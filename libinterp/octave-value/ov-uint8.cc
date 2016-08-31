@@ -71,3 +71,4 @@ template class octave_base_int_scalar<octave_uint8>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint8_scalar,
                                      "uint8 scalar", "uint8");
+

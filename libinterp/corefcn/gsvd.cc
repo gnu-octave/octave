@@ -38,8 +38,8 @@ static typename gsvd<T>::Type
 gsvd_type (int nargout)
 {
   return ((nargout == 0 || nargout == 1)
-         ? gsvd<T>::Type::sigma_only
-         : (nargout > 5) ? gsvd<T>::Type::std : gsvd<T>::Type::economy);
+          ? gsvd<T>::Type::sigma_only
+          : (nargout > 5) ? gsvd<T>::Type::std : gsvd<T>::Type::economy);
 }
 
 
@@ -182,14 +182,14 @@ routines.
   if (nr == 0 || nc == 0)
     {
       if (nargout == 5)
-          retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
-                        Matrix (nr, nc), identity_matrix (nr, nr),
-                        identity_matrix (nr, nr));
+        retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
+                      Matrix (nr, nc), identity_matrix (nr, nr),
+                      identity_matrix (nr, nr));
       else if (nargout == 6)
-          retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
-                        Matrix (nr, nc), identity_matrix (nr, nr),
-                        identity_matrix (nr, nr),
-                        identity_matrix (nr, nr));
+        retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
+                      Matrix (nr, nc), identity_matrix (nr, nr),
+                      identity_matrix (nr, nr),
+                      identity_matrix (nr, nr));
       else
         retval = ovl (Matrix (0, 1));
     }
@@ -480,3 +480,4 @@ routines.
 %! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
 
 */
+

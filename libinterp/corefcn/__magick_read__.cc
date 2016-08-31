@@ -761,7 +761,8 @@ Use @code{imread} instead.
 
   maybe_initialize_magick ();
 
-  const octave_scalar_map options = args(1).xscalar_map_value ("__magick_read__: OPTIONS must be a struct");
+  const octave_scalar_map options
+    = args(1).xscalar_map_value ("__magick_read__: OPTIONS must be a struct");
 
   octave_value_list output;
 
@@ -1407,7 +1408,8 @@ Use @code{imwrite} instead.
   const std::string filename = args(0).string_value ();
   const std::string ext = args(1).string_value ();
 
-  const octave_scalar_map options = args(4).xscalar_map_value ("__magick_write__: OPTIONS must be a struct");
+  const octave_scalar_map options
+    = args(4).xscalar_map_value ("__magick_write__: OPTIONS must be a struct");
 
   const octave_value img = args(2);
   const Matrix cmap = args(3).xmatrix_value ("__magick_write__: invalid MAP");
@@ -1526,7 +1528,8 @@ Use @code{imwrite} instead.
   // Note that this only needs to be set on the first frame
   imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());
 
-  const std::string compression = options.getfield ("compression").string_value ();
+  const std::string compression
+    = options.getfield ("compression").string_value ();
 
 #define COMPRESS_MAGICK_IMAGE_VECTOR(GM_TYPE)                           \
   for (std::vector<Magick::Image>::size_type i = 0; i < imvec.size (); i++) \
@@ -1657,20 +1660,21 @@ magick_to_octave_value (const Magick::CompressionType& magick)
     case Magick::ZipCompression:
       return octave_value ("deflate");
 
-      // The following are present only in recent versions of GraphicsMagick.
-      // At the moment the only use of this would be to have imfinfo report
-      // the compression method.  In the future, someone could implement
-      // the Compression option for imwrite in which case a macro in
-      // configure.ac will have to check for their presence of this.
-      // See bug #39913
-      //      case Magick::LZMACompression:
-      //        return octave_value ("lzma");
-      //      case Magick::JPEG2000Compression:
-      //        return octave_value ("jpeg2000");
-      //      case Magick::JBIG1Compression:
-      //        return octave_value ("jbig1");
-      //      case Magick::JBIG2Compression:
-      //        return octave_value ("jbig2");
+    // The following are present only in recent versions of GraphicsMagick.
+    // At the moment the only use of this would be to have imfinfo report
+    // the compression method.  In the future, someone could implement
+    // the Compression option for imwrite in which case a macro in
+    // configure.ac will have to check for their presence of this.
+    // See bug #39913
+    //      case Magick::LZMACompression:
+    //        return octave_value ("lzma");
+    //      case Magick::JPEG2000Compression:
+    //        return octave_value ("jpeg2000");
+    //      case Magick::JBIG1Compression:
+    //        return octave_value ("jbig1");
+    //      case Magick::JBIG2Compression:
+    //        return octave_value ("jbig2");
+
     default:
       return octave_value ("undefined");
     }
@@ -1695,7 +1699,7 @@ magick_to_octave_value (const Magick::OrientationType& magick)
 {
   switch (magick)
     {
-      // Values come from the TIFF6 spec
+    // Values come from the TIFF6 spec
     case Magick::TopLeftOrientation:
       return octave_value (1);
     case Magick::TopRightOrientation:
@@ -2305,3 +2309,4 @@ Fill formats info with GraphicsMagick CoderInfo.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

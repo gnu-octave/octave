@@ -82,7 +82,7 @@ tree::meets_bp_condition () const
             {
               if (! val(0).is_scalar_type ())
                 warning ("Breakpoint condition must be a scalar, not size %s",
-                  val(0).dims ().str ('x').c_str ());
+                         val(0).dims ().str ('x').c_str ());
               else
                 retval = val(0).bool_value ();
             }
@@ -97,3 +97,4 @@ tree::meets_bp_condition () const
     }
   return retval;
 }
+

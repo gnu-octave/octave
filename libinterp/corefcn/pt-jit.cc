@@ -1218,7 +1218,7 @@ jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
     {
       octave::unwind_protect frame;
       frame.add_method (&end_context,
-                       &std::vector<jit_magic_end::context>::pop_back);
+                        &std::vector<jit_magic_end::context>::pop_back);
 
       jit_magic_end::context ctx (factory, object, idx, narg);
       end_context.push_back (ctx);
@@ -2605,3 +2605,4 @@ The original variable value is restored when exiting the function.
   return ovl ();
 #endif
 }
+

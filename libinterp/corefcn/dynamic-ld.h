@@ -52,9 +52,11 @@ public:
             const std::string& file_name = "",
             bool relative = false);
 
-  static bool remove_oct (const std::string& fcn_name, octave::dynamic_library& shl);
+  static bool remove_oct (const std::string& fcn_name,
+                          octave::dynamic_library& shl);
 
-  static bool remove_mex (const std::string& fcn_name, octave::dynamic_library& shl);
+  static bool remove_mex (const std::string& fcn_name,
+                          octave::dynamic_library& shl);
 
 private:
 
@@ -100,3 +102,4 @@ protected:
 };
 
 #endif
+

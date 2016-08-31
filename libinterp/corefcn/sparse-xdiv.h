@@ -99,3 +99,4 @@ extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&,
                                      MatrixType&);
 
 #endif
+

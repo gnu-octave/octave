@@ -396,8 +396,8 @@ octave_complex::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   Complex tmp = complex_value ();
-  retval = H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-                     &tmp) >= 0;
+  retval = H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Tclose (type_hid);
@@ -449,8 +449,8 @@ octave_complex::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   // complex scalar:
   Complex ctmp;
-  if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-               &ctmp) >= 0)
+  if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &ctmp) >= 0)
     {
       retval = true;
       scalar = ctmp;
@@ -489,52 +489,53 @@ octave_complex::map (unary_mapper_t umap) const
 {
   switch (umap)
     {
-#define SCALAR_MAPPER(UMAP, FCN)                \
-      case umap_ ## UMAP:                       \
-        return octave_value (FCN (scalar))
+#define SCALAR_MAPPER(UMAP, FCN)              \
+    case umap_ ## UMAP:                       \
+      return octave_value (FCN (scalar))
 
-      SCALAR_MAPPER (abs, std::abs);
-      SCALAR_MAPPER (acos, octave::math::acos);
-      SCALAR_MAPPER (acosh, octave::math::acosh);
-      SCALAR_MAPPER (angle, std::arg);
-      SCALAR_MAPPER (arg, std::arg);
-      SCALAR_MAPPER (asin, octave::math::asin);
-      SCALAR_MAPPER (asinh, octave::math::asinh);
-      SCALAR_MAPPER (atan, octave::math::atan);
-      SCALAR_MAPPER (atanh, octave::math::atanh);
-      SCALAR_MAPPER (erf, octave::math::erf);
-      SCALAR_MAPPER (erfc, octave::math::erfc);
-      SCALAR_MAPPER (erfcx, octave::math::erfcx);
-      SCALAR_MAPPER (erfi, octave::math::erfi);
-      SCALAR_MAPPER (dawson, octave::math::dawson);
-      SCALAR_MAPPER (ceil, octave::math::ceil);
-      SCALAR_MAPPER (conj, std::conj);
-      SCALAR_MAPPER (cos, std::cos);
-      SCALAR_MAPPER (cosh, std::cosh);
-      SCALAR_MAPPER (exp, std::exp);
-      SCALAR_MAPPER (expm1, octave::math::expm1);
-      SCALAR_MAPPER (fix, octave::math::fix);
-      SCALAR_MAPPER (floor, octave::math::floor);
-      SCALAR_MAPPER (imag, std::imag);
-      SCALAR_MAPPER (log, std::log);
-      SCALAR_MAPPER (log2, octave::math::log2);
-      SCALAR_MAPPER (log10, std::log10);
-      SCALAR_MAPPER (log1p, octave::math::log1p);
-      SCALAR_MAPPER (real, std::real);
-      SCALAR_MAPPER (round, octave::math::round);
-      SCALAR_MAPPER (roundb, octave::math::roundb);
-      SCALAR_MAPPER (signum, octave::math::signum);
-      SCALAR_MAPPER (sin, std::sin);
-      SCALAR_MAPPER (sinh, std::sinh);
-      SCALAR_MAPPER (sqrt, std::sqrt);
-      SCALAR_MAPPER (tan, std::tan);
-      SCALAR_MAPPER (tanh, std::tanh);
-      SCALAR_MAPPER (isfinite, octave::math::finite);
-      SCALAR_MAPPER (isinf, octave::math::isinf);
-      SCALAR_MAPPER (isna, octave::math::is_NA);
-      SCALAR_MAPPER (isnan, octave::math::isnan);
+    SCALAR_MAPPER (abs, std::abs);
+    SCALAR_MAPPER (acos, octave::math::acos);
+    SCALAR_MAPPER (acosh, octave::math::acosh);
+    SCALAR_MAPPER (angle, std::arg);
+    SCALAR_MAPPER (arg, std::arg);
+    SCALAR_MAPPER (asin, octave::math::asin);
+    SCALAR_MAPPER (asinh, octave::math::asinh);
+    SCALAR_MAPPER (atan, octave::math::atan);
+    SCALAR_MAPPER (atanh, octave::math::atanh);
+    SCALAR_MAPPER (erf, octave::math::erf);
+    SCALAR_MAPPER (erfc, octave::math::erfc);
+    SCALAR_MAPPER (erfcx, octave::math::erfcx);
+    SCALAR_MAPPER (erfi, octave::math::erfi);
+    SCALAR_MAPPER (dawson, octave::math::dawson);
+    SCALAR_MAPPER (ceil, octave::math::ceil);
+    SCALAR_MAPPER (conj, std::conj);
+    SCALAR_MAPPER (cos, std::cos);
+    SCALAR_MAPPER (cosh, std::cosh);
+    SCALAR_MAPPER (exp, std::exp);
+    SCALAR_MAPPER (expm1, octave::math::expm1);
+    SCALAR_MAPPER (fix, octave::math::fix);
+    SCALAR_MAPPER (floor, octave::math::floor);
+    SCALAR_MAPPER (imag, std::imag);
+    SCALAR_MAPPER (log, std::log);
+    SCALAR_MAPPER (log2, octave::math::log2);
+    SCALAR_MAPPER (log10, std::log10);
+    SCALAR_MAPPER (log1p, octave::math::log1p);
+    SCALAR_MAPPER (real, std::real);
+    SCALAR_MAPPER (round, octave::math::round);
+    SCALAR_MAPPER (roundb, octave::math::roundb);
+    SCALAR_MAPPER (signum, octave::math::signum);
+    SCALAR_MAPPER (sin, std::sin);
+    SCALAR_MAPPER (sinh, std::sinh);
+    SCALAR_MAPPER (sqrt, std::sqrt);
+    SCALAR_MAPPER (tan, std::tan);
+    SCALAR_MAPPER (tanh, std::tanh);
+    SCALAR_MAPPER (isfinite, octave::math::finite);
+    SCALAR_MAPPER (isinf, octave::math::isinf);
+    SCALAR_MAPPER (isna, octave::math::is_NA);
+    SCALAR_MAPPER (isnan, octave::math::isnan);
 
     default:
       return octave_base_value::map (umap);
     }
 }
+

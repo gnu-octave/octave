@@ -624,7 +624,8 @@ initialize_jvm (void)
       vm_args.add ("-Djava.class.path=" + initial_class_path ());
       vm_args.add ("-Xrs");
       vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
-      vm_args.read_java_opts (initial_java_dir () + octave::sys::file_ops::dir_sep_str () +
+      vm_args.read_java_opts (initial_java_dir () +
+                              octave::sys::file_ops::dir_sep_str () +
                               "java.opts");
 
 #if ! defined (__APPLE__) && ! defined (__MACH__)
@@ -1606,7 +1607,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
         UNBOX_PRIMITIVE_SCALAR (uint64_t, uint64_scalar, "java/lang/Long", "(J)V");
 
 #undef UNBOX_PRIMITIVE_SCALAR
-      }
+    }
   else if (val.is_empty ())
     {
       jobj = 0;
@@ -2270,7 +2271,8 @@ octave_java::do_javaMethod (void *jni_env_arg, const std::string& name,
 }
 
 octave_value
-octave_java::do_javaMethod (const std::string& name, const octave_value_list& args)
+octave_java::do_javaMethod (const std::string& name,
+                            const octave_value_list& args)
 {
 #if defined (HAVE_JAVA)
 
@@ -2411,7 +2413,8 @@ octave_java::do_javaObject (void *jni_env_arg, const std::string& name,
 }
 
 octave_value
-octave_java::do_javaObject (const std::string& name, const octave_value_list& args)
+octave_java::do_javaObject (const std::string& name,
+                            const octave_value_list& args)
 {
 #if defined (HAVE_JAVA)
 
@@ -2534,7 +2537,8 @@ octave_java::do_java_get (void *jni_env_arg, const std::string& class_name,
 }
 
 octave_value
-octave_java::do_java_get (const std::string& class_name, const std::string& name)
+octave_java::do_java_get (const std::string& class_name,
+                          const std::string& name)
 {
 #if defined (HAVE_JAVA)
 
@@ -2664,7 +2668,8 @@ octave_java::do_java_set (void *jni_env_arg, const std::string& class_name,
 }
 
 octave_value
-octave_java::do_java_set (const std::string& class_name, const std::string& name,
+octave_java::do_java_set (const std::string& class_name,
+                          const std::string& name,
                           const octave_value& val)
 {
 #if defined (HAVE_JAVA)
@@ -3245,3 +3250,4 @@ Return true if @var{x} is a Java object.
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "zzz"), 3);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "hhh") < 0);
 */
+

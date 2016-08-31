@@ -197,3 +197,4 @@ private:
 typedef octave_float_complex octave_float_complex_scalar;
 
 #endif
+

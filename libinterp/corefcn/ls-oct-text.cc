@@ -234,7 +234,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 
 std::string
 read_text_data (std::istream& is, const std::string& filename, bool& global,
-                 octave_value& tc, octave_idx_type count)
+                octave_value& tc, octave_idx_type count)
 {
   // Read name for this entry or break on EOF.
 
@@ -414,3 +414,4 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,
                                             std::numeric_limits<int>::max ());
 }
+

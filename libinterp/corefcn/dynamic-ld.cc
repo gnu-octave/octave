@@ -57,7 +57,8 @@ public:
 
   static void append (const octave::dynamic_library& shl);
 
-  static void remove (octave::dynamic_library& shl, octave::dynamic_library::close_hook cl_hook = 0);
+  static void remove (octave::dynamic_library& shl,
+                      octave::dynamic_library::close_hook cl_hook = 0);
 
   static octave::dynamic_library find_file (const std::string& file_name);
 
@@ -71,7 +72,8 @@ private:
 
   void do_append (const octave::dynamic_library& shl);
 
-  void do_remove (octave::dynamic_library& shl, octave::dynamic_library::close_hook cl_hook = 0);
+  void do_remove (octave::dynamic_library& shl,
+                  octave::dynamic_library::close_hook cl_hook = 0);
 
   octave::dynamic_library do_find_file (const std::string& file_name) const;
 
@@ -453,3 +455,4 @@ octave_dynamic_loader::mex_f77_mangler (const std::string&)
 {
   return STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION));
 }
+

@@ -42,3 +42,4 @@ octave_function::empty_clone (void) const
   panic_impossible ();
   return 0;
 }
+

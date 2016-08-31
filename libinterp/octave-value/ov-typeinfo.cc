@@ -706,7 +706,7 @@ octave_value_typeinfo::unary_ops_map (void) const
   octave_scalar_map retval;
 
   int len = std::min (static_cast<int> (non_const_unary_ops.columns ()),
-    num_types);
+                      num_types);
 
   dim_vector tab_dims (1, len);
 
@@ -731,7 +731,7 @@ octave_value_typeinfo::non_const_unary_ops_map (void) const
   octave_scalar_map retval;
 
   int len = std::min (static_cast<int> (non_const_unary_ops.columns ()),
-    num_types);
+                      num_types);
 
   dim_vector tab_dims (1, len);
 
@@ -781,7 +781,7 @@ octave_value_typeinfo::compound_binary_ops_map (void) const
   octave_scalar_map retval;
 
   int len = std::min (static_cast<int> (compound_binary_ops.columns ()),
-    num_types);
+                      num_types);
 
   dim_vector tab_dims (len, len);
 
@@ -793,7 +793,8 @@ octave_value_typeinfo::compound_binary_ops_map (void) const
         for (int i = 0; i < len; i++)
           tab.xelem (j,i) = (compound_binary_ops(k,j,i) != 0);
 
-      octave_value::compound_binary_op op_id = static_cast<octave_value::compound_binary_op> (k);
+      octave_value::compound_binary_op op_id
+        = static_cast<octave_value::compound_binary_op> (k);
 
       retval.setfield (octave_value::binary_op_fcn_name (op_id), tab);
     }
@@ -891,3 +892,4 @@ Undocumented internal function.
 
   return ovl (octave_value_typeinfo::installed_type_info ());
 }
+

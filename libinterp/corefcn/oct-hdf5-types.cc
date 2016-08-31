@@ -64,3 +64,4 @@ check_hdf5_types (bool warn)
 
   return ok;
 }
+

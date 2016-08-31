@@ -49,7 +49,8 @@ DEFBINOP_OP (mul, sparse_complex_matrix, scalar, *)
 
 DEFBINOP (div, sparse_complex_matrix, scalar)
 {
-  const octave_sparse_complex_matrix& v1 = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
@@ -65,7 +66,8 @@ DEFBINOP (div, sparse_complex_matrix, scalar)
 
 DEFBINOP (pow, sparse_complex_matrix, scalar)
 {
-  const octave_sparse_complex_matrix& v1 = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double tmp = v2.scalar_value ();
@@ -77,7 +79,8 @@ DEFBINOP (pow, sparse_complex_matrix, scalar)
 
 DEFBINOP (ldiv, sparse_complex_matrix, scalar)
 {
-  const octave_sparse_complex_matrix& v1 = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
@@ -111,7 +114,8 @@ DEFBINOP_OP (el_mul, sparse_complex_matrix, scalar, *)
 
 DEFBINOP (el_div, sparse_complex_matrix, scalar)
 {
-  const octave_sparse_complex_matrix& v1 = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
@@ -129,7 +133,8 @@ DEFBINOP_FN (el_pow, sparse_complex_matrix, scalar, elem_xpow)
 
 DEFBINOP (el_ldiv, sparse_complex_matrix, scalar)
 {
-  const octave_sparse_complex_matrix& v1 = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   return octave_value
@@ -141,7 +146,8 @@ DEFBINOP_FN (el_or,  sparse_complex_matrix, scalar, mx_el_or)
 
 DEFCATOP (scm_s, sparse_complex_matrix, scalar)
 {
-  octave_sparse_complex_matrix& v1 = dynamic_cast<octave_sparse_complex_matrix&> (a1);
+  octave_sparse_complex_matrix& v1
+    = dynamic_cast<octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
   SparseComplexMatrix tmp (1, 1, v2.complex_value ());
   return octave_value
@@ -150,7 +156,8 @@ DEFCATOP (scm_s, sparse_complex_matrix, scalar)
 
 DEFASSIGNOP (assign, sparse_complex_matrix, scalar)
 {
-  octave_sparse_complex_matrix& v1 = dynamic_cast<octave_sparse_complex_matrix&> (a1);
+  octave_sparse_complex_matrix& v1
+    = dynamic_cast<octave_sparse_complex_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   SparseComplexMatrix tmp (1, 1, v2.complex_value ());
@@ -191,3 +198,4 @@ install_scm_s_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_complex_matrix, octave_scalar,
                     assign);
 }
+

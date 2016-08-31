@@ -216,10 +216,10 @@ permutation information.
                   SparseMatrix L = fact.L ();
 
                   if (nargout == 2)
-                      retval(0)
-                        = octave_value (P.transpose () * L,
-                            MatrixType (MatrixType::Permuted_Lower,
-                                        nr, fact.row_perm ()));
+                    retval(0)
+                      = octave_value (P.transpose () * L,
+                                      MatrixType (MatrixType::Permuted_Lower,
+                                                  nr, fact.row_perm ()));
                   else
                     {
                       retval(0) = L;
@@ -264,7 +264,9 @@ permutation information.
               ColumnVector Qinit (nc);
               for (octave_idx_type i = 0; i < nc; i++)
                 Qinit(i) = i;
-              octave::math::sparse_lu<SparseComplexMatrix> fact (m, Qinit, thres, false, true);
+              octave::math::sparse_lu<SparseComplexMatrix> fact (m, Qinit,
+                                                                 thres, false,
+                                                                 true);
 
               if (nargout < 2)
                 retval(0) = fact.Y ();
@@ -818,3 +820,4 @@ factorization from scratch.
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
 %! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
+

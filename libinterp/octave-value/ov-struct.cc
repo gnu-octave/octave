@@ -869,14 +869,16 @@ octave_struct::load_binary (std::istream& is, bool swap,
 }
 
 bool
-octave_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+octave_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                          bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
   hid_t data_hid = -1;
 
 #if defined (HAVE_HDF5_18)
-  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -1481,7 +1483,8 @@ octave_scalar_struct::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t data_hid = -1;
 
 #if defined (HAVE_HDF5_18)
-  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -2125,3 +2128,4 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);
 }
+

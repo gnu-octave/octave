@@ -293,3 +293,4 @@ num2hex (single ([-1, 1, e, Inf]))
 %!error num2hex (1,2)
 %!error num2hex (1j)
 */
+

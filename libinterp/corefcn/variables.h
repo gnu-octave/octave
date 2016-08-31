@@ -158,3 +158,4 @@ extern OCTINTERP_API void clear_symbol (const std::string& nm);
 extern OCTINTERP_API void maybe_missing_function_hook (const std::string& name);
 
 #endif
+

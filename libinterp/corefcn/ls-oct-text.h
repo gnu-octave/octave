@@ -49,15 +49,15 @@ extract_keyword (std::istream& is, const char *keyword,
 
 extern OCTINTERP_API std::string
 read_text_data (std::istream& is, const std::string& filename, bool& global,
-                 octave_value& tc, octave_idx_type count);
+                octave_value& tc, octave_idx_type count);
 
 extern OCTINTERP_API bool
 save_text_data (std::ostream& os, const octave_value& val_arg,
-                 const std::string& name, bool mark_as_global, int precision);
+                const std::string& name, bool mark_as_global, int precision);
 
 extern OCTINTERP_API bool
 save_text_data_for_plotting (std::ostream& os, const octave_value& t,
-                              const std::string& name);
+                             const std::string& name);
 
 extern OCTINTERP_API bool
 save_three_d (std::ostream& os, const octave_value& t,
@@ -189,3 +189,4 @@ extract_keyword (std::istream& is, const string_vector& keywords,
 }
 
 #endif
+

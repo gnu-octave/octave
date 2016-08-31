@@ -77,7 +77,7 @@ octave_name_version_and_copyright (void)
 
 std::string
 octave_name_version_copyright_copying_and_warranty
- (bool html, const std::string& extra_info)
+  (bool html, const std::string& extra_info)
 {
   std::string br = html ? "<br>\n" : "\n";
   std::string sep = html ? "\n</p>\n<p>\n" : "\n\n";
@@ -129,3 +129,4 @@ octave_startup_message (bool html)
 
   return msg;
 }
+

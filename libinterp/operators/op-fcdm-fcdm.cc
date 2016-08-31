@@ -42,13 +42,15 @@ DEFUNOP_OP (uminus, float_complex_diag_matrix, -)
 
 DEFUNOP (transpose, float_complex_diag_matrix)
 {
-  const octave_float_complex_diag_matrix& v = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
+  const octave_float_complex_diag_matrix& v
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
   return octave_value (v.float_complex_diag_matrix_value ().transpose ());
 }
 
 DEFUNOP (hermitian, float_complex_diag_matrix)
 {
-  const octave_float_complex_diag_matrix& v = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
+  const octave_float_complex_diag_matrix& v
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
   return octave_value (v.float_complex_diag_matrix_value ().hermitian ());
 }
 
@@ -60,8 +62,10 @@ DEFBINOP_OP (mul, float_complex_diag_matrix, float_complex_diag_matrix, *)
 
 DEFBINOP (div, float_complex_diag_matrix, float_complex_diag_matrix)
 {
-  const octave_float_complex_diag_matrix& v1 = dynamic_cast<const octave_float_complex_diag_matrix&> (a1);
-  const octave_float_complex_diag_matrix& v2 = dynamic_cast<const octave_float_complex_diag_matrix&> (a2);
+  const octave_float_complex_diag_matrix& v1
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a1);
+  const octave_float_complex_diag_matrix& v2
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a2);
 
   return xdiv (v1.float_complex_diag_matrix_value (),
                v2.float_complex_diag_matrix_value ());
@@ -69,8 +73,10 @@ DEFBINOP (div, float_complex_diag_matrix, float_complex_diag_matrix)
 
 DEFBINOP (ldiv, float_complex_diag_matrix, float_complex_diag_matrix)
 {
-  const octave_float_complex_diag_matrix& v1 = dynamic_cast<const octave_float_complex_diag_matrix&> (a1);
-  const octave_float_complex_diag_matrix& v2 = dynamic_cast<const octave_float_complex_diag_matrix&> (a2);
+  const octave_float_complex_diag_matrix& v1
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a1);
+  const octave_float_complex_diag_matrix& v2
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a2);
 
   return xleftdiv (v1.float_complex_diag_matrix_value (),
                    v2.float_complex_diag_matrix_value ());
@@ -78,7 +84,8 @@ DEFBINOP (ldiv, float_complex_diag_matrix, float_complex_diag_matrix)
 
 CONVDECL (float_complex_diag_matrix_to_complex_diag_matrix)
 {
-  const octave_float_complex_diag_matrix& v = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
+  const octave_float_complex_diag_matrix& v
+    = dynamic_cast<const octave_float_complex_diag_matrix&> (a);
 
   return new octave_complex_diag_matrix (v.complex_diag_matrix_value ());
 }
@@ -107,3 +114,4 @@ install_fcdm_fcdm_ops (void)
   INSTALL_WIDENOP (octave_float_complex_diag_matrix, octave_complex_diag_matrix,
                    float_complex_diag_matrix_to_complex_diag_matrix);
 }
+

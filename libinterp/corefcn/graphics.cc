@@ -137,7 +137,8 @@ viridis_colormap (void)
   // a colormap_property object, we need to initialize this before main is
   // even called, so calling an interpreted function is not possible.
 
-  const double cmapv[] = {
+  const double cmapv[] =
+  {
     2.67004010000000e-01, 2.72651720952381e-01, 2.77106307619048e-01,
     2.80356151428571e-01, 2.82390045238095e-01, 2.83204606666667e-01,
     2.82809341428571e-01, 2.81230763333333e-01, 2.78516153333333e-01,
@@ -201,7 +202,8 @@ viridis_colormap (void)
     2.78916748571429e-01, 2.53000856190476e-01, 2.26223670000000e-01,
     1.98879439523810e-01, 1.71494930000000e-01, 1.45037631428572e-01,
     1.21291048571429e-01, 1.03326155238095e-01, 9.53507900000000e-02,
-    1.00469958095238e-01, 1.17876387142857e-01, 1.43936200000000e-01};
+    1.00469958095238e-01, 1.17876387142857e-01, 1.43936200000000e-01
+  };
 
   // It would be nice if Matrix had a ctor allowing to do the
   // following without a copy
@@ -1568,7 +1570,7 @@ handle_property::do_set (const octave_value& v)
     }
 
   double dv = v.xdouble_value ("set: invalid graphics handle for property \"%s\"",
-                              get_name ().c_str ());
+                               get_name ().c_str ());
 
   graphics_handle gh = gh_manager::lookup (dv);
 
@@ -1731,7 +1733,8 @@ property::create (const std::string& name, const graphics_handle& h,
     }
   else if (type.compare ("handle"))
     {
-      double hv = (args.length () > 0 ? args(0).double_value () : octave::numeric_limits<double>::NaN ());
+      double hv = args.length () > 0 ? args(0).double_value ()
+                                     : octave::numeric_limits<double>::NaN ();
 
       graphics_handle gh (hv);
 
@@ -2592,7 +2595,7 @@ reparent (const octave_value& ov, const std::string& who,
   graphics_handle h = octave::numeric_limits<double>::NaN ();
 
   double hv = ov.xdouble_value ("%s: %s must be a graphics handle",
-                               who.c_str (), pname.c_str ());
+                                who.c_str (), pname.c_str ());
 
   h = gh_manager::lookup (hv);
 
@@ -2622,7 +2625,8 @@ gcf (void)
 {
   octave_value val = xget (0, "currentfigure");
 
-  return val.is_empty () ? octave::numeric_limits<double>::NaN () : val.double_value ();
+  return val.is_empty () ? octave::numeric_limits<double>::NaN ()
+                         : val.double_value ();
 }
 
 // This function is NOT equivalent to the scripting language function gca.
@@ -2631,7 +2635,8 @@ gca (void)
 {
   octave_value val = xget (gcf (), "currentaxes");
 
-  return val.is_empty () ? octave::numeric_limits<double>::NaN () : val.double_value ();
+  return val.is_empty () ? octave::numeric_limits<double>::NaN ()
+                         : val.double_value ();
 }
 
 static void
@@ -5301,10 +5306,10 @@ axes::properties::update_camera (void)
 
       if (el == 90 || el == -90)
         {
-          c_upv(0) =
-            -octave::math::signum (el) *sin (az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
-          c_upv(1) =
-            octave::math::signum (el) * cos (az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
+          c_upv(0) = -octave::math::signum (el)
+                     * sin (az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
+          c_upv(1) = octave::math::signum (el)
+                     * cos (az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
         }
       else
         c_upv(2) = 1;
@@ -5961,18 +5966,18 @@ axes::properties::update_zlabel_position (void)
           p = graphics_xform::xform_vector (xPlaneN, yPlane,
                                             (zpTickN + zpTick)/2);
           if (octave::math::isinf (fy))
-            p(0) += (octave::math::signum (xPlaneN - xPlane) * fx * ztickoffset);
+            p(0) += octave::math::signum (xPlaneN - xPlane) * fx * ztickoffset;
           else
-            p(1) += (octave::math::signum (yPlane - yPlaneN) * fy * ztickoffset);
+            p(1) += octave::math::signum (yPlane - yPlaneN) * fy * ztickoffset;
         }
       else
         {
           p = graphics_xform::xform_vector (xPlane, yPlaneN,
                                             (zpTickN + zpTick)/2);
           if (octave::math::isinf (fx))
-            p(1) += (octave::math::signum (yPlaneN - yPlane) * fy * ztickoffset);
+            p(1) += octave::math::signum (yPlaneN - yPlane) * fy * ztickoffset;
           else
-            p(0) += (octave::math::signum (xPlane - xPlaneN) * fx * ztickoffset);
+            p(0) += octave::math::signum (xPlane - xPlaneN) * fx * ztickoffset;
         }
 
       p = xform.transform (p(0), p(1), p(2), false);
@@ -6757,7 +6762,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
   double min_val = xmin;
   double max_val = xmax;
 
-  if (octave::math::isinf (min_val) && min_val > 0 && octave::math::isinf (max_val) && max_val < 0)
+  if (octave::math::isinf (min_val) && min_val > 0
+      && octave::math::isinf (max_val) && max_val < 0)
     {
       retval = default_lim (logscale);
       return retval;
@@ -9010,7 +9016,8 @@ uibuttongroup::properties::set_selectedobject (const octave_value& v)
           && gop.get_parent () == get___myhandle__ ()
           && go.isa ("uicontrol"))
         {
-          uicontrol::properties& cop = dynamic_cast<uicontrol::properties&> (go.get_properties ());
+          uicontrol::properties& cop
+            = dynamic_cast<uicontrol::properties&> (go.get_properties ());
           const caseless_str& style = cop.get_style ();
           if (style.compare ("radiobutton") || style.compare ("togglebutton"))
             {
@@ -9648,7 +9655,8 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
                 {
                   caseless_str cname (name);
 
-                  if (cname.compare ("deletefcn") || cname.compare ("createfcn")
+                  if (cname.compare ("deletefcn")
+                      || cname.compare ("createfcn")
                       || (go.isa ("figure")
                           && (cname.compare ("closerequestfcn")
                               || cname.compare ("resizefcn"))))
@@ -11782,3 +11790,4 @@ Undocumented internal function.
 
   return ovl ();
 }
+

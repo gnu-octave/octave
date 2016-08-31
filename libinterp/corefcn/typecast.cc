@@ -201,7 +201,8 @@ typecast (@var{x}, "uint8")
                                old_dims, frame);
       else
         get_data_and_bytesize (array.array_value (), data, byte_size,
-                               old_dims, frame); }
+                               old_dims, frame);
+    }
   else
     error ("typecast: invalid input class: %s",
            array.class_name ().c_str ());
@@ -291,7 +292,8 @@ do_bitpack (const boolNDArray& bitp)
   octave_idx_type n
     = bitp.numel () / (sizeof (T) * std::numeric_limits<unsigned char>::digits);
 
-  if (n * static_cast<int> (sizeof (T)) * std::numeric_limits<unsigned char>::digits != bitp.numel ())
+  if (n * static_cast<int> (sizeof (T)) *
+      std::numeric_limits<unsigned char>::digits != bitp.numel ())
     error ("bitpack: incorrect number of bits to make up output value");
 
   ArrayType retval (get_vec_dims (bitp.dims (), n));

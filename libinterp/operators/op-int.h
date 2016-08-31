@@ -1194,3 +1194,4 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_INSTALL_MM_INT_CMP_OPS (T1 ## _ ## T2 ## _mm, T1 ## _, T2 ## _)
 
 #endif
+

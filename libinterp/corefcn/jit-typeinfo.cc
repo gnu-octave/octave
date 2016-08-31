@@ -2242,3 +2242,4 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
 }
 
 #endif
+

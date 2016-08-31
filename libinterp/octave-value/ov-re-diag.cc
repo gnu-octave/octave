@@ -313,3 +313,4 @@ octave_diag_matrix::chk_valid_scalar (const octave_value& val,
     x = val.double_value ();
   return retval;
 }
+

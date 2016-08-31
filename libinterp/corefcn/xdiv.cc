@@ -1015,3 +1015,4 @@ xleftdiv (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
 FloatComplexDiagMatrix
 xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 { return dmdm_leftdiv_impl (a, b); }
+

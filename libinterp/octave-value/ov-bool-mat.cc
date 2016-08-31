@@ -551,7 +551,8 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, htmp)
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, htmp)
       >= 0)
     {
       retval = true;
@@ -640,3 +641,4 @@ Compatibility Note: Octave accepts complex values as input, whereas
 %!   assert (logical (eye (1, c{i})), s);
 %! endfor
 */
+

@@ -224,3 +224,4 @@ typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
 #endif
 
 #endif
+

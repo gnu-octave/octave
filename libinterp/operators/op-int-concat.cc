@@ -316,3 +316,4 @@ install_int_concat_ops (void)
   OCTAVE_INSTALL_CHAR_INT_CONCAT_FN (uint32);
   OCTAVE_INSTALL_CHAR_INT_CONCAT_FN (uint64);
 }
+

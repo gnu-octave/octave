@@ -119,7 +119,7 @@ public:
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
 #else
-  err_disabled_feature ("OpenGL_fltk", "OpenGL");
+    err_disabled_feature ("OpenGL_fltk", "OpenGL");
 #endif
   }
 
@@ -149,10 +149,10 @@ public:
     Fl_Gl_Window::resize (xx, yy, ww, hh);
 
 #else
-  // This shouldn't happen because construction of Opengl_fltk
-  // objects is supposed to be impossible if OpenGL is not available.
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+    panic_impossible ();
 #endif
   }
 
@@ -193,10 +193,10 @@ private:
       overlay ();
 
 #else
-  // This shouldn't happen because construction of Opengl_fltk
-  // objects is supposed to be impossible if OpenGL is not available.
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+    panic_impossible ();
 #endif
   }
 
@@ -211,10 +211,10 @@ private:
     glVertex2d (zoom_box(0), h () - zoom_box(1));
 
 #else
-  // This shouldn't happen because construction of Opengl_fltk
-  // objects is supposed to be impossible if OpenGL is not available.
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+    panic_impossible ();
 #endif
   }
 
@@ -249,10 +249,10 @@ private:
     glPopMatrix ();
 
 #else
-  // This shouldn't happen because construction of Opengl_fltk
-  // objects is supposed to be impossible if OpenGL is not available.
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+    panic_impossible ();
 #endif
   }
 
@@ -274,10 +274,10 @@ private:
     return Fl_Gl_Window::handle (event);
 
 #else
-  // This shouldn't happen because construction of Opengl_fltk
-  // objects is supposed to be impossible if OpenGL is not available.
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+    panic_impossible ();
 #endif
   }
 };
@@ -556,7 +556,8 @@ public:
 
   void update_position (uimenu::properties& uimenup, int pos)
   {
-    uimenup.get_property ("position").set (octave_value (static_cast<double> (pos)), true, false);
+    uimenup.get_property ("position").set (octave_value (static_cast<double> (pos)),
+                                           true, false);
   }
 
   void add_entry (uimenu::properties& uimenup)
@@ -638,9 +639,9 @@ public:
             if (pos <= 0)
               delayed_menus.push_back ((len - (ii + 1)));
             else
-             {
-               add_to_menu (kprop);
-             }
+              {
+                add_to_menu (kprop);
+              }
           }
       }
 
@@ -680,10 +681,10 @@ public:
             if (pos <= 0)
               delayed_menus.push_back ((len - (ii + 1)));
             else
-             {
-               add_to_menu (kprop);
-               update_position (kprop, ++count);
-             }
+              {
+                add_to_menu (kprop);
+                update_position (kprop, ++count);
+              }
           }
       }
 
@@ -1498,7 +1499,7 @@ private:
                           ax_obj = gh_manager::get_object (gh);
                           set_axes_currentpoint (ax_obj, pos_x, pos_y);
                         }
-                     }
+                    }
 
                   fp.execute_keypressfcn (evt);
                 }
@@ -1659,11 +1660,11 @@ private:
                                      x1, y1);
 
                           if (pan_enabled ())
-                          {
-                            std::string mode = pan_mode ();
+                            {
+                              std::string mode = pan_mode ();
 
-                            ap.translate_view (mode, x0, x1, y0, y1);
-                          }
+                              ap.translate_view (mode, x0, x1, y0, y1);
+                            }
                           else if (rotate_enabled ())
                             {
                               double daz, del;
@@ -2442,3 +2443,4 @@ Undocumented internal function.
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

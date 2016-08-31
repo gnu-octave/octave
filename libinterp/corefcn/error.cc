@@ -1077,7 +1077,8 @@ maybe_extract_message_id (const std::string& caller,
             }
           else
             nargs(0) = "call to " + caller
-              + " with message identifier '" + arg1 + "' requires message";
+                       + " with message identifier '" + arg1
+                       + "' requires message";
         }
     }
 
@@ -1549,8 +1550,8 @@ disable escape sequence expansion use a second backslash before the sequence
               m.contents ("identifier") = ids;
               m.contents ("state") = states;
 
-              symbol_table::assign
-                (".saved_warning_states.", m, scope, context);
+              symbol_table::assign (".saved_warning_states.",
+                                    m, scope, context);
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.

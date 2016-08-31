@@ -109,13 +109,13 @@ octave_complex_matrix::double_value (bool force_conversion) const
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real scalar");
+                              "complex matrix", "real scalar");
 
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
-                             "complex matrix", "real scalar");
+                            "complex matrix", "real scalar");
 
   retval = octave::math::real (matrix(0, 0));
 
@@ -129,13 +129,13 @@ octave_complex_matrix::float_value (bool force_conversion) const
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real scalar");
+                              "complex matrix", "real scalar");
 
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "real scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
-                             "complex matrix", "real scalar");
+                            "complex matrix", "real scalar");
 
   retval = octave::math::real (matrix(0, 0));
 
@@ -149,7 +149,7 @@ octave_complex_matrix::array_value (bool force_conversion) const
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real matrix");
+                              "complex matrix", "real matrix");
 
   retval = ::real (matrix);
 
@@ -163,7 +163,7 @@ octave_complex_matrix::matrix_value (bool force_conversion) const
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real matrix");
+                              "complex matrix", "real matrix");
 
   retval = ::real (ComplexMatrix (matrix));
 
@@ -177,7 +177,7 @@ octave_complex_matrix::float_matrix_value (bool force_conversion) const
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real matrix");
+                              "complex matrix", "real matrix");
 
   retval = ::real (ComplexMatrix (matrix));
 
@@ -195,7 +195,7 @@ octave_complex_matrix::complex_value (bool) const
     err_invalid_conversion ("complex matrix", "complex scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
-                             "complex matrix", "complex scalar");
+                            "complex matrix", "complex scalar");
 
   retval = matrix(0, 0);
 
@@ -213,7 +213,7 @@ octave_complex_matrix::float_complex_value (bool) const
     err_invalid_conversion ("complex matrix", "complex scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
-                             "complex matrix", "complex scalar");
+                            "complex matrix", "complex scalar");
 
   retval = matrix(0, 0);
 
@@ -251,7 +251,7 @@ octave_complex_matrix::char_array_value (bool frc_str_conv) const
 
   if (! frc_str_conv)
     warn_implicit_conversion ("Octave:num-to-str",
-                               "complex matrix", "string");
+                              "complex matrix", "string");
   else
     {
       retval = charNDArray (dims ());
@@ -277,7 +277,7 @@ octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
 
   if (! force_conversion)
     warn_implicit_conversion ("Octave:imag-to-real",
-                               "complex matrix", "real matrix");
+                              "complex matrix", "real matrix");
 
   retval = SparseMatrix (::real (ComplexMatrix (matrix)));
 
@@ -614,8 +614,9 @@ octave_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (retval)
     {
       Complex *mtmp = m.fortran_vec ();
-      if (H5Dwrite (data_hid, complex_type_hid, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-                    mtmp) < 0)
+      if (H5Dwrite (data_hid, complex_type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                    octave_H5P_DEFAULT, mtmp)
+          < 0)
         {
           H5Tclose (complex_type_hid);
           retval = false;
@@ -703,8 +704,9 @@ octave_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   ComplexNDArray m (dv);
   Complex *reim = m.fortran_vec ();
-  if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-               reim) >= 0)
+  if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, reim)
+      >= 0)
     {
       retval = true;
       matrix = m;
@@ -766,54 +768,55 @@ octave_complex_matrix::map (unary_mapper_t umap) const
     case umap_conj:
       return ::conj (matrix);
 
-#define ARRAY_METHOD_MAPPER(UMAP, FCN)          \
-      case umap_ ## UMAP:                       \
-        return octave_value (matrix.FCN ())
+#define ARRAY_METHOD_MAPPER(UMAP, FCN)        \
+    case umap_ ## UMAP:                       \
+      return octave_value (matrix.FCN ())
 
-      ARRAY_METHOD_MAPPER (abs, abs);
-      ARRAY_METHOD_MAPPER (isnan, isnan);
-      ARRAY_METHOD_MAPPER (isinf, isinf);
-      ARRAY_METHOD_MAPPER (isfinite, isfinite);
+    ARRAY_METHOD_MAPPER (abs, abs);
+    ARRAY_METHOD_MAPPER (isnan, isnan);
+    ARRAY_METHOD_MAPPER (isinf, isinf);
+    ARRAY_METHOD_MAPPER (isfinite, isfinite);
 
-#define ARRAY_MAPPER(UMAP, TYPE, FCN)                   \
-      case umap_ ## UMAP:                               \
-        return octave_value (matrix.map<TYPE> (FCN))
+#define ARRAY_MAPPER(UMAP, TYPE, FCN)                 \
+    case umap_ ## UMAP:                               \
+      return octave_value (matrix.map<TYPE> (FCN))
 
-      ARRAY_MAPPER (acos, Complex, octave::math::acos);
-      ARRAY_MAPPER (acosh, Complex, octave::math::acosh);
-      ARRAY_MAPPER (angle, double, std::arg);
-      ARRAY_MAPPER (arg, double, std::arg);
-      ARRAY_MAPPER (asin, Complex, octave::math::asin);
-      ARRAY_MAPPER (asinh, Complex, octave::math::asinh);
-      ARRAY_MAPPER (atan, Complex, octave::math::atan);
-      ARRAY_MAPPER (atanh, Complex, octave::math::atanh);
-      ARRAY_MAPPER (erf, Complex, octave::math::erf);
-      ARRAY_MAPPER (erfc, Complex, octave::math::erfc);
-      ARRAY_MAPPER (erfcx, Complex, octave::math::erfcx);
-      ARRAY_MAPPER (erfi, Complex, octave::math::erfi);
-      ARRAY_MAPPER (dawson, Complex, octave::math::dawson);
-      ARRAY_MAPPER (ceil, Complex, octave::math::ceil);
-      ARRAY_MAPPER (cos, Complex, std::cos);
-      ARRAY_MAPPER (cosh, Complex, std::cosh);
-      ARRAY_MAPPER (exp, Complex, std::exp);
-      ARRAY_MAPPER (expm1, Complex, octave::math::expm1);
-      ARRAY_MAPPER (fix, Complex, octave::math::fix);
-      ARRAY_MAPPER (floor, Complex, octave::math::floor);
-      ARRAY_MAPPER (log, Complex, std::log);
-      ARRAY_MAPPER (log2, Complex, octave::math::log2);
-      ARRAY_MAPPER (log10, Complex, std::log10);
-      ARRAY_MAPPER (log1p, Complex, octave::math::log1p);
-      ARRAY_MAPPER (round, Complex, octave::math::round);
-      ARRAY_MAPPER (roundb, Complex, octave::math::roundb);
-      ARRAY_MAPPER (signum, Complex, octave::math::signum);
-      ARRAY_MAPPER (sin, Complex, std::sin);
-      ARRAY_MAPPER (sinh, Complex, std::sinh);
-      ARRAY_MAPPER (sqrt, Complex, std::sqrt);
-      ARRAY_MAPPER (tan, Complex, std::tan);
-      ARRAY_MAPPER (tanh, Complex, std::tanh);
-      ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (acos, Complex, octave::math::acos);
+    ARRAY_MAPPER (acosh, Complex, octave::math::acosh);
+    ARRAY_MAPPER (angle, double, std::arg);
+    ARRAY_MAPPER (arg, double, std::arg);
+    ARRAY_MAPPER (asin, Complex, octave::math::asin);
+    ARRAY_MAPPER (asinh, Complex, octave::math::asinh);
+    ARRAY_MAPPER (atan, Complex, octave::math::atan);
+    ARRAY_MAPPER (atanh, Complex, octave::math::atanh);
+    ARRAY_MAPPER (erf, Complex, octave::math::erf);
+    ARRAY_MAPPER (erfc, Complex, octave::math::erfc);
+    ARRAY_MAPPER (erfcx, Complex, octave::math::erfcx);
+    ARRAY_MAPPER (erfi, Complex, octave::math::erfi);
+    ARRAY_MAPPER (dawson, Complex, octave::math::dawson);
+    ARRAY_MAPPER (ceil, Complex, octave::math::ceil);
+    ARRAY_MAPPER (cos, Complex, std::cos);
+    ARRAY_MAPPER (cosh, Complex, std::cosh);
+    ARRAY_MAPPER (exp, Complex, std::exp);
+    ARRAY_MAPPER (expm1, Complex, octave::math::expm1);
+    ARRAY_MAPPER (fix, Complex, octave::math::fix);
+    ARRAY_MAPPER (floor, Complex, octave::math::floor);
+    ARRAY_MAPPER (log, Complex, std::log);
+    ARRAY_MAPPER (log2, Complex, octave::math::log2);
+    ARRAY_MAPPER (log10, Complex, std::log10);
+    ARRAY_MAPPER (log1p, Complex, octave::math::log1p);
+    ARRAY_MAPPER (round, Complex, octave::math::round);
+    ARRAY_MAPPER (roundb, Complex, octave::math::roundb);
+    ARRAY_MAPPER (signum, Complex, octave::math::signum);
+    ARRAY_MAPPER (sin, Complex, std::sin);
+    ARRAY_MAPPER (sinh, Complex, std::sinh);
+    ARRAY_MAPPER (sqrt, Complex, std::sqrt);
+    ARRAY_MAPPER (tan, Complex, std::tan);
+    ARRAY_MAPPER (tanh, Complex, std::tanh);
+    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
 
     default:
       return octave_base_value::map (umap);
     }
 }
+

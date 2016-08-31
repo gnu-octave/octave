@@ -256,3 +256,4 @@ tree_classdef::accept (tree_walker& tw)
 {
   tw.visit_classdef (*this);
 }
+

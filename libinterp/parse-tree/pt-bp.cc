@@ -508,3 +508,4 @@ tree_breakpoint::take_action (tree_statement& stmt)
   else
     panic_impossible ();
 }
+

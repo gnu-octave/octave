@@ -43,8 +43,9 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
              const std::string& term)
 {
   return octave::gl2ps_print (fig, stream, term);
-} 
+}
 
 #endif
 
 #endif
+

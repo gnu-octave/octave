@@ -68,7 +68,7 @@ namespace octave
   bool tree_evaluator::quiet_breakpoint_flag = false;
 
   tree_evaluator::stmt_list_type tree_evaluator::statement_context
-  = tree_evaluator::other;
+    = tree_evaluator::other;
 
   bool tree_evaluator::in_loop_command = false;
 
@@ -816,7 +816,8 @@ namespace octave
   {
     bool execution_error = false;
 
-    { // unwind frame before catch block
+    {
+      // unwind frame before catch block
       octave::unwind_protect frame;
 
       frame.protect_var (buffer_error_messages);
@@ -1240,3 +1241,4 @@ The original variable value is restored when exiting the function.
 
 %!error (silent_functions (1, 2))
 */
+

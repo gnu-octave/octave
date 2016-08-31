@@ -591,7 +591,7 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
   if (! SYMAMD_NAME () (n_col, ridx, cidx, perm,
-                       knobs, stats, &calloc, &free))
+                        knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report)(stats);
 
@@ -755,3 +755,4 @@ permutations on the tree.
 
   return retval;
 }
+

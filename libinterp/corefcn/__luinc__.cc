@@ -72,7 +72,8 @@ See documentation for @code{luinc}.
     }
   else if (args(1).is_map ())
     {
-      octave_scalar_map map = args(1).xscalar_map_value ("luinc: OPTS must be a scalar structure");
+      octave_scalar_map map
+        = args(1).xscalar_map_value ("luinc: OPTS must be a scalar structure");
 
       octave_value tmp;
 

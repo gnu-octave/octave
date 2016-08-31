@@ -1491,3 +1491,4 @@ Return true if running in the student edition of @sc{matlab}.
 
 %!error isstudent (1)
 */
+

@@ -46,3 +46,4 @@ octave_magic_colon::print_raw (std::ostream& os, bool) const
 {
   os << ":";
 }
+

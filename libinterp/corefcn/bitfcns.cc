@@ -601,7 +601,7 @@ bitshift (10, [-2, -1, 0, 1, 2])
       else if (nbits < 1)
         mask = 0;
       int bits_in_type = sizeof (double)
-        * std::numeric_limits<unsigned char>::digits;
+                         * std::numeric_limits<unsigned char>::digits;
       NDArray m = m_arg.array_value ();
       DO_BITSHIFT ();
     }
@@ -632,7 +632,7 @@ bitshift (10, [-2, -1, 0, 1, 2])
       else if (nbits < 1)
         mask = 0;
       int bits_in_type = sizeof (float)
-        * std::numeric_limits<unsigned char>::digits;
+                         * std::numeric_limits<unsigned char>::digits;
       FloatNDArray m = m_arg.float_array_value ();
       DO_BITSHIFT (Float);
     }
@@ -895,3 +895,4 @@ by @code{intmax}.
 
 %!error sizemax (0)
 */
+

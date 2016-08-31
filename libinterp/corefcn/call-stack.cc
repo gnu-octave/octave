@@ -585,3 +585,4 @@ octave_call_stack::do_goto_base_frame (void)
 
   symbol_table::set_scope_and_context (tmp.m_scope, tmp.m_context);
 }
+

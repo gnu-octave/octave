@@ -201,3 +201,4 @@ install_sm_sm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_sq_str,
                     null_assign);
 }
+

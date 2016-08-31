@@ -171,3 +171,4 @@ read_until_newline (std::istream& is, bool keep_newline)
 
   return buf.str ();
 }
+

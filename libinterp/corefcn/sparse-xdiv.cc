@@ -397,7 +397,8 @@ x_el_div (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix result (nr, nc, Complex (octave::numeric_limits<double>::NaN (), octave::numeric_limits<double>::NaN ()));
+  ComplexMatrix result (nr, nc, Complex (octave::numeric_limits<double>::NaN (),
+                                         octave::numeric_limits<double>::NaN ()));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
@@ -630,3 +631,4 @@ xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
+

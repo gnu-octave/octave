@@ -33,3 +33,4 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFINENULLASSIGNCONV
 
 #include "op-pm-template.cc"
+

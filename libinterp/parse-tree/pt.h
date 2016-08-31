@@ -61,23 +61,24 @@ public:
   }
 
   virtual void set_breakpoint (const std::string& condition)
-    { if (bp)
-        *bp = condition;
-      else
-        bp = new std::string(condition);
-    }
+  {
+    if (bp)
+      *bp = condition;
+    else
+      bp = new std::string(condition);
+  }
 
   virtual void delete_breakpoint (void) { if (bp) delete bp; bp = NULL; }
 
   bool meets_bp_condition (void) const;
 
   bool is_breakpoint (bool check_active = false) const
-    { return bp && (!check_active || meets_bp_condition ()); }
+  { return bp && (!check_active || meets_bp_condition ()); }
 
   // breakpoint condition, or "0" (i.e., "false") if no breakpoint.
   // To distinguish "0" from a disabled breakpoint, test "is_breakpoint" too.
   const std::string bp_cond (void) const
-    { return bp ? *bp : std::string("0"); }
+  { return bp ? *bp : std::string("0"); }
 
   std::string str_print_code (void);
 
@@ -101,3 +102,4 @@ private:
 };
 
 #endif
+

@@ -528,7 +528,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
   else
     {
       if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                            &calloc, &free, 0, -1))
+                             &calloc, &free, 0, -1))
         {
           CSYMAMD_NAME (_report)(stats);
 
@@ -573,3 +573,4 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
 
 #endif
 }
+

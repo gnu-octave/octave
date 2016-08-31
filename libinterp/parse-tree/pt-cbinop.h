@@ -83,3 +83,4 @@ maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
                                   = octave_value::unknown_binary_op);
 
 #endif
+

@@ -59,9 +59,12 @@ along with Octave; see the file COPYING.  If not, see
 static octave_scalar_map
 mk_stat_map (const octave::sys::base_file_stat& fs)
 {
-  static bool have_rdev = octave::sys::base_file_stat::have_struct_stat_st_rdev ();
-  static bool have_blksize = octave::sys::base_file_stat::have_struct_stat_st_blksize ();
-  static bool have_blocks = octave::sys::base_file_stat::have_struct_stat_st_blocks ();
+  static bool have_rdev =
+    octave::sys::base_file_stat::have_struct_stat_st_rdev ();
+  static bool have_blksize =
+    octave::sys::base_file_stat::have_struct_stat_st_blksize ();
+  static bool have_blocks =
+    octave::sys::base_file_stat::have_struct_stat_st_blocks ();
 
   static double nan = octave::numeric_limits<double>::NaN ();
 
@@ -739,11 +742,11 @@ error message.
       FILE *ifile = fdopen (fid[0], "r");
       FILE *ofile = fdopen (fid[1], "w");
 
-      octave_stream is = octave_stdiostream::create ("pipe-in", ifile,
-                                                       std::ios::in);
+      octave_stream is
+        = octave_stdiostream::create ("pipe-in", ifile, std::ios::in);
 
-      octave_stream os = octave_stdiostream::create ("pipe-out", ofile,
-                                                       std::ios::out);
+      octave_stream os
+        = octave_stdiostream::create ("pipe-out", ofile, std::ios::out);
 
       return ovl (octave_stream_list::insert (is),
                   octave_stream_list::insert (os),
@@ -1594,3 +1597,4 @@ child has been resumed by delivery of a @code{SIGCONT} signal.
 {
   return const_value (args, octave::sys::wcontinue ());
 }
+

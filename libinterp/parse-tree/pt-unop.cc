@@ -82,7 +82,7 @@ tree_prefix_expression::rvalue1 (int)
 
           if (val.is_defined ())
             {
-               BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
 
               // Attempt to do the operation in-place if it is unshared
               // (a temporary expression).
@@ -189,3 +189,4 @@ tree_postfix_expression::accept (tree_walker& tw)
 {
   tw.visit_postfix_expression (*this);
 }
+

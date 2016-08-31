@@ -275,3 +275,4 @@ the function @code{nzmax}.
   else
     error ("spalloc: M,N,NZ must be non-negative");
 }
+

@@ -145,8 +145,10 @@ namespace octave
 
     bool is_nan_or_inf (double x, double y, double z) const
     {
-      return (octave::math::isnan (x) || octave::math::isnan (y) || octave::math::isnan (z)
-              || octave::math::isinf (x) || octave::math::isinf (y) || octave::math::isinf (z));
+      return (octave::math::isnan (x) || octave::math::isnan (y)
+              || octave::math::isnan (z)
+              || octave::math::isinf (x) || octave::math::isinf (y)
+              || octave::math::isinf (z));
     }
 
     octave_uint8 clip_code (double x, double y, double z) const
@@ -174,7 +176,8 @@ namespace octave
 
     void draw_axes_children (const axes::properties& props);
 
-    void draw_all_lights (const base_properties& props, std::list<graphics_object>& obj_list);
+    void draw_all_lights (const base_properties& props,
+                          std::list<graphics_object>& obj_list);
 
   private:
     // The graphics toolkit associated with the figure being rendered.
@@ -213,3 +216,4 @@ namespace octave
 }
 
 #endif
+

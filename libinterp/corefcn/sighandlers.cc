@@ -410,7 +410,7 @@ namespace octave
 
   sig_handler *
   set_signal_handler (const char *signame, sig_handler *handler,
-                             bool restart_syscalls)
+                      bool restart_syscalls)
   {
     return octave_set_signal_handler_by_name (signame, handler,
                                               restart_syscalls);
@@ -843,3 +843,4 @@ The original variable value is restored when exiting the function.
 
 %!error (sigterm_dumps_octave_core (1, 2))
 */
+

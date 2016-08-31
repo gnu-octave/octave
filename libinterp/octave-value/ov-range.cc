@@ -675,8 +675,9 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   range_vals[1] = r.inc () != 0 ? r.limit () : r.numel ();
   range_vals[2] = r.inc ();
 
-  if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-                range_vals) >= 0)
+  if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                octave_H5P_DEFAULT, range_vals)
+      >= 0)
     {
       octave_idx_type nel = r.numel ();
       retval = hdf5_add_scalar_attr (data_hid, H5T_NATIVE_IDX,
@@ -734,8 +735,9 @@ octave_range::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   double rangevals[3];
-  if (H5Dread (data_hid, range_type, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT,
-               rangevals) >= 0)
+  if (H5Dread (data_hid, range_type, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, rangevals)
+      >= 0)
     {
       retval = true;
       octave_idx_type nel;
@@ -840,3 +842,4 @@ The original variable value is restored when exiting the function.
 %!   warning (warn_state.state, warn_state.identifier);
 %! end_unwind_protect
 */
+

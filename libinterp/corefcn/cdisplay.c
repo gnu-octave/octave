@@ -179,3 +179,4 @@ octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
 
   return msg;
 }
+

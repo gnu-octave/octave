@@ -188,3 +188,4 @@ extern OCTINTERP_API bool Vjava_unsigned_autoconversion;
 extern OCTINTERP_API bool Vdebug_java;
 
 #endif
+

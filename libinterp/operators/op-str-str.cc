@@ -36,7 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (transpose, char_matrix_str)
 {
-  const octave_char_matrix_str& v = dynamic_cast<const octave_char_matrix_str&> (a);
+  const octave_char_matrix_str& v
+    = dynamic_cast<const octave_char_matrix_str&> (a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");
@@ -97,7 +98,8 @@ DEFCHARNDBINOP_FN (ne, !=, char_matrix_str, char_matrix_str, char_array,
 DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 {
   octave_char_matrix_str& v1 = dynamic_cast<octave_char_matrix_str&> (a1);
-  const octave_char_matrix_str& v2 = dynamic_cast<const octave_char_matrix_str&> (a2);
+  const octave_char_matrix_str& v2
+    = dynamic_cast<const octave_char_matrix_str&> (a2);
 
   v1.assign (idx, v2.char_array_value ());
   return octave_value ();
@@ -182,3 +184,4 @@ install_str_str_ops (void)
                     null_assign);
 
 }
+

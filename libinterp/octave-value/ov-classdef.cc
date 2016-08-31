@@ -66,7 +66,7 @@ err_method_access (const std::string& from, const cdef_method& meth)
 OCTAVE_NORETURN static
 void
 err_property_access (const std::string& from, const cdef_property& prop,
-                       bool is_set = false)
+                     bool is_set = false)
 {
   octave_value acc = prop.get (is_set ? "SetAccess" : "GetAccess");
   std::string acc_s;
@@ -821,8 +821,8 @@ void
 octave_classdef::register_type (void)
 {
   t_id = octave_value_typeinfo::register_type
-    (octave_classdef::t_name, "<unknown>",
-     octave_value (new octave_classdef ()));
+         (octave_classdef::t_name, "<unknown>",
+          octave_value (new octave_classdef ()));
 }
 
 octave_value_list
@@ -2020,7 +2020,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
                 = a.get_constructor_list ();
 
               for (std::list<cdef_class>::const_iterator
-                     it = explicit_ctor_list.begin ();
+                   it = explicit_ctor_list.begin ();
                    it != explicit_ctor_list.end ();
                    ++it)
                 {
@@ -2054,7 +2054,7 @@ cdef_class::cdef_class_rep::get_methods (void)
   int idx = 0;
 
   for (std::map<std::string,cdef_method>::const_iterator
-         it = meths.begin (); it != meths.end (); ++it, ++idx)
+       it = meths.begin (); it != meths.end (); ++it, ++idx)
     c (idx, 0) = to_ov (it->second);
 
   return c;
@@ -2153,7 +2153,7 @@ cdef_class::cdef_class_rep::get_properties (int mode)
   int idx = 0;
 
   for (std::map<std::string,cdef_property>::const_iterator
-         it = props.begin (); it != props.end (); ++it, ++idx)
+       it = props.begin (); it != props.end (); ++it, ++idx)
     c (idx, 0) = to_ov (it->second);
 
   return c;
@@ -3470,9 +3470,11 @@ install_classdef (void)
   // meta.class methods
   meta_class.install_method (make_method (meta_class, "fromName", class_fromName,
                                           "public", true));
-  meta_class.install_method (make_method (meta_class, "fevalStatic", class_fevalStatic,
+  meta_class.install_method (make_method (meta_class, "fevalStatic",
+                                          class_fevalStatic,
                                           "public", false));
-  meta_class.install_method (make_method (meta_class, "getConstant", class_getConstant,
+  meta_class.install_method (make_method (meta_class, "getConstant",
+                                          class_getConstant,
                                           "public", false));
   meta_class.install_method (make_method (meta_class, "eq", class_eq));
   meta_class.install_method (make_method (meta_class, "ne", class_ne));
@@ -3775,3 +3777,4 @@ Returns the meta.class object corresponding to the class of @var{obj}.
 ;;; mode: C++ ***
 ;;; End: ***
 */
+

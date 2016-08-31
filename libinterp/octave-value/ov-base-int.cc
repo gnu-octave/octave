@@ -405,7 +405,8 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
 
 template <typename T>
 bool
-octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                      bool)
 {
   bool retval = false;
 
@@ -698,7 +699,8 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
 
 template <typename T>
 bool
-octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                      bool)
 {
   bool retval = false;
 

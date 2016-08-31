@@ -164,3 +164,4 @@ install_s_sm_ops (void)
 
   INSTALL_WIDENOP (octave_scalar, octave_sparse_matrix, sparse_matrix_conv);
 }
+

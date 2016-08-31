@@ -58,8 +58,8 @@ namespace octave
 
     gl2ps_renderer (FILE *_fp, const std::string& _term)
       : octave::opengl_renderer () , fp (_fp), term (_term), fontsize (),
-      fontname (), buffer_overflow (false)
-      { }
+        fontname (), buffer_overflow (false)
+    { }
 
     ~gl2ps_renderer (void) { }
 
@@ -345,9 +345,9 @@ namespace octave
         // Translate and rotate
         double rot = rotation * 4.0 * atan (1.0) / 180;
         coord_pix(0) += ((*p).get_x () + box(0))*cos (rot)
-          - ((*p).get_y () + box(1))*sin (rot);
+                        - ((*p).get_y () + box(1))*sin (rot);
         coord_pix(1) -= ((*p).get_y () + box(1))*cos (rot)
-          + ((*p).get_x () + box(0))*sin (rot);;
+                        + ((*p).get_x () + box(0))*sin (rot);;
 
         // Turn coordinates back into current gl coordinates
         ColumnVector coord =
@@ -692,12 +692,12 @@ namespace octave
   void
   gl2ps_renderer::draw_pixels (int w, int h, const float *data)
   {
-    // Clip data between 0 and 1 for float values 
+    // Clip data between 0 and 1 for float values
     OCTAVE_LOCAL_BUFFER (float, tmp_data, 3*w*h);
 
     for (int i = 0; i < 3*h*w; i++)
       tmp_data[i] = (data[i] < 0.0f ? 0.0f : (data[i] > 1.0f ? 1.0f : data[i]));
-        
+
     gl2psDrawPixels (w, h, 0, 0, GL_RGB, GL_FLOAT, tmp_data);
   }
 
@@ -847,3 +847,4 @@ namespace octave
 #endif
   }
 }
+

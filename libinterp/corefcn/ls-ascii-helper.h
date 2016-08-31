@@ -38,3 +38,4 @@ extern OCTINTERP_API std::string
 read_until_newline (std::istream& is, bool keep_newline = false);
 
 #endif
+

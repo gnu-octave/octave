@@ -150,3 +150,4 @@ install_cs_s_ops (void)
 
   INSTALL_ASSIGNCONV (octave_complex, octave_scalar, octave_complex_matrix);
 }
+

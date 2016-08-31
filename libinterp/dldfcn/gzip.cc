@@ -424,46 +424,46 @@ namespace octave
 
     std::function<void(const std::string&)> walk;
     walk = [&walk, &mk_dest_path, &dest_paths] (const std::string& path) -> void
-      {
-        const octave::sys::file_stat fs (path);
-        // is_dir and is_reg will return false if failed to stat.
-        if (fs.is_dir ())
-          {
-            octave::sys::dir_entry dir (path);
-            if (dir)
-              {
-                // Collect the whole list of filenames first, before recursion
-                // to avoid issues with infinite loop if the action generates
-                // files in the same directory (highly likely).
-                string_vector dirlist = dir.read ();
-                for (octave_idx_type i = 0; i < dirlist.numel (); i++)
-                  if (dirlist(i) != "." && dirlist(i) != "..")
-                    walk (octave::sys::file_ops::concat (path, dirlist(i)));
-              }
-            // Note that we skip any problem with directories.
-          }
-        else if (fs.is_reg ())
-          {
-            const std::string dest_path = mk_dest_path (path);
-            try
-              {
-                X::zip (path, dest_path);
-              }
-            catch (...)
-              {
-                // Error "handling" is not including filename on the output list.
-                // Also remove created file which maybe was not even created
-                // in the first place.  Note that it is possible for the file
-                // to exist in the first place and for X::zip to not have
-                // clobber it yet but we remove it anyway by design.
-                octave::sys::unlink (dest_path);
-                return;
-              }
-            dest_paths.push_front (dest_path);
-          }
-        // Skip all other file types and errors.
-        return;
-      };
+    {
+      const octave::sys::file_stat fs (path);
+      // is_dir and is_reg will return false if failed to stat.
+      if (fs.is_dir ())
+        {
+          octave::sys::dir_entry dir (path);
+          if (dir)
+            {
+              // Collect the whole list of filenames first, before recursion
+              // to avoid issues with infinite loop if the action generates
+              // files in the same directory (highly likely).
+              string_vector dirlist = dir.read ();
+              for (octave_idx_type i = 0; i < dirlist.numel (); i++)
+                if (dirlist(i) != "." && dirlist(i) != "..")
+                  walk (octave::sys::file_ops::concat (path, dirlist(i)));
+            }
+          // Note that we skip any problem with directories.
+        }
+      else if (fs.is_reg ())
+        {
+          const std::string dest_path = mk_dest_path (path);
+          try
+            {
+              X::zip (path, dest_path);
+            }
+          catch (...)
+            {
+              // Error "handling" is not including filename on the output list.
+              // Also remove created file which maybe was not even created
+              // in the first place.  Note that it is possible for the file
+              // to exist in the first place and for X::zip to not have
+              // clobber it yet but we remove it anyway by design.
+              octave::sys::unlink (dest_path);
+              return;
+            }
+          dest_paths.push_front (dest_path);
+        }
+      // Skip all other file types and errors.
+      return;
+    };
 
     for (octave_idx_type i = 0; i < source_patterns.numel (); i++)
       {
@@ -787,3 +787,4 @@ The optional output @var{filelist} is a list of the compressed files.
 %!endfunction
 %!test run_test_function (@test_save_to_dir)
 */
+

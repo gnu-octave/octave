@@ -1124,11 +1124,9 @@ likely.
       // entries in the map
       for (octave_idx_type i = 0; i < m; i++)
         {
-          octave_idx_type k = i +
-            std::floor (rvec[i] * (n - i));
+          octave_idx_type k = i + std::floor (rvec[i] * (n - i));
 
-          // For shuffling first m entries, no need to use extra
-          // storage
+          // For shuffling first m entries, no need to use extra storage
           if (k < m)
             {
               std::swap (ivec[i], ivec[k]);
@@ -1147,8 +1145,7 @@ likely.
       // Perform the Knuth shuffle of the first m entries
       for (octave_idx_type i = 0; i < m; i++)
         {
-          octave_idx_type k = i +
-            std::floor (rvec[i] * (n - i));
+          octave_idx_type k = i + std::floor (rvec[i] * (n - i));
           std::swap (ivec[i], ivec[k]);
         }
     }
@@ -1178,3 +1175,4 @@ likely.
 %!   assert (length (unique (p)), 30);
 %! endfor
 */
+

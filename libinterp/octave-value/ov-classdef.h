@@ -410,7 +410,7 @@ public:
     Cell val = map.contents (pname);
 
     if (val.numel () < 1)
-        error ("get: unknown slot: %s", pname.c_str ());
+      error ("get: unknown slot: %s", pname.c_str ());
 
     return val(0, 0);
   }
@@ -1666,3 +1666,4 @@ private:
 ;;; mode: C++ ***
 ;;; End: ***
 */
+

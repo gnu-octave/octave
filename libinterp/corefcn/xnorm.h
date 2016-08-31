@@ -44,3 +44,4 @@ extern OCTINTERP_API octave_value
 xfrobnorm (const octave_value& x);
 
 #endif
+

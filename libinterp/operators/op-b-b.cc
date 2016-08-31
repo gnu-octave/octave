@@ -100,3 +100,4 @@ install_b_b_ops (void)
   INSTALL_ASSIGNCONV (octave_bool, octave_null_str, octave_bool_matrix);
   INSTALL_ASSIGNCONV (octave_bool, octave_null_sq_str, octave_bool_matrix);
 }
+

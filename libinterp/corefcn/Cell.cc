@@ -260,11 +260,11 @@ Cell::delete_elements (const octave_value_list& idx_arg)
         ra_idx.xelem (i) = idx_arg(i).index_vector ();
       }
     catch (octave::index_exception& e)
-        {
-          // Rethrow to allow more info to be reported later.
-          e.set_pos (len, i+1);
-          throw;
-        }
+      {
+        // Rethrow to allow more info to be reported later.
+        e.set_pos (len, i+1);
+        throw;
+      }
 
   Array<octave_value>::delete_elements (ra_idx);
 }
@@ -354,3 +354,4 @@ Cell::diag (octave_idx_type m, octave_idx_type n) const
 {
   return Array<octave_value>::diag (m, n);
 }
+

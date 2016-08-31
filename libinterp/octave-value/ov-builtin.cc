@@ -123,7 +123,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
   BEGIN_PROFILER_BLOCK (octave_builtin)
 
-    retval = (*f) (args, nargout);
+  retval = (*f) (args, nargout);
   // Do not allow null values to be returned from functions.
   // FIXME: perhaps true builtins should be allowed?
   retval.make_storable_values ();
@@ -160,3 +160,4 @@ octave_builtin::function (void) const
 }
 
 const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;
+

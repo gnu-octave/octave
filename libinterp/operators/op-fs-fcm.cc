@@ -53,8 +53,10 @@ DEFNDBINOP_OP (mul, float_scalar, float_complex_matrix, float_scalar,
 
 DEFBINOP (div, float_scalar, float_complex_matrix)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_scalar& v1
+    = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
   FloatMatrix m1 = v1.float_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -70,8 +72,10 @@ DEFBINOP_FN (pow, float_scalar, float_complex_matrix, xpow)
 
 DEFBINOP (ldiv, float_scalar, float_complex_matrix)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_scalar& v1
+    = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
   float d = v1.float_value ();
 
@@ -103,8 +107,10 @@ DEFNDBINOP_FN (el_pow, float_scalar, float_complex_matrix, float_scalar,
 
 DEFBINOP (el_ldiv, float_scalar, float_complex_matrix)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_scalar& v1
+    = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
   float d = v1.float_value ();
 
@@ -177,3 +183,4 @@ install_fs_fcm_ops (void)
   INSTALL_WIDENOP (octave_float_scalar, octave_float_complex_matrix,
                    float_complex_matrix_conv);
 }
+

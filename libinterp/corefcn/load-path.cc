@@ -853,7 +853,8 @@ load_path::loader::remove_method_map (const std::string& dir)
 
       fcn_map_type& fm = i->second;
 
-      std::string full_dir_name = octave::sys::file_ops::concat (dir, "@" + class_name);
+      std::string full_dir_name
+        = octave::sys::file_ops::concat (dir, "@" + class_name);
 
       for (fcn_map_iterator q = fm.begin (); q != fm.end (); q++)
         {
@@ -1340,7 +1341,8 @@ load_path::do_find_file (const std::string& file) const
         return tfile;
     }
 
-  if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos)
+  if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+      != std::string::npos)
     {
       // Given name has a directory separator, so append it to each
       // element of the load path in turn.
@@ -1491,7 +1493,8 @@ load_path::do_find_first_of (const string_vector& flist) const
     {
       std::string file = flist[i];
 
-      if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos)
+      if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+          != std::string::npos)
         {
           if (octave::sys::env::absolute_pathname (file)
               || octave::sys::env::rooted_relative_pathname (file))
@@ -1570,7 +1573,8 @@ load_path::do_find_all_first_of (const string_vector& flist) const
     {
       std::string file = flist[i];
 
-      if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos)
+      if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+          != std::string::npos)
         {
           if (octave::sys::env::absolute_pathname (file)
               || octave::sys::env::rooted_relative_pathname (file))
@@ -2565,3 +2569,4 @@ Undocumented internal function.
 
   return ovl ();
 }
+

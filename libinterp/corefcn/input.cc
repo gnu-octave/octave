@@ -464,8 +464,8 @@ generate_completion (const std::string& text, int state)
 
           if (hint == name.substr (0, hint_len))
             {
-                    // Special case: array reference forces prefix="."
-                    //               in generate_struct_completions ()
+              // Special case: array reference forces prefix="."
+              //               in generate_struct_completions ()
               if (list_index <= name_list_len && ! prefix.empty ())
                 retval = (prefix == "." ? "" : prefix) + "." + name;
               else
@@ -1583,3 +1583,4 @@ The original variable value is restored when exiting the function.
 
   return retval;
 }
+

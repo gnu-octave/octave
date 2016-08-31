@@ -526,8 +526,8 @@ Undocumented internal function.
       cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
       arg_list.clear ();
       SparseComplexMatrix U, L;
-      ilu_crout < SparseComplexMatrix, Complex >
-                (sm_l, sm_u, L, U, cols_norm.fortran_vec () ,
+      ilu_crout <SparseComplexMatrix, Complex>
+                (sm_l, sm_u, L, U, cols_norm.fortran_vec (),
                  rows_norm.fortran_vec (), Complex (droptol), milu);
 
       arg_list.append (octave_value (L.cols ()));
@@ -587,7 +587,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   octave_idx_type* cidx_l = cidx_out_l.fortran_vec ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
   octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
-  Array <T> data_out_l (dim_vector (max_len_l ,1));
+  Array <T> data_out_l (dim_vector (max_len_l, 1));
   T* data_l = data_out_l.fortran_vec ();
 
   // Data for U
@@ -1027,7 +1027,7 @@ Undocumented internal function.
       arg_list.clear ();
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
       SparseComplexMatrix U, L;
-      ilu_tp < SparseComplexMatrix, Complex>
+      ilu_tp <SparseComplexMatrix, Complex>
               (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
                Complex (droptol), Complex (thresh), milu, udiag);
 

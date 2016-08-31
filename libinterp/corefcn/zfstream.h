@@ -505,3 +505,4 @@ setcompression (int l, int s = Z_DEFAULT_STRATEGY)
 #endif
 
 #endif
+

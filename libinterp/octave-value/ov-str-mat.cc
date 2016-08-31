@@ -64,7 +64,8 @@ default_numeric_conversion_function (const octave_base_value& a)
 {
   octave_base_value *retval = 0;
 
-  const octave_char_matrix_str& v = dynamic_cast<const octave_char_matrix_str&> (a);
+  const octave_char_matrix_str& v
+    = dynamic_cast<const octave_char_matrix_str&> (a);
 
   NDArray nda = v.array_value (true);
 
@@ -765,3 +766,4 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   return retval;
 }
+

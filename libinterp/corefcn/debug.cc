@@ -276,160 +276,160 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
       // process the actual arguments
       switch (token)
         {
-          case dbstop_in:
-            symbol_name = args(pos).string_value ();
-            if (seen_in)
-              error ("%s: Too many function names specified -- %s",
-                     who, symbol_name.c_str ());
-            else if (seen_at || seen_if)
-              error ("%s: function name must come before line number and 'if'",
-                     who);
-            seen_in = true;
-            pos++;
-            break;
+        case dbstop_in:
+          symbol_name = args(pos).string_value ();
+          if (seen_in)
+            error ("%s: Too many function names specified -- %s",
+                   who, symbol_name.c_str ());
+          else if (seen_at || seen_if)
+            error ("%s: function name must come before line number and 'if'",
+                   who);
+          seen_in = true;
+          pos++;
+          break;
 
-          case dbstop_at:
-            if (seen_at)
-              error ("%s: Only one 'at' clause is allowed -- %s",
-                     who, args(pos).string_value ().c_str ());
-            else if (seen_if)
-                error ("%s: line number must come before 'if' clause\n");
-            seen_at = true;
+        case dbstop_at:
+          if (seen_at)
+            error ("%s: Only one 'at' clause is allowed -- %s",
+                   who, args(pos).string_value ().c_str ());
+          else if (seen_if)
+            error ("%s: line number must come before 'if' clause\n");
+          seen_at = true;
 
-            if (! seen_in)
-              {
-                // It was a line number.  Get function name from debugger.
-                if (Vdebugging)
-                  symbol_name = get_user_code ()->profiler_name ();
-                else
-                  error ("%s: function name must come before line number "
-                         "and 'if'", who);
-                seen_in = true;
-              }
-            else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n");
+          if (! seen_in)
+            {
+              // It was a line number.  Get function name from debugger.
+              if (Vdebugging)
+                symbol_name = get_user_code ()->profiler_name ();
+              else
+                error ("%s: function name must come before line number "
+                       "and 'if'", who);
+              seen_in = true;
+            }
+          else if (seen_if)
+            error ("%s: line number must come before 'if' clause\n");
 
-            // Read a list of line numbers (or arrays thereof)
-            for ( ; pos < nargin; pos++)
-              {
-                if (args(pos).is_string ())
-                  {
-                    int line = atoi (args(pos).string_value ().c_str ());
+          // Read a list of line numbers (or arrays thereof)
+          for ( ; pos < nargin; pos++)
+            {
+              if (args(pos).is_string ())
+                {
+                  int line = atoi (args(pos).string_value ().c_str ());
 
-                    if (line > 0)
-                      lines[list_idx++] = line;
-                    else
-                      break;        // may be "if"
-                  }
-                else if (args(pos).is_numeric_type ())
-                  {
-                    const NDArray arg = args(pos).array_value ();
+                  if (line > 0)
+                    lines[list_idx++] = line;
+                  else
+                    break;        // may be "if"
+                }
+              else if (args(pos).is_numeric_type ())
+                {
+                  const NDArray arg = args(pos).array_value ();
 
-                    for (octave_idx_type j = 0; j < arg.numel (); j++)
-                      lines[list_idx++] = static_cast<int> (arg.elem (j));
-                  }
-                else
-                  error ("%s: Invalid argument type %s",
-                         args(pos).type_name ().c_str ());
-              }
-            break;
+                  for (octave_idx_type j = 0; j < arg.numel (); j++)
+                    lines[list_idx++] = static_cast<int> (arg.elem (j));
+                }
+              else
+                error ("%s: Invalid argument type %s",
+                       args(pos).type_name ().c_str ());
+            }
+          break;
 
-          case dbstop_if:
-            if (seen_in)    // conditional breakpoint
-              {
-                cond = "";  // remaining arguments form condition
-                for (; pos < nargin; pos++)
-                  {
-                    if (args(pos).is_string ())
-                      cond = cond + " " + args(pos).string_value ();
-                    else
-                      error ("%s: arguments to 'if' must all be strings", who);
-                  }
+        case dbstop_if:
+          if (seen_in)    // conditional breakpoint
+            {
+              cond = "";  // remaining arguments form condition
+              for (; pos < nargin; pos++)
+                {
+                  if (args(pos).is_string ())
+                    cond = cond + " " + args(pos).string_value ();
+                  else
+                    error ("%s: arguments to 'if' must all be strings", who);
+                }
 
-                cond = cond.substr (1);   // omit initial space
-              }
-            else    // stop on event (error, warning, interrupt, NaN/inf)
-              {
-                std::string condition = args(pos).string_value ();
-                int on_off = ! strcmp(who, "dbstop");
+              cond = cond.substr (1);   // omit initial space
+            }
+          else    // stop on event (error, warning, interrupt, NaN/inf)
+            {
+              std::string condition = args(pos).string_value ();
+              int on_off = ! strcmp(who, "dbstop");
 
-                // list of error/warning IDs to update
-                std::set<std::string> *id_list = NULL;
-                bool *stop_flag = NULL;         // Vdebug_on_... flag
+              // list of error/warning IDs to update
+              std::set<std::string> *id_list = NULL;
+              bool *stop_flag = NULL;         // Vdebug_on_... flag
 
-                if (condition == "error")
-                  {
-                    id_list = &bp_table::errors_that_stop;
-                    stop_flag = &Vdebug_on_error;
-                  }
-                else if (condition == "warning")
-                  {
-                    id_list = &bp_table::warnings_that_stop;
-                    stop_flag = &Vdebug_on_warning;
-                  }
-                else if (condition == "caught" && nargin > pos+1
-                         && args(pos+1).string_value () == "error")
-                  {
-                    id_list = &bp_table::caught_that_stop;
-                    stop_flag = &Vdebug_on_caught;
-                    pos++;
-                  }
-                else if (condition == "interrupt")
-                  {
-                    octave::Vdebug_on_interrupt = on_off;
-                  }
-                else if (condition == "naninf")
+              if (condition == "error")
+                {
+                  id_list = &bp_table::errors_that_stop;
+                  stop_flag = &Vdebug_on_error;
+                }
+              else if (condition == "warning")
+                {
+                  id_list = &bp_table::warnings_that_stop;
+                  stop_flag = &Vdebug_on_warning;
+                }
+              else if (condition == "caught" && nargin > pos+1
+                       && args(pos+1).string_value () == "error")
+                {
+                  id_list = &bp_table::caught_that_stop;
+                  stop_flag = &Vdebug_on_caught;
+                  pos++;
+                }
+              else if (condition == "interrupt")
+                {
+                  octave::Vdebug_on_interrupt = on_off;
+                }
+              else if (condition == "naninf")
 #if defined (DBSTOP_NANINF)
-                  {
-                    Vdebug_on_naninf = on_off;
-                    enable_fpe (on_off);
-                  }
+                {
+                  Vdebug_on_naninf = on_off;
+                  enable_fpe (on_off);
+                }
 #else
-                  warning ("%s: condition '%s' not yet supported",
-                           who, condition.c_str ());
-#endif
-                else
-                  error ("%s: invalid condition %s",
+                warning ("%s: condition '%s' not yet supported",
                          who, condition.c_str ());
+#endif
+              else
+                error ("%s: invalid condition %s",
+                       who, condition.c_str ());
 
-                // process ID list for "dbstop if error <error_ID>" etc
-                if (id_list != NULL)
-                  {
-                    pos++;
-                    if (pos < nargin)       // only affect a single error ID
-                      {
-                        if (! args(pos).is_string () || nargin > pos+1)
-                          error ("%s: ID must be a single string", who);
-                        else if (on_off == 1)
-                          {
-                            id_list->insert (args(pos).string_value ());
-                            *stop_flag = 1;
-                          }
-                        else
-                          {
-                            id_list->erase (args(pos).string_value ());
-                            if (id_list->empty ())
-                              *stop_flag = 0;
-                          }
-                      }
-                    else   // unqualified.  Turn all on or off
-                      {
-                        id_list->clear ();
-                        *stop_flag = on_off;
-                        if (stop_flag == &Vdebug_on_error)
-                          {
-                            // Matlab stops on both.
-                            octave::Vdebug_on_interrupt = on_off;
-                          }
-                      }
-                  }
+              // process ID list for "dbstop if error <error_ID>" etc
+              if (id_list != NULL)
+                {
+                  pos++;
+                  if (pos < nargin)       // only affect a single error ID
+                    {
+                      if (! args(pos).is_string () || nargin > pos+1)
+                        error ("%s: ID must be a single string", who);
+                      else if (on_off == 1)
+                        {
+                          id_list->insert (args(pos).string_value ());
+                          *stop_flag = 1;
+                        }
+                      else
+                        {
+                          id_list->erase (args(pos).string_value ());
+                          if (id_list->empty ())
+                            *stop_flag = 0;
+                        }
+                    }
+                  else   // unqualified.  Turn all on or off
+                    {
+                      id_list->clear ();
+                      *stop_flag = on_off;
+                      if (stop_flag == &Vdebug_on_error)
+                        {
+                          // Matlab stops on both.
+                          octave::Vdebug_on_interrupt = on_off;
+                        }
+                    }
+                }
 
-                pos = nargin;
-              }
-            break;
+              pos = nargin;
+            }
+          break;
 
-          default:      // dbstop_none should never occur
-            break;
+        default:      // dbstop_none should never occur
+          break;
         }
     }
 }
@@ -753,7 +753,8 @@ bp_table::do_add_breakpoint (const std::string& fname,
         }
     }
 
-  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
+                                       || Vdebugging;
 
   return retval;
 }
@@ -851,7 +852,8 @@ bp_table::do_remove_breakpoint (const std::string& fname,
         }
     }
 
-  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
+                                       || Vdebugging;
 
   return retval;
 }
@@ -884,7 +886,8 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     error ("remove_all_breakpoint_in_file: "
            "unable to find function %s\n", fname.c_str ());
 
-  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
+                                       || Vdebugging;
 
   return retval;
 }
@@ -901,7 +904,8 @@ bp_table::do_remove_all_breakpoints (void)
       remove_all_breakpoints_in_file (*it);
     }
 
-  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+  octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
+                                       || Vdebugging;
 }
 
 std::string
@@ -967,7 +971,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                       if (cmds)
                         {
                           std::list<bp_type> bkpts
-                                             = cmds->breakpoints_and_conds ();
+                            = cmds->breakpoints_and_conds ();
 
                           if (! bkpts.empty ())
                             retval[bp_fname + Vfilemarker + ff->name ()] = bkpts;
@@ -1600,25 +1604,25 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
   if (ff.empty ())
     os << "dbtype: unknown function " << name << "\n";
   else
-  {
-    std::ifstream fs (ff.c_str (), std::ios::in);
-
-    if (! fs)
-      os << "dbtype: unable to open '" << ff << "' for reading!\n";
-    else
     {
-      int line = 1;
-      std::string text;
+      std::ifstream fs (ff.c_str (), std::ios::in);
 
-      while (std::getline (fs, text) && line <= end)
+      if (! fs)
+        os << "dbtype: unable to open '" << ff << "' for reading!\n";
+      else
         {
-          if (line >= start)
-            os << line << "\t" << text << "\n";
+          int line = 1;
+          std::string text;
 
-          line++;
+          while (std::getline (fs, text) && line <= end)
+            {
+              if (line >= start)
+                os << line << "\t" << text << "\n";
+
+              line++;
+            }
         }
     }
-  }
 
   os.flush ();
 }

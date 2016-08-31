@@ -959,7 +959,8 @@ octave_cell::mex_get_data (void) const
 }
 
 bool
-octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats)
+octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                        bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
@@ -973,7 +974,8 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_fl
   space_hid = data_hid = size_hid = -1;
 
 #if defined (HAVE_HDF5_18)
-  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+  data_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -1388,9 +1390,9 @@ octave_cell::map (unary_mapper_t umap) const
 {
   switch (umap)
     {
-#define FORWARD_MAPPER(UMAP)                    \
-      case umap_ ## UMAP:                       \
-        return matrix.UMAP ()
+#define FORWARD_MAPPER(UMAP)                  \
+    case umap_ ## UMAP:                       \
+      return matrix.UMAP ()
 
     FORWARD_MAPPER (xisalnum);
     FORWARD_MAPPER (xisalpha);
@@ -1412,3 +1414,4 @@ octave_cell::map (unary_mapper_t umap) const
       return octave_base_value::map (umap);
     }
 }
+

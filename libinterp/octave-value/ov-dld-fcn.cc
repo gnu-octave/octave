@@ -81,8 +81,10 @@ octave_dld_function::time_parsed (void) const
 //       of objects to point to an invalid code segment.
 
 octave_dld_function*
-octave_dld_function::create (octave_builtin::fcn ff, const octave::dynamic_library& shl,
+octave_dld_function::create (octave_builtin::fcn ff,
+                             const octave::dynamic_library& shl,
                              const std::string& nm, const std::string& ds)
 {
   return new octave_dld_function (ff, shl, nm, ds);
 }
+

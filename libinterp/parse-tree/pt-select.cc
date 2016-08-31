@@ -211,3 +211,4 @@ tree_switch_command::accept (tree_walker& tw)
 {
   tw.visit_switch_command (*this);
 }
+

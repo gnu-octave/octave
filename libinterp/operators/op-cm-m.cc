@@ -48,7 +48,8 @@ DEFBINOP_OP (mul, complex_matrix, matrix, *)
 
 DEFBINOP (mul_trans, complex_matrix, matrix)
 {
-  const octave_complex_matrix& v1 = dynamic_cast<const octave_complex_matrix&> (a1);
+  const octave_complex_matrix& v1
+    = dynamic_cast<const octave_complex_matrix&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   ComplexMatrix m1 = v1.complex_matrix_value ();
@@ -60,7 +61,8 @@ DEFBINOP (mul_trans, complex_matrix, matrix)
 
 DEFBINOP (div, complex_matrix, matrix)
 {
-  const octave_complex_matrix& v1 = dynamic_cast<const octave_complex_matrix&> (a1);
+  const octave_complex_matrix& v1
+    = dynamic_cast<const octave_complex_matrix&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
   MatrixType typ = v2.matrix_type ();
 
@@ -78,7 +80,8 @@ DEFBINOPX (pow, complex_matrix, matrix)
 
 DEFBINOP (ldiv, complex_matrix, matrix)
 {
-  const octave_complex_matrix& v1 = dynamic_cast<const octave_complex_matrix&> (a1);
+  const octave_complex_matrix& v1
+    = dynamic_cast<const octave_complex_matrix&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
@@ -102,7 +105,8 @@ DEFNDBINOP_FN (el_pow, complex_matrix, matrix, complex_array, array, elem_xpow)
 
 DEFBINOP (el_ldiv, complex_matrix, matrix)
 {
-  const octave_complex_matrix& v1 = dynamic_cast<const octave_complex_matrix&> (a1);
+  const octave_complex_matrix& v1
+    = dynamic_cast<const octave_complex_matrix&> (a1);
   const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   return quotient (v2.array_value (), v1.complex_array_value ());
@@ -143,3 +147,4 @@ install_cm_m_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_matrix, assign);
 }
+

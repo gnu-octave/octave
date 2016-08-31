@@ -118,3 +118,4 @@ install_bm_b_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint64_scalar,
                     conv_and_assign);
 }
+

@@ -156,3 +156,4 @@ install_fs_fm_ops (void)
 
   INSTALL_WIDENOP (octave_float_scalar, octave_float_matrix, matrix_conv);
 }
+

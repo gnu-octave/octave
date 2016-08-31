@@ -517,3 +517,4 @@ octave_perm_matrix::fast_elem_extract (octave_idx_type n) const
   else
     return octave_value ();
 }
+

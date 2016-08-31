@@ -1567,7 +1567,7 @@ in double precision even for single precision inputs.
 
 #undef MAKE_INT_BRANCH
 
-          // GAGME: Accursed Matlab compatibility...
+    // GAGME: Accursed Matlab compatibility...
     case btyp_char:
       retval = arg.array_value (true).prod (dim);
       break;
@@ -1960,7 +1960,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           if (all_real_p && ! args(i).is_real_type ())
             all_real_p = false;
           if (all_cmplx_p && ! (args(i).is_complex_type ()
-              || args(i).is_real_type ()))
+                                || args(i).is_real_type ()))
             all_cmplx_p = false;
           if (! any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
@@ -3080,7 +3080,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
 
 #undef MAKE_INT_BRANCH
 
-      // GAGME: Accursed Matlab compatibility...
+    // GAGME: Accursed Matlab compatibility...
     case btyp_char:
       if (isextra)
         retval = arg.array_value (true).xsum (dim);
@@ -3430,7 +3430,7 @@ complex ([1, 2], [3, 4])
 
               SparseComplexMatrix result;
               result = SparseComplexMatrix (re_val)
-                + Complex (0, 1) * SparseComplexMatrix (im_val);
+                       + Complex (0, 1) * SparseComplexMatrix (im_val);
               retval = octave_value (new octave_sparse_complex_matrix (result));
             }
         }
@@ -7385,14 +7385,14 @@ converted to logical.
                              fval.cell_value ());
         }
 
-        MAKE_INT_BRANCH (int8)
-        MAKE_INT_BRANCH (int16)
-        MAKE_INT_BRANCH (int32)
-        MAKE_INT_BRANCH (int64)
-        MAKE_INT_BRANCH (uint8)
-        MAKE_INT_BRANCH (uint16)
-        MAKE_INT_BRANCH (uint32)
-        MAKE_INT_BRANCH (uint64)
+      MAKE_INT_BRANCH (int8)
+      MAKE_INT_BRANCH (int16)
+      MAKE_INT_BRANCH (int32)
+      MAKE_INT_BRANCH (int64)
+      MAKE_INT_BRANCH (uint8)
+      MAKE_INT_BRANCH (uint16)
+      MAKE_INT_BRANCH (uint32)
+      MAKE_INT_BRANCH (uint64)
 
       else
         error ("merge: cannot merge %s with %s with array mask",
@@ -7420,7 +7420,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
         {
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (col1, sl1))
-                 - SparseT (retval.index (col2, sl2));
+                   - SparseT (retval.index (col2, sl2));
           assert (retval.columns () == k-1);
           order--;
           k--;
@@ -7433,7 +7433,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
         {
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (sl1, col1))
-                 - SparseT (retval.index (sl2, col2));
+                   - SparseT (retval.index (sl2, col2));
           assert (retval.rows () == k-1);
           order--;
           k--;
@@ -7884,3 +7884,4 @@ dimensions of the decoded array.
 %!error <input was not valid base64> base64_decode ("AQ=")
 %!error <incorrect input size> base64_decode ("AQ==")
 */
+

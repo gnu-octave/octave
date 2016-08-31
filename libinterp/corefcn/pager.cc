@@ -721,3 +721,4 @@ The original variable value is restored when exiting the function.
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER_FLAGS);
 }
+

@@ -48,7 +48,8 @@ DEFBINOP_FN (el_or, bool, sparse_bool_matrix, mx_el_or)
 DEFCATOP (b_sbm, bool, sparse_bool_matrix)
 {
   octave_bool& v1 = dynamic_cast<octave_bool&> (a1);
-  const octave_sparse_bool_matrix& v2 = dynamic_cast<const octave_sparse_bool_matrix&> (a2);
+  const octave_sparse_bool_matrix& v2 =
+    dynamic_cast<const octave_sparse_bool_matrix&> (a2);
   SparseBoolMatrix tmp (1, 1, v1.bool_value ());
   return octave_value (tmp. concat (v2.sparse_bool_matrix_value (),
                                     ra_idx));
@@ -65,7 +66,8 @@ DEFCATOP (b_sm, bool, sparse_matrix)
 DEFCATOP (s_sbm, scalar, sparse_bool_matrix)
 {
   octave_scalar& v1 = dynamic_cast<octave_scalar&> (a1);
-  const octave_sparse_bool_matrix& v2 = dynamic_cast<const octave_sparse_bool_matrix&> (a2);
+  const octave_sparse_bool_matrix& v2 =
+    dynamic_cast<const octave_sparse_bool_matrix&> (a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value(tmp. concat (v2.sparse_matrix_value (), ra_idx));
 }
@@ -97,3 +99,4 @@ install_b_sbm_ops (void)
   INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix,
                    sparse_bool_matrix_conv);
 }
+

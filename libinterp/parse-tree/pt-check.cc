@@ -176,7 +176,7 @@ tree_checker::visit_complex_for_command (tree_complex_for_command& cmd)
 
       if (len == 0 || len > 2)
         errmsg ("invalid number of output arguments in for command",
-               cmd.line ());
+                cmd.line ());
 
       do_lvalue_check = true;
 
@@ -510,7 +510,7 @@ tree_checker::visit_try_catch_command (tree_try_catch_command& cmd)
     {
       if (! expr_id->lvalue_ok ())
         errmsg ("invalid lvalue used for identifier in try-catch command",
-               cmd.line ());
+                cmd.line ());
     }
 
   if (try_code)
@@ -572,3 +572,4 @@ tree_checker::errmsg (const std::string& msg, int line)
   else
     error ("%s: %d: %s", file_name.c_str (), line, msg.c_str ());
 }
+

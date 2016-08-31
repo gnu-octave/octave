@@ -1925,22 +1925,22 @@ public:
 
 #if 0
   const string_property& as_string_property (void) const
-    { return *(dynamic_cast<string_property*> (rep)); }
+  { return *(dynamic_cast<string_property*> (rep)); }
 
   const radio_property& as_radio_property (void) const
-    { return *(dynamic_cast<radio_property*> (rep)); }
+  { return *(dynamic_cast<radio_property*> (rep)); }
 
   const color_property& as_color_property (void) const
-    { return *(dynamic_cast<color_property*> (rep)); }
+  { return *(dynamic_cast<color_property*> (rep)); }
 
   const double_property& as_double_property (void) const
-    { return *(dynamic_cast<double_property*> (rep)); }
+  { return *(dynamic_cast<double_property*> (rep)); }
 
   const bool_property& as_bool_property (void) const
-    { return *(dynamic_cast<bool_property*> (rep)); }
+  { return *(dynamic_cast<bool_property*> (rep)); }
 
   const handle_property& as_handle_property (void) const
-    { return *(dynamic_cast<handle_property*> (rep)); }
+  { return *(dynamic_cast<handle_property*> (rep)); }
 #endif
 
 private:
@@ -3987,8 +3987,8 @@ public:
       // FIXME: Remove warning with "zero" in 4.6
       if (yaxislocation_is ("zero"))
         warning_with_id ("Octave:deprecated-property",
-            "Setting 'yaxislocation' to 'zero' is deprecated, "
-            "set to 'origin' instead.");
+                         "Setting 'yaxislocation' to 'zero' is deprecated, "
+                         "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       update_ylabel_position ();
@@ -3998,8 +3998,8 @@ public:
       // FIXME: Remove warning with "zero" in 4.6
       if (xaxislocation_is ("zero"))
         warning_with_id ("Octave:deprecated-property",
-            "Setting 'xaxislocation' to 'zero' is deprecated, "
-            "set to 'origin' instead.");
+                         "Setting 'xaxislocation' to 'zero' is deprecated, "
+                         "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       update_xlabel_position ();
@@ -6452,3 +6452,4 @@ OCTINTERP_API graphics_handle gca (void);
 OCTINTERP_API void close_all_figures (void);
 
 #endif
+

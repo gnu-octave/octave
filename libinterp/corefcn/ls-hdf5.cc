@@ -1071,8 +1071,8 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
 
   std::string t = val.type_name ();
 #if defined (HAVE_HDF5_18)
-  data_id = H5Gcreate (loc_id, name.c_str (), octave_H5P_DEFAULT, octave_H5P_DEFAULT,
-                       octave_H5P_DEFAULT);
+  data_id = H5Gcreate (loc_id, name.c_str (), octave_H5P_DEFAULT,
+                       octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_id = H5Gcreate (loc_id, name.c_str (), 0);
 #endif
@@ -1090,12 +1090,15 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)
   data_type_id = H5Dcreate (data_id, "type",  type_id, space_id,
-                            octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                            octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                            octave_H5P_DEFAULT);
 #else
-  data_type_id = H5Dcreate (data_id, "type",  type_id, space_id, octave_H5P_DEFAULT);
+  data_type_id = H5Dcreate (data_id, "type",  type_id, space_id,
+                            octave_H5P_DEFAULT);
 #endif
-  if (data_type_id < 0 || H5Dwrite (data_type_id, type_id, octave_H5S_ALL, octave_H5S_ALL,
-                                    octave_H5P_DEFAULT, t.c_str ()) < 0)
+  if (data_type_id < 0
+      || H5Dwrite (data_type_id, type_id, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, t.c_str ()) < 0)
     goto error_cleanup;
 
   // Now call the real function to save the variable
@@ -1161,3 +1164,4 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
 }
 
 #endif
+

@@ -193,7 +193,8 @@ set_application_id (void)
   if (hShell != NULL)
     {
       SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
-        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell, "SetCurrentProcessExplicitAppUserModelID"));
+        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
+                                           "SetCurrentProcessExplicitAppUserModelID"));
 
       if (pfnSetCurrentProcessExplicitAppUserModelID)
         pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave");
@@ -856,7 +857,8 @@ for floating point calculations.
 No actual tests are performed.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt = octave::mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::native_float_format ();
 
   return ovl (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian
               || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
@@ -872,7 +874,8 @@ DEFUN (native_float_format, , ,
 Return the native floating point format as a string.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt = octave::mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::native_float_format ();
 
   return ovl (octave::mach_info::float_format_as_string (flt_fmt));
 }
@@ -968,3 +971,4 @@ and false otherwise.
 {
   return ovl (display_info::display_available ());
 }
+

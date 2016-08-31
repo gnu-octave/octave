@@ -1006,14 +1006,17 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
 
   bool inf_or_nan = (octave::math::isinf (c) || octave::math::isnan (c));
 
-  bool int_only = (octave::math::x_nint (rp) == rp && octave::math::x_nint (ip) == ip);
+  bool int_only = (octave::math::x_nint (rp) == rp
+                   && octave::math::x_nint (ip) == ip);
 
   double r_abs = rp < 0.0 ? -rp : rp;
   double i_abs = ip < 0.0 ? -ip : ip;
 
-  int r_x = (! octave::math::finite (rp) || r_abs == 0.0) ? 0 : num_digits (r_abs);
+  int r_x = (! octave::math::finite (rp)
+             || r_abs == 0.0) ? 0 : num_digits (r_abs);
 
-  int i_x = (! octave::math::finite (ip) || i_abs == 0.0) ? 0 : num_digits (i_abs);
+  int i_x = (! octave::math::finite (ip)
+             || i_abs == 0.0) ? 0 : num_digits (i_abs);
 
   int x_max, x_min;
 
@@ -4200,3 +4203,4 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1,
                                             std::numeric_limits<int>::max ());
 }
+

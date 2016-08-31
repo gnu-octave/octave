@@ -169,3 +169,4 @@ install_sm_cs_ops (void)
   INSTALL_ASSIGNCONV (octave_sparse_matrix, octave_complex,
                       octave_sparse_complex_matrix);
 }
+

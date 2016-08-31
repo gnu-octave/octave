@@ -230,3 +230,4 @@ octave_procbuf::close (void)
 
 #endif
 }
+

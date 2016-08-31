@@ -90,3 +90,4 @@ extern void
 maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p);
 
 #endif
+

@@ -32,3 +32,4 @@ extern save_type
 get_save_type (float max_val, float min_val);
 
 #endif
+

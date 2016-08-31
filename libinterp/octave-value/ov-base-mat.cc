@@ -225,39 +225,39 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
     {
       switch (n_idx)
         {
-          case 0:
-            panic_impossible ();
-            break;
+        case 0:
+          panic_impossible ();
+          break;
 
-          case 1:
-            {
-              idx_vector i = idx (0).index_vector ();
+        case 1:
+          {
+            idx_vector i = idx (0).index_vector ();
 
-              matrix.assign (i, rhs);
-            }
-            break;
+            matrix.assign (i, rhs);
+          }
+          break;
 
-          case 2:
-            {
-              idx_vector i = idx (0).index_vector ();
+        case 2:
+          {
+            idx_vector i = idx (0).index_vector ();
 
-              k = 1;
-              idx_vector j = idx (1).index_vector ();
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
 
-              matrix.assign (i, j, rhs);
-            }
-            break;
+            matrix.assign (i, j, rhs);
+          }
+          break;
 
-          default:
-            {
-              Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
+        default:
+          {
+            Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
 
-              for (k = 0; k < n_idx; k++)
-                idx_vec(k) = idx(k).index_vector ();
+            for (k = 0; k < n_idx; k++)
+              idx_vec(k) = idx(k).index_vector ();
 
-              matrix.assign (idx_vec, rhs);
-            }
-            break;
+            matrix.assign (idx_vec, rhs);
+          }
+          break;
         }
     }
   catch (const octave::index_exception& e)

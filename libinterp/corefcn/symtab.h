@@ -2957,3 +2957,4 @@ extern OCTINTERP_API std::string
 get_dispatch_type (const octave_value_list& args, builtin_type_t& builtin_type);
 
 #endif
+

@@ -285,7 +285,8 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t group_hid = -1;
 
 #if defined (HAVE_HDF5_18)
-  group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+  group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                         octave_H5P_DEFAULT);
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -372,10 +373,12 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, octave_H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+                        octave_H5P_DEFAULT);
 #endif
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
-                                octave_H5P_DEFAULT, nm.c_str ()) < 0)
+  if (data_hid < 0
+      || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, nm.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -399,8 +402,9 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid,
                         octave_H5P_DEFAULT);
 #endif
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
-                                octave_H5P_DEFAULT, iftext.c_str ()) < 0)
+  if (data_hid < 0
+      || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, iftext.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -530,7 +534,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, nm_tmp) < 0)
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, nm_tmp) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -592,7 +597,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, iftext_tmp) < 0)
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, iftext_tmp) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -985,3 +991,4 @@ quadv (fcn, 0, 3)
 %!error vectorize (1, 2)
 %!error <FUN must be a string or inline function> vectorize (1)
 */
+

@@ -75,8 +75,10 @@ template <typename FP>
 static std::complex<FP>
 simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
-  if (! octave::math::isinteger (a.real ()) || ! octave::math::isinteger (a.imag ())
-      || ! octave::math::isinteger (b.real ()) || ! octave::math::isinteger (b.imag ()))
+  if (! octave::math::isinteger (a.real ())
+      || ! octave::math::isinteger (a.imag ())
+      || ! octave::math::isinteger (b.real ())
+      || ! octave::math::isinteger (b.imag ()))
     error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
@@ -154,8 +156,10 @@ static std::complex<FP>
 extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
               std::complex<FP>& x, std::complex<FP>& y)
 {
-  if (! octave::math::isinteger (a.real ()) || ! octave::math::isinteger (a.imag ())
-      || ! octave::math::isinteger (b.real ()) || ! octave::math::isinteger (b.imag ()))
+  if (! octave::math::isinteger (a.real ())
+      || ! octave::math::isinteger (a.imag ())
+      || ! octave::math::isinteger (b.real ())
+      || ! octave::math::isinteger (b.imag ()))
     error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
@@ -274,10 +278,10 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
       retval = do_simple_gcd<NDArray> (a, b);
       break;
 
-#define MAKE_INT_BRANCH(X)                              \
-      case btyp_ ## X:                                  \
-        retval = do_simple_gcd<X ## NDArray> (a, b);    \
-        break
+#define MAKE_INT_BRANCH(X)                            \
+    case btyp_ ## X:                                  \
+      retval = do_simple_gcd<X ## NDArray> (a, b);    \
+      break
 
     MAKE_INT_BRANCH (int8);
     MAKE_INT_BRANCH (int16);
@@ -386,10 +390,10 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       retval = do_extended_gcd<NDArray> (a, b, x, y);
       break;
 
-#define MAKE_INT_BRANCH(X)                                      \
-      case btyp_ ## X:                                          \
-        retval = do_extended_gcd<X ## NDArray> (a, b, x, y);    \
-        break
+#define MAKE_INT_BRANCH(X)                                    \
+    case btyp_ ## X:                                          \
+      retval = do_extended_gcd<X ## NDArray> (a, b, x, y);    \
+      break
 
     MAKE_INT_BRANCH (int8);
     MAKE_INT_BRANCH (int16);
@@ -529,3 +533,4 @@ gcd ([15, 9], [20, 18])
 %! s.a = 1;
 %! fail ("gcd (s)");
 */
+

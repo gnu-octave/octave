@@ -155,3 +155,4 @@ install_class_ops (void)
   INSTALL_CLASS_BINOP (op_el_and, and);
   INSTALL_CLASS_BINOP (op_el_or, or);
 }
+

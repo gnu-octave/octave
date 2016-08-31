@@ -47,8 +47,10 @@ DEFNDBINOP_OP (mul, float_complex_matrix, float_complex,
 
 DEFBINOP (div, float_complex_matrix, float_complex)
 {
-  const octave_float_complex_matrix& v1 = dynamic_cast<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex_matrix& v1
+    = dynamic_cast<const octave_float_complex_matrix&> (a1);
+  const octave_float_complex& v2
+    = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplex d = v2.float_complex_value ();
 
@@ -62,8 +64,10 @@ DEFBINOP_FN (pow, float_complex_matrix, float_complex, xpow)
 
 DEFBINOP (ldiv, float_complex_matrix, float_complex)
 {
-  const octave_float_complex_matrix& v1 = dynamic_cast<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex_matrix& v1
+    = dynamic_cast<const octave_float_complex_matrix&> (a1);
+  const octave_float_complex& v2
+    = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -92,8 +96,10 @@ DEFNDBINOP_OP (el_mul, float_complex_matrix, float_complex,
 
 DEFBINOP (el_div, float_complex_matrix, float_complex)
 {
-  const octave_float_complex_matrix& v1 = dynamic_cast<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex_matrix& v1
+    = dynamic_cast<const octave_float_complex_matrix&> (a1);
+  const octave_float_complex& v2
+    = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplex d = v2.float_complex_value ();
 
@@ -108,8 +114,10 @@ DEFNDBINOP_FN (el_pow, float_complex_matrix, float_complex,
 
 DEFBINOP (el_ldiv, float_complex_matrix, float_complex)
 {
-  const octave_float_complex_matrix& v1 = dynamic_cast<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex_matrix& v1
+    = dynamic_cast<const octave_float_complex_matrix&> (a1);
+  const octave_float_complex& v2
+    = dynamic_cast<const octave_float_complex&> (a2);
 
   return x_el_div (v2.float_complex_value (), v1.float_complex_array_value ());
 }
@@ -194,3 +202,4 @@ install_fcm_fcs_ops (void)
   INSTALL_ASSIGNOP (op_div_eq, octave_float_complex_matrix,
                     octave_float_complex_scalar, assign_div);
 }
+

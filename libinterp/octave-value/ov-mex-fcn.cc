@@ -144,9 +144,10 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   BEGIN_PROFILER_BLOCK (octave_mex_function)
 
-    retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+  retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
 
   END_PROFILER_BLOCK
 
   return retval;
 }
+

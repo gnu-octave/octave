@@ -293,8 +293,8 @@ parameters for @code{daspk}.
               fname = "function y = ";
               fname.append (fcn_name);
               fname.append (" (x, xdot, t) y = ");
-              daspk_fcn = extract_function
-                (c(0), "daspk", fcn_name, fname, "; endfunction");
+              daspk_fcn = extract_function (c(0), "daspk", fcn_name,
+                                            fname, "; endfunction");
             }
 
           if (daspk_fcn)
@@ -361,9 +361,8 @@ parameters for @code{daspk}.
                     jname = "function jac = ";
                     jname.append (jac_name);
                     jname.append (" (x, xdot, t, cj) jac = ");
-                    daspk_jac = extract_function (tmp(1), "daspk",
-                                                  jac_name, jname,
-                                                  "; endfunction");
+                    daspk_jac = extract_function (tmp(1), "daspk", jac_name,
+                                                  jname, "; endfunction");
 
                     if (! daspk_jac)
                       {
@@ -441,3 +440,4 @@ parameters for @code{daspk}.
 
   return retval;
 }
+

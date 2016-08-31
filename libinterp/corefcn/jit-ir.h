@@ -1442,3 +1442,4 @@ jit_const<T, EXTRACT_T, PASS_T, QUOTE>::accept (jit_ir_walker& walker)
 
 #endif
 #endif
+

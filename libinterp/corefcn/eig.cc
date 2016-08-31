@@ -122,18 +122,18 @@ The eigenvalues returned by @code{eig} are not ordered.
   bool AEPcase = nargin == 1 || args(1).is_string ();
 
   if (! AEPcase)
-  {
-    arg_b = args(1);
+    {
+      arg_b = args(1);
 
-    if (arg_b.is_empty ())
-      return octave_value_list (2, Matrix ());
+      if (arg_b.is_empty ())
+        return octave_value_list (2, Matrix ());
 
-    if (! arg_b.is_float_type ())
-      err_wrong_type_arg ("eig", arg_b);
+      if (! arg_b.is_float_type ())
+        err_wrong_type_arg ("eig", arg_b);
 
-    if (arg_b.rows () != arg_b.columns ())
-      err_square_matrix_required ("eig", "B");
-  }
+      if (arg_b.rows () != arg_b.columns ())
+        err_square_matrix_required ("eig", "B");
+    }
 
   bool qz_flag = false;
   bool chol_flag = false;
@@ -641,3 +641,4 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!error <wrong type argument>
 %!  eig ([1 2 ; 2 3], [1 2 ; 2 3], [1 2 ; 2 3])
 */
+

@@ -796,62 +796,62 @@ octave_float_matrix::map (unary_mapper_t umap) const
       return matrix;
 
     // Mappers handled specially.
-#define ARRAY_METHOD_MAPPER(UMAP, FCN)          \
-      case umap_ ## UMAP:                       \
-        return octave_value (matrix.FCN ())
+#define ARRAY_METHOD_MAPPER(UMAP, FCN)        \
+    case umap_ ## UMAP:                       \
+      return octave_value (matrix.FCN ())
 
-      ARRAY_METHOD_MAPPER (abs, abs);
-      ARRAY_METHOD_MAPPER (isnan, isnan);
-      ARRAY_METHOD_MAPPER (isinf, isinf);
-      ARRAY_METHOD_MAPPER (isfinite, isfinite);
+    ARRAY_METHOD_MAPPER (abs, abs);
+    ARRAY_METHOD_MAPPER (isnan, isnan);
+    ARRAY_METHOD_MAPPER (isinf, isinf);
+    ARRAY_METHOD_MAPPER (isfinite, isfinite);
 
-#define ARRAY_MAPPER(UMAP, TYPE, FCN)                   \
-      case umap_ ## UMAP:                               \
-        return octave_value (matrix.map<TYPE> (FCN))
+#define ARRAY_MAPPER(UMAP, TYPE, FCN)                 \
+    case umap_ ## UMAP:                               \
+      return octave_value (matrix.map<TYPE> (FCN))
 
-#define RC_ARRAY_MAPPER(UMAP, TYPE, FCN)        \
-      case umap_ ## UMAP:                       \
-        return do_rc_map (matrix, FCN)
+#define RC_ARRAY_MAPPER(UMAP, TYPE, FCN)      \
+    case umap_ ## UMAP:                       \
+      return do_rc_map (matrix, FCN)
 
-      RC_ARRAY_MAPPER (acos, FloatComplex, octave::math::rc_acos);
-      RC_ARRAY_MAPPER (acosh, FloatComplex, octave::math::rc_acosh);
-      ARRAY_MAPPER (angle, float, octave::math::arg);
-      ARRAY_MAPPER (arg, float,octave::math ::arg);
-      RC_ARRAY_MAPPER (asin, FloatComplex, octave::math::rc_asin);
-      ARRAY_MAPPER (asinh, float, octave::math::asinh);
-      ARRAY_MAPPER (atan, float, ::atanf);
-      RC_ARRAY_MAPPER (atanh, FloatComplex, octave::math::rc_atanh);
-      ARRAY_MAPPER (erf, float, octave::math::erf);
-      ARRAY_MAPPER (erfinv, float, octave::math::erfinv);
-      ARRAY_MAPPER (erfcinv, float, octave::math::erfcinv);
-      ARRAY_MAPPER (erfc, float, octave::math::erfc);
-      ARRAY_MAPPER (erfcx, float, octave::math::erfcx);
-      ARRAY_MAPPER (erfi, float, octave::math::erfi);
-      ARRAY_MAPPER (dawson, float, octave::math::dawson);
-      ARRAY_MAPPER (gamma, float, octave::math::gamma);
-      RC_ARRAY_MAPPER (lgamma, FloatComplex, octave::math::rc_lgamma);
-      ARRAY_MAPPER (cbrt, float, octave::math::cbrt);
-      ARRAY_MAPPER (ceil, float, ::ceilf);
-      ARRAY_MAPPER (cos, float, ::cosf);
-      ARRAY_MAPPER (cosh, float, ::coshf);
-      ARRAY_MAPPER (exp, float, ::expf);
-      ARRAY_MAPPER (expm1, float, octave::math::expm1);
-      ARRAY_MAPPER (fix, float, octave::math::fix);
-      ARRAY_MAPPER (floor, float, ::floorf);
-      RC_ARRAY_MAPPER (log, FloatComplex, octave::math::rc_log);
-      RC_ARRAY_MAPPER (log2, FloatComplex, octave::math::rc_log2);
-      RC_ARRAY_MAPPER (log10, FloatComplex, octave::math::rc_log10);
-      RC_ARRAY_MAPPER (log1p, FloatComplex, octave::math::rc_log1p);
-      ARRAY_MAPPER (round, float, octave::math::round);
-      ARRAY_MAPPER (roundb, float, octave::math::roundb);
-      ARRAY_MAPPER (signum, float, octave::math::signum);
-      ARRAY_MAPPER (sin, float, ::sinf);
-      ARRAY_MAPPER (sinh, float, ::sinhf);
-      RC_ARRAY_MAPPER (sqrt, FloatComplex, octave::math::rc_sqrt);
-      ARRAY_MAPPER (tan, float, ::tanf);
-      ARRAY_MAPPER (tanh, float, ::tanhf);
-      ARRAY_MAPPER (isna, bool, octave::math::is_NA);
-      ARRAY_MAPPER (xsignbit, float, octave::math::signbit);
+    RC_ARRAY_MAPPER (acos, FloatComplex, octave::math::rc_acos);
+    RC_ARRAY_MAPPER (acosh, FloatComplex, octave::math::rc_acosh);
+    ARRAY_MAPPER (angle, float, octave::math::arg);
+    ARRAY_MAPPER (arg, float,octave::math ::arg);
+    RC_ARRAY_MAPPER (asin, FloatComplex, octave::math::rc_asin);
+    ARRAY_MAPPER (asinh, float, octave::math::asinh);
+    ARRAY_MAPPER (atan, float, ::atanf);
+    RC_ARRAY_MAPPER (atanh, FloatComplex, octave::math::rc_atanh);
+    ARRAY_MAPPER (erf, float, octave::math::erf);
+    ARRAY_MAPPER (erfinv, float, octave::math::erfinv);
+    ARRAY_MAPPER (erfcinv, float, octave::math::erfcinv);
+    ARRAY_MAPPER (erfc, float, octave::math::erfc);
+    ARRAY_MAPPER (erfcx, float, octave::math::erfcx);
+    ARRAY_MAPPER (erfi, float, octave::math::erfi);
+    ARRAY_MAPPER (dawson, float, octave::math::dawson);
+    ARRAY_MAPPER (gamma, float, octave::math::gamma);
+    RC_ARRAY_MAPPER (lgamma, FloatComplex, octave::math::rc_lgamma);
+    ARRAY_MAPPER (cbrt, float, octave::math::cbrt);
+    ARRAY_MAPPER (ceil, float, ::ceilf);
+    ARRAY_MAPPER (cos, float, ::cosf);
+    ARRAY_MAPPER (cosh, float, ::coshf);
+    ARRAY_MAPPER (exp, float, ::expf);
+    ARRAY_MAPPER (expm1, float, octave::math::expm1);
+    ARRAY_MAPPER (fix, float, octave::math::fix);
+    ARRAY_MAPPER (floor, float, ::floorf);
+    RC_ARRAY_MAPPER (log, FloatComplex, octave::math::rc_log);
+    RC_ARRAY_MAPPER (log2, FloatComplex, octave::math::rc_log2);
+    RC_ARRAY_MAPPER (log10, FloatComplex, octave::math::rc_log10);
+    RC_ARRAY_MAPPER (log1p, FloatComplex, octave::math::rc_log1p);
+    ARRAY_MAPPER (round, float, octave::math::round);
+    ARRAY_MAPPER (roundb, float, octave::math::roundb);
+    ARRAY_MAPPER (signum, float, octave::math::signum);
+    ARRAY_MAPPER (sin, float, ::sinf);
+    ARRAY_MAPPER (sinh, float, ::sinhf);
+    RC_ARRAY_MAPPER (sqrt, FloatComplex, octave::math::rc_sqrt);
+    ARRAY_MAPPER (tan, float, ::tanf);
+    ARRAY_MAPPER (tanh, float, ::tanhf);
+    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (xsignbit, float, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:

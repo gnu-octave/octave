@@ -38,3 +38,4 @@ extern void octave_history_write_timestamp (void);
 extern bool input_from_tmp_history_file;
 
 #endif
+

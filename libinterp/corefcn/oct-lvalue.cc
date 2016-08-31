@@ -105,3 +105,4 @@ octave_lvalue::value (void) const
 
   return retval;
 }
+

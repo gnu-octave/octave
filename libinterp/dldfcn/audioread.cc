@@ -110,7 +110,8 @@ is stored in the audio file.
       double dend = octave::math::isinf (range(1)) ? info.frames : range(1);
 
       if (dstart < 1 || dstart > dend || dend > info.frames
-          || octave::math::x_nint (dstart) != dstart || octave::math::x_nint (dend) != dend)
+          || octave::math::x_nint (dstart) != dstart
+          || octave::math::x_nint (dend) != dend)
         error ("audioread: invalid specification for range of frames");
 
       start = dstart - 1;
@@ -603,3 +604,4 @@ with names that start with @var{format}.
 
   return octave_value ();
 }
+

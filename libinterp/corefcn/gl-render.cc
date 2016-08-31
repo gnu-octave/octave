@@ -63,28 +63,28 @@ namespace octave
 
   // Use symbolic names for axes
   enum
-    {
-      X_AXIS,
-      Y_AXIS,
-      Z_AXIS
-    };
+  {
+    X_AXIS,
+    Y_AXIS,
+    Z_AXIS
+  };
 
   // Use symbolic names for color mode
   enum
-    {
-      UNIFORM,
-      FLAT,
-      INTERP,
-      TEXTURE
-    };
+  {
+    UNIFORM,
+    FLAT,
+    INTERP,
+    TEXTURE
+  };
 
   // Use symbolic names for lighting
   enum
-    {
-      NONE,
-      //FLAT,  // Already declared in anonymous enum for color mode
-      GOURAUD = 2
-    };
+  {
+    NONE,
+    //FLAT,  // Already declared in anonymous enum for color mode
+    GOURAUD = 2
+  };
 
   // Win32 API requires the CALLBACK attributes for
   // GLU callback functions.  Define it to empty on
@@ -1484,7 +1484,7 @@ namespace octave
         int hmax = 0;
         bool tick_along_z = nearhoriz || octave::math::isinf (fx);
         bool mirror = props.is_box () && ystate != AXE_ANY_DIR
-          && (! props.has_property ("__plotyy_axes__"));
+                      && (! props.has_property ("__plotyy_axes__"));
 
         // set styles when drawing only minor grid
         if (do_yminorgrid && ! do_ygrid)
@@ -1724,7 +1724,8 @@ namespace octave
   }
 
   void
-  opengl_renderer::draw_all_lights (const base_properties& props, std::list<graphics_object>& obj_list)
+  opengl_renderer::draw_all_lights (const base_properties& props,
+                                    std::list<graphics_object>& obj_list)
   {
 #if defined (HAVE_OPENGL)
     Matrix children = props.get_all_children ();
@@ -4103,3 +4104,4 @@ namespace octave
 #endif
   }
 }
+

@@ -68,3 +68,4 @@ procstreambase::close (void)
 
   return status;
 }
+

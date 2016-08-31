@@ -383,7 +383,8 @@ compatibility with @sc{matlab}.
 
       F77_XFCN (zggbal, ZGGBAL,
                 (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn, F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
+                 nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
+                 F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
                  nn, ilo, ihi, lscale.fortran_vec (),
                  rscale.fortran_vec (), work.fortran_vec (), info
                  F77_CHAR_ARG_LEN (1)));
@@ -461,7 +462,8 @@ compatibility with @sc{matlab}.
                 (F77_CONST_CHAR_ARG2 (&compq, 1),
                  F77_CONST_CHAR_ARG2 (&compz, 1),
                  nn, ilo, ihi, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()),
-                 nn, F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn, F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
+                 nn, F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn,
+                 F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
                  F77_DBLE_CMPLX_ARG (CZ.fortran_vec ()), nn, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
@@ -890,8 +892,10 @@ compatibility with @sc{matlab}.
           F77_XFCN (ztgevc, ZTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
                      F77_CONST_CHAR_ARG2 (&howmny, 1),
-                     select, nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn, F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
-                     nn, F77_DBLE_CMPLX_ARG (CVL.fortran_vec ()), nn, F77_DBLE_CMPLX_ARG (CVR.fortran_vec ()), nn, nn,
+                     select, nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
+                     F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
+                     nn, F77_DBLE_CMPLX_ARG (CVL.fortran_vec ()), nn,
+                     F77_DBLE_CMPLX_ARG (CVR.fortran_vec ()), nn, nn,
                      m, F77_DBLE_CMPLX_ARG (cwork2.fortran_vec ()), rwork2.fortran_vec (), info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
@@ -1093,3 +1097,4 @@ compatibility with @sc{matlab}.
 %! [AA, BB, Z2] = qz (A, B, '-');
 %! assert (Z1, Z2);
 */
+

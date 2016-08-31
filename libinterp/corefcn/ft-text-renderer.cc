@@ -89,229 +89,229 @@ static void ft_face_destroyed (void *object);
 
 namespace octave
 {
-class
-ft_manager
-{
-public:
-  static bool instance_ok (void)
+  class
+  ft_manager
   {
-    bool retval = true;
+  public:
+    static bool instance_ok (void)
+    {
+      bool retval = true;
 
-    if (! instance)
-      {
-        instance = new ft_manager ();
+      if (! instance)
+        {
+          instance = new ft_manager ();
 
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
+          if (instance)
+            singleton_cleanup_list::add (cleanup_instance);
+        }
 
-    if (! instance)
-      error ("unable to create ft_manager!");
+      if (! instance)
+        error ("unable to create ft_manager!");
 
-    return retval;
-  }
+      return retval;
+    }
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
+    static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  static FT_Face get_font (const std::string& name, const std::string& weight,
-                           const std::string& angle, double size)
-  {
-    return (instance_ok ()
-            ? instance->do_get_font (name, weight, angle, size)
-            : 0);
-  }
+    static FT_Face get_font (const std::string& name, const std::string& weight,
+                             const std::string& angle, double size)
+    {
+      return (instance_ok ()
+              ? instance->do_get_font (name, weight, angle, size)
+              : 0);
+    }
 
-  static void font_destroyed (FT_Face face)
-  {
-    if (instance_ok ())
-      instance->do_font_destroyed (face);
-  }
+    static void font_destroyed (FT_Face face)
+    {
+      if (instance_ok ())
+        instance->do_font_destroyed (face);
+    }
 
-private:
+  private:
 
-  static ft_manager *instance;
+    static ft_manager *instance;
 
-  typedef std::pair<std::string, double> ft_key;
-  typedef std::map<ft_key, FT_Face> ft_cache;
+    typedef std::pair<std::string, double> ft_key;
+    typedef std::map<ft_key, FT_Face> ft_cache;
 
-  // Cache the fonts loaded by FreeType.  This cache only contains
-  // weak references to the fonts, strong references are only present
-  // in class text_renderer.
-  ft_cache cache;
+    // Cache the fonts loaded by FreeType.  This cache only contains
+    // weak references to the fonts, strong references are only present
+    // in class text_renderer.
+    ft_cache cache;
 
-private:
+  private:
 
-  // No copying!
+    // No copying!
 
-  ft_manager (const ft_manager&);
+    ft_manager (const ft_manager&);
 
-  ft_manager& operator = (const ft_manager&);
+    ft_manager& operator = (const ft_manager&);
 
-  ft_manager (void)
-    : library (), freetype_initialized (false), fontconfig_initialized (false)
-  {
-    if (FT_Init_FreeType (&library))
-      error ("unable to initialize FreeType library");
-    else
-      freetype_initialized = true;
+    ft_manager (void)
+      : library (), freetype_initialized (false), fontconfig_initialized (false)
+    {
+      if (FT_Init_FreeType (&library))
+        error ("unable to initialize FreeType library");
+      else
+        freetype_initialized = true;
 
 #if defined (HAVE_FONTCONFIG)
-    if (! FcInit ())
-      error ("unable to initialize fontconfig library");
-    else
-      fontconfig_initialized = true;
+      if (! FcInit ())
+        error ("unable to initialize fontconfig library");
+      else
+        fontconfig_initialized = true;
 #endif
-  }
+    }
 
-  ~ft_manager (void)
-  {
-    if (freetype_initialized)
-      FT_Done_FreeType (library);
+    ~ft_manager (void)
+    {
+      if (freetype_initialized)
+        FT_Done_FreeType (library);
 
 #if defined (HAVE_FONTCONFIG)
-    // FIXME: Skip the call to FcFini because it can trigger the assertion
-    //
-    //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
-    //
-    // if (fontconfig_initialized)
-    //   FcFini ();
+      // FIXME: Skip the call to FcFini because it can trigger the assertion
+      //
+      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
+      //
+      // if (fontconfig_initialized)
+      //   FcFini ();
 #endif
-  }
+    }
 
-  FT_Face do_get_font (const std::string& name, const std::string& weight,
-                       const std::string& angle, double size)
-  {
-    FT_Face retval = 0;
+    FT_Face do_get_font (const std::string& name, const std::string& weight,
+                         const std::string& angle, double size)
+    {
+      FT_Face retval = 0;
 
 #if defined (HAVE_FT_REFERENCE_FACE)
-    // Look first into the font cache, then use fontconfig.  If the font
-    // is present in the cache, simply add a reference and return it.
+      // Look first into the font cache, then use fontconfig.  If the font
+      // is present in the cache, simply add a reference and return it.
 
-    ft_key key (name + ":" + weight + ":" + angle, size);
-    ft_cache::const_iterator it = cache.find (key);
+      ft_key key (name + ":" + weight + ":" + angle, size);
+      ft_cache::const_iterator it = cache.find (key);
 
-    if (it != cache.end ())
-      {
-        FT_Reference_Face (it->second);
-        return it->second;
-      }
+      if (it != cache.end ())
+        {
+          FT_Reference_Face (it->second);
+          return it->second;
+        }
 #endif
 
-    std::string file;
+      std::string file;
 
 #if defined (HAVE_FONTCONFIG)
-    if (fontconfig_initialized)
-      {
-        int fc_weight, fc_angle;
+      if (fontconfig_initialized)
+        {
+          int fc_weight, fc_angle;
 
-        if (weight == "bold")
-          fc_weight = FC_WEIGHT_BOLD;
-        else if (weight == "light")
-          fc_weight = FC_WEIGHT_LIGHT;
-        else if (weight == "demi")
-          fc_weight = FC_WEIGHT_DEMIBOLD;
-        else
-          fc_weight = FC_WEIGHT_NORMAL;
+          if (weight == "bold")
+            fc_weight = FC_WEIGHT_BOLD;
+          else if (weight == "light")
+            fc_weight = FC_WEIGHT_LIGHT;
+          else if (weight == "demi")
+            fc_weight = FC_WEIGHT_DEMIBOLD;
+          else
+            fc_weight = FC_WEIGHT_NORMAL;
 
-        if (angle == "italic")
-          fc_angle = FC_SLANT_ITALIC;
-        else if (angle == "oblique")
-          fc_angle = FC_SLANT_OBLIQUE;
-        else
-          fc_angle = FC_SLANT_ROMAN;
+          if (angle == "italic")
+            fc_angle = FC_SLANT_ITALIC;
+          else if (angle == "oblique")
+            fc_angle = FC_SLANT_OBLIQUE;
+          else
+            fc_angle = FC_SLANT_ROMAN;
 
-        FcPattern *pat = FcPatternCreate ();
+          FcPattern *pat = FcPatternCreate ();
 
-        FcPatternAddString (pat, FC_FAMILY,
-                            (reinterpret_cast<const FcChar8*>
-                             (name == "*" ? "sans" : name.c_str ())));
+          FcPatternAddString (pat, FC_FAMILY,
+                              (reinterpret_cast<const FcChar8*>
+                               (name == "*" ? "sans" : name.c_str ())));
 
-        FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
-        FcPatternAddInteger (pat, FC_SLANT, fc_angle);
-        FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
+          FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
+          FcPatternAddInteger (pat, FC_SLANT, fc_angle);
+          FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
-        if (FcConfigSubstitute (0, pat, FcMatchPattern))
-          {
-            FcResult res;
-            FcPattern *match;
+          if (FcConfigSubstitute (0, pat, FcMatchPattern))
+            {
+              FcResult res;
+              FcPattern *match;
 
-            FcDefaultSubstitute (pat);
-            match = FcFontMatch (0, pat, &res);
+              FcDefaultSubstitute (pat);
+              match = FcFontMatch (0, pat, &res);
 
-            // FIXME: originally, this test also required that
-            // res != FcResultNoMatch.  Is that really needed?
-            if (match)
-              {
-                unsigned char *tmp;
+              // FIXME: originally, this test also required that
+              // res != FcResultNoMatch.  Is that really needed?
+              if (match)
+                {
+                  unsigned char *tmp;
 
-                FcPatternGetString (match, FC_FILE, 0, &tmp);
-                file = reinterpret_cast<char*> (tmp);
-              }
-            else
-              ::warning ("could not match any font: %s-%s-%s-%g",
-                         name.c_str (), weight.c_str (), angle.c_str (),
-                         size);
+                  FcPatternGetString (match, FC_FILE, 0, &tmp);
+                  file = reinterpret_cast<char*> (tmp);
+                }
+              else
+                ::warning ("could not match any font: %s-%s-%s-%g",
+                           name.c_str (), weight.c_str (), angle.c_str (),
+                           size);
 
-            if (match)
-              FcPatternDestroy (match);
-          }
+              if (match)
+                FcPatternDestroy (match);
+            }
 
-        FcPatternDestroy (pat);
-      }
+          FcPatternDestroy (pat);
+        }
 #endif
 
-    if (file.empty ())
-      {
+      if (file.empty ())
+        {
 #if defined (OCTAVE_USE_WINDOWS_API)
-        file = "C:/WINDOWS/Fonts/verdana.ttf";
+          file = "C:/WINDOWS/Fonts/verdana.ttf";
 #else
-        // FIXME: find a "standard" font for UNIX platforms
+          // FIXME: find a "standard" font for UNIX platforms
 #endif
-      }
+        }
 
-    if (! file.empty ())
-      {
-        if (FT_New_Face (library, file.c_str (), 0, &retval))
-          ::warning ("ft_manager: unable to load font: %s", file.c_str ());
+      if (! file.empty ())
+        {
+          if (FT_New_Face (library, file.c_str (), 0, &retval))
+            ::warning ("ft_manager: unable to load font: %s", file.c_str ());
 #if defined (HAVE_FT_REFERENCE_FACE)
-        else
-          {
-            // Install a finalizer to notify ft_manager that the font is
-            // being destroyed.  The class ft_manager only keeps weak
-            // references to font objects.
+          else
+            {
+              // Install a finalizer to notify ft_manager that the font is
+              // being destroyed.  The class ft_manager only keeps weak
+              // references to font objects.
 
-            retval->generic.data = new ft_key (key);
-            retval->generic.finalizer = ft_face_destroyed;
+              retval->generic.data = new ft_key (key);
+              retval->generic.finalizer = ft_face_destroyed;
 
-            // Insert loaded font into the cache.
+              // Insert loaded font into the cache.
 
-            cache[key] = retval;
-          }
+              cache[key] = retval;
+            }
 #endif
-      }
+        }
 
-    return retval;
-  }
+      return retval;
+    }
 
-  void do_font_destroyed (FT_Face face)
-  {
-    if (face->generic.data)
-      {
-        ft_key *pkey = reinterpret_cast<ft_key*> (face->generic.data);
+    void do_font_destroyed (FT_Face face)
+    {
+      if (face->generic.data)
+        {
+          ft_key *pkey = reinterpret_cast<ft_key*> (face->generic.data);
 
-        cache.erase (*pkey);
-        delete pkey;
-        face->generic.data = 0;
-      }
-  }
+          cache.erase (*pkey);
+          delete pkey;
+          face->generic.data = 0;
+        }
+    }
 
-private:
-  FT_Library library;
-  bool freetype_initialized;
-  bool fontconfig_initialized;
-};
+  private:
+    FT_Library library;
+    bool freetype_initialized;
+    bool fontconfig_initialized;
+  };
 
-ft_manager *ft_manager::instance = 0;
+  ft_manager *ft_manager::instance = 0;
 
 }
 
@@ -347,9 +347,9 @@ namespace octave
 
     ft_text_renderer (void)
       : base_text_renderer (), font (), bbox (1, 4, 0.0), halign (0),
-      xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-      color (dim_vector (1, 3), 0)
-        { }
+        xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
+        color (dim_vector (1, 3), 0)
+    { }
 
     ~ft_text_renderer (void) { }
 
@@ -1384,3 +1384,4 @@ namespace octave
 #endif
   }
 }
+

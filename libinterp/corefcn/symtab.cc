@@ -1333,7 +1333,8 @@ symbol_table::find_submethod (const std::string& name,
 {
   octave_value fcn;
 
-  std::string full_name = "@" + dispatch_type + octave::sys::file_ops::dir_sep_str () + name;
+  std::string full_name = "@" + dispatch_type +
+                          octave::sys::file_ops::dir_sep_str () + name;
   size_t pos = full_name.find_first_of (Vfilemarker);
 
   if (pos != std::string::npos)
@@ -1934,3 +1935,4 @@ updated to use some other function.
 %! clear bar;
 %! assert (! strcmp (which ("bar"), ""));
 */
+

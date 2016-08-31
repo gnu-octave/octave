@@ -156,3 +156,4 @@ install_fcs_fm_ops (void)
   INSTALL_ASSIGNCONV (octave_complex, octave_float_matrix,
                       octave_complex_matrix);
 }
+

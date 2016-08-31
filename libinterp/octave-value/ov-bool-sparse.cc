@@ -57,7 +57,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  const octave_sparse_bool_matrix& v = dynamic_cast<const octave_sparse_bool_matrix&> (a);
+  const octave_sparse_bool_matrix& v =
+    dynamic_cast<const octave_sparse_bool_matrix&> (a);
 
   return
     new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
@@ -336,7 +337,8 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
 }
 
 bool
-octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                      bool)
 {
   bool retval = false;
 
@@ -350,8 +352,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 #if defined (HAVE_HDF5_18)
-  hid_t group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
-                               octave_H5P_DEFAULT);
+  hid_t group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT,
+                               octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   hid_t group_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -372,7 +374,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
     }
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -397,7 +400,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -422,7 +426,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -460,7 +465,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -498,7 +504,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
                         octave_H5P_DEFAULT);
@@ -523,7 +530,8 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 
 #if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "data", H5T_NATIVE_HBOOL, space_hid,
-                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "data", H5T_NATIVE_HBOOL, space_hid,
                         octave_H5P_DEFAULT);
@@ -595,7 +603,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, &nr)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &nr)
       < 0)
     {
       H5Dclose (data_hid);
@@ -620,7 +629,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, &nc)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &nc)
       < 0)
     {
       H5Dclose (data_hid);
@@ -645,7 +655,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, &nz)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &nz)
       < 0)
     {
       H5Dclose (data_hid);
@@ -690,7 +701,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   octave_idx_type *itmp = m.xcidx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL, octave_H5P_DEFAULT, itmp)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, itmp)
       < 0)
     {
       H5Sclose (space_hid);
@@ -818,3 +830,4 @@ octave_sparse_bool_matrix::as_mxArray (void) const
 
   return retval;
 }
+

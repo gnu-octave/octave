@@ -52,8 +52,10 @@ DEFBINOP_OP (mul, float_matrix, float_complex_matrix, *)
 
 DEFBINOP (trans_mul, float_matrix, float_complex_matrix)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_matrix& v1
+    = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
   FloatMatrix m1 = v1.float_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -64,8 +66,10 @@ DEFBINOP (trans_mul, float_matrix, float_complex_matrix)
 
 DEFBINOP (div, float_matrix, float_complex_matrix)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_matrix& v1
+    = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
   MatrixType typ = v2.matrix_type ();
 
   FloatComplexMatrix ret = xdiv (v1.float_matrix_value (),
@@ -82,8 +86,10 @@ DEFBINOPX (pow, float_matrix, float_complex_matrix)
 
 DEFBINOP (ldiv, float_matrix, float_complex_matrix)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_matrix& v1
+    = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_matrix_value (),
@@ -95,8 +101,10 @@ DEFBINOP (ldiv, float_matrix, float_complex_matrix)
 
 DEFBINOP (trans_ldiv, float_matrix, float_complex_matrix)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_matrix& v1
+    = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_matrix_value (),
@@ -129,8 +137,10 @@ DEFNDBINOP_FN (el_pow, float_matrix, float_complex_matrix, float_array,
 
 DEFBINOP (el_ldiv, float_matrix, float_complex_matrix)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex_matrix& v2 = dynamic_cast<const octave_float_complex_matrix&> (a2);
+  const octave_float_matrix& v1
+    = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex_matrix& v2
+    = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
   return quotient (v2.float_complex_array_value (), v1.float_array_value ());
 }
@@ -206,3 +216,4 @@ install_fm_fcm_ops (void)
   INSTALL_WIDENOP (octave_float_matrix, octave_float_complex_matrix,
                    float_complex_matrix_conv);
 }
+

@@ -81,7 +81,7 @@ default_history_file (void)
 
   if (file.empty ())
     file = octave::sys::file_ops::concat (octave::sys::env::get_home_directory (),
-                             ".octave_hist");
+                                          ".octave_hist");
 
   return file;
 }
@@ -846,3 +846,4 @@ The original variable value is restored when exiting the function.
 
   return retval;
 }
+

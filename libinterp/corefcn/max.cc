@@ -321,11 +321,10 @@ do_minmax_body (const octave_value_list& args,
           retval = do_minmax_red_op<charNDArray> (arg, nargout, dim, ismin);
           break;
 
-#define MAKE_INT_BRANCH(X)                                              \
-          case btyp_ ## X:                                              \
-            retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, \
-                                                     ismin);            \
-            break;
+#define MAKE_INT_BRANCH(X)                                                    \
+        case btyp_ ## X:                                                      \
+          retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
+          break;
 
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
@@ -398,10 +397,10 @@ do_minmax_body (const octave_value_list& args,
           retval = do_minmax_bin_op<charNDArray> (argx, argy, ismin);
           break;
 
-#define MAKE_INT_BRANCH(X)                                              \
-          case btyp_ ## X:                                              \
-            retval = do_minmax_bin_op<X ## NDArray> (argx, argy, ismin); \
-            break;
+#define MAKE_INT_BRANCH(X)                                             \
+        case btyp_ ## X:                                               \
+          retval = do_minmax_bin_op<X ## NDArray> (argx, argy, ismin); \
+          break;
 
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
@@ -951,11 +950,10 @@ do_cumminmax_body (const octave_value_list& args,
                                                          ismin);
       break;
 
-#define MAKE_INT_BRANCH(X)                                              \
-      case btyp_ ## X:                                                  \
-        retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim,  \
-                                                    ismin);             \
-        break;
+#define MAKE_INT_BRANCH(X)                                                   \
+    case btyp_ ## X:                                                         \
+      retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
+      break;
 
       MAKE_INT_BRANCH (int8);
       MAKE_INT_BRANCH (int16);

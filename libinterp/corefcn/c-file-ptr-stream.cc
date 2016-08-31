@@ -314,3 +314,4 @@ c_zfile_ptr_buf::buf_close (void)
 }
 
 #endif
+

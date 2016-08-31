@@ -134,8 +134,7 @@ do_bessel (enum bessel_type type, const char *fn,
             }
           else
             {
-              FloatComplexNDArray x
-                = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
+              FloatComplexNDArray x = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
 
               Array<octave_idx_type> ierr;
               octave_value result;
@@ -190,8 +189,7 @@ do_bessel (enum bessel_type type, const char *fn,
                 }
               else
                 {
-                  FloatComplexNDArray x
-                    = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
+                  FloatComplexNDArray x = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
 
                   Array<octave_idx_type> ierr;
                   octave_value result;
@@ -1161,3 +1159,4 @@ Table 10.4 - j and y for various integer orders and arguments.
 %! assert (j, jt, -1e-9);
 %! assert (y, yt, -1e-9);
 */
+

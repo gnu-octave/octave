@@ -57,3 +57,4 @@ tree_function_def::accept (tree_walker& tw)
 {
   tw.visit_function_def (*this);
 }
+

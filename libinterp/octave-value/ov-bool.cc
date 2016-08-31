@@ -318,3 +318,4 @@ octave_bool::as_mxArray (void) const
 
   return retval;
 }
+

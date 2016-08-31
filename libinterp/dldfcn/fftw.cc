@@ -306,7 +306,7 @@ used per default.
 #if defined (HAVE_FFTW3_THREADS)
         retval = octave_value (octave_fftw_planner::threads());
 #else
-      retval = 1;
+        retval = 1;
 #endif
     }
   else
@@ -383,3 +383,4 @@ used per default.
 %!error fftw ("threads", "invalid")
 %!error fftw ("threads", -3)
  */
+

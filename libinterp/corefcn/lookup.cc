@@ -386,3 +386,4 @@ at most n-1).
 %!assert (lookup ({"apple","lemon","orange"}, "potato"), 3)
 %!assert (lookup ({"orange","lemon","apple"}, "potato"), 0)
 */
+

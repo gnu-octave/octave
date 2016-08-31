@@ -95,12 +95,12 @@ namespace octave
     private:
 
       enum bracket_type
-        {
-          BRACKET = 1,
-          BRACE = 2,
-          PAREN = 3,
-          ANON_FCN_BODY = 4
-        };
+      {
+        BRACKET = 1,
+        BRACE = 2,
+        PAREN = 3,
+        ANON_FCN_BODY = 4
+      };
 
     public:
 
@@ -852,3 +852,4 @@ namespace octave
 }
 
 #endif
+

@@ -87,3 +87,4 @@ install_pm_pm_ops (void)
   INSTALL_ASSIGNCONV (octave_perm_matrix, octave_matrix, octave_matrix);
   INSTALL_WIDENOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
 }
+

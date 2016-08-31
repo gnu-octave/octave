@@ -168,3 +168,4 @@ Close the group database.
 
   return ovl (static_cast<double> (status), msg);
 }
+

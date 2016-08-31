@@ -143,3 +143,4 @@ install_m_cs_ops (void)
   INSTALL_ASSIGNCONV (octave_float_matrix, octave_complex,
                       octave_float_complex_matrix);
 }
+

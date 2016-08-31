@@ -135,7 +135,8 @@ is_valid_function (const octave_value& arg,
     }
   else if (warn)
     // FIXME: Should this be "err" and "error_for", rather than warn?
-    error ("%s: argument must be a string containing function name", warn_for.c_str ());
+    error ("%s: argument must be a string containing function name",
+           warn_for.c_str ());
 
   return ans;
 }
@@ -1672,7 +1673,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
           feval ("load", octave_value (nm), 0);
 
           std::string newmsg = std::string ("Variables in the file ")
-            + nm + ":\n\n";
+                               + nm + ":\n\n";
 
           retval = do_who (i, argv, return_list, verbose, newmsg);
 
@@ -2690,3 +2691,4 @@ should return an error message to be displayed.
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
 }
+

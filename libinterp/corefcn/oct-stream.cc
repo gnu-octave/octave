@@ -1615,10 +1615,10 @@ namespace octave
   public:
 
     enum special_conversion
-      {
-        whitespace_conversion = 1,
-        literal_conversion = 2
-      };
+    {
+      whitespace_conversion = 1,
+      literal_conversion = 2
+    };
 
     textscan_format_elt (const std::string& txt, int w = 0, int p = -1,
                          int bw = 0, bool dis = false, char typ = '\0',
@@ -2060,7 +2060,8 @@ namespace octave
     if (! text.empty ())
       {
         textscan_format_elt *elt
-          = new textscan_format_elt (text, width, prec, bitwidth, discard, type, char_class);
+          = new textscan_format_elt (text, width, prec, bitwidth, discard, type,
+                                     char_class);
 
         if (! discard)
           output_container.push_back (val_type);
@@ -2710,7 +2711,7 @@ namespace octave
       done_after = out.size () + 1;
 
     int valid_rows = (row == ntimes) ? ntimes
-      : (((err & 1) && (err & 8)) ? row : row+1);
+                                     : (((err & 1) && (err & 8)) ? row : row+1);
     dim_vector dv (valid_rows, 1);
 
     ra_idx(0) = 0;
@@ -2856,7 +2857,8 @@ namespace octave
       {
         int ch1 = is.peek ();
         if (ch1 == '-' || ch1 == '+' || (ch1 >= '0' && ch1 <= '9'))
-          {          // if 1.0e+$ or some such, this will set failbit, as we want
+          {
+            // if 1.0e+$ or some such, this will set failbit, as we want
             width_left--;                         // count "E"
             int exp = 0;
             int exp_sign = 1;
@@ -2969,7 +2971,8 @@ namespace octave
                 if (ch2 == 'f')
                   {
                     inf = true;
-                    re = (ch == '+') ? octave::numeric_limits<double>::Inf () : -octave::numeric_limits<double>::Inf ();
+                    re = (ch == '+') ? octave::numeric_limits<double>::Inf ()
+                                     : -octave::numeric_limits<double>::Inf ();
                     value = 0;
                   }
                 else
@@ -3021,7 +3024,7 @@ namespace octave
 
                 is.clear (state);
                 is.seekg (pos);        // reset to position before look-ahead
-                // FIXME: is.read could invalidate pos
+                                       // FIXME: is.read could invalidate pos
 
                 for (int i = 0; i < treat_as_empty.numel (); i++)
                   {
@@ -3112,7 +3115,8 @@ namespace octave
     std::string retval ("");
     bool done = false;
     do
-      {                               // find sequence ending with an ending char
+      {
+        // find sequence ending with an ending char
         std::string next;
         scan_caret (is, ends.c_str (), next);
         retval = retval + next;   // FIXME: could use repeated doubling of size
@@ -3305,8 +3309,8 @@ namespace octave
         else
           {
             double v;    // Matlab docs say 1e30 etc should be valid for %d and
-            // 1000 as a %d8 should be 127, so read as double.
-            // Some loss of precision for d64 and u64.
+                         // 1000 as a %d8 should be 127, so read as double.
+                         // Some loss of precision for d64 and u64.
             skip_whitespace (is);
             v = read_double (is, fmt);
             if (! fmt.discard && ! is.fail ())
@@ -3495,7 +3499,7 @@ namespace octave
         // delimiters at the start of the conversion, or can those be skipped?
         if (elem->type != textscan_format_elt::literal_conversion
             // && elem->type != '[' && elem->type != '^' && elem->type != 'c'
-            )
+           )
           skip_delim (is);
 
         if (is.eof ())
@@ -3510,7 +3514,8 @@ namespace octave
         if (this_conversion_failed)
           {
             if (is.tellg () == pos && ! conversion_failed)
-              {                 // done_after = first failure
+              {
+                // done_after = first failure
                 done_after = i; // note fail, but parse others to get empty_val
                 conversion_failed = true;
               }
@@ -3524,9 +3529,10 @@ namespace octave
     if (done)
       is.setstate (std::ios::eofbit);
 
-    return no_conversions + (is.eof () ? 2 : 0)
-      + (conversion_failed ? 4 : 0)
-      + (nothing_worked ? 8 : 0);
+    return no_conversions
+           + (is.eof () ? 2 : 0)
+           + (conversion_failed ? 4 : 0)
+           + (nothing_worked ? 8 : 0);
 
   }
 
@@ -3591,7 +3597,8 @@ namespace octave
         else if (param == "commentstyle")
           {
             if (args(i+1).is_string ())
-              {   // check here for names like "C++", "C", "shell", ...?
+              {
+                // check here for names like "C++", "C", "shell", ...?
                 comment_style = Cell (args(i+1));
               }
             else if (args(i+1).is_cell ())
@@ -3786,7 +3793,8 @@ namespace octave
                     std::string last = end_c.substr (end_c.size () - 1);
                     std::string may_match ("");
                     do
-                      {           // find sequence ending with last char
+                      {
+                        // find sequence ending with last char
                         scan_caret (is, last, dummy);
                         is.get_undelim ();        // (read LAST itself)
 
@@ -3833,7 +3841,7 @@ namespace octave
 
     is.clear ();
     is.seekg (pos);              // reset to position before look-ahead
-    // FIXME: pos may be corrupted by is.read
+                                 // FIXME: pos may be corrupted by is.read
 
     int i;
     int (*compare)(const char *, const char *, size_t);
@@ -4201,12 +4209,13 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
                         || c2 == '6' || c2 == '7')
                       is >> std::oct >> value >> std::dec;
                     else if (c2 == '8' || c2 == '9')
-                    {
-                      // FIXME: Would like to set error state on octave stream.
-                      // See bug #46493.  But only std::istream is input to fcn
-                      // error ("internal failure to match octal format");
-                      value = 0;
-                    }
+                      {
+                        // FIXME: Would like to set error state on octave
+                        // stream.  See bug #46493.  But only std::istream is
+                        // input to fcn.
+                        // error ("internal failure to match octal format");
+                        value = 0;
+                      }
                     else
                       value = 0;
                   }
@@ -4678,8 +4687,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
             {
               if (elt->type == scanf_format_elt::null
                   || (! (elt->type == scanf_format_elt::whitespace_conversion
-                        || elt->type == scanf_format_elt::literal_conversion
-                        || elt->type == '%')
+                         || elt->type == scanf_format_elt::literal_conversion
+                         || elt->type == '%')
                       && max_conv > 0 && conversion_count == max_conv))
                 {
                   // We are done, either because we have reached the end of the
@@ -6026,7 +6035,8 @@ octave_stream::skipl (const octave_value& tc_count, bool& err,
 
   if (tc_count.is_defined ())
     {
-      if (tc_count.is_scalar_type () && octave::math::isinf (tc_count.scalar_value ()))
+      if (tc_count.is_scalar_type ()
+          && octave::math::isinf (tc_count.scalar_value ()))
         count = -1;
       else
         {
@@ -7577,3 +7587,4 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
 
   return retval;
 }
+

@@ -428,7 +428,7 @@ tree_index_expression::rvalue (int nargout,
       retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
                             lvalue_list);
     }
-  catch (octave::index_exception& e)    // problems with range, invalid index type etc.
+  catch (octave::index_exception& e)  // range problems, bad index type, etc.
     {
       final_index_error (e, expr);
     }
@@ -704,3 +704,4 @@ tree_index_expression::accept (tree_walker& tw)
 {
   tw.visit_index_expression (*this);
 }
+

@@ -42,19 +42,22 @@ DEFUNOP_OP (not, sparse_bool_matrix, !)
 
 DEFUNOP (uplus, sparse_bool_matrix)
 {
-  const octave_sparse_bool_matrix& v = dynamic_cast<const octave_sparse_bool_matrix&> (a);
+  const octave_sparse_bool_matrix& v
+    = dynamic_cast<const octave_sparse_bool_matrix&> (a);
   return octave_value (v.sparse_matrix_value ());
 }
 
 DEFUNOP (uminus, sparse_bool_matrix)
 {
-  const octave_sparse_bool_matrix& v = dynamic_cast<const octave_sparse_bool_matrix&> (a);
+  const octave_sparse_bool_matrix& v
+    = dynamic_cast<const octave_sparse_bool_matrix&> (a);
   return octave_value (- v.sparse_matrix_value ());
 }
 
 DEFUNOP (transpose, sparse_bool_matrix)
 {
-  const octave_sparse_bool_matrix& v = dynamic_cast<const octave_sparse_bool_matrix&> (a);
+  const octave_sparse_bool_matrix& v
+    = dynamic_cast<const octave_sparse_bool_matrix&> (a);
   return octave_value (v.sparse_bool_matrix_value ().transpose ());
 }
 
@@ -102,3 +105,4 @@ install_sbm_sbm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix,
                     octave_sparse_bool_matrix, assign);
 }
+

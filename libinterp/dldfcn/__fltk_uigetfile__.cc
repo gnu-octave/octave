@@ -125,7 +125,8 @@ Undocumented internal function.
         }
 
       if (multi_type == Fl_File_Chooser::DIRECTORY)
-        retval(0) = octave::sys::file_ops::native_separator_path (std::string (fc.value ()));
+        retval(0) = octave::sys::file_ops::native_separator_path (
+                      std::string (fc.value ()));
       else
         {
           retval(1) = octave::sys::file_ops::native_separator_path (

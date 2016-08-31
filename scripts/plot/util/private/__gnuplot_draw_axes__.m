@@ -1687,8 +1687,22 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       plot_cmd = "plot";
     else
       plot_cmd = "splot";
-      rot_x = 90 - axis_obj.view(2);
-      rot_z = axis_obj.view(1);
+      ## Wrap view correctly to match Matlab
+      if (axis_obj.view(2) <= 90)
+        rot_x = 90 - axis_obj.view(2);
+      else 
+        rot_x = axis_obj.view(2) - 90;
+      endif  
+      rot_x = mod (rot_x, 360);
+      while (rot_x < 0)
+        rot_x += 360;
+      endwhile
+      if (axis_obj.view(2) <= 90)
+        rot_z = axis_obj.view(1);
+      else
+        rot_z = axis_obj.view(1) + 180;
+      endif  
+      rot_z = mod (rot_z, 360);
       while (rot_z < 0)
         rot_z += 360;
       endwhile

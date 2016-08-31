@@ -282,7 +282,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #define F77_RET_T void
 
-#define F77_RETURN(retval) return retval;
+#define F77_RETURN(retval) return;
 #if defined (HAVE_OCTAVE_NORETURN_ATTR)
 #  define F77_NORETURN(retval)
 #else

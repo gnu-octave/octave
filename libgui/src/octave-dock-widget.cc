@@ -50,8 +50,10 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   connect (p, SIGNAL (settings_changed (const QSettings*)),
            this, SLOT (handle_settings (const QSettings*)));
 
-  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*, octave_dock_widget*)),
-           this, SLOT (handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*)));
+  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*,
+                                           octave_dock_widget*)),
+           this, SLOT (handle_active_dock_changed (octave_dock_widget*,
+                                                   octave_dock_widget*)));
 
   QStyle *st = style ();
   _icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
@@ -171,8 +173,8 @@ void
 octave_dock_widget::set_title (const QString& title)
 {
 #if defined (Q_OS_WIN32)
-  QHBoxLayout* h_layout =
-    static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
+  QHBoxLayout* h_layout
+    = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
   label->setStyleSheet ("background: transparent;");
   h_layout->insertWidget (0,label);
@@ -209,12 +211,14 @@ octave_dock_widget::make_window ()
 
   // remove parent and adjust the (un)dock icon
   setParent (0, Qt::Window);
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock"+_icon_color+".png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock" 
+                                + _icon_color + ".png"));
   _dock_action->setToolTip (tr ("Dock widget"));
 
   // restore the last geometry when floating
   setGeometry (settings->value ("DockWidgets/" + objectName ()
-                       + "_floating_geometry",QRect(50,100,480,480)).toRect ());
+                                + "_floating_geometry",
+                                QRect (50,100,480,480)).toRect ());
 
 #else
 
@@ -251,8 +255,9 @@ octave_dock_widget::make_widget (bool dock)
   if (dock)
     {
       // add widget to last saved docking area (dock=true is default)
-      int area = settings->value ("DockWidgets/" + objectName () + "_dock_area",
-                                  Qt::TopDockWidgetArea).toInt ();
+      int area
+        = settings->value ("DockWidgets/" + objectName () + "_dock_area",
+                           Qt::TopDockWidgetArea).toInt ();
       _parent->addDockWidget (static_cast<Qt::DockWidgetArea> (area), this);
 
       // FIXME: restoreGeometry is ignored for docked widgets
@@ -264,7 +269,8 @@ octave_dock_widget::make_widget (bool dock)
     setParent (_parent);
 
   // adjust the (un)dock icon
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-undock"+_icon_color+".png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
+                                + _icon_color + ".png"));
   _dock_action->setToolTip (tr ("Undock widget"));
 
 #else
@@ -418,11 +424,11 @@ octave_dock_widget::set_style (bool active)
 void
 octave_dock_widget::handle_settings (const QSettings *settings)
 {
-  _custom_style =
-    settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
+  _custom_style
+    = settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
 
-  _title_3d =
-    settings->value ("DockWidgets/widget_title_3d",50).toInt ();
+  _title_3d
+    = settings->value ("DockWidgets/widget_title_3d",50).toInt ();
 
   QColor default_var = QColor (0,0,0);
   _fg_color = settings->value ("Dockwidgets/title_fg_color",
@@ -492,3 +498,4 @@ octave_dock_widget::closeEvent (QCloseEvent *e)
   set_focus_predecessor ();
   QDockWidget::closeEvent (e);
 }
+

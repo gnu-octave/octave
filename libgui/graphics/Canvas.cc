@@ -50,983 +50,985 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-void
-Canvas::redraw (bool sync)
-{
-  QWidget *w = qWidget ();
-
-  if (w)
-    {
-      if (sync)
-        w->repaint ();
-      else
-        w->update ();
-    }
-}
-
-void
-Canvas::blockRedraw (bool block)
-{
-  m_redrawBlocked = block;
-}
-
-void
-Canvas::setCursor (MouseMode mode)
-{
-  QWidget *w = qWidget ();
-
-  if (w)
-    {
-      static QCursor origCursor = w->cursor ();
-
-      switch (mode)
-        {
-        case PanMode:
-        case RotateMode:
-          w->setCursor (Qt::OpenHandCursor);
-          break;
-
-        case ZoomInMode:
-          w->setCursor (QPixmap (":/images/zoom-in.png"));
-          break;
-
-        case ZoomOutMode:
-          w->setCursor (QPixmap (":/images/zoom-out.png"));
-          break;
-
-        default:
-          w->setCursor (origCursor);
-          break;
-        }
-    }
-}
-
-void
-Canvas::print (const QString& file_cmd, const QString& term)
-{
-  gh_manager::auto_lock lock;
-  graphics_object obj = gh_manager::get_object (m_handle);
-
-  if (obj.valid_object ())
-    {
-      graphics_object figObj (obj.get_ancestor ("figure"));
-
-      gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
-    }
-}
-
-/*
-   Two updateCurrentPoint() routines are required:
-   1) Used for QMouseEvents where cursor position data is in callback from Qt.
-   2) Used for QKeyEvents where cursor position must be determined.
-*/
-void
-Canvas::updateCurrentPoint(const graphics_object& fig,
-                           const graphics_object& obj, QMouseEvent* event)
-{
-  gh_manager::auto_lock lock;
-
-  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                        Utils::figureCurrentPoint (fig, event), false);
-
-  Matrix children = obj.get_properties ().get_children ();
-  octave_idx_type num_children = children.numel ();
-
-  for (int i = 0; i < num_children; i++)
-    {
-      graphics_object childObj (gh_manager::get_object (children(i)));
-
-      if (childObj.isa ("axes"))
-        {
-          axes::properties& ap = Utils::properties<axes> (childObj);
-          Matrix x_zlim = ap.get_transform_zlim ();
-          graphics_xform x_form = ap.get_transform ();
-
-          ColumnVector p1 = x_form.untransform (event->x (), event->y (),
-                                                x_zlim(0));
-          ColumnVector p2 = x_form.untransform (event->x (), event->y (),
-                                                x_zlim(1));
-
-          Matrix cp (2, 3, 0.0);
-
-          cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
-          cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
+  void
+  Canvas::redraw (bool sync)
+  {
+    QWidget *w = qWidget ();
+
+    if (w)
+      {
+        if (sync)
+          w->repaint ();
+        else
+          w->update ();
+      }
+  }
+
+  void
+  Canvas::blockRedraw (bool block)
+  {
+    m_redrawBlocked = block;
+  }
+
+  void
+  Canvas::setCursor (MouseMode mode)
+  {
+    QWidget *w = qWidget ();
+
+    if (w)
+      {
+        static QCursor origCursor = w->cursor ();
+
+        switch (mode)
+          {
+          case PanMode:
+          case RotateMode:
+            w->setCursor (Qt::OpenHandCursor);
+            break;
+
+          case ZoomInMode:
+            w->setCursor (QPixmap (":/images/zoom-in.png"));
+            break;
+
+          case ZoomOutMode:
+            w->setCursor (QPixmap (":/images/zoom-out.png"));
+            break;
+
+          default:
+            w->setCursor (origCursor);
+            break;
+          }
+      }
+  }
+
+  void
+  Canvas::print (const QString& file_cmd, const QString& term)
+  {
+    gh_manager::auto_lock lock;
+    graphics_object obj = gh_manager::get_object (m_handle);
+
+    if (obj.valid_object ())
+      {
+        graphics_object figObj (obj.get_ancestor ("figure"));
+
+        gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
+      }
+  }
+
+  /*
+     Two updateCurrentPoint() routines are required:
+     1) Used for QMouseEvents where cursor position data is in callback from Qt.
+     2) Used for QKeyEvents where cursor position must be determined.
+  */
+  void
+  Canvas::updateCurrentPoint(const graphics_object& fig,
+                             const graphics_object& obj, QMouseEvent* event)
+  {
+    gh_manager::auto_lock lock;
+
+    gh_manager::post_set (fig.get_handle (), "currentpoint",
+                          Utils::figureCurrentPoint (fig, event), false);
+
+    Matrix children = obj.get_properties ().get_children ();
+    octave_idx_type num_children = children.numel ();
+
+    for (int i = 0; i < num_children; i++)
+      {
+        graphics_object childObj (gh_manager::get_object (children(i)));
+
+        if (childObj.isa ("axes"))
+          {
+            axes::properties& ap = Utils::properties<axes> (childObj);
+            Matrix x_zlim = ap.get_transform_zlim ();
+            graphics_xform x_form = ap.get_transform ();
+
+            ColumnVector p1 = x_form.untransform (event->x (), event->y (),
+                                                  x_zlim(0));
+            ColumnVector p2 = x_form.untransform (event->x (), event->y (),
+                                                  x_zlim(1));
+
+            Matrix cp (2, 3, 0.0);
+
+            cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
+            cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
 
-          gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
-                                false);
-        }
-    }
-}
+            gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
+                                  false);
+          }
+      }
+  }
 
-void
-Canvas::updateCurrentPoint(const graphics_object& fig,
-                           const graphics_object& obj)
-{
-  gh_manager::auto_lock lock;
+  void
+  Canvas::updateCurrentPoint(const graphics_object& fig,
+                             const graphics_object& obj)
+  {
+    gh_manager::auto_lock lock;
 
-  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                        Utils::figureCurrentPoint (fig), false);
+    gh_manager::post_set (fig.get_handle (), "currentpoint",
+                          Utils::figureCurrentPoint (fig), false);
 
-  Matrix children = obj.get_properties ().get_children ();
-  octave_idx_type num_children = children.numel ();
+    Matrix children = obj.get_properties ().get_children ();
+    octave_idx_type num_children = children.numel ();
 
-  for (int i = 0; i < num_children; i++)
-    {
-      graphics_object childObj (gh_manager::get_object (children(i)));
+    for (int i = 0; i < num_children; i++)
+      {
+        graphics_object childObj (gh_manager::get_object (children(i)));
 
-      if (childObj.isa ("axes"))
-        {
-          // FIXME: QCursor::pos() may give inaccurate results with asynchronous
-          //        window systems like X11 over ssh.
-          QWidget *w = qWidget ();
-          QPoint p = w->mapFromGlobal (QCursor::pos ());
-          axes::properties& ap = Utils::properties<axes> (childObj);
-          Matrix x_zlim = ap.get_transform_zlim ();
-          graphics_xform x_form = ap.get_transform ();
+        if (childObj.isa ("axes"))
+          {
+            // FIXME: QCursor::pos() may give inaccurate results with asynchronous
+            //        window systems like X11 over ssh.
+            QWidget *w = qWidget ();
+            QPoint p = w->mapFromGlobal (QCursor::pos ());
+            axes::properties& ap = Utils::properties<axes> (childObj);
+            Matrix x_zlim = ap.get_transform_zlim ();
+            graphics_xform x_form = ap.get_transform ();
 
-          ColumnVector p1 = x_form.untransform (p.x (), p.y (), x_zlim(0));
-          ColumnVector p2 = x_form.untransform (p.x (), p.y (), x_zlim(1));
+            ColumnVector p1 = x_form.untransform (p.x (), p.y (), x_zlim(0));
+            ColumnVector p2 = x_form.untransform (p.x (), p.y (), x_zlim(1));
 
-          Matrix cp (2, 3, 0.0);
+            Matrix cp (2, 3, 0.0);
 
-          cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
-          cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
+            cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
+            cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
 
-          gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
-                                false);
-        }
-    }
-}
+            gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
+                                  false);
+          }
+      }
+  }
 
-void
-Canvas::annotation_callback (const octave_value_list& args)
-{
-  Ffeval (ovl ("annotation").append (args));
+  void
+  Canvas::annotation_callback (const octave_value_list& args)
+  {
+    Ffeval (ovl ("annotation").append (args));
 
-  redraw ();
-}
+    redraw ();
+  }
 
-void
-Canvas::canvasToggleAxes (const graphics_handle& handle)
-{
-  gh_manager::auto_lock lock;
+  void
+  Canvas::canvasToggleAxes (const graphics_handle& handle)
+  {
+    gh_manager::auto_lock lock;
 
-  graphics_object go = gh_manager::get_object (handle);
+    graphics_object go = gh_manager::get_object (handle);
 
-  if (go.valid_object ())
-    {
-      figure::properties& fp = Utils::properties<figure> (go);
+    if (go.valid_object ())
+      {
+        figure::properties& fp = Utils::properties<figure> (go);
 
-      graphics_handle ah = fp.get_currentaxes ();
+        graphics_handle ah = fp.get_currentaxes ();
 
-      graphics_object ax = gh_manager::get_object (ah);
+        graphics_object ax = gh_manager::get_object (ah);
 
-      if (ax.valid_object ())
-        {
-          axes::properties& ap = Utils::properties<axes> (ax);
+        if (ax.valid_object ())
+          {
+            axes::properties& ap = Utils::properties<axes> (ax);
 
-          if (ap.handlevisibility_is ("on"))
-            {
-              ap.set_visible (! ap.is_visible ());
+            if (ap.handlevisibility_is ("on"))
+              {
+                ap.set_visible (! ap.is_visible ());
 
-              redraw (true);
-            }
-        }
-    }
-}
+                redraw (true);
+              }
+          }
+      }
+  }
 
-void
-Canvas::canvasToggleGrid (const graphics_handle& handle)
-{
-  gh_manager::auto_lock lock;
+  void
+  Canvas::canvasToggleGrid (const graphics_handle& handle)
+  {
+    gh_manager::auto_lock lock;
 
-  graphics_object go = gh_manager::get_object (handle);
+    graphics_object go = gh_manager::get_object (handle);
 
-  if (go.valid_object ())
-    {
-      figure::properties& fp = Utils::properties<figure> (go);
+    if (go.valid_object ())
+      {
+        figure::properties& fp = Utils::properties<figure> (go);
 
-      graphics_handle ah = fp.get_currentaxes ();
+        graphics_handle ah = fp.get_currentaxes ();
 
-      graphics_object ax = gh_manager::get_object (ah);
+        graphics_object ax = gh_manager::get_object (ah);
 
-      if (ax.valid_object ())
-        {
-          axes::properties& ap = Utils::properties<axes> (ax);
+        if (ax.valid_object ())
+          {
+            axes::properties& ap = Utils::properties<axes> (ax);
 
-          std::string tmp;
+            std::string tmp;
 
-          // If any grid is off, then turn them all on.  If they are all
-          // on, then turn them off.
+            // If any grid is off, then turn them all on.  If they are all
+            // on, then turn them off.
 
-          std::string state = ((ap.get_xgrid () == "off"
-                                || ap.get_ygrid () == "off"
-                                || ap.get_zgrid () == "off")
-                               ? "on" : "off");
+            std::string state = ((ap.get_xgrid () == "off"
+                                  || ap.get_ygrid () == "off"
+                                  || ap.get_zgrid () == "off")
+                                 ? "on" : "off");
 
-          ap.set_xgrid (state);
-          ap.set_ygrid (state);
-          ap.set_zgrid (state);
+            ap.set_xgrid (state);
+            ap.set_ygrid (state);
+            ap.set_zgrid (state);
 
-          redraw (true);
-        }
-    }
-}
+            redraw (true);
+          }
+      }
+  }
 
-static void
-autoscale_axes (axes::properties& ap)
-{
-  ap.clear_zoom_stack ();
+  static void
+  autoscale_axes (axes::properties& ap)
+  {
+    ap.clear_zoom_stack ();
 
-  ap.set_xlimmode ("auto");
-  ap.set_ylimmode ("auto");
-  ap.set_zlimmode ("auto");
-}
+    ap.set_xlimmode ("auto");
+    ap.set_ylimmode ("auto");
+    ap.set_zlimmode ("auto");
+  }
 
-void
-Canvas::canvasAutoAxes (const graphics_handle& handle)
-{
-  gh_manager::auto_lock lock;
-
-  graphics_object go = gh_manager::get_object (handle);
-
-  if (go.valid_object ())
-    {
-      figure::properties& fp = Utils::properties<figure> (go);
-
-      graphics_handle ah = fp.get_currentaxes ();
-
-      graphics_object ax = gh_manager::get_object (ah);
-
-      if (ax.valid_object ())
-        {
-          axes::properties& ap = Utils::properties<axes> (ax);
-
-          autoscale_axes (ap);
-
-          redraw (true);
-        }
-    }
-}
-
-void
-Canvas::canvasPaintEvent (void)
-{
-  if (! m_redrawBlocked)
-    {
-      gh_manager::auto_lock lock;
-
-      draw (m_handle);
-
-      if ((m_mouseMode == ZoomInMode && m_mouseAxes.ok ()) || m_rectMode)
-        drawZoomBox (m_mouseAnchor, m_mouseCurrent);
-    }
-}
-
-static bool
-pan_enabled (const graphics_object figObj)
-{
-  // Getting pan mode property:
-  octave_value ov_pm
-    = Utils::properties<figure> (figObj).get___pan_mode__ ();
-
-  octave_scalar_map pm = ov_pm.scalar_map_value ();
-
-  return pm.contents ("Enable").string_value () == "on";
-}
-
-static std::string
-pan_mode (const graphics_object figObj)
-{
-  // Getting pan mode property:
-  octave_value ov_pm
-    = Utils::properties<figure> (figObj).get___pan_mode__ ();
-
-  octave_scalar_map pm = ov_pm.scalar_map_value ();
-
-  return pm.contents ("Motion").string_value ();
-}
-
-static bool
-zoom_enabled (const graphics_object figObj)
-{
-  // Getting zoom mode property:
-  octave_value ov_zm
-    = Utils::properties<figure> (figObj).get___zoom_mode__ ();
-
-  octave_scalar_map zm = ov_zm.scalar_map_value ();
-
-  return zm.contents ("Enable").string_value () == "on";
-}
-
-static std::string
-zoom_mode (const graphics_object figObj)
-{
-  // Getting zoom mode property:
-  octave_value ov_zm
-    = Utils::properties<figure> (figObj).get___zoom_mode__ ();
-
-  octave_scalar_map zm = ov_zm.scalar_map_value ();
-
-  return zm.contents ("Motion").string_value ();
-}
-
-void
-Canvas::select_object (graphics_object obj, QMouseEvent* event,
-                       graphics_object &currentObj, graphics_object &axesObj,
-                       bool axes_only)
-{
-  QList<graphics_object> axesList;
-  Matrix children = obj.get_properties ().get_all_children ();
-  octave_idx_type num_children = children.numel ();
-
-  for (int i = 0; i < num_children; i++)
-    {
-      graphics_object childObj (gh_manager::get_object (children(i)));
-
-      if (childObj.isa ("axes"))
-        axesList.append (childObj);
-      else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel")
-               || childObj.isa ("uibuttongroup"))
-        {
-          Matrix bb = childObj.get_properties ().get_boundingbox (false);
-          QRectF r (bb(0), bb(1), bb(2), bb(3));
-
-          r.adjust (-5, -5, 5, 5);
+  void
+  Canvas::canvasAutoAxes (const graphics_handle& handle)
+  {
+    gh_manager::auto_lock lock;
+
+    graphics_object go = gh_manager::get_object (handle);
+
+    if (go.valid_object ())
+      {
+        figure::properties& fp = Utils::properties<figure> (go);
+
+        graphics_handle ah = fp.get_currentaxes ();
+
+        graphics_object ax = gh_manager::get_object (ah);
+
+        if (ax.valid_object ())
+          {
+            axes::properties& ap = Utils::properties<axes> (ax);
+
+            autoscale_axes (ap);
+
+            redraw (true);
+          }
+      }
+  }
+
+  void
+  Canvas::canvasPaintEvent (void)
+  {
+    if (! m_redrawBlocked)
+      {
+        gh_manager::auto_lock lock;
+
+        draw (m_handle);
+
+        if ((m_mouseMode == ZoomInMode && m_mouseAxes.ok ()) || m_rectMode)
+          drawZoomBox (m_mouseAnchor, m_mouseCurrent);
+      }
+  }
+
+  static bool
+  pan_enabled (const graphics_object figObj)
+  {
+    // Getting pan mode property:
+    octave_value ov_pm
+      = Utils::properties<figure> (figObj).get___pan_mode__ ();
+
+    octave_scalar_map pm = ov_pm.scalar_map_value ();
+
+    return pm.contents ("Enable").string_value () == "on";
+  }
+
+  static std::string
+  pan_mode (const graphics_object figObj)
+  {
+    // Getting pan mode property:
+    octave_value ov_pm
+      = Utils::properties<figure> (figObj).get___pan_mode__ ();
+
+    octave_scalar_map pm = ov_pm.scalar_map_value ();
+
+    return pm.contents ("Motion").string_value ();
+  }
+
+  static bool
+  zoom_enabled (const graphics_object figObj)
+  {
+    // Getting zoom mode property:
+    octave_value ov_zm
+      = Utils::properties<figure> (figObj).get___zoom_mode__ ();
+
+    octave_scalar_map zm = ov_zm.scalar_map_value ();
+
+    return zm.contents ("Enable").string_value () == "on";
+  }
+
+  static std::string
+  zoom_mode (const graphics_object figObj)
+  {
+    // Getting zoom mode property:
+    octave_value ov_zm
+      = Utils::properties<figure> (figObj).get___zoom_mode__ ();
+
+    octave_scalar_map zm = ov_zm.scalar_map_value ();
+
+    return zm.contents ("Motion").string_value ();
+  }
+
+  void
+  Canvas::select_object (graphics_object obj, QMouseEvent* event,
+                         graphics_object &currentObj, graphics_object &axesObj,
+                         bool axes_only)
+  {
+    QList<graphics_object> axesList;
+    Matrix children = obj.get_properties ().get_all_children ();
+    octave_idx_type num_children = children.numel ();
+
+    for (int i = 0; i < num_children; i++)
+      {
+        graphics_object childObj (gh_manager::get_object (children(i)));
+
+        if (childObj.isa ("axes"))
+          axesList.append (childObj);
+        else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel")
+                 || childObj.isa ("uibuttongroup"))
+          {
+            Matrix bb = childObj.get_properties ().get_boundingbox (false);
+            QRectF r (bb(0), bb(1), bb(2), bb(3));
+
+            r.adjust (-5, -5, 5, 5);
 
 #if (HAVE_QT4)
-          bool rect_contains_pos = r.contains (event->posF ());
+            bool rect_contains_pos = r.contains (event->posF ());
 #else
-          bool rect_contains_pos = r.contains (event->localPos ());
+            bool rect_contains_pos = r.contains (event->localPos ());
 #endif
-          if (rect_contains_pos)
-            {
-              currentObj = childObj;
-              break;
-            }
-        }
-    }
+            if (rect_contains_pos)
+              {
+                currentObj = childObj;
+                break;
+              }
+          }
+      }
 
-  if (axes_only)
-    {
-      QPoint pt = event->pos ();
+    if (axes_only)
+      {
+        QPoint pt = event->pos ();
 
-      for (QList<graphics_object>::ConstIterator it = axesList.begin ();
-           it != axesList.end (); ++it)
-        {
-          const axes::properties& ap =
-            dynamic_cast<const axes::properties&> ((*it).get_properties ());
+        for (QList<graphics_object>::ConstIterator it = axesList.begin ();
+             it != axesList.end (); ++it)
+          {
+            const axes::properties& ap =
+              dynamic_cast<const axes::properties&> ((*it).get_properties ());
 
-          ColumnVector p0 = ap.pixel2coord (pt.x (), pt.y ());
-          Matrix xlim = ap.get_xlim ().matrix_value ();
-          Matrix ylim = ap.get_ylim ().matrix_value ();
+            ColumnVector p0 = ap.pixel2coord (pt.x (), pt.y ());
+            Matrix xlim = ap.get_xlim ().matrix_value ();
+            Matrix ylim = ap.get_ylim ().matrix_value ();
 
-          if (xlim(0) < p0(0) && xlim(1) > p0(0)
-              && ylim(0) < p0(1) && ylim(1) > p0(1))
-            {
-              axesObj = *it;
-              return;
-            }
-        }
-    }
-  else if (! currentObj)
-    {
-      for (QList<graphics_object>::ConstIterator it = axesList.begin ();
-           it != axesList.end (); ++it)
-        {
-          graphics_object go = selectFromAxes (*it, event->pos ());
+            if (xlim(0) < p0(0) && xlim(1) > p0(0)
+                && ylim(0) < p0(1) && ylim(1) > p0(1))
+              {
+                axesObj = *it;
+                return;
+              }
+          }
+      }
+    else if (! currentObj)
+      {
+        for (QList<graphics_object>::ConstIterator it = axesList.begin ();
+             it != axesList.end (); ++it)
+          {
+            graphics_object go = selectFromAxes (*it, event->pos ());
 
-          if (go)
-            {
-              currentObj = go;
-              axesObj = *it;
-            }
-          // FIXME: is this really necessary? the axes object should
-          //        have been selected through selectFromAxes anyway
-          else if (it->get_properties ().is_hittest ())
-            {
-              Matrix bb = it->get_properties ().get_boundingbox (true);
-              QRectF r (bb(0), bb(1), bb(2), bb(3));
+            if (go)
+              {
+                currentObj = go;
+                axesObj = *it;
+              }
+            // FIXME: is this really necessary? the axes object should
+            //        have been selected through selectFromAxes anyway
+            else if (it->get_properties ().is_hittest ())
+              {
+                Matrix bb = it->get_properties ().get_boundingbox (true);
+                QRectF r (bb(0), bb(1), bb(2), bb(3));
 
 #if defined (HAVE_QT4)
-              bool rect_contains_pos = r.contains (event->posF ());
+                bool rect_contains_pos = r.contains (event->posF ());
 #else
-              bool rect_contains_pos = r.contains (event->localPos ());
+                bool rect_contains_pos = r.contains (event->localPos ());
 #endif
-              if (rect_contains_pos)
-                axesObj = *it;
-            }
+                if (rect_contains_pos)
+                  axesObj = *it;
+              }
 
-          if (axesObj && currentObj)
+            if (axesObj && currentObj)
+              break;
+          }
+      }
+  }
+
+  void
+  Canvas::canvasMouseMoveEvent (QMouseEvent* event)
+  {
+    gh_manager::auto_lock lock;
+    graphics_object ax = gh_manager::get_object (m_mouseAxes);
+
+    if (m_mouseMode != NoMode && (ax.valid_object () || m_mouseMode == TextMode))
+      {
+        switch (m_mouseMode)
+          {
+          case RotateMode:
+            {
+              axes::properties& ap = Utils::properties<axes> (ax);
+
+              ap.rotate3d (m_mouseCurrent.x (), event->x (),
+                           m_mouseCurrent.y (), event->y ());
+
+              // Update current mouse position
+              m_mouseCurrent = event->pos ();
+
+              // Force immediate redraw
+              redraw (true);
+            }
             break;
-        }
-    }
-}
-
-void
-Canvas::canvasMouseMoveEvent (QMouseEvent* event)
-{
-  gh_manager::auto_lock lock;
-  graphics_object ax = gh_manager::get_object (m_mouseAxes);
-
-  if (m_mouseMode != NoMode && (ax.valid_object () || m_mouseMode == TextMode))
-    {
-      switch (m_mouseMode)
-        {
-        case RotateMode:
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            ap.rotate3d (m_mouseCurrent.x (), event->x (),
-                         m_mouseCurrent.y (), event->y ());
-
-            // Update current mouse position
+          case TextMode:
+          case ZoomInMode:
+          case ZoomOutMode:
             m_mouseCurrent = event->pos ();
-
-            // Force immediate redraw
             redraw (true);
-          }
-          break;
-        case TextMode:
-        case ZoomInMode:
-        case ZoomOutMode:
-          m_mouseCurrent = event->pos ();
-          redraw (true);
-          break;
+            break;
 
-        case PanMode:
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            graphics_object figObj (ax.get_ancestor ("figure"));
-
-            std::string mode = pan_mode (figObj);
-
-            ColumnVector p0 = ap.pixel2coord (m_mouseCurrent.x (),
-                                              m_mouseCurrent.y ());
-            ColumnVector p1 = ap.pixel2coord (event->x (),
-                                              event->y ());
-
-            ap.translate_view (mode, p0(0), p1(0), p0(1), p1(1));
-
-            // Update current mouse position
-            m_mouseCurrent = event->pos ();
-
-            // Force immediate redraw
-            redraw (true);
-          }
-
-        default:
-          break;
-        }
-    }
-  else if (m_mouseMode == NoMode)
-    {
-      graphics_object obj = gh_manager::get_object (m_handle);
-
-      if (obj.valid_object ())
-        {
-          graphics_object figObj (obj.get_ancestor ("figure"));
-
-          if (figObj.valid_object () &&
-              ! figObj.get ("windowbuttonmotionfcn").is_empty ())
+          case PanMode:
             {
-              updateCurrentPoint (figObj, obj, event);
-              gh_manager::post_callback (figObj.get_handle (),
-                                         "windowbuttonmotionfcn");
+              axes::properties& ap = Utils::properties<axes> (ax);
+
+              graphics_object figObj (ax.get_ancestor ("figure"));
+
+              std::string mode = pan_mode (figObj);
+
+              ColumnVector p0 = ap.pixel2coord (m_mouseCurrent.x (),
+                                                m_mouseCurrent.y ());
+              ColumnVector p1 = ap.pixel2coord (event->x (),
+                                                event->y ());
+
+              ap.translate_view (mode, p0(0), p1(0), p0(1), p1(1));
+
+              // Update current mouse position
+              m_mouseCurrent = event->pos ();
+
+              // Force immediate redraw
+              redraw (true);
             }
-        }
-    }
 
-  // Update mouse coordinates in the figure window status bar
-  graphics_object obj = gh_manager::get_object (m_handle);
-  graphics_object figObj = obj.get_ancestor ("figure");
+          default:
+            break;
+          }
+      }
+    else if (m_mouseMode == NoMode)
+      {
+        graphics_object obj = gh_manager::get_object (m_handle);
 
-  if (figObj.valid_object () && obj.valid_object ())
-    {
-      graphics_object currentObj, axesObj;
-      select_object (obj, event, currentObj, axesObj, true);
+        if (obj.valid_object ())
+          {
+            graphics_object figObj (obj.get_ancestor ("figure"));
 
-      if (axesObj.valid_object ())
-        {
-          // FIXME: should we use signal/slot mechanism instead of
-          //        directly calling parent fig methods
-          Figure* fig =
-            dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
-          axes::properties& ap = Utils::properties<axes> (axesObj);
+            if (figObj.valid_object () &&
+                ! figObj.get ("windowbuttonmotionfcn").is_empty ())
+              {
+                updateCurrentPoint (figObj, obj, event);
+                gh_manager::post_callback (figObj.get_handle (),
+                                           "windowbuttonmotionfcn");
+              }
+          }
+      }
 
-          if (fig)
-            fig->updateStatusBar (ap.pixel2coord (event->x (), event->y ()));
-        }
-    }
-}
+    // Update mouse coordinates in the figure window status bar
+    graphics_object obj = gh_manager::get_object (m_handle);
+    graphics_object figObj = obj.get_ancestor ("figure");
 
-void
-Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
-{
-  // same processing as normal click, but event type is MouseButtonDblClick
-  canvasMousePressEvent (event);
-}
+    if (figObj.valid_object () && obj.valid_object ())
+      {
+        graphics_object currentObj, axesObj;
+        select_object (obj, event, currentObj, axesObj, true);
 
-static double
-button_number (QMouseEvent *event)
-{
-  double retval = 0;
+        if (axesObj.valid_object ())
+          {
+            // FIXME: should we use signal/slot mechanism instead of
+            //        directly calling parent fig methods
+            Figure* fig =
+              dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+            axes::properties& ap = Utils::properties<axes> (axesObj);
 
-  switch (event->button ())
-    {
-    case Qt::LeftButton:
-      retval = 1;
-      break;
+            if (fig)
+              fig->updateStatusBar (ap.pixel2coord (event->x (), event->y ()));
+          }
+      }
+  }
 
-    case Qt::MidButton:
-      retval = 2;
-      break;
+  void
+  Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
+  {
+    // same processing as normal click, but event type is MouseButtonDblClick
+    canvasMousePressEvent (event);
+  }
 
-    case Qt::RightButton:
-      retval = 3;
-      break;
+  static double
+  button_number (QMouseEvent *event)
+  {
+    double retval = 0;
 
-    default:
-      break;
-    }
+    switch (event->button ())
+      {
+      case Qt::LeftButton:
+        retval = 1;
+        break;
 
-  return retval;
-}
+      case Qt::MidButton:
+        retval = 2;
+        break;
 
-void
-Canvas::canvasMousePressEvent (QMouseEvent* event)
-{
-  gh_manager::auto_lock lock;
-  graphics_object obj = gh_manager::get_object (m_handle);
+      case Qt::RightButton:
+        retval = 3;
+        break;
 
-  bool isdblclick = (event->type () == QEvent::MouseButtonDblClick);
+      default:
+        break;
+      }
 
-  if (obj.valid_object ())
-    {
-      graphics_object figObj (obj.get_ancestor ("figure"));
-      graphics_object currentObj, axesObj;
+    return retval;
+  }
 
-      select_object (obj, event, currentObj, axesObj);
+  void
+  Canvas::canvasMousePressEvent (QMouseEvent* event)
+  {
+    gh_manager::auto_lock lock;
+    graphics_object obj = gh_manager::get_object (m_handle);
 
-      if (axesObj)
-        {
-              if (axesObj.get_properties ().handlevisibility_is ("on")
-                  && axesObj.get_properties ().get_tag () != "legend"
-                  && axesObj.get_properties ().get_tag () != "colorbar")
-            Utils::properties<figure> (figObj)
+    bool isdblclick = (event->type () == QEvent::MouseButtonDblClick);
+
+    if (obj.valid_object ())
+      {
+        graphics_object figObj (obj.get_ancestor ("figure"));
+        graphics_object currentObj, axesObj;
+
+        select_object (obj, event, currentObj, axesObj);
+
+        if (axesObj)
+          {
+            if (axesObj.get_properties ().handlevisibility_is ("on")
+                && axesObj.get_properties ().get_tag () != "legend"
+                && axesObj.get_properties ().get_tag () != "colorbar")
+              Utils::properties<figure> (figObj)
               .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-          if (! currentObj)
-            currentObj = axesObj;
-        }
+            if (! currentObj)
+              currentObj = axesObj;
+          }
 
-      if (! currentObj)
-        currentObj = obj;
+        if (! currentObj)
+          currentObj = obj;
 
-      if (currentObj.get_properties ().handlevisibility_is ("on"))
-        Utils::properties<figure> (figObj)
+        if (currentObj.get_properties ().handlevisibility_is ("on"))
+          Utils::properties<figure> (figObj)
           .set_currentobject (currentObj.get_handle ().as_octave_value ());
-      else
-        Utils::properties<figure> (figObj).set_currentobject (octave::numeric_limits<double>::NaN ());
+        else
+          Utils::properties<figure> (figObj).set_currentobject (
+            octave::numeric_limits<double>::NaN ());
 
-      Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+        Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
 
-      MouseMode newMouseMode = NoMode;
+        MouseMode newMouseMode = NoMode;
 
-      if (fig)
-        newMouseMode = fig->mouseMode ();
+        if (fig)
+          newMouseMode = fig->mouseMode ();
 
-      switch (newMouseMode)
-        {
-        case NoMode:
-          gh_manager::post_set (figObj.get_handle (), "selectiontype",
-                                Utils::figureSelectionType (event, isdblclick), false);
+        switch (newMouseMode)
+          {
+          case NoMode:
+            gh_manager::post_set (figObj.get_handle (), "selectiontype",
+                                  Utils::figureSelectionType (event, isdblclick), false);
 
-          updateCurrentPoint (figObj, obj, event);
+            updateCurrentPoint (figObj, obj, event);
 
-          gh_manager::post_callback (figObj.get_handle (),
-                                     "windowbuttondownfcn",
-                                     button_number (event));
-
-          if (currentObj.get ("buttondownfcn").is_empty ())
-            {
-              graphics_object parentObj =
-                gh_manager::get_object (currentObj.get_parent ());
-
-              if (parentObj.valid_object () && parentObj.isa ("hggroup"))
-                gh_manager::post_callback (parentObj.get_handle (),
-                                           "buttondownfcn",
-                                           button_number (event));
-            }
-          else
-            gh_manager::post_callback (currentObj.get_handle (),
-                                       "buttondownfcn",
+            gh_manager::post_callback (figObj.get_handle (),
+                                       "windowbuttondownfcn",
                                        button_number (event));
 
-          if (event->button () == Qt::RightButton)
-            ContextMenu::executeAt (currentObj.get_properties (),
-                                    event->globalPos ());
-          break;
-
-        case TextMode:
-          {
-            if (event->modifiers () == Qt::NoModifier)
+            if (currentObj.get ("buttondownfcn").is_empty ())
               {
-                switch (event->buttons ())
-                  {
-                  case Qt::LeftButton:
-                    m_mouseAnchor = m_mouseCurrent = event->pos ();
-                    m_mouseMode = newMouseMode;
-                    m_rectMode = true;
-                  }
+                graphics_object parentObj =
+                  gh_manager::get_object (currentObj.get_parent ());
+
+                if (parentObj.valid_object () && parentObj.isa ("hggroup"))
+                  gh_manager::post_callback (parentObj.get_handle (),
+                                             "buttondownfcn",
+                                             button_number (event));
               }
-            redraw (false);
-          }
-          break;
+            else
+              gh_manager::post_callback (currentObj.get_handle (),
+                                         "buttondownfcn",
+                                         button_number (event));
 
-        case PanMode:
-        case RotateMode:
-        case ZoomInMode:
-        case ZoomOutMode:
-          if (axesObj && axesObj.get_properties ().handlevisibility_is ("on"))
+            if (event->button () == Qt::RightButton)
+              ContextMenu::executeAt (currentObj.get_properties (),
+                                      event->globalPos ());
+            break;
+
+          case TextMode:
             {
-              bool redraw_figure = true;
-
-              if (isdblclick)
-                {
-                  if (event->button () == Qt::LeftButton)
-                    {
-                      axes::properties& ap = Utils::properties<axes> (axesObj);
-
-                      autoscale_axes (ap);
-                    }
-                  else
-                    {
-                      redraw_figure = false;
-                    }
-                }
-              else if (event->modifiers () == Qt::NoModifier)
+              if (event->modifiers () == Qt::NoModifier)
                 {
                   switch (event->buttons ())
                     {
                     case Qt::LeftButton:
                       m_mouseAnchor = m_mouseCurrent = event->pos ();
-                      m_mouseAxes = axesObj.get_handle ();
                       m_mouseMode = newMouseMode;
-                      m_clickMode = newMouseMode == ZoomInMode;
-                      break;
+                      m_rectMode = true;
+                    }
+                }
+              redraw (false);
+            }
+            break;
 
-                    case Qt::RightButton:
-                      if (newMouseMode == ZoomInMode)
-                        {
-                          m_mouseAnchor = m_mouseCurrent = event->pos ();
-                          m_mouseAxes = axesObj.get_handle ();
-                          m_mouseMode = newMouseMode;
-                          m_clickMode = false;
-                        }
+          case PanMode:
+          case RotateMode:
+          case ZoomInMode:
+          case ZoomOutMode:
+            if (axesObj && axesObj.get_properties ().handlevisibility_is ("on"))
+              {
+                bool redraw_figure = true;
 
-                      break;
+                if (isdblclick)
+                  {
+                    if (event->button () == Qt::LeftButton)
+                      {
+                        axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                    case Qt::MidButton:
+                        autoscale_axes (ap);
+                      }
+                    else
+                      {
+                        redraw_figure = false;
+                      }
+                  }
+                else if (event->modifiers () == Qt::NoModifier)
+                  {
+                    switch (event->buttons ())
+                      {
+                      case Qt::LeftButton:
+                        m_mouseAnchor = m_mouseCurrent = event->pos ();
+                        m_mouseAxes = axesObj.get_handle ();
+                        m_mouseMode = newMouseMode;
+                        m_clickMode = newMouseMode == ZoomInMode;
+                        break;
+
+                      case Qt::RightButton:
+                        if (newMouseMode == ZoomInMode)
+                          {
+                            m_mouseAnchor = m_mouseCurrent = event->pos ();
+                            m_mouseAxes = axesObj.get_handle ();
+                            m_mouseMode = newMouseMode;
+                            m_clickMode = false;
+                          }
+
+                        break;
+
+                      case Qt::MidButton:
                         {
                           axes::properties& ap =
                             Utils::properties<axes> (axesObj);
 
                           autoscale_axes (ap);
                         }
-                      break;
+                        break;
 
-                    default:
-                      redraw_figure = false;
-                      break;
-                    }
-                }
-              else if (event->modifiers () == Qt::ShiftModifier)
-                {
-                  switch (event->buttons ())
-                    {
-                    case Qt::LeftButton:
-                      if (newMouseMode == ZoomInMode)
-                        {
-                          m_mouseAnchor = m_mouseCurrent = event->pos ();
-                          m_mouseAxes = axesObj.get_handle ();
-                          m_mouseMode = newMouseMode;
-                          m_clickMode = false;
-                        }
-                      break;
+                      default:
+                        redraw_figure = false;
+                        break;
+                      }
+                  }
+                else if (event->modifiers () == Qt::ShiftModifier)
+                  {
+                    switch (event->buttons ())
+                      {
+                      case Qt::LeftButton:
+                        if (newMouseMode == ZoomInMode)
+                          {
+                            m_mouseAnchor = m_mouseCurrent = event->pos ();
+                            m_mouseAxes = axesObj.get_handle ();
+                            m_mouseMode = newMouseMode;
+                            m_clickMode = false;
+                          }
+                        break;
 
-                    default:
-                      redraw_figure = false;
-                      break;
-                    }
-                }
+                      default:
+                        redraw_figure = false;
+                        break;
+                      }
+                  }
 
-              if (redraw_figure)
-                redraw (false);
-            }
-          break;
+                if (redraw_figure)
+                  redraw (false);
+              }
+            break;
 
-        default:
-          break;
-        }
-    }
+          default:
+            break;
+          }
+      }
 
-}
+  }
 
-void
-Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
-{
-  if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
-      && m_mouseAxes.ok ())
-    {
-      gh_manager::auto_lock lock;
-      graphics_object ax = gh_manager::get_object (m_mouseAxes);
+  void
+  Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
+  {
+    if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
+        && m_mouseAxes.ok ())
+      {
+        gh_manager::auto_lock lock;
+        graphics_object ax = gh_manager::get_object (m_mouseAxes);
 
-      if (ax.valid_object ())
-        {
-          axes::properties& ap = Utils::properties<axes> (ax);
+        if (ax.valid_object ())
+          {
+            axes::properties& ap = Utils::properties<axes> (ax);
 
-          graphics_object obj = gh_manager::get_object (m_handle);
+            graphics_object obj = gh_manager::get_object (m_handle);
 
-          graphics_object figObj (obj.get_ancestor ("figure"));
+            graphics_object figObj (obj.get_ancestor ("figure"));
 
-          std::string zm = zoom_mode (figObj);
+            std::string zm = zoom_mode (figObj);
 
-          if (m_mouseAnchor == event->pos ())
-            {
-              double factor = m_clickMode ? 2.0 : 0.5;
+            if (m_mouseAnchor == event->pos ())
+              {
+                double factor = m_clickMode ? 2.0 : 0.5;
 
-              ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
+                ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
 
-              ap.zoom_about_point (zm, p1(0), p1(1), factor);
-            }
-          else if (m_mouseMode == ZoomInMode)
-            {
-              ColumnVector p0 = ap.pixel2coord (m_mouseAnchor.x (),
-                                                m_mouseAnchor.y ());
-              ColumnVector p1 = ap.pixel2coord (event->x (),
-                                                event->y ());
+                ap.zoom_about_point (zm, p1(0), p1(1), factor);
+              }
+            else if (m_mouseMode == ZoomInMode)
+              {
+                ColumnVector p0 = ap.pixel2coord (m_mouseAnchor.x (),
+                                                  m_mouseAnchor.y ());
+                ColumnVector p1 = ap.pixel2coord (event->x (),
+                                                  event->y ());
 
-              Matrix xl (1, 2, 0.0);
-              Matrix yl (1, 2, 0.0);
+                Matrix xl (1, 2, 0.0);
+                Matrix yl (1, 2, 0.0);
 
-              xl(0) = std::min (p0(0), p1(0));
-              xl(1) = std::max (p0(0), p1(0));
-              yl(0) = std::min (p0(1), p1(1));
-              yl(1) = std::max (p0(1), p1(1));
+                xl(0) = std::min (p0(0), p1(0));
+                xl(1) = std::max (p0(0), p1(0));
+                yl(0) = std::min (p0(1), p1(1));
+                yl(1) = std::max (p0(1), p1(1));
 
-              ap.zoom (zm, xl, yl);
-            }
+                ap.zoom (zm, xl, yl);
+              }
 
-          redraw (false);
-        }
-    }
-  else if (m_mouseMode == NoMode)
-    {
-      gh_manager::auto_lock lock;
-      graphics_object obj = gh_manager::get_object (m_handle);
+            redraw (false);
+          }
+      }
+    else if (m_mouseMode == NoMode)
+      {
+        gh_manager::auto_lock lock;
+        graphics_object obj = gh_manager::get_object (m_handle);
 
-      if (obj.valid_object ())
-        {
-          graphics_object figObj (obj.get_ancestor ("figure"));
+        if (obj.valid_object ())
+          {
+            graphics_object figObj (obj.get_ancestor ("figure"));
 
-          updateCurrentPoint (figObj, obj, event);
-          gh_manager::post_callback (figObj.get_handle (),
-                                     "windowbuttonupfcn");
-        }
-    }
-  else if (m_mouseMode == TextMode)
-    {
-      gh_manager::auto_lock lock;
+            updateCurrentPoint (figObj, obj, event);
+            gh_manager::post_callback (figObj.get_handle (),
+                                       "windowbuttonupfcn");
+          }
+      }
+    else if (m_mouseMode == TextMode)
+      {
+        gh_manager::auto_lock lock;
 
-      graphics_object figObj =
-        gh_manager::get_object (m_handle).get_ancestor ("figure");
-      if (figObj.valid_object ())
-        {
-          QWidget *w = qWidget ();
-          if (w)
-            {
-              Matrix bb = figObj.get ("position").matrix_value ();
-              bb(0) = m_mouseAnchor.x () / bb(2);
-              bb(1) = 1.0 - (m_mouseAnchor.y () / bb(3));
-              bb(2) = (event->x () - m_mouseAnchor.x ()) / bb(2);
-              bb(3) = (m_mouseAnchor.y () - event->y ()) / bb(3);
+        graphics_object figObj =
+          gh_manager::get_object (m_handle).get_ancestor ("figure");
+        if (figObj.valid_object ())
+          {
+            QWidget *w = qWidget ();
+            if (w)
+              {
+                Matrix bb = figObj.get ("position").matrix_value ();
+                bb(0) = m_mouseAnchor.x () / bb(2);
+                bb(1) = 1.0 - (m_mouseAnchor.y () / bb(3));
+                bb(2) = (event->x () - m_mouseAnchor.x ()) / bb(2);
+                bb(3) = (m_mouseAnchor.y () - event->y ()) / bb(3);
 
-              octave_value_list props = ovl ("textbox", bb);
+                octave_value_list props = ovl ("textbox", bb);
 
-              annotation_dialog anno_dlg (w, props);
+                annotation_dialog anno_dlg (w, props);
 
-              if (anno_dlg.exec () == QDialog::Accepted)
-                {
-                  props = anno_dlg.get_properties ();
-                  props.prepend (figObj.get_handle ().as_octave_value ());
+                if (anno_dlg.exec () == QDialog::Accepted)
+                  {
+                    props = anno_dlg.get_properties ();
+                    props.prepend (figObj.get_handle ().as_octave_value ());
 
-                  octave_link::post_event (this, &Canvas::annotation_callback,
-                                           props);
-                }
-            }
-        }
-    }
-  m_rectMode = false;
-  m_mouseAxes = graphics_handle ();
-  m_mouseMode = NoMode;
-}
+                    octave_link::post_event (this, &Canvas::annotation_callback,
+                                             props);
+                  }
+              }
+          }
+      }
+    m_rectMode = false;
+    m_mouseAxes = graphics_handle ();
+    m_mouseMode = NoMode;
+  }
 
-void
-Canvas::canvasWheelEvent (QWheelEvent* event)
-{
-  gh_manager::auto_lock lock;
-  graphics_object obj = gh_manager::get_object (m_handle);
+  void
+  Canvas::canvasWheelEvent (QWheelEvent* event)
+  {
+    gh_manager::auto_lock lock;
+    graphics_object obj = gh_manager::get_object (m_handle);
 
-  if (obj.valid_object ())
-    {
-      std::string mode;
+    if (obj.valid_object ())
+      {
+        std::string mode;
 
-      graphics_object axesObj;
+        graphics_object axesObj;
 
-      Matrix children = obj.get_properties ().get_children ();
-      octave_idx_type num_children = children.numel ();
+        Matrix children = obj.get_properties ().get_children ();
+        octave_idx_type num_children = children.numel ();
 
-      for (int i = 0; i < num_children; i++)
-        {
-          graphics_object childObj (gh_manager::get_object (children(i)));
+        for (int i = 0; i < num_children; i++)
+          {
+            graphics_object childObj (gh_manager::get_object (children(i)));
 
-          if (childObj.isa ("axes"))
-            {
-              graphics_object go = selectFromAxes (childObj, event->pos ());
+            if (childObj.isa ("axes"))
+              {
+                graphics_object go = selectFromAxes (childObj, event->pos ());
 
-              if (go)
-                {
-                  axesObj = childObj;
-                  break;
-                }
-            }
-        }
+                if (go)
+                  {
+                    axesObj = childObj;
+                    break;
+                  }
+              }
+          }
 
-      if (axesObj)
-        {
-          MouseMode newMouseMode = NoMode;
+        if (axesObj)
+          {
+            MouseMode newMouseMode = NoMode;
 
-          graphics_object figObj (obj.get_ancestor ("figure"));
+            graphics_object figObj (obj.get_ancestor ("figure"));
 
-          Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+            Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
 
-          if (fig)
-            newMouseMode = fig->mouseMode ();
+            if (fig)
+              newMouseMode = fig->mouseMode ();
 
-          if (axesObj.get_properties ().handlevisibility_is ("on"))
-            {
-              Utils::properties<figure> (figObj)
+            if (axesObj.get_properties ().handlevisibility_is ("on"))
+              {
+                Utils::properties<figure> (figObj)
                 .set_currentaxes (axesObj.get_handle ().as_octave_value ());
 
-              if (zoom_enabled (figObj))
-                {
-                  if (event->delta () > 0)
-                    newMouseMode = ZoomInMode;
-                  else
-                    newMouseMode = ZoomOutMode;
+                if (zoom_enabled (figObj))
+                  {
+                    if (event->delta () > 0)
+                      newMouseMode = ZoomInMode;
+                    else
+                      newMouseMode = ZoomOutMode;
 
-                  mode = zoom_mode (figObj);
-                }
-              else if (pan_enabled (figObj))
-                {
-                  newMouseMode = PanMode;
+                    mode = zoom_mode (figObj);
+                  }
+                else if (pan_enabled (figObj))
+                  {
+                    newMouseMode = PanMode;
 
-                  mode = pan_mode (figObj);
-                }
-            }
-
-          bool redrawFigure = true;
-
-          switch (newMouseMode)
-            {
-            case ZoomInMode:
-            case ZoomOutMode:
-              {
-                axes::properties& ap = Utils::properties<axes> (axesObj);
-
-                // Control how fast to zoom when using scroll wheel.
-                double wheel_zoom_speed = ap.get_mousewheelzoom ();
-
-                // Determine if we're zooming in or out.
-                double factor = (newMouseMode == ZoomInMode
-                                 ? 1 / (1.0 - wheel_zoom_speed)
-                                 : 1.0 - wheel_zoom_speed);
-
-                // FIXME: should we zoom about point for 2D plots?
-
-                ap.zoom (mode, factor);
+                    mode = pan_mode (figObj);
+                  }
               }
-              break;
 
-            case PanMode:
+            bool redrawFigure = true;
+
+            switch (newMouseMode)
               {
-                axes::properties& ap = Utils::properties<axes> (axesObj);
+              case ZoomInMode:
+              case ZoomOutMode:
+                {
+                  axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                double factor = event->delta () > 0 ? 0.1 : -0.1;
+                  // Control how fast to zoom when using scroll wheel.
+                  double wheel_zoom_speed = ap.get_mousewheelzoom ();
 
-                ap.pan (mode, factor);
+                  // Determine if we're zooming in or out.
+                  double factor = (newMouseMode == ZoomInMode
+                                   ? 1 / (1.0 - wheel_zoom_speed)
+                                   : 1.0 - wheel_zoom_speed);
+
+                  // FIXME: should we zoom about point for 2D plots?
+
+                  ap.zoom (mode, factor);
+                }
+                break;
+
+              case PanMode:
+                {
+                  axes::properties& ap = Utils::properties<axes> (axesObj);
+
+                  double factor = event->delta () > 0 ? 0.1 : -0.1;
+
+                  ap.pan (mode, factor);
+                }
+                break;
+
+              default:
+                redrawFigure = false;
+                break;
               }
-              break;
 
-            default:
-              redrawFigure = false;
-              break;
-            }
+            if (redrawFigure)
+              redraw (false);
+          }
+      }
+  }
 
-          if (redrawFigure)
-            redraw (false);
-        }
-    }
-}
+  bool
+  Canvas::canvasKeyPressEvent (QKeyEvent* event)
+  {
+    if (m_eventMask & KeyPress)
+      {
+        gh_manager::auto_lock lock;
+        graphics_object obj = gh_manager::get_object (m_handle);
 
-bool
-Canvas::canvasKeyPressEvent (QKeyEvent* event)
-{
-  if (m_eventMask & KeyPress)
-    {
-      gh_manager::auto_lock lock;
-      graphics_object obj = gh_manager::get_object (m_handle);
+        if (obj.valid_object ())
+          {
+            graphics_object figObj (obj.get_ancestor ("figure"));
 
-      if (obj.valid_object ())
-        {
-          graphics_object figObj (obj.get_ancestor ("figure"));
+            updateCurrentPoint (figObj, obj);
+          }
 
-          updateCurrentPoint (figObj, obj);
-        }
+        octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
 
-      octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
+        gh_manager::post_set (m_handle, "currentcharacter",
+                              eventData.getfield ("Character"), false);
+        gh_manager::post_callback (m_handle, "keypressfcn", eventData);
 
-      gh_manager::post_set (m_handle, "currentcharacter",
-                            eventData.getfield ("Character"), false);
-      gh_manager::post_callback (m_handle, "keypressfcn", eventData);
+        return true;
+      }
 
-      return true;
-    }
+    return false;
+  }
 
-  return false;
-}
+  bool
+  Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
+  {
+    if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
+      {
+        gh_manager::post_callback (m_handle, "keyreleasefcn",
+                                   Utils::makeKeyEventStruct (event));
 
-bool
-Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
-{
-  if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
-    {
-      gh_manager::post_callback (m_handle, "keyreleasefcn",
-                                 Utils::makeKeyEventStruct (event));
+        return true;
+      }
 
-      return true;
-    }
+    return false;
+  }
 
-  return false;
-}
-
-Canvas*
-Canvas::create (const std::string& /* name */, QWidget* parent,
-                const graphics_handle& handle)
-{
-  // Only OpenGL
-  return new GLCanvas (parent, handle);
-}
+  Canvas*
+  Canvas::create (const std::string& /* name */, QWidget* parent,
+                  const graphics_handle& handle)
+  {
+    // Only OpenGL
+    return new GLCanvas (parent, handle);
+  }
 
 }; // namespace QtHandles
+

@@ -33,107 +33,108 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ContextMenu*
-ContextMenu::create (const graphics_object& go)
-{
-  Object* xparent = Object::parentObject (go);
+  ContextMenu*
+  ContextMenu::create (const graphics_object& go)
+  {
+    Object* xparent = Object::parentObject (go);
 
-  if (xparent)
-    {
-      QWidget* w = xparent->qWidget<QWidget> ();
+    if (xparent)
+      {
+        QWidget* w = xparent->qWidget<QWidget> ();
 
-      return new ContextMenu (go, new QMenu (w));
-    }
+        return new ContextMenu (go, new QMenu (w));
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-ContextMenu::ContextMenu (const graphics_object& go, QMenu* xmenu)
+  ContextMenu::ContextMenu (const graphics_object& go, QMenu* xmenu)
     : Object (go, xmenu)
-{
-  xmenu->setAutoFillBackground (true);
+  {
+    xmenu->setAutoFillBackground (true);
 
-  connect (xmenu, SIGNAL (aboutToShow (void)), SLOT (aboutToShow (void)));
-  connect (xmenu, SIGNAL (aboutToHide (void)), SLOT (aboutToHide (void)));
-}
+    connect (xmenu, SIGNAL (aboutToShow (void)), SLOT (aboutToShow (void)));
+    connect (xmenu, SIGNAL (aboutToHide (void)), SLOT (aboutToHide (void)));
+  }
 
-ContextMenu::~ContextMenu (void)
-{
-}
+  ContextMenu::~ContextMenu (void)
+  {
+  }
 
-void
-ContextMenu::update (int pId)
-{
-  uicontextmenu::properties& up = properties<uicontextmenu> ();
-  QMenu* xmenu = qWidget<QMenu> ();
+  void
+  ContextMenu::update (int pId)
+  {
+    uicontextmenu::properties& up = properties<uicontextmenu> ();
+    QMenu* xmenu = qWidget<QMenu> ();
 
-  switch (pId)
-    {
-    case base_properties::ID_VISIBLE:
-      if (up.is_visible ())
-        {
-          Matrix pos = up.get_position ().matrix_value ();
-          QWidget* parentW = xmenu->parentWidget ();
-          QPoint pt;
+    switch (pId)
+      {
+      case base_properties::ID_VISIBLE:
+        if (up.is_visible ())
+          {
+            Matrix pos = up.get_position ().matrix_value ();
+            QWidget* parentW = xmenu->parentWidget ();
+            QPoint pt;
 
-          pt.rx () = octave::math::round (pos(0));
-          pt.ry () = parentW->height () - octave::math::round (pos(1));
-          pt = parentW->mapToGlobal (pt);
+            pt.rx () = octave::math::round (pos(0));
+            pt.ry () = parentW->height () - octave::math::round (pos(1));
+            pt = parentW->mapToGlobal (pt);
 
-          xmenu->popup (pt);
-        }
-      else
-        xmenu->hide ();
-      break;
-    default:
-      Object::update (pId);
-      break;
-    }
-}
+            xmenu->popup (pt);
+          }
+        else
+          xmenu->hide ();
+        break;
+      default:
+        Object::update (pId);
+        break;
+      }
+  }
 
-void
-ContextMenu::aboutToShow (void)
-{
-  gh_manager::post_callback (m_handle, "callback");
-  gh_manager::post_set (m_handle, "visible", "on", false);
-}
+  void
+  ContextMenu::aboutToShow (void)
+  {
+    gh_manager::post_callback (m_handle, "callback");
+    gh_manager::post_set (m_handle, "visible", "on", false);
+  }
 
-void
-ContextMenu::aboutToHide (void)
-{
-  gh_manager::post_set (m_handle, "visible", "off", false);
-}
+  void
+  ContextMenu::aboutToHide (void)
+  {
+    gh_manager::post_set (m_handle, "visible", "off", false);
+  }
 
-QWidget*
-ContextMenu::menu (void)
-{
-  return qWidget<QWidget> ();
-}
+  QWidget*
+  ContextMenu::menu (void)
+  {
+    return qWidget<QWidget> ();
+  }
 
-void
-ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
-{
-  graphics_handle h = props.get_uicontextmenu ();
+  void
+  ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
+  {
+    graphics_handle h = props.get_uicontextmenu ();
 
-  if (h.ok ())
-    {
-      gh_manager::auto_lock lock;
-      graphics_object go = gh_manager::get_object (h);
+    if (h.ok ())
+      {
+        gh_manager::auto_lock lock;
+        graphics_object go = gh_manager::get_object (h);
 
-      if (go.valid_object ())
-        {
-          ContextMenu* cMenu =
-            dynamic_cast<ContextMenu*> (Backend::toolkitObject (go));
+        if (go.valid_object ())
+          {
+            ContextMenu* cMenu =
+              dynamic_cast<ContextMenu*> (Backend::toolkitObject (go));
 
-          if (cMenu)
-            {
-              QMenu* menu = cMenu->qWidget<QMenu> ();
+            if (cMenu)
+              {
+                QMenu* menu = cMenu->qWidget<QMenu> ();
 
-              if (menu)
-                menu->popup (pt);
-            }
-        }
-    }
-}
+                if (menu)
+                  menu->popup (pt);
+              }
+          }
+      }
+  }
 
 }; // namespace QtHandles
+

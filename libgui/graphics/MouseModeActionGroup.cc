@@ -33,80 +33,81 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
-  : QObject (xparent), m_current (0)
-{
-  m_actions.append (new QAction (QIcon (":/images/rotate.png"),
-                                 tr ("Rotate"), this));
-  QAction *zoom_in = new QAction ("Z+", this);
-  zoom_in->setToolTip (tr ("Zoom In"));
-  m_actions.append (zoom_in);
+  MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
+    : QObject (xparent), m_current (0)
+  {
+    m_actions.append (new QAction (QIcon (":/images/rotate.png"),
+                                   tr ("Rotate"), this));
+    QAction *zoom_in = new QAction ("Z+", this);
+    zoom_in->setToolTip (tr ("Zoom In"));
+    m_actions.append (zoom_in);
 
-  QAction *zoom_out = new QAction ("Z-", this);
-  zoom_out->setToolTip (tr ("Zoom Out"));
-  m_actions.append (zoom_out);
+    QAction *zoom_out = new QAction ("Z-", this);
+    zoom_out->setToolTip (tr ("Zoom Out"));
+    m_actions.append (zoom_out);
 
-  m_actions.append (new QAction (QIcon (":/images/pan.png"),
-                                 tr ("Pan"), this));
-  m_actions.append (new QAction (QIcon::fromTheme ("insert-text"),
-                                 tr ("Insert Text"), this));
-  m_actions.append (new QAction (QIcon (":/images/select.png"),
-                                 tr ("Select"), this));
+    m_actions.append (new QAction (QIcon (":/images/pan.png"),
+                                   tr ("Pan"), this));
+    m_actions.append (new QAction (QIcon::fromTheme ("insert-text"),
+                                   tr ("Insert Text"), this));
+    m_actions.append (new QAction (QIcon (":/images/select.png"),
+                                   tr ("Select"), this));
 
-  foreach (QAction* a, m_actions)
+    foreach (QAction* a, m_actions)
     {
       a->setCheckable (true);
       connect (a, SIGNAL (toggled (bool)), this, SLOT (actionToggled (bool)));
     }
-}
+  }
 
-MouseModeActionGroup::~MouseModeActionGroup (void)
-{
-}
+  MouseModeActionGroup::~MouseModeActionGroup (void)
+  {
+  }
 
-void
-MouseModeActionGroup::actionToggled (bool checked)
-{
-  if (! checked)
-    {
-      if (sender () == m_current)
-        {
-          m_current = 0;
-          emit modeChanged (NoMode);
-        }
-    }
-  else
-    {
-      int i = m_actions.indexOf (qobject_cast<QAction*> (sender ()));
+  void
+  MouseModeActionGroup::actionToggled (bool checked)
+  {
+    if (! checked)
+      {
+        if (sender () == m_current)
+          {
+            m_current = 0;
+            emit modeChanged (NoMode);
+          }
+      }
+    else
+      {
+        int i = m_actions.indexOf (qobject_cast<QAction*> (sender ()));
 
-      if (i >= 0)
-        {
-          m_current = m_actions[i];
-          for (int j = 0; j < m_actions.size (); j++)
-            {
-              // SelectMode cancels all the others but the button
-              // doesn't remain highlighed.
+        if (i >= 0)
+          {
+            m_current = m_actions[i];
+            for (int j = 0; j < m_actions.size (); j++)
+              {
+                // SelectMode cancels all the others but the button
+                // doesn't remain highlighed.
 
-              if (j != i || i+1 == SelectMode)
-                m_actions[j]->setChecked (false);
-            }
+                if (j != i || i+1 == SelectMode)
+                  m_actions[j]->setChecked (false);
+              }
 
-          emit modeChanged (static_cast<MouseMode> (i+1));
-        }
-    }
-}
+            emit modeChanged (static_cast<MouseMode> (i+1));
+          }
+      }
+  }
 
-void
-MouseModeActionGroup::setMode (MouseMode mode)
-{
-  for (int i = 0; i < m_actions.size (); i++)
-    m_actions[i]->setChecked (i+1 == mode);
+  void
+  MouseModeActionGroup::setMode (MouseMode mode)
+  {
+    for (int i = 0; i < m_actions.size (); i++)
+      m_actions[i]->setChecked (i+1 == mode);
 
-  // SelectMode cancels all the others but the button doesn't remain
-  // highlighed.
+    // SelectMode cancels all the others but the button doesn't remain
+    // highlighed.
 
-  if (mode == SelectMode)
-    m_actions[SelectMode-1]->setChecked (false);
-}
+    if (mode == SelectMode)
+      m_actions[SelectMode-1]->setChecked (false);
+  }
 
 };
+

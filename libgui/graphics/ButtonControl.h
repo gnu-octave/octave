@@ -30,25 +30,26 @@ class QAbstractButton;
 namespace QtHandles
 {
 
-class ButtonControl : public BaseControl
-{
-  Q_OBJECT
+  class ButtonControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  ButtonControl (const graphics_object& go, QAbstractButton* btn);
-  ~ButtonControl (void);
+  public:
+    ButtonControl (const graphics_object& go, QAbstractButton* btn);
+    ~ButtonControl (void);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void clicked (void);
-  void toggled (bool checked);
+  private slots:
+    void clicked (void);
+    void toggled (bool checked);
 
-private:
-  bool m_blockCallback;
-};
+  private:
+    bool m_blockCallback;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

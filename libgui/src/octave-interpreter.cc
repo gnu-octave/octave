@@ -55,3 +55,4 @@ octave_interpreter::interrupt (void)
 {
   thread_manager.interrupt ();
 }
+

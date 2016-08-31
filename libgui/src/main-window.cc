@@ -196,8 +196,8 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
     }
 
   // editor needs extra handling
-  octave_dock_widget *edit_dock_widget =
-                        static_cast<octave_dock_widget *> (editor_window);
+  octave_dock_widget *edit_dock_widget
+    = static_cast<octave_dock_widget *> (editor_window);
   // if new dock has focus, emit signal and store active focus
   // except editor changes to a dialog (dock=0)
   if ((dock || _active_dock != edit_dock_widget) && (dock != _active_dock))
@@ -257,9 +257,9 @@ main_window::report_status_message (const QString& statusMessage)
 void
 main_window::handle_save_workspace_request (void)
 {
-  QString file =
-    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0,
-                                  QFileDialog::DontUseNativeDialog);
+  QString file
+    = QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0,
+                                    QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::save_workspace_callback,
@@ -651,7 +651,8 @@ void
 main_window::process_settings_dialog_request (const QString& desired_tab)
 {
   if (_settings_dlg)  // _settings_dlg is a guarded pointer!
-    {                 // here the dialog is still open and called once again
+    {
+      // here the dialog is still open and called once again
       if (! desired_tab.isEmpty ())
         _settings_dlg->show_tab (desired_tab);
       return;
@@ -741,7 +742,7 @@ main_window::notice_settings (const QSettings *settings)
       QString name = widget->objectName ();
       if (! name.isEmpty ())
         { // if children has a name
-          icon = widget_icon_data[icon_set_found].path; // prefix or octave-logo
+          icon = widget_icon_data[icon_set_found].path; // prefix | octave-logo
           if (widget_icon_data[icon_set_found].name != "NONE")
             icon += name + ".png"; // add widget name and ext.
           widget->setWindowIcon (QIcon (icon));
@@ -769,11 +770,11 @@ main_window::notice_settings (const QSettings *settings)
   else
     status_bar->hide ();
 
-  _prevent_readline_conflicts =
-    settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
+  _prevent_readline_conflicts
+    = settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
 
-  _suppress_dbg_location =
-        ! settings->value ("terminal/print_debug_location", false).toBool ();
+  _suppress_dbg_location
+    = ! settings->value ("terminal/print_debug_location", false).toBool ();
 
   resource_manager::update_network_settings ();
 
@@ -797,7 +798,9 @@ main_window::confirm_shutdown_octave (void)
         {
           int ans = QMessageBox::question (this, tr ("Octave"),
                                            tr ("Are you sure you want to exit Octave?"),
-                                           QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+                                           (QMessageBox::Ok
+                                           | QMessageBox::Cancel),
+                                           QMessageBox::Ok);
 
           if (ans != QMessageBox::Ok)
             closenow = false;
@@ -954,7 +957,8 @@ main_window::handle_exit_debugger (void)
 void
 main_window::debug_continue (void)
 {
-  octave_cmd_debug *cmd = new octave_cmd_debug ("cont", _suppress_dbg_location);
+  octave_cmd_debug *cmd
+    = new octave_cmd_debug ("cont", _suppress_dbg_location);
   _cmd_queue.add_cmd (cmd);
 }
 
@@ -968,7 +972,8 @@ main_window::debug_step_into (void)
 void
 main_window::debug_step_over (void)
 {
-  octave_cmd_debug *cmd = new octave_cmd_debug ("step", _suppress_dbg_location);
+  octave_cmd_debug *cmd
+    = new octave_cmd_debug ("step", _suppress_dbg_location);
   _cmd_queue.add_cmd (cmd);
 }
 
@@ -982,7 +987,8 @@ main_window::debug_step_out (void)
 void
 main_window::debug_quit (void)
 {
-  octave_cmd_debug *cmd = new octave_cmd_debug ("quit", _suppress_dbg_location);
+  octave_cmd_debug *cmd
+    = new octave_cmd_debug ("quit", _suppress_dbg_location);
   _cmd_queue.add_cmd (cmd);
 }
 
@@ -1104,7 +1110,8 @@ main_window::set_window_layout (QSettings *settings)
           // make widget visible if desired
           if (floating && visible)              // floating and visible
             {
-              if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())
+              if (settings->value ("DockWidgets/" + widget->objectName ()
+                                   + "_minimized").toBool ())
                 widget->showMinimized ();
               else
                 widget->setVisible (true);
@@ -1112,7 +1119,7 @@ main_window::set_window_layout (QSettings *settings)
           else
             {
               widget->make_widget ();
-              widget->setVisible (visible);       // not floating -> show
+              widget->setVisible (visible);     // not floating -> show
             }
         }
     }
@@ -1434,12 +1441,14 @@ main_window::construct (void)
       connect (this,
                SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
                editor_window,
-               SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+               SLOT (handle_insert_debugger_pointer_request (const QString&,
+                                                             int)));
 
       connect (this,
                SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
                editor_window,
-               SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+               SLOT (handle_delete_debugger_pointer_request (const QString&,
+                                                             int)));
 
       connect (this,
                SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
@@ -1448,10 +1457,11 @@ main_window::construct (void)
                SLOT (handle_update_breakpoint_marker_request (bool,
                                                               const QString&,
                                                               int,
-							      const QString&)));
+							                                                const QString&)));
 #endif
 
-      octave_link::post_event (this, &main_window::resize_command_window_callback);
+      octave_link::post_event (this,
+                               &main_window::resize_command_window_callback);
 
       configure_shortcuts ();
     }
@@ -1472,12 +1482,14 @@ main_window::handle_octave_ready ()
           // restore last dir from previous session
           QStringList curr_dirs
             = settings->value ("MainWindow/current_directory_list").toStringList ();
-          startup_dir = QDir (curr_dirs.at (0));  // last dir in previous session
+          startup_dir
+            = QDir (curr_dirs.at (0));  // last dir in previous session
         }
       else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
         {
           // do not restore but there is a startup dir configured
-          startup_dir = QDir (settings->value ("octave_startup_dir").toString ());
+          startup_dir
+            = QDir (settings->value ("octave_startup_dir").toString ());
         }
     }
 
@@ -1578,21 +1590,23 @@ main_window::construct_octave_qt_link (void)
       connect (_octave_qt_link,
                SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
                this,
-               SLOT (handle_insert_debugger_pointer_request (const QString&, int)));
+               SLOT (handle_insert_debugger_pointer_request (const QString&,
+                                                             int)));
 
       connect (_octave_qt_link,
                SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
                this,
-               SLOT (handle_delete_debugger_pointer_request (const QString&, int)));
+               SLOT (handle_delete_debugger_pointer_request (const QString&,
+                                                             int)));
 
       connect (_octave_qt_link,
                SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
-	                                                int, const QString&)),
+	                                                      int, const QString&)),
                this,
                SLOT (handle_update_breakpoint_marker_request (bool,
-	                                                      const QString&,
+	                                                            const QString&,
                                                               int,
-							      const QString&)));
+							                                                const QString&)));
 
       connect (_octave_qt_link,
                SIGNAL (show_doc_signal (const QString &)),
@@ -1810,7 +1824,7 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   _find_files_action
     = edit_menu->addAction (resource_manager::icon ("edit-find"),
-                             tr ("Find Files..."));
+                            tr ("Find Files..."));
 
   edit_menu->addSeparator ();
 
@@ -1854,7 +1868,7 @@ main_window::construct_debug_menu_item (const char *icon, const QString& item,
                                         const char *member)
 {
   QAction *action = add_action (_debug_menu,
-                                  resource_manager::icon (QString (icon)),
+                                resource_manager::icon (QString (icon)),
                                 item, member);
 
   action->setEnabled (false);
@@ -1873,20 +1887,20 @@ main_window::construct_debug_menu (QMenuBar *p)
   _debug_menu = m_add_menu (p, tr ("De&bug"));
 
   _debug_step_over = construct_debug_menu_item (
-                      "db-step", tr ("Step"),
+                       "db-step", tr ("Step"),
                        SLOT (debug_step_over ()));
 
   _debug_step_into = construct_debug_menu_item (
-                      "db-step-in", tr ("Step In"),
+                       "db-step-in", tr ("Step In"),
                        SLOT (debug_step_into ()));
 
   _debug_step_out = construct_debug_menu_item (
                       "db-step-out", tr ("Step Out"),
-                       SLOT (debug_step_out ()));
+                      SLOT (debug_step_out ()));
 
   _debug_continue = construct_debug_menu_item (
                       "db-cont", tr ("Continue"),
-                       SLOT (debug_continue ()));
+                      SLOT (debug_continue ()));
 
   _debug_menu->addSeparator ();
 #if defined (HAVE_QSCINTILLA)
@@ -1894,8 +1908,8 @@ main_window::construct_debug_menu (QMenuBar *p)
 #endif
 
   _debug_quit = construct_debug_menu_item (
-                      "db-stop", tr ("Quit Debug Mode"),
-                       SLOT (debug_quit ()));
+                  "db-stop", tr ("Quit Debug Mode"),
+                  SLOT (debug_quit ()));
 }
 
 QAction *

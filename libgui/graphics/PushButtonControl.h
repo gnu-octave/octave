@@ -30,18 +30,19 @@ class QPushButton;
 namespace QtHandles
 {
 
-class PushButtonControl : public ButtonControl
-{
-public:
-  PushButtonControl (const graphics_object& go, QPushButton* btn);
-  ~PushButtonControl (void);
+  class PushButtonControl : public ButtonControl
+  {
+  public:
+    PushButtonControl (const graphics_object& go, QPushButton* btn);
+    ~PushButtonControl (void);
 
-  static PushButtonControl* create (const graphics_object& go);
+    static PushButtonControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
-};
+  protected:
+    void update (int pId);
+  };
 
 }; // namespace QtHandles
 
 #endif
+

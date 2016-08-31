@@ -66,7 +66,7 @@ shortcut_manager::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-      instance = new shortcut_manager ();
+    instance = new shortcut_manager ();
 
   if (! instance)
     {
@@ -310,9 +310,9 @@ shortcut_manager::do_init_data ()
 
   // run
   init (tr ("Run File"), "editor_run:run_file",
-        QKeySequence (prefix + Qt::Key_F5) );
+        QKeySequence (prefix + Qt::Key_F5));
   init (tr ("Run Selection"), "editor_run:run_selection",
-        QKeySequence (prefix + Qt::Key_F9) );
+        QKeySequence (prefix + Qt::Key_F9));
 
   // help
   init (tr ("Help on Keyword"), "editor_help:help_keyword",
@@ -454,15 +454,15 @@ shortcut_manager::do_write_shortcuts (QSettings* settings,
 
   for (int i = 0; i < _sc.count (); i++)  // loop over all shortcuts
     {
-      settings->setValue("shortcuts/"+_sc.at (i).settings_key,
-                             _sc.at (i).actual_sc.toString ());
+      settings->setValue ("shortcuts/"+_sc.at (i).settings_key,
+                          _sc.at (i).actual_sc.toString ());
       // special: check main-window for Ctrl-D (Terminal)
       if (_sc.at (i).settings_key.startsWith ("main_")
           && _sc.at (i).actual_sc == QKeySequence (Qt::ControlModifier+Qt::Key_D))
         sc_ctrld = true;
     }
 
-    settings->setValue ("shortcuts/main_ctrld",sc_ctrld);
+  settings->setValue ("shortcuts/main_ctrld",sc_ctrld);
 
   if (closing)
     {
@@ -696,15 +696,15 @@ shortcut_manager::do_import_export (int action)
         file = QFileDialog::getOpenFileName (this,
                     tr ("Import shortcuts from file ..."), QString (),
                     tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                    0,QFileDialog::DontUseNativeDialog);
+                    0, QFileDialog::DontUseNativeDialog);
       else if (action == OSC_EXPORT)
         file = QFileDialog::getSaveFileName (this,
                     tr ("Export shortcuts into file ..."), QString (),
                     tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                    0,QFileDialog::DontUseNativeDialog);
+                    0, QFileDialog::DontUseNativeDialog);
 
       if (file.isEmpty ())
-          return false;
+        return false;
 
       QSettings *osc_settings = new QSettings (file, QSettings::IniFormat);
 
@@ -738,8 +738,7 @@ enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)
 }
 
 enter_shortcut::~enter_shortcut ()
-{
-}
+{ }
 
 // slot for checkbox whether the shortcut is directly entered or not
 void
@@ -782,3 +781,4 @@ enter_shortcut::keyPressEvent (QKeyEvent *e)
       setText (QKeySequence(key).toString ());
     }
 }
+

@@ -30,26 +30,27 @@ class QAbstractSlider;
 namespace QtHandles
 {
 
-class SliderControl : public BaseControl
-{
-  Q_OBJECT
+  class SliderControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  SliderControl (const graphics_object& go, QAbstractSlider* slider);
-  ~SliderControl (void);
+  public:
+    SliderControl (const graphics_object& go, QAbstractSlider* slider);
+    ~SliderControl (void);
 
-  static SliderControl* create (const graphics_object& go);
+    static SliderControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void valueChanged (int ival);
+  private slots:
+    void valueChanged (int ival);
 
-private:
-  bool m_blockUpdates;
-};
+  private:
+    bool m_blockUpdates;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

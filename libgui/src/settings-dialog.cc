@@ -330,7 +330,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   default_var = QColor (192,192,192);
   QColor bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
-                                      default_var).value<QColor> ();
+                                            default_var).value<QColor> ();
   _widget_title_bg_color_active = new color_picker (bg_color_active);
   _widget_title_bg_color_active->setEnabled (false);
   ui->layout_widget_bgtitle_active->addWidget (_widget_title_bg_color_active,0);
@@ -348,7 +348,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   default_var = QColor (0,0,0);
   QColor fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
-                                      default_var).value<QColor> ();
+                                            default_var).value<QColor> ();
   _widget_title_fg_color_active = new color_picker (fg_color_active);
   _widget_title_fg_color_active->setEnabled (false);
   ui->layout_widget_fgtitle_active->addWidget (_widget_title_fg_color_active,0);
@@ -435,7 +435,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_ws_indent_checkbox->setChecked (
     settings->value ("editor/show_white_space_indent",false).toBool ());
   ui->cb_show_eol->setChecked (
-    settings->value ("editor/show_eol_chars",false).toBool () );
+    settings->value ("editor/show_eol_chars",false).toBool ());
   ui->cb_show_hscrollbar->setChecked (
     settings->value ("editor/show_hscroll_bar",true).toBool ());
 
@@ -451,7 +451,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   int eol_mode = 2;
 #endif
   ui->combo_eol_mode->setCurrentIndex (
-    settings->value ("editor/default_eol_mode",eol_mode).toInt () );
+    settings->value ("editor/default_eol_mode",eol_mode).toInt ());
   ui->editor_auto_ind_checkbox->setChecked (
     settings->value ("editor/auto_indent", true).toBool ());
   ui->editor_tab_ind_checkbox->setChecked (
@@ -741,7 +741,7 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("DockWidgets/widget_title_custom_style",
                       ui->cb_widget_custom_style->isChecked ());
   settings->setValue ("DockWidgets/widget_title_3d",
-                      ui->sb_3d_title->value ( ));
+                      ui->sb_3d_title->value ());
   settings->setValue ("Dockwidgets/title_bg_color",
                       _widget_title_bg_color->color ());
   settings->setValue ("Dockwidgets/title_bg_color_active",
@@ -763,7 +763,7 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
 
   // status bar
-  settings->setValue ( "show_status_bar", ui->cb_status_bar->isChecked ());
+  settings->setValue ("show_status_bar", ui->cb_status_bar->isChecked ());
 
   // Octave startup
   settings->setValue ("restore_octave_dir",
@@ -1052,3 +1052,4 @@ settings_dialog::default_shortcut_set ()
 {
   shortcut_manager::import_export (shortcut_manager::OSC_DEFAULT);
 }
+

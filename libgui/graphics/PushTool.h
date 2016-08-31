@@ -28,23 +28,24 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-class PushTool : public ToolBarButton<uipushtool>
-{
-  Q_OBJECT
+  class PushTool : public ToolBarButton<uipushtool>
+  {
+    Q_OBJECT
 
-public:
-  PushTool (const graphics_object& go, QAction* action);
-  ~PushTool (void);
+  public:
+    PushTool (const graphics_object& go, QAction* action);
+    ~PushTool (void);
 
-  static PushTool* create (const graphics_object& go);
+    static PushTool* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void clicked (void);
-};
+  private slots:
+    void clicked (void);
+  };
 
 }; // namespace QtHandles
 
 #endif
+

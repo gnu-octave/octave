@@ -30,26 +30,27 @@ class QComboBox;
 namespace QtHandles
 {
 
-class PopupMenuControl : public BaseControl
-{
-  Q_OBJECT
+  class PopupMenuControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  PopupMenuControl (const graphics_object& go, QComboBox* box);
-  ~PopupMenuControl (void);
+  public:
+    PopupMenuControl (const graphics_object& go, QComboBox* box);
+    ~PopupMenuControl (void);
 
-  static PopupMenuControl* create (const graphics_object& go);
+    static PopupMenuControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void currentIndexChanged (int index);
+  private slots:
+    void currentIndexChanged (int index);
 
-private:
-  bool m_blockUpdate;
-};
+  private:
+    bool m_blockUpdate;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

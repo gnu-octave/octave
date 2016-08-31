@@ -128,7 +128,8 @@ namespace octave
 
     set_application_id ();
 
-    std::string show_gui_msgs = octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+    std::string show_gui_msgs =
+      octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
     // Installing our handler suppresses the messages.
 
@@ -238,3 +239,4 @@ namespace octave
     return qt_app.exec ();
   }
 }
+

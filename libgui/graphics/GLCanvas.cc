@@ -33,159 +33,160 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& gh)
+  GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& gh)
 #if defined (Q_OS_WIN32)
-  : QGLWidget (QGLFormat (QGL::SampleBuffers | QGL::IndirectRendering),
-               xparent), Canvas (gh)
+    : QGLWidget (QGLFormat (QGL::SampleBuffers | QGL::IndirectRendering),
+                 xparent), Canvas (gh)
 #else
-  : QGLWidget (QGLFormat (QGL::SampleBuffers), xparent), Canvas (gh)
+    : QGLWidget (QGLFormat (QGL::SampleBuffers), xparent), Canvas (gh)
 #endif
-{
-  setFocusPolicy (Qt::ClickFocus);
-  setFocus();
-}
+  {
+    setFocusPolicy (Qt::ClickFocus);
+    setFocus();
+  }
 
-GLCanvas::~GLCanvas (void)
-{
-}
+  GLCanvas::~GLCanvas (void)
+  {
+  }
 
-void
-GLCanvas::draw (const graphics_handle& gh)
-{
-  gh_manager::auto_lock lock;
-  graphics_object go = gh_manager::get_object (gh);
+  void
+  GLCanvas::draw (const graphics_handle& gh)
+  {
+    gh_manager::auto_lock lock;
+    graphics_object go = gh_manager::get_object (gh);
 
-  if (go)
-    {
-      octave::opengl_renderer r;
+    if (go)
+      {
+        octave::opengl_renderer r;
 
-      r.set_viewport (width (), height ());
-      r.draw(go);
-    }
-}
+        r.set_viewport (width (), height ());
+        r.draw(go);
+      }
+  }
 
-void
-GLCanvas::toggleAxes (const graphics_handle& gh)
-{
-  canvasToggleAxes (gh);
-}
+  void
+  GLCanvas::toggleAxes (const graphics_handle& gh)
+  {
+    canvasToggleAxes (gh);
+  }
 
-void
-GLCanvas::toggleGrid (const graphics_handle& gh)
-{
-  canvasToggleGrid (gh);
-}
+  void
+  GLCanvas::toggleGrid (const graphics_handle& gh)
+  {
+    canvasToggleGrid (gh);
+  }
 
-void
-GLCanvas::autoAxes (const graphics_handle& gh)
-{
-  canvasAutoAxes (gh);
-}
+  void
+  GLCanvas::autoAxes (const graphics_handle& gh)
+  {
+    canvasAutoAxes (gh);
+  }
 
-graphics_object
-GLCanvas::selectFromAxes (const graphics_object& ax, const QPoint& pt)
-{
-  makeCurrent ();
+  graphics_object
+  GLCanvas::selectFromAxes (const graphics_object& ax, const QPoint& pt)
+  {
+    makeCurrent ();
 
-  if (ax)
-    {
-      octave::opengl_selector s;
+    if (ax)
+      {
+        octave::opengl_selector s;
 
-      s.set_viewport (width (), height ());
-      return s.select (ax, pt.x (), height () - pt.y ());
-    }
+        s.set_viewport (width (), height ());
+        return s.select (ax, pt.x (), height () - pt.y ());
+      }
 
-  return graphics_object ();
-}
+    return graphics_object ();
+  }
 
-inline void
-glDrawZoomBox (const QPoint& p1, const QPoint& p2)
-{
-  glVertex2d (p1.x (), p1.y ());
-  glVertex2d (p2.x (), p1.y ());
-  glVertex2d (p2.x (), p2.y ());
-  glVertex2d (p1.x (), p2.y ());
-  glVertex2d (p1.x (), p1.y ());
-}
+  inline void
+  glDrawZoomBox (const QPoint& p1, const QPoint& p2)
+  {
+    glVertex2d (p1.x (), p1.y ());
+    glVertex2d (p2.x (), p1.y ());
+    glVertex2d (p2.x (), p2.y ());
+    glVertex2d (p1.x (), p2.y ());
+    glVertex2d (p1.x (), p1.y ());
+  }
 
-void
-GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
-{
-  glPushMatrix ();
+  void
+  GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
+  {
+    glPushMatrix ();
 
-  glMatrixMode (GL_MODELVIEW);
-  glLoadIdentity ();
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity ();
 
-  glMatrixMode (GL_PROJECTION);
-  glLoadIdentity ();
-  glOrtho (0, width (), height (), 0, 1, -1);
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
+    glOrtho (0, width (), height (), 0, 1, -1);
 
-  glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-  glDisable (GL_DEPTH_TEST);
+    glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    glDisable (GL_DEPTH_TEST);
 
-  glBegin (GL_POLYGON);
-  glColor4f (0.45, 0.62, 0.81, 0.1);
-  glDrawZoomBox (p1, p2);
-  glEnd ();
+    glBegin (GL_POLYGON);
+    glColor4f (0.45, 0.62, 0.81, 0.1);
+    glDrawZoomBox (p1, p2);
+    glEnd ();
 
-  glBegin (GL_LINE_STRIP);
-  glLineWidth (1.5);
-  glColor4f (0.45, 0.62, 0.81, 0.9);
-  glDrawZoomBox (p1, p2);
-  glEnd ();
+    glBegin (GL_LINE_STRIP);
+    glLineWidth (1.5);
+    glColor4f (0.45, 0.62, 0.81, 0.9);
+    glDrawZoomBox (p1, p2);
+    glEnd ();
 
-  glPopAttrib ();
-  glPopMatrix ();
-}
+    glPopAttrib ();
+    glPopMatrix ();
+  }
 
-void
-GLCanvas::paintGL (void)
-{
-  canvasPaintEvent ();
-}
+  void
+  GLCanvas::paintGL (void)
+  {
+    canvasPaintEvent ();
+  }
 
-void
-GLCanvas::mouseDoubleClickEvent (QMouseEvent* xevent)
-{
-  canvasMouseDoubleClickEvent (xevent);
-}
+  void
+  GLCanvas::mouseDoubleClickEvent (QMouseEvent* xevent)
+  {
+    canvasMouseDoubleClickEvent (xevent);
+  }
 
-void
-GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
-{
-  canvasMouseMoveEvent (xevent);
-}
+  void
+  GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
+  {
+    canvasMouseMoveEvent (xevent);
+  }
 
-void
-GLCanvas::mousePressEvent (QMouseEvent* xevent)
-{
-  canvasMousePressEvent (xevent);
-}
+  void
+  GLCanvas::mousePressEvent (QMouseEvent* xevent)
+  {
+    canvasMousePressEvent (xevent);
+  }
 
-void
-GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
-{
-  canvasMouseReleaseEvent (xevent);
-}
+  void
+  GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
+  {
+    canvasMouseReleaseEvent (xevent);
+  }
 
-void
-GLCanvas::wheelEvent (QWheelEvent* xevent)
-{
-  canvasWheelEvent (xevent);
-}
+  void
+  GLCanvas::wheelEvent (QWheelEvent* xevent)
+  {
+    canvasWheelEvent (xevent);
+  }
 
-void
-GLCanvas::keyPressEvent (QKeyEvent* xevent)
-{
-  if (! canvasKeyPressEvent (xevent))
-    QGLWidget::keyPressEvent (xevent);
-}
+  void
+  GLCanvas::keyPressEvent (QKeyEvent* xevent)
+  {
+    if (! canvasKeyPressEvent (xevent))
+      QGLWidget::keyPressEvent (xevent);
+  }
 
-void
-GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
-{
-  if (! canvasKeyReleaseEvent (xevent))
-    QGLWidget::keyReleaseEvent (xevent);
-}
+  void
+  GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
+  {
+    if (! canvasKeyReleaseEvent (xevent))
+      QGLWidget::keyReleaseEvent (xevent);
+  }
 
 }; // namespace QtHandles
+

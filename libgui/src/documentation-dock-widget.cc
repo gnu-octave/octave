@@ -68,3 +68,4 @@ documentation_dock_widget::showDoc (const QString &name)
   _webinfo->load_ref (name);
 
 }
+

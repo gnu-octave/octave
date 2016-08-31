@@ -32,3 +32,4 @@ liboctgui_hg_id (void)
 {
   return "%OCTAVE_HG_ID%";
 }
+

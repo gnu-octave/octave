@@ -112,19 +112,21 @@ history_dock_widget::construct ()
   // Init state of the filter
   QSettings *settings = resource_manager::get_settings ();
 
-  _filter_shown = settings->value ("history_dock_widget/filter_shown",true).toBool();
+  _filter_shown
+    = settings->value ("history_dock_widget/filter_shown",true).toBool();
   _filter_widget->setVisible (_filter_shown);
 
   _filter->addItems (settings->value ("history_dock_widget/mru_list").toStringList ());
 
-  bool filter_state =
-            settings->value ("history_dock_widget/filter_active", false).toBool ();
+  bool filter_state
+    = settings->value ("history_dock_widget/filter_active", false).toBool ();
   _filter_checkbox->setChecked (filter_state);
   filter_activate (filter_state);
 
   // Connect signals and slots
   connect (_filter, SIGNAL (editTextChanged (const QString&)),
-           &_sort_filter_proxy_model, SLOT (setFilterWildcard (const QString&)));
+           &_sort_filter_proxy_model,
+           SLOT (setFilterWildcard (const QString&)));
   connect (_filter_checkbox, SIGNAL (toggled (bool)),
            this, SLOT (filter_activate (bool)));
   connect (_filter->lineEdit (), SIGNAL (editingFinished ()),
@@ -198,12 +200,12 @@ void history_dock_widget::ctxMenu (const QPoint &xpos)
   if (index.isValid () && index.column () == 0)
     {
       menu.addAction (resource_manager::icon ("edit-copy"),
-                  tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
+                      tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
       menu.addAction (tr ("Evaluate"), this,
-                  SLOT (handle_contextmenu_evaluate (bool)));
+                      SLOT (handle_contextmenu_evaluate (bool)));
       menu.addAction (resource_manager::icon ("document-new"),
-                  tr ("Create script"), this,
-                  SLOT (handle_contextmenu_create_script (bool)));
+                      tr ("Create script"), this,
+                      SLOT (handle_contextmenu_create_script (bool)));
     }
   if (_filter_shown)
     menu.addAction (tr ("Hide filter"), this,
@@ -322,7 +324,7 @@ history_dock_widget::copyClipboard ()
       && _filter->lineEdit ()->hasSelectedText ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
-      clipboard->setText ( _filter->lineEdit ()->selectedText ());
+      clipboard->setText (_filter->lineEdit ()->selectedText ());
     }
 }
 
@@ -361,3 +363,4 @@ void history_dock_widget::handle_visibility (bool visible)
       filter_activate (filter_state);
     }
 }
+

@@ -121,3 +121,4 @@ octave_thread_manager::create_rep (void)
   return new pthread_thread_manager ();
 #endif
 }
+

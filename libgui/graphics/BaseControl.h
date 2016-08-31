@@ -31,25 +31,26 @@ class QObject;
 namespace QtHandles
 {
 
-class BaseControl : public Object
-{
-public:
-  BaseControl (const graphics_object& go, QWidget* w);
-  ~BaseControl (void);
+  class BaseControl : public Object
+  {
+  public:
+    BaseControl (const graphics_object& go, QWidget* w);
+    ~BaseControl (void);
 
-  Container* innerContainer (void) { return 0; }
+    Container* innerContainer (void) { return 0; }
 
-  bool eventFilter (QObject* watched, QEvent* e);
+    bool eventFilter (QObject* watched, QEvent* e);
 
-protected:
-  void init (QWidget* w, bool callBase = false);
-  void update (int pId);
+  protected:
+    void init (QWidget* w, bool callBase = false);
+    void update (int pId);
 
-private:
-  bool m_normalizedFont;
-  bool m_keyPressHandlerDefined;
-};
+  private:
+    bool m_normalizedFont;
+    bool m_keyPressHandlerDefined;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

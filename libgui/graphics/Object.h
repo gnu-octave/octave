@@ -34,73 +34,74 @@ class QWidget;
 namespace QtHandles
 {
 
-class Container;
-class ObjectProxy;
+  class Container;
+  class ObjectProxy;
 
-class Object : public QObject
-{
-  Q_OBJECT
+  class Object : public QObject
+  {
+    Q_OBJECT
 
-public:
-  Object (const graphics_object& go, QObject* obj = 0);
+  public:
+    Object (const graphics_object& go, QObject* obj = 0);
 
-  virtual ~Object (void);
+    virtual ~Object (void);
 
-  base_properties& properties (void)
+    base_properties& properties (void)
     { return object ().get_properties (); }
 
-  const base_properties& properties (void) const
+    const base_properties& properties (void) const
     { return object ().get_properties (); }
 
-  template <typename T>
-  typename T::properties& properties (void)
+    template <typename T>
+    typename T::properties& properties (void)
     {
       return dynamic_cast<typename T::properties&>
-        (object ().get_properties ());
+             (object ().get_properties ());
     }
 
-  template <typename T>
-  const typename T::properties& properties (void) const
+    template <typename T>
+    const typename T::properties& properties (void) const
     {
       return dynamic_cast<const typename T::properties&>
-        (object ().get_properties ());
+             (object ().get_properties ());
     }
 
-  graphics_object object (void) const;
+    graphics_object object (void) const;
 
-  virtual QObject* qObject (void) { return m_qobject; }
+    virtual QObject* qObject (void) { return m_qobject; }
 
-  template <typename T>
-  T* qWidget (void) { return qobject_cast<T*>(qObject ()); }
+    template <typename T>
+    T* qWidget (void) { return qobject_cast<T*>(qObject ()); }
 
-  virtual Container* innerContainer (void) = 0;
+    virtual Container* innerContainer (void) = 0;
 
-  static Object* fromQObject (QObject* obj);
+    static Object* fromQObject (QObject* obj);
 
-public slots:
-  void slotUpdate (int pId);
-  void slotFinalize (void);
-  void slotRedraw (void);
-  void slotPrint (const QString& file_cmd, const QString& term);
+  public slots:
+    void slotUpdate (int pId);
+    void slotFinalize (void);
+    void slotRedraw (void);
+    void slotPrint (const QString& file_cmd, const QString& term);
 
-  void objectDestroyed (QObject *obj = 0);
+    void objectDestroyed (QObject *obj = 0);
 
-protected:
-  static Object* parentObject (const graphics_object& go);
-  void init (QObject* obj, bool callBase = false);
+  protected:
+    static Object* parentObject (const graphics_object& go);
+    void init (QObject* obj, bool callBase = false);
 
-  virtual void update (int pId);
-  virtual void finalize (void);
-  virtual void redraw (void);
-  virtual void print (const QString& file_cmd, const QString& term);
+    virtual void update (int pId);
+    virtual void finalize (void);
+    virtual void redraw (void);
+    virtual void print (const QString& file_cmd, const QString& term);
 
-  virtual void beingDeleted (void);
+    virtual void beingDeleted (void);
 
-protected:
-  graphics_handle m_handle;
-  QObject* m_qobject;
-};
+  protected:
+    graphics_handle m_handle;
+    QObject* m_qobject;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

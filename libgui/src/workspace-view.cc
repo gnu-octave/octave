@@ -468,7 +468,7 @@ workspace_view::notice_settings (const QSettings *settings)
 
   for (i = 0; i < _columns_shown_keys.size (); i++)
     {
-      view->setColumnHidden ( i + 1,
+      view->setColumnHidden (i + 1,
             ! settings->value (_columns_shown_keys.at (i),true).toBool ());
     }
 

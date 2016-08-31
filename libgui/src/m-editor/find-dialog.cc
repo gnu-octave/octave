@@ -320,17 +320,17 @@ find_dialog::find (bool forward)
         }
       else if (! do_forward)
         {
-           // search from position before search characters text length
-           // if search backward on existing results,
-           _edit_area->getCursorPosition (&line,&col);
-           if (_find_result_available && _edit_area->hasSelectedText ())
-             {
-               int currpos = _edit_area->positionFromLineIndex(line,col);
-               currpos -= (_search_line_edit->text ().length ());
-               if (currpos < 0)
-                 currpos = 0;
-               _edit_area->lineIndexFromPosition(currpos, &line,&col);
-             }
+          // search from position before search characters text length
+          // if search backward on existing results,
+          _edit_area->getCursorPosition (&line,&col);
+          if (_find_result_available && _edit_area->hasSelectedText ())
+            {
+              int currpos = _edit_area->positionFromLineIndex(line,col);
+              currpos -= (_search_line_edit->text ().length ());
+              if (currpos < 0)
+                currpos = 0;
+              _edit_area->lineIndexFromPosition(currpos, &line,&col);
+            }
         }
     }
 
@@ -340,9 +340,9 @@ find_dialog::find (bool forward)
           && _search_selection_check_box->isChecked ())
         {
 #if defined (HAVE_QSCI_FINDSELECTION)
-           if (_find_result_available)
-             _find_result_available = _edit_area->findNext ();
-           else
+          if (_find_result_available)
+            _find_result_available = _edit_area->findNext ();
+          else
             _find_result_available
               = _edit_area->findFirstInSelection (
                                       _search_line_edit->text (),
@@ -361,15 +361,15 @@ find_dialog::find (bool forward)
         {
           _find_result_available
             = _edit_area->findFirst (_search_line_edit->text (),
-                                    _regex_check_box->isChecked (),
-                                    _case_check_box->isChecked (),
-                                    _whole_words_check_box->isChecked (),
-                                    do_wrap,
-                                    do_forward,
-                                    line,col,
-                                    true
+                                     _regex_check_box->isChecked (),
+                                     _case_check_box->isChecked (),
+                                     _whole_words_check_box->isChecked (),
+                                     do_wrap,
+                                     do_forward,
+                                     line,col,
+                                     true
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-                                    , true
+                                     , true
 #endif
                                     );
         }
@@ -449,3 +449,4 @@ find_dialog::no_matches_message ()
 }
 
 #endif
+

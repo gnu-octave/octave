@@ -108,7 +108,8 @@ marker::handle_find_translation (int linenr, int& translation_linenr,
 
 
 void
-marker::handle_find_just_before (int linenr, int& original_linenr, int& editor_linenr)
+marker::handle_find_just_before (int linenr, int& original_linenr,
+                                 int& editor_linenr)
 {
   if (_original_linenr < linenr && _original_linenr >= original_linenr)
     {
@@ -119,7 +120,8 @@ marker::handle_find_just_before (int linenr, int& original_linenr, int& editor_l
 
 
 void
-marker::handle_find_just_after (int linenr, int& original_linenr, int& editor_linenr)
+marker::handle_find_just_after (int linenr, int& original_linenr,
+                                int& editor_linenr)
 {
   if (_original_linenr > linenr && _original_linenr <= original_linenr)
     {
@@ -169,7 +171,8 @@ marker::handle_marker_line_undeleted (int mhandle)
   // lobby for such a signal.
   if (_mhandle == mhandle)
     {
-      if (_marker_type == unsure_breakpoint || _marker_type == unsure_debugger_position)
+      if (_marker_type == unsure_breakpoint
+          || _marker_type == unsure_debugger_position)
         {
           int editor_linenr = _edit_area->markerLine (_mhandle);
           _edit_area->markerDeleteHandle(_mhandle);
@@ -181,3 +184,4 @@ marker::handle_marker_line_undeleted (int mhandle)
 }
 
 #endif
+

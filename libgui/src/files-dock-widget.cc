@@ -139,8 +139,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
   popdown_button->setMenu (popdown_menu);
   popdown_button->setPopupMode (QToolButton::InstantPopup);
   popdown_button->setDefaultAction (new QAction (
-                              resource_manager::icon ("applications-system"), "",
-                              _navigation_tool_bar));
+                            resource_manager::icon ("applications-system"), "",
+                            _navigation_tool_bar));
 
   popdown_menu->addSeparator ();
   popdown_menu->addAction (resource_manager::icon ("folder"),
@@ -186,7 +186,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
   else if (! settings->value ("filesdockwidget/startup_dir").toString ().isEmpty ())
     {
       // do not restore but there is a startup dir configured
-      startup_dir = QDir (settings->value ("filesdockwidget/startup_dir").toString ());
+      startup_dir
+        = QDir (settings->value ("filesdockwidget/startup_dir").toString ());
     }
 
   if (! startup_dir.exists ())
@@ -426,17 +427,17 @@ void files_dock_widget::toggle_header (int col)
 
   switch (col)
     {
-      case 0:
-      case 1:
-      case 2:
-        // toggle column visibility
-        _file_tree_view->setColumnHidden (col + 1, shown);
-        break;
-      case 3:
-      case 4:
-        // other actions depending on new settings
-        notice_settings (settings);
-        break;
+    case 0:
+    case 1:
+    case 2:
+      // toggle column visibility
+      _file_tree_view->setColumnHidden (col + 1, shown);
+      break;
+    case 3:
+    case 4:
+      // other actions depending on new settings
+      notice_settings (settings);
+      break;
     }
 }
 
@@ -461,7 +462,8 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
             settings->value (_columns_shown_keys.at (i),true).toBool ());
     }
 
-  connect (_sig_mapper, SIGNAL (mapped (int)), this, SLOT (toggle_header (int)));
+  connect (_sig_mapper, SIGNAL (mapped (int)),
+           this, SLOT (toggle_header (int)));
 
   menu.exec (_file_tree_view->mapToGlobal (mpos));
 }
@@ -483,10 +485,12 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
 
       // check if item at mouse position is seleccted
       if (! sel.contains (index))
-        { // is not selected -> clear actual selection and select this item
+        {
+          // is not selected -> clear actual selection and select this item
           m->setCurrentIndex(index,
-                  QItemSelectionModel::Clear | QItemSelectionModel::Select |
-                  QItemSelectionModel::Rows);
+                             QItemSelectionModel::Clear
+                             | QItemSelectionModel::Select
+                             | QItemSelectionModel::Rows);
         }
 
       // construct the context menu depending on item
@@ -800,14 +804,14 @@ files_dock_widget::notice_settings (const QSettings *settings)
 
   // filenames are always shown, other columns can be hidden by settings
   for (int i = 0; i < 3; i++)
-     _file_tree_view->setColumnHidden (i + 1, ! settings->value (
-                                  _columns_shown_keys.at (i),false).toBool ());
+    _file_tree_view->setColumnHidden (i + 1,
+        ! settings->value (_columns_shown_keys.at (i),false).toBool ());
 
   if (settings->value (_columns_shown_keys.at (3),false).toBool ())
-      _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries
-                                     | QDir::Hidden);
+    _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries
+                                   | QDir::Hidden);
   else
-      _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+    _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
 
   _file_tree_view->setAlternatingRowColors (
     settings->value (_columns_shown_keys.at (4),true).toBool ());
@@ -828,7 +832,8 @@ files_dock_widget::notice_settings (const QSettings *settings)
 void
 files_dock_widget::popdownmenu_home (bool)
 {
-  QString dir = QString::fromStdString (octave::sys::env::get_home_directory ());
+  QString dir
+    = QString::fromStdString (octave::sys::env::get_home_directory ());
 
   if (dir.isEmpty ())
     dir = QDir::homePath ();
@@ -842,7 +847,8 @@ files_dock_widget::popdownmenu_search_dir (bool)
   QString dir = QFileDialog::getExistingDirectory
                   (this, tr ("Set directory of file browser"),
                    _file_system_model->rootPath (),
-                   QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog);
+                   QFileDialog::ShowDirsOnly
+                   | QFileDialog::DontUseNativeDialog);
   set_current_directory (dir);
 }
 

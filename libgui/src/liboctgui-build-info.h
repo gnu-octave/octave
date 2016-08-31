@@ -32,3 +32,4 @@ along with Octave; see the file COPYING.  If not, see
 extern std::string liboctgui_hg_id (void);
 
 #endif
+

@@ -31,23 +31,24 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-void
-TextEdit::focusOutEvent (QFocusEvent* xevent)
-{
-  QTextEdit::focusOutEvent (xevent);
+  void
+  TextEdit::focusOutEvent (QFocusEvent* xevent)
+  {
+    QTextEdit::focusOutEvent (xevent);
 
-  emit editingFinished ();
-}
+    emit editingFinished ();
+  }
 
-void
-TextEdit::keyPressEvent (QKeyEvent* xevent)
-{
-  QTextEdit::keyPressEvent (xevent);
+  void
+  TextEdit::keyPressEvent (QKeyEvent* xevent)
+  {
+    QTextEdit::keyPressEvent (xevent);
 
-  if ((xevent->key () == Qt::Key_Return
-       || xevent->key () == Qt::Key_Enter)
-      && xevent->modifiers () == Qt::ControlModifier)
-    emit returnPressed ();
-}
+    if ((xevent->key () == Qt::Key_Return
+         || xevent->key () == Qt::Key_Enter)
+        && xevent->modifiers () == Qt::ControlModifier)
+      emit returnPressed ();
+  }
 
 }; // namespace QtHandles
+

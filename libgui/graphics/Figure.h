@@ -36,112 +36,113 @@ class QToolBar;
 namespace QtHandles
 {
 
-enum MouseMode
-{
-  // NOTE: These values must match the order of the buttons in the
-  // MouseModeActionGroup object.
+  enum MouseMode
+  {
+    // NOTE: These values must match the order of the buttons in the
+    // MouseModeActionGroup object.
 
-  NoMode      = 0,
-  RotateMode  = 1,
-  ZoomInMode  = 2,
-  ZoomOutMode = 3,
-  PanMode     = 4,
-  TextMode    = 5,
-  SelectMode  = 6
-};
+    NoMode      = 0,
+    RotateMode  = 1,
+    ZoomInMode  = 2,
+    ZoomOutMode = 3,
+    PanMode     = 4,
+    TextMode    = 5,
+    SelectMode  = 6
+  };
 
-class Container;
-class FigureWindow;
-class MenuBar;
-class ToolBar;
+  class Container;
+  class FigureWindow;
+  class MenuBar;
+  class ToolBar;
 
-class MouseModeActionGroup;
+  class MouseModeActionGroup;
 
-class Figure :
+  class Figure :
   public Object,
   public MenuContainer,
   public GenericEventNotifyReceiver
-{
-  Q_OBJECT
+  {
+    Q_OBJECT
 
-  friend class ToolBar;
+    friend class ToolBar;
 
-public:
-  Figure (const graphics_object& go, FigureWindow* win);
-  ~Figure (void);
+  public:
+    Figure (const graphics_object& go, FigureWindow* win);
+    ~Figure (void);
 
-  static Figure* create (const graphics_object& go);
+    static Figure* create (const graphics_object& go);
 
-  QString fileName (void);
-  void setFileName (const QString& name);
+    QString fileName (void);
+    void setFileName (const QString& name);
 
-  MouseMode mouseMode (void);
+    MouseMode mouseMode (void);
 
-  Container* innerContainer (void);
-  QWidget* menu (void);
-  void updateStatusBar (ColumnVector pt);
+    Container* innerContainer (void);
+    QWidget* menu (void);
+    void updateStatusBar (ColumnVector pt);
 
-  bool eventNotifyBefore (QObject* watched, QEvent* event);
-  void eventNotifyAfter (QObject* watched, QEvent* event);
+    bool eventNotifyBefore (QObject* watched, QEvent* event);
+    void eventNotifyAfter (QObject* watched, QEvent* event);
 
-protected:
-  enum UpdateBoundingBoxFlag
+  protected:
+    enum UpdateBoundingBoxFlag
     {
       UpdateBoundingBoxPosition = 0x1,
       UpdateBoundingBoxSize     = 0x2,
       UpdateBoundingBoxAll      = 0x3
     };
 
-protected:
-  void redraw (void);
-  void print (const QString& file_cmd, const QString& term);
-  void update (int pId);
-  void updateBoundingBox (bool internal = false, int flags = 0);
-  void beingDeleted (void);
+  protected:
+    void redraw (void);
+    void print (const QString& file_cmd, const QString& term);
+    void update (int pId);
+    void updateBoundingBox (bool internal = false, int flags = 0);
+    void beingDeleted (void);
 
-private:
-  void createFigureToolBarAndMenuBar (void);
-  void showFigureToolBar (bool visible);
-  void showMenuBar (bool visible);
-  void addCustomToolBar (QToolBar* bar, bool visible);
-  void showCustomToolBar (QToolBar* bar, bool visible);
+  private:
+    void createFigureToolBarAndMenuBar (void);
+    void showFigureToolBar (bool visible);
+    void showMenuBar (bool visible);
+    void addCustomToolBar (QToolBar* bar, bool visible);
+    void showCustomToolBar (QToolBar* bar, bool visible);
 
-  void updateFigureToolBarAndMenuBar (void);
+    void updateFigureToolBarAndMenuBar (void);
 
-  static void updateBoundingBoxHelper (void*);
+    static void updateBoundingBoxHelper (void*);
 
-  void save_figure_callback (const std::string& file);
-  void copy_figure_callback (const std::string& format);
+    void save_figure_callback (const std::string& file);
+    void copy_figure_callback (const std::string& format);
 
-  void enableMouseTracking (void);
+    void enableMouseTracking (void);
 
-private slots:
-  void setMouseMode (MouseMode mode);
-  void fileSaveFigure (bool prompt = false);
-  void fileSaveFigureAs (void);
-  void fileCloseFigure (void);
-  void editCopy (bool choose_format = false);
-  void helpAboutOctave (void);
-  void updateMenuBar (void);
-  void updateContainer (void);
-  void toggleAxes (void);
-  void toggleGrid (void);
-  void autoAxes (void);
+  private slots:
+    void setMouseMode (MouseMode mode);
+    void fileSaveFigure (bool prompt = false);
+    void fileSaveFigureAs (void);
+    void fileCloseFigure (void);
+    void editCopy (bool choose_format = false);
+    void helpAboutOctave (void);
+    void updateMenuBar (void);
+    void updateContainer (void);
+    void toggleAxes (void);
+    void toggleGrid (void);
+    void autoAxes (void);
 
-signals:
-  void asyncUpdate (void);
+  signals:
+    void asyncUpdate (void);
 
-private:
-  Container* m_container;
-  bool m_blockUpdates;
-  QToolBar* m_figureToolBar;
-  MenuBar* m_menuBar;
-  QStatusBar* m_statusBar;
-  QRect m_innerRect;
-  QRect m_outerRect;
-  MouseModeActionGroup* m_mouseModeGroup;
-};
+  private:
+    Container* m_container;
+    bool m_blockUpdates;
+    QToolBar* m_figureToolBar;
+    MenuBar* m_menuBar;
+    QStatusBar* m_statusBar;
+    QRect m_innerRect;
+    QRect m_outerRect;
+    MouseModeActionGroup* m_mouseModeGroup;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

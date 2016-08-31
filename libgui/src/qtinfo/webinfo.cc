@@ -98,7 +98,8 @@ webinfo::webinfo (QWidget *p)
   resize (500, 300);
 
   if (! set_info_path (QString::fromStdString (Vinfo_file)))
-    { // Info file does not exist
+    {
+      // Info file does not exist
       _search_check_box->setEnabled (false);
       _search_line_edit->setEnabled (false);
 

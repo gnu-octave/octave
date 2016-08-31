@@ -345,3 +345,4 @@ welcome_wizard::accept (void)
 
   QDialog::accept ();
 }
+

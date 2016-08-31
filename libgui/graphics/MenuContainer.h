@@ -28,12 +28,13 @@ class QWidget;
 namespace QtHandles
 {
 
-class MenuContainer
-{
-public:
-  virtual QWidget* menu (void) = 0;
-};
+  class MenuContainer
+  {
+  public:
+    virtual QWidget* menu (void) = 0;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

@@ -30,24 +30,25 @@ class QAction;
 namespace QtHandles
 {
 
-class Container;
+  class Container;
 
-template <typename T>
-class ToolBarButton : public Object
-{
-public:
-  ToolBarButton (const graphics_object& go, QAction* action);
-  ~ToolBarButton (void);
+  template <typename T>
+  class ToolBarButton : public Object
+  {
+  public:
+    ToolBarButton (const graphics_object& go, QAction* action);
+    ~ToolBarButton (void);
 
-  Container* innerContainer (void) { return 0; }
+    Container* innerContainer (void) { return 0; }
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private:
-  QAction* m_separator;
-};
+  private:
+    QAction* m_separator;
+  };
 
 };
 
 #endif
+

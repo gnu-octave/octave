@@ -35,121 +35,122 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-SliderControl*
-SliderControl::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  SliderControl*
+  SliderControl::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      Container* container = parent->innerContainer ();
-
-      if (container)
-        return new SliderControl (go, new QScrollBar (container));
-    }
-
-  return 0;
-}
-
-SliderControl::SliderControl (const graphics_object& go,
-                              QAbstractSlider* slider)
-  : BaseControl (go, slider), m_blockUpdates (false)
-{
-  uicontrol::properties& up = properties<uicontrol> ();
-
-  slider->setTracking (false);
-  Matrix bb = up.get_boundingbox ();
-  slider->setOrientation (bb(2) > bb(3) ? Qt::Horizontal : Qt::Vertical);
-  Matrix steps = up.get_sliderstep ().matrix_value ();
-  slider->setMinimum (0);
-  slider->setMaximum (RANGE_INT_MAX);
-  slider->setSingleStep (octave::math::round (steps(0) * RANGE_INT_MAX));
-  slider->setPageStep (octave::math::round (steps(1) * RANGE_INT_MAX));
-  Matrix value = up.get_value ().matrix_value ();
-  if (value.numel () > 0)
-    {
-      double dmin = up.get_min (), dmax = up.get_max ();
-
-      slider->setValue (octave::math::round (((value(0) - dmin) / (dmax - dmin))
-                                * RANGE_INT_MAX));
-    }
-
-  connect (slider, SIGNAL (valueChanged (int)), SLOT (valueChanged (int)));
-}
-
-SliderControl::~SliderControl (void)
-{
-}
-
-void
-SliderControl::update (int pId)
-{
-  uicontrol::properties& up = properties<uicontrol> ();
-  QScrollBar* slider = qWidget<QScrollBar> ();
-
-  switch (pId)
-    {
-    case uicontrol::properties::ID_SLIDERSTEP:
+    if (parent)
       {
-        Matrix steps = up.get_sliderstep ().matrix_value ();
+        Container* container = parent->innerContainer ();
 
-        slider->setSingleStep (octave::math::round (steps(0) * RANGE_INT_MAX));
-        slider->setPageStep (octave::math::round (steps(1) * RANGE_INT_MAX));
+        if (container)
+          return new SliderControl (go, new QScrollBar (container));
       }
-      break;
 
-    case uicontrol::properties::ID_VALUE:
+    return 0;
+  }
+
+  SliderControl::SliderControl (const graphics_object& go,
+                                QAbstractSlider* slider)
+    : BaseControl (go, slider), m_blockUpdates (false)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+
+    slider->setTracking (false);
+    Matrix bb = up.get_boundingbox ();
+    slider->setOrientation (bb(2) > bb(3) ? Qt::Horizontal : Qt::Vertical);
+    Matrix steps = up.get_sliderstep ().matrix_value ();
+    slider->setMinimum (0);
+    slider->setMaximum (RANGE_INT_MAX);
+    slider->setSingleStep (octave::math::round (steps(0) * RANGE_INT_MAX));
+    slider->setPageStep (octave::math::round (steps(1) * RANGE_INT_MAX));
+    Matrix value = up.get_value ().matrix_value ();
+    if (value.numel () > 0)
       {
-        Matrix value = up.get_value ().matrix_value ();
-        double dmax = up.get_max (), dmin = up.get_min ();
+        double dmin = up.get_min (), dmax = up.get_max ();
 
-        if (value.numel () > 0)
-          {
-            int ival = octave::math::round (((value(0) - dmin) / (dmax - dmin))
-                               * RANGE_INT_MAX);
-
-            m_blockUpdates = true;
-            slider->setValue (ival);
-            m_blockUpdates = false;
-          }
+        slider->setValue (octave::math::round (((value(0) - dmin) / (dmax - dmin))
+                                               * RANGE_INT_MAX));
       }
-      break;
 
-    default:
-      BaseControl::update (pId);
-      break;
-    }
-}
+    connect (slider, SIGNAL (valueChanged (int)), SLOT (valueChanged (int)));
+  }
 
-void
-SliderControl::valueChanged (int ival)
-{
-  if (! m_blockUpdates)
-    {
-      gh_manager::auto_lock lock;
-      graphics_object go = object ();
+  SliderControl::~SliderControl (void)
+  {
+  }
 
-      if (go.valid_object ())
+  void
+  SliderControl::update (int pId)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+    QScrollBar* slider = qWidget<QScrollBar> ();
+
+    switch (pId)
+      {
+      case uicontrol::properties::ID_SLIDERSTEP:
         {
-          uicontrol::properties& up = Utils::properties<uicontrol> (go);
+          Matrix steps = up.get_sliderstep ().matrix_value ();
 
+          slider->setSingleStep (octave::math::round (steps(0) * RANGE_INT_MAX));
+          slider->setPageStep (octave::math::round (steps(1) * RANGE_INT_MAX));
+        }
+        break;
+
+      case uicontrol::properties::ID_VALUE:
+        {
           Matrix value = up.get_value ().matrix_value ();
-          double dmin = up.get_min (), dmax = up.get_max ();
+          double dmax = up.get_max (), dmin = up.get_min ();
 
-          int ival_tmp = (value.numel () > 0 ?
-                          octave::math::round (((value(0) - dmin) / (dmax - dmin))
-                                  * RANGE_INT_MAX) :
-                          0);
-
-          if (ival != ival_tmp || value.numel () > 0)
+          if (value.numel () > 0)
             {
-              double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
+              int ival = octave::math::round (((value(0) - dmin) / (dmax - dmin))
+                                              * RANGE_INT_MAX);
 
-              gh_manager::post_set (m_handle, "value", octave_value (dval));
-              gh_manager::post_callback (m_handle, "callback");
+              m_blockUpdates = true;
+              slider->setValue (ival);
+              m_blockUpdates = false;
             }
         }
-    }
-}
+        break;
+
+      default:
+        BaseControl::update (pId);
+        break;
+      }
+  }
+
+  void
+  SliderControl::valueChanged (int ival)
+  {
+    if (! m_blockUpdates)
+      {
+        gh_manager::auto_lock lock;
+        graphics_object go = object ();
+
+        if (go.valid_object ())
+          {
+            uicontrol::properties& up = Utils::properties<uicontrol> (go);
+
+            Matrix value = up.get_value ().matrix_value ();
+            double dmin = up.get_min (), dmax = up.get_max ();
+
+            int ival_tmp = (value.numel () > 0 ?
+                            octave::math::round (((value(0) - dmin) / (dmax - dmin))
+                                                 * RANGE_INT_MAX) :
+                            0);
+
+            if (ival != ival_tmp || value.numel () > 0)
+              {
+                double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
+
+                gh_manager::post_set (m_handle, "value", octave_value (dval));
+                gh_manager::post_callback (m_handle, "callback");
+              }
+          }
+      }
+  }
 
 }; // namespace QtHandles
+

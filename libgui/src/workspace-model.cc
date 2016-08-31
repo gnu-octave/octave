@@ -292,3 +292,4 @@ workspace_model::notice_settings (const QSettings *settings)
       _storage_class_colors.replace (i,setting_color);
     }
 }
+

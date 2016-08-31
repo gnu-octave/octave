@@ -74,8 +74,8 @@ annotation_dialog::init ()
 
   // set gui element to default values
   ui->cb_fit_box_to_text->setChecked (true);
-  ui->cb_horz_align->setCurrentIndex ( ui->cb_horz_align->findText("left") );
-  ui->cb_vert_align->setCurrentIndex ( ui->cb_vert_align->findText("middle") );
+  ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText("left"));
+  ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText("middle"));
 
   // set gui elements to any values from input properties
   set_gui_props ();
@@ -91,7 +91,8 @@ annotation_dialog::~annotation_dialog ()
 void
 annotation_dialog::button_clicked (QAbstractButton *button)
 {
-  QDialogButtonBox::ButtonRole button_role = ui->button_box->buttonRole (button);
+  QDialogButtonBox::ButtonRole button_role
+    = ui->button_box->buttonRole (button);
 
   QSettings *settings = resource_manager::get_settings ();
 
@@ -99,14 +100,14 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   if (settings)
     settings->setValue ("annotation/geometry",saveGeometry ());
 
-  if (button_role == QDialogButtonBox::ApplyRole ||
-      button_role == QDialogButtonBox::AcceptRole)
+  if (button_role == QDialogButtonBox::ApplyRole
+      || button_role == QDialogButtonBox::AcceptRole)
     {
       get_gui_props ();
     }
 
-  if (button_role == QDialogButtonBox::RejectRole ||
-      button_role == QDialogButtonBox::AcceptRole)
+  if (button_role == QDialogButtonBox::RejectRole
+      || button_role == QDialogButtonBox::AcceptRole)
     close ();
 }
 
@@ -130,32 +131,32 @@ annotation_dialog::get_gui_props ()
   props.append (ovl ("textbox", position));
 
   props.append (ovl ("string", ui->edit_string->text ().toStdString ()));
-  props.append (ovl ("fitboxtotext", ui->cb_fit_box_to_text->isChecked() ? 
-                     "on" : "off" ));
+  props.append (ovl ("fitboxtotext",
+                     ui->cb_fit_box_to_text->isChecked () ? "on" : "off"));
 
-  // FIXME: only "normalized" units is selectable, change the code bellow
+  // FIXME: only "normalized" units is selectable, change the code below
   //        once more units are added in the UI.
-  std::string tmpval;
+  std::string tmpstr;
   props.append (ovl ("units", "normalized"));
-  
-  tmpval = (ui->cb_horz_align->currentIndex () == 0 ? "left" :
+
+  tmpstr = (ui->cb_horz_align->currentIndex () == 0 ? "left" :
             (ui->cb_horz_align->currentIndex () == 1 ? "center" : "right"));
-  props.append (ovl ("horizontalalignment", tmpval));
+  props.append (ovl ("horizontalalignment", tmpstr));
 
-  tmpval = (ui->cb_vert_align->currentIndex () == 0 ? "top" :
+  tmpstr = (ui->cb_vert_align->currentIndex () == 0 ? "top" :
             (ui->cb_horz_align->currentIndex () == 1 ? "middle" : "bottom"));
-  props.append (ovl ("verticalalignment", tmpval));
+  props.append (ovl ("verticalalignment", tmpstr));
 
-  tmpval = ui->cb_font_name->currentText ().toStdString();
-  props.append (ovl ("fontname", tmpval));
+  tmpstr = ui->cb_font_name->currentText ().toStdString();
+  props.append (ovl ("fontname", tmpstr));
 
   props.append (ovl ("fontsize", ui->sb_font_size->value ()));
-  props.append (ovl ("fontweight", ui->cb_font_bold->isChecked() ? 
-                     "bold" : "normal" ));
-  props.append (ovl ("fontangle", ui->cb_font_italic->isChecked() ? 
-                     "italic" : "normal" ));
+  props.append (ovl ("fontweight",
+                     ui->cb_font_bold->isChecked () ? "bold" : "normal"));
+  props.append (ovl ("fontangle",
+                     ui->cb_font_italic->isChecked () ? "italic" : "normal"));
   props.append (ovl ("color", Utils::toRgb (ui->btn_color->palette ().
-                                            color (QPalette::Button))));
+                     color (QPalette::Button))));
 
   // FIXME: only "none" linestyle is selectable, change the code bellow
   //        once more linestyles are added in the UI.
@@ -204,43 +205,47 @@ annotation_dialog::set_gui_props ()
         }
       else if (name == "fitboxtotext")
         {
-          ui->cb_fit_box_to_text->setChecked ( props(1*i +1).string_value () == "on" );
+          ui->cb_fit_box_to_text->setChecked (props(1*i +1).string_value () == "on");
         }
       else if (name == "units")
         {
-          ui->cb_units->setCurrentIndex ( ui->cb_units->findText(props(1*i +1).string_value ().c_str ()) );
+          ui->cb_units->setCurrentIndex (ui->cb_units->findText (props(
+                                            1*i +1).string_value ().c_str ()));
         }
       else if (name == "horizontalalignment")
         {
-          ui->cb_horz_align->setCurrentIndex ( ui->cb_horz_align->findText(props(1*i +1).string_value ().c_str ()) );
+          ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText (props(
+                                                 1*i +1).string_value ().c_str ()));
         }
       else if (name == "verticalalignment")
         {
-          ui->cb_vert_align->setCurrentIndex ( ui->cb_vert_align->findText(props(1*i +1).string_value ().c_str ()) );
+          ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText (props(
+                                                 1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontname")
         {
-          ui->cb_vert_align->setCurrentIndex ( ui->cb_font_name->findText(props(1*i +1).string_value ().c_str ()) );
+          ui->cb_vert_align->setCurrentIndex (ui->cb_font_name->findText (props(
+                                                 1*i +1).string_value ().c_str ()));
         }
-       else if (name == "fontsize")
+      else if (name == "fontsize")
         {
-          ui->sb_font_size->setValue ( props(1*i +1).float_value () );
+          ui->sb_font_size->setValue (props(1*i +1).float_value ());
         }
-       else if (name == "fontweight")
+      else if (name == "fontweight")
         {
-          ui->cb_font_bold->setChecked ( props(1*i +1).string_value () == "bold" );
+          ui->cb_font_bold->setChecked (props(1*i +1).string_value () == "bold");
         }
-       else if (name == "fontangle")
+      else if (name == "fontangle")
         {
-          ui->cb_font_italic->setChecked ( props(1*i +1).string_value () == "italic" );
+          ui->cb_font_italic->setChecked (props(1*i +1).string_value () == "italic");
         }
-       else if (name == "color")
+      else if (name == "color")
         {
           QColor color;
           if (props(1*i +1).is_matrix_type ())
-              color = Utils::fromRgb (props(2*i +1).matrix_value ());
+            color = Utils::fromRgb (props(2*i +1).matrix_value ());
           else
-             color.setNamedColor (props(2*i +1).string_value ().c_str ());
+            color.setNamedColor (props(2*i +1).string_value ().c_str ());
 
           if (color.isValid ())
             ui->btn_color->setPalette (QPalette (color));
@@ -268,16 +273,16 @@ annotation_dialog::prompt_for_color ()
       color = QColorDialog::getColor(color, this);
 
       if (color.isValid ())
-      {
-        widg->setPalette (QPalette (color));
+        {
+          widg->setPalette (QPalette (color));
 
-        QString css = QString ("background-color: %1; border: 1px solid %2;")
-                .arg (color.name ())
-                .arg ("#000000");
+          QString css = QString ("background-color: %1; border: 1px solid %2;")
+                        .arg (color.name ())
+                        .arg ("#000000");
 
-        widg->setStyleSheet (css);
-        widg->update ();
-      }
+          widg->setStyleSheet (css);
+          widg->update ();
+        }
     }
 }
 

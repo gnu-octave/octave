@@ -30,19 +30,20 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
+  DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
 
-class FigureWindow : public FigureWindowBase
-{
-  Q_OBJECT
+  class FigureWindow : public FigureWindowBase
+  {
+    Q_OBJECT
 
-public:
-  FigureWindow (QWidget* parent = 0);
-  ~FigureWindow (void);
+  public:
+    FigureWindow (QWidget* parent = 0);
+    ~FigureWindow (void);
 
-  QMenu* createPopupMenu (void);
-};
+    QMenu* createPopupMenu (void);
+  };
 
 }; // namespace QtHandles
 
 #endif
+

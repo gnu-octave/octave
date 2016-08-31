@@ -30,15 +30,16 @@ class QPushButton;
 namespace QtHandles
 {
 
-class ToggleButtonControl : public ButtonControl
-{
-public:
-  ToggleButtonControl (const graphics_object& go, QPushButton* box);
-  ~ToggleButtonControl (void);
+  class ToggleButtonControl : public ButtonControl
+  {
+  public:
+    ToggleButtonControl (const graphics_object& go, QPushButton* box);
+    ~ToggleButtonControl (void);
 
-  static ToggleButtonControl* create (const graphics_object& go);
-};
+    static ToggleButtonControl* create (const graphics_object& go);
+  };
 
 }; // namespace QtHandles
 
 #endif
+

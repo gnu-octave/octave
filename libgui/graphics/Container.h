@@ -32,26 +32,27 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
+  DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
 
-class Canvas;
+  class Canvas;
 
-class Container : public ContainerBase
-{
-public:
-  Container (QWidget* parent);
-  ~Container (void);
+  class Container : public ContainerBase
+  {
+  public:
+    Container (QWidget* parent);
+    ~Container (void);
 
-  Canvas* canvas (const graphics_handle& handle, bool create = true);
+    Canvas* canvas (const graphics_handle& handle, bool create = true);
 
-protected:
-  void childEvent (QChildEvent* event);
-  void resizeEvent (QResizeEvent* event);
+  protected:
+    void childEvent (QChildEvent* event);
+    void resizeEvent (QResizeEvent* event);
 
-private:
-  Canvas* m_canvas;
-};
+  private:
+    Canvas* m_canvas;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

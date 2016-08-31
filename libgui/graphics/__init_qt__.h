@@ -26,10 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-bool __init__ (void);
+  bool __init__ (void);
 
 }; // namespace QtHandles
 
 extern void install___init_qt___functions (void);
 
 #endif
+

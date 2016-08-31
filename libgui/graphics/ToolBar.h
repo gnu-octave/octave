@@ -31,34 +31,35 @@ class QToolBar;
 namespace QtHandles
 {
 
-class Figure;
+  class Figure;
 
-class ToolBar : public Object
-{
-  Q_OBJECT
+  class ToolBar : public Object
+  {
+    Q_OBJECT
 
-public:
-  ToolBar (const graphics_object& go, QToolBar* bar);
-  ~ToolBar (void);
+  public:
+    ToolBar (const graphics_object& go, QToolBar* bar);
+    ~ToolBar (void);
 
-  static ToolBar* create (const graphics_object& go);
+    static ToolBar* create (const graphics_object& go);
 
-  Container* innerContainer (void) { return 0; }
+    Container* innerContainer (void) { return 0; }
 
-  bool eventFilter (QObject* watched, QEvent* event);
+    bool eventFilter (QObject* watched, QEvent* event);
 
-protected:
-  void update (int pId);
-  void beingDeleted (void);
+  protected:
+    void update (int pId);
+    void beingDeleted (void);
 
-private slots:
-  void hideEmpty (void);
+  private slots:
+    void hideEmpty (void);
 
-private:
-  QAction* m_empty;
-  Figure* m_figure;
-};
+  private:
+    QAction* m_empty;
+    Figure* m_figure;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

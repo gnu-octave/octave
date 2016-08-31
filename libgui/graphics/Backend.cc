@@ -48,181 +48,182 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static std::string
-toolkitObjectProperty (const graphics_object& go)
-{
-  if (go.isa ("figure"))
-    return std::string ("__plot_stream__");
-  else if (go.isa ("uicontrol")
-           || go.isa ("uipanel")
-           || go.isa ("uibuttongroup")
-           || go.isa ("uimenu")
-           || go.isa ("uicontextmenu")
-           || go.isa ("uitoolbar")
-           || go.isa ("uipushtool")
-           || go.isa ("uitoggletool"))
-    return std::string ("__object__");
-  else
-    qCritical ("QtHandles::Backend: no __object__ property known for object "
-               "of type %s", go.type ().c_str ());
+  static std::string
+  toolkitObjectProperty (const graphics_object& go)
+  {
+    if (go.isa ("figure"))
+      return std::string ("__plot_stream__");
+    else if (go.isa ("uicontrol")
+             || go.isa ("uipanel")
+             || go.isa ("uibuttongroup")
+             || go.isa ("uimenu")
+             || go.isa ("uicontextmenu")
+             || go.isa ("uitoolbar")
+             || go.isa ("uipushtool")
+             || go.isa ("uitoggletool"))
+      return std::string ("__object__");
+    else
+      qCritical ("QtHandles::Backend: no __object__ property known for object "
+                 "of type %s", go.type ().c_str ());
 
-  return "";
-}
+    return "";
+  }
 
-Backend::Backend (void)
-  : QObject (), base_graphics_toolkit ("qt")
-{
-  ObjectFactory* factory = ObjectFactory::instance ();
+  Backend::Backend (void)
+    : QObject (), base_graphics_toolkit ("qt")
+  {
+    ObjectFactory* factory = ObjectFactory::instance ();
 
-  connect (this, SIGNAL (createObject (double)),
-           factory, SLOT (createObject (double)));
-}
+    connect (this, SIGNAL (createObject (double)),
+             factory, SLOT (createObject (double)));
+  }
 
-Backend::~Backend (void)
-{
-}
+  Backend::~Backend (void)
+  {
+  }
 
-bool
-Backend::initialize (const graphics_object& go)
-{
-  if (go.isa ("figure")
-      || go.isa ("uicontrol")
-      || go.isa ("uipanel")
-      || go.isa ("uibuttongroup")
-      || go.isa ("uimenu")
-      || go.isa ("uicontextmenu")
-      || go.isa ("uitoolbar")
-      || go.isa ("uipushtool")
-      || go.isa ("uitoggletool"))
-    {
-      Logger::debug ("Backend::initialize %s from thread %08x",
-                     go.type ().c_str (), QThread::currentThreadId ());
+  bool
+  Backend::initialize (const graphics_object& go)
+  {
+    if (go.isa ("figure")
+        || go.isa ("uicontrol")
+        || go.isa ("uipanel")
+        || go.isa ("uibuttongroup")
+        || go.isa ("uimenu")
+        || go.isa ("uicontextmenu")
+        || go.isa ("uitoolbar")
+        || go.isa ("uipushtool")
+        || go.isa ("uitoggletool"))
+      {
+        Logger::debug ("Backend::initialize %s from thread %08x",
+                       go.type ().c_str (), QThread::currentThreadId ());
 
-      ObjectProxy* proxy = new ObjectProxy ();
-      graphics_object gObj (go);
+        ObjectProxy* proxy = new ObjectProxy ();
+        graphics_object gObj (go);
 
-      OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
-      gObj.get_properties ().set(toolkitObjectProperty (go), tmp);
+        OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
+        gObj.get_properties ().set(toolkitObjectProperty (go), tmp);
 
-      emit createObject (go.get_handle ().value ());
+        emit createObject (go.get_handle ().value ());
 
-      return true;
-    }
+        return true;
+      }
 
-  return false;
-}
+    return false;
+  }
 
-void
-Backend::update (const graphics_object& go, int pId)
-{
-  // Rule out obvious properties we want to ignore.
-  if (pId == figure::properties::ID___PLOT_STREAM__
-      || pId == uicontrol::properties::ID___OBJECT__
-      || pId == uipanel::properties::ID___OBJECT__
-      || pId == uibuttongroup::properties::ID___OBJECT__
-      || pId == uimenu::properties::ID___OBJECT__
-      || pId == uicontextmenu::properties::ID___OBJECT__
-      || pId == uitoolbar::properties::ID___OBJECT__
-      || pId == uipushtool::properties::ID___OBJECT__
-      || pId == uitoggletool::properties::ID___OBJECT__
-      || pId == base_properties::ID___MODIFIED__)
-    return;
+  void
+  Backend::update (const graphics_object& go, int pId)
+  {
+    // Rule out obvious properties we want to ignore.
+    if (pId == figure::properties::ID___PLOT_STREAM__
+        || pId == uicontrol::properties::ID___OBJECT__
+        || pId == uipanel::properties::ID___OBJECT__
+        || pId == uibuttongroup::properties::ID___OBJECT__
+        || pId == uimenu::properties::ID___OBJECT__
+        || pId == uicontextmenu::properties::ID___OBJECT__
+        || pId == uitoolbar::properties::ID___OBJECT__
+        || pId == uipushtool::properties::ID___OBJECT__
+        || pId == uitoggletool::properties::ID___OBJECT__
+        || pId == base_properties::ID___MODIFIED__)
+      return;
 
-  Logger::debug ("Backend::update %s(%d) from thread %08x",
-                 go.type ().c_str (), pId, QThread::currentThreadId ());
+    Logger::debug ("Backend::update %s(%d) from thread %08x",
+                   go.type ().c_str (), pId, QThread::currentThreadId ());
 
-  ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy* proxy = toolkitObjectProxy (go);
 
-  if (proxy)
-    {
-      if (go.isa ("uicontrol")
-          && pId == uicontrol::properties::ID_STYLE)
-        {
-          // Special case: we need to recreate the control widget
-          // associated with the octave graphics_object
+    if (proxy)
+      {
+        if (go.isa ("uicontrol")
+            && pId == uicontrol::properties::ID_STYLE)
+          {
+            // Special case: we need to recreate the control widget
+            // associated with the octave graphics_object
 
-          finalize (go);
-          initialize (go);
-        }
-      else
-        proxy->update (pId);
-    }
-}
+            finalize (go);
+            initialize (go);
+          }
+        else
+          proxy->update (pId);
+      }
+  }
 
-void
-Backend::finalize (const graphics_object& go)
-{
-  Logger::debug ("Backend::finalize %s from thread %08x",
-                 go.type ().c_str (), QThread::currentThreadId ());
+  void
+  Backend::finalize (const graphics_object& go)
+  {
+    Logger::debug ("Backend::finalize %s from thread %08x",
+                   go.type ().c_str (), QThread::currentThreadId ());
 
-  ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy* proxy = toolkitObjectProxy (go);
 
-  if (proxy)
-    {
-      proxy->finalize ();
-      delete proxy;
+    if (proxy)
+      {
+        proxy->finalize ();
+        delete proxy;
 
-      graphics_object gObj (go);
+        graphics_object gObj (go);
 
-      gObj.get_properties ().set (toolkitObjectProperty (go), Matrix ());
-    }
-}
+        gObj.get_properties ().set (toolkitObjectProperty (go), Matrix ());
+      }
+  }
 
-void
-Backend::redraw_figure (const graphics_object& go) const
-{
-  if (go.get_properties ().is_visible ())
-    {
-      ObjectProxy* proxy = toolkitObjectProxy (go);
+  void
+  Backend::redraw_figure (const graphics_object& go) const
+  {
+    if (go.get_properties ().is_visible ())
+      {
+        ObjectProxy* proxy = toolkitObjectProxy (go);
 
-      if (proxy)
-        proxy->redraw ();
-    }
-}
+        if (proxy)
+          proxy->redraw ();
+      }
+  }
 
-void
-Backend::print_figure (const graphics_object& go,
-                            const std::string& term,
-                            const std::string& file_cmd,
-                            const std::string& /*debug_file*/) const
-{
-  if (go.get_properties ().is_visible ())
-    {
-      ObjectProxy* proxy = toolkitObjectProxy (go);
+  void
+  Backend::print_figure (const graphics_object& go,
+                         const std::string& term,
+                         const std::string& file_cmd,
+                         const std::string& /*debug_file*/) const
+  {
+    if (go.get_properties ().is_visible ())
+      {
+        ObjectProxy* proxy = toolkitObjectProxy (go);
 
-      if (proxy)
-        proxy->print (QString::fromStdString (file_cmd),
-                      QString::fromStdString (term));
-    }
-}
+        if (proxy)
+          proxy->print (QString::fromStdString (file_cmd),
+                        QString::fromStdString (term));
+      }
+  }
 
-Object*
-Backend::toolkitObject (const graphics_object& go)
-{
-  ObjectProxy* proxy = toolkitObjectProxy (go);
+  Object*
+  Backend::toolkitObject (const graphics_object& go)
+  {
+    ObjectProxy* proxy = toolkitObjectProxy (go);
 
-  if (proxy)
-    return proxy->object ();
+    if (proxy)
+      return proxy->object ();
 
-  return 0;
-}
+    return 0;
+  }
 
-ObjectProxy*
-Backend::toolkitObjectProxy (const graphics_object& go)
-{
-  if (go)
-    {
-      octave_value ov = go.get (toolkitObjectProperty (go));
+  ObjectProxy*
+  Backend::toolkitObjectProxy (const graphics_object& go)
+  {
+    if (go)
+      {
+        octave_value ov = go.get (toolkitObjectProperty (go));
 
-      if (ov.is_defined () && ! ov.is_empty ())
-        {
-          OCTAVE_INTPTR_TYPE ptr = ov.OCTAVE_PTR_SCALAR ().value ();
+        if (ov.is_defined () && ! ov.is_empty ())
+          {
+            OCTAVE_INTPTR_TYPE ptr = ov.OCTAVE_PTR_SCALAR ().value ();
 
-          return reinterpret_cast<ObjectProxy*> (ptr);
-        }
-    }
+            return reinterpret_cast<ObjectProxy*> (ptr);
+          }
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
 };
+

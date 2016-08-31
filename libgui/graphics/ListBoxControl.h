@@ -30,26 +30,27 @@ class QListWidget;
 namespace QtHandles
 {
 
-class ListBoxControl : public BaseControl
-{
-  Q_OBJECT
+  class ListBoxControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  ListBoxControl (const graphics_object& go, QListWidget* list);
-  ~ListBoxControl (void);
+  public:
+    ListBoxControl (const graphics_object& go, QListWidget* list);
+    ~ListBoxControl (void);
 
-  static ListBoxControl* create (const graphics_object& go);
+    static ListBoxControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void itemSelectionChanged (void);
+  private slots:
+    void itemSelectionChanged (void);
 
-private:
-  bool m_blockCallback;
-};
+  private:
+    bool m_blockCallback;
+  };
 
 }; // namespace QtHandles
 
 #endif
+

@@ -32,30 +32,31 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-CheckBoxControl*
-CheckBoxControl::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  CheckBoxControl*
+  CheckBoxControl::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      Container* container = parent->innerContainer ();
+    if (parent)
+      {
+        Container* container = parent->innerContainer ();
 
-      if (container)
-        return new CheckBoxControl (go, new QCheckBox (container));
-    }
+        if (container)
+          return new CheckBoxControl (go, new QCheckBox (container));
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-CheckBoxControl::CheckBoxControl (const graphics_object& go, QCheckBox* box)
+  CheckBoxControl::CheckBoxControl (const graphics_object& go, QCheckBox* box)
     : ButtonControl (go, box)
-{
-  box->setAutoFillBackground (true);
-}
+  {
+    box->setAutoFillBackground (true);
+  }
 
-CheckBoxControl::~CheckBoxControl (void)
-{
-}
+  CheckBoxControl::~CheckBoxControl (void)
+  {
+  }
 
 };
+

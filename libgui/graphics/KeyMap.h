@@ -28,13 +28,14 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-namespace KeyMap
-{
+  namespace KeyMap
+  {
 
-std::string qKeyToKeyString (int key);
+    std::string qKeyToKeyString (int key);
 
-}; // namespace KeyMap
+  }; // namespace KeyMap
 
 }; // namespace QtHandles
 
 #endif
+

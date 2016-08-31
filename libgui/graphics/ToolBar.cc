@@ -41,96 +41,96 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static QAction*
-addEmptyAction (QToolBar* bar)
-{
-  static QIcon _empty;
+  static QAction*
+  addEmptyAction (QToolBar* bar)
+  {
+    static QIcon _empty;
 
-  if (_empty.isNull ())
-    {
-      QPixmap pix (16, 16);
+    if (_empty.isNull ())
+      {
+        QPixmap pix (16, 16);
 
-      pix.fill (Qt::transparent);
+        pix.fill (Qt::transparent);
 
-      _empty = QIcon (pix);
-    }
+        _empty = QIcon (pix);
+      }
 
-  QAction* a = bar->addAction (_empty, "Empty Toolbar");
+    QAction* a = bar->addAction (_empty, "Empty Toolbar");
 
-  a->setEnabled (false);
-  a->setToolTip ("");
+    a->setEnabled (false);
+    a->setToolTip ("");
 
-  return a;
-}
+    return a;
+  }
 
-ToolBar*
-ToolBar::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  ToolBar*
+  ToolBar::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      QWidget* parentWidget = parent->qWidget<QWidget> ();
+    if (parent)
+      {
+        QWidget* parentWidget = parent->qWidget<QWidget> ();
 
-      if (parentWidget)
-        return new ToolBar (go, new QToolBar (parentWidget));
-    }
+        if (parentWidget)
+          return new ToolBar (go, new QToolBar (parentWidget));
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
-  : Object (go, bar), m_empty (0), m_figure (0)
-{
-  uitoolbar::properties& tp = properties<uitoolbar> ();
+  ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
+    : Object (go, bar), m_empty (0), m_figure (0)
+  {
+    uitoolbar::properties& tp = properties<uitoolbar> ();
 
-  bar->setFloatable (false);
-  bar->setMovable (false);
-  bar->setVisible (tp.is_visible ());
+    bar->setFloatable (false);
+    bar->setMovable (false);
+    bar->setVisible (tp.is_visible ());
 
-  m_empty = addEmptyAction (bar);
+    m_empty = addEmptyAction (bar);
 
-  m_figure =
-    dynamic_cast<Figure*> (Object::fromQObject (bar->parentWidget ()));
+    m_figure =
+      dynamic_cast<Figure*> (Object::fromQObject (bar->parentWidget ()));
 
-  if (m_figure)
-    m_figure->addCustomToolBar (bar, tp.is_visible ());
+    if (m_figure)
+      m_figure->addCustomToolBar (bar, tp.is_visible ());
 
-  bar->installEventFilter (this);
-}
+    bar->installEventFilter (this);
+  }
 
-ToolBar::~ToolBar (void)
-{
-}
+  ToolBar::~ToolBar (void)
+  {
+  }
 
-void
-ToolBar::update (int pId)
-{
-  uitoolbar::properties& tp = properties<uitoolbar> ();
-  QToolBar* bar = qWidget<QToolBar> ();
+  void
+  ToolBar::update (int pId)
+  {
+    uitoolbar::properties& tp = properties<uitoolbar> ();
+    QToolBar* bar = qWidget<QToolBar> ();
 
-  switch (pId)
-    {
-    case base_properties::ID_VISIBLE:
-      if (m_figure)
-        m_figure->showCustomToolBar (bar, tp.is_visible ());
-      break;
+    switch (pId)
+      {
+      case base_properties::ID_VISIBLE:
+        if (m_figure)
+          m_figure->showCustomToolBar (bar, tp.is_visible ());
+        break;
 
-    default:
-      Object::update (pId);
-      break;
-    }
-}
+      default:
+        Object::update (pId);
+        break;
+      }
+  }
 
-bool
-ToolBar::eventFilter (QObject* watched, QEvent* xevent)
-{
-  if (watched == qObject ())
-    {
-      switch (xevent->type ())
-        {
-        case QEvent::ActionAdded:
-        case QEvent::ActionRemoved:
+  bool
+  ToolBar::eventFilter (QObject* watched, QEvent* xevent)
+  {
+    if (watched == qObject ())
+      {
+        switch (xevent->type ())
+          {
+          case QEvent::ActionAdded:
+          case QEvent::ActionRemoved:
             {
               QActionEvent* ae = dynamic_cast<QActionEvent*> (xevent);
               QToolBar* bar = qWidget<QToolBar> ();
@@ -149,32 +149,33 @@ ToolBar::eventFilter (QObject* watched, QEvent* xevent)
                     }
                 }
             }
-          break;
+            break;
 
-        default:
-          break;
-        }
-    }
+          default:
+            break;
+          }
+      }
 
-  return false;
-}
+    return false;
+  }
 
-void
-ToolBar::hideEmpty (void)
-{
-  m_empty->setVisible (false);
-}
+  void
+  ToolBar::hideEmpty (void)
+  {
+    m_empty->setVisible (false);
+  }
 
-void
-ToolBar::beingDeleted (void)
-{
-  if (m_figure)
-    {
-      QToolBar* bar = qWidget<QToolBar> ();
+  void
+  ToolBar::beingDeleted (void)
+  {
+    if (m_figure)
+      {
+        QToolBar* bar = qWidget<QToolBar> ();
 
-      if (bar)
-        m_figure->showCustomToolBar (bar, false);
-    }
-}
+        if (bar)
+          m_figure->showCustomToolBar (bar, false);
+      }
+  }
 
 }; // namespace QtHandles
+

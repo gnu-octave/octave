@@ -62,7 +62,8 @@ parser::set_info_path (const QString& infoPath)
     {
       if (info_file_exists)
         break;
-      info_file_exists = QFileInfo (info.absoluteFilePath () + "." + it.key ()).exists ();
+      info_file_exists = QFileInfo (info.absoluteFilePath () + "." +
+                                    it.key ()).exists ();
     }
 
   if (info_file_exists)
@@ -96,7 +97,8 @@ parser::open_file (QFileInfo & file_info)
   QIODevice *iodevice = 0;
   if (_compressors_map.contains (file_info.suffix ()))
     {
-      QString command = _compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ());
+      QString command = _compressors_map.value (file_info.suffix ()).arg (
+                          file_info.absoluteFilePath ());
       iprocstream ips (command.toStdString ());
 
       if (ips.bad ())

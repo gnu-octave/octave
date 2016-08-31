@@ -39,47 +39,48 @@ class QMouseEvent;
 namespace QtHandles
 {
 
-namespace Utils
-{
-  QString fromStdString (const std::string& s);
-  std::string toStdString (const QString& s);
+  namespace Utils
+  {
+    QString fromStdString (const std::string& s);
+    std::string toStdString (const QString& s);
 
-  QStringList fromStringVector (const string_vector& v);
-  string_vector toStringVector (const QStringList& l);
+    QStringList fromStringVector (const string_vector& v);
+    string_vector toStringVector (const QStringList& l);
 
-  Cell toCellString (const QStringList& l);
+    Cell toCellString (const QStringList& l);
 
-  template <typename T>
-  QFont computeFont (const typename T::properties& props, int height = -1);
+    template <typename T>
+    QFont computeFont (const typename T::properties& props, int height = -1);
 
-  QColor fromRgb (const Matrix& rgb);
-  Matrix toRgb (const QColor& c);
+    QColor fromRgb (const Matrix& rgb);
+    Matrix toRgb (const QColor& c);
 
-  Qt::Alignment fromHVAlign (const std::string& halign,
-                             const std::string& valign);
+    Qt::Alignment fromHVAlign (const std::string& halign,
+                               const std::string& valign);
 
-  std::string figureSelectionType (QMouseEvent* event,
-                                   bool isDoubleClick = false);
+    std::string figureSelectionType (QMouseEvent* event,
+                                     bool isDoubleClick = false);
 
-  Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
-  Matrix figureCurrentPoint (const graphics_object& fig);
+    Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
+    Matrix figureCurrentPoint (const graphics_object& fig);
 
-  template <typename T>
-  inline typename T::properties&
-  properties (graphics_object obj)
+    template <typename T>
+    inline typename T::properties&
+    properties (graphics_object obj)
     { return dynamic_cast<typename T::properties&> (obj.get_properties ()); }
 
-  template <typename T>
-  inline typename T::properties&
-  properties (const graphics_handle& h)
+    template <typename T>
+    inline typename T::properties&
+    properties (const graphics_handle& h)
     { return Utils::properties<T> (gh_manager::get_object (h)); }
 
-  QImage makeImageFromCData (const octave_value& v, int width = -1,
-                             int height = -1);
+    QImage makeImageFromCData (const octave_value& v, int width = -1,
+                               int height = -1);
 
-  octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
-};
+    octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
+  };
 
 }; // namespace QtHandles
 
 #endif
+

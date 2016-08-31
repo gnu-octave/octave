@@ -28,23 +28,24 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-class TextEdit : public QTextEdit
-{
-  Q_OBJECT
+  class TextEdit : public QTextEdit
+  {
+    Q_OBJECT
 
-public:
-  TextEdit (QWidget* xparent) : QTextEdit(xparent) { }
-  ~TextEdit (void) { }
+  public:
+    TextEdit (QWidget* xparent) : QTextEdit(xparent) { }
+    ~TextEdit (void) { }
 
-signals:
-  void editingFinished (void);
-  void returnPressed (void);
+  signals:
+    void editingFinished (void);
+    void returnPressed (void);
 
-protected:
-  void focusOutEvent (QFocusEvent* event);
-  void keyPressEvent (QKeyEvent* event);
-};
+  protected:
+    void focusOutEvent (QFocusEvent* event);
+    void keyPressEvent (QKeyEvent* event);
+  };
 
 }; // namespace QtHandles
 
 #endif
+

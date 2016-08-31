@@ -57,25 +57,25 @@ class file_editor : public file_editor_interface
 public:
 
   struct tab_info
-    {
-      QWidget *fet_ID;
-      QString  encoding;
-    };
+  {
+    QWidget *fet_ID;
+    QString  encoding;
+  };
 
   typedef std::map<QString, tab_info>::iterator editor_tab_map_iterator;
   typedef std::map<QString, tab_info>::const_iterator editor_tab_map_const_iterator;
 
   // struct that allows to sort with respect to the tab index
   struct session_data
+  {
+    QString index;
+    QString file_name;
+    QString encoding;
+    bool operator<(const session_data &other) const
     {
-      QString index;
-      QString file_name;
-      QString encoding;
-      bool operator<(const session_data &other) const
-        {
-          return index < other.index;
-        }
-    };
+      return index < other.index;
+    }
+  };
 
   file_editor (QWidget *p);
   ~file_editor (void);
@@ -88,16 +88,16 @@ public:
 
   void insert_global_actions (QList<QAction*>);
   enum shared_actions_idx
-    {
-      NEW_SCRIPT_ACTION = 0,
-      NEW_FUNCTION_ACTION,
-      OPEN_ACTION,
-      FIND_FILES_ACTION,
-      UNDO_ACTION,
-      COPY_ACTION,
-      PASTE_ACTION,
-      SELECTALL_ACTION
-    };
+  {
+    NEW_SCRIPT_ACTION = 0,
+    NEW_FUNCTION_ACTION,
+    OPEN_ACTION,
+    FIND_FILES_ACTION,
+    UNDO_ACTION,
+    COPY_ACTION,
+    PASTE_ACTION,
+    SELECTALL_ACTION
+  };
 
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
@@ -440,3 +440,4 @@ private:
 };
 
 #endif
+

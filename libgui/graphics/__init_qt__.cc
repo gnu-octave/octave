@@ -41,89 +41,89 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-static bool qtHandlesInitialized = false;
+  static bool qtHandlesInitialized = false;
 
-bool
-__init__ (void)
-{
-  if (! qtHandlesInitialized)
-    {
-      if (qApp)
-        {
-          gh_manager::auto_lock lock;
+  bool
+  __init__ (void)
+  {
+    if (! qtHandlesInitialized)
+      {
+        if (qApp)
+          {
+            gh_manager::auto_lock lock;
 
-          qRegisterMetaType<graphics_object> ("graphics_object");
+            qRegisterMetaType<graphics_object> ("graphics_object");
 
-          gh_manager::enable_event_processing (true);
+            gh_manager::enable_event_processing (true);
 
-          graphics_toolkit tk (new Backend ());
-          gtk_manager::load_toolkit (tk);
+            graphics_toolkit tk (new Backend ());
+            gtk_manager::load_toolkit (tk);
 
-          octave_add_atexit_function ("__shutdown_qt__");
+            octave_add_atexit_function ("__shutdown_qt__");
 
-          // Change some default settings to use Qt default colors
-          QPalette p;
-          graphics_object root = gh_manager::get_object (0);
+            // Change some default settings to use Qt default colors
+            QPalette p;
+            graphics_object root = gh_manager::get_object (0);
 
-          /*
-          root.set ("defaultfigurecolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-          */
-          root.set ("defaultuicontrolbackgroundcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-          root.set ("defaultuicontrolforegroundcolor",
-                    octave_value (Utils::toRgb
-                                  (p.color (QPalette::WindowText))));
-          root.set ("defaultuipanelbackgroundcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-          root.set ("defaultuipanelforegroundcolor",
-                    octave_value (Utils::toRgb
-                                  (p.color (QPalette::WindowText))));
-          root.set ("defaultuipanelhighlightcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Light))));
-          root.set ("defaultuipanelshadowcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Dark))));
-          root.set ("defaultuibuttongroupbackgroundcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-          root.set ("defaultuibuttongroupforegroundcolor",
-                    octave_value (Utils::toRgb
-                                  (p.color (QPalette::WindowText))));
-          root.set ("defaultuibuttongrouphighlightcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Light))));
-          root.set ("defaultuibuttongroupshadowcolor",
-                    octave_value (Utils::toRgb (p.color (QPalette::Dark))));
+            /*
+            root.set ("defaultfigurecolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
+            */
+            root.set ("defaultuicontrolbackgroundcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
+            root.set ("defaultuicontrolforegroundcolor",
+                      octave_value (Utils::toRgb
+                                    (p.color (QPalette::WindowText))));
+            root.set ("defaultuipanelbackgroundcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
+            root.set ("defaultuipanelforegroundcolor",
+                      octave_value (Utils::toRgb
+                                    (p.color (QPalette::WindowText))));
+            root.set ("defaultuipanelhighlightcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Light))));
+            root.set ("defaultuipanelshadowcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Dark))));
+            root.set ("defaultuibuttongroupbackgroundcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
+            root.set ("defaultuibuttongroupforegroundcolor",
+                      octave_value (Utils::toRgb
+                                    (p.color (QPalette::WindowText))));
+            root.set ("defaultuibuttongrouphighlightcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Light))));
+            root.set ("defaultuibuttongroupshadowcolor",
+                      octave_value (Utils::toRgb (p.color (QPalette::Dark))));
 
-          qtHandlesInitialized = true;
+            qtHandlesInitialized = true;
 
-          return true;
-        }
-      else
-        error ("__init_qt__: QApplication object must exist.");
-    }
+            return true;
+          }
+        else
+          error ("__init_qt__: QApplication object must exist.");
+      }
 
-  return false;
-}
+    return false;
+  }
 
-bool
-__shutdown__ (void)
-{
-  if (qtHandlesInitialized)
-    {
-      gh_manager::auto_lock lock;
+  bool
+  __shutdown__ (void)
+  {
+    if (qtHandlesInitialized)
+      {
+        gh_manager::auto_lock lock;
 
-      octave_add_atexit_function ("__shutdown_qt__");
+        octave_add_atexit_function ("__shutdown_qt__");
 
-      gtk_manager::unload_toolkit ("qt");
+        gtk_manager::unload_toolkit ("qt");
 
-      gh_manager::enable_event_processing (false);
+        gh_manager::enable_event_processing (false);
 
-      qtHandlesInitialized = false;
+        qtHandlesInitialized = false;
 
-      return true;
-    }
+        return true;
+      }
 
-  return false;
-}
+    return false;
+  }
 
 }; // namespace QtHandles
 
@@ -239,13 +239,13 @@ DEFUN (__uigetfile_qt__, args, , "")
           int i = 0;
 
           foreach (const QString& s, files)
-            {
-              QFileInfo fi (s);
+          {
+            QFileInfo fi (s);
 
-              if (dirName.isEmpty ())
-                dirName = appendDirSep (fi.canonicalPath ());
-              cFiles(i++) = toStdString (fi.fileName ());
-            }
+            if (dirName.isEmpty ())
+              dirName = appendDirSep (fi.canonicalPath ());
+            cFiles(i++) = toStdString (fi.fileName ());
+          }
 
           retval(0) = cFiles;
           retval(1) = toStdString (dirName);
@@ -338,7 +338,7 @@ DEFUN (__uigetdir_qt__, args, , "")
   QString defaultDirectory = fromStdString (args(0).string_value ());
 
   QString dirName = QFileDialog::getExistingDirectory (0, caption,
-                                                       defaultDirectory);
+                    defaultDirectory);
 
   if (! dirName.isNull ())
     retval = toStdString (dirName);
@@ -347,3 +347,4 @@ DEFUN (__uigetdir_qt__, args, , "")
 }
 
 #endif
+

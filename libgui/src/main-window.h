@@ -169,7 +169,7 @@ public slots:
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
                                                 const QString& file, int line,
-						const QString& cond);
+                                    						const QString& cond);
 
   void read_settings (void);
   void init_terminal_size (void);
@@ -225,7 +225,7 @@ public slots:
 
   // get the dockwidgets
   QList<octave_dock_widget *> get_dock_widget_list ()
-    { return dock_widget_list (); }
+  { return dock_widget_list (); }
 
 private slots:
   void disable_menu_shortcuts (bool disable);
@@ -437,3 +437,4 @@ private:
 };
 
 #endif
+

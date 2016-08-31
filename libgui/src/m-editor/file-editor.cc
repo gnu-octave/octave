@@ -294,12 +294,12 @@ file_editor::request_open_file (void)
   extra->addWidget (label_enc,1,0);
   extra->addWidget (combo_enc,1,1);
   extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                          QSizePolicy::Fixed), 1,2);
+                                     QSizePolicy::Fixed), 1,2);
 
   // and add the extra grid layout to the dialog's layout
   QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
   dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                                  1,dialog_layout->columnCount ());
+                            1,dialog_layout->columnCount ());
 
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
@@ -368,9 +368,9 @@ file_editor::call_custom_editor (const QString& file_name, int line)
                                arg (editor),
                                QMessageBox::Ok, this);
 
-           msgBox->setWindowModality (Qt::NonModal);
-           msgBox->setAttribute (Qt::WA_DeleteOnClose);
-           msgBox->show ();
+          msgBox->setWindowModality (Qt::NonModal);
+          msgBox->setAttribute (Qt::WA_DeleteOnClose);
+          msgBox->show ();
         }
 
       if (line < 0 && ! file_name.isEmpty ())
@@ -682,7 +682,8 @@ file_editor::handle_edit_mfile_request (const QString& fname,
   QString filename = QString ();
 
   if (type == QString("built-in function"))
-    { // built in function: can't edit
+    {
+      // built in function: can't edit
       message = tr ("%1 is a built-in function");
     }
   else if (type.isEmpty ())
@@ -708,7 +709,8 @@ file_editor::handle_edit_mfile_request (const QString& fname,
           filename = file.canonicalFilePath (); // local file exists
         }
       else
-        { // local file does not exist -> try private directory
+        {
+          // local file does not exist -> try private directory
           file = QFileInfo (ffile);
           file = QFileInfo (QDir (file.canonicalPath () + "/private"),
                             fname + ".m");
@@ -727,10 +729,10 @@ file_editor::handle_edit_mfile_request (const QString& fname,
   if (! message.isEmpty ())
     {
       QMessageBox *msgBox
-          = new QMessageBox (QMessageBox::Critical,
-                             tr ("Octave Editor"),
-                             message.arg (name),
-                             QMessageBox::Ok, this);
+        = new QMessageBox (QMessageBox::Critical,
+                           tr ("Octave Editor"),
+                           message.arg (name),
+                           QMessageBox::Ok, this);
 
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -738,7 +740,7 @@ file_editor::handle_edit_mfile_request (const QString& fname,
       return;
     }
 
-  if ( filename.isEmpty ())
+  if (filename.isEmpty ())
     filename = QString::fromStdString (
                            map.contents ("file").data ()[0].string_value ());
 
@@ -1165,8 +1167,8 @@ file_editor::handle_file_name_changed (const QString& fname,
 void
 file_editor::request_close_file (bool)
 {
-  file_editor_tab *editor_tab =
-      static_cast<file_editor_tab *> (_tab_widget->currentWidget ());
+  file_editor_tab *editor_tab
+    = static_cast<file_editor_tab *> (_tab_widget->currentWidget ());
   editor_tab->conditional_close ();
 }
 
@@ -1194,8 +1196,8 @@ file_editor::request_close_other_files (bool)
     {
       if (tabID != _tab_widget->widget (index))
         {
-          editor_tab =
-              static_cast<file_editor_tab *> (_tab_widget->widget (index));
+          editor_tab
+            = static_cast<file_editor_tab *> (_tab_widget->widget (index));
           editor_tab->conditional_close ();
         }
     }
@@ -1204,8 +1206,8 @@ file_editor::request_close_other_files (bool)
 void
 file_editor::handle_tab_close_request (int index)
 {
-  file_editor_tab *editor_tab =
-       static_cast<file_editor_tab *> (_tab_widget->widget (index));
+  file_editor_tab *editor_tab
+    = static_cast<file_editor_tab *> (_tab_widget->widget (index));
   editor_tab->conditional_close ();
 }
 
@@ -1562,7 +1564,8 @@ file_editor::construct (void)
                                    .toStringList ();
 
   if (_mru_files_encodings.count () != _mru_files.count ())
-    { // encodings don't have the same count -> do not use them!
+    {
+      // encodings don't have the same count -> do not use them!
       _mru_files_encodings = QStringList ();
       for (int i = 0; i < _mru_files.count (); i++)
         _mru_files_encodings << QString ();
@@ -1943,7 +1946,7 @@ file_editor::restore_session (QSettings *settings)
       if (do_encoding)
         item.encoding = session_encodings.at (n);
 
-     s_data << item;
+      s_data << item;
     }
 
   qSort (s_data);
@@ -1968,7 +1971,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f->qsci_edit_area (), SIGNAL (create_context_menu_signal (QMenu *)),
            this, SLOT (create_context_menu (QMenu *)));
 
-  connect (f->qsci_edit_area (), SIGNAL (execute_command_in_terminal_signal (const QString&)),
+  connect (f->qsci_edit_area (),
+           SIGNAL (execute_command_in_terminal_signal (const QString&)),
            main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
   // Signals from the file editor_tab
@@ -1985,7 +1989,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (add_filename_to_list (const QString&,
                                             const QString&, QWidget*)),
            this, SLOT (handle_add_filename_to_list (const QString&,
-                                                    const QString&, QWidget*)));
+                                                    const QString&,
+                                                    QWidget*)));
 
   connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
            this, SLOT (check_conflict_save (const QString&, bool)));
@@ -2001,7 +2006,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (f, SIGNAL (edit_mfile_request (const QString&, const QString&,
                                           const QString&, int)),
-           this, SLOT (handle_edit_mfile_request (const QString&, const QString&,
+           this, SLOT (handle_edit_mfile_request (const QString&,
+                                                  const QString&,
                                                   const QString&, int)));
 
   // Signals from the file_editor non-trivial operations
@@ -2083,7 +2089,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_remove_all_breakpoints (const QWidget*)),
            f, SLOT (remove_all_breakpoints (const QWidget*)));
 
-  connect (this, SIGNAL (fetab_scintilla_command (const QWidget *, unsigned int)),
+  connect (this, SIGNAL (fetab_scintilla_command (const QWidget *,
+                                                  unsigned int)),
            f, SLOT (scintilla_command (const QWidget *, unsigned int)));
 
   connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*)),
@@ -2098,7 +2105,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_unindent_selected_text (const QWidget*)),
            f, SLOT (unindent_selected_text (const QWidget*)));
 
-  connect (this, SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
+  connect (this,
+           SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
            f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
 
   connect (this, SIGNAL (fetab_find (const QWidget*, QList<QAction *>)),
@@ -2331,33 +2339,33 @@ file_editor::empty_script (bool startup, bool visible)
 // and is made visible
 void
 file_editor::handle_visibility (bool visible)
-  {
-    empty_script (false, visible);
+{
+  empty_script (false, visible);
 
-    if (visible && ! isFloating ())
-      focus ();
-  }
+  if (visible && ! isFloating ())
+    focus ();
+}
 
 void
 file_editor::dragEnterEvent (QDragEnterEvent *e)
-  {
-    if (e->mimeData ()->hasUrls ())
-      {
-        e->acceptProposedAction();
-      }
-  }
+{
+  if (e->mimeData ()->hasUrls ())
+    {
+      e->acceptProposedAction();
+    }
+}
 
 void
 file_editor::dropEvent (QDropEvent *e)
-  {
-    if (e->mimeData ()->hasUrls ())
+{
+  if (e->mimeData ()->hasUrls ())
+    {
+      foreach (QUrl url, e->mimeData ()->urls ())
       {
-        foreach (QUrl url, e->mimeData ()->urls ())
-        {
-          request_open_file (url.toLocalFile ());
-        }
+        request_open_file (url.toLocalFile ());
       }
-  }
+    }
+}
 
 // slots for tab navigation
 void
@@ -2412,3 +2420,4 @@ file_editor::switch_tab (int direction, bool movetab)
 }
 
 #endif
+

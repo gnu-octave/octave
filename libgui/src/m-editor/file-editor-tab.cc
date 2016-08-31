@@ -162,10 +162,12 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->markerDefine (QsciScintilla::Circle, marker::cond_break);
   _edit_area->setMarkerBackgroundColor (QColor (255,127,0), marker::cond_break);
   _edit_area->markerDefine (QsciScintilla::RightArrow, marker::debugger_position);
-  _edit_area->setMarkerBackgroundColor (QColor (255,255,0), marker::debugger_position);
+  _edit_area->setMarkerBackgroundColor (QColor (255,255,0),
+                                        marker::debugger_position);
   _edit_area->markerDefine (QsciScintilla::RightArrow,
                             marker::unsure_debugger_position);
-  _edit_area->setMarkerBackgroundColor (QColor (192,192,192), marker::unsure_debugger_position);
+  _edit_area->setMarkerBackgroundColor (QColor (192,192,192),
+                                        marker::unsure_debugger_position);
 
   connect (_edit_area, SIGNAL (marginClicked (int, int,
                                               Qt::KeyboardModifiers)),
@@ -268,7 +270,8 @@ file_editor_tab::closeEvent (QCloseEvent *e)
                        // exits of octave which were canceled by the user
 
   if (check_file_modified () == QMessageBox::Cancel)
-    { // ignore close event if file is not saved and user cancels
+    {
+      // ignore close event if file is not saved and user cancels
       // closing this window
       e->ignore ();
     }
@@ -291,13 +294,13 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
   // search for a subfunction in actual file (this is done at first because
   // octave finds this function before other with same name in the search path
   QRegExp rxfun1 ("^[\t ]*function[^=]+=[\t ]*"
-      + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
+                  + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
   QRegExp rxfun2 ("^[\t ]*function[\t ]+"
-      + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
+                  + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
   QRegExp rxfun3 ("^[\t ]*function[\t ]+"
-      + word_at_cursor + "[\t ]*$");
+                  + word_at_cursor + "[\t ]*$");
   QRegExp rxfun4 ("^[\t ]*function[^=]+=[\t ]*"
-      + word_at_cursor + "[\t ]*$");
+                  + word_at_cursor + "[\t ]*$");
 
   int pos_fct = -1;
   QStringList lines = _edit_area->text ().split ("\n");
@@ -316,7 +319,8 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
     }
 
   if (pos_fct > -1)
-    { // reg expr. found: it is an internal function
+    {
+      // reg expr. found: it is an internal function
       _edit_area->setCursorPosition (line, pos_fct);
       _edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
                                                   // SCI_VISIBLEFROMDOCLINE
@@ -463,9 +467,9 @@ file_editor_tab::unchanged_or_saved (void)
   if (_edit_area->isModified ())
     {
       int ans = QMessageBox::question (0, tr ("Octave Editor"),
-         tr ("Cannot add breakpoint to modified file.\n"
-             "Save and add breakpoint, or canel?"),
-          QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
+                  tr ("Cannot add breakpoint to modified file.\n"
+                      "Save and add breakpoint, or canel?"),
+                  QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
 
       if (ans == QMessageBox::Save)
         save_file (_file_name, false);
@@ -623,7 +627,8 @@ file_editor_tab::update_lexer ()
 
           // check whether the APIs info needs to be prepared and saved
           QFileInfo apis_file = QFileInfo (_prep_apis_file);
-          update_apis_file = ! apis_file.exists ();  // flag whether apis file needs update
+          // flag whether apis file needs update
+          update_apis_file = ! apis_file.exists ();
 
           // function list depends on installed packages: check mod. date
           if (! update_apis_file && octave_functions)
@@ -644,7 +649,7 @@ file_editor_tab::update_lexer ()
 #endif
 
               if (local_pkg_list.exists ()
-                  & (apis_date < local_pkg_list.lastModified ()) )
+                  && (apis_date < local_pkg_list.lastModified ()))
                 update_apis_file = true;
 
               // compare to global package list
@@ -653,7 +658,7 @@ file_editor_tab::update_lexer ()
                                         QString::fromStdString (Voctave_home)
                                         + "/share/octave/octave_packages");
                if (global_pkg_list.exists ()
-                   && (apis_date < global_pkg_list.lastModified ()) )
+                   && (apis_date < global_pkg_list.lastModified ()))
                 update_apis_file = true;
             }
           }
@@ -2695,3 +2700,4 @@ file_editor_tab::get_function_name ()
 }
 
 #endif
+

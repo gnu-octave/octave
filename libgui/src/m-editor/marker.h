@@ -46,14 +46,14 @@ public:
   // If multiple markers are on the same line, the first one listed
   // is drawn at the back, so big ones should be first.
   enum editor_markers
-    {
-      breakpoint,
-      cond_break,
-      unsure_breakpoint,
-      bookmark,
-      debugger_position,
-      unsure_debugger_position
-    };
+  {
+    breakpoint,
+    cond_break,
+    unsure_breakpoint,
+    bookmark,
+    debugger_position,
+    unsure_debugger_position
+  };
 
   marker (QsciScintilla *edit_area, int original_linenr,
           editor_markers marker_type, const QString& condition = "");
@@ -72,9 +72,11 @@ public slots:
   void handle_remove (void);
   void handle_find_translation (int original_linenr, int& editor_linenr,
                                 marker*& bp);
-  void handle_find_just_before (int linenr, int& original_linenr, int& editor_linenr);
-  void handle_find_just_after (int linenr, int& original_linenr, int& editor_linenr);
-/*  void handle_lines_changed (void);*/
+  void handle_find_just_before (int linenr, int& original_linenr,
+                                int& editor_linenr);
+  void handle_find_just_after (int linenr, int& original_linenr,
+                               int& editor_linenr);
+  /*  void handle_lines_changed (void);*/
   void handle_marker_line_deleted (int mhandle);
   void handle_marker_line_undeleted (int mhandle);
   void handle_report_editor_linenr (QIntList& lines, QStringList& conditions);

@@ -32,55 +32,55 @@ class QWidget;
 namespace QtHandles
 {
 
-class GenericEventNotifyReceiver;
+  class GenericEventNotifyReceiver;
 
-class GenericEventNotifySender
-{
-public:
-  GenericEventNotifySender (void) : m_receivers () { }
-  virtual ~GenericEventNotifySender (void) { }
+  class GenericEventNotifySender
+  {
+  public:
+    GenericEventNotifySender (void) : m_receivers () { }
+    virtual ~GenericEventNotifySender (void) { }
 
-  void addReceiver (GenericEventNotifyReceiver* r)
+    void addReceiver (GenericEventNotifyReceiver* r)
     { m_receivers.insert (r); }
 
-  void removeReceiver (GenericEventNotifyReceiver* r)
+    void removeReceiver (GenericEventNotifyReceiver* r)
     { m_receivers.remove (r); }
 
-protected:
-  bool notifyReceiversBefore (QObject* obj, QEvent* evt);
-  void notifyReceiversAfter (QObject* obj, QEvent* evt);
+  protected:
+    bool notifyReceiversBefore (QObject* obj, QEvent* evt);
+    void notifyReceiversAfter (QObject* obj, QEvent* evt);
 
-private:
-  QSet<GenericEventNotifyReceiver*> m_receivers;
-};
+  private:
+    QSet<GenericEventNotifyReceiver*> m_receivers;
+  };
 
-class GenericEventNotifyReceiver
-{
-public:
-  GenericEventNotifyReceiver (void) { }
-  virtual ~GenericEventNotifyReceiver (void) { }
+  class GenericEventNotifyReceiver
+  {
+  public:
+    GenericEventNotifyReceiver (void) { }
+    virtual ~GenericEventNotifyReceiver (void) { }
 
-  virtual bool eventNotifyBefore (QObject* obj, QEvent* evt) = 0;
-  virtual void eventNotifyAfter (QObject* obj, QEvent* evt) = 0;
-};
+    virtual bool eventNotifyBefore (QObject* obj, QEvent* evt) = 0;
+    virtual void eventNotifyAfter (QObject* obj, QEvent* evt) = 0;
+  };
 
-inline
-bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
-                                                      QEvent* evt)
-{
-  foreach (GenericEventNotifyReceiver* r, m_receivers)
+  inline
+  bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
+      QEvent* evt)
+  {
+    foreach (GenericEventNotifyReceiver* r, m_receivers)
     if (r->eventNotifyBefore (obj, evt))
       return true;
-  return false;
-}
+    return false;
+  }
 
-inline
-void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
-                                                     QEvent* evt)
-{
-  foreach (GenericEventNotifyReceiver* r, m_receivers)
+  inline
+  void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
+      QEvent* evt)
+  {
+    foreach (GenericEventNotifyReceiver* r, m_receivers)
     r->eventNotifyAfter (obj, evt);
-}
+  }
 
 #define DECLARE_GENERICEVENTNOTIFY_SENDER(T,B) \
 class T : public B, public GenericEventNotifySender \
@@ -102,3 +102,4 @@ public: \
 };
 
 #endif
+

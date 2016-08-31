@@ -55,7 +55,8 @@ default_qt_settings_file (void)
   std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
   if (dsf.empty ())
-    dsf = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () + "default-qt-settings";
+    dsf = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () +
+          "default-qt-settings";
 
   return QString::fromStdString (dsf);
 }
@@ -141,7 +142,7 @@ resource_manager::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-      instance = new resource_manager ();
+    instance = new resource_manager ();
 
   if (! instance)
     {
@@ -375,3 +376,4 @@ resource_manager::do_combo_encoding (QComboBox *combo, QString current)
 
   combo->setMaxVisibleItems (12);
 }
+

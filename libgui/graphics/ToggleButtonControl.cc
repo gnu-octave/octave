@@ -34,37 +34,38 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ToggleButtonControl*
-ToggleButtonControl::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  ToggleButtonControl*
+  ToggleButtonControl::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      Container* container = parent->innerContainer ();
+    if (parent)
+      {
+        Container* container = parent->innerContainer ();
 
-      if (container)
-        return new ToggleButtonControl (go, new QPushButton (container));
-    }
+        if (container)
+          return new ToggleButtonControl (go, new QPushButton (container));
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
-                                          QPushButton* btn)
+  ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
+      QPushButton* btn)
     : ButtonControl (go, btn)
-{
-  Object* parent = Object::parentObject (go);
-  ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
-  if (btnGroup)
-    btnGroup->addButton (btn);
+  {
+    Object* parent = Object::parentObject (go);
+    ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+    if (btnGroup)
+      btnGroup->addButton (btn);
 
-  btn->setCheckable (true);
-  btn->setAutoFillBackground (true);
-}
+    btn->setCheckable (true);
+    btn->setAutoFillBackground (true);
+  }
 
-ToggleButtonControl::~ToggleButtonControl (void)
-{
-}
+  ToggleButtonControl::~ToggleButtonControl (void)
+  {
+  }
 
 };
+

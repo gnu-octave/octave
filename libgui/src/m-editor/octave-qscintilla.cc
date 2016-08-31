@@ -74,28 +74,28 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
       int cmd_key = cmd_list.at (i)->key ();
       switch (cmd_key)
         {
-          case Qt::Key_C | Qt::CTRL :               // SelectionCopy
-          case Qt::Key_X | Qt::CTRL :               // SelectionCut
-          case Qt::Key_V | Qt::CTRL :               // Paste
-          case Qt::Key_A | Qt::CTRL :               // SelectAll
-          case Qt::Key_D | Qt::CTRL :               // SelectionDuplicate
-          case Qt::Key_T | Qt::CTRL :               // LineTranspose
-          case Qt::Key_Z | Qt::CTRL :               // Undo
-          case Qt::Key_Y | Qt::CTRL :               // Redo
-          case Qt::Key_Z | Qt::CTRL | Qt::SHIFT :   // Redo
-          case Qt::Key_U | Qt::CTRL :               // SelectionLowerCase
-          case Qt::Key_U | Qt::CTRL | Qt::SHIFT :   // SelectionUpperCase
-          case Qt::Key_Plus | Qt::CTRL :            // ZoomIn
-          case Qt::Key_Minus | Qt::CTRL :           // ZoomOut
-          case Qt::Key_Backspace | Qt::CTRL | Qt::SHIFT :   // DeleteLineLeft
-          case Qt::Key_Delete | Qt::CTRL | Qt::SHIFT :      // DeleteLineRight
-          case Qt::Key_K | Qt::META :                       // DeleteLineRight
-          case Qt::Key_Backspace | Qt::CTRL :       // DeleteWordLeft
-          case Qt::Key_Delete | Qt::CTRL :          // DeleteWordRight
-          case Qt::Key_L | Qt::CTRL | Qt::SHIFT :   // LineDelete
-          case Qt::Key_L | Qt::CTRL :               // LineCut
-          case Qt::Key_T | Qt::CTRL | Qt::SHIFT :   // LineCopy
-            cmd_list.at (i)->setKey (0);
+        case Qt::Key_C | Qt::CTRL :               // SelectionCopy
+        case Qt::Key_X | Qt::CTRL :               // SelectionCut
+        case Qt::Key_V | Qt::CTRL :               // Paste
+        case Qt::Key_A | Qt::CTRL :               // SelectAll
+        case Qt::Key_D | Qt::CTRL :               // SelectionDuplicate
+        case Qt::Key_T | Qt::CTRL :               // LineTranspose
+        case Qt::Key_Z | Qt::CTRL :               // Undo
+        case Qt::Key_Y | Qt::CTRL :               // Redo
+        case Qt::Key_Z | Qt::CTRL | Qt::SHIFT :   // Redo
+        case Qt::Key_U | Qt::CTRL :               // SelectionLowerCase
+        case Qt::Key_U | Qt::CTRL | Qt::SHIFT :   // SelectionUpperCase
+        case Qt::Key_Plus | Qt::CTRL :            // ZoomIn
+        case Qt::Key_Minus | Qt::CTRL :           // ZoomOut
+        case Qt::Key_Backspace | Qt::CTRL | Qt::SHIFT :   // DeleteLineLeft
+        case Qt::Key_Delete | Qt::CTRL | Qt::SHIFT :      // DeleteLineRight
+        case Qt::Key_K | Qt::META :                       // DeleteLineRight
+        case Qt::Key_Backspace | Qt::CTRL :       // DeleteWordLeft
+        case Qt::Key_Delete | Qt::CTRL :          // DeleteWordRight
+        case Qt::Key_L | Qt::CTRL | Qt::SHIFT :   // LineDelete
+        case Qt::Key_L | Qt::CTRL :               // LineCut
+        case Qt::Key_T | Qt::CTRL | Qt::SHIFT :   // LineCopy
+          cmd_list.at (i)->setKey (0);
         }
     }
 #endif
@@ -243,21 +243,21 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
                                        this, SLOT (contextmenu_edit (bool)));
             }
         }
-      }
+    }
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-    else
-      {
-        // remove all standard actions from scintilla
-        QList<QAction *> all_actions = context_menu->actions ();
-        QAction* a;
+  else
+    {
+      // remove all standard actions from scintilla
+      QList<QAction *> all_actions = context_menu->actions ();
+      QAction* a;
 
-        foreach (a, all_actions)
-          context_menu->removeAction (a);
+      foreach (a, all_actions)
+      context_menu->removeAction (a);
 
-        a = context_menu->addAction (tr ("dbstop if ..."), this,
-                                     SLOT (contextmenu_break_condition (bool)));
-        a->setData (local_pos);
-      }
+      a = context_menu->addAction (tr ("dbstop if ..."), this,
+                                   SLOT (contextmenu_break_condition (bool)));
+      a->setData (local_pos);
+    }
 #endif
 
   // finaly show the menu
@@ -343,3 +343,4 @@ void octave_qscintilla::focusInEvent(QFocusEvent *focusEvent)
 }
 
 #endif
+

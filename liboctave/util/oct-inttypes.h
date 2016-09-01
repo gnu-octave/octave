@@ -902,12 +902,6 @@ public:
 
   operator T (void) const { return value (); }
 
-  // char and bool operators intentionally omitted.
-
-  operator double (void) const { return double_value (); }
-
-  operator float (void) const { return float_value (); }
-
   octave_int<T>
   operator + () const
   { return *this; }

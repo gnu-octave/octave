@@ -46,6 +46,7 @@ function [prog, args] = gnuplot_binary (new_prog, varargin)
       error ("gnuplot_binary: NEW_PROG must be a non-empty string");
     endif
     gp_binary = new_prog;
+    __gnuplot_has_feature__ ("__reset__");
   endif
 
   if (nargin > 1)

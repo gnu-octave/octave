@@ -190,8 +190,7 @@ namespace QtHandles
   }
 
   Figure::~Figure (void)
-  {
-  }
+  { }
 
   static std::string
   mouse_mode_to_string (MouseMode mode)

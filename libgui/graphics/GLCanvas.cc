@@ -46,8 +46,7 @@ namespace QtHandles
   }
 
   GLCanvas::~GLCanvas (void)
-  {
-  }
+  { }
 
   void
   GLCanvas::draw (const graphics_handle& gh)

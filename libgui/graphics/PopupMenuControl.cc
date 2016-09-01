@@ -63,8 +63,7 @@ namespace QtHandles
   }
 
   PopupMenuControl::~PopupMenuControl (void)
-  {
-  }
+  { }
 
   void PopupMenuControl::update (int pId)
   {

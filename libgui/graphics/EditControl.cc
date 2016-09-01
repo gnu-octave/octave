@@ -116,8 +116,7 @@ namespace QtHandles
   }
 
   EditControl::~EditControl (void)
-  {
-  }
+  { }
 
   void
   EditControl::initCommon (QWidget*)

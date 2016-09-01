@@ -39,8 +39,7 @@ namespace QtHandles
   }
 
   FigureWindow::~FigureWindow (void)
-  {
-  }
+  { }
 
   QMenu*
   FigureWindow::createPopupMenu (void)

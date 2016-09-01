@@ -199,8 +199,7 @@ have_gnuplot_binary (void)
         }
     }
   catch (octave::execution_exception&)
-    {
-    }
+    { }
 
   return retval;
 }

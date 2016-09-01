@@ -61,8 +61,7 @@ namespace QtHandles
   }
 
   MouseModeActionGroup::~MouseModeActionGroup (void)
-  {
-  }
+  { }
 
   void
   MouseModeActionGroup::actionToggled (bool checked)

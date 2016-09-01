@@ -170,8 +170,7 @@ namespace QtHandles
   }
 
   ButtonGroup::~ButtonGroup (void)
-  {
-  }
+  { }
 
   bool
   ButtonGroup::eventFilter (QObject* watched, QEvent* xevent)

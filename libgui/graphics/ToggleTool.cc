@@ -60,8 +60,7 @@ namespace QtHandles
   }
 
   ToggleTool::~ToggleTool (void)
-  {
-  }
+  { }
 
   void
   ToggleTool::update (int pId)

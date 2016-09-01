@@ -60,8 +60,7 @@ namespace QtHandles
 
   template <typename T>
   ToolBarButton<T>::~ToolBarButton (void)
-  {
-  }
+  { }
 
   template <typename T>
   void

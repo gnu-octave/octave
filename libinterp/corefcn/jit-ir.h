@@ -196,7 +196,7 @@ jit_value : public jit_internal_list<jit_value, jit_use>
 {
 public:
   jit_value (void) : llvm_value (0), ty (0), mlast_use (0),
-                     min_worklist (false) {}
+                     min_worklist (false) { }
 
   virtual ~jit_value (void);
 
@@ -878,7 +878,7 @@ public:
   jit_assign_base (jit_variable *adest) : jit_instruction (), mdest (adest) { }
 
   jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
-                                                        mdest (adest) {}
+                                                        mdest (adest) { }
 
   jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
     : jit_instruction (arg0, arg1), mdest (adest) { }

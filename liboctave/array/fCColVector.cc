@@ -40,8 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 FloatComplexColumnVector::FloatComplexColumnVector (const FloatColumnVector& a)
   : MArray<FloatComplex> (a)
-{
-}
+{ }
 
 bool
 FloatComplexColumnVector::operator == (const FloatComplexColumnVector& a) const

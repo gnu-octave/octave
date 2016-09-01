@@ -44,8 +44,7 @@ namespace octave
       aepbalance (const aepbalance& a)
         : balanced_mat (a.balanced_mat), scale (a.scale),
           ilo(a.ilo), ihi(a.ihi), job(a.job)
-      {
-      }
+      { }
 
       aepbalance& operator = (const aepbalance& a)
       {

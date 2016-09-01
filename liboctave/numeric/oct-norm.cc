@@ -71,8 +71,8 @@ class norm_accumulator_p
 {
   R p,scl,sum;
 public:
-  norm_accumulator_p () {} // we need this one for Array
-  norm_accumulator_p (R pp) : p(pp), scl(0), sum(1) {}
+  norm_accumulator_p () { } // we need this one for Array
+  norm_accumulator_p (R pp) : p(pp), scl(0), sum(1) { }
 
   template <typename U>
   void accum (U val)
@@ -99,8 +99,8 @@ class norm_accumulator_mp
 {
   R p,scl,sum;
 public:
-  norm_accumulator_mp () {} // we need this one for Array
-  norm_accumulator_mp (R pp) : p(pp), scl(0), sum(1) {}
+  norm_accumulator_mp () { } // we need this one for Array
+  norm_accumulator_mp (R pp) : p(pp), scl(0), sum(1) { }
 
   template <typename U>
   void accum (U val)
@@ -128,7 +128,7 @@ class norm_accumulator_2
   R scl,sum;
   static R pow2 (R x) { return x*x; }
 public:
-  norm_accumulator_2 () : scl(0), sum(1) {}
+  norm_accumulator_2 () : scl(0), sum(1) { }
 
   void accum (R val)
   {
@@ -160,7 +160,7 @@ class norm_accumulator_1
 {
   R sum;
 public:
-  norm_accumulator_1 () : sum (0) {}
+  norm_accumulator_1 () : sum (0) { }
   template <typename U>
   void accum (U val)
   {
@@ -175,7 +175,7 @@ class norm_accumulator_inf
 {
   R max;
 public:
-  norm_accumulator_inf () : max (0) {}
+  norm_accumulator_inf () : max (0) { }
   template <typename U>
   void accum (U val)
   {
@@ -193,7 +193,7 @@ class norm_accumulator_minf
 {
   R min;
 public:
-  norm_accumulator_minf () : min (octave::numeric_limits<R>::Inf ()) {}
+  norm_accumulator_minf () : min (octave::numeric_limits<R>::Inf ()) { }
   template <typename U>
   void accum (U val)
   {
@@ -211,7 +211,7 @@ class norm_accumulator_0
 {
   unsigned int num;
 public:
-  norm_accumulator_0 () : num (0) {}
+  norm_accumulator_0 () : num (0) { }
   template <typename U>
   void accum (U val)
   {

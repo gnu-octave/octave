@@ -147,7 +147,7 @@ jit_use::user_parent (void) const
 
 // -------------------- jit_value --------------------
 jit_value::~jit_value (void)
-{}
+{ }
 
 jit_block *
 jit_value::first_use_block (void)
@@ -782,7 +782,7 @@ jit_magic_end::context::context (jit_factory& factory, jit_value *avalue,
                                  size_t aindex, size_t acount)
   : value (avalue), index (factory.create<jit_const_index> (aindex)),
     count (factory.create<jit_const_index> (acount))
-{}
+{ }
 
 jit_magic_end::jit_magic_end (const std::vector<context>& full_context)
   : contexts (full_context)

@@ -117,8 +117,7 @@ namespace QtHandles
   }
 
   ListBoxControl::~ListBoxControl (void)
-  {
-  }
+  { }
 
   void
   ListBoxControl::update (int pId)

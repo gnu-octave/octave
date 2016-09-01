@@ -171,8 +171,7 @@ w32_init (void)
 
 static bool
 w32_shell_execute (const std::string& file)
-{
-}
+{ }
 
 #endif
 

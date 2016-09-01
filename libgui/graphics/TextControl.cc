@@ -63,8 +63,7 @@ namespace QtHandles
   }
 
   TextControl::~TextControl (void)
-  {
-  }
+  { }
 
   void
   TextControl::update (int pId)

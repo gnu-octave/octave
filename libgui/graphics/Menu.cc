@@ -153,8 +153,7 @@ namespace QtHandles
   }
 
   Menu::~Menu (void)
-  {
-  }
+  { }
 
   void
   Menu::update (int pId)

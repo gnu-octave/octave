@@ -145,8 +145,7 @@ namespace QtHandles
   }
 
   Panel::~Panel (void)
-  {
-  }
+  { }
 
   bool
   Panel::eventFilter (QObject* watched, QEvent* xevent)

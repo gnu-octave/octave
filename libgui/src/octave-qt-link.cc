@@ -522,13 +522,11 @@ octave_qt_link::do_clear_history (void)
 
 void
 octave_qt_link::do_pre_input_event (void)
-{
-}
+{ }
 
 void
 octave_qt_link::do_post_input_event (void)
-{
-}
+{ }
 
 void
 octave_qt_link::do_enter_debugger_event (const std::string& file, int line)

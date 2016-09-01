@@ -100,8 +100,7 @@ namespace QtHandles
   }
 
   ToolBar::~ToolBar (void)
-  {
-  }
+  { }
 
   void
   ToolBar::update (int pId)

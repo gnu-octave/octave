@@ -73,8 +73,7 @@ along with Octave; see the file COPYING.  If not, see
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseMatrix& a)
   : MSparse<Complex> (a)
-{
-}
+{ }
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseBoolMatrix& a)
   : MSparse<Complex> (a.rows (), a.cols (), a.nnz ())

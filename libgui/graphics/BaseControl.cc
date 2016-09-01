@@ -99,8 +99,7 @@ namespace QtHandles
   }
 
   BaseControl::~BaseControl (void)
-  {
-  }
+  { }
 
   void
   BaseControl::update (int pId)

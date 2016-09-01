@@ -79,8 +79,7 @@ namespace QtHandles
   }
 
   Backend::~Backend (void)
-  {
-  }
+  { }
 
   bool
   Backend::initialize (const graphics_object& go)

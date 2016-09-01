@@ -163,8 +163,7 @@ private:
     }
 
     ~shortcut_t (void)
-    {
-    }
+    { }
 
     QTreeWidgetItem *tree_item;
     QString description;

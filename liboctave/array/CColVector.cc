@@ -40,8 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
   : MArray<Complex> (a)
-{
-}
+{ }
 
 bool
 ComplexColumnVector::operator == (const ComplexColumnVector& a) const

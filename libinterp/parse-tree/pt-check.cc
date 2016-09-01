@@ -62,8 +62,7 @@ tree_checker::visit_binary_expression (tree_binary_expression& expr)
 
 void
 tree_checker::visit_break_command (tree_break_command&)
-{
-}
+{ }
 
 void
 tree_checker::visit_colon_expression (tree_colon_expression& expr)
@@ -86,8 +85,7 @@ tree_checker::visit_colon_expression (tree_colon_expression& expr)
 
 void
 tree_checker::visit_continue_command (tree_continue_command&)
-{
-}
+{ }
 
 void
 tree_checker::do_decl_command (tree_decl_command& cmd)
@@ -227,8 +225,7 @@ tree_checker::visit_function_def (tree_function_def& fdef)
 
 void
 tree_checker::visit_identifier (tree_identifier& /* id */)
-{
-}
+{ }
 
 void
 tree_checker::visit_if_clause (tree_if_clause& cmd)
@@ -338,28 +335,23 @@ tree_checker::visit_multi_assignment (tree_multi_assignment& expr)
 
 void
 tree_checker::visit_no_op_command (tree_no_op_command& /* cmd */)
-{
-}
+{ }
 
 void
 tree_checker::visit_anon_fcn_handle (tree_anon_fcn_handle& /* afh */)
-{
-}
+{ }
 
 void
 tree_checker::visit_constant (tree_constant& /* val */)
-{
-}
+{ }
 
 void
 tree_checker::visit_fcn_handle (tree_fcn_handle& /* fh */)
-{
-}
+{ }
 
 void
 tree_checker::visit_funcall (tree_funcall& /* fc */)
-{
-}
+{ }
 
 void
 tree_checker::visit_parameter_list (tree_parameter_list& lst)
@@ -395,8 +387,7 @@ tree_checker::visit_prefix_expression (tree_prefix_expression& expr)
 
 void
 tree_checker::visit_return_command (tree_return_command&)
-{
-}
+{ }
 
 void
 tree_checker::visit_return_list (tree_return_list& lst)

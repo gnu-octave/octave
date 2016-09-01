@@ -78,8 +78,7 @@ namespace QtHandles
   }
 
   SliderControl::~SliderControl (void)
-  {
-  }
+  { }
 
   void
   SliderControl::update (int pId)

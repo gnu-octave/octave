@@ -58,8 +58,7 @@ namespace QtHandles
   }
 
   PushButtonControl::~PushButtonControl (void)
-  {
-  }
+  { }
 
   void
   PushButtonControl::update (int pId)

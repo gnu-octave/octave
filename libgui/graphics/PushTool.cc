@@ -54,8 +54,7 @@ namespace QtHandles
   }
 
   PushTool::~PushTool (void)
-  {
-  }
+  { }
 
   void
   PushTool::update (int pId)

@@ -48,8 +48,7 @@ namespace QtHandles
   }
 
   Logger::~Logger (void)
-  {
-  }
+  { }
 
   Logger*
   Logger::instance (void)

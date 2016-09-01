@@ -64,8 +64,7 @@ namespace QtHandles
   }
 
   ToggleButtonControl::~ToggleButtonControl (void)
-  {
-  }
+  { }
 
 };
 

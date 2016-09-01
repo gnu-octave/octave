@@ -64,8 +64,7 @@ namespace QtHandles
   }
 
   RadioButtonControl::~RadioButtonControl (void)
-  {
-  }
+  { }
 
 };
 

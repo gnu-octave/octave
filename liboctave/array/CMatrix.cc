@@ -73,18 +73,15 @@ static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (),
 
 ComplexMatrix::ComplexMatrix (const Matrix& a)
   : ComplexNDArray (a)
-{
-}
+{ }
 
 ComplexMatrix::ComplexMatrix (const RowVector& rv)
   : ComplexNDArray (rv)
-{
-}
+{ }
 
 ComplexMatrix::ComplexMatrix (const ColumnVector& cv)
   : ComplexNDArray (cv)
-{
-}
+{ }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
   : ComplexNDArray (a.dims (), 0.0)
@@ -109,13 +106,11 @@ ComplexMatrix::ComplexMatrix (const DiagArray2<double>& a)
 
 ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
   : ComplexNDArray (rv)
-{
-}
+{ }
 
 ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
   : ComplexNDArray (cv)
-{
-}
+{ }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
   : ComplexNDArray (a.dims (), 0.0)
@@ -142,8 +137,7 @@ ComplexMatrix::ComplexMatrix (const DiagArray2<Complex>& a)
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
   : ComplexNDArray (a)
-{
-}
+{ }
 
 ComplexMatrix::ComplexMatrix (const charMatrix& a)
   : ComplexNDArray (a.dims (), 0.0)

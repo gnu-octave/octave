@@ -57,8 +57,7 @@ shortcut_manager::shortcut_manager ()
 }
 
 shortcut_manager::~shortcut_manager ()
-{
-}
+{ }
 
 bool
 shortcut_manager::instance_ok (void)

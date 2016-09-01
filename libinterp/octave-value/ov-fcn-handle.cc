@@ -1919,8 +1919,7 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
                                       int exp_nargin)
   : octave_fcn_handle (f), root_handle (root), arg_template (templ),
     arg_mask (mask), expected_nargin (exp_nargin)
-{
-}
+{ }
 
 octave_fcn_handle *
 octave_fcn_binder::maybe_binder (const octave_value& f)

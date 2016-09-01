@@ -70,13 +70,11 @@ along with Octave; see the file COPYING.  If not, see
 
 FloatMatrix::FloatMatrix (const FloatRowVector& rv)
   : FloatNDArray (rv)
-{
-}
+{ }
 
 FloatMatrix::FloatMatrix (const FloatColumnVector& cv)
   : FloatNDArray (cv)
-{
-}
+{ }
 
 FloatMatrix::FloatMatrix (const FloatDiagMatrix& a)
   : FloatNDArray (a.dims (), 0.0)
@@ -112,8 +110,7 @@ FloatMatrix::FloatMatrix (const PermMatrix& a)
 
 FloatMatrix::FloatMatrix (const boolMatrix& a)
   : FloatNDArray (a)
-{
-}
+{ }
 
 FloatMatrix::FloatMatrix (const charMatrix& a)
   : FloatNDArray (a.dims ())

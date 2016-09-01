@@ -71,18 +71,15 @@ static const FloatComplex FloatComplex_NaN_result (octave::numeric_limits<float>
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix& a)
   : FloatComplexNDArray (a)
-{
-}
+{ }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatRowVector& rv)
   : FloatComplexNDArray (rv)
-{
-}
+{ }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatColumnVector& cv)
   : FloatComplexNDArray (cv)
-{
-}
+{ }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatDiagMatrix& a)
   : FloatComplexNDArray (a.dims (), 0.0)
@@ -107,13 +104,11 @@ FloatComplexMatrix::FloatComplexMatrix (const DiagArray2<float>& a)
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexRowVector& rv)
   : FloatComplexNDArray (rv)
-{
-}
+{ }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector& cv)
   : FloatComplexNDArray (cv)
-{
-}
+{ }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexDiagMatrix& a)
   : FloatComplexNDArray (a.dims (), 0.0)
@@ -141,8 +136,7 @@ FloatComplexMatrix::FloatComplexMatrix (const DiagArray2<FloatComplex>& a)
 
 FloatComplexMatrix::FloatComplexMatrix (const boolMatrix& a)
   : FloatComplexNDArray (a)
-{
-}
+{ }
 
 FloatComplexMatrix::FloatComplexMatrix (const charMatrix& a)
   : FloatComplexNDArray (a.dims (), 0.0)

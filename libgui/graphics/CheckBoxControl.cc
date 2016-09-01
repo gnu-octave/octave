@@ -55,8 +55,7 @@ namespace QtHandles
   }
 
   CheckBoxControl::~CheckBoxControl (void)
-  {
-  }
+  { }
 
 };
 

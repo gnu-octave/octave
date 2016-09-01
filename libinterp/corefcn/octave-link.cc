@@ -86,8 +86,7 @@ octave_link::connect_link (octave_link* obj)
 
 void
 octave_link::do_generate_events (void)
-{
-}
+{ }
 
 void
 octave_link::do_process_events (void)

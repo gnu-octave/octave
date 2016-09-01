@@ -68,13 +68,11 @@ along with Octave; see the file COPYING.  If not, see
 
 Matrix::Matrix (const RowVector& rv)
   : NDArray (rv)
-{
-}
+{ }
 
 Matrix::Matrix (const ColumnVector& cv)
   : NDArray (cv)
-{
-}
+{ }
 
 Matrix::Matrix (const DiagMatrix& a)
   : NDArray (a.dims (), 0.0)
@@ -110,8 +108,7 @@ Matrix::Matrix (const PermMatrix& a)
 
 Matrix::Matrix (const boolMatrix& a)
   : NDArray (a)
-{
-}
+{ }
 
 Matrix::Matrix (const charMatrix& a)
   : NDArray (a.dims ())

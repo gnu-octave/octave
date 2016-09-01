@@ -57,8 +57,7 @@ namespace QtHandles
   }
 
   ButtonControl::~ButtonControl (void)
-  {
-  }
+  { }
 
   void
   ButtonControl::update (int pId)

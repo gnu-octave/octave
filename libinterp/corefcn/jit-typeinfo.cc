@@ -526,7 +526,7 @@ jit_type::to_llvm_arg (void) const
 jit_function::jit_function () : module (0), llvm_function (0), mresult (0),
                                 call_conv (jit_convention::length),
                                 mcan_error (false)
-{}
+{ }
 
 jit_function::jit_function (llvm::Module *amodule,
                             jit_convention::type acall_conv,
@@ -590,13 +590,12 @@ jit_function::jit_function (const jit_function& fn, jit_type *aresult,
                             const std::vector<jit_type *>& aargs)
   : module (fn.module), llvm_function (fn.llvm_function), mresult (aresult),
     args (aargs), call_conv (fn.call_conv), mcan_error (fn.mcan_error)
-{
-}
+{ }
 
 jit_function::jit_function (const jit_function& fn)
   : module (fn.module), llvm_function (fn.llvm_function), mresult (fn.mresult),
     args (fn.args), call_conv (fn.call_conv), mcan_error (fn.mcan_error)
-{}
+{ }
 
 void
 jit_function::erase (void)

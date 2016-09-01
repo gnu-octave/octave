@@ -840,13 +840,11 @@ namespace octave
 
   void
   command_history::do_remove (int)
-  {
-  }
+  { }
 
   void
   command_history::do_clear (void)
-  {
-  }
+  { }
 
   int
   command_history::do_where (void) const
@@ -880,8 +878,7 @@ namespace octave
 
   void
   command_history::do_stifle (int)
-  {
-  }
+  { }
 
   int
   command_history::do_unstifle (void)
@@ -897,8 +894,7 @@ namespace octave
 
   void
   command_history::do_set_mark (int)
-  {
-  }
+  { }
 
   int
   command_history::do_goto_mark (void)
@@ -987,8 +983,7 @@ namespace octave
 
   void
   command_history::do_replace_entry (int, const std::string&)
-  {
-  }
+  { }
 
   void
   command_history::do_clean_up_and_save (const std::string& f_arg, int)

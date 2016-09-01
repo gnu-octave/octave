@@ -58,8 +58,7 @@ namespace QtHandles
   }
 
   ContextMenu::~ContextMenu (void)
-  {
-  }
+  { }
 
   void
   ContextMenu::update (int pId)

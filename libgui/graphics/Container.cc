@@ -44,8 +44,7 @@ namespace QtHandles
   }
 
   Container::~Container (void)
-  {
-  }
+  { }
 
   Canvas*
   Container::canvas (const graphics_handle& gh, bool xcreate)

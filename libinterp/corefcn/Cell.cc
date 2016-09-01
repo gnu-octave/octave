@@ -34,8 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 Cell::Cell (const octave_value_list& ovl)
   : Array<octave_value> (ovl.cell_value ())
-{
-}
+{ }
 
 Cell::Cell (const string_vector& sv, bool trim)
   : Array<octave_value> ()

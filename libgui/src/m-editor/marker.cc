@@ -44,8 +44,7 @@ marker::marker (QsciScintilla *area, int original_linenr,
 
 
 marker::~marker (void)
-{
-}
+{ }
 
 
 void

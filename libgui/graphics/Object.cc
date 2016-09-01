@@ -66,8 +66,7 @@ namespace QtHandles
   }
 
   Object::~Object (void)
-  {
-  }
+  { }
 
   graphics_object
   Object::object (void) const
@@ -131,8 +130,7 @@ namespace QtHandles
 
   void
   Object::update (int /* pId */)
-  {
-  }
+  { }
 
   void
   Object::finalize (void)
@@ -147,18 +145,15 @@ namespace QtHandles
 
   void
   Object::redraw (void)
-  {
-  }
+  { }
 
   void
   Object::print (const QString& /* file_cmd */, const QString& /* term */)
-  {
-  }
+  { }
 
   void
   Object::beingDeleted (void)
-  {
-  }
+  { }
 
   void Object::objectDestroyed (QObject* obj)
   {

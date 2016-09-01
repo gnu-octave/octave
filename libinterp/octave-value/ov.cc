@@ -473,76 +473,63 @@ octave_value::binary_op_to_assign_op (binary_op op)
 
 octave_value::octave_value (short int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 
 octave_value::octave_value (unsigned short int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 
 octave_value::octave_value (int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 
 octave_value::octave_value (unsigned int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 
 octave_value::octave_value (long int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 
 octave_value::octave_value (unsigned long int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
 octave_value::octave_value (long long int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 #endif
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
 octave_value::octave_value (unsigned long long int i)
   : rep (new octave_scalar (i))
-{
-}
+{ }
 #endif
 
 octave_value::octave_value (octave::sys::time t)
   : rep (new octave_scalar (t.double_value ()))
-{
-}
+{ }
 
 octave_value::octave_value (double d)
   : rep (new octave_scalar (d))
-{
-}
+{ }
 
 octave_value::octave_value (float d)
   : rep (new octave_float_scalar (d))
-{
-}
+{ }
 
 octave_value::octave_value (const Cell& c, bool is_csl)
   : rep (is_csl
          ? dynamic_cast<octave_base_value *> (new octave_cs_list (c))
          : dynamic_cast<octave_base_value *> (new octave_cell (c)))
-{
-}
+{ }
 
 octave_value::octave_value (const Array<octave_value>& a, bool is_csl)
   : rep (is_csl
          ? dynamic_cast<octave_base_value *> (new octave_cs_list (Cell (a)))
          : dynamic_cast<octave_base_value *> (new octave_cell (Cell (a))))
-{
-}
+{ }
 
 octave_value::octave_value (const Matrix& m, const MatrixType& t)
   : rep (new octave_matrix (m, t))
@@ -750,8 +737,7 @@ octave_value::octave_value (const PermMatrix& p)
 
 octave_value::octave_value (bool b)
   : rep (new octave_bool (b))
-{
-}
+{ }
 
 octave_value::octave_value (const boolMatrix& bm, const MatrixType& t)
   : rep (new octave_bool_matrix (bm, t))
@@ -1124,8 +1110,7 @@ octave_value::octave_value (const octave_map& m)
 
 octave_value::octave_value (const octave_scalar_map& m)
   : rep (new octave_scalar_struct (m))
-{
-}
+{ }
 
 octave_value::octave_value (const octave_map& m, const std::string& id,
                             const std::list<std::string>& plist)
@@ -1137,18 +1122,15 @@ octave_value::octave_value (const octave_map& m, const std::string& id,
 octave_value::octave_value (const octave_scalar_map& m, const std::string& id,
                             const std::list<std::string>& plist)
   : rep (new octave_class (m, id, plist))
-{
-}
+{ }
 
 octave_value::octave_value (const octave_value_list& l, bool)
   : rep (new octave_cs_list (l))
-{
-}
+{ }
 
 octave_value::octave_value (octave_value::magic_colon)
   : rep (new octave_magic_colon ())
-{
-}
+{ }
 
 octave_value::octave_value (octave_base_value *new_rep, bool borrow)
   : rep (new_rep)

@@ -30,12 +30,10 @@ namespace QtHandles
 
   namespace KeyMap
   {
-
     std::string qKeyToKeyString (int key);
+  }
 
-  }; // namespace KeyMap
-
-}; // namespace QtHandles
+}
 
 #endif
 

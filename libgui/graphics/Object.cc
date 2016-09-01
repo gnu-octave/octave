@@ -188,5 +188,5 @@ namespace QtHandles
     return 0;
   }
 
-}; // namespace QtHandles
+}
 

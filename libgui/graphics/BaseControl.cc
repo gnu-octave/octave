@@ -246,5 +246,5 @@ namespace QtHandles
     return Object::eventFilter (watched, xevent);
   }
 
-}; // namespace QtHandles
+}
 

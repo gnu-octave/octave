@@ -45,7 +45,7 @@ namespace QtHandles
     void triggered (bool checked);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

@@ -254,7 +254,7 @@ namespace QtHandles
       return keyMapper.value (key, std::string ("<unknown key>"));
     }
 
-  }; //namespace KeyMap
+  }
 
-}; // namespace QtHandles
+}
 

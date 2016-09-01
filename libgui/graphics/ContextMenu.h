@@ -56,7 +56,7 @@ namespace QtHandles
     void aboutToHide (void);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

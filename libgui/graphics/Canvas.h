@@ -122,7 +122,7 @@ namespace QtHandles
     bool m_rectMode;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

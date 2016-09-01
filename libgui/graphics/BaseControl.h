@@ -50,7 +50,7 @@ namespace QtHandles
     bool m_keyPressHandlerDefined;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

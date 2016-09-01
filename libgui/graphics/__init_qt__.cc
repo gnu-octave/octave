@@ -125,7 +125,7 @@ namespace QtHandles
     return false;
   }
 
-}; // namespace QtHandles
+}
 
 DEFUN (__init_qt__, , , "")
 {

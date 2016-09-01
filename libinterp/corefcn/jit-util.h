@@ -45,7 +45,8 @@ namespace llvm
   class Value;
   class Module;
 #if defined (LEGACY_PASSMANAGER)
-  namespace legacy {
+  namespace legacy
+  {
     class FunctionPassManager;
     class PassManager;
   }

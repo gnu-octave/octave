@@ -45,7 +45,7 @@ namespace QtHandles
     void clicked (void);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

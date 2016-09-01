@@ -1030,5 +1030,5 @@ namespace QtHandles
     return new GLCanvas (parent, handle);
   }
 
-}; // namespace QtHandles
+}
 

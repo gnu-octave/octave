@@ -64,7 +64,7 @@ namespace QtHandles
     bool m_textChanged;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

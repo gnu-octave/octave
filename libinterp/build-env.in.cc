@@ -304,6 +304,6 @@ namespace octave
     const char *Z_LIBS = %OCTAVE_CONF_Z_LIBS%;
 
     const char *config_opts = %OCTAVE_CONF_config_opts%;
-  };
-};
+  }
+}
 

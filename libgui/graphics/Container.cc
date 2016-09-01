@@ -112,5 +112,5 @@ namespace QtHandles
         hasMouseTracking ());
   }
 
-}; // namespace QtHandles
+}
 

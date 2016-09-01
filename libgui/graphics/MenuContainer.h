@@ -34,7 +34,7 @@ namespace QtHandles
     virtual QWidget* menu (void) = 0;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

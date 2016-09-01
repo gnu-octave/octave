@@ -142,7 +142,7 @@ namespace QtHandles
     MouseModeActionGroup* m_mouseModeGroup;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

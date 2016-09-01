@@ -28,7 +28,7 @@ namespace QtHandles
 
   bool __init__ (void);
 
-}; // namespace QtHandles
+}
 
 extern void install___init_qt___functions (void);
 

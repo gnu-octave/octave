@@ -50,7 +50,7 @@ namespace QtHandles
     bool m_blockCallback;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

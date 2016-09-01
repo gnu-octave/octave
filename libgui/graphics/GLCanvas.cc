@@ -188,5 +188,5 @@ namespace QtHandles
       QGLWidget::keyReleaseEvent (xevent);
   }
 
-}; // namespace QtHandles
+}
 

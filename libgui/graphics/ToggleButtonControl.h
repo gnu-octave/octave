@@ -39,7 +39,7 @@ namespace QtHandles
     static ToggleButtonControl* create (const graphics_object& go);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

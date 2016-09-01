@@ -1012,5 +1012,5 @@ namespace QtHandles
     { w->setMouseTracking (true); }
   }
 
-}; // namespace QtHandles
+}
 

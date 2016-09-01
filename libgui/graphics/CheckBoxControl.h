@@ -39,7 +39,7 @@ namespace QtHandles
     static CheckBoxControl* create (const graphics_object& go);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

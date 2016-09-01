@@ -176,5 +176,5 @@ namespace QtHandles
       }
   }
 
-}; // namespace QtHandles
+}
 

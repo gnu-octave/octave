@@ -66,8 +66,7 @@ message_handler (QtMsgType, const char *)
 #else
 message_handler (QtMsgType, const QMessageLogContext &, const QString &)
 #endif
-{
-}
+{ }
 
 namespace octave
 {

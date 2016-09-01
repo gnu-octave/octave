@@ -43,7 +43,7 @@ namespace QtHandles
     QMenu* createPopupMenu (void);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

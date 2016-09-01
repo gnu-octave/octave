@@ -50,5 +50,5 @@ namespace QtHandles
       emit returnPressed ();
   }
 
-}; // namespace QtHandles
+}
 

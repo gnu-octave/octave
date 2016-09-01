@@ -59,7 +59,7 @@ namespace QtHandles
     Figure* m_figure;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

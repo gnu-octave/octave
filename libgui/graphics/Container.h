@@ -52,7 +52,7 @@ namespace QtHandles
     Canvas* m_canvas;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

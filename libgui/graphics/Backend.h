@@ -67,7 +67,7 @@ namespace QtHandles
     void createObject (double handle);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

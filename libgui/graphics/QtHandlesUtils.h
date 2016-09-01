@@ -78,9 +78,9 @@ namespace QtHandles
                                int height = -1);
 
     octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
-  };
+  }
 
-}; // namespace QtHandles
+}
 
 #endif
 

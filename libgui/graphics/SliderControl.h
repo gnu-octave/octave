@@ -50,7 +50,7 @@ namespace QtHandles
     bool m_blockUpdates;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

@@ -170,8 +170,8 @@ namespace octave
     extern const char *Z_LDFLAGS;
     extern const char *Z_LIBS;
     extern const char *config_opts;
-  };
-};
+  }
+}
 
 #endif
 

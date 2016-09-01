@@ -386,7 +386,7 @@ namespace QtHandles
       return retval;
     }
 
-  }; // namespace Utils
+  }
 
-}; // namespace QtHandles
+}
 

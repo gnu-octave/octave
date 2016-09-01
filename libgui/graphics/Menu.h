@@ -62,7 +62,7 @@ namespace QtHandles
     QAction* m_separator;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

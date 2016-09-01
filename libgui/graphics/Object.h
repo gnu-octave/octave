@@ -101,7 +101,7 @@ namespace QtHandles
     QObject* m_qobject;
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

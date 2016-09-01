@@ -50,7 +50,7 @@ namespace QtHandles
     void debugV (const char* fmt, va_list arg);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

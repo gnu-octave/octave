@@ -42,7 +42,7 @@ namespace QtHandles
     void update (int pId);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

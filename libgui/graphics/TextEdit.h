@@ -45,7 +45,7 @@ namespace QtHandles
     void keyPressEvent (QKeyEvent* event);
   };
 
-}; // namespace QtHandles
+}
 
 #endif
 

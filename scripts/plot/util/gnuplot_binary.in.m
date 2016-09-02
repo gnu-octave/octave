@@ -60,8 +60,9 @@ endfunction
 
 %!test
 %! orig_val = gnuplot_binary ();
-%! old_val = gnuplot_binary ("X");
+%! old_val = gnuplot_binary ("__foobar__");
 %! assert (orig_val, old_val);
-%! assert (gnuplot_binary (), "X");
+%! assert (gnuplot_binary (), "__foobar__");
 %! gnuplot_binary (orig_val);
 %! assert (gnuplot_binary (), orig_val);
+

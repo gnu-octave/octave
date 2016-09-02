@@ -59,15 +59,19 @@ function [x, y, z] = pol2cart (theta, r, z = [])
     r = theta(:,2);
     theta = theta(:,1);
   elseif (nargin == 2)
-    if (! ((isnumeric (theta) && isnumeric (r))
-            && (size_equal (theta, r) || isscalar (theta) || isscalar (r))))
+    if (! isnumeric (theta) || ! isnumeric (r))
+      error ("pol2cart: THETA, R must be numeric arrays of the same size, or scalar");
+    endif
+    [err, theta, r] = common_size (theta, r);
+    if (err)
       error ("pol2cart: THETA, R must be numeric arrays of the same size, or scalar");
     endif
   elseif (nargin == 3)
-    if (! ((isnumeric (theta) && isnumeric (r) && isnumeric (z))
-            && (size_equal (theta, r) || isscalar (theta) || isscalar (r))
-            && (size_equal (theta, z) || isscalar (theta) || isscalar (z))
-            && (size_equal (r, z) || isscalar (r) || isscalar (z))))
+    if (! isnumeric (theta) || ! isnumeric (r) || ! isnumeric (z))
+      error ("pol2cart: THETA, R, Z must be numeric arrays of the same size, or scalar");
+    endif
+    [err, theta, r, z] = common_size (theta, r, z);
+    if (err)
       error ("pol2cart: THETA, R, Z must be numeric arrays of the same size, or scalar");
     endif
   endif
@@ -76,7 +80,11 @@ function [x, y, z] = pol2cart (theta, r, z = [])
   y = r .* sin (theta);
 
   if (nargout <= 1)
-    x = [x(:), y(:), z(:)];
+    if (isempty (z))
+      x = [x(:), y(:)];
+    else
+      x = [x(:), y(:), z(:)];
+    endif
   endif
 
 endfunction
@@ -103,7 +111,7 @@ endfunction
 %! [x, y, z2] = pol2cart (t, r, z);
 %! assert (x, [0, 1, 2], sqrt (eps));
 %! assert (y, [0, 1, 2], sqrt (eps));
-%! assert (z, z2);
+%! assert (z2, z);
 
 %!test
 %! t = 0;
@@ -112,7 +120,7 @@ endfunction
 %! [x, y, z2] = pol2cart (t, r, z);
 %! assert (x, [0, 1, 2], sqrt (eps));
 %! assert (y, [0, 0, 0], sqrt (eps));
-%! assert (z, z2);
+%! assert (z2, z);
 
 %!test
 %! t = [1, 1, 1]*pi/4;
@@ -121,7 +129,7 @@ endfunction
 %! [x, y, z2] = pol2cart (t, r, z);
 %! assert (x, [1, 1, 1] / sqrt (2), eps);
 %! assert (y, [1, 1, 1] / sqrt (2), eps);
-%! assert (z, z2);
+%! assert (z2, z);
 
 %!test
 %! t = 0;
@@ -130,7 +138,7 @@ endfunction
 %! [x, y, z2] = pol2cart (t, r, z);
 %! assert (x, [1, 2, 3], eps);
 %! assert (y, [0, 0, 0] / sqrt (2), eps);
-%! assert (z, z2);
+%! assert (z2, [1, 1, 1]);
 
 %!test
 %! P = [0, 0; pi/4, sqrt(2); pi/4, 2*sqrt(2)];
@@ -182,3 +190,4 @@ endfunction
 %!error <numeric arrays of the same size> pol2cart ([1,2,3], [1,2,3], {1,2,3})
 %!error <numeric arrays of the same size> pol2cart (ones (3,3,3), 1, ones (3,2,3))
 %!error <numeric arrays of the same size> pol2cart (ones (3,3,3), ones (3,2,3), 1)
+

@@ -468,7 +468,7 @@ file_editor_tab::unchanged_or_saved (void)
     {
       int ans = QMessageBox::question (0, tr ("Octave Editor"),
                   tr ("Cannot add breakpoint to modified file.\n"
-                      "Save and add breakpoint, or canel?"),
+                      "Save and add breakpoint, or cancel?"),
                   QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
 
       if (ans == QMessageBox::Save)

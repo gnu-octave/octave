@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
+## @deftypefn {} {[@var{err}, @var{yi}, @dots{}] =} common_size (@var{xi}, @dots{})
 ## Determine if all input arguments are either scalar or of common size.
 ##
 ## If true, @var{err} is zero, and @var{yi} is a matrix of the common size
@@ -29,8 +29,8 @@
 ##
 ## @example
 ## @group
-## [errorcode, a, b] = common_size ([1 2; 3 4], 5)
-##      @result{} errorcode = 0
+## [err, a, b] = common_size ([1 2; 3 4], 5)
+##      @result{} err = 0
 ##      @result{} a = [ 1, 2; 3, 4 ]
 ##      @result{} b = [ 5, 5; 5, 5 ]
 ## @end group
@@ -39,6 +39,7 @@
 ## @noindent
 ## This is useful for implementing functions where arguments can either be
 ## scalars or of common size.
+## @seealso{size, size_equal, numel, ndims}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -46,34 +47,34 @@
 ## Adapted-By: jwe
 ## Optimized-By: Jaroslav Hajek
 
-function [errorcode, varargout] = common_size (varargin)
+function [err, varargout] = common_size (varargin)
 
   if (nargin < 2)
     error ("common_size: only makes sense if nargin >= 2");
   endif
 
-  ## Find scalar args.
-  nscal = cellfun ("numel", varargin) != 1;
+  ## Find array args
+  array = cellfun ("numel", varargin) != 1;
+  aridx = find (array, 1);
 
-  i = find (nscal, 1);
-
-  if (isempty (i))
-    errorcode = 0;
+  if (isempty (aridx))
+    ## All inputs are scalars
+    err = 0;
     varargout = varargin;
   else
-    match = cellfun ("size_equal", varargin, varargin(i));
-    if (any (nscal &! match))
-      errorcode = 1;
+    sz_eq = cellfun ("size_equal", varargin, varargin(aridx));
+    if (any (! sz_eq & array))
+      err = 1;
       varargout = varargin;
     else
-      errorcode = 0;
+      err = 0;
       if (nargout > 1)
-        scal = ! nscal;
         varargout = varargin;
-        if (any (nscal))
-          dims = size (varargin{find (nscal, 1)});
+        if (any (array))
+          scalar = ! array;
+          dims = size (varargin{aridx});
           subs = arrayfun (@ones, 1, dims, "uniformoutput", false);
-          varargout(scal) = cellindexmat (varargin(scal), subs{:});
+          varargout(scalar) = cellindexmat (varargin(scalar), subs{:});
         endif
       endif
     endif
@@ -90,5 +91,14 @@ endfunction
 %! assert (b, [3,3;3,3]);
 %! assert (c, [5,5;5,5]);
 
+%!test
+%! m = [1,2;3,4];
+%! [err, a, b, c] = common_size (m, [], 5);
+%! assert (err, 1);
+%! assert (a, m);
+%! assert (b, []);
+%! assert (c, 5);
+
 %!error common_size ()
+%!error common_size (1)
 

@@ -16,8 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## FIXME: the information in this file is currently duplicated in help.cc.
-
 !
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-
@@ -225,7 +223,7 @@ Element by element multiplication operator.
 .**
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-
-@deftypefn {} {} .*
+@deftypefn {} {} .**
 Element by element power operator.  If several complex results are possible,
 returns the one with smallest non-negative argument (angle).  Use
 @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a

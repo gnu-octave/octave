@@ -2726,7 +2726,7 @@ will return 3 as the second row has three column entries.
 
 This method is also called when an object appears as lvalue with cs-list
 indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.
-@seealso{size}
+@seealso{size, length, ndims}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -2782,7 +2782,7 @@ size ([1, 2; 3, 4; 5, 6], 2)
 
 @noindent
 returns the number of columns in the given matrix.
-@seealso{numel, ndims, length, rows, columns}
+@seealso{numel, ndims, length, rows, columns, size_equal, common_size}
 @end deftypefn */)
 {
   octave_value_list retval;
@@ -2840,9 +2840,9 @@ DEFUN (size_equal, args, ,
 @deftypefn {} {} size_equal (@var{a}, @var{b}, @dots{})
 Return true if the dimensions of all arguments agree.
 
-Trailing singleton dimensions are ignored.
-When called with a single or no argument @code{size_equal} returns true.
-@seealso{size, numel, ndims}
+Trailing singleton dimensions are ignored.  When called with a single argument,
+or no argument, @code{size_equal} returns true.
+@seealso{size, numel, ndims, common_size}
 @end deftypefn */)
 {
   int nargin = args.length ();

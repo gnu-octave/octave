@@ -247,28 +247,28 @@ real result is preferred.
 -*- texinfo -*-
 @deftypefn {} {} ./
 Element by element right division operator.
-@seealso{/, .\, rdivide, mrdivide}
+@seealso{/, .\\, rdivide, mrdivide}
 @end deftypefn
 /
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-
 @deftypefn {} {} /
 Right division operator.
-@seealso{./, \, rdivide, mrdivide}
+@seealso{./, \\, rdivide, mrdivide}
 @end deftypefn
 .\
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-
 @deftypefn {} {} .\
 Element by element left division operator.
-@seealso{\, ./, rdivide, mrdivide}
+@seealso{\\, ./, rdivide, mrdivide}
 @end deftypefn
 \
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-
 @deftypefn {} {} \
 Left division operator.
-@seealso{.\, /, ldivide, mldivide}
+@seealso{.\\, /, ldivide, mldivide}
 @end deftypefn
 :
 @c libinterp/parse-tree/oct-parse.in.yy

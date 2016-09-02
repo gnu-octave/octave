@@ -271,8 +271,8 @@
     <message>
         <location line="+3"/>
         <source>i</source>
-        <translatorcomment>kursiv</translatorcomment>
-        <translation>i</translation>
+        <translatorcomment>Das kann man wie &quot;fett&quot; für &quot;b&quot; hier eigentlich auch ausschreiben. Oder die Großbuchstaben &quot;F&quot; für &quot;b&quot; und &quot;K&quot; für &quot;i&quot; (so erkennt man es vielleicht aus den Office-Produkten wieder).</translatorcomment>
+        <translation>kursiv</translation>
     </message>
     <message>
         <location line="+428"/>
@@ -368,7 +368,8 @@
     <message>
         <location line="+444"/>
         <source>Edge</source>
-        <translation>Rand</translation>
+        <translatorcomment>Hier wird eigentlich die Rahmenfarbe eingestellt. Vielleicht ist das englische &quot;edge&quot; hier auch nicht ganz passend, sondern es sollte besser &quot;border&quot; da stehen? </translatorcomment>
+        <translation>Rahmen</translation>
     </message>
     <message>
         <location line="+133"/>
@@ -680,14 +681,14 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+8"/>
         <source>Move to Matching Brace</source>
-        <translatorcomment>Nicht ganz richtig. Funktioniert auch rückwärts mit der öffnenden Klammer. Besser &quot;passend&quot;, &quot;übereinstimmend&quot;, &quot;gegenüberliegend&quot;</translatorcomment>
-        <translation>Zur schließenden Klammer springen</translation>
+        <translatorcomment>Funktioniert auch rückwärts mit der öffnenden Klammer</translatorcomment>
+        <translation>Zur zugehörigen Klammer springen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Select to Matching Brace</source>
-        <translatorcomment>Nicht ganz richtig. Funktioniert auch rückwärts mit der öffnenden Klammer. Besser &quot;passend&quot;, &quot;übereinstimmend&quot;, &quot;gegenüberliegend&quot;</translatorcomment>
-        <translation>Auswählen bis zur schließenden Klammer</translation>
+        <translatorcomment>Funktioniert auch rückwärts mit der öffnenden Klammer</translatorcomment>
+        <translation>Auswählen bis zur zugehörigen Klammer</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -727,7 +728,7 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+4"/>
         <source>Show &amp;Horizontal Scrollbar</source>
-        <translation>&amp;Horizontale Bildlaufleiste</translation>
+        <translation>&amp;Horizontale Bildlaufleiste anzeigen</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -757,6 +758,7 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+36"/>
         <source>Can not find function %1</source>
+        <translatorcomment>Schreibfehler im Englischen: &quot;Can not&quot; -&gt; &quot;Cannot&quot;</translatorcomment>
         <translation>Kann Funktion %1 nicht finden</translation>
     </message>
     <message>
@@ -946,7 +948,7 @@ Debuggen abbrechen und speichern?</translation>
     <message>
         <location line="+28"/>
         <source>Octave Files (*.m)</source>
-        <translation>Octave Skripte (*.m)</translation>
+        <translation>Octave Dateien (*.m)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -961,12 +963,12 @@ Debuggen abbrechen und speichern?</translation>
     <message>
         <location line="-1342"/>
         <source>encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodierung:</translation>
     </message>
     <message>
         <location line="+239"/>
         <source>Breakpoint condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Bedingung für Haltepunkt</translation>
     </message>
     <message>
         <location line="+88"/>
@@ -983,7 +985,8 @@ Debuggen abbrechen und speichern?</translation>
         <location line="-1737"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or canel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Haltepunkt kann nicht in einer geänderten Datei gesetzt werden.
+Speichern und Haltepunkt setzen oder abbrechen?</translation>
     </message>
     <message>
         <location line="+1611"/>
@@ -994,7 +997,14 @@ If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot;
+ist kein gültiger Name.
+
+Mit diesem Dateinamen kann das Skript nicht als 
+Octave-Befehl aufgerufen werden.
+
+Einen anderen Namen wählen?
+</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1003,7 +1013,12 @@ with the selected codec %1.
 Using it will result in data loss!
 
 Do you want to chose another codec?</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Text kann mit der gewählten
+Zeichenkodierung %1 nicht ohne Datenverlust
+gespeichert werden!
+
+Andere Zeichenkodierung wählen?
+</translation>
     </message>
     <message>
         <location line="+99"/>
@@ -1031,7 +1046,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+319"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>Die Datei %1 wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?</translation>
+        <translation>Die Datei &apos;%1&apos; wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?</translation>
     </message>
 </context>
 <context>
@@ -1090,7 +1105,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="-49"/>
         <source>Browse your files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien durchsuchen</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1483,12 +1498,13 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation>Suche...</translation>
+        <translatorcomment>&quot;Suche...&quot; ist im &quot;Suche Dateien&quot;-Dialog missverständlich. Ich habe erst mal auf den falschen Knopf geklickt... </translatorcomment>
+        <translation>Durchsuchen...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse for start directory</source>
-        <translation>Suche Startverzeichnis</translation>
+        <translation>Startverzeichnis auswählen</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1583,7 +1599,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+15"/>
         <source>Filename/location</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateinamen/Verzeichnis</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1625,7 +1641,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/history-dock-widget.cc" line="+47"/>
         <source>Browse and search the command history.</source>
-        <translation>Durchsuchen der Befehlshistorie.</translation>
+        <translation>Durchsuchen des Befehlsverlaufs.</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1635,7 +1651,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+8"/>
         <source>Enter text to filter the command history</source>
-        <translation>Suchbegriff eingeben, um die Befehlshistorie zu filtern</translation>
+        <translation>Suchbegriff eingeben, um den Befehlsverlauf zu filtern</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1645,7 +1661,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+5"/>
         <source>Command History</source>
-        <translation>Befehlshistorie</translation>
+        <translation>Befehlsverlauf</translation>
     </message>
     <message>
         <location line="+107"/>
@@ -1830,7 +1846,7 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
     <message>
         <location line="+3"/>
         <source>Clear Command History</source>
-        <translation>Befehlshistorie löschen</translation>
+        <translation>Befehlsverlauf löschen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1967,7 +1983,7 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <location line="-1198"/>
         <location line="+1201"/>
         <source>Browse directories</source>
-        <translation>Verzeichnis suchen</translation>
+        <translation>Verzeichnisse durchsuchen</translation>
     </message>
     <message>
         <location line="-175"/>
@@ -2012,7 +2028,7 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
     <message>
         <location line="+3"/>
         <source>Command History</source>
-        <translation>Befehlshistorie</translation>
+        <translation>Befehlsverlauf</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2654,7 +2670,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+54"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateierweiterungen (durch &quot;;&quot; getrennt), für die der Standard-Texteditor verwendet werden soll:</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -2664,7 +2680,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+35"/>
         <source>Colors for variable attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Farben für Variablen-Attribute</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2700,7 +2716,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+76"/>
         <source>Actual</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesetzt</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3705,7 +3721,7 @@ verwendet. Soll das Tastenkürzel trotzdem verwendet werden und damit von der vo
     <message>
         <location line="+9"/>
         <source>Only top-level symbols may be renamed</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur Toplevel-Symbole können umbenannt werden</translation>
     </message>
     <message>
         <location line="+19"/>

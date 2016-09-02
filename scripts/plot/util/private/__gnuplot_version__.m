@@ -21,11 +21,15 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function version = __gnuplot_version__ (do_reset = false)
+## Return the version of gnuplot we are using.  Note that we do not
+## attempt to handle the case of the user switching to different
+## versions of gnuplot during the same session.
+
+function version = __gnuplot_version__ ()
 
   persistent __version__ = "";
 
-  if (isempty (__version__) || do_reset)
+  if (isempty (__version__))
     [status, output] = system (sprintf ('"%s" --version', gnuplot_binary ()));
     if (status != 0)
       ## This message ends in a newline so that the traceback messages

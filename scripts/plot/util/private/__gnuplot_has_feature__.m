@@ -42,9 +42,9 @@ function res = __gnuplot_has_feature__ (feature)
                          "dashtype"};
   persistent has_features;
 
-  if (isempty (has_features) || strcmp (feature, "__reset__"))
+  if (isempty (has_features))
     try
-      gnuplot_version = __gnuplot_version__ ("__reset__");
+      gnuplot_version = __gnuplot_version__ ();
     catch
       ## Don't throw an error if gnuplot isn't installed
       gnuplot_version = "0.0.0";

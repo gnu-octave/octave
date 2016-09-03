@@ -986,7 +986,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               color = [0, 0, 0];
             endif
 
-            lt = gnuplot_linetype (obj);
+            lt = gnuplot_linestyletype (obj);
 
             if (isfield (obj, "linewidth"))
               lw = sprintf ("linewidth %f", obj.linewidth);
@@ -1957,7 +1957,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
     color = [0, 0, 0];
   endif
 
-  lt = gnuplot_linetype (obj);
+  lt = gnuplot_linestyletype (obj);
   if (! isempty (lt))
     fprintf (plot_stream, " %s", lt);
   endif
@@ -2088,7 +2088,7 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
 
 endfunction
 
-function [lt] = gnuplot_linetype (obj)
+function lt = gnuplot_linestyletype (obj)
 
   if (isfield (obj, "linestyle"))
     if (__gnuplot_has_feature__ ("dashtype"))
@@ -2107,7 +2107,7 @@ function [lt] = gnuplot_linetype (obj)
         otherwise
           lt = "";
       endswitch
-    elseif (__gnuplot_has_feature__ ("linetype"))
+    else
       opt = "linetype";
       switch (obj.linestyle)
         case "-"
@@ -2123,8 +2123,6 @@ function [lt] = gnuplot_linetype (obj)
         otherwise
           lt = "";
       endswitch
-    else
-      lt = "";
     endif
     if (! isempty (lt))
       lt = sprintf ("%s %s", opt, lt);

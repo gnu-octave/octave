@@ -70,7 +70,7 @@
     <message>
         <location line="+6"/>
         <source>Background color, pink (255,0,255) means default</source>
-        <translation>Color de fondo. rosa (255,0,255) representa predeterminado</translation>
+        <translation>Color de fondo; rosa (255,0,255) representa predeterminado</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -90,7 +90,7 @@
         <location line="+1"/>
         <source>u</source>
         <comment>short form for underlined</comment>
-        <translatorcomment>Abreviatura para caracteres subrayadas</translatorcomment>
+        <translatorcomment>Abreviatura para caracteres subrayados</translatorcomment>
         <translation>s</translation>
     </message>
 </context>
@@ -296,7 +296,7 @@
         <location line="+5"/>
         <location line="+29"/>
         <source>middle</source>
-        <translation>en medio</translation>
+        <translation>centro</translation>
     </message>
     <message>
         <location line="-24"/>
@@ -800,7 +800,7 @@ ya se encuentra abierto en el editor</translation>
     <message>
         <location line="+3"/>
         <source>Find &amp;Previous...</source>
-        <translation>Buscar &amp;Anterior...</translation>
+        <translation>Buscar &amp;anterior...</translation>
     </message>
     <message>
         <location line="+118"/>
@@ -820,7 +820,7 @@ ya se encuentra abierto en el editor</translation>
     <message>
         <location line="+2"/>
         <source>Zoom &amp;Out</source>
-        <translation>&amp;Disminuir</translation>
+        <translation>&amp;Reducir</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -850,7 +850,7 @@ ya se encuentra abierto en el editor</translation>
     <message>
         <location line="-1171"/>
         <source>The associated file editor tab has disappeared.</source>
-        <translation>La pestaña del editor de texto asociado ha desaparecido.</translation>
+        <translation>La pestaña asociada del editor de texto ha desaparecido.</translation>
     </message>
     <message>
         <location line="+928"/>
@@ -940,14 +940,14 @@ Aviso: ¡el contenido del editor ha sido modificado!</translation>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
-        <translation>Al parecer el archivo
+        <translation>Parece que el archivo
 %1
 ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
     </message>
     <message>
         <location line="-249"/>
         <source>Line Endings:</source>
-        <translation>Fin de línea:</translation>
+        <translation>Fines de línea:</translation>
     </message>
     <message>
         <location line="-1817"/>
@@ -965,7 +965,7 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or canel?</source>
         <translation>No es posible agregar punto de interrupción al archivo modificado.
-¿Guardar y agregar punto de interrupción, o cancelar?</translation>
+¿Desea guardar y agregar punto de interrupción o cancelar?</translation>
     </message>
     <message>
         <location line="+1322"/>
@@ -977,7 +977,7 @@ Save and add breakpoint, or canel?</source>
         <source>This file is currently being executed.
 Quit debugging and save?</source>
         <translation>Este archivo esta siendo ejecutado.
-¿Interrumpir depuración y guardar?</translation>
+¿Desea interrumpir la depuración y guardar?</translation>
     </message>
     <message>
         <location line="+175"/>
@@ -1022,8 +1022,8 @@ Do you want to choose another name?</source>
         <translation>&quot;%1&quot;
 no es un identificador válido.
 
-Si mantiene ese nombre de archivo, no le será posible 
-llamar su script usando su nombre como comando de octave.
+Si mantiene ese nombre de archivo no le será posible
+llamar a su script usando su nombre como comando de Octave.
 
 ¿Desea escoger otro nombre?</translation>
     </message>
@@ -1042,7 +1042,7 @@ con el codec seleccionado %1.
     <message>
         <location line="+83"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>Al parecer el archivo &apos;%1&apos; ha sido modificado por otra aplicación. ¿Desea recargarlo?</translation>
+        <translation>Parece que el archivo &apos;%1&apos; ha sido modificado por otra aplicación. ¿Desea recargarlo?</translation>
     </message>
 </context>
 <context>
@@ -1070,7 +1070,7 @@ con el codec seleccionado %1.
     <message>
         <location line="+15"/>
         <source>Set Browser Directory...</source>
-        <translation>Asignar directorio de navegador...</translation>
+        <translation>Asignar directorio del navegador...</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1086,7 +1086,7 @@ con el codec seleccionado %1.
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation>Abrir en editor de texto</translation>
+        <translation>Abrir en el editor de texto</translation>
     </message>
     <message>
         <location line="+154"/>
@@ -1270,7 +1270,7 @@ con el codec seleccionado %1.
     <message>
         <location line="+145"/>
         <source>Set directory of file browser</source>
-        <translation>Seleccionar directorio de explorador de archivos</translation>
+        <translation>Seleccionar el directorio del explorador de archivos</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1361,7 +1361,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;p&gt;Para más información acerca de Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Visite &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (se abre en una ventana externa del navegador)&lt;/li&gt;
-&lt;li&gt;Obtenga la documentación en linea en formato &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o como &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;documento&lt;/span&gt;&lt;/a&gt; pdf(se abre en una ventana externa del navegador)&lt;/li&gt;
+&lt;li&gt;Obtenga la documentación en línea en formato &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o como &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;documento&lt;/span&gt;&lt;/a&gt; pdf (se abre en una ventana externa del navegador)&lt;/li&gt;
 &lt;li&gt;Abra el navegador de documentación de la GUI de Octave desde el menú de ayuda&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -1805,7 +1805,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+192"/>
         <source>Octave Community News</source>
-        <translation>Noticas de la comunidad Octave</translation>
+        <translation>Noticas de la comunidad de Octave</translation>
     </message>
     <message>
         <location line="+206"/>
@@ -2057,7 +2057,8 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation>Informar de fallo</translation>
+        <translatorcomment>Añado entre paréntesis la palabra bug porque ya está totalmente implantada en el mundo castellanoparlante</translatorcomment>
+        <translation>Informar de fallo (bug)</translation>
     </message>
 </context>
 <context>
@@ -2113,7 +2114,7 @@ La conexión a la web para mostrar las últimas novedades sobre Octave ha sido d
 Para ver las últimas novedades, vaya a
 &lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
 cuando tenga conexión a la web (el enlace se abre en un navegador externo)
-o active la conexión a la web para ver las novedades en el diálogo de configuración de red de Octave
+o actívela para ver las novedades en el diálogo de configuración de red de Octave
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; Los desarrolladores de Octave,
@@ -2191,17 +2192,17 @@ no existe. ¿Desea crearlo?</translation>
     <message>
         <location line="+254"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>El archivo %1 no existe en las rutas de búsqueda de funciones (path). Para ejecutar o depurar la función que está editando, tiene que cambiar al directorio %2 o agregar ese directorio a las rutas de búsqueda de funciones (path).</translation>
+        <translation>El archivo %1 no existe en las rutas de búsqueda de funciones (path). Para ejecutar o depurar la función que está editando tiene que cambiar al directorio %2 o agregarlo a las rutas de búsqueda de funciones (path).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation>Existe un archivo con el mismo nombre que %1 en la ruta de búsqueda de funciones (path). Para ejecutar o depurar la función que se está editando, cambie al directorio %2.</translation>
+        <translation>Existe un archivo con el mismo nombre que %1 en la ruta de búsqueda de funciones (path). Para ejecutar o depurar la función que se está editando cambie al directorio %2.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translation>Cambiar directorio o agregar directorioa la ruta de búsqueda de funciones (path)</translation>
+        <translation>Cambiar directorio o agregar directorio a la ruta de búsqueda de funciones (path)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2416,7 +2417,7 @@ La interfaz gráfica de Octave se cerrará.</translation>
     <message>
         <location line="-1007"/>
         <source>Show line numbers</source>
-        <translation>Mostrar numeros de línea</translation>
+        <translation>Mostrar números de línea</translation>
     </message>
     <message>
         <location line="+81"/>
@@ -2451,7 +2452,7 @@ La interfaz gráfica de Octave se cerrará.</translation>
     <message>
         <location line="-441"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation>línea de comando (%f=archivo, %l=linea):</translation>
+        <translation>línea de comandos (%f=archivo, %l=linea):</translation>
     </message>
     <message>
         <location line="+613"/>
@@ -2717,7 +2718,7 @@ La interfaz gráfica de Octave se cerrará.</translation>
     <message>
         <location line="-71"/>
         <source>Edit a shortcut by double-clicking in a cell</source>
-        <translation>Los Accesos Directos se pueden editar haciendo doble clic en la celda correspondiente</translation>
+        <translation>Los accesos directos se pueden editar haciendo doble clic en la celda correspondiente</translation>
     </message>
     <message>
         <location line="+76"/>
@@ -2772,12 +2773,12 @@ La interfaz gráfica de Octave se cerrará.</translation>
     <message>
         <location line="+31"/>
         <source>Select this option to prevent conflicts with readline shortcuts</source>
-        <translation>Seleccione esta opción para evitar conflictos con los Accesos Directos de la línea de comandos</translation>
+        <translation>Seleccione esta opción para evitar conflictos con los accesos directos de la línea de comandos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Disable global shortcuts when terminal window has focus</source>
-        <translation>Deshabilitar los Accesos Directos globales cuando la ventana del terminal se enfoque </translation>
+        <translation>Deshabilitar los accesos directos globales cuando la ventana del terminal se enfoque </translation>
     </message>
     <message>
         <location line="+53"/>
@@ -2899,7 +2900,7 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Cuando la GUI se inicia, chequeará el sitio web de Octave para obtener novedades e información acerca de la comunidad.
-Esta verificación se hará una vez cada día como máximo, y las noticias serán desplegadas únicamente si hay algo nuevo desde la última vez que se vieron.&lt;/p&gt;
+Esta verificación se hará una vez cada día como máximo y las noticias serán desplegadas únicamente si hay algo nuevo desde la última vez que se vieron.&lt;/p&gt;
 &lt;p&gt;También puede revisar las noticias seleccionando &quot;Noticias de la Comunidad&quot; en el menú de ayuda en la GUI o visitando
 &lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -3184,12 +3185,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Find Next</source>
-        <translation>Buscar Siguiente</translation>
+        <translation>Buscar siguiente</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find Previous</source>
-        <translation>Buscar Anterior</translation>
+        <translation>Buscar anterior</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3316,22 +3317,22 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+48"/>
         <source>Switch to Left Tab</source>
-        <translation>Cambiar a Pestaña Izquierda</translation>
+        <translation>Cambiar a pestaña izquierda</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Switch to Right Tab</source>
-        <translation>Cambiar a Pestaña Derecha</translation>
+        <translation>Cambiar a pestaña derecha</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Move Tab Left</source>
-        <translation>Mover Pestaña Izquierda</translation>
+        <translation>Mover pestaña izquierda</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Move Tab Right</source>
-        <translation>Mover Pestaña Derecha</translation>
+        <translation>Mover pestaña derecha</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3346,34 +3347,34 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+98"/>
         <source>Enter new Shortcut</source>
-        <translation>Introducir nuevo Acceso Directo</translation>
+        <translation>Introducir nuevo acceso directo</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>Overwriting Shortcuts</source>
-        <translation>Sobrescribir Accesos Directos</translation>
+        <translation>Sobrescribir accesos directos</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-        <translation>Está a punto de sobrescribir todos los Accesos Directos.
-¿Le gustaría salvar el conjunto actual de Accesos Directos o cancelar esta acción?</translation>
+        <translation>Está a punto de sobreescribir todos los accesos directos.
+¿Le gustaría salvar el conjunto actual de accesos directos o cancelar esta acción?</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Don&apos;t save</source>
-        <translation>No salvar</translation>
+        <translation>No guardar</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Import shortcuts from file ...</source>
-        <translation>Importar Accesos Directos de archivo ...</translation>
+        <translation>Importar accesos directos de archivo ...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts into file ...</source>
-        <translation>Exportar Accesos Directos al archivo ...</translation>
+        <translation>Exportar accesos directos al archivo ...</translation>
     </message>
     <message>
         <location line="-571"/>
@@ -3388,7 +3389,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation>Informar de fallo</translation>
+        <translation>Informar de fallo (bug)</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -3438,7 +3439,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+2"/>
         <source>Show Toolbar</source>
-        <translation>Mostrar Barra de Herramientas</translation>
+        <translation>Mostrar barra de herramientas</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3448,7 +3449,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+2"/>
         <source>Show Horizontal Scrollbar</source>
-        <translation>Mostrar Barra de Desplazamiento Horizontal</translation>
+        <translation>Mostrar barra de desplazamiento horizontal</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3553,22 +3554,22 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+106"/>
         <source>Apply the desired shortcut or click on the right button to reset the shortcut to its default.</source>
-        <translation>Aplique el Acceso Directo que desee o haga clic en el botón derecho para restablecer el Acceso Directo a su valor predeterminado.</translation>
+        <translation>Aplique el acceso directo que desee o haga clic en el botón derecho para restablecer el acceso directo a su valor predeterminado.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter shortcut directly by performing it</source>
-        <translation>Introduzca un Acceso Directo.ejecutándolo directamente </translation>
+        <translation>Introduzca un acceso directo ejecutándolo directamente</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Actual shortcut</source>
-        <translation>Acceso Directo actual</translation>
+        <translation>Acceso directo actual</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Default shortcut</source>
-        <translation>Acceso Directo por defecto</translation>
+        <translation>Acceso directo por defecto</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3578,7 +3579,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+45"/>
         <source>Double Shortcut</source>
-        <translation>Acceso Directo doble</translation>
+        <translation>Acceso directo doble</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3587,22 +3588,22 @@ Would you like to save the current shortcut set or cancel the action?</source>
 is already used for the action
   &quot;%2&quot;.
 Do you want to use the shortcut anyhow removing it from the previous action?</source>
-        <translation>El Acceso Directo seleccionado
+        <translation>El acceso directo seleccionado
   &quot;%1&quot;
 ya se utiliza para la acción
   &quot;%2&quot;.
-¿Desea utilizar el Acceso Directo de cualquier modo suprimiendo la acción previamente asignada?</translation>
+¿Desea utilizar el acceso directo de cualquier modo suprimiendo la acción previamente asignada?</translation>
     </message>
     <message>
         <location line="+113"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation>Archivo de Acceso Directo de Octave (*.osc);;Todos los archivos (*)</translation>
+        <translation>Archivo de acceso directo de Octave (*.osc);;Todos los archivos (*)</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
-        <translation>No se ha podido abrir %1 como archivo de Accesos Directos de Octave</translation>
+        <translation>No se ha podido abrir %1 como archivo de accesos directos de Octave</translation>
     </message>
 </context>
 <context>
@@ -3723,7 +3724,7 @@ ya se utiliza para la acción
     <message>
         <location line="+9"/>
         <source>Only top-level symbols may be renamed</source>
-        <translation>Sólo símbolos de nivel superior pueden ser renombrados</translation>
+        <translation>Sólo los símbolos de nivel superior pueden ser renombrados</translation>
     </message>
     <message>
         <location line="+19"/>

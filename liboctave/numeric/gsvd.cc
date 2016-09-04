@@ -19,14 +19,19 @@
 #  include <config.h>
 #endif
 
+#include <vector>
+
 #include "gsvd.h"
+
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
-#include "CMatrix.h"
-#include "dDiagMatrix.h"
 #include "dMatrix.h"
+#include "fMatrix.h"
+#include "CMatrix.h"
+#include "fCMatrix.h"
+#include "dDiagMatrix.h"
+#include "fDiagMatrix.h"
 
-#include <vector>
 
 template <>
 void
@@ -36,7 +41,8 @@ gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
                      double *tmp_dataB, octave_idx_type p1, Matrix& alpha,
                      Matrix& beta, double *u, octave_idx_type nrow_u, double *v,
                      octave_idx_type nrow_v, double *q, octave_idx_type nrow_q,
-                     Matrix& work, octave_idx_type* iwork, octave_idx_type& info)
+                     Matrix& work, octave_idx_type* iwork,
+                     octave_idx_type& info)
 {
   F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                              F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -51,6 +57,31 @@ gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
                              F77_CHAR_ARG_LEN (1)));
 }
 
+template <>
+void
+gsvd<FloatMatrix>::ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
+                          octave_idx_type n, octave_idx_type p,
+                          octave_idx_type& k, octave_idx_type& l,
+                          float *tmp_dataA, octave_idx_type m1,
+                          float *tmp_dataB, octave_idx_type p1,
+                          FloatMatrix& alpha, FloatMatrix& beta, float *u,
+                          octave_idx_type nrow_u, float *v,
+                          octave_idx_type nrow_v, float *q,
+                          octave_idx_type nrow_q, FloatMatrix& work,
+                          octave_idx_type* iwork, octave_idx_type& info)
+{
+  F77_XFCN (sggsvd, SGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             F77_CONST_CHAR_ARG2 (&jobq, 1),
+                             m, n, p, k, l, tmp_dataA, m1,
+                             tmp_dataB, p1, alpha.fortran_vec (),
+                             beta.fortran_vec (), u, nrow_u,
+                             v, nrow_v, q, nrow_q, work.fortran_vec (),
+                             iwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+}
 
 template <>
 void
@@ -76,6 +107,38 @@ gsvd<ComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
                              F77_DBLE_CMPLX_ARG (v), nrow_v,
                              F77_DBLE_CMPLX_ARG (q), nrow_q,
                              F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
+                             rwork.fortran_vec (), iwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
+}
+
+template <>
+void
+gsvd<FloatComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
+                                 octave_idx_type m, octave_idx_type n,
+                                 octave_idx_type p, octave_idx_type& k,
+                                 octave_idx_type& l, FloatComplex *tmp_dataA,
+                                 octave_idx_type m1, FloatComplex *tmp_dataB,
+                                 octave_idx_type p1, FloatMatrix& alpha,
+                                 FloatMatrix& beta, FloatComplex *u,
+                                 octave_idx_type nrow_u, FloatComplex *v,
+                                 octave_idx_type nrow_v, FloatComplex *q,
+                                 octave_idx_type nrow_q,
+                                 FloatComplexMatrix& work,
+                                 octave_idx_type* iwork, octave_idx_type& info)
+{
+  FloatMatrix rwork(2*n, 1);
+  F77_XFCN (cggsvd, CGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             F77_CONST_CHAR_ARG2 (&jobq, 1),
+                             m, n, p, k, l, F77_CMPLX_ARG (tmp_dataA), m1,
+                             F77_CMPLX_ARG (tmp_dataB), p1,
+                             alpha.fortran_vec (), beta.fortran_vec (),
+                             F77_CMPLX_ARG (u), nrow_u,
+                             F77_CMPLX_ARG (v), nrow_v,
+                             F77_CMPLX_ARG (q), nrow_q,
+                             F77_CMPLX_ARG (work.fortran_vec ()),
                              rwork.fortran_vec (), iwork, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)
@@ -207,8 +270,8 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
   lwork = (lwork > p ? lwork : p) + n;
 
   T work (lwork, 1);
-  Matrix alpha (n, 1);
-  Matrix beta (n, 1);
+  real_matrix alpha (n, 1);
+  real_matrix beta (n, 1);
 
   std::vector<octave_idx_type> iwork (n);
 
@@ -288,8 +351,7 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
 }
 
 // Instantiations we need.
-
 template class gsvd<Matrix>;
-
+template class gsvd<FloatMatrix>;
 template class gsvd<ComplexMatrix>;
-
+template class gsvd<FloatComplexMatrix>;

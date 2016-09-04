@@ -839,6 +839,35 @@ extern "C"
      F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
+  F77_FUNC (sggsvd, SGGSVD)
+   (F77_CONST_CHAR_ARG_DECL,    // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     F77_REAL*,                 // A
+     const F77_INT&,            // LDA
+     F77_REAL*,                 // B
+     const F77_INT&,            // LDB
+     F77_REAL*,                 // ALPHA
+     F77_REAL*,                 // BETA
+     F77_REAL*,                 // U
+     const F77_INT&,            // LDU
+     F77_REAL*,                 // V
+     const F77_INT&,            // LDV
+     F77_REAL*,                 // Q
+     const F77_INT&,            // LDQ
+     F77_REAL*,                 // WORK
+     int*,                      // IWORK
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
   F77_FUNC (zggsvd, ZGGSVD)
     (F77_CONST_CHAR_ARG_DECL,   // JOBU
      F77_CONST_CHAR_ARG_DECL,   // JOBV
@@ -863,6 +892,36 @@ extern "C"
      F77_DBLE_CMPLX*,           // WORK
      F77_DBLE*,                 // RWORK
      F77_INT*,                  // IWORK(N)
+     F77_INT&                   // INFO
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL
+     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (cggsvd, CGGSVD)
+   (F77_CONST_CHAR_ARG_DECL,    // JOBU
+     F77_CONST_CHAR_ARG_DECL,   // JOBV
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ
+     const F77_INT&,            // M
+     const F77_INT&,            // N
+     const F77_INT&,            // P
+     F77_INT &,                 // K
+     F77_INT &,                 // L
+     F77_CMPLX*,                // A
+     const F77_INT&,            // LDA
+     F77_CMPLX*,                // B
+     const F77_INT&,            // LDB
+     F77_REAL*,                 // ALPHA
+     F77_REAL*,                 // BETA
+     F77_CMPLX*,                // U
+     const F77_INT&,            // LDU
+     F77_CMPLX*,                // V
+     const F77_INT&,            // LDV
+     F77_CMPLX*,                // Q
+     const F77_INT&,            // LDQ
+     F77_CMPLX*,                // WORK
+     F77_REAL*,                 // RWORK
+     int*,                      // IWORK
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL

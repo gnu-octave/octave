@@ -43,11 +43,42 @@ gsvd_type (int nargout)
 }
 
 
+// Named like this to avoid conflicts with the gsvd class.
+template <typename T>
+static octave_value_list
+function_gsvd (const T& A, const T& B, const octave_idx_type nargout)
+{
+  gsvd<T> result (A, B, gsvd_type<T> (nargout));
+
+  octave_value_list retval (nargout);
+  if (nargout < 2)
+    {
+      DiagMatrix sigA = result.singular_values_A ();
+      DiagMatrix sigB = result.singular_values_B ();
+      for (int i = sigA.rows () - 1; i >= 0; i--)
+        sigA.dgxelem(i) /= sigB.dgxelem(i);
+      retval(0) = sigA.diag ();
+    }
+  else
+    {
+      retval(0) = result.left_singular_matrix_A ();
+      retval(1) = result.left_singular_matrix_B ();
+      if (nargout > 2)
+        retval(2) = result.right_singular_matrix ();
+      if (nargout > 3)
+        retval(3) = result.singular_values_A ();
+      if (nargout > 4)
+        retval(4) = result.singular_values_B ();
+      if (nargout > 5)
+        retval(5) = result.R_matrix ();
+    }
+  return retval;
+}
+
 DEFUN (gsvd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} gsvd (@var{a}, @var{b})
-@deftypefnx {} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x}] =} gsvd (@var{a}, @var{b})
-@deftypefnx {} {[@var{u}, @var{v}, @var{c}, @var{s}, @var{x}, @var{r}] =} gsvd (@var{a}, @var{b})
+@deftypefnx {} {[@var{u}, @var{v}, @var{x}, @var{c}, @var{s}, @var{r}] =} gsvd (@var{a}, @var{b})
 @cindex generalized singular value decomposition
 Compute the generalized singular value decomposition of (@var{a}, @var{b}):
 @tex
@@ -140,6 +171,12 @@ v =
   -0.41974   0.90765
   -0.90765  -0.41974
 
+x =
+
+   0.408248   0.902199   0.139179
+  -0.816497   0.429063  -0.386314
+   0.408248  -0.044073  -0.911806
+
 c =
 
    0.10499   0.00000
@@ -148,11 +185,6 @@ c =
 s =
    0.99447   0.00000
    0.00000   0.99999
-x =
-
-   0.408248   0.902199   0.139179
-  -0.816497   0.429063  -0.386314
-   0.408248  -0.044073  -0.911806
 
 r =
   -0.14093  -1.24345   0.43737
@@ -179,19 +211,25 @@ routines.
 
   octave_idx_type np = argB.columns ();
 
+  // This "special" case should be handled in the gsvd class, not here
   if (nr == 0 || nc == 0)
     {
-      if (nargout == 5)
-        retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
-                      Matrix (nr, nc), identity_matrix (nr, nr),
-                      identity_matrix (nr, nr));
-      else if (nargout == 6)
-        retval = ovl (identity_matrix (nc, nc), identity_matrix (nc, nc),
-                      Matrix (nr, nc), identity_matrix (nr, nr),
-                      identity_matrix (nr, nr),
-                      identity_matrix (nr, nr));
-      else
-        retval = ovl (Matrix (0, 1));
+      retval = octave_value_list (nargout);
+      if (nargout < 2) // S = gsvd (A, B)
+        retval(0) = Matrix (0, 1);
+      else // [U, V, X, C, S, R] = gsvd (A, B)
+        {
+          retval(0) = identity_matrix (nc, nc);
+          retval(1) = identity_matrix (nc, nc);
+          if (nargout > 2)
+            retval(2) = identity_matrix (nr, nr);
+          if (nargout > 3)
+            retval(3) = Matrix (nr, nc);
+          if (nargout > 4)
+            retval(4) = identity_matrix (nr, nr);
+          if (nargout > 5)
+            retval(5) = identity_matrix (nr, nr);
+        }
     }
   else
     {
@@ -211,34 +249,7 @@ routines.
               if (tmpB.any_element_is_inf_or_nan ())
                 error ("gsvd: B cannot have Inf or NaN values");
 
-              gsvd<Matrix> result (tmpA, tmpB, gsvd_type<Matrix> (nargout));
-
-              // DiagMatrix sigma = result.singular_values ();
-
-              if (nargout == 0 || nargout == 1)
-                {
-                  DiagMatrix sigA = result.singular_values_A ();
-                  DiagMatrix sigB = result.singular_values_B ();
-                  for (int i = sigA.rows() - 1; i >=0; i--)
-                    sigA.dgxelem(i) /= sigB.dgxelem(i);
-                  retval = ovl (sigA.diag());
-                }
-              else
-                {
-                  if (nargout > 5)
-                    retval = ovl (result.left_singular_matrix_A (),
-                                  result.left_singular_matrix_B (),
-                                  result.singular_values_A (),
-                                  result.singular_values_B (),
-                                  result.right_singular_matrix (),
-                                  result.R_matrix ());
-                  else
-                    retval = ovl (result.left_singular_matrix_A (),
-                                  result.left_singular_matrix_B (),
-                                  result.singular_values_A (),
-                                  result.singular_values_B (),
-                                  result.right_singular_matrix ());
-                }
+              retval = function_gsvd (tmpA, tmpB, nargout);
             }
         }
       else if (argA.is_complex_type () || argB.is_complex_type ())
@@ -253,35 +264,7 @@ routines.
               if (ctmpB.any_element_is_inf_or_nan ())
                 error ("gsvd: B cannot have Inf or NaN values");
 
-              gsvd<ComplexMatrix> result (ctmpA, ctmpB,
-                                          gsvd_type<ComplexMatrix> (nargout));
-
-              // DiagMatrix sigma = result.singular_values ();
-
-              if (nargout == 0 || nargout == 1)
-                {
-                  DiagMatrix sigA = result.singular_values_A ();
-                  DiagMatrix sigB = result.singular_values_B ();
-                  for (int i = sigA.rows() - 1; i >=0; i--)
-                    sigA.dgxelem(i) /= sigB.dgxelem(i);
-                  retval = ovl (sigA.diag());
-                }
-              else
-                {
-                  if (nargout > 5)
-                    retval = ovl (result.left_singular_matrix_A (),
-                                  result.left_singular_matrix_B (),
-                                  result.singular_values_A (),
-                                  result.singular_values_B (),
-                                  result.right_singular_matrix (),
-                                  result.R_matrix ());
-                  else
-                    retval = ovl (result.left_singular_matrix_A (),
-                                  result.left_singular_matrix_B (),
-                                  result.singular_values_A (),
-                                  result.singular_values_B (),
-                                  result.right_singular_matrix ());
-                }
+              retval = function_gsvd (ctmpA, ctmpB, nargout);
             }
         }
       else
@@ -305,7 +288,7 @@ routines.
 
 ## A (5x3) and B (3x3) are full rank
 %!test
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -315,7 +298,7 @@ routines.
 ## A: 5x3 full rank, B: 3x3 rank deficient
 %!test
 %! B(2, 2) = 0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
 %! D2 = [zeros(2, 1) S; zeros(1, 3)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
@@ -326,7 +309,7 @@ routines.
 %!test
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -336,7 +319,7 @@ routines.
 ## A and B are both rank deficient
 %!test
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
 %! D2 = [S; zeros(1, 2)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
@@ -348,7 +331,7 @@ routines.
 %! A = A0.';
 %! B0 = diag ([1 2 4 8 16]);
 %! B = B0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = [C zeros(3,2)];
 %! D2 = [S zeros(3,2); zeros(2, 3) eye(2)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -358,7 +341,7 @@ routines.
 ## A: 3x5 full rank, B: 5x5 rank deficient
 %!test
 %! B(2, 2) = 0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
 %! D2 = zeros(5, 5); D2(1:2, 2:3) = S; D2(3:4, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
@@ -369,7 +352,7 @@ routines.
 %!test
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (3, 5);  D1(1:3, 1:3) = C;
 %! D2 = zeros (5, 5);  D2(1:3, 1:3) = S;  D2(4:5, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -381,7 +364,7 @@ routines.
 %! A = A0.'; B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! [U, V, C, S, X, R]=gsvd (A, B);
+%! [U, V, X, C, S, R]=gsvd (A, B);
 %! D1 = zeros(3, 4); D1(1:3, 1:3) = C;
 %! D2 = eye (4); D2(1:3, 1:3) = S; D2(5,:) = 0;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -394,7 +377,7 @@ routines.
 %! B0 = diag ([1 2 4]) + j*diag ([4 -2 -1]);
 %! A = A0;
 %! B = B0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -404,7 +387,7 @@ routines.
 ## A: 5x3 complex full rank, B: 3x3 complex rank deficient
 %!test
 %! B(2, 2) = 0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
 %! D2 = [zeros(2, 1) S; zeros(1, 3)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
@@ -415,7 +398,7 @@ routines.
 %!test
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -425,7 +408,7 @@ routines.
 ## A (5x3) and B (3x3) are both complex rank deficient
 %!test
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
 %! D2 = [S; zeros(1, 2)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
@@ -438,7 +421,7 @@ routines.
 %! A = A0.';
 %! B0 = diag ([1 2 4 8 16]) + j*diag ([-5 4 -3 2 -1]);
 %! B = B0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = [C zeros(3,2)];
 %! D2 = [S zeros(3,2); zeros(2, 3) eye(2)];
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -448,7 +431,7 @@ routines.
 ## A: 3x5 complex full rank, B: 5x5 complex rank deficient
 %!test
 %! B(2, 2) = 0;
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
 %! D2 = zeros(5,5);  D2(1:2, 2:3) = S;  D2(3:4, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (2, 1)) <= 1e-6);
@@ -459,7 +442,7 @@ routines.
 %!test
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5);  D1(1:3, 1:3) = C;
 %! D2 = zeros(5,5);  D2(1:3, 1:3) = S;  D2(4:5, 4:5) = eye (2);
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
@@ -472,12 +455,11 @@ routines.
 %! B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
-%! [U, V, C, S, X, R] = gsvd (A, B);
+%! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 4);  D1(1:3, 1:3) = C;
 %! D2 = eye (4);  D2(1:3, 1:3) = S;  D2(5,:) = 0;
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*[zeros(4, 1) R]) <= 1e-6);
 %! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
-
 */
 

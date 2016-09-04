@@ -1,0 +1,9 @@
+Name: @PACKAGE_NAME@
+Description: C++ interface to GNU Octave underlying library.
+URL: https://www.octave.org
+Version: @PACKAGE_VERSION@
+Requires:
+Requires.private:
+Libs: -L@octlibdir@ @LIBOCTAVE@
+Libs.private: @LIBOCTAVE_LINK_DEPS@
+Cflags: -I@octincludedir@/..

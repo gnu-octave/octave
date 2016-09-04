@@ -23,6 +23,8 @@
 
 octlib_LTLIBRARIES += %reldir%/liboctave.la
 
+%canon_reldir%_pkgconfig_DATA = %reldir%/octave.pc
+
 BUILT_INCS = \
   $(BUILT_LIBOCTAVE_OPERATORS_INC) \
   $(LIBOCTAVE_OPT_INC)
@@ -112,11 +114,16 @@ OCTAVE_INTERPRETER_TARGETS += \
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
+pkgconfig_DATA += $(%canon_reldir%_pkgconfig_DATA)
+
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
   $(LIBOCTAVE_BUILT_NODISTFILES) \
   $(LIBOCTAVE_TST_FILES)
+
+%canon_reldir%_DISTCLEANFILES += \
+  $(%canon_reldir%_pkgconfig_DATA)
 
 BUILT_NODISTFILES += $(LIBOCTAVE_BUILT_NODISTFILES)
 

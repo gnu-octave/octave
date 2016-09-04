@@ -183,6 +183,8 @@ noinst_LTLIBRARIES =
 octinclude_HEADERS =
 nodist_octinclude_HEADERS =
 
+pkgconfig_DATA =
+
 DIST_SRC =
 
 ALL_LOCAL_TARGETS =

@@ -28,6 +28,8 @@
 
 octlib_LTLIBRARIES += %reldir%/liboctinterp.la
 
+%canon_reldir%_pkgconfig_DATA = %reldir%/octinterp.pc
+
 BUILT_SOURCES += \
   %reldir%/builtin-defun-decls.h \
   %reldir%/corefcn/default-defs.h \
@@ -326,6 +328,8 @@ uninstall-built-in-docstrings:
 	rm -f $(DESTDIR)$(octetcdir)/built-in-docstrings
 .PHONY: uninstall-built-in-docstrings
 
+pkgconfig_DATA += $(%canon_reldir%_pkgconfig_DATA)
+
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
@@ -335,6 +339,9 @@ EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
   $(OCT_FILES) \
   %reldir%/corefcn/oct-tex-parser.output \
   %reldir%/parse-tree/oct-parse.output
+
+%canon_reldir%_DISTCLEANFILES += \
+  $(%canon_reldir%_pkgconfig_DATA)
 
 %canon_reldir%_MAINTAINERCLEANFILES += \
   %reldir%/DOCSTRINGS \

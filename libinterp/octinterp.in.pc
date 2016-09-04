@@ -1,0 +1,9 @@
+Name: @PACKAGE_NAME@
+Description: C++ interface to GNU Octave interpreter.
+URL: https://www.octave.org
+Version: @PACKAGE_VERSION@
+Requires: octave = @PACKAGE_VERSION@
+Requires.private:
+Libs: -L@octlibdir@ @LIBOCTINTERP@
+Libs.private:
+Cflags: -I@octincludedir@/..

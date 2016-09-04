@@ -188,6 +188,10 @@ OCTAVE_SET_DEFAULT([infofile], '${infodir}/octave.info')
 ## Programs used in configuring Octave.
 dnl Find pkg-config executable (sets $PKG_CONFIG)
 PKG_PROG_PKG_CONFIG
+## And where we will install our own .pc files.
+PKG_INSTALLDIR
+AC_SUBST([liboctave_pkgconfigdir], [$pkgconfigdir])
+AC_SUBST([libinterp_pkgconfigdir], [$pkgconfigdir])
 
 ## Programs used in Makefiles.
 AC_PROG_AWK
@@ -3269,7 +3273,9 @@ AC_CONFIG_FILES([
   Makefile
   build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
   doc/doxyhtml/Doxyfile
-  libgnu/Makefile])
+  libgnu/Makefile
+  liboctave/octave.pc:liboctave/octave.in.pc
+  libinterp/octinterp.pc:libinterp/octinterp.in.pc])
 
 dnl We use a .in.h file for oct-conf-post.h simply to copy it to the build tree
 dnl so that we don't have to add the -I${top_srcdir} to any CPPFLAGS variables.

@@ -34,21 +34,21 @@
 
 
 template <typename T>
-static typename gsvd<T>::Type
+static typename octave::math::gsvd<T>::Type
 gsvd_type (int nargout)
 {
   return ((nargout == 0 || nargout == 1)
-          ? gsvd<T>::Type::sigma_only
-          : (nargout > 5) ? gsvd<T>::Type::std : gsvd<T>::Type::economy);
+          ? octave::math::gsvd<T>::Type::sigma_only
+          : (nargout > 5) ? octave::math::gsvd<T>::Type::std
+                          : octave::math::gsvd<T>::Type::economy);
 }
-
 
 // Named like this to avoid conflicts with the gsvd class.
 template <typename T>
 static octave_value_list
 function_gsvd (const T& A, const T& B, const octave_idx_type nargout)
 {
-  gsvd<T> result (A, B, gsvd_type<T> (nargout));
+  octave::math::gsvd<T> result (A, B, gsvd_type<T> (nargout));
 
   octave_value_list retval (nargout);
   if (nargout < 2)

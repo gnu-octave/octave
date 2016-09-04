@@ -20,76 +20,83 @@
 
 #include "octave-config.h"
 
-template <typename T>
-class
-gsvd
+namespace octave
 {
-public:
-
-  enum class Type
+  namespace math
   {
-    std,
-    economy,
-    sigma_only
-  };
+    template <typename T>
+    class
+    gsvd
+    {
+    public:
 
-  gsvd (void) : sigmaA (), sigmaB (), left_smA (), left_smB (), right_sm () { }
-
-  gsvd (const T& a, const T& b, gsvd::Type gsvd_type = gsvd<T>::Type::economy);
-
-  gsvd (const gsvd& a)
-    : type (a.type),
-      sigmaA (a.sigmaA), sigmaB (a.sigmaB),
-      left_smA (a.left_smA), left_smB (a.left_smB), right_sm (a.right_sm),
-      R(a.R) { }
-
-  gsvd& operator = (const gsvd& a)
-  {
-    if (this != &a)
+      enum class Type
       {
-        type = a.type;
-        sigmaA = a.sigmaA;
-        sigmaB = a.sigmaB;
-        left_smA = a.left_smA;
-        left_smB = a.left_smB;
-        right_sm = a.right_sm;
-        R = a.R;
+        std,
+        economy,
+        sigma_only
+      };
+
+      gsvd (void) : sigmaA (), sigmaB (), left_smA (), left_smB (), right_sm ()
+      { }
+
+      gsvd (const T& a, const T& b,
+            gsvd::Type gsvd_type = gsvd<T>::Type::economy);
+
+      gsvd (const gsvd& a)
+        : type (a.type),
+          sigmaA (a.sigmaA), sigmaB (a.sigmaB),
+          left_smA (a.left_smA), left_smB (a.left_smB), right_sm (a.right_sm),
+          R(a.R) { }
+
+      gsvd& operator = (const gsvd& a)
+      {
+        if (this != &a)
+          {
+            type = a.type;
+            sigmaA = a.sigmaA;
+            sigmaB = a.sigmaB;
+            left_smA = a.left_smA;
+            left_smB = a.left_smB;
+            right_sm = a.right_sm;
+            R = a.R;
+          }
+
+        return *this;
       }
 
-    return *this;
+      ~gsvd (void) { }
+
+      typename T::real_diag_matrix_type
+      singular_values_A (void) const { return sigmaA; }
+
+      typename T::real_diag_matrix_type
+      singular_values_B (void) const { return sigmaB; }
+
+      T left_singular_matrix_A (void) const;
+      T left_singular_matrix_B (void) const;
+
+      T right_singular_matrix (void) const;
+      T R_matrix (void) const;
+
+    private:
+      typedef typename T::value_type P;
+      typedef typename T::real_matrix_type real_matrix;
+
+      gsvd::Type type;
+      typename T::real_diag_matrix_type sigmaA, sigmaB;
+      T left_smA, left_smB;
+      T right_sm, R;
+
+      void ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
+                  octave_idx_type n, octave_idx_type p, octave_idx_type& k,
+                  octave_idx_type& l, P *tmp_dataA, octave_idx_type m1,
+                  P *tmp_dataB, octave_idx_type p1, real_matrix& alpha,
+                  real_matrix& beta, P *u, octave_idx_type nrow_u, P *v,
+                  octave_idx_type nrow_v, P *q, octave_idx_type nrow_q, T& work,
+                  octave_idx_type* iwork, octave_idx_type& info);
+    };
   }
-
-  ~gsvd (void) { }
-
-  typename T::real_diag_matrix_type
-  singular_values_A (void) const { return sigmaA; }
-
-  typename T::real_diag_matrix_type
-  singular_values_B (void) const { return sigmaB; }
-
-  T left_singular_matrix_A (void) const;
-  T left_singular_matrix_B (void) const;
-
-  T right_singular_matrix (void) const;
-  T R_matrix (void) const;
-
-private:
-  typedef typename T::value_type P;
-  typedef typename T::real_matrix_type real_matrix;
-
-  gsvd::Type type;
-  typename T::real_diag_matrix_type sigmaA, sigmaB;
-  T left_smA, left_smB;
-  T right_sm, R;
-
-  void ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
-              octave_idx_type n, octave_idx_type p, octave_idx_type& k,
-              octave_idx_type& l, P *tmp_dataA, octave_idx_type m1,
-              P *tmp_dataB, octave_idx_type p1, real_matrix& alpha,
-              real_matrix& beta, P *u, octave_idx_type nrow_u, P *v,
-              octave_idx_type nrow_v, P *q, octave_idx_type nrow_q, T& work,
-              octave_idx_type* iwork, octave_idx_type& info);
-};
+}
 
 #endif
-

@@ -861,7 +861,7 @@ extern "C"
      F77_REAL*,                 // Q
      const F77_INT&,            // LDQ
      F77_REAL*,                 // WORK
-     int*,                      // IWORK
+     F77_INT*,                  // IWORK
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -921,7 +921,7 @@ extern "C"
      const F77_INT&,            // LDQ
      F77_CMPLX*,                // WORK
      F77_REAL*,                 // RWORK
-     int*,                      // IWORK
+     F77_INT*,                  // IWORK
      F77_INT&                   // INFO
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL

@@ -207,7 +207,7 @@ Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}
 and @var{x}.
 
 @var{y} and @var{x} must match in size and orientation.  The signs of
-elements of @var{y} and @var{x} are used to determine the quadrats of each
+elements of @var{y} and @var{x} are used to determine the quadrants of each
 resulting value.
 
 This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.

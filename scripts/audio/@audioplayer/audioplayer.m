@@ -38,7 +38,7 @@
 ##
 ## @example
 ## @group
-## y = randn (2, 44100) - 0.5;
+## y = 0.25 * randn (2, 44100);
 ## player = audioplayer (y, 44100, 8);
 ## play (player);
 ## @end group
@@ -111,7 +111,7 @@ endfunction
 
 %!demo
 %! fs = 44100;
-%! audio = randn (2, 2*fs) - 0.5;
+%! audio = 0.25 * randn (2, 2*fs);
 %! player = audioplayer (audio, fs);
 %! play (player);
 %! pause (1);
@@ -124,8 +124,8 @@ endfunction
 ## Tests of audioplayer must not actually play anything.
 
 %!testif HAVE_PORTAUDIO
-%! mono = randn (1, 44100) - 0.5;
-%! stereo = randn (2, 44100) - 0.5;
+%! mono = 0.25 * randn (1, 44100);
+%! stereo = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player1 = audioplayer (mono, fs);
 %! player2 = audioplayer (stereo, fs);
@@ -137,7 +137,7 @@ endfunction
 %! assert (player2.TotalSamples, 44100);
 
 %!testif HAVE_PORTAUDIO
-%! audio = randn (2, 44100) - 0.5;
+%! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
 %! set (player, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
@@ -146,7 +146,7 @@ endfunction
 %! assert (player.UserData, [1, 2; 3, 4]);
 
 %!testif HAVE_PORTAUDIO
-%! audio = randn (2, 44100) - 0.5;
+%! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
 %! settable = set (player);
@@ -159,7 +159,7 @@ endfunction
 %! assert (player.UserData, [1, 2; 3, 4]);
 
 %!testif HAVE_PORTAUDIO
-%! audio = randn (2, 44100) - 0.5;
+%! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
 %! player.SampleRate = 8000;

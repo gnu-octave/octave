@@ -300,7 +300,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h = plot (1:10);
+%!   h = plot (1:10, "b");
 %!   set (h, "tag", "foobar");
 %!   g = findobj (gcf (), "tag", "foobar", "type", "line", "color", [0 0 1]);
 %!   assert (g, h);

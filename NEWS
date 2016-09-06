@@ -16,6 +16,10 @@ Summary of important user-visible changes for version 4.2:
 
     Examples: 0b101 == 5 or 0B1100_0001 == 0xC1
 
+ ** The default set of colors used to plot lines has been updated to be
+    compatible with Matlab's new default color scheme.  The line plot
+    color scheme can be set with the axes property "ColorOrder".
+
  ** The default colormap is now set to "viridis" which is also the
     default colormap in matplotlib.  This new colormap fixes some of the
     main issues with the old default colormap "jet" such as its bad

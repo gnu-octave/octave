@@ -242,24 +242,32 @@ default_colororder (void)
 {
   Matrix retval (7, 3, 0.0);
 
-  retval(0,2) = 1.0;
+  retval(0,1) = 0.447;
+  retval(0,2) = 0.741;
 
-  retval(1,1) = 0.5;
+  retval(1,0) = 0.850;
+  retval(1,1) = 0.325;
+  retval(1,2) = 0.098;
 
-  retval(2,0) = 1.0;
+  retval(2,0) = 0.929;
+  retval(2,1) = 0.694;
+  retval(2,2) = 0.125;
 
-  retval(3,1) = 0.75;
-  retval(3,2) = 0.75;
+  retval(3,0) = 0.494;
+  retval(3,1) = 0.184;
+  retval(3,2) = 0.556;
 
-  retval(4,0) = 0.75;
-  retval(4,2) = 0.75;
+  retval(4,0) = 0.466;
+  retval(4,1) = 0.674;
+  retval(4,2) = 0.188;
 
-  retval(5,0) = 0.75;
-  retval(5,1) = 0.75;
+  retval(5,0) = 0.301;
+  retval(5,1) = 0.745;
+  retval(5,2) = 0.933;
 
-  retval(6,0) = 0.25;
-  retval(6,1) = 0.25;
-  retval(6,2) = 0.25;
+  retval(6,0) = 0.635;
+  retval(6,1) = 0.078;
+  retval(6,2) = 0.184;
 
   return retval;
 }

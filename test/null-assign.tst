@@ -55,11 +55,22 @@
 %!test
 %! a = ones (3); fail ("a(:,1:3) = double ([])");
 
-## subsasgn should work the same way
+## for compatibility with Matlab, subsasgn allows any 0x0 double array
+## but not other empty arrays (bug #48867)
 %!test
-%! a = ones (3); a = subsasgn (a, substruct ('()', {':',1:2}), []); assert (size (a), [3,1]);
+%! a = ones (3);
+%! a = subsasgn (a, substruct ('()', {':',1:2}), []);
+%! assert (size (a), [3,1]);
 %!test
-%! a = ones (3); b = []; fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".");
+%! a = ones (3); b = zeros (0, 0);
+%! a = subsasgn (a, substruct ('()', {':',1:2}), b);
+%! assert (size (a), [3,1]);
+%!test
+%! a = ones (3); b = zeros (0, 0, 2);
+%! fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".");
+%!test
+%! a = ones (3); b = zeros (0, 0, "uint8");
+%! fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".");
 
 %!test
 %! classes = {@int8, @int16, @int32, @int64, ...

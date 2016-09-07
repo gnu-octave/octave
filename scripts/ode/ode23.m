@@ -419,7 +419,6 @@ endfunction
 %! p = diff (log (err)) ./ diff (log (h))
 %!
 %! ## Estimate order visually
-%! figure ();
 %! loglog (h, tol, "-ob",
 %!         h, err, "-b",
 %!         h, (h/h(end)) .^ 2 .* tol(end), "k--",

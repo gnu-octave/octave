@@ -404,9 +404,8 @@ endfunction
 %! p = diff (log (err)) ./ diff (log (h))
 %!
 %! ## Estimate order visually
-%! figure ();
 %! loglog (h, tol, "-ob",
-%!         h, err, "-b"
+%!         h, err, "-b",
 %!         h, (h/h(end)) .^ 4 .* tol(end), "k--",
 %!         h, (h/h(end)) .^ 5 .* tol(end), "k-")
 %! axis tight

@@ -126,11 +126,11 @@ endfunction
 %! subplot (1,2,2);
 %!  h2 = plot (x, cos (x), "b");
 %!
-%! input ("Type <RETURN> to link plots");
+%! input ("Press <enter> to link plots: ");
 %! hlink = linkprop ([h1, h2], {"color", "linestyle"});
-%! input ("Type <RETURN> to change color");
+%! input ("Press <enter> to change color: ");
 %! set (h1, "color", "green");
-%! input ("Type <RETURN> to change linestyle");
+%! input ("Press <enter> to change linestyle: ");
 %! set (h2, "linestyle", "--");
 
 %!test

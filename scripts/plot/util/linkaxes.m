@@ -110,9 +110,9 @@ endfunction
 %! bar (5*rand (4, 1), "facecolor", "g");
 %! hax3 = subplot (3,1,3);
 %! bar (10*rand (4, 1), "facecolor", "b");
-%! input ("Type <RETURN> to link axes");
+%! input ("Press <enter> to link axes: ");
 %! linkaxes ([hax1, hax2, hax3]);
-%! input ("Type <RETURN> to change ylim");
+%! input ("Press <enter> to change ylim: ");
 %! ylim (hax3, [0 10]);
 
 %!test

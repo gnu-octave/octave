@@ -39,13 +39,13 @@ function hg = __scatter__ (varargin)
   if (istart <= nargin)
     s = varargin{istart}(:);
     if (isempty (s) || ischar (s))
-      s = 6;
+      s = 36;
     endif
     if (! ischar (varargin{istart}))
       istart += 1;
     endif
   else
-    s = 6;
+    s = 36;
   endif
 
   ## Remove NaNs
@@ -76,10 +76,14 @@ function hg = __scatter__ (varargin)
       c = c(:);
     endif
   elseif (firstnonnumeric == istart && ischar (varargin{istart})
-          && ! (   strcmpi (varargin{istart}, "filled")
-                || strcmpi (varargin{istart}, "fill")))
-    c = varargin{istart};
-    firstnonnumeric += 1;
+          && any (tolower (varargin{istart}(1)) == "ymcrgbwk"))
+    [linespec, valid] = __pltopt__ (fcn, varargin{istart}, false);
+    if (valid)
+      c = varargin{istart};
+      firstnonnumeric += 1;
+    else
+      c = [];
+    endif
   else
     c = [];
   endif
@@ -111,18 +115,24 @@ function hg = __scatter__ (varargin)
     elseif ((ischar (arg) || iscellstr (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ (fcn, arg, false);
       if (valid)
+        ## Valid linestyle, but possibly not valid marker
         have_marker = true;
         marker = linespec.marker;
         if (strcmp (marker, "none"))
           marker = "o";
         elseif (isempty (marker))
           have_marker = false;
-          [~, marker] = __next_line_style__ ();
+          marker = "o";
         endif
       else
-        error ("%s: invalid linespec", fcn);
+        ## Prop/Val pair
+        newargs{end+1} = arg;
+        if (iarg <= nargin)
+          newargs{end+1} = varargin{iarg++};
+        endif
       endif
     else
+      ## Prop/Val pair
       newargs{end+1} = arg;
       if (iarg <= nargin)
         newargs{end+1} = varargin{iarg++};
@@ -156,6 +166,7 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "sizedata", @update_data);
 
   one_explicit_color = ischar (c) || isequal (size (c), [1, 3]);
+  s = sqrt (s);  # size adjustment for visual compatibility w/Matlab
 
   if (numel (x) <= 100)
 
@@ -377,6 +388,7 @@ function update_data (h, d)
   endif
   filled = ! strcmp (get (h, "markerfacecolor"), "none");
   s = get (h, "sizedata");
+  s = sqrt (s);  # size adjustment for visual compatibility w/Matlab 
   if (numel (s) == 1)
     s = repmat (s, numel (x), 1);
   endif

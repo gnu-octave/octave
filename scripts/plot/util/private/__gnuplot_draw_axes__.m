@@ -1011,7 +1011,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               endif
             else
               colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-                                   round (255*color));
+                                   uint8 (255*color));
             endif
 
             sidx = 1;
@@ -1946,7 +1946,8 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   found_style = false;
   if (isnumeric (linecolor))
     color = linecolor;
-    if (isfield (obj, "alpha"))
+    if (isfield (obj, "alpha")
+        &&  __gnuplot_has_feature__ ("alphablend_linecolor"))
       alphastr = sprintf ("%02x", round (255*(1-obj.alpha)));
     else
       alphastr = "";

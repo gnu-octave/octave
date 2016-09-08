@@ -133,6 +133,11 @@ Summary of important user-visible changes for version 4.2:
     literally grab the HTML published code from a remote website, for
     example.
 
+ ** The MEX API now includes the function mexCallMATLABWithTrap.  This
+    function will not abort if an error occurs during mexCallMATLAB, but
+    instead will return execution to the MEX function for error
+    handling.
+
  ** Other new functions added in 4.2:
 
       audioformats

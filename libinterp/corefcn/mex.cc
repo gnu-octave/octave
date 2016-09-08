@@ -3112,6 +3112,30 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   return execution_error ? 1 : 0;
 }
 
+mxArray *
+mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
+                       mxArray *argin[], const char *fname)
+{
+  mxArray *mx = NULL;
+  const char *fields[] = {"identifier", "message", "case", "stack"};
+
+  int old_flag = mex_context ? mex_context->trap_feval_error : 0;
+  mexSetTrapFlag (1);
+  if (mexCallMATLAB (nargout, argout, nargin, argin, fname))
+    {
+      mx = mxCreateStructMatrix (1, 1, 4, fields);
+      mxSetFieldByNumber (mx, 0, 0, mxCreateString ("Octave:MEX"));
+      std::string msg = "mexCallMATLABWithTrap: function call <"
+                        + std::string (fname) + "> failed";
+      mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
+      mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+    }
+  mexSetTrapFlag (old_flag);
+
+  return mx;
+}
+
 void
 mexSetTrapFlag (int flag)
 {

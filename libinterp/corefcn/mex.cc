@@ -3078,7 +3078,11 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   catch (const octave::execution_exception&)
     {
       if (mex_context->trap_feval_error)
-        recover_from_exception ();
+        {
+          recover_from_exception ();
+
+          execution_error = true;
+        }
       else
         {
           args.resize (0);
@@ -3099,7 +3103,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
       // but there is no way to steal memory from a matrix, never mind
       // that matrix memory is allocated by new[] and mxArray memory
       // is allocated by malloc().
-      argout[i] = mex_context->make_value (retval (i));
+      argout[i] = mex_context->make_value (retval(i));
     }
 
   while (num_to_copy < nargout)

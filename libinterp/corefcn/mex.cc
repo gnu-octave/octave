@@ -2246,7 +2246,7 @@ public:
   }
 
   // 1 if error should be returned to MEX file, 0 if abort.
-  int trap_feval_error;
+  int trap_feval_error = 0;
 
 private:
 

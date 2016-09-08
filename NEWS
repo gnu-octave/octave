@@ -133,6 +133,10 @@ Summary of important user-visible changes for version 4.2:
     literally grab the HTML published code from a remote website, for
     example.
 
+ ** The value of the MEX variable TrapFlag now defaults to 0, which will
+    cause Octave to abort execution of a MEX file and return to the
+    prompt if an error is encountered in mexCallMATLAB.
+
  ** The MEX API now includes the function mexCallMATLABWithTrap.  This
     function will not abort if an error occurs during mexCallMATLAB, but
     instead will return execution to the MEX function for error

@@ -296,7 +296,7 @@ public:
 
   void set_n (mwSize /*n*/) { request_mutation (); }
 
-  void set_dimensions (mwSize */*dims_arg*/, mwSize /*ndims_arg*/)
+  void set_dimensions (mwSize * /*dims_arg*/, mwSize /*ndims_arg*/)
   {
     request_mutation ();
   }
@@ -357,7 +357,7 @@ public:
   }
 
   // Not allowed.
-  void set_class_name (const char */*name_arg*/) { request_mutation (); }
+  void set_class_name (const char * /*name_arg*/) { request_mutation (); }
 
   mxArray *get_cell (mwIndex /*idx*/) const
   {
@@ -366,7 +366,7 @@ public:
   }
 
   // Not allowed.
-  void set_cell (mwIndex /*idx*/, mxArray */*val*/) { request_mutation (); }
+  void set_cell (mwIndex /*idx*/, mxArray * /*val*/) { request_mutation (); }
 
   double get_scalar (void) const { return val.scalar_value (true); }
 
@@ -395,10 +395,10 @@ public:
   }
 
   // Not allowed.
-  void set_data (void */*pr*/) { request_mutation (); }
+  void set_data (void * /*pr*/) { request_mutation (); }
 
   // Not allowed.
-  void set_imag_data (void */*pi*/) { request_mutation (); }
+  void set_imag_data (void * /*pi*/) { request_mutation (); }
 
   mwIndex *get_ir (void) const
   {
@@ -413,16 +413,16 @@ public:
   mwSize get_nzmax (void) const { return val.nzmax (); }
 
   // Not allowed.
-  void set_ir (mwIndex */*ir*/) { request_mutation (); }
+  void set_ir (mwIndex * /*ir*/) { request_mutation (); }
 
   // Not allowed.
-  void set_jc (mwIndex */*jc*/) { request_mutation (); }
+  void set_jc (mwIndex * /*jc*/) { request_mutation (); }
 
   // Not allowed.
   void set_nzmax (mwSize /*nzmax*/) { request_mutation (); }
 
   // Not allowed.
-  int add_field (const char */*key*/)
+  int add_field (const char * /*key*/)
   {
     request_mutation ();
     return 0;
@@ -439,7 +439,7 @@ public:
 
   // Not allowed.
   void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
-                            mxArray */*val*/)
+                            mxArray * /*val*/)
   {
     request_mutation ();
   }
@@ -452,7 +452,7 @@ public:
     return 0;
   }
 
-  int get_field_number (const char */*key*/) const
+  int get_field_number (const char * /*key*/) const
   {
     request_mutation ();
     return 0;
@@ -737,8 +737,14 @@ public:
 
   void set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
   {
-    dims = dims_arg;
     ndims = ndims_arg;
+
+    mxFree (dims);
+    dims = (ndims > 0 ? static_cast<mwSize *>
+                          (mxArray::malloc (ndims * sizeof (mwSize)))
+                      : 0);
+    for (int i = 0; i < ndims; i++)
+      dims[i] = dims_arg[i];
   }
 
   mwSize get_number_of_elements (void) const
@@ -790,7 +796,7 @@ public:
     err_invalid_type ();
   }
 
-  void set_cell (mwIndex /*idx*/, mxArray */*val*/)
+  void set_cell (mwIndex /*idx*/, mxArray * /*val*/)
   {
     err_invalid_type ();
   }
@@ -810,12 +816,12 @@ public:
     err_invalid_type ();
   }
 
-  void set_data (void */*pr*/)
+  void set_data (void * /*pr*/)
   {
     err_invalid_type ();
   }
 
-  void set_imag_data (void */*pi*/)
+  void set_imag_data (void * /*pi*/)
   {
     err_invalid_type ();
   }
@@ -835,12 +841,12 @@ public:
     err_invalid_type ();
   }
 
-  void set_ir (mwIndex */*ir*/)
+  void set_ir (mwIndex * /*ir*/)
   {
     err_invalid_type ();
   }
 
-  void set_jc (mwIndex */*jc*/)
+  void set_jc (mwIndex * /*jc*/)
   {
     err_invalid_type ();
   }
@@ -850,7 +856,7 @@ public:
     err_invalid_type ();
   }
 
-  int add_field (const char */*key*/)
+  int add_field (const char * /*key*/)
   {
     err_invalid_type ();
   }
@@ -866,7 +872,7 @@ public:
   }
 
   void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
-                            mxArray */*val*/)
+                            mxArray * /*val*/)
   {
     err_invalid_type ();
   }
@@ -881,12 +887,12 @@ public:
     err_invalid_type ();
   }
 
-  int get_field_number (const char */*key*/) const
+  int get_field_number (const char * /*key*/) const
   {
     return -1;
   }
 
-  int get_string (char */*buf*/, mwSize /*buflen*/) const
+  int get_string (char * /*buf*/, mwSize /*buflen*/) const
   {
     err_invalid_type ();
   }
@@ -1825,7 +1831,7 @@ public:
   {
     mwSize nel = get_number_of_elements ();
 
-    for  (mwIndex i = 0; i < nel; i++)
+    for (mwIndex i = 0; i < nel; i++)
       delete data[i];
 
     mxFree (data);

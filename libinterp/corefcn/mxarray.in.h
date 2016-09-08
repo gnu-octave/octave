@@ -80,6 +80,7 @@ mxClassID;
 
 typedef unsigned char mxLogical;
 
+/* Matlab uses a wide char (uint16) internally, but Octave uses plain char. */
 /* typedef Uint16 mxChar; */
 typedef char mxChar;
 

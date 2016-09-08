@@ -53,7 +53,7 @@ libgui_liboctgui_la_LIBADD = \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-libgui_liboctgui_current = 1
+libgui_liboctgui_current = 2
 libgui_liboctgui_revision = 0
 libgui_liboctgui_age = 0
 

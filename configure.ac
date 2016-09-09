@@ -19,21 +19,21 @@ dnl Copyright (C) 1993-2016 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.63])
-AC_INIT([GNU Octave], [4.1.0+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [4.2.0-rc1], [http://octave.org/bugs.html], [octave])
 
 dnl Note that the version number is duplicated here and in AC_INIT
 dnl because AC_INIT requires it to be static, not computed from
 dnl shell variables.
 OCTAVE_MAJOR_VERSION=4
-OCTAVE_MINOR_VERSION=1
-OCTAVE_PATCH_VERSION=0+
+OCTAVE_MINOR_VERSION=2
+OCTAVE_PATCH_VERSION=0-rc1
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
 OCTAVE_COPYRIGHT="Copyright (C) 2016 John W. Eaton and others."
 
-OCTAVE_RELEASE_DATE="2015-05-26"
+OCTAVE_RELEASE_DATE="2016-09-07"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly
@@ -47,7 +47,7 @@ OCTAVE_RELEASE_DATE="2015-05-26"
 ## libinterp, perhaps we should be computing the "api version" from
 ## those versions numbers in some way instead of setting it
 ## independently here.
-OCTAVE_API_VERSION="api-v50+"
+OCTAVE_API_VERSION="api-v51"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)

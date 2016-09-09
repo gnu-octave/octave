@@ -79,7 +79,7 @@ liboctave_liboctave_la_LIBADD += \
   $(LIBOCTAVE_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctave_liboctave_current = 3
+liboctave_liboctave_current = 4
 liboctave_liboctave_revision = 0
 liboctave_liboctave_age = 0
 

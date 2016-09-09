@@ -1534,7 +1534,7 @@ OCTAVE_CHECK_LIB(sndfile, sndfile,
 
 OCTAVE_CHECK_LIB(portaudio, PortAudio,
   [PortAudio library not found.  The audioplayer, audiorecorder, and audiodevinfo functions will be disabled.],
-  [portaudio.h], [Pa_Initialize],
+  [portaudio.h], [Pa_GetDeviceCount],
   [], [don't use PortAudio library, disable audio playback and recording],
   [], [portaudio-2.0])
 

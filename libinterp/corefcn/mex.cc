@@ -3117,13 +3117,13 @@ mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
                        mxArray *argin[], const char *fname)
 {
   mxArray *mx = NULL;
-  const char *fields[] = {"identifier", "message", "case", "stack"};
 
   int old_flag = mex_context ? mex_context->trap_feval_error : 0;
   mexSetTrapFlag (1);
   if (mexCallMATLAB (nargout, argout, nargin, argin, fname))
     {
-      mx = mxCreateStructMatrix (1, 1, 4, fields);
+      const char *field_names[] = {"identifier", "message", "case", "stack"};
+      mx = mxCreateStructMatrix (1, 1, 4, field_names);
       mxSetFieldByNumber (mx, 0, 0, mxCreateString ("Octave:MEX"));
       std::string msg = "mexCallMATLABWithTrap: function call <"
                         + std::string (fname) + "> failed";
@@ -3149,10 +3149,9 @@ mexEvalString (const char *s)
   int retval = 0;
 
   int parse_status;
+  bool execution_error = false;
 
   octave_value_list ret;
-
-  bool execution_error = false;
 
   try
     {
@@ -3169,6 +3168,42 @@ mexEvalString (const char *s)
     retval = 1;
 
   return retval;
+}
+
+mxArray *
+mexEvalStringWithTrap (const char *s)
+{
+  mxArray *mx = NULL;
+
+  int parse_status;
+  bool execution_error = false;
+
+  octave_value_list ret;
+
+  try
+    {
+      ret = eval_string (s, false, parse_status, 0);
+    }
+  catch (const octave::execution_exception&)
+    {
+      recover_from_exception ();
+
+      execution_error = true;
+    }
+
+  if (parse_status || execution_error)
+    {
+      const char *field_names[] = {"identifier", "message", "case", "stack"};
+      mx = mxCreateStructMatrix (1, 1, 4, field_names);
+      mxSetFieldByNumber (mx, 0, 0, mxCreateString ("Octave:MEX"));
+      std::string msg = "mexEvalStringWithTrap: eval of <"
+                        + std::string (s) + "> failed";
+      mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
+      mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+    }
+
+  return mx;
 }
 
 void

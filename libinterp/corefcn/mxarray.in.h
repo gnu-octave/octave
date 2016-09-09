@@ -63,7 +63,7 @@ typedef enum
   mxSTRUCT_CLASS,
   mxLOGICAL_CLASS,
   mxCHAR_CLASS,
-  mxUNUSED_CLASS,
+  mxVOID_CLASS,
   mxDOUBLE_CLASS,
   mxSINGLE_CLASS,
   mxINT8_CLASS,

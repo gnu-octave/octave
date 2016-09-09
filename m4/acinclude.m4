@@ -1507,9 +1507,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       for octave_qscintilla_try in $octave_qscintilla_libnames; do
         LIBS="$QT_LIBS -l$octave_qscintilla_try"
         AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-          #include <Qsci/qscilexersql.h>
+          #include <Qsci/qsciapis.h>
+          #include <Qsci/qscilexercpp.h>
           ]], [[
-          QsciLexerSQL sqlLexer(0);
+          QsciLexer *lexer = new QsciLexerCPP ();
+          QsciAPIs *lexer_apis = new QsciAPIs (lexer);
           ]])],
           octave_cv_lib_qscintilla="-l$octave_qscintilla_try",
           octave_cv_lib_qscintilla=no)

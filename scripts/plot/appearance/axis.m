@@ -194,7 +194,26 @@ function limits = __axis__ (ca, ax, varargin)
       set (ca, "dataaspectratiomode", "auto",
                "plotboxaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "equal"))
-      set (ca, "dataaspectratio", [1, 1, 1], "plotboxaspectratio", [5 4 4]);
+      ## Get position of axis in pixels
+      ca_units = get (ca, "units");
+      set (ca, "units", "pixels");
+      axis_pos = get (ca, "position");
+      set (ca, "units", ca_units);
+
+      pbar = get (ca, "PlotBoxAspectRatio");
+      dx = diff (__get_tight_lims__ (ca, "x"));
+      dy = diff (__get_tight_lims__ (ca, "y"));
+      dz = diff (__get_tight_lims__ (ca, "z"));
+      new_pbar = [dx dy dz];
+      if (dx/pbar(1) < dy/pbar(2))
+        set (ca, "xlimmode", "auto");
+        new_pbar(1) = dy / axis_pos(4)*axis_pos(3);
+      else
+        set (ca, "ylimmode", "auto");
+        new_pbar(2) = dx / axis_pos(3)*axis_pos(4);
+      endif
+      set (ca, "dataaspectratio", [1, 1, 1],
+               "plotboxaspectratio", new_pbar);
 
     elseif (strcmpi (ax, "normal"))
       ## Set plotboxaspectratio to something obtuse so that switching

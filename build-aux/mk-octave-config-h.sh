@@ -22,6 +22,8 @@
 # autoconf-generated config.h file.  See the notes at the top of the
 # generated octave-config.h file for more details.
 
+SED=${SED:-sed}
+
 if [ $# -ne 1 ]; then
   echo "usage: mk-octave-config-h.sh CONFIG-FILE" 1>&2
   exit 1
@@ -144,7 +146,7 @@ octave_unused_parameter (const T&)
 #  define OCTINTERP_API OCTAVE_IMPORT
 EOF
 
-octave_idx_type="`sed -n 's/#define OCTAVE_IDX_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
+octave_idx_type="`$SED -n 's/#define OCTAVE_IDX_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
 
 if test -z "$octave_idx_type"; then
   echo "mk-octave-config-h.sh: failed to find OCTAVE_IDX_TYPE in $config_h_file" 1>&2
@@ -165,20 +167,20 @@ fi
 
 echo ""
 
-sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_ATOMIC_REFCOUNT.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_ATOMIC_REFCOUNT.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
 
 echo ""
 
-sed -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file
-sed -n 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
 
 if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF
@@ -207,7 +209,7 @@ if grep "#define HAVE_ROUNDL" $config_h_file > /dev/null; then
   have_roundl=yes
 fi
 
-sizeof_long_double="`sed -n 's/#define SIZEOF_LONG_DOUBLE \([0-9]*\)/\1/p' $config_h_file`"
+sizeof_long_double="`$SED -n 's/#define SIZEOF_LONG_DOUBLE \([0-9]*\)/\1/p' $config_h_file`"
 
 if test -z "$sizeof_long_double"; then
   echo "mk-octave-config-h.sh: failed to find SIZEOF_LONG_DOUBLE in $config_h_file" 1>&2
@@ -236,11 +238,11 @@ fi
 
 echo ""
 
-sed -n 's/#\(\(undef\|define\) F77_USES_.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) F77_USES_.*$\)/#  \1/p' $config_h_file
 
 echo ""
 
-sed -n 's/#\(\(undef\|define\) F77_FUNC.*$\)/#  \1/p' $config_h_file
+$SED -n 's/#\(\(undef\|define\) F77_FUNC.*$\)/#  \1/p' $config_h_file
 
 cat << EOF
 

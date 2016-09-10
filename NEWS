@@ -142,6 +142,11 @@ Summary of important user-visible changes for version 4.2:
     instead will return execution to the MEX function for error
     handling.
 
+ ** The functions mxAssert and mxAssertS for checking assertions have
+    been added.  In order to avoid a performance penalty they are only
+    compiled in to debug versions of a MEX file, i.e., that are produced
+    when the '-g' option is given to mex() or mkoctfile().
+
  ** Other new MEX API functions include mexEvalStringWithTrap.
 
  ** Other new functions added in 4.2:

@@ -214,6 +214,8 @@ public:
 
   virtual int is_empty (void) const = 0;
 
+  virtual bool is_scalar (void) const = 0;
+
   virtual mxClassID get_class_id (void) const = 0;
 
   virtual const char *get_class_name (void) const = 0;
@@ -420,6 +422,8 @@ public:
   { return rep->get_number_of_elements (); }
 
   int is_empty (void) const { return get_number_of_elements () == 0; }
+
+  bool is_scalar (void) const { return rep->is_scalar (); }
 
   const char *get_name (void) const { return name; }
 

@@ -79,16 +79,17 @@ extern OCTINTERP_API const char *mexFunctionName (void);
 extern OCTINTERP_API int mexCallMATLAB (int nargout, mxArray *argout[],
                                         int nargin, mxArray *argin[],
                                         const char *fname);
-
 extern OCTINTERP_API mxArray * mexCallMATLABWithTrap (int nargout,
                                                       mxArray *argout[],
                                                       int nargin,
                                                       mxArray *argin[],
                                                       const char *fname);
 
-extern OCTINTERP_API void mexSetTrapFlag (int flag);
 extern OCTINTERP_API int mexEvalString (const char *s);
 extern OCTINTERP_API mxArray * mexEvalStringWithTrap (const char *s);
+
+extern OCTINTERP_API void mexSetTrapFlag (int flag);
+
 extern OCTINTERP_API void mexErrMsgTxt (const char *s);
 extern OCTINTERP_API void mexErrMsgIdAndTxt (const char *id, const char *s,
                                              ...);
@@ -105,18 +106,21 @@ extern OCTINTERP_API const mxArray *mexGetVariablePtr (const char *space,
 extern OCTINTERP_API int mexPutVariable (const char *space, const char *name,
                                          const mxArray *ptr);
 
+extern OCTINTERP_API const mxArray *mexGet (double handle,
+                                            const char *property);
+extern OCTINTERP_API int mexSet (double handle, const char *property,
+                                 mxArray *val);
+
 extern OCTINTERP_API void mexMakeArrayPersistent (mxArray *ptr);
 extern OCTINTERP_API void mexMakeMemoryPersistent (void *ptr);
 
-extern OCTINTERP_API int mexAtExit (void (*f) (void));
-extern OCTINTERP_API const mxArray *mexGet (double handle,
-                                            const char *property);
+extern OCTINTERP_API void mexLock (void);
+extern OCTINTERP_API void mexUnlock (void);
+
 extern OCTINTERP_API int mexIsGlobal (const mxArray *ptr);
 extern OCTINTERP_API int mexIsLocked (void);
-extern OCTINTERP_API void mexLock (void);
-extern OCTINTERP_API int mexSet (double handle, const char *property,
-                                 mxArray *val);
-extern OCTINTERP_API void mexUnlock (void);
+
+extern OCTINTERP_API int mexAtExit (void (*f) (void));
 
 /* Floating point predicates.  */
 extern OCTINTERP_API int mxIsFinite (double v);
@@ -202,8 +206,9 @@ extern OCTINTERP_API int mxIsLogicalScalar (const mxArray *ptr);
 /* Odd type+size+value predicate.  */
 extern OCTINTERP_API int mxIsLogicalScalarTrue (const mxArray *ptr);
 
-/* Size predicate.  */
+/* Size predicates.  */
 extern OCTINTERP_API int mxIsEmpty (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsScalar (const mxArray *ptr);
 
 /* Just plain odd thing to ask of a value.  */
 extern OCTINTERP_API int mxIsFromGlobalWS (const mxArray *ptr);

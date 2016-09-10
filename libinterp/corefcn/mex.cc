@@ -305,6 +305,14 @@ public:
 
   int is_empty (void) const { return val.is_empty (); }
 
+  bool is_scalar (void) const
+  {
+    // Force dims and ndims to be cached.
+    get_dimensions ();
+
+    return ndims == 2 && dims[0] == 1 && dims[1] == 1;
+  }  
+
   mxClassID get_class_id (void) const
   {
     id = mxUNKNOWN_CLASS;
@@ -758,6 +766,11 @@ public:
   }
 
   int is_empty (void) const { return get_number_of_elements () == 0; }
+
+  bool is_scalar (void) const
+  {
+    return ndims == 2 && dims[0] == 1 && dims[1] == 1;
+  }
 
   mxClassID get_class_id (void) const { return id; }
 
@@ -2686,6 +2699,12 @@ int
 mxIsEmpty (const mxArray *ptr)
 {
   return ptr->is_empty ();
+}
+
+bool
+mxIsScalar (const mxArray *ptr)
+{
+  return ptr->is_scalar ();
 }
 
 // FIXME: Just plain odd thing to ask of a value.

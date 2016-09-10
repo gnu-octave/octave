@@ -29,7 +29,7 @@ function retval = mex (varargin)
   [output, status] = mkoctfile ("--mex", varargin{:});
 
   if (! isempty (output))
-    disp (output);
+    printf ("%s", output);
   endif
   if (nargout > 0)
     retval = status;

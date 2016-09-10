@@ -498,6 +498,10 @@ main (int argc, char **argv)
         {
           defs += (" " + arg);
         }
+      else if (arg == "-largeArrayDims" || arg == "-compatibleArrayDims")
+        {
+          std::cout << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
+        }
       else if (starts_with (arg, "-Wl,") || starts_with (arg, "-l")
                || starts_with (arg, "-L") || starts_with (arg, "-R"))
         {

@@ -310,11 +310,12 @@ public:
   mxArray (const octave_value& ov);
 
   mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
-           mxComplexity flag = mxREAL);
+           mxComplexity flag = mxREAL, bool init = true);
 
   mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag = mxREAL);
 
-  mxArray (mxClassID id, mwSize m, mwSize n, mxComplexity flag = mxREAL);
+  mxArray (mxClassID id, mwSize m, mwSize n,
+           mxComplexity flag = mxREAL, bool init = true);
 
   mxArray (mxClassID id, double val);
 

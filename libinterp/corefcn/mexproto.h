@@ -160,6 +160,14 @@ extern OCTINTERP_API mxArray *mxCreateNumericArray (mwSize ndims,
 extern OCTINTERP_API mxArray *mxCreateNumericMatrix (mwSize m, mwSize n,
                                                      mxClassID class_id,
                                                      mxComplexity flag);
+extern OCTINTERP_API mxArray *mxCreateUninitNumericArray (mwSize ndims,
+                                                          const mwSize *dims,
+                                                          mxClassID class_id,
+                                                          mxComplexity flag);
+extern OCTINTERP_API mxArray *mxCreateUninitNumericMatrix (mwSize m, mwSize n,
+                                                           mxClassID class_id,
+                                                           mxComplexity flag);
+
 extern OCTINTERP_API mxArray *mxCreateSparse (mwSize m, mwSize n, mwSize nzmax,
                                               mxComplexity flag);
 extern OCTINTERP_API mxArray *mxCreateSparseLogicalMatrix (mwSize m, mwSize n,

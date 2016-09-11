@@ -998,12 +998,18 @@ class mxArray_number : public mxArray_matlab
 public:
 
   mxArray_number (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg,
-                  mxComplexity flag = mxREAL)
+                  mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (id_arg, ndims_arg, dims_arg),
-      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
-                                               get_element_size ())
-                            : 0) { }
+      pr (init ? mxArray::calloc (get_number_of_elements (),
+                                  get_element_size ())
+               : mxArray::malloc (get_number_of_elements ()
+                                  * get_element_size ())),
+      pi (flag == mxCOMPLEX
+            ? (init ? mxArray::calloc (get_number_of_elements (),
+                                       get_element_size ())
+                    : mxArray::malloc (get_number_of_elements ()
+                                       * get_element_size ()))
+            : 0) { }
 
   mxArray_number (mxClassID id_arg, const dim_vector& dv,
                   mxComplexity flag = mxREAL)
@@ -1011,15 +1017,23 @@ public:
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
                                                get_element_size ())
-                            : 0) { }
+                            : 0)
+  { }
 
   mxArray_number (mxClassID id_arg, mwSize m, mwSize n,
-                  mxComplexity flag = mxREAL)
+                  mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (id_arg, m, n),
-      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
-                                               get_element_size ())
-                            : 0) { }
+      pr (init ? mxArray::calloc (get_number_of_elements (),
+                                  get_element_size ())
+               : mxArray::malloc (get_number_of_elements ()
+                                  * get_element_size ())),
+      pi (flag == mxCOMPLEX
+            ? (init ? mxArray::calloc (get_number_of_elements (),
+                                       get_element_size ())
+                    : mxArray::malloc (get_number_of_elements ()
+                                       * get_element_size ()))
+            : 0)
+  { }
 
   mxArray_number (mxClassID id_arg, double val)
     : mxArray_matlab (id_arg, 1, 1),
@@ -1907,14 +1921,15 @@ mxArray::mxArray (const octave_value& ov)
   : rep (new mxArray_octave_value (ov)), name (0) { }
 
 mxArray::mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
-                  mxComplexity flag)
-  : rep (new mxArray_number (id, ndims, dims, flag)), name (0) { }
+                  mxComplexity flag, bool init)
+  : rep (new mxArray_number (id, ndims, dims, flag, init)), name (0) { }
 
 mxArray::mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag)
   : rep (new mxArray_number (id, dv, flag)), name (0) { }
 
-mxArray::mxArray (mxClassID id, mwSize m, mwSize n, mxComplexity flag)
-  : rep (new mxArray_number (id, m, n, flag)), name (0) { }
+mxArray::mxArray (mxClassID id, mwSize m, mwSize n,
+                  mxComplexity flag, bool init)
+  : rep (new mxArray_number (id, m, n, flag, init)), name (0) { }
 
 mxArray::mxArray (mxClassID id, double val)
   : rep (new mxArray_number (id, val)), name (0) { }
@@ -2517,6 +2532,20 @@ mxCreateNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
                        mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (class_id, m, n, flag));
+}
+
+mxArray *
+mxCreateUninitNumericArray (mwSize ndims, const mwSize *dims,
+                            mxClassID class_id, mxComplexity flag)
+{
+  return maybe_mark_array (new mxArray (class_id, ndims, dims, flag, false));
+}
+
+mxArray *
+mxCreateUninitNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
+                             mxComplexity flag)
+{
+  return maybe_mark_array (new mxArray (class_id, m, n, flag, false));
 }
 
 mxArray *

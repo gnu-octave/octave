@@ -148,7 +148,7 @@ Summary of important user-visible changes for version 4.2:
     when the '-g' option is given to mex() or mkoctfile().
 
  ** Other new MEX API functions include mexEvalStringWithTrap,
-    mxIsScalar.
+    mxIsScalar, mxCreateUninitNumericArray, mxCreateUninitNumericMatrix.
 
  ** Other new functions added in 4.2:
 

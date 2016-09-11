@@ -55,6 +55,7 @@ SUCH DAMAGE.
 extern "C" {
 #else
 #  include <stdlib.h>
+#  include <stdbool.h>
 #endif
 
 /* The definition of OCTINTERP_API is normally provided by Octave's
@@ -123,9 +124,9 @@ extern OCTINTERP_API int mexIsLocked (void);
 extern OCTINTERP_API int mexAtExit (void (*f) (void));
 
 /* Floating point predicates.  */
-extern OCTINTERP_API int mxIsFinite (double v);
-extern OCTINTERP_API int mxIsInf (double v);
-extern OCTINTERP_API int mxIsNaN (double v);
+extern OCTINTERP_API bool mxIsFinite (double v);
+extern OCTINTERP_API bool mxIsInf (double v);
+extern OCTINTERP_API bool mxIsNaN (double v);
 
 /* Floating point values.  */
 extern OCTINTERP_API double mxGetEps (void);
@@ -188,38 +189,38 @@ extern OCTINTERP_API mxArray *mxDuplicateArray (const mxArray *v);
 extern OCTINTERP_API void mxDestroyArray (mxArray *v);
 
 /* Type Predicates.  */
-extern OCTINTERP_API int mxIsCell (const mxArray *ptr);
-extern OCTINTERP_API int mxIsChar (const mxArray *ptr);
-extern OCTINTERP_API int mxIsClass (const mxArray *ptr, const char *name);
-extern OCTINTERP_API int mxIsComplex (const mxArray *ptr);
-extern OCTINTERP_API int mxIsDouble (const mxArray *ptr);
-extern OCTINTERP_API int mxIsFunctionHandle (const mxArray *ptr);
-extern OCTINTERP_API int mxIsInt16 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsInt32 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsInt64 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsInt8 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsLogical (const mxArray *ptr);
-extern OCTINTERP_API int mxIsNumeric (const mxArray *ptr);
-extern OCTINTERP_API int mxIsSingle (const mxArray *ptr);
-extern OCTINTERP_API int mxIsSparse (const mxArray *ptr);
-extern OCTINTERP_API int mxIsStruct (const mxArray *ptr);
-extern OCTINTERP_API int mxIsUint16 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsUint32 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsUint64 (const mxArray *ptr);
-extern OCTINTERP_API int mxIsUint8 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsCell (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsChar (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsClass (const mxArray *ptr, const char *name);
+extern OCTINTERP_API bool mxIsComplex (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsDouble (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsFunctionHandle (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsInt16 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsInt32 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsInt64 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsInt8 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsLogical (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsNumeric (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsSingle (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsSparse (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsStruct (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsUint16 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsUint32 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsUint64 (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsUint8 (const mxArray *ptr);
 
 /* Odd type+size predicate.  */
-extern OCTINTERP_API int mxIsLogicalScalar (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsLogicalScalar (const mxArray *ptr);
 
 /* Odd type+size+value predicate.  */
-extern OCTINTERP_API int mxIsLogicalScalarTrue (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsLogicalScalarTrue (const mxArray *ptr);
 
 /* Size predicates.  */
-extern OCTINTERP_API int mxIsEmpty (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsEmpty (const mxArray *ptr);
 extern OCTINTERP_API bool mxIsScalar (const mxArray *ptr);
 
 /* Just plain odd thing to ask of a value.  */
-extern OCTINTERP_API int mxIsFromGlobalWS (const mxArray *ptr);
+extern OCTINTERP_API bool mxIsFromGlobalWS (const mxArray *ptr);
 
 /* Dimension extractors.  */
 extern OCTINTERP_API size_t mxGetM (const mxArray *ptr);

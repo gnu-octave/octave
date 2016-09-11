@@ -2394,19 +2394,19 @@ mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 
 // Floating point predicates.
 
-int
+bool
 mxIsFinite (const double v)
 {
   return lo_ieee_finite (v) != 0;
 }
 
-int
+bool
 mxIsInf (const double v)
 {
   return lo_ieee_isinf (v) != 0;
 }
 
-int
+bool
 mxIsNaN (const double v)
 {
   return lo_ieee_isnan (v) != 0;
@@ -2595,136 +2595,136 @@ mxDestroyArray (mxArray *ptr)
 }
 
 // Type Predicates.
-int
+bool
 mxIsCell (const mxArray *ptr)
 {
   return ptr->is_cell ();
 }
 
-int
+bool
 mxIsChar (const mxArray *ptr)
 {
   return ptr->is_char ();
 }
 
-int
+bool
 mxIsClass (const mxArray *ptr, const char *name)
 {
   return ptr->is_class (name);
 }
 
-int
+bool
 mxIsComplex (const mxArray *ptr)
 {
   return ptr->is_complex ();
 }
 
-int
+bool
 mxIsDouble (const mxArray *ptr)
 {
   return ptr->is_double ();
 }
 
-int
+bool
 mxIsFunctionHandle (const mxArray *ptr)
 {
   return ptr->is_function_handle ();
 }
 
-int
+bool
 mxIsInt16 (const mxArray *ptr)
 {
   return ptr->is_int16 ();
 }
 
-int
+bool
 mxIsInt32 (const mxArray *ptr)
 {
   return ptr->is_int32 ();
 }
 
-int
+bool
 mxIsInt64 (const mxArray *ptr)
 {
   return ptr->is_int64 ();
 }
 
-int
+bool
 mxIsInt8 (const mxArray *ptr)
 {
   return ptr->is_int8 ();
 }
 
-int
+bool
 mxIsLogical (const mxArray *ptr)
 {
   return ptr->is_logical ();
 }
 
-int
+bool
 mxIsNumeric (const mxArray *ptr)
 {
   return ptr->is_numeric ();
 }
 
-int
+bool
 mxIsSingle (const mxArray *ptr)
 {
   return ptr->is_single ();
 }
 
-int
+bool
 mxIsSparse (const mxArray *ptr)
 {
   return ptr->is_sparse ();
 }
 
-int
+bool
 mxIsStruct (const mxArray *ptr)
 {
   return ptr->is_struct ();
 }
 
-int
+bool
 mxIsUint16 (const mxArray *ptr)
 {
   return ptr->is_uint16 ();
 }
 
-int
+bool
 mxIsUint32 (const mxArray *ptr)
 {
   return ptr->is_uint32 ();
 }
 
-int
+bool
 mxIsUint64 (const mxArray *ptr)
 {
   return ptr->is_uint64 ();
 }
 
-int
+bool
 mxIsUint8 (const mxArray *ptr)
 {
   return ptr->is_uint8 ();
 }
 
 // Odd type+size predicate.
-int
+bool
 mxIsLogicalScalar (const mxArray *ptr)
 {
   return ptr->is_logical_scalar ();
 }
 
 // Odd type+size+value predicate.
-int
+bool
 mxIsLogicalScalarTrue (const mxArray *ptr)
 {
   return ptr->is_logical_scalar_true ();
 }
 
 // Size predicate.
-int
+bool
 mxIsEmpty (const mxArray *ptr)
 {
   return ptr->is_empty ();
@@ -2738,7 +2738,7 @@ mxIsScalar (const mxArray *ptr)
 
 // FIXME: Just plain odd thing to ask of a value.
 // Still, Octave is incompatible because it does not implement this.
-int
+bool
 mxIsFromGlobalWS (const mxArray * /*ptr*/)
 {
   mexErrMsgTxt ("mxIsFromGlobalWS() is unimplemented");

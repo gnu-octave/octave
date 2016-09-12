@@ -51,13 +51,6 @@ SUCH DAMAGE.
 
 typedef enum
 {
-  mxREAL = 0,
-  mxCOMPLEX = 1
-}
-mxComplexity;
-
-typedef enum
-{
   mxUNKNOWN_CLASS = 0,
   mxCELL_CLASS,
   mxSTRUCT_CLASS,
@@ -78,16 +71,24 @@ typedef enum
 }
 mxClassID;
 
-typedef unsigned char mxLogical;
+typedef enum
+{
+  mxREAL = 0,
+  mxCOMPLEX = 1
+}
+mxComplexity;
 
 /* Matlab uses a wide char (uint16) internally, but Octave uses plain char. */
 /* typedef Uint16 mxChar; */
 typedef char mxChar;
 
+typedef unsigned char mxLogical;
+
 /*
- * FIXME: Mathworks says these should be size_t on 64-bit system and when
- * mex is used with the -largearraydims flag, but why do that?  Its better
- * to conform to the same indexing as the rest of Octave.
+ * FIXME: Mathworks says mwSize, mwIndex should be int generally.
+ * But on 64-bit systems, or when mex -largeArrayDims is used, it is size_t.
+ * mwSignedIndex is supposed to be ptrdiff_t.  All of this is confusing.
+ * Its better to conform to the same indexing as the rest of Octave.
  */
 typedef %OCTAVE_IDX_TYPE% mwSize;
 typedef %OCTAVE_IDX_TYPE% mwIndex;
@@ -208,7 +209,7 @@ public:
 
   virtual void set_n (mwSize n) = 0;
 
-  virtual void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
+  virtual int set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
 
   virtual mwSize get_number_of_elements (void) const = 0;
 
@@ -416,8 +417,8 @@ public:
 
   void set_n (mwSize n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
 
-  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
-  { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
+  int set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
+  { DO_MUTABLE_METHOD (int, set_dimensions (dims_arg, ndims_arg)); }
 
   mwSize get_number_of_elements (void) const
   { return rep->get_number_of_elements (); }

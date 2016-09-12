@@ -194,6 +194,7 @@ extern OCTINTERP_API bool mxIsChar (const mxArray *ptr);
 extern OCTINTERP_API bool mxIsClass (const mxArray *ptr, const char *name);
 extern OCTINTERP_API bool mxIsComplex (const mxArray *ptr);
 extern OCTINTERP_API bool mxIsDouble (const mxArray *ptr);
+/* Matlab seems to have deprecated IsFunctionHandle, but it seems useful */
 extern OCTINTERP_API bool mxIsFunctionHandle (const mxArray *ptr);
 extern OCTINTERP_API bool mxIsInt16 (const mxArray *ptr);
 extern OCTINTERP_API bool mxIsInt32 (const mxArray *ptr);
@@ -225,15 +226,15 @@ extern OCTINTERP_API bool mxIsFromGlobalWS (const mxArray *ptr);
 /* Dimension extractors.  */
 extern OCTINTERP_API size_t mxGetM (const mxArray *ptr);
 extern OCTINTERP_API size_t mxGetN (const mxArray *ptr);
-extern OCTINTERP_API mwSize *mxGetDimensions (const mxArray *ptr);
+extern OCTINTERP_API const mwSize *mxGetDimensions (const mxArray *ptr);
 extern OCTINTERP_API mwSize mxGetNumberOfDimensions (const mxArray *ptr);
 extern OCTINTERP_API size_t mxGetNumberOfElements (const mxArray *ptr);
 
 /* Dimension setters.  */
 extern OCTINTERP_API void mxSetM (mxArray *ptr, mwSize M);
 extern OCTINTERP_API void mxSetN (mxArray *ptr, mwSize N);
-extern OCTINTERP_API void mxSetDimensions (mxArray *ptr, const mwSize *dims,
-                                           mwSize ndims);
+extern OCTINTERP_API int mxSetDimensions (mxArray *ptr, const mwSize *dims,
+                                          mwSize ndims);
 
 /* Data extractors.  */
 extern OCTINTERP_API double *mxGetPi (const mxArray *ptr);
@@ -296,8 +297,9 @@ extern OCTINTERP_API int mxGetString (const mxArray *ptr, char *buf,
 extern OCTINTERP_API char *mxArrayToString (const mxArray *ptr);
 
 /* Miscellaneous.  */
-extern OCTINTERP_API mwIndex
-mxCalcSingleSubscript (const mxArray *ptr, mwSize nsubs, mwIndex *subs);
+extern OCTINTERP_API mwIndex mxCalcSingleSubscript (const mxArray *ptr,
+                                                    mwSize nsubs,
+                                                    mwIndex *subs);
 
 extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
 

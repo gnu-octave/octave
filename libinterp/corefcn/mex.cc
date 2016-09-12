@@ -296,9 +296,11 @@ public:
 
   void set_n (mwSize /*n*/) { request_mutation (); }
 
-  void set_dimensions (mwSize * /*dims_arg*/, mwSize /*ndims_arg*/)
+  int set_dimensions (mwSize * /*dims_arg*/, mwSize /*ndims_arg*/)
   {
     request_mutation ();
+
+    return 0; 
   }
 
   mwSize get_number_of_elements (void) const { return val.numel (); }
@@ -319,18 +321,20 @@ public:
 
     std::string cn = val.class_name ();
 
-    if (cn == "cell")
-      id = mxCELL_CLASS;
-    else if (cn == "struct")
-      id = mxSTRUCT_CLASS;
-    else if (cn == "logical")
-      id = mxLOGICAL_CLASS;
-    else if (cn == "char")
-      id = mxCHAR_CLASS;
-    else if (cn == "double")
+    if (cn == "double")
       id = mxDOUBLE_CLASS;
     else if (cn == "single")
       id = mxSINGLE_CLASS;
+    else if (cn == "char")
+      id = mxCHAR_CLASS;
+    else if (cn == "logical")
+      id = mxLOGICAL_CLASS;
+    else if (cn == "cell")
+      id = mxCELL_CLASS;
+    else if (cn == "struct")
+      id = mxSTRUCT_CLASS;
+    else if (cn == "function_handle")
+      id = mxFUNCTION_CLASS;
     else if (cn == "int8")
       id = mxINT8_CLASS;
     else if (cn == "uint8")
@@ -347,8 +351,6 @@ public:
       id = mxINT64_CLASS;
     else if (cn == "uint64")
       id = mxUINT64_CLASS;
-    else if (cn == "function_handle")
-      id = mxFUNCTION_CLASS;
 
     return id;
   }
@@ -376,6 +378,7 @@ public:
   // Not allowed.
   void set_cell (mwIndex /*idx*/, mxArray * /*val*/) { request_mutation (); }
 
+  // FIXME: For sparse arrays, this should return the first non-zero value.
   double get_scalar (void) const { return val.scalar_value (true); }
 
   void *get_data (void) const
@@ -491,7 +494,7 @@ public:
 
   char *array_to_string (void) const
   {
-    // FIXME: this is suposed to handle multi-byte character strings.
+    // FIXME: this is supposed to handle multi-byte character strings.
 
     char *buf = 0;
 
@@ -532,12 +535,13 @@ public:
 
     switch (id)
       {
-      case mxCELL_CLASS: return sizeof (mxArray *);
-      case mxSTRUCT_CLASS: return sizeof (mxArray *);
-      case mxLOGICAL_CLASS: return sizeof (mxLogical);
-      case mxCHAR_CLASS: return sizeof (mxChar);
       case mxDOUBLE_CLASS: return sizeof (double);
       case mxSINGLE_CLASS: return sizeof (float);
+      case mxCHAR_CLASS: return sizeof (mxChar);
+      case mxLOGICAL_CLASS: return sizeof (mxLogical);
+      case mxCELL_CLASS: return sizeof (mxArray *);
+      case mxSTRUCT_CLASS: return sizeof (mxArray *);
+      case mxFUNCTION_CLASS: return 0;
       case mxINT8_CLASS: return 1;
       case mxUINT8_CLASS: return 1;
       case mxINT16_CLASS: return 2;
@@ -546,7 +550,8 @@ public:
       case mxUINT32_CLASS: return 4;
       case mxINT64_CLASS: return 8;
       case mxUINT64_CLASS: return 8;
-      case mxFUNCTION_CLASS: return 0;
+      // FIXME: user-defined objects need their own class ID.
+      //        What should they return, size of pointer?
       default: return 0;
       }
   }
@@ -743,16 +748,30 @@ public:
 
   void set_n (mwSize n) { dims[1] = n; }
 
-  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
+  int set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
   {
     ndims = ndims_arg;
 
     mxFree (dims);
-    dims = (ndims > 0 ? static_cast<mwSize *>
-                          (mxArray::malloc (ndims * sizeof (mwSize)))
-                      : 0);
-    for (int i = 0; i < ndims; i++)
-      dims[i] = dims_arg[i];
+
+    if (ndims > 0)
+      {
+        dims
+          = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
+        
+        if (dims == NULL)
+          return 1;
+
+        for (int i = 0; i < ndims; i++)
+          dims[i] = dims_arg[i];
+
+        return 0;
+      }
+    else
+      {
+        dims = 0;
+        return 0;
+      }
   }
 
   mwSize get_number_of_elements (void) const
@@ -778,12 +797,13 @@ public:
   {
     switch (id)
       {
-      case mxCELL_CLASS: return "cell";
-      case mxSTRUCT_CLASS: return "struct";
-      case mxLOGICAL_CLASS: return "logical";
-      case mxCHAR_CLASS: return "char";
       case mxDOUBLE_CLASS: return "double";
       case mxSINGLE_CLASS: return "single";
+      case mxCHAR_CLASS: return "char";
+      case mxLOGICAL_CLASS: return "logical";
+      case mxCELL_CLASS: return "cell";
+      case mxSTRUCT_CLASS: return "struct";
+      case mxFUNCTION_CLASS: return "function_handle";
       case mxINT8_CLASS: return "int8";
       case mxUINT8_CLASS: return "uint8";
       case mxINT16_CLASS: return "int16";
@@ -792,7 +812,8 @@ public:
       case mxUINT32_CLASS: return "uint32";
       case mxINT64_CLASS: return "int64";
       case mxUINT64_CLASS: return "uint64";
-      case mxFUNCTION_CLASS: return "function_handle";
+      case mxUNKNOWN_CLASS: return "unknown";
+      // FIXME: should return the classname of user-defined objects
       default: return "unknown";
       }
   }
@@ -939,6 +960,8 @@ public:
       case mxINT64_CLASS: return 8;
       case mxUINT64_CLASS: return 8;
       case mxFUNCTION_CLASS: return 0;
+      // FIXME: user-defined objects need their own class ID.
+      //        What should they return, size of pointer?
       default: return 0;
       }
   }
@@ -1108,20 +1131,20 @@ public:
 
     switch (get_class_id ())
       {
-      case mxLOGICAL_CLASS:
-        retval = *(static_cast<bool *> (pr));
-        break;
-
-      case mxCHAR_CLASS:
-        retval = *(static_cast<mxChar *> (pr));
+      case mxDOUBLE_CLASS:
+        retval = *(static_cast<double *> (pr));
         break;
 
       case mxSINGLE_CLASS:
         retval = *(static_cast<float *> (pr));
         break;
 
-      case mxDOUBLE_CLASS:
-        retval = *(static_cast<double *> (pr));
+      case mxCHAR_CLASS:
+        retval = *(static_cast<mxChar *> (pr));
+        break;
+
+      case mxLOGICAL_CLASS:
+        retval = *(static_cast<bool *> (pr));
         break;
 
       case mxINT8_CLASS:
@@ -1199,7 +1222,7 @@ public:
 
   char *array_to_string (void) const
   {
-    // FIXME: this is suposed to handle multi-byte character strings.
+    // FIXME: this is supposed to handle multi-byte character strings.
 
     mwSize nel = get_number_of_elements ();
 
@@ -1226,24 +1249,36 @@ public:
 
     switch (get_class_id ())
       {
-      case mxLOGICAL_CLASS:
-        retval = int_to_ov<mxLogical, boolNDArray, bool> (dv);
-        break;
-
-      case mxCHAR_CLASS:
+      case mxDOUBLE_CLASS:
         {
           mwSize nel = get_number_of_elements ();
 
-          mxChar *ppr = static_cast<mxChar *> (pr);
+          double *ppr = static_cast<double *> (pr);
 
-          charNDArray val (dv);
+          if (pi)
+            {
+              ComplexNDArray val (dv);
 
-          char *ptr = val.fortran_vec ();
+              Complex *ptr = val.fortran_vec ();
 
-          for (mwIndex i = 0; i < nel; i++)
-            ptr[i] = static_cast<char> (ppr[i]);
+              double *ppi = static_cast<double *> (pi);
 
-          retval = val;
+              for (mwIndex i = 0; i < nel; i++)
+                ptr[i] = Complex (ppr[i], ppi[i]);
+
+              retval = val;
+            }
+          else
+            {
+              NDArray val (dv);
+
+              double *ptr = val.fortran_vec ();
+
+              for (mwIndex i = 0; i < nel; i++)
+                ptr[i] = ppr[i];
+
+              retval = val;
+            }
         }
         break;
 
@@ -1280,37 +1315,25 @@ public:
         }
         break;
 
-      case mxDOUBLE_CLASS:
+      case mxCHAR_CLASS:
         {
           mwSize nel = get_number_of_elements ();
 
-          double *ppr = static_cast<double *> (pr);
+          mxChar *ppr = static_cast<mxChar *> (pr);
 
-          if (pi)
-            {
-              ComplexNDArray val (dv);
+          charNDArray val (dv);
 
-              Complex *ptr = val.fortran_vec ();
+          char *ptr = val.fortran_vec ();
 
-              double *ppi = static_cast<double *> (pi);
+          for (mwIndex i = 0; i < nel; i++)
+            ptr[i] = static_cast<char> (ppr[i]);
 
-              for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = Complex (ppr[i], ppi[i]);
-
-              retval = val;
-            }
-          else
-            {
-              NDArray val (dv);
-
-              double *ptr = val.fortran_vec ();
-
-              for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = ppr[i];
-
-              retval = val;
-            }
+          retval = val;
         }
+        break;
+
+      case mxLOGICAL_CLASS:
+        retval = int_to_ov<mxLogical, boolNDArray, bool> (dv);
         break;
 
       case mxINT8_CLASS:
@@ -1459,30 +1482,6 @@ public:
 
     switch (get_class_id ())
       {
-      case mxLOGICAL_CLASS:
-        {
-          bool *ppr = static_cast<bool *> (pr);
-
-          SparseBoolMatrix val (get_m (), get_n (),
-                                static_cast<octave_idx_type> (nzmax));
-
-          for (mwIndex i = 0; i < nzmax; i++)
-            {
-              val.xdata (i) = ppr[i];
-              val.xridx (i) = ir[i];
-            }
-
-          for (mwIndex i = 0; i < get_n () + 1; i++)
-            val.xcidx (i) = jc[i];
-
-          retval = val;
-        }
-        break;
-
-      case mxSINGLE_CLASS:
-        error ("single precision sparse data type not supported");
-        break;
-
       case mxDOUBLE_CLASS:
         {
           if (pi)
@@ -1523,6 +1522,30 @@ public:
               retval = val;
             }
         }
+        break;
+
+      case mxLOGICAL_CLASS:
+        {
+          bool *ppr = static_cast<bool *> (pr);
+
+          SparseBoolMatrix val (get_m (), get_n (),
+                                static_cast<octave_idx_type> (nzmax));
+
+          for (mwIndex i = 0; i < nzmax; i++)
+            {
+              val.xdata (i) = ppr[i];
+              val.xridx (i) = ir[i];
+            }
+
+          for (mwIndex i = 0; i < get_n () + 1; i++)
+            val.xcidx (i) = jc[i];
+
+          retval = val;
+        }
+        break;
+
+      case mxSINGLE_CLASS:
+        error ("single precision sparse data type not supported");
         break;
 
       default:
@@ -2759,7 +2782,7 @@ mxGetN (const mxArray *ptr)
   return ptr->get_n ();
 }
 
-mwSize *
+const mwSize *
 mxGetDimensions (const mxArray *ptr)
 {
   return ptr->get_dimensions ();
@@ -2790,12 +2813,12 @@ mxSetN (mxArray *ptr, mwSize n)
   ptr->set_n (n);
 }
 
-void
+int
 mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
 {
-  ptr->set_dimensions (static_cast<mwSize *>
-                       (maybe_unmark (const_cast<mwSize *> (dims))),
-                       ndims);
+  return (ptr->set_dimensions (static_cast<mwSize *>
+                               (maybe_unmark (const_cast<mwSize *> (dims))),
+                               ndims));
 }
 
 // Data extractors.
@@ -2811,6 +2834,8 @@ mxGetPi (const mxArray *ptr)
   return static_cast<double *> (ptr->get_imag_data ());
 }
 
+// FIXME: For sparse arrays, mxGetScalar should return the first non-zero
+// element, rather than just the first element.
 double
 mxGetScalar (const mxArray *ptr)
 {
@@ -2820,7 +2845,10 @@ mxGetScalar (const mxArray *ptr)
 mxChar *
 mxGetChars (const mxArray *ptr)
 {
-  return static_cast<mxChar *> (ptr->get_data ());
+  if (mxIsChar (ptr))
+    return static_cast<mxChar *> (ptr->get_data ());
+  else
+    return NULL;
 }
 
 mxLogical *

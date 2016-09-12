@@ -239,7 +239,7 @@ scalar_xpow (const S& a, const SM& b)
 
 /*
 %!assert (sparse (2) .^ [3, 4], sparse ([8, 16]))
-%!assert (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]))
+%!assert <47775> (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]))
 */
 
 // -*- 1 -*-

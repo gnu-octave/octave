@@ -116,7 +116,7 @@ function retval = num2str (x, arg)
             ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
           endif
           ## FIXME: Integers should be masked to show only 16 significant digits
-          ##        See %!xtest with 1e23 below.
+          ##        See test case for bug #36133 below
           fmt = sprintf ("%%%d.0f", ndgt);
         endif
       else
@@ -161,7 +161,7 @@ function retval = num2str (x, arg)
         ## Integer input
         ndgt += 3;
         ## FIXME: Integers should be masked to show only 16 significant digits
-        ##        See %!xtest below
+        ##        See test case for bug #36133 below
         fmt = sprintf ("%%%d.0f%%-+%d.0fi", ndgt, ndgt);
       endif
     endif
@@ -243,7 +243,7 @@ endfunction
 
 ## FIXME: Integers greater than flintmax() - 1 should be masked to show just
 ##        16 digits of precision.
-%!xtest
+%!test <36133>
 %! assert (num2str (1e23), "100000000000000000000000");
 
 ## Test for bug #44864, extra rows generated from newlines in format

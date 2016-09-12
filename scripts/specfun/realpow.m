@@ -45,7 +45,7 @@ endfunction
 %! x = rand (10, 10);
 %! y = randn (10, 10);
 %! assert (x.^y, realpow (x,y));
-%!assert (realpow (1i,2), -1)
+%!assert <47775> (realpow (1i,2), -1)
 
 %!error realpow ()
 %!error realpow (1)

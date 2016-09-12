@@ -393,14 +393,14 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 ##        The terms in the convolution added in reverse order compared
 ##        to the "full" option.  This produces differences on the order
 ##        of tens of eps.  This should be fixed, but in the meantime
-##        the tests will be marked as xtests.
+##        the tests will be marked as known failures.
 %!shared a, b, c
 %! ## test 3D by 3D
 %! a = rand (10, 10, 10);
 %! b = rand (3, 3, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,2:11))
-%!xtest
+%!test <39314>
 %! assert (convn (a, b, "valid"), c(3:10,3:10,3:10));
 %!
 %!test
@@ -409,7 +409,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! b = rand (3, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,:))
-%!xtest
+%!test <39314>
 %! assert (convn (a, b, "valid"), c(3:10,3:10,:));
 %!
 %!test
@@ -426,7 +426,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! b = rand (4, 3, 2, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(3:12,2:16,2:8,2:9,:))
-%!xtest
+%!test <39314>
 %! assert (convn (a, b, "valid"), c(4:10,3:15,2:7,3:8,:));
 
 %!test

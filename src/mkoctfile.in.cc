@@ -312,6 +312,8 @@ static std::string help_msg =
 "\n"
 "  -s, --strip             Strip output file.\n"
 "\n"
+"  -n, --just-print        Print commands, but do not execute them.\n"
+"\n"
 "  -v, --verbose           Echo commands as they are executed.\n"
 "\n"
 "  FILE                    Compile or link FILE.  Recognized file types are:\n"
@@ -372,8 +374,14 @@ ends_with (const std::string& s, const std::string& suffix)
 }
 
 static int
-run_command (const std::string& cmd)
+run_command (const std::string& cmd, bool printonly = false)
 {
+  if (printonly)
+    {
+      std::cout << cmd << std::endl;
+      return 0;
+    }
+
   if (debug)
     std::cout << cmd << std::endl;
 
@@ -414,6 +422,7 @@ main (int argc, char **argv)
   bool link_stand_alone = false;
   std::string output_ext = ".oct";
   bool depend = false;
+  bool printonly = false;
 
   if (argc == 1)
     {
@@ -526,6 +535,10 @@ main (int argc, char **argv)
             }
           else
             std::cerr << "mkoctfile: output filename missing" << std::endl;
+        }
+      else if (arg == "-n" || arg == "--just-print")
+        {
+          printonly = true;
         }
       else if (arg == "-p" || arg == "-print" || arg == "--print")
         {
@@ -708,7 +721,7 @@ main (int argc, char **argv)
                             + vars["ALL_FFLAGS"] + " "
                             + incflags + " " + defs + " " + pass_on_options
                             + " " + f + " -o " + o;
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
       else
         {
@@ -740,7 +753,7 @@ main (int argc, char **argv)
                             + pass_on_options + " "
                             + incflags + " " + defs + " "
                             + quote_path (f) + " -o " + quote_path (o);
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
       else
         {
@@ -773,7 +786,7 @@ main (int argc, char **argv)
                             + pass_on_options + " "
                             + incflags + " " + defs + " "
                             + quote_path (f) + " -o " + quote_path (o);
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
       else
         {
@@ -800,7 +813,7 @@ main (int argc, char **argv)
                                 + " -loctinterp -loctave "
                                 + " " + vars["OCTAVE_LINK_OPTS"]
                                 + " " + vars["OCTAVE_LINK_DEPS"];
-              result = run_command (cmd);
+              result = run_command (cmd, printonly);
             }
           else
             {
@@ -822,13 +835,13 @@ main (int argc, char **argv)
                             + vars["LFLAGS"] + " -loctinterp -loctave "
                             + vars["OCT_LINK_OPTS"] + " "
                             + vars["OCT_LINK_DEPS"];
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
 
       if (strip)
         {
           std::string cmd = "strip " + octfile;
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
     }
 

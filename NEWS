@@ -6,7 +6,7 @@ Summary of important user-visible changes for version 4.2:
     by using '_' as a thousands separator or to group nibbles into bytes
     in hex constants.
 
-    Examples: 1_000_000 == 1e6 or 0xDE_AD_BE_EF
+    Examples: 1_000_000 == 1e6  or  0xDE_AD_BE_EF
 
  ** The parser has been extended to understand binary numbers which
     begin with the prefix '0b' or '0B'.  The value returned is Octave's
@@ -14,7 +14,7 @@ Summary of important user-visible changes for version 4.2:
     Therefore numbers greater than flintmax, i.e., 2^53, will lose some
     precision.
 
-    Examples: 0b101 == 5 or 0B1100_0001 == 0xC1
+    Examples: 0b101 == 5  or  0B1100_0001 == 0xC1
 
  ** The default set of colors used to plot lines has been updated to be
     compatible with Matlab's new default color scheme.  The line plot
@@ -102,7 +102,7 @@ Summary of important user-visible changes for version 4.2:
 
  ** The axes properties "TitleFontSizeMultiplier" and "TitleFontWeight"
     are now implemented which control the default appearance of text
-    created with title() appear.
+    created with title().
     The axes property "LabelFontSizeMultiplier" is now implemented
     which controls the default appearance of text created with
     xlabel(), ylabel(), or zlabel().
@@ -142,10 +142,14 @@ Summary of important user-visible changes for version 4.2:
     instead will return execution to the MEX function for error
     handling.
 
+ ** The MEX API functions for input validation that begin with "mxIs"
+    (e.g., mxIsDouble, mxIsEmpty, etc.) now return type bool rather than
+    type int.
+
  ** The functions mxAssert and mxAssertS for checking assertions have
     been added.  In order to avoid a performance penalty they are only
     compiled in to debug versions of a MEX file, i.e., that are produced
-    when the '-g' option is given to mex() or mkoctfile().
+    when the '-g' option is given to mex or mkoctfile.
 
  ** Other new MEX API functions include mexEvalStringWithTrap,
     mxIsScalar, mxCreateUninitNumericArray, mxCreateUninitNumericMatrix.

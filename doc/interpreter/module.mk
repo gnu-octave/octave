@@ -121,7 +121,6 @@ MUNGED_TEXI_SRC = \
   doc/interpreter/diffeq.texi \
   doc/interpreter/diagperm.texi \
   doc/interpreter/external.texi \
-  doc/interpreter/emacs.texi \
   doc/interpreter/errors.texi \
   doc/interpreter/eval.texi \
   doc/interpreter/expr.texi \

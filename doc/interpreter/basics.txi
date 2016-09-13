@@ -153,8 +153,7 @@ commands in the system or user startup files that use the
 @cindex @code{--interactive}
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
-remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, @pxref{Emacs Octave Support}.
+remote shell command or inside an Emacs shell buffer.
 
 @item --jit-compiler
 @cindex @code{--jit-compiler}

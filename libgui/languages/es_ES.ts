@@ -346,7 +346,7 @@
     <message>
         <location line="+17"/>
         <source>units</source>
-        <translation>unidades</translation>
+        <translation>Unidades</translation>
     </message>
     <message>
         <location line="+11"/>

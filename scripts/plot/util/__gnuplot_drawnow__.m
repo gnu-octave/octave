@@ -339,7 +339,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         endif
       endif
     endif
-    if (__gnuplot_has_feature__ ("has_termoption_dashed"))
+    if (__gnuplot_has_feature__ ("has_termoption_dashed")
+        && ! __gnuplot_has_feature__ ("dashtype"))
       fprintf (plot_stream, "set termoption dashed\n");
     endif
   else

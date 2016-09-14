@@ -313,7 +313,7 @@ static std::string help_msg =
 "  -s, --strip             Strip output file.\n"
 "\n"
 "  -n, --just-print, --dry-run\n"
-"      Print commands, but do not execute them.\n"
+"                          Print commands, but do not execute them.\n"
 "\n"
 "  -v, --verbose           Echo commands as they are executed.\n"
 "\n"

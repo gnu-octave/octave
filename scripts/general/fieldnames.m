@@ -46,11 +46,11 @@ function names = fieldnames (obj)
     ## Call internal C++ function for structs or Octave objects
     names = __fieldnames__ (obj);
   elseif (isjava (obj) || ischar (obj))
-    ## FIXME: Function prototype that excepts java obj exists, but doesn't
+    ## FIXME: Function prototype that accepts java obj exists, but doesn't
     ##        work if obj is java.lang.String.  Convert obj to classname.
     ## FIXME: this is now working for objects whose class is in the dynamic
     ##        classpath but will continue to fail if such classnames are used
-    ##        instead (see bug #42710)
+    ##        instead (see bug #42710).
     if (isa (obj, "java.lang.String"))
       obj = class (obj);
     endif

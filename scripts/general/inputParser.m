@@ -638,8 +638,8 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
 
-## We must not perform validation of default values (bug #45837)
-%!test
+## We must not perform validation of default values
+%!test <45837>
 %! p = inputParser;
 %! p.addParameter ("Dir", [], @ischar);
 %! p.parse ();

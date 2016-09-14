@@ -252,8 +252,5 @@ octave_complex_diag_matrix::chk_valid_scalar (const octave_value& val,
 }
 
 /*
-
-%% bug #36368
-%!assert (diag ([1+i, 1-i])^2 , diag ([2i, -2i]), 4*eps)
-
+%!assert <36368> (diag ([1+i, 1-i])^2 , diag ([2i, -2i]), 4*eps)
 */

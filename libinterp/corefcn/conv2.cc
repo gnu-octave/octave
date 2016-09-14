@@ -255,10 +255,14 @@ When the third argument is a matrix, return the convolution of the matrix
 %!shared
 
 %% Test cases from Bug #34893
-%!assert (conv2 ([1:5;1:5], [1:2], "same"), [4 7 10 13 10; 4 7 10 13 10])
-%!assert (conv2 ([1:5;1:5]', [1:2]', "same"), [4 7 10 13 10; 4 7 10 13 10]')
-%!assert (conv2 ([1:5;1:5], [1:2], "valid"), [4 7 10 13; 4 7 10 13])
-%!assert (conv2 ([1:5;1:5]', [1:2]', "valid"), [4 7 10 13; 4 7 10 13]')
+%!assert <34893> (conv2 ([1:5;1:5], [1:2], "same"),
+%!                [4 7 10 13 10; 4 7 10 13 10])
+%!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "same"),
+%!                [4 7 10 13 10; 4 7 10 13 10]')
+%!assert <34893> (conv2 ([1:5;1:5], [1:2], "valid"),
+%!                [4 7 10 13; 4 7 10 13])
+%!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
+%!                [4 7 10 13; 4 7 10 13]')
 
 %!test
 %! rand ("seed", 42);
@@ -377,8 +381,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 }
 
 /*
-## Check for bug #39314
-%!test
+%!test <39314>
 %! v = reshape ([1 2], [1 1 2]);
 %! assert (convn (v, v), reshape ([1 4 4], [1 1 3]));
 %! assert (convn (v, v, "same"), reshape ([4 4], [1 1 2]));

@@ -558,8 +558,7 @@ $x = 0$, $f = e = 0$.
 %! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
 %! assert (e(1:2,:), [0,1; 2,3]);
 
-# bug #42583
-%!assert (all (log2 (pow2 (-1074:1023)) == -1074:1023))
+%!assert <42583> (all (log2 (pow2 (-1074:1023)) == -1074:1023))
 */
 
 DEFUN (rem, args, ,
@@ -725,12 +724,10 @@ periodic, @code{mod} is a better choice.
 %! assert (nnz (y), 1);
 %! assert (y, sparse ([NaN 0 0 0]));
 
-## Bug #45587
-%!assert (signbit (rem (-0, 1)))
-%!assert (! signbit (rem (0, 1)))
+%!assert <45587> (signbit (rem (-0, 1)))
+%!assert <45587> (! signbit (rem (0, 1)))
 
-## bug #42627
-%!assert (rem (0.94, 0.01), 0.0)
+%!assert <42627> (rem (0.94, 0.01), 0.0)
 
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
@@ -906,12 +903,10 @@ negative numbers or when the values are periodic.
 %!assert (mod (2.1, 0.1), 0)
 %!assert (mod (2.1, 0.2), 0.1, eps)
 
-## Bug #45587
-%!assert (signbit (mod (-0, 0)))
-%!assert (! signbit (mod (0, -0)))
+%!assert <45587> (signbit (mod (-0, 0)))
+%!assert <45587> (! signbit (mod (0, -0)))
 
-## Bug #42627
-%!assert (mod (0.94, 0.01), 0.0)
+%!assert <42627> (mod (0.94, 0.01), 0.0)
 */
 
 // FIXME: Macros NATIVE_REDUCTION_1 and NATIVE_REDUCTION seem to be unused.
@@ -1424,10 +1419,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
 
-## bug #37411
-%!assert (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
-%!assert (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
-%!assert (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
+%!assert <37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
+%!assert <37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
+%!assert <37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
 
 ## Test non-square size
 %!assert (diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
@@ -4260,7 +4254,7 @@ val = ones (m,n, "uint8")
 ## Matlab requires the size to be a row vector.  In that logic, it supports
 ## n to be a 1x0 vector (returns 0x0) but not a 0x1 vector.  Octave supports
 ## any vector and therefore must support 0x1, 1x0, and 0x0x1 (but not 0x1x1).
-%!test
+%!test <47298>
 %! funcs = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
 %! for idx = 1:numel (funcs)
 %!   func = funcs{idx};
@@ -5757,8 +5751,8 @@ compute the norms of each column and return a row vector.
 %!assert (norm (q, [], "rows"), norm (q, 2, "rows"))
 %!assert (norm (q, [], "cols"), norm (q, 2, "cols"))
 
-%!test
-%! ## Test for norm returning NaN on sparse matrix (bug #30631)
+%!test <30631>
+%! ## Test for norm returning NaN on sparse matrix
 %! A = sparse (2,2);
 %! A(2,1) = 1;
 %! assert (norm (A), 1);

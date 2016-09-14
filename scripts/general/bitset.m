@@ -101,8 +101,8 @@ endfunction
 %!   endfor
 %! endfor
 
-## Bug #36458
-%!assert (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]), uint8 ([0, 3; 2 5]))
+%!assert <36458> (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]),
+%!                uint8 ([0, 3; 2 5]))
 
 %!error bitset (1)
 %!error bitset (1, 2, 3, 4)

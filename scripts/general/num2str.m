@@ -115,7 +115,7 @@ function retval = num2str (x, arg)
           if (any (! valid))
             ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
           endif
-          ## FIXME: Integers should be masked to show only 16 significant digits
+          ## FIXME: Integers must be masked to show only 16 significant digits
           ##        See test case for bug #36133 below
           fmt = sprintf ("%%%d.0f", ndgt);
         endif
@@ -160,7 +160,7 @@ function retval = num2str (x, arg)
       else
         ## Integer input
         ndgt += 3;
-        ## FIXME: Integers should be masked to show only 16 significant digits
+        ## FIXME: Integers must be masked to show only 16 significant digits
         ##        See test case for bug #36133 below
         fmt = sprintf ("%%%d.0f%%-+%d.0fi", ndgt, ndgt);
       endif
@@ -246,11 +246,10 @@ endfunction
 %!test <36133>
 %! assert (num2str (1e23), "100000000000000000000000");
 
-## Test for bug #44864, extra rows generated from newlines in format
-%!assert (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
+## Test for extra rows generated from newlines in format
+%!assert <44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
 
-## Test for bug #45174
-%!assert (num2str ([65 66 67], "%s"), "ABC")
+%!assert <45174> (num2str ([65 66 67], "%s"), "ABC")
 
 %!error num2str ()
 %!error num2str (1, 2, 3)

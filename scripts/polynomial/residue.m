@@ -415,7 +415,7 @@ endfunction
 %! assert (br, b, 1e-12);
 %! assert (ar, a, 1e-12);
 
-## The following test is due to Bernard Grung (bug #34266)
+## The following test is due to Bernard Grung
 %!test <34266>
 %! z1 =  7.0372976777e6;
 %! p1 = -3.1415926536e9;

@@ -1619,8 +1619,7 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!test
-%! ## bug #42035
+%!test <42035>
 %! h = figure ("visible", "off");
 %! unwind_protect
 %!   hax1 = subplot (1,2,1);

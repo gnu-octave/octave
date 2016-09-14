@@ -324,7 +324,7 @@ endfunction
 %!test
 %! obs = toupper (datestr (testtime,16));
 %! assert (obs, " 2:33 AM");
-%!test  # bug #48071
+%!test <48071>
 %! testtime2 = testtime;
 %! testtime2(4) = 15;
 %! obs = toupper (datestr (testtime2,16));

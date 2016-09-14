@@ -361,8 +361,8 @@ endfunction
 %!assert (datevec ("06/01/2015 3:07:12.12 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
 %!        [2015,6,1,15,7,12.12])
 
-## Test structure of return value (bug #42334)
-%!test
+## Test structure of return value
+%!test <42334>
 %! [~, ~, d] = datevec ([1 2; 3 4]);
 %! assert (d, [1 2; 3 4]);
 

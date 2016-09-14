@@ -1746,14 +1746,13 @@ as the name of the function when reporting errors.
 #%! assert (R{1}, int32 (1));
 #%! assert (isempty (R{2}), true);
 
-## bug #37023
-%!test
+%!test <37023>
 %! data = textscan ("   1. 1 \n 2 3\n", '%f %f');
 %! assert (data{1}, [1; 2], 1e-15);
 %! assert (data{2}, [1; 3], 1e-15);
 
-## Whitespace test (bug #37333) using delimiter ";"
-%!test
+## Whitespace test using delimiter ";"
+%!test <37333>
 %! tc{1, 1} = "C:/code;";
 %! tc{1, end+1} = "C:/code/meas;";
 %! tc{1, end+1} = " C:/code/sim;";
@@ -1768,8 +1767,8 @@ as the name of the function when reporting errors.
 %!   assert (strcmp (lh, rh));
 %! endfor
 
-## Whitespace test (bug #37333), adding multipleDelimsAsOne true arg
-%!test
+## Whitespace test, adding multipleDelimsAsOne true arg
+%!test <37333>
 %! tc{1, 1} = "C:/code;";
 %! tc{1, end+1} = " C:/code/meas;";
 %! tc{1, end+1} = "C:/code/sim;;";
@@ -1785,7 +1784,7 @@ as the name of the function when reporting errors.
 %! endfor
 
 ## Whitespace test (bug #37333), adding multipleDelimsAsOne false arg
-%!test
+%!test <37333>
 %! tc{1, 1} = "C:/code;";
 %! tc{1, end+1} = " C:/code/meas;";
 %! tc{1, end+1} = "C:/code/sim;;";
@@ -1802,7 +1801,7 @@ as the name of the function when reporting errors.
 %! endfor
 
 ## Whitespace test (bug #37333) whitespace "" arg
-%!test
+%!test <37333>
 %! tc{1, 1} = "C:/code;";
 %! tc{1, end+1} = " C:/code/meas;";
 %! tc{1, end+1} = "C:/code/sim;";
@@ -1817,7 +1816,7 @@ as the name of the function when reporting errors.
 %! endfor
 
 ## Whitespace test (bug #37333), whitespace " " arg
-%!test
+%!test <37333>
 %! tc{1, 1} = "C:/code;";
 %! tc{1, end+1} = " C:/code/meas;";
 %! tc{1, end+1} = "C:/code/sim;";
@@ -1935,21 +1934,19 @@ as the name of the function when reporting errors.
 %! unlink (f);
 %! assert (msg1, lasterr);
 
-## Bug #41824
-%!assert (textscan ("123", "", "whitespace", " "){:}, 123);
+%!assert <41824> (textscan ("123", "", "whitespace", " "){:}, 123);
 
-## Bug #42343-1, just test supplied emptyvalue
-%!assert (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf),
-%!        {Inf, NaN})
+## just test supplied emptyvalue
+%!assert <42343> (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf),
+%!                {Inf, NaN})
 
-## Bug #42343-2, test padding with supplied emptyvalue
-%!test
+## test padding with supplied emptyvalue
+%!test <42343>
 %! c = textscan (",1,,4\nInf,  ,NaN\n", "", "delimiter", ",",
 %!               "emptyvalue", -10);
 %! assert (cell2mat (c), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
 
-## Bug #42528
-%!test
+%!test <42528>
 %! assert (textscan ("1i", ""){1},  0+1i);
 %! C = textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i\n 1+1 1+1j", "",
 %!               "delimiter", ",");
@@ -1980,8 +1977,7 @@ as the name of the function when reporting errors.
 %! assert (c{2}', [12, 22]);
 %! assert (c{3}', [13, 23]);
 
-## Bug #44750
-%!test
+%!test <44750>
 %! c = textscan ("/home/foo/", "%s", "delimiter", "/",
 %!               "MultipleDelimsAsOne", 1);
 %! assert (c{1}, {"home"; "foo"});
@@ -2001,8 +1997,8 @@ as the name of the function when reporting errors.
 %!               "Total: %f %% (of cm values)");
 %! assert (c{1}, 32.5, 1e-5);
 
-## Test various forms of string format specifiers (bug #45712)
-%!test
+## Test various forms of string format specifiers
+%!test <45712>
 %! str = "14 :1 z:2 z:3 z:5 z:11";
 %! C = textscan (str, "%f %s %*s %3s %*3s %f", "delimiter", ":");
 %! assert (C, {14, {"1 z"}, {"3 z"}, 11});
@@ -2091,8 +2087,7 @@ as the name of the function when reporting errors.
 %! assert (C{1}, {"ab cd efg"; "a ce g"; "   "});
 %! assert (C{2}, {"1Any"; "2Trailing"; "3Junk"});
 
-## Bug #36464
-%!assert (textscan ("1 2 3 4 5 6", "%*n%n%*[^\n]"){1}, 2);
+%!assert <36464> (textscan ("1 2 3 4 5 6", "%*n%n%*[^\n]"){1}, 2);
 
 ## test %[]] and %[^]]
 %!test

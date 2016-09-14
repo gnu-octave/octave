@@ -229,8 +229,8 @@ endfunction
 %!  end_unwind_protect
 %!endfunction
 
-## BMP images must be saved uncompressed by default (bug #45565)
-%!testif HAVE_MAGICK
+## BMP images must be saved uncompressed by default
+%!testif HAVE_MAGICK <45565>
 %! assert (get_bmp_compression ("", [], "BMP"), 0);
 %! assert (get_bmp_compression ("", [], "bmp"), 0);
 %! assert (get_bmp_compression (".BMP"), 0);

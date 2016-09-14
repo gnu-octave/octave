@@ -227,8 +227,8 @@ endfunction
 %!  h = image (-x, -y, img);
 %!  title ("image (-x, -y, img)");
 
-%!test
-%! ## test hidden properties x/ydatamode (bug #42121)
+## test hidden properties x/ydatamode
+%!test <42121>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   nx = 64; ny = 64;

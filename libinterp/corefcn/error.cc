@@ -1729,9 +1729,7 @@ disable escape sequence expansion use a second backslash before the sequence
 }
 
 /*
-## Test for (bug #45753)
-
-%!test
+%!test <45753>
 %! warning ("error");
 %! assert (! isempty (help ("warning")));
 */

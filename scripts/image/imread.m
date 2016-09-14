@@ -204,7 +204,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test for bug #41584 (some GM coders report saturated channels as binary)
-%!testif HAVE_MAGICK
+%!testif HAVE_MAGICK <41584>
 %! im = zeros ([16 16 3], "uint8");
 %! im(:,:,1) = 255;
 %! im(:,:,3) = repmat (0:16:255, [16 1]);

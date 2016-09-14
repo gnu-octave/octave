@@ -539,9 +539,9 @@ endfunction
 %! X = meshgrid (1:4);
 %! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
-## re-order monotonically decreasing (bug #41838).
-%!assert (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
-%!assert (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
+## re-order monotonically decreasing
+%!assert <41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
+%!assert <41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
 
 %!shared z, zout, tol
 %! z = [1 3 5; 3 5 7; 5 7 9];

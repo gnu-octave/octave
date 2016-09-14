@@ -1301,7 +1301,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 /*
-%!test
+%!test <33857>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
@@ -1322,7 +1322,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!   mode = modes{i};
 %!   nm = tempname ();
 %!   unwind_protect
-%!     f2 (1); # bug #33857
+%!     f2 (1);
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!     clear f2 g2 hm2 hdld2 hbi2
 %!     load (nm);
@@ -1353,8 +1353,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!  endif
 %!endfunction
 
-Test for bug #35876
-%!test
+%!test <35876>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;

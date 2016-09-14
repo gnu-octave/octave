@@ -987,8 +987,8 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
 %! ## Parenthesis in named token (ie (int)) causes a problem
 %! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
 
-%!test
-%! ## Mix of named and unnamed tokens can cause segfault (bug #35683)
+%!test <35683>
+%! ## Mix of named and unnamed tokens can cause segfault
 %! str = "abcde";
 %! ptn = '(?<T1>a)(\w+)(?<T2>d\w+)';
 %! tokens = regexp (str, ptn, "names");
@@ -1123,7 +1123,8 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
 %!assert (regexp ("\n", '\n'), 1)
 %!assert (regexp ("\n", "\n"), 1)
 
-%!test  # Bug #45407, escape sequences are silently converted
+# Test escape sequences are silently converted
+%!test <45407> 
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
 %! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
 %! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');

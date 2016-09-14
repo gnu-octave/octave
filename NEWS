@@ -109,7 +109,7 @@ Summary of important user-visible changes for version 4.2:
 
  ** The graphics property "box" for axes now defaults to "off".
     To obtain equivalent plots to previous versions of Octave use
-      set (0, "DefaultAxesBox", "off");
+      set (0, "DefaultAxesBox", "on");
     in your .octaverc file.
 
  ** The graphics property "boxstyle" has been implemented.  The default
@@ -120,7 +120,7 @@ Summary of important user-visible changes for version 4.2:
     eventually be removed.  This property has also been removed
     from Matlab, and was never implemented in Octave.
 
- ** The graphics property "graphicssmothing" for figures now controls
+ ** The graphics property "graphicssmoothing" for figures now controls
     whether anti-aliasing will be used for lines.  The default is "on".
 
  ** The value "zero" for the axes properties "xaxislocation" and

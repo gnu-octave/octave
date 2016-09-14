@@ -615,8 +615,8 @@ An example is @code{speye (1e6)} which will create a matrix with a million
 rows and columns, but only a million nonzero elements.  Therefore the
 number of rows by the number of columns in this case is more than two
 hundred times the maximum value that can be represented by an unsigned int.
-The use of @code{numel} should therefore be avoided useless it is known
-it won't overflow.
+The use of @code{numel} should therefore be avoided unless it is known
+that it will not overflow.
 
 Extreme care must be take with the elem method and the @qcode{"()"} operator,
 which perform basically the same function.  The reason is that if a

@@ -696,6 +696,11 @@ namespace octave
         warning ("opengl_renderer: cannot render object of type '%s'",
                  props.graphics_object_name ().c_str ());
       }
+
+    GLenum gl_error = glGetError ();
+    if (gl_error)
+      warning ("opengl_renderer: Error %d occurred drawing '%s' object",
+               gl_error, props.graphics_object_name ().c_str ());
   }
 
 #if defined (HAVE_OPENGL)
@@ -788,13 +793,24 @@ namespace octave
       {
         glEnable (GL_BLEND);
         glEnable (GL_MULTISAMPLE);
-        GLint iMultiSample, iNumSamples;
-        glGetIntegerv (GL_SAMPLE_BUFFERS, &iMultiSample);
-        glGetIntegerv (GL_SAMPLES, &iNumSamples);
-        if (iMultiSample != GL_TRUE || iNumSamples == 0)
+        bool has_multisample = false;
+        if (! glGetError ())
+          {
+            GLint iMultiSample, iNumSamples;
+            glGetIntegerv (GL_SAMPLE_BUFFERS, &iMultiSample);
+            glGetIntegerv (GL_SAMPLES, &iNumSamples);
+            if (iMultiSample == GL_TRUE && iNumSamples > 0)
+              has_multisample = true;
+          }
+
+        if (! has_multisample)
           {
             // MultiSample not implemented.  Use old-style anti-aliasing
             glDisable (GL_MULTISAMPLE);
+            // Disabling GL_MULTISAMPLE will raise a gl error if it is not
+            // implemented.  Thus, call glGetError to reset the error state.
+            glGetError ();
+
             glEnable (GL_LINE_SMOOTH);
             glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
           }
@@ -812,6 +828,11 @@ namespace octave
         glClearColor (c(0), c(1), c(2), 1);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       }
+
+    GLenum gl_error = glGetError ();
+    if (gl_error)
+      warning ("opengl_renderer: Error %d occurred in init_gl_context",
+               gl_error);
 
 #else
 

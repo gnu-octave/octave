@@ -312,7 +312,8 @@ static std::string help_msg =
 "\n"
 "  -s, --strip             Strip output file.\n"
 "\n"
-"  -n, --just-print        Print commands, but do not execute them.\n"
+"  -n, --just-print, --dry-run\n"
+"      Print commands, but do not execute them.\n"
 "\n"
 "  -v, --verbose           Echo commands as they are executed.\n"
 "\n"
@@ -536,7 +537,7 @@ main (int argc, char **argv)
           else
             std::cerr << "mkoctfile: output filename missing" << std::endl;
         }
-      else if (arg == "-n" || arg == "--just-print")
+      else if (arg == "-n" || arg == "--dry-run" || arg == "--just-print")
         {
           printonly = true;
         }

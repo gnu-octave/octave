@@ -378,8 +378,25 @@ public:
   // Not allowed.
   void set_cell (mwIndex /*idx*/, mxArray * /*val*/) { request_mutation (); }
 
-  // FIXME: For sparse arrays, this should return the first non-zero value.
-  double get_scalar (void) const { return val.scalar_value (true); }
+  double get_scalar (void) const
+  {
+    if (val.is_sparse_type ())
+      {
+        // For sparse arrays, return the first non-zero value. 
+        void * data = val.mex_get_data (); 
+        if (data == NULL)
+          return 0.0;
+
+        if (val.is_bool_type ())
+          return *static_cast<bool *> (data);
+        else if (val.is_real_type ())
+          return *static_cast<double *> (data);
+        else  // Complex type, only return real part
+          return *static_cast<double *> (data);
+      }
+    else
+      return val.scalar_value (true);
+  }
 
   void *get_data (void) const
   {
@@ -2834,8 +2851,6 @@ mxGetPi (const mxArray *ptr)
   return static_cast<double *> (ptr->get_imag_data ());
 }
 
-// FIXME: For sparse arrays, mxGetScalar should return the first non-zero
-// element, rather than just the first element.
 double
 mxGetScalar (const mxArray *ptr)
 {

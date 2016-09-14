@@ -16,6 +16,8 @@ Summary of important user-visible changes for version 4.2:
 
     Examples: 0b101 == 5  or  0B1100_0001 == 0xC1
 
+ ** gnuplot 4.4 is now the minimum version supported by Octave.
+
  ** The default set of colors used to plot lines has been updated to be
     compatible with Matlab's new default color scheme.  The line plot
     color scheme can be set with the axes property "ColorOrder".

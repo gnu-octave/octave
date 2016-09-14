@@ -250,8 +250,7 @@ function arg_st = __print_parse_opts__ (varargin)
     __graphics_toolkit__ = get (0, "defaultfigure__graphics_toolkit__");
   endif
 
-  if (strcmp (__graphics_toolkit__, "gnuplot")
-      && __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
+  if (strcmp (__graphics_toolkit__, "gnuplot"))
     suffixes(strncmp (dev_list, "epslatex", 8)) = {"eps"};
   endif
 

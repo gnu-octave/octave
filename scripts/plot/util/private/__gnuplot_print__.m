@@ -87,12 +87,7 @@ function opts = __gnuplot_print__ (opts)
                "invalid suffix '%s' for device '%s'.",
                ext, lower (opts.devopt));
       endif
-      if (__gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
-        suffix = "tex";
-      else
-        ## Gnuplot 4.0 wants a ".eps" suffix.
-        suffix = "eps";
-      endif
+      suffix = "tex";
       if (strfind (opts.devopt, "standalone"))
         gp_opts = sprintf ("standalone %s", gp_opts);
         term = strrep (opts.devopt, "standalone", "");

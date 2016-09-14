@@ -83,43 +83,21 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   if (strcmp (axis_obj.activepositionproperty, "position"))
-    if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-      if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
-        x = [1, 1];
-      else
-        ## 3D plots need to be sized down to fit in the window.
-        x = 1.0 ./ sqrt ([2, 2.5]);
-      endif
-      fprintf (plot_stream, "set tmargin screen %.15g;\n",
-               pos(2)+pos(4)/2+x(2)*pos(4)/2);
-      fprintf (plot_stream, "set bmargin screen %.15g;\n",
-               pos(2)+pos(4)/2-x(2)*pos(4)/2);
-      fprintf (plot_stream, "set lmargin screen %.15g;\n",
-               pos(1)+pos(3)/2-x(1)*pos(3)/2);
-      fprintf (plot_stream, "set rmargin screen %.15g;\n",
-               pos(1)+pos(3)/2+x(1)*pos(3)/2);
-      sz_str = "";
+    if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
+      x = [1, 1];
     else
-      fprintf (plot_stream, "set tmargin 0;\n");
-      fprintf (plot_stream, "set bmargin 0;\n");
-      fprintf (plot_stream, "set lmargin 0;\n");
-      fprintf (plot_stream, "set rmargin 0;\n");
-
-      if (nd == 3 && all (axis_obj.view == [0, 90]))
-        ## FIXME: Kludge to allow colorbar to be added to a pcolor() plot
-        pos(3:4) = pos(3:4) * 1.4;
-        pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
-      endif
-
-      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-
-      if (strcmp (axis_obj.dataaspectratiomode, "manual"))
-        sz_str = sprintf ("set size ratio %.15g", -dr);
-      else
-        sz_str = "set size noratio";
-      endif
-      sz_str = sprintf ("%s %.15g, %.15g;\n", sz_str, pos(3), pos(4));
+      ## 3D plots need to be sized down to fit in the window.
+      x = 1.0 ./ sqrt ([2, 2.5]);
     endif
+    fprintf (plot_stream, "set tmargin screen %.15g;\n",
+             pos(2)+pos(4)/2+x(2)*pos(4)/2);
+    fprintf (plot_stream, "set bmargin screen %.15g;\n",
+             pos(2)+pos(4)/2-x(2)*pos(4)/2);
+    fprintf (plot_stream, "set lmargin screen %.15g;\n",
+             pos(1)+pos(3)/2-x(1)*pos(3)/2);
+    fprintf (plot_stream, "set rmargin screen %.15g;\n",
+             pos(1)+pos(3)/2+x(1)*pos(3)/2);
+    sz_str = "";
   else ## activepositionproperty == outerposition
     fprintf (plot_stream, "unset tmargin;\n");
     fprintf (plot_stream, "unset bmargin;\n");
@@ -885,8 +863,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                      [[xcol; xcol(end)], [ycol; ycol(end)], ...
                                      [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
               else
-                if (__gnuplot_has_feature__ ("transparent_patches")
-                        && isscalar (obj.facealpha))
+                if (isscalar (obj.facealpha))
                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
                                        round (255*color), obj.facealpha);
                 else
@@ -937,8 +914,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 ec = obj.edgecolor;
               endif
 
-              if ((strcmp (ec, "flat")
-                   || strcmp (ec, "interp"))
+              if ((strcmp (ec, "flat") || strcmp (ec, "interp"))
                   && isfield (obj, "cdata"))
                 if (ndims (obj.cdata) == 2
                     && (columns (obj.cdata) == nc
@@ -1310,8 +1286,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             dord = "depthorder";
           endif
 
-          if (__gnuplot_has_feature__ ("transparent_surface")
-              && isscalar (obj.facealpha))
+          if (isscalar (obj.facealpha))
             fprintf (plot_stream,
                      "set style fill transparent solid %f;\n",
                      obj.facealpha);
@@ -1635,13 +1610,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       otherwise
         pos = "";
     endswitch
-    if (__gnuplot_has_feature__ ("key_has_font_properties"))
-      [fontname, fontsize] = get_fontname_and_size (hlgnd);
-      fontspacespec = [create_spacingspec(fontname, fontsize, gnuplot_term),...
-                       ' ', create_fontspec(fontname, fontsize, gnuplot_term)];
-    else
-      fontspacespec = "";
-    endif
+    [fontname, fontsize] = get_fontname_and_size (hlgnd);
+    fontspacespec = [create_spacingspec(fontname, fontsize, gnuplot_term),...
+                     ' ', create_fontspec(fontname, fontsize, gnuplot_term)];
     textcolors = get (findobj (hlgnd.children, "type", "text"), "color");
     if (iscell (textcolors))
       textcolors = cell2mat (textcolors);

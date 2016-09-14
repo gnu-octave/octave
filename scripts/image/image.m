@@ -32,8 +32,6 @@
 ## convenience, @var{x} and @var{y} may be specified as N-element vectors
 ## matching the length of the data in @var{img}.  However, only the first and
 ## last elements will be used to determine the axis limits.
-## @strong{Warning:} @var{x} and @var{y} are ignored when using gnuplot 4.0
-## or earlier.
 ##
 ## Multiple property/value pairs may be specified for the image object, but
 ## they must appear in pairs.
@@ -133,8 +131,7 @@ endfunction
 ## Generic image creation.
 ##
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
-## variables are ignored.
+## @var{x} and @var{y}.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

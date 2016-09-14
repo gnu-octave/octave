@@ -259,7 +259,6 @@ function hg = __quiver__ (varargin)
       h3 = plot (x, y, "linestyle", "none", "marker", mk, "parent", hg);
     endif
     if (have_filled)
-      ## FIXME: gnuplot doesn't respect the markerfacecolor field
       set (h3, "markerfacecolor", get (h1, "color"));
     endif
 

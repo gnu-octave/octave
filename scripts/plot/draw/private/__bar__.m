@@ -27,8 +27,7 @@ function varargout = __bar__ (vertical, func, varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ (func, varargin{:});
 
-  ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
-  width = 0.8 - 10 * eps;
+  width = 0.8;
   group = true;
   histc = NA;
   bv = 0;  # BaseValue

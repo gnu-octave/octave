@@ -193,16 +193,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
                                  "epscairo", "epslatex", "fig", "gif", ...
                                  "jpeg", "latex", "pbm", "pdf", "pdfcairo", ...
                                  "postscript", "png", "pngcairo", "pstex", ...
-                                 "pslatex", "svg", "tikz"};
-          if (__gnuplot_has_feature__ ("windows_figure_position"))
-            terminals_with_size{end+1} = "windows";
-          endif
-          if (__gnuplot_has_feature__ ("x11_figure_position"))
-            terminals_with_size{end+1} = "x11";
-          endif
-          if (__gnuplot_has_feature__ ("wxt_figure_size"))
-            terminals_with_size{end+1} = "wxt";
-          endif
+                                 "pslatex", "svg", "tikz", "windows", ...
+                                 "wxt", "x11"};
           switch (term)
             case terminals_with_size
               size_str = sprintf ("size %.12g,%.12g", gnuplot_size);
@@ -228,10 +220,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             otherwise
               size_str = "";
           endswitch
-          if ((strcmp (term, "x11")
-               && __gnuplot_has_feature__ ("x11_figure_position"))
-              || (strcmpi (term, "windows")
-                  && __gnuplot_has_feature__ ("windows_figure_position")))
+          if (strcmp (term, "x11") || strcmpi (term, "windows"))
             ## X11/Windows allows the window to be positioned as well.
             units = get (0, "units");
             unwind_protect
@@ -300,16 +289,6 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         term_str = [term_str " " size_str];
       endif
     endif
-    if (! __gnuplot_has_feature__ ("has_termoption_dashed"))
-      ## If "set termoption dashed" isn't available add "dashed" option
-      ## to the "set terminal ..." command, if it is supported.
-      if (any (strcmp (term, {"aqua", "cgm", "eepic", "emf", "epslatex", ...
-                              "fig", "pcl5", "mp", "next", "openstep", ...
-                              "pdf", "pdfcairo", "pngcairo", "postscript", ...
-                              "pslatex", "pstext", "svg", "tgif", "x11"})))
-        term_str = [term_str " dashed"];
-      endif
-    endif
     if (any (strcmp (term, {"aqua", "wxt"})))
       term_str = [term_str, " ", "dashlength 1"];
     elseif (any (strcmp (term, {"epslatex", "postscript", "pslatex"})))
@@ -339,8 +318,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         endif
       endif
     endif
-    if (__gnuplot_has_feature__ ("has_termoption_dashed")
-        && ! __gnuplot_has_feature__ ("dashtype"))
+    if (! __gnuplot_has_feature__ ("dashtype"))
       fprintf (plot_stream, "set termoption dashed\n");
     endif
   else

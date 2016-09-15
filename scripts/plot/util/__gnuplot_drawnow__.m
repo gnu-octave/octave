@@ -189,17 +189,17 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           gnuplot_size = gnuplot_size / 72;
         endif
         if (all (gnuplot_size > 0))
-          terminals_with_size = {"canvas", "cairolatex", "eepic", "emf", ...
+          terminals_with_size = {"cairolatex", "canvas", "eepic", "emf", ...
                                  "epscairo", "epslatex", "fig", "gif", ...
                                  "jpeg", "latex", "pbm", "pdf", "pdfcairo", ...
-                                 "postscript", "png", "pngcairo", "pstex", ...
-                                 "pslatex", "svg", "tikz", "windows", ...
-                                 "wxt", "x11"};
+                                 "png", "pngcairo", "postscript", ...
+                                 "pslatex","pstex", "qt", "svg", "tikz", ...
+                                 "windows", "wxt", "x11"};
           switch (term)
             case terminals_with_size
               size_str = sprintf ("size %.12g,%.12g", gnuplot_size);
-            case "tikz"
-              size_str = sprintf ("size %gin,%gin", gnuplot_size);
+            case {"aqua", "fig", "corel"}
+              size_str = sprintf ("size %g %g", gnuplot_size);
             case "dumb"
               new_stream = 1;
               if (! isempty (getenv ("COLUMNS"))
@@ -213,10 +213,10 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
                 ## Use the gnuplot default.
                 size_str = "";
               endif
-            case {"aqua", "fig", "corel"}
-              size_str = sprintf ("size %g %g", gnuplot_size);
             case "dxf"
-              size_str = "";
+              size_str = "";  # dxf supposedly supports "set size" in 5.0
+            case "tikz"
+              size_str = sprintf ("size %gin,%gin", gnuplot_size);
             otherwise
               size_str = "";
           endswitch

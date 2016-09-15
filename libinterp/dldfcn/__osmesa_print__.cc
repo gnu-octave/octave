@@ -216,7 +216,7 @@ instead.
 %!   unwind_protect
 %!     sombrero ();
 %!     __osmesa_print__ (hf, fn, "svg");
-%!     assert (stat (fn).size, 2692270, -0.1);
+%!     assert (stat (fn).size, 2579392, -0.1);
 %!     img = __osmesa_print__ (hf);
 %!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
 %!     ## Use pixel sum per RGB channel as fingerprint

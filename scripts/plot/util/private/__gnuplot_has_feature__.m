@@ -30,6 +30,8 @@ function res = __gnuplot_has_feature__ (feature)
                          "linetype",
                          "dashtype",
                          "alphablend_linecolor"};
+                         "qt_terminal"};
+
   persistent has_features;
 
   if (isempty (has_features))
@@ -39,8 +41,8 @@ function res = __gnuplot_has_feature__ (feature)
       ## Don't throw an error if gnuplot isn't installed
       gnuplot_version = "0.0.0";
     end_try_catch
-    versions =  {"4.4", "4.6", "4.6", "5.0", "4.6"};
-    operators = {">=",  ">=",  ">=",  ">=",  ">="};
+    versions =  {"4.4", "4.6", "4.6", "5.0", "4.6", "4.6"};
+    operators = {">=" , ">=" , ">=" , ">=" , ">=" , ">=" };
     have_features = false (size (features));
     for n = 1 : numel (have_features)
       has_features(n) = compare_versions (gnuplot_version, versions{n}, operators{n});

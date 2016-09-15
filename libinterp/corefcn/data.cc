@@ -5190,17 +5190,17 @@ if fewer than two values are requested.
 
 ## Test support for vectors in BASE and LIMIT
 %!assert (linspace ([1 2 3], [7 8 9]),
-%!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)])
+%!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)], 10*eps)
 %!assert (linspace ([1 2 3]', [7 8 9]'),
-%!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)])
+%!        [linspace(1, 7); linspace(2, 8); linspace(3, 9)], 10*eps)
 %!assert (linspace ([1 2 3], 9),
-%!        [linspace(1, 9); linspace(2, 9); linspace(3, 9)])
+%!        [linspace(1, 9); linspace(2, 9); linspace(3, 9)], 10*eps)
 %!assert (linspace ([1 2 3]', 9),
-%!        [linspace(1, 9); linspace(2, 9); linspace(3, 9)])
+%!        [linspace(1, 9); linspace(2, 9); linspace(3, 9)], 10*eps)
 %!assert (linspace (1, [7 8 9]),
-%!        [linspace(1, 7); linspace(1, 8); linspace(1, 9)])
+%!        [linspace(1, 7); linspace(1, 8); linspace(1, 9)], 10*eps)
 %!assert (linspace (1, [7 8 9]'),
-%!        [linspace(1, 7); linspace(1, 8); linspace(1, 9)])
+%!        [linspace(1, 7); linspace(1, 8); linspace(1, 9)], 10*eps)
 
 ## Test class of output
 %!assert (class (linspace (1, 2)), "double")

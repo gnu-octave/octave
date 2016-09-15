@@ -156,7 +156,12 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!test
+## FIXME: std::acosh on Windows platforms, returns a result that differs
+## by 1 in the last significant digit.  This is ~30*eps which is quite large.
+## The decision now (9/15/2016) is to mark the test with a bug number so
+## it is understood why it is failing, and wait for MinGw to improve their
+## std library.
+%!test <49091>
 %! re = 2.99822295029797;
 %! im = pi/2;
 %! assert (acosh (-10i), re - i*im);
@@ -166,7 +171,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!test
+%!test <49091>
 %! re = single (2.99822295029797);
 %! im = single (pi/2);
 %! assert (acosh (single (10i)), re + i*im, 5*eps ("single"));

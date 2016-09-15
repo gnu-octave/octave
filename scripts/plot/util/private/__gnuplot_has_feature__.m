@@ -29,7 +29,7 @@ function res = __gnuplot_has_feature__ (feature)
                          "needs_color_with_postscript",
                          "linetype",
                          "dashtype",
-                         "alphablend_linecolor"};
+                         "alphablend_linecolor",
                          "qt_terminal"};
 
   persistent has_features;

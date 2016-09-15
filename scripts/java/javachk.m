@@ -142,6 +142,9 @@ endfunction
 %! assert (msg.identifier, "Java DESKTOP");
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! assert (javachk ("jvm"), "");
 
 ## Test input validation

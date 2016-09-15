@@ -682,6 +682,9 @@ currently installed data types.
 %! assert (typeinfo (cvar), "onCleanup");
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! x = javaObject ("java.lang.StringBuffer");
 %! assert (typeinfo (x), "octave_java");
 

@@ -1779,6 +1779,9 @@ is derived.
 %!assert (class (single (1.1)), "single")
 %!assert (class (uint8 (1)), "uint8")
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! jobj = javaObject ("java.lang.StringBuffer");
 %! assert (class (jobj), "java.lang.StringBuffer");
 
@@ -1882,6 +1885,9 @@ belongs to.
 %!assert (isa ({1, 2}, {"numeric", "integer", "cell"}), [false false true])
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! ## The first and last assert() are equal on purpose.  The assert() in
 %! ## the middle with an invalid class name will cause the java code to
 %! ## throw exceptions which we then must clear properly (or all other calls

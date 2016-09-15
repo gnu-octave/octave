@@ -81,6 +81,9 @@ endfunction
 
 ## test Java classname
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! mtds = methods ("java.lang.Double");
 %! search = strfind (mtds, "java.lang.Double valueOf");
 %! assert (! isempty ([search{:}]));

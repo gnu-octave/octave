@@ -75,11 +75,17 @@ endfunction
 
 ## test Java classname by passing classname
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! names = fieldnames ("java.lang.Double");
 %! assert (any (strcmp (names, "MAX_VALUE")));
 
 ## test Java classname by passing java object
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! names = fieldnames (javaObject ("java.lang.Double", 10));
 %! assert (any (strcmp (names, "MAX_VALUE")));
 %! assert (all (ismember ({"POSITIVE_INFINITY", "NEGATIVE_INFINITY", ...
@@ -88,6 +94,9 @@ endfunction
 %!                        names)));
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! names = fieldnames (javaObject ("java.lang.String", "Hello"));
 %! assert (any (strcmp (names, "CASE_INSENSITIVE_ORDER")));
 

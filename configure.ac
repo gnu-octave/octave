@@ -2113,32 +2113,15 @@ if test x$octave_cv_lib_amd = xyes \
   CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
   LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   xtra_libs=
-  OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
-  AC_CHECK_LIB([rt], [clock_gettime], [xtra_libs="-lrt"], [xtra_libs=])
-  ## FIXME: This library list is only accurate for Linux, Mac OS X.
-  ##        Possibly need other library names for MinGW, Cygwin.
-  AC_SEARCH_LIBS([SuiteSparse_time], [suitesparseconfig SuiteSparse],
-                 [], [], [$xtra_libs])
-  case $ac_cv_search_SuiteSparse_time in
-    -l*)
-      SUITESPARSE_CONFIG_LIBS="$ac_cv_search_SuiteSparse_time"
-    ;;
-    no)
-      if test x$octave_cv_lib_umfpack = xyes \
-         && $octave_cv_umfpack_need_suitesparse_time = yes; then
-        UMFPACK_LIBS=
-        warn_suitesparse_config="UMFPACK library found but is missing SuiteSparse_time functionality.  UMFPACK library will be disabled."
-      fi
-    ;;
-  esac
+  AC_CHECK_LIB([suitesparseconfig], [SuiteSparse_time],
+    [SUITESPARSE_CONFIG_LIBS="-lsuitesparseconfig"],
+    [AC_CHECK_LIB([rt], [clock_gettime],
+      [AC_CHECK_LIB([suitesparseconfig], [SuiteSparse_time],
+        [SUITESPARSE_CONFIG_LIBS="-lsuitesparseconfig -lrt"], [], [-lrt])])])
   LIBS="$save_LIBS"
   CPPFLAGS="$save_CPPFLAGS"
-  AC_SUBST(SUITESPARSE_CONFIG_LIBS)
-  if test -n "$warn_suitesparseconfig"; then
-    OCTAVE_CONFIGURE_WARNING([warn_suitesparseconfig])
-    SUITESPARSE_CONFIG_LIBS=
-  fi
 fi
+AC_SUBST(SUITESPARSE_CONFIG_LIBS)
 
 ## Check for UMFPACK separately split complex matrix and RHS.
 if test -n "$UMFPACK_LIBS"; then

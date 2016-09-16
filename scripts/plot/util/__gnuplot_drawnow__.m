@@ -223,8 +223,12 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             otherwise
               size_str = "";
           endswitch
-          if (strcmp (term, "x11") || strcmpi (term, "windows"))
-            ## X11/Windows allows the window to be positioned as well.
+          if (strcmp (term, "x11") || strcmp (term, "windows") 
+              || (strcmp (term, "wxt")
+                  && __gnuplot_has_feature__ ("wxt_figure_position")) 
+              || (strcmp (term, "qt")
+                  && __gnuplot_has_feature__ ("qt_figure_position")))
+            ## X11/Windows/qt/wxt (=> ver 5) allows the window to be positioned.
             units = get (0, "units");
             unwind_protect
               set (0, "units", "pixels");
@@ -377,7 +381,7 @@ function have_enhanced = gnuplot_is_enhanced_term (plot_stream, term)
 endfunction
 
 function ret = output_to_screen (term)
-  ret = any (strcmpi (term,
+  ret = any (strcmp (term,
                      {"aqua", "dumb", "pm", "qt", "windows", "wxt", "x11"}));
 endfunction
 

@@ -172,19 +172,13 @@ octave_perm_matrix::float_value (bool) const
 Complex
 octave_perm_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
-
-  Complex retval (tmp, tmp);
-
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion (type_name (), "complex scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             type_name (), "complex scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return Complex (matrix(0, 0), 0);
 }
 
 FloatComplex

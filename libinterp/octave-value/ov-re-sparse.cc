@@ -108,10 +108,6 @@ octave_sparse_matrix::double_value (bool) const
 Complex
 octave_sparse_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
-
-  Complex retval (tmp, tmp);
-
   // FIXME: maybe this should be a function, valid_as_scalar()
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("real sparse matrix", "complex scalar");
@@ -120,9 +116,7 @@ octave_sparse_matrix::complex_value (bool) const
     warn_implicit_conversion ("Octave:array-to-scalar",
                               "real sparse matrix", "complex scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return Complex (matrix(0, 0), 0);
 }
 
 Matrix

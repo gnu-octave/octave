@@ -179,19 +179,13 @@ octave_complex_matrix::float_matrix_value (bool force_conversion) const
 Complex
 octave_complex_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
-
-  Complex retval (tmp, tmp);
-
   if (rows () == 0 || columns () == 0)
     err_invalid_conversion ("complex matrix", "complex scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "complex matrix", "complex scalar");
 
-  retval = matrix(0, 0);
-
-  return retval;
+  return matrix(0, 0);
 }
 
 FloatComplex

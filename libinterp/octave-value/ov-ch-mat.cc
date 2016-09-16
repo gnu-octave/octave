@@ -121,19 +121,13 @@ octave_char_matrix::uint64_scalar_value () const
 Complex
 octave_char_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
-
-  Complex retval (tmp, tmp);
-
   if (rows () == 0 && columns () == 0)
     err_invalid_conversion ("character matrix", "complex scalar");
 
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "character matrix", "complex scalar");
 
-  retval = static_cast<unsigned char> (matrix(0, 0));
-
-  return retval;
+  return Complex (static_cast<unsigned char> (matrix(0, 0)), 0);
 }
 
 FloatComplex

@@ -307,10 +307,6 @@ octave_range::is_true (void) const
 Complex
 octave_range::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
-
-  Complex retval (tmp, tmp);
-
   octave_idx_type nel = range.numel ();
 
   if (nel == 0)
@@ -319,9 +315,7 @@ octave_range::complex_value (bool) const
   warn_implicit_conversion ("Octave:array-to-scalar",
                             "range", "complex scalar");
 
-  retval = range.base ();
-
-  return retval;
+  return Complex (range.base (), 0);
 }
 
 FloatComplex

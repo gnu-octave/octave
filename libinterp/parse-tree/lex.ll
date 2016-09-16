@@ -1216,7 +1216,7 @@ ANY_INCLUDING_NL (.|{NL})
 \\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
 
-    static const char *msg = "using continuation marker \\ outside of double quoted strings is deprecated and will be removed in a future version of Octave";
+    static const char *msg = "using continuation marker \\ outside of double quoted strings is deprecated and will be removed from a future version of Octave, use ... instead";
 
     std::string nm = curr_lexer->fcn_file_full_name;
 

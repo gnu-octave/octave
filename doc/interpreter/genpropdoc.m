@@ -389,7 +389,7 @@ value in the figure title bar.";
 properties depends upon __prop__.  The horizontal and vertical values for \
 @code{papersize} and @code{paperposition} reverse order \
 when __prop__ is switched between @code{\"portrait\"} and \
-@code{\"landscape\"}."
+@code{\"landscape\"}.";
 
       case "paperposition"
         s.doc = "Vector @code{[left bottom width height]} defining the \
@@ -447,14 +447,14 @@ units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
         s.doc = doc_unused;
 
       case "resizefcn"
-        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead."
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
         s.valid = valid_fcn;
 
       case "selectiontype"
         ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
 
       case "sizechangedfcn"
-        s.doc = "Callback triggered when the figure window size is changed."
+        s.doc = "Callback triggered when the figure window size is changed.";
         s.valid = valid_fcn;
 
       case "toolbar"

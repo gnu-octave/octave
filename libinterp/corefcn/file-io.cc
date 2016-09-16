@@ -2751,6 +2751,8 @@ see @code{tmpfile}.
 
   if (nargin > 0)
     dir = args(0).xstring_value ("tempname: DIR must be a string");
+  else
+    dir = octave::sys::env::getenv ("TMPDIR");
 
   std::string pfx ("oct-");
 

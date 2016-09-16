@@ -318,7 +318,7 @@ endfunction
 %!   copyfile (filename, [filename ".orig"]);
 %!   gzip (filename, dirname);
 %!   [~, f] = fileparts (filename);
-%!   filelist = unpack (fullfile (dirname, [f ".gz"]), P_tmpdir);
+%!   filelist = unpack (fullfile (dirname, [f ".gz"]), tempdir);
 %!   assert (filelist{1}, filename);
 %!   fid = fopen ([filename ".orig"], "rb");
 %!   assert (fid >= 0);

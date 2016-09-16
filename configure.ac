@@ -2097,9 +2097,16 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
-## Test features of the installed UMFPACK library
+## If using SuiteSparse libraries, check for suitesparseconfig library.
 
-if test -n "$UMFPACK_LIBS"; then
+SUITESPARSE_CONFIG_LIBS=
+if test x$octave_cv_lib_amd = xyes \
+   || test x$octave_cv_lib_camd = xyes \
+   || test x$octave_cv_lib_colamd = xyes \
+   || test x$octave_cv_lib_ccolamd = xyes \
+   || test x$octave_cv_lib_cholmod = xyes \
+   || test x$octave_cv_lib_cxsparse = xyes \
+   || test x$octave_cv_lib_umfpack = xyes; then
   ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time
   save_CPPFLAGS="$CPPFLAGS"
   save_LIBS="$LIBS";
@@ -2107,37 +2114,41 @@ if test -n "$UMFPACK_LIBS"; then
   LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   xtra_libs=
   OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
-  if test $STATIC_LIBS = yes || test $octave_cv_umfpack_need_suitesparse_time = yes; then
-    AC_CHECK_LIB([rt], [clock_gettime], [xtra_libs="-lrt"], [xtra_libs=])
-    ## FIXME: This library list is only accurate for Linux, Mac OS X.
-    ##        Possibly need other library names for MinGW, Cygwin.
-    AC_SEARCH_LIBS([SuiteSparse_time],
-                   [suitesparseconfig SuiteSparse],
-                   [], [], [$xtra_libs])
-    case $ac_cv_search_SuiteSparse_time in
-      -l*)
-        UMFPACK_LIBS="$UMFPACK_LIBS $ac_cv_search_SuiteSparse_time"
-      ;;
-      no)
+  AC_CHECK_LIB([rt], [clock_gettime], [xtra_libs="-lrt"], [xtra_libs=])
+  ## FIXME: This library list is only accurate for Linux, Mac OS X.
+  ##        Possibly need other library names for MinGW, Cygwin.
+  AC_SEARCH_LIBS([SuiteSparse_time], [suitesparseconfig SuiteSparse],
+                 [], [], [$xtra_libs])
+  case $ac_cv_search_SuiteSparse_time in
+    -l*)
+      SUITESPARSE_CONFIG_LIBS="$ac_cv_search_SuiteSparse_time"
+    ;;
+    no)
+      if test x$octave_cv_lib_umfpack = xyes \
+         && $octave_cv_umfpack_need_suitesparse_time = yes; then
         UMFPACK_LIBS=
-        AC_MSG_WARN([UMFPACK library found but is missing SuiteSparse_time functionality.])
-        AC_MSG_WARN([UMFPACK library will be disabled.])
-      ;;
-    esac
-  fi
+        warn_suitesparse_config="UMFPACK library found but is missing SuiteSparse_time functionality.  UMFPACK library will be disabled."
+      fi
+    ;;
+  esac
   LIBS="$save_LIBS"
   CPPFLAGS="$save_CPPFLAGS"
-
-  ## Check for UMFPACK separately split complex matrix and RHS.
-  if test -n "$UMFPACK_LIBS"; then
-    save_CPPFLAGS="$CPPFLAGS"
-    save_LIBS="$LIBS";
-    CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
-    LIBS="$UMFPACK_LIBS $CHOLMOD_LDFLAGS $CHOLMOD_LIBS $AMD_LDFLAGS $AMD_LIBS $COLAMD_LDFLAGS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
-    OCTAVE_UMFPACK_SEPARATE_SPLIT
-    LIBS="$save_LIBS"
-    CPPFLAGS="$save_CPPFLAGS"
+  AC_SUBST(SUITESPARSE_CONFIG_LIBS)
+  if test -n "$warn_suitesparseconfig"; then
+    OCTAVE_CONFIGURE_WARNING([warn_suitesparseconfig])
+    SUITESPARSE_CONFIG_LIBS=
   fi
+fi
+
+## Check for UMFPACK separately split complex matrix and RHS.
+if test -n "$UMFPACK_LIBS"; then
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LIBS="$LIBS";
+  CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
+  LIBS="$UMFPACK_LIBS $CHOLMOD_LDFLAGS $CHOLMOD_LIBS $AMD_LDFLAGS $AMD_LIBS $COLAMD_LDFLAGS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
+  OCTAVE_UMFPACK_SEPARATE_SPLIT
+  LIBS="$save_LIBS"
+  CPPFLAGS="$save_CPPFLAGS"
 fi
 
 ### Check for ARPACK library.
@@ -2942,7 +2953,7 @@ SPARSE_XCPPFLAGS="$CHOLMOD_CPPFLAGS $UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CAMD_CPPFLA
 
 SPARSE_XLDFLAGS="$CHOLMOD_LDFLAGS $UMFPACK_LDFLAGS $AMD_LDFLAGS $CAMD_LDFLAGS $COLAMD_LDFLAGS  $CCOLAMD_LDFLAGS $CXSPARSE_LDFLAGS"
 
-SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS"
+SPARSE_XLIBS="$CHOLMOD_LIBS $UMFPACK_LIBS $AMD_LIBS $CAMD_LIBS $COLAMD_LIBS $CCOLAMD_LIBS $CXSPARSE_LIBS $SUITESPARSE_CONFIG_LIBS"
 
 AC_SUBST(FFTW_XCPPFLAGS)
 AC_SUBST(FFTW_XLDFLAGS)
@@ -3179,116 +3190,117 @@ AC_MSG_NOTICE([
 
 Octave is now configured for $canonical_host_type
 
-  Source directory:            $srcdir
-  Installation prefix:         $prefix
-  C compiler:                  $CC $XTRA_CFLAGS $WARN_CFLAGS $CFLAGS
-  C++ compiler:                $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
-  Fortran compiler:            $F77 $FFLAGS
-  Fortran libraries:           $FLIBS
-  Lex libraries:               $LEXLIB
-  LIBS:                        $LIBS
-  Extra LDFLAGS:               $WARN_LDFLAGS
+  Source directory:              $srcdir
+  Installation prefix:           $prefix
+  C compiler:                    $CC $XTRA_CFLAGS $WARN_CFLAGS $CFLAGS
+  C++ compiler:                  $CXX $XTRA_CXXFLAGS $WARN_CXXFLAGS $CXXFLAGS
+  Fortran compiler:              $F77 $FFLAGS
+  Fortran libraries:             $FLIBS
+  Lex libraries:                 $LEXLIB
+  LIBS:                          $LIBS
+  Extra LDFLAGS:                 $WARN_LDFLAGS
 
-  AMD CPPFLAGS:                $AMD_CPPFLAGS
-  AMD LDFLAGS:                 $AMD_LDFLAGS
-  AMD libraries:               $AMD_LIBS
-  ARPACK CPPFLAGS:             $ARPACK_CPPFLAGS
-  ARPACK LDFLAGS:              $ARPACK_LDFLAGS
-  ARPACK libraries:            $ARPACK_LIBS
-  BLAS libraries:              $BLAS_LIBS
-  BZ2 CPPFLAGS:                $BZ2_CPPFLAGS
-  BZ2 LDFLAGS:                 $BZ2_LDFLAGS
-  BZ2 libraries:               $BZ2_LIBS
-  CAMD CPPFLAGS:               $CAMD_CPPFLAGS
-  CAMD LDFLAGS:                $CAMD_LDFLAGS
-  CAMD libraries:              $CAMD_LIBS
-  CARBON libraries:            $CARBON_LIBS
-  CCOLAMD CPPFLAGS:            $CCOLAMD_CPPFLAGS
-  CCOLAMD LDFLAGS:             $CCOLAMD_LDFLAGS
-  CCOLAMD libraries:           $CCOLAMD_LIBS
-  CHOLMOD CPPFLAGS:            $CHOLMOD_CPPFLAGS
-  CHOLMOD LDFLAGS:             $CHOLMOD_LDFLAGS
-  CHOLMOD libraries:           $CHOLMOD_LIBS
-  COLAMD CPPFLAGS:             $COLAMD_CPPFLAGS
-  COLAMD LDFLAGS:              $COLAMD_LDFLAGS
-  COLAMD libraries:            $COLAMD_LIBS
-  CURL CPPFLAGS:               $CURL_CPPFLAGS
-  CURL LDFLAGS:                $CURL_LDFLAGS
-  CURL libraries:              $CURL_LIBS
-  CXSPARSE CPPFLAGS:           $CXSPARSE_CPPFLAGS
-  CXSPARSE LDFLAGS:            $CXSPARSE_LDFLAGS
-  CXSPARSE libraries:          $CXSPARSE_LIBS
-  DL libraries:                $DL_LIBS
-  FFTW3 CPPFLAGS:              $FFTW3_CPPFLAGS
-  FFTW3 LDFLAGS:               $FFTW3_LDFLAGS
-  FFTW3 libraries:             $FFTW3_LIBS
-  FFTW3F CPPFLAGS:             $FFTW3F_CPPFLAGS
-  FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
-  FFTW3F libraries:            $FFTW3F_LIBS
-  FLTK CPPFLAGS:               $FLTK_CPPFLAGS
-  FLTK LDFLAGS:                $FLTK_LDFLAGS
-  FLTK libraries:              $FLTK_LIBS
-  fontconfig CPPFLAGS:         $FONTCONFIG_CPPFLAGS
-  fontconfig libraries:        $FONTCONFIG_LIBS
-  FreeType2 CPPFLAGS:          $FT2_CPPFLAGS
-  FreeType2 libraries:         $FT2_LIBS
-  GLPK CPPFLAGS:               $GLPK_CPPFLAGS
-  GLPK LDFLAGS:                $GLPK_LDFLAGS
-  GLPK libraries:              $GLPK_LIBS
-  HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
-  HDF5 LDFLAGS:                $HDF5_LDFLAGS
-  HDF5 libraries:              $HDF5_LIBS
-  Java home:                   $JAVA_HOME
-  Java JVM path:               $JAVA_LDPATH
-  Java CPPFLAGS:               $JAVA_CPPFLAGS
-  Java libraries:              $JAVA_LIBS
-  LAPACK libraries:            $LAPACK_LIBS
-  LLVM CPPFLAGS:               $LLVM_CPPFLAGS
-  LLVM LDFLAGS:                $LLVM_LDFLAGS
-  LLVM libraries:              $LLVM_LIBS
-  Magick++ CPPFLAGS:           $MAGICK_CPPFLAGS
-  Magick++ LDFLAGS:            $MAGICK_LDFLAGS
-  Magick++ libraries:          $MAGICK_LIBS
-  OPENGL libraries:            $OPENGL_LIBS
-  OSMesa CPPFLAGS:             $OSMESA_CPPFLAGS
-  OSMesa LDFLAGS:              $OSMESA_LDFLAGS
-  OSMesa libraries:            $OSMESA_LIBS
-  PCRE CPPFLAGS:               $PCRE_CPPFLAGS
-  PCRE libraries:              $PCRE_LIBS
-  PortAudio CPPFLAGS:          $PORTAUDIO_CPPFLAGS
-  PortAudio LDFLAGS:           $PORTAUDIO_LDFLAGS
-  PortAudio libraries:         $PORTAUDIO_LIBS
-  PTHREAD flags:               $PTHREAD_CFLAGS
-  PTHREAD libraries:           $PTHREAD_LIBS
-  QHULL CPPFLAGS:              $QHULL_CPPFLAGS
-  QHULL LDFLAGS:               $QHULL_LDFLAGS
-  QHULL libraries:             $QHULL_LIBS
-  QRUPDATE CPPFLAGS:           $QRUPDATE_CPPFLAGS
-  QRUPDATE LDFLAGS:            $QRUPDATE_LDFLAGS
-  QRUPDATE libraries:          $QRUPDATE_LIBS
-  Qt CPPFLAGS:                 $QT_CPPFLAGS
-  Qt LDFLAGS:                  $QT_LDFLAGS
-  Qt libraries:                $QT_LIBS
-  Qt moc:                      $MOC $MOCFLAGS
-  Qt uic:                      $UIC $UICFLAGS
-  Qt rcc:                      $RCC $RCCFLAGS
-  Qt lrelease:                 $LRELEASE $LRELEASEFLAGS
-  READLINE libraries:          $READLINE_LIBS
-  Sndfile CPPFLAGS:            $SNDFILE_CPPFLAGS
-  Sndfile LDFLAGS:             $SNDFILE_LDFLAGS
-  Sndfile libraries:           $SNDFILE_LIBS
-  TERM libraries:              $TERM_LIBS
-  UMFPACK CPPFLAGS:            $UMFPACK_CPPFLAGS
-  UMFPACK LDFLAGS:             $UMFPACK_LDFLAGS
-  UMFPACK libraries:           $UMFPACK_LIBS
-  X11 include flags:           $X11_INCFLAGS
-  X11 libraries:               $X11_LIBS
-  Z CPPFLAGS:                  $Z_CPPFLAGS
-  Z LDFLAGS:                   $Z_LDFLAGS
-  Z libraries:                 $Z_LIBS
+  AMD CPPFLAGS:                  $AMD_CPPFLAGS
+  AMD LDFLAGS:                   $AMD_LDFLAGS
+  AMD libraries:                 $AMD_LIBS
+  ARPACK CPPFLAGS:               $ARPACK_CPPFLAGS
+  ARPACK LDFLAGS:                $ARPACK_LDFLAGS
+  ARPACK libraries:              $ARPACK_LIBS
+  BLAS libraries:                $BLAS_LIBS
+  BZ2 CPPFLAGS:                  $BZ2_CPPFLAGS
+  BZ2 LDFLAGS:                   $BZ2_LDFLAGS
+  BZ2 libraries:                 $BZ2_LIBS
+  CAMD CPPFLAGS:                 $CAMD_CPPFLAGS
+  CAMD LDFLAGS:                  $CAMD_LDFLAGS
+  CAMD libraries:                $CAMD_LIBS
+  CARBON libraries:              $CARBON_LIBS
+  CCOLAMD CPPFLAGS:              $CCOLAMD_CPPFLAGS
+  CCOLAMD LDFLAGS:               $CCOLAMD_LDFLAGS
+  CCOLAMD libraries:             $CCOLAMD_LIBS
+  CHOLMOD CPPFLAGS:              $CHOLMOD_CPPFLAGS
+  CHOLMOD LDFLAGS:               $CHOLMOD_LDFLAGS
+  CHOLMOD libraries:             $CHOLMOD_LIBS
+  COLAMD CPPFLAGS:               $COLAMD_CPPFLAGS
+  COLAMD LDFLAGS:                $COLAMD_LDFLAGS
+  COLAMD libraries:              $COLAMD_LIBS
+  CURL CPPFLAGS:                 $CURL_CPPFLAGS
+  CURL LDFLAGS:                  $CURL_LDFLAGS
+  CURL libraries:                $CURL_LIBS
+  CXSPARSE CPPFLAGS:             $CXSPARSE_CPPFLAGS
+  CXSPARSE LDFLAGS:              $CXSPARSE_LDFLAGS
+  CXSPARSE libraries:            $CXSPARSE_LIBS
+  DL libraries:                  $DL_LIBS
+  FFTW3 CPPFLAGS:                $FFTW3_CPPFLAGS
+  FFTW3 LDFLAGS:                 $FFTW3_LDFLAGS
+  FFTW3 libraries:               $FFTW3_LIBS
+  FFTW3F CPPFLAGS:               $FFTW3F_CPPFLAGS
+  FFTW3F LDFLAGS:                $FFTW3F_LDFLAGS
+  FFTW3F libraries:              $FFTW3F_LIBS
+  FLTK CPPFLAGS:                 $FLTK_CPPFLAGS
+  FLTK LDFLAGS:                  $FLTK_LDFLAGS
+  FLTK libraries:                $FLTK_LIBS
+  fontconfig CPPFLAGS:           $FONTCONFIG_CPPFLAGS
+  fontconfig libraries:          $FONTCONFIG_LIBS
+  FreeType2 CPPFLAGS:            $FT2_CPPFLAGS
+  FreeType2 libraries:           $FT2_LIBS
+  GLPK CPPFLAGS:                 $GLPK_CPPFLAGS
+  GLPK LDFLAGS:                  $GLPK_LDFLAGS
+  GLPK libraries:                $GLPK_LIBS
+  HDF5 CPPFLAGS:                 $HDF5_CPPFLAGS
+  HDF5 LDFLAGS:                  $HDF5_LDFLAGS
+  HDF5 libraries:                $HDF5_LIBS
+  Java home:                     $JAVA_HOME
+  Java JVM path:                 $JAVA_LDPATH
+  Java CPPFLAGS:                 $JAVA_CPPFLAGS
+  Java libraries:                $JAVA_LIBS
+  LAPACK libraries:              $LAPACK_LIBS
+  LLVM CPPFLAGS:                 $LLVM_CPPFLAGS
+  LLVM LDFLAGS:                  $LLVM_LDFLAGS
+  LLVM libraries:                $LLVM_LIBS
+  Magick++ CPPFLAGS:             $MAGICK_CPPFLAGS
+  Magick++ LDFLAGS:              $MAGICK_LDFLAGS
+  Magick++ libraries:            $MAGICK_LIBS
+  OPENGL libraries:              $OPENGL_LIBS
+  OSMesa CPPFLAGS:               $OSMESA_CPPFLAGS
+  OSMesa LDFLAGS:                $OSMESA_LDFLAGS
+  OSMesa libraries:              $OSMESA_LIBS
+  PCRE CPPFLAGS:                 $PCRE_CPPFLAGS
+  PCRE libraries:                $PCRE_LIBS
+  PortAudio CPPFLAGS:            $PORTAUDIO_CPPFLAGS
+  PortAudio LDFLAGS:             $PORTAUDIO_LDFLAGS
+  PortAudio libraries:           $PORTAUDIO_LIBS
+  PTHREAD flags:                 $PTHREAD_CFLAGS
+  PTHREAD libraries:             $PTHREAD_LIBS
+  QHULL CPPFLAGS:                $QHULL_CPPFLAGS
+  QHULL LDFLAGS:                 $QHULL_LDFLAGS
+  QHULL libraries:               $QHULL_LIBS
+  QRUPDATE CPPFLAGS:             $QRUPDATE_CPPFLAGS
+  QRUPDATE LDFLAGS:              $QRUPDATE_LDFLAGS
+  QRUPDATE libraries:            $QRUPDATE_LIBS
+  Qt CPPFLAGS:                   $QT_CPPFLAGS
+  Qt LDFLAGS:                    $QT_LDFLAGS
+  Qt libraries:                  $QT_LIBS
+  Qt moc:                        $MOC $MOCFLAGS
+  Qt uic:                        $UIC $UICFLAGS
+  Qt rcc:                        $RCC $RCCFLAGS
+  Qt lrelease:                   $LRELEASE $LRELEASEFLAGS
+  READLINE libraries:            $READLINE_LIBS
+  Sndfile CPPFLAGS:              $SNDFILE_CPPFLAGS
+  Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
+  Sndfile libraries:             $SNDFILE_LIBS
+  SuiteSparse config libraries:  $SUITESPARSE_CONFIG_LIBS
+  TERM libraries:                $TERM_LIBS
+  UMFPACK CPPFLAGS:              $UMFPACK_CPPFLAGS
+  UMFPACK LDFLAGS:               $UMFPACK_LDFLAGS
+  UMFPACK libraries:             $UMFPACK_LIBS
+  X11 include flags:             $X11_INCFLAGS
+  X11 libraries:                 $X11_LIBS
+  Z CPPFLAGS:                    $Z_CPPFLAGS
+  Z LDFLAGS:                     $Z_LDFLAGS
+  Z libraries:                   $Z_LIBS
 
-  Default pager:               $DEFAULT_PAGER
-  gnuplot:                     $GNUPLOT
+  Default pager:                 $DEFAULT_PAGER
+  gnuplot:                       $GNUPLOT
 
   Build Octave Qt GUI:                $build_qt_gui
   JIT compiler for loops:             $ENABLE_JIT

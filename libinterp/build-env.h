@@ -154,6 +154,7 @@ namespace octave
     extern const char *SH_LD;
     extern const char *SH_LDFLAGS;
     extern const char *STATIC_LIBS;
+    extern const char *SUITESPARSE_CONFIG_LIBS;
     extern const char *TERM_LIBS;
     extern const char *UMFPACK_CPPFLAGS;
     extern const char *UMFPACK_LDFLAGS;

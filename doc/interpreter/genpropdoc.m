@@ -438,6 +438,10 @@ units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
         s.doc = doc_unused;
 
       case "position"
+        s.doc = "Specify the position and size of the figure.  \
+The four elements of the vector are the coordinates of the lower left corner \
+and width and height of the figure.  \
+@xref{XREFfigureunits, , @w{units property}}.";
         s.valid = valid_4elvec;
 
       case "renderer"

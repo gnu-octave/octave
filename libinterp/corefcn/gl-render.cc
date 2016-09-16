@@ -697,10 +697,14 @@ namespace octave
                  props.graphics_object_name ().c_str ());
       }
 
+#if defined (HAVE_OPENGL)
+
     GLenum gl_error = glGetError ();
     if (gl_error)
       warning ("opengl_renderer: Error %d occurred drawing '%s' object",
                gl_error, props.graphics_object_name ().c_str ());
+
+#endif
   }
 
 #if defined (HAVE_OPENGL)
@@ -901,6 +905,7 @@ namespace octave
 
 #else
 
+    octave_unused_parameter (linewidth);
     octave_unused_parameter (gridstyle);
     octave_unused_parameter (gridcolor);
     octave_unused_parameter (gridalpha);
@@ -3638,6 +3643,7 @@ namespace octave
 
     octave_unused_parameter (s);
     octave_unused_parameter (use_stipple);
+    octave_unused_parameter (linewidth);
 
     // This shouldn't happen because construction of opengl_renderer
     // objects is supposed to be impossible if OpenGL is not available.

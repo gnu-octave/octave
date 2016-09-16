@@ -5319,6 +5319,30 @@ Like @code{eval}, except that the expressions are evaluated in the context
   return retval;
 }
 
+static void
+maybe_print_last_error_message (bool *doit)
+{
+  if (doit && *doit)
+    // Print error message again, which was lost because of the stderr buffer
+    // Note: this keeps error_state and last_error_stack intact
+    message_with_id ("error", last_error_id ().c_str (),
+                     last_error_message ().c_str ());
+}
+
+static void
+restore_octave_stdout (std::streambuf *buf)
+{
+  octave_stdout.flush ();
+  octave_stdout.rdbuf (buf);
+}
+
+static void
+restore_octave_stderr (std::streambuf *buf)
+{
+  std::cerr.flush ();
+  std::cerr.rdbuf (buf);
+}
+
 DEFUN (evalc, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} evalc (@var{try})
@@ -5365,38 +5389,20 @@ s = evalc ("t = 42"), t
   std::streambuf* old_out_buf = out_stream.rdbuf (buffer.rdbuf ());
   std::streambuf* old_err_buf = err_stream.rdbuf (buffer.rdbuf ());
 
+  bool eval_error_occurred = true;
+
+  octave::unwind_protect frame;
+
+  frame.add_fcn (maybe_print_last_error_message, &eval_error_occurred);
+  frame.add_fcn (restore_octave_stdout, old_out_buf);
+  frame.add_fcn (restore_octave_stderr, old_err_buf);
 
   // call standard eval function
   octave_value_list retval;
   int eval_nargout = std::max (0, nargout - 1);
 
-  const octave::execution_exception* eval_exception = 0;
-  try
-    {
-      retval = Feval (args, eval_nargout);
-    }
-  catch (const octave::execution_exception& e)
-    {
-      // hold back exception from eval until we have restored streams
-      eval_exception = &e;
-    }
-
-  // stop capturing buffer and restore stdout/stderr
-  out_stream.flush ();
-  err_stream.flush ();
-
-  out_stream.rdbuf (old_out_buf);
-  err_stream.rdbuf (old_err_buf);
-
-  if (eval_exception)
-    {
-      // Print error message again, which was lost because of the stderr buffer
-      // Note: this keeps error_state and last_error_stack intact
-      message_with_id ("error", last_error_id ().c_str (),
-                       last_error_message ().c_str ());
-      // rethrow original exception from above
-      throw *eval_exception;
-    }
+  retval = Feval (args, eval_nargout);
+  eval_error_occurred = false;
 
   retval.prepend (buffer.str ());
   return retval;

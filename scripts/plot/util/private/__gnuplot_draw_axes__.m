@@ -2377,7 +2377,11 @@ endfunction
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)
 
   if (isempty (t.fontname) || strcmp (t.fontname, "*"))
-    fnt = "";
+    if (ispc ())
+      fnt = "Helvetica";
+    else
+      fnt = "";
+    endif
   else
     fnt = t.fontname;
   endif
@@ -2389,17 +2393,32 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
     if (! isempty (t.fontangle)
         && (strcmp (t.fontangle, "italic")
             || strcmp (t.fontangle, "oblique")))
-      f = [f "-bolditalic"];
+      if (__gnuplot_has_feature__ ("fontspec_5"))
+        f = [f ":Bold:Italic"];
+      else
+        f = [f "-bolditalic"];
+      endif
+
       it = true;
       bld = true;
     else
-      f = [f "-bold"];
+      if (__gnuplot_has_feature__ ("fontspec_5"))
+        f = [f ":Bold"];
+      else
+        f = [f "-bold"];
+      endif
+
       bld = true;
     endif
   elseif (! isempty (t.fontangle)
           && (strcmp (t.fontangle, "italic")
               || strcmp (t.fontangle, "oblique")))
-    f = [f "-italic"];
+    if (__gnuplot_has_feature__ ("fontspec_5"))
+      f = [f ":Italic"];
+    else
+      f = [f "-italic"];
+    endif
+
     it = true;
   endif
 
@@ -2494,17 +2513,33 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         str = [str(1:s(i) - 1) '{/' fnt ' ' str(s(i) + 3:end) '}'];
       elseif (strncmp (f, "it", 2) || strncmp (f, "sl", 2))
         it = true;
-        if (bld)
-          str = [str(1:s(i) - 1) '{/' fnt '-bolditalic ' str(s(i) + 3:end) '}'];
+        if (__gnuplot_has_feature__ ("fontspec_5"))
+          if (bld)
+            str = [str(1:s(i)-1) '{/' fnt ':Bold:Italic ' str(s(i)+3:end) '}'];
+          else
+            str = [str(1:s(i)-1) '{/' fnt ':Italic ' str(s(i)+3:end) '}'];
+          endif
         else
-          str = [str(1:s(i) - 1) '{/' fnt '-italic ' str(s(i) + 3:end) '}'];
+          if (bld)
+            str = [str(1:s(i)-1) '{/' fnt '-bolditalic ' str(s(i)+3:end) '}'];
+          else
+            str = [str(1:s(i)-1) '{/' fnt '-italic ' str(s(i)+3:end) '}'];
+          endif
         endif
       elseif (strncmp (f, "bf", 2))
         bld = true;
-        if (it)
-          str = [str(1:s(i) - 1) '{/' fnt '-bolditalic ' str(s(i) + 3:end) '}'];
+        if (__gnuplot_has_feature__ ("fontspec_5"))
+          if (it)
+            str = [str(1:s(i)-1) '{/' fnt ':Bold:Italic ' str(s(i)+3:end) '}'];
+          else
+            str = [str(1:s(i)-1) '{/' fnt ':Bold ' str(s(i)+3:end) '}'];
+          endif
         else
-          str = [str(1:s(i) - 1) '{/' fnt '-bold ' str(s(i) + 3:end) '}'];
+          if (it)
+            str = [str(1:s(i)-1) '{/' fnt '-bolditalic ' str(s(i)+3:end) '}'];
+          else
+            str = [str(1:s(i)-1) '{/' fnt '-bold ' str(s(i)+3:end) '}'];
+          endif
         endif
       elseif (strcmp (f, "color"))
         ## FIXME: Ignore \color but remove trailing {} block as well

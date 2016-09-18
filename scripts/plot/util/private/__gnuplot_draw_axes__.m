@@ -932,9 +932,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   ccol = cdat;
                 endif
                 if (strcmp (ec, "flat"))
-                  if (numel (ccol) == 3)
+                  if (isequal (size (ccol), [1, 3]))
                     color = ccol;
                   else
+                    if (strcmp (obj.cdatamapping, "scaled"))
+                      ccol = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
+                    endif
+                    ccol = max (1, min (ccol, cmap_sz));
                     if (isscalar (ccol))
                       ccol = repmat (ccol, numel (xcol), 1);
                     endif
@@ -952,6 +956,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                     color = "interp";
                     have_cdata(data_idx) = true;
                   endif
+                  if (strcmp (obj.cdatamapping, "direct"))
+                    ccol = round (ccol);
+                  else
+                    ccol = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
+                  endif
+                  ccol = max (1, min (ccol, cmap_sz));
                 endif
               elseif (isnumeric (ec))
                 color = ec;

@@ -39,12 +39,12 @@ namespace octave
 EOF
 
 $AWK \
-  '/#define (OCTAVE_|)HAVE_/ {
-     sub (/(OCTAVE_|)HAVE_/, "", $2);
+  '/#define (OCTAVE_HAVE|HAVE)_/ {
+     sub (/(OCTAVE_HAVE|HAVE)_/, "", $2);
      printf ("          m.assign (\"%s\", ov_true);\n", $2);
    }
-   /\/\* #undef (OCTAVE_|)HAVE_/ {
-     sub (/(OCTAVE_|)HAVE_/, "", $3);
+   /\/\* #undef (OCTAVE_HAVE|HAVE)_/ {
+     sub (/(OCTAVE_HAVE|HAVE)_/, "", $3);
      printf ("          m.assign (\"%s\", ov_false);\n", $3);
    } {
    }' $conffile | sort

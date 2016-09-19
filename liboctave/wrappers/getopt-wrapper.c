@@ -88,7 +88,7 @@ make_option_struct (const struct octave_getopt_options *opts)
 }
 
 int
-octave_getopt_long_wrapper (int argc, char *const *argv,
+octave_getopt_long_wrapper (int argc, char **argv,
                             const char *shortopts,
                             const struct octave_getopt_options *longopts,
                             int *longind)

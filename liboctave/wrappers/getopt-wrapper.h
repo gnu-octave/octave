@@ -40,7 +40,7 @@ struct octave_getopt_options
 #define octave_optional_arg 2
 
 extern int
-octave_getopt_long_wrapper (int argc, char *const *argv,
+octave_getopt_long_wrapper (int argc, char **argv,
                             const char *shortopts,
                             const struct octave_getopt_options *longopts,
                             int *longind);

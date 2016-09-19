@@ -670,7 +670,7 @@ namespace octave
       case MODE_RENDER:
         if (bbox.numel () != 4)
           {
-            ::warning ("ft_text_renderer: invalid bounding box, cannot render");
+            ::error ("ft_text_renderer: invalid bounding box, cannot render");
 
             xoffset = line_yoffset = yoffset = 0;
             pixels = uint8NDArray ();

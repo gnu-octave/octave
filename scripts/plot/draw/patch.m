@@ -20,9 +20,9 @@
 ## @deftypefn  {} {} patch ()
 ## @deftypefnx {} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {} {} patch (@var{fv})
 ## @deftypefnx {} {} patch ("Faces", @var{faces}, "Vertices", @var{verts}, @dots{})
 ## @deftypefnx {} {} patch (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} patch (@dots{}, @var{propstruct}, @dots{})
 ## @deftypefnx {} {} patch (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} patch (@dots{})
 ## Create patch object in the current axes with vertices at locations
@@ -55,9 +55,8 @@
 ## @qcode{"Vertices"}/@var{verts}, @qcode{"Faces"}/@var{faces} as
 ## inputs.
 ##
-## A third input form is to create a structure @var{fv} with the fields
-## @qcode{"vertices"}, @qcode{"faces"}, and optionally
-## @qcode{"facevertexcdata"}.
+## Instead of using property/value pairs, any property can be set by passing a
+## structure @var{propstruct} with the respective field names.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
@@ -150,9 +149,9 @@ endfunction
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
 %! vert = [x1, y1; x2, y2];
-%! fac = [1:8,NaN(1,8);9:24];
-%! patch ("Faces",fac, "Vertices",vert, ...
-%!        "FaceVertexCData",[0, 1, 0; 0, 0, 1], "FaceColor", "flat");
+%! p.Faces = [1:8,NaN(1,8);9:24];
+%! p.FaceColor = "flat";
+%! patch (p, 'Vertices', vert, 'FaceVertexCData', [0, 1, 0; 0, 0, 1]);
 %! title ("patch() with specification of color for each vertex");
 
 %!demo

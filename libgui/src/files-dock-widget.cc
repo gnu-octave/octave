@@ -79,11 +79,11 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _columns_shown.append (tr ("Alternating row colors"));
 
   _columns_shown_keys = QStringList ();
-  _columns_shown_keys.append (tr ("filesdockwidget/showFileSize"));
-  _columns_shown_keys.append (tr ("filesdockwidget/showFileType"));
-  _columns_shown_keys.append (tr ("filesdockwidget/showLastModified"));
-  _columns_shown_keys.append (tr ("filesdockwidget/showHiddenFiles"));
-  _columns_shown_keys.append (tr ("filesdockwidget/useAlternatingRowColors"));
+  _columns_shown_keys.append ("filesdockwidget/showFileSize");
+  _columns_shown_keys.append ("filesdockwidget/showFileType");
+  _columns_shown_keys.append ("filesdockwidget/showLastModified");
+  _columns_shown_keys.append ("filesdockwidget/showHiddenFiles");
+  _columns_shown_keys.append ("filesdockwidget/useAlternatingRowColors");
 
   QWidget *container = new QWidget (this);
 

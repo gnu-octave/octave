@@ -675,18 +675,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
         [style, sidx] = do_linestyle_command (obj, obj.color, data_idx,
                                               plot_stream, errbars);
-        if (__gnuplot_has_feature__ ("linetype"))
-          scmd = "linetype";
-        else
-          scmd = "linestyle";
-        endif
 
         if isempty (style{1})
           style{1} = "points";
           data{data_idx} = {};
         endif
-        withclause{data_idx} = sprintf ("with %s %s %d",
-                                        style{1}, scmd, sidx(1));
+        withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                        style{1}, sidx(1));
 
         if (length (style) > 1)
           data_idx += 1;
@@ -697,8 +692,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = "title \"\"";
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
-          withclause{data_idx} = sprintf ("with %s %s %d",
-                                          style{2}, scmd, sidx(2));
+          withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                          style{2}, sidx(2));
         endif
         if (length (style) > 2)
           data_idx += 1;
@@ -709,8 +704,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = "title \"\"";
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
-          withclause{data_idx} = sprintf ("with %s %s %d",
-                                          style{3}, scmd, sidx(3));
+          withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                          style{3}, sidx(3));
         endif
 
       case "patch"
@@ -1306,23 +1301,15 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                    interp_str, dord);
         endif
 
-        if (! strcmp (obj.linestyle, "none") && ! strcmp (obj.edgecolor, "none"))
+        draw_surf_line = ! strcmp (obj.linestyle, "none") && ! strcmp (obj.edgecolor, "none");
+        draw_surf_marker = (! strcmp (obj.marker, "none")
+                             && ! (strcmp (obj.markeredgecolor, "none")
+                                   && strcmp (obj.markerfacecolor, "none")));
+        if (draw_surf_line || draw_surf_marker)
           flat_interp_edge = (strcmp (obj.edgecolor, "flat")
                               || strcmp (obj.edgecolor, "interp"));
-          if (flat_interp_edge)
-            scmd = "palette";
-            ccol = ":($4)";
-            N_tup = 4;
-          else
-            if (__gnuplot_has_feature__ ("linetype"))
-              scmd = "linetype";
-            else
-              scmd = "linestyle";
-            endif
-            ccol = "";
-            N_tup = 3;
-          endif
-
+          flat_marker = (strcmp (obj.markeredgecolor, "flat") || strcmp (obj.markerfacecolor, "flat")
+                         || strcmp (obj.markeredgecolor, "auto") || strcmp (obj.markerfacecolor, "auto"));
           [style, sidx] = do_linestyle_command (obj, obj.edgecolor,
                                                 data_idx,
                                                 plot_stream);
@@ -1341,40 +1328,46 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           endif
 
           for np = 1:num_pass
-            if (np <= num_cols)
-              k = np;
-              yrec = ylen;
-              zz = zeros (ylen, N_tup);
-              zz(:,1) = xdat(:,k);
-              zz(:,2) = ydat(:,k);
-              zz(:,3) = zdat(:,k);
-              if (flat_interp_edge)
-                zz(:,4) = cdat(:,k);
-              endif
-            else
-              j = np - num_cols;
-              yrec = xlen;
-              zz = zeros (xlen, N_tup);
-              zz(:,1) = xdat(j,:)';
-              zz(:,2) = ydat(j,:)';
-              zz(:,3) = zdat(j,:)';
-              if (flat_interp_edge)
-                zz(:,4) = cdat(j,:)';
-              endif
-            endif
-
-            zz = zz.';
-
             for i_stl = 1:length (style)
-              if (flat_interp_edge)
-                sopt = "";
+              has_ccol = ((strncmp (style{i_stl}, "lines", 5) && flat_interp_edge) ||
+                          (strncmp (style{i_stl}, "points", 6) && flat_marker));
+              if (has_ccol)
+                ccol = ":($4)";
+                N_tup = 4;
               else
-                sopt = sprintf ("%d", sidx(i_stl));
+                ccol = "";
+                N_tup = 3;
               endif
+              sopt = sprintf ("ls %d", sidx (i_stl));
+
+              if (np <= num_cols)
+                k = np;
+                yrec = ylen;
+                zz = zeros (ylen, N_tup);
+                zz(:,1) = xdat(:,k);
+                zz(:,2) = ydat(:,k);
+                zz(:,3) = zdat(:,k);
+                if (has_ccol)
+                  zz(:,4) = cdat(:,k);
+                endif
+              else
+                j = np - num_cols;
+                yrec = xlen;
+                zz = zeros (xlen, N_tup);
+                zz(:,1) = xdat(j,:)';
+                zz(:,2) = ydat(j,:)';
+                zz(:,3) = zdat(j,:)';
+                if (has_ccol)
+                  zz(:,4) = cdat(j,:)';
+                endif
+              endif
+
+              zz = zz.';
+
               data_idx += 1;
               is_image_data(data_idx) = false;
               parametric(data_idx) = false;
-              if (flat_interp_edge)
+              if (has_ccol)
                 have_cdata(data_idx) = true;
               else
                 have_cdata(data_idx) = false;
@@ -1389,8 +1382,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               else
                 data{data_idx} = zz;
               endif
-              withclause{data_idx} = sprintf ("with %s %s %s",
-                                              style{i_stl}, scmd, sopt);
+              withclause{data_idx} = sprintf ("with %s %s",
+                                              style{i_stl}, sopt);
             endfor
           endfor
         endif
@@ -1559,13 +1552,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     else
       sidx_minor = 0;
     endif
-    if (__gnuplot_has_feature__ ("linetype"))
-      scmd = "linetype";
-    else
-      scmd = "linestyle";
-    endif
-    fprintf (plot_stream, "set grid %s %d, %s %d;\n",
-             scmd, sidx_major, scmd, sidx_minor);
+    fprintf (plot_stream, "set grid linestyle %d, linestyle %d;\n",
+             sidx_major, sidx_minor);
   endif
 
   if (! isempty (hlgnd) && ! isempty (hlgnd.children)
@@ -1916,13 +1904,8 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   style = {};
   ltidx = [];
 
-  if (__gnuplot_has_feature__ ("linetype"))
-    scommand = "linetype";
-  else
-    scommand = "style line";
-  endif
-  fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
-  fprintf (plot_stream, "set %s %d", scommand, idx);
+  fprintf (plot_stream, "set style line %d default;\n", idx);
+  fprintf (plot_stream, "set style line %d", idx);
 
   found_style = false;
   if (isnumeric (linecolor))
@@ -1937,6 +1920,11 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
              alphastr, round (255*color));
   else
     color = [0, 0, 0];
+    flat_interp_edge = (strcmp (obj.edgecolor, "flat")
+                        || strcmp (obj.edgecolor, "interp"));
+    if (flat_interp_edge)
+        fprintf (plot_stream, " palette");
+    endif
   endif
 
   lt = gnuplot_linestyletype (obj);
@@ -1971,7 +1959,6 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
         && ! strcmp (obj.markerfacecolor, "none"))
       if (strcmp (obj.markerfacecolor, "auto")
-          || ! isnumeric (obj.markerfacecolor)
           || (isnumeric (obj.markerfacecolor)
               && isequal (color, obj.markerfacecolor)))
         if (! isempty (pt2))
@@ -1993,11 +1980,13 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         else
           fputs (plot_stream, ";\n");
         endif
-        fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
-        fprintf (plot_stream, "set %s %d", scommand, idx);
+        fprintf (plot_stream, "set style line %d default;\n", idx);
+        fprintf (plot_stream, "set style line %d", idx);
         if (isnumeric (obj.markerfacecolor))
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
                    round (255*obj.markerfacecolor));
+        else
+          fprintf (plot_stream, " palette");
         endif
         if (! isempty (pt2))
           style{sidx} = "points";
@@ -2013,7 +2002,6 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         && ! strcmp (obj.markeredgecolor, "none"))
       if (facesame && ! isempty (pt)
           && (strcmp (obj.markeredgecolor, "auto")
-              || ! isnumeric (obj.markeredgecolor)
               || (isnumeric (obj.markeredgecolor)
                   && isequal (color, obj.markeredgecolor))))
         if (sidx == 1 && ((length (style{sidx}) == 5
@@ -2037,14 +2025,13 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         else
           fputs (plot_stream, ";\n");
         endif
-        fprintf (plot_stream, "set %s %d default;\n", scommand, idx);
-        fprintf (plot_stream, "set %s %d", scommand, idx);
-        if (strcmp (obj.markeredgecolor, "auto"))
-          fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                   round (255*color));
-        elseif (isnumeric (obj.markeredgecolor))
+        fprintf (plot_stream, "set style line %d default;\n", idx);
+        fprintf (plot_stream, "set style line %d", idx);
+        if (isnumeric (obj.markeredgecolor))
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
                    round (255*obj.markeredgecolor));
+        else
+          fprintf (plot_stream, " palette");
         endif
         if (! isempty (pt))
           style{sidx} = "points";

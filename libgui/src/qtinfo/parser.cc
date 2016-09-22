@@ -240,7 +240,7 @@ parser::get_next_node (QIODevice *io)
         }
       else
         {
-          text.append (line);
+          text.append (QString::fromUtf8 (line));
         }
     }
   return text;

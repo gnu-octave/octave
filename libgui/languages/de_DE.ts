@@ -2826,7 +2826,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+1"/>
         <source>Unable to save settings.  Missing settings file or unknown directory.</source>
-        <translation>Unfähig die Einstellungen zu speichern. Fehlende Datei oder unbekanntes Verzeichnis.</translation>
+        <translation>Die Einstellungen können nicht gespeichert werden.  Fehlende Datei oder unbekanntes Verzeichnis.</translation>
     </message>
     <message>
         <location line="+18"/>

@@ -1383,6 +1383,15 @@ namespace octave
         bool tick_along_z = nearhoriz || octave::math::isinf (fy);
         bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
+        if (props.xcolormode_is ("manual"))
+          {
+            // use axis color for (minor)gridcolor
+            if (props.gridcolormode_is ("auto"))
+              gridcolor = props.get_xcolor_rgb ();
+            if (props.minorgridcolormode_is ("auto"))
+              minorgridcolor = props.get_xcolor_rgb ();
+          }
+
         // set styles when drawing only minor grid
         if (do_xminorgrid && ! do_xgrid)
           {
@@ -1512,6 +1521,15 @@ namespace octave
         bool mirror = props.is_box () && ystate != AXE_ANY_DIR
                       && (! props.has_property ("__plotyy_axes__"));
 
+        if (props.ycolormode_is ("manual"))
+          {
+            // use axis color for (minor)gridcolor
+            if (props.gridcolormode_is ("auto"))
+              gridcolor = props.get_ycolor_rgb ();
+            if (props.minorgridcolormode_is ("auto"))
+              minorgridcolor = props.get_ycolor_rgb ();
+          }
+
         // set styles when drawing only minor grid
         if (do_yminorgrid && ! do_ygrid)
           {
@@ -1628,6 +1646,15 @@ namespace octave
         int wmax = 0;
         int hmax = 0;
         bool mirror = props.is_box () && zstate != AXE_ANY_DIR;
+
+        if (props.zcolormode_is ("manual"))
+          {
+            // use axis color for (minor)gridcolor
+            if (props.gridcolormode_is ("auto"))
+              gridcolor = props.get_zcolor_rgb ();
+            if (props.minorgridcolormode_is ("auto"))
+              minorgridcolor = props.get_zcolor_rgb ();
+          }
 
         // set styles when drawing only minor grid
         if (do_zminorgrid && ! do_zgrid)

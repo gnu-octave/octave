@@ -21,9 +21,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {} {} pkg @var{command} @var{option} @var{pkg_name}
-## Manage packages (groups of add-on functions) for Octave.
+## @deftypefnx {} {[@var{out1}, @dots{}] =} pkg (@var{command}, @dots{} )
+## Manage or query packages (groups of add-on functions) for Octave.
 ##
-## Different actions are available depending on the value of @var{command}.
+## Different actions are available depending on the value of @var{command}
+## and on return arguments.
 ##
 ## Available commands:
 ##

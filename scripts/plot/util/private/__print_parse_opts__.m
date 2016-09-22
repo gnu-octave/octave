@@ -587,7 +587,6 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
     papersize = papersize([2,1]);
-    paperposition = paperposition([2,1,4,3]);
   endif
 
   if (! strcmp (papertype, "<custom>")

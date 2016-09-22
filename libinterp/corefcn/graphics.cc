@@ -4346,17 +4346,13 @@ figure::properties::update_paperorientation (void)
 {
   std::string porient = get_paperorientation ();
   Matrix sz = get_papersize ().matrix_value ();
-  Matrix pos = get_paperposition ().matrix_value ();
   if ((sz(0) > sz(1) && porient == "portrait")
       || (sz(0) < sz(1) && porient == "landscape"))
     {
       std::swap (sz(0), sz(1));
-      std::swap (pos(0), pos(1));
-      std::swap (pos(2), pos(3));
       // Call papertype.set rather than set_papertype to avoid loops
       // between update_papersize and update_papertype
       papersize.set (octave_value (sz));
-      paperposition.set (octave_value (pos));
     }
 
   if (paperpositionmode.is ("auto"))

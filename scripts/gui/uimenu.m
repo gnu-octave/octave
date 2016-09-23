@@ -104,6 +104,9 @@ endfunction
 %! uimenu (e, 'label', 'Toggle &Grid', 'accelerator', 'g', 'callback', 'grid (gca)');
 
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -121,6 +124,9 @@ endfunction
 
 ## check for top level menus file and edit
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -134,6 +140,9 @@ endfunction
 %! end_unwind_protect
 
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect

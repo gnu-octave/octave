@@ -104,6 +104,9 @@ endfunction
 
 
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! unwind_protect
 %!   hf = figure ("visible", "off");
 %!   toolkit = graphics_toolkit ();
@@ -115,6 +118,9 @@ endfunction
 %! end_unwind_protect
 
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! old_toolkit = graphics_toolkit ();
 %! switch (old_toolkit)
 %!   case {"gnuplot"}

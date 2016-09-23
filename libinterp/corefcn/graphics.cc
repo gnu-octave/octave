@@ -4632,6 +4632,9 @@ axes::properties::sync_positions (void)
 
 /*
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");
 %! unwind_protect
@@ -4650,7 +4653,11 @@ axes::properties::sync_positions (void)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");
 %! fpos = get (hf, "position");
@@ -4669,7 +4676,11 @@ axes::properties::sync_positions (void)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
 %!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! hf = figure ("visible", "off");
 %! graphics_toolkit (hf, "fltk");
 %! fpos = get (hf, "position");

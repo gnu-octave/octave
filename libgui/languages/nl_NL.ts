@@ -1,4 +1,4 @@
-+<!DOCTYPE TS>
+<!DOCTYPE TS>
 <TS version="2.0" language="nl_NL">
 <context>
     <name>ListDialog</name>

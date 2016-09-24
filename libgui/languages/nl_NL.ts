@@ -1,4 +1,4 @@
-<!DOCTYPE TS>
++<!DOCTYPE TS>
 <TS version="2.0" language="nl_NL">
 <context>
     <name>ListDialog</name>
@@ -2148,7 +2148,7 @@ is reeds geopend in de editor</translation>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation>&amp;Vorig onderbekingspunt</translation>
+        <translation>&amp;Vorig onderbrekingspunt</translation>
     </message>
     <message>
         <location line="-6"/>
@@ -2629,7 +2629,7 @@ Debuggen afsluiten en opslaan?</translation>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation>Kan geen onderbrekingpunt in een aangepast bestand plaatsen.
-Opslaan en onderbrekingskpunt plaatsen, of annuleren?</translation>
+Opslaan en onderbrekingspunt plaatsen, of annuleren?</translation>
     </message>
     <message>
         <location line="+1611"/>

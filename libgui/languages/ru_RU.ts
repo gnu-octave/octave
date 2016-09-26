@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>ListDialog</name>
     <message>
@@ -131,27 +131,27 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Число</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Зарезервированное слово</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -204,17 +204,17 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Зарезервированное слово</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -247,7 +247,7 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -460,22 +460,22 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Команда</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заголовок</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -485,17 +485,17 @@
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалённая строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Добавленная строка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изменённая строка</translation>
     </message>
 </context>
 <context>
@@ -503,27 +503,27 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Число</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Зарезервированное слово</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -551,7 +551,7 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -759,37 +759,37 @@
     <message>
         <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">О&amp;тменить</translation>
+        <translation>О&amp;тменить</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторить</translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Вы&amp;резать</translation>
+        <translation>Вы&amp;резать</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Копировать</translation>
+        <translation>&amp;Копировать</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Вставить</translation>
+        <translation>&amp;Вставить</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать все</translation>
     </message>
 </context>
 <context>
@@ -848,7 +848,7 @@
         <location line="+7"/>
         <location line="+463"/>
         <source>About Octave</source>
-        <translation type="unfinished">Об Octave</translation>
+        <translation>Об Octave</translation>
     </message>
     <message>
         <location line="-465"/>
@@ -900,113 +900,113 @@
     <message>
         <location filename="../graphics/annotation-dialog.ui" line="+17"/>
         <source>Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Font</source>
-        <translation type="unfinished">Шрифт</translation>
+        <translation>Шрифт</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>bold</source>
-        <translation type="unfinished"></translation>
+        <translation>жирный</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>b</source>
-        <translation type="unfinished">ж</translation>
+        <translation>ж</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>italic</source>
-        <translation type="unfinished"></translation>
+        <translation>курсив</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>i</source>
-        <translation type="unfinished">к</translation>
+        <translation>к</translation>
     </message>
     <message>
         <location line="+428"/>
         <source>color</source>
-        <translation type="unfinished"></translation>
+        <translation>цвет</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Horz alignment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выравнивание</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">слева</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+29"/>
         <source>middle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">по середине</translation>
     </message>
     <message>
         <location line="-24"/>
         <source>right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">справа</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vert alignment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выравнивание</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>top</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">сверху</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">снизу</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Расположение</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">единицы</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1016,27 +1016,27 @@
     <message>
         <location line="+8"/>
         <source>Fit to box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Обрамление</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Обрамление</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Цвет фона</translation>
     </message>
     <message>
         <location line="+444"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Цвет линии</translation>
     </message>
     <message>
         <location line="+133"/>
         <source>Line style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Стиль линии</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1046,7 +1046,7 @@
     <message>
         <location line="+8"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ширина линии</translation>
     </message>
 </context>
 <context>
@@ -1376,22 +1376,22 @@ is already open in the editor</source>
     <message>
         <location line="+22"/>
         <source>Show &amp;Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать панель &amp;инструментов</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show &amp;Statusbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать строку &amp;состояния</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show &amp;Horizontal Scrollbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать &amp;горизонтальную полосу прокрутки</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Последние файлы</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -1406,27 +1406,27 @@ is already open in the editor</source>
     <message>
         <location line="-1467"/>
         <source>File Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодировка:</translation>
     </message>
     <message>
         <location line="+403"/>
         <source>%1 is a built-in function</source>
-        <translation type="unfinished">%1 является встроенной функцией</translation>
+        <translation>%1 является встроенной функцией</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Can not find function %1</source>
-        <translation type="unfinished">Невозможно найти функцию %1</translation>
+        <translation>Невозможно найти функцию %1</translation>
     </message>
     <message>
         <location line="+911"/>
         <source>Find &amp;Next...</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти &amp;следующее....</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp;Previous...</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти &amp;предыдущее...</translation>
     </message>
     <message>
         <location line="+118"/>
@@ -1597,7 +1597,7 @@ Quit debugging and save?</source>
     <message>
         <location line="+9"/>
         <source>File Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодировка:</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -1617,7 +1617,7 @@ Quit debugging and save?</source>
     <message>
         <location line="-1342"/>
         <source>encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>кодировка:</translation>
     </message>
     <message>
         <location line="+239"/>
@@ -1697,7 +1697,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+69"/>
         <source>File Browser</source>
-        <translation>Файловый менеджер</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -1728,12 +1728,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="-26"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть в системном диспетчере файлов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть в текстовом редакторе</translation>
     </message>
     <message>
         <location line="+389"/>
@@ -1870,8 +1870,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+2"/>
         <source>Delete...</source>
-        <translation>Удалить...
-</translation>
+        <translation>Удалить...</translation>
     </message>
     <message>
         <location line="+125"/>
@@ -2241,7 +2240,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+15"/>
         <source>Filename/location</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя файла/расположение</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2322,12 +2321,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+4"/>
         <source>Hide filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть фильтр</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать фильтр</translation>
     </message>
 </context>
 <context>
@@ -2512,22 +2511,22 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+56"/>
         <source>Show File Browser</source>
-        <translation>Показывать файловый менеджер</translation>
+        <translation>Показывать диспетчер файлов</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>File Browser</source>
-        <translation>Файловый менеджер</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Contribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Внести вклад</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Donate to Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Внести пожертвование</translation>
     </message>
     <message>
         <location line="-123"/>
@@ -2977,7 +2976,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="-299"/>
         <source>Show tool bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать панель инструментов</translation>
     </message>
     <message>
         <location line="+383"/>
@@ -3077,7 +3076,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+518"/>
         <source>Text encoding used for loading and saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодировка по умолчанию</translation>
     </message>
     <message>
         <location line="+56"/>
@@ -3246,7 +3245,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+73"/>
         <source>File Browser</source>
-        <translation>Файловый менеджер</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="-1661"/>
@@ -3306,7 +3305,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+54"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширения файлов, котрые будут открываться в текстовом редакторе (разделённые &quot;;&quot;):</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -3316,7 +3315,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+35"/>
         <source>Colors for variable attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветовое обозначение переменных</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3326,23 +3325,23 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+101"/>
         <source>Import shortcut set</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Export current shortcut set</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Reset shortcuts to their defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+80"/>
         <source>Default</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location line="-71"/>
@@ -3352,7 +3351,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+76"/>
         <source>Actual</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущая</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3392,7 +3391,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+1716"/>
         <source>Synchronize Octave working directory with file browser</source>
-        <translation>Синхронизировать рабочую папку Octave с менеджером фалов</translation>
+        <translation>Синхронизировать рабочую папку Octave с диспетчером файлов</translation>
     </message>
     <message>
         <location line="+184"/>
@@ -3457,12 +3456,12 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Unable to save settings.  Missing settings file or unknown directory.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможно сохранить настройки. Пропущены параметры или неизвестный каталог.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3494,7 +3493,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+6"/>
         <source>Set File Browser Startup Directory</source>
-        <translation>Установить начальную папку для файлового менеджера</translation>
+        <translation>Установить начальную папку для диспетчера файлов</translation>
     </message>
 </context>
 <context>
@@ -3673,7 +3672,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Show File Browser</source>
-        <translation>Показывать файловый менеджер</translation>
+        <translation>Показывать диспетчер файлов</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3703,7 +3702,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>File Browser</source>
-        <translation>Файловый менеджер</translation>
+        <translation>Диспетчер файлов</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3814,12 +3813,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти следующее</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти предыдущее</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3941,7 +3940,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+44"/>
         <source>Global</source>
-        <translation type="unfinished"></translation>
+        <translation>Общие</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -4357,12 +4356,12 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     <message>
         <location line="+19"/>
         <source>Hide filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть фильтр</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать фильтр</translation>
     </message>
     <message>
         <location line="+149"/>

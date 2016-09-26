@@ -2406,7 +2406,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+5"/>
         <source>Undo</source>
-        <translation>やり直し</translation>
+        <translation>元に戻す</translation>
     </message>
     <message>
         <location line="+7"/>

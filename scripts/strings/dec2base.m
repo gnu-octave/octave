@@ -63,9 +63,7 @@ function retval = dec2base (d, base, len)
   endif
 
   ## Create column vector for algorithm
-  if (! iscolumn (d))
-    d = d(:);
-  endif
+  d = d(:);
 
   ## Treat logical as numeric for compatibility with ML
   if (islogical (d))
@@ -92,7 +90,7 @@ function retval = dec2base (d, base, len)
 
   ## determine number of digits required to handle all numbers, can overflow
   ## by 1 digit
-  max_len = round (log (max (max (d(:)), 1)) / log (base)) + 1;
+  max_len = round (log (max (max (d), 1)) / log (base)) + 1;
 
   if (nargin == 3)
     max_len = max (max_len, len);

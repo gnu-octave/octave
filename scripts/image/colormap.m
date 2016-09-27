@@ -72,7 +72,11 @@ function cmap = colormap (varargin)
       if (strcmp (map, "default"))
         map = viridis (64);
       else
-        map = feval (map);
+        try
+          map = feval (map);
+        catch
+          error ("colormap: failed to set MAP <%s>", map);
+        end_try_catch
       endif
     endif
 
@@ -142,5 +146,5 @@ endfunction
 %!error <MAP must be a real-valued N x 3> colormap ([1 0 1 0])
 %!error <all MAP values must be in the range> colormap ([-1 0 0])
 %!error <all MAP values must be in the range> colormap ([2 0 0])
-%!error colormap ("invalid", "name")
+%!error <failed to set MAP .invalid_map_name.> colormap ("invalid_map_name")
 

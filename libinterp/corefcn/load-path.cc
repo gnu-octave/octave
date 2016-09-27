@@ -57,7 +57,12 @@ load_path::dir_info::update (void)
 {
   octave::sys::file_stat fs (dir_name);
 
-  if (fs)
+  if (! fs)
+    {
+      std::string msg = fs.error ();
+      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+    }
+  else
     {
       if (is_relative)
         {
@@ -69,43 +74,46 @@ load_path::dir_info::update (void)
 
               if (p != abs_dir_cache.end ())
                 {
-                  // The directory is in the cache of all directories
-                  // we have visited (indexed by its absolute name).
-                  // If it is out of date, initialize it.  Otherwise,
-                  // copy the info from the cache.  By doing that, we
-                  // avoid unnecessary calls to stat that can slow
-                  // things down tremendously for large directories.
-
+                  // The directory is in the cache of all directories we have
+                  // visited (indexed by absolute name).  If it is out of date,
+                  // initialize it.  Otherwise, copy the info from the cache.
+                  // By doing that, we avoid unnecessary calls to stat that can
+                  // slow things down tremendously for large directories.
                   const dir_info& di = p->second;
 
                   if (fs.mtime () + fs.time_resolution ()
                       > di.dir_time_last_checked)
                     initialize ();
                   else
-                    *this = di;
+                    {
+                      // Copy over info from cache, but leave dir_name and
+                      // is_relative unmodified.
+                      this->abs_dir_name = di.abs_dir_name;
+                      this->dir_mtime = di.dir_mtime;
+                      this->dir_time_last_checked = di.dir_time_last_checked;
+                      this->all_files = di.all_files;
+                      this->fcn_files = di.fcn_files;
+                      this->private_file_map = di.private_file_map;
+                      this->method_file_map = di.method_file_map;
+                      this->package_dir_map = di.package_dir_map;
+                    }
                 }
               else
                 {
                   // We haven't seen this directory before.
-
                   initialize ();
                 }
             }
           catch (const octave::execution_exception&)
             {
-              // Skip updating if we don't know where we are but
-              // don't treat it as an error.
-
+              // Skip updating if we don't know where we are,
+              // but don't treat it as an error.
               recover_from_exception ();
             }
         }
+      // Absolute path, check timestamp to see whether it requires re-caching
       else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
         initialize ();
-    }
-  else
-    {
-      std::string msg = fs.error ();
-      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
     }
 }
 

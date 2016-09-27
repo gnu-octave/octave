@@ -372,6 +372,7 @@ classdef inputParser < handle
     endfunction
 
     function parse (this, varargin)
+      this.Results = struct ();
       if (numel (varargin) < numel (this.Required))
         if (this.FunctionName)
           print_usage (this.FunctionName);
@@ -731,3 +732,12 @@ endclassdef
 %! p.addParameter ("line", "tree");
 %! p.parse ("line", "circle");
 %! assert (p.Results, struct ("op1", "val", "line", "circle"));
+
+%!test
+%! p = inputParser;
+%! p.addParameter ("a", []);
+%! p.addParameter ("b", []);
+%! p.parse ("a", 1);
+%! p.parse ("b", 1);
+%! assert (p.Results, struct ("a", [], "b", 1));
+

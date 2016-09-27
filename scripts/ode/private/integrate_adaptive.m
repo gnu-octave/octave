@@ -103,7 +103,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   ## Initialize the EventFcn
   if (options.haveeventfunction)
     ode_event_handler (options.Events, tspan(end), x,
-                         "init", options.funarguments{:});
+                       "init", options.funarguments{:});
   endif
 
   if (options.havenonnegative)
@@ -118,12 +118,13 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
   k_vals = [];
   iout = istep = 1;
+  
   while (dir * t_old < dir * tspan(end))
 
     ## Compute integration step from t_old to t_new = t_old + dt
     [t_new, options.comp] = kahan (t_old, options.comp, dt);
     [t_new, x_new, x_est, new_k_vals] = ...
-      stepper (func, t_old, x_old, dt, options, k_vals, t_new);
+    stepper (func, t_old, x_old, dt, options, k_vals, t_new);
 
     solution.cntcycles += 1;
 
@@ -152,9 +153,9 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           t(t_caught) = tspan(t_caught);
           iout = max (t_caught);
           x(:, t_caught) = ...
-            runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
-                                     t(t_caught), new_k_vals, dt, func,
-                                     options.funarguments);
+          runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
+                                   t(t_caught), new_k_vals, dt, func,
+                                   options.funarguments);
 
           istep += 1;
 
@@ -166,8 +167,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
               id = t_caught(idenseout);
               td = t(id);
               solution.event = ...
-                ode_event_handler (options.Events, t(id), x(:, id), [],
-                                     options.funarguments{:});
+              ode_event_handler (options.Events, t(id), x(:, id), [],
+                                 options.funarguments{:});
               if (! isempty (solution.event{1}) && solution.event{1} == 1)
                 t(id) = solution.event{3}(end);
                 t = t(1:id);
@@ -217,8 +218,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
         ## Stop integration if eventbreak is true.
         if (options.haveeventfunction)
           solution.event = ...
-            ode_event_handler (options.Events, t(istep), x(:, istep), [],
-                                 options.funarguments{:});
+          ode_event_handler (options.Events, t(istep), x(:, istep), [],
+                             options.funarguments{:});
           if (! isempty (solution.event{1}) && solution.event{1} == 1)
             t(istep) = solution.event{3}(end);
             x(:, istep) = solution.event{4}(end, :).';
@@ -278,7 +279,10 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     err += eps;  # avoid divisions by zero
     dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
     dt = dir * min (abs (dt), options.MaxStep);
-
+    if (! (abs (dt) > eps (t (end))))
+      break
+    endif
+    
     ## make sure we don't go past tpan(end)
     dt = dir * min (abs (dt), abs (tspan(end) - t_old));
 
@@ -287,14 +291,14 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   ## Check if integration of the ode has been successful
   if (dir * t(end) < dir * tspan(end))
     if (solution.unhandledtermination == true)
-      error ("integrate_adaptive:unexpected_termination",
-             [" Solving was not successful. ", ...
-              " The iterative integration loop exited at time", ...
-              " t = %f before the endpoint at tend = %f was reached. ", ...
-              " This may happen if the stepsize becomes too small. ", ...
-              " Try to reduce the value of 'InitialStep'", ...
-              " and/or 'MaxStep' with the command 'odeset'."],
-             t(end), tspan(end));
+      warning ("integrate_adaptive:unexpected_termination",
+               [" Solving was not successful. ", ...
+                " The iterative integration loop exited at time", ...
+                " t = %f before the endpoint at tend = %f was reached. ", ...
+                " This may happen if the stepsize becomes too small. ", ...
+                " Try to reduce the value of 'InitialStep'", ...
+                " and/or 'MaxStep' with the command 'odeset'."],
+               t(end), tspan(end));
     else
       warning ("integrate_adaptive:unexpected_termination",
                ["Solver was stopped by a call of 'break'", ...

@@ -478,9 +478,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       switch (obj.type)
         case {"image"}
           if (isfield (obj, "cdata") && islogical (obj.cdata))
-            set (axis_obj.parent, "colormap", [0 0 0; 1 1 1]);
-            set (h, "clim", [0 1]);
-            set (h, "climmode", "manual");
             parent_figure_obj.colormap = [0 0 0; 1 1 1];
             axis_obj.clim = [0 1];
             axis_obj.climmode = "manual";
@@ -553,20 +550,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
     switch (obj.type)
       case "image"
-        img_data = obj.cdata;
+        img_data = mapcdata (obj.cdata, obj.cdatamapping, clim, cmap_sz);
         img_xdata = obj.xdata;
         img_ydata = obj.ydata;
 
-        if (ndims (img_data) != 3)
-          if (islogical (img_data))
-            img_data += 1;
-          else
-            if (strcmp (obj.cdatamapping, "scaled"))
-              img_data = 1 + fix (cmap_sz*(img_data-clim(1))/(clim(2)-clim(1)));
-            endif
-            img_data = max (1, min (img_data, cmap_sz));
-          endif
-        endif
         data_idx += 1;
         is_image_data(data_idx) = true;
         parametric(data_idx) = false;
@@ -788,24 +775,14 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                     ccol = cdat;
                   endif
                   if (strcmp (obj.facecolor, "flat"))
+                    ccdat = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                     if (isequal (size (ccol), [1, 3]))
                       ## RGB Triplet
                       color = ccol;
                     elseif (nd == 3 && numel (xcol) == 3)
-                      if (strcmp (obj.cdatamapping, "scaled"))
-                        ccdat = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
-                      else
-                        ccdat = ccol;
-                      endif
-                      ccdat = max (1, min (ccdat, cmap_sz));
+                      color = cmap(ccdat(1), :);
                     else
-                      if (strcmp (obj.cdatamapping, "direct"))
-                        r = round (ccol);
-                      else
-                        r = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
-                      endif
-                      r = max (1, min (r, cmap_sz));
-                      color = cmap(r, :);
+                      color = cmap(ccdat, :);
                     endif
                   elseif (strcmp (obj.facecolor, "interp"))
                     if (nd == 3 && numel (xcol) == 3)
@@ -816,23 +793,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                         addedcmap = [addedcmap; ccdat];
                         ccdat = tmp(:);
                       else
-                        if (strcmp (obj.cdatamapping, "scaled"))
-                          ccdat = 1 + fix (cmap_sz*(ccdat(:)-clim(1))/(clim(2)-clim(1)));
-                        else
-                          ccdat = ccdat(:);
-                        endif
-                        ccdat = max (1, min (ccdat, cmap_sz));
+                        ccdat = mapcdata (ccdat(:), obj.cdatamapping, clim, cmap_sz);
                       endif
                     else
                       if (sum (diff (ccol)))
                         warning ("\"interp\" not supported, using 1st entry of cdata");
                       endif
-                      if (strcmp (obj.cdatamapping, "direct"))
-                        r = round (ccol);
-                      else
-                        r = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
-                      endif
-                      r = max (1, min (r, cmap_sz));
+                      r = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                       color = cmap(r(1),:);
                     endif
                   endif
@@ -927,13 +894,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   ccol = cdat;
                 endif
                 if (strcmp (ec, "flat"))
+                  ccol = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                   if (isequal (size (ccol), [1, 3]))
                     color = ccol;
                   else
-                    if (strcmp (obj.cdatamapping, "scaled"))
-                      ccol = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
-                    endif
-                    ccol = max (1, min (ccol, cmap_sz));
                     if (isscalar (ccol))
                       ccol = repmat (ccol, numel (xcol), 1);
                     endif
@@ -951,12 +915,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                     color = "interp";
                     have_cdata(data_idx) = true;
                   endif
-                  if (strcmp (obj.cdatamapping, "direct"))
-                    ccol = round (ccol);
-                  else
-                    ccol = 1 + fix (cmap_sz*(ccol-clim(1))/(clim(2)-clim(1)));
-                  endif
-                  ccol = max (1, min (ccol, cmap_sz));
+                  ccol = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                 endif
               elseif (isnumeric (ec))
                 color = ec;
@@ -1202,11 +1161,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         xdat = obj.xdata;
         ydat = obj.ydata;
         zdat = obj.zdata;
-        cdat = obj.cdata;
-        if (strcmp (obj.cdatamapping, "scaled"))
-          cdat = 1 + fix (cmap_sz*(cdat-clim(1))/(clim(2)-clim(1)));
-        endif
-        cdat = max (1, min (cdat, cmap_sz));
+        cdat = mapcdata (obj.cdata, obj.cdatamapping, clim, cmap_sz);
         err = false;
         if (! size_equal (zdat, cdat))
           err = true;
@@ -2892,3 +2847,23 @@ function maybe_do_x2tick_mirror (plot_stream, axis_obj)
 
 endfunction
 
+function retval = mapcdata (cdata, mode, clim, cmap_sz)
+  if (ndims (cdata) == 3)
+    # True color, clamp data to 8-bit
+    cdata = double (cdata);
+    cdata = uint8 (255*(cdata-clim(1))/(clim(2)-clim(1)));
+    # Scale using inverse of gnuplot's cbrange mapping
+    retval = 1 + double (cdata)*(cmap_sz-1)/255;
+  else
+    if (islogical (cdata))
+      cdata += 1;
+    elseif (strcmp (mode, "scaled"))
+      cdata = double (cdata);
+      clim = double (clim);
+      cdata = 1 + fix ((cmap_sz-1)*(cdata-clim(1))/(clim(2)-clim(1)));
+    else
+      cdata = round (cdata);
+    endif
+    retval = max (1, min (cdata, cmap_sz));
+  endif
+endfunction

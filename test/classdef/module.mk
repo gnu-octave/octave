@@ -1,7 +1,7 @@
-classdef_FCN_FILES = \
-  classdef/foo_method_changes_property_size.m \
-  classdef/foo_static_method_constant_property.m \
-  classdef/foo_value_class.m \
-  classdef/classdef.tst
+classdef_TEST_FILES = \
+  test/classdef/foo_method_changes_property_size.m \
+  test/classdef/foo_static_method_constant_property.m \
+  test/classdef/foo_value_class.m \
+  test/classdef/classdef.tst
 
-FCN_FILES += $(classdef_FCN_FILES)
+TEST_FILES += $(classdef_TEST_FILES)

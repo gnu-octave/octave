@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Ben Abbott
+## Copyright (C) 2009-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} __gnuplot_get_var__ (@var{h}, @var{name}, @var{fmt})
+## @deftypefn {} {@var{value} =} __gnuplot_get_var__ (@var{h}, @var{name}, @var{fmt})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -52,8 +52,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
   if (use_mkfifo)
     gpin_name = tempname ();
 
-    ## Mode: 0600 == 6*8*8
-    [err, msg] = mkfifo (gpin_name, 6*8*8);
+    [err, msg] = mkfifo (gpin_name, 600);
 
     if (err)
       error ("__gnuplot_get_var__: Can not make FIFO (%s)", msg);
@@ -118,7 +117,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       while (isempty (str))
         str = fread (istream, "*char")';
         if (isempty (str))
-          sleep (0.05);
+          pause (0.05);
         else
           str = regexp (str, 'OCTAVE:.*', "match");
           str = str{end}(8:end);

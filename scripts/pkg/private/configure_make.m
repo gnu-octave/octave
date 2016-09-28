@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,17 +18,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} configure_make (@var{desc}, @var{packdir}, @var{verbose})
+## @deftypefn {} {} configure_make (@var{desc}, @var{packdir}, @var{verbose})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function configure_make (desc, packdir, verbose)
+
   ## Perform ./configure, make, make install in "src".
   if (exist (fullfile (packdir, "src"), "dir"))
     src = fullfile (packdir, "src");
-    octave_bindir = octave_config_info ("bindir");
+    octave_bindir = __octave_config_info__ ("bindir");
     ver = version ();
-    ext = octave_config_info ("EXEEXT");
+    ext = __octave_config_info__ ("EXEEXT");
     mkoctfile_program = fullfile (octave_bindir, ...
                                   sprintf ("mkoctfile-%s%s", ver, ext));
     octave_config_program = fullfile (octave_bindir, ...
@@ -51,8 +52,7 @@ function configure_make (desc, packdir, verbose)
 
     cenv = {"MKOCTFILE"; mkoctfile_program;
             "OCTAVE_CONFIG"; octave_config_program;
-            "OCTAVE"; octave_binary;
-            "INSTALLDIR"; desc.dir};
+            "OCTAVE"; octave_binary};
     scenv = sprintf ("%s='%s' ", cenv{:});
 
     ## Configure.
@@ -70,8 +70,7 @@ function configure_make (desc, packdir, verbose)
       if (isempty (getenv ("RANLIB")))
         flags = [flags ' RANLIB="' mkoctfile("-p", "RANLIB") '"'];
       endif
-      cmd = ["cd '" src "'; " ...
-             scenv "./configure --prefix=\"" desc.dir "\"" flags];
+      cmd = ["cd '" src "'; " scenv "./configure " flags];
       [status, output] = shell (cmd, verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
@@ -96,86 +95,46 @@ function configure_make (desc, packdir, verbose)
         error ("pkg: error running `make' for the %s package.", desc.name);
       endif
     endif
+  endif
 
-    ## Copy files to "inst" and "inst/arch" (this is instead of 'make
-    ## install').
-    files = fullfile (src, "FILES");
-    instdir = fullfile (packdir, "inst");
-    archdir = fullfile (packdir, "inst", getarch ());
+endfunction
 
-    ## Get file names.
-    if (exist (files, "file"))
-      [fid, msg] = fopen (files, "r");
-      if (fid < 0)
-        error ("couldn't open %s: %s", files, msg);
+## Executes a shell command.
+## In the end it calls system(), but in the case of MS Windows it will first
+## check if sh.exe works.
+##
+## If VERBOSE is true, it will prints the output to STDOUT in real time and
+## the second output argument will be an empty string.  Otherwise, it will
+## contain the output of the execeuted command.
+function [status, output] = shell (cmd, verbose)
+  persistent have_sh;
+
+  cmd = strrep (cmd, "\\", "/");
+  if (ispc () && ! isunix ())
+    if (isempty (have_sh))
+      if (system ('sh.exe -c "exit"'))
+        have_sh = false;
+      else
+        have_sh = true;
       endif
-      filenames = char (fread (fid))';
-      fclose (fid);
-      if (filenames(end) == "\n")
-        filenames(end) = [];
-      endif
-      filenames = strtrim (ostrsplit (filenames, "\n"));
-      delete_idx = [];
-      for i = 1:length (filenames)
-        if (! all (isspace (filenames{i})))
-          filenames{i} = fullfile (src, filenames{i});
-        else
-          delete_idx(end+1) = i;
-        endif
-      endfor
-      filenames(delete_idx) = [];
-    else
-      m = dir (fullfile (src, "*.m"));
-      oct = dir (fullfile (src, "*.oct"));
-      mex = dir (fullfile (src, "*.mex"));
-
-      filenames = cellfun (@(x) fullfile (src, x),
-                           {m.name, oct.name, mex.name},
-                           "uniformoutput", false);
     endif
-
-    ## Split into architecture dependent and independent files.
-    if (isempty (filenames))
-      idx = [];
+    if (have_sh)
+      cmd = ['sh.exe -c "' cmd '"'];
     else
-      idx = cellfun ("is_architecture_dependent", filenames);
-    endif
-    archdependent = filenames(idx);
-    archindependent = filenames(!idx);
-
-    ## Copy the files.
-    if (! all (isspace ([filenames{:}])))
-        if (! exist (instdir, "dir"))
-          mkdir (instdir);
-        endif
-        if (! all (isspace ([archindependent{:}])))
-          if (verbose)
-            printf ("copyfile");
-            printf (" %s", archindependent{:});
-            printf ("%s\n", instdir);
-          endif
-          [status, output] = copyfile (archindependent, instdir);
-          if (status != 1)
-            rmdir (desc.dir, "s");
-            error ("Couldn't copy files from 'src' to 'inst': %s", output);
-          endif
-        endif
-        if (! all (isspace ([archdependent{:}])))
-          if (verbose)
-            printf ("copyfile");
-            printf (" %s", archdependent{:});
-            printf (" %s\n", archdir);
-          endif
-          if (! exist (archdir, "dir"))
-            mkdir (archdir);
-          endif
-          [status, output] = copyfile (archdependent, archdir);
-          if (status != 1)
-            rmdir (desc.dir, "s");
-            error ("Couldn't copy files from 'src' to 'inst': %s", output);
-          endif
-        endif
+      error ("pkg: unable to find the command shell.");
     endif
   endif
+  ## if verbose, we want to display the output in real time.  To do this, we
+  ## must call system with 1 output argument.  But then the variable `output'
+  ## won't exist.  So we initialize it empty.  If an error does occur, and we
+  ## are verbose we will return an empty string but it's all fine since
+  ## the error message has already been displayed.
+  output = "";
+  if (verbose)
+    [status] = system (cmd);
+  else
+    [status, output] = system (cmd);
+  endif
+
 endfunction
 

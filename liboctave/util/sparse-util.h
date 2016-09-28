@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2015 David Bateman
+Copyright (C) 2005-2016 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -21,19 +21,22 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_util_h)
+#if ! defined (octave_sparse_util_h)
 #define octave_sparse_util_h 1
 
-#ifdef HAVE_CHOLMOD
+#include "octave-config.h"
 
-// FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
-extern OCTAVE_API void SparseCholError (int status, char *file,
-                                        int line, char *message);
-extern OCTAVE_API void SparseCholError (int status, const char *file,
-                                        int line, const char *message);
-extern OCTAVE_API int SparseCholPrint (const char *fmt, ...);
+// The next two functions don't do anything unless CHOLMOD is available
 
-#endif //HAVE_CHOLMOD
+// FIXME: This overload is here due to API change in SuiteSparse (3.1 -> 3.2)
+extern OCTAVE_API void
+SparseCholError (int status, char *file, int line, char *message);
+
+extern OCTAVE_API void
+SparseCholError (int status, const char *file, int line, const char *message);
+
+extern OCTAVE_API int
+SparseCholPrint (const char *fmt, ...);
 
 extern OCTAVE_API bool
 sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
@@ -41,3 +44,4 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
                    octave_idx_type nnz);
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} newplot ()
-## @deftypefnx {Function File} {} newplot (@var{hfig})
-## @deftypefnx {Function File} {} newplot (@var{hax})
-## @deftypefnx {Function File} {@var{hax} =} newplot (@dots{})
+## @deftypefn  {} {} newplot ()
+## @deftypefnx {} {} newplot (@var{hfig})
+## @deftypefnx {} {} newplot (@var{hax})
+## @deftypefnx {} {@var{hax} =} newplot (@dots{})
 ## Prepare graphics engine to produce a new plot.
 ##
 ## This function is called at the beginning of all high-level plotting
@@ -152,16 +152,6 @@ function hax = newplot (hsave = [])
     deleteall = false;
   endif
 
-  ## FIXME: Is this necessary anymore?
-  ##        It seems like a kluge that belongs somewhere else.
-  if (strcmp (get (ca, "__hold_all__"), "off"))
-    __next_line_color__ (true);
-    __next_line_style__ (true);
-  else
-    __next_line_color__ (false);
-    __next_line_style__ (false);
-  endif
-
   anp = get (ca, "nextplot");
   switch (anp)
     case "add"
@@ -210,8 +200,13 @@ function hax = newplot (hsave = [])
       ## xlabel, ylabel, zlabel, and title text objects.
       ## Also it preserves font properties like fontsize.
       ## For the time being, in order to have axis labels and title work,
-      ## the above code is is required.
+      ## the above code is required.
   endswitch
+
+  ## Reset line and color styles when hold is not on
+  if (! strcmp (anp, "add"))
+    set (ca, "colororderindex", 1, "linestyleorderindex", 1);
+  endif
 
   if (nargout > 0)
     hax = ca;

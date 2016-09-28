@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lin2mu (@var{x}, @var{n})
+## @deftypefn {} {} lin2mu (@var{x}, @var{n})
 ## Convert audio data from linear to mu-law.
 ##
 ## Mu-law values use 8-bit unsigned integers.  Linear values use @var{n}-bit

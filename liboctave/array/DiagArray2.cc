@@ -1,7 +1,7 @@
 // Template array classes
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -22,9 +22,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <cassert>
 
@@ -36,24 +36,24 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-error.h"
 
-template <class T>
+template <typename T>
 DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,
                            octave_idx_type c)
   : Array<T> (a.as_column ()), d1 (r), d2 (c)
 {
   octave_idx_type rcmin = std::min (r, c);
-  if (rcmin != a.length ())
+  if (rcmin != a.numel ())
     Array<T>::resize (dim_vector (rcmin, 1));
 }
 
-template <class T>
+template <typename T>
 Array<T>
 DiagArray2<T>::diag (octave_idx_type k) const
 {
   return extract_diag (k);
 }
 
-template <class T>
+template <typename T>
 Array<T>
 DiagArray2<T>::extract_diag (octave_idx_type k) const
 {
@@ -72,14 +72,14 @@ DiagArray2<T>::extract_diag (octave_idx_type k) const
   return d;
 }
 
-template <class T>
+template <typename T>
 DiagArray2<T>
 DiagArray2<T>::transpose (void) const
 {
   return DiagArray2<T> (*this, d2, d1);
 }
 
-template <class T>
+template <typename T>
 DiagArray2<T>
 DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 {
@@ -88,7 +88,7 @@ DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 
 // A two-dimensional array with diagonal elements only.
 
-template <class T>
+template <typename T>
 T&
 DiagArray2<T>::elem (octave_idx_type r, octave_idx_type c)
 {
@@ -96,7 +96,7 @@ DiagArray2<T>::elem (octave_idx_type r, octave_idx_type c)
   return (r == c) ? Array<T>::elem (r) : zero;
 }
 
-template <class T>
+template <typename T>
 T&
 DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c)
 {
@@ -104,16 +104,13 @@ DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c)
   return check_idx (r, c) ? elem (r, c) : zero;
 }
 
-template <class T>
+template <typename T>
 void
 DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
                        const T& rfv)
 {
   if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler) ("can't resize to negative dimensions");
-      return;
-    }
+    (*current_liboctave_error_handler) ("can't resize to negative dimensions");
 
   if (r != dim1 () || c != dim2 ())
     {
@@ -122,7 +119,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
     }
 }
 
-template <class T>
+template <typename T>
 Array<T>
 DiagArray2<T>::array_value (void) const
 {
@@ -141,16 +138,11 @@ DiagArray2<T>::check_idx (octave_idx_type r, octave_idx_type c) const
   bool ok = true;
 
   if (r < 0 || r >= dim1 ())
-    {
-      gripe_index_out_of_range (2, 1, r+1, dim1 ());
-      ok = false;
-    }
+    octave::err_index_out_of_range (2, 1, r+1, dim1 (), dims ());
 
   if (c < 0 || c >= dim2 ())
-    {
-      gripe_index_out_of_range (2, 2, c+1, dim2 ());
-      ok = false;
-    }
+    octave::err_index_out_of_range (2, 2, c+1, dim2 (), dims ());
 
   return ok;
 }
+

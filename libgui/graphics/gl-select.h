@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,59 +20,66 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_gl_selector__
-#define __QtHandles_gl_selector__ 1
-
-#include "gl-render.h"
+#if ! defined (octave_gl_select_h)
+#define octave_gl_select_h 1
 
 #include <map>
 
-enum select_flags
+#include "gl-render.h"
+#include "oct-opengl.h"
+
+namespace octave
 {
-  select_ignore_hittest  = 0x01,
-  select_last            = 0x02
-};
 
-class opengl_selector : public opengl_renderer
-{
-public:
-  opengl_selector (void) : size (5) { }
+  enum select_flags
+  {
+    select_ignore_hittest = 0x01,
+    select_last           = 0x02
+  };
 
-  virtual ~opengl_selector (void) { }
+  class opengl_selector : public opengl_renderer
+  {
+  public:
+    opengl_selector (void) : size (5) { }
 
-  graphics_object select (const graphics_object& ax, int x, int y,
-                          int flags = 0);
+    virtual ~opengl_selector (void) { }
 
-  virtual void draw (const graphics_object& go, bool toplevel = true);
+    graphics_object select (const graphics_object& ax, int x, int y,
+                            int flags = 0);
 
-protected:
-  virtual void draw_text (const text::properties& props);
+    virtual void draw (const graphics_object& go, bool toplevel = true);
 
-  virtual void draw_image (const image::properties& props);
+  protected:
+    virtual void draw_text (const text::properties& props);
 
-  virtual void setup_opengl_transformation (const axes::properties& props);
+    virtual void draw_image (const image::properties& props);
 
-  virtual void init_marker (const std::string& m, double size, float width);
+    virtual void setup_opengl_transformation (const axes::properties& props);
 
-  virtual Matrix render_text (const std::string& txt,
-                              double x, double y, double z,
-                              int halign, int valign, double rotation = 0.0);
+    virtual void init_marker (const std::string& m, double size, float width);
 
-private:
-  void apply_pick_matrix (void);
+    virtual Matrix render_text (const std::string& txt,
+                                double x, double y, double z,
+                                int halign, int valign, double rotation = 0.0);
 
-  void fake_text (double x, double y, double z, const Matrix& bbox,
-                  bool use_scale = true);
+  private:
+    void apply_pick_matrix (void);
 
-private:
-  // The mouse coordinate of the selection/picking point
-  int xp, yp;
+    void fake_text (double x, double y, double z, const Matrix& bbox,
+                    bool use_scale = true);
 
-  // The size (in pixels) of the picking window
-  int size;
+  private:
+    // The mouse coordinate of the selection/picking point
+    int xp, yp;
 
-  // The OpenGL name mapping
-  std::map<GLuint, graphics_object> object_map;
-};
+    // The size (in pixels) of the picking window
+    int size;
 
-#endif // __QtHandles_gl_selector__
+    // The OpenGL name mapping
+    std::map<GLuint, graphics_object> object_map;
+  };
+
+}
+
+#endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2015 John W. Eaton
+Copyright (C) 2006-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,12 +21,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_load_path_h)
+#if ! defined (octave_load_path_h)
 #define octave_load_path_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 
 #include "pathsearch.h"
@@ -96,24 +99,24 @@ public:
   static std::string find_method (const std::string& class_name,
                                   const std::string& meth,
                                   std::string& dir_name,
-                                  const std::string& pack_name = std::string ())
+                                  const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader (pack_name).find_method (class_name, meth,
                                                       dir_name)
-      : std::string ();
+      : "";
   }
 
   static std::string find_method (const std::string& class_name,
                                   const std::string& meth,
-                                  const std::string& pack_name = std::string ())
+                                  const std::string& pack_name = "")
   {
     std::string dir_name;
     return find_method (class_name, meth, dir_name, pack_name);
   }
 
   static std::list<std::string> methods (const std::string& class_name,
-                                         const std::string& pack_name = std::string ())
+                                         const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader(pack_name).methods (class_name)
@@ -141,15 +144,15 @@ public:
   }
 
   static std::string find_fcn (const std::string& fcn, std::string& dir_name,
-                               const std::string& pack_name = std::string ())
+                               const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name)
-      : std::string ();
+      : "";
   }
 
   static std::string find_fcn (const std::string& fcn,
-                               const std::string& pack_name = std::string ())
+                               const std::string& pack_name = "")
   {
     std::string dir_name;
     return find_fcn (fcn, dir_name, pack_name);
@@ -157,53 +160,53 @@ public:
 
   static std::string find_private_fcn (const std::string& dir,
                                        const std::string& fcn,
-                                       const std::string& pack_name = std::string ())
+                                       const std::string& pack_name = "")
   {
     return instance_ok ()
       ? instance->get_loader (pack_name).find_private_fcn (dir, fcn)
-      : std::string ();
+      : "";
   }
 
   static std::string find_fcn_file (const std::string& fcn,
-                                    const std::string& pack_name = std::string ())
+                                    const std::string& pack_name = "")
   {
     std::string dir_name;
 
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : std::string ();
+      : "";
   }
 
   static std::string find_oct_file (const std::string& fcn,
-                                    const std::string& pack_name = std::string ())
+                                    const std::string& pack_name = "")
   {
     std::string dir_name;
 
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : std::string ();
+      : "";
   }
 
   static std::string find_mex_file (const std::string& fcn,
-                                    const std::string& pack_name = std::string ())
+                                    const std::string& pack_name = "")
   {
     std::string dir_name;
 
     return instance_ok ()
       ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : std::string ();
+      : "";
   }
 
   static std::string find_file (const std::string& file)
   {
     return instance_ok ()
-           ? instance->do_find_file (file) : std::string ();
+           ? instance->do_find_file (file) : "";
   }
 
   static std::string find_dir (const std::string& dir)
   {
     return instance_ok ()
-           ? instance->do_find_dir (dir) : std::string ();
+           ? instance->do_find_dir (dir) : "";
   }
 
   static string_vector find_matching_dirs (const std::string& dir)
@@ -215,7 +218,7 @@ public:
   static std::string find_first_of (const string_vector& files)
   {
     return instance_ok () ?
-           instance->do_find_first_of (files) : std::string ();
+           instance->do_find_first_of (files) : "";
   }
 
   static string_vector find_all_first_of (const string_vector& files)
@@ -248,7 +251,7 @@ public:
 
   static std::string path (void)
   {
-    return instance_ok () ? instance->do_path () : std::string ();
+    return instance_ok () ? instance->do_path () : "";
   }
 
   static void display (std::ostream& os)
@@ -257,27 +260,32 @@ public:
       instance->do_display (os);
   }
 
-  static void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
+  static hook_fcn_ptr get_add_hook (void) { return add_hook; }
+  static hook_fcn_ptr get_remove_hook (void) { return remove_hook; }
 
+  static void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
   static void set_remove_hook (hook_fcn_ptr f) { remove_hook = f; }
+
+  static void execute_pkg_add (const std::string& dir);
+  static void execute_pkg_del (const std::string& dir);
 
   static void set_command_line_path (const std::string& p)
   {
     if (command_line_path.empty ())
       command_line_path = p;
     else
-      command_line_path += dir_path::path_sep_str () + p;
+      command_line_path += octave::directory_path::path_sep_str () + p;
   }
 
   static std::string get_command_line_path (void)
   {
     return instance_ok () ? instance->do_get_command_line_path ()
-                          : std::string ();
+                          : "";
   }
 
   static std::string system_path (void)
   {
-    return instance_ok () ? instance->do_system_path () : std::string ();
+    return instance_ok () ? instance->do_system_path () : "";
   }
 
 private:
@@ -387,8 +395,8 @@ private:
     std::string dir_name;
     std::string abs_dir_name;
     bool is_relative;
-    octave_time dir_mtime;
-    octave_time dir_time_last_checked;
+    octave::sys::time dir_mtime;
+    octave::sys::time dir_time_last_checked;
     string_vector all_files;
     string_vector fcn_files;
     fcn_file_map_type private_file_map;
@@ -446,10 +454,10 @@ private:
   // private files (those found in the special "private" subdirectory)
   // in each directory.
   //
-  // Second, a map from file names (the union of all "public" files for all
+  // Second, a map from filenames (the union of all "public" files for all
   // directories, but without filename extensions) to a list of
   // corresponding information (directory name and file types).  This
-  // way, we can quickly find shadowed file names and look up all
+  // way, we can quickly find shadowed filenames and look up all
   // overloaded functions (in the "@" directories used to implement
   // classes).
 
@@ -490,7 +498,7 @@ private:
   class loader
   {
   public:
-    loader (const std::string& pfx = std::string ())
+    loader (const std::string& pfx = "")
       : prefix (pfx), dir_list (), fcn_map (), private_fcn_map (),
         method_map () { }
 
@@ -514,14 +522,14 @@ private:
       return *this;
     }
 
-    void add (const dir_info& di, bool at_end)
+    void add (const dir_info& di, bool at_end, bool updating)
     {
       if (at_end)
         dir_list.push_back (di.dir_name);
       else
         dir_list.push_front (di.dir_name);
 
-      add_to_fcn_map (di, at_end);
+      add_to_fcn_map (di, at_end, updating);
 
       add_to_private_fcn_map (di);
 
@@ -565,7 +573,7 @@ private:
     string_vector fcn_names (void) const;
 
   private:
-    void add_to_fcn_map (const dir_info& di, bool at_end);
+    void add_to_fcn_map (const dir_info& di, bool at_end, bool updating);
 
     void add_to_private_fcn_map (const dir_info& di);
 
@@ -635,10 +643,10 @@ private:
   void do_move (dir_info_list_iterator i, bool at_end);
 
   void move (const dir_info& di, bool at_end,
-             const std::string& pname = std::string ());
+             const std::string& pname = "");
 
   void remove (const dir_info& di,
-               const std::string& pname = std::string ());
+               const std::string& pname = "");
 
   void do_initialize (bool set_initial_path);
 
@@ -722,7 +730,8 @@ private:
   { return command_line_path; }
 
   void add (const dir_info& di, bool at_end,
-            const std::string& pname = std::string ()) const;
+            const std::string& pname = "",
+            bool updating = false) const;
 
   friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
 };
@@ -730,7 +739,5 @@ private:
 extern std::string
 genpath (const std::string& dir, const string_vector& skip = "private");
 
-extern void execute_pkg_add (const std::string& dir);
-extern void execute_pkg_del (const std::string& dir);
-
 #endif
+

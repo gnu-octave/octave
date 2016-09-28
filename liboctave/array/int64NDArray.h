@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_int64NDArray_h)
+#if ! defined (octave_int64NDArray_h)
 #define octave_int64NDArray_h 1
+
+#include "octave-config.h"
 
 #include "intNDArray.h"
 #include "mx-op-decl.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 #include "bsxfun-decl.h"
 
 typedef intNDArray<octave_int64> int64NDArray;
@@ -48,3 +50,4 @@ BSXFUN_MIXED_INT_DECLS(int64NDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (int64NDArray, OCTAVE_API)
 
 #endif
+

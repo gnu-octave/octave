@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_rand_h)
+#if ! defined (octave_oct_rand_h)
 #define octave_oct_rand_h 1
+
+#include "octave-config.h"
 
 #include <map>
 #include <string>
@@ -48,7 +50,8 @@ public:
   // Return the current seed.
   static double seed (void)
   {
-    return instance_ok () ? instance->do_seed () : octave_NaN;
+    return instance_ok () ? instance->do_seed ()
+                          : octave::numeric_limits<double>::NaN ();
   }
 
   // Set the seed.
@@ -66,14 +69,14 @@ public:
   }
 
   // Return the current state.
-  static ColumnVector state (const std::string& d = std::string ())
+  static ColumnVector state (const std::string& d = "")
   {
     return instance_ok () ? instance->do_state (d) : ColumnVector ();
   }
 
   // Set the current state/
   static void state (const ColumnVector &s,
-                     const std::string& d = std::string ())
+                     const std::string& d = "")
   {
     if (instance_ok ())
       instance->do_state (s, d);
@@ -89,7 +92,7 @@ public:
   // Return the current distribution.
   static std::string distribution (void)
   {
-    return instance_ok () ? instance->do_distribution () : std::string ();
+    return instance_ok () ? instance->do_distribution () : "";
   }
 
   // Set the current distribution.  May be either "uniform" (the
@@ -133,13 +136,15 @@ public:
   // Return the next number from the sequence.
   static double scalar (double a = 1.0)
   {
-    return instance_ok () ? instance->do_scalar (a) : octave_NaN;
+    return instance_ok () ? instance->do_scalar (a)
+                          : octave::numeric_limits<double>::NaN ();
   }
 
   // Return the next number from the sequence.
   static float float_scalar (float a = 1.0)
   {
-    return instance_ok () ? instance->do_float_scalar (a) : octave_Float_NaN;
+    return instance_ok () ? instance->do_float_scalar (a)
+                          : octave::numeric_limits<float>::NaN ();
   }
 
   // Return an array of numbers from the sequence.
@@ -160,7 +165,6 @@ public:
   {
     return instance_ok () ? instance->do_nd_array (dims, a) : NDArray ();
   }
-
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
@@ -273,3 +277,4 @@ private:
 };
 
 #endif
+

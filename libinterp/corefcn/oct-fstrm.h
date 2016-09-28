@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_fstrm_h)
+#if ! defined (octave_oct_fstrm_h)
 #define octave_oct_fstrm_h 1
+
+#include "octave-config.h"
 
 #include <fstream>
 #include <string>
@@ -34,15 +36,15 @@ octave_fstream : public octave_base_stream
 public:
 
   octave_fstream (const std::string& nm_arg,
-                  std::ios::openmode arg_md = std::ios::in|std::ios::out,
-                  oct_mach_info::float_format flt_fmt
-                    = oct_mach_info::native_float_format ());
+                  std::ios::openmode arg_md = std::ios::in | std::ios::out,
+                  octave::mach_info::float_format flt_fmt
+                    = octave::mach_info::native_float_format ());
 
   static octave_stream
   create (const std::string& nm_arg,
-          std::ios::openmode arg_md = std::ios::in|std::ios::out,
-          oct_mach_info::float_format flt_fmt
-            = oct_mach_info::native_float_format ());
+          std::ios::openmode arg_md = std::ios::in | std::ios::out,
+          octave::mach_info::float_format flt_fmt
+            = octave::mach_info::native_float_format ());
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -84,3 +86,4 @@ private:
 };
 
 #endif
+

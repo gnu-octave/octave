@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_base_diag_h)
+#if ! defined (octave_ov_base_diag_h)
 #define octave_ov_base_diag_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -31,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "str-vec.h"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -39,7 +41,7 @@ class tree_walker;
 
 // Real matrix values.
 
-template <class DMT, class MT>
+template <typename DMT, typename MT>
 class
 octave_base_diag : public octave_base_value
 {
@@ -86,7 +88,14 @@ public:
   { return to_dense ().reshape (new_dims); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-  { return to_dense ().permute (vec, inv); }
+  {
+    if (vec.numel () == 2
+        && ((vec.xelem (0) == 1 && vec.xelem (1) == 0)
+            || (vec.xelem (0) == 0 && vec.xelem (1) == 1)))
+      return DMT (matrix);
+    else
+      return to_dense ().permute (vec, inv);
+  }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -197,7 +206,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const;
+             octave::mach_info::float_format flt_fmt) const;
 
   mxArray *as_mxArray (void) const;
 
@@ -225,3 +234,4 @@ private:
 };
 
 #endif
+

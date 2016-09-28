@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 John Donoghue
+## Copyright (C) 2013-2016 John Donoghue
 ##
 ## This file is part of Octave.
 ##
@@ -17,18 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} preferences
+## @deftypefn {} {} preferences
 ## Display the GUI preferences dialog window for Octave.
 ## @end deftypefn
 
 ## Author: John Donoghue
-## Version: 0.01
 
 function preferences ()
+
   if (isguirunning ())
     __octave_link_show_preferences__ ();
   else
     warning ("preferences: GUI must be running to use preferences dialog");
   endif
+
 endfunction
+
+
+%!test
+%! if (isguirunning ())
+%!   return;
+%! endif
+%! fail ("preferences ()", "warning", "GUI must be running");
 

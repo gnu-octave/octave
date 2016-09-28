@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Daniel Sebald
+## Copyright (C) 2006-2016 Daniel Sebald
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{version} =} __gnuplot_version__ ()
+## @deftypefn {} {@var{version} =} __gnuplot_version__ ()
 ## Undocumented internal function.
 ## @end deftypefn
 

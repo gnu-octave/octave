@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,24 +20,73 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include <cstdlib>
+
+#include <iostream>
+#include <string>
+
+#include "liboctave-build-info.h"
+
+#include "liboctinterp-build-info.h"
+
+#include "oct-env.h"
 
 #include "defaults.h"
 #include "octave.h"
+#include "octave-build-info.h"
 #include "sysdep.h"
+
+static void
+check_hg_versions (void)
+{
+  bool ok = true;
+
+  // Each library and executable has its own definition of the hg
+  // id.  They should always match but may be different because of a
+  // botched installation or incorrect LD_LIBRARY_PATH or some other
+  // unusual problem.
+
+  std::string octave_id = octave_hg_id ();
+  std::string liboctave_id = liboctave_hg_id ();
+  std::string liboctinterp_id = liboctinterp_hg_id ();
+
+  if (octave_id != liboctave_id)
+    {
+      std::cerr << "octave hg id ("
+                << octave_id
+                << ") does not match liboctave hg id ("
+                << liboctave_id
+                << ")" << std::endl;
+      ok = false;
+    }
+
+  if (octave_id != liboctinterp_id)
+    {
+      std::cerr << "octave hg id ("
+                << octave_id
+                << ") does not match liboctinterp hg id ("
+                << liboctinterp_id
+                << ")" << std::endl;
+      ok = false;
+    }
+
+  if (! ok)
+    exit (1);
+}
 
 int
 main (int argc, char **argv)
 {
-  octave_process_command_line (argc, argv);
+  check_hg_versions ();
 
-  sysdep_init ();
+  octave::sys::env::set_program_name (argv[0]);
 
-  install_defaults ();
+  octave::cli_application app (argc, argv);
 
-  octave_initialize_interpreter (argc, argv, 0);
-
-  return octave_execute_interpreter ();
+  return app.execute ();
 }
+

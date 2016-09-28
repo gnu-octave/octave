@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman
+## Copyright (C) 2006-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cotd (@var{x})
+## @deftypefn {} {} cotd (@var{x})
 ## Compute the cotangent for each element of @var{x} in degrees.
 ## @seealso{acotd, cot}
 ## @end deftypefn

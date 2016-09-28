@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QComboBox>
@@ -33,48 +33,47 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-PopupMenuControl*
-PopupMenuControl::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  PopupMenuControl*
+  PopupMenuControl::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      Container* container = parent->innerContainer ();
+    if (parent)
+      {
+        Container* container = parent->innerContainer ();
 
-      if (container)
-        return new PopupMenuControl (go, new QComboBox (container));
-    }
+        if (container)
+          return new PopupMenuControl (go, new QComboBox (container));
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
-  : BaseControl (go, box), m_blockUpdate (false)
-{
-  uicontrol::properties& up = properties<uicontrol> ();
+  PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
+    : BaseControl (go, box), m_blockUpdate (false)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
 
-  box->addItems (Utils::fromStdString (up.get_string_string ()).split ('|'));
+    box->addItems (Utils::fromStdString (up.get_string_string ()).split ('|'));
 
-  update (uicontrol::properties::ID_VALUE);
+    update (uicontrol::properties::ID_VALUE);
 
-  connect (box, SIGNAL (currentIndexChanged (int)),
-           SLOT (currentIndexChanged (int)));
-}
+    connect (box, SIGNAL (currentIndexChanged (int)),
+             SLOT (currentIndexChanged (int)));
+  }
 
-PopupMenuControl::~PopupMenuControl (void)
-{
-}
+  PopupMenuControl::~PopupMenuControl (void)
+  { }
 
-void PopupMenuControl::update (int pId)
-{
-  uicontrol::properties& up = properties<uicontrol> ();
-  QComboBox* box = qWidget<QComboBox> ();
+  void PopupMenuControl::update (int pId)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+    QComboBox* box = qWidget<QComboBox> ();
 
-  switch (pId)
-    {
-    case uicontrol::properties::ID_STRING:
-      m_blockUpdate = true;
+    switch (pId)
+      {
+      case uicontrol::properties::ID_STRING:
+        m_blockUpdate = true;
         {
           int oldCurrent = box->currentIndex ();
 
@@ -95,20 +94,18 @@ void PopupMenuControl::update (int pId)
                                     false);
             }
         }
-      m_blockUpdate = false;
-      break;
+        m_blockUpdate = false;
+        break;
 
-    case uicontrol::properties::ID_VALUE:
-      m_blockUpdate = true;
+      case uicontrol::properties::ID_VALUE:
+        m_blockUpdate = true;
         {
           Matrix value = up.get_value ().matrix_value ();
 
           if (value.numel () > 0)
             {
-              if (value(0) !=  static_cast<int>(value(0)))
-                {
+              if (value(0) != static_cast<int>(value(0)))
                 warning ("popupmenu value should be integer");
-                }
               else
                 {
                   int newIndex = int (value(0)) - 1;
@@ -123,25 +120,26 @@ void PopupMenuControl::update (int pId)
                 }
             }
         }
-      m_blockUpdate = false;
-      break;
+        m_blockUpdate = false;
+        break;
 
-    default:
-      BaseControl::update (pId);
-      break;
-    }
+      default:
+        BaseControl::update (pId);
+        break;
+      }
+  }
+
+  void
+  PopupMenuControl::currentIndexChanged (int index)
+  {
+    if (! m_blockUpdate)
+      {
+        gh_manager::post_set (m_handle, "value",
+                              octave_value (double (index + 1)),
+                              false);
+        gh_manager::post_callback (m_handle, "callback");
+      }
+  }
+
 }
 
-void
-PopupMenuControl::currentIndexChanged (int index)
-{
-  if (! m_blockUpdate)
-    {
-      gh_manager::post_set (m_handle, "value",
-                            octave_value (double (index + 1)),
-                            false);
-      gh_manager::post_callback (m_handle, "callback");
-    }
-}
-
-}; // namespace QtHandles

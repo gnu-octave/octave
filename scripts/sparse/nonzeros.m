@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Paul Kienzle
+## Copyright (C) 2004-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nonzeros (@var{s})
+## @deftypefn {} {} nonzeros (@var{s})
 ## Return a vector of the nonzero values of the sparse matrix @var{s}.
 ## @seealso{find, nnz}
 ## @end deftypefn

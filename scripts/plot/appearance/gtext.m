@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} gtext (@var{s})
-## @deftypefnx {Function File} {} gtext (@{@var{s1}, @var{s2}, @dots{}@})
-## @deftypefnx {Function File} {} gtext (@{@var{s1}; @var{s2}; @dots{}@})
-## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} gtext (@dots{})
+## @deftypefn  {} {} gtext (@var{s})
+## @deftypefnx {} {} gtext (@{@var{s1}, @var{s2}, @dots{}@})
+## @deftypefnx {} {} gtext (@{@var{s1}; @var{s2}; @dots{}@})
+## @deftypefnx {} {} gtext (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} gtext (@dots{})
 ## Place text on the current figure using the mouse.
 ##
 ## The text is defined by the string @var{s}.  If @var{s} is a cell string

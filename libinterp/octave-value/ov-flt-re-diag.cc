@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "byte-swap.h"
@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-flt-re-mat.h"
 #include "ls-utils.h"
 
-template class octave_base_diag<FloatDiagMatrix, FloatMatrix>;
 
+template class octave_base_diag<FloatDiagMatrix, FloatMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix,
                                      "float diagonal matrix", "single");
@@ -41,7 +41,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_float_diag_matrix&);
+  const octave_float_diag_matrix& v =
+    dynamic_cast<const octave_float_diag_matrix&> (a);
 
   return new octave_float_matrix (v.float_matrix_value ());
 }
@@ -89,6 +90,66 @@ octave_float_diag_matrix::float_complex_diag_matrix_value (bool) const
 }
 
 octave_value
+octave_float_diag_matrix::as_double (void) const
+{
+  return DiagMatrix (matrix);
+}
+
+octave_value
+octave_float_diag_matrix::as_single (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_float_diag_matrix::as_int8 (void) const
+{
+  return int8_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_int16 (void) const
+{
+  return int16_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_int32 (void) const
+{
+  return int32_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_int64 (void) const
+{
+  return int64_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint8 (void) const
+{
+  return uint8_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint16 (void) const
+{
+  return uint16_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint32 (void) const
+{
+  return uint32_array_value ();
+}
+
+octave_value
+octave_float_diag_matrix::as_uint64 (void) const
+{
+  return uint64_array_value ();
+}
+
+octave_value
 octave_float_diag_matrix::map (unary_mapper_t umap) const
 {
   switch (umap)
@@ -103,7 +164,7 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
     case umap_sqrt:
       {
         FloatComplexColumnVector tmp = matrix.extract_diag ().map<FloatComplex>
-                                       (rc_sqrt);
+                                       (octave::math::rc_sqrt);
         FloatComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;
@@ -140,7 +201,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
 
 bool
 octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
-                                       oct_mach_info::float_format fmt)
+                                       octave::mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;
@@ -158,8 +219,10 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
   float *re = m.fortran_vec ();
   octave_idx_type len = m.length ();
   read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;
@@ -174,3 +237,4 @@ octave_float_diag_matrix::chk_valid_scalar (const octave_value& val,
     x = val.float_value ();
   return retval;
 }
+

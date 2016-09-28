@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman and Marco Caliari
+## Copyright (C) 2006-2016 David Bateman and Marco Caliari
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{n} =} normest (@var{A})
-## @deftypefnx {Function File} {@var{n} =} normest (@var{A}, @var{tol})
-## @deftypefnx {Function File} {[@var{n}, @var{c}] =} normest (@dots{})
+## @deftypefn  {} {@var{n} =} normest (@var{A})
+## @deftypefnx {} {@var{n} =} normest (@var{A}, @var{tol})
+## @deftypefnx {} {[@var{n}, @var{c}] =} normest (@dots{})
 ## Estimate the 2-norm of the matrix @var{A} using a power series analysis.
 ##
 ## This is typically used for large matrices, where the cost of calculating
@@ -68,7 +68,7 @@ function [n, c] = normest (A, tol = 1e-6)
     if (normx == 0)
       x = rand (ncols, 1);
     else
-      x = x / normx;
+      x /= normx;
     endif
     y = A' * x;
     n = norm (y);
@@ -76,6 +76,7 @@ function [n, c] = normest (A, tol = 1e-6)
   until (abs (n - n0) <= tol * n)
 
   rand ("state", v);    # restore state of random number generator
+
 endfunction
 
 

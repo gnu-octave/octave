@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QString>
@@ -34,78 +34,80 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-ObjectProxy::ObjectProxy (Object* obj)
-  : QObject (), m_object (0)
-{
-  init (obj);
-}
+  ObjectProxy::ObjectProxy (Object* obj)
+    : QObject (), m_object (0)
+  {
+    init (obj);
+  }
 
-void
-ObjectProxy::init (Object* obj)
-{
-  if (obj != m_object)
-    {
-      if (m_object)
-        {
-          disconnect (this, SIGNAL (sendUpdate (int)),
-                      m_object, SLOT (slotUpdate (int)));
-          disconnect (this, SIGNAL (sendFinalize (void)),
-                      m_object, SLOT (slotFinalize (void)));
-          disconnect (this, SIGNAL (sendRedraw (void)),
-                      m_object, SLOT (slotRedraw (void)));
-          disconnect (this, SIGNAL (sendPrint (const QString&, const QString&)),
-                      m_object, SLOT (slotPrint (const QString&, const QString&)));
-        }
+  void
+  ObjectProxy::init (Object* obj)
+  {
+    if (obj != m_object)
+      {
+        if (m_object)
+          {
+            disconnect (this, SIGNAL (sendUpdate (int)),
+                        m_object, SLOT (slotUpdate (int)));
+            disconnect (this, SIGNAL (sendFinalize (void)),
+                        m_object, SLOT (slotFinalize (void)));
+            disconnect (this, SIGNAL (sendRedraw (void)),
+                        m_object, SLOT (slotRedraw (void)));
+            disconnect (this, SIGNAL (sendPrint (const QString&, const QString&)),
+                        m_object, SLOT (slotPrint (const QString&, const QString&)));
+          }
 
-      m_object = obj;
+        m_object = obj;
 
-      if (m_object)
-        {
-          connect (this, SIGNAL (sendUpdate (int)),
-                   m_object, SLOT (slotUpdate (int)));
-          connect (this, SIGNAL (sendFinalize (void)),
-                   m_object, SLOT (slotFinalize (void)));
-          connect (this, SIGNAL (sendRedraw (void)),
-                   m_object, SLOT (slotRedraw (void)));
-          connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
-                   m_object, SLOT (slotPrint (const QString&, const QString&)));
-        }
-    }
-}
+        if (m_object)
+          {
+            connect (this, SIGNAL (sendUpdate (int)),
+                     m_object, SLOT (slotUpdate (int)));
+            connect (this, SIGNAL (sendFinalize (void)),
+                     m_object, SLOT (slotFinalize (void)));
+            connect (this, SIGNAL (sendRedraw (void)),
+                     m_object, SLOT (slotRedraw (void)));
+            connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
+                     m_object, SLOT (slotPrint (const QString&, const QString&)),
+                     Qt::BlockingQueuedConnection);
+          }
+      }
+  }
 
-void
-ObjectProxy::setObject (Object* obj)
-{
-  emit sendFinalize ();
-  init (obj);
-}
+  void
+  ObjectProxy::setObject (Object* obj)
+  {
+    emit sendFinalize ();
+    init (obj);
+  }
 
-void
-ObjectProxy::update (int pId)
-{
-  if (octave_thread::is_octave_thread ())
-    emit sendUpdate (pId);
-  else
-    m_object->slotUpdate (pId);
-}
+  void
+  ObjectProxy::update (int pId)
+  {
+    if (octave_thread::is_octave_thread ())
+      emit sendUpdate (pId);
+    else if (m_object)
+      m_object->slotUpdate (pId);
+  }
 
-void
-ObjectProxy::finalize (void)
-{
-  emit sendFinalize ();
-  init (0);
-}
+  void
+  ObjectProxy::finalize (void)
+  {
+    emit sendFinalize ();
+    init (0);
+  }
 
-void
-ObjectProxy::redraw (void)
-{
-  emit sendRedraw ();
-}
+  void
+  ObjectProxy::redraw (void)
+  {
+    emit sendRedraw ();
+  }
 
-void
-ObjectProxy::print (const QString& file_cmd, const QString& term)
-{
-  emit sendPrint (file_cmd, term);
-}
+  void
+  ObjectProxy::print (const QString& file_cmd, const QString& term)
+  {
+    emit sendPrint (file_cmd, term);
+  }
 
 };
+

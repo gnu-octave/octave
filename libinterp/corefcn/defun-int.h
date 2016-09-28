@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_defun_int_h)
+#if ! defined (octave_defun_int_h)
 #define octave_defun_int_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -45,31 +47,31 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-                      const octave_shlib& shl, const std::string& doc,
+                      const octave::dynamic_library& shl, const std::string& doc,
                       bool relative = false);
 
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-                      const octave_shlib& shl, bool relative = false);
+                      const octave::dynamic_library& shl, bool relative = false);
 
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
 
 // Gets the shlib of the currently executing DLD function, if any.
-extern OCTINTERP_API octave_shlib
+extern OCTINTERP_API octave::dynamic_library
 get_current_shlib (void);
 
 // This is a convenience class that calls the above function automatically at
-// construction time. When deriving new classes, you can either use it as a
+// construction time.  When deriving new classes, you can either use it as a
 // field or as a parent (with multiple inheritance).
 
-class octave_auto_shlib : public octave_shlib
+class octave_auto_shlib : public octave::dynamic_library
 {
 public:
   octave_auto_shlib (void)
-    : octave_shlib (get_current_shlib ()) { }
-  octave_auto_shlib (const octave_shlib& shl)
-    : octave_shlib (shl) { }
+    : octave::dynamic_library (get_current_shlib ()) { }
+  octave_auto_shlib (const octave::dynamic_library& shl)
+    : octave::dynamic_library (shl) { }
 };
 
 extern OCTINTERP_API bool
@@ -78,112 +80,53 @@ defun_isargout (int, int);
 extern OCTINTERP_API void
 defun_isargout (int, int, bool *);
 
-#define DECLARE_FUNX(name, args_name, nargout_name) \
-  OCTAVE_EXPORT octave_value_list \
+#define FORWARD_DECLARE_FUNX(name)              \
+  extern OCTAVE_EXPORT octave_value_list        \
+  name (const octave_value_list&, int)
+
+#define FORWARD_DECLARE_FUN(name)               \
+  FORWARD_DECLARE_FUNX (F ## name)
+
+#define DECLARE_FUNX(name, args_name, nargout_name)             \
+  OCTAVE_EXPORT octave_value_list                               \
   name (const octave_value_list& args_name, int nargout_name)
 
-#define DECLARE_FUN(name, args_name, nargout_name) \
+#define DECLARE_FUN(name, args_name, nargout_name)      \
   DECLARE_FUNX (F ## name, args_name, nargout_name)
 
 // Define the code that will be used to insert the new function into
 // the symbol table.  We look for this name instead of the actual
 // function so that we can easily install the doc std::string too.
 
-typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
+typedef bool (*octave_dld_fcn_installer) (const octave::dynamic_library&, bool relative);
 
 typedef octave_function *
-  (*octave_dld_fcn_getter) (const octave_shlib&, bool relative);
+  (*octave_dld_fcn_getter) (const octave::dynamic_library&, bool relative);
 
-#define DEFINE_FUN_INSTALLER_FUN(name, doc) \
+#if defined (OCTAVE_SOURCE)
+#  define DEFINE_FUN_INSTALLER_FUN(name, doc)                           \
+  DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, "external-doc")
+#else
+#  define DEFINE_FUN_INSTALLER_FUN(name, doc)                   \
   DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)
+#endif
 
-#define DEFINE_FUNX_INSTALLER_FUN(name, fname, gname, doc) \
-  extern "C" \
-  OCTAVE_EXPORT \
-  octave_function * \
-  gname (const octave_shlib& shl, bool relative) \
-  { \
-    octave_function *retval = 0; \
- \
-    check_version (OCTAVE_API_VERSION, name); \
- \
-    if (! error_state) \
-      { \
-        octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
- \
-        if (relative) \
-          fcn->mark_relative (); \
- \
-        retval = fcn; \
-      } \
- \
-    return retval; \
+#define DEFINE_FUNX_INSTALLER_FUN(name, fname, gname, doc)              \
+  extern "C"                                                            \
+  OCTAVE_EXPORT                                                         \
+  octave_function *                                                     \
+  gname (const octave::dynamic_library& shl, bool relative)             \
+  {                                                                     \
+    check_version (OCTAVE_API_VERSION, name);                           \
+                                                                        \
+    octave_dld_function *fcn                                            \
+      = octave_dld_function::create (fname, shl, name, doc);            \
+                                                                        \
+    if (relative)                                                       \
+      fcn->mark_relative ();                                            \
+                                                                        \
+    return fcn;                                                         \
   }
 
-// MAKE_BUILTINS is defined to extract function names and related
-// information and create the *.df files that are eventually used to
-// create the builtins.cc file.
-
-#if defined (MAKE_BUILTINS)
-
-// Generate code to install name in the symbol table.  The script
-// mkdefs will create a .def file for every .cc file that uses DEFUN,
-// or DEFCMD.
-
-#define DEFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUN_INTERNAL (name, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFCONSTFUN_INTERNAL (name, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUNX_INTERNAL (name, fname, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-// Generate code to install name in the symbol table.  The script
-// mkdefs will create a .def file for every .cc file that uses
-// DEFUN_DLD.
-
-#define DEFUN_DLD_INTERNAL(name, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUN_DLD_INTERNAL (name, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-#define DEFUNX_DLD_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, doc) \
-  END_INSTALL_BUILTIN
-
-// Generate code for making another name for an existing function.
-
-#define DEFALIAS_INTERNAL(alias, name) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFALIAS_INTERNAL(alias, name) \
-  END_INSTALL_BUILTIN
-
-#else /* ! MAKE_BUILTINS */
-
-// Generate the first line of the function definition.  This ensures
-// that the internal functions all have the same signature.
-
-#define DEFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
-
-#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
-  DECLARE_FUN (name, args_name, nargout_name)
-
-#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
-  DECLARE_FUNX (fname, args_name, nargout_name)
-
-// No definition is required for an alias.
-
-#define DEFALIAS_INTERNAL(alias, name)
-
-#endif /* ! MAKE_BUILTINS */
-
 #endif
+

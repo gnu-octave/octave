@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_CSparse_h)
+#if ! defined (octave_CSparse_h)
 #define octave_CSparse_h 1
+
+#include "octave-config.h"
 
 #include "dMatrix.h"
 #include "dNDArray.h"
@@ -34,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "DET.h"
 #include "MSparse.h"
-#include "MSparse-defs.h"
 
 #include "Sparse-op-decls.h"
 
@@ -51,6 +52,9 @@ OCTAVE_API
 SparseComplexMatrix : public MSparse<Complex>
 {
 public:
+
+  // Corresponding dense matrix type for this sparse matrix type.
+  typedef ComplexMatrix dense_matrix_type;
 
   typedef void (*solve_singularity_handler) (double rcond);
 
@@ -160,13 +164,13 @@ public:
   SparseComplexMatrix inverse (MatrixType& mattype,
                                octave_idx_type& info) const;
   SparseComplexMatrix inverse (MatrixType& mattype, octave_idx_type& info,
-                               double& rcond, int force = 0,
-                               int calc_cond = 1) const;
+                               double& rcond, bool force = false,
+                               bool calc_cond = true) const;
 
   ComplexDET determinant (void) const;
   ComplexDET determinant (octave_idx_type& info) const;
   ComplexDET determinant (octave_idx_type& info, double& rcond,
-                          int calc_cond = 1) const;
+                          bool calc_cond = true) const;
 
 private:
   // Diagonal matrix solvers
@@ -547,10 +551,5 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix, OCTAVE_API)
 
 SPARSE_FORWARD_DEFS (MSparse, SparseComplexMatrix, ComplexMatrix, Complex)
 
-#ifdef USE_64_BIT_IDX_T
-#define UMFPACK_ZNAME(name) umfpack_zl_ ## name
-#else
-#define UMFPACK_ZNAME(name) umfpack_zi_ ## name
 #endif
 
-#endif

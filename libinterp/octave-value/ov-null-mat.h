@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_null_mat_h)
+#if ! defined (octave_ov_null_mat_h)
 #define octave_ov_null_mat_h 1
+
+#include "octave-config.h"
 
 #include "ov.h"
 #include "ov-re-mat.h"
@@ -30,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 // Design rationale:
 // The constructors are hidden.  There is only one null matrix (or null string)
 // object, that can have shallow copies.  Cloning the object returns just a
-// normal empty matrix, so all the shallow copies are, in fact, read-only. This
-// conveniently ensures that any attempt to fiddle with the null matrix
+// normal empty matrix, so all the shallow copies are, in fact, read-only.
+// This conveniently ensures that any attempt to fiddle with the null matrix
 // destroys its special status.
 
 // The special [] value.
@@ -71,7 +73,6 @@ public:
 
   type_conv_info numeric_conversion_function (void) const;
 
-
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
@@ -99,3 +100,4 @@ private:
 };
 
 #endif
+

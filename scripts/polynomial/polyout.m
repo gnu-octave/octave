@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Auburn University.  All rights reserved.
+## Copyright (C) 1995-2016 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyout (@var{c})
-## @deftypefnx {Function File} {} polyout (@var{c}, @var{x})
-## @deftypefnx {Function File} {@var{str} =} polyout (@dots{})
+## @deftypefn  {} {} polyout (@var{c})
+## @deftypefnx {} {} polyout (@var{c}, @var{x})
+## @deftypefnx {} {@var{str} =} polyout (@dots{})
 ## Display a formatted version of the polynomial @var{c}.
 ##
 ## The formatted polynomial
@@ -89,6 +89,7 @@ function y = polyout (c, x)
 endfunction
 
 function str = coeff (c)
+
   if (imag (c))
     if (real (c))
       str = sprintf ("(%s)", num2str (c, 5));
@@ -98,6 +99,7 @@ function str = coeff (c)
   else
     str = num2str (c, 5);
   endif
+
 endfunction
 
 

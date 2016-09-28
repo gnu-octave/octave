@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hlink} =} linkprop (@var{h}, "@var{prop}")
-## @deftypefnx {Function File} {@var{hlink} =} linkprop (@var{h}, @{"@var{prop1}", "@var{prop2}", @dots{}@})
+## @deftypefn  {} {@var{hlink} =} linkprop (@var{h}, "@var{prop}")
+## @deftypefnx {} {@var{hlink} =} linkprop (@var{h}, @{"@var{prop1}", "@var{prop2}", @dots{}@})
 ## Link graphic object properties, such that a change in one is propagated to
 ## the others.
 ##
@@ -102,6 +102,7 @@ function update_prop (h, ~, hlist, prop)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function delete_linkprop (hlist, prop)
@@ -109,7 +110,7 @@ function delete_linkprop (hlist, prop)
   for i = 1 : numel (hlist)
     if (ishandle (hlist(i)))
       for j = 1 : numel (prop)
-        dellistener (hlist(i), prop{j}),
+        dellistener (hlist(i), prop{j});
       endfor
     endif
   endfor
@@ -121,15 +122,16 @@ endfunction
 %! clf;
 %! x = 0:0.1:10;
 %! subplot (1,2,1);
-%! h1 = plot (x, sin (x), 'r');
+%!  h1 = plot (x, sin (x), "r");
 %! subplot (1,2,2);
-%! h2 = plot (x, cos (x), 'b');
-%! input ('Type <RETURN> to link plots');
-%! hlink = linkprop ([h1, h2], {'color', 'linestyle'});
-%! input ('Type <RETURN> to change color');
-%! set (h1, 'color', 'green');
-%! input ('Type <RETURN> to change linestyle');
-%! set (h2, 'linestyle', '--');
+%!  h2 = plot (x, cos (x), "b");
+%!
+%! input ("Press <enter> to link plots: ");
+%! hlink = linkprop ([h1, h2], {"color", "linestyle"});
+%! input ("Press <enter> to change color: ");
+%! set (h1, "color", "green");
+%! input ("Press <enter> to change linestyle: ");
+%! set (h2, "linestyle", "--");
 
 %!test
 %! hf1 = figure ("visible", "off");

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pr_output_h)
+#if ! defined (octave_pr_output_h)
 #define octave_pr_output_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 
 #include "oct-cmplx.h"
+#include "oct-inttypes-fwd.h"
 
 template <typename T> class Array;
 class ComplexMatrix;
@@ -49,9 +52,7 @@ class PermMatrix;
 class Cell;
 class octave_value;
 
-#include "intNDArray.h"
-#include "oct-inttypes.h"
-
+template <typename T> class intNDArray;
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, bool d,
@@ -269,3 +270,4 @@ extern bool Vprint_empty_dimensions;
 extern bool Vcompact_format;
 
 #endif
+

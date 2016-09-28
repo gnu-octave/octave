@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_id_h)
+#if ! defined (octave_pt_id_h)
 #define octave_pt_id_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
@@ -66,7 +68,7 @@ public:
 
   bool is_defined (void) { return sym->is_defined (); }
 
-  virtual bool is_variable (void) { return sym->is_variable (); }
+  virtual bool is_variable (void) const { return sym->is_variable (); }
 
   virtual bool is_black_hole (void) { return false; }
 
@@ -118,8 +120,8 @@ public:
 
   void static_workspace_error (void)
   {
-    ::error ("can not add variable \"%s\" to a static workspace",
-             name ().c_str ());
+    error ("can not add variable \"%s\" to a static workspace",
+           name ().c_str ());
   }
 
   tree_identifier *dup (symbol_table::scope_id scope,
@@ -152,12 +154,15 @@ public:
 
   std::string name (void) const { return "~"; }
 
-  bool is_variable (void) { return false; }
+  bool is_variable (void) const { return false; }
 
   bool is_black_hole (void) { return true; }
 
-  tree_black_hole *dup (void) const
-  { return new tree_black_hole; }
+  tree_black_hole *dup (symbol_table::scope_id,
+                        symbol_table::context_id) const
+  {
+    return new tree_black_hole;
+  }
 
   octave_lvalue lvalue (void)
   {
@@ -166,3 +171,4 @@ public:
 };
 
 #endif
+

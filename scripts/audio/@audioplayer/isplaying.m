@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isplaying (@var{player})
+## @deftypefn {} {} isplaying (@var{player})
 ## Return true if the audioplayer object @var{player} is currently playing back
 ## audio and false otherwise.
 ## @end deftypefn

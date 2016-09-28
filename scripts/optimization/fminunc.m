@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 VZLU Prague, a.s.
+## Copyright (C) 2008-2016 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -19,9 +19,9 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fminunc (@var{fcn}, @var{x0})
-## @deftypefnx {Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
+## @deftypefn  {} {} fminunc (@var{fcn}, @var{x0})
+## @deftypefnx {} {} fminunc (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ##
@@ -41,11 +41,11 @@
 ## @qcode{"AutoScaling"}.
 ##
 ## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}, when
-## called with 2 output arguments, also returns the Jacobian matrix of partial
-## first derivatives at the requested point.  @code{TolX} specifies the
-## termination tolerance for the unknown variables @var{x}, while @code{TolFun}
-## is a tolerance for the objective function value @var{fval}.  The default is
-## @code{1e-7} for both options.
+## called with two output arguments, also returns the Jacobian matrix of
+## partial first derivatives at the requested point.  @code{TolX} specifies
+## the termination tolerance for the unknown variables @var{x}, while
+## @code{TolFun} is a tolerance for the objective function value @var{fval}.
+##  The default is @code{1e-7} for both options.
 ##
 ## For a description of the other options, see @code{optimset}.
 ##
@@ -76,14 +76,15 @@
 ## The trust region radius became excessively small.
 ## @end table
 ##
-## Optionally, @code{fminunc} can return a structure with convergence statistics
-## (@var{output}), the output gradient (@var{grad}) at the solution @var{x},
-## and approximate Hessian (@var{hess}) at the solution @var{x}.
+## Optionally, @code{fminunc} can return a structure with convergence
+## statistics (@var{output}), the output gradient (@var{grad}) at the
+## solution @var{x}, and approximate Hessian (@var{hess}) at the solution
+## @var{x}.
 ##
-## Application Notes: If have only a single nonlinear equation of one variable
-## then using @code{fminbnd} is usually a better choice.
+## Application Notes: If the objective function is a single nonlinear equation
+## of one variable then using @code{fminbnd} is usually a better choice.
 ##
-## The algorithm used by @code{fminsearch} is a gradient search which depends
+## The algorithm used by @code{fminunc} is a gradient search which depends
 ## on the objective function being differentiable.  If the function has
 ## discontinuities it may be better to use a derivative-free algorithm such as
 ## @code{fminsearch}.
@@ -96,7 +97,7 @@
 function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struct ())
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
+  if (nargin == 1 && strcmp (fcn, "defaults"))
     x = optimset ("MaxIter", 400, "MaxFunEvals", Inf,
                   "GradObj", "off", "TolX", 1e-7, "TolFun", 1e-7,
                   "OutputFcn", [], "FunValCheck", "off",
@@ -113,7 +114,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     fcn = str2func (fcn, "global");
   endif
 
-  xsiz = size (x0);
+  xsz = size (x0);
   n = numel (x0);
 
   has_grad = strcmpi (optimget (options, "GradObj", "off"), "on");
@@ -122,8 +123,8 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   maxfev = optimget (options, "MaxFunEvals", Inf);
   outfcn = optimget (options, "OutputFcn");
 
-  ## Get scaling matrix using the TypicalX option. If set to "auto", the
-  ## scaling matrix is estimated using the jacobian.
+  ## Get scaling matrix using the TypicalX option.  If set to "auto", the
+  ## scaling matrix is estimated using the Jacobian.
   typicalx = optimget (options, "TypicalX");
   if (isempty (typicalx))
     typicalx = ones (n, 1);
@@ -140,10 +141,8 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     fcn = @(x) guarded_eval (fcn, x);
   endif
 
-  ## These defaults are rather stringent. I think that normally, user
+  ## These defaults are rather stringent.  I think that normally, user
   ## prefers accuracy to performance.
-
-  macheps = eps (class (x0));
 
   tolx = optimget (options, "TolX", 1e-7);
   tolf = optimget (options, "TolFun", 1e-7);
@@ -159,7 +158,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   info = 0;
 
   ## Initial evaluation.
-  fval = fcn (reshape (x, xsiz));
+  fval = fcn (reshape (x, xsz));
   n = length (x);
 
   if (! isempty (outfcn))
@@ -167,12 +166,18 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     optimvalues.funccount = nfev;
     optimvalues.fval = fval;
     optimvalues.searchdirection = zeros (n, 1);
-    state = 'init';
+    state = "init";
     stop = outfcn (x, optimvalues, state);
     if (stop)
       info = -1;
       break;
     endif
+  endif
+
+  if (isa (x0, "single") || isa (fval, "single"))
+    macheps = eps ("single");
+  else
+    macheps = eps ("double");
   endif
 
   nsuciter = 0;
@@ -187,11 +192,11 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
     ## Calculate function value and gradient (possibly via FD).
     if (has_grad)
-      [fval, grad] = fcn (reshape (x, xsiz));
+      [fval, grad] = fcn (reshape (x, xsz));
       grad = grad(:);
-      nfev ++;
+      nfev += 1;
     else
-      grad = __fdjac__ (fcn, reshape (x, xsiz), fval, typicalx, cdif)(:);
+      grad = __fdjac__ (fcn, reshape (x, xsz), fval, typicalx, cdif)(:);
       nfev += (1 + cdif) * length (x);
     endif
 
@@ -202,11 +207,11 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       ## Use the damped BFGS formula.
       y = grad - grad0;
       sBs = sumsq (w);
-      Bs = hesr'*w;
-      sy = y'*s;
+      Bs = hesr' * w;
+      sy = y' * s;
       theta = 0.8 / max (1 - sy / sBs, 0.8);
       r = theta * y + (1-theta) * Bs;
-      hesr = cholupdate (hesr, r / sqrt (s'*r), "+");
+      hesr = cholupdate (hesr, r / sqrt (s' * r), "+");
       [hesr, info] = cholupdate (hesr, Bs / sqrt (sBs), "-");
       if (info)
         hesr = eye (n);
@@ -214,8 +219,8 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     endif
 
     if (autoscale)
-      ## Second derivatives approximate the hessian.
-      d2f = norm (hesr, 'columns').';
+      ## Second derivatives approximate the Hessian.
+      d2f = norm (hesr, "columns").';
       if (niter == 1)
         dg = d2f;
       else
@@ -231,7 +236,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     endif
 
     ## FIXME: why tolf*n*xn?  If abs (e) ~ abs(x) * eps is a vector
-    ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e. by
+    ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e., by
     ## tolf ~ eps we demand as much accuracy as we can expect.
     if (norm (grad) <= tolf*n*xn)
       info = 1;
@@ -251,8 +256,8 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         delta = min (delta, sn);
       endif
 
-      fval1 = fcn (reshape (x + s, xsiz)) (:);
-      nfev ++;
+      fval1 = fcn (reshape (x + s, xsz))(:);
+      nfev += 1;
 
       if (fval1 < fval)
         ## Scaled actual reduction.
@@ -261,7 +266,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         actred = -1;
       endif
 
-      w = hesr*s;
+      w = hesr * s;
       ## Scaled predicted reduction, and ratio.
       t = 1/2 * sumsq (w) + grad'*s;
       if (t < 0)
@@ -276,7 +281,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         delta *= decfac;
         decfac ^= 1.4142;
-        if (delta <= 1e1*macheps*xn)
+        if (delta <= 10*macheps*xn)
           ## Trust region became uselessly small.
           info = -3;
           break;
@@ -296,11 +301,11 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         x += s;
         xn = norm (dg .* x);
         fval = fval1;
-        nsuciter++;
+        nsuciter += 1;
         suc = true;
       endif
 
-      niter ++;
+      niter += 1;
 
       ## FIXME: should outputfcn be called only after a successful iteration?
       if (! isempty (outfcn))
@@ -308,7 +313,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         optimvalues.funccount = nfev;
         optimvalues.fval = fval;
         optimvalues.searchdirection = s;
-        state = 'iter';
+        state = "iter";
         stop = outfcn (x, optimvalues, state);
         if (stop)
           info = -1;
@@ -316,18 +321,18 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         endif
       endif
 
-      ## Tests for termination conditions. A mysterious place, anything
+      ## Tests for termination conditions.  A mysterious place, anything
       ## can happen if you change something here...
 
       ## The rule of thumb (which I'm not sure M*b is quite following)
       ## is that for a tolerance that depends on scaling, only 0 makes
-      ## sense as a default value. But 0 usually means uselessly long
+      ## sense as a default value.  But 0 usually means uselessly long
       ## iterations, so we need scaling-independent tolerances wherever
       ## possible.
 
       ## The following tests done only after successful step.
       if (ratio >= 1e-4)
-        ## This one is classic. Note that we use scaled variables again,
+        ## This one is classic.  Note that we use scaled variables again,
         ## but compare to scaled step, so nothing bad.
         if (sn <= tolx*xn)
           info = 2;
@@ -340,12 +345,39 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     endwhile
   endwhile
 
-  ## Restore original shapes.
-  x = reshape (x, xsiz);
+  ## When info != 1, recalculate the gradient and Hessian using the final x.
+  if (nargout > 4 && (info == -1 || info == 2 || info == 3))
+    grad0 = grad;
+    if (has_grad)
+      [fval, grad] = fcn (reshape (x, xsz));
+      grad = grad(:);
+    else
+      grad = __fdjac__ (fcn, reshape (x, xsz), fval, typicalx, cdif)(:);
+    endif
 
-  output.iterations = niter;
-  output.successful = nsuciter;
-  output.funcCount = nfev;
+    if (nargout > 5)
+      ## Use the damped BFGS formula.
+      y = grad - grad0;
+      sBs = sumsq (w);
+      Bs = hesr' * w;
+      sy = y' * s;
+      theta = 0.8 / max (1 - sy / sBs, 0.8);
+      r = theta * y + (1-theta) * Bs;
+      hesr = cholupdate (hesr, r / sqrt (s' * r), "+");
+      hesr = cholupdate (hesr, Bs / sqrt (sBs), "-");
+    endif
+    ## Return the gradient in the same shape as x
+    grad = reshape (grad, xsz);
+  endif
+
+  ## Restore original shapes.
+  x = reshape (x, xsz);
+
+  if (nargout > 3)
+    output.iterations = niter;
+    output.successful = nsuciter;
+    output.funcCount = nfev;
+  endif
 
   if (nargout > 5)
     hess = hesr'*hesr;
@@ -355,6 +387,7 @@ endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
 function [fx, gx] = guarded_eval (fun, x)
+
   if (nargout > 1)
     [fx, gx] = fun (x);
   else
@@ -369,22 +402,23 @@ function [fx, gx] = guarded_eval (fun, x)
   elseif (any (isinf (fx(:))))
     error ("fminunc:isinf", "fminunc: Inf value encountered");
   endif
+
 endfunction
 
 
-%!function f = __rosenb (x)
+%!function f = __rosenb__ (x)
 %!  n = length (x);
 %!  f = sumsq (1 - x(1:n-1)) + 100 * sumsq (x(2:n) - x(1:n-1).^2);
 %!endfunction
 %!
 %!test
-%! [x, fval, info, out] = fminunc (@__rosenb, [5, -5]);
+%! [x, fval, info, out] = fminunc (@__rosenb__, [5, -5]);
 %! tol = 2e-5;
 %! assert (info > 0);
 %! assert (x, ones (1, 2), tol);
 %! assert (fval, 0, tol);
 %!test
-%! [x, fval, info, out] = fminunc (@__rosenb, zeros (1, 4));
+%! [x, fval, info, out] = fminunc (@__rosenb__, zeros (1, 4));
 %! tol = 2e-5;
 %! assert (info > 0);
 %! assert (x, ones (1, 4), tol);
@@ -401,10 +435,11 @@ endfunction
 ## Minimize 1/2*norm(r*x)^2  subject to the constraint norm(d.*x) <= delta,
 ## x being a convex combination of the gauss-newton and scaled gradient.
 
-## TODO: error checks
-## TODO: handle singularity, or leave it up to mldivide?
+## FIXME: error checks
+## FIXME: handle singularity, or leave it up to mldivide?
 
 function x = __doglegm__ (r, g, d, delta)
+
   ## Get Gauss-Newton direction.
   b = r' \ g;
   x = r \ b;
@@ -436,5 +471,6 @@ function x = __doglegm__ (r, g, d, delta)
     ## Form the appropriate convex combination.
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
+
 endfunction
 

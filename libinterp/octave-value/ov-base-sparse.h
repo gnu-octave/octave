@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_base_sparse_h)
+#if ! defined (octave_ov_base_sparse_h)
 #define octave_ov_base_sparse_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -32,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -43,7 +45,7 @@ class tree_walker;
 
 class octave_sparse_bool_matrix;
 
-template <class T>
+template <typename T>
 class
 octave_base_sparse : public octave_base_value
 {
@@ -95,6 +97,13 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using octave_base_value::assign;
+
   void assign (const octave_value_list& idx, const T& rhs);
 
   void delete_elements (const octave_value_list& idx);
@@ -143,7 +152,8 @@ public:
 
   bool is_true (void) const;
 
-  octave_idx_type capacity (void) const { return matrix.capacity (); }
+  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  octave_idx_type capacity (void) const { return nzmax (); }
 
   bool print_as_scalar (void) const;
 
@@ -177,3 +187,4 @@ protected:
 };
 
 #endif
+

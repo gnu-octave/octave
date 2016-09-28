@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,18 +21,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_map_h)
+#if ! defined (octave_oct_map_h)
 #define octave_oct_map_h 1
+
+#include "octave-config.h"
 
 #include <algorithm>
 #include <map>
 
 #include "Cell.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 class string_vector;
 
-// A class holding a map field->index. Supports reference-counting.
+// A class holding a map field->index.  Supports reference-counting.
 class OCTINTERP_API
 octave_fields
 {
@@ -113,15 +115,15 @@ public:
   // check whether a field exists.
   bool isfield (const std::string& name) const;
 
-  // get index of field. return -1 if not exist
+  // get index of field.  return -1 if not exist
   octave_idx_type getfield (const std::string& name) const;
-  // get index of field. add if not exist
+  // get index of field.  add if not exist
   octave_idx_type getfield (const std::string& name);
   // remove field and return the index. -1 if didn't exist.
   octave_idx_type rmfield (const std::string& name);
 
-  // order the fields of this map. creates a permutation
-  // used to order the fields.
+  // order the fields of this map.
+  // creates a permutation used to order the fields.
   void orderfields (Array<octave_idx_type>& perm);
 
   // compares two instances for equality up to order of fields.
@@ -145,7 +147,6 @@ public:
   }
 };
 
-
 class OCTINTERP_API
 octave_scalar_map
 {
@@ -157,7 +158,7 @@ public:
   octave_scalar_map (void) : xkeys (), xvals () { }
 
   octave_scalar_map (const string_vector& k)
-    : xkeys (k), xvals (k.length ()) { }
+    : xkeys (k), xvals (k.numel ()) { }
 
   octave_scalar_map (const octave_scalar_map& m)
     : xkeys (m.xkeys), xvals(m.xvals) { }
@@ -170,8 +171,9 @@ public:
     return *this;
   }
 
-  // iteration support. note that both const and non-const iterators are the
-  // same. The const/non-const distinction is made by the key & contents method.
+  // iteration support.
+  // note that both const and non-const iterators are the same.
+  // The const/non-const distinction is made by the key & contents method.
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
@@ -213,15 +215,15 @@ public:
   string_vector keys (void) const
   { return fieldnames (); }
 
-  // get contents of a given field. empty value if not exist.
+  // get contents of a given field.  empty value if not exist.
   octave_value getfield (const std::string& key) const;
 
-  // set contents of a given field. add if not exist.
+  // set contents of a given field.  add if not exist.
   void setfield (const std::string& key, const octave_value& val);
   void assign (const std::string& k, const octave_value& val)
   { setfield (k, val); }
 
-  // remove a given field. do nothing if not exist.
+  // remove a given field.  do nothing if not exist.
   void rmfield (const std::string& key);
   void del (const std::string& k) { rmfield (k); }
 
@@ -250,7 +252,7 @@ private:
 
 };
 
-template<>
+template <>
 inline octave_scalar_map
 octave_value_extract<octave_scalar_map> (const octave_value& v)
 { return v.scalar_map_value (); }
@@ -273,10 +275,10 @@ public:
   octave_map (const dim_vector& dv) : xkeys (), xvals (), dimensions (dv) { }
 
   octave_map (const string_vector& k)
-    : xkeys (k), xvals (k.length (), Cell (1, 1)), dimensions (1, 1) { }
+    : xkeys (k), xvals (k.numel (), Cell (1, 1)), dimensions (1, 1) { }
 
   octave_map (const dim_vector& dv, const string_vector& k)
-    : xkeys (k), xvals (k.length (), Cell (dv)), dimensions (dv) { }
+    : xkeys (k), xvals (k.numel (), Cell (dv)), dimensions (dv) { }
 
   octave_map (const octave_map& m)
     : xkeys (m.xkeys), xvals (m.xvals), dimensions (m.dimensions) { }
@@ -292,8 +294,9 @@ public:
     return *this;
   }
 
-  // iteration support. note that both const and non-const iterators are the
-  // same. The const/non-const distinction is made by the key & contents method.
+  // iteration support.
+  // note that both const and non-const iterators are the same.
+  // The const/non-const distinction is made by the key & contents method.
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
@@ -335,10 +338,10 @@ public:
   string_vector keys (void) const
   { return fieldnames (); }
 
-  // get contents of a given field. empty value if not exist.
+  // get contents of a given field.  empty value if not exist.
   Cell getfield (const std::string& key) const;
 
-  // set contents of a given field. add if not exist. checks for
+  // set contents of a given field.  add if not exist.  checks for
   // correct dimensions.
   void setfield (const std::string& key, const Cell& val);
   void assign (const std::string& k, const Cell& val)
@@ -395,7 +398,7 @@ public:
 
   dim_vector dims (void) const { return dimensions; }
 
-  int ndims (void) const { return dimensions.length (); }
+  int ndims (void) const { return dimensions.ndims (); }
 
   octave_map transpose (void) const;
 
@@ -465,8 +468,9 @@ private:
                       const octave_map *map_list, octave_map& retval);
 };
 
-template<>
+template <>
 inline octave_map octave_value_extract<octave_map> (const octave_value& v)
 { return v.map_value (); }
 
 #endif
+

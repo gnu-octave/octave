@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 David Bateman
+Copyright (C) 2008-2016 David Bateman
 
 This file is part of Octave.
 
@@ -20,40 +20,40 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "utils.h"
 
 DEFUN (rcond, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{c} =} rcond (@var{A})\n\
-Compute the 1-norm estimate of the reciprocal condition number as returned\n\
-by @sc{lapack}.\n\
-\n\
-If the matrix is well-conditioned then @var{c} will be near 1 and if the\n\
-matrix is poorly conditioned it will be close to 0.\n\
-\n\
-The matrix @var{A} must not be sparse.  If the matrix is sparse then\n\
-@code{condest (@var{A})} or @code{rcond (full (@var{A}))} should be used\n\
-instead.\n\
-@seealso{cond, condest}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{c} =} rcond (@var{A})
+Compute the 1-norm estimate of the reciprocal condition number as returned
+by @sc{lapack}.
+
+If the matrix is well-conditioned then @var{c} will be near 1 and if the
+matrix is poorly conditioned it will be close to 0.
+
+The matrix @var{A} must not be sparse.  If the matrix is sparse then
+@code{condest (@var{A})} or @code{rcond (full (@var{A}))} should be used
+instead.
+@seealso{cond, condest}
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ();
-  else if (args(0).is_sparse_type ())
+  if (args(0).is_sparse_type ())
     error ("rcond: for sparse matrices use 'rcond (full (a))' or 'condest (a)' instead");
-  else if (args(0).is_single_type ())
+
+  if (args(0).is_single_type ())
     {
       if (args(0).is_complex_type ())
         {
@@ -97,9 +97,10 @@ instead.\n\
 %!shared x, sx
 %! x = [-5.25, -2.25; -2.25, 1] * eps () + ones (2) / 2;
 %! sx = [-5.25, -2.25; -2.25, 1] * eps ("single") + ones (2) / 2;
-%!assert (rcond (x) < eps ());
-%!assert (rcond (sx) < eps ('single'));
-%!assert (rcond (x*i) < eps ());
-%!assert (rcond (sx*i) < eps ('single'));
+%!assert (rcond (x) < eps ())
+%!assert (rcond (sx) < eps ('single'))
+%!assert (rcond (x*i) < eps ())
+%!assert (rcond (sx*i) < eps ('single'))
 
 */
+

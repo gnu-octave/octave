@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "Array-util.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
@@ -42,10 +42,11 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (not, complex)
 {
-  CAST_UNOP_ARG (const octave_complex&);
+  const octave_complex& v = dynamic_cast<const octave_complex&> (a);
   Complex x = v.complex_value ();
-  if (xisnan (x))
-    gripe_nan_to_logical_conversion ();
+  if (octave::math::isnan (x))
+    octave::err_nan_to_logical_conversion ();
+
   return octave_value (x == 0.0);
 }
 
@@ -55,7 +56,7 @@ DEFUNOP_OP (transpose, complex, /* no-op */)
 
 DEFUNOP (hermitian, complex)
 {
-  CAST_UNOP_ARG (const octave_complex&);
+  const octave_complex& v = dynamic_cast<const octave_complex&> (a);
 
   return octave_value (conj (v.complex_value ()));
 }
@@ -71,12 +72,13 @@ DEFBINOP_OP (mul, complex, complex, *)
 
 DEFBINOP (div, complex, complex)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.complex_value () / d);
 }
@@ -85,12 +87,13 @@ DEFBINOP_FN (pow, complex, complex, xpow)
 
 DEFBINOP (ldiv, complex, complex)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_value () / d);
 }
@@ -106,12 +109,13 @@ DEFBINOP_OP (el_mul, complex, complex, *)
 
 DEFBINOP (el_div, complex, complex)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.complex_value () / d);
 }
@@ -120,40 +124,34 @@ DEFBINOP_FN (el_pow, complex, complex, xpow)
 
 DEFBINOP (el_ldiv, complex, complex)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_value () / d);
 }
 
 DEFBINOP (el_and, complex, complex)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return v1.complex_value () != 0.0 && v2.complex_value () != 0.0;
 }
 
 DEFBINOP (el_or, complex, complex)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return v1.complex_value () != 0.0 || v2.complex_value () != 0.0;
 }
 
 DEFNDCATOP_FN (cs_cs, complex, complex, complex_array, complex_array, concat)
-
-CONVDECL (complex_to_float_complex)
-{
-  CAST_CONV_ARG (const octave_complex&);
-
-  return new octave_float_complex_matrix (FloatComplexMatrix (1, 1,
-                                          static_cast<FloatComplex>
-                                            (v.complex_value ())));
-}
 
 void
 install_cs_cs_ops (void)
@@ -195,7 +193,5 @@ install_cs_cs_ops (void)
   INSTALL_ASSIGNCONV (octave_complex, octave_null_str, octave_complex_matrix);
   INSTALL_ASSIGNCONV (octave_complex, octave_null_sq_str,
                       octave_complex_matrix);
-
-  INSTALL_CONVOP (octave_complex, octave_float_complex_matrix,
-                  complex_to_float_complex);
 }
+

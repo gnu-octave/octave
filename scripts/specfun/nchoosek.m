@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2015 Rolf Fabian and Paul Kienzle
+## Copyright (C) 2001-2016 Rolf Fabian and Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
-## @deftypefnx {Function File} {@var{c} =} nchoosek (@var{set}, @var{k})
+## @deftypefn  {} {@var{c} =} nchoosek (@var{n}, @var{k})
+## @deftypefnx {} {@var{c} =} nchoosek (@var{set}, @var{k})
 ##
 ## Compute the binomial coefficient of @var{n} or list all possible
 ## combinations of a @var{set} of items.

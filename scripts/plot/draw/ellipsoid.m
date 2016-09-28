@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Sylvain Pelissier
+## Copyright (C) 2007-2016 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ellipsoid (@var{xc}, @var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr}, @var{n})
-## @deftypefnx {Function File} {} ellipsoid (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ellipsoid (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} ellipsoid (@dots{})
+## @deftypefn  {} {} ellipsoid (@var{xc}, @var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr}, @var{n})
+## @deftypefnx {} {} ellipsoid (@dots{}, @var{n})
+## @deftypefnx {} {} ellipsoid (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} ellipsoid (@dots{})
 ## Plot a 3-D ellipsoid.
 ##
 ## The inputs @var{xc}, @var{yc}, @var{zc} specify the center of the ellipsoid.
@@ -95,5 +95,5 @@ endfunction
 %!demo
 %! clf;
 %! ellipsoid (0, 0, 1, 2, 3, 4, 20);
-%! title ('ellipsoid()');
+%! title ("ellipsoid()");
 

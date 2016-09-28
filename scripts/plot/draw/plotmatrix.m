@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} plotmatrix (@var{x}, @var{y})
-## @deftypefnx {Function File} {} plotmatrix (@var{x})
-## @deftypefnx {Function File} {} plotmatrix (@dots{}, @var{style})
-## @deftypefnx {Function File} {} plotmatrix (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
+## @deftypefn  {} {} plotmatrix (@var{x}, @var{y})
+## @deftypefnx {} {} plotmatrix (@var{x})
+## @deftypefnx {} {} plotmatrix (@dots{}, @var{style})
+## @deftypefnx {} {} plotmatrix (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{h}, @var{ax}, @var{bigax}, @var{p}, @var{pax}] =} plotmatrix (@dots{})
 ## Scatter plot of the columns of one matrix against another.
 ##
 ## Given the arguments @var{x} and @var{y} that have a matching number of
@@ -110,10 +110,11 @@ endfunction
 
 %!demo
 %! clf;
-%! plotmatrix (randn (100, 3), 'g+');
+%! plotmatrix (randn (100, 3), "g+");
 
 
 function plotmatrixdelete (h, d, ax)
+
   for i = 1 : numel (ax)
     hc = ax(i);
     if (isaxes (hc) && strcmpi (get (hc, "beingdeleted"), "off"))
@@ -124,13 +125,16 @@ function plotmatrixdelete (h, d, ax)
       endif
     endif
   endfor
+
 endfunction
 
 function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
+
   have_line_spec = false;
   have_hist = false;
   parent = get (bigax, "parent");
-  for i = 1 : nargin - 1
+  narg = nargin ();
+  for i = 1 : narg - 1
     arg = varargin{i};
     if (ischar (arg) || iscellstr (arg))
       [linespec, valid] = __pltopt__ ("plotmatrix", varargin{i}, false);
@@ -138,7 +142,7 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
         have_line_spec = true;
         linespec = varargin(i);
         varargin(i) = [];
-        nargin = nargin - 1;
+        narg -= 1;
         break;
       else
         print_usage ("plotmatrix");
@@ -146,11 +150,11 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
     endif
   endfor
 
-  if (nargin == 2)
+  if (narg == 2)
     X = varargin{1};
     Y = X;
     have_hist = true;
-  elseif (nargin == 3)
+  elseif (narg == 3)
     X = varargin{1};
     Y = varargin{2};
   else
@@ -197,5 +201,6 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
       endif
     endfor
   endfor
+
 endfunction
 

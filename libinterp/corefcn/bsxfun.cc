@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2015 David Bateman
+Copyright (C) 2007-2016 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -95,7 +95,7 @@ typedef octave_value (*bsxfun_handler) (const octave_value&,
 // Static table of handlers.
 bsxfun_handler bsxfun_handler_table[bsxfun_num_builtin_ops][btyp_num_types];
 
-template <class NDA, NDA (bsxfun_op) (const NDA&, const NDA&)>
+template <typename NDA, NDA (bsxfun_op) (const NDA&, const NDA&)>
 static octave_value
 bsxfun_forward_op (const octave_value& x, const octave_value& y)
 {
@@ -104,7 +104,7 @@ bsxfun_forward_op (const octave_value& x, const octave_value& y)
   return octave_value (bsxfun_op (xa, ya));
 }
 
-template <class NDA, boolNDArray (bsxfun_rel) (const NDA&, const NDA&)>
+template <typename NDA, boolNDArray (bsxfun_rel) (const NDA&, const NDA&)>
 static octave_value
 bsxfun_forward_rel (const octave_value& x, const octave_value& y)
 {
@@ -115,7 +115,7 @@ bsxfun_forward_rel (const octave_value& x, const octave_value& y)
 
 // pow() needs a special handler for reals
 // because of the potentially complex result.
-template <class NDA, class CNDA>
+template <typename NDA, typename CNDA>
 static octave_value
 do_bsxfun_real_pow (const octave_value& x, const octave_value& y)
 {
@@ -133,22 +133,24 @@ static void maybe_fill_table (void)
   if (filled)
     return;
 
-#define REGISTER_OP_HANDLER(OP, BTYP, NDA, FUNOP) \
+#define REGISTER_OP_HANDLER(OP, BTYP, NDA, FUNOP)                       \
   bsxfun_handler_table[OP][BTYP] = bsxfun_forward_op<NDA, FUNOP>
-#define REGISTER_REL_HANDLER(REL, BTYP, NDA, FUNREL) \
+
+#define REGISTER_REL_HANDLER(REL, BTYP, NDA, FUNREL)                    \
   bsxfun_handler_table[REL][BTYP] = bsxfun_forward_rel<NDA, FUNREL>
-#define REGISTER_STD_HANDLERS(BTYP, NDA) \
-  REGISTER_OP_HANDLER (bsxfun_builtin_plus, BTYP, NDA, bsxfun_add); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_minus, BTYP, NDA, bsxfun_sub); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_times, BTYP, NDA, bsxfun_mul); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_divide, BTYP, NDA, bsxfun_div); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_max, BTYP, NDA, bsxfun_max); \
-  REGISTER_OP_HANDLER (bsxfun_builtin_min, BTYP, NDA, bsxfun_min); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_eq, BTYP, NDA, bsxfun_eq); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_ne, BTYP, NDA, bsxfun_ne); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_lt, BTYP, NDA, bsxfun_lt); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_le, BTYP, NDA, bsxfun_le); \
-  REGISTER_REL_HANDLER (bsxfun_builtin_gt, BTYP, NDA, bsxfun_gt); \
+
+#define REGISTER_STD_HANDLERS(BTYP, NDA)                                \
+  REGISTER_OP_HANDLER (bsxfun_builtin_plus, BTYP, NDA, bsxfun_add);     \
+  REGISTER_OP_HANDLER (bsxfun_builtin_minus, BTYP, NDA, bsxfun_sub);    \
+  REGISTER_OP_HANDLER (bsxfun_builtin_times, BTYP, NDA, bsxfun_mul);    \
+  REGISTER_OP_HANDLER (bsxfun_builtin_divide, BTYP, NDA, bsxfun_div);   \
+  REGISTER_OP_HANDLER (bsxfun_builtin_max, BTYP, NDA, bsxfun_max);      \
+  REGISTER_OP_HANDLER (bsxfun_builtin_min, BTYP, NDA, bsxfun_min);      \
+  REGISTER_REL_HANDLER (bsxfun_builtin_eq, BTYP, NDA, bsxfun_eq);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_ne, BTYP, NDA, bsxfun_ne);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_lt, BTYP, NDA, bsxfun_lt);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_le, BTYP, NDA, bsxfun_le);       \
+  REGISTER_REL_HANDLER (bsxfun_builtin_gt, BTYP, NDA, bsxfun_gt);       \
   REGISTER_REL_HANDLER (bsxfun_builtin_ge, BTYP, NDA, bsxfun_ge)
 
   REGISTER_STD_HANDLERS (btyp_double, NDArray);
@@ -230,19 +232,19 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
                      const dim_vector& dva, const dim_vector& dvc,
                      octave_idx_type i, octave_value_list &idx)
 {
-  octave_idx_type nd = dva.length ();
+  octave_idx_type nd = dva.ndims ();
 
   if (i == 0)
     {
       idx(0) = octave_value (':');
       for (octave_idx_type j = 1; j < nd; j++)
         {
-          if (dva (j) == 1)
+          if (dva(j) == 1)
             idx(j) = octave_value (1);
           else
             idx(j) = octave_value ((i % dvc(j)) + 1);
 
-          i = i / dvc (j);
+          i /= dvc(j);
         }
 
       Ac = A;
@@ -256,14 +258,14 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
       octave_idx_type k1 = i - 1;
       for (octave_idx_type j = 1; j < nd; j++)
         {
-          if (dva(j) != 1 && k % dvc (j) != k1 % dvc (j))
+          if (dva(j) != 1 && k % dvc(j) != k1 % dvc(j))
             {
               idx (j) = octave_value ((k % dvc(j)) + 1);
               is_changed = true;
             }
 
-          k = k / dvc (j);
-          k1 = k1 / dvc (j);
+          k /= dvc(j);
+          k1 /= dvc(j);
         }
 
       if (is_changed)
@@ -282,7 +284,7 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
 static void
 update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 {
-  octave_idx_type nd = dv.length ();
+  octave_idx_type nd = dv.ndims ();
 
   if (i == 0)
     {
@@ -294,8 +296,8 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
     {
       for (octave_idx_type j = 1; j < nd; j++)
         {
-          idx (j) = octave_value (i % dv (j) + 1);
-          i = i / dv (j);
+          idx (j) = octave_value (i % dv(j) + 1);
+          i /= dv(j);
         }
     }
 }
@@ -304,365 +306,349 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 static void
 update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 {
-  octave_idx_type nd = dv.length ();
+  octave_idx_type nd = dv.ndims ();
 
   idx(0) = 0;
   for (octave_idx_type j = 1; j < nd; j++)
     {
-      idx (j) = i % dv (j);
-      i = i / dv (j);
+      idx(j) = i % dv(j);
+      i /= dv(j);
     }
 }
 
 DEFUN (bsxfun, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
-The binary singleton expansion function performs broadcasting,\n\
-that is, it applies a binary function @var{f} element-by-element to two\n\
-array arguments @var{A} and @var{B}, and expands as necessary\n\
-singleton dimensions in either input argument.\n\
-\n\
-@var{f} is a function handle, inline function, or string containing the name\n\
-of the function to evaluate.  The function @var{f} must be capable of\n\
-accepting two column-vector arguments of equal length, or one column vector\n\
-argument and a scalar.\n\
-\n\
-The dimensions of @var{A} and @var{B} must be equal or singleton.  The\n\
-singleton dimensions of the arrays will be expanded to the same\n\
-dimensionality as the other array.\n\
-@seealso{arrayfun, cellfun}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
+The binary singleton expansion function performs broadcasting,
+that is, it applies a binary function @var{f} element-by-element to two
+array arguments @var{A} and @var{B}, and expands as necessary
+singleton dimensions in either input argument.
+
+@var{f} is a function handle, inline function, or string containing the name
+of the function to evaluate.  The function @var{f} must be capable of
+accepting two column-vector arguments of equal length, or one column vector
+argument and a scalar.
+
+The dimensions of @var{A} and @var{B} must be equal or singleton.  The
+singleton dimensions of the arrays will be expanded to the same
+dimensionality as the other array.
+@seealso{arrayfun, cellfun}
+@end deftypefn */)
 {
-  int nargin = args.length ();
+  if (args.length () != 3)
+    print_usage ();
+
+  octave_value func = args(0);
+  if (func.is_string ())
+    {
+      std::string name = func.string_value ();
+      func = symbol_table::find_function (name);
+      if (func.is_undefined ())
+        error ("bsxfun: invalid function name: %s", name.c_str ());
+    }
+  else if (! (args(0).is_function_handle () || args(0).is_inline_function ()))
+    error ("bsxfun: F must be a string or function handle");
+
   octave_value_list retval;
 
-  if (nargin != 3)
-    print_usage ();
-  else
+  const octave_value A = args(1);
+  const octave_value B = args(2);
+
+  if (func.is_builtin_function ()
+      || (func.is_function_handle () && ! A.is_object () && ! B.is_object ()))
     {
-      octave_value func = args(0);
-
-      if (func.is_string ())
+      // This may break if the default behavior is overridden.  But if you
+      // override arithmetic operators for builtin classes, you should expect
+      // mayhem anyway (constant folding etc).  Querying is_overloaded() may
+      // not be exactly what we need here.
+      octave_function *fcn_val = func.function_value ();
+      if (fcn_val)
         {
-          std::string name = func.string_value ();
-          func = symbol_table::find_function (name);
-          if (func.is_undefined ())
-            error ("bsxfun: invalid function name: %s", name.c_str ());
+          octave_value tmp = maybe_optimized_builtin (fcn_val->name (), A, B);
+          if (tmp.is_defined ())
+            retval(0) = tmp;
         }
-      else if (! (args(0).is_function_handle ()
-               || args(0).is_inline_function ()))
-        error ("bsxfun: F must be a string or function handle");
+    }
 
-      const octave_value A = args(1);
-      const octave_value B = args(2);
+  if (retval.empty ())
+    {
+      dim_vector dva = A.dims ();
+      octave_idx_type nda = dva.ndims ();
+      dim_vector dvb = B.dims ();
+      octave_idx_type ndb = dvb.ndims ();
+      octave_idx_type nd = nda;
 
-      if (func.is_builtin_function ()
-          || (func.is_function_handle ()
-              && ! A.is_object () && ! B.is_object ()))
+      if (nda > ndb)
+        dvb.resize (nda, 1);
+      else if (nda < ndb)
         {
-          // This may break if the default behavior is overridden.  But if you
-          // override arithmetic operators for builtin classes, you should
-          // expect mayhem anyway (constant folding etc).  Querying
-          // is_overloaded() may not be exactly what we need here.
-          octave_function *fcn_val = func.function_value ();
-          if (fcn_val)
-            {
-              octave_value tmp = maybe_optimized_builtin (fcn_val->name (),
-                                                          A, B);
-              if (tmp.is_defined ())
-                retval(0) = tmp;
-            }
+          dva.resize (ndb, 1);
+          nd = ndb;
         }
 
-      if (! error_state && retval.empty ())
+      for (octave_idx_type i = 0; i < nd; i++)
+        if (dva(i) != dvb(i) && dva(i) != 1 && dvb(i) != 1)
+          error ("bsxfun: dimensions of A and B must match");
+
+      // Find the size of the output
+      dim_vector dvc;
+      dvc.resize (nd);
+
+      for (octave_idx_type i = 0; i < nd; i++)
+        dvc(i) = (dva(i) < 1 ? dva(i)
+                  : (dvb(i) < 1 ? dvb(i)
+                     : (dva(i) > dvb(i)
+                        ? dva(i) : dvb(i))));
+
+      if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
         {
-          dim_vector dva = A.dims ();
-          octave_idx_type nda = dva.length ();
-          dim_vector dvb = B.dims ();
-          octave_idx_type ndb = dvb.length ();
-          octave_idx_type nd = nda;
+          octave_value_list inputs (2);
+          inputs(0) = A;
+          inputs(1) = B;
+          retval = func.do_multi_index_op (1, inputs);
+        }
+      else if (dvc.numel () < 1)
+        {
+          octave_value_list inputs (2);
+          inputs(0) = A.resize (dvc);
+          inputs(1) = B.resize (dvc);
+          retval = func.do_multi_index_op (1, inputs);
+        }
+      else
+        {
+          octave_idx_type ncount = 1;
+          for (octave_idx_type i = 1; i < nd; i++)
+            ncount *= dvc(i);
 
-          if (nda > ndb)
-            dvb.resize (nda, 1);
-          else if (nda < ndb)
+#define BSXDEF(T)                               \
+          T result_ ## T;                       \
+          bool have_ ## T = false;
+
+          BSXDEF(NDArray);
+          BSXDEF(ComplexNDArray);
+          BSXDEF(FloatNDArray);
+          BSXDEF(FloatComplexNDArray);
+          BSXDEF(boolNDArray);
+          BSXDEF(int8NDArray);
+          BSXDEF(int16NDArray);
+          BSXDEF(int32NDArray);
+          BSXDEF(int64NDArray);
+          BSXDEF(uint8NDArray);
+          BSXDEF(uint16NDArray);
+          BSXDEF(uint32NDArray);
+          BSXDEF(uint64NDArray);
+
+          octave_value Ac;
+          octave_value_list idxA;
+          octave_value Bc;
+          octave_value_list idxB;
+          octave_value C;
+          octave_value_list inputs (2);
+          Array<int> ra_idx (dim_vector (dvc.ndims (), 1), 0);
+
+          for (octave_idx_type i = 0; i < ncount; i++)
             {
-              dva.resize (ndb, 1);
-              nd = ndb;
-            }
+              if (maybe_update_column (Ac, A, dva, dvc, i, idxA))
+                inputs(0) = Ac;
 
-          for (octave_idx_type i = 0; i < nd; i++)
-            if (dva (i) != dvb (i) && dva (i) != 1 && dvb (i) != 1)
-              {
-                error ("bsxfun: dimensions of A and B must match");
-                break;
-              }
+              if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
+                inputs(1) = Bc;
 
-          if (!error_state)
-            {
-              // Find the size of the output
-              dim_vector dvc;
-              dvc.resize (nd);
+              octave_value_list tmp = func.do_multi_index_op (1, inputs);
 
-              for (octave_idx_type i = 0; i < nd; i++)
-                dvc (i) = (dva (i) < 1 ? dva (i)
-                                       : (dvb (i) < 1 ? dvb (i)
-                                                      : (dva (i) > dvb (i)
-                                                        ? dva (i) : dvb (i))));
-
-              if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
-                {
-                  octave_value_list inputs;
-                  inputs (0) = A;
-                  inputs (1) = B;
-                  retval = func.do_multi_index_op (1, inputs);
+#define BSXINIT(T, CLS, EXTRACTOR)                                      \
+              (result_type == CLS)                                      \
+                {                                                       \
+                  have_ ## T = true;                                    \
+                  result_ ## T = tmp(0). EXTRACTOR ## _array_value ();  \
+                  result_ ## T .resize (dvc);                           \
                 }
-              else if (dvc.numel () < 1)
+
+              if (i == 0)
                 {
-                  octave_value_list inputs;
-                  inputs (0) = A.resize (dvc);
-                  inputs (1) = B.resize (dvc);
-                  retval = func.do_multi_index_op (1, inputs);
+                  if (! tmp(0).is_sparse_type ())
+                    {
+                      std::string result_type = tmp(0).class_name ();
+                      if (result_type == "double")
+                        {
+                          if (tmp(0).is_real_type ())
+                            {
+                              have_NDArray = true;
+                              result_NDArray = tmp(0).array_value ();
+                              result_NDArray.resize (dvc);
+                            }
+                          else
+                            {
+                              have_ComplexNDArray = true;
+                              result_ComplexNDArray =
+                                tmp(0).complex_array_value ();
+                              result_ComplexNDArray.resize (dvc);
+                            }
+                        }
+                      else if (result_type == "single")
+                        {
+                          if (tmp(0).is_real_type ())
+                            {
+                              have_FloatNDArray = true;
+                              result_FloatNDArray
+                                = tmp(0).float_array_value ();
+                              result_FloatNDArray.resize (dvc);
+                            }
+                          else
+                            {
+                              have_ComplexNDArray = true;
+                              result_ComplexNDArray =
+                                tmp(0).complex_array_value ();
+                              result_ComplexNDArray.resize (dvc);
+                            }
+                        }
+                      else if BSXINIT(boolNDArray, "logical", bool)
+                      else if BSXINIT(int8NDArray, "int8", int8)
+                      else if BSXINIT(int16NDArray, "int16", int16)
+                      else if BSXINIT(int32NDArray, "int32", int32)
+                      else if BSXINIT(int64NDArray, "int64", int64)
+                      else if BSXINIT(uint8NDArray, "uint8", uint8)
+                      else if BSXINIT(uint16NDArray, "uint16", uint16)
+                      else if BSXINIT(uint32NDArray, "uint32", uint32)
+                      else if BSXINIT(uint64NDArray, "uint64", uint64)
+                      else
+                        {
+                          C = tmp(0);
+                          C = C.resize (dvc);
+                        }
+                    }
+                  else  // Skip semi-fast path for sparse matrices
+                    {
+                      C = tmp (0);
+                      C = C.resize (dvc);
+                    }
                 }
               else
                 {
-                  octave_idx_type ncount = 1;
-                  for (octave_idx_type i = 1; i < nd; i++)
-                    ncount *= dvc (i);
+                  update_index (ra_idx, dvc, i);
 
-#define BSXDEF(T) \
-                  T result_ ## T; \
-                  bool have_ ## T = false;
-
-                  BSXDEF(NDArray);
-                  BSXDEF(ComplexNDArray);
-                  BSXDEF(FloatNDArray);
-                  BSXDEF(FloatComplexNDArray);
-                  BSXDEF(boolNDArray);
-                  BSXDEF(int8NDArray);
-                  BSXDEF(int16NDArray);
-                  BSXDEF(int32NDArray);
-                  BSXDEF(int64NDArray);
-                  BSXDEF(uint8NDArray);
-                  BSXDEF(uint16NDArray);
-                  BSXDEF(uint32NDArray);
-                  BSXDEF(uint64NDArray);
-
-                  octave_value Ac ;
-                  octave_value_list idxA;
-                  octave_value Bc;
-                  octave_value_list idxB;
-                  octave_value C;
-                  octave_value_list inputs;
-                  Array<int> ra_idx (dim_vector (dvc.length (), 1), 0);
-
-
-                  for (octave_idx_type i = 0; i < ncount; i++)
+                  if (have_FloatNDArray
+                      || have_FloatComplexNDArray)
                     {
-                      if (maybe_update_column (Ac, A, dva, dvc, i, idxA))
-                        inputs (0) = Ac;
-
-                      if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
-                        inputs (1) = Bc;
-
-                      octave_value_list tmp = func.do_multi_index_op (1,
-                                                                      inputs);
-
-                      if (error_state)
-                        break;
-
-#define BSXINIT(T, CLS, EXTRACTOR) \
-                      (result_type == CLS) \
-                        { \
-                            have_ ## T = true; \
-                            result_ ## T = \
-                                tmp (0). EXTRACTOR ## _array_value (); \
-                            result_ ## T .resize (dvc); \
-                        }
-
-                      if (i == 0)
+                      if (! tmp(0).is_float_type ())
                         {
-                          if (! tmp(0).is_sparse_type ())
+                          if (have_FloatNDArray)
                             {
-                              std::string result_type = tmp(0).class_name ();
-                              if (result_type == "double")
-                                {
-                                  if (tmp(0).is_real_type ())
-                                    {
-                                      have_NDArray = true;
-                                      result_NDArray = tmp(0).array_value ();
-                                      result_NDArray.resize (dvc);
-                                    }
-                                  else
-                                    {
-                                      have_ComplexNDArray = true;
-                                      result_ComplexNDArray =
-                                        tmp(0).complex_array_value ();
-                                      result_ComplexNDArray.resize (dvc);
-                                    }
-                                }
-                              else if (result_type == "single")
-                                {
-                                  if (tmp(0).is_real_type ())
-                                    {
-                                      have_FloatNDArray = true;
-                                      result_FloatNDArray
-                                        = tmp(0).float_array_value ();
-                                      result_FloatNDArray.resize (dvc);
-                                    }
-                                  else
-                                    {
-                                      have_ComplexNDArray = true;
-                                      result_ComplexNDArray =
-                                        tmp(0).complex_array_value ();
-                                      result_ComplexNDArray.resize (dvc);
-                                    }
-                                }
-                              else if BSXINIT(boolNDArray, "logical", bool)
-                              else if BSXINIT(int8NDArray, "int8", int8)
-                              else if BSXINIT(int16NDArray, "int16", int16)
-                              else if BSXINIT(int32NDArray, "int32", int32)
-                              else if BSXINIT(int64NDArray, "int64", int64)
-                              else if BSXINIT(uint8NDArray, "uint8", uint8)
-                              else if BSXINIT(uint16NDArray, "uint16", uint16)
-                              else if BSXINIT(uint32NDArray, "uint32", uint32)
-                              else if BSXINIT(uint64NDArray, "uint64", uint64)
-                              else
-                                {
-                                  C = tmp (0);
-                                  C = C.resize (dvc);
-                                }
+                              have_FloatNDArray = false;
+                              C = result_FloatNDArray;
+                            }
+                          else
+                            {
+                              have_FloatComplexNDArray = false;
+                              C = result_FloatComplexNDArray;
+                            }
+                          C = do_cat_op (C, tmp(0), ra_idx);
+                        }
+                      else if (tmp(0).is_double_type ())
+                        {
+                          if (tmp(0).is_complex_type ()
+                              && have_FloatNDArray)
+                            {
+                              result_ComplexNDArray =
+                                ComplexNDArray (result_FloatNDArray);
+                              result_ComplexNDArray.insert
+                                (tmp(0).complex_array_value (), ra_idx);
+                              have_FloatComplexNDArray = false;
+                              have_ComplexNDArray = true;
+                            }
+                          else
+                            {
+                              result_NDArray =
+                                NDArray (result_FloatNDArray);
+                              result_NDArray.insert
+                                (tmp(0).array_value (), ra_idx);
+                              have_FloatNDArray = false;
+                              have_NDArray = true;
                             }
                         }
+                      else if (tmp(0).is_real_type ())
+                        result_FloatNDArray.insert
+                          (tmp(0).float_array_value (), ra_idx);
                       else
                         {
-                          update_index (ra_idx, dvc, i);
-
-                          if (have_FloatNDArray
-                              || have_FloatComplexNDArray)
-                            {
-                              if (! tmp(0).is_float_type ())
-                                {
-                                  if (have_FloatNDArray)
-                                    {
-                                      have_FloatNDArray = false;
-                                      C = result_FloatNDArray;
-                                    }
-                                  else
-                                    {
-                                      have_FloatComplexNDArray = false;
-                                      C = result_FloatComplexNDArray;
-                                    }
-                                  C = do_cat_op (C, tmp(0), ra_idx);
-                                }
-                              else if (tmp(0).is_double_type ())
-                                {
-                                  if (tmp(0).is_complex_type ()
-                                      && have_FloatNDArray)
-                                    {
-                                      result_ComplexNDArray =
-                                        ComplexNDArray (result_FloatNDArray);
-                                      result_ComplexNDArray.insert
-                                        (tmp(0).complex_array_value (), ra_idx);
-                                      have_FloatComplexNDArray = false;
-                                      have_ComplexNDArray = true;
-                                    }
-                                  else
-                                    {
-                                      result_NDArray =
-                                        NDArray (result_FloatNDArray);
-                                      result_NDArray.insert
-                                        (tmp(0).array_value (), ra_idx);
-                                      have_FloatNDArray = false;
-                                      have_NDArray = true;
-                                    }
-                                }
-                              else if (tmp(0).is_real_type ())
-                                result_FloatNDArray.insert
-                                  (tmp(0).float_array_value (), ra_idx);
-                              else
-                                {
-                                  result_FloatComplexNDArray =
-                                    FloatComplexNDArray (result_FloatNDArray);
-                                  result_FloatComplexNDArray.insert
-                                    (tmp(0).float_complex_array_value (),
-                                     ra_idx);
-                                  have_FloatNDArray = false;
-                                  have_FloatComplexNDArray = true;
-                                }
-                            }
-                          else if (have_NDArray)
-                            {
-                              if (! tmp(0).is_float_type ())
-                                {
-                                  have_NDArray = false;
-                                  C = result_NDArray;
-                                  C = do_cat_op (C, tmp(0), ra_idx);
-                                }
-                              else if (tmp(0).is_real_type ())
-                                result_NDArray.insert (tmp(0).array_value (),
-                                                       ra_idx);
-                              else
-                                {
-                                  result_ComplexNDArray =
-                                    ComplexNDArray (result_NDArray);
-                                  result_ComplexNDArray.insert
-                                    (tmp(0).complex_array_value (), ra_idx);
-                                  have_NDArray = false;
-                                  have_ComplexNDArray = true;
-                                }
-                            }
-
-#define BSXLOOP(T, CLS, EXTRACTOR) \
-                        (have_ ## T) \
-                          { \
-                            if (tmp (0).class_name () != CLS) \
-                              { \
-                                have_ ## T = false; \
-                                C = result_ ## T; \
-                                C = do_cat_op (C, tmp (0), ra_idx); \
-                              } \
-                            else \
-                              result_ ## T .insert \
-                                (tmp(0). EXTRACTOR ## _array_value (), \
-                                ra_idx); \
-                          }
-
-                          else if BSXLOOP(ComplexNDArray, "double", complex)
-                          else if BSXLOOP(boolNDArray, "logical", bool)
-                          else if BSXLOOP(int8NDArray, "int8", int8)
-                          else if BSXLOOP(int16NDArray, "int16", int16)
-                          else if BSXLOOP(int32NDArray, "int32", int32)
-                          else if BSXLOOP(int64NDArray, "int64", int64)
-                          else if BSXLOOP(uint8NDArray, "uint8", uint8)
-                          else if BSXLOOP(uint16NDArray, "uint16", uint16)
-                          else if BSXLOOP(uint32NDArray, "uint32", uint32)
-                          else if BSXLOOP(uint64NDArray, "uint64", uint64)
-                          else
-                            C = do_cat_op (C, tmp(0), ra_idx);
+                          result_FloatComplexNDArray =
+                            FloatComplexNDArray (result_FloatNDArray);
+                          result_FloatComplexNDArray.insert
+                            (tmp(0).float_complex_array_value (),
+                             ra_idx);
+                          have_FloatNDArray = false;
+                          have_FloatComplexNDArray = true;
+                        }
+                    }
+                  else if (have_NDArray)
+                    {
+                      if (! tmp(0).is_float_type ())
+                        {
+                          have_NDArray = false;
+                          C = result_NDArray;
+                          C = do_cat_op (C, tmp(0), ra_idx);
+                        }
+                      else if (tmp(0).is_real_type ())
+                        result_NDArray.insert (tmp(0).array_value (),
+                                               ra_idx);
+                      else
+                        {
+                          result_ComplexNDArray =
+                            ComplexNDArray (result_NDArray);
+                          result_ComplexNDArray.insert
+                            (tmp(0).complex_array_value (), ra_idx);
+                          have_NDArray = false;
+                          have_ComplexNDArray = true;
                         }
                     }
 
-#define BSXEND(T) \
-                  (have_ ## T) \
-                    retval(0) = result_ ## T;
+#define BSXLOOP(T, CLS, EXTRACTOR)                                      \
+                  (have_ ## T)                                          \
+                    {                                                   \
+                      if (tmp(0).class_name () != CLS)                  \
+                        {                                               \
+                          have_ ## T = false;                           \
+                          C = result_ ## T;                             \
+                          C = do_cat_op (C, tmp(0), ra_idx);            \
+                        }                                               \
+                      else                                              \
+                        result_ ## T .insert (tmp(0). EXTRACTOR ## _array_value (), ra_idx); \
+                    }
 
-                  if BSXEND(NDArray)
-                  else if BSXEND(ComplexNDArray)
-                  else if BSXEND(FloatNDArray)
-                  else if BSXEND(FloatComplexNDArray)
-                  else if BSXEND(boolNDArray)
-                  else if BSXEND(int8NDArray)
-                  else if BSXEND(int16NDArray)
-                  else if BSXEND(int32NDArray)
-                  else if BSXEND(int64NDArray)
-                  else if BSXEND(uint8NDArray)
-                  else if BSXEND(uint16NDArray)
-                  else if BSXEND(uint32NDArray)
-                  else if BSXEND(uint64NDArray)
+                  else if BSXLOOP(ComplexNDArray, "double", complex)
+                  else if BSXLOOP(boolNDArray, "logical", bool)
+                  else if BSXLOOP(int8NDArray, "int8", int8)
+                  else if BSXLOOP(int16NDArray, "int16", int16)
+                  else if BSXLOOP(int32NDArray, "int32", int32)
+                  else if BSXLOOP(int64NDArray, "int64", int64)
+                  else if BSXLOOP(uint8NDArray, "uint8", uint8)
+                  else if BSXLOOP(uint16NDArray, "uint16", uint16)
+                  else if BSXLOOP(uint32NDArray, "uint32", uint32)
+                  else if BSXLOOP(uint64NDArray, "uint64", uint64)
                   else
-                    retval(0) = C;
+                    C = do_cat_op (C, tmp(0), ra_idx);
                 }
             }
+
+#define BSXEND(T)                               \
+          (have_ ## T)                          \
+            retval(0) = result_ ## T;
+
+          if BSXEND(NDArray)
+          else if BSXEND(ComplexNDArray)
+          else if BSXEND(FloatNDArray)
+          else if BSXEND(FloatComplexNDArray)
+          else if BSXEND(boolNDArray)
+          else if BSXEND(int8NDArray)
+          else if BSXEND(int16NDArray)
+          else if BSXEND(int32NDArray)
+          else if BSXEND(int64NDArray)
+          else if BSXEND(uint8NDArray)
+          else if BSXEND(uint16NDArray)
+          else if BSXEND(uint32NDArray)
+          else if BSXEND(uint64NDArray)
+          else
+            retval(0) = C;
         }
     }
 
@@ -759,7 +745,7 @@ dimensionality as the other array.\n\
 %!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
 
 %% The test below is a very hard case to treat
-%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]));
+%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
 %! a = randn (3, 1, 3);
@@ -823,5 +809,16 @@ dimensionality as the other array.\n\
 %!     endfor
 %!   endfor
 %! endfor
-%!
+
+## Automatic broadcasting with zero length dimensions
+%!assert <47085> ([1 2 3] .+ zeros (0, 3), zeros (0, 3))
+%!assert <47085> (rand (3, 3, 1) .+ rand (3, 3, 0), zeros (3, 3, 0))
+
+## In-place broadcasting with zero length dimensions
+%!test <47085>
+%! a = zeros (0, 3);
+%! a .+= [1 2 3];
+%! assert (a, zeros (0, 3));
+
 */
+

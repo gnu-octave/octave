@@ -1,7 +1,6 @@
 /*
 
-Copyright (C) 2005-2015 Ludwig Schwardt, Kevin Ruland
-
+Copyright (C) 2005-2016 Ludwig Schwardt, Kevin Ruland
 
 This file is part of Octave.
 
@@ -31,25 +30,25 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
 #include "zfstream.h"
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
-#include <cstring>          // for strcpy, strcat, strlen (mode strings)
-#include <cstdio>           // for BUFSIZ
+// For strcpy, strcat, strlen (mode strings).
+#include <cstring>
+// For BUFSIZ.
+#include <cstdio>
 
 // Internal buffer sizes (default and "unbuffered" versions)
 #define STASHED_CHARACTERS 16
 #define BIGBUFSIZE (256 * 1024 + STASHED_CHARACTERS)
 #define SMALLBUFSIZE 1
-
-/*****************************************************************************/
 
 // Default constructor
 gzfilebuf::gzfilebuf ()
@@ -64,7 +63,7 @@ gzfilebuf::gzfilebuf ()
 gzfilebuf::~gzfilebuf ()
 {
   // Sync output buffer and close only if responsible for file
-  // (i.e. attached streams should be left open at this stage)
+  // (i.e., attached streams should be left open at this stage)
   this->sync ();
   if (own_fd)
     this->close ();
@@ -173,18 +172,18 @@ gzfilebuf::open_mode (std::ios_base::openmode mode, char* c_mode) const
   // Double the time for less than 1% size improvement seems
   // excessive though - keeping it at the default level
   // To change back, just append "9" to the next three mode strings
-  if (!testi && testo && !testt && !testa)
+  if (! testi && testo && ! testt && ! testa)
     strcpy (c_mode, "w");
-  if (!testi && testo && !testt && testa)
+  if (! testi && testo && ! testt && testa)
     strcpy (c_mode, "a");
-  if (!testi && testo && testt && !testa)
+  if (! testi && testo && testt && ! testa)
     strcpy (c_mode, "w");
-  if (testi && !testo && !testt && !testa)
+  if (testi && ! testo && ! testt && ! testa)
     strcpy (c_mode, "r");
   // No read/write mode yet
-  //  if (testi && testo && !testt && !testa)
+  //  if (testi && testo && ! testt && ! testa)
   //    strcpy(c_mode, "r+");
-  //  if (testi && testo && testt && !testa)
+  //  if (testi && testo && testt && ! testa)
   //    strcpy(c_mode, "w+");
 
   // Mode string should be empty for invalid combination of flags
@@ -210,9 +209,9 @@ gzfilebuf::showmanyc ()
     return 0;
 }
 
-// Puts back a character to the stream in two cases. Firstly, when there
+// Puts back a character to the stream in two cases.  Firstly, when there
 // is no putback position available, and secondly when the character putback
-// differs from the one in the file. We can only support the first case
+// differs from the one in the file.  We can only support the first case
 // with gzipped files.
 gzfilebuf::int_type
 gzfilebuf::pbackfail (gzfilebuf::int_type c)
@@ -358,7 +357,7 @@ gzfilebuf::setbuf (char_type* p, std::streamsize n)
   // least a buffer of size 1 (very inefficient though, therefore make it
   // bigger?).  This follows from [27.5.2.4.3]/12 (gptr needs to point at
   // something, it seems).
-  if (!p || !n)
+  if (! p || ! n)
     {
       // Replace existing buffer (if any) with small internal buffer
       this->disable_buffer ();
@@ -379,7 +378,7 @@ gzfilebuf::setbuf (char_type* p, std::streamsize n)
   return this;
 }
 
-// Write put area to gzipped file (i.e. ensures that put area is empty)
+// Write put area to gzipped file (i.e., ensures that put area is empty)
 int
 gzfilebuf::sync ()
 {
@@ -394,7 +393,7 @@ void
 gzfilebuf::enable_buffer ()
 {
   // If internal buffer required, allocate one
-  if (own_buffer && !buffer)
+  if (own_buffer && ! buffer)
     {
       // Check for buffered vs. "unbuffered"
       if (buffer_size > 0)
@@ -515,8 +514,6 @@ gzfilebuf::seekpos (pos_type sp, std::ios_base::openmode)
   return ret;
 }
 
-/*****************************************************************************/
-
 // Default constructor initializes stream buffer
 gzifstream::gzifstream ()
   : std::istream (0), sb ()
@@ -565,8 +562,6 @@ gzifstream::close ()
   if (! sb.close ())
     this->setstate (std::ios_base::failbit);
 }
-
-/*****************************************************************************/
 
 // Default constructor initializes stream buffer
 gzofstream::gzofstream ()
@@ -617,4 +612,5 @@ gzofstream::close ()
     this->setstate (std::ios_base::failbit);
 }
 
-#endif // HAVE_ZLIB
+#endif
+

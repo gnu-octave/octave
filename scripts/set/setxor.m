@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2015 Julien Bect
-## Copyright (C) 2008-2015 Jaroslav Hajek
+## Copyright (C) 2014-2016 Julien Bect
+## Copyright (C) 2008-2016 Jaroslav Hajek
 ## Copyright (C) 2000, 2006-2007 Paul Kienzle
 ##
 ## This file is part of Octave.
@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} setxor (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
+## @deftypefn  {} {@var{c} =} setxor (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
 ##
 ## Return the unique elements exclusive to sets @var{a} or @var{b} sorted in
 ## ascending order.
@@ -50,7 +50,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
   [a, b] = validsetargs ("setxor", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+  isrowvec = isrow (a) && isrow (b);
 
   ## Form A and B into sets.
   if (nargout > 1)

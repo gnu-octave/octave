@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 VZLU Prague, a.s.
+## Copyright (C) 2008-2016 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -19,9 +19,9 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fzero (@var{fun}, @var{x0})
-## @deftypefnx {Function File} {} fzero (@var{fun}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
+## @deftypefn  {} {} fzero (@var{fun}, @var{x0})
+## @deftypefnx {} {} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
 ## Find a zero of a univariate function.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
@@ -76,10 +76,12 @@
 ##  Number of function evaluations.
 ##
 ## @item bracketx
-##  A two-element vector with the final bracketing of the zero along the x-axis.
+##  A two-element vector with the final bracketing of the zero along the
+## x-axis.
 ##
 ## @item brackety
-##  A two-element vector with the final bracketing of the zero along the y-axis.
+##  A two-element vector with the final bracketing of the zero along the
+## y-axis.
 ## @end itemize
 ## @seealso{optimset, fsolve}
 ## @end deftypefn
@@ -92,8 +94,8 @@
 ## sequentially calling building blocks subprograms we implement here a
 ## FSM version using one interior point determination and one bracketing
 ## per iteration, thus reducing the number of temporary variables and
-## simplifying the algorithm structure. Further, this approach reduces
-## the need for external functions and error handling. The algorithm has
+## simplifying the algorithm structure.  Further, this approach reduces
+## the need for external functions and error handling.  The algorithm has
 ## also been slightly modified.
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
@@ -116,7 +118,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     fun = str2func (fun, "global");
   endif
 
-  ## TODO
+  ## FIXME:
   ## displev = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
@@ -281,7 +283,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     ## Calculate new point.
     x = c;
     fval = fc = fun (c);
-    niter ++; nfev ++;
+    niter += 1; nfev += 1;
 
     ## Modification 2: skip inverse cubic interpolation if
     ## nonmonotonicity is detected.
@@ -354,8 +356,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
 endfunction
 
-## An assistant function that evaluates a function handle and checks for
-## bad results.
+## A helper function that evaluates a function and checks for bad results.
 function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);

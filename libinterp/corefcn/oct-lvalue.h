@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_lvalue_h)
+#if ! defined (octave_oct_lvalue_h)
 #define octave_oct_lvalue_h 1
+
+#include "octave-config.h"
 
 class octave_value;
 class octave_value_list;
 
 #include <string>
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pt-idx.h"
 #include "symtab.h"
 
@@ -88,7 +90,11 @@ public:
 
   void set_index (const std::string& t, const std::list<octave_value_list>& i);
 
-  void clear_index (void) { type = std::string (); idx.clear (); }
+  void clear_index (void) { type = ""; idx.clear (); }
+
+  std::string index_type (void) const { return type; }
+
+  bool index_is_empty (void) const;
 
   void do_unary_op (octave_value::unary_op op);
 
@@ -106,3 +112,4 @@ private:
 };
 
 #endif
+

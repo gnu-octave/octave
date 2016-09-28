@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -22,29 +22,32 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <iomanip>
 #include <iostream>
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "quit.h"
 #include "pr-output.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
 #include "boolSparse.h"
 #include "ov-base-sparse.h"
+#include "octave-preserve-stream-state.h"
 #include "pager.h"
 #include "utils.h"
 
-template <class T>
+#include "lo-array-errwarn.h"
+
+template <typename T>
 octave_value
 octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
                                     bool resize_ok)
@@ -53,42 +56,54 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 
   octave_idx_type n_idx = idx.length ();
 
-  switch (n_idx)
+  // If we catch an indexing error in index_vector, we flag an error in
+  // index k.  Ensure it is the right value befor each idx_vector call.
+  // Same variable as used in the for loop in the default case.
+
+  octave_idx_type k = 0;
+
+  try
     {
-    case 0:
-      retval = matrix;
-      break;
+      switch (n_idx)
+        {
+        case 0:
+          retval = matrix;
+          break;
 
-    case 1:
-      {
-        idx_vector i = idx (0).index_vector ();
-
-        if (! error_state)
-          retval = octave_value (matrix.index (i, resize_ok));
-      }
-      break;
-
-    case 2:
-      {
-        idx_vector i = idx (0).index_vector ();
-
-        if (! error_state)
+        case 1:
           {
+            idx_vector i = idx (0).index_vector ();
+
+            retval = octave_value (matrix.index (i, resize_ok));
+          }
+          break;
+
+        case 2:
+          {
+            idx_vector i = idx (0).index_vector ();
+
+            k = 1;
             idx_vector j = idx (1).index_vector ();
 
-            if (! error_state)
-              retval = octave_value (matrix.index (i, j, resize_ok));
+            retval = octave_value (matrix.index (i, j, resize_ok));
           }
-      }
-      break;
-    default:
-      error ("sparse indexing needs 1 or 2 indices");
+          break;
+
+        default:
+          error ("sparse indexing needs 1 or 2 indices");
+        }
+    }
+  catch (octave::index_exception& e)
+    {
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (n_idx, k+1);
+      throw;
     }
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::subsref (const std::string& type,
                                 const std::list<octave_value_list>& idx)
@@ -116,7 +131,7 @@ octave_base_sparse<T>::subsref (const std::string& type,
   return retval.next_subsref (type, idx);
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::subsasgn (const std::string& type,
                                  const std::list<octave_value_list>& idx,
@@ -128,31 +143,29 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
     {
     case '(':
       {
-        if (type.length () == 1)
-          retval = numeric_assign (type, idx, rhs);
-        else
+        if (type.length () != 1)
           {
             std::string nm = type_name ();
             error ("in indexed assignment of %s, last lhs index must be ()",
                    nm.c_str ());
           }
+
+        retval = numeric_assign (type, idx, rhs);
       }
       break;
 
     case '{':
     case '.':
       {
-        if (is_empty ())
-          {
-            octave_value tmp = octave_value::empty_conv (type, rhs);
-
-            retval = tmp.subsasgn (type, idx, rhs);
-          }
-        else
+        if (! is_empty ())
           {
             std::string nm = type_name ();
             error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
           }
+
+        octave_value tmp = octave_value::empty_conv (type, rhs);
+
+        retval = tmp.subsasgn (type, idx, rhs);
       }
       break;
 
@@ -163,91 +176,112 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
   return retval;
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
 {
 
   octave_idx_type len = idx.length ();
 
-  switch (len)
+  // If we catch an indexing error in index_vector, we flag an error in
+  // index k.  Ensure it is the right value befor each idx_vector call.
+  // Same variable as used in the for loop in the default case.
+
+  octave_idx_type k = 0;
+
+  try
     {
-    case 1:
-      {
-        idx_vector i = idx (0).index_vector ();
-
-        if (! error_state)
-          matrix.assign (i, rhs);
-
-        break;
-      }
-
-    case 2:
-      {
-        idx_vector i = idx (0).index_vector ();
-
-        if (! error_state)
+      switch (len)
+        {
+        case 1:
           {
-            idx_vector j = idx (1).index_vector ();
+            idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              matrix.assign (i, j, rhs);
+            matrix.assign (i, rhs);
+
+            break;
           }
 
-        break;
-      }
+        case 2:
+          {
+            idx_vector i = idx (0).index_vector ();
 
-    default:
-      error ("sparse indexing needs 1 or 2 indices");
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
+
+            matrix.assign (i, j, rhs);
+
+            break;
+          }
+
+        default:
+          error ("sparse indexing needs 1 or 2 indices");
+        }
     }
-
+  catch (octave::index_exception& e)
+    {
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (len, k+1);
+      throw;
+    }
 
   // Invalidate matrix type.
   typ.invalidate_type ();
 }
 
-template <class MT>
+template <typename MT>
 void
 octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type len = idx.length ();
 
-  switch (len)
+  // If we catch an indexing error in index_vector, we flag an error in
+  // index k.  Ensure it is the right value befor each idx_vector call.
+  // Same variable as used in the for loop in the default case.
+
+  octave_idx_type k = 0;
+
+  try
     {
-    case 1:
-      {
-        idx_vector i = idx (0).index_vector ();
-
-        if (! error_state)
-          matrix.delete_elements (i);
-
-        break;
-      }
-
-    case 2:
-      {
-        idx_vector i = idx (0).index_vector ();
-
-        if (! error_state)
+      switch (len)
+        {
+        case 1:
           {
-            idx_vector j = idx (1).index_vector ();
+            idx_vector i = idx (0).index_vector ();
 
-            if (! error_state)
-              matrix.delete_elements (i, j);
+            matrix.delete_elements (i);
+
+            break;
           }
 
-        break;
-      }
+        case 2:
+          {
+            idx_vector i = idx (0).index_vector ();
 
-    default:
-      error ("sparse indexing needs 1 or 2 indices");
+            k = 1;
+            idx_vector j = idx (1).index_vector ();
+
+            matrix.delete_elements (i, j);
+
+            break;
+          }
+
+        default:
+          error ("sparse indexing needs 1 or 2 indices");
+        }
+    }
+  catch (octave::index_exception& e)
+    {
+      // Rethrow to allow more info to be reported later.
+      e.set_pos_if_unset (len, k+1);
+      throw;
     }
 
   // Invalidate the matrix type
   typ.invalidate_type ();
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
 {
@@ -256,7 +290,7 @@ octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::is_true (void) const
 {
@@ -265,19 +299,28 @@ octave_base_sparse<T>::is_true (void) const
   octave_idx_type nel = dv.numel ();
   octave_idx_type nz = nnz ();
 
-  if (nz == nel && nel > 0)
+  if (nel > 0)
     {
       T t1 (matrix.reshape (dim_vector (nel, 1)));
 
-      SparseBoolMatrix t2 = t1.all ();
+      if (t1.any_element_is_nan ())
+        octave::err_nan_to_logical_conversion ();
 
-      retval = t2(0);
+      if (nel > 1)
+        warn_array_as_logical (dv);
+
+      if (nz == nel)
+        {
+          SparseBoolMatrix t2 = t1.all ();
+
+          retval = t2(0);
+        }
     }
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::print_as_scalar (void) const
 {
@@ -286,7 +329,7 @@ octave_base_sparse<T>::print_as_scalar (void) const
   return (dv.all_ones () || dv.any_zero ());
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax)
 {
@@ -294,7 +337,7 @@ octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax)
   newline (os);
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::print_info (std::ostream& os,
                                    const std::string& prefix) const
@@ -302,7 +345,7 @@ octave_base_sparse<T>::print_info (std::ostream& os,
   matrix.print_info (os, prefix);
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_sparse<T>::print_raw (std::ostream& os,
                                   bool pr_as_read_syntax) const
@@ -384,7 +427,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
     }
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::save_ascii (std::ostream& os)
 {
@@ -394,50 +437,40 @@ octave_base_sparse<T>::save_ascii (std::ostream& os)
   matrix.maybe_compress ();
 
   os << "# nnz: "      << nnz () << "\n";
-  os << "# rows: "     << dv (0) << "\n";
-  os << "# columns: "  << dv (1) << "\n";
+  os << "# rows: "     << dv(0) << "\n";
+  os << "# columns: "  << dv(1) << "\n";
 
   os << this->matrix;
 
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_sparse<T>::load_ascii (std::istream& is)
 {
   octave_idx_type nz = 0;
   octave_idx_type nr = 0;
   octave_idx_type nc = 0;
-  bool success = true;
 
-  if (extract_keyword (is, "nnz", nz, true)
-      && extract_keyword (is, "rows", nr, true)
-      && extract_keyword (is, "columns", nc, true))
-    {
-      T tmp (nr, nc, nz);
+  if (! extract_keyword (is, "nnz", nz, true)
+      || ! extract_keyword (is, "rows", nr, true)
+      || ! extract_keyword (is, "columns", nc, true))
+    error ("load: failed to extract number of rows and columns");
 
-      is >> tmp;
+  T tmp (nr, nc, nz);
 
-      if (!is)
-        {
-          error ("load: failed to load matrix constant");
-          success = false;
-        }
+  is >> tmp;
 
-      matrix = tmp;
-    }
-  else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+  if (! is)
+    error ("load: failed to load matrix constant");
 
-  return success;
+  matrix = tmp;
+
+  return true;
 }
 
-
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
 {
@@ -450,7 +483,7 @@ octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
   return (i < nr && j < nc) ? octave_value (matrix(i,j)) : octave_value ();
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 {
@@ -507,3 +540,4 @@ octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 
   return retval;
 }
+

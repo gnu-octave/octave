@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Teemu Ikonen
+## Copyright (C) 2000-2016 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -17,16 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} semilogxerr (@var{y}, @var{ey})
-## @deftypefnx {Function File} {} semilogxerr (@var{y}, @dots{}, @var{fmt})
-## @deftypefnx {Function File} {} semilogxerr (@var{x}, @var{y}, @var{ey})
-## @deftypefnx {Function File} {} semilogxerr (@var{x}, @var{y}, @var{err}, @var{fmt})
-## @deftypefnx {Function File} {} semilogxerr (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
-## @deftypefnx {Function File} {} semilogxerr (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
-## @deftypefnx {Function File} {} semilogxerr (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
-## @deftypefnx {Function File} {} semilogxerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
-## @deftypefnx {Function File} {} semilogxerr (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} semilogxerr (@dots{})
+## @deftypefn  {} {} semilogxerr (@var{y}, @var{ey})
+## @deftypefnx {} {} semilogxerr (@var{y}, @dots{}, @var{fmt})
+## @deftypefnx {} {} semilogxerr (@var{x}, @var{y}, @var{ey})
+## @deftypefnx {} {} semilogxerr (@var{x}, @var{y}, @var{err}, @var{fmt})
+## @deftypefnx {} {} semilogxerr (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
+## @deftypefnx {} {} semilogxerr (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
+## @deftypefnx {} {} semilogxerr (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
+## @deftypefnx {} {} semilogxerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
+## @deftypefnx {} {} semilogxerr (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} semilogxerr (@dots{})
 ## Produce 2-D plots using a logarithmic scale for the x-axis and errorbars
 ## at each data point.
 ##
@@ -65,11 +65,11 @@ function h = semilogxerr (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log");
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "xminortick", "on");
     endif
 
-    htmp = __errcomm__ ("semilogxerr", hax, varargin{:});
+    htmp = __errplot__ ("semilogxerr", hax, varargin{:});
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -89,8 +89,8 @@ endfunction
 %! x = exp (log (0.01):0.2:log (10));
 %! y = wblpdf (x, 2, 2);
 %! ey = 0.5*rand (size (y)) .* y;
-%! semilogxerr (x, y, ey, '#~x-');
+%! semilogxerr (x, y, ey, "#~x-");
 %! xlim (x([1, end]));
-%! title ({'semilogxerr(): semilogx() plot with errorbars', ...
-%!         'X-axis is logarithmic'});
+%! title ({"semilogxerr(): semilogx() plot with errorbars", ...
+%!         "X-axis is logarithmic"});
 

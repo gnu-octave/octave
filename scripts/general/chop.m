@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 John W. Eaton
+## Copyright (C) 2010-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chop (@var{x}, @var{ndigits}, @var{base})
+## @deftypefn {} {} chop (@var{x}, @var{ndigits}, @var{base})
 ## Truncate elements of @var{x} to a length of @var{ndigits} such that the
 ## resulting numbers are exactly divisible by @var{base}.
 ##

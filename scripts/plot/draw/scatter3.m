@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} scatter3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s})
-## @deftypefnx {Function File} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s}, @var{c})
-## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{style})
-## @deftypefnx {Function File} {} scatter3 (@dots{}, "filled")
-## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} scatter3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} scatter3 (@dots{})
+## @deftypefn  {} {} scatter3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s})
+## @deftypefnx {} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s}, @var{c})
+## @deftypefnx {} {} scatter3 (@dots{}, @var{style})
+## @deftypefnx {} {} scatter3 (@dots{}, "filled")
+## @deftypefnx {} {} scatter3 (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {} {} scatter3 (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} scatter3 (@dots{})
 ## Draw a 3-D scatter plot.
 ##
 ## A marker is plotted at each point defined by the coordinates in the vectors
@@ -38,8 +38,8 @@
 ## The color of the markers is determined by @var{c}, which can be a string
 ## defining a fixed color; a 3-element vector giving the red, green, and blue
 ## components of the color; a vector of the same length as @var{x} that gives
-## a scaled index into the current colormap; or an @nospell{Nx3} matrix defining
-## the RGB color of each marker individually.
+## a scaled index into the current colormap; or an @nospell{Nx3} matrix
+## defining the RGB color of each marker individually.
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot} command.
@@ -82,8 +82,8 @@ function retval = scatter3 (varargin)
 
     htmp = __scatter__ (hax, 3, "scatter3", varargin{:});
 
-    if (! ishold (hax))
-      set (hax, "view", [-37.5, 30], "box", "off",
+    if (! ishold ())
+      set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   unwind_protect_cleanup
@@ -103,27 +103,27 @@ endfunction
 %! clf;
 %! [x, y, z] = peaks (20);
 %! scatter3 (x(:), y(:), z(:), [], z(:));
-%! title ({'Default scatter3() plot', ...
-%!         'constant size bubbles and color determined by Z'});
+%! title ({"Default scatter3() plot", ...
+%!         "constant size bubbles and color determined by Z"});
 
 %!demo
 %! clf;
 %! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 10, z(:), 's');
-%! title ({'scatter3() plot', ...
-%!         'marker is square, size is 10, color determined by Z'});
+%! scatter3 (x(:), y(:), z(:), 10, z(:), "s");
+%! title ({"scatter3() plot", ...
+%!         "marker is square, size is 10, color determined by Z"});
 
 %!demo
 %! clf;
 %! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 20*z(:), [], 's');
-%! title ({'scatter3() plot', ...
-%!         'marker is square, size is determined by Z'});
+%! scatter3 (x(:), y(:), z(:), 20*z(:), [], "s");
+%! title ({"scatter3() plot", ...
+%!         "marker is square, size is determined by Z"});
 
 %!demo
 %! clf;
 %! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), 's');
-%! title ({'scatter3() plot', ...
-%!         'marker is square, size and color determined by Z'});
+%! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), "s");
+%! title ({"scatter3() plot", ...
+%!         "marker is square, size and color determined by Z"});
 

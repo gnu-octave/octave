@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2015 John W. Eaton
+Copyright (C) 1995-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_min_h)
+#if ! defined (octave_base_min_h)
 #define octave_base_min_h 1
+
+#include "octave-config.h"
 
 #include "dColVector.h"
 
@@ -114,7 +116,7 @@ public:
     return do_minimize (objf, inform, lambda);
   }
 
-  octave_idx_type size (void) const { return x.capacity (); }
+  octave_idx_type size (void) const { return x.numel (); }
 
 protected:
 
@@ -122,3 +124,4 @@ protected:
 };
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstring>
@@ -48,13 +48,21 @@ octave_handle_signal (void)
     }
 }
 
+extern OCTAVE_API void
+clean_up_and_exit (int exit_status, bool safe_to_return)
+{
+  octave_exception_state = octave_quit_exception;
+
+  throw octave::exit_exception (exit_status, safe_to_return);
+}
+
 void
 octave_throw_interrupt_exception (void)
 {
   if (octave_interrupt_hook)
     octave_interrupt_hook ();
 
-  throw octave_interrupt_exception ();
+  throw octave::interrupt_exception ();
 }
 
 void
@@ -64,7 +72,7 @@ octave_throw_execution_exception (void)
 
   octave_exception_state = octave_exec_exception;
 
-  throw octave_execution_exception ();
+  throw octave::execution_exception ();
 }
 
 void
@@ -98,8 +106,14 @@ octave_rethrow_exception (void)
           octave_throw_bad_alloc ();
           break;
 
+        case octave_quit_exception:
+          clean_up_and_exit (octave_exit_exception_status,
+                             octave_exit_exception_safe_to_return);
+          break;
+
         default:
           break;
         }
     }
 }
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} frnd (@var{m}, @var{n})
-## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{r})
-## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, [@var{sz}])
+## @deftypefn  {} {} frnd (@var{m}, @var{n})
+## @deftypefnx {} {} frnd (@var{m}, @var{n}, @var{r})
+## @deftypefnx {} {} frnd (@var{m}, @var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} frnd (@var{m}, @var{n}, [@var{sz}])
 ## Return a matrix of random samples from the F distribution with
 ## @var{m} and @var{n} degrees of freedom.
 ##

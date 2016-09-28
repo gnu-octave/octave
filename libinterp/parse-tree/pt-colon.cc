@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 #include "ov.h"
 #include "pt-bp.h"
@@ -39,30 +39,26 @@ tree_colon_expression::append (tree_expression *t)
 {
   tree_colon_expression *retval = 0;
 
-  if (op_base)
+  if (! op_base)
+    error ("invalid colon expression");
+
+  if (op_limit)
     {
-      if (op_limit)
-        {
-          if (op_increment)
-            ::error ("invalid colon expression");
-          else
-            {
-              // Stupid syntax:
-              //
-              // base : limit
-              // base : increment : limit
+      if (op_increment)
+        error ("invalid colon expression");
 
-              op_increment = op_limit;
-              op_limit = t;
-            }
-        }
-      else
-        op_limit = t;
+      // Stupid syntax:
+      //
+      // base : limit
+      // base : increment : limit
 
-      retval = this;
+      op_increment = op_limit;
+      op_limit = t;
     }
   else
-    ::error ("invalid colon expression");
+    op_limit = t;
+
+  retval = this;
 
   return retval;
 }
@@ -70,14 +66,10 @@ tree_colon_expression::append (tree_expression *t)
 octave_value_list
 tree_colon_expression::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for colon expression");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 octave_value
@@ -85,73 +77,49 @@ tree_colon_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state || ! op_base || ! op_limit)
+  if (! op_base || ! op_limit)
     return retval;
 
   octave_value ov_base = op_base->rvalue1 ();
 
-  if (error_state || ov_base.is_undefined ())
-    eval_error ("invalid base value in colon expression");
-  else
+  octave_value ov_limit = op_limit->rvalue1 ();
+
+  if (ov_base.is_object () || ov_limit.is_object ())
     {
-      octave_value ov_limit = op_limit->rvalue1 ();
+      octave_value_list tmp1;
 
-      if (error_state || ov_limit.is_undefined ())
-        eval_error ("invalid limit value in colon expression");
-      else if (ov_base.is_object () || ov_limit.is_object ())
+      if (op_increment)
         {
-          octave_value_list tmp1;
+          octave_value ov_increment = op_increment->rvalue1 ();
 
-          if (op_increment)
-            {
-              octave_value ov_increment = op_increment->rvalue1 ();
-
-              if (error_state || ov_increment.is_undefined ())
-                eval_error ("invalid increment value in colon expression");
-              else
-                {
-                  tmp1(2) = ov_limit;
-                  tmp1(1) = ov_increment;
-                  tmp1(0) = ov_base;
-                }
-            }
-          else
-            {
-              tmp1(1) = ov_limit;
-              tmp1(0) = ov_base;
-            }
-
-          if (!error_state)
-            {
-              octave_value fcn = symbol_table::find_function ("colon", tmp1);
-
-              if (fcn.is_defined ())
-                {
-                  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-
-                  if (! error_state)
-                    retval = tmp2 (0);
-                }
-              else
-                ::error ("can not find overloaded colon function");
-            }
+          tmp1(2) = ov_limit;
+          tmp1(1) = ov_increment;
+          tmp1(0) = ov_base;
         }
       else
         {
-          octave_value ov_increment = 1.0;
-
-          if (op_increment)
-            {
-              ov_increment = op_increment->rvalue1 ();
-
-              if (error_state || ov_increment.is_undefined ())
-                eval_error ("invalid increment value in colon expression");
-            }
-
-          if (! error_state)
-            retval = do_colon_op (ov_base, ov_increment, ov_limit,
-                                  is_for_cmd_expr ());
+          tmp1(1) = ov_limit;
+          tmp1(0) = ov_base;
         }
+
+      octave_value fcn = symbol_table::find_function ("colon", tmp1);
+
+      if (! fcn.is_defined ())
+        error ("can not find overloaded colon function");
+
+      octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+
+      retval = tmp2 (0);
+    }
+  else
+    {
+      octave_value ov_increment = 1.0;
+
+      if (op_increment)
+        ov_increment = op_increment->rvalue1 ();
+
+      retval = do_colon_op (ov_base, ov_increment, ov_limit,
+                            is_for_cmd_expr ());
     }
 
   return retval;
@@ -160,7 +128,7 @@ tree_colon_expression::rvalue1 (int)
 void
 tree_colon_expression::eval_error (const std::string& s) const
 {
-  ::error ("%s", s.c_str ());
+  error ("%s", s.c_str ());
 }
 
 int
@@ -202,3 +170,4 @@ tree_colon_expression::accept (tree_walker& tw)
 {
   tw.visit_colon_expression (*this);
 }
+

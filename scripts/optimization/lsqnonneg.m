@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Bill Denney
+## Copyright (C) 2008-2016 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
@@ -19,14 +19,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d})
-## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
+## @deftypefn  {} {@var{x} =} lsqnonneg (@var{c}, @var{d})
+## @deftypefnx {} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
+## @deftypefnx {} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
 ## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
 ## @code{@var{x} >= 0}.
 ##
@@ -119,7 +119,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
   ## LH3: test for completion.
   while (iter < max_iter)
     while (iter < max_iter)
-      iter++;
+      iter += 1;
 
       ## LH6: compute the positive matrix and find the min norm solution
       ## of the positive problem.
@@ -146,7 +146,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
         x += alpha*(xx - x);
         ## LH11: move from P to Z all X == 0.
         ## This corresponds to those indices where minimum of sf is attained.
-        idx = idx (sf == alpha);
+        idx = idx(sf == alpha);
         p(idx) = [];
         if (useqr)
           ## update the QR factorization.
@@ -178,7 +178,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
                "a non-unique solution may be returned due to equal gradients");
       idx = idx(1);
     endif
-    ## move the index from Z to P. Keep P sorted.
+    ## move the index from Z to P.  Keep P sorted.
     z = [1:n]; z(p) = [];
     zidx = z(idx);
     jdx = 1 + lookup (p, zidx);

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Kai Habel
+## Copyright (C) 2007-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surf (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surf (@var{z})
-## @deftypefnx {Function File} {} surf (@dots{}, @var{c})
-## @deftypefnx {Function File} {} surf (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} surf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} surf (@dots{})
+## @deftypefn  {} {} surf (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} surf (@var{z})
+## @deftypefnx {} {} surf (@dots{}, @var{c})
+## @deftypefnx {} {} surf (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} surf (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} surf (@dots{})
 ## Plot a 3-D surface mesh.
 ##
 ## The surface mesh is plotted using shaded rectangles.  The vertices of the
@@ -71,7 +71,7 @@ function retval = surf (varargin)
 
     htmp = surface (varargin{:});
 
-    if (! ishold (hax))
+    if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
@@ -91,28 +91,28 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! surf (Z);
-%! title ({'surf() plot of peaks() function'; 'color determined by height Z'});
+%! title ({"surf() plot of peaks() function"; "color determined by height Z"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
 %! shading interp;
-%! title ({'surf() plot of peaks() function'; ...
-%!         'facecolor is interpolated, color determined by gradient of Z'});
+%! title ({"surf() plot of peaks() function"; ...
+%!         "facecolor is interpolated, color determined by gradient of Z"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = sombrero ();
 %! [~,Fy] = gradient (Z);
 %! surf (X, Y, Z, Fy);
 %! shading interp;
-%! title ({'surf() plot of peaks() function'; ...
-%!         'facecolor is interpolated, color determined by Y-gradient of Z'});
+%! title ({"surf() plot of peaks() function"; ...
+%!         "facecolor is interpolated, color determined by Y-gradient of Z"});
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} mesh (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} mesh (@var{z})
-## @deftypefnx {Function File} {} mesh (@dots{}, @var{c})
-## @deftypefnx {Function File} {} mesh (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} mesh (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} mesh (@dots{})
+## @deftypefn  {} {} mesh (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} mesh (@var{z})
+## @deftypefnx {} {} mesh (@dots{}, @var{c})
+## @deftypefnx {} {} mesh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} mesh (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} mesh (@dots{})
 ## Plot a 3-D wireframe mesh.
 ##
 ## The wireframe mesh is plotted using rectangles.  The vertices of the
@@ -70,7 +70,8 @@ function h = mesh (varargin)
   unwind_protect
     hax = newplot (hax);
 
-    mesh_props = {"facecolor", "w", "edgecolor", "flat"};
+    mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
+                  "facelighting", "none", "edgelighting", "flat"};
     chararg = find (cellfun ("isclass", varargin, "char"), 1);
     if (isempty (chararg))
       htmp = surface (varargin{:}, mesh_props{:});
@@ -101,46 +102,46 @@ endfunction
 %! x = logspace (0,1,11);
 %! z = x'*x;
 %! mesh (x, x, z);
-%! xlabel 'X-axis';
-%! ylabel 'Y-axis';
-%! zlabel 'Z-axis';
-%! title ('mesh() with color proportional to height');
+%! xlabel "X-axis";
+%! ylabel "Y-axis";
+%! zlabel "Z-axis";
+%! title ("mesh() with color proportional to height");
 
 %!demo
 %! clf;
 %! x = logspace (0,1,11);
 %! z = x'*x;
 %! mesh (x, x, z, z.^2);
-%! xlabel 'X-axis';
-%! ylabel 'Y-axis';
-%! zlabel 'linear scale';
-%! title ('mesh() with color proportional to Z^2');
+%! xlabel "X-axis";
+%! ylabel "Y-axis";
+%! zlabel "linear scale";
+%! title ("mesh() with color proportional to Z^2");
 
 %!demo
 %! clf;
 %! x = logspace (0,1,11);
 %! z = x'*x;
 %! mesh (x, x, z, z.^2);
-%! set (gca, 'zscale', 'log');
-%! xlabel 'X-axis';
-%! ylabel 'Y-axis';
-%! zlabel 'log scale';
-%! title ({'mesh() with color proportional to Z^2', 'Z-axis is log scale'});
+%! set (gca, "zscale", "log");
+%! xlabel "X-axis";
+%! ylabel "Y-axis";
+%! zlabel "log scale";
+%! title ({"mesh() with color proportional to Z^2", "Z-axis is log scale"});
 %! try
-%!   if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
-%!     title ({'Gnuplot: mesh color is wrong', 'This is a Gnuplot bug'});
+%!   if (strcmp (get (gcf, "__graphics_toolkit__"), "gnuplot"))
+%!     title ({"Gnuplot: mesh color is wrong", "This is a Gnuplot bug"});
 %!   endif
 %! catch
-%! end
+%! end_try_catch
 
 %!demo
 %! clf;
 %! x = logspace (0,1,11);
 %! z = x'*x;
-%! mesh (x, x, z, 'facecolor', 'none', 'edgecolor', 'c');
-%! xlabel 'X-axis';
-%! ylabel 'Y-axis';
-%! zlabel 'Z-axis';
-%! title ({'mesh() default properties overridden', ...
-%!         'transparent mesh with cyan color'});
+%! mesh (x, x, z, "facecolor", "none", "edgecolor", "c");
+%! xlabel "X-axis";
+%! ylabel "Y-axis";
+%! zlabel "Z-axis";
+%! title ({"mesh() default properties overridden", ...
+%!         "transparent mesh with cyan color"});
 

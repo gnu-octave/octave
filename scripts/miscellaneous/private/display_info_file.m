@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Carnë Draug
+## Copyright (C) 2013-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## news() and citation() are very much alike. They both do the same thing, just
-## for different files. This function does all the work.
+## news() and citation() are very much alike.  They both do the same thing,
+## just for different files.  This function does all the work.
 
 function display_info_file (func, package, file)
 
@@ -26,7 +26,7 @@ function display_info_file (func, package, file)
   endif
 
   if (strcmpi (package, "octave"))
-    octetcdir = octave_config_info ("octetcdir");
+    octetcdir = __octave_config_info__ ("octetcdir");
     filepath  = fullfile (octetcdir, file);
   else
     installed = pkg ("list");

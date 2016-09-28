@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 VZLU Prague
+Copyright (C) 2010-2016 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "ov-lazy-idx.h"
 #include "ops.h"
 #include "ov-scalar.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_lazy_index, "lazy_index", "double");
@@ -35,7 +35,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_lazy_index, "lazy_index", "double");
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_lazy_index&);
+  const octave_lazy_index& v = dynamic_cast<const octave_lazy_index&> (a);
 
   return v.full_value ().clone ();
 }
@@ -105,8 +105,8 @@ octave_lazy_index::sort (octave_idx_type dim, sortmode mode) const
 {
   const dim_vector odims = index.orig_dimensions ();
   // index_vector can employ a more efficient sorting algorithm.
-  if (mode == ASCENDING && odims.length () == 2
-      && (dim >= 0 && dim <= 1) && odims (1-dim) == 1)
+  if (mode == ASCENDING && odims.ndims () == 2
+      && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted ();
   else
     return idx_vector (index.as_array ().sort (dim, mode),
@@ -119,8 +119,8 @@ octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 {
   const dim_vector odims = index.orig_dimensions ();
   // index_vector can employ a more efficient sorting algorithm.
-  if (mode == ASCENDING && odims.length () == 2
-      && (dim >= 0 && dim <= 1) && odims (1-dim) == 1)
+  if (mode == ASCENDING && odims.ndims () == 2
+      && (dim >= 0 && dim <= 1) && odims(1-dim) == 1)
     return index_vector ().sorted (sidx);
   else
     return idx_vector (index.as_array ().sort (sidx, dim, mode),
@@ -161,43 +161,40 @@ static const std::string value_save_tag ("index_value");
 
 bool octave_lazy_index::save_ascii (std::ostream& os)
 {
-  return save_ascii_data (os, make_value (), value_save_tag, false, 0);
+  return save_text_data (os, make_value (), value_save_tag, false, 0);
 }
 
 bool octave_lazy_index::load_ascii (std::istream& is)
 {
   bool dummy;
 
-  std::string nm = read_ascii_data (is, std::string (), dummy, value, 0);
-
+  std::string nm = read_text_data (is, "", dummy, value, 0);
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
-  else
-    index = value.index_vector ();
 
-  return ! error_state;
+  index = value.index_vector ();
+
+  return true;
 }
-
 
 bool octave_lazy_index::save_binary (std::ostream& os, bool& save_as_floats)
 {
   return save_binary_data (os, make_value (), value_save_tag,
-                           std::string (), false, save_as_floats);
+                           "", false, save_as_floats);
 }
 
 bool octave_lazy_index::load_binary (std::istream& is, bool swap,
-                                     oct_mach_info::float_format fmt)
+                                     octave::mach_info::float_format fmt)
 {
   bool dummy;
   std::string doc;
 
-  std::string nm = read_binary_data (is, swap, fmt, std::string (),
-                                     dummy, value, doc);
-
+  std::string nm = read_binary_data (is, swap, fmt, "", dummy, value, doc);
   if (nm != value_save_tag)
     error ("lazy_index: corrupted data on load");
-  else
-    index = value.index_vector ();
 
-  return ! error_state;
+  index = value.index_vector ();
+
+  return true;
 }
+

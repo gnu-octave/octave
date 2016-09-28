@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} gmap40 ()
-## @deftypefnx {Function File} {@var{map} =} gmap40 (@var{n})
+## @deftypefn  {} {@var{map} =} gmap40 ()
+## @deftypefnx {} {@var{map} =} gmap40 (@var{n})
 ##
 ## @code{gmap40} is deprecated and will be removed in Octave version 4.4.
 ##
@@ -33,9 +33,6 @@
 ## in a repetition of the above colors.
 ## @seealso{colormap}
 ## @end deftypefn
-
-## PKG_ADD: colormap ("register", "gmap40");
-## PKG_DEL: colormap ("unregister", "gmap40");
 
 ## Deprecated in 4.0
 

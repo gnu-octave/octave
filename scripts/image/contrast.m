@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{cmap} =} contrast (@var{x})
-## @deftypefnx {Function File} {@var{cmap} =} contrast (@var{x}, @var{n})
+## @deftypefn  {} {@var{cmap} =} contrast (@var{x})
+## @deftypefnx {} {@var{cmap} =} contrast (@var{x}, @var{n})
 ## Return a gray colormap that maximizes the contrast in an image.
 ##
 ## The returned colormap will have @var{n} rows.  If @var{n} is not defined
@@ -49,7 +49,7 @@ endfunction
 
 
 %!demo
-%! figure;
+%! clf;
 %! img = reshape (1:100, 10, 10);
 %! imagesc (img);
 %! colormap (gray (64));

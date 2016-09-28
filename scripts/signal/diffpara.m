@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{d}, @var{dd}] =} diffpara (@var{x}, @var{a}, @var{b})
+## @deftypefn {} {[@var{d}, @var{dd}] =} diffpara (@var{x}, @var{a}, @var{b})
 ## Return the estimator @var{d} for the differencing parameter of an
 ## integrated time series.
 ##
@@ -34,7 +34,7 @@
 ## The value of @var{d} is simply the mean of @var{dd}.
 ##
 ## Reference: @nospell{P.J. Brockwell & R.A. Davis}. @cite{Time Series:
-## Theory and Methods}. Springer 1987.
+## Theory and Methods}. @nospell{Springer} 1987.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

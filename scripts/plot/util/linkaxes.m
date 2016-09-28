@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Willem Atsma
+## Copyright (C) 2014-2016 Willem Atsma
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} linkaxes (@var{hax})
-## @deftypefnx {Function File} {} linkaxes (@var{hax}, @var{optstr})
+## @deftypefn  {} {} linkaxes (@var{hax})
+## @deftypefnx {} {} linkaxes (@var{hax}, @var{optstr})
 ## Link the axis limits of 2-D plots such that a change in one is propagated
 ## to the others.
 ##
@@ -105,14 +105,14 @@ endfunction
 %!demo
 %! clf;
 %! hax1 = subplot (3,1,1);
-%! bar (rand (4, 1), 'facecolor', 'r');
+%! bar (rand (4, 1), "facecolor", "r");
 %! hax2 = subplot (3,1,2);
-%! bar (5*rand (4, 1), 'facecolor', 'g');
+%! bar (5*rand (4, 1), "facecolor", "g");
 %! hax3 = subplot (3,1,3);
-%! bar (10*rand (4, 1), 'facecolor', 'b');
-%! input ('Type <RETURN> to link axes');
+%! bar (10*rand (4, 1), "facecolor", "b");
+%! input ("Press <enter> to link axes: ");
 %! linkaxes ([hax1, hax2, hax3]);
-%! input ('Type <RETURN> to change ylim');
+%! input ("Press <enter> to change ylim: ");
 %! ylim (hax3, [0 10]);
 
 %!test

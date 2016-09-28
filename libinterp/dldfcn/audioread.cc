@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 Vytautas Jančauskas
+Copyright (C) 2013-2016 Vytautas Jančauskas
+Copyright (C) 2016 Damjan Angelovski
 
 This file is part of Octave.
 
@@ -20,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -32,16 +33,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-struct.h"
+#include "pager.h"
 
-#ifdef HAVE_SNDFILE
-#include <sndfile.h>
+#if defined (HAVE_SNDFILE)
+#  include <sndfile.h>
 #endif
 
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 static void
 safe_close (SNDFILE *file)
 {
@@ -50,54 +52,43 @@ safe_close (SNDFILE *file)
 #endif
 
 DEFUN_DLD (audioread, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
-\n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
-@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
-Read the audio file @var{filename} and return the audio data @var{y} and\n\
-sampling rate @var{fs}.\n\
-\n\
-The audio data is stored as matrix with rows corresponding to audio frames\n\
-and columns corresponding to channels.\n\
-\n\
-The optional two-element vector argument @var{samples} specifies starting\n\
-and ending frames.\n\
-\n\
-The optional argument @var{datatype} specifies the datatype to return.\n\
-If it is @qcode{\"native\"}, then the type of data depends on how the data\n\
-is stored in the audio file.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{y}, @var{fs}] =} audioread (@var{filename})
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})
 
-#ifdef HAVE_SNDFILE
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})
+@deftypefnx {} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})
+Read the audio file @var{filename} and return the audio data @var{y} and
+sampling rate @var{fs}.
+
+The audio data is stored as matrix with rows corresponding to audio frames
+and columns corresponding to channels.
+
+The optional two-element vector argument @var{samples} specifies starting
+and ending frames.
+
+The optional argument @var{datatype} specifies the datatype to return.
+If it is @qcode{"native"}, then the type of data depends on how the data
+is stored in the audio file.
+@end deftypefn */)
+{
+#if defined (HAVE_SNDFILE)
 
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  std::string filename = args(0).string_value ();
-
-  if (error_state)
-    return retval;
+  std::string filename = args(0).xstring_value ("audioread: FILENAME must be a string");
 
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    {
-      error ("audioread: failed to open input file %s", filename.c_str ());
-      return retval;
-    }
+    error ("audioread: failed to open input file %s", filename.c_str ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
 
@@ -112,24 +103,16 @@ is stored in the audio file.\n\
     {
       RowVector range = args(1).row_vector_value ();
 
-      if (error_state)
-        return retval;
+      if (range.numel () != 2)
+        error ("audioread: invalid specification for range of frames");
 
-      if (range.nelem () != 2)
-        {
-          error ("audioread: invalid specification for range of frames");
-          return retval;
-        }
-
-      double dstart = xisinf (range(0)) ? info.frames : range(0);
-      double dend = xisinf (range(1)) ? info.frames : range(1);
+      double dstart = octave::math::isinf (range(0)) ? info.frames : range(0);
+      double dend = octave::math::isinf (range(1)) ? info.frames : range(1);
 
       if (dstart < 1 || dstart > dend || dend > info.frames
-          || D_NINT (dstart) != dstart || D_NINT (dend) != dend)
-        {
-          error ("audioread: invalid specification for range of frames");
-          return retval;
-        }
+          || octave::math::x_nint (dstart) != dstart
+          || octave::math::x_nint (dend) != dend)
+        error ("audioread: invalid specification for range of frames");
 
       start = dstart - 1;
       end = dend;
@@ -158,9 +141,6 @@ is stored in the audio file.\n\
         type = args(2).string_value ();
       else
         type = args(1).string_value ();
-
-      if (error_state)
-        return retval;
 
       if (type == "native")
         {
@@ -192,19 +172,19 @@ is stored in the audio file.\n\
   else
     ret_audio = audio;
 
-  retval(1) = info.samplerate;
-  retval(0) = ret_audio;
+  return ovl (ret_audio, info.samplerate);
 
 #else
 
-  error ("sndfile not found on your system and thus audioread is not functional");
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("audioread",
+                        "reading and writing sound files through libsndfile");
 
 #endif
-
-  return retval;
 }
 
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
 static int
 extension_to_format (const std::string& ext)
@@ -252,62 +232,47 @@ extension_to_format (const std::string& ext)
 #endif
 
 DEFUN_DLD (audiowrite, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
-@deftypefnx {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
-\n\
-Write audio data from the matrix @var{y} to @var{filename} at sampling rate\n\
-@var{fs} with the file format determined by the file extension.\n\
-\n\
-Additional name/value argument pairs may be used to specify the\n\
-following options:\n\
-\n\
-@table @samp\n\
-@item BitsPerSample\n\
-Number of bits per sample, valid values are 8, 16, 24 and 32.  Default is 16.\n\
-\n\
-@item BitRate\n\
-Valid argument name, but ignored.  Left for compatibility with @sc{matlab}.\n\
-\n\
-@item Quality\n\
-Quality setting for the Ogg Vorbis compressor.  Values can range between 0\n\
-and 100 with 100 being the highest quality setting.  Default is 75.\n\
-\n\
-@item Title\n\
-Title for the audio file.\n\
-\n\
-@item Artist\n\
-Artist name.\n\
-\n\
-@item Comment\n\
-Comment.\n\
-@end table\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} audiowrite (@var{filename}, @var{y}, @var{fs})
+@deftypefnx {} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})
+
+Write audio data from the matrix @var{y} to @var{filename} at sampling rate
+@var{fs} with the file format determined by the file extension.
+
+Additional name/value argument pairs may be used to specify the
+following options:
+
+@table @samp
+@item BitsPerSample
+Number of bits per sample.  Valid values are 8, 16, 24, and 32.  Default is
+16.
+
+@item BitRate
+Valid argument name, but ignored.  Left for compatibility with @sc{matlab}.
+
+@item Quality
+Quality setting for the Ogg Vorbis compressor.  Values can range between 0
+and 100 with 100 being the highest quality setting.  Default is 75.
+
+@item Title
+Title for the audio file.
+
+@item Artist
+Artist name.
+
+@item Comment
+Comment.
+@end table
+@end deftypefn */)
 {
-  // FIXME: shouldn't we return something to indicate whether the file
-  // was written successfully?
-
-  octave_value retval;
-
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
   int nargin = args.length ();
 
   if (nargin < 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  std::string filename = args(0).string_value ();
-
-  if (error_state)
-    return retval;
-
-  Matrix audio = args(1).matrix_value ();
-
-  if (error_state)
-    return retval;
+  std::string filename = args(0).xstring_value ("audiowrite: FILENAME must be a string");
 
   double bias = 0.0;
   double scale = 1.0;
@@ -319,15 +284,11 @@ Comment.\n\
   else if (args(1).is_int32_type ())
     scale = std::pow (2.0, 31);
   else if (args(1).is_integer_type ())
-    {
-      gripe_wrong_type_arg ("audiowrite", args(1));
-      return retval;
-    }
+    err_wrong_type_arg ("audiowrite", args(1));
+
+  Matrix audio = args(1).matrix_value ();
 
   int samplerate = args(2).int_value ();
-
-  if (error_state)
-    return retval;
 
   std::string ext;
   size_t dotpos = filename.find_last_of (".");
@@ -354,7 +315,7 @@ Comment.\n\
 
   SF_INFO info;
 
-  memset (&info, 0, sizeof (info)) ;
+  memset (&info, 0, sizeof (info));
 
   sf_count_t chunk_size = 0;
 
@@ -408,10 +369,7 @@ Comment.\n\
           else if (bits == 32)
             info.format |= SF_FORMAT_PCM_32;
           else
-            {
-              error ("audiowrite: wrong number of bits specified");
-              return retval;
-            }
+            error ("audiowrite: wrong number of bits specified");
         }
       else if (keyword == "BitRate")
         ;
@@ -426,21 +384,15 @@ Comment.\n\
       else if (keyword == "Comment")
         comment = value_arg.string_value ();
       else
-        {
-          error ("audiowrite: wrong argument name");
-          return retval;
-        }
+        error ("audiowrite: wrong argument name");
     }
 
   SNDFILE *file = sf_open (filename.c_str (), SFM_WRITE, &info);
 
   if (! file)
-    {
-      error ("audiowrite: failed to open output file %s", filename.c_str ());
-      return retval;
-    }
+    error ("audiowrite: failed to open output file %s", filename.c_str ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
 
@@ -467,57 +419,48 @@ Comment.\n\
       sf_count_t items_written = sf_write_float (file, data+offset, chunk_size);
 
       if (items_written != chunk_size)
-        {
-          error ("audiowrite: write failed, wrote %ld of %ld items\n",
-                 items_written, chunk_size);
-          return retval;
-        }
+        error ("audiowrite: write failed, wrote %ld of %ld items\n",
+               items_written, chunk_size);
 
       total_items_written += items_written;
       offset += chunk_size;
     }
 
+  // FIXME: shouldn't we return something to indicate whether the file
+  // was written successfully?
+  return ovl ();
+
 #else
 
-  error ("sndfile not found on your system and thus audiowrite is not functional");
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("audiowrite",
+                        "reading and writing sound files through libsndfile");
 
 #endif
-
-  return retval;
 }
 
 DEFUN_DLD (audioinfo, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{info} =} audioinfo (@var{filename})\n\
-Return information about an audio file specified by @var{filename}.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{info} =} audioinfo (@var{filename})
+Return information about an audio file specified by @var{filename}.
+@end deftypefn */)
 {
-  octave_value retval;
-
-#ifdef HAVE_SNDFILE
+#if defined (HAVE_SNDFILE)
 
   if (args.length () != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  std::string filename = args(0).string_value ();
-
-  if (error_state)
-    return retval;
+  std::string filename = args(0).xstring_value ("audioinfo: FILENAME must be a string");
 
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   if (! file)
-    {
-      error ("audioinfo: failed to open file %s", filename.c_str ());
-      return retval;
-    }
+    error ("audioinfo: failed to open file %s", filename.c_str ());
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.add_fcn (safe_close, file);
 
@@ -562,13 +505,103 @@ Return information about an audio file specified by @var{filename}.\n\
   result.assign ("Artist", sf_get_string (file, SF_STR_ARTIST));
   result.assign ("Comment", sf_get_string (file, SF_STR_COMMENT));
 
-  retval = result;
+  return ovl (result);
 
 #else
 
-  error ("sndfile not found on your system and thus audioinfo is not functional");
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("audioinfo",
+                        "reading and writing sound files through libsndfile");
+
+#endif
+}
+
+#if defined (HAVE_SNDFILE)
+
+static void
+audio_sub_formats (int format)
+{
+  int count;
+  sf_command (NULL, SFC_GET_FORMAT_SUBTYPE_COUNT, &count, sizeof (int));
+
+  for (int i = 0; i < count; i++)
+    {
+      SF_FORMAT_INFO info;
+      info.format = i;
+      sf_command (NULL, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info));
+
+      SF_INFO sfinfo;
+      memset (&sfinfo, 0, sizeof (sfinfo));
+      sfinfo.channels = 1;
+      sfinfo.format = (format & SF_FORMAT_TYPEMASK) | info.format;
+
+      if (sf_format_check (&sfinfo))
+        octave_stdout << "  " << info.name << std::endl;
+    }
+}
 
 #endif
 
-  return retval;
+DEFUN_DLD (audioformats, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} audioformats ()
+@deftypefnx {} {} audioformats (@var{format})
+Display information about all supported audio formats.
+
+If the optional argument @var{format} is given, then display only formats
+with names that start with @var{format}.
+@end deftypefn */)
+{
+#if defined (HAVE_SNDFILE)
+
+  if (args.length () > 1)
+    print_usage ();
+
+  std::string search = "";
+  if (args.length () > 0)
+    {
+      search = args(0).string_value ();
+      std::transform (search.begin (), search.end (), search.begin (), tolower);
+    }
+
+  int count;
+  sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
+
+  for (int i = 0; i < count; i++)
+    {
+      SF_FORMAT_INFO info;
+      info.format = i;
+      sf_command (NULL, SFC_GET_FORMAT_MAJOR, &info, sizeof (info));
+      bool match = true;
+
+      if (! search.empty ())
+        {
+          std::string nm = info.name;
+          std::transform (nm.begin (), nm.end (), nm.begin (), tolower);
+          match = nm.compare (0, search.length (), search) == 0;
+        }
+
+      if (match)
+        {
+          octave_stdout << "name: " << info.name << std::endl;
+          octave_stdout << "extension: " << info.extension << std::endl;
+          octave_stdout << "id: " << info.format << std::endl;
+          octave_stdout << "subformats:" << std::endl;
+
+          audio_sub_formats (info.format);
+        }
+    }
+
+#else
+
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("audioformats",
+                        "getting sound formats through libsndfile");
+
+#endif
+
+  return octave_value ();
 }
+

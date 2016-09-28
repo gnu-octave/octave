@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 John W. Eaton
+## Copyright (C) 2010-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} runtests ()
-## @deftypefnx {Function File} {} runtests (@var{directory})
+## @deftypefn  {} {} runtests ()
+## @deftypefnx {} {} runtests (@var{directory})
 ## Execute built-in tests for all m-files in the specified @var{directory}.
 ##
 ## Test blocks in any C++ source files (@file{*.cc}) will also be executed
@@ -38,7 +38,7 @@ function runtests (directory)
     do_class_dirs = true;
   elseif (nargin == 1)
     dirs = {canonicalize_file_name(directory)};
-    if (isempty (dirs{1}))
+    if (isempty (dirs{1}) || ! isdir (dirs{1}))
       ## Search for directory name in path
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];
@@ -62,6 +62,7 @@ function runtests (directory)
 endfunction
 
 function run_all_tests (directory, do_class_dirs)
+
   flist = readdir (directory);
   dirs = {};
   no_tests = {};
@@ -75,7 +76,7 @@ function run_all_tests (directory, do_class_dirs)
       if (has_tests (ff))
         print_test_file_name (f);
         [p, n, xf, sk] = test (ff, "quiet");
-        print_pass_fail (n, p);
+        print_pass_fail (n, p, xf);
         fflush (stdout);
       elseif (has_functions (ff))
         no_tests(end+1) = f;
@@ -99,48 +100,58 @@ function run_all_tests (directory, do_class_dirs)
       run_all_tests (d, false);
     endfor
   endif
+
 endfunction
 
 function retval = has_functions (f)
+
   n = length (f);
   if (n > 3 && strcmpi (f((end-2):end), ".cc"))
     fid = fopen (f);
-    if (fid >= 0)
-      str = fread (fid, "*char")';
-      fclose (fid);
-      retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
-                                      'lineanchors', 'once'));
-    else
-      error ("fopen failed: %s", f);
+    if (fid < 0)
+      error ("runtests: fopen failed: %s", f);
     endif
+    str = fread (fid, "*char")';
+    fclose (fid);
+    retval = ! isempty (regexp (str,'^(?:DEFUN|DEFUN_DLD|DEFUNX)\>',
+                                    'lineanchors', 'once'));
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;
   else
     retval = false;
   endif
+
 endfunction
 
 function retval = has_tests (f)
+
   fid = fopen (f);
-  if (fid >= 0)
-    str = fread (fid, "*char").';
-    fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
-                                     'lineanchors', 'once'));
-  else
+  if (fid < 0)
     error ("runtests: fopen failed: %s", f);
   endif
+
+  str = fread (fid, "*char").';
+  fclose (fid);
+  retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
+                                   'lineanchors', 'once'));
+
 endfunction
 
-function print_pass_fail (n, p)
+function print_pass_fail (n, p, xf)
+
   if (n > 0)
     printf (" PASS %4d/%-4d", p, n);
     nfail = n - p;
     if (nfail > 0)
-      printf (" FAIL %d", nfail);
+      if (nfail != xf)
+        printf (" FAIL %d", nfail - xf);
+      else
+        printf (" XFAIL %d", xf);
+      endif
     endif
   endif
   puts ("\n");
+
 endfunction
 
 function print_test_file_name (nm)

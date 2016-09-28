@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_colon_h)
-#define octave_tree_colon 1
+#if ! defined (octave_pt_colon_h)
+#define octave_pt_colon_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -113,3 +115,4 @@ private:
 };
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -32,8 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "data.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "oct-map.h"
+#include "ovl.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
@@ -63,7 +64,7 @@ tm_row_const
 private:
 
   class
-  tm_row_const_rep : public octave_base_list<octave_value>
+  tm_row_const_rep : public octave::base_list<octave_value>
   {
   public:
 
@@ -273,10 +274,11 @@ get_concat_class (const std::string& c1, const std::string& c2)
   return retval;
 }
 
-static void
+OCTAVE_NORETURN static
+void
 eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 {
-  ::error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
+  error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
 }
 
 void
@@ -323,13 +325,13 @@ tm_row_const::tm_row_const_rep::do_init_element (const octave_value& val,
   if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
     all_cmplx = false;
 
-  if (!any_cell && val.is_cell ())
+  if (! any_cell && val.is_cell ())
     any_cell = true;
 
-  if (!any_sparse && val.is_sparse_type ())
+  if (! any_sparse && val.is_sparse_type ())
     any_sparse = true;
 
-  if (!any_class && val.is_object ())
+  if (! any_class && val.is_object ())
     any_class = true;
 
   // Special treatment of sparse matrices to avoid out-of-memory error
@@ -360,9 +362,9 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
       octave_value tmp = elt->rvalue1 ();
 
-      if (error_state || tmp.is_undefined ())
+      if (tmp.is_undefined ())
         {
-          ok = ! error_state;
+          ok = true;
           return;
         }
       else
@@ -388,35 +390,29 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
   first_elem = true;
 
-  if (! error_state)
+  for (iterator p = begin (); p != end (); p++)
     {
-      for (iterator p = begin (); p != end (); p++)
+      octave_quit ();
+
+      octave_value val = *p;
+
+      dim_vector this_elt_dv = val.dims ();
+
+      if (! this_elt_dv.zero_by_zero ())
         {
-          octave_quit ();
+          all_mt = false;
 
-          octave_value val = *p;
-
-          dim_vector this_elt_dv = val.dims ();
-
-          if (! this_elt_dv.zero_by_zero ())
+          if (first_elem)
             {
-              all_mt = false;
-
-              if (first_elem)
-                {
-                  first_elem = false;
-                  dv = this_elt_dv;
-                }
-              else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
-                {
-                  eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
-                  break;
-                }
+              first_elem = false;
+              dv = this_elt_dv;
             }
+          else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
+            eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
         }
     }
 
-  ok = ! error_state;
+  ok = true;
 }
 
 void
@@ -432,7 +428,10 @@ tm_row_const::tm_row_const_rep::cellify (void)
         {
           elt_changed = true;
 
-          *p = Cell (*p);
+          if (p->is_empty ())
+            *p = Cell ();
+          else
+            *p = Cell (*p);
         }
     }
 
@@ -456,18 +455,14 @@ tm_row_const::tm_row_const_rep::cellify (void)
                   dv = this_elt_dv;
                 }
               else if (! dv.hvcat (this_elt_dv, 1))
-                {
-                  eval_error ("horizontal dimensions mismatch",
-                              dv, this_elt_dv);
-                  break;
-                }
+                eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
             }
         }
     }
 }
 
 class
-tm_const : public octave_base_list<tm_row_const>
+tm_const : public octave::base_list<tm_row_const>
 {
 public:
 
@@ -589,13 +584,13 @@ tm_const::init (const tree_matrix& tm)
           if (all_mt && ! tmp.all_empty_p ())
             all_mt = false;
 
-          if (!any_cell && tmp.any_cell_p ())
+          if (! any_cell && tmp.any_cell_p ())
             any_cell = true;
 
-          if (!any_sparse && tmp.any_sparse_p ())
+          if (! any_sparse && tmp.any_sparse_p ())
             any_sparse = true;
 
-          if (!any_class && tmp.any_class_p ())
+          if (! any_class && tmp.any_class_p ())
             any_class = true;
 
           all_1x1 = all_1x1 && tmp.all_1x1_p ();
@@ -606,73 +601,63 @@ tm_const::init (const tree_matrix& tm)
         break;
     }
 
-  if (! error_state)
+  if (any_cell && ! any_class && ! first_elem_is_struct)
     {
-      if (any_cell && ! any_class && ! first_elem_is_struct)
-        {
-          for (iterator q = begin (); q != end (); q++)
-            {
-              octave_quit ();
-
-              q->cellify ();
-            }
-        }
-
-      first_elem = true;
-
       for (iterator q = begin (); q != end (); q++)
         {
           octave_quit ();
 
-          tm_row_const elt = *q;
-
-          octave_idx_type this_elt_nr = elt.rows ();
-          octave_idx_type this_elt_nc = elt.cols ();
-
-          std::string this_elt_class_nm = elt.class_name ();
-          class_nm = get_concat_class (class_nm, this_elt_class_nm);
-
-          dim_vector this_elt_dv = elt.dims ();
-
-          all_mt = false;
-
-          if (first_elem)
-            {
-              first_elem = false;
-
-              dv = this_elt_dv;
-            }
-          else if (all_str && dv.length () == 2
-                   && this_elt_dv.length () == 2)
-            {
-              // FIXME: this is Octave's specialty. Character matrices allow
-              // rows of unequal length.
-              if (this_elt_nc > cols ())
-                dv(1) = this_elt_nc;
-              dv(0) += this_elt_nr;
-            }
-          else if ((!any_class) && (!dv.hvcat (this_elt_dv, 0)))
-            {
-              eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
-              return;
-            }
+          q->cellify ();
         }
     }
 
-  ok = ! error_state;
+  first_elem = true;
+
+  for (iterator q = begin (); q != end (); q++)
+    {
+      octave_quit ();
+
+      tm_row_const elt = *q;
+
+      octave_idx_type this_elt_nr = elt.rows ();
+      octave_idx_type this_elt_nc = elt.cols ();
+
+      std::string this_elt_class_nm = elt.class_name ();
+      class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
+      dim_vector this_elt_dv = elt.dims ();
+
+      all_mt = false;
+
+      if (first_elem)
+        {
+          first_elem = false;
+
+          dv = this_elt_dv;
+        }
+      else if (all_str && dv.ndims () == 2
+               && this_elt_dv.ndims () == 2)
+        {
+          // FIXME: this is Octave's specialty.
+          // Character matrices allow rows of unequal length.
+          if (this_elt_nc > cols ())
+            dv(1) = this_elt_nc;
+          dv(0) += this_elt_nr;
+        }
+      else if ((! any_class) && (! dv.hvcat (this_elt_dv, 0)))
+        eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
+    }
+
+  ok = true;
 }
 
 octave_value_list
 tree_matrix::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for matrix list");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 void
@@ -683,7 +668,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
                      "concatenation of different character string types may have unintended consequences");
 }
 
-template<class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Array<T>& result,
                     tm_const& tmp)
@@ -707,20 +692,13 @@ single_type_concat (Array<T>& result,
           TYPE ra = octave_value_extract<TYPE> (*q);
 
           // Skip empty arrays to allow looser rules.
-          if (! error_state)
-            {
-              if (! ra.is_empty ())
-                {
-                  result.insert (ra, r, c);
 
-                  if (! error_state)
-                    c += ra.columns ();
-                  else
-                    return;
-                }
+          if (! ra.is_empty ())
+            {
+              result.insert (ra, r, c);
+
+              c += ra.columns ();
             }
-          else
-            return;
         }
 
       r += row.rows ();
@@ -728,7 +706,7 @@ single_type_concat (Array<T>& result,
     }
 }
 
-template<class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Array<T>& result,
                     const dim_vector& dv,
@@ -752,8 +730,7 @@ single_type_concat (Array<T>& result,
           result.clear (dv);
           assert (static_cast<size_t> (result.numel ()) == row.length ());
           octave_idx_type i = 0;
-          for (tm_row_const::iterator q = row.begin ();
-               q != row.end () && ! error_state; q++)
+          for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
             result(i++) = octave_value_extract<T> (*q);
 
           return;
@@ -763,9 +740,7 @@ single_type_concat (Array<T>& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end () && ! error_state;
-           q++)
+      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
         {
           octave_quit ();
 
@@ -773,8 +748,7 @@ single_type_concat (Array<T>& result,
           i++;
         }
 
-      if (! error_state)
-        result = Array<T>::cat (-2, ncols, array_list);
+      result = Array<T>::cat (-2, ncols, array_list);
     }
   else
     {
@@ -783,7 +757,7 @@ single_type_concat (Array<T>& result,
     }
 }
 
-template<class TYPE, class T>
+template <typename TYPE, typename T>
 static void
 single_type_concat (Sparse<T>& result,
                     const dim_vector& dv,
@@ -808,9 +782,7 @@ single_type_concat (Sparse<T>& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end () && ! error_state;
-           q++)
+      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
         {
           octave_quit ();
 
@@ -826,7 +798,7 @@ single_type_concat (Sparse<T>& result,
   result = Sparse<T>::cat (-1, nrows, sparse_row_list);
 }
 
-template<class MAP>
+template <typename MAP>
 static void
 single_type_concat (octave_map& result,
                     const dim_vector& dv,
@@ -848,9 +820,7 @@ single_type_concat (octave_map& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (MAP, map_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end () && ! error_state;
-           q++)
+      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
         {
           octave_quit ();
 
@@ -866,7 +836,7 @@ single_type_concat (octave_map& result,
   result = octave_map::cat (-1, nrows, map_row_list);
 }
 
-template<class TYPE>
+template <typename TYPE>
 static octave_value
 do_single_type_concat (const dim_vector& dv,
                        tm_const& tmp)
@@ -878,7 +848,7 @@ do_single_type_concat (const dim_vector& dv,
   return result;
 }
 
-template<>
+template <>
 octave_value
 do_single_type_concat<octave_map> (const dim_vector& dv,
                                    tm_const& tmp)
@@ -921,13 +891,10 @@ do_class_concat (tm_const& tmc)
         }
     }
 
-  if (! error_state)
-    {
-      if (rows.length () == 1)
-        retval = rows(0);
-      else
-        retval = do_class_concat (rows, "vertcat", 0);
-    }
+  if (rows.length () == 1)
+    retval = rows(0);
+  else
+    retval = do_class_concat (rows, "vertcat", 0);
 
   return retval;
 }
@@ -997,8 +964,8 @@ tree_matrix::rvalue1 (int)
           char type = all_dq_strings_p ? '"' : '\'';
 
           if (! all_strings_p)
-            gripe_implicit_conversion ("Octave:num-to-str",
-                                       "numeric", result_type);
+            warn_implicit_conversion ("Octave:num-to-str",
+                                      "numeric", result_type);
           else
             maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
@@ -1039,7 +1006,7 @@ tree_matrix::rvalue1 (int)
         {
           // The line below might seem crazy, since we take a copy of
           // the first argument, resize it to be empty and then resize
-          // it to be full. This is done since it means that there is
+          // it to be full.  This is done since it means that there is
           // no recopying of data, as would happen if we used a single
           // resize.  It should be noted that resize operation is also
           // significantly slower than the do_cat_op function, so it
@@ -1050,7 +1017,7 @@ tree_matrix::rvalue1 (int)
           //    ctmp = octave_value_typeinfo::lookup_type
           //          (tmp.begin() -> begin() -> type_name());
           //
-          // and then directly resize. However, for some types there
+          // and then directly resize.  However, for some types there
           // might be some additional setup needed, and so this should
           // be avoided.
 
@@ -1095,53 +1062,46 @@ tree_matrix::rvalue1 (int)
                 ctmp = ctmp.resize (dim_vector (0,0)).resize (dv);
             }
 
-          if (! error_state)
+          // Now, extract the values from the individual elements and
+          // insert them in the result matrix.
+
+          int dv_len = dv.ndims ();
+          octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
+          Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
+
+          for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
             {
-              // Now, extract the values from the individual elements and
-              // insert them in the result matrix.
+              octave_quit ();
 
-              int dv_len = dv.length ();
-              octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
-              Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
+              tm_row_const row = *p;
 
-              for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+              for (tm_row_const::iterator q = row.begin ();
+                   q != row.end ();
+                   q++)
                 {
                   octave_quit ();
 
-                  tm_row_const row = *p;
+                  octave_value elt = *q;
 
-                  for (tm_row_const::iterator q = row.begin ();
-                       q != row.end ();
-                       q++)
-                    {
-                      octave_quit ();
+                  if (elt.is_empty ())
+                    continue;
 
-                      octave_value elt = *q;
+                  ctmp = do_cat_op (ctmp, elt, ra_idx);
 
-                      if (elt.is_empty ())
-                        continue;
-
-                      ctmp = do_cat_op (ctmp, elt, ra_idx);
-
-                      if (error_state)
-                        goto done;
-
-                      ra_idx (1) += elt.columns ();
-                    }
-
-                  ra_idx (0) += row.rows ();
-                  ra_idx (1) = 0;
+                  ra_idx (1) += elt.columns ();
                 }
 
-              retval = ctmp;
-
-              if (frc_str_conv && ! retval.is_string ())
-                retval = retval.convert_to_str ();
+              ra_idx (0) += row.rows ();
+              ra_idx (1) = 0;
             }
+
+          retval = ctmp;
+
+          if (frc_str_conv && ! retval.is_string ())
+            retval = retval.convert_to_str ();
         }
     }
 
-done:
   return retval;
 }
 
@@ -1164,8 +1124,8 @@ tree_matrix::accept (tree_walker& tw)
 
 /*
 ## test concatenation with all zero matrices
-%!assert ([ "" 65*ones(1,10) ], "AAAAAAAAAA");
-%!assert ([ 65*ones(1,10) "" ], "AAAAAAAAAA");
+%!assert ([ "" 65*ones(1,10) ], "AAAAAAAAAA")
+%!assert ([ 65*ones(1,10) "" ], "AAAAAAAAAA")
 
 %!test
 %! c = {"foo"; "bar"; "bazoloa"};
@@ -1386,30 +1346,30 @@ tree_matrix::accept (tree_walker& tw)
 */
 
 DEFUN (string_fill_char, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} string_fill_char ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} string_fill_char (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} string_fill_char (@var{new_val}, \"local\")\n\
-Query or set the internal variable used to pad all rows of a character\n\
-matrix to the same length.\n\
-\n\
-The value must be a single character and the default is @qcode{\" \"} (a\n\
-single space).  For example:\n\
-\n\
-@example\n\
-@group\n\
-string_fill_char (\"X\");\n\
-[ \"these\"; \"are\"; \"strings\" ]\n\
-      @result{}  \"theseXX\"\n\
-          \"areXXXX\"\n\
-          \"strings\"\n\
-@end group\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} string_fill_char ()
+@deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})
+@deftypefnx {} {} string_fill_char (@var{new_val}, "local")
+Query or set the internal variable used to pad all rows of a character
+matrix to the same length.
+
+The value must be a single character and the default is @qcode{" "} (a
+single space).  For example:
+
+@example
+@group
+string_fill_char ("X");
+[ "these"; "are"; "strings" ]
+      @result{}  "theseXX"
+          "areXXXX"
+          "strings"
+@end group
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (string_fill_char);
 }
@@ -1427,5 +1387,8 @@ The original variable value is restored when exiting the function.\n\
 %! string_fill_char (orig_val);
 %! assert (string_fill_char (), orig_val);
 
+%!assert ( [ [], {1} ], {1} )
+
 %!error (string_fill_char (1, 2))
 */
+

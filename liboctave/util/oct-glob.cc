@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 John W. Eaton
+Copyright (C) 2010-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,18 +20,18 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <algorithm>
 #include <string>
 
-#include <fnmatch.h>
-#include <glob.h>
+#include "glob-wrappers.h"
 
 #include "oct-glob.h"
 #include "file-stat.h"
+#include "unwind-prot.h"
 
 // These functions are defined here and not in glob_match.cc so that we
 // can include the glob.h file from gnulib, which defines glob to
@@ -42,89 +42,208 @@ along with Octave; see the file COPYING.  If not, see
 static bool
 single_match_exists (const std::string& file)
 {
-  file_stat s (file);
+  octave::sys::file_stat s (file);
 
   return s.exists ();
 }
 
-bool
-octave_fnmatch (const string_vector& pat, const std::string& str,
-                int fnmatch_flags)
+namespace octave
 {
-  int npat = pat.length ();
-
-  const char *cstr = str.c_str ();
-
-  for (int i = 0; i < npat; i++)
-    if (fnmatch (pat(i).c_str (), cstr, fnmatch_flags) != FNM_NOMATCH)
-      return true;
-
-  return false;
-}
-
-string_vector
-octave_glob (const string_vector& pat)
-{
-  string_vector retval;
-
-  int npat = pat.length ();
-
-  int k = 0;
-
-  for (int i = 0; i < npat; i++)
+  namespace sys
+  {
+    bool
+    fnmatch (const string_vector& pat, const std::string& str, int fnm_flags)
     {
-      std::string xpat = pat(i);
+      int npat = pat.numel ();
 
-      if (! xpat.empty ())
+      const char *cstr = str.c_str ();
+
+      for (int i = 0; i < npat; i++)
+        if (octave_fnmatch_wrapper (pat(i).c_str (), cstr, fnm_flags)
+            != octave_fnm_nomatch_wrapper ())
+          return true;
+
+      return false;
+    }
+
+    string_vector
+    glob (const string_vector& pat)
+    {
+      string_vector retval;
+
+      int npat = pat.numel ();
+
+      int k = 0;
+
+      octave::unwind_protect frame;
+
+      void *glob_info = octave_create_glob_info_struct ();
+
+      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+
+      for (int i = 0; i < npat; i++)
         {
-          glob_t glob_info;
+          std::string xpat = pat(i);
 
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
-          && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-          std::replace_if (xpat.begin (), xpat.end (),
-                           std::bind2nd (std::equal_to<char> (), '\\'),
-                           '/');
-#endif
-
-          int err = gnulib::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
-
-          if (! err)
+          if (! xpat.empty ())
             {
-              int n = glob_info.gl_pathc;
-
-              const char * const *matches = glob_info.gl_pathv;
-
-              // FIXME: we shouldn't have to check to see if
-              // a single match exists, but it seems that glob() won't
-              // check for us unless the pattern contains globbing
-              // characters.  Hmm.
-
-              if (n > 1
-                  || (n == 1
-                      && single_match_exists (std::string (matches[0]))))
-                {
-                  retval.resize (k+n);
-
-                  for (int j = 0; j < n; j++)
-                    {
-                      std::string tmp = matches[j];
-
-#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
-                      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-                      std::replace_if (tmp.begin (), tmp.end (),
-                                       std::bind2nd (std::equal_to<char> (),
-                                                     '/'),
-                                       '\\');
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+              std::replace_if (xpat.begin (), xpat.end (),
+                               std::bind2nd (std::equal_to<char> (), '\\'),
+                               '/');
 #endif
 
-                      retval[k++] = tmp;
+              int err = octave_glob_wrapper (xpat.c_str (),
+                                             octave_glob_nosort_wrapper (),
+                                             glob_info);
+
+              if (! err)
+                {
+                  int n = octave_glob_num_matches (glob_info);
+
+                  const char * const *matches
+                    = octave_glob_match_list (glob_info);
+
+                  // FIXME: we shouldn't have to check to see if
+                  // a single match exists, but it seems that glob() won't
+                  // check for us unless the pattern contains globbing
+                  // characters.  Hmm.
+
+                  if (n > 1
+                      || (n == 1
+                          && single_match_exists (std::string (matches[0]))))
+                    {
+                      retval.resize (k+n);
+
+                      for (int j = 0; j < n; j++)
+                        {
+                          std::string tmp = matches[j];
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)    \
+  && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
+                          std::replace_if (tmp.begin (), tmp.end (),
+                                           std::bind2nd (std::equal_to<char> (),
+                                                         '/'),
+                                           '\\');
+#endif
+
+                          retval[k++] = tmp;
+                        }
+                    }
+
+                  octave_globfree_wrapper (glob_info);
+                }
+            }
+        }
+
+      return retval.sort ();
+    }
+
+    // Glob like Windows "dir".  Treat only * and ? as wildcards,
+    // and "*.*" matches filenames even if they do not contain ".".
+    string_vector
+    windows_glob (const string_vector& pat)
+    {
+      string_vector retval;
+
+      int npat = pat.numel ();
+
+      int k = 0;
+
+      octave::unwind_protect frame;
+
+      void *glob_info = octave_create_glob_info_struct ();
+
+      frame.add_fcn (octave_destroy_glob_info_struct, glob_info);
+
+      for (int i = 0; i < npat; i++)
+        {
+          std::string xpat = pat(i);
+
+          if (! xpat.empty ())
+            {
+              std::string escaped;
+              escaped.reserve (xpat.length ());
+
+              for (size_t j = 0; j < xpat.length (); j++)
+                {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+                  if (xpat[j] == '\\')
+                    escaped += '/';
+                  else
+#endif
+                    {
+                      if (xpat[j] == ']' || xpat[j] == '[')
+                        escaped += '\\';
+
+                      escaped += xpat[j];
                     }
                 }
 
-              gnulib::globfree (&glob_info);
+              // Replace trailing "*.*" by "*".
+              int len = escaped.length ();
+              if (len >= 3 && escaped.substr (len - 3) == "*.*")
+                escaped = escaped.substr (0, len - 2);
+
+              int err = octave_glob_wrapper (escaped.c_str (),
+                                             octave_glob_nosort_wrapper (),
+                                             glob_info);
+
+              if (! err)
+                {
+                  int n = octave_glob_num_matches (glob_info);
+
+                  const char * const *matches
+                    = octave_glob_match_list (glob_info);
+
+                  // FIXME: we shouldn't have to check to see if
+                  // a single match exists, but it seems that glob() won't
+                  // check for us unless the pattern contains globbing
+                  // characters.  Hmm.
+
+                  if (n > 1
+                      || (n == 1
+                          && single_match_exists (std::string (matches[0]))))
+                    {
+                      retval.resize (k + n);
+
+                      for (int j = 0; j < n; j++)
+                        {
+                          std::string tmp = matches[j];
+
+                          std::string unescaped;
+                          unescaped.reserve (tmp.length ());
+
+                          for (size_t m = 0; m < tmp.length (); m++)
+                            {
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)           \
+     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+                              if (tmp[m] == '/')
+                                unescaped += '\\';
+                              else
+#endif
+                                {
+                                  if (tmp[m] == '\\'
+                                      && ++m == tmp.length ())
+                                    break;
+
+                                  unescaped += tmp[m];
+                                }
+                            }
+
+                          retval[k++] = unescaped;
+                        }
+                    }
+
+                  octave_globfree_wrapper (glob_info);
+                }
             }
         }
-    }
 
-  return retval.sort ();
+      return retval.sort ();
+    }
+  }
 }
+

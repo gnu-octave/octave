@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Bill Denney
+## Copyright (C) 2006-2016 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} bunzip2 (@var{bzfile})
-## @deftypefnx {Function File} {@var{filelist} =} bunzip2 (@var{bzfile}, @var{dir})
+## @deftypefn  {} {@var{filelist} =} bunzip2 (@var{bzfile})
+## @deftypefnx {} {@var{filelist} =} bunzip2 (@var{bzfile}, @var{dir})
 ## Unpack the bzip2 archive @var{bzfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather

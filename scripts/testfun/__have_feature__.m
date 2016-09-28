@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 John W. Eaton
+## Copyright (C) 2013-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __have_feature__ (feature)
+## @deftypefn {} {} __have_feature__ (feature)
 ## Undocumented internal function.
 ## @end deftypefn
 
 function retval = __have_feature__ (feature)
-  features = octave_config_info ("features");
+
+  if (strncmp (feature, "ENABLE_", 7))
+    features = __octave_config_info__ ();
+  else
+    features = __octave_config_info__ ("build_features");
+  endif
+
   if (iscellstr (feature))
     retval = (all (isfield (features, feature))
               && cellfun (@(x) features.(x), feature));
@@ -31,6 +37,7 @@ function retval = __have_feature__ (feature)
   else
     retval = false;
   endif
+
 endfunction
 
 

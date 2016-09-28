@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate Sparse matrix of double values.
@@ -35,14 +35,14 @@ template <>
 bool
 sparse_ascending_compare<double> (double a, double b)
 {
-  return (xisnan (b) || (a < b));
+  return (octave::math::isnan (b) || (a < b));
 }
 
 template <>
 bool
 sparse_descending_compare<double> (double a, double b)
 {
-  return (xisnan (a) || (a > b));
+  return (octave::math::isnan (a) || (a > b));
 }
 
 INSTANTIATE_SPARSE (double, OCTAVE_API);
@@ -50,3 +50,4 @@ INSTANTIATE_SPARSE (double, OCTAVE_API);
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<double>&);
 #endif
+

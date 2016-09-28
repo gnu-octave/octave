@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -26,16 +26,16 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/Value.h>
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
+#  include <llvm/IR/Value.h>
 #else
-#include <llvm/Value.h>
+#  include <llvm/Value.h>
 #endif
 
 #include <llvm/Support/raw_os_ostream.h>
@@ -49,3 +49,4 @@ operator<< (std::ostream& os, const llvm::Value& v)
 }
 
 #endif
+

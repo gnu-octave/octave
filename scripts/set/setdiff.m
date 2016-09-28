@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} setdiff (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}] =} setdiff (@dots{})
+## @deftypefn  {} {@var{c} =} setdiff (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}] =} setdiff (@dots{})
 ## Return the unique elements in @var{a} that are not in @var{b} sorted in
 ## ascending order.
 ##
@@ -48,7 +48,7 @@ function [c, ia] = setdiff (a, b, varargin)
   [a, b] = validsetargs ("setdiff", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isrow (a);
+  isrowvec = isrow (a);
 
   if (by_rows)
     if (nargout > 1)
@@ -114,13 +114,13 @@ endfunction
 %! assert (c, [5]);
 %! assert (c, a(ia));
 
-## Test output orientation compatibility (bug #42577)
-%!assert (setdiff ([1:5], 2), [1,3,4,5])
-%!assert (setdiff ([1:5]', 2), [1;3;4;5])
-%!assert (setdiff ([1:5], [2:3]), [1,4,5])
-%!assert (setdiff ([1:5], [2:3]'), [1,4,5])
-%!assert (setdiff ([1:5]', [2:3]), [1;4;5])
-%!assert (setdiff ([1:5]', [2:3]'), [1;4;5])
+## Test output orientation compatibility
+%!assert <42577> (setdiff ([1:5], 2), [1,3,4,5])
+%!assert <42577> (setdiff ([1:5]', 2), [1;3;4;5])
+%!assert <42577> (setdiff ([1:5], [2:3]), [1,4,5])
+%!assert <42577> (setdiff ([1:5], [2:3]'), [1,4,5])
+%!assert <42577> (setdiff ([1:5]', [2:3]), [1;4;5])
+%!assert <42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
 
 %!test
 %! a = rand (3,3,3);

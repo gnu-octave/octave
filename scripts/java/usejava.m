@@ -1,5 +1,5 @@
-## Copyright (C) 2012-2015 Rik Wehbring
-## Parts Copyright (C) 2012-2015 Philip Nienhuis
+## Copyright (C) 2012-2016 Rik Wehbring
+## Parts Copyright (C) 2012-2016 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} usejava (@var{feature})
+## @deftypefn {} {} usejava (@var{feature})
 ## Return true if the Java element @var{feature} is available.
 ##
 ## Possible features are:
@@ -62,7 +62,7 @@ function retval = usejava (feature)
     case "awt"
       try
         dum = methods ("java.awt.Frame");
-        retval = true;
+        retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     case "desktop"
       ## Octave has no Java based GUI/desktop, leave retval = false
@@ -74,7 +74,7 @@ function retval = usejava (feature)
     case "swing"
       try
         dum = methods ("javax.swing.Popup");
-        retval = true;
+        retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     otherwise
       error ("usejava: unrecognized feature '%s'", feature);
@@ -86,6 +86,9 @@ endfunction
 %!assert (usejava ("desktop"), false)
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! assert (usejava ("jvm"), true);
 
 ## Test input validation

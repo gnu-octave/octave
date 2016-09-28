@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cor_test (@var{x}, @var{y}, @var{alt}, @var{method})
+## @deftypefn {} {} cor_test (@var{x}, @var{y}, @var{alt}, @var{method})
 ## Test whether two samples @var{x} and @var{y} come from uncorrelated
 ## populations.
 ##
@@ -28,7 +28,7 @@
 ##
 ## The optional argument string @var{method} specifies which correlation
 ## coefficient to use for testing.  If @var{method} is @qcode{"pearson"}
-## (default), the (usual) Pearson's produt moment correlation coefficient is
+## (default), the (usual) Pearson's product moment correlation coefficient is
 ## used.  In this case, the data should come from a bivariate normal
 ## distribution.  Otherwise, the other two methods offer nonparametric
 ## alternatives.  If @var{method} is @qcode{"kendall"}, then Kendall's rank

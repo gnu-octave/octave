@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_variables_h)
+#if ! defined (octave_variables_h)
 #define octave_variables_h 1
+
+#include "octave-config.h"
 
 class octave_function;
 class octave_user_function;
@@ -46,11 +48,11 @@ class string_vector;
 extern OCTINTERP_API void clear_mex_functions (void);
 
 extern OCTINTERP_API octave_function *
-is_valid_function (const octave_value&, const std::string& = std::string (),
+is_valid_function (const octave_value&, const std::string& = "",
                    bool warn = false);
 
 extern OCTINTERP_API octave_function *
-is_valid_function (const std::string&, const std::string& = std::string (),
+is_valid_function (const std::string&, const std::string& = "",
                    bool warn = false);
 
 extern OCTINTERP_API octave_function *
@@ -66,7 +68,7 @@ generate_struct_completions (const std::string& text, std::string& prefix,
                              std::string& hint);
 
 extern OCTINTERP_API bool
-looks_like_struct (const std::string& text);
+looks_like_struct (const std::string& text, char prev_char);
 
 extern OCTINTERP_API int
 symbol_exist (const std::string& name, const std::string& type = "any");
@@ -106,28 +108,32 @@ set_internal_variable (int& var, const octave_value_list& args,
 extern OCTINTERP_API octave_value
 set_internal_variable (double& var, const octave_value_list& args,
                        int nargout, const char *nm,
-                       double minval = -octave_Inf,
-                       double maxval = octave_Inf);
+                       double minval = -octave::numeric_limits<double>::Inf (),
+                       double maxval = octave::numeric_limits<double>::Inf ());
 
 extern OCTINTERP_API octave_value
 set_internal_variable (std::string& var, const octave_value_list& args,
                        int nargout, const char *nm, bool empty_ok = true);
 
 extern OCTINTERP_API octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+                       int nargout, const char *nm, const char **choices);
+
+extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
                        int nargout, const char *nm, const char **choices);
 
-#define SET_INTERNAL_VARIABLE(NM) \
+#define SET_INTERNAL_VARIABLE(NM)                       \
   set_internal_variable (V ## NM, args, nargout, #NM)
 
-#define SET_NONEMPTY_INTERNAL_STRING_VARIABLE(NM) \
+#define SET_NONEMPTY_INTERNAL_STRING_VARIABLE(NM)               \
   set_internal_variable (V ## NM, args, nargout, #NM, false)
 
-#define SET_INTERNAL_VARIABLE_WITH_LIMITS(NM, MINVAL, MAXVAL) \
+#define SET_INTERNAL_VARIABLE_WITH_LIMITS(NM, MINVAL, MAXVAL)           \
   set_internal_variable (V ## NM, args, nargout, #NM, MINVAL, MAXVAL)
 
 // in the following, CHOICES must be a C string array terminated by null.
-#define SET_INTERNAL_VARIABLE_CHOICES(NM, CHOICES) \
+#define SET_INTERNAL_VARIABLE_CHOICES(NM, CHOICES)              \
   set_internal_variable (V ## NM, args, nargout, #NM, CHOICES)
 
 extern OCTINTERP_API std::string builtin_string_variable (const std::string&);
@@ -137,9 +143,9 @@ extern OCTINTERP_API octave_value builtin_any_variable (const std::string&);
 
 extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);
 
-extern OCTINTERP_API void
-bind_internal_variable (const std::string& fname,
-                        const octave_value& val) GCC_ATTR_DEPRECATED;
+OCTAVE_DEPRECATED ("note: internal variables have been replaced by functions; use 'feval' instead")
+OCTINTERP_API extern void
+bind_internal_variable (const std::string& fname, const octave_value& val);
 
 extern OCTINTERP_API void mlock (void);
 extern OCTINTERP_API void munlock (const std::string&);
@@ -152,3 +158,4 @@ extern OCTINTERP_API void clear_symbol (const std::string& nm);
 extern OCTINTERP_API void maybe_missing_function_hook (const std::string& name);
 
 #endif
+

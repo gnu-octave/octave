@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ylabel (@var{string})
-## @deftypefnx {Function File} {} ylabel (@var{string}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} ylabel (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ylabel (@dots{})
+## @deftypefn  {} {} ylabel (@var{string})
+## @deftypefnx {} {} ylabel (@var{string}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {} {} ylabel (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ylabel (@dots{})
 ## Specify the string used to label the y-axis of the current axis.
 ##
 ## If @var{hax} is specified then label the axis defined by @var{hax}.
@@ -51,7 +51,8 @@ function h = ylabel (varargin)
   endif
 
   htmp = __axis_label__ (hax, "ylabel", varargin{1},
-                         "color", get (hax, "ycolor"), varargin{2:end});
+                         "color", get (hax, "ycolor"),
+                         varargin{2:end});
 
   if (nargout > 0)
     h = htmp;
@@ -63,12 +64,23 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   y = ylabel ("ylabel_string", "color", "r");
-%!   assert (get (gca, "ylabel"), y);
-%!   assert (get (y, "type"), "text");
-%!   assert (get (y, "visible"), "on");
-%!   assert (get (y, "string"), "ylabel_string");
-%!   assert (get (y, "color"), [1 0 0]);
+%!   hy = ylabel ("ylabel_string");
+%!   assert (get (gca, "ylabel"), hy);
+%!   assert (get (hy, "type"), "text");
+%!   assert (get (hy, "visible"), "on");
+%!   assert (get (hy, "string"), "ylabel_string");
+%!   assert (get (hy, "color"), get (0, "defaultaxesycolor"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   set (gca, "fontsize", 5, "labelfontsizemultiplier", 3);
+%!   hy = ylabel ("ylabel_string", "color", "r");
+%!   assert (get (hy, "fontsize"), 15);
+%!   assert (get (hy, "color"), [1 0 0]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

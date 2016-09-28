@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -31,3 +31,4 @@ along with Octave; see the file COPYING.  If not, see
 #define LEFT
 
 #include "op-pm-template.cc"
+

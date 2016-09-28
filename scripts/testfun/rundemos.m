@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 John W. Eaton
+## Copyright (C) 2008-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rundemos ()
-## @deftypefnx {Function File} {} rundemos (@var{directory})
+## @deftypefn  {} {} rundemos ()
+## @deftypefnx {} {} rundemos (@var{directory})
 ## Execute built-in demos for all m-files in the specified @var{directory}.
 ##
 ## Demo blocks in any C++ source files (@file{*.cc}) will also be executed
@@ -38,7 +38,7 @@ function rundemos (directory)
     do_class_dirs = true;
   elseif (nargin == 1)
     dirs = {canonicalize_file_name(directory)};
-    if (isempty (dirs{1}))
+    if (isempty (dirs{1}) || ! isdir (dirs{1}))
       ## Search for directory name in path
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];
@@ -62,6 +62,7 @@ function rundemos (directory)
 endfunction
 
 function run_all_demos (directory, do_class_dirs)
+
   flist = readdir (directory);
   dirs = {};
   for i = 1:numel (flist)
@@ -94,17 +95,20 @@ function run_all_demos (directory, do_class_dirs)
       run_all_demos (d, false);
     endfor
   endif
+
 endfunction
 
 function retval = has_demos (f)
+
   fid = fopen (f);
   if (f < 0)
     error ("rundemos: fopen failed: %s", f);
-  else
-    str = fread (fid, "*char").';
-    fclose (fid);
-    retval = ! isempty (regexp (str, '^%!demo', 'lineanchors', 'once'));
   endif
+
+  str = fread (fid, "*char").';
+  fclose (fid);
+  retval = ! isempty (regexp (str, '^%!demo', 'lineanchors', 'once'));
+
 endfunction
 
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FILEEDITORINTERFACE_H
-#define FILEEDITORINTERFACE_H
+#if ! defined (octave_file_editor_interface_h)
+#define octave_file_editor_interface_h 1
 
 #include <QMenu>
 #include <QToolBar>
@@ -44,7 +44,7 @@ public:
   virtual QMenu *debug_menu () = 0;
   virtual QToolBar *toolbar () = 0;
 
-  virtual void insert_new_open_actions (QAction*,QAction*,QAction*) = 0;
+  virtual void insert_global_actions (QList<QAction*>) = 0;
   virtual void handle_enter_debug_mode (void) = 0;
   virtual void handle_exit_debug_mode (void) = 0;
 
@@ -56,7 +56,7 @@ public:
 
   virtual void
   handle_update_breakpoint_marker_request (bool insert, const QString& file,
-                                           int line) = 0;
+                                           int line, const QString& cond) = 0;
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 
@@ -71,10 +71,13 @@ public slots:
   virtual void request_new_script (const QString& command = QString ()) = 0;
   virtual void request_new_function (bool) = 0;
   virtual void request_open_file () = 0;
-  virtual void request_open_file (const QString& openFileName, int line = -1,
+  virtual void request_open_file (const QString& openFileName,
+                                  const QString& encoding = QString (),
+                                  int line = -1,
                                   bool debug_pointer = false,
                                   bool breakpoint_marker = false,
-                                  bool insert = true) = 0;
+                                  bool insert = true,
+                                  const QString& cond = "") = 0;
 //signals:
 
 //protected:
@@ -83,4 +86,5 @@ public slots:
 
 };
 
-#endif // FILEEDITORINTERFACE_H
+#endif
+

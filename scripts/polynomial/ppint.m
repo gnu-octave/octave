@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 VZLU Prague, a.s., Czech Republic
+## Copyright (C) 2008-2016 VZLU Prague, a.s., Czech Republic
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{ppi} =} ppint (@var{pp})
-## @deftypefnx {Function File} {@var{ppi} =} ppint (@var{pp}, @var{c})
+## @deftypefn  {} {@var{ppi} =} ppint (@var{pp})
+## @deftypefnx {} {@var{ppi} =} ppint (@var{pp}, @var{c})
 ## Compute the integral of the piecewise polynomial struct @var{pp}.
 ##
 ## @var{c}, if given, is the constant of integration.
@@ -26,6 +26,7 @@
 ## @end deftypefn
 
 function ppi = ppint (pp, c)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 Copyirght (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,11 +21,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include <iostream>
+#include <sstream>
+#include <limits>
+#include <string>
+#include <new>
 
 #include "dim-vector.h"
 
@@ -36,7 +39,7 @@ dim_vector::nil_rep (void)
   return zv.rep;
 }
 
-// The maximum allowed value for a dimension extent. This will normally be a
+// The maximum allowed value for a dimension extent.  This will normally be a
 // tiny bit off the maximum value of octave_idx_type.
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into
 // Sparse, but this offset may change in the future.
@@ -63,7 +66,7 @@ dim_vector::chop_all_singletons (void)
   if (j == 1)
     rep[1] = 1;
 
-  ndims () = j > 2 ? j : 2;
+  rep[-1] = j > 2 ? j : 2;
 }
 
 std::string
@@ -71,11 +74,11 @@ dim_vector::str (char sep) const
 {
   std::ostringstream buf;
 
-  for (int i = 0; i < length (); i++)
+  for (int i = 0; i < ndims (); i++)
     {
       buf << elem (i);
 
-      if (i < length () - 1)
+      if (i < ndims () - 1)
         buf << sep;
     }
 
@@ -89,7 +92,7 @@ dim_vector::num_ones (void) const
 {
   int retval = 0;
 
-  for (int i = 0; i < length (); i++)
+  for (int i = 0; i < ndims (); i++)
     if (elem (i) == 1)
       retval++;
 
@@ -101,7 +104,7 @@ dim_vector::safe_numel (void) const
 {
   octave_idx_type idx_max = dim_max ();
   octave_idx_type n = 1;
-  int n_dims = length ();
+  int n_dims = ndims ();
 
   for (int i = 0; i < n_dims; i++)
     {
@@ -124,7 +127,7 @@ dim_vector::squeeze (void) const
 
   int k = 0;
 
-  for (int i = 0; i < length (); i++)
+  for (int i = 0; i < ndims (); i++)
     {
       if (elem (i) == 1)
         dims_changed = true;
@@ -170,7 +173,7 @@ dim_vector::squeeze (void) const
   return new_dims;
 }
 
-// This is the rule for cat(). cat (dim, A, B) works if one
+// This is the rule for cat().  cat (dim, A, B) works if one
 // of the following holds, in this order:
 //
 // 1. size (A, k) == size (B, k) for all k != dim.
@@ -217,8 +220,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
     rep[dim] += (dim < ndb ? dvb(dim) : 1);
   else
     {
-      // Dimensions don't match. The only allowed fix is
-      // to omit 0x0.
+      // Dimensions don't match.  The only allowed fix is to omit 0x0.
       if (ndb == 2 && dvb(0) == 0 && dvb(1) == 0)
         match = true;
       else if (orig_nd == 2 && rep[0] == 0 && rep[1] == 0)
@@ -249,7 +251,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
 {
   if (concat (dvb, dim))
     return true;
-  else if (length () == 2 && dvb.length () == 2)
+  else if (ndims () == 2 && dvb.ndims () == 2)
     {
       bool e2dv = rep[0] + rep[1] == 1;
       bool e2dvb = dvb(0) + dvb(1) == 1;
@@ -272,7 +274,7 @@ dim_vector::hvcat (const dim_vector& dvb, int dim)
 dim_vector
 dim_vector::redim (int n) const
 {
-  int n_dims = length ();
+  int n_dims = ndims ();
 
   if (n_dims == n)
     return *this;
@@ -308,3 +310,4 @@ dim_vector::redim (int n) const
       return retval;
     }
 }
+

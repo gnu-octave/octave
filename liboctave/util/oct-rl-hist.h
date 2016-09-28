@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 John W. Eaton
+Copyright (C) 2000-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,18 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_rl_hist_h)
+#if ! defined (octave_oct_rl_hist_h)
 #define octave_oct_rl_hist_h 1
 
-#ifdef __cplusplus
+#include "octave-config.h"
+
+#if defined (__cplusplus)
 extern "C"
 {
 #endif
 
-enum {
+enum
+{
   HC_IGNSPACE = 0x01,
   HC_IGNDUPS = 0x02,
   HC_ERASEDUPS = 0x04
@@ -76,8 +79,9 @@ extern char **octave_history_list (int, int);
 
 extern void octave_replace_history_entry (int, const char *);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 
 #endif
+

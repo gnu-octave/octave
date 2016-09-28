@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 use utf8;
 
-# Copyright (C) 2012-2015 Rik Wehbring
+# Copyright (C) 2012-2016 Rik Wehbring
 #
 # This file is part of Octave.
 #
@@ -26,7 +26,7 @@ use Cwd;
 
 ## Expecting arguments in this order:
 ##
-##  SRCDIR SRCDIR-FILES ... -- LOCAL-FILES ...
+##  SRCDIR SRCDIR-FILES ...
 
 unless (@ARGV >= 2) { die "Usage: $0 srcdir m_filename1 ..." ; }
 
@@ -42,17 +42,11 @@ __END_OF_MSG__
 
 MFILE: foreach my $m_fname (@ARGV)
 {
-  if ($m_fname eq "--")
-    {
-      $srcdir = getcwd ();
-      next MFILE;
-    }
-
   my $full_fname = File::Spec->catfile ($srcdir, $m_fname);
   my @paths = File::Spec->splitdir ($full_fname);
   if (@paths < 3
       || $paths[-2] eq "private"   # skip private directories
-      || $paths[-1] !~ s/\.m$//i)  # skip non m-files, and remove extension
+      || $paths[-1] !~ s/(\.in|)\.m$//i)  # skip non m-files, and remove extension
     { next MFILE; }
 
   ## @classes will have @class/method as their function name
@@ -63,7 +57,7 @@ MFILE: foreach my $m_fname (@ARGV)
   next MFILE unless @help_txt;
 
   print "\x{1d}$fcn\n";
-  print "\@c $fcn ", File::Spec->catfile ("scripts", $m_fname), "\n";
+  print "\@c $fcn $m_fname\n";
 
   foreach $_ (@help_txt)
     {

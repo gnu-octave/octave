@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ## Copyright (C) 2010 Kai Habel
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hlist} =} __pie__ (caller, @dots{})
+## @deftypefn {} {@var{hlist} =} __pie__ (caller, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -29,7 +29,7 @@ function hlist = __pie__ (caller, varargin)
   iarg = 3;
 
   if (! isvector (x))
-    error ("%s: expecting vector argument", caller);
+    error ("%s: X must be a vector", caller);
   endif
 
   len = length (x);
@@ -151,6 +151,7 @@ function hlist = __pie__ (caller, varargin)
   elseif (strcmp (caller, "pie"))
     axis ([-1.5, 1.5, -1.5, 1.5], "square", "off");
   endif
+
 endfunction
 
 function update_text_pos (all_handles)
@@ -197,5 +198,6 @@ function update_text_pos (all_handles)
       endif
     endfor
   endif
+
 endfunction
 

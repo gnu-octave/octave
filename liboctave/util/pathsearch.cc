@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,156 +20,126 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdlib>
 
 #include <string>
 
+#include "kpse.h"
+#include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "pathsearch.h"
 #include "singleton-cleanup.h"
-#include "str-vec.h"
 
-#include "kpse.cc"
-
-dir_path::static_members *dir_path::static_members::instance = 0;
-
-dir_path::static_members::static_members (void)
-  : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
-
-bool
-dir_path::static_members::instance_ok (void)
+namespace octave
 {
-  bool retval = true;
+  directory_path::static_members *directory_path::static_members::instance = 0;
 
-  if (! instance)
-    {
-      instance = new static_members ();
+  directory_path::static_members::static_members (void)
+    : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }
 
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
+  bool
+  directory_path::static_members::instance_ok (void)
+  {
+    bool retval = true;
 
-  if (! instance)
-    {
+    if (! instance)
+      {
+        instance = new static_members ();
+
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
+
+    if (! instance)
       (*current_liboctave_error_handler)
-        ("unable to create dir_path::static_members object!");
+        ("unable to create directory_path::static_members object!");
 
-      retval = false;
-    }
+    return retval;
+  }
 
-  return retval;
+  std::list<std::string>
+  directory_path::elements (void)
+  {
+    return m_initialized ? m_path_elements : std::list<std::string> ();
+  }
+
+  std::list<std::string>
+  directory_path::all_directories (void)
+  {
+    std::list<std::string> retval;
+
+    if (m_initialized)
+      {
+        for (const auto& elt : m_path_elements)
+          {
+            std::string elt_dir = kpse_element_dir (elt);
+
+            if (! elt_dir.empty ())
+              retval.push_back (elt_dir);
+          }
+      }
+
+    return retval;
+  }
+
+  std::string
+  directory_path::find_first (const std::string& nm)
+  {
+    return m_initialized ? kpse_path_search (m_expanded_path, nm) : "";
+  }
+
+  std::list<std::string>
+  directory_path::find_all (const std::string& nm)
+  {
+    return (m_initialized
+            ? kpse_all_path_search (m_expanded_path, nm)
+            : std::list<std::string> ());
+  }
+
+  std::string
+  directory_path::find_first_of (const std::list<std::string>& names)
+  {
+    return (m_initialized
+            ? kpse_path_find_first_of (m_expanded_path, names) : "");
+  }
+
+  std::list<std::string>
+  directory_path::find_all_first_of (const std::list<std::string>& names)
+  {
+    return (m_initialized
+            ? kpse_all_path_find_first_of (m_expanded_path, names)
+            : std::list<std::string> ());
+  }
+
+  void
+  directory_path::init (void)
+  {
+    static bool octave_kpse_initialized = false;
+
+    if (! octave_kpse_initialized)
+      {
+        std::string val = octave::sys::env::getenv ("KPATHSEA_DEBUG");
+
+        if (! val.empty ())
+          kpse_debug |= atoi (val.c_str ());
+
+        octave_kpse_initialized = true;
+      }
+
+    m_expanded_path
+      = kpse_path_expand (m_default_path.empty ()
+                          ? m_orig_path
+                          : kpse_expand_default (m_orig_path, m_default_path));
+
+    for (kpse_path_iterator pi (m_expanded_path); pi != std::string::npos; pi++)
+      m_path_elements.push_back (*pi);
+
+    m_initialized = true;
+  }
 }
 
-string_vector
-dir_path::elements (void)
-{
-  return initialized ? pv : string_vector ();
-}
-
-string_vector
-dir_path::all_directories (void)
-{
-  int count = 0;
-  string_vector retval;
-
-  if (initialized)
-    {
-      int len = pv.length ();
-
-      int nmax = len > 32 ? len : 32;
-
-      retval.resize (len);
-
-      for (int i = 0; i < len; i++)
-        {
-          str_llist_type *elt_dirs = kpse_element_dirs (pv[i]);
-
-          if (elt_dirs)
-            {
-              str_llist_elt_type *dir;
-
-              for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
-                {
-                  const std::string elt_dir = STR_LLIST (*dir);
-
-                  if (! elt_dir.empty ())
-                    {
-                      if (count == nmax)
-                        nmax *= 2;
-
-                      retval.resize (nmax);
-
-                      retval[count++] = elt_dir;
-                    }
-                }
-            }
-        }
-
-      retval.resize (count);
-    }
-
-  return retval;
-}
-
-std::string
-dir_path::find_first (const std::string& nm)
-{
-  return initialized ? kpse_path_search (p, nm, true) : std::string ();
-}
-
-string_vector
-dir_path::find_all (const std::string& nm)
-{
-  return initialized ? kpse_all_path_search (p, nm) : string_vector ();
-}
-
-std::string
-dir_path::find_first_of (const string_vector& names)
-{
-  return initialized
-         ? kpse_path_find_first_of (p, names, true) : std::string ();
-}
-
-string_vector
-dir_path::find_all_first_of (const string_vector& names)
-{
-  return initialized
-         ? kpse_all_path_find_first_of (p, names) : string_vector ();
-}
-
-void
-dir_path::init (void)
-{
-  static bool octave_kpathsea_initialized = false;
-
-  if (! octave_kpathsea_initialized)
-    {
-      std::string val = octave_env::getenv ("KPATHSEA_DEBUG");
-
-      if (! val.empty ())
-        kpathsea_debug |= atoi (val.c_str ());
-
-      octave_kpathsea_initialized = true;
-    }
-
-  p = kpse_path_expand (p_default.empty ()
-                        ? p_orig : kpse_expand_default (p_orig, p_default));
-
-  int count = 0;
-  for (kpse_path_iterator pi (p); pi != std::string::npos; pi++)
-    count++;
-
-  pv.resize (count);
-
-  kpse_path_iterator pi (p);
-
-  for (int i = 0; i < count; i++)
-    pv[i] = *pi++;
-
-  initialized = true;
-}

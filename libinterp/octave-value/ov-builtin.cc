@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,17 +20,18 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
+#include "call-stack.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov-builtin.h"
 #include "ov.h"
 #include "profiler.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 
 
@@ -105,49 +106,37 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (args.has_magic_colon ())
-    ::error ("invalid use of colon in function argument list");
-  else
+    error ("invalid use of colon in function argument list");
+
+  octave::unwind_protect frame;
+
+  octave_call_stack::push (this);
+
+  frame.add_fcn (octave_call_stack::pop);
+
+  if (lvalue_list || curr_lvalue_list)
     {
-      unwind_protect frame;
-
-      octave_call_stack::push (this);
-
-      frame.add_fcn (octave_call_stack::pop);
-
-      if (lvalue_list || curr_lvalue_list)
-        {
-          frame.protect_var (curr_lvalue_list);
-          curr_lvalue_list = lvalue_list;
-        }
-
-      try
-        {
-          BEGIN_PROFILER_BLOCK (octave_builtin)
-
-          retval = (*f) (args, nargout);
-          // Do not allow null values to be returned from functions.
-          // FIXME: perhaps true builtins should be allowed?
-          retval.make_storable_values ();
-          // Fix the case of a single undefined value.
-          // This happens when a compiled function uses
-          //   octave_value retval;
-          // instead of
-          //   octave_value_list retval;
-          // the idiom is very common, so we solve that here.
-          if (retval.length () == 1 && retval.xelem (0).is_undefined ())
-            retval.clear ();
-
-          END_PROFILER_BLOCK
-        }
-      catch (octave_execution_exception)
-        {
-          gripe_library_execution_error ();
-        }
+      frame.protect_var (curr_lvalue_list);
+      curr_lvalue_list = lvalue_list;
     }
+
+  BEGIN_PROFILER_BLOCK (octave_builtin)
+
+  retval = (*f) (args, nargout);
+  // Do not allow null values to be returned from functions.
+  // FIXME: perhaps true builtins should be allowed?
+  retval.make_storable_values ();
+  // Fix the case of a single undefined value.
+  // This happens when a compiled function uses
+  //   octave_value retval;
+  // instead of
+  //   octave_value_list retval;
+  // the idiom is very common, so we solve that here.
+  if (retval.length () == 1 && retval.xelem (0).is_undefined ())
+    retval.clear ();
+
+  END_PROFILER_BLOCK
 
   return retval;
 }
@@ -171,3 +160,4 @@ octave_builtin::function (void) const
 }
 
 const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;
+

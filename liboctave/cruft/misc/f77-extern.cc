@@ -1,7 +1,7 @@
 // misc-extern.cc                                     -*- C++ -*-
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "f77-fcn.h"
@@ -33,3 +33,4 @@ along with Octave; see the file COPYING.  If not, see
 
 // So we can check to see if an exception has occurred.
 int f77_exception_encountered = 0;
+

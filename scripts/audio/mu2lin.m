@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mu2lin (@var{x}, @var{n})
+## @deftypefn {} {} mu2lin (@var{x}, @var{n})
 ## Convert audio data from mu-law to linear.
 ##
 ## Mu-law values are 8-bit unsigned integers.  Linear values use @var{n}-bit
@@ -69,7 +69,7 @@ function y = mu2lin (x, n = 0)
   ## Convert to real or 8-bit.
   if (n == 0)
     ## [ -32768, 32767 ] -> [ -1, 1)
-    y = y/32768;
+    y /= 32768;
   elseif (n == 8)
     ld = max (abs (y (:)));
     if (ld < 16384 && ld > 0)

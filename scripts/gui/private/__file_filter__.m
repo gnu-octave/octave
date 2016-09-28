@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Kai Habel
+## Copyright (C) 2010-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,22 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __file_filter__ (@var{file_filter})
+## @deftypefn {} {} __file_filter__ (@var{caller}, @var{file_filter})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: Kai Habel
 
-function [retval, defname, defdir] = __file_filter__ (file_filter, name)
+function [retval, defname, defdir] = __file_filter__ (caller, file_filter)
 
-  revtal = {};
+  #keyboard;
+  retval = {};
   defname = "";
   defdir = "";
 
-  if (iscell (file_filter))
+  if (nargin == 1 || isempty (file_filter))
+    ## Do nothing, and just add default pattern.
+  elseif (iscell (file_filter))
     [r, c] = size (file_filter);
     if (c != 1 && c != 2)
-      error ("%s: invalid filter specification", name);
+      error ("%s: invalid filter specification", caller);
     endif
     if (c == 1)
       retval = cell (r, 2);
@@ -51,14 +54,18 @@ function [retval, defname, defdir] = __file_filter__ (file_filter, name)
   elseif (ischar (file_filter))
     [defdir, fname, fext] = fileparts (file_filter);
     if (! strcmp (fname, "*"))
-      defname = strcat (fname, fext);
+      defname = [fname, fext];
     endif
-    if ((length (fext) > 0) && (! strcmp(fext, '.*')))
-      fext = strcat ("*", fext);
+    if (! isempty (fext))
+      fext = ["*" fext];
       retval = {fext, __default_filtername__(fext)};
     endif
   endif
 
+  ## Delete any "*.*" pattern, and add "* All Files"
+  if (! isempty (retval))
+    retval(strcmp (retval(1,:), "*.*"), :) = [];
+  endif
   retval(end+1,:) = {"*", __default_filtername__("*")};
 
 endfunction
@@ -74,7 +81,7 @@ function name = __default_filtername__ (filterext)
       name = "Octave Source Files";
     case "*.c"
       name = "C Source Files";
-    case {"*.cc" "*.c++" "*.cpp"}
+    case {"*.cc", "*.cp", "*.cpp", "*.CPP", "*.cxx", "*.c++" "*.C"}
       name = "C++ Source Files";
     case "*.oct"
       name = "Octave Compiled Files";

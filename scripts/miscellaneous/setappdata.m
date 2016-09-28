@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Ben Abbott
+## Copyright (C) 2010-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} setappdata (@var{h}, @var{name}, @var{value})
-## @deftypefnx {Function File} {} setappdata (@var{h}, @var{name1}, @var{value1}, @var{name2}, @var{value3}, @dots{})
+## @deftypefn  {} {} setappdata (@var{h}, @var{name}, @var{value})
+## @deftypefnx {} {} setappdata (@var{h}, @var{name1}, @var{value1}, @var{name2}, @var{value3}, @dots{})
 ## Set the application data @var{name} to @var{value} for the graphics object
 ## with handle @var{h}.
 ##

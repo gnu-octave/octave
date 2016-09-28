@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,10 +21,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef octave_interpreter_h
-#define octave_interpreter_h 1
+#if ! defined (octave_octave_interpreter_h)
+#define octave_octave_interpreter_h 1
 
 #include <QObject>
+
+#include "octave.h"
 
 #include "thread-manager.h"
 
@@ -36,7 +38,9 @@ public:
 
   // An object to manage the Octave interpreter.
 
-  octave_interpreter (void) : QObject (), thread_manager () { }
+  octave_interpreter (octave::application *app_context);
+
+  ~octave_interpreter (void) { }
 
 signals:
 
@@ -53,6 +57,11 @@ public slots:
 private:
 
   octave_thread_manager thread_manager;
+
+  octave::application *m_app_context;
+
+  int m_exit_status;
 };
 
 #endif
+

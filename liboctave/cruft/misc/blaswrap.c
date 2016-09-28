@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Jarno Rajahalme
+Copyright (C) 2012-2016 Jarno Rajahalme
 
 This file is part of Octave.
 
@@ -38,11 +38,11 @@ architecture.
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h> /* USE_BLASWRAP ? */
+#if defined (HAVE_CONFIG_H)
+#  include "config.h" /* USE_BLASWRAP ? */
 #endif
 
-#ifdef USE_BLASWRAP
+#if defined (USE_BLASWRAP)
 
 /*
  * vecLib is an Apple framework (collection of libraries) containing
@@ -52,8 +52,8 @@ architecture.
  * get the Apple versions, rather than some other blas/lapack with the
  * same name.
  */
-#ifndef VECLIB_FILE
-#define VECLIB_FILE "/System/Library/Frameworks/vecLib.framework/Versions/A/vecLib"
+#if ! defined (VECLIB_FILE)
+#  define VECLIB_FILE "/System/Library/Frameworks/vecLib.framework/Versions/A/vecLib"
 #endif
 
 /*
@@ -254,7 +254,6 @@ F2C_BLAS_CALL(doublecomplex, zdotu_)
 F2C_BLAS_CALL(complex, cdotc_)
 F2C_BLAS_CALL(doublecomplex, zdotc_)
 
-
 /*
  * Function pointer arrays, indexed by the enums
  */
@@ -293,3 +292,4 @@ static void finiVecLibWrappers (void)
 }
 
 #endif /* USE_BLASWRAP */
+

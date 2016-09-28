@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Kai Habel
+## Copyright (C) 2010-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile ()
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
+## @deftypefn  {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile ()
+## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt})
+## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
+## @deftypefnx {} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## @deftypefnx {} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
+## @deftypefnx {} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
 ##
 ## Open a GUI dialog for selecting a file and return the filename @var{fname},
 ## the path to this file @var{fpath}, and the filter index @var{fltidx}.
@@ -49,6 +49,16 @@
 ## extensions.
 ## Example: @code{uigetfile (@{"*.gif;*.png;*.jpg", "Supported Picture
 ## Formats"@})}
+##
+## @item A directory name or path name
+## If the folder name of path name contains a trailing file separator, the
+## contents of that folder will be displayed.  If no trailing file separator
+## is present the parent directory is listed.  The substring to the right of
+## the rightmost file separator (if any) will be interpreted as a file or
+## directory name and if that file or directory exists it will be highlighted.
+## If the path name or directory name is wholly or partly nonexistent, the
+## current working directory will be displayed.
+## No filter will be active.
 ## @end table
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
@@ -75,50 +85,38 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   ## Preset default values
   outargs = {cell(0, 2),         # File Filter
              "Open File",        # Dialog Title
-             "",                 # Default file name
+             "",                 # Default filename
              [240, 120],         # Dialog Position (pixel x/y)
              "off",              # MultiSelect on/off
              pwd};               # Default directory
 
   idx1 = idx2 = [];
-  if (length (varargin) > 0)
-    for i = 1 : length (varargin)
-      val = varargin{i};
-      if (ischar (val))
-        val = tolower (val);
-        if (strcmp (val, "multiselect"))
-          idx1 = i;
-        elseif (strcmp (val, "position"))
-          idx2 = i;
-        endif
-      endif
-    endfor
+  has_opts = false;
+  if (nargin > 0)
+    idx1 = find (strcmpi (varargin, "multiselect"), 1);
+    idx2 = find (strcmpi (varargin, "position"), 1);
+    if (idx1 || idx2)
+      has_opts = true;
+    endif
   endif
 
-  stridx = [idx1, idx2, 0];
-  if (length (stridx) > 1)
-    stridx = min (stridx(1 : end - 1));
-  endif
+  optidx = min ([idx1, idx2, nargin+1]);
 
-  args = varargin;
-  if (stridx)
-    args = varargin(1 : stridx - 1);
-  endif
+  args = varargin(1:optidx-1);
 
-  len = length (args);
+  len = numel (args);
   if (len > 0)
-    file_filter = args{1};
-    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
-    if (length (defdir) > 0)
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ ("uigetfile", args{1});
+    if (! isempty (defdir))
       outargs{6} = defdir;
     endif
   else
-    outargs{1} = __file_filter__ (outargs{1});
+    outargs{1} = __file_filter__ ("uigetfile", outargs{1});
   endif
 
   if (len > 1)
     if (ischar (args{2}))
-      if (length (args{2}) > 0)
+      if (! isempty (args{2}))
         outargs{2} = args{2};
       endif
     elseif (! isempty (args{2}))
@@ -134,42 +132,40 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       else
         [fdir, fname, fext] = fileparts (varargin{3});
       endif
-      if (length (fdir) > 0)
+      if (! isempty (fdir))
         outargs{6} = fdir;
       endif
-      if (length (fname) > 0 || length (fext) > 0)
-        outargs{3} = strcat (fname, fext);
+      if (! isempty (fname) || ! isempty (fext))
+        outargs{3} = [fname fext];
       endif
     elseif (! isempty (args{3}))
       print_usage ();
     endif
   endif
 
-  if (stridx)
+  if (has_opts)
     ## string arguments ("position" or "multiselect")
 
     ## check for even number of remaining arguments, prop/value pair(s)
-    if (rem (nargin - stridx + 1, 2))
-      error ("uigetfile: expecting property/value pairs");
+    if (rem (nargin - optidx + 1, 2))
+      error ("uigetfile: PROPERTY/VALUE arguments must occur in pairs");
     endif
 
-    for i = stridx : 2 : nargin
+    for i = optidx : 2 : nargin
       prop = varargin{i};
       val = varargin{i + 1};
       if (strcmpi (prop, "position"))
-        if (isnumeric (val) && length (val) == 2)
-          outargs{4} = val;
-        else
-          error ("uigetfile: expecting 2-element vector for position argument");
+        if (! isnumeric (val) || length (val) != 2)
+          error ('uigetfile: "Position" must be a 2-element vector');
         endif
+        outargs{4} = val;
       elseif (strcmpi (prop, "multiselect"))
-        if (ischar (val))
-          outargs{5} = tolower (val);
-        else
-          error ("uigetfile: expecting string argument (on/off) for multiselect");
+        if (! ischar (val))
+          error ('uigetfile: MultiSelect value must be a string ("on"/"off")');
         endif
+        outargs{5} = tolower (val);
       else
-        error ("uigetfile: unknown argument");
+        error ("uigetfile: unknown argument '%s'", prop);
       endif
     endfor
   endif

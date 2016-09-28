@@ -3,10 +3,10 @@
 // To use this file, your version of Octave must support dynamic
 // linking.  To find out if it does, type the command
 //
-//   octave_config_info ("ENABLE_DYNAMIC_LINKING")
+//   __octave_config_info__ ("ENABLE_DYNAMIC_LINKING")
 //
 // at the Octave prompt.  Support for dynamic linking is included if
-// this expression returns the string "yes".
+// this expression is true.
 //
 // To compile this file, type the command
 //
@@ -46,27 +46,26 @@
 // 3) The number of output arguments
 // 4) A string to use as help text if 'help <function_name>' is entered.
 //
-// Note below that the third parameter (nargout) of DEFUN_DLD is not used,
-// so it is omitted from the list of arguments in order to avoid a warning
-// from gcc about an unused function parameter.
+// Note below that the third parameter (nargout) of DEFUN_DLD is not used.
 
-DEFUN_DLD (oct_demo, args, ,
+DEFUN_DLD (oct_demo, args, /* nargout */,
            "[...] = oct_demo (...)\n\
 \n\
-Print a greeting followed by the values of all the arguments passed.\n\
+Print a greeting followed by the values of all input arguments.\n\
+\n\
 Return all arguments in reverse order.")
 {
-  // The list of values to return.  See the declaration in oct-obj.h
+  // The inputs to this are available in the variable named args.
+
+  int nargin = args.length ();
+
+  // The list of values to return.  See the declaration in ovl.h.
 
   octave_value_list retval;
 
   // This stream is normally connected to the pager.
 
   octave_stdout << "Hello, world!\n";
-
-  // The inputs to this function are available in args.
-
-  int nargin = args.length ();
 
   // The octave_value_list class is a zero-based array of octave_value objects.
   // The declaration for the octave_value class is in the file ov.h.

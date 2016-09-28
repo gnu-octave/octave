@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_load_save_h)
+#if ! defined (octave_load_save_h)
 #define octave_load_save_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
@@ -35,7 +37,7 @@ class octave_value;
 // Similarly, save_as_floats may be an option for LS_BINARY, LS_HDF5 etc.
 enum load_save_format_type
 {
-  LS_ASCII,
+  LS_TEXT,
   LS_BINARY,
   LS_MAT_ASCII,
   LS_MAT_BINARY,
@@ -72,12 +74,12 @@ extern void dump_octave_core (void);
 
 extern int
 read_binary_file_header (std::istream& is, bool& swap,
-                         oct_mach_info::float_format& flt_fmt,
+                         octave::mach_info::float_format& flt_fmt,
                          bool quiet = false);
 
 extern octave_value
 do_load (std::istream& stream, const std::string& orig_fname,
-         load_save_format format, oct_mach_info::float_format flt_fmt,
+         load_save_format format, octave::mach_info::float_format flt_fmt,
          bool list_only, bool swap, bool verbose,
          const string_vector& argv, int argv_idx, int argc, int nargout);
 
@@ -95,3 +97,4 @@ extern void octave_prepare_hdf5 (void);
 extern void octave_finalize_hdf5 (void);
 
 #endif
+

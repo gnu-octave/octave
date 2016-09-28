@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1997-2015 Kurt Hornik
+## Copyright (C) 1997-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygecdf (@var{x}, @var{t}, @var{m}, @var{n})
+## @deftypefn {} {} hygecdf (@var{x}, @var{t}, @var{m}, @var{n})
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## hypergeometric distribution with parameters @var{t}, @var{m}, and @var{n}.
 ##

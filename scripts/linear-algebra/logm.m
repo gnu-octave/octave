@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 N. J. Higham
+## Copyright (C) 2008-2016 N. J. Higham
 ## Copyright (C) 2010 Richard T. Guy
 ## Copyright (C) 2010 Marco Caliari
 ##
@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} logm (@var{A})
-## @deftypefnx {Function File} {@var{s} =} logm (@var{A}, @var{opt_iters})
-## @deftypefnx {Function File} {[@var{s}, @var{iters}] =} logm (@dots{})
+## @deftypefn  {} {@var{s} =} logm (@var{A})
+## @deftypefnx {} {@var{s} =} logm (@var{A}, @var{opt_iters})
+## @deftypefnx {} {[@var{s}, @var{iters}] =} logm (@dots{})
 ## Compute the matrix logarithm of the square matrix @var{A}.
 ##
 ## The implementation utilizes a Pad@'e approximant and the identity
@@ -86,7 +86,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   while (k < opt_iters)
     tau = norm (s - eye (size (s)),1);
     if (tau <= theta (7))
-      p = p + 1;
+      p += 1;
       j(1) = find (tau <= theta, 1);
       j(2) = find (tau / 2 <= theta, 1);
       if (j(1) - j(2) <= 1 || p == 2)
@@ -94,7 +94,7 @@ function [s, iters] = logm (A, opt_iters = 100)
         break
       endif
     endif
-    k = k + 1;
+    k += 1;
     s = sqrtm (s);
   endwhile
 
@@ -102,7 +102,7 @@ function [s, iters] = logm (A, opt_iters = 100)
     warning ("logm: maximum number of square roots exceeded; results may still be accurate");
   endif
 
-  s = s - eye (size (s));
+  s -= eye (size (s));
 
   if (m > 1)
     s = logm_pade_pf (s, m);
@@ -133,16 +133,18 @@ endfunction
 ##   LOG(EYE(SIZE(A))+A) using a partial fraction expansion.
 
 function s = logm_pade_pf (A, m)
+
   [nodes, wts] = gauss_legendre (m);
   ## Convert from [-1,1] to [0,1].
   nodes = (nodes+1)/2;
-  wts = wts/2;
+  wts /= 2;
 
   n = length (A);
   s = zeros (n);
   for j = 1:m
     s += wts(j)*(A/(eye (n) + nodes(j)*A));
   endfor
+
 endfunction
 
 ######################################################################
@@ -155,11 +157,13 @@ endfunction
 ## rules, Math. Comp., 23(106):221-230, 1969.
 
 function [x, w] = gauss_legendre (n)
+
   i = 1:n-1;
   v = i./sqrt ((2*i).^2-1);
   [V, D] = eig (diag (v, -1) + diag (v, 1));
   x = diag (D);
   w = 2*(V(1,:)'.^2);
+
 endfunction
 
 

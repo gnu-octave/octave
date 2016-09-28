@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} plotyy (@var{x1}, @var{y1}, @var{x2}, @var{y2})
-## @deftypefnx {Function File} {} plotyy (@dots{}, @var{fun})
-## @deftypefnx {Function File} {} plotyy (@dots{}, @var{fun1}, @var{fun2})
-## @deftypefnx {Function File} {} plotyy (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{ax}, @var{h1}, @var{h2}] =} plotyy (@dots{})
+## @deftypefn  {} {} plotyy (@var{x1}, @var{y1}, @var{x2}, @var{y2})
+## @deftypefnx {} {} plotyy (@dots{}, @var{fun})
+## @deftypefnx {} {} plotyy (@dots{}, @var{fun1}, @var{fun2})
+## @deftypefnx {} {} plotyy (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{ax}, @var{h1}, @var{h2}] =} plotyy (@dots{})
 ## Plot two sets of data with independent y-axes and a common x-axis.
 ##
 ## The arguments @var{x1} and @var{y1} define the arguments for the first plot
@@ -112,7 +112,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
 
   h1 = feval (fun1, x1, y1);
 
-  set (ax(1), "color", "none", "ycolor", getcolor (h1(1)), "xlim", xlim);
+  set (ax(1), "ycolor", getcolor (h1(1)), "xlim", xlim);
 
   set (gcf (), "nextplot", "add");
 
@@ -181,7 +181,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   elseif (ishandle (ax(1)))
     set (ax(1), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen. File a bug report.");
+    error ("plotyy.m: This shouldn't happen.  File a bug report.");
   endif
   if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data");
@@ -189,8 +189,9 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
   elseif (ishandle (ax(2)))
     set (ax(2), "__plotyy_axes__", ax);
   else
-    error ("plotyy.m: This shouldn't happen. File a bug report.");
+    error ("plotyy.m: This shouldn't happen.  File a bug report.");
   endif
+
 endfunction
 
 function deleteplotyy (h, ~, ax2, t2)
@@ -204,6 +205,7 @@ endfunction
 
 function update_nextplot (h, ~, ax2)
   persistent recursion = false;
+
   if (! recursion)
     unwind_protect
       recursion = true;
@@ -212,6 +214,7 @@ function update_nextplot (h, ~, ax2)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_position (h, ~, ax2)
@@ -252,9 +255,11 @@ function update_position (h, ~, ax2)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function color = getcolor (ax)
+
   obj = get (ax);
   if (isfield (obj, "color"))
     color = obj.color;
@@ -265,6 +270,7 @@ function color = getcolor (ax)
   else
     color = [0, 0, 0];
   endif
+
 endfunction
 
 
@@ -274,18 +280,18 @@ endfunction
 %! y1 = sin (x);
 %! y2 = exp (x - 1);
 %! ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
-%! xlabel ('X');
-%! ylabel (ax(1), 'Axis 1');
-%! ylabel (ax(2), 'Axis 2');
-%! text (0.5, 0.5, 'Left Axis', ...
-%!       'color', [0 0 1], 'horizontalalignment', 'center', 'parent', ax(1));
-%! text (4.5, 80, 'Right Axis', ...
-%!       'color', [0 0.5 0], 'horizontalalignment', 'center', 'parent', ax(2));
-%! title ({'plotyy() example'; 'Left axis uses @plot, Right axis uses @semilogy'});
+%! xlabel ("X");
+%! ylabel (ax(1), "Axis 1");
+%! ylabel (ax(2), "Axis 2");
+%! text (0.5, 0.5, "Left Axis", ...
+%!       "color", [0 0 1], "horizontalalignment", "center", "parent", ax(1));
+%! text (4.5, 80, "Right Axis", ...
+%!       "color", [0 0.5 0], "horizontalalignment", "center", "parent", ax(2));
+%! title ({"plotyy() example"; "left axis uses @plot, right axis uses @semilogy"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = linspace (-1, 1, 201);
 %! subplot (2,2,1);
 %!  plotyy (x,sin(pi*x), x,10*cos(pi*x));
@@ -295,19 +301,19 @@ endfunction
 %!  contour (peaks (25));
 %! subplot (2,2,4);
 %!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
-%! axis square;
+%!  axis square;
 
 %!demo
-%! clf
+%! clf;
 %! hold on
 %! t = (0:0.1:9);
 %! x = sin (t);
 %! y = 5 * cos (t);
 %! [hax, h1, h2] = plotyy (t, x, t, y);
 %! [~, h3, h4] = plotyy (t+1, x, t+1, y);
-%! set ([h3, h4], 'linestyle', '--');
-%! xlabel (hax(1), 'xlabel');
+%! set ([h3, h4], "linestyle", "--");
+%! xlabel (hax(1), "xlabel");
 %! title (hax(2), 'Two plotyy graphs on same figure using "hold on"');
-%! ylabel (hax(1), 'Left axis is Blue');
-%! ylabel (hax(2), 'Right axis is Green');
+%! ylabel (hax(1), "Left axis is Blue");
+%! ylabel (hax(2), "Right axis is Green");
 

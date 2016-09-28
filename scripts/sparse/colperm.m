@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 David Bateman and Andy Adler
+## Copyright (C) 2004-2016 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} colperm (@var{s})
+## @deftypefn {} {@var{p} =} colperm (@var{s})
 ## Return the column permutations such that the columns of
 ## @code{@var{s} (:, @var{p})} are ordered in terms of increasing number of
 ## nonzero elements.
@@ -35,6 +35,7 @@ function p = colperm (s)
 
   [i, j] = find (s);
   idx = find (diff ([j; Inf]) != 0);
-  [dummy, p] = sort (idx - [0; idx(1:(end-1))]);
+  [~, p] = sort (idx - [0; idx(1:(end-1))]);
+
 endfunction
 

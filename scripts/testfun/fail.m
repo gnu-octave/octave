@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Paul Kienzle
+## Copyright (C) 2005-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -20,10 +20,10 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fail (@var{code})
-## @deftypefnx {Function File} {} fail (@var{code}, @var{pattern})
-## @deftypefnx {Function File} {} fail (@var{code}, "warning")
-## @deftypefnx {Function File} {} fail (@var{code}, "warning", @var{pattern})
+## @deftypefn  {} {} fail (@var{code})
+## @deftypefnx {} {} fail (@var{code}, @var{pattern})
+## @deftypefnx {} {} fail (@var{code}, "warning")
+## @deftypefnx {} {} fail (@var{code}, "warning", @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
 ## @var{pattern}, otherwise produce an error.
@@ -142,9 +142,8 @@ endfunction
 %!fail ("[1,2]*[2,3]", "nonconformant")
 %!fail ("fail ('[1,2]*[2;3]', 'nonconformant')", "expected error <nonconformant> but got none")
 %!fail ("fail ('[1,2]*[2,3]', 'usage:')", "expected error <usage:>\nbut got.*nonconformant")
-%!fail ("warning ('test warning')", "warning", "test warning");
-
-#%!fail ("warning ('next test')",'warning','next test');  # only allowed one warning test?!?
+%!fail ("warning ('test warning')", "warning", "test warning")
+%!fail ("warning ('next test')", 'warning', 'next test')
 
 ## Test that fail() itself will generate an error
 %!error <expected error> fail ("1")

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Andreas Weingessel
+## Copyright (C) 1995-2016 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sinewave (@var{m}, @var{n}, @var{d})
+## @deftypefn {} {} sinewave (@var{m}, @var{n}, @var{d})
 ## Return an @var{m}-element vector with @var{i}-th element given by
 ## @code{sin (2 * pi * (@var{i}+@var{d}-1) / @var{n})}.
 ##

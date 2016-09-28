@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 John W. Eaton
+## Copyright (C) 2012-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{current_state} =} recycle ()
-## @deftypefnx {Function File} {@var{old_state} =} recycle (@var{new_state})
+## @deftypefn  {} {@var{current_state} =} recycle ()
+## @deftypefnx {} {@var{old_state} =} recycle (@var{new_state})
 ## Query or set the preference for recycling deleted files.
 ##
 ## When recycling is enabled, commands which would permanently erase files

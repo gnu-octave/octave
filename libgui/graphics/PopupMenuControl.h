@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_PopupMenuControl__
-#define __QtHandles_PopupMenuControl__ 1
+#if ! defined (octave_PopupMenuControl_h)
+#define octave_PopupMenuControl_h 1
 
 #include "BaseControl.h"
 
@@ -30,26 +30,27 @@ class QComboBox;
 namespace QtHandles
 {
 
-class PopupMenuControl : public BaseControl
-{
-  Q_OBJECT
+  class PopupMenuControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  PopupMenuControl (const graphics_object& go, QComboBox* box);
-  ~PopupMenuControl (void);
+  public:
+    PopupMenuControl (const graphics_object& go, QComboBox* box);
+    ~PopupMenuControl (void);
 
-  static PopupMenuControl* create (const graphics_object& go);
+    static PopupMenuControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void currentIndexChanged (int index);
+  private slots:
+    void currentIndexChanged (int index);
 
-private:
-  bool m_blockUpdate;
-};
+  private:
+    bool m_blockUpdate;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

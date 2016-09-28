@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -71,8 +71,8 @@ imwrite (J, "my_output_image.img");
 
 It is possible to get information about an image file on disk, without actually
 reading it into Octave.  This is done using the @code{imfinfo} function which
-provides read access to many of the parameters stored in the header of the image
-file.
+provides read access to many of the parameters stored in the header of the
+image file.
 
 @DOCSTRING(imfinfo)
 
@@ -140,6 +140,8 @@ index in the color map, and each row in the color map corresponds to
 an RGB color.  The color map must be of class @code{double} with values
 between 0 and 1.
 
+@DOCSTRING(im2double)
+
 @DOCSTRING(iscolormap)
 
 @DOCSTRING(gray2ind)
@@ -189,6 +191,8 @@ between 0 and 1.
 @DOCSTRING(spring)
 
 @DOCSTRING(summer)
+
+@DOCSTRING(viridis)
 
 @DOCSTRING(white)
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2015 David Bateman
+Copyright (C) 2006-2016 David Bateman
 Copyright (C) 2006 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_MatrixType_h)
-#define octave_MatrixType_h
+#if ! defined (octave_MatrixType_h)
+#define octave_MatrixType_h 1
+
+#include "octave-config.h"
+
+#include "MSparse.h"
 
 class Matrix;
 class ComplexMatrix;
@@ -66,9 +70,8 @@ public:
 
   MatrixType (const FloatComplexMatrix &a);
 
-  MatrixType (const SparseMatrix &a);
-
-  MatrixType (const SparseComplexMatrix &a);
+  template <typename T>
+  MatrixType (const MSparse<T> &a);
 
   MatrixType (const matrix_type t, bool _full = false);
 
@@ -183,3 +186,4 @@ private:
 };
 
 #endif
+

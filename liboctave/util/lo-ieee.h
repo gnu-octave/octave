@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,10 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_ieee_h)
+#if ! defined (octave_lo_ieee_h)
 #define octave_lo_ieee_h 1
 
-#ifdef  __cplusplus
+#include "octave-config.h"
+
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -45,8 +47,8 @@ extern "C" {
 /* Octave's idea of not a number.  */
 #define octave_Float_NaN (lo_ieee_float_nan_value ())
 
-/* FIXME -- this code assumes that a double has twice the
-   number of bits as an int */
+/* FIXME: This code assumes that a double has twice the
+          number of bits as an int */
 
 typedef union
 {
@@ -94,45 +96,64 @@ extern OCTAVE_API float lo_ieee_float_nan_value (void);
 
 extern OCTAVE_API int __lo_ieee_float_signbit (float);
 
-#ifdef  __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 
-#define lo_ieee_isnan(x) (sizeof (x) == sizeof (float) ? \
-                         __lo_ieee_float_isnan (x) : __lo_ieee_isnan (x))
-#define lo_ieee_finite(x) (sizeof (x) == sizeof (float) ? \
-                           __lo_ieee_float_finite (x) : __lo_ieee_finite (x))
-#define lo_ieee_isinf(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
+#define lo_ieee_isnan(x)                                \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_isnan (x) : __lo_ieee_isnan (x))
 
+#define lo_ieee_finite(x)                               \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_finite (x) : __lo_ieee_finite (x))
 
-#define lo_ieee_is_NA(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
-#define lo_ieee_is_NaN_or_NA(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_is_NaN_or_NA (x) : __lo_ieee_is_NaN_or_NA (x))
-#define lo_ieee_signbit(x) (sizeof (x) == sizeof (float) ? \
-                          __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
+#define lo_ieee_isinf(x)                                \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
 
-#ifdef __cplusplus
+#define lo_ieee_is_NA(x)                                \
+  (sizeof (x) == sizeof (float)                         \
+   ? __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
 
-template <typename T>
-struct octave_numeric_limits
+#define lo_ieee_is_NaN_or_NA(x)                                         \
+  (sizeof (x) == sizeof (float)                                         \
+   ? __lo_ieee_float_is_NaN_or_NA (x) : __lo_ieee_is_NaN_or_NA (x))
+
+#define lo_ieee_signbit(x)                                      \
+  (sizeof (x) == sizeof (float)                                 \
+   ? __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
+
+#if defined (__cplusplus)
+
+namespace octave
 {
-  static T NA (void) { return static_cast<T> (0); }
-};
+  template <typename T>
+  struct numeric_limits
+  {
+    static T NA (void) { return static_cast<T> (0); }
+    static T NaN (void) { return static_cast<T> (0); }
+    static T Inf (void) { return static_cast<T> (0); }
+  };
 
-template <>
-struct octave_numeric_limits<double>
-{
-  static double NA (void) { return octave_NA; }
-};
+  template <>
+  struct numeric_limits<double>
+  {
+    static double NA (void) { return octave_NA; }
+    static double NaN (void) { return octave_NaN; }
+    static double Inf (void) { return octave_Inf; }
+  };
 
-template <>
-struct octave_numeric_limits<float>
-{
-  static float NA (void) { return octave_Float_NA; }
-};
+  template <>
+  struct numeric_limits<float>
+  {
+    static float NA (void) { return octave_Float_NA; }
+    static float NaN (void) { return octave_Float_NaN; }
+    static float Inf (void) { return octave_Float_Inf; }
+  };
+}
 
 #endif
 
 #endif
+

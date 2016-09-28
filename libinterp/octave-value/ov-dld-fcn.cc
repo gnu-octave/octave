@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "oct-shlib.h"
@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <defaults.h>
 #include "dynamic-ld.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-dld-fcn.h"
 #include "ov.h"
 
@@ -38,9 +38,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,
                                      "dynamically-linked function",
                                      "dynamically-linked function");
 
-
 octave_dld_function::octave_dld_function
-  (octave_builtin::fcn ff, const octave_shlib& shl,
+  (octave_builtin::fcn ff, const octave::dynamic_library& shl,
    const std::string& nm, const std::string& ds)
   : octave_builtin (ff, nm, ds), sh_lib (shl)
 {
@@ -64,7 +63,7 @@ octave_dld_function::fcn_file_name (void) const
   return sh_lib.file_name ();
 }
 
-octave_time
+octave::sys::time
 octave_dld_function::time_parsed (void) const
 {
   return sh_lib.time_loaded ();
@@ -82,8 +81,10 @@ octave_dld_function::time_parsed (void) const
 //       of objects to point to an invalid code segment.
 
 octave_dld_function*
-octave_dld_function::create (octave_builtin::fcn ff, const octave_shlib& shl,
+octave_dld_function::create (octave_builtin::fcn ff,
+                             const octave::dynamic_library& shl,
                              const std::string& nm, const std::string& ds)
 {
   return new octave_dld_function (ff, shl, nm, ds);
 }
+

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2014-2015 Julien Bect
-Copyright (C) 2012-2015 Daniel Kraft
+Copyright (C) 2014-2016 Julien Bect
+Copyright (C) 2012-2016 Daniel Kraft
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 profile_data_accumulator::stats::stats ()
   : time (0.0), calls (0), recursive (false),
     parents (), children ()
-{}
+{ }
 
 octave_value
 profile_data_accumulator::stats::function_set_value (const function_set& list)
@@ -57,7 +57,7 @@ profile_data_accumulator::stats::function_set_value (const function_set& list)
 
 profile_data_accumulator::tree_node::tree_node (tree_node* p, octave_idx_type f)
   : parent (p), fcn_id (f), children (), time (0.0), calls (0)
-{}
+{ }
 
 profile_data_accumulator::tree_node::~tree_node ()
 {
@@ -130,10 +130,10 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
 octave_value
 profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 {
-  /* Note that we don't generate the entry just for this node, but rather
-     a struct-array with entries for all children.  This way, the top-node
-     (for which we don't want a real entry) generates already the final
-     hierarchical profile data.  */
+  // Note that we don't generate the entry just for this node, but
+  // rather a struct-array with entries for all children.  This way, the
+  // top-node (for which we don't want a real entry) generates already
+  // the final hierarchical profile data.
 
   const octave_idx_type n = children.size ();
 
@@ -176,34 +176,18 @@ profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 
 profile_data_accumulator::profile_data_accumulator ()
   : known_functions (), fcn_index (),
-    enabled (false), call_tree (0), last_time (-1.0)
-{}
+    enabled (false), call_tree (new tree_node (0, 0)),
+    active_fcn (0), last_time (-1.0)
+{ }
 
 profile_data_accumulator::~profile_data_accumulator ()
 {
-  if (call_tree)
-    delete call_tree;
+  delete call_tree;
 }
 
 void
 profile_data_accumulator::set_active (bool value)
 {
-  if (value)
-    {
-      // Create a call-tree top-node if there isn't yet one.
-      if (! call_tree)
-        call_tree = new tree_node (0, 0);
-
-      // Let the top-node be the active one.  This ensures we have a clean
-      // fresh start collecting times.
-      active_fcn = call_tree;
-    }
-  else
-    {
-      // Make sure we start with fresh timing if we're re-enabled later.
-      last_time = -1.0;
-    }
-
   enabled = value;
 }
 
@@ -216,7 +200,7 @@ profile_data_accumulator::enter_function (const std::string& fcn)
 
   // If there is already an active function, add to its time before
   // pushing the new one.
-  if (active_fcn != call_tree)
+  if (active_fcn && active_fcn != call_tree)
     add_current_time ();
 
   // Map the function's name to its index.
@@ -231,7 +215,11 @@ profile_data_accumulator::enter_function (const std::string& fcn)
   else
     fcn_idx = pos->second;
 
+  if (! active_fcn)
+    active_fcn = call_tree;
+
   active_fcn = active_fcn->enter (fcn_idx);
+
   last_time = query_time ();
 
 }
@@ -239,36 +227,36 @@ profile_data_accumulator::enter_function (const std::string& fcn)
 void
 profile_data_accumulator::exit_function (const std::string& fcn)
 {
-  assert (call_tree);
-  // FIXME: This assert statements doesn't make sense if profile() is called
-  //        from within a function hierarchy to begin with.  See bug #39587.
-  //assert (active_fcn != call_tree);
+  if (active_fcn)
+    {
+      assert (call_tree);
+      // FIXME: This assert statements doesn't make sense if profile() is called
+      //        from within a function hierarchy to begin with.  See bug #39587.
+      //assert (active_fcn != call_tree);
 
-  // Usually, if we are disabled this function is not even called.  But the
-  // call disabling the profiler is an exception.  So also check here
-  // and only record the time if enabled.
-  if (is_active ())
-    add_current_time ();
+      // Usually, if we are disabled this function is not even called.  But the
+      // call disabling the profiler is an exception.  So also check here
+      // and only record the time if enabled.
+      if (is_active ())
+        add_current_time ();
 
-  fcn_index_map::iterator pos = fcn_index.find (fcn);
-  // FIXME: This assert statements doesn't make sense if profile() is called
-  //        from within a function hierarchy to begin with.  See bug #39587.
-  //assert (pos != fcn_index.end ());
-  active_fcn = active_fcn->exit (pos->second);
+      fcn_index_map::iterator pos = fcn_index.find (fcn);
+      // FIXME: This assert statements doesn't make sense if profile() is called
+      //        from within a function hierarchy to begin with.  See bug #39587.
+      //assert (pos != fcn_index.end ());
+      active_fcn = active_fcn->exit (pos->second);
 
-  // If this was an "inner call", we resume executing the parent function
-  // up the stack.  So note the start-time for this!
-  last_time = query_time ();
+      // If this was an "inner call", we resume executing the parent function
+      // up the stack.  So note the start-time for this!
+      last_time = query_time ();
+    }
 }
 
 void
 profile_data_accumulator::reset (void)
 {
   if (is_active ())
-    {
-      error ("Can't reset active profiler.");
-      return;
-    }
+    error ("Can't reset active profiler.");
 
   known_functions.clear ();
   fcn_index.clear ();
@@ -276,7 +264,8 @@ profile_data_accumulator::reset (void)
   if (call_tree)
     {
       delete call_tree;
-      call_tree = 0;
+      call_tree = new tree_node (0, 0);
+      active_fcn = 0;
     }
 
   last_time = -1.0;
@@ -373,7 +362,7 @@ profile_data_accumulator::get_hierarchical (void) const
 double
 profile_data_accumulator::query_time (void) const
 {
-  octave_time now;
+  octave::sys::time now;
 
   // FIXME: is this volatile declaration really needed?
   // See bug #34210 for additional details.
@@ -385,76 +374,62 @@ profile_data_accumulator::query_time (void) const
 void
 profile_data_accumulator::add_current_time (void)
 {
-  const double t = query_time ();
-  assert (last_time >= 0.0 && last_time <= t);
+  if (active_fcn)
+    {
+      const double t = query_time ();
 
-  assert (call_tree && active_fcn != call_tree);
-  active_fcn->add_time (t - last_time);
+      active_fcn->add_time (t - last_time);
+    }
 }
 
 profile_data_accumulator profiler;
 
 // Enable or disable the profiler data collection.
 DEFUN (__profiler_enable__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __profiler_enable__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __profiler_enable__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
+  int nargin = args.length ();
 
-  const int nargin = args.length ();
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin > 0)
-    {
-      if (nargin > 1)
-        {
-          print_usage ();
-          return retval;
-        }
+    profiler.set_active (args(0).bool_value ());
 
-      profiler.set_active (args(0).bool_value ());
-    }
-
-  retval(0) = profiler.is_active ();
-
-  return retval;
+  return ovl (profiler.is_active ());
 }
 
 // Clear all collected profiling data.
 DEFUN (__profiler_reset__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __profiler_reset__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __profiler_reset__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
-  const int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     warning ("profiler_reset: ignoring extra arguments");
 
   profiler.reset ();
 
-  return retval;
+  return ovl ();
 }
 
 // Query the timings collected by the profiler.
 DEFUN (__profiler_data__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __profiler_data__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __profiler_data__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
-  const int nargin = args.length ();
-
-  if (nargin > 0)
+  if (args.length () > 0)
     warning ("profiler_data: ignoring extra arguments");
 
   if (nargout > 1)
-    retval(1) = profiler.get_hierarchical ();
-  retval(0) = profiler.get_flat ();
-
-  return retval;
+    return ovl (profiler.get_flat (), profiler.get_hierarchical ());
+  else
+    return ovl (profiler.get_flat ());
 }
 

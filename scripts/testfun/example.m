@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} example @var{name}
-## @deftypefnx {Command} {} example @var{name} @var{n}
-## @deftypefnx {Function File} {} example ("@var{name}")
-## @deftypefnx {Function File} {} example ("@var{name}", @var{n})
-## @deftypefnx {Function File} {[@var{s}, @var{idx}] =} example (@dots{})
+## @deftypefn  {} {} example @var{name}
+## @deftypefnx {} {} example @var{name} @var{n}
+## @deftypefnx {} {} example ("@var{name}")
+## @deftypefnx {} {} example ("@var{name}", @var{n})
+## @deftypefnx {} {[@var{s}, @var{idx}] =} example (@dots{})
 ##
 ## Display the code for example @var{n} associated with the function
 ## @var{name}, but do not run it.
@@ -103,7 +103,7 @@ endfunction
 %! x = sin (t);
 %! plot (t,x)
 
-%!assert (example ("example", 1), "\n example (\"example\");");
+%!assert (example ("example", 1), "\n example (\"example\");")
 
 %!test
 %! [code, idx] = example ("example");

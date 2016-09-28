@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} compass (@var{u}, @var{v})
-## @deftypefnx {Function File} {} compass (@var{z})
-## @deftypefnx {Function File} {} compass (@dots{}, @var{style})
-## @deftypefnx {Function File} {} compass (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
+## @deftypefn  {} {} compass (@var{u}, @var{v})
+## @deftypefnx {} {} compass (@var{z})
+## @deftypefnx {} {} compass (@dots{}, @var{style})
+## @deftypefnx {} {} compass (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} compass (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
 ## from the origin of a polar plot.
@@ -127,6 +127,7 @@ endfunction
 %! randn_1x9_data = [1.42934, -1.10821, -1.70404, 0.63357, -0.68337, -1.19771, -0.96502, -1.12810, 0.22457];
 %! a = toeplitz ([1;randn_9x1_data], [1,randn_1x9_data]);
 %! compass (eig (a));
+%! title ("compass() example");
 
 ## Test input validation
 %!error compass ()

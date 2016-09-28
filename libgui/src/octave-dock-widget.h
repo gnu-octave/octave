@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Richard Crozier
+Copyright (C) 2012-2016 Richard Crozier
 
 This file is part of Octave.
 
@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_dock_widget_h)
+#if ! defined (octave_octave_dock_widget_h)
 #define octave_octave_dock_widget_h 1
 
 #include <QDockWidget>
@@ -37,7 +37,7 @@ class octave_dock_widget : public QDockWidget
 public:
 
   octave_dock_widget (QWidget *p = 0);
-  virtual ~octave_dock_widget ();
+  virtual ~octave_dock_widget (void) { }
 
   virtual void connect_visibility_changed (void);
   void make_window (void);
@@ -76,13 +76,14 @@ public slots:
   }
 
   virtual void notice_settings (const QSettings*)
-  {
-  }
+  { }
   void handle_settings (const QSettings*);
 
   void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
   QMainWindow *main_win () { return _parent; }
+
+  void save_settings (void);
 
 protected slots:
 
@@ -101,8 +102,6 @@ protected slots:
 
   // event filter for double clicks into the window decoration elements
   bool eventFilter(QObject *obj, QEvent *e);
-
-  virtual void add_actions (QList<QAction *> action_list);
 
 private slots:
 
@@ -138,3 +137,4 @@ private:
 };
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Paul Kienzle
+## Copyright (C) 2004-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -20,52 +20,68 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} inputname (@var{n})
+## @deftypefn {} {} inputname (@var{n})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##
-## If the argument is not a simple variable name, return an empty string.
-## @code{inputname} may only be used within a function body, not at the
-## command line.
+## If the argument is not a simple variable name, return an empty string.  As
+## an example, a reference to a field in a structure such as @code{s.field} is
+## not a simple name and will return @qcode{""}.
+##
+## @code{inputname} is only useful within a function.  When used at the command
+## line it always returns an empty string.
 ## @seealso{nargin, nthargout}
 ## @end deftypefn
 
-function s = inputname (n)
+function name = inputname (n)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", fix (n)));
+  name = "";
+  try
+    name = evalin ("caller", sprintf ("__varval__ ('.argn.'){%d}", fix (n)));
+  catch
+    return;
+  end_try_catch
+
   ## For compatibility with Matlab,
   ## return empty string if argument name is not a valid identifier.
-  if (! isvarname (s))
-    s = "";
+  if (! isvarname (name))
+    name = "";
   endif
 
 endfunction
 
 
 ## Warning: heap big magic in the following tests!!!
-## The test function builds a private context for each
-## test, with only the specified values shared between
-## them.  It does this using the following template:
+## The test function builds a private context for each test, with only the
+## specified values shared between them.  It does this using the following
+## template:
 ##
-##     function [<shared>] = testfn(<shared>)
+##     function [<shared>] = testfn (<shared>)
 ##        <test>
+##     endfunction
 ##
-## To test inputname, I need a function context invoked
-## with known parameter names.  So define a couple of
-## shared parameters, et voila!, the test is trivial.
+## To test inputname, I need a function context invoked with known parameter
+## names.  So define a couple of shared parameters, et voila!, the test is
+## trivial.
 
 %!shared hello, worldly
 %!assert (inputname (1), "hello")
 %!assert (inputname (2), "worldly")
+%!assert (inputname (3), "")
 
-%!function r = foo (x, y)
+## Clear parameter list so that testfn is created with zero inputs/outputs
+%!shared
+%!assert (inputname (-1), "")
+%!assert (inputname (1), "")
+
+%!function r = __foo__ (x, y)
 %!  r = inputname (2);
 %!endfunction
-%!assert (foo (pi, e), "e");
-%!assert (feval (@foo, pi, e), "e");
+%!assert (__foo__ (pi, e), "e")
+%!assert (feval (@__foo__, pi, e), "e")
 
 %!error inputname ()
 %!error inputname (1,2)

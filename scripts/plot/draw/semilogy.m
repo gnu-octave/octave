@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} semilogy (@var{y})
-## @deftypefnx {Function File} {} semilogy (@var{x}, @var{y})
-## @deftypefnx {Function File} {} semilogy (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} semilogy (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} semilogy (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} semilogy (@dots{})
+## @deftypefn  {} {} semilogy (@var{y})
+## @deftypefnx {} {} semilogy (@var{x}, @var{y})
+## @deftypefnx {} {} semilogy (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} semilogy (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {} {} semilogy (@var{h}, @dots{})
+## @deftypefnx {} {@var{h} =} semilogy (@dots{})
 ## Produce a 2-D plot using a logarithmic scale for the y-axis.
 ##
 ## See the documentation of @code{plot} for a description of the
@@ -53,8 +53,8 @@ function h = semilogy (varargin)
     hax = newplot (hax);
 
     set (hax, "yscale", "log");
-    if (! ishold (hax))
-      set (hax, "yminortick", "on");
+    if (! ishold ())
+      set (hax, "yminortick", "on", "box", "on");
     endif
 
     htmp = __plt__ ("semilogy", hax, varargin{:});
@@ -77,7 +77,7 @@ endfunction
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogy (x, y);
-%! title ({'semilogx() plot', 'Y-axis is logarithmic'});
+%! title ({"semilogx() plot", "Y-axis is logarithmic"});
 
 %!demo
 %! clf;
@@ -86,11 +86,11 @@ endfunction
 %!
 %! subplot (2,1,1);
 %!  semilogy (x, y);
-%!  ylabel ('semilogy (x, y)');
+%!  title ("semilogy (x, y)");
 %!
 %! subplot (2,1,2);
 %!  semilogy (x, -y);
-%!  ylabel ('semilogy (x, -y)');
+%!  title ("semilogy (x, -y)");
 
 %!demo
 %! clf;
@@ -99,13 +99,13 @@ endfunction
 %!
 %! subplot (2,1,1);
 %!  semilogy (x, y);
-%!  set (gca, 'ydir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  ylabel ({'semilogy (x, y)', 'ydir = reversed'});
+%!  set (gca, "ydir", "reverse", "activepositionproperty", "outerposition");
+%!  title ({"semilogy (x, y)", "ydir = reversed"});
 %!
 %! subplot (2,1,2);
 %!  semilogy (x, -y);
-%!  set (gca, 'ydir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  ylabel ({'semilogy (x, -y)', 'ydir = reversed'});
+%!  set (gca, "ydir", "reverse", "activepositionproperty", "outerposition");
+%!  title ({"semilogy (x, -y)", "ydir = reversed"});
 
 %!test
 %! hf = figure ("visible", "off");

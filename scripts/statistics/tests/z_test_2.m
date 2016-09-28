@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{z}] =} z_test_2 (@var{x}, @var{y}, @var{v_x}, @var{v_y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{z}] =} z_test_2 (@var{x}, @var{y}, @var{v_x}, @var{v_y}, @var{alt})
 ## For two samples @var{x} and @var{y} from normal distributions with unknown
 ## means and known variances @var{v_x} and @var{v_y}, perform a Z-test of the
 ## hypothesis of equal means.

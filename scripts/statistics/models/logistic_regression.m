@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
+## @deftypefn {} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
 ## Perform ordinal logistic regression.
 ##
 ## Suppose @var{y} takes values in @var{k} ordered categories, and let
@@ -128,16 +128,16 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
   ## maximize likelihood using Levenberg modified Newton's method
   iter = 0;
   while (abs (dl' * (d2l \ dl) / length (dl)) > tol)
-    iter = iter + 1;
+    iter += 1;
     tbold = tb;
     devold = dev;
     tb = tbold - d2l \ dl;
     [g, g1, p, dev] = logistic_regression_likelihood (y, x, tb, z, z1);
     if ((dev - devold) / (dl' * (tb - tbold)) < 0)
-      epsilon = epsilon / decr;
+      epsilon /= decr;
     else
       while ((dev - devold) / (dl' * (tb - tbold)) > 0)
-        epsilon = epsilon * incr;
+        epsilon *= incr;
          if (epsilon > 1e+15)
            error ("logistic_regression: epsilon too large");
          endif

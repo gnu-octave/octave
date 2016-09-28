@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} trace (@var{A})
+## @deftypefn {} {} trace (@var{A})
 ## Compute the trace of @var{A}, the sum of the elements along the main
 ## diagonal.
 ##

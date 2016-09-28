@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} unzip (@var{zipfile})
-## @deftypefnx {Function File} {@var{filelist} =} unzip (@var{zipfile}, @var{dir})
+## @deftypefn  {} {@var{filelist} =} unzip (@var{zipfile})
+## @deftypefnx {} {@var{filelist} =} unzip (@var{zipfile}, @var{dir})
 ## Unpack the ZIP archive @var{zipfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather

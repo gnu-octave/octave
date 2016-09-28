@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_boolMatrix_h)
+#if ! defined (octave_boolMatrix_h)
 #define octave_boolMatrix_h 1
+
+#include "octave-config.h"
 
 #include "Array.h"
 #include "boolNDArray.h"
@@ -90,3 +92,4 @@ SM_BOOL_OP_DECLS (bool, boolMatrix, OCTAVE_API)
 MM_CMP_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)
 
 #endif
+

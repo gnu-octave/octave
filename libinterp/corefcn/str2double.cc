@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 Jaroslav Hajek
+Copyright (C) 2010-2016 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "ov.h"
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 
 static inline bool
@@ -64,7 +64,7 @@ single_num (std::istringstream& is)
       char c2 = is.get ();
       if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
         {
-          num = octave_Inf;
+          num = octave::numeric_limits<double>::Inf ();
           is.peek (); // May set EOF bit.
         }
       else
@@ -85,7 +85,7 @@ single_num (std::istringstream& is)
           char c2 = is.get ();
           if (c1 == 'a' && c2 == 'N')
             {
-              num = octave_NaN;
+              num = octave::numeric_limits<double>::NaN ();
               is.peek (); // May set EOF bit.
             }
           else
@@ -275,9 +275,9 @@ str2double1 (const std::string& str_arg)
   bool i1, i2, s1, s2;
 
   if (is.eof ())
-    val = octave_NaN;
+    val = octave::numeric_limits<double>::NaN ();
   else if (! extract_num (is, num, i1, s1))
-    val = octave_NaN;
+    val = octave::numeric_limits<double>::NaN ();
   else
     {
       set_component (val, num, i1);
@@ -285,7 +285,7 @@ str2double1 (const std::string& str_arg)
       if (! is.eof ())
         {
           if (! extract_num (is, num, i2, s2) || i1 == i2 || ! s2)
-            val = octave_NaN;
+            val = octave::numeric_limits<double>::NaN ();
           else
             set_component (val, num, i2);
         }
@@ -295,91 +295,85 @@ str2double1 (const std::string& str_arg)
 }
 
 DEFUN (str2double, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} str2double (@var{s})\n\
-Convert a string to a real or complex number.\n\
-\n\
-The string must be in one of the following formats where a and b are real\n\
-numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:\n\
-\n\
-@itemize\n\
-@item a + bi\n\
-\n\
-@item a + b*i\n\
-\n\
-@item a + i*b\n\
-\n\
-@item bi + a\n\
-\n\
-@item b*i + a\n\
-\n\
-@item i*b + a\n\
-@end itemize\n\
-\n\
-If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where\n\
-the brackets indicate optional arguments and @qcode{'d'} indicates zero or\n\
-more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}\n\
-are also accepted.\n\
-\n\
-@var{s} may be a character string, character matrix, or cell array.  For\n\
-character arrays the conversion is repeated for every row, and a double or\n\
-complex array is returned.  Empty rows in @var{s} are deleted and not\n\
-returned in the numeric array.  For cell arrays each character string\n\
-element is processed and a double or complex array of the same dimensions as\n\
-@var{s} is returned.\n\
-\n\
-For unconvertible scalar or character string input @code{str2double} returns\n\
-a NaN@.  Similarly, for character array input @code{str2double} returns a\n\
-NaN for any row of @var{s} that could not be converted.  For a cell array,\n\
-@code{str2double} returns a NaN for any element of @var{s} for which\n\
-conversion fails.  Note that numeric elements in a mixed string/numeric\n\
-cell array are not strings and the conversion will fail for these elements\n\
-and return NaN.\n\
-\n\
-@code{str2double} can replace @code{str2num}, and it avoids the security\n\
-risk of using @code{eval} on unknown data.\n\
-@seealso{str2num}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} str2double (@var{s})
+Convert a string to a real or complex number.
 
+The string must be in one of the following formats where a and b are real
+numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:
+
+@itemize
+@item a + bi
+
+@item a + b*i
+
+@item a + i*b
+
+@item bi + a
+
+@item b*i + a
+
+@item i*b + a
+@end itemize
+
+If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where
+the brackets indicate optional arguments and @qcode{'d'} indicates zero or
+more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}
+are also accepted.
+
+@var{s} may be a character string, character matrix, or cell array.  For
+character arrays the conversion is repeated for every row, and a double or
+complex array is returned.  Empty rows in @var{s} are deleted and not
+returned in the numeric array.  For cell arrays each character string
+element is processed and a double or complex array of the same dimensions as
+@var{s} is returned.
+
+For unconvertible scalar or character string input @code{str2double} returns
+a NaN@.  Similarly, for character array input @code{str2double} returns a
+NaN for any row of @var{s} that could not be converted.  For a cell array,
+@code{str2double} returns a NaN for any element of @var{s} for which
+conversion fails.  Note that numeric elements in a mixed string/numeric
+cell array are not strings and the conversion will fail for these elements
+and return NaN.
+
+@code{str2double} can replace @code{str2num}, and it avoids the security
+risk of using @code{eval} on unknown data.
+@seealso{str2num}
+@end deftypefn */)
+{
   if (args.length () != 1)
     print_usage ();
-  else if (args(0).is_string ())
+
+  octave_value retval;
+
+  if (args(0).is_string ())
     {
       if (args(0).rows () == 0 || args(0).columns () == 0)
-        {
-          retval = Matrix (1, 1, octave_NaN);
-        }
+        retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
       else if (args(0).rows () == 1 && args(0).ndims () == 2)
-        {
-          retval = str2double1 (args(0).string_value ());
-        }
+        retval = str2double1 (args(0).string_value ());
       else
         {
-          const string_vector sv = args(0).all_strings ();
-          if (! error_state)
-            retval = sv.map<Complex> (str2double1);
+          const string_vector sv = args(0).string_vector_value ();
+
+          retval = sv.map<Complex> (str2double1);
         }
     }
   else if (args(0).is_cell ())
     {
       const Cell cell = args(0).cell_value ();
 
-      if (! error_state)
+      ComplexNDArray output (cell.dims (), octave::numeric_limits<double>::NaN ());
+
+      for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
-          ComplexNDArray output (cell.dims (), octave_NaN);
-          for (octave_idx_type i = 0; i < cell.numel (); i++)
-            {
-              if (cell(i).is_string ())
-                output(i) = str2double1 (cell(i).string_value ());
-            }
-          retval = output;
+          if (cell(i).is_string ())
+            output(i) = str2double1 (cell(i).string_value ());
         }
+      retval = output;
     }
   else
-    retval = Matrix (1, 1, octave_NaN);
-
+    retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
 
   return retval;
 }
@@ -416,4 +410,5 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)
 %!assert (str2double (char(zeros(3,0))), NaN)
- */
+*/
+

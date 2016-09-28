@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} gamrnd (@var{a}, @var{b})
-## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{r})
-## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, [@var{sz}])
+## @deftypefn  {} {} gamrnd (@var{a}, @var{b})
+## @deftypefnx {} {} gamrnd (@var{a}, @var{b}, @var{r})
+## @deftypefnx {} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} gamrnd (@var{a}, @var{b}, [@var{sz}])
 ## Return a matrix of random samples from the Gamma distribution with
 ## shape parameter @var{a} and scale @var{b}.
 ##

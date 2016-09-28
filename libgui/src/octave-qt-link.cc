@@ -1,8 +1,8 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
-Copyright (C) 2011-2015 John P. Swensen
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
+Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
@@ -22,30 +22,34 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QStringList>
 #include <QDialog>
 #include <QDir>
+#include <QPushButton>
 
+#include "oct-env.h"
 #include "str-vec.h"
+
+#include "builtin-defun-decls.h"
 #include "dialog.h"
 #include "error.h"
-#include "workspace-element.h"
-#include "builtin-defun-decls.h"
 #include "load-path.h"
-#include "oct-env.h"
 #include "utils.h"
 
+#include "octave-gui.h"
 #include "octave-qt-link.h"
-
 #include "resource-manager.h"
+#include "workspace-element.h"
 
-octave_qt_link::octave_qt_link (QWidget *p)
+octave_qt_link::octave_qt_link (QWidget *p,
+                                octave::gui_application *app_context)
   : octave_link (), main_thread (new QThread ()),
-    command_interpreter (new octave_interpreter ())
+    m_app_context (app_context),
+    command_interpreter (new octave_interpreter (app_context))
 {
   _current_directory = "";
   _new_dir = true;
@@ -61,7 +65,11 @@ octave_qt_link::octave_qt_link (QWidget *p)
   main_thread->start ();
 }
 
-octave_qt_link::~octave_qt_link (void) { }
+octave_qt_link::~octave_qt_link (void)
+{
+  delete command_interpreter;
+  delete main_thread;
+}
 
 void
 octave_qt_link::execute_interpreter (void)
@@ -118,7 +126,7 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  if (settings->value ("editor/create_new_file",false).toBool ())
+  if (! settings || settings->value ("editor/create_new_file",false).toBool ())
     return true;
 
   QFileInfo file_info (QString::fromStdString (file));
@@ -134,7 +142,7 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
     tr ("File\n%1\ndoes not exist. Do you want to create it?").
     arg (QDir::currentPath () + QDir::separator ()
          + QString::fromStdString (file)),
-    tr ("Octave Editor"), "quest", btn, tr ("Create"), role );
+    tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
 
   // Wait while the user is responding to message box.
   uiwidget_creator.waitcondition.wait (&uiwidget_creator.mutex);
@@ -235,7 +243,7 @@ make_filter_list (const octave_link::filter_list& lst)
 
   // We have pairs of data, first being the list of extensions
   // exta;exb;extc etc second the name to use as filter name
-  // (optional).  Qt wants a a list of filters in the format of
+  // (optional).  Qt wants a list of filters in the format of
   // 'FilterName (space separated exts)'.
 
   for (octave_link::filter_list::const_iterator it = lst.begin ();
@@ -250,7 +258,7 @@ make_filter_list (const octave_link::filter_list& lst)
       name.replace (QRegExp ("\\(.*\\)"), "");
       ext.replace (";", " ");
 
-      if (name.length () == 0)
+      if (name.isEmpty ())
         {
           // No name field.  Build one from the extensions.
           name = ext.toUpper () + " Files";
@@ -372,6 +380,11 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
   return retval;
 }
 
+// Prompt to allow file to be run by setting cwd (or if addpath_option==true,
+// alternatively setting the path).
+// This uses a QMessageBox unlike other functions in this file,
+// because uiwidget_creator.waitcondition.wait hangs when called from
+// file_editor_tab::handle_context_menu_break_condition().  (FIXME: why hang?)
 int
 octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
                                               const std::string& dir,
@@ -381,7 +394,6 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 
   QString qdir = QString::fromStdString (dir);
   QString qfile = QString::fromStdString (file);
-
   QString msg
     = (addpath_option
        ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
@@ -396,14 +408,14 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
   QStringList btn;
   QStringList role;
   btn << cd_txt;
-  role << "AcceptRole";
+  role << "YesRole";
   if (addpath_option)
     {
       btn << addpath_txt;
       role << "AcceptRole";
     }
   btn << cancel_txt;
-  role << "AcceptRole";
+  role << "RejectRole";
 
   // Lock mutex before signaling.
   uiwidget_creator.mutex.lock ();
@@ -437,7 +449,7 @@ octave_qt_link::do_change_directory (const std::string& dir)
 void
 octave_qt_link::update_directory ()
 {
-   emit change_directory_signal (_current_directory);
+  emit change_directory_signal (_current_directory);
   _new_dir = false;
 }
 
@@ -490,7 +502,7 @@ octave_qt_link::do_set_history (const string_vector& hist)
 {
   QStringList qt_hist;
 
-  for (octave_idx_type i = 0; i < hist.length (); i++)
+  for (octave_idx_type i = 0; i < hist.numel (); i++)
     qt_hist.append (QString::fromStdString (hist[i]));
 
   emit set_history_signal (qt_hist);
@@ -510,13 +522,11 @@ octave_qt_link::do_clear_history (void)
 
 void
 octave_qt_link::do_pre_input_event (void)
-{
-}
+{ }
 
 void
 octave_qt_link::do_post_input_event (void)
-{
-}
+{ }
 
 void
 octave_qt_link::do_enter_debugger_event (const std::string& file, int line)
@@ -538,23 +548,28 @@ octave_qt_link::do_exit_debugger_event (void)
   emit exit_debugger_signal ();
 }
 
+// Display (if @insert true) or remove the appropriate symbol for a breakpoint
+// in @file at @line with condition @cond.
 void
 octave_qt_link::do_update_breakpoint (bool insert,
-                                      const std::string& file, int line)
+                                      const std::string& file, int line,
+                                      const std::string& cond)
 {
   emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
-                                        line);
+                                        line, QString::fromStdString (cond));
 }
 
 void
 octave_qt_link::do_set_default_prompts (std::string& ps1, std::string& ps2,
                                         std::string& ps4)
 {
-  ps1 = ">> ";
-  ps2 = "";
-  ps4 = "";
+  if (m_app_context->start_gui_p ())
+    {
+      ps1 = ">> ";
+      ps2 = "";
+      ps4 = "";
+    }
 }
-
 
 void
 octave_qt_link::do_insert_debugger_pointer (const std::string& file, int line)
@@ -568,7 +583,6 @@ octave_qt_link::do_delete_debugger_pointer (const std::string& file, int line)
   emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
 }
 
-
 bool
 octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
 {
@@ -576,7 +590,7 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
   bool ok = false;
   bool addpath_option = true;
 
-  std::string curr_dir = octave_env::get_current_directory ();
+  std::string curr_dir = octave::sys::env::get_current_directory ();
 
   if (same_file (curr_dir, dir))
     ok = true;
@@ -584,7 +598,11 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
     {
       bool dir_in_load_path = load_path::contains_canonical (dir);
 
-      std::string base_file = octave_env::base_pathname (file);
+      // get base name, allowing "@class/method.m" (bug #41514)
+      std::string base_file = (file.length () > dir.length ())
+                              ? file.substr (dir.length () + 1)
+                              : octave::sys::env::base_pathname (file);
+
       std::string lp_file = load_path::find_file (base_file);
 
       if (dir_in_load_path)
@@ -650,3 +668,4 @@ octave_qt_link::terminal_interrupt (void)
 {
   command_interpreter->interrupt ();
 }
+

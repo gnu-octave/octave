@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 John Donoghue
+## Copyright (C) 2013-2016 John Donoghue
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} prefdir
-## @deftypefnx {Command} {@var{dir} =} prefdir
-## Return the directory that contains the preferences for Octave.
+## @deftypefn  {} {} prefdir
+## @deftypefnx {} {} prefdir (1)
+## @deftypefnx {} {@var{dir} =} prefdir
+## Return the directory that holds the preferences for Octave.
 ##
 ## Examples:
 ##
@@ -34,15 +35,23 @@
 ## @example
 ## cd (prefdir)
 ## @end example
+##
+## If called with an argument, the preferences directory is created if it
+## doesn't already exist.
 ## @seealso{getpref, setpref, addpref, rmpref, ispref}
 ## @end deftypefn
 
 ## Author: John Donoghue
-## Version: 0.01
 
-function folder = prefdir ()
+function dir = prefdir ()
 
-  folder = get_home_directory ();
+  dir = get_home_directory ();
+
+  if (nargin > 0)
+    if (! exist (dir, "dir"))
+      mkdir (dir);
+    endif
+  endif
 
 endfunction
 

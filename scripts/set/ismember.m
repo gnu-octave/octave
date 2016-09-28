@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tf} =} ismember (@var{a}, @var{s})
-## @deftypefnx {Function File} {@var{tf} =} ismember (@var{a}, @var{s}, "rows")
-## @deftypefnx {Function File} {[@var{tf}, @var{s_idx}] =} ismember (@dots{})
+## @deftypefn  {} {@var{tf} =} ismember (@var{a}, @var{s})
+## @deftypefnx {} {@var{tf} =} ismember (@var{a}, @var{s}, "rows")
+## @deftypefnx {} {[@var{tf}, @var{s_idx}] =} ismember (@dots{})
 ##
 ## Return a logical matrix @var{tf} with the same shape as @var{a} which is
 ## true (1) if the element in @var{a} is found in @var{s} and false (0) if it
@@ -163,37 +163,37 @@ endfunction
 
 %!test
 %! [result, s_idx] = ismember ([1, 2], []);
-%! assert (result, [false false])
+%! assert (result, [false false]);
 %! assert (s_idx, [0, 0]);
 
 %!test
 %! [result, s_idx] = ismember ([], [1, 2]);
-%! assert (result, logical ([]))
+%! assert (result, logical ([]));
 %! assert (s_idx, []);
 
 %!test
 %! [result, s_idx] = ismember ({"a", "b"}, "");
-%! assert (result, [false false])
+%! assert (result, [false false]);
 %! assert (s_idx, [0, 0]);
 
 %!test
 %! [result, s_idx] = ismember ({"a", "b"}, {});
-%! assert (result, [false false])
+%! assert (result, [false false]);
 %! assert (s_idx, [0, 0]);
 
 %!test
 %! [result, s_idx] = ismember ("", {"a", "b"});
-%! assert (result, false)
+%! assert (result, false);
 %! assert (s_idx, 0);
 
 %!test
 %! [result, s_idx] = ismember ({}, {"a", "b"});
-%! assert (result, logical ([]))
+%! assert (result, logical ([]));
 %! assert (s_idx, []);
 
 %!test
 %! [result, s_idx] = ismember ([1 2 3 4 5], [3]);
-%! assert (result, logical ([0 0 1 0 0]))
+%! assert (result, logical ([0 0 1 0 0]));
 %! assert (s_idx , [0 0 1 0 0]);
 
 %!test

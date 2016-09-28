@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
@@ -56,7 +56,7 @@ DEFNDCATOP_FN (f_bm, float_scalar, bool_matrix, float_array, float_array,
 
 DEFCONV (bool_matrix_conv, bool, bool_matrix)
 {
-  CAST_CONV_ARG (const octave_bool&);
+  const octave_bool& v = dynamic_cast<const octave_bool&> (a);
 
   return new octave_bool_matrix (v.bool_matrix_value ());
 }
@@ -79,3 +79,4 @@ install_b_bm_ops (void)
 
   INSTALL_WIDENOP (octave_bool, octave_bool_matrix, bool_matrix_conv);
 }
+

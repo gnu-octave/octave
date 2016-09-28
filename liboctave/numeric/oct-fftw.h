@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 John W. Eaton
+Copyright (C) 2001-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,19 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_fftw_h)
+#if ! defined (octave_oct_fftw_h)
 #define octave_oct_fftw_h 1
+
+#include "octave-config.h"
 
 #include <cstddef>
 
-#if defined (HAVE_FFTW3_H)
-#include <fftw3.h>
-#endif
-
 #include "oct-cmplx.h"
 #include "dim-vector.h"
-
-#if defined (HAVE_FFTW)
 
 class
 OCTAVE_API
@@ -58,31 +54,27 @@ public:
 
   static bool instance_ok (void);
 
-  static fftw_plan
+  static void *
   create_plan (int dir, const int rank, const dim_vector dims,
                octave_idx_type howmany, octave_idx_type stride,
                octave_idx_type dist, const Complex *in,
                Complex *out)
   {
-    static fftw_plan dummy;
-
     return instance_ok ()
            ? instance->do_create_plan (dir, rank, dims, howmany, stride,
                                        dist, in, out)
-           : dummy;
+           : 0;
   }
 
-  static fftw_plan
+  static void *
   create_plan (const int rank, const dim_vector dims,
                octave_idx_type howmany, octave_idx_type stride,
                octave_idx_type dist, const double *in, Complex *out)
   {
-    static fftw_plan dummy;
-
     return instance_ok ()
            ? instance->do_create_plan (rank, dims, howmany, stride, dist,
                                        in, out)
-           : dummy;
+           : 0;
   }
 
   static FftwMethod method (void)
@@ -99,23 +91,12 @@ public:
     return instance_ok () ? instance->do_method (_meth) : dummy;
   }
 
-#if defined (HAVE_FFTW3F_THREADS)
-  static void threads (int _nthreads)
-  {
-    if (instance_ok () && _nthreads != threads ())
-      {
-        instance->nthreads = _nthreads;
-        fftw_plan_with_nthreads (_nthreads);
-        //Clear the current plans
-        instance->rplan = instance->plan[0] = instance->plan[1] = 0;
-      }
-  }
+  static void threads (int nt);
 
-  static int threads ()
+  static int threads (void)
   {
     return instance_ok () ? instance->nthreads : 0;
   }
-#endif
 
 private:
 
@@ -129,13 +110,13 @@ private:
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  fftw_plan
+  void *
   do_create_plan (int dir, const int rank, const dim_vector dims,
                   octave_idx_type howmany, octave_idx_type stride,
                   octave_idx_type dist, const Complex *in,
                   Complex *out);
 
-  fftw_plan
+  void *
   do_create_plan (const int rank, const dim_vector dims,
                   octave_idx_type howmany, octave_idx_type stride,
                   octave_idx_type dist, const double *in, Complex *out);
@@ -149,7 +130,7 @@ private:
   // FIXME: perhaps this should be split into two classes?
 
   // Plan for fft and ifft of complex values
-  fftw_plan plan[2];
+  void *plan[2];
 
   // dist
   octave_idx_type d[2];
@@ -170,7 +151,7 @@ private:
   bool inplace[2];
 
   // Plan for fft of real values
-  fftw_plan rplan;
+  void *rplan;
 
   // dist
   octave_idx_type rd;
@@ -189,10 +170,9 @@ private:
 
   bool rsimd_align;
 
-#if defined (HAVE_FFTW3_THREADS)
-  //number of threads when compiled with Multi-threading support
+  // number of threads.  Always 1 unless compiled with multi-threading
+  // support.
   int nthreads;
-#endif
 };
 
 class
@@ -219,31 +199,27 @@ public:
 
   static bool instance_ok (void);
 
-  static fftwf_plan
+  static void *
   create_plan (int dir, const int rank, const dim_vector dims,
                octave_idx_type howmany, octave_idx_type stride,
                octave_idx_type dist, const FloatComplex *in,
                FloatComplex *out)
   {
-    static fftwf_plan dummy;
-
     return instance_ok ()
            ? instance->do_create_plan (dir, rank, dims, howmany, stride,
                                        dist, in, out)
-           : dummy;
+           : 0;
   }
 
-  static fftwf_plan
+  static void *
   create_plan (const int rank, const dim_vector dims,
                octave_idx_type howmany, octave_idx_type stride,
                octave_idx_type dist, const float *in, FloatComplex *out)
   {
-    static fftwf_plan dummy;
-
     return instance_ok ()
            ? instance->do_create_plan (rank, dims, howmany, stride, dist,
                                        in, out)
-           : dummy;
+           : 0;
   }
 
   static FftwMethod method (void)
@@ -260,23 +236,12 @@ public:
     return instance_ok () ? instance->do_method (_meth) : dummy;
   }
 
-#if defined (HAVE_FFTW3F_THREADS)
-  static void threads (int _nthreads)
-  {
-    if (instance_ok () && _nthreads != threads ())
-      {
-        instance->nthreads = _nthreads;
-        fftwf_plan_with_nthreads (_nthreads);
-        //Clear the current plans
-        instance->rplan = instance->plan[0] = instance->plan[1] = 0;
-      }
-  }
+  static void threads (int nt);
 
-  static int threads ()
+  static int threads (void)
   {
     return instance_ok () ? instance->nthreads : 0;
   }
-#endif
 
 private:
 
@@ -290,13 +255,13 @@ private:
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  fftwf_plan
+  void *
   do_create_plan (int dir, const int rank, const dim_vector dims,
                   octave_idx_type howmany, octave_idx_type stride,
                   octave_idx_type dist, const FloatComplex *in,
                   FloatComplex *out);
 
-  fftwf_plan
+  void *
   do_create_plan (const int rank, const dim_vector dims,
                   octave_idx_type howmany, octave_idx_type stride,
                   octave_idx_type dist, const float *in, FloatComplex *out);
@@ -310,7 +275,7 @@ private:
   // FIXME: perhaps this should be split into two classes?
 
   // Plan for fft and ifft of complex values
-  fftwf_plan plan[2];
+  void *plan[2];
 
   // dist
   octave_idx_type d[2];
@@ -331,7 +296,7 @@ private:
   bool inplace[2];
 
   // Plan for fft of real values
-  fftwf_plan rplan;
+  void *rplan;
 
   // dist
   octave_idx_type rd;
@@ -350,10 +315,9 @@ private:
 
   bool rsimd_align;
 
-#if defined (HAVE_FFTW3F_THREADS)
-  //number of threads when compiled with Multi-threading support
+  // number of threads.  Always 1 unless compiled with multi-threading
+  // support.
   int nthreads;
-#endif
 };
 
 class
@@ -400,6 +364,8 @@ private:
   octave_fftw& operator = (const octave_fftw&);
 };
 
-#endif
+extern OCTAVE_API std::string octave_fftw_version (void);
+extern OCTAVE_API std::string octave_fftwf_version (void);
 
 #endif
+

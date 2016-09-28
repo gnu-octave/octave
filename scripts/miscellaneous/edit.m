@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2015 Paul Kienzle
+## Copyright (C) 2001-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} edit @var{name}
-## @deftypefnx {Command} {} edit @var{field} @var{value}
-## @deftypefnx {Command} {@var{value} =} edit get @var{field}
+## @deftypefn  {} {} edit @var{name}
+## @deftypefnx {} {} edit @var{field} @var{value}
+## @deftypefnx {} {@var{value} =} edit ("get", @var{field})
+## @deftypefnx {} {@var{value} =} edit ("get", "all")
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as its
@@ -43,9 +44,9 @@
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
 ## @code{@var{name}.cc} in the path and try to modify it, otherwise it will
-## create a new @file{.cc} file in the current directory.  If @var{name} happens
-## to be an m-file or interpreter defined function, then the text of that
-## function will be inserted into the .cc file as a comment.
+## create a new @file{.cc} file in the current directory.  If @var{name}
+## happens to be an m-file or interpreter defined function, then the text of
+## that function will be inserted into the .cc file as a comment.
 ##
 ## @item
 ## If @file{@var{name}.ext} is on your path then it will be edited, otherwise
@@ -60,12 +61,13 @@
 ## @end itemize
 ##
 ## If @code{edit} is called with @var{field} and @var{value} variables, the
-## value of the control field @var{field} will be set to @var{value}.  If an
-## output argument is requested and the first input argument is @code{get}
-## then @code{edit} will return the value of the control field @var{field}.
-## If the control field does not exist, edit will return a structure
-## containing all fields and values.  Thus, @code{edit get all} returns a
-## complete control structure.
+## value of the control field @var{field} will be set to @var{value}.
+##
+## If an output argument is requested and the first input argument is
+## @code{get} then @code{edit} will return the value of the control field
+## @var{field}.  If the control field does not exist, edit will return a
+## structure containing all fields and values.  Thus, @code{edit ("get",
+## @qcode{"all"})} returns a complete control structure.
 ##
 ## The following control fields are used:
 ##
@@ -101,7 +103,7 @@
 ## @end table
 ##
 ## Unless you specify @samp{pd}, edit will prepend the copyright statement
-## with "Copyright (C) yyyy Function Author".
+## with "Copyright (C) YYYY Author".
 ##
 ## @item mode
 ## This value determines whether the editor should be started in async mode
@@ -121,7 +123,7 @@
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
 
-function ret = edit (varargin)
+function retval = edit (varargin)
 
   ## Pick up globals or default them.
 
@@ -139,7 +141,7 @@ function ret = edit (varargin)
   FUNCTION.EDITOR = [EDITOR() " %s"];
 
   if (nargin == 1)
-    ## User has supplied one arg, this can be a single file name
+    ## User has supplied one arg, this can be a single filename
     ## or a cell array of strings containing multiple files to be opened
     if (iscellstr (varargin{1}))
       ## If first arg is a cell array of strings,
@@ -150,10 +152,10 @@ function ret = edit (varargin)
       ## of length 1 (by copying the input cell array)
       editfilelist = varargin(1);
     else
-      error ("edit: expected file to be a string or cell array of strings");
+      error ("edit: file NAME must be a string or cell array of strings");
     endif
   elseif (nargin == 2)
-    ## User has supplied two arguments, these could be two file names,
+    ## User has supplied two arguments, these could be two filenames,
     ## or a combination of editor state name and new value for that state,
     ## so first check for the various states
     statevar = varargin{1};
@@ -161,8 +163,7 @@ function ret = edit (varargin)
     switch (toupper (statevar))
       case "EDITOR"
         error ("Octave:deprecated-function",
-               "The EDITOR option of edit has been removed.  Use EDITOR() directly.")
-        return;
+               "The EDITOR option of edit has been removed.  Use EDITOR() directly.");
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")
           stateval = [ get_home_directory, stateval(2:end) ];
@@ -182,7 +183,7 @@ function ret = edit (varargin)
         if (strcmp (stateval, "sync") || strcmp (stateval, "async"))
           FUNCTION.MODE = stateval;
         else
-          error ('edit: expected "edit MODE sync|async"');
+          error ("edit: MODE must be sync or async");
         endif
         return;
       case "EDITINPLACE"
@@ -199,14 +200,14 @@ function ret = edit (varargin)
         return;
       case "GET"
         if (isfield (FUNCTION, toupper (stateval)))
-          ret = FUNCTION.(toupper (stateval));
+          retval = FUNCTION.(toupper (stateval));
         else
-          ret = FUNCTION;
+          retval = FUNCTION;
         endif
         return;
       otherwise
         ## If none of the states match, assume both inputs are actually
-        ## file names to be opened.
+        ## filenames to be opened.
         editfilelist = varargin;
     endswitch
   elseif (nargin > 2)
@@ -242,7 +243,7 @@ function ret = edit (varargin)
 
   else
 
-    ## Only one file name was supplied, get it from the cell array
+    ## Only one filename was supplied, get it from the cell array
     file = tilde_expand (editfilelist{1});
 
     ## Check whether the user is trying to edit a builtin or compiled function.
@@ -269,7 +270,7 @@ function ret = edit (varargin)
     ## The code below includes a portion that serves as a place-holder for
     ## the changes suggested above.
 
-    ## Create list of explicit and implicit file names.
+    ## Create list of explicit and implicit filenames.
     filelist = {file};
     ## If file has no extension, add file.m and file.cc to the list.
     idx = rindex (file, ".");
@@ -471,11 +472,14 @@ SUCH DAMAGE.\
         else
           code = " ";
         endif
-        body = ["#include <octave/oct.h>\n\n",               ...
-                "DEFUN_DLD(" name ", args, nargout, \"\\\n", ...
-                name, "\\n\\\n\")\n{\n",                     ...
-                "  octave_value_list retval;\n",             ...
-                "  int nargin = args.length ();\n\n",        ...
+        body = ["#include <octave/oct.h>\n\n"             ...
+                "DEFUN_DLD(" name ", args, nargout,\n"    ...
+                "          \"-*- texinfo -*-\\n\\\n"      ...
+                "@deftypefn {} {@var{retval} =} " name    ...
+                " (@var{input1}, @var{input2})\\n\\\n"    ...
+                "@seealso{}\\n\\\n@end deftypefn\")\n{\n" ...
+                "  octave_value_list retval;\n"           ...
+                "  int nargin = args.length ();\n\n"      ...
                 code, "\n  return retval;\n}\n"];
 
         text = [comment, body];
@@ -488,14 +492,14 @@ SUCH DAMAGE.\
                   "endfunction\n"];
         endif
         if (isempty (head))
-          comment = ["## -*- texinfo -*- \n## @deftypefn {Function File} " ...
+          comment = ["## -*- texinfo -*- \n## @deftypefn {} " ...
                      "{@var{retval} =} " name                              ...
                      " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
           comment = ["## " strrep(head,"\n","\n## ") "\n\n"                ...
-                     "## -*- texinfo -*- \n## @deftypefn {Function File} " ...
+                     "## -*- texinfo -*- \n## @deftypefn {} " ...
                      "{@var{retval} =} " name                              ...
                      " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
@@ -566,7 +570,7 @@ endfunction
 %! edit author none
 %! edit email none
 %! edit license none
-%! edit ("editinplace", ! s.editinplace)
+%! edit ("editinplace", ! s.editinplace);
 %! if (s.mode(1) == "a")
 %!   edit mode sync
 %! else

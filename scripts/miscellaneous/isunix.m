@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 John W. Eaton
+## Copyright (C) 2004-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isunix ()
+## @deftypefn {} {} isunix ()
 ## Return true if Octave is running on a Unix-like system and false otherwise.
 ## @seealso{ismac, ispc}
 ## @end deftypefn
@@ -25,7 +25,7 @@
 function retval = isunix ()
 
   if (nargin == 0)
-    retval = octave_config_info ("unix");
+    retval = __octave_config_info__ ("unix");
   else
     print_usage ();
   endif

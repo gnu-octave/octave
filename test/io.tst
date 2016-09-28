@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## FIXME: we should skip (or mark as an expected failure) the test for
+## FIXME: we should skip (or mark as a known bug) the test for
 ## saving sparse matrices to MAT files when using 64-bit indexing since
 ## that is not implemented yet.
 
@@ -241,7 +241,7 @@
 %!
 %! save ("-binary", struct_dat,
 %!       "-struct", "STR", "matrix_fld", "str*_fld");
-%! STR =  load (struct_dat);
+%! STR = load (struct_dat);
 %!
 %! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -254,7 +254,7 @@
 %!test
 %! matrix1 = rand (100, 2);
 %! matrix_ascii = fullfile (P_tmpdir, "matrix.ascii");
-%! save ("-ascii", matrix_ascii, "matrix1")
+%! save ("-ascii", matrix_ascii, "matrix1");
 %! matrix2 = load (matrix_ascii);
 %! assert (matrix1, matrix2, 1e-9);
 %!
@@ -284,6 +284,34 @@
 %!assert (sscanf ('0177 08', '%i'), [127; 0; 8])
 %!assert (sscanf ('0177 08', '%d'), [177; 8])
 
+## bug #47741
+%!assert (sscanf ('2147483647', '%d'), 2147483647)
+%!assert (sscanf ('2147483647', '%i'), 2147483647)
+%!assert (sscanf ('4294967295', '%u'), 4294967295)
+%!assert (sscanf ('37777777777', '%o'), 4294967295)
+%!assert (sscanf ('ffffffff', '%x'), 4294967295)
+## FIXME: scanf should return int64/uint64 if all conversions are %l[dioux].
+## Until then only test values that are within precision range of a double.
+%!assert (sscanf ('281474976710655', '%ld'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%li'), 281474976710655)
+%!assert (sscanf ('281474976710655', '%lu'), 281474976710655)
+%!assert (sscanf ('7777777777777777', '%lo'), 281474976710655)
+%!assert (sscanf ('ffffffffffff', '%lx'), 281474976710655)
+
+## bug #47759
+%!assert (sscanf ('999999999999999', '%d'), double (intmax ("int32")))
+%!assert (sscanf ('999999999999999', '%i'), double (intmax ("int32")))
+%!assert (sscanf ('999999999999999', '%u'), double (intmax ("uint32")))
+%!assert (sscanf ('777777777777777', '%o'), double (intmax ("uint32")))
+%!assert (sscanf ('fffffffffffffff', '%x'), double (intmax ("uint32")))
+## FIXME: scanf should return int64/uint64 if all conversions are %l[dioux].
+## Until then cast to a double (and lose precision) for comparison.
+%!assert (sscanf ('9999999999999999999999', '%ld'), double (intmax ("int64")))
+%!assert (sscanf ('9999999999999999999999', '%li'), double (intmax ("int64")))
+%!assert (sscanf ('9999999999999999999999', '%lu'), double (intmax ("uint64")))
+%!assert (sscanf ('7777777777777777777777', '%lo'), double (intmax ("uint64")))
+%!assert (sscanf ('ffffffffffffffffffffff', '%lx'), double (intmax ("uint64")))
+
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
@@ -311,8 +339,8 @@
 %! [v2, c2, m2] = sscanf ("1 2 bar 3 4 5 6", "%d");
 %!
 %! assert ((a == 1.2 && b == 3 && c == "foo"
-%! && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && ischar (m1)
-%! && v2 == [1; 2] && c2 == 2 && ischar (m2)));
+%!          && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && ischar (m1)
+%!          && v2 == [1; 2] && c2 == 2 && ischar (m2)));
 
 %!error <Invalid call to sscanf> sscanf ()
 %!error sscanf (1, 2)
@@ -428,8 +456,8 @@
 
 %!assert (ischar (tempname ()))
 
-%!error <DIR must be a string> tempname (1);
-%!error <PREFIX must be a string> tempname ("foo", 1);
+%!error <DIR must be a string> tempname (1)
+%!error <PREFIX must be a string> tempname ("foo", 1)
 
 %!error <Invalid call to tempname> tempname (1, 2, 3)
 
@@ -575,6 +603,8 @@
 
 %!test
 %! id = tmpfile ();
+%! ## FIXME: better test for endianness?
+%! big_endian = (bitunpack (uint16 (1))(1) == 0);
 %! fwrite (id, "abcdefg");
 %! frewind (id);
 %! [data, count] = fread (id);
@@ -582,15 +612,23 @@
 %! assert (count, 7);
 %! frewind (id);
 %! [data, count] = fread (id, 'int16');
-%! assert (data, [25185; 25699; 26213]);
+%! expected = [25185; 25699; 26213];
+%! if (big_endian)
+%!   expected = double (swapbytes (int16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 3);
 %! frewind (id);
 %! [data, count] = fread (id, [10, 2], 'int16');
-%! assert (data, [25185; 25699; 26213]);
+%! assert (data, expected);
 %! assert (count, 3);
 %! frewind (id);
 %! [data, count] = fread (id, [2, 10], 'int16');
-%! assert (data, [25185, 26213; 25699, 0]);
+%! expected = [25185, 26213; 25699, 0];
+%! if (big_endian)
+%!   expected = double (swapbytes (int16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 3);
 %! fclose (id);
 
@@ -623,19 +661,31 @@
 
 %!test
 %! id = tmpfile ();
+%! ## FIXME: better test for endianness?
+%! big_endian = (bitunpack (uint16 (1))(1) == 0);
 %! fwrite (id, char (0:15));
 %! frewind (id);
 %! [data, count] = fread (id, [1, Inf], "4*uint16", 3);
-%! assert (data, [256, 770, 1284, 1798, 3083, 3597]);
+%! expected = [256, 770, 1284, 1798, 3083, 3597];
+%! if (big_endian)
+%!   expected = double (swapbytes (uint16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 6);
 %! fclose (id);
 
 %!test
 %! id = tmpfile ();
+%! ## FIXME: better test for endianness?
+%! big_endian = (bitunpack (uint16 (1))(1) == 0);
 %! fwrite (id, char (0:15));
 %! frewind (id);
 %! [data, count] = fread (id, [3, Inf], "4*uint16", 3);
-%! assert (data, [256, 1798; 770, 3083; 1284, 3597]);
+%! expected = [256, 1798; 770, 3083; 1284, 3597];
+%! if (big_endian)
+%!   expected = double (swapbytes (uint16 (expected)));
+%! endif
+%! assert (data, expected);
 %! assert (count, 6);
 %! fclose (id);
 
@@ -648,30 +698,30 @@
 %! assert (count, 4);
 %! fclose (id);
 
-%!assert (sprintf ("%1s", "foo"), "foo");
-%!assert (sprintf ("%.s", "foo"), char (zeros (1, 0)));
-%!assert (sprintf ("%1.s", "foo"), " ");
-%!assert (sprintf ("%.1s", "foo"), "f");
-%!assert (sprintf ("%1.1s", "foo"), "f");
-%!assert (sprintf ("|%4s|", "foo"), "| foo|");
-%!assert (sprintf ("|%-4s|", "foo"), "|foo |");
-%!assert (sprintf ("|%4.1s|", "foo"), "|   f|");
-%!assert (sprintf ("|%-4.1s|", "foo"), "|f   |");
+%!assert (sprintf ("%1s", "foo"), "foo")
+%!assert (sprintf ("%.s", "foo"), char (zeros (1, 0)))
+%!assert (sprintf ("%1.s", "foo"), " ")
+%!assert (sprintf ("%.1s", "foo"), "f")
+%!assert (sprintf ("%1.1s", "foo"), "f")
+%!assert (sprintf ("|%4s|", "foo"), "| foo|")
+%!assert (sprintf ("|%-4s|", "foo"), "|foo |")
+%!assert (sprintf ("|%4.1s|", "foo"), "|   f|")
+%!assert (sprintf ("|%-4.1s|", "foo"), "|f   |")
 
-%!assert (sprintf ("%c ", "foo"), "f o o ");
-%!assert (sprintf ("%s ", "foo"), "foo ");
+%!assert (sprintf ("%c ", "foo"), "f o o ")
+%!assert (sprintf ("%s ", "foo"), "foo ")
 
-%!assert (sprintf ("|%d|", "foo"), "|102||111||111|");
-%!assert (sprintf ("|%s|", [102, 111, 111]), "|foo|");
+%!assert (sprintf ("|%d|", "foo"), "|102||111||111|")
+%!assert (sprintf ("|%s|", [102, 111, 111]), "|foo|")
 
-%!assert (sprintf ("%s %d ", [102, 1e5, 111, 1e5, 111]), "f 100000 o 100000 o ");
+%!assert (sprintf ("%s %d ", [102, 1e5, 111, 1e5, 111]), "f 100000 o 100000 o ")
 
-%!assert (sprintf ("%c,%c,%c,%c", "abcd"), "a,b,c,d");
-%!assert (sprintf ("%s,%s,%s,%s", "abcd"), "abcd,");
+%!assert (sprintf ("%c,%c,%c,%c", "abcd"), "a,b,c,d")
+%!assert (sprintf ("%s,%s,%s,%s", "abcd"), "abcd,")
 
-%!assert (sprintf ("|%x|", "Octave"), "|4f||63||74||61||76||65|");
-%!assert (sprintf ("|%X|", "Octave"), "|4F||63||74||61||76||65|");
-%!assert (sprintf ("|%o|", "Octave"), "|117||143||164||141||166||145|");
+%!assert (sprintf ("|%x|", "Octave"), "|4f||63||74||61||76||65|")
+%!assert (sprintf ("|%X|", "Octave"), "|4F||63||74||61||76||65|")
+%!assert (sprintf ("|%o|", "Octave"), "|117||143||164||141||166||145|")
 
 ## bug #47192
 %!assert (sprintf ("%s", repmat ("blah", 2, 1)), "bbllaahh")

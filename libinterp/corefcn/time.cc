@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -31,12 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-time.h"
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 // Date and time functions.
 
 static octave_scalar_map
-mk_tm_map (const octave_base_tm& t)
+mk_tm_map (const octave::sys::base_tm& t)
 {
   octave_scalar_map m;
 
@@ -50,76 +50,74 @@ mk_tm_map (const octave_base_tm& t)
   m.assign ("wday", static_cast<double> (t.wday ()));
   m.assign ("yday", static_cast<double> (t.yday ()));
   m.assign ("isdst", static_cast<double> (t.isdst ()));
+  m.assign ("gmtoff", static_cast<double> (t.gmtoff ()));
   m.assign ("zone", t.zone ());
 
   return m;
 }
 
 static inline int
-intfield (const octave_scalar_map& m, const std::string& k)
+intfield (const octave_scalar_map& m, const std::string& k, const char *who)
 {
   int retval = 0;
 
   octave_value v = m.getfield (k);
 
   if (! v.is_empty ())
-    retval = v.int_value ();
+    retval = v.xint_value ("%s: invalid TM_STRUCT argument", who);
 
   return retval;
 }
 
 static inline std::string
-stringfield (const octave_scalar_map& m, const std::string& k)
+stringfield (const octave_scalar_map& m, const std::string& k, const char *who)
 {
   std::string retval;
 
   octave_value v = m.getfield (k);
 
   if (! v.is_empty ())
-    retval = v.string_value ();
+    retval = v.xstring_value ("%s: invalid TM_STRUCT argument", who);
 
   return retval;
 }
 
-static octave_base_tm
-extract_tm (const octave_scalar_map& m)
+static octave::sys::base_tm
+extract_tm (const octave_scalar_map& m, const char *who)
 {
-  octave_base_tm tm;
+  octave::sys::base_tm tm;
 
-  tm.usec (intfield (m, "usec"));
-  tm.sec (intfield (m, "sec"));
-  tm.min (intfield (m, "min"));
-  tm.hour (intfield (m, "hour"));
-  tm.mday (intfield (m, "mday"));
-  tm.mon (intfield (m, "mon"));
-  tm.year (intfield (m, "year"));
-  tm.wday (intfield (m, "wday"));
-  tm.yday (intfield (m, "yday"));
-  tm.isdst (intfield (m, "isdst"));
-  tm.zone (stringfield (m, "zone"));
+  tm.usec (intfield (m, "usec", who));
+  tm.sec (intfield (m, "sec", who));
+  tm.min (intfield (m, "min", who));
+  tm.hour (intfield (m, "hour", who));
+  tm.mday (intfield (m, "mday", who));
+  tm.mon (intfield (m, "mon", who));
+  tm.year (intfield (m, "year", who));
+  tm.wday (intfield (m, "wday", who));
+  tm.yday (intfield (m, "yday", who));
+  tm.isdst (intfield (m, "isdst", who));
+  tm.gmtoff (intfield (m, "gmtoff", who));
+  tm.zone (stringfield (m, "zone", who));
 
   return tm;
 }
 
 DEFUN (time, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{seconds} =} time ()\n\
-Return the current time as the number of seconds since the epoch.\n\
-\n\
-The epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
-1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the value\n\
-returned by @code{time} was 856163706.\n\
-@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{seconds} =} time ()
+Return the current time as the number of seconds since the epoch.
 
-  if (args.length () == 0)
-    retval = octave_time ();
-  else
+The epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
+1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the value
+returned by @code{time} was 856163706.
+@seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn */)
+{
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return ovl (octave::sys::time ());
 }
 
 /*
@@ -129,47 +127,41 @@ returned by @code{time} was 856163706.\n\
 */
 
 DEFUN (gmtime, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{tm_struct} =} gmtime (@var{t})\n\
-Given a value returned from @code{time}, or any non-negative integer,\n\
-return a time structure corresponding to CUT (Coordinated Universal Time).\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-gmtime (time ())\n\
-     @result{} @{\n\
-           usec = 0\n\
-           sec = 6\n\
-           min = 15\n\
-           hour = 7\n\
-           mday = 17\n\
-           mon = 1\n\
-           year = 97\n\
-           wday = 1\n\
-           yday = 47\n\
-           isdst = 0\n\
-           zone = CST\n\
-        @}\n\
-@end group\n\
-@end example\n\
-@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{tm_struct} =} gmtime (@var{t})
+Given a value returned from @code{time}, or any non-negative integer,
+return a time structure corresponding to CUT (Coordinated Universal Time).
+
+For example:
+
+@example
+@group
+gmtime (time ())
+     @result{} @{
+           usec = 0
+           sec = 6
+           min = 15
+           hour = 7
+           mday = 17
+           mon = 1
+           year = 97
+           wday = 1
+           yday = 47
+           isdst = 0
+           gmtoff = 0
+           zone = GMT
+        @}
+@end group
+@end example
+@seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      double tmp = args(0).double_value ();
-
-      if (! error_state)
-        retval = octave_value (mk_tm_map (octave_gmtime (tmp)));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  double tmp = args(0).double_value ();
+
+  return ovl (mk_tm_map (octave::sys::gmtime (tmp)));
 }
 
 /*
@@ -192,45 +184,39 @@ gmtime (time ())\n\
 */
 
 DEFUN (localtime, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{tm_struct} =} localtime (@var{t})\n\
-Given a value returned from @code{time}, or any non-negative integer,\n\
-return a time structure corresponding to the local time zone.\n\
-\n\
-@example\n\
-@group\n\
-localtime (time ())\n\
-     @result{} @{\n\
-           usec = 0\n\
-           sec = 6\n\
-           min = 15\n\
-           hour = 1\n\
-           mday = 17\n\
-           mon = 1\n\
-           year = 97\n\
-           wday = 1\n\
-           yday = 47\n\
-           isdst = 0\n\
-           zone = CST\n\
-        @}\n\
-@end group\n\
-@end example\n\
-@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{tm_struct} =} localtime (@var{t})
+Given a value returned from @code{time}, or any non-negative integer,
+return a time structure corresponding to the local time zone.
+
+@example
+@group
+localtime (time ())
+     @result{} @{
+           usec = 0
+           sec = 6
+           min = 15
+           hour = 1
+           mday = 17
+           mon = 1
+           year = 97
+           wday = 1
+           yday = 47
+           isdst = 0
+           gmtoff = -21600
+           zone = CST
+        @}
+@end group
+@end example
+@seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      double tmp = args(0).double_value ();
-
-      if (! error_state)
-        retval = octave_value (mk_tm_map (octave_localtime (tmp)));
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  double tmp = args(0).double_value ();
+
+  return ovl (mk_tm_map (octave::sys::localtime (tmp)));
 }
 
 /*
@@ -253,44 +239,30 @@ localtime (time ())\n\
 */
 
 DEFUN (mktime, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{seconds} =} mktime (@var{tm_struct})\n\
-Convert a time structure corresponding to the local time to the number of\n\
-seconds since the epoch.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-mktime (localtime (time ()))\n\
-     @result{} 856163706\n\
-@end group\n\
-@end example\n\
-@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{seconds} =} mktime (@var{tm_struct})
+Convert a time structure corresponding to the local time to the number of
+seconds since the epoch.
+
+For example:
+
+@example
+@group
+mktime (localtime (time ()))
+     @result{} 856163706
+@end group
+@end example
+@seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      octave_scalar_map map = args(0).scalar_map_value ();
-
-      if (! error_state)
-        {
-          octave_base_tm tm = extract_tm (map);
-
-          if (! error_state)
-            retval = octave_time (tm);
-          else
-            error ("mktime: invalid TM_STRUCT argument");
-        }
-      else
-        error ("mktime: TM_STRUCT argument must be a structure");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
+
+  octave::sys::base_tm tm = extract_tm (map, "mktime");
+
+  return ovl (octave::sys::time (tm));
 }
 
 /*
@@ -311,196 +283,181 @@ mktime (localtime (time ()))\n\
 */
 
 DEFUN (strftime, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strftime (@var{fmt}, @var{tm_struct})\n\
-Format the time structure @var{tm_struct} in a flexible way using the format\n\
-string @var{fmt} that contains @samp{%} substitutions similar to those in\n\
-@code{printf}.\n\
-\n\
-Except where noted, substituted fields have a fixed size; numeric fields are\n\
-padded if necessary.  Padding is with zeros by default; for fields that\n\
-display a single number, padding can be changed or inhibited by following\n\
-the @samp{%} with one of the modifiers described below.  Unknown field\n\
-specifiers are copied as normal characters.  All other characters are copied\n\
-to the output without change.  For example:\n\
-\n\
-@example\n\
-@group\n\
-strftime (\"%r (%Z) %A %e %B %Y\", localtime (time ()))\n\
-      @result{} \"01:15:06 AM (CST) Monday 17 February 1997\"\n\
-@end group\n\
-@end example\n\
-\n\
-Octave's @code{strftime} function supports a superset of the ANSI C field\n\
-specifiers.\n\
-\n\
-@noindent\n\
-Literal character fields:\n\
-\n\
-@table @code\n\
-@item %%\n\
-% character.\n\
-\n\
-@item %n\n\
-Newline character.\n\
-\n\
-@item %t\n\
-Tab character.\n\
-@end table\n\
-\n\
-@noindent\n\
-Numeric modifiers (a nonstandard extension):\n\
-\n\
-@table @code\n\
-@item - (dash)\n\
-Do not pad the field.\n\
-\n\
-@item _ (underscore)\n\
-Pad the field with spaces.\n\
-@end table\n\
-\n\
-@noindent\n\
-Time fields:\n\
-\n\
-@table @code\n\
-@item %H\n\
-Hour (00-23).\n\
-\n\
-@item %I\n\
-Hour (01-12).\n\
-\n\
-@item %k\n\
-Hour (0-23).\n\
-\n\
-@item %l\n\
-Hour (1-12).\n\
-\n\
-@item %M\n\
-Minute (00-59).\n\
-\n\
-@item %p\n\
-Locale's AM or PM.\n\
-\n\
-@item %r\n\
-Time, 12-hour (hh:mm:ss [AP]M).\n\
-\n\
-@item %R\n\
-Time, 24-hour (hh:mm).\n\
-\n\
-@item %s\n\
-Time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension).\n\
-\n\
-@item %S\n\
-Second (00-61).\n\
-\n\
-@item %T\n\
-Time, 24-hour (hh:mm:ss).\n\
-\n\
-@item %X\n\
-Locale's time representation (%H:%M:%S).\n\
-\n\
-@item %Z\n\
-Time zone (EDT), or nothing if no time zone is determinable.\n\
-@end table\n\
-\n\
-@noindent\n\
-Date fields:\n\
-\n\
-@table @code\n\
-@item %a\n\
-Locale's abbreviated weekday name (Sun-Sat).\n\
-\n\
-@item %A\n\
-Locale's full weekday name, variable length (Sunday-Saturday).\n\
-\n\
-@item %b\n\
-Locale's abbreviated month name (Jan-Dec).\n\
-\n\
-@item %B\n\
-Locale's full month name, variable length (January-December).\n\
-\n\
-@item %c\n\
-Locale's date and time (Sat Nov 04 12:02:33 EST 1989).\n\
-\n\
-@item %C\n\
-Century (00-99).\n\
-\n\
-@item %d\n\
-Day of month (01-31).\n\
-\n\
-@item %e\n\
-Day of month ( 1-31).\n\
-\n\
-@item %D\n\
-Date (mm/dd/yy).\n\
-\n\
-@item %h\n\
-Same as %b.\n\
-\n\
-@item %j\n\
-Day of year (001-366).\n\
-\n\
-@item %m\n\
-Month (01-12).\n\
-\n\
-@item %U\n\
-Week number of year with Sunday as first day of week (00-53).\n\
-\n\
-@item %w\n\
-Day of week (0-6).\n\
-\n\
-@item %W\n\
-Week number of year with Monday as first day of week (00-53).\n\
-\n\
-@item %x\n\
-Locale's date representation (mm/dd/yy).\n\
-\n\
-@item %y\n\
-Last two digits of year (00-99).\n\
-\n\
-@item %Y\n\
-Year (1970-).\n\
-@end table\n\
-@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} strftime (@var{fmt}, @var{tm_struct})
+Format the time structure @var{tm_struct} in a flexible way using the format
+string @var{fmt} that contains @samp{%} substitutions similar to those in
+@code{printf}.
+
+Except where noted, substituted fields have a fixed size; numeric fields are
+padded if necessary.  Padding is with zeros by default; for fields that
+display a single number, padding can be changed or inhibited by following
+the @samp{%} with one of the modifiers described below.  Unknown field
+specifiers are copied as normal characters.  All other characters are copied
+to the output without change.  For example:
+
+@example
+@group
+strftime ("%r (%Z) %A %e %B %Y", localtime (time ()))
+      @result{} "01:15:06 AM (CST) Monday 17 February 1997"
+@end group
+@end example
+
+Octave's @code{strftime} function supports a superset of the ANSI C field
+specifiers.
+
+@noindent
+Literal character fields:
+
+@table @code
+@item %%
+% character.
+
+@item %n
+Newline character.
+
+@item %t
+Tab character.
+@end table
+
+@noindent
+Numeric modifiers (a nonstandard extension):
+
+@table @code
+@item - (dash)
+Do not pad the field.
+
+@item _ (underscore)
+Pad the field with spaces.
+@end table
+
+@noindent
+Time fields:
+
+@table @code
+@item %H
+Hour (00-23).
+
+@item %I
+Hour (01-12).
+
+@item %k
+Hour (0-23).
+
+@item %l
+Hour (1-12).
+
+@item %M
+Minute (00-59).
+
+@item %p
+Locale's AM or PM.
+
+@item %r
+Time, 12-hour (hh:mm:ss [AP]M).
+
+@item %R
+Time, 24-hour (hh:mm).
+
+@item %s
+Time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension).
+
+@item %S
+Second (00-61).
+
+@item %T
+Time, 24-hour (hh:mm:ss).
+
+@item %X
+Locale's time representation (%H:%M:%S).
+
+@item %z
+Offset from UTC (±@nospell{hhmm}), or nothing if no time zone is
+determinable.
+
+@item %Z
+Time zone (EDT), or nothing if no time zone is determinable.
+@end table
+
+@noindent
+Date fields:
+
+@table @code
+@item %a
+Locale's abbreviated weekday name (Sun-Sat).
+
+@item %A
+Locale's full weekday name, variable length (Sunday-Saturday).
+
+@item %b
+Locale's abbreviated month name (Jan-Dec).
+
+@item %B
+Locale's full month name, variable length (January-December).
+
+@item %c
+Locale's date and time (Sat Nov 04 12:02:33 EST 1989).
+
+@item %C
+Century (00-99).
+
+@item %d
+Day of month (01-31).
+
+@item %e
+Day of month ( 1-31).
+
+@item %D
+Date (mm/dd/yy).
+
+@item %h
+Same as %b.
+
+@item %j
+Day of year (001-366).
+
+@item %m
+Month (01-12).
+
+@item %U
+Week number of year with Sunday as first day of week (00-53).
+
+@item %w
+Day of week (0-6).
+
+@item %W
+Week number of year with Monday as first day of week (00-53).
+
+@item %x
+Locale's date representation (mm/dd/yy).
+
+@item %y
+Last two digits of year (00-99).
+
+@item %Y
+Year (1970-).
+@end table
+@seealso{strptime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 2)
-    {
-      if (args(0).is_string ())
-        {
-          std::string fmt = args(0).string_value ();
-
-          octave_scalar_map map = args(1).scalar_map_value ();
-
-          if (! error_state)
-            {
-              octave_base_tm tm = extract_tm (map);
-
-              if (! error_state)
-                retval = tm.strftime (fmt);
-              else
-                error ("strftime: invalid TM_STRUCT argument");
-            }
-          else
-            error ("strftime: TM_STRUCT must be a structure");
-        }
-      else
-        error ("strftime: FMT must be a string");
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  std::string fmt = args(0).xstring_value ("strftime: FMT must be a string");
+
+  octave_scalar_map map = args(1).xscalar_map_value ("strftime: TM_STRUCT must be a structure");
+
+  octave::sys::base_tm tm = extract_tm (map, "strftime");
+
+  return ovl (tm.strftime (fmt));
 }
 
 /*
-%!assert (ischar (strftime ("%%%n%t%H%I%k%l", localtime (time ()))));
-%!assert (ischar (strftime ("%M%p%r%R%s%S%T", localtime (time ()))));
-%!assert (ischar (strftime ("%X%Z%z%a%A%b%B", localtime (time ()))));
-%!assert (ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ()))));
-%!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))));
+%!assert (ischar (strftime ("%%%n%t%H%I%k%l", localtime (time ()))))
+%!assert (ischar (strftime ("%M%p%r%R%s%S%T", localtime (time ()))))
+%!assert (ischar (strftime ("%X%Z%z%a%A%b%B", localtime (time ()))))
+%!assert (ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ()))))
+%!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))))
 
 %!error strftime ()
 %!error strftime ("foo", 1)
@@ -509,44 +466,27 @@ Year (1970-).\n\
 */
 
 DEFUN (strptime, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})\n\
-Convert the string @var{str} to the time structure @var{tm_struct} under\n\
-the control of the format string @var{fmt}.\n\
-\n\
-If @var{fmt} fails to match, @var{nchars} is 0; otherwise, it is set to the\n\
-position of last matched character plus 1. Always check for this unless\n\
-you're absolutely sure the date string will be parsed correctly.\n\
-@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})
+Convert the string @var{str} to the time structure @var{tm_struct} under
+the control of the format string @var{fmt}.
+
+If @var{fmt} fails to match, @var{nchars} is 0; otherwise, it is set to the
+position of last matched character plus 1.  Always check for this unless
+you're absolutely sure the date string will be parsed correctly.
+@seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  if (args.length () == 2)
-    {
-      if (args(0).is_string ())
-        {
-          std::string str = args(0).string_value ();
-
-          if (args(1).is_string ())
-            {
-              std::string fmt = args(1).string_value ();
-
-              octave_strptime t (str, fmt);
-
-              retval(1) = t.characters_converted ();
-              retval(0) = octave_value (mk_tm_map (t));
-            }
-          else
-            error ("strptime: FMT must be a string");
-        }
-      else
-        error ("strptime: argument STR must be a string");
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  std::string str = args(0).xstring_value ("strptime: argument STR must be a string");
+
+  std::string fmt = args(1).xstring_value ("strptime: FMT must be a string");
+
+  octave::sys::strptime t (str, fmt);
+
+  return ovl (mk_tm_map (t), t.characters_converted ());
 }
 
 /*
@@ -568,3 +508,4 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
 %!error strptime ()
 */
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 David Bateman
+## Copyright (C) 2010-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} whitebg ()
-## @deftypefnx {Function File} {} whitebg (@var{color})
-## @deftypefnx {Function File} {} whitebg ("none")
-## @deftypefnx {Function File} {} whitebg (@var{hfig}, @dots{})
+## @deftypefn  {} {} whitebg ()
+## @deftypefnx {} {} whitebg (@var{color})
+## @deftypefnx {} {} whitebg ("none")
+## @deftypefnx {} {} whitebg (@var{hfig}, @dots{})
 ## Invert the colors in the current color scheme.
 ##
 ## The root properties are also inverted such that all subsequent plot use the
@@ -38,6 +38,7 @@
 ## @end deftypefn
 
 function whitebg (varargin)
+
   h = 0;
   color = NaN;
 
@@ -65,17 +66,17 @@ function whitebg (varargin)
     isroot = false;
     fig = h;
   else
-    error ("expecting a figure handle");
+    error ("whitebg: HFIF must be a valid figure handle");
   endif
 
   axes = findall (fig, "type", "axes");
   if (isnan (color))
-    ## Root figure. Set the default axes and figure properties so that
-    ## subsequent plots have the new color scheme
+    ## Root figure.  Set the default axes and figure properties so that
+    ## subsequent plots have the new color scheme.
     if (isroot)
       fac = get (0, "factory");
       fields = fieldnames (fac);
-      fieldindex = intersect (find (! cellfun ("isempty", regexp (fields, 'color'))), union (find (! cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
+      fieldindex = intersect (find (! cellfun ("isempty", regexp (fields, 'color'))), union (find (! cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (! cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
 
       ## Check whether the factory value has been replaced
       for nf = 1 : numel (fieldindex);
@@ -105,7 +106,7 @@ function whitebg (varargin)
     for nh = 1 : numel (h)
       p = get (h (nh));
       fields = fieldnames (p);
-      fieldindex = find (!cellfun ("isempty", regexp (fields, 'color')));
+      fieldindex = find (! cellfun ("isempty", regexp (fields, 'color')));
       if (numel (fieldindex))
         for nf = 1 : numel (fieldindex);
           field = fields{fieldindex(nf)};
@@ -133,8 +134,7 @@ function whitebg (varargin)
       endif
     endfor
   else
-    ## FIXME
-    ## Is this the right thing to do in this case?
+    ## FIXME: Is this the right thing to do in this case?
     set (findall (fig, "type", "axes"), "color", color);
     if (isroot)
       defs = get (0, "default");
@@ -144,6 +144,7 @@ function whitebg (varargin)
       endif
     endif
   endif
+
 endfunction
 
 

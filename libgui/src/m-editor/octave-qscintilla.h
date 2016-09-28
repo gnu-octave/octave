@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 Torsten
+Copyright (C) 2013-2016 Torsten
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#if !defined (octave_octave_qscintilla_h)
+#if ! defined (octave_octave_qscintilla_h)
 #define octave_octave_qscintilla_h 1
 
 #include <Qsci/qsciscintilla.h>
@@ -38,9 +38,8 @@ public:
   octave_qscintilla (QWidget *p);
   ~octave_qscintilla ();
 
-#ifdef HAVE_QSCI_VERSION_2_6_0
   virtual void contextMenuEvent (QContextMenuEvent *e);
-#endif
+
   void context_help_doc (bool);
   void context_edit ();
   void context_run ();
@@ -55,6 +54,8 @@ signals:
   void qsci_has_focus_signal (bool);
   void status_update (bool,bool);
   void show_doc_signal (const QString&);
+  void context_menu_break_condition_signal (int);
+  void context_menu_break_once (int);
 
 private slots:
 
@@ -64,9 +65,14 @@ private slots:
   void contextmenu_edit (bool);
   void contextmenu_run (bool);
 
+  void contextmenu_break_condition (bool);
+  void contextmenu_break_once (const QPoint&);
+
   void text_changed (void);
 
 protected:
+
+  void focusInEvent(QFocusEvent *focusEvent);
 
 private:
 
@@ -75,3 +81,4 @@ private:
 };
 
 #endif
+

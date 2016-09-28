@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} empirical_cdf (@var{x}, @var{data})
+## @deftypefn {} {} empirical_cdf (@var{x}, @var{data})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the empirical distribution obtained from
 ## the univariate sample @var{data}.

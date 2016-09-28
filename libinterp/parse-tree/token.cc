@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "symtab.h"
 #include "token.h"
 #include "utils.h"
@@ -193,3 +193,4 @@ token::text_rep (void)
 {
   return orig_text;
 }
+

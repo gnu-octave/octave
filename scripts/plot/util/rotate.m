@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 John W. Eaton
+## Copyright (C) 2014-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rotate (@var{h}, @var{dir}, @var{alpha})
-## @deftypefnx {Function File} {} rotate (@dots{}, @var{origin})
+## @deftypefn  {} {} rotate (@var{h}, @var{dir}, @var{alpha})
+## @deftypefnx {} {} rotate (@dots{}, @var{origin})
 ## Rotate the plot object @var{h} through @var{alpha} degrees around the line
 ## with direction @var{dir} and origin @var{origin}.
 ##
@@ -111,7 +111,7 @@ function rotate (h, direction, alpha, origin)
     origin = [a, b, c];
   endif
 
-  direction = direction / norm (direction);
+  direction /= norm (direction);
 
   u = direction(1);
   v = direction(2);
@@ -166,6 +166,7 @@ function rotate (h, direction, alpha, origin)
 
 endfunction
 
+
 ## Test input validation
 %!shared h1, h2, o1, o2, o3
 %! h1 = figure ("visible", "off");
@@ -175,14 +176,14 @@ endfunction
 %! o3 = text (0, 0, "foobar");
 %!error rotate ()
 %!error rotate (o1)
-%!error rotate (o1, [0,0,0]);
-%!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90);
-%!error <invalid direction> rotate (o1, "foo", 90);
-%!error <invalid rotation angle> rotate (o1, [0,0,0], "foo");
-%!error <invalid origin> rotate (o1, [0,0,0], 90, "foo");
-%!error rotate (o1, [0,0,0], 90, [0,0,0], 1);
-%!error <H must be an array of one or more graphics handles> rotate (NaN, [0,0,0], 90);
-%!error <expecting image, line, patch, or surface objects> rotate (o3, [0,0,0], 90);
+%!error rotate (o1, [0,0,0])
+%!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
+%!error <invalid direction> rotate (o1, "foo", 90)
+%!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")
+%!error <invalid origin> rotate (o1, [0,0,0], 90, "foo")
+%!error rotate (o1, [0,0,0], 90, [0,0,0], 1)
+%!error <H must be an array of one or more graphics handles> rotate (NaN, [0,0,0], 90)
+%!error <expecting image, line, patch, or surface objects> rotate (o3, [0,0,0], 90)
 %!test
 %! close (h1);
 %! close (h2);

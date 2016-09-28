@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} strjust (@var{s})
-## @deftypefnx {Function File} {} strjust (@var{s}, @var{pos})
+## @deftypefn  {} {} strjust (@var{s})
+## @deftypefnx {} {} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
 ## be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.
 ##
@@ -59,7 +59,7 @@ function y = strjust (s, pos = "right")
   ## Apparently, Matlab considers nulls to be blanks as well; however, does
   ## not preserve the nulls, but rather converts them to blanks.  That's a
   ## bit unexpected, but it allows simpler processing, because we can move
-  ## just the nonblank characters. So we'll do the same here.
+  ## just the nonblank characters.  So we'll do the same here.
 
   [nr, nc] = size (s);
   ## Find the indices of all nonblanks.
@@ -67,7 +67,7 @@ function y = strjust (s, pos = "right")
   [idx, jdx] = find (nonbl);
 
   if (strcmpi (pos, "right"))
-    ## We wish to find the maximum column index for each row. Because jdx is
+    ## We wish to find the maximum column index for each row.  Because jdx is
     ## sorted, we can take advantage of the fact that assignment is processed
     ## sequentially and for duplicate indices the last value will remain.
     maxs = repmat (nc, [nr, 1]);

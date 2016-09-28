@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2013-2015 Daniel J. Sebald
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2013-2016 Daniel J. Sebald
 
 This file is part of Octave.
 
@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dialog_h)
+#if ! defined (octave_dialog_h)
 #define octave_dialog_h 1
 
 #include <QMutex>
@@ -60,7 +60,7 @@ public:
 
     // Use the last button in the list as the reject result, i.e., when no
     // button is pressed such as in the case of the upper right close tab.
-    if (!button.isEmpty ())
+    if (! button.isEmpty ())
       dialog_button = button.last ();
 
     QString xicon = icon;
@@ -163,7 +163,6 @@ private:
 
 extern QUIWidgetCreator uiwidget_creator;
 
-
 class MessageDialog : public QMessageBox
 {
   Q_OBJECT
@@ -185,7 +184,6 @@ private:
   }
 };
 
-
 class ListDialog : public QDialog
 {
   Q_OBJECT
@@ -199,6 +197,8 @@ public:
                        const QString& name, const QStringList& prompt,
                        const QString& ok_string, const QString& cancel_string);
 
+  ~ListDialog (void);
+
 signals:
 
   void finish_selection (const QIntList&, int);
@@ -210,8 +210,13 @@ public slots:
   void buttonCancel_clicked (void);
 
   void reject (void);
-};
 
+  void item_double_clicked (const QModelIndex&);
+
+private:
+
+  QAbstractItemModel *model;
+};
 
 class InputDialog : public QDialog
 {
@@ -260,3 +265,4 @@ private slots:
 };
 
 #endif
+

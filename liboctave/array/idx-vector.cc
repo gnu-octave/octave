@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdlib>
@@ -40,15 +40,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-mappers.h"
 
-static void
-gripe_invalid_range (void)
+OCTAVE_NORETURN static
+void
+err_invalid_range (void)
 {
-  (*current_liboctave_error_handler)
-    ("invalid range used as index");
+  (*current_liboctave_error_handler) ("invalid range used as index");
 }
 
 static void
-gripe_index_out_of_range (void)
+err_index_out_of_range (void)
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_vector index out of range");
@@ -75,9 +75,9 @@ idx_vector::idx_base_rep::as_array (void)
   (*current_liboctave_error_handler)
     ("internal error: as_array not allowed for this index class");
 
+  // Never actually executed, but required to silence compiler warning
   return Array<octave_idx_type> ();
 }
-
 
 idx_vector::idx_colon_rep::idx_colon_rep (char c)
 {
@@ -85,6 +85,7 @@ idx_vector::idx_colon_rep::idx_colon_rep (char c)
     {
       (*current_liboctave_error_handler)
         ("internal error: invalid character converted to idx_vector; must be ':'");
+      // FIXME: this is unreachable now.
       err = true;
     }
 }
@@ -93,12 +94,9 @@ octave_idx_type
 idx_vector::idx_colon_rep::checkelem (octave_idx_type i) const
 {
   if (i < 0)
-    {
-      gripe_index_out_of_range ();
-      return 0;
-    }
-  else
-    return i;
+    err_index_out_of_range ();
+
+  return i;
 }
 
 idx_vector::idx_base_rep *
@@ -106,9 +104,6 @@ idx_vector::idx_colon_rep::sort_idx (Array<octave_idx_type>&)
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_colon_rep::sort_idx");
-
-  count++;
-  return this;
 }
 
 std::ostream&
@@ -117,48 +112,46 @@ idx_vector::idx_colon_rep::print (std::ostream& os) const
   return os << ":";
 }
 
-
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
                                           octave_idx_type _limit,
                                           octave_idx_type _step)
-  : start(_start), len (_step ? std::max ((_limit - _start) / _step, static_cast<octave_idx_type> (0)) : -1), step (_step)
+  : start(_start),
+    len (_step ? std::max ((_limit - _start) / _step,
+                           static_cast<octave_idx_type> (0))
+               : -1),
+    step (_step)
 {
   if (len < 0)
-    {
-      gripe_invalid_range ();
-      err = true;
-    }
-  else if (start < 0 || (step < 0 && start + (len-1)*step < 0))
-    {
-      gripe_invalid_index ();
-      err = true;
-    }
+    err_invalid_range ();
+  if (start < 0)
+    octave::err_invalid_index (start);
+  if (step < 0 && start + (len-1)*step < 0)
+    octave::err_invalid_index (start + (len-1)*step);
 }
 
 idx_vector::idx_range_rep::idx_range_rep (const Range& r)
-  : start (0), len (r.nelem ()), step (1)
+  : start (0), len (r.numel ()), step (1)
 {
   if (len < 0)
-    {
-      gripe_invalid_range ();
-      err = true;
-    }
-  else if (len > 0)
+    err_invalid_range ();
+
+  if (len > 0)
     {
       if (r.all_elements_are_ints ())
         {
           start = static_cast<octave_idx_type> (r.base ()) - 1;
           step = static_cast<octave_idx_type> (r.inc ());
-          if (start < 0 || (step < 0 && start + (len-1)*step < 0))
-            {
-              gripe_invalid_index ();
-              err = true;
-            }
+          if (start < 0)
+            octave::err_invalid_index (start);
+          if (step < 0 && start + (len - 1)*step < 0)
+            octave::err_invalid_index (start + (len - 1)*step);
         }
       else
         {
-          gripe_invalid_index ();
-          err = true;
+          // find first non-integer, then gripe about it
+          double b = r.base ();
+          double inc = r.inc ();
+          octave::err_invalid_index (b != std::floor (b) ? b : b + inc);
         }
     }
 }
@@ -167,12 +160,9 @@ octave_idx_type
 idx_vector::idx_range_rep::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= len)
-    {
-      gripe_index_out_of_range ();
-      return 0;
-    }
-  else
-    return start + i*step;
+    err_index_out_of_range ();
+
+  return start + i*step;
 }
 
 idx_vector::idx_base_rep *
@@ -235,8 +225,8 @@ inline octave_idx_type
 convert_index (octave_idx_type i, bool& conv_error,
                octave_idx_type& ext)
 {
-  if (i <= 0)
-    conv_error = true;
+  if (i <= 0 && ! conv_error)
+    octave::err_invalid_index (i-1);
 
   if (ext < i)
     ext = i;
@@ -250,7 +240,7 @@ convert_index (double x, bool& conv_error, octave_idx_type& ext)
   octave_idx_type i = static_cast<octave_idx_type> (x);
 
   if (static_cast<double> (i) != x)
-    conv_error = true;
+    octave::err_invalid_index (x-1);
 
   return convert_index (i, conv_error, ext);
 }
@@ -261,7 +251,7 @@ convert_index (float x, bool& conv_error, octave_idx_type& ext)
   return convert_index (static_cast<double> (x), conv_error, ext);
 }
 
-template <class T>
+template <typename T>
 inline octave_idx_type
 convert_index (octave_int<T> x, bool& conv_error,
                octave_idx_type& ext)
@@ -271,34 +261,27 @@ convert_index (octave_int<T> x, bool& conv_error,
   return convert_index (i, conv_error, ext);
 }
 
-
-template <class T>
+template <typename T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
   : data (0)
 {
   octave_idx_type dummy = 0;
 
   data = convert_index (x, err, dummy);
-
-  if (err)
-    gripe_invalid_index ();
 }
 
 idx_vector::idx_scalar_rep::idx_scalar_rep (octave_idx_type i)
   : data (i)
 {
   if (data < 0)
-    {
-      gripe_invalid_index ();
-      err = true;
-    }
+    octave::err_invalid_index (data);
 }
 
 octave_idx_type
 idx_vector::idx_scalar_rep::checkelem (octave_idx_type i) const
 {
   if (i != 0)
-    gripe_index_out_of_range ();
+    err_index_out_of_range ();
 
   return data;
 }
@@ -329,23 +312,18 @@ idx_vector::idx_scalar_rep::as_array (void)
   return Array<octave_idx_type> (dim_vector (1, 1), data);
 }
 
-
-template <class T>
+template <typename T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
   : data (0), len (nda.numel ()), ext (0), aowner (0), orig_dims (nda.dims ())
 {
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type [len];
+      std::unique_ptr<octave_idx_type []> d (new octave_idx_type [len]);
+
       for (octave_idx_type i = 0; i < len; i++)
         d[i] = convert_index (nda.xelem (i), err, ext);
-      data = d;
 
-      if (err)
-        {
-          delete [] data;
-          gripe_invalid_index ();
-        }
+      data = d.release ();
     }
 }
 
@@ -362,15 +340,15 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
         {
           octave_idx_type k = inda.xelem (i);
           if (k < 0)
-            err = true;
+            {
+              if (! err)
+                octave::err_invalid_index (k);
+            }
           else if (k > max)
             max = k;
         }
 
       ext = max + 1;
-
-      if (err)
-        gripe_invalid_index ();
     }
 }
 
@@ -413,14 +391,14 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
   const dim_vector dv = bnda.dims ();
 
   if (! dv.all_zero ())
-    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
                  ? dim_vector (1, len) : dim_vector (len, 1));
 
   if (len != 0)
     {
       octave_idx_type *d = new octave_idx_type [len];
 
-      octave_idx_type ntot = bnda.length ();
+      octave_idx_type ntot = bnda.numel ();
 
       octave_idx_type k = 0;
       for (octave_idx_type i = 0; i < ntot; i++)
@@ -439,7 +417,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
   const dim_vector dv = bnda.dims ();
 
   if (! dv.all_zero ())
-    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
                  ? dim_vector (1, len) : dim_vector (len, 1));
 
   if (len != 0)
@@ -473,10 +451,7 @@ octave_idx_type
 idx_vector::idx_vector_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
-    {
-      gripe_invalid_index ();
-      return 0;
-    }
+    octave::err_invalid_index (n);
 
   return xelem (n);
 }
@@ -490,11 +465,11 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       return this;
     }
 
-  // This is wrapped in auto_ptr so that we don't leak on out-of-memory.
-  std::auto_ptr<idx_vector_rep> new_rep (
+  // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
+  std::unique_ptr<idx_vector_rep> new_rep (
     new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
 
-  if (ext > len*xlog2 (1.0 + len))
+  if (ext > len*octave::math::log2 (1.0 + len))
     {
       // Use standard sort via octave_sort.
       octave_idx_type *new_data = new octave_idx_type [len];
@@ -510,7 +485,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
           octave_idx_type new_len = std::unique (new_data, new_data + len)
                                     - new_data;
           new_rep->len = new_len;
-          if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
+          if (new_rep->orig_dims.ndims () == 2 && new_rep->orig_dims(0) == 1)
             new_rep->orig_dims = dim_vector (1, new_len);
           else
             new_rep->orig_dims = dim_vector (new_len, 1);
@@ -528,7 +503,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
         new_len += has[i];
 
       new_rep->len = new_len;
-      if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
+      if (new_rep->orig_dims.ndims () == 2 && new_rep->orig_dims(0) == 1)
         new_rep->orig_dims = dim_vector (1, new_len);
       else
         new_rep->orig_dims = dim_vector (new_len, 1);
@@ -563,11 +538,11 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
 idx_vector::idx_base_rep *
 idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
 {
-  // This is wrapped in auto_ptr so that we don't leak on out-of-memory.
-  std::auto_ptr<idx_vector_rep> new_rep (
+  // This is wrapped in unique_ptr so that we don't leak on out-of-memory.
+  std::unique_ptr<idx_vector_rep> new_rep (
     new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
 
-  if (ext > len*xlog2 (1.0 + len))
+  if (ext > len*octave::math::log2 (1.0 + len))
     {
       // Use standard sort via octave_sort.
       idx.clear (orig_dims);
@@ -625,7 +600,9 @@ idx_vector::idx_vector_rep::print (std::ostream& os) const
     os << data[ii] << ',' << ' ';
 
   if (len > 0)
-    os << data[len-1]; os << ']';
+    os << data[len-1];
+
+  os << ']';
 
   return os;
 }
@@ -656,7 +633,6 @@ idx_vector::idx_vector_rep::as_array (void)
     }
 }
 
-
 idx_vector::idx_mask_rep::idx_mask_rep (bool b)
   : data (0), len (b ? 1 : 0), ext (0), lsti (-1), lste (-1),
     aowner (0), orig_dims (len, len)
@@ -678,7 +654,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
   if (nnz < 0)
     len = bnda.nnz ();
 
-  // We truncate the extent as much as possible. For Matlab
+  // We truncate the extent as much as possible.  For Matlab
   // compatibility, but maybe it's not a bad idea anyway.
   while (ext > 0 && ! bnda(ext-1))
     ext--;
@@ -686,7 +662,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
   const dim_vector dv = bnda.dims ();
 
   if (! dv.all_zero ())
-    orig_dims = ((dv.length () == 2 && dv(0) == 1)
+    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
                  ? dim_vector (1, len) : dim_vector (len, 1));
 
   aowner = new Array<bool> (bnda);
@@ -723,10 +699,7 @@ octave_idx_type
 idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= len)
-    {
-      gripe_invalid_index ();
-      return 0;
-    }
+    octave::err_invalid_index (n);
 
   return xelem (n);
 }
@@ -740,7 +713,9 @@ idx_vector::idx_mask_rep::print (std::ostream& os) const
     os << data[ii] << ',' << ' ';
 
   if (ext > 0)
-    os << data[ext-1]; os << ']';
+    os << data[ext-1];
+
+  os << ']';
 
   return os;
 }
@@ -1074,7 +1049,7 @@ idx_vector::copy_data (octave_idx_type *data) const
   switch (rep->idx_class ())
     {
     case class_colon:
-      current_liboctave_error_handler ("colon not allowed");
+      (*current_liboctave_error_handler) ("colon not allowed");
       break;
 
     case class_range:
@@ -1307,6 +1282,7 @@ idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
     {
       (*current_liboctave_error_handler)
         ("invalid matrix index = %d", extent (z_len));
+      // FIXME: Should we call this before calling error_handler?
       rep->err = true;
       chkerr ();
     }
@@ -1332,8 +1308,8 @@ idx_vector::ones_count () const
 }
 
 // Instantiate the octave_int constructors we want.
-#define INSTANTIATE_SCALAR_VECTOR_REP_CONST(T) \
-  template OCTAVE_API idx_vector::idx_scalar_rep::idx_scalar_rep (T); \
+#define INSTANTIATE_SCALAR_VECTOR_REP_CONST(T)                          \
+  template OCTAVE_API idx_vector::idx_scalar_rep::idx_scalar_rep (T);   \
   template OCTAVE_API idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>&);
 
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (float)
@@ -1353,3 +1329,4 @@ INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
 %!assert ((1:3)(find ([1,0,1] != 0)), [1,3])
 
 */
+

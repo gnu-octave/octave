@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} hold
-## @deftypefnx {Command} {} hold on
-## @deftypefnx {Command} {} hold off
-## @deftypefnx {Command} {} hold all
-## @deftypefnx {Function File} {} hold (@var{hax}, @dots{})
+## @deftypefn  {} {} hold
+## @deftypefnx {} {} hold on
+## @deftypefnx {} {} hold off
+## @deftypefnx {} {} hold (@var{hax}, @dots{})
 ## Toggle or set the @qcode{"hold"} state of the plotting engine which
 ## determines whether new graphic objects are added to the plot or replace
 ## the existing objects.
@@ -29,12 +28,11 @@
 ## @table @code
 ## @item hold on
 ## Retain plot data and settings so that subsequent plot commands are displayed
-## on a single graph.
+## on a single graph.  Line color and line style are advanced for each new plot
+## added.
 ##
-## @item hold all
-## Retain plot line color, line style, data, and settings so that subsequent
-## plot commands are displayed on a single graph with the next line color and
-## style.
+## @item hold all (deprecated)
+## Equivalent to @code{hold on}.
 ##
 ## @item hold off
 ## Restore default graphics settings which clear the graph and reset axis
@@ -92,7 +90,6 @@ function hold (varargin)
     set (hax, "nextplot", "add");
     set (hfig, "nextplot", "add");
   endif
-  set (hax, "__hold_all__", hold_all);
 
 endfunction
 
@@ -103,16 +100,7 @@ endfunction
 %! plot (t, sin (t));
 %! hold on;
 %! plot (t, cos (t));
-%! title ({'hold on', '2 plots shown on same graph'});
-%! hold off;
-
-%!demo
-%! clf;
-%! t = linspace (0, 2*pi, 100);
-%! plot (t, sin (t));
-%! hold all;
-%! plot (t, cos (t));
-%! title ({'hold all', '2 plots shown on same graph with linestyle also preserved'});
+%! title ({"hold on", "2 plots shown on same graph"});
 %! hold off;
 
 %!demo
@@ -121,48 +109,51 @@ endfunction
 %! [X, Y] = find (A > 0.95);
 %! imshow (A);
 %! hold on;
-%! plot (X, Y, 'o');
+%! plot (X, Y, "o");
 %! hold off;
-%! title ('hold with image and plot');
+%! title ("hold with image and plot");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! hold on;
 %! imagesc (1 ./ hilb (4));
-%! plot (1:4, '-s');
+%! plot (1:4, "-s");
+%! title ("hold with image and plot");
 %! hold off;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! hold on;
 %! imagesc (1 ./ hilb (2));
 %! imagesc (1 ./ hilb (4));
+%! title ({"hold with two images", "only second image is visible"});
 %! hold off;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! hold on;
-%! plot (1:4, '-s');
+%! plot (1:4, "-s");
 %! imagesc (1 ./ hilb (4));
+%! title ({"hold with plot and image", "only image is visible"});
 %! hold off;
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! t = linspace (-3, 3, 50);
 %! [x, y] = meshgrid (t, t);
 %! z = peaks (x, y);
 %! contourf (x, y, z, 10);
 %! hold on;
-%! plot (x(:), y(:), '^');
-%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], 'red');
+%! plot (x(:), y(:), "^");
+%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], "red");
 %! xlim ([-2.0 2.0]);
 %! ylim ([-2.0 2.0]);
-%! colorbar ('SouthOutside');
-%! title ('Test script for some plot functions');
+%! colorbar ("SouthOutside");
+%! title ("hold with line, surface, and patch objects");
 
 ## hold on test
 %!test

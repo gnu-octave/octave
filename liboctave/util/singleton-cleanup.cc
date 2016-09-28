@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <lo-error.h>
@@ -31,10 +31,9 @@ singleton_cleanup_list *singleton_cleanup_list::instance = 0;
 
 singleton_cleanup_list::~singleton_cleanup_list (void)
 {
-  for (std::set<fptr>::iterator p = fcn_list.begin ();
-       p != fcn_list.end (); p++)
+  for (auto fcnptr : fcn_list)
     {
-      fptr fcn = *p;
+      fptr fcn = *fcnptr;
 
       fcn ();
     }
@@ -49,12 +48,9 @@ singleton_cleanup_list::instance_ok (void)
     instance = new singleton_cleanup_list ();
 
   if (! instance)
-    {
-      current_liboctave_error_handler
-        ("unable to create singleton_cleanup_list object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create singleton_cleanup_list object!");
 
   return retval;
 }
+

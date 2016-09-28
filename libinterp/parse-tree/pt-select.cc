@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"
@@ -117,13 +117,12 @@ tree_switch_case::~tree_switch_case (void)
   delete lead_comm;
 }
 
-
 bool
 tree_switch_case::label_matches (const octave_value& val)
 {
   octave_value label_value = label->rvalue1 ();
 
-  if (! error_state && label_value.is_defined ())
+  if (label_value.is_defined ())
     {
       if (label_value.is_cell ())
         {
@@ -135,22 +134,13 @@ tree_switch_case::label_matches (const octave_value& val)
                 {
                   bool match = val.is_equal (cell(i,j));
 
-                  if (error_state)
-                    return false;
-                  else if (match)
+                  if (match)
                     return true;
                 }
             }
         }
       else
-        {
-          bool match = val.is_equal (label_value);
-
-          if (error_state)
-            return false;
-          else
-            return match;
-        }
+        return val.is_equal (label_value);
     }
 
   return false;
@@ -221,3 +211,4 @@ tree_switch_command::accept (tree_walker& tw)
 {
   tw.visit_switch_command (*this);
 }
+

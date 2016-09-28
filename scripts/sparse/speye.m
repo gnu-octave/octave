@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 David Bateman and Andy Adler
+## Copyright (C) 2004-2016 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} speye (@var{m}, @var{n})
-## @deftypefnx {Function File} {@var{s} =} speye (@var{m})
-## @deftypefnx {Function File} {@var{s} =} speye (@var{sz})
+## @deftypefn  {} {@var{s} =} speye (@var{m}, @var{n})
+## @deftypefnx {} {@var{s} =} speye (@var{m})
+## @deftypefnx {} {@var{s} =} speye (@var{sz})
 ## Return a sparse identity matrix of size @var{m}x@var{n}.
 ##
 ## The implementation is significantly more efficient than
@@ -32,6 +32,7 @@
 ## @end deftypefn
 
 function s = speye (m, n)
+
   if (nargin == 1)
     if (isvector (m) && length (m) == 2)
       n = m(2);
@@ -49,6 +50,7 @@ function s = speye (m, n)
 
   lo = min ([m, n]);
   s = sparse (1:lo, 1:lo, 1, m, n);
+
 endfunction
 
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -32,16 +32,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-map.h"
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 // Password file functions.  (Why not?)
 
 static octave_value
-mk_pw_map (const octave_passwd& pw)
+mk_pw_map (const octave::sys::password& pw)
 {
   octave_value retval;
 
@@ -57,171 +57,119 @@ mk_pw_map (const octave_passwd& pw)
       m.assign ("dir", pw.dir ());
       m.assign ("shell", pw.shell ());
 
-      retval = m;
+      retval = ovl (m);
     }
   else
-    retval = 0;
+    retval = ovl (0);
 
   return retval;
 }
 
 DEFUN (getpwent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{pw_struct} =} getpwent ()\n\
-Return a structure containing an entry from the password database,\n\
-opening it if necessary.\n\
-\n\
-Once the end of the data has been reached, @code{getpwent} returns 0.\n\
-@seealso{setpwent, endpwent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pw_struct} =} getpwent ()
+Return a structure containing an entry from the password database,
+opening it if necessary.
+
+Once the end of the data has been reached, @code{getpwent} returns 0.
+@seealso{setpwent, endpwent}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = 0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = mk_pw_map (octave_passwd::getpwent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  std::string msg;
+
+  // octave::sys::password::getpwent may set msg.
+  octave_value val = mk_pw_map (octave::sys::password::getpwent (msg));
+
+  return ovl (val, msg);
 }
 
 DEFUN (getpwuid, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{pw_struct} =} getpwuid (@var{uid}).\n\
-Return a structure containing the first entry from the password database\n\
-with the user ID @var{uid}.\n\
-\n\
-If the user ID does not exist in the database, @code{getpwuid} returns 0.\n\
-@seealso{getpwnam}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pw_struct} =} getpwuid (@var{uid}).
+Return a structure containing the first entry from the password database
+with the user ID @var{uid}.
+
+If the user ID does not exist in the database, @code{getpwuid} returns 0.
+@seealso{getpwnam}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = 0;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      double dval = args(0).double_value ();
-
-      if (! error_state)
-        {
-          if (D_NINT (dval) == dval)
-            {
-              uid_t uid = static_cast<uid_t> (dval);
-
-              std::string msg;
-
-              retval(1) = msg;
-              retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
-            }
-          else
-            error ("getpwuid: UID must be an integer");
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  double dval = args(0).double_value ();
+
+  if (octave::math::x_nint (dval) != dval)
+    error ("getpwuid: UID must be an integer");
+
+  uid_t uid = static_cast<uid_t> (dval);
+
+  std::string msg;
+
+  // octave::sys::password::getpwuid may set msg.
+  octave_value val = mk_pw_map (octave::sys::password::getpwuid (uid, msg));
+
+  return ovl (val, msg);
 }
 
 DEFUN (getpwnam, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{pw_struct} =} getpwnam (@var{name})\n\
-Return a structure containing the first entry from the password database\n\
-with the user name @var{name}.\n\
-\n\
-If the user name does not exist in the database, @code{getpwname} returns 0.\n\
-@seealso{getpwuid}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{pw_struct} =} getpwnam (@var{name})
+Return a structure containing the first entry from the password database
+with the user name @var{name}.
+
+If the user name does not exist in the database, @code{getpwname} returns 0.
+@seealso{getpwuid}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = 0.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string s = args(0).string_value ();
-
-      if (! error_state)
-        {
-          std::string msg;
-
-          retval(1) = msg;
-          retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string s = args(0).string_value ();
+
+  std::string msg;
+
+  // octave::sys::password::getpwnam may set msg.
+  octave_value val = mk_pw_map (octave::sys::password::getpwnam (s, msg));
+
+  return ovl (val, msg);
 }
 
 DEFUN (setpwent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} setpwent ()\n\
-Return the internal pointer to the beginning of the password database.\n\
-@seealso{getpwent, endpwent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} setpwent ()
+Return the internal pointer to the beginning of the password database.
+@seealso{getpwent, endpwent}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = static_cast<double> (octave_passwd::setpwent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  std::string msg;
+
+  // octave::sys::password::setpwent may set msg.
+  int status = octave::sys::password::setpwent (msg);
+
+  return ovl (static_cast<double> (status), msg);
 }
 
 DEFUN (endpwent, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} endpwent ()\n\
-Close the password database.\n\
-@seealso{getpwent, setpwent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} endpwent ()
+Close the password database.
+@seealso{getpwent, setpwent}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      std::string msg;
-
-      retval(1) = msg;
-      retval(0) = static_cast<double> (octave_passwd::endpwent (msg));
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  std::string msg;
+
+  // octave::sys::password::endpwent may set msg.
+  int status = octave::sys::password::endpwent (msg);
+
+  return ovl (static_cast<double> (status), msg);
 }
+

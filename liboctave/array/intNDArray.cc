@@ -1,7 +1,7 @@
-// N-D Array  manipulations.
+// N-D Array manipulations.
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -22,9 +22,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include "Array-util.h"
 #include "mx-base.h"
@@ -33,23 +33,23 @@ along with Octave; see the file COPYING.  If not, see
 
 // unary operations
 
-template <class T>
+template <typename T>
 boolNDArray
 intNDArray<T>::operator ! (void) const
 {
   boolNDArray b (this->dims ());
 
-  for (octave_idx_type i = 0; i < this->length (); i++)
+  for (octave_idx_type i = 0; i < this->numel (); i++)
     b.elem (i) = ! this->elem (i);
 
   return b;
 }
 
-template <class T>
+template <typename T>
 bool
 intNDArray<T>::any_element_not_one_or_zero (void) const
 {
-  octave_idx_type nel = this->nelem ();
+  octave_idx_type nel = this->numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -62,14 +62,14 @@ intNDArray<T>::any_element_not_one_or_zero (void) const
   return false;
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::diag (octave_idx_type k) const
 {
   return MArray<T>::diag (k);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::diag (octave_idx_type m, octave_idx_type n) const
 {
@@ -78,21 +78,21 @@ intNDArray<T>::diag (octave_idx_type m, octave_idx_type n) const
 
 // FIXME: this is not quite the right thing.
 
-template <class T>
+template <typename T>
 boolNDArray
 intNDArray<T>::all (int dim) const
 {
   return do_mx_red_op<bool, T > (*this, dim, mx_inline_all);
 }
 
-template <class T>
+template <typename T>
 boolNDArray
 intNDArray<T>::any (int dim) const
 {
   return do_mx_red_op<bool, T > (*this, dim, mx_inline_any);
 }
 
-template <class T>
+template <typename T>
 void
 intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
                                 const dim_vector& dimensions,
@@ -101,7 +101,7 @@ intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 intNDArray<T>::compute_index (Array<octave_idx_type>& ra_idx,
                               const dim_vector& dimensions)
@@ -109,7 +109,7 @@ intNDArray<T>::compute_index (Array<octave_idx_type>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::concat (const intNDArray<T>& rb,
                        const Array<octave_idx_type>& ra_idx)
@@ -119,7 +119,7 @@ intNDArray<T>::concat (const intNDArray<T>& rb,
   return *this;
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>&
 intNDArray<T>::insert (const intNDArray<T>& a, octave_idx_type r,
                        octave_idx_type c)
@@ -128,7 +128,7 @@ intNDArray<T>::insert (const intNDArray<T>& a, octave_idx_type r,
   return *this;
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>&
 intNDArray<T>::insert (const intNDArray<T>& a,
                        const Array<octave_idx_type>& ra_idx)
@@ -139,11 +139,11 @@ intNDArray<T>::insert (const intNDArray<T>& a,
 
 // This contains no information on the array structure !!!
 
-template <class T>
+template <typename T>
 std::ostream&
 operator << (std::ostream& os, const intNDArray<T>& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     os << " " << a.elem (i) << "\n";
@@ -151,11 +151,11 @@ operator << (std::ostream& os, const intNDArray<T>& a)
   return os;
 }
 
-template <class T>
+template <typename T>
 std::istream&
 operator >> (std::istream& is, intNDArray<T>& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   if (nel > 0)
     {
@@ -168,22 +168,20 @@ operator >> (std::istream& is, intNDArray<T>& a)
           if (is)
             a.elem (i) = tmp;
           else
-            goto done;
+            return is;
         }
     }
-
-done:
 
   return is;
 }
 
 // FIXME: should abs and signum just be mapper functions?
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::abs (void) const
 {
-  octave_idx_type nel = this->nelem ();
+  octave_idx_type nel = this->numel ();
   intNDArray<T> ret (this->dims ());
 
   for (octave_idx_type i = 0; i < nel; i++)
@@ -195,11 +193,11 @@ intNDArray<T>::abs (void) const
   return ret;
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::signum (void) const
 {
-  octave_idx_type nel = this->nelem ();
+  octave_idx_type nel = this->numel ();
   intNDArray<T> ret (this->dims ());
 
   for (octave_idx_type i = 0; i < nel; i++)
@@ -211,93 +209,94 @@ intNDArray<T>::signum (void) const
   return ret;
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::prod (int dim) const
 {
   return do_mx_red_op<T, T> (*this, dim, mx_inline_prod);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::sum (int dim) const
 {
   return do_mx_red_op<T, T> (*this, dim, mx_inline_sum);
 }
 
-template <class T>
+template <typename T>
 NDArray
 intNDArray<T>::dsum (int dim) const
 {
   return do_mx_red_op<double, T> (*this, dim, mx_inline_dsum);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::cumsum (int dim) const
 {
   return do_mx_cum_op<T, T> (*this, dim, mx_inline_cumsum);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::max (int dim) const
 {
   return do_mx_minmax_op<T> (*this, dim, mx_inline_max);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_minmax_op<T> (*this, idx_arg, dim, mx_inline_max);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::min (int dim) const
 {
   return do_mx_minmax_op<T> (*this, dim, mx_inline_min);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_minmax_op<T> (*this, idx_arg, dim, mx_inline_min);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::cummax (int dim) const
 {
   return do_mx_cumminmax_op<T> (*this, dim, mx_inline_cummax);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::cummax (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_cumminmax_op<T> (*this, idx_arg, dim, mx_inline_cummax);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::cummin (int dim) const
 {
   return do_mx_cumminmax_op<T> (*this, dim, mx_inline_cummin);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 {
   return do_mx_cumminmax_op<T> (*this, idx_arg, dim, mx_inline_cummin);
 }
 
-template <class T>
+template <typename T>
 intNDArray<T>
 intNDArray<T>::diff (octave_idx_type order, int dim) const
 {
   return do_mx_diff_op<T> (*this, dim, order, mx_inline_diff);
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -26,42 +26,42 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 #include "jit-typeinfo.h"
 
-#ifdef HAVE_LLVM_IR_VERIFIER_H
-#include <llvm/IR/Verifier.h>
+#if defined (HAVE_LLVM_IR_VERIFIER_H)
+#  include <llvm/IR/Verifier.h>
 #else
-#include <llvm/Analysis/Verifier.h>
+#  include <llvm/Analysis/Verifier.h>
 #endif
 
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/GlobalVariable.h>
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Function.h>
-#include <llvm/IR/Instructions.h>
-#include <llvm/IR/Intrinsics.h>
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
+#  include <llvm/IR/GlobalVariable.h>
+#  include <llvm/IR/LLVMContext.h>
+#  include <llvm/IR/Function.h>
+#  include <llvm/IR/Instructions.h>
+#  include <llvm/IR/Intrinsics.h>
 #else
-#include <llvm/GlobalVariable.h>
-#include <llvm/LLVMContext.h>
-#include <llvm/Function.h>
-#include <llvm/Instructions.h>
-#include <llvm/Intrinsics.h>
+#  include <llvm/GlobalVariable.h>
+#  include <llvm/LLVMContext.h>
+#  include <llvm/Function.h>
+#  include <llvm/Instructions.h>
+#  include <llvm/Intrinsics.h>
 #endif
 
-#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
-#include <llvm/Support/IRBuilder.h>
-#elif defined(HAVE_LLVM_IR_IRBUILDER_H)
-#include <llvm/IR/IRBuilder.h>
+#if defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
+#  include <llvm/Support/IRBuilder.h>
+#  elif defined(HAVE_LLVM_IR_IRBUILDER_H)
+#  include <llvm/IR/IRBuilder.h>
 #else
-#include <llvm/IRBuilder.h>
+#  include <llvm/IRBuilder.h>
 #endif
 
 #include <llvm/Support/raw_os_ostream.h>
@@ -115,7 +115,7 @@ extern "C" octave_idx_type
 octave_jit_compute_nelem (double base, double limit, double inc)
 {
   Range rng = Range (base, limit, inc);
-  return rng.nelem ();
+  return rng.numel ();
 }
 
 extern "C" void
@@ -213,43 +213,24 @@ octave_jit_cast_any_complex (Complex c)
 }
 
 extern "C" void
-octave_jit_gripe_nan_to_logical_conversion (void)
+octave_jit_octave::err_nan_to_logical_conversion (void)
 {
-  try
-    {
-      gripe_nan_to_logical_conversion ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  octave::err_nan_to_logical_conversion ();
 }
 
 extern "C" void
 octave_jit_ginvalid_index (void)
 {
-  try
-    {
-      gripe_invalid_index ();
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  // FIXME: 0-argument form of octave::err_invalid_index removed in cset dd6345fd8a97
+  //        Report -1 as the bad index for all occurrences.
+  octave::err_invalid_index (static_cast<octave_idx_type> (-1));
 }
 
 extern "C" void
 octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
                          octave_idx_type ext)
 {
-  try
-    {
-      gripe_index_out_of_range (nd, dim, iext, ext);
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  octave::err_index_out_of_range (nd, dim, iext, ext);
 }
 
 extern "C" jit_matrix
@@ -257,7 +238,7 @@ octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
                                 double value)
 {
   NDArray *array = mat->array;
-  if (array->nelem () < index)
+  if (array->numel () < index)
     array->resize1 (index);
 
   double *data = array->fortran_vec ();
@@ -281,19 +262,12 @@ octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
                          octave_idx_type idx_count)
 {
   // FIXME: Replace this with a more optimal version
-  try
-    {
-      Array<idx_vector> idx;
-      make_indices (indicies, idx_count, idx);
+  Array<idx_vector> idx;
+  make_indices (indicies, idx_count, idx);
 
-      Array<double> ret = mat->array->index (idx);
-      return ret.xelem (0);
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-      return 0;
-    }
+  Array<double> ret = mat->array->index (idx);
+
+  return ret.xelem (0);
 }
 
 extern "C" jit_matrix
@@ -302,20 +276,14 @@ octave_jit_paren_scalar_subsasgn (jit_matrix *mat, double *indices,
 {
   // FIXME: Replace this with a more optimal version
   jit_matrix ret;
-  try
-    {
-      Array<idx_vector> idx;
-      make_indices (indices, idx_count, idx);
 
-      Matrix temp (1, 1);
-      temp.xelem(0) = value;
-      mat->array->assign (idx, temp);
-      ret.update (mat->array);
-    }
-  catch (const octave_execution_exception&)
-    {
-      gripe_library_execution_error ();
-    }
+  Array<idx_vector> idx;
+  make_indices (indices, idx_count, idx);
+
+  Matrix temp (1, 1);
+  temp.xelem(0) = value;
+  mat->array->assign (idx, temp);
+  ret.update (mat->array);
 
   return ret;
 }
@@ -418,7 +386,7 @@ octave_jit_complex_div (Complex lhs, Complex rhs)
 {
   // see src/OPERATORS/op-cs-cs.cc
   if (rhs == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return lhs / rhs;
 }
@@ -427,7 +395,7 @@ octave_jit_complex_div (Complex lhs, Complex rhs)
 static inline int
 xisint (double x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
@@ -471,8 +439,9 @@ octave_jit_print_matrix (jit_matrix *m)
   std::cout << *m << std::endl;
 }
 
-static void
-gripe_bad_result (void)
+OCTAVE_NORETURN static
+void
+err_bad_result (void)
 {
   error ("incorrect type information given to the JIT compiler");
 }
@@ -492,10 +461,7 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
   if (result_type)
     {
       if (ovl.length () < 1)
-        {
-          gripe_bad_result ();
-          return 0;
-        }
+        err_bad_result ();
 
       octave_value result = ovl.xelem(0);
       octave_base_value *ret = result.internal_rep ();
@@ -503,9 +469,9 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
       return ret;
     }
 
-  if (! (ovl.length () == 0
+  if (! (ovl.empty ()
          || (ovl.length () == 1 && ovl.xelem (0).is_undefined ())))
-    gripe_bad_result ();
+    err_bad_result ();
 
   return 0;
 }
@@ -560,7 +526,7 @@ jit_type::to_llvm_arg (void) const
 jit_function::jit_function () : module (0), llvm_function (0), mresult (0),
                                 call_conv (jit_convention::length),
                                 mcan_error (false)
-{}
+{ }
 
 jit_function::jit_function (llvm::Module *amodule,
                             jit_convention::type acall_conv,
@@ -602,7 +568,7 @@ jit_function::jit_function (llvm::Module *amodule,
 
   if (sret ())
     {
-#ifdef FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
+#if defined (FUNCTION_ADDATTRIBUTE_ARG_IS_ATTRIBUTES)
       llvm::AttrBuilder attr_builder;
       attr_builder.addAttribute (llvm::Attributes::StructRet);
       llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);
@@ -613,7 +579,7 @@ jit_function::jit_function (llvm::Module *amodule,
     }
 
   if (call_conv == jit_convention::internal)
-#ifdef FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES
+#if defined (FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES)
     llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
 #else
     llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
@@ -624,13 +590,12 @@ jit_function::jit_function (const jit_function& fn, jit_type *aresult,
                             const std::vector<jit_type *>& aargs)
   : module (fn.module), llvm_function (fn.llvm_function), mresult (aresult),
     args (aargs), call_conv (fn.call_conv), mcan_error (fn.mcan_error)
-{
-}
+{ }
 
 jit_function::jit_function (const jit_function& fn)
   : module (fn.module), llvm_function (fn.llvm_function), mresult (fn.mresult),
     args (fn.args), call_conv (fn.call_conv), mcan_error (fn.mcan_error)
-{}
+{ }
 
 void
 jit_function::erase (void)
@@ -720,7 +685,7 @@ jit_function::call (llvm::IRBuilderD& builder,
 
   if (sret ())
     {
-#ifdef CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
+#if defined (CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES)
       llvm::AttrBuilder attr_builder;
       attr_builder.addAttribute(llvm::Attributes::StructRet);
       llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);
@@ -746,9 +711,9 @@ jit_function::argument (llvm::IRBuilderD& builder, size_t idx) const
 {
   assert (idx < args.size ());
 
-  // FIXME: We should be treating arguments like a list, not a vector. Shouldn't
-  // matter much for now, as the number of arguments shouldn't be much bigger
-  // than 4
+  // FIXME: We should be treating arguments like a list, not a vector.
+  // Shouldn't matter much for now, as the number of arguments shouldn't
+  // be much bigger than 4
   llvm::Function::arg_iterator iter = llvm_function->arg_begin ();
   if (sret ())
     ++iter;
@@ -852,7 +817,7 @@ const jit_function&
 jit_operation::overload (const std::vector<jit_type*>& types) const
 {
   static jit_function null_overload;
-  for (size_t i  =0; i < types.size (); ++i)
+  for (size_t i = 0; i < types.size (); ++i)
     if (! types[i])
       return null_overload;
 
@@ -1267,7 +1232,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   add_binary_fcmp (scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
   add_binary_fcmp (scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
 
-  jit_function gripe_div0 = create_external (JIT_FN (gripe_divide_by_zero), 0);
+  jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero), 0);
   gripe_div0.mark_can_error ();
 
   // divide is annoying because it might error
@@ -1301,9 +1266,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   binary_ops[octave_value::op_ldiv].add_overload (fn);
   binary_ops[octave_value::op_el_ldiv].add_overload (fn);
 
-  // In general, the result of scalar ^ scalar is a complex number. We might be
-  // able to improve on this if we keep track of the range of values varaibles
-  // can take on.
+  // In general, the result of scalar ^ scalar is a complex number.  We might
+  // be able to improve on this if we keep track of the range of values
+  // variables can take on.
   fn = create_external (JIT_FN (octave_jit_pow_scalar_scalar), complex, scalar,
                         scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
@@ -1417,7 +1382,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     temp = builder.CreateFMul (lhs, temp);
     fn.do_return (builder, complex_new (temp, fzero), false);
 
-
     builder.SetInsertPoint (complex_mul);
     temp = complex_new (builder.CreateFMul (lhs, complex_real (rhs)),
                         builder.CreateFMul (lhs, complex_imag (rhs)));
@@ -1425,7 +1389,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   binary_ops[octave_value::op_mul].add_overload (fn);
   binary_ops[octave_value::op_el_mul].add_overload (fn);
-
 
   fn = mirror_binary (mul_scalar_complex);
   binary_ops[octave_value::op_mul].add_overload (fn);
@@ -1542,7 +1505,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   logically_true_fn.stash_name ("logically_true");
 
   jit_function gripe_nantl
-    = create_external (JIT_FN (octave_jit_gripe_nan_to_logical_conversion), 0);
+    = create_external (JIT_FN (octave_jit_octave::err_nan_to_logical_conversion), 0);
   gripe_nantl.mark_can_error ();
 
   fn = create_internal ("octave_jit_logically_true_scalar", boolean, scalar);
@@ -1579,7 +1542,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function compute_nelem
     = create_external (JIT_FN (octave_jit_compute_nelem),
                        index, scalar, scalar, scalar);
-
 
   fn = create_internal ("octave_jit_make_range", range, scalar, scalar, scalar);
   body = fn.new_block ();
@@ -1644,7 +1606,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *len
       = builder.CreateExtractValue (mat, llvm::ArrayRef<unsigned> (2));
     cond = builder.CreateICmpSGT (int_idx, len);
-
 
     llvm::BasicBlock *bounds_error = fn.new_block ("bounds_error", done);
     llvm::BasicBlock *success = fn.new_block ("success", done);
@@ -2246,7 +2207,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
 {
   if (ov.is_function ())
     {
-      // FIXME: This is ugly, we need to finalize how we want to to this, then
+      // FIXME: This is ugly, we need to finalize how we want to do this, then
       // have octave_value fully support the needed functionality
       octave_builtin *builtin
         = dynamic_cast<octave_builtin *> (ov.internal_rep ());
@@ -2271,7 +2232,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
       Complex cv = ov.complex_value ();
 
       // We don't really represent complex values, instead we represent
-      // complex_or_scalar. If the imag value is zero, we assume a scalar.
+      // complex_or_scalar.  If the imag value is zero, we assume a scalar.
       if (cv.imag () != 0)
         return get_complex ();
     }
@@ -2280,3 +2241,4 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
 }
 
 #endif
+

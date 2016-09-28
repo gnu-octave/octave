@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QChildEvent>
@@ -37,51 +37,50 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-Container::Container (QWidget* xparent)
-  : ContainerBase (xparent), m_canvas (0)
-{
-  setFocusPolicy (Qt::ClickFocus);
-}
+  Container::Container (QWidget* xparent)
+    : ContainerBase (xparent), m_canvas (0)
+  {
+    setFocusPolicy (Qt::ClickFocus);
+  }
 
-Container::~Container (void)
-{
-}
+  Container::~Container (void)
+  { }
 
-Canvas*
-Container::canvas (const graphics_handle& gh, bool xcreate)
-{
-  if (! m_canvas && xcreate)
-    {
-      gh_manager::auto_lock lock;
-      graphics_object go = gh_manager::get_object (gh);
+  Canvas*
+  Container::canvas (const graphics_handle& gh, bool xcreate)
+  {
+    if (! m_canvas && xcreate)
+      {
+        gh_manager::auto_lock lock;
+        graphics_object go = gh_manager::get_object (gh);
 
-      if (go)
-        {
-          graphics_object fig = go.get_ancestor ("figure");
+        if (go)
+          {
+            graphics_object fig = go.get_ancestor ("figure");
 
-          m_canvas = Canvas::create (fig.get("renderer").string_value (),
-                                     this, gh);
+            m_canvas = Canvas::create (fig.get("renderer").string_value (),
+                                       this, gh);
 
-          QWidget* canvasWidget = m_canvas->qWidget ();
+            QWidget* canvasWidget = m_canvas->qWidget ();
 
-          canvasWidget->lower ();
-          canvasWidget->show ();
-          canvasWidget->setGeometry (0, 0, width (), height ());
-        }
-    }
+            canvasWidget->lower ();
+            canvasWidget->show ();
+            canvasWidget->setGeometry (0, 0, width (), height ());
+          }
+      }
 
-  return m_canvas;
-}
+    return m_canvas;
+  }
 
-void
-Container::resizeEvent (QResizeEvent* /* event */)
-{
-  if (m_canvas)
-    m_canvas->qWidget ()->setGeometry (0, 0, width (), height ());
+  void
+  Container::resizeEvent (QResizeEvent* /* event */)
+  {
+    if (m_canvas)
+      m_canvas->qWidget ()->setGeometry (0, 0, width (), height ());
 
-  gh_manager::auto_lock lock;
+    gh_manager::auto_lock lock;
 
-  foreach (QObject* qObj, children ())
+    foreach (QObject* qObj, children ())
     {
       if (qObj->isWidgetType ())
         {
@@ -89,21 +88,28 @@ Container::resizeEvent (QResizeEvent* /* event */)
 
           if (obj)
             {
-              Matrix bb = obj->properties ().get_boundingbox (false);
+              graphics_object go = obj->object ();
 
-              obj->qWidget<QWidget> ()
-                ->setGeometry (xround (bb(0)), xround (bb(1)),
-                               xround (bb(2)), xround (bb(3)));
+              if (go.valid_object ())
+                {
+                  Matrix bb = go.get_properties ().get_boundingbox (false);
+
+                  obj->qWidget<QWidget> ()
+                  ->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
+                                 octave::math::round (bb(2)), octave::math::round (bb(3)));
+                }
             }
         }
     }
+  }
+
+  void
+  Container::childEvent (QChildEvent* xevent)
+  {
+    if (xevent->child ()->isWidgetType ())
+      qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (
+        hasMouseTracking ());
+  }
+
 }
 
-void
-Container::childEvent (QChildEvent* xevent)
-{
-  if (xevent->child ()->isWidgetType ())
-    qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (hasMouseTracking ());
-}
-
-}; // namespace QtHandles

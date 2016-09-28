@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // FIXME: it might be nice to only include the declarations of the
@@ -31,48 +31,50 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 #include MINCLUDE
 #include "ops.h"
-#ifdef DEFINENULLASSIGNCONV
-#include "ov-null-mat.h"
+#if defined (DEFINENULLASSIGNCONV)
+#  include "ov-null-mat.h"
 #endif
 
-#ifndef LDMATRIX
-#define LDMATRIX LMATRIX
+#if ! defined (LDMATRIX)
+#  define LDMATRIX LMATRIX
 #endif
 
 #define OCTAVE_LMATRIX CONCAT2(octave_, LMATRIX)
 #define OCTAVE_LDMATRIX CONCAT2(octave_, LDMATRIX)
 #define OCTAVE_RMATRIX CONCAT2(octave_, RMATRIX)
-#ifdef LEFT
-#define LMATRIX_VALUE perm_matrix_value
-#define RMATRIX_VALUE CONCAT2(RMATRIX, _value)
+#if defined (LEFT)
+#  define LMATRIX_VALUE perm_matrix_value
+#  define RMATRIX_VALUE CONCAT2(RMATRIX, _value)
 #else
-#define LMATRIX_VALUE CONCAT2(LMATRIX, _value)
-#define RMATRIX_VALUE perm_matrix_value
+#  define LMATRIX_VALUE CONCAT2(LMATRIX, _value)
+#  define RMATRIX_VALUE perm_matrix_value
 #endif
 
 DEFBINOP (mul, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return v1.LMATRIX_VALUE () * v2.RMATRIX_VALUE ();
 }
 
-#ifdef LEFT
+#if defined (LEFT)
 DEFBINOP (ldiv, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return v1.perm_matrix_value ().inverse () * v2.RMATRIX_VALUE ();
 }
 #else
 DEFBINOP (div, LMATRIX, RMATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
+  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
 
   return v1.LMATRIX_VALUE () * v2.perm_matrix_value ().inverse ();
 }
 #endif
-
 
 #define SHORT_NAME CONCAT3(LSHORT, _, RSHORT)
 #define INST_NAME CONCAT3(install_, SHORT_NAME, _ops)
@@ -81,14 +83,15 @@ void
 INST_NAME (void)
 {
   INSTALL_BINOP (op_mul, OCTAVE_LMATRIX, OCTAVE_RMATRIX, mul);
-#ifdef LEFT
+#if defined (LEFT)
   INSTALL_BINOP (op_ldiv, OCTAVE_LMATRIX, OCTAVE_RMATRIX, ldiv);
 #else
   INSTALL_BINOP (op_div, OCTAVE_LMATRIX, OCTAVE_RMATRIX, div);
 #endif
-#ifdef DEFINENULLASSIGNCONV
+#if defined (DEFINENULLASSIGNCONV)
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_matrix, OCTAVE_LDMATRIX);
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_str, OCTAVE_LDMATRIX);
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);
 #endif
 }
+

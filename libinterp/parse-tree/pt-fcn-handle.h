@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_fcn_handle_h)
-#define octave_fcn_handle_h 1
+#if ! defined (octave_pt_fcn_handle_h)
+#define octave_pt_fcn_handle_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
@@ -154,3 +156,4 @@ private:
 };
 
 #endif
+

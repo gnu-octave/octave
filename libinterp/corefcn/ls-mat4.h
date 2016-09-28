@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_mat4_h)
+#if ! defined (octave_ls_mat4_h)
 #define octave_ls_mat4_h 1
 
-extern oct_mach_info::float_format
+#include "octave-config.h"
+
+extern octave::mach_info::float_format
 mopt_digit_to_float_format (int mach);
 
 extern int
-float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt);
+float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt);
 
 extern int
 read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
@@ -40,6 +42,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
 extern bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
-                      const std::string& name) ;
+                      const std::string& name);
 
 #endif
+

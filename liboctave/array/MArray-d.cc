@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2015 John W. Eaton
+Copyright (C) 1995-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate MArrays of double values.
@@ -39,3 +39,4 @@ INSTANTIATE_MARRAY_FRIENDS (double, OCTAVE_API)
 template class OCTAVE_API MDiagArray2<double>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (double, OCTAVE_API)
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
-## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
+## @deftypefn  {} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
+## @deftypefnx {} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
 ## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ##
 ## The input image @var{rgb} can be specified as a single matrix of size
@@ -82,10 +82,10 @@ function [x, map] = rgb2ind (R, G, B)
     case "int16"
       map = (double (im) + 32768) / 65535;
     otherwise
-      error ("unsupported image class %s", im_class);
+      error ("rgb2ind: unsupported image class %s", im_class);
   endswitch
 
-  ## we convert to the smallest class necessary to encode the image. Matlab
+  ## we convert to the smallest class necessary to encode the image.  Matlab
   ## documentation does not mention what it does when uint16 is not enough...
   ## When an indexed image is of integer class, there's a -1 offset to the
   ## colormap, hence the adjustment
@@ -99,13 +99,14 @@ function [x, map] = rgb2ind (R, G, B)
 
 endfunction
 
+
 ## Test input validation
 %!error rgb2ind ()
 %!error rgb2ind (1,2,3,4,5,6,7)
 %!error <RGB> rgb2ind (rand (10, 10, 4))
 
 ## FIXME: the following tests simply make sure that rgb2ind and ind2rgb
-##        reverse each other. We should have better tests for this.
+##        reverse each other.  We should have better tests for this.
 
 ## Typical usage
 %!test

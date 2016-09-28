@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Jordi Gutiérrez Hermoso
+Copyright (C) 2012-2016 Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
 
@@ -22,8 +22,10 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
-#if !defined (octave_bsxfun_h)
+#if ! defined (octave_bsxfun_h)
 #define octave_bsxfun_h 1
+
+#include "octave-config.h"
 
 #include <algorithm>
 
@@ -36,12 +38,12 @@ bool
 is_valid_bsxfun (const std::string& name, const dim_vector& dx,
                  const dim_vector& dy)
 {
-  for (int i = 0; i < std::min (dx.length (), dy.length ()); i++)
+  for (int i = 0; i < std::min (dx.ndims (), dy.ndims ()); i++)
     {
       octave_idx_type xk = dx(i);
       octave_idx_type yk = dy(i);
       // Check the three conditions for valid bsxfun dims
-      if (! ((xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
+      if (! ((xk == yk) || (xk == 1 && yk != 1) || (xk != 1 && yk == 1)))
         return false;
     }
 
@@ -60,8 +62,8 @@ bool
 is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
                          const dim_vector& dx)
 {
-  octave_idx_type drl = dr.length ();
-  octave_idx_type dxl = dx.length ();
+  octave_idx_type drl = dr.ndims ();
+  octave_idx_type dxl = dx.ndims ();
   if (drl < dxl)
     return false;
 
@@ -71,7 +73,7 @@ is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
       octave_idx_type xk = dx(i);
 
       // Only two valid canditions to check; can't stretch rk
-      if (! ((rk == xk) || (rk > 1 && xk == 1)))
+      if (! ((rk == xk) || (rk != 1 && xk == 1)))
         return false;
     }
 
@@ -85,3 +87,4 @@ is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
 #include "bsxfun-defs.cc"
 
 #endif
+

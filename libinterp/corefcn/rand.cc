@@ -1,7 +1,7 @@
 
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -22,16 +22,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <ctime>
-#if defined (HAVE_UNORDERED_MAP)
 #include <unordered_map>
-#elif defined (HAVE_TR1_UNORDERED_MAP)
-#include <tr1/unordered_map>
-#endif
 #include <string>
 
 #include "f77-fcn.h"
@@ -41,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "ov-re-mat.h"
@@ -57,18 +53,9 @@ static octave_value
 do_rand (const octave_value_list& args, int nargin, const char *fcn,
          const std::string& distribution, bool additional_arg = false)
 {
-  octave_value retval;
   NDArray a;
   int idx = 0;
-  dim_vector dims;
   bool is_single = false;
-
-  unwind_protect frame;
-  // Restore current distribution on any exit.
-  frame.add_fcn (octave_rand::distribution,
-                 octave_rand::distribution ());
-
-  octave_rand::distribution (distribution);
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
@@ -86,24 +73,27 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   if (additional_arg)
     {
       if (nargin == 0)
-        {
-          error ("%s: expecting at least one argument", fcn);
-          goto done;
-        }
+        error ("%s: at least one argument is required", fcn);
       else if (args(0).is_string ())
         additional_arg = false;
       else
         {
-          a = args(0).array_value ();
-          if (error_state)
-            {
-              error ("%s: expecting scalar or matrix arguments", fcn);
-              goto done;
-            }
+          a = args(0).xarray_value ("%s: dimension must be a scalar integer", fcn);
+
           idx++;
           nargin--;
         }
     }
+
+  octave_value retval;
+  dim_vector dims;
+
+  octave::unwind_protect frame;
+  // Restore current distribution on any exit.
+  frame.add_fcn (octave_rand::distribution,
+                 octave_rand::distribution ());
+
+  octave_rand::distribution (distribution);
 
   switch (nargin)
     {
@@ -118,6 +108,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             dims(0) = 1;
             dims(1) = 1;
           }
+
         goto gen_matrix;
       }
       break;
@@ -131,37 +122,21 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             std::string s_arg = tmp.string_value ();
 
             if (s_arg == "dist")
-              {
-                retval = octave_rand::distribution ();
-              }
+              retval = octave_rand::distribution ();
             else if (s_arg == "seed")
-              {
-                retval = octave_rand::seed ();
-              }
+              retval = octave_rand::seed ();
             else if (s_arg == "state" || s_arg == "twister")
-              {
-                retval = octave_rand::state (fcn);
-              }
+              retval = octave_rand::state (fcn);
             else if (s_arg == "uniform")
-              {
-                octave_rand::uniform_distribution ();
-              }
+              octave_rand::uniform_distribution ();
             else if (s_arg == "normal")
-              {
-                octave_rand::normal_distribution ();
-              }
+              octave_rand::normal_distribution ();
             else if (s_arg == "exponential")
-              {
-                octave_rand::exponential_distribution ();
-              }
+              octave_rand::exponential_distribution ();
             else if (s_arg == "poisson")
-              {
-                octave_rand::poisson_distribution ();
-              }
+              octave_rand::poisson_distribution ();
             else if (s_arg == "gamma")
-              {
-                octave_rand::gamma_distribution ();
-              }
+              octave_rand::gamma_distribution ();
             else
               error ("%s: unrecognized string argument", fcn);
           }
@@ -169,77 +144,67 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           {
             double dval = tmp.double_value ();
 
-            if (xisnan (dval))
-              {
-                error ("%s: NaN is invalid matrix dimension", fcn);
-              }
-            else
-              {
-                dims.resize (2);
+            if (octave::math::isnan (dval))
+              error ("%s: NaN is invalid matrix dimension", fcn);
 
-                dims(0) = NINTbig (tmp.double_value ());
-                dims(1) = NINTbig (tmp.double_value ());
+            dims.resize (2);
 
-                if (! error_state)
-                  goto gen_matrix;
-              }
+            dims(0) = octave::math::nint_big (tmp.double_value ());
+            dims(1) = octave::math::nint_big (tmp.double_value ());
+
+            goto gen_matrix;
           }
         else if (tmp.is_range ())
           {
             Range r = tmp.range_value ();
 
-            if (r.all_elements_are_ints ())
+            if (! r.all_elements_are_ints ())
+              error ("%s: all elements of range must be integers", fcn);
+
+            octave_idx_type n = r.numel ();
+
+            dims.resize (n);
+
+            octave_idx_type base = octave::math::nint_big (r.base ());
+            octave_idx_type incr = octave::math::nint_big (r.inc ());
+
+            for (octave_idx_type i = 0; i < n; i++)
               {
-                octave_idx_type n = r.nelem ();
-
-                dims.resize (n);
-
-                octave_idx_type base = NINTbig (r.base ());
-                octave_idx_type incr = NINTbig (r.inc ());
-
-                for (octave_idx_type i = 0; i < n; i++)
-                  {
-                    //Negative dimensions are treated as zero for Matlab
-                    //compatibility
-                    dims(i) = base >= 0 ? base : 0;
-                    base += incr;
-                  }
-
-                goto gen_matrix;
-
+                // Negative dimensions treated as zero for Matlab compatibility
+                dims(i) = base >= 0 ? base : 0;
+                base += incr;
               }
-            else
-              error ("%s: all elements of range must be integers",
-                     fcn);
+
+            goto gen_matrix;
           }
         else if (tmp.is_matrix_type ())
           {
-            Array<int> iv = tmp.int_vector_value (true);
+            Array<int> iv;
 
-            if (! error_state)
+            try
               {
-                octave_idx_type len = iv.length ();
-
-                dims.resize (len);
-
-                for (octave_idx_type i = 0; i < len; i++)
-                  {
-                    //Negative dimensions are treated as zero for Matlab
-                    //compatibility
-                    octave_idx_type elt = iv(i);
-                    dims(i) = elt >=0 ? elt : 0;
-                  }
-
-                goto gen_matrix;
+                iv = tmp.int_vector_value (true);
               }
-            else
-              error ("%s: expecting integer vector", fcn);
+            catch (octave::execution_exception& e)
+              {
+                error (e, "%s: dimensions must be a scalar or array of integers", fcn);
+              }
+
+            octave_idx_type len = iv.numel ();
+
+            dims.resize (len);
+
+            for (octave_idx_type i = 0; i < len; i++)
+              {
+                // Negative dimensions treated as zero for Matlab compatibility
+                octave_idx_type elt = iv(i);
+                dims(i) = elt >=0 ? elt : 0;
+              }
+
+            goto gen_matrix;
           }
         else
-          {
-            gripe_wrong_type_arg ("rand", tmp);
-            return retval;
-          }
+          err_wrong_type_arg ("rand", tmp);
       }
       break;
 
@@ -257,8 +222,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   {
                     double d = args(idx+1).double_value ();
 
-                    if (! error_state)
-                      octave_rand::seed (d);
+                    octave_rand::seed (d);
                   }
                 else if (args(idx+1).is_string ()
                          && args(idx+1).string_value () == "reset")
@@ -276,8 +240,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                     ColumnVector s =
                       ColumnVector (args(idx+1).vector_value(false, true));
 
-                    if (! error_state)
-                      octave_rand::state (s, fcn);
+                    octave_rand::state (s, fcn);
                   }
               }
             else
@@ -289,13 +252,12 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                octave_idx_type elt = args(idx+i).int_value ();
-                if (error_state)
-                  {
-                    error ("%s: expecting integer arguments", fcn);
-                    goto done;
-                  }
-                //Negative is zero for Matlab compatibility
+                octave_idx_type elt =
+                  args(idx+i).xidx_type_value (
+                    "%s: dimension must be a scalar or array of integers",
+                    fcn);
+
+                // Negative dimensions treated as zero for Matlab compatibility
                 dims(i) = elt >= 0 ? elt : 0;
               }
 
@@ -305,8 +267,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
       break;
     }
 
-done:
-
+  // No "goto gen_matrix" in code path.  Must be done processing.
   return retval;
 
 gen_matrix:
@@ -317,20 +278,20 @@ gen_matrix:
     {
       if (additional_arg)
         {
-          if (a.length () == 1)
+          if (a.numel () == 1)
             return octave_rand::float_nd_array (dims, a(0));
           else
             {
               if (a.dims () != dims)
-                {
-                  error ("%s: mismatch in argument size", fcn);
-                  return retval;
-                }
-              octave_idx_type len = a.length ();
+                error ("%s: mismatch in argument size", fcn);
+
+              octave_idx_type len = a.numel ();
               FloatNDArray m (dims);
               float *v = m.fortran_vec ();
+
               for (octave_idx_type i = 0; i < len; i++)
                 v[i] = octave_rand::float_scalar (a(i));
+
               return m;
             }
         }
@@ -341,20 +302,20 @@ gen_matrix:
     {
       if (additional_arg)
         {
-          if (a.length () == 1)
+          if (a.numel () == 1)
             return octave_rand::nd_array (dims, a(0));
           else
             {
               if (a.dims () != dims)
-                {
-                  error ("%s: mismatch in argument size", fcn);
-                  return retval;
-                }
-              octave_idx_type len = a.length ();
+                error ("%s: mismatch in argument size", fcn);
+
+              octave_idx_type len = a.numel ();
               NDArray m (dims);
               double *v = m.fortran_vec ();
+
               for (octave_idx_type i = 0; i < len; i++)
                 v[i] = octave_rand::scalar (a(i));
+
               return m;
             }
         }
@@ -364,101 +325,95 @@ gen_matrix:
 }
 
 DEFUN (rand, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} rand (@var{n})\n\
-@deftypefnx {Built-in Function} {} rand (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rand ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} rand (\"state\")\n\
-@deftypefnx {Built-in Function} {} rand (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rand (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} rand (\"seed\")\n\
-@deftypefnx {Built-in Function} {} rand (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rand (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} rand (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} rand (@dots{}, \"double\")\n\
-Return a matrix with random elements uniformly distributed on the\n\
-interval (0, 1).\n\
-\n\
-The arguments are handled the same as the arguments for @code{eye}.\n\
-\n\
-You can query the state of the random number generator using the form\n\
-\n\
-@example\n\
-v = rand (\"state\")\n\
-@end example\n\
-\n\
-This returns a column vector @var{v} of length 625.  Later, you can restore\n\
-the random number generator to the state @var{v} using the form\n\
-\n\
-@example\n\
-rand (\"state\", v)\n\
-@end example\n\
-\n\
-@noindent\n\
-You may also initialize the state vector from an arbitrary vector of length\n\
-@leq{} 625 for @var{v}.  This new state will be a hash based on the value of\n\
-@var{v}, not @var{v} itself.\n\
-\n\
-By default, the generator is initialized from @code{/dev/urandom} if it is\n\
-available, otherwise from CPU time, wall clock time, and the current\n\
-fraction of a second.  Note that this differs from @sc{matlab}, which\n\
-always initializes the state to the same state at startup.  To obtain\n\
-behavior comparable to @sc{matlab}, initialize with a deterministic state\n\
-vector in Octave's startup files (@pxref{Startup Files}).\n\
-\n\
-To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
-Twister with a period of @math{2^{19937}-1}\n\
-(See @nospell{M. Matsumoto and T. Nishimura},\n\
-@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform\n\
-pseudorandom number generator},\n\
-ACM Trans. on Modeling and Computer Simulation Vol. 8, No. 1, pp. 3--30,\n\
-January 1998,\n\
-@url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
-Do @strong{not} use for cryptography without securely hashing several\n\
-returned values together, otherwise the generator state can be learned after\n\
-reading 624 consecutive values.\n\
-\n\
-Older versions of Octave used a different random number generator.\n\
-The new generator is used by default as it is significantly faster than the\n\
-old generator, and produces random numbers with a significantly longer cycle\n\
-time.  However, in some circumstances it might be desirable to obtain the\n\
-same random sequences as produced by the old generators.  To do this the\n\
-keyword @qcode{\"seed\"} is used to specify that the old generators should\n\
-be used, as in\n\
-\n\
-@example\n\
-rand (\"seed\", val)\n\
-@end example\n\
-\n\
-@noindent\n\
-which sets the seed of the generator to @var{val}.  The seed of the\n\
-generator can be queried with\n\
-\n\
-@example\n\
-s = rand (\"seed\")\n\
-@end example\n\
-\n\
-However, it should be noted that querying the seed will not cause\n\
-@code{rand} to use the old generators, only setting the seed will.  To cause\n\
-@code{rand} to once again use the new generators, the keyword\n\
-@qcode{\"state\"} should be used to reset the state of the @code{rand}.\n\
-\n\
-The state or seed of the generator can be reset to a new random value using\n\
-the @qcode{\"reset\"} keyword.\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-@seealso{randn, rande, randg, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} rand (@var{n})
+@deftypefnx {} {} rand (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} rand ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} rand ("state")
+@deftypefnx {} {} rand ("state", @var{v})
+@deftypefnx {} {} rand ("state", "reset")
+@deftypefnx {} {@var{v} =} rand ("seed")
+@deftypefnx {} {} rand ("seed", @var{v})
+@deftypefnx {} {} rand ("seed", "reset")
+@deftypefnx {} {} rand (@dots{}, "single")
+@deftypefnx {} {} rand (@dots{}, "double")
+Return a matrix with random elements uniformly distributed on the
+interval (0, 1).
+
+The arguments are handled the same as the arguments for @code{eye}.
+
+You can query the state of the random number generator using the form
+
+@example
+v = rand ("state")
+@end example
+
+This returns a column vector @var{v} of length 625.  Later, you can restore
+the random number generator to the state @var{v} using the form
+
+@example
+rand ("state", v)
+@end example
+
+@noindent
+You may also initialize the state vector from an arbitrary vector of length
+@leq{} 625 for @var{v}.  This new state will be a hash based on the value of
+@var{v}, not @var{v} itself.
+
+By default, the generator is initialized from @code{/dev/urandom} if it is
+available, otherwise from CPU time, wall clock time, and the current
+fraction of a second.  Note that this differs from @sc{matlab}, which
+always initializes the state to the same state at startup.  To obtain
+behavior comparable to @sc{matlab}, initialize with a deterministic state
+vector in Octave's startup files (@pxref{Startup Files}).
+
+To compute the pseudo-random sequence, @code{rand} uses the Mersenne
+Twister with a period of @math{2^{19937}-1}
+(See @nospell{M. Matsumoto and T. Nishimura},
+@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform
+pseudorandom number generator},
+ACM Trans. on Modeling and Computer Simulation Vol. 8, No. 1, pp. 3--30,
+January 1998,
+@url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
+Do @strong{not} use for cryptography without securely hashing several
+returned values together, otherwise the generator state can be learned after
+reading 624 consecutive values.
+
+Older versions of Octave used a different random number generator.
+The new generator is used by default as it is significantly faster than the
+old generator, and produces random numbers with a significantly longer cycle
+time.  However, in some circumstances it might be desirable to obtain the
+same random sequences as produced by the old generators.  To do this the
+keyword @qcode{"seed"} is used to specify that the old generators should
+be used, as in
+
+@example
+rand ("seed", val)
+@end example
+
+@noindent
+which sets the seed of the generator to @var{val}.  The seed of the
+generator can be queried with
+
+@example
+s = rand ("seed")
+@end example
+
+However, it should be noted that querying the seed will not cause
+@code{rand} to use the old generators, only setting the seed will.  To cause
+@code{rand} to once again use the new generators, the keyword
+@qcode{"state"} should be used to reset the state of the @code{rand}.
+
+The state or seed of the generator can be reset to a new random value using
+the @qcode{"reset"} keyword.
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+@seealso{randn, rande, randg, randp}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  retval = do_rand (args, nargin, "rand", "uniform");
-
-  return retval;
+  return do_rand (args, args.length (), "rand", "uniform");
 }
 
 // FIXME: The old generator (selected when "seed" is set) will not
@@ -549,45 +504,39 @@ classes.\n\
 static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN (randn, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randn (@var{n})\n\
-@deftypefnx {Built-in Function} {} randn (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randn ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} randn (\"state\")\n\
-@deftypefnx {Built-in Function} {} randn (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randn (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} randn (\"seed\")\n\
-@deftypefnx {Built-in Function} {} randn (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randn (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} randn (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} randn (@dots{}, \"double\")\n\
-Return a matrix with normally distributed random elements having zero mean\n\
-and variance one.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}.\n\
-\n\
-By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
-``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-\n\
-Reference: @nospell{G. Marsaglia and W.W. Tsang},\n\
-@cite{Ziggurat Method for Generating Random Variables},\n\
-J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/}\n\
-\n\
-@seealso{rand, rande, randg, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randn (@var{n})
+@deftypefnx {} {} randn (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randn ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} randn ("state")
+@deftypefnx {} {} randn ("state", @var{v})
+@deftypefnx {} {} randn ("state", "reset")
+@deftypefnx {} {@var{v} =} randn ("seed")
+@deftypefnx {} {} randn ("seed", @var{v})
+@deftypefnx {} {} randn ("seed", "reset")
+@deftypefnx {} {} randn (@dots{}, "single")
+@deftypefnx {} {} randn (@dots{}, "double")
+Return a matrix with normally distributed random elements having zero mean
+and variance one.
+
+The arguments are handled the same as the arguments for @code{rand}.
+
+By default, @code{randn} uses the @nospell{Marsaglia and Tsang}
+``Ziggurat technique'' to transform from a uniform to a normal distribution.
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+
+Reference: @nospell{G. Marsaglia and W.W. Tsang},
+@cite{Ziggurat Method for Generating Random Variables},
+J. Statistical Software, vol 5, 2000,
+@url{http://www.jstatsoft.org/v05/i08/}
+
+@seealso{rand, rande, randg, randp}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  retval = do_rand (args, nargin, "randn", "normal");
-
-  return retval;
+  return do_rand (args, args.length (), "randn", "normal");
 }
 
 /*
@@ -622,45 +571,39 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (rande, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} rande (@var{n})\n\
-@deftypefnx {Built-in Function} {} rande (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rande ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} rande (\"state\")\n\
-@deftypefnx {Built-in Function} {} rande (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rande (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} rande (\"seed\")\n\
-@deftypefnx {Built-in Function} {} rande (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} rande (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} rande (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} rande (@dots{}, \"double\")\n\
-Return a matrix with exponentially distributed random elements.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}.\n\
-\n\
-By default, @code{rande} uses the @nospell{Marsaglia and Tsang}\n\
-``Ziggurat technique'' to transform from a uniform to an exponential\n\
-distribution.\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-\n\
-Reference: @nospell{G. Marsaglia and W.W. Tsang},\n\
-@cite{Ziggurat Method for Generating Random Variables},\n\
-J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/}\n\
-\n\
-@seealso{rand, randn, randg, randp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} rande (@var{n})
+@deftypefnx {} {} rande (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} rande ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} rande ("state")
+@deftypefnx {} {} rande ("state", @var{v})
+@deftypefnx {} {} rande ("state", "reset")
+@deftypefnx {} {@var{v} =} rande ("seed")
+@deftypefnx {} {} rande ("seed", @var{v})
+@deftypefnx {} {} rande ("seed", "reset")
+@deftypefnx {} {} rande (@dots{}, "single")
+@deftypefnx {} {} rande (@dots{}, "double")
+Return a matrix with exponentially distributed random elements.
+
+The arguments are handled the same as the arguments for @code{rand}.
+
+By default, @code{rande} uses the @nospell{Marsaglia and Tsang}
+``Ziggurat technique'' to transform from a uniform to an exponential
+distribution.
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+
+Reference: @nospell{G. Marsaglia and W.W. Tsang},
+@cite{Ziggurat Method for Generating Random Variables},
+J. Statistical Software, vol 5, 2000,
+@url{http://www.jstatsoft.org/v05/i08/}
+
+@seealso{rand, randn, randg, randp}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  retval = do_rand (args, nargin, "rande", "exponential");
-
-  return retval;
+  return do_rand (args, args.length (), "rande", "exponential");
 }
 
 /*
@@ -697,120 +640,116 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (randg, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randg (@var{n})\n\
-@deftypefnx {Built-in Function} {} randg (@var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randg ([@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} randg (\"state\")\n\
-@deftypefnx {Built-in Function} {} randg (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randg (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} randg (\"seed\")\n\
-@deftypefnx {Built-in Function} {} randg (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randg (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} randg (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} randg (@dots{}, \"double\")\n\
-Return a matrix with @code{gamma (@var{a},1)} distributed random elements.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}, except\n\
-for the argument @var{a}.\n\
-\n\
-This can be used to generate many distributions:\n\
-\n\
-@table @asis\n\
-@item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}\n\
-\n\
-@example\n\
-r = b * randg (a)\n\
-@end example\n\
-\n\
-@item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}\n\
-\n\
-@example\n\
-@group\n\
-r1 = randg (a, 1)\n\
-r = r1 / (r1 + randg (b, 1))\n\
-@end group\n\
-@end example\n\
-\n\
-@item @code{Erlang (a, n)}\n\
-\n\
-@example\n\
-r = a * randg (n)\n\
-@end example\n\
-\n\
-@item @code{chisq (df)} for @code{df > 0}\n\
-\n\
-@example\n\
-r = 2 * randg (df / 2)\n\
-@end example\n\
-\n\
-@item @code{t (df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
-\n\
-@example\n\
-r = randn () / sqrt (2 * randg (df / 2) / df)\n\
-@end example\n\
-\n\
-@item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}\n\
-\n\
-@example\n\
-@group\n\
-## r1 equals 1 if n1 is infinite\n\
-r1 = 2 * randg (n1 / 2) / n1\n\
-## r2 equals 1 if n2 is infinite\n\
-r2 = 2 * randg (n2 / 2) / n2\n\
-r = r1 / r2\n\n\
-@end group\n\
-@end example\n\
-\n\
-@item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}\n\
-\n\
-@example\n\
-r = randp ((1 - p) / p * randg (n))\n\
-@end example\n\
-\n\
-@item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}\n\
-(use chisq if @code{L = 0})\n\
-\n\
-@example\n\
-@group\n\
-r = randp (L / 2)\n\
-r(r > 0) = 2 * randg (r(r > 0))\n\
-r(df > 0) += 2 * randg (df(df > 0)/2)\n\
-@end group\n\
-@end example\n\
-\n\
-@item @code{Dirichlet (a1, @dots{} ak)}\n\
-\n\
-@example\n\
-@group\n\
-r = (randg (a1), @dots{}, randg (ak))\n\
-r = r / sum (r)\n\
-@end group\n\
-@end example\n\
-\n\
-@end table\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-@seealso{rand, randn, rande, randp}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randg (@var{n})
+@deftypefnx {} {} randg (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randg ([@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} randg ("state")
+@deftypefnx {} {} randg ("state", @var{v})
+@deftypefnx {} {} randg ("state", "reset")
+@deftypefnx {} {@var{v} =} randg ("seed")
+@deftypefnx {} {} randg ("seed", @var{v})
+@deftypefnx {} {} randg ("seed", "reset")
+@deftypefnx {} {} randg (@dots{}, "single")
+@deftypefnx {} {} randg (@dots{}, "double")
+Return a matrix with @code{gamma (@var{a},1)} distributed random elements.
 
+The arguments are handled the same as the arguments for @code{rand}, except
+for the argument @var{a}.
+
+This can be used to generate many distributions:
+
+@table @asis
+@item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}
+
+@example
+r = b * randg (a)
+@end example
+
+@item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}
+
+@example
+@group
+r1 = randg (a, 1)
+r = r1 / (r1 + randg (b, 1))
+@end group
+@end example
+
+@item @code{Erlang (a, n)}
+
+@example
+r = a * randg (n)
+@end example
+
+@item @code{chisq (df)} for @code{df > 0}
+
+@example
+r = 2 * randg (df / 2)
+@end example
+
+@item @code{t (df)} for @code{0 < df < inf} (use randn if df is infinite)
+
+@example
+r = randn () / sqrt (2 * randg (df / 2) / df)
+@end example
+
+@item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}
+
+@example
+@group
+## r1 equals 1 if n1 is infinite
+r1 = 2 * randg (n1 / 2) / n1
+## r2 equals 1 if n2 is infinite
+r2 = 2 * randg (n2 / 2) / n2
+r = r1 / r2
+@end group
+@end example
+
+@item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}
+
+@example
+r = randp ((1 - p) / p * randg (n))
+@end example
+
+@item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}
+(use chisq if @code{L = 0})
+
+@example
+@group
+r = randp (L / 2)
+r(r > 0) = 2 * randg (r(r > 0))
+r(df > 0) += 2 * randg (df(df > 0)/2)
+@end group
+@end example
+
+@item @code{Dirichlet (a1, @dots{} ak)}
+
+@example
+@group
+r = (randg (a1), @dots{}, randg (ak))
+r = r / sum (r)
+@end group
+@end example
+
+@end table
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+@seealso{rand, randn, rande, randp}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   if (nargin < 1)
     error ("randg: insufficient arguments");
-  else
-    retval = do_rand (args, nargin, "randg", "gamma", true);
 
-  return retval;
+  return do_rand (args, nargin, "randg", "gamma", true);
 }
 
 /*
 %!test
-%! randg ("state", 12)
+%! randg ("state", 12);
 %! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]); # *** Please report
 
 %!test
@@ -975,66 +914,62 @@ classes.\n\
 */
 
 DEFUN (randp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randp (@var{l}, @var{n})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, [@var{m} @var{n} @dots{}])\n\
-@deftypefnx {Built-in Function} {@var{v} =} randp (\"state\")\n\
-@deftypefnx {Built-in Function} {} randp (\"state\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randp (\"state\", \"reset\")\n\
-@deftypefnx {Built-in Function} {@var{v} =} randp (\"seed\")\n\
-@deftypefnx {Built-in Function} {} randp (\"seed\", @var{v})\n\
-@deftypefnx {Built-in Function} {} randp (\"seed\", \"reset\")\n\
-@deftypefnx {Built-in Function} {} randp (@dots{}, \"single\")\n\
-@deftypefnx {Built-in Function} {} randp (@dots{}, \"double\")\n\
-Return a matrix with Poisson distributed random elements with mean value\n\
-parameter given by the first argument, @var{l}.\n\
-\n\
-The arguments are handled the same as the arguments for @code{rand}, except\n\
-for the argument @var{l}.\n\
-\n\
-Five different algorithms are used depending on the range of @var{l} and\n\
-whether or not @var{l} is a scalar or a matrix.\n\
-\n\
-@table @asis\n\
-@item For scalar @var{l} @leq{} 12, use direct method.\n\
-W.H. Press, et al., @cite{Numerical Recipes in C},\n\
-Cambridge University Press, 1992.\n\
-\n\
-@item For scalar @var{l} > 12, use rejection method.[1]\n\
-W.H. Press, et al., @cite{Numerical Recipes in C},\n\
-Cambridge University Press, 1992.\n\
-\n\
-@item For matrix @var{l} @leq{} 10, use inversion method.[2]\n\
-@nospell{E. Stadlober, et al., WinRand source code}, available via FTP.\n\
-\n\
-@item For matrix @var{l} > 10, use patchwork rejection method.\n\
-@nospell{E. Stadlober, et al., WinRand source code}, available via FTP, or\n\
-@nospell{H. Zechner}, @cite{Efficient sampling from continuous and discrete\n\
-unimodal distributions}, Doctoral Dissertation, 156pp., Technical\n\
-University @nospell{Graz}, Austria, 1994.\n\
-\n\
-@item For @var{l} > 1e8, use normal approximation.\n\
-@nospell{L. Montanet}, et al., @cite{Review of Particle Properties},\n\
-Physical Review D 50 p1284, 1994.\n\
-@end table\n\
-\n\
-The class of the value returned can be controlled by a trailing\n\
-@qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
-classes.\n\
-@seealso{rand, randn, rande, randg}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randp (@var{l}, @var{n})
+@deftypefnx {} {} randp (@var{l}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {} randp (@var{l}, [@var{m} @var{n} @dots{}])
+@deftypefnx {} {@var{v} =} randp ("state")
+@deftypefnx {} {} randp ("state", @var{v})
+@deftypefnx {} {} randp ("state", "reset")
+@deftypefnx {} {@var{v} =} randp ("seed")
+@deftypefnx {} {} randp ("seed", @var{v})
+@deftypefnx {} {} randp ("seed", "reset")
+@deftypefnx {} {} randp (@dots{}, "single")
+@deftypefnx {} {} randp (@dots{}, "double")
+Return a matrix with Poisson distributed random elements with mean value
+parameter given by the first argument, @var{l}.
 
+The arguments are handled the same as the arguments for @code{rand}, except
+for the argument @var{l}.
+
+Five different algorithms are used depending on the range of @var{l} and
+whether or not @var{l} is a scalar or a matrix.
+
+@table @asis
+@item For scalar @var{l} @leq{} 12, use direct method.
+W.H. Press, et al., @cite{Numerical Recipes in C},
+Cambridge University Press, 1992.
+
+@item For scalar @var{l} > 12, use rejection method.[1]
+W.H. Press, et al., @cite{Numerical Recipes in C},
+Cambridge University Press, 1992.
+
+@item For matrix @var{l} @leq{} 10, use inversion method.[2]
+@nospell{E. Stadlober, et al., WinRand source code}, available via FTP.
+
+@item For matrix @var{l} > 10, use patchwork rejection method.
+@nospell{E. Stadlober, et al., WinRand source code}, available via FTP, or
+@nospell{H. Zechner}, @cite{Efficient sampling from continuous and discrete
+unimodal distributions}, Doctoral Dissertation, 156pp., Technical
+University @nospell{Graz}, Austria, 1994.
+
+@item For @var{l} > 1e8, use normal approximation.
+@nospell{L. Montanet}, et al., @cite{Review of Particle Properties},
+Physical Review D 50 p1284, 1994.
+@end table
+
+The class of the value returned can be controlled by a trailing
+@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
+classes.
+@seealso{rand, randn, rande, randg}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   if (nargin < 1)
     error ("randp: insufficient arguments");
-  else
-    retval = do_rand (args, nargin, "randp", "poisson", true);
 
-  return retval;
+  return do_rand (args, nargin, "randp", "poisson", true);
 }
 
 /*
@@ -1044,28 +979,28 @@ classes.\n\
 %!test
 %! ## Test fixed state
 %! randp ("state", 1);
-%! assert (randp (5, 1, 6), [5 5 3 7 7 3])
+%! assert (randp (5, 1, 6), [5 5 3 7 7 3]);
 %!test
 %! ## Test fixed state
 %! randp ("state", 1);
-%! assert (randp (15, 1, 6), [13 15 8 18 18 15])
+%! assert (randp (15, 1, 6), [13 15 8 18 18 15]);
 %!test
 %! ## Test fixed state
 %! randp ("state", 1);
-%! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6)
+%! assert (randp (1e9, 1, 6), [999915677 999976657 1000047684 1000019035 999985749 999977692], -1e-6);
 %!test
 %! ## Test fixed state
 %! randp ("seed", 1);
 %! %%assert (randp (5, 1, 6), [8 2 3 6 6 8])
-%! assert (randp (5, 1, 5), [8 2 3 6 6])
+%! assert (randp (5, 1, 5), [8 2 3 6 6]);
 %!test
 %! ## Test fixed state
 %! randp ("seed", 1);
-%! assert (randp (15, 1, 6), [15 16 12 10 10 12])
+%! assert (randp (15, 1, 6), [15 16 12 10 10 12]);
 %!test
 %! ## Test fixed state
 %! randp ("seed", 1);
-%! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6)
+%! assert (randp (1e9, 1, 6), [1000006208 1000012224 999981120 999963520 999963072 999981440], -1e-6);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -1124,139 +1059,114 @@ classes.\n\
 */
 
 DEFUN (randperm, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} randperm (@var{n})\n\
-@deftypefnx {Built-in Function} {} randperm (@var{n}, @var{m})\n\
-Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
-\n\
-If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
-replacement from @code{1:@var{n}}.\n\
-\n\
-The complexity is O(@var{n}) in memory and O(@var{m}) in time, unless\n\
-@var{m} < @var{n}/5, in which case O(@var{m}) memory is used as well.  The\n\
-randomization is performed using rand().  All permutations are equally\n\
-likely.\n\
-@seealso{perms}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} randperm (@var{n})
+@deftypefnx {} {} randperm (@var{n}, @var{m})
+Return a row vector containing a random permutation of @code{1:@var{n}}.
+
+If @var{m} is supplied, return @var{m} unique entries, sampled without
+replacement from @code{1:@var{n}}.
+
+The complexity is O(@var{n}) in memory and O(@var{m}) in time, unless
+@var{m} < @var{n}/5, in which case O(@var{m}) memory is used as well.  The
+randomization is performed using rand().  All permutations are equally
+likely.
+@seealso{perms}
+@end deftypefn */)
 {
-
-#ifdef USE_UNORDERED_MAP_WITH_TR1
-using std::tr1::unordered_map;
-#else
-using std::unordered_map;
-#endif
-
   int nargin = args.length ();
-  octave_value retval;
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  octave_idx_type n = args(0).idx_type_value (true);
+  octave_idx_type m = (nargin == 2) ? args(1).idx_type_value (true) : n;
+
+  if (m < 0 || n < 0)
+    error ("randperm: M and N must be non-negative");
+
+  if (m > n)
+    error ("randperm: M must be less than or equal to N");
+
+  // Quick and dirty heuristic to decide if we allocate or not the
+  // whole vector for tracking the truncated shuffle.
+  bool short_shuffle = m < n/5;
+
+  // Generate random numbers.
+  NDArray r = octave_rand::nd_array (dim_vector (1, m));
+  double *rvec = r.fortran_vec ();
+
+  octave_idx_type idx_len = short_shuffle ? m : n;
+  Array<octave_idx_type> idx;
+  try
     {
-      octave_idx_type n, m;
+      idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+    }
+  catch (const std::bad_alloc&)
+    {
+      // Looks like n is too big and short_shuffle is false.
+      // Let's try again, but this time with the alternative.
+      idx_len = m;
+      short_shuffle = true;
+      idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+    }
 
-      n = args(0).idx_type_value (true);
+  octave_idx_type *ivec = idx.fortran_vec ();
 
-      if (nargin == 2)
-        m = args(1).idx_type_value (true);
-      else
-        m = n;
+  for (octave_idx_type i = 0; i < idx_len; i++)
+    ivec[i] = i;
 
-      if (m < 0 || n < 0)
-        error ("randperm: M and N must be non-negative");
+  if (short_shuffle)
+    {
+      std::unordered_map<octave_idx_type, octave_idx_type> map (m);
 
-      if (m > n)
-        error ("randperm: M must be less than or equal to N");
-
-      // Quick and dirty heuristic to decide if we allocate or not the
-      // whole vector for tracking the truncated shuffle.
-      bool short_shuffle = m < n/5;
-
-      if (! error_state)
+      // Perform the Knuth shuffle only keeping track of moved
+      // entries in the map
+      for (octave_idx_type i = 0; i < m; i++)
         {
-          // Generate random numbers.
-          NDArray r = octave_rand::nd_array (dim_vector (1, m));
-          double *rvec = r.fortran_vec ();
+          octave_idx_type k = i + std::floor (rvec[i] * (n - i));
 
-          octave_idx_type idx_len = short_shuffle ? m : n;
-          Array<octave_idx_type> idx;
-          try
+          // For shuffling first m entries, no need to use extra storage
+          if (k < m)
             {
-              idx = Array<octave_idx_type> (dim_vector (1, idx_len));
-            }
-          catch (std::bad_alloc)
-            {
-              // Looks like n is too big and short_shuffle is false.
-              // Let's try again, but this time with the alternative.
-              idx_len = m;
-              short_shuffle = true;
-              idx = Array<octave_idx_type> (dim_vector (1, idx_len));
-            }
-
-          octave_idx_type *ivec = idx.fortran_vec ();
-
-          for (octave_idx_type i = 0; i < idx_len; i++)
-            ivec[i] = i;
-
-          if (short_shuffle)
-            {
-              unordered_map<octave_idx_type, octave_idx_type> map (m);
-
-              // Perform the Knuth shuffle only keeping track of moved
-              // entries in the map
-              for (octave_idx_type i = 0; i < m; i++)
-                {
-                  octave_idx_type k = i +
-                                      gnulib::floor (rvec[i] * (n - i));
-
-                  //For shuffling first m entries, no need to use extra
-                  //storage
-                  if (k < m)
-                    {
-                      std::swap (ivec[i], ivec[k]);
-                    }
-                  else
-                    {
-                      if (map.find (k) == map.end ())
-                        map[k] = k;
-
-                      std::swap (ivec[i], map[k]);
-                    }
-                }
+              std::swap (ivec[i], ivec[k]);
             }
           else
             {
+              if (map.find (k) == map.end ())
+                map[k] = k;
 
-              // Perform the Knuth shuffle of the first m entries
-              for (octave_idx_type i = 0; i < m; i++)
-                {
-                  octave_idx_type k = i +
-                                      gnulib::floor (rvec[i] * (n - i));
-                  std::swap (ivec[i], ivec[k]);
-                }
+              std::swap (ivec[i], map[k]);
             }
-
-          // Convert to doubles, reusing r.
-          for (octave_idx_type i = 0; i < m; i++)
-            rvec[i] = ivec[i] + 1;
-
-          if (m < n)
-            idx.resize (dim_vector (1, m));
-
-          // Now create an array object with a cached idx_vector.
-          retval = new octave_matrix (r, idx_vector (idx));
         }
     }
   else
-    print_usage ();
+    {
+      // Perform the Knuth shuffle of the first m entries
+      for (octave_idx_type i = 0; i < m; i++)
+        {
+          octave_idx_type k = i + std::floor (rvec[i] * (n - i));
+          std::swap (ivec[i], ivec[k]);
+        }
+    }
 
-  return retval;
+  // Convert to doubles, reusing r.
+  for (octave_idx_type i = 0; i < m; i++)
+    rvec[i] = ivec[i] + 1;
+
+  if (m < n)
+    idx.resize (dim_vector (1, m));
+
+  // Now create an array object with a cached idx_vector.
+  return ovl (new octave_matrix (r, idx_vector (idx)));
 }
 
 /*
 %!assert (sort (randperm (20)), 1:20)
 %!assert (length (randperm (20,10)), 10)
 
-## Test biggish N (bug #39378)
-%!assert (length (randperm (30000^2, 100000)), 100000)
+## Test biggish N
+%!assert <39378> (length (randperm (30000^2, 100000)), 100000)
 
 %!test
 %! rand ("seed", 0);
@@ -1265,3 +1175,4 @@ using std::unordered_map;
 %!   assert (length (unique (p)), 30);
 %! endfor
 */
+

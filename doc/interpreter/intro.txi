@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -94,7 +94,7 @@ constants such as the base of the natural logarithm (e) and the ratio
 of a circle's circumference to its diameter (pi) are pre-defined.
 
 @noindent
-For example, to verify Euler's Identity,
+For example, to verify @nospell{Euler's} Identity,
 @tex
 $$e^{\imath\pi} = -1$$
 @end tex
@@ -423,7 +423,7 @@ Info is provided in this manual, @pxref{Getting Help}.
 @node Conventions
 @section Conventions
 
-This section explains the notational conventions that are used in this
+This section explains the notation conventions that are used in this
 manual.  You may want to skip this section and refer back to it later.
 
 @menu
@@ -543,14 +543,6 @@ error: fieldnames: Invalid input argument
 Functions and commands are described in this manual in a
 uniform format.  The first line of a description contains the name of
 the item followed by its arguments, if any.
-@ifnottex
-The category---function, command, or whatever---appears at the
-beginning of the line.
-@end ifnottex
-@iftex
-The category---function, command, or whatever---is printed next to the
-right margin.
-@end iftex
 If there are multiple ways to invoke the function then each allowable
 form is listed.
 
@@ -580,9 +572,9 @@ to related functions.
 Here is a description of an imaginary function @code{foo}:
 
 @need 4000
-@deftypefn  {Function File} {} foo (@var{x})
-@deftypefnx {Function File} {} foo (@var{x}, @var{y})
-@deftypefnx {Function File} {} foo (@var{x}, @var{y}, @dots{})
+@deftypefn  {} {} foo (@var{x})
+@deftypefnx {} {} foo (@var{x}, @var{y})
+@deftypefnx {} {} foo (@var{x}, @var{y}, @dots{})
 The function @code{foo} subtracts @var{x} from @var{y}, then adds the
 remaining arguments to the result.
 
@@ -620,9 +612,7 @@ specifically in the description of the function.  In some sections,
 features common to parameters of several functions are described at the
 beginning.
 
-Functions in Octave may be defined in several different ways.  The
-category name for functions may include a tag that indicates the
-way that the function is defined.  These additional tags include
+Functions in Octave may be defined in several different ways:
 
 @table @asis
 @item Function File
@@ -648,21 +638,23 @@ The function described works element-by-element for matrix and vector
 arguments.
 @end table
 
+Use @code{which} or @code{exist} to determine the category of a function
+and where it resides.
+
 @node A Sample Command Description
 @subsubsection A Sample Command Description
 @cindex command descriptions
 
-Command descriptions have a format similar to function descriptions,
-except that the word `Function' is replaced by `Command'.  Commands are
-functions that may be called without surrounding their arguments in
-parentheses.  For example, here is the description for Octave's
-@code{diary} command:
+Commands are functions that may be called without surrounding their arguments
+in parentheses.  Command descriptions have a format similar to function
+descriptions.  For example, here is the description for Octave's @code{diary}
+command:
 
 @need 4000
-@deftypefn  {Command} {} diary
-@deftypefnx {Command} {} diary on
-@deftypefnx {Command} {} diary off
-@deftypefnx {Command} {} diary @var{filename}
+@deftypefn  {} {} diary
+@deftypefnx {} {} diary on
+@deftypefnx {} {} diary off
+@deftypefnx {} {} diary @var{filename}
 Record a list of all commands @emph{and} the output they produce, mixed
 together just as they appear on the terminal.
 

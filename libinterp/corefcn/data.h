@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_data_h)
+#if ! defined (octave_data_h)
 #define octave_data_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -32,3 +34,4 @@ extern OCTINTERP_API octave_value
 do_class_concat (const octave_value_list& ovl, std::string cattype, int dim);
 
 #endif
+

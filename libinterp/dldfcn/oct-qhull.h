@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,41 +20,44 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_qhull_h)
+#if ! defined (octave_oct_qhull_h)
 #define octave_oct_qhull_h 1
+
+#include "octave-config.h"
 
 #include <cstdio>
 
 extern "C" {
 
 #if defined (HAVE_LIBQHULL_LIBQHULL_H)
-# include <libqhull/libqhull.h>
-# include <libqhull/qset.h>
-# include <libqhull/geom.h>
-# include <libqhull/poly.h>
-# include <libqhull/io.h>
+#  include <libqhull/libqhull.h>
+#  include <libqhull/qset.h>
+#  include <libqhull/geom.h>
+#  include <libqhull/poly.h>
+#  include <libqhull/io.h>
 #elif defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
-# if defined (HAVE_QHULL_LIBQHULL_H)
-#  include <qhull/libqhull.h>
-# else
-#  include <qhull/qhull.h>
-# endif
-# include <qhull/qset.h>
-# include <qhull/geom.h>
-# include <qhull/poly.h>
-# include <qhull/io.h>
-#elif defined (HAVE_LIBQHULL_H) || defined (HAVE_QHULL_H)
-# if defined (HAVE_LIBQHULL_H)
-#  include <libqhull.h>
-# else
-#  include <qhull.h>
-# endif
-# include <qset.h>
-# include <geom.h>
-# include <poly.h>
-# include <io.h>
+#  if defined (HAVE_QHULL_LIBQHULL_H)
+#    include <qhull/libqhull.h>
+#  else
+#    include <qhull/qhull.h>
+#  endif
+#  include <qhull/qset.h>
+#  include <qhull/geom.h>
+#  include <qhull/poly.h>
+#  include <qhull/io.h>
+#  elif defined (HAVE_LIBQHULL_H) || defined (HAVE_QHULL_H)
+#  if defined (HAVE_LIBQHULL_H)
+#    include <libqhull.h>
+#  else
+#    include <qhull.h>
+#  endif
+#  include <qset.h>
+#  include <geom.h>
+#  include <poly.h>
+#  include <io.h>
 #endif
 
 }
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_xpow_h)
+#if ! defined (octave_sparse_xpow_h)
 #define octave_sparse_xpow_h 1
+
+#include "octave-config.h"
 
 #include "oct-cmplx.h"
 
@@ -55,3 +57,4 @@ extern octave_value elem_xpow (const SparseComplexMatrix& a,
                                const SparseComplexMatrix& b);
 
 #endif
+

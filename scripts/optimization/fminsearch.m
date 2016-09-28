@@ -1,4 +1,4 @@
-## Copyright (C) 2003,2012 Andy Adler
+## Copyright (C) 2003-2016 Andy Adler
 ## Copyright (C) 2002, 2013 N.J.Higham
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} fminsearch (@var{fun}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
+## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
+## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}] =} fminsearch (@dots{})
 ##
 ## Find a value of @var{x} which minimizes the function @var{fun}.
 ##
@@ -52,10 +52,10 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fminsearch");
 
-## FIXME: Add support for "exitflag" output variable
-## FIXME: Add support for "output" output variable
+## FIXME: Add support for "exitflag" output variable.
+## FIXME: Add support for "output" output variable.
 ## FIXME: For Display option, add 'final' and 'notify' options.  Not too hard.
-## FIXME: Add support for OutputFcn.  See fminunc for a template
+## FIXME: Add support for OutputFcn.  See fminunc for a template.
 ## FIXME: Add support for exiting based on TolFun.  See fminunc for an idea.
 
 function [x, fval] = fminsearch (fun, x0, options = struct ())
@@ -100,7 +100,7 @@ endfunction
 ##           STOPIT(4) = 0: regular simplex (sides of equal length, the default)
 ##           STOPIT(4) = 1: right-angled simplex.
 ##        Progress of the iteration is not shown if STOPIT(5) = 0 (default 1).
-##           STOPIT(6) indicates the direction (ie. minimization or
+##           STOPIT(6) indicates the direction (i.e., minimization or
 ##                   maximization.) Default is 1, maximization.
 ##                   set STOPIT(6)=-1 for minimization
 ##        If a non-empty fourth parameter string SAVIT is present, then
@@ -150,7 +150,7 @@ function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x 
   ## Use function to minimize, not maximize
   stopit(6) = dirn = -1;
 
-  ## File name for snapshots.
+  ## Filename for snapshots.
   savit = [];  # FIXME: expose this parameter to the outside
 
 endfunction
@@ -211,7 +211,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
   alpha = 1;  beta = 1/2;  gamma = 2;
 
   while (1)   # Outer (and only) loop.
-    k++;
+    k += 1;
 
     if (k > maxiter)
       msg = "Exceeded maximum iterations...quitting\n";
@@ -265,14 +265,14 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
     vr = (1 + alpha)*vbar - alpha*V(:,n+1);
     x(:) = vr;
     fr = dirn * feval (fun,x,varargin{:});
-    nf = nf + 1;
+    nf += 1;
     vk = vr;  fk = fr; how = "reflect, ";
     if (fr > f(n))
       if (fr > f(1))
         ve = gamma*vr + (1-gamma)*vbar;
         x(:) = ve;
         fe = dirn * feval (fun,x,varargin{:});
-        nf = nf + 1;
+        nf += 1;
         if (fe > f(1))
           vk = ve;
           fk = fe;
@@ -289,7 +289,7 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
       vc = beta*vt + (1-beta)*vbar;
       x(:) = vc;
       fc = dirn * feval (fun,x,varargin{:});
-      nf = nf + 1;
+      nf += 1;
       if (fc > f(n))
         vk = vc; fk = fc;
         how = "contract,";
@@ -299,11 +299,11 @@ function [x, fmax, nf] = nmsmax (fun, x, options, savit, varargin)
           x(:) = V(:,j);
           f(j) = dirn * feval (fun,x,varargin{:});
         endfor
-        nf = nf + n-1;
+        nf += n-1;
         vk = (V(:,1) + V(:,n+1))/2;
         x(:) = vk;
         fk = dirn * feval (fun,x,varargin{:});
-        nf = nf + 1;
+        nf += 1;
         how = "shrink,  ";
       endif
     endif

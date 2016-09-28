@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,45 +20,51 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QPushButton>
 
 #include "ToggleButtonControl.h"
+#include "ButtonGroup.h"
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
 namespace QtHandles
 {
 
-ToggleButtonControl*
-ToggleButtonControl::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  ToggleButtonControl*
+  ToggleButtonControl::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      Container* container = parent->innerContainer ();
+    if (parent)
+      {
+        Container* container = parent->innerContainer ();
 
-      if (container)
-        return new ToggleButtonControl (go, new QPushButton (container));
-    }
+        if (container)
+          return new ToggleButtonControl (go, new QPushButton (container));
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
-                                          QPushButton* btn)
+  ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
+      QPushButton* btn)
     : ButtonControl (go, btn)
-{
-  btn->setCheckable (true);
-  btn->setAutoFillBackground (true);
-}
+  {
+    Object* parent = Object::parentObject (go);
+    ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+    if (btnGroup)
+      btnGroup->addButton (btn);
 
-ToggleButtonControl::~ToggleButtonControl (void)
-{
-}
+    btn->setCheckable (true);
+    btn->setAutoFillBackground (true);
+  }
+
+  ToggleButtonControl::~ToggleButtonControl (void)
+  { }
 
 };
+

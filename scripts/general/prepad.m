@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} prepad (@var{x}, @var{l})
-## @deftypefnx {Function File} {} prepad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {Function File} {} prepad (@var{x}, @var{l}, @var{c}, @var{dim})
+## @deftypefn  {} {} prepad (@var{x}, @var{l})
+## @deftypefnx {} {} prepad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {} {} prepad (@var{x}, @var{l}, @var{c}, @var{dim})
 ## Prepend the scalar value @var{c} to the vector @var{x} until it is of length
 ## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##
@@ -73,7 +73,15 @@ function y = prepad (x, l, c, dim)
 
   d = sz(dim);
 
-  if (d >= l)
+  if (d == l)
+    ## This optimization makes sense because the function is used to match
+    ## the length between two vectors not knowing a priori is larger, and
+    ## allow for:
+    ##    ml = max (numel (v1), numel (v2));
+    ##    v1 = prepad (v1, ml);
+    ##    v2 = prepad (v2, ml);
+    y = x;
+  elseif (d >= l)
     idx = repmat ({':'}, nd, 1);
     idx{dim} = d-l+1:d;
     y = x(idx{:});
@@ -91,13 +99,17 @@ endfunction
 %!assert (prepad ([1,2], 4, 2), [2,2,1,2])
 %!assert (prepad ([1;2], 4, 2), [2;2;1;2])
 
+%!assert (prepad ([1 2], 2), [1 2])
+%!assert (prepad ([1; 2], 2), [1; 2])
+%!assert (prepad ([1; 2], 2, 3, 2), [3 1; 3 2])
+
 %!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2])
 
 %!assert (prepad ([1,2], 2, 2, 3), reshape ([2,2,1,2], 1, 2, 2))
 %!assert (prepad ([1;2], 2, 2, 3), reshape ([2;2;1;2], 2, 1, 2))
 
-%! ## Test with string concatenation (bug #44162)
-%!assert (prepad ("Octave", 16, "x"), "xxxxxxxxxxOctave")
+%! ## Test with string concatenation
+%!assert <44162> (prepad ("Octave", 16, "x"), "xxxxxxxxxxOctave")
 %!assert (prepad ("Octave", 4), "tave")
 
 ## FIXME: We need tests for multidimensional arrays.

@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{properties} =} __get_properties__ (@var{player})
+## @deftypefn {} {@var{properties} =} __get_properties__ (@var{player})
 ## Return a struct containing all named properties of the audioplayer object
 ## @var{player}.
 ## @end deftypefn

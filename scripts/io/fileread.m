@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 VZLU Prague
+## Copyright (C) 2010-2016 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{str} =} fileread (@var{filename})
+## @deftypefn {} {@var{str} =} fileread (@var{filename})
 ## Read the contents of @var{filename} and return it as a string.
 ## @seealso{fread, textread, sscanf}
 ## @end deftypefn

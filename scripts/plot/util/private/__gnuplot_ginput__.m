@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Petr Mikulik
+## Copyright (C) 2004-2016 Petr Mikulik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
+## @deftypefn {} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -63,8 +63,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
   if (use_mkfifo)
     gpin_name = tempname ();
 
-    ##Mode: 6*8*8 ==  0600
-    [err, msg] = mkfifo (gpin_name, 6*8*8);
+    [err, msg] = mkfifo (gpin_name, 600);
 
     if (err)
       error ("ginput: Can not open fifo (%s)", msg);
@@ -75,10 +74,10 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
 
     k = 0;
     while (true)
-      k++;
+      k += 1;
 
       ## Notes: MOUSE_* can be undefined if user closes gnuplot by "q"
-      ## or Alt-F4. Further, this abrupt close also requires the leading
+      ## or Alt-F4.  Further, this abrupt close also requires the leading
       ## "\n" on the next line.
       if (use_mkfifo)
         fprintf (ostream, "set print \"%s\";\n", gpin_name);
@@ -111,7 +110,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         while (isempty (str))
           str = fread (istream, "*char")';
           if (isempty (str))
-            sleep (0.05);
+            pause (0.05);
           else
             str = regexp (str, 'OCTAVE:\s+[-+.\d]+\s+[-+.\d]+\s+\d*', 'match');
           endif

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} asctime (@var{tm_struct})
+## @deftypefn {} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following
 ## format: @qcode{"ddd mmm mm HH:MM:SS yyyy@xbackslashchar{}n"}.
 ##

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_help_h)
+#if ! defined (octave_help_h)
 #define octave_help_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
@@ -31,8 +33,6 @@ class string_vector;
 extern string_vector make_name_list (void);
 
 extern OCTINTERP_API std::string raw_help (const std::string&, bool&);
-
-extern OCTINTERP_API void install_built_in_docstrings (void);
 
 // Name of the doc cache file specified on the command line.
 // (--doc-cache-file file)
@@ -54,3 +54,4 @@ extern OCTINTERP_API std::string Vinfo_program;
 extern OCTINTERP_API std::string do_which (const std::string& name);
 
 #endif
+

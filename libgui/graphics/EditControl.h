@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_EditControl__
-#define __QtHandles_EditControl__ 1
+#if ! defined (octave_EditControl_h)
+#define octave_EditControl_h 1
 
 #include "BaseControl.h"
 
@@ -31,39 +31,40 @@ class QWidget;
 namespace QtHandles
 {
 
-class TextEdit;
+  class TextEdit;
 
-class EditControl : public BaseControl
-{
-  Q_OBJECT
+  class EditControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  EditControl (const graphics_object& go, QLineEdit* edit);
-  EditControl (const graphics_object& go, TextEdit* edit);
-  ~EditControl (void);
+  public:
+    EditControl (const graphics_object& go, QLineEdit* edit);
+    EditControl (const graphics_object& go, TextEdit* edit);
+    ~EditControl (void);
 
-  static EditControl* create (const graphics_object& go);
+    static EditControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private:
-  void init (QLineEdit* edit, bool callBase = false);
-  void init (TextEdit* edit, bool callBase = false);
-  void initCommon (QWidget* widget);
-  bool updateSingleLine (int pId);
-  bool updateMultiLine (int pId);
+  private:
+    void init (QLineEdit* edit, bool callBase = false);
+    void init (TextEdit* edit, bool callBase = false);
+    void initCommon (QWidget* widget);
+    bool updateSingleLine (int pId);
+    bool updateMultiLine (int pId);
 
-private slots:
-  void textChanged (void);
-  void editingFinished (void);
-  void returnPressed (void);
+  private slots:
+    void textChanged (void);
+    void editingFinished (void);
+    void returnPressed (void);
 
-private:
-  bool m_multiLine;
-  bool m_textChanged;
-};
+  private:
+    bool m_multiLine;
+    bool m_textChanged;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

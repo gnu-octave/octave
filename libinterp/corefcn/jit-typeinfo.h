@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -22,10 +22,12 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Max Brister <max@2bass.com>
 
-#if !defined (octave_jit_typeinfo_h)
+#if ! defined (octave_jit_typeinfo_h)
 #define octave_jit_typeinfo_h 1
 
-#ifdef HAVE_LLVM
+#include "octave-config.h"
+
+#if defined (HAVE_LLVM)
 
 #include <map>
 #include <vector>
@@ -45,7 +47,7 @@ struct
 jit_range
 {
   jit_range (const Range& from) : base (from.base ()), limit (from.limit ()),
-                                  inc (from.inc ()), nelem (from.nelem ())
+                                  inc (from.inc ()), nelem (from.numel ())
   { }
 
   operator Range () const
@@ -79,7 +81,7 @@ jit_array
   {
     ref_count = array->jit_ref_count ();
     slice_data = array->jit_slice_data () - 1;
-    slice_len = array->capacity ();
+    slice_len = array->numel ();
     dimensions = array->jit_dimensions ();
   }
 
@@ -108,8 +110,7 @@ typedef jit_array<NDArray, double> jit_matrix;
 std::ostream& operator << (std::ostream& os, const jit_matrix& mat);
 
 // calling convention
-namespace
-jit_convention
+namespace jit_convention
 {
   enum
   type
@@ -124,10 +125,10 @@ jit_convention
   };
 }
 
-// Used to keep track of estimated (infered) types during JIT. This is a
+// Used to keep track of estimated (infered) types during JIT.  This is a
 // hierarchical type system which includes both concrete and abstract types.
 //
-// The types form a lattice. Currently we only allow for one parent type, but
+// The types form a lattice.  Currently we only allow for one parent type, but
 // eventually we may allow for multiple predecessors.
 class
 jit_type
@@ -161,7 +162,7 @@ public:
 
   // A function declared like: mytype foo (int arg0, int arg1);
   // Will be converted to: void foo (mytype *retval, int arg0, int arg1)
-  // if mytype is sret. The caller is responsible for allocating space for
+  // if mytype is sret.  The caller is responsible for allocating space for
   // retval. (on the stack)
   bool sret (jit_convention::type cc) const { return msret[cc]; }
 
@@ -176,7 +177,7 @@ public:
   void mark_pointer_arg (jit_convention::type cc)
   { mpointer_arg[cc] = true; }
 
-  // Convert into an equivalent form before calling. For example, complex is
+  // Convert into an equivalent form before calling.  For example, complex is
   // represented as two values llvm vector, but we need to pass it as a two
   // valued llvm structure to C functions.
   convert_fn pack (jit_convention::type cc) { return mpack[cc]; }
@@ -231,14 +232,14 @@ public:
                 const llvm::Twine& aname, jit_type *aresult,
                 const std::vector<jit_type *>& aargs);
 
-  // Use an existing function, but change the argument types. The new argument
+  // Use an existing function, but change the argument types.  The new argument
   // types must behave the same for the current calling convention.
   jit_function (const jit_function& fn, jit_type *aresult,
                 const std::vector<jit_type *>& aargs);
 
   jit_function (const jit_function& fn);
 
-  // erase the interal LLVM function (if it exists). Will become invalid.
+  // erase the interal LLVM function (if it exists).  Will become invalid.
   void erase (void);
 
   template <typename T>
@@ -318,7 +319,6 @@ private:
 };
 
 std::ostream& operator << (std::ostream& os, const jit_function& fn);
-
 
 // Keeps track of information about how to implement operations (+, -, *, ect)
 // and their resulting types.
@@ -671,7 +671,6 @@ private:
   jit_type *new_type (const std::string& name, jit_type *parent,
                       llvm::Type *llvm_type, bool skip_paren = false);
 
-
   void add_print (jit_type *ty, void *fptr);
 
   void add_binary_op (jit_type *ty, int op, int llvm_op);
@@ -694,7 +693,7 @@ private:
     return retval;
   }
 
-#define JIT_PARAM_ARGS llvm::ExecutionEngine *ee, T fn,     \
+#define JIT_PARAM_ARGS llvm::ExecutionEngine *ee, T fn, \
     const llvm::Twine& name, jit_type *ret,
 #define JIT_PARAMS ee, fn, name, ret,
 #define CREATE_FUNCTION(N) JIT_EXPAND(template <typename T> jit_function, \
@@ -850,3 +849,4 @@ private:
 
 #endif
 #endif
+

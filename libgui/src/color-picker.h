@@ -3,7 +3,7 @@
 // by Harald Jedele, 23.03.01, GPL version 2 or any later version.
 //
 // Copyright (C) FZI Forschungszentrum Informatik Karlsruhe
-// Copyright (C) 2013-2015 Torsten
+// Copyright (C) 2013-2016 Torsten
 //
 // This file is part of Octave.
 //
@@ -24,8 +24,8 @@
 
 // Author: Torsten <ttl@justmail.de>
 
-#ifndef COLORPICKER_H
-#define COLORPICKER_H
+#if ! defined (octave_color_picker_h)
+#define octave_color_picker_h 1
 
 #include <QPushButton>
 #include <QColorDialog>
@@ -47,3 +47,4 @@ private:
 };
 
 #endif
+

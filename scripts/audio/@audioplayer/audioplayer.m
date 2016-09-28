@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
+## @deftypefn  {} {@var{player} =} audioplayer (@var{y}, @var{fs})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{recorder})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{recorder}, @var{id})
 ## Create an audioplayer object that will play back data @var{y} at sample
 ## rate @var{fs}.
 ##
@@ -38,7 +38,7 @@
 ##
 ## @example
 ## @group
-## y = randn (2, 44100) - 0.5;
+## y = 0.25 * randn (2, 44100);
 ## player = audioplayer (y, 44100, 8);
 ## play (player);
 ## @end group
@@ -50,7 +50,7 @@
 ## functions in a separate thread which is likely to cause trouble with
 ## all of Octave's global data...
 ##
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{function}, @dots{})
+## @deftypefnx {} {@var{player} =} audioplayer (@var{function}, @dots{})
 ##
 ## Given a function handle, use that function to process the audio.
 #
@@ -82,8 +82,8 @@
 function player = audioplayer (varargin)
 
   if (nargin < 1 || nargin > 4
-      || (nargin < 2 && (isa (varargin{1}, "function_handle")
-                         || ischar (varargin{1}))))
+      || (nargin < 2 && ! (is_function_handle (varargin{1})
+                           || ischar (varargin{1}))))
     print_usage ();
   endif
 
@@ -111,21 +111,21 @@ endfunction
 
 %!demo
 %! fs = 44100;
-%! audio = randn (2, 2*fs) - 0.5;
+%! audio = 0.25 * randn (2, 2*fs);
 %! player = audioplayer (audio, fs);
 %! play (player);
-%! sleep (1);
+%! pause (1);
 %! pause (player);
-%! sleep (1);
+%! pause (1);
 %! resume (player);
-%! sleep (1);
+%! pause (1);
 %! stop (player);
 
 ## Tests of audioplayer must not actually play anything.
 
 %!testif HAVE_PORTAUDIO
-%! mono = randn (1, 44100) - 0.5;
-%! stereo = randn (2, 44100) - 0.5;
+%! mono = 0.25 * randn (1, 44100);
+%! stereo = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player1 = audioplayer (mono, fs);
 %! player2 = audioplayer (stereo, fs);
@@ -137,7 +137,7 @@ endfunction
 %! assert (player2.TotalSamples, 44100);
 
 %!testif HAVE_PORTAUDIO
-%! audio = randn (2, 44100) - 0.5;
+%! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
 %! set (player, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
@@ -146,7 +146,7 @@ endfunction
 %! assert (player.UserData, [1, 2; 3, 4]);
 
 %!testif HAVE_PORTAUDIO
-%! audio = randn (2, 44100) - 0.5;
+%! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
 %! settable = set (player);
@@ -159,7 +159,7 @@ endfunction
 %! assert (player.UserData, [1, 2; 3, 4]);
 
 %!testif HAVE_PORTAUDIO
-%! audio = randn (2, 44100) - 0.5;
+%! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
 %! player.SampleRate = 8000;
@@ -176,13 +176,13 @@ endfunction
 #%!testif HAVE_PORTAUDIO
 #%! player = audioplayer (@callback, 44100);
 #%! play (player);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (player);
 #%! assert (1);
 
 #%!testif HAVE_PORTAUDIO
 #%! player = audioplayer ("callback", 44100, 16);
 #%! play (player);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (player);
 #%! assert (1);

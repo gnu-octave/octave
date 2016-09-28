@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 John W. Eaton
+Copyright (C) 2000-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,24 +20,26 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
+#include "filepos-wrappers.h"
+
 #include "c-file-ptr-stream.h"
 
-#ifndef SEEK_SET
-#define SEEK_SET 0
+#if ! defined (SEEK_SET)
+#  define SEEK_SET 0
 #endif
 
-#ifndef SEEK_CUR
-#define SEEK_CUR 1
+#if ! defined (SEEK_CUR)
+#  define SEEK_CUR 1
 #endif
 
-#ifndef SEEK_END
-#define SEEK_END 2
+#if ! defined (SEEK_END)
+#  define SEEK_END 2
 #endif
 
 c_file_ptr_buf::~c_file_ptr_buf (void)
@@ -50,17 +52,10 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
 c_file_ptr_buf::int_type
 c_file_ptr_buf::overflow (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
   if (f)
-    return (c != traits_type::eof ()) ? gnulib::fputc (c, f) : flush ();
+    return (c != traits_type::eof ()) ? std::fputc (c, f) : flush ();
   else
     return traits_type::not_eof (c);
-#else
-  if (f)
-    return (c != EOF) ? gnulib::fputc (c, f) : flush ();
-  else
-    return EOF;
-#endif
 }
 
 c_file_ptr_buf::int_type
@@ -68,42 +63,29 @@ c_file_ptr_buf::underflow_common (bool bump)
 {
   if (f)
     {
-      int_type c = gnulib::fgetc (f);
+      int_type c = std::fgetc (f);
 
-      if (! bump
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-          && c != traits_type::eof ())
-#else
-          && c != EOF)
-#endif
+      if (! bump && c != traits_type::eof ())
         ungetc (c, f);
 
       return c;
     }
   else
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
     return traits_type::eof ();
-#else
-    return EOF;
-#endif
 }
 
 c_file_ptr_buf::int_type
 c_file_ptr_buf::pbackfail (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? ungetc (c, f)
-                                         : traits_type::not_eof (c);
-#else
-  return (c != EOF && f) ? ungetc (c, f) : EOF;
-#endif
+  return ((c != traits_type::eof () && f)
+          ? ungetc (c, f) : traits_type::not_eof (c));
 }
 
 std::streamsize
 c_file_ptr_buf::xsputn (const char* s, std::streamsize n)
 {
   if (f)
-    return gnulib::fwrite (s, 1, n, f);
+    return std::fwrite (s, 1, n, f);
   else
     return 0;
 }
@@ -112,7 +94,7 @@ std::streamsize
 c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 {
   if (f)
-    return gnulib::fread (s, 1, n, f);
+    return std::fread (s, 1, n, f);
   else
     return 0;
 }
@@ -120,46 +102,38 @@ c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 static inline int
 seekdir_to_whence (std::ios::seekdir dir)
 {
-  return ((dir == std::ios::beg) ? SEEK_SET :
-          (dir == std::ios::cur) ? SEEK_CUR :
-          (dir == std::ios::end) ? SEEK_END :
-          dir);
+  return (dir == std::ios::beg
+          ? SEEK_SET : (dir == std::ios::cur
+                        ? SEEK_CUR : (dir == std::ios::end
+                                      ? SEEK_END : dir)));
 }
 
 std::streampos
-c_file_ptr_buf::seekoff (std::streamoff /* offset */,
-                         std::ios::seekdir /* dir */,
+c_file_ptr_buf::seekoff (std::streamoff offset,
+                         std::ios::seekdir dir,
                          std::ios::openmode)
 {
-  // FIXME
-#if 0
   if (f)
     {
-      fseek (f, offset, seekdir_to_whence (dir));
+      octave_fseeko_wrapper (f, offset, seekdir_to_whence (dir));
 
-      return ftell (f);
+      return octave_ftello_wrapper (f);
     }
   else
     return 0;
-#endif
-  return -1;
 }
 
 std::streampos
-c_file_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
+c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
-  // FIXME
-#if 0
   if (f)
     {
-      fseek (f, offset, SEEK_SET);
+      octave_fseeko_wrapper (f, offset, SEEK_SET);
 
-      return ftell (f);
+      return octave_ftello_wrapper (f);
     }
   else
     return 0;
-#endif
-  return -1;
 }
 
 int
@@ -173,7 +147,7 @@ c_file_ptr_buf::sync (void)
 int
 c_file_ptr_buf::flush (void)
 {
-  return f ? gnulib::fflush (f) : EOF;
+  return f ? std::fflush (f) : traits_type::eof ();
 }
 
 int
@@ -195,22 +169,22 @@ c_file_ptr_buf::buf_close (void)
 int
 c_file_ptr_buf::seek (off_t offset, int origin)
 {
-  return f ? gnulib::fseeko (f, offset, origin) : -1;
+  return f ? octave_fseeko_wrapper (f, offset, origin) : -1;
 }
 
 off_t
 c_file_ptr_buf::tell (void)
 {
-  return f ? gnulib::ftello (f) : -1;
+  return f ? octave_ftello_wrapper (f) : -1;
 }
 
 int
 c_file_ptr_buf::file_close (FILE *f)
 {
-  return gnulib::fclose (f);
+  return std::fclose (f);
 }
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
 c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
 {
@@ -222,17 +196,10 @@ c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::overflow (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
   if (f)
     return (c != traits_type::eof ()) ? gzputc (f, c) : flush ();
   else
     return traits_type::not_eof (c);
-#else
-  if (f)
-    return (c != EOF) ? gzputc (f, c) : flush ();
-  else
-    return EOF;
-#endif
 }
 
 c_zfile_ptr_buf::int_type
@@ -242,33 +209,20 @@ c_zfile_ptr_buf::underflow_common (bool bump)
     {
       int_type c = gzgetc (f);
 
-      if (! bump
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-          && c != traits_type::eof ())
-#else
-          && c != EOF)
-#endif
+      if (! bump && c != traits_type::eof ())
         gzungetc (c, f);
 
       return c;
     }
   else
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
     return traits_type::eof ();
-#else
-    return EOF;
-#endif
 }
 
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::pbackfail (int_type c)
 {
-#if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? gzungetc (c, f)
-                                         : traits_type::not_eof (c);
-#else
-  return (c != EOF && f) ? gzungetc (c, f) : EOF;
-#endif
+  return ((c != traits_type::eof () && f)
+          ? gzungetc (c, f) : traits_type::not_eof (c));
 }
 
 std::streamsize
@@ -340,7 +294,7 @@ c_zfile_ptr_buf::flush (void)
   // something other than 0 for the second argument to gzflush and
   // checking the return value, etc.?
 
-  return f ? gzflush (f, 0) : EOF;
+  return f ? gzflush (f, 0) : traits_type::eof ();
 }
 
 int
@@ -360,3 +314,4 @@ c_zfile_ptr_buf::buf_close (void)
 }
 
 #endif
+

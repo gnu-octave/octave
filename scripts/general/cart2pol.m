@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{x}, @var{y})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}] =} cart2pol (@var{C})
-## @deftypefnx {Function File} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{C})
-## @deftypefnx {Function File} {@var{P} =} cart2pol (@dots{})
+## @deftypefn  {} {[@var{theta}, @var{r}] =} cart2pol (@var{x}, @var{y})
+## @deftypefnx {} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {[@var{theta}, @var{r}] =} cart2pol (@var{C})
+## @deftypefnx {} {[@var{theta}, @var{r}, @var{z}] =} cart2pol (@var{C})
+## @deftypefnx {} {@var{P} =} cart2pol (@dots{})
 ##
 ## Transform Cartesian coordinates to polar or cylindrical coordinates.
 ##
@@ -59,15 +59,19 @@ function [theta, r, z] = cart2pol (x, y, z = [])
     y = x(:,2);
     x = x(:,1);
   elseif (nargin == 2)
-    if (! ((isnumeric (x) && isnumeric (y))
-            && (size_equal (x, y) || isscalar (x) || isscalar (y))))
+    if (! isnumeric (x) || ! isnumeric (y))
+      error ("cart2pol: X, Y must be numeric arrays of the same size, or scalar");
+    endif
+    [err, x, y] = common_size (x, y);
+    if (err)
       error ("cart2pol: X, Y must be numeric arrays of the same size, or scalar");
     endif
   elseif (nargin == 3)
-    if (! ((isnumeric (x) && isnumeric (y) && isnumeric (z))
-            && (size_equal (x, y) || isscalar (x) || isscalar (y))
-            && (size_equal (x, z) || isscalar (x) || isscalar (z))
-            && (size_equal (y, z) || isscalar (y) || isscalar (z))))
+    if (! isnumeric (x) || ! isnumeric (y) || ! isnumeric (z))
+      error ("cart2pol: X, Y, Z must be numeric arrays of the same size, or scalar");
+    endif
+    [err, x, y, z] = common_size (x, y, z);
+    if (err)
       error ("cart2pol: X, Y, Z must be numeric arrays of the same size, or scalar");
     endif
   endif
@@ -76,7 +80,11 @@ function [theta, r, z] = cart2pol (x, y, z = [])
   r = sqrt (x .^ 2 + y .^ 2);
 
   if (nargout <= 1)
-    theta = [theta(:), r(:), z(:)];
+    if (isempty (z))
+      theta = [theta(:), r(:)];
+    else
+      theta = [theta(:), r(:), z(:)];
+    endif
   endif
 
 endfunction
@@ -103,7 +111,7 @@ endfunction
 %! [t, r, z2] = cart2pol (x, y, z);
 %! assert (t, [0, pi/4, pi/4], sqrt (eps));
 %! assert (r, sqrt (2)*[0, 1, 2], sqrt (eps));
-%! assert (z, z2);
+%! assert (z2, z);
 
 %!test
 %! x = [0, 1, 2];
@@ -112,7 +120,7 @@ endfunction
 %! [t, r, z2] = cart2pol (x, y, z);
 %! assert (t, [0, 0, 0], eps);
 %! assert (r, x, eps);
-%! assert (z, z2);
+%! assert (z2, [0, 0, 0]);
 
 %!test
 %! x = 0;
@@ -121,16 +129,16 @@ endfunction
 %! [t, r, z2] = cart2pol (x, y, z);
 %! assert (t, [0, 1, 1]*pi/2, eps);
 %! assert (r, y, eps);
-%! assert (z, z2);
+%! assert (z2, [0, 0, 0]);
 
 %!test
 %! x = 0;
 %! y = 0;
 %! z = [0, 1, 2];
 %! [t, r, z2] = cart2pol (x, y, z);
-%! assert (t, 0);
-%! assert (r, 0);
-%! assert (z, z2);
+%! assert (t, [0, 0, 0]);
+%! assert (r, [0, 0, 0]);
+%! assert (z2, z);
 
 %!test
 %! C = [0, 0; 1, 1; 2, 2];

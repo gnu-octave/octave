@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezplot (@var{f})
-## @deftypefnx {Function File} {} ezplot (@var{f2v})
-## @deftypefnx {Function File} {} ezplot (@var{fx}, @var{fy})
-## @deftypefnx {Function File} {} ezplot (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezplot (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezplot (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezplot (@dots{})
+## @deftypefn  {} {} ezplot (@var{f})
+## @deftypefnx {} {} ezplot (@var{f2v})
+## @deftypefnx {} {} ezplot (@var{fx}, @var{fy})
+## @deftypefnx {} {} ezplot (@dots{}, @var{dom})
+## @deftypefnx {} {} ezplot (@dots{}, @var{n})
+## @deftypefnx {} {} ezplot (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezplot (@dots{})
 ##
 ## Plot the 2-D curve defined by the function @var{f}.
 ##
@@ -87,22 +87,22 @@ endfunction
 
 
 %!demo
-%! %% sinc function using function handle
+%! ## sinc function using function handle
 %! f = @(x) sin (pi*x) ./ (pi*x);
 %! ezplot (f);
 
 %!demo
-%! %% example of a function string and explicit limits
+%! ## example of a function string and explicit limits
 %! clf;
-%! ezplot ('1/x', [-2 2]);
+%! ezplot ("1/x", [-2 2]);
 
 %!demo
-%! %% parameterized function example over -2*pi <= t <= +2*pi
+%! ## parameterized function example over -2*pi <= t <= +2*pi
 %! clf;
 %! ezplot (@cos, @sin);
 
 %!demo
-%! %% implicit function of 2 variables
+%! ## implicit function of 2 variables
 %! clf;
-%! ezplot (inline ('x^2 - y^2 - 1'));
+%! ezplot (inline ("x^2 - y^2 - 1"));
 

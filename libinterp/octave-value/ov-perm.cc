@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "byte-swap.h"
@@ -32,11 +32,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ops.h"
 #include "pr-output.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 
 octave_value
 octave_perm_matrix::subsref (const std::string& type,
@@ -74,8 +74,19 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   idx_vector idx0, idx1;
   if (nidx == 2)
     {
-      idx0 = idx(0).index_vector ();
-      idx1 = idx(1).index_vector ();
+      int k = 0;    // index we're processing when index_vector throws
+      try
+        {
+          idx0 = idx(0).index_vector ();
+          k = 1;
+          idx1 = idx(1).index_vector ();
+        }
+      catch (octave::index_exception& e)
+        {
+          // Rethrow to allow more info to be reported later.
+          e.set_pos_if_unset (2, k+1);
+          throw;
+        }
     }
 
   // This hack is to allow constructing permutation matrices using
@@ -83,7 +94,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   // vectors.
   // Note that, for better consistency, eye(n)(:,:) still converts to a full
   // matrix.
-  if (! error_state && nidx == 2)
+  if (nidx == 2)
     {
       bool left = idx0.is_permutation (matrix.rows ());
       bool right = idx1.is_permutation (matrix.cols ());
@@ -109,8 +120,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
         }
     }
 
-  // if error_state is set, we've already griped.
-  if (! error_state && ! retval.is_defined ())
+  if (! retval.is_defined ())
     {
       if (nidx == 2 && ! resize_ok && idx0.is_scalar () && idx1.is_scalar ())
         retval = matrix.checkelem (idx0(0), idx1(0));
@@ -121,66 +131,54 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
+// Return true if this matrix has all true elements (non-zero, not NaN/NA).
+// A permutation cannot have NaN/NA.
 bool
 octave_perm_matrix::is_true (void) const
 {
-  return to_dense ().is_true ();
+  if (dims ().numel () > 1)
+    {
+      warn_array_as_logical (dims ());
+      return false;    // > 1x1 permutation always has zeros, and no NaN.
+    }
+  else
+    return dims ().numel ();    // 1x1 is [1] == true, 0x0 == false.
 }
 
 double
 octave_perm_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
+  if (is_empty ())
+    err_invalid_conversion (type_name (), "real scalar");
 
-  if (numel () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "real scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            type_name (), "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion (type_name (), "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 float
 octave_perm_matrix::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
+  if (is_empty ())
+    err_invalid_conversion (type_name (), "real scalar");
 
-  if (numel () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "real scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            type_name (), "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion (type_name (), "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 Complex
 octave_perm_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion (type_name (), "complex scalar");
 
-  Complex retval (tmp, tmp);
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            type_name (), "complex scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion (type_name (), "complex scalar");
-
-  return retval;
+  return Complex (matrix(0, 0), 0);
 }
 
 FloatComplex
@@ -190,25 +188,23 @@ octave_perm_matrix::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 type_name (), "complex scalar");
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion (type_name (), "complex scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion (type_name (), "complex scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            type_name (), "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
 
-#define FORWARD_MATRIX_VALUE(TYPE, PREFIX) \
-TYPE \
-octave_perm_matrix::PREFIX ## _value (bool frc_str_conv) const \
-{ \
-  return to_dense ().PREFIX ## _value (frc_str_conv); \
-}
+#define FORWARD_MATRIX_VALUE(TYPE, PREFIX)                              \
+  TYPE                                                                  \
+  octave_perm_matrix::PREFIX ## _value (bool frc_str_conv) const        \
+  {                                                                     \
+    return to_dense ().PREFIX ## _value (frc_str_conv);                 \
+  }
 
 SparseMatrix
 octave_perm_matrix::sparse_matrix_value (bool) const
@@ -254,6 +250,66 @@ octave_perm_matrix::convert_to_str_internal (bool pad, bool force,
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
 
+octave_value
+octave_perm_matrix::as_double (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_perm_matrix::as_single (void) const
+{
+  return float_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_int8 (void) const
+{
+  return int8_array_value  ();
+}
+
+octave_value
+octave_perm_matrix::as_int16 (void) const
+{
+  return int16_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_int32 (void) const
+{
+  return int32_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_int64 (void) const
+{
+  return int64_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint8 (void) const
+{
+  return uint8_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint16 (void) const
+{
+  return uint16_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint32 (void) const
+{
+  return uint32_array_value ();
+}
+
+octave_value
+octave_perm_matrix::as_uint64 (void) const
+{
+  return uint64_array_value ();
+}
+
 bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
@@ -261,7 +317,7 @@ octave_perm_matrix::save_ascii (std::ostream& os)
   os << "# orient: c\n";
 
   Array<octave_idx_type> pvec = matrix.col_perm_vec ();
-  octave_idx_type n = pvec.length ();
+  octave_idx_type n = pvec.numel ();
   ColumnVector tmp (n);
   for (octave_idx_type i = 0; i < n; i++) tmp(i) = pvec(i) + 1;
   os << tmp;
@@ -273,37 +329,26 @@ bool
 octave_perm_matrix::load_ascii (std::istream& is)
 {
   octave_idx_type n;
-  bool success = true;
   char orient;
 
-  if (extract_keyword (is, "size", n, true)
-      && extract_keyword (is, "orient", orient, true))
-    {
-      bool colp = orient == 'c';
-      ColumnVector tmp (n);
-      is >> tmp;
-      if (!is)
-        {
-          error ("load: failed to load permutation matrix constant");
-          success = false;
-        }
-      else
-        {
-          Array<octave_idx_type> pvec (dim_vector (n, 1));
-          for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
-          matrix = PermMatrix (pvec, colp);
+  if (! extract_keyword (is, "size", n, true)
+      || ! extract_keyword (is, "orient", orient, true))
+    error ("load: failed to extract size & orientation");
 
-          // Invalidate cache. Probably not necessary, but safe.
-          dense_cache = octave_value ();
-        }
-    }
-  else
-    {
-      error ("load: failed to extract size & orientation");
-      success = false;
-    }
+  bool colp = orient == 'c';
+  ColumnVector tmp (n);
+  is >> tmp;
+  if (! is)
+    error ("load: failed to load permutation matrix constant");
 
-  return success;
+  Array<octave_idx_type> pvec (dim_vector (n, 1));
+  for (octave_idx_type i = 0; i < n; i++) pvec(i) = tmp(i) - 1;
+  matrix = PermMatrix (pvec, colp);
+
+  // Invalidate cache.  Probably not necessary, but safe.
+  dense_cache = octave_value ();
+
+  return true;
 }
 
 bool
@@ -323,7 +368,7 @@ octave_perm_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_perm_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format)
+                                 octave::mach_info::float_format)
 {
   int32_t sz;
   bool colp;
@@ -393,7 +438,7 @@ octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax)
 int
 octave_perm_matrix::write (octave_stream& os, int block_size,
                            oct_data_conv::data_type output_type, int skip,
-                           oct_mach_info::float_format flt_fmt) const
+                           octave::mach_info::float_format flt_fmt) const
 {
   return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }
@@ -405,7 +450,6 @@ octave_perm_matrix::print_info (std::ostream& os,
   matrix.print_info (os, prefix);
 }
 
-
 octave_value
 octave_perm_matrix::to_dense (void) const
 {
@@ -415,14 +459,13 @@ octave_perm_matrix::to_dense (void) const
   return dense_cache;
 }
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix,
                                      "permutation matrix", "double");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_perm_matrix&);
+  const octave_perm_matrix& v = dynamic_cast<const octave_perm_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }
@@ -439,7 +482,7 @@ octave_perm_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  if (matrix.nelem () == 1)
+  if (matrix.numel () == 1)
     retval = new octave_scalar (matrix (0, 0));
 
   return retval;
@@ -460,3 +503,4 @@ octave_perm_matrix::fast_elem_extract (octave_idx_type n) const
   else
     return octave_value ();
 }
+

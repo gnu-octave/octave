@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,17 +18,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{list} =} list_forge_packages ()
+## @deftypefn {} {@var{list} =} list_forge_packages ()
 ## Undocumented internal function.
 ## @end deftypefn
 
 function list = list_forge_packages ()
+
   [list, succ] = urlread ("http://packages.octave.org/list_packages.php");
-  if (succ)
-    list = ostrsplit (list, " \n\t", true);
-  else
+  if (! succ)
     error ("pkg: could not read URL, please verify internet connection");
   endif
+
+  list = ostrsplit (list, " \n\t", true);
+
   if (nargout == 0)
     page_screen_output (false, "local");
     puts ("OctaveForge provides these packages:\n");
@@ -41,5 +43,6 @@ function list = list_forge_packages ()
       printf ("  %s %s\n", list{i}, ver);
     endfor
   endif
+
 endfunction
 

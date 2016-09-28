@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyder (@var{p})
-## @deftypefnx {Function File} {[@var{k}] =} polyder (@var{a}, @var{b})
-## @deftypefnx {Function File} {[@var{q}, @var{d}] =} polyder (@var{b}, @var{a})
+## @deftypefn  {} {} polyder (@var{p})
+## @deftypefnx {} {[@var{k}] =} polyder (@var{a}, @var{b})
+## @deftypefnx {} {[@var{q}, @var{d}] =} polyder (@var{b}, @var{a})
 ## Return the coefficients of the derivative of the polynomial whose
 ## coefficients are given by the vector @var{p}.
 ##
@@ -69,8 +69,8 @@ function [q, d] = polyder (p, a)
         endif
 
         ## move all the gain into the numerator
-        q = q/d(1);
-        d = d/d(1);
+        q /= d(1);
+        d /= d(1);
       endif
     else
       lp = numel (p);

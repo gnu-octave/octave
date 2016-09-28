@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Ben Abbott
+## Copyright (C) 2007-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} findobj ()
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
-## @deftypefnx {Function File} {@var{h} =} findobj ("-property", @var{prop_name})
-## @deftypefnx {Function File} {@var{h} =} findobj ("-regexp", @var{prop_name}, @var{pattern})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{hlist}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{hlist}, "flat", @dots{})
-## @deftypefnx {Function File} {@var{h} =} findobj (@var{hlist}, "-depth", @var{d}, @dots{})
+## @deftypefn  {} {@var{h} =} findobj ()
+## @deftypefnx {} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, @dots{})
+## @deftypefnx {} {@var{h} =} findobj (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
+## @deftypefnx {} {@var{h} =} findobj ("-property", @var{prop_name})
+## @deftypefnx {} {@var{h} =} findobj ("-regexp", @var{prop_name}, @var{pattern})
+## @deftypefnx {} {@var{h} =} findobj (@var{hlist}, @dots{})
+## @deftypefnx {} {@var{h} =} findobj (@var{hlist}, "flat", @dots{})
+## @deftypefnx {} {@var{h} =} findobj (@var{hlist}, "-depth", @var{d}, @dots{})
 ## Find graphics object with specified property values.
 ##
 ## The simplest form is
@@ -99,7 +99,7 @@ function h = findobj (varargin)
       if (ischar (varargin{n1}))
         if (strcmpi (varargin{n1}, "flat"))
           depth = 0;
-          n1 = n1 + 1;
+          n1 += 1;
         endif
       else
         error ("findobj: properties and options must be strings");
@@ -133,32 +133,32 @@ function h = findobj (varargin)
     if (ischar (args{na}))
       if (strcmpi (args{na}, "-property"))
         if (na + 1 <= numel (args))
-          na = na + 1;
+          na += 1;
           property(np) = 1;
           pname{np} = args{na};
-          na = na + 1;
+          na += 1;
           pvalue{np} = [];
-          np = np + 1;
+          np += 1;
         else
           error ("findobj: inconsistent number of arguments");
         endif
       elseif (strcmpi (args{na}, "-regexp"))
         if (na + 2 <= numel (args))
           regularexpression(np) = 1;
-          na = na + 1;
+          na += 1;
           pname{np} = args{na};
-          na = na + 1;
+          na += 1;
           pvalue{np} = args{na};
-          na = na + 1;
-          np = np + 1;
+          na += 1;
+          np += 1;
         else
           error ("findobj: inconsistent number of arguments");
         endif
       elseif (strcmpi (args{na}, "-depth"))
         if (na + 1 <= numel (args))
-          na = na + 1;
+          na += 1;
           depth = args{na};
-          na = na + 1;
+          na += 1;
         else
           error ("findobj: inconsistent number of arguments");
         endif
@@ -166,14 +166,14 @@ function h = findobj (varargin)
         ## Parameter/value pairs.
         if (na + 1 <= numel (args))
           pname{np} = args{na};
-          na = na + 1;
+          na += 1;
           pvalue{np} = args{na};
-          na = na + 1;
+          na += 1;
           if (na <= numel (args))
             if (ischar (args{na}))
               if (any (strcmpi (args{na}, operatorprecedence)))
                 logicaloperator{np} = args{na}(2:end);
-                na = na+1;
+                na += 1;
               endif
             else
               error ("findobj: properties and options must be strings");
@@ -181,7 +181,7 @@ function h = findobj (varargin)
           else
             logicaloperator{np} = "and";
           endif
-          np = np + 1;
+          np += 1;
         else
           error ("findobj: inconsistent number of arguments");
         endif
@@ -189,7 +189,7 @@ function h = findobj (varargin)
         if (strcmpi (args{na}, "-not"))
           extranegation(np) = true;
         endif
-        na = na + 1;
+        na += 1;
       endif
     else
       error ("findobj: properties and options must be strings");
@@ -203,7 +203,7 @@ function h = findobj (varargin)
 
   ## Load all objects which qualify for being searched.
   idepth = 0;
-  h = handles;
+  h = handles(:);
   while (numel (handles) && ! (idepth >= depth))
     children = [];
     for n = 1 : numel (handles)
@@ -211,7 +211,7 @@ function h = findobj (varargin)
     endfor
     handles = children;
     h = [h; children];
-    idepth = idepth + 1;
+    idepth += 1;
   endwhile
 
   if (numpairs > 0)
@@ -267,7 +267,7 @@ function h = findobj (varargin)
                                  match(:,np+1));
             logicaloperator(np+1) = [];
             match(:,np+1) = [];
-            numpairs = numpairs - 1;
+            numpairs -= 1;
           endif
           if (numpairs < 2)
             break;
@@ -284,6 +284,7 @@ function h = findobj (varargin)
 
   h = h(match);
   h = h(:);
+
 endfunction
 
 
@@ -299,7 +300,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   h = plot (1:10);
+%!   h = plot (1:10, "b");
 %!   set (h, "tag", "foobar");
 %!   g = findobj (gcf (), "tag", "foobar", "type", "line", "color", [0 0 1]);
 %!   assert (g, h);
@@ -341,7 +342,6 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! toolkit = graphics_toolkit ("gnuplot");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2,2,1);
@@ -352,11 +352,9 @@ endfunction
 %!   assert (h, h3);
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 %!test
-%! toolkit = graphics_toolkit ("gnuplot");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h1 = subplot (2,2,1, "tag", "1");
@@ -364,10 +362,9 @@ endfunction
 %!   h3 = subplot (2,2,3, "tag", "3");
 %!   h4 = subplot (2,2,4, "tag", "4");
 %!   h = findobj (hf, "type", "axes", "-not", "tag", "1");
-%!   assert (h, [h4; h3; h2])
+%!   assert (h, [h4; h3; h2]);
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 %!test
@@ -386,7 +383,7 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-%! assert (h, [h4; h3; h2])
+%! assert (h, [h4; h3; h2]);
 
 %!test
 %! hf = figure ("visible", "off");
@@ -397,9 +394,9 @@ endfunction
 %!                "-or", "parent", hf,
 %!                "-and", "type", "axes");
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
-%! assert (h, [hf; ha])
+%! assert (h, [hf; ha]);
 
 %!test
 %! hf = figure ("visible", "off");

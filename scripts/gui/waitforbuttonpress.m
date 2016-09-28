@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Petr Mikulik
+## Copyright (C) 2004-2016 Petr Mikulik
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} waitforbuttonpress ()
-## @deftypefnx {Function File} {@var{b} =} waitforbuttonpress ()
+## @deftypefn  {} {} waitforbuttonpress ()
+## @deftypefnx {} {@var{b} =} waitforbuttonpress ()
 ## Wait for mouse click or key press over the current figure window.
 ##
 ## The return value of @var{b} is 0 if a mouse button was pressed or 1 if a

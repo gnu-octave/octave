@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,13 +21,24 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 #include <limits>
 #include <vector>
+
+#include "dNDArray.h"
+#include "fNDArray.h"
+#include "int8NDArray.h"
+#include "int16NDArray.h"
+#include "int32NDArray.h"
+#include "int64NDArray.h"
+#include "uint8NDArray.h"
+#include "uint16NDArray.h"
+#include "uint32NDArray.h"
+#include "uint64NDArray.h"
 
 #include "data-conv.h"
 #include "lo-ieee.h"
@@ -40,9 +51,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "oct-stream.h"
@@ -59,18 +70,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-flt-re-diag.h"
 #include "ov-flt-cx-diag.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 #include "ops.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
-template class octave_base_matrix<FloatNDArray>;
 
+template class octave_base_matrix<FloatNDArray>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
                                      "single");
@@ -80,7 +90,7 @@ octave_float_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  if (matrix.nelem () == 1)
+  if (matrix.numel () == 1)
     retval = new octave_float_scalar (matrix (0));
 
   return retval;
@@ -89,37 +99,25 @@ octave_float_matrix::try_narrowing_conversion (void)
 double
 octave_float_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
+  if (is_empty ())
+    err_invalid_conversion ("real matrix", "real scalar");
 
-  if (numel () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "real scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("real matrix", "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 float
 octave_float_matrix::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
+  if (is_empty ())
+    err_invalid_conversion ("real matrix", "real scalar");
 
-  if (numel () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "real scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("real matrix", "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 // FIXME
@@ -139,21 +137,13 @@ octave_float_matrix::float_matrix_value (bool) const
 Complex
 octave_float_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("real matrix", "complex scalar");
 
-  Complex retval (tmp, tmp);
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "complex scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("real matrix", "complex scalar");
-
-  return retval;
+  return Complex (matrix(0, 0), 0);
 }
 
 FloatComplex
@@ -163,15 +153,13 @@ octave_float_matrix::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "real matrix", "complex scalar");
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("real matrix", "complex scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("real matrix", "complex scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "real matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -212,9 +200,9 @@ boolNDArray
 octave_float_matrix::bool_array_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-  else if (warn && matrix.any_element_not_one_or_zero ())
-    gripe_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
+  if (warn && matrix.any_element_not_one_or_zero ())
+    warn_logical_conversion ();
 
   return boolNDArray (matrix);
 }
@@ -248,6 +236,66 @@ octave_float_matrix::sparse_complex_matrix_value (bool) const
 }
 
 octave_value
+octave_float_matrix::as_double (void) const
+{
+  return NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_single (void) const
+{
+  return FloatNDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int8 (void) const
+{
+  return int8NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int16 (void) const
+{
+  return int16NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int32 (void) const
+{
+  return int32NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_int64 (void) const
+{
+  return int64NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint8 (void) const
+{
+  return uint8NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint16 (void) const
+{
+  return uint16NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint32 (void) const
+{
+  return uint32NDArray (matrix);
+}
+
+octave_value
+octave_float_matrix::as_uint64 (void) const
+{
+  return uint64NDArray (matrix);
+}
+
+octave_value
 octave_float_matrix::diag (octave_idx_type k) const
 {
   octave_value retval;
@@ -263,19 +311,13 @@ octave_float_matrix::diag (octave_idx_type k) const
 octave_value
 octave_float_matrix::diag (octave_idx_type m, octave_idx_type n) const
 {
-  octave_value retval;
-
-  if (matrix.ndims () == 2
-      && (matrix.rows () == 1 || matrix.columns () == 1))
-    {
-      FloatMatrix mat (matrix);
-
-      retval = mat.diag (m, n);
-    }
-  else
+  if (matrix.ndims () != 2
+      || (matrix.rows () != 1 && matrix.columns () != 1))
     error ("diag: expecting vector argument");
 
-  return retval;
+  FloatMatrix mat (matrix);
+
+  return mat.diag (m, n);
 }
 
 octave_value
@@ -293,32 +335,27 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
     {
       octave_quit ();
 
-      float d = matrix (i);
+      float d = matrix(i);
 
-      if (xisnan (d))
-        {
-          gripe_nan_to_character_conversion ();
-          return retval;
-        }
-      else
-        {
-          int ival = NINT (d);
+      if (octave::math::isnan (d))
+        octave::err_nan_to_character_conversion ();
 
-          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
+      int ival = octave::math::nint (d);
+
+      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
+        {
+          // FIXME: is there something better we could do?
+
+          ival = 0;
+
+          if (! warned)
             {
-              // FIXME: is there something better we could do?
-
-              ival = 0;
-
-              if (! warned)
-                {
-                  ::warning ("range error for conversion to character value");
-                  warned = true;
-                }
+              ::warning ("range error for conversion to character value");
+              warned = true;
             }
-
-          chm (i) = static_cast<char> (ival);
         }
+
+      chm(i) = static_cast<char> (ival);
     }
 
   retval = octave_value (chm, type);
@@ -329,23 +366,23 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 bool
 octave_float_matrix::save_ascii (std::ostream& os)
 {
-  dim_vector d = dims ();
+  dim_vector dv = dims ();
 
-  if (d.length () > 2)
+  if (dv.ndims () > 2)
     {
       FloatNDArray tmp = float_array_value ();
 
-      os << "# ndims: " << d.length () << "\n";
+      os << "# ndims: " << dv.ndims () << "\n";
 
-      for (int i=0; i < d.length (); i++)
-        os << " " << d (i);
+      for (int i=0; i < dv.ndims (); i++)
+        os << " " << dv(i);
 
       os << "\n" << tmp;
     }
   else
     {
       // Keep this case, rather than use generic code above for backward
-      // compatiability. Makes load_ascii much more complex!!
+      // compatibility.  Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
 
@@ -358,8 +395,6 @@ octave_float_matrix::save_ascii (std::ostream& os)
 bool
 octave_float_matrix::load_ascii (std::istream& is)
 {
-  bool success = true;
-
   string_vector keywords(2);
 
   keywords[0] = "ndims";
@@ -368,108 +403,81 @@ octave_float_matrix::load_ascii (std::istream& is)
   std::string kw;
   octave_idx_type val = 0;
 
-  if (extract_keyword (is, keywords, kw, val, true))
+  if (! extract_keyword (is, keywords, kw, val, true))
+    error ("load: failed to extract number of rows and columns");
+
+  if (kw == "ndims")
     {
-      if (kw == "ndims")
+      int mdims = static_cast<int> (val);
+
+      if (mdims < 0)
+        error ("load: failed to extract number of dimensions");
+
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+
+      if (! is)
+        error ("load: failed to read dimensions");
+
+      FloatNDArray tmp(dv);
+
+      is >> tmp;
+
+      if (! is)
+        error ("load: failed to load matrix constant");
+
+      matrix = tmp;
+    }
+  else if (kw == "rows")
+    {
+      octave_idx_type nr = val;
+      octave_idx_type nc = 0;
+
+      if (nr < 0 || ! extract_keyword (is, "columns", nc) || nc < 0)
+        error ("load: failed to extract number of rows and columns");
+
+      if (nr > 0 && nc > 0)
         {
-          int mdims = static_cast<int> (val);
+          FloatMatrix tmp (nr, nc);
+          is >> tmp;
+          if (! is)
+            error ("load: failed to load matrix constant");
 
-          if (mdims >= 0)
-            {
-              dim_vector dv;
-              dv.resize (mdims);
-
-              for (int i = 0; i < mdims; i++)
-                is >> dv(i);
-
-              if (is)
-                {
-                  FloatNDArray tmp(dv);
-
-                  is >> tmp;
-
-                  if (is)
-                    matrix = tmp;
-                  else
-                    {
-                      error ("load: failed to load matrix constant");
-                      success = false;
-                    }
-                }
-              else
-                {
-                  error ("load: failed to read dimensions");
-                  success = false;
-                }
-            }
-          else
-            {
-              error ("load: failed to extract number of dimensions");
-              success = false;
-            }
+          matrix = tmp;
         }
-      else if (kw == "rows")
-        {
-          octave_idx_type nr = val;
-          octave_idx_type nc = 0;
-
-          if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-            {
-              if (nr > 0 && nc > 0)
-                {
-                  FloatMatrix tmp (nr, nc);
-                  is >> tmp;
-                  if (is)
-                    matrix = tmp;
-                  else
-                    {
-                      error ("load: failed to load matrix constant");
-                      success = false;
-                    }
-                }
-              else if (nr == 0 || nc == 0)
-                matrix = FloatMatrix (nr, nc);
-              else
-                panic_impossible ();
-            }
-          else
-            {
-              error ("load: failed to extract number of rows and columns");
-              success = false;
-            }
-        }
+      else if (nr == 0 || nc == 0)
+        matrix = FloatMatrix (nr, nc);
       else
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    panic_impossible ();
 
-  return success;
+  return true;
 }
 
 bool
 octave_float_matrix::save_binary (std::ostream& os, bool&)
 {
-
-  dim_vector d = dims ();
-  if (d.length () < 1)
+  dim_vector dv = dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length ();
+  int32_t tmp = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i = 0; i < d.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     {
-      tmp = d(i);
+      tmp = dv(i);
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   FloatNDArray m = float_array_value ();
   save_type st = LS_FLOAT;
-  if (d.numel () > 8192) // FIXME: make this configurable.
+  if (dv.numel () > 8192) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -477,14 +485,14 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
     }
 
   const float *mtmp = m.data ();
-  write_floats (os, mtmp, st, d.numel ());
+  write_floats (os, mtmp, st, dv.numel ());
 
   return true;
 }
 
 bool
 octave_float_matrix::load_binary (std::istream& is, bool swap,
-                                  oct_mach_info::float_format fmt)
+                                  octave::mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -527,8 +535,10 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       float *re = m.fortran_vec ();
       read_floats (is, re, static_cast<save_type> (tmp), dv.numel (),
                    swap, fmt);
-      if (error_state || ! is)
+
+      if (! is)
         return false;
+
       matrix = m;
     }
   else
@@ -545,8 +555,10 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       float *re = m.fortran_vec ();
       octave_idx_type len = nr * nc;
       read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
-      if (error_state || ! is)
+
+      if (! is)
         return false;
+
       matrix = m;
     }
   return true;
@@ -564,7 +576,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
   if (empty)
     return (empty > 0);
 
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
   FloatNDArray m = array_value ();
@@ -573,7 +585,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = dv (rank-i-1);
+    hdims[i] = dv(rank-i-1);
 
   space_hid = H5Screate_simple (rank, hdims, 0);
 
@@ -581,7 +593,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 
   hid_t save_type_hid = H5T_NATIVE_FLOAT;
 
-#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+#if defined (HAVE_HDF5_INT2FLOAT_CONVERSIONS)
   // hdf5 currently doesn't support float/integer conversions
   else
     {
@@ -591,13 +603,13 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
         save_type_hid
           = save_type_to_hdf5 (get_save_type (max_val, min_val));
     }
-#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
-#if HAVE_HDF5_18
+#endif
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -606,14 +618,17 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
     }
 
   float *mtmp = m.fortran_vec ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, mtmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, mtmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -633,8 +648,8 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
-#if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -670,8 +685,8 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   FloatNDArray m (dv);
   float *re = m.fortran_vec ();
-  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, re) >= 0)
+  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, re) >= 0)
     {
       retval = true;
       matrix = m;
@@ -681,7 +696,10 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
 #endif
 
   return retval;
@@ -764,62 +782,62 @@ octave_float_matrix::map (unary_mapper_t umap) const
       return matrix;
 
     // Mappers handled specially.
-#define ARRAY_METHOD_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
+#define ARRAY_METHOD_MAPPER(UMAP, FCN)        \
+    case umap_ ## UMAP:                       \
       return octave_value (matrix.FCN ())
 
-      ARRAY_METHOD_MAPPER (abs, abs);
-      ARRAY_METHOD_MAPPER (isnan, isnan);
-      ARRAY_METHOD_MAPPER (isinf, isinf);
-      ARRAY_METHOD_MAPPER (finite, isfinite);
+    ARRAY_METHOD_MAPPER (abs, abs);
+    ARRAY_METHOD_MAPPER (isnan, isnan);
+    ARRAY_METHOD_MAPPER (isinf, isinf);
+    ARRAY_METHOD_MAPPER (isfinite, isfinite);
 
-#define ARRAY_MAPPER(UMAP, TYPE, FCN) \
-    case umap_ ## UMAP: \
+#define ARRAY_MAPPER(UMAP, TYPE, FCN)                 \
+    case umap_ ## UMAP:                               \
       return octave_value (matrix.map<TYPE> (FCN))
 
-#define RC_ARRAY_MAPPER(UMAP, TYPE, FCN) \
-    case umap_ ## UMAP: \
+#define RC_ARRAY_MAPPER(UMAP, TYPE, FCN)      \
+    case umap_ ## UMAP:                       \
       return do_rc_map (matrix, FCN)
 
-      RC_ARRAY_MAPPER (acos, FloatComplex, rc_acos);
-      RC_ARRAY_MAPPER (acosh, FloatComplex, rc_acosh);
-      ARRAY_MAPPER (angle, float, ::arg);
-      ARRAY_MAPPER (arg, float, ::arg);
-      RC_ARRAY_MAPPER (asin, FloatComplex, rc_asin);
-      ARRAY_MAPPER (asinh, float, ::asinhf);
-      ARRAY_MAPPER (atan, float, ::atanf);
-      RC_ARRAY_MAPPER (atanh, FloatComplex, rc_atanh);
-      ARRAY_MAPPER (erf, float, ::erff);
-      ARRAY_MAPPER (erfinv, float, ::erfinv);
-      ARRAY_MAPPER (erfcinv, float, ::erfcinv);
-      ARRAY_MAPPER (erfc, float, ::erfcf);
-      ARRAY_MAPPER (erfcx, float, ::erfcx);
-      ARRAY_MAPPER (erfi, float, ::erfi);
-      ARRAY_MAPPER (dawson, float, ::dawson);
-      ARRAY_MAPPER (gamma, float, xgamma);
-      RC_ARRAY_MAPPER (lgamma, FloatComplex, rc_lgamma);
-      ARRAY_MAPPER (cbrt, float, ::cbrtf);
-      ARRAY_MAPPER (ceil, float, ::ceilf);
-      ARRAY_MAPPER (cos, float, ::cosf);
-      ARRAY_MAPPER (cosh, float, ::coshf);
-      ARRAY_MAPPER (exp, float, ::expf);
-      ARRAY_MAPPER (expm1, float, ::expm1f);
-      ARRAY_MAPPER (fix, float, ::fix);
-      ARRAY_MAPPER (floor, float, ::floorf);
-      RC_ARRAY_MAPPER (log, FloatComplex, rc_log);
-      RC_ARRAY_MAPPER (log2, FloatComplex, rc_log2);
-      RC_ARRAY_MAPPER (log10, FloatComplex, rc_log10);
-      RC_ARRAY_MAPPER (log1p, FloatComplex, rc_log1p);
-      ARRAY_MAPPER (round, float, xround);
-      ARRAY_MAPPER (roundb, float, xroundb);
-      ARRAY_MAPPER (signum, float, ::signum);
-      ARRAY_MAPPER (sin, float, ::sinf);
-      ARRAY_MAPPER (sinh, float, ::sinhf);
-      RC_ARRAY_MAPPER (sqrt, FloatComplex, rc_sqrt);
-      ARRAY_MAPPER (tan, float, ::tanf);
-      ARRAY_MAPPER (tanh, float, ::tanhf);
-      ARRAY_MAPPER (isna, bool, octave_is_NA);
-      ARRAY_MAPPER (xsignbit, float, xsignbit);
+    RC_ARRAY_MAPPER (acos, FloatComplex, octave::math::rc_acos);
+    RC_ARRAY_MAPPER (acosh, FloatComplex, octave::math::rc_acosh);
+    ARRAY_MAPPER (angle, float, octave::math::arg);
+    ARRAY_MAPPER (arg, float,octave::math ::arg);
+    RC_ARRAY_MAPPER (asin, FloatComplex, octave::math::rc_asin);
+    ARRAY_MAPPER (asinh, float, octave::math::asinh);
+    ARRAY_MAPPER (atan, float, ::atanf);
+    RC_ARRAY_MAPPER (atanh, FloatComplex, octave::math::rc_atanh);
+    ARRAY_MAPPER (erf, float, octave::math::erf);
+    ARRAY_MAPPER (erfinv, float, octave::math::erfinv);
+    ARRAY_MAPPER (erfcinv, float, octave::math::erfcinv);
+    ARRAY_MAPPER (erfc, float, octave::math::erfc);
+    ARRAY_MAPPER (erfcx, float, octave::math::erfcx);
+    ARRAY_MAPPER (erfi, float, octave::math::erfi);
+    ARRAY_MAPPER (dawson, float, octave::math::dawson);
+    ARRAY_MAPPER (gamma, float, octave::math::gamma);
+    RC_ARRAY_MAPPER (lgamma, FloatComplex, octave::math::rc_lgamma);
+    ARRAY_MAPPER (cbrt, float, octave::math::cbrt);
+    ARRAY_MAPPER (ceil, float, ::ceilf);
+    ARRAY_MAPPER (cos, float, ::cosf);
+    ARRAY_MAPPER (cosh, float, ::coshf);
+    ARRAY_MAPPER (exp, float, ::expf);
+    ARRAY_MAPPER (expm1, float, octave::math::expm1);
+    ARRAY_MAPPER (fix, float, octave::math::fix);
+    ARRAY_MAPPER (floor, float, ::floorf);
+    RC_ARRAY_MAPPER (log, FloatComplex, octave::math::rc_log);
+    RC_ARRAY_MAPPER (log2, FloatComplex, octave::math::rc_log2);
+    RC_ARRAY_MAPPER (log10, FloatComplex, octave::math::rc_log10);
+    RC_ARRAY_MAPPER (log1p, FloatComplex, octave::math::rc_log1p);
+    ARRAY_MAPPER (round, float, octave::math::round);
+    ARRAY_MAPPER (roundb, float, octave::math::roundb);
+    ARRAY_MAPPER (signum, float, octave::math::signum);
+    ARRAY_MAPPER (sin, float, ::sinf);
+    ARRAY_MAPPER (sinh, float, ::sinhf);
+    RC_ARRAY_MAPPER (sqrt, FloatComplex, octave::math::rc_sqrt);
+    ARRAY_MAPPER (tan, float, ::tanf);
+    ARRAY_MAPPER (tanh, float, ::tanhf);
+    ARRAY_MAPPER (isna, bool, octave::math::is_NA);
+    ARRAY_MAPPER (xsignbit, float, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:
@@ -841,83 +859,10 @@ octave_float_matrix::map (unary_mapper_t umap) const
     case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
-        return error_state ? octave_value () : str_conv.map (umap);
+        return str_conv.map (umap);
       }
 
     default:
       return octave_base_value::map (umap);
     }
 }
-
-DEFUN (single, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} single (@var{x})\n\
-Convert @var{x} to single precision type.\n\
-@seealso{double}\n\
-@end deftypefn")
-{
-  // The OCTAVE_TYPE_CONV_BODY3 macro declares retval, so they go
-  // inside their own scopes, and we don't declare retval here to
-  // avoid a shadowed declaration warning.
-
-  if (args.length () == 1)
-    {
-      if (args(0).is_diag_matrix ())
-        {
-          if (args(0).is_complex_type ())
-            {
-              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_diag_matrix,
-                                      octave_float_complex);
-            }
-          else
-            {
-              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_diag_matrix,
-                                      octave_float_scalar);
-            }
-        }
-      else if (args(0).is_sparse_type ())
-        {
-          error ("single: sparse type does not support single precision");
-        }
-      else if (args(0).is_complex_type ())
-        {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_matrix,
-                                  octave_float_complex);
-        }
-      else
-        {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_matrix,
-                                  octave_float_scalar);
-        }
-    }
-  else
-    print_usage ();
-
-  return octave_value ();
-}
-
-/*
-%!assert (class (single (1)), "single")
-%!assert (class (single (1 + i)), "single")
-%!assert (class (single (int8 (1))), "single")
-%!assert (class (single (uint8 (1))), "single")
-%!assert (class (single (int16 (1))), "single")
-%!assert (class (single (uint16 (1))), "single")
-%!assert (class (single (int32 (1))), "single")
-%!assert (class (single (uint32 (1))), "single")
-%!assert (class (single (int64 (1))), "single")
-%!assert (class (single (uint64 (1))), "single")
-%!assert (class (single (true)), "single")
-%!assert (class (single ("A")), "single")
-%!error (single (sparse (1)))
-%!test
-%! x = diag ([1 3 2]);
-%! y = single (x);
-%! assert (class (x), "double");
-%! assert (class (y), "single");
-%!test
-%! x = diag ([i 3 2]);
-%! y = single (x);
-%! assert (class (x), "double");
-%! assert (class (y), "single");
-*/

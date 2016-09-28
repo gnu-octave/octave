@@ -1,7 +1,7 @@
 // Template sparse array class
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -23,9 +23,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <cassert>
 
@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "PermMatrix.h"
 
-template <class T>
+template <typename T>
 typename Sparse<T>::SparseRep *
 Sparse<T>::nil_rep (void)
 {
@@ -60,7 +60,7 @@ Sparse<T>::nil_rep (void)
   return &nr;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>::Sparse (const PermMatrix& a)
   : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
     dimensions (dim_vector (a.rows (), a.cols ()))
@@ -78,56 +78,48 @@ Sparse<T>::Sparse (const PermMatrix& a)
     data (i) = 1.0;
 }
 
-template <class T>
+template <typename T>
 T&
 Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 {
   octave_idx_type i;
 
-  if (nzmx > 0)
-    {
-      for (i = c[_c]; i < c[_c + 1]; i++)
-        if (r[i] == _r)
-          return d[i];
-        else if (r[i] > _r)
-          break;
+  if (nzmx <= 0)
+    (*current_liboctave_error_handler)
+      ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
 
-      // Ok, If we've gotten here, we're in trouble.. Have to create a
-      // new element in the sparse array. This' gonna be slow!!!
-      if (c[ncols] == nzmx)
-        {
-          (*current_liboctave_error_handler)
-            ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
-          return *d;
-        }
-
-      octave_idx_type to_move = c[ncols] - i;
-      if (to_move != 0)
-        {
-          for (octave_idx_type j = c[ncols]; j > i; j--)
-            {
-              d[j] = d[j-1];
-              r[j] = r[j-1];
-            }
-        }
-
-      for (octave_idx_type j = _c + 1; j < ncols + 1; j++)
-        c[j] = c[j] + 1;
-
-      d[i] = 0.;
-      r[i] = _r;
-
+  for (i = c[_c]; i < c[_c + 1]; i++)
+    if (r[i] == _r)
       return d[i];
-    }
-  else
+    else if (r[i] > _r)
+      break;
+
+  // Ok, If we've gotten here, we're in trouble.  Have to create a
+  // new element in the sparse array.  This' gonna be slow!!!
+  if (c[ncols] == nzmx)
+    (*current_liboctave_error_handler)
+      ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
+
+  octave_idx_type to_move = c[ncols] - i;
+  if (to_move != 0)
     {
-      (*current_liboctave_error_handler)
-        ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");
-      return *d;
+      for (octave_idx_type j = c[ncols]; j > i; j--)
+        {
+          d[j] = d[j-1];
+          r[j] = r[j-1];
+        }
     }
+
+  for (octave_idx_type j = _c + 1; j < ncols + 1; j++)
+    c[j] = c[j] + 1;
+
+  d[i] = 0.;
+  r[i] = _r;
+
+  return d[i];
 }
 
-template <class T>
+template <typename T>
 T
 Sparse<T>::SparseRep::celem (octave_idx_type _r, octave_idx_type _c) const
 {
@@ -138,7 +130,7 @@ Sparse<T>::SparseRep::celem (octave_idx_type _r, octave_idx_type _c) const
   return T ();
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
 {
@@ -149,7 +141,7 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
       for (octave_idx_type j = 1; j <= ncols; j++)
         {
           octave_idx_type u = c[j];
-          for (i = i; i < u; i++)
+          for (; i < u; i++)
             if (d[i] != T ())
               {
                 d[k] = d[i];
@@ -162,7 +154,7 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
   change_length (c[ncols]);
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::SparseRep::change_length (octave_idx_type nz)
 {
@@ -193,14 +185,27 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
     }
 }
 
-template <class T>
+template <typename T>
 bool
 Sparse<T>::SparseRep::indices_ok (void) const
 {
   return sparse_indices_ok (r, c, nrows, ncols, nnz ());
 }
 
-template <class T>
+template <typename T>
+bool
+Sparse<T>::SparseRep::any_element_is_nan (void) const
+{
+  octave_idx_type nz = nnz ();
+
+  for (octave_idx_type i = 0; i < nz; i++)
+    if (octave::math::isnan (d[i]))
+      return true;
+
+  return false;
+}
+
+template <typename T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
   : rep (0), dimensions (dim_vector (nr, nc))
 {
@@ -228,18 +233,18 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
     }
 }
 
-template <class T>
+template <typename T>
 Sparse<T>::Sparse (const dim_vector& dv)
   : rep (0), dimensions (dv)
 {
-  if (dv.length () != 2)
+  if (dv.ndims () != 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
-  else
-    rep = new typename Sparse<T>::SparseRep (dv(0), dv(1), 0);
+
+  rep = new typename Sparse<T>::SparseRep (dv(0), dv(1), 0);
 }
 
-template <class T>
+template <typename T>
 Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
   : rep (0), dimensions (dv)
 {
@@ -247,43 +252,41 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
   // Work in unsigned long long to avoid overflow issues with numel
   unsigned long long a_nel = static_cast<unsigned long long>(a.rows ()) *
                              static_cast<unsigned long long>(a.cols ());
-  unsigned long long dv_nel = static_cast<unsigned long long>(dv (0)) *
-                              static_cast<unsigned long long>(dv (1));
+  unsigned long long dv_nel = static_cast<unsigned long long>(dv(0)) *
+                              static_cast<unsigned long long>(dv(1));
 
   if (a_nel != dv_nel)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const Sparse&, const dim_vector&): dimension mismatch");
-  else
-    {
-      dim_vector old_dims = a.dims ();
-      octave_idx_type new_nzmx = a.nnz ();
-      octave_idx_type new_nr = dv (0);
-      octave_idx_type new_nc = dv (1);
-      octave_idx_type old_nr = old_dims (0);
-      octave_idx_type old_nc = old_dims (1);
 
-      rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmx);
+  dim_vector old_dims = a.dims ();
+  octave_idx_type new_nzmx = a.nnz ();
+  octave_idx_type new_nr = dv(0);
+  octave_idx_type new_nc = dv(1);
+  octave_idx_type old_nr = old_dims(0);
+  octave_idx_type old_nc = old_dims(1);
 
-      octave_idx_type kk = 0;
-      xcidx (0) = 0;
-      for (octave_idx_type i = 0; i < old_nc; i++)
-        for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++)
-          {
-            octave_idx_type tmp = i * old_nr + a.ridx (j);
-            octave_idx_type ii = tmp % new_nr;
-            octave_idx_type jj = (tmp - ii) / new_nr;
-            for (octave_idx_type k = kk; k < jj; k++)
-              xcidx (k+1) = j;
-            kk = jj;
-            xdata (j) = a.data (j);
-            xridx (j) = ii;
-          }
-      for (octave_idx_type k = kk; k < new_nc; k++)
-        xcidx (k+1) = new_nzmx;
-    }
+  rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmx);
+
+  octave_idx_type kk = 0;
+  xcidx (0) = 0;
+  for (octave_idx_type i = 0; i < old_nc; i++)
+    for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++)
+      {
+        octave_idx_type tmp = i * old_nr + a.ridx (j);
+        octave_idx_type ii = tmp % new_nr;
+        octave_idx_type jj = (tmp - ii) / new_nr;
+        for (octave_idx_type k = kk; k < jj; k++)
+          xcidx (k+1) = j;
+        kk = jj;
+        xdata (j) = a.data (j);
+        xridx (j) = ii;
+      }
+  for (octave_idx_type k = kk; k < new_nc; k++)
+    xcidx (k+1) = new_nzmx;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                    const idx_vector& c, octave_idx_type nr,
                    octave_idx_type nc, bool sum_terms,
@@ -345,7 +348,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
         }
       else if (cl == 1)
         {
-          // Sparse column vector. Sort row indices.
+          // Sparse column vector.  Sort row indices.
           idx_vector rs = r.sorted ();
 
           octave_quit ();
@@ -426,7 +429,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
             else
               sidx[ci[cd[i]+1]++] = rd[i];
 
-          // Subsorts. We don't need a stable sort, all values are equal.
+          // Subsorts.  We don't need a stable sort, all values are equal.
           xcidx (0) = 0;
           for (octave_idx_type j = 0; j < nc; j++)
             {
@@ -491,7 +494,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     }
   else if (cl == 1)
     {
-      // Sparse column vector. Sort row indices.
+      // Sparse column vector.  Sort row indices.
       Array<octave_idx_type> rsi;
       idx_vector rs = r.sorted (rsi);
 
@@ -577,7 +580,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           p.second = i;
         }
 
-      // Subsorts. We don't need a stable sort, the second index stabilizes it.
+      // Subsorts.  We don't need a stable sort, the second index stabilizes it.
       xcidx (0) = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -643,50 +646,48 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     }
 }
 
-template <class T>
+template <typename T>
 Sparse<T>::Sparse (const Array<T>& a)
   : rep (0), dimensions (a.dims ())
 {
-  if (dimensions.length () > 2)
+  if (dimensions.ndims () > 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const Array<T>&): dimension mismatch");
-  else
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type len = a.numel ();
+  octave_idx_type new_nzmx = 0;
+
+  // First count the number of nonzero terms
+  for (octave_idx_type i = 0; i < len; i++)
+    if (a(i) != T ())
+      new_nzmx++;
+
+  rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
+
+  octave_idx_type ii = 0;
+  xcidx (0) = 0;
+  for (octave_idx_type j = 0; j < nc; j++)
     {
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-      octave_idx_type len = a.length ();
-      octave_idx_type new_nzmx = 0;
-
-      // First count the number of nonzero terms
-      for (octave_idx_type i = 0; i < len; i++)
-        if (a(i) != T ())
-          new_nzmx++;
-
-      rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
-
-      octave_idx_type ii = 0;
-      xcidx (0) = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            if (a.elem (i,j) != T ())
-              {
-                xdata (ii) = a.elem (i,j);
-                xridx (ii++) = i;
-              }
-          xcidx (j+1) = ii;
-        }
+      for (octave_idx_type i = 0; i < nr; i++)
+        if (a.elem (i,j) != T ())
+          {
+            xdata (ii) = a.elem (i,j);
+            xridx (ii++) = i;
+          }
+      xcidx (j+1) = ii;
     }
 }
 
-template <class T>
+template <typename T>
 Sparse<T>::~Sparse (void)
 {
   if (--rep->count == 0)
     delete rep;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>&
 Sparse<T>::operator = (const Sparse<T>& a)
 {
@@ -704,69 +705,59 @@ Sparse<T>::operator = (const Sparse<T>& a)
   return *this;
 }
 
-template <class T>
+template <typename T>
 octave_idx_type
 Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {
-  octave_idx_type retval = -1;
+  octave_idx_type n = dimensions.ndims ();
 
-  octave_idx_type n = dimensions.length ();
-
-  if (n > 0 && n == ra_idx.length ())
-    {
-      retval = ra_idx(--n);
-
-      while (--n >= 0)
-        {
-          retval *= dimensions(n);
-          retval += ra_idx(n);
-        }
-    }
-  else
+  if (n <= 0 || n != ra_idx.numel ())
     (*current_liboctave_error_handler)
       ("Sparse<T>::compute_index: invalid ra_idxing operation");
+
+  octave_idx_type retval = -1;
+
+  retval = ra_idx(--n);
+
+  while (--n >= 0)
+    {
+      retval *= dimensions(n);
+      retval += ra_idx(n);
+    }
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 T
 Sparse<T>::range_error (const char *fcn, octave_idx_type n) const
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
-  return T ();
 }
 
-template <class T>
+template <typename T>
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type n)
 {
   (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
-  static T foo;
-  return foo;
 }
 
-template <class T>
+template <typename T>
 T
 Sparse<T>::range_error (const char *fcn, octave_idx_type i,
                         octave_idx_type j) const
 {
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d): range error", fcn, i, j);
-  return T ();
+  (*current_liboctave_error_handler) ("%s (%d, %d): range error", fcn, i, j);
 }
 
-template <class T>
+template <typename T>
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 {
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d): range error", fcn, i, j);
-  static T foo;
-  return foo;
+  (*current_liboctave_error_handler) ("%s (%d, %d): range error", fcn, i, j);
 }
 
-template <class T>
+template <typename T>
 T
 Sparse<T>::range_error (const char *fcn,
                         const Array<octave_idx_type>& ra_idx) const
@@ -775,7 +766,7 @@ Sparse<T>::range_error (const char *fcn,
 
   buf << fcn << " (";
 
-  octave_idx_type n = ra_idx.length ();
+  octave_idx_type n = ra_idx.numel ();
 
   if (n > 0)
     buf << ra_idx(0);
@@ -788,11 +779,9 @@ Sparse<T>::range_error (const char *fcn,
   std::string buf_str = buf.str ();
 
   (*current_liboctave_error_handler) (buf_str.c_str ());
-
-  return T ();
 }
 
-template <class T>
+template <typename T>
 T&
 Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 {
@@ -800,7 +789,7 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 
   buf << fcn << " (";
 
-  octave_idx_type n = ra_idx.length ();
+  octave_idx_type n = ra_idx.numel ();
 
   if (n > 0)
     buf << ra_idx(0);
@@ -813,25 +802,22 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
   std::string buf_str = buf.str ();
 
   (*current_liboctave_error_handler) (buf_str.c_str ());
-
-  static T foo;
-  return foo;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::reshape (const dim_vector& new_dims) const
 {
   Sparse<T> retval;
   dim_vector dims2 = new_dims;
 
-  if (dims2.length () > 2)
+  if (dims2.ndims () > 2)
     {
       (*current_liboctave_warning_with_id_handler)
         ("Octave:reshape-smashes-dims",
-         "reshape: sparse reshape to N-d array smashes dims");
+         "reshape: sparse reshape to N-D array smashes dims");
 
-      for (octave_idx_type i = 2; i < dims2.length (); i++)
+      for (octave_idx_type i = 2; i < dims2.ndims (); i++)
         dims2(1) *= dims2(i);
 
       dims2.resize (2);
@@ -850,7 +836,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 
           octave_idx_type kk = 0;
           retval.xcidx (0) = 0;
-          // quotient and remainder of  i * old_nr divided by new_nr
+          // Quotient and remainder of i * old_nr divided by new_nr.
           // Track them individually to avoid overflow (bug #42850).
           octave_idx_type i_old_qu = 0;
           octave_idx_type i_old_rm = static_cast<octave_idx_type> (-old_nr);
@@ -898,7 +884,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
 {
@@ -907,7 +893,7 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
   bool fail = false;
   bool trans = false;
 
-  if (perm_vec.length () == 2)
+  if (perm_vec.numel () == 2)
     {
       if (perm_vec(0) == 0 && perm_vec(1) == 1)
         /* do nothing */;
@@ -926,7 +912,7 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
   return trans ? this->transpose () : *this;
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::resize1 (octave_idx_type n)
 {
@@ -942,40 +928,33 @@ Sparse<T>::resize1 (octave_idx_type n)
   else if (nc == 1)
     resize (n, 1);
   else
-    gripe_invalid_resize ();
+    octave::err_invalid_resize ();
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::resize (const dim_vector& dv)
 {
-  octave_idx_type n = dv.length ();
+  octave_idx_type n = dv.ndims ();
 
   if (n != 2)
-    {
-      (*current_liboctave_error_handler) ("sparse array must be 2-D");
-      return;
-    }
+    (*current_liboctave_error_handler) ("sparse array must be 2-D");
 
   resize (dv(0), dv(1));
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 {
   if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-        ("can't resize to negative dimension");
-      return;
-    }
+    (*current_liboctave_error_handler) ("can't resize to negative dimension");
 
   if (r == dim1 () && c == dim2 ())
     return;
 
   // This wouldn't be necessary for r >= rows () if nrows wasn't part of the
-  // Sparse rep. It is not good for anything in there.
+  // Sparse rep.  It is not good for anything in there.
   make_unique ();
 
   if (r < rows ())
@@ -985,7 +964,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
       for (octave_idx_type j = 1; j <= rep->ncols; j++)
         {
           octave_idx_type u = xcidx (j);
-          for (i = i; i < u; i++)
+          for (; i < u; i++)
             if (xridx (i) < r)
               {
                 xdata (k) = xdata (i);
@@ -1014,7 +993,7 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
   rep->change_length (rep->nnz ());
 }
 
-template <class T>
+template <typename T>
 Sparse<T>&
 Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
 {
@@ -1024,10 +1003,7 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   octave_idx_type nc = cols ();
 
   if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for insert");
 
   // First count the number of elements in the final array
   octave_idx_type nel = cidx (c) + a.nnz ();
@@ -1098,21 +1074,18 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   return *this;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>&
 Sparse<T>::insert (const Sparse<T>& a, const Array<octave_idx_type>& ra_idx)
 {
 
-  if (ra_idx.length () != 2)
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+  if (ra_idx.numel () != 2)
+    (*current_liboctave_error_handler) ("range error for insert");
 
-  return insert (a, ra_idx (0), ra_idx (1));
+  return insert (a, ra_idx(0), ra_idx(1));
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::transpose (void) const
 {
@@ -1149,9 +1122,9 @@ Sparse<T>::transpose (void) const
   return retval;
 }
 
-// Lower bound lookup. Could also use octave_sort, but that has upper bound
-// semantics, so requires some manipulation to set right. Uses a plain loop for
-// small columns.
+// Lower bound lookup.  Could also use octave_sort, but that has upper bound
+// semantics, so requires some manipulation to set right.  Uses a plain loop
+// for small columns.
 static octave_idx_type
 lblookup (const octave_idx_type *ridx, octave_idx_type nr,
           octave_idx_type ri)
@@ -1168,7 +1141,7 @@ lblookup (const octave_idx_type *ridx, octave_idx_type nr,
     return std::lower_bound (ridx, ridx + nr, ri) - ridx;
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::delete_elements (const idx_vector& idx)
 {
@@ -1185,8 +1158,9 @@ Sparse<T>::delete_elements (const idx_vector& idx)
   const dim_vector idx_dims = idx.orig_dimensions ();
 
   if (idx.extent (nel) > nel)
-    gripe_del_index_out_of_range (true, idx.extent (nel), nel);
-  else if (nc == 1)
+    octave::err_del_index_out_of_range (true, idx.extent (nel), nel);
+
+  if (nc == 1)
     {
       // Sparse column vector.
       const Sparse<T> tmp = *this; // constant copy to prevent COW.
@@ -1268,7 +1242,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
     }
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
 {
@@ -1283,7 +1257,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       // Deleting columns.
       octave_idx_type lb, ub;
       if (idx_j.extent (nc) > nc)
-        gripe_del_index_out_of_range (false, idx_j.extent (nc), nc);
+        octave::err_del_index_out_of_range (false, idx_j.extent (nc), nc);
       else if (idx_j.is_cont_range (nc, lb, ub))
         {
           if (lb == 0 && ub == nc)
@@ -1321,7 +1295,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       // Deleting rows.
       octave_idx_type lb, ub;
       if (idx_i.extent (nr) > nr)
-        gripe_del_index_out_of_range (false, idx_i.extent (nr), nr);
+        octave::err_del_index_out_of_range (false, idx_i.extent (nr), nr);
       else if (idx_i.is_cont_range (nr, lb, ub))
         {
           if (lb == 0 && ub == nr)
@@ -1387,7 +1361,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
     }
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::delete_elements (int dim, const idx_vector& idx)
 {
@@ -1396,14 +1370,10 @@ Sparse<T>::delete_elements (int dim, const idx_vector& idx)
   else if (dim == 1)
     delete_elements (idx_vector::colon, idx);
   else
-    {
-      (*current_liboctave_error_handler)
-        ("invalid dimension in delete_elements");
-      return;
-    }
+    (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 {
@@ -1443,24 +1413,21 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     }
   else if (idx.extent (nel) > nel)
     {
+      if (! resize_ok)
+        octave::err_index_out_of_range (1, 1, idx.extent (nel), nel, dims ());
+
       // resize_ok is completely handled here.
-      if (resize_ok)
-        {
-          octave_idx_type ext = idx.extent (nel);
-          Sparse<T> tmp = *this;
-          tmp.resize1 (ext);
-          retval = tmp.index (idx);
-        }
-      else
-        gripe_index_out_of_range (1, 1, idx.extent (nel), nel);
+      octave_idx_type ext = idx.extent (nel);
+      Sparse<T> tmp = *this;
+      tmp.resize1 (ext);
+      retval = tmp.index (idx);
     }
   else if (nr == 1 && nc == 1)
     {
       // You have to be pretty sick to get to this bit of code,
       // since you have a scalar stored as a sparse matrix, and
-      // then want to make a dense matrix with sparse
-      // representation. Ok, we'll do it, but you deserve what
-      // you get!!
+      // then want to make a dense matrix with sparse representation.
+      // Ok, we'll do it, but you deserve what you get!!
       retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
     }
   else if (nc == 1)
@@ -1606,7 +1573,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
   return retval;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
                   bool resize_ok) const
@@ -1635,9 +1602,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
           retval = tmp.index (idx_i, idx_j);
         }
       else if (idx_i.extent (nr) > nr)
-        gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr);
+        octave::err_index_out_of_range (2, 1, idx_i.extent (nr), nr, dims ());
       else
-        gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc);
+        octave::err_index_out_of_range (2, 2, idx_j.extent (nc), nc, dims ());
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1649,7 +1616,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
     }
   else if (idx_i.is_colon ())
     {
-      // Great, we're just manipulating columns. This is going to be quite
+      // Great, we're just manipulating columns.  This is going to be quite
       // efficient, because the columns can stay compressed as they are.
       if (idx_j.is_colon ())
         retval = *this; // Shallow copy.
@@ -1690,7 +1657,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
     }
   else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
     {
-      // It's actually vector indexing. The 1D index is specialized for that.
+      // It's actually vector indexing.  The 1D index is specialized for that.
       retval = index (idx_i);
 
       // If nr == 1 then the vector indexing will return a column vector!!
@@ -1782,7 +1749,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
 
       if (idx_i.is_range () && idx_i.increment () == -1)
         {
-          // It's nr:-1:1. Just flip all columns.
+          // It's nr:-1:1.  Just flip all columns.
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_quit ();
@@ -1833,7 +1800,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
     }
   else if (idx_j.is_colon ())
     {
-      // This requires  uncompressing columns, which is generally costly,
+      // This requires uncompressing columns, which is generally costly,
       // so we rely on the efficient transpose to handle this.
       // It may still make sense to optimize some cases here.
       retval = transpose ();
@@ -1850,7 +1817,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
   return retval;
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
 {
@@ -1900,7 +1867,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
               octave_idx_type rnz = rhs.nnz ();
               octave_idx_type new_nz = nz - (ui - li) + rnz;
 
-              if (new_nz >= nz && new_nz <= capacity ())
+              if (new_nz >= nz && new_nz <= nzmax ())
                 {
                   // Adding/overwriting elements, enough capacity allocated.
 
@@ -1943,7 +1910,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
             }
           else if (idx.is_range () && idx.increment () == -1)
             {
-              // It's s(u:-1:l) = r. Reverse the assignment.
+              // It's s(u:-1:l) = r.  Reverse the assignment.
               assign (idx.sorted (), rhs.index (idx_vector (rhl - 1, 0, -1)));
             }
           else if (idx.is_permutation (n))
@@ -1999,10 +1966,10 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
         assign (idx, Sparse<T> (rhl, 1));
     }
   else
-    gripe_invalid_assignment_size ();
+    octave::err_nonconformant ("=", dim_vector(idx.length (n),1), rhs.dims());
 }
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::assign (const idx_vector& idx_i,
                    const idx_vector& idx_j, const Sparse<T>& rhs)
@@ -2071,7 +2038,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
       if (idx_i.is_colon ())
         {
           octave_idx_type lb, ub;
-          // Great, we're just manipulating columns. This is going to be quite
+          // Great, we're just manipulating columns.  This is going to be quite
           // efficient, because the columns can stay compressed as they are.
           if (idx_j.is_colon ())
             *this = rhs; // Shallow copy.
@@ -2083,7 +2050,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
               octave_idx_type rnz = rhs.nnz ();
               octave_idx_type new_nz = nz - (ui - li) + rnz;
 
-              if (new_nz >= nz && new_nz <= capacity ())
+              if (new_nz >= nz && new_nz <= nzmax ())
                 {
                   // Adding/overwriting elements, enough capacity allocated.
 
@@ -2136,7 +2103,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
             }
           else if (idx_j.is_range () && idx_j.increment () == -1)
             {
-              // It's s(:,u:-1:l) = r. Reverse the assignment.
+              // It's s(:,u:-1:l) = r.  Reverse the assignment.
               assign (idx_i, idx_j.sorted (),
                       rhs.index (idx_i, idx_vector (m - 1, 0, -1)));
             }
@@ -2210,7 +2177,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
             {
               // FIXME: optimize more special cases?
               // In general this requires unpacking the columns, which is slow,
-              // especially for many small columns. OTOH, transpose is an
+              // especially for many small columns.  OTOH, transpose is an
               // efficient O(nr+nc+nnz) operation.
               *this = transpose ();
               assign (idx_vector::colon, idx_i, rhs.transpose ());
@@ -2234,13 +2201,17 @@ Sparse<T>::assign (const idx_vector& idx_i,
       else
         assign (idx_i, idx_j, Sparse<T> (n, m));
     }
+  else if (idx_i.length (nr) == m && idx_j.length (nc) == n && (n==1 || m==1))
+    {
+      assign (idx_i, idx_j, rhs.transpose ());
+    }
   else
-    gripe_assignment_dimension_mismatch ();
+    octave::err_nonconformant  ("=", idx_i.length (nr), idx_j.length (nc), n, m);
 }
 
 // Can't use versions of these in Array.cc due to duplication of the
 // instantiations for Array<double and Sparse<double>, etc
-template <class T>
+template <typename T>
 bool
 sparse_ascending_compare (typename ref_param<T>::type a,
                           typename ref_param<T>::type b)
@@ -2248,7 +2219,7 @@ sparse_ascending_compare (typename ref_param<T>::type a,
   return (a < b);
 }
 
-template <class T>
+template <typename T>
 bool
 sparse_descending_compare (typename ref_param<T>::type a,
                            typename ref_param<T>::type b)
@@ -2256,7 +2227,7 @@ sparse_descending_compare (typename ref_param<T>::type a,
   return (a > b);
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
 {
@@ -2265,7 +2236,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  if (m.length () < 1 || dim > 1)
+  if (m.numel () < 1 || dim > 1)
     return m;
 
   if (dim > 0)
@@ -2321,7 +2292,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   return m;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
                  sortmode mode) const
@@ -2331,7 +2302,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  if (m.length () < 1 || dim > 1)
+  if (m.numel () < 1 || dim > 1)
     {
       sidx = Array<octave_idx_type> (dim_vector (nr, nc), 1);
       return m;
@@ -2427,7 +2398,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   return m;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::diag (octave_idx_type k) const
 {
@@ -2600,7 +2571,7 @@ Sparse<T>::diag (octave_idx_type k) const
   return d;
 }
 
-template <class T>
+template <typename T>
 Sparse<T>
 Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 {
@@ -2613,27 +2584,24 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
       dim = -dim - 1;
     }
   else if (dim < 0)
-    (*current_liboctave_error_handler)
-      ("cat: invalid dimension");
+    (*current_liboctave_error_handler) ("cat: invalid dimension");
 
   dim_vector dv;
   octave_idx_type total_nz = 0;
-  if (dim == 0 || dim == 1)
-    {
-      if (n == 1)
-        return sparse_list[0];
-
-      for (octave_idx_type i = 0; i < n; i++)
-        {
-          if (! (dv.*concat_rule) (sparse_list[i].dims (), dim))
-            (*current_liboctave_error_handler)
-              ("cat: dimension mismatch");
-          total_nz += sparse_list[i].nnz ();
-        }
-    }
-  else
+  if (dim != 0 && dim != 1)
     (*current_liboctave_error_handler)
       ("cat: invalid dimension for sparse concatenation");
+
+  if (n == 1)
+    return sparse_list[0];
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      if (! (dv.*concat_rule) (sparse_list[i].dims (), dim))
+        (*current_liboctave_error_handler) ("cat: dimension mismatch");
+
+      total_nz += sparse_list[i].nnz ();
+    }
 
   Sparse<T> retval (dv, total_nz);
 
@@ -2655,7 +2623,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
             for (octave_idx_type i = 0; i < n; i++)
               {
                 const Sparse<T>& spi = sparse_list[i];
-                // Skipping empty matrices. See the comment in Array.cc.
+                // Skipping empty matrices.  See the comment in Array.cc.
                 if (spi.is_empty ())
                   continue;
 
@@ -2682,7 +2650,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
           {
             octave_quit ();
 
-            // Skipping empty matrices. See the comment in Array.cc.
+            // Skipping empty matrices.  See the comment in Array.cc.
             if (sparse_list[i].is_empty ())
               continue;
 
@@ -2701,7 +2669,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
   return retval;
 }
 
-template <class T>
+template <typename T>
 Array<T>
 Sparse<T>::array_value () const
 {
@@ -2723,6 +2691,109 @@ Sparse<T>::array_value () const
     }
 
   return retval;
+}
+
+template <typename T>
+std::istream&
+read_sparse_matrix (std::istream& is, Sparse<T>& a,
+                    T (*read_fcn) (std::istream&))
+{
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+  octave_idx_type nz = a.nzmax ();
+
+  if (nr > 0 && nc > 0)
+    {
+      octave_idx_type itmp;
+      octave_idx_type jtmp;
+      octave_idx_type iold = 0;
+      octave_idx_type jold = 0;
+      octave_idx_type ii = 0;
+      T tmp;
+
+      a.cidx (0) = 0;
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          itmp = 0; jtmp = 0;
+          is >> itmp;
+          itmp--;
+
+          is >> jtmp;
+          jtmp--;
+
+          if (is.fail ())
+            {
+              is.clear();
+              std::string err_field;
+              is >> err_field;
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: element %d: "
+                 "Symbols '%s' is not an integer format",
+                 i+1, err_field.c_str ());
+            }
+
+          if (itmp < 0 || itmp >= nr)
+            {
+              is.setstate (std::ios::failbit);
+
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: element %d: "
+                 "row index = %d out of range",
+                 i+1, itmp + 1);
+            }
+
+          if (jtmp < 0 || jtmp >= nc)
+            {
+              is.setstate (std::ios::failbit);
+
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: element %d: "
+                 "column index = %d out of range",
+                 i+1, jtmp + 1);
+            }
+
+          if (jtmp < jold)
+            {
+              is.setstate (std::ios::failbit);
+
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: element %d:"
+                 "column indices must appear in ascending order (%d < %d)",
+                 i+1, jtmp, jold);
+            }
+          else if (jtmp > jold)
+            {
+              for (octave_idx_type j = jold; j < jtmp; j++)
+                a.cidx (j+1) = ii;
+            }
+          else if (itmp < iold)
+            {
+              is.setstate (std::ios::failbit);
+
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: element %d: "
+                 "row indices must appear in ascending order in each column "
+                 "(%d < %d)",
+                 i+1, iold, itmp);
+            }
+
+          iold = itmp;
+          jold = jtmp;
+
+          tmp = read_fcn (is);
+
+          if (! is)
+            return is;  // Problem, return is in error state
+
+          a.data (ii) = tmp;
+          a.ridx (ii++) = itmp;
+        }
+
+      for (octave_idx_type j = jold; j < nc; j++)
+        a.cidx (j+1) = ii;
+    }
+
+  return is;
 }
 
 /*
@@ -2811,7 +2882,6 @@ Sparse<T>::array_value () const
 %!error id=Octave:invalid-resize set_slice (sparse (ones ([2 2])), 11, 5)
 %!error id=Octave:invalid-resize set_slice (sparse (ones ([2 2])), 11, 6)
 
-
 #### 2d indexing
 
 ## size = [2 0]
@@ -2884,13 +2954,10 @@ Sparse<T>::array_value () const
 %!test test_sparse_slice ([2 2], 22, 3);
 %!test test_sparse_slice ([2 2], 22, 4);
 
-bug #35570:
+%!assert <35570> (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
 
-%!assert (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
-
-## Test removing columns (bug #36656)
-
-%!test
+## Test removing columns
+%!test <36656>
 %! s = sparse (magic (5));
 %! s(:,2:4) = [];
 %! assert (s, sparse (magic (5)(:, [1,5])));
@@ -2901,25 +2968,33 @@ bug #35570:
 %! assert (s, sparse ([], [], [], 0, 1));
 
 ## Test (bug #37321)
-%!test a=sparse (0,0); assert (all (a) == sparse ([1]));
-%!test a=sparse (0,1); assert (all (a) == sparse ([1]));
-%!test a=sparse (1,0); assert (all (a) == sparse ([1]));
-%!test a=sparse (1,0); assert (all (a,2) == sparse ([1]));
-%!test a=sparse (1,0); assert (size (all (a,1)), [1 0]);
-%!test a=sparse (1,1);
+%!test <37321> a=sparse (0,0); assert (all (a) == sparse ([1]));
+%!test <37321> a=sparse (0,1); assert (all (a) == sparse ([1]));
+%!test <37321> a=sparse (1,0); assert (all (a) == sparse ([1]));
+%!test <37321> a=sparse (1,0); assert (all (a,2) == sparse ([1]));
+%!test <37321> a=sparse (1,0); assert (size (all (a,1)), [1 0]);
+%!test <37321> a=sparse (1,1);
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
-%!test a=sparse (2,1);
+%!test <37321> a=sparse (2,1);
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
-%!test a=sparse (1,2);
+%!test <37321> a=sparse (1,2);
 %! assert (all (a) == sparse ([0]));
 %! assert (size (all (a)), [1 1]);
-%!test a=sparse (2,2); assert (isequal (all (a), sparse ([0 0])));
+%!test <37321> a=sparse (2,2); assert (isequal (all (a), sparse ([0 0])));
+
+## Test assigning row to a column slice
+%!test <45589>
+%! a = sparse (magic (3));
+%! b = a;
+%! a(1,:) = 1:3;
+%! b(1,:) = (1:3)';
+%! assert (a, b);
 
 */
 
-template <class T>
+template <typename T>
 void
 Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
 {
@@ -2933,6 +3008,9 @@ Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "rep->count:  " << rep->count << "\n";
 }
 
-#define INSTANTIATE_SPARSE(T, API) \
-  template class API Sparse<T>;
+#define INSTANTIATE_SPARSE(T, API)                                      \
+  template class API Sparse<T>;                                         \
+  template std::istream&                                                \
+  read_sparse_matrix<T> (std::istream& is, Sparse<T>& a,                \
+                         T (*read_fcn) (std::istream&));
 

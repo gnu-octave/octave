@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,13 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{arch} =} getarch ()
+## @deftypefn {} {@var{arch} =} getarch ()
 ## Undocumented internal function.
 ## @end deftypefn
 
 function arch = getarch ()
-  persistent _arch = [octave_config_info("canonical_host_type"), "-", ...
-                      octave_config_info("api_version")];
+  persistent _arch = [__octave_config_info__("canonical_host_type"), "-", ...
+                      __octave_config_info__("api_version")];
+
   arch = _arch;
 endfunction
 

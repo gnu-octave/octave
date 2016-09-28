@@ -2,7 +2,7 @@
 ##
 ## run-octave -- run Octave in the build tree.
 ##
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -20,12 +20,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-AWK=%AWK%
-FIND=%FIND%
-SED=%SED%
+: ${AWK=%AWK%}
+: ${FIND=%FIND%}
+: ${SED=%SED%}
+: ${ADDRESS_SANITIZER_OPTIONS="%ADRESS_SANITIZER_OPTIONS%"}
 
-# FIXME -- is there a better way to handle the possibility of spaces
-# in these names?
+# FIXME: is there a better way to handle the possibility of spaces
+#        in these names?
 
 top_srcdir='%abs_top_srcdir%'
 builddir='%builddir%'
@@ -35,9 +36,9 @@ d2="$builddir/scripts"
 d3="$builddir/libinterp"
 d4="$top_srcdir/examples/data"
 
-d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
+d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d4_list=`$FIND "$d4" -type d -exec echo '{}' ';' | $SED 's/$/:/'`
 
 d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
@@ -56,7 +57,7 @@ INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
 ## Checking for string equality below with prepended x's in order to
 ## handle problems with empty strings.
-if [ $# -gt 0 ]; then
+while [ $# -gt 0 ]; do
   if [ "x$1" = "x-g" ]; then
     driver="gdb --args"
     shift
@@ -81,7 +82,18 @@ if [ $# -gt 0 ]; then
   elif [ "x$1" = "x-cli" ]; then
     octave_executable="$builddir/src/octave-cli"
     shift
+  else
+    break
   fi
+done
+
+## DOCSTRINGS and doc-cache files may exist in the current (build) directory
+## or in the source directory when building from a release.
+if ! [ -e $DOCFILE ]; then
+  DOCFILE="$top_srcdir/doc/interpreter/doc-cache"
+fi
+if ! [ -e $BUILT_IN_DOCSTRINGS_FILE ]; then
+  BUILT_IN_DOCSTRINGS_FILE="$top_srcdir/libinterp/DOCSTRINGS"
 fi
 
 ## We set OCTAVE_ARCHLIBDIR so that the wrapper program can find the
@@ -89,14 +101,20 @@ fi
 ## need Octave to find other things in ARCHLIBDIR that are not built
 ## in the $builddir/src directory.
 
-OCTAVE_BINDIR="$builddir/src" \
-OCTAVE_ARCHLIBDIR="$builddir/src" \
-OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings" \
-OCTAVE_LOCALE_DIR="$builddir/libgui/languages" \
-OCTAVE_JAVA_DIR="$builddir/scripts/java" \
-  exec $builddir/libtool --mode=execute $driver \
-    "$octave_executable" --no-init-path --path="$LOADPATH" \
-    --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
-    --built-in-docstrings-file="$BUILT_IN_DOCSTRINGS_FILE" \
-    --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"
+OCTAVE_ARCHLIBDIR="$builddir/src"; export OCTAVE_ARCHLIBDIR
+OCTAVE_BINDIR="$builddir/src"; export OCTAVE_BINDIR
+OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings"; export OCTAVE_DEFAULT_QT_SETTINGS
+OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
+OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR
+OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/site-rcfile"; export OCTAVE_SITE_INITFILE
+OCTAVE_VERSION_INITFILE="$top_srcdir/scripts/startup/version-rcfile"; export OCTAVE_VERSION_INITFILE
+
+if [ "$ADDRESS_SANITIZER_ENABLED" = yes ]; then
+  ASAN_OPTIONS=symbolize=1; export ASAN_OPTIONS
+fi
+
+exec $builddir/libtool --mode=execute $driver \
+  "$octave_executable" --no-init-path --path="$LOADPATH" \
+  --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
+  --built-in-docstrings-file="$BUILT_IN_DOCSTRINGS_FILE" \
+  --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"

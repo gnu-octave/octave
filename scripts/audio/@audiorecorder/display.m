@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} display (@var{recorder})
+## @deftypefn {} {} display (@var{recorder})
 ## Display the properties of the audiorecorder object @var{recorder}.
 ## @end deftypefn
 

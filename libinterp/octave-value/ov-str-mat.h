@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_str_mat_h)
+#if ! defined (octave_ov_str_mat_h)
 #define octave_ov_str_mat_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -125,9 +127,11 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const;
 
-  string_vector all_strings (bool pad = false) const;
+  string_vector string_vector_value (bool pad = false) const;
 
   std::string string_value (bool force = false) const;
+
+  std::string xstring_value (void) const { return string_value (); }
 
   Array<std::string> cellstr_value (void) const;
 
@@ -151,7 +155,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -159,7 +163,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
 protected:
@@ -168,7 +172,6 @@ protected:
                                      bool resize_ok, char type = '"');
 
 private:
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -242,7 +245,6 @@ public:
                             bool resize_ok = false)
   { return do_index_op_internal (idx, resize_ok, '\''); }
 
-
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
   { return octave_value (matrix.sort (dim, mode), '\''); }
 
@@ -252,8 +254,8 @@ public:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

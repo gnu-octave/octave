@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2015 John W. Eaton
+Copyright (C) 2006-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,11 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 /* Original version written by Paul Kienzle distributed as free
    software in the in the public domain.  */
 
-#ifndef _RANDGAMMA_H
+#if ! defined (octave_randgamma_h)
+#define octave_randgamma_h 1
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
+#include "octave-config.h"
 
 extern OCTAVE_API double oct_randg (double a);
 extern OCTAVE_API void oct_fill_randg (double a, octave_idx_type n, double *p);
@@ -36,7 +35,5 @@ extern OCTAVE_API float oct_float_randg (float a);
 extern OCTAVE_API void oct_fill_float_randg (float a, octave_idx_type n,
                                              float *p);
 
-#ifdef  __cplusplus
-}
 #endif
-#endif
+

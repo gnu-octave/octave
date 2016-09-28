@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2015 John W. Eaton
+Copyright (C) 2007-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -29,16 +29,16 @@ To initialize:
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "builtins.h"
+#include "build-env.h"
+#include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "file-stat.h"
 #include "graphics.h"
-#include "oct-conf.h"
 #include "oct-env.h"
 #include "parse.h"
 #include "utils.h"
@@ -90,7 +90,7 @@ public:
               {
                 send_quit (props.get___plot_stream__ ());
                 props.set___plot_stream__ (Matrix ());
-                props.set___enhanced__ (false);
+                props.set_graphicssmoothing (false);
               }
             break;
           }
@@ -105,13 +105,12 @@ public:
   }
 
   void print_figure (const graphics_object& go, const std::string& term,
-                     const std::string& file, bool mono,
+                     const std::string& file,
                      const std::string& debug_file) const
   {
     octave_value_list args;
     if (! debug_file.empty ())
-      args(4) = debug_file;
-    args(3) = mono;
+      args(3) = debug_file;
     args(2) = file;
     args(1) = term;
     args(0) = go.get_handle ().as_octave_value ();
@@ -151,20 +150,17 @@ private:
         octave_value_list args;
         Matrix fids = pstream.matrix_value ();
 
-        if (! error_state)
+        Ffputs (ovl (fids(0), "\nquit;\n"));
+
+        Ffflush (ovl (fids(0)));
+        Fpclose (ovl (fids(0)));
+
+        if (fids.numel () > 1)
           {
-            Ffputs (ovl (fids(0), "\nquit;\n"));
+            Fpclose (ovl (fids(1)));
 
-            Ffflush (ovl (fids(0)));
-            Fpclose (ovl (fids(0)));
-
-            if (fids.numel () > 1)
-              {
-                Fpclose (ovl (fids(1)));
-
-                if (fids.numel () > 2)
-                  Fwaitpid (ovl (fids(2)));
-              }
+            if (fids.numel () > 2)
+              Fwaitpid (ovl (fids(2)));
           }
       }
   }
@@ -173,32 +169,48 @@ private:
 static bool
 have_gnuplot_binary (void)
 {
-  const std::string exeext = std::string (OCTAVE_CONF_EXEEXT);
-  const std::string path = octave_env::getenv ("PATH");
+  const std::string exeext = octave::build_env::EXEEXT;
+  const std::string path = octave::sys::env::getenv ("PATH");
+  bool retval = false;
 
-  octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
-  std::string gnuplot_binary = tmp(0).string_value ();
-
-  string_vector args (gnuplot_binary);
-  std::string gnuplot_path = search_path_for_file (path, args);
-
-  file_stat fs (gnuplot_path);
-
-  if (! fs.exists () && ! exeext.empty ())
+  try
     {
-      args[0] += exeext;
+      octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
 
-      gnuplot_path = search_path_for_file (path, args);
+      if (tmp(0).is_string ())
+        {
+          std::string gnuplot_binary = tmp(0).string_value ();
 
-      fs = file_stat (gnuplot_path);
+          string_vector args (gnuplot_binary);
+          std::string gnuplot_path = search_path_for_file (path, args);
+
+          octave::sys::file_stat fs (gnuplot_path);
+
+          if (! fs.exists () && ! exeext.empty ())
+            {
+              args[0] += exeext;
+
+              gnuplot_path = search_path_for_file (path, args);
+
+              fs = octave::sys::file_stat (gnuplot_path);
+            }
+
+          retval = fs.exists ();
+        }
     }
+  catch (octave::execution_exception&)
+    { }
 
-  return fs.exists ();
+  return retval;
 }
 
 // Initialize the gnuplot graphics toolkit.
 
-DEFUN_DLD (__init_gnuplot__, , , "")
+DEFUN_DLD (__init_gnuplot__, , ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __init_gnuplot__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -218,10 +230,10 @@ DEFUN_DLD (__init_gnuplot__, , , "")
 }
 
 DEFUN_DLD (__have_gnuplot__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{gnuplot_available} =} __have_gnuplot__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{gnuplot_available} =} __have_gnuplot__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -229,4 +241,9 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+/*
+## No test needed for internal helper function.
+%!assert (1)
+*/
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## Undocumented internal function.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
+## @deftypefn {} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -44,7 +44,7 @@
 ##    b. object     convert to struct, and then compare as stated above
 ##    c. cell       compare each member by order (recursive)
 ##    d. char       compare each member with strcmp
-##    e  fcn_handle compare using overloade 'eq' operator
+##    e  fcn_handle compare using overloaded 'eq' operator
 ##    f. <other>    compare each nonzero member, and assume NaN == NaN
 ##                  if nans_compare_equal is nonzero.
 
@@ -73,7 +73,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     k = 1;
     do
       t = all (builtin ("size", x, k) == cellfun ("size", varargin, k));
-    until (!t || k++ == nd);
+    until (! t || k++ == nd);
   endif
 
   ## From here on, compare objects as if they were structures.
@@ -99,7 +99,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx = 0;
       s_fn_x = sort (fn_x);
       while (t && idx < l_v)
-        idx++;
+        idx += 1;
         ## We'll allow the fieldnames to be in a different order.
         t = all (strcmp (s_fn_x, sort (fn_v{idx})));
       endwhile
@@ -107,7 +107,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx = 0;
       while (t && idx < l_fn_x)
         ## Test that all field values are equal.
-        idx++;
+        idx += 1;
         args = cell (1, 2+l_v);
         args(1:2) = {nans_compare_equal, {x.(fn_x{idx})}};
         for argn = 1:l_v
@@ -122,7 +122,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       l_x = numel (x);
       idx = 0;
       while (t && idx < l_x)
-        idx++;
+        idx += 1;
         args = cell (1, 2+l_v);
         args(1:2) = {nans_compare_equal, x{idx}};
         args(3:end) = [cellindexmat(varargin, idx){:}];
@@ -155,7 +155,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         f_y = find (y);
 
         t = (l_f_x == length (f_y)) && all (f_x == f_y);
-        if (!t)
+        if (! t)
           break;
         endif
 
@@ -163,11 +163,11 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         m = (x == y);
         t = all (m);
 
-        if (!t && nans_compare_equal)
-          t = isnan (x(!m)) && isnan (y(!m));
+        if (! t && nans_compare_equal)
+          t = isnan (x(! m)) && isnan (y(! m));
         endif
 
-        if (!t)
+        if (! t)
           break;
         endif
       endfor

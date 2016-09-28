@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __additional_help_message__ ()
+## @deftypefn {} {} __additional_help_message__ ()
 ## Undocumented internal function.
 ## @end deftypefn
 

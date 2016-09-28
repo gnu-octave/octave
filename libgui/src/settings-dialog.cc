@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "resource-manager.h"
@@ -34,25 +34,227 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QVector>
 #include <QHash>
+#include <QMessageBox>
+#include <QTextCodec>
 
-#ifdef HAVE_QSCINTILLA
-#include "octave-qscintilla.h"
-#include "octave-txt-lexer.h"
-#include <QScrollArea>
+#if defined (HAVE_QSCINTILLA)
+#  include "octave-qscintilla.h"
+#  include "octave-txt-lexer.h"
+#  include <QScrollArea>
 
-#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
-#define HAVE_LEXER_OCTAVE
-#include <Qsci/qscilexeroctave.h>
-#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
-#define HAVE_LEXER_MATLAB
-#include <Qsci/qscilexermatlab.h>
+#  if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+#    define HAVE_LEXER_OCTAVE 1
+#    include <Qsci/qscilexeroctave.h>
+#  elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+#    define HAVE_LEXER_MATLAB 1
+#    include <Qsci/qscilexermatlab.h>
+#  endif
+
+#  include <Qsci/qscilexercpp.h>
+#  include <Qsci/qscilexerbash.h>
+#  include <Qsci/qscilexerperl.h>
+#  include <Qsci/qscilexerbatch.h>
+#  include <Qsci/qscilexerdiff.h>
 #endif
 
-#include <Qsci/qscilexercpp.h>
-#include <Qsci/qscilexerbash.h>
-#include <Qsci/qscilexerperl.h>
-#include <Qsci/qscilexerbatch.h>
-#include <Qsci/qscilexerdiff.h>
+#if defined (HAVE_QSCINTILLA)
+
+static const int MaxLexerStyles = 64;
+static const int MaxStyleNumber = 128;
+
+static int
+get_valid_lexer_styles (QsciLexer *lexer, int styles[])
+{
+  int max_style = 0;
+  int actual_style = 0;
+  while (actual_style < MaxStyleNumber && max_style < MaxLexerStyles)
+    {
+      if ((lexer->description (actual_style)) != "")  // valid style
+        styles[max_style++] = actual_style;
+      actual_style++;
+    }
+  return max_style;
+}
+
+static void
+read_lexer_settings (Ui::settings_dialog * ui, QsciLexer *lexer,
+                     QSettings *settings)
+{
+  lexer->readSettings (*settings);
+  int styles[MaxLexerStyles];  // array for saving valid styles
+                               // (enum is not continuous)
+  int max_style = get_valid_lexer_styles (lexer, styles);
+  QGridLayout *style_grid = new QGridLayout ();
+  QVector<QLabel*> description (max_style);
+  QVector<QFontComboBox*> select_font (max_style);
+  QVector<QSpinBox*> font_size (max_style);
+  QVector<QCheckBox*> attrib_font (3 * max_style);
+  QVector<color_picker*> color (max_style);
+  QVector<color_picker*> bg_color (max_style);
+  int default_size = 10;
+  QFont default_font = QFont ();
+  int label_width;
+  QColor default_color = QColor ();
+  QColor dummy_color = QColor (255,0,255);
+
+  for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
+    {
+      QString actual_name = lexer->description (styles[i]);
+      QFont   actual_font = lexer->font (styles[i]);
+      description[i] = new QLabel (actual_name);
+      description[i]->setWordWrap (true);
+      label_width = 24*description[i]->fontMetrics ().averageCharWidth ();
+      description[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
+      description[i]->setMinimumSize (label_width,1);
+      select_font[i] = new QFontComboBox ();
+      select_font[i]->setObjectName (actual_name+"_font");
+      select_font[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
+      select_font[i]->setMinimumSize (label_width,1);
+      font_size[i] = new QSpinBox ();
+      font_size[i]->setObjectName (actual_name+"_size");
+      if (styles[i] == 0) // the default
+        {
+          select_font[i]->setCurrentFont (actual_font);
+          default_font = actual_font;
+          font_size[i]->setRange (6,24);
+          default_size = actual_font.pointSize ();
+          font_size[i]->setValue (default_size);
+          default_color = lexer->defaultPaper ();
+          bg_color[i] = new color_picker (default_color);
+        }
+      else   // other styles
+        {
+          select_font[i]->setCurrentFont (actual_font);
+          if (actual_font.family () == default_font.family ())
+            select_font[i]->setEditText (lexer->description (0));
+          font_size[i]->setRange (-4,4);
+          font_size[i]->setValue (actual_font.pointSize ()-default_size);
+          font_size[i]->setToolTip (QObject::tr ("Difference to the default size"));
+          if (lexer->paper (styles[i]) == default_color)
+            bg_color[i] = new color_picker (dummy_color);
+          else
+            bg_color[i] = new color_picker (lexer->paper (styles[i]));
+          bg_color[i]->setToolTip
+            (QObject::tr ("Background color, pink (255,0,255) means default"));
+        }
+      attrib_font[0+3*i] = new QCheckBox (QObject::tr ("b", "short form for bold"));
+      attrib_font[1+3*i] = new QCheckBox (QObject::tr ("i", "short form for italic"));
+      attrib_font[2+3*i] = new QCheckBox (QObject::tr ("u", "short form for underlined"));
+      attrib_font[0+3*i]->setChecked (Qt::Checked && actual_font.bold ());
+      attrib_font[0+3*i]->setObjectName (actual_name+"_bold");
+      attrib_font[1+3*i]->setChecked (Qt::Checked && actual_font.italic ());
+      attrib_font[1+3*i]->setObjectName (actual_name+"_italic");
+      attrib_font[2+3*i]->setChecked (Qt::Checked && actual_font.underline ());
+      attrib_font[2+3*i]->setObjectName (actual_name+"_underline");
+      color[i] = new color_picker (lexer->color (styles[i]));
+      color[i]->setObjectName (actual_name+"_color");
+      bg_color[i]->setObjectName (actual_name+"_bg_color");
+      int column = 1;
+      style_grid->addWidget (description[i],     i, column++);
+      style_grid->addWidget (select_font[i],     i, column++);
+      style_grid->addWidget (font_size[i],       i, column++);
+      style_grid->addWidget (attrib_font[0+3*i], i, column++);
+      style_grid->addWidget (attrib_font[1+3*i], i, column++);
+      style_grid->addWidget (attrib_font[2+3*i], i, column++);
+      style_grid->addWidget (color[i],           i, column++);
+      style_grid->addWidget (bg_color[i],        i, column++);
+    }
+  // place grid with elements into the tab
+  QScrollArea *scroll_area = new QScrollArea ();
+  QWidget *scroll_area_contents = new QWidget ();
+  scroll_area_contents->setObjectName (QString (lexer->language ())+"_styles");
+  scroll_area_contents->setLayout (style_grid);
+  scroll_area->setWidget (scroll_area_contents);
+  ui->tabs_editor_lexers->addTab (scroll_area,lexer->language ());
+
+  ui->tabs_editor_lexers->setCurrentIndex (
+    settings->value ("settings/last_editor_styles_tab",0).toInt ());
+}
+
+static void
+write_lexer_settings (Ui::settings_dialog * ui, QsciLexer *lexer,
+                      QSettings *settings)
+{
+  QWidget *tab = ui->tabs_editor_lexers->
+                 findChild <QWidget *>(QString (lexer->language ())+"_styles");
+  int styles[MaxLexerStyles];  // array for saving valid styles
+                               // (enum is not continuous)
+  int max_style = get_valid_lexer_styles (lexer, styles);
+  QFontComboBox *select_font;
+  QSpinBox *font_size;
+  QCheckBox *attrib_font[3];
+  color_picker *color;
+  color_picker *bg_color;
+  int default_size = 10;
+  QFont default_font = QFont ("Courier New",10,-1,0);
+  QColor default_color = QColor ();
+  QColor dummy_color = QColor (255,0,255);
+
+  for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
+    {
+      QString actual_name = lexer->description (styles[i]);
+      select_font    = tab->findChild <QFontComboBox *>(actual_name+"_font");
+      font_size      = tab->findChild <QSpinBox *>(actual_name+"_size");
+      attrib_font[0] = tab->findChild <QCheckBox *>(actual_name+"_bold");
+      attrib_font[1] = tab->findChild <QCheckBox *>(actual_name+"_italic");
+      attrib_font[2] = tab->findChild <QCheckBox *>(actual_name+"_underline");
+      color          = tab->findChild <color_picker *>(actual_name+"_color");
+      bg_color       = tab->findChild <color_picker *>(actual_name+"_bg_color");
+      QFont new_font = default_font;
+      if (select_font)
+        {
+          new_font = select_font->currentFont ();
+          if (styles[i] == 0)
+            default_font = new_font;
+          else if (select_font->currentText () == lexer->description (0))
+            new_font = default_font;
+        }
+      if (font_size)
+        {
+          if (styles[i] == 0)
+            {
+              default_size = font_size->value ();
+              new_font.setPointSize (font_size->value ());
+            }
+          else
+            new_font.setPointSize (font_size->value ()+default_size);
+        }
+      if (attrib_font[0])
+        new_font.setBold (attrib_font[0]->isChecked ());
+      if (attrib_font[1])
+        new_font.setItalic (attrib_font[1]->isChecked ());
+      if (attrib_font[2])
+        new_font.setUnderline (attrib_font[2]->isChecked ());
+      lexer->setFont (new_font,styles[i]);
+      if (styles[i] == 0)
+        lexer->setDefaultFont (new_font);
+      if (color)
+        lexer->setColor (color->color (),styles[i]);
+      if (bg_color)
+        {
+          if (styles[i] == 0)
+            {
+              default_color = bg_color->color ();
+              lexer->setPaper (default_color,styles[i]);
+              lexer->setDefaultPaper (default_color);
+            }
+          else
+            {
+              if (bg_color->color () == dummy_color)
+                lexer->setPaper (default_color,styles[i]);
+              else
+                lexer->setPaper (bg_color->color (),styles[i]);
+            }
+        }
+    }
+
+  lexer->writeSettings (*settings);
+
+  settings->setValue (
+    "settings/last_editor_styles_tab",ui->tabs_editor_lexers->currentIndex ());
+  settings->sync ();
+}
+
 #endif
 
 settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
@@ -61,6 +263,15 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->setupUi (this);
 
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    {
+      QMessageBox msgBox (QMessageBox::Warning, tr ("Octave Settings"),
+                          tr ("Unable to save settings.  Missing settings "
+                              "file or unknown directory."));
+      msgBox.exec ();
+      return;
+    }
 
   // restore last geometry
   restoreGeometry (settings->value("settings/geometry").toByteArray ());
@@ -119,7 +330,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   default_var = QColor (192,192,192);
   QColor bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
-                                      default_var).value<QColor> ();
+                                            default_var).value<QColor> ();
   _widget_title_bg_color_active = new color_picker (bg_color_active);
   _widget_title_bg_color_active->setEnabled (false);
   ui->layout_widget_bgtitle_active->addWidget (_widget_title_bg_color_active,0);
@@ -137,7 +348,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   default_var = QColor (0,0,0);
   QColor fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
-                                      default_var).value<QColor> ();
+                                            default_var).value<QColor> ();
   _widget_title_fg_color_active = new color_picker (fg_color_active);
   _widget_title_fg_color_active->setEnabled (false);
   ui->layout_widget_fgtitle_active->addWidget (_widget_title_fg_color_active,0);
@@ -165,13 +376,17 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->pb_octave_dir, SIGNAL (pressed ()),
            this, SLOT (get_octave_dir ()));
 
+  //
   // editor
+  //
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",
                                                         false).toBool ());
   ui->customFileEditor->setText (
     settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (
     settings->value ("editor/showLineNumbers",true).toBool ());
+
+  resource_manager::combo_encoding (ui->editor_combo_encoding);
 
   default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
@@ -190,6 +405,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/long_line_column",80).toInt ());
   ui->cb_edit_status_bar->setChecked (
     settings->value ("editor/show_edit_status_bar",true).toBool ());
+  ui->cb_edit_tool_bar->setChecked (
+    settings->value ("editor/show_toolbar",true).toBool ());
   ui->cb_code_folding->setChecked (
     settings->value ("editor/code_folding",true).toBool ());
 
@@ -218,12 +435,12 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_ws_indent_checkbox->setChecked (
     settings->value ("editor/show_white_space_indent",false).toBool ());
   ui->cb_show_eol->setChecked (
-    settings->value ("editor/show_eol_chars",false).toBool () );
+    settings->value ("editor/show_eol_chars",false).toBool ());
   ui->cb_show_hscrollbar->setChecked (
     settings->value ("editor/show_hscroll_bar",true).toBool ());
 
-#ifdef HAVE_QSCINTILLA
-#if defined (Q_OS_WIN32)
+#if defined (HAVE_QSCINTILLA)
+#  if defined (Q_OS_WIN32)
   int eol_mode = QsciScintilla::EolWindows;
 #elif defined (Q_OS_MAC)
   int eol_mode = QsciScintilla::EolMac;
@@ -234,7 +451,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   int eol_mode = 2;
 #endif
   ui->combo_eol_mode->setCurrentIndex (
-    settings->value ("editor/default_eol_mode",eol_mode).toInt () );
+    settings->value ("editor/default_eol_mode",eol_mode).toInt ());
   ui->editor_auto_ind_checkbox->setChecked (
     settings->value ("editor/auto_indent", true).toBool ());
   ui->editor_tab_ind_checkbox->setChecked (
@@ -296,16 +513,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     ui->terminal_cursorType->setCurrentIndex (2);
 
   // file browser
-  ui->showFileSize->setChecked (
-    settings->value ("filesdockwidget/showFileSize", false).toBool ());
-  ui->showFileType->setChecked (
-    settings->value ("filesdockwidget/showFileType", false).toBool ());
-  ui->showLastModified->setChecked (
-    settings->value ("filesdockwidget/showLastModified",false).toBool ());
-  ui->showHiddenFiles->setChecked (
-    settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
-  ui->useAlternatingRowColors->setChecked (
-    settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
   connect (ui->sync_octave_directory, SIGNAL (toggled (bool)),
            this, SLOT (set_disabled_pref_file_browser_dir (bool)));
   ui->sync_octave_directory->setChecked (
@@ -316,6 +523,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("filesdockwidget/startup_dir").toString ());
   connect (ui->pb_file_browser_dir, SIGNAL (pressed ()),
            this, SLOT (get_file_browser_dir ()));
+  ui->le_file_browser_extensions->setText (
+    settings->value ("filesdockwidget/txt_file_extensions", "m;c;cc;cpp;h;txt")
+    .toString ());
 
   ui->checkbox_allow_web_connect->setChecked (
     settings->value ("news/allow_web_connection",false).toBool ());
@@ -350,53 +560,47 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   ui->cb_prevent_readline_conflicts->setChecked (
     settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
-  int set = settings->value ("shortcuts/set",0).toInt ();
-  ui->rb_sc_set1->setChecked (set == 0);
-  ui->rb_sc_set2->setChecked (set == 1);
 
   // initialize the tree view with all shortcut data
   shortcut_manager::fill_treewidget (ui->shortcuts_treewidget);
 
   // connect the buttons for import/export of the shortcut sets
-  connect (ui->btn_import_shortcut_set1, SIGNAL (clicked ()),
-           this, SLOT (import_shortcut_set1 ()));
-  connect (ui->btn_export_shortcut_set1, SIGNAL (clicked ()),
-           this, SLOT (export_shortcut_set1 ()));
-  connect (ui->btn_import_shortcut_set2, SIGNAL (clicked ()),
-           this, SLOT (import_shortcut_set2 ()));
-  connect (ui->btn_export_shortcut_set2, SIGNAL (clicked ()),
-           this, SLOT (export_shortcut_set2 ()));
+  connect (ui->btn_import_shortcut_set, SIGNAL (clicked ()),
+           this, SLOT (import_shortcut_set ()));
+  connect (ui->btn_export_shortcut_set, SIGNAL (clicked ()),
+           this, SLOT (export_shortcut_set ()));
+  connect (ui->btn_default_shortcut_set, SIGNAL (clicked ()),
+           this, SLOT (default_shortcut_set ()));
 
-
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
 #if defined (HAVE_LEXER_OCTAVE)
   lexer = new QsciLexerOctave ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
 #elif defined (HAVE_LEXER_MATLAB)
   lexer = new QsciLexerMatlab ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
 #endif
   lexer = new QsciLexerCPP ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerPerl ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerBatch ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerDiff ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerBash ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new octave_txt_lexer ();
-  read_lexer_settings (lexer,settings);
+  read_lexer_settings (ui, lexer, settings);
   delete lexer;
 #endif
 
@@ -419,8 +623,9 @@ settings_dialog::show_tab (const QString& tab)
   if (tab.isEmpty ())
     {
       QSettings *settings = resource_manager::get_settings ();
-      ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
-                                      0).toInt ());
+      if (settings)
+        ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
+                                        0).toInt ());
     }
   else
     {
@@ -431,116 +636,6 @@ settings_dialog::show_tab (const QString& tab)
         ui->tabWidget->indexOf (tab_hash.value (tab)));
     }
 }
-
-#ifdef HAVE_QSCINTILLA
-int
-settings_dialog::get_valid_lexer_styles (QsciLexer *lexer, int styles[])
-{
-  int max_style = 0;
-  int actual_style = 0;
-  while (actual_style < MaxStyleNumber && max_style < MaxLexerStyles)
-    {
-      if ((lexer->description (actual_style)) != "")  // valid style
-        styles[max_style++] = actual_style;
-      actual_style++;
-    }
-  return max_style;
-}
-
-void
-settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
-{
-  lexer->readSettings (*settings);
-  int styles[MaxLexerStyles];  // array for saving valid styles
-                               // (enum is not continuous)
-  int max_style = get_valid_lexer_styles (lexer, styles);
-  QGridLayout *style_grid = new QGridLayout ();
-  QVector<QLabel*> description (max_style);
-  QVector<QFontComboBox*> select_font (max_style);
-  QVector<QSpinBox*> font_size (max_style);
-  QVector<QCheckBox*> attrib_font (3 * max_style);
-  QVector<color_picker*> color (max_style);
-  QVector<color_picker*> bg_color (max_style);
-  int default_size = 10;
-  QFont default_font = QFont ();
-  int label_width;
-  QColor default_color = QColor ();
-  QColor dummy_color = QColor (255,0,255);
-
-  for (int i = 0; i < max_style; i++)  // create dialog elements for all styles
-    {
-      QString actual_name = lexer->description (styles[i]);
-      QFont   actual_font = lexer->font (styles[i]);
-      description[i] = new QLabel (actual_name);
-      description[i]->setWordWrap (true);
-      label_width = 24*description[i]->fontMetrics ().averageCharWidth ();
-      description[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
-      description[i]->setMinimumSize (label_width,1);
-      select_font[i] = new QFontComboBox ();
-      select_font[i]->setObjectName (actual_name+"_font");
-      select_font[i]->setMaximumSize (label_width,QWIDGETSIZE_MAX);
-      select_font[i]->setMinimumSize (label_width,1);
-      font_size[i] = new QSpinBox ();
-      font_size[i]->setObjectName (actual_name+"_size");
-      if (styles[i] == 0) // the default
-        {
-          select_font[i]->setCurrentFont (actual_font);
-          default_font = actual_font;
-          font_size[i]->setRange (6,24);
-          default_size = actual_font.pointSize ();
-          font_size[i]->setValue (default_size);
-          default_color = lexer->defaultPaper ();
-          bg_color[i] = new color_picker (default_color);
-        }
-      else   // other styles
-        {
-          select_font[i]->setCurrentFont (actual_font);
-          if (actual_font.family () == default_font.family ())
-            select_font[i]->setEditText (lexer->description (0));
-          font_size[i]->setRange (-4,4);
-          font_size[i]->setValue (actual_font.pointSize ()-default_size);
-          font_size[i]->setToolTip (tr ("Difference to the default size"));
-          if (lexer->paper (styles[i]) == default_color)
-            bg_color[i] = new color_picker (dummy_color);
-          else
-            bg_color[i] = new color_picker (lexer->paper (styles[i]));
-          bg_color[i]->setToolTip
-          (tr ("Background color, pink (255,0,255) means default"));
-        }
-      attrib_font[0+3*i] = new QCheckBox (tr ("b", "short form for bold"));
-      attrib_font[1+3*i] = new QCheckBox (tr ("i", "short form for italic"));
-      attrib_font[2+3*i] = new QCheckBox (tr ("u", "short form for underlined"));
-      attrib_font[0+3*i]->setChecked (Qt::Checked && actual_font.bold ());
-      attrib_font[0+3*i]->setObjectName (actual_name+"_bold");
-      attrib_font[1+3*i]->setChecked (Qt::Checked && actual_font.italic ());
-      attrib_font[1+3*i]->setObjectName (actual_name+"_italic");
-      attrib_font[2+3*i]->setChecked (Qt::Checked && actual_font.underline ());
-      attrib_font[2+3*i]->setObjectName (actual_name+"_underline");
-      color[i] = new color_picker (lexer->color (styles[i]));
-      color[i]->setObjectName (actual_name+"_color");
-      bg_color[i]->setObjectName (actual_name+"_bg_color");
-      int column = 1;
-      style_grid->addWidget (description[i],     i, column++);
-      style_grid->addWidget (select_font[i],     i, column++);
-      style_grid->addWidget (font_size[i],       i, column++);
-      style_grid->addWidget (attrib_font[0+3*i], i, column++);
-      style_grid->addWidget (attrib_font[1+3*i], i, column++);
-      style_grid->addWidget (attrib_font[2+3*i], i, column++);
-      style_grid->addWidget (color[i],           i, column++);
-      style_grid->addWidget (bg_color[i],        i, column++);
-    }
-  // place grid with elements into the tab
-  QScrollArea *scroll_area = new QScrollArea ();
-  QWidget *scroll_area_contents = new QWidget ();
-  scroll_area_contents->setObjectName (QString (lexer->language ())+"_styles");
-  scroll_area_contents->setLayout (style_grid);
-  scroll_area->setWidget (scroll_area_contents);
-  ui->tabs_editor_lexers->addTab (scroll_area,lexer->language ());
-
-  ui->tabs_editor_lexers->setCurrentIndex (
-    settings->value ("settings/last_editor_styles_tab",0).toInt ());
-}
-#endif
 
 void
 settings_dialog::read_workspace_colors (QSettings *settings)
@@ -627,7 +722,6 @@ void
 settings_dialog::write_changed_settings (bool closing)
 {
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME: what should happen if settings is 0?
 
   // the icon set
   QString widget_icon_set = "NONE";
@@ -647,7 +741,7 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("DockWidgets/widget_title_custom_style",
                       ui->cb_widget_custom_style->isChecked ());
   settings->setValue ("DockWidgets/widget_title_3d",
-                      ui->sb_3d_title->value ( ));
+                      ui->sb_3d_title->value ());
   settings->setValue ("Dockwidgets/title_bg_color",
                       _widget_title_bg_color->color ());
   settings->setValue ("Dockwidgets/title_bg_color_active",
@@ -669,7 +763,7 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
 
   // status bar
-  settings->setValue ( "show_status_bar", ui->cb_status_bar->isChecked ());
+  settings->setValue ("show_status_bar", ui->cb_status_bar->isChecked ());
 
   // Octave startup
   settings->setValue ("restore_octave_dir",
@@ -694,6 +788,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_code_folding->isChecked ());
   settings->setValue ("editor/show_edit_status_bar",
                       ui->cb_edit_status_bar->isChecked ());
+  settings->setValue ("editor/show_toolbar",
+                      ui->cb_edit_tool_bar->isChecked ());
   settings->setValue ("editor/codeCompletion",
                       ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold",
@@ -720,6 +816,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode",
                       ui->combo_eol_mode->currentIndex ());
+  settings->setValue ("editor/default_encoding",
+                      ui->editor_combo_encoding->currentText ());
   settings->setValue ("editor/auto_indent",
                       ui->editor_auto_ind_checkbox->isChecked ());
   settings->setValue ("editor/tab_indents_line",
@@ -750,23 +848,15 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("terminal/fontName",
                       ui->terminal_fontName->currentFont ().family ());
 
-  settings->setValue ("filesdockwidget/showFileSize",
-                      ui->showFileSize->isChecked ());
-  settings->setValue ("filesdockwidget/showFileType",
-                      ui->showFileType->isChecked ());
-  settings->setValue ("filesdockwidget/showLastModified",
-                      ui->showLastModified->isChecked ());
-  settings->setValue ("filesdockwidget/showHiddenFiles",
-                      ui->showHiddenFiles->isChecked ());
-  settings->setValue ("filesdockwidget/useAlternatingRowColors",
-                      ui->useAlternatingRowColors->isChecked ());
+  // file browser
   settings->setValue ("filesdockwidget/sync_octave_directory",
                       ui->sync_octave_directory->isChecked ());
   settings->setValue ("filesdockwidget/restore_last_dir",
                       ui->cb_restore_file_browser_dir->isChecked ());
   settings->setValue ("filesdockwidget/startup_dir",
                       ui->le_file_browser_dir->text ());
-
+  settings->setValue ("filesdockwidget/txt_file_extensions",
+                      ui->le_file_browser_extensions->text ());
 
   settings->setValue ("news/allow_web_connection",
                       ui->checkbox_allow_web_connect->isChecked ());
@@ -797,35 +887,35 @@ settings_dialog::write_changed_settings (bool closing)
     }
   settings->setValue ("terminal/cursorType", cursorType);
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
   // editor styles: create lexer, get dialog contents, and write settings
   QsciLexer *lexer;
 #if defined (HAVE_LEXER_OCTAVE)
   lexer = new QsciLexerOctave ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
 #elif defined (HAVE_LEXER_MATLAB)
   lexer = new QsciLexerMatlab ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
 #endif
   lexer = new QsciLexerCPP ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerPerl ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerBatch ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerDiff ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new QsciLexerBash ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
   lexer = new octave_txt_lexer ();
-  write_lexer_settings (lexer,settings);
+  write_lexer_settings (ui, lexer, settings);
   delete lexer;
 #endif
 
@@ -841,11 +931,7 @@ settings_dialog::write_changed_settings (bool closing)
   // shortcuts
   settings->setValue ("shortcuts/prevent_readline_conflicts",
                       ui->cb_prevent_readline_conflicts->isChecked ());
-  int set = 0;
-  if (ui->rb_sc_set2->isChecked ())
-    set = 1;
-  settings->setValue ("shortcuts/set",set);
-  shortcut_manager::write_shortcuts (0, settings, closing); // 0: write both sets
+  shortcut_manager::write_shortcuts (settings, closing);
 
   // settings dialog's geometry
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
@@ -853,91 +939,6 @@ settings_dialog::write_changed_settings (bool closing)
 
   settings->sync ();
 }
-
-#ifdef HAVE_QSCINTILLA
-void
-settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
-{
-  QWidget *tab = ui->tabs_editor_lexers->
-                 findChild <QWidget *>(QString (lexer->language ())+"_styles");
-  int styles[MaxLexerStyles];  // array for saving valid styles
-                               // (enum is not continuous)
-  int max_style = get_valid_lexer_styles (lexer, styles);
-  QFontComboBox *select_font;
-  QSpinBox *font_size;
-  QCheckBox *attrib_font[3];
-  color_picker *color;
-  color_picker *bg_color;
-  int default_size = 10;
-  QFont default_font = QFont ("Courier New",10,-1,0);
-  QColor default_color = QColor ();
-  QColor dummy_color = QColor (255,0,255);
-
-  for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
-    {
-      QString actual_name = lexer->description (styles[i]);
-      select_font    = tab->findChild <QFontComboBox *>(actual_name+"_font");
-      font_size      = tab->findChild <QSpinBox *>(actual_name+"_size");
-      attrib_font[0] = tab->findChild <QCheckBox *>(actual_name+"_bold");
-      attrib_font[1] = tab->findChild <QCheckBox *>(actual_name+"_italic");
-      attrib_font[2] = tab->findChild <QCheckBox *>(actual_name+"_underline");
-      color          = tab->findChild <color_picker *>(actual_name+"_color");
-      bg_color       = tab->findChild <color_picker *>(actual_name+"_bg_color");
-      QFont new_font = default_font;
-      if (select_font)
-        {
-          new_font = select_font->currentFont ();
-          if (styles[i] == 0)
-            default_font = new_font;
-          else if (select_font->currentText () == lexer->description (0))
-            new_font = default_font;
-        }
-      if (font_size)
-        {
-          if (styles[i] == 0)
-            {
-              default_size = font_size->value ();
-              new_font.setPointSize (font_size->value ());
-            }
-          else
-            new_font.setPointSize (font_size->value ()+default_size);
-        }
-      if (attrib_font[0])
-        new_font.setBold (attrib_font[0]->isChecked ());
-      if (attrib_font[1])
-        new_font.setItalic (attrib_font[1]->isChecked ());
-      if (attrib_font[2])
-        new_font.setUnderline (attrib_font[2]->isChecked ());
-      lexer->setFont (new_font,styles[i]);
-      if (styles[i] == 0)
-        lexer->setDefaultFont (new_font);
-      if (color)
-        lexer->setColor (color->color (),styles[i]);
-      if (bg_color)
-        {
-          if (styles[i] == 0)
-            {
-              default_color = bg_color->color ();
-              lexer->setPaper (default_color,styles[i]);
-              lexer->setDefaultPaper (default_color);
-            }
-          else
-            {
-              if (bg_color->color () == dummy_color)
-                lexer->setPaper (default_color,styles[i]);
-              else
-                lexer->setPaper (bg_color->color (),styles[i]);
-            }
-        }
-    }
-
-  lexer->writeSettings (*settings);
-
-  settings->setValue (
-    "settings/last_editor_styles_tab",ui->tabs_editor_lexers->currentIndex ());
-  settings->sync ();
-}
-#endif
 
 void
 settings_dialog::write_workspace_colors (QSettings *settings)
@@ -973,7 +974,6 @@ settings_dialog::write_terminal_colors (QSettings *settings)
     }
   settings->sync ();
 }
-
 
 // internal slots
 
@@ -1036,25 +1036,20 @@ settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
 
 // slots for import/export of shortcut sets
 void
-settings_dialog::import_shortcut_set1 ()
+settings_dialog::import_shortcut_set ()
 {
-  shortcut_manager::import_export (true,1);
+  shortcut_manager::import_export (shortcut_manager::OSC_IMPORT);
 }
 
 void
-settings_dialog::export_shortcut_set1 ()
+settings_dialog::export_shortcut_set ()
 {
-  shortcut_manager::import_export (false,1);
+  shortcut_manager::import_export (shortcut_manager::OSC_EXPORT);
 }
 
 void
-settings_dialog::import_shortcut_set2 ()
+settings_dialog::default_shortcut_set ()
 {
-  shortcut_manager::import_export (true,2);
+  shortcut_manager::import_export (shortcut_manager::OSC_DEFAULT);
 }
 
-void
-settings_dialog::export_shortcut_set2 ()
-{
-  shortcut_manager::import_export (false,2);
-}

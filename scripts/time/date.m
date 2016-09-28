@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} date ()
+## @deftypefn {} {} date ()
 ## Return the current date as a character string in the form DD-MMM-YYYY@.
 ##
 ## For example:

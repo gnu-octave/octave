@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} summer ()
-## @deftypefnx {Function File} {@var{map} =} summer (@var{n})
+## @deftypefn  {} {@var{map} =} summer ()
+## @deftypefnx {} {@var{map} =} summer (@var{n})
 ## Create color colormap.  This colormap varies from green to yellow.
 ##
 ## The argument @var{n} must be a scalar.
@@ -28,9 +28,6 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Date:  06/03/2000
-
-## PKG_ADD: colormap ("register", "summer");
-## PKG_DEL: colormap ("unregister", "summer");
 
 function map = summer (n = rows (colormap ()))
 
@@ -56,8 +53,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'summer' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (summer (64));
-
+%! ## Show the 'summer' colormap profile and as an image
+%! cmap = summer (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

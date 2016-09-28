@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FILEEDITORMDISUBWINDOW_H
-#define FILEEDITORMDISUBWINDOW_H
+#if ! defined (octave_file_editor_h)
+#define octave_file_editor_h 1
 
 #include <QToolBar>
 #include <QAction>
@@ -39,14 +39,43 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
+// subclassed QTabWidget for usable tab-bar
+class tab_widget : public QTabWidget
+{
+  Q_OBJECT
+
+public:
+  tab_widget (QWidget *p) : QTabWidget (p) { }
+  ~tab_widget () { }
+  QTabBar* tabBar() const { return (QTabWidget::tabBar()); }
+};
+
 class file_editor : public file_editor_interface
 {
   Q_OBJECT
 
 public:
 
-  typedef std::map<QString, QWidget *>::iterator editor_tab_map_iterator;
-  typedef std::map<QString, QWidget *>::const_iterator editor_tab_map_const_iterator;
+  struct tab_info
+  {
+    QWidget *fet_ID;
+    QString  encoding;
+  };
+
+  typedef std::map<QString, tab_info>::iterator editor_tab_map_iterator;
+  typedef std::map<QString, tab_info>::const_iterator editor_tab_map_const_iterator;
+
+  // struct that allows to sort with respect to the tab index
+  struct session_data
+  {
+    QString index;
+    QString file_name;
+    QString encoding;
+    bool operator<(const session_data &other) const
+    {
+      return index < other.index;
+    }
+  };
 
   file_editor (QWidget *p);
   ~file_editor (void);
@@ -56,7 +85,19 @@ public:
   QMenu *get_mru_menu (void) { return _mru_file_menu; }
   QMenu *debug_menu (void);
   QToolBar *toolbar (void);
-  void insert_new_open_actions (QAction*,QAction*,QAction*);
+
+  void insert_global_actions (QList<QAction*>);
+  enum shared_actions_idx
+  {
+    NEW_SCRIPT_ACTION = 0,
+    NEW_FUNCTION_ACTION,
+    OPEN_ACTION,
+    FIND_FILES_ACTION,
+    UNDO_ACTION,
+    COPY_ACTION,
+    PASTE_ACTION,
+    SELECTALL_ACTION
+  };
 
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
@@ -95,14 +136,16 @@ signals:
   void fetab_indent_selected_text (const QWidget* ID);
   void fetab_unindent_selected_text (const QWidget* ID);
   void fetab_convert_eol (const QWidget* ID, QsciScintilla::EolMode eol_mode);
-  void fetab_find (const QWidget* ID);
+  void fetab_find (const QWidget* ID, QList<QAction *>);
+  void fetab_find_next (const QWidget* ID);
+  void fetab_find_previous (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
   void fetab_move_match_brace (const QWidget* ID, bool select);
   void fetab_completion (const QWidget*);
   void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
-                                   int line = -1);
+                                   int line = -1, const QString& = "");
   void fetab_set_focus (const QWidget* ID);
   void fetab_scintilla_command (const QWidget* ID, unsigned int sci_msg);
 
@@ -111,6 +154,7 @@ signals:
   void fetab_zoom_normal (const QWidget* ID);
 
   void fetab_set_directory (const QString& dir);
+  void fetab_recover_from_exit (void);
 
   void request_settings_dialog (const QString&);
   void execute_command_in_terminal_signal (const QString&);
@@ -132,12 +176,8 @@ public slots:
   void request_mru_open_file (QAction *action);
   void request_print_file (bool);
 
-  void request_undo (bool);
   void request_redo (bool);
-  void request_copy (bool);
   void request_cut (bool);
-  void request_paste (bool);
-  void request_selectall (bool);
   void request_context_help (bool);
   void request_context_doc (bool);
   void request_context_edit (bool);
@@ -179,6 +219,8 @@ public slots:
   void request_conv_eol_mac (bool);
 
   void request_find (bool);
+  void request_find_next (bool);
+  void request_find_previous (bool);
 
   void request_goto_line (bool);
   void request_completion (bool);
@@ -187,16 +229,20 @@ public slots:
                                  const QString& toolTip);
   void handle_tab_close_request (int index);
   void handle_tab_remove_request (void);
-  void handle_add_filename_to_list (const QString& fileName, QWidget *ID);
+  void handle_add_filename_to_list (const QString& fileName,
+                                    const QString& encoding, QWidget *ID);
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
-  void handle_mru_add_file (const QString& file_name);
+  void handle_mru_add_file (const QString& file_name, const QString& encoding);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
-                                                const QString& file, int line);
+                                                const QString& file, int line,
+                                                const QString& cond);
+  void handle_edit_mfile_request (const QString& name, const QString& file,
+                                  const QString& curr_dir, int line);
 
   void handle_edit_file_request (const QString& file);
 
@@ -218,21 +264,33 @@ protected slots:
 private slots:
 
   void request_open_files (const QStringList&);
-  void request_open_file (const QString& fileName, int line = -1,
-                          bool debug_pointer = false,
-                          bool breakpoint_marker = false, bool insert = true);
+  void request_open_file (const QString& fileName,
+                          const QString& encoding = QString (),
+                          int line = -1, bool debug_pointer = false,
+                          bool breakpoint_marker = false, bool insert = true,
+                          const QString& cond = "");
   void request_preferences (bool);
   void request_styles_preferences (bool);
   void restore_create_file_setting ();
+
+  void handle_combo_enc_current_index (QString new_encoding);
 
   void show_line_numbers (bool);
   void show_white_space (bool);
   void show_eol_chars (bool);
   void show_indent_guides (bool);
   void show_long_line (bool);
+  void show_toolbar (bool);
+  void show_statusbar (bool);
+  void show_hscrollbar (bool);
   void zoom_in (bool);
   void zoom_out (bool);
   void zoom_normal (bool);
+
+  void switch_left_tab ();
+  void switch_right_tab ();
+  void move_tab_left ();
+  void move_tab_right ();
 
   void create_context_menu (QMenu *);
   void edit_status_update (bool, bool);
@@ -253,6 +311,10 @@ private:
 
   void toggle_preference (const QString& preference, bool def);
 
+  void switch_tab (int direction, bool movetab = false);
+
+  void restore_session (QSettings *settings);
+
   bool editor_tab_has_focus ();
 
   QWidget *find_tab_widget (const QString& openFileName) const;
@@ -261,7 +323,7 @@ private:
 
   QMenu* m_add_menu (QMenuBar *p, QString text);
 
-  std::map<QString, QWidget *> editor_tab_map;
+  std::map<QString, tab_info> editor_tab_map;
   QHash<QMenu*, QStringList> _hash_menu_text;
 
   QString ced;
@@ -296,6 +358,9 @@ private:
   QAction *_show_eol_action;
   QAction *_show_indguide_action;
   QAction *_show_longline_action;
+  QAction *_show_toolbar_action;
+  QAction *_show_statusbar_action;
+  QAction *_show_hscrollbar_action;
   QAction *_zoom_in_action;
   QAction *_zoom_out_action;
   QAction *_zoom_normal_action;
@@ -311,6 +376,9 @@ private:
   QAction *_transpose_line_action;
 
   QAction *_find_action;
+  QAction *_find_next_action;
+  QAction *_find_previous_action;
+  QAction *_find_files_action;
   QAction *_goto_line_action;
   QAction *_completion_action;
 
@@ -326,6 +394,7 @@ private:
   QAction *_run_selection_action;
 
   QAction *_edit_function_action;
+  QAction *_popdown_mru_action;
   QAction *_save_action;
   QAction *_save_as_action;
   QAction *_close_action;
@@ -338,25 +407,37 @@ private:
   QAction *_preferences_action;
   QAction *_styles_preferences_action;
 
+  QAction *_switch_left_tab_action;
+  QAction *_switch_right_tab_action;
+  QAction *_move_tab_left_action;
+  QAction *_move_tab_right_action;
+
   QAction *_toggle_breakpoint_action;
   QAction *_next_breakpoint_action;
   QAction *_previous_breakpoint_action;
   QAction *_remove_all_breakpoints_action;
 
+  QMenu *_edit_menu;
   QMenu *_edit_cmd_menu;
   QMenu *_edit_fmt_menu;
   QMenu *_edit_nav_menu;
   QMenu *_fileMenu;
   QMenu *_view_editor_menu;
 
-  QTabWidget *_tab_widget;
+  QList<QAction*> _fetab_actions;
+
+  tab_widget *_tab_widget;
 
   int _marker_breakpoint;
+
+  QString _file_encoding;
 
   enum { MaxMRUFiles = 10 };
   QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
+  QStringList _mru_files_encodings;
 };
 
-#endif // FILEEDITORMDISUBWINDOW_H
+#endif
+

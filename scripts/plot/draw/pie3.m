@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ## Copyright (C) 2010 Kai Habel
 ##
 ## This file is part of Octave.
@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pie3 (@var{x})
-## @deftypefnx {Function File} {} pie3 (@dots{}, @var{explode})
-## @deftypefnx {Function File} {} pie3 (@dots{}, @var{labels})
-## @deftypefnx {Function File} {} pie3 (@var{hax}, @dots{});
-## @deftypefnx {Function File} {@var{h} =} pie3 (@dots{});
+## @deftypefn  {} {} pie3 (@var{x})
+## @deftypefnx {} {} pie3 (@dots{}, @var{explode})
+## @deftypefnx {} {} pie3 (@dots{}, @var{labels})
+## @deftypefnx {} {} pie3 (@var{hax}, @dots{});
+## @deftypefnx {} {@var{h} =} pie3 (@dots{});
 ## Plot a 3-D pie chart.
 ##
 ## Called with a single vector argument, produces a 3-D pie chart of the
@@ -43,9 +43,9 @@
 ## patch, surface, and text objects generating the plot.
 ##
 ## Note: If @code{sum (@var{x}) @leq{} 1} then the elements of @var{x} are
-## interpreted as percentages directly and are not normalized by @code{sum (x)}.
-## Furthermore, if the sum is less than 1 then there will be a missing slice
-## in the pie plot to represent the missing, unspecified percentage.
+## interpreted as percentages directly and are not normalized by @code{sum
+## (x)}.  Furthermore, if the sum is less than 1 then there will be a missing
+## slice in the pie plot to represent the missing, unspecified percentage.
 ##
 ## @seealso{pie, bar, hist, rose}
 ## @end deftypefn
@@ -85,19 +85,19 @@ endfunction
 %! clf;
 %! pie3 ([5:-1:1], [0, 0, 1, 0, 0]);
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
-%! title ('pie3() with exploded wedge');
+%! title ("pie3() with exploded wedge");
 
 %!demo
 %! clf;
-%! pie3 ([3, 2, 1], [0, 0, 1], {'Cheddar', 'Swiss', 'Camembert'});
+%! pie3 ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ('pie3() with labels');
+%! title ("pie3() with labels");
 
 %!demo
 %! clf;
-%! pie3 ([0.17, 0.34, 0.41], {'Cheddar', 'Swiss', 'Camembert'});
+%! pie3 ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ('pie3() with missing slice');
+%! title ("pie3() with missing slice");
 

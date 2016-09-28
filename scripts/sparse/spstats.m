@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Paul Kienzle
+## Copyright (C) 2004-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S})
-## @deftypefnx {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S}, @var{j})
+## @deftypefn  {} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S})
+## @deftypefnx {} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S}, @var{j})
 ## Return the stats for the nonzero elements of the sparse matrix @var{S}.
 ##
 ## @var{count} is the number of nonzeros in each column, @var{mean} is the mean

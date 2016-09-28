@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cerrno>
@@ -32,31 +32,21 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_stream
 octave_fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
-                        oct_mach_info::float_format ff)
+                        octave::mach_info::float_format ff)
 {
   return octave_stream (new octave_fstream (nm_arg, arg_md, ff));
 }
 
 octave_fstream::octave_fstream (const std::string& nm_arg,
                                 std::ios::openmode arg_md,
-                                oct_mach_info::float_format ff)
+                                octave::mach_info::float_format ff)
   : octave_base_stream (arg_md, ff), nm (nm_arg)
 {
-
-#if CXX_ISO_COMPLIANT_LIBRARY
-
   fs.open (nm.c_str (), arg_md);
 
-#else
-  // Override default protection of 0664 so that umask will appear to
-  // do the right thing.
-
-  fs.open (nm.c_str (), arg_md, 0666);
-
-#endif
-
   if (! fs)
-    error (gnulib::strerror (errno));
+    // Note: error is inherited from octave_base_stream, not ::error.
+    error (std::strerror (errno));
 }
 
 // Position a stream at OFFSET relative to ORIGIN.
@@ -64,6 +54,8 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 int
 octave_fstream::seek (off_t, int)
 {
+  // Note: error is inherited from octave_base_stream, not ::error.
+  // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid_operation");
   return -1;
 }
@@ -73,6 +65,8 @@ octave_fstream::seek (off_t, int)
 off_t
 octave_fstream::tell (void)
 {
+  // Note: error is inherited from octave_base_stream, not ::error.
+  // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid_operation");
   return -1;
 }
@@ -112,3 +106,4 @@ octave_fstream::output_stream (void)
 
   return retval;
 }
+

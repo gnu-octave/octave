@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -37,15 +37,17 @@ capability is provided by access to OpenGL@.  Which plotting system
 is used is controlled by the @code{graphics_toolkit} function.
 @xref{Graphics Toolkits}.
 
-The function call @code{graphics_toolkit ("fltk")} selects the
+The function call @code{graphics_toolkit ("qt")} selects the
+Qt/OpenGL system, @code{graphics_toolkit ("fltk")} selects the
 FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
-gnuplot system.  The two systems may be used selectively through the use
+gnuplot system.  The three systems may be used selectively through the use
 of the @code{graphics_toolkit} property of the graphics handle for each
 figure.  This is explained in @ref{Graphics Data Structures}.
-@strong{Caution:} The FLTK toolkit uses single precision variables internally
-which limits the maximum value that can be displayed to approximately
-@math{10^{38}}.  If your data contains larger values you must use the gnuplot
-toolkit which supports values up to @math{10^{308}}.
+@strong{Caution:} The OpenGL-based toolkits use single precision
+variables internally which limits the maximum value that can be
+displayed to approximately @math{10^{38}}.  If your data contains larger
+values you must use the gnuplot toolkit which supports values up to
+@math{10^{308}}.
 
 @node High-Level Plotting
 @section High-Level Plotting
@@ -380,13 +382,27 @@ three-dimensional plots.
 
 @DOCSTRING(isonormals)
 
+@DOCSTRING(isocaps)
+
 @DOCSTRING(isocolors)
+
+@DOCSTRING(smooth3)
+
+@DOCSTRING(reducevolume)
+
+@DOCSTRING(reducepatch)
 
 @DOCSTRING(shrinkfaces)
 
 @DOCSTRING(diffuse)
 
 @DOCSTRING(specular)
+
+@DOCSTRING(lighting)
+
+@DOCSTRING(material)
+
+@DOCSTRING(camlight)
 
 @DOCSTRING(meshgrid)
 
@@ -617,6 +633,7 @@ figure window, call the @code{close} function.
 
 @node Use of the @code{interpreter} Property
 @subsection Use of the @code{interpreter} Property
+@anchor{XREFinterpreterusage}
 
 All text objects---such as titles, labels, legends, and text---include
 the property @qcode{"interpreter"} that determines the manner in
@@ -632,10 +649,6 @@ The @qcode{"tex"} option implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
 characters or mathematical symbols.  Special characters are inserted by using
 a backslash (\) character followed by a code, as shown in @ref{tab:extended}.
-
-Note that for on-screen display the interpreter property is honored by all
-graphics toolkits.  However for printing, @strong{only} the @qcode{"gnuplot"}
-toolkit renders @TeX{} instructions.
 
 Besides special glyphs, the formatting of the text can be changed within the
 string by using the codes
@@ -923,31 +936,6 @@ width 0.6pt \tabskip=0pt\cr
 @end tex
 @end float
 
-A complete example showing the capabilities of the extended text is
-
-@example
-@group
-x = 0:0.01:3;
-plot (x, erf (x));
-hold on;
-plot (x,x,"r");
-axis ([0, 3, 0, 1]);
-text (0.65, 0.6175, strcat ('\leftarrow x = @{2/\surd\pi',
-' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
-' e^@{-t^2@} dt@} = 0.6175'))
-@end group
-@end example
-
-@ifnotinfo
-@noindent
-The result of which can be seen in @ref{fig:extendedtext}
-
-@float Figure,fig:extendedtext
-@center @image{extended,4in}
-@caption{Example of inclusion of text with the @TeX{} interpreter}
-@end float
-@end ifnotinfo
-
 @node Printing and Saving Plots
 @subsection Printing and Saving Plots
 @cindex plotting, saving and printing plots
@@ -972,12 +960,49 @@ print -deps foo.eps
 saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
 
-The different graphic toolkits have different print capabilities.  In
-particular, the OpenGL based toolkits such as @code{fltk} do not support
-the @qcode{"interpreter"} property of text objects.  This means special
-symbols drawn with the @qcode{"tex"} interpreter will appear correctly
-on-screen but will be rendered with interpreter @qcode{"none"} when printing.
-Switch graphics toolkits for printing if this is a concern.
+The current graphic toolkits produce very similar graphic displays but differ
+in their capability to display text and in print capabilities.  In particular,
+the OpenGL based toolkits such as @code{fltk} and @code{qt} do not support the
+@qcode{"interpreter"} property of text objects.  This means that when using
+OpenGL toolkits special symbols drawn with the @qcode{"tex"} interpreter will
+appear correctly on-screen but will be rendered with interpreter @qcode{"none"}
+when printing unless one of the @code{standalone} (see below) modes is used.
+These modes provide access to the pdflatex processor and therefore allow full
+use of @LaTeX{} commands.
+
+A complete example showing the capabilities of text printing using the
+@option{-dpdflatexstandalone} option is:
+
+@example
+@group
+x = 0:0.01:3;
+hf = figure ();
+plot (x, erf (x));
+hold on;
+plot (x, x, "r");
+axis ([0, 3, 0, 1]);
+text (0.65, 0.6175, ['$\displaystyle\leftarrow x = @{2\over\sqrt@{\pi@}@}'...
+                     '\int_@{0@}^@{x@}e^@{-t^2@} dt = 0.6175$']);
+xlabel ("x");
+ylabel ("erf (x)");
+title ("erf (x) with text annotation");
+set (hf, "visible", "off");
+print (hf, "plot15_7.pdf", "-dpdflatexstandalone");
+set (hf, "visible", "on");
+system ("pdflatex plot15_7");
+open ("plot15_7.pdf");
+@end group
+@end example
+
+@ifnotinfo
+@noindent
+The result of this example can be seen in @ref{fig:extendedtext}
+
+@float Figure,fig:extendedtext
+@center @image{extended,4in}
+@caption{Example of inclusion of text with use of @option{-dpdflatexstandalone}}
+@end float
+@end ifnotinfo
 
 @DOCSTRING(print)
 
@@ -1000,9 +1025,8 @@ commands can be used to save and re-create a graphics object.
 @subsection Interacting with Plots
 
 The user can select points on a plot with the @code{ginput} function or
-selection the position at which to place text on the plot with the
-@code{gtext} function using the mouse.  Menus may also be created
-and populated with specific user commands via the @code{uimenu} function.
+select the position at which to place text on the plot with the
+@code{gtext} function using the mouse.
 
 @DOCSTRING(ginput)
 
@@ -1010,7 +1034,8 @@ and populated with specific user commands via the @code{uimenu} function.
 
 @DOCSTRING(gtext)
 
-@DOCSTRING(uimenu)
+More sophisticated user interaction mechanisms can be obtained using the
+@nospell{ui*} family of functions, @pxref{UI Elements}.
 
 @node Test Plotting Functions
 @subsection Test Plotting Functions
@@ -1044,7 +1069,8 @@ order to address the data structures which control visual display.  A
 graphics handle may point to any one of a number of different base object
 types and these objects are the graphics data structures themselves.  The
 primitive graphic object types are: @code{figure}, @code{axes}, @code{line},
-@code{text}, @code{patch}, @code{surface}, @code{text}, and @code{image}.
+@code{text}, @code{patch}, @code{surface}, @code{text}, @code{image}, and
+@code{light}.
 
 Each of these objects has a function by the same name, and, each of these
 functions returns a graphics handle pointing to an object of the corresponding
@@ -1070,7 +1096,7 @@ the root object.
 3. Below the @code{figure} objects are @code{axes} objects.
 
 4. Below the @code{axes} objects are @code{line}, @code{text}, @code{patch},
-@code{surface}, and @code{image} objects.
+@code{surface}, @code{image}, and @code{light} objects.
 
 Graphics handles may be distinguished from function handles
 (@pxref{Function Handles}) by means of the function @code{ishandle}.
@@ -1174,7 +1200,7 @@ A figure window.
 @cindex axes graphics object
 @cindex graphics object, axes
 A set of axes.  This object is a child of a figure object and may be a
-parent of line, text, image, patch, or surface objects.
+parent of line, text, image, patch, surface, or light objects.
 
 @item line
 @cindex line graphics object
@@ -1200,6 +1226,11 @@ A filled polygon, currently limited to two dimensions.
 @cindex surface graphics object
 @cindex graphics object, surface
 A three-dimensional surface.
+
+@item light
+@cindex light graphics object
+@cindex graphics object, light
+A light object used for lighting effects on patches and surfaces.
 @c @end group
 @end table
 
@@ -1208,11 +1239,11 @@ A three-dimensional surface.
 
 You can create any graphics object primitive by calling the function of the
 same name as the object; In other words, @code{figure}, @code{axes},
-@code{line}, @code{text}, @code{image}, @code{patch}, and @code{surface}
-functions.  These fundamental graphic objects automatically become children
-of the current axes object as if @code{hold on} was in place.  Seperately, axes
-will automatically become children of the current figure object and figures
-will become children of the root object 0.
+@code{line}, @code{text}, @code{image}, @code{patch}, @code{surface}, and
+@code{light} functions.  These fundamental graphic objects automatically become
+children of the current axes object as if @code{hold on} was in place.
+Separately, axes will automatically become children of the current figure
+object and figures will become children of the root object 0.
 
 If this auto-joining feature is not desired then it is important to call
 @code{newplot} first to prepare a new figure and axes for plotting.
@@ -1228,6 +1259,8 @@ Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
 @DOCSTRING(patch)
 
 @DOCSTRING(surface)
+
+@DOCSTRING(light)
 
 @subsubsection Handle Functions
 @cindex handle functions
@@ -1367,12 +1400,22 @@ struct2hdl (fig_struct);
 * Image Properties::
 * Patch Properties::
 * Surface Properties::
+* Light Properties::
+* Uimenu Properties::
+* Uibuttongroup Properties::
+* Uicontextmenu Properties::
+* Uipanel Properties::
+* Uicontrol Properties::
+* Uitoolbar Properties::
+* Uipushtool Properties::
+* Uitoggletool Properties::
 @end menu
 
-In this Section the graphics object properties are discussed in detail, starting
-with the root figure properties and continuing through the objects
-hierarchy.  The documentation about a specific graphics object can be displayed
-using @code{doc} function, e.g., @code{doc ("axes properties")} will show
+In this Section the graphics object properties are discussed in detail,
+starting with the root figure properties and continuing through the objects
+hierarchy.  The documentation about a specific graphics object can be
+displayed using @code{doc} function, e.g., @code{doc ("axes properties")} will
+show
 @ref{Axes Properties}.
 
 The allowed values for radio (string) properties can be retrieved
@@ -1452,6 +1495,78 @@ The @code{surface} properties are:
 
 @include plot-surfaceproperties.texi
 
+
+@node Light Properties
+@subsubsection Light Properties
+@cindex light properties
+
+The @code{light} properties are:
+
+@include plot-lightproperties.texi
+
+@node Uimenu Properties
+@subsubsection Uimenu Properties
+@cindex uimenu properties
+
+The @code{uimenu} properties are:
+
+@include plot-uimenuproperties.texi
+
+@node Uibuttongroup Properties
+@subsubsection Uibuttongroup Properties
+@cindex uibuttongroup properties
+
+The @code{uibuttongroup} properties are:
+
+@include plot-uibuttongroupproperties.texi
+
+@node Uicontextmenu Properties
+@subsubsection Uicontextmenu Properties
+@cindex uicontextmenu properties
+
+The @code{uicontextmenu} properties are:
+
+@include plot-uicontextmenuproperties.texi
+
+@node Uipanel Properties
+@subsubsection Uipanel Properties
+@cindex uipanel properties
+
+The @code{uipanel} properties are:
+
+@include plot-uipanelproperties.texi
+
+@node Uicontrol Properties
+@subsubsection Uicontrol Properties
+@cindex uicontrol properties
+
+The @code{uicontrol} properties are:
+
+@include plot-uicontrolproperties.texi
+
+@node Uitoolbar Properties
+@subsubsection Uitoolbar Properties
+@cindex uitoolbar properties
+
+The @code{uitoolbar} properties are:
+
+@include plot-uitoolbarproperties.texi
+
+@node Uipushtool Properties
+@subsubsection Uipushtool Properties
+@cindex uipushtool properties
+
+The @code{uipushtool} properties are:
+
+@include plot-uipushtoolproperties.texi
+
+@node Uitoggletool Properties
+@subsubsection Uitoggletool Properties
+@cindex uitoggletool properties
+
+The @code{uitoggletool} properties are:
+
+@include plot-uitoggletoolproperties.texi
 
 @node Searching Properties
 @subsection Searching Properties
@@ -1975,7 +2090,8 @@ bars.  @xref{Line Styles}.
 
 @item  edgecolor
 @itemx facecolor
-The line and fill color of the patch objects making up the bars.  @xref{Colors}.
+The line and fill color of the patch objects making up the bars.
+@xref{Colors}.
 
 @item xdata
 The nominal x positions of the bars.  Changes in this property and
@@ -2174,7 +2290,8 @@ The RGB color or color name of the line objects of the quiver.  @xref{Colors}.
 
 @item  linewidth
 @itemx linestyle
-The line width and style of the line objects of the quiver.  @xref{Line Styles}.
+The line width and style of the line objects of the quiver.  @xref{Line
+Styles}.
 
 @item  marker
 @itemx markerfacecolor
@@ -2256,7 +2373,8 @@ The RGB color or color name of the line objects of the stairs.  @xref{Colors}.
 
 @item  linewidth
 @itemx linestyle
-The line width and style of the line objects of the stairs.  @xref{Line Styles}.
+The line width and style of the line objects of the stairs.  @xref{Line
+Styles}.
 
 @item  marker
 @itemx markeredgecolor

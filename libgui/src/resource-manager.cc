@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -31,12 +31,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QNetworkProxy>
 #include <QLibraryInfo>
 #include <QMessageBox>
+#if defined (HAVE_QT5)
+#  include <QStandardPaths>
+#endif
+#include <QTextCodec>
 
 #include "error.h"
 #include "file-ops.h"
 #include "help.h"
 #include "oct-env.h"
-#include "singleton-cleanup.h"
 
 #include "defaults.h"
 
@@ -49,10 +52,11 @@ resource_manager *resource_manager::instance = 0;
 static QString
 default_qt_settings_file (void)
 {
-  std::string dsf = octave_env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
+  std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
   if (dsf.empty ())
-    dsf = Voct_etc_dir + file_ops::dir_sep_str () + "default-qt-settings";
+    dsf = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () +
+          "default-qt-settings";
 
   return QString::fromStdString (dsf);
 }
@@ -61,10 +65,13 @@ resource_manager::resource_manager (void)
   : settings_directory (), settings_file (), settings (0),
     default_settings (0)
 {
-  QDesktopServices desktopServices;
-
+#if defined (HAVE_QT4)
   QString home_path
-    = desktopServices.storageLocation (QDesktopServices::HomeLocation);
+    = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
+#else
+  QString home_path
+    = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
+#endif
 
   settings_directory = home_path + "/.config/octave";
 
@@ -84,7 +91,7 @@ QString
 resource_manager::get_gui_translation_dir (void)
 {
   // get environment variable for the locale dir (e.g. from run-octave)
-  std::string dldir = octave_env::getenv ("OCTAVE_LOCALE_DIR");
+  std::string dldir = octave::sys::env::getenv ("OCTAVE_LOCALE_DIR");
   if (dldir.empty ())
     dldir = Voct_locale_dir; // env-var empty, load the default location
   return QString::fromStdString (dldir);
@@ -116,13 +123,13 @@ resource_manager::config_translators (QTranslator *qt_tr,
   // load the translator file for qt strings
   loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
 
-  if (!loaded) // try lower case
+  if (! loaded) // try lower case
     qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
 
   // load the translator file for qscintilla settings
   loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
 
-  if (!loaded) // try lower case
+  if (! loaded) // try lower case
     qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
 
   // load the translator file for gui strings
@@ -135,16 +142,11 @@ resource_manager::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    {
-      instance = new resource_manager ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
+    instance = new resource_manager ();
 
   if (! instance)
     {
-      ::error ("unable to create resource_manager object!");
+      error ("unable to create resource_manager object!");
 
       retval = false;
     }
@@ -184,7 +186,7 @@ resource_manager::do_reload_settings (void)
       QDir ("/").mkpath (settings_directory);
       QFile qt_settings (default_qt_settings_file ());
 
-      if (!qt_settings.open (QFile::ReadOnly))
+      if (! qt_settings.open (QFile::ReadOnly))
         return;
 
       QTextStream in (&qt_settings);
@@ -240,7 +242,7 @@ resource_manager::do_set_settings (const QString& file)
   if (! (settings
          && QFile::exists (settings->fileName ())
          && settings->isWritable ()
-         && settings->status () ==  QSettings::NoError))
+         && settings->status () == QSettings::NoError))
     {
       QString msg = QString (QT_TR_NOOP (
         "The settings file\n%1\n"
@@ -325,3 +327,53 @@ resource_manager::do_icon (const QString& icon_name, bool fallback)
   else
     return QIcon::fromTheme (icon_name);
 }
+
+// initialize a given combo box with available text encodings
+void
+resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+{
+  // get the codec name for each mib
+  QList<int> all_mibs = QTextCodec::availableMibs ();
+  QStringList all_codecs;
+  foreach (int mib, all_mibs)
+    {
+      QTextCodec *c = QTextCodec::codecForMib (mib);
+      all_codecs << c->name ().toUpper ();
+    }
+  all_codecs.removeDuplicates ();
+  qSort (all_codecs);
+
+  // the default encoding
+#if defined (Q_OS_WIN32)
+  QString def_enc = "SYSTEM";
+#else
+  QString def_enc = "UTF-8";
+#endif
+
+  // get the value from the settings file if no current encoding is given
+  QString enc = current;
+  if (enc.isEmpty ())
+    {
+      enc = settings->value ("editor/default_encoding",def_enc).toString ();
+      if (enc.isEmpty ())  // still empty?
+        enc = def_enc;     // take default
+    }
+
+  // fill the combo box
+  foreach (QString c, all_codecs)
+    combo->addItem (c);
+
+  // prepend the default item
+  combo->insertSeparator (0);
+  combo->insertItem (0, def_enc);
+
+  // select the current/default item
+  int idx = combo->findText (enc);
+  if (idx >= 0)
+    combo->setCurrentIndex (idx);
+  else
+    combo->setCurrentIndex (0);
+
+  combo->setMaxVisibleItems (12);
+}
+

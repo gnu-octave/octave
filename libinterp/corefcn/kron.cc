@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Paul Kienzle <pkienzle@users.sf.net>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "dMatrix.h"
@@ -46,9 +46,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
-template <class R, class T>
+template <typename R, typename T>
 static MArray<T>
 kron (const MArray<R>& a, const MArray<T>& b)
 {
@@ -75,7 +75,7 @@ kron (const MArray<R>& a, const MArray<T>& b)
   return c;
 }
 
-template <class R, class T>
+template <typename R, typename T>
 static MArray<T>
 kron (const MDiagArray2<R>& a, const MArray<T>& b)
 {
@@ -100,7 +100,7 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
   return c;
 }
 
-template <class T>
+template <typename T>
 static MSparse<T>
 kron (const MSparse<T>& A, const MSparse<T>& B)
 {
@@ -150,12 +150,13 @@ kron (const PermMatrix& a, const PermMatrix& b)
   return PermMatrix (res_perm, true);
 }
 
-template <class MTA, class MTB>
+template <typename MTA, typename MTB>
 octave_value
 do_kron (const octave_value& a, const octave_value& b)
 {
   MTA am = octave_value_extract<MTA> (a);
   MTB bm = octave_value_extract<MTB> (b);
+
   return octave_value (kron (am, bm));
 }
 
@@ -231,57 +232,57 @@ dispatch_kron (const octave_value& a, const octave_value& b)
 }
 
 
-DEFUN (kron, args, , "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} kron (@var{A}, @var{B})\n\
-@deftypefnx {Built-in Function} {} kron (@var{A1}, @var{A2}, @dots{})\n\
-Form the Kronecker product of two or more matrices.\n\
-\n\
-This is defined block by block as\n\
-\n\
-@example\n\
-x = [ a(i,j)*b ]\n\
-@end example\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-kron (1:4, ones (3, 1))\n\
-     @result{}  1  2  3  4\n\
-         1  2  3  4\n\
-         1  2  3  4\n\
-@end group\n\
-@end example\n\
-\n\
-If there are more than two input arguments @var{A1}, @var{A2}, @dots{},\n\
-@var{An} the Kronecker product is computed as\n\
-\n\
-@example\n\
-kron (kron (@var{A1}, @var{A2}), @dots{}, @var{An})\n\
-@end example\n\
-\n\
-@noindent\n\
-Since the Kronecker product is associative, this is well-defined.\n\
-@end deftypefn")
-{
-  octave_value retval;
+DEFUN (kron, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} kron (@var{A}, @var{B})
+@deftypefnx {} {} kron (@var{A1}, @var{A2}, @dots{})
+Form the Kronecker product of two or more matrices.
 
+This is defined block by block as
+
+@example
+x = [ a(i,j)*b ]
+@end example
+
+For example:
+
+@example
+@group
+kron (1:4, ones (3, 1))
+     @result{}  1  2  3  4
+         1  2  3  4
+         1  2  3  4
+@end group
+@end example
+
+If there are more than two input arguments @var{A1}, @var{A2}, @dots{},
+@var{An} the Kronecker product is computed as
+
+@example
+kron (kron (@var{A1}, @var{A2}), @dots{}, @var{An})
+@end example
+
+@noindent
+Since the Kronecker product is associative, this is well-defined.
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin >= 2)
-    {
-      octave_value a = args(0);
-      octave_value b = args(1);
-      retval = dispatch_kron (a, b);
-      for (octave_idx_type i = 2; i < nargin; i++)
-        retval = dispatch_kron (retval, args(i));
-    }
-  else
+  if (nargin < 2)
     print_usage ();
+
+  octave_value retval;
+
+  octave_value a = args(0);
+  octave_value b = args(1);
+
+  retval = dispatch_kron (a, b);
+
+  for (octave_idx_type i = 2; i < nargin; i++)
+    retval = dispatch_kron (retval, args(i));
 
   return retval;
 }
-
 
 /*
 %!test
@@ -308,7 +309,6 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %!assert (kron (d1, d1), kron (d2, d2))
 %!assert (kron (d1, d2), kron (d2, d1))
 
-
 %!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
 
 %% Test for two diag matrices.  See the comments above in
@@ -320,5 +320,6 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %! expected (2, 12) = 4;
 %! expected (5, 15) = 6;
 %! expected (6, 16) = 8;
-%! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected)
+%! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected);
 */
+

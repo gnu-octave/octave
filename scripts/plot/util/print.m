@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} print ()
-## @deftypefnx {Function File} {} print (@var{options})
-## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
-## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
+## @deftypefn  {} {} print ()
+## @deftypefnx {} {} print (@var{options})
+## @deftypefnx {} {} print (@var{filename}, @var{options})
+## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
 ## Print a plot, or save it to a file.
 ##
 ## Both output formatted for printing (PDF and PostScript), and many bitmapped
 ## and vector image formats are supported.
 ##
-## @var{filename} defines the name of the output file.  If the file name has
+## @var{filename} defines the name of the output file.  If the filename has
 ## no suffix, one is inferred from the specified device and appended to the
-## file name.  If no filename is specified, the output is sent to the
+## filename.  If no filename is specified, the output is sent to the
 ## printer.
 ##
 ## @var{h} specifies the handle of the figure to print.  If no handle is
@@ -79,8 +79,8 @@
 ##   Octave is able to produce output for various printers, bitmaps, and
 ## vector formats by using Ghostscript.  For bitmap and printer output
 ## anti-aliasing is applied using Ghostscript's TextAlphaBits and
-## GraphicsAlphaBits options.  The default number of bits for each is 4.
-## Allowed values for @var{N} are 1, 2, or 4.
+## GraphicsAlphaBits options.  The default number of bits are 4 and 1
+## respectively.  Allowed values for @var{N} are 1, 2, or 4.
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
@@ -125,13 +125,27 @@
 ## braces).  The @samp{pdflatex} device, and any of the @samp{standalone}
 ## formats, are not available with the Gnuplot toolkit.
 ##
-##   @item tikz
-##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
-## the result is PGF.
+##   @item  epscairo
+##   @itemx pdfcairo
+##   @itemx epscairolatex
+##   @itemx pdfcairolatex
+##   @itemx epscairolatexstandalone
+##   @itemx pdfcairolatexstandalone
+##     Generate Cairo based output when using the Gnuplot graphics toolkit.
+## The @samp{epscairo} and @samp{pdfcairo} devices are synonymous with
+## the @samp{epsc} device.  The @LaTeX{} variants generate a @LaTeX{} file,
+## @file{@var{filename}.tex}, for the text portions of a plot, and an image
+## file, @file{@var{filename}.(eps|pdf)}, for the graph portion of the plot.
+## The @samp{standalone} variants behave as described for
+## @samp{epslatexstandalone} above.
 ##
 ##   @item  ill
 ##   @itemx aifm
 ##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
+##
+##   @item canvas
+##     Javascript-based drawing on HTML5 canvas viewable in a web browser
+## (only available for the Gnuplot graphics toolkit).
 ##
 ##   @item  cdr
 ##   @itemx @nospell{corel}
@@ -148,8 +162,19 @@
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
 ## @option{-textspecial} or @option{-textnormal} can be used to control whether the special flag should be set for the text in the figure.  (default is @option{-textnormal})
 ##
+##   @item gif
+##     GIF image (only available for the Gnuplot graphics toolkit)
+##
 ##   @item hpgl
 ##     HP plotter language
+##
+##   @item  jpg
+##   @itemx jpeg
+##     JPEG image
+##
+##   @item latex
+##     @LaTeX{} picture environment (only available for the Gnuplot graphics
+## toolkit).
 ##
 ##   @item mf
 ##     Metafont
@@ -157,22 +182,22 @@
 ##   @item png
 ##     Portable network graphics
 ##
-##   @item  jpg
-##   @itemx jpeg
-##     JPEG image
-##
-##   @item gif
-##     GIF image (only available for the Gnuplot graphics toolkit)
-##
 ##   @item pbm
 ##     PBMplus
-##
-##   @item svg
-##     Scalable vector graphics
 ##
 ##   @item pdf
 ##     Portable document format
 ##   @end table
+##
+##   @item svg
+##     Scalable vector graphics
+##
+##   @item  tikz
+##   @itemx tikzstandalone
+##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
+## the result is PGF@.  The @samp{tikzstandalone} device produces a @LaTeX{}
+## document which includes the TikZ file (@samp{tikzstandalone} is only
+## available for the Gnuplot graphics toolkit).
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as PostScript.
@@ -297,7 +322,7 @@ function print (varargin)
     error ("print: no figure to print");
   endif
 
-  if (isempty (findall (opts.figure, "-depth", "1", "type", "axes")))
+  if (isempty (findall (opts.figure, "-depth", 1, "type", "axes")))
     error ("print: no axes object in figure to print");
   endif
 
@@ -317,27 +342,71 @@ function print (varargin)
 
     drawnow ();
 
+    ## print() requires children of axes to have units = "normalized", or "data"
+    hobj = findall (opts.figure, "-not", "type", "figure", ...
+      "-not", "type", "axes", "-property", "units", ...
+      "-not", "units", "normalized", "-not", "units", "data");
+    for n = 1:numel(hobj)
+      props(n).h = hobj(n);
+      props(n).name = "units";
+      props(n).value = {get(hobj(n), "units")};
+      set (hobj(n), "units", "data");
+    endfor
+
+    ## print() requires axes units = "normalized"
+    hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
+      "-not", "units", "normalized");
+    m = numel (props);
+    for n = 1:numel(hax)
+      props(m+n).h = hax(n);
+      props(m+n).name = "units";
+      props(m+n).value = {get(hax(n), "units")};
+      set (hax(n), "units", "normalized");
+    endfor
+
     ## print() requires figure units to be "pixels"
-    props(1).h = opts.figure;
-    props(1).name = "units";
-    props(1).value = {get(opts.figure, "units")};
+    m = numel (props);
+    props(m+1).h = opts.figure;
+    props(m+1).name = "units";
+    props(m+1).value = {get(opts.figure, "units")};
     set (opts.figure, "units", "pixels");
 
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
-    props(2).h = opts.figure;
-    props(2).name = "position";
-    props(2).value = {fpos};
+    props(m+2).h = opts.figure;
+    props(m+2).name = "position";
+    props(m+2).value = {fpos};
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos);
 
-    ## Set figure background to none.
-    ## This is done both for consistency with Matlab and to eliminate
-    ## the visible box along the figure's perimeter.
-    props(3).h = opts.figure;
-    props(3).name = "color";
-    props(3).value{1} = get (props(3).h, props(3).name);
-    set (props(3).h, "color", "none");
+    ## Implement InvertHardCopy option
+    do_hardcopy = strcmp (get (opts.figure, "inverthardcopy"), "on");
+
+    if (do_hardcopy)
+      ## Set figure background to white.
+      props(m+3).h = opts.figure;
+      props(m+3).name = "color";
+      props(m+3).value{1} = get (props(m+3).h, props(m+3).name);
+      set (props(m+3).h, "color", "white");
+      nfig = m + 3;
+    else
+      nfig = m + 2;
+    endif
+
+    if (do_hardcopy)
+      ## Set background to white for all top-level axes objects
+      hax = findall (opts.figure, "-depth", 1, "type", "axes",
+                                  "-not", "tag", "legend",
+                                  "-not", "color", "none");
+      m = numel (props);
+      for n = 1:numel(hax)
+        props(m+n).h = hax(n);
+        props(m+n).name = "color";
+        props(m+n).value{1} = get(hax(n), "color");
+        set (hax(n), "color", "white");
+      endfor
+      nfig += n;
+    endif
 
     if (opts.force_solid != 0)
       h = findall (opts.figure, "-property", "linestyle");
@@ -355,8 +424,7 @@ function print (varargin)
       set (h, "linestyle", linestyle);
     endif
 
-    if (opts.use_color < 0
-        && ! strcmp (get (opts.figure, "__graphics_toolkit__"), "gnuplot"))
+    if (opts.use_color < 0)
       color_props = {"color", "facecolor", "edgecolor", "colormap"};
       for c = 1:numel (color_props)
         h = findall (opts.figure, "-property", color_props{c});
@@ -412,7 +480,7 @@ function print (varargin)
         endif
         if (! isempty (opts.scalefontsize) && ! opts.scalefontsize != 1)
           ## This is done to work around the bbox being whole numbers.
-          fontsize = fontsize * opts.scalefontsize;
+          fontsize *= opts.scalefontsize;
         endif
         ## FIXME: legend child objects need to be acted on first.
         ##        or legend fontsize callback will destroy them.
@@ -435,12 +503,12 @@ function print (varargin)
     ## restore modified properties
     if (isstruct (props))
       ## Restore figure position and units first
-      for n = 2:-1:1
+      for n = nfig:-1:1
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor
-      for n = numel (props):-1:3
+      for n = numel (props):-1:(nfig + 1)
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
@@ -464,7 +532,7 @@ endfunction
 
 function cmd = epstool (opts, filein, fileout)
   ## As epstool does not work with pipes, a subshell is used to
-  ## permit piping. Since this solution does not work with the DOS
+  ## permit piping.  Since this solution does not work with the DOS
   ## command shell, the -tight and -preview options are disabled if
   ## output must be piped.
 
@@ -503,7 +571,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
   else
     pipein = false;
-    filein = strcat ("'", strtrim (filein), "'");
+    filein = ["'" strtrim(filein) "'"];
   endif
   if (strcmp (fileout, "-"))
     pipeout = true;
@@ -515,7 +583,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
   else
     pipeout = false;
-    fileout = strcat ("'", strtrim (fileout), "'");
+    fileout = ["'" strtrim(fileout) "'"];
   endif
 
   if (! isempty (opts.preview) && opts.tight_flag)
@@ -621,12 +689,15 @@ function cmd = epstool (opts, filein, fileout)
   if (opts.debug)
     fprintf ("epstool command: '%s'\n", cmd);
   endif
+
 endfunction
 
 function cmd = fig2dev (opts, devopt)
+
   if (nargin < 2)
     devopt = opts.devopt;
   endif
+
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.fig2dev_binary))
     if (dos_shell)
@@ -641,25 +712,29 @@ function cmd = fig2dev (opts, devopt)
   if (opts.debug)
     fprintf ("fig2dev command: '%s'\n", cmd);
   endif
+
 endfunction
 
 function latex_standalone (opts)
+
   n = find (opts.name == ".", 1, "last");
   if (! isempty (n))
     opts.name = opts.name(1:n-1);
   endif
-  latexfile = strcat (opts.name, ".tex");
+  latexfile = [opts.name ".tex"];
+
   switch (opts.devopt)
     case {"pdflatexstandalone"}
       packages = "\\usepackage{graphicx,color}";
-      graphicsfile = strcat (opts.name, "-inc.pdf");
+      graphicsfile = [opts.name "-inc.pdf"];
     case {"pslatexstandalone"}
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = strcat (opts.name, "-inc.ps");
+      graphicsfile = [opts.name "-inc.ps"];
     otherwise
       packages = "\\usepackage{epsfig,color}";
-      graphicsfile = strcat (opts.name, "-inc.eps");
+      graphicsfile = [opts.name "-inc.eps"];
   endswitch
+
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
                        fix (opts.canvas_size), fix (opts.canvas_size));
   prepend = {"\\documentclass{minimal}";
@@ -668,21 +743,22 @@ function latex_standalone (opts)
              "\\begin{document}";
              "\\centering"};
   postpend = {"\\end{document}"};
+
   fid = fopen (latexfile, "r");
-  if (fid >= 0)
-    latex = fscanf (fid, "%c", Inf);
-    status = fclose (fid);
-    if (status != 0)
-      error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile);
-    endif
-    ## TODO - should this be fixed in GL2PS?
-    latex = strrep (latex, "\\includegraphics{}",
-                    sprintf ("\\includegraphics{%s}", graphicsfile));
-  else
+  if (fid < 0)
     error ("print:erroropeningfile",
            "print.m: error opening file '%s'", latexfile);
   endif
+  latex = fscanf (fid, "%c", Inf);
+  status = fclose (fid);
+  if (status != 0)
+    error ("print:errorclosingfile",
+           "print.m: error closing file '%s'", latexfile);
+  endif
+  ## FIXME: should this be fixed in GL2PS?
+  latex = strrep (latex, "\\includegraphics{}",
+                  sprintf ("\\includegraphics{%s}", graphicsfile));
+
   fid = fopen (latexfile, "w");
   if (fid >= 0)
     fprintf (fid, "%s\n", prepend{:});
@@ -697,12 +773,15 @@ function latex_standalone (opts)
     error ("print:erroropeningfile",
            "print.m: error opening file '%s'", latexfile);
   endif
+
 endfunction
 
 function cmd = lpr (opts)
+
   if (nargin < 2)
     devopt = opts.devopt;
   endif
+
   if (! isempty (opts.lpr_binary))
     cmd = opts.lpr_binary;
     if (! isempty (opts.lpr_options))
@@ -717,12 +796,15 @@ function cmd = lpr (opts)
   if (opts.debug)
     fprintf ("lpr command: '%s'\n", cmd);
   endif
+
 endfunction
 
 function cmd = pstoedit (opts, devopt)
+
   if (nargin < 2)
     devopt = opts.devopt;
   endif
+
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.pstoedit_binary))
     if (dos_shell)
@@ -737,5 +819,6 @@ function cmd = pstoedit (opts, devopt)
   if (opts.debug)
     fprintf ("pstoedit command: '%s'\n", cmd);
   endif
+
 endfunction
 

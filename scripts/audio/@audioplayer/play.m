@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} play (@var{player})
-## @deftypefnx {Function File} {} play (@var{player}, @var{start})
-## @deftypefnx {Function File} {} play (@var{player}, @var{limits})
+## @deftypefn  {} {} play (@var{player})
+## @deftypefnx {} {} play (@var{player}, @var{start})
+## @deftypefnx {} {} play (@var{player}, @var{limits})
 ## Play audio stored in the audioplayer object @var{player} without blocking.
 ##
 ## Given optional argument start, begin playing at @var{start} seconds in the

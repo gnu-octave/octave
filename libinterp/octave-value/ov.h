@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_h)
+#if ! defined (octave_ov_h)
 #define octave_ov_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -92,8 +94,6 @@ public:
     op_div,            // mrdivide
     op_pow,            // mpower
     op_ldiv,           // mldivide
-    op_lshift,
-    op_rshift,
     op_lt,             // lt
     op_le,             // le
     op_eq,             // eq
@@ -137,8 +137,6 @@ public:
     op_div_eq,
     op_ldiv_eq,
     op_pow_eq,
-    op_lshift_eq,
-    op_rshift_eq,
     op_el_mul_eq,
     op_el_div_eq,
     op_el_ldiv_eq,
@@ -181,20 +179,19 @@ public:
   octave_value (long int i);
   octave_value (unsigned long int i);
 
-  // FIXME: these are kluges.  They turn into doubles
-  // internally, which will break for very large values.  We just use
-  // them to store things like 64-bit ino_t, etc, and hope that those
-  // values are never actually larger than can be represented exactly
-  // in a double.
+  // FIXME: These are kluges.  They turn into doubles internally, which will
+  // break for very large values.  We just use them to store things like
+  // 64-bit ino_t, etc, and hope that those values are never actually larger
+  // than can be represented exactly in a double.
 
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
   octave_value (long long int i);
 #endif
-#if defined (HAVE_UNSIGNED_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
   octave_value (unsigned long long int i);
 #endif
 
-  octave_value (octave_time t);
+  octave_value (octave::sys::time t);
   octave_value (double d);
   octave_value (float d);
   octave_value (const Array<octave_value>& a, bool is_cs_list = false);
@@ -242,12 +239,16 @@ public:
   octave_value (const charMatrix& chm,  char type = '\'');
   octave_value (const charNDArray& chnda, char type = '\'');
   octave_value (const Array<char>& chnda, char type = '\'');
-  octave_value (const charMatrix& chm, bool is_string,
-                char type = '\'') GCC_ATTR_DEPRECATED;
-  octave_value (const charNDArray& chnda, bool is_string,
-                char type = '\'') GCC_ATTR_DEPRECATED;
-  octave_value (const Array<char>& chnda, bool is_string,
-                char type = '\'') GCC_ATTR_DEPRECATED;
+
+  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
+  octave_value (const charMatrix& chm, bool is_string, char type = '\'');
+
+  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
+  octave_value (const charNDArray& chnda, bool is_string, char type = '\'');
+
+  OCTAVE_DEPRECATED ("note: IS_STRING argument is ignored")
+  octave_value (const Array<char>& chnda, bool is_string, char type = '\'');
+
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m,
@@ -296,7 +297,9 @@ public:
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep, bool borrow = false);
-  octave_value (octave_base_value *new_rep, int xcount) GCC_ATTR_DEPRECATED;
+
+  OCTAVE_DEPRECATED ("note: in the future there will be no way to directly set reference count")
+  octave_value (octave_base_value *new_rep, int xcount);
 
   // Copy constructor.
 
@@ -313,8 +316,7 @@ public:
   octave_base_value *empty_clone (void) const
   { return rep->empty_clone (); }
 
-  // Delete the representation of this constant if the count drops to
-  // zero.
+  // Delete the representation of this constant if the count drops to zero.
 
   ~octave_value (void)
   {
@@ -336,7 +338,7 @@ public:
   }
 
   // This uniquifies the value if it is referenced by more than a certain
-  // number of shallow copies. This is useful for optimizations where we
+  // number of shallow copies.  This is useful for optimizations where we
   // know a certain copy, typically within a cell array, to be obsolete.
   void make_unique (int obsolete_copies)
   {
@@ -383,6 +385,21 @@ public:
   // The result of full().
   octave_value full_value (void) const
   { return rep->full_value (); }
+
+  // Type conversions.
+
+  octave_value as_double (void) const { return rep->as_double (); }
+  octave_value as_single (void) const { return rep->as_single (); }
+
+  octave_value as_int8 (void) const { return rep->as_int8 (); }
+  octave_value as_int16 (void) const { return rep->as_int16 (); }
+  octave_value as_int32 (void) const { return rep->as_int32 (); }
+  octave_value as_int64 (void) const { return rep->as_int64 (); }
+
+  octave_value as_uint8 (void) const { return rep->as_uint8 (); }
+  octave_value as_uint16 (void) const { return rep->as_uint16 (); }
+  octave_value as_uint32 (void) const { return rep->as_uint32 (); }
+  octave_value as_uint64 (void) const { return rep->as_uint64 (); }
 
   octave_base_value *try_narrowing_conversion (void)
   { return rep->try_narrowing_conversion (); }
@@ -482,8 +499,9 @@ public:
   octave_idx_type numel (void) const
   { return rep->numel (); }
 
+  OCTAVE_DEPRECATED ("use 'numel' instead")
   octave_idx_type capacity (void) const
-  { return rep->capacity (); }
+  { return rep->numel (); }
 
   size_t byte_size (void) const
   { return rep->byte_size (); }
@@ -512,9 +530,8 @@ public:
   MatrixType matrix_type (const MatrixType& typ) const
   { return rep->matrix_type (typ); }
 
-  // Does this constant have a type?  Both of these are provided since
-  // it is sometimes more natural to write is_undefined() instead of
-  // ! is_defined().
+  // Does this constant have a type?  Both of these are provided since it is
+  // sometimes more natural to write is_undefined() instead of ! is_defined().
 
   bool is_defined (void) const
   { return rep->is_defined (); }
@@ -677,7 +694,7 @@ public:
   // Are the dimensions of this constant zero by zero?
 
   bool is_zero_by_zero (void) const
-  { return (rows () == 0 && columns () == 0); }
+  { return (ndims () == 2 && rows () == 0 && columns () == 0); }
 
   bool is_constant (void) const
   { return rep->is_constant (); }
@@ -766,8 +783,6 @@ public:
 
   float float_scalar_value (bool frc_str_conv = false) const
   { return rep->float_scalar_value (frc_str_conv); }
-
-  Cell cell_value (void) const;
 
   Matrix matrix_value (bool frc_str_conv = false) const
   { return rep->matrix_value (frc_str_conv); }
@@ -890,11 +905,17 @@ public:
   uint64NDArray uint64_array_value (void) const
   { return rep->uint64_array_value (); }
 
-  string_vector all_strings (bool pad = false) const
-  { return rep->all_strings (pad); }
-
   std::string string_value (bool force = false) const
   { return rep->string_value (force); }
+
+  string_vector string_vector_value (bool pad = false) const
+  { return rep->string_vector_value (pad); }
+
+  OCTAVE_DEPRECATED ("use 'string_vector_value' instead")
+  string_vector all_strings (bool pad = false) const
+  { return string_vector_value (pad); }
+
+  Cell cell_value (void) const;
 
   Array<std::string> cellstr_value (void) const
   { return rep->cellstr_value (); }
@@ -953,7 +974,6 @@ public:
   complex_row_vector_value (bool frc_str_conv = false,
                             bool frc_vec_conv = false) const;
 
-
   FloatColumnVector float_column_vector_value (bool frc_str_conv = false,
                                                bool frc_vec_conv = false) const;
 
@@ -967,9 +987,6 @@ public:
   FloatComplexRowVector
   float_complex_row_vector_value (bool frc_str_conv = false,
                                   bool frc_vec_conv = false) const;
-
-
-
 
   Array<int> int_vector_value (bool req_int = false,
                                bool frc_str_conv = false,
@@ -993,6 +1010,175 @@ public:
   float_complex_vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
 
+  // Extract values of specific types without any implicit type conversions.
+  // Throw an error if an object is the wrong type for the requested value
+  // extraction.
+  //
+  // These functions are intended to provide a simple way to extract values of
+  // specific types and display error messages that are more meaningful than
+  // the generic "error: wrong type argument 'cell'" message.
+
+  short int xshort_value (const char *fmt, ...) const;
+
+  unsigned short int xushort_value (const char *fmt, ...) const;
+
+  int xint_value (const char *fmt, ...) const;
+
+  unsigned int xuint_value (const char *fmt, ...) const;
+
+  int xnint_value (const char *fmt, ...) const;
+
+  long int xlong_value (const char *fmt, ...) const;
+
+  unsigned long int xulong_value (const char *fmt, ...) const;
+
+  int64_t xint64_value (const char *fmt, ...) const;
+
+  uint64_t xuint64_value (const char *fmt, ...) const;
+
+  octave_idx_type xidx_type_value (const char *fmt, ...) const;
+
+  double xdouble_value (const char *fmt, ...) const;
+
+  float xfloat_value (const char *fmt, ...) const;
+
+  double xscalar_value (const char *fmt, ...) const;
+
+  float xfloat_scalar_value (const char *fmt, ...) const;
+
+  Matrix xmatrix_value (const char *fmt, ...) const;
+
+  FloatMatrix xfloat_matrix_value (const char *fmt, ...) const;
+
+  NDArray xarray_value (const char *fmt, ...) const;
+
+  FloatNDArray xfloat_array_value (const char *fmt, ...) const;
+
+  Complex xcomplex_value (const char *fmt, ...) const;
+
+  FloatComplex xfloat_complex_value (const char *fmt, ...) const;
+
+  ComplexMatrix xcomplex_matrix_value (const char *fmt, ...) const;
+
+  FloatComplexMatrix xfloat_complex_matrix_value (const char *fmt, ...) const;
+
+  ComplexNDArray xcomplex_array_value (const char *fmt, ...) const;
+
+  FloatComplexNDArray xfloat_complex_array_value (const char *fmt, ...) const;
+
+  bool xbool_value (const char *fmt, ...) const;
+
+  boolMatrix xbool_matrix_value (const char *fmt, ...) const;
+
+  boolNDArray xbool_array_value (const char *fmt, ...) const;
+
+  charMatrix xchar_matrix_value (const char *fmt, ...) const;
+
+  charNDArray xchar_array_value (const char *fmt, ...) const;
+
+  SparseMatrix xsparse_matrix_value (const char *fmt, ...) const;
+
+  SparseComplexMatrix xsparse_complex_matrix_value (const char *fmt, ...) const;
+
+  SparseBoolMatrix xsparse_bool_matrix_value (const char *fmt, ...) const;
+
+  DiagMatrix xdiag_matrix_value (const char *fmt, ...) const;
+
+  FloatDiagMatrix xfloat_diag_matrix_value (const char *fmt, ...) const;
+
+  ComplexDiagMatrix xcomplex_diag_matrix_value (const char *fmt, ...) const;
+
+  FloatComplexDiagMatrix xfloat_complex_diag_matrix_value (const char *fmt, ...) const;
+
+  PermMatrix xperm_matrix_value (const char *fmt, ...) const;
+
+  octave_int8 xint8_scalar_value (const char *fmt, ...) const;
+
+  octave_int16 xint16_scalar_value (const char *fmt, ...) const;
+
+  octave_int32 xint32_scalar_value (const char *fmt, ...) const;
+
+  octave_int64 xint64_scalar_value (const char *fmt, ...) const;
+
+  octave_uint8 xuint8_scalar_value (const char *fmt, ...) const;
+
+  octave_uint16 xuint16_scalar_value (const char *fmt, ...) const;
+
+  octave_uint32 xuint32_scalar_value (const char *fmt, ...) const;
+
+  octave_uint64 xuint64_scalar_value (const char *fmt, ...) const;
+
+  int8NDArray xint8_array_value (const char *fmt, ...) const;
+
+  int16NDArray xint16_array_value (const char *fmt, ...) const;
+
+  int32NDArray xint32_array_value (const char *fmt, ...) const;
+
+  int64NDArray xint64_array_value (const char *fmt, ...) const;
+
+  uint8NDArray xuint8_array_value (const char *fmt, ...) const;
+
+  uint16NDArray xuint16_array_value (const char *fmt, ...) const;
+
+  uint32NDArray xuint32_array_value (const char *fmt, ...) const;
+
+  uint64NDArray xuint64_array_value (const char *fmt, ...) const;
+
+  std::string xstring_value (const char *fmt, ...) const;
+
+  string_vector xstring_vector_value (const char *fmt, ...) const;
+
+  Cell xcell_value (const char *fmt, ...) const;
+
+  Array<std::string> xcellstr_value (const char *fmt, ...) const;
+
+  Range xrange_value (const char *fmt, ...) const;
+
+  octave_map xmap_value (const char *fmt, ...) const;
+
+  octave_scalar_map xscalar_map_value (const char *fmt, ...) const;
+
+  ColumnVector xcolumn_vector_value (const char *fmt, ...) const;
+
+  ComplexColumnVector
+  xcomplex_column_vector_value (const char *fmt, ...) const;
+
+  RowVector xrow_vector_value (const char *fmt, ...) const;
+
+  ComplexRowVector xcomplex_row_vector_value (const char *fmt, ...) const;
+
+  FloatColumnVector xfloat_column_vector_value (const char *fmt, ...) const;
+
+  FloatComplexColumnVector
+  xfloat_complex_column_vector_value (const char *fmt, ...) const;
+
+  FloatRowVector xfloat_row_vector_value (const char *fmt, ...) const;
+
+  FloatComplexRowVector
+  xfloat_complex_row_vector_value (const char *fmt, ...) const;
+
+  Array<int> xint_vector_value (const char *fmt, ...) const;
+
+  Array<octave_idx_type>
+  xoctave_idx_type_vector_value (const char *fmt, ...) const;
+
+  Array<double> xvector_value (const char *fmt, ...) const;
+
+  Array<Complex> xcomplex_vector_value (const char *fmt, ...) const;
+
+  Array<float> xfloat_vector_value (const char *fmt, ...) const;
+
+  Array<FloatComplex> xfloat_complex_vector_value (const char *fmt, ...) const;
+
+  octave_function *xfunction_value (const char *fmt, ...) const;
+  octave_user_function *xuser_function_value (const char *fmt, ...) const;
+  octave_user_script *xuser_script_value (const char *fmt, ...) const;
+  octave_user_code *xuser_code_value (const char *fmt, ...) const;
+  octave_fcn_handle *xfcn_handle_value (const char *fmt, ...) const;
+  octave_fcn_inline *xfcn_inline_value (const char *fmt, ...) const;
+
+  octave_value_list xlist_value (const char *fmt, ...) const;
+
   // Possibly economize a lazy-indexed value.
 
   void maybe_economize (void)
@@ -1004,14 +1190,14 @@ public:
 
   octave_value storable_value (void) const;
 
-  // Ditto, but in place, i.e. equivalent to *this = this->storable_value (),
+  // Ditto, but in place, i.e., equivalent to *this = this->storable_value (),
   // but possibly more efficient.
 
   void make_storable_value (void);
 
-  // Conversions.  These should probably be private.  If a user of this
-  // class wants a certain kind of constant, he should simply ask for
-  // it, and we should convert it if possible.
+  // FIXME: These should probably be private.
+  // Conversions.  If a user of this class wants a certain kind of constant,
+  // he should simply ask for it, and we should convert it if possible.
 
   octave_value convert_to_str (bool pad = false, bool force = false,
                                char type = '\'') const
@@ -1086,7 +1272,7 @@ public:
   bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
 
   void print_info (std::ostream& os,
-                   const std::string& prefix = std::string ()) const;
+                   const std::string& prefix = "") const;
 
   bool save_ascii (std::ostream& os) { return rep->save_ascii (os); }
 
@@ -1096,7 +1282,7 @@ public:
   { return rep->save_binary (os, save_as_floats); }
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt)
+                    octave::mach_info::float_format fmt)
   { return rep->load_binary (is, swap, fmt); }
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
@@ -1108,7 +1294,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const;
+             octave::mach_info::float_format flt_fmt) const;
 
   octave_base_value *internal_rep (void) const { return rep; }
 
@@ -1152,7 +1338,10 @@ public:
   void dump (std::ostream& os) const { rep->dump (os); }
 
 #define MAPPER_FORWARD(F) \
-  octave_value F (void) const { return rep->map (octave_base_value::umap_ ## F); }
+  octave_value F (void) const                           \
+  {                                                     \
+    return rep->map (octave_base_value::umap_ ## F);    \
+  }
 
   MAPPER_FORWARD (abs)
   MAPPER_FORWARD (acos)
@@ -1177,7 +1366,7 @@ public:
   MAPPER_FORWARD (dawson)
   MAPPER_FORWARD (exp)
   MAPPER_FORWARD (expm1)
-  MAPPER_FORWARD (finite)
+  MAPPER_FORWARD (isfinite)
   MAPPER_FORWARD (fix)
   MAPPER_FORWARD (floor)
   MAPPER_FORWARD (gamma)
@@ -1200,8 +1389,7 @@ public:
   MAPPER_FORWARD (tan)
   MAPPER_FORWARD (tanh)
 
-  // These functions are prefixed with X to avoid potential macro
-  // conflicts.
+  // These functions are prefixed with X to avoid potential macro conflicts.
 
   MAPPER_FORWARD (xisalnum)
   MAPPER_FORWARD (xisalpha)
@@ -1225,14 +1413,16 @@ public:
   octave_value map (octave_base_value::unary_mapper_t umap) const
   { return rep->map (umap); }
 
-  // Extract the n-th element, aka val(n). Result is undefined if val is not an
-  // array type or n is out of range. Never error.
+  // Extract the n-th element, aka val(n).
+  // Result is undefined if val is not an array type or n is out of range.
+  // Never error.
   octave_value
   fast_elem_extract (octave_idx_type n) const
   { return rep->fast_elem_extract (n); }
 
-  // Assign the n-th element, aka val(n) = x. Returns false if val is not an
-  // array type, x is not a matching scalar type, or n is out of range.
+  // Assign the n-th element, aka val(n) = x.
+  // Return false if val is not an array type, x is not a matching scalar type,
+  // or n is out of range.
   // Never error.
   virtual bool
   fast_elem_insert (octave_idx_type n, const octave_value& x)
@@ -1273,22 +1463,22 @@ extern OCTINTERP_API octave_value
 do_binary_op (octave_value::compound_binary_op op,
               const octave_value& a, const octave_value& b);
 
-#define OV_UNOP_FN(name) \
-  inline octave_value \
-  name (const octave_value& a) \
-  { \
+#define OV_UNOP_FN(name)                        \
+  inline octave_value                           \
+  name (const octave_value& a)                  \
+  {                                             \
     return do_unary_op (octave_value::name, a); \
   }
 
-#define OV_UNOP_OP(name, op) \
-  inline octave_value \
-  operator op (const octave_value& a) \
-  { \
-    return name (a); \
+#define OV_UNOP_OP(name, op)                    \
+  inline octave_value                           \
+  operator op (const octave_value& a)           \
+  {                                             \
+    return name (a);                            \
   }
 
-#define OV_UNOP_FN_OP(name, op) \
-  OV_UNOP_FN (name) \
+#define OV_UNOP_FN_OP(name, op)                 \
+  OV_UNOP_FN (name)                             \
   OV_UNOP_OP (name, op)
 
 OV_UNOP_FN_OP (op_not, !)
@@ -1303,22 +1493,22 @@ OV_UNOP_FN (op_hermitian)
 //   incr
 //   decr
 
-#define OV_BINOP_FN(name) \
-  inline octave_value \
+#define OV_BINOP_FN(name)                               \
+  inline octave_value                                   \
   name (const octave_value& a1, const octave_value& a2) \
-  { \
-    return do_binary_op (octave_value::name, a1, a2); \
+  {                                                     \
+    return do_binary_op (octave_value::name, a1, a2);   \
   }
 
-#define OV_BINOP_OP(name, op) \
-  inline octave_value \
-  operator op (const octave_value& a1, const octave_value& a2) \
-  { \
-    return name (a1, a2); \
+#define OV_BINOP_OP(name, op)                                   \
+  inline octave_value                                           \
+  operator op (const octave_value& a1, const octave_value& a2)  \
+  {                                                             \
+    return name (a1, a2);                                       \
   }
 
-#define OV_BINOP_FN_OP(name, op) \
-  OV_BINOP_FN (name) \
+#define OV_BINOP_FN_OP(name, op)                \
+  OV_BINOP_FN (name)                            \
   OV_BINOP_OP (name, op)
 
 OV_BINOP_FN_OP (op_add, +)
@@ -1328,8 +1518,6 @@ OV_BINOP_FN_OP (op_div, /)
 
 OV_BINOP_FN (op_pow)
 OV_BINOP_FN (op_ldiv)
-OV_BINOP_FN (op_lshift)
-OV_BINOP_FN (op_rshift)
 
 OV_BINOP_FN_OP (op_lt, <)
 OV_BINOP_FN_OP (op_le, <=)
@@ -1347,11 +1535,11 @@ OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
 
-#define OV_COMP_BINOP_FN(name) \
-  inline octave_value \
+#define OV_COMP_BINOP_FN(name)                          \
+  inline octave_value                                   \
   name (const octave_value& a1, const octave_value& a2) \
-  { \
-    return do_binary_op (octave_value::name, a1, a2); \
+  {                                                     \
+    return do_binary_op (octave_value::name, a1, a2);   \
   }
 
 OV_COMP_BINOP_FN (op_trans_mul)
@@ -1361,21 +1549,17 @@ OV_COMP_BINOP_FN (op_mul_herm)
 
 extern OCTINTERP_API void install_types (void);
 
-// This will eventually go away, but for now it can be used to
-// simplify the transition to the new octave_value class hierarchy,
-// which uses octave_base_value instead of octave_value for the type
-// of octave_value::rep.
-#define OV_REP_TYPE octave_base_value
-
 // Templated value extractors.
-template<class Value>
+template <typename Value>
 inline Value octave_value_extract (const octave_value&)
 { assert (false); }
 
-#define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX) \
-template<> \
-inline VALUE octave_value_extract<VALUE> (const octave_value& v) \
-  { return v.MPREFIX ## _value (); }
+#define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX)                              \
+  template <>                                                           \
+  inline VALUE octave_value_extract<VALUE> (const octave_value& v)      \
+  {                                                                     \
+    return v.MPREFIX ## _value ();                                      \
+  }
 
 DEF_VALUE_EXTRACTOR (double, scalar)
 DEF_VALUE_EXTRACTOR (float, float_scalar)
@@ -1391,7 +1575,6 @@ DEF_VALUE_EXTRACTOR (octave_uint8, uint8_scalar)
 DEF_VALUE_EXTRACTOR (octave_uint16, uint16_scalar)
 DEF_VALUE_EXTRACTOR (octave_uint32, uint32_scalar)
 DEF_VALUE_EXTRACTOR (octave_uint64, uint64_scalar)
-
 
 DEF_VALUE_EXTRACTOR (NDArray, array)
 DEF_VALUE_EXTRACTOR (FloatNDArray, float_array)
@@ -1436,13 +1619,17 @@ DEF_VALUE_EXTRACTOR (SparseComplexMatrix, sparse_complex_matrix)
 DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 #undef DEF_VALUE_EXTRACTOR
 
-#define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL) \
-template<> \
-inline VALUE octave_value_extract<VALUE> (const octave_value&) \
-  { assert (false); return DEFVAL; }
+#define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL)                         \
+  template <>                                                           \
+  inline VALUE octave_value_extract<VALUE> (const octave_value&)        \
+  {                                                                     \
+    assert (false);                                                     \
+    return DEFVAL;                                                      \
+  }
 
 DEF_DUMMY_VALUE_EXTRACTOR (char, 0)
 DEF_DUMMY_VALUE_EXTRACTOR (octave_value, octave_value ())
 #undef DEF_DUMMY_VALUE_EXTRACTOR
 
 #endif
+

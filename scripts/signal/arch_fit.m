@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{a}, @var{b}] =} arch_fit (@var{y}, @var{x}, @var{p}, @var{iter}, @var{gamma}, @var{a0}, @var{b0})
+## @deftypefn {} {[@var{a}, @var{b}] =} arch_fit (@var{y}, @var{x}, @var{p}, @var{iter}, @var{gamma}, @var{a0}, @var{b0})
 ## Fit an ARCH regression model to the time series @var{y} using the scoring
 ## algorithm in @nospell{Engle's} original ARCH paper.
 ##
@@ -96,17 +96,17 @@ function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
     tmp = esq ./ h.^2 - 1 ./ h;
     s   = 1 ./ h(1:T-p);
     for j = 1 : p;
-      s = s - a(j+1) * tmp(j+1:T-p+j);
+      s -= a(j+1) * tmp(j+1:T-p+j);
     endfor
     r = 1 ./ h(1:T-p);
     for j = 1:p;
-      r = r + 2 * h(j+1:T-p+j).^2 .* esq(1:T-p);
+      r += 2 * h(j+1:T-p+j).^2 .* esq(1:T-p);
     endfor
     r = sqrt (r);
     X_tilde = x(1:T-p, :) .* (r * ones (1,k));
     e_tilde = e(1:T-p) .*s ./ r;
     delta_b = inv (X_tilde' * X_tilde) * X_tilde' * e_tilde;
-    b   = b + gamma * delta_b;
+    b  += gamma * delta_b;
     e   = y - x * b;
     esq = e .^ 2;
     Z   = autoreg_matrix (esq, p);
@@ -114,7 +114,7 @@ function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
     f   = esq ./ h - ones (T,1);
     Z_tilde = Z ./ (h * ones (1, p+1));
     delta_a = inv (Z_tilde' * Z_tilde) * Z_tilde' * f;
-    a = a + gamma * delta_a;
+    a += gamma * delta_a;
   endfor
 
 endfunction

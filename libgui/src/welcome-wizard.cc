@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QApplication>
@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#ifdef __WIN32__
+#if defined (OCTAVE_USE_WINDOWS_API)
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
 #endif
@@ -46,7 +46,6 @@ make_octave_logo (QWidget *p = 0, int height = 100)
   logo->setPixmap (logo_pixmap.scaledToHeight (height));
   return logo;
 };
-
 
 
 initial_page::initial_page (welcome_wizard *wizard)
@@ -101,8 +100,6 @@ initial_page::initial_page (welcome_wizard *wizard)
   connect (next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
   connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }
-
-
 
 setup_community_news::setup_community_news (welcome_wizard *wizard)
   : QWidget (wizard),
@@ -193,7 +190,6 @@ setup_community_news::setup_community_news (welcome_wizard *wizard)
   connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }
 
-
 final_page::final_page (welcome_wizard *wizard)
   : QWidget (wizard),
     title (new QLabel (tr ("Enjoy!"), this)),
@@ -269,7 +265,6 @@ final_page::final_page (welcome_wizard *wizard)
   connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
 }
 
-
 welcome_wizard::welcome_wizard (QWidget *p)
   : QDialog (p), page_ctor_list (), page_list_iterator (),
     current_page (initial_page::create (this)),
@@ -289,7 +284,7 @@ welcome_wizard::welcome_wizard (QWidget *p)
 
   show_page ();
 
-#ifdef __WIN32__
+#if defined (OCTAVE_USE_WINDOWS_API)
   // HACK to forceshow of dialog if started minimized
   ShowWindow((HWND)winId(), SW_SHOWNORMAL);
 #endif
@@ -350,3 +345,4 @@ welcome_wizard::accept (void)
 
   QDialog::accept ();
 }
+

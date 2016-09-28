@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 Dirk Laurie
+## Copyright (C) 1993-2016 Dirk Laurie
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} invhilb (@var{n})
+## @deftypefn {} {} invhilb (@var{n})
 ## Return the inverse of the Hilbert matrix of order @var{n}.
 ##
 ## This can be computed exactly using

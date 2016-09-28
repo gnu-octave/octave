@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,11 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_funcall_h)
+#if ! defined (octave_tree_funcall_h)
 #define octave_tree_funcall_h 1
 
+#include "octave-config.h"
+
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "parse.h"
 #include "pt-exp.h"
 
@@ -96,3 +98,4 @@ private:
 };
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -22,10 +22,12 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Max Brister <max@2bass.com>
 
-#if !defined (octave_pt_jit_h)
+#if ! defined (octave_pt_jit_h)
 #define octave_pt_jit_h 1
 
-#ifdef HAVE_LLVM
+#include "octave-config.h"
+
+#if defined (HAVE_LLVM)
 
 #include "jit-ir.h"
 #include "pt-walk.h"
@@ -196,21 +198,21 @@ private:
 
   jit_call *create_checked_impl (jit_call *ret);
 
-  // get an existing vairable. If the variable does not exist, it will not be
+  // get an existing vairable.  If the variable does not exist, it will not be
   // created
   jit_variable *find_variable (const std::string& vname) const;
 
-  // get a variable, create it if it does not exist. The type will default to
+  // get a variable, create it if it does not exist.  The type will default to
   // the variable's current type in the symbol table.
   jit_variable *get_variable (const std::string& vname);
 
-  // create a variable of the given name and given type. Will also insert an
+  // create a variable of the given name and given type.  Will also insert an
   // extract statement
   jit_variable *create_variable (const std::string& vname, jit_type *type,
                                  bool isarg = true);
 
-  // The name of the next for loop iterator. If inc is false, then the iterator
-  // counter will not be incremented.
+  // The name of the next for loop iterator.  If inc is false, then the
+  // iterator counter will not be incremented.
   std::string next_iterator (bool inc = true)
   { return next_name ("#iter", iterator_count, inc); }
 
@@ -386,7 +388,7 @@ private:
   size_t trip_count (const octave_value& bounds) const;
 
   llvm::Module *module;
-#ifdef LEGACY_PASSMANAGER
+#if defined (LEGACY_PASSMANAGER)
   llvm::legacy::PassManager *module_pass_manager;
   llvm::legacy::FunctionPassManager *pass_manager;
 #else
@@ -449,3 +451,4 @@ private:
 
 #endif
 #endif
+

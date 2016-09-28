@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fCDiagMatrix_h)
+#if ! defined (octave_fCDiagMatrix_h)
 #define octave_fCDiagMatrix_h 1
+
+#include "octave-config.h"
 
 #include "MDiagArray2.h"
 
@@ -67,7 +69,7 @@ public:
   FloatComplexDiagMatrix (const FloatComplexDiagMatrix& a)
     : MDiagArray2<FloatComplex> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexDiagMatrix (const DiagArray2<U>& a)
     : MDiagArray2<FloatComplex> (a) { }
 
@@ -162,3 +164,4 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b);
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, FloatComplexDiagMatrix, FloatComplex)
 
 #endif
+

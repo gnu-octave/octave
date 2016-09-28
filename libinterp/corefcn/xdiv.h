@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2008 Jaroslav Hajek
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_xdiv_h)
+#if ! defined (octave_xdiv_h)
 #define octave_xdiv_h 1
+
+#include "octave-config.h"
 
 #include "mx-defs.h"
 #include "MatrixType.h"
@@ -98,7 +100,6 @@ extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a,
                                     MatrixType &typ,
                                     blas_trans_type transt = blas_no_trans);
 
-
 extern Matrix xdiv (const Matrix& a, const DiagMatrix& b);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const DiagMatrix& b);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexDiagMatrix& b);
@@ -149,3 +150,4 @@ extern FloatComplexDiagMatrix xleftdiv (const FloatComplexDiagMatrix& a,
                                         const FloatComplexDiagMatrix& b);
 
 #endif
+

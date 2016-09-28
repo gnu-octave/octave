@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ## Copyright (C) 2008 Marco Caliari
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{l} =} legendre (@var{n}, @var{x})
-## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
-## Compute the Legendre function of degree @var{n} and order
+## @deftypefn  {} {@var{l} =} legendre (@var{n}, @var{x})
+## @deftypefnx {} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
+## Compute the associated Legendre function of degree @var{n} and order
 ## @var{m} = 0 @dots{} @var{n}.
 ##
 ## The value @var{n} must be a real non-negative integer.
@@ -32,11 +32,11 @@
 ## is @qcode{"unnorm"}.
 ##
 ## When the optional argument @var{normalization} is @qcode{"unnorm"}, compute
-## the Legendre function of degree @var{n} and order @var{m} and return all
-## values for @var{m} = 0 @dots{} @var{n}.  The return value has one dimension
-## more than @var{x}.
+## the associated Legendre function of degree @var{n} and order @var{m} and
+## return all values for @var{m} = 0 @dots{} @var{n}.  The return value has one
+## dimension more than @var{x}.
 ##
-## The Legendre Function of degree @var{n} and order @var{m}:
+## The associated Legendre function of degree @var{n} and order @var{m}:
 ##
 ## @tex
 ## $$
@@ -134,8 +134,8 @@
 ##
 ## When the optional argument @var{normalization} is @qcode{"norm"}, compute
 ## the fully normalized associated Legendre function.  The fully normalized
-## associated Legendre function is related to the unnormalized Legendre
-## functions by the following:
+## associated Legendre function is related to the unnormalized associated
+## Legendre functions by the following:
 ##
 ## For Legendre functions of degree @var{n} and order @var{m}
 ##
@@ -192,7 +192,7 @@ function retval = legendre (n, x, normalization)
       error ('legendre: NORMALIZATION option must be "unnorm", "norm", or "sch"');
   endswitch
 
-  scale = scale * ones (size (x));
+  scale *= ones (size (x));
 
   ## Based on the recurrence relation below
   ##            m                 m              m

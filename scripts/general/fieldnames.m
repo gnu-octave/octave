@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 2012-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{names} =} fieldnames (@var{struct})
-## @deftypefnx {Function File} {@var{names} =} fieldnames (@var{obj})
-## @deftypefnx {Function File} {@var{names} =} fieldnames (@var{javaobj})
-## @deftypefnx {Function File} {@var{names} =} fieldnames ("@var{jclassname}")
+## @deftypefn  {} {@var{names} =} fieldnames (@var{struct})
+## @deftypefnx {} {@var{names} =} fieldnames (@var{obj})
+## @deftypefnx {} {@var{names} =} fieldnames (@var{javaobj})
+## @deftypefnx {} {@var{names} =} fieldnames ("@var{javaclassname}")
 ## Return a cell array of strings with the names of the fields in the
 ## specified input.
 ##
@@ -30,9 +30,9 @@
 ## When the input is an Octave object @var{obj}, the names are the public
 ## properties of the object.
 ##
-## When the input is a Java object @var{javaobj} or Java classname
-## @var{jclassname} the name are the public data elements of the object or
-## class.
+## When the input is a Java object @var{javaobj} or a string containing the
+## name of a Java class @var{javaclassname}, the names are the public fields
+## (data members) of the object or class.
 ## @seealso{numfields, isfield, orderfields, struct, methods}
 ## @end deftypefn
 
@@ -46,11 +46,11 @@ function names = fieldnames (obj)
     ## Call internal C++ function for structs or Octave objects
     names = __fieldnames__ (obj);
   elseif (isjava (obj) || ischar (obj))
-    ## FIXME: Function prototype that excepts java obj exists, but doesn't
+    ## FIXME: Function prototype that accepts java obj exists, but doesn't
     ##        work if obj is java.lang.String.  Convert obj to classname.
-    ## FIXME this is now working for objects whose class is in the dynamic
+    ## FIXME: this is now working for objects whose class is in the dynamic
     ##        classpath but will continue to fail if such classnames are used
-    ##        instead (see bug #42710)
+    ##        instead (see bug #42710).
     if (isa (obj, "java.lang.String"))
       obj = class (obj);
     endif
@@ -75,11 +75,17 @@ endfunction
 
 ## test Java classname by passing classname
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! names = fieldnames ("java.lang.Double");
 %! assert (any (strcmp (names, "MAX_VALUE")));
 
 ## test Java classname by passing java object
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! names = fieldnames (javaObject ("java.lang.Double", 10));
 %! assert (any (strcmp (names, "MAX_VALUE")));
 %! assert (all (ismember ({"POSITIVE_INFINITY", "NEGATIVE_INFINITY", ...
@@ -88,6 +94,9 @@ endfunction
 %!                        names)));
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! names = fieldnames (javaObject ("java.lang.String", "Hello"));
 %! assert (any (strcmp (names, "CASE_INSENSITIVE_ORDER")));
 

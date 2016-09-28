@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_builtin_h)
+#if ! defined (octave_ov_builtin_h)
 #define octave_ov_builtin_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -44,8 +46,8 @@ public:
 
   typedef octave_value_list (*fcn) (const octave_value_list&, int);
 
-  octave_builtin (fcn ff, const std::string& nm = std::string (),
-                  const std::string& ds = std::string ())
+  octave_builtin (fcn ff, const std::string& nm = "",
+                  const std::string& ds = "")
     : octave_function (nm, ds), f (ff), file (), jtype (0) { }
 
   octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,
@@ -110,8 +112,8 @@ private:
 
   octave_builtin& operator = (const octave_builtin& ob);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

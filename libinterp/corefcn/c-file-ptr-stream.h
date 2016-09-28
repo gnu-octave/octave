@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 John W. Eaton
+Copyright (C) 2000-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_c_file_ptr_stream_h)
+#if ! defined (octave_c_file_ptr_stream_h)
 #define octave_c_file_ptr_stream_h 1
+
+#include "octave-config.h"
 
 #include <cstdio>
 
@@ -32,11 +34,7 @@ c_file_ptr_buf : public std::streambuf
 {
 public:
 
-#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
-  typedef int int_type;
-#else
   typedef std::streambuf::int_type int_type;
-#endif
 
   typedef int (*close_fcn) (FILE *);
 
@@ -141,10 +139,10 @@ typedef c_file_ptr_stream<std::ostream, FILE *, c_file_ptr_buf>
 typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf>
   io_c_file_ptr_stream;
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 
-#ifdef HAVE_ZLIB_H
-#include <zlib.h>
+#if defined (HAVE_ZLIB_H)
+#  include <zlib.h>
 #endif
 
 class
@@ -152,11 +150,7 @@ c_zfile_ptr_buf : public std::streambuf
 {
 public:
 
-#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
-  typedef int int_type;
-#else
   typedef std::streambuf::int_type int_type;
-#endif
 
   typedef int (*close_fcn) (gzFile);
 
@@ -230,3 +224,4 @@ typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
 #endif
 
 #endif
+

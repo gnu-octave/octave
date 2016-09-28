@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,11 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef RESOURCEMANAGER_H
-#define RESOURCEMANAGER_H
+#if ! defined (octave_resource_manager_h)
+#define octave_resource_manager_h 1
 
 #include <QDesktopServices>
 #include <QIcon>
+#include <QComboBox>
 #include <QMap>
 #include <QSettings>
 #include <QTranslator>
@@ -76,6 +77,12 @@ public:
       instance->do_set_settings (file);
   }
 
+  static void combo_encoding (QComboBox *combo, QString current = QString ())
+  {
+    if (instance_ok ())
+      instance->do_combo_encoding (combo, current);
+  }
+
   static QString get_gui_translation_dir (void);
 
   static void config_translators (QTranslator*, QTranslator*, QTranslator*);
@@ -99,17 +106,15 @@ public:
   static QStringList terminal_color_names (void);
   static QList<QColor> terminal_default_colors (void);
 
-private:
-
   static resource_manager *instance;
+
+public slots:
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
+private:
+
   // No copying!
-
-  resource_manager (const resource_manager&);
-
-  resource_manager& operator = (const resource_manager&);
 
   static bool instance_ok (void);
 
@@ -139,6 +144,8 @@ private:
 
   QIcon do_icon (const QString& icon, bool fallback);
 
+  void do_combo_encoding (QComboBox *combo, QString current);
 };
 
-#endif // RESOURCEMANAGER_H
+#endif
+

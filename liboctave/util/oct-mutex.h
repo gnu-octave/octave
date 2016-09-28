@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Michael Goffioul
+Copyright (C) 2008-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_mutex_h)
+#if ! defined (octave_oct_mutex_h)
 #define octave_oct_mutex_h 1
+
+#include "octave-config.h"
 
 #include "oct-refcount.h"
 
@@ -148,3 +150,4 @@ public:
 };
 
 #endif
+

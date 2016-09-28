@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -22,16 +22,15 @@
 %!   sin (i);
 %! endfor
 %! [t2, u2, s2] = cputime ();
-%! assert (t1, u1 + s1);
-%! assert (t2 == u2 + s2);
+%! assert (t1, u1 + s1, 2*eps (t1));
+%! assert (t2, u2 + s2, 2*eps (t2));
 %! assert (t2 >= t1);
 %! assert (u2 >= u2);
 %! assert (s2 >= s2);
-%!#assert (t1 == u1 + s1 && t2 == u2 + s2 && t2 >= t1 && u2 >= u2 && s2 >= s2);
 
 %!test
 %! tic ();
-%! sleep (2);
+%! pause (2);
 %! assert (toc () > 0);
 
 %!test
@@ -40,22 +39,6 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!error <Invalid call to pause> pause (1, 2)
-
-%!test
-%! sleep (0);
-%! __printf_assert__ ("ok\n");
-%! assert (__prog_output_assert__ ("ok"));
-
-%!error <Invalid call to sleep> sleep ()
-%!error <Invalid call to sleep> sleep (1, 2)
-
-%!test
-%! usleep (0);
-%! __printf_assert__ ("ok\n");
-%! assert (__prog_output_assert__ ("ok"));
-
-%!error <Invalid call to usleep> usleep ()
-%!error <Invalid call to usleep> usleep (1, 2)
 
 %!test
 %! from = tempname ();
@@ -145,38 +128,38 @@
 
 %!test
 %! [s, err, msg] = stat (filesep);
-%! assert ((err == 0
-%! && isstruct (s)
-%! && isfield (s, "dev")
-%! && isfield (s, "ino")
-%! && isfield (s, "modestr")
-%! && isfield (s, "nlink")
-%! && isfield (s, "uid")
-%! && isfield (s, "gid")
-%! && isfield (s, "size")
-%! && isfield (s, "atime")
-%! && isfield (s, "mtime")
-%! && isfield (s, "ctime")
-%! && ischar (msg)));
+%! assert (err == 0
+%!         && isstruct (s)
+%!         && isfield (s, "dev")
+%!         && isfield (s, "ino")
+%!         && isfield (s, "modestr")
+%!         && isfield (s, "nlink")
+%!         && isfield (s, "uid")
+%!         && isfield (s, "gid")
+%!         && isfield (s, "size")
+%!         && isfield (s, "atime")
+%!         && isfield (s, "mtime")
+%!         && isfield (s, "ctime")
+%!         && ischar (msg));
 
 %!error <Invalid call to stat> stat ()
 %!error <Invalid call to stat> stat ("foo", 1)
 
 %!test
 %! [s, err, msg] = lstat (filesep);
-%! assert ((err == 0
-%! && isstruct (s)
-%! && isfield (s, "dev")
-%! && isfield (s, "ino")
-%! && isfield (s, "modestr")
-%! && isfield (s, "nlink")
-%! && isfield (s, "uid")
-%! && isfield (s, "gid")
-%! && isfield (s, "size")
-%! && isfield (s, "atime")
-%! && isfield (s, "mtime")
-%! && isfield (s, "ctime")
-%! && ischar (msg)));
+%! assert (err == 0
+%!         && isstruct (s)
+%!         && isfield (s, "dev")
+%!         && isfield (s, "ino")
+%!         && isfield (s, "modestr")
+%!         && isfield (s, "nlink")
+%!         && isfield (s, "uid")
+%!         && isfield (s, "gid")
+%!         && isfield (s, "size")
+%!         && isfield (s, "atime")
+%!         && isfield (s, "mtime")
+%!         && isfield (s, "ctime")
+%!         && ischar (msg));
 
 %!error <Invalid call to lstat> lstat ()
 %!error <Invalid call to lstat> lstat ("foo", 1)
@@ -187,7 +170,9 @@
 %!   if (exist ("/dev/initctl"))
 %!     assert (S_ISFIFO (stat ("/dev/initctl").mode));
 %!   endif
-%!   assert (S_ISLNK (lstat ("/dev/core").mode));
+%!   if (exist ("/dev/core"))
+%!     assert (S_ISLNK (lstat ("/dev/core").mode));
+%!   endif
 %! endif
 %! nm = tempname ();
 %! fid = fopen (nm, "wb");
@@ -202,13 +187,13 @@
 %! unlink (nm);
 %! assert (r(:), [true; false; false; false; false; false; false]);
 
-%!error <octave_base_value::double_value> S_ISREG ({})
-%!error <octave_base_value::double_value> S_ISDIR ({})
-%!error <octave_base_value::double_value> S_ISCHR ({})
-%!error <octave_base_value::double_value> S_ISBLK ({})
-%!error <octave_base_value::double_value> S_ISFIFO ({})
-%!error <octave_base_value::double_value> S_ISLNK ({})
-%!error <octave_base_value::double_value> S_ISSOCK ({})
+%!error <S_ISREG: invalid MODE value> S_ISREG ({})
+%!error <S_ISDIR: invalid MODE value> S_ISDIR ({})
+%!error <S_ISCHR: invalid MODE value> S_ISCHR ({})
+%!error <S_ISBLK: invalid MODE value> S_ISBLK ({})
+%!error <S_ISFIFO: invalid MODE value> S_ISFIFO ({})
+%!error <S_ISLNK: invalid MODE value> S_ISLNK ({})
+%!error <S_ISSOCK: invalid MODE value> S_ISSOCK ({})
 
 %!error <Invalid call to S_ISREG> S_ISREG ()
 %!error <Invalid call to S_ISDIR> S_ISDIR ()
@@ -225,7 +210,7 @@
 
 %!assert (ischar (file_in_path (path (), "date.m")))
 
-%!error <invalid option> file_in_path ("foo", "bar", 1)
+%!error <file_in_path: optional third argument must be a string> file_in_path ("foo", "bar", 1)
 %!error <Invalid call to file_in_path> file_in_path ()
 %!error <Invalid call to file_in_path> file_in_path ("foo", "bar", "baz", "ooka")
 
@@ -252,19 +237,23 @@
 
 %!error <... getppid> getppid (1)
 
-%!assert (geteuid () >= 0)
+%!testif HAVE_GETEUID
+%! assert (geteuid () >= 0)
 
 %!error <... geteuid> geteuid (1)
 
-%!assert (getuid () >= 0)
+%!testif HAVE_GETUID
+%! assert (getuid () >= 0)
 
 %!error <... getuid> getuid (1)
 
-%!assert (getegid () >= 0)
+%!testif HAVE_GETEGID
+%! assert (getegid () >= 0)
 
 %!error <... getegid> getegid (1)
 
-%!assert (getgid () >= 0)
+%!testif HAVE_GETGID
+%! assert (getgid () >= 0)
 
 %!error <... getgid> getgid (1)
 
@@ -310,14 +299,14 @@
 %!testif HAVE_GETPWENT
 %! s = getpwent ();
 %! endpwent ();
-%! assert ((isstruct (s)
-%! && isfield (s, "name")
-%! && isfield (s, "passwd")
-%! && isfield (s, "uid")
-%! && isfield (s, "gid")
-%! && isfield (s, "gecos")
-%! && isfield (s, "dir")
-%! && isfield (s, "shell")));
+%! assert (isstruct (s)
+%!         && isfield (s, "name")
+%!         && isfield (s, "passwd")
+%!         && isfield (s, "uid")
+%!         && isfield (s, "gid")
+%!         && isfield (s, "gecos")
+%!         && isfield (s, "dir")
+%!         && isfield (s, "shell"));
 
 %!error <Invalid call to getpwent> getpwent (1)
 
@@ -352,11 +341,11 @@
 %!testif HAVE_GETGRENT
 %! x = getgrent ();
 %! endgrent ();
-%! assert ((isstruct (x)
-%! && isfield (x, "name")
-%! && isfield (x, "passwd")
-%! && isfield (x, "gid")
-%! && isfield (x, "mem")));
+%! assert (isstruct (x)
+%!         && isfield (x, "name")
+%!         && isfield (x, "passwd")
+%!         && isfield (x, "gid")
+%!         && isfield (x, "mem"));
 
 %!error <Invalid call to getgrent> getgrent (1)
 
@@ -390,6 +379,6 @@
 
 %!assert (isieee () == 1 || isieee () == 0)
 
-%!assert (isstruct (octave_config_info ()))
+%!assert (isstruct (__octave_config_info__ ()))
 
 %!assert (isstruct (getrusage ()))

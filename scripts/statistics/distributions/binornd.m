@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} binornd (@var{n}, @var{p})
-## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, @var{r})
-## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, [@var{sz}])
+## @deftypefn  {} {} binornd (@var{n}, @var{p})
+## @deftypefnx {} {} binornd (@var{n}, @var{p}, @var{r})
+## @deftypefnx {} {} binornd (@var{n}, @var{p}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} binornd (@var{n}, @var{p}, [@var{sz}])
 ## Return a matrix of random samples from the binomial distribution with
 ## parameters @var{n} and @var{p}, where @var{n} is the number of trials
 ## and @var{p} is the probability of success.

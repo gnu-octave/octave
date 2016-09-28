@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Paul Kienzle
+## Copyright (C) 2006-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{days} =} datenum (@var{datevec})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
-## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
-## @deftypefnx {Function File} {@var{days} =} datenum ("datestr")
-## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{f})
-## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{p})
-## @deftypefnx {Function File} {[@var{days}, @var{secs}] =} datenum (@dots{})
+## @deftypefn  {} {@var{days} =} datenum (@var{datevec})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
+## @deftypefnx {} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
+## @deftypefnx {} {@var{days} =} datenum ("datestr")
+## @deftypefnx {} {@var{days} =} datenum ("datestr", @var{f})
+## @deftypefnx {} {@var{days} =} datenum ("datestr", @var{p})
+## @deftypefnx {} {[@var{days}, @var{secs}] =} datenum (@dots{})
 ## Return the date/time input as a serial day number, with Jan 1, 0000
 ## defined as day 1.
 ##
@@ -154,7 +154,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     day += reshape (monthstart (mod (month-1,12) + 1), size (day)) + 60;
   endif
 
-  ## Add number of days to the start of the current year. Correct
+  ## Add number of days to the start of the current year.  Correct
   ## for leap year every 4 years except centuries not divisible by 400.
   day += 365*year + floor (year/4) - floor (year/100) + floor (year/400);
 

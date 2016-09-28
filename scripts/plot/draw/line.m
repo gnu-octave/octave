@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} line ()
-## @deftypefnx {Function File} {} line (@var{x}, @var{y})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} line (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} line (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} line (@dots{})
+## @deftypefn  {} {} line ()
+## @deftypefnx {} {} line (@var{x}, @var{y})
+## @deftypefnx {} {} line (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} line (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} line (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} line (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} line (@dots{})
 ## Create line object from @var{x} and @var{y} (and possibly @var{z}) and
 ## insert in the current axes.
 ##
@@ -34,8 +34,8 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle (or vector of handles)
-## to the line objects created.
+## The optional return value @var{h} is a graphics handle (or vector of
+## handles) to the line objects created.
 ##
 ## @seealso{image, patch, rectangle, surface, text}
 ## @end deftypefn
@@ -63,24 +63,24 @@ endfunction
 
 
 %!demo
-%! clf
-%! line ([0 1], [0.8 0.8], 'linestyle', '-', 'color', 'b');
-%! line ([0 1], [0.6 0.6], 'linestyle', '--', 'color', 'g');
-%! line ([0 1], [0.4 0.4], 'linestyle', ':', 'color', 'r');
-%! line ([0 1], [0.2 0.2], 'linestyle', '-.', 'color', 'k');
+%! clf;
+%! line ([0 1], [0.8 0.8], "linestyle", "-", "color", "b");
+%! line ([0 1], [0.6 0.6], "linestyle", "--", "color", "g");
+%! line ([0 1], [0.4 0.4], "linestyle", ":", "color", "r");
+%! line ([0 1], [0.2 0.2], "linestyle", "-.", "color", "k");
 %! ylim ([0 1]);
-%! title ('line() with various linestyles');
+%! title ("line() with various linestyles");
 %! legend ('"-"', '"--"', '":"', '"-."', 'location', 'eastoutside');
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.3:10;
 %! y1 = cos (x);
 %! y2 = sin (x);
 %! subplot (3,1,1);
-%!  args = {'color', 'b', 'marker', 's'};
+%!  args = {"color", "b", "marker", "s"};
 %!  line ([x(:), x(:)], [y1(:), y2(:)], args{:});
-%!  title ('Test broadcasting for line()');
+%!  title ("Test broadcasting for line()");
 %! subplot (3,1,2);
 %!  line (x(:), [y1(:), y2(:)], args{:});
 %! subplot (3,1,3);

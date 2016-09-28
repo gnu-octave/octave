@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_strstrm_h)
+#if ! defined (octave_oct_strstrm_h)
 #define octave_oct_strstrm_h 1
+
+#include "octave-config.h"
 
 #include <string>
 #include <sstream>
@@ -34,8 +36,8 @@ octave_base_strstream : public octave_base_stream
 public:
 
   octave_base_strstream (std::ios::openmode m = std::ios::out,
-                         oct_mach_info::float_format ff
-                           = oct_mach_info::native_float_format ())
+                         octave::mach_info::float_format ff
+                           = octave::mach_info::native_float_format ())
     : octave_base_stream (m, ff) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
@@ -48,7 +50,7 @@ public:
 
   // The name of the file.
 
-  std::string name (void) const { return std::string (); }
+  std::string name (void) const { return ""; }
 
   virtual std::streambuf *rdbuf (void) = 0;
 
@@ -76,25 +78,25 @@ public:
 
   octave_istrstream (const char *data,
                      std::ios::openmode arg_md = std::ios::out,
-                     oct_mach_info::float_format ff
-                       = oct_mach_info::native_float_format ())
+                     octave::mach_info::float_format ff
+                       = octave::mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), is (data) { }
 
   octave_istrstream (const std::string& data,
                      std::ios::openmode arg_md = std::ios::out,
-                     oct_mach_info::float_format ff
-                       = oct_mach_info::native_float_format ())
+                     octave::mach_info::float_format ff
+                       = octave::mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), is (data.c_str ()) { }
 
   static octave_stream
   create (const char *data, std::ios::openmode arg_md = std::ios::out,
-          oct_mach_info::float_format ff
-            = oct_mach_info::native_float_format ());
+          octave::mach_info::float_format ff
+            = octave::mach_info::native_float_format ());
 
   static octave_stream
   create (const std::string& data, std::ios::openmode arg_md = std::ios::out,
-          oct_mach_info::float_format ff
-            = oct_mach_info::native_float_format ());
+          octave::mach_info::float_format ff
+            = octave::mach_info::native_float_format ());
 
   // Return nonzero if EOF has been reached on this stream.
 
@@ -133,14 +135,14 @@ octave_ostrstream : public octave_base_strstream
 public:
 
   octave_ostrstream (std::ios::openmode arg_md = std::ios::out,
-                     oct_mach_info::float_format ff
-                       = oct_mach_info::native_float_format ())
+                     octave::mach_info::float_format ff
+                       = octave::mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), os () { }
 
   static octave_stream
   create (std::ios::openmode arg_md = std::ios::out,
-          oct_mach_info::float_format ff
-            = oct_mach_info::native_float_format ());
+          octave::mach_info::float_format ff
+            = octave::mach_info::native_float_format ());
 
   // Return nonzero if EOF has been reached on this stream.
 
@@ -174,3 +176,4 @@ private:
 };
 
 #endif
+

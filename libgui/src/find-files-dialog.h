@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John Donoghue
+Copyright (C) 2013-2016 John Donoghue
 
 This file is part of Octave.
 
@@ -19,8 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-#if !defined (octave_find_files_dialog_h)
-#define octave_find_files_dialog_h
+#if ! defined (octave_find_files_dialog_h)
+#define octave_find_files_dialog_h 1
 
 #include <QDialog>
 #include <QModelIndex>
@@ -40,6 +40,7 @@ class find_files_dialog : public QDialog
 public:
   find_files_dialog (QWidget * parent=0);
   virtual ~find_files_dialog ();
+  void save_settings (void);
 
 signals:
   void file_selected (const QString &fileName);
@@ -75,5 +76,5 @@ private:
   QStatusBar * _status_bar;
 };
 
-#endif // octave_find_files_dialog_h
+#endif
 

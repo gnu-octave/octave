@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Fotios Kasolis
+## Copyright (C) 2012-2016 Fotios Kasolis
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{z} =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
-## @deftypefnx {Function File} {[@var{v}, @var{z}] =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
+## @deftypefn  {} {@var{z} =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
+## @deftypefnx {} {[@var{v}, @var{z}] =} polyeig (@var{C0}, @var{C1}, @dots{}, @var{Cl})
 ##
 ## Solve the polynomial eigenvalue problem of degree @var{l}.
 ##

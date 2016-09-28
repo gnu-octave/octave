@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -28,40 +28,25 @@ along with Octave; see the file COPYING.  If not, see
 // Rewritten to use templates to handle both real and complex cases by
 // jwe, Wed Nov  1 19:15:29 1995.
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "quit.h"
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
-
-extern MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, int dim);
-
-extern MArray<float>
-filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
-
-extern MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
-        int dim);
-#endif
-
-template <class T>
+template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
         int dim = 0)
 {
   MArray<T> y;
 
-  octave_idx_type a_len  = a.length ();
-  octave_idx_type b_len  = b.length ();
+  octave_idx_type a_len = a.numel ();
+  octave_idx_type b_len = b.numel ();
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
@@ -76,17 +61,11 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   T norm = a (0);
 
   if (norm == static_cast<T> (0.0))
-    {
-      error ("filter: the first element of A must be nonzero");
-      return y;
-    }
+    error ("filter: the first element of A must be nonzero");
 
   dim_vector x_dims = x.dims ();
-  if (dim < 0 || dim > x_dims.length ())
-    {
-      error ("filter: DIM must be a valid dimension");
-      return y;
-    }
+  if (dim < 0 || dim > x_dims.ndims ())
+    error ("filter: DIM must be a valid dimension");
 
   octave_idx_type x_len = x_dims(dim);
 
@@ -94,32 +73,20 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   octave_idx_type si_len = si_dims(0);
 
   if (si_len != ab_len - 1)
-    {
-      error ("filter: first dimension of SI must be of length max (length (a), length (b)) - 1");
-      return y;
-    }
+    error ("filter: first dimension of SI must be of length max (length (a), length (b)) - 1");
 
-  if (si_dims.length () != x_dims.length ())
-    {
-      error ("filter: dimensionality of SI and X must agree");
-      return y;
-    }
+  if (si_dims.ndims () != x_dims.ndims ())
+    error ("filter: dimensionality of SI and X must agree");
 
   for (octave_idx_type i = 1; i < dim; i++)
     {
       if (si_dims(i) != x_dims(i-1))
-        {
-          error ("filter: dimensionality of SI and X must agree");
-          return y;
-        }
+        error ("filter: dimensionality of SI and X must agree");
     }
-  for (octave_idx_type i = dim+1; i < x_dims.length (); i++)
+  for (octave_idx_type i = dim+1; i < x_dims.ndims (); i++)
     {
       if (si_dims(i) != x_dims(i))
-        {
-          error ("filter: dimensionality of SI and X must agree");
-          return y;
-        }
+        error ("filter: dimensionality of SI and X must agree");
     }
 
   if (x_len == 0)
@@ -127,8 +94,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   if (norm != static_cast<T> (1.0))
     {
-      a = a / norm;
-      b = b / norm;
+      a /= norm;
+      b /= norm;
     }
 
   if (a_len <= 1 && si_len <= 0)
@@ -136,7 +103,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   y.resize (x_dims, 0.0);
 
-  int x_stride = 1;
+  octave_idx_type x_stride = 1;
   for (int i = 0; i < dim; i++)
     x_stride *= x_dims(i);
 
@@ -235,48 +202,19 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   return y;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&,
-        MArray<double>&, int dim);
-
-extern MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
-        MArray<Complex>&, int dim);
-
-extern MArray<float>
-filter (MArray<float>&, MArray<float>&, MArray<float>&,
-        MArray<float>&, int dim);
-
-extern MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
-        MArray<FloatComplex>&, int dim);
-#endif
-
-template <class T>
+template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 {
   dim_vector x_dims = x.dims ();
 
   if (dim < 0)
-    {
-      // Find first non-singleton dimension
-      while (dim < x_dims.length () && x_dims(dim) <= 1)
-        dim++;
+    dim = x_dims.first_non_singleton ();
+  else if (dim > x_dims.ndims ())
+    error ("filter: DIM must be a valid dimension");
 
-      // All dimensions singleton, pick first dimension
-      if (dim == x_dims.length ())
-        dim = 0;
-    }
-  else if (dim < 0 || dim > x_dims.length ())
-    {
-      error ("filter: DIM must be a valid dimension");
-      return MArray<T> ();
-    }
-
-  octave_idx_type a_len = a.length ();
-  octave_idx_type b_len = b.length ();
+  octave_idx_type a_len = a.numel ();
+  octave_idx_type b_len = b.numel ();
 
   octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
   dim_vector si_dims = x.dims ();
@@ -289,120 +227,113 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   return filter (b, a, x, si, dim);
 }
 
-DEFUN (filter, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{y} =} filter (@var{b}, @var{a}, @var{x})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
-Apply a 1-D digital filter to the data @var{x}.\n\
-\n\
-@code{filter} returns the solution to the following linear, time-invariant\n\
-difference equation:\n\
-@tex\n\
-$$\n\
-\\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n\
- 1 \\le n \\le P\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
- N                   M\n\
-SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)    for 1<=n<=length(x)\n\
-k=0                 k=0\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@end ifnottex\n\
-\n\
-@noindent\n\
-where\n\
-@ifnottex\n\
-N=length(a)-1 and M=length(b)-1.\n\
-@end ifnottex\n\
-@tex\n\
-$a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
-@end tex\n\
-The result is calculated over the first non-singleton dimension of @var{x}\n\
-or over @var{dim} if supplied.\n\
-\n\
-An equivalent form of the equation is:\n\
-@tex\n\
-$$\n\
-y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
- 1 \\le n \\le P\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
-          N                   M\n\
-y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
-         k=1                 k=0\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@end ifnottex\n\
-\n\
-@noindent\n\
-where\n\
-@ifnottex\n\
- c = a/a(1) and d = b/a(1).\n\
-@end ifnottex\n\
-@tex\n\
-$c = a/a_1$ and $d = b/a_1$.\n\
-@end tex\n\
-\n\
-If the fourth argument @var{si} is provided, it is taken as the\n\
-initial state of the system and the final state is returned as\n\
-@var{sf}.  The state vector is a column vector whose length is\n\
-equal to the length of the longest coefficient vector minus one.\n\
-If @var{si} is not supplied, the initial state vector is set to all\n\
-zeros.\n\
-\n\
-In terms of the Z Transform, @var{y} is the result of passing the\n\
-discrete-time signal @var{x} through a system characterized by the following\n\
-rational system function:\n\
-@tex\n\
-$$\n\
-H(z) = {\\displaystyle\\sum_{k=0}^M d_{k+1} z^{-k}\n\
-        \\over 1 + \\displaystyle\\sum_{k+1}^N c_{k+1} z^{-k}}\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@group\n\
-          M\n\
-         SUM d(k+1) z^(-k)\n\
-         k=0\n\
-H(z) = ---------------------\n\
-            N\n\
-       1 + SUM c(k+1) z^(-k)\n\
-           k=1\n\
-@end group\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-@seealso{filter2, fftfilt, freqz}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+DEFUN (filter, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})
+@deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})
+Apply a 1-D digital filter to the data @var{x}.
 
-  int nargin  = args.length ();
+@code{filter} returns the solution to the following linear, time-invariant
+difference equation:
+@tex
+$$
+\sum_{k=0}^N a_{k+1} y_{n-k} = \sum_{k=0}^M b_{k+1} x_{n-k}, \qquad
+ 1 \le n \le P
+$$
+@end tex
+@ifnottex
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+ N                   M
+SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)    for 1<=n<=length(x)
+k=0                 k=0
+@end group
+@end smallexample
+
+@end ifnottex
+
+@noindent
+where
+@ifnottex
+N=length(a)-1 and M=length(b)-1.
+@end ifnottex
+@tex
+$a \in \Re^{N-1}$, $b \in \Re^{M-1}$, and $x \in \Re^P$.
+@end tex
+The result is calculated over the first non-singleton dimension of @var{x}
+or over @var{dim} if supplied.
+
+An equivalent form of the equation is:
+@tex
+$$
+y_n = -\sum_{k=1}^N c_{k+1} y_{n-k} + \sum_{k=0}^M d_{k+1} x_{n-k}, \qquad
+ 1 \le n \le P
+$$
+@end tex
+@ifnottex
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+          N                   M
+y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)
+         k=1                 k=0
+@end group
+@end smallexample
+
+@end ifnottex
+
+@noindent
+where
+@ifnottex
+ c = a/a(1) and d = b/a(1).
+@end ifnottex
+@tex
+$c = a/a_1$ and $d = b/a_1$.
+@end tex
+
+If the fourth argument @var{si} is provided, it is taken as the
+initial state of the system and the final state is returned as
+@var{sf}.  The state vector is a column vector whose length is
+equal to the length of the longest coefficient vector minus one.
+If @var{si} is not supplied, the initial state vector is set to all
+zeros.
+
+In terms of the Z Transform, @var{y} is the result of passing the
+discrete-time signal @var{x} through a system characterized by the following
+rational system function:
+@tex
+$$
+H(z) = {\displaystyle\sum_{k=0}^M d_{k+1} z^{-k}
+        \over 1 + \displaystyle\sum_{k+1}^N c_{k+1} z^{-k}}
+$$
+@end tex
+@ifnottex
+
+@example
+@group
+          M
+         SUM d(k+1) z^(-k)
+         k=0
+H(z) = ---------------------
+            N
+       1 + SUM c(k+1) z^(-k)
+           k=1
+@end group
+@end example
+
+@end ifnottex
+@seealso{filter2, fftfilt, freqz}
+@end deftypefn */)
+{
+  int nargin = args.length ();
 
   if (nargin < 3 || nargin > 5)
-    {
-      print_usage ();
-      return retval;
-    }
-
-  const char *errmsg = "filter: arguments a and b must be vectors";
+    print_usage ();
 
   int dim;
   dim_vector x_dims = args(2).dims ();
@@ -410,23 +341,16 @@ H(z) = ---------------------\n\
   if (nargin == 5)
     {
       dim = args(4).nint_value () - 1;
-      if (dim < 0 || dim >= x_dims.length ())
-        {
-          error ("filter: DIM must be a valid dimension");
-          return retval;
-        }
+      if (dim < 0 || dim >= x_dims.ndims ())
+        error ("filter: DIM must be a valid dimension");
     }
   else
-    {
-      // Find first non-singleton dimension
-      dim = 0;
-      while (dim < x_dims.length () && x_dims(dim) <= 1)
-        dim++;
+    dim = x_dims.first_non_singleton ();
 
-      // All dimensions singleton, pick first dimension
-      if (dim == x_dims.length ())
-        dim = 0;
-    }
+  octave_value_list retval;
+
+  const char *a_b_errmsg = "filter: A and B must be vectors";
+  const char *x_si_errmsg = "filter: X and SI must be arrays";
 
   bool isfloat = (args(0).is_single_type ()
                   || args(1).is_single_type ()
@@ -440,198 +364,145 @@ H(z) = ---------------------\n\
     {
       if (isfloat)
         {
-          FloatComplexColumnVector b (args(0).float_complex_vector_value ());
-          FloatComplexColumnVector a (args(1).float_complex_vector_value ());
+          FloatComplexColumnVector b = args(0).xfloat_complex_vector_value (a_b_errmsg);
+          FloatComplexColumnVector a = args(1).xfloat_complex_vector_value (a_b_errmsg);
+          FloatComplexNDArray x = args(2).xfloat_complex_array_value (x_si_errmsg);
 
-          FloatComplexNDArray x (args(2).float_complex_array_value ());
+          FloatComplexNDArray si;
 
-          if (! error_state)
+          if (nargin == 3 || args(3).is_empty ())
             {
-              FloatComplexNDArray si;
+              octave_idx_type a_len = a.numel ();
+              octave_idx_type b_len = b.numel ();
 
-              if (nargin == 3 || args(3).is_empty ())
-                {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+              octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+              dim_vector si_dims = x.dims ();
+              for (int i = dim; i > 0; i--)
+                si_dims(i) = si_dims(i-1);
+              si_dims(0) = si_len;
 
-                  dim_vector si_dims = x.dims ();
-                  for (int i = dim; i > 0; i--)
-                    si_dims(i) = si_dims(i-1);
-                  si_dims(0) = si_len;
-
-                  si.resize (si_dims, 0.0);
-                }
-              else
-                {
-                  si = args(3).float_complex_array_value ();
-
-                  if (si.is_vector () && x.is_vector ())
-                    si = si.reshape (dim_vector (si.numel (), 1));
-                }
-
-              if (! error_state)
-                {
-                  FloatComplexNDArray y (filter (b, a, x, si, dim));
-
-                  if (nargout == 2)
-                    retval(1) = si;
-
-                  retval(0) = y;
-                }
-              else
-                error (errmsg);
+              si.resize (si_dims, 0.0);
             }
           else
-            error (errmsg);
+            {
+              si = args(3).xfloat_complex_array_value (x_si_errmsg);
+
+              if (si.is_vector () && x.is_vector ())
+                si = si.reshape (dim_vector (si.numel (), 1));
+            }
+
+          FloatComplexNDArray y (filter (b, a, x, si, dim));
+
+          retval = ovl (y, si);
         }
       else
         {
-          ComplexColumnVector b (args(0).complex_vector_value ());
-          ComplexColumnVector a (args(1).complex_vector_value ());
+          ComplexColumnVector b = args(0).xcomplex_vector_value (a_b_errmsg);
+          ComplexColumnVector a = args(1).xcomplex_vector_value (a_b_errmsg);
 
-          ComplexNDArray x (args(2).complex_array_value ());
+          ComplexNDArray x = args(2).xcomplex_array_value (x_si_errmsg);
 
-          if (! error_state)
+          ComplexNDArray si;
+
+          if (nargin == 3 || args(3).is_empty ())
             {
-              ComplexNDArray si;
+              octave_idx_type a_len = a.numel ();
+              octave_idx_type b_len = b.numel ();
 
-              if (nargin == 3 || args(3).is_empty ())
-                {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+              octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+              dim_vector si_dims = x.dims ();
+              for (int i = dim; i > 0; i--)
+                si_dims(i) = si_dims(i-1);
+              si_dims(0) = si_len;
 
-                  dim_vector si_dims = x.dims ();
-                  for (int i = dim; i > 0; i--)
-                    si_dims(i) = si_dims(i-1);
-                  si_dims(0) = si_len;
-
-                  si.resize (si_dims, 0.0);
-                }
-              else
-                {
-                  si = args(3).complex_array_value ();
-
-                  if (si.is_vector () && x.is_vector ())
-                    si = si.reshape (dim_vector (si.numel (), 1));
-                }
-
-              if (! error_state)
-                {
-                  ComplexNDArray y (filter (b, a, x, si, dim));
-
-                  if (nargout == 2)
-                    retval(1) = si;
-
-                  retval(0) = y;
-                }
-              else
-                error (errmsg);
+              si.resize (si_dims, 0.0);
             }
           else
-            error (errmsg);
+            {
+              si = args(3).xcomplex_array_value (x_si_errmsg);
+
+              if (si.is_vector () && x.is_vector ())
+                si = si.reshape (dim_vector (si.numel (), 1));
+            }
+
+          ComplexNDArray y (filter (b, a, x, si, dim));
+
+          retval = ovl (y, si);
         }
     }
   else
     {
       if (isfloat)
         {
-          FloatColumnVector b (args(0).float_vector_value ());
-          FloatColumnVector a (args(1).float_vector_value ());
+          FloatColumnVector b = args(0).xfloat_vector_value (a_b_errmsg);
+          FloatColumnVector a = args(1).xfloat_vector_value (a_b_errmsg);
 
-          FloatNDArray x (args(2).float_array_value ());
+          FloatNDArray x = args(2).xfloat_array_value (x_si_errmsg);
 
-          if (! error_state)
+          FloatNDArray si;
+
+          if (nargin == 3 || args(3).is_empty ())
             {
-              FloatNDArray si;
+              octave_idx_type a_len = a.numel ();
+              octave_idx_type b_len = b.numel ();
 
-              if (nargin == 3 || args(3).is_empty ())
-                {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+              octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+              dim_vector si_dims = x.dims ();
+              for (int i = dim; i > 0; i--)
+                si_dims(i) = si_dims(i-1);
+              si_dims(0) = si_len;
 
-                  dim_vector si_dims = x.dims ();
-                  for (int i = dim; i > 0; i--)
-                    si_dims(i) = si_dims(i-1);
-                  si_dims(0) = si_len;
-
-                  si.resize (si_dims, 0.0);
-                }
-              else
-                {
-                  si = args(3).float_array_value ();
-
-                  if (si.is_vector () && x.is_vector ())
-                    si = si.reshape (dim_vector (si.numel (), 1));
-                }
-
-              if (! error_state)
-                {
-                  FloatNDArray y (filter (b, a, x, si, dim));
-
-                  if (nargout == 2)
-                    retval(1) = si;
-
-                  retval(0) = y;
-                }
-              else
-                error (errmsg);
+              si.resize (si_dims, 0.0);
             }
           else
-            error (errmsg);
+            {
+              si = args(3).xfloat_array_value (x_si_errmsg);
+
+              if (si.is_vector () && x.is_vector ())
+                si = si.reshape (dim_vector (si.numel (), 1));
+            }
+
+          FloatNDArray y (filter (b, a, x, si, dim));
+
+          retval = ovl (y, si);
         }
       else
         {
-          ColumnVector b (args(0).vector_value ());
-          ColumnVector a (args(1).vector_value ());
+          ColumnVector b = args(0).xvector_value (a_b_errmsg);
+          ColumnVector a = args(1).xvector_value (a_b_errmsg);
 
-          NDArray x (args(2).array_value ());
+          NDArray x = args(2).xarray_value (x_si_errmsg);
 
-          if (! error_state)
+          NDArray si;
+
+          if (nargin == 3 || args(3).is_empty ())
             {
-              NDArray si;
+              octave_idx_type a_len = a.numel ();
+              octave_idx_type b_len = b.numel ();
 
-              if (nargin == 3 || args(3).is_empty ())
-                {
-                  octave_idx_type a_len = a.length ();
-                  octave_idx_type b_len = b.length ();
+              octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-                  octave_idx_type si_len = (a_len > b_len ? a_len : b_len) - 1;
+              dim_vector si_dims = x.dims ();
+              for (int i = dim; i > 0; i--)
+                si_dims(i) = si_dims(i-1);
+              si_dims(0) = si_len;
 
-                  dim_vector si_dims = x.dims ();
-                  for (int i = dim; i > 0; i--)
-                    si_dims(i) = si_dims(i-1);
-                  si_dims(0) = si_len;
-
-                  si.resize (si_dims, 0.0);
-                }
-              else
-                {
-                  si = args(3).array_value ();
-
-                  if (si.is_vector () && x.is_vector ())
-                    si = si.reshape (dim_vector (si.numel (), 1));
-                }
-
-              if (! error_state)
-                {
-                  NDArray y (filter (b, a, x, si, dim));
-
-                  if (nargout == 2)
-                    retval(1) = si;
-
-                  retval(0) = y;
-                }
-              else
-                error (errmsg);
+              si.resize (si_dims, 0.0);
             }
           else
-            error (errmsg);
+            {
+              si = args(3).xarray_value (x_si_errmsg);
+
+              if (si.is_vector () && x.is_vector ())
+                si = si.reshape (dim_vector (si.numel (), 1));
+            }
+
+          NDArray y (filter (b, a, x, si, dim));
+
+          retval = ovl (y, si);
         }
     }
 
@@ -743,3 +614,4 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! y = filter ([1 1 1], 1, x, [], 3);
 %! assert (y, y0);
 */
+

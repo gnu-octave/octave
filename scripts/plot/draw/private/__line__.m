@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} __line__ (@var{p}, @dots{})
+## @deftypefn {} {@var{h} =} __line__ (@var{p}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -114,10 +114,8 @@ function h = __line__ (p, varargin)
         || (nvecpts != 0 && any (nvecpts != cellfun ("size", tmp, 1))))
       error ("line: data size_mismatch");
     endif
-    if (any (mask))
-      data_args(mask) = cellfun (@(x) x(:,i), data(ismat),
-                                 "uniformoutput", false);
-    endif
+    data_args(mask) = cellfun (@(x) x(:,i), data(ismat),
+                               "uniformoutput", false);
 
     handles(i) = __go_line__ (p, data_args{:}, other_args{:});
 

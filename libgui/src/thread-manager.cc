@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,23 +20,21 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#include <windows.h>
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
 #else
-#include <pthread.h>
+#  include <pthread.h>
 #endif
 
-#include <sys/types.h>
-#include <signal.h>
+#include "signal-wrappers.h"
 
-#include "sighandlers.h"
 #include "thread-manager.h"
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
 class windows_thread_manager : public octave_base_thread_manager
 {
@@ -71,7 +69,22 @@ public:
   void interrupt (void)
   {
     if (initialized)
-      pthread_kill (my_thread, SIGINT);
+      {
+        // Send SIGINT to all other processes in our process group.
+        // This is needed to interrupt calls to system (), for example.
+
+        // FIXME: What happens if some code inside a
+        // {BEGIN,END}_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE block starts
+        // additional threads and one of those happens to catch this signal?
+        // Would the interrupt handler and the subsequent longjmp and exception
+        // all be executed in the wrong thread?  If so, is there any way to
+        // prevent that from happening?
+
+        int sigint;
+        octave_get_sig_number ("SIGINT", &sigint);
+
+        octave_kill_wrapper (0, sigint);
+      }
   }
 
 private:
@@ -87,57 +100,25 @@ octave_thread_manager::octave_thread_manager (void)
   : rep (octave_thread_manager::create_rep ())
 { }
 
-// The following is a workaround for an apparent bug in GCC 4.1.2 and
-// possibly earlier versions.  See Octave bug report #30685 for details.
-#if defined (__GNUC__)
-# if ! (__GNUC__ > 4 \
-        || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
-                              || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
-#  undef GNULIB_NAMESPACE
-#  define GNULIB_NAMESPACE
-#  warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
-# endif
-#endif
-
-static void
-block_or_unblock_signal (int how, int sig)
-{
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
-  // Blocking/unblocking signals at thread level is only supported
-  // on platform with fully compliant POSIX threads. This is not
-  // supported on Win32. Moreover, we have to make sure that SIGINT
-  // handler is not installed before calling AllocConsole: installing
-  // a SIGINT handler internally calls SetConsoleCtrlHandler, which
-  // must be called after AllocConsole to be effective.
-
-  sigset_t signal_mask;
-
-  GNULIB_NAMESPACE::sigemptyset (&signal_mask);
-
-  GNULIB_NAMESPACE::sigaddset (&signal_mask, sig);
-
-  pthread_sigmask (how, &signal_mask, 0);
-#endif
-}
-
 void
 octave_thread_manager::block_interrupt_signal (void)
 {
-  block_or_unblock_signal (SIG_BLOCK, SIGINT);
+  octave_block_interrupt_signal ();
 }
 
 void
 octave_thread_manager::unblock_interrupt_signal (void)
 {
-  block_or_unblock_signal (SIG_UNBLOCK, SIGINT);
+  octave_unblock_interrupt_signal ();
 }
 
 octave_base_thread_manager *
 octave_thread_manager::create_rep (void)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   return new windows_thread_manager ();
 #else
   return new pthread_thread_manager ();
 #endif
 }
+

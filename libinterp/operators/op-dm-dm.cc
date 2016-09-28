@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-re-diag.h"
@@ -42,7 +42,7 @@ DEFUNOP_OP (uminus, diag_matrix, -)
 
 DEFUNOP (transpose, diag_matrix)
 {
-  CAST_UNOP_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
   return octave_value (v.diag_matrix_value ().transpose ());
 }
 
@@ -54,7 +54,8 @@ DEFBINOP_OP (mul, diag_matrix, diag_matrix, *)
 
 DEFBINOP (div, diag_matrix, diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_diag_matrix&);
+  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
+  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
 
   return xdiv (v1.diag_matrix_value (),
                v2.diag_matrix_value ());
@@ -62,7 +63,8 @@ DEFBINOP (div, diag_matrix, diag_matrix)
 
 DEFBINOP (ldiv, diag_matrix, diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_diag_matrix&);
+  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
+  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
 
   return xleftdiv (v1.diag_matrix_value (),
                    v2.diag_matrix_value ());
@@ -70,16 +72,9 @@ DEFBINOP (ldiv, diag_matrix, diag_matrix)
 
 CONVDECL (diag_matrix_to_matrix)
 {
-  CAST_CONV_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
-}
-
-CONVDECL (diag_matrix_to_float_diag_matrix)
-{
-  CAST_CONV_ARG (const octave_diag_matrix&);
-
-  return new octave_float_diag_matrix (v.float_diag_matrix_value ());
 }
 
 void
@@ -96,9 +91,7 @@ install_dm_dm_ops (void)
   INSTALL_BINOP (op_div, octave_diag_matrix, octave_diag_matrix, div);
   INSTALL_BINOP (op_ldiv, octave_diag_matrix, octave_diag_matrix, ldiv);
 
-  INSTALL_CONVOP (octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
-  INSTALL_CONVOP (octave_diag_matrix, octave_float_diag_matrix,
-                  diag_matrix_to_float_diag_matrix);
   INSTALL_ASSIGNCONV (octave_diag_matrix, octave_matrix, octave_matrix);
   INSTALL_WIDENOP (octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
 }
+

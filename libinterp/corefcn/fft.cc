@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2015 David Bateman
+Copyright (C) 1997-2016 David Bateman
 Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.
@@ -21,37 +21,33 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-mappers.h"
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "utils.h"
 
 #if defined (HAVE_FFTW)
-#define FFTSRC "@sc{fftw}"
+#  define FFTSRC "@sc{fftw}"
 #else
-#define FFTSRC "@sc{fftpack}"
+#  define FFTSRC "@sc{fftpack}"
 #endif
 
 static octave_value
 do_fft (const octave_value_list &args, const char *fcn, int type)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
+  octave_value retval;
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
   octave_idx_type n_points = -1;
@@ -62,44 +58,35 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       if (! args(1).is_empty ())
         {
           double dval = args(1).double_value ();
-          if (xisnan (dval))
+          if (octave::math::isnan (dval))
             error ("%s: number of points (N) cannot be NaN", fcn);
-          else
-            {
-              n_points = NINTbig (dval);
-              if (n_points < 0)
-                error ("%s: number of points (N) must be greater than zero",
-                       fcn);
-            }
+
+          n_points = octave::math::nint_big (dval);
+          if (n_points < 0)
+            error ("%s: number of points (N) must be greater than zero", fcn);
         }
     }
-
-  if (error_state)
-    return retval;
 
   if (nargin > 2)
     {
       double dval = args(2).double_value ();
-      if (xisnan (dval))
+      if (octave::math::isnan (dval))
         error ("%s: DIM cannot be NaN", fcn);
-      else if (dval < 1 || dval > dims.length ())
+      else if (dval < 1 || dval > dims.ndims ())
         error ("%s: DIM must be a valid dimension along which to perform FFT",
                fcn);
       else
         // to be safe, cast it back to int since dim is an int
-        dim = NINT (dval) - 1;
+        dim = octave::math::nint (dval) - 1;
     }
 
-  if (error_state)
-    return retval;
-
-  for (octave_idx_type i = 0; i < dims.length (); i++)
+  for (octave_idx_type i = 0; i < dims.ndims (); i++)
     if (dims(i) < 0)
       return retval;
 
   if (dim < 0)
     {
-      for (octave_idx_type i = 0; i < dims.length (); i++)
+      for (octave_idx_type i = 0; i < dims.ndims (); i++)
         if (dims(i) > 1)
           {
             dim = i;
@@ -112,9 +99,9 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
     }
 
   if (n_points < 0)
-    n_points = dims (dim);
+    n_points = dims(dim);
   else
-    dims (dim) = n_points;
+    dims(dim) = n_points;
 
   if (dims.any_zero () || n_points == 0)
     {
@@ -130,21 +117,15 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         {
           FloatNDArray nda = arg.float_array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
         }
       else
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
         }
     }
   else
@@ -153,26 +134,18 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         {
           NDArray nda = arg.array_value ();
 
-          if (! error_state)
-            {
-              nda.resize (dims, 0.0);
-              retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
-            }
+          nda.resize (dims, 0.0);
+          retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
         }
       else if (arg.is_complex_type ())
         {
           ComplexNDArray cnda = arg.complex_array_value ();
 
-          if (! error_state)
-            {
-              cnda.resize (dims, 0.0);
-              retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
-            }
+          cnda.resize (dims, 0.0);
+          retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
         }
       else
-        {
-          gripe_wrong_type_arg (fcn, arg);
-        }
+        err_wrong_type_arg (fcn, arg);
     }
 
   return retval;
@@ -200,58 +173,58 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
 
 DEFUN (fft, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} fft (@var{x})\n\
-@deftypefnx {Built-in Function} {} fft (@var{x}, @var{n})\n\
-@deftypefnx {Built-in Function} {} fft (@var{x}, @var{n}, @var{dim})\n\
-Compute the discrete Fourier transform of @var{A} using\n\
-a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The FFT is calculated along the first non-singleton dimension of the\n\
-array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes the\n\
-FFT for each column of @var{x}.\n\
-\n\
-If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{x} to use, or an empty\n\
-matrix to specify that its value should be ignored.  If @var{n} is\n\
-larger than the dimension along which the FFT is calculated, then\n\
-@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
-smaller than the dimension along which the FFT is calculated, then\n\
-@var{x} is truncated.\n\
-\n\
-If called with three arguments, @var{dim} is an integer specifying the\n\
-dimension of the matrix along which the FFT is performed\n\
-@seealso{ifft, fft2, fftn, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} fft (@var{x})
+@deftypefnx {} {} fft (@var{x}, @var{n})
+@deftypefnx {} {} fft (@var{x}, @var{n}, @var{dim})
+Compute the discrete Fourier transform of @var{A} using
+a Fast Fourier Transform (FFT) algorithm.
+
+The FFT is calculated along the first non-singleton dimension of the
+array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes the
+FFT for each column of @var{x}.
+
+If called with two arguments, @var{n} is expected to be an integer
+specifying the number of elements of @var{x} to use, or an empty
+matrix to specify that its value should be ignored.  If @var{n} is
+larger than the dimension along which the FFT is calculated, then
+@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is
+smaller than the dimension along which the FFT is calculated, then
+@var{x} is truncated.
+
+If called with three arguments, @var{dim} is an integer specifying the
+dimension of the matrix along which the FFT is performed
+@seealso{ifft, fft2, fftn, fftw}
+@end deftypefn */)
 {
   return do_fft (args, "fft", 0);
 }
 
 
 DEFUN (ifft, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} ifft (@var{x})\n\
-@deftypefnx {Built-in Function} {} ifft (@var{x}, @var{n})\n\
-@deftypefnx {Built-in Function} {} ifft (@var{x}, @var{n}, @var{dim})\n\
-Compute the inverse discrete Fourier transform of @var{A}\n\
-using a Fast Fourier Transform (FFT) algorithm.\n\
-\n\
-The inverse FFT is calculated along the first non-singleton dimension\n\
-of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes\n\
-the inverse FFT for each column of @var{x}.\n\
-\n\
-If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{x} to use, or an empty\n\
-matrix to specify that its value should be ignored.  If @var{n} is\n\
-larger than the dimension along which the inverse FFT is calculated, then\n\
-@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
-smaller than the dimension along which the inverse FFT is calculated,\n\
-then @var{x} is truncated.\n\
-\n\
-If called with three arguments, @var{dim} is an integer specifying the\n\
-dimension of the matrix along which the inverse FFT is performed\n\
-@seealso{fft, ifft2, ifftn, fftw}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} ifft (@var{x})
+@deftypefnx {} {} ifft (@var{x}, @var{n})
+@deftypefnx {} {} ifft (@var{x}, @var{n}, @var{dim})
+Compute the inverse discrete Fourier transform of @var{A}
+using a Fast Fourier Transform (FFT) algorithm.
+
+The inverse FFT is calculated along the first non-singleton dimension
+of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes
+the inverse FFT for each column of @var{x}.
+
+If called with two arguments, @var{n} is expected to be an integer
+specifying the number of elements of @var{x} to use, or an empty
+matrix to specify that its value should be ignored.  If @var{n} is
+larger than the dimension along which the inverse FFT is calculated, then
+@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is
+smaller than the dimension along which the inverse FFT is calculated,
+then @var{x} is truncated.
+
+If called with three arguments, @var{dim} is an integer specifying the
+dimension of the matrix along which the inverse FFT is performed
+@seealso{fft, ifft2, ifftn, fftw}
+@end deftypefn */)
 {
   return do_fft (args, "ifft", 1);
 }
@@ -319,3 +292,4 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %!
 %! assert (ifft (S), s, 4*N*eps ("single"));
 */
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_event_queue_h)
+#if ! defined (octave_event_queue_h)
 #define octave_event_queue_h 1
+
+#include "octave-config.h"
 
 #include <queue>
 #include <memory>
@@ -36,8 +38,8 @@ public:
   event_queue (void) : fifo () { }
 
   // Destructor should not raise an exception, so all actions
-  // registered should be exception-safe (but setting error_state is
-  // allowed). If you're not sure, see event_queue_safe.
+  // registered should be exception-safe.  If you're not sure, see
+  // event_queue_safe.
 
   ~event_queue (void) { run (); }
 
@@ -51,7 +53,7 @@ public:
     if (! empty ())
       {
         // No leak on exception!
-        std::auto_ptr<elem> ptr (fifo.front ());
+        std::unique_ptr<elem> ptr (fifo.front ());
         fifo.pop ();
         ptr->run ();
       }
@@ -83,16 +85,15 @@ private:
 };
 
 // Like event_queue, but this one will guard against the
-// possibility of seeing an exception (or interrupt) in the cleanup
-// actions. Not that we can do much about it, but at least we won't
-// crash.
+// possibility of seeing an exception (or interrupt) in the cleanup actions.
+// Not that we can do much about it, but at least we won't crash.
 
 class
 event_queue_safe : public event_queue
 {
 private:
 
-  static void gripe_exception (void);
+  void warn_unhandled_exception (void) const;
 
 public:
 
@@ -106,9 +107,9 @@ public:
           {
             run_first ();
           }
-        catch (...) // Yes, the black hole. Remember we're in a dtor.
+        catch (...) // Yes, the black hole.  Remember we're in a dtor.
           {
-            gripe_exception ();
+            warn_unhandled_exception ();
           }
       }
   }
@@ -123,3 +124,4 @@ private:
 };
 
 #endif
+

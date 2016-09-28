@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Ben Abbott
+## Copyright (C) 2010-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __ghostscript__ (@var{@dots{}})
+## @deftypefn {} {} __ghostscript__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -34,8 +34,8 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   opts.device = "";
   opts.epscrop = false;
   opts.antialiasing = false;
-  opts.antialiasing_textalphabits = 4;,
-  opts.antialiasing_graphicsalphabits = 4;
+  opts.antialiasing_textalphabits = 4;
+  opts.antialiasing_graphicsalphabits = 1;
   opts.resolution = 150;
   opts.papersize = "";
   opts.pageoffset = [0 0];

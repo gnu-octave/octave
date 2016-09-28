@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{ks}, @var{d}] =} kolmogorov_smirnov_test_2 (@var{x}, @var{y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{ks}, @var{d}] =} kolmogorov_smirnov_test_2 (@var{x}, @var{y}, @var{alt})
 ## Perform a 2-sample Kolmogorov-Smirnov test of the null hypothesis that the
 ## samples @var{x} and @var{y} come from the same (continuous) distribution.
 ##
@@ -76,7 +76,7 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   ds = diff (s);
   if (any (ds == 0))
     ## There are some ties, so keep only those changes.
-    warning ("cannot compute correct p-values with ties");
+    warning ("kolmogorov_smirnov_test_2: cannot compute correct p-values with ties");
     elems = [find(ds); n_x+n_y];
     z = z(elems);
   endif

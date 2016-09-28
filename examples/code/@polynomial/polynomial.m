@@ -1,6 +1,6 @@
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polynomial ()
-## @deftypefnx {Function File} {} polynomial (@var{a})
+## @deftypefn  {} {} polynomial ()
+## @deftypefnx {} {} polynomial (@var{a})
 ## Create a polynomial object representing the polynomial
 ##
 ## @example
@@ -12,19 +12,23 @@
 ## @end deftypefn
 
 function p = polynomial (a)
+
+  if (nargin > 1)
+    print_usage ();
+  endif
+
   if (nargin == 0)
     p.poly = [0];
     p = class (p, "polynomial");
-  elseif (nargin == 1)
+  else
     if (strcmp (class (a), "polynomial"))
       p = a;
-    elseif (isvector (a) && isreal (a))
-      p.poly = a(:).';
+    elseif (isreal (a) && isvector (a))
+      p.poly = a(:).';  # force row vector
       p = class (p, "polynomial");
     else
-      error ("polynomial: expecting real vector");
+      error ("@polynomial: A must be a real vector");
     endif
-  else
-    print_usage ();
   endif
+
 endfunction

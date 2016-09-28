@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{value} =} get (@var{player}, @var{name})
-## @deftypefnx {Function File} {@var{values} =} get (@var{player})
+## @deftypefn  {} {@var{value} =} get (@var{player}, @var{name})
+## @deftypefnx {} {@var{values} =} get (@var{player})
 ## Return the @var{value} of the property identified by @var{name}.
 ##
 ## If @var{name} is a cell array return the values of the properties

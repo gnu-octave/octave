@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pf} =} factor (@var{q})
-## @deftypefnx {Function File} {[@var{pf}, @var{n}] =} factor (@var{q})
+## @deftypefn  {} {@var{pf} =} factor (@var{q})
+## @deftypefnx {} {[@var{pf}, @var{n}] =} factor (@var{q})
 ## Return the prime factorization of @var{q}.
 ##
 ## The prime factorization is defined as @code{prod (@var{pf}) == @var{q}}
@@ -26,10 +26,11 @@
 ## return 1.
 ##
 ## With two output arguments, return the unique prime factors @var{pf} and
-## their multiplicities.  That is, @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
+## their multiplicities.  That is,
+## @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
 ##
 ## Implementation Note: The input @var{q} must be less than
-## @code{bitmax} (9.0072e+15) in order to factor correctly.
+## @code{flintmax} (9.0072e+15) in order to factor correctly.
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn
 
@@ -63,7 +64,7 @@ function [pf, n] = factor (q)
   ## There is at most one prime greater than sqrt(q), and if it exists,
   ## it has multiplicity 1, so no need to consider any factors greater
   ## than sqrt(q) directly.  [If there were two factors p1, p2 > sqrt(q),
-  ## then q >= p1*p2 > sqrt(q)*sqrt(q) == q. Contradiction.]
+  ## then q >= p1*p2 > sqrt(q)*sqrt(q) == q.  Contradiction.]
   p = primes (sqrt (q));
   while (q > 1)
     ## Find prime factors in remaining q.
@@ -82,7 +83,7 @@ function [pf, n] = factor (q)
   q = prod (pf);
   if (q != qorig)
     error ("factor: Q too large to factor");
-  elseif (q > bitmax)
+  elseif (q >= flintmax ())
     warning ("factor: Q too large.  Answer is unreliable");
   endif
 

@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2015 Julien Bect
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 2013-2016 Julien Bect
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} kurtosis (@var{x})
-## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{flag})
-## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{flag}, @var{dim})
+## @deftypefn  {} {} kurtosis (@var{x})
+## @deftypefnx {} {} kurtosis (@var{x}, @var{flag})
+## @deftypefnx {} {} kurtosis (@var{x}, @var{flag}, @var{dim})
 ## Compute the sample kurtosis of the elements of @var{x}.
 ##
 ## The sample kurtosis is defined as
@@ -105,12 +105,12 @@ function y = kurtosis (x, flag, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (! (isscalar (dim) && dim == fix (dim)) || ! (1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("kurtosis: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   sz(dim) = 1;
 
   x = center (x, dim);   # center also promotes integer, logical to double
@@ -140,26 +140,22 @@ endfunction
 
 %!assert (kurtosis ([-3, 0, 1]) == kurtosis ([-1, 0, 3]))
 %!assert (kurtosis (ones (3, 5)), NaN (1, 5))
+%!assert (kurtosis (1, [], 3), NaN)
 
 %!assert (kurtosis ([1:5 10; 1:5 10],  0, 2), 5.4377317925288901 * [1; 1], 8 * eps)
 %!assert (kurtosis ([1:5 10; 1:5 10],  1, 2), 2.9786509002956195 * [1; 1], 8 * eps)
 %!assert (kurtosis ([1:5 10; 1:5 10], [], 2), 2.9786509002956195 * [1; 1], 8 * eps)
 
-## Test behaviour on single input
+## Test behavior on single input
 %!assert (kurtosis (single ([1:5 10])), single (2.9786513), eps ("single"))
 %!assert (kurtosis (single ([1 2]), 0), single (NaN))
 
 ## Verify no "divide-by-zero" warnings
 %!test
-%! wstate = warning ("query", "Octave:divide-by-zero");
-%! warning ("on", "Octave:divide-by-zero");
-%! unwind_protect
-%!   lastwarn ("");  # clear last warning
-%!   kurtosis (1);
-%!   assert (lastwarn (), "");
-%! unwind_protect_cleanup
-%!   warning (wstate, "Octave:divide-by-zero");
-%! end_unwind_protect
+%! warning ("on", "Octave:divide-by-zero", "local");
+%! lastwarn ("");  # clear last warning
+%! kurtosis (1);
+%! assert (lastwarn (), "");
 
 ## Test input validation
 %!error kurtosis ()
@@ -170,4 +166,4 @@ endfunction
 %!error <DIM must be an integer> kurtosis (1, [], ones (2,2))
 %!error <DIM must be an integer> kurtosis (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> kurtosis (1, [], 0)
-%!error <DIM must be .* a valid dimension> kurtosis (1, [], 3)
+

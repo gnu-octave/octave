@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -22,53 +22,47 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: A. S. Hodel <scotte@eng.auburn.edu>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
-#include "utils.h"
+#include "errwarn.h"
+#include "ovl.h"
 
-DEFUN (sylvester, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{X} =} syl (@var{A}, @var{B}, @var{C})\n\
-Solve the Sylvester equation\n\
-@tex\n\
-$$\n\
- A X + X B = C\n\
-$$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-A X + X B = C\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-using standard @sc{lapack} subroutines.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
-   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+DEFUN (sylvester, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{X} =} sylvester (@var{A}, @var{B}, @var{C})
+Solve the Sylvester equation
+@tex
+$$
+ A X + X B = C
+$$
+@end tex
+@ifnottex
+
+@example
+A X + X B = C
+@end example
+
+@end ifnottex
+using standard @sc{lapack} subroutines.
+
+For example:
+
+@example
+@group
+sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
+   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]
+@end group
+@end example
+@end deftypefn */)
 {
+  if (args.length () != 3)
+    print_usage ();
+
   octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 3 || nargout > 1)
-    {
-      print_usage ();
-      return retval;
-    }
 
   octave_value arg_a = args(0);
   octave_value arg_b = args(1);
@@ -83,39 +77,26 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   octave_idx_type c_nr = arg_c.rows ();
   octave_idx_type c_nc = arg_c.columns ();
 
-  int arg_a_is_empty = empty_arg ("sylvester", a_nr, a_nc);
-  int arg_b_is_empty = empty_arg ("sylvester", b_nr, b_nc);
-  int arg_c_is_empty = empty_arg ("sylvester", c_nr, c_nc);
-
   bool isfloat = arg_a.is_single_type ()
                  || arg_b.is_single_type ()
                  || arg_c.is_single_type ();
 
-  if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
-    if (isfloat)
-      return octave_value (FloatMatrix ());
-    else
-      return octave_value (Matrix ());
-  else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
-    return retval;
+  if (arg_a.is_empty () || arg_b.is_empty () || arg_c.is_empty ())
+    {
+      if (isfloat)
+        return ovl (FloatMatrix ());
+      else
+        return ovl (Matrix ());
+    }
 
   // Arguments are not empty, so check for correct dimensions.
 
   if (a_nr != a_nc)
-    {
-      gripe_square_matrix_required ("sylvester: input A");
-      return retval;
-    }
-  else if (b_nr != b_nc)
-    {
-      gripe_square_matrix_required ("sylvester: input B");
-      return retval;
-    }
-  else if (a_nr != c_nr || b_nr != c_nc)
-    {
-      gripe_nonconformant ();
-      return retval;
-    }
+    err_square_matrix_required ("sylvester", "A");
+  if (b_nr != b_nc)
+    err_square_matrix_required ("sylvester", "B");
+  if (a_nr != c_nr || b_nr != c_nc)
+    err_nonconformant ();
 
   if (isfloat)
     {
@@ -126,19 +107,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in complex arithmetic;
 
           FloatComplexMatrix ca = arg_a.float_complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatComplexMatrix cb = arg_b.float_complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatComplexMatrix cc = arg_c.float_complex_matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -147,19 +117,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in real arithmetic.
 
           FloatMatrix ca = arg_a.float_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatMatrix cb = arg_b.float_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           FloatMatrix cc = arg_c.float_matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -173,19 +132,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in complex arithmetic;
 
           ComplexMatrix ca = arg_a.complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           ComplexMatrix cb = arg_b.complex_matrix_value ();
-
-          if (error_state)
-            return retval;
-
           ComplexMatrix cc = arg_c.complex_matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -194,19 +142,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
           // Do everything in real arithmetic.
 
           Matrix ca = arg_a.matrix_value ();
-
-          if (error_state)
-            return retval;
-
           Matrix cb = arg_b.matrix_value ();
-
-          if (error_state)
-            return retval;
-
           Matrix cc = arg_c.matrix_value ();
-
-          if (error_state)
-            return retval;
 
           retval = Sylvester (ca, cb, cc);
         }
@@ -224,7 +161,8 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 %!error sylvester (1)
 %!error sylvester (1,2)
 %!error sylvester (1, 2, 3, 4)
-%!error <input A: .* must be a square matrix> sylvester (ones (2,3), ones (2,2), ones (2,2))
-%!error <input B: .* must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
+%!error <A must be a square matrix> sylvester (ones (2,3), ones (2,2), ones (2,2))
+%!error <B must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
 %!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))
 */
+

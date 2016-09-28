@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Alexander Barth
+## Copyright (C) 2006-2016 Alexander Barth
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{reg}, @var{prop}] =} parseparams (@var{params})
-## @deftypefnx {Function File} {[@var{reg}, @var{var1}, @dots{}] =} parseparams (@var{params}, @var{name1}, @var{default1}, @dots{})
+## @deftypefn  {} {[@var{reg}, @var{prop}] =} parseparams (@var{params})
+## @deftypefnx {} {[@var{reg}, @var{var1}, @dots{}] =} parseparams (@var{params}, @var{name1}, @var{default1}, @dots{})
 ## Return in @var{reg} the cell elements of @var{param} up to the first
 ## string element and in @var{prop} all remaining elements beginning with the
 ## first string element.

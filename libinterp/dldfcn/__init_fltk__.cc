@@ -1,8 +1,7 @@
 /*
 
-
-Copyright (C) 2007-2015 Shai Ayal
-Copyright (C) 2014-2015 Andreas Weber
+Copyright (C) 2007-2016 Shai Ayal
+Copyright (C) 2014-2016 Andreas Weber
 
 This file is part of Octave.
 
@@ -31,21 +30,23 @@ To initialize:
 
 */
 
-// PKG_ADD: if (__have_fltk__ () && have_window_system ()) register_graphics_toolkit ("fltk"); endif
+// PKG_ADD: if (__have_feature__ ("FLTK") && __have_feature__ ("OPENGL") && have_window_system ()) register_graphics_toolkit ("fltk"); endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "errwarn.h"
+#include "oct-opengl.h"
 #include "ov-fcn-handle.h"
 
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
 
 #if defined (HAVE_X_WINDOWS)
-#include <X11/Xlib.h>
+#  include <X11/Xlib.h>
 #endif
 
 #include <map>
@@ -53,8 +54,8 @@ To initialize:
 #include <sstream>
 #include <iostream>
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
+#if defined (WIN32)
+#  define WIN32_LEAN_AND_MEAN
 #endif
 
 #include <FL/Fl.H>
@@ -85,10 +86,10 @@ To initialize:
 #include "display.h"
 #include "file-ops.h"
 #include "gl-render.h"
-#include "gl2ps-renderer.h"
+#include "gl2ps-print.h"
 #include "graphics.h"
 #include "parse.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "variables.h"
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
@@ -114,8 +115,12 @@ public:
     : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), renderer (),
       in_zoom (false), zoom_box ()
   {
+#if defined (HAVE_OPENGL)
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
+#else
+    err_disabled_feature ("OpenGL_fltk", "OpenGL");
+#endif
   }
 
   ~OpenGL_fltk (void) { }
@@ -139,7 +144,16 @@ public:
 
   void resize (int xx, int yy, int ww, int hh)
   {
+#if defined (HAVE_OPENGL)
+
     Fl_Gl_Window::resize (xx, yy, ww, hh);
+
+#else
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+#endif
   }
 
   bool renumber (double new_number)
@@ -157,13 +171,15 @@ public:
 
 private:
   double number;
-  opengl_renderer renderer;
+  octave::opengl_renderer renderer;
   bool in_zoom;
   // (x1,y1,x2,y2)
   Matrix zoom_box;
 
   void draw (void)
   {
+#if defined (HAVE_OPENGL)
+
     if (! valid ())
       {
         glMatrixMode (GL_PROJECTION);
@@ -175,19 +191,37 @@ private:
 
     if (zoom ())
       overlay ();
+
+#else
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+#endif
   }
 
   void zoom_box_vertex (void)
   {
+#if defined (HAVE_OPENGL)
+
     glVertex2d (zoom_box(0), h () - zoom_box(1));
     glVertex2d (zoom_box(0), h () - zoom_box(3));
     glVertex2d (zoom_box(2), h () - zoom_box(3));
     glVertex2d (zoom_box(2), h () - zoom_box(1));
     glVertex2d (zoom_box(0), h () - zoom_box(1));
+
+#else
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+#endif
   }
 
   void overlay (void)
   {
+#if defined (HAVE_OPENGL)
+
     glPushMatrix ();
 
     glMatrixMode (GL_MODELVIEW);
@@ -213,10 +247,19 @@ private:
 
     glPopAttrib ();
     glPopMatrix ();
+
+#else
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+#endif
   }
 
   int handle (int event)
   {
+#if defined (HAVE_OPENGL)
+
     switch (event)
       {
       case FL_ENTER:
@@ -227,7 +270,15 @@ private:
         cursor (FL_CURSOR_DEFAULT);
         return 1;
       }
+
     return Fl_Gl_Window::handle (event);
+
+#else
+    // This shouldn't happen because construction of Opengl_fltk
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+#endif
   }
 };
 
@@ -293,11 +344,11 @@ public:
         if (m->submenu ())
           {
             // item has submenu
-            if (!menupath.empty ())
+            if (! menupath.empty ())
               menupath += "/";
             menupath += m->label ();
 
-            if (menupath.compare (findname) == 0)
+            if (menupath == findname)
               return (t);
           }
         else
@@ -314,11 +365,11 @@ public:
               }
             // Menu item?
             std::string itempath = menupath;
-            if (!itempath.empty ())
+            if (! itempath.empty ())
               itempath += "/";
             itempath += m->label ();
 
-            if (itempath.compare (findname) == 0)
+            if (itempath == findname)
               return (t);
           }
       }
@@ -342,7 +393,6 @@ public:
   Matrix do_find_uimenu_children (Matrix uimenu_childs) const
   {
     octave_idx_type k = 0;
-
 
     Matrix pos = Matrix (uimenu_childs.numel (), 1);
 
@@ -383,7 +433,7 @@ public:
   void update_accelerator (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
@@ -402,13 +452,13 @@ public:
   void update_callback (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
         if (item)
           {
-            if (!uimenup.get_callback ().is_empty ())
+            if (! uimenup.get_callback ().is_empty ())
               item->callback (static_cast<Fl_Callback*> (script_cb),
                               static_cast<void*> (&uimenup));
             else
@@ -420,7 +470,7 @@ public:
   void update_enable (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
@@ -437,7 +487,7 @@ public:
   void update_foregroundcolor (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
@@ -445,9 +495,9 @@ public:
           {
             Matrix rgb = uimenup.get_foregroundcolor_rgb ();
 
-            uchar r = static_cast<uchar> (gnulib::floor (rgb (0) * 255));
-            uchar g = static_cast<uchar> (gnulib::floor (rgb (1) * 255));
-            uchar b = static_cast<uchar> (gnulib::floor (rgb (2) * 255));
+            uchar r = static_cast<uchar> (std::floor (rgb (0) * 255));
+            uchar g = static_cast<uchar> (std::floor (rgb (1) * 255));
+            uchar b = static_cast<uchar> (std::floor (rgb (2) * 255));
 
             item->labelcolor (fl_rgb_color (r, g, b));
           }
@@ -457,10 +507,10 @@ public:
   void update_seperator (const uimenu::properties& uimenup)
   {
     // Matlab places the separator before the current
-    // menu entry, while fltk places it after. So we need to find
+    // menu entry, while fltk places it after.  So we need to find
     // the previous item in this menu/submenu. (Kai)
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         int itemflags = 0, idx;
         int curr_idx = find_index_by_name (fltk_label.c_str ());
@@ -490,7 +540,7 @@ public:
   void update_visible (uimenu::properties& uimenup)
   {
     std::string fltk_label = uimenup.get_fltk_label ();
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
           = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
@@ -506,7 +556,8 @@ public:
 
   void update_position (uimenu::properties& uimenup, int pos)
   {
-    uimenup.get_property ("position").set (octave_value (static_cast<double> (pos)), true, false);
+    uimenup.get_property ("position").set (octave_value (static_cast<double> (pos)),
+                                           true, false);
   }
 
   void add_entry (uimenu::properties& uimenup)
@@ -514,7 +565,7 @@ public:
 
     std::string fltk_label = uimenup.get_fltk_label ();
 
-    if (!fltk_label.empty ())
+    if (! fltk_label.empty ())
       {
         bool item_added = false;
         do
@@ -554,7 +605,7 @@ public:
                 item_added = true;
               }
           }
-        while (!item_added);
+        while (! item_added);
         uimenup.set_fltk_label (fltk_label);
       }
   }
@@ -563,7 +614,7 @@ public:
   {
     std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (uimenup);
-    int len = kids.length ();
+    int len = kids.numel ();
     std::string fltk_label = uimenup.get_fltk_label ();
     int count = 0;
 
@@ -588,9 +639,9 @@ public:
             if (pos <= 0)
               delayed_menus.push_back ((len - (ii + 1)));
             else
-             {
-               add_to_menu (kprop);
-             }
+              {
+                add_to_menu (kprop);
+              }
           }
       }
 
@@ -613,7 +664,7 @@ public:
   {
     std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (figp);
-    int len = kids.length ();
+    int len = kids.numel ();
     int count = 0;
     menubar->clear ();
     for (octave_idx_type ii = 0; ii < len; ii++)
@@ -630,10 +681,10 @@ public:
             if (pos <= 0)
               delayed_menus.push_back ((len - (ii + 1)));
             else
-             {
-               add_to_menu (kprop);
-               update_position (kprop, ++count);
-             }
+              {
+                add_to_menu (kprop);
+                update_position (kprop, ++count);
+              }
           }
       }
 
@@ -652,13 +703,13 @@ public:
       }
   }
 
-  template <class T_prop>
+  template <typename T_prop>
   void remove_from_menu (T_prop& prop)
   {
     Matrix kids;
     std::string type = prop.get_type ();
     kids = find_uimenu_children (prop);
-    int len = kids.length ();
+    int len = kids.numel ();
 
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
@@ -672,9 +723,9 @@ public:
           }
       }
 
-    if (type.compare ("uimenu") == 0)
+    if (type == "uimenu")
       delete_entry (dynamic_cast<uimenu::properties&> (prop));
-    else if (type.compare ("figure") == 0)
+    else if (type == "figure")
       menubar->clear ();
   }
 
@@ -716,8 +767,8 @@ public:
     callback (window_close, static_cast<void*> (this));
 
     // The size of the resize_dummy box also determines the minimum window size
-    resize_dummy = new Fl_Box (5 * status_h + 1, menu_h + 1,
-                               ww - 5 * status_h - 1, hh);
+    resize_dummy = new Fl_Box (5 * status_h, menu_h,
+                               ww - 5 * status_h, hh);
     // See http://fltk.org/articles.php?L415+I0+T+M1000+P1
     // for how resizable works
     resizable (resize_dummy);
@@ -738,8 +789,8 @@ public:
     // Only "status" should be resized.
 
     int toolbar_y = menu_h + hh + 1;
-    status = new Fl_Output (5 * status_h + 1, toolbar_y,
-                            ww - 5 * status_h - 1, status_h, "");
+    status = new Fl_Output (5 * status_h, toolbar_y,
+                            ww - 5 * status_h, status_h, "");
 
     status->textcolor (FL_BLACK);
     status->color (FL_GRAY);
@@ -771,7 +822,7 @@ public:
 
     set_name ();
     uimenu->add_to_menu (fp);
-    if (fp.menubar_is ("none") || !uimenu->items_to_show ())
+    if (fp.menubar_is ("none") || ! uimenu->items_to_show ())
       hide_menubar ();
 
     update_boundingbox (internal);
@@ -790,7 +841,7 @@ public:
 
 #if defined (HAVE_X_WINDOWS)
         std::string show_gui_msgs
-          = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+          = octave::sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
         // Installing our handler suppresses the messages.
         if (show_gui_msgs.empty ())
@@ -814,13 +865,11 @@ public:
 
   void renumber (double new_number)
   {
-    if (canvas)
-      {
-        if (canvas->renumber (new_number))
-          mark_modified ();
-      }
-    else
+    if (! canvas)
       error ("unable to renumber figure");
+
+    if (canvas->renumber (new_number))
+      mark_modified ();
   }
 
   void print (const std::string& cmd, const std::string& term)
@@ -921,7 +970,7 @@ public:
 
   // Move the toolbar at the bottom of the plot_window.
   // The only reason for moving the toolbar is hiding and
-  // showing the menubar. All other resizing is done by fltk.
+  // showing the menubar.  All other resizing is done by fltk.
 
   void update_toolbar_position ()
   {
@@ -937,9 +986,8 @@ public:
     panzoom->position (2 * status_h, toolbar_y);
     rotate->position (3 * status_h, toolbar_y);
     help->position (4 * status_h, toolbar_y);
-    status->resize (5 * status_h + 1, toolbar_y,
-                    w () - 5 * status_h - 1, status_h);
-
+    status->resize (5 * status_h, toolbar_y,
+                    w () - 5 * status_h, status_h);
     init_sizes ();
     redraw ();
   }
@@ -1070,7 +1118,6 @@ private:
   int pos_x;
   int pos_y;
 
-
   void axis_auto (void)
   {
     octave_value_list args;
@@ -1115,7 +1162,7 @@ private:
   graphics_handle pixel2axes_or_ca (int px, int py)
   {
     Matrix kids = fp.get_children ();
-    int len = kids.length ();
+    int len = kids.numel ();
 
     for (int k = 0; k < len; k++)
       {
@@ -1150,7 +1197,7 @@ private:
                      int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
-    x0 = y0 = x1 = y1 = octave_NaN;
+    x0 = y0 = x1 = y1 = octave::numeric_limits<double>::NaN ();
     std::stringstream cbuf;
     cbuf.precision (4);
     cbuf.width (6);
@@ -1184,7 +1231,7 @@ private:
 
   void set_currentpoint (int px, int py)
   {
-    if (!fp.is_beingdeleted ())
+    if (! fp.is_beingdeleted ())
       {
         Matrix pos = fp.map_from_boundingbox (px, py);
         fp.set_currentpoint (pos);
@@ -1396,7 +1443,7 @@ private:
 
     graphics_handle gh;
 
-    if (!fp.is_beingdeleted ())
+    if (! fp.is_beingdeleted ())
       {
         //std::cout << "plot_window::handle event = " <<  fl_eventnames[event] << std::endl;
 
@@ -1452,7 +1499,7 @@ private:
                           ax_obj = gh_manager::get_object (gh);
                           set_axes_currentpoint (ax_obj, pos_x, pos_y);
                         }
-                     }
+                    }
 
                   fp.execute_keypressfcn (evt);
                 }
@@ -1596,7 +1643,7 @@ private:
                         (ax_obj.get_properties ());
 
                       // Don't pan or rotate legend
-                      if (ap.get_tag ().compare ("legend") < 0)
+                      if (ap.get_tag () != "legend")
                         {
                           if (rotate_enabled ())
                             view2status (ax_obj);
@@ -1613,11 +1660,11 @@ private:
                                      x1, y1);
 
                           if (pan_enabled ())
-                          {
-                            std::string mode = pan_mode ();
+                            {
+                              std::string mode = pan_mode ();
 
-                            ap.translate_view (mode, x0, x1, y0, y1);
-                          }
+                              ap.translate_view (mode, x0, x1, y0, y1);
+                            }
                           else if (rotate_enabled ())
                             {
                               double daz, del;
@@ -1651,8 +1698,8 @@ private:
                   Matrix zoom_box (1,4,0);
                   zoom_box (0) = pos_x;
                   zoom_box (1) = pos_y;
-                  zoom_box (2) =  Fl::event_x ();
-                  zoom_box (3) =  Fl::event_y () - menu_dy ();
+                  zoom_box (2) = Fl::event_x ();
+                  zoom_box (3) = Fl::event_y () - menu_dy ();
                   canvas->set_zoom_box (zoom_box);
                   canvas->zoom (true);
                   mark_modified ();
@@ -1679,7 +1726,6 @@ private:
                     const double factor = (Fl::event_dy () < 0
                                            ? 1 / (1.0 - wheel_zoom_speed)
                                            : 1.0 - wheel_zoom_speed);
-
 
                     // Get the point we're zooming about.
                     double x1, y1;
@@ -1779,11 +1825,7 @@ public:
       instance = new figure_manager ();
 
     if (! instance)
-      {
-        ::error ("unable to create figure_manager object!");
-
-        retval = false;
-      }
+      error ("unable to create figure_manager object!");
 
     return retval;
   }
@@ -2086,8 +2128,8 @@ private:
         if (istr >> ind)
           return ind;
       }
+
     error ("figure_manager: could not recognize fltk index");
-    return -1;
   }
 
   void idx2figprops (int idx, figure::properties& fp)
@@ -2107,8 +2149,8 @@ private:
         else
           return 0;
       }
+
     error ("figure_manager: figure is not fltk");
-    return -1;
   }
 
   static int hnd2idx (double h)
@@ -2120,8 +2162,8 @@ private:
           dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
+
     error ("figure_manager: H (= %g) is not a figure", h);
-    return -1;
   }
 
   static int hnd2idx (const graphics_handle& fh)
@@ -2192,7 +2234,7 @@ public:
         else if (go.isa ("figure") || go.isa ("uicontextmenu"))
           ;
         else
-          error ("unexpected parent object\n");
+          error ("invalid parent object\n");
 
         uimenup.set_fltk_label (fltk_label);
       }
@@ -2289,7 +2331,7 @@ public:
 
   void print_figure (const graphics_object& go,
                      const std::string& term,
-                     const std::string& file_cmd, bool /*mono*/,
+                     const std::string& file_cmd,
                      const std::string& /*debug_file*/) const
   {
     figure_manager::print (go.get_handle (), file_cmd, term);
@@ -2306,7 +2348,7 @@ public:
     // FLTK doesn't give this info.
     return 72.0;
 
-    // FIXME: FLTK >= 1.3.0 could do this with  Fl::screen_dpi (h, v, n)
+    // FIXME: FLTK >= 1.3.0 could do this with Fl::screen_dpi (h, v, n)
     // but do we need it?
   }
 */
@@ -2346,32 +2388,32 @@ private:
 #endif
 
 DEFUN_DLD (__fltk_check__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __fltk_check__ ()\n\
-Undocumented internal function.  Calls Fl::check ()\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __fltk_check__ ()
+Undocumented internal function.  Calls Fl::check ()
+@end deftypefn */)
 {
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
   Fl::check ();
 
   if (Vdrawnow_requested)
     Fdrawnow ();
-#else
-  error ("__fltk_check__: not available without OpenGL and FLTK libraries");
-#endif
 
-  return octave_value ();
+  return ovl ();
+#else
+  err_disabled_feature ("__fltk_check__", "OpenGL and FLTK");
+#endif
 }
 
 // Initialize the fltk graphics toolkit.
 
 DEFUN_DLD (__init_fltk__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __init_fltk__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __init_fltk__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
   if (! display_info::display_available ())
     error ("__init_fltk__: no graphics DISPLAY available");
   else if (! toolkit_loaded)
@@ -2389,26 +2431,16 @@ Undocumented internal function.\n\
 
       fltk->set_input_event_hook_id (id);
     }
-#else
-  error ("__init_fltk__: not available without OpenGL and FLTK libraries");
-#endif
 
-  return octave_value ();
+  return ovl ();
+
+#else
+  err_disabled_feature ("__init_fltk__", "OpenGL and FLTK");
+#endif
 }
 
-DEFUN_DLD (__have_fltk__, , ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{FLTK_available} =} __have_fltk__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value retval;
+/*
+## No test needed for internal helper function.
+%!assert (1)
+*/
 
-#ifdef HAVE_FLTK
-  retval = true;
-#else
-  retval = false;
-#endif
-
-  return retval;
-}

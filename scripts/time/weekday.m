@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{n}, @var{s}] =} weekday (@var{d})
-## @deftypefnx {Function File} {[@var{n}, @var{s}] =} weekday (@var{d}, @var{format})
-## Return the day of the week as a number in @var{n} and as a string in @var{s}.
+## @deftypefn  {} {[@var{n}, @var{s}] =} weekday (@var{d})
+## @deftypefnx {} {[@var{n}, @var{s}] =} weekday (@var{d}, @var{format})
+## Return the day of the week as a number in @var{n} and as a string in
+## @var{s}.
 ##
 ## The days of the week are numbered 1--7 with the first day being Sunday.
 ##
@@ -67,7 +68,7 @@ function [d, s] = weekday (d, format = "short")
   ## Find the offset from a known Sunday (2008-Jan-6), mod 7.
   d = floor (reshape (mod (d - 733048, 7), endsize));
   ## Make Saturdays a 7 and not a 0.
-  d(!d) = 7;
+  d(! d) = 7;
 
   if (isargout (2))
     if (strcmpi (format, "long"))

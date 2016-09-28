@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Alois Schloegl
+## Copyright (C) 2004-2016 Alois Schloegl
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isdir (@var{f})
+## @deftypefn {} {} isdir (@var{f})
 ## Return true if @var{f} is a directory.
 ## @seealso{exist, stat, is_absolute_filename, is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isdir (f)
+
   if (nargin != 1)
-    print_usage ("isdir");
+    print_usage ();
   endif
 
   ## Exist returns an integer but isdir should return a logical.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: James R. Van Zandt <jrv@vanzandt.mv.com>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -51,12 +51,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "Cell.h"
+#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-save.h"
 #include "load-path.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "ov-class.h"
@@ -64,7 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -77,8 +78,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "defaults.h"
 
-#ifdef HAVE_ZLIB
-#include <zlib.h>
+#if defined (HAVE_ZLIB)
+#  include <zlib.h>
 #endif
 
 #define READ_PAD(is_small_data_element, l) ((is_small_data_element) ? 4 : (((l)+7)/8)*8)
@@ -125,7 +126,7 @@ enum arrayclasstype
 static void
 read_mat5_binary_data (std::istream& is, double *data,
                        octave_idx_type  count, bool swap, mat5_data_type type,
-                       oct_mach_info::float_format flt_fmt)
+                       octave::mach_info::float_format flt_fmt)
 {
 
   switch (type)
@@ -190,7 +191,7 @@ read_mat5_binary_data (std::istream& is, double *data,
 static void
 read_mat5_binary_data (std::istream& is, float *data,
                        octave_idx_type  count, bool swap, mat5_data_type type,
-                       oct_mach_info::float_format flt_fmt)
+                       octave::mach_info::float_format flt_fmt)
 {
 
   switch (type)
@@ -252,26 +253,26 @@ read_mat5_binary_data (std::istream& is, float *data,
     }
 }
 
-template <class T>
+template <typename T>
 void
 read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
                         bool swap, mat5_data_type type)
 {
 
-#define READ_INTEGER_DATA(TYPE, swap, data, size, len, stream)  \
-  do \
-    { \
-      if (len > 0) \
-        { \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+#define READ_INTEGER_DATA(TYPE, swap, data, size, len, stream)          \
+  do                                                                    \
+    {                                                                   \
+      if (len > 0)                                                      \
+        {                                                               \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
           std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
-          if (swap) \
-            swap_bytes< size > (ptr, len); \
-          for (octave_idx_type i = 0; i < len; i++) \
-            data[i] = ptr[i]; \
-        } \
-    } \
+          stream.read (reinterpret_cast<char *> (ptr), n_bytes);        \
+          if (swap)                                                     \
+            swap_bytes< size > (ptr, len);                              \
+          for (octave_idx_type i = 0; i < len; i++)                     \
+            data[i] = ptr[i];                                           \
+        }                                                               \
+    }                                                                   \
   while (0)
 
   switch (type)
@@ -369,64 +370,52 @@ read_mat5_integer_data (std::istream& is, int *m,
                         octave_idx_type count, bool swap,
                         mat5_data_type type);
 
-#define OCTAVE_MAT5_INTEGER_READ(TYP) \
-  { \
-        TYP re (dims); \
-  \
-        std::streampos tmp_pos; \
-  \
+#define OCTAVE_MAT5_INTEGER_READ(TYP)                                   \
+  {                                                                     \
+    TYP re (dims);                                                      \
+                                                                        \
+    std::streampos tmp_pos;                                             \
+                                                                        \
+    if (read_mat5_tag (is, swap, type, len, is_small_data_element))     \
+      error ("load: reading matrix data for '%s'", retval.c_str ());    \
+                                                                        \
+    octave_idx_type n = re.numel ();                                    \
+    tmp_pos = is.tellg ();                                              \
+    read_mat5_integer_data (is, re.fortran_vec (), n, swap,             \
+                            static_cast<enum mat5_data_type> (type));   \
+                                                                        \
+    if (! is)                                                           \
+      error ("load: reading matrix data for '%s'", retval.c_str ());    \
+                                                                        \
+    is.seekg (tmp_pos + static_cast<std::streamoff>                     \
+              (READ_PAD (is_small_data_element, len)));                 \
+                                                                        \
+    if (imag)                                                           \
+      {                                                                 \
+        /* We don't handle imag integer types, convert to an array */   \
+        NDArray im (dims);                                              \
+                                                                        \
         if (read_mat5_tag (is, swap, type, len, is_small_data_element)) \
-          { \
-            error ("load: reading matrix data for '%s'", retval.c_str ()); \
-            goto data_read_error; \
-          } \
-  \
-        octave_idx_type n = re.numel (); \
-        tmp_pos = is.tellg (); \
-        read_mat5_integer_data (is, re.fortran_vec (), n, swap, \
-                                static_cast<enum mat5_data_type> (type)); \
-  \
-        if (! is || error_state) \
-          { \
-            error ("load: reading matrix data for '%s'", retval.c_str ()); \
-            goto data_read_error; \
-          } \
-  \
-        is.seekg (tmp_pos + static_cast<std::streamoff>\
-                  (READ_PAD (is_small_data_element, len))); \
-  \
-        if (imag) \
-          { \
-            /* We don't handle imag integer types, convert to an array */ \
-            NDArray im (dims); \
-  \
-            if (read_mat5_tag (is, swap, type, len, is_small_data_element)) \
-              { \
-                error ("load: reading matrix data for '%s'", \
-                       retval.c_str ()); \
-                goto data_read_error; \
-              } \
-  \
-            n = im.numel (); \
-            read_mat5_binary_data (is, im.fortran_vec (), n, swap, \
-                                   static_cast<enum mat5_data_type> (type), flt_fmt); \
-  \
-            if (! is || error_state) \
-              { \
-                error ("load: reading imaginary matrix data for '%s'", \
-                       retval.c_str ()); \
-                goto data_read_error; \
-              } \
-  \
-            ComplexNDArray ctmp (dims); \
-  \
-            for (octave_idx_type i = 0; i < n; i++) \
-              ctmp(i) = Complex (re(i).double_value (), im(i)); \
-  \
-            tc = ctmp;  \
-          } \
-        else \
-          tc = re; \
+          error ("load: reading matrix data for '%s'",                  \
+                 retval.c_str ());                                      \
+                                                                        \
+        n = im.numel ();                                                \
+        read_mat5_binary_data (is, im.fortran_vec (), n, swap,          \
+                               static_cast<enum mat5_data_type> (type), flt_fmt); \
+                                                                        \
+        if (! is)                                                       \
+          error ("load: reading imaginary matrix data for '%s'",        \
+                 retval.c_str ());                                      \
+                                                                        \
+        ComplexNDArray ctmp (dims);                                     \
+                                                                        \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          ctmp(i) = Complex (re(i).double_value (), im(i));             \
+                                                                        \
+        tc = ctmp;                                                      \
+      }                                                                 \
+    else                                                                \
+      tc = re;                                                          \
   }
 
 // Read one element tag from stream IS,
@@ -441,7 +430,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
   int32_t temp;
 
   if (! is.read (reinterpret_cast<char *> (&temp), 4))
-    goto data_read_error;
+    return 1;
 
   if (swap)
     swap_bytes<4> (&temp);
@@ -458,7 +447,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
   else
     {
       if (! is.read (reinterpret_cast<char *> (&temp), 4))
-        goto data_read_error;
+        return 1;
       if (swap)
         swap_bytes<4> (&temp);
       bytes = temp;
@@ -466,9 +455,6 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
     }
 
   return 0;
-
-data_read_error:
-  return 1;
 }
 
 static void
@@ -510,11 +496,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   std::string classname;
 
   // MAT files always use IEEE floating point
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
   if ((number == 1) ^ swap)
-    flt_fmt = oct_mach_info::flt_fmt_ieee_big_endian;
+    flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
   else
-    flt_fmt = oct_mach_info::flt_fmt_ieee_little_endian;
+    flt_fmt = octave::mach_info::flt_fmt_ieee_little_endian;
 
   // element type, length and small data element flag
   int32_t type = 0;
@@ -525,7 +511,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   if (type == miCOMPRESSED)
     {
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
       // If C++ allowed us direct access to the file descriptor of an
       // ifstream in a uniform way, the code below could be vastly
       // simplified, and additional copies of the data in memory
@@ -540,76 +526,75 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_LOCAL_BUFFER (unsigned int, tmp, 2);
       if (uncompress (reinterpret_cast<Bytef *> (tmp), &destLen,
                       reinterpret_cast<Bytef *> (inbuf), element_length)
-          !=  Z_MEM_ERROR)
-        {
-          // Why should I have to initialize outbuf as I'll just overwrite!!
-          if (swap)
-            swap_bytes<4> (tmp, 2);
-
-          destLen = tmp[1] + 8;
-          std::string outbuf (destLen, ' ');
-
-          // FIXME: find a way to avoid casting away const here!
-
-          int err = uncompress (reinterpret_cast<Bytef *>
-                                 (const_cast<char *> (outbuf.c_str ())),
-                                &destLen, reinterpret_cast<Bytef *> (inbuf),
-                                element_length);
-
-          if (err != Z_OK)
-            {
-              std::string msg;
-              switch (err)
-                {
-                case Z_STREAM_END:
-                  msg = "stream end";
-                  break;
-
-                case Z_NEED_DICT:
-                  msg = "need dict";
-                  break;
-
-                case Z_ERRNO:
-                  msg = "errno case";
-                  break;
-
-                case Z_STREAM_ERROR:
-                  msg = "stream error";
-                  break;
-
-                case Z_DATA_ERROR:
-                  msg = "data error";
-                  break;
-
-                case Z_MEM_ERROR:
-                  msg = "mem error";
-                  break;
-
-                case Z_BUF_ERROR:
-                  msg = "buf error";
-                  break;
-
-                case Z_VERSION_ERROR:
-                  msg = "version error";
-                  break;
-                }
-
-              error ("load: error uncompressing data element (%s from zlib)",
-                     msg.c_str ());
-            }
-          else
-            {
-              std::istringstream gz_is (outbuf);
-              retval = read_mat5_binary_element (gz_is, filename,
-                                                 swap, global, tc);
-            }
-        }
-      else
+          == Z_MEM_ERROR)
         error ("load: error probing size of compressed data element");
 
+      // Why should I have to initialize outbuf as I'll just overwrite!!
+      if (swap)
+        swap_bytes<4> (tmp, 2);
+
+      destLen = tmp[1] + 8;
+      std::string outbuf (destLen, ' ');
+
+      // FIXME: find a way to avoid casting away const here!
+
+      int err = uncompress (reinterpret_cast<Bytef *>
+                            (const_cast<char *> (outbuf.c_str ())),
+                            &destLen, reinterpret_cast<Bytef *> (inbuf),
+                            element_length);
+
+      if (err != Z_OK)
+        {
+          std::string msg;
+          switch (err)
+            {
+            case Z_STREAM_END:
+              msg = "stream end";
+              break;
+
+            case Z_NEED_DICT:
+              msg = "need dict";
+              break;
+
+            case Z_ERRNO:
+              msg = "errno case";
+              break;
+
+            case Z_STREAM_ERROR:
+              msg = "stream error";
+              break;
+
+            case Z_DATA_ERROR:
+              msg = "data error";
+              break;
+
+            case Z_MEM_ERROR:
+              msg = "mem error";
+              break;
+
+            case Z_BUF_ERROR:
+              msg = "buf error";
+              break;
+
+            case Z_VERSION_ERROR:
+              msg = "version error";
+              break;
+            }
+
+          error ("load: error uncompressing data element (%s from zlib)",
+                 msg.c_str ());
+        }
+      else
+        {
+          std::istringstream gz_is (outbuf);
+          retval = read_mat5_binary_element (gz_is, filename,
+                                             swap, global, tc);
+        }
+
       return retval;
-#else // HAVE_ZLIB
-      error ("load: zlib unavailable, cannot read compressed data element");
+
+#else
+      err_disabled_feature ("load", "compressed data elements (zlib)");
 #endif
     }
 
@@ -619,7 +604,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     {
       pos = is.tellg ();
       error ("load: invalid element type = %d", type);
-      goto early_read_error;
     }
 
   if (element_length == 0)
@@ -634,10 +618,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   int32_t len;
   if (read_mat5_tag (is, swap, type, len, is_small_data_element)
       || type != miUINT32 || len != 8 || is_small_data_element)
-    {
-      error ("load: invalid array flags subelement");
-      goto early_read_error;
-    }
+    error ("load: invalid array flags subelement");
 
   int32_t flags;
   read_int (is, swap, flags);
@@ -661,10 +642,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
       if (read_mat5_tag (is, swap, type, dim_len, is_small_data_element)
           || type != miINT32)
-        {
-          error ("load: invalid dimensions array subelement");
-          goto early_read_error;
-        }
+        error ("load: invalid dimensions array subelement");
 
       int ndims = dim_len / 4;
       if (ndims == 1)
@@ -697,10 +675,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   if (read_mat5_tag (is, swap, type, len, is_small_data_element)
       || ! INT8(type))
-    {
-      error ("load: invalid array name subelement");
-      goto early_read_error;
-    }
+    error ("load: invalid array name subelement");
 
   {
     OCTAVE_LOCAL_BUFFER (char, name, len+1);
@@ -737,11 +712,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             std::string nm
               = read_mat5_binary_element (is, filename, swap, global, tc2);
 
-            if (! is || error_state)
-              {
-                error ("load: reading cell data for '%s'", nm.c_str ());
-                goto data_read_error;
-              }
+            if (! is)
+              error ("load: reading cell data for '%s'", nm.c_str ());
 
             cell_array(i) = tc2;
           }
@@ -780,55 +752,40 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::streampos tmp_pos;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading sparse row data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse row data for '%s'", retval.c_str ());
 
         tmp_pos = is.tellg ();
 
         read_mat5_integer_data (is, ridx, nzmax, swap,
                                 static_cast<enum mat5_data_type> (type));
 
-        if (! is || error_state)
-          {
-            error ("load: reading sparse row data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+        if (! is)
+          error ("load: reading sparse row data for '%s'", retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
 
         // col indices
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading sparse column data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse column data for '%s'",
+                 retval.c_str ());
 
         tmp_pos = is.tellg ();
 
         read_mat5_integer_data (is, cidx, nc + 1, swap,
                                 static_cast<enum mat5_data_type> (type));
 
-        if (! is || error_state)
-          {
-            error ("load: reading sparse column data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+        if (! is)
+          error ("load: reading sparse column data for '%s'",
+                 retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
 
         // real data subelement
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading sparse matrix data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading sparse matrix data for '%s'",
+                 retval.c_str ());
 
         octave_idx_type nnz = cidx[nc];
         NDArray re;
@@ -843,12 +800,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
-        if (! is || error_state)
-          {
-            error ("load: reading sparse matrix data for '%s'",
-                   retval.c_str ());
-            goto data_read_error;
-          }
+        if (! is)
+          error ("load: reading sparse matrix data for '%s'",
+                 retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
@@ -859,22 +813,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             NDArray im (dim_vector (static_cast<int> (nnz), 1));
 
             if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-              {
-                error ("load: reading sparse matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading sparse matrix data for '%s'",
+                     retval.c_str ());
 
             read_mat5_binary_data (is, im.fortran_vec (), nnz, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
-            if (! is || error_state)
-              {
-                error ("load: reading imaginary sparse matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+            if (! is)
+              error ("load: reading imaginary sparse matrix data for '%s'",
+                     retval.c_str ());
 
             for (octave_idx_type i = 0; i < nnz; i++)
               scm.xdata (i) = Complex (re (i), im (i));
@@ -892,11 +840,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::string nm
           = read_mat5_binary_element (is, filename, swap, global, tc2);
 
-        if (! is || error_state)
+        if (! is)
           goto data_read_error;
 
         // Octave can handle both "/" and "\" as a directory seperator
-        // and so can ignore the separator field of m0. I think the
+        // and so can ignore the separator field of m0.  I think the
         // sentinel field is also save to ignore.
         octave_scalar_map m0 = tc2.scalar_map_value ();
         octave_scalar_map m1
@@ -907,7 +855,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (ftype == "simple" || ftype == "scopedfunction")
           {
-            if (fpath.length () == 0)
+            if (fpath.empty ())
               // We have a builtin function
               tc = make_fcn_handle (fname);
             else
@@ -920,21 +868,21 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     && OCTAVE_EXEC_PREFIX != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
-                    // doesn't equal octave_config_info ("exec_prefix")
+                    // doesn't equal __octave_config_info__ ("exec_prefix")
                     // then the function points to a version of Octave
-                    // or Matlab other than the running version. In that
+                    // or Matlab other than the running version.  In that
                     // case we replace with the same function in the
                     // running version of Octave?
 
                     // First check if just replacing matlabroot is enough
                     std::string str = OCTAVE_EXEC_PREFIX +
                                       fpath.substr (mroot.length ());
-                    file_stat fs (str);
+                    octave::sys::file_stat fs (str);
 
                     if (fs.exists ())
                       {
                         size_t xpos
-                          = str.find_last_of (file_ops::dir_sep_chars ());
+                          = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                         std::string dir_name = str.substr (0, xpos);
 
@@ -952,18 +900,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     else
                       {
                         // Next just search for it anywhere in the system path
-                        string_vector names(3);
-                        names(0) = fname + ".oct";
-                        names(1) = fname + ".mex";
-                        names(2) = fname + ".m";
+                        std::list<std::string> names;
+                        names.push_back (fname + ".oct");
+                        names.push_back (fname + ".mex");
+                        names.push_back (fname + ".m");
 
-                        dir_path p (load_path::system_path ());
+                        octave::directory_path p (load_path::system_path ());
 
                         str =
-                          octave_env::make_absolute (p.find_first_of (names));
+                          octave::sys::env::make_absolute (p.find_first_of (names));
 
                         size_t xpos
-                          = str.find_last_of (file_ops::dir_sep_chars ());
+                          = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                         std::string dir_name = str.substr (0, xpos);
 
@@ -988,7 +936,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 else
                   {
                     size_t xpos
-                      = fpath.find_last_of (file_ops::dir_sep_chars ());
+                      = fpath.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
                     std::string dir_name = fpath.substr (0, xpos);
 
@@ -1027,7 +975,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
             m2 = tc2.scalar_map_value ();
 
-            unwind_protect_safe frame;
+            octave::unwind_protect_safe frame;
 
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
@@ -1058,32 +1006,21 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             octave_value anon_fcn_handle =
               eval_string (fname.substr (4), true, parse_status);
 
-            if (parse_status == 0)
-              {
-                octave_fcn_handle *fh =
-                  anon_fcn_handle.fcn_handle_value ();
+            if (parse_status != 0)
+              error ("load: failed to load anonymous function handle");
 
-                if (fh)
-                  tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
-                else
-                  {
-                    error ("load: failed to load anonymous function handle");
-                    goto skip_ahead;
-                  }
-              }
-            else
-              {
-                error ("load: failed to load anonymous function handle");
-                goto skip_ahead;
-              }
+            octave_fcn_handle *fh =
+              anon_fcn_handle.fcn_handle_value ();
+
+            if (! fh)
+              error ("load: failed to load anonymous function handle");
+
+            tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
 
             frame.run ();
           }
         else
-          {
-            error ("load: invalid function handle type");
-            goto skip_ahead;
-          }
+          error ("load: invalid function handle type");
       }
       break;
 
@@ -1099,10 +1036,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             int32_t fn_len;
             if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
                 || ! INT8(fn_type))
-              {
-                error ("load: invalid field name subelement");
-                goto data_read_error;
-              }
+              error ("load: invalid field name subelement");
 
             OCTAVE_LOCAL_BUFFER (char, elname, fn_len + 1);
 
@@ -1139,7 +1073,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     octave_value fieldtc;
                     read_mat5_binary_element (is, filename, swap, global,
                                               fieldtc);
-                    if (! is || error_state)
+                    if (! is)
                       goto data_read_error;
 
                     elt[i](j) = fieldtc;
@@ -1161,10 +1095,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element)
             || ! INT8(type))
-          {
-            error ("load: invalid class name");
-            goto skip_ahead;
-          }
+          error ("load: invalid class name");
 
         {
           OCTAVE_LOCAL_BUFFER (char, name, len+1);
@@ -1198,10 +1129,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // that eventually someone will recognize that's a waste of space.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
             || fn_type != miINT32)
-          {
-            error ("load: invalid field name length subelement");
-            goto data_read_error;
-          }
+          error ("load: invalid field name length subelement");
 
         if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len))
           goto data_read_error;
@@ -1213,10 +1141,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // us how many fields there are.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
             || ! INT8(fn_type))
-          {
-            error ("load: invalid field name subelement");
-            goto data_read_error;
-          }
+          error ("load: invalid field name subelement");
 
         octave_idx_type n_fields = fn_len/field_name_length;
 
@@ -1261,7 +1186,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             if (classname == "inline")
               {
                 // inline is not an object in Octave but rather an
-                // overload of a function handle. Special case.
+                // overload of a function handle.  Special case.
                 tc =
                   new octave_fcn_inline (m.contents ("expr")(0).string_value (),
                                          m.contents ("args")(0).string_value ());
@@ -1280,14 +1205,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     tc = cls;
                     if (load_path::find_method (classname, "loadobj")
-                        != std::string ())
+                        != "")
                       {
-                        octave_value_list tmp = feval ("loadobj", tc, 1);
+                        try
+                          {
+                            octave_value_list tmp = feval ("loadobj", tc, 1);
 
-                        if (! error_state)
-                          tc = tmp(0);
-                        else
-                          goto data_read_error;
+                            tc = tmp(0);
+                          }
+                        catch (const octave::execution_exception&)
+                          {
+                            goto data_read_error;
+                          }
                       }
                   }
                 else
@@ -1352,7 +1281,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_MAT5_INTEGER_READ (uint64NDArray);
       break;
 
-
     case MAT_FILE_SINGLE_CLASS:
       {
         FloatNDArray re (dims);
@@ -1362,10 +1290,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::streampos tmp_pos;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         octave_idx_type n = re.numel ();
         tmp_pos = is.tellg ();
@@ -1373,11 +1298,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
-        if (! is || error_state)
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+        if (! is)
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
@@ -1389,22 +1311,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             FloatNDArray im (dims);
 
             if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-              {
-                error ("load: reading matrix data for '%s'", retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading matrix data for '%s'", retval.c_str ());
 
             n = im.numel ();
             read_mat5_binary_data (is, im.fortran_vec (), n, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
-            if (! is || error_state)
-              {
-                error ("load: reading imaginary matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+            if (! is)
+              error ("load: reading imaginary matrix data for '%s'",
+                     retval.c_str ());
 
             FloatComplexNDArray ctmp (dims);
 
@@ -1431,10 +1347,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         std::streampos tmp_pos;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         octave_idx_type n = re.numel ();
         tmp_pos = is.tellg ();
@@ -1442,11 +1355,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
-        if (! is || error_state)
-          {
-            error ("load: reading matrix data for '%s'", retval.c_str ());
-            goto data_read_error;
-          }
+        if (! is)
+          error ("load: reading matrix data for '%s'", retval.c_str ());
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
                   (READ_PAD (is_small_data_element, len)));
@@ -1471,22 +1381,16 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             NDArray im (dims);
 
             if (read_mat5_tag (is, swap, type, len, is_small_data_element))
-              {
-                error ("load: reading matrix data for '%s'", retval.c_str ());
-                goto data_read_error;
-              }
+              error ("load: reading matrix data for '%s'", retval.c_str ());
 
             n = im.numel ();
             read_mat5_binary_data (is, im.fortran_vec (), n, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
-            if (! is || error_state)
-              {
-                error ("load: reading imaginary matrix data for '%s'",
-                       retval.c_str ());
-                goto data_read_error;
-              }
+            if (! is)
+              error ("load: reading imaginary matrix data for '%s'",
+                     retval.c_str ());
 
             ComplexNDArray ctmp (dims);
 
@@ -1517,7 +1421,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 else if (type == miUTF8)
                   {
                     // Search for multi-byte encoded UTF8 characters and
-                    // replace with 0x3F for '?'... Give the user a warning
+                    // replace with 0x3F for '?'...  Give the user a warning
 
                     bool utf8_multi_byte = false;
                     for (octave_idx_type i = 0; i < n; i++)
@@ -1555,13 +1459,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   return retval;
 
+// FIXME: With short-circuiting error(), no need for goto in code
 data_read_error:
-early_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
-  return std::string ();
 
 skip_ahead:
-  warning ("skipping over '%s'", retval.c_str ());
+  warning ("load: skipping over '%s'", retval.c_str ());
   is.seekg (pos + static_cast<std::streamoff> (element_length));
   return read_mat5_binary_element (is, filename, swap, global, tc);
 }
@@ -1589,13 +1492,14 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
     {
       if (! quiet)
         error ("load: can't read binary file");
+
       return -1;
     }
 
   if (! swap)                   // version number is inverse swapped!
     version = ((version >> 8) & 0xff) + ((version & 0xff) << 8);
 
-  if (version != 1 && !quiet)
+  if (version != 1 && ! quiet)
     warning ("load: found version %d binary MAT file, "
              "but only prepared for version 1", version);
 
@@ -1611,7 +1515,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
       bool global;
       read_mat5_binary_element (is, filename, swap, global, tc);
 
-      if (!is || error_state)
+      if (! is)
         return -1;
 
       if (tc.is_uint8_type ())
@@ -1631,7 +1535,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
 
           read_mat5_binary_element (fh_ws, filename, swap, global, subsys_ov);
 
-          if (error_state)
+          if (! is)
             return -1;
         }
       else
@@ -1655,31 +1559,28 @@ write_mat5_tag (std::ostream& is, int type, octave_idx_type bytes)
     {
       temp = type;
       if (! is.write (reinterpret_cast<char *> (&temp), 4))
-        goto data_write_error;
+        return 1;
       temp = bytes;
     }
 
   if (! is.write (reinterpret_cast<char *> (&temp), 4))
-    goto data_write_error;
+    return 1;
 
   return 0;
-
-data_write_error:
-  return 1;
 }
 
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data().
 
-#define MAT5_DO_WRITE(TYPE, data, count, stream) \
-  do \
-    { \
-      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count); \
-      for (octave_idx_type i = 0; i < count; i++) \
-        ptr[i] = static_cast<TYPE> (data[i]); \
+#define MAT5_DO_WRITE(TYPE, data, count, stream)                        \
+  do                                                                    \
+    {                                                                   \
+      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count);                           \
+      for (octave_idx_type i = 0; i < count; i++)                       \
+        ptr[i] = static_cast<TYPE> (data[i]);                           \
       std::streamsize n_bytes = sizeof (TYPE) * static_cast<std::streamsize> (count); \
-      stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
-    } \
+      stream.write (reinterpret_cast<char *> (ptr), n_bytes);           \
+    }                                                                   \
   while (0)
 
 // write out the numeric values in M to OS,
@@ -1769,8 +1670,7 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
         break;
 
       default:
-        (*current_liboctave_error_handler)
-          ("unrecognized data format requested");
+        error ("unrecognized data format requested");
         break;
       }
   }
@@ -1855,8 +1755,7 @@ write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
         break;
 
       default:
-        (*current_liboctave_error_handler)
-          ("unrecognized data format requested");
+        error ("unrecognized data format requested");
         break;
       }
   }
@@ -1867,7 +1766,7 @@ write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
     }
 }
 
-template <class T>
+template <typename T>
 void
 write_mat5_integer_data (std::ostream& os, const T *m, int size,
                          octave_idx_type nel)
@@ -1992,7 +1891,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
             {
               double tmp = val[i];
 
-              if (xfinite (tmp)
+              if (octave::math::finite (tmp)
                   && fabs (tmp) > std::numeric_limits<float>::max ())
                 {
                   too_large_for_float = true;
@@ -2000,7 +1899,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
                 }
             }
 
-          if (!too_large_for_float)
+          if (! too_large_for_float)
             size = 4;
         }
 
@@ -2010,7 +1909,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
 
       // double max_val = val[0];
       // double min_val = val[0];
-      // bool all_integers =  true;
+      // bool all_integers = true;
       //
       // for (int i = 0; i < nel; i++)
       //   {
@@ -2022,7 +1921,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (D_NINT (val) != val)
+      //     if (octave::math::x_nint (val) != val)
       //       {
       //         all_integers = false;
       //         break;
@@ -2058,14 +1957,13 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
     {
       int size = 4;
 
-
       // The code below is disabled since get_save_type currently doesn't
       // deal with integer types.  This will need to be activated if
       // get_save_type is changed.
 
       // float max_val = val[0];
       // float min_val = val[0];
-      // bool all_integers =  true;
+      // bool all_integers = true;
       //
       // for (int i = 0; i < nel; i++)
       //   {
@@ -2077,7 +1975,7 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (D_NINT (val) != val)
+      //     if (octave::math::x_nint (val) != val)
       //       {
       //         all_integers = false;
       //         break;
@@ -2098,10 +1996,10 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
       //       size = 2;
       //     else if (max_val <= 2147483647L && min_val >= -2147483647L)
       //       size = 4;
-      //   }
+      //
 
-      // Round nel up to nearest even number of elements. Take into account
-      // Short tags for 4 byte elements.
+      // Round nel up to nearest even number of elements.
+      // Take into account short tags for 4 byte elements.
       return PAD ((nel > 0 && nel * size <= 4 ? 4 : 8) + nel * size);
     }
   else
@@ -2117,12 +2015,12 @@ save_mat5_array_length (const Complex* val, octave_idx_type nel,
   OCTAVE_LOCAL_BUFFER (double, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = std::real (val[i]);
+    tmp[i] = octave::math::real (val[i]);
 
   ret = save_mat5_array_length (tmp, nel, save_as_floats);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = std::imag (val[i]);
+    tmp[i] = octave::math::imag (val[i]);
 
   ret += save_mat5_array_length (tmp, nel, save_as_floats);
 
@@ -2138,12 +2036,12 @@ save_mat5_array_length (const FloatComplex* val, octave_idx_type nel,
   OCTAVE_LOCAL_BUFFER (float, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = std::real (val[i]);
+    tmp[i] = octave::math::real (val[i]);
 
   ret = save_mat5_array_length (tmp, nel, save_as_floats);
 
   for (octave_idx_type i = 1; i < nel; i++)
-    tmp[i] = std::imag (val[i]);
+    tmp[i] = octave::math::imag (val[i]);
 
   ret += save_mat5_array_length (tmp, nel, save_as_floats);
 
@@ -2199,12 +2097,12 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         }
     }
 
-#define INT_LEN(nel, size) \
-  { \
-    ret += 8; \
-    octave_idx_type sz = nel * size; \
-    if (sz > 4) \
-      ret += PAD (sz);  \
+#define INT_LEN(nel, size)                      \
+  {                                             \
+    ret += 8;                                   \
+    octave_idx_type sz = nel * size;            \
+    if (sz > 4)                                 \
+      ret += PAD (sz);                          \
   }
 
   else if (cname == "int8")
@@ -2275,7 +2173,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
       else if (tc.is_object ())
         {
-          size_t classlen = tc.class_name (). length ();
+          size_t classlen = tc.class_name ().length ();
 
           ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
         }
@@ -2284,7 +2182,6 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         fieldcnt++;
 
       ret += 16 + fieldcnt * (max_namelen + 1);
-
 
       for (octave_idx_type j = 0; j < nel; j++)
         {
@@ -2320,7 +2217,7 @@ write_mat5_sparse_index_vector (std::ostream& os,
 }
 
 static void
-gripe_dim_too_large (const std::string& name)
+warn_dim_too_large (const std::string& name)
 {
   warning ("save: skipping %s: dimension too large for MAT format",
            name.c_str ());
@@ -2350,8 +2247,8 @@ save_mat5_binary_element (std::ostream& os,
     {
       if (dv(i) > max_dim_val)
         {
-          gripe_dim_too_large (name);
-          goto skip_to_next;
+          warn_dim_too_large (name);
+          return true;  // skip to next
         }
     }
 
@@ -2375,34 +2272,35 @@ save_mat5_binary_element (std::ostream& os,
 
       if (nnz > max_dim_val || nc + 1 > max_dim_val)
         {
-          gripe_dim_too_large (name);
-          goto skip_to_next;
+          warn_dim_too_large (name);
+          return true;  // skip to next
         }
 
       nnz_32 = nnz;
     }
   else if (dv.numel () > max_dim_val)
     {
-      gripe_dim_too_large (name);
-      goto skip_to_next;
+      warn_dim_too_large (name);
+      return true;  // skip to next
     }
 
-#ifdef HAVE_ZLIB
-  if (mat7_format && !compressing)
+#if defined (HAVE_ZLIB)
+
+  if (mat7_format && ! compressing)
     {
       bool ret = false;
 
       std::ostringstream buf;
 
-      // The code seeks backwards in the stream to fix the header. Can't
-      // do this with zlib, so use a stringstream.
+      // The code seeks backwards in the stream to fix the header.
+      // Can't do this with zlib, so use a stringstream.
       ret = save_mat5_binary_element (buf, tc, name, mark_as_global, true,
                                       save_as_floats, true);
 
       if (ret)
         {
           // destLen must be at least 0.1% larger than source buffer
-          // + 12 bytes. Reality is it must be larger again than that.
+          // + 12 bytes.  Reality is it must be larger again than that.
           std::string buf_str = buf.str ();
           uLongf srcLen = buf_str.length ();
           uLongf destLen = srcLen * 101 / 100 + 12;
@@ -2411,22 +2309,22 @@ save_mat5_binary_element (std::ostream& os,
           if (compress (reinterpret_cast<Bytef *> (out_buf), &destLen,
                         reinterpret_cast<const Bytef *> (buf_str.c_str ()),
                                                          srcLen)
-              == Z_OK)
-            {
-              write_mat5_tag (os, miCOMPRESSED,
-                              static_cast<octave_idx_type> (destLen));
+              != Z_OK)
+            error ("save: error compressing data element");
 
-              os.write (out_buf, destLen);
-            }
-          else
-            {
-              error ("save: error compressing data element");
-              ret = false;
-            }
+          write_mat5_tag (os, miCOMPRESSED,
+                          static_cast<octave_idx_type> (destLen));
+
+          os.write (out_buf, destLen);
         }
 
       return ret;
     }
+
+#else
+
+  octave_unused_parameter (compressing);
+
 #endif
 
   write_mat5_tag (os, miMATRIX, save_mat5_element_length
@@ -2480,8 +2378,9 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_OBJECT_CLASS;
   else
     {
-      gripe_wrong_type_arg ("save", tc, false);
-      goto error_cleanup;
+      // FIXME: Should this just error out rather than warn?
+      warn_wrong_type_arg ("save", tc);
+      error ("save: error while writing '%s' to MAT file", name.c_str ());
     }
 
   os.write (reinterpret_cast<char *> (&flags), 4);
@@ -2559,12 +2458,12 @@ save_mat5_binary_element (std::ostream& os,
           NDArray buf (dim_vector (nnz, 1));
 
           for (octave_idx_type i = 0; i < nnz; i++)
-            buf (i) = std::real (m.data (i));
+            buf (i) = octave::math::real (m.data (i));
 
           write_mat5_array (os, buf, save_as_floats);
 
           for (octave_idx_type i = 0; i < nnz; i++)
-            buf (i) = std::imag (m.data (i));
+            buf (i) = octave::math::imag (m.data (i));
 
           write_mat5_array (os, buf, save_as_floats);
         }
@@ -2661,7 +2560,7 @@ save_mat5_binary_element (std::ostream& os,
       Cell cell = tc.cell_value ();
 
       if (! write_mat5_cell_array (os, cell, mark_as_global, save_as_floats))
-        goto error_cleanup;
+        error ("save: error while writing '%s' to MAT file", name.c_str ());
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
     {
@@ -2703,13 +2602,19 @@ save_mat5_binary_element (std::ostream& os,
 
       if (tc.is_object ()
           && load_path::find_method (tc.class_name (),
-                                     "saveobj") != std::string ())
+                                     "saveobj") != "")
         {
-          octave_value_list tmp = feval ("saveobj", tc, 1);
-          if (! error_state)
-            m = tmp(0).map_value ();
-          else
-            goto error_cleanup;
+          try
+            {
+              octave_value_list tmp = feval ("saveobj", tc, 1);
+
+              m = tmp(0).map_value ();
+            }
+          catch (const octave::execution_exception&)
+            {
+              error ("save: error while writing '%s' to MAT file",
+                     name.c_str ());
+            }
         }
       else
         m = tc.map_value ();
@@ -2762,19 +2667,15 @@ save_mat5_binary_element (std::ostream& os,
                                                          false,
                                                          save_as_floats);
                 if (! retval2)
-                  goto error_cleanup;
+                  error ("save: error while writing '%s' to MAT file",
+                         name.c_str ());
               }
           }
       }
     }
   else
-    gripe_wrong_type_arg ("save", tc, false);
+    // FIXME: Should this just error out rather than warn?
+    warn_wrong_type_arg ("save", tc);
 
-skip_to_next:
   return true;
-
-error_cleanup:
-  error ("save: error while writing '%s' to MAT file", name.c_str ());
-
-  return false;
 }

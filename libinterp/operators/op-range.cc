@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-range.h"
 #include "ov-ch-mat.h"
@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (not, range)
 {
-  CAST_UNOP_ARG (const octave_range&);
+  const octave_range& v = dynamic_cast<const octave_range&> (a);
 
   return octave_value (! v.matrix_value ());
 }
@@ -55,7 +55,7 @@ DEFUNOP_OP (uminus, range, -)
 
 DEFUNOP (transpose, range)
 {
-  CAST_UNOP_ARG (const octave_range&);
+  const octave_range& v = dynamic_cast<const octave_range&> (a);
 
   return octave_value (v.matrix_value ().transpose ());
 }
@@ -88,7 +88,7 @@ DEFNDCATOP_FN (chm_r, char_matrix, range, char_array, array, concat)
 
 CONVDECL (range_to_matrix)
 {
-  CAST_CONV_ARG (const octave_range&);
+  const octave_range& v = dynamic_cast<const octave_range&> (a);
 
   return new octave_matrix (v.array_value ());
 }
@@ -140,3 +140,4 @@ install_range_ops (void)
 
   INSTALL_WIDENOP (octave_range, octave_matrix, range_to_matrix);
 }
+

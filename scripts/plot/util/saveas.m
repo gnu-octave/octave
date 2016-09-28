@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Kai Habel
+## Copyright (C) 2010-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} saveas (@var{h}, @var{filename})
-## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{fmt})
+## @deftypefn  {} {} saveas (@var{h}, @var{filename})
+## @deftypefnx {} {} saveas (@var{h}, @var{filename}, @var{fmt})
 ## Save graphic object @var{h} to the file @var{filename} in graphic format
 ## @var{fmt}.
 ##
@@ -96,11 +96,11 @@ function saveas (h, filename, fmt = "pdf")
     [~, ~, ext] = fileparts (filename);
 
     if (isempty (ext))
-      filename = strcat (filename, ".", fmt);
+      filename = [filename "." fmt];
     endif
   endif
 
-  prt_opt = strcat ("-d", tolower (fmt));
+  prt_opt = ["-d" tolower(fmt)];
 
   print (fig, filename, prt_opt);
 

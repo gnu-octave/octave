@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Michael Goffioul
+## Copyright (C) 2012-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} uiresume (@var{h})
+## @deftypefn {} {} uiresume (@var{h})
 ## Resume program execution suspended with @code{uiwait}.
 ##
 ## The handle @var{h} must be the same as the on specified in @code{uiwait}.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2015 David Bateman
+Copyright (C) 2007-2016 David Bateman
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -32,84 +32,71 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 DEFUN (__dsearchn__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})
+Undocumented internal function.
+@end deftypefn */)
 {
-  int nargin = args.length ();
-  octave_value_list retval;
-
-  if (nargin != 2)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 2)
+    print_usage ();
 
   Matrix x = args(0).matrix_value ().transpose ();
   Matrix xi = args(1).matrix_value ().transpose ();
 
-  if (! error_state)
+  if (x.rows () != xi.rows () || x.columns () < 1)
+    error ("__dsearch__: number of rows of X and XI must match");
+
+  octave_idx_type n = x.rows ();
+  octave_idx_type nx = x.columns ();
+  octave_idx_type nxi = xi.columns ();
+
+  ColumnVector idx (nxi);
+  double *pidx = idx.fortran_vec ();
+  ColumnVector dist (nxi);
+  double *pdist = dist.fortran_vec ();
+
+#define DIST(dd, y, yi, m)                      \
+  dd = 0.0;                                     \
+  for (octave_idx_type k = 0; k < m; k++)       \
+    {                                           \
+      double yd = y[k] - yi[k];                 \
+      dd += yd * yd;                            \
+    }                                           \
+  dd = sqrt (dd)
+
+  const double *pxi = xi.fortran_vec ();
+  for (octave_idx_type i = 0; i < nxi; i++)
     {
-      if (x.rows () != xi.rows () || x.columns () < 1)
-        error ("__dsearch__: number of rows of X and XI must match");
-      else
+      double d0;
+      const double *px = x.fortran_vec ();
+      DIST(d0, px, pxi, n);
+      *pidx = 1.;
+      for (octave_idx_type j = 1; j < nx; j++)
         {
-          octave_idx_type n = x.rows ();
-          octave_idx_type nx = x.columns ();
-          octave_idx_type nxi = xi.columns ();
-
-          ColumnVector idx (nxi);
-          double *pidx = idx.fortran_vec ();
-          ColumnVector dist (nxi);
-          double *pdist = dist.fortran_vec ();
-
-#define DIST(dd, y, yi, m) \
-  dd = 0.; \
-  for (octave_idx_type k = 0; k < m; k++) \
-   { \
-     double yd = y[k] - yi[k]; \
-     dd += yd * yd; \
-   } \
-  dd = sqrt (dd);
-
-          const double *pxi = xi.fortran_vec ();
-          for (octave_idx_type i = 0; i < nxi; i++)
+          px += n;
+          double d;
+          DIST (d, px, pxi, n);
+          if (d < d0)
             {
-              double d0;
-              const double *px = x.fortran_vec ();
-              DIST(d0, px, pxi, n);
-              *pidx = 1.;
-              for (octave_idx_type j = 1; j < nx; j++)
-                {
-                  px += n;
-                  double d;
-                  DIST (d, px, pxi, n);
-                  if (d < d0)
-                    {
-                      d0 = d;
-                      *pidx = static_cast<double>(j + 1);
-                    }
-                  OCTAVE_QUIT;
-                }
-
-              *pdist++ = d0;
-              pidx++;
-              pxi += n;
+              d0 = d;
+              *pidx = static_cast<double>(j + 1);
             }
-
-          retval(1) = dist;
-          retval(0) = idx;
+          OCTAVE_QUIT;
         }
+
+      *pdist++ = d0;
+      pidx++;
+      pxi += n;
     }
 
-  return retval;
+  return ovl (idx, dist);
 }
 
 /*
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

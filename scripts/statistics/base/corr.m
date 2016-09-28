@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} corr (@var{x})
-## @deftypefnx {Function File} {} corr (@var{x}, @var{y})
+## @deftypefn  {} {} corr (@var{x})
+## @deftypefnx {} {} corr (@var{x}, @var{y})
 ## Compute matrix of correlation coefficients.
 ##
 ## If each row of @var{x} and @var{y} is an observation and each column is

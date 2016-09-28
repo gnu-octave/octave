@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,18 +21,22 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-error.h"
 #include "unwind-prot.h"
 
-void
-unwind_protect_safe::gripe_exception (void)
+namespace octave
 {
-  // FIXME: can this throw an exception?
-
-  (*current_liboctave_error_handler)
-    ("internal: unhandled exception in unwind_protect handler");
+  void
+  unwind_protect_safe::warn_unhandled_exception (void) const
+  {
+    (*current_liboctave_warning_handler)
+      ("unhandled exception in unwind_protect_safe handler.  "
+       "It is a bug in Octave for this to happen.  "
+       "Please help improve Octave by reporting it.");
+  }
 }
+

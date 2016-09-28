@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_intNDArray_h)
+#if ! defined (octave_intNDArray_h)
 #define octave_intNDArray_h 1
+
+#include "octave-config.h"
 
 #include "MArray.h"
 #include "boolNDArray.h"
 class NDArray;
 
-template <class T>
+template <typename T>
 class
 intNDArray : public MArray<T>
 {
@@ -44,13 +46,13 @@ public:
   intNDArray (const dim_vector& dv, T val)
     : MArray<T> (dv, val) { }
 
-  template <class U>
+  template <typename U>
   intNDArray (const Array<U>& a) : MArray<T> (a) { }
 
-  template <class U>
+  template <typename U>
   intNDArray (const MArray<U>& a) : MArray<T> (a) { }
 
-  template <class U>
+  template <typename U>
   intNDArray (const intNDArray<U>& a) : MArray<T> (a) { }
 
   intNDArray& operator = (const intNDArray<T>& a)
@@ -123,10 +125,11 @@ public:
 
 // i/o
 
-template <class T>
+template <typename T>
 std::ostream& operator << (std::ostream& os, const intNDArray<T>& a);
 
-template <class T>
+template <typename T>
 std::istream& operator >> (std::istream& is, intNDArray<T>& a);
 
 #endif
+

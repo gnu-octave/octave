@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cross (@var{x}, @var{y})
-## @deftypefnx {Function File} {} cross (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {} {} cross (@var{x}, @var{y})
+## @deftypefnx {} {} cross (@var{x}, @var{y}, @var{dim})
 ## Compute the vector cross product of two 3-dimensional vectors @var{x} and
 ## @var{y}.
 ##
@@ -51,8 +51,8 @@ function z = cross (x, y, dim)
   endif
 
   if (ndims (x) < 3 && ndims (y) < 3 && nargin < 3)
-    ## COMPATIBILITY -- opposite behaviour for cross(row,col)
-    ## Swap x and y in the assignments below to get the matlab behaviour.
+    ## COMPATIBILITY -- opposite behavior for cross(row,col)
+    ## Swap x and y in the assignments below to get the matlab behavior.
     ## Better yet, fix the calling code so that it uses conformant vectors.
     if (columns (x) == 1 && rows (y) == 1)
       warning ("cross: taking cross product of column by row");

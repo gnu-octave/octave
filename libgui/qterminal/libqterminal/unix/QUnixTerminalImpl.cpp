@@ -1,5 +1,5 @@
 /*  Copyright (C) 2008 e_k (e_k@users.sourceforge.net)
-    Copyright (C) 2012-2015 Jacob Dawid <jacob.dawid@cybercatalyst.com>
+    Copyright (C) 2012-2016 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -114,6 +114,10 @@ void QUnixTerminalImpl::connectToPty()
 
 QUnixTerminalImpl::~QUnixTerminalImpl()
 {
+    delete m_terminalModel;
+    delete m_kpty;
+    delete m_terminalView;
+
     // Restore stderr so that any errors at exit might appear somewhere.
     dup2 (fdstderr, STDERR_FILENO);
 

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_workspace_model_h)
+#if ! defined (octave_workspace_model_h)
 #define octave_workspace_model_h 1
 
 #include <QAbstractTableModel>
@@ -111,3 +111,4 @@ private:
 };
 
 #endif
+

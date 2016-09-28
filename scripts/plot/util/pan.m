@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Andreas Weber
+## Copyright (C) 2014-2016 Andreas Weber
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} pan
-## @deftypefnx {Command} {} pan on
-## @deftypefnx {Command} {} pan off
-## @deftypefnx {Command} {} pan xon
-## @deftypefnx {Command} {} pan yon
-## @deftypefnx {Function File} {} pan (@var{hfig}, @var{option})
+## @deftypefn  {} {} pan
+## @deftypefnx {} {} pan on
+## @deftypefnx {} {} pan off
+## @deftypefnx {} {} pan xon
+## @deftypefnx {} {} pan yon
+## @deftypefnx {} {} pan (@var{hfig}, @var{option})
 ## Control the interactive panning mode of a figure in the GUI.
 ##
 ## Given the option @qcode{"on"} or @qcode{"off"}, set the interactive
@@ -50,16 +50,16 @@ function pan (varargin)
   endif
 
   if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
-    error ("pan_object_handle = pan (hfig): not implemented");
+    error ("pan: syntax 'handle = pan (hfig)' not implemented");
   endif
 
   if (nargs == 2)
     hfig = varargin{1};
     if (isfigure (hfig))
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
-      error ("pan: expecting figure handle as first argument");
+      error ("pan: invalid figure handle HFIG");
     endif
   endif
 
@@ -106,14 +106,16 @@ function pan (varargin)
 endfunction
 
 function update_mouse_mode (hfig, arg)
+
   if (strcmp (arg, "off"))
     set (hfig, "__mouse_mode__", "none");
   else
-    ## FIXME: Is there a better way other than calling these
-    ## functions to set the other mouse mode Enable fields to
-    ## "off"?
+    ## FIXME: Is there a better way other than calling these functions
+    ##        to set the other mouse mode Enable fields to "off"?
     rotate3d ("off");
     zoom ("off");
     set (hfig, "__mouse_mode__", "pan");
   endif
+
 endfunction
+

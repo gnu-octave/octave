@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 
 This file is part of Octave.
 
@@ -20,12 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_fcn_inline_h)
+#if ! defined (octave_ov_fcn_inline_h)
 #define octave_ov_fcn_inline_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
-
 
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -46,7 +47,7 @@ public:
     : octave_fcn_handle (), iftext (), ifargs () { }
 
   octave_fcn_inline (const std::string& f, const string_vector& a,
-                     const std::string& n = std::string ());
+                     const std::string& n = "");
 
   octave_fcn_inline (const octave_fcn_inline& fi)
     : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }
@@ -77,7 +78,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -89,7 +90,6 @@ public:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
   // The expression of an inline function.
@@ -100,3 +100,4 @@ private:
 };
 
 #endif
+

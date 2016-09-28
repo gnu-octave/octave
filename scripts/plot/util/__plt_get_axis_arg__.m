@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}, @var{varargin}, @var{narg}] =} __plt_get_axis_arg__ (@var{caller}, @var{varargin})
+## @deftypefn {} {[@var{h}, @var{varargin}, @var{narg}] =} __plt_get_axis_arg__ (@var{caller}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -34,7 +34,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       && ishandle (varargin{1}) && varargin{1} != 0 && ! isfigure (varargin{1}))
     htmp = varargin{1};
     if (! isaxes (htmp))
-      error ("%s: expecting first argument to be axes handle", caller);
+      error ("%s: first argument must be axes handle", caller);
     endif
     if (! strcmp (get (htmp, "tag"), "legend"))
       h = htmp;
@@ -52,7 +52,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
         h = [ancestor(htmp, "axes"), htmp];
       endif
     else
-      error ("%s: expecting parent value to be axes handle", caller);
+      error ("%s: parent value must be an axes handle", caller);
     endif
   endif
 

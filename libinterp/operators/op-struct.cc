@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-struct.h"
@@ -36,20 +36,17 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (transpose, struct)
 {
-  CAST_UNOP_ARG (const octave_struct&);
+  const octave_struct& v = dynamic_cast<const octave_struct&> (a);
 
   if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.map_value ().transpose ());
+    error ("transpose not defined for N-D objects");
+
+  return octave_value (v.map_value ().transpose ());
 }
 
 DEFUNOP (scalar_transpose, scalar_struct)
 {
-  CAST_UNOP_ARG (const octave_scalar_struct&);
+  const octave_scalar_struct& v = dynamic_cast<const octave_scalar_struct&> (a);
 
   return octave_value (v.scalar_map_value ());
 }
@@ -63,30 +60,32 @@ static octave_value
 oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
-  octave_value retval;
-  CAST_BINOP_ARGS (const octave_struct&, const octave_matrix&);
+  const octave_struct& v1 = dynamic_cast<const octave_struct&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
+
   NDArray tmp = v2.array_value ();
   dim_vector dv = tmp.dims ();
-  if (dv.all_zero ())
-    retval = octave_value (v1.map_value ());
-  else
+
+  if (! dv.all_zero ())
     error ("invalid concatenation of structure with matrix");
-  return retval;
+
+  return octave_value (v1.map_value ());
 }
 
 static octave_value
 oct_catop_matrix_struct (octave_base_value& a1, const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
-  octave_value retval;
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_struct&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_struct& v2 = dynamic_cast<const octave_struct&> (a2);
+
   NDArray tmp = v1.array_value ();
   dim_vector dv = tmp.dims ();
-  if (dv.all_zero ())
-    retval = octave_value (v2.map_value ());
-  else
+
+  if (! dv.all_zero ())
     error ("invalid concatenation of structure with matrix");
-  return retval;
+
+  return octave_value (v2.map_value ());
 }
 
 void
@@ -106,3 +105,4 @@ install_struct_ops (void)
   INSTALL_CATOP (octave_struct, octave_matrix, struct_matrix);
   INSTALL_CATOP (octave_matrix, octave_struct, matrix_struct);
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Jaroslav Hajek
+Copyright (C) 2009-2016 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_convn_h)
+#if ! defined (octave_oct_convn_h)
 #define octave_oct_convn_h 1
+
+#include "octave-config.h"
 
 #include "dMatrix.h"
 #include "fMatrix.h"
@@ -51,14 +53,17 @@ enum convn_type
   convn_valid
 };
 
-#define CONV_DECLS(TPREF, RPREF) \
-extern OCTAVE_API TPREF ## NDArray \
-convn (const TPREF ## NDArray& a, const RPREF ## NDArray& b, convn_type ct); \
-extern OCTAVE_API TPREF ## Matrix \
-convn (const TPREF ## Matrix& a, const RPREF ## Matrix& b, convn_type ct); \
-extern OCTAVE_API TPREF ## Matrix \
-convn (const TPREF ## Matrix& a, const RPREF ## ColumnVector& c, \
-       const RPREF ## RowVector& r, convn_type ct)
+#define CONV_DECLS(TPREF, RPREF)                                        \
+  extern OCTAVE_API TPREF ## NDArray                                    \
+  convn (const TPREF ## NDArray& a, const RPREF ## NDArray& b,          \
+         convn_type ct);                                                \
+  extern OCTAVE_API TPREF ## Matrix                                     \
+  convn (const TPREF ## Matrix& a, const RPREF ## Matrix& b,            \
+         convn_type ct);                                                \
+  extern OCTAVE_API TPREF ## Matrix                                     \
+  convn (const TPREF ## Matrix& a, const RPREF ## ColumnVector& c,      \
+         const RPREF ## RowVector& r, convn_type ct)
+
 
 CONV_DECLS ( , );
 CONV_DECLS (Complex, );

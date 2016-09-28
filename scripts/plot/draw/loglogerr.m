@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Teemu Ikonen
+## Copyright (C) 2000-2016 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -17,16 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} loglogerr (@var{y}, @var{ey})
-## @deftypefnx {Function File} {} loglogerr (@var{y}, @dots{}, @var{fmt})
-## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{ey})
-## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{err}, @var{fmt})
-## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
-## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
-## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
-## @deftypefnx {Function File} {} loglogerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
-## @deftypefnx {Function File} {} loglogerr (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} loglogerr (@dots{})
+## @deftypefn  {} {} loglogerr (@var{y}, @var{ey})
+## @deftypefnx {} {} loglogerr (@var{y}, @dots{}, @var{fmt})
+## @deftypefnx {} {} loglogerr (@var{x}, @var{y}, @var{ey})
+## @deftypefnx {} {} loglogerr (@var{x}, @var{y}, @var{err}, @var{fmt})
+## @deftypefnx {} {} loglogerr (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
+## @deftypefnx {} {} loglogerr (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
+## @deftypefnx {} {} loglogerr (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
+## @deftypefnx {} {} loglogerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
+## @deftypefnx {} {} loglogerr (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} loglogerr (@dots{})
 ## Produce 2-D plots on a double logarithm axis with errorbars.
 ##
 ## Many different combinations of arguments are possible.  The most common
@@ -63,10 +63,10 @@ function h = loglogerr (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log", "yscale", "log");
-    if (! ishold (hax))
-      set (hax, "xminortick", "on", "yminortick", "on");
+    if (! ishold ())
+      set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
     endif
-    htmp = __errcomm__ ("loglogerr", hax, varargin{:});
+    htmp = __errplot__ ("loglogerr", hax, varargin{:});
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -87,8 +87,8 @@ endfunction
 %! y = wblpdf (x, 3, 2);
 %! eyu = 2*rand (size (y)) .* y;
 %! eyl = 0.5*rand (size (y)) .* y;
-%! loglogerr (x, y, eyl, eyu, '#~x-');
+%! loglogerr (x, y, eyl, eyu, "#~x-");
 %! xlim (x([1, end]));
-%! title ({'loglogerr(): loglog() plot with errorbars', ...
-%!         'Both axes are logarithmic'});
+%! title ({"loglogerr(): loglog() plot with errorbars", ...
+%!         "Both axes are logarithmic"});
 

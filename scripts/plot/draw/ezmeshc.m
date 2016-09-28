@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezmeshc (@var{f})
-## @deftypefnx {Function File} {} ezmeshc (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {} ezmeshc (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezmeshc (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezmeshc (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezmeshc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezmeshc (@dots{})
+## @deftypefn  {} {} ezmeshc (@var{f})
+## @deftypefnx {} {} ezmeshc (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {} ezmeshc (@dots{}, @var{dom})
+## @deftypefnx {} {} ezmeshc (@dots{}, @var{n})
+## @deftypefnx {} {} ezmeshc (@dots{}, "circ")
+## @deftypefnx {} {} ezmeshc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezmeshc (@dots{})
 ##
 ## Plot the mesh and contour lines defined by a function.
 ##
@@ -80,7 +80,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezmeshc (f, [-3, 3]);
 

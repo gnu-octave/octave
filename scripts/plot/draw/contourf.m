@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Kai Habel
+## Copyright (C) 2007-2016 Kai Habel
 ## Copyright (C) 2003 Shai Ayal
 ##
 ## This file is part of Octave.
@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contourf (@var{z})
-## @deftypefnx {Function File} {} contourf (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contourf (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {} contourf (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contourf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@dots{})
+## @deftypefn  {} {} contourf (@var{z})
+## @deftypefnx {} {} contourf (@var{z}, @var{vn})
+## @deftypefnx {} {} contourf (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} contourf (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {} contourf (@dots{}, @var{style})
+## @deftypefnx {} {} contourf (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{h}] =} contourf (@dots{})
 ## Create a 2-D contour plot with filled intervals.
 ##
 ## Plot level curves (contour lines) of the matrix @var{z} and fill the region
@@ -74,6 +74,11 @@ function [c, h] = contourf (varargin)
 
     [ctmp, htmp] = __contour__ (hax, "none", "fill", "on",
                                      "linecolor", "black", varargin{:});
+
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -90,26 +95,26 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks (50);
 %! contourf (x, y, z, -7:9);
-%! title ({'contourf() plot (filled contour lines)'; 'Z = peaks()'});
+%! title ({"contourf() plot (filled contour lines)"; "Z = peaks()"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
 %! contourf (X, Y, abs (Z), 10);
-%! title ({'contourf() plot'; 'polar fcn: Z = sin (2*theta) * (1-r)'});
+%! title ({"contourf() plot"; "polar fcn: Z = sin (2*theta) * (1-r)"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = linspace (-2, 2);
 %! [x, y] = meshgrid (x);
 %! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2 + 1);
 %! contourf (x, y, z, [0.4, 0.4]);
-%! title ('Hole should be filled with the background color');
+%! title ("Hole should be filled with the background color");
 

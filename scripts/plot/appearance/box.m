@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} box
-## @deftypefnx {Command} {} box on
-## @deftypefnx {Command} {} box off
-## @deftypefnx {Function File} {} box (@var{hax}, @dots{})
+## @deftypefn  {} {} box
+## @deftypefnx {} {} box on
+## @deftypefnx {} {} box off
+## @deftypefnx {} {} box (@var{hax}, @dots{})
 ## Control display of the axis border.
 ##
 ## The argument may be either @qcode{"on"} or @qcode{"off"}.  If it is
@@ -68,4 +68,40 @@ function box (varargin)
   set (hax, "box", box_state);
 
 endfunction
+
+
+%!demo
+%! clf;
+%! plot (1:10, "o-");
+%! box off;
+%! title ("box off");
+
+%!demo
+%! clf;
+%! plot (1:10, "o-");
+%! box on;
+%! title ("box on");
+
+%!demo
+%! clf;
+%! z = [0:0.05:5];
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! box off;
+%! title ("box off");
+
+%!demo
+%! clf;
+%! z = [0:0.05:5];
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! box on;
+%! set (gca, "boxstyle", "back");
+%! title ({"box on", 'boxstyle = "back"'});
+
+%!demo
+%! clf;
+%! z = [0:0.05:5];
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! box on;
+%! set (gca, "boxstyle", "full");
+%! title ({"box on", 'boxstyle = "full"'});
 

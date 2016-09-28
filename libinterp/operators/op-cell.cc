@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-cell.h"
 #include "ov-scalar.h"
@@ -38,15 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (transpose, cell)
 {
-  CAST_UNOP_ARG (const octave_cell&);
+  const octave_cell& v = dynamic_cast<const octave_cell&> (a);
 
   if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (Cell (v.cell_value ().transpose ()));
+    error ("transpose not defined for N-D objects");
+
+  return octave_value (Cell (v.cell_value ().transpose ()));
 }
 
 DEFCATOP_FN (c_c, cell, cell, concat)
@@ -69,3 +66,4 @@ install_cell_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_str, null_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
 }
+

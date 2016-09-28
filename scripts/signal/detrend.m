@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} detrend (@var{x}, @var{p})
+## @deftypefn {} {} detrend (@var{x}, @var{p})
 ## If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
 ## best fit of a polynomial of order @var{p} from the data @var{x}.
 ##
@@ -38,7 +38,7 @@
 ## Adapted-By: jwe
 
 function y = detrend (x, p = 1)
-  ## Check input
+
   if (nargin > 0 && isreal (x) && ndims (x) <= 2)
     ## Check p
     if (ischar (p) && strcmpi (p, "constant"))

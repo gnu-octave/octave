@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,29 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_quit_h)
+#if ! defined (octave_quit_h)
 #define octave_quit_h 1
 
-#include <stdio.h>
+#include "octave-config.h"
 
-#include <signal.h>
 #include <setjmp.h>
 
-#ifdef __cplusplus
-#include <new>
+/* The signal header is just needed for the sig_atomic_t type.  */
+#if defined (__cplusplus)
+#  include <csignal>
+#  include <string>
 extern "C" {
-#endif
-
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-CRUFT_API extern void w32_sigint_init (void);   /* setup */
-CRUFT_API extern void w32_raise_final (void);   /* tear down */
-CRUFT_API extern void w32_raise (int sig);      /* raise signal in main thread */
-CRUFT_API extern int w32_in_main_thread (void); /* return true if in main thread */
-
+#else
+#  include <signal.h>
 #endif
 
 #if defined (OCTAVE_HAVE_SIG_JUMP)
@@ -59,61 +50,152 @@ typedef jmp_buf octave_jmp_buf;
 
 #endif
 
-CRUFT_API extern octave_jmp_buf current_context;
+OCTAVE_API extern octave_jmp_buf current_context;
 
-CRUFT_API extern void octave_save_current_context (void *);
+OCTAVE_API extern void octave_save_current_context (void *);
 
-CRUFT_API extern void octave_restore_current_context (void *);
+OCTAVE_API extern void octave_restore_current_context (void *);
 
-CRUFT_API extern void octave_jump_to_enclosing_context (void) GCC_ATTR_NORETURN;
+OCTAVE_NORETURN OCTAVE_API extern void octave_jump_to_enclosing_context (void);
 
-CRUFT_API extern void octave_save_signal_mask (void);
+#if defined (__cplusplus)
 
-CRUFT_API extern void octave_restore_signal_mask (void);
-
-#ifdef __cplusplus
-class
-octave_execution_exception
+namespace octave
 {
-};
+  class
+  execution_exception
+  {
+  public:
 
-class
-octave_interrupt_exception
-{
-};
+    execution_exception (void) : m_stack_trace () { }
+
+    execution_exception (const execution_exception& x)
+      : m_stack_trace (x.m_stack_trace) { }
+
+    execution_exception& operator = (const execution_exception& x)
+    {
+      if (&x != this)
+        m_stack_trace = x.m_stack_trace;
+
+      return *this;
+    }
+
+    ~execution_exception (void) { }
+
+    virtual void set_stack_trace (const std::string& st)
+    {
+      m_stack_trace = st;
+    }
+
+    virtual void set_stack_trace (void)
+    {
+      m_stack_trace = "";
+    }
+
+    virtual std::string info (void) const
+    {
+      return m_stack_trace;
+    }
+
+  private:
+
+    std::string m_stack_trace;
+  };
+
+  class
+  exit_exception
+  {
+  public:
+
+    exit_exception (int exit_status = 0, bool safe_to_return = false)
+      : m_exit_status (exit_status), m_safe_to_return (safe_to_return)
+    { }
+
+    exit_exception (const exit_exception& ex)
+      : m_exit_status (ex.m_exit_status), m_safe_to_return (ex.m_safe_to_return)
+    { }
+
+    exit_exception& operator = (exit_exception& ex)
+    {
+      if (this != &ex)
+        {
+          m_exit_status = ex.m_exit_status;
+          m_safe_to_return = ex.m_safe_to_return;
+        }
+
+      return *this;
+    }
+
+    ~exit_exception (void) { }
+
+    int exit_status (void) const { return m_exit_status; }
+
+    bool safe_to_return (void) const { return m_safe_to_return; }
+
+  private:
+
+    int m_exit_status;
+
+    bool m_safe_to_return;
+  };
+
+  class
+  interrupt_exception
+  {
+  };
+}
+
+OCTAVE_DEPRECATED ("use 'octave::execution_exception' instead")
+typedef octave::exit_exception octave_execution_exception;
+
+OCTAVE_DEPRECATED ("use 'octave::exit_exception' instead")
+typedef octave::exit_exception octave_exit_exception;
+
+OCTAVE_DEPRECATED ("use 'octave::interrupt_exception' instead")
+typedef octave::interrupt_exception octave_interrupt_exception;
+
 #endif
 
 enum octave_exception
 {
   octave_no_exception = 0,
   octave_exec_exception = 1,
-  octave_alloc_exception = 2
+  octave_alloc_exception = 3,
+  octave_quit_exception = 4
 };
 
-CRUFT_API extern sig_atomic_t octave_interrupt_immediately;
+OCTAVE_API extern sig_atomic_t octave_interrupt_immediately;
 
 /*
   > 0: interrupt pending
     0: no interrupt pending
   < 0: handling interrupt
 */
-CRUFT_API extern sig_atomic_t octave_interrupt_state;
+OCTAVE_API extern sig_atomic_t octave_interrupt_state;
 
-CRUFT_API extern sig_atomic_t octave_exception_state;
+OCTAVE_API extern sig_atomic_t octave_exception_state;
 
-CRUFT_API extern volatile sig_atomic_t octave_signal_caught;
+OCTAVE_API extern sig_atomic_t octave_exit_exception_status;
 
-CRUFT_API extern void octave_handle_signal (void);
+OCTAVE_API extern sig_atomic_t octave_exit_exception_safe_to_return;
 
-CRUFT_API extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
+OCTAVE_API extern volatile sig_atomic_t octave_signal_caught;
 
-CRUFT_API extern void octave_throw_execution_exception (void) GCC_ATTR_NORETURN;
+OCTAVE_API extern void octave_handle_signal (void);
 
-CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
+OCTAVE_NORETURN OCTAVE_API extern void octave_throw_interrupt_exception (void);
 
-CRUFT_API extern void octave_rethrow_exception (void);
+OCTAVE_NORETURN OCTAVE_API extern void octave_throw_execution_exception (void);
 
-#ifdef __cplusplus
+OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
+
+OCTAVE_API extern void octave_rethrow_exception (void);
+
+#if defined (__cplusplus)
+
+extern OCTAVE_API void
+clean_up_and_exit (int exit_status, bool safe_to_return = false);
+
 inline void octave_quit (void)
 {
   if (octave_signal_caught)
@@ -127,15 +209,15 @@ inline void octave_quit (void)
 
 #else
 
-#define OCTAVE_QUIT \
-  do \
-    { \
-      if (octave_signal_caught) \
-        { \
-          octave_signal_caught = 0; \
-          octave_handle_signal (); \
-        } \
-    } \
+#define OCTAVE_QUIT                             \
+  do                                            \
+    {                                           \
+      if (octave_signal_caught)                 \
+        {                                       \
+          octave_signal_caught = 0;             \
+          octave_handle_signal ();              \
+        }                                       \
+    }                                           \
   while (0)
 #endif
 
@@ -155,77 +237,86 @@ inline void octave_quit (void)
    so that you can perform extra clean up operations before throwing
    the interrupt exception.  */
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
-  octave_rethrow_exception (); \
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE     \
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;        \
+  octave_rethrow_exception ();                          \
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1 \
-  do \
-    { \
-      octave_jmp_buf saved_context; \
- \
-      octave_save_current_context (saved_context); \
- \
-      if (octave_set_current_context) \
-        { \
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1           \
+  do                                                            \
+    {                                                           \
+      octave_jmp_buf saved_context;                             \
+                                                                \
+      octave_save_current_context (saved_context);              \
+                                                                \
+      if (octave_set_current_context)                           \
+        {                                                       \
           octave_restore_current_context (saved_context)
 
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2 \
-        } \
-      else \
-        { \
-          octave_interrupt_immediately++
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2   \
+  }                                                     \
+      else                                              \
+        {                                               \
+  octave_interrupt_immediately++
 
-#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
-          octave_interrupt_immediately--; \
-          octave_restore_current_context (saved_context); \
-        } \
-    } \
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE       \
+  octave_interrupt_immediately--;                       \
+  octave_restore_current_context (saved_context);       \
+}                                                       \
+}                                                       \
   while (0)
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 
-#define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
+#define BEGIN_INTERRUPT_WITH_EXCEPTIONS                                 \
   sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
- \
-  try \
-    { \
+                                                                        \
+  try                                                                   \
+    {                                                                   \
       octave_interrupt_immediately = 0;
 
-#define END_INTERRUPT_WITH_EXCEPTIONS \
-    } \
-  catch (octave_interrupt_exception) \
-    { \
+#define END_INTERRUPT_WITH_EXCEPTIONS                                   \
+    }                                                                   \
+  catch (const octave::interrupt_exception&)                            \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_jump_to_enclosing_context (); \
-    } \
-  catch (octave_execution_exception) \
-    { \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+  catch (const octave::execution_exception&)                            \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_exec_exception; \
-      octave_jump_to_enclosing_context (); \
-    } \
-  catch (std::bad_alloc) \
-    { \
+      octave_exception_state = octave_exec_exception;                   \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+  catch (const std::bad_alloc&)                                         \
+    {                                                                   \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_exception_state = octave_alloc_exception; \
-      octave_jump_to_enclosing_context (); \
-    } \
- \
+      octave_exception_state = octave_alloc_exception;                  \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+  catch (const octave::exit_exception& ex)                              \
+    {                                                                   \
+      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
+      octave_exception_state = octave_quit_exception;                   \
+      octave_exit_exception_status = ex.exit_status ();                 \
+      octave_exit_exception_safe_to_return = ex.safe_to_return ();      \
+      octave_jump_to_enclosing_context ();                              \
+    }                                                                   \
+                                                                        \
   octave_interrupt_immediately = saved_octave_interrupt_immediately
 #endif
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 
 /* These should only be declared for C++ code, and should also be
    outside of any extern "C" block.  */
 
-extern CRUFT_API void (*octave_signal_hook) (void);
-extern CRUFT_API void (*octave_interrupt_hook) (void);
-extern CRUFT_API void (*octave_bad_alloc_hook) (void);
+extern OCTAVE_API void (*octave_signal_hook) (void);
+extern OCTAVE_API void (*octave_interrupt_hook) (void);
+extern OCTAVE_API void (*octave_bad_alloc_hook) (void);
 
 #endif
 
 #endif
+

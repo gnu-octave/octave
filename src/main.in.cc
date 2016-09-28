@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -28,8 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 // that it remains small, it should NOT depend on or be linked with
 // liboctave or libinterp.
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdlib>
@@ -39,41 +39,32 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
+#include "fcntl-wrappers.h"
+#include "signal-wrappers.h"
+#include "strdup-wrapper.h"
+#include "unistd-wrappers.h"
+#include "wait-wrappers.h"
 
-#ifndef OCTAVE_VERSION
-#define OCTAVE_VERSION %OCTAVE_VERSION%
+#if ! defined (OCTAVE_VERSION)
+#  define OCTAVE_VERSION %OCTAVE_VERSION%
 #endif
 
-#ifndef OCTAVE_ARCHLIBDIR
-#define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
+#if ! defined (OCTAVE_ARCHLIBDIR)
+#  define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
 #endif
 
-#ifndef OCTAVE_BINDIR
-#define OCTAVE_BINDIR %OCTAVE_BINDIR%
+#if ! defined (OCTAVE_BINDIR)
+#  define OCTAVE_BINDIR %OCTAVE_BINDIR%
 #endif
 
-#ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#if ! defined (OCTAVE_PREFIX)
+#  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
 
 #include "display-available.h"
 #include "shared-fcns.h"
 
-#include <cstdlib>
-
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
-
-#include <signal.h>
-#include <fcntl.h>
-
-// This is a liboctave header, but it doesn't include any other Octave
-// headers or declare any functions that are defined in liboctave.
-#include "syswait.h"
-
-typedef void sig_handler (int);
+#if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
 // Forward signals to the GUI process.
 
@@ -88,141 +79,65 @@ gui_driver_sig_handler (int sig)
     caught_signal = sig;
 }
 
-static sig_handler *
-octave_set_signal_handler (int sig, sig_handler *handler)
+static void
+gui_driver_set_signal_handler (const char *signame,
+                               octave_sig_handler *handler)
 {
-  struct sigaction act, oact;
-
-  act.sa_handler = handler;
-  act.sa_flags = 0;
-
-  gnulib::sigemptyset (&act.sa_mask);
-  gnulib::sigemptyset (&oact.sa_mask);
-
-  gnulib::sigaction (sig, &act, &oact);
-
-  return oact.sa_handler;
+  octave_set_signal_handler_by_name (signame, handler, false);
 }
 
 static void
 install_signal_handlers (void)
 {
-
-#ifdef SIGINT
-  octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGBREAK
-  octave_set_signal_handler (SIGBREAK, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGABRT
-  octave_set_signal_handler (SIGABRT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGALRM
-  octave_set_signal_handler (SIGALRM, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGBUS
-  octave_set_signal_handler (SIGBUS, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGINT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGBREAK", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGABRT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGALRM", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGBUS", gui_driver_sig_handler);
 
   // SIGCHLD
   // SIGCLD
   // SIGCONT
 
-#ifdef SIGEMT
-  octave_set_signal_handler (SIGEMT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGFPE
-  octave_set_signal_handler (SIGFPE, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGHUP
-  octave_set_signal_handler (SIGHUP, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGILL
-  octave_set_signal_handler (SIGILL, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGEMT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGFPE", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGHUP", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGILL", gui_driver_sig_handler);
 
   // SIGINFO
   // SIGINT
 
-#ifdef SIGIOT
-  octave_set_signal_handler (SIGIOT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGLOST
-  octave_set_signal_handler (SIGLOST, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGPIPE
-  octave_set_signal_handler (SIGPIPE, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGPOLL
-  octave_set_signal_handler (SIGPOLL, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGIOT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGLOST", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGPIPE", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGPOLL", gui_driver_sig_handler);
 
   // SIGPROF
   // SIGPWR
 
-#ifdef SIGQUIT
-  octave_set_signal_handler (SIGQUIT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGSEGV
-  octave_set_signal_handler (SIGSEGV, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGQUIT", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGSEGV", gui_driver_sig_handler);
 
   // SIGSTOP
 
-#ifdef SIGSYS
-  octave_set_signal_handler (SIGSYS, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGTERM
-  octave_set_signal_handler (SIGTERM, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGTRAP
-  octave_set_signal_handler (SIGTRAP, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGSYS", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGTERM", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGTRAP", gui_driver_sig_handler);
 
   // SIGTSTP
   // SIGTTIN
   // SIGTTOU
   // SIGURG
 
-#ifdef SIGUSR1
-  octave_set_signal_handler (SIGUSR1, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGUSR2
-  octave_set_signal_handler (SIGUSR2, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGVTALRM
-  octave_set_signal_handler (SIGVTALRM, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGIO
-  octave_set_signal_handler (SIGIO, gui_driver_sig_handler);
-#endif
+  gui_driver_set_signal_handler ("SIGUSR1", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGUSR2", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGVTALRM", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGIO", gui_driver_sig_handler);
 
   // SIGWINCH
 
-#ifdef SIGXCPU
-  octave_set_signal_handler (SIGXCPU, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGXFSZ
-  octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
-#endif
-
+  gui_driver_set_signal_handler ("SIGXCPU", gui_driver_sig_handler);
+  gui_driver_set_signal_handler ("SIGXFSZ", gui_driver_sig_handler);
 }
 
 static bool
@@ -230,17 +145,13 @@ have_controlling_terminal (void)
 {
   int retval = false;
 
-#if defined (HAVE_CTERMID)
-  const char *ctty = ctermid (0);
-#else
-  const char *ctty = "/dev/tty";
-#endif
+  const char *ctty = octave_ctermid_wrapper ();
 
-  int fd = gnulib::open (ctty, O_RDWR, 0);
+  int fd = octave_open_wrapper (ctty, octave_o_rdwr_wrapper (), 0);
 
   if (fd >= 0)
     {
-      gnulib::close (fd);
+      octave_close_wrapper (fd);
 
       retval = true;
     }
@@ -277,137 +188,14 @@ get_octave_archlibdir (void)
                       : dir;
 }
 
-// Adapted from libtool wrapper.
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-
-/* Prepares an argument vector before calling spawn().
-   Note that spawn() does not by itself call the command interpreter
-     (getenv ("COMSPEC") != NULL ? getenv ("COMSPEC") :
-      ({ OSVERSIONINFO v; v.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-         GetVersionEx(&v);
-         v.dwPlatformId == VER_PLATFORM_WIN32_NT;
-      }) ? "cmd.exe" : "command.com").
-   Instead it simply concatenates the arguments, separated by ' ', and calls
-   CreateProcess().  We must quote the arguments since Win32 CreateProcess()
-   interprets characters like ' ', '\t', '\\', '"' (but not '<' and '>') in a
-   special way:
-   - Space and tab are interpreted as delimiters. They are not treated as
-     delimiters if they are surrounded by double quotes: "...".
-   - Unescaped double quotes are removed from the input. Their only effect is
-     that within double quotes, space and tab are treated like normal
-     characters.
-   - Backslashes not followed by double quotes are not special.
-   - But 2*n+1 backslashes followed by a double quote become
-     n backslashes followed by a double quote (n >= 0):
-       \" -> "
-       \\\" -> \"
-       \\\\\" -> \\"
- */
-#define SHELL_SPECIAL_CHARS "\"\\ \001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037"
-#define SHELL_SPACE_CHARS " \001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037"
-char **
-prepare_spawn (char **argv)
-{
-  size_t argc;
-  char **new_argv;
-  size_t i;
-
-  /* Count number of arguments.  */
-  for (argc = 0; argv[argc] != NULL; argc++)
-    ;
-
-  /* Allocate new argument vector.  */
-  new_argv = new char* [argc + 1];
-
-  /* Put quoted arguments into the new argument vector.  */
-  for (i = 0; i < argc; i++)
-    {
-      const char *string = argv[i];
-
-      if (string[0] == '\0')
-        new_argv[i] = strdup ("\"\"");
-      else if (strpbrk (string, SHELL_SPECIAL_CHARS) != NULL)
-        {
-          int quote_around = (strpbrk (string, SHELL_SPACE_CHARS) != NULL);
-          size_t length;
-          unsigned int backslashes;
-          const char *s;
-          char *quoted_string;
-          char *p;
-
-          length = 0;
-          backslashes = 0;
-          if (quote_around)
-            length++;
-          for (s = string; *s != '\0'; s++)
-            {
-              char c = *s;
-              if (c == '"')
-                length += backslashes + 1;
-              length++;
-              if (c == '\\')
-                backslashes++;
-              else
-                backslashes = 0;
-            }
-          if (quote_around)
-            length += backslashes + 1;
-
-          quoted_string = new char [length + 1];
-
-          p = quoted_string;
-          backslashes = 0;
-          if (quote_around)
-            *p++ = '"';
-          for (s = string; *s != '\0'; s++)
-            {
-              char c = *s;
-              if (c == '"')
-                {
-                  unsigned int j;
-                  for (j = backslashes + 1; j > 0; j--)
-                    *p++ = '\\';
-                }
-              *p++ = c;
-              if (c == '\\')
-                backslashes++;
-              else
-                backslashes = 0;
-            }
-          if (quote_around)
-            {
-              unsigned int j;
-              for (j = backslashes; j > 0; j--)
-                *p++ = '\\';
-              *p++ = '"';
-            }
-          *p = '\0';
-
-          new_argv[i] = quoted_string;
-        }
-      else
-        new_argv[i] = (char *) string;
-    }
-  new_argv[argc] = NULL;
-
-  return new_argv;
-}
-
-#endif // __WIN32__ && ! __CYGWIN__
-
 static int
 octave_exec (const std::string& file, char **argv)
 {
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  argv = prepare_spawn (argv);
-  return _spawnv (_P_WAIT, file.c_str (), argv);
-#else
-  execv (file.c_str (), argv);
+  int status = octave_execv_wrapper (file.c_str (), argv);
 
-  std::cerr << "octave: failed to exec '" << file << "'" << std::endl;
+  std::cerr << argv[0] << ": failed to exec '" << file << "'" << std::endl;
 
-  return 1;
-#endif
+  return status;
 }
 
 static char *
@@ -436,21 +224,24 @@ main (int argc, char **argv)
     = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
   std::string octave_gui = octave_archlibdir + dir_sep_char + "octave-gui";
 
-#if defined (HAVE_OCTAVE_GUI)
+#if defined (HAVE_OCTAVE_QT_GUI)
   // The Octave version number is already embedded in the
   // octave_archlibdir directory name so we don't need to append it to
-  // the octave-gui file name.
+  // the octave-gui filename.
 
   std::string file = octave_gui;
 #else
   std::string file = octave_cli;
 #endif
 
-  char **new_argv = new char * [argc + 1];
+  // Declaring new_argv static avoids leak warnings when using GCC's
+  // --address-sanitizer option.
+  static char **new_argv = new char * [argc + 1];
 
   int k = 1;
 
   bool warn_display = true;
+  bool no_display = false;
 
   for (int i = 1; i < argc; i++)
     {
@@ -483,13 +274,26 @@ main (int argc, char **argv)
           warn_display = false;
           new_argv[k++] = argv[i];
         }
+      else if (! strcmp (argv[i], "--no-window-system")
+               || ! strcmp (argv[i], "-W"))
+        {
+          no_display = true;
+          new_argv[k++] = argv[i];
+        }
       else
         new_argv[k++] = argv[i];
     }
 
   new_argv[k] = 0;
 
-  if (gui_libs || start_gui)
+  if (no_display)
+    {
+      start_gui = false;
+      gui_libs = false;
+
+      file = octave_cli;
+    }
+  else if (gui_libs || start_gui)
     {
       int dpy_avail;
 
@@ -513,20 +317,19 @@ main (int argc, char **argv)
         }
     }
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#if defined (OCTAVE_USE_WINDOWS_API)
   file += ".exe";
 #endif
 
   new_argv[0] = strsave (file.c_str ());
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
+#if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
   if (gui_libs && start_gui && have_controlling_terminal ())
     {
       install_signal_handlers ();
 
-      gui_pid = fork ();
+      gui_pid = octave_fork_wrapper ();
 
       if (gui_pid < 0)
         {
@@ -538,7 +341,7 @@ main (int argc, char **argv)
         {
           // Child.
 
-          if (setsid () < 0)
+          if (octave_setsid_wrapper () < 0)
             {
               std::cerr << "octave: error calling setsid!" << std::endl;
 
@@ -555,7 +358,7 @@ main (int argc, char **argv)
 
           while (true)
             {
-              WAITPID (gui_pid, &status, 0);
+              octave_waitpid_wrapper (gui_pid, &status, 0);
 
               if (caught_signal > 0)
                 {
@@ -563,28 +366,36 @@ main (int argc, char **argv)
 
                   caught_signal = -1;
 
-                  kill (gui_pid, sig);
+                  octave_kill_wrapper (gui_pid, sig);
                 }
-              else if (WIFEXITED (status))
+              else if (octave_wifexited_wrapper (status))
                 {
-                  retval = WEXITSTATUS (status);
+                  retval = octave_wexitstatus_wrapper (status);
                   break;
                 }
-              else if (WIFSIGNALLED (status))
+              else if (octave_wifsignaled_wrapper (status))
                 {
                   std::cerr << "octave exited with signal "
-                            << WTERMSIG (status) << std::endl;
+                            << octave_wtermsig_wrapper (status) << std::endl;
                   break;
                 }
             }
         }
     }
   else
-    retval = octave_exec (file, new_argv);
+    {
+      retval = octave_exec (file, new_argv);
+
+      if (retval < 0)
+        std::cerr << argv[0] << ": " << std::strerror (errno) << std::endl;
+    }
 
 #else
 
   retval = octave_exec (file, new_argv);
+
+  if (retval < 0)
+    std::cerr << argv[0] << ": " << std::strerror (errno) << std::endl;
 
 #endif
 
@@ -608,3 +419,4 @@ This is the developer documentation for Octave's own source code. It is
 intended to help for hacking Octave. It may also be useful for
 understanding the Octave API when writing your own .oct files.
 */
+

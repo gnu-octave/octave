@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "ov-fcn.h"
@@ -52,12 +52,12 @@ tree_funcall::print_raw (std::ostream& os, bool pr_as_read_syntax,
 
       os << nm << " (";
 
-      octave_idx_type len = args.length ();
-      for (octave_idx_type i = 0; i < len; i++)
+      octave_idx_type n = args.length ();
+      for (octave_idx_type i = 0; i < n; i++)
         {
           args(i).print_raw (os, pr_as_read_syntax);
 
-          if (i < len - 1)
+          if (i < n - 1)
             os << ", ";
         }
 
@@ -90,8 +90,8 @@ tree_funcall::rvalue (int nargout)
 
   if (retval.length () == 1 && retval(0).is_function ())
     {
-      // The return object is a function. We may need to re-index it using the
-      // same logic as for identifier. This is primarily used for superclass
+      // The return object is a function.  We may need to re-index it using the
+      // same logic as for identifier.  This is primarily used for superclass
       // references in classdef.
 
       octave_value val = retval(0);
@@ -108,3 +108,4 @@ tree_funcall::rvalue (int nargout)
 
   return retval;
 }
+

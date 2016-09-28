@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
@@ -22,8 +22,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_idx_vector_h)
+#if ! defined (octave_idx_vector_h)
 #define octave_idx_vector_h 1
+
+#include "octave-config.h"
 
 #include <cassert>
 #include <cstring>
@@ -33,18 +35,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <memory>
 
 #include "dim-vector.h"
-#include "oct-inttypes.h"
+#include "oct-inttypes-fwd.h"
 #include "oct-refcount.h"
 
-template<class T> class Array;
-template<class T> class Sparse;
+template <typename T> class Array;
+template <typename T> class Sparse;
 class Range;
 
 // Design rationale:
 // idx_vector is a reference-counting, polymorphic pointer, that can contain
 // 4 types of index objects: a magic colon, a range, a scalar, or an index vector.
 // Polymorphic methods for single element access are provided, as well as
-// templates implementing "early dispatch", i.e. hoisting the checks for index
+// templates implementing "early dispatch", i.e., hoisting the checks for index
 // type out of loops.
 
 class
@@ -63,7 +65,7 @@ public:
     class_mask
   };
 
-  template<class T> friend class std::auto_ptr;
+  template <typename T, typename D> friend class std::unique_ptr;
 
 private:
 
@@ -83,7 +85,7 @@ private:
     // Length of the index vector.
     virtual octave_idx_type length (octave_idx_type n) const = 0;
 
-    // The maximum index + 1. The actual dimension is passed in.
+    // The maximum index + 1.  The actual dimension is passed in.
     virtual octave_idx_type extent (octave_idx_type n) const = 0;
 
     // Index class.
@@ -137,14 +139,13 @@ private:
     idx_base_rep *sort_uniq_clone (bool = false)
     { count++; return this; }
 
-    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    OCTAVE_NORETURN idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type) const { return true; }
 
     std::ostream& print (std::ostream& os) const;
 
   private:
-
 
     // No copying!
     idx_colon_rep (const idx_colon_rep& idx);
@@ -179,8 +180,10 @@ private:
     octave_idx_type length (octave_idx_type) const { return len; }
 
     octave_idx_type extent (octave_idx_type n) const
-    { return len ? std::max (n, (start + 1 + (step < 0 ? 0 : step * (len - 1))))
-                 : n; }
+    {
+      return len ? std::max (n, start + 1 + (step < 0 ? 0 : step * (len - 1)))
+                 : n;
+    }
 
     idx_class_type idx_class (void) const { return class_range; }
 
@@ -206,7 +209,6 @@ private:
 
   private:
 
-
     // No copying!
     idx_range_rep (const idx_range_rep& idx);
     idx_range_rep& operator = (const idx_range_rep& idx);
@@ -228,7 +230,7 @@ private:
     // Zero-based constructor.
     idx_scalar_rep (octave_idx_type i);
 
-    template <class T>
+    template <typename T>
     idx_scalar_rep (T x);
 
     octave_idx_type xelem (octave_idx_type) const { return data; }
@@ -262,7 +264,6 @@ private:
 
   private:
 
-
     // No copying!
     idx_scalar_rep (const idx_scalar_rep& idx);
     idx_scalar_rep& operator = (const idx_scalar_rep& idx);
@@ -290,7 +291,7 @@ private:
     idx_vector_rep (const Array<octave_idx_type>& inda,
                     octave_idx_type _ext, direct);
 
-    template <class T>
+    template <typename T>
     idx_vector_rep (const Array<T>&);
 
     idx_vector_rep (bool);
@@ -327,7 +328,6 @@ private:
     Array<octave_idx_type> as_array (void);
 
   private:
-
 
     // No copying!
     idx_vector_rep (const idx_vector_rep& idx);
@@ -401,7 +401,6 @@ private:
 
   private:
 
-
     // No copying!
     idx_mask_rep (const idx_mask_rep& idx);
     idx_mask_rep& operator = (const idx_mask_rep& idx);
@@ -410,7 +409,7 @@ private:
     octave_idx_type len;
     octave_idx_type ext;
 
-    // FIXME: I'm not sure if this is a good design. Maybe it would be
+    // FIXME: I'm not sure if this is a good design.  Maybe it would be
     // better to employ some sort of generalized iteration scheme.
     mutable octave_idx_type lsti;
     mutable octave_idx_type lste;
@@ -487,7 +486,7 @@ public:
 
   // Conversion constructors (used by interpreter).
 
-  template <class T>
+  template <typename T>
   idx_vector (octave_int<T> x) : rep (new idx_scalar_rep (x)) { chkerr (); }
 
   idx_vector (double x) : rep (new idx_scalar_rep (x)) { chkerr (); }
@@ -497,7 +496,7 @@ public:
   // A scalar bool does not necessarily map to scalar index.
   idx_vector (bool x) : rep (new idx_mask_rep (x)) { chkerr (); }
 
-  template <class T>
+  template <typename T>
   idx_vector (const Array<octave_int<T> >& nda) : rep (new idx_vector_rep (nda))
   { chkerr (); }
 
@@ -553,7 +552,7 @@ public:
 
   octave_idx_type operator () (octave_idx_type n) const
   {
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return rep->checkelem (n);
 #else
     return rep->xelem (n);
@@ -599,7 +598,7 @@ public:
   friend std::ostream& operator << (std::ostream& os, const idx_vector& a)
   { return a.print (os); }
 
-  // Slice with specializations. No checking of bounds!
+  // Slice with specializations.  No checking of bounds!
   //
   // This is equivalent to the following loop (but much faster):
   //
@@ -607,7 +606,7 @@ public:
   //   dest[i] = src[idx(i)];
   // return i;
   //
-  template <class T>
+  template <typename T>
   octave_idx_type
   index (const T *src, octave_idx_type n, T *dest) const
   {
@@ -673,7 +672,7 @@ public:
     return len;
   }
 
-  // Slice assignment with specializations. No checking of bounds!
+  // Slice assignment with specializations.  No checking of bounds!
   //
   // This is equivalent to the following loop (but much faster):
   //
@@ -681,7 +680,7 @@ public:
   //   dest[idx(i)] = src[i];
   // return i;
   //
-  template <class T>
+  template <typename T>
   octave_idx_type
   assign (const T *src, octave_idx_type n, T *dest) const
   {
@@ -745,7 +744,7 @@ public:
     return len;
   }
 
-  // Slice fill with specializations. No checking of bounds!
+  // Slice fill with specializations.  No checking of bounds!
   //
   // This is equivalent to the following loop (but much faster):
   //
@@ -753,7 +752,7 @@ public:
   //   dest[idx(i)] = val;
   // return i;
   //
-  template <class T>
+  template <typename T>
   octave_idx_type
   fill (const T& val, octave_idx_type n, T *dest) const
   {
@@ -817,13 +816,13 @@ public:
     return len;
   }
 
-  // Generic non-breakable indexed loop. The loop body should be
+  // Generic non-breakable indexed loop.  The loop body should be
   // encapsulated in a single functor body.  This is equivalent to the
   // following loop (but faster, at least for simple inlined bodies):
   //
   // for (octave_idx_type i = 0; i < idx->length (n); i++) body (idx(i));
 
-  template <class Functor>
+  template <typename Functor>
   void
   loop (octave_idx_type n, Functor body) const
   {
@@ -882,7 +881,7 @@ public:
 
   }
 
-  // Generic breakable indexed loop. The loop body should be
+  // Generic breakable indexed loop.  The loop body should be
   // encapsulated in a single functor body.  This is equivalent to the
   // following loop (but faster, at least for simple inlined bodies):
   //
@@ -891,7 +890,7 @@ public:
   // return i;
   //
 
-  template <class Functor>
+  template <typename Functor>
   octave_idx_type
   bloop (octave_idx_type n, Functor body) const
   {
@@ -970,7 +969,7 @@ public:
   }
 
   // Rationale:
-  // This method is the key to "smart indexing". When indexing cartesian
+  // This method is the key to "smart indexing".  When indexing cartesian
   // arrays, sometimes consecutive index vectors can be reduced into a
   // single index.  If rows (A) = k and i.maybe_reduce (j) gives k, then
   // A(i,j)(:) is equal to A(k)(:).
@@ -991,11 +990,11 @@ public:
 
   bool is_permutation (octave_idx_type n) const;
 
-  // Returns the inverse permutation. If this is not a permutation on 1:n, the
+  // Returns the inverse permutation.  If this is not a permutation on 1:n, the
   // result is undefined (but no error unless extent () != n).
   idx_vector inverse_permutation (octave_idx_type n) const;
 
-  // Copies all the indices to a given array. Not allowed for colons.
+  // Copies all the indices to a given array.  Not allowed for colons.
   void copy_data (octave_idx_type *data) const;
 
   // If the index is a mask, convert it to index vector.
@@ -1040,3 +1039,4 @@ private:
 };
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,12 +21,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-cx-mat.h"
@@ -48,8 +48,10 @@ DEFBINOP_OP (mul, sparse_complex_matrix, complex_matrix, *)
 
 DEFBINOP (div, sparse_complex_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_complex_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v2.matrix_type ();
 
   ComplexMatrix ret = xdiv (v1.complex_matrix_value (),
@@ -62,20 +64,21 @@ DEFBINOP (div, sparse_complex_matrix, complex_matrix)
 DEFBINOPX (pow, sparse_complex_matrix, complex_matrix)
 {
   error ("can't do A ^ B for A and B both matrices");
-  return octave_value ();
 }
 
 DEFBINOP (ldiv, sparse_complex_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_complex_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
       Complex d = v1.complex_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v2.complex_array_value () / d);
     }
@@ -106,8 +109,10 @@ DEFBINOP_FN (el_div, sparse_complex_matrix, complex_matrix, quotient)
 
 DEFBINOP (el_pow, sparse_complex_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_complex_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   return octave_value
          (elem_xpow (v1.sparse_complex_matrix_value (), SparseComplexMatrix
@@ -116,8 +121,10 @@ DEFBINOP (el_pow, sparse_complex_matrix, complex_matrix)
 
 DEFBINOP (el_ldiv, sparse_complex_matrix, matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_complex_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   return octave_value (quotient (v2.complex_matrix_value (),
                                  v1.sparse_complex_matrix_value ()));
@@ -128,17 +135,21 @@ DEFBINOP_FN (el_or,  sparse_complex_matrix, complex_matrix, mx_el_or)
 
 DEFCATOP (scm_cm, sparse_complex_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (octave_sparse_complex_matrix&,
-                   const octave_complex_matrix&);
+  octave_sparse_complex_matrix& v1
+    = dynamic_cast<octave_sparse_complex_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
   SparseComplexMatrix tmp (v2.complex_matrix_value ());
   return octave_value
-         (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
+         (v1.sparse_complex_matrix_value ().concat (tmp, ra_idx));
 }
 
 DEFASSIGNOP (assign, sparse_complex_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (octave_sparse_complex_matrix&,
-                   const octave_complex_matrix&);
+  octave_sparse_complex_matrix& v1
+    = dynamic_cast<octave_sparse_complex_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   SparseComplexMatrix tmp (v2.complex_matrix_value ());
   v1.assign (idx, tmp);
@@ -195,3 +206,4 @@ install_scm_cm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_complex_matrix,
                     octave_complex_matrix, assign);
 }
+

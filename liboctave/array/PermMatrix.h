@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_PermMatrix_h)
+#if ! defined (octave_PermMatrix_h)
 #define octave_PermMatrix_h 1
+
+#include "octave-config.h"
 
 #include "Array.h"
 #include "mx-defs.h"
@@ -37,32 +39,37 @@ public:
 
   PermMatrix (octave_idx_type n);
 
-  PermMatrix (const Array<octave_idx_type>& p) GCC_ATTR_DEPRECATED;
+  OCTAVE_DEPRECATED ("use 'PermMatrix (p, false, true)' instead")
+  PermMatrix (const Array<octave_idx_type>& p);
 
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
 
   PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
 
-  PermMatrix (const idx_vector& idx) GCC_ATTR_DEPRECATED;
+  OCTAVE_DEPRECATED ("use 'PermVector (idx, false, 0)' instead")
+  PermMatrix (const idx_vector& idx);
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 
   octave_idx_type dim1 (void) const
-  { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::numel (); }
   octave_idx_type dim2 (void) const
-  { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::numel (); }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
   octave_idx_type perm_length (void) const
-  { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::numel (); }
   // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const
   { return perm_length (); }
-  octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
-  octave_idx_type numel (void) const { return nelem (); }
+
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type nelem (void) const { return numel (); }
+
+  octave_idx_type numel (void) const { return dim1 () * dim2 (); }
 
   size_t byte_size (void) const
   { return Array<octave_idx_type>::byte_size (); }
@@ -84,7 +91,7 @@ public:
   octave_idx_type
   operator () (octave_idx_type i, octave_idx_type j) const
   {
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return checkelem (i, j);
 #else
     return elem (i, j);
@@ -95,7 +102,7 @@ public:
   PermMatrix transpose (void) const;
   PermMatrix inverse (void) const;
 
-  // Determinant, i.e. the sign of permutation.
+  // Determinant, i.e., the sign of permutation.
   octave_idx_type determinant (void) const;
 
   // Efficient integer power of a permutation.
@@ -124,3 +131,4 @@ OCTAVE_API
 operator * (const PermMatrix& a, const PermMatrix& b);
 
 #endif
+

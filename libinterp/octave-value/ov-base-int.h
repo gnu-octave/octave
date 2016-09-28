@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_base_int_h)
+#if ! defined (octave_ov_base_int_h)
 #define octave_ov_base_int_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -39,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // base int matrix values.
 
-template <class T>
+template <typename T>
 class
 octave_base_int_matrix : public octave_base_matrix<T>
 {
@@ -69,6 +71,19 @@ public:
 
   octave_value convert_to_str_internal (bool, bool, char type) const;
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -76,7 +91,7 @@ public:
   bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format);
+                    octave::mach_info::float_format);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
 
@@ -85,7 +100,7 @@ public:
 
 // base int scalar values.
 
-template <class T>
+template <typename T>
 class
 octave_base_int_scalar : public octave_base_scalar<T>
 {
@@ -114,6 +129,19 @@ public:
 
   octave_value convert_to_str_internal (bool, bool, char type) const;
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -121,7 +149,7 @@ public:
   bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format);
+                    octave::mach_info::float_format);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool);
 
@@ -129,3 +157,4 @@ public:
 };
 
 #endif
+

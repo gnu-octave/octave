@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Mike Miller
+## Copyright (C) 2013-2016 Mike Miller
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} waterfall (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} waterfall (@var{z})
-## @deftypefnx {Function File} {} waterfall (@dots{}, @var{c})
-## @deftypefnx {Function File} {} waterfall (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} waterfall (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} waterfall (@dots{})
+## @deftypefn  {} {} waterfall (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} waterfall (@var{z})
+## @deftypefnx {} {} waterfall (@dots{}, @var{c})
+## @deftypefnx {} {} waterfall (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} waterfall (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} waterfall (@dots{})
 ## Plot a 3-D waterfall plot.
 ##
 ## A waterfall plot is similar to a @code{meshz} plot except only
@@ -64,12 +64,6 @@ function h = waterfall (varargin)
 
   set (htmp, "meshstyle", "row");
 
-  ## The gnuplot toolkit does nothing with the meshstyle property currently.
-  toolkit = get (ancestor (htmp, "figure"), "__graphics_toolkit__");
-  if (strcmp (toolkit, "gnuplot"))
-    warning ("waterfall: may not render correctly using toolkit '%s'", toolkit);
-  endif
-
   if (nargout > 0)
     h = htmp;
   endif
@@ -79,21 +73,21 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! waterfall (Z);
-%! title ('waterfall() plot of peaks() function');
+%! title ("waterfall() plot of peaks() function");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! subplot (1,2,1)
 %!  meshz (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('meshz() plot');
+%!  title ("meshz() plot");
 %! subplot (1,2,2)
 %!  waterfall (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('waterfall() plot');
+%!  title ("waterfall() plot");
 

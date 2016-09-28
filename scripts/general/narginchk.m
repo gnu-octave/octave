@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Carnë Draug
+## Copyright (C) 2012-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,15 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} narginchk (@var{minargs}, @var{maxargs})
+## @deftypefn {} {} narginchk (@var{minargs}, @var{maxargs})
 ## Check for correct number of input arguments.
 ##
 ## Generate an error message if the number of arguments in the calling function
-## is outside the range @var{minargs} and @var{maxargs}.  Otherwise, do nothing.
+## is outside the range @var{minargs} and @var{maxargs}.  Otherwise, do
+## nothing.
 ##
 ## Both @var{minargs} and @var{maxargs} must be scalar numeric values.  Zero,
-## Inf, and negative values are all allowed, and @var{minargs} and @var{maxargs}
-## may be equal.
+## Inf, and negative values are all allowed, and @var{minargs} and
+## @var{maxargs} may be equal.
 ##
 ## Note that this function evaluates @code{nargin} on the caller.
 ##
@@ -39,19 +40,19 @@ function narginchk (minargs, maxargs)
   if (nargin != 2)
     print_usage;
   elseif (! isnumeric (minargs) || ! isscalar (minargs))
-    error ("minargs must be a numeric scalar");
+    error ("narginchk: minargs must be a numeric scalar");
   elseif (! isnumeric (maxargs) || ! isscalar (maxargs))
-    error ("maxargs must be a numeric scalar");
+    error ("narginchk: maxargs must be a numeric scalar");
   elseif (minargs > maxargs)
-    error ("minargs cannot be larger than maxargs");
+    error ("narginchk: minargs cannot be larger than maxargs");
   endif
 
   args = evalin ("caller", "nargin;");
 
   if (args < minargs)
-    error ("not enough input arguments");
+    error ("narginchk: not enough input arguments");
   elseif (args > maxargs)
-    error ("too many input arguments");
+    error ("narginchk: too many input arguments");
   endif
 
 endfunction
@@ -65,7 +66,7 @@ endfunction
 %!error <not enough input arguments> f([3, 3], 1)
 
 %!test
-%! f([1,1])
+%! f([1,1]);
 %!test
-%! f([1,5], 2, 3, 4, 5)
+%! f([1,5], 2, 3, 4, 5);
 

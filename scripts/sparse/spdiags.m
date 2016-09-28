@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{B} =} spdiags (@var{A})
-## @deftypefnx {Function File} {[@var{B}, @var{d}] =} spdiags (@var{A})
-## @deftypefnx {Function File} {@var{B} =} spdiags (@var{A}, @var{d})
-## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
-## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
+## @deftypefn  {} {@var{B} =} spdiags (@var{A})
+## @deftypefnx {} {[@var{B}, @var{d}] =} spdiags (@var{A})
+## @deftypefnx {} {@var{B} =} spdiags (@var{A}, @var{d})
+## @deftypefnx {} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
+## @deftypefnx {} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
 ## A generalization of the function @code{diag}.
 ##
 ## Called with a single input argument, the nonzero diagonals @var{d} of
@@ -144,7 +144,7 @@ endfunction
 %! [B, d] = spdiags (A);
 %! assert (d, [-2 2]');
 %! assert (B, [31 0; 0 0; 0 13]);
-%! assert (spdiags (B, d, 3,3), A)
+%! assert (spdiags (B, d, 3,3), A);
 
 %!test
 %! ## Case 1: M > N
@@ -154,7 +154,7 @@ endfunction
 %! [B, d] = spdiags (A);
 %! assert (d, [-2 2]');
 %! assert (B, [31 0; 0 0; 0 13]);
-%! assert (spdiags (B, d, 4,3), A)
+%! assert (spdiags (B, d, 4,3), A);
 
 %!test
 %! ## Case 1: M < N
@@ -164,7 +164,7 @@ endfunction
 %! [B, d] = spdiags (A);
 %! assert (d, [-2 2]');
 %! assert (B, [0 13; 0 0; 31 0]);
-%! assert (spdiags (B, d, 3,4), A)
+%! assert (spdiags (B, d, 3,4), A);
 
 %!assert (spdiags (zeros (1,0),1,1,1), sparse (0))
 %!assert (spdiags (zeros (0,1),1,1,1), sparse (0))

@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Ben Abbott
+## Copyright (C) 2009-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{has_feature} =} __gnuplot_has_feature__ (@var{feature})
+## @deftypefn {} {@var{has_feature} =} __gnuplot_has_feature__ (@var{feature})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -25,18 +25,15 @@
 ## Created: 2009-01-27
 
 function res = __gnuplot_has_feature__ (feature)
-  persistent features = {"x11_figure_position",
-                         "wxt_figure_size",
-                         "transparent_patches",
-                         "transparent_surface",
-                         "epslatex_implies_eps_filesuffix",
-                         "epslatexstandalone_terminal",
-                         "screen_coordinates_for_{lrtb}margin",
-                         "variable_GPVAL_TERMINALS",
-                         "key_has_font_properties",
-                         "windows_figure_position",
-                         "has_termoption_dashed",
-                         "needs_color_with_postscript"};
+  persistent features = {"minimum_version",
+                         "needs_color_with_postscript",
+                         "dashtype",
+                         "alphablend_linecolor",
+                         "qt_terminal",
+                         "wxt_figure_position",
+                         "qt_figure_position",
+                         "fontspec_5"};
+
   persistent has_features;
 
   if (isempty (has_features))
@@ -46,8 +43,8 @@ function res = __gnuplot_has_feature__ (feature)
       ## Don't throw an error if gnuplot isn't installed
       gnuplot_version = "0.0.0";
     end_try_catch
-    versions = {"4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4", "4.4", "4.3", "5.0"};
-    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
+    versions  = {"4.4", "4.6", "5.0", "4.6", "4.6", "5.0", "5.0", "5.0"};
+    operators = {">=" , ">=" , ">=" , ">=" , ">=" , ">=" , ">=" , ">=" };
     have_features = false (size (features));
     for n = 1 : numel (have_features)
       has_features(n) = compare_versions (gnuplot_version, versions{n}, operators{n});

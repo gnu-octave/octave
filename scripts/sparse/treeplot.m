@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Ivana Varekova
+## Copyright (C) 2005-2016 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} treeplot (@var{tree})
-## @deftypefnx {Function File} {} treeplot (@var{tree}, @var{node_style}, @var{edge_style})
+## @deftypefn  {} {} treeplot (@var{tree})
+## @deftypefnx {} {} treeplot (@var{tree}, @var{node_style}, @var{edge_style})
 ## Produce a graph of tree or forest.
 ##
 ## The first argument is vector of predecessors.
@@ -78,7 +78,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
     xhelp(tree(i)+1) = xhelp(tree(i)+1)+1;
   endfor
 
-  ## The number of "parent" (actual) node (it's descendants will be
+  ## The number of "parent" (actual) node (its descendants will be
   ## browse in the next iteration).
   par_number = 0;
 
@@ -117,7 +117,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
 
     ## If there is not any descendant of "parent node":
     if (stk(end,2) != par_number)
-      left_most++;
+      left_most += 1;
       x_coordinate_r(par_number) = left_most;
       max_ht = min (max_ht, level);
       if (length (stk) > 1 && find ((shift (stk,1) - stk) == 0) > 1
@@ -149,7 +149,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
     else
       ## There were descendants of "parent nod" choose the last of
       ## them and go on through it.
-      level--;
+      level -= 1;
       par_number = stk(end,1);
       y_coordinate(par_number) = level;
       x_coordinate_l(par_number) = left_most + 1;

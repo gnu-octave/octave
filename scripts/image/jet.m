@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} jet ()
-## @deftypefnx {Function File} {@var{map} =} jet (@var{n})
+## @deftypefn  {} {@var{map} =} jet ()
+## @deftypefnx {} {@var{map} =} jet (@var{n})
 ## Create color colormap.  This colormap ranges from dark blue through blue,
 ## cyan, green, yellow, red, to dark red.
 ##
@@ -28,9 +28,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-
-## PKG_ADD: colormap ("register", "jet");
-## PKG_DEL: colormap ("unregister", "jet");
 
 function map = jet (n = rows (colormap ()))
 
@@ -49,7 +46,7 @@ function map = jet (n = rows (colormap ()))
     nel = ceil (n/4);           # number of elements
     idx1 = ceil (3/8 * n) + 1;  # ~3/8*n for large n
     if (mod (n, 8) == 2)
-      idx1++;
+      idx1 += 1;
     endif
     idx2 = idx1 + nel - 1;      # ~5/8*n for large n
     idx3 = min (idx2 + nel, n); # ~7/8*n for large n
@@ -90,8 +87,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'jet' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (jet (64));
-
+%! ## Show the 'jet' colormap profile and as an image
+%! cmap = jet (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

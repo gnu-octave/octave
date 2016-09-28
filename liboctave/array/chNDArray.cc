@@ -1,7 +1,7 @@
-// N-D Array  manipulations.
+// N-D Array manipulations.
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -70,7 +70,7 @@ charNDArray::charNDArray (const std::string& s)
 }
 
 charNDArray::charNDArray (const string_vector& s, char fill_value)
-  : Array<char> (dim_vector (s.length (), s.max_length ()), fill_value)
+  : Array<char> (dim_vector (s.numel (), s.max_length ()), fill_value)
 {
   octave_idx_type nr = rows ();
 
@@ -112,29 +112,24 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
   charNDArray tmp (rb.dims ());
   octave_idx_type nel = rb.numel ();
 
-  if (rb.numel () == 0)
+  if (rb.is_empty ())
     return *this;
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
       double d = rb.elem (i);
 
-      if (xisnan (d))
-        {
-          (*current_liboctave_error_handler)
-            ("invalid conversion from NaN to character");
-          return *this;
-        }
-      else
-        {
-          octave_idx_type ival = NINTbig (d);
+      if (octave::math::isnan (d))
+        (*current_liboctave_error_handler)
+          ("invalid conversion from NaN to character");
 
-          if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-            // FIXME: is there something better to do? Should we warn the user?
-            ival = 0;
+      octave_idx_type ival = octave::math::nint_big (d);
 
-          tmp.elem (i) = static_cast<char>(ival);
-        }
+      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
+        // FIXME: is there something better to do? Should we warn the user?
+        ival = 0;
+
+      tmp.elem (i) = static_cast<char>(ival);
     }
 
   insert (tmp, ra_idx);
@@ -262,3 +257,4 @@ NDND_CMP_OPS (charNDArray, charNDArray)
 NDND_BOOL_OPS (charNDArray, charNDArray)
 
 BSXFUN_STDREL_DEFS_MXLOOP (charNDArray)
+

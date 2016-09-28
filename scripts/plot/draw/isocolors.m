@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Martin Helm
+## Copyright (C) 2009-2016 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{cd}] =} isocolors (@var{c}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@dots{}, @var{p})
-## @deftypefnx {Function File} {} isocolors (@dots{})
+## @deftypefn  {} {[@var{cd}] =} isocolors (@var{c}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
+## @deftypefnx {} {[@var{cd}] =} isocolors (@dots{}, @var{p})
+## @deftypefnx {} {} isocolors (@dots{})
 ##
 ## Compute isosurface colors.
 ##
@@ -31,7 +31,7 @@
 ## the second input argument @var{v} keeps the vertices of a geometry
 ## then return a matrix @var{cd} with color data information for the
 ## geometry at computed points
-## @command{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
+## @code{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
 ## @var{cd} can be taken to manually set FaceVertexCData of a patch.
 ##
 ## If called with further input arguments @var{x}, @var{y} and @var{z}
@@ -39,7 +39,7 @@
 ## then the color data is taken at those given points.  Instead of the
 ## color data @var{c} this function can also be called with RGB values
 ## @var{r}, @var{g}, @var{b}.  If input argumnets @var{x}, @var{y},
-## @var{z} are not given then again @command{meshgrid} computed values
+## @var{z} are not given then again @code{meshgrid} computed values
 ## are taken.
 ##
 ## Optionally, the patch handle @var{p} can be given as the last input
@@ -51,7 +51,7 @@
 ## For example:
 ##
 ## @example
-## function [] = isofinish (p)
+## function isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##             "PlotBoxAspectRatio", [1 1 1]);
 ##   set (p, "FaceColor", "interp");
@@ -100,6 +100,7 @@
 ## Author: Martin Helm <martin@mhelm.de>
 
 function varargout = isocolors (varargin)
+
   calc_rgb = false;
   switch (nargin)
     case 2
@@ -135,6 +136,7 @@ function varargout = isocolors (varargin)
     otherwise
       print_usage ();
   endswitch
+
   if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
@@ -144,6 +146,7 @@ function varargout = isocolors (varargin)
   else
     error ("isocolors: last argument is not a vertex list or patch handle");
   endif
+
   if (calc_rgb)
     new_col = zeros (rows (v), 3);
     new_col(:,1) = __interp_cube__ (x, y, z, R, v, "values" );
@@ -152,6 +155,8 @@ function varargout = isocolors (varargin)
   else
     new_col = __interp_cube__ (x, y, z, c, v, "values" );
   endif
+
+  ## FIXME: No reason to actually error out if an extra argout is used.
   switch (nargout)
     case 0
       if (! isempty (pa))
@@ -162,6 +167,7 @@ function varargout = isocolors (varargin)
     otherwise
       print_usage ();
   endswitch
+
 endfunction
 
 

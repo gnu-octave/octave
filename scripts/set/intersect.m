@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} intersect (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
+## @deftypefn  {} {@var{c} =} intersect (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
 ##
 ## Return the unique elements common to both @var{a} and @var{b} sorted in
 ## ascending order.
@@ -47,10 +47,19 @@ function [c, ia, ib] = intersect (a, b, varargin)
   [a, b] = validsetargs ("intersect", a, b, varargin{:});
 
   if (isempty (a) || isempty (b))
-    c = ia = ib = [];
+    ## Special case shortcuts algorithm.
+    ## Lots of type checking required for Matlab compatibility.
+    if (isnumeric (a) && isnumeric (b))
+      c = [];
+    elseif (iscell (b))
+      c = {};
+    else
+      c = "";
+    endif
+    ia = ib = [];
   else
     by_rows = nargin == 3;
-    isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+    isrowvec = isrow (a) && isrow (b);
 
     ## Form A and B into sets
     if (nargout > 1)
@@ -141,3 +150,11 @@ endfunction
 %! assert (ia, [1:3]');
 %! assert (ib, [1:3]');
 
+## Test return type of empty intersections
+%!assert (intersect (['a', 'b'], {}), {})
+%!assert (intersect ([], {'a', 'b'}), {})
+%!assert (intersect ([], {}), {})
+%!assert (intersect ({'a', 'b'}, []), {})
+%!assert (intersect ([], ['a', 'b']), "")
+%!assert (intersect ({}, []), {})
+%!assert (intersect (['a', 'b'], []), "")

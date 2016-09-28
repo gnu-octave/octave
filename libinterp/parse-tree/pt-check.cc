@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
@@ -41,7 +41,7 @@ tree_checker::visit_argument_list (tree_argument_list& lst)
       if (elt)
         {
           if (do_lvalue_check && ! elt->lvalue_ok ())
-            gripe ("invalid lvalue in multiple assignment", elt->line ());
+            errmsg ("invalid lvalue in multiple assignment", elt->line ());
         }
     }
 }
@@ -62,8 +62,7 @@ tree_checker::visit_binary_expression (tree_binary_expression& expr)
 
 void
 tree_checker::visit_break_command (tree_break_command&)
-{
-}
+{ }
 
 void
 tree_checker::visit_colon_expression (tree_colon_expression& expr)
@@ -86,8 +85,7 @@ tree_checker::visit_colon_expression (tree_colon_expression& expr)
 
 void
 tree_checker::visit_continue_command (tree_continue_command&)
-{
-}
+{ }
 
 void
 tree_checker::do_decl_command (tree_decl_command& cmd)
@@ -146,7 +144,7 @@ tree_checker::visit_simple_for_command (tree_simple_for_command& cmd)
   if (lhs)
     {
       if (! lhs->lvalue_ok ())
-        gripe ("invalid lvalue in for command", cmd.line ());
+        errmsg ("invalid lvalue in for command", cmd.line ());
     }
 
   tree_expression *expr = cmd.control_expr ();
@@ -175,8 +173,8 @@ tree_checker::visit_complex_for_command (tree_complex_for_command& cmd)
       int len = lhs->length ();
 
       if (len == 0 || len > 2)
-        gripe ("invalid number of output arguments in for command",
-               cmd.line ());
+        errmsg ("invalid number of output arguments in for command",
+                cmd.line ());
 
       do_lvalue_check = true;
 
@@ -227,8 +225,7 @@ tree_checker::visit_function_def (tree_function_def& fdef)
 
 void
 tree_checker::visit_identifier (tree_identifier& /* id */)
-{
-}
+{ }
 
 void
 tree_checker::visit_if_clause (tree_if_clause& cmd)
@@ -338,28 +335,23 @@ tree_checker::visit_multi_assignment (tree_multi_assignment& expr)
 
 void
 tree_checker::visit_no_op_command (tree_no_op_command& /* cmd */)
-{
-}
+{ }
 
 void
 tree_checker::visit_anon_fcn_handle (tree_anon_fcn_handle& /* afh */)
-{
-}
+{ }
 
 void
 tree_checker::visit_constant (tree_constant& /* val */)
-{
-}
+{ }
 
 void
 tree_checker::visit_fcn_handle (tree_fcn_handle& /* fh */)
-{
-}
+{ }
 
 void
 tree_checker::visit_funcall (tree_funcall& /* fc */)
-{
-}
+{ }
 
 void
 tree_checker::visit_parameter_list (tree_parameter_list& lst)
@@ -395,8 +387,7 @@ tree_checker::visit_prefix_expression (tree_prefix_expression& expr)
 
 void
 tree_checker::visit_return_command (tree_return_command&)
-{
-}
+{ }
 
 void
 tree_checker::visit_return_list (tree_return_list& lst)
@@ -420,7 +411,7 @@ tree_checker::visit_simple_assignment (tree_simple_assignment& expr)
   if (lhs)
     {
       if (! lhs->lvalue_ok ())
-        gripe ("invalid lvalue in assignment", expr.line ());
+        errmsg ("invalid lvalue in assignment", expr.line ());
     }
 
   tree_expression *rhs = expr.right_hand_side ();
@@ -509,8 +500,8 @@ tree_checker::visit_try_catch_command (tree_try_catch_command& cmd)
   if (expr_id)
     {
       if (! expr_id->lvalue_ok ())
-        gripe ("invalid lvalue used for identifier in try-catch command",
-               cmd.line ());
+        errmsg ("invalid lvalue used for identifier in try-catch command",
+                cmd.line ());
     }
 
   if (try_code)
@@ -565,10 +556,11 @@ tree_checker::visit_do_until_command (tree_do_until_command& cmd)
 }
 
 void
-tree_checker::gripe (const std::string& msg, int line)
+tree_checker::errmsg (const std::string& msg, int line)
 {
   if (file_name.empty ())
     error ("%s", msg.c_str ());
   else
     error ("%s: %d: %s", file_name.c_str (), line, msg.c_str ());
 }
+

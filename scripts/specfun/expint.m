@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2013 Sylvain Pelissier
+## Copyright (C) 2006-2016 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} expint (@var{x})
+## @deftypefn {} {} expint (@var{x})
 ## Compute the exponential integral:
 ## @tex
 ## $$
@@ -103,7 +103,7 @@ function y = expint (x)
 endfunction
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} expint_Ei (@var{x})
+## @deftypefn {} {@var{y} =} expint_Ei (@var{x})
 ## Compute the exponential integral:
 ## @verbatim
 ##                       infinity
@@ -152,6 +152,7 @@ function y = expint_Ei (x)
       endif;
     endif
   endfor
+
 endfunction
 
 

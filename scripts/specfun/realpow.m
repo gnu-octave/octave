@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} realpow (@var{x}, @var{y})
+## @deftypefn {} {} realpow (@var{x}, @var{y})
 ## Compute the real-valued, element-by-element power operator.
 ##
 ## This is equivalent to @w{@code{@var{x} .^ @var{y}}}, except that
@@ -45,7 +45,7 @@ endfunction
 %! x = rand (10, 10);
 %! y = randn (10, 10);
 %! assert (x.^y, realpow (x,y));
-%!assert (realpow (1i,2), -1)
+%!assert <47775> (realpow (1i,2), -1)
 
 %!error realpow ()
 %!error realpow (1)

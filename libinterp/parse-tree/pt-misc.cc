@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "Cell.h"
@@ -81,41 +81,34 @@ tree_parameter_list::validate (in_or_out type)
                 error ("invalid use of ~ in output list");
             }
           else if (dict.find (name) != dict.end ())
-            {
-              retval = false;
-              error ("'%s' appears more than once in parameter list",
-                     name.c_str ());
-              break;
-            }
+            error ("'%s' appears more than once in parameter list",
+                   name.c_str ());
           else
             dict.insert (name);
         }
     }
 
-  if (! error_state)
+  std::string va_type = (type == in ? "varargin" : "varargout");
+
+  size_t len = length ();
+
+  if (len > 0)
     {
-      std::string va_type = (type == in ? "varargin" : "varargout");
+      tree_decl_elt *elt = back ();
 
-      size_t len = length ();
+      tree_identifier *id = elt->ident ();
 
-      if (len > 0)
+      if (id && id->name () == va_type)
         {
-          tree_decl_elt *elt = back ();
+          if (len == 1)
+            mark_varargs_only ();
+          else
+            mark_varargs ();
 
-          tree_identifier *id = elt->ident ();
-
-          if (id && id->name () == va_type)
-            {
-              if (len == 1)
-                mark_varargs_only ();
-              else
-                mark_varargs ();
-
-              iterator p = end ();
-              --p;
-              delete *p;
-              erase (p);
-            }
+          iterator p = end ();
+          --p;
+          delete *p;
+          erase (p);
         }
     }
 
@@ -182,8 +175,6 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
 void
 tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 {
-  int nargin = args.length ();
-
   int expected_nargin = length ();
 
   iterator p = begin ();
@@ -194,15 +185,12 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 
       octave_lvalue ref = elt->lvalue ();
 
-      if (i < nargin)
+      if (i < args.length ())
         {
           if (args(i).is_defined () && args(i).is_magic_colon ())
             {
               if (! elt->eval ())
-                {
-                  ::error ("no default value for argument %d\n", i+1);
-                  return;
-                }
+                error ("no default value for argument %d", i+1);
             }
           else
             ref.define (args(i));
@@ -251,7 +239,7 @@ tree_parameter_list::convert_to_const_vector (int nargout,
   octave_idx_type vlen = varargout.numel ();
   int len = length ();
 
-  // Special case. Will do a shallow copy.
+  // Special case.  Will do a shallow copy.
   if (len == 0)
     return varargout;
   else if (nargout <= len)
@@ -367,3 +355,4 @@ tree_return_list::accept (tree_walker& tw)
 {
   tw.visit_return_list (*this);
 }
+

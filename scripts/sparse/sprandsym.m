@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 David Bateman and Andy Adler
+## Copyright (C) 2004-2016 David Bateman and Andy Adler
 ## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sprandsym (@var{n}, @var{d})
-## @deftypefnx {Function File} {} sprandsym (@var{s})
+## @deftypefn  {} {} sprandsym (@var{n}, @var{d})
+## @deftypefnx {} {} sprandsym (@var{s})
 ## Generate a symmetric random sparse matrix.
 ##
 ## The size of the matrix will be @var{n}x@var{n}, with a density of values
@@ -41,7 +41,7 @@ function S = sprandsym (n, d)
     [i, j] = find (tril (n));
     [nr, nc] = size (n);
     S = sparse (i, j, randn (size (i)), nr, nc);
-    S = S + tril (S, -1)';
+    S += tril (S, -1)';
     return;
   endif
 
@@ -85,19 +85,19 @@ function r = pick_rand_diag (n, k)
   ## that this R is chosen uniformly over all such matrices.
   ##
   ## Let D be the number of diagonal entries and M the number of
-  ## off-diagonal entries. Then K = D + 2*M. Let A = N*(N-1)/2 be the
+  ## off-diagonal entries.  Then K = D + 2*M.  Let A = N*(N-1)/2 be the
   ## number of available entries in the upper triangle of the matrix.
   ## Then, by a simple counting argument, there is a total of
   ##
   ##     T = nchoosek (N, D) * nchoosek (A, M)
   ##
   ## symmetric NxN matrices with a total of K nonzero entries and D on
-  ## the diagonal. Letting D range from mod (K,2) through min (N,K), and
+  ## the diagonal.  Letting D range from mod (K,2) through min (N,K), and
   ## dividing by this sum, we obtain the probability P for D to be each
   ## of those values.
   ##
   ## However, we cannot use this form for computation, as the binomial
-  ## coefficients become unmanageably large. Instead, we use the
+  ## coefficients become unmanageably large.  Instead, we use the
   ## successive quotients Q(i) = T(i+1)/T(i), which we easily compute to
   ## be
   ##
@@ -110,7 +110,7 @@ function r = pick_rand_diag (n, k)
   ##      C = [ T(1)/T(1), T(2)/T(1), T(3)/T(1), ..., T(N)/T(1) ]
   ##
   ## Their sum is thus S = sum (T)/T(1), and then C(i)/S is the desired
-  ## probability P(i) for i=1:N. The cumsum will finally give the
+  ## probability P(i) for i=1:N.  The cumsum will finally give the
   ## distribution function for computing the random number of entries on
   ## the diagonal R.
   ##
@@ -133,8 +133,8 @@ function r = pick_rand_diag (n, k)
   ## Slight modification from discussion above: pivot around the max in
   ## order to avoid overflow (underflow is fine, just means effectively
   ## zero probabilities).
-  [~, midx] = max (cumsum (log (q))) ;
-  midx++;
+  [~, midx] = max (cumsum (log (q)));
+  midx += 1;
   lc = fliplr (cumprod (1./q(midx-1:-1:1)));
   rc = cumprod (q(midx:end));
 

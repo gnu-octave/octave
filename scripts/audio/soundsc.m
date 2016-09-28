@@ -1,4 +1,4 @@
-## Copyright (C) 2015 Mike Miller
+## Copyright (C) 2016 Mike Miller
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} soundsc (@var{y})
-## @deftypefnx {Function File} {} soundsc (@var{y}, @var{fs})
-## @deftypefnx {Function File} {} soundsc (@var{y}, @var{fs}, @var{nbits})
-## @deftypefnx {Function File} {} soundsc (@dots{}, [@var{ymin}, @var{ymax}])
+## @deftypefn  {} {} soundsc (@var{y})
+## @deftypefnx {} {} soundsc (@var{y}, @var{fs})
+## @deftypefnx {} {} soundsc (@var{y}, @var{fs}, @var{nbits})
+## @deftypefnx {} {} soundsc (@dots{}, [@var{ymin}, @var{ymax}])
 ## Scale the audio data @var{y} and play it at sample rate @var{fs} to the
 ## default audio device.
 ##
@@ -33,10 +33,10 @@
 ## The optional argument @var{nbits} specifies the bit depth to play to the
 ## audio device and defaults to 8 bits.
 ##
-## By default, @var{y} is automatically normalized to the range [-1, 1].  If the
-## range [@var{ymin}, @var{ymax}] is given, then elements of @var{y} that fall
-## within the range @var{ymin} @leq{} @var{y} @leq{} @var{ymax} are scaled to
-## the range [-1, 1] instead.
+## By default, @var{y} is automatically normalized to the range [-1, 1].  If
+## the range [@var{ymin}, @var{ymax}] is given, then elements of @var{y}
+## that fall within the range @var{ymin} @leq{} @var{y} @leq{} @var{ymax}
+## are scaled to the range [-1, 1] instead.
 ##
 ## For more control over audio playback, use the @code{audioplayer} class.
 ## @seealso{sound, record}

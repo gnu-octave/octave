@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Tony Richardson, Jaroslav Hajek
+## Copyright (C) 2009-2016 Tony Richardson, Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyaffine (@var{f}, @var{mu})
+## @deftypefn {} {} polyaffine (@var{f}, @var{mu})
 ## Return the coefficients of the polynomial vector @var{f} after an affine
 ## transformation.
 ##
@@ -56,7 +56,7 @@ function g = polyaffine (f, mu)
 
    ## Scale.
    if (mu(2) != 1)
-     g = g ./ (mu(2) .^ (lf-1:-1:0));
+     g ./= mu(2) .^ (lf-1:-1:0);
    endif
 
    ## Translate.

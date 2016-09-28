@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,16 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_init_qt__
-#define __QtHandles_init_qt__ 1
+#if ! defined (octave__init_qt___h)
+#define octave__init_qt___h 1
 
 namespace QtHandles
 {
 
-bool __init__ (void);
+  bool __init__ (void);
 
-}; // namespace QtHandles
+}
 
 extern void install___init_qt___functions (void);
 
 #endif
+

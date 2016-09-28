@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 
 %!shared a
 %! a = 2;
-%!assert (a(1), 2);
+%!assert (a(1), 2)
 %!error id=Octave:index-out-of-bounds a(logical ([1,1]))
 
 %!shared a

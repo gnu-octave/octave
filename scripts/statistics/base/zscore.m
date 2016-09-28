@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{z} =} zscore (@var{x})
-## @deftypefnx {Function File} {@var{z} =} zscore (@var{x}, @var{opt})
-## @deftypefnx {Function File} {@var{z} =} zscore (@var{x}, @var{opt}, @var{dim})
-## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@dots{})
+## @deftypefn  {} {@var{z} =} zscore (@var{x})
+## @deftypefnx {} {@var{z} =} zscore (@var{x}, @var{opt})
+## @deftypefnx {} {@var{z} =} zscore (@var{x}, @var{opt}, @var{dim})
+## @deftypefnx {} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@dots{})
 ## Compute the Z score of @var{x}
 ##
 ## If @var{x} is a vector, subtract its mean and divide by its standard
@@ -86,8 +86,7 @@ function [z, mu, sigma] = zscore (x, opt, dim)
     sigma = std (x, opt, dim);
     s = sigma;
     s(s==0) = 1;
-    ## FIXME: Use normal broadcasting once we can disable that warning
-    z = bsxfun (@rdivide, bsxfun (@minus, x, mu), s);
+    z = (x - mu) ./ s;
   endif
 
 endfunction

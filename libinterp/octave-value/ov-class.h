@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2015 John W. Eaton
+Copyright (C) 2007-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_class_h)
+#if ! defined (octave_ov_class_h)
 #define octave_ov_class_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -152,6 +154,8 @@ public:
 
   bool is_object (void) const { return true; }
 
+  bool is_true (void) const;
+
   octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const;
@@ -168,7 +172,7 @@ public:
 
   bool is_instance_of (const std::string&) const;
 
-  string_vector all_strings (bool pad) const;
+  string_vector string_vector_value (bool pad) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -192,7 +196,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -201,9 +205,7 @@ public:
   mxArray *as_mxArray (void) const;
 
 private:
-
   octave_map map;
-
 
 public:
   int type_id (void) const { return t_id; }
@@ -257,7 +259,7 @@ public:
       return *this;
     }
 
-    octave_idx_type nfields (void) const { return field_names.length (); }
+    octave_idx_type nfields (void) const { return field_names.numel (); }
 
     size_t nparents (void) const { return parent_class_names.size (); }
 
@@ -283,3 +285,4 @@ public:
 };
 
 #endif
+

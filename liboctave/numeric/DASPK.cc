@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -56,13 +56,13 @@ typedef octave_idx_type (*daspk_psol_ptr) (const octave_idx_type&,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const octave_idx_type&,
-                             double&, double*, double*, double&,
-                             const octave_idx_type*, const double*,
-                             const double*, octave_idx_type&,
-                             double*, const octave_idx_type&,
-                             octave_idx_type*, const octave_idx_type&,
-                             const double*, const octave_idx_type*,
+  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const F77_INT&,
+                             F77_DBLE&, F77_DBLE*, F77_DBLE*, F77_DBLE&,
+                             const F77_INT*, const F77_DBLE*,
+                             const F77_DBLE*, F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             F77_INT*, const F77_INT&,
+                             const F77_DBLE*, const F77_INT*,
                              daspk_jac_ptr, daspk_psol_ptr);
 }
 
@@ -91,7 +91,7 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 
   if (ires >= 0)
     {
-      if (tmp_delta.length () == 0)
+      if (tmp_delta.is_empty ())
         ires = -2;
       else
         {
@@ -122,7 +122,6 @@ ddaspk_psol (const octave_idx_type&, const double&, const double *,
 
   return 0;
 }
-
 
 static octave_idx_type
 ddaspk_j (const double& time, const double *state, const double *deriv,
@@ -160,7 +159,7 @@ DASPK::do_integrate (double tout)
 
   ColumnVector retval;
 
-  if (! initialized || restart || DAEFunc::reset|| DASPK_options::reset)
+  if (! initialized || restart || DAEFunc::reset || DASPK_options::reset)
     {
       integration_error = false;
 
@@ -196,8 +195,9 @@ DASPK::do_integrate (double tout)
 
           ColumnVector res = (*user_fun) (x, xdot, t, ires);
 
-          if (res.length () != x.length ())
+          if (res.numel () != x.numel ())
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: inconsistent sizes for state and residual vectors");
 
@@ -207,6 +207,7 @@ DASPK::do_integrate (double tout)
         }
       else
         {
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: no user supplied RHS subroutine!");
 
@@ -240,8 +241,8 @@ DASPK::do_integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
-      octave_idx_type rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
+      octave_idx_type rel_tol_len = rel_tol.numel ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -253,6 +254,8 @@ DASPK::do_integrate (double tout)
         }
       else
         {
+
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: inconsistent sizes for tolerance arrays");
 
@@ -288,6 +291,7 @@ DASPK::do_integrate (double tout)
             }
           else
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid value for maximum order");
               integration_error = true;
@@ -302,13 +306,14 @@ DASPK::do_integrate (double tout)
           {
             Array<octave_idx_type> ict = inequality_constraint_types ();
 
-            if (ict.length () == n)
+            if (ict.numel () == n)
               {
                 for (octave_idx_type i = 0; i < n; i++)
                   {
                     octave_idx_type val = ict(i);
                     if (val < -2 || val > 2)
                       {
+                        // FIXME: Should this be a warning?
                         (*current_liboctave_error_handler)
                           ("daspk: invalid value for inequality constraint type");
                         integration_error = true;
@@ -319,13 +324,14 @@ DASPK::do_integrate (double tout)
               }
             else
               {
+                // FIXME: Should this be a warning?
                 (*current_liboctave_error_handler)
                   ("daspk: inequality constraint types size mismatch");
                 integration_error = true;
                 return retval;
               }
           }
-          // Fall through...
+        // Fall through...
 
         case 0:
         case 2:
@@ -333,6 +339,7 @@ DASPK::do_integrate (double tout)
           break;
 
         default:
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: invalid value for enforce inequality constraints option");
           integration_error = true;
@@ -347,7 +354,7 @@ DASPK::do_integrate (double tout)
 
               Array<octave_idx_type> av = algebraic_variables ();
 
-              if (av.length () == n)
+              if (av.numel () == n)
                 {
                   octave_idx_type lid;
                   if (eiq == 0 || eiq == 2)
@@ -362,6 +369,7 @@ DASPK::do_integrate (double tout)
                 }
               else
                 {
+                  // FIXME: Should this be a warning?
                   (*current_liboctave_error_handler)
                     ("daspk: algebraic variables size mismatch");
                   integration_error = true;
@@ -370,6 +378,7 @@ DASPK::do_integrate (double tout)
             }
           else if (ccic != 2)
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid value for compute consistent initial condition option");
               integration_error = true;
@@ -387,7 +396,7 @@ DASPK::do_integrate (double tout)
 
           Array<octave_idx_type> av = algebraic_variables ();
 
-          if (av.length () == n)
+          if (av.numel () == n)
             {
               octave_idx_type lid;
               if (eiq == 0 || eiq == 2)
@@ -406,18 +415,19 @@ DASPK::do_integrate (double tout)
         {
           Array<double> ich = initial_condition_heuristics ();
 
-          if (ich.length () == 6)
+          if (ich.numel () == 6)
             {
-              iwork(31) = NINTbig (ich(0));
-              iwork(32) = NINTbig (ich(1));
-              iwork(33) = NINTbig (ich(2));
-              iwork(34) = NINTbig (ich(3));
+              iwork(31) = octave::math::nint_big (ich(0));
+              iwork(32) = octave::math::nint_big (ich(1));
+              iwork(33) = octave::math::nint_big (ich(2));
+              iwork(34) = octave::math::nint_big (ich(3));
 
               rwork(13) = ich(4);
               rwork(14) = ich(5);
             }
           else
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("daspk: invalid initial condition heuristics option");
               integration_error = true;
@@ -437,6 +447,7 @@ DASPK::do_integrate (double tout)
           break;
 
         default:
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: invalid value for print initial condition info option");
           integration_error = true;
@@ -471,7 +482,7 @@ DASPK::do_integrate (double tout)
   switch (istate)
     {
     case 1: // A step was successfully taken in intermediate-output
-            // mode. The code has not yet reached TOUT.
+            // mode.  The code has not yet reached TOUT.
     case 2: // The integration to TSTOP was successfully completed
             // (T=TSTOP) by stepping exactly to TSTOP.
     case 3: // The integration to TOUT was successfully completed
@@ -510,7 +521,7 @@ DASPK::do_integrate (double tout)
               // achieve convergence.
     case -33: // The code has encountered trouble from which it cannot
               // recover. A message is printed explaining the trouble
-              // and control is returned to the calling program. For
+              // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
       integration_error = true;
       break;
@@ -518,8 +529,7 @@ DASPK::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %d) returned from ddaspk",
-         istate);
+        ("unrecognized value of istate (= %d) returned from ddaspk", istate);
       break;
     }
 
@@ -538,7 +548,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -583,7 +593,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -597,7 +607,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
           xdot_out.elem (0, i) = xdot.elem (i);
         }
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {
@@ -778,3 +788,4 @@ DASPK::error_message (void) const
 
   return retval;
 }
+

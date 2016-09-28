@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ListBoxControl__
-#define __QtHandles_ListBoxControl__ 1
+#if ! defined (octave_ListBoxControl_h)
+#define octave_ListBoxControl_h 1
 
 #include "BaseControl.h"
 
@@ -30,26 +30,27 @@ class QListWidget;
 namespace QtHandles
 {
 
-class ListBoxControl : public BaseControl
-{
-  Q_OBJECT
+  class ListBoxControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  ListBoxControl (const graphics_object& go, QListWidget* list);
-  ~ListBoxControl (void);
+  public:
+    ListBoxControl (const graphics_object& go, QListWidget* list);
+    ~ListBoxControl (void);
 
-  static ListBoxControl* create (const graphics_object& go);
+    static ListBoxControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void itemSelectionChanged (void);
+  private slots:
+    void itemSelectionChanged (void);
 
-private:
-  bool m_blockCallback;
-};
+  private:
+    bool m_blockCallback;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

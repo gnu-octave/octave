@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,17 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_cutils_h)
+#if ! defined (octave_lo_cutils_h)
 #define octave_lo_cutils_h 1
+
+#include "octave-config.h"
 
 #include <sys/types.h>
 
-#ifdef HAVE_LOADLIBRARY_API
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
-#ifdef __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -44,25 +41,9 @@ octave_strcasecmp (const char *s1, const char *s2);
 OCTAVE_API int
 octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
-#ifdef HAVE_LOADLIBRARY_API
-OCTAVE_API void *
-octave_w32_library_search (HINSTANCE handle, const char *name);
-#endif
-
-OCTAVE_API pid_t
-octave_waitpid (pid_t pid, int *status, int options);
-
-OCTAVE_API int octave_wifexited (int status);
-OCTAVE_API int octave_wexitstatus (int status);
-OCTAVE_API int octave_wifsignaled (int status);
-OCTAVE_API int octave_wtermsig (int status);
-OCTAVE_API int octave_wcoredump (int status);
-OCTAVE_API int octave_wifstopped (int status);
-OCTAVE_API int octave_wstopsig (int status);
-OCTAVE_API int octave_wifcontinued (int status);
-
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 
 #endif
+

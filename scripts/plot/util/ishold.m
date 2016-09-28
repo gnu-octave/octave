@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} ishold
-## @deftypefnx {Function File} {} ishold (@var{hax})
-## @deftypefnx {Function File} {} ishold (@var{hfig})
+## @deftypefn  {} {} ishold
+## @deftypefnx {} {} ishold (@var{hax})
+## @deftypefnx {} {} ishold (@var{hfig})
 ## Return true if the next plot will be added to the current plot, or
 ## false if the plot device will be cleared before drawing the next plot.
 ##
@@ -38,19 +38,23 @@ function retval = ishold (h)
     fig = gcf ();
     ax = get (fig, "currentaxes");
   else
-    if (ishandle (h))
-      if (strcmp (get (h, "type"), "figure"))
-        fig = h;
-        ax = get (fig, "currentaxes");
-      elseif (strcmp (get (h, "type"), "axes"))
-        ax = h;
-        fig = ancestor (ax, "figure");
-      else
-        error ("ishold: H must be an axes or figure graphics handle");
-      endif
-    else
+    if (! ishandle (h))
       error ("ishold: H must be an axes or figure graphics handle");
     endif
+
+    switch (get (h, "type"))
+      case "figure"
+        fig = h;
+        ax = get (fig, "currentaxes");
+
+      case "axes"
+        ax = h;
+        fig = ancestor (ax, "figure");
+
+      otherwise
+        error ("ishold: H must be an axes or figure graphics handle");
+
+    endswitch
   endif
 
   retval = (strcmp (get (fig, "nextplot"), "add")

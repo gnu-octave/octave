@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ToggleButtonControl__
-#define __QtHandles_ToggleButtonControl__ 1
+#if ! defined (octave_ToggleButtonControl_h)
+#define octave_ToggleButtonControl_h 1
 
 #include "ButtonControl.h"
 
@@ -30,15 +30,16 @@ class QPushButton;
 namespace QtHandles
 {
 
-class ToggleButtonControl : public ButtonControl
-{
-public:
-  ToggleButtonControl (const graphics_object& go, QPushButton* box);
-  ~ToggleButtonControl (void);
+  class ToggleButtonControl : public ButtonControl
+  {
+  public:
+    ToggleButtonControl (const graphics_object& go, QPushButton* box);
+    ~ToggleButtonControl (void);
 
-  static ToggleButtonControl* create (const graphics_object& go);
-};
+    static ToggleButtonControl* create (const graphics_object& go);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fill (@var{x}, @var{y}, @var{c})
-## @deftypefnx {Function File} {} fill (@var{x1}, @var{y1}, @var{c1}, @var{x2}, @var{y2}, @var{c2})
-## @deftypefnx {Function File} {} fill (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {} fill (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} fill (@dots{})
+## @deftypefn  {} {} fill (@var{x}, @var{y}, @var{c})
+## @deftypefnx {} {} fill (@var{x1}, @var{y1}, @var{c1}, @var{x2}, @var{y2}, @var{c2})
+## @deftypefnx {} {} fill (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {} {} fill (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} fill (@dots{})
 ## Create one or more filled 2-D polygons.
 ##
 ## The inputs @var{x} and @var{y} are the coordinates of the polygon vertices.
@@ -88,6 +88,9 @@ function h = fill (varargin)
   unwind_protect
     hax = newplot (hax);
     old_nxtplt = get (hax, "nextplot");
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
     unwind_protect
       set (hax, "nextplot", "add");
 
@@ -146,6 +149,7 @@ function iargs = __find_patches__ (varargin)
 endfunction
 
 function retval = iscolorspec (arg)
+
   retval = false;
   if (ischar (arg))
     persistent colors = {"y", "yellow", "r", "red", "m", "magenta", ...
@@ -159,6 +163,7 @@ function retval = iscolorspec (arg)
     ## Let patch worry about the multple different input formats.
     retval = true;
   endif
+
 endfunction
 
 
@@ -170,8 +175,8 @@ endfunction
 %! y1 = cos (t1);
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
-%! h = fill (x1,y1,'r', x2,y2,'g');
-%! title ({'fill() function'; 'cdata specified with string'});
+%! h = fill (x1,y1,"r", x2,y2,"g");
+%! title ({"fill() function"; "cdata specified with string"});
 
 %!demo
 %! clf;
@@ -182,7 +187,7 @@ endfunction
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
 %! h = fill (x1,y1,1, x2,y2,2);
-%! title ({'fill() function'; 'cdata = row vector produces FaceColor = "flat"'});
+%! title ({"fill() function"; 'cdata = row vector produces FaceColor = "flat"'});
 
 %!demo
 %! clf;
@@ -195,6 +200,6 @@ endfunction
 %!      1 0.5
 %!      1 0.5];
 %! c = [1 2 3 4]';
-%! fill (x, y, c);
-%! title ({'fill() function'; 'cdata = column vector produces FaceColor = "interp"'});
+%! fill (x, y, [c c]);
+%! title ({"fill() function"; 'cdata = column vector produces FaceColor = "interp"'});
 

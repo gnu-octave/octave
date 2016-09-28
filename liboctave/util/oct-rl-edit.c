@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 John W. Eaton
+Copyright (C) 2000-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #if defined (USE_READLINE)
@@ -89,8 +89,7 @@ octave_rl_erase_empty_line (int val)
 
    Instead, temporarily redefine the redisplay function to do nothing.
 
-   FIXME -- It would be safer to do this when protected from
-   interrupts... */
+   FIXME: It would be safer to do this when protected from interrupts... */
 
 static void
 flush_stdout (void)
@@ -171,6 +170,12 @@ const char *
 octave_rl_line_buffer (void)
 {
   return rl_line_buffer;
+}
+
+int
+octave_rl_point (void)
+{
+  return rl_point;
 }
 
 int
@@ -298,6 +303,18 @@ octave_rl_set_completer_word_break_characters (const char *s)
   rl_completer_word_break_characters = ss;
 }
 
+char *
+octave_rl_get_completer_word_break_characters (void)
+{
+  return rl_completer_word_break_characters;
+}
+
+void
+octave_rl_set_completion_word_break_hook (rl_completion_hook_fcn_ptr f)
+{
+  rl_completion_word_break_hook = f;
+}
+
 void
 octave_rl_set_basic_quote_characters (const char *s)
 {
@@ -407,7 +424,7 @@ octave_rl_prompt_end_ignore (void)
 }
 
 void
-octave_rl_add_defun (const char *name, rl_fcn_ptr f, char key)
+octave_rl_add_defun (const char *name, rl_fcn_ptr f, int key)
 {
   rl_add_defun (name, f, key);
 }
@@ -442,16 +459,17 @@ octave_rl_history_search_backward (int count, int ignore)
   return rl_history_search_backward (count, ignore);
 }
 
-char
+int
 octave_rl_ctrl (char c)
 {
   return CTRL (c);
 }
 
-char
+int
 octave_rl_meta (char c)
 {
   return META (c);
 }
 
 #endif
+

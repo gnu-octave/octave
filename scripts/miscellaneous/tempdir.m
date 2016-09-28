@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2015 John W. Eaton
+## Copyright (C) 2003-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dir} =} tempdir ()
+## @deftypefn {} {@var{dir} =} tempdir ()
 ## Return the name of the host system's directory for temporary files.
 ##
 ## The directory name is taken first from the environment variable

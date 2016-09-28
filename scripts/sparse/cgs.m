@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Radek Salac
+## Copyright (C) 2008-2016 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} cgs (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} cgs (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} cgs (@var{A}, @var{b}, @dots{})
+## @deftypefn  {} {@var{x} =} cgs (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
+## @deftypefnx {} {@var{x} =} cgs (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} cgs (@var{A}, @var{b}, @dots{})
 ## Solve @code{A x = b}, where @var{A} is a square matrix, using the
 ## Conjugate Gradients Squared method.
 ##
@@ -79,7 +79,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (A, "function_handle"))
       Ax = @(x) feval (A, x);
     else
-      error ("cgs: A must be a function or square matrix");
+      error ("cgs: A must be a square matrix or function");
     endif
 
     if (nargin < 3 || isempty (tol))
@@ -146,9 +146,9 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       ## Cache.
       q = Ax (p);
       alpha = ro / (p' * q);
-      x = x + alpha * p;
+      x += alpha * p;
 
-      res = res - alpha * q;
+      res -= alpha * q;
       relres = norm (res) / norm_b;
       resvec = [resvec; relres];
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 Copyright (C) 2010 Jaroslav Hajek
 
@@ -22,21 +22,24 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
+#include <list>
 #include <sstream>
 #include <vector>
 
 #include "file-ops.h"
 #include "oct-locbuf.h"
 
+#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
+#include "interpreter.h"
 #include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
@@ -61,7 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
 #include "ls-hdf5.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
 
@@ -82,7 +85,7 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
     symbol_table::cache_name (uf->scope (), nm);
 
   if (uf && uf->is_nested_function ())
-    ::error ("handles to nested functions are not yet supported");
+    error ("handles to nested functions are not yet supported");
 }
 
 octave_value_list
@@ -148,7 +151,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  out_of_date_check (fcn, std::string (), false);
+  out_of_date_check (fcn, "", false);
 
   if (has_overloads)
     {
@@ -258,8 +261,6 @@ bool
 octave_fcn_handle::set_fcn (const std::string &octaveroot,
                             const std::string& fpath)
 {
-  bool success = true;
-
   if (octaveroot.length () != 0
       && fpath.length () >= octaveroot.length ()
       && fpath.substr (0, octaveroot.length ()) == octaveroot
@@ -268,95 +269,77 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
       // First check if just replacing matlabroot is enough
       std::string str = OCTAVE_EXEC_PREFIX +
                         fpath.substr (octaveroot.length ());
-      file_stat fs (str);
+      octave::sys::file_stat fs (str);
 
       if (fs.exists ())
         {
-          size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = str.substr (0, xpos);
 
           octave_function *xfcn
             = load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (xfcn)
-            {
-              octave_value tmp (xfcn);
+          if (! xfcn)
+            error ("function handle points to non-existent function");
 
-              fcn = octave_value (new octave_fcn_handle (tmp, nm));
-            }
-          else
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+          octave_value tmp (xfcn);
+
+          fcn = octave_value (new octave_fcn_handle (tmp, nm));
         }
       else
         {
           // Next just search for it anywhere in the system path
-          string_vector names(3);
-          names(0) = nm + ".oct";
-          names(1) = nm + ".mex";
-          names(2) = nm + ".m";
+          std::list<std::string> names;
+          names.push_back (nm + ".oct");
+          names.push_back (nm + ".mex");
+          names.push_back (nm + ".m");
 
-          dir_path p (load_path::system_path ());
+          octave::directory_path p (load_path::system_path ());
 
-          str = octave_env::make_absolute (p.find_first_of (names));
+          str = octave::sys::env::make_absolute (p.find_first_of (names));
 
-          size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = str.substr (0, xpos);
 
           octave_function *xfcn = load_fcn_from_file (str, dir_name, "", "", nm);
 
-          if (xfcn)
-            {
-              octave_value tmp (xfcn);
+          if (! xfcn)
+            error ("function handle points to non-existent function");
 
-              fcn = octave_value (new octave_fcn_handle (tmp, nm));
-            }
-          else
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+          octave_value tmp (xfcn);
+
+          fcn = octave_value (new octave_fcn_handle (tmp, nm));
         }
     }
   else
     {
       if (fpath.length () > 0)
         {
-          size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = fpath.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
           std::string dir_name = fpath.substr (0, xpos);
 
           octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", "", nm);
 
-          if (xfcn)
-            {
-              octave_value tmp (xfcn);
+          if (! xfcn)
+            error ("function handle points to non-existent function");
 
-              fcn = octave_value (new octave_fcn_handle (tmp, nm));
-            }
-          else
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+          octave_value tmp (xfcn);
+
+          fcn = octave_value (new octave_fcn_handle (tmp, nm));
         }
       else
         {
           fcn = symbol_table::find_function (nm);
 
           if (! fcn.is_function ())
-            {
-              error ("function handle points to non-existent function");
-              success = false;
-            }
+            error ("function handle points to non-existent function");
         }
     }
 
-  return success;
+  return true;
 }
 
 bool
@@ -386,7 +369,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
           for (std::list<symbol_table::symbol_record>::const_iterator
                p = vars.begin (); p != vars.end (); p++)
             {
-              if (! save_ascii_data (os, p->varval (0), p->name (), false, 0))
+              if (! save_text_data (os, p->varval (0), p->name (), false, 0))
                 return ! os.fail ();
             }
         }
@@ -394,7 +377,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
   else
     {
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : std::string ();
+      std::string fnm = f ? f->fcn_file_name () : "";
 
       os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
       if (! fnm.empty ())
@@ -412,14 +395,14 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
   std::streampos pos = is.tellg ();
   std::string octaveroot = extract_keyword (is, "octaveroot", true);
-  if (octaveroot.length () == 0)
+  if (octaveroot.empty ())
     {
       is.seekg (pos);
       is.clear ();
     }
   pos = is.tellg ();
   std::string fpath = extract_keyword (is, "path", true);
-  if (fpath.length () == 0)
+  if (fpath.empty ())
     {
       is.seekg (pos);
       is.clear ();
@@ -444,7 +427,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       pos = is.tellg ();
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -469,13 +452,10 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   bool dummy;
 
                   std::string name
-                    = read_ascii_data (is, std::string (), dummy, t2, i);
+                    = read_text_data (is, "", dummy, t2, i);
 
-                  if (!is)
-                    {
-                      error ("load: failed to load anonymous function handle");
-                      break;
-                    }
+                  if (! is)
+                    error ("load: failed to load anonymous function handle");
 
                   symbol_table::assign (name, t2, local_scope, 0);
                 }
@@ -572,7 +552,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       std::ostringstream nmbuf;
 
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : std::string ();
+      std::string fnm = f ? f->fcn_file_name () : "";
 
       nmbuf << nm << "\n" << OCTAVE_EXEC_PREFIX << "\n" << fnm;
 
@@ -587,7 +567,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_fcn_handle::load_binary (std::istream& is, bool swap,
-                                oct_mach_info::float_format fmt)
+                                octave::mach_info::float_format fmt)
 {
   bool success = true;
 
@@ -631,7 +611,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       is.read (ctmp2, tmp);
       ctmp2[tmp] = 0;
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -653,14 +633,11 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               std::string doc;
 
               std::string name =
-                read_binary_data (is, swap, fmt, std::string (),
+                read_binary_data (is, swap, fmt, "",
                                   dummy, t2, doc);
 
-              if (!is)
-                {
-                  error ("load: failed to load anonymous function handle");
-                  break;
-                }
+              if (! is)
+                error ("load: failed to load anonymous function handle");
 
               symbol_table::assign (name, t2, local_scope);
             }
@@ -721,8 +698,9 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   bool retval = true;
 
   hid_t group_hid = -1;
-#if HAVE_HDF5_18
-  group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                         octave_H5P_DEFAULT);
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -751,14 +729,17 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+                        octave_H5P_DEFAULT);
 #endif
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-                                H5P_DEFAULT, nm.c_str ()) < 0)
+  if (data_hid < 0
+      || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, nm.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -782,15 +763,17 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
           return false;
         }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
       data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
-                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                            octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                            octave_H5P_DEFAULT);
 #else
       data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
-                            H5P_DEFAULT);
+                            octave_H5P_DEFAULT);
 #endif
-      if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-                                    H5P_DEFAULT, stmp.c_str ()) < 0)
+      if (data_hid < 0
+          || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                       octave_H5P_DEFAULT, stmp.c_str ()) < 0)
         {
           H5Sclose (space_hid);
           H5Tclose (type_hid);
@@ -813,14 +796,14 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
           if (as_id >= 0)
             {
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
               hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
                                       H5T_NATIVE_IDX, as_id,
-                                      H5P_DEFAULT, H5P_DEFAULT);
+                                      octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 
 #else
               hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
-                                      H5T_NATIVE_IDX, as_id, H5P_DEFAULT);
+                                      H5T_NATIVE_IDX, as_id, octave_H5P_DEFAULT);
 #endif
 
               if (a_id >= 0)
@@ -836,9 +819,9 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
             }
           else
             retval = false;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
           data_hid = H5Gcreate (group_hid, "symbol table",
-                                H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                                octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
           data_hid = H5Gcreate (group_hid, "symbol table", 0);
 #endif
@@ -865,7 +848,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       std::string octaveroot = OCTAVE_EXEC_PREFIX;
 
       octave_function *f = function_value ();
-      std::string fpath = f ? f->fcn_file_name () : std::string ();
+      std::string fpath = f ? f->fcn_file_name () : "";
 
       H5Sclose (space_hid);
       hdims[0] = 1;
@@ -881,12 +864,12 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Tclose (type_hid);
       type_hid = H5Tcopy (H5T_C_S1);
       H5Tset_size (type_hid, octaveroot.length () + 1);
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
       hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
-                              type_hid, space_hid, H5P_DEFAULT, H5P_DEFAULT);
+                              type_hid, space_hid, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
       hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
-                              type_hid, space_hid, H5P_DEFAULT);
+                              type_hid, space_hid, octave_H5P_DEFAULT);
 #endif
 
       if (a_id >= 0)
@@ -918,11 +901,11 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       type_hid = H5Tcopy (H5T_C_S1);
       H5Tset_size (type_hid, fpath.length () + 1);
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
       a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-      a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, H5P_DEFAULT);
+      a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, octave_H5P_DEFAULT);
 #endif
 
       if (a_id >= 0)
@@ -942,7 +925,12 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   return retval;
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+  octave_unused_parameter (save_as_floats);
+
+  warn_save ("hdf5");
+
   return false;
 #endif
 }
@@ -958,16 +946,16 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   hsize_t rank;
   int slen;
 
-#if HAVE_HDF5_18
-  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
   if (group_hid < 0)
     return false;
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nm", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nm");
 #endif
@@ -1017,7 +1005,9 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, nm_tmp) < 0)
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, nm_tmp)
+      < 0)
     {
       H5Tclose (st_id);
       H5Sclose (space_hid);
@@ -1032,8 +1022,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   if (nm == anonymous)
     {
-#if HAVE_HDF5_18
-      data_hid = H5Dopen (group_hid, "fcn", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+      data_hid = H5Dopen (group_hid, "fcn", octave_H5P_DEFAULT);
 #else
       data_hid = H5Dopen (group_hid, "fcn");
 #endif
@@ -1088,7 +1078,9 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       st_id = H5Tcopy (H5T_C_S1);
       H5Tset_size (st_id, slen);
 
-      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, fcn_tmp) < 0)
+      if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, fcn_tmp)
+          < 0)
         {
           H5Tclose (st_id);
           H5Sclose (space_hid);
@@ -1111,9 +1103,9 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       // turn off error reporting temporarily, but save the error
       // reporting function:
-#if HAVE_HDF5_18
-      H5Eget_auto (H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (H5E_DEFAULT, 0, 0);
+#if defined (HAVE_HDF5_18)
+      H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
+      H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
 #else
       H5Eget_auto (&err_func, &err_func_data);
       H5Eset_auto (0, 0);
@@ -1130,13 +1122,13 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
         }
 
       // restore error reporting:
-#if HAVE_HDF5_18
-      H5Eset_auto (H5E_DEFAULT, err_func, err_func_data);
+#if defined (HAVE_HDF5_18)
+      H5Eset_auto (octave_H5E_DEFAULT, err_func, err_func_data);
 #else
       H5Eset_auto (err_func, err_func_data);
 #endif
 
-      unwind_protect_safe frame;
+      octave::unwind_protect_safe frame;
 
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
@@ -1152,8 +1144,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (len > 0 && success)
         {
           hsize_t num_obj = 0;
-#if HAVE_HDF5_18
-          data_hid = H5Gopen (group_hid, "symbol table", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+          data_hid = H5Gopen (group_hid, "symbol table", octave_H5P_DEFAULT);
 #else
           data_hid = H5Gopen (group_hid, "symbol table");
 #endif
@@ -1161,27 +1153,17 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
           H5Gclose (data_hid);
 
           if (num_obj != static_cast<hsize_t>(len))
-            {
-              error ("load: failed to load anonymous function handle");
-              success = false;
-            }
+            error ("load: failed to load anonymous function handle");
 
-          if (! error_state)
+          hdf5_callback_data dsub;
+          int current_item = 0;
+          for (octave_idx_type i = 0; i < len; i++)
             {
-              hdf5_callback_data dsub;
-              int current_item = 0;
-              for (octave_idx_type i = 0; i < len; i++)
-                {
-                  if (H5Giterate (group_hid, "symbol table", &current_item,
-                                  hdf5_read_next_data, &dsub) <= 0)
-                    {
-                      error ("load: failed to load anonymous function handle");
-                      success = false;
-                      break;
-                    }
+              if (hdf5_h5g_iterate (group_hid, "symbol table", &current_item,
+                                    &dsub) <= 0)
+                error ("load: failed to load anonymous function handle");
 
-                  symbol_table::assign (dsub.name, dsub.tc, local_scope);
-                }
+              symbol_table::assign (dsub.name, dsub.tc, local_scope);
             }
         }
 
@@ -1227,9 +1209,9 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       // turn off error reporting temporarily, but save the error
       // reporting function:
-#if HAVE_HDF5_18
-      H5Eget_auto (H5E_DEFAULT, &err_func, &err_func_data);
-      H5Eset_auto (H5E_DEFAULT, 0, 0);
+#if defined (HAVE_HDF5_18)
+      H5Eget_auto (octave_H5E_DEFAULT, &err_func, &err_func_data);
+      H5Eset_auto (octave_H5E_DEFAULT, 0, 0);
 #else
       H5Eget_auto (&err_func, &err_func_data);
       H5Eset_auto (0, 0);
@@ -1293,8 +1275,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
         }
 
       // restore error reporting:
-#if HAVE_HDF5_18
-      H5Eset_auto (H5E_DEFAULT, err_func, err_func_data);
+#if defined (HAVE_HDF5_18)
+      H5Eset_auto (octave_H5E_DEFAULT, err_func, err_func_data);
 #else
       H5Eset_auto (err_func, err_func_data);
 #endif
@@ -1309,13 +1291,17 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return success;
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
   return false;
 #endif
 }
 
 /*
-%!test
+%!test <33857>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
@@ -1328,15 +1314,15 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %! hdld2 = hdld;
 %! hbi2 = hbi;
 %! modes = {"-text", "-binary"};
-%! if (isfield (octave_config_info, "HAVE_HDF5")
-%!     && octave_config_info ("HAVE_HDF5"))
+%! if (isfield (__octave_config_info__, "HAVE_HDF5")
+%!     && __octave_config_info__ ("HAVE_HDF5"))
 %!   modes(end+1) = "-hdf5";
 %! endif
 %! for i = 1:numel (modes)
 %!   mode = modes{i};
 %!   nm = tempname ();
 %!   unwind_protect
-%!     f2 (1); # bug #33857
+%!     f2 (1);
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!     clear f2 g2 hm2 hdld2 hbi2
 %!     load (nm);
@@ -1361,14 +1347,13 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!endfunction
 %!function [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n, nm)
 %!  if (n == 0)
-%!    load (nm)
+%!    load (nm);
 %!  else
 %!    [f2, g2, hm2, hdld2, hbi2] = fcn_handle_load_recurse (n - 1, nm);
 %!  endif
 %!endfunction
 
-Test for bug #35876
-%!test
+%!test <35876>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
@@ -1381,8 +1366,8 @@ Test for bug #35876
 %! hdld2 = hdld;
 %! hbi2 = hbi;
 %! modes = {"-text", "-binary"};
-%! if (isfield (octave_config_info, "HAVE_HDF5")
-%!     && octave_config_info ("HAVE_HDF5"))
+%! if (isfield (__octave_config_info__, "HAVE_HDF5")
+%!     && __octave_config_info__ ("HAVE_HDF5"))
 %!   modes(end+1) = "-hdf5";
 %! endif
 %! for i = 1:numel (modes)
@@ -1599,7 +1584,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
     }
   else
     {
-      // Globally visible (or no match yet). Query overloads.
+      // Globally visible (or no match yet).  Query overloads.
       std::list<std::string> classes = load_path::overloads (tnm);
       bool any_match = fptr != 0 || classes.size () > 0;
       if (! any_match)
@@ -1610,34 +1595,32 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
           any_match = classes.size () > 0;
         }
 
-      if (any_match)
-        {
-          octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
-          retval = fh;
-
-          for (std::list<std::string>::iterator iter = classes.begin ();
-               iter != classes.end (); iter++)
-            {
-              std::string class_name = *iter;
-              octave_value fmeth = symbol_table::find_method (tnm, class_name);
-
-              bool is_builtin = false;
-              for (int i = 0; i < btyp_num_types; i++)
-                {
-                  // FIXME: Too slow? Maybe binary lookup?
-                  if (class_name == btyp_class_name[i])
-                    {
-                      is_builtin = true;
-                      fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
-                    }
-                }
-
-              if (! is_builtin)
-                fh->set_overload (class_name, fmeth);
-            }
-        }
-      else
+      if (! any_match)
         error ("@%s: no function and no method found", tnm.c_str ());
+
+      octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
+      retval = fh;
+
+      for (std::list<std::string>::iterator iter = classes.begin ();
+           iter != classes.end (); iter++)
+        {
+          std::string class_name = *iter;
+          octave_value fmeth = symbol_table::find_method (tnm, class_name);
+
+          bool is_builtin = false;
+          for (int i = 0; i < btyp_num_types; i++)
+            {
+              // FIXME: Too slow? Maybe binary lookup?
+              if (class_name == btyp_class_name[i])
+                {
+                  is_builtin = true;
+                  fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
+                }
+            }
+
+          if (! is_builtin)
+            fh->set_overload (class_name, fmeth);
+        }
     }
 
   return retval;
@@ -1678,214 +1661,214 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 */
 
 DEFUN (functions, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{s} =} functions (@var{fcn_handle})\n\
-Return a structure containing information about the function handle\n\
-@var{fcn_handle}.\n\
-\n\
-The structure @var{s} always contains these three fields:\n\
-\n\
-@table @asis\n\
-@item function\n\
-The function name.  For an anonymous function (no name) this will be the\n\
-actual function definition.\n\
-\n\
-@item type\n\
-Type of the function.\n\
-\n\
-@table @asis\n\
-@item anonymous\n\
-The function is anonymous.\n\
-\n\
-@item private\n\
-The function is private.\n\
-\n\
-@item overloaded\n\
-The function overloads an existing function.\n\
-\n\
-@item simple\n\
-The function is a built-in or m-file function.\n\
-\n\
-@item subfunction\n\
-The function is a subfunction within an m-file.\n\
-@end table\n\
-\n\
-@item file\n\
-The m-file that will be called to perform the function.  This field is empty\n\
-for anonymous and built-in functions.\n\
-@end table\n\
-\n\
-In addition, some function types may return more information in additional\n\
-fields.\n\
-\n\
-@strong{Warning:} @code{functions} is provided for debugging purposes only.\n\
-It's behavior may change in the future and programs should not depend on a\n\
-particular output.\n\
-\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{s} =} functions (@var{fcn_handle})
+Return a structure containing information about the function handle
+@var{fcn_handle}.
+
+The structure @var{s} always contains these three fields:
+
+@table @asis
+@item function
+The function name.  For an anonymous function (no name) this will be the
+actual function definition.
+
+@item type
+Type of the function.
+
+@table @asis
+@item anonymous
+The function is anonymous.
+
+@item private
+The function is private.
+
+@item overloaded
+The function overloads an existing function.
+
+@item simple
+The function is a built-in or m-file function.
+
+@item subfunction
+The function is a subfunction within an m-file.
+@end table
+
+@item file
+The m-file that will be called to perform the function.  This field is empty
+for anonymous and built-in functions.
+@end table
+
+In addition, some function types may return more information in additional
+fields.
+
+@strong{Warning:} @code{functions} is provided for debugging purposes only.
+Its behavior may change in the future and programs should not depend on a
+particular output.
+
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      octave_fcn_handle *fh = args(0).fcn_handle_value ();
-
-      if (! error_state)
-        {
-          octave_function *fcn = fh ? fh->function_value () : 0;
-
-          if (fcn)
-            {
-              octave_scalar_map m;
-
-              std::string fh_nm = fh->fcn_name ();
-
-              if (fh_nm == octave_fcn_handle::anonymous)
-                {
-                  std::ostringstream buf;
-                  fh->print_raw (buf);
-                  m.setfield ("function", buf.str ());
-
-                  m.setfield ("type", "anonymous");
-                }
-              else
-                {
-                  m.setfield ("function", fh_nm);
-
-                  if (fcn->is_subfunction ())
-                    {
-                      m.setfield ("type", "subfunction");
-                      Cell parentage (dim_vector (1, 2));
-                      parentage.elem (0) = fh_nm;
-                      parentage.elem (1) = fcn->parent_fcn_name ();
-                      m.setfield ("parentage", octave_value (parentage));
-                    }
-                  else if (fcn->is_private_function ())
-                    m.setfield ("type", "private");
-                  else if (fh->is_overloaded ())
-                    m.setfield ("type", "overloaded");
-                  else
-                    m.setfield ("type", "simple");
-                }
-
-              std::string nm = fcn->fcn_file_name ();
-
-              if (fh_nm == octave_fcn_handle::anonymous)
-                {
-                  m.setfield ("file", nm);
-
-                  octave_user_function *fu = fh->user_function_value ();
-
-                  std::list<symbol_table::symbol_record> vars
-                    = symbol_table::all_variables (fu->scope (), 0);
-
-                  size_t varlen = vars.size ();
-
-                  if (varlen > 0)
-                    {
-                      octave_scalar_map ws;
-                      for (std::list<symbol_table::symbol_record>::const_iterator
-                           p = vars.begin (); p != vars.end (); p++)
-                        {
-                          ws.assign (p->name (), p->varval (0));
-                        }
-
-                      m.setfield ("workspace", ws);
-                    }
-                }
-              else if (fcn->is_user_function () || fcn->is_user_script ())
-                {
-                  octave_function *fu = fh->function_value ();
-                  m.setfield ("file", fu->fcn_file_name ());
-                }
-              else
-                m.setfield ("file", "");
-
-              retval = m;
-            }
-          else
-            error ("functions: FCN_HANDLE is not a valid function handle object");
-        }
-      else
-        error ("functions: FCN_HANDLE argument must be a function handle object");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
+
+  octave_function *fcn = fh ? fh->function_value () : 0;
+
+  if (! fcn)
+    error ("functions: FCN_HANDLE is not a valid function handle object");
+
+  octave_scalar_map m;
+
+  std::string fh_nm = fh->fcn_name ();
+
+  if (fh_nm == octave_fcn_handle::anonymous)
+    {
+      std::ostringstream buf;
+      fh->print_raw (buf);
+      m.setfield ("function", buf.str ());
+
+      m.setfield ("type", "anonymous");
+    }
+  else
+    {
+      m.setfield ("function", fh_nm);
+
+      if (fcn->is_subfunction ())
+        {
+          m.setfield ("type", "subfunction");
+          Cell parentage (dim_vector (1, 2));
+          parentage.elem (0) = fh_nm;
+          parentage.elem (1) = fcn->parent_fcn_name ();
+          m.setfield ("parentage", octave_value (parentage));
+        }
+      else if (fcn->is_private_function ())
+        m.setfield ("type", "private");
+      else if (fh->is_overloaded ())
+        m.setfield ("type", "overloaded");
+      else
+        m.setfield ("type", "simple");
+    }
+
+  std::string nm = fcn->fcn_file_name ();
+
+  if (fh_nm == octave_fcn_handle::anonymous)
+    {
+      m.setfield ("file", nm);
+
+      octave_user_function *fu = fh->user_function_value ();
+
+      std::list<symbol_table::symbol_record> vars
+        = symbol_table::all_variables (fu->scope (), 0);
+
+      size_t varlen = vars.size ();
+
+      if (varlen > 0)
+        {
+          octave_scalar_map ws;
+          for (std::list<symbol_table::symbol_record>::const_iterator
+               p = vars.begin (); p != vars.end (); p++)
+            {
+              ws.assign (p->name (), p->varval (0));
+            }
+
+          m.setfield ("workspace", ws);
+        }
+    }
+  else if (fcn->is_user_function () || fcn->is_user_script ())
+    {
+      octave_function *fu = fh->function_value ();
+      m.setfield ("file", fu->fcn_file_name ());
+    }
+  else
+    m.setfield ("file", "");
+
+  return ovl (m);
 }
 
 DEFUN (func2str, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} func2str (@var{fcn_handle})\n\
-Return a string containing the name of the function referenced by the\n\
-function handle @var{fcn_handle}.\n\
-@seealso{str2func, functions}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} func2str (@var{fcn_handle})
+Return a string containing the name of the function referenced by the
+function handle @var{fcn_handle}.
+@seealso{str2func, functions}
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_fcn_handle *fh = args(0).fcn_handle_value ("func2str: FCN_HANDLE argument must be a function handle object");
+
+  if (! fh)
+    error ("func2str: FCN_HANDLE must be a valid function handle");
+
   octave_value retval;
 
-  if (args.length () == 1)
+  std::string fh_nm = fh->fcn_name ();
+
+  if (fh_nm == octave_fcn_handle::anonymous)
     {
-      octave_fcn_handle *fh = args(0).fcn_handle_value ();
+      std::ostringstream buf;
 
-      if (! error_state && fh)
-        {
-          std::string fh_nm = fh->fcn_name ();
+      fh->print_raw (buf);
 
-          if (fh_nm == octave_fcn_handle::anonymous)
-            {
-              std::ostringstream buf;
-
-              fh->print_raw (buf);
-
-              retval = buf.str ();
-            }
-          else
-            retval = fh_nm;
-        }
-      else
-        error ("func2str: FCN_HANDLE must be a valid function handle");
+      retval = buf.str ();
     }
   else
-    print_usage ();
+    retval = fh_nm;
 
   return retval;
 }
 
 DEFUN (str2func, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} str2func (@var{fcn_name})\n\
-@deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
-Return a function handle constructed from the string @var{fcn_name}.\n\
-\n\
-If the optional @qcode{\"global\"} argument is passed, locally visible\n\
-functions are ignored in the lookup.\n\
-\n\
-Note: @code{str2func} does not currently accept strings which define\n\
-anonymous functions (those which begin with @samp{@@}).\n\
-Use @w{@code{eval (@var{str})}} as a replacement.\n\
-@seealso{func2str, inline}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} str2func (@var{fcn_name})
+@deftypefnx {} {} str2func (@var{fcn_name}, "global")
+Return a function handle constructed from the string @var{fcn_name}.
+
+If the optional @qcode{"global"} argument is passed, locally visible
+functions are ignored in the lookup.
+@seealso{func2str, inline}
+@end deftypefn */)
 {
-  octave_value retval;
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string nm = args(0).xstring_value ("str2func: FCN_NAME must be a string");
+
+  octave_value retval;
+
+  if (nm[0] == '@')
     {
-      if (args(0).is_string ())
-        {
-          std::string nm = args(0).string_value ();
-          retval = make_fcn_handle (nm, nargin != 2);
-        }
-      else
-        error ("str2func: FCN_NAME must be a string");
+      int parse_status;
+      octave_value anon_fcn_handle =
+        eval_string (nm, true, parse_status);
+
+      if (parse_status == 0)
+        retval = anon_fcn_handle;
     }
   else
-    print_usage ();
+    retval = make_fcn_handle (nm, nargin != 2);
 
   return retval;
 }
+
+/*
+%!test
+%! f = str2func ("<");
+%! assert (class (f), "function_handle");
+%! assert (func2str (f), "lt");
+%! assert (f (1, 2), true);
+%! assert (f (2, 1), false);
+
+%!test
+%! f = str2func ("@(x) sin (x)");
+%! assert (func2str (f), "@(x) sin (x)");
+%! assert (f (0:3), sin (0:3));
+
+%!error <FCN_NAME must be a string> str2func ({"sin"})
+*/
 
 /*
 %!function y = __testrecursionfunc (f, x, n)
@@ -1904,22 +1887,16 @@ Use @w{@code{eval (@var{str})}} as a replacement.\n\
 */
 
 DEFUN (is_function_handle, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_function_handle (@var{x})\n\
-Return true if @var{x} is a function handle.\n\
-@seealso{isa, typeinfo, class, functions}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} is_function_handle (@var{x})
+Return true if @var{x} is a function handle.
+@seealso{isa, typeinfo, class, functions}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    retval = args(0).is_function_handle ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return ovl (args(0).is_function_handle ());
 }
 
 /*
@@ -1941,8 +1918,7 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
                                       int exp_nargin)
   : octave_fcn_handle (f), root_handle (root), arg_template (templ),
     arg_mask (mask), expected_nargin (exp_nargin)
-{
-}
+{ }
 
 octave_fcn_handle *
 octave_fcn_binder::maybe_binder (const octave_value& f)
@@ -2058,19 +2034,34 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                     {
                       // It's a name.
                       std::string head_name = head_id->name ();
-                      // Function handles can't handle legacy dispatch, so
-                      // we make sure it's not defined.
-                      if (symbol_table::get_dispatch (head_name).size () > 0)
+
+                      if (head_name == "eval" || head_name == "feval")
                         bad = true;
                       else
                         {
-                          // Simulate try/catch.
-                          unwind_protect frame;
-                          interpreter_try (frame);
+                          // Function handles can't handle legacy
+                          // dispatch, so we make sure it's not
+                          // defined.
 
-                          root_val = make_fcn_handle (head_name);
-                          if (error_state)
+                          if (symbol_table::get_dispatch (head_name).size () > 0)
                             bad = true;
+                          else
+                            {
+                              // Simulate try/catch.
+                              octave::unwind_protect frame;
+                              interpreter_try (frame);
+
+                              try
+                                {
+                                  root_val = make_fcn_handle (head_name);
+                                }
+                              catch (const octave::execution_exception&)
+                                {
+                                  recover_from_exception ();
+
+                                  bad = true;
+                                }
+                            }
                         }
                     }
                 }
@@ -2094,6 +2085,12 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
   return retval;
 }
+
+/*
+%!test
+%! f = @(t) eval ('2*t');
+%! assert (f (21), 42);
+*/
 
 octave_value_list
 octave_fcn_binder::do_multi_index_op (int nargout,
@@ -2137,3 +2134,4 @@ octave_fcn_binder::do_multi_index_op (int nargout,
 %! x = [1,2;3,4];
 %! assert (__f (@(i) x(:,i), 1), [1;3]);
 */
+

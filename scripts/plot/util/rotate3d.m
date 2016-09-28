@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Andreas Weber
+## Copyright (C) 2014-2016 Andreas Weber
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} rotate3d
-## @deftypefnx {Command} {} rotate3d on
-## @deftypefnx {Command} {} rotate3d off
-## @deftypefnx {Function File} {} rotate3d (@var{hfig}, @var{option})
+## @deftypefn  {} {} rotate3d
+## @deftypefnx {} {} rotate3d on
+## @deftypefnx {} {} rotate3d off
+## @deftypefnx {} {} rotate3d (@var{hfig}, @var{option})
 ## Control the interactive 3-D rotation mode of a figure in the GUI.
 ##
 ## Given the option @qcode{"on"} or @qcode{"off"}, set the interactive
@@ -45,16 +45,16 @@ function rotate3d (varargin)
   endif
 
   if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
-    error ("rotate_object_handle = rotate3d (hfig): not implemented");
+    error ("rotate3d: syntax 'handle = rotate3d (hfig)' not implemented");
   endif
 
   if (nargs == 2)
     hfig = varargin{1};
     if (isfigure (hfig))
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
-      error ("rotate3d: expecting figure handle as first argument");
+      error ("rotate3d: invalid figure handle HFIG");
     endif
   endif
 
@@ -95,6 +95,7 @@ function rotate3d (varargin)
 endfunction
 
 function update_mouse_mode (hfig, arg)
+
   if (strcmp (arg, "off"))
     set (hfig, "__mouse_mode__", "none");
   else
@@ -105,4 +106,6 @@ function update_mouse_mode (hfig, arg)
     zoom ("off");
     set (hfig, "__mouse_mode__", "rotate");
   endif
+
 endfunction
+

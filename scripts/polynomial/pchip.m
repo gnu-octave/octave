@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2015 Kai Habel
+## Copyright (C) 2001-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} pchip (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
+## @deftypefn  {} {@var{pp} =} pchip (@var{x}, @var{y})
+## @deftypefnx {} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
 ## Return the Piecewise Cubic Hermite Interpolating Polynomial (pchip) of
 ## points @var{x} and @var{y}.
 ##
@@ -51,7 +51,8 @@
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
 ## and each row of this matrix is then treated separately.  Note that this is
-## exactly opposite to @code{interp1} but is done for @sc{matlab} compatibility.
+## exactly opposite to @code{interp1} but is done for @sc{matlab}
+## compatibility.
 ##
 ## @seealso{spline, ppval, mkpp, unmkpp}
 ## @end deftypefn
@@ -116,7 +117,7 @@ function ret = pchip (x, y, xi)
   del2 = (d2 - delta) / h;
   c3 = del1 + del2;
   c2 = -c3 - del1;
-  c3 = c3 / h;
+  c3 /= h;
   coeffs = cat (3, c3, c2, d1, f1);
 
   ret = mkpp (x, coeffs, szy(1:end-1));
@@ -171,6 +172,6 @@ endfunction
 %!assert (size (yi2), [3,2,5,4])
 %!assert (squeeze (yi2(1,2,3,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
 
-%!error (pchip (1,2));
-%!error (pchip (1,2,3));
+%!error (pchip (1,2))
+%!error (pchip (1,2,3))
 

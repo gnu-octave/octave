@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,22 +21,28 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+// FIXME: All gripe_XXX functions deprecated in 4.2.  Remove file in 4.6
+
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include <sstream>
 
 #include "lo-array-gripes.h"
 #include "lo-error.h"
 
-const char *error_id_nonconformant_args = "Octave:nonconformant-args";
+// Text constants used to shorten code below.
+static const char *error_id_nonconformant_args = "Octave:nonconformant-args";
 
-const char *error_id_index_out_of_bounds = "Octave:index-out-of-bounds";
+static const char *error_id_index_out_of_bounds = "Octave:index-out-of-bounds";
 
-const char *error_id_invalid_index = "Octave:invalid-index";
+static const char *error_id_invalid_index = "Octave:invalid-index";
 
-const char *warning_id_nearly_singular_matrix = "Octave:nearly-singular-matrix";
+static const char *warning_id_nearly_singular_matrix =
+  "Octave:nearly-singular-matrix";
 
-const char *warning_id_singular_matrix = "Octave:singular-matrix";
+static const char *warning_id_singular_matrix = "Octave:singular-matrix";
 
 void
 gripe_nan_to_logical_conversion (void)
@@ -90,63 +96,179 @@ gripe_nonconformant (const char *op, const dim_vector& op1_dims,
 }
 
 void
-gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
-                          octave_idx_type ext)
-{
-  const char *err_id = error_id_index_out_of_bounds;
-
-  switch (nd)
-    {
-    case 1:
-      (*current_liboctave_error_with_id_handler)
-        (err_id, "A(I): index out of bounds; value %d out of bound %d",
-         idx, ext);
-      break;
-
-    case 2:
-      (*current_liboctave_error_with_id_handler)
-        (err_id, "A(I,J): %s index out of bounds; value %d out of bound %d",
-         (dim == 1) ? "row" : "column", idx, ext);
-      break;
-
-    default:
-      (*current_liboctave_error_with_id_handler)
-        (err_id, "A(I,J,...): index to dimension %d out of bounds; value %d out of bound %d",
-         dim, idx, ext);
-      break;
-    }
-}
-
-void
 gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
                               octave_idx_type ext)
 {
   const char *err_id = error_id_index_out_of_bounds;
 
   (*current_liboctave_error_with_id_handler)
-    (err_id, "A(%s) = []: index out of bounds; value %d out of bound %d",
+    (err_id, "A(%s) = []: index out of bounds: value %d out of bound %d",
      is1d ? "I" : "..,I,..", idx, ext);
 }
 
-void
-gripe_invalid_index (void)
+namespace octave
 {
-  const char *err_id = error_id_invalid_index;
+  class invalid_index : public index_exception
+  {
+  public:
 
-  (*current_liboctave_error_with_id_handler)
-#ifdef USE_64_BIT_IDX_T
-    (err_id, "subscript indices must be either positive integers less than 2^63 or logicals");
+    invalid_index (const std::string& value, octave_idx_type ndim,
+                   octave_idx_type dimen)
+      : index_exception (value, ndim, dimen)
+    { }
+
+    std::string details (void) const
+    {
+#if defined (OCTAVE_ENABLE_64)
+      return "subscripts must be either integers 1 to (2^63)-1 or logicals";
 #else
-    (err_id, "subscript indices must be either positive integers less than 2^31 or logicals");
+      return "subscripts must be either integers 1 to (2^31)-1 or logicals";
+#endif
+    }
+
+    // ID of error to throw
+    const char *err_id (void) const
+    {
+      return error_id_invalid_index;
+    }
+  };
+}
+
+// Complain if an index is negative, fractional, or too big.
+
+void
+gripe_invalid_index (const std::string& idx, octave_idx_type nd,
+                     octave_idx_type dim, const std::string&)
+{
+  octave::invalid_index e (idx, nd, dim);
+
+  throw e;
+}
+
+void
+gripe_invalid_index (octave_idx_type n, octave_idx_type nd,
+                     octave_idx_type dim, const std::string& var)
+{
+  std::ostringstream buf;
+  buf << n + 1;
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+  gripe_invalid_index (buf.str (), nd, dim, var);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic pop
 #endif
 }
 
-// FIXME: the following is a common error message to resize,
-// regardless of whether it's called from assign or elsewhere.  It
-// seems OK to me, but eventually the gripe can be specialized.
-// Anyway, propagating various error messages into procedure is, IMHO,
-// a nonsense.  If anything, we should change error handling here (and
-// throughout liboctave) to allow custom handling of errors
+void
+gripe_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
+                     const std::string& var)
+{
+  std::ostringstream buf;
+  buf << n + 1;
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+  gripe_invalid_index (buf.str (), nd, dim, var);
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic pop
+#endif
+}
+
+namespace octave
+{
+  // Gripe and exception for read access beyond the bounds of an array.
+
+  class out_of_range : public index_exception
+  {
+  public:
+
+    out_of_range (const std::string& value, octave_idx_type nd_in,
+                  octave_idx_type dim_in)
+      : index_exception (value, nd_in, dim_in), extent (0)
+    { }
+
+    std::string details (void) const
+    {
+      std::string expl;
+
+      if (nd >= size.ndims ())   // if not an index slice
+        {
+          if (var != "")
+            expl = "but " + var + " has size ";
+          else
+            expl = "but object has size ";
+
+          expl = expl + size.str ('x');
+        }
+      else
+        {
+          std::ostringstream buf;
+          buf << extent;
+          expl = "out of bound " + buf.str ();
+        }
+
+      return expl;
+    }
+
+    // ID of error to throw.
+    const char *err_id (void) const
+    {
+      return error_id_index_out_of_bounds;
+    }
+
+    void set_size (const dim_vector& size_in) { size = size_in; }
+
+    void set_extent (octave_idx_type ext) { extent = ext; }
+
+  private:
+
+    // Dimension of object being accessed.
+    dim_vector size;
+
+    // Length of dimension being accessed.
+    octave_idx_type extent;
+  };
+}
+
+// Complain of an index that is out of range, but we don't know matrix size
+void
+gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
+                          octave_idx_type ext)
+{
+  std::ostringstream buf;
+  buf << idx;
+  octave::out_of_range e (buf.str (), nd, dim);
+
+  e.set_extent (ext);
+  // ??? Make details method give extent not size.
+  e.set_size (dim_vector (1, 1, 1, 1, 1, 1,1));
+
+  throw e;
+}
+
+// Complain of an index that is out of range
+void
+gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
+                          octave_idx_type ext, const dim_vector& d)
+{
+  std::ostringstream buf;
+  buf << idx;
+  octave::out_of_range e (buf.str (), nd, dim);
+
+  e.set_extent (ext);
+  e.set_size (d);
+
+  throw e;
+}
 
 void
 gripe_invalid_resize (void)
@@ -154,20 +276,6 @@ gripe_invalid_resize (void)
   (*current_liboctave_error_with_id_handler)
     ("Octave:invalid-resize",
      "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element");
-}
-
-void
-gripe_invalid_assignment_size (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I) = X: X must have the same size as I");
-}
-
-void
-gripe_assignment_dimension_mismatch (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I,J,...) = X: dimensions mismatch");
 }
 
 void
@@ -186,3 +294,6 @@ gripe_singular_matrix (double rcond)
          "matrix singular to machine precision, rcond = %g", rcond);
     }
 }
+
+/* Tests in test/index.tst */
+

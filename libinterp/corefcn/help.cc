@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,21 +20,19 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdlib>
 #include <cstring>
 
 #include <algorithm>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
-
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "cmd-edit.h"
 #include "file-ops.h"
@@ -43,16 +41,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "str-vec.h"
 
+#include "call-stack.h"
 #include <defaults.h>
+#include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "help.h"
 #include "input.h"
 #include "load-path.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-usr-fcn.h"
+#include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
@@ -60,8 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
-#include "syswait.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -92,730 +92,157 @@ static std::string Vmakeinfo_program = "makeinfo";
 // functions.
 static bool Vsuppress_verbose_help_message = false;
 
-#include <map>
-
-typedef std::map<std::string, std::string> map_type;
-typedef map_type::value_type pair_type;
-typedef map_type::const_iterator map_iter;
-
-template<typename T, size_t z>
-size_t
-size (T const (&)[z])
+const static char * const operators[] =
 {
-  return z;
-}
-
-const static pair_type operators[] =
-{
-  pair_type ("!",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} !\n\
-Logical 'not' operator.\n\
-@seealso{~, not}\n\
-@end deftypefn"),
-
-  pair_type ("~",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ~\n\
-Logical 'not' operator.\n\
-@seealso{!, not}\n\
-@end deftypefn"),
-
-  pair_type ("!=",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} !=\n\
-Logical 'not equals' operator.\n\
-@seealso{~=, ne}\n\
-@end deftypefn"),
-
-  pair_type ("~=",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ~=\n\
-Logical 'not equals' operator.\n\
-@seealso{!=, ne}\n\
-@end deftypefn"),
-
-  pair_type ("\"",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} \"\n\
-String delimiter.\n\
-@end deftypefn"),
-
-  pair_type ("#",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} #\n\
-Begin comment character.\n\
-@seealso{%, #@\\{}\n\
-@end deftypefn"),
-
-  pair_type ("%",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} %\n\
-Begin comment character.\n\
-@seealso{#, %@\\{}\n\
-@end deftypefn"),
-
-  pair_type ("#{",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} #@{\n\
-Begin block comment.  There must be nothing else, other than\n\
-whitespace, in the line both before and after @code{#@{}.\n\
-It is possible to nest block comments.\n\
-@seealso{%@\\{, #@\\}, #}\n\
-@end deftypefn"),
-
-  pair_type ("%{",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} %@{\n\
-Begin block comment.  There must be nothing else, other than\n\
-whitespace, in the line both before and after @code{%@{}.\n\
-It is possible to nest block comments.\n\
-@seealso{#@\\{, %@\\}, %}\n\
-@end deftypefn"),
-
-  pair_type ("#}",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} #@}\n\
-Close block comment.  There must be nothing else, other than\n\
-whitespace, in the line both before and after @code{#@}}.\n\
-It is possible to nest block comments.\n\
-@seealso{%@\\}, #@\\{, #}\n\
-@end deftypefn"),
-
-  pair_type ("%}",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} %@}\n\
-Close block comment.  There must be nothing else, other than\n\
-whitespace, in the line both before and after @code{%@}}.\n\
-It is possible to nest block comments.\n\
-@seealso{#@\\}, %@\\{, %}\n\
-@end deftypefn"),
-
-  pair_type ("...",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ...\n\
-Continuation marker.  Joins current line with following line.\n\
-@end deftypefn"),
-
-  pair_type ("&",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} &\n\
-Element by element logical 'and' operator.\n\
-@seealso{&&, and}\n\
-@end deftypefn"),
-
-  pair_type ("&&",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} &&\n\
-Logical 'and' operator (with short-circuit evaluation).\n\
-@seealso{&, and}\n\
-@end deftypefn"),
-
-  pair_type ("'",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} '\n\
-Matrix transpose operator.  For complex matrices, computes the\n\
-complex conjugate (Hermitian) transpose.\n\
-\n\
-The single quote character may also be used to delimit strings, but\n\
-it is better to use the double quote character, since that is never\n\
-ambiguous.\n\
-@seealso{.', transpose}\n\
-@end deftypefn"),
-
-  pair_type ("(",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} (\n\
-Array index or function argument delimiter.\n\
-@end deftypefn"),
-
-  pair_type (")",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {})\n\
-Array index or function argument delimiter.\n\
-@end deftypefn"),
-
-  pair_type ("*",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} *\n\
-Multiplication operator.\n\
-@seealso{.*, times}\n\
-@end deftypefn"),
-
-  pair_type ("**",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} **\n\
-Power operator.  This may return complex results for real inputs.  Use\n\
-@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
-real results when possible.\n\
-@seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}\n\
-@end deftypefn"),
-
-  pair_type ("^",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ^\n\
-Power operator.  This may return complex results for real inputs.  Use\n\
-@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
-real results when possible.\n\
-@seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}\n\
-@end deftypefn"),
-
-  pair_type ("+",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} +\n\
-Addition operator.\n\
-@seealso{plus}\n\
-@end deftypefn"),
-
-  pair_type ("++",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ++\n\
-Increment operator.  As in C, may be applied as a prefix or postfix\n\
-operator.\n\
-@seealso{--}\n\
-@end deftypefn"),
-
-  pair_type (",",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ,\n\
-Array index, function argument, or command separator.\n\
-@end deftypefn"),
-
-  pair_type ("-",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} -\n\
-Subtraction or unary negation operator.\n\
-@seealso{minus}\n\
-@end deftypefn"),
-
-  pair_type ("--",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} --\n\
-Decrement operator.  As in C, may be applied as a prefix or postfix\n\
-operator.\n\
-@seealso{++}\n\
-@end deftypefn"),
-
-  pair_type (".'",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} .'\n\
-Matrix transpose operator.  For complex matrices, computes the\n\
-transpose, @emph{not} the complex conjugate transpose.\n\
-@seealso{', transpose}\n\
-@end deftypefn"),
-
-  pair_type (".*",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} .*\n\
-Element by element multiplication operator.\n\
-@seealso{*, times}\n\
-@end deftypefn"),
-
-  pair_type (".**",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} .*\n\
-Element by element power operator.  If several complex results are possible,\n\
-returns the one with smallest non-negative argument (angle).  Use\n\
-@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
-real result is preferred.\n\
-@seealso{**, ^, .^, power, realpow, realsqrt, cbrt, nthroot}\n\
-@end deftypefn"),
-
-  pair_type (".^",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} .^\n\
-Element by element power operator.  If several complex results are possible,\n\
-returns the one with smallest non-negative argument (angle).  Use\n\
-@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
-real result is preferred.\n\
-@seealso{.**, ^, **, power, realpow, realsqrt, cbrt, nthroot}\n\
-@end deftypefn"),
-
-  pair_type ("./",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ./\n\
-Element by element right division operator.\n\
-@seealso{/, .\\, rdivide, mrdivide}\n\
-@end deftypefn"),
-
-  pair_type ("/",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} /\n\
-Right division operator.\n\
-@seealso{./, \\, rdivide, mrdivide}\n\
-@end deftypefn"),
-
-  pair_type (".\\",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} .\\\n\
-Element by element left division operator.\n\
-@seealso{\\, ./, rdivide, mrdivide}\n\
-@end deftypefn"),
-
-  pair_type ("\\",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} \\\n\
-Left division operator.\n\
-@seealso{.\\, /, ldivide, mldivide}\n\
-@end deftypefn"),
-
-  pair_type (":",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} :\n\
-Select entire rows or columns of matrices.\n\
-@end deftypefn"),
-
-  pair_type (";",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ;\n\
-Array row or command separator.\n\
-@seealso{,}\n\
-@end deftypefn"),
-
-  pair_type ("<",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} <\n\
-'Less than' operator.\n\
-@seealso{lt}\n\
-@end deftypefn"),
-
-  pair_type ("<=",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} <=\n\
-'Less than' or 'equals' operator.\n\
-@seealso{le}\n\
-@end deftypefn"),
-
-  pair_type ("=",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} =\n\
-Assignment operator.\n\
-@end deftypefn"),
-
-  pair_type ("==",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ==\n\
-Equality test operator.\n\
-@seealso{eq}\n\
-@end deftypefn"),
-
-  pair_type (">",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} >\n\
-'Greater than' operator.\n\
-@seealso{gt}\n\
-@end deftypefn"),
-
-  pair_type (">=",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} >=\n\
-'Greater than' or 'equals' operator.\n\
-@seealso{ge}\n\
-@end deftypefn"),
-
-  pair_type ("[",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} [\n\
-Return list delimiter.\n\
-@seealso{]}\n\
-@end deftypefn"),
-
-  pair_type ("]",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ]\n\
-Return list delimiter.\n\
-@seealso{[}\n\
-@end deftypefn"),
-
-  pair_type ("|",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} |\n\
-Element by element logical 'or' operator.\n\
-@seealso{||, or}\n\
-@end deftypefn"),
-
-  pair_type ("||",
-  "-*- texinfo -*-\n\
-@deftypefn {Operator} {} ||\n\
-Logical 'or' (with short-circuit evaluation) operator.\n\
-@seealso{|, or}\n\
-@end deftypefn"),
+  "!",
+  "~",
+  "!=",
+  "~=",
+  "\"",
+  "#",
+  "%",
+  "#{",
+  "%{",
+  "#}",
+  "%}",
+  "...",
+  "&",
+  "&&",
+  "'",
+  "(",
+  ")",
+  "*",
+  "**",
+  "^",
+  "+",
+  "++",
+  ",",
+  "-",
+  "--",
+  ".'",
+  ".*",
+  ".**",
+  ".^",
+  "./",
+  "/",
+  ".\\",
+  "\\",
+  ":",
+  ";",
+  "<",
+  "<=",
+  "=",
+  "==",
+  ">",
+  ">=",
+  "[",
+  "]",
+  "|",
+  "||",
+  0
 };
 
-const static pair_type keywords[] =
+const static string_vector operator_names (operators);
+
+const static char * const keywords[] =
 {
-  pair_type ("break",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} break\n\
-Exit the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, parfor, continue}\n\
-@end deftypefn"),
-
-  pair_type ("case",
-  "-*- texinfo -*-\n\
-@deftypefn  {Keyword} {} case @var{value}\n\
-@deftypefnx {Keyword} {} case @{@var{value}, @dots{}@}\n\
-A case statement in a switch.  Octave cases are exclusive and do not\n\
-fall-through as do C-language cases.  A switch statement must have at least\n\
-one case.  See @code{switch} for an example.\n\
-@seealso{switch}\n\
-@end deftypefn"),
-
-  pair_type ("catch",
-  "-*- texinfo -*-\n\
-@deftypefn  {Keyword} {} catch\n\
-@deftypefnx {Keyword} {} catch @var{value}\n\
-Begin the cleanup part of a try-catch block.\n\
-@seealso{try}\n\
-@end deftypefn"),
-
-  pair_type ("continue",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} continue\n\
-Jump to the end of the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, parfor, break}\n\
-@end deftypefn"),
-
-  pair_type ("do",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} do\n\
-Begin a do-until loop.  This differs from a do-while loop in that the\n\
-body of the loop is executed at least once.\n\
-\n\
-@example\n\
-@group\n\
-i = 0;\n\
-do\n\
-  i++\n\
-until (i == 10)\n\
-@end group\n\
-@end example\n\
-@seealso{for, until, while}\n\
-@end deftypefn"),
-
-  pair_type ("else",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} else\n\
-Alternate action for an if block.  See @code{if} for an example.\n\
-@seealso{if}\n\
-@end deftypefn"),
-
-  pair_type ("elseif",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} elseif (@var{condition})\n\
-Alternate conditional test for an if block.  See @code{if} for an example.\n\
-@seealso{if}\n\
-@end deftypefn"),
-
-  pair_type ("end",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} end\n\
-Mark the end of any @code{for}, @code{parfor}, @code{if}, @code{do},\n\
-@code{while}, @code{function}, @code{switch}, @code{try}, or\n\
-@code{unwind_protect} block.\n\
-@seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}\n\
-@end deftypefn"),
-
-  pair_type ("end_try_catch",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} end_try_catch\n\
-Mark the end of an @code{try-catch} block.\n\
-@seealso{try, catch}\n\
-@end deftypefn"),
-
-  pair_type ("end_unwind_protect",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} end_unwind_protect\n\
-Mark the end of an unwind_protect block.\n\
-@seealso{unwind_protect}\n\
-@end deftypefn"),
-
-  pair_type ("endfor",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} endfor\n\
-Mark the end of a for loop.  See @code{for} for an example.\n\
-@seealso{for}\n\
-@end deftypefn"),
-
-  pair_type ("endfunction",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} endfunction\n\
-Mark the end of a function.\n\
-@seealso{function}\n\
-@end deftypefn"),
-
-  pair_type ("endif",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} endif\n\
-Mark the end of an if block.  See @code{if} for an example.\n\
-@seealso{if}\n\
-@end deftypefn"),
-
-  pair_type ("endparfor",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} endparfor\n\
-Mark the end of a parfor loop.  See @code{parfor} for an example.\n\
-@seealso{parfor}\n\
-@end deftypefn"),
-
-  pair_type ("endswitch",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} endswitch\n\
-Mark the end of a switch block.  See @code{switch} for an example.\n\
-@seealso{switch}\n\
-@end deftypefn"),
-
-  pair_type ("endwhile",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} endwhile\n\
-Mark the end of a while loop.  See @code{while} for an example.\n\
-@seealso{do, while}\n\
-@end deftypefn"),
-
-  pair_type ("for",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
-Begin a for loop.\n\
-\n\
-@example\n\
-@group\n\
-for i = 1:10\n\
-  i\n\
-endfor\n\
-@end group\n\
-@end example\n\
-@seealso{do, parfor, while}\n\
-@end deftypefn"),
-
-  pair_type ("function",
-  "-*- texinfo -*-\n\
-@deftypefn  {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
-@deftypefnx {Keyword} {} function {} function (@var{input}, @dots{})\n\
-@deftypefnx {Keyword} {} function @var{outputs} = function\n\
-Begin a function body with @var{outputs} as results and @var{inputs} as\n\
-parameters.\n\
-@seealso{return}\n\
-@end deftypefn"),
-
-  pair_type ("global",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} global @var{var}\n\
-Declare variables to have global scope.\n\
-\n\
-@example\n\
-@group\n\
-global @var{x};\n\
-if (isempty (@var{x}))\n\
-  x = 1;\n\
-endif\n\
-@end group\n\
-@end example\n\
-@seealso{persistent}\n\
-@end deftypefn"),
-
-  pair_type ("if",
-  "-*- texinfo -*-\n\
-@deftypefn  {Keyword} {} if (@var{cond}) @dots{} endif\n\
-@deftypefnx {Keyword} {} if (@var{cond}) @dots{} else @dots{} endif\n\
-@deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
-@deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
-Begin an if block.\n\
-\n\
-@example\n\
-@group\n\
-x = 1;\n\
-if (x == 1)\n\
-  disp (\"one\");\n\
-elseif (x == 2)\n\
-  disp (\"two\");\n\
-else\n\
-  disp (\"not one or two\");\n\
-endif\n\
-@end group\n\
-@end example\n\
-@seealso{switch}\n\
-@end deftypefn"),
-
-  pair_type ("otherwise",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} otherwise\n\
-The default statement in a switch block (similar to else in an if block).\n\
-@seealso{switch}\n\
-@end deftypefn"),
-
-  pair_type ("parfor",
-  "-*- texinfo -*-\n\
-@deftypefn  {Keyword} {} parfor @var{i} = @var{range}\n\
-@deftypefnx {Keyword} {} parfor (@var{i} = @var{range}, @var{maxproc})\n\
-Begin a for loop that may execute in parallel.\n\
-\n\
-@example\n\
-@group\n\
-parfor i = 1:10\n\
-  i\n\
-endparfor\n\
-@end group\n\
-@end example\n\
-@seealso{for, do, while}\n\
-@end deftypefn"),
-
-  pair_type ("persistent",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} persistent @var{var}\n\
-Declare variables as persistent.  A variable that has been declared\n\
-persistent within a function will retain its contents in memory between\n\
-subsequent calls to the same function.  The difference between persistent\n\
-variables and global variables is that persistent variables are local in\n\
-scope to a particular function and are not visible elsewhere.\n\
-@seealso{global}\n\
-@end deftypefn"),
-
-  pair_type ("return",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} return\n\
-Return from a function.\n\
-@seealso{function}\n\
-@end deftypefn"),
-
-  pair_type ("static",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} static\n\
-This statement has been deprecated in favor of @code{persistent}.\n\
-@seealso{persistent}\n\
-@end deftypefn"),
-
-  pair_type ("switch",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} switch @var{statement}\n\
-Begin a switch block.\n\
-\n\
-@example\n\
-@group\n\
-yesno = \"yes\"\n\
-\n\
-switch yesno\n\
-  case @{\"Yes\" \"yes\" \"YES\" \"y\" \"Y\"@}\n\
-    value = 1;\n\
-  case @{\"No\" \"no\" \"NO\" \"n\" \"N\"@}\n\
-    value = 0;\n\
-  otherwise\n\
-    error (\"invalid value\");\n\
-endswitch\n\
-@end group\n\
-@end example\n\
-@seealso{if, case, otherwise}\n\
-@end deftypefn"),
-
-  pair_type ("try",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} try\n\
-Begin a try-catch block.\n\
-\n\
-If an error occurs within a try block, then the catch code will be run and\n\
-execution will proceed after the catch block (though it is often\n\
-recommended to use the lasterr function to re-throw the error after cleanup\n\
-is completed).\n\
-@seealso{catch, unwind_protect}\n\
-@end deftypefn"),
-
-  pair_type ("until",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} until (@var{cond})\n\
-End a do-until loop.  See @code{do} for an example.\n\
-@seealso{do}\n\
-@end deftypefn"),
-
-  pair_type ("unwind_protect",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} unwind_protect\n\
-Begin an unwind_protect block.\n\
-\n\
-If an error occurs within the first part of an unwind_protect block\n\
-the commands within the unwind_protect_cleanup block are executed before\n\
-the error is thrown.  If an error is not thrown, then the\n\
-unwind_protect_cleanup block is still executed (in other words, the\n\
-unwind_protect_cleanup will be run with or without an error in the\n\
-unwind_protect block).\n\
-@seealso{unwind_protect_cleanup, try}\n\
-@end deftypefn"),
-
-  pair_type ("unwind_protect_cleanup",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} unwind_protect_cleanup\n\
-Begin the cleanup section of an unwind_protect block.\n\
-@seealso{unwind_protect}\n\
-@end deftypefn"),
-
-  pair_type ("varargin",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} varargin\n\
-Pass an arbitrary number of arguments into a function.\n\
-@seealso{varargout, nargin, isargout, nargout, nthargout}\n\
-@end deftypefn"),
-
-  pair_type ("varargout",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} varargout\n\
-Pass an arbitrary number of arguments out of a function.\n\
-@seealso{varargin, nargin, isargout, nargout, nthargout}\n\
-@end deftypefn"),
-
-  pair_type ("while",
-  "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} while\n\
-Begin a while loop.\n\
-\n\
-@example\n\
-@group\n\
-i = 0;\n\
-while (i < 10)\n\
-  i++\n\
-endwhile\n\
-@end group\n\
-@end example\n\
-@seealso{do, endwhile, for, until}\n\
-@end deftypefn"),
+  "break",
+  "case",
+  "catch",
+  "continue",
+  "do",
+  "else",
+  "elseif",
+  "end",
+  "end_try_catch",
+  "end_unwind_protect",
+  "endfor",
+  "endfunction",
+  "endif",
+  "endparfor",
+  "endswitch",
+  "endwhile",
+  "for",
+  "function",
+  "global",
+  "if",
+  "otherwise",
+  "parfor",
+  "persistent",
+  "return",
+  "static",
+  "switch",
+  "try",
+  "until",
+  "unwind_protect",
+  "unwind_protect_cleanup",
+  "varargin",
+  "varargout",
+  "while",
+  0
 };
 
-// Return a copy of the operator or keyword names.
+const static string_vector keyword_names (keywords);
+
+// Return a vector of all functions from this file,
+// for use in command line auto-completion.
 static string_vector
-names (const map_type& lst)
+local_functions (void)
 {
-  string_vector retval (lst.size ());
-  int j = 0;
-  for (map_iter iter = lst.begin (); iter != lst.end (); iter ++)
-    retval[j++] = iter->first;
+  string_vector retval;
+
+  octave_user_code *curr_fcn = octave_call_stack::caller_user_code ();
+
+  if (! curr_fcn)
+    return retval;
+
+  // All subfunctions are listed in the top-level function of this file.
+  while (curr_fcn->is_subfunction ())
+    curr_fcn = symbol_table::get_curr_fcn (curr_fcn->parent_fcn_scope ());
+
+  // Get subfunctions.
+  const std::list<std::string> names = curr_fcn->subfunction_names ();
+
+  size_t sz = names.size ();
+  retval.resize (sz);
+
+  // Loop over them.
+  size_t i = 0;
+  for (std::list<std::string>::const_iterator p = names.begin ();
+       p != names.end (); p++)
+    retval(i++) = *p;
+
+  retval.resize (i);
   return retval;
 }
-
-const static map_type operators_map (operators, operators + size (operators));
-const static map_type keywords_map (keywords, keywords + size (keywords));
-const static string_vector keyword_names = names (keywords_map);
 
 // FIXME: It's not likely that this does the right thing now.
 
 string_vector
 make_name_list (void)
 {
-  const int key_len = keyword_names.length ();
+  const int key_len = keyword_names.numel ();
 
   const string_vector bif = symbol_table::built_in_function_names ();
-  const int bif_len = bif.length ();
+  const int bif_len = bif.numel ();
 
   const string_vector cfl = symbol_table::cmdline_function_names ();
-  const int cfl_len = cfl.length ();
+  const int cfl_len = cfl.numel ();
 
   const string_vector lcl = symbol_table::variable_names ();
-  const int lcl_len = lcl.length ();
+  const int lcl_len = lcl.numel ();
 
   const string_vector ffl = load_path::fcn_names ();
-  const int ffl_len = ffl.length ();
+  const int ffl_len = ffl.numel ();
 
   const string_vector afl = autoloaded_functions ();
-  const int afl_len = afl.length ();
+  const int afl_len = afl.numel ();
+
+  const string_vector lfl = local_functions ();
+  const int lfl_len = lfl.numel ();
 
   const int total_len
-    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len;
+    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len + lfl_len;
 
   string_vector list (total_len);
 
@@ -840,6 +267,9 @@ make_name_list (void)
 
   for (i = 0; i < afl_len; i++)
     list[j++] = afl[i];
+
+  for (i = 0; i < lfl_len; i++)
+    list[j++] = lfl[i];
 
   return list;
 }
@@ -916,12 +346,119 @@ raw_help_from_file (const std::string& nm, std::string& h,
 }
 
 static bool
-raw_help_from_map (const std::string& nm, std::string& h,
-                   const map_type& map, bool& symbol_found)
+raw_help_from_docstrings_file (const std::string& nm, std::string& h,
+                               bool& symbol_found)
 {
-  map_iter idx = map.find (nm);
-  symbol_found = (idx != map.end ());
-  h = (symbol_found) ? idx->second : "";
+  typedef std::pair<std::streampos, std::streamoff> txt_limits_type;
+  typedef std::map<std::string, txt_limits_type> help_txt_map_type;
+
+  static help_txt_map_type help_txt_map;
+  static bool initialized = false;
+
+  h = "";
+  symbol_found = false;
+
+  // FIXME: Should we cache the timestamp of the file and reload the
+  // offsets if it changes?  Or just warn about that?  Or just ignore
+  // it, and assume it won't change?
+
+  if (! initialized)
+    {
+      std::string fname = Vbuilt_in_docstrings_file;
+
+      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+
+      if (! file)
+        error ("failed to open docstrings file: %s", fname.c_str ());
+
+      // Ignore header;
+      file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
+
+      if (file.eof ())
+        error ("invalid built-in-docstrings file!");
+
+      // FIXME: eliminate fixed buffer size.
+      size_t bufsize = 1000;
+      OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
+
+      while (! file.eof ())
+        {
+          std::string name;
+          int i = 0;
+          int c;
+          while (file && (c = file.get ()) != std::istream::traits_type::eof ())
+            {
+              if (c == '\n' || c == '\r')
+                {
+                  buf[i] = '\0';
+                  name = buf;
+                  break;
+                }
+              else
+                buf[i++] = c;
+            }
+
+          // Skip @c FILENAME which is part of current DOCSTRINGS
+          // syntax.  This may disappear if a specific format for
+          // docstring files is developed.
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ()
+                 && c != '\n' && c != '\r')
+            ; // skip text
+
+          // skip newline characters
+          while (file
+                 && (c = file.get ()) != std::istream::traits_type::eof ()
+                 && c == '\n' && c == '\r')
+            ; // skip text
+
+          file.unget ();
+
+          // Position of beginning of help text.
+          std::streampos beg = file.tellg ();
+
+          // Skip help text.
+          file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
+
+          // Position of end of help text.
+          std::streamoff len = file.tellg () - beg - 1;
+
+          help_txt_map[name] = txt_limits_type (beg, len);
+        }
+
+      initialized = true;
+    }
+
+  help_txt_map_type::const_iterator it = help_txt_map.find (nm);
+
+  if (it != help_txt_map.end ())
+    {
+      txt_limits_type txt_limits = it->second;
+
+      std::streampos beg = txt_limits.first;
+      std::streamoff len = txt_limits.second;
+
+      std::string fname = Vbuilt_in_docstrings_file;
+
+      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+
+      if (! file)
+        error ("failed to open docstrings file: %s", fname.c_str ());
+
+      file.seekg (beg);
+
+      size_t txt_len = len;
+      OCTAVE_LOCAL_BUFFER (char, buf, txt_len + 1);
+
+      file.read (buf, txt_len);
+
+      buf[txt_len] = '\0';
+
+      h = buf;
+
+      symbol_found = true;
+    }
+
   return symbol_found;
 }
 
@@ -935,116 +472,37 @@ raw_help (const std::string& nm, bool& symbol_found)
   bool found;
 
   found = raw_help_from_symbol_table (nm, h, w, symbol_found);
-  if (! found && ! error_state)
-    {
-      found = raw_help_from_file (nm, h, f, symbol_found);
-      if (! found && ! error_state)
-        {
-          found = raw_help_from_map (nm, h, operators_map, symbol_found);
-          if (! found && ! error_state)
-            {
-              raw_help_from_map (nm, h, keywords_map, symbol_found);
-            }
-        }
-    }
+
+  if (! found)
+    found = raw_help_from_file (nm, h, f, symbol_found);
+
+  if (! found || h == "external-doc")
+    raw_help_from_docstrings_file (nm, h, symbol_found);
 
   return h;
 }
 
 DEFUN (built_in_docstrings_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} built_in_docstrings_file ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} built_in_docstrings_file (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} built_in_docstrings_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-file containing docstrings for built-in Octave functions.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/share/octave/@var{version}/etc/built-in-docstrings},\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.  The default value may be\n\
-overridden by the environment variable\n\
-@w{@env{OCTAVE_BUILT_IN_DOCSTRINGS_FILE}}, or the command line argument\n\
-@option{--built-in-docstrings-file FNAME}.\n\
-\n\
-Note: This variable is only used when Octave is initializing itself.\n\
-Modifying it during a running session of Octave will have no effect.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} built_in_docstrings_file ()
+@deftypefnx {} {@var{old_val} =} built_in_docstrings_file (@var{new_val})
+@deftypefnx {} {} built_in_docstrings_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+file containing docstrings for built-in Octave functions.
+
+The default value is
+@file{@var{octave-home}/share/octave/@var{version}/etc/built-in-docstrings},
+in which @var{octave-home} is the root directory of the Octave installation,
+and @var{version} is the Octave version number.  The default value may be
+overridden by the environment variable
+@w{@env{OCTAVE_BUILT_IN_DOCSTRINGS_FILE}}, or the command line argument
+@option{--built-in-docstrings-file FNAME}.
+
+Note: This variable is only used when Octave is initializing itself.
+Modifying it during a running session of Octave will have no effect.
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (built_in_docstrings_file);
-}
-
-void
-install_built_in_docstrings (void)
-{
-  std::string fname = Vbuilt_in_docstrings_file;
-
-  std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
-
-  if (file)
-    {
-      // Ignore header;
-      file.ignore (1000, 0x1d);
-
-      if (file.gcount () == 1000)
-        {
-          // We use std::cerr here instead of calling Octave's warning
-          // function because install_built_in_docstrings is called
-          // before the interpreter is initialized, so warning messages
-          // won't work properly.
-
-          std::cerr << "warning: is builtin-docstrings file corrupted?"
-                    << std::endl;
-          return;
-        }
-
-      // FIXME: eliminate fixed buffer size.
-      size_t bufsize = 100000;
-
-      OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
-
-      while (! file.eof ())
-        {
-          file.getline (buf, bufsize, 0x1d);
-
-          std::string tmp (buf);
-
-          size_t pos = tmp.find ('\n');
-
-          std::string fcn = tmp.substr (0, pos);
-
-          octave_value ov = symbol_table::find_built_in_function (fcn);
-
-          if (ov.is_defined ())
-            {
-              octave_function *fp = ov.function_value ();
-
-              if (fp)
-                {
-                  tmp = tmp.substr (pos+1);
-
-                  // Strip @c FILENAME which is part of current DOCSTRINGS
-                  // syntax.  This may disappear if a specific format for
-                  // docstring files is developed.
-                  while (tmp.length () > 2 && tmp[0] == '@' && tmp[1] == 'c')
-                    {
-                      pos = tmp.find ('\n');
-                      tmp = tmp.substr (pos+1);
-                    }
-
-                  fp->document (tmp);
-                }
-            }
-        }
-    }
-  else
-    {
-      // See note above about using std::cerr instead of warning.
-
-      std::cerr << "warning: docstring file '" << fname << "' not found"
-                << std::endl;
-    }
-
 }
 
 static void
@@ -1078,39 +536,27 @@ do_get_help_text (const std::string& name, std::string& text,
     }
 }
 
-DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
-Return the raw help text of function @var{name}.\n\
-\n\
-The raw help text is returned in @var{text} and the format in @var{format}\n\
-The format is a string which is one of @qcode{\"texinfo\"},\n\
-@qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
-@seealso{get_help_text_from_file}\n\
-@end deftypefn")
+DEFUN (get_help_text, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{text}, @var{format}] =} get_help_text (@var{name})
+Return the raw help text of function @var{name}.
+
+The raw help text is returned in @var{text} and the format in @var{format}
+The format is a string which is one of @qcode{"texinfo"},
+@qcode{"html"}, or @qcode{"plain text"}.
+@seealso{get_help_text_from_file}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  if (args.length () == 1)
-    {
-      const std::string name = args(0).string_value ();
-
-      if (! error_state)
-        {
-          std::string text;
-          std::string format;
-
-          do_get_help_text (name, text, format);
-
-          retval(1) = format;
-          retval(0) = text;
-        }
-      else
-        error ("get_help_text: invalid input");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  const std::string name = args(0).xstring_value ("get_help_text: NAME must be a string");
+
+  std::string text, format;
+
+  do_get_help_text (name, text, format);
+
+  return ovl (text, format);
 }
 
 static void
@@ -1148,85 +594,147 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 }
 
 DEFUN (get_help_text_from_file, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
-Return the raw help text from the file @var{fname}.\n\
-\n\
-The raw help text is returned in @var{text} and the format in @var{format}\n\
-The format is a string which is one of @qcode{\"texinfo\"},\n\
-@qcode{\"html\"}, or @qcode{\"plain text\"}.\n\
-@seealso{get_help_text}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})
+Return the raw help text from the file @var{fname}.
+
+The raw help text is returned in @var{text} and the format in @var{format}
+The format is a string which is one of @qcode{"texinfo"},
+@qcode{"html"}, or @qcode{"plain text"}.
+@seealso{get_help_text}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  if (args.length () == 1)
-    {
-      const std::string fname = args(0).string_value ();
-
-      if (! error_state)
-        {
-          std::string text;
-          std::string format;
-
-          do_get_help_text_from_file (fname, text, format);
-
-          retval(1) = format;
-          retval(0) = text;
-        }
-      else
-        error ("get_help_text_from_file: invalid input");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  const std::string fname = args(0).xstring_value ("get_help_text_from_file: NAME must be a string");
+
+  std::string text, format;
+
+  do_get_help_text_from_file (fname, text, format);
+
+  return ovl (text, format);
 }
 
 // Return a cell array of strings containing the names of all
 // operators.
 
 DEFUN (__operators__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __operators__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __operators__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  return octave_value (Cell (names (operators_map)));
+  return ovl (Cell (operator_names));
 }
 
 // Return a cell array of strings containing the names of all
 // keywords.
 
 DEFUN (__keywords__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __keywords__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __keywords__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  return octave_value (Cell (names (keywords_map)));
+  return ovl (Cell (keyword_names));
 }
 
 // Return a cell array of strings containing the names of all builtin
 // functions.
 
 DEFUN (__builtins__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Function File} {} __builtins__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __builtins__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   const string_vector bif = symbol_table::built_in_function_names ();
 
-  return octave_value (Cell (bif));
+  return ovl (Cell (bif));
 }
+
+DEFUN (localfunctions, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} localfunctions ()
+Return a list of all local functions, i.e., subfunctions, within the current
+file.
+
+The return value is a column cell array of function handles to all local
+functions accessible from the function from which @code{localfunctions} is
+called.  Nested functions are @emph{not} included in the list.
+
+If the call is from the command line, an anonymous function, or a script,
+the return value is an empty cell array.
+
+Compatibility Note: Subfunctions which contain nested functions are not
+included in the list.  This is a known issue.
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  Cell retval;
+
+  // Find the main function we are in.
+  octave_user_code *parent_fcn = octave_call_stack::debug_user_code ();
+
+  if (! parent_fcn)
+    return ovl (retval);
+
+  // Find the subfunctions of this function.
+  // FIXME: This includes all nested functions.
+  //        Once handles of nested functions are implemented,
+  //        we will need to exclude ones not in scope.
+  const std::list<std::string> names = parent_fcn->subfunction_names ();
+  const std::map<std::string, octave_value> h = parent_fcn->subfunctions ();
+
+  size_t sz = names.size ();
+  retval.resize (dim_vector (sz, 1));
+
+  // loop over them.
+  size_t i = 0;
+  for (std::list<std::string>::const_iterator p = names.begin ();
+       p != names.end (); p++)
+    {
+      std::map<std::string, octave_value>::const_iterator q = h.find (*p);
+      if (q != h.end () &&
+          ! q->second.user_function_value ()->is_nested_function ())
+        retval(i++) = octave_value (new octave_fcn_handle (q->second, *p));
+    }
+
+  // remove pre-allocation for nested functions
+  retval.resize (dim_vector (i, 1));
+
+  return ovl (retval);
+}
+
+/*
+%!test
+%! f = tempname (".", "oct_");
+%! fcn_name = f(3:end);
+%! f = [f ".m"];
+%! unwind_protect
+%!   fid = fopen (f, "w+");
+%!   fprintf (fid, "function z = %s\n z = localfunctions; end\n", fcn_name);
+%!   fprintf (fid, "function z = b(x)\n z = x+1; end\n");
+%!   fprintf (fid, "function z = c(x)\n z = 2*x; end\n");
+%!   fclose (fid);
+%!   d = eval (fcn_name);
+%!   assert (size (d), [2, 1]);
+%!   assert (d{1}(3), 4);
+%!   assert (d{2}(3), 6);
+%! unwind_protect_cleanup
+%!   unlink (f);
+%! end_unwind_protect
+*/
 
 static std::string
 do_which (const std::string& name, std::string& type)
 {
   std::string file;
 
-  type = std::string ();
+  type = "";
 
   octave_value val = symbol_table::find_function (name);
 
@@ -1272,9 +780,8 @@ do_which (const std::string& name, std::string& type)
       else
         file = load_path::find_file (name);
 
-      file = octave_env::make_absolute (file);
+      file = octave::sys::env::make_absolute (file);
     }
-
 
   return file;
 }
@@ -1292,51 +799,39 @@ do_which (const std::string& name)
 }
 
 DEFUN (__which__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __which__ (@var{name}, @dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __which__ (@var{name}, @dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
+  string_vector argv = args.make_argv ();
 
-  string_vector argv = args.make_argv ("which");
+  int nargin = argv.numel ();
 
-  if (! error_state)
+  octave_map m (dim_vector (1, nargin));
+
+  Cell names (1, nargin);
+  Cell files (1, nargin);
+  Cell types (1, nargin);
+
+  for (int i = 0; i < nargin; i++)
     {
-      int argc = argv.length ();
+      std::string name = argv[i];
 
-      if (argc > 1)
-        {
-          octave_map m (dim_vector (1, argc-1));
+      std::string type;
 
-          Cell names (1, argc-1);
-          Cell files (1, argc-1);
-          Cell types (1, argc-1);
+      std::string file = do_which (name, type);
 
-          for (int i = 1; i < argc; i++)
-            {
-              std::string name = argv[i];
-
-              std::string type;
-
-              std::string file = do_which (name, type);
-
-              names(i-1) = name;
-              files(i-1) = file;
-              types(i-1) = type;
-            }
-
-          m.assign ("name", names);
-          m.assign ("file", files);
-          m.assign ("type", types);
-
-          retval = m;
-        }
-      else
-        print_usage ();
+      names(i) = name;
+      files(i) = file;
+      types(i) = type;
     }
 
-  return retval;
+  m.assign ("name", names);
+  m.assign ("file", files);
+  m.assign ("type", types);
+
+  return ovl (m);
 }
 
 // FIXME: Are we sure this function always does the right thing?
@@ -1347,13 +842,13 @@ file_is_in_dir (const std::string filename, const std::string dir)
     {
       const int dir_len = dir.size ();
       const int filename_len = filename.size ();
-      const int max_allowed_seps = file_ops::is_dir_sep (dir[dir_len-1]) ? 0
+      const int max_allowed_seps = octave::sys::file_ops::is_dir_sep (dir[dir_len-1]) ? 0
                                                                          : 1;
 
       int num_seps = 0;
       for (int i = dir_len; i < filename_len; i++)
-        if (file_ops::is_dir_sep (filename[i]))
-          num_seps ++;
+        if (octave::sys::file_ops::is_dir_sep (filename[i]))
+          num_seps++;
 
       return (num_seps <= max_allowed_seps);
     }
@@ -1366,178 +861,179 @@ file_is_in_dir (const std::string filename, const std::string dir)
 // the current path.
 
 DEFUN (__list_functions__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{retval} =} __list_functions__ ()\n\
-@deftypefnx {Function File} {@var{retval} =} __list_functions__ (@var{directory})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{retval} =} __list_functions__ ()
+@deftypefnx {} {@var{retval} =} __list_functions__ (@var{directory})
+Return a list of all functions (.m and .oct functions) in the load path.
+
+If the optional argument @var{directory} is given then list only the functions
+in that directory.
+@seealso{path}
+@end deftypefn */)
 {
   octave_value retval;
 
-  // Get list of functions
-  string_vector ffl = load_path::fcn_names ();
-  string_vector afl = autoloaded_functions ();
-
   if (args.length () == 0)
-    retval = Cell (ffl.append (afl));
-  else if (args(0).is_string ())
     {
-      std::string dir = args(0).string_value ();
+      // Get list of all functions
+      string_vector ffl = load_path::fcn_names ();
+      string_vector afl = autoloaded_functions ();
+
+      retval = Cell (ffl.append (afl));
+    }
+  else
+    {
+      std::string dir = args(0).xstring_value ("__list_functions__: DIRECTORY argument must be a string");
 
       string_vector fl = load_path::files (dir, true);
 
-      if (! error_state)
-        {
-          // Return a sorted list with unique entries (in case of
-          // .m and .oct versions of the same function in a given
-          // directory, for example).
-          fl.sort (true);
+      // Return a sorted list with unique entries (in case of .m and .oct
+      // versions of the same function in a given directory, for example).
+      fl.sort (true);
 
-          retval = Cell (fl);
-        }
+      retval = Cell (fl);
     }
-  else
-    error ("__list_functions__: DIRECTORY argument must be a string");
 
   return retval;
 }
 
 DEFUN (doc_cache_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-Octave documentation cache file.\n\
-\n\
-A cache file significantly improves the performance of the @code{lookfor}\n\
-command.  The default value is\n\
-@file{@var{octave-home}/share/octave/@var{version}/etc/doc-cache},\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.\n\
-The default value may be overridden by the environment variable\n\
-@w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
-@option{--doc-cache-file FNAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}\n\
-@seealso{lookfor}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} doc_cache_file ()
+@deftypefnx {} {@var{old_val} =} doc_cache_file (@var{new_val})
+@deftypefnx {} {} doc_cache_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+Octave documentation cache file.
+
+A cache file significantly improves the performance of the @code{lookfor}
+command.  The default value is
+@file{@var{octave-home}/share/octave/@var{version}/etc/doc-cache},
+in which @var{octave-home} is the root directory of the Octave installation,
+and @var{version} is the Octave version number.
+The default value may be overridden by the environment variable
+@w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument
+@option{--doc-cache-file FNAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{doc_cache_create, lookfor, info_program, doc, help, makeinfo_program}
+@seealso{lookfor}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);
 }
 
 DEFUN (texi_macros_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} texi_macros_file ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} texi_macros_file (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} texi_macros_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-file containing Texinfo macros that are prepended to documentation strings\n\
-before they are passed to makeinfo.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-and @var{version} is the Octave version number.\n\
-The default value may be overridden by the environment variable\n\
-@w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument\n\
-@option{--texi-macros-file FNAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{makeinfo_program}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} texi_macros_file ()
+@deftypefnx {} {@var{old_val} =} texi_macros_file (@var{new_val})
+@deftypefnx {} {} texi_macros_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+file containing Texinfo macros that are prepended to documentation strings
+before they are passed to makeinfo.
+
+The default value is
+@file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},
+in which @var{octave-home} is the root directory of the Octave installation,
+and @var{version} is the Octave version number.
+The default value may be overridden by the environment variable
+@w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument
+@option{--texi-macros-file FNAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{makeinfo_program}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (texi_macros_file);
 }
 
 DEFUN (info_file, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-Octave info file.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/info/octave.info}, in\n\
-which @var{octave-home} is the root directory of the Octave installation.\n\
-The default value may be overridden by the environment variable\n\
-@w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
-@option{--info-file FNAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{info_program, doc, help, makeinfo_program}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} info_file ()
+@deftypefnx {} {@var{old_val} =} info_file (@var{new_val})
+@deftypefnx {} {} info_file (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+Octave info file.
+
+The default value is
+@file{@var{octave-home}/info/octave.info}, in
+which @var{octave-home} is the root directory of the Octave installation.
+The default value may be overridden by the environment variable
+@w{@env{OCTAVE_INFO_FILE}}, or the command line argument
+@option{--info-file FNAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{info_program, doc, help, makeinfo_program}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (info_file);
 }
 
 DEFUN (info_program, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-info program to run.\n\
-\n\
-The default value is\n\
-@file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
-in which @var{octave-home} is the root directory of the Octave installation,\n\
-@var{version} is the Octave version number, and @var{arch} is the system\n\
-type (for example, @code{i686-pc-linux-gnu}).  The default value may be\n\
-overridden by the environment variable\n\
-@w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
-@option{--info-program NAME}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{info_file, doc, help, makeinfo_program}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} info_program ()
+@deftypefnx {} {@var{old_val} =} info_program (@var{new_val})
+@deftypefnx {} {} info_program (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+info program to run.
+
+The default value is
+@file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}
+in which @var{octave-home} is the root directory of the Octave installation,
+@var{version} is the Octave version number, and @var{arch} is the system
+type (for example, @code{i686-pc-linux-gnu}).  The default value may be
+overridden by the environment variable
+@w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument
+@option{--info-program NAME}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{info_file, doc, help, makeinfo_program}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (info_program);
 }
 
 DEFUN (makeinfo_program, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the\n\
-program that Octave runs to format help text containing\n\
-Texinfo markup commands.\n\
-\n\
-The default value is @code{makeinfo}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{texi_macros_file, info_file, info_program, doc, help}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} makeinfo_program ()
+@deftypefnx {} {@var{old_val} =} makeinfo_program (@var{new_val})
+@deftypefnx {} {} makeinfo_program (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the
+program that Octave runs to format help text containing
+Texinfo markup commands.
+
+The default value is @code{makeinfo}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{texi_macros_file, info_file, info_program, doc, help}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (makeinfo_program);
 }
 
 DEFUN (suppress_verbose_help_message, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave\n\
-will add additional help information to the end of the output from\n\
-the @code{help} command and usage messages for built-in commands.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} suppress_verbose_help_message ()
+@deftypefnx {} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})
+@deftypefnx {} {} suppress_verbose_help_message (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave
+will add additional help information to the end of the output from
+the @code{help} command and usage messages for built-in commands.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);
 }
+

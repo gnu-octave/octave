@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2015 Michael Goffioul.
-Copyright (C) 2012-2015 Jacob Dawid.
+Copyright (C) 2012-2016 Michael Goffioul.
+Copyright (C) 2012-2016 Jacob Dawid.
 
 This file is part of QTerminal.
 
@@ -94,6 +94,8 @@ signals:
 
   void interrupt_signal (void);
 
+  void edit_mfile_request (const QString&, int);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -102,16 +104,7 @@ public slots:
 
   virtual void selectAll (void) = 0;
 
-  virtual void handleCustomContextMenuRequested (const QPoint& at)
-  {
-    QClipboard * cb = QApplication::clipboard ();
-
-    _paste_action->setEnabled (cb->text().length() > 0);
-    _copy_action->setEnabled (selectedText().length() > 0);
-
-    _contextMenu->move (mapToGlobal (at));
-    _contextMenu->show ();
-  }
+  virtual void handleCustomContextMenuRequested (const QPoint& at);
 
   void notice_settings (const QSettings *settings);
 
@@ -120,6 +113,8 @@ public slots:
   void terminal_interrupt (void) { emit interrupt_signal (); }
 
   void set_global_shortcuts (bool focus_out);
+
+  void edit_file (void);
 
 protected:
 
@@ -143,6 +138,8 @@ protected:
     _selectall_action = _contextMenu->addAction (
                       tr ("Select All"), this, SLOT (selectAll ()));
 
+    _edit_action = _contextMenu->addAction (
+                      tr (""), this, SLOT (edit_file ()));
 
     _contextMenu->addSeparator ();
 
@@ -154,6 +151,9 @@ protected:
 
     connect (this, SIGNAL (report_status_message (const QString&)),
              xparent, SLOT (report_status_message (const QString&)));
+
+    connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
+             xparent, SLOT (edit_mfile (const QString&, int)));
 
     connect (xparent, SIGNAL (settings_changed (const QSettings *)),
              this, SLOT (notice_settings (const QSettings *)));
@@ -179,6 +179,13 @@ protected:
 
     connect (_interrupt_action, SIGNAL (triggered ()),
             this, SLOT (terminal_interrupt ()));
+
+    // dummy (nop) action catching Ctrl-D in terminal, no connection
+    _nop_action = new QAction (this);
+    addAction (_nop_action);
+
+    _nop_action->setShortcut (
+            QKeySequence (Qt::ControlModifier + Qt::Key_D));
   }
 
 private:
@@ -187,8 +194,10 @@ private:
   QAction * _copy_action;
   QAction * _paste_action;
   QAction * _selectall_action;
+  QAction * _edit_action;
 
   QAction *_interrupt_action;
+  QAction *_nop_action;
 };
 
 #endif // QTERMINAL_H

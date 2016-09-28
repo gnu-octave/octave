@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cctype>
@@ -329,7 +329,7 @@ tree_print_code::visit_octave_user_function (octave_user_function& fcn)
 
       cmd_list->accept (*this);
 
-      decrement_indent_level ();
+      // endfunction will decrement the indent level.
     }
 
   visit_octave_user_function_trailer (fcn);
@@ -600,7 +600,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
         case '.':
           {
             string_vector nm = *p_arg_names;
-            assert (nm.length () == 1);
+            assert (nm.numel () == 1);
             os << "." << nm(0);
           }
           break;
@@ -719,6 +719,9 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 void
 tree_print_code::visit_no_op_command (tree_no_op_command& cmd)
 {
+  if (cmd.is_end_of_fcn_or_script () && curr_print_indent_level > 1)
+    decrement_indent_level ();
+
   indent ();
 
   os << cmd.original_command ();
@@ -873,13 +876,7 @@ tree_print_code::visit_statement (tree_statement& stmt)
     {
       cmd->accept (*this);
 
-      if (! stmt.print_result ())
-        {
-          os << ";";
-          newline (" ");
-        }
-      else
-        newline ();
+      newline ();
     }
   else
     {
@@ -1269,7 +1266,7 @@ tree_print_code::print_comment_elt (const octave_comment_elt& elt)
   size_t i = 0;
 
   while (i < len && comment[i++] == '\n')
-    ; /* Skip leading new lines. */
+    ; // Skip leading new lines.
   i--;
 
   while (i < len)
@@ -1343,3 +1340,4 @@ tree_print_code::print_indented_comment (octave_comment_list *comment_list)
 
   decrement_indent_level ();
 }
+

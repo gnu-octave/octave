@@ -1,24 +1,10 @@
-FCN_FILE_DIRS += @ftp
-
-@ftp_FCN_FILES = \
-  @ftp/ascii.m \
-  @ftp/binary.m  \
-  @ftp/cd.m  \
-  @ftp/close.m  \
-  @ftp/delete.m  \
-  @ftp/dir.m  \
-  @ftp/display.m  \
-  @ftp/ftp.m  \
-  @ftp/loadobj.m  \
-  @ftp/mget.m  \
-  @ftp/mkdir.m  \
-  @ftp/mput.m  \
-  @ftp/rename.m  \
-  @ftp/rmdir.m  \
-  @ftp/saveobj.m
-
-FCN_FILES += $(@ftp_FCN_FILES)
-
-PKG_ADD_FILES += @ftp/PKG_ADD
-
-DIRSTAMP_FILES += @ftp/$(octave_dirstamp)
+## Automake fails to process "include scripts/@ftp/module.mk" in the directory
+## above.  All of the commands which would normally be in this file were
+## manually placed in scripts/module.mk to avoid using the "include" directive.
+##
+## This is an Automake bug.  Automake has switched to a Perl backend which uses
+## the following pattern to detect a path:
+##
+## my $PATH_PATTERN = '(\w|[+/.-])+';
+##
+## This pattern only includes alphanumeric, '_', and [+/.-], but not "@".

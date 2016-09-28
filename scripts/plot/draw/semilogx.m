@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} semilogx (@var{y})
-## @deftypefnx {Function File} {} semilogx (@var{x}, @var{y})
-## @deftypefnx {Function File} {} semilogx (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} semilogx (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} semilogx (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} semilogx (@dots{})
+## @deftypefn  {} {} semilogx (@var{y})
+## @deftypefnx {} {} semilogx (@var{x}, @var{y})
+## @deftypefnx {} {} semilogx (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} semilogx (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {} {} semilogx (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} semilogx (@dots{})
 ## Produce a 2-D plot using a logarithmic scale for the x-axis.
 ##
 ## See the documentation of @code{plot} for a description of the
@@ -53,8 +53,8 @@ function h = semilogx (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log");
-    if (! ishold (hax))
-      set (hax, "xminortick", "on");
+    if (! ishold ())
+      set (hax, "xminortick", "on", "box", "on");
     endif
 
     htmp = __plt__ ("semilogx", hax, varargin{:});
@@ -77,7 +77,7 @@ endfunction
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogx (y, x);
-%! title ({'semilogx() plot', 'X-axis is logarithmic'});
+%! title ({"semilogx() plot", "X-axis is logarithmic"});
 
 %!demo
 %! clf;
@@ -86,11 +86,11 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  semilogx (x, y);
-%!  xlabel ('semilogx (x, y)');
+%!  title ("semilogx (x, y)");
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
-%!  xlabel ('semilogx (-x, y)');
+%!  title ("semilogx (-x, y)");
 
 %!demo
 %! clf;
@@ -99,13 +99,13 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  semilogx (x, y);
-%!  set (gca, 'xdir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  xlabel ({'semilogx (x, y)', 'xdir = reversed'});
+%!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%!  title ({"semilogx (x, y)", "xdir = reversed"});
 %!
 %! subplot (1,2,2);
 %!  semilogx (-x, y);
-%!  set (gca, 'xdir', 'reverse', 'activepositionproperty', 'outerposition');
-%!  xlabel ({'semilogx (-x, y)', 'xdir = reversed'});
+%!  set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%!  title ({"semilogx (-x, y)", "xdir = reversed"});
 
 %!test
 %! hf = figure ("visible", "off");

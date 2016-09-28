@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,16 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include <assert.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
+#include <assert.h>
 
 /* Dummy Fortran main declaration, needed in order to link to some
    Fortran libraries.  See the AC_F77_DUMMY_MAIN macro documentation.
    This function should never be called. */
 
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
+#if defined (F77_DUMMY_MAIN)
+#  if defined (__cplusplus)
 extern "C"
 #  endif
 int F77_DUMMY_MAIN () { assert (0); return 1; }
 #endif
+

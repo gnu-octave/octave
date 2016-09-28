@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 David Bateman
+## Copyright (C) 2004-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rotdim (@var{x})
-## @deftypefnx {Function File} {} rotdim (@var{x}, @var{n})
-## @deftypefnx {Function File} {} rotdim (@var{x}, @var{n}, @var{plane})
+## @deftypefn  {} {} rotdim (@var{x})
+## @deftypefnx {} {} rotdim (@var{x}, @var{n})
+## @deftypefnx {} {} rotdim (@var{x}, @var{n}, @var{plane})
 ## Return a copy of @var{x} with the elements rotated counterclockwise in
 ## 90-degree increments.
 ##
@@ -78,7 +78,7 @@ function y = rotdim (x, n, plane)
       plane = [];
       dim = 0;
       while (dim < nd)
-        dim = dim + 1;
+        dim += 1;
         if (sz (dim) != 1)
           plane = [plane, dim];
           if (length (plane) == 2)
@@ -104,7 +104,7 @@ function y = rotdim (x, n, plane)
 
   n = rem (n, 4);
   if (n < 0)
-    n = n + 4;
+    n += 4;
   endif
   if (n == 0)
     y = x;

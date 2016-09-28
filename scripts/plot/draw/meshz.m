@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} meshz (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} meshz (@var{z})
-## @deftypefnx {Function File} {} meshz (@dots{}, @var{c})
-## @deftypefnx {Function File} {} meshz (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} meshz (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} meshz (@dots{})
+## @deftypefn  {} {} meshz (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} meshz (@var{z})
+## @deftypefnx {} {} meshz (@dots{}, @var{c})
+## @deftypefnx {} {} meshz (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} meshz (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} meshz (@dots{})
 ## Plot a 3-D wireframe mesh with a surrounding curtain.
 ##
 ## The wireframe mesh is plotted using rectangles.  The vertices of the
@@ -146,30 +146,30 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! meshz (Z);
-%! title ('meshz() plot of peaks() function');
+%! title ("meshz() plot of peaks() function");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! subplot (1,2,1)
 %!  mesh (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('mesh() plot');
+%!  title ("mesh() plot");
 %! subplot (1,2,2)
 %!  meshz (Z);
 %!  daspect ([2.5, 2.5, 1]);
-%!  title ('meshz() plot');
+%!  title ("meshz() plot");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = peaks ();
 %! [fx, fy] = gradient (Z);
 %! C = sqrt (fx.^2 + fy.^2);
 %! meshz (X,Y,Z,C);
-%! title ('meshz() plot with color determined by gradient');
+%! title ("meshz() plot with color determined by gradient");
 

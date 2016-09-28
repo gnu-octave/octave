@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isrecording (@var{recorder})
-## Return true if the audiorecorder object @var{recorder} is currently recording
-## audio and false otherwise.
+## @deftypefn {} {} isrecording (@var{recorder})
+## Return true if the audiorecorder object @var{recorder} is currently
+## recording audio and false otherwise.
 ## @end deftypefn
 
 function result = isrecording (recorder)

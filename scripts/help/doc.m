@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} doc @var{function_name}
-## @deftypefnx {Command} {} doc
+## @deftypefn  {} {} doc @var{function_name}
+## @deftypefnx {} {} doc
 ## Display documentation for the function @var{function_name} directly from an
 ## online version of the printed manual, using the GNU Info browser.
 ##
@@ -35,7 +35,7 @@
 ## Author: Soren Hauberg <soren@hauberg.org>
 ## Adapted-by: jwe
 
-function retval = doc (fname)
+function retval = doc (function_name)
 
   if (nargin == 0 || nargin == 1)
 
@@ -45,28 +45,28 @@ function retval = doc (fname)
       ## Get the directory where the function lives.
       ## FIXME: Maybe we should have a better way of doing this?
 
-      if (ischar (fname))
-        ftype = exist (fname);
+      if (ischar (function_name))
+        ftype = exist (function_name);
       else
-        error ("doc: expecting argument to be a character string");
+        error ("doc: FUNCTION_NAME must be a string");
       endif
     else
-      fname = "";
+      function_name = "";
     endif
 
     ## if GUI is running, let it display the function
     if (isguirunning ())
-      __octave_link_show_doc__ (fname);
+      __octave_link_show_doc__ (function_name);
     else
 
       if (ftype == 2 || ftype == 3)
-        ffile = which (fname);
+        ffile = which (function_name);
       else
         ffile = "";
       endif
 
       if (isempty (ffile))
-        info_dir = octave_config_info ("infodir");
+        info_dir = __octave_config_info__ ("infodir");
       else
         info_dir = fileparts (ffile);
       endif
@@ -95,17 +95,17 @@ function retval = doc (fname)
       cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
                      info_program (), info_file_name, info_dir);
 
-      have_fname = ! isempty (fname);
+      have_fname = ! isempty (function_name);
 
       if (have_fname)
-        status = system (sprintf ("%s --index-search \"%s\"", cmd, fname));
+        status = system (sprintf ("%s --index-search \"%s\"", cmd, function_name));
       endif
 
 
       if (! (have_fname && status == 0))
         status = system (cmd);
         if (status == 127)
-          warning ("unable to find info program '%s'", info_program ());
+          warning ("doc: unable to find info program '%s'", info_program ());
         endif
       endif
 
@@ -121,7 +121,7 @@ function retval = doc (fname)
 endfunction
 
 
-%!test
+%!testif ENABLE_DOCS
 %! ifile = info_file ();
 %! if (exist (ifile) != 2 && exist (sprintf ("%s.gz", ifile)) != 2)
 %!   error ("Info file %s or %s.gz does not exist!", ifile, ifile);

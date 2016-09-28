@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
-## @deftypefnx {Function File} {[@var{R}, @var{G}, @var{B}] =} ind2rgb (@var{x}, @var{map})
+## @deftypefn  {} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
+## @deftypefnx {} {[@var{R}, @var{G}, @var{B}] =} ind2rgb (@var{x}, @var{map})
 ## Convert an indexed image to red, green, and blue color components.
 ##
 ## The image @var{x} must be an indexed image which will be converted using the

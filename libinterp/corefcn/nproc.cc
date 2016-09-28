@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Iain Murray
+Copyright (C) 2012-2016 Iain Murray
 
 This file is part of Octave.
 
@@ -20,46 +20,42 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
-#include "nproc.h"
+#include "nproc-wrapper.h"
 
-DEFUN (nproc, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} nproc ()\n\
-@deftypefnx {Built-in Function} {} nproc (@var{query})\n\
-Return the current number of available processors.\n\
-\n\
-If called with the optional argument @var{query}, modify how processors\n\
-are counted as follows:\n\
-\n\
-@table @code\n\
-@item all\n\
-total number of processors.\n\
-\n\
-@item current\n\
-processors available to the current process.\n\
-\n\
-@item overridable\n\
-same as @code{current}, but overridable through the @w{@env{OMP_NUM_THREADS}}\n\
-environment variable.\n\
-@end table\n\
-@end deftypefn")
+DEFUN (nproc, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nproc ()
+@deftypefnx {} {} nproc (@var{query})
+Return the current number of available processors.
+
+If called with the optional argument @var{query}, modify how processors
+are counted as follows:
+
+@table @code
+@item all
+total number of processors.
+
+@item current
+processors available to the current process.
+
+@item overridable
+same as @code{current}, but overridable through the
+@w{@env{OMP_NUM_THREADS}} environment variable.
+@end table
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if ((nargin != 0 && nargin != 1) || (nargout != 0 && nargout != 1))
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin > 1)
+    print_usage ();
 
-  nproc_query query = NPROC_CURRENT;
+  octave_nproc_query query = OCTAVE_NPROC_CURRENT;
+
   if (nargin == 1)
     {
       std::string arg = args(0).string_value ();
@@ -67,28 +63,23 @@ environment variable.\n\
       std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
 
       if (arg == "all")
-        query = NPROC_ALL;
+        query = OCTAVE_NPROC_ALL;
       else if (arg == "current")
-        query = NPROC_CURRENT;
+        query = OCTAVE_NPROC_CURRENT;
       else if (arg == "overridable")
-        query = NPROC_CURRENT_OVERRIDABLE;
+        query = OCTAVE_NPROC_CURRENT_OVERRIDABLE;
       else
-        {
-          error ("nproc: invalid value for QUERY");
-          return retval;
-        }
+        error ("nproc: invalid value for QUERY");
     }
 
-  retval = num_processors (query);
-
-  return retval;
+  return ovl (octave_num_processors_wrapper (query));
 }
 
 /*
 ## Must always report at least 1 cpu available
-%!assert (nproc () >= 1);
-%!assert (nproc ("all") >= 1);
-%!assert (nproc ("current") >= 1);
+%!assert (nproc () >= 1)
+%!assert (nproc ("all") >= 1)
+%!assert (nproc ("current") >= 1)
 
 %!test
 %! c = nproc ("current");
@@ -105,5 +96,6 @@ environment variable.\n\
 %!   endif
 %! end_unwind_protect
 
-%!error nproc ("no_valid_option");
+%!error nproc ("no_valid_option")
 */
+

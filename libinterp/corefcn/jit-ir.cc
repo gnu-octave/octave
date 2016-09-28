@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -26,20 +26,20 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 #include "jit-ir.h"
 
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/BasicBlock.h>
-#include <llvm/IR/Instructions.h>
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
+#  include <llvm/IR/BasicBlock.h>
+#  include <llvm/IR/Instructions.h>
 #else
-#include <llvm/BasicBlock.h>
-#include <llvm/Instructions.h>
+#  include <llvm/BasicBlock.h>
+#  include <llvm/Instructions.h>
 #endif
 
 #include "error.h"
@@ -147,7 +147,7 @@ jit_use::user_parent (void) const
 
 // -------------------- jit_value --------------------
 jit_value::~jit_value (void)
-{}
+{ }
 
 jit_block *
 jit_value::first_use_block (void)
@@ -782,7 +782,7 @@ jit_magic_end::context::context (jit_factory& factory, jit_value *avalue,
                                  size_t aindex, size_t acount)
   : value (avalue), index (factory.create<jit_const_index> (aindex)),
     count (factory.create<jit_const_index> (acount))
-{}
+{ }
 
 jit_magic_end::jit_magic_end (const std::vector<context>& full_context)
   : contexts (full_context)
@@ -843,3 +843,4 @@ jit_magic_end::overload () const
 }
 
 #endif
+

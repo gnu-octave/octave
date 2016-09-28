@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Jaroslav Hajek
+Copyright (C) 2009-2016 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,39 +21,42 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_bsxfun_decl_h)
+#if ! defined (octave_bsxfun_decl_h)
 #define octave_bsxfun_decl_h 1
 
-#define BSXFUN_OP_DECL(OP, ARRAY, API) \
-extern API ARRAY bsxfun_ ## OP (const ARRAY&, const ARRAY&);
+#include "octave-config.h"
 
-#define BSXFUN_OP2_DECL(OP, ARRAY, ARRAY1, ARRAY2, API) \
-extern API ARRAY bsxfun_ ## OP (const ARRAY1&, const ARRAY2&);
+#define BSXFUN_OP_DECL(OP, ARRAY, API)                          \
+  extern API ARRAY bsxfun_ ## OP (const ARRAY&, const ARRAY&);
 
-#define BSXFUN_REL_DECL(OP, ARRAY, API) \
-extern API boolNDArray bsxfun_ ## OP (const ARRAY&, const ARRAY&);
+#define BSXFUN_OP2_DECL(OP, ARRAY, ARRAY1, ARRAY2, API)                 \
+  extern API ARRAY bsxfun_ ## OP (const ARRAY1&, const ARRAY2&);
 
-#define BSXFUN_STDOP_DECLS(ARRAY, API) \
-  BSXFUN_OP_DECL (add, ARRAY, API) \
-  BSXFUN_OP_DECL (sub, ARRAY, API) \
-  BSXFUN_OP_DECL (mul, ARRAY, API) \
-  BSXFUN_OP_DECL (div, ARRAY, API) \
-  BSXFUN_OP_DECL (pow, ARRAY, API) \
-  BSXFUN_OP_DECL (min, ARRAY, API) \
+#define BSXFUN_REL_DECL(OP, ARRAY, API)                                 \
+  extern API boolNDArray bsxfun_ ## OP (const ARRAY&, const ARRAY&);
+
+#define BSXFUN_STDOP_DECLS(ARRAY, API)          \
+  BSXFUN_OP_DECL (add, ARRAY, API)              \
+  BSXFUN_OP_DECL (sub, ARRAY, API)              \
+  BSXFUN_OP_DECL (mul, ARRAY, API)              \
+  BSXFUN_OP_DECL (div, ARRAY, API)              \
+  BSXFUN_OP_DECL (pow, ARRAY, API)              \
+  BSXFUN_OP_DECL (min, ARRAY, API)              \
   BSXFUN_OP_DECL (max, ARRAY, API)
 
-#define BSXFUN_MIXED_INT_DECLS(INT_TYPE, API)         \
+#define BSXFUN_MIXED_INT_DECLS(INT_TYPE, API)                   \
   BSXFUN_OP2_DECL (pow, INT_TYPE, INT_TYPE, NDArray, API)       \
   BSXFUN_OP2_DECL (pow, INT_TYPE, INT_TYPE, FloatNDArray, API)  \
   BSXFUN_OP2_DECL (pow, INT_TYPE, NDArray, INT_TYPE, API)       \
   BSXFUN_OP2_DECL (pow, INT_TYPE, FloatNDArray, INT_TYPE, API)
 
-#define BSXFUN_STDREL_DECLS(ARRAY, API) \
-  BSXFUN_REL_DECL (eq, ARRAY, API) \
-  BSXFUN_REL_DECL (ne, ARRAY, API) \
-  BSXFUN_REL_DECL (lt, ARRAY, API) \
-  BSXFUN_REL_DECL (le, ARRAY, API) \
-  BSXFUN_REL_DECL (gt, ARRAY, API) \
+#define BSXFUN_STDREL_DECLS(ARRAY, API)         \
+  BSXFUN_REL_DECL (eq, ARRAY, API)              \
+  BSXFUN_REL_DECL (ne, ARRAY, API)              \
+  BSXFUN_REL_DECL (lt, ARRAY, API)              \
+  BSXFUN_REL_DECL (le, ARRAY, API)              \
+  BSXFUN_REL_DECL (gt, ARRAY, API)              \
   BSXFUN_REL_DECL (ge, ARRAY, API)
 
 #endif
+

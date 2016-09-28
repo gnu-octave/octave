@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
 #include "error.h"
 #include "pr-output.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-colon.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon,
@@ -46,3 +46,4 @@ octave_magic_colon::print_raw (std::ostream& os, bool) const
 {
   os << ":";
 }
+

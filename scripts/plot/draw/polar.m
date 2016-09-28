@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polar (@var{theta}, @var{rho})
-## @deftypefnx {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
-## @deftypefnx {Function File} {} polar (@var{cplx})
-## @deftypefnx {Function File} {} polar (@var{cplx}, @var{fmt})
-## @deftypefnx {Function File} {} polar (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} polar (@dots{})
+## @deftypefn  {} {} polar (@var{theta}, @var{rho})
+## @deftypefnx {} {} polar (@var{theta}, @var{rho}, @var{fmt})
+## @deftypefnx {} {} polar (@var{cplx})
+## @deftypefnx {} {} polar (@var{cplx}, @var{fmt})
+## @deftypefnx {} {} polar (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} polar (@dots{})
 ## Create a 2-D plot from polar coordinates @var{theta} and @var{rho}.
 ##
 ## If a single complex input @var{cplx} is given then the real part is used
@@ -95,7 +95,7 @@ function h = polar (varargin)
       print_usage ();
     endif
 
-    if (! ishold (hax))
+    if (! ishold ())
       hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
 
       set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
@@ -127,7 +127,8 @@ function h = polar (varargin)
       addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
       addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
       addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
-      addlistener (hax, "interpreter", {@__update_text__, hg, "interpreter"});
+      addlistener (hax, "ticklabelinterpreter",
+                   {@__update_text__, hg, "interpreter"});
       addlistener (hax, "layer", {@__update_layer__, hg});
       addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
       addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
@@ -155,15 +156,24 @@ endfunction
 
 function rtick = __calc_rtick__ (hax, maxr)
   ## FIXME: workaround: calculate r(ho)tick from xtick
-  savexlim = get (hax, "xlim");
-  saveylim = get (hax, "ylim");
+  ##        It would be better to just calculate the values,
+  ##        but that code is deep in the C++ for the plot engines.
+  saved_lims = get (hax, {"xlim", "ylim"});
   set (hax, "xlim", [-maxr maxr], "ylim", [-maxr maxr]);
+
   xtick = get (hax, "xtick");
-  rtick = xtick(find (xtick > 0, 1):find (xtick >= maxr, 1));
-  if (isempty (rtick))
-    rtick = [0.5 1];
+  minidx = find (xtick > 0, 1);
+  maxidx = find (xtick >= maxr, 1);
+  if (! isempty (maxidx))
+    rtick = xtick(minidx:maxidx);
+  else
+    ## Add one more tick through linear interpolation
+    rtick = xtick(minidx:end);
+    rtick(end+1) = xtick(end) + diff (xtick(end-1:end));
   endif
-  set (hax, "xlim", savexlim, "ylim", saveylim);
+
+  set (hax, {"xlim", "ylim"}, saved_lims);
+
 endfunction
 
 function retval = __plr1__ (h, theta, fmt)
@@ -186,6 +196,7 @@ function retval = __plr2__ (h, theta, rho, fmt)
   if (ndims (theta) > 2 || ndims (rho) > 2)
     error ("polar: THETA and RHO must be 2-D objects");
   endif
+
   theta = real (theta);
   rho = real (rho);
 
@@ -302,6 +313,7 @@ function __update_layer__ (hax, ~, hg)
   unwind_protect_cleanup
     set (0, "showhiddenhandles", shh);
   end_unwind_protect
+
 endfunction
 
 function __update_polar_grid__ (hax, ~, hg)
@@ -325,8 +337,10 @@ function __update_polar_grid__ (hax, ~, hg)
             "linewidth", get(hax, "linewidth")};
   ## "fontunits" should be first because it affects "fontsize" property.
   tprops(1:2:12) = {"fontunits", "fontangle", "fontname", "fontsize", ...
-                    "fontweight", "interpreter"};
+                    "fontweight", "ticklabelinterpreter"};
   tprops(2:2:12) = get (hax, tprops(1:2:12));
+  tprops(1:2:12) = strrep (tprops(1:2:12), "ticklabelinterpreter",
+                           "interpreter");
 
   ## The number of points used for a circle
   circle_points = 50;
@@ -381,7 +395,7 @@ function resetaxis (~, ~, hax)
     dellistener (hax, "fontsize");
     dellistener (hax, "fontunits");
     dellistener (hax, "fontweight");
-    dellistener (hax, "interpreter");
+    dellistener (hax, "ticklabelinterpreter");
     dellistener (hax, "layer");
     dellistener (hax, "gridlinestyle");
     dellistener (hax, "linewidth");
@@ -394,36 +408,36 @@ endfunction
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (7*theta);
 %! polar (theta, rho);
-%! title ('polar() plot');
+%! title ("polar() plot");
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! cplx = theta + i*sin (7*theta);
-%! polar (cplx, 'g');
-%! title ('polar() plot of complex data');
+%! polar (cplx, "g");
+%! title ("polar() plot of complex data");
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (2*theta).*cos (2*theta);
-%! polar (theta, rho, '--r');
-%! set (gca, 'rtick', 0.1:0.1:0.6, 'ttick', 0:20:340);
-%! title ('polar() plot with finer grid');
+%! polar (theta, rho, "--r");
+%! set (gca, "rtick", 0.1:0.1:0.6, "ttick", 0:20:340);
+%! title ("polar() plot with finer grid");
 
 %!demo
 %! clf;
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (2*theta).*cos (2*theta);
-%! polar (theta, rho, '--b');
-%! set (gca, 'fontsize', 12, 'linewidth', 2, 'color', [0.8 0.8 0.8]);
-%! title ('polar() plot with modified axis appearance');
+%! polar (theta, rho, "--b");
+%! set (gca, "fontsize", 12, "linewidth", 2, "color", [0.8 0.8 0.8]);
+%! title ("polar() plot with modified axis appearance");
 
 %!demo
 %! clf;
 %! theta = linspace (0,8*pi,1000);
 %! rho = sin (5/4*theta);
 %! polar (theta, rho);
-%! set (gca, 'rtick', 0.2:0.2:1);
-%! title ('polar() plot');
+%! set (gca, "rtick", 0.2:0.2:1);
+%! title ("polar() plot");
 

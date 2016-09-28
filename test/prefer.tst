@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -33,9 +33,9 @@
 %! m = [3,2];
 %! fail ("[m ']");
 
-%!assert (all ([3 2] == (3:-1:2)));
+%!assert (all ([3 2] == (3:-1:2)))
 
-%!assert (all ([3, 2] == (3:-1:2)));
+%!assert (all ([3, 2] == (3:-1:2)))
 
 %!test
 %! m = [3,2];
@@ -107,9 +107,9 @@
 %! assert (!isempty (findstr (b{1}, "[](0x0)")));
 %! print_empty_dimensions (ped);
 
-%!assert (all (size (inv ([])) == [0, 0]));
+%!assert (all (size (inv ([])) == [0, 0]))
 
-%!assert (all (svd ([]) == zeros (0, 1)));
+%!assert (all (svd ([]) == zeros (0, 1)))
 
 %!test
 %! sp = save_precision ();

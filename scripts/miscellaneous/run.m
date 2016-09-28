@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} run @var{script}
-## @deftypefnx {Function File} {} run ("@var{script}")
+## @deftypefn  {} {} run @var{script}
+## @deftypefnx {} {} run ("@var{script}")
 ## Run @var{script} in the current workspace.
 ##
 ## Scripts which reside in directories specified in Octave's load path, and
 ## which end with the extension @file{".m"}, can be run simply by typing
 ## their name.  For scripts not located on the load path, use @code{run}.
 ##
-## The file name @var{script} can be a bare, fully qualified, or relative
-## filename and with or without a file extension.  If no extension is specified,
-## Octave will first search for a script with the @file{".m"} extension before
-## falling back to the script name without an extension.
+## The filename @var{script} can be a bare, fully qualified, or relative
+## filename and with or without a file extension.  If no extension is
+## specified, Octave will first search for a script with the @file{".m"}
+## extension before falling back to the script name without an extension.
 ##
 ## Implementation Note: If @var{script} includes a path component, then
 ## @code{run} first changes the working directory to the directory where
@@ -59,21 +59,23 @@ function run (script)
   endif
 
   if (! isempty (d))
-    if (exist (d, "dir"))
-      startdir = pwd ();
-      d = make_absolute_filename (d);
-      unwind_protect
-        cd (d);
-        evalin ("caller", sprintf ("source ('%s%s');", f, ext),
-                "rethrow (lasterror ())");
-      unwind_protect_cleanup
-        if (strcmp (d, pwd ()))
-          cd (startdir);
-        endif
-      end_unwind_protect
-    else
+    if (! exist (d, "dir"))
       error ("run: the path %s doesn't exist", d);
     endif
+
+    startdir = pwd ();
+    scriptdir = "";
+    unwind_protect
+      cd (d);
+      scriptdir = pwd ();
+      evalin ("caller", sprintf ("source ('%s%s');", f, ext),
+              "rethrow (lasterror ())");
+    unwind_protect_cleanup
+      if (strcmp (scriptdir, pwd ()))
+        cd (startdir);
+      endif
+    end_unwind_protect
+
   else
     if (! isempty (ext))
       script = which (script);
@@ -84,6 +86,7 @@ function run (script)
     evalin ("caller", sprintf ("source ('%s');", script),
             "rethrow (lasterror ())");
   endif
+
 endfunction
 
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,17 +21,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include "MDiagArray2.h"
 #include "Array-util.h"
 #include "lo-error.h"
 
-#include "MArray-defs.h"
-
-template <class T>
+template <typename T>
 bool
 MDiagArray2<T>::is_multiple_of_identity (T val) const
 {
@@ -54,11 +52,11 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
 
 // Element by element MDiagArray2 by scalar ops.
 
-#define MARRAY_DAS_OP(OP, FN) \
-  template <class T> \
-  MDiagArray2<T> \
-  operator OP (const MDiagArray2<T>& a, const T& s) \
-  { \
+#define MARRAY_DAS_OP(OP, FN)                                           \
+  template <typename T>                                                 \
+  MDiagArray2<T>                                                        \
+  operator OP (const MDiagArray2<T>& a, const T& s)                     \
+  {                                                                     \
     return MDiagArray2<T> (do_ms_binary_op<T, T, T> (a, s, FN), a.d1, a.d2); \
   }
 
@@ -67,23 +65,24 @@ MARRAY_DAS_OP (/, mx_inline_div)
 
 // Element by element scalar by MDiagArray2 ops.
 
-template <class T>
+template <typename T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
   return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul),
-                                                   a.d1, a.d2);
+                         a.d1, a.d2);
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
 
-#define MARRAY_DADA_OP(FCN, OP, FN) \
-  template <class T> \
-  MDiagArray2<T> \
-  FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
-  { \
-    if (a.d1 != b.d1 || a.d2 != b.d2) \
-      gripe_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2); \
+#define MARRAY_DADA_OP(FCN, OP, FN)                                     \
+  template <typename T>                                                 \
+  MDiagArray2<T>                                                        \
+  FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b)                \
+  {                                                                     \
+    if (a.d1 != b.d1 || a.d2 != b.d2)                                   \
+      octave::err_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2);                 \
+                                                                        \
     return MDiagArray2<T> (do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN), a.d1, a.d2); \
   }
 
@@ -93,17 +92,18 @@ MARRAY_DADA_OP (product,    *, mx_inline_mul)
 
 // Unary MDiagArray2 ops.
 
-template <class T>
+template <typename T>
 MDiagArray2<T>
 operator + (const MDiagArray2<T>& a)
 {
   return a;
 }
 
-template <class T>
+template <typename T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
   return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus),
                          a.d1, a.d2);
 }
+

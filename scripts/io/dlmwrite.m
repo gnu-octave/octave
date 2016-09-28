@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2015 Paul Kienzle
+## Copyright (C) 2002-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,17 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dlmwrite (@var{file}, @var{M})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
-## @deftypefnx {Function File} {} dlmwrite (@var{fid}, @dots{})
-## Write the matrix @var{M} to the named file using delimiters.
+## @deftypefn  {} {} dlmwrite (@var{file}, @var{M})
+## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, @var{delim}, @var{r}, @var{c})
+## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
+## @deftypefnx {} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
+## @deftypefnx {} {} dlmwrite (@var{fid}, @dots{})
+## Write the numeric matrix @var{M} to the text file @var{file} using a
+## delimiter.
 ##
-## @var{file} should be a file name or writable file ID given by @code{fopen}.
+## @var{file} should be a filename or a writable file ID given by @code{fopen}.
 ##
 ## The parameter @var{delim} specifies the delimiter to use to separate values
-## on a row.
+## on a row.  If no delimiter is specified the comma character @samp{,} is
+## used.
 ##
 ## The value of @var{r} specifies the number of delimiter-only lines to add to
 ## the start of the file.
@@ -48,12 +50,11 @@
 ## See @var{delim} above.
 ##
 ## @item @qcode{"newline"}
-## The character(s) to use to separate each row.  Three special cases exist
-## for this option.  @qcode{"unix"} is changed into
-## @qcode{"@xbackslashchar{}n"}, @qcode{"pc"} is changed into
-## @qcode{"@xbackslashchar{}r@xbackslashchar{}n"}, and @qcode{"mac"} is
-## changed into @qcode{"@xbackslashchar{}r"}.  Any other value is used
-## directly as the newline separator.
+## The character(s) to separate each row.  Three special cases exist for this
+## option.  @qcode{"unix"} is changed into @qcode{"@xbackslashchar{}n"},
+## @qcode{"pc"} is changed into @qcode{"@xbackslashchar{}r@xbackslashchar{}n"},
+## and @qcode{"mac"} is changed into @qcode{"@xbackslashchar{}r"}.  Any other
+## value is used directly as the newline separator.
 ##
 ## @item @qcode{"roffset"}
 ## See @var{r} above.
@@ -107,7 +108,7 @@ function dlmwrite (file, M, varargin)
   ## process the input arguments
   i = 0;
   while (i < length (varargin))
-    i++;
+    i += 1;
     if (strcmpi (varargin{i}, "delimiter"))
       delim = varargin{++i};
     elseif (strcmpi (varargin{i}, "newline"))
@@ -131,7 +132,7 @@ function dlmwrite (file, M, varargin)
     elseif (strcmpi (varargin{i}, "-append"))
       opentype = "at";
     elseif (strcmpi (varargin{i}, "append"))
-      i++;
+      i += 1;
       if (strcmpi (varargin{i}, "on"))
         opentype = "at";
       elseif (strcmpi (varargin{i}, "off"))

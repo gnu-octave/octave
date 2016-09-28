@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_unop_h)
+#if ! defined (octave_pt_unop_h)
 #define octave_pt_unop_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -110,7 +112,6 @@ public:
 
   std::string profiler_name (void) const { return "prefix " + oper (); }
 
-
 private:
 
   // No copying!
@@ -160,3 +161,4 @@ private:
 };
 
 #endif
+

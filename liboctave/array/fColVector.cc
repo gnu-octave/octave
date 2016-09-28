@@ -1,7 +1,7 @@
 // ColumnVector manipulations.
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -22,40 +22,27 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
 #include "Array-util.h"
-#include "f77-fcn.h"
 #include "functor.h"
+#include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
-
-// Fortran functions we call.
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const float&, const float*, const octave_idx_type&,
-                           const float*, const octave_idx_type&, const float&,
-                           float*, const octave_idx_type&
-                           F77_CHAR_ARG_LEN_DECL);
-}
 
 // Column Vector class.
 
 bool
 FloatColumnVector::operator == (const FloatColumnVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -69,13 +56,10 @@ FloatColumnVector::operator != (const FloatColumnVector& a) const
 FloatColumnVector&
 FloatColumnVector::insert (const FloatColumnVector& a, octave_idx_type r)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (r < 0 || r + a_len > length ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+  if (r < 0 || r + a_len > numel ())
+    (*current_liboctave_error_handler) ("range error for insert");
 
   if (a_len > 0)
     {
@@ -91,7 +75,7 @@ FloatColumnVector::insert (const FloatColumnVector& a, octave_idx_type r)
 FloatColumnVector&
 FloatColumnVector::fill (float val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -107,13 +91,10 @@ FloatColumnVector::fill (float val)
 FloatColumnVector&
 FloatColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   if (r1 > r2) { std::swap (r1, r2); }
 
@@ -131,9 +112,9 @@ FloatColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r2)
 FloatColumnVector
 FloatColumnVector::stack (const FloatColumnVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nr_insert = len;
-  FloatColumnVector retval (len + a.length ());
+  FloatColumnVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nr_insert);
   return retval;
@@ -201,27 +182,25 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
-  else
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
+
+  retval.clear (nr);
+
+  if (nr != 0)
     {
-      retval.clear (nr);
-
-      if (nr != 0)
+      if (nc == 0)
+        retval.fill (0.0);
+      else
         {
-          if (nc == 0)
-            retval.fill (0.0);
-          else
-            {
-              float *y = retval.fortran_vec ();
+          float *y = retval.fortran_vec ();
 
-              F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                       nr, nc, 1.0f, m.data (), nr,
-                                       a.data (), 1, 0.0f, y, 1
-                                       F77_CHAR_ARG_LEN (1)));
-            }
+          F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+                                   nr, nc, 1.0f, m.data (), nr,
+                                   a.data (), 1, 0.0f, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
         }
     }
 
@@ -238,24 +217,22 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.cols ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (nc != a_len)
-    gripe_nonconformant ("operator *", nr, nc, a_len, 1);
+    octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
+
+  if (nr == 0 || nc == 0)
+    retval.resize (nr, 0.0);
   else
     {
-      if (nr == 0 || nc == 0)
-        retval.resize (nr, 0.0);
-      else
-        {
-          retval.resize (nr);
+      retval.resize (nr);
 
-          for (octave_idx_type i = 0; i < a_len; i++)
-            retval.elem (i) = a.elem (i) * m.elem (i, i);
+      for (octave_idx_type i = 0; i < a_len; i++)
+        retval.elem (i) = a.elem (i) * m.elem (i, i);
 
-          for (octave_idx_type i = a_len; i < nr; i++)
-            retval.elem (i) = 0.0;
-        }
+      for (octave_idx_type i = a_len; i < nr; i++)
+        retval.elem (i) = 0.0;
     }
 
   return retval;
@@ -266,7 +243,7 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
 float
 FloatColumnVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0.0;
 
@@ -282,7 +259,7 @@ FloatColumnVector::min (void) const
 float
 FloatColumnVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0.0;
 
@@ -299,7 +276,7 @@ std::ostream&
 operator << (std::ostream& os, const FloatColumnVector& a)
 {
 //  int field_width = os.precision () + 7;
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << /* setw (field_width) << */ a.elem (i) << "\n";
   return os;
 }
@@ -307,7 +284,7 @@ operator << (std::ostream& os, const FloatColumnVector& a)
 std::istream&
 operator >> (std::istream& is, FloatColumnVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {
@@ -323,3 +300,4 @@ operator >> (std::istream& is, FloatColumnVector& a)
     }
   return is;
 }
+

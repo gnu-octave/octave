@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Ben Abbott, Jonas Lundgren
+## Copyright (C) 2012-2016 Ben Abbott, Jonas Lundgren
 ##
 ## This file is part of Octave.
 ##
@@ -16,10 +16,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function splineimages (nm, typ)
-  graphics_toolkit ("gnuplot");
+function splineimages (d, nm, typ)
+  set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
+  outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -30,7 +31,7 @@ function splineimages (nm, typ)
   endif
 
   if (strcmp (typ, "txt"))
-    image_as_txt (nm);
+    image_as_txt (d, nm);
   elseif (strcmp (nm, "splinefit1")) ## Breaks and Pieces
     x = 2 * pi * rand (1, 200);
     y = sin (x) + sin (2 * x) + 0.2 * randn (size (x));
@@ -47,7 +48,7 @@ function splineimages (nm, typ)
     axis tight;
     ylim ([-2.5 2.5]);
     legend ("data", "41 breaks, 40 pieces", "11 breaks, 10 pieces");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit2")) ## Spline orders
     ## Data (200 points)
     x = 2 * pi * rand (1, 200);
@@ -69,7 +70,7 @@ function splineimages (nm, typ)
     axis tight;
     ylim ([-2.5 2.5]);
     legend ({"data", "order 0", "order 1", "order 2", "order 3", "order 4"});
-    print ([nm, "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit3"))
     ## Data (100 points)
     x = 2 * pi * [0, (rand (1, 98)), 1];
@@ -86,7 +87,7 @@ function splineimages (nm, typ)
     axis tight;
     ylim ([-2 3]);
     legend ({"data", "no constraints", "periodic"});
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit4"))
     ## Data (200 points)
     x = 2 * pi * rand (1, 200);
@@ -108,8 +109,8 @@ function splineimages (nm, typ)
     plot (x, y, ".", xx, [y1; y2]);
     axis tight;
     ylim ([-1.5 1.5]);
-    legend({"data", "clamped", "hinged periodic"});
-    print ([nm "." typ], d_typ);
+    legend ({"data", "clamped", "hinged periodic"});
+    print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit5"))
     ## Truncated data
     x = [0,  1,  2,  4,  8, 16, 24, 40, 56, 72, 80] / 80;
@@ -130,7 +131,7 @@ function splineimages (nm, typ)
     legend ({"data", "spline", "breaks"});
     axis tight;
     ylim ([0 0.1]);
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "splinefit6"))
     ## Data
     x = linspace (0, 2*pi, 200);
@@ -153,31 +154,49 @@ function splineimages (nm, typ)
              "robust, beta = 0.75", "no robust fitting"});
     axis tight;
     ylim ([-2 2]);
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   endif
   hide_output ();
 endfunction
 
+## This function no longer sets the graphics toolkit; That is now done
+## automatically by C++ code which will ordinarily choose 'qt', but might
+## choose gnuplot on older systems.  Only a complete lack of plotting is a
+## problem.
+function set_graphics_toolkit ()
+  if (isempty (available_graphics_toolkits ()))
+    error ("no graphics toolkit available for plotting");
+  elseif (! strcmp ("gnuplot", graphics_toolkit ())
+          && ! __have_feature__ ("OSMESA"))
+    if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
+      error ("no graphics toolkit available for offscreen plotting");
+    else
+      graphics_toolkit ("gnuplot");
+    endif
+  endif
+endfunction
+
 function set_print_size ()
-  image_size = [5.0, 3.5]; # in inches, 16:9 format
+  image_size = [8.0, 6.0]; # in inches, 4:3 format
   border = 0;              # For postscript use 50/72
   set (0, "defaultfigurepapertype", "<custom>");
   set (0, "defaultfigurepaperorientation", "landscape");
   set (0, "defaultfigurepapersize", image_size + 2*border);
   set (0, "defaultfigurepaperposition", [border, border, image_size]);
+  ## FIXME: Required until listener for legend exists (bug #39697)
+  set (0, "defaultfigureposition", [ 72*[border, border, image_size] ]);
 endfunction
 
-## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnpulot
-## can't pop output as it can the terminal type).
+## Use this function before plotting commands and after every call to print
+## since print() resets output to stdout (unfortunately, gnuplot can't pop
+## output as it can the terminal type).
 function hide_output ()
-  f = figure (1);
-  set (f, "visible", "off");
+  hf = figure (1, "visible", "off");
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(nm)
-  fid = fopen (sprintf ("%s.txt", nm), "wt");
+function image_as_txt (d, nm)
+  fid = fopen (fullfile (d, [nm ".txt"]), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");
@@ -188,6 +207,6 @@ endfunction
 
 %!demo
 %! for s = 1:6
-%!   splineimages (sprintf ("splinefit##d", s), "pdf")
+%!   splineimages (sprintf ("splinefit##d", s), "pdf");
 %! endfor
 

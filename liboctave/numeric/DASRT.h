@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,13 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DASRT_h)
+#if ! defined (octave_DASRT_h)
 #define octave_DASRT_h 1
+
+#include "octave-config.h"
 
 #include <cfloat>
 
 #include "DASRT-opts.h"
-#include "lo-math.h"
 
 class
 DASRT_result
@@ -122,3 +123,4 @@ private:
 };
 
 #endif
+

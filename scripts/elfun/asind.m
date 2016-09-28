@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman
+## Copyright (C) 2006-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} asind (@var{x})
+## @deftypefn {} {} asind (@var{x})
 ## Compute the inverse sine in degrees for each element of @var{x}.
 ## @seealso{sind, asin}
 ## @end deftypefn

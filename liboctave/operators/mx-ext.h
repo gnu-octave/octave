@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,13 +20,18 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mx_ext_h)
+#if ! defined (octave_mx_ext_h)
 #define octave_mx_ext_h 1
+
+#include "octave-config.h"
 
 // Result of a AEP Balance operation.
 
-#include "dbleAEPBAL.h"
-#include "CmplxAEPBAL.h"
+#include "aepbalance.h"
+
+// Result of a GEP Balance operation.
+
+#include "gepbalance.h"
 
 // Result of a Determinant calculation.
 
@@ -34,47 +39,36 @@ along with Octave; see the file COPYING.  If not, see
 
 // Result of a Cholesky Factorization
 
-#include "dbleCHOL.h"
-#include "CmplxCHOL.h"
-#include "floatCHOL.h"
-#include "fCmplxCHOL.h"
+#include "chol.h"
 
 // Result of a Hessenberg Decomposition
 
-#include "dbleHESS.h"
-#include "CmplxHESS.h"
+#include "hess.h"
 
 // Result of a Schur Decomposition
 
-#include "dbleSCHUR.h"
-#include "CmplxSCHUR.h"
-#include "floatSCHUR.h"
-#include "fCmplxSCHUR.h"
+#include "schur.h"
 
 // Result of a Singular Value Decomposition.
 
-#include "dbleSVD.h"
-#include "CmplxSVD.h"
-#include "floatSVD.h"
-#include "fCmplxSVD.h"
+#include "svd.h"
 
 // Result of an Eigenvalue computation.
 
 #include "EIG.h"
 
+// Result of a Generalized Singular Value Decomposition.
+
+#include "gsvd.h"
+
+
 // Result of an LU decomposition.
 
-#include "dbleLU.h"
-#include "CmplxLU.h"
-#include "floatLU.h"
-#include "fCmplxLU.h"
+#include "lu.h"
 
 // Result of a QR decomposition.
 
-#include "dbleQR.h"
-#include "CmplxQR.h"
-
-#include "dbleQRP.h"
-#include "CmplxQRP.h"
+#include "qr.h"
 
 #endif
+

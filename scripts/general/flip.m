@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 David Bateman
+## Copyright (C) 2004-2016 David Bateman
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} flip (@var{x})
-## @deftypefnx {Function File} {} flip (@var{x}, @var{dim})
+## @deftypefn  {} {} flip (@var{x})
+## @deftypefnx {} {} flip (@var{x}, @var{dim})
 ## Flip array across dimension @var{dim}.
 ##
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.
@@ -88,7 +88,7 @@ endfunction
 %! a(1:2,1:2,2) = [5 6; 7 8];
 %! b(1:2,1:2,1) = [5 6; 7 8];
 %! b(1:2,1:2,2) = [1 2; 3 4];
-%! assert (flip (a, 3), b)
+%! assert (flip (a, 3), b);
 
 %!test
 %! a = b = zeros (2, 2, 1, 2);
@@ -96,9 +96,9 @@ endfunction
 %! a(1:2,1:2,:,2) = [5 6; 7 8];
 %! b(1:2,1:2,:,1) = [5 6; 7 8];
 %! b(1:2,1:2,:,2) = [1 2; 3 4];
-%! assert (flip (a, 3), a)
-%! assert (flip (a, 4), b)
-%! assert (flip (a, 5), a)
+%! assert (flip (a, 3), a);
+%! assert (flip (a, 4), b);
+%! assert (flip (a, 5), a);
 
 %!error flip ()
 %!error flip (1, 2, 3)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -49,9 +49,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-save.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
@@ -75,7 +75,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 read_mat_binary_data (std::istream& is, double *data, int precision,
                       int len, bool swap,
-                      oct_mach_info::float_format flt_fmt)
+                      octave::mach_info::float_format flt_fmt)
 {
   switch (precision)
     {
@@ -125,16 +125,16 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
     return 1;
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
-    goto data_read_error;
+    return -1;
 
   if (! is.read (reinterpret_cast<char *> (&nc), 4))
-    goto data_read_error;
+    return -1;
 
   if (! is.read (reinterpret_cast<char *> (&imag), 4))
-    goto data_read_error;
+    return -1;
 
   if (! is.read (reinterpret_cast<char *> (&len), 4))
-    goto data_read_error;
+    return -1;
 
 // If mopt is nonzero and the byte order is swapped, mopt will be
 // bigger than we expect, so we swap bytes.
@@ -145,7 +145,7 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 //
 // Gag me.
 
-  if (oct_mach_info::words_big_endian () && mopt == 0)
+  if (octave::mach_info::words_big_endian () && mopt == 0)
     swap = true;
 
   // mopt is signed, therefore byte swap may result in negative value.
@@ -166,38 +166,36 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
     {
       if (! quiet)
         error ("load: can't read binary file");
+
       return -1;
     }
 
   return 0;
-
-data_read_error:
-  return -1;
 }
 
 // We don't just use a cast here, because we need to be able to detect
 // possible errors.
 
-oct_mach_info::float_format
+octave::mach_info::float_format
 mopt_digit_to_float_format (int mach)
 {
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
 
   switch (mach)
     {
     case 0:
-      flt_fmt = oct_mach_info::flt_fmt_ieee_little_endian;
+      flt_fmt = octave::mach_info::flt_fmt_ieee_little_endian;
       break;
 
     case 1:
-      flt_fmt = oct_mach_info::flt_fmt_ieee_big_endian;
+      flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
       break;
 
     case 2:
     case 3:
     case 4:
     default:
-      flt_fmt = oct_mach_info::flt_fmt_unknown;
+      flt_fmt = octave::mach_info::flt_fmt_unknown;
       break;
     }
 
@@ -205,17 +203,17 @@ mopt_digit_to_float_format (int mach)
 }
 
 int
-float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
+float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt)
 {
   int retval = -1;
 
   switch (flt_fmt)
     {
-    case oct_mach_info::flt_fmt_ieee_little_endian:
+    case octave::mach_info::flt_fmt_ieee_little_endian:
       retval = 0;
       break;
 
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       retval = 1;
       break;
 
@@ -242,29 +240,22 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 {
   std::string retval;
 
-  // These are initialized here instead of closer to where they are
-  // first used to avoid errors from gcc about goto crossing
-  // initialization of variable.
-
-  Matrix re;
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
   bool swap = false;
-  int type = 0;
-  int prec = 0;
-  int order = 0;
-  int mach = 0;
-  int dlen = 0;
-
   int32_t mopt, nr, nc, imag, len;
 
   int err = read_mat_file_header (is, swap, mopt, nr, nc, imag, len);
   if (err)
     {
       if (err < 0)
-        goto data_read_error;
-      else
-        return retval;
+        error ("load: trouble reading binary file '%s'", filename.c_str ());
+
+      return retval;
     }
+
+  int type = 0;
+  int prec = 0;
+  int order = 0;
+  int mach = 0;
 
   type = mopt % 10;  // Full, sparse, etc.
   mopt /= 10;        // Eliminate first digit.
@@ -274,19 +265,16 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   mopt /= 10;        // Eliminate third digit.
   mach = mopt % 10;  // IEEE, VAX, etc.
 
+  octave::mach_info::float_format flt_fmt;
   flt_fmt = mopt_digit_to_float_format (mach);
 
-  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
-    {
-      error ("load: unrecognized binary format!");
-      return retval;
-    }
+  if (flt_fmt == octave::mach_info::flt_fmt_unknown)
+    error ("load: unrecognized binary format!");
 
   if (imag && type == 1)
-    {
-      error ("load: encountered complex matrix with string flag set!");
-      return retval;
-    }
+    error ("load: encountered complex matrix with string flag set!");
+
+  int dlen = 0;
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it, but apparently not all files do.  Either
@@ -296,12 +284,12 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
     OCTAVE_LOCAL_BUFFER (char, name, len+1);
     name[len] = '\0';
     if (! is.read (name, len))
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
     retval = name;
 
     dlen = nr * nc;
     if (dlen < 0)
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
 
     if (order)
       {
@@ -369,15 +357,12 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       }
     else
       {
-        re.resize (nr, nc);
+        Matrix re (nr, nc);
 
         read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
 
-        if (! is || error_state)
-          {
-            error ("load: reading matrix data for '%s'", name);
-            goto data_read_error;
-          }
+        if (! is)
+          error ("load: reading matrix data for '%s'", name);
 
         if (imag)
           {
@@ -386,17 +371,14 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap,
                                   flt_fmt);
 
-            if (! is || error_state)
-              {
-                error ("load: reading imaginary matrix data for '%s'", name);
-                goto data_read_error;
-              }
+            if (! is)
+              error ("load: reading imaginary matrix data for '%s'", name);
 
             ComplexMatrix ctmp (nr, nc);
 
             for (octave_idx_type j = 0; j < nc; j++)
               for (octave_idx_type i = 0; i < nr; i++)
-                ctmp (i, j) = Complex (re (i, j), im (i, j));
+                ctmp (i,j) = Complex (re(i,j), im(i,j));
 
             tc = order ? ctmp.transpose () : ctmp;
           }
@@ -409,10 +391,6 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
     return retval;
   }
-
-data_read_error:
-  error ("load: trouble reading binary file '%s'", filename.c_str ());
-  return retval;
 }
 
 // Save the data from TC along with the corresponding NAME on stream OS
@@ -426,8 +404,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   mopt += tc.is_sparse_type () ? 2 : tc.is_string () ? 1 : 0;
 
-  oct_mach_info::float_format flt_fmt =
-    oct_mach_info::native_float_format ();;
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::native_float_format ();;
 
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 
@@ -471,7 +449,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   if (tc.is_string ())
     {
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       charMatrix chm = tc.char_matrix_value ();
 
@@ -498,7 +476,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       Range r = tc.range_value ();
       double base = r.base ();
       double inc = r.inc ();
-      octave_idx_type nel = r.nelem ();
+      octave_idx_type nel = r.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
         {
           double x = base + i * inc;
@@ -534,13 +512,13 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
           for (octave_idx_type i = 0; i < len; i++)
-            dtmp[i] = std::real (m.data (i));
+            dtmp[i] = octave::math::real (m.data (i));
           os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = 0.;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
           for (octave_idx_type i = 0; i < len; i++)
-            dtmp[i] = std::imag (m.data (i));
+            dtmp[i] = octave::math::imag (m.data (i));
           os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           os.write (reinterpret_cast<const char *> (&ds), 8);
         }
@@ -589,7 +567,9 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
     }
   else
-    gripe_wrong_type_arg ("save", tc, false);
+    // FIXME: Should this just error out rather than warn?
+    warn_wrong_type_arg ("save", tc);
 
   return ! os.fail ();
 }
+

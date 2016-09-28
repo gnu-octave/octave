@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,31 +20,32 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_PushTool__
-#define __QtHandles_PushTool__ 1
+#if ! defined (octave_PushTool_h)
+#define octave_PushTool_h 1
 
 #include "ToolBarButton.h"
 
 namespace QtHandles
 {
 
-class PushTool : public ToolBarButton<uipushtool>
-{
-  Q_OBJECT
+  class PushTool : public ToolBarButton<uipushtool>
+  {
+    Q_OBJECT
 
-public:
-  PushTool (const graphics_object& go, QAction* action);
-  ~PushTool (void);
+  public:
+    PushTool (const graphics_object& go, QAction* action);
+    ~PushTool (void);
 
-  static PushTool* create (const graphics_object& go);
+    static PushTool* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void clicked (void);
-};
+  private slots:
+    void clicked (void);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

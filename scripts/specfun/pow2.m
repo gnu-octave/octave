@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pow2 (@var{x})
-## @deftypefnx {Function File} {} pow2 (@var{f}, @var{e})
+## @deftypefn  {} {} pow2 (@var{x})
+## @deftypefnx {} {} pow2 (@var{f}, @var{e})
 ## With one input argument, compute
 ## @tex
 ## $2^x$

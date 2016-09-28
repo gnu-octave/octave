@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 Kai Habel
+Copyright (C) 2010-2016 Kai Habel
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
+#if defined (WIN32)
+#  define WIN32_LEAN_AND_MEAN
 #endif
 
 #include <FL/Fl.H>
@@ -42,21 +42,23 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "defun-dld.h"
+#include "errwarn.h"
 #include "file-ops.h"
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __fltk_uigetfile__ (@dots{})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __fltk_uigetfile__ (@dots{})
+Undocumented internal function.
+@end deftypefn */)
 {
-#ifdef HAVE_FLTK
+#if defined (HAVE_FLTK)
+
   // Expected argument list:
   //
   //   args(0) ... FileFilter in fltk format
   //   args(1) ... Title
   //   args(2) ... Default Filename
-  //   args(3) ... PostionValue [x,y]
+  //   args(3) ... PositionValue [x,y]
   //   args(4) ... SelectValue "on"/"off"/"dir"/"create"
 
   octave_value_list retval (3, octave_value (0));
@@ -123,10 +125,11 @@ Undocumented internal function.\n\
         }
 
       if (multi_type == Fl_File_Chooser::DIRECTORY)
-        retval(0) = file_ops::native_separator_path (std::string (fc.value ()));
+        retval(0) = octave::sys::file_ops::native_separator_path (
+                      std::string (fc.value ()));
       else
         {
-          retval(1) = file_ops::native_separator_path (
+          retval(1) = octave::sys::file_ops::native_separator_path (
                         std::string (fc.directory ()) + sep);
           retval(2) = fc.filter_value () + 1;
         }
@@ -136,9 +139,13 @@ Undocumented internal function.\n\
   Fl::flush ();
 
   return retval;
+
 #else
-  error ("__fltk_uigetfile__: not available without OpenGL and FLTK libraries");
-  return octave_value ();
+
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__fltk_uigetfile__", "OpenGL and FLTK");
+
 #endif
 }
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} caxis ([cmin cmax])
-## @deftypefnx {Function File} {} caxis ("auto")
-## @deftypefnx {Function File} {} caxis ("manual")
-## @deftypefnx {Function File} {} caxis (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{limits} =} caxis ()
+## @deftypefn  {} {} caxis ([cmin cmax])
+## @deftypefnx {} {} caxis ("auto")
+## @deftypefnx {} {} caxis ("manual")
+## @deftypefnx {} {} caxis (@var{hax}, @dots{})
+## @deftypefnx {} {@var{limits} =} caxis ()
 ## Query or set color axis limits for plots.
 ##
 ## The limits argument should be a 2-element vector specifying the lower and
@@ -80,7 +80,7 @@ function limits = __caxis__ (ca, ax, varargin)
   elseif (isvector (ax))
     len = length (ax);
     if (len != 2)
-      error ("caxis: expecting vector with 2 elements");
+      error ("caxis: LIMITS must be a 2-element vector");
     endif
 
     set (ca, "clim", [ax(1), ax(2)]);

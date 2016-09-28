@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,6 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// FIXME: Do not uncomment these lines to have this file included only once.
+//        The build will break (2/6/2016).
+// #if ! defined (octave_ov_intx_h)
+// #define octave_ov_intx_h 1
+
+#include "octave-config.h"
+
 #include <cstdlib>
 
 #include <iosfwd>
@@ -35,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-base-int.h"
 #include "ov-typeinfo.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
@@ -102,18 +109,15 @@ public:
   {
     double retval = lo_ieee_nan_value ();
 
-    if (numel () > 0)
-      {
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   type_name (), "real scalar");
+    if (is_empty ())
+      err_invalid_conversion (type_name (), "real scalar");
 
-        retval = matrix(0).double_value ();
-      }
-    else
-      gripe_invalid_conversion (type_name (), "real scalar");
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              type_name (), "real scalar");
+
+    retval = matrix(0).double_value ();
 
     return retval;
-
   }
 
   float
@@ -121,18 +125,15 @@ public:
   {
     float retval = lo_ieee_float_nan_value ();
 
-    if (numel () > 0)
-      {
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   type_name (), "real scalar");
+    if (is_empty ())
+      err_invalid_conversion (type_name (), "real scalar");
 
-        retval = matrix(0).float_value ();
-      }
-    else
-      gripe_invalid_conversion (type_name (), "real scalar");
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              type_name (), "real scalar");
+
+    retval = matrix(0).float_value ();
 
     return retval;
-
   }
 
   double scalar_value (bool = false) const { return double_value (); }
@@ -144,16 +145,15 @@ public:
   {
     Matrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
-    else
-      {
-        retval = Matrix (dv(0), dv(1));
-        double *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = matrix(i).double_value ();
-      }
+
+    retval = Matrix (dv(0), dv(1));
+    double *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = matrix(i).double_value ();
+
     return retval;
   }
 
@@ -162,16 +162,15 @@ public:
   {
     FloatMatrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
-    else
-      {
-        retval = FloatMatrix (dv(0), dv(1));
-        float *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = matrix(i).float_value ();
-      }
+
+    retval = FloatMatrix (dv(0), dv(1));
+    float *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = matrix(i).float_value ();
+
     return retval;
   }
 
@@ -180,16 +179,15 @@ public:
   {
     ComplexMatrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
-    else
-      {
-        retval = ComplexMatrix (dv(0), dv(1));
-        Complex *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = Complex (matrix(i).double_value ());
-      }
+
+    retval = ComplexMatrix (dv(0), dv(1));
+    Complex *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = Complex (matrix(i).double_value ());
+
     return retval;
   }
 
@@ -198,16 +196,15 @@ public:
   {
     FloatComplexMatrix retval;
     dim_vector dv = dims ();
-    if (dv.length () > 2)
+    if (dv.ndims () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
-    else
-      {
-        retval = FloatComplexMatrix (dv(0), dv(1));
-        FloatComplex *vec = retval.fortran_vec ();
-        octave_idx_type nel = matrix.numel ();
-        for (octave_idx_type i = 0; i < nel; i++)
-          vec[i] = FloatComplex (matrix(i).float_value ());
-      }
+
+    retval = FloatComplexMatrix (dv(0), dv(1));
+    FloatComplex *vec = retval.fortran_vec ();
+    octave_idx_type nel = matrix.numel ();
+    for (octave_idx_type i = 0; i < nel; i++)
+      vec[i] = FloatComplex (matrix(i).float_value ());
+
     return retval;
   }
 
@@ -263,7 +260,7 @@ public:
     octave_idx_type nel = numel ();
 
     if (warn && matrix.any_element_not_one_or_zero ())
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     bool *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
@@ -309,7 +306,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
   // Unsafe.  This function exists to support the MEX interface.
@@ -354,7 +351,7 @@ public:
       case umap_isna:
       case umap_isinf:
         return boolNDArray (matrix.dims (), false);
-      case umap_finite:
+      case umap_isfinite:
         return boolNDArray (matrix.dims (), true);
 
       // Special cases for Matlab compatibility.
@@ -373,7 +370,6 @@ public:
   }
 
 private:
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -577,7 +573,7 @@ public:
   bool bool_value (bool warn = false) const
   {
     if (warn && scalar != 0.0 && scalar != 1.0)
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     return scalar.bool_value ();
   }
@@ -588,7 +584,7 @@ public:
     boolNDArray retval (dim_vector (1, 1));
 
     if (warn && scalar != 0.0 && scalar != 1.0)
-      gripe_logical_conversion ();
+      warn_logical_conversion ();
 
     retval(0) = scalar.bool_value ();
 
@@ -617,7 +613,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, octave_idx_type skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   {
     return os.write (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (),
                      block_size, output_type, skip, flt_fmt);
@@ -660,7 +656,7 @@ public:
       case umap_isna:
       case umap_isinf:
         return false;
-      case umap_finite:
+      case umap_isfinite:
         return true;
 
       // Special cases for Matlab compatibility.
@@ -678,6 +674,6 @@ public:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
+

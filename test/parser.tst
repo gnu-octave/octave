@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 John W. Eaton
+## Copyright (C) 2010-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -90,18 +90,18 @@
 ## Level 11 (transpose and exponentiation)
 %!test
 %! a = 2;
-%! assert (2 ^a++, 4)
-%! assert (a, 3)
-%! assert (2 ^--a ^2, 16)
-%! assert (a, 2)
-%! assert (2 ^++a, 8)
-%! assert (a, 3)
-%! assert (a' ^2, 9)
-%! assert (2 ^sin(0), 1)
-%! assert (-2 ^2, -4);
-%! assert (2 ^+1 ^3, 8)
-%! assert (2 ^-1 ^3, 0.125)
-%! assert (2 ^~0 ^2, 4)
+%! assert (2 ^a++, 4);
+%! assert (a, 3);
+%! assert (2 ^--a ^2, 16);
+%! assert (a, 2);
+%! assert (2 ^++a, 8);
+%! assert (a, 3);
+%! assert (a' ^2, 9);
+%! assert (2 ^sin(0), 1);
+%! assert (-2 ^2, -4);;
+%! assert (2 ^+1 ^3, 8);
+%! assert (2 ^-1 ^3, 0.125);
+%! assert (2 ^~0 ^2, 4);
 %! assert (!0 ^0, false);
 %! assert (2*3 ^2, 18);
 %! assert (2+3 ^2, 11);
@@ -275,6 +275,24 @@
 %! assert (a += b *= c += 1, 42);
 %! assert (b == 40 && c == 8);
 
+## Test extended number format which allows '_' as NOP character
+%!assert (123_456, 123456)
+%!assert (.123_456, .123456)
+%!assert (123_456.123_456, 123456.123456)
+%!assert (0xAB_CD, 43981)
+%!assert (2e0_1, 20)
+
+## Test binary constants
+%!assert (0b101, 5)
+%!assert (0B1100_0001, 0xC1)
+%!assert (class (0b1), "double")
+
+## Test range of large binary and hexadecimal literals
+%!assert (0x8000_0000_0000_0000, 2^63)
+%!assert (0xFFFF_FFFF_FFFF_FFFF, 2^64)
+%!assert (0b10000000_0000000_000000000_00000000_00000000_00000000_00000000_00000000, 2^63)
+%!assert (0b11111111_1111111_111111111_11111111_11111111_11111111_11111111_11111111, 2^64)
+
 ## Test creation of anonymous functions
 
 %!test
@@ -303,4 +321,8 @@
 %!test
 %! a = {1, @sin, 2, @cos};
 %! b = {1 @sin 2 @cos};
-%! assert (a, b)
+%! assert (a, b);
+
+## Maybe unnecessary, but check that further changes to parser don't
+## invalidate error handling (bug #46534).
+#!error <vertical dimensions mismatch \(1x2 vs 1x1\)> z = [1, 2; 3]

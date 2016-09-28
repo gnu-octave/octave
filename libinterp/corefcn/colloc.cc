@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -31,51 +31,33 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 DEFUN (colloc, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
-Compute derivative and integral weight matrices for orthogonal collocation.\n\
-\n\
-Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
-@cite{Solution of Differential Equation Models by Polynomial Approximation}.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{r}, @var{amat}, @var{bmat}, @var{q}] =} colloc (@var{n}, "left", "right")
+Compute derivative and integral weight matrices for orthogonal collocation.
 
+Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
+@cite{Solution of Differential Equation Models by Polynomial Approximation}.
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (! args(0).is_scalar_type ())
-    {
-      error ("colloc: N must be a scalar");
-      return retval;
-    }
+    error ("colloc: N must be a scalar");
 
   double tmp = args(0).double_value ();
+  if (octave::math::isnan (tmp))
+    error ("colloc: N cannot be NaN");
 
-  if (error_state)
-    return retval;
-
-  if (xisnan (tmp))
-    {
-      error ("colloc: N cannot be NaN");
-      return retval;
-    }
-
-  octave_idx_type ncol = NINTbig (tmp);
+  octave_idx_type ncol = octave::math::nint_big (tmp);
   if (ncol < 0)
-    {
-      error ("colloc: N must be positive");
-      return retval;
-    }
+    error ("colloc: N must be positive");
 
   octave_idx_type ntot = ncol;
   octave_idx_type left = 0;
@@ -83,45 +65,20 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
 
   for (int i = 1; i < nargin; i++)
     {
-      if (args(i).is_defined ())
-        {
-          if (! args(i).is_string ())
-            {
-              error ("colloc: expecting string argument \"left\" or \"right\"");
-              return retval;
-            }
+      std::string s = args(i).xstring_value ("colloc: optional arguments must be strings");
 
-          std::string s = args(i).string_value ();
-
-          if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
-              || s == "right")
-            {
-              right = 1;
-            }
-          else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
-                   || s == "left")
-            {
-              left = 1;
-            }
-          else
-            {
-              error ("colloc: unrecognized argument");
-              return retval;
-            }
-        }
+      if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r')) || s == "right")
+        right = 1;
+      else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
+               || s == "left")
+        left = 1;
       else
-        {
-          error ("colloc: unexpected empty argument");
-          return retval;
-        }
+        error ("colloc: string argument must be \"left\" or \"right\"");
     }
 
   ntot += left + right;
   if (ntot < 1)
-    {
-      error ("colloc: the total number of roots must be positive");
-      return retval;
-    }
+    error ("colloc: the total number of roots must be positive");
 
   CollocWt wts (ncol, left, right);
 
@@ -130,10 +87,6 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},\n\
   Matrix B = wts.second ();
   ColumnVector q = wts.quad_weights ();
 
-  retval(3) = q;
-  retval(2) = B;
-  retval(1) = A;
-  retval(0) = r;
-
-  return retval;
+  return ovl (r, A, B, q);
 }
+

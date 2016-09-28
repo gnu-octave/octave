@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
+## @deftypefn {} {} strcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated
 ## horizontally.
 ##
@@ -82,11 +82,15 @@
 function st = strcat (varargin)
 
   if (nargin == 0)
-    print_usage ();
-  endif
-
-  if (nargin == 1)
-    st = varargin{1};
+    st = "";
+  elseif (nargin == 1)
+    if (iscellstr (varargin{1}))
+      st = varargin{1};
+    elseif (isreal (varargin{1}) || ischar (varargin{1}))
+      st = char (cellstr (varargin{1}));
+    else
+      error ("strcat: inputs must be strings or cells of strings");
+    endif
   else
     ## Convert to cells of strings
     uo = "uniformoutput";
@@ -146,8 +150,13 @@ endfunction
 %!assert (all (strcmp (strcat ({"a", "bb"}, "ccc"), {"accc", "bbccc"})))
 %!assert (all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
 
+## test with a single string or cell input
+%!assert <49094> (strcat ("foo    "), "foo")
+%!assert <49094> (strcat ({"foo"}), {"foo"})
+
+%!assert (strcat (1), char (1))
 %!assert (strcat (1, 2), strcat (char (1), char (2)))
 %!assert (strcat ("", 2), strcat ([], char (2)))
 
-%!error strcat ()
+%!assert (strcat (), "")
 

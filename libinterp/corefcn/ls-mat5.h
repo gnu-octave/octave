@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_mat5_h)
+#if ! defined (octave_ls_mat5_h)
 #define octave_ls_mat5_h 1
+
+#include "octave-config.h"
 
 enum mat5_data_type
 {
@@ -48,7 +50,7 @@ enum mat5_data_type
 extern int
 read_mat5_binary_file_header (std::istream& is, bool& swap,
                               bool quiet = false,
-                              const std::string& filename = std::string ());
+                              const std::string& filename = "");
 extern std::string
 read_mat5_binary_element (std::istream& is, const std::string& filename,
                           bool swap, bool& global, octave_value& tc);
@@ -59,3 +61,4 @@ save_mat5_binary_element (std::ostream& os,
                           bool save_as_floats, bool compressing = false);
 
 #endif
+

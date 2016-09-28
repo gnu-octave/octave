@@ -3,7 +3,7 @@
 // by Harald Jedele, 23.03.01, GPL version 2 or any later version.
 //
 // Copyright (C) FZI Forschungszentrum Informatik Karlsruhe
-// Copyright (C) 2013-2015 Torsten
+// Copyright (C) 2013-2016 Torsten
 //
 // This file is part of Octave.
 //
@@ -24,8 +24,8 @@
 
 // Author: Torsten <ttl@justmail.de>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "color-picker.h"
@@ -69,3 +69,4 @@ void color_picker::update_button ()
   setStyleSheet (css);
   repaint ();
 }
+

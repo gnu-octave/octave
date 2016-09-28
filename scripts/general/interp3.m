@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{vi} =} interp3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
-## @deftypefnx {Function File} {@var{vi} =} interp3 (@var{v}, @var{xi}, @var{yi}, @var{zi})
-## @deftypefnx {Function File} {@var{vi} =} interp3 (@var{v}, @var{n})
-## @deftypefnx {Function File} {@var{vi} =} interp3 (@var{v})
-## @deftypefnx {Function File} {@var{vi} =} interp3 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{vi} =} interp3 (@dots{}, @var{method}, @var{extrapval})
+## @deftypefn  {} {@var{vi} =} interp3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {} {@var{vi} =} interp3 (@var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {} {@var{vi} =} interp3 (@var{v}, @var{n})
+## @deftypefnx {} {@var{vi} =} interp3 (@var{v})
+## @deftypefnx {} {@var{vi} =} interp3 (@dots{}, @var{method})
+## @deftypefnx {} {@var{vi} =} interp3 (@dots{}, @var{method}, @var{extrapval})
 ##
 ## Three-dimensional interpolation.
 ##
@@ -44,12 +44,12 @@
 ## not important.
 ##
 ## If called with a single reference data matrix @var{v} and a refinement
-## value @var{n}, then perform interpolation over a 3-D grid where each original
-## interval has been recursively subdivided @var{n} times.  This results in
-## @code{2^@var{n}-1} additional points for every interval in the original
-## grid.  If @var{n} is omitted a value of 1 is used.  As an example, the
-## interval [0,1] with @code{@var{n}==2} results in a refined interval with
-## points at [0, 1/4, 1/2, 3/4, 1].
+## value @var{n}, then perform interpolation over a 3-D grid where each
+## original interval has been recursively subdivided @var{n} times.  This
+## results in @code{2^@var{n}-1} additional points for every interval in the
+## original grid.  If @var{n} is omitted a value of 1 is used.  As an
+## example, the interval [0,1] with @code{@var{n}==2} results in a refined
+## interval with points at [0, 1/4, 1/2, 3/4, 1].
 ##
 ## The interpolation @var{method} is one of:
 ##
@@ -101,7 +101,7 @@ function vi = interp3 (varargin)
     nargs -= 2;
   elseif (ischar (varargin{end}))
     method = varargin{end};
-    nargs--;
+    nargs -= 1;
   endif
 
   if (method(1) == "*")

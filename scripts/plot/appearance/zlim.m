@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zlimits} =} zlim ()
-## @deftypefnx {Function File} {@var{xmode} =} zlim ("mode")
-## @deftypefnx {Function File} {} zlim ([@var{z_lo} @var{z_hi}])
-## @deftypefnx {Function File} {} zlim ("auto")
-## @deftypefnx {Function File} {} zlim ("manual")
-## @deftypefnx {Function File} {} zlim (@var{hax}, @dots{})
+## @deftypefn  {} {@var{zlimits} =} zlim ()
+## @deftypefnx {} {@var{xmode} =} zlim ("mode")
+## @deftypefnx {} {} zlim ([@var{z_lo} @var{z_hi}])
+## @deftypefnx {} {} zlim ("auto")
+## @deftypefnx {} {} zlim ("manual")
+## @deftypefnx {} {} zlim (@var{hax}, @dots{})
 ## Query or set the limits of the z-axis for the current plot.
 ##
 ## Called without arguments @code{zlim} returns the z-axis limits of the
@@ -43,11 +43,13 @@
 ## @end deftypefn
 
 function retval = zlim (varargin)
+
   ret = __axis_limits__ ("zlim", varargin{:});
 
   if (! isempty (ret))
     retval = ret;
   endif
+
 endfunction
 
 
@@ -55,29 +57,25 @@ endfunction
 %! clf;
 %! line ();
 %! zlim ([0.2, 0.8]);
-%! title ('zlim is [0.2, 0.8]');
-%! assert (zlim (), [0.2, 0.8]);
+%! title ("zlim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! line ();
-%! zlim ('auto');
-%! title ('zlim is auto');
-%! assert (zlim ('mode'), 'auto');
+%! zlim ("auto");
+%! title ("zlim is auto");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! zlim ([0.2, 0.8]);
-%! title ('zlim is [0.2, 0.8]');
-%! assert (zlim (), [0.2, 0.8]);
+%! title ("zlim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! zlim ('auto');
-%! title ('zlim is auto');
-%! assert (zlim ('mode'), 'auto');
+%! zlim ("auto");
+%! title ("zlim is auto");
 
 %!test
 %! hf = figure ("visible", "off");

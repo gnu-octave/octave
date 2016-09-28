@@ -1115,7 +1115,7 @@ C     - Substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
 C     - Ignore some components of v in the norm, with the effect of
 C       suppressing the error control on those components of Y.
 C  ---------------------------------------------------------------------
-C***ROUTINES CALLED  SEWSET, SINTDY, D1MACH, SSTODE, SVNORM, XERRWD
+C***ROUTINES CALLED  SEWSET, SINTDY, R1MACH, SSTODE, SVNORM, XERRWD
 C***COMMON BLOCKS    SLS001
 C***REVISION HISTORY  (YYYYMMDD)
 C 19791129  DATE WRITTEN
@@ -1194,26 +1194,27 @@ C  DGETRF AND DGETRS   ARE ROUTINES FROM LAPACK FOR SOLVING FULL
 C           SYSTEMS OF LINEAR ALGEBRAIC EQUATIONS.
 C  DGBTRF AND DGBTRS   ARE ROUTINES FROM LAPACK FOR SOLVING BANDED
 C           LINEAR SYSTEMS.
-C  D1MACH   computes the unit roundoff in a machine-independent manner.
+C  R1MACH   computes the unit roundoff in a machine-independent manner.
 C  XERRWD, XSETUN, XSETF, IXSAV, IUMACH   handle the printing of all
 C           error messages and warnings.  XERRWD is machine-dependent.
-C Note: SVNORM, D1MACH, IXSAV, and IUMACH are function routines.
+C Note: SVNORM, R1MACH, IXSAV, and IUMACH are function routines.
 C All the others are subroutines.
 C
 C**End
 C
 C  Declare externals.
       EXTERNAL SPREPJ, SSOLSY
-      REAL D1MACH, SVNORM
+      REAL R1MACH, SVNORM
 C
 C  Declare all other variables.
-      INTEGER INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH, IOWNS,
+      INTEGER INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH,
+     1   IALTH, IPUP, LMAX, MEO, NQNYH, NSLP,
      1   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L,
      2   LYH, LEWT, LACOR, LSAVF, LWM, LIWM, METH, MITER,
      3   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
       INTEGER I, I1, I2, IFLAG, IMXER, KGO, LF0,
      1   LENIW, LENRW, LENWM, ML, MORD, MU, MXHNL0, MXSTP0
-      REAL ROWNS,
+      REAL CONIT, CRATE, EL, ELCO, HOLD, RMAX, TESCO,
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND
       REAL ATOLI, AYI, BIG, EWTI, H0, HMAX, HMX, RH, RTOLI,
      1   TCRIT, TDIST, TNEXT, TOL, TOLSF, TP, SIZE, SUM, W0
@@ -1231,9 +1232,11 @@ C SPREPJ, and SSOLSY.
 C Groups of variables are replaced by dummy arrays in the Common
 C declarations in routines where those variables are not used.
 C-----------------------------------------------------------------------
-      COMMON /SLS001/ ROWNS(209),
+      COMMON /SLS001/ CONIT, CRATE, EL(13), ELCO(13,12),
+     1   HOLD, RMAX, TESCO(3,12),
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND,
-     2   INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH, IOWNS(6),
+     2   INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH,
+     3   IALTH, IPUP, LMAX, MEO, NQNYH, NSLP,
      3   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L,
      4   LYH, LEWT, LACOR, LSAVF, LWM, LIWM, METH, MITER,
      5   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
@@ -1367,7 +1370,7 @@ C It contains all remaining initializations, the initial call to F,
 C and the calculation of the initial step size.
 C The error weights in EWT are inverted after being loaded.
 C-----------------------------------------------------------------------
- 100  UROUND = D1MACH(4)
+ 100  UROUND = R1MACH(4)
       TN = T
       IF (ITASK .NE. 4 .AND. ITASK .NE. 5) GO TO 110
       TCRIT = RWORK(1)

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 VZLU Prague, a.s., Czech Republic
+## Copyright (C) 2008-2016 VZLU Prague, a.s., Czech Republic
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{angle} =} subspace (@var{A}, @var{B})
+## @deftypefn {} {@var{angle} =} subspace (@var{A}, @var{B})
 ## Determine the largest principal angle between two subspaces
 ## spanned by the columns of matrices @var{A} and @var{B}.
 ## @end deftypefn
@@ -37,7 +37,7 @@ function ang = subspace (A, B)
   if (nargin != 2)
     print_usage ();
   elseif (ndims (A) != 2 || ndims (B) != 2)
-    error ("subspace: expecting A and B to be 2-dimensional arrays");
+    error ("subspace: A and B must be 2-dimensional arrays");
   elseif (rows (A) != rows (B))
     error ("subspace: column dimensions of A and B must match");
   endif

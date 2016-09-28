@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David BAteman
+## Copyright (C) 2007-2016 David BAteman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contour3 (@var{z})
-## @deftypefnx {Function File} {} contour3 (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour3 (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contour3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour3 (@dots{})
+## @deftypefn  {} {} contour3 (@var{z})
+## @deftypefnx {} {} contour3 (@var{z}, @var{vn})
+## @deftypefnx {} {} contour3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {} contour3 (@dots{}, @var{style})
+## @deftypefnx {} {} contour3 (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{h}] =} contour3 (@dots{})
 ## Create a 3-D contour plot.
 ##
 ## @code{contour3} plots level curves (contour lines) of the matrix @var{z}
@@ -42,7 +42,8 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional output @var{c} are the contour levels in @code{contourc} format.
+## The optional output @var{c} are the contour levels in @code{contourc}
+## format.
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup
 ## comprising the contour lines.
@@ -80,7 +81,7 @@ function [c, h] = contour3 (varargin)
   end_unwind_protect
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30], "box", "off",
+    set (hax, "view", [-37.5, 30],
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
@@ -95,12 +96,12 @@ endfunction
 %!demo
 %! clf;
 %! colormap (cool (64));
-%! surf (peaks (19), 'facecolor', 'none', 'edgecolor', [0.85 0.85 0.85]);
+%! surf (peaks (19), "facecolor", "none", "edgecolor", [0.85 0.85 0.85]);
 %! hold on;
 %! contour3 (peaks (19));
 %! hold off;
 %! axis tight;
 %! zlim auto;
 %! view (315, 17);
-%! title ({'contour3 of peaks() function', 'gray surf() shows peaks function'});
+%! title ({"contour3 of peaks() function", "gray surf() shows peaks function"});
 

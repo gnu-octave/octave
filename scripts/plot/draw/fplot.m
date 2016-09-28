@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Paul Kienzle
+## Copyright (C) 2005-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fplot (@var{fn}, @var{limits})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{tol})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{n})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{fmt})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} fplot (@dots{})
+## @deftypefn  {} {} fplot (@var{fn}, @var{limits})
+## @deftypefnx {} {} fplot (@dots{}, @var{tol})
+## @deftypefnx {} {} fplot (@dots{}, @var{n})
+## @deftypefnx {} {} fplot (@dots{}, @var{fmt})
+## @deftypefnx {} {[@var{x}, @var{y}] =} fplot (@dots{})
 ## Plot a function @var{fn} within the range defined by @var{limits}.
 ##
 ## @var{fn} is a function handle, inline function, or string containing the
@@ -70,7 +70,7 @@
 ## Consider this when writing user-defined functions and use @code{.*},
 ## @code{./}, etc.  See the function @code{vectorize} for potentially
 ## converting inline or anonymous functions to vectorized versions.
-##  
+##
 ## @seealso{ezplot, plot, vectorize}
 ## @end deftypefn
 
@@ -138,15 +138,23 @@ function [X, Y] = fplot (varargin)
     y = feval (fn, x);
   endif
 
-  if (rows (x0) != rows (y0))
+  if (rows (x0) == rows (y0))
+    fcn_transpose = false;
+  elseif (rows (x0) == columns (y0))
+    fcn_transpose = true;
+    y0 = y0.';
+    y = y.';
+  elseif (isscalar (y0))
     ## FN is a constant value function
     y0 = repmat (y0, size (x0));
     y = repmat (y, size (x));
+  else
+    error ("fplot: invalid function FN (# of outputs not equal to inputs)");
   endif
 
   err0 = Inf;
 
-  ## FIXME: This algorithm should really use adaptive scaling as the
+  ## FIXME: This algorithm should really use adaptive scaling as
   ##        the numerical quadrature algorithms do so that extra points are
   ##        used where they are needed and not spread evenly over the entire
   ##        x-range.  Try any function with a discontinuity, such as
@@ -169,6 +177,9 @@ function [X, Y] = fplot (varargin)
     n = 2 * (n - 1) + 1;
     x = linspace (limits(1), limits(2), n)';
     y = feval (fn, x);
+    if (fcn_transpose)
+      y = y.';
+    endif
   endwhile
 
   if (nargout == 2)
@@ -196,25 +207,41 @@ endfunction
 %!demo
 %! clf;
 %! fplot (@cos, [0, 2*pi]);
-%! title ('fplot() single function');
+%! title ("fplot() single function");
 
 %!demo
 %! clf;
-%! fplot ('[cos(x), sin(x)]', [0, 2*pi]);
-%! title ('fplot() multiple functions');
+%! fplot ("[cos(x), sin(x)]", [0, 2*pi]);
+%! title ("fplot() multiple functions");
 
 %!demo
 %! clf;
-%! %% sinc function
 %! fh = @(x) sin (pi*x) ./ (pi*x);
 %! fplot (fh, [-5, 5]);
-%! title ('fplot() sinc function');
+%! title ("fplot() sinc function (possible division by 0, near 0)");
 
 %!test
+%! ## Multi-valued function
 %! [x, y] = fplot ("[cos(x), sin(x)]", [0, 2*pi]);
 %! assert (columns (y) == 2);
 %! assert (rows (x) == rows (y));
 %! assert (y, [cos(x), sin(x)], -2e-3);
+
+%!test
+%! ## Function requiring transpose
+%! fn = @(x) 2 * x(:).';
+%! [x, y] = fplot (fn, [-1, 1]);
+%! assert (columns (y) == 1);
+%! assert (rows (x) == rows (y));
+%! assert (y, 2*x);
+
+%!test
+%! ## Constant value function
+%! fn = @(x) 5;
+%! [x, y] = fplot (fn, [-1, 1]);
+%! assert (columns (y) == 1);
+%! assert (rows (x) == rows (y));
+%! assert (y, repmat ([5], size (x)));
 
 ## Test input validation
 %!error fplot (1)
@@ -224,4 +251,7 @@ endfunction
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1 2 3])
 %!error <bad input in position 3> fplot (@cos,[-1,1], {1})
+%!error <invalid function FN>
+%! fn = @(x) [x;x];
+%! fplot (fn, [-1,1]);
 

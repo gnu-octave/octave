@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Andreas Weingessel
+## Copyright (C) 1995-2016 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} blackman (@var{m})
-## @deftypefnx {Function File} {} blackman (@var{m}, "periodic")
-## @deftypefnx {Function File} {} blackman (@var{m}, "symmetric")
+## @deftypefn  {} {} blackman (@var{m})
+## @deftypefnx {} {} blackman (@var{m}, "periodic")
+## @deftypefnx {} {} blackman (@var{m}, "symmetric")
 ## Return the filter coefficients of a Blackman window of length @var{m}.
 ##
 ## If the optional argument @qcode{"periodic"} is given, the periodic form
@@ -60,7 +60,7 @@ function c = blackman (m, opt)
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    m -= 1;
     k = (0 : m)' / N;
     c = 0.42 - 0.5 * cos (2 * pi * k) + 0.08 * cos (4 * pi * k);
   endif
@@ -78,8 +78,8 @@ endfunction
 %! assert (A(ceil (N/2)), 1, 1e-6);
 %! assert ([A(1), A(length (A))], zeros (1,2), 1e-6);
 
-%!assert (blackman (15), blackman (15, "symmetric"));
-%!assert (blackman (16)(1:15), blackman (15, "periodic"));
+%!assert (blackman (15), blackman (15, "symmetric"))
+%!assert (blackman (16)(1:15), blackman (15, "periodic"))
 %!test
 %! N = 16;
 %! A = blackman (N, "periodic");
@@ -89,5 +89,5 @@ endfunction
 %!error blackman (0.5)
 %!error blackman (-1)
 %!error blackman (ones (1,4))
-%!error blackman (1, "invalid");
+%!error blackman (1, "invalid")
 

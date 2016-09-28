@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Michael Goffioul
+## Copyright (C) 2007-2016 Michael Goffioul
 ## Copyright (C) 2007-2009 David Bateman
 ##
 ## This file is part of Octave.
@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} area (@var{y})
-## @deftypefnx {Function File} {} area (@var{x}, @var{y})
-## @deftypefnx {Function File} {} area (@dots{}, @var{lvl})
-## @deftypefnx {Function File} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} area (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} area (@dots{})
+## @deftypefn  {} {} area (@var{y})
+## @deftypefnx {} {} area (@var{x}, @var{y})
+## @deftypefnx {} {} area (@dots{}, @var{lvl})
+## @deftypefnx {} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} area (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} area (@dots{})
 ## Area plot of the columns of @var{y}.
 ##
 ## This plot shows the contributions of each column value to the row sum.
@@ -115,6 +115,11 @@ function h = area (varargin)
   unwind_protect
     hax = newplot (hax);
     htmp = __area__ (hax, x, y, bv, varargin{num_numeric+1:end});
+
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -187,11 +192,13 @@ function retval = __area__ (ax, x, y, bv, varargin)
 endfunction
 
 function update_props (h, d)
+
   kids = get (h, "children");
   set (kids, "edgecolor", get (h, "edgecolor"),
              "facecolor", get (h, "facecolor"),
              "linestyle", get (h, "linestyle"),
              "linewidth", get (h, "linewidth"));
+
 endfunction
 
 function move_baseline (h, d)
@@ -217,9 +224,11 @@ function move_baseline (h, d)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_data (h, d)
+
   hlist = get (h, "areagroup");
   bv = get (h, "basevalue");
   for i = 1 : length (hlist)
@@ -237,6 +246,7 @@ function update_data (h, d)
 
     y0 = y1;
   endfor
+
 endfunction
 
 
@@ -247,8 +257,8 @@ endfunction
 %! y = [sin(t).^2, cos(t).^2];
 %! area (t, y);
 %! axis tight
-%! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');
-%! title ('area() plot');
+%! legend ("sin^2", "cos^2", "location", "NorthEastOutside");
+%! title ("area() plot");
 
 %!demo
 %! ## Show effects of setting BaseValue
@@ -256,20 +266,20 @@ endfunction
 %! x = [-2:0.1:2]';
 %! y = x.^2 - 1;
 %! subplot (1, 2, 1)
-%! area (x, y);
-%! title ({'Parabola y = x^2 -1';'BaseValue = 0'});
+%!  area (x, y);
+%!  title ({"Parabola y = x^2 -1";"BaseValue = 0"});
 %! subplot (1, 2, 2)
-%! h = area (x, y);
-%! set (h, 'basevalue', -1);
-%! title ({'Parabola y = x^2 -1';'BaseValue = -1'});
+%!  h = area (x, y);
+%!  set (h, "basevalue", -1);
+%!  title ({"Parabola y = x^2 -1";"BaseValue = -1"});
 
 %!demo
 %! clf;
 %! x = 0:10;
 %! y = rand (size (x));
 %! h = area (x, y);
-%! set (h, 'ydata', sort (get (h, 'ydata')))
-%! title ('area() plot of sorted data');
+%! set (h, "ydata", sort (get (h, "ydata")));
+%! title ("area() plot of sorted data");
 
 ## Test input validation
 %!error area ()

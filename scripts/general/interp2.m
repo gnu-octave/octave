@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z}, @var{n})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrap})
+## @deftypefn  {} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefnx {} {@var{zi} =} interp2 (@var{z}, @var{xi}, @var{yi})
+## @deftypefnx {} {@var{zi} =} interp2 (@var{z}, @var{n})
+## @deftypefnx {} {@var{zi} =} interp2 (@var{z})
+## @deftypefnx {} {@var{zi} =} interp2 (@dots{}, @var{method})
+## @deftypefnx {} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrap})
 ##
 ## Two-dimensional interpolation.
 ##
@@ -98,7 +98,7 @@ function ZI = interp2 (varargin)
     nargs -= 2;
   elseif (ischar (varargin{end}))
     method = varargin{end};
-    nargs--;
+    nargs -= 1;
   endif
   if (method(1) == "*")
     warning ("interp2: ignoring unsupported '*' flag to METHOD");
@@ -345,7 +345,7 @@ function o = bc (x)
   x = abs (x);
   o = zeros (size (x));
   idx1 = (x < 1);
-  idx2 = !idx1 & (x < 2);
+  idx2 = ! idx1 & (x < 2);
   o(idx1) = 1 - 2.*x(idx1).^2 + x(idx1).^3;
   o(idx2) = 4 - 8.*x(idx2) + 5.*x(idx2).^2 - x(idx2).^3;
 endfunction
@@ -539,9 +539,9 @@ endfunction
 %! X = meshgrid (1:4);
 %! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
-## re-order monotonically decreasing (bug #41838).
-%!assert (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5);
-%!assert (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5);
+## re-order monotonically decreasing
+%!assert <41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
+%!assert <41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
 
 %!shared z, zout, tol
 %! z = [1 3 5; 3 5 7; 5 7 9];

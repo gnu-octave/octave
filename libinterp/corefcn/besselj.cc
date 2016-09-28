@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2015 John W. Eaton
+Copyright (C) 1997-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-specfun.h"
@@ -29,8 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 enum bessel_type
@@ -43,634 +42,528 @@ enum bessel_type
   BESSEL_H2
 };
 
-#define DO_BESSEL(type, alpha, x, scaled, ierr, result) \
-  do \
-    { \
-      switch (type) \
-        { \
-          case BESSEL_J: \
-            result = besselj (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_Y: \
-            result = bessely (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_I: \
-            result = besseli (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_K: \
-            result = besselk (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_H1: \
-            result = besselh1 (alpha, x, scaled, ierr); \
-            break; \
- \
-          case BESSEL_H2: \
-            result = besselh2 (alpha, x, scaled, ierr); \
-            break; \
- \
-          default: \
-            break; \
-        } \
-    } \
+#define DO_BESSEL(type, alpha, x, scaled, ierr, result)                 \
+  do                                                                    \
+    {                                                                   \
+      switch (type)                                                     \
+        {                                                               \
+        case BESSEL_J:                                                  \
+          result = octave::math::besselj (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_Y:                                                  \
+          result = octave::math::bessely (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_I:                                                  \
+          result = octave::math::besseli (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_K:                                                  \
+          result = octave::math::besselk (alpha, x, scaled, ierr);      \
+          break;                                                        \
+                                                                        \
+        case BESSEL_H1:                                                 \
+          result = octave::math::besselh1 (alpha, x, scaled, ierr);     \
+          break;                                                        \
+                                                                        \
+        case BESSEL_H2:                                                 \
+          result = octave::math::besselh2 (alpha, x, scaled, ierr);     \
+          break;                                                        \
+                                                                        \
+        default:                                                        \
+          break;                                                        \
+        }                                                               \
+    }                                                                   \
   while (0)
-
-static void
-gripe_bessel_arg (const char *fn, const char *arg)
-{
-  error ("%s: expecting scalar or matrix as %s argument", fn, arg);
-}
 
 octave_value_list
 do_bessel (enum bessel_type type, const char *fn,
            const octave_value_list& args, int nargout)
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  octave_value_list retval (nargout > 1 ? 2 : 1);
+
+  bool scaled = false;
+  if (nargin == 3)
     {
-      bool scaled = false;
-      if (nargin == 3)
-        {
-          octave_value opt_arg = args(2);
-          bool rpt_error = false;
+      octave_value opt_arg = args(2);
+      bool rpt_error = false;
 
-          if (! opt_arg.is_scalar_type ())
+      if (! opt_arg.is_scalar_type ())
+        rpt_error = true;
+      else if (opt_arg.is_numeric_type ())
+        {
+          double opt_val = opt_arg.double_value ();
+          if (opt_val != 0.0 && opt_val != 1.0)
             rpt_error = true;
-          else if (opt_arg.is_numeric_type ())
-            {
-              double opt_val = opt_arg.double_value ();
-              if (opt_val != 0.0 && opt_val != 1.0)
-                rpt_error = true;
-              scaled = (opt_val == 1.0);
-            }
-          else if (opt_arg.is_bool_type ())
-            scaled = opt_arg.bool_value ();
-
-          if (rpt_error)
-            {
-              error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
-              return retval;
-            }
+          scaled = (opt_val == 1.0);
         }
+      else if (opt_arg.is_bool_type ())
+        scaled = opt_arg.bool_value ();
 
-      octave_value alpha_arg = args(0);
-      octave_value x_arg = args(1);
+      if (rpt_error)
+        error ("%s: OPT must be 0 (or false) or 1 (or true)", fn);
+    }
 
-      if (alpha_arg.is_single_type () || x_arg.is_single_type ())
+  octave_value alpha_arg = args(0);
+  octave_value x_arg = args(1);
+
+  if (alpha_arg.is_single_type () || x_arg.is_single_type ())
+    {
+      if (alpha_arg.is_scalar_type ())
         {
-          if (alpha_arg.is_scalar_type ())
+          float alpha = args(0).xfloat_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+          if (x_arg.is_scalar_type ())
             {
-              float alpha = args(0).float_value ();
+              FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
 
-              if (! error_state)
-                {
-                  if (x_arg.is_scalar_type ())
-                    {
-                      FloatComplex x = x_arg.float_complex_value ();
+              octave_idx_type ierr;
+              octave_value result;
 
-                      if (! error_state)
-                        {
-                          octave_idx_type ierr;
-                          octave_value result;
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = static_cast<float> (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    {
-                      FloatComplexNDArray x
-                        = x_arg.float_complex_array_value ();
-
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
-
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                }
-              else
-                gripe_bessel_arg (fn, "first");
+              retval(0) = result;
+              if (nargout > 1)
+                retval(1) = static_cast<float> (ierr);
             }
           else
             {
-              dim_vector dv0 = args(0).dims ();
-              dim_vector dv1 = args(1).dims ();
+              FloatComplexNDArray x = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
 
-              bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
-              bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
+              Array<octave_idx_type> ierr;
+              octave_value result;
 
-              if (args0_is_row_vector && args1_is_col_vector)
-                {
-                  FloatRowVector ralpha = args(0).float_row_vector_value ();
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                  if (! error_state)
-                    {
-                      FloatComplexColumnVector cx =
-                        x_arg.float_complex_column_vector_value ();
-
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
-
-                          DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    gripe_bessel_arg (fn, "first");
-                }
-              else
-                {
-                  FloatNDArray alpha = args(0).float_array_value ();
-
-                  if (! error_state)
-                    {
-                      if (x_arg.is_scalar_type ())
-                        {
-                          FloatComplex x = x_arg.float_complex_value ();
-
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
-
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
-
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
-                      else
-                        {
-                          FloatComplexNDArray x
-                            = x_arg.float_complex_array_value ();
-
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
-
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
-
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
-                    }
-                  else
-                    gripe_bessel_arg (fn, "first");
-                }
+              retval(0) = result;
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
             }
         }
       else
         {
-          if (alpha_arg.is_scalar_type ())
+          dim_vector dv0 = args(0).dims ();
+          dim_vector dv1 = args(1).dims ();
+
+          bool args0_is_row_vector = (dv0(1) == dv0.numel ());
+          bool args1_is_col_vector = (dv1(0) == dv1.numel ());
+
+          if (args0_is_row_vector && args1_is_col_vector)
             {
-              double alpha = args(0).double_value ();
+              FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
-              if (! error_state)
-                {
-                  if (x_arg.is_scalar_type ())
-                    {
-                      Complex x = x_arg.complex_value ();
+              FloatComplexColumnVector cx =
+                x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
-                      if (! error_state)
-                        {
-                          octave_idx_type ierr;
-                          octave_value result;
+              Array<octave_idx_type> ierr;
+              octave_value result;
 
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
+              DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
-                          if (nargout > 1)
-                            retval(1) = static_cast<double> (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    {
-                      ComplexNDArray x = x_arg.complex_array_value ();
-
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
-
-                          DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                }
-              else
-                gripe_bessel_arg (fn, "first");
+              retval(0) = result;
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
             }
           else
             {
-              dim_vector dv0 = args(0).dims ();
-              dim_vector dv1 = args(1).dims ();
+              FloatNDArray alpha = args(0).xfloat_array_value ("%s: ALPHA must be a scalar or matrix", fn);
 
-              bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
-              bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
-
-              if (args0_is_row_vector && args1_is_col_vector)
+              if (x_arg.is_scalar_type ())
                 {
-                  RowVector ralpha = args(0).row_vector_value ();
+                  FloatComplex x = x_arg.xfloat_complex_value ("%s: X must be a scalar or matrix", fn);
 
-                  if (! error_state)
-                    {
-                      ComplexColumnVector cx =
-                        x_arg.complex_column_vector_value ();
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
 
-                      if (! error_state)
-                        {
-                          Array<octave_idx_type> ierr;
-                          octave_value result;
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                          DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
-
-                          if (nargout > 1)
-                            retval(1) = NDArray (ierr);
-
-                          retval(0) = result;
-                        }
-                      else
-                        gripe_bessel_arg (fn, "second");
-                    }
-                  else
-                    gripe_bessel_arg (fn, "first");
+                  retval(0) = result;
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
                 }
               else
                 {
-                  NDArray alpha = args(0).array_value ();
+                  FloatComplexNDArray x = x_arg.xfloat_complex_array_value ("%s: X must be a scalar or matrix", fn);
 
-                  if (! error_state)
-                    {
-                      if (x_arg.is_scalar_type ())
-                        {
-                          Complex x = x_arg.complex_value ();
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
 
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
-
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
-                      else
-                        {
-                          ComplexNDArray x = x_arg.complex_array_value ();
-
-                          if (! error_state)
-                            {
-                              Array<octave_idx_type> ierr;
-                              octave_value result;
-
-                              DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-                              if (nargout > 1)
-                                retval(1) = NDArray (ierr);
-
-                              retval(0) = result;
-                            }
-                          else
-                            gripe_bessel_arg (fn, "second");
-                        }
-                    }
-                  else
-                    gripe_bessel_arg (fn, "first");
+                  retval(0) = result;
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
                 }
             }
         }
     }
   else
-    print_usage ();
+    {
+      if (alpha_arg.is_scalar_type ())
+        {
+          double alpha = args(0).xdouble_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+          if (x_arg.is_scalar_type ())
+            {
+              Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
+
+              octave_idx_type ierr;
+              octave_value result;
+
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+              retval(0) = result;
+              if (nargout > 1)
+                retval(1) = static_cast<double> (ierr);
+            }
+          else
+            {
+              ComplexNDArray x = x_arg.xcomplex_array_value ("%s: X must be a scalar or matrix", fn);
+
+              Array<octave_idx_type> ierr;
+              octave_value result;
+
+              DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+              retval(0) = result;
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+            }
+        }
+      else
+        {
+          dim_vector dv0 = args(0).dims ();
+          dim_vector dv1 = args(1).dims ();
+
+          bool args0_is_row_vector = (dv0(1) == dv0.numel ());
+          bool args1_is_col_vector = (dv1(0) == dv1.numel ());
+
+          if (args0_is_row_vector && args1_is_col_vector)
+            {
+              RowVector ralpha = args(0).xrow_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+              ComplexColumnVector cx =
+                x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+
+              Array<octave_idx_type> ierr;
+              octave_value result;
+
+              DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+
+              retval(0) = result;
+              if (nargout > 1)
+                retval(1) = NDArray (ierr);
+            }
+          else
+            {
+              NDArray alpha = args(0).xarray_value ("%s: ALPHA must be a scalar or matrix", fn);
+
+              if (x_arg.is_scalar_type ())
+                {
+                  Complex x = x_arg.xcomplex_value ("%s: X must be a scalar or matrix", fn);
+
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
+
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+                  retval(0) = result;
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
+                }
+              else
+                {
+                  ComplexNDArray x = x_arg.xcomplex_array_value ("%s: X must be a scalar or matrix", fn);
+
+                  Array<octave_idx_type> ierr;
+                  octave_value result;
+
+                  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+                  retval(0) = result;
+                  if (nargout > 1)
+                    retval(1) = NDArray (ierr);
+                }
+            }
+        }
+    }
 
   return retval;
 }
 
 DEFUN (besselj, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
-Compute Bessel or Hankel functions of various kinds:\n\
-\n\
-@table @code\n\
-@item besselj\n\
-Bessel functions of the first kind.  If the argument @var{opt} is 1 or true,\n\
-the result is multiplied by @w{@code{exp (-abs (imag (@var{x})))}}.\n\
-\n\
-@item bessely\n\
-Bessel functions of the second kind.  If the argument @var{opt} is 1 or true,\n\
-the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
-\n\
-@item besseli\n\
-\n\
-Modified Bessel functions of the first kind.  If the argument @var{opt} is 1\n\
-or true, the result is multiplied by @code{exp (-abs (real (@var{x})))}.\n\
-\n\
-@item besselk\n\
-\n\
-Modified Bessel functions of the second kind.  If the argument @var{opt} is 1\n\
-or true, the result is multiplied by @code{exp (@var{x})}.\n\
-\n\
-@item besselh\n\
-Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
-= 2) kind.  If the argument @var{opt} is 1 or true, the result is multiplied\n\
-by @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
-@var{k} = 2.\n\
-@end table\n\
-\n\
-If @var{alpha} is a scalar, the result is the same size as @var{x}.\n\
-If @var{x} is a scalar, the result is the same size as @var{alpha}.\n\
-If @var{alpha} is a row vector and @var{x} is a column vector, the\n\
-result is a matrix with @code{length (@var{x})} rows and\n\
-@code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and\n\
-@var{x} must conform and the result will be the same size.\n\
-\n\
-The value of @var{alpha} must be real.  The value of @var{x} may be\n\
-complex.\n\
-\n\
-If requested, @var{ierr} contains the following status information\n\
-and is the same size as the result.\n\
-\n\
-@enumerate 0\n\
-@item\n\
-Normal return.\n\
-\n\
-@item\n\
-Input error, return @code{NaN}.\n\
-\n\
-@item\n\
-Overflow, return @code{Inf}.\n\
-\n\
-@item\n\
-Loss of significance by argument reduction results in less than\n\
-half of machine accuracy.\n\
-\n\
-@item\n\
-Complete loss of significance by argument reduction, return @code{NaN}.\n\
-\n\
-@item\n\
-Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}.\n\
-@end enumerate\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+@deftypefnx {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+Compute Bessel or Hankel functions of various kinds:
+
+@table @code
+@item besselj
+Bessel functions of the first kind.  If the argument @var{opt} is 1 or true,
+the result is multiplied by @w{@code{exp (-abs (imag (@var{x})))}}.
+
+@item bessely
+Bessel functions of the second kind.  If the argument @var{opt} is 1 or
+true, the result is multiplied by @code{exp (-abs (imag (@var{x})))}.
+
+@item besseli
+
+Modified Bessel functions of the first kind.  If the argument @var{opt} is 1
+or true, the result is multiplied by @code{exp (-abs (real (@var{x})))}.
+
+@item besselk
+
+Modified Bessel functions of the second kind.  If the argument @var{opt} is
+1 or true, the result is multiplied by @code{exp (@var{x})}.
+
+@item besselh
+Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
+= 2) kind.  If the argument @var{opt} is 1 or true, the result is multiplied
+by @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
+@var{k} = 2.
+@end table
+
+If @var{alpha} is a scalar, the result is the same size as @var{x}.
+If @var{x} is a scalar, the result is the same size as @var{alpha}.
+If @var{alpha} is a row vector and @var{x} is a column vector, the
+result is a matrix with @code{length (@var{x})} rows and
+@code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and
+@var{x} must conform and the result will be the same size.
+
+The value of @var{alpha} must be real.  The value of @var{x} may be
+complex.
+
+If requested, @var{ierr} contains the following status information
+and is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+
+@item
+Input error, return @code{NaN}.
+
+@item
+Overflow, return @code{Inf}.
+
+@item
+Loss of significance by argument reduction results in less than
+half of machine accuracy.
+
+@item
+Complete loss of significance by argument reduction, return @code{NaN}.
+
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+@end deftypefn */)
 {
   return do_bessel (BESSEL_J, "besselj", args, nargout);
 }
 
+/*
+%!# Function besselj is tested along with other bessels at the end of this file
+*/
+
 DEFUN (bessely, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   return do_bessel (BESSEL_Y, "bessely", args, nargout);
 }
 
+/*
+%!# Function bessely is tested along with other bessels at the end of this file
+*/
+
 DEFUN (besseli, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   return do_bessel (BESSEL_I, "besseli", args, nargout);
 }
 
+/*
+%!# Function besseli is tested along with other bessels at the end of this file
+*/
+
 DEFUN (besselk, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
 {
   return do_bessel (BESSEL_K, "besselk", args, nargout);
 }
 
-DEFUN (besselh, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
-See besselj.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+/*
+%!# Function besselk is tested along with other bessels at the end of this file
+*/
 
+DEFUN (besselh, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+See besselj.
+@end deftypefn */)
+{
   int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 4)
+    print_usage ();
+
+  octave_value_list retval;
 
   if (nargin == 2)
     {
       retval = do_bessel (BESSEL_H1, "besselh", args, nargout);
     }
-  else if (nargin == 3 || nargin == 4)
-    {
-      octave_idx_type kind = args(1).int_value ();
-
-      if (! error_state)
-        {
-          octave_value_list tmp_args;
-
-          if (nargin == 4)
-            tmp_args(2) = args(3);
-
-          tmp_args(1) = args(2);
-          tmp_args(0) = args(0);
-
-          if (kind == 1)
-            retval = do_bessel (BESSEL_H1, "besselh", tmp_args, nargout);
-          else if (kind == 2)
-            retval = do_bessel (BESSEL_H2, "besselh", tmp_args, nargout);
-          else
-            error ("besselh: expecting K = 1 or 2");
-        }
-      else
-        error ("besselh: invalid value of K");
-    }
   else
-    print_usage ();
+    {
+      octave_idx_type kind = args(1).xint_value ("besselh: invalid value of K");
+
+      octave_value_list tmp_args;
+
+      if (nargin == 4)
+        tmp_args(2) = args(3);
+
+      tmp_args(1) = args(2);
+      tmp_args(0) = args(0);
+
+      if (kind == 1)
+        retval = do_bessel (BESSEL_H1, "besselh", tmp_args, nargout);
+      else if (kind == 2)
+        retval = do_bessel (BESSEL_H2, "besselh", tmp_args, nargout);
+      else
+        error ("besselh: K must be 1 or 2");
+    }
 
   return retval;
 }
+
+/*
+%!# Function besselh is tested along with other bessels at the end of this file
+*/
 
 DEFUN (airy, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})\n\
-Compute Airy functions of the first and second kind, and their derivatives.\n\
-\n\
-@example\n\
-@group\n\
- K   Function   Scale factor (if \"opt\" is supplied)\n\
----  --------   ---------------------------------------\n\
- 0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
- 1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
- 2   Bi (Z)     exp (-abs (real ((2/3) * Z * sqrt (Z))))\n\
- 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z * sqrt (Z))))\n\
-@end group\n\
-@end example\n\
-\n\
-The function call @code{airy (@var{z})} is equivalent to\n\
-@code{airy (0, @var{z})}.\n\
-\n\
-The result is the same size as @var{z}.\n\
-\n\
-If requested, @var{ierr} contains the following status information and\n\
-is the same size as the result.\n\
-\n\
-@enumerate 0\n\
-@item\n\
-Normal return.\n\
-\n\
-@item\n\
-Input error, return @code{NaN}.\n\
-\n\
-@item\n\
-Overflow, return @code{Inf}.\n\
-\n\
-@item\n\
-Loss of significance by argument reduction results in less than half\n\
- of machine accuracy.\n\
-\n\
-@item\n\
-Complete loss of significance by argument reduction, return @code{NaN}.\n\
-\n\
-@item\n\
-Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}.\n\
-@end enumerate\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})
+Compute Airy functions of the first and second kind, and their derivatives.
 
+@example
+@group
+ K   Function   Scale factor (if "opt" is supplied)
+---  --------   ---------------------------------------
+ 0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))
+ 1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))
+ 2   Bi (Z)     exp (-abs (real ((2/3) * Z * sqrt (Z))))
+ 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z * sqrt (Z))))
+@end group
+@end example
+
+The function call @code{airy (@var{z})} is equivalent to
+@code{airy (0, @var{z})}.
+
+The result is the same size as @var{z}.
+
+If requested, @var{ierr} contains the following status information and
+is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+
+@item
+Input error, return @code{NaN}.
+
+@item
+Overflow, return @code{Inf}.
+
+@item
+Loss of significance by argument reduction results in less than half
+ of machine accuracy.
+
+@item
+Complete loss of significance by argument reduction, return @code{NaN}.
+
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin > 0 && nargin < 4)
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+
+  octave_value_list retval (nargout > 1 ? 2 : 1);
+
+  int kind = 0;
+  if (nargin > 1)
     {
-      bool scale = (nargin == 3);
+      kind = args(0).xint_value ("airy: K must be an integer value");
 
-      int kind = 0;
+      if (kind < 0 || kind > 3)
+        error ("airy: K must be 0, 1, 2, or 3");
+    }
 
-      if (nargin > 1)
-        {
-          kind = args(0).int_value ();
+  bool scale = (nargin == 3);
 
-          if (! error_state)
-            {
-              if (kind < 0 || kind > 3)
-                error ("airy: expecting K = 0, 1, 2, or 3");
-            }
-          else
-            error ("airy: K must be an integer value");
-        }
+  int idx = (nargin == 1 ? 0 : 1);
 
-      if (! error_state)
-        {
-          int idx = nargin == 1 ? 0 : 1;
+  if (args(idx).is_single_type ())
+    {
+      FloatComplexNDArray z = args(idx).xfloat_complex_array_value ("airy: Z must be a complex matrix");
 
-          if (args(idx).is_single_type ())
-            {
-              FloatComplexNDArray z = args(idx).float_complex_array_value ();
+      Array<octave_idx_type> ierr;
+      octave_value result;
 
-              if (! error_state)
-                {
-                  Array<octave_idx_type> ierr;
-                  octave_value result;
+      if (kind > 1)
+        result = octave::math::biry (z, kind == 3, scale, ierr);
+      else
+        result = octave::math::airy (z, kind == 1, scale, ierr);
 
-                  if (kind > 1)
-                    result = biry (z, kind == 3, scale, ierr);
-                  else
-                    result = airy (z, kind == 1, scale, ierr);
-
-                  if (nargout > 1)
-                    retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
-                }
-              else
-                error ("airy: Z must be a complex matrix");
-            }
-          else
-            {
-              ComplexNDArray z = args(idx).complex_array_value ();
-
-              if (! error_state)
-                {
-                  Array<octave_idx_type> ierr;
-                  octave_value result;
-
-                  if (kind > 1)
-                    result = biry (z, kind == 3, scale, ierr);
-                  else
-                    result = airy (z, kind == 1, scale, ierr);
-
-                  if (nargout > 1)
-                    retval(1) = NDArray (ierr);
-
-                  retval(0) = result;
-                }
-              else
-                error ("airy: Z must be a complex matrix");
-            }
-        }
+      retval(0) = result;
+      if (nargout > 1)
+        retval(1) = NDArray (ierr);
     }
   else
-    print_usage ();
+    {
+      ComplexNDArray z = args(idx).xcomplex_array_value ("airy: Z must be a complex matrix");
+
+      Array<octave_idx_type> ierr;
+      octave_value result;
+
+      if (kind > 1)
+        result = octave::math::biry (z, kind == 3, scale, ierr);
+      else
+        result = octave::math::airy (z, kind == 1, scale, ierr);
+
+      retval(0) = result;
+      if (nargout > 1)
+        retval(1) = NDArray (ierr);
+    }
 
   return retval;
 }
+
+/*
+FIXME: Function airy does not yet have BIST tests
+*/
 
 /*
 ## Test values computed with GP/PARI version 2.3.3
@@ -952,33 +845,32 @@ return @code{NaN}.\n\
 %!assert (besselh (-alpha,1,x,1), -I*(jx + I*yx)*exp(-I*x), 100*eps)
 %!assert (besselh (-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
 
-
 Tests contributed by Robert T. Short.
 Tests are based on the properties and tables in A&S:
  Abramowitz and Stegun, "Handbook of Mathematical Functions",
  1972.
 
-For regular Bessel functions, there are 3 tests. These compare octave
+For regular Bessel functions, there are 3 tests.  These compare octave
 results against Tables 9.1, 9.2, and 9.4 in A&S. Tables 9.1 and 9.2
 are good to only a few decimal places, so any failures should be
-considered a broken implementation. Table 9.4 is an extended table
-for larger orders and arguments. There are some differences between
+considered a broken implementation.  Table 9.4 is an extended table
+for larger orders and arguments.  There are some differences between
 Octave and Table 9.4, mostly in the last decimal place but in a very
-few instances the errors are in the last two places. The comparison
+few instances the errors are in the last two places.  The comparison
 tolerance has been changed to reflect this.
 
-Similarly for modifed Bessel functions, there are 3 tests. These
+Similarly for modified Bessel functions, there are 3 tests.  These
 compare octave results against Tables 9.8, 9.9, and 9.11 in A&S.
 Tables 9.8 and 9.9 are good to only a few decimal places, so any
-failures should be considered a broken implementation. Table 9.11 is
-an extended table for larger orders and arguments. There are some
+failures should be considered a broken implementation.  Table 9.11 is
+an extended table for larger orders and arguments.  There are some
 differences between octave and Table 9.11, mostly in the last decimal
 place but in a very few instances the errors are in the last two
-places. The comparison tolerance has been changed to reflect this.
+places.  The comparison tolerance has been changed to reflect this.
 
 For spherical Bessel functions, there are also three tests, comparing
-octave results to Tables 10.1, 10.2, and 10.4 in A&S. Very similar
-comments may be made here as in the previous lines. At this time,
+octave results to Tables 10.1, 10.2, and 10.4 in A&S.  Very similar
+comments may be made here as in the previous lines.  At this time,
 modified spherical Bessel function tests are not included.
 
 % Table 9.1 - J and Y for integer orders 0, 1, 2.
@@ -1267,3 +1159,4 @@ Table 10.4 - j and y for various integer orders and arguments.
 %! assert (j, jt, -1e-9);
 %! assert (y, yt, -1e-9);
 */
+

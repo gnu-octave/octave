@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{newdesc} =} save_order (@var{desc})
+## @deftypefn {} {@var{newdesc} =} save_order (@var{desc})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function newdesc = save_order (desc)
+
   newdesc = {};
   for i = 1 : length (desc)
     deps = desc{i}.depends;
@@ -46,6 +47,7 @@ function newdesc = save_order (desc)
       endif
     endif
   endfor
+
   ## Eliminate the duplicates.
   idx = [];
   for i = 1 : length (newdesc)
@@ -56,5 +58,6 @@ function newdesc = save_order (desc)
     endfor
   endfor
   newdesc(idx) = [];
+
 endfunction
 

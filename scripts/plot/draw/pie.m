@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pie (@var{x})
-## @deftypefnx {Function File} {} pie (@dots{}, @var{explode})
-## @deftypefnx {Function File} {} pie (@dots{}, @var{labels})
-## @deftypefnx {Function File} {} pie (@var{hax}, @dots{});
-## @deftypefnx {Function File} {@var{h} =} pie (@dots{});
+## @deftypefn  {} {} pie (@var{x})
+## @deftypefnx {} {} pie (@dots{}, @var{explode})
+## @deftypefnx {} {} pie (@dots{}, @var{labels})
+## @deftypefnx {} {} pie (@var{hax}, @dots{});
+## @deftypefnx {} {@var{h} =} pie (@dots{});
 ## Plot a 2-D pie chart.
 ##
 ## When called with a single vector argument, produce a pie chart of the
@@ -42,9 +42,9 @@
 ## and text objects generating the plot.
 ##
 ## Note: If @code{sum (@var{x}) @leq{} 1} then the elements of @var{x} are
-## interpreted as percentages directly and are not normalized by @code{sum (x)}.
-## Furthermore, if the sum is less than 1 then there will be a missing slice
-## in the pie plot to represent the missing, unspecified percentage.
+## interpreted as percentages directly and are not normalized by @code{sum
+## (x)}.  Furthermore, if the sum is less than 1 then there will be a missing
+## slice in the pie plot to represent the missing, unspecified percentage.
 ##
 ## @seealso{pie3, bar, hist, rose}
 ## @end deftypefn
@@ -84,20 +84,20 @@ endfunction
 %! clf;
 %! pie ([3, 2, 1], [0, 0, 1]);
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
-%! title ('pie() with exploded wedge');
+%! title ("pie() with exploded wedge");
 
 %!demo
 %! clf;
-%! pie ([3, 2, 1], [0, 0, 1], {'Cheddar', 'Swiss', 'Camembert'});
+%! pie ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ('pie() with labels');
+%! title ("pie() with labels");
 
 
 %!demo
 %! clf;
-%! pie ([0.17, 0.34, 0.41], {'Cheddar', 'Swiss', 'Camembert'});
+%! pie ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ('pie() with missing slice');
+%! title ("pie() with missing slice");
 

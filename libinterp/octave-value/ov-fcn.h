@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_fcn_h)
+#if ! defined (octave_ov_fcn_h)
 #define octave_ov_fcn_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
 #include "oct-time.h"
 #include "str-vec.h"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 #include "symtab.h"
@@ -59,37 +61,37 @@ public:
 
   virtual bool is_system_fcn_file (void) const { return false; }
 
-  virtual std::string fcn_file_name (void) const { return std::string (); }
+  virtual std::string fcn_file_name (void) const { return ""; }
 
-  virtual std::string src_file_name (void) const { return std::string (); }
+  virtual std::string src_file_name (void) const { return ""; }
 
   // The name to show in the profiler (also used as map-key).
   virtual std::string profiler_name (void) const { return name (); }
 
-  virtual std::string parent_fcn_name (void) const { return std::string (); }
+  virtual std::string parent_fcn_name (void) const { return ""; }
 
   virtual symbol_table::scope_id parent_fcn_scope (void) const { return -1; }
 
-  virtual void mark_fcn_file_up_to_date (const octave_time&) { }
+  virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
   virtual symbol_table::scope_id scope (void) { return -1; }
 
-  virtual octave_time time_parsed (void) const
-  { return octave_time (static_cast<time_t> (0)); }
+  virtual octave::sys::time time_parsed (void) const
+  { return octave::sys::time (static_cast<time_t> (0)); }
 
-  virtual octave_time time_checked (void) const
-  { return octave_time (static_cast<time_t> (0)); }
+  virtual octave::sys::time time_checked (void) const
+  { return octave::sys::time (static_cast<time_t> (0)); }
 
   virtual bool is_subfunction (void) const { return false; }
 
-  virtual bool is_class_constructor (const std::string& = std::string ()) const
+  virtual bool is_class_constructor (const std::string& = "") const
   { return false; }
 
   virtual bool
-  is_classdef_constructor (const std::string& = std::string ()) const
+  is_classdef_constructor (const std::string& = "") const
   { return false; }
 
-  virtual bool is_class_method (const std::string& = std::string ()) const
+  virtual bool is_class_method (const std::string& = "") const
   { return false; }
 
   virtual bool takes_varargs (void) const { return false; }
@@ -105,7 +107,7 @@ public:
   std::string package_name (void) const { return xpackage_name; }
 
   virtual void
-  mark_as_private_function (const std::string& cname = std::string ())
+  mark_as_private_function (const std::string& cname = "")
   {
     private_function = true;
     xdispatch_class = cname;
@@ -117,7 +119,7 @@ public:
   { return private_function && xdispatch_class == nm; }
 
   virtual bool
-  is_anonymous_function_of_class (const std::string& = std::string ()) const
+  is_anonymous_function_of_class (const std::string& = "") const
   { return false; }
 
   std::string dir_name (void) const { return my_dir_name; }
@@ -182,7 +184,7 @@ public:
 protected:
 
   octave_function (const std::string& nm,
-                   const std::string& ds = std::string ())
+                   const std::string& ds = "")
     : relative (false), locked (false), private_function (false),
       xdispatch_class (), my_name (nm), my_dir_name (), doc (ds) { }
 
@@ -225,3 +227,4 @@ private:
 };
 
 #endif
+

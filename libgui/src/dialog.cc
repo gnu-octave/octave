@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2013-2015 Daniel J. Sebald
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2013-2016 Daniel J. Sebald
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "dialog.h"
@@ -41,8 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QGridLayout>
 #include <QLabel>
 
-QUIWidgetCreator uiwidget_creator;
 
+QUIWidgetCreator uiwidget_creator;
 
 QUIWidgetCreator::QUIWidgetCreator (void)
   : QObject (), dialog_result (-1), dialog_button (),
@@ -50,14 +50,12 @@ QUIWidgetCreator::QUIWidgetCreator (void)
     path_name (new QString ())
 { }
 
-
 QUIWidgetCreator::~QUIWidgetCreator (void)
 {
   delete string_list;
   delete list_index;
   delete path_name;
 }
-
 
 void
 QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
@@ -78,7 +76,6 @@ QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
   waitcondition.wakeAll ();
 }
 
-
 void
 QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                         int button_pressed)
@@ -95,7 +92,6 @@ QUIWidgetCreator::list_select_finished (const QIntList& selected,
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
 }
-
 
 void
 QUIWidgetCreator::input_finished (const QStringList& input, int button_pressed)
@@ -130,8 +126,6 @@ QUIWidgetCreator::filedialog_finished (const QStringList& files,
   // Wake up Octave process so that it continues.
   waitcondition.wakeAll ();
 }
-
-
 
 MessageDialog::MessageDialog (const QString& message,
                               const QString& title,
@@ -184,6 +178,7 @@ MessageDialog::MessageDialog (const QString& message,
           // Make the last button the button pressed when <esc> key activated.
           if (i == N-1)
             {
+// FIXME: Why define and then immediately test value?
 #define ACTIVE_ESCAPE 1
 #if ACTIVE_ESCAPE
               setEscapeButton (pbutton);
@@ -199,17 +194,12 @@ MessageDialog::MessageDialog (const QString& message,
            &uiwidget_creator, SLOT (dialog_button_clicked (QAbstractButton *)));
 }
 
-
 ListDialog::ListDialog (const QStringList& list, const QString& mode,
                         int wd, int ht, const QList<int>& initial,
                         const QString& title, const QStringList& prompt,
                         const QString& ok_string, const QString& cancel_string)
-  : QDialog ()
+  : QDialog (), model (new QStringListModel (list))
 {
-  // Put the list of items into a model.  Keep this off of the stack
-  // because this conceivably could be a very large list.
-  QAbstractItemModel *model = new QStringListModel (list);
-
   QListView *view = new QListView;
   view->setModel (model);
 
@@ -248,6 +238,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
       for (int j = 0; j < prompt.length (); j++)
         {
           if (j > 0)
+// FIXME: Why define and then immediately test value?
 #define RICH_TEXT 1
 #if RICH_TEXT
             prompt_string.append ("<br>");
@@ -265,7 +256,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
     }
   listLayout->addWidget (view);
   QPushButton *select_all = new QPushButton (tr ("Select All"));
-  select_all->setEnabled (mode == "multiple");
+  select_all->setVisible (mode == "multiple");
   listLayout->addWidget (select_all);
 
   QPushButton *buttonOk = new QPushButton (ok_string);
@@ -274,6 +265,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   buttonsLayout->addStretch (1);
   buttonsLayout->addWidget (buttonOk);
   buttonsLayout->addWidget (buttonCancel);
+  buttonOk->setDefault (true);
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addLayout (listLayout);
@@ -298,8 +290,15 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   connect (this, SIGNAL (finish_selection (const QIntList&, int)),
            &uiwidget_creator,
            SLOT (list_select_finished (const QIntList&, int)));
+
+  connect (view, SIGNAL (doubleClicked (const QModelIndex&)),
+           this, SLOT (item_double_clicked (const QModelIndex&)));
 }
 
+ListDialog::~ListDialog (void)
+{
+  delete model;
+}
 
 void
 ListDialog::buttonOk_clicked (void)
@@ -317,7 +316,6 @@ ListDialog::buttonOk_clicked (void)
   done (QDialog::Accepted);
 }
 
-
 void
 ListDialog::buttonCancel_clicked (void)
 {
@@ -330,20 +328,24 @@ ListDialog::buttonCancel_clicked (void)
   done (QDialog::Rejected);
 }
 
-
 void
 ListDialog::reject (void)
 {
   buttonCancel_clicked ();
 }
 
+void
+ListDialog::item_double_clicked (const QModelIndex&)
+{
+  buttonOk_clicked ();
+}
 
 InputDialog::InputDialog (const QStringList& prompt, const QString& title,
                           const QFloatList& nr, const QFloatList& nc,
                           const QStringList& defaults)
   : QDialog ()
 {
-
+// FIXME: Why define and then immediately test value?
 #define LINE_EDIT_FOLLOWS_PROMPT 0
 
 #if LINE_EDIT_FOLLOWS_PROMPT
@@ -407,7 +409,6 @@ InputDialog::InputDialog (const QStringList& prompt, const QString& title,
            SLOT (input_finished (const QStringList&, int)));
 }
 
-
 void
 InputDialog::buttonOk_clicked (void)
 {
@@ -429,7 +430,6 @@ InputDialog::buttonCancel_clicked (void)
   emit finish_input (empty, 0);
   done (QDialog::Rejected);
 }
-
 
 void
 InputDialog::reject (void)
@@ -511,7 +511,7 @@ void FileDialog::acceptSelection (void)
       path = directory ().absolutePath ();
     }
 
-  // Matlab expects just the file name, whereas the file dialog gave us
+  // Matlab expects just the filename, whereas the file dialog gave us
   // full path names, so fix it.
 
   for (int i = 0; i < string_result.size (); i++)
@@ -519,7 +519,7 @@ void FileDialog::acceptSelection (void)
 
   // if not showing only dirs, add end slash for the path component
   if (testOption (QFileDialog::ShowDirsOnly)  == false)
-    path = path + "/";
+    path += "/";
 
   // convert to native slashes
   path = QDir::toNativeSeparators (path);

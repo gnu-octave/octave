@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Ben Abbott
+## Copyright (C) 2010-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rmappdata (@var{h}, @var{name})
-## @deftypefnx {Function File} {} rmappdata (@var{h}, @var{name1}, @var{name2}, @dots{})
+## @deftypefn  {} {} rmappdata (@var{h}, @var{name})
+## @deftypefnx {} {} rmappdata (@var{h}, @var{name1}, @var{name2}, @dots{})
 ## Delete the application data @var{name} from the graphics object with handle
 ## @var{h}.
 ##

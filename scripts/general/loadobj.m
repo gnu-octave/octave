@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{b} =} loadobj (@var{a})
+## @deftypefn {} {@var{b} =} loadobj (@var{a})
 ## Method of a class to manipulate an object after loading it from a file.
 ##
 ## The function @code{loadobj} is called when the object @var{a} is loaded

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-cx-mat.h"
 #include "ov-cx-diag.h"
@@ -42,13 +42,15 @@ DEFUNOP_OP (uminus, complex_diag_matrix, -)
 
 DEFUNOP (transpose, complex_diag_matrix)
 {
-  CAST_UNOP_ARG (const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v =
+    dynamic_cast<const octave_complex_diag_matrix&> (a);
   return octave_value (v.complex_diag_matrix_value ().transpose ());
 }
 
 DEFUNOP (hermitian, complex_diag_matrix)
 {
-  CAST_UNOP_ARG (const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v =
+    dynamic_cast<const octave_complex_diag_matrix&> (a);
   return octave_value (v.complex_diag_matrix_value ().hermitian ());
 }
 
@@ -60,8 +62,10 @@ DEFBINOP_OP (mul, complex_diag_matrix, complex_diag_matrix, *)
 
 DEFBINOP (div, complex_diag_matrix, complex_diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex_diag_matrix&,
-                   const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v1 =
+    dynamic_cast<const octave_complex_diag_matrix&> (a1);
+  const octave_complex_diag_matrix& v2 =
+    dynamic_cast<const octave_complex_diag_matrix&> (a2);
 
   return xdiv (v1.complex_diag_matrix_value (),
                v2.complex_diag_matrix_value ());
@@ -69,8 +73,10 @@ DEFBINOP (div, complex_diag_matrix, complex_diag_matrix)
 
 DEFBINOP (ldiv, complex_diag_matrix, complex_diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex_diag_matrix&,
-                   const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v1 =
+    dynamic_cast<const octave_complex_diag_matrix&> (a1);
+  const octave_complex_diag_matrix& v2 =
+    dynamic_cast<const octave_complex_diag_matrix&> (a2);
 
   return xleftdiv (v1.complex_diag_matrix_value (),
                    v2.complex_diag_matrix_value ());
@@ -78,17 +84,10 @@ DEFBINOP (ldiv, complex_diag_matrix, complex_diag_matrix)
 
 CONVDECL (complex_diag_matrix_to_complex_matrix)
 {
-  CAST_CONV_ARG (const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v =
+    dynamic_cast<const octave_complex_diag_matrix&> (a);
 
   return new octave_complex_matrix (v.complex_matrix_value ());
-}
-
-CONVDECL (complex_diag_matrix_to_float_complex_diag_matrix)
-{
-  CAST_CONV_ARG (const octave_complex_diag_matrix&);
-
-  return
-    new octave_float_complex_diag_matrix (v.float_complex_diag_matrix_value ());
 }
 
 void
@@ -110,12 +109,9 @@ install_cdm_cdm_ops (void)
   INSTALL_BINOP (op_ldiv, octave_complex_diag_matrix,
                  octave_complex_diag_matrix, ldiv);
 
-  INSTALL_CONVOP (octave_complex_diag_matrix, octave_complex_matrix,
-                  complex_diag_matrix_to_complex_matrix);
-  INSTALL_CONVOP (octave_complex_diag_matrix, octave_float_complex_diag_matrix,
-                  complex_diag_matrix_to_float_complex_diag_matrix);
   INSTALL_ASSIGNCONV (octave_complex_diag_matrix, octave_complex_matrix,
                       octave_complex_matrix);
   INSTALL_WIDENOP (octave_complex_diag_matrix, octave_complex_matrix,
                    complex_diag_matrix_to_complex_matrix);
 }
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{newargs} =} __add_datasource__ (@var{fcn}, @var{h}, @var{data}, @var{varargin})
+## @deftypefn {} {@var{newargs} =} __add_datasource__ (@var{fcn}, @var{h}, @var{data}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -28,7 +28,7 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
   endif
 
   for i = 1 : numel (data)
-    addproperty (strcat (data{i}, "datasource"), h, "string", "");
+    addproperty ([data{i} "datasource"], h, "string", "");
   endfor
 
   i = 0;
@@ -42,11 +42,12 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
       if (ischar (val))
         set (h, arg, val);
       else
-        error ("%s: expecting data source to be a string", fcn);
+        error ("%s: datasource must be a string", fcn);
       endif
     else
       newargs{end + 1} = arg;
     endif
   endwhile
+
 endfunction
 

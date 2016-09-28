@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Carlo de Falco
+Copyright (C) 2009-2016 Carlo de Falco
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,16 +21,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "oct-norm.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 
-template <class ColumnVector, class Matrix, class RowVector>
+template <typename ColumnVector, typename Matrix, typename RowVector>
 static void
 do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 {
@@ -44,54 +44,44 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
     }
 
   h(Vc) = xnorm (x);
-  if (real (h(Vc)) > 0)
-    x = x / h(Vc);
+  if (octave::math::real (h(Vc)) > 0)
+    x /= h(Vc);
 }
 
-DEFUN (mgorth, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
-Orthogonalize a given column vector @var{x} with respect to a set of\n\
-orthonormal vectors comprising the columns of @var{v} using the modified\n\
-Gram-Schmidt method.\n\
-\n\
-On exit, @var{y} is a unit vector such that:\n\
-\n\
-@example\n\
-@group\n\
-  norm (@var{y}) = 1\n\
-  @var{v}' * @var{y} = 0\n\
-  @var{x} = [@var{v}, @var{y}]*@var{h}'\n\
-@end group\n\
-@end example\n\
-\n\
-@end deftypefn")
+DEFUN (mgorth, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})
+Orthogonalize a given column vector @var{x} with respect to a set of
+orthonormal vectors comprising the columns of @var{v} using the modified
+Gram-Schmidt method.
+
+On exit, @var{y} is a unit vector such that:
+
+@example
+@group
+  norm (@var{y}) = 1
+  @var{v}' * @var{y} = 0
+  @var{x} = [@var{v}, @var{y}]*@var{h}'
+@end group
+@end example
+
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2 || nargout > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 2)
+    print_usage ();
 
   octave_value arg_x = args(0);
   octave_value arg_v = args(1);
 
   if (arg_v.ndims () != 2 || arg_x.ndims () != 2 || arg_x.columns () != 1
       || arg_v.rows () != arg_x.rows ())
-    {
-      error ("mgorth: V should be a matrix, and X a column vector with"
-             " the same number of rows as V.");
-      return retval;
-    }
+    error ("mgorth: V should be a matrix, and X a column vector with"
+           " the same number of rows as V.");
 
   if (! arg_x.is_numeric_type () && ! arg_v.is_numeric_type ())
-    {
-      error ("mgorth: X and V must be numeric");
-    }
+    error ("mgorth: X and V must be numeric");
+
+  octave_value_list retval;
 
   bool iscomplex = (arg_x.is_complex_type () || arg_v.is_complex_type ());
   if (arg_x.is_single_type () || arg_v.is_single_type ())
@@ -103,8 +93,7 @@ On exit, @var{y} is a unit vector such that:\n\
           FloatComplexMatrix V = arg_v.float_complex_matrix_value ();
           FloatComplexRowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
       else
         {
@@ -112,8 +101,7 @@ On exit, @var{y} is a unit vector such that:\n\
           FloatMatrix V = arg_v.float_matrix_value ();
           FloatRowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
     }
   else
@@ -124,8 +112,7 @@ On exit, @var{y} is a unit vector such that:\n\
           ComplexMatrix V = arg_v.complex_matrix_value ();
           ComplexRowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
       else
         {
@@ -133,8 +120,7 @@ On exit, @var{y} is a unit vector such that:\n\
           Matrix V = arg_v.matrix_value ();
           RowVector h;
           do_mgorth (x, V, h);
-          retval(1) = h;
-          retval(0) = x;
+          retval = ovl (x, h);
         }
     }
 
@@ -155,3 +141,4 @@ On exit, @var{y} is a unit vector such that:\n\
 %! endfor
 %! assert (a' * a, eye (5), 1e10);
 */
+

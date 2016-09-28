@@ -1,3 +1,3 @@
-function y = mtimes (a, b)
-  y = polynomial (conv (double (a), double (b)));
+function p = mtimes (a, b)
+  p = polynomial (conv (double (a), double (b)));
 endfunction

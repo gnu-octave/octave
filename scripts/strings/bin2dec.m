@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 Daniel Calvelo
+## Copyright (C) 1996-2016 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bin2dec (@var{s})
+## @deftypefn {} {} bin2dec (@var{s})
 ## Return the decimal number corresponding to the binary number represented
 ## by the string @var{s}.
 ##

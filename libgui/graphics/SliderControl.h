@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_SliderControl__
-#define __QtHandles_SliderControl__ 1
+#if ! defined (octave_SliderControl_h)
+#define octave_SliderControl_h 1
 
 #include "BaseControl.h"
 
@@ -30,26 +30,27 @@ class QAbstractSlider;
 namespace QtHandles
 {
 
-class SliderControl : public BaseControl
-{
-  Q_OBJECT
+  class SliderControl : public BaseControl
+  {
+    Q_OBJECT
 
-public:
-  SliderControl (const graphics_object& go, QAbstractSlider* slider);
-  ~SliderControl (void);
+  public:
+    SliderControl (const graphics_object& go, QAbstractSlider* slider);
+    ~SliderControl (void);
 
-  static SliderControl* create (const graphics_object& go);
+    static SliderControl* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void valueChanged (int ival);
+  private slots:
+    void valueChanged (int ival);
 
-private:
-  bool m_blockUpdates;
-};
+  private:
+    bool m_blockUpdates;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

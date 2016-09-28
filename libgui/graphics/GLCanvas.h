@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_GLCanvas__
-#define __QtHandles_GLCanvas__ 1
+#if ! defined (octave_GLCanvas_h)
+#define octave_GLCanvas_h 1
 
 #include <QGLWidget>
 
@@ -30,34 +30,35 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-class GLCanvas : public QGLWidget, public Canvas
-{
-public:
-  GLCanvas (QWidget* parent, const graphics_handle& handle);
-  ~GLCanvas (void);
+  class GLCanvas : public QGLWidget, public Canvas
+  {
+  public:
+    GLCanvas (QWidget* parent, const graphics_handle& handle);
+    ~GLCanvas (void);
 
-  void draw (const graphics_handle& handle);
-  void toggleAxes (const graphics_handle& handle);
-  void toggleGrid (const graphics_handle& handle);
-  void autoAxes (const graphics_handle& handle);
-  void drawZoomBox (const QPoint& p1, const QPoint& p2);
-  void resize (int /* x */, int /* y */,
-               int /* width */, int /* height */) { }
-  graphics_object selectFromAxes (const graphics_object& ax,
-                                  const QPoint& pt);
-  QWidget* qWidget (void) { return this; }
+    void draw (const graphics_handle& handle);
+    void toggleAxes (const graphics_handle& handle);
+    void toggleGrid (const graphics_handle& handle);
+    void autoAxes (const graphics_handle& handle);
+    void drawZoomBox (const QPoint& p1, const QPoint& p2);
+    void resize (int /* x */, int /* y */,
+                 int /* width */, int /* height */) { }
+    graphics_object selectFromAxes (const graphics_object& ax,
+                                    const QPoint& pt);
+    QWidget* qWidget (void) { return this; }
 
-protected:
-  void paintGL (void);
-  void mouseDoubleClickEvent (QMouseEvent* event);
-  void mouseMoveEvent (QMouseEvent* event);
-  void mousePressEvent (QMouseEvent* event);
-  void mouseReleaseEvent (QMouseEvent* event);
-  void wheelEvent (QWheelEvent* event);
-  void keyPressEvent (QKeyEvent* event);
-  void keyReleaseEvent (QKeyEvent* event);
-};
+  protected:
+    void paintGL (void);
+    void mouseDoubleClickEvent (QMouseEvent* event);
+    void mouseMoveEvent (QMouseEvent* event);
+    void mousePressEvent (QMouseEvent* event);
+    void mouseReleaseEvent (QMouseEvent* event);
+    void wheelEvent (QWheelEvent* event);
+    void keyPressEvent (QKeyEvent* event);
+    void keyReleaseEvent (QKeyEvent* event);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

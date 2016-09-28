@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_FigureWindow__
-#define __QtHandles_FigureWindow__ 1
+#if ! defined (octave_FigureWindow_h)
+#define octave_FigureWindow_h 1
 
 #include <QMainWindow>
 
@@ -30,19 +30,20 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
+  DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
 
-class FigureWindow : public FigureWindowBase
-{
-  Q_OBJECT
+  class FigureWindow : public FigureWindowBase
+  {
+    Q_OBJECT
 
-public:
-  FigureWindow (QWidget* parent = 0);
-  ~FigureWindow (void);
+  public:
+    FigureWindow (QWidget* parent = 0);
+    ~FigureWindow (void);
 
-  QMenu* createPopupMenu (void);
-};
+    QMenu* createPopupMenu (void);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

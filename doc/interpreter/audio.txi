@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 Kurt Hornik
+@c Copyright (C) 1996-2016 Kurt Hornik
 @c
 @c This file is part of Octave.
 @c
@@ -41,6 +41,8 @@ wav, flac and ogg vorbis.
 @DOCSTRING(audioread)
 
 @DOCSTRING(audiowrite)
+
+@DOCSTRING(audioformats)
 
 @node Audio Device Information
 @section Audio Device Information
@@ -182,6 +184,3 @@ files holding data in mu-law encoding end in @file{au}, @file{mu}, or
 
 @DOCSTRING(soundsc)
 
-@DOCSTRING(wavread)
-
-@DOCSTRING(wavwrite)

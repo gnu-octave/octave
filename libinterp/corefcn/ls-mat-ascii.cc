@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -48,12 +48,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
+#include "interpreter.h"
 #include "lex.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
 #include "ls-mat-ascii.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
@@ -109,7 +110,7 @@ get_mat_data_input_line (std::istream& is)
 static void
 get_lines_and_columns (std::istream& is,
                        octave_idx_type& nr, octave_idx_type& nc,
-                       const std::string& filename = std::string (),
+                       const std::string& filename = "",
                        bool quiet = false, bool check_numeric = false)
 {
   std::streampos pos = is.tellg ();
@@ -119,7 +120,7 @@ get_lines_and_columns (std::istream& is,
   nr = 0;
   nc = 0;
 
-  while (is && ! error_state)
+  while (is)
     {
       octave_quit ();
 
@@ -232,8 +233,6 @@ std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
                      octave_value& tc)
 {
-  std::string retval;
-
   std::string varname;
 
   size_t pos = filename.rfind ('/');
@@ -256,108 +255,92 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
         varname[i] = '_';
     }
 
-  if (is_keyword (varname) || ! isalpha (varname[0]))
+  if (octave::is_keyword (varname) || ! isalpha (varname[0]))
     varname.insert (0, "X");
 
-  if (valid_identifier (varname))
-    {
-      octave_idx_type nr = 0;
-      octave_idx_type nc = 0;
-
-      int total_count = 0;
-
-      get_lines_and_columns (is, nr, nc, filename);
-
-      octave_quit ();
-
-      if (! error_state && nr > 0 && nc > 0)
-        {
-          Matrix tmp (nr, nc);
-
-          if (nr < 1 || nc < 1)
-            is.clear (std::ios::badbit);
-          else
-            {
-              double d;
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  std::string buf = get_mat_data_input_line (is);
-
-                  std::istringstream tmp_stream (buf);
-
-                  for (octave_idx_type j = 0; j < nc; j++)
-                    {
-                      octave_quit ();
-
-                      d = octave_read_value<double> (tmp_stream);
-
-                      if (tmp_stream || tmp_stream.eof ())
-                        {
-                          tmp.elem (i, j) = d;
-                          total_count++;
-
-                          // Skip whitespace and commas.
-                          char c;
-                          while (1)
-                            {
-                              tmp_stream >> c;
-
-                              if (! tmp_stream)
-                                break;
-
-                              if (! (c == ' ' || c == '\t' || c == ','))
-                                {
-                                  tmp_stream.putback (c);
-                                  break;
-                                }
-                            }
-
-                          if (tmp_stream.eof ())
-                            break;
-                        }
-                      else
-                        {
-                          error ("load: failed to read matrix from file '%s'",
-                                 filename.c_str ());
-
-                          return retval;
-                        }
-
-                    }
-                }
-            }
-
-          if (is || is.eof ())
-            {
-              // FIXME: not sure this is best, but it works.
-
-              if (is.eof ())
-                is.clear ();
-
-              octave_idx_type expected = nr * nc;
-
-              if (expected == total_count)
-                {
-                  tc = tmp;
-                  retval = varname;
-                }
-              else
-                error ("load: expected %d elements, found %d",
-                       expected, total_count);
-            }
-          else
-            error ("load: failed to read matrix from file '%s'",
-                   filename.c_str ());
-        }
-      else
-        error ("load: unable to extract matrix size from file '%s'",
-               filename.c_str ());
-    }
-  else
+  if (! valid_identifier (varname))
     error ("load: unable to convert filename '%s' to valid identifier",
            filename.c_str ());
 
-  return retval;
+  octave_idx_type nr = 0;
+  octave_idx_type nc = 0;
+
+  int total_count = 0;
+
+  get_lines_and_columns (is, nr, nc, filename);
+
+  octave_quit ();
+
+  if (nr <= 0 || nc <= 0)
+    error ("load: unable to extract matrix size from file '%s'",
+           filename.c_str ());
+
+  Matrix tmp (nr, nc);
+
+  if (nr < 1 || nc < 1)
+    is.clear (std::ios::badbit);
+  else
+    {
+      double d;
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          std::string buf = get_mat_data_input_line (is);
+
+          std::istringstream tmp_stream (buf);
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              octave_quit ();
+
+              d = octave_read_value<double> (tmp_stream);
+
+              if (! tmp_stream && ! tmp_stream.eof ())
+                error ("load: failed to read matrix from file '%s'",
+                       filename.c_str ());
+
+              tmp.elem (i, j) = d;
+              total_count++;
+
+              // Skip whitespace and commas.
+              char c;
+              while (1)
+                {
+                  tmp_stream >> c;
+
+                  if (! tmp_stream)
+                    break;
+
+                  if (! (c == ' ' || c == '\t' || c == ','))
+                    {
+                      tmp_stream.putback (c);
+                      break;
+                    }
+                }
+
+              if (tmp_stream.eof ())
+                break;
+            }
+        }
+    }
+
+  if (! is && ! is.eof ())
+    error ("load: failed to read matrix from file '%s'",
+           filename.c_str ());
+
+  // FIXME: not sure this is best, but it works.
+
+  if (is.eof ())
+    is.clear ();
+
+  octave_idx_type expected = nr * nc;
+
+  if (expected != total_count)
+    error ("load: expected %d elements, found %d",
+           expected, total_count);
+
+  tc = tmp;
+
+  return varname;
 }
 
 bool
@@ -369,15 +352,20 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
   if (val.is_complex_type ())
     warning ("save: omitting imaginary part for ASCII file");
 
-  Matrix m = val.matrix_value (true);
+  Matrix m;
 
-  if (error_state)
+  try
     {
-      success = false;
-
-      error_state = 0;
+      m = val.matrix_value (true);
     }
-  else
+  catch (const octave::execution_exception& e)
+    {
+      recover_from_exception ();
+
+      success = false;
+    }
+
+  if (success)
     {
       long old_precision = os.precision ();
 
@@ -422,3 +410,4 @@ looks_like_mat_ascii_file (std::istream& is, const std::string& filename)
 
   return retval;
 }
+

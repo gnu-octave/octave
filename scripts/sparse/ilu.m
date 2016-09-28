@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2015 Eduardo Ramos Fernández <eduradical951@gmail.com>
-## Copyright (C) 2013-2015 Kai T. Ohlhus <k.ohlhus@gmail.com>
+## Copyright (C) 2014-2016 Eduardo Ramos Fernández <eduradical951@gmail.com>
+## Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ilu (@var{A})
-## @deftypefnx {Function File} {} ilu (@var{A}, @var{opts})
-## @deftypefnx {Function File} {[@var{L}, @var{U}] =} ilu (@dots{})
-## @deftypefnx {Function File} {[@var{L}, @var{U}, @var{P}] =} ilu (@dots{})
+## @deftypefn  {} {} ilu (@var{A})
+## @deftypefnx {} {} ilu (@var{A}, @var{opts})
+## @deftypefnx {} {[@var{L}, @var{U}] =} ilu (@dots{})
+## @deftypefnx {} {[@var{L}, @var{U}, @var{P}] =} ilu (@dots{})
 ##
 ## Compute the incomplete LU factorization of the sparse square matrix @var{A}.
 ##
@@ -154,7 +154,8 @@
 ## @end example
 ##
 ## This example uses ILU as preconditioner for a random FEM-Matrix, which has a
-## large condition number.  Without @var{L} and @var{U} BICG would not converge.
+## large condition number.  Without @var{L} and @var{U} BICG would not
+## converge.
 ##
 ## @seealso{lu, ichol, bicg, gmres}
 ## @end deftypefn

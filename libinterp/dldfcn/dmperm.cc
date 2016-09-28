@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2015 David Bateman
+Copyright (C) 2005-2016 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -21,27 +21,27 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "utils.h"
 
 #include "oct-sparse.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
-#include "SparseQR.h"
-#include "SparseCmplxQR.h"
 
-#ifdef USE_64_BIT_IDX_T
-#define CXSPARSE_NAME(name) cs_dl ## name
+#if defined (OCTAVE_ENABLE_64)
+#  define CXSPARSE_NAME(name) cs_dl ## name
 #else
-#define CXSPARSE_NAME(name) cs_di ## name
+#  define CXSPARSE_NAME(name) cs_di ## name
 #endif
+
+#if defined (HAVE_CXSPARSE)
 
 static RowVector
 put_int (octave_idx_type *p, octave_idx_type n)
@@ -52,7 +52,6 @@ put_int (octave_idx_type *p, octave_idx_type n)
   return ret;
 }
 
-#if HAVE_CXSPARSE
 static octave_value_list
 dmperm_internal (bool rank, const octave_value arg, int nargout)
 {
@@ -82,95 +81,77 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
       csm.i = cm.xridx ();
     }
 
-  if (!error_state)
+  if (nargout <= 1 || rank)
     {
-      if (nargout <= 1 || rank)
+      octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
+      if (rank)
         {
-#if defined(CS_VER) && (CS_VER >= 2)
-          octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
-#else
-          octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm);
-#endif
-          if (rank)
-            {
-              octave_idx_type r = 0;
-              for (octave_idx_type i = 0; i < nc; i++)
-                if (jmatch[nr+i] >= 0)
-                  r++;
-              retval(0) = static_cast<double>(r);
-            }
-          else
-            retval(0) = put_int (jmatch + nr, nc);
-          CXSPARSE_NAME (_free) (jmatch);
+          octave_idx_type r = 0;
+          for (octave_idx_type i = 0; i < nc; i++)
+            if (jmatch[nr+i] >= 0)
+              r++;
+          retval(0) = static_cast<double>(r);
         }
       else
-        {
-#if defined(CS_VER) && (CS_VER >= 2)
-          CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm, 0);
-#else
-          CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm);
-#endif
-
-          //retval(5) = put_int (dm->rr, 5);
-          //retval(4) = put_int (dm->cc, 5);
-#if defined(CS_VER) && (CS_VER >= 2)
-          retval(3) = put_int (dm->s, dm->nb+1);
-          retval(2) = put_int (dm->r, dm->nb+1);
-          retval(1) = put_int (dm->q, nc);
-          retval(0) = put_int (dm->p, nr);
-#else
-          retval(3) = put_int (dm->S, dm->nb+1);
-          retval(2) = put_int (dm->R, dm->nb+1);
-          retval(1) = put_int (dm->Q, nc);
-          retval(0) = put_int (dm->P, nr);
-#endif
-          CXSPARSE_NAME (_dfree) (dm);
-        }
+        retval(0) = put_int (jmatch + nr, nc);
+      CXSPARSE_NAME (_free) (jmatch);
     }
+  else
+    {
+      CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm, 0);
+
+      //retval(5) = put_int (dm->rr, 5);
+      //retval(4) = put_int (dm->cc, 5);
+      retval = ovl (put_int (dm->p, nr), put_int (dm->q, nc),
+                    put_int (dm->r, dm->nb+1), put_int (dm->s, dm->nb+1));
+
+      CXSPARSE_NAME (_dfree) (dm);
+    }
+
   return retval;
 }
+
 #endif
 
 DEFUN_DLD (dmperm, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} dmperm (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})\n\
-\n\
-@cindex @nospell{Dulmage-Mendelsohn} decomposition\n\
-Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix\n\
-@var{S}.\n\
-\n\
-With a single output argument @code{dmperm} performs the row permutations\n\
-@var{p} such that @code{@var{S}(@var{p},:)} has no zero elements on the\n\
-diagonal.\n\
-\n\
-Called with two or more output arguments, returns the row and column\n\
-permutations, such that @code{@var{S}(@var{p}, @var{q})} is in block\n\
-triangular form.  The values of @var{r} and @var{S} define the boundaries\n\
-of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.\n\
-\n\
-The method used is described in: @nospell{A. Pothen & C.-J. Fan.}\n\
-@cite{Computing the Block Triangular Form of a Sparse Matrix}.\n\
-ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
-@seealso{colamd, ccolamd}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{p} =} dmperm (@var{S})
+@deftypefnx {} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})
+
+@cindex Dulmage-Mendelsohn decomposition
+Perform a @nospell{Dulmage-Mendelsohn} permutation of the sparse matrix
+@var{S}.
+
+With a single output argument @code{dmperm} performs the row permutations
+@var{p} such that @code{@var{S}(@var{p},:)} has no zero elements on the
+diagonal.
+
+Called with two or more output arguments, returns the row and column
+permutations, such that @code{@var{S}(@var{p}, @var{q})} is in block
+triangular form.  The values of @var{r} and @var{S} define the boundaries
+of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.
+
+The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
+@cite{Computing the Block Triangular Form of a Sparse Matrix}.
+ACM Trans. Math. Software, 16(4):303-324, 1990.
+@seealso{colamd, ccolamd}
+@end deftypefn */)
 {
-  int nargin = args.length ();
-  octave_value_list retval;
+#if defined (HAVE_CXSPARSE)
 
-  if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 1)
+    print_usage ();
 
-#if HAVE_CXSPARSE
-  retval = dmperm_internal (false, args(0), nargout);
+  return ovl (dmperm_internal (false, args(0), nargout));
+
 #else
-  error ("dmperm: not available in this version of Octave");
-#endif
 
-  return retval;
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  err_disabled_feature ("dmperm", "CXSparse");
+
+#endif
 }
 
 /*
@@ -190,43 +171,43 @@ ACM Trans. Math. Software, 16(4):303-324, 1990.\n\
 */
 
 DEFUN_DLD (sprank, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} sprank (@var{S})\n\
-@cindex structural rank\n\
-\n\
-Calculate the structural rank of the sparse matrix @var{S}.\n\
-\n\
-Note that only the structure of the matrix is used in this calculation based\n\
-on a @nospell{Dulmage-Mendelsohn} permutation to block triangular form.  As\n\
-such the numerical rank of the matrix @var{S} is bounded by\n\
-@code{sprank (@var{S}) >= rank (@var{S})}.  Ignoring floating point errors\n\
-@code{sprank (@var{S}) == rank (@var{S})}.\n\
-@seealso{dmperm}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{p} =} sprank (@var{S})
+@cindex structural rank
+
+Calculate the structural rank of the sparse matrix @var{S}.
+
+Note that only the structure of the matrix is used in this calculation based
+on a @nospell{Dulmage-Mendelsohn} permutation to block triangular form.  As
+such the numerical rank of the matrix @var{S} is bounded by
+@code{sprank (@var{S}) >= rank (@var{S})}.  Ignoring floating point errors
+@code{sprank (@var{S}) == rank (@var{S})}.
+@seealso{dmperm}
+@end deftypefn */)
 {
-  int nargin = args.length ();
-  octave_value_list retval;
+#if defined (HAVE_CXSPARSE)
 
-  if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 1)
+    print_usage ();
 
-#if HAVE_CXSPARSE
-  retval = dmperm_internal (true, args(0), nargout);
+  return ovl (dmperm_internal (true, args(0), nargout));
+
 #else
-  error ("sprank: not available in this version of Octave");
-#endif
 
-  return retval;
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  err_disabled_feature ("sprank", "CXSparse");
+
+#endif
 }
 
 /*
 %!testif HAVE_CXSPARSE
-%! assert (sprank (speye (20)), 20)
+%! assert (sprank (speye (20)), 20);
 %!testif HAVE_CXSPARSE
-%! assert (sprank ([1,0,2,0;2,0,4,0]), 2)
+%! assert (sprank ([1,0,2,0;2,0,4,0]), 2);
 
 %!error sprank (1,2)
 */
+

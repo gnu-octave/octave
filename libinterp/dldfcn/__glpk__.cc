@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2015 Nicolo' Giorgetti
-Copyright (C) 2013-2015 Sébastien Villemot <sebastien@debian.org>
+Copyright (C) 2005-2016 Nicolo' Giorgetti
+Copyright (C) 2013-2016 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 
@@ -21,21 +21,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
-#include <csetjmp>
 #include <ctime>
 
 #include "lo-ieee.h"
 
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 
 #if defined (HAVE_GLPK)
@@ -43,9 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
 #if defined (HAVE_GLPK_GLPK_H)
-#include <glpk/glpk.h>
+#  include <glpk/glpk.h>
 #else
-#include <glpk.h>
+#  include <glpk.h>
 #endif
 }
 
@@ -71,8 +70,6 @@ struct control_params
   double tolobj;
 };
 
-static jmp_buf mark;  //-- Address for long jump to jump to
-
 int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       double *a, double *b, char *ctype, int *freeLB, double *lb,
@@ -88,7 +85,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   glp_prob *lp = glp_create_prob ();
 
-  //-- Set the sense of optimization
+  // Set the sense of optimization
   if (sense == 1)
     glp_set_obj_dir (lp, GLP_MIN);
   else
@@ -97,7 +94,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   glp_add_cols (lp, n);
   for (int i = 0; i < n; i++)
     {
-      //-- Define type of the structural variables
+      // Define type of the structural variables
       if (! freeLB[i] && ! freeUB[i])
         {
           if (lb[i] != ub[i])
@@ -119,7 +116,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         }
 
       // -- Set the objective coefficient of the corresponding
-      // -- structural variable. No constant term is assumed.
+      // -- structural variable.  No constant term is assumed.
       glp_set_obj_coef(lp,i+1,c[i]);
 
       if (isMIP)
@@ -130,13 +127,11 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   for (int i = 0; i < m; i++)
     {
-      /* If the i-th row has no lower bound (types F,U), the
-         corrispondent parameter will be ignored.
-         If the i-th row has no upper bound (types F,L), the corrispondent
-         parameter will be ignored.
-         If the i-th row is of S type, the i-th LB is used, but
-         the i-th UB is ignored.
-      */
+      // If the i-th row has no lower bound (types F,U), the
+      // corrispondent parameter will be ignored.  If the i-th row has
+      // no upper bound (types F,L), the corrispondent parameter will be
+      // ignored.  If the i-th row is of S type, the i-th LB is used,
+      // but the i-th UB is ignored.
 
       switch (ctype[i])
         {
@@ -170,25 +165,22 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   if (save_pb)
     {
       static char tmp[] = "outpb.lp";
-      if (glp_write_lp (lp, NULL, tmp) != 0)
-        {
-          error ("__glpk__: unable to write problem");
-          longjmp (mark, -1);
-        }
+      if (glp_write_lp (lp, 0, tmp) != 0)
+        error ("__glpk__: unable to write problem");
     }
 
-  //-- scale the problem data
-  if (!par->presol || lpsolver != 1)
+  // scale the problem data
+  if (! par->presol || lpsolver != 1)
     glp_scale_prob (lp, scale);
 
-  //-- build advanced initial basis (if required)
-  if (lpsolver == 1 && !par->presol)
+  // build advanced initial basis (if required)
+  if (lpsolver == 1 && ! par->presol)
     glp_adv_basis (lp, 0);
 
-  /* For MIP problems without a presolver, a first pass with glp_simplex
-     is required */
-  if ((!isMIP && lpsolver == 1)
-      || (isMIP && !par->presol))
+  // For MIP problems without a presolver, a first pass with glp_simplex
+  // is required
+  if ((! isMIP && lpsolver == 1)
+      || (isMIP && ! par->presol))
     {
       glp_smcp smcp;
       glp_init_smcp (&smcp);
@@ -225,7 +217,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       errnum = glp_intopt (lp, &iocp);
     }
 
-  if (!isMIP && lpsolver == 2)
+  if (! isMIP && lpsolver == 2)
     {
       glp_iptcp iptcp;
       glp_init_iptcp (&iptcp);
@@ -261,7 +253,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
         }
       else
         {
-          /* Primal values */
+          // Primal values
           for (int i = 0; i < n; i++)
             {
               if (lpsolver == 1)
@@ -270,7 +262,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                 xmin[i] = glp_ipt_col_prim (lp, i+1);
             }
 
-          /* Dual values */
+          // Dual values
           for (int i = 0; i < m; i++)
             {
               if (lpsolver == 1)
@@ -279,7 +271,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
                 lambda[i] = glp_ipt_row_dual (lp, i+1);
             }
 
-          /* Reduced costs */
+          // Reduced costs
           for (int i = 0; i < glp_get_num_cols (lp); i++)
             {
               if (lpsolver == 1)
@@ -293,113 +285,76 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     }
 
   glp_delete_prob (lp);
+  // Request that GLPK free all memory resources.
+  // This prevents reported memory leaks, but isn't strictly necessary.
+  // The memory blocks use are allocated once and don't grow with further
+  // calls to glpk so they would be reclaimed anyways when Octave exits.
+  glp_free_env ();
 
   return errnum;
 }
 
 #endif
 
-#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL) \
-  do \
-    { \
-      octave_value tmp = PARAM.getfield (NAME); \
- \
-      if (tmp.is_defined ()) \
-        { \
-          if (! tmp.is_empty ()) \
-            { \
-              VAL = tmp.scalar_value (); \
- \
-              if (error_state) \
-                { \
-                  error ("glpk: invalid value in PARAM." NAME); \
-                  return retval; \
-                } \
-            } \
-          else \
-            { \
-              error ("glpk: invalid value in PARAM." NAME); \
-              return retval; \
-            } \
-        } \
-    } \
+#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, VAL)                           \
+  do                                                                    \
+    {                                                                   \
+      octave_value tmp = PARAM.getfield (NAME);                         \
+                                                                        \
+      if (tmp.is_defined ())                                            \
+        {                                                               \
+          if (! tmp.is_empty ())                                        \
+            VAL = tmp.xscalar_value ("glpk: invalid value in PARAM" NAME); \
+          else                                                          \
+            error ("glpk: invalid value in PARAM" NAME);                \
+        }                                                               \
+    }                                                                   \
   while (0)
 
-#define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL) \
-  do \
-    { \
-      octave_value tmp = PARAM.getfield (NAME); \
- \
-      if (tmp.is_defined ()) \
-        { \
-          if (! tmp.is_empty ()) \
-            { \
-              VAL = tmp.int_value (); \
- \
-              if (error_state) \
-                { \
-                  error ("glpk: invalid value in PARAM." NAME); \
-                  return retval; \
-                } \
-            } \
-          else \
-            { \
-              error ("glpk: invalid value in PARAM." NAME); \
-              return retval; \
-            } \
-        } \
-    } \
+#define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL)                            \
+  do                                                                    \
+    {                                                                   \
+      octave_value tmp = PARAM.getfield (NAME);                         \
+                                                                        \
+      if (tmp.is_defined ())                                            \
+        {                                                               \
+          if (! tmp.is_empty ())                                        \
+            VAL = tmp.xint_value ("glpk: invalid value in PARAM" NAME); \
+          else                                                          \
+            error ("glpk: invalid value in PARAM" NAME);                \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 DEFUN_DLD (__glpk__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{values}] =} __glpk__ (@var{args})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{values}] =} __glpk__ (@var{args})
+Undocumented internal function.
+@end deftypefn */)
 {
-  // The list of values to return.  See the declaration in oct-obj.h
-  octave_value_list retval;
-
 #if defined (HAVE_GLPK)
 
-  int nrhs = args.length ();
+  // FIXME: Should we even need checking for an internal function?
+  if (args.length () != 9)
+    print_usage ();
 
-  if (nrhs != 9)
-    {
-      print_usage ();
-      return retval;
-    }
+  // 1nd Input.  A column array containing the objective function coefficients.
+  int mrowsc = args(0).rows ();
 
-  //-- 1nd Input. A column array containing the objective function
-  //--            coefficients.
-  volatile int mrowsc = args(0).rows ();
-
-  Matrix C (args(0).matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of C");
-      return retval;
-    }
+  Matrix C = args(0).xmatrix_value ("__glpk__: invalid value of C");
 
   double *c = C.fortran_vec ();
   Array<int> rn;
   Array<int> cn;
   ColumnVector a;
-  volatile int mrowsA;
-  volatile int nz = 0;
+  int mrowsA;
+  int nz = 0;
 
-  //-- 2nd Input. A matrix containing the constraints coefficients.
+  // 2nd Input.  A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
   if (args(1).is_sparse_type ())
     {
-      SparseMatrix A = args(1).sparse_matrix_value (); // get the sparse matrix
-
-      if (error_state)
-        {
-          error ("__glpk__: invalid value of A");
-          return retval;
-        }
+      SparseMatrix A = args(1).xsparse_matrix_value ("__glpk__: invalid value of A");
 
       mrowsA = A.rows ();
       octave_idx_type Anc = A.cols ();
@@ -409,10 +364,7 @@ Undocumented internal function.\n\
       a.resize (Anz+1, 0.0);
 
       if (Anc != mrowsc)
-        {
-          error ("__glpk__: invalid value of A");
-          return retval;
-        }
+        error ("__glpk__: invalid value of A");
 
       for (octave_idx_type j = 0; j < Anc; j++)
         for (octave_idx_type i = A.cidx (j); i < A.cidx (j+1); i++)
@@ -425,13 +377,7 @@ Undocumented internal function.\n\
     }
   else
     {
-      Matrix A (args(1).matrix_value ()); // get the matrix
-
-      if (error_state)
-        {
-          error ("__glpk__: invalid value of A");
-          return retval;
-        }
+      Matrix A = args(1).xmatrix_value ("__glpk__: invalid value of A");
 
       mrowsA = A.rows ();
       rn.resize (dim_vector (mrowsA*mrowsc+1, 1));
@@ -454,90 +400,66 @@ Undocumented internal function.\n\
 
     }
 
-  //-- 3rd Input. A column array containing the right-hand side value
-  //               for each constraint in the constraint matrix.
-  Matrix B (args(2).matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of B");
-      return retval;
-    }
+  // 3rd Input.  A column array containing the right-hand side value
+  //             for each constraint in the constraint matrix.
+  Matrix B = args(2).xmatrix_value ("__glpk__: invalid value of B");
 
   double *b = B.fortran_vec ();
 
-  //-- 4th Input. An array of length mrowsc containing the lower
-  //--            bound on each of the variables.
-  Matrix LB (args(3).matrix_value ());
+  // 4th Input.  An array of length mrowsc containing the lower
+  //             bound on each of the variables.
+  Matrix LB = args(3).xmatrix_value ("__glpk__: invalid value of LB");
 
-  if (error_state || LB.length () < mrowsc)
-    {
-      error ("__glpk__: invalid value of LB");
-      return retval;
-    }
+  if (LB.numel () < mrowsc)
+    error ("__glpk__: invalid dimensions for LB");
 
   double *lb = LB.fortran_vec ();
 
-  //-- LB argument, default: Free
+  // LB argument, default: Free
   Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (xisinf (lb[i]))
+      if (octave::math::isinf (lb[i]))
         {
           freeLB(i) = 1;
-          lb[i] = -octave_Inf;
+          lb[i] = -octave::numeric_limits<double>::Inf ();
         }
       else
         freeLB(i) = 0;
     }
 
-  //-- 5th Input. An array of at least length numcols containing the upper
-  //--            bound on each of the variables.
-  Matrix UB (args(4).matrix_value ());
+  // 5th Input.  An array of at least length numcols containing the upper
+  //             bound on each of the variables.
+  Matrix UB = args(4).xmatrix_value ("__glpk__: invalid value of UB");
 
-  if (error_state || UB.length () < mrowsc)
-    {
-      error ("__glpk__: invalid value of UB");
-      return retval;
-    }
+  if (UB.numel () < mrowsc)
+    error ("__glpk__: invalid dimensions for UB");
 
   double *ub = UB.fortran_vec ();
 
   Array<int> freeUB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
-      if (xisinf (ub[i]))
+      if (octave::math::isinf (ub[i]))
         {
           freeUB(i) = 1;
-          ub[i] = octave_Inf;
+          ub[i] = octave::numeric_limits<double>::Inf ();
         }
       else
         freeUB(i) = 0;
     }
 
-  //-- 6th Input. A column array containing the sense of each constraint
-  //--            in the constraint matrix.
-  charMatrix CTYPE (args(5).char_matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of CTYPE");
-      return retval;
-    }
+  // 6th Input.  A column array containing the sense of each constraint
+  //             in the constraint matrix.
+  charMatrix CTYPE = args(5).xchar_matrix_value ("__glpk__: invalid value of CTYPE");
 
   char *ctype = CTYPE.fortran_vec ();
 
-  //-- 7th Input. A column array containing the types of the variables.
-  charMatrix VTYPE (args(6).char_matrix_value ());
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of VARTYPE");
-      return retval;
-    }
+  // 7th Input.  A column array containing the types of the variables.
+  charMatrix VTYPE = args(6).xchar_matrix_value ("__glpk__: invalid value of VARTYPE");
 
   Array<int> vartype (dim_vector (mrowsc, 1));
-  volatile int isMIP = 0;
+  int isMIP = 0;
   for (int i = 0; i < mrowsc ; i++)
     {
       if (VTYPE(i,0) == 'I')
@@ -549,124 +471,83 @@ Undocumented internal function.\n\
         vartype(i) = GLP_CV;
     }
 
-  //-- 8th Input. Sense of optimization.
-  volatile int sense;
-  double SENSE = args(7).scalar_value ();
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of SENSE");
-      return retval;
-    }
+  // 8th Input.  Sense of optimization.
+  int sense;
+  double SENSE = args(7).xscalar_value ("__glpk__: invalid value of SENSE");
 
   if (SENSE >= 0)
     sense = 1;
   else
     sense = -1;
 
-  //-- 9th Input. A structure containing the control parameters.
-  octave_scalar_map PARAM = args(8).scalar_map_value ();
-
-  if (error_state)
-    {
-      error ("__glpk__: invalid value of PARAM");
-      return retval;
-    }
+  // 9th Input.  A structure containing the control parameters.
+  octave_scalar_map PARAM = args(8).xscalar_map_value ("__glpk__: invalid value of PARAM");
 
   control_params par;
 
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  //-- Integer parameters
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Integer parameters
 
-  //-- Level of messages output by the solver
+  // Level of messages output by the solver
   par.msglev = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("msglev", par.msglev);
   if (par.msglev < 0 || par.msglev > 3)
-    {
-      error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.msglev must be 0 (no output) or 1 (error and warning messages only [default]) or 2 (normal output) or 3 (full output)");
 
-  //-- scaling option
-  volatile int scale = 16;
+  // scaling option
+  int scale = 16;
   OCTAVE_GLPK_GET_INT_PARAM ("scale", scale);
   if (scale < 0 || scale > 128)
-    {
-      error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
-      return retval;
-    }
+    error ("__glpk__: PARAM.scale must either be 128 (automatic selection of scaling options), or a bitwise or of: 1 (geometric mean scaling), 16 (equilibration scaling), 32 (round scale factors to power of two), 64 (skip if problem is well scaled");
 
-  //-- Dual simplex option
+  // Dual simplex option
   par.dual = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("dual", par.dual);
   if (par.dual < 1 || par.dual > 3)
-    {
-      error ("__glpk__: PARAM.dual must be 1 (use two-phase primal simplex [default]) or 2 (use two-phase dual simplex) or 3 (use two-phase dual simplex, and if it fails, switch to the primal simplex)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.dual must be 1 (use two-phase primal simplex [default]) or 2 (use two-phase dual simplex) or 3 (use two-phase dual simplex, and if it fails, switch to the primal simplex)");
 
-  //-- Pricing option
+  // Pricing option
   par.price = 34;
   OCTAVE_GLPK_GET_INT_PARAM ("price", par.price);
   if (par.price != 17 && par.price != 34)
-    {
-      error ("__glpk__: PARAM.price must be 17 (textbook pricing) or 34 (steepest edge pricing [default])");
-      return retval;
-    }
+    error ("__glpk__: PARAM.price must be 17 (textbook pricing) or 34 (steepest edge pricing [default])");
 
-  //-- Simplex iterations limit
+  // Simplex iterations limit
   par.itlim = std::numeric_limits<int>::max ();
   OCTAVE_GLPK_GET_INT_PARAM ("itlim", par.itlim);
 
-  //-- Output frequency, in iterations
+  // Output frequency, in iterations
   par.outfrq = 200;
   OCTAVE_GLPK_GET_INT_PARAM ("outfrq", par.outfrq);
 
-  //-- Branching heuristic option
+  // Branching heuristic option
   par.branch = 4;
   OCTAVE_GLPK_GET_INT_PARAM ("branch", par.branch);
   if (par.branch < 1 || par.branch > 5)
-    {
-      error ("__glpk__: PARAM.branch must be 1 (first fractional variable) or 2 (last fractional variable) or 3 (most fractional variable) or 4 (heuristic by Driebeck and Tomlin [default]) or 5 (hybrid pseudocost heuristic)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.branch must be 1 (first fractional variable) or 2 (last fractional variable) or 3 (most fractional variable) or 4 (heuristic by Driebeck and Tomlin [default]) or 5 (hybrid pseudocost heuristic)");
 
-  //-- Backtracking heuristic option
+  // Backtracking heuristic option
   par.btrack = 4;
   OCTAVE_GLPK_GET_INT_PARAM ("btrack", par.btrack);
   if (par.btrack < 1 || par.btrack > 4)
-    {
-      error ("__glpk__: PARAM.btrack must be 1 (depth first search) or 2 (breadth first search) or 3 (best local bound) or 4 (best projection heuristic [default]");
-      return retval;
-    }
+    error ("__glpk__: PARAM.btrack must be 1 (depth first search) or 2 (breadth first search) or 3 (best local bound) or 4 (best projection heuristic [default]");
 
-  //-- Presolver option
+  // Presolver option
   par.presol = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("presol", par.presol);
   if (par.presol < 0 || par.presol > 1)
-    {
-      error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
-      return retval;
-    }
+    error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
 
-  //-- LPsolver option
-  volatile int lpsolver = 1;
+  // LPsolver option
+  int lpsolver = 1;
   OCTAVE_GLPK_GET_INT_PARAM ("lpsolver", lpsolver);
   if (lpsolver < 1 || lpsolver > 2)
-    {
-      error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
-      return retval;
-    }
+    error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
 
-  //-- Ratio test option
+  // Ratio test option
   par.rtest = 34;
   OCTAVE_GLPK_GET_INT_PARAM ("rtest", par.rtest);
   if (par.rtest != 17 && par.rtest != 34)
-    {
-      error ("__glpk__: PARAM.rtest must be 17 (standard ratio test) or 34 (Harris' two-pass ratio test [default])");
-      return retval;
-    }
+    error ("__glpk__: PARAM.rtest must be 17 (standard ratio test) or 34 (Harris' two-pass ratio test [default])");
 
   par.tmlim = std::numeric_limits<int>::max ();
   OCTAVE_GLPK_GET_INT_PARAM ("tmlim", par.tmlim);
@@ -674,27 +555,25 @@ Undocumented internal function.\n\
   par.outdly = 0;
   OCTAVE_GLPK_GET_INT_PARAM ("outdly", par.outdly);
 
-  //-- Save option
-  volatile int save_pb = 0;
+  // Save option
+  int save_pb = 0;
   OCTAVE_GLPK_GET_INT_PARAM ("save", save_pb);
   save_pb = save_pb != 0;
 
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  //-- Real parameters
-  //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Real parameters
 
-  //-- Relative tolerance used to check if the current basic solution
-  //-- is primal feasible
+  // Relative tolerance used to check if the current basic solution
+  // is primal feasible
   par.tolbnd = 1e-7;
   OCTAVE_GLPK_GET_REAL_PARAM ("tolbnd", par.tolbnd);
 
-  //-- Absolute tolerance used to check if the current basic solution
-  //-- is dual feasible
+  // Absolute tolerance used to check if the current basic solution
+  // is dual feasible
   par.toldj = 1e-7;
   OCTAVE_GLPK_GET_REAL_PARAM ("toldj", par.toldj);
 
-  //-- Relative tolerance used to choose eligible pivotal elements of
-  //--  the simplex table in the ratio test
+  // Relative tolerance used to choose eligible pivotal elements of
+  //  the simplex table in the ratio test
   par.tolpiv = 1e-10;
   OCTAVE_GLPK_GET_REAL_PARAM ("tolpiv", par.tolpiv);
 
@@ -710,24 +589,21 @@ Undocumented internal function.\n\
   par.tolobj = 1e-7;
   OCTAVE_GLPK_GET_REAL_PARAM ("tolobj", par.tolobj);
 
-  //-- Assign pointers to the output parameters
+  // Assign pointers to the output parameters
   ColumnVector xmin (mrowsc, octave_NA);
   double fmin = octave_NA;
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
   double time;
   int status;
-  volatile int errnum = 0;
 
-  int jmpret = setjmp (mark);
-
-  if (jmpret == 0)
-    errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
-                   cn.fortran_vec (), a.fortran_vec (), b, ctype,
-                   freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
-                   vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale,
-                   &par, xmin.fortran_vec (), &fmin, &status,
-                   lambda.fortran_vec (), redcosts.fortran_vec (), &time);
+  int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
+                     cn.fortran_vec (), a.fortran_vec (), b, ctype,
+                     freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
+                     ub, vartype.fortran_vec (), isMIP, lpsolver,
+                     save_pb, scale, &par, xmin.fortran_vec (), &fmin,
+                     &status, lambda.fortran_vec (),
+                     redcosts.fortran_vec (), &time);
 
   octave_scalar_map extra;
 
@@ -740,21 +616,19 @@ Undocumented internal function.\n\
   extra.assign ("time", time);
   extra.assign ("status", status);
 
-  retval(3) = extra;
-  retval(2) = errnum;
-  retval(1) = fmin;
-  retval(0) = xmin;
+  return ovl (xmin, fmin, errnum, extra);
 
 #else
 
-  gripe_not_supported ("glpk");
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("glpk", "GNU Linear Programming Kit");
 
 #endif
-
-  return retval;
 }
 
 /*
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} ls
-## @deftypefnx {Command} {} ls @var{filenames}
-## @deftypefnx {Command} {} ls @var{options}
-## @deftypefnx {Command} {} ls @var{options} @var{filenames}
-## @deftypefnx {Function File} {@var{list} =} ls (@dots{})
+## @deftypefn  {} {} ls
+## @deftypefnx {} {} ls @var{filenames}
+## @deftypefnx {} {} ls @var{options}
+## @deftypefnx {} {} ls @var{options} @var{filenames}
+## @deftypefnx {} {@var{list} =} ls (@dots{})
 ##
 ## List directory contents.
 ##
@@ -84,6 +84,10 @@ function retval = ls (varargin)
     args = sprintf ("%s ", args{:});
   else
     args = "";
+  endif
+
+  if (nargout > 0 && (isunix () || ismac ()))
+    args = ["-1 ", args];
   endif
 
   cmd = [__ls_command__ " " args];

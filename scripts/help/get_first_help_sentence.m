@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{text} =} get_first_help_sentence (@var{name})
-## @deftypefnx {Function File} {@var{text} =} get_first_help_sentence (@var{name}, @var{max_len})
-## @deftypefnx {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@dots{})
+## @deftypefn  {} {@var{text} =} get_first_help_sentence (@var{name})
+## @deftypefnx {} {@var{text} =} get_first_help_sentence (@var{name}, @var{max_len})
+## @deftypefnx {} {[@var{text}, @var{status}] =} get_first_help_sentence (@dots{})
 ## Return the first sentence of a function's help text.
 ##
 ## The first sentence is defined as the text after the function declaration
@@ -42,7 +42,7 @@
 ## @end deftypefn
 
 function [text, status] = get_first_help_sentence (name, max_len = 80)
-  ## Check input
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
@@ -77,6 +77,7 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
   if (nargout <= 1 && status != 0)
     warning ("get_first_help_sentence: couldn't run makeinfo on '%s'", name);
   endif
+
 endfunction
 
 ## This function extracts the first sentence from a plain text help text
@@ -92,7 +93,7 @@ function [text, status] = first_sentence_plain_text (help_text, max_len)
 endfunction
 
 ## This function extracts the first sentence from a Texinfo help text.
-## The function works by removing @def* from the texinfo text. After this, we
+## The function works by removing @def* from the texinfo text.  After this, we
 ## render the text to plain text using makeinfo, and then extract the first
 ## line.
 function [text, status] = first_sentence_texinfo (help_text, max_len)
@@ -100,7 +101,7 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
 
-  ## Find, and remove, lines that start with @def. This should remove things
+  ## Find, and remove, lines that start with @def.  This should remove things
   ## such as @deftypefn, @deftypefnx, @defvar, etc.
   keep = true (size (help_text));
   def_idx = strfind (help_text, "@def");
@@ -117,9 +118,9 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     ## Remove the @end ... that corresponds to the @def we removed above
     def1 = def_idx(1);
     space_idx = find (help_text == " ");
-    space_idx = space_idx (find (space_idx > def1, 1));
+    space_idx = space_idx(find (space_idx > def1, 1));
     bracket_idx = find (help_text == "{" | help_text == "}");
-    bracket_idx = bracket_idx (find (bracket_idx > def1, 1));
+    bracket_idx = bracket_idx(find (bracket_idx > def1, 1));
     if (isempty (space_idx) && isempty (bracket_idx))
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif
@@ -140,6 +141,7 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
 
   ## Extract first line with plain text method.
   text = first_sentence_plain_text (help_text, max_len);
+
 endfunction
 
 ## This function extracts the first sentence from a html help text.

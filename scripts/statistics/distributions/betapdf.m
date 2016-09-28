@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ## Copyright (C) 2010 Christos Dimitrakakis
 ##
 ## This file is part of Octave.
@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} betapdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {} {} betapdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the Beta distribution with parameters @var{a} and @var{b}.
 ## @end deftypefn

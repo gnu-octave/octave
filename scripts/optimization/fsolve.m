@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 VZLU Prague, a.s.
+## Copyright (C) 2008-2016 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -19,8 +19,8 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fsolve (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
+## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
 ## @var{fcn} should accept a vector (array) defining the unknown variables,
@@ -53,9 +53,9 @@
 ##
 ## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
 ## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
-## amount of Jacobian calculations.  If your user function always calculates the
-## Jacobian (regardless of number of output arguments) then this option provides
-## no advantage and should be set to false.
+## amount of Jacobian calculations.  If your user function always calculates
+## the Jacobian (regardless of number of output arguments) then this option
+## provides no advantage and should be set to false.
 ##
 ## @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess
@@ -167,7 +167,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   updating = strcmpi (optimget (options, "Updating", "on"), "on");
   complexeqn = strcmpi (optimget (options, "ComplexEqn", "off"), "on");
 
-  ## Get scaling matrix using the TypicalX option. If set to "auto", the
+  ## Get scaling matrix using the TypicalX option.  If set to "auto", the
   ## scaling matrix is estimated using the Jacobian.
   typicalx = optimget (options, "TypicalX");
   if (isempty (typicalx))
@@ -185,10 +185,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     fcn = @(x) guarded_eval (fcn, x, complexeqn);
   endif
 
-  ## These defaults are rather stringent. I think that normally, user
-  ## prefers accuracy to performance.
-
-  macheps = eps (class (x0));
+  ## These defaults are rather stringent.
+  ## Normally user prefers accuracy to performance.
 
   tolx = optimget (options, "TolX", 1e-7);
   tolf = optimget (options, "TolFun", 1e-7);
@@ -223,6 +221,12 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     endif
   endif
 
+  if (isa (x0, "single") || isa (fvec, "single"))
+    macheps = eps ("single");
+  else
+    macheps = eps ("double");
+  endif
+
   nsuciter = 0;
 
   ## Outer loop.
@@ -236,7 +240,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         updating = false;
       endif
       fvec = fvec(:);
-      nfev ++;
+      nfev += 1;
     else
       fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec, typicalx, cdif);
       nfev += (1 + cdif) * length (x);
@@ -244,15 +248,15 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     ## For square and overdetermined systems, we update a QR
     ## factorization of the Jacobian to avoid solving a full system in each
-    ## step. In this case, we pass a triangular matrix to __dogleg__.
+    ## step.  In this case, we pass a triangular matrix to __dogleg__.
     useqr = updating && m >= n && n > 10;
 
     if (useqr)
       ## FIXME: Currently, pivoting is mostly useless because the \ operator
       ## cannot exploit the resulting props of the triangular factor.
       ## Unpivoted QR is significantly faster so it doesn't seem right to pivot
-      ## just to get invariance. Original MINPACK didn't pivot either, at least
-      ## when qr updating was used.
+      ## just to get invariance.  Original MINPACK didn't pivot either,
+      ## at least when qr updating was used.
       [q, r] = qr (fjac, 0);
     endif
 
@@ -268,7 +272,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         ##   dg = max (dg, jcn);
         ## but it seems not good if we start with a bad guess yielding Jacobian
         ## columns with large norms that later decrease, because the
-        ## corresponding variable will still be overscaled. So instead, we only
+        ## corresponding variable will still be overscaled.  Instead, we only
         ## give the old scaling a small momentum, but do not honor it.
 
         dg = max (0.1*dg, jcn);
@@ -283,7 +287,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     ## It also seems that in the case of fast (and inhomogeneously) changing
     ## Jacobian, the Broyden updates are of little use, so maybe we could
-    ## skip them if a big disproportional change is expected. The question is,
+    ## skip them if a big disproportional change is expected.  The question is,
     ## of course, how to define the above terms :)
 
     lastratio = 0;
@@ -311,7 +315,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
       fvec1 = fcn (reshape (x + s, xsiz)) (:);
       fn1 = norm (fvec1);
-      nfev ++;
+      nfev += 1;
 
       if (fn1 < fn)
         ## Scaled actual reduction.
@@ -333,7 +337,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       ## Update delta.
       if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         nsuc = 0;
-        nfail ++;
+        nfail += 1;
         delta *= decfac;
         decfac ^= 1.4142;
         if (delta <= 1e1*macheps*xn)
@@ -345,7 +349,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         lastratio = ratio;
         decfac = 0.5;
         nfail = 0;
-        nsuc ++;
+        nsuc += 1;
         if (abs (1-ratio) <= 0.1)
           delta = 1.4142*sn;
         elseif (ratio >= 0.5 || nsuc > 1)
@@ -359,10 +363,10 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         xn = norm (dg .* x);
         fvec = fvec1;
         fn = fn1;
-        nsuciter ++;
+        nsuciter += 1;
       endif
 
-      niter ++;
+      niter += 1;
 
       ## FIXME: should outputfcn be only called after a successful iteration?
       if (! isempty (outfcn))
@@ -378,27 +382,27 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         endif
       endif
 
-      ## Tests for termination conditions. A mysterious place, anything
+      ## Tests for termination conditions.  A mysterious place, anything
       ## can happen if you change something here...
 
       ## The rule of thumb (which I'm not sure M*b is quite following)
       ## is that for a tolerance that depends on scaling, only 0 makes
-      ## sense as a default value. But 0 usually means uselessly long
+      ## sense as a default value.  But 0 usually means uselessly long
       ## iterations, so we need scaling-independent tolerances wherever
       ## possible.
 
       ## FIXME: Why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
-      ## of perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e. by
+      ## of perturbations of x, then norm (fjac*e) <= eps*n*xn, i.e., by
       ## tolf ~ eps we demand as much accuracy as we can expect.
       if (fn <= tolf*n*xn)
         info = 1;
         ## The following tests done only after successful step.
       elseif (ratio >= 1e-4)
-        ## This one is classic. Note that we use scaled variables again,
+        ## This one is classic.  Note that we use scaled variables again,
         ## but compare to scaled step, so nothing bad.
         if (sn <= tolx*xn)
           info = 2;
-          ## Again a classic one. It seems weird to use the same tolf
+          ## Again a classic one.  It seems weird to use the same tolf
           ## for two different tests, but that's what M*b manual appears
           ## to say.
         elseif (actred < tolf)
@@ -438,9 +442,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
 endfunction
 
-## An assistant function that evaluates a function handle and checks for
-## bad results.
+## A helper function that evaluates a function and checks for bad results.
 function [fx, jx] = guarded_eval (fun, x, complexeqn)
+
   if (nargout > 1)
     [fx, jx] = fun (x);
   else
@@ -457,13 +461,16 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
   elseif (any (isinf (fx(:))))
     error ("fsolve:isinf", "fsolve: Inf value encountered");
   endif
+
 endfunction
 
 function [fx, jx] = make_fcn_jac (x, fcn, fjac)
+
   fx = fcn (x);
   if (nargout == 2)
     jx = fjac (x);
   endif
+
 endfunction
 
 
@@ -555,7 +562,7 @@ endfunction
 %! c_opt = [a0, b0];
 %! tol = 1e-5;
 %!
-%! [c, fval, info, output] =  fsolve (@(c) (exp(-c(1)*x) + c(2) - y), [0, 0]);
+%! [c, fval, info, output] = fsolve (@(c) (exp(-c(1)*x) + c(2) - y), [0, 0]);
 %! assert (info > 0);
 %! assert (norm (c - c_opt, Inf) < tol);
 %! assert (norm (fval) < norm (noise));
@@ -579,10 +586,11 @@ endfunction
 ## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
 ## x being a convex combination of the gauss-newton and scaled gradient.
 
-## TODO: error checks
-## TODO: handle singularity, or leave it up to mldivide?
+## FIXME: error checks
+## FIXME: handle singularity, or leave it up to mldivide?
 
 function x = __dogleg__ (r, b, d, delta)
+
   ## Get Gauss-Newton direction.
   x = r \ b;
   xn = norm (d .* x);
@@ -613,5 +621,6 @@ function x = __dogleg__ (r, b, d, delta)
     ## Form the appropriate convex combination.
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
+
 endfunction
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
+## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt})
 ## Undocumented internal function.
 ## @end deftypefn
 
-## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
+## @deftypefn {} {} __pltopt__ (@var{caller}, @var{opt})
 ##
 ## Decode plot option strings.
 ##
@@ -126,7 +126,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   have_marker = false;
 
   ## If called by __errplot__, extract the linestyle before proceeding.
-  if (strcmp (caller, "__errplot__"))
+  if (strcmp (caller, "__do_errplot__"))
     if (strncmp (opt, "#~>", 3))
       n = 3;
     elseif (strncmp (opt, "#~", 2) || strncmp (opt, "~>", 2))
@@ -235,7 +235,7 @@ endfunction
 
 
 ## Only cursory testing.  Real testing done by appearance of plots.
-%test
+%!test
 %! opts = __pltopt__ ("abc", "");
 %! assert (opts.color, []);
 %! assert (opts.linestyle, []);
@@ -258,7 +258,7 @@ endfunction
 %! assert (opts.linestyle, []);
 %! assert (opts.marker, []);
 %!test
-%! opts = __pltopt__ ("__errplot__", "~>r");
+%! opts = __pltopt__ ("__do_errplot__", "~>r");
 %! assert (opts.errorstyle, "~>");
 %! assert (opts.color, [1 0 0 ]);
 %! assert (opts.linestyle, []);

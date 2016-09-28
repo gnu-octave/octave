@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{text}, @var{status}] =} __strip_html_tags__ (@var{html_text})
+## @deftypefn {} {[@var{text}, @var{status}] =} __strip_html_tags__ (@var{html_text})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -25,6 +25,7 @@
 ## function.
 
 function [text, status] = __strip_html_tags__ (html_text)
+
   start = find (html_text == "<");
   stop  = find (html_text == ">");
   if (length (start) == length (stop))
@@ -40,10 +41,12 @@ function [text, status] = __strip_html_tags__ (html_text)
     text = "";
     status = 1;
   endif
+
 endfunction
 
 ## This function removes end-lines (\n) that makes printing look bad
 function text = strip_superfluous_endlines (text)
+
   ## Find groups of end-lines
   els = find (text == "\n");
   dels = diff (els);
@@ -77,6 +80,7 @@ function text = strip_superfluous_endlines (text)
   endfor
 
   ## Actually remove the elements
-  text = text (keep);
+  text = text(keep);
+
 endfunction
 

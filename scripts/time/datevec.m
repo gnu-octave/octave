@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{v} =} datevec (@var{date})
-## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{f})
-## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{p})
-## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{f}, @var{p})
-## @deftypefnx {Function File} {[@var{y}, @var{m}, @var{d}, @var{h}, @var{mi}, @var{s}] =} datevec (@dots{})
+## @deftypefn  {} {@var{v} =} datevec (@var{date})
+## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{f})
+## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{p})
+## @deftypefnx {} {@var{v} =} datevec (@var{date}, @var{f}, @var{p})
+## @deftypefnx {} {[@var{y}, @var{m}, @var{d}, @var{h}, @var{mi}, @var{s}] =} datevec (@dots{})
 ## Convert a serial date number (see @code{datenum}) or date string (see
 ## @code{datestr}) into a date vector.
 ##
@@ -183,9 +183,9 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
     srnd = 2 .^ floor (- log2 (tmps));
     s = round (86400 * fracd .* srnd) ./ srnd;
     h = floor (s / 3600);
-    s = s - 3600 * h;
+    s -= 3600 * h;
     mi = floor (s / 60);
-    s = s - 60 * mi;
+    s -= 60 * mi;
 
   endif
 
@@ -257,23 +257,23 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
     ## Find location of FFF in ds.
     ## Might not match idx because of things like yyyy -> %y.
     [~, nc] = strptime (ds, f(1:idx-1));
-    
+
     msec = ds(nc:min (nc+2,end)); # pull 3-digit fractional seconds.
     msec_idx = find (! isdigit (msec), 1);
-    
+
     if (! isempty (msec_idx))  # non-digits in msec
       msec = msec(1:msec_idx-1);
       msec(end+1:3) = "0";     # pad msec with trailing zeros
       ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
     elseif (numel (msec) < 3)  # less than three digits in msec
-      m_len = numel (msec); 
+      m_len = numel (msec);
       msec(end+1:3) = "0";     # pad msec with trailing zeros
       ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
     endif
-    
+
     ## replace FFF with digits to guarantee match in strptime.
     f(idx:idx+2) = msec;
-  
+
     if (nc > 0)
       [tm, nc] = strptime (ds, f);
       tm.usec = 1000 * str2double (msec);
@@ -361,13 +361,13 @@ endfunction
 %!assert (datevec ("06/01/2015 3:07:12.12 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
 %!        [2015,6,1,15,7,12.12])
 
-## Test structure of return value (bug #42334)
-%!test
+## Test structure of return value
+%!test <42334>
 %! [~, ~, d] = datevec ([1 2; 3 4]);
 %! assert (d, [1 2; 3 4]);
 
 ## Other tests
-%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]');
+%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]')
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dSparse_h)
+#if ! defined (octave_dSparse_h)
 #define octave_dSparse_h 1
+
+#include "octave-config.h"
 
 #include "dMatrix.h"
 #include "dNDArray.h"
@@ -32,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "DET.h"
 #include "MSparse.h"
-#include "MSparse-defs.h"
 
 #include "Sparse-op-decls.h"
 
@@ -48,6 +49,9 @@ OCTAVE_API
 SparseMatrix : public MSparse<double>
 {
 public:
+
+  // Corresponding dense matrix type for this sparse matrix type.
+  typedef Matrix dense_matrix_type;
 
   typedef void (*solve_singularity_handler) (double rcond);
 
@@ -122,13 +126,17 @@ public:
   friend OCTAVE_API SparseMatrix real (const SparseComplexMatrix& a);
   friend OCTAVE_API SparseMatrix imag (const SparseComplexMatrix& a);
 
-  friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y)
-                                        GCC_ATTR_DEPRECATED ;
-  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y)
-                                        GCC_ATTR_DEPRECATED ;
-  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x,
-                                        const SparseMatrix& y)
-                                        GCC_ATTR_DEPRECATED ;
+  OCTAVE_DEPRECATED ("use 'Fatan2' instead")
+  OCTAVE_API friend
+  SparseMatrix atan2 (const double& x, const SparseMatrix& y);
+
+  OCTAVE_DEPRECATED ("use 'Fatan2' instead")
+  OCTAVE_API friend
+  SparseMatrix atan2 (const SparseMatrix& x, const double& y);
+
+  OCTAVE_DEPRECATED ("use 'Fatan2' instead")
+  OCTAVE_API friend
+  SparseMatrix atan2 (const SparseMatrix& x, const SparseMatrix& y);
 
   SparseMatrix transpose (void) const
   {
@@ -156,12 +164,13 @@ public:
   SparseMatrix inverse (MatrixType& mattype) const;
   SparseMatrix inverse (MatrixType& mattype, octave_idx_type& info) const;
   SparseMatrix inverse (MatrixType& mattype, octave_idx_type& info,
-                        double& rcond, int force = 0, int calc_cond = 1) const;
+                        double& rcond, bool force = false,
+                        bool calc_cond = true) const;
 
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;
   DET determinant (octave_idx_type& info, double& rcond,
-                   int calc_cond = 1) const;
+                   bool calc_cond = true) const;
 
 private:
   // Diagonal matrix solvers
@@ -500,10 +509,5 @@ SPARSE_SMSM_BOOL_OP_DECLS (SparseMatrix, SparseMatrix, OCTAVE_API)
 
 SPARSE_FORWARD_DEFS (MSparse, SparseMatrix, Matrix, double)
 
-#ifdef USE_64_BIT_IDX_T
-#define UMFPACK_DNAME(name) umfpack_dl_ ## name
-#else
-#define UMFPACK_DNAME(name) umfpack_di_ ## name
 #endif
 
-#endif

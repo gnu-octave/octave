@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2015 Ludwig Schwardt, Kevin Ruland
+Copyright (C) 2005-2016 Ludwig Schwardt, Kevin Ruland
 
 This file is part of Octave.
 
@@ -30,23 +30,23 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef ZFSTREAM_H
-#define ZFSTREAM_H
+#if ! defined (octave_zfsstream_h)
+#define octave_zfsstream_h 1
 
-#ifdef HAVE_ZLIB
+#include "octave-config.h"
+
+#if defined (HAVE_ZLIB)
 
 #include <iosfwd>
 
 #include "zlib.h"
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file stream buffer class.
  *
- *  This class implements basic_filebuf for gzipped files. It doesn't yet
+ *  This class implements basic_filebuf for gzipped files.  It doesn't yet
  *  support seeking (allowed by zlib but slow/limited), putback and read/write
- *  access *  (tricky). Otherwise, it attempts to be a drop-in replacement for
+ *  access *  (tricky).  Otherwise, it attempts to be a drop-in replacement for
  *  the standard file streambuf.
 */
 class gzfilebuf : public std::streambuf
@@ -66,7 +66,7 @@ public:
    *  @return  Z_OK on success, Z_STREAM_ERROR otherwise.
    *
    *  Unfortunately, these parameters cannot be modified separately, as the
-   *  previous zfstream version assumed. Since the strategy is seldom changed,
+   *  previous zfstream version assumed.  Since the strategy is seldom changed,
    *  it can default and setcompression(level) then becomes like the old
    *  setcompressionlevel(level).
   */
@@ -83,7 +83,7 @@ public:
 
   /**
    *  @brief  Open gzipped file.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags.
    *  @return  @c this on success, NULL on failure.
   */
@@ -132,7 +132,7 @@ protected:
    *  @return  First character in get area on success, EOF on error.
    *
    *  This actually reads characters from gzipped file to stream
-   *  buffer. Always buffered.
+   *  buffer.  Always buffered.
   */
   virtual int_type
   underflow ();
@@ -143,7 +143,7 @@ protected:
    *  @return  Non-EOF on success, EOF on error.
    *
    *  This actually writes characters in stream buffer to
-   *  gzipped file. With unbuffered output this is done one
+   *  gzipped file.  With unbuffered output this is done one
    *  character at a time.
   */
   virtual int_type
@@ -178,7 +178,7 @@ protected:
   virtual pos_type
   seekoff (off_type off, std::ios_base::seekdir way,
            std::ios_base::openmode mode =
-             std::ios_base::in|std::ios_base::out);
+             std::ios_base::in | std::ios_base::out);
 
   /**
    *  @brief  Alters the stream positions.
@@ -187,7 +187,7 @@ protected:
    */
   virtual pos_type
   seekpos (pos_type sp, std::ios_base::openmode mode =
-             std::ios_base::in|std::ios_base::out);
+             std::ios_base::in | std::ios_base::out);
 
   virtual int_type
   pbackfail (int_type c = traits_type::eof ());
@@ -209,8 +209,8 @@ private:
   /**
    *  @brief  Allocate internal buffer.
    *
-   *  This function is safe to call multiple times. It will ensure
-   *  that a proper internal buffer exists if it is required. If the
+   *  This function is safe to call multiple times.  It will ensure
+   *  that a proper internal buffer exists if it is required.  If the
    *  buffer already exists or is external, the buffer pointers will be
    *  reset to their original state.
   */
@@ -220,8 +220,8 @@ private:
   /**
    *  @brief  Destroy internal buffer.
    *
-   *  This function is safe to call multiple times. It will ensure
-   *  that the internal buffer is deallocated if it exists. In any
+   *  This function is safe to call multiple times.  It will ensure
+   *  that the internal buffer is deallocated if it exists.  In any
    *  case, it will also reset the buffer pointers.
   */
   void
@@ -270,12 +270,10 @@ private:
   bool own_buffer;
 };
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file input stream class.
  *
- *  This class implements ifstream for gzipped files. Seeking and putback
+ *  This class implements ifstream for gzipped files.  Seeking and putback
  *  is not supported yet.
 */
 class gzifstream : public std::istream
@@ -286,7 +284,7 @@ public:
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
@@ -318,14 +316,14 @@ public:
 
   /**
    *  @brief  Open gzipped file.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::in).
    *
    *  Stream will be in state good() if file opens successfully;
-   *  otherwise in state fail(). This differs from the behavior of
+   *  otherwise in state fail().  This differs from the behavior of
    *  ifstream, which never sets the state to good() and therefore
    *  won't allow you to reuse the stream for a second file unless
-   *  you manually clear() the state. The choice is a matter of
+   *  you manually clear() the state.  The choice is a matter of
    *  convenience.
   */
   void
@@ -359,12 +357,10 @@ private:
   gzfilebuf sb;
 };
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file output stream class.
  *
- *  This class implements ofstream for gzipped files. Seeking and putback
+ *  This class implements ofstream for gzipped files.  Seeking and putback
  *  is not supported yet.
 */
 class gzofstream : public std::ostream
@@ -375,7 +371,7 @@ public:
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
@@ -407,14 +403,14 @@ public:
 
   /**
    *  @brief  Open gzipped file.
-   *  @param  name  File name.
+   *  @param  name  Filename.
    *  @param  mode  Open mode flags (forced to contain ios::out).
    *
    *  Stream will be in state good() if file opens successfully;
-   *  otherwise in state fail(). This differs from the behavior of
+   *  otherwise in state fail().  This differs from the behavior of
    *  ofstream, which never sets the state to good() and therefore
    *  won't allow you to reuse the stream for a second file unless
-   *  you manually clear() the state. The choice is a matter of
+   *  you manually clear() the state.  The choice is a matter of
    *  convenience.
   */
   void
@@ -448,15 +444,13 @@ private:
   gzfilebuf sb;
 };
 
-/*****************************************************************************/
-
 /**
  *  @brief  Gzipped file output stream manipulator class.
  *
- *  This class defines a two-argument manipulator for gzofstream. It is used
+ *  This class defines a two-argument manipulator for gzofstream.  It is used
  *  as base for the setcompression(int,int) manipulator.
 */
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 class gzomanip2
 {
 public:
@@ -480,8 +474,6 @@ private:
   T2 val2;
 };
 
-/*****************************************************************************/
-
 // Manipulator function thunks through to stream buffer
 inline gzofstream&
 setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
@@ -491,7 +483,7 @@ setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 }
 
 // Manipulator constructor stores arguments
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline
 gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
                              T1 v1,
@@ -500,7 +492,7 @@ gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
 { }
 
 // Insertor applies underlying manipulator function to stream
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline gzofstream&
 operator<<(gzofstream& s, const gzomanip2<T1,T2>& m)
 { return (*m.func)(s, m.val1, m.val2); }
@@ -510,6 +502,7 @@ inline gzomanip2<int,int>
 setcompression (int l, int s = Z_DEFAULT_STRATEGY)
 { return gzomanip2<int,int>(&setcompression, l, s); }
 
-#endif // HAVE_ZLIB
+#endif
 
-#endif // ZFSTREAM_H
+#endif
+

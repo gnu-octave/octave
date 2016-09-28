@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,31 +20,32 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ToggleTool__
-#define __QtHandles_ToggleTool__ 1
+#if ! defined (octave_ToggleTool_h)
+#define octave_ToggleTool_h 1
 
 #include "ToolBarButton.h"
 
 namespace QtHandles
 {
 
-class ToggleTool : public ToolBarButton<uitoggletool>
-{
-  Q_OBJECT
+  class ToggleTool : public ToolBarButton<uitoggletool>
+  {
+    Q_OBJECT
 
-public:
-  ToggleTool (const graphics_object& go, QAction* action);
-  ~ToggleTool (void);
+  public:
+    ToggleTool (const graphics_object& go, QAction* action);
+    ~ToggleTool (void);
 
-  static ToggleTool* create (const graphics_object& go);
+    static ToggleTool* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void triggered (bool checked);
-};
+  private slots:
+    void triggered (bool checked);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,13 +20,24 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <iostream>
 #include <limits>
 #include <vector>
+
+#include "dNDArray.h"
+#include "fNDArray.h"
+#include "int8NDArray.h"
+#include "int16NDArray.h"
+#include "int32NDArray.h"
+#include "int64NDArray.h"
+#include "uint8NDArray.h"
+#include "uint16NDArray.h"
+#include "uint32NDArray.h"
+#include "uint64NDArray.h"
 
 #include "lo-ieee.h"
 #include "lo-utils.h"
@@ -35,8 +46,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "defun.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "oct-stream.h"
@@ -52,7 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
@@ -61,7 +72,7 @@ along with Octave; see the file COPYING.  If not, see
 // about comparisons always false due to limited range of data types.
 // Ugh.  The cure may be worse than the disease.
 
-template <class T, bool is_signed = true, bool can_be_too_big = true>
+template <typename T, bool is_signed = true, bool can_be_too_big = true>
 struct octave_base_int_helper
 {
   static bool
@@ -71,13 +82,13 @@ struct octave_base_int_helper
   }
 };
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper<T, false, false>
 {
   static bool char_value_out_of_range (T) { return false; }
 };
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper<T, false, true>
 {
   static bool char_value_out_of_range (T val)
@@ -86,7 +97,7 @@ struct octave_base_int_helper<T, false, true>
   }
 };
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper<T, true, false>
 {
   static bool char_value_out_of_range (T val) { return val < 0; }
@@ -98,7 +109,7 @@ struct octave_base_int_helper<T, true, false>
 // are still OK, but will see the warnings again for any other types
 // that do not meet this assumption.
 
-template <class T>
+template <typename T>
 struct octave_base_int_helper_traits
 {
   static const bool can_be_larger_than_uchar_max = true;
@@ -122,21 +133,20 @@ struct octave_base_int_helper_traits<unsigned char>
   static const bool can_be_larger_than_uchar_max = false;
 };
 
-
-template <class T>
+template <typename T>
 octave_base_value *
 octave_base_int_matrix<T>::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  if (this->matrix.nelem () == 1)
+  if (this->matrix.numel () == 1)
     retval = new typename octave_value_int_traits<T>::scalar_type
                (this->matrix (0));
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 {
@@ -184,77 +194,136 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-template <class T>
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_double (void) const
+{
+  return NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_single (void) const
+{
+  return FloatNDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_int8 (void) const
+{
+  return int8NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_int16 (void) const
+{
+  return int16NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_int32 (void) const
+{
+  return int32NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_int64 (void) const
+{
+  return int64NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_uint8 (void) const
+{
+  return uint8NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_uint16 (void) const
+{
+  return uint16NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_uint32 (void) const
+{
+  return uint32NDArray (this->matrix);
+}
+
+template <typename MT>
+octave_value
+octave_base_int_matrix<MT>::as_uint64 (void) const
+{
+  return uint64NDArray (this->matrix);
+}
+
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
-  dim_vector d = this->dims ();
+  dim_vector dv = this->dims ();
 
-  os << "# ndims: " << d.length () << "\n";
+  os << "# ndims: " << dv.ndims () << "\n";
 
-  for (int i = 0; i < d.length (); i++)
-    os << " " << d (i);
+  for (int i = 0; i < dv.ndims (); i++)
+    os << " " << dv(i);
 
   os << "\n" << this->matrix;
 
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::load_ascii (std::istream& is)
 {
   int mdims = 0;
-  bool success = true;
 
-  if (extract_keyword (is, "ndims", mdims, true))
-    {
-      if (mdims >= 0)
-        {
-          dim_vector dv;
-          dv.resize (mdims);
-
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
-
-          T tmp(dv);
-
-          is >> tmp;
-
-          if (!is)
-            {
-              error ("load: failed to load matrix constant");
-              success = false;
-            }
-
-          this->matrix = tmp;
-        }
-      else
-        {
-          error ("load: failed to extract number of rows and columns");
-          success = false;
-        }
-    }
-  else
+  if (! extract_keyword (is, "ndims", mdims, true))
     error ("load: failed to extract number of dimensions");
 
-  return success;
+  if (mdims < 0)
+    error ("load: failed to extract number of rows and columns");
+
+  dim_vector dv;
+  dv.resize (mdims);
+
+  for (int i = 0; i < mdims; i++)
+    is >> dv(i);
+
+  T tmp(dv);
+
+  is >> tmp;
+
+  if (! is)
+    error ("load: failed to load matrix constant");
+
+  this->matrix = tmp;
+
+  return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 {
-  dim_vector d = this->dims ();
-  if (d.length () < 1)
+  dim_vector dv = this->dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length ();
+  int32_t tmp = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i=0; i < d.length (); i++)
+  for (int i=0; i < dv.ndims (); i++)
     {
-      tmp = d(i);
+      tmp = dv(i);
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
@@ -264,10 +333,10 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format)
+                                        octave::mach_info::float_format)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
@@ -334,9 +403,10 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
-octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                      bool)
 {
   bool retval = false;
 
@@ -348,24 +418,24 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   if (empty)
     return (empty > 0);
 
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = dv (rank-i-1);
+    hdims[i] = dv(rank-i-1);
 
   space_hid = H5Screate_simple (rank, hdims, 0);
 
   if (space_hid < 0) return false;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -373,20 +443,23 @@ octave_base_int_matrix<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
       return false;
     }
 
-  retval = H5Dwrite (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, this->matrix.data ()) >= 0;
+  retval = H5Dwrite (data_hid, save_type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, this->matrix.data ()) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
 #else
-  this->gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  this->warn_save ("hdf5");
 #endif
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
@@ -402,8 +475,8 @@ octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
-#if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -438,8 +511,8 @@ octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   T m (dv);
-  if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, m.fortran_vec ()) >= 0)
+  if (H5Dread (data_hid, save_type_hid, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, m.fortran_vec ()) >= 0)
     {
       retval = true;
       this->matrix = m;
@@ -449,13 +522,16 @@ octave_base_int_matrix<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
-  this->gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  this->warn_load ("hdf5");
 #endif
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 void
 octave_base_int_matrix<T>::print_raw (std::ostream& os,
                                       bool pr_as_read_syntax) const
@@ -464,7 +540,7 @@ octave_base_int_matrix<T>::print_raw (std::ostream& os,
                          this->current_print_indent_level ());
 }
 
-template <class T>
+template <typename T>
 octave_value
 octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
 {
@@ -495,7 +571,77 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-template <class T>
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_double (void) const
+{
+  return static_cast<double> (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_single (void) const
+{
+  return static_cast<float> (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_int8 (void) const
+{
+  return octave_int8 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_int16 (void) const
+{
+  return octave_int16 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_int32 (void) const
+{
+  return octave_int32 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_int64 (void) const
+{
+  return octave_int64 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_uint8 (void) const
+{
+  return octave_uint8 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_uint16 (void) const
+{
+  return octave_uint16 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_uint32 (void) const
+{
+  return octave_uint32 (this->scalar);
+}
+
+template <typename T>
+octave_value
+octave_base_int_scalar<T>::as_uint64 (void) const
+{
+  return octave_uint64 (this->scalar);
+}
+
+template <typename T>
 bool
 octave_base_int_scalar<T>::save_ascii (std::ostream& os)
 {
@@ -503,20 +649,18 @@ octave_base_int_scalar<T>::save_ascii (std::ostream& os)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::load_ascii (std::istream& is)
 {
   is >> this->scalar;
-  if (!is)
-    {
-      error ("load: failed to load scalar constant");
-      return false;
-    }
+  if (! is)
+    error ("load: failed to load scalar constant");
+
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
 {
@@ -524,10 +668,10 @@ octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format)
+                                        octave::mach_info::float_format)
 {
   T tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), this->byte_size ()))
@@ -553,9 +697,10 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-template <class T>
+template <typename T>
 bool
-octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                      bool)
 {
   bool retval = false;
 
@@ -569,12 +714,12 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -582,28 +727,31 @@ octave_base_int_scalar<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
       return false;
     }
 
-  retval = H5Dwrite (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &(this->scalar)) >= 0;
+  retval = H5Dwrite (data_hid, save_type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &(this->scalar)) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
 #else
-  this->gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  this->warn_save ("hdf5");
 #endif
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool
 octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
 #if defined (HAVE_HDF5)
 
   hid_t save_type_hid = HDF5_SAVE_TYPE;
-#if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -618,8 +766,8 @@ octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   T tmp;
-  if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, &tmp) < 0)
+  if (H5Dread (data_hid, save_type_hid, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &tmp) < 0)
     {
       H5Dclose (data_hid);
       return false;
@@ -632,7 +780,11 @@ octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return true;
 
 #else
-  this->gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  this->warn_load ("hdf5");
+
   return false;
 #endif
 }

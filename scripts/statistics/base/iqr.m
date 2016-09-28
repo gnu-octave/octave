@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} iqr (@var{x})
-## @deftypefnx {Function File} {} iqr (@var{x}, @var{dim})
+## @deftypefn  {} {} iqr (@var{x})
+## @deftypefnx {} {} iqr (@var{x}, @var{dim})
 ## Return the interquartile range, i.e., the difference between the upper
 ## and lower quartile of the input data.
 ##
@@ -73,7 +73,7 @@ function y = iqr (x, dim)
     offset2 = 0;
     while (offset > stride)
       offset -= stride;
-      offset2++;
+      offset2 += 1;
     endwhile
     offset += offset2 * stride * n;
     rng = [0 : n-1] * stride + offset;

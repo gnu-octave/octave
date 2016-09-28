@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} cumtrapz (@var{y})
-## @deftypefnx {Function File} {@var{q} =} cumtrapz (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{q} =} cumtrapz (@dots{}, @var{dim})
+## @deftypefn  {} {@var{q} =} cumtrapz (@var{y})
+## @deftypefnx {} {@var{q} =} cumtrapz (@var{x}, @var{y})
+## @deftypefnx {} {@var{q} =} cumtrapz (@dots{}, @var{dim})
 ## Cumulative numerical integration of points @var{y} using the trapezoidal
 ## method.
 ##
@@ -31,7 +31,8 @@
 ## When the argument @var{x} is omitted an equally spaced @var{x} vector with
 ## unit spacing (1) is assumed.  @code{cumtrapz (@var{x}, @var{y})} evaluates
 ## the integral with respect to the spacing in @var{x} and the values in
-## @var{y}.  This is useful if the points in @var{y} have been sampled unevenly.
+## @var{y}.  This is useful if the points in @var{y} have been sampled
+## unevenly.
 ##
 ## If the optional @var{dim} argument is given, operate along this dimension.
 ##
@@ -100,7 +101,7 @@ function z = cumtrapz (x, y, dim)
       shape = ones (nd, 1);
       shape(dim) = sz(dim);
       x = reshape (x, shape);
-      z = 0.5 * cumsum (bsxfun (@times, diff (x), y(idx1{:}) + y(idx2{:})), dim);
+      z = 0.5 * cumsum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
     else
       if (! size_equal (x, y))
         error ("cumtrapz: X and Y must have same shape");

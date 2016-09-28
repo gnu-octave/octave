@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} blanks (@var{n})
+## @deftypefn {} {} blanks (@var{n})
 ## Return a string of @var{n} blanks.
 ##
 ## For example:

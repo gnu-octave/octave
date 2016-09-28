@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ## Copyright (C) 2006 David Bateman
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} spline (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
+## @deftypefn  {} {@var{pp} =} spline (@var{x}, @var{y})
+## @deftypefnx {} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
 ## Return the cubic spline interpolant of points @var{x} and @var{y}.
 ##
 ## When called with two arguments, return the piecewise polynomial @var{pp}
@@ -99,7 +99,7 @@ function ret = spline (x, y, xi)
 
   for k = (1:columns (a))(any (isnan (a)))
     ok = ! isnan (a(:,k));
-    a(!ok,k) = spline (x(ok), a(ok,k), x(!ok));
+    a(! ok,k) = spline (x(ok), a(ok,k), x(! ok));
   endfor
 
   complete = false;
@@ -256,7 +256,7 @@ endfunction
 %! assert (spline (x, y, x(ok)), y(ok), abserr);
 %!test
 %! ok = ! isnan (y);
-%! assert (! isnan (spline (x, y, x(!ok))));
+%! assert (! isnan (spline (x, y, x(! ok))));
 %!test
 %! x = [1,2];
 %! y = [1,4];

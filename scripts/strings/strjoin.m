@@ -1,5 +1,5 @@
 ## Copyright (C) 2007 Muthiah Annamalai
-## Copyright (C) 2013-2015 Ben Abbott
+## Copyright (C) 2013-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{str} =} strjoin (@var{cstr})
-## @deftypefnx {Function File} {@var{str} =} strjoin (@var{cstr}, @var{delimiter})
+## @deftypefn  {} {@var{str} =} strjoin (@var{cstr})
+## @deftypefnx {} {@var{str} =} strjoin (@var{cstr}, @var{delimiter})
 ## Join the elements of the cell string array, @var{cstr}, into a single
 ## string.
 ##
@@ -72,7 +72,7 @@ function rval = strjoin (cstr, delimiter)
     delimiter(end) = {""};
   elseif (num > 0 && numel (delimiter) != num - 1)
     error ("strjoin:cellstring_delimiter_mismatch",
-      "strjoin: the number of delimiters does not match the number of strings")
+      "strjoin: the number of delimiters does not match the number of strings");
   else
     delimiter(end+1) = {""};
   endif

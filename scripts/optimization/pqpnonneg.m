@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Bill Denney
+## Copyright (C) 2008-2016 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
@@ -19,12 +19,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d})
-## @deftypefnx {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d}, @var{x0})
-## @deftypefnx {Function File} {[@var{x}, @var{minval}] =} pqpnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
+## @deftypefn  {} {@var{x} =} pqpnonneg (@var{c}, @var{d})
+## @deftypefnx {} {@var{x} =} pqpnonneg (@var{c}, @var{d}, @var{x0})
+## @deftypefnx {} {[@var{x}, @var{minval}] =} pqpnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
+## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
 ## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >= 0}.
 ##
 ## @var{c} ## and @var{d} must be real, and @var{c} must be symmetric and
@@ -113,7 +113,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
   ## LH3: test for completion.
   while (iter < max_iter)
     while (iter < max_iter)
-      iter++;
+      iter += 1;
 
       ## LH6: compute the positive matrix and find the min norm solution
       ## of the positive problem.
@@ -171,7 +171,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
                "a non-unique solution may be returned due to equal gradients");
       idx = idx(1);
     endif
-    ## move the index from Z to P. Keep P sorted.
+    ## move the index from Z to P.  Keep P sorted.
     z = [1:n]; z(p) = [];
     zidx = z(idx);
     jdx = 1 + lookup (p, zidx);

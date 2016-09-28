@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
+## @deftypefn {} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
 ## Return the cumulative distribution function (CDF) at @var{x} of the
 ## Kolmogorov-Smirnov distribution.
 ##

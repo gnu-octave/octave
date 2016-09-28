@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Laurent Mazet
+## Copyright (C) 2005-2016 Laurent Mazet
 ## Copyright (C) 2010 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,12 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{m} =} cell2mat (@var{c})
+## @deftypefn {} {@var{m} =} cell2mat (@var{c})
 ## Convert the cell array @var{c} into a matrix by concatenating all
 ## elements of @var{c} into a hyperrectangle.
 ##
 ## Elements of @var{c} must be numeric, logical, or char matrices; or cell
-## arrays; or structs; and @code{cat} must be able to concatenate them together.
+## arrays; or structs; and @code{cat} must be able to concatenate them
+## together.
 ## @seealso{mat2cell, num2cell}
 ## @end deftypefn
 
@@ -93,8 +94,8 @@ endfunction
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! cell2mat (C)
 
-%!assert (cell2mat ({}), []);
-%!assert (cell2mat ([]), []);
+%!assert (cell2mat ({}), [])
+%!assert (cell2mat ([]), [])
 %!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;
@@ -114,10 +115,22 @@ endfunction
 %! m = {1, 2, 3};
 %! assert (cell2mat (mat2cell (m, 1, [1 1 1])), m);
 
+## cell2mat from cell into another cell
+%!assert (cell2mat ({{"foo", "bar", "qux"}}), {"foo", "bar", "qux"})
+%!assert (cell2mat ({{"foo"}, {"bar", "qux"}}), {"foo", "bar", "qux"})
+%!assert (cell2mat ({{"foo"}; {"bar"; "qux"}}), {"foo"; "bar"; "qux"})
+%!assert (cell2mat ({{"foo", "lol"}; {"bar", "qux"}}),
+%!        {"foo", "lol"; "bar", "qux"})
+
+## cell2mat cell strings
+%!assert (cell2mat ({"foo", "lol"; "bar", "qux"}),
+%!        reshape ("fboaorlqoulx", [2 6]))
+
 %!error cell2mat ()
 %!error cell2mat (1,2)
 %!error <C must be a cell array> cell2mat ([1,2])
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], struct()})
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], {1}})
 %!error <mixed cells, structs, and matrices> cell2mat ({struct(), {1}})
-
+%!error <dimension mismatch> cell2mat ({{"foo"}; {"bar", "qux"}})
+%!error <dimension mismatch> cell2mat ({"foox", "lol"; "bar", "qux"})

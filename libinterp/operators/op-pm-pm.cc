@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-perm.h"
 #include "ov-re-mat.h"
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (transpose, perm_matrix)
 {
-  CAST_UNOP_ARG (const octave_perm_matrix&);
+  const octave_perm_matrix& v = dynamic_cast<const octave_perm_matrix&> (a);
   return octave_value (v.perm_matrix_value ().transpose ());
 }
 
@@ -44,28 +44,31 @@ DEFBINOP_OP (mul, perm_matrix, perm_matrix, *)
 
 DEFBINOP (div, perm_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_perm_matrix&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_perm_matrix& v2 = dynamic_cast<const octave_perm_matrix&> (a2);
 
   return (v1.perm_matrix_value () * v2.perm_matrix_value ().inverse ());
 }
 
 DEFBINOP (ldiv, perm_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_perm_matrix&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_perm_matrix& v2 = dynamic_cast<const octave_perm_matrix&> (a2);
 
   return (v1.perm_matrix_value ().inverse () * v2.perm_matrix_value ());
 }
 
 DEFBINOP (pow, perm_matrix, scalar)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_scalar&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   return xpow (v1.perm_matrix_value (), v2.scalar_value ());
 }
 
 CONVDECL (perm_matrix_to_matrix)
 {
-  CAST_CONV_ARG (const octave_perm_matrix&);
+  const octave_perm_matrix& v = dynamic_cast<const octave_perm_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }
@@ -81,7 +84,7 @@ install_pm_pm_ops (void)
   INSTALL_BINOP (op_ldiv, octave_perm_matrix, octave_perm_matrix, ldiv);
   INSTALL_BINOP (op_pow, octave_perm_matrix, octave_scalar, pow);
 
-  INSTALL_CONVOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
   INSTALL_ASSIGNCONV (octave_perm_matrix, octave_matrix, octave_matrix);
   INSTALL_WIDENOP (octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
 }
+

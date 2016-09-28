@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} logistic_pdf (@var{x})
+## @deftypefn {} {} logistic_pdf (@var{x})
 ## For each element of @var{x}, compute the PDF at @var{x} of the
 ## logistic distribution.
 ## @end deftypefn

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
@@ -45,12 +45,13 @@ DEFBINOP_OP (mul, scalar, complex, *)
 
 DEFBINOP (div, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.double_value () / d);
 }
@@ -59,12 +60,13 @@ DEFBINOP_FN (pow, scalar, complex, xpow)
 
 DEFBINOP (ldiv, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   double d = v1.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_value () / d);
 }
@@ -80,12 +82,13 @@ DEFBINOP_OP (el_mul, scalar, complex, *)
 
 DEFBINOP (el_div, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.double_value () / d);
 }
@@ -94,26 +97,29 @@ DEFBINOP_FN (el_pow, scalar, complex, xpow)
 
 DEFBINOP (el_ldiv, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   double d = v1.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_value () / d);
 }
 
 DEFBINOP (el_and, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return octave_value (v1.double_value () && (v2.complex_value () != 0.0));
 }
 
 DEFBINOP (el_or, scalar, complex)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return octave_value (v1.double_value () || (v2.complex_value () != 0.0));
 }
@@ -148,3 +154,4 @@ install_s_cs_ops (void)
   INSTALL_ASSIGNCONV (octave_float_scalar, octave_complex,
                       octave_float_complex_matrix);
 }
+

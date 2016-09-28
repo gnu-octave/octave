@@ -1,7 +1,7 @@
 // utils.cc
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cctype>
@@ -34,18 +34,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "quit.h"
 
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
+#include "putenv-wrapper.h"
 
 bool xis_int_or_inf_or_nan (double x)
-{ return xisnan (x) || D_NINT (x) == x; }
+{ return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
 
 bool xis_one_or_zero (double x)
 { return x == 0 || x == 1; }
@@ -55,7 +53,8 @@ bool xis_zero (double x)
 
 bool xtoo_large_for_float (double x)
 {
-  return (xfinite (x) && fabs (x) > std::numeric_limits<float>::max ());
+  return (octave::math::finite (x)
+          && fabs (x) > std::numeric_limits<float>::max ());
 }
 
 bool xtoo_large_for_float (const Complex& x)
@@ -65,7 +64,7 @@ bool xtoo_large_for_float (const Complex& x)
 }
 
 bool xis_int_or_inf_or_nan (float x)
-{ return xisnan (x) || D_NINT (x) == x; }
+{ return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
 
 bool xis_one_or_zero (float x)
 { return x == 0 || x == 1; }
@@ -97,14 +96,17 @@ octave_putenv (const std::string& name, const std::string& value)
 {
   int new_len = name.length () + value.length () + 2;
 
-  char *new_item = static_cast<char*> (gnulib::malloc (new_len));
+  // FIXME: This leaks memory, but so would a call to setenv.
+  // Short of extreme measures to track memory, altering the environment
+  // always leaks memory, but the saving grace is that the leaks are small.
+  char *new_item = static_cast<char*> (std::malloc (new_len));
 
   sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
 
   // As far as I can see there's no way to distinguish between the
   // various errors; putenv doesn't have errno values.
 
-  if (gnulib::putenv (new_item) < 0)
+  if (octave_putenv_wrapper (new_item) < 0)
     (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 }
 
@@ -125,13 +127,13 @@ octave_fgets (FILE *f, bool& eof)
   int grow_size = 1024;
   int max_size = grow_size;
 
-  char *buf = static_cast<char *> (gnulib::malloc (max_size));
+  char *buf = static_cast<char *> (std::malloc (max_size));
   char *bufptr = buf;
   int len = 0;
 
   do
     {
-      if (gnulib::fgets (bufptr, grow_size, f))
+      if (std::fgets (bufptr, grow_size, f))
         {
           len = strlen (bufptr);
 
@@ -140,7 +142,7 @@ octave_fgets (FILE *f, bool& eof)
               int tmp = bufptr - buf + grow_size - 1;
               grow_size *= 2;
               max_size += grow_size;
-              buf = static_cast<char *> (gnulib::realloc (buf, max_size));
+              buf = static_cast<char *> (std::realloc (buf, max_size));
               bufptr = buf + tmp;
 
               if (*(bufptr-1) == '\n')
@@ -238,8 +240,8 @@ read_inf_nan_na (std::istream& is, char c0)
               val = std::numeric_limits<T>::quiet_NaN ();
             else
               {
-                val = octave_numeric_limits<T>::NA ();
-                if (c2 != EOF)
+                val = octave::numeric_limits<T>::NA ();
+                if (c2 != std::istream::traits_type::eof ())
                   is.putback (c2);
               }
           }
@@ -427,3 +429,4 @@ octave_write_float_complex (std::ostream& os, const FloatComplex& c)
   octave_write_float (os, imag (c));
   os << ")";
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QMenu>
@@ -31,22 +31,22 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-FigureWindow::FigureWindow (QWidget* xparent)
-  : FigureWindowBase (xparent)
-{
-  // set icon from application resources
-  setWindowIcon (QIcon (":/actions/icons/logo.png"));
+  FigureWindow::FigureWindow (QWidget* xparent)
+    : FigureWindowBase (xparent)
+  {
+    // set icon from application resources
+    setWindowIcon (QIcon (":/actions/icons/logo.png"));
+  }
+
+  FigureWindow::~FigureWindow (void)
+  { }
+
+  QMenu*
+  FigureWindow::createPopupMenu (void)
+  {
+    // For the time being, disable menubar/toolbar popup menu
+    return 0;
+  }
+
 }
 
-FigureWindow::~FigureWindow (void)
-{
-}
-
-QMenu*
-FigureWindow::createPopupMenu (void)
-{
-  // For the time being, disable menubar/toolbar popup menu
-  return 0;
-}
-
-}; // namespace QtHandles

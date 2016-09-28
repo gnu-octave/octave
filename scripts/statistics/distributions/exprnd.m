@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} exprnd (@var{lambda})
-## @deftypefnx {Function File} {} exprnd (@var{lambda}, @var{r})
-## @deftypefnx {Function File} {} exprnd (@var{lambda}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} exprnd (@var{lambda}, [@var{sz}])
+## @deftypefn  {} {} exprnd (@var{lambda})
+## @deftypefnx {} {} exprnd (@var{lambda}, @var{r})
+## @deftypefnx {} {} exprnd (@var{lambda}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} exprnd (@var{lambda}, [@var{sz}])
 ## Return a matrix of random samples from the exponential distribution with
 ## mean @var{lambda}.
 ##

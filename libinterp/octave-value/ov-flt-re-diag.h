@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_flt_re_diag_h)
+#if ! defined (octave_ov_flt_re_diag_h)
 #define octave_ov_flt_re_diag_h 1
+
+#include "octave-config.h"
 
 #include "ov-base.h"
 #include "ov-base-diag.h"
@@ -75,10 +77,23 @@ public:
 
   FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   octave_value map (unary_mapper_t umap) const;
 
@@ -87,8 +102,8 @@ private:
   bool chk_valid_scalar (const octave_value&,
                          float&) const;
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

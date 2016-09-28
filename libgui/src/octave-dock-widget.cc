@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2015 Richard Crozier
-Copyright (C) 2013-2015 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2016 Richard Crozier
+Copyright (C) 2013-2016 Torsten <ttl@justmail.de>
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QApplication>
@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 octave_dock_widget::octave_dock_widget (QWidget *p)
   : QDockWidget (p)
 {
-
   _parent = static_cast<QMainWindow *> (p);     // store main window
   _floating = false;
   _predecessor_widget = 0;
@@ -51,8 +50,10 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   connect (p, SIGNAL (settings_changed (const QSettings*)),
            this, SLOT (handle_settings (const QSettings*)));
 
-  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*, octave_dock_widget*)),
-           this, SLOT (handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*)));
+  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*,
+                                           octave_dock_widget*)),
+           this, SLOT (handle_active_dock_changed (octave_dock_widget*,
+                                                   octave_dock_widget*)));
 
   QStyle *st = style ();
   _icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
@@ -109,9 +110,6 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 
 #endif
 
-  // adding actions of the main window
-  connect (p, SIGNAL (add_actions_signal (QList<QAction *>)),
-           this, SLOT (add_actions (QList<QAction *>)));
   // copy & paste handling
   connect (p, SIGNAL (copyClipboard_signal ()),
            this, SLOT (copyClipboard ()));
@@ -127,11 +125,15 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   setFocusPolicy (Qt::StrongFocus);
 }
 
-octave_dock_widget::~octave_dock_widget ()
+void
+octave_dock_widget::save_settings (void)
 {
   // save state of this dock-widget
   QString name = objectName ();
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   settings->beginGroup ("DockWidgets");
 
@@ -159,7 +161,6 @@ octave_dock_widget::connect_visibility_changed (void)
   emit active_changed (isVisible ());  // emit once for init of window menu
 }
 
-
 // set the widget which previously had focus when tabified
 void
 octave_dock_widget::set_predecessor_widget (octave_dock_widget *prev_widget)
@@ -172,8 +173,8 @@ void
 octave_dock_widget::set_title (const QString& title)
 {
 #if defined (Q_OS_WIN32)
-  QHBoxLayout* h_layout =
-    static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
+  QHBoxLayout* h_layout
+    = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
   label->setStyleSheet ("background: transparent;");
   h_layout->insertWidget (0,label);
@@ -210,12 +211,14 @@ octave_dock_widget::make_window ()
 
   // remove parent and adjust the (un)dock icon
   setParent (0, Qt::Window);
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock"+_icon_color+".png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock" 
+                                + _icon_color + ".png"));
   _dock_action->setToolTip (tr ("Dock widget"));
 
   // restore the last geometry when floating
   setGeometry (settings->value ("DockWidgets/" + objectName ()
-                       + "_floating_geometry",QRect(50,100,480,480)).toRect ());
+                                + "_floating_geometry",
+                                QRect (50,100,480,480)).toRect ());
 
 #else
 
@@ -232,7 +235,6 @@ octave_dock_widget::make_window ()
 
   set_focus_predecessor ();  // set focus previously active widget if tabbed
 }
-
 
 // dock the widget
 void
@@ -253,8 +255,9 @@ octave_dock_widget::make_widget (bool dock)
   if (dock)
     {
       // add widget to last saved docking area (dock=true is default)
-      int area = settings->value ("DockWidgets/" + objectName () + "_dock_area",
-                                  Qt::TopDockWidgetArea).toInt ();
+      int area
+        = settings->value ("DockWidgets/" + objectName () + "_dock_area",
+                           Qt::TopDockWidgetArea).toInt ();
       _parent->addDockWidget (static_cast<Qt::DockWidgetArea> (area), this);
 
       // FIXME: restoreGeometry is ignored for docked widgets
@@ -266,7 +269,8 @@ octave_dock_widget::make_widget (bool dock)
     setParent (_parent);
 
   // adjust the (un)dock icon
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-undock"+_icon_color+".png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
+                                + _icon_color + ".png"));
   _dock_action->setToolTip (tr ("Undock widget"));
 
 #else
@@ -330,6 +334,11 @@ octave_dock_widget::set_style (bool active)
   else
     dock_icon = "widget-undock";
 
+#if defined (Q_OS_MAC)
+  QString alignment = "center";
+#else
+  QString alignment = "center left";
+#endif
   if (_custom_style)
     {
 
@@ -371,7 +380,7 @@ octave_dock_widget::set_style (bool active)
       css = background + QString (" color: %1 ;").arg (fg_col.name ());
 #else
       css = QString ("QDockWidget::title { " + background +
-                     "                     text-align: center left;"
+                     "                     text-align: " + alignment + ";"
                      "                     padding: 0px 0px 0px 4px;}\n"
                      "QDockWidget { color: %1 ; "
                      "  titlebar-close-icon: url(:/actions/icons/widget-close%2.png);"
@@ -387,7 +396,7 @@ octave_dock_widget::set_style (bool active)
 #if defined (Q_OS_WIN32)
       css = QString ("");
 #else
-      css = QString ("QDockWidget::title { text-align: center left;"
+      css = QString ("QDockWidget::title { text-align: " + alignment + ";"
                      "                     padding: 0px 0px 0px 4px;}"
                      "QDockWidget {"
                      "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"
@@ -415,11 +424,11 @@ octave_dock_widget::set_style (bool active)
 void
 octave_dock_widget::handle_settings (const QSettings *settings)
 {
-  _custom_style =
-    settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
+  _custom_style
+    = settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
 
-  _title_3d =
-    settings->value ("DockWidgets/widget_title_3d",50).toInt ();
+  _title_3d
+    = settings->value ("DockWidgets/widget_title_3d",50).toInt ();
 
   QColor default_var = QColor (0,0,0);
   _fg_color = settings->value ("Dockwidgets/title_fg_color",
@@ -481,14 +490,6 @@ octave_dock_widget::handle_active_dock_changed (octave_dock_widget *w_old,
     }
 }
 
-// slot for adding actions from the main window
-void
-octave_dock_widget::add_actions (QList<QAction *> action_list)
-{
-  if (objectName () != "FileEditor")
-    addActions (action_list);
-}
-
 // close event
 void
 octave_dock_widget::closeEvent (QCloseEvent *e)
@@ -497,3 +498,4 @@ octave_dock_widget::closeEvent (QCloseEvent *e)
   set_focus_predecessor ();
   QDockWidget::closeEvent (e);
 }
+

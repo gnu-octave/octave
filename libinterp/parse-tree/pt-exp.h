@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_exp_h)
+#if ! defined (octave_pt_exp_h)
 #define octave_pt_exp_h 1
+
+#include "octave-config.h"
 
 #include <string>
 #include <list>
@@ -93,7 +95,7 @@ public:
 
   // Check if the result of the expression should be printed.
   // Should normally be used in conjunction with
-  // tree_evaluator::statement_printing_enabled.
+  // octave::tree_evaluator::statement_printing_enabled.
   bool print_result (void) const { return print_flag; }
 
   virtual std::string oper (void) const { return "<unknown>"; }
@@ -143,7 +145,7 @@ protected:
   //                  ==> 0 for expression e2
   int num_parens;
 
-  // The first index type associated with this expression. This field
+  // The first index type associated with this expression.  This field
   // is 0 (character '\0') if the expression has no associated index.
   // See the code in tree_identifier::rvalue for the rationale.
   char postfix_index_type;
@@ -165,3 +167,4 @@ private:
 };
 
 #endif
+

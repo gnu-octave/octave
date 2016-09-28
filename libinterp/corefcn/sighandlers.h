@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -30,156 +30,105 @@ Free Software Foundation, Inc.
 
 // This file should always be included after config.h!
 
-#if !defined (octave_sighandlers_h)
+#if ! defined (octave_sighandlers_h)
 #define octave_sighandlers_h 1
 
-// Include signal.h, not csignal since the latter might only define
-// the ANSI standard C signal interface.
+#include "octave-config.h"
 
-#include <signal.h>
+#include "child-list.h"
 
-#include "syswait.h"
-#include "siglist.h"
-
-#include "base-list.h"
-
-typedef void sig_handler (int);
-
-// FIXME: the data should probably be private...
-
-struct
-octave_interrupt_handler
+namespace octave
 {
-#ifdef SIGINT
-  sig_handler *int_handler;
-#endif
+  // This type must match the typedef in signal-wrappers.h.
+  typedef void sig_handler (int);
 
-#ifdef SIGBREAK
-  sig_handler *brk_handler;
-#endif
-};
-
-// Nonzero means we have already printed a message for this series of
-// SIGPIPES.  We assume that the writer will eventually give up.
-extern int pipe_handler_error_count;
-
-// TRUE means we can be interrupted.
-extern OCTINTERP_API bool can_interrupt;
-
-extern OCTINTERP_API
-sig_handler *octave_set_signal_handler (int, sig_handler *,
-                                        bool restart_syscalls = true);
-
-extern OCTINTERP_API void install_signal_handlers (void);
-
-extern OCTINTERP_API void octave_signal_handler (void);
-
-extern OCTINTERP_API octave_interrupt_handler octave_catch_interrupts (void);
-
-extern OCTINTERP_API octave_interrupt_handler octave_ignore_interrupts (void);
-
-extern OCTINTERP_API octave_interrupt_handler
-octave_set_interrupt_handler (const volatile octave_interrupt_handler&,
-                              bool restart_syscalls = true);
-
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-extern OCTINTERP_API void w32_raise_sigint (void);
-#endif
-
-// extern void ignore_sigchld (void);
-
-// Maybe this should be in a separate file?
-
-class
-OCTINTERP_API
-octave_child
-{
-public:
-
-  // Do whatever to handle event for child with PID (might not
-  // actually be dead, could just be stopped).  Return true if
-  // the list element corresponding to PID should be removed from
-  // list.  This function should not call any functions that modify
-  // the octave_child_list.
-
-  typedef bool (*child_event_handler) (pid_t, int);
-
-  octave_child (pid_t id = -1, child_event_handler f = 0)
-    : pid (id), handler (f), have_status (0), status (0) { }
-
-  octave_child (const octave_child& oc)
-    : pid (oc.pid), handler (oc.handler),
-      have_status (oc.have_status), status (oc.status) { }
-
-  octave_child& operator = (const octave_child& oc)
+  struct
+  interrupt_handler
   {
-    if (&oc != this)
-      {
-        pid = oc.pid;
-        handler = oc.handler;
-        have_status = oc.have_status;
-        status = oc.status;
-      }
-    return *this;
-  }
-
-  ~octave_child (void) { }
-
-  // The process id of this child.
-  pid_t pid;
-
-  // The function we call if an event happens for this child.
-  child_event_handler handler;
-
-  // Nonzero if this child has stopped or terminated.
-  sig_atomic_t have_status;
-
-  // The status of this child; 0 if running, otherwise a status value
-  // from waitpid.
-  int status;
-};
-
-class
-OCTINTERP_API
-octave_child_list
-{
-protected:
-
-  octave_child_list (void) { }
-
-  class octave_child_list_rep : public octave_base_list<octave_child>
-  {
-  public:
-
-    void insert (pid_t pid, octave_child::child_event_handler f);
-
-    void reap (void);
-
-    bool wait (void);
+    sig_handler *int_handler;
+    sig_handler *brk_handler;
   };
 
-public:
+  // Nonzero means we have already printed a message for this series of
+  // SIGPIPES.  We assume that the writer will eventually give up.
+  extern int pipe_handler_error_count;
 
-  ~octave_child_list (void) { }
+  // TRUE means we can be interrupted.
+  extern OCTINTERP_API bool can_interrupt;
 
-  static void insert (pid_t pid, octave_child::child_event_handler f);
+  extern OCTINTERP_API sig_handler *
+  set_signal_handler (int sig, sig_handler *h,
+                      bool restart_syscalls = true);
 
-  static void reap (void);
+  extern OCTINTERP_API sig_handler *
+  set_signal_handler (const char *signame, sig_handler *h,
+                      bool restart_syscalls = true);
 
-  static bool wait (void);
+  extern OCTINTERP_API void install_signal_handlers (void);
 
-  static void remove (pid_t pid);
+  extern OCTINTERP_API void signal_handler (void);
 
-private:
+  extern OCTINTERP_API interrupt_handler catch_interrupts (void);
 
-  static bool instance_ok (void);
+  extern OCTINTERP_API interrupt_handler ignore_interrupts (void);
 
-  static octave_child_list_rep *instance;
+  extern OCTINTERP_API interrupt_handler
+  set_interrupt_handler (const volatile interrupt_handler& h,
+                         bool restart_syscalls = true);
 
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-};
+  // TRUE means we should try to enter the debugger on SIGINT.
+  extern OCTINTERP_API bool Vdebug_on_interrupt;
+}
 
-// TRUE means we should try to enter the debugger on SIGINT.
-extern OCTINTERP_API bool Vdebug_on_interrupt;
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::interrupt_handler' instead")
+typedef octave::interrupt_handler octave_interrupt_handler;
+
+OCTAVE_DEPRECATED ("use 'octave::sig_handler' instead")
+typedef octave::sig_handler octave_sig_handler;
+
+OCTAVE_DEPRECATED ("use 'octave::pipe_handler_error_count' instead")
+static auto& pipe_handler_error_count = octave::pipe_handler_error_count;
+
+OCTAVE_DEPRECATED ("use 'octave::can_interrupt' instead")
+static auto& can_interrupt = octave::can_interrupt;
+
+OCTAVE_DEPRECATED ("use 'octave::set_signal_handler' instead")
+inline octave::sig_handler *
+octave_set_signal_handler (int sig, octave::sig_handler *handler,
+                           bool restart_syscalls = true)
+{
+  return octave::set_signal_handler (sig, handler, restart_syscalls);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::set_signal_handler' instead")
+inline octave::sig_handler *
+octave_set_signal_handler (const char *signame, octave::sig_handler *handler,
+                           bool restart_syscalls = true)
+{
+  return octave::set_signal_handler (signame, handler, restart_syscalls);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::set_signal_handler' instead")
+const auto install_signal_handlers = octave::install_signal_handlers;
+
+OCTAVE_DEPRECATED ("use 'octave::signal_handler' instead")
+const auto octave_signal_handler = octave::signal_handler;
+
+OCTAVE_DEPRECATED ("use 'octave::interrupt_handler' instead")
+const auto octave_catch_interrupts = octave::catch_interrupts;
+
+OCTAVE_DEPRECATED ("use 'octave::ignore_interrupts' instead")
+const auto octave_ignore_interrupts = octave::ignore_interrupts;
+
+OCTAVE_DEPRECATED ("use 'octave::set_interrupt_handler' instead")
+const auto octave_set_interrupt_handler = octave::set_interrupt_handler;
+
+OCTAVE_DEPRECATED ("use 'octave::Vdebug_on_interrupt' instead")
+static auto& Vdebug_on_interrupt = octave::Vdebug_on_interrupt;
 
 #endif
+
+#endif
+

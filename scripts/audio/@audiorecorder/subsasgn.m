@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} subsasgn (@var{recorder}, @var{idx}, @var{rhs})
+## @deftypefn {} {@var{value} =} subsasgn (@var{recorder}, @var{idx}, @var{rhs})
 ## Perform subscripted assignment on the audio recorder object @var{recorder}.
 ##
 ## Assign the value of @var{rhs} to the recorder property named by @var{idx}.
 ## @end deftypefn
 
 function value = subsasgn (recorder, idx, rhs)
+
   if (nargin != 3)
     print_usage ();
   endif
@@ -41,3 +42,4 @@ function value = subsasgn (recorder, idx, rhs)
   endif
 
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} welch_test (@var{x}, @var{y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{t}, @var{df}] =} welch_test (@var{x}, @var{y}, @var{alt})
 ## For two samples @var{x} and @var{y} from normal distributions with
 ## unknown means and unknown and not necessarily equal variances,
 ## perform a Welch test of the null hypothesis of equal means.

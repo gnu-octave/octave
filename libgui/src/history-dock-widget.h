@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef HISTORYDOCKWIDGET_H
-#define HISTORYDOCKWIDGET_H
+#if ! defined (octave_history_dock_widget_h)
+#define octave_history_dock_widget_h 1
 
 #include <QLineEdit>
 #include <QListView>
@@ -39,13 +39,14 @@ class history_dock_widget : public octave_dock_widget
 public:
 
   history_dock_widget (QWidget *parent = 0);
-  ~history_dock_widget ();
+  ~history_dock_widget (void) { }
 
 public slots:
 
   void set_history (const QStringList& hist);
   void append_history (const QString& hist_entry);
   void clear_history (void);
+  void save_settings (void);
 
 signals:
 
@@ -67,6 +68,7 @@ private slots:
   void handle_contextmenu_copy (bool flag);
   void handle_contextmenu_evaluate (bool flag);
   void handle_contextmenu_create_script (bool flag);
+  void handle_contextmenu_filter (void);
   void ctxMenu (const QPoint &pos);
 
   void copyClipboard ();
@@ -86,7 +88,10 @@ private:
 
   QCheckBox *_filter_checkbox;
   QComboBox *_filter;
+  QWidget *_filter_widget;
+  bool _filter_shown;
   enum { MaxFilterHistory = 10 };
 };
 
-#endif // HISTORYDOCKWIDGET_H
+#endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} duplication_matrix (@var{n})
+## @deftypefn {} {} duplication_matrix (@var{n})
 ## Return the duplication matrix
 ## @tex
 ##  $D_n$
@@ -82,7 +82,7 @@ function d = duplication_matrix (n)
       d((j - 1) * n + i, count + i) = 1;
       d((i - 1) * n + j, count + i) = 1;
     endfor
-    count = count + n - j;
+    count += n - j;
   endfor
 
 endfunction

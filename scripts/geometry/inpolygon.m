@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{in} =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
-## @deftypefnx {Function File} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
+## @deftypefn  {} {@var{in} =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
+## @deftypefnx {} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{yv})
 ##
 ## For a polygon defined by vertex points @code{(@var{xv}, @var{yv})}, return
 ## true if the points @code{(@var{x}, @var{y})} are inside (or on the boundary)
@@ -37,7 +37,7 @@
 
 ## Vectorized by Søren Hauberg <soren@hauberg.org>
 
-## The method for determining if a point is in in a polygon is based on
+## The method for determining if a point is in a polygon is based on
 ## the algorithm shown on
 ## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 ## and is credited to Randolph Franklin.
@@ -75,7 +75,7 @@ function [in, on] = inpolygon (x, y, xv, yv)
     ## Check if (x,y) are actually on the boundary of the polygon.
     idx2 = (((yv(i) <= y & y <= yv(j)) | (yv(j) <= y & y <= yv(i)))
             & ((xv(i) <= x & x <= xv(j)) | (xv(j) <= x & x <= xv(i)))
-            & (0 == distance | !delta_xv));
+            & (0 == distance | ! delta_xv));
     on(idx2) = true;
 
     j = i;
@@ -98,13 +98,13 @@ endfunction
 %! ya = [0:0.1:1.4];
 %! [x,y] = meshgrid (xa, ya);
 %! [in,on] = inpolygon (x, y, xv, yv);
-%! inside = in & !on;
+%! inside = in & ! on;
 %!
 %! clf;
 %! plot (xv, yv);
 %! hold on;
-%! plot (x(inside), y(inside), "@g")
-%! plot (x(!in), y(!in), "@m");
+%! plot (x(inside), y(inside), "@g");
+%! plot (x(! in), y(! in), "@m");
 %! plot (x(on), y(on), "@b");
 %! hold off;
 %! disp ("Green points are inside polygon, magenta are outside,");
@@ -123,13 +123,13 @@ endfunction
 %! ya = [0:0.1:1.4];
 %! [x, y] = meshgrid (xa, ya);
 %! [in, on] = inpolygon (x, y, xv, yv);
-%! inside = in & !on;
+%! inside = in & ! on;
 %!
 %! clf;
 %! plot (xv, yv);
 %! hold on;
 %! plot (x(inside), y(inside), "@g");
-%! plot (x(!in), y(!in), "@m");
+%! plot (x(! in), y(! in), "@m");
 %! plot (x(on), y(on), "@b");
 %! hold off;
 %! disp ("Green points are inside polygon, magenta are outside,");

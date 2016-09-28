@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} clabel (@var{c}, @var{h})
-## @deftypefnx {Function File} {} clabel (@var{c}, @var{h}, @var{v})
-## @deftypefnx {Function File} {} clabel (@var{c}, @var{h}, "manual")
-## @deftypefnx {Function File} {} clabel (@var{c})
-## @deftypefnx {Function File} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} clabel (@dots{})
+## @deftypefn  {} {} clabel (@var{c}, @var{h})
+## @deftypefnx {} {} clabel (@var{c}, @var{h}, @var{v})
+## @deftypefnx {} {} clabel (@var{c}, @var{h}, "manual")
+## @deftypefnx {} {} clabel (@var{c})
+## @deftypefnx {} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} clabel (@dots{})
 ## Add labels to the contours of a contour plot.
 ##
 ## The contour levels are specified by the contour matrix @var{c} which is
@@ -139,15 +139,15 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [c, h] = contour (peaks (), -4:6);
-%! clabel (c, h, -4:2:6, 'fontsize', 12);
-%! title ('clabel() labeling every other contour');
+%! clabel (c, h, -4:2:6, "fontsize", 12);
+%! title ("clabel() labeling every other contour");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [c, h] = contourf (peaks (), -7:6);
-%! clabel (c, h, -6:2:6, 'fontsize', 12);
-%! title ('clabel() labeling every other contour');
+%! clabel (c, h, -6:2:6, "fontsize", 12);
+%! title ("clabel() labeling every other contour");
 

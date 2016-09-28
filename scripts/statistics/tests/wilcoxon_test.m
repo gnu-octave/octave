@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{z}] =} wilcoxon_test (@var{x}, @var{y}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{z}] =} wilcoxon_test (@var{x}, @var{y}, @var{alt})
 ## For two matched-pair sample vectors @var{x} and @var{y}, perform a
 ## Wilcoxon signed-rank test of the null hypothesis
 ## PROB (@var{x} > @var{y}) == 1/2.
@@ -58,11 +58,11 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   x = reshape (x, 1, n);
   y = reshape (y, 1, n);
   d = x - y;
-  d = d (find (d != 0));
+  d = d(find (d != 0));
   n = length (d);
   if (n > 25)
     r = ranks (abs (d));
-    z = sum (r (find (d > 0)));
+    z = sum (r(find (d > 0)));
     z = ((z - n * (n + 1) / 4) / sqrt (n * (n + 1) * (2 * n + 1) / 24));
   else
     error ("wilcoxon_test: implementation requires more than 25 different pairs");

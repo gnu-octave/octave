@@ -1,8 +1,8 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
-Copyright (C) 2011-2015 John P. Swensen
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
+Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef OCTAVE_QT_LINK_H
-#define OCTAVE_QT_LINK_H
+#if ! defined (octave_octave_qt_link_h)
+#define octave_octave_qt_link_h 1
 
 #include <list>
 #include <string>
@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMutex>
 #include <QWaitCondition>
 
+#include "octave-gui.h"
 #include "octave-link.h"
 #include "octave-interpreter.h"
 
@@ -55,7 +56,7 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (QWidget *p);
+  octave_qt_link (QWidget *p, octave::gui_application *app_context);
 
   ~octave_qt_link (void);
 
@@ -124,7 +125,8 @@ public:
   void do_execute_in_debugger_event (const std::string& file, int line);
   void do_exit_debugger_event (void);
 
-  void do_update_breakpoint (bool insert, const std::string& file, int line);
+  void do_update_breakpoint (bool insert, const std::string& file, int line,
+                             const std::string& cond);
 
   void do_set_default_prompts (std::string& ps1, std::string& ps2,
                                std::string& ps4);
@@ -154,6 +156,8 @@ private:
 
   // Thread running octave_main.
   QThread *main_thread;
+
+  octave::gui_application *m_app_context;
 
   octave_interpreter *command_interpreter;
 
@@ -191,7 +195,7 @@ signals:
   void exit_debugger_signal (void);
 
   void update_breakpoint_marker_signal (bool insert, const QString& file,
-                                        int line);
+                                        int line, const QString& cond);
 
   void insert_debugger_pointer_signal (const QString&, int);
   void delete_debugger_pointer_signal (const QString&, int);
@@ -209,3 +213,4 @@ public slots:
 };
 
 #endif
+

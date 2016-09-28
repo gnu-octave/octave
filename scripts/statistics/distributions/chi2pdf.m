@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chi2pdf (@var{x}, @var{n})
+## @deftypefn {} {} chi2pdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the chi-square distribution with @var{n} degrees of freedom.
 ## @end deftypefn

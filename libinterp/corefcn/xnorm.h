@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 VZLU Prague, a.s.
+Copyright (C) 2008-2016 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -22,8 +22,10 @@ along with Octave; see the file COPYING.  If not, see
 
 // author: Jaroslav Hajek <highegg@gmail.com>
 
-#if !defined (octave_xnorm_h)
+#if ! defined (octave_xnorm_h)
 #define octave_xnorm_h 1
+
+#include "octave-config.h"
 
 #include "oct-norm.h"
 
@@ -42,3 +44,4 @@ extern OCTINTERP_API octave_value
 xfrobnorm (const octave_value& x);
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 VZLU Prague
+Copyright (C) 2010-2016 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,9 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#if ! defined (octave_ov_oncleanup_h)
+#define octave_ov_oncleanup_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 
@@ -30,11 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include "ov.h"
 
-static void
-gripe_internal (void)
-{
-  error ("onCleanup: internal error: cloning nonempty object");
-}
 
 class octave_oncleanup : public octave_base_value
 {
@@ -46,7 +42,7 @@ public:
   octave_base_value *clone (void) const
   {
     if (fcn.is_defined ())
-      gripe_internal ();
+      error ("onCleanup: internal error: cloning nonempty object");
 
     return empty_clone ();
   }
@@ -79,7 +75,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -97,3 +93,6 @@ protected:
 
   octave_value fcn;
 };
+
+#endif
+

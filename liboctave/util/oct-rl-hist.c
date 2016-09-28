@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 John W. Eaton
+Copyright (C) 2000-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "oct-rl-hist.h"
@@ -279,13 +279,13 @@ octave_history_list (int limit, int number_lines)
 
       beg = (limit < 0 || end < limit) ? 0 : (end - limit);
 
-      retval = malloc ((end - beg + 1) * sizeof (char **));
+      retval = malloc ((size_t) (end - beg + 1) * sizeof (char **));
 
       k = 0;
       for (i = beg; i < end; i++)
         {
           char *line = hlist[i]->line;
-          int len = line ? strlen (line) : 0;
+          size_t len = line ? strlen (line) : 0;
           char *tmp = malloc (len + 64);
 
           if (number_lines)
@@ -318,3 +318,4 @@ octave_replace_history_entry (int which, const char *line)
 }
 
 #endif
+

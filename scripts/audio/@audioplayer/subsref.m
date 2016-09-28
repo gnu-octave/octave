@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} subsref (@var{player}, @var{idx})
+## @deftypefn {} {@var{value} =} subsref (@var{player}, @var{idx})
 ## Perform subscripted selection on the audio player object @var{player}.
 ##
 ## Return the player property value named by @var{idx}.
 ## @end deftypefn
 
 function value = subsref (player, idx)
+
   if (nargin != 2)
     print_usage ();
   endif
@@ -36,7 +37,8 @@ function value = subsref (player, idx)
     field = idx.subs;
     value = get (player, field);
   else
-    error ("@audioplayer/subsref: invalid subscript type")
+    error ("@audioplayer/subsref: invalid subscript type");
   endif
 
 endfunction
+

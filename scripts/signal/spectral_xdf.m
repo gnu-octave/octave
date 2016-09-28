@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spectral_xdf (@var{x})
-## @deftypefnx {Function File} {} spectral_xdf (@var{x}, @var{win})
-## @deftypefnx {Function File} {} spectral_xdf (@var{x}, @var{win}, @var{b})
+## @deftypefn  {} {} spectral_xdf (@var{x})
+## @deftypefnx {} {} spectral_xdf (@var{x}, @var{win})
+## @deftypefnx {} {} spectral_xdf (@var{x}, @var{win}, @var{b})
 ## Return the spectral density estimator given a data vector @var{x}, window
 ## name @var{win}, and bandwidth, @var{b}.
 ##
@@ -60,7 +60,7 @@ function retval = spectral_xdf (x, win, b)
     w = feval (win, xr, b);
   endif
 
-  x = x - sum (x) / xr;
+  x -= sum (x) / xr;
 
   retval = (abs (fft (x)) / xr).^2;
   retval = real (ifft (fft (retval) .* fft (w)));
@@ -72,8 +72,8 @@ endfunction
 
 
 ## Test input validation
-%!error spectral_xdf ();
-%!error spectral_xdf (1, 2, 3, 4);
-%!error spectral_xdf (1, 2);
-%!error spectral_xdf (1, "invalid");
+%!error spectral_xdf ()
+%!error spectral_xdf (1, 2, 3, 4)
+%!error spectral_xdf (1, 2)
+%!error spectral_xdf (1, "invalid")
 

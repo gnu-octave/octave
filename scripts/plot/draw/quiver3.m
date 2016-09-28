@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} quiver3 (@var{u}, @var{v}, @var{w})
-## @deftypefnx {Function File} {} quiver3 (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
-## @deftypefnx {Function File} {} quiver3 (@dots{}, @var{s})
-## @deftypefnx {Function File} {} quiver3 (@dots{}, @var{style})
-## @deftypefnx {Function File} {} quiver3 (@dots{}, "filled")
-## @deftypefnx {Function File} {} quiver3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} quiver3 (@dots{})
+## @deftypefn  {} {} quiver3 (@var{u}, @var{v}, @var{w})
+## @deftypefnx {} {} quiver3 (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
+## @deftypefnx {} {} quiver3 (@dots{}, @var{s})
+## @deftypefnx {} {} quiver3 (@dots{}, @var{style})
+## @deftypefnx {} {} quiver3 (@dots{}, "filled")
+## @deftypefnx {} {} quiver3 (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} quiver3 (@dots{})
 ##
 ## Plot a 3-D vector field with arrows.
 ##
@@ -42,8 +42,8 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## drawn rather than arrows.  If the argument @qcode{"filled"} is given then the
-## markers are filled.
+## drawn rather than arrows.  If the argument @qcode{"filled"} is given then
+## the markers are filled.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
@@ -82,8 +82,8 @@ function h = quiver3 (varargin)
     hax = newplot (hax);
     htmp = __quiver__ (hax, true, varargin{:});
 
-    if (! ishold (hax))
-      set (hax, "view", [-37.5, 30], "box", "off",
+    if (! ishold ())
+      set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   unwind_protect_cleanup
@@ -101,27 +101,27 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks (25);
 %! surf (x, y, z);
 %! hold on;
 %! [u, v, w] = surfnorm (x, y, z / 10);
 %! h = quiver3 (x, y, z, u, v, w);
-%! set (h, 'maxheadsize', 0.25);
+%! set (h, "maxheadsize", 0.25);
 %! hold off;
-%! title ('quiver3 of surface normals to peaks() function');
+%! title ("quiver3 of surface normals to peaks() function");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks (25);
 %! surf (x, y, z);
 %! hold on;
 %! [u, v, w] = surfnorm (x, y, z / 10);
 %! h = quiver3 (x, y, z, u, v, w);
-%! set (h, 'maxheadsize', 0.25);
+%! set (h, "maxheadsize", 0.25);
 %! hold off;
 %! shading interp;
-%! title ({'quiver3 of surface normals to peaks() function'; ...
+%! title ({"quiver3 of surface normals to peaks() function"; ...
 %!         'shading "interp"'});
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2015 John Donoghue
+Copyright (C) 2016 John Donoghue
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef ANNOTATIONDIALOG_H
-#define ANNOTATIONDIALOG_H
+#if ! defined (octave_annotation_dialog_h)
+#define octave_annotation_dialog_h 1
 
 #include <QDialog>
 #include <QLineEdit>
 #include <QAbstractButton>
 
-#include "oct-obj.h"
+#include "ovl.h"
 
 namespace Ui
 {
@@ -59,4 +59,5 @@ private:
   octave_value_list props;
 };
 
-#endif // ANNOTATIONDIALOG_H
+#endif
+

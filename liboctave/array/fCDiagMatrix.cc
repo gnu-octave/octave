@@ -1,7 +1,7 @@
 // DiagMatrix manipulations.
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -80,10 +80,7 @@ FloatComplexDiagMatrix::fill (float val,
                               octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
@@ -96,10 +93,7 @@ FloatComplexDiagMatrix::fill (const FloatComplex& val,
                               octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = beg; i <= end; i++)
     elem (i, i) = val;
@@ -111,11 +105,8 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+  if (a.numel () != len)
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -127,11 +118,8 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+  if (a.numel () != len)
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -143,11 +131,8 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatRowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+  if (a.numel () != len)
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -159,11 +144,8 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a)
 {
   octave_idx_type len = length ();
-  if (a.length () != len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+  if (a.numel () != len)
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < len; i++)
     elem (i, i) = a.elem (i);
@@ -174,12 +156,9 @@ FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a)
 FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatColumnVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -191,12 +170,9 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a,
                               octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -207,12 +183,9 @@ FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a,
 FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -224,12 +197,9 @@ FloatComplexDiagMatrix&
 FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a,
                               octave_idx_type beg)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
   if (beg < 0 || beg + a_len >= length ())
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   for (octave_idx_type i = 0; i < a_len; i++)
     elem (i+beg, i+beg) = a.elem (i);
@@ -279,10 +249,7 @@ FloatComplexDiagMatrix::row (octave_idx_type i) const
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
   if (i < 0 || i >= r)
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatComplexRowVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid row selection");
 
   FloatComplexRowVector retval (c, 0.0);
   if (r <= c || (r > c && i < c))
@@ -295,10 +262,7 @@ FloatComplexRowVector
 FloatComplexDiagMatrix::row (char *s) const
 {
   if (! s)
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatComplexRowVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid row selection");
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -306,10 +270,7 @@ FloatComplexDiagMatrix::row (char *s) const
   else if (c == 'l' || c == 'L')
     return row (rows () - 1);
   else
-    {
-      (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatComplexRowVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid row selection");
 }
 
 FloatComplexColumnVector
@@ -318,10 +279,7 @@ FloatComplexDiagMatrix::column (octave_idx_type i) const
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
   if (i < 0 || i >= c)
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatComplexColumnVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid column selection");
 
   FloatComplexColumnVector retval (r, 0.0);
   if (r >= c || (r < c && i < r))
@@ -334,10 +292,7 @@ FloatComplexColumnVector
 FloatComplexDiagMatrix::column (char *s) const
 {
   if (! s)
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatComplexColumnVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid column selection");
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -345,10 +300,7 @@ FloatComplexDiagMatrix::column (char *s) const
   else if (c == 'l' || c == 'L')
     return column (cols () - 1);
   else
-    {
-      (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatComplexColumnVector ();
-    }
+    (*current_liboctave_error_handler) ("invalid column selection");
 }
 
 FloatComplexDiagMatrix
@@ -364,10 +316,7 @@ FloatComplexDiagMatrix::inverse (octave_idx_type& info) const
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
   if (r != c)
-    {
-      (*current_liboctave_error_handler) ("inverse requires square matrix");
-      return FloatComplexDiagMatrix ();
-    }
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   FloatComplexDiagMatrix retval (r, c);
 
@@ -425,10 +374,7 @@ FloatComplexDiagMatrix::operator += (const FloatDiagMatrix& a)
   octave_idx_type a_nc = a.cols ();
 
   if (r != a_nr || c != a_nc)
-    {
-      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
-      return *this;
-    }
+    octave::err_nonconformant ("operator +=", r, c, a_nr, a_nc);
 
   if (r == 0 || c == 0)
     return *this;
@@ -449,7 +395,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
@@ -474,10 +420,7 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
-      return FloatComplexDiagMatrix ();
-    }
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   if (a_nr == 0 || a_nc == 0 || b_nc == 0)
     return FloatComplexDiagMatrix (a_nr, a_nc, 0.0);
@@ -507,10 +450,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nc != b_nr)
-    {
-      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
-      return FloatComplexDiagMatrix ();
-    }
+    octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
 
   if (a_nr == 0 || a_nc == 0 || b_nc == 0)
     return FloatComplexDiagMatrix (a_nr, a_nc, 0.0);
@@ -537,16 +477,11 @@ FloatComplexDiagMatrix::determinant (void) const
 {
   FloatComplexDET det (1.0f);
   if (rows () != cols ())
-    {
-      (*current_liboctave_error_handler) ("determinant requires square matrix");
-      det = FloatComplexDET (0.0);
-    }
-  else
-    {
-      octave_idx_type len = length ();
-      for (octave_idx_type i = 0; i < len; i++)
-        det *= elem (i, i);
-    }
+    (*current_liboctave_error_handler) ("determinant requires square matrix");
+
+  octave_idx_type len = length ();
+  for (octave_idx_type i = 0; i < len; i++)
+    det *= elem (i, i);
 
   return det;
 }
@@ -580,3 +515,4 @@ operator << (std::ostream& os, const FloatComplexDiagMatrix& a)
     }
   return os;
 }
+

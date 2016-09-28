@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 Paul Kienzle
+## Copyright (C) 1993-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hadamard (@var{n})
+## @deftypefn {} {} hadamard (@var{n})
 ## Construct a Hadamard matrix (@nospell{Hn}) of size @var{n}-by-@var{n}.
 ##
 ## The size @var{n} must be of the form @math{2^k * p} in which p is one of
@@ -68,7 +68,7 @@ function h = hadamard (n)
   ## Find k if n = 2^k*p.
   k = 0;
   while (n > 1 && fix (n/2) == n/2)
-    k++;
+    k += 1;
     n /= 2;
   endwhile
 

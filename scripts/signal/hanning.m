@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Andreas Weingessel
+## Copyright (C) 1995-2016 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hanning (@var{m})
-## @deftypefnx {Function File} {} hanning (@var{m}, "periodic")
-## @deftypefnx {Function File} {} hanning (@var{m}, "symmetric")
+## @deftypefn  {} {} hanning (@var{m})
+## @deftypefnx {} {} hanning (@var{m}, "periodic")
+## @deftypefnx {} {} hanning (@var{m}, "symmetric")
 ## Return the filter coefficients of a Hanning window of length @var{m}.
 ##
 ## If the optional argument @qcode{"periodic"} is given, the periodic form
@@ -60,24 +60,24 @@ function c = hanning (m, opt)
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    m -= 1;
     c = 0.5 - 0.5 * cos (2 * pi * (0 : m)' / N);
   endif
 
 endfunction
 
 
-%!assert (hanning (1), 1);
-%!assert (hanning (2), zeros (2,1));
-%!assert (hanning (15), flip (hanning (15)), 5*eps);
-%!assert (hanning (16), flip (hanning (16)), 5*eps);
+%!assert (hanning (1), 1)
+%!assert (hanning (2), zeros (2,1))
+%!assert (hanning (15), flip (hanning (15)), 5*eps)
+%!assert (hanning (16), flip (hanning (16)), 5*eps)
 %!test
 %! N = 15;
 %! A = hanning (N);
 %! assert (A(ceil (N/2)), 1);
 
-%!assert (hanning (15), hanning (15, "symmetric"));
-%!assert (hanning (16)(1:15), hanning (15, "periodic"));
+%!assert (hanning (15), hanning (15, "symmetric"))
+%!assert (hanning (16)(1:15), hanning (15, "periodic"))
 %!test
 %! N = 16;
 %! A = hanning (N, "periodic");
@@ -87,5 +87,5 @@ endfunction
 %!error hanning (0.5)
 %!error hanning (-1)
 %!error hanning (ones (1,4))
-%!error hanning (1, "invalid");
+%!error hanning (1, "invalid")
 

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} discrete_pdf (@var{x}, @var{v}, @var{p})
+## @deftypefn {} {} discrete_pdf (@var{x}, @var{v}, @var{p})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of a univariate discrete distribution which assumes the values
 ## in @var{v} with probabilities @var{p}.

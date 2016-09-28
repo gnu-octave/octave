@@ -1,130 +1,130 @@
-class_Blork_FCN_FILES = \
-  classes/@Blork/Blork.m \
-  classes/@Blork/bleek.m \
-  classes/@Blork/display.m \
-  classes/@Blork/get.m \
-  classes/@Blork/set.m
+class_Blork_TEST_FILES = \
+  test/classes/@Blork/Blork.m \
+  test/classes/@Blork/bleek.m \
+  test/classes/@Blork/display.m \
+  test/classes/@Blork/get.m \
+  test/classes/@Blork/set.m
 
-class_Cork_FCN_FILES = \
-  classes/@Cork/Cork.m \
-  classes/@Cork/click.m \
-  classes/@Cork/display.m \
-  classes/@Cork/get.m \
-  classes/@Cork/set.m
+class_Cork_TEST_FILES = \
+  test/classes/@Cork/Cork.m \
+  test/classes/@Cork/click.m \
+  test/classes/@Cork/display.m \
+  test/classes/@Cork/get.m \
+  test/classes/@Cork/set.m
 
-class_Dork_FCN_FILES = \
-  classes/@Dork/Dork.m \
-  classes/@Dork/bling.m \
-  classes/@Dork/display.m \
-  classes/@Dork/gack.m \
-  classes/@Dork/get.m \
-  classes/@Dork/getStash.m \
-  classes/@Dork/private/myStash.m \
-  classes/@Dork/set.m
+class_Dork_TEST_FILES = \
+  test/classes/@Dork/Dork.m \
+  test/classes/@Dork/bling.m \
+  test/classes/@Dork/display.m \
+  test/classes/@Dork/gack.m \
+  test/classes/@Dork/get.m \
+  test/classes/@Dork/getStash.m \
+  test/classes/@Dork/private/myStash.m \
+  test/classes/@Dork/set.m
 
-class_Gork_FCN_FILES = \
-  classes/@Gork/Gork.m \
-  classes/@Gork/cork.m \
-  classes/@Gork/display.m \
-  classes/@Gork/gark.m \
-  classes/@Gork/get.m \
-  classes/@Gork/set.m \
-  classes/@Gork/subsasgn.m \
-  classes/@Gork/subsref.m
+class_Gork_TEST_FILES = \
+  test/classes/@Gork/Gork.m \
+  test/classes/@Gork/cork.m \
+  test/classes/@Gork/display.m \
+  test/classes/@Gork/gark.m \
+  test/classes/@Gork/get.m \
+  test/classes/@Gork/set.m \
+  test/classes/@Gork/subsasgn.m \
+  test/classes/@Gork/subsref.m
 
-class_Pork_FCN_FILES = \
-  classes/@Pork/Pork.m \
-  classes/@Pork/bling.m \
-  classes/@Pork/display.m \
-  classes/@Pork/get.m \
-  classes/@Pork/gurk.m \
-  classes/@Pork/private/myStash.m \
-  classes/@Pork/set.m
+class_Pork_TEST_FILES = \
+  test/classes/@Pork/Pork.m \
+  test/classes/@Pork/bling.m \
+  test/classes/@Pork/display.m \
+  test/classes/@Pork/get.m \
+  test/classes/@Pork/gurk.m \
+  test/classes/@Pork/private/myStash.m \
+  test/classes/@Pork/set.m
 
-class_Sneetch_FCN_FILES = \
-  classes/@Sneetch/Sneetch.m \
-  classes/@Sneetch/display.m
+class_Sneetch_TEST_FILES = \
+  test/classes/@Sneetch/Sneetch.m \
+  test/classes/@Sneetch/display.m
 
-class_Snork_FCN_FILES = \
-  classes/@Snork/Snork.m \
-  classes/@Snork/cack.m \
-  classes/@Snork/display.m \
-  classes/@Snork/double.m \
-  classes/@Snork/end.m \
-  classes/@Snork/eq.m \
-  classes/@Snork/ge.m \
-  classes/@Snork/get.m \
-  classes/@Snork/getStash.m \
-  classes/@Snork/gick.m \
-  classes/@Snork/gt.m \
-  classes/@Snork/horzcat.m \
-  classes/@Snork/ldivide.m \
-  classes/@Snork/le.m \
-  classes/@Snork/loadobj.m \
-  classes/@Snork/lt.m \
-  classes/@Snork/minus.m \
-  classes/@Snork/mldivide.m \
-  classes/@Snork/mpower.m \
-  classes/@Snork/mrdivide.m \
-  classes/@Snork/mtimes.m \
-  classes/@Snork/ne.m \
-  classes/@Snork/plus.m \
-  classes/@Snork/power.m \
-  classes/@Snork/private/myStash.m \
-  classes/@Snork/rdivide.m \
-  classes/@Snork/saveobj.m \
-  classes/@Snork/set.m \
-  classes/@Snork/subsasgn.m \
-  classes/@Snork/subsindex.m \
-  classes/@Snork/subsref.m \
-  classes/@Snork/tattack.m \
-  classes/@Snork/times.m \
-  classes/@Snork/uminus.m \
-  classes/@Snork/uplus.m \
-  classes/@Snork/vertcat.m
+class_Snork_TEST_FILES = \
+  test/classes/@Snork/Snork.m \
+  test/classes/@Snork/cack.m \
+  test/classes/@Snork/display.m \
+  test/classes/@Snork/double.m \
+  test/classes/@Snork/end.m \
+  test/classes/@Snork/eq.m \
+  test/classes/@Snork/ge.m \
+  test/classes/@Snork/get.m \
+  test/classes/@Snork/getStash.m \
+  test/classes/@Snork/gick.m \
+  test/classes/@Snork/gt.m \
+  test/classes/@Snork/horzcat.m \
+  test/classes/@Snork/ldivide.m \
+  test/classes/@Snork/le.m \
+  test/classes/@Snork/loadobj.m \
+  test/classes/@Snork/lt.m \
+  test/classes/@Snork/minus.m \
+  test/classes/@Snork/mldivide.m \
+  test/classes/@Snork/mpower.m \
+  test/classes/@Snork/mrdivide.m \
+  test/classes/@Snork/mtimes.m \
+  test/classes/@Snork/ne.m \
+  test/classes/@Snork/plus.m \
+  test/classes/@Snork/power.m \
+  test/classes/@Snork/private/myStash.m \
+  test/classes/@Snork/rdivide.m \
+  test/classes/@Snork/saveobj.m \
+  test/classes/@Snork/set.m \
+  test/classes/@Snork/subsasgn.m \
+  test/classes/@Snork/subsindex.m \
+  test/classes/@Snork/subsref.m \
+  test/classes/@Snork/tattack.m \
+  test/classes/@Snork/times.m \
+  test/classes/@Snork/uminus.m \
+  test/classes/@Snork/uplus.m \
+  test/classes/@Snork/vertcat.m
 
-class_Spork_FCN_FILES = \
-  classes/@Spork/Spork.m \
-  classes/@Spork/cack.m \
-  classes/@Spork/display.m \
-  classes/@Spork/geek.m \
-  classes/@Spork/get.m \
-  classes/@Spork/getStash.m \
-  classes/@Spork/loadobj.m \
-  classes/@Spork/private/myStash.m \
-  classes/@Spork/saveobj.m \
-  classes/@Spork/set.m
+class_Spork_TEST_FILES = \
+  test/classes/@Spork/Spork.m \
+  test/classes/@Spork/cack.m \
+  test/classes/@Spork/display.m \
+  test/classes/@Spork/geek.m \
+  test/classes/@Spork/get.m \
+  test/classes/@Spork/getStash.m \
+  test/classes/@Spork/loadobj.m \
+  test/classes/@Spork/private/myStash.m \
+  test/classes/@Spork/saveobj.m \
+  test/classes/@Spork/set.m
 
-class_CPrecedenceTester1_FCN_FILES = \
-  classes/@CPrecedenceTester1/CPrecedenceTester1.m \
-  classes/@CPrecedenceTester1/tattack.m
+class_CPrecedenceTester1_TEST_FILES = \
+  test/classes/@CPrecedenceTester1/CPrecedenceTester1.m \
+  test/classes/@CPrecedenceTester1/tattack.m
 
-class_CPrecedenceTester2_FCN_FILES = \
-  classes/@CPrecedenceTester2/CPrecedenceTester2.m \
-  classes/@CPrecedenceTester2/tattack.m
+class_CPrecedenceTester2_TEST_FILES = \
+  test/classes/@CPrecedenceTester2/CPrecedenceTester2.m \
+  test/classes/@CPrecedenceTester2/tattack.m
 
-class_CPrecedenceTester3_FCN_FILES = \
-  classes/@CPrecedenceTester3/CPrecedenceTester3.m \
-  classes/@CPrecedenceTester3/tattack.m
+class_CPrecedenceTester3_TEST_FILES = \
+  test/classes/@CPrecedenceTester3/CPrecedenceTester3.m \
+  test/classes/@CPrecedenceTester3/tattack.m
 
-class_SizeTester_FCN_FILES = \
-  classes/@SizeTester/SizeTester.m \
-  classes/@SizeTester/numel.m \
-  classes/@SizeTester/size.m
+class_SizeTester_TEST_FILES = \
+  test/classes/@SizeTester/SizeTester.m \
+  test/classes/@SizeTester/numel.m \
+  test/classes/@SizeTester/size.m
 
-classes_FCN_FILES = \
-  $(class_Blork_FCN_FILES) \
-  $(class_Cork_FCN_FILES) \
-  $(class_Dork_FCN_FILES) \
-  $(class_Gork_FCN_FILES) \
-  $(class_Pork_FCN_FILES) \
-  $(class_Sneetch_FCN_FILES) \
-  $(class_Snork_FCN_FILES) \
-  $(class_Spork_FCN_FILES) \
-  $(class_CPrecedenceTester1_FCN_FILES) \
-  $(class_CPrecedenceTester2_FCN_FILES) \
-  $(class_CPrecedenceTester3_FCN_FILES) \
-  $(class_SizeTester_FCN_FILES) \
-  classes/classes.tst
+classes_TEST_FILES = \
+  $(class_Blork_TEST_FILES) \
+  $(class_Cork_TEST_FILES) \
+  $(class_Dork_TEST_FILES) \
+  $(class_Gork_TEST_FILES) \
+  $(class_Pork_TEST_FILES) \
+  $(class_Sneetch_TEST_FILES) \
+  $(class_Snork_TEST_FILES) \
+  $(class_Spork_TEST_FILES) \
+  $(class_CPrecedenceTester1_TEST_FILES) \
+  $(class_CPrecedenceTester2_TEST_FILES) \
+  $(class_CPrecedenceTester3_TEST_FILES) \
+  $(class_SizeTester_TEST_FILES) \
+  test/classes/classes.tst
 
-FCN_FILES += $(classes_FCN_FILES)
+TEST_FILES += $(classes_TEST_FILES)

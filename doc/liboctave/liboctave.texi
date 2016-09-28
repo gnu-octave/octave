@@ -1,4 +1,4 @@
-% Copyright (C) 1996-2015 John W. Eaton
+% Copyright (C) 1996-2016 John W. Eaton
 %
 % This file is part of Octave.
 %
@@ -50,13 +50,13 @@ END-INFO-DIR-ENTRY
 @c The version.texi file doesn't include a chapter, so it must not be
 @c included if you want to run the Emacs function
 @c texinfo-multiple-files-update.
-@include version.texi
+@include version-liboctave.texi
 
 @settitle Octave C++ Classes
 
 @ifnottex
 
-Copyright (C) 1996-2015 John W. Eaton.
+Copyright (C) 1996-2016 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice

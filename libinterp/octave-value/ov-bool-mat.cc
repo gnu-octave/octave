@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,21 +21,32 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 #include <vector>
+
+#include "dNDArray.h"
+#include "fNDArray.h"
+#include "int8NDArray.h"
+#include "int16NDArray.h"
+#include "int32NDArray.h"
+#include "int64NDArray.h"
+#include "uint8NDArray.h"
+#include "uint16NDArray.h"
+#include "uint32NDArray.h"
+#include "uint64NDArray.h"
 
 #include "lo-ieee.h"
 #include "mx-base.h"
 #include "oct-locbuf.h"
 
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-hdf5.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -47,12 +58,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
 template class octave_base_matrix<boolNDArray>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix,
                                      "bool matrix", "logical");
@@ -60,7 +70,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_bool_matrix&);
+  const octave_bool_matrix& v = dynamic_cast<const octave_bool_matrix&> (a);
 
   return new octave_matrix (NDArray (v.bool_array_value ()));
 }
@@ -94,57 +104,37 @@ octave_bool_matrix::try_narrowing_conversion (void)
 double
 octave_bool_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("bool matrix", "real scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "real scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "bool matrix", "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("bool matrix", "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 float
 octave_bool_matrix::float_value (bool) const
 {
-  float retval = lo_ieee_float_nan_value ();
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("bool matrix", "real scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "real scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "bool matrix", "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("bool matrix", "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 Complex
 octave_bool_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("bool matrix", "complex scalar");
 
-  Complex retval (tmp, tmp);
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "bool matrix", "complex scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("bool matrix", "complex scalar");
-
-  return retval;
+  return Complex (matrix(0, 0), 0);
 }
 
 FloatComplex
@@ -154,15 +144,13 @@ octave_bool_matrix::float_complex_value (bool) const
 
   FloatComplex retval (tmp, tmp);
 
-  if (rows () > 0 && columns () > 0)
-    {
-      gripe_implicit_conversion ("Octave:array-to-scalar",
-                                 "bool matrix", "complex scalar");
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("bool matrix", "complex scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("bool matrix", "complex scalar");
+  warn_implicit_conversion ("Octave:array-to-scalar",
+                            "bool matrix", "complex scalar");
+
+  retval = matrix(0, 0);
 
   return retval;
 }
@@ -173,6 +161,66 @@ octave_bool_matrix::convert_to_str_internal (bool pad, bool force,
 {
   octave_value tmp = octave_value (array_value ());
   return tmp.convert_to_str (pad, force, type);
+}
+
+octave_value
+octave_bool_matrix::as_double (void) const
+{
+  return NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_single (void) const
+{
+  return FloatNDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_int8 (void) const
+{
+  return int8NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_int16 (void) const
+{
+  return int16NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_int32 (void) const
+{
+  return int32NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_int64 (void) const
+{
+  return int64NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_uint8 (void) const
+{
+  return uint8NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_uint16 (void) const
+{
+  return uint16NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_uint32 (void) const
+{
+  return uint32NDArray (matrix);
+}
+
+octave_value
+octave_bool_matrix::as_uint64 (void) const
+{
+  return uint64NDArray (matrix);
 }
 
 void
@@ -186,21 +234,21 @@ octave_bool_matrix::print_raw (std::ostream& os,
 bool
 octave_bool_matrix::save_ascii (std::ostream& os)
 {
-  dim_vector d = dims ();
-  if (d.length () > 2)
+  dim_vector dv = dims ();
+  if (dv.ndims () > 2)
     {
       NDArray tmp = array_value ();
-      os << "# ndims: " << d.length () << "\n";
+      os << "# ndims: " << dv.ndims () << "\n";
 
-      for (int i = 0; i < d.length (); i++)
-        os << " " << d (i);
+      for (int i = 0; i < dv.ndims (); i++)
+        os << " " << dv(i);
 
       os << "\n" << tmp;
     }
   else
     {
       // Keep this case, rather than use generic code above for backward
-      // compatiability. Makes load_ascii much more complex!!
+      // compatibility.  Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
 
@@ -215,8 +263,6 @@ octave_bool_matrix::save_ascii (std::ostream& os)
 bool
 octave_bool_matrix::load_ascii (std::istream& is)
 {
-  bool success = true;
-
   string_vector keywords (2);
 
   keywords[0] = "ndims";
@@ -225,126 +271,96 @@ octave_bool_matrix::load_ascii (std::istream& is)
   std::string kw;
   octave_idx_type val = 0;
 
-  if (extract_keyword (is, keywords, kw, val, true))
+  if (! extract_keyword (is, keywords, kw, val, true))
+    error ("load: failed to extract number of rows and columns");
+
+  if (kw == "ndims")
     {
-      if (kw == "ndims")
+      int mdims = static_cast<int> (val);
+
+      if (mdims < 0)
+        error ("load: failed to extract number of dimensions");
+
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+
+      if (! is)
+        error ("load: failed to extract dimensions");
+
+      boolNDArray btmp (dv);
+
+      if (btmp.is_empty ())
+        matrix = btmp;
+      else
         {
-          int mdims = static_cast<int> (val);
+          NDArray tmp(dv);
+          is >> tmp;
 
-          if (mdims >= 0)
-            {
-              dim_vector dv;
-              dv.resize (mdims);
+          if (! is)
+            error ("load: failed to load matrix constant");
 
-              for (int i = 0; i < mdims; i++)
-                is >> dv(i);
+          for (octave_idx_type i = 0; i < btmp.numel (); i++)
+            btmp.elem (i) = (tmp.elem (i) != 0.);
 
-              if (is)
-                {
-                  boolNDArray btmp (dv);
-
-                  if (btmp.is_empty ())
-                    matrix = btmp;
-                  else
-                    {
-                      NDArray tmp(dv);
-                      is >> tmp;
-
-                      if (is)
-                        {
-                          for (octave_idx_type i = 0; i < btmp.nelem (); i++)
-                            btmp.elem (i) = (tmp.elem (i) != 0.);
-
-                          matrix = btmp;
-                        }
-                      else
-                        {
-                          error ("load: failed to load matrix constant");
-                          success = false;
-                        }
-                    }
-                }
-              else
-                {
-                  error ("load: failed to extract dimensions");
-                  success = false;
-                }
-            }
-          else
-            {
-              error ("load: failed to extract number of dimensions");
-              success = false;
-            }
+          matrix = btmp;
         }
-      else if (kw == "rows")
+    }
+  else if (kw == "rows")
+    {
+      octave_idx_type nr = val;
+      octave_idx_type nc = 0;
+
+      if (nr < 0 || ! extract_keyword (is, "columns", nc) || nc < 0)
+        error ("load: failed to extract number of rows and columns");
+
+      if (nr > 0 && nc > 0)
         {
-          octave_idx_type nr = val;
-          octave_idx_type nc = 0;
+          Matrix tmp (nr, nc);
+          is >> tmp;
+          if (! is)
+            error ("load: failed to load matrix constant");
 
-          if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-            {
-              if (nr > 0 && nc > 0)
-                {
-                  Matrix tmp (nr, nc);
-                  is >> tmp;
-                  if (is)
-                    {
-                      boolMatrix btmp (nr, nc);
-                      for (octave_idx_type j = 0; j < nc; j++)
-                        for (octave_idx_type i = 0; i < nr; i++)
-                          btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
+          boolMatrix btmp (nr, nc);
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = 0; i < nr; i++)
+              btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
 
-                      matrix = btmp;
-                    }
-                  else
-                    {
-                      error ("load: failed to load matrix constant");
-                      success = false;
-                    }
-                }
-              else if (nr == 0 || nc == 0)
-                matrix = boolMatrix (nr, nc);
-              else
-                panic_impossible ();
-            }
-          else
-            {
-              error ("load: failed to extract number of rows and columns");
-              success = false;
-            }
+          matrix = btmp;
         }
+      else if (nr == 0 || nc == 0)
+        matrix = boolMatrix (nr, nc);
       else
         panic_impossible ();
     }
   else
-    {
-      error ("load: failed to extract number of rows and columns");
-      success = false;
-    }
+    panic_impossible ();
 
-  return success;
+  return true;
 }
 
 bool
 octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
 
-  dim_vector d = dims ();
-  if (d.length () < 1)
+  dim_vector dv = dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length ();
+  int32_t tmp = - dv.ndims ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i = 0; i < d.length (); i++)
+  for (int i = 0; i < dv.ndims (); i++)
     {
-      tmp = d(i);
+      tmp = dv(i);
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
   boolNDArray m = bool_array_value ();
   bool *mtmp = m.fortran_vec ();
-  octave_idx_type nel = m.nelem ();
+  octave_idx_type nel = m.numel ();
   OCTAVE_LOCAL_BUFFER (char, htmp, nel);
 
   for (octave_idx_type i = 0; i < nel; i++)
@@ -357,7 +373,7 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_bool_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format /* fmt */)
+                                 octave::mach_info::float_format /* fmt */)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
@@ -422,7 +438,7 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (empty)
     return (empty > 0);
 
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
   boolNDArray m = bool_array_value ();
@@ -431,16 +447,16 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = dv (rank-i-1);
+    hdims[i] = dv(rank-i-1);
 
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0) return false;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -448,21 +464,24 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave_idx_type nel = m.nelem ();
+  octave_idx_type nel = m.numel ();
   bool *mtmp = m.fortran_vec ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
 
   for (octave_idx_type i = 0; i < nel; i++)
     htmp[i] = mtmp[i];
 
-  retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, htmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, htmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -482,8 +501,8 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
-#if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -518,7 +537,8 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp)
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, htmp)
       >= 0)
     {
       retval = true;
@@ -533,7 +553,10 @@ octave_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
 #endif
 
   return retval;
@@ -557,40 +580,39 @@ octave_bool_matrix::as_mxArray (void) const
 }
 
 DEFUN (logical, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} logical (@var{x})\n\
-Convert the numeric object @var{x} to logical type.\n\
-\n\
-Any nonzero values will be converted to true (1) while zero values will be\n\
-converted to false (0).  The non-numeric value NaN cannot be converted and\n\
-will produce an error.\n\
-\n\
-Compatibility Note: Octave accepts complex values as input, whereas\n\
-@sc{matlab} issues an error.\n\
-@seealso{double, single, char}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} logical (@var{x})
+Convert the numeric object @var{x} to logical type.
+
+Any nonzero values will be converted to true (1) while zero values will be
+converted to false (0).  The non-numeric value NaN cannot be converted and
+will produce an error.
+
+Compatibility Note: Octave accepts complex values as input, whereas
+@sc{matlab} issues an error.
+@seealso{double, single, char}
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
   octave_value retval;
 
-  if (args.length () == 1)
+  octave_value arg = args(0);
+
+  if (arg.is_bool_type ())
+    retval = arg;
+  else if (arg.is_numeric_type ())
     {
-      octave_value arg = args(0);
-      if (arg.is_bool_type ())
-        retval = arg;
-      else if (arg.is_numeric_type ())
-        {
-          if (arg.is_sparse_type ())
-            retval = arg.sparse_bool_matrix_value ();
-          else if (arg.is_scalar_type ())
-            retval = arg.bool_value ();
-          else
-            retval = arg.bool_array_value ();
-        }
+      if (arg.is_sparse_type ())
+        retval = arg.sparse_bool_matrix_value ();
+      else if (arg.is_scalar_type ())
+        retval = arg.bool_value ();
       else
-        gripe_wrong_type_arg ("logical", arg);
+        retval = arg.bool_array_value ();
     }
   else
-    print_usage ();
+    err_wrong_type_arg ("logical", arg);
 
   return retval;
 }
@@ -598,10 +620,11 @@ Compatibility Note: Octave accepts complex values as input, whereas\n\
 /*
 %!test
 %! m = eye (2) != 0;
-%! s = !0;
+%! s = ! 0;
 %! c = {"double", "single", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64", "logical"};
 %! for i = 1:numel (c)
-%!   assert (logical (eye (2, c{i})), m)
-%!   assert (logical (eye (1, c{i})), s)
+%!   assert (logical (eye (2, c{i})), m);
+%!   assert (logical (eye (1, c{i})), s);
 %! endfor
 */
+

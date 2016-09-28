@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "ov.h"
 
@@ -45,13 +45,26 @@ void
 octave_lvalue::set_index (const std::string& t,
                           const std::list<octave_value_list>& i)
 {
-  if (idx.empty ())
-    {
-      type = t;
-      idx = i;
-    }
-  else
+  if (! idx.empty ())
     error ("invalid index expression in assignment");
+
+  type = t;
+  idx = i;
+}
+
+bool
+octave_lvalue::index_is_empty (void) const
+{
+  bool retval = false;
+
+  if (idx.size () == 1)
+    {
+      octave_value_list tmp = idx.front ();
+
+      retval = (tmp.length () == 1 && tmp(0).is_empty ());
+    }
+
+  return retval;
 }
 
 void
@@ -92,3 +105,4 @@ octave_lvalue::value (void) const
 
   return retval;
 }
+

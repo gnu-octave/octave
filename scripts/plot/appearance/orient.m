@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2015 Paul Kienzle
+## Copyright (C) 2001-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} orient (@var{orientation})
-## @deftypefnx {Function File} {} orient (@var{hfig}, @var{orientation})
-## @deftypefnx {Function File} {@var{orientation} =} orient ()
-## @deftypefnx {Function File} {@var{orientation} =} orient (@var{hfig})
+## @deftypefn  {} {} orient (@var{orientation})
+## @deftypefnx {} {} orient (@var{hfig}, @var{orientation})
+## @deftypefnx {} {@var{orientation} =} orient ()
+## @deftypefnx {} {@var{orientation} =} orient (@var{hfig})
 ## Query or set the print orientation for figure @var{hfig}.
 ##
 ## Valid values for @var{orientation} are @qcode{"portrait"},
@@ -54,7 +54,7 @@ function retval = orient (varargin)
   if (nargs > 0 && numel (varargin{1}) == 1 && isfigure (varargin{1}))
     cf = varargin{1};
     varargin(1) = [];
-    nargs--;
+    nargs -= 1;
   else
     cf = gcf ();
   endif
@@ -127,13 +127,13 @@ endfunction
 
 %!test
 %! orient portrait;
-%! assert (orient, "portrait")   # default
+%! assert (orient, "portrait");  # default
 %! assert (get (hfig, "papersize"), papersize);
 %! assert (get (hfig, "paperposition"), paperposition);
 
 %!test
 %! orient landscape;
-%! assert (orient,"landscape")   # change to landscape
+%! assert (orient,"landscape");  # change to landscape
 %! assert (get (hfig, "papersize"), papersize([2, 1]));
 %! assert (get (hfig, "paperposition"), fullpaperposition([1, 2, 4, 3]));
 

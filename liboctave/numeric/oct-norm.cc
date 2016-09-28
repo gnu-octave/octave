@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 VZLU Prague, a.s.
+Copyright (C) 2008-2016 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // author: Jaroslav Hajek <highegg@gmail.com>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
@@ -33,49 +33,48 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
-#include "oct-cmplx.h"
+#include "Array-util.h"
+#include "Array.h"
+#include "CColVector.h"
+#include "CMatrix.h"
+#include "CRowVector.h"
+#include "CSparse.h"
+#include "dColVector.h"
+#include "dDiagMatrix.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
+#include "dSparse.h"
+#include "fCColVector.h"
+#include "fCMatrix.h"
+#include "fCRowVector.h"
+#include "fColVector.h"
+#include "fDiagMatrix.h"
+#include "fMatrix.h"
+#include "fRowVector.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "mx-cm-s.h"
-#include "mx-s-cm.h"
 #include "mx-fcm-fs.h"
 #include "mx-fs-fcm.h"
-#include "Array.h"
-#include "Array-util.h"
-#include "CMatrix.h"
-#include "dMatrix.h"
-#include "fCMatrix.h"
-#include "fMatrix.h"
-#include "CColVector.h"
-#include "dColVector.h"
-#include "CRowVector.h"
-#include "dRowVector.h"
-#include "fCColVector.h"
-#include "fColVector.h"
-#include "fCRowVector.h"
-#include "fRowVector.h"
-#include "CSparse.h"
-#include "dSparse.h"
-#include "dbleSVD.h"
-#include "CmplxSVD.h"
-#include "floatSVD.h"
-#include "fCmplxSVD.h"
+#include "mx-s-cm.h"
+#include "oct-cmplx.h"
+#include "svd.h"
 
 // Theory: norm accumulator is an object that has an accum method able
 // to handle both real and complex element, and a cast operator
-// returning the intermediate norm. Reference: Higham, N. "Estimating
+// returning the intermediate norm.  Reference: Higham, N. "Estimating
 // the Matrix p-Norm." Numer. Math. 62, 539-555, 1992.
 
 // norm accumulator for the p-norm
-template <class R>
+template <typename R>
 class norm_accumulator_p
 {
   R p,scl,sum;
 public:
-  norm_accumulator_p () {} // we need this one for Array
-  norm_accumulator_p (R pp) : p(pp), scl(0), sum(1) {}
+  norm_accumulator_p () { } // we need this one for Array
+  norm_accumulator_p (R pp) : p(pp), scl(0), sum(1) { }
 
-  template<class U>
+  template <typename U>
   void accum (U val)
   {
     octave_quit ();
@@ -95,15 +94,15 @@ public:
 };
 
 // norm accumulator for the minus p-pseudonorm
-template <class R>
+template <typename R>
 class norm_accumulator_mp
 {
   R p,scl,sum;
 public:
-  norm_accumulator_mp () {} // we need this one for Array
-  norm_accumulator_mp (R pp) : p(pp), scl(0), sum(1) {}
+  norm_accumulator_mp () { } // we need this one for Array
+  norm_accumulator_mp (R pp) : p(pp), scl(0), sum(1) { }
 
-  template<class U>
+  template <typename U>
   void accum (U val)
   {
     octave_quit ();
@@ -123,13 +122,13 @@ public:
 };
 
 // norm accumulator for the 2-norm (euclidean)
-template <class R>
+template <typename R>
 class norm_accumulator_2
 {
   R scl,sum;
   static R pow2 (R x) { return x*x; }
 public:
-  norm_accumulator_2 () : scl(0), sum(1) {}
+  norm_accumulator_2 () : scl(0), sum(1) { }
 
   void accum (R val)
   {
@@ -156,13 +155,13 @@ public:
 };
 
 // norm accumulator for the 1-norm (city metric)
-template <class R>
+template <typename R>
 class norm_accumulator_1
 {
   R sum;
 public:
-  norm_accumulator_1 () : sum (0) {}
-  template<class U>
+  norm_accumulator_1 () : sum (0) { }
+  template <typename U>
   void accum (U val)
   {
     sum += std::abs (val);
@@ -171,43 +170,49 @@ public:
 };
 
 // norm accumulator for the inf-norm (max metric)
-template <class R>
+template <typename R>
 class norm_accumulator_inf
 {
   R max;
 public:
-  norm_accumulator_inf () : max (0) {}
-  template<class U>
+  norm_accumulator_inf () : max (0) { }
+  template <typename U>
   void accum (U val)
   {
-    max = std::max (max, std::abs (val));
+    if (octave::math::isnan (val))
+      max = octave::numeric_limits<R>::NaN ();
+    else
+      max = std::max (max, std::abs (val));
   }
   operator R () { return max; }
 };
 
 // norm accumulator for the -inf pseudonorm (min abs value)
-template <class R>
+template <typename R>
 class norm_accumulator_minf
 {
   R min;
 public:
-  norm_accumulator_minf () : min (octave_Inf) {}
-  template<class U>
+  norm_accumulator_minf () : min (octave::numeric_limits<R>::Inf ()) { }
+  template <typename U>
   void accum (U val)
   {
-    min = std::min (min, std::abs (val));
+    if (octave::math::isnan (val))
+      min = octave::numeric_limits<R>::NaN ();
+    else
+      min = std::min (min, std::abs (val));
   }
   operator R () { return min; }
 };
 
 // norm accumulator for the 0-pseudonorm (hamming distance)
-template <class R>
+template <typename R>
 class norm_accumulator_0
 {
   unsigned int num;
 public:
-  norm_accumulator_0 () : num (0) {}
-  template<class U>
+  norm_accumulator_0 () : num (0) { }
+  template <typename U>
   void accum (U val)
   {
     if (val != static_cast<U> (0)) ++num;
@@ -215,10 +220,9 @@ public:
   operator R () { return num; }
 };
 
-
 // OK, we're armed :) Now let's go for the fun
 
-template <class T, class R, class ACC>
+template <typename T, typename R, typename ACC>
 inline void vector_norm (const Array<T>& v, R& res, ACC acc)
 {
   for (octave_idx_type i = 0; i < v.numel (); i++)
@@ -228,7 +232,7 @@ inline void vector_norm (const Array<T>& v, R& res, ACC acc)
 }
 
 // dense versions
-template <class T, class R, class ACC>
+template <typename T, typename R, typename ACC>
 void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (1, m.columns ()));
@@ -242,7 +246,7 @@ void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
     }
 }
 
-template <class T, class R, class ACC>
+template <typename T, typename R, typename ACC>
 void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (m.rows (), 1));
@@ -258,7 +262,7 @@ void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 }
 
 // sparse versions
-template <class T, class R, class ACC>
+template <typename T, typename R, typename ACC>
 void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (1, m.columns ()));
@@ -272,7 +276,7 @@ void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
     }
 }
 
-template <class T, class R, class ACC>
+template <typename T, typename R, typename ACC>
 void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (m.rows (), 1));
@@ -288,30 +292,30 @@ void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 }
 
 // now the dispatchers
-#define DEFINE_DISPATCHER(FUNC_NAME, ARG_TYPE, RES_TYPE) \
-template <class T, class R> \
-RES_TYPE FUNC_NAME (const ARG_TYPE& v, R p) \
-{ \
-  RES_TYPE res; \
-  if (p == 2) \
-    FUNC_NAME (v, res, norm_accumulator_2<R> ()); \
-  else if (p == 1) \
-    FUNC_NAME (v, res, norm_accumulator_1<R> ()); \
-  else if (lo_ieee_isinf (p)) \
-    { \
-      if (p > 0) \
-        FUNC_NAME (v, res, norm_accumulator_inf<R> ()); \
-      else \
-        FUNC_NAME (v, res, norm_accumulator_minf<R> ()); \
-    } \
-  else if (p == 0) \
-    FUNC_NAME (v, res, norm_accumulator_0<R> ()); \
-  else if (p > 0) \
-    FUNC_NAME (v, res, norm_accumulator_p<R> (p)); \
-  else \
-    FUNC_NAME (v, res, norm_accumulator_mp<R> (p)); \
-  return res; \
-}
+#define DEFINE_DISPATCHER(FUNC_NAME, ARG_TYPE, RES_TYPE)        \
+  template <typename T, typename R>                             \
+  RES_TYPE FUNC_NAME (const ARG_TYPE& v, R p)                   \
+  {                                                             \
+    RES_TYPE res;                                               \
+    if (p == 2)                                                 \
+      FUNC_NAME (v, res, norm_accumulator_2<R> ());             \
+    else if (p == 1)                                            \
+      FUNC_NAME (v, res, norm_accumulator_1<R> ());             \
+    else if (lo_ieee_isinf (p))                                 \
+      {                                                         \
+        if (p > 0)                                              \
+          FUNC_NAME (v, res, norm_accumulator_inf<R> ());       \
+        else                                                    \
+          FUNC_NAME (v, res, norm_accumulator_minf<R> ());      \
+      }                                                         \
+    else if (p == 0)                                            \
+      FUNC_NAME (v, res, norm_accumulator_0<R> ());             \
+    else if (p > 0)                                             \
+      FUNC_NAME (v, res, norm_accumulator_p<R> (p));            \
+    else                                                        \
+      FUNC_NAME (v, res, norm_accumulator_mp<R> (p));           \
+    return res;                                                 \
+  }
 
 DEFINE_DISPATCHER (vector_norm, MArray<T>, R)
 DEFINE_DISPATCHER (column_norms, MArray<T>, MArray<R>)
@@ -319,10 +323,10 @@ DEFINE_DISPATCHER (row_norms, MArray<T>, MArray<R>)
 DEFINE_DISPATCHER (column_norms, MSparse<T>, MArray<R>)
 DEFINE_DISPATCHER (row_norms, MSparse<T>, MArray<R>)
 
-// The approximate subproblem in Higham's method. Find lambda and mu such that
+// The approximate subproblem in Higham's method.  Find lambda and mu such that
 // norm ([lambda, mu], p) == 1 and norm (y*lambda + col*mu, p) is maximized.
-// Real version. As in Higham's paper.
-template <class ColVectorT, class R>
+// Real version.  As in Higham's paper.
+template <typename ColVectorT, typename R>
 static void
 higham_subp (const ColVectorT& y, const ColVectorT& col,
              octave_idx_type nsamp, R p, R& lambda, R& mu)
@@ -347,10 +351,10 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
     }
 }
 
-// Complex version. Higham's paper does not deal with complex case, so we use a
-// simple extension. First, guess the magnitudes as in real version, then try
-// to rotate lambda to improve further.
-template <class ColVectorT, class R>
+// Complex version.  Higham's paper does not deal with complex case, so we use
+// a simple extension.  First, guess the magnitudes as in real version, then
+// try to rotate lambda to improve further.
+template <typename ColVectorT, typename R>
 static void
 higham_subp (const ColVectorT& y, const ColVectorT& col,
              octave_idx_type nsamp, R p,
@@ -395,17 +399,17 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
 }
 
 // the p-dual element (should work for both real and complex)
-template <class T, class R>
+template <typename T, typename R>
 inline T elem_dual_p (T x, R p)
 {
-  return signum (x) * std::pow (std::abs (x), p-1);
+  return octave::math::signum (x) * std::pow (std::abs (x), p-1);
 }
 
 // the VectorT is used for vectors, but actually it has to be
-// a Matrix type to allow all the operations. For instance SparseMatrix
+// a Matrix type to allow all the operations.  For instance SparseMatrix
 // does not support multiplication with column/row vectors.
 // the dual vector
-template <class VectorT, class R>
+template <typename VectorT, typename R>
 VectorT dual_p (const VectorT& x, R p, R q)
 {
   VectorT res (x.dims ());
@@ -415,7 +419,7 @@ VectorT dual_p (const VectorT& x, R p, R q)
 }
 
 // Higham's hybrid method
-template <class MatrixT, class VectorT, class R>
+template <typename MatrixT, typename VectorT, typename R>
 R higham (const MatrixT& m, R p, R tol, int maxiter,
           VectorT& x)
 {
@@ -459,7 +463,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
 
       z = z.hermitian ();
       x = dual_p (z, q, p);
-      iter ++;
+      iter++;
     }
 
   return gamma;
@@ -475,14 +479,15 @@ static const char *p_less1_gripe = "xnorm: p must be at least 1";
 static int max_norm_iter = 100;
 
 // version with SVD for dense matrices
-template <class MatrixT, class VectorT, class SVDT, class R>
-R matrix_norm (const MatrixT& m, R p, VectorT, SVDT)
+template <typename MatrixT, typename VectorT, typename R>
+R svd_matrix_norm (const MatrixT& m, R p, VectorT)
 {
   R res = 0;
   if (p == 2)
     {
-      SVDT svd (m, SVD::sigma_only);
-      res = svd.singular_values () (0,0);
+      octave::math::svd<MatrixT> fact
+        (m, octave::math::svd<MatrixT>::Type::sigma_only);
+      res = fact.singular_values () (0,0);
     }
   else if (p == 1)
     res = xcolnorms (m, 1).max ();
@@ -501,7 +506,7 @@ R matrix_norm (const MatrixT& m, R p, VectorT, SVDT)
 }
 
 // SVD-free version for sparse matrices
-template <class MatrixT, class VectorT, class R>
+template <typename MatrixT, typename VectorT, typename R>
 R matrix_norm (const MatrixT& m, R p, VectorT)
 {
   R res = 0;
@@ -523,15 +528,23 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
 
 // and finally, here's what we've promised in the header file
 
-#define DEFINE_XNORM_FUNCS(PREFIX, RTYPE) \
-  OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p) \
-  { return vector_norm (x, p); } \
-  OCTAVE_API RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p) \
-  { return vector_norm (x, p); } \
-  OCTAVE_API RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p) \
-  { return matrix_norm (x, p, PREFIX##Matrix (), PREFIX##SVD ()); } \
-  OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix& x) \
-  { return vector_norm (x, static_cast<RTYPE> (2)); }
+#define DEFINE_XNORM_FUNCS(PREFIX, RTYPE)                               \
+  OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p)       \
+  {                                                                     \
+    return vector_norm (x, p);                                          \
+  }                                                                     \
+  OCTAVE_API RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p)          \
+  {                                                                     \
+    return vector_norm (x, p);                                          \
+  }                                                                     \
+  OCTAVE_API RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p)             \
+  {                                                                     \
+    return svd_matrix_norm (x, p, PREFIX##Matrix ());                   \
+  }                                                                     \
+  OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix& x)                  \
+  {                                                                     \
+    return vector_norm (x, static_cast<RTYPE> (2));                     \
+  }
 
 DEFINE_XNORM_FUNCS(, double)
 DEFINE_XNORM_FUNCS(Complex, double)
@@ -539,7 +552,7 @@ DEFINE_XNORM_FUNCS(Float, float)
 DEFINE_XNORM_FUNCS(FloatComplex, float)
 
 // this is needed to avoid copying the sparse matrix for xfrobnorm
-template <class T, class R>
+template <typename T, typename R>
 inline void array_norm_2 (const T* v, octave_idx_type n, R& res)
 {
   norm_accumulator_2<R> acc;
@@ -549,24 +562,32 @@ inline void array_norm_2 (const T* v, octave_idx_type n, R& res)
   res = acc;
 }
 
-#define DEFINE_XNORM_SPARSE_FUNCS(PREFIX, RTYPE) \
-  OCTAVE_API RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p) \
-  { return matrix_norm (x, p, PREFIX##Matrix ()); } \
-  OCTAVE_API RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x) \
-  { \
-    RTYPE res; \
-    array_norm_2 (x.data (), x.nnz (), res); \
-    return res; \
+#define DEFINE_XNORM_SPARSE_FUNCS(PREFIX, RTYPE)                        \
+  OCTAVE_API RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p)     \
+  {                                                                     \
+    return matrix_norm (x, p, PREFIX##Matrix ());                       \
+  }                                                                     \
+  OCTAVE_API RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x)          \
+  {                                                                     \
+    RTYPE res;                                                          \
+    array_norm_2 (x.data (), x.nnz (), res);                            \
+    return res;                                                         \
   }
 
 DEFINE_XNORM_SPARSE_FUNCS(, double)
 DEFINE_XNORM_SPARSE_FUNCS(Complex, double)
 
-#define DEFINE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE) \
-  extern OCTAVE_API RPREFIX##RowVector xcolnorms (const PREFIX##Matrix& m, RTYPE p) \
-  { return column_norms (m, p); } \
-  extern OCTAVE_API RPREFIX##ColumnVector xrownorms (const PREFIX##Matrix& m, RTYPE p) \
-  { return row_norms (m, p); } \
+#define DEFINE_COLROW_NORM_FUNCS(PREFIX, RPREFIX, RTYPE)        \
+  extern OCTAVE_API RPREFIX##RowVector                          \
+  xcolnorms (const PREFIX##Matrix& m, RTYPE p)                  \
+  {                                                             \
+    return column_norms (m, p);                                 \
+  }                                                             \
+  extern OCTAVE_API RPREFIX##ColumnVector                       \
+  xrownorms (const PREFIX##Matrix& m, RTYPE p)                  \
+  {                                                             \
+    return row_norms (m, p);                                    \
+  }                                                             \
 
 DEFINE_COLROW_NORM_FUNCS(, , double)
 DEFINE_COLROW_NORM_FUNCS(Complex, , double)

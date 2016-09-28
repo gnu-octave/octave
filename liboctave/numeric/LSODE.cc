@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -47,13 +47,13 @@ typedef octave_idx_type (*lsode_jac_ptr) (const octave_idx_type&,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, octave_idx_type&, double*,
-                             double&, double&, octave_idx_type&, double&,
-                             const double*, octave_idx_type&,
-                             octave_idx_type&, octave_idx_type&,
-                             double*, octave_idx_type&, octave_idx_type*,
-                             octave_idx_type&, lsode_jac_ptr,
-                             octave_idx_type&);
+  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, F77_INT&, F77_DBLE*,
+                             F77_DBLE&, F77_DBLE&, F77_INT&, F77_DBLE&,
+                             const F77_DBLE*, F77_INT&,
+                             F77_INT&, F77_INT&,
+                             F77_DBLE*, F77_INT&, F77_INT*,
+                             F77_INT&, lsode_jac_ptr,
+                             F77_INT&);
 }
 
 static ODEFunc::ODERHSFunc user_fun;
@@ -74,7 +74,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
 
   tmp_deriv = (*user_fun) (*tmp_x, time);
 
-  if (tmp_deriv.length () == 0)
+  if (tmp_deriv.is_empty ())
     ierr = -1;
   else
     {
@@ -175,6 +175,7 @@ LSODE::do_integrate (double tout)
             }
           else
             {
+              // FIXME: Should this be a warning?
               (*current_liboctave_error_handler)
                 ("lsode: invalid value for maximum order");
               integration_error = true;
@@ -208,8 +209,9 @@ LSODE::do_integrate (double tout)
 
       ColumnVector xdot = (*user_fun) (x, t);
 
-      if (x.length () != xdot.length ())
+      if (x.numel () != xdot.numel ())
         {
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and derivative vectors");
 
@@ -224,7 +226,7 @@ LSODE::do_integrate (double tout)
       rel_tol = relative_tolerance ();
       abs_tol = absolute_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
 
       if (abs_tol_len == 1)
         itol = 1;
@@ -232,6 +234,7 @@ LSODE::do_integrate (double tout)
         itol = 2;
       else
         {
+          // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("lsode: inconsistent sizes for state and absolute tolerance vectors");
 
@@ -304,8 +307,7 @@ LSODE::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %d) returned from lsode",
-         istate);
+        ("unrecognized value of istate (= %d) returned from lsode", istate);
       break;
     }
 
@@ -383,7 +385,7 @@ LSODE::do_integrate (const ColumnVector& tout)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -413,7 +415,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -423,7 +425,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
       for (octave_idx_type i = 0; i < n; i++)
         retval.elem (0, i) = x.elem (i);
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {
@@ -503,3 +505,4 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
   return retval;
 }
+

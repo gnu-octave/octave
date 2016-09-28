@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 David Bateman
+## Copyright (C) 2009-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cd (@var{f})
-## @deftypefnx {Function File} {} cd (@var{f}, @var{path})
+## @deftypefn  {} {} cd (@var{f})
+## @deftypefnx {} {} cd (@var{f}, @var{path})
 ## Get or set the remote directory on the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
@@ -32,6 +32,7 @@
 ## @end deftypefn
 
 function path = cd (f, path)
+
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
@@ -39,7 +40,9 @@ function path = cd (f, path)
   if (nargin == 2)
     __ftp_cwd__ (f.curlhandle, path);
   endif
+
   path = __ftp_pwd__ (f.curlhandle);
+
 endfunction
 
 

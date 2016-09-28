@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Michael Goffioul
+## Copyright (C) 2012-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{filterspec} =} __fltk_file_filter__ (@var{filter})
+## @deftypefn {} {@var{filterspec} =} __fltk_file_filter__ (@var{filter})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -28,7 +28,7 @@ function retval = __fltk_file_filter__ (file_filter)
   retval = "";
   [r, c] = size (file_filter);
   if ((c == 0) || (c > 2))
-    error ("expecting 1 or to 2 columns for file filter cell");
+    error ("file filter cell must have 1 or 2 columns");
   endif
   fltk_str = "";
   for idx = 1 : r
@@ -37,7 +37,7 @@ function retval = __fltk_file_filter__ (file_filter)
     curr_ext = ostrsplit (curr_ext, ";");
 
     if (length (curr_ext) > 1)
-      curr_ext = regexprep (curr_ext, '\*\.', ',');
+      curr_ext = strrep (curr_ext, '*.', ',');
       curr_ext = strcat (curr_ext{:})(2 : end);
       curr_ext = strcat ("*.{", curr_ext, "}");
     else
@@ -48,8 +48,8 @@ function retval = __fltk_file_filter__ (file_filter)
 
     if (c == 2)
       curr_desc = file_filter{idx, 2};
-      curr_desc = regexprep (curr_desc, '\(', '<');
-      curr_desc = regexprep (curr_desc, '\)', '>');
+      curr_desc = strrep (curr_desc, '(', '<');
+      curr_desc = strrep (curr_desc, ')', '>');
     endif
 
     if (length (fltk_str) > 0)

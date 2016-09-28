@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2015 John W. Eaton
+## Copyright (C) 2002-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} freqz_plot (@var{w}, @var{h})
-## @deftypefnx {Function File} {} freqz_plot (@var{w}, @var{h}, @var{freq_norm})
+## @deftypefn  {} {} freqz_plot (@var{w}, @var{h})
+## @deftypefnx {} {} freqz_plot (@var{w}, @var{h}, @var{freq_norm})
 ## Plot the magnitude and phase response of @var{h}.
 ##
 ## If the optional @var{freq_norm} argument is true, the frequency vector

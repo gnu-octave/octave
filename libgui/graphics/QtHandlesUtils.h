@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Utils__
-#define __QtHandles_Utils__ 1
+#if ! defined (octave_QtHandlesUtils_h)
+#define octave_QtHandlesUtils_h 1
 
 #include <QColor>
 #include <QFont>
@@ -39,47 +39,48 @@ class QMouseEvent;
 namespace QtHandles
 {
 
-namespace Utils
-{
-  QString fromStdString (const std::string& s);
-  std::string toStdString (const QString& s);
+  namespace Utils
+  {
+    QString fromStdString (const std::string& s);
+    std::string toStdString (const QString& s);
 
-  QStringList fromStringVector (const string_vector& v);
-  string_vector toStringVector (const QStringList& l);
+    QStringList fromStringVector (const string_vector& v);
+    string_vector toStringVector (const QStringList& l);
 
-  Cell toCellString (const QStringList& l);
+    Cell toCellString (const QStringList& l);
 
-  template <class T>
-  QFont computeFont (const typename T::properties& props, int height = -1);
+    template <typename T>
+    QFont computeFont (const typename T::properties& props, int height = -1);
 
-  QColor fromRgb (const Matrix& rgb);
-  Matrix toRgb (const QColor& c);
+    QColor fromRgb (const Matrix& rgb);
+    Matrix toRgb (const QColor& c);
 
-  Qt::Alignment fromHVAlign (const caseless_str& halign,
-                             const caseless_str& valign);
+    Qt::Alignment fromHVAlign (const std::string& halign,
+                               const std::string& valign);
 
-  std::string figureSelectionType (QMouseEvent* event,
-                                   bool isDoubleClick = false);
+    std::string figureSelectionType (QMouseEvent* event,
+                                     bool isDoubleClick = false);
 
-  Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
-  Matrix figureCurrentPoint (const graphics_object& fig);
+    Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
+    Matrix figureCurrentPoint (const graphics_object& fig);
 
-  template <class T>
-  inline typename T::properties&
-  properties (graphics_object obj)
+    template <typename T>
+    inline typename T::properties&
+    properties (graphics_object obj)
     { return dynamic_cast<typename T::properties&> (obj.get_properties ()); }
 
-  template <class T>
-  inline typename T::properties&
-  properties (const graphics_handle& h)
+    template <typename T>
+    inline typename T::properties&
+    properties (const graphics_handle& h)
     { return Utils::properties<T> (gh_manager::get_object (h)); }
 
-  QImage makeImageFromCData (const octave_value& v, int width = -1,
-                             int height = -1);
+    QImage makeImageFromCData (const octave_value& v, int width = -1,
+                               int height = -1);
 
-  octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
-};
+    octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
+  }
 
-}; // namespace QtHandles
+}
 
 #endif
+

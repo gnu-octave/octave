@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2008-2009 VZLU Prague
 
@@ -22,17 +22,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "CmplxCHOL.h"
-#include "dbleCHOL.h"
-#include "fCmplxCHOL.h"
-#include "floatCHOL.h"
-#include "SparseCmplxCHOL.h"
-#include "SparsedbleCHOL.h"
+#include <string>
+
+#include "chol.h"
+#include "sparse-chol.h"
 #include "oct-spparms.h"
 #include "sparse-util.h"
 
@@ -40,11 +37,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
-#include "utils.h"
+#include "errwarn.h"
+#include "ovl.h"
 
-template <class CHOLT>
+#include "oct-string.h"
+
+template <typename CHOLT>
+static octave_value
+get_chol (const CHOLT& fact)
+{
+  return octave_value (fact.chol_matrix());
+}
+
+template <typename CHOLT>
 static octave_value
 get_chol_r (const CHOLT& fact)
 {
@@ -52,7 +57,7 @@ get_chol_r (const CHOLT& fact)
                        MatrixType (MatrixType::Upper));
 }
 
-template <class CHOLT>
+template <typename CHOLT>
 static octave_value
 get_chol_l (const CHOLT& fact)
 {
@@ -61,314 +66,245 @@ get_chol_l (const CHOLT& fact)
 }
 
 DEFUN_DLD (chol, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{R} =} chol (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}] =} chol (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, \"vector\")\n\
-@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
-@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
-@cindex Cholesky factorization\n\
-Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive definite\n\
-matrix @var{A}.\n\
-\n\
-The Cholesky@tie{}factor is defined by\n\
-@tex\n\
-$ R^T R = A $.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{R}' * @var{R} = @var{A}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Called with one output argument @code{chol} fails if @var{A} or @var{S} is\n\
-not positive definite.  With two or more output arguments @var{p} flags\n\
-whether the matrix was positive definite and @code{chol} does not fail.  A\n\
-zero value indicated that the matrix was positive definite and the @var{R}\n\
-gives the factorization, and @var{p} will have a positive value otherwise.\n\
-\n\
-If called with 3 outputs then a sparsity preserving row/column permutation\n\
-is applied to @var{A} prior to the factorization.  That is @var{R} is the\n\
-factorization of @code{@var{A}(@var{Q},@var{Q})} such that\n\
-@tex\n\
-$ R^T R = Q^T A Q$.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{R}' * @var{R} = @var{Q}' * @var{A} * @var{Q}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-The sparsity preserving permutation is generally returned as a matrix.\n\
-However, given the flag @qcode{\"vector\"}, @var{Q} will be returned as a\n\
-vector such that\n\
-@tex\n\
-$ R^T R = A (Q, Q)$.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{R}' * @var{R} = @var{A}(@var{Q}, @var{Q}).\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Called with either a sparse or full matrix and using the @qcode{\"lower\"}\n\
-flag, @code{chol} returns the lower triangular factorization such that\n\
-@tex\n\
-$ L L^T = A $.\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{L} * @var{L}' = @var{A}.\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-For full matrices, if the @qcode{\"lower\"} flag is set only the lower\n\
-triangular part of the matrix is used for the factorization, otherwise the\n\
-upper triangular part is used.\n\
-\n\
-In general the lower triangular factorization is significantly faster for\n\
-sparse matrices.\n\
-@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{R} =} chol (@var{A})
+@deftypefnx {} {[@var{R}, @var{p}] =} chol (@var{A})
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A})
+@deftypefnx {} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{A}, "vector")
+@deftypefnx {} {[@var{L}, @dots{}] =} chol (@dots{}, "lower")
+@deftypefnx {} {[@var{R}, @dots{}] =} chol (@dots{}, "upper")
+@cindex Cholesky factorization
+Compute the upper Cholesky@tie{}factor, @var{R}, of the real symmetric
+or complex Hermitian positive definite matrix @var{A}.
+
+The upper Cholesky@tie{}factor @var{R} is computed by using the upper
+triangular part of matrix @var{A} and is defined by
+@tex
+$ R^T R = A $.
+@end tex
+@ifnottex
+
+@example
+@var{R}' * @var{R} = @var{A}.
+@end example
+
+@end ifnottex
+
+Calling @code{chol} using the optional @qcode{"upper"} flag has the
+same behavior.  In contrast, using the optional @qcode{"lower"} flag,
+@code{chol} returns the lower triangular factorization, computed by using
+the lower triangular part of matrix @var{A}, such that
+@tex
+$ L L^T = A $.
+@end tex
+@ifnottex
+
+@example
+@var{L} * @var{L}' = @var{A}.
+@end example
+
+@end ifnottex
+
+Called with one output argument @code{chol} fails if matrix @var{A} is
+not positive definite.  Note that if matrix @var{A} is not real symmetric
+or complex Hermitian then the lower triangular part is considered to be
+the (complex conjugate) transpose of the upper triangular part, or vice
+versa, given the @qcode{"lower"} flag.
+
+Called with two or more output arguments @var{p} flags whether the matrix
+@var{A} was positive definite and @code{chol} does not fail.  A zero value
+of @var{p} indicates that matrix @var{A} is positive definite and @var{R}
+gives the factorization.  Otherwise, @var{p} will have a positive value.
+
+If called with three output arguments matrix @var{A} must be sparse and
+a sparsity preserving row/column permutation is applied to matrix @var{A}
+prior to the factorization.  That is @var{R} is the factorization of
+@code{@var{A}(@var{Q},@var{Q})} such that
+@tex
+$ R^T R = Q^T A Q$.
+@end tex
+@ifnottex
+
+@example
+@var{R}' * @var{R} = @var{Q}' * @var{A} * @var{Q}.
+@end example
+
+@end ifnottex
+
+The sparsity preserving permutation is generally returned as a matrix.
+However, given the optional flag @qcode{"vector"}, @var{Q} will be
+returned as a vector such that
+@tex
+$ R^T R = A (Q, Q)$.
+@end tex
+@ifnottex
+
+@example
+@var{R}' * @var{R} = @var{A}(@var{Q}, @var{Q}).
+@end example
+
+@end ifnottex
+
+In general the lower triangular factorization is significantly faster for
+sparse matrices.
+@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}
+@end deftypefn */)
 {
-  octave_value_list retval;
   int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 3 || nargout > 3)
+    print_usage ();
+  if (nargout > 2 && ! args(0).is_sparse_type ())
+    error ("chol: using three output arguments, matrix A must be sparse");
+
   bool LLt = false;
   bool vecout = false;
 
-  if (nargin < 1 || nargin > 3 || nargout > 3
-      || (! args(0).is_sparse_type () && nargout > 2))
-    {
-      print_usage ();
-      return retval;
-    }
-
   int n = 1;
-  while (n < nargin && ! error_state)
+  while (n < nargin)
     {
-      std::string tmp = args(n++).string_value ();
+      std::string tmp = args(n++).xstring_value ("chol: optional arguments must be strings");
 
-      if (! error_state)
-        {
-          if (tmp.compare ("vector") == 0)
-            vecout = true;
-          else if (tmp.compare ("lower") == 0)
-            // FIXME: currently the option "lower" is handled by transposing
-            //  the matrix, factorizing it with the lapack function
-            //  DPOTRF ('U', ...) and finally transposing the factor.  It would
-            //  be more efficient to use DPOTRF ('L', ...) in this case.
-            LLt = true;
-          else if (tmp.compare ("upper") == 0)
-            LLt = false;
-          else
-            error ("chol: unexpected second or third input");
-        }
+      if (octave::string::strcmpi (tmp, "vector"))
+        vecout = true;
+      else if (octave::string::strcmpi (tmp, "lower"))
+        LLt = true;
+      else if (octave::string::strcmpi (tmp, "upper"))
+        LLt = false;
       else
-        error ("chol: expecting trailing string arguments");
+        error ("chol: optional argument must be one of \"vector\", \"lower\", or \"upper\"");
     }
 
-  if (! error_state)
+  octave_value_list retval;
+  octave_value arg = args(0);
+
+  if (arg.is_empty ())
+    return ovl (Matrix ());
+
+  if (arg.is_sparse_type ())
     {
-      octave_value arg = args(0);
+      octave_idx_type info;
+      bool natural = (nargout != 3);
+      bool force = nargout > 1;
 
-      octave_idx_type nr = arg.rows ();
-      octave_idx_type nc = arg.columns ();
-
-      int arg_is_empty = empty_arg ("chol", nr, nc);
-
-      if (arg_is_empty < 0)
-        return retval;
-      if (arg_is_empty > 0)
-        return octave_value (Matrix ());
-
-      if (arg.is_sparse_type ())
+      if (arg.is_real_type ())
         {
-          octave_idx_type info;
-          bool natural = (nargout != 3);
-          bool force = nargout > 1;
+          SparseMatrix m = arg.sparse_matrix_value ();
 
-          if (arg.is_real_type ())
+          octave::math::sparse_chol<SparseMatrix> fact (m, info, natural, force);
+
+          if (nargout == 3)
             {
-              SparseMatrix m = arg.sparse_matrix_value ();
-
-              if (! error_state)
-                {
-                  SparseCHOL fact (m, info, natural, force);
-
-                  if (nargout == 3)
-                    {
-                      if (vecout)
-                        retval(2) = fact.perm ();
-                      else
-                        retval(2) = fact.Q ();
-                    }
-
-                  if (nargout > 1 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = fact.L ();
-                      else
-                        retval(0) = fact.R ();
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              if (vecout)
+                retval(2) = fact.perm ();
+              else
+                retval(2) = fact.Q ();
             }
-          else if (arg.is_complex_type ())
+
+          if (nargout >= 2 || info == 0)
             {
-              SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-
-              if (! error_state)
-                {
-                  SparseComplexCHOL fact (m, info, natural, force);
-
-                  if (nargout == 3)
-                    {
-                      if (vecout)
-                        retval(2) = fact.perm ();
-                      else
-                        retval(2) = fact.Q ();
-                    }
-
-                  if (nargout > 1 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = fact.L ();
-                      else
-                        retval(0) = fact.R ();
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              retval(1) = info;
+              if (LLt)
+                retval(0) = fact.L ();
+              else
+                retval(0) = fact.R ();
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            error ("chol: input matrix must be positive definite");
         }
-      else if (arg.is_single_type ())
+      else if (arg.is_complex_type ())
         {
-          if (arg.is_real_type ())
+          SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+
+          octave::math::sparse_chol<SparseComplexMatrix> fact (m, info, natural, force);
+
+          if (nargout == 3)
             {
-              FloatMatrix m = arg.float_matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  FloatCHOL fact;
-                  if (LLt)
-                    fact = FloatCHOL (m.transpose (), info);
-                  else
-                    fact = FloatCHOL (m, info);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              if (vecout)
+                retval(2) = fact.perm ();
+              else
+                retval(2) = fact.Q ();
             }
-          else if (arg.is_complex_type ())
+
+          if (nargout >= 2 || info == 0)
             {
-              FloatComplexMatrix m = arg.float_complex_matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  FloatComplexCHOL fact;
-                  if (LLt)
-                    fact = FloatComplexCHOL (m.transpose (), info);
-                  else
-                    fact = FloatComplexCHOL (m, info);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
+              retval(1) = info;
+              if (LLt)
+                retval(0) = fact.L ();
+              else
+                retval(0) = fact.R ();
             }
           else
-            gripe_wrong_type_arg ("chol", arg);
+            error ("chol: input matrix must be positive definite");
         }
       else
+        err_wrong_type_arg ("chol", arg);
+    }
+  else if (arg.is_single_type ())
+    {
+      if (vecout)
+        error ("chol: A must be sparse for the \"vector\" option");
+      if (arg.is_real_type ())
         {
-          if (arg.is_real_type ())
-            {
-              Matrix m = arg.matrix_value ();
+          FloatMatrix m = arg.float_matrix_value ();
 
-              if (! error_state)
-                {
-                  octave_idx_type info;
+          octave_idx_type info;
 
-                  CHOL fact;
-                  if (LLt)
-                    fact = CHOL (m.transpose (), info);
-                  else
-                    fact = CHOL (m, info);
+          octave::math::chol<FloatMatrix> fact (m, info, LLt != true);
 
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
-            }
-          else if (arg.is_complex_type ())
-            {
-              ComplexMatrix m = arg.complex_matrix_value ();
-
-              if (! error_state)
-                {
-                  octave_idx_type info;
-
-                  ComplexCHOL fact;
-                  if (LLt)
-                    fact = ComplexCHOL (m.transpose (), info);
-                  else
-                    fact = ComplexCHOL (m, info);
-
-                  if (nargout == 2 || info == 0)
-                    {
-                      retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    error ("chol: input matrix must be positive definite");
-                }
-            }
+          if (nargout == 2 || info == 0)
+            retval = ovl (get_chol (fact), info);
           else
-            gripe_wrong_type_arg ("chol", arg);
+            error ("chol: input matrix must be positive definite");
         }
+      else if (arg.is_complex_type ())
+        {
+          FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+          octave_idx_type info;
+
+          octave::math::chol<FloatComplexMatrix> fact (m, info, LLt != true);
+
+          if (nargout == 2 || info == 0)
+            retval = ovl (get_chol (fact), info);
+          else
+            error ("chol: input matrix must be positive definite");
+        }
+      else
+        err_wrong_type_arg ("chol", arg);
+    }
+  else
+    {
+      if (vecout)
+        error ("chol: A must be sparse for the \"vector\" option");
+      if (arg.is_real_type ())
+        {
+          Matrix m = arg.matrix_value ();
+
+          octave_idx_type info;
+
+          octave::math::chol<Matrix> fact (m, info, LLt != true);
+
+          if (nargout == 2 || info == 0)
+            retval = ovl (get_chol (fact), info);
+          else
+            error ("chol: input matrix must be positive definite");
+        }
+      else if (arg.is_complex_type ())
+        {
+          ComplexMatrix m = arg.complex_matrix_value ();
+
+          octave_idx_type info;
+
+          octave::math::chol<ComplexMatrix> fact (m, info, LLt != true);
+
+          if (nargout == 2 || info == 0)
+            retval = ovl (get_chol (fact), info);
+          else
+            error ("chol: input matrix must be positive definite");
+        }
+      else
+        err_wrong_type_arg ("chol", arg);
     }
 
   return retval;
@@ -377,8 +313,35 @@ sparse matrices.\n\
 /*
 %!assert (chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps))
 %!assert (chol (single ([2, 1; 1, 1])), single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
+
+%!assert (chol ([2, 1; 1, 1], "upper"), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)],
+%!        sqrt (eps))
+%!assert (chol ([2, 1; 1, 1], "lower"), [sqrt(2), 0; 1/sqrt(2), 1/sqrt(2)],
+%!        sqrt (eps))
+
+%!assert (chol ([2, 1; 1, 1], "lower"), chol ([2, 1; 1, 1], "LoweR"))
+%!assert (chol ([2, 1; 1, 1], "upper"), chol ([2, 1; 1, 1], "Upper"))
+
+## Check the "vector" option which only affects the 3rd argument and
+## is only valid for sparse input.
 %!testif HAVE_CHOLMOD
-%! ## Bug #42587
+%! a = sparse ([2 1; 1 1]);
+%! r = sparse ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]);
+%! [rd, pd, qd] = chol (a);
+%! [rv, pv, qv] = chol (a, "vector");
+%! assert (r, rd, eps)
+%! assert (r, rv, eps)
+%! assert (pd, 0)
+%! assert (pd, pv)
+%! assert (qd, sparse (eye (2)))
+%! assert (qv, [1 2])
+%!
+%! [rv, pv, qv] = chol (a, "Vector"); # check case sensitivity
+%! assert (r, rv, eps)
+%! assert (pd, pv)
+%! assert (qv, [1 2])
+
+%!testif HAVE_CHOLMOD <42587>
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);
 %! [Q, p] = chol (A);
 %! assert (p != 0);
@@ -386,137 +349,117 @@ sparse matrices.\n\
 %!error chol ()
 %!error <matrix must be positive definite> chol ([1, 2; 3, 4])
 %!error <requires square matrix> chol ([1, 2; 3, 4; 5, 6])
-%!error <unexpected second or third input> chol (1, 2)
+%!error <optional arguments must be strings> chol (1, 2)
+%!error <optional argument must be one of "vector", "lower"> chol (1, "foobar")
+%!error <matrix A must be sparse> [L,p,Q] = chol ([1, 2; 3, 4])
+%!error <A must be sparse> [L, p] = chol ([1, 2; 3, 4], "vector")
 */
 
 DEFUN_DLD (cholinv, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} cholinv (@var{A})\n\
-Compute the inverse of the symmetric positive definite matrix @var{A} using\n\
-the Cholesky@tie{}factorization.\n\
-@seealso{chol, chol2inv, inv}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} cholinv (@var{A})
+Compute the inverse of the symmetric positive definite matrix @var{A} using
+the Cholesky@tie{}factorization.
+@seealso{chol, chol2inv, inv}
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
   octave_value retval;
+  octave_value arg = args(0);
 
-  int nargin = args.length ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
-  if (nargin == 1)
+  if (nr == 0 || nc == 0)
+    retval = Matrix ();
+  else
     {
-      octave_value arg = args(0);
-
-      octave_idx_type nr = arg.rows ();
-      octave_idx_type nc = arg.columns ();
-
-      if (nr == 0 || nc == 0)
-        retval = Matrix ();
-      else
+      if (arg.is_sparse_type ())
         {
-          if (arg.is_sparse_type ())
+          octave_idx_type info;
+
+          if (arg.is_real_type ())
             {
-              octave_idx_type info;
+              SparseMatrix m = arg.sparse_matrix_value ();
 
-              if (arg.is_real_type ())
-                {
-                  SparseMatrix m = arg.sparse_matrix_value ();
+              octave::math::sparse_chol<SparseMatrix> chol (m, info);
 
-                  if (! error_state)
-                    {
-                      SparseCHOL chol (m, info);
-
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
-                }
-              else if (arg.is_complex_type ())
-                {
-                  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-
-                  if (! error_state)
-                    {
-                      SparseComplexCHOL chol (m, info);
-
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
-                }
+              if (info == 0)
+                retval = chol.inverse ();
               else
-                gripe_wrong_type_arg ("cholinv", arg);
+                error ("cholinv: A must be positive definite");
             }
-          else if (arg.is_single_type ())
+          else if (arg.is_complex_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  FloatMatrix m = arg.float_matrix_value ();
+              SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      FloatCHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
-                }
-              else if (arg.is_complex_type ())
-                {
-                  FloatComplexMatrix m = arg.float_complex_matrix_value ();
+              octave::math::sparse_chol<SparseComplexMatrix> chol (m, info);
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      FloatComplexCHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
-                }
+              if (info == 0)
+                retval = chol.inverse ();
               else
-                gripe_wrong_type_arg ("chol", arg);
+                error ("cholinv: A must be positive definite");
             }
           else
+            err_wrong_type_arg ("cholinv", arg);
+        }
+      else if (arg.is_single_type ())
+        {
+          if (arg.is_real_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  Matrix m = arg.matrix_value ();
+              FloatMatrix m = arg.float_matrix_value ();
 
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      CHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
-                }
-              else if (arg.is_complex_type ())
-                {
-                  ComplexMatrix m = arg.complex_matrix_value ();
-
-                  if (! error_state)
-                    {
-                      octave_idx_type info;
-                      ComplexCHOL chol (m, info);
-                      if (info == 0)
-                        retval = chol.inverse ();
-                      else
-                        error ("cholinv: A must be positive definite");
-                    }
-                }
+              octave_idx_type info;
+              octave::math::chol<FloatMatrix> chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
               else
-                gripe_wrong_type_arg ("chol", arg);
+                error ("cholinv: A must be positive definite");
             }
+          else if (arg.is_complex_type ())
+            {
+              FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+              octave_idx_type info;
+              octave::math::chol<FloatComplexMatrix> chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
+              else
+                error ("cholinv: A must be positive definite");
+            }
+          else
+            err_wrong_type_arg ("chol", arg);
+        }
+      else
+        {
+          if (arg.is_real_type ())
+            {
+              Matrix m = arg.matrix_value ();
+
+              octave_idx_type info;
+              octave::math::chol<Matrix> chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
+              else
+                error ("cholinv: A must be positive definite");
+            }
+          else if (arg.is_complex_type ())
+            {
+              ComplexMatrix m = arg.complex_matrix_value ();
+
+              octave_idx_type info;
+              octave::math::chol<ComplexMatrix> chol (m, info);
+              if (info == 0)
+                retval = chol.inverse ();
+              else
+                error ("cholinv: A must be positive definite");
+            }
+          else
+            err_wrong_type_arg ("chol", arg);
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -537,242 +480,254 @@ the Cholesky@tie{}factorization.\n\
 */
 
 DEFUN_DLD (chol2inv, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} chol2inv (@var{U})\n\
-Invert a symmetric, positive definite square matrix from its Cholesky\n\
-decomposition, @var{U}.\n\
-\n\
-Note that @var{U} should be an upper-triangular matrix with positive\n\
-diagonal elements.  @code{chol2inv (@var{U})} provides\n\
-@code{inv (@var{U}'*@var{U})} but it is much faster than using @code{inv}.\n\
-@seealso{chol, cholinv, inv}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} chol2inv (@var{U})
+Invert a symmetric, positive definite square matrix from its Cholesky
+decomposition, @var{U}.
+
+Note that @var{U} should be an upper-triangular matrix with positive
+diagonal elements.  @code{chol2inv (@var{U})} provides
+@code{inv (@var{U}'*@var{U})} but it is much faster than using @code{inv}.
+@seealso{chol, cholinv, inv}
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
   octave_value retval;
 
-  int nargin = args.length ();
+  octave_value arg = args(0);
 
-  if (nargin == 1)
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
+
+  if (nr == 0 || nc == 0)
+    retval = Matrix ();
+  else
     {
-      octave_value arg = args(0);
-
-      octave_idx_type nr = arg.rows ();
-      octave_idx_type nc = arg.columns ();
-
-      if (nr == 0 || nc == 0)
-        retval = Matrix ();
-      else
+      if (arg.is_sparse_type ())
         {
-          if (arg.is_sparse_type ())
+          if (arg.is_real_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  SparseMatrix r = arg.sparse_matrix_value ();
+              SparseMatrix r = arg.sparse_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
-                }
-              else if (arg.is_complex_type ())
-                {
-                  SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
-
-                  if (! error_state)
-                    retval = chol2inv (r);
-                }
-              else
-                gripe_wrong_type_arg ("chol2inv", arg);
+              retval = octave::math::chol2inv (r);
             }
-          else if (arg.is_single_type ())
+          else if (arg.is_complex_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  FloatMatrix r = arg.float_matrix_value ();
+              SparseComplexMatrix r = arg.sparse_complex_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
-                }
-              else if (arg.is_complex_type ())
-                {
-                  FloatComplexMatrix r = arg.float_complex_matrix_value ();
-
-                  if (! error_state)
-                    retval = chol2inv (r);
-                }
-              else
-                gripe_wrong_type_arg ("chol2inv", arg);
-
+              retval = octave::math::chol2inv (r);
             }
           else
+            err_wrong_type_arg ("chol2inv", arg);
+        }
+      else if (arg.is_single_type ())
+        {
+          if (arg.is_real_type ())
             {
-              if (arg.is_real_type ())
-                {
-                  Matrix r = arg.matrix_value ();
+              FloatMatrix r = arg.float_matrix_value ();
 
-                  if (! error_state)
-                    retval = chol2inv (r);
-                }
-              else if (arg.is_complex_type ())
-                {
-                  ComplexMatrix r = arg.complex_matrix_value ();
-
-                  if (! error_state)
-                    retval = chol2inv (r);
-                }
-              else
-                gripe_wrong_type_arg ("chol2inv", arg);
+              retval = octave::math::chol2inv (r);
             }
+          else if (arg.is_complex_type ())
+            {
+              FloatComplexMatrix r = arg.float_complex_matrix_value ();
+
+              retval = octave::math::chol2inv (r);
+            }
+          else
+            err_wrong_type_arg ("chol2inv", arg);
+
+        }
+      else
+        {
+          if (arg.is_real_type ())
+            {
+              Matrix r = arg.matrix_value ();
+
+              retval = octave::math::chol2inv (r);
+            }
+          else if (arg.is_complex_type ())
+            {
+              ComplexMatrix r = arg.complex_matrix_value ();
+
+              retval = octave::math::chol2inv (r);
+            }
+          else
+            err_wrong_type_arg ("chol2inv", arg);
         }
     }
-  else
-    print_usage ();
 
   return retval;
 }
 
+/*
+
+## Test for bug #36437
+%!function sparse_chol2inv (T, tol)
+%!  iT = inv (T);
+%!  ciT = chol2inv (chol (T));
+%!  assert (ciT, iT, tol);
+%!  assert (chol2inv (chol ( full (T))), ciT, tol*2);
+%!endfunction
+
+%!testif HAVE_CHOLMOD
+%! A = gallery ("poisson", 3);
+%! sparse_chol2inv (A, eps);
+
+%!testif HAVE_CHOLMOD
+%! n = 10;
+%! B = spdiags (ones (n, 1) * [1 2 1], [-1 0 1], n, n);
+%! sparse_chol2inv (B, eps*100);
+
+%!testif HAVE_CHOLMOD
+%! C = gallery("tridiag", 5);
+%! sparse_chol2inv (C, eps*10);
+
+%!testif HAVE_CHOLMOD
+%! D = gallery("wathen", 1, 1);
+%! sparse_chol2inv (D, eps*10^4);
+
+*/
+
 DEFUN_DLD (cholupdate, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
-Update or downdate a Cholesky@tie{}factorization.\n\
-\n\
-Given an upper triangular matrix @var{R} and a column vector @var{u},\n\
-attempt to determine another upper triangular matrix @var{R1} such that\n\
-\n\
-@itemize @bullet\n\
-@item\n\
-@var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'\n\
-if @var{op} is @qcode{\"+\"}\n\
-\n\
-@item\n\
-@var{R1}'*@var{R1} = @var{R}'*@var{R} - @var{u}*@var{u}'\n\
-if @var{op} is @qcode{\"-\"}\n\
-@end itemize\n\
-\n\
-If @var{op} is @qcode{\"-\"}, @var{info} is set to\n\
-\n\
-@itemize\n\
-@item 0 if the downdate was successful,\n\
-\n\
-@item 1 if @var{R}'*@var{R} - @var{u}*@var{u}' is not positive definite,\n\
-\n\
-@item 2 if @var{R} is singular.\n\
-@end itemize\n\
-\n\
-If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
-@seealso{chol, cholinsert, choldelete, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})
+Update or downdate a Cholesky@tie{}factorization.
+
+Given an upper triangular matrix @var{R} and a column vector @var{u},
+attempt to determine another upper triangular matrix @var{R1} such that
+
+@itemize @bullet
+@item
+@var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'
+if @var{op} is @qcode{"+"}
+
+@item
+@var{R1}'*@var{R1} = @var{R}'*@var{R} - @var{u}*@var{u}'
+if @var{op} is @qcode{"-"}
+@end itemize
+
+If @var{op} is @qcode{"-"}, @var{info} is set to
+
+@itemize
+@item 0 if the downdate was successful,
+
+@item 1 if @var{R}'*@var{R} - @var{u}*@var{u}' is not positive definite,
+
+@item 2 if @var{R} is singular.
+@end itemize
+
+If @var{info} is not present, an error message is printed in cases 1 and 2.
+@seealso{chol, cholinsert, choldelete, cholshift}
+@end deftypefn */)
 {
-  octave_idx_type nargin = args.length ();
+  int nargin = args.length ();
 
-  octave_value_list retval;
-
-  if (nargin > 3 || nargin < 2)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argu = args(1);
 
-  if (argr.is_numeric_type () && argu.is_numeric_type ()
-      && (nargin < 3 || args(2).is_string ()))
+  if (! argr.is_numeric_type () || ! argu.is_numeric_type ()
+      || (nargin > 2 && ! args(2).is_string ()))
+    print_usage ();
+
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+
+  octave_idx_type n = argr.rows ();
+
+  std::string op = (nargin < 3) ? "+" : args(2).string_value ();
+
+  bool down = (op == "-");
+
+  if (! down && op != "+")
+    error ("cholupdate: OP must be \"+\" or \"-\"");
+
+  if (argr.columns () != n || argu.rows () != n || argu.columns () != 1)
+    error ("cholupdate: dimension mismatch between R and U");
+
+  int err = 0;
+  if (argr.is_single_type () || argu.is_single_type ())
     {
-      octave_idx_type n = argr.rows ();
+      if (argr.is_real_type () && argu.is_real_type ())
+        {
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
+          FloatColumnVector u = argu.float_column_vector_value ();
 
-      std::string op = (nargin < 3) ? "+" : args(2).string_value ();
+          octave::math::chol<FloatMatrix> fact;
+          fact.set (R);
 
-      bool down = op == "-";
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
 
-      if (down || op == "+")
-        if (argr.columns () == n && argu.rows () == n && argu.columns () == 1)
-          {
-            int err = 0;
-            if (argr.is_single_type () || argu.is_single_type ())
-              {
-                if (argr.is_real_type () && argu.is_real_type ())
-                  {
-                    // real case
-                    FloatMatrix R = argr.float_matrix_value ();
-                    FloatColumnVector u = argu.float_column_vector_value ();
-
-                    FloatCHOL fact;
-                    fact.set (R);
-
-                    if (down)
-                      err = fact.downdate (u);
-                    else
-                      fact.update (u);
-
-                    retval(0) = get_chol_r (fact);
-                  }
-                else
-                  {
-                    // complex case
-                    FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                    FloatComplexColumnVector u =
-                      argu.float_complex_column_vector_value ();
-
-                    FloatComplexCHOL fact;
-                    fact.set (R);
-
-                    if (down)
-                      err = fact.downdate (u);
-                    else
-                      fact.update (u);
-
-                    retval(0) = get_chol_r (fact);
-                  }
-              }
-            else
-              {
-                if (argr.is_real_type () && argu.is_real_type ())
-                  {
-                    // real case
-                    Matrix R = argr.matrix_value ();
-                    ColumnVector u = argu.column_vector_value ();
-
-                    CHOL fact;
-                    fact.set (R);
-
-                    if (down)
-                      err = fact.downdate (u);
-                    else
-                      fact.update (u);
-
-                    retval(0) = get_chol_r (fact);
-                  }
-                else
-                  {
-                    // complex case
-                    ComplexMatrix R = argr.complex_matrix_value ();
-                    ComplexColumnVector u = argu.complex_column_vector_value ();
-
-                    ComplexCHOL fact;
-                    fact.set (R);
-
-                    if (down)
-                      err = fact.downdate (u);
-                    else
-                      fact.update (u);
-
-                    retval(0) = get_chol_r (fact);
-                  }
-              }
-
-            if (nargout > 1)
-              retval(1) = err;
-            else if (err == 1)
-              error ("cholupdate: downdate violates positiveness");
-            else if (err == 2)
-              error ("cholupdate: singular matrix");
-          }
-        else
-          error ("cholupdate: dimension mismatch between R and U");
+          retval = ovl (get_chol_r (fact));
+        }
       else
-        error ("cholupdate: OP must be \"+\" or \"-\"");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+          FloatComplexColumnVector u =
+            argu.float_complex_column_vector_value ();
+
+          octave::math::chol<FloatComplexMatrix> fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval = ovl (get_chol_r (fact));
+        }
     }
   else
-    print_usage ();
+    {
+      if (argr.is_real_type () && argu.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+          ColumnVector u = argu.column_vector_value ();
+
+          octave::math::chol<Matrix> fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval = ovl (get_chol_r (fact));
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+          ComplexColumnVector u = argu.complex_column_vector_value ();
+
+          octave::math::chol<ComplexMatrix> fact;
+          fact.set (R);
+
+          if (down)
+            err = fact.downdate (u);
+          else
+            fact.update (u);
+
+          retval = ovl (get_chol_r (fact));
+        }
+    }
+
+  if (nargout > 1)
+    retval(1) = err;
+  else if (err == 1)
+    error ("cholupdate: downdate violates positiveness");
+  else if (err == 2)
+    error ("cholupdate: singular matrix");
 
   return retval;
 }
@@ -840,128 +795,117 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 */
 
 DEFUN_DLD (cholinsert, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})\n\
-@deftypefnx {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
-Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
-positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of\n\
-@var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
-@w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.\n\
-\n\
-On return, @var{info} is set to\n\
-\n\
-@itemize\n\
-@item 0 if the insertion was successful,\n\
-\n\
-@item 1 if @var{A1} is not positive definite,\n\
-\n\
-@item 2 if @var{R} is singular.\n\
-@end itemize\n\
-\n\
-If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
-@seealso{chol, cholupdate, choldelete, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})
+@deftypefnx {} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})
+Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
+triangular, return the Cholesky@tie{}factorization of
+@var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and
+@w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.
+
+On return, @var{info} is set to
+
+@itemize
+@item 0 if the insertion was successful,
+
+@item 1 if @var{A1} is not positive definite,
+
+@item 2 if @var{R} is singular.
+@end itemize
+
+If @var{info} is not present, an error message is printed in cases 1 and 2.
+@seealso{chol, cholupdate, choldelete, cholshift}
+@end deftypefn */)
 {
-  octave_idx_type nargin = args.length ();
-
-  octave_value_list retval;
-
-  if (nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 3)
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argj = args(1);
   octave_value argu = args(2);
 
-  if (argr.is_numeric_type () && argu.is_numeric_type ()
-      && argj.is_real_scalar ())
+  if (! argr.is_numeric_type () || ! argu.is_numeric_type ()
+      || ! argj.is_real_scalar ())
+    print_usage ();
+
+  octave_idx_type n = argr.rows ();
+  octave_idx_type j = argj.scalar_value ();
+
+  if (argr.columns () != n || argu.rows () != n+1 || argu.columns () != 1)
+    error ("cholinsert: dimension mismatch between R and U");
+
+  if (j < 1 || j > n+1)
+    error ("cholinsert: index J out of range");
+
+  octave_value_list retval (nargout == 2 ? 2 : 1);
+
+  int err = 0;
+  if (argr.is_single_type () || argu.is_single_type ())
     {
-      octave_idx_type n = argr.rows ();
-      octave_idx_type j = argj.scalar_value ();
-
-      if (argr.columns () == n && argu.rows () == n+1 && argu.columns () == 1)
+      if (argr.is_real_type () && argu.is_real_type ())
         {
-          if (j > 0 && j <= n+1)
-            {
-              int err = 0;
-              if (argr.is_single_type () || argu.is_single_type ())
-                {
-                  if (argr.is_real_type () && argu.is_real_type ())
-                    {
-                      // real case
-                      FloatMatrix R = argr.float_matrix_value ();
-                      FloatColumnVector u = argu.float_column_vector_value ();
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
+          FloatColumnVector u = argu.float_column_vector_value ();
 
-                      FloatCHOL fact;
-                      fact.set (R);
-                      err = fact.insert_sym (u, j-1);
+          octave::math::chol<FloatMatrix> fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
 
-                      retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    {
-                      // complex case
-                      FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                      FloatComplexColumnVector u =
-                        argu.float_complex_column_vector_value ();
-
-                      FloatComplexCHOL fact;
-                      fact.set (R);
-                      err = fact.insert_sym (u, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                }
-              else
-                {
-                  if (argr.is_real_type () && argu.is_real_type ())
-                    {
-                      // real case
-                      Matrix R = argr.matrix_value ();
-                      ColumnVector u = argu.column_vector_value ();
-
-                      CHOL fact;
-                      fact.set (R);
-                      err = fact.insert_sym (u, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    {
-                      // complex case
-                      ComplexMatrix R = argr.complex_matrix_value ();
-                      ComplexColumnVector u =
-                        argu.complex_column_vector_value ();
-
-                      ComplexCHOL fact;
-                      fact.set (R);
-                      err = fact.insert_sym (u, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                }
-
-              if (nargout > 1)
-                retval(1) = err;
-              else if (err == 1)
-                error ("cholinsert: insertion violates positiveness");
-              else if (err == 2)
-                error ("cholinsert: singular matrix");
-              else if (err == 3)
-                error ("cholinsert: diagonal element must be real");
-            }
-          else
-            error ("cholinsert: index J out of range");
+          retval = ovl (get_chol_r (fact));
         }
       else
-        error ("cholinsert: dimension mismatch between R and U");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+          FloatComplexColumnVector u =
+            argu.float_complex_column_vector_value ();
+
+          octave::math::chol<FloatComplexMatrix> fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
     }
   else
-    print_usage ();
+    {
+      if (argr.is_real_type () && argu.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+          ColumnVector u = argu.column_vector_value ();
+
+          octave::math::chol<Matrix> fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+          ComplexColumnVector u =
+            argu.complex_column_vector_value ();
+
+          octave::math::chol<ComplexMatrix> fact;
+          fact.set (R);
+          err = fact.insert_sym (u, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+    }
+
+  if (nargout > 1)
+    retval(1) = err;
+  else if (err == 1)
+    error ("cholinsert: insertion violates positiveness");
+  else if (err == 2)
+    error ("cholinsert: singular matrix");
+  else if (err == 3)
+    error ("cholinsert: diagonal element must be real");
 
   return retval;
 }
@@ -1037,7 +981,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! assert (cu, cl', eps);
 
 %!test
-%! cca  = chol (Ac);
+%! cca   = chol (Ac);
 %!
 %! ccal  = chol (Ac, "lower");
 %! ccal2 = chol (tril (Ac), "lower");
@@ -1055,7 +999,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! assert (cca, ccau2,  eps);
 
 %!test
-%! cca  = chol (single (Ac));
+%! cca   = chol (single (Ac));
 %!
 %! ccal  = chol (single (Ac), "lower");
 %! ccal2 = chol (tril (single (Ac)), "lower");
@@ -1085,7 +1029,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!
 %! ca = a + i*b;
 %!
-%! cca  = chol (ca);
+%! cca   = chol (ca);
 %!
 %! ccal  = chol (ca, "lower");
 %! ccal2 = chol (tril (ca), "lower");
@@ -1104,96 +1048,85 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 */
 
 DEFUN_DLD (choldelete, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
-Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
-positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
-@w{p = [1:j-1,j+1:n+1]}.\n\
-@seealso{chol, cholupdate, cholinsert, cholshift}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{R1} =} choldelete (@var{R}, @var{j})
+Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
+triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
+@w{p = [1:j-1,j+1:n+1]}.
+@seealso{chol, cholupdate, cholinsert, cholshift}
+@end deftypefn */)
 {
-  octave_idx_type nargin = args.length ();
-
-  octave_value_list retval;
-
-  if (nargin != 2)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 2)
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argj = args(1);
 
-  if (argr.is_numeric_type () && argj.is_real_scalar ())
+  if (! argr.is_numeric_type () || ! argj.is_real_scalar ())
+    print_usage ();
+
+  octave_idx_type n = argr.rows ();
+  octave_idx_type j = argj.scalar_value ();
+
+  if (argr.columns () != n)
+    err_square_matrix_required ("choldelete", "R");
+
+  if (j < 0 && j > n)
+    error ("choldelete: index J out of range");
+
+  octave_value_list retval;
+
+  if (argr.is_single_type ())
     {
-      octave_idx_type n = argr.rows ();
-      octave_idx_type j = argj.scalar_value ();
-
-      if (argr.columns () == n)
+      if (argr.is_real_type ())
         {
-          if (j > 0 && j <= n)
-            {
-              if (argr.is_single_type ())
-                {
-                  if (argr.is_real_type ())
-                    {
-                      // real case
-                      FloatMatrix R = argr.float_matrix_value ();
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
 
-                      FloatCHOL fact;
-                      fact.set (R);
-                      fact.delete_sym (j-1);
+          octave::math::chol<FloatMatrix> fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
 
-                      retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    {
-                      // complex case
-                      FloatComplexMatrix R = argr.float_complex_matrix_value ();
-
-                      FloatComplexCHOL fact;
-                      fact.set (R);
-                      fact.delete_sym (j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                }
-              else
-                {
-                  if (argr.is_real_type ())
-                    {
-                      // real case
-                      Matrix R = argr.matrix_value ();
-
-                      CHOL fact;
-                      fact.set (R);
-                      fact.delete_sym (j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    {
-                      // complex case
-                      ComplexMatrix R = argr.complex_matrix_value ();
-
-                      ComplexCHOL fact;
-                      fact.set (R);
-                      fact.delete_sym (j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                }
-            }
-          else
-            error ("choldelete: index J out of range");
+          retval = ovl (get_chol_r (fact));
         }
       else
-        error ("choldelete: matrix R must be square");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+
+          octave::math::chol<FloatComplexMatrix> fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
     }
   else
-    print_usage ();
+    {
+      if (argr.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+
+          octave::math::chol<Matrix> fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+
+          octave::math::chol<ComplexMatrix> fact;
+          fact.set (R);
+          fact.delete_sym (j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+    }
 
   return retval;
 }
@@ -1237,105 +1170,93 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 */
 
 DEFUN_DLD (cholshift, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
-Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
-positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of\n\
-@w{@var{A}(p,p)}, where @w{p} is the permutation @*\n\
-@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
- or @*\n\
-@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*\n\
-\n\
-@seealso{chol, cholupdate, cholinsert, choldelete}\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})
+Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
+triangular, return the Cholesky@tie{}factorization of
+@w{@var{A}(p,p)}, where @w{p} is the permutation @*
+@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*
+ or @*
+@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*
+
+@seealso{chol, cholupdate, cholinsert, choldelete}
+@end deftypefn */)
 {
-  octave_idx_type nargin = args.length ();
-
-  octave_value_list retval;
-
-  if (nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 3)
+    print_usage ();
 
   octave_value argr = args(0);
   octave_value argi = args(1);
   octave_value argj = args(2);
 
-  if (argr.is_numeric_type ()
-      && argi.is_real_scalar () && argj.is_real_scalar ())
+  if (! argr.is_numeric_type () || ! argi.is_real_scalar ()
+      || ! argj.is_real_scalar ())
+    print_usage ();
+
+  octave_idx_type n = argr.rows ();
+  octave_idx_type i = argi.scalar_value ();
+  octave_idx_type j = argj.scalar_value ();
+
+  if (argr.columns () != n)
+    err_square_matrix_required ("cholshift", "R");
+
+  if (j < 0 || j > n+1 || i < 0 || i > n+1)
+    error ("cholshift: index I or J is out of range");
+
+  octave_value_list retval;
+
+  if (argr.is_single_type () && argi.is_single_type ()
+      && argj.is_single_type ())
     {
-      octave_idx_type n = argr.rows ();
-      octave_idx_type i = argi.scalar_value ();
-      octave_idx_type j = argj.scalar_value ();
-
-      if (argr.columns () == n)
+      if (argr.is_real_type ())
         {
-          if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
-            {
+          // real case
+          FloatMatrix R = argr.float_matrix_value ();
 
-              if (argr.is_single_type () && argi.is_single_type ()
-                  && argj.is_single_type ())
-                {
-                  if (argr.is_real_type ())
-                    {
-                      // real case
-                      FloatMatrix R = argr.float_matrix_value ();
+          octave::math::chol<FloatMatrix> fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
 
-                      FloatCHOL fact;
-                      fact.set (R);
-                      fact.shift_sym (i-1, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    {
-                      // complex case
-                      FloatComplexMatrix R = argr.float_complex_matrix_value ();
-
-                      FloatComplexCHOL fact;
-                      fact.set (R);
-                      fact.shift_sym (i-1, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                }
-              else
-                {
-                  if (argr.is_real_type ())
-                    {
-                      // real case
-                      Matrix R = argr.matrix_value ();
-
-                      CHOL fact;
-                      fact.set (R);
-                      fact.shift_sym (i-1, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                  else
-                    {
-                      // complex case
-                      ComplexMatrix R = argr.complex_matrix_value ();
-
-                      ComplexCHOL fact;
-                      fact.set (R);
-                      fact.shift_sym (i-1, j-1);
-
-                      retval(0) = get_chol_r (fact);
-                    }
-                }
-            }
-          else
-            error ("cholshift: index I or J is out of range");
+          retval = ovl (get_chol_r (fact));
         }
       else
-        error ("cholshift: R must be a square matrix");
+        {
+          // complex case
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+
+          octave::math::chol<FloatComplexMatrix> fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
     }
   else
-    print_usage ();
+    {
+      if (argr.is_real_type ())
+        {
+          // real case
+          Matrix R = argr.matrix_value ();
+
+          octave::math::chol<Matrix> fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+      else
+        {
+          // complex case
+          ComplexMatrix R = argr.complex_matrix_value ();
+
+          octave::math::chol<ComplexMatrix> fact;
+          fact.set (R);
+          fact.shift_sym (i-1, j-1);
+
+          retval = ovl (get_chol_r (fact));
+        }
+    }
 
   return retval;
 }
@@ -1401,3 +1322,4 @@ triangular, return the Cholesky@tie{}factorization of\n\
 %! assert (norm (triu (R1)-R1, Inf), 0);
 %! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1*eps ("single"));
 */
+

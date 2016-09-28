@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 John W. Eaton, Shai Ayal, Kai Habel
+## Copyright (C) 2007-2016 John W. Eaton, Shai Ayal, Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}, @var{fail}] =} __patch__ (@var{p}, @dots{})
+## @deftypefn {} {[@var{h}, @var{fail}] =} __patch__ (@var{p}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -36,16 +36,6 @@ function [h, failed] = __patch__ (p, varargin)
 
   if (isempty (varargin))
     args = varargin;
-  elseif (isstruct (varargin{1}))
-    if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
-      fvs = varargin{1};
-      fvc = cell (1, 2*numfields (fvs));
-      fvc(1:2:end) = fieldnames (fvs);
-      fvc(2:2:end) = struct2cell (fvs);
-      args = [fvc{:}, varargin(2:end)];
-    else
-      failed = true;
-    endif
   elseif (is_numeric_arg(1))
     if (nargin < 3 || ! is_numeric_arg(2))
       failed = true;
@@ -59,25 +49,25 @@ function [h, failed] = __patch__ (p, varargin)
       elseif (nargin > 3 && all (is_numeric_arg(1:3)))
         x = varargin{1};
         y = varargin{2};
-        iarg = 4;
-        if (rem (nargin - iarg, 2) == 1)
-          c = varargin{iarg};
+        if (nargin > 4 && iscolorspec (varargin{4}))
           z = varargin{3};
+          c = varargin{4};
           iarg = 5;
         else
           z = [];
           c = varargin{3};
+          iarg = 4;
         endif
       elseif (nargin > 2 && all (is_numeric_arg(1:2)))
         x = varargin{1};
         y = varargin{2};
         z = [];
-        iarg = 3;
-        if (rem (nargin - iarg, 2) == 1)
-          c = varargin{iarg};
-          iarg++;
+        if (iscolorspec (varargin{3}))
+          c = varargin{3};
+          iarg = 4;
         else
           c = [];
+          iarg = 3;
         endif
       endif
 
@@ -159,8 +149,7 @@ function [h, failed] = __patch__ (p, varargin)
             error ("patch: size of X, Y, and C must be equal");
           endif
         endif
-      elseif (ischar (c) && rem (nargin - iarg, 2) == 0)
-        ## Assume any additional argument over an even number is a color string.
+      elseif (iscolorspec (c))
         args{7} = "facecolor";
         args{8} = tolower (c);
         args{9} = "cdata";
@@ -180,5 +169,18 @@ function [h, failed] = __patch__ (p, varargin)
 
   if (! failed)
     h = __go_patch__ (p, args{:});
+  endif
+
+endfunction
+
+function retval = iscolorspec (arg)
+  retval = false;
+  if (ischar (arg))
+    persistent colors = {"y", "yellow", "r", "red", "m", "magenta", ...
+                         "c", "cyan", "g", "green", "b", "blue", ...
+                         "w", "white", "k", "black"};
+    if (any (strcmpi (arg, colors)))
+      retval = true;
+    endif
   endif
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Massimiliano Fasi
+## Copyright (C) 2014-2016 Massimiliano Fasi
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isdiag (@var{A})
+## @deftypefn {} {} isdiag (@var{A})
 ## Return true if @var{A} is a diagonal matrix.
 ## @seealso{isbanded, istril, istriu, diag, bandwidth}
 ## @end deftypefn
@@ -30,25 +30,28 @@ function retval = isdiag (A)
     print_usage ();
   endif
 
-  retval = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
-  if (retval)
+  if (strcmp (typeinfo (A), "diagonal matrix"))
+    retval = true;
+  elseif ((isnumeric (A) || islogical (A)) && ndims (A) == 2)
     [i, j] = find (A);
     retval = all (i == j);
+  else
+    retval = false;
   endif
 
 endfunction
 
 
-%!assert (! isdiag ("string"))
+%!assert (isdiag ("string"), false)
+%!assert (isdiag (zeros (2,2,2)), false)
 %!assert (isdiag ([]))
-
 %!assert (isdiag (1))
-%!assert (! isdiag ([1, 1]))
-%!assert (! isdiag ([1; 1]))
+%!assert (isdiag ([1, 1]), false)
+%!assert (isdiag ([1; 1]), false)
 %!assert (isdiag (eye (10)))
-%!assert (issymmetric ([i, 0; 0, 1 + i]))
-%!assert (isdiag (speye (1000000)))
 %!assert (isdiag (logical (eye (10))))
+%!assert (isdiag (speye (1e6)))
+%!assert (isdiag (diag (1:10)))
 
 ## Test input validation
 %!error isdiag ()

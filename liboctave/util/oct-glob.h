@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 John W. Eaton
+Copyright (C) 2010-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,16 +20,38 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_glob_h)
+#if ! defined (octave_oct_glob_h)
 #define octave_oct_glob_h 1
+
+#include "octave-config.h"
 
 #include "str-vec.h"
 
-extern bool
-octave_fnmatch (const string_vector& pat, const std::string& str,
-                int fnmatch_flags);
+namespace octave
+{
+  namespace sys
+  {
+    extern bool
+    fnmatch (const string_vector& pat, const std::string& str,
+             int fnmatch_flags);
 
-extern string_vector
-octave_glob (const string_vector&);
+    extern string_vector
+    glob (const string_vector&);
+
+    extern string_vector
+    windows_glob (const string_vector&);
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::sys::fnmatch' instead")
+const auto octave_fnmatch = octave::sys::fnmatch;
+
+OCTAVE_DEPRECATED ("use 'octave::sys::glob' instead")
+const auto octave_glob = octave::sys::glob;
 
 #endif
+
+#endif
+

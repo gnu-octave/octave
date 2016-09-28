@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acsc (@var{x})
+## @deftypefn {} {} acsc (@var{x})
 ## Compute the inverse cosecant in radians for each element of @var{x}.
 ## @seealso{csc, acscd}
 ## @end deftypefn

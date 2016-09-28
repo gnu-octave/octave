@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 VZLU Prague
+## Copyright (C) 2009-2016 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{names} =} __all_opts__ (@dots{})
+## @deftypefn {} {@var{names} =} __all_opts__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -39,7 +39,7 @@ function names = __all_opts__ (varargin)
   elseif (nargin == 0)
     names = saved_names;
   else
-    ## query all options from all known functions. These will call optimset,
+    ## query all options from all known functions.  These will call optimset,
     ## which will in turn call us, but we won't answer.
     recursive = true;
     names = saved_names;

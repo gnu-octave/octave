@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 David Bateman
+## Copyright (C) 2009-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{f} =} ftp (@var{host})
-## @deftypefnx {Function File} {@var{f} =} ftp (@var{host}, @var{username}, @var{password})
+## @deftypefn  {} {@var{f} =} ftp (@var{host})
+## @deftypefnx {} {@var{f} =} ftp (@var{host}, @var{username}, @var{password})
 ## Connect to the FTP server @var{host} with @var{username} and @var{password}.
 ##
 ## If @var{username} and @var{password} are not specified, user
@@ -46,6 +46,7 @@
 ## @end deftypefn
 
 function obj = ftp (host = "", username = "anonymous", password = "")
+
   if (nargin == 1 && isa (host, "ftp"))
     obj = host;   # Copy constructor
   else
@@ -58,6 +59,7 @@ function obj = ftp (host = "", username = "anonymous", password = "")
     endif
     obj = class (p, "ftp");
   endif
+
 endfunction
 
 

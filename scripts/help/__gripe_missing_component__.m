@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Mike Miller
+## Copyright (C) 2013-2016 Mike Miller
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __gripe_missing_component__ (@var{caller}, @var{component})
+## @deftypefn {} {} __gripe_missing_component__ (@var{caller}, @var{component})
 ## Undocumented internal function.
 ## @end deftypefn
 

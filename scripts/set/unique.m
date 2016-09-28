@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,15 +18,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unique (@var{x})
-## @deftypefnx {Function File} {} unique (@var{x}, "rows")
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "first")
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "last")
+## @deftypefn  {} {} unique (@var{x})
+## @deftypefnx {} {} unique (@var{x}, "rows")
+## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
+## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "first")
+## @deftypefnx {} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{}, "last")
 ## Return the unique elements of @var{x} sorted in ascending order.
 ##
 ## If the input @var{x} is a column vector then return a column vector;
-## Otherwise, return a row vector.  @var{x} may also be a cell array of strings.
+## Otherwise, return a row vector.  @var{x} may also be a cell array of
+## strings.
 ##
 ## If the optional argument @qcode{"rows"} is given then return the unique
 ## rows of @var{x} sorted in ascending order.  The input must be a 2-D matrix
@@ -35,10 +36,11 @@
 ## If requested, return index vectors @var{i} and @var{j} such that
 ## @code{@var{y} = @var{x}(@var{i})} and @code{@var{x} = @var{y}(@var{j})}.
 ##
-## Additionally, if @var{i} is a requested output then one of @qcode{"first"} or
-## @qcode{"last"} may be given as an input.  If @qcode{"last"} is specified,
-## return the highest possible indices in @var{i}, otherwise, if @qcode{"first"}
-## is specified, return the lowest.  The default is @qcode{"last"}.
+## Additionally, if @var{i} is a requested output then one of
+## @qcode{"first"} or @qcode{"last"} may be given as an input.  If
+## @qcode{"last"} is specified, return the highest possible indices in
+## @var{i}, otherwise, if @qcode{"first"} is specified, return the lowest.
+## The default is @qcode{"last"}.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
@@ -146,9 +148,9 @@ function [y, i, j] = unique (x, varargin)
   if (isargout (3))
     j = i;
     if (dim == 1)
-      j(i) = cumsum ([1; !match]);
+      j(i) = cumsum ([1; ! match]);
     else
-      j(i) = cumsum ([1, !match]);
+      j(i) = cumsum ([1, ! match]);
     endif
   endif
 

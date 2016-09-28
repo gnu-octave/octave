@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} lookfor @var{str}
-## @deftypefnx {Command} {} lookfor -all @var{str}
-## @deftypefnx {Function File} {[@var{fcn}, @var{help1str}] =} lookfor (@var{str})
-## @deftypefnx {Function File} {[@var{fcn}, @var{help1str}] =} lookfor ("-all", @var{str})
+## @deftypefn  {} {} lookfor @var{str}
+## @deftypefnx {} {} lookfor -all @var{str}
+## @deftypefnx {} {[@var{fcn}, @var{help1str}] =} lookfor (@var{str})
+## @deftypefnx {} {[@var{fcn}, @var{help1str}] =} lookfor ("-all", @var{str})
 ## Search for the string @var{str} in the documentation of all functions in the
 ## current function search path.
 ##
@@ -77,7 +77,7 @@ function [fcn, help1str] = lookfor (str, arg2)
   ## ditto for path.
   new_path = ostrsplit (path (), pathsep ());
 
-  ## remove  directories already covered by orig_path.
+  ## remove directories already covered by orig_path.
   if (had_core_cache)
     new_path = setdiff (new_path, orig_path);
   endif
@@ -183,15 +183,18 @@ function [fcn, help1str] = lookfor (str, arg2)
 endfunction
 
 function [fcns, help_texts] = search_cache (str, cache_file, search_type)
+
   load (cache_file);
-  if (! isempty (cache))
-    t1 = strfind (lower (cache (1, :)), str);
-    t2 = strfind (lower (cache (search_type, :)), str);
+
+  if (isempty (cache))
+    fcns = help_texts = {};
+  else
+    t1 = strfind (lower (cache(1, :)), str);
+    t2 = strfind (lower (cache(search_type, :)), str);
     cache_idx = find (! (cellfun ("isempty", t1) & cellfun ("isempty", t2)));
     fcns = cache(1, cache_idx);
     help_texts = cache(3, cache_idx);
-  else
-    fcns = help_texts = {};
   endif
+
 endfunction
 

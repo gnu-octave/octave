@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Massimiliano Fasi
+## Copyright (C) 2014-2016 Massimiliano Fasi
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{bw} =} bandwidth (@var{A}, @var{type})
-## @deftypefnx {Function File} {[@var{lower}, @var{upper}] =} bandwidth (@var{A})
+## @deftypefn  {} {@var{bw} =} bandwidth (@var{A}, @var{type})
+## @deftypefnx {} {[@var{lower}, @var{upper}] =} bandwidth (@var{A})
 ## Compute the bandwidth of @var{A}.
 ##
 ## The @var{type} argument is the string @qcode{"lower"} for the lower

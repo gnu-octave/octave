@@ -1,7 +1,7 @@
-// N-D Array  manipulations.
+// N-D Array manipulations.
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "functor.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "MArray-defs.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
 #include "mx-fcnda-fs.h"
@@ -60,7 +59,7 @@ FloatComplexNDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -69,9 +68,9 @@ FloatComplexNDArray::fourier (int dim) const
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  octave_idx_type howmany = numel () / dv (dim);
+  octave_idx_type howmany = numel () / dv(dim);
   howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
-  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv (dim) / stride);
+  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
   const FloatComplex *in (fortran_vec ());
@@ -91,7 +90,7 @@ FloatComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   octave_idx_type stride = 1;
@@ -100,9 +99,9 @@ FloatComplexNDArray::ifourier (int dim) const
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  octave_idx_type howmany = numel () / dv (dim);
+  octave_idx_type howmany = numel () / dv(dim);
   howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
-  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv (dim) / stride);
+  octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
   const FloatComplex *in (fortran_vec ());
@@ -121,10 +120,10 @@ FloatComplexNDArray
 FloatComplexNDArray::fourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return FloatComplexNDArray ();
 
-  dim_vector dv2(dv(0), dv(1));
+  dim_vector dv2 (dv(0), dv(1));
   const FloatComplex *in = fortran_vec ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
@@ -141,10 +140,10 @@ FloatComplexNDArray
 FloatComplexNDArray::ifourier2d (void) const
 {
   dim_vector dv = dims ();
-  if (dv.length () < 2)
+  if (dv.ndims () < 2)
     return FloatComplexNDArray ();
 
-  dim_vector dv2(dv(0), dv(1));
+  dim_vector dv2 (dv(0), dv(1));
   const FloatComplex *in = fortran_vec ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
@@ -161,7 +160,7 @@ FloatComplexNDArray
 FloatComplexNDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const FloatComplex *in (fortran_vec ());
   FloatComplexNDArray retval (dv);
@@ -176,7 +175,7 @@ FloatComplexNDArray
 FloatComplexNDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
 
   const FloatComplex *in (fortran_vec ());
   FloatComplexNDArray retval (dv);
@@ -189,26 +188,14 @@ FloatComplexNDArray::ifourierNd (void) const
 
 #else
 
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, FloatComplex*);
-
-  F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, FloatComplex*,
-                           FloatComplex*);
-
-  F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, FloatComplex*,
-                           FloatComplex*);
-}
+#include "lo-fftpack-proto.h"
 
 FloatComplexNDArray
 FloatComplexNDArray::fourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   FloatComplexNDArray retval (dv);
@@ -229,7 +216,7 @@ FloatComplexNDArray::fourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
   octave_idx_type dist = (stride == 1 ? npts : 1);
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type k = 0; k < nloop; k++)
     {
@@ -240,7 +227,7 @@ FloatComplexNDArray::fourier (int dim) const
           for (octave_idx_type i = 0; i < npts; i++)
             tmp[i] = elem ((i + k*npts)*stride + j*dist);
 
-          F77_FUNC (cfftf, CFFTF) (npts, tmp, pwsave);
+          F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (tmp), F77_CMPLX_ARG (pwsave));
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i];
@@ -255,7 +242,7 @@ FloatComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 
-  if (dim > dv.length () || dim < 0)
+  if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
 
   FloatComplexNDArray retval (dv);
@@ -276,7 +263,7 @@ FloatComplexNDArray::ifourier (int dim) const
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
   octave_idx_type dist = (stride == 1 ? npts : 1);
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
   for (octave_idx_type k = 0; k < nloop; k++)
     {
@@ -287,7 +274,7 @@ FloatComplexNDArray::ifourier (int dim) const
           for (octave_idx_type i = 0; i < npts; i++)
             tmp[i] = elem ((i + k*npts)*stride + j*dist);
 
-          F77_FUNC (cfftb, CFFTB) (npts, tmp, pwsave);
+          F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (tmp), F77_CMPLX_ARG (pwsave));
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i] /
@@ -322,7 +309,7 @@ FloatComplexNDArray::fourier2d (void) const
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
-      F77_FUNC (cffti, CFFTI) (npts, pwsave);
+      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
       for (octave_idx_type k = 0; k < nloop; k++)
         {
@@ -333,7 +320,7 @@ FloatComplexNDArray::fourier2d (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
+              F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) = prow[l];
@@ -370,7 +357,7 @@ FloatComplexNDArray::ifourier2d (void) const
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
-      F77_FUNC (cffti, CFFTI) (npts, pwsave);
+      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
       for (octave_idx_type k = 0; k < nloop; k++)
         {
@@ -381,7 +368,7 @@ FloatComplexNDArray::ifourier2d (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
+              F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) =
@@ -399,7 +386,7 @@ FloatComplexNDArray
 FloatComplexNDArray::fourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   FloatComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -418,7 +405,7 @@ FloatComplexNDArray::fourierNd (void) const
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
-      F77_FUNC (cffti, CFFTI) (npts, pwsave);
+      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
       for (octave_idx_type k = 0; k < nloop; k++)
         {
@@ -429,7 +416,7 @@ FloatComplexNDArray::fourierNd (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
+              F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) = prow[l];
@@ -446,7 +433,7 @@ FloatComplexNDArray
 FloatComplexNDArray::ifourierNd (void) const
 {
   dim_vector dv = dims ();
-  int rank = dv.length ();
+  int rank = dv.ndims ();
   FloatComplexNDArray retval (*this);
   octave_idx_type stride = 1;
 
@@ -465,7 +452,7 @@ FloatComplexNDArray::ifourierNd (void) const
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
-      F77_FUNC (cffti, CFFTI) (npts, pwsave);
+      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
 
       for (octave_idx_type k = 0; k < nloop; k++)
         {
@@ -476,7 +463,7 @@ FloatComplexNDArray::ifourierNd (void) const
               for (octave_idx_type l = 0; l < npts; l++)
                 prow[l] = retval((l + k*npts)*stride + j*dist);
 
-              F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
+              F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
 
               for (octave_idx_type l = 0; l < npts; l++)
                 retval((l + k*npts)*stride + j*dist) =
@@ -498,7 +485,7 @@ boolNDArray
 FloatComplexNDArray::operator ! (void) const
 {
   if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
+    octave::err_nan_to_logical_conversion ();
 
   return do_mx_unary_op<bool, FloatComplex> (*this, mx_inline_not);
 }
@@ -532,14 +519,14 @@ FloatComplexNDArray::all_elements_are_real (void) const
 bool
 FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
 {
-  octave_idx_type nel = nelem ();
+  octave_idx_type nel = numel ();
 
   if (nel > 0)
     {
       FloatComplex val = elem (0);
 
-      float r_val = std::real (val);
-      float i_val = std::imag (val);
+      float r_val = val.real ();
+      float i_val = val.imag ();
 
       max_val = r_val;
       min_val = r_val;
@@ -557,8 +544,8 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
     {
       FloatComplex val = elem (i);
 
-      float r_val = std::real (val);
-      float i_val = std::imag (val);
+      float r_val = val.real ();
+      float i_val = val.imag ();
 
       if (r_val > max_val)
         max_val = r_val;
@@ -572,7 +559,8 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
+      if (octave::math::x_nint (r_val) != r_val
+          || octave::math::x_nint (i_val) != i_val)
         return false;
     }
 
@@ -676,8 +664,8 @@ concat (NDArray& ra, FloatComplexNDArray& rb,
   return retval;
 }
 
-static const FloatComplex FloatComplex_NaN_result (octave_Float_NaN,
-                                                   octave_Float_NaN);
+static const FloatComplex FloatComplex_NaN_result (octave::numeric_limits<float>::NaN (),
+                                                   octave::numeric_limits<float>::NaN ());
 
 FloatComplexNDArray
 FloatComplexNDArray::max (int dim) const
@@ -738,19 +726,19 @@ FloatComplexNDArray::abs (void) const
 boolNDArray
 FloatComplexNDArray::isnan (void) const
 {
-  return do_mx_unary_map<bool, FloatComplex, xisnan> (*this);
+  return do_mx_unary_map<bool, FloatComplex, octave::math::isnan> (*this);
 }
 
 boolNDArray
 FloatComplexNDArray::isinf (void) const
 {
-  return do_mx_unary_map<bool, FloatComplex, xisinf> (*this);
+  return do_mx_unary_map<bool, FloatComplex, octave::math::isinf> (*this);
 }
 
 boolNDArray
 FloatComplexNDArray::isfinite (void) const
 {
-  return do_mx_unary_map<bool, FloatComplex, xfinite> (*this);
+  return do_mx_unary_map<bool, FloatComplex, octave::math::finite> (*this);
 }
 
 FloatComplexNDArray
@@ -765,23 +753,20 @@ FloatComplexNDArray::insert (const NDArray& a,
 {
   dim_vector a_dv = a.dims ();
 
-  int n = a_dv.length ();
+  int n = a_dv.ndims ();
 
-  if (n == dimensions.length ())
+  if (n == dimensions.ndims ())
     {
-      Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
+      Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.ndims (), 1), 0);
 
       a_ra_idx.elem (0) = r;
       a_ra_idx.elem (1) = c;
 
       for (int i = 0; i < n; i++)
         {
-          if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
-            {
-              (*current_liboctave_error_handler)
-                ("Array<T>::insert: range error for insert");
-              return *this;
-            }
+          if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dimensions(i))
+            (*current_liboctave_error_handler)
+              ("Array<T>::insert: range error for insert");
         }
 
       a_ra_idx.elem (0) = 0;
@@ -789,14 +774,14 @@ FloatComplexNDArray::insert (const NDArray& a,
 
       octave_idx_type n_elt = a.numel ();
 
-      // IS make_unique () NECCESSARY HERE??
+      // IS make_unique () NECESSARY HERE?
 
       for (octave_idx_type i = 0; i < n_elt; i++)
         {
           Array<octave_idx_type> ra_idx = a_ra_idx;
 
-          ra_idx.elem (0) = a_ra_idx (0) + r;
-          ra_idx.elem (1) = a_ra_idx (1) + c;
+          ra_idx.elem (0) = a_ra_idx(0) + r;
+          ra_idx.elem (1) = a_ra_idx(1) + c;
 
           elem (ra_idx) = a.elem (a_ra_idx);
 
@@ -857,7 +842,7 @@ FloatComplexNDArray::diag (octave_idx_type m, octave_idx_type n) const
 std::ostream&
 operator << (std::ostream& os, const FloatComplexNDArray& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -871,7 +856,7 @@ operator << (std::ostream& os, const FloatComplexNDArray& a)
 std::istream&
 operator >> (std::istream& is, FloatComplexNDArray& a)
 {
-  octave_idx_type nel = a.nelem ();
+  octave_idx_type nel = a.numel ();
 
   if (nel > 0)
     {
@@ -882,11 +867,9 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
           if (is)
             a.elem (i) = tmp;
           else
-            goto done;
+            return is;
         }
     }
-
-done:
 
   return is;
 }
@@ -924,3 +907,4 @@ BSXFUN_STDOP_DEFS_MXLOOP (FloatComplexNDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (FloatComplexNDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, FloatComplexNDArray, mx_inline_pow)
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{ylimits} =} ylim ()
-## @deftypefnx {Function File} {@var{xmode} =} ylim ("mode")
-## @deftypefnx {Function File} {} ylim ([@var{y_lo} @var{y_hi}])
-## @deftypefnx {Function File} {} ylim ("auto")
-## @deftypefnx {Function File} {} ylim ("manual")
-## @deftypefnx {Function File} {} ylim (@var{hax}, @dots{})
+## @deftypefn  {} {@var{ylimits} =} ylim ()
+## @deftypefnx {} {@var{xmode} =} ylim ("mode")
+## @deftypefnx {} {} ylim ([@var{y_lo} @var{y_hi}])
+## @deftypefnx {} {} ylim ("auto")
+## @deftypefnx {} {} ylim ("manual")
+## @deftypefnx {} {} ylim (@var{hax}, @dots{})
 ## Query or set the limits of the y-axis for the current plot.
 ##
 ## Called without arguments @code{ylim} returns the y-axis limits of the
@@ -43,11 +43,13 @@
 ## @end deftypefn
 
 function retval = ylim (varargin)
+
   ret = __axis_limits__ ("ylim", varargin{:});
 
   if (! isempty (ret))
     retval = ret;
   endif
+
 endfunction
 
 
@@ -55,29 +57,25 @@ endfunction
 %! clf;
 %! line ();
 %! ylim ([0.2, 0.8]);
-%! title ('ylim is [0.2, 0.8]');
-%! assert (ylim (), [0.2, 0.8]);
+%! title ("ylim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! line ();
-%! ylim ('auto');
-%! title ('ylim is auto');
-%! assert (ylim ('mode'), 'auto');
+%! ylim ("auto");
+%! title ("ylim is auto");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! ylim ([0.2, 0.8]);
-%! title ('ylim is [0.2, 0.8]');
-%! assert (ylim (), [0.2, 0.8]);
+%! title ("ylim is [0.2, 0.8]");
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! ylim ('auto');
-%! title ('ylim is auto');
-%! assert (ylim ('mode'), 'auto');
+%! ylim ("auto");
+%! title ("ylim is auto");
 
 %!test
 %! hf = figure ("visible", "off");

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 John W. Eaton
+Copyright (C) 2008-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_functor_h)
+#if ! defined (octave_functor_h)
 #define octave_functor_h 1
+
+#include "octave-config.h"
 
 template <typename RT, typename PT>
 class fcn_ptr
@@ -73,3 +75,4 @@ func_ptr_with_conversion (RT (*f) (PT))
 }
 
 #endif
+

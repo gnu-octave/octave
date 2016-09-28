@@ -1,4 +1,5 @@
-## Copyright (C) 2013-2015 Carnë Draug
+## Copyright (C) 2013-2016 Carnë Draug
+## Copyright (C) 2016 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##
@@ -9,7 +10,7 @@
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
@@ -17,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{arg_idx})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name})
-## @deftypefnx {Function File} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name}, @var{arg_idx})
+## @deftypefn  {} {} validateattributes (@var{A}, @var{classes}, @var{attributes})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{arg_idx})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name})
+## @deftypefnx {} {} validateattributes (@var{A}, @var{classes}, @var{attributes}, @var{func_name}, @var{arg_name}, @var{arg_idx})
 ## Check validity of input argument.
 ##
 ## Confirms that the argument @var{A} is valid by belonging to one of
@@ -55,7 +56,8 @@
 ##
 ## @table @asis
 ## @item @qcode{"<="}
-## All values are less than or equal to the following value in @var{attributes}.
+## All values are less than or equal to the following value in
+## @var{attributes}.
 ##
 ## @item @qcode{"<"}
 ## All values are less than the following value in @var{attributes}.
@@ -83,6 +85,9 @@
 ##
 ## @item @qcode{"decreasing"}
 ## No value is @var{NaN}, and each is less than the preceding one.
+##
+## @item @qcode{"diag"}
+## Value is a diagonal matrix.
 ##
 ## @item @qcode{"even"}
 ## All values are even numbers.
@@ -117,7 +122,7 @@
 ## @item @qcode{"nonnan"}
 ## No value is a @code{NaN}.
 ##
-## @item @qcode{"nonnegative"}
+## @item @nospell{@qcode{"nonnegative"}}
 ## All values are non negative.
 ##
 ## @item @qcode{"nonsparse"}
@@ -165,12 +170,15 @@
 ## @end deftypefn
 
 function validateattributes (A, cls, attr, varargin)
+
   if (nargin < 3 || nargin > 6)
     print_usage ();
   elseif (! iscellstr (cls))
-    error ("validateattributes: CLASSES must be a cell array of strings");
+    error ("Octave:invalid-type",
+           "validateattributes: CLASSES must be a cell array of strings");
   elseif (! iscell (attr))
-    error ("validateattributes: ATTRIBUTES must be a cell array");
+    error ("Octave:invalid-type",
+           "validateattributes: ATTRIBUTES must be a cell array");
   endif
 
   ## Built start of error message from the extra optional arguments
@@ -183,19 +191,22 @@ function validateattributes (A, cls, attr, varargin)
     elseif (nargin == 4 && valid_arg_idx (fourth))
       var_name = sprintf ("input %d", fourth);
     else
-      error ("validateattributes: 4th input argument must be ARG_IDX or FUNC_NAME");
+      error ("Octave:invalid-input-arg",
+             "validateattributes: 4th input argument must be ARG_IDX or FUNC_NAME");
     endif
 
     if (nargin > 4)
       var_name = varargin{2};
       if (! ischar (var_name))
-        error ("validateattributes: VAR_NAME must be a string");
+        error ("Octave:invalid-type",
+               "validateattributes: VAR_NAME must be a string");
       endif
 
       if (nargin > 5)
         arg_idx = varargin{3};
         if (! valid_arg_idx (arg_idx))
-          error ("validateattributes: ARG_IDX must be a positive integer");
+          error ("Octave:invalid-input-arg",
+                 "validateattributes: ARG_IDX must be a positive integer");
         endif
         var_name = sprintf ("%s (argument #%i)", var_name, arg_idx);
       endif
@@ -219,60 +230,110 @@ function validateattributes (A, cls, attr, varargin)
     cls = unique (cls);
 
     classes = sprintf (" %s", cls{:});
-    error ("%s must be of class:\n\n %s\n\nbut was of class %s",
+    error ("Octave:invalid-type",
+           "%s must be of class:\n\n %s\n\nbut was of class %s",
            err_ini, classes, class (A));
   endif
 
   ## We use a while loop because some attributes require the following value
-  ## in the cell array. Also, we can't just get the boolean value for the
+  ## in the cell array.  Also, we can't just get the boolean value for the
   ## test and check at the end the error message since some of the tests
   ## require some more complex error message.
 
   ## It may look like that we don't perform enough input check in this
   ## function (e.g., we don't check if there's a value after the size
-  ## attribute). The reasoning is that this will be a function mostly used
+  ## attribute).  The reasoning is that this will be a function mostly used
   ## by developers with fairly static input so any problem would be caught
-  ## immediately during that functino development, it's no dependent on the
-  ## final user input. In addition, it can be called so many times at the
+  ## immediately during that function development, it's no dependent on the
+  ## final user input.  In addition, it can be called so many times at the
   ## start of every function, we want it to run specially fast.
   idx = 1;
   problem = false; # becomes true when one of the tests fails
   while (idx <= numel (attr))
-    ## TODO: once we use this in Octave core, it might be worthy to find
+    ## FIXME: once we use this in Octave core, it might be worthy to find
     ## which attributes are checked more often, and place them in that
     ## order inside the switch block.
     switch (tolower (attr{idx++}))
-      case "2d",            problem = ndims (A) != 2;
-      case "3d",            problem = ndims (A) > 3;
-      case "column",        problem = ! iscolumn (A);
-      case "row",           problem = ! isrow (A);
-      case "scalar",        problem = ! isscalar (A);
-      case "vector",        problem = ! isvector (A);
-      case "square",        problem = ! issquare (A);
-      case "nonempty",      problem = isempty (A);
-      case "nonsparse",     problem = issparse (A);
-      case "binary",        problem = ! islogical (A) && ...
-                                      any ((A(:) != 1) & (A(:) != 0));
-      case "even",          problem = any (rem (A(:), 2) != 0);
-      case "odd",           problem = any (mod (A(:), 2) != 1);
-      case "integer",       problem = ! isinteger (A) && ...
-                                      any (ceil (A(:)) != A(:));
-      case "real",          problem = ! isreal (A);
-      case "finite",        problem = ! isinteger (A) && ...
-                                      ! all (isfinite (A(:)));
-      case "nonnan",        problem = ! isinteger (A) && ...
-                                      any (isnan (A(:)));
-      case "nonnegative",   problem = any (A(:) < 0);
-      case "nonzero",       problem = any (A(:) == 0);
-      case "positive",      problem = any (A(:) <= 0);
-      case "decreasing",    problem = (any (isnan (A(:)))
-                                       || any (diff (A(:)) >= 0));
-      case "increasing",    problem = (any (isnan (A(:)))
-                                       || any (diff (A(:)) <= 0));
-      case "nondecreasing", problem = (any (isnan (A(:)))
-                                       || any (diff (A(:)) <  0));
-      case "nonincreasing", problem = (any (isnan (A(:)))
-                                       || any (diff (A(:)) >  0));
+      case "2d",
+        problem = ndims (A) != 2;
+        err_id = "Octave:expected-2d";
+      case "3d",
+        problem = ndims (A) > 3;
+        err_id = "Octave:expected-3d";
+      case "column",
+        problem = ! iscolumn (A);
+        err_id = "Octave:expected-column";
+      case "row",
+        problem = ! isrow (A);
+        err_id = "Octave:expected-row";
+      case "scalar",
+        problem = ! isscalar (A);
+        err_id = "Octave:expected-scalar";
+      case "vector",
+        problem = ! isvector (A);
+        err_id = "Octave:expected-vector";
+      case "square",
+        problem = ! issquare (A);
+        err_id = "Octave:expected-square";
+      case "diag",
+        problem = ! isdiag (A);
+        err_id = "Octave:expected-diag";
+      case "nonempty",
+        problem = isempty (A);
+        err_id = "Octave:expected-nonempty";
+      case "nonsparse",
+        problem = issparse (A);
+        err_id = "Octave:expected-nonsparse";
+      case "binary",
+        problem = ! islogical (A) && ...
+                  any ((A(:) != 1) & (A(:) != 0));
+        err_id = "Octave:expected-binary";
+      case "even",
+        problem = any (rem (A(:), 2) != 0);
+        err_id = "Octave:expected-even";
+      case "odd",
+        problem = any (mod (A(:), 2) != 1);
+        err_id = "Octave:expected-odd";
+      case "integer",
+        problem = ! isinteger (A) && ...
+                  any (ceil (A(:)) != A(:));
+        err_id = "Octave:expected-integer";
+      case "real",
+        problem = ! isreal (A);
+        err_id = "Octave:expected-real";
+      case "finite",
+        problem = ! isinteger (A) && ...
+                  ! all (isfinite (A(:)));
+        err_id = "Octave:expected-finite";
+      case "nonnan",
+        problem = ! isinteger (A) && ...
+                  any (isnan (A(:)));
+        err_id = "Octave:expected-nonnan";
+      case "nonnegative",
+        problem = any (A(:) < 0);
+        err_id = "Octave:expected-nonnegative";
+      case "nonzero",
+        problem = any (A(:) == 0);
+        err_id = "Octave:expected-nonzero";
+      case "positive",
+        problem = any (A(:) <= 0);
+        err_id = "Octave:expected-positive";
+      case "decreasing",
+        problem = (any (isnan (A(:)))
+                   || any (diff (A(:)) >= 0));
+        err_id = "Octave:expected-decreasing";
+      case "increasing",
+        problem = (any (isnan (A(:)))
+                   || any (diff (A(:)) <= 0));
+        err_id = "Octave:expected-increasing";
+      case "nondecreasing",
+        problem = (any (isnan (A(:)))
+                   || any (diff (A(:)) <  0));
+        err_id = "Octave:expected-nondecreasing";
+      case "nonincreasing",
+        problem = (any (isnan (A(:)))
+                   || any (diff (A(:)) >  0));
+        err_id = "Octave:expected-nonincreasing";
       case "size",
         A_size = size (A);
         w_size = attr{idx++};
@@ -281,49 +342,72 @@ function validateattributes (A, cls, attr, varargin)
           A_size_str = sprintf ("%dx", size (A))(1:end-1);
           w_size_str = sprintf ("%ix", w_size)(1:end-1);
           w_size_str = strrep (w_size_str, "NaN", "N");
-          error ("%s must be of size %s but was %s", err_ini, w_size_str, A_size_str);
+          err_id = "Octave:incorrect-size";
+          error (err_id,
+                 "%s must be of size %s but was %s",
+                 err_ini, w_size_str, A_size_str);
         endif
       case "numel",
         if (numel (A) != attr{idx++})
-          error ("%s must have %d elements", err_ini, attr{idx-1});
+          err_id = "Octave:incorrect-numel";
+          error (err_id,
+                 "%s must have %d elements", err_ini, attr{idx-1});
         endif
       case "ncols",
         if (columns (A) != attr{idx++})
-          error ("%s must have %d columns", err_ini, attr{idx-1});
+          err_id = "Octave:incorrect-numcols";
+          error (err_id,
+                 "%s must have %d columns", err_ini, attr{idx-1});
         endif
       case "nrows",
         if (rows (A) != attr{idx++})
-          error ("%s must have %d rows", err_ini, attr{idx-1});
+          err_id = "Octave:incorrect-numrows";
+          error (err_id,
+                 "%s must have %d rows", err_ini, attr{idx-1});
         endif
       case "ndims",
         ## Note that a [4 5 1] matrix is not considered to have ndims == 3
-        ## but is ok for "3d". This is not a bug.
+        ## but is ok for "3d".  This is not a bug.
         if (ndims (A) != attr{idx++})
-          error ("%s must have %d dimensions", err_ini, attr{idx-1});
+          err_id = "Octave:incorrect-numdims";
+          error (err_id,
+                 "%s must have %d dimensions", err_ini, attr{idx-1});
         endif
       case ">"
         if (! all (A(:) > attr{idx++}))
-          error ("%s must be greater than %f", err_ini, attr{idx-1});
+          err_id = "Octave:expected-greater";
+          error (err_id,
+                 "%s must be greater than %f", err_ini, attr{idx-1});
         endif
       case ">="
         if (! all (A(:) >= attr{idx++}))
-          error ("%s must be greater than or equal to %f", err_ini, attr{idx-1});
+          err_id = "Octave:expected-greater-equal";
+          error (err_id,
+                 "%s must be greater than or equal to %f", err_ini, attr{idx-1});
         endif
       case "<"
         if (! all (A(:) < attr{idx++}))
-          error ("%s must be less than %f", err_ini, attr{idx-1});
+          err_id = "Octave:expected-less";
+          error (err_id,
+                 "%s must be less than %f", err_ini, attr{idx-1});
         endif
       case "<="
         if (! all (A(:) <= attr{idx++}))
-          error ("%s must be less than or equal to %f", err_ini, attr{idx-1});
+          err_id = "Octave:expected-less-equal";
+          error (err_id,
+                 "%s must be less than or equal to %f", err_ini, attr{idx-1});
         endif
       otherwise
-        error ("validateattributes: unknown ATTRIBUTE %s", attr{idx-1});
+        err_id = "Octave:invalid-input-arg";
+        error (err_id,
+               "validateattributes: unknown ATTRIBUTE %s", attr{idx-1});
     endswitch
     if (problem)
-      error ("%s must be %s", err_ini, attr{idx-1});
+      error (err_id,
+             "%s must be %s", err_ini, attr{idx-1});
     endif
   endwhile
+
 endfunction
 
 function retval = valid_arg_idx (arg)
@@ -384,50 +468,265 @@ endfunction
 %!error <greater than> validateattributes ([6 7 8 5], {}, {">=", 6})
 %!error <less than> validateattributes ([6 7 8 5], {}, {"<", 8})
 %!error <less than> validateattributes ([6 7 8 5], {}, {"<=", 7})
+%!error <diag> validateattributes ([0 0 0; 0 0 0; 1 0 0], {}, {"diag"})
+%!error <diag> validateattributes (repmat (eye (3), [1 1 3]), {}, {"diag"})
 
 %!test
-%! validateattributes (rand (5), {"numeric"}, {})
-%! validateattributes (rand (5), {"float"}, {})
-%! validateattributes (rand (5), {"double"}, {})
-%! validateattributes ("text", {"char"}, {})
-%! validateattributes (rand (5), {}, {"2d"})
-%! validateattributes (rand (5), {}, {"3d"})
-%! validateattributes (rand (5, 5, 5), {}, {"3d"})
-%! validateattributes (rand (5, 1), {}, {"column"})
-%! validateattributes (rand (1, 5), {}, {"row"})
-%! validateattributes ("a", {}, {"scalar"})
-%! validateattributes (5, {}, {"scalar"})
-%! validateattributes (rand (1, 5), {}, {"vector"})
-%! validateattributes (rand (5, 1), {}, {"vector"})
-%! validateattributes (rand (5), {}, {"square"})
-%! validateattributes (rand (5), {}, {"nonempty"})
-%! validateattributes (rand (5), {}, {"nonsparse"})
-%! validateattributes ([0 1 0 1 0], {}, {"binary"})
-%! validateattributes (rand (5) > 0.5, {}, {"binary"})
-%! validateattributes ([8 4 0 6], {}, {"even"})
-%! validateattributes ([-1 3 5], {}, {"odd"})
-%! validateattributes ([8 4 0 6], {}, {"real"})
-%! validateattributes ([8 4i 0 6], {}, {"finite"})
-%! validateattributes (uint8 ([8 4]), {}, {"finite"})
-%! validateattributes ([8 Inf], {}, {"nonnan"})
-%! validateattributes ([0 7 4], {}, {"nonnegative"})
-%! validateattributes ([-8 7 4], {}, {"nonzero"})
-%! validateattributes ([8 7 4], {}, {"positive"})
-%! validateattributes ([8 7 4 -5], {}, {"decreasing"})
-%! validateattributes ([-8 -7 4 5], {}, {"increasing"})
-%! validateattributes ([8 4 4 -5], {}, {"nonincreasing"})
-%! validateattributes ([-8 -8 4 5], {}, {"nondecreasing"})
-%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 7 2]})
-%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 NaN 7 2]})
-%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 NaN 2 NaN]})
-%! validateattributes (rand (6, 2), {}, {"numel", 12})
-%! validateattributes (rand (6, 2), {}, {"ncols", 2})
-%! validateattributes (rand (6, 2), {}, {"nrows", 6})
-%! validateattributes (rand (6, 2, 4, 5), {}, {"ndims", 4})
-%! validateattributes ([4 5 6 7], {}, {">", 3})
-%! validateattributes ([4 5 6 7], {}, {">=", 4})
-%! validateattributes ([4 5 6 7], {}, {"<", 8})
-%! validateattributes ([4 5 6 7], {}, {"<=", 7})
+%! validateattributes (rand (5), {"numeric"}, {});
+%! validateattributes (rand (5), {"float"}, {});
+%! validateattributes (rand (5), {"double"}, {});
+%! validateattributes ("text", {"char"}, {});
+%! validateattributes (rand (5), {}, {"2d"});
+%! validateattributes (rand (5), {}, {"3d"});
+%! validateattributes (rand (5, 5, 5), {}, {"3d"});
+%! validateattributes (rand (5, 1), {}, {"column"});
+%! validateattributes (rand (1, 5), {}, {"row"});
+%! validateattributes ("a", {}, {"scalar"});
+%! validateattributes (5, {}, {"scalar"});
+%! validateattributes (rand (1, 5), {}, {"vector"});
+%! validateattributes (rand (5, 1), {}, {"vector"});
+%! validateattributes (rand (5), {}, {"square"});
+%! validateattributes (rand (5), {}, {"nonempty"});
+%! validateattributes (rand (5), {}, {"nonsparse"});
+%! validateattributes ([0 1 0 1 0], {}, {"binary"});
+%! validateattributes (rand (5) > 0.5, {}, {"binary"});
+%! validateattributes ([8 4 0 6], {}, {"even"});
+%! validateattributes ([-1 3 5], {}, {"odd"});
+%! validateattributes ([8 4 0 6], {}, {"real"});
+%! validateattributes ([8 4i 0 6], {}, {"finite"});
+%! validateattributes (uint8 ([8 4]), {}, {"finite"});
+%! validateattributes ([8 Inf], {}, {"nonnan"});
+%! validateattributes ([0 7 4], {}, {"nonnegative"});
+%! validateattributes ([-8 7 4], {}, {"nonzero"});
+%! validateattributes ([8 7 4], {}, {"positive"});
+%! validateattributes ([8 7 4 -5], {}, {"decreasing"});
+%! validateattributes ([-8 -7 4 5], {}, {"increasing"});
+%! validateattributes ([8 4 4 -5], {}, {"nonincreasing"});
+%! validateattributes ([-8 -8 4 5], {}, {"nondecreasing"});
+%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 7 2]});
+%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 NaN 7 2]});
+%! validateattributes (rand (4, 6, 7, 2), {}, {"size", [4 6 NaN 2 NaN]});
+%! validateattributes (rand (6, 2), {}, {"numel", 12});
+%! validateattributes (rand (6, 2), {}, {"ncols", 2});
+%! validateattributes (rand (6, 2), {}, {"nrows", 6});
+%! validateattributes (rand (6, 2, 4, 5), {}, {"ndims", 4});
+%! validateattributes ([4 5 6 7], {}, {">", 3});
+%! validateattributes ([4 5 6 7], {}, {">=", 4});
+%! validateattributes ([4 5 6 7], {}, {"<", 8});
+%! validateattributes ([4 5 6 7], {}, {"<=", 7});
+%! validateattributes (eye (3), {}, {"diag"});
+%! validateattributes ([1 0 0; 0 1 0; 0 0 1], {}, {"diag"});
+%! validateattributes (zeros (3), {}, {"diag"});
 
 %!test
-%! validateattributes ([0 1 0 1], {"double", "uint8"}, {"binary", "size", [NaN 4], "nonnan"})
+%! validateattributes ([0 1 0 1], {"double", "uint8"}, {"binary", "size", [NaN 4], "nonnan"});
+
+%!test
+%! try validateattributes (ones(1,2,3), {"numeric"}, {"2d"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-2d");
+%! end_try_catch
+
+%!test
+%! try validateattributes (ones(1,2,3,4), {"numeric"}, {"3d"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-3d");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"column"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-column");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2].', {"numeric"}, {"row"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-row");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"scalar"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-scalar");
+%! end_try_catch
+
+%!test
+%! try validateattributes (ones(3), {"numeric"}, {"vector"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-vector");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"size", [1 1]});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:incorrect-size");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"numel", 7});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:incorrect-numel");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"ncols", 7});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:incorrect-numcols");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"nrows", 7});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:incorrect-numrows");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"ndims", 5});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:incorrect-numdims");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"square"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-square");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"diag"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-diag");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([], {"numeric"}, {"nonempty"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nonempty");
+%! end_try_catch
+
+%!test
+%! try validateattributes (speye(2), {"numeric"}, {"nonsparse"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nonsparse");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {">", 3});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-greater");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {">=", 3});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-greater-equal");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"<", -3});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-less");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"<=", -3});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-less-equal");
+%! end_try_catch
+
+%!test
+%! try validateattributes (3, {"numeric"}, {"binary"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-binary");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1, {"numeric"}, {"even"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-even");
+%! end_try_catch
+
+%!test
+%! try validateattributes (2, {"numeric"}, {"odd"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-odd");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1.1, {"numeric"}, {"integer"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-integer");
+%! end_try_catch
+
+%!test
+%! try validateattributes (1+1i*2, {"numeric"}, {"real"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-real");
+%! end_try_catch
+
+%!test
+%! try validateattributes (Inf, {"numeric"}, {"finite"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-finite");
+%! end_try_catch
+
+%!test
+%! try validateattributes (NaN, {"numeric"}, {"nonnan"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nonnan");
+%! end_try_catch
+
+%!test
+%! try validateattributes (-1, {"numeric"}, {"nonnegative"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nonnegative");
+%! end_try_catch
+
+%!test
+%! try validateattributes (0, {"numeric"}, {"nonzero"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nonzero");
+%! end_try_catch
+
+%!test
+%! try validateattributes (-1, {"numeric"}, {"positive"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-positive");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"decreasing"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-decreasing");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([2 1], {"numeric"}, {"increasing"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-increasing");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 0], {"numeric"}, {"nondecreasing"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nondecreasing");
+%! end_try_catch
+
+%!test
+%! try validateattributes ([1 2], {"numeric"}, {"nonincreasing"});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:expected-nonincreasing");
+%! end_try_catch
+
+%!test
+%! try validateattributes (@sin, {"numeric"}, {});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:invalid-type");
+%! end_try_catch
+
+%!test
+%! try validateattributes (@sin, 1, {});
+%! catch id,
+%! assert (getfield (id, "identifier"), "Octave:invalid-type");
+%! end_try_catch

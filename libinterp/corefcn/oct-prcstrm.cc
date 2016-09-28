@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdio>
@@ -31,18 +31,17 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
-                            oct_mach_info::float_format ff)
+                            octave::mach_info::float_format ff)
 {
   return octave_stream (new octave_iprocstream (n, arg_md, ff));
 }
 
 octave_iprocstream::octave_iprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
-                                        oct_mach_info::float_format ff)
+                                        octave::mach_info::float_format ff)
   : octave_stdiostream (n, octave_popen (n.c_str (), "r"),
                         arg_md, ff, octave_pclose)
-{
-}
+{ }
 
 octave_iprocstream::~octave_iprocstream (void)
 {
@@ -51,20 +50,20 @@ octave_iprocstream::~octave_iprocstream (void)
 
 octave_stream
 octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
-                            oct_mach_info::float_format ff)
+                            octave::mach_info::float_format ff)
 {
   return octave_stream (new octave_oprocstream (n, arg_md, ff));
 }
 
 octave_oprocstream::octave_oprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
-                                        oct_mach_info::float_format ff)
+                                        octave::mach_info::float_format ff)
   : octave_stdiostream (n, octave_popen (n.c_str (), "w"),
                         arg_md, ff, octave_pclose)
-{
-}
+{ }
 
 octave_oprocstream::~octave_oprocstream (void)
 {
   do_close ();
 }
+

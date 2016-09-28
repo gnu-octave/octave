@@ -1,4 +1,4 @@
-## Copyright (C) 1997-2015 Vincent Cautaerts
+## Copyright (C) 1997-2016 Vincent Cautaerts
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fftshift (@var{x})
-## @deftypefnx {Function File} {} fftshift (@var{x}, @var{dim})
+## @deftypefn  {} {} fftshift (@var{x})
+## @deftypefnx {} {} fftshift (@var{x}, @var{dim})
 ## Perform a shift of the vector @var{x}, for use with the @code{fft} and
 ## @code{ifft} functions, in order the move the frequency 0 to the center of
 ## the vector or matrix.
@@ -138,8 +138,8 @@ endfunction
 %! assert (y, "efgabcd");
 %! assert (fftshift (y), "bcdefga");
 
-## Test N-dimensional input (bug #45207)
-%!test
+## Test N-dimensional input
+%!test <45207>
 %! x = [0:3];
 %! x = x + x' + reshape (x, [1 1 4]);
 %! y1 = [4 5 2 3; 5 6 3 4; 2 3 0 1; 3 4 1 2];
@@ -147,7 +147,7 @@ endfunction
 %! assert (y, reshape ([y1 + 2, y1 + 3, y1, y1 + 1], [4 4 4]));
 %! assert (fftshift (y), x);
 
-%% Test input validation
+## Test input validation
 %!error fftshift ()
 %!error fftshift (1, 2, 3)
 %!error fftshift (0:3, -1)

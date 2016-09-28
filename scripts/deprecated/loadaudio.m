@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
+## @deftypefn {} {} loadaudio (@var{name}, @var{ext}, @var{bps})
 ##
 ## @code{loadaudio} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{audioread} in all new code.

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rose (@var{th})
-## @deftypefnx {Function File} {} rose (@var{th}, @var{nbins})
-## @deftypefnx {Function File} {} rose (@var{th}, @var{bins})
-## @deftypefnx {Function File} {} rose (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
-## @deftypefnx {Function File} {[@var{thout} @var{rout}] =} rose (@dots{})
+## @deftypefn  {} {} rose (@var{th})
+## @deftypefnx {} {} rose (@var{th}, @var{nbins})
+## @deftypefnx {} {} rose (@var{th}, @var{bins})
+## @deftypefnx {} {} rose (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} rose (@dots{})
+## @deftypefnx {} {[@var{thout} @var{rout}] =} rose (@dots{})
 ## Plot an angular histogram.
 ##
 ## With one vector argument, @var{th}, plot the histogram with 20 angular bins.
@@ -31,7 +31,7 @@
 ##
 ## If @var{nbins} is given and is a scalar, then the histogram is produced with
 ## @var{nbin} bins.  If @var{bins} is a vector, then the center of each bin is
-## defined by the values of @var{bins} and the number of bins is
+## defined by the values in @var{bins} and the number of bins is
 ## given by the number of elements in @var{bins}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
@@ -43,6 +43,8 @@
 ## If two output arguments are requested then no plot is made and
 ## the polar vectors necessary to plot the histogram are returned instead.
 ##
+## Example
+##
 ## @example
 ## @group
 ## [th, r] = rose ([2*randn(1e5,1), pi + 2*randn(1e5,1)]);
@@ -50,6 +52,12 @@
 ## @end group
 ## @end example
 ##
+## Programming Note: When specifying bin centers with the @var{bins} input,
+## the edges for bins 2 to N-1 are spaced so that @code{@var{bins}(i)} is
+## centered between the edges.  The final edge is drawn halfway between bin N
+## and bin 1.  This guarantees that all input @var{th} will be placed into one
+## of the bins, but also means that for some combinations bin 1 and bin N may
+## not be centered on the user's given values.
 ## @seealso{hist, polar}
 ## @end deftypefn
 
@@ -61,33 +69,54 @@ function [thout, rout] = rose (varargin)
     print_usage ();
   endif
 
-  ## Force theta to [0,2*pi] range
   th = varargin{1};
-  th = atan2 (sin (th), cos (th)) + pi;
+  ## Force theta to [0,2*pi] range
+  th = atan2 (sin (th), cos (th));
+  th(th < 0) += 2*pi;
 
-  if (nargin > 1)
-    x = varargin{2};
-    if (isscalar (x))
-      x = [0.5/x : 1/x : 1] * 2*pi;
-    else
-      ## Force theta to [0,2*pi] range
-      x = atan2 (sin (x), cos (x)) + pi;
-    endif
+  custom_bins = false;
+  if (nargin == 1)
+    bins = [1/40 : 1/20 : 1] * 2*pi;
   else
-    x = [1/40 : 1/20 : 1] * 2*pi;
+    bins = varargin{2};
+    if (isscalar (bins))
+      bins = [0.5/bins : 1/bins : 1] * 2*pi;
+    else
+      custom_bins = true;
+      ## Force angles to [0,2*pi] range
+      bins = atan2 (sin (bins), cos (bins));
+      bins(bins < 0) += 2*pi;
+      bins = unique (bins);
+    endif
+  endif
+  if (numel (bins) < 3)
+    warning ("rose: bin sizes >= pi will not plot correctly");
   endif
 
-  [nn, xx] = hist (th, x);
-  xx = xx(:).';
-  if (isvector (nn))
-    nn = nn(:);
+  [counts, binctr] = hist (th, bins);
+  binctr = binctr(:).';    # Force row vector
+  if (isvector (counts))
+    counts = counts(:);
   endif
-  x1 = xx(1:end-1) + diff (xx, 1) / 2;
-  x1 = [x1 ; x1; x1; x1](:);
-  th = [0; 0; x1; 2*pi ; 2*pi];
-  r = zeros (4 * rows (nn), columns (nn));
-  r(2:4:end, :) = nn;
-  r(3:4:end, :) = nn;
+  
+  binedge = binctr(1:end-1) + diff (binctr) / 2;
+  binedge = [binedge ; zeros(size(binedge)); zeros(size(binedge)); binedge];
+  binedge = binedge(:);
+  if (! custom_bins)
+    ## Add in implicit edges at 0 and 2*pi
+    th = [0; 0; binedge; 2*pi ; 0];
+  else
+    ## Add in final edge
+    last_bin_edge = binctr(end) + diff ([binctr(end), (2*pi+binctr(1))])/2;
+    if ((binedge(end) + last_bin_edge)/2 != binctr(end))
+      warning ("rose: bin 1 and bin %d are not centered", numel (binctr));
+    endif
+    th = [0; last_bin_edge; binedge; last_bin_edge; 0];
+  endif
+
+  r = zeros (4 * rows (counts), columns (counts));
+  r(2:4:end, :) = counts;
+  r(3:4:end, :) = counts;
 
   if (nargout < 2)
     oldfig = [];
@@ -117,10 +146,22 @@ endfunction
 %!demo
 %! clf;
 %! rose (2*randn (1e5, 1), 8);
-%! title ('rose() angular histogram plot with 8 bins');
+%! title ("rose() angular histogram plot with 8 bins");
 
 %!demo
 %! clf;
 %! rose ([2*randn(1e5, 1), pi + 2*randn(1e5, 1)]);
-%! title ('rose() angular histogram plot with 2 data series');
+%! title ("rose() angular histogram plot with 2 data series");
+
+%!demo
+%! clf;
+%! rose ([0, 2, 3, 5], [0, pi/2, pi, 3*pi/2]);
+%! title ("rose() angular histogram plot with specified bins");
+
+## Test input validation
+%!error rose ()
+%!warning <bin sizes .= pi will not plot correctly>
+%! [th, r] = rose ([1 2 2 4 4 4], 2);
+%!warning <bin 1 and bin 3 are not centered>
+%! [th, r] = rose ([1 2 2 4 4 4], [1 2 3]);
 

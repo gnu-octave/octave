@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Quad_h)
+#if ! defined (octave_Quad_h)
 #define octave_Quad_h 1
+
+#include "octave-config.h"
 
 #include <cfloat>
 
 #include "dColVector.h"
 #include "fColVector.h"
-#include "lo-math.h"
 
 typedef double (*integrand_fcn) (double x);
 typedef float (*float_integrand_fcn) (float x);
@@ -143,8 +144,8 @@ public:
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                      float& abserr);
+  OCTAVE_NORETURN float do_integrate (octave_idx_type& ier,
+                                      octave_idx_type& neval, float& abserr);
 
 private:
 
@@ -163,24 +164,23 @@ public:
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   IndefQuad (integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf), integration_error (0) { }
+    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t), integration_error (0) { }
+    : Quad (fcn), bound (b), type (t) { }
 
   ~IndefQuad (void) { }
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                      float& abserr);
+  OCTAVE_NORETURN float do_integrate (octave_idx_type& ier,
+                                      octave_idx_type& neval, float& abserr);
 
 private:
 
   double bound;
   IntegralType type;
-  int integration_error;
 };
 
 class
@@ -206,8 +206,8 @@ public:
 
   ~FloatDefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                       double& abserr);
+  OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
+                                       octave_idx_type& neval, double& abserr);
 
   float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                       float& abserr);
@@ -229,15 +229,15 @@ public:
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   FloatIndefQuad (float_integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf), integration_error (0) { }
+    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
 
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t), integration_error (0) { }
+    : Quad (fcn), bound (b), type (t) { }
 
   ~FloatIndefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
-                       double& abserr);
+  OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
+                                       octave_idx_type& neval, double& abserr);
 
   float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                       float& abserr);
@@ -246,7 +246,7 @@ private:
 
   float bound;
   IntegralType type;
-  int integration_error;
 };
 
 #endif
+

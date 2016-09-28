@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} manova (@var{x}, @var{g})
+## @deftypefn {} {} manova (@var{x}, @var{g})
 ## Perform a one-way multivariate analysis of variance (MANOVA).
 ##
 ## The goal is to test whether the p-dimensional population means of data
@@ -69,7 +69,7 @@ function manova (x, g)
     group_label = s ([1, (reshape (i, 1, k - 1) + 1)]);
   endif
 
-  x = x - ones (n, 1) * mean (x);
+  x -= ones (n, 1) * mean (x);
   SST = x' * x;
 
   s = zeros (1, p);
@@ -77,7 +77,7 @@ function manova (x, g)
   for i = 1 : k;
     v = x (find (g == group_label (i)), :);
     s = sum (v);
-    SSB = SSB + s' * s / rows (v);
+    SSB += s' * s / rows (v);
   endfor
   n_b = k - 1;
 

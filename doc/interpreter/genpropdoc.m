@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Pantxo Diribarne
+## Copyright (C) 2014-2016 Pantxo Diribarne
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
+## @deftypefn {} {@var{retval} =} genpropdoc (@var{OBJNAME}, @var{FILENAME})
 ##
 ## Print FILENAME texinfo source file associated to OBJNAME objects.  This
 ## function is meant to be run for generating octave documentation
@@ -30,7 +30,9 @@
 
 function genpropdoc (objname, fname)
   objnames = {"root", "figure", "axes", "line", ...
-              "text", "image", "patch", "surface"};
+              "text", "image", "patch", "surface", "light", ...
+              "uimenu", "uibuttongroup", "uicontextmenu", "uipanel", ...
+              "uicontrol", "uitoolbar", "uipushtool", "uitoggletool"};
 
   ## Base properties
   base = getstructure ("base");
@@ -123,6 +125,7 @@ __prop__ is unused.";
       case "busyaction"
       case "buttondownfcn"
         s.valid = valid_fcn;
+
       case "children"
         s.doc = "Graphics handles of the __objname__'s children.";
         s.valid = "vector of graphics handles";
@@ -169,7 +172,7 @@ always @qcode{\"__objname__\"}";
         s.doc = "Graphics handle of the uicontextmenu object that is \
 currently associated to this __objname__ object.";
         s.valid = valid_handle;
-        
+
       case "userdata"
         s.doc = "User-defined data to associate with the graphics object.";
         s.valid = "Any Octave data";
@@ -195,9 +198,9 @@ is always empty.";
 
       ## Specific properties
       case "callbackobject"
+        s.doc = "Graphics handle of the current object whose callback is executing.";
         s.valid = valid_handle;
 
-      case "commandwindowsize"
       case "currentfigure"
         s.doc = "Graphics handle of the current figure.";
         s.valid = valid_handle;
@@ -282,6 +285,7 @@ are visible in their parents' children list, regardless of the value of their \
       ## Specific properties
       case "alphamap"
         s.doc = sprintf (doc_notimpl, "Transparency");
+
       case "closerequestfcn"
         s.valid = valid_fcn;
 
@@ -324,15 +328,19 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
       case "dockcontrols"
         s.doc = doc_unused;
 
-      case "doublebuffer"
       case "filename"
-        s.doc = "The filename used when saving the plot figure";
+        s.doc = "The filename used when saving the plot figure.";
         s.valid = valid_string;
+
+      case "graphicssmoothing"
+        s.doc = "Use smoothing techniques to reduce the appearance of jagged lines.";
 
       case "integerhandle"
         s.doc = "Assign the next lowest unused integer as the Figure number.";
 
       case "inverthardcopy"
+        s.doc = "Replace the figure and axes background color with white when printing.";
+
       case "keypressfcn"
         s.valid = valid_fcn;
 
@@ -355,13 +363,17 @@ key.\n\
 
       case "menubar"
         s.doc = "Control the display of the figure menu bar in the upper \
-left of the figure.";  
+left of the figure.";
 
       case "name"
         s.doc = "Name to be displayed in the figure title bar.  The name is \
 displayed to the right of any title determined by the @code{numbertitle} \
 property.";
         s.valid = valid_string;
+
+      ## FIXME: Uncomment when support added in graphics.in.h
+      #case "number"
+      #  s.doc = "Number of current figure (RO).";
 
       case "nextplot"
 
@@ -373,30 +385,50 @@ value in the figure title bar.";
         s.valid = valid_4elvec;
 
       case "paperorientation"
+        s.doc = "The value for the @code{papersize}, and @code{paperposition} \
+properties depends upon __prop__.  The horizontal and vertical values for \
+@code{papersize} and @code{paperposition} reverse order \
+when __prop__ is switched between @code{\"portrait\"} and \
+@code{\"landscape\"}.";
+
       case "paperposition"
-        s.doc = "Vector @code{[x0 y0 width height]} defining the position of \
-the figure (in @code{paperunits} units) on the printed page.\
-  __modemsg__.";
+        s.doc = "Vector @code{[left bottom width height]} defining the \
+position and size of the figure (in @code{paperunits} units) on the printed \
+page.  The position @code{[left bottom]} defines the lower left corner of the \
+figure on the page, and the size is defined by @code{[width height]}.  For \
+output formats not implicitly rendered on paper, @code{width} and \
+@code{height} define the size of the image and the position information is \
+ignored.  \
+__modemsg__.";
         s.valid = valid_4elvec;
 
       case "paperpositionmode"
         s.doc = "If __prop__ is set to @qcode{\"auto\"}, the \
 @code{paperposition} property is automatically computed: the printed \
 figure will have the same size as the on-screen figure and will be centered \
-on the output page.";
+on the output page.  Setting the __prop__ to @code{\"auto\"} does not modify \
+the value of the @code{paperposition} property.";
 
       case "papersize"
         s.doc = "Vector @code{[width height]} defining the size of the \
-paper for printing.  Setting this property forces the @code{papertype} \
-property to be set to @qcode{\"<custom>\"}.";
+paper for printing.  Setting the __prop__ property to a value, not associated \
+with one of the defined @code{papertypes} and consistent with the setting for \
+@code{paperorientation}, forces the @code{papertype} property to the value \
+@qcode{\"<custom>\"}.  If __prop__ is set to a value associated with a \
+supported @code{papertype} and consistent with the @code{paperorientation}, \
+the @code{papertype} value is modified to the associated value.";
         s.valid = valid_2elvec;
 
       case "papertype"
         s.doc = "Name of the paper used for printed output.  \
-Setting __prop__ also changes @code{papersize} accordingly.";
+Setting __prop__ also changes @code{papersize}, while maintaining consistency \
+with the @code{paperorientation} property.";
 
       case "paperunits"
-        s.doc = "The unit used to compute the @code{paperposition} property.";
+        s.doc = "The unit used to compute the @code{paperposition} property.  \
+For __prop__ set to @code{\"pixels\"}, the conversion between physical \
+units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
+@code{screenpixelsperinch} property of the root object.";
 
       case "pointer"
         s.doc = doc_unused;
@@ -406,19 +438,33 @@ Setting __prop__ also changes @code{papersize} accordingly.";
         s.doc = doc_unused;
 
       case "position"
+        s.doc = "Specify the position and size of the figure.  \
+The four elements of the vector are the coordinates of the lower left corner \
+and width and height of the figure.  \
+@xref{XREFfigureunits, , @w{units property}}.";
         s.valid = valid_4elvec;
 
       case "renderer"
       case "renderermode"
+
       case "resize"
+        s.doc = doc_unused;
+
       case "resizefcn"
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
         s.valid = valid_fcn;
 
       case "selectiontype"
-        s.doc = doc_unused;
+        ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
+
+      case "sizechangedfcn"
+        s.doc = "Callback triggered when the figure window size is changed.";
+        s.valid = valid_fcn;
 
       case "toolbar"
-        s.doc = doc_unused;
+        s.doc = "Control the display of the toolbar along the bottom of the \
+figure window.  When set to @qcode{\"auto\"}, the display is based on the \
+value of the @code{menubar} property.";
 
       case "units"
         s.doc = "The unit used to compute the @code{position} and \
@@ -452,11 +498,17 @@ released respectively.  When these callback functions are executed, the \
         s.valid = valid_fcn;
 
       case "windowstyle"
-      case "wvisual"
-      case "wvisualmode"
-      case "xdisplay"
-      case "xvisual"
-      case "xvisualmode"
+        s.doc = "The window style of a figure.  One of the following values:\n\
+@table @code\n\
+@item normal\n\
+Set the window style as non modal.\n\
+@item modal\n\
+Set the window as modal so that it will stay on top of all normal figures.\n\
+@item docked\n\
+Setting the window style as docked currently does not dock the window.\n\
+@end table\n\
+\n\
+Changing modes of a visible figure may cause the figure to close and reopen.";
 
     endswitch
 
@@ -471,11 +523,16 @@ released respectively.  When these callback functions are executed, the \
       case "activepositionproperty"
       case "alim"
         s.doc = sprintf (doc_notimpl, "Transparency");
+
       case "alimmode"
       case "ambientlightcolor"
         s.doc = sprintf (doc_notimpl, "Light");
+
       case "box"
         s.doc = "Control whether the axes has a surrounding box.";
+
+      case "boxstyle"
+        s.doc = doc_unused;
 
       case "cameraposition"
         s.valid = valid_3elvec;
@@ -500,6 +557,9 @@ __modemsg__.  @xref{XREFpcolor, , @w{pcolor function}}.";
 
       case "climmode"
 
+      case "clippingstyle"
+        s.doc = doc_unused;
+
       case "color"
         s.doc = "Color of the axes background.  @xref{Colors, , colorspec}.";
         s.valid = valid_color;
@@ -508,6 +568,9 @@ __modemsg__.  @xref{XREFpcolor, , @w{pcolor function}}.";
         s.doc = "RGB values used by plot function for automatic line \
 coloring.";
         s.valid = "N-by-3 RGB matrix";
+
+      case "colororderindex"
+        s.doc = doc_unused;
 
       case "currentpoint"
         s.doc = "Matrix @code{[xf, yf, zf; xb, yb, zb]} which holds the \
@@ -528,7 +591,6 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
         s.valid = valid_3elvec;
 
       case "dataaspectratiomode"
-      case "drawmode"
       case "fontangle"
       case "fontname"
         s.doc = "Name of the font used for axes annotations.";
@@ -542,21 +604,55 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
       case "fontunits"
         s.doc = "Unit used to interpret @code{fontsize} property.";
 
+      case "fontsmoothing"
+        s.doc = doc_unused;
+
       case "fontweight"
 
+      case "gridalpha"
+        s.doc = sprintf (doc_notimpl, "Transparency");
+
+      case "gridalphamode"
+        s.doc = doc_unused;
+
+      case "gridcolor"
+        s.doc = doc_unused;
+
+      case "gridcolormode"
+        s.doc = doc_unused;
+
       case "gridlinestyle"
-      case "interpreter"
+
+      case "labelfontsizemultiplier"
+        s.doc = doc_unused;
 
       case "layer"
         s.doc = "Control whether the axes is drawn below child graphics \
-objects (ticks, labels, etc. covered by plotted objects) or above.";
+objects (ticks, labels, etc.@: covered by plotted objects) or above.";
 
       case "linestyleorder"
+        s.doc = doc_unused;
+
+      case "linestyleorderindex"
+        s.doc = doc_unused;
 
       case "linewidth"
+
+      case "minorgridalpha"
+        s.doc = sprintf (doc_notimpl, "Transparency");
+
+      case "minorgridalphamode"
+        s.doc = doc_unused;
+
+      case "minorgridcolor"
+        s.doc = doc_unused;
+
+      case "minorgridcolormode"
+        s.doc = doc_unused;
+
       case "minorgridlinestyle"
       case "mousewheelzoom"
-        s.doc = "Fraction of axes limits to zoom for each wheel movement."; 
+        s.doc = "Fraction of axes limits to zoom for each wheel movement.";
         s.valid = "scalar in the range (0, 1)";
 
       case "nextplot"
@@ -570,6 +666,9 @@ left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesposition, , @w{position property}}.";
         s.valid = valid_4elvec;
+
+      case "pickableparts"
+        s.doc = doc_unused;
 
       case "plotboxaspectratio"
       case "plotboxaspectratiomode"
@@ -585,12 +684,20 @@ height to be 0.4 and 0.5 respectively.  \
         s.valid = valid_4elvec;
 
       case "projection"
+        s.doc = doc_unused;
+
+      case "sortmethod"
+        s.doc = doc_unused;
 
       case "tickdir"
         s.doc = "Control whether axes tick marks project \"in\" to the plot \
 box or \"out\".";
 
       case "tickdirmode"
+
+      case "ticklabelinterpreter"
+        s.doc = "Control the way x/y/zticklabel properties are interpreted.\n\
+@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
 
       case "ticklength"
         s.doc = "Two-element vector @code{[2Dlen 3Dlen]} specifying the \
@@ -602,6 +709,12 @@ length of the tickmarks relative to the longest visible axis.";
         s.doc = "Graphics handle of the title text object.";
         s.valid = valid_handle;
 
+      case "titlefontsizemultiplier"
+        s.doc = doc_unused;
+
+      case "titlefontweight"
+        s.doc = doc_unused;
+
       case "units"
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
@@ -612,6 +725,9 @@ the viewpoint for three-dimensional plots";
       case "xcolor"
         s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
+
+      case "xcolormode"
+        s.doc = doc_unused;
 
       case "xdir"
       case "xgrid"
@@ -642,11 +758,17 @@ for the x-axis.  __modemsg__.  @xref{XREFxlim, , @w{xlim function}}.";
         s.valid = valid_cellstring;
 
       case "xticklabelmode"
+      case "xticklabelrotation"
+        s.doc = doc_unused;
+
       case "xtickmode"
       case "yaxislocation"
       case "ycolor"
         s.doc = "Color of the y-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
+
+      case "ycolormode"
+        s.doc = doc_unused;
 
       case "ydir"
       case "ygrid"
@@ -677,10 +799,16 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = valid_cellstring;
 
       case "yticklabelmode"
+      case "yticklabelrotation"
+        s.doc = doc_unused;
+
       case "ytickmode"
       case "zcolor"
         s.doc = "Color of the z-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
+
+      case "zcolormode"
+        s.doc = doc_unused;
 
       case "zdir"
       case "zgrid"
@@ -711,6 +839,9 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_cellstring;
 
       case "zticklabelmode"
+      case "zticklabelrotation"
+        s.doc = doc_unused;
+
       case "ztickmode"
     endswitch
 
@@ -730,10 +861,8 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.doc = "Text for the legend entry corresponding to this line.";
         s.valid = valid_cellstring;
 
-      case "erasemode"
-        s.doc = doc_unused;
-
       case "interpreter"
+
       case "linestyle"
         s.doc = "@xref{Line Styles}.";
 
@@ -811,8 +940,6 @@ z data.";
         s.valid = valid_color;
 
       case "editing"
-      case "erasemode"
-        s.doc = doc_unused;
 
       case "extent"
       case "fontangle"
@@ -836,6 +963,10 @@ z data.";
 
       case "horizontalalignment"
       case "interpreter"
+        s.doc = "Control the way the @qcode{\"string\"} property is \
+interpreted.\n\
+@xref{XREFinterpreterusage, , @w{Use of the interpreter property}}.";
+
       case "linestyle"
         s.doc = sprintf (doc_notimpl, "Background area");
 
@@ -889,9 +1020,6 @@ measured in degrees.";
         s.doc = "Text for the legend entry corresponding to this image.";
         s.valid = valid_cellstring;
 
-      case "erasemode"
-        s.doc = doc_unused;
-
       case "xdata"
         s.doc = "Two-element vector @code{[xmin xmax]} specifying the x \
 coordinates of the first and last columns of the image.\n\
@@ -926,10 +1054,13 @@ of @code{[1 rows(image)]}.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "ambientstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the ambient light. Value between 0.0 and 1.0";
+        s.valid = "scalar";
 
       case "backfacelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "@qcode{\"lit\"}: The normals are used as is for lighting. \
+@qcode{\"reverselit\"}: The normals are always oriented towards the point of view. \
+@qcode{\"unlit\"}: Faces with normals pointing away from the point of view are unlit.";
 
       case "cdata"
         s.valid = "matrix";
@@ -937,7 +1068,9 @@ of @code{[1 rows(image)]}.";
       case "cdatamapping"
       case "cdatasource"
       case "diffusestrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the diffuse reflex. Value between 0.0 (no \
+diffuse reflex) and 1.0 (full diffuse reflex).";
+        s.valid = "scalar";
 
       case "displayname"
         s.doc = "Text for the legend entry corresponding to this surface.";
@@ -948,17 +1081,25 @@ of @code{[1 rows(image)]}.";
 
       case "edgecolor"
       case "edgelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
-      case "erasemode"
-        s.doc = doc_unused;
       case "facealpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
         s.valid = valid_scalmat;
 
       case "facecolor"
       case "facelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "interpreter"
       case "linestyle"
@@ -986,13 +1127,19 @@ of @code{[1 rows(image)]}.";
       case "meshstyle"
       case "normalmode"
       case "specularcolorreflectance"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Reflectance for specular color. Value between 0.0 (color \
+of underlying face) and 1.0 (color of light source).";
+        s.valid = "scalar";
 
       case "specularexponent"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Exponent for the specular reflex. The lower the value, \
+the more the reflex is spread out.";
+        s.valid = "scalar";
 
       case "specularstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the specular reflex. Value between 0.0 (no \
+specular reflex) and 1.0 (full specular reflex).";
+        s.valid = "scalar";
 
       case "vertexnormals"
       case "xdata"
@@ -1021,11 +1168,13 @@ of @code{[1 rows(image)]}.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "ambientstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the ambient light. Value between 0.0 and 1.0";
         s.valid = "scalar";
 
       case "backfacelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc =  "@qcode{\"lit\"}: The normals are used as is for lighting. \
+@qcode{\"reverselit\"}: The normals are always oriented towards the point of view. \
+@qcode{\"unlit\"}: Faces with normals pointing away from the point of view are unlit.";
 
       case "cdata"
         s.doc = "Data defining the patch object color.\n\
@@ -1042,7 +1191,8 @@ it defines the color at each vertex.";
         s.valid = valid_scalmat;
 
       case "diffusestrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the diffuse reflex. Value between 0.0 (no \
+diffuse reflex) and 1.0 (full diffuse reflex).";
         s.valid = "scalar";
 
       case "displayname"
@@ -1054,10 +1204,12 @@ it defines the color at each vertex.";
 
       case "edgecolor"
       case "edgelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
-
-      case "erasemode"
-        s.doc = doc_unused;
+        s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "facealpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
@@ -1072,7 +1224,12 @@ it defines the color at each vertex.";
                             "@qcode{\"interp\"}"});
 
       case "facelighting"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
+of the object are drawn with light and shadow effects. Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
+the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+@qcode{\"gouraud\"}.";
 
       case "faces"
       case "xdata"
@@ -1105,15 +1262,18 @@ it defines the color at each vertex.";
 
       case "normalmode"
       case "specularcolorreflectance"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Reflectance for specular color.  Value between 0.0 (color \
+of underlying face) and 1.0 (color of light source).";
         s.valid = "scalar";
 
       case "specularexponent"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Exponent for the specular reflex.  The lower the value, \
+the more the reflex is spread out.";
         s.valid = "scalar";
 
       case "specularstrength"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = "Strength of the specular reflex.  Value between 0.0 (no \
+specular reflex) and 1.0 (full specular reflex).";
         s.valid = "scalar";
 
       case "vertexnormals"
@@ -1128,6 +1288,189 @@ it defines the color at each vertex.";
 
       case "zdata"
         s.valid = valid_vecmat;
+
+    endswitch
+
+  ## Light properties
+  elseif (strcmp (objname, "light"))
+    switch (field)
+      ## Overridden shared properties
+      case "children"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "color"
+        s.doc = "Color of the light source.  @xref{Colors, ,colorspec}.";
+        s.valid = valid_color;
+
+      case "position"
+        s.doc = "Position of the light source.";
+
+      case "style"
+        s.doc = "This string defines whether the light emanates from a \
+light source at infinite distance (@qcode{\"infinite\"}) or from a local \
+point source (@qcode{\"local\"}).";
+
+    endswitch
+
+  ## uimenu properties
+  elseif (strcmp (objname, "uimenu"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "accelerator"
+      case "callback"
+      case "checked"
+      case "enable"
+      case "foregroundcolor"
+      case "label"
+      case "position"
+      case "separator"
+
+    endswitch
+
+  ## uicontextmenu properties
+  elseif (strcmp (objname, "uicontextmenu"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "callback"
+      case "position"
+
+    endswitch
+
+  ## uipanel properties
+  elseif (strcmp (objname, "uipanel"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+      case "backgroundcolor"
+      case "bordertype"
+      case "borderwidth"
+      case "fontangle"
+      case "fontname"
+      case "fontsize"
+      case "fontunits"
+      case "fontweight"
+      case "foregroundcolor"
+      case "highlightcolor"
+      case "position"
+      case "resizefcn"
+      case "shadowcolor"
+      case "title"
+      case "titleposition"
+      case "units"
+
+    endswitch
+
+  ## uibuttongroup properties
+  elseif (strcmp (objname, "uibuttongroup"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+        case "backgroundcolor"
+        case "bordertype"
+        case "borderwidth"
+        case "fontangle"
+        case "fontname"
+        case "fontsize"
+        case "fontunits"
+        case "fontweight"
+        case "foregroundcolor"
+        case "highlightcolor"
+        case "position"
+        case "resizefcn"
+        case "selectedobject"
+        case "selectionchangedfcn"
+        case "shadowcolor"
+        case "title"
+        case "titleposition"
+        case "units"
+
+    endswitch
+
+  ## uicontrol properties
+  elseif (strcmp (objname, "uicontrol"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+      case "backgroundcolor"
+      case "callback"
+      case "cdata"
+      case "enable"
+      case "extent"
+      case "fontangle"
+      case "fontname"
+      case "fontsize"
+      case "fontunits"
+      case "fontweight"
+      case "foregroundcolor"
+      case "horizontalalignment"
+      case "keypressfcn"
+      case "listboxtop"
+      case "max"
+      case "min"
+      case "position"
+      case "sliderstep"
+      case "string"
+      case "style"
+      case "tooltipstring"
+      case "units"
+      case "value"
+      case "verticalalignment"
+
+    endswitch
+
+  ## uitoolbar properties
+  elseif (strcmp (objname, "uitoolbar"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+    endswitch
+
+  ## uipushtool properties
+  elseif (strcmp (objname, "uipushtool"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "cdata"
+      case "clickedcallback"
+      case "enable"
+      case "separator"
+      case "tooltipstring"
+
+    endswitch
+
+  ## uitoggletool properties
+  elseif (strcmp (objname, "uitoggletool"))
+    switch (field)
+      ## Overridden shared properties
+      case "buttondownfcn"
+        s.doc = doc_unused;
+
+      ## Specific properties
+      case "cdata"
+      case "clickedcallback"
+      case "enable"
+      case "offcallback"
+      case "oncallback"
+      case "separator"
+      case "state"
+      case "tooltipstring"
 
     endswitch
   endif
@@ -1158,8 +1501,8 @@ function s = getstructure (objname, base = [])
 
   ## Build a default object to extract its properties list and default values.
   if (strcmp (objname, "base"))
-    ## Base properties are extracted from hggroup that only have 2 additional
-    ## regular (non-hidden) properties, "displayname" and "erasemode".
+    ## Base properties are extracted from hggroup that only have 1 additional
+    ## regular (non-hidden) property, "displayname".
     h = hggroup ();
   elseif (strcmp (objname, "root"))
     h = 0;
@@ -1207,7 +1550,7 @@ function s = getstructure (objname, base = [])
   s = struct (args{:});
 
   if (strcmp (objname, "base"))
-    s = rmfield (s, {"displayname", "erasemode"});
+    s = rmfield (s, "displayname");
   endif
 
   if (isfigure (hf))
@@ -1307,7 +1650,7 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014-2015 Pantxo Diribarne\n\
+@c Copyright (C) 2014-2016 Pantxo Diribarne\n\
 @c\n\
 @c This file is part of Octave.\n\
 @c\n\
@@ -1338,4 +1681,5 @@ function str = print_options (val, default)
   elseif (! isempty (default))
     str = ["def. " default];
   endif
+
 endfunction

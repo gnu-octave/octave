@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Bill Denney, Robert Platt
+## Copyright (C) 2008-2016 Bill Denney, Robert Platt
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{varname} =} genvarname (@var{str})
-## @deftypefnx {Function File} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
+## @deftypefn  {} {@var{varname} =} genvarname (@var{str})
+## @deftypefnx {} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
 ## Create valid unique variable name(s) from @var{str}.
 ##
 ## If @var{str} is a cellstr, then a unique variable is created for each cell
@@ -160,7 +160,7 @@ function varname = genvarname (str, exclusions = {})
     varname(i) = str(i);
     idx = 0;
     while (excluded)
-      idx++;
+      idx += 1;
       varname{i} = sprintf ("%s%d", str{i}, idx);
       excluded = any (strcmp (varname{i}, exclusions));
     endwhile

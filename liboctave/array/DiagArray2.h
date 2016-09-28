@@ -1,7 +1,7 @@
 // Template array classes
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -23,8 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DiagArray2_h)
+#if ! defined (octave_DiagArray2_h)
 #define octave_DiagArray2_h 1
+
+#include "octave-config.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -34,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 // Array<T> is inherited privately so that some methods, like index, don't
 // produce unexpected results.
 
-template <class T>
+template <typename T>
 class
 DiagArray2 : protected Array<T>
 {
@@ -62,7 +64,7 @@ public:
   DiagArray2 (const DiagArray2<T>& a)
     : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
 
-  template <class U>
+  template <typename U>
   DiagArray2 (const DiagArray2<U>& a)
     : Array<T> (a.extract_diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
@@ -87,9 +89,9 @@ public:
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
-  octave_idx_type diag_length (void) const { return Array<T>::length (); }
+  octave_idx_type diag_length (void) const { return Array<T>::numel (); }
   // FIXME: a dangerous ambiguity?
-  octave_idx_type length (void) const { return Array<T>::length (); }
+  octave_idx_type length (void) const { return Array<T>::numel (); }
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 
@@ -97,7 +99,9 @@ public:
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 
-  Array<T> diag (octave_idx_type k = 0) const GCC_ATTR_DEPRECATED;
+  OCTAVE_DEPRECATED ("use 'extract_diag' instead")
+  Array<T> diag (octave_idx_type k = 0) const;
+
   Array<T> extract_diag (octave_idx_type k = 0) const;
   DiagArray2<T> build_diag_matrix () const
   {
@@ -127,7 +131,7 @@ public:
 
   T operator () (octave_idx_type r, octave_idx_type c) const
   {
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return checkelem (r, c);
 #else
     return elem (r, c);
@@ -138,7 +142,7 @@ public:
 
   T& operator () (octave_idx_type r, octave_idx_type c)
   {
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     return checkelem (r, c);
 #else
     return elem (r, c);
@@ -184,3 +188,4 @@ private:
 };
 
 #endif
+

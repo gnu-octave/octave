@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,22 +20,23 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <sstream>
 
 #include "str-vec.h"
 
+#include "builtin-defun-decls.h"
+#include "call-stack.h"
 #include <defaults.h>
 #include "Cell.h"
-#include "builtins.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
@@ -47,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "symtab.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "parse.h"
@@ -68,7 +69,6 @@ octave_user_code::subfunctions (void) const
 }
 
 // User defined scripts.
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
                                      "user-defined script",
@@ -115,11 +115,7 @@ octave_value_list
 octave_user_script::subsref (const std::string&,
                              const std::list<octave_value_list>&, int)
 {
-  octave_value_list retval;
-
-  ::error ("invalid use of script %s in index expression", file_name.c_str ());
-
-  return retval;
+  error ("invalid use of script %s in index expression", file_name.c_str ());
 }
 
 octave_value_list
@@ -128,44 +124,41 @@ octave_user_script::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
-  if (! error_state)
+  if (args.length () != 0 || nargout != 0)
+    error ("invalid call to script %s", file_name.c_str ());
+
+  if (cmd_list)
     {
-      if (args.length () == 0 && nargout == 0)
-        {
-          if (cmd_list)
-            {
-              frame.protect_var (call_depth);
-              call_depth++;
+      frame.protect_var (call_depth);
+      call_depth++;
 
-              if (call_depth < Vmax_recursion_depth)
-                {
-                  octave_call_stack::push (this);
+      if (call_depth >= Vmax_recursion_depth)
+        error ("max_recursion_depth exceeded");
 
-                  frame.add_fcn (octave_call_stack::pop);
+      octave_call_stack::push (this);
 
-                  frame.protect_var (tree_evaluator::statement_context);
-                  tree_evaluator::statement_context = tree_evaluator::script;
+      frame.add_fcn (octave_call_stack::pop);
 
-                  BEGIN_PROFILER_BLOCK (octave_user_script)
+      // Update line number even if debugging.
+      frame.protect_var (Vtrack_line_num);
+      Vtrack_line_num = true;
 
-                  cmd_list->accept (*current_evaluator);
+      frame.protect_var (octave::tree_evaluator::statement_context);
+      octave::tree_evaluator::statement_context = octave::tree_evaluator::script;
 
-                  END_PROFILER_BLOCK
+      BEGIN_PROFILER_BLOCK (octave_user_script)
 
-                  if (tree_return_command::returning)
-                    tree_return_command::returning = 0;
+        cmd_list->accept (*octave::current_evaluator);
 
-                  if (tree_break_command::breaking)
-                    tree_break_command::breaking--;
-                }
-              else
-                ::error ("max_recursion_depth exceeded");
-            }
-        }
-      else
-        error ("invalid call to script %s", file_name.c_str ());
+      END_PROFILER_BLOCK
+
+      if (tree_return_command::returning)
+        tree_return_command::returning = 0;
+
+      if (tree_break_command::breaking)
+        tree_break_command::breaking--;
     }
 
   return retval;
@@ -179,7 +172,6 @@ octave_user_script::accept (tree_walker& tw)
 
 // User defined functions.
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
                                      "user-defined function",
                                      "user-defined function");
@@ -190,7 +182,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 octave_user_function::octave_user_function
   (symbol_table::scope_id sid, tree_parameter_list *pl,
    tree_parameter_list *rl, tree_statement_list *cl)
-  : octave_user_code (std::string (), std::string ()),
+  : octave_user_code ("", ""),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
     location_line (0), location_column (0),
@@ -203,7 +195,7 @@ octave_user_function::octave_user_function
     class_constructor (none), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
 {
@@ -225,7 +217,7 @@ octave_user_function::~octave_user_function (void)
   delete lead_comm;
   delete trail_comm;
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   delete jit_info;
 #endif
 
@@ -476,9 +468,6 @@ octave_user_function::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (! cmd_list)
     return retval;
 
@@ -499,24 +488,19 @@ octave_user_function::do_multi_index_op (int nargout,
         panic_impossible ();
     }
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   if (is_special_expr ()
       && tree_jit::execute (*this, args, retval))
     return retval;
 #endif
 
-  int nargin = args.length ();
-
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (call_depth);
   call_depth++;
 
   if (call_depth >= Vmax_recursion_depth)
-    {
-      ::error ("max_recursion_depth exceeded");
-      return retval;
-    }
+    error ("max_recursion_depth exceeded");
 
   // Save old and set current symbol table context, for
   // eval_undefined_error().
@@ -524,6 +508,9 @@ octave_user_function::do_multi_index_op (int nargout,
   int context = active_context ();
 
   octave_call_stack::push (this, local_scope, context);
+
+  frame.protect_var (Vtrack_line_num);
+  Vtrack_line_num = true;    // update source line numbers, even if debugging
   frame.add_fcn (octave_call_stack::pop);
 
   if (call_depth > 0 && ! is_anonymous_function ())
@@ -536,29 +523,18 @@ octave_user_function::do_multi_index_op (int nargout,
   string_vector arg_names = args.name_tags ();
 
   if (param_list && ! param_list->varargs_only ())
-    {
-      param_list->define_from_arg_vector (args);
-      if (error_state)
-        return retval;
-    }
+    param_list->define_from_arg_vector (args);
 
   // For classdef constructor, pre-populate the output arguments
   // with the pre-initialized object instance, extracted above.
 
   if (is_classdef_constructor ())
     {
-      if (ret_list)
-        {
-          ret_list->define_from_arg_vector (ret_args);
-          if (error_state)
-            return retval;
-        }
-      else
-        {
-          ::error ("%s: invalid classdef constructor, no output argument defined",
-                   dispatch_class ().c_str ());
-          return retval;
-        }
+      if (! ret_list)
+        error ("%s: invalid classdef constructor, no output argument defined",
+               dispatch_class ().c_str ());
+
+      ret_list->define_from_arg_vector (ret_args);
     }
 
   // Force parameter list to be undefined when this function exits.
@@ -590,8 +566,8 @@ octave_user_function::do_multi_index_op (int nargout,
       frame.add_fcn (symbol_table::clear_variables);
     }
 
-  bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args),
-                       lvalue_list);
+  bind_automatic_vars (arg_names, args.length (), nargout,
+                       all_va_args (args), lvalue_list);
 
   frame.add_method (this, &octave_user_function::restore_warning_states);
 
@@ -608,22 +584,30 @@ octave_user_function::do_multi_index_op (int nargout,
 
   // Evaluate the commands that make up the function.
 
-  frame.protect_var (tree_evaluator::statement_context);
-  tree_evaluator::statement_context = tree_evaluator::function;
+  frame.protect_var (octave::tree_evaluator::statement_context);
+  octave::tree_evaluator::statement_context = octave::tree_evaluator::function;
 
   BEGIN_PROFILER_BLOCK (octave_user_function)
 
   if (is_special_expr ())
     {
-      tree_expression *expr = special_expr ();
+      assert (cmd_list->length () == 1);
+
+      tree_statement *stmt = cmd_list->front ();
+
+      tree_expression *expr = stmt->expression ();
 
       if (expr)
-        retval = (lvalue_list
-                  ? expr->rvalue (nargout, lvalue_list)
-                  : expr->rvalue (nargout));
+        {
+          octave_call_stack::set_location (stmt->line (), stmt->column ());
+
+          retval = (lvalue_list
+                    ? expr->rvalue (nargout, lvalue_list)
+                    : expr->rvalue (nargout));
+        }
     }
   else
-    cmd_list->accept (*current_evaluator);
+    cmd_list->accept (*octave::current_evaluator);
 
   END_PROFILER_BLOCK
 
@@ -635,9 +619,6 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (tree_break_command::breaking)
     tree_break_command::breaking--;
-
-  if (error_state)
-    return retval;
 
   // Copy return values out.
 
@@ -652,16 +633,10 @@ octave_user_function::do_multi_index_op (int nargout,
           octave_value varargout_varval = symbol_table::varval ("varargout");
 
           if (varargout_varval.is_defined ())
-            {
-              varargout = varargout_varval.cell_value ();
-
-              if (error_state)
-                error ("expecting varargout to be a cell array object");
-            }
+            varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
         }
 
-      if (! error_state)
-        retval = ret_list->convert_to_const_vector (nargout, varargout);
+      retval = ret_list->convert_to_const_vector (nargout, varargout);
     }
 
   return retval;
@@ -803,11 +778,8 @@ octave_user_function::restore_warning_states (void)
 
   if (val.is_defined ())
     {
-      // Don't use the usual approach of attempting to extract a value
-      // and then checking error_state since this code might be
-      // executing when error_state is already set.  But do fail
-      // spectacularly if .saved_warning_states. is not an octave_map
-      // (or octave_scalar_map) object.
+      // Fail spectacularly if .saved_warning_states. is not an
+      // octave_map (or octave_scalar_map) object.
 
       if (! val.is_map ())
         panic_impossible ();
@@ -823,39 +795,44 @@ octave_user_function::restore_warning_states (void)
 }
 
 DEFUN (nargin, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} nargin ()\n\
-@deftypefnx {Built-in Function} {} nargin (@var{fcn})\n\
-Report the number of input arguments to a function.\n\
-\n\
-Called from within a function, return the number of arguments passed to the\n\
-function.  At the top level, return the number of command line arguments\n\
-passed to Octave.\n\
-\n\
-If called with the optional argument @var{fcn}---a function name or handle---\n\
-return the declared number of arguments that the function can accept.\n\
-\n\
-If the last argument to @var{fcn} is @var{varargin} the returned value is\n\
-negative.  For example, the function @code{union} for sets is declared as\n\
-\n\
-@example\n\
-@group\n\
-function [y, ia, ib] = union (a, b, varargin)\n\
-\n\
-and\n\
-\n\
-nargin (\"union\")\n\
-@result{} -3\n\
-@end group\n\
-@end example\n\
-\n\
-Programming Note: @code{nargin} does not work on built-in functions.\n\
-@seealso{nargout, narginchk, varargin, inputname}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nargin ()
+@deftypefnx {} {} nargin (@var{fcn})
+Report the number of input arguments to a function.
 
+Called from within a function, return the number of arguments passed to the
+function.  At the top level, return the number of command line arguments
+passed to Octave.
+
+If called with the optional argument @var{fcn}---a function name or
+handle---return the declared number of arguments that the function can
+accept.
+
+If the last argument to @var{fcn} is @var{varargin} the returned value is
+negative.  For example, the function @code{union} for sets is declared as
+
+@example
+@group
+function [y, ia, ib] = union (a, b, varargin)
+
+and
+
+nargin ("union")
+@result{} -3
+@end group
+@end example
+
+Programming Note: @code{nargin} does not work on compiled functions
+(@file{.oct} files) such as built-in or dynamically loaded functions.
+@seealso{nargout, narginchk, varargin, inputname}
+@end deftypefn */)
+{
   int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
@@ -866,106 +843,103 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
           std::string name = func.string_value ();
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
-            {
-              error ("nargin: invalid function name: %s", name.c_str ());
-              return retval;
-            }
+            error ("nargin: invalid function name: %s", name.c_str ());
         }
 
-      octave_function *fcn_val = func.function_value ();
-      if (fcn_val)
-        {
-          octave_user_function *fcn = fcn_val->user_function_value (true);
-
-          if (fcn)
-            {
-              tree_parameter_list *param_list = fcn->parameter_list ();
-
-              retval = param_list ? param_list->length () : 0;
-              if (fcn->takes_varargs ())
-                retval = -1 - retval;
-            }
-          else
-            {
-              // Matlab gives up for histc,
-              // so maybe it's ok that that we give up somtimes too?
-              error ("nargin: nargin information not available for built-in functions");
-            }
-        }
-      else
+      octave_function *fcn_val = func.function_value (true);
+      if (! fcn_val)
         error ("nargin: FCN must be a string or function handle");
+
+      octave_user_function *fcn = fcn_val->user_function_value (true);
+
+      if (! fcn)
+        {
+          // Matlab gives up for histc, so maybe it's ok that we
+          // give up sometimes too?
+
+          std::string type = fcn_val->type_name ();
+          error ("nargin: number of input arguments unavailable for %s objects",
+                 type.c_str ());
+        }
+
+      tree_parameter_list *param_list = fcn->parameter_list ();
+
+      retval = param_list ? param_list->length () : 0;
+      if (fcn->takes_varargs ())
+        retval = -1 - retval;
     }
-  else if (nargin == 0)
+  else
     {
       retval = symbol_table::varval (".nargin.");
 
       if (retval.is_undefined ())
         retval = 0;
     }
-  else
-    print_usage ();
 
   return retval;
 }
 
 DEFUN (nargout, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} nargout ()\n\
-@deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
-Report the number of output arguments from a function.\n\
-\n\
-Called from within a function, return the number of values the caller expects\n\
-to receive.  At the top level, @code{nargout} with no argument is undefined\n\
-and will produce an error.\n\
-\n\
-If called with the optional argument @var{fcn}---a function name or\n\
-handle---return the number of declared output values that the function can\n\
-produce.\n\
-\n\
-If the final output argument is @var{varargout} the returned value is\n\
-negative.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-f ()\n\
-@end example\n\
-\n\
-@noindent\n\
-will cause @code{nargout} to return 0 inside the function @code{f} and\n\
-\n\
-@example\n\
-[s, t] = f ()\n\
-@end example\n\
-\n\
-@noindent\n\
-will cause @code{nargout} to return 2 inside the function @code{f}.\n\
-\n\
-In the second usage,\n\
-\n\
-@example\n\
-nargout (@@histc) \% or nargout (\"histc\")\n\
-@end example\n\
-\n\
-@noindent\n\
-will return 2, because @code{histc} has two outputs, whereas\n\
-\n\
-@example\n\
-nargout (@@imread)\n\
-@end example\n\
-\n\
-@noindent\n\
-will return -2, because @code{imread} has two outputs and the second is\n\
-@var{varargout}.\n\
-\n\
-Programming Note.  @code{nargout} does not work for built-in functions and\n\
-returns -1 for all anonymous functions.\n\
-@seealso{nargin, varargout, isargout, nthargout}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} nargout ()
+@deftypefnx {} {} nargout (@var{fcn})
+Report the number of output arguments from a function.
 
+Called from within a function, return the number of values the caller
+expects to receive.  At the top level, @code{nargout} with no argument is
+undefined and will produce an error.
+
+If called with the optional argument @var{fcn}---a function name or
+handle---return the number of declared output values that the function can
+produce.
+
+If the final output argument is @var{varargout} the returned value is
+negative.
+
+For example,
+
+@example
+f ()
+@end example
+
+@noindent
+will cause @code{nargout} to return 0 inside the function @code{f} and
+
+@example
+[s, t] = f ()
+@end example
+
+@noindent
+will cause @code{nargout} to return 2 inside the function @code{f}.
+
+In the second usage,
+
+@example
+nargout (@@histc) \% or nargout ("histc")
+@end example
+
+@noindent
+will return 2, because @code{histc} has two outputs, whereas
+
+@example
+nargout (@@imread)
+@end example
+
+@noindent
+will return -2, because @code{imread} has two outputs and the second is
+@var{varargout}.
+
+Programming Note.  @code{nargout} does not work for built-in functions and
+returns -1 for all anonymous functions.
+@seealso{nargin, varargout, isargout, nthargout}
+@end deftypefn */)
+{
   int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
@@ -976,17 +950,11 @@ returns -1 for all anonymous functions.\n\
           std::string name = func.string_value ();
           func = symbol_table::find_function (name);
           if (func.is_undefined ())
-            {
-              error ("nargout: invalid function name: %s", name.c_str ());
-              return retval;
-            }
+            error ("nargout: invalid function name: %s", name.c_str ());
         }
 
       if (func.is_inline_function ())
-        {
-          retval = 1;
-          return retval;
-        }
+        return ovl (1);
 
       if (func.is_function_handle ())
         {
@@ -994,70 +962,62 @@ returns -1 for all anonymous functions.\n\
           std::string fh_nm = fh->fcn_name ();
 
           if (fh_nm == octave_fcn_handle::anonymous)
-            {
-              retval = -1;
-              return retval;
-            }
+            return ovl (-1);
         }
 
-      octave_function *fcn_val = func.function_value ();
-      if (fcn_val)
-        {
-          octave_user_function *fcn = fcn_val->user_function_value (true);
-
-          if (fcn)
-            {
-              tree_parameter_list *ret_list = fcn->return_list ();
-
-              retval = ret_list ? ret_list->length () : 0;
-
-              if (fcn->takes_var_return ())
-                retval = -1 - retval;
-            }
-          else
-            {
-              // JWE said this information is not available (2011-03-10)
-              // without making intrusive changes to Octave.
-              // Matlab gives up for histc,
-              // so maybe it's ok that we give up somtimes too?
-              error ("nargout: nargout information not available for built-in functions.");
-            }
-        }
-      else
+      octave_function *fcn_val = func.function_value (true);
+      if (! fcn_val)
         error ("nargout: FCN must be a string or function handle");
-    }
-  else if (nargin == 0)
-    {
-      if (! symbol_table::at_top_level ())
-        {
-          retval = symbol_table::varval (".nargout.");
 
-          if (retval.is_undefined ())
-            retval = 0;
+      octave_user_function *fcn = fcn_val->user_function_value (true);
+
+      if (! fcn)
+        {
+          // Matlab gives up for histc, so maybe it's ok that we
+          // give up sometimes too?
+
+          std::string type = fcn_val->type_name ();
+          error ("nargout: number of output arguments unavailable for %s objects",
+                 type.c_str ());
         }
-      else
-        error ("nargout: invalid call at top level");
+
+      tree_parameter_list *ret_list = fcn->return_list ();
+
+      retval = ret_list ? ret_list->length () : 0;
+
+      if (fcn->takes_var_return ())
+        retval = -1 - retval;
     }
   else
-    print_usage ();
+    {
+      if (symbol_table::at_top_level ())
+        error ("nargout: invalid call at top level");
+
+      retval = symbol_table::varval (".nargout.");
+
+      if (retval.is_undefined ())
+        retval = 0;
+    }
 
   return retval;
 }
 
 DEFUN (optimize_subsasgn_calls, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
-Query or set the internal flag for subsasgn method call optimizations.\n\
-\n\
-If true, Octave will attempt to eliminate the redundant copying when calling\n\
-the subsasgn method of a user-defined class.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} optimize_subsasgn_calls ()
+@deftypefnx {} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})
+@deftypefnx {} {} optimize_subsasgn_calls (@var{new_val}, "local")
+Query or set the internal flag for @code{subsasgn} method call
+optimizations.
+
+If true, Octave will attempt to eliminate the redundant copying when calling
+the @code{subsasgn} method of a user-defined class.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{subsasgn}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
 }
@@ -1073,83 +1033,63 @@ static bool val_in_table (const Matrix& table, double val)
 
 static bool isargout1 (int nargout, const Matrix& ignored, double k)
 {
-  if (k != xround (k) || k <= 0)
-    {
-      error ("isargout: K must be a positive integer");
-      return false;
-    }
-  else
-    return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
+  if (k != octave::math::round (k) || k <= 0)
+    error ("isargout: K must be a positive integer");
+
+  return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
 }
 
 DEFUN (isargout, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isargout (@var{k})\n\
-Within a function, return a logical value indicating whether the argument\n\
-@var{k} will be assigned to a variable on output.\n\
-\n\
-If the result is false, the argument has been ignored during the function\n\
-call through the use of the tilde (~) special output argument.  Functions\n\
-can use @code{isargout} to avoid performing unnecessary calculations for\n\
-outputs which are unwanted.\n\
-\n\
-If @var{k} is outside the range @code{1:max (nargout)}, the function returns\n\
-false.  @var{k} can also be an array, in which case the function works\n\
-element-by-element and a logical array is returned.  At the top level,\n\
-@code{isargout} returns an error.\n\
-@seealso{nargout, varargout, nthargout}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isargout (@var{k})
+Within a function, return a logical value indicating whether the argument
+@var{k} will be assigned to a variable on output.
+
+If the result is false, the argument has been ignored during the function
+call through the use of the tilde (~) special output argument.  Functions
+can use @code{isargout} to avoid performing unnecessary calculations for
+outputs which are unwanted.
+
+If @var{k} is outside the range @code{1:max (nargout)}, the function returns
+false.  @var{k} can also be an array, in which case the function works
+element-by-element and a logical array is returned.  At the top level,
+@code{isargout} returns an error.
+@seealso{nargout, varargout, nthargout}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      if (! symbol_table::at_top_level ())
-        {
-          int nargout1 = symbol_table::varval (".nargout.").int_value ();
-          if (error_state)
-            {
-              error ("isargout: internal error");
-              return retval;
-            }
-
-          Matrix ignored;
-          octave_value tmp = symbol_table::varval (".ignored.");
-          if (tmp.is_defined ())
-            ignored = tmp.matrix_value ();
-
-          if (args(0).is_scalar_type ())
-            {
-              double k = args(0).double_value ();
-              if (! error_state)
-                retval = isargout1 (nargout1, ignored, k);
-            }
-          else if (args(0).is_numeric_type ())
-            {
-              const NDArray ka = args(0).array_value ();
-              if (! error_state)
-                {
-                  boolNDArray r (ka.dims ());
-                  for (octave_idx_type i = 0;
-                       i < ka.numel () && ! error_state;
-                       i++)
-                    r(i) = isargout1 (nargout1, ignored, ka(i));
-
-                  retval = r;
-                }
-            }
-          else
-            gripe_wrong_type_arg ("isargout", args(0));
-        }
-      else
-        error ("isargout: invalid call at top level");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  if (symbol_table::at_top_level ())
+    error ("isargout: invalid call at top level");
+
+  int nargout1 = symbol_table::varval (".nargout.").int_value ();
+
+  Matrix ignored;
+  octave_value tmp = symbol_table::varval (".ignored.");
+  if (tmp.is_defined ())
+    ignored = tmp.matrix_value ();
+
+  if (args(0).is_scalar_type ())
+    {
+      double k = args(0).double_value ();
+
+      return ovl (isargout1 (nargout1, ignored, k));
+    }
+  else if (args(0).is_numeric_type ())
+    {
+      const NDArray ka = args(0).array_value ();
+
+      boolNDArray r (ka.dims ());
+      for (octave_idx_type i = 0; i < ka.numel (); i++)
+        r(i) = isargout1 (nargout1, ignored, ka(i));
+
+      return ovl (r);
+    }
+  else
+    err_wrong_type_arg ("isargout", args(0));
+
+  return ovl ();
 }
 
 /*
@@ -1181,7 +1121,7 @@ element-by-element and a logical array is returned.  At the top level,\n\
 %! [~, y] = try_isargout ();
 %! assert (y, -2);
 %!
-%!error [~, ~] = try_isargout ();
+%!error [~, ~] = try_isargout ()
 %!
 %% Check to see that isargout isn't sticky:
 %!test
@@ -1208,3 +1148,4 @@ element-by-element and a logical array is returned.  At the top level,\n\
 %! [~, y] = c{2}();
 %! assert (y, -2);
 */
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Bill Denney
+## Copyright (C) 2008-2016 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
-## @deftypefnx {Function File} {@var{validstr} =} validatestring (@dots{}, @var{position})
+## @deftypefn  {} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
+## @deftypefnx {} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
+## @deftypefnx {} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
+## @deftypefnx {} {@var{validstr} =} validatestring (@dots{}, @var{position})
 ## Verify that @var{str} is an element, or substring of an element, in
 ## @var{strarray}.
 ##
@@ -114,7 +114,7 @@ function str = validatestring (str, strarray, varargin)
   matches = strncmpi (str, strarray(:), length (str));
   nmatches = sum (matches);
   if (nmatches == 0)
-    error ("%sdoes not match any of\n%s", errstr,
+    error ("validatestring: %sdoes not match any of\n%s", errstr,
            sprintf ("%s, ", strarray{:})(1:end-2));
   elseif (nmatches == 1)
     str = strarray{matches};
@@ -129,7 +129,7 @@ function str = validatestring (str, strarray, varargin)
     if (all (submatch))
       str = short_str;
     else
-      error ("%sallows multiple unique matches:\n%s",
+      error ("validatestring: %sallows multiple unique matches:\n%s",
              errstr, sprintf ("%s, ", strarray{match_idx})(1:end-2));
     endif
   endif

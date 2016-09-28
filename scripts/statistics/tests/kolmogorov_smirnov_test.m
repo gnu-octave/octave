@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test (@var{x}, @var{dist}, @var{params}, @var{alt})
+## @deftypefn {} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test (@var{x}, @var{dist}, @var{params}, @var{alt})
 ## Perform a Kolmogorov-Smirnov test of the null hypothesis that the
 ## sample @var{x} comes from the (continuous) distribution @var{dist}.
 ##
@@ -116,7 +116,7 @@ endfunction
 %!assert (kolmogorov_smirnov_test (0:100, "unif", 0, 100), 1.0, eps)
 ## test for recognition of logistic_cdf function
 %!assert (kolmogorov_smirnov_test (0:100, "logistic"), 0)
-## test for  F < G
+## test for F < G
 %!assert (kolmogorov_smirnov_test (50:100, "unif", 0, 50, "<"))
 
 %!error kolmogorov_smirnov_test (1)

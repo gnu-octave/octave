@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} trapz (@var{y})
-## @deftypefnx {Function File} {@var{q} =} trapz (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{q} =} trapz (@dots{}, @var{dim})
+## @deftypefn  {} {@var{q} =} trapz (@var{y})
+## @deftypefnx {} {@var{q} =} trapz (@var{x}, @var{y})
+## @deftypefnx {} {@var{q} =} trapz (@dots{}, @var{dim})
 ##
 ## Numerically evaluate the integral of points @var{y} using the trapezoidal
 ## method.
@@ -114,7 +114,7 @@ function z = trapz (x, y, dim)
       shape = ones (nd, 1);
       shape(dim) = sz(dim);
       x = reshape (x, shape);
-      z = 0.5 * sum (bsxfun (@times, diff (x), y(idx1{:}) + y(idx2{:})), dim);
+      z = 0.5 * sum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
     else
       if (! size_equal (x, y))
         error ("trapz: X and Y must have same shape");
@@ -122,6 +122,7 @@ function z = trapz (x, y, dim)
       z = 0.5 * sum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
     endif
   endif
+
 endfunction
 
 

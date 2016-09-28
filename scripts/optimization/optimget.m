@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Jaroslav Hajek
+## Copyright (C) 2008-2016 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} optimget (@var{options}, @var{parname})
-## @deftypefnx {Function File} {} optimget (@var{options}, @var{parname}, @var{default})
+## @deftypefn  {} {} optimget (@var{options}, @var{parname})
+## @deftypefnx {} {} optimget (@var{options}, @var{parname}, @var{default})
 ## Return the specific option @var{parname} from the optimization options
 ## structure @var{options} created by @code{optimset}.
 ##

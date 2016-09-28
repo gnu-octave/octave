@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} csc (@var{x})
+## @deftypefn {} {} csc (@var{x})
 ## Compute the cosecant for each element of @var{x} in radians.
 ## @seealso{acsc, cscd, csch}
 ## @end deftypefn

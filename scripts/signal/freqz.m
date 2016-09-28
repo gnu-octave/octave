@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b})
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n})
-## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
-## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@dots{}, @var{Fs})
-## @deftypefnx {Function File} {} freqz (@dots{})
+## @deftypefn  {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@var{b})
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a})
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n})
+## @deftypefnx {} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
+## @deftypefnx {} {[@var{h}, @var{w}] =} freqz (@dots{}, @var{Fs})
+## @deftypefnx {} {} freqz (@dots{})
 ##
 ## Return the complex frequency response @var{h} of the rational IIR filter
 ## whose numerator and denominator coefficients are @var{b} and @var{a},
@@ -152,7 +152,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     k = max (length (b), length (a));
     if (k > n/2 && nargout == 0)
       ## Ensure a causal phase response.
-      n = n * 2 .^ ceil (log2 (2*k/n));
+      n *= 2 .^ ceil (log2 (2*k/n));
     endif
 
     if (whole_region)
@@ -165,7 +165,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     else
       N = 2*n;
       if (plot_output)
-        n++;
+        n += 1;
       endif
       f = Fs * (0:n-1).' / N;
     endif
@@ -178,8 +178,8 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     ha = zeros (n, 1);
 
     for i = 1:N:pad_sz
-      hb = hb + fft (postpad (b(i:i+N-1), N))(1:n);
-      ha = ha + fft (postpad (a(i:i+N-1), N))(1:n);
+      hb += fft (postpad (b(i:i+N-1), N))(1:n);
+      ha += fft (postpad (a(i:i+N-1), N))(1:n);
     endfor
 
   endif
@@ -208,7 +208,7 @@ endfunction
 %! [h,w] = freqz (b,a,32);
 %! assert (h(1),1,10*eps);
 %! assert (abs (h(17)).^2,0.5,10*eps);
-%! assert (h,freqz (b,a,w),10*eps); # fft should be consistent with polyval
+%! assert (h,freqz (b,a,w),10*eps);  # fft should be consistent with polyval
 
 %!test # whole-half consistency
 %! b = [1 1 1]/3; # 3-sample average

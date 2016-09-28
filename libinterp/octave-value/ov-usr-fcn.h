@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_usr_fcn_h)
+#if ! defined (octave_ov_usr_fcn_h)
 #define octave_ov_usr_fcn_h 1
+
+#include "octave-config.h"
 
 #include <ctime>
 
@@ -29,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 
 #include "comment-list.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 #include "symtab.h"
@@ -44,7 +46,7 @@ class tree_va_return_list;
 class tree_expression;
 class tree_walker;
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 class jit_function_info;
 #endif
 
@@ -66,7 +68,7 @@ public:
 protected:
 
   octave_user_code (const std::string& nm,
-                    const std::string& ds = std::string ())
+                    const std::string& ds = "")
     : octave_function (nm, ds) { }
 
 private:
@@ -89,10 +91,10 @@ public:
 
   octave_user_script (const std::string& fnm, const std::string& nm,
                       tree_statement_list *cmds,
-                      const std::string& ds = std::string ());
+                      const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      const std::string& ds = std::string ());
+                      const std::string& ds = "");
 
   ~octave_user_script (void);
 
@@ -109,9 +111,9 @@ public:
 
   void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
 
-  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
-  void stash_fcn_file_time (const octave_time& t)
+  void stash_fcn_file_time (const octave::sys::time& t)
   {
     t_parsed = t;
     mark_fcn_file_up_to_date (t);
@@ -119,9 +121,9 @@ public:
 
   std::string fcn_file_name (void) const { return file_name; }
 
-  octave_time time_parsed (void) const { return t_parsed; }
+  octave::sys::time time_parsed (void) const { return t_parsed; }
 
-  octave_time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return t_checked; }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -150,11 +152,11 @@ private:
   std::string file_name;
 
   // The time the file was parsed.
-  octave_time t_parsed;
+  octave::sys::time t_parsed;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  octave_time t_checked;
+  octave::sys::time t_checked;
 
   // Used to keep track of recursion depth.
   int call_depth;
@@ -164,7 +166,6 @@ private:
   octave_user_script (const octave_user_script& f);
 
   octave_user_script& operator = (const octave_user_script& f);
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -229,9 +230,9 @@ public:
 
   void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
 
-  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 
-  void stash_fcn_file_time (const octave_time& t)
+  void stash_fcn_file_time (const octave::sys::time& t)
   {
     t_parsed = t;
     mark_fcn_file_up_to_date (t);
@@ -247,9 +248,9 @@ public:
 
   symbol_table::scope_id scope (void) { return local_scope; }
 
-  octave_time time_parsed (void) const { return t_parsed; }
+  octave::sys::time time_parsed (void) const { return t_parsed; }
 
-  octave_time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return t_checked; }
 
   void mark_as_system_fcn_file (void);
 
@@ -266,7 +267,7 @@ public:
 
   bool takes_var_return (void) const;
 
-  void mark_as_private_function (const std::string& cname = std::string ())
+  void mark_as_private_function (const std::string& cname = "")
   {
     symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
 
@@ -305,7 +306,7 @@ public:
   bool is_anonymous_function (void) const { return anonymous_function; }
 
   bool is_anonymous_function_of_class
-  (const std::string& cname = std::string ()) const
+  (const std::string& cname = "") const
   {
     return anonymous_function
            ? (cname.empty ()
@@ -315,7 +316,7 @@ public:
   }
 
   // If we are a special expression, then the function body consists of exactly
-  // one expression. The expression's result is the return value of the
+  // one expression.  The expression's result is the return value of the
   // function.
   bool is_special_expr (void) const
   {
@@ -330,13 +331,13 @@ public:
 
   void mark_as_classdef_constructor (void) { class_constructor = classdef; }
 
-  bool is_class_constructor (const std::string& cname = std::string ()) const
+  bool is_class_constructor (const std::string& cname = "") const
   {
     return class_constructor == legacy
       ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
 
-  bool is_classdef_constructor (const std::string& cname = std::string ()) const
+  bool is_classdef_constructor (const std::string& cname = "") const
   {
     return class_constructor == classdef
       ? (cname.empty () ? true : cname == dispatch_class ()) : false;
@@ -344,7 +345,7 @@ public:
 
   void mark_as_class_method (void) { class_method = true; }
 
-  bool is_class_method (const std::string& cname = std::string ()) const
+  bool is_class_method (const std::string& cname = "") const
   {
     return class_method
            ? (cname.empty () ? true : cname == dispatch_class ()) : false;
@@ -384,14 +385,14 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
-  // body. May be null (even if is_special_expr is true).
+  // body.  May be null (even if is_special_expr is true).
   tree_expression *special_expr (void);
 
   bool subsasgn_optimization_ok (void);
 
   void accept (tree_walker& tw);
 
-  template <class T>
+  template <typename T>
   bool local_protect (T& variable)
   {
     if (curr_unwind_protect_frame)
@@ -403,7 +404,7 @@ public:
       return false;
   }
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   jit_function_info *get_info (void) { return jit_info; }
 
   void stash_info (jit_function_info *info) { jit_info = info; }
@@ -455,11 +456,11 @@ private:
   std::list<std::string> subfcn_names;
 
   // The time the file was parsed.
-  octave_time t_parsed;
+  octave::sys::time t_parsed;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  octave_time t_checked;
+  octave::sys::time t_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp
@@ -496,9 +497,9 @@ private:
   symbol_table::scope_id local_scope;
 
   // pointer to the current unwind_protect frame of this function.
-  unwind_protect *curr_unwind_protect_frame;
+  octave::unwind_protect *curr_unwind_protect_frame;
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
   jit_function_info *jit_info;
 #endif
 
@@ -520,8 +521,8 @@ private:
 
   octave_user_function& operator = (const octave_user_function& fn);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef FILESDOCKWIDGET_H
-#define FILESDOCKWIDGET_H
+#if ! defined (octave_files_dock_widget_h)
+#define octave_files_dock_widget_h 1
 
 #include <QListView>
 #include <QDate>
@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAction>
 #include <QTreeView>
 #include <QMouseEvent>
+#include <QSignalMapper>
 
 #include <QComboBox>
 #include "octave-dock-widget.h"
@@ -51,7 +52,7 @@ public:
 
   files_dock_widget (QWidget *parent = 0);
 
-  ~files_dock_widget ();
+  ~files_dock_widget (void) { }
 
 public slots:
 
@@ -79,19 +80,18 @@ public slots:
   /** Tells the widget to react on changed settings. */
   void notice_settings (const QSettings *settings);
 
-private slots:
-  /** context menu wanted */
-  void contextmenu_requested (const QPoint& pos);
+  void save_settings (void);
 
-  void toggle_headercontextitem_filesize ();
-  void toggle_headercontextitem_filetype ();
-  void toggle_headercontextitem_datemodified ();
-  void toggle_headercontextitem_showhidden ();
+private slots:
 
   void headercontextmenu_requested (const QPoint& pos);
+  void toggle_header (int col);
 
+  /** context menu wanted */
+  void contextmenu_requested (const QPoint& pos);
   /* context menu actions */
   void contextmenu_open (bool);
+  void contextmenu_open_in_editor (bool);
   void contextmenu_open_in_app (bool);
   void contextmenu_copy_selection (bool);
   void contextmenu_run (bool);
@@ -160,6 +160,11 @@ private:
   QString           _octave_dir;         // the actual octave dir
 
   enum { MaxMRUDirs = 10 };
+
+  QStringList _columns_shown;
+  QStringList _columns_shown_keys;
+  QSignalMapper *_sig_mapper;
 };
 
-#endif // FILESDOCKWIDGET_H
+#endif
+

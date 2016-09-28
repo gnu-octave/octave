@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2015 Andreas Weber <andy.weber.aw@gmail.com>
+Copyright (C) 2016 Andreas Weber <andy.weber.aw@gmail.com>
 
 This file is part of Octave.
 
@@ -23,105 +23,87 @@ from git://anongit.freedesktop.org/mesa/demos
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #if defined (HAVE_OSMESA_H)
-#include <osmesa.h>
+#  include <osmesa.h>
 #elif defined (HAVE_GL_OSMESA_H)
-#include <GL/osmesa.h>
+#  include <GL/osmesa.h>
 #endif
 
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
 #include "defun-dld.h"
+#include "errwarn.h"
 #include "gl-render.h"
-#include "gl2ps-renderer.h"
+#include "gl2ps-print.h"
 #include "graphics.h"
-#include "gripes.h"
+#include "oct-opengl.h"
 
-#if defined (HAVE_OSMESA) && defined (HAVE_OPENGL)
-static void
-close_fcn (FILE *f)
-{
-  gnulib::fclose (f);
-}
+#if defined (HAVE_OSMESA)
 
 static void
 reset_visibility (figure::properties *fp)
 {
   fp->set_visible ("on");
 }
+
 #endif
 
 DEFUN_DLD(__osmesa_print__, args, ,
-          "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} __osmesa_print__ (@var{h}, @var{file}, @var{term})\n\
-@deftypefnx {Loadable Function} {@var{img} =} __osmesa_print__ (@var{h})\n\
-Print figure @var{h} using OSMesa and gl2ps for vector formats.\n\
-\n\
-This is a private internal function.\n\
-\n\
-The first method calls gl2ps with the appropriate @var{term} and writes\n\
-the output of gl2ps to @var{file}.  If the first character of @var{file}\n\
-is @qcode{|}, then a process is started and the output of gl2ps is piped\n\
-to it.\n\
-\n\
-Valid options for @var{term}, which can be concatenated in one string, are:\n\
-\n\
-@table @asis\n\
-@item @qcode{eps}, @qcode{pdf}, @qcode{ps}, @qcode{svg}, @qcode{pgf}, @qcode{tex}\n\
-Select output format.\n\
-\n\
-@item @qcode{is2D}\n\
-Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting algorithm.\n\
-\n\
-@item @qcode{notext}\n\
-Don't render text.\n\
-@end table\n\
-\n\
-The second method doesn't use gl2ps and returns a RGB image in @var{img}\n\
-instead.\n\
-\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+          doc: /* -*- texinfo -*-
+@deftypefn  {} {} __osmesa_print__ (@var{h}, @var{file}, @var{term})
+@deftypefnx {} {@var{img} =} __osmesa_print__ (@var{h})
+Print figure @var{h} using OSMesa and gl2ps for vector formats.
 
-#if ! defined (HAVE_OSMESA)
-  gripe_disabled_feature ("__osmesa_print__", "offscreen rendering");
-#else
+This is a private internal function.
+
+The first method calls gl2ps with the appropriate @var{term} and writes
+the output of gl2ps to @var{file}.  If the first character of @var{file}
+is @code{|}, then a process is started and the output of gl2ps is piped
+to it.
+
+Valid options for @var{term}, which can be concatenated in one string, are:
+
+@table @asis
+@item @qcode{eps}, @qcode{pdf}, @qcode{ps}, @qcode{svg}, @qcode{pgf}, @qcode{tex}
+Select output format.
+
+@item @code{is2D}
+Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting
+algorithm.
+
+@item @code{notext}
+Don't render text.
+@end table
+
+The second method doesn't use gl2ps and returns a RGB image in @var{img}
+instead.
+
+@end deftypefn */)
+{
+#if defined (HAVE_OSMESA)
 
   int nargin = args.length ();
 
-  if (! (nargin == 1 || nargin == 3))
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin != 1 && nargin != 3)
+    print_usage ();
 
   if (nargin == 3)
     {
       if (! (args(1).is_string () && args(2).is_string ()))
-        {
-          error ("__osmesa_print__: FILE and TERM must be strings");
-          return retval;
-        }
-
-#ifndef HAVE_GL2PS_H
-      error ("__osmesa_print__: Octave has been compiled without gl2ps");
-      return retval;
-#endif
+        error ("__osmesa_print__: FILE and TERM must be strings");
     }
+
+  octave_value_list retval;
 
   int h = args(0).double_value ();
   graphics_object fobj = gh_manager::get_object (h);
   if (! (fobj && fobj.isa ("figure")))
-    {
-      error ("__osmesa_print__: H must be a valid figure handle");
-      return retval;
-    }
+    error ("__osmesa_print__: H must be a valid figure handle");
 
   figure::properties& fp =
     dynamic_cast<figure::properties&> (fobj.get_properties ());
@@ -135,20 +117,14 @@ instead.\n\
   // Create an RGBA-mode context, specify Z=16, stencil=0, accum=0 sizes
   OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);
   if (! ctx)
-    {
-      error ("__osmesa_print__: OSMesaCreateContext failed!\n");
-      return retval;
-    }
+    error ("__osmesa_print__: OSMesaCreateContext failed!\n");
 
   // Allocate the image buffer
   OCTAVE_LOCAL_BUFFER (GLubyte, buffer, 4 * Width * Height);
 
   // Bind the buffer to the context and make it current
   if (! OSMesaMakeCurrent (ctx, buffer, GL_UNSIGNED_BYTE, Width, Height))
-    {
-      error ("__osmesa_print__: OSMesaMakeCurrent failed!\n");
-      return retval;
-    }
+    error ("__osmesa_print__: OSMesaMakeCurrent failed!\n");
 
   // Test for a bug in OSMesa with version < 9.0
   //
@@ -162,7 +138,7 @@ instead.\n\
     error ("__osmesa_print__: Depth and stencil doesn't match,"
            " are you sure you are using OSMesa >= 9.0?");
 
-  unwind_protect outer_frame;
+  octave::unwind_protect outer_frame;
 
   bool v = fp.is_visible ();
 
@@ -175,59 +151,20 @@ instead.\n\
 
   if (nargin == 3)
     {
-      // use gl2ps
-#ifndef HAVE_GL2PS_H
-      gripe_disabled_feature ("__osmesa_print__", "gl2ps");
-#else
       std::string file = args(1).string_value ();
       std::string term = args(2).string_value ();
 
-      if (! error_state)
-        {
-          size_t pos_p = file.find_first_of ("|");
-          size_t pos_c = file.find_first_not_of ("| ");
-
-          if (pos_p == std::string::npos && pos_c == std::string::npos)
-            error ("__osmesa_print__: empty output ''");
-          else if (pos_c == std::string::npos)
-            error ("__osmesa_print__: empty pipe '|'");
-          else if (pos_p != std::string::npos && pos_p < pos_c)
-            {
-              // create process and pipe gl2ps output to it
-              std::string cmd = file.substr (pos_c);
-              gl2ps_print (fobj, cmd, term);
-            }
-          else
-            {
-              // write gl2ps output directly to file
-              FILE *filep = gnulib::fopen (file.substr (pos_c).c_str (), "w");
-
-              if (filep)
-                {
-                  unwind_protect frame;
-
-                  frame.add_fcn (close_fcn, filep);
-
-                  glps_renderer rend (filep, term);
-                  rend.draw (fobj, "");
-
-                  // Make sure buffered commands are finished!!!
-                  glFinish ();
-                }
-              else
-                error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
-            }
-        }
-#endif
+      gl2ps_print (fobj, file, term);
     }
   else
     {
       // return RGB image
-      opengl_renderer rend;
-      rend.draw (fobj);
+      octave::opengl_renderer rend;
 
-      // Make sure buffered commands are finished!!!
-      glFinish ();
+      // Draw and finish () or there may primitives missing in the
+      // output.
+      rend.draw (fobj);
+      rend.finish ();
 
       dim_vector dv (4, Width, Height);
 
@@ -251,13 +188,20 @@ instead.\n\
 
       // Remove alpha channel
       idx(2) = idx_vector (0, 3);
-      retval = octave_value (img.permute (perm). index(idx));
+      retval = octave_value (img.permute (perm).index(idx));
     }
 
   OSMesaDestroyContext (ctx);
 
-#endif
   return retval;
+
+#else
+
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__osmesa_print__", "offscreen rendering with OSMesa");
+
+#endif
 }
 
 /*
@@ -265,33 +209,42 @@ instead.\n\
 ##        This is not critical, since this facility will mostly be used in
 ##        the future for generating the images in Octave's own documentation.
 ##        For the moment, disable these tests on PC's and Macs.
-%!testif HAVE_OSMESA, HAVE_GL2PS_H
+%!testif HAVE_OPENGL, HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
-%!   h = figure ("visible", "off");
+%!   hf = figure ("visible", "off");
 %!   fn = tempname ();
-%!   sombrero ();
-%!   __osmesa_print__ (h, fn, "svg");
-%!   assert (stat (fn).size, 2692270, -0.1);
-%!   unlink (fn);
-%!   img = __osmesa_print__ (h);
-%!   assert (size (img), [get(h, "position")([4, 3]), 3])
-%!   ## Use pixel sum per RGB channel as fingerprint
-%!   img_fp = squeeze (sum (sum (img), 2));
-%!   assert (img_fp, [52942515; 54167797; 56158178], -0.05);
+%!   unwind_protect
+%!     sombrero ();
+%!     __osmesa_print__ (hf, fn, "svg");
+%!     assert (stat (fn).size, 2579392, -0.1);
+%!     img = __osmesa_print__ (hf);
+%!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
+%!     ## Use pixel sum per RGB channel as fingerprint
+%!     img_fp = squeeze (sum (sum (img), 2));
+%!     assert (img_fp, [52942515; 54167797; 56158178], -0.05);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!     unlink (fn);
+%!   end_unwind_protect
 %! endif
 
-%!testif HAVE_OSMESA, HAVE_GL2PS_H
+%!testif HAVE_OPENGL, HAVE_OSMESA, HAVE_GL2PS_H
 %! if (isunix ())
-%!   h = figure ("visible", "off");
+%!   hf = figure ("visible", "off");
 %!   fn = tempname ();
-%!   plot (sin (0:0.1:2*pi));
-%!   __osmesa_print__ (h, fn, "svgis2d");
-%!   assert (stat (fn).size, 7438, -0.1);
-%!   unlink (fn);
-%!   img = __osmesa_print__ (h);
-%!   assert (size (img), [get(h, "position")([4, 3]), 3])
-%!   ## Use pixel sum per RGB channel as fingerprint
-%!   img_fp = squeeze (sum (sum (img), 2));
-%!   assert (img_fp, [59281711; 59281711; 59482179], -0.05);
+%!   unwind_protect
+%!     plot (sin (0:0.1:2*pi));
+%!     __osmesa_print__ (hf, fn, "svgis2d");
+%!     assert (stat (fn).size, 6276, -0.1);
+%!     img = __osmesa_print__ (hf);
+%!     assert (size (img), [get(hf, "position")([4, 3]), 3]);
+%!     ## Use pixel sum per RGB channel as fingerprint
+%!     img_fp = squeeze (sum (sum (img), 2));
+%!     assert (img_fp, [59281711; 59281711; 59482179], -0.05);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!     unlink (fn);
+%!   end_unwind_protect
 %! endif
 */
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} primes (@var{n})
+## @deftypefn {} {} primes (@var{n})
 ## Return all primes up to @var{n}.
 ##
 ## The output data class (double, single, uint32, etc.) is the same as the

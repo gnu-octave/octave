@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
-## @deftypefnx {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
-## @deftypefnx {Function File} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x})
+## @deftypefn  {} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
+## @deftypefnx {} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
+## @deftypefnx {} {[@var{xx}, @var{yy}, @var{zz}] =} meshgrid (@var{x})
 ## Given vectors of @var{x} and @var{y} coordinates, return matrices @var{xx}
 ## and @var{yy} corresponding to a full 2-D grid.
 ##

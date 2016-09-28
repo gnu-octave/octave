@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -47,13 +47,13 @@ typedef octave_idx_type (*dassl_jac_ptr) (const double&, const double*,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const octave_idx_type&,
-                             double&, double*, double*, double&,
-                             const octave_idx_type*, const double*,
-                             const double*, octave_idx_type&,
-                             double*, const octave_idx_type&,
-                             octave_idx_type*, const octave_idx_type&,
-                             const double*, const octave_idx_type*,
+  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const F77_INT&,
+                             F77_DBLE&, F77_DBLE*, F77_DBLE*, F77_DBLE&,
+                             const F77_INT*, const F77_DBLE*,
+                             const F77_DBLE*, F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             F77_INT*, const F77_INT&,
+                             const F77_DBLE*, const F77_INT*,
                              dassl_jac_ptr);
 }
 
@@ -84,7 +84,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 
   if (ires >= 0)
     {
-      if (tmp_delta.length () == 0)
+      if (tmp_delta.is_empty ())
         ires = -2;
       else
         {
@@ -131,7 +131,7 @@ DASSL::do_integrate (double tout)
 {
   ColumnVector retval;
 
-  if (! initialized || restart || DAEFunc::reset|| DASSL_options::reset)
+  if (! initialized || restart || DAEFunc::reset || DASSL_options::reset)
     {
       integration_error = false;
 
@@ -175,7 +175,7 @@ DASSL::do_integrate (double tout)
 
           ColumnVector res = (*user_fun) (x, xdot, t, ires);
 
-          if (res.length () != x.length ())
+          if (res.numel () != x.numel ())
             {
               (*current_liboctave_error_handler)
                 ("dassl: inconsistent sizes for state and residual vectors");
@@ -251,8 +251,8 @@ DASSL::do_integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
-      octave_idx_type rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
+      octave_idx_type rel_tol_len = rel_tol.numel ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -295,7 +295,7 @@ DASSL::do_integrate (double tout)
   switch (istate)
     {
     case 1: // A step was successfully taken in intermediate-output
-            // mode. The code has not yet reached TOUT.
+            // mode.  The code has not yet reached TOUT.
     case 2: // The integration to TSTOP was successfully completed
             // (T=TSTOP) by stepping exactly to TSTOP.
     case 3: // The integration to TOUT was successfully completed
@@ -324,8 +324,8 @@ DASSL::do_integrate (double tout)
               // returned to the calling program.
     case -12: // DDASSL failed to compute the initial YPRIME.
     case -33: // The code has encountered trouble from which it cannot
-              // recover. A message is printed explaining the trouble
-              // and control is returned to the calling program. For
+              // recover.  A message is printed explaining the trouble
+              // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
       integration_error = true;
       break;
@@ -353,7 +353,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -398,7 +398,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 {
   Matrix retval;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -412,7 +412,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
           xdot_out.elem (0, i) = xdot.elem (i);
         }
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {
@@ -579,3 +579,4 @@ DASSL::error_message (void) const
 
   return retval;
 }
+

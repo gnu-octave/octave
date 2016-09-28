@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 David Bateman
+## Copyright (C) 2010-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,42 +17,40 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{style} =} __next_line_style__ (@var{reset})
+## @deftypefn {} {@var{style} =} __next_line_style__ (@var{reset})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Return the next line style in the rotation.
 
 
-function [linestyle, marker] = __next_line_style__ (reset)
+function [linestyle, marker] = __next_line_style__ ()
 
-  persistent reset_style = true;
+  ca = gca ();
 
-  if (nargin == 1)
-    ## Indicates whether the next call will increment or not
-    reset_style = reset;
-  else
-    ## Find and return the next line style
-    ca = gca ();
-    style_rotation = get (ca, "linestyleorder");
-    if (ischar (style_rotation))
-      style_rotation = strsplit (style_rotation, "|");
-    endif
-    nStyles = length (style_rotation);
-    if (reset_style || (nStyles < 2))
-      style_index = 1;
-      reset_style = false;
-    else
-      ## Executed when "hold all" is active
-      nChildren = length (get (ca, "Children"));
-      nColors = rows (get (ca, "ColorOrder"));
-      style_index = mod (floor (nChildren/nColors), nStyles) + 1;
-    endif
-    options = __pltopt__ ("__next_line_style__",
-                          style_rotation(style_index));
-    linestyle = options.linestyle;
-    marker = options.marker;
+  styleorder = get (ca, "linestyleorder");
+  if (isempty (styleorder))
+    linestyle = "-";   # basic line
+    marker = "none";   # no marker
+    return;
   endif
+
+  if (ischar (styleorder))
+    styleorder = cellstr (styleorder);
+  endif
+
+  style_idx = fix (get (ca, "linestyleorderindex"));
+  num_styles = rows (styleorder);
+  style_idx = mod (style_idx, num_styles);
+  if (style_idx == 0)
+    style_idx = num_styles;
+  elseif (style_idx < 0)
+    style_idx = 1;
+  endif
+
+  options = __pltopt__ ("__next_line_style__", styleorder{style_idx});
+  linestyle = options.linestyle;
+  marker = options.marker;
 
 endfunction
 
@@ -64,13 +62,13 @@ endfunction
 %!   set (hax, "colororder", [0 0 1]);
 %!   set (hax, "linestyleorder", {"-", ":", "--"});
 %!   hold on;
-%!   h = plot (1:5,1:5, 1:4,1:4, 1:3,1:3);
+%!   h = plot (1:2,1:2, 2:3,2:3, 3:4,3:4);
 %!   assert (get (h, "linestyle"), {"-"; ":"; "--"});
 %!   cla (hax);
-%!   hold all;
-%!   h1 = plot (1:5,1:5);
-%!   h2 = plot (1:4,1:4);
-%!   h3 = plot (1:3,1:3);
+%!   hold on;
+%!   h1 = plot (1:2,1:2);
+%!   h2 = plot (2:3,2:3);
+%!   h3 = plot (3:4,3:4);
 %!   assert (get ([h1;h2;h3], "linestyle"), {"-"; ":"; "--"});
 %! unwind_protect_cleanup
 %!   close (hf);

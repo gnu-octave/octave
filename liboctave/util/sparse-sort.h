@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_sort_h)
-#define octave_sparse_sort_h
+#if ! defined (octave_sparse_sort_h)
+#define octave_sparse_sort_h 1
+
+#include "octave-config.h"
 
 #include "oct-sort.h"
 
@@ -50,3 +52,4 @@ bool octave_idx_vector_comp (octave_idx_vector_sort* i,
                              octave_idx_vector_sort* j);
 
 #endif
+

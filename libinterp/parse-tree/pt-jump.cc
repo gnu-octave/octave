@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pt-bp.h"
 #include "pt-jump.h"
 #include "pt-walk.h"
@@ -85,3 +85,4 @@ tree_return_command::accept (tree_walker& tw)
 {
   tw.visit_return_command (*this);
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
@@ -34,14 +34,14 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFASSIGNOP (assign, char_matrix_str, octave_scalar)
 {
-  CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_scalar&);
+  octave_char_matrix_str& v1 = dynamic_cast<octave_char_matrix_str&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   octave_value tmp
     = v2.convert_to_str_internal (false, false,
                                   a1.is_sq_string () ? '\'' : '"');
 
-  if (! error_state)
-    v1.assign (idx, tmp.char_array_value ());
+  v1.assign (idx, tmp.char_array_value ());
 
   return octave_value ();
 }
@@ -63,3 +63,4 @@ install_str_s_ops (void)
   INSTALL_CATOP (octave_scalar, octave_char_matrix_str, s_str);
   INSTALL_CATOP (octave_scalar, octave_char_matrix_sq_str, s_str);
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 Kai Habel
+Copyright (C) 2000-2016 Kai Habel
 
 This file is part of Octave.
 
@@ -38,8 +38,8 @@ along with Octave; see the file COPYING.  If not, see
   * change the default options (for compatibility with matlab)
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -50,20 +50,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
-# include "oct-qhull.h"
-# if defined (NEED_QHULL_VERSION)
+
+#  include "oct-qhull.h"
+
+#  if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
-# endif
-#endif
+#  endif
 
 static void
 close_fcn (FILE *f)
 {
-  gnulib::fclose (f);
+  std::fclose (f);
 }
 
 static bool
@@ -74,35 +76,32 @@ octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
       int maxval = std::numeric_limits<int>::max ();
 
       if (dim > maxval || n > maxval)
-        {
-          error ("%s: dimension too large for Qhull", who);
-          return false;
-        }
+        error ("%s: dimension too large for Qhull", who);
     }
 
   return true;
 }
 
+#endif
+
 DEFUN_DLD (__delaunayn__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{T} =} __delaunayn__ (@var{pts})\n\
-@deftypefnx {Loadable Function} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{T} =} __delaunayn__ (@var{pts})
+@deftypefnx {} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})
+Undocumented internal function.
+@end deftypefn */)
 
 {
-  octave_value_list retval;
-
 #if defined (HAVE_QHULL)
 
-  retval(0) = 0.0;
-
   int nargin = args.length ();
+
   if (nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
+
+  octave_value_list retval;
+
+  retval(0) = 0.0;
 
   Matrix p (args(0).matrix_value ());
   const octave_idx_type dim = p.columns ();
@@ -133,10 +132,7 @@ Undocumented internal function.\n\
             options += tmp(i) + " ";
         }
       else
-        {
-          error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");
-          return retval;
-        }
+        error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");
     }
 
   if (n > dim + 1)
@@ -150,73 +146,64 @@ Undocumented internal function.\n\
 
       sprintf (flags, "qhull d %s", options.c_str ());
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       // Replace the outfile pointer with stdout for debugging information.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-      FILE *outfile = gnulib::fopen ("NUL", "w");
+      FILE *outfile = std::fopen ("NUL", "w");
 #else
-      FILE *outfile = gnulib::fopen ("/dev/null", "w");
+      FILE *outfile = std::fopen ("/dev/null", "w");
 #endif
       FILE *errfile = stderr;
 
-      if (outfile)
-        frame.add_fcn (close_fcn, outfile);
-      else
-        {
-          error ("__delaunayn__: unable to create temporary file for output");
-          return retval;
-        }
+      if (! outfile)
+        error ("__delaunayn__: unable to create temporary file for output");
+
+      frame.add_fcn (close_fcn, outfile);
 
       int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);
+      if (exitcode)
+        error ("__delaunayn__: qhull failed");
+
+      // triangulate non-simplicial facets
+      qh_triangulate ();
+
+      facetT *facet;
+      vertexT *vertex, **vertexp;
+      octave_idx_type nf = 0;
+      octave_idx_type i = 0;
+
+      FORALLfacets
+        {
+          if (! facet->upperdelaunay)
+            nf++;
+
+          // Double check.  Non-simplicial facets will cause segfault below
+          if (! facet->simplicial)
+            error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
+        }
+
       if (! exitcode)
         {
-          // triangulate non-simplicial facets
-          qh_triangulate ();
-
-          facetT *facet;
-          vertexT *vertex, **vertexp;
-          octave_idx_type nf = 0;
-          octave_idx_type i = 0;
+          Matrix simpl (nf, dim+1);
 
           FORALLfacets
             {
               if (! facet->upperdelaunay)
-                nf++;
-
-              // Double check.  Non-simplicial facets will cause segfault below
-              if (! facet->simplicial)
                 {
-                  error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
-                  exitcode = 1;
-                  break;
-                }
-            }
+                  octave_idx_type j = 0;
 
-          if (! exitcode)
-            {
-              Matrix simpl (nf, dim+1);
-
-              FORALLfacets
-                {
-                  if (! facet->upperdelaunay)
+                  FOREACHvertex_ (facet->vertices)
                     {
-                      octave_idx_type j = 0;
-
-                      FOREACHvertex_ (facet->vertices)
-                        {
-                          simpl(i, j++) = 1 + qh_pointid(vertex->point);
-                        }
-                      i++;
+                      simpl(i, j++) = 1 + qh_pointid(vertex->point);
                     }
+                  i++;
                 }
-
-              retval(0) = simpl;
             }
+
+          retval(0) = simpl;
         }
-      else
-        error ("__delaunayn__: qhull failed");
 
       // Free memory from Qhull
       qh_freeqhull (! qh_ALL);
@@ -239,14 +226,19 @@ Undocumented internal function.\n\
       retval(0) = vec;
     }
 
-#else
-  error ("__delaunayn__: not available in this version of Octave");
-#endif
-
   return retval;
+
+#else
+
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__delaunayn__", "Qhull");
+
+#endif
 }
 
 /*
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

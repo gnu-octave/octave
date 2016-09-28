@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_base_scalar_h)
+#if ! defined (octave_ov_base_scalar_h)
 #define octave_ov_base_scalar_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -38,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Real scalar values.
 
-template <class ST>
+template <typename ST>
 class
 octave_base_scalar : public octave_base_value
 {
@@ -158,3 +160,4 @@ protected:
 };
 
 #endif
+

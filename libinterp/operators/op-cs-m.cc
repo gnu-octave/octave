@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "mx-cs-nda.h"
@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-cs-nda.h"
 #include "mx-nda-cs.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
@@ -48,7 +48,8 @@ DEFNDBINOP_OP (mul, complex, matrix, complex, array, *)
 
 DEFBINOP (div, complex, matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   ComplexMatrix m1 = v1.complex_matrix_value ();
   Matrix m2 = v2.matrix_value ();
@@ -64,12 +65,13 @@ DEFBINOP_FN (pow, complex, matrix, xpow)
 
 DEFBINOP (ldiv, complex, matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.array_value () / d);
 }
@@ -87,12 +89,13 @@ DEFNDBINOP_FN (el_pow, complex, matrix, complex, array, elem_xpow)
 
 DEFBINOP (el_ldiv, complex, matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.array_value () / d);
 }
@@ -128,3 +131,4 @@ install_cs_m_ops (void)
 
   INSTALL_ASSIGNCONV (octave_complex, octave_matrix, octave_complex_matrix);
 }
+

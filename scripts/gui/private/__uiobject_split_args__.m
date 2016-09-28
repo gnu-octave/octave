@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Michael Goffioul
+## Copyright (C) 2012-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
+## @deftypefn {} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -41,7 +41,7 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   endif
 
   if (rem (length (args), 2))
-    error ("%s: expecting PROPERTY/VALUE pairs", who);
+    error ("%s: PROPERTY/VALUE arguments must occur in pairs", who);
   endif
 
   if (! isempty (args))

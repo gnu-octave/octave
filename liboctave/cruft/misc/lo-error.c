@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <stdarg.h>
@@ -34,20 +34,20 @@ along with Octave; see the file COPYING.  If not, see
    symbol errors when creating shared versions of libcruft. */
 
 /* Pointer to the current error handling function. */
-liboctave_error_handler current_liboctave_error_handler
-  = liboctave_fatal;
+OCTAVE_NORETURN liboctave_error_handler
+  current_liboctave_error_handler = liboctave_fatal;
 
 /* Pointer to the current error_with_id handling function. */
-liboctave_error_with_id_handler current_liboctave_error_with_id_handler
-  = liboctave_fatal_with_id;
+OCTAVE_NORETURN liboctave_error_with_id_handler
+  current_liboctave_error_with_id_handler = liboctave_fatal_with_id;
 
 /* Pointer to the current warning handler. */
-liboctave_warning_handler current_liboctave_warning_handler
-  = liboctave_warning;
+liboctave_warning_handler
+  current_liboctave_warning_handler = liboctave_warning;
 
 /* Pointer to the current warning_with_id handler. */
-liboctave_warning_with_id_handler current_liboctave_warning_with_id_handler
-  = liboctave_warning_with_id;
+liboctave_warning_with_id_handler
+  current_liboctave_warning_with_id_handler = liboctave_warning_with_id;
 
 static void
 verror (const char *name, const char *fmt, va_list args)
@@ -61,7 +61,7 @@ verror (const char *name, const char *fmt, va_list args)
 }
 
 void
-set_liboctave_error_handler (liboctave_error_handler f)
+set_liboctave_error_handler (OCTAVE_NORETURN liboctave_error_handler f)
 {
   if (f)
     current_liboctave_error_handler = f;
@@ -70,7 +70,8 @@ set_liboctave_error_handler (liboctave_error_handler f)
 }
 
 void
-set_liboctave_error_with_id_handler (liboctave_error_with_id_handler f)
+set_liboctave_error_with_id_handler (OCTAVE_NORETURN
+                                     liboctave_error_with_id_handler f)
 {
   if (f)
     current_liboctave_error_with_id_handler = f;
@@ -110,8 +111,9 @@ liboctave_fatal (const char *fmt, ...)
 void
 liboctave_fatal_with_id (const char *id, const char *fmt, ...)
 {
+  octave_unused_parameter (id);
+
   va_list args;
-  (void) id; /*unused*/
   va_start (args, fmt);
   verror ("fatal", fmt, args);
   va_end (args);
@@ -131,9 +133,11 @@ liboctave_warning (const char *fmt, ...)
 void
 liboctave_warning_with_id (const char *id, const char *fmt, ...)
 {
+  octave_unused_parameter (id);
+
   va_list args;
-  (void) id; /*unused*/
   va_start (args, fmt);
   verror ("warning", fmt, args);
   va_end (args);
 }
+

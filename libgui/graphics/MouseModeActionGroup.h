@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_MouseModeActionGroup__
-#define __QtHandles_MouseModeActionGroup__ 1
+#if ! defined (octave_MouseModeActionGroup_h)
+#define octave_MouseModeActionGroup_h 1
 
 #include <QList>
 #include <QObject>
@@ -33,29 +33,30 @@ class QAction;
 namespace QtHandles
 {
 
-class MouseModeActionGroup : public QObject
-{
-  Q_OBJECT
+  class MouseModeActionGroup : public QObject
+  {
+    Q_OBJECT
 
-public:
-  MouseModeActionGroup (QObject* parent = 0);
-  ~MouseModeActionGroup (void);
+  public:
+    MouseModeActionGroup (QObject* parent = 0);
+    ~MouseModeActionGroup (void);
 
-  QList<QAction*> actions (void) const { return m_actions; }
+    QList<QAction*> actions (void) const { return m_actions; }
 
-  void setMode (MouseMode mode);
+    void setMode (MouseMode mode);
 
-signals:
-  void modeChanged (MouseMode mode);
+  signals:
+    void modeChanged (MouseMode mode);
 
-private slots:
-  void actionToggled (bool checked);
+  private slots:
+    void actionToggled (bool checked);
 
-private:
-  QList<QAction*> m_actions;
-  QAction* m_current;
-};
+  private:
+    QList<QAction*> m_actions;
+    QAction* m_current;
+  };
 
 };
 
 #endif
+

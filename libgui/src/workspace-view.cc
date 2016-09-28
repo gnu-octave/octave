@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QInputDialog>
@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 #include <QLabel>
 #include <QCompleter>
+#include <QSignalMapper>
 
 #include "workspace-view.h"
 #include "resource-manager.h"
@@ -75,45 +76,65 @@ workspace_view::workspace_view (QWidget *p)
   // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
 
-  // Create a new layout and add widgets to it.
-  QVBoxLayout *vbox_layout = new QVBoxLayout ();
-  QHBoxLayout *hbox_layout = new QHBoxLayout ();
-  hbox_layout->addWidget (filter_label);
-  hbox_layout->addWidget (_filter_checkbox);
-  hbox_layout->addWidget (_filter);
-  vbox_layout->addLayout (hbox_layout);
-  vbox_layout->addWidget (view);
-  vbox_layout->setMargin (2);
+  // Create the layouts
+  _filter_widget = new QWidget (this);
+  QHBoxLayout *filter_layout = new QHBoxLayout ();
 
-  // Set the empty widget to have our layout.
-  widget ()->setLayout (vbox_layout);
+  filter_layout->addWidget (filter_label);
+  filter_layout->addWidget (_filter_checkbox);
+  filter_layout->addWidget (_filter);
+  filter_layout->setMargin(0);
+  _filter_widget->setLayout (filter_layout);
 
-  // Initialize collapse/expand state of the workspace subcategories.
+  QVBoxLayout *ws_layout = new QVBoxLayout ();
+  ws_layout->addWidget (_filter_widget);
+  ws_layout->addWidget (view);
 
   QSettings *settings = resource_manager::get_settings ();
 
-  //enable sorting (setting column and order after model was set)
-  view->setSortingEnabled (true);
-  // Initialize column order and width of the workspace
-  view->horizontalHeader ()->restoreState (
-    settings->value ("workspaceview/column_state").toByteArray ());
-  // Set header properties for sorting
-  view->horizontalHeader ()->setClickable (true);
-  view->horizontalHeader ()->setMovable (true);
-  view->horizontalHeader ()->setSortIndicator (
-    settings->value ("workspaceview/sort_by_column",0).toInt (),
-    static_cast<Qt::SortOrder>
-    (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ())
-  );
-  view->horizontalHeader ()->setSortIndicatorShown (true);
+  if (settings)
+    {
+      _filter_shown = settings->value ("workspaceview/filter_shown",true).toBool();
+      _filter_widget->setVisible (_filter_shown);
 
-  // Init state of the filter
-  _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
+      ws_layout->setMargin (2);
 
-  bool filter_state =
-    settings->value ("workspaceview/filter_active", false).toBool ();
-  _filter_checkbox->setChecked (filter_state);
-  filter_activate (filter_state);
+      // Set the empty widget to have our layout.
+      widget ()->setLayout (ws_layout);
+
+      // Initialize collapse/expand state of the workspace subcategories.
+
+      //enable sorting (setting column and order after model was set)
+      view->setSortingEnabled (true);
+      // Initialize column order and width of the workspace
+      view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+
+      // Set header properties for sorting
+#if defined (HAVE_QT4)
+      view->horizontalHeader ()->setClickable (true);
+      view->horizontalHeader ()->setMovable (true);
+#else
+      view->horizontalHeader ()->setSectionsClickable (true);
+      view->horizontalHeader ()->setSectionsMovable (true);
+#endif
+      view->horizontalHeader ()->setSortIndicator (settings->value ("workspaceview/sort_by_column",0).toInt (),
+                                                   static_cast<Qt::SortOrder>
+                                                   (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));
+      view->horizontalHeader ()->setSortIndicatorShown (true);
+
+      view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
+      connect (view->horizontalHeader (),
+               SIGNAL (customContextMenuRequested (const QPoint &)),
+               this, SLOT (header_contextmenu_requested (const QPoint &)));
+
+      // Init state of the filter
+      _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
+
+      bool filter_state =
+        settings->value ("workspaceview/filter_active", false).toBool ();
+      _filter_checkbox->setChecked (filter_state);
+      filter_activate (filter_state);
+    }
 
   // Connect signals and slots.
 
@@ -129,12 +150,15 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
-
 }
 
-workspace_view::~workspace_view (void)
+void
+workspace_view::save_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   settings->setValue ("workspaceview/column_state",
                       view->horizontalHeader ()->saveState ());
@@ -146,6 +170,7 @@ workspace_view::~workspace_view (void)
 
   settings->setValue ("workspaceview/filter_active",
                       _filter_checkbox->isChecked ());
+  settings->setValue ("workspaceview/filter_shown", _filter_shown);
 
   QStringList mru;
   for (int i = 0; i < _filter->count (); i++)
@@ -153,6 +178,9 @@ workspace_view::~workspace_view (void)
   settings->setValue ("workspaceview/mru_list", mru);
 
   settings->sync ();
+
+  if (_sig_mapper)
+    delete _sig_mapper;
 }
 
 void workspace_view::setModel (workspace_model *model)
@@ -223,6 +251,48 @@ workspace_view::get_var_name (QModelIndex index)
 }
 
 void
+workspace_view::header_contextmenu_requested (const QPoint& mpos)
+{
+  QMenu menu (this);
+
+  if (_sig_mapper)
+    delete _sig_mapper;
+  _sig_mapper = new QSignalMapper (this);
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  for (int i = 0; i < _columns_shown.size (); i++)
+    {
+      QAction *action = menu.addAction (_columns_shown.at (i),
+                                        _sig_mapper, SLOT (map ()));
+      _sig_mapper->setMapping(action, i);
+      action->setCheckable (true);
+      action->setChecked (
+            settings->value (_columns_shown_keys.at (i),true).toBool ());
+    }
+
+  connect (_sig_mapper, SIGNAL (mapped (int)), this, SLOT (toggle_header (int)));
+
+  menu.exec (view->mapToGlobal (mpos));
+}
+
+void
+workspace_view::toggle_header (int col)
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  QString key = _columns_shown_keys.at (col);
+  bool shown = settings->value (key,true).toBool ();
+
+  view->setColumnHidden (col + 1, shown);
+
+  settings->setValue (key, ! shown);
+  settings->sync ();
+
+  octave_dock_widget::save_settings ();
+}
+
+void
 workspace_view::contextmenu_requested (const QPoint& qpos)
 {
   QMenu menu (this);
@@ -263,8 +333,18 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
       menu.addAction ("stem (" + var_name + ")", this,
                       SLOT (handle_contextmenu_stem ()));
 
-      menu.exec (view->mapToGlobal (qpos));
+      menu.addSeparator ();
+
     }
+
+  if (_filter_shown)
+    menu.addAction (tr ("Hide filter"), this,
+                    SLOT (handle_contextmenu_filter ()));
+  else
+    menu.addAction (tr ("Show filter"), this,
+                    SLOT (handle_contextmenu_filter ()));
+
+  menu.exec (view->mapToGlobal (qpos));
 }
 
 void
@@ -316,8 +396,8 @@ workspace_view::handle_contextmenu_rename (void)
       bool ok = false;
 
       QString new_name
-        =  inputDialog->getText (0, "Rename Variable", "New name:",
-                                 QLineEdit::Normal, var_name, &ok);
+        = inputDialog->getText (0, "Rename Variable", "New name:",
+                                QLineEdit::Normal, var_name, &ok);
 
       if (ok && ! new_name.isEmpty ())
         {
@@ -359,13 +439,20 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 }
 
 void
+workspace_view::handle_contextmenu_filter (void)
+{
+  _filter_shown = not _filter_shown;
+  _filter_widget->setVisible (_filter_shown);
+}
+
+void
 workspace_view::handle_model_changed (void)
 {
 //  view->resizeRowsToContents ();
   // Just modify those rows that have been added rather than go through
   // the whole list.  For-loop test will handle when number of rows reduced.
   QFontMetrics fm = view->fontMetrics ();
-  int row_height =  fm.height ();
+  int row_height = fm.height ();
   int new_row_count = _filter_model.rowCount ();
   for (int i = view_previous_row_count; i < new_row_count; i++)
     view->setRowHeight (i, row_height);
@@ -375,15 +462,23 @@ workspace_view::handle_model_changed (void)
 void
 workspace_view::notice_settings (const QSettings *settings)
 {
+  int i;
+
   _model->notice_settings (settings); // update colors of model first
+
+  for (i = 0; i < _columns_shown_keys.size (); i++)
+    {
+      view->setColumnHidden (i + 1,
+            ! settings->value (_columns_shown_keys.at (i),true).toBool ());
+    }
 
   QString tool_tip;
 
-  if (!settings->value ("workspaceview/hide_tool_tips",false).toBool ())
+  if (! settings->value ("workspaceview/hide_tool_tips",false).toBool ())
     {
       tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
       tool_tip += QString (tr ("Colors for variable attributes:"));
-      for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+      for (i = 0; i < resource_manager::storage_class_chars ().length (); i++)
         {
           tool_tip +=
             QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
@@ -394,6 +489,19 @@ workspace_view::notice_settings (const QSettings *settings)
 
   setToolTip (tool_tip);
 
+  _columns_shown = QStringList ();
+  _columns_shown.append (tr ("Class"));
+  _columns_shown.append (tr ("Dimension"));
+  _columns_shown.append (tr ("Value"));
+  _columns_shown.append (tr ("Attribute"));
+
+  _columns_shown_keys = QStringList ();
+  _columns_shown_keys.append ("workspaceview/show_class");
+  _columns_shown_keys.append ("workspaceview/show_dimension");
+  _columns_shown_keys.append ("workspaceview/show_value");
+  _columns_shown_keys.append ("workspaceview/show_attribute");
+
+  _sig_mapper = 0;
 }
 
 void

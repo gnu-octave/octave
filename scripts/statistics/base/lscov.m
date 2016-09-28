@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Nir Krakauer
+## Copyright (C) 2014-2016 Nir Krakauer
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,10 +14,10 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} lscov (@var{A}, @var{b})
-## @deftypefnx {Function File} {@var{x} =} lscov (@var{A}, @var{b}, @var{V})
-## @deftypefnx {Function File} {@var{x} =} lscov (@var{A}, @var{b}, @var{V}, @var{alg})
-## @deftypefnx {Function File} {[@var{x}, @var{stdx}, @var{mse}, @var{S}] =} lscov (@dots{})
+## @deftypefn  {} {@var{x} =} lscov (@var{A}, @var{b})
+## @deftypefnx {} {@var{x} =} lscov (@var{A}, @var{b}, @var{V})
+## @deftypefnx {} {@var{x} =} lscov (@var{A}, @var{b}, @var{V}, @var{alg})
+## @deftypefnx {} {[@var{x}, @var{stdx}, @var{mse}, @var{S}] =} lscov (@dots{})
 ##
 ## Compute a generalized linear least squares fit.
 ##
@@ -111,10 +111,11 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
       endfor
     endif
   endif
+
 endfunction
 
 
-%!test
+%!test <49040>
 %! ## Longley data from the NIST Statistical Reference Dataset
 %! Z = [  60323    83.0   234289   2356     1590    107608  1947
 %!        61122    88.5   259426   2325     1456    108632  1948
@@ -172,11 +173,11 @@ endfunction
 %! assert(mseg, 0.0019, 1E-4);
 %! y2 = [y 2*y];
 %! [b2, se_b2, mse2, S2] = lscov (X, y2);
-%! assert(b2, [b 2*b], 2*eps)
-%! assert(se_b2, [se_b 2*se_b], eps)
-%! assert(mse2, [mse 4*mse], eps)
-%! assert(S2(:, :, 1), S, eps)
-%! assert(S2(:, :, 2), 4*S, eps)
+%! assert(b2, [b 2*b], 2*eps);
+%! assert(se_b2, [se_b 2*se_b], eps);
+%! assert(mse2, [mse 4*mse], eps);
+%! assert(S2(:, :, 1), S, eps);
+%! assert(S2(:, :, 2), 4*S, eps);
 
 %!test
 %! ## Artificial example with positive semidefinite weight matrix

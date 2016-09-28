@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QMutex>
@@ -35,33 +35,32 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-Logger* Logger::s_instance = 0;
-QMutex* Logger::s_mutex = 0;
+  Logger* Logger::s_instance = 0;
+  QMutex* Logger::s_mutex = 0;
 
-Logger::Logger (void)
-  : m_debugEnabled (false)
-{
-  QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
+  Logger::Logger (void)
+    : m_debugEnabled (false)
+  {
+    QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
 
-  if (pe.value ("QTHANDLES_DEBUG", "0") != "0")
-    m_debugEnabled = true;
-}
+    if (pe.value ("QTHANDLES_DEBUG", "0") != "0")
+      m_debugEnabled = true;
+  }
 
-Logger::~Logger (void)
-{
-}
+  Logger::~Logger (void)
+  { }
 
-Logger*
-Logger::instance (void)
-{
-  if (! s_instance)
-    {
-      s_instance = new Logger ();
-      s_mutex = new QMutex ();
-    }
+  Logger*
+  Logger::instance (void)
+  {
+    if (! s_instance)
+      {
+        s_instance = new Logger ();
+        s_mutex = new QMutex ();
+      }
 
-  return s_instance;
-}
+    return s_instance;
+  }
 
 #define STATIC_LOGGER(fun) \
   void Logger::fun (const char* fmt, ...) \
@@ -73,16 +72,17 @@ Logger::instance (void)
     va_end (vl); \
   }
 
-STATIC_LOGGER (debug)
+  STATIC_LOGGER (debug)
 
-void
-Logger::debugV (const char* fmt, va_list arg)
-{
-  if (m_debugEnabled)
-    {
-      vfprintf (stderr, fmt, arg);
-      fprintf (stderr, "\n");
-    }
+  void
+  Logger::debugV (const char* fmt, va_list arg)
+  {
+    if (m_debugEnabled)
+      {
+        vfprintf (stderr, fmt, arg);
+        fprintf (stderr, "\n");
+      }
+  }
+
 }
 
-}; // namespace QtHandles

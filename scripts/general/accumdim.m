@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 VZLU Prague
+## Copyright (C) 2010-2016 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
+## @deftypefn {} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
 ## Create an array by accumulating the slices of an array into the
 ## positions defined by their subscripts along a specified dimension.
 ##
@@ -125,7 +125,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
   subsc = {':'}(ones (1, length (sz)));
   subsc{dim} = idx;
   vals = mat2cell (vals(subsc{:}), szc{:});
-  ## Apply reductions. Special case min, max.
+  ## Apply reductions.  Special case min, max.
   if (func == @min || func == @max)
     vals = cellfun (func, vals, {[]}, {dim}, "uniformoutput", false);
   else

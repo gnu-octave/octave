@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,18 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef SETTINGSDIALOG_H
-#define SETTINGSDIALOG_H
+#if ! defined (octave_settings_dialog_h)
+#define octave_settings_dialog_h 1
 
 #include <QDialog>
 #include <QSettings>
 #include <QLineEdit>
 
 #include "color-picker.h"
-
-#ifdef HAVE_QSCINTILLA
-class QsciLexer;
-#endif
 
 namespace Ui
 {
@@ -59,20 +55,12 @@ private slots:
   void button_clicked (QAbstractButton *button);
 
   // slots for import/export-buttons of shortcut sets
-  void import_shortcut_set1 ();
-  void export_shortcut_set1 ();
-  void import_shortcut_set2 ();
-  void export_shortcut_set2 ();
+  void import_shortcut_set ();
+  void export_shortcut_set ();
+  void default_shortcut_set ();
 
 private:
   Ui::settings_dialog * ui;
-#ifdef HAVE_QSCINTILLA
-  void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
-  void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
-  int  get_valid_lexer_styles (QsciLexer *lexer, int styles[]);
-  enum { MaxLexerStyles = 64,
-         MaxStyleNumber = 128 };
-#endif
 
   void write_changed_settings (bool closing);
 
@@ -89,4 +77,5 @@ private:
   color_picker *_editor_current_line_color;
 };
 
-#endif // SETTINGSDIALOG_H
+#endif
+

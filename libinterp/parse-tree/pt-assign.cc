@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -29,9 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
 #include "ov.h"
@@ -62,14 +62,10 @@ tree_simple_assignment::~tree_simple_assignment (void)
 octave_value_list
 tree_simple_assignment::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for expression X = RHS");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 octave_value
@@ -77,71 +73,59 @@ tree_simple_assignment::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (rhs)
     {
       octave_value rhs_val = rhs->rvalue1 ();
 
-      if (! error_state)
+      if (rhs_val.is_undefined ())
+        error ("value on right hand side of assignment is undefined");
+
+      if (rhs_val.is_cs_list ())
         {
-          if (rhs_val.is_undefined ())
-            {
-              error ("value on right hand side of assignment is undefined");
-              return retval;
-            }
+          const octave_value_list lst = rhs_val.list_value ();
+
+          if (lst.empty ())
+            error ("invalid number of elements on RHS of assignment");
+
+          rhs_val = lst(0);
+        }
+
+      try
+        {
+          octave_lvalue ult = lhs->lvalue ();
+
+          if (ult.numel () != 1)
+            err_nonbraced_cs_list_assignment ();
+
+          ult.assign (etype, rhs_val);
+
+          if (etype == octave_value::op_asn_eq)
+            retval = rhs_val;
           else
+            retval = ult.value ();
+
+          if (print_result ()
+              && octave::tree_evaluator::statement_printing_enabled ())
             {
-              if (rhs_val.is_cs_list ())
-                {
-                  const octave_value_list lst = rhs_val.list_value ();
+              // We clear any index here so that we can
+              // get the new value of the referenced
+              // object below, instead of the indexed
+              // value (which should be the same as the
+              // right hand side value).
 
-                  if (! lst.empty ())
-                    rhs_val = lst(0);
-                  else
-                    {
-                      error ("invalid number of elements on RHS of assignment");
-                      return retval;
-                    }
-                }
+              ult.clear_index ();
 
-              octave_lvalue ult = lhs->lvalue ();
+              octave_value lhs_val = ult.value ();
 
-              if (ult.numel () != 1)
-                gripe_nonbraced_cs_list_assignment ();
-
-              if (! error_state)
-                {
-                  ult.assign (etype, rhs_val);
-
-                  if (! error_state)
-                    {
-                      if (etype == octave_value::op_asn_eq)
-                        retval = rhs_val;
-                      else
-                        retval = ult.value ();
-
-                      if (print_result ()
-                          && tree_evaluator::statement_printing_enabled ())
-                        {
-                          // We clear any index here so that we can
-                          // get the new value of the referenced
-                          // object below, instead of the indexed
-                          // value (which should be the same as the
-                          // right hand side value).
-
-                          ult.clear_index ();
-
-                          octave_value lhs_val = ult.value ();
-
-                          if (! error_state)
-                            lhs_val.print_with_name (octave_stdout,
-                                                     lhs->name ());
-                        }
-                    }
-                }
+              lhs_val.print_with_name (octave_stdout,
+                                       lhs->name ());
             }
+        }
+      catch (octave::index_exception& e)
+        {
+          e.set_var (lhs->name ());
+          std::string msg = e.message ();
+          error_with_id (e.err_id (), msg.c_str ());
         }
     }
 
@@ -211,15 +195,9 @@ tree_multi_assignment::rvalue (int)
 {
   octave_value_list retval;
 
-  if (error_state)
-    return retval;
-
   if (rhs)
     {
       std::list<octave_lvalue> lvalue_list = lhs->lvalue_list ();
-
-      if (error_state)
-        return retval;
 
       octave_idx_type n_out = 0;
 
@@ -234,9 +212,6 @@ tree_multi_assignment::rvalue (int)
                                          && rhs_val1(0).is_cs_list ()
                                          ? rhs_val1(0).list_value ()
                                          : rhs_val1);
-
-      if (error_state)
-        return retval;
 
       octave_idx_type k = 0;
 
@@ -260,23 +235,45 @@ tree_multi_assignment::rvalue (int)
 
           if (nel != 1)
             {
-              if (k + nel <= n)
+              // Huge kluge so that wrapper scripts with lines like
+              //
+              //   [varargout{1:nargout}] = fcn (args);
+              //
+              // Will work the same as calling fcn directly when nargout
+              // is 0 and fcn produces more than one output even when
+              // nargout is 0.  This only works if varargout has not yet
+              // been defined.  See also bug #43813.
+
+              if (lvalue_list.size () == 1 && nel == 0 && n > 0
+                  && ! ult.is_black_hole () && ult.is_undefined ()
+                  && ult.index_type () == "{" && ult.index_is_empty ())
                 {
-                  // This won't do a copy.
-                  octave_value_list ovl  = rhs_val.slice (k, nel);
+                  // Convert undefined lvalue with empty index to a cell
+                  // array with a single value and indexed by 1 to
+                  // handle a single output.
 
-                  ult.assign (octave_value::op_asn_eq,
-                              octave_value (ovl, true));
+                  nel = 1;
 
-                  if (! error_state)
-                    {
-                      retval_list.push_back (ovl);
+                  ult.define (Cell (1, 1));
 
-                      k += nel;
-                    }
+                  ult.clear_index ();
+                  std::list<octave_value_list> idx;
+                  idx.push_back (octave_value_list (octave_value (1)));
+                  ult.set_index ("{", idx);
                 }
-              else
+
+              if (k + nel > n)
                 error ("some elements undefined in return list");
+
+              // This won't do a copy.
+              octave_value_list ovl = rhs_val.slice (k, nel);
+
+              ult.assign (octave_value::op_asn_eq,
+                          octave_value (ovl, true));
+
+              retval_list.push_back (ovl);
+
+              k += nel;
             }
           else
             {
@@ -289,7 +286,7 @@ tree_multi_assignment::rvalue (int)
                       k++;
                       continue;
                     }
-                  else if (! error_state)
+                  else
                     {
                       retval_list.push_back (rhs_val(k));
 
@@ -313,20 +310,16 @@ tree_multi_assignment::rvalue (int)
                   // RHS values.  We shouldn't complain that a value we
                   // don't need is missing from the list.
 
-                  if (ult.is_black_hole ())
-                    {
-                      k++;
-                      continue;
-                    }
-                  else
+                  if (! ult.is_black_hole ())
                     error ("element number %d undefined in return list", k+1);
+
+                  k++;
+                  continue;
                 }
             }
 
-          if (error_state)
-            break;
-          else if (print_result ()
-                   && tree_evaluator::statement_printing_enabled ())
+          if (print_result ()
+              && octave::tree_evaluator::statement_printing_enabled ())
             {
               // We clear any index here so that we can get
               // the new value of the referenced object below,
@@ -337,19 +330,12 @@ tree_multi_assignment::rvalue (int)
 
               octave_value lhs_val = ult.value ();
 
-              if (! error_state)
-                lhs_val.print_with_name (octave_stdout,
-                                         lhs_elt->name ());
+              lhs_val.print_with_name (octave_stdout, lhs_elt->name ());
             }
-
-          if (error_state)
-            break;
-
         }
 
       // Concatenate return values.
       retval = retval_list;
-
     }
 
   return retval;
@@ -393,3 +379,4 @@ tree_multi_assignment::accept (tree_walker& tw)
 {
   tw.visit_multi_assignment (*this);
 }
+

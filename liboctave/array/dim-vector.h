@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 Copyirght (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,34 +21,68 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dim_vector_h)
+#if ! defined (octave_dim_vector_h)
 #define octave_dim_vector_h 1
 
-#include <cassert>
-#include <limits>
+#include "octave-config.h"
 
-#include <sstream>
+#include <cassert>
+
+#include <initializer_list>
 #include <string>
 
 #include "lo-error.h"
 #include "lo-macros.h"
 #include "oct-refcount.h"
 
-// Rationale: This implementation is more tricky than Array, but the
-// big plus is that dim_vector requires only one allocation instead of
-// two.  It is (slightly) patterned after GCC's basic_string
-// implementation.  rep is a pointer to an array of memory, comprising
-// count, length, and the data:
-//
-//          <count>
-//          <ndims>
-//  rep --> <dims[0]>
-//          <dims[1]>
-//          ...
-//
-// The inlines count(), ndims() recover this data from the rep.  Note
-// that rep points to the beginning of dims to grant faster access
-// (reinterpret_cast is assumed to be an inexpensive operation).
+//! Vector representing the dimensions (size) of an Array.
+/*!
+  A dim_vector is used to represent dimensions of an Array.  It is used
+  on its constructor to specify its size, or when reshaping it.
+
+  @code{.cc}
+  // Matrix with 10 rows and 20 columns.
+  Matrix m Matrix (dim_vector (10, 20));
+
+  // Change its size to 5 rows and 40 columns.
+  Matrix m2 = m.reshape (dim_vector (5, 40));
+
+  // Five dimensional Array of length 10, 20, 3, 8, 7 on each dimension.
+  NDArray a (dim_vector (10, 20, 3, 8, 7));
+
+  // Uninitialized array of same size as other.
+  NDArray b (a.dims ());
+  @endcode
+
+  The main thing to understand about this class, is that methods such as
+  ndims() and numel(), return the value for an Array of these dimensions,
+  not the actual number of elements in the dim_vector.
+
+  @code{.cc}
+  dim_vector d (10, 5, 3);
+  octave_idx_type n = d.numel (); // returns 150
+  octave_idx_type nd = d.ndims (); // returns 3
+  @endcode
+
+  ## Implementation details ##
+
+  This implementation is more tricky than Array, but the big plus is that
+  dim_vector requires only one allocation instead of two.  It is (slightly)
+  patterned after GCC's basic_string implementation.  rep is a pointer to an
+  array of memory, comprising count, length, and the data:
+
+  @verbatim
+          <count>
+          <ndims>
+  rep --> <dims[0]>
+          <dims[1]>
+          ...
+  @endverbatim
+
+  The inlines count(), ndims() recover this data from the rep.  Note
+  that rep points to the beginning of dims to grant faster access
+  (reinterpret_cast is assumed to be an inexpensive operation).
+*/
 
 class
 OCTAVE_API
@@ -57,8 +91,6 @@ dim_vector
 private:
 
   octave_idx_type *rep;
-
-  octave_idx_type& ndims (void) const { return rep[-1]; }
 
   octave_idx_type& count (void) const { return rep[-2]; }
 
@@ -80,10 +112,7 @@ private:
   {
     int l = ndims ();
 
-    octave_idx_type *r = new octave_idx_type [l + 2];
-
-    *r++ = 1;
-    *r++ = l;
+    octave_idx_type* r = newrep (l);
 
     for (int i = 0; i < l; i++)
       r[i] = rep[i];
@@ -100,16 +129,13 @@ private:
     if (n < 2)
       n = 2;
 
-    octave_idx_type *r = new octave_idx_type [n + 2];
-
-    *r++ = 1;
-    *r++ = n;
+    octave_idx_type* r = newrep (n);
 
     if (l > n)
       l = n;
 
-    int j;
-    for (j = 0; j < l; j++)
+    int j = 0;
+    for (; j < l; j++)
       r[j] = rep[j];
     for (; j < n; j++)
       r[j] = fill_value;
@@ -131,7 +157,7 @@ private:
       {
         octave_idx_type *new_rep = clonerep ();
 
-        if (OCTREFCOUNT_ATOMIC_DECREMENT(&(count())) == 0)
+        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
           freerep ();
 
         rep = new_rep;
@@ -140,19 +166,13 @@ private:
 
 public:
 
-// There are constructors for up to 7 dimensions initialized this way.
-// More can be added if necessary.
-#define ASSIGN_REP(i) rep[i] = d ## i;
-#define DIM_VECTOR_CTOR(N) \
-  dim_vector (OCT_MAKE_DECL_LIST (octave_idx_type, d, N)) \
-    : rep (newrep (N)) \
-  { \
-    OCT_ITERATE_MACRO (ASSIGN_REP, N) \
-  }
-
-  //! Construct dim_vector for 2 dimensional array.
+  //! Construct dim_vector for a N dimensional array.
   /*!
-    It can be used to construct a 2D array.  Example:
+
+    Each argument to constructor defines the length of an additional
+    dimension.  A dim_vector always represents a minimum of 2 dimensions
+    (just like an Array has at least 2 dimensions) and there is no
+    upper limit on the number of dimensions.
 
     @code{.cc}
     dim_vector dv (7, 5);
@@ -163,49 +183,38 @@ public:
     one for each dimension.  It can then be used to construct a Matrix
     with such dimensions, i.e., 7 rows and 5 columns.
 
-    There are constructors available for up to 7 dimensions.  For a higher
-    number of dimensions, use redim() or resize().
-
-    Note that that there is no constructor for a 1 element dim_vector.
-    This is because there are no 1 dimensional Array in liboctave.  Such
-    constructor did exist in liboctave but was removed in version 4.0.0
-    due to its potential for confusion.
-  */
-  DIM_VECTOR_CTOR (2)
-
-  //! Construct dim_vector for 3 dimensional array.
-  /*!
-    It can be used to construct a 3D array.  Example:
-
     @code{.cc}
-    NDArray A (dim_vector (7, 5, 4));
+    NDArray x (dim_vector (7, 5, 10));
     @endcode
 
-    This will construct a 3 dimensional NDArray of lengths 7, 5, and 4,
+    This will construct a 3 dimensional NDArray of lengths 7, 5, and 10,
     on the first, second, and third dimension (rows, columns, and pages)
     respectively.
+
+    Note that that there is no constructor that accepts only one
+    dimension length to avoid confusion.  The source for such confusion
+    is that constructor could mean:
+      - a column vector, i.e., assume @f$[N, 1]@f$;
+      - a square matrix, i.e., as is common in Octave interpreter;
+      - support for a 1 dimensional Array (does not exist);
+
+    Using r, c, and lengths... as arguments, allow us to check at compile
+    time that there's at least 2 dimensions specified, while maintaining
+    type safety.
   */
-  DIM_VECTOR_CTOR (3)
-
-  //! Construct dim_vector for 4 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (4)
-  //! Construct dim_vector for 5 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (5)
-  //! Construct dim_vector for 6 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (6)
-  //! Construct dim_vector for 7 dimensional array.
-  //! @see dim_vector(octave_idx_type d0, octave_idx_type d1)
-  DIM_VECTOR_CTOR (7)
-
-#undef ASSIGN_REP
-#undef DIM_VECTOR_CTOR
+  template <typename... Ints>
+  dim_vector (const octave_idx_type r, const octave_idx_type c,
+              Ints... lengths) : rep (newrep (2 + sizeof... (Ints)))
+  {
+    std::initializer_list<octave_idx_type> all_lengths = {r, c, lengths...};
+    for (const octave_idx_type l: all_lengths)
+      *rep++ = l;
+    rep -= all_lengths.size ();
+  }
 
   octave_idx_type& elem (int i)
   {
-#ifdef BOUNDS_CHECKING
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     assert (i >= 0 && i < ndims ());
 #endif
     make_unique ();
@@ -214,7 +223,7 @@ public:
 
   octave_idx_type elem (int i) const
   {
-#ifdef BOUNDS_CHECKING
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     assert (i >= 0 && i < ndims ());
 #endif
     return rep[i];
@@ -229,7 +238,7 @@ public:
         do
           l--;
         while (l > 2 && rep[l-1] == 1);
-        ndims () = l;
+        rep[-1] = l;
       }
   }
 
@@ -250,10 +259,10 @@ public:
   static octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ())
-  { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
+  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
 
   dim_vector (const dim_vector& dv) : rep (dv.rep)
-  { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
+  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
 
   // FIXME: Should be private, but required by array constructor for jit
   explicit dim_vector (octave_idx_type *r) : rep (r) { }
@@ -267,11 +276,11 @@ public:
   {
     if (&dv != this)
       {
-        if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
+        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
           freerep ();
 
         rep = dv.rep;
-        OCTREFCOUNT_ATOMIC_INCREMENT (&(count()));
+        OCTAVE_ATOMIC_INCREMENT (&(count ()));
       }
 
     return *this;
@@ -279,10 +288,25 @@ public:
 
   ~dim_vector (void)
   {
-    if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
+    if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
       freerep ();
   }
 
+  //! Number of dimensions.
+  /*!
+      Returns the number of dimensions of the dim_vector.  This is number of
+      elements in the dim_vector including trailing singetons.  It is also
+      the number of dimensions an Array with this dim_vector would have.
+  */
+  octave_idx_type ndims (void) const { return rep[-1]; }
+
+  //! Number of dimensions.
+  //! Synonymous with ndims().
+  /*!
+    While this method is not officially deprecated, consider using ndims()
+    instead to avoid confusion.  Array does not have length because of its
+    odd definition as length of the longest dimension.
+  */
   int length (void) const { return ndims (); }
 
   octave_idx_type& operator () (int i) { return elem (i); }
@@ -291,13 +315,13 @@ public:
 
   void resize (int n, int fill_value = 0)
   {
-    int len = length ();
+    int len = ndims ();
 
     if (n != len)
       {
         octave_idx_type *r = resizerep (n, fill_value);
 
-        if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
+        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
           freerep ();
 
         rep = r;
@@ -310,7 +334,7 @@ public:
   {
     bool retval = true;
 
-    for (int i = 0; i < length (); i++)
+    for (int i = 0; i < ndims (); i++)
       {
         if (elem (i) != 0)
           {
@@ -324,20 +348,19 @@ public:
 
   bool empty_2d (void) const
   {
-    return length () == 2 && (elem (0) == 0 || elem (1) == 0);
+    return ndims () == 2 && (elem (0) == 0 || elem (1) == 0);
   }
-
 
   bool zero_by_zero (void) const
   {
-    return length () == 2 && elem (0) == 0 && elem (1) == 0;
+    return ndims () == 2 && elem (0) == 0 && elem (1) == 0;
   }
 
   bool any_zero (void) const
   {
     bool retval = false;
 
-    for (int i = 0; i < length (); i++)
+    for (int i = 0; i < ndims (); i++)
       {
         if (elem (i) == 0)
           {
@@ -353,7 +376,7 @@ public:
 
   bool all_ones (void) const
   {
-    return (num_ones () == length ());
+    return (num_ones () == ndims ());
   }
 
   //! Number of elements that a matrix with this dimensions would have.
@@ -365,7 +388,7 @@ public:
 
   octave_idx_type numel (int n = 0) const
   {
-    int n_dims = length ();
+    int n_dims = ndims ();
 
     octave_idx_type retval = 1;
 
@@ -378,7 +401,7 @@ public:
   /*!
      The following function will throw a std::bad_alloc ()
      exception if the requested size is larger than can be indexed by
-     octave_idx_type. This may be smaller than the actual amount of
+     octave_idx_type.  This may be smaller than the actual amount of
      memory that can be safely allocated on a system.  However, if we
      don't fail here, we can end up with a mysterious crash inside a
      function that is iterating over an array using octave_idx_type
@@ -389,7 +412,7 @@ public:
 
   bool any_neg (void) const
   {
-    int n_dims = length ();
+    int n_dims = ndims ();
     int i;
 
     for (i = 0; i < n_dims; i++)
@@ -418,7 +441,7 @@ public:
 
   dim_vector as_column (void) const
   {
-    if (length () == 2 && elem (1) == 1)
+    if (ndims () == 2 && elem (1) == 1)
       return *this;
     else
       return dim_vector (numel (), 1);
@@ -426,7 +449,7 @@ public:
 
   dim_vector as_row (void) const
   {
-    if (length () == 2 && elem (0) == 1)
+    if (ndims () == 2 && elem (0) == 1)
       return *this;
     else
       return dim_vector (1, numel ());
@@ -434,12 +457,12 @@ public:
 
   bool is_vector (void) const
   {
-    return (length () == 2 && (elem (0) == 1 || elem (1) == 1));
+    return (ndims () == 2 && (elem (0) == 1 || elem (1) == 1));
   }
 
   int first_non_singleton (int def = 0) const
   {
-    for (int i = 0; i < length (); i++)
+    for (int i = 0; i < ndims (); i++)
       {
         if (elem (i) != 1)
           return i;
@@ -448,24 +471,16 @@ public:
     return def;
   }
 
-  //! Compute a linear index from an index tuple.
+  //! Linear index from an index tuple.
+  octave_idx_type compute_index (const octave_idx_type* idx) const
+  { return compute_index (idx, ndims ()); }
 
-  octave_idx_type compute_index (const octave_idx_type *idx) const
-  {
-    octave_idx_type k = 0;
-    for (int i = length () - 1; i >= 0; i--)
-      k = k * rep[i] + idx[i];
-
-    return k;
-  }
-
-  //! Ditto, but the tuple may be incomplete (nidx < length ()).
-
+  //! Linear index from an incomplete index tuple (nidx < length ()).
   octave_idx_type compute_index (const octave_idx_type *idx, int nidx) const
   {
     octave_idx_type k = 0;
     for (int i = nidx - 1; i >= 0; i--)
-      k = k * rep[i] + idx[i];
+      k = rep[i] * k + idx[i];
 
     return k;
   }
@@ -479,7 +494,7 @@ public:
   int increment_index (octave_idx_type *idx, int start = 0) const
   {
     int i;
-    for (i = start; i < length (); i++)
+    for (i = start; i < ndims (); i++)
       {
         if (++(*idx) == rep[i])
           *idx++ = 0;
@@ -493,7 +508,7 @@ public:
 
   dim_vector cumulative (void) const
   {
-    int nd = length ();
+    int nd = ndims ();
     dim_vector retval = alloc (nd);
 
     octave_idx_type k = 1;
@@ -510,12 +525,11 @@ public:
   {
     octave_idx_type k = idx[0];
 
-    for (int i = 1; i < length (); i++)
+    for (int i = 1; i < ndims (); i++)
       k += rep[i-1] * idx[i];
 
     return k;
   }
-
 
   friend bool operator == (const dim_vector& a, const dim_vector& b);
 };
@@ -529,8 +543,8 @@ operator == (const dim_vector& a, const dim_vector& b)
 
   bool retval = true;
 
-  int a_len = a.length ();
-  int b_len = b.length ();
+  int a_len = a.ndims ();
+  int b_len = b.ndims ();
 
   if (a_len != b_len)
     retval = false;
@@ -556,3 +570,4 @@ operator != (const dim_vector& a, const dim_vector& b)
 }
 
 #endif
+

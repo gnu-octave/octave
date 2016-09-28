@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 Pedro Gonnet
+Copyright (C) 2010-2016 Pedro Gonnet
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-ieee.h"
@@ -29,19 +29,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "parse.h"
 #include "utils.h"
 #include "variables.h"
 
-/* Extended debugging */
+// Extended debugging.
 #define DEBUG_QUADCC 0
 
-/* Define the minimum size of the interval heap. */
-#define min_cquad_heapsize  200
+// Define the minimum size of the interval heap.
+#define MIN_CQUAD_HEAPSIZE 200
 
-
-/* Data of a single interval */
+// Data of a single interval.
 typedef struct
 {
   double a, b;
@@ -51,7 +50,7 @@ typedef struct
   int depth, rdepth, ndiv;
 } cquad_ival;
 
-/* Some constants and matrices that we'll need.  */
+// Some constants and matrices that we'll need.
 
 static const double xi[33] =
 {
@@ -1395,20 +1394,18 @@ static const double Tright[33 * 33] =
   0., 0., .23283064365386962891e-9
 };
 
-/* Allocates a workspace for the given maximum number of intervals.
-    Note that if the workspace gets filled, the intervals with the
-    lowest error estimates are dropped. The maximum number of
-    intervals is therefore not the maximum number of intervals
-    that will be computed, but merely the size of the buffer.
-    */
+// Allocates a workspace for the given maximum number of intervals.
+// Note that if the workspace gets filled, the intervals with the lowest
+// error estimates are dropped.  The maximum number of intervals is
+// therefore not the maximum number of intervals that will be computed,
+// but merely the size of the buffer.
 
-/* Compute the product of the fx with one of the inverse
-    Vandermonde-like matrices. */
+// Compute the product of the fx with one of the inverse
+// Vandermonde-like matrices.
 
 void
 Vinvfx (const double *fx, double *c, const int d)
 {
-
   int i, j;
 
   switch (d)
@@ -1446,17 +1443,14 @@ Vinvfx (const double *fx, double *c, const int d)
         }
       break;
     }
-
 }
 
-
-/* Downdate the interpolation given by the n coefficients c
-    by removing the nodes with indices in nans. */
+// Downdate the interpolation given by the N coefficients C by removing
+// the nodes with indices in nans.
 
 void
 downdate (double *c, int n, int d, int *nans, int nnans)
 {
-
   static const int bidx[4] = { 0, 6, 16, 34 };
   double b_new[34], alpha;
   int i, j;
@@ -1479,104 +1473,101 @@ downdate (double *c, int n, int d, int *nans, int nnans)
       c[n] = 0;
       n--;
     }
-
 }
 
+// The actual integration routine.
 
-/* The actual integration routine.  */
+DEFUN (quadcc, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})
+@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})
+@deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
+@deftypefnx {} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})
+Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
+using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.
 
-DEFUN (quadcc, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
-@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-@deftypefnx {Function File} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
-Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
-using doubly-adaptive @nospell{Clenshaw-Curtis} quadrature.\n\
-\n\
-@var{f} is a function handle, inline function, or string containing the name\n\
-of the function to evaluate.  The function @var{f} must be vectorized and\n\
-must return a vector of output values if given a vector of input values.\n\
-For example,\n\
-\n\
-@example\n\
-f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
-@end example\n\
-\n\
-@noindent\n\
-which uses the element-by-element ``dot'' form for all operators.\n\
-\n\
-@var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
-or both limits may be infinite.  @code{quadcc} handles an inifinite limit\n\
-by substituting the variable of integration with @code{x = tan (pi/2*u)}.\n\
-\n\
-The optional argument @var{tol} defines the relative tolerance used to stop\n\
-the integration procedure.  The default value is @math{1e^{-6}}.\n\
-\n\
-The optional argument @var{sing} contains a list of points where the\n\
-integrand has known singularities, or discontinuities\n\
-in any of its derivatives, inside the integration interval.\n\
-For the example above, which has a discontinuity at x=1, the call to\n\
-@code{quadcc} would be as follows\n\
-\n\
-@example\n\
-int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
-@end example\n\
-\n\
-The result of the integration is returned in @var{q}.\n\
-\n\
-@var{err} is an estimate of the absolute integration error.\n\
-\n\
-@var{nr_points} is the number of points at which the integrand was evaluated.\n\
-\n\
-If the adaptive integration did not converge, the value of @var{err} will be\n\
-larger than the requested tolerance.  Therefore, it is recommended to verify\n\
-this value for difficult integrands.\n\
-\n\
-@code{quadcc} is capable of dealing with non-numeric values of the integrand\n\
-such as @code{NaN} or @code{Inf}.  If the integral diverges, and\n\
-@code{quadcc} detects this, then a warning is issued and @code{Inf} or\n\
-@code{-Inf} is returned.\n\
-\n\
-Note: @code{quadcc} is a general purpose quadrature algorithm and, as such,\n\
-may be less efficient for a smooth or otherwise well-behaved integrand than\n\
-other methods such as @code{quadgk}.\n\
-\n\
-The algorithm uses @nospell{Clenshaw-Curtis} quadrature rules of increasing\n\
-degree in each interval and bisects the interval if either the function does\n\
-not appear to be smooth or a rule of maximum degree has been reached.  The\n\
-error estimate is computed from the L2-norm of the difference between two\n\
-successive interpolations of the integrand over the nodes of the respective\n\
-quadrature rules.\n\
-\n\
-Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive\n\
-Quadrature Using Explicit Interpolants}, ACM Transactions on\n\
-Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
-@seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
-@end deftypefn")
+@var{f} is a function handle, inline function, or string containing the name
+of the function to evaluate.  The function @var{f} must be vectorized and
+must return a vector of output values if given a vector of input values.
+For example,
+
+@example
+f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));
+@end example
+
+@noindent
+which uses the element-by-element ``dot'' form for all operators.
+
+@var{a} and @var{b} are the lower and upper limits of integration.  Either
+or both limits may be infinite.  @code{quadcc} handles an inifinite limit
+by substituting the variable of integration with @code{x = tan (pi/2*u)}.
+
+The optional argument @var{tol} defines the relative tolerance used to stop
+the integration procedure.  The default value is @math{1e^{-6}}.
+
+The optional argument @var{sing} contains a list of points where the
+integrand has known singularities, or discontinuities
+in any of its derivatives, inside the integration interval.
+For the example above, which has a discontinuity at x=1, the call to
+@code{quadcc} would be as follows
+
+@example
+int = quadcc (f, a, b, 1.0e-6, [ 1 ]);
+@end example
+
+The result of the integration is returned in @var{q}.
+
+@var{err} is an estimate of the absolute integration error.
+
+@var{nr_points} is the number of points at which the integrand was
+evaluated.
+
+If the adaptive integration did not converge, the value of @var{err} will be
+larger than the requested tolerance.  Therefore, it is recommended to verify
+this value for difficult integrands.
+
+@code{quadcc} is capable of dealing with non-numeric values of the integrand
+such as @code{NaN} or @code{Inf}.  If the integral diverges, and
+@code{quadcc} detects this, then a warning is issued and @code{Inf} or
+@code{-Inf} is returned.
+
+Note: @code{quadcc} is a general purpose quadrature algorithm and, as such,
+may be less efficient for a smooth or otherwise well-behaved integrand than
+other methods such as @code{quadgk}.
+
+The algorithm uses @nospell{Clenshaw-Curtis} quadrature rules of increasing
+degree in each interval and bisects the interval if either the function does
+not appear to be smooth or a rule of maximum degree has been reached.  The
+error estimate is computed from the L2-norm of the difference between two
+successive interpolations of the integrand over the nodes of the respective
+quadrature rules.
+
+Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive
+Quadrature Using Explicit Interpolants}, ACM Transactions on
+Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
+@seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  /* Some constants that we will need. */
+  // Some constants that we will need.
   static const int n[4] = { 4, 8, 16, 32 };
   static const int skip[4] = { 8, 4, 2, 1 };
   static const int idx[4] = { 0, 5, 14, 31 };
   static const double w = M_SQRT2 / 2;
   static const int ndiv_max = 20;
 
-  /* Arguments left and right */
+  // Arguments left and right.
   int nargin = args.length ();
   octave_function *fcn;
   double a, b, tol, *sing;
 
-  /* Variables needed for transforming the integrand. */
+  // Variables needed for transforming the integrand.
   bool wrap = false;
   double xw;
 
-  /* Stuff we will need to call the integrand. */
+  // Stuff we will need to call the integrand.
   octave_value_list fargs, fvals;
 
-  /* Actual variables (as opposed to constants above). */
+  // Actual variables (as opposed to constants above).
   double m, h, ml, hl, mr, hr, temp;
   double igral, err, igral_final, err_final;
   int nivals, neval = 0;
@@ -1585,13 +1576,9 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   cquad_ival *iv, *ivl, *ivr;
   double nc, ncdiff;
 
-
-  /* Parse the input arguments. */
+  // Parse the input arguments.
   if (nargin < 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   if (args(0).is_function_handle () || args(0).is_inline_function ())
     fcn = args(0).function_value ();
@@ -1606,48 +1593,32 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 
   if (! args(1).is_real_scalar ())
-    {
-      error ("quadcc: lower limit of integration (A) must be a single real scalar");
-      return retval;
-    }
+    error ("quadcc: lower limit of integration (A) must be a single real scalar");
   else
     a = args(1).double_value ();
 
   if (! args(2).is_real_scalar ())
-    {
-      error ("quadcc: upper limit of integration (B) must be a single real scalar");
-      return retval;
-    }
+    error ("quadcc: upper limit of integration (B) must be a single real scalar");
   else
     b = args(2).double_value ();
 
   if (nargin < 4 || args(3).is_empty ())
     tol = 1.0e-6;
   else if (! args(3).is_real_scalar () || args(3).double_value () <= 0)
-    {
-      error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
-      return retval;
-    }
+    error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
   else
     tol = args(3).double_value ();
 
   if (nargin < 5)
-    {
-      nivals = 1;
-    }
+    nivals = 1;
   else if (!(args(4).is_real_scalar () || args(4).is_real_matrix ()))
-    {
-      error ("quadcc: list of singularities (SING) must be a vector of real values");
-      return retval;
-    }
+    error ("quadcc: list of singularities (SING) must be a vector of real values");
   else
-    {
-      nivals = 1 + args(4).numel ();
-    }
+    nivals = 1 + args(4).numel ();
 
-  int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1
-                                                     : min_cquad_heapsize);
-  /* The interval heap. */
+  int cquad_heapsize = (nivals >= MIN_CQUAD_HEAPSIZE ? nivals + 1
+                                                     : MIN_CQUAD_HEAPSIZE);
+  // The interval heap.
   OCTAVE_LOCAL_BUFFER (cquad_ival, ivals, cquad_heapsize);
   OCTAVE_LOCAL_BUFFER (double, iivals, cquad_heapsize);
   OCTAVE_LOCAL_BUFFER (int, heap, cquad_heapsize);
@@ -1659,7 +1630,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
   else
     {
-      // Intervals around singularities
+      // Intervals around singularities.
       sing = args(4).array_value ().fortran_vec ();
       iivals[0] = a;
       for (i = 0; i < nivals - 1; i++)
@@ -1667,29 +1638,27 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       iivals[nivals] = b;
     }
 
-  /* If a or b are +/-Inf, transform the integral. */
-  if (xisinf (a) || xisinf (b))
+  // If a or b are +/-Inf, transform the integral.
+  if (octave::math::isinf (a) || octave::math::isinf (b))
     {
       wrap = true;
       for (i = 0; i < nivals + 1; i++)
-        if (xisinf (iivals[i]))
-          iivals[i] = gnulib::copysign (1.0, iivals[i]);
+        if (octave::math::isinf (iivals[i]))
+          iivals[i] = std::copysign (1.0, iivals[i]);
         else
           iivals[i] = 2.0 * atan (iivals[i]) / M_PI;
     }
 
-
-  /* Initialize the heaps. */
+  // Initialize the heaps.
   for (i = 0; i < cquad_heapsize; i++)
     heap[i] = i;
 
-  /* Create the first interval(s). */
+  // Create the first interval(s).
   igral = 0.0;
   err = 0.0;
   for (j = 0; j < nivals; j++)
     {
-
-      /* Initialize the interval. */
+      // Initialize the interval.
       iv = &(ivals[heap[j]]);
       m = (iivals[j] + iivals[j + 1]) / 2;
       h = (iivals[j + 1] - iivals[j]) / 2;
@@ -1708,16 +1677,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       fargs(0) = ex;
       fvals = feval (fcn, fargs, 1);
       if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-        {
-          error ("quadcc: integrand F must return a single, real-valued vector");
-          return retval;
-        }
+        error ("quadcc: integrand F must return a single, real-valued vector");
+
       Matrix effex = fvals(0).matrix_value ();
-      if (effex.length () != ex.length ())
-        {
-          error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-          return retval;
-        }
+      if (effex.numel () != ex.numel ())
+        error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
       for (i = 0; i <= n[3]; i++)
         {
           iv->fx[i] = effex(i);
@@ -1727,7 +1692,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               iv->fx[i] *= (1.0 + xw * xw) * M_PI / 2;
             }
           neval++;
-          if (! xfinite (iv->fx[i]))
+          if (! octave::math::finite (iv->fx[i]))
             {
               nans[nnans++] = i;
               iv->fx[i] = 0.0;
@@ -1737,7 +1702,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       Vinvfx (iv->fx, &(iv->c[idx[2]]), 2);
       Vinvfx (iv->fx, &(iv->c[0]), 0);
       for (i = 0; i < nnans; i++)
-        iv->fx[nans[i]] = octave_NaN;
+        iv->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
       iv->a = iivals[j];
       iv->b = iivals[j + 1];
       iv->depth = 3;
@@ -1763,11 +1728,11 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       if (ncdiff / nc > 0.1 && iv->err < 2 * h * nc)
         iv->err = 2 * h * nc;
 
-      /* Tabulate this interval's data. */
+      // Tabulate this interval's data.
       igral += iv->igral;
       err += iv->err;
 
-      /* Sift it up the heap. */
+      // Sift it up the heap.
       i = j;
       while (i > 0 && ivals[heap[i / 2]].err < ivals[heap[i]].err)
         {
@@ -1776,25 +1741,21 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           heap[i / 2] = temp;
           i /= 2;
         }
-
     }
 
-
-  /* Initialize some global values. */
+  // Initialize some global values.
   igral_final = 0.0;
   err_final = 0.0;
 
-
-  /* Main loop. */
+  // Main loop.
   while (nivals > 0 && err > 0.0 && err > fabs (igral) * tol
          && !(err_final > fabs (igral) * tol
               && err - err_final < fabs (igral) * tol))
     {
-
-      /* Allow the user to interrupt. */
+      // Allow the user to interrupt.
       OCTAVE_QUIT;
 
-      /* Put our finger on the interval with the largest error. */
+      // Put our finger on the interval with the largest error.
       iv = &(ivals[heap[0]]);
       m = (iv->a + iv->b) / 2;
       h = (iv->b - iv->a) / 2;
@@ -1804,14 +1765,13 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
 
-      /* Should we try to increase the degree? */
+      // Should we try to increase the degree?
       if (iv->depth < 3)
         {
-
-          /* Keep tabs on some variables. */
+          // Keep tabs on some variables.
           d = ++iv->depth;
 
-          /* Get the new (missing) function values */
+          // Get the new (missing) function values.
           {
             ColumnVector ex (n[d] / 2);
             if (wrap)
@@ -1827,17 +1787,13 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector");
+
             Matrix effex = fvals(0).matrix_value ();
-            if (effex.length () != ex.length ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-                return retval;
-              }
-            neval += effex.length ();
+            if (effex.numel () != ex.numel ())
+              error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
+            neval += effex.numel ();
             for (i = 0; i < n[d] / 2; i++)
               {
                 j = (2 * i + 1) * skip[d];
@@ -1852,24 +1808,24 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[d])
             {
-              if (! xfinite (iv->fx[i]))
+              if (! octave::math::finite (iv->fx[i]))
                 {
                   nans[nnans++] = i;
                   iv->fx[i] = 0.0;
                 }
             }
 
-          /* Compute the new coefficients. */
+          // Compute the new coefficients.
           Vinvfx (iv->fx, &(iv->c[idx[d]]), d);
-          /* Downdate any NaNs. */
+          // Downdate any NaNs.
           if (nnans > 0)
             {
               downdate (&(iv->c[idx[d]]), n[d], d, nans, nnans);
               for (i = 0; i < nnans; i++)
-                iv->fx[nans[i]] = octave_NaN;
+                iv->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
             }
 
-          /* Compute the error estimate. */
+          // Compute the error estimate.
           nc = 0.0;
           for (i = n[d - 1] + 1; i <= n[d]; i++)
             {
@@ -1886,51 +1842,48 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           ncdiff = sqrt (ncdiff);
           nc = sqrt (nc);
           iv->err = ncdiff * 2 * h;
-          /* Compute the local integral. */
+          // Compute the local integral.
           iv->igral = 2 * h * w * iv->c[idx[d]];
-          /* Split the interval prematurely? */
+          // Split the interval prematurely?
           split = (nc > 0 && ncdiff / nc > 0.1);
         }
-
-      /* Maximum degree reached, just split. */
       else
         {
+          // Maximum degree reached, just split.
           split = 1;
         }
 
-
-      /* Should we drop this interval? */
+      // Should we drop this interval?
       if ((m + h * xi[0]) >= (m + h * xi[1])
           || (m + h * xi[31]) >= (m + h * xi[32])
           || iv->err < fabs (iv->igral)
                        * std::numeric_limits<double>::epsilon () * 10)
         {
-
 #if (DEBUG_QUADCC)
           printf ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
                   heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
 
-          /* Keep this interval's contribution */
+          // Keep this interval's contribution.
           err_final += iv->err;
           igral_final += iv->igral;
-          /* Swap with the last element on the heap */
+          // Swap with the last element on the heap.
           t = heap[nivals - 1];
           heap[nivals - 1] = heap[0];
           heap[0] = t;
           nivals--;
-          /* Fix up the heap */
+          // Fix up the heap.
           i = 0;
           while (2 * i + 1 < nivals)
             {
-              /* Get the kids */
+              // Get the kids.
               j = 2 * i + 1;
-              /* If the j+1st entry exists and is larger than the jth,
-                 use it instead. */
+              // If the j+1st entry exists and is larger than the jth,
+              // use it instead.
               if (j + 1 < nivals
                   && ivals[heap[j + 1]].err >= ivals[heap[j]].err)
                 j++;
-              /* Do we need to move the ith entry up? */
+              // Do we need to move the ith entry up?
               if (ivals[heap[j]].err <= ivals[heap[i]].err)
                 break;
               else
@@ -1941,16 +1894,12 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                   i = j;
                 }
             }
-
         }
-
-      /* Do we need to split this interval? */
       else if (split)
         {
-
-          /* Some values we will need often... */
+          // Some values we will need often...
           d = iv->depth;
-          /* Generate the interval on the left */
+          // Generate the interval on the left.
           ivl = &(ivals[heap[nivals++]]);
           ivl->a = iv->a;
           ivl->b = m;
@@ -1975,17 +1924,13 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector");
+
             Matrix effex = fvals(0).matrix_value ();
-            if (effex.length () != ex.length ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-                return retval;
-              }
-            neval += effex.length ();
+            if (effex.numel () != ex.numel ())
+              error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
+            neval += effex.numel ();
             for (i = 0; i < n[0] - 1; i++)
               {
                 j = (i + 1) * skip[0];
@@ -2000,7 +1945,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! xfinite (ivl->fx[i]))
+              if (! octave::math::finite (ivl->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivl->fx[i] = 0.0;
@@ -2011,7 +1956,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (ivl->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivl->fx[nans[i]] = octave_NaN;
+                ivl->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2032,21 +1977,20 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             }
           ncdiff = sqrt (ncdiff);
           ivl->err = ncdiff * h;
-          /* Check for divergence. */
+          // Check for divergence.
           ivl->ndiv = iv->ndiv + (fabs (iv->c[0]) > 0
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
-              igral = gnulib::copysign (octave_Inf, igral);
+              igral = std::copysign (octave::numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
 
-          /* Compute the local integral. */
+          // Compute the local integral.
           ivl->igral = h * w * ivl->c[0];
 
-
-          /* Generate the interval on the right */
+          // Generate the interval on the right.
           ivr = &(ivals[heap[nivals++]]);
           ivr->a = m;
           ivr->b = iv->b;
@@ -2071,17 +2015,13 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             fargs(0) = ex;
             fvals = feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector");
-                return retval;
-              }
+              error ("quadcc: integrand F must return a single, real-valued vector");
+
             Matrix effex = fvals(0).matrix_value ();
-            if (effex.length () != ex.length ())
-              {
-                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
-                return retval;
-              }
-            neval += effex.length ();
+            if (effex.numel () != ex.numel ())
+              error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+
+            neval += effex.numel ();
             for (i = 0; i < n[0] - 1; i++)
               {
                 j = (i + 1) * skip[0];
@@ -2096,7 +2036,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! xfinite (ivr->fx[i]))
+              if (! octave::math::finite (ivr->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivr->fx[i] = 0.0;
@@ -2107,7 +2047,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             {
               downdate (ivr->c, n[0], 0, nans, nnans);
               for (i = 0; i < nnans; i++)
-                ivr->fx[nans[i]] = octave_NaN;
+                ivr->fx[nans[i]] = octave::numeric_limits<double>::NaN ();
             }
           for (i = 0; i <= n[d]; i++)
             {
@@ -2128,30 +2068,29 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
             }
           ncdiff = sqrt (ncdiff);
           ivr->err = ncdiff * h;
-          /* Check for divergence. */
+          // Check for divergence.
           ivr->ndiv = iv->ndiv + (fabs (iv->c[0]) > 0
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
-              igral = gnulib::copysign (octave_Inf, igral);
+              igral = std::copysign (octave::numeric_limits<double>::Inf (), igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
 
-          /* Compute the local integral. */
+          // Compute the local integral.
           ivr->igral = h * w * ivr->c[0];
 
+          // Fix-up the heap: we now have one interval on top that we
+          // don't need any more and two new, unsorted ones at the
+          // bottom.
 
-          /* Fix-up the heap: we now have one interval on top
-             that we don't need any more and two new, unsorted
-             ones at the bottom. */
-          /* Flip the last interval to the top of the heap and
-             sift down. */
+          // Flip the last interval to the top of the heap and sift down.
           t = heap[nivals - 1];
           heap[nivals - 1] = heap[0];
           heap[0] = t;
           nivals--;
-          /* Sift this interval back down the heap. */
+          // Sift this interval back down the heap.
           i = 0;
           while (2 * i + 1 < nivals - 1)
             {
@@ -2170,7 +2109,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 }
             }
 
-          /* Now grab the last interval and sift it up the heap. */
+          // Now grab the last interval and sift it up the heap.
           i = nivals - 1;
           while (i > 0)
             {
@@ -2185,13 +2124,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
               else
                 break;
             }
-
-
         }
-
-      /* Otherwise, just fix-up the heap. */
       else
         {
+          // Otherwise, just fix-up the heap.
           i = 0;
           while (2 * i + 1 < nivals)
             {
@@ -2209,10 +2145,10 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                   i = j;
                 }
             }
-
         }
 
-      /* If the heap is about to overflow, remove the last two intervals. */
+      // If the heap is about to overflow, remove the last two
+      // intervals.
       while (nivals > cquad_heapsize - 2)
         {
           iv = &(ivals[heap[nivals - 1]]);
@@ -2225,7 +2161,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           nivals--;
         }
 
-      /* Collect the value of the integral and error. */
+      // Collect the value of the integral and error.
       igral = igral_final;
       err = err_final;
       for (i = 0; i < nivals; i++)
@@ -2233,10 +2169,9 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           igral += ivals[heap[i]].igral;
           err += ivals[heap[i]].err;
         }
-
     }
 
-  /* Dump the contents of the heap. */
+  // Dump the contents of the heap.
 #if (DEBUG_QUADCC)
   for (i = 0; i < nivals; i++)
     {
@@ -2247,16 +2182,8 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 #endif
 
-  /* Clean up and present the results. */
-  if (nargout > 2)
-    retval(2) = neval;
-  if (nargout > 1)
-    retval(1) = err;
-  retval(0) = igral;
-  /* All is well that ends well. */
-  return retval;
+  return ovl (igral, err, neval);
 }
-
 
 /*
 %!assert (quadcc (@sin, -pi, pi), 0, 1e-6)
@@ -2295,3 +2222,4 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 %!error (quadcc (@sin, 0, pi, 0))
 %!error (quadcc (@sin, 0, pi, 1e-6, [ i ]))
 */
+

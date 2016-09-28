@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Michael Goffioul
+Copyright (C) 2012-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,12 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <algorithm>
 
+#include "call-stack.h"
 #include "defun.h"
 #include "load-path.h"
 #include "ov-builtin.h"
@@ -41,13 +42,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "singleton-cleanup.h"
 #include "symtab.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
 
-static void
-gripe_method_access (const std::string& from, const cdef_method& meth)
+OCTAVE_NORETURN static
+void
+err_method_access (const std::string& from, const cdef_method& meth)
 {
   octave_value acc = meth.get ("Access");
   std::string acc_s;
@@ -61,9 +63,10 @@ gripe_method_access (const std::string& from, const cdef_method& meth)
          from.c_str (), meth.get_name ().c_str (), acc_s.c_str ());
 }
 
-static void
-gripe_property_access (const std::string& from, const cdef_property& prop,
-                       bool is_set = false)
+OCTAVE_NORETURN static
+void
+err_property_access (const std::string& from, const cdef_property& prop,
+                     bool is_set = false)
 {
   octave_value acc = prop.get (is_set ? "SetAccess" : "GetAccess");
   std::string acc_s;
@@ -98,22 +101,19 @@ make_function_of_class (const std::string& class_name,
 {
   octave_function *of = fcn.function_value ();
 
-  if (! error_state)
+  of->stash_dispatch_class (class_name);
+
+  octave_user_function *uf = of->user_function_value (true);
+
+  if (uf)
     {
-      of->stash_dispatch_class (class_name);
-
-      octave_user_function *uf = of->user_function_value (true);
-
-      if (! error_state && uf)
+      if (get_base_name (class_name) == uf->name ())
         {
-          if (get_base_name (class_name) == uf->name ())
-            {
-              uf->mark_as_class_constructor ();
-              uf->mark_as_classdef_constructor ();
-            }
-          else
-            uf->mark_as_class_method ();
+          uf->mark_as_class_constructor ();
+          uf->mark_as_classdef_constructor ();
         }
+      else
+        uf->mark_as_class_method ();
     }
 }
 
@@ -180,8 +180,7 @@ lookup_class (const octave_value& ov)
     {
       cdef_class cls (to_cdef (ov));
 
-      if (! error_state)
-        return lookup_class (cls);
+      return lookup_class (cls);
     }
 
   return cdef_class ();
@@ -196,13 +195,7 @@ lookup_classes (const Cell& cls_list)
     {
       cdef_class c = lookup_class (cls_list(i));
 
-      if (! error_state)
-        retval.push_back (c);
-      else
-        {
-          retval.clear ();
-          break;
-        }
+      retval.push_back (c);
     }
 
   return retval;
@@ -233,13 +226,12 @@ is_superclass (const cdef_class& clsa, const cdef_class& clsb,
     {
       Cell c = clsb.get ("SuperClasses").cell_value ();
 
-      for (int i = 0; ! error_state && ! retval && i < c.numel (); i++)
+      for (int i = 0; ! retval && i < c.numel (); i++)
         {
           cdef_class cls = lookup_class (c(i));
 
-          if (! error_state)
-            retval = is_superclass (clsa, cls, true,
-                                    max_depth < 0 ? max_depth : max_depth-1);
+          retval = is_superclass (clsa, cls, true,
+                                  max_depth < 0 ? max_depth : max_depth-1);
         }
     }
 
@@ -285,11 +277,9 @@ get_class_context (std::string& name, bool& in_constructor)
                   && ! fcn->dispatch_class ().empty ())))
     {
       cls = lookup_class (fcn->dispatch_class ());
-      if (! error_state)
-        {
-          name = fcn->name ();
-          in_constructor = fcn->is_classdef_constructor ();
-        }
+
+      name = fcn->name ();
+      in_constructor = fcn->is_classdef_constructor ();
     }
 
   return cls;
@@ -314,8 +304,8 @@ in_class_method (const cdef_class& cls)
 
 static bool
 check_access (const cdef_class& cls, const octave_value& acc,
-              const std::string& meth_name = std::string (),
-              const std::string& prop_name = std::string (),
+              const std::string& meth_name = "",
+              const std::string& prop_name = "",
               bool is_prop_set = false)
 {
   if (acc.is_string ())
@@ -330,7 +320,7 @@ check_access (const cdef_class& cls, const octave_value& acc,
       // The access is private or protected, this requires a
       // valid class context.
 
-      if (! error_state && ctx.ok ())
+      if (ctx.ok ())
         {
           if (acc_s == "private")
             return (ctx == cls);
@@ -388,20 +378,17 @@ check_access (const cdef_class& cls, const octave_value& acc,
 
       // At this point, a class context is always required.
 
-      if (! error_state && ctx.ok ())
+      if (ctx.ok ())
         {
           if (ctx == cls)
             return true;
 
-          for (int i = 0; ! error_state && i < acc.numel (); i++)
+          for (int i = 0; i < acc.numel (); i++)
             {
               cdef_class acc_cls (to_cdef (acc_c(i)));
 
-              if (! error_state)
-                {
-                  if (is_superclass (acc_cls, ctx))
-                    return true;
-                }
+              if (is_superclass (acc_cls, ctx))
+                return true;
             }
         }
     }
@@ -454,7 +441,7 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
       if (uf)
         {
           // At this point, the method is executing, but we still need to
-          // check the context object for which the method is executing. For
+          // check the context object for which the method is executing.  For
           // methods, it's the first argument of the function; for ctors, it
           // is the first return value.
 
@@ -534,17 +521,12 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        retval(0) = to_ov (lookup_class (name));
-      else
-        error ("fromName: invalid class name, expected a string value");
-    }
-  else
+  if (args.length () != 1)
     error ("fromName: invalid number of parameters");
+
+  std::string name = args(0).xstring_value ("fromName: CLASS_NAME must be a string");
+
+  retval(0) = to_ov (lookup_class (name));
 
   return retval;
 }
@@ -552,42 +534,22 @@ class_fromName (const octave_value_list& args, int /* nargout */)
 static octave_value_list
 class_fevalStatic (const octave_value_list& args, int nargout)
 {
-  octave_value_list retval;
+  if (args.length () <= 1 || args(0).type_name () != "object")
+    error ("fevalStatic: first argument must be a meta.class object");
 
-  if (args.length () > 1 && args(0).type_name () == "object")
-    {
-      cdef_class cls (to_cdef (args(0)));
+  cdef_class cls (to_cdef (args(0)));
 
-      if (! error_state)
-        {
-          std::string meth_name = args(1).string_value ();
+  std::string meth_name = args(1).xstring_value ("fevalStatic: method name must be a string");
 
-          if (! error_state)
-            {
-              cdef_method meth = cls.find_method (meth_name);
+  cdef_method meth = cls.find_method (meth_name);
 
-              if (meth.ok ())
-                {
-                  if (meth.is_static ())
-                    retval = meth.execute (args.splice (0, 2), nargout,
-                                           true, "fevalStatic");
-                  else
-                    error ("fevalStatic: method `%s' is not static",
-                           meth_name.c_str ());
-                }
-              else
-                error ("fevalStatic: method not found: %s",
-                       meth_name.c_str ());
-            }
-          else
-            error ("fevalStatic: invalid method name, expected a string value");
-        }
-      error ("fevalStatic: invalid object, expected a meta.class object");
-    }
-  else
-    error ("fevalStatic: invalid arguments");
+  if (! meth.ok ())
+    error ("fevalStatic: method not found: %s", meth_name.c_str ());
 
-  return retval;
+  if (! meth.is_static ())
+    error ("fevalStatic: method `%s' is not static", meth_name.c_str ());
+
+  return meth.execute (args.splice (0, 2), nargout, true, "fevalStatic");
 }
 
 static octave_value_list
@@ -595,69 +557,50 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
 {
   octave_value_list retval;
 
-  if (args.length () == 2 && args(0).type_name () == "object"
-      && args(0).class_name () == "meta.class")
-    {
-      cdef_class cls = to_cdef (args(0));
+  if (args.length () != 2 || args(0).type_name () != "object"
+      || args(0).class_name () != "meta.class")
+    error ("getConstant: first argument must be a meta.class object");
 
-      if (! error_state)
-        {
-          std::string prop_name = args(1).string_value ();
+  cdef_class cls = to_cdef (args(0));
 
-          if (! error_state)
-            {
-              cdef_property prop = cls.find_property (prop_name);
+  std::string prop_name = args(1).xstring_value ("getConstant: property name must be a string");
 
-              if (prop.ok ())
-                {
-                  if (prop.is_constant ())
-                    retval(0) = prop.get_value (true, "getConstant");
-                  else
-                    error ("getConstant: property `%s' is not constant",
-                           prop_name.c_str ());
-                }
-              else
-                error ("getConstant: property not found: %s",
-                       prop_name.c_str ());
-            }
-          else
-            error ("getConstant: invalid property name, expected a string value");
-        }
-      else
-        error ("getConstant: invalid object, expected a meta.class object");
-    }
-  else
-    error ("getConstant: invalid arguments");
+  cdef_property prop = cls.find_property (prop_name);
+
+  if (! prop.ok ())
+    error ("getConstant: property not found: %s",
+           prop_name.c_str ());
+
+  if (! prop.is_constant ())
+    error ("getConstant: property `%s' is not constant",
+           prop_name.c_str ());
+
+  retval(0) = prop.get_value (true, "getConstant");
 
   return retval;
 }
 
-#define META_CLASS_CMP(OP, CLSA, CLSB, FUN) \
-static octave_value_list \
-class_ ## OP (const octave_value_list& args, int /* nargout */) \
-{ \
-  octave_value_list retval; \
-\
-  if (args.length () == 2 \
-      && args(0).type_name () == "object" \
-      && args(1).type_name () == "object" \
-      && args(0).class_name () == "meta.class" \
-      && args(1).class_name () == "meta.class") \
-    { \
-      cdef_class clsa = to_cdef (args(0)); \
-\
-      cdef_class clsb = to_cdef (args(1)); \
-\
-      if (! error_state) \
-        retval(0) = FUN (CLSA, CLSB); \
-      else \
-        error (#OP ": invalid objects, expected meta.class objects"); \
-    } \
-  else \
-    error (#OP ": invalid arguments"); \
-\
-  return retval; \
-}
+#define META_CLASS_CMP(OP, CLSA, CLSB, FUN)                             \
+  static octave_value_list                                              \
+  class_ ## OP (const octave_value_list& args, int /* nargout */)       \
+  {                                                                     \
+    octave_value_list retval;                                           \
+                                                                        \
+    if (args.length () != 2                                             \
+        || args(0).type_name () != "object"                             \
+        || args(1).type_name () != "object"                             \
+        || args(0).class_name () != "meta.class"                        \
+        || args(1).class_name () != "meta.class")                       \
+      error (#OP ": invalid arguments");                                \
+                                                                        \
+    cdef_class clsa = to_cdef (args(0));                                \
+                                                                        \
+    cdef_class clsb = to_cdef (args(1));                                \
+                                                                        \
+    retval(0) = FUN (CLSA, CLSB);                                       \
+                                                                        \
+    return retval;                                                      \
+  }
 
 META_CLASS_CMP (lt, clsb, clsa, is_strict_superclass)
 META_CLASS_CMP (le, clsb, clsa, is_superclass)
@@ -706,8 +649,8 @@ make_class (const std::string& name,
   cls.put ("Abstract", false);
   cls.put ("ConstructOnLoad", false);
   cls.put ("ContainingPackage", Matrix ());
-  cls.put ("Description", std::string ());
-  cls.put ("DetailedDescription", std::string ());
+  cls.put ("Description", "");
+  cls.put ("DetailedDescription", "");
   cls.put ("Events", Cell ());
   cls.put ("Hidden", false);
   cls.put ("InferiorClasses", Cell ());
@@ -738,18 +681,13 @@ make_class (const std::string& name,
         }
 
       if (has_handle_class && ! all_handle_compatible)
-        ::error ("%s: cannot mix handle and non-HandleCompatible classes",
-                 name.c_str ());
-      else
-        {
-          cls.put ("HandleCompatible", all_handle_compatible);
-          if (has_handle_class)
-            cls.mark_as_handle_class ();
-        }
-    }
+        error ("%s: cannot mix handle and non-HandleCompatible classes",
+               name.c_str ());
 
-  if (error_state)
-    return cdef_class ();
+      cls.put ("HandleCompatible", all_handle_compatible);
+      if (has_handle_class)
+        cls.mark_as_handle_class ();
+    }
 
   if (! name.empty ())
     cdef_manager::register_class (cls);
@@ -784,8 +722,8 @@ make_property (const cdef_class& cls, const std::string& name,
   cdef_property prop (name);
 
   prop.set_class (cdef_class::meta_property ());
-  prop.put ("Description", std::string ());
-  prop.put ("DetailedDescription", std::string ());
+  prop.put ("Description", "");
+  prop.put ("DetailedDescription", "");
   prop.put ("Abstract", false);
   prop.put ("Constant", false);
   prop.put ("GetAccess", get_access);
@@ -828,8 +766,8 @@ make_method (const cdef_class& cls, const std::string& name,
   meth.put ("Abstract", false);
   meth.put ("Access", m_access);
   meth.put ("DefiningClass", to_ov (cls));
-  meth.put ("Description", std::string ());
-  meth.put ("DetailedDescription", std::string ());
+  meth.put ("Description", "");
+  meth.put ("DetailedDescription", "");
   meth.put ("Hidden", false);
   meth.put ("Sealed", true);
   meth.put ("Static", is_static);
@@ -857,7 +795,7 @@ make_method (const cdef_class& cls, const std::string& name,
 
 static cdef_package
 make_package (const std::string& nm,
-              const std::string& parent = std::string ())
+              const std::string& parent = "")
 {
   cdef_package pack (nm);
 
@@ -875,7 +813,6 @@ make_package (const std::string& nm,
 
 //----------------------------------------------------------------------------
 
-
 int octave_classdef::t_id (-1);
 
 const std::string octave_classdef::t_name ("object");
@@ -884,8 +821,8 @@ void
 octave_classdef::register_type (void)
 {
   t_id = octave_value_typeinfo::register_type
-    (octave_classdef::t_name, "<unknown>",
-     octave_value (new octave_classdef ()));
+         (octave_classdef::t_name, "<unknown>",
+          octave_value (new octave_classdef ()));
 }
 
 octave_value_list
@@ -908,13 +845,10 @@ octave_classdef::subsref (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsref");
 
-          if (! error_state)
-            {
-              count++;
-              args(0) = octave_value (this);
+          count++;
+          args(0) = octave_value (this);
 
-              retval = meth.execute (args, nargout, true, "subsref");
-            }
+          retval = meth.execute (args, nargout, true, "subsref");
 
           return retval;
         }
@@ -924,11 +858,8 @@ octave_classdef::subsref (const std::string& type,
 
   retval = object.subsref (type, idx, nargout, skip, cdef_class ());
 
-  if (! error_state)
-    {
-      if (type.length () > skip && idx.size () > skip)
-        retval = retval(0).next_subsref (nargout, type, idx, skip);
-    }
+  if (type.length () > skip && idx.size () > skip)
+    retval = retval(0).next_subsref (nargout, type, idx, skip);
 
   return retval;
 }
@@ -942,17 +873,14 @@ octave_classdef::subsref (const std::string& type,
   octave_value_list retval;
 
   // This variant of subsref is used to create temporary values when doing
-  // assignment with multi-level indexing. AFAIK this is only used for internal
+  // assignment with multi-level indexing.  AFAIK this is only used for internal
   // purpose (not sure we should even implement this) and any overload subsref
   // should not be called.
 
   retval = object.subsref (type, idx, 1, skip, cdef_class (), auto_add);
 
-  if (! error_state)
-    {
-      if (type.length () > skip && idx.size () > skip)
-        retval = retval(0).next_subsref (1, type, idx, skip);
-    }
+  if (type.length () > skip && idx.size () > skip)
+    retval = retval(0).next_subsref (1, type, idx, skip);
 
   return retval.length () > 0 ? retval(0) : octave_value ();
 }
@@ -976,28 +904,22 @@ octave_classdef::subsasgn (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsasgn");
 
-          if (! error_state)
-            {
-              count++;
-              args(0) = octave_value (this);
-              args(2) = rhs;
+          count++;
+          args(0) = octave_value (this);
+          args(2) = rhs;
 
-              octave_value_list retlist;
+          octave_value_list retlist;
 
-              retlist = meth.execute (args, 1, true, "subsasgn");
+          retlist = meth.execute (args, 1, true, "subsasgn");
 
-              if (! error_state)
-                {
-                  if (retlist.length () > 0)
-                    retval = retlist(0);
-                  else
-                    ::error ("overloaded method `subsasgn' did not return any value");
-                }
-            }
+          if (retlist.empty ())
+            error ("overloaded method `subsasgn' did not return any value");
+
+          retval = retlist(0);
         }
     }
 
-  if (! error_state && ! retval.is_defined ())
+  if (! retval.is_defined ())
     retval = object.subsasgn (type, idx, rhs);
 
   return retval;
@@ -1012,8 +934,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
     {
       object = object.make_array ();
 
-      if (! error_state)
-        return subsasgn (type, idx, rhs);
+      return subsasgn (type, idx, rhs);
     }
   else
     return octave_base_value::undef_subsasgn (type, idx, rhs);
@@ -1144,7 +1065,7 @@ public:
   { return object.meta_is_postfix_index_handled (type); }
 
   bool
-  is_classdef_constructor (const std::string& cname = std::string ()) const
+  is_classdef_constructor (const std::string& cname = "") const
   {
     bool retval = false;
 
@@ -1200,12 +1121,9 @@ public:
         break;
       }
 
-    if (! error_state)
-      {
-        if (type.length () > skip && idx.size () > skip
-            && retval.length () > 0)
-          retval = retval(0).next_subsref (nargout, type, idx, skip);
-      }
+    if (type.length () > skip && idx.size () > skip
+        && retval.length () > 0)
+      retval = retval(0).next_subsref (nargout, type, idx, skip);
 
     return retval;
   }
@@ -1232,73 +1150,60 @@ public:
 
     ctx = get_class_context (meth_name, in_constructor);
 
-    if (! error_state && ctx.ok ())
+    if (! ctx.ok ())
+      error ("superclass calls can only occur in methods or constructors");
+
+    std::string mname = args(0).string_value ();
+    std::string cname = args(1).string_value ();
+
+    cdef_class cls = lookup_class (cname);
+
+    if (in_constructor)
       {
-        std::string mname = args(0).string_value ();
-        std::string cname = args(1).string_value ();
+        if (! is_direct_superclass (cls, ctx))
+          error ("`%s' is not a direct superclass of `%s'",
+                 cname.c_str (), ctx.get_name ().c_str ());
 
-        cdef_class cls = lookup_class (cname);
+        if (! is_constructed_object (mname))
+          error ("cannot call superclass constructor with variable `%s'",
+                 mname.c_str ());
 
-        if (! error_state)
-          {
-            if (in_constructor)
-              {
-                if (is_direct_superclass (cls, ctx))
-                  {
-                    if (is_constructed_object (mname))
-                      {
-                        octave_value sym = symbol_table::varval (mname);
+        octave_value sym = symbol_table::varval (mname);
 
-                        cls.run_constructor (to_cdef_ref (sym), idx);
+        cls.run_constructor (to_cdef_ref (sym), idx);
 
-                        retval(0) = sym;
-                      }
-                    else
-                      ::error ("cannot call superclass constructor with "
-                               "variable `%s'", mname.c_str ());
-                  }
-                else
-                  ::error ("`%s' is not a direct superclass of `%s'",
-                           cname.c_str (), ctx.get_name ().c_str ());
-              }
-            else
-              {
-                if (mname == meth_name)
-                  {
-                    if (is_strict_superclass (cls, ctx))
-                      {
-                        // I see 2 possible implementations here:
-                        // 1) use cdef_object::subsref with a different class
-                        //    context; this avoids duplicating code, but
-                        //    assumes the object is always the first argument
-                        // 2) lookup the method manually and call
-                        //    cdef_method::execute; this duplicates part of
-                        //    logic in cdef_object::subsref, but avoid the
-                        //    assumption of 1)
-                        // Not being sure about the assumption of 1), I
-                        // go with option 2) for the time being.
-
-                        cdef_method meth = cls.find_method (meth_name, false);
-
-                        if (meth.ok ())
-                          retval = meth.execute (idx, nargout, true,
-                                                 meth_name);
-                        else
-                          ::error ("no method `%s' found in superclass `%s'",
-                                   meth_name.c_str (), cname.c_str ());
-                      }
-                    else
-                      ::error ("`%s' is not a superclass of `%s'",
-                               cname.c_str (), ctx.get_name ().c_str ());
-                  }
-                else
-                  ::error ("method name mismatch (`%s' != `%s')",
-                           mname.c_str (), meth_name.c_str ());
-              }
-          }
+        retval(0) = sym;
       }
-    else if (! error_state)
-      ::error ("superclass calls can only occur in methods or constructors");
+    else
+      {
+        if (mname != meth_name)
+          error ("method name mismatch (`%s' != `%s')",
+                 mname.c_str (), meth_name.c_str ());
+
+        if (! is_strict_superclass (cls, ctx))
+          error ("`%s' is not a superclass of `%s'",
+                 cname.c_str (), ctx.get_name ().c_str ());
+
+        // I see 2 possible implementations here:
+        // 1) use cdef_object::subsref with a different class
+        //    context; this avoids duplicating code, but
+        //    assumes the object is always the first argument
+        // 2) lookup the method manually and call
+        //    cdef_method::execute; this duplicates part of
+        //    logic in cdef_object::subsref, but avoid the
+        //    assumption of 1)
+        // Not being sure about the assumption of 1), I
+        // go with option 2) for the time being.
+
+        cdef_method meth = cls.find_method (meth_name, false);
+
+        if (! meth.ok ())
+          error ("no method `%s' found in superclass `%s'",
+                 meth_name.c_str (), cname.c_str ());
+
+        retval = meth.execute (idx, nargout, true,
+                               meth_name);
+      }
 
     return retval;
   }
@@ -1352,8 +1257,6 @@ cdef_object::map_value (void) const
       for (std::map<std::string, cdef_property>::iterator it = props.begin ();
            it != props.end (); ++it)
         {
-          octave_value pvalue;
-
           if (is_array ())
             {
               Array<cdef_object> a_obj = array_value ();
@@ -1361,27 +1264,17 @@ cdef_object::map_value (void) const
               Cell cvalue (a_obj.dims ());
 
               for (octave_idx_type i = 0; i < a_obj.numel (); i++)
-                {
-                  cvalue (i) = it->second.get_value (a_obj(i), false);
+                cvalue (i) = it->second.get_value (a_obj(i), false);
 
-                  if (error_state)
-                    break;
-                }
-
-              if (! error_state)
-                retval.setfield (it->first, cvalue);
+              retval.setfield (it->first, cvalue);
             }
           else
             {
               Cell cvalue (dim_vector (1, 1),
                            it->second.get_value (*this, false));
 
-              if (! error_state)
-                retval.setfield (it->first, cvalue);
+              retval.setfield (it->first, cvalue);
             }
-
-          if (error_state)
-            break;
         }
     }
 
@@ -1449,42 +1342,49 @@ cdef_object_scalar::subsref (const std::string& type,
               }
           }
 
-        if (skip == 0 && ! error_state)
+        if (skip == 0)
           {
             cdef_property prop = cls.find_property (name);
 
-            if (prop.ok ())
-              {
-                if (prop.is_constant ())
-                  retval(0) = prop.get_value (true, "subsref");
-                else
-                  {
-                    refcount++;
-                    retval(0) = prop.get_value (cdef_object (this),
-                                                true, "subsref");
-                  }
-
-                skip = 1;
-              }
-            else
+            if (! prop.ok ())
               error ("subsref: unknown method or property: %s", name.c_str ());
+
+            if (prop.is_constant ())
+              retval(0) = prop.get_value (true, "subsref");
+            else
+              {
+                refcount++;
+                retval(0) = prop.get_value (cdef_object (this),
+                                            true, "subsref");
+              }
+
+            skip = 1;
           }
         break;
       }
 
     case '(':
       {
-        refcount++;
+        const octave_value_list& ival = idx.front ();
 
+        refcount++;
         cdef_object this_obj (this);
 
-        Array<cdef_object> arr (dim_vector (1, 1), this_obj);
+        if (ival.empty ())
+          {
+            skip++;
+            retval(0) = to_ov (this_obj);
+          }
+        else
+          {
+            Array<cdef_object> arr (dim_vector (1, 1), this_obj);
 
-        cdef_object new_obj = cdef_object (new cdef_object_array (arr));
+            cdef_object new_obj = cdef_object (new cdef_object_array (arr));
 
-        new_obj.set_class (get_class ());
+            new_obj.set_class (get_class ());
 
-        retval = new_obj.subsref (type, idx, nargout, skip, cls, auto_add);
+            retval = new_obj.subsref (type, idx, nargout, skip, cls, auto_add);
+          }
       }
       break;
 
@@ -1511,57 +1411,42 @@ cdef_object_scalar::subsasgn (const std::string& type,
       {
         std::string name = (idx.front ())(0).string_value ();
 
-        if (! error_state)
+        cdef_property prop = cls.find_property (name);
+
+        if (! prop.ok ())
+          error ("subsasgn: unknown property: %s", name.c_str ());
+
+        if (prop.is_constant ())
+          error ("subsasgn: cannot assign constant property: %s",
+                 name.c_str ());
+
+        refcount++;
+
+        cdef_object obj (this);
+
+        if (type.length () == 1)
           {
-            cdef_property prop = cls.find_property (name);
+            prop.set_value (obj, rhs, true, "subsasgn");
 
-            if (prop.ok ())
-              {
-                if (prop.is_constant ())
-                  error ("subsasgn: cannot assign constant property: %s",
-                         name.c_str ());
-                else
-                  {
-                    refcount++;
+            retval = to_ov (obj);
+          }
+        else
+          {
+            octave_value val =
+              prop.get_value (obj, true, "subsasgn");
 
-                    cdef_object obj (this);
+            std::list<octave_value_list> args (idx);
 
-                    if (type.length () == 1)
-                      {
-                        prop.set_value (obj, rhs, true, "subsasgn");
+            args.erase (args.begin ());
 
-                        if (! error_state)
-                          retval = to_ov (obj);
-                      }
-                    else
-                      {
-                        octave_value val =
-                          prop.get_value (obj, true, "subsasgn");
+            val = val.assign (octave_value::op_asn_eq,
+                              type.substr (1), args, rhs);
 
-                        if (! error_state)
-                          {
-                            std::list<octave_value_list> args (idx);
+            if (val.class_name () != "object"
+                || ! to_cdef (val).is_handle_object ())
+              prop.set_value (obj, val, true, "subsasgn");
 
-                            args.erase (args.begin ());
-
-                            val = val.assign (octave_value::op_asn_eq,
-                                              type.substr (1), args, rhs);
-
-                            if (! error_state)
-                              {
-                                if (val.class_name () != "object"
-                                    || ! to_cdef (val).is_handle_object ())
-                                  prop.set_value (obj, val, true, "subsasgn");
-
-                                if (! error_state)
-                                  retval = to_ov (obj);
-                              }
-                          }
-                      }
-                  }
-              }
-            else
-              error ("subsasgn: unknown property: %s", name.c_str ());
+            retval = to_ov (obj);
           }
       }
       break;
@@ -1580,8 +1465,7 @@ cdef_object_scalar::subsasgn (const std::string& type,
 
         octave_value tmp = new_obj.subsasgn (type, idx, rhs);
 
-        if (! error_state)
-          retval = tmp;
+        retval = tmp;
       }
       break;
 
@@ -1600,13 +1484,9 @@ cdef_object_scalar::mark_for_construction (const cdef_class& cls)
 
   Cell supcls = cls.get ("SuperClasses").cell_value ();
 
-  if (! error_state)
-    {
-      std::list<cdef_class> supcls_list = lookup_classes (supcls);
+  std::list<cdef_class> supcls_list = lookup_classes (supcls);
 
-      if (! error_state)
-        ctor_list[cls] = supcls_list;
-    }
+  ctor_list[cls] = supcls_list;
 }
 
 octave_value_list
@@ -1624,47 +1504,51 @@ cdef_object_array::subsref (const std::string& type,
     case '(':
       {
         const octave_value_list& ival = idx.front ();
-        bool is_scalar = true;
-        Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
         if (ival.empty ())
           {
-            ::error ("can't index %s object(s) with empty parentheses",
-                     class_name ().c_str ());
+            refcount++;
+            retval(0) = to_ov (cdef_object (this));
             break;
           }
 
-        for (int i = 0; ! error_state && i < ival.length (); i++)
+        bool is_scalar = true;
+        Array<idx_vector> iv (dim_vector (1, ival.length ()));
+
+        for (int i = 0; i < ival.length (); i++)
           {
-            iv(i) = ival(i).index_vector ();
-            if (! error_state)
-              is_scalar = is_scalar && iv(i).is_scalar ();
+            try
+              {
+                iv(i) = ival(i).index_vector ();
+              }
+            catch (octave::index_exception& e)
+              {
+                // Rethrow to allow more info to be reported later.
+                e.set_pos_if_unset (ival.length (), i+1);
+                throw;
+              }
+
+            is_scalar = is_scalar && iv(i).is_scalar ();
           }
 
-        if (! error_state)
+        Array<cdef_object> ires = array.index (iv, auto_add);
+
+        // If resizing is enabled (auto_add = true), it's possible
+        // indexing was out-of-bound and the result array contains
+        // invalid cdef_objects.
+
+        if (auto_add)
+          fill_empty_values (ires);
+
+        if (is_scalar)
+          retval(0) = to_ov (ires(0));
+        else
           {
-            Array<cdef_object> ires = array.index (iv, auto_add);
+            cdef_object array_obj (new cdef_object_array (ires));
 
-            if (! error_state)
-              {
-                // If resizing is enabled (auto_add = true), it's possible
-                // indexing was out-of-bound and the result array contains
-                // invalid cdef_objects.
+            array_obj.set_class (get_class ());
 
-                if (auto_add)
-                  fill_empty_values (ires);
-
-                if (is_scalar)
-                  retval(0) = to_ov (ires(0));
-                else
-                  {
-                    cdef_object array_obj (new cdef_object_array (ires));
-
-                    array_obj.set_class (get_class ());
-
-                    retval(0) = to_ov (array_obj);
-                  }
-              }
+            retval(0) = to_ov (array_obj);
           }
       }
       break;
@@ -1685,25 +1569,19 @@ cdef_object_array::subsref (const std::string& type,
               octave_value_list r = array(i).subsref (type, idx, 1, dummy_skip,
                                                       dummy_cls);
 
-              if (! error_state)
-                {
-                  if (r.length () > 0)
-                    c(i) = r(0);
-                }
-              else
-                break;
+              if (r.length () > 0)
+                c(i) = r(0);
             }
 
-          if (! error_state)
-            retval(0) = octave_value (c, true);
+          retval(0) = octave_value (c, true);
 
           break;
         }
       // fall through "default"
 
     default:
-      ::error ("can't perform indexing operation on array of %s objects",
-               class_name ().c_str ());
+      error ("can't perform indexing operation on array of %s objects",
+             class_name ().c_str ());
       break;
     }
 
@@ -1724,58 +1602,49 @@ cdef_object_array::subsasgn (const std::string& type,
         {
           cdef_object rhs_obj = to_cdef (rhs);
 
-          if (! error_state)
+          if (rhs_obj.get_class () != get_class ())
+            error ("can't assign %s object into array of %s objects.",
+                   rhs_obj.class_name ().c_str (),
+                   class_name ().c_str ());
+
+          const octave_value_list& ival = idx.front ();
+          bool is_scalar = true;
+          Array<idx_vector> iv (dim_vector (1, ival.length ()));
+
+          for (int i = 0; i < ival.length (); i++)
             {
-              if (rhs_obj.get_class () == get_class ())
+              try
                 {
-                  const octave_value_list& ival = idx.front ();
-                  bool is_scalar = true;
-                  Array<idx_vector> iv (dim_vector (1, ival.length ()));
-
-                  for (int i = 0; ! error_state && i < ival.length (); i++)
-                    {
-                      iv(i) = ival(i).index_vector ();
-                      if (! error_state)
-                        is_scalar = is_scalar && iv(i).is_scalar ();
-                    }
-
-                  if (! error_state)
-                    {
-                      Array<cdef_object> rhs_mat;
-
-                      if (! rhs_obj.is_array ())
-                        {
-                          rhs_mat = Array<cdef_object> (dim_vector (1, 1));
-                          rhs_mat(0) = rhs_obj;
-                        }
-                      else
-                        rhs_mat = rhs_obj.array_value ();
-
-                      if (! error_state)
-                        {
-                          octave_idx_type n = array.numel ();
-
-                          array.assign (iv, rhs_mat, cdef_object ());
-
-                          if (! error_state)
-                            {
-                              if (array.numel () > n)
-                                fill_empty_values ();
-
-                              if (! error_state)
-                                {
-                                  refcount++;
-                                  retval = to_ov (cdef_object (this));
-                                }
-                            }
-                        }
-                    }
+                  iv(i) = ival(i).index_vector ();
                 }
-              else
-                ::error ("can't assign %s object into array of %s objects.",
-                         rhs_obj.class_name ().c_str (),
-                         class_name ().c_str ());
+              catch (octave::index_exception& e)
+                {
+                  e.set_pos_if_unset (ival.length (), i+1);
+                  throw;   // var name set in pt-idx.cc / pt-assign.cc
+                }
+
+              is_scalar = is_scalar && iv(i).is_scalar ();
             }
+
+          Array<cdef_object> rhs_mat;
+
+          if (! rhs_obj.is_array ())
+            {
+              rhs_mat = Array<cdef_object> (dim_vector (1, 1));
+              rhs_mat(0) = rhs_obj;
+            }
+          else
+            rhs_mat = rhs_obj.array_value ();
+
+          octave_idx_type n = array.numel ();
+
+          array.assign (iv, rhs_mat, cdef_object ());
+
+          if (array.numel () > n)
+            fill_empty_values ();
+
+          refcount++;
+          retval = to_ov (cdef_object (this));
         }
       else
         {
@@ -1783,97 +1652,97 @@ cdef_object_array::subsasgn (const std::string& type,
 
           bool is_scalar = true;
 
-          Array<idx_vector> iv (dim_vector (1, ival.length ()));
+          Array<idx_vector> iv (dim_vector (1, std::max (ival.length (),
+            static_cast<octave_idx_type> (2))));
 
-          for (int i = 0; ! error_state && i < ival.length (); i++)
+          for (int i = 0; i < ival.length (); i++)
             {
-              iv(i) = ival(i).index_vector ();
-
-              if (! error_state)
+              try
                 {
-                  is_scalar = is_scalar && iv(i).is_scalar ();
-
-                  if (! is_scalar)
-                    error ("subsasgn: invalid indexing for object array "
-                           "assignment, the index must reference a single "
-                           "object in the array.");
+                  iv(i) = ival(i).index_vector ();
                 }
+              catch (octave::index_exception& e)
+                {
+                  // Rethrow to allow more info to be reported later.
+                  e.set_pos_if_unset (ival.length (), i+1);
+                  throw;
+                }
+
+              is_scalar = is_scalar && iv(i).is_scalar ();
+
+              if (! is_scalar)
+                error ("subsasgn: invalid indexing for object array assignment"
+                       ", the index must reference a single object in the "
+                       "array.");
             }
 
-          if (! error_state)
+          // Fill in trailing singleton dimensions so that
+          // array.index doesn't create a new blank entry (bug #46660).
+          for (int i = ival.length (); i < 2; i++)
+            iv(i) = static_cast<octave_idx_type> (1);
+
+          Array<cdef_object> a = array.index (iv, true);
+
+          if (a.numel () != 1)
+            error ("subsasgn: invalid indexing for object array assignment");
+
+          cdef_object obj = a(0);
+
+          int ignore_copies = 0;
+
+          // If the object in 'a' is not valid, this means the index
+          // was out-of-bound and we need to create a new object.
+
+          if (! obj.ok ())
+            obj = get_class ().construct_object (octave_value_list ());
+          else
+            // Optimize the subsasgn call to come.  There are 2 copies
+            // that we can safely ignore:
+            // - 1 in "array"
+            // - 1 in "a"
+            ignore_copies = 2;
+
+          std::list<octave_value_list> next_idx (idx);
+
+          next_idx.erase (next_idx.begin ());
+
+          octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
+                                           rhs, ignore_copies);
+
+          cdef_object robj = to_cdef (tmp);
+
+          if (! robj.ok ()
+              || robj.is_array ()
+              || robj.get_class () != get_class ())
+            error ("subasgn: invalid assignment into array of %s objects",
+                   class_name ().c_str ());
+
+          // Small optimization, when dealing with handle
+          // objects, we don't need to re-assign the result
+          // of subsasgn back into the array.
+
+          if (! robj.is (a(0)))
             {
-              Array<cdef_object> a = array.index (iv, true);
+              Array<cdef_object> rhs_a (dim_vector (1, 1),
+                                        robj);
 
-              if (a.numel () != 1)
-                error ("subsasgn: invalid indexing for object array "
-                       "assignment");
+              octave_idx_type n = array.numel ();
 
-              if (! error_state)
-                {
-                  cdef_object obj = a(0);
+              array.assign (iv, rhs_a);
 
-                  int ignore_copies = 0;
-
-                  // If the object in 'a' is not valid, this means the index
-                  // was out-of-bound and we need to create a new object.
-
-                  if (! obj.ok ())
-                    obj = get_class ().construct_object (octave_value_list ());
-                  else
-                    // Optimize the subsasgn call to come. There are 2 copies
-                    // that we can safely ignore:
-                    // - 1 in "array"
-                    // - 1 in "a"
-                    ignore_copies = 2;
-
-                  std::list<octave_value_list> next_idx (idx);
-
-                  next_idx.erase (next_idx.begin ());
-
-                  octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
-                                                   rhs, ignore_copies);
-
-                  if (! error_state)
-                    {
-                      cdef_object robj = to_cdef (tmp);
-
-                      if (robj.ok ()
-                          && ! robj.is_array ()
-                          && robj.get_class () == get_class ())
-                        {
-                          // Small optimization, when dealing with handle
-                          // objects, we don't need to re-assign the result
-                          // of subsasgn back into the array.
-
-                          if (! robj.is (a(0)))
-                            {
-                              Array<cdef_object> rhs_a (dim_vector (1, 1),
-                                                        robj);
-
-                              octave_idx_type n = array.numel ();
-
-                              array.assign (iv, rhs_a);
-
-                              if (array.numel () > n)
-                                fill_empty_values ();
-                            }
-
-                          refcount++;
-
-                          retval = to_ov (cdef_object (this));
-                        }
-                      else
-                        error ("subasgn: invalid assignment into array of %s "
-                               "objects", class_name ().c_str ());
-                    }
-                }
+              if (array.numel () > n)
+                fill_empty_values ();
             }
+
+          refcount++;
+
+          retval = to_ov (cdef_object (this));
         }
       break;
 
     default:
-      ::error ("can't perform indexing operation on array of %s objects",
-               class_name ().c_str ());
+      error ("can't perform indexing operation on array of %s objects",
+             class_name ().c_str ());
       break;
     }
 
@@ -1885,26 +1754,22 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
 {
   cdef_class cls = get_class ();
 
-  if (! error_state)
+  cdef_object obj;
+
+  int n = arr.numel ();
+
+  for (int i = 0; i < n; i++)
     {
-      cdef_object obj;
-
-      int n = arr.numel ();
-
-      for (int i = 0; ! error_state && i < n; i++)
+      if (! arr.xelem (i).ok ())
         {
-          if (! arr.xelem (i).ok ())
+          if (! obj.ok ())
             {
-              if (! obj.ok ())
-                {
-                  obj = cls.construct_object (octave_value_list ());
+              obj = cls.construct_object (octave_value_list ());
 
-                  if (! error_state)
-                    arr.xelem (i) = obj;
-                }
-              else
-                arr.xelem (i) = obj.copy ();
+              arr.xelem (i) = obj;
             }
+          else
+            arr.xelem (i) = obj.copy ();
         }
     }
 }
@@ -1935,7 +1800,7 @@ cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
   return true;
 }
 
-void
+inline void
 cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 {
   ctor_list.erase (cls);
@@ -1995,13 +1860,10 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
         {
           cdef_class cls = lookup_class (super_classes(i));
 
-          if (! error_state)
-            {
-              cdef_method meth = cls.find_method (nm);
+          cdef_method meth = cls.find_method (nm);
 
-              if (meth.ok ())
-                return meth;
-            }
+          if (meth.ok ())
+            return meth;
         }
     }
 
@@ -2017,7 +1879,7 @@ public:
   void visit_statement_list (tree_statement_list& t)
   {
     for (tree_statement_list::const_iterator it = t.begin ();
-         ! error_state && it != t.end (); ++it)
+         it != t.end (); ++it)
       (*it)->accept (*this);
   }
 
@@ -2112,13 +1974,13 @@ public:
   void visit_do_until_command (tree_do_until_command&) { }
 
 private:
-  /* The name of the constructor being analyzed */
+  // The name of the constructor being analyzed.
   std::string who;
 
-  /* The name of the first output argument of the constructor */
+  // The name of the first output argument of the constructor.
   std::string obj_name;
 
-  /* The list of superclass constructors that are explicitly called */
+  // The list of superclass constructors that are explicitly called.
   std::list<cdef_class> ctor_list;
 };
 
@@ -2145,34 +2007,30 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
               tree_parameter_list *ret_list = uf->return_list ();
               tree_statement_list *body = uf->body ();
 
-              if (ret_list && ret_list->size () == 1)
+              if (! ret_list || ret_list->size () != 1)
+                error ("%s: invalid constructor output arguments",
+                       meth.get_name ().c_str ());
+
+              std::string obj_name = ret_list->front ()->name ();
+              ctor_analyzer a (meth.get_name (), obj_name);
+
+              body->accept (a);
+
+              std::list<cdef_class> explicit_ctor_list
+                = a.get_constructor_list ();
+
+              for (std::list<cdef_class>::const_iterator
+                   it = explicit_ctor_list.begin ();
+                   it != explicit_ctor_list.end ();
+                   ++it)
                 {
-                  std::string obj_name = ret_list->front ()->name ();
-                  ctor_analyzer a (meth.get_name (), obj_name);
-
-                  body->accept (a);
-                  if (! error_state)
-                    {
-                      std::list<cdef_class> explicit_ctor_list
-                        = a.get_constructor_list ();
-
-                      for (std::list<cdef_class>::const_iterator
-                           it = explicit_ctor_list.begin ();
-                           ! error_state && it != explicit_ctor_list.end ();
-                           ++it)
-                        {
 #if DEBUG_TRACE
-                          std::cerr << "explicit superclass constructor: "
-                                    << it->get_name () << std::endl;
+                  std::cerr << "explicit superclass constructor: "
+                            << it->get_name () << std::endl;
 #endif
 
-                          implicit_ctor_list.remove (*it);
-                        }
-                    }
+                  implicit_ctor_list.remove (*it);
                 }
-              else
-                ::error ("%s: invalid constructor output arguments",
-                         meth.get_name ().c_str ());
             }
         }
     }
@@ -2191,20 +2049,15 @@ cdef_class::cdef_class_rep::get_methods (void)
 
   find_methods (meths, false);
 
-  if (! error_state)
-    {
-      Cell c (meths.size (), 1);
+  Cell c (meths.size (), 1);
 
-      int idx = 0;
+  int idx = 0;
 
-      for (std::map<std::string,cdef_method>::const_iterator
-            it = meths.begin (); it != meths.end (); ++it, ++idx)
-        c (idx, 0) = to_ov (it->second);
+  for (std::map<std::string,cdef_method>::const_iterator
+       it = meths.begin (); it != meths.end (); ++it, ++idx)
+    c (idx, 0) = to_ov (it->second);
 
-      return c;
-    }
-
-  return Cell ();
+  return c;
 }
 
 void
@@ -2246,10 +2099,7 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string,
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        cls.get_rep ()->find_methods (meths, true);
-      else
-        break;
+      cls.get_rep ()->find_methods (meths, true);
     }
 }
 
@@ -2274,13 +2124,10 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        {
-          cdef_property prop = cls.find_property (nm);
+      cdef_property prop = cls.find_property (nm);
 
-          if (prop.ok ())
-            return prop;
-        }
+      if (prop.ok ())
+        return prop;
     }
 
   return cdef_property ();
@@ -2301,20 +2148,15 @@ cdef_class::cdef_class_rep::get_properties (int mode)
 
   props = get_property_map (mode);
 
-  if (! error_state)
-    {
-      Cell c (props.size (), 1);
+  Cell c (props.size (), 1);
 
-      int idx = 0;
+  int idx = 0;
 
-      for (std::map<std::string,cdef_property>::const_iterator
-            it = props.begin (); it != props.end (); ++it, ++idx)
-        c (idx, 0) = to_ov (it->second);
+  for (std::map<std::string,cdef_property>::const_iterator
+       it = props.begin (); it != props.end (); ++it, ++idx)
+    c (idx, 0) = to_ov (it->second);
 
-      return c;
-    }
-
-  return Cell ();
+  return c;
 }
 
 std::map<std::string, cdef_property>
@@ -2334,8 +2176,7 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
 {
   property_const_iterator it;
 
-  for (it = property_map.begin (); ! error_state && it != property_map.end ();
-       ++it)
+  for (it = property_map.begin (); it != property_map.end (); ++it)
     {
       std::string nm = it->second.get_name ();
 
@@ -2358,17 +2199,14 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
 
   Cell super_classes = get ("SuperClasses").cell_value ();
 
-  for (int i = 0; ! error_state && i < super_classes.numel (); i++)
+  for (int i = 0; i < super_classes.numel (); i++)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        cls.get_rep ()->find_properties (props,
-                                         (mode == property_all ?
-                                          property_all :
-                                          property_inherited));
-      else
-        break;
+      cls.get_rep ()->find_properties (props,
+                                       (mode == property_all
+                                        ? property_all
+                                        : property_inherited));
     }
 }
 
@@ -2379,7 +2217,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
   load_all_methods ();
 
   for (method_const_iterator it = method_map.begin ();
-       ! error_state && it != method_map.end(); ++it)
+       it != method_map.end(); ++it)
     {
       if (! it->second.is_constructor ())
         {
@@ -2399,7 +2237,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
     }
 
   for (property_const_iterator it = property_map.begin ();
-       ! error_state && it != property_map.end (); ++it)
+       it != property_map.end (); ++it)
     {
       std::string nm = it->second.get_name ();
 
@@ -2419,14 +2257,11 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 
   Cell super_classes = get ("SuperClasses").cell_value ();
 
-  for (int i = 0; ! error_state && i < super_classes.numel (); i++)
+  for (int i = 0; i < super_classes.numel (); i++)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (! error_state)
-        cls.get_rep ()->find_names (names, all);
-      else
-        break;
+      cls.get_rep ()->find_names (names, all);
     }
 }
 
@@ -2437,19 +2272,9 @@ cdef_class::cdef_class_rep::get_names (void)
 
   find_names (names, false);
 
-  if (! error_state)
-    {
-      string_vector v (names.size ());
+  string_vector v (names);
 
-      int idx = 0;
-      for (std::set<std::string>::const_iterator it = names.begin ();
-           it != names.end (); ++it, ++idx)
-        v[idx] = *it;
-
-      return v.sort (true);
-    }
-
-  return string_vector ();
+  return v.sort (true);
 }
 
 void
@@ -2478,8 +2303,7 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      if (!error_state)
-        cls.delete_object (obj);
+      cls.delete_object (obj);
     }
 }
 
@@ -2505,73 +2329,60 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
       break;
 
     case '.':
-      // Static method, constant (or property?)
+      {
+        // Static method, constant (or property?)
 
 #if DEBUG_TRACE
-      std::cerr << "static method/property" << std::endl;
+        std::cerr << "static method/property" << std::endl;
 #endif
 
-      if (idx.front ().length () == 1)
-        {
-          std::string nm = idx.front ()(0).string_value ();
+        if (idx.front ().length () != 1)
+          error ("invalid meta.class indexing");
 
-          if (! error_state)
-            {
-              cdef_method meth = find_method (nm);
+        std::string nm = idx.front ()(0).xstring_value ("invalid meta.class indexing, expected a method or property name");
 
-              if (meth.ok ())
-                {
-                  if (meth.is_static ())
-                    {
-                      octave_value_list args;
+        cdef_method meth = find_method (nm);
 
-                      if (type.length () > 1 && idx.size () > 1
-                          && type[1] == '(')
-                        {
-                          args = *(++(idx.begin ()));
-                          skip++;
-                        }
+        if (meth.ok ())
+          {
+            if (! meth.is_static ())
+              error ("method `%s' is not static", nm.c_str ());
 
-                      retval = meth.execute (args, (type.length () > skip
-                                                    ? 1 : nargout), true,
-                                             "meta.class");
-                    }
-                  else
-                    ::error ("method `%s' is not static", nm.c_str ());
-                }
-              else
-                {
-                  cdef_property prop = find_property (nm);
+            octave_value_list args;
 
-                  if (prop.ok ())
-                    {
-                      if (prop.is_constant ())
-                        retval(0) = prop.get_value (true, "meta.class");
-                      else
-                        ::error ("property `%s' is not constant",
-                                 nm.c_str ());
-                    }
-                  else
-                    ::error ("no such method or property `%s'", nm.c_str ());
-                }
-            }
-          else
-            ::error ("invalid meta.class indexing, expected a method or property name");
-        }
-      else
-        ::error ("invalid meta.class indexing");
+            if (type.length () > 1 && idx.size () > 1
+                && type[1] == '(')
+              {
+                args = *(++(idx.begin ()));
+                skip++;
+              }
+
+            retval = meth.execute (args, (type.length () > skip
+                                          ? 1 : nargout), true,
+                                   "meta.class");
+          }
+        else
+          {
+            cdef_property prop = find_property (nm);
+
+            if (! prop.ok ())
+              error ("no such method or property `%s'", nm.c_str ());
+
+            if (! prop.is_constant ())
+              error ("property `%s' is not constant", nm.c_str ());
+
+            retval(0) = prop.get_value (true, "meta.class");
+          }
+      }
       break;
 
     default:
-      ::error ("invalid meta.class indexing");
+      error ("invalid meta.class indexing");
       break;
     }
 
-  if (! error_state)
-    {
-      if (type.length () > skip && idx.size () > skip && ! retval.empty ())
-        retval = retval(0).next_subsref (nargout, type, idx, skip);
-    }
+  if (type.length () > skip && idx.size () > skip && ! retval.empty ())
+    retval = retval(0).next_subsref (nargout, type, idx, skip);
 
   return retval;
 }
@@ -2590,35 +2401,26 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
   std::list<cdef_class> super_classes = lookup_classes (
                                           get ("SuperClasses").cell_value ());
 
-  if (! error_state)
+  for (std::list<cdef_class>::iterator it = super_classes.begin ();
+       it != super_classes.end (); ++it)
+    it->initialize_object (obj);
+
+  for (property_const_iterator it = property_map.begin ();
+       it != property_map.end (); ++it)
     {
-      for (std::list<cdef_class>::iterator it = super_classes.begin ();
-           ! error_state && it != super_classes.end (); ++it)
-        it->initialize_object (obj);
-
-      if (! error_state)
+      if (! it->second.get ("Dependent").bool_value ())
         {
-          for (property_const_iterator it = property_map.begin ();
-               ! error_state && it != property_map.end (); ++it)
-            {
-              if (! it->second.get ("Dependent").bool_value ())
-                {
-                  octave_value pvalue = it->second.get ("DefaultValue");
+          octave_value pvalue = it->second.get ("DefaultValue");
 
-                  if (pvalue.is_defined ())
-                    obj.put (it->first, pvalue);
-                  else
-                    obj.put (it->first, octave_value (Matrix ()));
-                }
-            }
-
-          if (! error_state)
-            {
-              refcount++;
-              obj.mark_for_construction (cdef_class (this));
-            }
+          if (pvalue.is_defined ())
+            obj.put (it->first, pvalue);
+          else
+            obj.put (it->first, octave_value (Matrix ()));
         }
     }
+
+  refcount++;
+  obj.mark_for_construction (cdef_class (this));
 }
 
 void
@@ -2628,16 +2430,12 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
   octave_value_list empty_args;
 
   for (std::list<cdef_class>::const_iterator it = implicit_ctor_list.begin ();
-       ! error_state && it != implicit_ctor_list.end (); ++it)
+       it != implicit_ctor_list.end (); ++it)
     {
       cdef_class supcls = lookup_class (*it);
 
-      if (! error_state)
-        supcls.run_constructor (obj, empty_args);
+      supcls.run_constructor (obj, empty_args);
     }
-
-  if (error_state)
-    return;
 
   std::string cls_name = get_name ();
   std::string ctor_name = get_base_name (cls_name);
@@ -2652,17 +2450,11 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
       ctor_args.prepend (to_ov (obj));
       ctor_retval = ctor.execute (ctor_args, 1, true, "constructor");
 
-      if (! error_state)
-        {
-          if (ctor_retval.length () == 1)
-            obj = to_cdef (ctor_retval(0));
-          else
-            {
-              ::error ("%s: invalid number of output arguments for classdef constructor",
-                       ctor_name.c_str ());
-              return;
-            }
-        }
+      if (ctor_retval.length () != 1)
+        error ("%s: invalid number of output arguments for classdef constructor",
+               ctor_name.c_str ());
+
+      obj = to_cdef (ctor_retval(0));
     }
 
   obj.mark_as_constructed (wrap ());
@@ -2673,7 +2465,7 @@ cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 {
   cdef_object obj = construct_object (args);
 
-  if (! error_state && obj.ok ())
+  if (obj.ok ())
     return to_ov (obj);
 
   return octave_value ();
@@ -2682,80 +2474,74 @@ cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 cdef_object
 cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 {
-  if (! is_abstract ())
-    {
-      cdef_object obj;
-
-      if (is_meta_class ())
-        {
-          // This code path is only used to create empty meta objects
-          // as filler for the empty values within a meta object array.
-
-          cdef_class this_cls = wrap ();
-
-          static cdef_object empty_class;
-
-          if (this_cls == cdef_class::meta_class ())
-            {
-              if (! empty_class.ok ())
-                empty_class = make_class ("", std::list<cdef_class> ());
-              obj = empty_class;
-            }
-          else if (this_cls == cdef_class::meta_property ())
-            {
-              static cdef_property empty_property;
-
-              if (! empty_class.ok ())
-                empty_class = make_class ("", std::list<cdef_class> ());
-              if (! empty_property.ok ())
-                empty_property = make_property (empty_class, "");
-              obj = empty_property;
-            }
-          else if (this_cls == cdef_class::meta_method ())
-            {
-              static cdef_method empty_method;
-
-              if (! empty_class.ok ())
-                empty_class = make_class ("", std::list<cdef_class> ());
-              if (! empty_method.ok ())
-                empty_method = make_method (empty_class, "", octave_value ());
-              obj = empty_method;
-            }
-          else if (this_cls == cdef_class::meta_package ())
-            {
-              static cdef_package empty_package;
-
-              if (! empty_package.ok ())
-                empty_package = make_package ("");
-              obj = empty_package;
-            }
-          else
-            panic_impossible ();
-
-          return obj;
-        }
-      else
-        {
-          if (is_handle_class ())
-            obj = cdef_object (new handle_cdef_object ());
-          else
-            obj = cdef_object (new value_cdef_object ());
-          obj.set_class (wrap ());
-
-          initialize_object (obj);
-
-          if (! error_state)
-            {
-              run_constructor (obj, args);
-
-              if (! error_state)
-                return obj;
-            }
-        }
-    }
-  else
+  if (is_abstract ())
     error ("cannot instantiate object for abstract class `%s'",
            get_name ().c_str ());
+
+  cdef_object obj;
+
+  if (is_meta_class ())
+    {
+      // This code path is only used to create empty meta objects
+      // as filler for the empty values within a meta object array.
+
+      cdef_class this_cls = wrap ();
+
+      static cdef_object empty_class;
+
+      if (this_cls == cdef_class::meta_class ())
+        {
+          if (! empty_class.ok ())
+            empty_class = make_class ("", std::list<cdef_class> ());
+          obj = empty_class;
+        }
+      else if (this_cls == cdef_class::meta_property ())
+        {
+          static cdef_property empty_property;
+
+          if (! empty_class.ok ())
+            empty_class = make_class ("", std::list<cdef_class> ());
+          if (! empty_property.ok ())
+            empty_property = make_property (empty_class, "");
+          obj = empty_property;
+        }
+      else if (this_cls == cdef_class::meta_method ())
+        {
+          static cdef_method empty_method;
+
+          if (! empty_class.ok ())
+            empty_class = make_class ("", std::list<cdef_class> ());
+          if (! empty_method.ok ())
+            empty_method = make_method (empty_class, "", octave_value ());
+          obj = empty_method;
+        }
+      else if (this_cls == cdef_class::meta_package ())
+        {
+          static cdef_package empty_package;
+
+          if (! empty_package.ok ())
+            empty_package = make_package ("");
+          obj = empty_package;
+        }
+      else
+        panic_impossible ();
+
+      return obj;
+    }
+  else
+    {
+      if (is_handle_class ())
+        obj = cdef_object (new handle_cdef_object ());
+      else
+        obj = cdef_object (new value_cdef_object ());
+      obj.set_class (wrap ());
+
+      initialize_object (obj);
+
+      run_constructor (obj, args);
+
+      return obj;
+    }
 
   return cdef_object ();
 }
@@ -2783,7 +2569,7 @@ compute_attribute_value (tree_classdef_attribute* t)
     return octave_value (true);
 }
 
-template<class T>
+template <typename T>
 static std::string
 attribute_value_to_string (T* t, octave_value v)
 {
@@ -2817,7 +2603,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
     {
       for (tree_classdef_superclass_list::iterator it =
              t->superclass_list ()->begin ();
-           ! error_state && it != t->superclass_list ()->end (); ++it)
+           it != t->superclass_list ()->end (); ++it)
         {
           std::string sclass_name = (*it)->class_name ();
 
@@ -2827,27 +2613,15 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           cdef_class sclass = lookup_class (sclass_name);
 
-          if (! error_state)
-            {
-              if (! sclass.get ("Sealed").bool_value ())
-                slist.push_back (sclass);
-              else
-                {
-                  ::error ("`%s' cannot inherit from `%s', because it is sealed",
-                           full_class_name.c_str (), sclass_name.c_str ());
-                  return retval;
-                }
-            }
-          else
-            return retval;
+          if (sclass.get ("Sealed").bool_value ())
+            error ("`%s' cannot inherit from `%s', because it is sealed",
+                   full_class_name.c_str (), sclass_name.c_str ());
 
+          slist.push_back (sclass);
         }
     }
 
   retval = ::make_class (full_class_name, slist);
-
-  if (error_state)
-    return cdef_class ();
 
   // Package owning this class
 
@@ -2855,7 +2629,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
     {
       cdef_package pack = cdef_manager::find_package (t->package_name ());
 
-      if (! error_state && pack.ok ())
+      if (pack.ok ())
         retval.put ("ContainingPackage", to_ov (pack));
     }
 
@@ -2884,7 +2658,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   if (b)
     {
-      // Keep track of the get/set accessor methods. They will be used
+      // Keep track of the get/set accessor methods.  They will be used
       // later on when creating properties.
 
       std::map<std::string, octave_value> get_methods;
@@ -2966,9 +2740,9 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           // Look for all external methods visible on octave path at the
           // time of loading of the class.
           //
-          // TODO: This is an "extension" to Matlab behavior, which only
+          // FIXME: This is an "extension" to Matlab behavior, which only
           // looks in the @-folder containing the original classdef
-          // file. However, this is easier to implement it that way at
+          // file.  However, this is easier to implement it that way at
           // the moment.
 
           std::list<std::string> external_methods =
@@ -2979,7 +2753,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                it != external_methods.end ();
                ++it)
             {
-              // TODO: should we issue a warning if the method is already
+              // FIXME: should we issue a warning if the method is already
               // defined in the classdef file?
 
               if (*it != class_name
@@ -3003,7 +2777,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
       // Property blocks
 
       // FIXME: default property expression should be able to call static
-      //        methods of the class being constructed. A restricted CLASSNAME
+      //        methods of the class being constructed.  A restricted CLASSNAME
       //        symbol should be added to the scope before evaluating default
       //        value expressions.
 
@@ -3084,7 +2858,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                        ait != amap.end (); ++ait)
                     prop.put (ait->first, ait->second);
 
-                  // Install property access methods, if any. Remove the
+                  // Install property access methods, if any.  Remove the
                   // accessor methods from the temporary storage map, so we can
                   // detect which ones are invalid and do not correspond to a
                   // defined property.
@@ -3134,22 +2908,15 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
   octave_value retval;
 
   if (do_check_access && ! check_get_access ())
-    {
-      gripe_property_access (who, wrap (), false);
-
-      return retval;
-    }
+    err_property_access (who, wrap (), false);
 
   if (! obj.is_constructed ())
     {
       cdef_class cls (to_cdef (get ("DefiningClass")));
 
       if (! obj.is_partially_constructed_for (cls))
-        {
-          ::error ("cannot reference properties of class `%s' for non-constructed object",
-                   cls.get_name ().c_str ());
-          return retval;
-        }
+        error ("cannot reference properties of class `%s' for non-constructed object",
+               cls.get_name ().c_str ());
     }
 
   octave_value get_fcn = get ("GetMethod");
@@ -3166,8 +2933,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       args = execute_ov (get_fcn, args, 1);
 
-      if (! error_state)
-        retval = args(0);
+      retval = args(0);
     }
 
   return retval;
@@ -3178,11 +2944,7 @@ cdef_property::cdef_property_rep::get_value (bool do_check_access,
                                              const std::string& who)
 {
   if (do_check_access && ! check_get_access ())
-    {
-      gripe_property_access (who, wrap (), false);
-
-      return octave_value ();
-    }
+    err_property_access (who, wrap (), false);
 
   return get ("DefaultValue");
 }
@@ -3201,22 +2963,15 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
                                              const std::string& who)
 {
   if (do_check_access && ! check_set_access ())
-    {
-      gripe_property_access (who, wrap (), true);
-
-      return;
-    }
+    err_property_access (who, wrap (), true);
 
   if (! obj.is_constructed ())
     {
       cdef_class cls (to_cdef (get ("DefiningClass")));
 
       if (! obj.is_partially_constructed_for (cls))
-        {
-          ::error ("cannot reference properties of class `%s' for non-constructed object",
-                   cls.get_name ().c_str ());
-          return;
-        }
+        error ("cannot reference properties of class `%s' for non-constructed object",
+               cls.get_name ().c_str ());
     }
 
   octave_value set_fcn = get ("SetMethod");
@@ -3232,21 +2987,17 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
       args = execute_ov (set_fcn, args, 1);
 
-      if (! error_state)
+      if (args.length () > 0 && args(0).is_defined ())
         {
-          if (args.length () > 0 && args(0).is_defined ())
+          if (args (0).is_classdef_object ())
             {
-              if (args (0).is_classdef_object ())
-                {
-                  cdef_object new_obj = to_cdef (args(0));
+              cdef_object new_obj = to_cdef (args(0));
 
-                  if (! error_state)
-                    obj = new_obj;
-                }
-              else
-                ::warning ("set-method of property `%s' returned a non-classdef object",
-                           get_name ().c_str ());
+              obj = new_obj;
             }
+          else
+            ::warning ("set-method of property `%s' returned a non-classdef object",
+                       get_name ().c_str ());
         }
     }
 }
@@ -3256,9 +3007,8 @@ cdef_property::cdef_property_rep::check_get_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  if (! error_state)
-    return ::check_access (cls, get ("GetAccess"), std::string (),
-                           get_name (), false);
+  return ::check_access (cls, get ("GetAccess"), "",
+                         get_name (), false);
 
   return false;
 }
@@ -3268,9 +3018,8 @@ cdef_property::cdef_property_rep::check_set_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  if (! error_state)
-    return ::check_access (cls, get ("SetAccess"), std::string (),
-                           get_name (), true);
+  return ::check_access (cls, get ("SetAccess"), "",
+                         get_name (), true);
 
   return false;
 }
@@ -3318,8 +3067,8 @@ cdef_method::cdef_method_rep::check_method (void)
         }
 
       if (is_dummy_method (function))
-        ::error ("no definition found for method `%s' of class `%s'",
-                 get_name ().c_str (), dispatch_type.c_str ());
+        error ("no definition found for method `%s' of class `%s'",
+               get_name ().c_str (), dispatch_type.c_str ());
     }
 }
 
@@ -3331,24 +3080,16 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
   octave_value_list retval;
 
   if (do_check_access && ! check_access ())
-    {
-      gripe_method_access (who, wrap ());
+    err_method_access (who, wrap ());
 
-      return retval;
-    }
-
-  if (! get ("Abstract").bool_value ())
-    {
-      check_method ();
-
-      if (! error_state && function.is_defined ())
-        {
-          retval = execute_ov (function, args, nargout);
-        }
-    }
-  else
+  if (get ("Abstract").bool_value ())
     error ("%s: cannot execute abstract method",
            get ("Name").string_value ().c_str ());
+
+  check_method ();
+
+  if (function.is_defined ())
+    retval = execute_ov (function, args, nargout);
 
   return retval;
 }
@@ -3362,32 +3103,26 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
   octave_value_list retval;
 
   if (do_check_access && ! check_access ())
-    {
-      gripe_method_access (who, wrap ());
+    err_method_access (who, wrap ());
 
-      return retval;
-    }
-
-  if (! get ("Abstract").bool_value ())
-    {
-      check_method ();
-
-      if (! error_state && function.is_defined ())
-        {
-          octave_value_list new_args;
-
-          new_args.resize (args.length () + 1);
-
-          new_args(0) = to_ov (obj);
-          for (int i = 0; i < args.length (); i++)
-            new_args(i+1) = args(i);
-
-          retval = execute_ov (function, new_args, nargout);
-        }
-    }
-  else
+  if (get ("Abstract").bool_value ())
     error ("%s: cannot execute abstract method",
            get ("Name").string_value ().c_str ());
+
+  check_method ();
+
+  if (function.is_defined ())
+    {
+      octave_value_list new_args;
+
+      new_args.resize (args.length () + 1);
+
+      new_args(0) = to_ov (obj);
+      for (int i = 0; i < args.length (); i++)
+        new_args(i+1) = args(i);
+
+      retval = execute_ov (function, new_args, nargout);
+    }
 
   return retval;
 }
@@ -3406,10 +3141,7 @@ cdef_method::cdef_method_rep::check_access (void) const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  if (! error_state)
-    return ::check_access (cls, get ("Access"), get_name ());
-
-  return false;
+  return ::check_access (cls, get ("Access"), get_name ());
 }
 
 octave_value_list
@@ -3430,11 +3162,8 @@ cdef_method::cdef_method_rep::meta_subsref
       break;
     }
 
-  if (! error_state)
-    {
-      if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
-        retval = retval(0).next_subsref (nargout, type, idx, 1);
-    }
+  if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
+    retval = retval(0).next_subsref (nargout, type, idx, 1);
 
   return retval;
 }
@@ -3450,17 +3179,12 @@ package_fromName (const octave_value_list& args, int /* nargout */)
 {
   octave_value_list retval;
 
-  if (args.length () == 1)
-    {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        retval(0) = to_ov (lookup_package (name));
-      else
-        error ("fromName: invalid package name, expected a string value");
-    }
-  else
+  if (args.length () != 1)
     error ("fromName: invalid number of parameters");
+
+  std::string name = args(0).xstring_value ("fromName: PACKAGE_NAME must be a string");
+
+  retval(0) = to_ov (lookup_package (name));
 
   return retval;
 }
@@ -3564,7 +3288,7 @@ cdef_package::cdef_package_rep::install_package (const cdef_package& pack,
   member_count++;
 }
 
-template<class T1, class T2>
+template <typename T1, typename T2>
 Cell
 map2Cell (const std::map<T1, T2>& m)
 {
@@ -3610,62 +3334,52 @@ cdef_package::cdef_package_rep::meta_subsref
   switch (type[0])
     {
     case '.':
-      if (idx.front ().length () == 1)
-        {
-          std::string nm = idx.front ()(0).string_value ();
+      {
+        if (idx.front ().length () != 1)
+          error ("invalid meta.package indexing");
 
-          if (! error_state)
-            {
+        std::string nm = idx.front ()(0).xstring_value ("invalid meta.package indexing, expected a symbol name");
+
 #if DEBUG_TRACE
-              std::cerr << "meta.package query: " << nm << std::endl;
+        std::cerr << "meta.package query: " << nm << std::endl;
 #endif
 
-              octave_value o = find (nm);
+        octave_value o = find (nm);
 
-              if (o.is_defined ())
-                {
-                  if (o.is_function ())
-                    {
-                      octave_function* fcn = o.function_value ();
+        if (! o.is_defined ())
+          error ("member `%s' in package `%s' does not exist",
+                 nm.c_str (), get_name ().c_str ());
 
-                      if (! error_state)
-                        {
-                          // NOTE: the case where the package query is the last
-                          // part of this subsref index is handled in the parse
-                          // tree, because there is some logic to handle magic
-                          // "end" that makes it impossible to execute the
-                          // function call at this stage.
+        if (o.is_function ())
+          {
+            octave_function* fcn = o.function_value ();
 
-                          if (type.size () > 1
-                              && ! fcn->is_postfix_index_handled (type[1]))
-                            {
-                              octave_value_list tmp_args;
+            // NOTE: the case where the package query is the last
+            // part of this subsref index is handled in the parse
+            // tree, because there is some logic to handle magic
+            // "end" that makes it impossible to execute the
+            // function call at this stage.
 
-                              retval = o.do_multi_index_op (nargout,
-                                                            tmp_args);
-                            }
-                          else
-                            retval(0) = o;
+            if (type.size () > 1
+                && ! fcn->is_postfix_index_handled (type[1]))
+              {
+                octave_value_list tmp_args;
 
-                          if (type.size () > 1 && idx.size () > 1)
-                            retval = retval(0).next_subsref (nargout, type,
-                                                             idx, 1);
-                        }
-                    }
-                  else if (type.size () > 1 && idx.size () > 1)
-                    retval = o.next_subsref (nargout, type, idx, 1);
-                  else
-                    retval(0) = o;
-                }
-              else if (! error_state)
-                error ("member `%s' in package `%s' does not exist",
-                       nm.c_str (), get_name ().c_str ());
-            }
-          else
-            error ("invalid meta.package indexing, expected a symbol name");
-        }
-      else
-        error ("invalid meta.package indexing");
+                retval = o.do_multi_index_op (nargout,
+                                              tmp_args);
+              }
+            else
+              retval(0) = o;
+
+            if (type.size () > 1 && idx.size () > 1)
+              retval = retval(0).next_subsref (nargout, type,
+                                               idx, 1);
+          }
+        else if (type.size () > 1 && idx.size () > 1)
+          retval = o.next_subsref (nargout, type, idx, 1);
+        else
+          retval(0) = o;
+      }
       break;
 
     default:
@@ -3700,13 +3414,13 @@ install_classdef (void)
 {
   octave_classdef::register_type ();
 
-  /* bootstrap */
+  // bootstrap
   cdef_class handle = make_class ("handle");
   cdef_class meta_class = cdef_class::_meta_class = make_meta_class ("meta.class", handle);
   handle.set_class (meta_class);
   meta_class.set_class (meta_class);
 
-  /* meta classes */
+  // meta classes
   cdef_class meta_property = cdef_class::_meta_property = make_meta_class ("meta.property", handle);
   cdef_class meta_method = cdef_class::_meta_method = make_meta_class ("meta.method", handle);
   cdef_class meta_package = cdef_class::_meta_package = make_meta_class ("meta.package", handle);
@@ -3714,7 +3428,7 @@ install_classdef (void)
   cdef_class meta_event = make_meta_class ("meta.event", handle);
   cdef_class meta_dynproperty = make_meta_class ("meta.dynamicproperty", handle);
 
-  /* meta.class properties */
+  // meta.class properties
   meta_class.install_property (make_attribute (meta_class, "Abstract"));
   meta_class.install_property (make_attribute (meta_class, "ConstructOnLoad"));
   meta_class.install_property (make_property  (meta_class, "ContainingPackage"));
@@ -3753,12 +3467,14 @@ install_classdef (void)
       (make_property (meta_class, "SuperClassList",
                       make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClassList"),
                       "public", Matrix (), "private"));
-  /* meta.class methods */
+  // meta.class methods
   meta_class.install_method (make_method (meta_class, "fromName", class_fromName,
                                           "public", true));
-  meta_class.install_method (make_method (meta_class, "fevalStatic", class_fevalStatic,
+  meta_class.install_method (make_method (meta_class, "fevalStatic",
+                                          class_fevalStatic,
                                           "public", false));
-  meta_class.install_method (make_method (meta_class, "getConstant", class_getConstant,
+  meta_class.install_method (make_method (meta_class, "getConstant",
+                                          class_getConstant,
                                           "public", false));
   meta_class.install_method (make_method (meta_class, "eq", class_eq));
   meta_class.install_method (make_method (meta_class, "ne", class_ne));
@@ -3767,7 +3483,7 @@ install_classdef (void)
   meta_class.install_method (make_method (meta_class, "gt", class_gt));
   meta_class.install_method (make_method (meta_class, "ge", class_ge));
 
-  /* meta.method properties */
+  // meta.method properties
   meta_method.install_property (make_attribute (meta_method, "Abstract"));
   meta_method.install_property (make_attribute (meta_method, "Access"));
   meta_method.install_property (make_attribute (meta_method, "DefiningClass"));
@@ -3778,7 +3494,7 @@ install_classdef (void)
   meta_method.install_property (make_attribute (meta_method, "Sealed"));
   meta_method.install_property (make_attribute (meta_method, "Static"));
 
-  /* meta.property properties */
+  // meta.property properties
   meta_property.install_property (make_attribute (meta_property, "Name"));
   meta_property.install_property (make_attribute (meta_property, "Description"));
   meta_property.install_property (make_attribute (meta_property, "DetailedDescription"));
@@ -3799,13 +3515,13 @@ install_classdef (void)
                       make_fcn_handle (property_get_defaultvalue, "meta.property>get.DefaultValue"),
                       "public", Matrix (), "private"));
   meta_property.install_property (make_attribute (meta_property, "HasDefault"));
-  /* meta.property events */
+  // meta.property events
   // FIXME: add events
 
-  /* handle methods */
+  // handle methods
   handle.install_method (make_method (handle, "delete", handle_delete));
 
-  /* meta.package properties */
+  // meta.package properties
   meta_package.install_property (make_attribute (meta_package, "Name"));
   meta_package.install_property (make_property  (meta_package, "ContainingPackage"));
   meta_package.install_property
@@ -3837,7 +3553,7 @@ install_classdef (void)
   meta_package.install_method (make_method (meta_package, "getAllPackages", package_getAllPackages,
                                             "public", true));
 
-  /* create "meta" package */
+  // create "meta" package
   cdef_package package_meta = cdef_package::_meta = make_package ("meta");
   package_meta.install_class (meta_class,       "class");
   package_meta.install_class (meta_property,    "property");
@@ -3846,7 +3562,7 @@ install_classdef (void)
   package_meta.install_class (meta_event,       "event");
   package_meta.install_class (meta_dynproperty, "dynproperty");
 
-  /* install built-in classes into the symbol table */
+  // install built-in classes into the symbol table
   symbol_table::install_built_in_function
     ("meta.class", octave_value (meta_class.get_constructor_function ()));
   symbol_table::install_built_in_function
@@ -3969,7 +3685,7 @@ cdef_manager::do_find_package (const std::string& name,
           size_t pos = name.find ('.');
 
           if (pos == std::string::npos)
-            retval = make_package (name, std::string ());
+            retval = make_package (name, "");
           else
             {
               std::string parent_name = name.substr (0, pos);
@@ -3999,84 +3715,61 @@ cdef_manager::do_find_package_symbol (const std::string& pack_name)
 
 //----------------------------------------------------------------------------
 
-DEFUN (__meta_get_package__, args, , "")
+DEFUN (__meta_get_package__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __meta_get_package__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      std::string cname = args(0).string_value ();
-
-      if (! error_state)
-        retval = to_ov (lookup_package (cname));
-      else
-        error ("invalid package name, expected a string value");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
+
+  return to_ov (lookup_package (cname));
 }
 
-DEFUN (__superclass_reference__, args, /* nargout */,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __superclass_reference__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+DEFUN (__superclass_reference__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __superclass_reference__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  return octave_value (new octave_classdef_superclass_ref (args));
+  return ovl (new octave_classdef_superclass_ref (args));
 }
 
-DEFUN (__meta_class_query__, args, /* nargout */,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __meta_class_query__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+DEFUN (__meta_class_query__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __meta_class_query__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
-
 #if DEBUG_TRACE
   std::cerr << "__meta_class_query__ ("
             << args(0).string_value () << ")"
             << std::endl;
 #endif
 
-  if (args.length () == 1)
-    {
-      std::string cls = args(0).string_value ();
-
-      if (! error_state)
-        retval = to_ov (lookup_class (cls));
-      else
-        error ("invalid class name, expected a string value");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string cls = args(0).xstring_value ("CLASS_NAME must be a string");
+
+  return to_ov (lookup_class (cls));
 }
 
-DEFUN (metaclass, args, /* nargout */,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} metaclass (obj)\n\
-Returns the meta.class object corresponding to the class of @var{obj}.\n\
-@end deftypefn")
+DEFUN (metaclass, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} metaclass (obj)
+Returns the meta.class object corresponding to the class of @var{obj}.
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      cdef_object obj = to_cdef (args(0));
-
-      if (! error_state)
-        retval = to_ov (obj.get_class ());
-      else
-        print_usage ();
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  cdef_object obj = to_cdef (args(0));
+
+  return to_ov (obj.get_class ());
 }
 
 /*
@@ -4084,3 +3777,4 @@ Returns the meta.class object corresponding to the class of @var{obj}.\n\
 ;;; mode: C++ ***
 ;;; End: ***
 */
+

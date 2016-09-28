@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} issymmetric (@var{A})
-## @deftypefnx {Function File} {} issymmetric (@var{A}, @var{tol})
+## @deftypefn  {} {} issymmetric (@var{A})
+## @deftypefnx {} {} issymmetric (@var{A}, @var{tol})
 ## Return true if @var{A} is a symmetric matrix within the tolerance specified
 ## by @var{tol}.
 ##

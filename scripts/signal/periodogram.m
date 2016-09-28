@@ -1,6 +1,6 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ## Copyright (C) 2010 Alois Schloegl
-## Copyright (C) 2014-2015 Drew Abbot
+## Copyright (C) 2014-2016 Drew Abbot
 ##
 ## This file is part of Octave.
 ##
@@ -19,12 +19,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{Pxx}, @var{w}] =} periodogram (@var{x})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win}, @var{nfft})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{f}] =} periodogram (@var{x}, @var{win}, @var{nfft}, @var{Fs})
-## @deftypefnx {Function File} {[@var{Pxx}, @var{f}] =} periodogram (@dots{}, "@var{range}")
-## @deftypefnx {Function File} {} periodogram (@dots{})
+## @deftypefn  {} {[@var{Pxx}, @var{w}] =} periodogram (@var{x})
+## @deftypefnx {} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win})
+## @deftypefnx {} {[@var{Pxx}, @var{w}] =} periodogram (@var{x}, @var{win}, @var{nfft})
+## @deftypefnx {} {[@var{Pxx}, @var{f}] =} periodogram (@var{x}, @var{win}, @var{nfft}, @var{Fs})
+## @deftypefnx {} {[@var{Pxx}, @var{f}] =} periodogram (@dots{}, "@var{range}")
+## @deftypefnx {} {} periodogram (@dots{})
 ## Return the periodogram (Power Spectral Density) of @var{x}.
 ##
 ## The possible inputs are:
@@ -98,7 +98,7 @@ function [pxx, f] = periodogram (x, varargin)
         case 4
           fs     = varargin{k};
       endswitch
-      j++;
+      j += 1;
     endif
   endfor
 

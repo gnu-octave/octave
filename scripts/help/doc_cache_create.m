@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} doc_cache_create (@var{out_file}, @var{directory})
-## @deftypefnx {Function File} {} doc_cache_create (@var{out_file})
-## @deftypefnx {Function File} {} doc_cache_create ()
+## @deftypefn  {} {} doc_cache_create (@var{out_file}, @var{directory})
+## @deftypefnx {} {} doc_cache_create (@var{out_file})
+## @deftypefnx {} {} doc_cache_create ()
 ## Generate documentation cache for all functions in @var{directory}.
 ##
 ## A documentation cache is generated for all functions in @var{directory}
@@ -30,7 +30,7 @@
 ## @file{doc-cache} if not given.
 ##
 ## If no directory is given (or it is the empty matrix), a cache for built-in
-## operators, etc. is generated.
+## functions, operators, and keywords is generated.
 ##
 ## @seealso{doc_cache_file, lookfor, path}
 ## @end deftypefn
@@ -66,9 +66,10 @@ function doc_cache_create (out_file = "doc-cache", directory = [])
 endfunction
 
 function [text, first_sentence, status] = handle_function (f, text, format)
+
   first_sentence = "";
-  ## Skip functions that start with __ as these shouldn't be searched by lookfor
-  if (length (f) > 2 && all (f (1:2) == "_"))
+  ## Skip internal functions starting with "__"
+  if (strncmp (f, "__", 2))
     status = 1;
     return;
   endif
@@ -93,9 +94,11 @@ function [text, first_sentence, status] = handle_function (f, text, format)
 
   ## Get first sentence of help text
   first_sentence = get_first_help_sentence (f);
+
 endfunction
 
 function cache = create_cache (list)
+
   cache = {};
 
   ## For each function:
@@ -117,6 +120,7 @@ function cache = create_cache (list)
     cache(2, end) = text;
     cache(3, end) = first_sentence;
   endfor
+
 endfunction
 
 function cache = gen_doc_cache_in_dir (directory)
@@ -142,7 +146,7 @@ function cache = gen_doc_cache_in_dir (directory)
   ## concatenate results
   cache = [cache{:}];
 
-  ## remove dirs form path
+  ## remove dirs from path
   if (! isempty (dirs_notpath))
     rmpath (dirs_notpath{:});
   endif
@@ -150,12 +154,14 @@ function cache = gen_doc_cache_in_dir (directory)
 endfunction
 
 function cache = gen_builtin_cache ()
+
   operators = __operators__ ();
   keywords = __keywords__ ();
   builtins = __builtins__ ();
   list = {operators{:}, keywords{:}, builtins{:}};
 
   cache = create_cache (list);
+
 endfunction
 
 

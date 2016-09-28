@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Jaroslav Hajek
+## Copyright (C) 2009-2016 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{cstr}] =} strsplit (@var{str})
-## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@var{str}, @var{del})
-## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
-## @deftypefnx {Function File} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
+## @deftypefn  {} {[@var{cstr}] =} strsplit (@var{str})
+## @deftypefnx {} {[@var{cstr}] =} strsplit (@var{str}, @var{del})
+## @deftypefnx {} {[@var{cstr}] =} strsplit (@dots{}, @var{name}, @var{value})
+## @deftypefnx {} {[@var{cstr}, @var{matches}] =} strsplit (@dots{})
 ## Split the string @var{str} using the delimiters specified by @var{del} and
 ## return a cell string array of substrings.
 ##
@@ -263,7 +263,7 @@ endfunction
 %!assert (strsplit (["a,bc,,de"], ",", false, "delimitertype", "r"), {"a", "bc", "", "de"})
 %!assert (strsplit (["a,bc,de"], ",", true, "delimitertype", "r"), {"a", "bc", "de"})
 %!assert (strsplit (["a,bc,de"], "[, ]", true, "delimitertype", "r"), {"a", "bc", "de"})
-%!assert (strsplit ("hello \t world", true, "delimitertype", "r"), {"hello", "world"});
+%!assert (strsplit ("hello \t world", true, "delimitertype", "r"), {"hello", "world"})
 
 %!assert (strsplit ("foo\tbar", '\t', "delimitertype", "r"), {"foo", "bar"})
 %!assert (strsplit ("foo\tbar", '\t', "delimitertype", "s"), {"foo", "bar"})
@@ -272,37 +272,35 @@ endfunction
 %!test
 %! [a, m] = strsplit ("a\t \nb", '\s', "delimitertype", "regularexpression",
 %!   "collapsedelimiters", false);
-%! assert (a, {"a", "", "", "b"})
-%! assert (m, {"\t", " ", "\n"})
+%! assert (a, {"a", "", "", "b"});
+%! assert (m, {"\t", " ", "\n"});
 %!test
 %! [a, m] = strsplit ("a\t \nb", '\s', false, "delimitertype", "regularexpression");
-%! assert (a, {"a", "", "", "b"})
-%! assert (m, {"\t", " ", "\n"})
+%! assert (a, {"a", "", "", "b"});
+%! assert (m, {"\t", " ", "\n"});
 %!test
 %! [a, m] = strsplit ("a\t \nb", '\s', "delimitertype", "regularexpression");
-%! assert (a, {"a", "b"})
-%! assert (m, {"\t \n"})
+%! assert (a, {"a", "b"});
+%! assert (m, {"\t \n"});
 %!test
 %! [a, m] = strsplit ("a\t \nb", {"\t", " ", "\n"}, "delimitertype", "simple");
-%! assert (a, {"a", "b"})
-%! assert (m, {"\t \n"})
+%! assert (a, {"a", "b"});
+%! assert (m, {"\t \n"});
 %!test
 %! [s, m] = strsplit ("hello \t world", true);
 %! assert (s, {"hello", "world"});
 %! assert (m, {" \t "});
 
 ## Compatibility
-%! assert (strsplit ("", "a"), {""})
-%! assert (strsplit ("a", "a"), {"", ""})
-%! assert (strsplit ("aa", "a"), {"", ""})
-%! assert (strsplit ("aaa", "a"), {"", ""})
+%! assert (strsplit ("", "a"), {""});
+%! assert (strsplit ("a", "a"), {"", ""});
+%! assert (strsplit ("aa", "a"), {"", ""});
+%! assert (strsplit ("aaa", "a"), {"", ""});
 
-## Bug #44641
-%!assert (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})
-%!assert (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"})
+%!assert <44641> (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})
+%!assert <44641> (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"})
 
-## Bug #47403
-%!assert (strsplit ('xxx+yyy', '+'), {"xxx", "yyy"})
+%!assert <47403> (strsplit ('xxx+yyy', '+'), {"xxx", "yyy"})
 
 ## Test input validation
 %!error strsplit ()

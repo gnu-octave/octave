@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Kai Habel
+## Copyright (C) 2009-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
-## @deftypefnx {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
+## @deftypefn  {} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
+## @deftypefnx {} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
 ## Calculate the specular reflection strength of a surface defined by the
 ## normal vector elements @var{sx}, @var{sy}, @var{sz} using Phong's
 ## approximation.
@@ -28,8 +28,8 @@
 ## given as 2-element vectors [azimuth, elevation] in degrees or as 3-element
 ## vectors [x, y, z].
 ##
-## An optional sixth argument specifies the specular exponent (spread) @var{se}.
-## If not given, @var{se} defaults to 10.
+## An optional sixth argument specifies the specular exponent (spread)
+## @var{se}.  If not given, @var{se} defaults to 10.
 ## @seealso{diffuse, surfl}
 ## @end deftypefn
 
@@ -88,7 +88,7 @@ function retval = specular (sx, sy, sz, lv, vv, se)
 
   ## Allow postive values only
   retval(retval < 0) = 0;
-  retval = retval .^ se;
+  retval .^= se;
 
 endfunction
 

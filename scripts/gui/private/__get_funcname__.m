@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Andreas Weber
+## Copyright (C) 2014-2016 Andreas Weber
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{funcname} =} __get_funcname__ (@var{basename})
+## @deftypefn {} {@var{funcname} =} __get_funcname__ (@var{basename})
 ## Internal function.
 ##
 ## Build function name for the current graphics toolkit according to the schema
@@ -30,13 +30,13 @@ function funcname = __get_funcname__ (basename)
 
   if (! __octave_link_enabled__ ())
     tk = graphics_toolkit ();
-    funcname = strcat ("__", basename, "_", tk, "__");
+    funcname = [ "__" basename "_" tk "__"];
     if (numel (tk) > 0 && ! strcmp (tk, "fltk")
         && ! __is_function__ (funcname))
       warning ("%s: no implementation for toolkit '%s', using 'fltk' instead",
                basename, tk);
     endif
-    funcname = strcat ("__", basename, "_fltk__");
+    funcname = ["__" basename "_fltk__"];
   else
     funcname = "";
   endif

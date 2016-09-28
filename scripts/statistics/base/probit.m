@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} probit (@var{p})
+## @deftypefn {} {} probit (@var{p})
 ## Return the probit (the quantile of the standard normal distribution) for
 ## each element of @var{p}.
 ## @seealso{logit}

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_boolNDArray_h)
+#if ! defined (octave_boolNDArray_h)
 #define octave_boolNDArray_h 1
+
+#include "octave-config.h"
 
 #include "Array.h"
 
@@ -118,3 +120,4 @@ BSXFUN_OP_DECL (and, boolNDArray, OCTAVE_API);
 BSXFUN_OP_DECL (or, boolNDArray, OCTAVE_API);
 
 #endif
+

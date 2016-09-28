@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,13 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
 #include "defun.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "profiler.h"
 #include "pt-binop.h"
@@ -47,9 +47,9 @@ tree_binary_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("binary operator '%s': invalid number of output arguments",
-           oper () . c_str ());
-  else
-    retval = rvalue1 (nargout);
+           oper ().c_str ());
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -69,9 +69,6 @@ tree_binary_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (Vdo_braindead_shortcircuit_evaluation
       && eligible_for_braindead_shortcircuit)
     {
@@ -79,48 +76,37 @@ tree_binary_expression::rvalue1 (int)
         {
           octave_value a = op_lhs->rvalue1 ();
 
-          if (! error_state)
+          if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
             {
-              if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
+              bool result = false;
+
+              bool a_true = a.is_true ();
+
+              if (a_true)
                 {
-                  bool result = false;
-
-                  bool a_true = a.is_true ();
-
-                  if (! error_state)
+                  if (etype == octave_value::op_el_or)
                     {
-                      if (a_true)
-                        {
-                          if (etype == octave_value::op_el_or)
-                            {
-                              matlab_style_short_circuit_warning ("|");
-                              result = true;
-                              goto done;
-                            }
-                        }
-                      else
-                        {
-                          if (etype == octave_value::op_el_and)
-                            {
-                              matlab_style_short_circuit_warning ("&");
-                              goto done;
-                            }
-                        }
-
-                      if (op_rhs)
-                        {
-                          octave_value b = op_rhs->rvalue1 ();
-
-                          if (! error_state)
-                            result = b.is_true ();
-                        }
-
-                    done:
-
-                      if (! error_state)
-                        return octave_value (result);
+                      matlab_style_short_circuit_warning ("|");
+                      return octave_value (true);
                     }
                 }
+              else
+                {
+                  if (etype == octave_value::op_el_and)
+                    {
+                      matlab_style_short_circuit_warning ("&");
+                      return octave_value (false);
+                    }
+                }
+
+              if (op_rhs)
+                {
+                  octave_value b = op_rhs->rvalue1 ();
+
+                  result = b.is_true ();
+                }
+
+              return octave_value (result);
             }
         }
     }
@@ -129,24 +115,21 @@ tree_binary_expression::rvalue1 (int)
     {
       octave_value a = op_lhs->rvalue1 ();
 
-      if (! error_state && a.is_defined () && op_rhs)
+      if (a.is_defined () && op_rhs)
         {
           octave_value b = op_rhs->rvalue1 ();
 
-          if (! error_state && b.is_defined ())
+          if (b.is_defined ())
             {
               BEGIN_PROFILER_BLOCK (tree_binary_expression)
 
               // Note: The profiler does not catch the braindead
               // short-circuit evaluation code above, but that should be
-              // ok. The evaluation of operands and the operator itself
+              // ok.  The evaluation of operands and the operator itself
               // is entangled and it's not clear where to start/stop
               // timing the operator to make it reasonable.
 
               retval = ::do_binary_op (etype, a, b);
-
-              if (error_state)
-                retval = octave_value ();
 
               END_PROFILER_BLOCK
             }
@@ -191,9 +174,9 @@ tree_boolean_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("binary operator '%s': invalid number of output arguments",
-           oper () . c_str ());
-  else
-    retval = rvalue1 (nargout);
+           oper ().c_str ());
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -203,13 +186,10 @@ tree_boolean_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   bool result = false;
 
   // This evaluation is not caught by the profiler, since we can't find
-  // a reasonable place where to time. Note that we don't want to
+  // a reasonable place where to time.  Note that we don't want to
   // include evaluation of LHS or RHS into the timing, but this is
   // entangled together with short-circuit evaluation here.
 
@@ -217,40 +197,27 @@ tree_boolean_expression::rvalue1 (int)
     {
       octave_value a = op_lhs->rvalue1 ();
 
-      if (! error_state)
+      bool a_true = a.is_true ();
+
+      if (a_true)
         {
-          bool a_true = a.is_true ();
-
-          if (! error_state)
-            {
-              if (a_true)
-                {
-                  if (etype == bool_or)
-                    {
-                      result = true;
-                      goto done;
-                    }
-                }
-              else
-                {
-                  if (etype == bool_and)
-                    goto done;
-                }
-
-              if (op_rhs)
-                {
-                  octave_value b = op_rhs->rvalue1 ();
-
-                  if (! error_state)
-                    result = b.is_true ();
-                }
-
-            done:
-
-              if (! error_state)
-                retval = octave_value (result);
-            }
+          if (etype == bool_or)
+            return octave_value (true);
         }
+      else
+        {
+          if (etype == bool_and)
+            return octave_value (false);
+        }
+
+      if (op_rhs)
+        {
+          octave_value b = op_rhs->rvalue1 ();
+
+          result = b.is_true ();
+        }
+
+      retval = octave_value (result);
     }
 
   return retval;
@@ -293,24 +260,24 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 }
 
 DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave will\n\
-do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
-conditions of if or while statements.\n\
-\n\
-This feature is only provided for compatibility with @sc{matlab} and should\n\
-not be used unless you are porting old code that relies on this feature.\n\
-\n\
-To obtain short-circuit behavior for logical expressions in new programs,\n\
-you should always use the @samp{&&} and @samp{||} operators.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} do_braindead_shortcircuit_evaluation ()
+@deftypefnx {} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})
+@deftypefnx {} {} do_braindead_shortcircuit_evaluation (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave will
+do short-circuit evaluation of @samp{|} and @samp{&} operators inside the
+conditions of if or while statements.
+
+This feature is only provided for compatibility with @sc{matlab} and should
+not be used unless you are porting old code that relies on this feature.
+
+To obtain short-circuit behavior for logical expressions in new programs,
+you should always use the @samp{&&} and @samp{||} operators.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
 {
   static bool warned = false;
   if (! warned)
@@ -335,3 +302,4 @@ The original variable value is restored when exiting the function.\n\
 %! endif
 %! assert (x, 1);
 */
+

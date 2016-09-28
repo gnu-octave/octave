@@ -1,4 +1,4 @@
-## Copyright (C) 1997-2015 Vincent Cautaerts
+## Copyright (C) 1997-2016 Vincent Cautaerts
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ifftshift (@var{x})
-## @deftypefnx {Function File} {} ifftshift (@var{x}, @var{dim})
+## @deftypefn  {} {} ifftshift (@var{x})
+## @deftypefnx {} {} ifftshift (@var{x}, @var{dim})
 ## Undo the action of the @code{fftshift} function.
 ##
 ## For even length @var{x}, @code{fftshift} is its own inverse, but odd lengths
@@ -123,8 +123,8 @@ endfunction
 %! assert (y, "abcdefg");
 %! assert (ifftshift (y), "defgabc");
 
-## Test N-dimensional input (bug #45207)
-%!test
+## Test N-dimensional input
+%!test <45207>
 %! x = [0:3];
 %! x = x + x' + reshape (x, [1 1 4]);
 %! y1 = [4 5 2 3; 5 6 3 4; 2 3 0 1; 3 4 1 2];
@@ -132,7 +132,7 @@ endfunction
 %! assert (y, reshape ([y1 + 2, y1 + 3, y1, y1 + 1], [4 4 4]));
 %! assert (ifftshift (y), x);
 
-%% Test input validation
+## Test input validation
 %!error ifftshift ()
 %!error ifftshift (1, 2, 3)
 %!error ifftshift (0:3, -1)

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Massimiliano Fasi
+## Copyright (C) 2014-2016 Massimiliano Fasi
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} hgload (@var{filename})
+## @deftypefn {} {@var{h} =} hgload (@var{filename})
 ## Load the graphics object in @var{filename} into the graphics handle @var{h}.
 ##
 ## If @var{filename} has no extension, Octave will try to find the file with

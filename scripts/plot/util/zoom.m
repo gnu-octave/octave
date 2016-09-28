@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 John W. Eaton
+## Copyright (C) 2014-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} zoom
-## @deftypefnx {Command} {} zoom (@var{factor})
-## @deftypefnx {Command} {} zoom on
-## @deftypefnx {Command} {} zoom off
-## @deftypefnx {Command} {} zoom xon
-## @deftypefnx {Command} {} zoom yon
-## @deftypefnx {Command} {} zoom out
-## @deftypefnx {Command} {} zoom reset
-## @deftypefnx {Command} {} zoom (@var{hfig}, @var{option})
+## @deftypefn  {} {} zoom
+## @deftypefnx {} {} zoom (@var{factor})
+## @deftypefnx {} {} zoom on
+## @deftypefnx {} {} zoom off
+## @deftypefnx {} {} zoom xon
+## @deftypefnx {} {} zoom yon
+## @deftypefnx {} {} zoom out
+## @deftypefnx {} {} zoom reset
+## @deftypefnx {} {} zoom (@var{hfig}, @var{option})
 ## Zoom the current axes object or control the interactive zoom mode of a
 ## figure in the GUI.
 ##
@@ -55,7 +55,7 @@
 ## @end deftypefn
 
 ## Eventually we need to also support these features:
-## @deftypefnx {Command} {zoom_object_handle =} zoom (@var{hfig})
+## @deftypefnx {} {zoom_object_handle =} zoom (@var{hfig})
 
 function zoom (varargin)
 
@@ -65,7 +65,7 @@ function zoom (varargin)
   endif
 
   if (nargs == 1 && nargout > 0 && isfigure (varargin{1}))
-    error ("zoom_object_handle = zoom (hfig): not implemented");
+    error ("zoom: syntax 'handle = zoom (hfig)' not implemented");
   endif
 
   hfig = NaN;
@@ -73,9 +73,9 @@ function zoom (varargin)
     hfig = varargin{1};
     if (isfigure (hfig))
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
-      error ("zoom: expecting figure handle as first argument");
+      error ("zoom: invalid figure handle HFIG");
     endif
   endif
 
@@ -163,16 +163,17 @@ function zoom (varargin)
 endfunction
 
 function update_mouse_mode (hfig, arg)
+
   if (strcmp (arg, "off"))
     set (hfig, "__mouse_mode__", "none");
   else
-    ## FIXME: Is there a better way other than calling these
-    ## functions to set the other mouse mode Enable fields to
-    ## "off"?
+    ## FIXME: Is there a better way other than calling these functions
+    ##        to set the other mouse mode Enable fields to "off"?
     pan ("off");
     rotate3d ("off");
     set (hfig, "__mouse_mode__", "zoom");
   endif
+
 endfunction
 
 
@@ -180,20 +181,20 @@ endfunction
 %! clf;
 %! sombrero ();
 %! pause (1);
-%! %% zoom in by a factor of 2
+%! ## zoom in by a factor of 2
 %! zoom (2);
 %! pause (1);
-%! %% return to original zoom level
+%! ## return to original zoom level
 %! zoom out;
 %! pause (1);
-%! %% zoom in by a factor of 2
+%! ## zoom in by a factor of 2
 %! zoom (2);
 %! pause (1);
-%! %% set this zoom level as the "initial zoom level"
-%! %% and zoom in some more
+%! ## set this zoom level as the "initial zoom level"
+%! ## and zoom in some more
 %! zoom reset;
 %! zoom (2);
 %! pause (1);
-%! %% return to zoom level set by last call to "zoom reset"
+%! ## return to zoom level set by last call to "zoom reset"
 %! zoom out;
 

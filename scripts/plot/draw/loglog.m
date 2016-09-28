@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} loglog (@var{y})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{prop}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{fmt})
-## @deftypefnx {Function File} {} loglog (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} loglog (@dots{})
+## @deftypefn  {} {} loglog (@var{y})
+## @deftypefnx {} {} loglog (@var{x}, @var{y})
+## @deftypefnx {} {} loglog (@var{x}, @var{y}, @var{prop}, @var{value}, @dots{})
+## @deftypefnx {} {} loglog (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {} {} loglog (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} loglog (@dots{})
 ## Produce a 2-D plot using logarithmic scales for both axes.
 ##
 ## See the documentation of @code{plot} for a description of the arguments
@@ -53,8 +53,8 @@ function h = loglog (varargin)
     hax = newplot (hax);
 
     set (hax, "xscale", "log", "yscale", "log");
-    if (! ishold (hax))
-      set (hax, "xminortick", "on", "yminortick", "on");
+    if (! ishold ())
+      set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
     endif
 
     htmp = __plt__ ("loglog", hax, varargin{:});
@@ -78,7 +78,7 @@ endfunction
 %! x = sort ((t .* (1 + rand (size (t)))) .^ 2);
 %! y = (t .* (1 + rand (size (t)))) .^ 2;
 %! loglog (x, y);
-%! title ({'loglog() plot', 'Both axes are logarithmic'});
+%! title ({"loglog() plot", "Both axes are logarithmic"});
 
 %!demo
 %! clf;
@@ -87,12 +87,12 @@ endfunction
 %!
 %! subplot (1,2,1);
 %!  loglog (a, b);
-%!  xlabel ('loglog (a, b)');
+%!  title ("loglog (a, b)");
 %!
 %! subplot (1,2,2);
 %!  loglog (a, abs (b));
-%!  set (gca, 'ydir', 'reverse');
-%!  xlabel ('loglog (a, abs (b))');
+%!  set (gca, "ydir", "reverse");
+%!  title ("loglog (a, abs (b))");
 
 %!test
 %! hf = figure ("visible", "off");

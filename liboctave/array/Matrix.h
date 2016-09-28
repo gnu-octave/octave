@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,8 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 // Should probably say something here about why these classes are not
 // represented by some sort of inheritance tree...
 
-#if !defined (octave_Matrix_h)
+#if ! defined (octave_Matrix_h)
 #define octave_Matrix_h 1
+
+#include "octave-config.h"
 
 #include "mx-base.h"
 
@@ -34,3 +36,4 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-ops.h"
 
 #endif
+

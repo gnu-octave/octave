@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef DOCUMENTATIONDOCKWIDGET_H
-#define DOCUMENTATIONDOCKWIDGET_H
+#if ! defined (octave_documentation_dock_widget_h)
+#define octave_documentation_dock_widget_h 1
 
 #include "octave-dock-widget.h"
 
@@ -46,4 +46,5 @@ private:
   webinfo *_webinfo;
 };
 
-#endif // DOCUMENTATIONDOCKWIDGET_H
+#endif
+

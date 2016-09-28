@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Jaroslav Hajek
+## Copyright (C) 2008-2016 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __fdjac__ (@var{fcn}, @var{x}, @var{fvec}, @var{err})
+## @deftypefn {} {} __fdjac__ (@var{fcn}, @var{x}, @var{fvec}, @var{err})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function fjac = __fdjac__ (fcn, x, fvec, typicalx, cdif, err = 0)
+
   if (cdif)
     err = (max (eps, err)) ^ (1/3);
     h = typicalx*err;
@@ -42,7 +43,6 @@ function fjac = __fdjac__ (fcn, x, fvec, typicalx, cdif, err = 0)
       fjac(:,i) = (fcn (x1)(:) - fvec) / (x1(i) - x(i));
     endfor
   endif
+
 endfunction
-
-
 

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} betainv (@var{x}, @var{a}, @var{b})
+## @deftypefn {} {} betainv (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the Beta distribution with parameters @var{a} and @var{b}.
 ## @end deftypefn
@@ -56,7 +56,7 @@ function inv = betainv (x, a, b)
   inv(k) = 1;
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
-  if (any (k))
+  if (! isempty (k))
     if (! isscalar (a) || ! isscalar (b))
       a = a(k);
       b = b(k);
@@ -81,8 +81,10 @@ function inv = betainv (x, a, b)
       y(l) = 1 - sqrt (myeps) * ones (length (l), 1);
     endif
 
-    y_old = y;
-    for i = 1 : 10000
+    y_new = y;
+    loopcnt = 0;
+    do
+      y_old = y_new;
       h     = (betacdf (y_old, a, b) - x) ./ betapdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= myeps);
@@ -94,11 +96,11 @@ function inv = betainv (x, a, b)
         y_new(ind) = 1 - (1 - y_old(ind)) / 10;
       endif
       h = y_old - y_new;
-      if (max (abs (h)) < sqrt (myeps))
-        break;
-      endif
-      y_old = y_new;
-    endfor
+    until (max (abs (h)) < sqrt (myeps) || ++loopcnt == 40)
+
+    if (loopcnt == 40)
+      warning ("betainv: calculation failed to converge for some values");
+    endif
 
     inv(k) = y_new;
   endif

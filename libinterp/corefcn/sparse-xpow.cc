@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 
 #include "dSparse.h"
@@ -46,13 +46,12 @@ along with Octave; see the file COPYING.  If not, see
 static inline int
 xisint (double x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
 
-
-// Safer pow functions. Only two make sense for sparse matrices, the
+// Safer pow functions.  Only two make sense for sparse matrices, the
 // others should all promote to full matrices.
 
 octave_value
@@ -64,65 +63,60 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
+
+  if (static_cast<int> (b) != b)
+    error ("use full(a) ^ full(b)");
+
+  int btmp = static_cast<int> (b);
+  if (btmp == 0)
+    {
+      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          tmp.data (i) = 1.0;
+          tmp.ridx (i) = i;
+        }
+      for (octave_idx_type i = 0; i < nr + 1; i++)
+        tmp.cidx (i) = i;
+
+      retval = tmp;
+    }
   else
     {
-      if (static_cast<int> (b) == b)
+      SparseMatrix atmp;
+      if (btmp < 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  tmp.data (i) = 1.0;
-                  tmp.ridx (i) = i;
-                }
-              for (octave_idx_type i = 0; i < nr + 1; i++)
-                tmp.cidx (i) = i;
+          btmp = -btmp;
 
-              retval = tmp;
-            }
-          else
-            {
-              SparseMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
+          octave_idx_type info;
+          double rcond = 0.0;
+          MatrixType mattyp (a);
 
-                  octave_idx_type info;
-                  double rcond = 0.0;
-                  MatrixType mattyp (a);
+          atmp = a.inverse (mattyp, info, rcond, 1);
 
-                  atmp = a.inverse (mattyp, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              SparseMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
+          if (info == -1)
+            warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
         }
       else
-        error ("use full(a) ^ full(b)");
+        atmp = a;
+
+      SparseMatrix result (atmp);
+
+      btmp--;
+
+      while (btmp > 0)
+        {
+          if (btmp & 1)
+            result = result * atmp;
+
+          btmp >>= 1;
+
+          if (btmp > 0)
+            atmp = atmp * atmp;
+        }
+
+      retval = result;
     }
 
   return retval;
@@ -137,65 +131,60 @@ xpow (const SparseComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
+
+  if (static_cast<int> (b) != b)
+    error ("use full(a) ^ full(b)");
+
+  int btmp = static_cast<int> (b);
+  if (btmp == 0)
+    {
+      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          tmp.data (i) = 1.0;
+          tmp.ridx (i) = i;
+        }
+      for (octave_idx_type i = 0; i < nr + 1; i++)
+        tmp.cidx (i) = i;
+
+      retval = tmp;
+    }
   else
     {
-      if (static_cast<int> (b) == b)
+      SparseComplexMatrix atmp;
+      if (btmp < 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-              for (octave_idx_type i = 0; i < nr; i++)
-                {
-                  tmp.data (i) = 1.0;
-                  tmp.ridx (i) = i;
-                }
-              for (octave_idx_type i = 0; i < nr + 1; i++)
-                tmp.cidx (i) = i;
+          btmp = -btmp;
 
-              retval = tmp;
-            }
-          else
-            {
-              SparseComplexMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
+          octave_idx_type info;
+          double rcond = 0.0;
+          MatrixType mattyp (a);
 
-                  octave_idx_type info;
-                  double rcond = 0.0;
-                  MatrixType mattyp (a);
+          atmp = a.inverse (mattyp, info, rcond, 1);
 
-                  atmp = a.inverse (mattyp, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              SparseComplexMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
+          if (info == -1)
+            warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
         }
       else
-        error ("use full(a) ^ full(b)");
+        atmp = a;
+
+      SparseComplexMatrix result (atmp);
+
+      btmp--;
+
+      while (btmp > 0)
+        {
+          if (btmp & 1)
+            result = result * atmp;
+
+          btmp >>= 1;
+
+          if (btmp > 0)
+            atmp = atmp * atmp;
+        }
+
+      retval = result;
     }
 
   return retval;
@@ -236,7 +225,7 @@ xpow (const SparseComplexMatrix& a, double b)
 // seem worth the effort to optimize -- how often does this case come up
 // in practice?
 
-template <class S, class SM>
+template <typename S, typename SM>
 inline octave_value
 scalar_xpow (const S& a, const SM& b)
 {
@@ -249,8 +238,8 @@ scalar_xpow (const S& a, const SM& b)
 }
 
 /*
-%!assert (sparse (2) .^ [3, 4], sparse ([8, 16]));
-%!assert (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]));
+%!assert (sparse (2) .^ [3, 4], sparse ([8, 16]))
+%!assert <47775> (sparse (2i) .^ [3, 4], sparse ([-0-8i, 16]))
 */
 
 // -*- 1 -*-
@@ -327,7 +316,7 @@ elem_xpow (const SparseMatrix& a, double b)
 {
   // FIXME: What should a .^ 0 give?  Matlab gives a
   // sparse matrix with same structure as a, which is strictly
-  // incorrect. Keep compatibility.
+  // incorrect.  Keep compatibility.
 
   octave_value retval;
 
@@ -427,10 +416,7 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -450,9 +436,9 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
 done:
 
   // This is a dumb operator for sparse matrices anyway, and there is
-  // no sensible way to handle the 0.^0 versus the 0.^x cases. Therefore
+  // no sensible way to handle the 0.^0 versus the 0.^x cases.  Therefore
   // allocate a full matrix filled for the 0.^0 case and shrink it later
-  // as needed
+  // as needed.
 
   if (convert_to_complex)
     {
@@ -532,10 +518,7 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
@@ -675,10 +658,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
@@ -687,7 +667,6 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
         {
           octave_quit ();
           double btmp = b(a.ridx (i), j);
-          Complex tmp;
 
           if (xisint (btmp))
             result.xelem (a.ridx (i), j) = std::pow (a.data (i),
@@ -746,10 +725,7 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
     return scalar_xpow (a(0), b);
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
@@ -765,3 +741,4 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 
   return result;
 }
+

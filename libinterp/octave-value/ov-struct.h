@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_struct_h)
+#if ! defined (octave_ov_struct_h)
 #define octave_ov_struct_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -138,7 +140,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -158,7 +160,6 @@ protected:
   octave_map map;
 
 private:
-
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -191,7 +192,6 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int);
-
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx,
@@ -258,7 +258,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -277,8 +277,8 @@ private:
 
   octave_value to_array (void);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

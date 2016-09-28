@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
@@ -58,15 +58,12 @@ DEFNCUNOP_METHOD (invert, bool_matrix, invert)
 
 DEFUNOP (transpose, bool_matrix)
 {
-  CAST_UNOP_ARG (const octave_bool_matrix&);
+  const octave_bool_matrix& v = dynamic_cast<const octave_bool_matrix&> (a);
 
   if (v.ndims () > 2)
-    {
-      error ("transpose not defined for N-d objects");
-      return octave_value ();
-    }
-  else
-    return octave_value (v.bool_matrix_value ().transpose ());
+    error ("transpose not defined for N-D objects");
+
+  return octave_value (v.bool_matrix_value ().transpose ());
 }
 
 // bool matrix by bool matrix ops.
@@ -120,14 +117,10 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 
   boolNDArray v2 = a2.bool_array_value (true);
 
-  if (! error_state)
-    v1.assign (idx, v2);
+  v1.assign (idx, v2);
 
   return octave_value ();
 }
-
-DEFCONVFN (matrix_to_bool_matrix, matrix, bool)
-DEFCONVFN (scalar_to_bool_matrix, scalar, bool)
 
 void
 install_bm_bm_ops (void)
@@ -159,9 +152,6 @@ install_bm_bm_ops (void)
   INSTALL_CATOP (octave_matrix, octave_bool_matrix, m_bm);
   INSTALL_CATOP (octave_bool_matrix, octave_float_matrix, bm_fm);
   INSTALL_CATOP (octave_float_matrix, octave_bool_matrix, fm_bm);
-
-  INSTALL_CONVOP (octave_matrix, octave_bool_matrix, matrix_to_bool_matrix);
-  INSTALL_CONVOP (octave_scalar, octave_bool_matrix, scalar_to_bool_matrix);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool_matrix, assign);
 
@@ -208,3 +198,4 @@ install_bm_bm_ops (void)
   INSTALL_ASSIGNOP (op_el_or_eq, octave_bool_matrix, octave_bool_matrix,
                     assign_or);
 }
+

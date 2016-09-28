@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_locbuf_h)
+#if ! defined (octave_oct_locbuf_h)
 #define octave_oct_locbuf_h 1
+
+#include "octave-config.h"
 
 #include <cstddef>
 #include "oct-cmplx.h"
@@ -30,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 // that gets deleted automatically.  For common POD types, we provide
 // specializations.
 
-template <class T>
+template <typename T>
 class octave_local_buffer
 {
 public:
@@ -40,7 +42,9 @@ public:
     if (size)
       data = new T [size];
   }
+
   ~octave_local_buffer (void) { delete [] data; }
+
   operator T *() const { return data; }
 
 private:
@@ -107,19 +111,19 @@ private:
 
 // This specializes octave_local_buffer to use the chunked buffer
 // mechanism for POD types.
-#define SPECIALIZE_POD_BUFFER(TYPE) \
-template <> \
-class octave_local_buffer<TYPE> : private octave_chunk_buffer \
-{ \
-public: \
-  octave_local_buffer (size_t size) \
-    : octave_chunk_buffer (size * sizeof (TYPE)) { } \
- \
-  operator TYPE *() const \
-  { \
-    return reinterpret_cast<TYPE *> (this->data ()); \
-  } \
-}
+#define SPECIALIZE_POD_BUFFER(TYPE)                             \
+  template <>                                                   \
+  class octave_local_buffer<TYPE> : private octave_chunk_buffer \
+  {                                                             \
+  public:                                                       \
+    octave_local_buffer (size_t size)                           \
+      : octave_chunk_buffer (size * sizeof (TYPE)) { }          \
+                                                                \
+    operator TYPE *() const                                     \
+    {                                                           \
+      return reinterpret_cast<TYPE *> (this->data ());          \
+    }                                                           \
+  }
 
 SPECIALIZE_POD_BUFFER (bool);
 SPECIALIZE_POD_BUFFER (char);
@@ -137,7 +141,7 @@ SPECIALIZE_POD_BUFFER (FloatComplex);
 // MORE ?
 
 // All pointers and const pointers are also POD types.
-template <class T>
+template <typename T>
 class octave_local_buffer<T *> : private octave_chunk_buffer
 {
 public:
@@ -148,7 +152,7 @@ public:
   operator T **() const { return reinterpret_cast<T **> (this->data ()); }
 };
 
-template <class T>
+template <typename T>
 class octave_local_buffer<const T *> : private octave_chunk_buffer
 {
 public:
@@ -163,7 +167,7 @@ public:
 };
 
 // If the compiler supports dynamic stack arrays, we can use the
-// attached hack to place small buffer arrays on the stack. It may be
+// attached hack to place small buffer arrays on the stack.  It may be
 // even faster than our obstack-like optimization, but is dangerous
 // because stack is a very limited resource, so we disable it.
 
@@ -179,23 +183,22 @@ public:
 // stack array and the octave_local_buffer object, but only one of
 // them will be nonempty.
 
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  const size_t _bufsize_ ## buf = size; \
-  const bool _lbufaut_ ## buf = _bufsize_ ## buf * sizeof (T) \
-     <= OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE; \
-  T _bufaut_ ## buf [_lbufaut_ ## buf ? _bufsize_ ## buf : 0]; \
-  octave_local_buffer<T> _bufheap_ ## buf \
-    (!_lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
-  T *buf = _lbufaut_ ## buf \
-    ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf)
+#define OCTAVE_LOCAL_BUFFER(T, buf, size)                               \
+  const size_t _bufsize_ ## buf = size;                                 \
+  const bool _lbufaut_ ## buf = _bufsize_ ## buf * sizeof (T)           \
+    <= OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE;                              \
+  T _bufaut_ ## buf [_lbufaut_ ## buf ? _bufsize_ ## buf : 0];          \
+  octave_local_buffer<T> _bufheap_ ## buf (! _lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
+  T *buf = (_lbufaut_ ## buf                                            \
+            ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf))
 
 #else
 
 // If we don't have automatic arrays, we simply always use
 // octave_local_buffer.
 
-#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  octave_local_buffer<T> _buffer_ ## buf (size); \
+#define OCTAVE_LOCAL_BUFFER(T, buf, size)               \
+  octave_local_buffer<T> _buffer_ ## buf (size);        \
   T *buf = _buffer_ ## buf
 
 #endif
@@ -203,10 +206,10 @@ public:
 // Note: we use weird variables in the for loop to avoid warnings
 // about shadowed parameters.
 
-#define OCTAVE_LOCAL_BUFFER_INIT(T, buf, size, value) \
-  OCTAVE_LOCAL_BUFFER (T, buf, size); \
-  for (size_t _buf_iter = 0, _buf_size = size; \
-        _buf_iter < _buf_size; _buf_iter++) \
+#define OCTAVE_LOCAL_BUFFER_INIT(T, buf, size, value)   \
+  OCTAVE_LOCAL_BUFFER (T, buf, size);                   \
+  for (size_t _buf_iter = 0, _buf_size = size;          \
+       _buf_iter < _buf_size; _buf_iter++)              \
     buf[_buf_iter] = value
 
 #endif

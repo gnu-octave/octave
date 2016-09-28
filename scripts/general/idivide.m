@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} idivide (@var{x}, @var{y}, @var{op})
+## @deftypefn {} {} idivide (@var{x}, @var{y}, @var{op})
 ## Integer division with different rounding rules.
 ##
 ## The standard behavior of integer division such as @code{@var{a} ./ @var{b}}
@@ -66,6 +66,7 @@
 ## @end deftypefn
 
 function z = idivide (x, y, op)
+
   if (nargin < 2 || nargin > 3)
     print_usage ();
   elseif (nargin == 2)
@@ -98,6 +99,7 @@ function z = idivide (x, y, op)
       error ("idivide: unrecognized rounding type");
     endif
   endif
+
 endfunction
 
 

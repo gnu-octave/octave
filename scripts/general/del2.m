@@ -1,5 +1,5 @@
-## Copyright (C) 2000-2015 Kai Habel
-## Copyright (C) 2007  David Bateman
+## Copyright (C) 2000-2016 Kai Habel
+## Copyright (C) 2007 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{d} =} del2 (@var{M})
-## @deftypefnx {Function File} {@var{d} =} del2 (@var{M}, @var{h})
-## @deftypefnx {Function File} {@var{d} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
+## @deftypefn  {} {@var{d} =} del2 (@var{M})
+## @deftypefnx {} {@var{d} =} del2 (@var{M}, @var{h})
+## @deftypefnx {} {@var{d} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
 ##
 ## Calculate the discrete Laplace
 ## @tex
@@ -45,8 +45,8 @@
 ## @end example
 ##
 ## @end ifnottex
-## For N-dimensional arrays the sum in parentheses is expanded to include second
-## derivatives over the additional higher dimensions.
+## For N-dimensional arrays the sum in parentheses is expanded to include
+## second derivatives over the additional higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
 ## scalar defining the equidistant spacing in all dimensions.  Alternatively,
@@ -156,7 +156,8 @@ function D = del2 (M, varargin)
     endif
   endfor
 
-  D = D ./ nd;
+  D ./= nd;
+
 endfunction
 
 

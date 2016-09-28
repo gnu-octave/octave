@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,21 +20,38 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_sysdep_h)
+#if ! defined (octave_lo_sysdep_h)
 #define octave_lo_sysdep_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
+#include <sys/types.h>
+
 #include "lo-ieee.h"
+
 class string_vector;
 
-extern std::string octave_getcwd (void);
+namespace octave
+{
+  namespace sys
+  {
+    extern std::string getcwd (void);
 
-extern int octave_chdir (const std::string&);
+    extern int chdir (const std::string&);
+  }
+}
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-extern pid_t octave_popen2 (const std::string&, const string_vector&,
-                            bool, int *, std::string&);
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::sys::getcwd' instead")
+const auto octave_getcwd = octave::sys::getcwd;
+
+OCTAVE_DEPRECATED ("use 'octave::sys::chdir' instead")
+const auto octave_chdir = octave::sys::chdir;
+
 #endif
 
 #endif
+

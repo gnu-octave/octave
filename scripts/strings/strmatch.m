@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2013 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2003 Alois Schloegl
 ## Copyright (C) 2010 VZLU Prague
 ##
@@ -19,8 +19,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} strmatch (@var{s}, @var{A})
-## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
+## @deftypefn  {} {} strmatch (@var{s}, @var{A})
+## @deftypefnx {} {} strmatch (@var{s}, @var{A}, "exact")
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ##
 ## The second argument @var{A} must be a string, character matrix, or a cell
@@ -111,7 +111,7 @@ endfunction
 %!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
 %!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4])
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to strmatch> strmatch ()
 %!error <Invalid call to strmatch> strmatch ("a")
 %!error <Invalid call to strmatch> strmatch ("a", "aaa", "exact", 1)

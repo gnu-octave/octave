@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -144,7 +144,7 @@ is what the @code{polyfit} function does.
 
 In situations where a single polynomial isn't good enough, a solution
 is to use several polynomials pieced together.  The function
-@code{splinefit} fits a peicewise polynomial (spline) to a set of
+@code{splinefit} fits a piecewise polynomial (spline) to a set of
 data.
 
 @DOCSTRING(splinefit)
@@ -348,6 +348,12 @@ The result of which can be seen in @ref{fig:splinefit6}.
 robust fitting (@var{beta} = 0) is also included.}
 @end float
 @end ifnotinfo
+
+A very specific form of polynomial interpretation is the Pad@'e approximant.
+For control systems, a continuous-time delay can be modeled very simply with
+the approximant.
+
+@DOCSTRING(padecoef)
 
 The function, @code{ppval}, evaluates the piecewise polynomials, created
 by @code{mkpp} or other means, and @code{unmkpp} returns detailed

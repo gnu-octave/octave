@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 John W. Eaton
+## Copyright (C) 2012-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isdeployed ()
+## @deftypefn {} {} isdeployed ()
 ## Return true if the current program has been compiled and is running
 ## separately from the Octave interpreter and false if it is running in
 ## the Octave interpreter.

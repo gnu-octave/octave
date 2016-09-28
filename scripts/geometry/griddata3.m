@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
-## @deftypefnx {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method})
-## @deftypefnx {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method}, @var{options})
+## @deftypefn  {} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method})
+## @deftypefnx {} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method}, @var{options})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
 ##
@@ -99,5 +99,5 @@ endfunction
 %! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
 %! vi = griddata3 (x, y, z, v, xi, yi, zi, "nearest");
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
-%! assert (max (abs (vv(:))), 0, 0.1)
+%! assert (max (abs (vv(:))), 0, 0.1);
 

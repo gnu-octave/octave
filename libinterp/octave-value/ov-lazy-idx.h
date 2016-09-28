@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 VZLU Prague
+Copyright (C) 2010-2016 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_lazy_idx_h)
+#if ! defined (octave_ov_lazy_idx_h)
 #define octave_ov_lazy_idx_h 1
+
+#include "octave-config.h"
 
 #include "ov-re-mat.h"
 
@@ -136,9 +138,11 @@ public:
   void print_info (std::ostream& os, const std::string& prefix) const
   { make_value ().print_info (os, prefix); }
 
-#define FORWARD_VALUE_QUERY(TYPE,NAME) \
-  TYPE \
-  NAME (void) const { return make_value ().NAME (); }
+#define FORWARD_VALUE_QUERY(TYPE, NAME)         \
+  TYPE NAME (void) const                        \
+  {                                             \
+    return make_value ().NAME ();               \
+  }
 
   FORWARD_VALUE_QUERY (int8NDArray,  int8_array_value)
   FORWARD_VALUE_QUERY (int16NDArray, int16_array_value)
@@ -149,52 +153,44 @@ public:
   FORWARD_VALUE_QUERY (uint32NDArray, uint32_array_value)
   FORWARD_VALUE_QUERY (uint64NDArray, uint64_array_value)
 
-#define FORWARD_VALUE_QUERY1(TYPE,NAME) \
-  TYPE \
-  NAME (bool flag = false) const { return make_value ().NAME (flag); }
+#define FORWARD_VALUE_QUERY1(TYPE, NAME)        \
+  TYPE NAME (bool flag = false) const           \
+  {                                             \
+    return make_value ().NAME (flag);           \
+  }
 
   FORWARD_VALUE_QUERY1 (double, double_value)
-
   FORWARD_VALUE_QUERY1 (float, float_value)
-
   FORWARD_VALUE_QUERY1 (double, scalar_value)
-
   FORWARD_VALUE_QUERY1 (Matrix, matrix_value)
-
   FORWARD_VALUE_QUERY1 (FloatMatrix, float_matrix_value)
-
   FORWARD_VALUE_QUERY1 (Complex, complex_value)
-
   FORWARD_VALUE_QUERY1 (FloatComplex, float_complex_value)
-
   FORWARD_VALUE_QUERY1 (ComplexMatrix, complex_matrix_value)
-
   FORWARD_VALUE_QUERY1 (FloatComplexMatrix, float_complex_matrix_value)
-
   FORWARD_VALUE_QUERY1 (ComplexNDArray, complex_array_value)
-
   FORWARD_VALUE_QUERY1 (FloatComplexNDArray, float_complex_array_value)
-
   FORWARD_VALUE_QUERY1 (boolNDArray, bool_array_value)
-
   FORWARD_VALUE_QUERY1 (charNDArray, char_array_value)
-
   FORWARD_VALUE_QUERY1 (NDArray, array_value)
-
   FORWARD_VALUE_QUERY1 (FloatNDArray, float_array_value)
-
   FORWARD_VALUE_QUERY1 (SparseMatrix, sparse_matrix_value)
-
   FORWARD_VALUE_QUERY1 (SparseComplexMatrix, sparse_complex_matrix_value)
 
   octave_value diag (octave_idx_type k = 0) const
-  { return make_value ().diag (k); }
+  {
+    return make_value ().diag (k);
+  }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const
-  { return make_value ().convert_to_str_internal (pad, force, type); }
+  {
+    return make_value ().convert_to_str_internal (pad, force, type);
+  }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
-  { return make_value ().print_raw (os, pr_as_read_syntax); }
+  {
+    return make_value ().print_raw (os, pr_as_read_syntax);
+  }
 
   bool save_ascii (std::ostream& os);
 
@@ -203,26 +199,34 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
-
+                    octave::mach_info::float_format fmt);
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
-  { return make_value ().write (os, block_size, output_type, skip, flt_fmt); }
+             octave::mach_info::float_format flt_fmt) const
+  {
+    return make_value ().write (os, block_size, output_type, skip, flt_fmt);
+  }
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const
-  { return make_value ().mex_get_data (); }
+  {
+    return make_value ().mex_get_data ();
+  }
 
   mxArray *as_mxArray (void) const
-  { return make_value ().as_mxArray (); }
+  {
+    return make_value ().as_mxArray ();
+  }
 
   octave_value map (unary_mapper_t umap) const
-  { return make_value ().map (umap); }
+  {
+    return make_value ().map (umap);
+  }
 
 private:
+
   const octave_value& make_value (void) const
   {
     if (value.is_undefined ())
@@ -249,3 +253,4 @@ private:
 };
 
 #endif
+

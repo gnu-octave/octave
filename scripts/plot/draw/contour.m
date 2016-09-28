@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 Shai Ayal
+## Copyright (C) 1993-2016 Shai Ayal
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contour (@var{z})
-## @deftypefnx {Function File} {} contour (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {} contour (@dots{}, @var{style})
-## @deftypefnx {Function File} {} contour (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour (@dots{})
+## @deftypefn  {} {} contour (@var{z})
+## @deftypefnx {} {} contour (@var{z}, @var{vn})
+## @deftypefnx {} {} contour (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {} {} contour (@dots{}, @var{style})
+## @deftypefnx {} {} contour (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{h}] =} contour (@dots{})
 ## Create a 2-D contour plot.
 ##
 ## Plot level curves (contour lines) of the matrix @var{z}, using the
@@ -72,6 +72,11 @@ function [c, h] = contour (varargin)
     hax = newplot (hax);
 
     [ctmp, htmp] = __contour__ (hax, "none", varargin{:});
+
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -88,26 +93,26 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
-%! title ({'contour() plot (isolines of constant Z)'; 'Z = peaks()'});
+%! title ({"contour() plot (isolines of constant Z)"; "Z = peaks()"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
 %! contour (X, Y, abs (Z), 10);
-%! title ({'contour() plot'; 'polar fcn: Z = sin (2*theta) * (1-r)'});
+%! title ({"contour() plot"; "polar fcn: Z = sin (2*theta) * (1-r)"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! z = peaks ();
 %! contour (z, [0 0]);
-%! title ({'contour() plot with single isoline at Z == 0'; 'Z = peaks()'});
+%! title ({"contour() plot with single isoline at Z == 0"; "Z = peaks()"});
 
 %!test
 %! hf = figure ("visible", "off");
@@ -117,8 +122,8 @@ endfunction
 %!   [c, h] = contour (x, y, z);
 %!   levellist = -6:6;
 %!   set (h, "levellist", levellist);
-%!   assert (get (h, "levellist"), levellist)
-%!   assert (get (h, "levellistmode"), "manual")
+%!   assert (get (h, "levellist"), levellist);
+%!   assert (get (h, "levellistmode"), "manual");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -131,10 +136,10 @@ endfunction
 %!   [c, h] = contour (x, y, z);
 %!   levelstep = 3;
 %!   set (h, "levelstep", levelstep);
-%!   assert (get (h, "levelstep"), levelstep)
-%!   assert (get (h, "levelstepmode"), "manual")
-%!   assert (get (h, "levellist"), -6:levelstep:6)
-%!   assert (get (h, "levellistmode"), "auto")
+%!   assert (get (h, "levelstep"), levelstep);
+%!   assert (get (h, "levelstepmode"), "manual");
+%!   assert (get (h, "levellist"), -6:levelstep:6);
+%!   assert (get (h, "levellistmode"), "auto");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

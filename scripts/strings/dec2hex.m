@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 Daniel Calvelo
+## Copyright (C) 1996-2016 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2hex (@var{d}, @var{len})
+## @deftypefn {} {} dec2hex (@var{d}, @var{len})
 ## Return the hexadecimal string corresponding to the non-negative integer
 ## @var{d}.
 ##

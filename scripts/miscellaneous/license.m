@@ -1,5 +1,5 @@
-## Copyright (C) 2005-2015 William Poetra Yoga Hadisoeseno
-## Copyright (C) 2014-2015 Carnë Draug
+## Copyright (C) 2005-2016 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2014-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -18,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} license
-## @deftypefnx {Command} {} license inuse
-## @deftypefnx {Command} {} license inuse @var{feature}
-## @deftypefnx {Function File} {} license ("inuse")
-## @deftypefnx {Function File} {@var{retval} =} license ("inuse")
-## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
-## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
-## @deftypefnx {Function File} {[@var{retval}, @var{errmsg}] =} license ("checkout", @var{feature})
+## @deftypefn  {} {} license
+## @deftypefnx {} {} license inuse
+## @deftypefnx {} {} license inuse @var{feature}
+## @deftypefnx {} {} license ("inuse")
+## @deftypefnx {} {@var{retval} =} license ("inuse")
+## @deftypefnx {} {@var{retval} =} license ("test", @var{feature})
+## @deftypefnx {} {@var{retval} =} license ("checkout", @var{feature})
+## @deftypefnx {} {[@var{retval}, @var{errmsg}] =} license ("checkout", @var{feature})
 ## Get license information for Octave and Octave packages.
 ##
 ## GNU Octave is free software distributed under the GNU General Public
@@ -62,7 +62,7 @@
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function [retval, errmsg] = license (cmd, feature, toogle)
+function [retval, errmsg] = license (cmd, feature, toggle)
 
   if (nargin > 3)
     print_usage ();
@@ -99,13 +99,13 @@ function [retval, errmsg] = license (cmd, feature, toogle)
       endif
 
       if (nargin > 2)
-        ## We ignore the toogle argument because... what's the point?  We
+        ## We ignore the toggle argument because... what's the point?  We
         ## don't need a license management system on Octave.  This function
-        ## will return true, even if anyone tries to disabled a license.
-        switch (tolower (toogle))
+        ## will return true, even if anyone tries to disable a license.
+        switch (tolower (toggle))
           case "enable"   # do nothing
           case "disable"  # do nothing
-          otherwise       error ("license: TOOGLE must be enable or disable");
+          otherwise       error ("license: TOGGLE must be enable or disable");
         endswitch
       endif
 
@@ -172,7 +172,7 @@ endfunction
 
 %!test
 %! for idx = 1: numel (list)
-%!   assert (license ("test", list{idx}.name), true)
+%!   assert (license ("test", list{idx}.name), true);
 %! endfor
 
 %!assert (license ("checkout", "octave"), true)
@@ -184,5 +184,5 @@ endfunction
 ## Test input validation
 %!error license ("not_inuse")
 %!error license ("not_test", "octave", "enable")
-%!error <TOOGLE must be enable or disable> license ("test", "octave", "invalid_toogle")
+%!error <TOGGLE must be enable or disable> license ("test", "octave", "invalid_toggle")
 

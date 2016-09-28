@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Bill Denney
+## Copyright (C) 2006-2016 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
+## @deftypefn {} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
 ## Compare two version strings using the given @var{operator}.
 ##
 ## This function assumes that versions @var{v1} and @var{v2} are arbitrarily
@@ -175,7 +175,7 @@ function out = compare_versions (v1, v2, operator)
 
   ## Reverse the output if not is given.
   if (not_op)
-    out = !out;
+    out = ! out;
   endif
 
 endfunction

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,31 +20,32 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_TextEdit__
-#define __QtHandles_TextEdit__ 1
+#if ! defined (octave_TextEdit_h)
+#define octave_TextEdit_h 1
 
 #include <QTextEdit>
 
 namespace QtHandles
 {
 
-class TextEdit : public QTextEdit
-{
-  Q_OBJECT
+  class TextEdit : public QTextEdit
+  {
+    Q_OBJECT
 
-public:
-  TextEdit (QWidget* xparent) : QTextEdit(xparent) { }
-  ~TextEdit (void) { }
+  public:
+    TextEdit (QWidget* xparent) : QTextEdit(xparent) { }
+    ~TextEdit (void) { }
 
-signals:
-  void editingFinished (void);
-  void returnPressed (void);
+  signals:
+    void editingFinished (void);
+    void returnPressed (void);
 
-protected:
-  void focusOutEvent (QFocusEvent* event);
-  void keyPressEvent (QKeyEvent* event);
-};
+  protected:
+    void focusOutEvent (QFocusEvent* event);
+    void keyPressEvent (QKeyEvent* event);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

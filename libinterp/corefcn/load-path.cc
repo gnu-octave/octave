@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2015 John W. Eaton
+Copyright (C) 2006-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <algorithm>
@@ -37,17 +37,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "defun.h"
 #include "input.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 
 load_path *load_path::instance = 0;
-load_path::hook_fcn_ptr load_path::add_hook = execute_pkg_add;
-load_path::hook_fcn_ptr load_path::remove_hook = execute_pkg_del;
+load_path::hook_fcn_ptr load_path::add_hook = load_path::execute_pkg_add;
+load_path::hook_fcn_ptr load_path::remove_hook = load_path::execute_pkg_del;
 std::string load_path::command_line_path;
 std::string load_path::sys_path;
 load_path::abs_dir_cache_type load_path::abs_dir_cache;
@@ -55,57 +55,65 @@ load_path::abs_dir_cache_type load_path::abs_dir_cache;
 void
 load_path::dir_info::update (void)
 {
-  file_stat fs (dir_name);
+  octave::sys::file_stat fs (dir_name);
 
-  if (fs)
+  if (! fs)
+    {
+      std::string msg = fs.error ();
+      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+    }
+  else
     {
       if (is_relative)
         {
           try
             {
-              std::string abs_name = octave_env::make_absolute (dir_name);
+              std::string abs_name = octave::sys::env::make_absolute (dir_name);
 
               abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
               if (p != abs_dir_cache.end ())
                 {
-                  // The directory is in the cache of all directories
-                  // we have visited (indexed by its absolute name).
-                  // If it is out of date, initialize it.  Otherwise,
-                  // copy the info from the cache.  By doing that, we
-                  // avoid unnecessary calls to stat that can slow
-                  // things down tremendously for large directories.
-
+                  // The directory is in the cache of all directories we have
+                  // visited (indexed by absolute name).  If it is out of date,
+                  // initialize it.  Otherwise, copy the info from the cache.
+                  // By doing that, we avoid unnecessary calls to stat that can
+                  // slow things down tremendously for large directories.
                   const dir_info& di = p->second;
 
                   if (fs.mtime () + fs.time_resolution ()
                       > di.dir_time_last_checked)
                     initialize ();
                   else
-                    *this = di;
+                    {
+                      // Copy over info from cache, but leave dir_name and
+                      // is_relative unmodified.
+                      this->abs_dir_name = di.abs_dir_name;
+                      this->dir_mtime = di.dir_mtime;
+                      this->dir_time_last_checked = di.dir_time_last_checked;
+                      this->all_files = di.all_files;
+                      this->fcn_files = di.fcn_files;
+                      this->private_file_map = di.private_file_map;
+                      this->method_file_map = di.method_file_map;
+                      this->package_dir_map = di.package_dir_map;
+                    }
                 }
               else
                 {
                   // We haven't seen this directory before.
-
                   initialize ();
                 }
             }
-          catch (octave_execution_exception)
+          catch (const octave::execution_exception&)
             {
-              // Skip updating if we don't know where we are, but
-              // don't treat it as an error.
-
-              error_state = 0;
+              // Skip updating if we don't know where we are,
+              // but don't treat it as an error.
+              recover_from_exception ();
             }
         }
+      // Absolute path, check timestamp to see whether it requires re-caching
       else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
         initialize ();
-    }
-  else
-    {
-      std::string msg = fs.error ();
-      warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
     }
 }
 
@@ -133,11 +141,11 @@ load_path::dir_info::is_package (const std::string& name) const
 void
 load_path::dir_info::initialize (void)
 {
-  is_relative = ! octave_env::absolute_pathname (dir_name);
+  is_relative = ! octave::sys::env::absolute_pathname (dir_name);
 
-  dir_time_last_checked = octave_time (static_cast<time_t> (0));
+  dir_time_last_checked = octave::sys::time (static_cast<time_t> (0));
 
-  file_stat fs (dir_name);
+  octave::sys::file_stat fs (dir_name);
 
   if (fs)
     {
@@ -145,13 +153,13 @@ load_path::dir_info::initialize (void)
       package_dir_map.clear ();
 
       dir_mtime = fs.mtime ();
-      dir_time_last_checked = octave_time ();
+      dir_time_last_checked = octave::sys::time ();
 
       get_file_list (dir_name);
 
       try
         {
-          std::string abs_name = octave_env::make_absolute (dir_name);
+          std::string abs_name = octave::sys::env::make_absolute (dir_name);
 
           // FIXME: nothing is ever removed from this cache of
           // directory information, so there could be some resource
@@ -159,9 +167,12 @@ load_path::dir_info::initialize (void)
 
           abs_dir_cache[abs_name] = *this;
         }
-      catch (octave_execution_exception)
+      catch (const octave::execution_exception&)
         {
-          // Skip updating if we don't know where we are.
+          // Skip updating if we don't know where we are but don't treat
+          // it as an error.
+
+          recover_from_exception ();
         }
     }
   else
@@ -174,13 +185,13 @@ load_path::dir_info::initialize (void)
 void
 load_path::dir_info::get_file_list (const std::string& d)
 {
-  dir_entry dir (d);
+  octave::sys::dir_entry dir (d);
 
   if (dir)
     {
       string_vector flist = dir.read ();
 
-      octave_idx_type len = flist.length ();
+      octave_idx_type len = flist.numel ();
 
       all_files.resize (len);
       fcn_files.resize (len);
@@ -192,9 +203,9 @@ load_path::dir_info::get_file_list (const std::string& d)
         {
           std::string fname = flist[i];
 
-          std::string full_name = file_ops::concat (d, fname);
+          std::string full_name = octave::sys::file_ops::concat (d, fname);
 
-          file_stat fs (full_name);
+          octave::sys::file_stat fs (full_name);
 
           if (fs)
             {
@@ -244,27 +255,24 @@ get_fcn_files (const std::string& d)
 {
   load_path::dir_info::fcn_file_map_type retval;
 
-  dir_entry dir (d);
+  octave::sys::dir_entry dir (d);
 
   if (dir)
     {
       string_vector flist = dir.read ();
 
-      octave_idx_type len = flist.length ();
+      octave_idx_type len = flist.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
           std::string fname = flist[i];
 
-          std::string ext;
-          std::string base = fname;
-
           size_t pos = fname.rfind ('.');
 
           if (pos != std::string::npos)
             {
-              base = fname.substr (0, pos);
-              ext = fname.substr (pos);
+              std::string base = fname.substr (0, pos);
+              std::string ext = fname.substr (pos);
 
               if (valid_identifier (base))
                 {
@@ -277,7 +285,8 @@ get_fcn_files (const std::string& d)
                   else if (ext == ".mex")
                     t = load_path::MEX_FILE;
 
-                  retval[base] |= t;
+                  if (t)
+                    retval[base] = t;
                 }
             }
         }
@@ -303,9 +312,9 @@ load_path::dir_info::get_method_file_map (const std::string& d,
 {
   method_file_map[class_name].method_file_map = get_fcn_files (d);
 
-  std::string pd = file_ops::concat (d, "private");
+  std::string pd = octave::sys::file_ops::concat (d, "private");
 
-  file_stat fs (pd);
+  octave::sys::file_stat fs (pd);
 
   if (fs && fs.is_dir ())
     method_file_map[class_name].private_file_map = get_fcn_files (pd);
@@ -332,11 +341,7 @@ load_path::instance_ok (void)
     }
 
   if (! instance)
-    {
-      ::error ("unable to create load path object!");
-
-      retval = false;
-    }
+    error ("unable to create load path object!");
 
   return retval;
 }
@@ -346,7 +351,7 @@ load_path::instance_ok (void)
 load_path::const_dir_info_list_iterator
 load_path::find_dir_info (const std::string& dir_arg) const
 {
-  std::string dir = file_ops::tilde_expand (dir_arg);
+  std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
 
   const_dir_info_list_iterator retval = dir_info_list.begin ();
 
@@ -364,7 +369,7 @@ load_path::find_dir_info (const std::string& dir_arg) const
 load_path::dir_info_list_iterator
 load_path::find_dir_info (const std::string& dir_arg)
 {
-  std::string dir = file_ops::tilde_expand (dir_arg);
+  std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
 
   dir_info_list_iterator retval = dir_info_list.begin ();
 
@@ -408,7 +413,7 @@ void
 load_path::loader::move_fcn_map (const std::string& dir_name,
                                  const string_vector& fcn_files, bool at_end)
 {
-  octave_idx_type len = fcn_files.length ();
+  octave_idx_type len = fcn_files.numel ();
 
   for (octave_idx_type k = 0; k < len; k++)
     {
@@ -465,7 +470,7 @@ load_path::loader::move_method_map (const std::string& dir_name, bool at_end)
       fcn_map_type& fm = i->second;
 
       std::string full_dir_name
-        = file_ops::concat (dir_name, "@" + class_name);
+        = octave::sys::file_ops::concat (dir_name, "@" + class_name);
 
       for (fcn_map_iterator q = fm.begin (); q != fm.end (); q++)
         {
@@ -571,7 +576,7 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
       if (path.empty ())
         path = tpath;
       else
-        path += dir_path::path_sep_str () + tpath;
+        path += octave::directory_path::path_sep_str () + tpath;
     }
 }
 
@@ -596,7 +601,7 @@ load_path::do_initialize (bool set_initial_path)
   std::string tpath = load_path::command_line_path;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_PATH");
+    tpath = octave::sys::env::getenv ("OCTAVE_PATH");
 
   std::string xpath;
 
@@ -605,7 +610,7 @@ load_path::do_initialize (bool set_initial_path)
       xpath = tpath;
 
       if (! sys_path.empty ())
-        xpath += dir_path::path_sep_str () + sys_path;
+        xpath += octave::directory_path::path_sep_str () + sys_path;
     }
   else
     xpath = sys_path;
@@ -629,7 +634,7 @@ split_path (const std::string& p)
   std::list<std::string> retval;
 
   size_t beg = 0;
-  size_t end = p.find (dir_path::path_sep_char ());
+  size_t end = p.find (octave::directory_path::path_sep_char ());
 
   size_t len = p.length ();
 
@@ -645,7 +650,7 @@ split_path (const std::string& p)
       if (beg == len)
         break;
 
-      end = p.find (dir_path::path_sep_char (), beg);
+      end = p.find (octave::directory_path::path_sep_char (), beg);
     }
 
   std::string elt = p.substr (beg);
@@ -683,7 +688,7 @@ load_path::do_set (const std::string& p, bool warn, bool is_init)
 
   // Temporarily disable add hook.
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
   frame.protect_var (add_hook);
 
   add_hook = 0;
@@ -732,7 +737,7 @@ strip_trailing_separators (const std::string& dir_arg)
 
   size_t k = dir.length ();
 
-  while (k > 1 && file_ops::is_dir_sep (dir[k-1]))
+  while (k > 1 && octave::sys::file_ops::is_dir_sep (dir[k-1]))
     k--;
 
   if (k < dir.length ())
@@ -750,7 +755,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
     warning_with_id ("Octave:recursive-path-search",
                      "trailing '//' is no longer special in search path elements");
 
-  std::string dir = file_ops::tilde_expand (dir_arg);
+  std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
 
   dir = strip_trailing_separators (dir);
 
@@ -760,7 +765,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
     do_move (i, at_end);
   else
     {
-      file_stat fs (dir);
+      octave::sys::file_stat fs (dir);
 
       if (fs)
         {
@@ -768,18 +773,15 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
             {
               dir_info di (dir);
 
-              if (! error_state)
-                {
-                  if (at_end)
-                    dir_info_list.push_back (di);
-                  else
-                    dir_info_list.push_front (di);
+              if (at_end)
+                dir_info_list.push_back (di);
+              else
+                dir_info_list.push_front (di);
 
-                  add (di, at_end);
+              add (di, at_end);
 
-                  if (add_hook)
-                    add_hook (dir);
-                }
+              if (add_hook)
+                add_hook (dir);
             }
           else if (warn)
             warning ("addpath: %s: not a directory", dir_arg.c_str ());
@@ -803,7 +805,7 @@ void
 load_path::loader::remove_fcn_map (const std::string& dir,
                                    const string_vector& fcn_files)
 {
-  octave_idx_type len = fcn_files.length ();
+  octave_idx_type len = fcn_files.numel ();
 
   for (octave_idx_type k = 0; k < len; k++)
     {
@@ -859,7 +861,8 @@ load_path::loader::remove_method_map (const std::string& dir)
 
       fcn_map_type& fm = i->second;
 
-      std::string full_dir_name = file_ops::concat (dir, "@" + class_name);
+      std::string full_dir_name
+        = octave::sys::file_ops::concat (dir, "@" + class_name);
 
       for (fcn_map_iterator q = fm.begin (); q != fm.end (); q++)
         {
@@ -904,7 +907,7 @@ load_path::do_remove (const std::string& dir_arg)
         }
       else
         {
-          std::string dir = file_ops::tilde_expand (dir_arg);
+          std::string dir = octave::sys::file_ops::tilde_expand (dir_arg);
 
           dir = strip_trailing_separators (dir);
 
@@ -985,7 +988,7 @@ load_path::do_update (void) const
 
       di.update ();
 
-      add (di, true);
+      add (di, true, "", true);
     }
 }
 
@@ -1103,11 +1106,11 @@ load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
           retval = find_method (class_name, meth, dir_name);
         }
       else
-        retval = std::string ();
+        retval = "";
     }
   else
     {
-      dir_name = std::string ();
+      dir_name = "";
 
       const_fcn_map_iterator p = fcn_map.find (fcn);
 
@@ -1121,7 +1124,7 @@ load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
             {
               const file_info& fi = *i;
 
-              retval = file_ops::concat (fi.dir_name, fcn);
+              retval = octave::sys::file_ops::concat (fi.dir_name, fcn);
 
               if (check_file_type (retval, type, fi.types,
                                    fcn, "load_path::do_find_fcn"))
@@ -1130,7 +1133,7 @@ load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
                   break;
                 }
               else
-                retval = std::string ();
+                retval = "";
             }
         }
     }
@@ -1157,7 +1160,7 @@ load_path::loader::find_private_fcn (const std::string& dir,
       if (p != m.end ())
         {
           std::string fname
-            = file_ops::concat (file_ops::concat (dir, "private"), fcn);
+            = octave::sys::file_ops::concat (octave::sys::file_ops::concat (dir, "private"), fcn);
 
           if (check_file_type (fname, type, p->second, fcn,
                                "load_path::find_private_fcn"))
@@ -1177,7 +1180,7 @@ load_path::loader::find_method (const std::string& class_name,
 
   //  update ();
 
-  dir_name = std::string ();
+  dir_name = "";
 
   const_method_map_iterator q = method_map.find (class_name);
 
@@ -1197,7 +1200,7 @@ load_path::loader::find_method (const std::string& class_name,
             {
               const file_info& fi = *i;
 
-              retval = file_ops::concat (fi.dir_name, meth);
+              retval = octave::sys::file_ops::concat (fi.dir_name, meth);
 
               bool found = check_file_type (retval, type, fi.types,
                                             meth, "load_path::do_find_method");
@@ -1208,7 +1211,7 @@ load_path::loader::find_method (const std::string& class_name,
                   break;
                 }
               else
-                retval = std::string ();
+                retval = "";
             }
         }
     }
@@ -1313,10 +1316,10 @@ find_private_file (const std::string& fname)
 
       if (! dir_name.empty ())
         {
-          std::string pfname = dir_name + file_ops::dir_sep_str ()
-                               + "private" + file_ops::dir_sep_str () + fname;
+          std::string pfname = dir_name + octave::sys::file_ops::dir_sep_str ()
+                               + "private" + octave::sys::file_ops::dir_sep_str () + fname;
 
-          file_stat fs (pfname);
+          octave::sys::file_stat fs (pfname);
 
           if (fs.exists () && fs.is_reg ())
             retval = pfname;
@@ -1331,10 +1334,10 @@ load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
-  if (octave_env::absolute_pathname (file)
-      || octave_env::rooted_relative_pathname (file))
+  if (octave::sys::env::absolute_pathname (file)
+      || octave::sys::env::rooted_relative_pathname (file))
     {
-      file_stat fs (file);
+      octave::sys::file_stat fs (file);
 
       return fs.exists () ? file : retval;
     }
@@ -1346,7 +1349,8 @@ load_path::do_find_file (const std::string& file) const
         return tfile;
     }
 
-  if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
+  if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+      != std::string::npos)
     {
       // Given name has a directory separator, so append it to each
       // element of the load path in turn.
@@ -1355,9 +1359,9 @@ load_path::do_find_file (const std::string& file) const
            p != dir_info_list.end ();
            p++)
         {
-          std::string tfile = file_ops::concat (p->dir_name, file);
+          std::string tfile = octave::sys::file_ops::concat (p->dir_name, file);
 
-          file_stat fs (tfile);
+          octave::sys::file_stat fs (tfile);
 
           if (fs.exists ())
             return tfile;
@@ -1373,12 +1377,12 @@ load_path::do_find_file (const std::string& file) const
         {
           string_vector all_files = p->all_files;
 
-          octave_idx_type len = all_files.length ();
+          octave_idx_type len = all_files.numel ();
 
           for (octave_idx_type i = 0; i < len; i++)
             {
               if (all_files[i] == file)
-                return file_ops::concat (p->dir_name, file);
+                return octave::sys::file_ops::concat (p->dir_name, file);
             }
         }
     }
@@ -1391,11 +1395,11 @@ load_path::do_find_dir (const std::string& dir) const
 {
   std::string retval;
 
-  if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
-      && (octave_env::absolute_pathname (dir)
-          || octave_env::rooted_relative_pathname (dir)))
+  if (dir.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos
+      && (octave::sys::env::absolute_pathname (dir)
+          || octave::sys::env::rooted_relative_pathname (dir)))
     {
-      file_stat fs (dir);
+      octave::sys::file_stat fs (dir);
 
       if (fs.exists () && fs.is_dir ())
         return dir;
@@ -1406,11 +1410,11 @@ load_path::do_find_dir (const std::string& dir) const
            p != dir_info_list.end ();
            p++)
         {
-          std::string dname = octave_env::make_absolute (p->dir_name);
+          std::string dname = octave::sys::env::make_absolute (p->dir_name);
 
           size_t dname_len = dname.length ();
 
-          if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
+          if (dname.substr (dname_len - 1) == octave::sys::file_ops::dir_sep_str ())
             {
               dname = dname.substr (0, dname_len - 1);
               dname_len--;
@@ -1419,10 +1423,10 @@ load_path::do_find_dir (const std::string& dir) const
           size_t dir_len = dir.length ();
 
           if (dname_len > dir_len
-              && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+              && octave::sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+              && dir == dname.substr (dname_len - dir_len))
             {
-              file_stat fs (p->dir_name);
+              octave::sys::file_stat fs (p->dir_name);
 
               if (fs.exists () && fs.is_dir ())
                 return p->dir_name;
@@ -1438,11 +1442,11 @@ load_path::do_find_matching_dirs (const std::string& dir) const
 {
   std::list<std::string> retlist;
 
-  if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
-      && (octave_env::absolute_pathname (dir)
-          || octave_env::rooted_relative_pathname (dir)))
+  if (dir.find_first_of (octave::sys::file_ops::dir_sep_chars ()) != std::string::npos
+      && (octave::sys::env::absolute_pathname (dir)
+          || octave::sys::env::rooted_relative_pathname (dir)))
     {
-      file_stat fs (dir);
+      octave::sys::file_stat fs (dir);
 
       if (fs.exists () && fs.is_dir ())
         retlist.push_back (dir);
@@ -1453,11 +1457,11 @@ load_path::do_find_matching_dirs (const std::string& dir) const
            p != dir_info_list.end ();
            p++)
         {
-          std::string dname = octave_env::make_absolute (p->dir_name);
+          std::string dname = octave::sys::env::make_absolute (p->dir_name);
 
           size_t dname_len = dname.length ();
 
-          if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
+          if (dname.substr (dname_len - 1) == octave::sys::file_ops::dir_sep_str ())
             {
               dname = dname.substr (0, dname_len - 1);
               dname_len--;
@@ -1466,10 +1470,10 @@ load_path::do_find_matching_dirs (const std::string& dir) const
           size_t dir_len = dir.length ();
 
           if (dname_len > dir_len
-              && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+              && octave::sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+              && dir == dname.substr (dname_len - dir_len))
             {
-              file_stat fs (p->dir_name);
+              octave::sys::file_stat fs (p->dir_name);
 
               if (fs.exists () && fs.is_dir ())
                 retlist.push_back (p->dir_name);
@@ -1488,7 +1492,7 @@ load_path::do_find_first_of (const string_vector& flist) const
   std::string dir_name;
   std::string file_name;
 
-  octave_idx_type flen = flist.length ();
+  octave_idx_type flen = flist.numel ();
   octave_idx_type rel_flen = 0;
 
   string_vector rel_flist (flen);
@@ -1497,12 +1501,13 @@ load_path::do_find_first_of (const string_vector& flist) const
     {
       std::string file = flist[i];
 
-      if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
+      if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+          != std::string::npos)
         {
-          if (octave_env::absolute_pathname (file)
-              || octave_env::rooted_relative_pathname (file))
+          if (octave::sys::env::absolute_pathname (file)
+              || octave::sys::env::rooted_relative_pathname (file))
             {
-              file_stat fs (file);
+              octave::sys::file_stat fs (file);
 
               if (fs.exists ())
                 return file;
@@ -1513,9 +1518,9 @@ load_path::do_find_first_of (const string_vector& flist) const
                    p != dir_info_list.end ();
                    p++)
                 {
-                  std::string tfile = file_ops::concat (p->dir_name, file);
+                  std::string tfile = octave::sys::file_ops::concat (p->dir_name, file);
 
-                  file_stat fs (tfile);
+                  octave::sys::file_stat fs (tfile);
 
                   if (fs.exists ())
                     return tfile;
@@ -1534,7 +1539,7 @@ load_path::do_find_first_of (const string_vector& flist) const
     {
       string_vector all_files = p->all_files;
 
-      octave_idx_type len = all_files.length ();
+      octave_idx_type len = all_files.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -1554,7 +1559,7 @@ load_path::do_find_first_of (const string_vector& flist) const
 done:
 
   if (! dir_name.empty ())
-    retval = file_ops::concat (dir_name, file_name);
+    retval = octave::sys::file_ops::concat (dir_name, file_name);
 
   return retval;
 }
@@ -1567,7 +1572,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
   std::string dir_name;
   std::string file_name;
 
-  octave_idx_type flen = flist.length ();
+  octave_idx_type flen = flist.numel ();
   octave_idx_type rel_flen = 0;
 
   string_vector rel_flist (flen);
@@ -1576,12 +1581,13 @@ load_path::do_find_all_first_of (const string_vector& flist) const
     {
       std::string file = flist[i];
 
-      if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
+      if (file.find_first_of (octave::sys::file_ops::dir_sep_chars ())
+          != std::string::npos)
         {
-          if (octave_env::absolute_pathname (file)
-              || octave_env::rooted_relative_pathname (file))
+          if (octave::sys::env::absolute_pathname (file)
+              || octave::sys::env::rooted_relative_pathname (file))
             {
-              file_stat fs (file);
+              octave::sys::file_stat fs (file);
 
               if (fs.exists ())
                 retlist.push_back (file);
@@ -1592,9 +1598,9 @@ load_path::do_find_all_first_of (const string_vector& flist) const
                    p != dir_info_list.end ();
                    p++)
                 {
-                  std::string tfile = file_ops::concat (p->dir_name, file);
+                  std::string tfile = octave::sys::file_ops::concat (p->dir_name, file);
 
-                  file_stat fs (tfile);
+                  octave::sys::file_stat fs (tfile);
 
                   if (fs.exists ())
                     retlist.push_back (tfile);
@@ -1612,14 +1618,14 @@ load_path::do_find_all_first_of (const string_vector& flist) const
     {
       string_vector all_files = p->all_files;
 
-      octave_idx_type len = all_files.length ();
+      octave_idx_type len = all_files.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
           for (octave_idx_type j = 0; j < rel_flen; j++)
             {
               if (all_files[i] == rel_flist[j])
-                retlist.push_back (file_ops::concat (p->dir_name,
+                retlist.push_back (octave::sys::file_ops::concat (p->dir_name,
                                                      rel_flist[j]));
             }
         }
@@ -1670,7 +1676,7 @@ load_path::do_files (const std::string& dir, bool omit_exts) const
 
   if (omit_exts)
     {
-      octave_idx_type len = retval.length ();
+      octave_idx_type len = retval.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -1716,13 +1722,13 @@ load_path::do_path (void) const
 
   string_vector xdirs = load_path::dirs ();
 
-  octave_idx_type len = xdirs.length ();
+  octave_idx_type len = xdirs.numel ();
 
   if (len > 0)
     xpath = xdirs[0];
 
   for (octave_idx_type i = 1; i < len; i++)
-    xpath += dir_path::path_sep_str () + xdirs[i];
+    xpath += octave::directory_path::path_sep_str () + xdirs[i];
 
   return xpath;
 }
@@ -1851,7 +1857,7 @@ in_path_list (const std::string& path_list, const std::string& path)
   size_t ps = path.size ();
   size_t pls = path_list.size ();
   size_t pos = path_list.find (path);
-  char psc = dir_path::path_sep_char ();
+  char psc = octave::directory_path::path_sep_char ();
   while (pos != std::string::npos)
     {
       if ((pos == 0 || path_list[pos-1] == psc)
@@ -1866,11 +1872,11 @@ in_path_list (const std::string& path_list, const std::string& path)
 
 void
 load_path::add (const dir_info& di, bool at_end,
-                const std::string& pname) const
+                const std::string& pname, bool updating) const
 {
   loader& l = get_loader (pname);
 
-  l.add (di, at_end);
+  l.add (di, at_end, updating);
 
   dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
 
@@ -1887,13 +1893,14 @@ load_path::add (const dir_info& di, bool at_end,
 }
 
 void
-load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
+load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end,
+                                   bool updating)
 {
   std::string dir_name = di.dir_name;
 
   string_vector fcn_files = di.fcn_files;
 
-  octave_idx_type len = fcn_files.length ();
+  octave_idx_type len = fcn_files.numel ();
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -1932,15 +1939,23 @@ load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
 
       if (p == file_info_list.end ())
         {
-          file_info fi (dir_name, t);
+          // Warn if a built-in or library function is being shadowed,
+          // but not if we are just updating (rehashing) the list.
 
-          if (at_end)
-            file_info_list.push_back (fi);
-          else
+          if (! updating)
             {
-              // Warn if a built-in or library function is being shadowed.
+              if (file_info_list.empty ())
+                {
+                  if (symbol_table::is_built_in_function_name (base))
+                    {
+                      std::string fcn_path = octave::sys::file_ops::concat (dir_name, fname);
 
-              if (! file_info_list.empty ())
+                      warning_with_id ("Octave:shadowed-function",
+                                       "function %s shadows a built-in function",
+                                       fcn_path.c_str ());
+                    }
+                }
+              else if (! at_end)
                 {
                   file_info& old = file_info_list.front ();
 
@@ -1955,23 +1970,21 @@ load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end)
                       && sys_path.find (old.dir_name) != std::string::npos
                       && in_path_list (sys_path, old.dir_name))
                     {
-                      std::string fcn_path = file_ops::concat (dir_name, fname);
+                      std::string fcn_path = octave::sys::file_ops::concat (dir_name, fname);
 
                       warning_with_id ("Octave:shadowed-function",
                                        "function %s shadows a core library function",
                                        fcn_path.c_str ());
                     }
                 }
-              else if (symbol_table::is_built_in_function_name (base))
-                {
-                  std::string fcn_path = file_ops::concat (dir_name, fname);
-                  warning_with_id ("Octave:shadowed-function",
-                                   "function %s shadows a built-in function",
-                                   fcn_path.c_str ());
-                }
-
-              file_info_list.push_front (fi);
             }
+
+          file_info fi (dir_name, t);
+
+          if (at_end)
+            file_info_list.push_back (fi);
+          else
+            file_info_list.push_front (fi);
         }
       else
         {
@@ -2008,7 +2021,7 @@ load_path::loader::add_to_method_map (const dir_info& di, bool at_end)
       fcn_map_type& fm = method_map[class_name];
 
       std::string full_dir_name
-        = file_ops::concat (dir_name, "@" + class_name);
+        = octave::sys::file_ops::concat (dir_name, "@" + class_name);
 
       const dir_info::class_info& ci = q->second;
 
@@ -2076,7 +2089,7 @@ load_path::loader::display (std::ostream& os) const
        i != private_fcn_map.end (); i++)
     {
       os << "\n*** private functions in "
-         << file_ops::concat (i->first, "private") << ":\n\n";
+         << octave::sys::file_ops::concat (i->first, "private") << ":\n\n";
 
       print_fcn_list (os, i->second);
     }
@@ -2142,7 +2155,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 {
   std::string retval;
 
-  dir_entry dir (dirname);
+  octave::sys::dir_entry dir (dirname);
 
   if (dir)
     {
@@ -2150,7 +2163,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
       string_vector dirlist = dir.read ().sort (false);
 
-      octave_idx_type len = dirlist.length ();
+      octave_idx_type len = dirlist.numel ();
 
       for (octave_idx_type i = 0; i < len; i++)
         {
@@ -2161,7 +2174,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
           if (! skip_p)
             {
-              for (octave_idx_type j = 0; j < skip.length (); j++)
+              for (octave_idx_type j = 0; j < skip.numel (); j++)
                 {
                   skip_p = (elt == skip[j]);
                   if (skip_p)
@@ -2170,12 +2183,12 @@ genpath (const std::string& dirname, const string_vector& skip)
 
               if (! skip_p)
                 {
-                  std::string nm = file_ops::concat (dirname, elt);
+                  std::string nm = octave::sys::file_ops::concat (dirname, elt);
 
-                  file_stat fs (nm);
+                  octave::sys::file_stat fs (nm);
 
                   if (fs && fs.is_dir ())
-                    retval += dir_path::path_sep_str () + genpath (nm, skip);
+                    retval += octave::directory_path::path_sep_str () + genpath (nm, skip);
                 }
             }
         }
@@ -2206,72 +2219,62 @@ execute_pkg_add_or_del (const std::string& dir,
   if (! octave_interpreter_ready)
     return;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
-  std::string file = file_ops::concat (dir, script_file);
+  std::string file = octave::sys::file_ops::concat (dir, script_file);
 
-  file_stat fs (file);
+  octave::sys::file_stat fs (file);
 
   if (fs.exists ())
     source_file (file, "base");
 }
 
 void
-execute_pkg_add (const std::string& dir)
+load_path::execute_pkg_add (const std::string& dir)
 {
   execute_pkg_add_or_del (dir, "PKG_ADD");
 }
 
 void
-execute_pkg_del (const std::string& dir)
+load_path::execute_pkg_del (const std::string& dir)
 {
   execute_pkg_add_or_del (dir, "PKG_DEL");
 }
 
 DEFUN (genpath, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
-@deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
-Return a path constructed from @var{dir} and all its subdirectories.\n\
-\n\
-If additional string parameters are given, the resulting path will exclude\n\
-directories with those names.\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} genpath (@var{dir})
+@deftypefnx {} {} genpath (@var{dir}, @var{skip}, @dots{})
+Return a path constructed from @var{dir} and all its subdirectories.
 
-  octave_idx_type nargin = args.length ();
+If additional string parameters are given, the resulting path will exclude
+directories with those names.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  octave_value retval;
 
   if (nargin == 1)
     {
-      std::string dirname = args(0).string_value ();
+      std::string dirname = args(0).xstring_value ("genpath: DIR must be a string");
 
-      if (! error_state)
-        retval = genpath (dirname);
-      else
-        error ("genpath: DIR must be a string");
+      retval = genpath (dirname);
     }
-  else if (nargin > 1)
+  else
     {
-      std::string dirname = args(0).string_value ();
+      std::string dirname = args(0).xstring_value ("genpath: all arguments must be strings");
 
       string_vector skip (nargin - 1);
 
       for (octave_idx_type i = 1; i < nargin; i++)
-        {
-          skip[i-1] = args(i).string_value ();
+        skip[i-1] = args(i).xstring_value ("genpath: all arguments must be strings");
 
-          if (error_state)
-            break;
-        }
-
-      if (! error_state)
-        retval = genpath (dirname, skip);
-      else
-        error ("genpath: all arguments must be strings");
+      retval = genpath (dirname, skip);
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2289,40 +2292,38 @@ rehash_internal (void)
 }
 
 DEFUN (rehash, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rehash ()\n\
-Reinitialize Octave's load path directory cache.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rehash ()
+Reinitialize Octave's load path directory cache.
+@end deftypefn */)
 {
-  octave_value_list retval;
-
   rehash_internal ();
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (command_line_path, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} command_line_path (@dots{})\n\
-Return the command line path variable.\n\
-\n\
-@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} command_line_path (@dots{})
+Return the command line path variable.
+
+@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
-  return octave_value (load_path::get_command_line_path ());
+  return ovl (load_path::get_command_line_path ());
 }
 
 DEFUN (restoredefaultpath, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\
-Restore Octave's path to its initial state at startup.\n\
-\n\
-@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} restoredefaultpath (@dots{})
+Restore Octave's path to its initial state at startup.
+
+@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
   load_path::initialize (true);
 
-  return octave_value (load_path::system_path ());
+  return ovl (load_path::system_path ());
 }
 
 // Return Octave's original default list of directories in which to
@@ -2331,254 +2332,249 @@ Restore Octave's path to its initial state at startup.\n\
 // ~/.octaverc file
 
 DEFUN (__pathorig__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} __pathorig__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} __pathorig__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  return octave_value (load_path::system_path ());
+  return ovl (load_path::system_path ());
 }
 
 DEFUN (path, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} path (@dots{})\n\
-Modify or display Octave's load path.\n\
-\n\
-If @var{nargin} and @var{nargout} are zero, display the elements of\n\
-Octave's load path in an easy to read format.\n\
-\n\
-If @var{nargin} is zero and nargout is greater than zero, return the\n\
-current load path.\n\
-\n\
-If @var{nargin} is greater than zero, concatenate the arguments,\n\
-separating them with @code{pathsep}.  Set the internal search path\n\
-to the result and return it.\n\
-\n\
-No checks are made for duplicate elements.\n\
-@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} path ()
+@deftypefnx {} {@var{str} =} path ()
+@deftypefnx {} {@var{str} =} path (@var{path1}, @dots{})
+Modify or display Octave's load path.
 
-  int argc = args.length () + 1;
+If @var{nargin} and @var{nargout} are zero, display the elements of
+Octave's load path in an easy to read format.
+
+If @var{nargin} is zero and nargout is greater than zero, return the
+current load path.
+
+If @var{nargin} is greater than zero, concatenate the arguments,
+separating them with @code{pathsep}.  Set the internal search path
+to the result and return it.
+
+No checks are made for duplicate elements.
+@seealso{addpath, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
+{
+  int nargin = args.length ();
 
   string_vector argv = args.make_argv ("path");
 
-  if (! error_state)
+  if (nargin > 0)
     {
-      if (argc > 1)
-        {
-          std::string path = argv[1];
+      std::string path = argv[1];
 
-          for (int i = 2; i < argc; i++)
-            path += dir_path::path_sep_str () + argv[i];
+      for (int i = 2; i <= nargin; i++)
+        path += octave::directory_path::path_sep_str () + argv[i];
 
-          load_path::set (path, true);
+      load_path::set (path, true);
 
-          rehash_internal ();
-        }
-
-      if (nargout > 0)
-        retval = load_path::path ();
-      else if (argc == 1 && nargout == 0)
-        {
-          octave_stdout <<
-                        "\nOctave's search path contains the following directories:\n\n";
-
-          string_vector dirs = load_path::dirs ();
-
-          dirs.list_in_columns (octave_stdout);
-
-          octave_stdout << "\n";
-        }
+      rehash_internal ();
     }
 
-  return retval;
+  if (nargout > 0)
+    return ovl (load_path::path ());
+  else if (nargin == 0 && nargout == 0)
+    {
+      octave_stdout <<
+        "\nOctave's search path contains the following directories:\n\n";
+
+      string_vector dirs = load_path::dirs ();
+
+      dirs.list_in_columns (octave_stdout);
+
+      octave_stdout << "\n";
+    }
+
+  return ovl ();
 }
 
 DEFUN (addpath, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
-@deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
-Add named directories to the function search path.\n\
-\n\
-If @var{option} is @qcode{\"-begin\"} or 0 (the default), prepend the\n\
-directory name to the current path.  If @var{option} is @qcode{\"-end\"}\n\
-or 1, append the directory name to the current path.\n\
-Directories added to the path must exist.\n\
-\n\
-In addition to accepting individual directory arguments, lists of\n\
-directory names separated by @code{pathsep} are also accepted.  For example:\n\
-\n\
-@example\n\
-addpath (\"dir1:/dir2:~/dir3\")\n\
-@end example\n\
-@seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} addpath (@var{dir1}, @dots{})
+@deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})
+Add named directories to the function search path.
 
-  // Originally written by Bill Denney and Etienne Grossman.  Heavily
-  // modified and translated to C++ by jwe.
+If @var{option} is @qcode{"-begin"} or 0 (the default), prepend the
+directory name to the current path.  If @var{option} is @qcode{"-end"}
+or 1, append the directory name to the current path.
+Directories added to the path must exist.
+
+In addition to accepting individual directory arguments, lists of
+directory names separated by @code{pathsep} are also accepted.  For example:
+
+@example
+addpath ("dir1:/dir2:~/dir3")
+@end example
+
+For each directory that is added, and that was not already in the path,
+@code{addpath} checks for the existence of a file named @file{PKG_ADD}
+(note lack of .m extension) and runs it if it exists.
+
+@seealso{path, rmpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
+{
+  // Originally written by Bill Denney and Etienne Grossman.
+  // Heavily modified and translated to C++ by jwe.
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
+
+  octave_value retval;
 
   if (nargout > 0)
     retval = load_path::path ();
 
-  int nargin = args.length ();
+  bool append = false;
 
-  if (nargin > 0)
+  octave_value option_arg = args(nargin-1);
+
+  if (option_arg.is_string ())
     {
-      bool append = false;
+      std::string option = option_arg.string_value ();
 
-      octave_value option_arg = args(nargin-1);
-
-      if (option_arg.is_string ())
+      if (option == "-end")
         {
-          std::string option = option_arg.string_value ();
-
-          if (option == "-end")
-            {
-              append = true;
-              nargin--;
-            }
-          else if (option == "-begin")
-            nargin--;
+          append = true;
+          nargin--;
         }
-      else if (option_arg.is_numeric_type ())
-        {
-          int val = option_arg.int_value ();
-
-          if (! error_state)
-            {
-              if (val == 0)
-                nargin--;
-              else if (val == 1)
-                {
-                  append = true;
-                  nargin--;
-                }
-              else
-                {
-                  error ("addpath: expecting final argument to be 1 or 0");
-                  return retval;
-                }
-            }
-          else
-            {
-              error ("addpath: expecting final argument to be 1 or 0");
-              return retval;
-            }
-        }
-
-      bool need_to_update = false;
-
-      for (int i = 0; i < nargin; i++)
-        {
-          if (args(i).is_string ())
-            {
-              std::string arg = args(i).string_value ();
-
-              std::list<std::string> dir_elts = split_path (arg);
-
-              if (! append)
-                std::reverse (dir_elts.begin (), dir_elts.end ());
-
-              for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-                   p != dir_elts.end ();
-                   p++)
-                {
-                  std::string dir = *p;
-
-                  //dir = regexprep (dir_elts{j}, '//+', "/");
-                  //dir = regexprep (dir, '/$', "");
-
-                  if (append)
-                    load_path::append (dir, true);
-                  else
-                    load_path::prepend (dir, true);
-
-                  need_to_update = true;
-                }
-            }
-          else
-            error ("addpath: all arguments must be strings");
-        }
-
-      if (need_to_update)
-        rehash_internal ();
+      else if (option == "-begin")
+        nargin--;
     }
-  else
-    print_usage ();
+  else if (option_arg.is_numeric_type ())
+    {
+      int val = option_arg.xint_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
+
+      if (val == 0)
+        nargin--;
+      else if (val == 1)
+        {
+          append = true;
+          nargin--;
+        }
+      else
+        error ("addpath: OPTION must be '-begin'/0 or '-end'/1");
+    }
+
+  bool need_to_update = false;
+
+  octave_value_list arglist (args.slice (0, nargin));
+  if (! append)
+    arglist.reverse ();
+
+  for (int i = 0; i < arglist.length (); i++)
+    {
+      std::string arg = arglist(i).xstring_value ("addpath: all arguments must be strings");
+
+      std::list<std::string> dir_elts = split_path (arg);
+
+      if (! append)
+        std::reverse (dir_elts.begin (), dir_elts.end ());
+
+      for (const auto& p : dir_elts)
+        {
+          std::string dir = p;
+
+          // Remove duplicate directory separators
+          dir.erase (std::unique (dir.begin (), dir.end (),
+                                  [](char l, char r)
+                                  {
+                                    return l == r &&
+                                           octave::sys::file_ops::is_dir_sep (l);
+                                  }),
+                     dir.end ());
+
+          if (append)
+            load_path::append (dir, true);
+          else
+            load_path::prepend (dir, true);
+
+          need_to_update = true;
+        }
+    }
+
+  if (need_to_update)
+    rehash_internal ();
 
   return retval;
 }
 
 DEFUN (rmpath, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rmpath (@var{dir1}, @dots{})\n\
-Remove @var{dir1}, @dots{} from the current function search path.\n\
-\n\
-In addition to accepting individual directory arguments, lists of\n\
-directory names separated by @code{pathsep} are also accepted.  For example:\n\
-\n\
-@example\n\
-rmpath (\"dir1:/dir2:~/dir3\")\n\
-@end example\n\
-@seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rmpath (@var{dir1}, @dots{})
+Remove @var{dir1}, @dots{} from the current function search path.
+
+In addition to accepting individual directory arguments, lists of
+directory names separated by @code{pathsep} are also accepted.  For example:
+
+@example
+rmpath ("dir1:/dir2:~/dir3")
+@end example
+
+For each directory that is removed, @code{rmpath} checks for the
+existence of a file named @file{PKG_DEL} (note lack of .m extension)
+and runs it if it exists.
+
+@seealso{path, addpath, genpath, pathdef, savepath, pathsep}
+@end deftypefn */)
 {
-  // Originally by Etienne Grossmann. Heavily modified and translated
+  // Originally written by Etienne Grossmann.  Heavily modified and translated
   // to C++ by jwe.
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    print_usage ();
 
   octave_value retval;
 
   if (nargout > 0)
     retval = load_path::path ();
 
-  int nargin = args.length ();
+  bool need_to_update = false;
 
-  if (nargin > 0)
+  for (int i = 0; i < nargin; i++)
     {
-      bool need_to_update = false;
+      std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
+      std::list<std::string> dir_elts = split_path (arg);
 
-      for (int i = 0; i < nargin; i++)
+      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+           p != dir_elts.end ();
+           p++)
         {
-          if (args(i).is_string ())
-            {
-              std::string arg = args(i).string_value ();
-              std::list<std::string> dir_elts = split_path (arg);
+          std::string dir = *p;
 
-              for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-                   p != dir_elts.end ();
-                   p++)
-                {
-                  std::string dir = *p;
+          //dir = regexprep (dir_elts{j}, '//+', "/");
+          //dir = regexprep (dir, '/$', "");
 
-                  //dir = regexprep (dir_elts{j}, '//+', "/");
-                  //dir = regexprep (dir, '/$', "");
-
-                  if (! load_path::remove (dir))
-                    warning ("rmpath: %s: not found", dir.c_str ());
-                  else
-                    need_to_update = true;
-                }
-            }
+          if (! load_path::remove (dir))
+            warning ("rmpath: %s: not found", dir.c_str ());
           else
-            error ("addpath: all arguments must be strings");
+            need_to_update = true;
         }
-
-      if (need_to_update)
-        rehash_internal ();
     }
-  else
-    print_usage ();
+
+  if (need_to_update)
+    rehash_internal ();
 
   return retval;
 }
 
-DEFUN (__dump_load_path__, , , "")
+DEFUN (__dump_load_path__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __dump_load_path__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
   load_path::display (octave_stdout);
 
-  return octave_value_list ();
+  return ovl ();
 }
+

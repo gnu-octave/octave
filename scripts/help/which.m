@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 John W. Eaton
+## Copyright (C) 2009-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} which name @dots{}
+## @deftypefn {} {} which name @dots{}
 ## Display the type of each @var{name}.
 ##
 ## If @var{name} is defined from a function file, the full name of the file is
@@ -27,43 +27,43 @@
 
 function varargout = which (varargin)
 
-  if (nargin > 0 && iscellstr (varargin))
-    m = __which__ (varargin{:});
+  if (nargin == 0 || ! iscellstr (varargin))
+    print_usage ();
+  endif
 
-    ## Check whether each name is a variable, variables take precedence over
-    ## functions in name resolution.
+  m = __which__ (varargin{:});
+
+  ## Check whether each name is a variable, variables take precedence over
+  ## functions in name resolution.
+  for i = 1:nargin
+    m(i).is_variable = evalin ("caller",
+                               ['exist ("' undo_string_escapes(m(i).name) '", "var")'], false);
+    if (m(i).is_variable)
+      m(i).file = "variable";
+    endif
+  endfor
+
+  if (nargout == 0)
     for i = 1:nargin
-      m(i).is_variable = evalin ("caller",
-                                 ["exist (\"" m(i).name "\", \"var\")"], false);
       if (m(i).is_variable)
-        m(i).file = "variable";
+        printf ("'%s' is a variable\n", m(i).name);
+      elseif (isempty (m(i).file))
+        if (! isempty (m(i).type))
+          printf ("'%s' is a %s\n",
+                  m(i).name, m(i).type);
+        endif
+      else
+        if (isempty (m(i).type))
+          printf ("'%s' is the file %s\n",
+                  m(i).name, m(i).file);
+        else
+          printf ("'%s' is a %s from the file %s\n",
+                  m(i).name, m(i).type, m(i).file);
+        endif
       endif
     endfor
-
-    if (nargout == 0)
-      for i = 1:nargin
-        if (m(i).is_variable)
-          printf ("'%s' is a variable\n", m(i).name);
-        elseif (isempty (m(i).file))
-          if (! isempty (m(i).type))
-            printf ("'%s' is a %s\n",
-                    m(i).name, m(i).type);
-          endif
-        else
-          if (isempty (m(i).type))
-            printf ("'%s' is the file %s\n",
-                    m(i).name, m(i).file);
-          else
-            printf ("'%s' is a %s from the file %s\n",
-                    m(i).name, m(i).type, m(i).file);
-          endif
-        endif
-      endfor
-    else
-      varargout = {m.file};
-    endif
   else
-    print_usage ();
+    varargout = {m.file};
   endif
 
 endfunction

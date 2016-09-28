@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -224,12 +224,12 @@ octave_ieee_init (void)
 
   if (! initialized)
     {
-      oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+      octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
 
       switch (ff)
         {
-        case oct_mach_info::flt_fmt_ieee_big_endian:
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           {
             lo_nan = std::numeric_limits<double>::quiet_NaN ();
             lo_inf = std::numeric_limits<double>::infinity ();
@@ -239,7 +239,7 @@ octave_ieee_init (void)
 
             // The following is patterned after code in R.
 
-            if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
+            if (ff == octave::mach_info::flt_fmt_ieee_big_endian)
               {
                 lo_ieee_hw = 0;
                 lo_ieee_lw = 1;
@@ -269,6 +269,7 @@ octave_ieee_init (void)
           // experiment with building Octave on a system without IEEE
           // floating point should be capable of removing this check and
           // the configure test.
+          // FIXME: Should this be a warning so that abort is reached?
           (*current_liboctave_error_handler)
             ("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");
           abort ();
@@ -277,3 +278,4 @@ octave_ieee_init (void)
       initialized = true;
     }
 }
+

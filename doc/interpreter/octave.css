@@ -1,0 +1,112 @@
+/*
+Copyright (C) 2016 Oliver Heimlich
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at
+your option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+/* Import web font Roboto Condensed, Font Library Version 2015-06-06 */
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Bold'), local('RobotoCondensed-Bold'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/4b8b4b377e8cb358cf886d13c7bb287c/RobotoCondensedBold.ttf') format('truetype');
+	font-weight: bold; font-style: normal; }
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Bold Italic'), local('RobotoCondensed-BoldItalic'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/9b1d05d1b332e5b95ad86e71ca8404fb/RobotoCondensedBoldItalic.ttf') format('truetype');
+    	font-weight: bold; font-style: italic; }
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Italic'), local('RobotoCondensed-Italic'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/d02fffb6890e4f28023dd149916d1b8a/RobotoCondensedItalic.ttf') format('truetype');
+	font-weight: normal; font-style: italic; }
+@font-face { font-family: 'Roboto Condensed'; src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'),
+	url('https://fontlibrary.org/assets/fonts/roboto-condensed/71405335c70332d94afd24ae4f06c9b2/b0b1845ecce8ab6a503971e808a8409c/RobotoCondensedRegular.ttf') format('truetype');
+	font-weight: normal; font-style: normal; }
+
+/* Import web font Fantasque Sans Mono, Font Library Version 2016-04-05 */
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Bold'), local('FantasqueSansMono-Bold'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/a46033d3a07d9385620dc83b7655203f/FantasqueSansMonoBold.ttf') format('truetype');
+	font-weight: bold; font-style: normal; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Bold Italic'), local('FantasqueSansMono-BoldItalic'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/b0683ef4c834908aa372ec78dea42349/FantasqueSansMonoBoldItalic.ttf') format('truetype');
+	font-weight: bold; font-style: italic; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Italic'), local('FantasqueSansMono-Italic'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/b78d0a48e4443f797e8d45dcf97594f7/FantasqueSansMonoItalic.ttf') format('truetype');
+	font-weight: normal; font-style: italic; }
+@font-face { font-family: 'Fantasque Sans Mono'; src: local('Fantasque Sans Mono Regular'), local('FantasqueSansMono-Regular'),
+	url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/f3fdc4f0f26e4431f54e8b552d55480c/FantasqueSansMonoRegular.ttf') format('truetype');
+	font-weight: normal; font-style: normal; }
+
+/* Use custom fonts */
+code, kbd, samp, tt, pre { font-family: 'Fantasque Sans Mono', monospace; }
+code, kbd, samp, tt { font-style: italic; padding: 0 0.1ex; /* slightly increase margin to surrounding text */ }
+body, .sansserif { font-family: 'Roboto Condensed', sans-serif; }
+h1, h2, h3, h4, h5, .menu-comment, .roman, .menu-preformatted { font-family: 'Roboto Condensed', serif; }
+
+/*
+Use colors from the solarized color theme (sparsely),
+the main text will remain in default colors for optimal readability (black on white).
+*/
+pre.example, .header, .float-caption, hr
+{
+  /* base00 ~ body text in light solarized theme */
+  color: #657b83;
+  border-color: #657b83;
+}
+pre.example
+{
+  /* base3 ~ background color in light solarized theme */
+  background-color: #fdf6e3;
+  padding: 0.5em;
+}
+a { color: #268bd2; /* blue */ }
+a:visited { color: #d33682; /* magenta */ }
+
+/* Center floating tables and images */
+.float table, .float img, .float object { margin-left: auto; margin-right: auto; }
+
+/* Decrease table width, but not on small screens */
+.float table { max-width: 38em; }
+
+/* Use horizontal lines: above/below tables and after table headers (Chicago Style) */
+.float table, .float th { border-collapse: collapse; border-top: 1px solid black; border-bottom: 1px solid black; }
+.float th, .float td { padding: 0.5em; }
+
+/* Use horizontal ruler with double lines */
+hr { border-width: 0; border-top-width: 3px; border-style: double; }
+
+/* Smaller gap between subsequent @group blocks */
+.example { margin-bottom: 1em; }
+.example + .example { margin-top: -0.5em }
+
+/* Smaller gap between definition and its description */
+dd > p:first-child { margin-top: 0.5em; }
+
+/* Limit maximum body width such that text is easier to read */
+body { max-width: 42em; margin-left: 0.5em; margin-right: 0.5em; }
+
+/* On small screens don't indent the code examples to prevent overflow */
+div.example { margin-left: auto; max-width: 38.8em; }
+
+/*
+Use left margin such that text is easier to read,
+but don't sacrifice space on small screens.
+*/
+@media screen and (min-width: 43em)
+{
+  /* Smooth transition for screens between 43em and 57em */
+  body { margin-left: auto; margin-right: auto; }
+  @media (min-width: 57em)
+  {
+    body { margin-left: 7.5em; }
+  }
+}

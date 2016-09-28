@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 
 static std::string
-octave_warranty_statement (const std::string& extra_info = std::string ())
+octave_warranty_statement (const std::string& extra_info = "")
 {
   return "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or\n\
 FITNESS FOR A PARTICULAR PURPOSE."
@@ -77,7 +77,7 @@ octave_name_version_and_copyright (void)
 
 std::string
 octave_name_version_copyright_copying_and_warranty
- (bool html, const std::string& extra_info)
+  (bool html, const std::string& extra_info)
 {
   std::string br = html ? "<br>\n" : "\n";
   std::string sep = html ? "\n</p>\n<p>\n" : "\n\n";
@@ -129,3 +129,4 @@ octave_startup_message (bool html)
 
   return msg;
 }
+

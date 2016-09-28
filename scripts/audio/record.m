@@ -1,5 +1,5 @@
-## Copyright (C) 2015 Mike Miller
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 2016 Mike Miller
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} record (@var{sec})
-## @deftypefnx {Function File} {} record (@var{sec}, @var{fs})
+## @deftypefn  {} {} record (@var{sec})
+## @deftypefnx {} {} record (@var{sec}, @var{fs})
 ## Record @var{sec} seconds of audio from the system's default audio input at
 ## a sampling rate of 8000 samples per second.
 ##

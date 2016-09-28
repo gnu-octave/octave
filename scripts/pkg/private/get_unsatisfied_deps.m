@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{bad_deps} =} get_unsatisfied_deps (@var{desc}, @var{installed_pkgs_lst})
+## @deftypefn {} {@var{bad_deps} =} get_unsatisfied_deps (@var{desc}, @var{installed_pkgs_lst})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
+
   bad_deps = {};
 
   ## For each dependency.
@@ -51,5 +52,6 @@ function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
       endif
     endif
   endfor
+
 endfunction
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Piotr Krzyzanowski
+## Copyright (C) 2004-2016 Piotr Krzyzanowski
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
+## @deftypefn  {} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ##
 ## Solve the linear system of equations @code{@var{A} * @var{x} = @var{b}} by
 ## means of the Preconditioned Conjugate Residuals iterative method.
@@ -165,7 +165,7 @@
 ## References:
 ##
 ## [1] @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
-## Systems of Equations}, section 9.5.4; Springer, 1994
+## Systems of Equations}, section 9.5.4; @nospell{Springer}, 1994
 ##
 ## @seealso{sparse, pcg}
 ## @end deftypefn
@@ -275,7 +275,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargi
     b_bot_old = b_bot;
 
     resvec(iter) = abs (norm (r));
-    iter++;
+    iter += 1;
   endwhile
 
   flag = 0;
@@ -285,11 +285,12 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargi
     flag = 1;
     if (nargout < 2)
       warning ("pcr: maximum number of iterations (%d) reached\n", iter);
-      warning ("the initial residual norm was reduced %g times.\n", 1.0/relres);
+      warning ("pcr: the initial residual norm was reduced %g times\n",
+               1.0/relres);
     endif
   elseif (nargout < 2 && ! breakdown)
     fprintf (stderr, "pcr: converged in %d iterations. \n", iter);
-    fprintf (stderr, "the initial residual norm was reduced %g times.\n",
+    fprintf (stderr, "pcr: the initial residual norm was reduced %g times\n",
              1.0 / relres);
   endif
 
@@ -345,7 +346,7 @@ endfunction
 %! [x, flag, relres, iter, resvec] = pcr (A,b,[],200);
 %! if (flag == 3)
 %!   printf ("PCR breakdown.  System matrix is [close to] singular\n");
-%! end
+%! endif
 %! clf;
 %! title ("Convergence history");
 %! xlabel ("Iteration"); ylabel ("log(||b-Ax||)");

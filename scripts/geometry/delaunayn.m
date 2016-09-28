@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{T} =} delaunayn (@var{pts})
-## @deftypefnx {Function File} {@var{T} =} delaunayn (@var{pts}, @var{options})
+## @deftypefn  {} {@var{T} =} delaunayn (@var{pts})
+## @deftypefnx {} {@var{T} =} delaunayn (@var{pts}, @var{options})
 ## Compute the Delaunay triangulation for an N-dimensional set of points.
 ##
 ## The Delaunay triangulation is a tessellation of the convex hull of a set of
@@ -31,9 +31,9 @@
 ## @var{pts} which describes a simplex of dimension dim.  For example, a 2-D
 ## simplex is a triangle and 3-D simplex is a tetrahedron.
 ##
-## An optional second argument, which must be a string or cell array of strings,
-## contains options passed to the underlying qhull command.
-## See the documentation for the Qhull library for details
+## An optional second argument, which must be a string or cell array of
+## strings, contains options passed to the underlying qhull command.  See the
+## documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
 ## The default options depend on the dimension of the input:
 ##
@@ -95,7 +95,7 @@ endfunction
 ## Test 3-D input
 %!testif HAVE_QHULL
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
-%! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)), [1,2,3,4;1,2,4,5])
+%! assert (sortrows (sort (delaunayn ([x(:) y(:) z(:)]), 2)), [1,2,3,4;1,2,4,5]);
 
 ## FIXME: Need tests for delaunayn
 

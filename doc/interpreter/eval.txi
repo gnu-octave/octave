@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -28,6 +28,11 @@ been computed and stored in a string, which is exactly what the
 @code{eval} function lets you do.
 
 @DOCSTRING(eval)
+
+The @code{evalc} function additionally captures any console output
+produced by the evaluated expression.
+
+@DOCSTRING(evalc)
 
 @menu
 * Calling a Function by its Name::

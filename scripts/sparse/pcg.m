@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Piotr Krzyzanowski
+## Copyright (C) 2004-2016 Piotr Krzyzanowski
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
+## @deftypefn  {} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
 ## Solve the linear system of equations @w{@code{@var{A} * @var{x} = @var{b}}}
 ## by means of the Preconditioned Conjugate Gradient iterative method.
@@ -319,7 +319,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
       ## fprintf (stderr,"PCG condest: %g (iteration: %d)\n", max (EVS)/min (EVS),iter);
     endif
     resvec(iter,1) = norm (r);
-    iter++;
+    iter += 1;
   endwhile
 
   if (nargout > 5)
@@ -370,12 +370,12 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
     flag = 1;
     if (nargout < 2)
       warning ("pcg: maximum number of iterations (%d) reached\n", iter);
-      warning ("the initial residual norm was reduced %g times.\n", ...
+      warning ("pcg: the initial residual norm was reduced %g times.\n",
                1.0 / relres);
     endif
   elseif (nargout < 2)
     fprintf (stderr, "pcg: converged in %d iterations. ", iter);
-    fprintf (stderr, "the initial residual norm was reduced %g times.\n",...
+    fprintf (stderr, "pcg: the initial residual norm was reduced %g times.\n",
              1.0/relres);
   endif
 
@@ -385,6 +385,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
       warning ("pcg: matrix not positive definite?\n");
     endif
   endif
+
 endfunction
 
 
@@ -494,8 +495,8 @@ endfunction
 
 %!test
 %! ## solve small indefinite diagonal system
-%! ## despite A is indefinite, the iteration continues and converges
-%! ## indefiniteness of A is detected
+%! ## Despite A being indefinite, the iteration continues and converges.
+%! ## The indefiniteness of A is detected.
 %!
 %! N = 10;
 %! A = diag([1:N] .* (-ones(1, N) .^ 2)); b = rand (N, 1);
@@ -519,10 +520,9 @@ endfunction
 %! assert (relres > 1.0);
 %! assert (iter, 20); # should perform max allowable default number of iterations
 
-%!test
-%! ## solve tridiagonal system with 'perfect' preconditioner
-%! ## which converges in one iteration, so the eigest does not
-%! ## work and issues a warning
+%!warning <iteration converged too fast>
+%! ## solve tridiagonal system with "perfect" preconditioner which converges
+%! ## in one iteration, so the eigest does not work and issues a warning.
 %!
 %! N = 100;
 %! A = zeros (N, N);
@@ -534,6 +534,6 @@ endfunction
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
 %! assert (norm (x - X) / norm (X), 0, 1e-6);
 %! assert (flag, 0);
-%! assert (iter, 1); # should converge in one iteration
+%! assert (iter, 1);  # should converge in one iteration
 %! assert (isnan (eigest), isnan ([NaN, NaN]));
 

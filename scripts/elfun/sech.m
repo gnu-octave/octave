@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} sech (@var{x})
+## @deftypefn {} {} sech (@var{x})
 ## Compute the hyperbolic secant of each element of @var{x}.
 ## @seealso{asech}
 ## @end deftypefn

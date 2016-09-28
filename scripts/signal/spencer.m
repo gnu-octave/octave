@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} spencer (@var{x})
-## Return Spencer's 15 point moving average of each column of @var{x}.
+## @deftypefn {} {} spencer (@var{x})
+## Return @nospell{Spencer's} 15 point moving average of each column of
+## @var{x}.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

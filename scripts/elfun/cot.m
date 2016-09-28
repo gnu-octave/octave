@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} cot (@var{x})
+## @deftypefn {} {} cot (@var{x})
 ## Compute the cotangent for each element of @var{x} in radians.
 ## @seealso{acot, cotd, coth}
 ## @end deftypefn

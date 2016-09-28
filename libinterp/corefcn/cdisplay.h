@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2014-2015 John W. Eaton
+Copyright (C) 2014-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,10 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_cdisplay_h)
+#if ! defined (octave_cdisplay_h)
 #define octave_cdisplay_h 1
 
-#ifdef __cplusplus
+#include "octave-config.h"
+
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -31,8 +33,9 @@ OCTINTERP_API extern const char *
 octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
                          int *dpy_avail);
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 
 #endif
+

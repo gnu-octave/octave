@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2015 John W. Eaton
+Copyright (C) 1999-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
 #include "Cell.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 #include "pt-cell.h"
@@ -70,10 +70,7 @@ tree_cell::rvalue1 (int)
               if (this_nc == 0)
                 continue;  // blank line
               else
-                {
-                  ::error ("number of columns must match");
-                  return retval;
-                }
+                error ("number of columns must match");
             }
         }
 
@@ -93,14 +90,10 @@ tree_cell::rvalue1 (int)
 octave_value_list
 tree_cell::rvalue (int nargout)
 {
-  octave_value_list retval;
-
   if (nargout > 1)
     error ("invalid number of output arguments for cell array");
-  else
-    retval = rvalue1 (nargout);
 
-  return retval;
+  return rvalue1 (nargout);
 }
 
 tree_expression *
@@ -119,3 +112,4 @@ tree_cell::accept (tree_walker& tw)
 {
   tw.visit_cell (*this);
 }
+

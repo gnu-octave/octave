@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_token_h)
+#if ! defined (octave_token_h)
 #define octave_token_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -65,7 +67,7 @@ public:
   token (int tv, bool is_keyword, int l = -1, int c = -1);
   token (int tv, const char *s, int l = -1, int c = -1);
   token (int tv, const std::string& s, int l = -1, int c = -1);
-  token (int tv, double d, const std::string& s = std::string (),
+  token (int tv, double d, const std::string& s = "",
          int l = -1, int c = -1);
   token (int tv, end_tok_type t, int l = -1, int c = -1);
   token (int tv, symbol_table::symbol_record *s, int l = -1, int c = -1);
@@ -138,3 +140,4 @@ private:
 };
 
 #endif
+

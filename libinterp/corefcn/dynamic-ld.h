@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dynamic_ld_h)
+#if ! defined (octave_dynamic_ld_h)
 #define octave_dynamic_ld_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -42,17 +44,19 @@ public:
 
   static octave_function *
   load_oct (const std::string& fcn_name,
-            const std::string& file_name = std::string (),
+            const std::string& file_name = "",
             bool relative = false);
 
   static octave_function *
   load_mex (const std::string& fcn_name,
-            const std::string& file_name = std::string (),
+            const std::string& file_name = "",
             bool relative = false);
 
-  static bool remove_oct (const std::string& fcn_name, octave_shlib& shl);
+  static bool remove_oct (const std::string& fcn_name,
+                          octave::dynamic_library& shl);
 
-  static bool remove_mex (const std::string& fcn_name, octave_shlib& shl);
+  static bool remove_mex (const std::string& fcn_name,
+                          octave::dynamic_library& shl);
 
 private:
 
@@ -70,17 +74,17 @@ private:
 
   octave_function *
   do_load_oct (const std::string& fcn_name,
-               const std::string& file_name = std::string (),
+               const std::string& file_name = "",
                bool relative = false);
 
   octave_function *
   do_load_mex (const std::string& fcn_name,
-               const std::string& file_name = std::string (),
+               const std::string& file_name = "",
                bool relative = false);
 
-  bool do_remove_oct (const std::string& fcn_name, octave_shlib& shl);
+  bool do_remove_oct (const std::string& fcn_name, octave::dynamic_library& shl);
 
-  bool do_remove_mex (const std::string& fcn_name, octave_shlib& shl);
+  bool do_remove_mex (const std::string& fcn_name, octave::dynamic_library& shl);
 
   static bool doing_load;
 
@@ -98,3 +102,4 @@ protected:
 };
 
 #endif
+

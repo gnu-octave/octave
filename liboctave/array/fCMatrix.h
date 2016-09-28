@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fCMatrix_h)
+#if ! defined (octave_fCMatrix_h)
 #define octave_fCMatrix_h 1
+
+#include "octave-config.h"
 
 #include "fCNDArray.h"
 #include "MArray.h"
@@ -41,6 +43,18 @@ public:
 
   typedef FloatComplexColumnVector column_vector_type;
   typedef FloatComplexRowVector row_vector_type;
+
+  typedef FloatColumnVector real_column_vector_type;
+  typedef FloatRowVector real_row_vector_type;
+
+  typedef FloatMatrix real_matrix_type;
+  typedef FloatComplexMatrix complex_matrix_type;
+
+  typedef FloatDiagMatrix real_diag_matrix_type;
+  typedef FloatComplexDiagMatrix complex_diag_matrix_type;
+
+  typedef float real_elt_type;
+  typedef FloatComplex complex_elt_type;
 
   typedef void (*solve_singularity_handler) (float rcon);
 
@@ -62,11 +76,11 @@ public:
   FloatComplexMatrix (const FloatComplexMatrix& a)
     : FloatComplexNDArray (a) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexMatrix (const MArray<U>& a)
     : FloatComplexNDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexMatrix (const Array<U>& a)
     : FloatComplexNDArray (a.as_matrix ()) { }
 
@@ -180,22 +194,22 @@ public:
 
 private:
   FloatComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
-                               float& rcon, int force, int calc_cond) const;
+                               float& rcon, bool force, bool calc_cond) const;
 
   FloatComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
-                               float& rcon, int force, int calc_cond) const;
+                               float& rcon, bool force, bool calc_cond) const;
 
 public:
   FloatComplexMatrix inverse (void) const;
   FloatComplexMatrix inverse (octave_idx_type& info) const;
   FloatComplexMatrix inverse (octave_idx_type& info, float& rcon,
-                              int force = 0, int calc_cond = 1) const;
+                              bool force = false, bool calc_cond = true) const;
 
   FloatComplexMatrix inverse (MatrixType &mattype) const;
   FloatComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   FloatComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
-                              float& rcon, int force = 0,
-                              int calc_cond = 1) const;
+                              float& rcon, bool force = false,
+                              bool calc_cond = true) const;
 
   FloatComplexMatrix pseudo_inverse (float tol = 0.0) const;
 
@@ -208,9 +222,9 @@ public:
   FloatComplexDET determinant (void) const;
   FloatComplexDET determinant (octave_idx_type& info) const;
   FloatComplexDET determinant (octave_idx_type& info, float& rcon,
-                               int calc_cond = 1) const;
+                               bool calc_cond = true) const;
   FloatComplexDET determinant (MatrixType &mattype, octave_idx_type& info,
-                               float& rcon, int calc_cond = 1) const;
+                               float& rcon, bool calc_cond = true) const;
 
   float rcond (void) const;
   float rcond (MatrixType &mattype) const;
@@ -483,3 +497,4 @@ MM_BOOL_OP_DECLS (FloatComplexMatrix, FloatComplexMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray, FloatComplexMatrix, FloatComplex)
 
 #endif
+

@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2015 Markus Bergholz
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2014-2016 Markus Bergholz
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -19,11 +19,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} repmat (@var{A}, @var{m})
-## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n})
-## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
-## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
-## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
+## @deftypefn  {} {} repmat (@var{A}, @var{m})
+## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n})
+## @deftypefnx {} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
+## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n}])
+## @deftypefnx {} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
+## Repeat matrix or N-D array.
+##
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.
 ##
@@ -31,7 +33,8 @@
 ## copying along more than two dimensions, specify the number of times to copy
 ## across each dimension @var{m}, @var{n}, @var{p}, @dots{}, in a vector in the
 ## second argument.
-## @seealso{repelems}
+##
+## @seealso{bsxfun, kron, repelems}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
@@ -76,7 +79,7 @@ function x = repmat (A, m, varargin)
         n = [];
       else
         error ("repmat: all input arguments must be scalar");
-      end
+      endif
     elseif (isempty (m))
       m = n = 1;
     elseif (isscalar (m))
@@ -151,8 +154,8 @@ endfunction
 %!assert (repmat (x, [1 3; 1 3], [1; 3]), repmat (x, [1 1 3]))
 %!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1; 4]))
 %!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1 2; 3 4]))
-%!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]));
-%!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]));
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]))
+%!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]))
 
 ## Test various methods of providing size parameters
 %!shared x
@@ -201,6 +204,9 @@ endfunction
 %!assert (size (repmat (1, [0, 1])), [0, 1])
 %!assert (size (repmat (1, [0, 5])), [0, 5])
 
+%!assert (size (repmat (ones (0, 3), [2 3])), [0 9])
+%!assert (size (repmat (ones (0, 0, 3), [2 3])), [0 0 3])
+
 %!shared x
 %! x = struct ("a", [], "b", []);
 %!assert (size (repmat (x, [1, 0])), [1, 0])
@@ -214,4 +220,3 @@ endfunction
 %!assert (size (repmat ({1}, [0, 5])), [0, 5])
 
 %!error (size (repmat (".", -1, -1)))
-

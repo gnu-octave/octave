@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "mx-fcs-fnda.h"
 #include "mx-fnda-fcs.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
 #include "ov-flt-complex.h"
@@ -49,7 +49,8 @@ DEFNDBINOP_OP (mul, float_complex, float_matrix, float_complex, float_array, *)
 
 DEFBINOP (div, float_complex, float_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_matrix&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_matrix& v2 = dynamic_cast<const octave_float_matrix&> (a2);
 
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
   FloatMatrix m2 = v2.float_matrix_value ();
@@ -65,12 +66,13 @@ DEFBINOP_FN (pow, float_complex, float_matrix, xpow)
 
 DEFBINOP (ldiv, float_complex, float_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_matrix&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_matrix& v2 = dynamic_cast<const octave_float_matrix&> (a2);
 
   FloatComplex d = v1.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_array_value () / d);
 }
@@ -97,12 +99,13 @@ DEFNDBINOP_FN (el_pow, float_complex, float_matrix, float_complex,
 
 DEFBINOP (el_ldiv, float_complex, float_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_matrix&);
+  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
+  const octave_float_matrix& v2 = dynamic_cast<const octave_float_matrix&> (a2);
 
   FloatComplex d = v1.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_array_value () / d);
 }
@@ -153,3 +156,4 @@ install_fcs_fm_ops (void)
   INSTALL_ASSIGNCONV (octave_complex, octave_float_matrix,
                       octave_complex_matrix);
 }
+

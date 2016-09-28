@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "PermMatrix.h"
@@ -29,11 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "oct-locbuf.h"
 
-static void
-gripe_invalid_permutation (void)
+OCTAVE_NORETURN static
+void
+err_invalid_permutation (void)
 {
-  (*current_liboctave_error_handler)
-    ("PermMatrix: invalid permutation vector");
+  (*current_liboctave_error_handler) ("PermMatrix: invalid permutation vector");
 }
 
 void
@@ -41,14 +41,11 @@ PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
 {
   if (check)
     {
-      if (! idx_vector (p).is_permutation (p.length ()))
-        {
-          gripe_invalid_permutation ();
-          Array<octave_idx_type>::operator = (Array<octave_idx_type> ());
-        }
+      if (! idx_vector (p).is_permutation (p.numel ()))
+        err_invalid_permutation ();
     }
 
-  if (!colp)
+  if (! colp)
     *this = this->transpose ();
 }
 
@@ -70,15 +67,13 @@ PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
   octave_idx_type len = idx.length (n);
 
   if (! idx.is_permutation (len))
-    gripe_invalid_permutation ();
-  else
-    {
-      Array<octave_idx_type> idxa (dim_vector (len, 1));
-      for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
-      Array<octave_idx_type>::operator = (idxa);
-    }
+    err_invalid_permutation ();
 
-  if (!colp)
+  Array<octave_idx_type> idxa (dim_vector (len, 1));
+  for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
+  Array<octave_idx_type>::operator = (idxa);
+
+  if (! colp)
     *this = this->transpose ();
 }
 
@@ -104,21 +99,17 @@ PermMatrix::PermMatrix (octave_idx_type n)
 octave_idx_type
 PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 {
-  octave_idx_type len = Array<octave_idx_type>::length ();
+  octave_idx_type len = Array<octave_idx_type>::numel ();
   if (i < 0 || j < 0 || i > len || j > len)
-    {
-      (*current_liboctave_error_handler) ("index out of range");
-      return 0;
-    }
-  else
-    return elem (i, j);
-}
+    (*current_liboctave_error_handler) ("index out of range");
 
+  return elem (i, j);
+}
 
 PermMatrix
 PermMatrix::transpose (void) const
 {
-  octave_idx_type len = Array<octave_idx_type>::length ();
+  octave_idx_type len = Array<octave_idx_type>::numel ();
 
   PermMatrix retval (len);
 
@@ -205,7 +196,7 @@ PermMatrix::pos_power (octave_idx_type m) const
           for (j = 0, ic = ics; j != mm; j++, ic = p[ic]) ;
         }
 
-      // now ic = p^m[ics]. Loop through the whole cycle.
+      // now ic = p^m[ics].  Loop through the whole cycle.
       octave_idx_type jcs = ics;
       do
         {
@@ -236,9 +227,10 @@ operator *(const PermMatrix& a, const PermMatrix& b)
   octave_idx_type n = a.columns ();
 
   if (n != b.rows ())
-    gripe_nonconformant ("operator *", n, n, b.rows (), b.rows ());
-  else
-    r = PermMatrix (ia.index (idx_vector (ib)), true, false);
+    octave::err_nonconformant ("operator *", n, n, b.rows (), b.rows ());
+
+  r = PermMatrix (ia.index (idx_vector (ib)), true, false);
 
   return r;
 }
+

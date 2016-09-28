@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -19,6 +19,10 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
+
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
 #define LINCLUDE "ov-flt-cx-diag.h"
 #define RINCLUDE "ov-flt-cx-mat.h"

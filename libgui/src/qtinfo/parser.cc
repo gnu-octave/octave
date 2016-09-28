@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012-2015 Jacob Dawid
+Copyright (C) 2012-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -24,8 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 // Author: P. L. Lucas
 // Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "parser.h"
@@ -62,7 +62,8 @@ parser::set_info_path (const QString& infoPath)
     {
       if (info_file_exists)
         break;
-      info_file_exists = QFileInfo (info.absoluteFilePath () + "." + it.key ()).exists ();
+      info_file_exists = QFileInfo (info.absoluteFilePath () + "." +
+                                    it.key ()).exists ();
     }
 
   if (info_file_exists)
@@ -96,7 +97,8 @@ parser::open_file (QFileInfo & file_info)
   QIODevice *iodevice = 0;
   if (_compressors_map.contains (file_info.suffix ()))
     {
-      QString command = _compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ());
+      QString command = _compressors_map.value (file_info.suffix ()).arg (
+                          file_info.absoluteFilePath ());
       iprocstream ips (command.toStdString ());
 
       if (ips.bad ())
@@ -114,7 +116,7 @@ parser::open_file (QFileInfo & file_info)
       QBuffer *io = new QBuffer (this);
       io->setData (result);
 
-      if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
+      if (! io->open (QIODevice::ReadOnly | QIODevice::Text))
         return 0;
 
       iodevice = io;
@@ -122,7 +124,7 @@ parser::open_file (QFileInfo & file_info)
   else
     {
       QFile *io = new QFile (file_info.absoluteFilePath ());
-      if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
+      if (! io->open (QIODevice::ReadOnly | QIODevice::Text))
         return 0;
       iodevice = io;
     }
@@ -176,7 +178,7 @@ parser::search_node (const QString& node_arg)
       seek (io, realPos);
 
       QString text = get_next_node (io);
-      if (!text.isEmpty())
+      if (! text.isEmpty())
         {
           return text;
         }
@@ -191,7 +193,7 @@ parser::search_node (const QString& node_arg)
 QString
 parser::search_node (const QString& node, QIODevice *io)
 {
-  while (!io->atEnd ())
+  while (! io->atEnd ())
     {
       QString text = get_next_node (io);
       if (node == get_node_name (text))
@@ -211,7 +213,7 @@ parser::get_next_node (QIODevice *io)
   char c;
   int i;
 
-  while (!io->atEnd ())
+  while (! io->atEnd ())
     {
       io->getChar (&c);
       if (c)
@@ -238,7 +240,7 @@ parser::get_next_node (QIODevice *io)
         }
       else
         {
-          text.append (line);
+          text.append (QString::fromUtf8 (line));
         }
     }
   return text;
@@ -555,7 +557,7 @@ void
 parser::seek (QIODevice *io, int pos)
 {
   char ch;
-  while (!io->atEnd () && pos > 0)
+  while (! io->atEnd () && pos > 0)
     {
       io->getChar (&ch);
       pos--;

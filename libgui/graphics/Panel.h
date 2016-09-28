@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Panel__
-#define __QtHandles_Panel__ 1
+#if ! defined (octave_Panel_h)
+#define octave_Panel_h 1
 
 #include "Object.h"
 
@@ -31,33 +31,34 @@ class QLabel;
 namespace QtHandles
 {
 
-class Container;
+  class Container;
 
-class Panel : public Object
-{
-public:
-  Panel (const graphics_object& go, QFrame* frame);
-  ~Panel (void);
+  class Panel : public Object
+  {
+  public:
+    Panel (const graphics_object& go, QFrame* frame);
+    ~Panel (void);
 
-  Container* innerContainer (void) { return m_container; }
+    Container* innerContainer (void) { return m_container; }
 
-  bool eventFilter (QObject* watched, QEvent* event);
+    bool eventFilter (QObject* watched, QEvent* event);
 
-  static Panel* create (const graphics_object& go);
+    static Panel* create (const graphics_object& go);
 
-protected:
-  void update (int pId);
-  void redraw (void);
+  protected:
+    void update (int pId);
+    void redraw (void);
 
-private:
-  void updateLayout (void);
+  private:
+    void updateLayout (void);
 
-private:
-  Container* m_container;
-  QLabel* m_title;
-  bool m_blockUpdates;
-};
+  private:
+    Container* m_container;
+    QLabel* m_title;
+    bool m_blockUpdates;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

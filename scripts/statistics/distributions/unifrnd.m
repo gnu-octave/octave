@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unifrnd (@var{a}, @var{b})
-## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{r})
-## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, [@var{sz}])
+## @deftypefn  {} {} unifrnd (@var{a}, @var{b})
+## @deftypefnx {} {} unifrnd (@var{a}, @var{b}, @var{r})
+## @deftypefnx {} {} unifrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} unifrnd (@var{a}, @var{b}, [@var{sz}])
 ## Return a matrix of random samples from the uniform distribution on
 ## [@var{a}, @var{b}].
 ##

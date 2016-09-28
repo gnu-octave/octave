@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_thread_manager_h)
+#if ! defined (octave_thread_manager_h)
 #define octave_thread_manager_h 1
+
+#include "octave-config.h"
+
+#include "oct-refcount.h"
 
 class octave_base_thread_manager
 {
@@ -43,7 +47,7 @@ public:
 
 protected:
 
-  int count;
+  octave_refcount<int> count;
 };
 
 class octave_thread_manager
@@ -90,3 +94,4 @@ private:
 };
 
 #endif
+

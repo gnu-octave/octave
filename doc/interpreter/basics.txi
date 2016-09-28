@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -153,8 +153,7 @@ commands in the system or user startup files that use the
 @cindex @code{--interactive}
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
-remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, @pxref{Emacs Octave Support}.
+remote shell command or inside an Emacs shell buffer.
 
 @item --jit-compiler
 @cindex @code{--jit-compiler}
@@ -374,6 +373,11 @@ Octave searches for @file{.octaverc}.
 
 If you start Octave in your home directory, commands from the file
 @file{~/.octaverc} will only be executed once.
+
+@item startup.m
+This file is used to make personal changes to the default
+Octave environment.  It is executed for @sc{matlab} compatibility, but
+@file{~/.octaverc} is the preferred location for configuration changes.
 @end table
 
 A message will be displayed as each of the startup files is read if you
@@ -493,9 +497,9 @@ characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 @menu
 * Cursor Motion::
 * Killing and Yanking::
-* Commands For Text::
-* Commands For Completion::
-* Commands For History::
+* Commands for Text::
+* Commands for Completion::
+* Commands for History::
 * Customizing readline::
 * Customizing the Prompt::
 * Diary and Echo Commands::
@@ -609,8 +613,8 @@ ring is not line specific; the text that you killed on a previously
 typed line is available to be yanked back later, when you are typing
 another line.
 
-@node Commands For Text
-@subsection Commands For Changing Text
+@node Commands for Text
+@subsection Commands for Changing Text
 
 The following commands can be used for entering characters that would
 otherwise have a special meaning (e.g., @key{TAB}, @kbd{C-q}, etc.), or
@@ -648,8 +652,8 @@ next word if the cursor is between words), moving the cursor to the end
 of the word.
 @end table
 
-@node Commands For Completion
-@subsection Letting Readline Type For You
+@node Commands for Completion
+@subsection Letting Readline Type for You
 @cindex command completion
 
 The following commands allow Octave to complete command and variable
@@ -668,8 +672,8 @@ List the possible completions of the text before the cursor.
 
 @DOCSTRING(completion_matches)
 
-@node Commands For History
-@subsection Commands For Manipulating The History
+@node Commands for History
+@subsection Commands for Manipulating the History
 @cindex command history
 @cindex input history
 @cindex history of commands
@@ -984,7 +988,7 @@ The line beginning with @samp{#!} lists the full path and filename of an
 interpreter to be run, and an optional initial command line argument to
 pass to that interpreter.  The operating system then runs the
 interpreter with the given argument and the full argument list of the
-executed program.  The first argument in the list is the full file name
+executed program.  The first argument in the list is the full filename
 of the Octave executable.  The rest of the argument list will either be
 options to Octave, or data files, or both.  The @samp{-qf} options are
 usually specified in stand-alone Octave programs to prevent them from

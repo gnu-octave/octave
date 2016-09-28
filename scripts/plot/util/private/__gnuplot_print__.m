@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Daniel Heiserer
+## Copyright (C) 1999-2016 Daniel Heiserer
 ## Copyright (C) 2001 Laurent Mazet
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __gnuplot_print__ (@var{@dots{}})
+## @deftypefn {} {} __gnuplot_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -71,32 +71,37 @@ function opts = __gnuplot_print__ (opts)
       dot = find (opts.name == ".", 1, "last");
       n = find (opts.devopt == "l", 1);
       suffix = opts.devopt(1:n-1);
-      if (! isempty (dot))
-        if (any (strcmpi (opts.name(dot:end), {["." suffix], ".tex", "."})))
-          name = opts.name(1:dot-1);
-        else
-          error ("print:invalid-suffix",
-                 "invalid suffix '%s' for device '%s'.",
-                 opts.name(dot:end), lower (opts.devopt));
-        endif
+      [ndir, name, ext] = fileparts (opts.name);
+      if (isempty (ext))
+        ext = "tex";
+      else
+        ext = ext(2:end);  # remove leading '.'
       endif
+      if (any (strcmpi (ext, {suffix, "tex"})))
+        name = fullfile (ndir, name);
+        if (any (strcmpi (ext, {"eps", "ps", "pdf"})))
+          suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
+        endif
+      else
+        error ("print:invalid-suffix",
+               "invalid suffix '%s' for device '%s'.",
+               ext, lower (opts.devopt));
+      endif
+      suffix = "tex";
       if (strfind (opts.devopt, "standalone"))
-        term = sprintf ("%s ",
-                        strrep (opts.devopt, "standalone", " standalone"));
+        gp_opts = sprintf ("standalone %s", gp_opts);
+        term = strrep (opts.devopt, "standalone", "");
       else
         term = sprintf ("%s ", opts.devopt);
       endif
-      if (__gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
-        suffix = "tex";
-      else
-        ## Gnuplot 4.0 wants a ".eps" suffix.
-        suffix = "eps";
-      endif
       local_drawnow ([term " " gp_opts],
-                     strcat (name, ".", suffix), opts);
-    case "tikz"
+                     [name "." suffix], opts);
+    case {"tikz", "tikzstandalone"}
+      if (strfind (opts.devopt, "standalone"))
+        gp_opts = sprintf ("standalone %s", gp_opts);
+      endif
       if (__gnuplot_has_terminal__ ("tikz"))
-        local_drawnow (["lua tikz " gp_opts], opts.name, opts);
+        local_drawnow (["tikz " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
                "print.m: '%s' output is not available for gnuplot-%s",
@@ -104,9 +109,33 @@ function opts = __gnuplot_print__ (opts)
       endif
     case "svg"
       local_drawnow (["svg dynamic " gp_opts], opts.name, opts);
-    case {"aifm", "corel", "eepic", "emf", "fig"}
+    case {"eepic"}
+      local_drawnow ([opts.devopt " color rotate " gp_opts], opts.name, opts);
+    case {"aifm", "corel", "emf", "fig"}
       local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
-    case {"pdfcairo", "pngcairo"}
+    case {"cairolatex", "epscairo", "epscairolatex", ...
+          "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
+          "pdfcairolatexstandalone", "pngcairo"}
+      term = opts.devopt;
+      if (strfind (term, "standalone"))
+        gp_opts = sprintf ("standalone %s", gp_opts);
+        term = strrep (term, "standalone", "");
+      endif
+      if (strfind (term, "epscairolatex"))
+        gp_opts = sprintf ("eps %s", gp_opts);
+        term = strrep (term, "epscairolatex", "cairolatex");
+      elseif (strfind (term, "pdfcairolatex"))
+        gp_opts = sprintf ("pdf %s", gp_opts);
+        term = strrep (term, "pdfcairolatex", "cairolatex");
+      endif
+      if (__gnuplot_has_terminal__ (term))
+        local_drawnow ([term " " gp_opts], opts.name, opts);
+      else
+        error (sprintf ("print:no%soutput", opts.devopt),
+               "print.m: '%s' output is not available for gnuplot-%s",
+               upper (opts.devopt), __gnuplot_version__ ());
+      endif
+    case {"canvas", "dxf", "hpgl", "latex", "mf", "gif", "pstricks", "texdraw"}
       if (__gnuplot_has_terminal__ (opts.devopt))
         local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
       else
@@ -114,8 +143,6 @@ function opts = __gnuplot_print__ (opts)
                "print.m: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
-    case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
-      local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
     case opts.ghostscript.device
       gp_opts = font_spec (opts, "devopt", "eps");
       opts.ghostscript.output = opts.name;
@@ -168,7 +195,9 @@ function opts = __gnuplot_print__ (opts)
 
 endfunction
 
+
 function eps_drawnow (opts, epsfile, gp_opts)
+
   [h, fontsize] = get_figure_text_objs (opts);
   unwind_protect
     fontsize_2x = cellfun (@times, {2}, fontsize, "uniformoutput", false);
@@ -177,21 +206,24 @@ function eps_drawnow (opts, epsfile, gp_opts)
   unwind_protect_cleanup
     set (h, {"fontsize"}, fontsize);
   end_unwind_protect
+
 endfunction
 
+
 function local_drawnow (term, file, opts)
-  if (opts.use_color < 0)
-    mono = true;
-  else
-    mono = false;
-  endif
+
   set (0, "currentfigure", opts.figure);
   if (isempty (opts.debug_file) || ! opts.debug)
-    drawnow (term, file, mono);
+    drawnow (term, file);
   else
-    drawnow (term, file, mono, opts.debug_file);
+    drawnow (term, file, opts.debug_file);
   endif
+  if (opts.debug)
+    fprintf ("Expanded gnuplot terminal = '%s'\n", term);
+  endif
+
 endfunction
+
 
 function f = font_spec (opts, varargin)
   for n = 1:2:numel (varargin)
@@ -210,7 +242,7 @@ function f = font_spec (opts, varargin)
     case {"eps", "eps2", "epsc", "epsc2"}
       ## Gnuplot renders fonts as half their specification, which
       ## results in a tight spacing for the axes-labels and tick-labels.
-      ## Compensate for the half scale. This will produce the proper
+      ## Compensate for the half scale.  This will produce the proper
       ## spacing for the requested fontsize.
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
         f = sprintf ('font "%s,%d"', opts.font, 2 * opts.fontsize);
@@ -229,7 +261,7 @@ function f = font_spec (opts, varargin)
         f = sprintf ('fname "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
         fontsize = round (opts.fontsize * 0.75);
-        f = sprintf ("%s fsize %d", f, fontsize);
+        f = sprintf ("fsize %d", fontsize);
       endif
     case "pdf"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
@@ -237,11 +269,17 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("fsize %d", f, opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
-    case {"pdfcairo", "pngcairo"}
-      if (! isempty (opts.font))
+    case {"cairolatex", "epscairo", "epscairolatex", ...
+          "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
+          "pdfcairolatexstandalone", "pngcairo"}
+      if (! isempty (opts.font) && ! isempty (opts.fontsize))
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
+      elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
+      elseif (! isempty (opts.fontsize))
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case {"epslatex", "epslatexstandalone"}
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
@@ -249,7 +287,7 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("%d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case "pslatex"
       if (! isempty (opts.fontsize))
@@ -261,7 +299,7 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ('font "%d"', opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case "emf"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
@@ -292,9 +330,12 @@ function f = font_spec (opts, varargin)
         f = sprintf ("fontsize %d", opts.fontsize);
       endif
   endswitch
+
 endfunction
 
+
 function [h, fontsize] = get_figure_text_objs (opts)
+
   h = findall (opts.figure, "-property", "fontsize");
   hp = get (h, "parent");
   if (iscell (hp))
@@ -314,5 +355,6 @@ function [h, fontsize] = get_figure_text_objs (opts)
     case 1
       fontsize = {fontsize};
   endswitch
+
 endfunction
 

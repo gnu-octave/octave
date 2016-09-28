@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{emp} =} dirempty (@var{nm}, @var{ign})
+## @deftypefn {} {@var{emp} =} dirempty (@var{nm}, @var{ign})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function emp = dirempty (nm, ign)
+
   if (exist (nm, "dir"))
     if (nargin < 2)
       ign = {".", ".."};
@@ -47,5 +48,6 @@ function emp = dirempty (nm, ign)
   else
     emp = true;
   endif
+
 endfunction
 

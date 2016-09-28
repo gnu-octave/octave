@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
+## @deftypefn {} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
 ## For a linear regression model
 ##
 ## @example

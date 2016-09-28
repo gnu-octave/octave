@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} prism ()
-## @deftypefnx {Function File} {@var{map} =} prism (@var{n})
+## @deftypefn  {} {@var{map} =} prism ()
+## @deftypefnx {} {@var{map} =} prism (@var{n})
 ## Create color colormap.  This colormap cycles through red, orange, yellow,
 ## green, blue and violet with each index change.
 ##
@@ -28,9 +28,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-
-## PKG_ADD: colormap ("register", "prism");
-## PKG_DEL: colormap ("unregister", "prism");
 
 function map = prism (n = rows (colormap ()))
 
@@ -53,8 +50,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'prism' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (prism (64));
-
+%! ## Show the 'prism' colormap profile and as an image
+%! cmap = prism (18); # 6 colors, therefore cycle 3 times
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

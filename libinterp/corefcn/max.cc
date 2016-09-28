@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-ieee.h"
@@ -34,27 +34,30 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 
 #include "ov-cx-mat.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-template <class ArrayType>
+template <typename ArrayType>
 static octave_value_list
 do_minmax_red_op (const octave_value& arg,
                   int nargout, int dim, bool ismin)
 {
-  octave_value_list retval;
+  octave_value_list retval (nargout > 1 ? 2 : 1);
   ArrayType array = octave_value_extract<ArrayType> (arg);
 
-  if (error_state)
-    return retval;
-
-  if (nargout == 2)
+  if (nargout <= 1)
     {
-      retval.resize (2);
+      if (ismin)
+        retval(0) = array.min (dim);
+      else
+        retval(0) = array.max (dim);
+    }
+  else
+    {
       Array<octave_idx_type> idx;
       if (ismin)
         retval(0) = array.min (idx, dim);
@@ -62,13 +65,6 @@ do_minmax_red_op (const octave_value& arg,
         retval(0) = array.max (idx, dim);
 
       retval(1) = octave_value (idx, true, true);
-    }
-  else
-    {
-      if (ismin)
-        retval(0) = array.min (dim);
-      else
-        retval(0) = array.max (dim);
     }
 
   return retval;
@@ -87,15 +83,18 @@ octave_value_list
 do_minmax_red_op<charNDArray> (const octave_value& arg,
                                int nargout, int dim, bool ismin)
 {
-  octave_value_list retval;
+  octave_value_list retval (nargout > 1 ? 2 : 1);
   charNDArray array = octave_value_extract<charNDArray> (arg);
 
-  if (error_state)
-    return retval;
-
-  if (nargout == 2)
+  if (nargout <= 1)
     {
-      retval.resize (2);
+      if (ismin)
+        retval(0) = NDArray (array.min (dim));
+      else
+        retval(0) = NDArray (array.max (dim));
+    }
+  else
+    {
       Array<octave_idx_type> idx;
       if (ismin)
         retval(0) = NDArray (array.min (idx, dim));
@@ -104,18 +103,11 @@ do_minmax_red_op<charNDArray> (const octave_value& arg,
 
       retval(1) = octave_value (idx, true, true);
     }
-  else
-    {
-      if (ismin)
-        retval(0) = NDArray (array.min (dim));
-      else
-        retval(0) = NDArray (array.max (dim));
-    }
 
   return retval;
 }
 
-// Specialization for bool arrays.
+// Specialization for bool arrays (dense or sparse).
 template <>
 octave_value_list
 do_minmax_red_op<boolNDArray> (const octave_value& arg,
@@ -123,30 +115,41 @@ do_minmax_red_op<boolNDArray> (const octave_value& arg,
 {
   octave_value_list retval;
 
-  if (nargout <= 1)
+  if (! arg.is_sparse_type ())
     {
-      // This case can be handled using any/all.
-      boolNDArray array = arg.bool_array_value ();
+      if (nargout <= 1)
+        {
+          // This case can be handled using any/all.
+          boolNDArray array = arg.bool_array_value ();
 
-      if (array.is_empty ())
-        retval(0) = array;
-      else if (ismin)
-        retval(0) = array.all (dim);
+          if (array.is_empty ())
+            retval(0) = array;
+          else if (ismin)
+            retval(0) = array.all (dim);
+          else
+            retval(0) = array.any (dim);
+        }
       else
-        retval(0) = array.any (dim);
+        {
+          // any/all don't have indexed versions, so do it via a conversion.
+          retval = do_minmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
+
+          retval(0) = retval(0).bool_array_value ();
+        }
     }
   else
     {
-      // any/all don't have indexed versions, so do it via a conversion.
-      retval = do_minmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
-      if (! error_state)
-        retval(0) = retval(0).bool_array_value ();
+      // Sparse: Don't use any/all trick, as full matrix could exceed memory.
+      // Instead, convert to double.
+      retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim, ismin);
+
+      retval(0) = retval(0).sparse_bool_matrix_value ();
     }
 
   return retval;
 }
 
-template <class ArrayType>
+template <typename ArrayType>
 static octave_value
 do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
                   bool ismin)
@@ -160,9 +163,7 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
       ScalarType x = octave_value_extract<ScalarType> (argx);
       ArrayType y = octave_value_extract<ArrayType> (argy);
 
-      if (error_state)
-        ;
-      else if (ismin)
+      if (ismin)
         retval = min (x, y);
       else
         retval = max (x, y);
@@ -172,9 +173,7 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
       ArrayType x = octave_value_extract<ArrayType> (argx);
       ScalarType y = octave_value_extract<ScalarType> (argy);
 
-      if (error_state)
-        ;
-      else if (ismin)
+      if (ismin)
         retval = min (x, y);
       else
         retval = max (x, y);
@@ -184,9 +183,7 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
       ArrayType x = octave_value_extract<ArrayType> (argx);
       ArrayType y = octave_value_extract<ArrayType> (argy);
 
-      if (error_state)
-        ;
-      else if (ismin)
+      if (ismin)
         retval = min (x, y);
       else
         retval = max (x, y);
@@ -213,9 +210,7 @@ do_minmax_bin_op<charNDArray> (const octave_value& argx,
   charNDArray x = octave_value_extract<charNDArray> (argx);
   charNDArray y = octave_value_extract<charNDArray> (argy);
 
-  if (error_state)
-    ;
-  else if (ismin)
+  if (ismin)
     {
       if (x.numel () == 1)
         retval = NDArray (min (x(0), y));
@@ -241,11 +236,14 @@ static octave_value_list
 do_minmax_body (const octave_value_list& args,
                 int nargout, bool ismin)
 {
-  octave_value_list retval;
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+
+  octave_value_list retval (nargout > 1 ? 2 : 1);
 
   const char *func = ismin ? "min" : "max";
-
-  int nargin = args.length ();
 
   if (nargin == 3 || nargin == 1)
     {
@@ -254,11 +252,9 @@ do_minmax_body (const octave_value_list& args,
       if (nargin == 3)
         {
           dim = args(2).int_value (true) - 1;
-          if (error_state || dim < 0)
-            {
-              error ("%s: DIM must be a valid dimension", func);
-              return retval;
-            }
+
+          if (dim < 0)
+            error ("%s: DIM must be a valid dimension", func);
 
           if (! args(1).is_empty ())
             warning ("%s: second argument is ignored", func);
@@ -271,7 +267,7 @@ do_minmax_body (const octave_value_list& args,
             if (arg.is_range () && (dim == -1 || dim == 1))
               {
                 Range range = arg.range_value ();
-                if (range.nelem () < 1)
+                if (range.numel () < 1)
                   {
                     retval(0) = arg;
                     if (nargout > 1)
@@ -282,14 +278,14 @@ do_minmax_body (const octave_value_list& args,
                     retval(0) = range.min ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.inc () < 0 ? range.nelem () : 1);
+                                  (range.inc () < 0 ? range.numel () : 1);
                   }
                 else
                   {
                     retval(0) = range.max ();
                     if (nargout > 1)
                       retval(1) = static_cast<double>
-                                  (range.inc () >= 0 ? range.nelem () : 1);
+                                  (range.inc () >= 0 ? range.numel () : 1);
                   }
               }
             else if (arg.is_sparse_type ())
@@ -297,8 +293,10 @@ do_minmax_body (const octave_value_list& args,
                                                        ismin);
             else
               retval = do_minmax_red_op<NDArray> (arg, nargout, dim, ismin);
-            break;
+
           }
+          break;
+
         case btyp_complex:
           {
             if (arg.is_sparse_type ())
@@ -307,22 +305,27 @@ do_minmax_body (const octave_value_list& args,
             else
               retval = do_minmax_red_op<ComplexNDArray> (arg, nargout, dim,
                                                          ismin);
-            break;
           }
+          break;
+
         case btyp_float:
           retval = do_minmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
           break;
+
         case btyp_float_complex:
           retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
                                                           ismin);
           break;
+
         case btyp_char:
           retval = do_minmax_red_op<charNDArray> (arg, nargout, dim, ismin);
           break;
-#define MAKE_INT_BRANCH(X) \
-        case btyp_ ## X: \
+
+#define MAKE_INT_BRANCH(X)                                                    \
+        case btyp_ ## X:                                                      \
           retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
           break;
+
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
         MAKE_INT_BRANCH (int32);
@@ -331,15 +334,18 @@ do_minmax_body (const octave_value_list& args,
         MAKE_INT_BRANCH (uint16);
         MAKE_INT_BRANCH (uint32);
         MAKE_INT_BRANCH (uint64);
+
 #undef MAKE_INT_BRANCH
+
         case btyp_bool:
           retval = do_minmax_red_op<boolNDArray> (arg, nargout, dim, ismin);
           break;
+
         default:
-          gripe_wrong_type_arg (func, arg);
+          err_wrong_type_arg (func, arg);
         }
     }
-  else if (nargin == 2)
+  else
     {
       octave_value argx = args(0);
       octave_value argy = args(1);
@@ -348,11 +354,9 @@ do_minmax_body (const octave_value_list& args,
       builtin_type_t rtyp;
       if (xtyp == btyp_char && ytyp == btyp_char)
         rtyp = btyp_char;
-      /*
-      FIXME: This is what should happen when boolNDArray has max()
-      else if (xtyp == btyp_bool && ytyp == btyp_bool)
-        rtyp = btyp_bool;
-      */
+      // FIXME: This is what should happen when boolNDArray has max()
+      // else if (xtyp == btyp_bool && ytyp == btyp_bool)
+      //   rtyp = btyp_bool;
       else
         rtyp = btyp_mixed_numeric (xtyp, ytyp);
 
@@ -366,8 +370,9 @@ do_minmax_body (const octave_value_list& args,
               retval = do_minmax_bin_op<SparseMatrix> (argx, argy, ismin);
             else
               retval = do_minmax_bin_op<NDArray> (argx, argy, ismin);
-            break;
           }
+          break;
+
         case btyp_complex:
           {
             if ((argx.is_sparse_type ()
@@ -377,21 +382,26 @@ do_minmax_body (const octave_value_list& args,
                                                               ismin);
             else
               retval = do_minmax_bin_op<ComplexNDArray> (argx, argy, ismin);
-            break;
           }
+          break;
+
         case btyp_float:
           retval = do_minmax_bin_op<FloatNDArray> (argx, argy, ismin);
           break;
+
         case btyp_float_complex:
           retval = do_minmax_bin_op<FloatComplexNDArray> (argx, argy, ismin);
           break;
+
         case btyp_char:
           retval = do_minmax_bin_op<charNDArray> (argx, argy, ismin);
           break;
-#define MAKE_INT_BRANCH(X) \
-        case btyp_ ## X: \
+
+#define MAKE_INT_BRANCH(X)                                             \
+        case btyp_ ## X:                                               \
           retval = do_minmax_bin_op<X ## NDArray> (argx, argy, ismin); \
           break;
+
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
         MAKE_INT_BRANCH (int32);
@@ -400,13 +410,14 @@ do_minmax_body (const octave_value_list& args,
         MAKE_INT_BRANCH (uint16);
         MAKE_INT_BRANCH (uint32);
         MAKE_INT_BRANCH (uint64);
+
 #undef MAKE_INT_BRANCH
-        /*
-        FIXME: This is what should happen when boolNDArray has max()
-        case btyp_bool:
-          retval = do_minmax_bin_op<boolNDArray> (argx, argy, ismin);
-          break;
-        */
+
+        // FIXME: This is what should happen when boolNDArray has max()
+        // case btyp_bool:
+        //   retval = do_minmax_bin_op<boolNDArray> (argx, argy, ismin);
+        //   break;
+
         default:
           error ("%s: cannot compute %s (%s, %s)", func, func,
                  argx.type_name ().c_str (), argy.type_name ().c_str ());
@@ -417,78 +428,76 @@ do_minmax_body (const octave_value_list& args,
         retval(0) = retval(0).bool_array_value ();
 
     }
-  else
-    print_usage ();
 
   return retval;
 }
 
 DEFUN (min, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} min (@var{x})\n\
-@deftypefnx {Built-in Function} {} min (@var{x}, [], @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
-@deftypefnx {Built-in Function} {} min (@var{x}, @var{y})\n\
-Find minimum values in the array @var{x}.\n\
-\n\
-For a vector argument, return the minimum value.  For a matrix argument,\n\
-return a row vector with the minimum value of each column.  For a\n\
-multi-dimensional array, @code{min} operates along the first non-singleton\n\
-dimension.\n\
-\n\
-If the optional third argument @var{dim} is present then operate along\n\
-this dimension.  In this case the second argument is ignored and should be\n\
-set to the empty matrix.\n\
-\n\
-For two matrices (or a matrix and a scalar), return the pairwise minimum.\n\
-\n\
-Thus,\n\
-\n\
-@example\n\
-min (min (@var{x}))\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the smallest element of the 2-D matrix @var{x}, and\n\
-\n\
-@example\n\
-@group\n\
-min (2:5, pi)\n\
-    @result{}  2.0000  3.0000  3.1416  3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-compares each element of the range @code{2:5} with @code{pi}, and returns a\n\
-row vector of the minimum values.\n\
-\n\
-For complex arguments, the magnitude of the elements are used for\n\
-comparison.  If the magnitudes are identical, then the results are ordered\n\
-by phase angle in the range (-pi, pi].  Hence,\n\
-\n\
-@example\n\
-@group\n\
-min ([-1 i 1 -i])\n\
-    @result{} -i\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-because all entries have magnitude 1, but -i has the smallest phase angle\n\
-with value -pi/2.\n\
-\n\
-If called with one input and two output arguments, @code{min} also returns\n\
-the first index of the minimum value(s).  Thus,\n\
-\n\
-@example\n\
-@group\n\
-[x, ix] = min ([1, 3, 0, 2, 0])\n\
-    @result{}  x = 0\n\
-        ix = 3\n\
-@end group\n\
-@end example\n\
-@seealso{max, cummin, cummax}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} min (@var{x})
+@deftypefnx {} {} min (@var{x}, [], @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} min (@var{x})
+@deftypefnx {} {} min (@var{x}, @var{y})
+Find minimum values in the array @var{x}.
+
+For a vector argument, return the minimum value.  For a matrix argument,
+return a row vector with the minimum value of each column.  For a
+multi-dimensional array, @code{min} operates along the first non-singleton
+dimension.
+
+If the optional third argument @var{dim} is present then operate along
+this dimension.  In this case the second argument is ignored and should be
+set to the empty matrix.
+
+For two matrices (or a matrix and a scalar), return the pairwise minimum.
+
+Thus,
+
+@example
+min (min (@var{x}))
+@end example
+
+@noindent
+returns the smallest element of the 2-D matrix @var{x}, and
+
+@example
+@group
+min (2:5, pi)
+    @result{}  2.0000  3.0000  3.1416  3.1416
+@end group
+@end example
+
+@noindent
+compares each element of the range @code{2:5} with @code{pi}, and returns a
+row vector of the minimum values.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.  If the magnitudes are identical, then the results are ordered
+by phase angle in the range (-pi, pi].  Hence,
+
+@example
+@group
+min ([-1 i 1 -i])
+    @result{} -i
+@end group
+@end example
+
+@noindent
+because all entries have magnitude 1, but -i has the smallest phase angle
+with value -pi/2.
+
+If called with one input and two output arguments, @code{min} also returns
+the first index of the minimum value(s).  Thus,
+
+@example
+@group
+[x, ix] = min ([1, 3, 0, 2, 0])
+    @result{}  x = 0
+        ix = 3
+@end group
+@end example
+@seealso{max, cummin, cummax}
+@end deftypefn */)
 {
   return do_minmax_body (args, nargout, true);
 }
@@ -645,71 +654,71 @@ the first index of the minimum value(s).  Thus,\n\
 */
 
 DEFUN (max, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} max (@var{x})\n\
-@deftypefnx {Built-in Function} {} max (@var{x}, [], @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
-@deftypefnx {Built-in Function} {} max (@var{x}, @var{y})\n\
-Find maximum values in the array @var{x}.\n\
-\n\
-For a vector argument, return the maximum value.  For a matrix argument,\n\
-return a row vector with the maximum value of each column.  For a\n\
-multi-dimensional array, @code{max} operates along the first non-singleton\n\
-dimension.\n\
-\n\
-If the optional third argument @var{dim} is present then operate along\n\
-this dimension.  In this case the second argument is ignored and should be\n\
-set to the empty matrix.\n\
-\n\
-For two matrices (or a matrix and a scalar), return the pairwise maximum.\n\
-\n\
-Thus,\n\
-\n\
-@example\n\
-max (max (@var{x}))\n\
-@end example\n\
-\n\
-@noindent\n\
-returns the largest element of the 2-D matrix @var{x}, and\n\
-\n\
-@example\n\
-@group\n\
-max (2:5, pi)\n\
-    @result{}  3.1416  3.1416  4.0000  5.0000\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-compares each element of the range @code{2:5} with @code{pi}, and returns a\n\
-row vector of the maximum values.\n\
-\n\
-For complex arguments, the magnitude of the elements are used for\n\
-comparison.  If the magnitudes are identical, then the results are ordered\n\
-by phase angle in the range (-pi, pi].  Hence,\n\
-\n\
-@example\n\
-@group\n\
-max ([-1 i 1 -i])\n\
-    @result{} -1\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-because all entries have magnitude 1, but -1 has the largest phase angle\n\
-with value pi.\n\
-\n\
-If called with one input and two output arguments, @code{max} also returns\n\
-the first index of the maximum value(s).  Thus,\n\
-\n\
-@example\n\
-@group\n\
-[x, ix] = max ([1, 3, 5, 2, 5])\n\
-    @result{}  x = 5\n\
-        ix = 3\n\
-@end group\n\
-@end example\n\
-@seealso{min, cummax, cummin}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} max (@var{x})
+@deftypefnx {} {} max (@var{x}, [], @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} max (@var{x})
+@deftypefnx {} {} max (@var{x}, @var{y})
+Find maximum values in the array @var{x}.
+
+For a vector argument, return the maximum value.  For a matrix argument,
+return a row vector with the maximum value of each column.  For a
+multi-dimensional array, @code{max} operates along the first non-singleton
+dimension.
+
+If the optional third argument @var{dim} is present then operate along
+this dimension.  In this case the second argument is ignored and should be
+set to the empty matrix.
+
+For two matrices (or a matrix and a scalar), return the pairwise maximum.
+
+Thus,
+
+@example
+max (max (@var{x}))
+@end example
+
+@noindent
+returns the largest element of the 2-D matrix @var{x}, and
+
+@example
+@group
+max (2:5, pi)
+    @result{}  3.1416  3.1416  4.0000  5.0000
+@end group
+@end example
+
+@noindent
+compares each element of the range @code{2:5} with @code{pi}, and returns a
+row vector of the maximum values.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.  If the magnitudes are identical, then the results are ordered
+by phase angle in the range (-pi, pi].  Hence,
+
+@example
+@group
+max ([-1 i 1 -i])
+    @result{} -1
+@end group
+@end example
+
+@noindent
+because all entries have magnitude 1, but -1 has the largest phase angle
+with value pi.
+
+If called with one input and two output arguments, @code{max} also returns
+the first index of the maximum value(s).  Thus,
+
+@example
+@group
+[x, ix] = max ([1, 3, 5, 2, 5])
+    @result{}  x = 5
+        ix = 3
+@end group
+@end example
+@seealso{min, cummax, cummin}
+@end deftypefn */)
 {
   return do_minmax_body (args, nargout, false);
 }
@@ -856,8 +865,9 @@ the first index of the maximum value(s).  Thus,\n\
 %! assert (max (x, 2.1i), sparse ([2.1i 2.1i 3 4]));
 
 ## Test for bug #40743
-%!assert (max (zeros (1,0), ones (1,1)), zeros (1,0))
-%!assert (max (sparse (zeros (1,0)), sparse (ones (1,1))), sparse (zeros (1,0)))
+%!assert <40743> (max (zeros (1,0), ones (1,1)), zeros (1,0))
+%!assert <40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
+                  sparse (zeros (1,0)))
 
 %!error max ()
 %!error max (1, 2, 3, 4)
@@ -868,18 +878,22 @@ the first index of the maximum value(s).  Thus,\n\
 
 */
 
-template <class ArrayType>
+template <typename ArrayType>
 static octave_value_list
 do_cumminmax_red_op (const octave_value& arg,
                      int nargout, int dim, bool ismin)
 {
-  octave_value_list retval;
+  octave_value_list retval (nargout > 1 ? 2 : 1);
   ArrayType array = octave_value_extract<ArrayType> (arg);
 
-  if (error_state)
-    return retval;
-
-  if (nargout == 2)
+  if (nargout <= 1)
+    {
+      if (ismin)
+        retval(0) = array.cummin (dim);
+      else
+        retval(0) = array.cummax (dim);
+    }
+  else
     {
       retval.resize (2);
       Array<octave_idx_type> idx;
@@ -890,13 +904,6 @@ do_cumminmax_red_op (const octave_value& arg,
 
       retval(1) = octave_value (idx, true, true);
     }
-  else
-    {
-      if (ismin)
-        retval(0) = array.cummin (dim);
-      else
-        retval(0) = array.cummax (dim);
-    }
 
   return retval;
 }
@@ -905,105 +912,108 @@ static octave_value_list
 do_cumminmax_body (const octave_value_list& args,
                    int nargout, bool ismin)
 {
-  octave_value_list retval;
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
 
   const char *func = ismin ? "cummin" : "cummax";
 
-  int nargin = args.length ();
-
-  if (nargin == 1 || nargin == 2)
+  octave_value arg = args(0);
+  int dim = -1;
+  if (nargin == 2)
     {
-      octave_value arg = args(0);
-      int dim = -1;
-      if (nargin == 2)
-        {
-          dim = args(1).int_value (true) - 1;
-          if (error_state || dim < 0)
-            {
-              error ("%s: DIM must be a valid dimension", func);
-              return retval;
-            }
-        }
+      dim = args(1).int_value (true) - 1;
 
-      switch (arg.builtin_type ())
-        {
-        case btyp_double:
-          retval = do_cumminmax_red_op<NDArray> (arg, nargout, dim, ismin);
-          break;
-        case btyp_complex:
-          retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
-                                                        ismin);
-          break;
-        case btyp_float:
-          retval = do_cumminmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
-          break;
-        case btyp_float_complex:
-          retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
-                                                             ismin);
-          break;
-#define MAKE_INT_BRANCH(X) \
-        case btyp_ ## X: \
-          retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, \
-                                                      ismin); \
-          break;
-        MAKE_INT_BRANCH (int8);
-        MAKE_INT_BRANCH (int16);
-        MAKE_INT_BRANCH (int32);
-        MAKE_INT_BRANCH (int64);
-        MAKE_INT_BRANCH (uint8);
-        MAKE_INT_BRANCH (uint16);
-        MAKE_INT_BRANCH (uint32);
-        MAKE_INT_BRANCH (uint64);
-#undef MAKE_INT_BRANCH
-        case btyp_bool:
-          {
-            retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
-                                                       ismin);
-            if (retval.length () > 0)
-              retval(0) = retval(0).bool_array_value ();
-            break;
-          }
-        default:
-          gripe_wrong_type_arg (func, arg);
-        }
+      if (dim < 0)
+        error ("%s: DIM must be a valid dimension", func);
     }
-  else
-    print_usage ();
+
+  octave_value_list retval;
+
+  switch (arg.builtin_type ())
+    {
+    case btyp_double:
+      retval = do_cumminmax_red_op<NDArray> (arg, nargout, dim, ismin);
+      break;
+
+    case btyp_complex:
+      retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
+                                                    ismin);
+      break;
+
+    case btyp_float:
+      retval = do_cumminmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
+      break;
+
+    case btyp_float_complex:
+      retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
+                                                         ismin);
+      break;
+
+#define MAKE_INT_BRANCH(X)                                                   \
+    case btyp_ ## X:                                                         \
+      retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
+      break;
+
+      MAKE_INT_BRANCH (int8);
+      MAKE_INT_BRANCH (int16);
+      MAKE_INT_BRANCH (int32);
+      MAKE_INT_BRANCH (int64);
+      MAKE_INT_BRANCH (uint8);
+      MAKE_INT_BRANCH (uint16);
+      MAKE_INT_BRANCH (uint32);
+      MAKE_INT_BRANCH (uint64);
+
+#undef MAKE_INT_BRANCH
+
+    case btyp_bool:
+      {
+        retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
+                                                   ismin);
+        if (retval.length () > 0)
+          retval(0) = retval(0).bool_array_value ();
+      }
+      break;
+
+    default:
+      err_wrong_type_arg (func, arg);
+    }
 
   return retval;
 }
 
 DEFUN (cummin, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cummin (@var{x})\n\
-@deftypefnx {Built-in Function} {} cummin (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
-Return the cumulative minimum values along dimension @var{dim}.\n\
-\n\
-If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-cummin ([5 4 6 2 3 1])\n\
-   @result{}  5  4  4  2  2  1\n\
-@end group\n\
-@end example\n\
-\n\
-If called with two output arguments the index of the minimum value is also\n\
-returned.\n\
-\n\
-@example\n\
-@group\n\
-[w, iw] = cummin ([5 4 6 2 3 1])\n\
-@result{}\n\
-w =  5  4  4  2  2  1\n\
-iw = 1  2  2  4  4  6\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{cummax, min, max}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cummin (@var{x})
+@deftypefnx {} {} cummin (@var{x}, @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} cummin (@var{x})
+Return the cumulative minimum values along dimension @var{dim}.
+
+If @var{dim} is unspecified it defaults to column-wise operation.  For
+example:
+
+@example
+@group
+cummin ([5 4 6 2 3 1])
+   @result{}  5  4  4  2  2  1
+@end group
+@end example
+
+If called with two output arguments the index of the minimum value is also
+returned.
+
+@example
+@group
+[w, iw] = cummin ([5 4 6 2 3 1])
+@result{}
+w =  5  4  4  2  2  1
+iw = 1  2  2  4  4  6
+@end group
+@end example
+
+@seealso{cummax, min, max}
+@end deftypefn */)
 {
   return do_cumminmax_body (args, nargout, true);
 }
@@ -1024,42 +1034,41 @@ iw = 1  2  2  4  4  6\n\
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-
 %!error cummin ()
 %!error cummin (1, 2, 3)
 */
 
 DEFUN (cummax, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cummax (@var{x})\n\
-@deftypefnx {Built-in Function} {} cummax (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummax (@dots{})\n\
-Return the cumulative maximum values along dimension @var{dim}.\n\
-\n\
-If @var{dim} is unspecified it defaults to column-wise operation.  For\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-cummax ([1 3 2 6 4 5])\n\
-   @result{}  1  3  3  6  6  6\n\
-@end group\n\
-@end example\n\
-\n\
-If called with two output arguments the index of the maximum value is also\n\
-returned.\n\
-\n\
-@example\n\
-@group\n\
-[w, iw] = cummax ([1 3 2 6 4 5])\n\
-@result{}\n\
-w =  1  3  3  6  6  6\n\
-iw = 1  2  2  4  4  4\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{cummin, max, min}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cummax (@var{x})
+@deftypefnx {} {} cummax (@var{x}, @var{dim})
+@deftypefnx {} {[@var{w}, @var{iw}] =} cummax (@dots{})
+Return the cumulative maximum values along dimension @var{dim}.
+
+If @var{dim} is unspecified it defaults to column-wise operation.  For
+example:
+
+@example
+@group
+cummax ([1 3 2 6 4 5])
+   @result{}  1  3  3  6  6  6
+@end group
+@end example
+
+If called with two output arguments the index of the maximum value is also
+returned.
+
+@example
+@group
+[w, iw] = cummax ([1 3 2 6 4 5])
+@result{}
+w =  1  3  3  6  6  6
+iw = 1  2  2  4  4  4
+@end group
+@end example
+
+@seealso{cummin, max, min}
+@end deftypefn */)
 {
   return do_cumminmax_body (args, nargout, false);
 }

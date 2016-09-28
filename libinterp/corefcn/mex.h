@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 Paul Kienzle
+Copyright (C) 2001-2016 Paul Kienzle
 
 This file is part of Octave.
 
@@ -45,26 +45,22 @@ SUCH DAMAGE.
 
 /* mex.h is for use in C-programs only; do NOT include it in mex.cc */
 
-#if ! defined (MEX_H)
-#define MEX_H
+#if ! defined (octave_mex_h)
+#define octave_mex_h 1
+
+#include "octave-config.h"
 
 #define HAVE_OCTAVE
 
 typedef void mxArray;
 
-#if ! defined (__cplusplus)
-typedef int bool;
-#endif
-
 /* -V4 stuff */
 #if defined (V4)
-#define Matrix mxArray
-#define REAL mxREAL
+#  define Matrix mxArray
+#  define REAL mxREAL
 #endif
 
 #define mxMAXNAME 64
-
-#include <stdint.h>
 
 #include "mexproto.h"
 
@@ -106,68 +102,68 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[]);
 
 /* Apparently these are also defined.  */
 
-#ifndef UINT64_T
-#define UINT64_T uint64_t
+#if ! defined (UINT64_T)
+#  define UINT64_T uint64_t
 #endif
 
-#ifndef uint64_T
-#define uint64_T uint64_t
+#if ! defined (uint64_T)
+#  define uint64_T uint64_t
 #endif
 
-#ifndef INT64_T
-#define INT64_T int64_t
+#if ! defined (INT64_T)
+#  define INT64_T int64_t
 #endif
 
-#ifndef int64_T
-#define int64_T int64_t
+#if ! defined (int64_T)
+#  define int64_T int64_t
 #endif
 
-#ifndef UINT32_T
-#define UINT32_T uint32_t
+#if ! defined (UINT32_T)
+#  define UINT32_T uint32_t
 #endif
 
-#ifndef uint32_T
-#define uint32_T uint32_t
+#if ! defined (uint32_T)
+#  define uint32_T uint32_t
 #endif
 
-#ifndef INT32_T
-#define INT32_T int32_t
+#if ! defined (INT32_T)
+#  define INT32_T int32_t
 #endif
 
-#ifndef int32_T
-#define int32_T int32_t
+#if ! defined (int32_T)
+#  define int32_T int32_t
 #endif
 
-#ifndef UINT16_T
-#define UINT16_T uint16_t
+#if ! defined (UINT16_T)
+#  define UINT16_T uint16_t
 #endif
 
-#ifndef uint16_T
-#define uint16_T uint16_t
+#if ! defined (uint16_T)
+#  define uint16_T uint16_t
 #endif
 
-#ifndef INT16_T
-#define INT16_T int16_t
+#if ! defined (INT16_T)
+#  define INT16_T int16_t
 #endif
 
-#ifndef int16_T
-#define int16_T int16_t
+#if ! defined (int16_T)
+#  define int16_T int16_t
 #endif
 
-#ifndef UINT8_T
-#define UINT8_T uint8_t
+#if ! defined (UINT8_T)
+#  define UINT8_T uint8_t
 #endif
 
-#ifndef uint8_T
-#define uint8_T uint8_t
+#if ! defined (uint8_T)
+#  define uint8_T uint8_t
 #endif
 
-#ifndef INT8_T
-#define INT8_T int8_t
+#if ! defined (INT8_T)
+#  define INT8_T int8_t
 #endif
 
-#ifndef int8_T
-#define int8_T int8_t
+#if ! defined (int8_T)
+#  define int8_T int8_t
 #endif
 
 #if defined (__cplusplus)
@@ -175,3 +171,4 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[]);
 #endif
 
 #endif
+

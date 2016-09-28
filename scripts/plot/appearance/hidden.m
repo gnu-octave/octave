@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Michael Goffioul
+## Copyright (C) 2007-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} hidden
-## @deftypefnx {Command} {} hidden on
-## @deftypefnx {Command} {} hidden off
-## @deftypefnx {Function File} {@var{mode} =} hidden (@dots{})
+## @deftypefn  {} {} hidden
+## @deftypefnx {} {} hidden on
+## @deftypefnx {} {} hidden off
+## @deftypefnx {} {@var{mode} =} hidden (@dots{})
 ## Control mesh hidden line removal.
 ##
 ## When called with no argument the hidden line removal state is toggled.
@@ -45,7 +45,7 @@ function state = hidden (mode = "toggle")
     print_usage ();
   elseif (nargin == 1)
     if (! ischar (mode))
-      error ("hidden: expecting MODE to be a string");
+      error ("hidden: MODE must be a string");
     elseif (! any (strcmpi (mode, {"on", "off"})))
       error ('hidden: MODE must be "on" or "off"');
     endif

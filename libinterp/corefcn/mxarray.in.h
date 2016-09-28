@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2001-2015 Paul Kienzle
+Copyright (C) 2001-2016 Paul Kienzle
 
 This file is part of Octave.
 
@@ -44,15 +44,10 @@ SUCH DAMAGE.
 
 */
 
-#if ! defined (MXARRAY_H)
-#define MXARRAY_H
+#if ! defined (octave_mxarray_h)
+#define octave_mxarray_h 1
 
-typedef enum
-{
-  mxREAL = 0,
-  mxCOMPLEX = 1
-}
-mxComplexity;
+#include "octave-config.h"
 
 typedef enum
 {
@@ -61,7 +56,7 @@ typedef enum
   mxSTRUCT_CLASS,
   mxLOGICAL_CLASS,
   mxCHAR_CLASS,
-  mxUNUSED_CLASS,
+  mxVOID_CLASS,
   mxDOUBLE_CLASS,
   mxSINGLE_CLASS,
   mxINT8_CLASS,
@@ -76,15 +71,24 @@ typedef enum
 }
 mxClassID;
 
-typedef unsigned char mxLogical;
+typedef enum
+{
+  mxREAL = 0,
+  mxCOMPLEX = 1
+}
+mxComplexity;
 
+/* Matlab uses a wide char (uint16) internally, but Octave uses plain char. */
 /* typedef Uint16 mxChar; */
 typedef char mxChar;
 
+typedef unsigned char mxLogical;
+
 /*
- * FIXME? Mathworks says these should be size_t on 64-bit system and when
- * mex is used with the -largearraydims flag, but why do that? Its better
- * to conform to the same indexing as the rest of Octave
+ * FIXME: Mathworks says mwSize, mwIndex should be int generally.
+ * But on 64-bit systems, or when mex -largeArrayDims is used, it is size_t.
+ * mwSignedIndex is supposed to be ptrdiff_t.  All of this is confusing.
+ * Its better to conform to the same indexing as the rest of Octave.
  */
 typedef %OCTAVE_IDX_TYPE% mwSize;
 typedef %OCTAVE_IDX_TYPE% mwIndex;
@@ -93,33 +97,34 @@ typedef %OCTAVE_IDX_TYPE% mwSignedIndex;
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 
 #include <cstring>
+#include "error.h"
 
 class octave_value;
 
-#define DO_MUTABLE_METHOD(RET_T, METHOD_CALL) \
-  RET_T retval = rep->METHOD_CALL; \
- \
-  if (rep->mutation_needed ()) \
-    { \
-      maybe_mutate (); \
-      retval = rep->METHOD_CALL; \
-    } \
- \
+#define DO_MUTABLE_METHOD(RET_T, METHOD_CALL)   \
+  RET_T retval = rep->METHOD_CALL;              \
+                                                \
+  if (rep->mutation_needed ())                  \
+    {                                           \
+      maybe_mutate ();                          \
+      retval = rep->METHOD_CALL;                \
+    }                                           \
+                                                \
   return retval
 
-#define DO_VOID_MUTABLE_METHOD(METHOD_CALL) \
-  rep->METHOD_CALL; \
- \
-  if (rep->mutation_needed ()) \
-    { \
-      maybe_mutate (); \
-      rep->METHOD_CALL; \
+#define DO_VOID_MUTABLE_METHOD(METHOD_CALL)     \
+  rep->METHOD_CALL;                             \
+                                                \
+  if (rep->mutation_needed ())                  \
+    {                                           \
+      maybe_mutate ();                          \
+      rep->METHOD_CALL;                         \
     }
 
-// A class to provide the default implemenation of some of the virtual
-// functions declared in the mxArray class.
-
 class mxArray;
+
+// A class to provide the default implementation of some of the
+// virtual functions declared in the mxArray class.
 
 class mxArray_base
 {
@@ -204,11 +209,13 @@ public:
 
   virtual void set_n (mwSize n) = 0;
 
-  virtual void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
+  virtual int set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
 
   virtual mwSize get_number_of_elements (void) const = 0;
 
   virtual int is_empty (void) const = 0;
+
+  virtual bool is_scalar (void) const = 0;
 
   virtual mxClassID get_class_id (void) const = 0;
 
@@ -216,10 +223,11 @@ public:
 
   virtual void set_class_name (const char *name_arg) = 0;
 
+  // FIXME: Why not just have this '= 0' as the others?
+  // Could then eliminate err_invalid_type function and #include "error.h".
   virtual mxArray *get_cell (mwIndex /*idx*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   virtual void set_cell (mwIndex idx, mxArray *val) = 0;
@@ -279,12 +287,17 @@ protected:
 
   mxArray_base (const mxArray_base&) { }
 
+  // FIXME: Deprecated in 4.2, remove in 4.6
+  OCTAVE_DEPRECATED ("use 'err_invalid_type' instead")
   void invalid_type_error (void) const
   {
     error ("invalid type for operation");
   }
 
-  void error (const char *msg) const;
+  OCTAVE_NORETURN void err_invalid_type (void) const
+  {
+    error ("invalid type for operation");
+  }
 };
 
 // The main interface class.  The representation can be based on an
@@ -298,11 +311,12 @@ public:
   mxArray (const octave_value& ov);
 
   mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
-           mxComplexity flag = mxREAL);
+           mxComplexity flag = mxREAL, bool init = true);
 
   mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag = mxREAL);
 
-  mxArray (mxClassID id, mwSize m, mwSize n, mxComplexity flag = mxREAL);
+  mxArray (mxClassID id, mwSize m, mwSize n,
+           mxComplexity flag = mxREAL, bool init = true);
 
   mxArray (mxClassID id, double val);
 
@@ -403,13 +417,15 @@ public:
 
   void set_n (mwSize n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
 
-  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
-  { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
+  int set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
+  { DO_MUTABLE_METHOD (int, set_dimensions (dims_arg, ndims_arg)); }
 
   mwSize get_number_of_elements (void) const
   { return rep->get_number_of_elements (); }
 
   int is_empty (void) const { return get_number_of_elements () == 0; }
+
+  bool is_scalar (void) const { return rep->is_scalar (); }
 
   const char *get_name (void) const { return name; }
 
@@ -494,7 +510,7 @@ public:
 
     if (str)
       {
-        mwSize sz =  sizeof (mxChar) * (strlen (str) + 1);
+        mwSize sz = sizeof (mxChar) * (strlen (str) + 1);
         retval = static_cast<char *> (mxArray::malloc (sz));
         strcpy (retval, str);
       }
@@ -531,3 +547,4 @@ private:
 
 #endif
 #endif
+

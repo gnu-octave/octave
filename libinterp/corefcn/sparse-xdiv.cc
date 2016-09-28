@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,14 +21,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
 
 #include "Array-util.h"
-#include "lo-array-gripes.h"
+#include "lo-array-errwarn.h"
 #include "oct-cmplx.h"
 #include "quit.h"
 #include "error.h"
@@ -44,10 +44,10 @@ along with Octave; see the file COPYING.  If not, see
 static void
 solve_singularity_warning (double rcond)
 {
-  gripe_singular_matrix (rcond);
+  octave::warn_singular_matrix (rcond);
 }
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b)
 {
@@ -59,14 +59,13 @@ mx_leftdiv_conform (const T1& a, const T2& b)
       octave_idx_type a_nc = a.cols ();
       octave_idx_type b_nc = b.cols ();
 
-      gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
-      return false;
+      octave::err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
 }
 
-#define INSTANTIATE_MX_LEFTDIV_CONFORM(T1, T2) \
+#define INSTANTIATE_MX_LEFTDIV_CONFORM(T1, T2)                  \
   template bool mx_leftdiv_conform (const T1&, const T2&)
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (SparseMatrix, SparseMatrix);
@@ -82,7 +81,7 @@ INSTANTIATE_MX_LEFTDIV_CONFORM (DiagMatrix, SparseComplexMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexDiagMatrix, SparseMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexDiagMatrix, SparseComplexMatrix);
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_div_conform (const T1& a, const T2& b)
 {
@@ -94,14 +93,13 @@ mx_div_conform (const T1& a, const T2& b)
       octave_idx_type a_nr = a.rows ();
       octave_idx_type b_nr = b.rows ();
 
-      gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
-      return false;
+      octave::err_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
 }
 
-#define INSTANTIATE_MX_DIV_CONFORM(T1, T2) \
+#define INSTANTIATE_MX_DIV_CONFORM(T1, T2)              \
   template bool mx_div_conform (const T1&, const T2&)
 
 INSTANTIATE_MX_DIV_CONFORM (SparseMatrix, SparseMatrix);
@@ -377,12 +375,11 @@ x_el_div (double a, const SparseMatrix& b)
 
   Matrix result;
   if (a == 0.)
-    result = Matrix (nr, nc, octave_NaN);
+    result = Matrix (nr, nc, octave::numeric_limits<double>::NaN ());
   else if (a > 0.)
-    result = Matrix (nr, nc, octave_Inf);
+    result = Matrix (nr, nc, octave::numeric_limits<double>::Inf ());
   else
-    result = Matrix (nr, nc, -octave_Inf);
-
+    result = Matrix (nr, nc, -octave::numeric_limits<double>::Inf ());
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
@@ -400,7 +397,8 @@ x_el_div (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix  result (nr, nc, Complex (octave_NaN, octave_NaN));
+  ComplexMatrix result (nr, nc, Complex (octave::numeric_limits<double>::NaN (),
+                                         octave::numeric_limits<double>::NaN ()));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
@@ -633,3 +631,4 @@ xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
+

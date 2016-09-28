@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sysdep_h)
+#if ! defined (octave_sysdep_h)
 #define octave_sysdep_h 1
+
+#include "octave-config.h"
 
 #include <cstdio>
 
@@ -31,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-sysdep.h"
 
 extern OCTINTERP_API void sysdep_init (void);
+
+extern OCTINTERP_API void set_application_id (void);
 
 extern OCTINTERP_API void sysdep_cleanup (void);
 
@@ -43,16 +47,8 @@ extern OCTINTERP_API int octave_kbhit (bool wait = true);
 
 extern OCTINTERP_API std::string get_P_tmpdir (void);
 
-extern void w32_set_quiet_shutdown (void);
-
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-extern void MINGW_signal_cleanup (void);
-#define MINGW_SIGNAL_CLEANUP() MINGW_signal_cleanup ()
-#else
-#define MINGW_SIGNAL_CLEANUP() do { } while (0)
-#endif
-
 extern OCTINTERP_API bool same_file_internal (const std::string&,
                                               const std::string&);
 
 #endif
+

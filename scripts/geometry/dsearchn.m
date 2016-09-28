@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
-## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
-## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{xi})
-## @deftypefnx {Function File} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
+## @deftypefn  {} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
+## @deftypefnx {} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
+## @deftypefnx {} {@var{idx} =} dsearchn (@var{x}, @var{xi})
+## @deftypefnx {} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
 ## Return the index @var{idx} of the closest point in @var{x} to the elements
 ## @var{xi}.
 ##
@@ -31,6 +31,7 @@
 ## @end deftypefn
 
 function [idx, d] = dsearchn (x, tri, xi, outval)
+
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
@@ -45,6 +46,7 @@ function [idx, d] = dsearchn (x, tri, xi, outval)
       d(idx2) = outval;
     endif
   endif
+
 endfunction
 
 

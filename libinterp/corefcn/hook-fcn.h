@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_hook_fcn_h)
+#if ! defined (octave_hook_fcn_h)
 #define octave_hook_fcn_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-fcn-handle.h"
 #include "parse.h"
@@ -44,7 +46,7 @@ public:
 
   virtual ~base_hook_function (void) { }
 
-  virtual std::string id (void) { return std::string (); }
+  virtual std::string id (void) { return ""; }
 
   virtual bool is_valid (void) { return false; }
 
@@ -260,3 +262,4 @@ private:
 };
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "oct-strstrm.h"
@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 int
 octave_base_strstream::seek (off_t, int)
 {
+  // Note: error is inherited from octave_base_stream, not ::error.
+  // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid operation");
   return -1;
 }
@@ -40,27 +42,30 @@ octave_base_strstream::seek (off_t, int)
 off_t
 octave_base_strstream::tell (void)
 {
+  // Note: error is inherited from octave_base_stream, not ::error.
+  // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid operation");
   return -1;
 }
 
 octave_stream
 octave_istrstream::create (const char *data, std::ios::openmode arg_md,
-                           oct_mach_info::float_format flt_fmt)
+                           octave::mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));
 }
 
 octave_stream
 octave_istrstream::create (const std::string& data, std::ios::openmode arg_md,
-                           oct_mach_info::float_format flt_fmt)
+                           octave::mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));
 }
 
 octave_stream
 octave_ostrstream::create (std::ios::openmode arg_md,
-                           oct_mach_info::float_format flt_fmt)
+                           octave::mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_ostrstream (arg_md, flt_fmt));
 }
+

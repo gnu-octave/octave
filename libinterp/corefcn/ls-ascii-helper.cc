@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Benjamin Lindner
+Copyright (C) 2009-2016 Benjamin Lindner
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "ls-ascii-helper.h"
@@ -80,10 +80,8 @@ skip_until_newline (std::istream& is, bool keep_newline)
     }
 }
 
-
-// If stream IS currently points to a newline (a leftover from a
-// previous read) then eat newline(s) until a non-newline character is
-// found.
+// If stream IS currently points to a newline (a leftover from a previous read)
+// then eat newline(s) until a non-newline character is found.
 
 void
 skip_preceeding_newline (std::istream& is)
@@ -129,7 +127,7 @@ std::string
 read_until_newline (std::istream& is, bool keep_newline)
 {
   if (! is)
-    return std::string ();
+    return "";
 
   std::ostringstream buf;
 
@@ -173,3 +171,4 @@ read_until_newline (std::istream& is, bool keep_newline)
 
   return buf.str ();
 }
+

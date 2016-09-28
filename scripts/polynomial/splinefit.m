@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Ben Abbott, Jonas Lundgren
+## Copyright (C) 2012-2016 Ben Abbott, Jonas Lundgren
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
-## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
+## @deftypefn  {} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
+## @deftypefnx {} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "beta", @var{beta})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "order", @var{order})
+## @deftypefnx {} {@var{pp} =} splinefit (@dots{}, "constraints", @var{constraints})
 ##
 ## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
 ## noisy data, @var{x} and @var{y}.
@@ -31,9 +31,9 @@
 ## @var{x} is a vector, and @var{y} is a vector or N-D array.  If @var{y} is an
 ## N-D array, then @var{x}(j) is matched to @var{y}(:,@dots{},:,j).
 ##
-## @var{p} is a positive integer defining the number of intervals along @var{x},
-## and @var{p}+1 is the number of breaks.  The number of points in each interval
-## differ by no more than 1.
+## @var{p} is a positive integer defining the number of intervals along
+## @var{x}, and @var{p}+1 is the number of breaks.  The number of points in
+## each interval differ by no more than 1.
 ##
 ## The optional property @var{periodic} is a logical value which specifies
 ## whether a periodic boundary condition is applied to the spline.  The
@@ -94,6 +94,7 @@
 ## @end deftypefn
 
 function pp = splinefit (x, y, breaks, varargin)
+
   if (nargin > 3)
     n = cellfun ("isclass", varargin, "char");
     varargin(n) = lower (varargin(n));
@@ -105,6 +106,7 @@ function pp = splinefit (x, y, breaks, varargin)
   else
     props = struct ();
   endif
+
   fields = fieldnames (props);
   for f = 1:numel (fields)
     if (! any (strcmp (fields{f},
@@ -113,6 +115,7 @@ function pp = splinefit (x, y, breaks, varargin)
              "unrecognized property '%s'", fields{f});
     endif
   endfor
+
   args = {};
   if (isfield (props, "periodic") && props.periodic)
     args{end+1} = "p";
@@ -142,7 +145,9 @@ function pp = splinefit (x, y, breaks, varargin)
   elseif (! isnumeric (breaks) || ! isvector (breaks))
     print_usage ();
   endif
+
   pp = __splinefit__ (x, y, breaks, args{:});
+
 endfunction
 
 
@@ -154,12 +159,12 @@ endfunction
 %! breaks = [0:5, 2*pi];
 %! % Fit a spline of order 5
 %! pp = splinefit (x, y, breaks, "order", 4);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
 %! title ("Fit a piece-wise polynomial of order 4");
-%! legend ({"data", "fit", "breaks"})
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 
@@ -171,12 +176,12 @@ endfunction
 %! breaks = [0:5, 2*pi];
 %! % Fit a spline of order 3 with periodic boundary conditions
 %! pp = splinefit (x, y, breaks, "order", 2, "periodic", true);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
 %! title ("Fit a periodic piece-wise polynomial of order 2");
-%! legend ({"data", "fit", "breaks"})
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 
@@ -193,12 +198,12 @@ endfunction
 %! con = struct ("xc", xc, "yc", yc, "cc", cc);
 %! % Fit a cubic spline with 8 pieces and constraints
 %! pp = splinefit (x, y, 8, "constraints", con);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
-%! title ("Fit a cubic spline with constraints")
-%! legend ({"data", "fit", "breaks"})
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
+%! title ("Fit a cubic spline with constraints");
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 
@@ -214,12 +219,12 @@ endfunction
 %! con = struct ("xc", xc, "yc", yc, "cc", cc);
 %! % Fit a spline of order 6 with constraints and periodicity
 %! pp = splinefit (x, y, breaks, "constraints", con, "order", 5, "periodic", true);
-%! clf ()
-%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r")
-%! xlabel ("Independent Variable")
-%! ylabel ("Dependent Variable")
-%! title ("Fit a 5th order piece-wise periodic polynomial with constraints")
-%! legend ({"data", "fit", "breaks"})
+%! clf;
+%! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
+%! xlabel ("Independent Variable");
+%! ylabel ("Dependent Variable");
+%! title ("Fit a 5th order piece-wise periodic polynomial with constraints");
+%! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 John W. Eaton
+## Copyright (C) 2014-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Built-in Function} {@var{fname} =} octave_tmp_file_name ()
-## @deftypefnx {Built-in Function} {@var{fname} =} octave_tmp_file_name (@var{dir})
-## @deftypefnx {Built-in Function} {@var{fname} =} octave_tmp_file_name (@var{dir}, @var{prefix})
+## @deftypefn  {} {@var{fname} =} octave_tmp_file_name ()
+## @deftypefnx {} {@var{fname} =} octave_tmp_file_name (@var{dir})
+## @deftypefnx {} {@var{fname} =} octave_tmp_file_name (@var{dir}, @var{prefix})
 ##
 ## @code{octave_tmp_file_name} is deprecated and will be removed in Octave
 ## version 4.4.  Use @code{tempname} for equivalent functionality.
 ##
-## Return a unique temporary file name as a string.
+## Return a unique temporary filename as a string.
 ##
 ## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
 ## If @var{dir} is also omitted, the default directory for temporary files

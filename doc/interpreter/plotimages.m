@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 John W. Eaton and David Bateman
+## Copyright (C) 2007-2016 John W. Eaton and David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -16,10 +16,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function plotimages (nm, typ)
-  graphics_toolkit ("gnuplot");
+function plotimages (d, nm, typ)
+  set_graphics_toolkit ();
   set_print_size ();
   hide_output ();
+  outfile = fullfile (d, [nm "." typ]);
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
@@ -29,22 +30,22 @@ function plotimages (nm, typ)
     d_typ = ["-d", typ];
   endif
 
-  if (strcmp(typ , "txt"))
-    image_as_txt(nm);
+  if (strcmp (typ , "txt"))
+    image_as_txt (d, nm);
   elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
     xlabel ("x");
     ylabel ("sin (x)");
     title ("Simple 2-D Plot");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "hist"))
     randn ("state", 1);
     hist (randn (10000, 1), 30);
     xlabel ("Value");
     ylabel ("Count");
     title ("Histogram of 10,000 normally distributed random numbers");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "errorbar"))
     rand ("state", 2);
     x = 0:0.1:10;
@@ -56,11 +57,11 @@ function plotimages (nm, typ)
     xlabel ("x");
     ylabel ("sin (x)");
     title ("Errorbar plot of sin (x)");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);
     title ("Example polar plot from 0 to 10*pi");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "mesh"))
     tx = ty = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (tx, ty);
@@ -71,33 +72,64 @@ function plotimages (nm, typ)
     ylabel ("ty");
     zlabel ("tz");
     title ("3-D Sombrero plot");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "plot3"))
     t = 0:0.1:10*pi;
     r = linspace (0, 1, numel (t));
     z = linspace (0, 1, numel (t));
-    plot3 (r.*sin(t), r.*cos(t), z);
+    plot3 (r.*sin (t), r.*cos (t), z);
     xlabel ("r.*sin (t)");
     ylabel ("r.*cos (t)");
     zlabel ("z");
     title ("plot3 display of 3-D helix");
-    print ([nm "." typ], d_typ);
+    print (outfile, d_typ);
   elseif (strcmp (nm, "extended"))
     x = 0:0.01:3;
-    plot (x,erf(x));
+    plot (x, erf (x));
     hold on;
-    plot (x,x,"r");
+    plot (x, x, "r");
     axis ([0, 3, 0, 1]);
-    text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
-          '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
     xlabel ("x");
     ylabel ("erf (x)");
     title ("erf (x) with text annotation");
-    print ([nm "." typ], d_typ);
+    if (strcmp (typ, "pdf") && ! strcmp (graphics_toolkit, "gnuplot"))
+      text (0.65, 0.6175, ['$\displaystyle\leftarrow x = {2\over\sqrt{\pi}}'...
+                           '\int_{0}^{x}e^{-t^2} dt = 0.6175$']);
+      ## Be very careful about modifying this.  pdflatex expects to be in
+      ## the same directory as the file it is operating on.
+      cd (make_absolute_filename (d));
+      print ([nm ".pdf"], "-dpdflatexstandalone");
+      [status, output] = system (["pdflatex " nm]);
+      if (status)
+        error ("plotimages: Failed to run pdflatex on <extended.pdf>");
+      endif
+      delete ([nm ".aux"], [nm "-inc.pdf"], [nm ".log"], [nm ".tex"]);
+    else
+      text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
+            '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
+      print (outfile, d_typ);
+    endif
   else
     error ("unrecognized plot requested");
   endif
   hide_output ();
+endfunction
+
+## This function no longer sets the graphics toolkit; That is now done
+## automatically by C++ code which will ordinarily choose 'qt', but might
+## choose gnuplot on older systems.  Only a complete lack of plotting is a
+## problem.
+function set_graphics_toolkit ()
+  if (isempty (available_graphics_toolkits ()))
+    error ("no graphics toolkit available for plotting");
+  elseif (! strcmp ("gnuplot", graphics_toolkit ()) ...
+          && ! __have_feature__ ("OSMESA"))
+    if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))
+      error ("no graphics toolkit available for offscreen plotting");
+    else
+      graphics_toolkit ("gnuplot");
+    endif
+  endif
 endfunction
 
 function set_print_size ()
@@ -109,20 +141,20 @@ function set_print_size ()
   set (0, "defaultfigurepaperposition", [border, border, image_size]);
 endfunction
 
-## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnpulot
-## can't pop output as it can the terminal type).
+## Use this function before plotting commands and after every call to print
+## since print() resets output to stdout (unfortunately, gnuplot can't pop
+## output as it can the terminal type).
 function hide_output ()
-  f = figure (1);
-  set (f, "visible", "off");
+  hf = figure (1, "visible", "off");
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(nm)
-  fid = fopen (sprintf ("%s.txt", nm), "wt");
+function image_as_txt (d, nm)
+  fid = fopen (fullfile (d, [nm ".txt"]), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 John W. Eaton
+## Copyright (C) 2004-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} delete (@var{file})
-## @deftypefnx {Function File} {} delete (@var{file1}, @var{file2}, @dots{})
-## @deftypefnx {Function File} {} delete (@var{handle})
+## @deftypefn  {} {} delete (@var{file})
+## @deftypefnx {} {} delete (@var{file1}, @var{file2}, @dots{})
+## @deftypefnx {} {} delete (@var{handle})
 ## Delete the named file or graphics handle.
 ##
 ## @var{file} may contain globbing patterns such as @samp{*}.  Multiple files

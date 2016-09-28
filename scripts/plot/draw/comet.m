@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Ben Abbott
+## Copyright (C) 2008-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} comet (@var{y})
-## @deftypefnx {Function File} {} comet (@var{x}, @var{y})
-## @deftypefnx {Function File} {} comet (@var{x}, @var{y}, @var{p})
-## @deftypefnx {Function File} {} comet (@var{hax}, @dots{})
+## @deftypefn  {} {} comet (@var{y})
+## @deftypefnx {} {} comet (@var{x}, @var{y})
+## @deftypefnx {} {} comet (@var{x}, @var{y}, @var{p})
+## @deftypefnx {} {} comet (@var{hax}, @dots{})
 ## Produce a simple comet style animation along the trajectory provided by
 ## the input coordinate vectors (@var{x}, @var{y}).
 ##
@@ -95,7 +95,7 @@ endfunction
 
 %!demo
 %! clf;
-%! title ('comet() animation');
+%! title ("comet() animation");
 %! hold on;
 %! t = 0:.1:2*pi;
 %! x = cos (2*t) .* (cos (t).^2);

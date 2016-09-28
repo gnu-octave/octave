@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Jaroslav Hajek
+Copyright (C) 2009-2016 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <algorithm>
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "defun.h"
 #include "unwind-prot.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 
 // This allows safe indexing with char.
@@ -58,7 +58,6 @@ qs_preprocess (const Array<char>& needle,
   for (octave_idx_type i = 0; i < m; i++)
     table[ORD(x[i])] = m - i;
 }
-
 
 static Array<octave_idx_type>
 qs_search (const Array<char>& needle,
@@ -149,125 +148,118 @@ qs_search (const Array<char>& needle,
 }
 
 DEFUN (strfind, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} strfind (@dots{}, \"overlaps\", @var{val})\n\
-Search for @var{pattern} in the string @var{str} and return the starting\n\
-index of every such occurrence in the vector @var{idx}.\n\
-\n\
-If there is no such occurrence, or if @var{pattern} is longer than\n\
-@var{str}, or if @var{pattern} itself is empty, then @var{idx} is the empty\n\
-array @code{[]}.\n\
-\n\
-The optional argument @qcode{\"overlaps\"} determines whether the pattern\n\
-can match at every position in @var{str} (true), or only for unique\n\
-occurrences of the complete pattern (false).  The default is true.\n\
-\n\
-If a cell array of strings @var{cellstr} is specified then @var{idx} is a\n\
-cell array of vectors, as specified above.\n\
-\n\
-Examples:\n\
-\n\
-@example\n\
-@group\n\
-strfind (\"abababa\", \"aba\")\n\
-     @result{} [1, 3, 5]\n\
-\n\
-strfind (\"abababa\", \"aba\", \"overlaps\", false)\n\
-     @result{} [1, 5]\n\
-\n\
-strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] =\n\
-\n\
-             1   3   5\n\
-\n\
-          [1,2] = [](1x0)\n\
-          [1,3] = [](1x0)\n\
-        @}\n\
-@end group\n\
-@end example\n\
-@seealso{findstr, strmatch, regexp, regexpi, find}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{idx} =} strfind (@var{str}, @var{pattern})
+@deftypefnx {} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})
+@deftypefnx {} {@var{idx} =} strfind (@dots{}, "overlaps", @var{val})
+Search for @var{pattern} in the string @var{str} and return the starting
+index of every such occurrence in the vector @var{idx}.
+
+If there is no such occurrence, or if @var{pattern} is longer than
+@var{str}, or if @var{pattern} itself is empty, then @var{idx} is the empty
+array @code{[]}.
+
+The optional argument @qcode{"overlaps"} determines whether the pattern
+can match at every position in @var{str} (true), or only for unique
+occurrences of the complete pattern (false).  The default is true.
+
+If a cell array of strings @var{cellstr} is specified then @var{idx} is a
+cell array of vectors, as specified above.
+
+Examples:
+
+@example
+@group
+strfind ("abababa", "aba")
+     @result{} [1, 3, 5]
+
+strfind ("abababa", "aba", "overlaps", false)
+     @result{} [1, 5]
+
+strfind (@{"abababa", "bebebe", "ab"@}, "aba")
+     @result{}
+        @{
+          [1,1] =
+
+             1   3   5
+
+          [1,2] = [](1x0)
+          [1,3] = [](1x0)
+        @}
+@end group
+@end example
+@seealso{findstr, strmatch, regexp, regexpi, find}
+@end deftypefn */)
 {
-  octave_value retval;
   int nargin = args.length ();
-  bool overlaps = true;
 
-  if (nargin == 4 && args(2).is_string () && args(3).is_scalar_type ())
-    {
-      std::string opt = args(2).string_value ();
-      if (opt == "overlaps")
-        {
-          overlaps = args(3).bool_value ();
-          nargin = 2;
-        }
-      else
-        {
-          error ("strfind: unknown option: %s", opt.c_str ());
-          return retval;
-        }
-    }
-
-  if (nargin == 2)
-    {
-      octave_value argstr = args(0);
-      octave_value argpat = args(1);
-      if (argpat.is_string ())
-        {
-          Array<char> needle = argpat.char_array_value ();
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, TABSIZE);
-          qs_preprocess (needle, table);
-
-          if (argstr.is_string ())
-            if (argpat.is_empty ())
-              // Return a null matrix for null pattern for MW compatibility
-              retval = Matrix ();
-            else
-              retval = octave_value (qs_search (needle,
-                                                argstr.char_array_value (),
-                                                table, overlaps),
-                                     true, true);
-          else if (argstr.is_cell ())
-            {
-              const Cell argsc = argstr.cell_value ();
-              Cell retc (argsc.dims ());
-              octave_idx_type ns = argsc.numel ();
-
-              for (octave_idx_type i = 0; i < ns; i++)
-                {
-                  octave_value argse = argsc(i);
-                  if (argse.is_string ())
-                    {
-                      if (argpat.is_empty ())
-                        retc(i) = Matrix ();
-                      else
-                        retc(i) = octave_value (qs_search (needle,
-                                                     argse.char_array_value (),
-                                                     table, overlaps),
-                                                true, true);
-                    }
-                  else
-                    {
-                      error ("strfind: each element of CELLSTR must be a string");
-                      break;
-                    }
-                }
-
-              retval = retc;
-            }
-          else
-            error ("strfind: first argument must be a string or cell array of strings");
-        }
-      else if (argpat.is_cell ())
-        retval = do_simple_cellfun (Fstrfind, "strfind", args);
-      else
-        error ("strfind: PATTERN must be a string or cell array of strings");
-    }
-  else
+  if (nargin != 4 && nargin != 2)
     print_usage ();
+
+  bool overlaps = true;
+  if (nargin == 4)
+    {
+      if (! args(2).is_string () || ! args(3).is_scalar_type ())
+        error ("strfind: invalid optional arguments");
+
+      std::string opt = args(2).string_value ();
+
+      if (opt == "overlaps")
+        overlaps = args(3).bool_value ();
+      else
+        error ("strfind: unknown option: %s", opt.c_str ());
+    }
+
+  octave_value retval;
+
+  octave_value argstr = args(0);
+  octave_value argpat = args(1);
+
+  if (argpat.is_string ())
+    {
+      Array<char> needle = argpat.char_array_value ();
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, table, TABSIZE);
+      qs_preprocess (needle, table);
+
+      if (argstr.is_string ())
+        if (argpat.is_empty ())
+          // Return a null matrix for null pattern for MW compatibility
+          retval = Matrix ();
+        else
+          retval = octave_value (qs_search (needle,
+                                            argstr.char_array_value (),
+                                            table, overlaps),
+                                 true, true);
+      else if (argstr.is_cell ())
+        {
+          const Cell argsc = argstr.cell_value ();
+          Cell retc (argsc.dims ());
+          octave_idx_type ns = argsc.numel ();
+
+          for (octave_idx_type i = 0; i < ns; i++)
+            {
+              octave_value argse = argsc(i);
+              if (! argse.is_string ())
+                error ("strfind: each element of CELLSTR must be a string");
+
+              if (argpat.is_empty ())
+                retc(i) = Matrix ();
+              else
+                retc(i) = octave_value (qs_search (needle,
+                                                   argse.char_array_value (),
+                                                   table, overlaps),
+                                        true, true);
+            }
+
+          retval = retc;
+        }
+      else
+        error ("strfind: first argument must be a string or cell array of strings");
+    }
+  else if (argpat.is_cell ())
+    retval = do_simple_cellfun (Fstrfind, "strfind", args);
+  else
+    error ("strfind: PATTERN must be a string or cell array of strings");
 
   return retval;
 }
@@ -314,7 +306,7 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
           if (overlaps)
             {
               retsiz = 0;
-              // OMG. Is this the "right answer" MW always looks for, or
+              // OMG.  Is this the "right answer" MW always looks for, or
               // someone was just lazy?
               octave_idx_type k = 0;
               for (octave_idx_type i = 0; i < nidx; i++)
@@ -359,98 +351,93 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 }
 
 DEFUN (strrep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})\n\
-@deftypefnx {Built-in Function} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})\n\
-@deftypefnx {Built-in Function} {@var{newstr} =} strrep (@dots{}, \"overlaps\", @var{val})\n\
-Replace all occurrences of the pattern @var{ptn} in the string @var{str}\n\
-with the string @var{rep} and return the result.\n\
-\n\
-The optional argument @qcode{\"overlaps\"} determines whether the pattern\n\
-can match at every position in @var{str} (true), or only for unique\n\
-occurrences of the complete pattern (false).  The default is true.\n\
-\n\
-@var{s} may also be a cell array of strings, in which case the replacement is\n\
-done for each element and a cell array is returned.\n\
-\n\
-Example:\n\
-\n\
-@example\n\
-@group\n\
-strrep (\"This is a test string\", \"is\", \"&%$\")\n\
-    @result{}  \"Th&%$ &%$ a test string\"\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{regexprep, strfind, findstr}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})
+@deftypefnx {} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})
+@deftypefnx {} {@var{newstr} =} strrep (@dots{}, "overlaps", @var{val})
+Replace all occurrences of the pattern @var{ptn} in the string @var{str}
+with the string @var{rep} and return the result.
+
+The optional argument @qcode{"overlaps"} determines whether the pattern
+can match at every position in @var{str} (true), or only for unique
+occurrences of the complete pattern (false).  The default is true.
+
+@var{s} may also be a cell array of strings, in which case the replacement
+is done for each element and a cell array is returned.
+
+Example:
+
+@example
+@group
+strrep ("This is a test string", "is", "&%$")
+    @result{}  "Th&%$ &%$ a test string"
+@end group
+@end example
+
+@seealso{regexprep, strfind, findstr}
+@end deftypefn */)
 {
-  octave_value retval;
   int nargin = args.length ();
+
+  if (nargin != 3 && nargin != 5)
+    print_usage ();
+
   bool overlaps = true;
 
-  if (nargin == 5 && args(3).is_string () && args(4).is_scalar_type ())
+  if (nargin == 5)
     {
+      if (! args(3).is_string () || ! args(4).is_scalar_type ())
+        error ("strrep: invalid optional arguments");
+
       std::string opt = args(3).string_value ();
       if (opt == "overlaps")
-        {
-          overlaps = args(4).bool_value ();
-          nargin = 3;
-        }
+        overlaps = args(4).bool_value ();
       else
-        {
-          error ("strrep: unknown option: %s", opt.c_str ());
-          return retval;
-        }
+        error ("strrep: unknown option: %s", opt.c_str ());
     }
 
-  if (nargin == 3)
+  octave_value retval;
+
+  octave_value argstr = args(0);
+  octave_value argpat = args(1);
+  octave_value argrep = args(2);
+
+  if (argpat.is_string () && argrep.is_string ())
     {
-      octave_value argstr = args(0);
-      octave_value argpat = args(1);
-      octave_value argrep = args(2);
-      if (argpat.is_string () && argrep.is_string ())
+      const Array<char> pat = argpat.char_array_value ();
+      const Array<char> rep = argrep.char_array_value ();
+
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, table, TABSIZE);
+      qs_preprocess (pat, table);
+
+      if (argstr.is_string ())
+        retval = qs_replace (argstr.char_array_value (), pat, rep,
+                             table, overlaps);
+      else if (argstr.is_cell ())
         {
-          const Array<char> pat = argpat.char_array_value ();
-          const Array<char> rep = argrep.char_array_value ();
+          const Cell argsc = argstr.cell_value ();
+          Cell retc (argsc.dims ());
+          octave_idx_type ns = argsc.numel ();
 
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, TABSIZE);
-          qs_preprocess (pat, table);
-
-          if (argstr.is_string ())
-            retval = qs_replace (argstr.char_array_value (), pat, rep,
-                                 table, overlaps);
-          else if (argstr.is_cell ())
+          for (octave_idx_type i = 0; i < ns; i++)
             {
-              const Cell argsc = argstr.cell_value ();
-              Cell retc (argsc.dims ());
-              octave_idx_type ns = argsc.numel ();
-
-              for (octave_idx_type i = 0; i < ns; i++)
-                {
-                  octave_value argse = argsc(i);
-                  if (argse.is_string ())
-                    retc(i) = qs_replace (argse.char_array_value (), pat, rep,
-                                          table, overlaps);
-                  else
-                    {
-                      error ("strrep: each element of S must be a string");
-                      break;
-                    }
-                }
-
-              retval = retc;
+              octave_value argse = argsc(i);
+              if (argse.is_string ())
+                retc(i) = qs_replace (argse.char_array_value (), pat, rep,
+                                      table, overlaps);
+              else
+                error ("strrep: each element of S must be a string");
             }
-          else
-            error ("strrep: S must be a string or cell array of strings");
+
+          retval = retc;
         }
-      else if (argpat.is_cell () || argrep.is_cell ())
-        retval = do_simple_cellfun (Fstrrep, "strrep", args);
       else
-        error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");
+        error ("strrep: S must be a string or cell array of strings");
     }
+  else if (argpat.is_cell () || argrep.is_cell ())
+    retval = do_simple_cellfun (Fstrrep, "strrep", args);
   else
-    print_usage ();
+    error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");
 
   return retval;
 }
@@ -466,3 +453,4 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
 %!error strrep ()
 %!error strrep ("foo", "bar", 3, 4)
 */
+

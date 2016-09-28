@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012-2015 Jacob Dawid
+Copyright (C) 2012-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -23,6 +23,9 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: P. L. Lucas
 // Author: 2012 Jacob Dawid <jacob.dawid@cybercatalyst.com>
+
+#if ! defined (octave_webinfo_h)
+#define octave_webinfo_h 1
 
 #include <QTextBrowser>
 #include "parser.h"
@@ -69,3 +72,6 @@ private:
 
   QTextBrowser *addNewTab (const QString& name);
 };
+
+#endif
+

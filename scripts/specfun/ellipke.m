@@ -1,6 +1,6 @@
-## Copyright (C) 2001, 2013 David Billinghurst
-## Copyright (C) 2001, 2013 Paul Kienzle
-## Copyright (C) 2003, 2013 Jaakko Ruohio
+## Copyright (C) 2001-2016 David Billinghurst
+## Copyright (C) 2001-2016 Paul Kienzle
+## Copyright (C) 2003-2016 Jaakko Ruohio
 ##
 ## This file is part of Octave.
 ##
@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{k} =} ellipke (@var{m})
-## @deftypefnx {Function File} {@var{k} =} ellipke (@var{m}, @var{tol})
-## @deftypefnx {Function File} {[@var{k}, @var{e}] =} ellipke (@dots{})
+## @deftypefn  {} {@var{k} =} ellipke (@var{m})
+## @deftypefnx {} {@var{k} =} ellipke (@var{m}, @var{tol})
+## @deftypefnx {} {[@var{k}, @var{e}] =} ellipke (@dots{})
 ## Compute complete elliptic integrals of the first K(@var{m}) and second
 ## E(@var{m}) kind.
 ##
@@ -103,7 +103,7 @@ function [k, e] = ellipke (m, tol = [])
   if (isempty (tol))
     tol = eps (class (m));
   elseif (! (isreal (tol) && isscalar (tol) && tol > 0))
-    error ("ellipke: TOL must be a real scalar > 0")
+    error ("ellipke: TOL must be a real scalar > 0");
   endif
 
   k = e = zeros (sz);
@@ -120,9 +120,9 @@ function [k, e] = ellipke (m, tol = [])
   ## Arithmetic-Geometric Mean (AGM) algorithm
   ## ( Abramowitz and Stegun, Section 17.6 )
   Nmax = 16;
-  idx = !idx_1 & !idx_neginf;
+  idx = ! idx_1 & ! idx_neginf;
   if (any (idx))
-    idx_neg = find (m < 0 & !idx_neginf);
+    idx_neg = find (m < 0 & ! idx_neginf);
     mult_k = 1./sqrt (1 - m(idx_neg));
     mult_e = sqrt (1 - m(idx_neg));
     m(idx_neg) = -m(idx_neg) ./ (1 - m(idx_neg));

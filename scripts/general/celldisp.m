@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} celldisp (@var{c})
-## @deftypefnx {Function File} {} celldisp (@var{c}, @var{name})
+## @deftypefn  {} {} celldisp (@var{c})
+## @deftypefnx {} {} celldisp (@var{c}, @var{name})
 ## Recursively display the contents of a cell array.
 ##
 ## By default the values are displayed with the name of the variable @var{c}.
@@ -69,9 +69,11 @@ function celldisp (c, name)
       disp ("");
     endif
   endfor
+
 endfunction
 
 function s = indices (dv, i)
+
   if (sum (dv != 1) > 1)
     c = cell (size (dv));
     [c{:}] = ind2sub (dv, i);
@@ -80,6 +82,7 @@ function s = indices (dv, i)
   else
     s = sprintf ("%i", i);
   endif
+
 endfunction
 
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2015 John W. Eaton
+Copyright (C) 1999-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_cell_h)
+#if ! defined (octave_ov_cell_h)
 #define octave_ov_cell_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -138,11 +140,13 @@ public:
   octave_value_list list_value (void) const;
 
   octave_value convert_to_str_internal (bool pad, bool, char type) const
-  { return octave_value (all_strings (pad), type); }
+  { return octave_value (string_vector_value (pad), type); }
 
-  string_vector all_strings (bool pad = false) const;
+  string_vector string_vector_value (bool pad = false) const;
 
   Array<std::string> cellstr_value (void) const;
+
+  Array<std::string> cellstr_value (const char *fmt, ...) const;
 
   bool print_as_scalar (void) const;
 
@@ -159,7 +163,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -178,10 +182,10 @@ private:
   void clear_cellstr_cache (void) const
   { cellstr_cache.reset (); }
 
-  mutable std::auto_ptr<Array<std::string> > cellstr_cache;
-
+  mutable std::unique_ptr<Array<std::string> > cellstr_cache;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

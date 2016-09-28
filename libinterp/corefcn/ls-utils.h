@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_utils_h)
-#define octave_ls_utils 1
+#if ! defined (octave_ls_utils_h)
+#define octave_ls_utils_h 1
+
+#include "octave-config.h"
 
 extern save_type
 get_save_type (double max_val, double min_val);
@@ -30,3 +32,4 @@ extern save_type
 get_save_type (float max_val, float min_val);
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezcontour (@var{f})
-## @deftypefnx {Function File} {} ezcontour (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezcontour (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezcontour (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezcontour (@dots{})
+## @deftypefn  {} {} ezcontour (@var{f})
+## @deftypefnx {} {} ezcontour (@dots{}, @var{dom})
+## @deftypefnx {} {} ezcontour (@dots{}, @var{n})
+## @deftypefnx {} {} ezcontour (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezcontour (@dots{})
 ##
 ## Plot the contour lines of a function.
 ##
@@ -69,7 +69,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezcontour (f, [-3, 3]);
 

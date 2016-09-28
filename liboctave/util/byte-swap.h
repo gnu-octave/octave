@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_byte_swap_h)
+#if ! defined (octave_byte_swap_h)
 #define octave_byte_swap_h 1
+
+#include "octave-config.h"
 
 static inline void
 swap_bytes (void *ptr, unsigned int i, unsigned int j)
@@ -44,8 +46,7 @@ swap_bytes (void *ptr)
 template <>
 inline void
 swap_bytes<1> (void *)
-{
-}
+{ }
 
 template <>
 inline void
@@ -88,7 +89,7 @@ swap_bytes (void *ptr, int len)
 template <>
 inline void
 swap_bytes<1> (void *, int)
-{
-}
+{ }
 
 #endif
+

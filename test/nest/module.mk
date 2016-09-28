@@ -1,21 +1,20 @@
-nest_fcn_files = \
-  nest/arg_nest.m \
-  nest/arg_ret.m \
-  nest/nest_eval.m \
-  nest/no_closure.m \
-  nest/persistent_nest.m \
-  nest/recursive_nest.m \
-  nest/recursive_nest2.m \
-  nest/recursive_nest3.m \
-  nest/scope0.m \
-  nest/scope1.m \
-  nest/scope2.m \
-  nest/scope3.m \
-  nest/script_nest.m \
-  nest/script_nest_script.m \
-  nest/nest.tst \
-  nest/varg_nest.m \
-  nest/varg_nest2.m
+nest_TEST_FILES = \
+  test/nest/arg_nest.m \
+  test/nest/arg_ret.m \
+  test/nest/nest_eval.m \
+  test/nest/no_closure.m \
+  test/nest/persistent_nest.m \
+  test/nest/recursive_nest.m \
+  test/nest/recursive_nest2.m \
+  test/nest/recursive_nest3.m \
+  test/nest/scope0.m \
+  test/nest/scope1.m \
+  test/nest/scope2.m \
+  test/nest/scope3.m \
+  test/nest/script_nest.m \
+  test/nest/script_nest_script.m \
+  test/nest/nest.tst \
+  test/nest/varg_nest.m \
+  test/nest/varg_nest2.m
 
-FCN_FILES += $(nest_FCN_FILES)
-
+TEST_FILES += $(nest_TEST_FILES)

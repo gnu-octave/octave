@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_cx_sparse_h)
+#if ! defined (octave_ov_cx_sparse_h)
 #define octave_ov_cx_sparse_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -125,10 +127,12 @@ public:
 
   SparseBoolMatrix sparse_bool_matrix_value (bool warn = false) const;
 
+  octave_value as_double (void) const;
+
 #if 0
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   {
     // Yes, for compatibility, we drop the imaginary part here.
     return os.write (matrix_value (true), block_size, output_type,
@@ -139,7 +143,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -151,8 +155,8 @@ public:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

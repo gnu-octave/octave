@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 John W. Eaton
+Copyright (C) 2001-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#if defined (HAVE_FFTW)
-
 #include <iostream>
+#include <string>
 #include <vector>
+
+#if defined (HAVE_FFTW3_H)
+#  include <fftw3.h>
+#endif
 
 #include "lo-error.h"
 #include "oct-fftw.h"
@@ -35,19 +38,21 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "singleton-cleanup.h"
 
-#if defined (HAVE_FFTW3_THREADS)
-#include "nproc.h"
+#if defined (HAVE_FFTW3_THREADS) || defined (HAVE_FFTW3F_THREADS)
+#  include "nproc-wrapper.h"
 #endif
+
+#if defined (HAVE_FFTW)
 
 octave_fftw_planner *octave_fftw_planner::instance = 0;
 
 // Helper class to create and cache FFTW plans for both 1D and
-// 2D. This implementation defaults to using FFTW_ESTIMATE to create
+// 2D.  This implementation defaults to using FFTW_ESTIMATE to create
 // the plans, which in theory is suboptimal, but provides quite
 // reasonable performance in practice.
 
 // Also note that if FFTW_ESTIMATE is not used then the planner in FFTW3
-// will destroy the input and output arrays. We must, therefore, create a
+// will destroy the input and output arrays.  We must, therefore, create a
 // temporary input array with the same size and 16-byte alignment as
 // the original array when using a different planner strategy.
 // Note that we also use any wisdom that is available, either in a
@@ -61,7 +66,7 @@ octave_fftw_planner *octave_fftw_planner::instance = 0;
 
 octave_fftw_planner::octave_fftw_planner (void)
   : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
-    rsimd_align (false)
+    rsimd_align (false), nthreads (1)
 {
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
@@ -71,11 +76,12 @@ octave_fftw_planner::octave_fftw_planner (void)
 
 #if defined (HAVE_FFTW3_THREADS)
   int init_ret = fftw_init_threads ();
-  if (!init_ret)
+  if (! init_ret)
     (*current_liboctave_error_handler) ("Error initializing FFTW threads");
-  //Use number of processors available to the current process
-  //This can be later changed with fftw ("threads", nthreads)
-  nthreads = num_processors (NPROC_CURRENT);
+
+  // Use number of processors available to the current process
+  // This can be later changed with fftw ("threads", nthreads).
+  nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
   fftw_plan_with_nthreads (nthreads);
 #endif
 
@@ -87,15 +93,15 @@ octave_fftw_planner::~octave_fftw_planner (void)
 {
   fftw_plan *plan_p;
 
-  plan_p = &rplan;
+  plan_p = reinterpret_cast<fftw_plan *> (&rplan);
   if (*plan_p)
     fftw_destroy_plan (*plan_p);
 
-  plan_p = &plan[0];
+  plan_p = reinterpret_cast<fftw_plan *> (&plan[0]);
   if (*plan_p)
     fftw_destroy_plan (*plan_p);
 
-  plan_p = &plan[1];
+  plan_p = reinterpret_cast<fftw_plan *> (&plan[1]);
   if (*plan_p)
     fftw_destroy_plan (*plan_p);
 }
@@ -114,20 +120,33 @@ octave_fftw_planner::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create octave_fftw_planner object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create octave_fftw_planner object!");
 
   return retval;
 }
 
-#define CHECK_SIMD_ALIGNMENT(x) \
+void
+octave_fftw_planner::threads (int nt)
+{
+#if defined (HAVE_FFTW3_THREADS)
+  if (instance_ok () && nt != threads ())
+    {
+      instance->nthreads = nt;
+      fftw_plan_with_nthreads (nt);
+      // Clear the current plans.
+      instance->rplan = instance->plan[0] = instance->plan[1] = 0;
+    }
+#else
+  (*current_liboctave_warning_handler)
+    ("unable to change number of threads without FFTW thread support");
+#endif
+}
+
+#define CHECK_SIMD_ALIGNMENT(x)                         \
   (((reinterpret_cast<ptrdiff_t> (x)) & 0xF) == 0)
 
-fftw_plan
+void *
 octave_fftw_planner::do_create_plan (int dir, const int rank,
                                      const dim_vector dims,
                                      octave_idx_type howmany,
@@ -136,7 +155,7 @@ octave_fftw_planner::do_create_plan (int dir, const int rank,
                                      const Complex *in, Complex *out)
 {
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
-  fftw_plan *cur_plan_p = &plan[which];
+  fftw_plan *cur_plan_p = reinterpret_cast<fftw_plan *> (&plan[which]);
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
   bool ioinplace = (in == out);
@@ -148,7 +167,7 @@ octave_fftw_planner::do_create_plan (int dir, const int rank,
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
       || ioinplace != inplace[which]
-      || ((ioalign != simd_align[which]) ? !ioalign : false))
+      || ((ioalign != simd_align[which]) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -252,14 +271,14 @@ octave_fftw_planner::do_create_plan (int dir, const int rank,
   return *cur_plan_p;
 }
 
-fftw_plan
+void *
 octave_fftw_planner::do_create_plan (const int rank, const dim_vector dims,
                                      octave_idx_type howmany,
                                      octave_idx_type stride,
                                      octave_idx_type dist,
                                      const double *in, Complex *out)
 {
-  fftw_plan *cur_plan_p = &rplan;
+  fftw_plan *cur_plan_p = reinterpret_cast<fftw_plan *> (&rplan);
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
 
@@ -268,7 +287,7 @@ octave_fftw_planner::do_create_plan (const int rank, const dim_vector dims,
   // change the alignment.
 
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
-      || rh != howmany || ((ioalign != rsimd_align) ? !ioalign : false))
+      || rh != howmany || ((ioalign != rsimd_align) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -388,11 +407,11 @@ octave_fftw_planner::do_method (FftwMethod _meth)
         {
           meth = _meth;
           if (rplan)
-            fftw_destroy_plan (rplan);
+            fftw_destroy_plan (reinterpret_cast<fftw_plan> (rplan));
           if (plan[0])
-            fftw_destroy_plan (plan[0]);
+            fftw_destroy_plan (reinterpret_cast<fftw_plan> (plan[0]));
           if (plan[1])
-            fftw_destroy_plan (plan[1]);
+            fftw_destroy_plan (reinterpret_cast<fftw_plan> (plan[1]));
           rplan = plan[0] = plan[1] = 0;
         }
     }
@@ -405,7 +424,7 @@ octave_float_fftw_planner *octave_float_fftw_planner::instance = 0;
 
 octave_float_fftw_planner::octave_float_fftw_planner (void)
   : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
-    rsimd_align (false)
+    rsimd_align (false), nthreads (1)
 {
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
@@ -415,11 +434,12 @@ octave_float_fftw_planner::octave_float_fftw_planner (void)
 
 #if defined (HAVE_FFTW3F_THREADS)
   int init_ret = fftwf_init_threads ();
-  if (!init_ret)
+  if (! init_ret)
     (*current_liboctave_error_handler) ("Error initializing FFTW3F threads");
-  //Use number of processors available to the current process
-  //This can be later changed with fftw ("threads", nthreads)
-  nthreads = num_processors (NPROC_CURRENT);
+
+  // Use number of processors available to the current process
+  // This can be later changed with fftw ("threads", nthreads).
+  nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
   fftwf_plan_with_nthreads (nthreads);
 #endif
 
@@ -431,15 +451,15 @@ octave_float_fftw_planner::~octave_float_fftw_planner (void)
 {
   fftwf_plan *plan_p;
 
-  plan_p = &rplan;
+  plan_p = reinterpret_cast<fftwf_plan *> (&rplan);
   if (*plan_p)
     fftwf_destroy_plan (*plan_p);
 
-  plan_p = &plan[0];
+  plan_p = reinterpret_cast<fftwf_plan *> (&plan[0]);
   if (*plan_p)
     fftwf_destroy_plan (*plan_p);
 
-  plan_p = &plan[1];
+  plan_p = reinterpret_cast<fftwf_plan *> (&plan[1]);
   if (*plan_p)
     fftwf_destroy_plan (*plan_p);
 }
@@ -458,17 +478,30 @@ octave_float_fftw_planner::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create octave_fftw_planner object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create octave_fftw_planner object!");
 
   return retval;
 }
 
-fftwf_plan
+void
+octave_float_fftw_planner::threads (int nt)
+{
+#if defined (HAVE_FFTW3F_THREADS)
+  if (instance_ok () && nt != threads ())
+    {
+      instance->nthreads = nt;
+      fftwf_plan_with_nthreads (nt);
+      // Clear the current plans.
+      instance->rplan = instance->plan[0] = instance->plan[1] = 0;
+    }
+#else
+  (*current_liboctave_warning_handler)
+    ("unable to change number of threads without FFTW thread support");
+#endif
+}
+
+void *
 octave_float_fftw_planner::do_create_plan (int dir, const int rank,
                                            const dim_vector dims,
                                            octave_idx_type howmany,
@@ -478,7 +511,7 @@ octave_float_fftw_planner::do_create_plan (int dir, const int rank,
                                            FloatComplex *out)
 {
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
-  fftwf_plan *cur_plan_p = &plan[which];
+  fftwf_plan *cur_plan_p = reinterpret_cast<fftwf_plan *> (&plan[which]);
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
   bool ioinplace = (in == out);
@@ -490,7 +523,7 @@ octave_float_fftw_planner::do_create_plan (int dir, const int rank,
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
       || ioinplace != inplace[which]
-      || ((ioalign != simd_align[which]) ? !ioalign : false))
+      || ((ioalign != simd_align[which]) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -594,7 +627,7 @@ octave_float_fftw_planner::do_create_plan (int dir, const int rank,
   return *cur_plan_p;
 }
 
-fftwf_plan
+void *
 octave_float_fftw_planner::do_create_plan (const int rank,
                                            const dim_vector dims,
                                            octave_idx_type howmany,
@@ -602,7 +635,7 @@ octave_float_fftw_planner::do_create_plan (const int rank,
                                            octave_idx_type dist,
                                            const float *in, FloatComplex *out)
 {
-  fftwf_plan *cur_plan_p = &rplan;
+  fftwf_plan *cur_plan_p = reinterpret_cast<fftwf_plan *> (&rplan);
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
 
@@ -611,7 +644,7 @@ octave_float_fftw_planner::do_create_plan (const int rank,
   // change the alignment.
 
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
-      || rh != howmany || ((ioalign != rsimd_align) ? !ioalign : false))
+      || rh != howmany || ((ioalign != rsimd_align) ? ! ioalign : false))
     create_new_plan = true;
   else
     {
@@ -731,11 +764,11 @@ octave_float_fftw_planner::do_method (FftwMethod _meth)
         {
           meth = _meth;
           if (rplan)
-            fftwf_destroy_plan (rplan);
+            fftwf_destroy_plan (reinterpret_cast<fftwf_plan> (rplan));
           if (plan[0])
-            fftwf_destroy_plan (plan[0]);
+            fftwf_destroy_plan (reinterpret_cast<fftwf_plan> (plan[0]));
           if (plan[1])
-            fftwf_destroy_plan (plan[1]);
+            fftwf_destroy_plan (reinterpret_cast<fftwf_plan> (plan[1]));
           rplan = plan[0] = plan[1] = 0;
         }
     }
@@ -744,7 +777,7 @@ octave_float_fftw_planner::do_method (FftwMethod _meth)
   return ret;
 }
 
-template <class T>
+template <typename T>
 static inline void
 convert_packcomplex_1d (T *out, size_t nr, size_t nc,
                         octave_idx_type stride, octave_idx_type dist)
@@ -760,13 +793,13 @@ convert_packcomplex_1d (T *out, size_t nr, size_t nc,
   octave_quit ();
 }
 
-template <class T>
+template <typename T>
 static inline void
 convert_packcomplex_Nd (T *out, const dim_vector &dv)
 {
   size_t nc = dv(0);
   size_t nr = dv(1);
-  size_t np = (dv.length () > 2 ? dv.numel () / nc / nr : 1);
+  size_t np = (dv.ndims () > 2 ? dv.numel () / nc / nr : 1);
   size_t nrp = nr * np;
   T *ptr1, *ptr2;
 
@@ -804,7 +837,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
   size_t kstep = dv(0);
   size_t nel = dv.numel ();
 
-  for (int inner = 2; inner < dv.length (); inner++)
+  for (int inner = 2; inner < dv.ndims (); inner++)
     {
       size_t jmax = jstart * dv(inner);
       for (size_t i = 0; i < nel; i+=jmax)
@@ -830,8 +863,9 @@ octave_fftw::fft (const double *in, Complex *out, size_t npts,
   dist = (dist < 0 ? npts : dist);
 
   dim_vector dv (npts, 1);
-  fftw_plan plan = octave_fftw_planner::create_plan (1, dv, nsamples,
-                                                     stride, dist, in, out);
+  void *vplan = octave_fftw_planner::create_plan (1, dv, nsamples,
+                                                  stride, dist, in, out);
+  fftw_plan plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft_r2c (plan, (const_cast<double *>(in)),
                         reinterpret_cast<fftw_complex *> (out));
@@ -850,9 +884,10 @@ octave_fftw::fft (const Complex *in, Complex *out, size_t npts,
   dist = (dist < 0 ? npts : dist);
 
   dim_vector dv (npts, 1);
-  fftw_plan plan = octave_fftw_planner::create_plan (FFTW_FORWARD, 1, dv,
-                                                     nsamples, stride,
-                                                     dist, in, out);
+  void *vplan = octave_fftw_planner::create_plan (FFTW_FORWARD, 1, dv,
+                                                  nsamples, stride,
+                                                  dist, in, out);
+  fftw_plan plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (plan,
                     reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
@@ -869,9 +904,10 @@ octave_fftw::ifft (const Complex *in, Complex *out, size_t npts,
   dist = (dist < 0 ? npts : dist);
 
   dim_vector dv (npts, 1);
-  fftw_plan plan = octave_fftw_planner::create_plan (FFTW_BACKWARD, 1, dv,
-                                                     nsamples, stride,
-                                                     dist, in, out);
+  void *vplan = octave_fftw_planner::create_plan (FFTW_BACKWARD, 1, dv,
+                                                  nsamples, stride,
+                                                  dist, in, out);
+  fftw_plan plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (plan,
                     reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
@@ -898,8 +934,9 @@ octave_fftw::fftNd (const double *in, Complex *out, const int rank,
 
   octave_idx_type offset = (dv.numel () / dv(0)) * ((dv(0) - 1) / 2);
 
-  fftw_plan plan = octave_fftw_planner::create_plan (rank, dv, 1, 1, dist,
-                                                     in, out + offset);
+  void *vplan = octave_fftw_planner::create_plan (rank, dv, 1, 1, dist,
+                                                  in, out + offset);
+  fftw_plan plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft_r2c (plan, (const_cast<double *>(in)),
                         reinterpret_cast<fftw_complex *> (out+ offset));
@@ -919,8 +956,9 @@ octave_fftw::fftNd (const Complex *in, Complex *out, const int rank,
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 
-  fftw_plan plan = octave_fftw_planner::create_plan (FFTW_FORWARD, rank,
-                                                     dv, 1, 1, dist, in, out);
+  void *vplan = octave_fftw_planner::create_plan (FFTW_FORWARD, rank,
+                                                  dv, 1, 1, dist, in, out);
+  fftw_plan plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (plan,
                     reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
@@ -937,8 +975,9 @@ octave_fftw::ifftNd (const Complex *in, Complex *out, const int rank,
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 
-  fftw_plan plan = octave_fftw_planner::create_plan (FFTW_BACKWARD, rank,
-                                                     dv, 1, 1, dist, in, out);
+  void *vplan = octave_fftw_planner::create_plan (FFTW_BACKWARD, rank,
+                                                  dv, 1, 1, dist, in, out);
+  fftw_plan plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (plan,
                     reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
@@ -959,9 +998,10 @@ octave_fftw::fft (const float *in, FloatComplex *out, size_t npts,
   dist = (dist < 0 ? npts : dist);
 
   dim_vector dv (npts, 1);
-  fftwf_plan plan = octave_float_fftw_planner::create_plan (1, dv, nsamples,
-                                                            stride, dist,
-                                                            in, out);
+  void *vplan = octave_float_fftw_planner::create_plan (1, dv, nsamples,
+                                                        stride, dist,
+                                                        in, out);
+  fftwf_plan plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft_r2c (plan, (const_cast<float *>(in)),
                          reinterpret_cast<fftwf_complex *> (out));
@@ -980,10 +1020,11 @@ octave_fftw::fft (const FloatComplex *in, FloatComplex *out, size_t npts,
   dist = (dist < 0 ? npts : dist);
 
   dim_vector dv (npts, 1);
-  fftwf_plan plan = octave_float_fftw_planner::create_plan (FFTW_FORWARD, 1,
-                                                            dv, nsamples,
-                                                            stride, dist,
-                                                            in, out);
+  void *vplan = octave_float_fftw_planner::create_plan (FFTW_FORWARD, 1,
+                                                        dv, nsamples,
+                                                        stride, dist,
+                                                        in, out);
+  fftwf_plan plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (plan,
                      reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
@@ -1000,10 +1041,11 @@ octave_fftw::ifft (const FloatComplex *in, FloatComplex *out, size_t npts,
   dist = (dist < 0 ? npts : dist);
 
   dim_vector dv (npts, 1);
-  fftwf_plan plan = octave_float_fftw_planner::create_plan (FFTW_BACKWARD, 1,
-                                                            dv, nsamples,
-                                                            stride, dist,
-                                                            in, out);
+  void *vplan = octave_float_fftw_planner::create_plan (FFTW_BACKWARD, 1,
+                                                        dv, nsamples,
+                                                        stride, dist,
+                                                        in, out);
+  fftwf_plan plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (plan,
                      reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
@@ -1030,9 +1072,10 @@ octave_fftw::fftNd (const float *in, FloatComplex *out, const int rank,
 
   octave_idx_type offset = (dv.numel () / dv(0)) * ((dv(0) - 1) / 2);
 
-  fftwf_plan plan = octave_float_fftw_planner::create_plan (rank, dv, 1, 1,
-                                                            dist, in,
-                                                            out + offset);
+  void *vplan = octave_float_fftw_planner::create_plan (rank, dv, 1, 1,
+                                                        dist, in,
+                                                        out + offset);
+  fftwf_plan plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft_r2c (plan, (const_cast<float *>(in)),
                          reinterpret_cast<fftwf_complex *> (out+ offset));
@@ -1052,9 +1095,10 @@ octave_fftw::fftNd (const FloatComplex *in, FloatComplex *out, const int rank,
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 
-  fftwf_plan plan = octave_float_fftw_planner::create_plan (FFTW_FORWARD,
-                                                            rank, dv, 1, 1,
-                                                            dist, in, out);
+  void *vplan = octave_float_fftw_planner::create_plan (FFTW_FORWARD,
+                                                        rank, dv, 1, 1,
+                                                        dist, in, out);
+  fftwf_plan plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (plan,
                      reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
@@ -1071,9 +1115,10 @@ octave_fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
   for (int i = 0; i < rank; i++)
     dist *= dv(i);
 
-  fftwf_plan plan = octave_float_fftw_planner::create_plan (FFTW_BACKWARD,
-                                                            rank, dv, 1, 1,
-                                                            dist, in, out);
+  void *vplan = octave_float_fftw_planner::create_plan (FFTW_BACKWARD,
+                                                        rank, dv, 1, 1,
+                                                        dist, in, out);
+  fftwf_plan plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (plan,
                      reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
@@ -1088,3 +1133,24 @@ octave_fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
 }
 
 #endif
+
+std::string
+octave_fftw_version (void)
+{
+#if defined (HAVE_FFTW)
+  return fftw_version;
+#else
+  return "none";
+#endif
+}
+
+std::string
+octave_fftwf_version (void)
+{
+#if defined (HAVE_FFTW)
+  return fftwf_version;
+#else
+  return "none";
+#endif
+}
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 Andreas Stahel
+Copyright (C) 2002-2016 Andreas Stahel
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Andreas Stahel <Andreas.Stahel@hta-bi.bfh.ch>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-ieee.h"
@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 inline double max (double a, double b, double c)
 {
@@ -60,34 +60,26 @@ inline double min (double a, double b, double c)
 // method to traverse it
 
 DEFUN (tsearch, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
-Search for the enclosing Delaunay convex hull.\n\
-\n\
-For @code{@var{t} = delaunay (@var{x}, @var{y})}, finds the index in @var{t}\n\
-containing the points @code{(@var{xi}, @var{yi})}.  For points outside the\n\
-convex hull, @var{idx} is NaN.\n\
-@seealso{delaunay, delaunayn}\n\
-@end deftypefn")
-{
-  const double eps=1.0e-12;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})
+Search for the enclosing Delaunay convex hull.
 
-  octave_value_list retval;
-  const int nargin = args.length ();
-  if (nargin != 5)
-    {
-      print_usage ();
-      return retval;
-    }
+For @code{@var{t} = delaunay (@var{x}, @var{y})}, finds the index in @var{t}
+containing the points @code{(@var{xi}, @var{yi})}.  For points outside the
+convex hull, @var{idx} is NaN.
+@seealso{delaunay, delaunayn}
+@end deftypefn */)
+{
+  if (args.length () != 5)
+    print_usage ();
+
+  const double eps = 1.0e-12;
 
   const ColumnVector x (args(0).vector_value ());
   const ColumnVector y (args(1).vector_value ());
   const Matrix elem (args(2).matrix_value ());
   const ColumnVector xi (args(3).vector_value ());
   const ColumnVector yi (args(4).vector_value ());
-
-  if (error_state)
-    return retval;
 
   const octave_idx_type nelem = elem.rows ();
 
@@ -103,7 +95,7 @@ convex hull, @var{idx} is NaN.\n\
       maxy(k) = max (REF (y, k, 0), REF (y, k, 1), REF (y, k, 2)) + eps;
     }
 
-  const octave_idx_type np = xi.length ();
+  const octave_idx_type np = xi.numel ();
   ColumnVector values (np);
 
   double x0, y0, a11, a12, a21, a22, det;
@@ -164,9 +156,7 @@ convex hull, @var{idx} is NaN.\n\
 
     } //endfor # kp
 
-  retval(0) = values;
-
-  return retval;
+  return ovl (values);
 }
 
 /*
@@ -182,3 +172,4 @@ convex hull, @var{idx} is NaN.\n\
 
 %!error tsearch ()
 */
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,11 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_boolSparse_h)
+#if ! defined (octave_boolSparse_h)
 #define octave_boolSparse_h 1
 
+#include "octave-config.h"
+
 #include "Sparse.h"
-#include "MSparse-defs.h"
+#include "MSparse.h"
 
 #include "boolMatrix.h"
 #include "boolNDArray.h"
@@ -40,6 +42,9 @@ OCTAVE_API
 SparseBoolMatrix : public Sparse<bool>
 {
 public:
+
+  // Corresponding dense matrix type for this sparse matrix type.
+  typedef boolMatrix dense_matrix_type;
 
   SparseBoolMatrix (void) : Sparse<bool> () { }
 
@@ -143,3 +148,4 @@ SPARSE_SMSM_EQNE_OP_DECLS (SparseBoolMatrix, SparseBoolMatrix, OCTAVE_API)
 SPARSE_SMSM_BOOL_OP_DECLS (SparseBoolMatrix, SparseBoolMatrix, OCTAVE_API)
 
 #endif
+

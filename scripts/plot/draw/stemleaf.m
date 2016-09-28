@@ -1,28 +1,25 @@
-## Copyright (C) 2013-2015 Michael D. Godfrey
+## Copyright (C) 2013-2016 Michael D. Godfrey
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public
-## License as published by the Free Software Foundation;
-## either version 3 of the License, or (at your option) any
-## later version.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied
-## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-## PURPOSE. See the GNU General Public License for more
-## details.
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public
-## License along with Octave; see the file COPYING. If not,
-## see <http://www.gnu.org/licenses/>.
-
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stemleaf (@var{x}, @var{caption})
-## @deftypefnx {Function File} {} stemleaf (@var{x}, @var{caption}, @var{stem_sz})
-## @deftypefnx {Function File} {@var{plotstr} =} stemleaf (@dots{})
+## @deftypefn  {} {} stemleaf (@var{x}, @var{caption})
+## @deftypefnx {} {} stemleaf (@var{x}, @var{caption}, @var{stem_sz})
+## @deftypefnx {} {@var{plotstr} =} stemleaf (@dots{})
 ## Compute and display a stem and leaf plot of the vector @var{x}.
 ##
 ## The input @var{x} should be a vector of integers.  Any non-integer values
@@ -71,7 +68,8 @@
 ## @code{@var{xs} = sort (@var{x})} before calling @code{stemleaf (@var{xs})}.
 ##
 ## The stem and leaf plot and associated displays are described in:
-## Ch. 3, @cite{Exploratory Data Analysis} by J. W. Tukey, Addison-Wesley, 1977.
+## Chapter 3, @cite{Exploratory Data Analysis} by J. W. Tukey, Addison-Wesley,
+## 1977.
 ## @seealso{hist, printd}
 ## @end deftypefn
 
@@ -114,7 +112,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ##
   ## Note that the code has some added complexity due to the need to
   ## distinguish both + and - 0 stems.  The +- stem values are essential
-  ## for all plots which span 0. After dealing with +-0 stems, the added
+  ## for all plots which span 0.  After dealing with +-0 stems, the added
   ## complexity of putting +- data values in the correct stem is minor,
   ## but the sign of 0 leaves must be checked.  And, the cases where the
   ## stems start or end at +- 0 must also be considered.
@@ -165,7 +163,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
     endif
   endif
 
-  ## Note that IEEE 754 states that -+ 0 should compare equal. This has
+  ## Note that IEEE 754 states that -+ 0 should compare equal.  This has
   ## led to C sort (and therefore Octave) treating them as equal.  Thus,
   ## sort([-1 0 -0 1]) yields [-1 0 -0 1], and sort([-1 -0 0 1])
   ## yields: [-1 -0 0 1].  This means that stem-and-leaf plotting cannot
@@ -247,7 +245,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
 
   ## Vectorized version provided by Rik Wehbring (rik@octave.org)
   ## Determine leaves for each stem:
-  new_line  = 1;
+  new_line = 1;
   for kx = 2: numel (stems)
 
     stem_sign = signbit (stems(kx));
@@ -306,18 +304,18 @@ endfunction
 
 
 %!demo
-%! %% Unsorted plot:
+%! ## Unsorted plot:
 %! x = [-22 12 -28 52  39 -2 12 10 11 11 42 38 44 18 44];
-%! stemleaf (x, 'Unsorted plot');
+%! stemleaf (x, "Unsorted plot");
 
 %!demo
-%! %% Sorted leaves:
+%! ## Sorted leaves:
 %! x = [-22 12 -28 52  39 -2 12 10 11 11 42 38 44 18 44];
 %! y = sort (x);
-%! stemleaf (y, 'Sorted leaves');
+%! stemleaf (y, "Sorted leaves");
 
 %!demo
-%! %% Sorted leaves (large dataset):
+%! ## Sorted leaves (large dataset):
 %! x = [-22 12 -28 52  39 -2 12 10 11 11 42 38 44 18 44 37 113 124 37 48     ...
 %!      127 36 29 31 125 139 131 115 105 132 104 123 35 113 122 42 117 119   ...
 %!      58 109 23 105 63 27 44 105 99 41 128 121 116 125 32 61 37 127 29 113 ...
@@ -327,12 +325,12 @@ endfunction
 %!      34 133 45 120 30 127 31 116 146 21 23 30 10 20 21 30 0 100 110 1 20  ...
 %!      0];
 %! y = sort (x);
-%! stemleaf (y, 'Sorted leaves (large dataset)');
+%! stemleaf (y, "Sorted leaves (large dataset)");
 
 %!demo
-%! %% Gaussian leaves:
+%! ## Gaussian leaves:
 %! x = fix (30 * randn (300,1));
-%! stemleaf (x, 'Gaussian leaves');
+%! stemleaf (x, "Gaussian leaves");
 
 %!test
 %! ## test minus to plus

@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt__ (@var{caller}, @var{h}, @var{varargin})
+## @deftypefn {} {} __plt__ (@var{caller}, @var{h}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -78,15 +78,15 @@ function retval = __plt__ (caller, h, varargin)
         next_arg = squeeze (next_arg);
         if (! any (strcmp (caller, warned_callers)) && ndims (next_arg) < 3)
           warning (["%s: N-d inputs have been squeezed to less than " ...
-                    "three dimensions"], caller)
+                    "three dimensions"], caller);
           warned_callers(end+1) = caller;
         endif
       endif
       if (isnumeric (next_arg) && ndims (next_arg) > 2)
-        error ("%s: plot arrays must have less than 2 dimensions", caller)
+        error ("%s: plot arrays must have less than 2 dimensions", caller);
       endif
 
-      nargs--;
+      nargs -= 1;
 
       if (ischar (next_arg) || iscellstr (next_arg))
         if (x_set)
@@ -96,7 +96,7 @@ function retval = __plt__ (caller, h, varargin)
               error ("%s: properties must appear followed by a value", caller);
             endif
             properties = [properties, [next_cell, varargin(k++)]];
-            nargs--;
+            nargs -= 1;
             continue;
           else
             while (nargs > 0 && ischar (varargin{k}))
@@ -157,7 +157,8 @@ function retval = __plt__ (caller, h, varargin)
 
 endfunction
 
-function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgnd)
+function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options,
+                                                hlgnd, tlgnd, setlgnd)
   n = numel (h);
   if (numel (options) == 1)
     options = repmat (options(:), n, 1);
@@ -171,6 +172,7 @@ function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgn
       setlgnd = true;
     endif
   endfor
+
 endfunction
 
 function retval = __plt1__ (h, x1, options, properties = {})

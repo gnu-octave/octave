@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
@@ -44,7 +44,8 @@ DEFNDBINOP_OP (mul, scalar, matrix, scalar, array, *)
 
 DEFBINOP (div, scalar, matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   Matrix m1 = v1.matrix_value ();
   Matrix m2 = v2.matrix_value ();
@@ -60,12 +61,13 @@ DEFBINOP_FN (pow, scalar, matrix, xpow)
 
 DEFBINOP (ldiv, scalar, matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   double d = v1.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.array_value () / d);
 }
@@ -83,12 +85,13 @@ DEFNDBINOP_FN (el_pow, scalar, matrix, scalar, array, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, matrix)
 {
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_matrix&);
+  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
+  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
 
   double d = v1.double_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.array_value () / d);
 }
@@ -100,7 +103,7 @@ DEFNDCATOP_FN (s_m, scalar, matrix, array, array, concat)
 
 DEFCONV (matrix_conv, scalar, matrix)
 {
-  CAST_CONV_ARG (const octave_scalar&);
+  const octave_scalar& v = dynamic_cast<const octave_scalar&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }
@@ -134,3 +137,4 @@ install_s_m_ops (void)
 
   INSTALL_WIDENOP (octave_scalar, octave_matrix, matrix_conv);
 }
+

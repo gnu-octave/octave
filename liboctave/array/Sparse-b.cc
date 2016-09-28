@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate Sparse matrix of double values.
@@ -30,8 +30,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse.h"
 #include "Sparse.cc"
 
+template <>
+bool
+Sparse<bool>::SparseRep::any_element_is_nan (void) const
+{
+  return false;
+}
+
 INSTANTIATE_SPARSE (bool, OCTAVE_API);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<bool>&);
 #endif
+

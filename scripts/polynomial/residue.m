@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ## Copyright (C) 2007 Ben Abbott
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
-## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
+## @deftypefn  {} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
+## @deftypefnx {} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
+## @deftypefnx {} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
 ## The first calling form computes the partial fraction expansion for the
 ## quotient of the polynomials, @var{b} and @var{a}.
 ##
@@ -87,8 +87,8 @@
 ## polynomial specified by @var{r}, @var{p} and @var{k}, and the pole
 ## multiplicity @var{e}.
 ##
-## If the multiplicity, @var{e}, is not explicitly specified the multiplicity is
-## determined by the function @code{mpoles}.
+## If the multiplicity, @var{e}, is not explicitly specified the
+## multiplicity is determined by the function @code{mpoles}.
 ##
 ## For example:
 ##
@@ -159,7 +159,7 @@ function [r, p, k, e] = residue (b, a, varargin)
     else
       e = [];
     endif
-    ## The inputs are the residue, pole, and direct part. Solve for the
+    ## The inputs are the residue, pole, and direct part.  Solve for the
     ## corresponding numerator and denominator polynomials
     [r, p] = rresidue (b, a, varargin{1}, toler, e);
     return;
@@ -170,8 +170,8 @@ function [r, p, k, e] = residue (b, a, varargin)
   a = polyreduce (a);
   b = polyreduce (b);
 
-  b = b / a(1);
-  a = a / a(1);
+  b /= a(1);
+  a /= a(1);
 
   la = length (a);
   lb = length (b);
@@ -198,7 +198,7 @@ function [r, p, k, e] = residue (b, a, varargin)
   p = p(indx);
 
   ## For each group of pole multiplicity, set the value of each
-  ## pole to the average of the group. This reduces the error in
+  ## pole to the average of the group.  This reduces the error in
   ## the resulting poles.
 
   p_group = cumsum (e == 1);
@@ -329,13 +329,13 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
     endfor
     pn = deconv (pden, pm);
     pn = r(n) * pn;
-    pnum = pnum + prepad (pn, N+1, 0, 2);
+    pnum += prepad (pn, N+1, 0, 2);
   endfor
 
   ## Add the direct term.
 
   if (numel (k))
-    pnum = pnum + conv (pden, k);
+    pnum += conv (pden, k);
   endif
 
   ## Check for leading zeros and trim the polynomial coefficients.
@@ -415,8 +415,8 @@ endfunction
 %! assert (br, b, 1e-12);
 %! assert (ar, a, 1e-12);
 
-## The following test is due to Bernard Grung (bug #34266)
-%!xtest
+## The following test is due to Bernard Grung
+%!test <34266>
 %! z1 =  7.0372976777e6;
 %! p1 = -3.1415926536e9;
 %! p2 = -4.9964813512e8;

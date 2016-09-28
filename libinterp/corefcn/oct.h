@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,26 +20,25 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_h)
+#if ! defined (octave_oct_h)
 #define octave_oct_h 1
+
+#include "octave-config.h"
 
 // Things that are often included to create .oct files.
 
-// config.h needs to be first because it includes #defines that can */
-// affect other header files.
-
-#include <config.h>
-
 #include "Matrix.h"
-
 #include "oct-locbuf.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "errwarn.h"
+// gripes.h was deprecated in version 4.2 and will be removed in 4.6
 #include "gripes.h"
 #include "help.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 #include "utils.h"
 #include "variables.h"
 
 #endif
+

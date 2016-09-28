@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2015 VZLU Prague
+Copyright (C) 2010-2016 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-fcn-handle.h"
 #include "ov-scalar.h"
@@ -34,14 +34,16 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFBINOP (eq, fcn_handle, fcn_handle)
 {
-  CAST_BINOP_ARGS (const octave_fcn_handle&, const octave_fcn_handle&);
+  const octave_fcn_handle& v1 = dynamic_cast<const octave_fcn_handle&> (a1);
+  const octave_fcn_handle& v2 = dynamic_cast<const octave_fcn_handle&> (a2);
 
   return v1.is_equal_to (v2);
 }
 
 DEFBINOP (ne, fcn_handle, fcn_handle)
 {
-  CAST_BINOP_ARGS (const octave_fcn_handle&, const octave_fcn_handle&);
+  const octave_fcn_handle& v1 = dynamic_cast<const octave_fcn_handle&> (a1);
+  const octave_fcn_handle& v2 = dynamic_cast<const octave_fcn_handle&> (a2);
 
   return ! v1.is_equal_to (v2);
 }
@@ -52,3 +54,4 @@ install_fcn_ops (void)
   INSTALL_BINOP (op_eq, octave_fcn_handle, octave_fcn_handle, eq);
   INSTALL_BINOP (op_ne, octave_fcn_handle, octave_fcn_handle, ne);
 }
+

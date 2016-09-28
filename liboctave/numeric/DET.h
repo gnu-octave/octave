@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,14 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DET_h)
+#if ! defined (octave_DET_h)
 #define octave_DET_h 1
+
+#include "octave-config.h"
 
 #include <cmath>
 #include "oct-cmplx.h"
 #include "lo-mappers.h"
 
-template <class T>
+template <typename T>
 class
 base_det
 {
@@ -36,18 +38,18 @@ public:
   base_det (T c = 1, int e = 0)
     : c2 (), e2 ()
   {
-    c2 = xlog2 (c, e2);
+    c2 = octave::math::log2 (c, e2);
     e2 += e;
   }
 
   base_det (T c, double e, double b)
     : c2 (), e2 ()
   {
-    e *= xlog2 (b);
+    e *= octave::math::log2 (b);
     e2 = e;
-    c *= xexp2 (e - e2);
+    c *= octave::math::exp2 (e - e2);
     int f;
-    c2 = xlog2 (c, f);
+    c2 = octave::math::log2 (c, f);
     e2 += f;
   }
 
@@ -71,7 +73,7 @@ public:
   void operator *= (T t)
   {
     int e;
-    c2 *= xlog2 (t, e);
+    c2 *= octave::math::log2 (t, e);
     e2 += e;
   }
 
@@ -88,3 +90,4 @@ typedef base_det<Complex> ComplexDET;
 typedef base_det<FloatComplex> FloatComplexDET;
 
 #endif
+

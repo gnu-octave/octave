@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} set (@var{player}, @var{name}, @var{value})
-## @deftypefnx {Function File} {} set (@var{player}, @var{properties})
-## @deftypefnx {Function File} {@var{properties} =} set (@var{player})
+## @deftypefn  {} {} set (@var{player}, @var{name}, @var{value})
+## @deftypefnx {} {} set (@var{player}, @var{properties})
+## @deftypefnx {} {@var{properties} =} set (@var{player})
 ## Set the value of property specified by @var{name} to a given @var{value}.
 ##
 ## If @var{name} and @var{value} are cell arrays, set each property to the
@@ -50,7 +50,7 @@ function settable = set (varargin)
       index = 1;
       for property = varargin{2}
         setproperty (player, char (property), varargin{3}{index});
-        index = index + 1;
+        index += 1;
       endfor
     else
       setproperty (player, varargin{2}, varargin{3});
@@ -62,6 +62,7 @@ function settable = set (varargin)
 endfunction
 
 function setproperty (player, property, value)
+
   switch (property)
     case "SampleRate"
       __player_set_fs__ (player, value);
@@ -72,4 +73,6 @@ function setproperty (player, property, value)
     otherwise
       error ("audioplayer: no such property or the property specified is read-only");
   endswitch
+
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezsurf (@var{f})
-## @deftypefnx {Function File} {} ezsurf (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {} ezsurf (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezsurf (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezsurf (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezsurf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezsurf (@dots{})
+## @deftypefn  {} {} ezsurf (@var{f})
+## @deftypefnx {} {} ezsurf (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {} ezsurf (@dots{}, @var{dom})
+## @deftypefnx {} {} ezsurf (@dots{}, @var{n})
+## @deftypefnx {} {} ezsurf (@dots{}, "circ")
+## @deftypefnx {} {} ezsurf (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezsurf (@dots{})
 ##
 ## Plot the surface defined by a function.
 ##
@@ -90,13 +90,13 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezsurf (f, [-3, 3]);
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! fx = @(s,t) cos (s) .* cos (t);
 %! fy = @(s,t) sin (s) .* cos (t);
 %! fz = @(s,t) sin (t);
@@ -105,12 +105,12 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) x.^2 + y.^2;
 %! subplot (1,2,1);
 %!  ezsurf (f, [-2,2]);
-%!  title ({'x^2 + y^2'; 'plotted over rectangular grid (default)'});
+%!  title ({"x^2 + y^2"; "plotted over rectangular grid (default)"});
 %! subplot (1,2,2);
-%!  ezsurf (f, [-2,2], 'circ');
-%!  title ({'x^2 + y^2'; 'plotted over circular disk with "circ"'});
+%!  ezsurf (f, [-2,2], "circ");
+%!  title ({"x^2 + y^2"; 'plotted over circular disk with "circ"'});
 

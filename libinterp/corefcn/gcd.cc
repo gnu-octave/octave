@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 2010 Jaroslav Hajek, Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "dNDArray.h"
@@ -34,14 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 static double
 simple_gcd (double a, double b)
 {
-  if (! xisinteger (a) || ! xisinteger (b))
-    (*current_liboctave_error_handler)
-      ("gcd: all values must be integers");
+  if (! octave::math::isinteger (a) || ! octave::math::isinteger (b))
+    error ("gcd: all values must be integers");
 
   double aa = fabs (a);
   double bb = fabs (b);
@@ -64,8 +63,8 @@ static void
 divide (const std::complex<FP>& a, const std::complex<FP>& b,
         std::complex<FP>& q, std::complex<FP>& r)
 {
-  FP qr = gnulib::floor ((a/b).real () + 0.5);
-  FP qi = gnulib::floor ((a/b).imag () + 0.5);
+  FP qr = std::floor ((a/b).real () + 0.5);
+  FP qi = std::floor ((a/b).imag () + 0.5);
 
   q = std::complex<FP> (qr, qi);
 
@@ -76,10 +75,11 @@ template <typename FP>
 static std::complex<FP>
 simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
-  if (! xisinteger (a.real ()) || ! xisinteger (a.imag ())
-      || ! xisinteger (b.real ()) || ! xisinteger (b.imag ()))
-    (*current_liboctave_error_handler)
-      ("gcd: all complex parts must be integers");
+  if (! octave::math::isinteger (a.real ())
+      || ! octave::math::isinteger (a.imag ())
+      || ! octave::math::isinteger (b.real ())
+      || ! octave::math::isinteger (b.imag ()))
+    error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
   std::complex<FP> bb = b;
@@ -98,7 +98,7 @@ simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
   return aa;
 }
 
-template <class T>
+template <typename T>
 static octave_int<T>
 simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
 {
@@ -118,9 +118,8 @@ simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
 static double
 extended_gcd (double a, double b, double& x, double& y)
 {
-  if (! xisinteger (a) || ! xisinteger (b))
-    (*current_liboctave_error_handler)
-      ("gcd: all values must be integers");
+  if (! octave::math::isinteger (a) || ! octave::math::isinteger (b))
+    error ("gcd: all values must be integers");
 
   double aa = fabs (a);
   double bb = fabs (b);
@@ -131,7 +130,7 @@ extended_gcd (double a, double b, double& x, double& y)
 
   while (bb != 0)
     {
-      double qq = gnulib::floor (aa / bb);
+      double qq = std::floor (aa / bb);
       double tt = fmod (aa, bb);
 
       aa = bb;
@@ -157,10 +156,11 @@ static std::complex<FP>
 extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
               std::complex<FP>& x, std::complex<FP>& y)
 {
-  if (! xisinteger (a.real ()) || ! xisinteger (a.imag ())
-      || ! xisinteger (b.real ()) || ! xisinteger (b.imag ()))
-    (*current_liboctave_error_handler)
-      ("gcd: all complex parts must be integers");
+  if (! octave::math::isinteger (a.real ())
+      || ! octave::math::isinteger (a.imag ())
+      || ! octave::math::isinteger (b.real ())
+      || ! octave::math::isinteger (b.imag ()))
+    error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
   std::complex<FP> bb = b;
@@ -200,7 +200,7 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
   return aa;
 }
 
-template <class T>
+template <typename T>
 static octave_int<T>
 extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
               octave_int<T>& x, octave_int<T>& y)
@@ -233,7 +233,7 @@ extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
   return aa;
 }
 
-template<class NDA>
+template <typename NDA>
 static octave_value
 do_simple_gcd (const octave_value& a, const octave_value& b)
 {
@@ -278,9 +278,9 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
       retval = do_simple_gcd<NDArray> (a, b);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-    case btyp_ ## X: \
-      retval = do_simple_gcd<X ## NDArray> (a, b); \
+#define MAKE_INT_BRANCH(X)                            \
+    case btyp_ ## X:                                  \
+      retval = do_simple_gcd<X ## NDArray> (a, b);    \
       break
 
     MAKE_INT_BRANCH (int8);
@@ -313,7 +313,7 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
   return retval;
 }
 
-template<class NDA>
+template <typename NDA>
 static octave_value
 do_extended_gcd (const octave_value& a, const octave_value& b,
                  octave_value& x, octave_value& y)
@@ -340,7 +340,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       if (aa.numel () == 1)
         dv = bb.dims ();
       else if (bb.numel () != 1 && bb.dims () != dv)
-        gripe_nonconformant ("gcd", a.dims (), b.dims ());
+        octave::err_nonconformant ("gcd", a.dims (), b.dims ());
 
       NDA gg (dv), xx (dv), yy (dv);
 
@@ -390,9 +390,9 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       retval = do_extended_gcd<NDArray> (a, b, x, y);
       break;
 
-#define MAKE_INT_BRANCH(X) \
-    case btyp_ ## X: \
-      retval = do_extended_gcd<X ## NDArray> (a, b, x, y); \
+#define MAKE_INT_BRANCH(X)                                    \
+    case btyp_ ## X:                                          \
+      retval = do_extended_gcd<X ## NDArray> (a, b, x, y);    \
       break
 
     MAKE_INT_BRANCH (int8);
@@ -420,7 +420,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     }
 
   // For consistency.
-  if (! error_state && a.is_sparse_type () && b.is_sparse_type ())
+  if (a.is_sparse_type () && b.is_sparse_type ())
     {
       retval = retval.sparse_matrix_value ();
       x = x.sparse_matrix_value ();
@@ -438,83 +438,72 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 }
 
 DEFUN (gcd, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
-@deftypefnx {Built-in Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
-Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.\n\
-\n\
-If more than one argument is given then all arguments must be the same size\n\
-or scalar.  In this case the greatest common divisor is calculated for each\n\
-element individually.  All elements must be ordinary or Gaussian (complex)\n\
-integers.  Note that for Gaussian integers, the gcd is only unique up to a\n\
-phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest\n\
-common divisor among the four possible is returned.\n\
-\n\
-Optional return arguments @var{v1}, @dots{}, contain integer vectors such\n\
-that,\n\
-\n\
-@tex\n\
-$g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
-@end tex\n\
-@ifnottex\n\
-\n\
-@example\n\
-@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}\n\
-@end example\n\
-\n\
-@end ifnottex\n\
-\n\
-Example code:\n\
-\n\
-@example\n\
-@group\n\
-gcd ([15, 9], [20, 18])\n\
-   @result{}  5  9\n\
-@end group\n\
-@end example\n\
-\n\
-@seealso{lcm, factor, isprime}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})
+@deftypefnx {} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})
+Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.
 
+If more than one argument is given then all arguments must be the same size
+or scalar.  In this case the greatest common divisor is calculated for each
+element individually.  All elements must be ordinary or Gaussian (complex)
+integers.  Note that for Gaussian integers, the gcd is only unique up to a
+phase factor (multiplication by 1, -1, i, or -i), so an arbitrary greatest
+common divisor among the four possible is returned.
+
+Optional return arguments @var{v1}, @dots{}, contain integer vectors such
+that,
+
+@tex
+$g = v_1 a_1 + v_2 a_2 + \cdots$
+@end tex
+@ifnottex
+
+@example
+@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}
+@end example
+
+@end ifnottex
+
+Example code:
+
+@example
+@group
+gcd ([15, 9], [20, 18])
+   @result{}  5  9
+@end group
+@end example
+
+@seealso{lcm, factor, isprime}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin > 1)
+  if (nargin < 2)
+    print_usage ();
+
+  octave_value_list retval;
+
+  if (nargout > 1)
     {
-      if (nargout > 1)
+      retval.resize (nargin + 1);
+
+      retval(0) = do_extended_gcd (args(0), args(1), retval(1), retval(2));
+
+      for (int j = 2; j < nargin; j++)
         {
-          retval.resize (nargin + 1);
-
-          retval(0) = do_extended_gcd (args(0), args(1), retval(1), retval(2));
-
-          for (int j = 2; j < nargin; j++)
-            {
-              octave_value x;
-              retval(0) = do_extended_gcd (retval(0), args(j),
-                                           x, retval(j+1));
-              for (int i = 0; i < j; i++)
-                retval(i+1).assign (octave_value::op_el_mul_eq, x);
-
-              if (error_state)
-                break;
-            }
-        }
-      else
-        {
-          retval(0) = do_simple_gcd (args(0), args(1));
-
-          for (int j = 2; j < nargin; j++)
-            {
-              retval(0) = do_simple_gcd (retval(0), args(j));
-
-              if (error_state)
-                break;
-            }
+          octave_value x;
+          retval(0) = do_extended_gcd (retval(0), args(j), x, retval(j+1));
+          for (int i = 0; i < j; i++)
+            retval(i+1).assign (octave_value::op_el_mul_eq, x);
         }
     }
   else
-    print_usage ();
+    {
+      retval(0) = do_simple_gcd (args(0), args(1));
+
+      for (int j = 2; j < nargin; j++)
+        retval(0) = do_simple_gcd (retval(0), args(j));
+    }
 
   return retval;
 }
@@ -530,13 +519,13 @@ gcd ([15, 9], [20, 18])\n\
 %! u = [953 + i*971, 967 + i*977];
 %! [d, k(1), k(2)] = gcd (p(1), p(2));
 %! [z, w(1), w(2)] = gcd (u(1), u(2));
-%! assert (d, 1)
-%! assert (sum (p.*k), d)
-%! assert (abs (z), sqrt (2))
-%! assert (abs (sum (u.*w)), sqrt (2))
+%! assert (d, 1);
+%! assert (sum (p.*k), d);
+%! assert (abs (z), sqrt (2));
+%! assert (abs (sum (u.*w)), sqrt (2));
 
-%!error <all values must be integers> gcd (1/2, 2);
-%!error <all complex parts must be integers> gcd (e + i*pi, 1);
+%!error <all values must be integers> gcd (1/2, 2)
+%!error <all complex parts must be integers> gcd (e + i*pi, 1)
 
 %!error gcd ()
 
@@ -544,3 +533,4 @@ gcd ([15, 9], [20, 18])\n\
 %! s.a = 1;
 %! fail ("gcd (s)");
 */
+

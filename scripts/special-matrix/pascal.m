@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Peter Ekberg
+## Copyright (C) 1999-2016 Peter Ekberg
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pascal (@var{n})
-## @deftypefnx {Function File} {} pascal (@var{n}, @var{t})
+## @deftypefn  {} {} pascal (@var{n})
+## @deftypefnx {} {} pascal (@var{n}, @var{t})
 ## Return the Pascal matrix of order @var{n} if @code{@var{t} = 0}.
 ##
 ## The default value of @var{t} is 0.
@@ -49,7 +49,7 @@ function retval = pascal (n, t = 0)
   elseif (! (isscalar (n) && isscalar (t)))
     error ("pascal: N and T must be scalars");
   elseif (! any (t == [-1, 0, 1, 2]))
-    error ("pascal: expecting T to be -1, 0, 1, or 2, found %d", t);
+    error ("pascal: T must be -1, 0, 1, or 2, found %d", t);
   endif
 
   retval = zeros (n);
@@ -91,6 +91,6 @@ endfunction
 %!error pascal (1,2,3)
 %!error <N and T must be scalars> pascal ([1 2])
 %!error <N and T must be scalars> pascal (1, [1 2])
-%!error <expecting T to be> pascal (3,-2)
-%!error <expecting T to be> pascal (3,4)
+%!error <T must be -1> pascal (3,-2)
+%!error <T must be .* or 2> pascal (3,4)
 

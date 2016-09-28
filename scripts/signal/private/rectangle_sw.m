@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rectangle_sw (@var{n}, @var{b})
+## @deftypefn {} {} rectangle_sw (@var{n}, @var{b})
 ## Rectangular spectral window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn

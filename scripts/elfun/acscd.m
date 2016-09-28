@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman
+## Copyright (C) 2006-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} acscd (@var{x})
+## @deftypefn {} {} acscd (@var{x})
 ## Compute the inverse cosecant in degrees for each element of @var{x}.
 ## @seealso{cscd, acsc}
 ## @end deftypefn

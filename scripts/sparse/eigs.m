@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 David Bateman
+## Copyright (C) 2005-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,26 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{d} =} eigs (@var{A})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{k})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{k}, @var{sigma})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{B})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{B}, @var{k})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{B})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{k})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {Function File} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {Function File} {[@var{V}, @var{d}] =} eigs (@var{A}, @dots{})
-## @deftypefnx {Function File} {[@var{V}, @var{d}] =} eigs (@var{af}, @var{n}, @dots{})
-## @deftypefnx {Function File} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{A}, @dots{})
-## @deftypefnx {Function File} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})
+## @deftypefn  {} {@var{d} =} eigs (@var{A})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {[@var{V}, @var{d}] =} eigs (@var{A}, @dots{})
+## @deftypefnx {} {[@var{V}, @var{d}] =} eigs (@var{af}, @var{n}, @dots{})
+## @deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{A}, @dots{})
+## @deftypefnx {} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})
 ## Calculate a limited number of eigenvalues and eigenvectors of @var{A},
 ## based on a selection criteria.
 ##
@@ -107,7 +107,8 @@
 ## @table @code
 ## @item issym
 ## If @var{af} is given, then flags whether the function @var{af} defines a
-## symmetric problem.  It is ignored if @var{A} is given.  The default is false.
+## symmetric problem.  It is ignored if @var{A} is given.  The default is
+## false.
 ##
 ## @item isreal
 ## If @var{af} is given, then flags whether the function @var{af} defines a
@@ -173,13 +174,13 @@
 ## @end table
 ##
 ## The return arguments of @code{eigs} depend on the number of return arguments
-## requested.  With a single return argument, a vector @var{d} of length @var{k}
-## is returned containing the @var{k} eigenvalues that have been found.  With
-## two return arguments, @var{V} is a @var{n}-by-@var{k} matrix whose columns
-## are the @var{k} eigenvectors corresponding to the returned eigenvalues.  The
-## eigenvalues themselves are returned in @var{d} in the form of a
-## @var{n}-by-@var{k} matrix, where the elements on the diagonal are the
-## eigenvalues.
+## requested.  With a single return argument, a vector @var{d} of length
+## @var{k} is returned containing the @var{k} eigenvalues that have been
+## found.  With two return arguments, @var{V} is a @var{n}-by-@var{k} matrix
+## whose columns are the @var{k} eigenvectors corresponding to the returned
+## eigenvalues.  The eigenvalues themselves are returned in @var{d} in the
+## form of a @var{n}-by-@var{k} matrix, where the elements on the diagonal
+## are the eigenvalues.
 ##
 ## Given a third return argument @var{flag}, @code{eigs} returns the status
 ## of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.
@@ -286,53 +287,53 @@ function out = select (args, k, sigma, real_valued, symmetric)
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "descend");
         else
-          error ('sigma = "la" requires real symmetric problem');
+          error ('eigs: sigma = "la" requires real symmetric problem');
         endif
 
       case "sa"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('sigma = "sa" requires real symmetric problem');
+          error ('eigs: sigma = "sa" requires real symmetric problem');
         endif
 
       case "be"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('sigma = "be" requires real symmetric problem');
+          error ('eigs: sigma = "be" requires real symmetric problem');
         endif
 
       case "lr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "descend");
         else
-          error ('sigma = "lr" requires complex or unsymmetric problem');
+          error ('eigs: sigma = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('sigma = "sr" requires complex or unsymmetric problem');
+          error ('eigs: sigma = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
-          error ('sigma = "li" requires complex or unsymmetric problem');
+          error ('eigs: sigma = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
-          error ('sigma = "si" requires complex or unsymmetric problem');
+          error ('eigs: sigma = "si" requires complex or unsymmetric problem');
         endif
 
       otherwise
-        error ("unrecognized value for sigma: %s", sigma);
+        error ("eigs: unrecognized value for sigma: %s", sigma);
     endswitch
   else
     ## numeric sigma, find k closest values
@@ -496,7 +497,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -623,7 +624,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -754,7 +755,7 @@ endfunction
 %! d2 = sort (d0);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
@@ -865,7 +866,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -991,7 +992,7 @@ endfunction
 %! d0 = eig (A);
 %! [~, idx] = sort (abs (d0));
 %! d0 = d0(idx);
-%! rand ("state", 42); % initialize generator to make eigs behavior reproducible
+%! rand ("state", 42); # initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs (d1), abs (d0(end:-1:(end-k+1))), 1e-11);
@@ -1116,7 +1117,7 @@ endfunction
 %! B = diag (ones (10, 1));
 %! reseig = eig (A, B);
 %! [~, idx] = sort (abs (reseig), "ascend");
-%! assert (eigs (A, B, 10, 0), reseig (idx))
+%! assert (eigs (A, B, 10, 0), reseig (idx));
 
 %!test
 %! X = [70 47 42 39 50 73 79 23;
@@ -1137,6 +1138,6 @@ endfunction
 %! tmp = abs (Z - ZZ);
 %! assert (max (tmp(:)) < 5e-11);
 
-%!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]);
-%!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]);
-%!assert (eigs (diag (1:5), 3, "be"), [1;4;5]);
+%!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5])
+%!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1])
+%!assert (eigs (diag (1:5), 3, "be"), [1;4;5])

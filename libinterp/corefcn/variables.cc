@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdio>
@@ -39,26 +39,28 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-regexp.h"
 #include "str-vec.h"
 
+#include "call-stack.h"
 #include <defaults.h>
 #include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "help.h"
 #include "input.h"
+#include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
 #include "octave-link.h"
+#include "octave-preserve-stream-state.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-class.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "symtab.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -109,6 +111,7 @@ is_valid_function (const std::string& fcn_name,
         ans = val.function_value (true);
     }
 
+  // FIXME: Should this be "err" and "error_for", rather than warn?
   if (! ans && warn)
     error ("%s: the symbol '%s' is not valid as a function",
            warn_for.c_str (), fcn_name.c_str ());
@@ -131,7 +134,9 @@ is_valid_function (const octave_value& arg,
       ans = is_valid_function (fcn_name, warn_for, warn);
     }
   else if (warn)
-    error ("%s: expecting function name as argument", warn_for.c_str ());
+    // FIXME: Should this be "err" and "error_for", rather than warn?
+    error ("%s: argument must be a string containing function name",
+           warn_for.c_str ());
 
   return ans;
 }
@@ -147,38 +152,28 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
-      if (arg.is_string ())
-        {
-          std::string s = arg.string_value ();
+      std::string s = arg.xstring_value ("%s: first argument must be a string",
+                                         warn_for.c_str ());
 
-          std::string cmd = header;
-          cmd.append (s);
-          cmd.append (trailer);
+      std::string cmd = header;
+      cmd.append (s);
+      cmd.append (trailer);
 
-          int parse_status;
+      int parse_status;
 
-          eval_string (cmd, true, parse_status, 0);
+      eval_string (cmd, true, parse_status, 0);
 
-          if (parse_status == 0)
-            {
-              retval = is_valid_function (fname, warn_for, 0);
+      if (parse_status != 0)
+        error ("%s: '%s' is not valid as a function",
+               warn_for.c_str (), fname.c_str ());
 
-              if (! retval)
-                {
-                  error ("%s: '%s' is not valid as a function",
-                         warn_for.c_str (), fname.c_str ());
-                  return retval;
-                }
+      retval = is_valid_function (fname, warn_for, 0);
 
-              warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
-                       warn_for.c_str ());
-            }
-          else
-            error ("%s: '%s' is not valid as a function",
-                   warn_for.c_str (), fname.c_str ());
-        }
-      else
-        error ("%s: expecting first argument to be a string",
+      if (! retval)
+        error ("%s: '%s' is not valid as a function",
+               warn_for.c_str (), fname.c_str ());
+
+      warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
                warn_for.c_str ());
     }
 
@@ -244,6 +239,7 @@ generate_struct_completions (const std::string& text,
   string_vector names;
 
   size_t pos = text.rfind ('.');
+  bool array = false;
 
   if (pos != std::string::npos)
     {
@@ -254,9 +250,15 @@ generate_struct_completions (const std::string& text,
 
       prefix = text.substr (0, pos);
 
+      if (prefix == "")
+        {
+          array = true;
+          prefix = find_indexed_expression (text);
+        }
+
       std::string base_name = prefix;
 
-      pos = base_name.find_first_of ("{(.");
+      pos = base_name.find_first_of ("{(. ");
 
       if (pos != std::string::npos)
         base_name = base_name.substr (0, pos);
@@ -265,10 +267,7 @@ generate_struct_completions (const std::string& text,
         {
           int parse_status;
 
-          unwind_protect frame;
-
-          frame.protect_var (error_state);
-          frame.protect_var (warning_state);
+          octave::unwind_protect frame;
 
           frame.protect_var (discard_error_messages);
           frame.protect_var (discard_warning_messages);
@@ -276,27 +275,38 @@ generate_struct_completions (const std::string& text,
           discard_error_messages = true;
           discard_warning_messages = true;
 
-          octave_value tmp = eval_string (prefix, true, parse_status);
+          try
+            {
+              octave_value tmp = eval_string (prefix, true, parse_status);
 
-          frame.run ();
+              frame.run ();
 
-          if (tmp.is_defined ()
-              && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
-            names = tmp.map_keys ();
+              if (tmp.is_defined ()
+                  && (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
+                names = tmp.map_keys ();
+            }
+          catch (const octave::execution_exception&)
+            {
+              recover_from_exception ();
+            }
         }
     }
+
+  // Undo look-back that found the array expression,
+  // but insert an extra "." to distinguish from the non-struct case.
+  if (array)
+    prefix = ".";
 
   return names;
 }
 
 // FIXME: this will have to be much smarter to work "correctly".
-
 bool
-looks_like_struct (const std::string& text)
+looks_like_struct (const std::string& text, char prev_char)
 {
   bool retval = (! text.empty ()
-                 && text != "."
-                 && text.find_first_of (file_ops::dir_sep_chars ()) == std::string::npos
+                 && (text != "." || prev_char == ')' || prev_char == '}')
+                 && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
                  && text.find ("..") == std::string::npos
                  && text.rfind ('.') != std::string::npos);
 
@@ -307,10 +317,9 @@ looks_like_struct (const std::string& text)
     {
       int parse_status;
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       frame.protect_var (discard_error_messages);
-      frame.protect_var (error_state);
 
       discard_error_messages = true;
 
@@ -328,21 +337,11 @@ looks_like_struct (const std::string& text)
 static octave_value
 do_isglobal (const octave_value_list& args)
 {
-  octave_value retval = false;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 1)
+    print_usage ();
 
   if (! args(0).is_string ())
-    {
-      error ("isglobal: NAME must be a string");
-      return retval;
-    }
+    error ("isglobal: NAME must be a string");
 
   std::string name = args(0).string_value ();
 
@@ -350,44 +349,39 @@ do_isglobal (const octave_value_list& args)
 }
 
 DEFUN (isglobal, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
-Return true if @var{name} is a globally visible variable.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-global x\n\
-isglobal (\"x\")\n\
-   @result{} 1\n\
-@end group\n\
-@end example\n\
-@seealso{isvarname, exist}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isglobal (@var{name})
+Return true if @var{name} is a globally visible variable.
+
+For example:
+
+@example
+@group
+global x
+isglobal ("x")
+   @result{} 1
+@end group
+@end example
+@seealso{isvarname, exist}
+@end deftypefn */)
 {
   return do_isglobal (args);
 }
 
-static octave_value
-safe_symbol_lookup (const std::string& symbol_name)
-{
-  octave_value retval;
+/*
+%!test
+%! global x;
+%! assert (isglobal ("x"), true);
 
-  unwind_protect frame;
-  interpreter_try (frame);
-
-  retval = symbol_table::find (symbol_name);
-
-  error_state = 0;
-
-  return retval;
-}
+%!error isglobal ()
+%!error isglobal ("a", "b")
+%!error isglobal (1)
+*/
 
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  if (is_keyword (name))
+  if (octave::is_keyword (name))
     return 0;
 
   bool search_any = type == "any";
@@ -395,6 +389,11 @@ symbol_exist (const std::string& name, const std::string& type)
   bool search_dir = type == "dir";
   bool search_file = type == "file";
   bool search_builtin = type == "builtin";
+  bool search_class = type == "class";
+
+  if (! (search_any || search_var || search_dir || search_file ||
+         search_builtin || search_class))
+    error ("exist: unrecognized type argument \"%s\"", type.c_str ());
 
   if (search_any || search_var)
     {
@@ -413,21 +412,13 @@ symbol_exist (const std::string& name, const std::string& type)
   // We shouldn't need to look in the global symbol table, since any name
   // that is visible in the current scope will be in the local symbol table.
 
-  octave_value val;
-
-  if (search_any || search_builtin)
+  // Command line function which Matlab does not support
+  if (search_any)
     {
-      // FIXME: safe_symbol_lookup will attempt unsafe load of .oct/.mex file.
-      // This can cause a segfault.  To catch this would require temporarily
-      // diverting the SIGSEGV exception handler and then restoring it.
-      // See bug #36067.
-      val = safe_symbol_lookup (name);
+      octave_value val = symbol_table::find_cmdline_function (name);
 
-      if (val.is_defined () && val.is_builtin_function ())
-        return 5;
-
-      if (search_builtin)
-        return 0;
+      if (val.is_defined ())
+        return 103;
     }
 
   if (search_any || search_file || search_dir)
@@ -456,7 +447,7 @@ symbol_exist (const std::string& name, const std::string& type)
       if (file_name.empty ())
         file_name = name;
 
-      file_stat fs (file_name);
+      octave::sys::file_stat fs (file_name);
 
       if (fs)
         {
@@ -481,14 +472,19 @@ symbol_exist (const std::string& name, const std::string& type)
         return 0;
     }
 
-  // Command line function which Matlab does not support
-  if (search_any && val.is_defined () && val.is_user_function ())
-    return 103;
+  if (search_any || search_builtin)
+    {
+      if (symbol_table::is_built_in_function_name (name))
+        return 5;
+
+      if (search_builtin)
+        return 0;
+    }
 
   return 0;
 }
 
-#define GET_IDX(LEN) \
+#define GET_IDX(LEN)                                                    \
   static_cast<int> ((LEN-1) * static_cast<double> (rand ()) / RAND_MAX)
 
 std::string
@@ -513,107 +509,96 @@ unique_symbol_name (const std::string& basename)
 }
 
 DEFUN (exist, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{c} =} exist (@var{name})\n\
-@deftypefnx {Built-in Function} {@var{c} =} exist (@var{name}, @var{type})\n\
-Check for the existence of @var{name} as a variable, function, file,\n\
-directory, or class.\n\
-\n\
-The return code @var{c} is one of\n\
-\n\
-@table @asis\n\
-@item 1\n\
-@var{name} is a variable.\n\
-\n\
-@item 2\n\
-@var{name} is an absolute file name, an ordinary file in Octave's\n\
-@code{path}, or (after appending @samp{.m}) a function file in Octave's\n\
-@code{path}.\n\
-\n\
-@item 3\n\
-@var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.\n\
-\n\
-@item 5\n\
-@var{name} is a built-in function.\n\
-\n\
-@item 7\n\
-@var{name} is a directory.\n\
-\n\
-@item 103\n\
-@var{name} is a function not associated with a file (entered on the command\n\
-line).\n\
-\n\
-@item 0\n\
-@var{name} does not exist.\n\
-@end table\n\
-\n\
-If the optional argument @var{type} is supplied, check only for symbols of\n\
-the specified type.  Valid types are\n\
-\n\
-@table @asis\n\
-@item @qcode{\"var\"}\n\
-Check only for variables.\n\
-\n\
-@item @qcode{\"builtin\"}\n\
-Check only for built-in functions.\n\
-\n\
-@item @qcode{\"dir\"}\n\
-Check only for directories.\n\
-\n\
-@item @qcode{\"file\"}\n\
-Check only for files and directories.\n\
-\n\
-@item @qcode{\"class\"}\n\
-Check only for classes.  (Note: This option is accepted, but not currently\n\
-implemented)\n\
-@end table\n\
-\n\
-If no type is given, and there are multiple possible matches for name,\n\
-@code{exist} will return a code according to the following priority list:\n\
-variable, built-in function, oct-file, directory, file, class.\n\
-\n\
-@code{exist} returns 2 if a regular file called @var{name} is present in\n\
-Octave's search path.  If you want information about other types of files\n\
-not on the search path you should use some combination of the functions\n\
-@code{file_in_path} and @code{stat} instead.\n\
-\n\
-@seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}\n\
-@end deftypefn")
-{
-  octave_value retval = false;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{c} =} exist (@var{name})
+@deftypefnx {} {@var{c} =} exist (@var{name}, @var{type})
+Check for the existence of @var{name} as a variable, function, file,
+directory, or class.
 
+The return code @var{c} is one of
+
+@table @asis
+@item 1
+@var{name} is a variable.
+
+@item 2
+@var{name} is an absolute filename, an ordinary file in Octave's
+@code{path}, or (after appending @samp{.m}) a function file in Octave's
+@code{path}.
+
+@item 3
+@var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.
+
+@item 5
+@var{name} is a built-in function.
+
+@item 7
+@var{name} is a directory.
+
+@item 103
+@var{name} is a function not associated with a file (entered on the command
+line).
+
+@item 0
+@var{name} does not exist.
+@end table
+
+If the optional argument @var{type} is supplied, check only for symbols of
+the specified type.  Valid types are
+
+@table @asis
+@item @qcode{"var"}
+Check only for variables.
+
+@item @qcode{"builtin"}
+Check only for built-in functions.
+
+@item @qcode{"dir"}
+Check only for directories.
+
+@item @qcode{"file"}
+Check only for files and directories.
+
+@item @qcode{"class"}
+Check only for classes.  (Note: This option is accepted, but not currently
+implemented)
+@end table
+
+If no type is given, and there are multiple possible matches for name,
+@code{exist} will return a code according to the following priority list:
+variable, built-in function, oct-file, directory, file, class.
+
+@code{exist} returns 2 if a regular file called @var{name} is present in
+Octave's search path.  If you want information about other types of files
+not on the search path you should use some combination of the functions
+@code{file_in_path} and @code{stat} instead.
+
+Programming Note: If @var{name} is implemented by a buggy .oct/.mex file,
+calling @var{exist} may cause Octave to crash.  To maintain high
+performance, Octave trusts .oct/.mex files instead of @nospell{sandboxing}
+them.
+
+@seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
-
-          if (nargin == 2)
-            {
-              if (args(1).is_string ())
-                {
-                  std::string type = args(1).string_value ();
-
-                  if (type == "class")
-                    warning ("exist: \"class\" type argument is not implemented");
-
-                  retval = symbol_exist (name, type);
-                }
-              else
-                error ("exist: TYPE must be a string");
-            }
-          else
-            retval = symbol_exist (name);
-        }
-      else
-        error ("exist: NAME must be a string");
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  return retval;
+  std::string name = args(0).xstring_value ("exist: NAME must be a string");
+
+  if (nargin == 2)
+    {
+      std::string type = args(1).xstring_value ("exist: TYPE must be a string");
+
+      if (type == "class")
+        warning ("exist: \"class\" type argument is not implemented");
+
+      return ovl (symbol_exist (name, type));
+    }
+  else
+    return ovl (symbol_exist (name));
 }
 
 /*
@@ -643,13 +628,13 @@ not on the search path you should use some combination of the functions\n\
 %!assert (exist ("print_usage", "file"), 2)
 %!assert (exist ("print_usage", "dir"), 0)
 
-## Don't search path for rooted relative file names
-%!assert (exist ("plot.m", "file"), 2);
-%!assert (exist ("./plot.m", "file"), 0);
-%!assert (exist ("./%nonexistentfile%", "file"), 0);
-%!assert (exist ("%nonexistentfile%", "file"), 0);
+## Don't search path for rooted relative filenames
+%!assert (exist ("plot.m", "file"), 2)
+%!assert (exist ("./plot.m", "file"), 0)
+%!assert (exist ("./%nonexistentfile%", "file"), 0)
+%!assert (exist ("%nonexistentfile%", "file"), 0)
 
-## Don't search path for absolute file names
+## Don't search path for absolute filenames
 %!test
 %! tname = tempname (pwd ());
 %! unwind_protect
@@ -682,6 +667,7 @@ not on the search path you should use some combination of the functions\n\
 %!warning <"class" type argument is not implemented> exist ("a", "class");
 %!error <TYPE must be a string> exist ("a", 1)
 %!error <NAME must be a string> exist (1)
+%!error <unrecognized type argument "foobar"> exist ("a", "foobar")
 
 */
 
@@ -736,22 +722,17 @@ wants_local_change (const octave_value_list& args, int& nargin)
 
   if (nargin == 2)
     {
-      if (args(1).is_string () && args(1).string_value () == "local")
-        {
-          nargin = 1;
-          retval = true;
-        }
-      else
-        {
-          error_with_cfn ("expecting second argument to be \"local\"");
-          nargin = 0;
-        }
+      if (! args(1).is_string () || args(1).string_value () != "local")
+        error_with_cfn ("second argument must be \"local\"");
+
+      nargin = 1;
+      retval = true;
     }
 
   return retval;
 }
 
-template <class T>
+template <typename T>
 bool try_local_protect (T& var)
 {
   octave_user_code *curr_usr_code = octave_call_stack::caller_user_code ();
@@ -782,17 +763,15 @@ set_internal_variable (bool& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
-      bool bval = args(0).bool_value ();
+      bool bval = args(0).xbool_value ("%s: argument must be a logical value", nm);
 
-      if (! error_state)
-        var = bval;
-      else
-        error ("%s: expecting arg to be a logical value", nm);
+      var = bval;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -814,32 +793,28 @@ set_internal_variable (char& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
+      std::string sval = args(0).xstring_value ("%s: argument must be a single character", nm);
 
-      if (! error_state)
+      switch (sval.length ())
         {
-          switch (sval.length ())
-            {
-            case 1:
-              var = sval[0];
-              break;
+        case 1:
+          var = sval[0];
+          break;
 
-            case 0:
-              var = '\0';
-              break;
+        case 0:
+          var = '\0';
+          break;
 
-            default:
-              error ("%s: argument must be a single character", nm);
-              break;
-            }
+        default:
+          error ("%s: argument must be a single character", nm);
+          break;
         }
-      else
-        error ("%s: argument must be a single character", nm);
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -862,25 +837,20 @@ set_internal_variable (int& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
-      int ival = args(0).int_value ();
+      int ival = args(0).xint_value ("%s: argument must be an integer value", nm);
 
-      if (! error_state)
-        {
-          if (ival < minval)
-            error ("%s: expecting arg to be greater than %d", nm, minval);
-          else if (ival > maxval)
-            error ("%s: expecting arg to be less than or equal to %d",
-                   nm, maxval);
-          else
-            var = ival;
-        }
-      else
-        error ("%s: expecting arg to be an integer value", nm);
+      if (ival < minval)
+        error ("%s: arg must be greater than %d", nm, minval);
+      if (ival > maxval)
+        error ("%s: arg must be less than or equal to %d", nm, maxval);
+
+      var = ival;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -903,24 +873,20 @@ set_internal_variable (double& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
-      double dval = args(0).scalar_value ();
+      double dval = args(0).xscalar_value ("%s: argument must be a scalar value", nm);
 
-      if (! error_state)
-        {
-          if (dval < minval)
-            error ("%s: expecting arg to be greater than %g", minval);
-          else if (dval > maxval)
-            error ("%s: expecting arg to be less than or equal to %g", maxval);
-          else
-            var = dval;
-        }
-      else
-        error ("%s: expecting arg to be a scalar value", nm);
+      if (dval < minval)
+        error ("%s: argument must be greater than %g", minval);
+      if (dval > maxval)
+        error ("%s: argument must be less than or equal to %g", maxval);
+
+      var = dval;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -942,22 +908,18 @@ set_internal_variable (std::string& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string sval = args(0).string_value ();
+      std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
 
-          if (empty_ok || ! sval.empty ())
-            var = sval;
-          else
-            error ("%s: value must not be empty", nm);
-        }
-      else
-        error ("%s: first argument must be a string", nm);
+      if (! empty_ok && sval.empty ())
+        error ("%s: value must not be empty", nm);
+
+      var = sval;
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
@@ -972,6 +934,7 @@ set_internal_variable (int& var, const octave_value_list& args,
     nchoices++;
 
   int nargin = args.length ();
+
   assert (var < nchoices);
 
   if (nargout > 0 || nargin == 0)
@@ -983,29 +946,68 @@ set_internal_variable (int& var, const octave_value_list& args,
         warning ("\"local\" has no effect outside a function");
     }
 
+  if (nargin > 1)
+    print_usage ();
+
   if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string sval = args(0).string_value ();
+      std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
 
-          int i = 0;
-          for (; i < nchoices; i++)
+      int i = 0;
+      for (; i < nchoices; i++)
+        {
+          if (sval == choices[i])
             {
-              if (sval == choices[i])
-                {
-                  var = i;
-                  break;
-                }
+              var = i;
+              break;
             }
-          if (i == nchoices)
-            error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
         }
-      else
-        error ("%s: first argument must be a string", nm);
+      if (i == nchoices)
+        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
     }
-  else if (nargin > 1)
+
+  return retval;
+}
+
+octave_value
+set_internal_variable (std::string& var, const octave_value_list& args,
+                       int nargout, const char *nm, const char **choices)
+{
+  octave_value retval;
+  int nchoices = 0;
+  while (choices[nchoices] != 0)
+    nchoices++;
+
+  int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
+    retval = var;
+
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
+
+  if (nargin > 1)
     print_usage ();
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).xstring_value ("%s: first argument must be a string", nm);
+
+      int i = 0;
+      for (; i < nchoices; i++)
+        {
+          if (sval == choices[i])
+            {
+              var = sval;
+              break;
+            }
+        }
+      if (i == nchoices)
+        error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
+    }
 
   return retval;
 }
@@ -1079,7 +1081,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
                 {
                   a = param.first_parameter_length - param.balance;
                   a = (a < 0 ? 0 : a);
-                  b = param.parameter_length - a - param.text . length ();
+                  b = param.parameter_length - a - param.text.length ();
                   b = (b < 0 ? 0 : b);
                   os << std::setiosflags (std::ios::left) << std::setw (a)
                      << "" << std::resetiosflags (std::ios::left) << param.text
@@ -1132,7 +1134,7 @@ get_dims_str (const octave_value& val)
 
   dim_vector dv = dim_vector::alloc (sz.numel ());
 
-  for (octave_idx_type i = 0; i < dv.length (); i++)
+  for (octave_idx_type i = 0; i < dv.ndims (); i++)
     dv(i) = sz(i);
 
   return dv.str ();
@@ -1145,7 +1147,7 @@ private:
   struct symbol_info
   {
     symbol_info (const symbol_table::symbol_record& sr,
-                 const std::string& expr_str = std::string (),
+                 const std::string& expr_str = "",
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
         varval (expr_val.is_undefined () ? sr.varval () : expr_val),
@@ -1247,7 +1249,7 @@ private:
                   break;
 
                 case 'e':
-                  os << varval.capacity ();
+                  os << varval.numel ();
                   break;
 
                 case 'n':
@@ -1395,7 +1397,7 @@ public:
 
             octave_value val = p->varval;
 
-            elements += val.capacity ();
+            elements += val.numel ();
             bytes += val.byte_size ();
           }
 
@@ -1408,7 +1410,7 @@ public:
 
   // Parse the string whos_line_format, and return a parameter list,
   // containing all information needed to print the given
-  // attributtes of the symbols.
+  // attributes of the symbols.
   std::list<whos_parameter> parse_whos_line_format (void)
   {
     int idx;
@@ -1467,7 +1469,7 @@ public:
                                 > static_cast<size_t> (param_length(pos_t)))
                                ? str.length () : param_length(pos_t));
 
-        elements1 = val.capacity ();
+        elements1 = val.numel ();
         ss1 << elements1;
         str = ss1.str ();
         param_length(pos_e) = ((str.length ()
@@ -1504,10 +1506,10 @@ public:
             // Parse one command from whos_line_format
             cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
             pos = cmd.find (';');
-            if (pos != std::string::npos)
-              cmd = cmd.substr (0, pos+1);
-            else
+            if (pos == std::string::npos)
               error ("parameter without ; in whos_line_format");
+
+            cmd = cmd.substr (0, pos+1);
 
             idx += cmd.length ();
 
@@ -1522,38 +1524,29 @@ public:
                               &a, &b, &balance) - 1;
 
             if (items < 2)
-              {
-                error ("whos_line_format: parameter structure without command in whos_line_format");
-                error_encountered = true;
-              }
+              error ("whos_line_format: parameter structure without command in whos_line_format");
 
             // Insert data into parameter
             param.first_parameter_length = 0;
             pos = param_string.find (param.command);
-            if (pos != std::string::npos)
-              {
-                param.parameter_length = param_length(pos);
-                param.text = param_names(pos);
-                param.line.assign (param_names(pos).length (), '=');
+            if (pos == std::string::npos)
+              error ("whos_line_format: '%c' is not a command", param.command);
 
-                param.parameter_length = (a > param.parameter_length
-                                          ? a : param.parameter_length);
-                if (param.command == 's' && param.modifier == 'c' && b > 0)
-                  param.first_parameter_length = b;
-              }
-            else
-              {
-                error ("whos_line_format: '%c' is not a command",
-                       param.command);
-                error_encountered = true;
-              }
+            param.parameter_length = param_length(pos);
+            param.text = param_names(pos);
+            param.line.assign (param_names(pos).length (), '=');
+
+            param.parameter_length = (a > param.parameter_length
+                                      ? a : param.parameter_length);
+            if (param.command == 's' && param.modifier == 'c' && b > 0)
+              param.first_parameter_length = b;
 
             if (param.command == 's')
               {
                 // Have to calculate space needed for printing
                 // matrix dimensions Space needed for Size column is
                 // hard to determine in prior, because it depends on
-                // dimensions to be shown. That is why it is
+                // dimensions to be shown.  That is why it is
                 // recalculated for each Size-command int first,
                 // rest = 0, total;
                 int rest = 0;
@@ -1591,11 +1584,8 @@ public:
                   }
               }
             else if (param.modifier == 'c')
-              {
-                error ("whos_line_format: modifier 'c' not available for command '%c'",
-                       param.command);
-                error_encountered = true;
-              }
+              error ("whos_line_format: modifier 'c' not available for command '%c'",
+                     param.command);
 
             // What happens if whos_line_format contains negative numbers
             // at param_length positions?
@@ -1641,7 +1631,7 @@ private:
 
 static octave_value
 do_who (int argc, const string_vector& argv, bool return_list,
-        bool verbose = false, std::string msg = std::string ())
+        bool verbose = false, std::string msg = "")
 {
   octave_value retval;
 
@@ -1662,35 +1652,30 @@ do_who (int argc, const string_vector& argv, bool return_list,
           // implement this option there so that the variables are never
           // stored at all.
           if (i == argc - 1)
-            error ("whos: -file argument must be followed by a file name");
-          else
-            {
-              std::string nm = argv[i + 1];
+            error ("whos: -file argument must be followed by a filename");
 
-              unwind_protect frame;
+          std::string nm = argv[i + 1];
 
-              // Set up temporary scope.
+          octave::unwind_protect frame;
 
-              symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
-              frame.add_fcn (symbol_table::erase_scope, tmp_scope);
+          // Set up temporary scope.
 
-              symbol_table::set_scope (tmp_scope);
+          symbol_table::scope_id tmp_scope = symbol_table::alloc_scope ();
+          frame.add_fcn (symbol_table::erase_scope, tmp_scope);
 
-              octave_call_stack::push (tmp_scope, 0);
-              frame.add_fcn (octave_call_stack::pop);
+          symbol_table::set_scope (tmp_scope);
 
-              frame.add_fcn (symbol_table::clear_variables);
+          octave_call_stack::push (tmp_scope, 0);
+          frame.add_fcn (octave_call_stack::pop);
 
-              feval ("load", octave_value (nm), 0);
+          frame.add_fcn (symbol_table::clear_variables);
 
-              if (! error_state)
-                {
-                  std::string newmsg = std::string ("Variables in the file ") +
-                                       nm + ":\n\n";
+          feval ("load", octave_value (nm), 0);
 
-                  retval =  do_who (i, argv, return_list, verbose, newmsg);
-                }
-            }
+          std::string newmsg = std::string ("Variables in the file ")
+                               + nm + ":\n\n";
+
+          retval = do_who (i, argv, return_list, verbose, newmsg);
 
           return retval;
         }
@@ -1773,10 +1758,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
                           octave_value expr_val
                             = eval_string (pat, true, parse_status);
 
-                          if (! error_state)
-                            symbol_stats.append (sr, pat, expr_val);
-                          else
-                            return retval;
+                          symbol_stats.append (sr, pat, expr_val);
                         }
                     }
                 }
@@ -1818,7 +1800,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
     }
   else if (! (symbol_stats.empty () && symbol_names.empty ()))
     {
-      if (msg.length () == 0)
+      if (msg.empty ())
         if (global_only)
           octave_stdout << "Global variables:\n\n";
         else
@@ -1842,136 +1824,116 @@ do_who (int argc, const string_vector& argv, bool return_list,
 }
 
 DEFUN (who, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Command} {} who\n\
-@deftypefnx {Command} {} who pattern @dots{}\n\
-@deftypefnx {Command} {} who option pattern @dots{}\n\
-@deftypefnx {Command} {C =} who (\"pattern\", @dots{})\n\
-List currently defined variables matching the given patterns.\n\
-\n\
-Valid pattern syntax is the same as described for the @code{clear} command.\n\
-If no patterns are supplied, all variables are listed.\n\
-\n\
-By default, only variables visible in the local scope are displayed.\n\
-\n\
-The following are valid options, but may not be combined.\n\
-\n\
-@table @code\n\
-@item global\n\
-List variables in the global scope rather than the current scope.\n\
-\n\
-@item -regexp\n\
-The patterns are considered to be regular expressions when matching the\n\
-variables to display.  The same pattern syntax accepted by the @code{regexp}\n\
-function is used.\n\
-\n\
-@item -file\n\
-The next argument is treated as a filename.  All variables found within the\n\
-specified file are listed.  No patterns are accepted when reading variables\n\
-from a file.\n\
-@end table\n\
-\n\
-If called as a function, return a cell array of defined variable names\n\
-matching the given patterns.\n\
-@seealso{whos, isglobal, isvarname, exist, regexp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} who
+@deftypefnx {} {} who pattern @dots{}
+@deftypefnx {} {} who option pattern @dots{}
+@deftypefnx {} {C =} who ("pattern", @dots{})
+List currently defined variables matching the given patterns.
+
+Valid pattern syntax is the same as described for the @code{clear} command.
+If no patterns are supplied, all variables are listed.
+
+By default, only variables visible in the local scope are displayed.
+
+The following are valid options, but may not be combined.
+
+@table @code
+@item global
+List variables in the global scope rather than the current scope.
+
+@item -regexp
+The patterns are considered to be regular expressions when matching the
+variables to display.  The same pattern syntax accepted by the @code{regexp}
+function is used.
+
+@item -file
+The next argument is treated as a filename.  All variables found within the
+specified file are listed.  No patterns are accepted when reading variables
+from a file.
+@end table
+
+If called as a function, return a cell array of defined variable names
+matching the given patterns.
+@seealso{whos, isglobal, isvarname, exist, regexp}
+@end deftypefn */)
 {
-  octave_value retval;
+  int argc = args.length () + 1;
 
-  if (nargout < 2)
-    {
-      int argc = args.length () + 1;
+  string_vector argv = args.make_argv ("who");
 
-      string_vector argv = args.make_argv ("who");
-
-      if (! error_state)
-        retval = do_who (argc, argv, nargout == 1);
-    }
-  else
-    print_usage ();
-
-  return retval;
+  return do_who (argc, argv, nargout == 1);
 }
 
 DEFUN (whos, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Command} {} whos\n\
-@deftypefnx {Command} {} whos pattern @dots{}\n\
-@deftypefnx {Command} {} whos option pattern @dots{}\n\
-@deftypefnx {Built-in Function} {S =} whos (\"pattern\", @dots{})\n\
-Provide detailed information on currently defined variables matching the\n\
-given patterns.\n\
-\n\
-Options and pattern syntax are the same as for the @code{who} command.\n\
-\n\
-Extended information about each variable is summarized in a table with the\n\
-following default entries.\n\
-\n\
-@table @asis\n\
-@item Attr\n\
-Attributes of the listed variable.  Possible attributes are:\n\
-\n\
-@table @asis\n\
-@item blank\n\
-Variable in local scope\n\
-\n\
-@item @code{a}\n\
-Automatic variable.  An automatic variable is one created by the\n\
-interpreter, for example @code{argn}.\n\
-\n\
-@item @code{c}\n\
-Variable of complex type.\n\
-\n\
-@item @code{f}\n\
-Formal parameter (function argument).\n\
-\n\
-@item @code{g}\n\
-Variable with global scope.\n\
-\n\
-@item @code{p}\n\
-Persistent variable.\n\
-@end table\n\
-\n\
-@item Name\n\
-The name of the variable.\n\
-\n\
-@item Size\n\
-The logical size of the variable.  A scalar is 1x1, a vector is\n\
-@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.\n\
-\n\
-@item Bytes\n\
-The amount of memory currently used to store the variable.\n\
-\n\
-@item Class\n\
-The class of the variable.  Examples include double, single, char, uint16,\n\
-cell, and struct.\n\
-@end table\n\
-\n\
-The table can be customized to display more or less information through\n\
-the function @code{whos_line_format}.\n\
-\n\
-If @code{whos} is called as a function, return a struct array of defined\n\
-variable names matching the given patterns.  Fields in the structure\n\
-describing each variable are: name, size, bytes, class, global, sparse,\n\
-complex, nesting, persistent.\n\
-@seealso{who, whos_line_format}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} whos
+@deftypefnx {} {} whos pattern @dots{}
+@deftypefnx {} {} whos option pattern @dots{}
+@deftypefnx {} {S =} whos ("pattern", @dots{})
+Provide detailed information on currently defined variables matching the
+given patterns.
+
+Options and pattern syntax are the same as for the @code{who} command.
+
+Extended information about each variable is summarized in a table with the
+following default entries.
+
+@table @asis
+@item Attr
+Attributes of the listed variable.  Possible attributes are:
+
+@table @asis
+@item blank
+Variable in local scope
+
+@item @code{a}
+Automatic variable.  An automatic variable is one created by the
+interpreter, for example @code{argn}.
+
+@item @code{c}
+Variable of complex type.
+
+@item @code{f}
+Formal parameter (function argument).
+
+@item @code{g}
+Variable with global scope.
+
+@item @code{p}
+Persistent variable.
+@end table
+
+@item Name
+The name of the variable.
+
+@item Size
+The logical size of the variable.  A scalar is 1x1, a vector is
+@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.
+
+@item Bytes
+The amount of memory currently used to store the variable.
+
+@item Class
+The class of the variable.  Examples include double, single, char, uint16,
+cell, and struct.
+@end table
+
+The table can be customized to display more or less information through
+the function @code{whos_line_format}.
+
+If @code{whos} is called as a function, return a struct array of defined
+variable names matching the given patterns.  Fields in the structure
+describing each variable are: name, size, bytes, class, global, sparse,
+complex, nesting, persistent.
+@seealso{who, whos_line_format}
+@end deftypefn */)
 {
-  octave_value retval;
+  int argc = args.length () + 1;
 
-  if (nargout < 2)
-    {
-      int argc = args.length () + 1;
+  string_vector argv = args.make_argv ("whos");
 
-      string_vector argv = args.make_argv ("whos");
-
-      if (! error_state)
-        retval = do_who (argc, argv, nargout == 1, true);
-    }
-  else
-    print_usage ();
-
-  return retval;
+  return do_who (argc, argv, nargout == 1, true);
 }
 
 // Defining variables.
@@ -2015,10 +1977,10 @@ mlock (void)
 {
   octave_function *fcn = octave_call_stack::current ();
 
-  if (fcn)
-    fcn->lock ();
-  else
+  if (! fcn)
     error ("mlock: invalid use outside a function");
+
+  fcn->lock ();
 }
 
 void
@@ -2054,100 +2016,91 @@ mislocked (const std::string& nm)
 }
 
 DEFUN (mlock, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mlock ()\n\
-Lock the current function into memory so that it can't be cleared.\n\
-@seealso{munlock, mislocked, persistent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} mlock ()
+Lock the current function into memory so that it can't be cleared.
+@seealso{munlock, mislocked, persistent}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  if (args.length () == 0)
-    {
-      octave_function *fcn = octave_call_stack::caller ();
-
-      if (fcn)
-        fcn->lock ();
-      else
-        error ("mlock: invalid use outside a function");
-    }
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  octave_function *fcn = octave_call_stack::caller ();
+
+  if (! fcn)
+    error ("mlock: invalid use outside a function");
+
+  fcn->lock ();
+
+  return ovl ();
 }
 
 DEFUN (munlock, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} munlock ()\n\
-@deftypefnx {Built-in Function} {} munlock (@var{fcn})\n\
-Unlock the named function @var{fcn}.\n\
-\n\
-If no function is named then unlock the current function.\n\
-@seealso{mlock, mislocked, persistent}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} munlock ()
+@deftypefnx {} {} munlock (@var{fcn})
+Unlock the named function @var{fcn}.
 
-  if (args.length () == 1)
+If no function is named then unlock the current function.
+@seealso{mlock, mislocked, persistent}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
-          munlock (name);
-        }
-      else
-        error ("munlock: FCN must be a string");
+      std::string name = args(0).xstring_value ("munlock: FCN must be a string");
+
+      munlock (name);
     }
-  else if (args.length () == 0)
+  else
     {
       octave_function *fcn = octave_call_stack::caller ();
 
-      if (fcn)
-        fcn->unlock ();
-      else
+      if (! fcn)
         error ("munlock: invalid use outside a function");
-    }
-  else
-    print_usage ();
 
-  return retval;
+      fcn->unlock ();
+    }
+
+  return ovl ();
 }
 
-
 DEFUN (mislocked, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} mislocked ()\n\
-@deftypefnx {Built-in Function} {} mislocked (@var{fcn})\n\
-Return true if the named function @var{fcn} is locked.\n\
-\n\
-If no function is named then return true if the current function is locked.\n\
-@seealso{mlock, munlock, persistent}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} mislocked ()
+@deftypefnx {} {} mislocked (@var{fcn})
+Return true if the named function @var{fcn} is locked.
+
+If no function is named then return true if the current function is locked.
+@seealso{mlock, munlock, persistent}
+@end deftypefn */)
 {
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
   octave_value retval;
 
-  if (args.length () == 1)
+  if (nargin == 1)
     {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
-          retval = mislocked (name);
-        }
-      else
-        error ("mislocked: FCN must be a string");
+      std::string name = args(0).xstring_value ("mislocked: FCN must be a string");
+
+      retval = mislocked (name);
     }
-  else if (args.length () == 0)
+  else
     {
       octave_function *fcn = octave_call_stack::caller ();
 
-      if (fcn)
-        retval = fcn->islocked ();
-      else
+      if (! fcn)
         error ("mislocked: invalid use outside a function");
+
+      retval = fcn->islocked ();
     }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -2167,7 +2120,7 @@ name_matches_any_pattern (const std::string& nm, const string_vector& argv,
         {
           if (have_regexp)
             {
-              if (is_regexp_match (patstr, nm))
+              if (octave::regexp::is_match (patstr, nm))
                 {
                   retval = true;
                   break;
@@ -2208,7 +2161,7 @@ do_clear_functions (const string_vector& argv, int argc, int idx,
         {
           string_vector fcns = symbol_table::user_function_names ();
 
-          int fcount = fcns.length ();
+          int fcount = fcns.numel ();
 
           for (int i = 0; i < fcount; i++)
             {
@@ -2234,7 +2187,7 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
     {
       string_vector gvars = symbol_table::global_variable_names ();
 
-      int gcount = gvars.length ();
+      int gcount = gvars.numel ();
 
       for (int i = 0; i < gcount; i++)
         symbol_table::clear_global (gvars[i]);
@@ -2245,7 +2198,7 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
         {
           string_vector gvars = symbol_table::global_variable_names ();
 
-          int gcount = gvars.length ();
+          int gcount = gvars.numel ();
 
           for (int i = 0; i < gcount; i++)
             {
@@ -2275,7 +2228,7 @@ do_clear_variables (const string_vector& argv, int argc, int idx,
         {
           string_vector lvars = symbol_table::variable_names ();
 
-          int lcount = lvars.length ();
+          int lcount = lvars.numel ();
 
           for (int i = 0; i < lcount; i++)
             {
@@ -2364,299 +2317,288 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     }
 }
 
-#define CLEAR_OPTION_ERROR(cond) \
-  do \
-    { \
-      if (cond) \
-        { \
-          print_usage (); \
-          return retval; \
-        } \
-    } \
+#define CLEAR_OPTION_ERROR(cond)                \
+  do                                            \
+    {                                           \
+      if (cond)                                 \
+        print_usage ();                         \
+    }                                           \
   while (0)
 
 DEFUN (clear, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Command} {} clear [options] pattern @dots{}\n\
-Delete the names matching the given patterns from the symbol table.\n\
-\n\
-The pattern may contain the following special characters:\n\
-\n\
-@table @code\n\
-@item ?\n\
-Match any single character.\n\
-\n\
-@item *\n\
-Match zero or more characters.\n\
-\n\
-@item [ @var{list} ]\n\
-Match the list of characters specified by @var{list}.  If the first\n\
-character is @code{!} or @code{^}, match all characters except those\n\
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
-match all lowercase and uppercase alphabetic characters.\n\
-@end table\n\
-\n\
-For example, the command\n\
-\n\
-@example\n\
-clear foo b*r\n\
-@end example\n\
-\n\
-@noindent\n\
-clears the name @code{foo} and all names that begin with the letter\n\
-@code{b} and end with the letter @code{r}.\n\
-\n\
-If @code{clear} is called without any arguments, all user-defined\n\
-variables (local and global) are cleared from the symbol table.\n\
-\n\
-If @code{clear} is called with at least one argument, only the visible\n\
-names matching the arguments are cleared.  For example, suppose you have\n\
-defined a function @code{foo}, and then hidden it by performing the\n\
-assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once\n\
-will clear the variable definition and restore the definition of\n\
-@code{foo} as a function.  Executing @kbd{clear foo} a second time will\n\
-clear the function definition.\n\
-\n\
-The following options are available in both long and short form\n\
-\n\
-@table @code\n\
-@item -all, -a\n\
-Clear all local and global user-defined variables and all functions from the\n\
-symbol table.\n\
-\n\
-@item -exclusive, -x\n\
-Clear the variables that don't match the following pattern.\n\
-\n\
-@item -functions, -f\n\
-Clear the function names and the built-in symbols names.\n\
-\n\
-@item -global, -g\n\
-Clear global symbol names.\n\
-\n\
-@item -variables, -v\n\
-Clear local variable names.\n\
-\n\
-@item -classes, -c\n\
-Clears the class structure table and clears all objects.\n\
-\n\
-@item -regexp, -r\n\
-The arguments are treated as regular expressions as any variables that\n\
-match will be cleared.\n\
-@end table\n\
-\n\
-With the exception of @code{exclusive}, all long options can be used\n\
-without the dash as well.\n\
-@seealso{who, whos, exist}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} clear [options] pattern @dots{}
+Delete the names matching the given patterns from the symbol table.
 
+The pattern may contain the following special characters:
+
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lowercase and uppercase alphabetic characters.
+@end table
+
+For example, the command
+
+@example
+clear foo b*r
+@end example
+
+@noindent
+clears the name @code{foo} and all names that begin with the letter
+@code{b} and end with the letter @code{r}.
+
+If @code{clear} is called without any arguments, all user-defined
+variables (local and global) are cleared from the symbol table.
+
+If @code{clear} is called with at least one argument, only the visible
+names matching the arguments are cleared.  For example, suppose you have
+defined a function @code{foo}, and then hidden it by performing the
+assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
+will clear the variable definition and restore the definition of
+@code{foo} as a function.  Executing @kbd{clear foo} a second time will
+clear the function definition.
+
+The following options are available in both long and short form
+
+@table @code
+@item -all, -a
+Clear all local and global user-defined variables and all functions from the
+symbol table.
+
+@item -exclusive, -x
+Clear the variables that don't match the following pattern.
+
+@item -functions, -f
+Clear the function names and the built-in symbols names.
+
+@item -global, -g
+Clear global symbol names.
+
+@item -variables, -v
+Clear local variable names.
+
+@item -classes, -c
+Clears the class structure table and clears all objects.
+
+@item -regexp, -r
+The arguments are treated as regular expressions as any variables that
+match will be cleared.
+@end table
+
+With the exception of @code{exclusive}, all long options can be used
+without the dash as well.
+@seealso{who, whos, exist}
+@end deftypefn */)
+{
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("clear");
 
-  if (! error_state)
+  if (argc == 1)
     {
-      if (argc == 1)
-        {
-          do_clear_globals (argv, argc, true);
-          do_clear_variables (argv, argc, true);
+      do_clear_globals (argv, argc, true);
+      do_clear_variables (argv, argc, true);
 
-          octave_link::clear_workspace ();
+      octave_link::clear_workspace ();
+    }
+  else
+    {
+      int idx = 0;
+
+      bool clear_all = false;
+      bool clear_functions = false;
+      bool clear_globals = false;
+      bool clear_variables = false;
+      bool clear_objects = false;
+      bool exclusive = false;
+      bool have_regexp = false;
+      bool have_dash_option = false;
+
+      while (++idx < argc)
+        {
+          if (argv[idx] == "-all" || argv[idx] == "-a")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_all = true;
+            }
+          else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
+            {
+              have_dash_option = true;
+              exclusive = true;
+            }
+          else if (argv[idx] == "-functions" || argv[idx] == "-f")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_functions = true;
+            }
+          else if (argv[idx] == "-global" || argv[idx] == "-g")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_globals = true;
+            }
+          else if (argv[idx] == "-variables" || argv[idx] == "-v")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_variables = true;
+            }
+          else if (argv[idx] == "-classes" || argv[idx] == "-c")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              clear_objects = true;
+            }
+          else if (argv[idx] == "-regexp" || argv[idx] == "-r")
+            {
+              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+              have_dash_option = true;
+              have_regexp = true;
+            }
+          else
+            break;
         }
-      else
+
+      if (idx <= argc)
         {
-          int idx = 0;
-
-          bool clear_all = false;
-          bool clear_functions = false;
-          bool clear_globals = false;
-          bool clear_variables = false;
-          bool clear_objects = false;
-          bool exclusive = false;
-          bool have_regexp = false;
-          bool have_dash_option = false;
-
-          while (++idx < argc)
+          if (! have_dash_option)
+            do_matlab_compatible_clear (argv, argc, idx);
+          else
             {
-              if (argv[idx] == "-all" || argv[idx] == "-a")
+              if (clear_all)
                 {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+                  maybe_warn_exclusive (exclusive);
 
-                  have_dash_option = true;
-                  clear_all = true;
-                }
-              else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
-                {
-                  have_dash_option = true;
-                  exclusive = true;
-                }
-              else if (argv[idx] == "-functions" || argv[idx] == "-f")
-                {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+                  if (++idx < argc)
+                    warning ("clear: ignoring extra arguments after -all");
 
-                  have_dash_option = true;
-                  clear_functions = true;
+                  symbol_table::clear_all ();
                 }
-              else if (argv[idx] == "-global" || argv[idx] == "-g")
+              else if (have_regexp)
                 {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_globals = true;
+                  do_clear_variables (argv, argc, idx, exclusive, true);
                 }
-              else if (argv[idx] == "-variables" || argv[idx] == "-v")
+              else if (clear_functions)
                 {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_variables = true;
+                  do_clear_functions (argv, argc, idx, exclusive);
                 }
-              else if (argv[idx] == "-classes" || argv[idx] == "-c")
+              else if (clear_globals)
                 {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  clear_objects = true;
+                  do_clear_globals (argv, argc, idx, exclusive);
                 }
-              else if (argv[idx] == "-regexp" || argv[idx] == "-r")
+              else if (clear_variables)
                 {
-                  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
-
-                  have_dash_option = true;
-                  have_regexp = true;
+                  do_clear_variables (argv, argc, idx, exclusive);
                 }
-              else
-                break;
-            }
-
-          if (idx <= argc)
-            {
-              if (! have_dash_option)
+              else if (clear_objects)
                 {
-                  do_matlab_compatible_clear (argv, argc, idx);
+                  symbol_table::clear_objects ();
+                  octave_class::clear_exemplar_map ();
+                  symbol_table::clear_all ();
                 }
               else
                 {
-                  if (clear_all)
-                    {
-                      maybe_warn_exclusive (exclusive);
-
-                      if (++idx < argc)
-                        warning
-                          ("clear: ignoring extra arguments after -all");
-
-                      symbol_table::clear_all ();
-                    }
-                  else if (have_regexp)
-                    {
-                      do_clear_variables (argv, argc, idx, exclusive, true);
-                    }
-                  else if (clear_functions)
-                    {
-                      do_clear_functions (argv, argc, idx, exclusive);
-                    }
-                  else if (clear_globals)
-                    {
-                      do_clear_globals (argv, argc, idx, exclusive);
-                    }
-                  else if (clear_variables)
-                    {
-                      do_clear_variables (argv, argc, idx, exclusive);
-                    }
-                  else if (clear_objects)
-                    {
-                      symbol_table::clear_objects ();
-                      octave_class::clear_exemplar_map ();
-                      symbol_table::clear_all ();
-                    }
-                  else
-                    {
-                      do_clear_symbols (argv, argc, idx, exclusive);
-                    }
+                  do_clear_symbols (argv, argc, idx, exclusive);
                 }
-
-              octave_link::set_workspace ();
             }
+
+          octave_link::set_workspace ();
         }
     }
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (whos_line_format, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
-Query or set the format string used by the command @code{whos}.\n\
-\n\
-A full format string is:\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-%[modifier]<command>[:width[:left-min[:balance]]];\n\
-@end smallexample\n\
-\n\
-The following command sequences are available:\n\
-\n\
-@table @code\n\
-@item %a\n\
-Prints attributes of variables (g=global, p=persistent, f=formal parameter,\n\
-a=automatic variable).\n\
-\n\
-@item %b\n\
-Prints number of bytes occupied by variables.\n\
-\n\
-@item %c\n\
-Prints class names of variables.\n\
-\n\
-@item %e\n\
-Prints elements held by variables.\n\
-\n\
-@item %n\n\
-Prints variable names.\n\
-\n\
-@item %s\n\
-Prints dimensions of variables.\n\
-\n\
-@item %t\n\
-Prints type names of variables.\n\
-@end table\n\
-\n\
-Every command may also have an alignment modifier:\n\
-\n\
-@table @code\n\
-@item l\n\
-Left alignment.\n\
-\n\
-@item r\n\
-Right alignment (default).\n\
-\n\
-@item c\n\
-Column-aligned (only applicable to command %s).\n\
-@end table\n\
-\n\
-The @code{width} parameter is a positive integer specifying the minimum\n\
-number of columns used for printing.  No maximum is needed as the field will\n\
-auto-expand as required.\n\
-\n\
-The parameters @code{left-min} and @code{balance} are only available when the\n\
-column-aligned modifier is used with the command @samp{%s}.\n\
-@code{balance} specifies the column number within the field width which will\n\
-be aligned between entries.  Numbering starts from 0 which indicates the\n\
-leftmost column.  @code{left-min} specifies the minimum field width to the\n\
-left of the specified balance column.\n\
-\n\
-The default format is:\n\
-\n\
-@qcode{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n\"}\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{whos}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} whos_line_format ()
+@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
+@deftypefnx {} {} whos_line_format (@var{new_val}, "local")
+Query or set the format string used by the command @code{whos}.
+
+A full format string is:
+@c Set example in small font to prevent overfull line
+
+@smallexample
+%[modifier]<command>[:width[:left-min[:balance]]];
+@end smallexample
+
+The following command sequences are available:
+
+@table @code
+@item %a
+Prints attributes of variables (g=global, p=persistent, f=formal parameter,
+a=automatic variable).
+
+@item %b
+Prints number of bytes occupied by variables.
+
+@item %c
+Prints class names of variables.
+
+@item %e
+Prints elements held by variables.
+
+@item %n
+Prints variable names.
+
+@item %s
+Prints dimensions of variables.
+
+@item %t
+Prints type names of variables.
+@end table
+
+Every command may also have an alignment modifier:
+
+@table @code
+@item l
+Left alignment.
+
+@item r
+Right alignment (default).
+
+@item c
+Column-aligned (only applicable to command %s).
+@end table
+
+The @code{width} parameter is a positive integer specifying the minimum
+number of columns used for printing.  No maximum is needed as the field will
+auto-expand as required.
+
+The parameters @code{left-min} and @code{balance} are only available when
+the column-aligned modifier is used with the command @samp{%s}.
+@code{balance} specifies the column number within the field width which
+will be aligned between entries.  Numbering starts from 0 which indicates
+the leftmost column.  @code{left-min} specifies the minimum field width to
+the left of the specified balance column.
+
+The default format is:
+
+@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{whos}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);
 }
@@ -2664,18 +2606,18 @@ The original variable value is restored when exiting the function.\n\
 static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the function to call when\n\
-an unknown identifier is requested.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{missing_component_hook}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} missing_function_hook ()
+@deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})
+@deftypefnx {} {} missing_function_hook (@var{new_val}, "local")
+Query or set the internal variable that specifies the function to call when
+an unknown identifier is requested.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{missing_component_hook}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);
 }
@@ -2690,7 +2632,7 @@ void maybe_missing_function_hook (const std::string& name)
       if (val.is_defined ())
         {
           // Ensure auto-restoration.
-          unwind_protect frame;
+          octave::unwind_protect frame;
           frame.protect_var (Vmissing_function_hook);
 
           // Clear the variable prior to calling the function.
@@ -2704,57 +2646,49 @@ void maybe_missing_function_hook (const std::string& name)
 }
 
 DEFUN (__varval__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __varval__ (@var{name})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __varval__ (@var{name})
+Return the value of the variable @var{name} directly from the symbol table.
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        retval = symbol_table::varval (args(0).string_value ());
-      else
-        error ("__varval__: expecting argument to be variable name");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
+
+  return symbol_table::varval (args(0).string_value ());
 }
 
 static std::string Vmissing_component_hook;
 
 DEFUN (missing_component_hook, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} missing_component_hook ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} missing_component_hook (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the function to call when\n\
-a component of Octave is missing.\n\
-\n\
-This can be useful for packagers that may split the Octave installation into\n\
-multiple sub-packages, for example, to provide a hint to users for how to\n\
-install the missing components.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-The hook function is expected to be of the form\n\
-\n\
-@example\n\
-@var{fcn} (@var{component})\n\
-@end example\n\
-\n\
-Octave will call @var{fcn} with the name of the function that requires the\n\
-component and a string describing the missing component.  The hook function\n\
-should return an error message to be displayed.\n\
-@seealso{missing_function_hook}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} missing_component_hook ()
+@deftypefnx {} {@var{old_val} =} missing_component_hook (@var{new_val})
+@deftypefnx {} {} missing_component_hook (@var{new_val}, "local")
+Query or set the internal variable that specifies the function to call when
+a component of Octave is missing.
+
+This can be useful for packagers that may split the Octave installation into
+multiple sub-packages, for example, to provide a hint to users for how to
+install the missing components.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+The hook function is expected to be of the form
+
+@example
+@var{fcn} (@var{component})
+@end example
+
+Octave will call @var{fcn} with the name of the function that requires the
+component and a string describing the missing component.  The hook function
+should return an error message to be displayed.
+@seealso{missing_function_hook}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
 }
+

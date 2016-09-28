@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{C})
-## @deftypefnx {Function File} {@var{S} =} cart2sph (@dots{})
+## @deftypefn  {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{C})
+## @deftypefnx {} {@var{S} =} cart2sph (@dots{})
 ## Transform Cartesian coordinates to spherical coordinates.
 ##
 ## The inputs @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.
@@ -55,10 +55,11 @@ function [theta, phi, r] = cart2sph (x, y, z)
     y = x(:,2);
     x = x(:,1);
   else
-    if (! ((isnumeric (x) && isnumeric (y) && isnumeric (z))
-            && (size_equal (x, y) || isscalar (x) || isscalar (y))
-            && (size_equal (x, z) || isscalar (x) || isscalar (z))
-            && (size_equal (y, z) || isscalar (y) || isscalar (z))))
+    if (! isnumeric (x) || ! isnumeric (y) || ! isnumeric (z))
+      error ("cart2sph: X, Y, Z must be numeric arrays of the same size, or scalar");
+    endif
+    [err, x, y, z] = common_size (x, y, z);
+    if (err)
       error ("cart2sph: X, Y, Z must be numeric arrays of the same size, or scalar");
     endif
   endif
@@ -109,6 +110,15 @@ endfunction
 %! assert (t, [0, 1, 1] * pi/4);
 %! assert (p, [0, 0, 0]);
 %! assert (r, [0, 1, 2] * sqrt (2));
+
+%!test
+%! x = 0;
+%! y = 0;
+%! z = [0, 1, 2];
+%! [t, p, r] = cart2sph (x, y, z);
+%! assert (t, [0, 0, 0]);
+%! assert (p, [0, 1, 1] * pi/2);
+%! assert (r, [0, 1, 2]);
 
 %!test
 %! C = [0, 0, 0; 1, 0, 1; 2, 0, 2];

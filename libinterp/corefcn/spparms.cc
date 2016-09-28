@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,89 +21,89 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "ov.h"
 #include "pager.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 
 #include "oct-spparms.h"
 
 DEFUN (spparms, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} { } spparms ()\n\
-@deftypefnx {Built-in Function} {@var{vals} =} spparms ()\n\
-@deftypefnx {Built-in Function} {[@var{keys}, @var{vals}] =} spparms ()\n\
-@deftypefnx {Built-in Function} {@var{val} =} spparms (@var{key})\n\
-@deftypefnx {Built-in Function} { } spparms (@var{vals})\n\
-@deftypefnx {Built-in Function} { } spparms (\"default\")\n\
-@deftypefnx {Built-in Function} { } spparms (\"tight\")\n\
-@deftypefnx {Built-in Function} { } spparms (@var{key}, @var{val})\n\
-Query or set the parameters used by the sparse solvers and factorization\n\
-functions.\n\
-\n\
-The first four calls above get information about the current settings, while\n\
-the others change the current settings.  The parameters are stored as pairs\n\
-of keys and values, where the values are all floats and the keys are one of\n\
-the following strings:\n\
-\n\
-@table @samp\n\
-@item spumoni\n\
-Printing level of debugging information of the solvers (default 0)\n\
-\n\
-@item ths_rel\n\
-Included for compatibility.  Not used.  (default 1)\n\
-\n\
-@item ths_abs\n\
-Included for compatibility.  Not used.  (default 1)\n\
-\n\
-@item exact_d\n\
-Included for compatibility.  Not used.  (default 0)\n\
-\n\
-@item supernd\n\
-Included for compatibility.  Not used.  (default 3)\n\
-\n\
-@item rreduce\n\
-Included for compatibility.  Not used.  (default 3)\n\
-\n\
-@item wh_frac\n\
-Included for compatibility.  Not used.  (default 0.5)\n\
-\n\
-@item autommd\n\
-Flag whether the LU/QR and the '\\' and '/' operators will automatically\n\
-use the sparsity preserving mmd functions (default 1)\n\
-\n\
-@item autoamd\n\
-Flag whether the LU and the '\\' and '/' operators will automatically\n\
-use the sparsity preserving amd functions (default 1)\n\
-\n\
-@item piv_tol\n\
-The pivot tolerance of the @sc{umfpack} solvers (default 0.1)\n\
-\n\
-@item sym_tol\n\
-The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)\n\
-\n\
-@item bandden\n\
-The density of nonzero elements in a banded matrix before it is treated\n\
-by the @sc{lapack} banded solvers (default 0.5)\n\
-\n\
-@item umfpack\n\
-Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
-'/' operations (default 1)\n\
-@end table\n\
-\n\
-The value of individual keys can be set with\n\
-@code{spparms (@var{key}, @var{val})}.\n\
-The default values can be restored with the special keyword\n\
-@qcode{\"default\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
-set the mmd solvers to attempt a sparser solution at the potential cost of\n\
-longer running time.\n\
-@seealso{chol, colamd, lu, qr, symamd}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} { } spparms ()
+@deftypefnx {} {@var{vals} =} spparms ()
+@deftypefnx {} {[@var{keys}, @var{vals}] =} spparms ()
+@deftypefnx {} {@var{val} =} spparms (@var{key})
+@deftypefnx {} { } spparms (@var{vals})
+@deftypefnx {} { } spparms ("default")
+@deftypefnx {} { } spparms ("tight")
+@deftypefnx {} { } spparms (@var{key}, @var{val})
+Query or set the parameters used by the sparse solvers and factorization
+functions.
+
+The first four calls above get information about the current settings, while
+the others change the current settings.  The parameters are stored as pairs
+of keys and values, where the values are all floats and the keys are one of
+the following strings:
+
+@table @samp
+@item spumoni
+Printing level of debugging information of the solvers (default 0)
+
+@item ths_rel
+Included for compatibility.  Not used.  (default 1)
+
+@item ths_abs
+Included for compatibility.  Not used.  (default 1)
+
+@item exact_d
+Included for compatibility.  Not used.  (default 0)
+
+@item supernd
+Included for compatibility.  Not used.  (default 3)
+
+@item rreduce
+Included for compatibility.  Not used.  (default 3)
+
+@item wh_frac
+Included for compatibility.  Not used.  (default 0.5)
+
+@item autommd
+Flag whether the LU/QR and the '\' and '/' operators will automatically
+use the sparsity preserving mmd functions (default 1)
+
+@item autoamd
+Flag whether the LU and the '\' and '/' operators will automatically
+use the sparsity preserving amd functions (default 1)
+
+@item piv_tol
+The pivot tolerance of the @sc{umfpack} solvers (default 0.1)
+
+@item sym_tol
+The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)
+
+@item bandden
+The density of nonzero elements in a banded matrix before it is treated
+by the @sc{lapack} banded solvers (default 0.5)
+
+@item umfpack
+Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\' and
+'/' operations (default 1)
+@end table
+
+The value of individual keys can be set with
+@code{spparms (@var{key}, @var{val})}.
+The default values can be restored with the special keyword
+@qcode{"default"}.  The special keyword @qcode{"tight"} can be used to
+set the mmd solvers to attempt a sparser solution at the potential cost of
+longer running time.
+@seealso{chol, colamd, lu, qr, symamd}
+@end deftypefn */)
 {
   octave_value_list retval;
   int nargin = args.length ();
@@ -113,12 +113,10 @@ longer running time.\n\
       if (nargout == 0)
         octave_sparse_params::print_info (octave_stdout, "");
       else if (nargout == 1)
-        retval(0) =  octave_sparse_params::get_vals ();
+        retval = ovl (octave_sparse_params::get_vals ());
       else if (nargout == 2)
-        {
-          retval(1) = octave_sparse_params::get_vals ();
-          retval(0) = octave_sparse_params::get_keys ();
-        }
+        retval = ovl (octave_sparse_params::get_keys (),
+                      octave_sparse_params::get_vals ());
       else
         error ("spparms: too many output arguments");
     }
@@ -147,41 +145,31 @@ longer running time.\n\
           else
             {
               double val = octave_sparse_params::get_key (str);
-              if (xisnan (val))
+              if (octave::math::isnan (val))
                 error ("spparms: KEY not recognized");
-              else
-                retval(0) = val;
+
+              retval = ovl (val);
             }
         }
       else
         {
-          NDArray vals = args(0).array_value ();
-
-          if (error_state)
-            error ("spparms: input must be a string or a vector");
-          else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
+          NDArray vals = args(0).xarray_value ("spparms: input must be a string or a vector");
+          if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
             error ("spparms: too many elements in vector VALS");
-          else
-            octave_sparse_params::set_vals (vals);
+
+          octave_sparse_params::set_vals (vals);
         }
     }
   else if (nargin == 2)
     {
-      if (args(0).is_string ())
-        {
-          std::string str = args(0).string_value ();
+      std::string str = args(0).xstring_value ("spparms: first argument must be a string");
 
-          double val = args(1).double_value ();
+      double val = args(1).xdouble_value ("spparms: second argument must be a real scalar");
 
-          if (error_state)
-            error ("spparms: second argument must be a real scalar");
-          else if (str == "umfpack")
-            warning ("spparms: request to disable umfpack solvers ignored");
-          else if (!octave_sparse_params::set_key (str, val))
-            error ("spparms: KEY not found");
-        }
-      else
-        error ("spparms: first argument must be a string");
+      if (str == "umfpack")
+        warning ("spparms: request to disable umfpack solvers ignored");
+      else if (! octave_sparse_params::set_key (str, val))
+        error ("spparms: KEY not found");
     }
   else
     error ("spparms: too many input arguments");
@@ -218,3 +206,4 @@ longer running time.\n\
 %!error spparms ("ths_rel", "hello")
 %!error <KEY not found> spparms ("UNKNOWN_KEY", 1)
 */
+

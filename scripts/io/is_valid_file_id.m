@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 John W. Eaton
+## Copyright (C) 2010-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_valid_file_id (@var{fid})
+## @deftypefn {} {} is_valid_file_id (@var{fid})
 ## Return true if @var{fid} refers to an open file.
 ## @seealso{freport, fopen}
 ## @end deftypefn

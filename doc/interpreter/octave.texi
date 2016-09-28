@@ -59,7 +59,7 @@ END-INFO-DIR-ENTRY
 @c The version.texi file doesn't include a chapter, so it must not be
 @c included if you want to run the Emacs function
 @c texinfo-multiple-files-update.
-@include version.texi
+@include version-octave.texi
 
 @settitle GNU Octave
 
@@ -76,8 +76,8 @@ Permission is granted to process this file through Tex and print the
 results, provided the printed document carries copying permission
 notice identical to this one except for the removal of this paragraph
 (this paragraph not being relevant to the printed manual).
-
 @end ignore
+
 Permission is granted to copy and distribute modified versions of
 this manual under the conditions for verbatim copying, provided that
 the entire resulting derived work is distributed under the terms of
@@ -92,7 +92,7 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 4 for Octave version @value{VERSION}
-@subtitle March 2015
+@subtitle September 2016
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
@@ -111,7 +111,7 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011, 2013, 2015 John W. Eaton.
+2007, 2011, 2013, 2015, 2016 John W. Eaton.
 
 This is the fourth edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.
@@ -185,16 +185,12 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Object Oriented Programming::
 * GUI Development::
 * System Utilities::
-* Java Interface::
 * Packages::
 * External Code Interface::
 * Test and Demo Functions::
-* Tips and Standards::
-* Contributing Guidelines::
 * Obsolete Functions::
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
-* Emacs Octave Support::
 * Grammar and Parser::
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
@@ -249,9 +245,9 @@ Command Line Editing
 
 * Cursor Motion::
 * Killing and Yanking::
-* Commands For Text::
-* Commands For Completion::
-* Commands For History::
+* Commands for Text::
+* Commands for Completion::
+* Commands for History::
 * Customizing readline::
 * Customizing the Prompt::
 * Diary and Echo Commands::
@@ -420,6 +416,27 @@ Function Files
 * Function Locking::
 * Function Precedence::
 
+Script Files
+
+* Publish Octave Script Files::
+* Publishing Markup::
+
+Publishing Markup
+
+* Using Publishing Markup in Script Files::
+* Text Formatting::
+* Sections::
+* Preformatted Code::
+* Preformatted Text::
+* Bulleted Lists::
+* Numbered Lists::
+* Including File Content::
+* Including Graphics::
+* Including URLs::
+* Mathematical Equations::
+* HTML Markup::
+* LaTeX Markup::
+
 Function Handles Anonymous Functions Inline Functions
 
 * Function Handles::
@@ -544,6 +561,15 @@ Graphics Object Properties
 * Image Properties::
 * Patch Properties::
 * Surface Properties::
+* Light Properties::
+* Uimenu Properties::
+* Uibuttongroup Properties::
+* Uicontextmenu Properties::
+* Uipanel Properties::
+* Uicontrol Properties::
+* Uitoolbar Properties::
+* Uipushtool Properties::
+* Uitoggletool Properties::
 
 Advanced Plotting
 
@@ -670,6 +696,10 @@ Differential Equations
 * Ordinary Differential Equations::
 * Differential-Algebraic Equations::
 
+Ordinary Differential Equations
+
+* Matlab-compatible solvers::
+
 Optimization
 
 * Linear Programming::
@@ -747,7 +777,7 @@ Audio Recorder
 Object Oriented Programming
 
 * Creating a Class::
-* Manipulating Classes::
+* Class Methods::
 * Indexing Objects::
 * Overloading Objects::
 * Inheritance and Aggregation::
@@ -792,20 +822,6 @@ Networking Utilities
 * URL Manipulation::
 * Base64 and Binary Data Transmission::
 
-Java Interface
-
-* Java Interface Functions::
-* Dialog Box Functions::
-* FAQ - Frequently asked Questions::
-
-FAQ - Frequently asked Questions
-
-* How to distinguish between Octave and Matlab?::
-* How to make Java classes available?::
-* How to create an instance of a Java class?::
-* How can I handle memory limitations?::
-* Which @TeX{} symbols are implemented in dialog functions?::
-
 Packages
 
 * Installing and Removing Packages::
@@ -825,6 +841,7 @@ External Code Interface
 * Oct-Files::
 * Mex-Files::
 * Standalone Programs::
+* Java Interface::
 
 Oct-Files
 
@@ -858,33 +875,24 @@ Mex-Files
 * Sparse Matrices with Mex-Files::
 * Calling Other Functions in Mex-Files::
 
+Java Interface
+
+* Java Interface Functions::
+* Making Java Classes Available::
+* Creating an Instance of a Java Class::
+* Handling Java Memory Limitations::
+
 Test and Demo Functions
 
 * Test Functions::
 * Demonstration Functions::
 
-Tips and Standards
-
-* Style Tips::                  Writing clean and robust programs.
-* Comment Tips::                Conventions for writing comments.
-* Function Headers::            Standard headers for functions.
-* Documentation Tips::          Writing readable documentation strings.
-
-Contributing Guidelines
-
-* How to Contribute::
-* Building the Development Sources::
-* Basics of Generating a Changeset::
-* General Guidelines::
-* Octave Sources (m-files)::
-* C++ Sources::
-* Other Sources::
-
 Trouble
 
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::
-* Service::
+* How To Get Help with Octave::
+* How to Distinguish Between Octave and Matlab::
 
 Reporting Bugs
 
@@ -905,13 +913,6 @@ Build Dependencies
 * Obtaining the Dependencies Automatically::
 * Build Tools::
 * External Packages::
-
-Emacs Octave Support
-
-* Installing EOS::
-* Using Octave Mode::
-* Running Octave from Within Emacs::
-* Using the Emacs Info Reader for Octave::
 
 Grammar and Parser
 
@@ -959,25 +960,16 @@ Grammar and Parser
 @include oop.texi
 @include gui.texi
 @include system.texi
-@include java.texi
 @include package.texi
-
-@c maybe add again later, if anyone every writes any really interesting
-@c fun stuff for Octave.
-@c
-@c @include amuse.texi
 
 @c ------------------------------------------------------------------------
 @c Appendices start here.
 
 @include external.texi
 @include testfun.texi
-@include tips.texi
-@include contrib.texi
 @include obsolete.texi
 @include bugs.texi
 @include install.texi
-@include emacs.texi
 @include grammar.texi
 @include gpl.texi
 
@@ -985,7 +977,6 @@ Grammar and Parser
 @c Indices start here.
 
 @include cp-idx.texi
-@c @include vr-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
 

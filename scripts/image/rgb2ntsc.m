@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yiq_map} =} rgb2ntsc (@var{rgb_map})
-## @deftypefnx {Function File} {@var{yiq_img} =} rgb2ntsc (@var{rgb_img})
+## @deftypefn  {} {@var{yiq_map} =} rgb2ntsc (@var{rgb_map})
+## @deftypefnx {} {@var{yiq_img} =} rgb2ntsc (@var{rgb_img})
 ## Transform a colormap or image from red-green-blue (RGB) color space to
 ## luminance-chrominance (NTSC) space.  The input may be of class uint8,
 ## uint16, single, or double.  The output is of class double.
@@ -51,33 +51,8 @@ function yiq = rgb2ntsc (rgb)
     print_usage ();
   endif
 
-  cls = class (rgb);
-  if (! any (strcmp (cls, {"uint8", "uint16", "single", "double"})))
-    error ("rgb2ntsc: invalid data type '%s'", cls);
-  elseif (isfloat (rgb) && (any (rgb(:) < 0) || any (rgb(:) > 1)))
-    error ("rgb2ntsc: floating point images may only contain values between 0 and 1");
-  endif
-
-  ## If we have an image convert it into a color map.
-  if (isreal (rgb) && ndims (rgb) == 3)
-    is_image = true;
-    sz = size (rgb);
-    rgb = [rgb(:,:,1)(:), rgb(:,:,2)(:), rgb(:,:,3)(:)];
-    ## Convert to a double image.
-    if (isinteger (rgb))
-      low = double (intmin (cls));
-      high = double (intmax (cls));
-      rgb = (double (rgb) - low) / (high - low);
-    elseif (isa (rgb, "single"))
-      rgb = double (rgb);
-    endif
-  else
-    is_image = false;
-  endif
-
-  if (! isreal (rgb) || columns (rgb) != 3 || issparse (rgb))
-    error ("rgb2ntsc: input must be a matrix of size Nx3 or NxMx3");
-  endif
+  [rgb, sz, is_im, is_nd] ...
+    = colorspace_conversion_input_check ("rgb2ntsc", "RGB", rgb);
 
   ## Reference matrix for transformation from http://en.wikipedia.org/wiki/YIQ
   ## and truncated to 3 significant figures.  Matlab uses this matrix for their
@@ -85,14 +60,12 @@ function yiq = rgb2ntsc (rgb)
   trans = [ 0.299,  0.596,  0.211;
             0.587, -0.274, -0.523;
             0.114, -0.322,  0.312 ];
-
-  ## Convert data.
   yiq = rgb * trans;
+  ## Note that if the input is of class single, we also return an image
+  ## of class single.  This is Matlab incompatible by design, since
+  ## Matlab always returning class double, is a Matlab bug (see patch #8709)
 
-  ## If input was an image, convert it back into one.
-  if (is_image)
-    yiq = reshape (yiq, sz);
-  endif
+  yiq = colorspace_conversion_revert (yiq, sz, is_im, is_nd);
 
 endfunction
 
@@ -110,9 +83,72 @@ endfunction
 %! rgb_img = rand (64, 64, 3);
 %! assert (ntsc2rgb (rgb2ntsc (rgb_img)), rgb_img, 1e-3);
 
+## test tolerance input checking on floats
+%! assert (rgb2ntsc ([1.5 1 1]), [1.149   0.298   0.105], 1e-3);
+
 ## Test input validation
 %!error rgb2ntsc ()
 %!error rgb2ntsc (1,2)
 %!error <invalid data type 'cell'> rgb2ntsc ({1})
-%!error <must be a matrix of size Nx3 or NxMx3> rgb2ntsc (ones (2,2))
+%!error <RGB must be a colormap or RGB image> rgb2ntsc (ones (2,2))
 
+## Test ND input
+%!test
+%! rgb = rand (16, 16, 3, 5);
+%! yiq = zeros (size (rgb));
+%! for i = 1:5
+%!   yiq(:,:,:,i) = rgb2ntsc (rgb(:,:,:,i));
+%! endfor
+%! assert (rgb2ntsc (rgb), yiq);
+
+## Test output class and size for input images.
+## Most of the tests only test for colormap input.
+
+%!test
+%! ntsc = rgb2ntsc (rand (10, 10, 3));
+%! assert (class (ntsc), "double");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! ntsc = rgb2ntsc (rand (10, 10, 3, "single"));
+%! assert (class (ntsc), "single");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! rgb = (rand (10, 10, 3) * 3 ) - 0.5; # values outside range [0 1]
+%! ntsc = rgb2ntsc (rgb);
+%! assert (class (ntsc), "double");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! rgb = (rand (10, 10, 3, "single") * 3 ) - 0.5; # values outside range [0 1]
+%! ntsc = rgb2ntsc (rgb);
+%! assert (class (ntsc), "single");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! ntsc = rgb2ntsc (randi ([0 255], 10, 10, 3, "uint8"));
+%! assert (class (ntsc), "double");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! ntsc = rgb2ntsc (randi ([0 65535], 10, 10, 3, "uint16"));
+%! assert (class (ntsc), "double");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! ntsc = rgb2ntsc (randi ([-128 127], 10, 10, 3, "int8"));
+%! assert (class (ntsc), "double");
+%! assert (size (ntsc), [10 10 3]);
+
+%!test
+%! rgb_double = reshape ([1 0 0 0 0 1 0 0 0 0 1 0], [2 2 3]);
+%! rgb_uint8  = reshape (uint8 ([255 0 0 0 0 255 0 0 0 0 255 0]),
+%!                       [2 2 3]);
+%! rgb_int16 = int16 (double (rgb_double * uint16 (65535)) -32768);
+%! expected = reshape ([.299 .587 .114 0 .596 -.274 -.322 0 .211 -.523 .312 0],
+%!                     [2 2 3]);
+%!
+%! assert (rgb2ntsc (rgb_double), expected);
+%! assert (rgb2ntsc (rgb_uint8), expected);
+%! assert (rgb2ntsc (single (rgb_double)), single (expected));

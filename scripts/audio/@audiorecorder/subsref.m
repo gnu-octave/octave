@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} subsref (@var{recorder}, @var{idx})
+## @deftypefn {} {@var{value} =} subsref (@var{recorder}, @var{idx})
 ## Perform subscripted selection on the audio recorder object @var{recorder}.
 ##
 ## Return the recorder property value named by @var{idx}.
@@ -37,7 +37,7 @@ function value = subsref (recorder, idx)
     field = idx.subs;
     value = get (recorder, field);
   else
-    error ("@audiorecorder/subsref: invalid subscript type")
+    error ("@audiorecorder/subsref: invalid subscript type");
   endif
 
 endfunction

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Jason Riedy
+Copyright (C) 2009-2016 Jason Riedy
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -37,8 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFBINOP (mul_pm_scm, perm_matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&,
-                   const octave_sparse_complex_matrix&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
@@ -54,8 +55,9 @@ DEFBINOP (mul_pm_scm, perm_matrix, sparse_complex_matrix)
 
 DEFBINOP (ldiv_pm_scm, perm_matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&,
-                   const octave_sparse_complex_matrix&);
+  const octave_perm_matrix& v1 = dynamic_cast<const octave_perm_matrix&> (a1);
+  const octave_sparse_complex_matrix& v2
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   return v1.perm_matrix_value ().inverse () * v2.sparse_complex_matrix_value ();
 }
@@ -64,8 +66,9 @@ DEFBINOP (ldiv_pm_scm, perm_matrix, sparse_complex_matrix)
 
 DEFBINOP (mul_scm_pm, sparse_complex_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_perm_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_perm_matrix& v2 = dynamic_cast<const octave_perm_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
@@ -81,8 +84,9 @@ DEFBINOP (mul_scm_pm, sparse_complex_matrix, perm_matrix)
 
 DEFBINOP (div_scm_pm, sparse_complex_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_perm_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_perm_matrix& v2 = dynamic_cast<const octave_perm_matrix&> (a2);
 
   return v1.sparse_complex_matrix_value () * v2.perm_matrix_value ().inverse ();
 }
@@ -99,3 +103,4 @@ install_pm_scm_ops (void)
   INSTALL_BINOP (op_div, octave_sparse_complex_matrix, octave_perm_matrix,
                  div_scm_pm);
 }
+

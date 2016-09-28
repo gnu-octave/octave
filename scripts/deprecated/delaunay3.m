@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
+## @deftypefn  {} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
 ##
 ## @code{delaunay3} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{delaunay} in all new code.
@@ -35,9 +35,9 @@
 ## @var{x}, @var{y}, @var{z} for the location of the j-th vertex of the i-th
 ## tetrahedron.
 ##
-## An optional fourth argument, which must be a string or cell array of strings,
-## contains options passed to the underlying qhull command.
-## See the documentation for the Qhull library for details
+## An optional fourth argument, which must be a string or cell array of
+## strings, contains options passed to the underlying qhull command.  See the
+## documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
 ## The default options are @code{@{"Qt", "Qbb", "Qc", "Qz"@}}.
 ##
@@ -84,7 +84,7 @@ endfunction
 
 %!testif HAVE_QHULL
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
-%! assert (sortrows (sort (delaunay3 (x, y, z), 2)), [1,2,3,4;1,2,4,5])
+%! assert (sortrows (sort (delaunay3 (x, y, z), 2)), [1,2,3,4;1,2,4,5]);
 
 ## FIXME: Need input validation tests
 

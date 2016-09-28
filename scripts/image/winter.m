@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} winter ()
-## @deftypefnx {Function File} {@var{map} =} winter (@var{n})
+## @deftypefn  {} {@var{map} =} winter ()
+## @deftypefnx {} {@var{map} =} winter (@var{n})
 ## Create color colormap.  This colormap varies from blue to green.
 ##
 ## The argument @var{n} must be a scalar.
@@ -27,9 +27,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-
-## PKG_ADD: colormap ("register", "winter");
-## PKG_DEL: colormap ("unregister", "winter");
 
 function map = winter (n = rows (colormap ()))
 
@@ -55,8 +52,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'winter' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (winter (64));
-
+%! ## Show the 'winter' colormap profile and as an image
+%! cmap = winter (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dMatrix_h)
+#if ! defined (octave_dMatrix_h)
 #define octave_dMatrix_h 1
+
+#include "octave-config.h"
 
 #include "dNDArray.h"
 #include "MArray.h"
@@ -41,6 +43,18 @@ public:
   typedef ColumnVector column_vector_type;
   typedef RowVector row_vector_type;
 
+  typedef ColumnVector real_column_vector_type;
+  typedef RowVector real_row_vector_type;
+
+  typedef Matrix real_matrix_type;
+  typedef ComplexMatrix complex_matrix_type;
+
+  typedef DiagMatrix real_diag_matrix_type;
+  typedef ComplexDiagMatrix complex_diag_matrix_type;
+
+  typedef double real_elt_type;
+  typedef Complex complex_elt_type;
+
   typedef void (*solve_singularity_handler) (double rcon);
 
   Matrix (void) : NDArray () { }
@@ -58,10 +72,10 @@ public:
 
   Matrix (const Matrix& a) : NDArray (a) { }
 
-  template <class U>
+  template <typename U>
   Matrix (const MArray<U>& a) : NDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   Matrix (const Array<U>& a) : NDArray (a.as_matrix ()) { }
 
   explicit Matrix (const RowVector& rv);
@@ -111,6 +125,7 @@ public:
 
   friend class ComplexMatrix;
 
+  Matrix hermitian (void) const { return MArray<double>::transpose (); }
   Matrix transpose (void) const { return MArray<double>::transpose (); }
 
   // resize is the destructive equivalent for this one
@@ -134,21 +149,21 @@ public:
 
 private:
   Matrix tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                   int force, int calc_cond) const;
+                   bool force, bool calc_cond) const;
 
   Matrix finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                   int force, int calc_cond) const;
+                   bool force, bool calc_cond) const;
 
 public:
   Matrix inverse (void) const;
   Matrix inverse (octave_idx_type& info) const;
-  Matrix inverse (octave_idx_type& info, double& rcon, int force = 0,
-                  int calc_cond = 1) const;
+  Matrix inverse (octave_idx_type& info, double& rcon, bool force = false,
+                  bool calc_cond = true) const;
 
   Matrix inverse (MatrixType &mattype) const;
   Matrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   Matrix inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
-                  int force = 0, int calc_cond = 1) const;
+                  bool force = false, bool calc_cond = true) const;
 
   Matrix pseudo_inverse (double tol = 0.0) const;
 
@@ -161,9 +176,9 @@ public:
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;
   DET determinant (octave_idx_type& info, double& rcon,
-                   int calc_cond = 1) const;
+                   bool calc_cond = true) const;
   DET determinant (MatrixType &mattype, octave_idx_type& info,
-                   double& rcon, int calc_cond = 1) const;
+                   double& rcon, bool calc_cond = true) const;
 
   double rcond (void) const;
   double rcond (MatrixType &mattype) const;
@@ -383,7 +398,8 @@ MM_BOOL_OP_DECLS (Matrix, Matrix, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArray, Matrix, double)
 
-template <class T>
+template <typename T>
 void read_int (std::istream& is, bool swap_bytes, T& val);
 
 #endif
+

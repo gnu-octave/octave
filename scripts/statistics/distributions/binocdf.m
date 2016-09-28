@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binocdf (@var{x}, @var{n}, @var{p})
+## @deftypefn {} {} binocdf (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the binomial distribution with parameters @var{n} and
 ## @var{p}, where @var{n} is the number of trials and @var{p} is the

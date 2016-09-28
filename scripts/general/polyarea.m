@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 David M. Doolin
+## Copyright (C) 1999-2016 David M. Doolin
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyarea (@var{x}, @var{y})
-## @deftypefnx {Function File} {} polyarea (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {} {} polyarea (@var{x}, @var{y})
+## @deftypefnx {} {} polyarea (@var{x}, @var{y}, @var{dim})
 ##
 ## Determine area of a polygon by triangle method.
 ##
@@ -49,17 +49,19 @@
 ##    * optimization saving half the sums and multiplies
 
 function a = polyarea (x, y, dim)
+
   if (nargin != 2 && nargin != 3)
     print_usage ();
-  elseif (size_equal (x, y))
-    if (nargin == 2)
-      a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
-    else
-      a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
-    endif
-  else
+  elseif (! size_equal (x, y))
     error ("polyarea: X and Y must have the same shape");
   endif
+
+  if (nargin == 2)
+    a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
+  else
+    a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
+  endif
+
 endfunction
 
 

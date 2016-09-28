@@ -1,6 +1,6 @@
-## Copyright (C) 2013-2015 Julien Bect
+## Copyright (C) 2013-2016 Julien Bect
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tcdf (@var{x}, @var{n})
+## @deftypefn {} {} tcdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the t (Student) distribution with
 ## @var{n} degrees of freedom.
@@ -65,7 +65,7 @@ function cdf = tcdf (x, n)
   endif
 
   ## deal with the case "abs(x) small"
-  kk = k & !x_big_abs;
+  kk = k & ! x_big_abs;
   if (isscalar (n))
     cdf(kk) = 0.5 * (1 - betainc (xx(kk) ./ (n + xx(kk)), 1/2, n/2));
   else

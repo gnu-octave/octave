@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2016 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ver
-## @deftypefnx {Function File} {} ver Octave
-## @deftypefnx {Function File} {} ver @var{package}
-## @deftypefnx {Function File} {v =} ver (@dots{})
+## @deftypefn  {} {} ver
+## @deftypefnx {} {} ver Octave
+## @deftypefnx {} {} ver @var{package}
+## @deftypefnx {} {v =} ver (@dots{})
 ##
 ## Display a header containing the current Octave version number, license
 ## string, and operating system.  The header is followed by a list of installed
@@ -47,7 +47,7 @@
 ## Date of the version/revision.
 ## @end table
 ##
-## @seealso{version, octave_config_info, usejava, pkg}
+## @seealso{version, usejava, pkg}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>

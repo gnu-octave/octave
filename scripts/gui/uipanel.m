@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Michael Goffioul
+## Copyright (C) 2012-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,20 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uipanel (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uipanel (@var{parent}, "@var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uipanel (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipanel (@var{parent}, "@var{property}, @var{value}, @dots{})
 ##
 ## Create a uipanel object and return a handle to it.
 ##
 ## uipanels are used as containers to group other uicontrol objects.
 ##
 ## If @var{parent} is omitted then a uipanel for the current figure is
-## created. If no figure is available, a new figure is created first. 
+## created.  If no figure is available, a new figure is created first.
 ##
-## If @var{parent} is given then a uipanel relative to @var{parent} is created. 
-## 
-## Any provided property value pairs will override the default values of the created 
-## uipanel object.
+## If @var{parent} is given then a uipanel relative to @var{parent} is created.
+##
+## Any provided property value pairs will override the default values of the
+## created uipanel object.
+##
+## Uipanel properties are documented at @ref{Uipanel Properties}.
 ##
 ## Examples:
 ##

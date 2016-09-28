@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2008-2015 Michael Goffioul
+Copyright (C) 2008-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include "config.h"
 #endif
 
 #include <string>
@@ -35,35 +35,48 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
-#include <unistd.h>
-
-// This mess suggested by the autoconf manual.
-
-#include <sys/types.h>
-
-#if defined HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
-
-#ifndef WIFEXITED
-#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
-#endif
-
-#ifndef WEXITSTATUS
-#define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
+#if defined (CROSS)
+#  include <sys/types.h>
+#  include <sys/wait.h>
+#  include <unistd.h>
+#else
+#  include "unistd-wrappers.h"
+#  include "wait-wrappers.h"
 #endif
 
 static std::map<std::string, std::string> vars;
 
-#ifndef OCTAVE_VERSION
-#define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
+#if ! defined (OCTAVE_VERSION)
+#  define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
 #endif
 
-#ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
+#if ! defined (OCTAVE_PREFIX)
+#  define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
 #endif
 
 #include "shared-fcns.h"
+
+#if defined (CROSS)
+
+static int
+octave_unlink_wrapper (const char *nm)
+{
+  return unlink (nm);
+}
+
+static bool
+octave_wifexited_wrapper (int status)
+{
+  return WIFEXITED (status);
+}
+
+static int
+octave_wexitstatus_wrapper (int status)
+{
+  return WEXITSTATUS (status);
+}
+
+#endif
 
 static std::string
 get_line (FILE *fp)
@@ -74,7 +87,7 @@ get_line (FILE *fp)
 
   while (true)
     {
-      c = gnulib::fgetc (fp);
+      c = std::fgetc (fp);
       if (c == '\n' || c == EOF)
         break;
       if (buf.size () <= idx)
@@ -86,7 +99,6 @@ get_line (FILE *fp)
   else
     return std::string (&buf[0], idx);
 }
-
 
 static std::string
 get_variable (const char *name, const std::string& defval)
@@ -130,7 +142,7 @@ initialize (void)
   vars["LIBDIR"] = get_variable ("LIBDIR", DEFAULT_LIBDIR);
   vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
   std::string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
       + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
@@ -243,7 +255,7 @@ static std::string help_msg =
 "\n"
 "  -M, --depend            Generate dependency files (.d) for C and C++\n"
 "                          source files.\n"
-#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+#if ! defined (OCTAVE_USE_WINDOWS_API)
 "\n"
 "  -pthread                Add -pthread to link command.\n"
 #endif
@@ -256,7 +268,7 @@ static std::string help_msg =
 "\n"
 "  -c, --compile           Compile, but do not link.\n"
 "\n"
-"  -o FILE, --output FILE  Output file name.  Default extension is .oct\n"
+"  -o FILE, --output FILE  Output filename.  Default extension is .oct\n"
 "                          (or .mex if --mex is specified) unless linking\n"
 "                          a stand-alone executable.\n"
 "\n"
@@ -300,21 +312,28 @@ static std::string help_msg =
 "\n"
 "  -s, --strip             Strip output file.\n"
 "\n"
+"  -n, --just-print, --dry-run\n"
+"                          Print commands, but do not execute them.\n"
+"\n"
 "  -v, --verbose           Echo commands as they are executed.\n"
 "\n"
 "  FILE                    Compile or link FILE.  Recognized file types are:\n"
 "\n"
 "                            .c    C source\n"
 "                            .cc   C++ source\n"
-"                            .C    C++ source\n"
+"                            .cp   C++ source\n"
 "                            .cpp  C++ source\n"
+"                            .CPP  C++ source\n"
+"                            .cxx  C++ source\n"
+"                            .c++  C++ source\n"
+"                            .C    C++ source\n"
 "                            .f    Fortran source (fixed form)\n"
 "                            .F    Fortran source (fixed form)\n"
 "                            .f90  Fortran source (free form)\n"
 "                            .F90  Fortran source (free form)\n"
 "                            .o    object file\n"
 "                            .a    library file\n"
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
 "                            .lib  library file\n"
 #endif
 "\n";
@@ -356,15 +375,21 @@ ends_with (const std::string& s, const std::string& suffix)
 }
 
 static int
-run_command (const std::string& cmd)
+run_command (const std::string& cmd, bool printonly = false)
 {
+  if (printonly)
+    {
+      std::cout << cmd << std::endl;
+      return 0;
+    }
+
   if (debug)
     std::cout << cmd << std::endl;
 
   int result = system (cmd.c_str ());
 
-  if (WIFEXITED (result))
-    result = WEXITSTATUS (result);
+  if (octave_wifexited_wrapper (result))
+    result = octave_wexitstatus_wrapper (result);
 
   return result;
 }
@@ -398,6 +423,7 @@ main (int argc, char **argv)
   bool link_stand_alone = false;
   std::string output_ext = ".oct";
   bool depend = false;
+  bool printonly = false;
 
   if (argc == 1)
     {
@@ -405,9 +431,9 @@ main (int argc, char **argv)
       return 1;
     }
 
-  if (argc == 2 && (!strcmp (argv[1], "-v")
-                    || !strcmp (argv[1], "-version")
-                    || !strcmp (argv[1], "--version")))
+  if (argc == 2 && (! strcmp (argv[1], "-v")
+                    || ! strcmp (argv[1], "-version")
+                    || ! strcmp (argv[1], "--version")))
     {
       std::cout << version_msg << std::endl;
       return 0;
@@ -422,8 +448,10 @@ main (int argc, char **argv)
           file = arg;
           cfiles.push_back (file);
         }
-      else if (ends_with (arg, ".cc") || ends_with (arg, ".C")
-               || ends_with (arg, ".cpp"))
+      else if (ends_with (arg, ".cc") || ends_with (arg, ".cp")
+               || ends_with (arg, ".cpp") || ends_with (arg, ".CPP")
+               || ends_with (arg, ".cxx") || ends_with (arg, ".c++")
+               || ends_with (arg, ".C"))
         {
           file = arg;
           ccfiles.push_back (file);
@@ -480,12 +508,16 @@ main (int argc, char **argv)
         {
           defs += (" " + arg);
         }
+      else if (arg == "-largeArrayDims" || arg == "-compatibleArrayDims")
+        {
+          std::cout << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
+        }
       else if (starts_with (arg, "-Wl,") || starts_with (arg, "-l")
                || starts_with (arg, "-L") || starts_with (arg, "-R"))
         {
           ldflags += (" " + arg);
         }
-#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+#if ! defined (OCTAVE_USE_WINDOWS_API)
       else if (arg == "-pthread")
         {
           ldflags += (" " + arg);
@@ -503,7 +535,11 @@ main (int argc, char **argv)
               outputfile = arg;
             }
           else
-            std::cerr << "mkoctfile: output file name missing" << std::endl;
+            std::cerr << "mkoctfile: output filename missing" << std::endl;
+        }
+      else if (arg == "-n" || arg == "--dry-run" || arg == "--just-print")
+        {
+          printonly = true;
         }
       else if (arg == "-p" || arg == "-print" || arg == "--print")
         {
@@ -541,7 +577,7 @@ main (int argc, char **argv)
       else if (arg == "-mex" || arg == "--mex")
         {
           incflags += " -I.";
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
           ldflags += " -Wl,-export:mexFunction";
 #endif
           output_ext = ".mex";
@@ -561,18 +597,24 @@ main (int argc, char **argv)
           return 1;
         }
 
-      if (!file.empty () && octfile.empty ())
+      if (! file.empty () && octfile.empty ())
         octfile = file;
+    }
+
+  if (output_ext ==  ".mex"
+      && vars["ALL_CFLAGS"].find ("-g") != std::string::npos) 
+    {
+      defs += " -DMEX_DEBUG";
     }
 
   if (link_stand_alone)
     {
-      if (!outputfile.empty ())
+      if (! outputfile.empty ())
         output_option = "-o " + outputfile;
     }
   else
     {
-      if (!outputfile.empty ())
+      if (! outputfile.empty ())
         {
           octfile = outputfile;
           size_t len = octfile.length ();
@@ -592,7 +634,7 @@ main (int argc, char **argv)
         {
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
-          gnulib::unlink (dfile.c_str ());
+          octave_unlink_wrapper (dfile.c_str ());
           std::string cmd = vars["CC"] + " "
                             + vars["DEPEND_FLAGS"] + " "
                             + vars["CPPFLAGS"] + " "
@@ -602,7 +644,7 @@ main (int argc, char **argv)
           FILE *fd = popen (cmd.c_str (), "r");
           std::ofstream fo (dfile.c_str ());
           size_t pos;
-          while (!feof (fd))
+          while (! feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != std::string::npos)
@@ -610,8 +652,8 @@ main (int argc, char **argv)
                   size_t spos = line.rfind ('/', pos);
                   std::string ofile =
                     (spos == std::string::npos
-                      ? line.substr (0, pos+2)
-                      : line.substr (spos+1, pos-spos+1));
+                     ? line.substr (0, pos+2)
+                     : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " "
                      << dfile << line.substr (pos) << std::endl;
                 }
@@ -626,8 +668,8 @@ main (int argc, char **argv)
         {
           std::string f = *it, dfile = basename (f, true) + ".d", line;
 
-          gnulib::unlink (dfile.c_str ());
-          std::string cmd = vars["CC"] + " "
+          octave_unlink_wrapper (dfile.c_str ());
+          std::string cmd = vars["CXX"] + " "
                             + vars["DEPEND_FLAGS"] + " "
                             + vars["CPPFLAGS"] + " "
                             + vars["ALL_CXXFLAGS"] + " "
@@ -636,7 +678,7 @@ main (int argc, char **argv)
           FILE *fd = popen (cmd.c_str (), "r");
           std::ofstream fo (dfile.c_str ());
           size_t pos;
-          while (!feof (fd))
+          while (! feof (fd))
             {
               line = get_line (fd);
               if ((pos = line.rfind (".o:")) != std::string::npos)
@@ -644,8 +686,8 @@ main (int argc, char **argv)
                   size_t spos = line.rfind ('/', pos);
                   std::string ofile =
                     (spos == std::string::npos
-                      ? line.substr (0, pos+2)
-                      : line.substr (spos+1, pos-spos+1));
+                     ? line.substr (0, pos+2)
+                     : line.substr (spos+1, pos-spos+1));
                   fo << "pic/" << ofile << " " << ofile << " "
                      << dfile << line.substr (pos+2) << std::endl;
                 }
@@ -659,13 +701,13 @@ main (int argc, char **argv)
       return 0;
     }
 
-  for (it = f77files.begin (); it != f77files.end () && !result; ++it)
+  for (it = f77files.begin (); it != f77files.end () && ! result; ++it)
     {
       std::string f = *it, b = basename (f, true);
-      if (!vars["F77"].empty ())
+      if (! vars["F77"].empty ())
         {
           std::string o;
-          if (!outputfile.empty ())
+          if (! outputfile.empty ())
             {
               if (link)
                 o = b + ".o";
@@ -680,7 +722,7 @@ main (int argc, char **argv)
                             + vars["ALL_FFLAGS"] + " "
                             + incflags + " " + defs + " " + pass_on_options
                             + " " + f + " -o " + o;
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
       else
         {
@@ -690,13 +732,13 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = cfiles.begin (); it != cfiles.end () && !result; ++it)
+  for (it = cfiles.begin (); it != cfiles.end () && ! result; ++it)
     {
       std::string f = *it;
-      if (!vars["CC"].empty ())
+      if (! vars["CC"].empty ())
         {
           std::string b = basename (f, true), o;
-          if (!outputfile.empty ())
+          if (! outputfile.empty ())
             {
               if (link)
                 o = b + ".o";
@@ -712,7 +754,7 @@ main (int argc, char **argv)
                             + pass_on_options + " "
                             + incflags + " " + defs + " "
                             + quote_path (f) + " -o " + quote_path (o);
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
       else
         {
@@ -722,13 +764,13 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = ccfiles.begin (); it != ccfiles.end () && !result; ++it)
+  for (it = ccfiles.begin (); it != ccfiles.end () && ! result; ++it)
     {
       std::string f = *it;
-      if (!vars["CXX"].empty ())
+      if (! vars["CXX"].empty ())
         {
           std::string b = basename (f, true), o;
-          if (!outputfile.empty ())
+          if (! outputfile.empty ())
             {
               if (link)
                 o = b + ".o";
@@ -745,7 +787,7 @@ main (int argc, char **argv)
                             + pass_on_options + " "
                             + incflags + " " + defs + " "
                             + quote_path (f) + " -o " + quote_path (o);
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
       else
         {
@@ -755,11 +797,11 @@ main (int argc, char **argv)
         }
     }
 
-  if (link && !objfiles.empty () && !result)
+  if (link && ! objfiles.empty () && ! result)
     {
       if (link_stand_alone)
         {
-          if (!vars["LD_CXX"].empty ())
+          if (! vars["LD_CXX"].empty ())
             {
               std::string cmd = vars["LD_CXX"] + " "
                                 + vars["CPPFLAGS"] + " "
@@ -772,7 +814,7 @@ main (int argc, char **argv)
                                 + " -loctinterp -loctave "
                                 + " " + vars["OCTAVE_LINK_OPTS"]
                                 + " " + vars["OCTAVE_LINK_DEPS"];
-              result = run_command (cmd);
+              result = run_command (cmd, printonly);
             }
           else
             {
@@ -794,15 +836,16 @@ main (int argc, char **argv)
                             + vars["LFLAGS"] + " -loctinterp -loctave "
                             + vars["OCT_LINK_OPTS"] + " "
                             + vars["OCT_LINK_DEPS"];
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
 
       if (strip)
         {
           std::string cmd = "strip " + octfile;
-          result = run_command (cmd);
+          result = run_command (cmd, printonly);
         }
     }
 
   return result;
 }
+

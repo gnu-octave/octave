@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 2012-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,15 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} methods (@var{obj})
-## @deftypefnx {Function File} {} methods ("@var{classname}")
-## @deftypefnx {Function File} {@var{mtds} =} methods (@dots{})
-##
-## Return a cell array containing the names of the methods for the
-## object @var{obj} or the named class @var{classname}.
+## @deftypefn  {} {} methods (@var{obj})
+## @deftypefnx {} {} methods ("@var{classname}")
+## @deftypefnx {} {@var{mtds} =} methods (@dots{})
+## List the names of the public methods for the object @var{obj} or the
+## named class @var{classname}.
 ##
 ## @var{obj} may be an Octave class object or a Java object.
+## @var{classname} may be the name of an Octave class or a Java class.
 ##
+## When called with no output arguments, @code{methods} prints the list of
+## method names to the screen.  Otherwise, the output argument @var{mtds}
+## contains the list in a cell array of strings.
 ## @seealso{fieldnames}
 ## @end deftypefn
 
@@ -78,6 +81,9 @@ endfunction
 
 ## test Java classname
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! mtds = methods ("java.lang.Double");
 %! search = strfind (mtds, "java.lang.Double valueOf");
 %! assert (! isempty ([search{:}]));

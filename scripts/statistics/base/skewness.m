@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2015 Julien Bect
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 2013-2016 Julien Bect
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} skewness (@var{x})
-## @deftypefnx {Function File} {} skewness (@var{x}, @var{flag})
-## @deftypefnx {Function File} {} skewness (@var{x}, @var{flag}, @var{dim})
+## @deftypefn  {} {} skewness (@var{x})
+## @deftypefnx {} {} skewness (@var{x}, @var{flag})
+## @deftypefnx {} {} skewness (@var{x}, @var{flag}, @var{dim})
 ## Compute the sample skewness of the elements of @var{x}.
 ##
 ## The sample skewness is defined as
@@ -92,10 +92,8 @@ function y = skewness (x, flag, dim)
 
   if (nargin < 2 || isempty (flag))
     flag = 1;  # default: do not use the "bias corrected" version
-  else
-    if (! isscalar (flag) || (flag != 0 && flag != 1))
-      error ("skewness: FLAG must be 0 or 1");
-    endif
+  elseif (! isscalar (flag) || (flag != 0 && flag != 1))
+    error ("skewness: FLAG must be 0 or 1");
   endif
 
   nd = ndims (x);
@@ -104,12 +102,12 @@ function y = skewness (x, flag, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("skewness: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   sz(dim) = 1;
 
   x = center (x, dim);   # center also promotes integer, logical to double
@@ -136,6 +134,7 @@ endfunction
 %!assert (skewness ([-1, 0, 2]) > 0)
 %!assert (skewness ([-3, 0, 1]) == -1 * skewness ([-1, 0, 3]))
 %!assert (skewness (ones (3, 5)), NaN (1, 5))
+%!assert (skewness (1, [], 3), NaN)
 
 %!test
 %! x = [0; 0; 0; 1];
@@ -146,21 +145,16 @@ endfunction
 %!assert (skewness ([1:5 10; 1:5 10],  1, 2), 1.051328089232020 * [1; 1], 2*eps)
 %!assert (skewness ([1:5 10; 1:5 10], [], 2), 1.051328089232020 * [1; 1], 2*eps)
 
-## Test behaviour on single input
+## Test behavior on single input
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 
 ## Verify no "divide-by-zero" warnings
 %!test
-%! wstate = warning ("query", "Octave:divide-by-zero");
-%! warning ("on", "Octave:divide-by-zero");
-%! unwind_protect
-%!   lastwarn ("");  # clear last warning
-%!   skewness (1);
-%!   assert (lastwarn (), "");
-%! unwind_protect_cleanup
-%!   warning (wstate, "Octave:divide-by-zero");
-%! end_unwind_protect
+%! warning ("on", "Octave:divide-by-zero", "local");
+%! lastwarn ("");  # clear last warning
+%! skewness (1);
+%! assert (lastwarn (), "");
 
 ## Test input validation
 %!error skewness ()
@@ -171,4 +165,4 @@ endfunction
 %!error <DIM must be an integer> skewness (1, [], ones (2,2))
 %!error <DIM must be an integer> skewness (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> skewness (1, [], 0)
-%!error <DIM must be .* a valid dimension> skewness (1, [], 3)
+

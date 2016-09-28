@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} stop (@var{recorder})
+## @deftypefn {} {} stop (@var{recorder})
 ## Stop the audiorecorder object @var{recorder} and clean up any audio streams.
 ## @end deftypefn
 

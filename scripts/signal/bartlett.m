@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Andreas Weingessel
+## Copyright (C) 1995-2016 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bartlett (@var{m})
+## @deftypefn {} {} bartlett (@var{m})
 ## Return the filter coefficients of a Bartlett (triangular) window of length
 ## @var{m}.
 ##
@@ -42,7 +42,7 @@ function c = bartlett (m)
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    m -= 1;
     n = fix (m / 2);
     c = [2*(0:n)/m, 2-2*(n+1:m)/m]';
   endif

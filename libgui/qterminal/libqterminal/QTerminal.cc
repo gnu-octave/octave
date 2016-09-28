@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2012-2015 Michael Goffioul.
-Copyright (C) 2012-2015 Jacob Dawid.
+Copyright (C) 2012-2016 Michael Goffioul.
+Copyright (C) 2012-2016 Jacob Dawid.
 
 This file is part of QTerminal.
 
@@ -76,11 +76,65 @@ void
 QTerminal::set_global_shortcuts (bool focus_out)
   {
     if (focus_out)
-      _interrupt_action->setShortcut (QKeySequence ());
+      {
+        _interrupt_action->setShortcut (QKeySequence ());
+        _nop_action->setShortcut (QKeySequence ());
+      }
     else
-     _interrupt_action->setShortcut (
-              QKeySequence (Qt::ControlModifier + Qt::Key_C));
+      {
+        _interrupt_action->setShortcut (
+              QKeySequence (Qt::ControlModifier | Qt::Key_C));
+        _nop_action->setShortcut (
+              QKeySequence (Qt::ControlModifier | Qt::Key_D));
+      }
   }
+
+// slot for the terminal's context menu
+void
+QTerminal::handleCustomContextMenuRequested (const QPoint& at)
+  {
+    QClipboard * cb = QApplication::clipboard ();
+    QString selected_text = selectedText();
+    bool has_selected_text = ! selected_text.isEmpty ();
+
+    _edit_action->setVisible (false);
+
+    if (has_selected_text)
+      {
+        QRegExp file ("(?:[ \\t]+)(\\S+) at line (\\d+) column (?:\\d+)");
+
+        int pos = file.indexIn (selected_text);
+
+        if (pos > -1)
+          {
+            QString file_name = file.cap (1);
+            QString line = file.cap (2);
+
+            _edit_action->setVisible (true);
+            _edit_action->setText (tr ("Edit %1 at line %2")
+                                   .arg (file_name).arg (line));
+
+            QStringList data;
+            data << file_name << line;
+            _edit_action->setData (data);
+          }
+      }
+
+    _paste_action->setEnabled (cb->text().length() > 0);
+    _copy_action->setEnabled (has_selected_text);
+
+    _contextMenu->exec (mapToGlobal (at));
+  }
+
+// slot for edit files in error messages
+void
+QTerminal::edit_file ()
+{
+  QString file = _edit_action->data ().toStringList ().at (0);
+  int line = _edit_action->data ().toStringList ().at (1).toInt ();
+
+  emit edit_mfile_request (file,line);
+}
 
 void
 QTerminal::notice_settings (const QSettings *settings)
@@ -131,24 +185,20 @@ QTerminal::notice_settings (const QSettings *settings)
                       QVariant (colors.at (3))).value<QColor> ());
   setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
 
-  // check whether Copy shoretcut is Ctrl-C
-  int set = settings->value ("shortcuts/set",0).toInt ();
-  QKeySequence copy;
-  QString key = QString ("shortcuts/main_edit:copy");
-  if (set)
-    key.append ("_1");  // if second set is active
-  copy = QKeySequence (settings->value (key).toString ()); // the copy shortcut
+  // check whether Copy shortcut is Ctrl-C
+  QKeySequence sc;
+  sc = QKeySequence (settings->value ("shortcuts/main_edit:copy").toString ());
 
-  // if copy is empty, shortcuts are not yet in the settings (take the default)
-  if (copy.isEmpty ())         // QKeySequence::Copy as second argument in
-    copy = QKeySequence::Copy; // settings->value () does not work!
+  // if sc is empty, shortcuts are not yet in the settings (take the default)
+  if (sc.isEmpty ())         // QKeySequence::Copy as second argument in
+    sc = QKeySequence::Copy; // settings->value () does not work!
 
   //  dis- or enable extra interrupt action
-  QKeySequence ctrl;
-  ctrl = Qt::ControlModifier;
-
-  bool extra_ir_action = (copy != QKeySequence (ctrl + Qt::Key_C));
-
+  bool extra_ir_action = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C));
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
+
+  // check whether shortcut Ctrl-D is in use by the main-window
+  bool ctrld = settings->value ("shortcuts/main_ctrld",false).toBool ();
+  _nop_action->setEnabled (! ctrld);
 }

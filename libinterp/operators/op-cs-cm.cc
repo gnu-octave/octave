@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
@@ -42,7 +42,9 @@ DEFNDBINOP_OP (mul, complex, complex_matrix, complex, complex_array, *)
 
 DEFBINOP (div, complex, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   ComplexMatrix m1 = v1.complex_matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -58,12 +60,14 @@ DEFBINOP_FN (pow, complex, complex_matrix, xpow)
 
 DEFBINOP (ldiv, complex, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_array_value () / d);
 }
@@ -89,12 +93,14 @@ DEFNDBINOP_FN (el_pow, complex, complex_matrix, complex, complex_array,
 
 DEFBINOP (el_ldiv, complex, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_complex&, const octave_complex_matrix&);
+  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   Complex d = v1.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.complex_array_value () / d);
 }
@@ -109,7 +115,7 @@ DEFNDCATOP_FN (cs_cm, complex, complex_matrix, complex_array, complex_array,
 
 DEFCONV (complex_matrix_conv, complex, complex_matrix)
 {
-  CAST_CONV_ARG (const octave_complex&);
+  const octave_complex& v = dynamic_cast<const octave_complex&> (a);
 
   return new octave_complex_matrix (v.complex_matrix_value ());
 }

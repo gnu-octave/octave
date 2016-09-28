@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 John W. Eaton
+## Copyright (C) 2014-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{output} =} open @var{file}
-## @deftypefnx {Function File} {@var{output} =} open (@var{file})
+## @deftypefn  {} {@var{output} =} open @var{file}
+## @deftypefnx {} {@var{output} =} open (@var{file})
 ## Open the file @var{file} in Octave or in an external application based on
-## the file type as determined by the file name extension.
+## the file type as determined by the filename extension.
 ##
 ## Recognized file types are
 ##
@@ -45,7 +45,7 @@ function output = open (file)
   endif
 
   if (! ischar (file))
-    error ("expecting argument to be a file name");
+    error ("open: FILE must be a string");
   endif
 
   [~, ~, ext] = fileparts (file);
@@ -59,12 +59,12 @@ function output = open (file)
       evalin ("base", sprintf ("load ('%s');", file));
     endif
   elseif (any (strcmpi (ext, {".fig", ".mdl", ".slx", ".prj"})))
-    error ("opening file type '%s' is not supported", ext);
+    error ("open: opening file type '%s' is not supported", ext);
   elseif (strcmpi (ext, ".exe"))
     if (ispc ())
       dos (file);
     else
-      error ("executing .exe files is only supported on Windows systems");
+      error ("open: executing .exe files is only supported on Windows systems");
     endif
   else
     __open_with_system_app__ (file);
@@ -72,7 +72,9 @@ function output = open (file)
 
 endfunction
 
+
 ## Test input validation
-%!error open
-%!error open (1)
-%!error output = open (1)
+%!error open ()
+%!error open ("abc", "def")
+%!error <FILE must be a string> open (1)
+

@@ -1,7 +1,7 @@
 // urlwrite and urlread, a curl front-end for octave
 /*
 
-Copyright (C) 2006-2015 Alexander Barth
+Copyright (C) 2006-2016 Alexander Barth
 Copyright (C) 2009 David Bateman
 
 This file is part of Octave.
@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 // Author: Alexander Barth <abarth@marine.usf.edu>
 // Adapted-By: jwe
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <string>
@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-cell.h"
 #include "pager.h"
 #include "oct-map.h"
@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 delete_file (const std::string& file)
 {
-  octave_unlink (file);
+  octave::sys::unlink (file);
 }
 
 typedef octave_handle curl_handle;
@@ -80,11 +80,7 @@ public:
       create_instance ();
 
     if (! instance)
-      {
-        ::error ("unable to create ch_manager!");
-
-        retval = false;
-      }
+      error ("unable to create ch_manager!");
 
     return retval;
   }
@@ -113,19 +109,19 @@ public:
                                  : curl_handle ();
   }
 
-  static url_transfer get_object (double val)
+  static octave::url_transfer get_object (double val)
   {
     return get_object (lookup (val));
   }
 
-  static url_transfer get_object (const octave_value& val)
+  static octave::url_transfer get_object (const octave_value& val)
   {
     return get_object (lookup (val));
   }
 
-  static url_transfer get_object (const curl_handle& h)
+  static octave::url_transfer get_object (const curl_handle& h)
   {
-    return instance_ok () ? instance->do_get_object (h) : url_transfer ();
+    return instance_ok () ? instance->do_get_object (h) : octave::url_transfer ();
   }
 
   static curl_handle make_curl_handle (const std::string& host,
@@ -147,14 +143,14 @@ private:
 
   static ch_manager *instance;
 
-  typedef std::map<curl_handle, url_transfer>::iterator iterator;
-  typedef std::map<curl_handle, url_transfer>::const_iterator const_iterator;
+  typedef std::map<curl_handle, octave::url_transfer>::iterator iterator;
+  typedef std::map<curl_handle, octave::url_transfer>::const_iterator const_iterator;
 
   typedef std::set<curl_handle>::iterator free_list_iterator;
   typedef std::set<curl_handle>::const_iterator const_free_list_iterator;
 
   // A map of handles to curl objects.
-  std::map<curl_handle, url_transfer> handle_map;
+  std::map<curl_handle, octave::url_transfer> handle_map;
 
   // The available curl handles.
   std::set<curl_handle> handle_free_list;
@@ -168,16 +164,16 @@ private:
 
   curl_handle do_lookup (double val)
   {
-    iterator p = (xisnan (val) ? handle_map.end () : handle_map.find (val));
+    iterator p = (octave::math::isnan (val) ? handle_map.end () : handle_map.find (val));
 
     return (p != handle_map.end ()) ? p->first : curl_handle ();
   }
 
-  url_transfer do_get_object (const curl_handle& h)
+  octave::url_transfer do_get_object (const curl_handle& h)
   {
     iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
 
-    return (p != handle_map.end ()) ? p->second : url_transfer ();
+    return (p != handle_map.end ()) ? p->second : octave::url_transfer ();
   }
 
   curl_handle do_make_curl_handle (const std::string& host,
@@ -187,17 +183,12 @@ private:
   {
     curl_handle h = get_handle ();
 
-    url_transfer obj (host, user, passwd, os);
+    octave::url_transfer obj (host, user, passwd, os);
 
-    if (obj.is_valid ())
-      {
-        if (! error_state)
-          handle_map[h] = obj;
-        else
-          h = curl_handle ();
-      }
-    else
-      error ("support for url transfers was disabled when Octave was built");
+    if (! obj.is_valid ())
+      error ("support for URL transfers was disabled when Octave was built");
+
+    handle_map[h] = obj;
 
     return h;
   }
@@ -268,937 +259,671 @@ ch_manager::do_free (const curl_handle& h)
     {
       iterator p = handle_map.find (h);
 
-      if (p != handle_map.end ())
-        {
-          // Curl handles are negative integers plus some random
-          // fractional part.  To avoid running out of integers, we
-          // recycle the integer part but tack on a new random part
-          // each time.
-
-          handle_map.erase (p);
-
-          if (h.value () < 0)
-            handle_free_list.insert
-             (std::ceil (h.value ()) - make_handle_fraction ());
-        }
-      else
+      if (p == handle_map.end ())
         error ("ch_manager::free: invalid object %g", h.value ());
+
+      // Curl handles are negative integers plus some random
+      // fractional part.  To avoid running out of integers, we
+      // recycle the integer part but tack on a new random part
+      // each time.
+
+      handle_map.erase (p);
+
+      if (h.value () < 0)
+        handle_free_list.insert
+          (std::ceil (h.value ()) - make_handle_fraction ());
     }
 }
 
 ch_manager *ch_manager::instance = 0;
 
 DEFUN (urlwrite, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {Loadable Function} {@var{f} =} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {Loadable Function} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
-@deftypefnx {Loadable Function} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})\n\
-Download a remote file specified by its @var{url} and save it as\n\
-@var{localfile}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-urlwrite (\"ftp://ftp.octave.org/pub/README\",\n\
-          \"README.txt\");\n\
-@end group\n\
-@end example\n\
-\n\
-The full path of the downloaded file is returned in @var{f}.\n\
-\n\
-The variable @var{success} is 1 if the download was successful,\n\
-otherwise it is 0 in which case @var{message} contains an error message.\n\
-\n\
-If no output argument is specified and an error occurs, then the error is\n\
-signaled through Octave's error handling mechanism.\n\
-\n\
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP and\n\
-FILE protocols.  Username and password may be specified in the URL, for\n\
-example:\n\
-\n\
-@example\n\
-@group\n\
-urlwrite (\"http://username:password@@example.com/file.txt\",\n\
-          \"file.txt\");\n\
-@end group\n\
-@end example\n\
-\n\
-GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @samp{post} and\n\
-@var{param} is a cell array of parameter and value pairs.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
-          \"get\", @{\"query\", \"octave\"@});\n\
-@end group\n\
-@end example\n\
-@seealso{urlread}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {@var{f} =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})
+Download a remote file specified by its @var{url} and save it as
+@var{localfile}.
 
+For example:
+
+@example
+@group
+urlwrite ("ftp://ftp.octave.org/pub/README",
+          "README.txt");
+@end group
+@end example
+
+The full path of the downloaded file is returned in @var{f}.
+
+The variable @var{success} is 1 if the download was successful,
+otherwise it is 0 in which case @var{message} contains an error message.
+
+If no output argument is specified and an error occurs, then the error is
+signaled through Octave's error handling mechanism.
+
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and
+FILE protocols.  Username and password may be specified in the URL, for
+example:
+
+@example
+@group
+urlwrite ("http://username:password@@example.com/file.txt",
+          "file.txt");
+@end group
+@end example
+
+GET and POST requests can be specified by @var{method} and @var{param}.
+The parameter @var{method} is either @samp{get} or @samp{post} and
+@var{param} is a cell array of parameter and value pairs.
+For example:
+
+@example
+@group
+urlwrite ("http://www.google.com/search", "search.html",
+          "get", @{"query", "octave"@});
+@end group
+@end example
+@seealso{urlread}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   // verify arguments
   if (nargin != 2 && nargin != 4)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  if (! args(0).is_string ())
-    {
-      error ("urlwrite: URL must be a string");
-      return retval;
-    }
+  std::string url = args(0).xstring_value ("urlwrite: URL must be a string");
 
-  std::string url = args(0).string_value ();
-
-  if (! args(1).is_string ())
-    {
-      error ("urlwrite: LOCALFILE must be a string");
-      return retval;
-    }
-
-  // name to store the file if download is succesful
-  std::string filename = args(1).string_value ();
+  // name to store the file if download is successful
+  std::string filename = args(1).xstring_value ("urlwrite: LOCALFILE must be a string");
 
   std::string method;
   Array<std::string> param;
 
   if (nargin == 4)
     {
-      if (! args(2).is_string ())
-        {
-          error ("urlwrite: METHOD must be a string");
-          return retval;
-        }
-
-      method = args(2).string_value ();
+      method = args(2).xstring_value ("urlwrite: METHOD must be a string");
 
       if (method != "get" && method != "post")
-        {
-          error ("urlwrite: METHOD must be \"get\" or \"post\"");
-          return retval;
-        }
+        error ("urlwrite: METHOD must be \"get\" or \"post\"");
 
-      param = args(3).cellstr_value ();
-
-      if (error_state)
-        {
-          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
-          return retval;
-        }
+      param = args(3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
-        {
-          error ("urlwrite: number of elements in PARAM must be even");
-          return retval;
-        }
+        error ("urlwrite: number of elements in PARAM must be even");
     }
 
   // The file should only be deleted if it doesn't initially exist, we
   // create it, and the download fails.  We use unwind_protect to do
   // it so that the deletion happens no matter how we exit the function.
 
-  file_stat fs (filename);
+  octave::sys::file_stat fs (filename);
 
   std::ofstream ofile (filename.c_str (), std::ios::out | std::ios::binary);
 
   if (! ofile.is_open ())
-    {
-      error ("urlwrite: unable to open file");
-      return retval;
-    }
+    error ("urlwrite: unable to open file");
 
-  unwind_protect_safe frame;
+  octave::unwind_protect_safe frame;
 
   frame.add_fcn (delete_file, filename);
 
-  url_transfer curl = url_transfer (url, ofile);
+  octave::url_transfer curl = octave::url_transfer (url, ofile);
 
-  if (curl.is_valid ())
+  octave_value_list retval;
+
+  if (! curl.is_valid ())
+    error ("support for URL transfers was disabled when Octave was built");
+
+  curl.http_action (param, method);
+
+  ofile.close ();
+
+  if (curl.good ())
+    frame.discard ();
+
+  if (nargout > 0)
     {
-      curl.http_action (param, method);
-
-      ofile.close ();
-
       if (curl.good ())
-        frame.discard ();
-
-      if (nargout > 0)
-        {
-          if (curl.good ())
-            {
-              retval(2) = std::string ();
-              retval(1) = true;
-              retval(0) = octave_env::make_absolute (filename);
-            }
-          else
-            {
-              retval(2) = curl.lasterror ();
-              retval(1) = false;
-              retval(0) = std::string ();
-            }
-        }
-
-      if (nargout < 2 && ! curl.good ())
-        error ("urlwrite: %s", curl.lasterror ().c_str ());
+        retval = ovl (octave::sys::env::make_absolute (filename), true, "");
+      else
+        retval = ovl ("", false, curl.lasterror ());
     }
-  else
-    error ("support for url transfers was disabled when Octave was built");
+
+  if (nargout < 2 && ! curl.good ())
+    error ("urlwrite: %s", curl.lasterror ().c_str ());
 
   return retval;
 }
 
 DEFUN (urlread, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{s} =} urlread (@var{url})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
-Download a remote file specified by its @var{url} and return its content\n\
-in string @var{s}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-s = urlread (\"ftp://ftp.octave.org/pub/README\");\n\
-@end example\n\
-\n\
-The variable @var{success} is 1 if the download was successful,\n\
-otherwise it is 0 in which case @var{message} contains an error\n\
-message.\n\
-\n\
-If no output argument is specified and an error occurs, then the error is\n\
-signaled through Octave's error handling mechanism.\n\
-\n\
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP and\n\
-FILE protocols.  Username and password may be specified in the URL@.  For\n\
-example:\n\
-\n\
-@example\n\
-s = urlread (\"http://user:password@@example.com/file.txt\");\n\
-@end example\n\
-\n\
-GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @samp{post} and\n\
-@var{param} is a cell array of parameter and value pairs.\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-s = urlread (\"http://www.google.com/search\", \"get\",\n\
-            @{\"query\", \"octave\"@});\n\
-@end group\n\
-@end example\n\
-@seealso{urlwrite}\n\
-@end deftypefn")
-{
-  // Octave's return value
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} urlread (@var{url})
+@deftypefnx {} {[@var{s}, @var{success}] =} urlread (@var{url})
+@deftypefnx {} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})
+@deftypefnx {} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})
+Download a remote file specified by its @var{url} and return its content
+in string @var{s}.
 
+For example:
+
+@example
+s = urlread ("ftp://ftp.octave.org/pub/README");
+@end example
+
+The variable @var{success} is 1 if the download was successful,
+otherwise it is 0 in which case @var{message} contains an error
+message.
+
+If no output argument is specified and an error occurs, then the error is
+signaled through Octave's error handling mechanism.
+
+This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and
+FILE protocols.  Username and password may be specified in the URL@.  For
+example:
+
+@example
+s = urlread ("http://user:password@@example.com/file.txt");
+@end example
+
+GET and POST requests can be specified by @var{method} and @var{param}.
+The parameter @var{method} is either @samp{get} or @samp{post} and
+@var{param} is a cell array of parameter and value pairs.
+For example:
+
+@example
+@group
+s = urlread ("http://www.google.com/search", "get",
+            @{"query", "octave"@});
+@end group
+@end example
+@seealso{urlwrite}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   // verify arguments
   if (nargin != 1 && nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  if (! args(0).is_string ())
-    {
-      error ("urlread: URL must be a string");
-      return retval;
-    }
-
-  std::string url = args(0).string_value ();
+  std::string url = args(0).xstring_value ("urlread: URL must be a string");
 
   std::string method;
   Array<std::string> param;
 
   if (nargin == 3)
     {
-      if (! args(1).is_string ())
-        {
-          error ("urlread: METHOD must be a string");
-          return retval;
-        }
-
-      method = args(1).string_value ();
+      method = args(1).xstring_value ("urlread: METHOD must be a string");
 
       if (method != "get" && method != "post")
-        {
-          error ("urlread: METHOD must be \"get\" or \"post\"");
-          return retval;
-        }
+        error ("urlread: METHOD must be \"get\" or \"post\"");
 
-      param = args(2).cellstr_value ();
-
-      if (error_state)
-        {
-          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
-          return retval;
-        }
+      param = args(2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
-        {
-          error ("urlread: number of elements in PARAM must be even");
-          return retval;
-        }
+        error ("urlread: number of elements in PARAM must be even");
     }
 
   std::ostringstream buf;
 
-  url_transfer curl = url_transfer (url, buf);
+  octave::url_transfer curl = octave::url_transfer (url, buf);
 
-  if (curl.is_valid ())
+  if (! curl.is_valid ())
+    error ("support for URL transfers was disabled when Octave was built");
+
+  curl.http_action (param, method);
+
+  octave_value_list retval;
+
+  if (nargout > 0)
     {
-      curl.http_action (param, method);
-
-      if (nargout > 0)
-        {
-          // Return empty string if no error occurred.
-          retval(2) = curl.good () ? "" : curl.lasterror ();
-          retval(1) = curl.good ();
-          retval(0) = buf.str ();
-        }
-
-      if (nargout < 2 && ! curl.good ())
-        error ("urlread: %s", curl.lasterror().c_str());
+      // Return empty string if no error occurred.
+      retval = ovl (buf.str (), curl.good (),
+                    curl.good () ? "" : curl.lasterror ());
     }
-  else
-    error ("support for url transfers was disabled when Octave was built");
+
+  if (nargout < 2 && ! curl.good ())
+    error ("urlread: %s", curl.lasterror ().c_str ());
 
   return retval;
 }
 
 DEFUN (__ftp__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{handle} =} __ftp__ (@var{host})\n\
-@deftypefnx {Loadable Function} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{handle} =} __ftp__ (@var{host})
+@deftypefnx {} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
-  std::string host;
-  std::string user = "anonymous";
-  std::string passwd = "";
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
-  else
-    {
-      host = args(0).string_value ();
+    print_usage ();
 
-      if (nargin > 1)
-        user = args(1).string_value ();
+  std::string host = args(0).xstring_value ("__ftp__: HOST must be a string");
 
-      if (nargin > 2)
-        passwd = args(2).string_value ();
+  std::string user = (nargin > 1)
+    ? args(1).xstring_value ("__ftp__: USER must be a string")
+    : std::string ("anonymous");
 
-      if (! error_state)
-        {
-          curl_handle ch
-            = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
+  std::string passwd = (nargin > 2)
+    ? args(2).xstring_value ("__ftp__: PASSWD must be a string")
+    : "";
 
-          if (! error_state)
-            retval = ch.value ();
-        }
-    }
+  curl_handle ch
+    = ch_manager::make_curl_handle (host, user, passwd, octave_stdout);
 
-  return retval;
+  return ovl (ch.value ());
 }
 
 DEFUN (__ftp_pwd__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_pwd__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_pwd__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_pwd__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-      if (curl.is_valid ())
-        retval = curl.pwd ();
-      else
-        error ("__ftp_pwd__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_pwd__: invalid ftp handle");
 
-  return retval;
+  return ovl (curl.pwd ());
 }
 
 DEFUN (__ftp_cwd__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_cwd__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_cwd__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 2)
     error ("__ftp_cwd__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  std::string path = "";
+  if (nargin > 1)
+    path = args(1).xstring_value ("__ftp_cwd__: PATH must be a string");
 
-      if (curl.is_valid ())
-        {
-          std::string path = "";
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-          if (nargin > 1)
-            path = args(1).string_value ();
+  if (! curl.is_valid ())
+    error ("__ftp_cwd__: invalid ftp handle");
 
-          if (! error_state)
-            curl.cwd (path);
-          else
-            error ("__ftp_cwd__: expecting path as second argument");
-        }
-      else
-        error ("__ftp_cwd__: invalid ftp handle");
-    }
+  curl.cwd (path);
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (__ftp_dir__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_dir__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_dir__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    error ("__ftp_dir__: incorrect number of arguments");
+
+  octave::url_transfer curl = ch_manager::get_object (args(0));
+
+  if (! curl.is_valid ())
+    error ("__ftp_dir__: invalid ftp handle");
+
   octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    error ("__ftp_dir__: incorrect number of arguments");
+  if (nargout == 0)
+    curl.dir ();
   else
     {
-      url_transfer curl = ch_manager::get_object (args(0));
+      string_vector sv = curl.list ();
+      octave_idx_type n = sv.numel ();
 
-      if (error_state)
-        return retval;
-
-      if (curl.is_valid ())
+      if (n == 0)
         {
-          if (nargout == 0)
-            curl.dir ();
-          else
-            {
-              string_vector sv = curl.list ();
-              octave_idx_type n = sv.length ();
+          string_vector flds (5);
 
-              if (n == 0)
-                {
-                  string_vector flds (5);
+          flds(0) = "name";
+          flds(1) = "date";
+          flds(2) = "bytes";
+          flds(3) = "isdir";
+          flds(4) = "datenum";
 
-                  flds(0) = "name";
-                  flds(1) = "date";
-                  flds(2) = "bytes";
-                  flds(3) = "isdir";
-                  flds(4) = "datenum";
-
-                  retval = octave_map (flds);
-                }
-              else
-                {
-                  octave_map st;
-
-                  Cell filectime (dim_vector (n, 1));
-                  Cell filesize (dim_vector (n, 1));
-                  Cell fileisdir (dim_vector (n, 1));
-                  Cell filedatenum (dim_vector (n, 1));
-
-                  st.assign ("name", Cell (sv));
-
-                  for (octave_idx_type i = 0; i < n; i++)
-                    {
-                      time_t ftime;
-                      bool fisdir;
-                      double fsize;
-
-                      curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
-
-                      fileisdir (i) = fisdir;
-                      filectime (i) = ctime (&ftime);
-                      filesize (i) = fsize;
-                      filedatenum (i) = double (ftime);
-                    }
-
-                  st.assign ("date", filectime);
-                  st.assign ("bytes", filesize);
-                  st.assign ("isdir", fileisdir);
-                  st.assign ("datenum", filedatenum);
-
-                  retval = st;
-                }
-            }
+          retval = octave_map (flds);
         }
       else
-        error ("__ftp_dir__: invalid ftp handle");
+        {
+          octave_map st;
+
+          Cell filectime (dim_vector (n, 1));
+          Cell filesize (dim_vector (n, 1));
+          Cell fileisdir (dim_vector (n, 1));
+          Cell filedatenum (dim_vector (n, 1));
+
+          st.assign ("name", Cell (sv));
+
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              time_t ftime;
+              bool fisdir;
+              double fsize;
+
+              curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
+
+              fileisdir (i) = fisdir;
+              filectime (i) = ctime (&ftime);
+              filesize (i) = fsize;
+              filedatenum (i) = double (ftime);
+            }
+
+          st.assign ("date", filectime);
+          st.assign ("bytes", filesize);
+          st.assign ("isdir", fileisdir);
+          st.assign ("datenum", filedatenum);
+
+          retval = st;
+        }
     }
 
   return retval;
 }
 
 DEFUN (__ftp_ascii__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_ascii__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_ascii__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_ascii__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-      if (curl.is_valid ())
-        curl.ascii ();
-      else
-        error ("__ftp_ascii__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_ascii__: invalid ftp handle");
 
-  return retval;
+  curl.ascii ();
+
+  return ovl ();
 }
 
 DEFUN (__ftp_binary__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_binary__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_binary__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_binary__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-      if (curl.is_valid ())
-        curl.binary ();
-      else
-        error ("__ftp_binary__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_binary__: invalid ftp handle");
 
-  return retval;
+  curl.binary ();
+
+  return ovl ();
 }
 
 DEFUN (__ftp_close__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_close__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_close__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_close__: incorrect number of arguments");
-  else
-    {
-      curl_handle h = ch_manager::lookup (args(0));
 
-      if (error_state)
-        return retval;
+  curl_handle h = ch_manager::lookup (args(0));
 
-      if (h.ok ())
-        ch_manager::free (h);
-      else
-        error ("__ftp_close__: invalid ftp handle");
-    }
+  if (! h.ok ())
+    error ("__ftp_close__: invalid ftp handle");
 
-  return retval;
+  ch_manager::free (h);
+
+  return ovl ();
 }
 
 DEFUN (__ftp_mode__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mode__ (@var{handle})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_mode__ (@var{handle})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
+  if (args.length () != 1)
     error ("__ftp_mode__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-      if (curl.is_valid ())
-        retval = (curl.is_ascii () ? "ascii" : "binary");
-      else
-        error ("__ftp_binary__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_binary__: invalid ftp handle");
 
-  return retval;
+  return ovl (curl.is_ascii () ? "ascii" : "binary");
 }
 
 DEFUN (__ftp_delete__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_delete__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_delete__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_delete__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  std::string file = args(1).xstring_value ("__ftp_delete__: FILE must be a string");
 
-      if (curl.is_valid ())
-        {
-          std::string file = args(1).string_value ();
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-          if (! error_state)
-            curl.del (file);
-          else
-            error ("__ftp_delete__: expecting file name as second argument");
-        }
-      else
-        error ("__ftp_delete__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_delete__: invalid ftp handle");
 
-  return retval;
+  curl.del (file);
+
+  return ovl ();
 }
 
 DEFUN (__ftp_rmdir__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_rmdir__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_rmdir__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_rmdir__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  std::string dir = args(1).xstring_value ("__ftp_rmdir__: DIR must be a string");
 
-      if (curl.is_valid ())
-        {
-          std::string dir = args(1).string_value ();
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-          if (! error_state)
-            curl.rmdir (dir);
-          else
-            error ("__ftp_rmdir__: expecting directory name as second argument");
-        }
-      else
-        error ("__ftp_rmdir__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_rmdir__: invalid ftp handle");
 
-  return retval;
+  curl.rmdir (dir);
+
+  return ovl ();
 }
 
 DEFUN (__ftp_mkdir__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mkdir__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_mkdir__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_mkdir__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  std::string dir = args(1).xstring_value ("__ftp_mkdir__: DIR must be a string");
 
-      if (curl.is_valid ())
-        {
-          std::string dir = args(1).string_value ();
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-          if (! error_state)
-            curl.mkdir (dir);
-          else
-            error ("__ftp_mkdir__: expecting directory name as second argument");
-        }
-      else
-        error ("__ftp_mkdir__: invalid ftp handle");
-    }
+  if (! curl.is_valid ())
+    error ("__ftp_mkdir__: invalid ftp handle");
 
-  return retval;
+  curl.mkdir (dir);
+
+  return ovl ();
 }
 
 DEFUN (__ftp_rename__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_rename__ (@var{handle}, @var{path})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_rename__ (@var{handle}, @var{path})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 3)
+  if (args.length () != 3)
     error ("__ftp_rename__: incorrect number of arguments");
-  else
-    {
-      url_transfer curl = ch_manager::get_object (args(0));
 
-      if (error_state)
-        return retval;
+  std::string oldname = args(1).xstring_value ("__ftp_rename__: OLDNAME must be a string");
+  std::string newname = args(2).xstring_value ("__ftp_rename__: NEWNAME must be a string");
 
-      if (curl.is_valid ())
-        {
-          std::string oldname = args(1).string_value ();
-          std::string newname = args(2).string_value ();
+  octave::url_transfer curl = ch_manager::get_object (args(0));
 
-          if (! error_state)
-            curl.rename (oldname, newname);
-          else
-            error ("__ftp_rename__: expecting file names for second and third arguments");
-        }
-      else
-        error ("__ftp_rename__: invalid ftp handle");
-    }
+  if (curl.is_valid ())
+    error ("__ftp_rename__: invalid ftp handle");
 
-  return retval;
+  curl.rename (oldname, newname);
+
+  return ovl ();
 }
 
 DEFUN (__ftp_mput__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mput__ (@var{handle}, @var{files})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __ftp_mput__ (@var{handle}, @var{files})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     error ("__ftp_mput__: incorrect number of arguments");
-  else
+
+  std::string pat = args(1).xstring_value ("__ftp_mput__: PATTERN must be a string");
+
+  octave::url_transfer curl = ch_manager::get_object (args(0));
+
+  if (! curl.is_valid ())
+    error ("__ftp_mput__: invalid ftp handle");
+
+  string_vector file_list;
+
+  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
+  string_vector files = pattern.glob ();
+
+  for (octave_idx_type i = 0; i < files.numel (); i++)
     {
-      url_transfer curl = ch_manager::get_object (args(0));
+      std::string file = files(i);
 
-      if (error_state)
-        return retval;
+      octave::sys::file_stat fs (file);
 
-      if (curl.is_valid ())
+      if (! fs.exists ())
+        error ("__ftp__mput: file does not exist");
+
+      if (fs.is_dir ())
         {
-          std::string pat = args(1).string_value ();
+          file_list.append (curl.mput_directory ("", file));
 
-          if (! error_state)
-            {
-              string_vector file_list;
-
-              glob_match pattern (file_ops::tilde_expand (pat));
-              string_vector files = pattern.glob ();
-
-              for (octave_idx_type i = 0; i < files.length (); i++)
-                {
-                  std::string file = files (i);
-
-                  file_stat fs (file);
-
-                  if (! fs.exists ())
-                    {
-                      error ("__ftp__mput: file does not exist");
-                      break;
-                    }
-
-                  if (fs.is_dir ())
-                    {
-                      file_list.append (curl.mput_directory ("", file));
-
-                      if (! curl.good ())
-                        {
-                          error ("__ftp_mput__: %s", curl.lasterror().c_str());
-                          break;
-                        }
-                    }
-                  else
-                    {
-                      // FIXME: Does ascii mode need to be flagged here?
-                      std::ifstream ifile (file.c_str (), std::ios::in |
-                                           std::ios::binary);
-
-                      if (! ifile.is_open ())
-                        {
-                          error ("__ftp_mput__: unable to open file");
-                          break;
-                        }
-
-                      curl.put (file, ifile);
-
-                      ifile.close ();
-
-                      if (! curl.good ())
-                        {
-                          error ("__ftp_mput__: %s", curl.lasterror().c_str());
-                          break;
-                        }
-
-                      file_list.append (file);
-                    }
-                }
-
-              if (nargout > 0)
-                retval = file_list;
-            }
-          else
-            error ("__ftp_mput__: expecting file name patter as second argument");
+          if (! curl.good ())
+            error ("__ftp_mput__: %s", curl.lasterror ().c_str ());
         }
       else
-        error ("__ftp_mput__: invalid ftp handle");
+        {
+          // FIXME: Does ascii mode need to be flagged here?
+          std::ifstream ifile (file.c_str (), std::ios::in | std::ios::binary);
+
+          if (! ifile.is_open ())
+            error ("__ftp_mput__: unable to open file");
+
+          curl.put (file, ifile);
+
+          ifile.close ();
+
+          if (! curl.good ())
+            error ("__ftp_mput__: %s", curl.lasterror ().c_str ());
+
+          file_list.append (file);
+        }
     }
 
-  return retval;
+  if (nargout > 0)
+    return ovl (file_list);
+  else
+    return ovl ();
 }
 
 DEFUN (__ftp_mget__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{files})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __ftp_mget__ (@var{handle}, @var{pattern})
+@deftypefnx {} {} __ftp_mget__ (@var{handle}, @var{pattern}, @var{target})
+Undocumented internal function
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin != 2 && nargin != 3)
     error ("__ftp_mget__: incorrect number of arguments");
-  else
+
+  std::string file = args(1).xstring_value ("__ftp_mget__: PATTERN must be a string");
+
+  std::string target;
+
+  if (nargin == 3 && ! args(2).is_empty ())
+    target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + octave::sys::file_ops::dir_sep_str ();
+
+  octave::url_transfer curl = ch_manager::get_object (args(0));
+
+  if (! curl.is_valid ())
+    error ("__ftp_mget__: invalid ftp handle");
+
+  string_vector sv = curl.list ();
+  octave_idx_type n = 0;
+  glob_match pattern (file);
+
+  for (octave_idx_type i = 0; i < sv.numel (); i++)
     {
-      url_transfer curl = ch_manager::get_object (args(0));
-
-      if (error_state)
-        return retval;
-
-      if (curl.is_valid ())
+      if (pattern.match (sv(i)))
         {
-          std::string file = args(1).string_value ();
-          std::string target;
+          n++;
 
-          if (nargin == 3)
-            target = args(2).string_value () + file_ops::dir_sep_str ();
+          time_t ftime;
+          bool fisdir;
+          double fsize;
 
-          if (! error_state)
-            {
-              string_vector sv = curl.list ();
-              octave_idx_type n = 0;
-              glob_match pattern (file);
+          curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
-
-              for (octave_idx_type i = 0; i < sv.length (); i++)
-                {
-                  if (pattern.match (sv(i)))
-                    {
-                      n++;
-
-                      time_t ftime;
-                      bool fisdir;
-                      double fsize;
-
-                      curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
-
-                      if (fisdir)
-                        curl.mget_directory (sv(i), target);
-                      else
-                        {
-                          std::ofstream ofile ((target + sv(i)).c_str (),
-                                               std::ios::out |
-                                               std::ios::binary);
-
-                          if (! ofile.is_open ())
-                            {
-                              error ("__ftp_mget__: unable to open file");
-                              break;
-                            }
-
-                          unwind_protect_safe frame;
-
-                          frame.add_fcn (delete_file, target + sv(i));
-
-                          curl.get (sv(i), ofile);
-
-                          ofile.close ();
-
-                          if (curl.good ())
-                            frame.discard ();
-                        }
-
-                      if (! curl.good ())
-                        {
-                          error ("__ftp_mget__: %s", curl.lasterror().c_str());
-                          break;
-                        }
-                    }
-                }
-              if (n == 0)
-                error ("__ftp_mget__: file not found");
-            }
+          if (fisdir)
+            curl.mget_directory (sv(i), target);
           else
-            error ("__ftp_mget__: expecting file name and target as second and third arguments");
+            {
+              std::ofstream ofile ((target + sv(i)).c_str (),
+                                   std::ios::out |
+                                   std::ios::binary);
+
+              if (! ofile.is_open ())
+                error ("__ftp_mget__: unable to open file");
+
+              octave::unwind_protect_safe frame;
+
+              frame.add_fcn (delete_file, target + sv(i));
+
+              curl.get (sv(i), ofile);
+
+              ofile.close ();
+
+              if (curl.good ())
+                frame.discard ();
+            }
+
+          if (! curl.good ())
+            error ("__ftp_mget__: %s", curl.lasterror().c_str());
         }
-      else
-        error ("__ftp_mget__: invalid ftp handle");
     }
 
-  return retval;
+  if (n == 0)
+    error ("__ftp_mget__: file not found");
+
+  return ovl ();
 }
+

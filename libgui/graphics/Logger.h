@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Logger__
-#define __QtHandles_Logger__ 1
+#if ! defined (octave_Logger_h)
+#define octave_Logger_h 1
 
 #include <cstdarg>
 
@@ -30,26 +30,27 @@ class QMutex;
 namespace QtHandles
 {
 
-class Logger
-{
-public:
-  static void debug (const char* fmt, ...);
+  class Logger
+  {
+  public:
+    static void debug (const char* fmt, ...);
 
-private:
-  bool m_debugEnabled;
+  private:
+    bool m_debugEnabled;
 
-  static Logger* s_instance;
-  static QMutex* s_mutex;
+    static Logger* s_instance;
+    static QMutex* s_mutex;
 
-private:
-  Logger (void);
-  ~Logger (void);
+  private:
+    Logger (void);
+    ~Logger (void);
 
-  static Logger* instance (void);
+    static Logger* instance (void);
 
-  void debugV (const char* fmt, va_list arg);
-};
+    void debugV (const char* fmt, va_list arg);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

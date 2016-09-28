@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 John W. Eaton
+## Copyright (C) 2013-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})
-## @deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, "all")
+## @deftypefn  {} {} find_dir_in_path (@var{dir})
+## @deftypefnx {} {} find_dir_in_path (@var{dir}, "all")
 ## This function has been deprecated.  Use @code{dir_in_loadpath} instead.
 ## @seealso{dir_in_loadpath}
 ## @end deftypefn

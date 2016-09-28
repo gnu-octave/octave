@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ODES_h)
+#if ! defined (octave_ODES_h)
 #define octave_ODES_h 1
+
+#include "octave-config.h"
 
 #include "ODESFunc.h"
 #include "base-de.h"
@@ -35,11 +37,11 @@ public:
     : base_diff_eqn (), ODESFunc (), xdot (), theta () { }
 
   ODES (const ColumnVector& s, double tm, ODESFunc& f)
-    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0), theta () { }
+    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.numel (), 0.0), theta () { }
 
   ODES (const ColumnVector& s, const ColumnVector& xtheta, double tm,
         ODESFunc& f)
-    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0),
+    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.numel (), 0.0),
       theta (xtheta) { }
 
   ODES (const ODES& a)
@@ -77,3 +79,4 @@ protected:
 };
 
 #endif
+

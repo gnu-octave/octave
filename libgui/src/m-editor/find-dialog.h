@@ -1,8 +1,8 @@
-/****************************************************************************
+/*
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2015 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2016 Torsten <ttl@justmail.de>
 Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)
@@ -56,10 +56,11 @@ along with Octave; see the file COPYING.  If not, see
 ** Nokia at qt-info@nokia.com.
 ** $QT_END_LICENSE$
 **
-****************************************************************************/
 
-#ifndef FIND_DIALOG_H
-#define FIND_DIALOG_H
+*/
+
+#if ! defined (octave_find_dialog_h)
+#define octave_find_dialog_h 1
 
 #include <QDialog>
 #include <Qsci/qsciscintilla.h>
@@ -75,14 +76,14 @@ class find_dialog : public QDialog
 {
   Q_OBJECT
 public:
-  find_dialog (QsciScintilla* edit_area, QWidget *parent = 0);
+  find_dialog (QsciScintilla* edit_area, QList<QAction *> find_actions,
+               QWidget *parent = 0);
   void init_search_text ();
 
 private slots:
-#ifdef HAVE_QSCI_FINDSELECTION
   void handle_sel_search_changed (int);
   void handle_selection_changed (bool has_selected);
-#endif
+
   void handle_backward_search_changed (int);
   void handle_search_text_changed (QString new_search_text);
 
@@ -121,5 +122,5 @@ private:
   bool               _rep_active;
 };
 
-#endif // FIND_DIALOG_H
+#endif
 

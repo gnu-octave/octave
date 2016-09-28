@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Carnë Draug
+## Copyright (C) 2014-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
-## @deftypefnx {Function File} {@var{filenames} =} fullfile (@dots{}, @var{files})
+## @deftypefn  {} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefnx {} {@var{filenames} =} fullfile (@dots{}, @var{files})
 ## Build complete filename from separate parts.
 ##
 ## Joins any number of path components intelligently.  The return value is
@@ -42,6 +42,8 @@
 ## replaced by backslashes; in addition drive letters are stripped of leading
 ## file separators to obtain a valid file path.
 ##
+## Note: @code{fullfile} does not perform any validation of the resulting full
+## filename.
 ## @seealso{fileparts, filesep}
 ## @end deftypefn
 
@@ -54,12 +56,14 @@ function filename = fullfile (varargin)
                                        "UniformOutput", false);
   else
     non_empty = cellfun ("isempty", varargin);
+    unc = 0;
     if (ispc && ! isempty (varargin))
-      varargin = strrep (varargin, "/", filesep);
+      varargin = strrep (varargin, '/', filesep);
+      unc = strncmp (varargin{1}, '\\', 2);
       varargin(1) = regexprep (varargin{1}, '[\\/]*([a-zA-Z]:[\\/]*)', "$1");
     endif
     filename = strjoin (varargin(! non_empty), filesep);
-    filename(strfind (filename, [filesep filesep])) = "";
+    filename(unc + strfind (filename(1+unc : end), [filesep filesep])) = "";
   endif
 
 endfunction
@@ -87,7 +91,6 @@ endfunction
 %!assert (fullfile ("x", "", "y", ""), xfsy)
 %!assert (fullfile ("", "x", "", "y", ""), xfsy)
 %!assert (fullfile (fs), fs)
-%!assert (fullfile (fs, fs), fs)
 %!assert (fullfile (fs, "x"), fsx)
 %!assert (fullfile (fs, xfs), fsxfs)
 %!assert (fullfile (fsx, fs), fsxfs)
@@ -107,6 +110,12 @@ endfunction
 %! if (ispc)
 %!   assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
 %!           ['A:\' xfsyfs]);
+%! endif
+
+## *nix specific - double backslash
+%!test
+%! if (isunix || ismac)
+%!   assert (fullfile (fs, fs), fs);
 %! endif
 
 ## Windows specific - drive letters and file sep type, cell array

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 Ben Sapp
+Copyright (C) 2001-2016 Ben Sapp
 
 This file is part of Octave.
 
@@ -20,18 +20,21 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_bp_h)
+#if ! defined (octave_pt_bp_h)
 #define octave_pt_bp_h 1
+
+#include "octave-config.h"
 
 #include "input.h"
 #include "ov-usr-fcn.h"
 #include "pt-walk.h"
 #include "pt-pr-code.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 class tree;
 class tree_decl_command;
 
+static std::string pt_bp_empty_string ("");
 class
 tree_breakpoint : public tree_walker
 {
@@ -39,8 +42,8 @@ public:
 
   enum action { set = 1, clear = 2, list = 3 };
 
-  tree_breakpoint (int l, action a)
-    : line (l), act (a), found (false), bp_list () { }
+  tree_breakpoint (int l, action a, const std::string& c = pt_bp_empty_string)
+    : line (l), act (a), condition (c), found (false), bp_list () { }
 
   ~tree_breakpoint (void) { }
 
@@ -135,6 +138,7 @@ public:
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
   octave_value_list get_list (void) { return bp_list; }
+  octave_value_list get_cond_list (void) { return bp_cond_list; }
 
   int get_line (void) { return found ? line : 0; }
 
@@ -152,11 +156,17 @@ private:
   // What to do.
   action act;
 
+  // Expression which must be true to break
+  std::string condition;
+
   // Have we already found the line?
   bool found;
 
   // List of breakpoint line numbers.
   octave_value_list bp_list;
+
+  // List of breakpoint conditions.
+  octave_value_list bp_cond_list;
 
   // No copying!
 
@@ -170,3 +180,4 @@ private:
 extern bool octave_debug_on_interrupt_state;
 
 #endif
+

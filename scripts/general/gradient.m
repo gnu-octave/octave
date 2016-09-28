@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{dx} =} gradient (@var{m})
-## @deftypefnx {Function File} {[@var{dx}, @var{dy}, @var{dz}, @dots{}] =} gradient (@var{m})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{x}, @var{y}, @var{z}, @dots{})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
+## @deftypefn  {} {@var{dx} =} gradient (@var{m})
+## @deftypefnx {} {[@var{dx}, @var{dy}, @var{dz}, @dots{}] =} gradient (@var{m})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{m}, @var{s})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{m}, @var{x}, @var{y}, @var{z}, @dots{})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{f}, @var{x0})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{s})
+## @deftypefnx {} {[@dots{}] =} gradient (@var{f}, @var{x0}, @var{x}, @var{y}, @dots{})
 ##
 ## Calculate the gradient of sampled data or a function.
 ##
@@ -84,6 +84,7 @@ function varargout = gradient (m, varargin)
 endfunction
 
 function varargout = matrix_gradient (m, varargin)
+
   transposed = false;
   if (isvector (m))
     ## make a row vector.
@@ -168,9 +169,11 @@ function varargout = matrix_gradient (m, varargin)
   if (transposed)
     varargout{1} = varargout{1}.';
   endif
+
 endfunction
 
 function varargout = handle_gradient (f, p0, varargin)
+
   ## Input checking
   p0_size = size (p0);
 
@@ -218,6 +221,7 @@ function varargout = handle_gradient (f, p0, varargin)
       varargout{d} = df_dx;
     endif
   endfor
+
 endfunction
 
 
@@ -300,6 +304,6 @@ endfunction
 %! df_dx = @(x, y) cos (x) .* cos (y);
 %! df_dy = @(x, y) -sin (x) .* sin (y);
 %! [dx, dy] = gradient (f, xy);
-%! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1)
-%! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1)
+%! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1);
+%! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1);
 

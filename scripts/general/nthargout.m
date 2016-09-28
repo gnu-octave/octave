@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Jordi Gutiérrez Hermoso
+## Copyright (C) 2012-2016 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} nthargout (@var{n}, @var{func}, @dots{})
-## @deftypefnx {Function File} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
+## @deftypefn  {} {} nthargout (@var{n}, @var{func}, @dots{})
+## @deftypefnx {} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
 ## Return the @var{n}th output argument of the function specified by the
 ## function handle or string @var{func}.
 ##
@@ -67,6 +67,7 @@
 ## Author: Jordi Gutiérrez Hermoso
 
 function out = nthargout (n, varargin)
+
   if (nargin < 2)
     print_usage ();
   endif

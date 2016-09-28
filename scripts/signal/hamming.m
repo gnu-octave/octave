@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Andreas Weingessel
+## Copyright (C) 1995-2016 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hamming (@var{m})
-## @deftypefnx {Function File} {} hamming (@var{m}, "periodic")
-## @deftypefnx {Function File} {} hamming (@var{m}, "symmetric")
+## @deftypefn  {} {} hamming (@var{m})
+## @deftypefnx {} {} hamming (@var{m}, "periodic")
+## @deftypefnx {} {} hamming (@var{m}, "symmetric")
 ## Return the filter coefficients of a Hamming window of length @var{m}.
 ##
 ## If the optional argument @qcode{"periodic"} is given, the periodic form
@@ -60,7 +60,7 @@ function c = hamming (m, opt)
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    m -= 1;
     c = 0.54 - 0.46 * cos (2 * pi * (0 : m)' / N);
   endif
 
@@ -76,8 +76,8 @@ endfunction
 %! A = hamming (N);
 %! assert (A(ceil (N/2)), 1);
 
-%!assert (hamming (15), hamming (15, "symmetric"));
-%!assert (hamming (16)(1:15), hamming (15, "periodic"));
+%!assert (hamming (15), hamming (15, "symmetric"))
+%!assert (hamming (16)(1:15), hamming (15, "periodic"))
 %!test
 %! N = 16;
 %! A = hamming (N, "periodic");
@@ -87,5 +87,5 @@ endfunction
 %!error hamming (0.5)
 %!error hamming (-1)
 %!error hamming (ones (1,4))
-%!error hamming (1, "invalid");
+%!error hamming (1, "invalid")
 

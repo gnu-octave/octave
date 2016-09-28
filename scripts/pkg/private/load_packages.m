@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} load_packages (@var{files}, @var{handle_deps}, @var{local_list}, @var{global_list})
+## @deftypefn {} {} load_packages (@var{files}, @var{handle_deps}, @var{local_list}, @var{global_list})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function load_packages (files, handle_deps, local_list, global_list)
+
   installed_pkgs_lst = installed_packages (local_list, global_list);
   num_packages = length (installed_pkgs_lst);
 
@@ -33,30 +34,16 @@ function load_packages (files, handle_deps, local_list, global_list)
     pdirs{i} = installed_pkgs_lst{i}.dir;
   endfor
 
-  ## Load all.
-  if (length (files) == 1 && strcmp (files{1}, "all"))
-    idx = [1:length(installed_pkgs_lst)];
-  ## Load auto.
-  elseif (length (files) == 1 && strcmp (files{1}, "auto"))
-    idx = [];
-    for i = 1:length (installed_pkgs_lst)
-      if (exist (fullfile (pdirs{i}, "packinfo", ".autoload"), "file"))
-        idx(end + 1) = i;
-      endif
-    endfor
-  ## Load package_name1 ...
-  else
-    idx = [];
-    for i = 1:length (files)
-      idx2 = find (strcmp (pnames, files{i}));
-      if (! any (idx2))
-          error ("package %s is not installed", files{i});
-      endif
-      idx(end + 1) = idx2;
-    endfor
-  endif
+  idx = [];
+  for i = 1:length (files)
+    idx2 = find (strcmp (pnames, files{i}));
+    if (! any (idx2))
+      error ("package %s is not installed", files{i});
+    endif
+    idx(end + 1) = idx2;
+  endfor
 
   ## Load the packages, but take care of the ordering of dependencies.
   load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst, true);
-endfunction
 
+endfunction

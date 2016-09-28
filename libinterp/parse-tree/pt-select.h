@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_select_h)
+#if ! defined (octave_pt_select_h)
 #define octave_pt_select_h 1
+
+#include "octave-config.h"
 
 class expression;
 class tree_statement_list;
@@ -86,7 +88,7 @@ private:
 };
 
 class
-tree_if_command_list : public octave_base_list<tree_if_clause *>
+tree_if_command_list : public octave::base_list<tree_if_clause *>
 {
 public:
 
@@ -216,7 +218,7 @@ private:
 };
 
 class
-tree_switch_case_list : public octave_base_list<tree_switch_case *>
+tree_switch_case_list : public octave::base_list<tree_switch_case *>
 {
 public:
 
@@ -300,3 +302,4 @@ private:
 };
 
 #endif
+

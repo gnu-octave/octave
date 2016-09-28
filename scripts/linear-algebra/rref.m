@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rref (@var{A})
-## @deftypefnx {Function File} {} rref (@var{A}, @var{tol})
-## @deftypefnx {Function File} {[@var{r}, @var{k}] =} rref (@dots{})
+## @deftypefn  {} {} rref (@var{A})
+## @deftypefnx {} {} rref (@var{A}, @var{tol})
+## @deftypefnx {} {[@var{r}, @var{k}] =} rref (@dots{})
 ## Return the reduced row echelon form of @var{A}.
 ##
 ## @var{tol} defaults to
@@ -41,7 +41,7 @@ function [A, k] = rref (A, tol)
   endif
 
   if (ndims (A) > 2)
-    error ("rref: expecting matrix argument");
+    error ("rref: A must be a 2-dimensional matrix");
   endif
 
   [rows, cols] = size (A);
@@ -126,5 +126,5 @@ endfunction
 %! [r k] = rref (a, tol);
 %! assert (rank (a, tol), rank (r, tol), 2e-8);
 
-%!error rref ();
+%!error rref ()
 

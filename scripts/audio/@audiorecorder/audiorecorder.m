@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{recorder} =} audiorecorder ()
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
+## @deftypefn  {} {@var{recorder} =} audiorecorder ()
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
 ## sample rate.
 ##
@@ -34,7 +34,7 @@
 ## functions in a separate thread which is likely to cause trouble with
 ## all of Octave's global data...
 ##
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
+## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
 ##
 ## Given a function handle, use that function to process the audio.
 
@@ -57,13 +57,13 @@ endfunction
 %!demo
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1);
-%! sleep (2);
+%! pause (2);
 %! player1 = audioplayer (recorder);
 %! player2 = getplayer (recorder);
 %! play (player1);
-%! sleep (2);
+%! pause (2);
 %! play (player2);
-%! sleep (2);
+%! pause (2);
 %! stop (player1);
 %! stop (player2);
 
@@ -119,7 +119,7 @@ endfunction
 #%! recorder = audiorecorder (@callback_record, 44100);
 #%! unlink ("record.txt")
 #%! record (recorder);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (recorder);
 #%! s = stat ("record.txt");
 #%! assert (s.size > 0);
@@ -128,7 +128,7 @@ endfunction
 #%! recorder = audiorecorder (@callback_record, 44100);
 #%! unlink ("record.txt")
 #%! record (recorder);
-#%! sleep (2);
+#%! pause (2);
 #%! stop (recorder);
 #%! s = stat ("record.txt");
 #%! assert (s.size > 0);

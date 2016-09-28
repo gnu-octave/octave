@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 A. Scottedward Hodel
+## Copyright (C) 1995-2016 A. Scottedward Hodel
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{housv}, @var{beta}, @var{zer}] =} housh (@var{x}, @var{j}, @var{z})
+## @deftypefn {} {[@var{housv}, @var{beta}, @var{zer}] =} housh (@var{x}, @var{j}, @var{z})
 ## Compute Householder reflection vector @var{housv} to reflect @var{x} to be
 ## the j-th column of identity, i.e.,
 ##
@@ -72,7 +72,7 @@ function [housv, beta, zer] = housh (x, j, z)
     housv = x;
     m = max (abs (housv));
     if (m != 0.0)
-      housv = housv / m;
+      housv /= m;
       alpha = norm (housv);
       if (alpha > z)
         beta = 1.0 / (alpha * (alpha + abs (housv(j))));

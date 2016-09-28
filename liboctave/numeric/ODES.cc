@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "ODES.h"
@@ -31,7 +31,7 @@ void
 ODES::initialize (const ColumnVector& xx, double tt)
 {
   base_diff_eqn::initialize (xx, tt);
-  xdot = ColumnVector (xx.length (), 0.0);
+  xdot = ColumnVector (xx.numel (), 0.0);
 }
 
 void
@@ -39,6 +39,7 @@ ODES::initialize (const ColumnVector& xx, double tt,
                   const ColumnVector& xtheta)
 {
   base_diff_eqn::initialize (xx, tt);
-  xdot = ColumnVector (xx.length (), 0.0);
+  xdot = ColumnVector (xx.numel (), 0.0);
   theta = xtheta;
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -25,12 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "debug.h"
 #include "defun.h"
+#include "errwarn.h"
 #include "ov.h"
 #include "pt-all.h"
 #include "pt-jit.h"
@@ -38,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "variables.h"
 
-#ifdef HAVE_LLVM
+#if defined (HAVE_LLVM)
 
 static bool Vdebug_jit = false;
 
@@ -51,47 +52,47 @@ static int Vjit_failcnt = 0;
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 
-#ifdef HAVE_LLVM_IR_VERIFIER_H
-#include <llvm/IR/Verifier.h>
+#if defined (HAVE_LLVM_IR_VERIFIER_H)
+#  include <llvm/IR/Verifier.h>
 #else
-#include <llvm/Analysis/Verifier.h>
+#  include <llvm/Analysis/Verifier.h>
 #endif
 
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
 
-#ifdef LEGACY_PASSMANAGER
-#include <llvm/IR/LegacyPassManager.h>
+#if defined (LEGACY_PASSMANAGER)
+#  include <llvm/IR/LegacyPassManager.h>
 #else
-#include <llvm/PassManager.h>
+#  include <llvm/PassManager.h>
 #endif
 
-#ifdef HAVE_LLVM_IR_FUNCTION_H
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Module.h>
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
+#  include <llvm/IR/LLVMContext.h>
+#  include <llvm/IR/Module.h>
 #else
-#include <llvm/LLVMContext.h>
-#include <llvm/Module.h>
+#  include <llvm/LLVMContext.h>
+#  include <llvm/Module.h>
 #endif
 
-#ifdef HAVE_LLVM_SUPPORT_IRBUILDER_H
-#include <llvm/Support/IRBuilder.h>
+#if defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
+#  include <llvm/Support/IRBuilder.h>
 #elif defined(HAVE_LLVM_IR_IRBUILDER_H)
-#include <llvm/IR/IRBuilder.h>
+#  include <llvm/IR/IRBuilder.h>
 #else
-#include <llvm/IRBuilder.h>
+#  include <llvm/IRBuilder.h>
 #endif
 
 #include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 
-#ifdef HAVE_LLVM_IR_DATALAYOUT_H
-#include <llvm/IR/DataLayout.h>
+#if defined (HAVE_LLVM_IR_DATALAYOUT_H)
+#  include <llvm/IR/DataLayout.h>
 #elif defined(HAVE_LLVM_DATALAYOUT_H)
-#include <llvm/DataLayout.h>
+#  include <llvm/DataLayout.h>
 #else
-#include <llvm/Target/TargetData.h>
+#  include <llvm/Target/TargetData.h>
 #endif
 
 #include <llvm/Transforms/IPO.h>
@@ -104,8 +105,10 @@ static llvm::LLVMContext& context = llvm::getGlobalContext ();
 // -------------------- jit_break_exception --------------------
 
 // jit_break is thrown whenever a branch we are converting has only breaks or
-// continues. This is because all code that follows a break or continue is dead.
-class jit_break_exception : public std::exception {};
+// continues.  This is because all code that follows a break or continue
+// is dead.
+class jit_break_exception : public std::exception
+{ };
 
 // -------------------- jit_convert --------------------
 jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
@@ -376,12 +379,12 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 {
   // Note we do an initial check to see if the loop will run atleast once.
   // This allows us to get better type inference bounds on variables defined
-  // and used only inside the for loop (e.g. the index variable)
+  // and used only inside the for loop (e.g., the index variable)
 
   // If we are a nested for loop we need to store the previous breaks
-  unwind_protect prot;
-  prot.protect_var (breaks);
-  prot.protect_var (continues);
+  octave::unwind_protect frame;
+  frame.protect_var (breaks);
+  frame.protect_var (continues);
   breaks.clear ();
   continues.clear ();
 
@@ -515,7 +518,7 @@ jit_convert::visit_identifier (tree_identifier& ti)
 {
   if (ti.has_magic_end ())
     {
-      if (!end_context.size ())
+      if (! end_context.size ())
         throw jit_fail_exception ("Illegal end");
       result = block->append (factory.create<jit_magic_end> (end_context));
     }
@@ -549,12 +552,12 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   size_t last_else = static_cast<size_t> (last->is_else_clause ());
 
   // entry_blocks represents the block you need to enter in order to execute
-  // the condition check for the ith clause. For the else, it is simple the
-  // else body. If there is no else body, then it is padded with the tail
+  // the condition check for the ith clause.  For the else, it is simple the
+  // else body.  If there is no else body, then it is padded with the tail.
   std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
   entry_blocks[0] = block;
 
-  // we need to construct blocks first, because they have jumps to eachother
+  // we need to construct blocks first, because they have jumps to each other.
   tree_if_command_list::iterator iter = lst.begin ();
   ++iter;
   for (size_t i = 1; iter != lst.end (); ++iter, ++i)
@@ -569,7 +572,6 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   jit_block *tail = factory.create<jit_block> ("if_tail");
   if (! last_else)
     entry_blocks[entry_blocks.size () - 1] = tail;
-
 
   // each branch in the if statement will have different breaks/continues
   block_list current_breaks = breaks;
@@ -757,8 +759,8 @@ jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
 
   if (op != octave_value::op_asn_eq)
     {
-      // do the equivlent binary operation, then assign. This is always correct,
-      // but isn't always optimal.
+      // Do the equivalent binary operation, then assign.
+      // This is always correct, but it isn't always optimal.
       tree_expression *lhs = tsa.left_hand_side ();
       jit_value *lhsv = visit (lhs);
       octave_value::binary_op bop = octave_value::assign_op_to_binary_op (op);
@@ -779,7 +781,7 @@ jit_convert::visit_statement (tree_statement& stmt)
     visit (cmd);
   else
     {
-      // stolen from tree_evaluator::visit_statement
+      // stolen from octave::tree_evaluator::visit_statement
       bool do_bind_ans = false;
 
       if (expr->is_identifier ())
@@ -856,7 +858,7 @@ jit_convert::visit_switch_command (tree_switch_command& cmd)
 
   std::vector<jit_block *> entry_blocks (case_blocks_num + 1 - has_otherwise);
 
-  // the first entry point is always the actual block. afterward new blocks
+  // the first entry point is always the actual block.  Afterward, new blocks
   // are created for every case and the otherwise branch
   entry_blocks[0] = block;
   for (size_t i = 1; i < case_blocks_num; ++i)
@@ -864,7 +866,7 @@ jit_convert::visit_switch_command (tree_switch_command& cmd)
 
   jit_block *tail = factory.create<jit_block> ("switch_tail");
 
-  // if there's no otherwise branch, the the 'else' of the last branch
+  // if there's no otherwise branch, the 'else' of the last branch
   // has to point to the tail
   if (! has_otherwise)
     entry_blocks[entry_blocks.size()-1] = tail;
@@ -954,9 +956,9 @@ jit_convert::visit_unwind_protect_command (tree_unwind_protect_command&)
 void
 jit_convert::visit_while_command (tree_while_command& wc)
 {
-  unwind_protect prot;
-  prot.protect_var (breaks);
-  prot.protect_var (continues);
+  octave::unwind_protect frame;
+  frame.protect_var (breaks);
+  frame.protect_var (continues);
   breaks.clear ();
   continues.clear ();
 
@@ -1016,9 +1018,9 @@ jit_convert::visit_while_command (tree_while_command& wc)
 void
 jit_convert::visit_do_until_command (tree_do_until_command& duc)
 {
-  unwind_protect prot;
-  prot.protect_var (breaks);
-  prot.protect_var (continues);
+  octave::unwind_protect frame;
+  frame.protect_var (breaks);
+  frame.protect_var (continues);
   breaks.clear ();
   continues.clear ();
 
@@ -1215,9 +1217,9 @@ jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
 
   for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
     {
-      unwind_protect prot;
-      prot.add_method (&end_context,
-                       &std::vector<jit_magic_end::context>::pop_back);
+      octave::unwind_protect frame;
+      frame.add_method (&end_context,
+                        &std::vector<jit_magic_end::context>::pop_back);
 
       jit_magic_end::context ctx (factory, object, idx, narg);
       end_context.push_back (ctx);
@@ -1277,8 +1279,8 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
 jit_value *
 jit_convert::visit (tree& tee)
 {
-  unwind_protect prot;
-  prot.protect_var (result);
+  octave::unwind_protect frame;
+  frame.protect_var (result);
 
   tee.accept (*this);
   return result;
@@ -1311,7 +1313,6 @@ jit_convert_llvm::convert_loop (llvm::Module *module,
     if (jit_extract_argument *extract
         = dynamic_cast<jit_extract_argument *> (*iter))
       argument_vec.push_back (std::make_pair (extract->name (), true));
-
 
   jit_type *any = jit_typeinfo::get_any ();
 
@@ -1346,7 +1347,6 @@ jit_convert_llvm::convert_loop (llvm::Module *module,
 
   return function;
 }
-
 
 jit_function
 jit_convert_llvm::convert_function (llvm::Module *module,
@@ -1637,7 +1637,7 @@ jit_convert_llvm::visit (jit_assign& assign)
 
 void
 jit_convert_llvm::visit (jit_argument&)
-{}
+{ }
 
 void
 jit_convert_llvm::visit (jit_magic_end& me)
@@ -2017,11 +2017,10 @@ jit_infer::simplify_phi (jit_phi& phi)
 // -------------------- tree_jit --------------------
 
 tree_jit::tree_jit (void) : module (0), engine (0)
-{
-}
+{ }
 
 tree_jit::~tree_jit (void)
-{}
+{ }
 
 bool
 tree_jit::execute (tree_simple_for_command& cmd, const octave_value& bounds)
@@ -2067,7 +2066,7 @@ tree_jit::initialize (void)
   if (! engine)
     return false;
 
-#ifdef LEGACY_PASSMANAGER
+#if defined (LEGACY_PASSMANAGER)
   module_pass_manager = new llvm::legacy::PassManager ();
   pass_manager = new llvm::legacy::FunctionPassManager (module);
 #else
@@ -2076,7 +2075,7 @@ tree_jit::initialize (void)
 #endif
   module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
-#ifdef HAVE_LLVM_DATALAYOUT
+#if defined (HAVE_LLVM_DATALAYOUT)
   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
 #else
   pass_manager->add (new llvm::TargetData (*engine->getTargetData ()));
@@ -2157,11 +2156,11 @@ tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
 bool
 tree_jit::enabled (void)
 {
-  // Ideally, we should only disable JIT if there is a breakpoint in the code we
-  // are about to run. However, we can't figure this out in O(1) time, so we
-  // conservatively check for the existence of any breakpoints.
-  return Vjit_enable && ! bp_table::have_breakpoints ()
-         && ! Vdebug_on_interrupt && ! Vdebug_on_error;
+  // Ideally, we should only disable JIT if there is a breakpoint in the code
+  // we are about to run. However, we can't figure this out in O(1) time, so
+  // we conservatively check for the existence of any breakpoints.
+  return (Vjit_enable && ! bp_table::have_breakpoints ()
+          && ! octave::Vdebug_on_interrupt && ! Vdebug_on_error);
 }
 
 size_t
@@ -2170,13 +2169,12 @@ tree_jit::trip_count (const octave_value& bounds) const
   if (bounds.is_range ())
     {
       Range rng = bounds.range_value ();
-      return rng.nelem ();
+      return rng.numel ();
     }
 
   // unsupported type
   return 0;
 }
-
 
 void
 tree_jit::optimize (llvm::Function *fn)
@@ -2190,7 +2188,7 @@ tree_jit::optimize (llvm::Function *fn)
   if (Vdebug_jit)
     {
       std::string error;
-#ifdef RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS
+#if defined (RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS)
       llvm::raw_fd_ostream fout ("test.bc", error,
                                  llvm::sys::fs::F_Binary);
 #else
@@ -2326,7 +2324,7 @@ jit_function_info::execute (const octave_value_list& ov_args,
   if (! function)
     return false;
 
-  // TODO figure out a way to delete ov_args so we avoid duplicating refcount
+  // FIXME: figure out a way to delete ov_args so we avoid duplicating refcount
   size_t nargs = ov_args.length ();
   std::vector<octave_base_value *> args (nargs);
   for (size_t i = 0; i < nargs; ++i)
@@ -2508,104 +2506,103 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
-#if defined (HAVE_LLVM)
-#define UNUSED_WITHOUT_LLVM(x) x
-#else
-#define UNUSED_WITHOUT_LLVM(x) x GCC_ATTR_UNUSED
-#endif
+DEFUN (jit_failcnt, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} jit_failcnt ()
+@deftypefnx {} {@var{old_val} =} jit_failcnt (@var{new_val})
+@deftypefnx {} {} jit_failcnt (@var{new_val}, "local")
+Query or set the internal variable that counts the number of JIT fail
+exceptions for Octave's JIT compiler.
 
-DEFUN (jit_failcnt, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_failcnt ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_failcnt (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_failcnt (@var{new_val}, \"local\")\n\
-Query or set the internal variable that counts the number of JIT fail\n\
-exceptions for Octave's JIT compiler.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, jit_startcnt, debug_jit}\n\
-@end deftypefn")
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_enable, jit_startcnt, debug_jit}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (jit_failcnt);
 #else
-  warning ("jit_failcnt: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+  warn_disabled_feature ("jit_failcnt", "JIT compiling");
+  return ovl ();
 #endif
 }
 
-DEFUN (debug_jit, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} debug_jit ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_jit (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} debug_jit (@var{new_val}, \"local\")\n\
-Query or set the internal variable that determines whether\n\
-debugging/tracing is enabled for Octave's JIT compiler.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, jit_startcnt}\n\
-@end deftypefn")
+DEFUN (debug_jit, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} debug_jit ()
+@deftypefnx {} {@var{old_val} =} debug_jit (@var{new_val})
+@deftypefnx {} {} debug_jit (@var{new_val}, "local")
+Query or set the internal variable that determines whether
+debugging/tracing is enabled for Octave's JIT compiler.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_enable, jit_startcnt}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (debug_jit);
 #else
-  warning ("debug_jit: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+  warn_disabled_feature ("debug_jit", "JIT");
+  return ovl ();
 #endif
 }
 
-DEFUN (jit_enable, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_enable ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_enable (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_enable (@var{new_val}, \"local\")\n\
-Query or set the internal variable that enables Octave's JIT compiler.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_startcnt, debug_jit}\n\
-@end deftypefn")
+DEFUN (jit_enable, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} jit_enable ()
+@deftypefnx {} {@var{old_val} =} jit_enable (@var{new_val})
+@deftypefnx {} {} jit_enable (@var{new_val}, "local")
+Query or set the internal variable that enables Octave's JIT compiler.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_startcnt, debug_jit}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE (jit_enable);
 #else
-  warning ("jit_enable: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+  warn_disabled_feature ("jit_enable", "JIT");
+  return ovl ();
 #endif
 }
 
-DEFUN (jit_startcnt, UNUSED_WITHOUT_LLVM (args),
-       UNUSED_WITHOUT_LLVM (nargout),
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} jit_startcnt ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} jit_startcnt (@var{new_val}, \"local\")\n\
-Query or set the internal variable that determines whether JIT compilation\n\
-will take place for a specific loop.\n\
-\n\
-Because compilation is a costly operation it does not make sense to employ\n\
-JIT when the loop count is low.  By default only loops with greater than\n\
-1000 iterations will be accelerated.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{jit_enable, jit_failcnt, debug_jit}\n\
-@end deftypefn")
+DEFUN (jit_startcnt, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} jit_startcnt ()
+@deftypefnx {} {@var{old_val} =} jit_startcnt (@var{new_val})
+@deftypefnx {} {} jit_startcnt (@var{new_val}, "local")
+Query or set the internal variable that determines whether JIT compilation
+will take place for a specific loop.
+
+Because compilation is a costly operation it does not make sense to employ
+JIT when the loop count is low.  By default only loops with greater than
+1000 iterations will be accelerated.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{jit_enable, jit_failcnt, debug_jit}
+@end deftypefn */)
 {
 #if defined (HAVE_LLVM)
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (jit_startcnt, 1,
                                             std::numeric_limits<int>::max ());
 #else
-  warning ("jit_enable: JIT compiling not available in this version of Octave");
-  return octave_value ();
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+  warn_disabled_feature ("jit_enable", "JIT");
+  return ovl ();
 #endif
 }
+

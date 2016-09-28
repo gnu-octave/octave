@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Kai Habel
+## Copyright (C) 2010-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## @deftypefn  {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
+## @deftypefnx {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
+## @deftypefnx {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
+## @deftypefnx {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
 ## Open a GUI dialog for selecting a file.
 ##
 ## @var{flt} contains a (list of) file filter string(s) in one of the following
@@ -65,19 +65,19 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
   ## Preset default values
   outargs = {cell(0, 2),     # File Filter
              "Save File",    # Dialog Title
-             "",             # Default file name
+             "",             # Default filename
              [240, 120],     # Dialog Position (pixel x/y)
              "create",
              pwd};           # Default directory
 
   if (nargin > 0)
-    file_filter = varargin{1};
-    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
-    if (length (defdir) > 0)
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ ("uiputfile",
+                                                        varargin{1});
+    if (! isempty (defdir))
       outargs{6} = defdir;
     endif
   else
-    outargs{1} = __file_filter__ (outargs{1});
+    outargs{1} = __file_filter__ ("uiputfile", outargs{1});
   endif
 
   if (nargin > 1)
@@ -100,7 +100,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
         outargs{6} = fdir;
       endif
       if (! isempty (fname) || ! isempty (fext))
-        outargs{3} = strcat (fname, fext);
+        outargs{3} = [fname fext];
       endif
     elseif (! isempty (varargin{3}))
       print_usage ();
@@ -116,11 +116,12 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
   ## Append extension to the name if it isn't already added.
   if (ischar (retfile))
-    ext = outargs{1}{retindex};
-    ext = strrep (ext, "*", "");
-
-    if (length (retfile) >= length (ext))
-      if (! strcmp (retfile(end-length (ext)+1:end), ext))
+    [~, ~, ext] = fileparts (retfile);
+    if (isempty (ext))
+      ext = outargs{1}{retindex};
+      ext = strrep (ext, "*", "");
+      if (! strcmp (ext, '.'))
+        [~, ~, ext] = fileparts (ext);  # paranoid checking of extension
         retfile = [retfile ext];
       endif
     endif

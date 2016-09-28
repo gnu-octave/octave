@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acoth (@var{x})
+## @deftypefn {} {} acoth (@var{x})
 ## Compute the inverse hyperbolic cotangent of each element of @var{x}.
 ## @seealso{coth}
 ## @end deftypefn

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
-#include "utils.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ops.h"
 #include "ov-re-diag.h"
 #include "ov-cx-diag.h"
@@ -37,41 +36,34 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 
 DEFUN (pinv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} pinv (@var{x})\n\
-@deftypefnx {Built-in Function} {} pinv (@var{x}, @var{tol})\n\
-Return the pseudoinverse of @var{x}.\n\
-\n\
-Singular values less than @var{tol} are ignored.\n\
-\n\
-If the second argument is omitted, it is taken to be\n\
-\n\
-@example\n\
-tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\
-@end example\n\
-\n\
-@noindent\n\
-where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pinv (@var{x})
+@deftypefnx {} {} pinv (@var{x}, @var{tol})
+Return the pseudoinverse of @var{x}.
 
+Singular values less than @var{tol} are ignored.
+
+If the second argument is omitted, it is taken to be
+
+@example
+tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,
+@end example
+
+@noindent
+where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value arg = args(0);
 
-  int arg_is_empty = empty_arg ("pinv", arg.rows (), arg.columns ());
+  if (arg.is_empty ())
+    return ovl (Matrix ());
 
-  if (arg_is_empty < 0)
-    return retval;
-  else if (arg_is_empty > 0)
-    return octave_value (Matrix ());
+  octave_value retval;
 
   bool isfloat = arg.is_single_type ();
 
@@ -83,14 +75,8 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
           if (nargin == 2)
             tol = args(1).float_value ();
 
-          if (error_state)
-            return retval;
-
           if (tol < 0.0)
-            {
-              error ("pinv: TOL must be greater than zero");
-              return retval;
-            }
+            error ("pinv: TOL must be greater than zero");
 
           if (arg.is_real_type ())
             retval = arg.float_diag_matrix_value ().pseudo_inverse (tol);
@@ -103,14 +89,8 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
           if (nargin == 2)
             tol = args(1).double_value ();
 
-          if (error_state)
-            return retval;
-
           if (tol < 0.0)
-            {
-              error ("pinv: TOL must be greater than zero");
-              return retval;
-            }
+            error ("pinv: TOL must be greater than zero");
 
           if (arg.is_real_type ())
             retval = arg.diag_matrix_value ().pseudo_inverse (tol);
@@ -128,33 +108,23 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
       if (nargin == 2)
         tol = args(1).float_value ();
 
-      if (error_state)
-        return retval;
-
       if (tol < 0.0)
-        {
-          error ("pinv: TOL must be greater than zero");
-          return retval;
-        }
+        error ("pinv: TOL must be greater than zero");
 
       if (arg.is_real_type ())
         {
           FloatMatrix m = arg.float_matrix_value ();
 
-          if (! error_state)
-            retval = m.pseudo_inverse (tol);
+          retval = m.pseudo_inverse (tol);
         }
       else if (arg.is_complex_type ())
         {
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-          if (! error_state)
-            retval = m.pseudo_inverse (tol);
+          retval = m.pseudo_inverse (tol);
         }
       else
-        {
-          gripe_wrong_type_arg ("pinv", arg);
-        }
+        err_wrong_type_arg ("pinv", arg);
     }
   else
     {
@@ -162,33 +132,23 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
       if (nargin == 2)
         tol = args(1).double_value ();
 
-      if (error_state)
-        return retval;
-
       if (tol < 0.0)
-        {
-          error ("pinv: TOL must be greater than zero");
-          return retval;
-        }
+        error ("pinv: TOL must be greater than zero");
 
       if (arg.is_real_type ())
         {
           Matrix m = arg.matrix_value ();
 
-          if (! error_state)
-            retval = m.pseudo_inverse (tol);
+          retval = m.pseudo_inverse (tol);
         }
       else if (arg.is_complex_type ())
         {
           ComplexMatrix m = arg.complex_matrix_value ();
 
-          if (! error_state)
-            retval = m.pseudo_inverse (tol);
+          retval = m.pseudo_inverse (tol);
         }
       else
-        {
-          gripe_wrong_type_arg ("pinv", arg);
-        }
+        err_wrong_type_arg ("pinv", arg);
     }
 
   return retval;
@@ -230,3 +190,4 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 %! assert (diag (y), [1/3 1/2 0 0 0]');
 
 */
+

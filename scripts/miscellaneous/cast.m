@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 John W. Eaton
+## Copyright (C) 2007-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cast (@var{val}, "@var{type}")
+## @deftypefn {} {} cast (@var{val}, "@var{type}")
 ## Convert @var{val} to data type @var{type}.
 ##
 ## @var{val} must be one of the numeric classes:

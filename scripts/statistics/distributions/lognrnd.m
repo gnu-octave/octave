@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} lognrnd (@var{mu}, @var{sigma})
-## @deftypefnx {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{r})
-## @deftypefnx {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} lognrnd (@var{mu}, @var{sigma}, [@var{sz}])
+## @deftypefn  {} {} lognrnd (@var{mu}, @var{sigma})
+## @deftypefnx {} {} lognrnd (@var{mu}, @var{sigma}, @var{r})
+## @deftypefnx {} {} lognrnd (@var{mu}, @var{sigma}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} lognrnd (@var{mu}, @var{sigma}, [@var{sz}])
 ## Return a matrix of random samples from the lognormal distribution with
 ## parameters @var{mu} and @var{sigma}.
 ##

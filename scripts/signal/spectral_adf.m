@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spectral_adf (@var{c})
-## @deftypefnx {Function File} {} spectral_adf (@var{c}, @var{win})
-## @deftypefnx {Function File} {} spectral_adf (@var{c}, @var{win}, @var{b})
+## @deftypefn  {} {} spectral_adf (@var{c})
+## @deftypefnx {} {} spectral_adf (@var{c}, @var{win})
+## @deftypefnx {} {} spectral_adf (@var{c}, @var{win}, @var{b})
 ## Return the spectral density estimator given a vector of autocovariances
 ## @var{c}, window name @var{win}, and bandwidth, @var{b}.
 ##
@@ -60,7 +60,7 @@ function retval = spectral_adf (c, win, b)
     w = feval (win, cr, b);
   endif
 
-  c = c .* w;
+  c .*= w;
 
   retval = 2 * real (fft (c)) - c(1);
   retval = [(zeros (cr, 1)), retval];
@@ -70,8 +70,8 @@ endfunction
 
 
 ## Test input validation
-%!error spectral_adf ();
-%!error spectral_adf (1, 2, 3, 4);
-%!error spectral_adf (1, 2);
-%!error spectral_adf (1, "invalid");
+%!error spectral_adf ()
+%!error spectral_adf (1, 2, 3, 4)
+%!error spectral_adf (1, 2)
+%!error spectral_adf (1, "invalid")
 

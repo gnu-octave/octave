@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 John W. Eaton
+## Copyright (C) 2006-2016 John W. Eaton
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} substruct (@var{type}, @var{subs}, @dots{})
+## @deftypefn {} {} substruct (@var{type}, @var{subs}, @dots{})
 ## Create a subscript structure for use with @code{subsref} or @code{subsasgn}.
 ##
 ## For example:
@@ -61,13 +61,13 @@ function retval = substruct (varargin)
   if (all (braces | dots))
     cells = cellfun ("isclass", sub, "cell");
     chars = cellfun ("isclass", sub, "char");
-    if (any (braces & !cells))
+    if (any (braces & ! cells))
       error ("substruct: for TYPE == () or {}, SUBS must be a cell array");
-    elseif (any (dots & !chars))
+    elseif (any (dots & ! chars))
       error ("substruct: for TYPE == ., SUBS must be a character string");
     endif
   else
-    error ('substruct: expecting TYPE to be one of "()", "{}", or "."');
+    error ('substruct: TYPE must be one of "()", "{}", or "."');
   endif
 
   retval = struct ("type", typ, "subs", sub);

@@ -1,5 +1,5 @@
 ## Copyright (C) 2004 Josep Mones i Teixidor
-## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 2012-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{Y}, @var{newmap}] =} cmunique (@var{X}, @var{map})
-## @deftypefnx {Function File} {[@var{Y}, @var{newmap}] =} cmunique (@var{RGB})
-## @deftypefnx {Function File} {[@var{Y}, @var{newmap}] =} cmunique (@var{I})
+## @deftypefn  {} {[@var{Y}, @var{newmap}] =} cmunique (@var{X}, @var{map})
+## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmunique (@var{RGB})
+## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmunique (@var{I})
 ## Convert an input image @var{X} to an ouput indexed image @var{Y} which uses
 ## the smallest colormap possible @var{newmap}.
 ##
@@ -30,9 +30,9 @@
 ## the indices adjusted to match the new, possibly smaller, colormap.
 ##
 ## When the input is an RGB image (an @nospell{MxNx3} array), the output
-## colormap will contain one entry for every unique color in the original image.
-## In the worst case the new map could have as many rows as the number of
-## pixels in the original image.
+## colormap will contain one entry for every unique color in the original
+## image.  In the worst case the new map could have as many rows as the
+## number of pixels in the original image.
 ##
 ## When the input is a grayscale image @var{I}, the output colormap will
 ## contain one entry for every unique intensity value in the original image.
@@ -67,7 +67,7 @@ function [Y, newmap] = cmunique (X, map)
 
   if (nargin == 2)
     ## (X, map) case
-    if (! iscolormap (map))
+    if (! iscolormap (map) || min (map(:)) < 0 || max (map(:)) > 1)
       error ("cmunique: MAP must be a valid colormap");
     endif
     [newmap,i,j] = unique (map, "rows");  # calculate unique colormap

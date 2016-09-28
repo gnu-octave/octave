@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2015 Gabriele Pannocchia
+Copyright (C) 2000-2016 Gabriele Pannocchia
 
 This file is part of Octave.
 
@@ -20,21 +20,21 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
 
-#include "dbleCHOL.h"
-#include "dbleSVD.h"
+#include "chol.h"
+#include "svd.h"
 #include "mx-m-dm.h"
 #include "EIG.h"
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "pr-output.h"
 #include "utils.h"
 
@@ -47,7 +47,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
   if (! A.is_empty ())
     {
-      SVD A_svd (A);
+      octave::math::svd<Matrix> A_svd (A);
 
       DiagMatrix S = A_svd.singular_values ();
 
@@ -62,7 +62,7 @@ null (const Matrix& A, octave_idx_type& rank)
 
       double tol = tmp * s(0) * std::numeric_limits<double>::epsilon ();
 
-      octave_idx_type n = s.length ();
+      octave_idx_type n = s.numel ();
 
       for (octave_idx_type i = 0; i < n; i++)
         {
@@ -97,11 +97,11 @@ qp (const Matrix& H, const ColumnVector& q,
   double rtol = sqrt (std::numeric_limits<double>::epsilon ());
 
   // Problem dimension.
-  octave_idx_type n = x.length ();
+  octave_idx_type n = x.numel ();
 
   // Dimension of constraints.
-  octave_idx_type n_eq = beq.length ();
-  octave_idx_type n_in = bin.length ();
+  octave_idx_type n_eq = beq.numel ();
+  octave_idx_type n_in = bin.numel ();
 
   // Filling the current active set.
 
@@ -136,16 +136,19 @@ qp (const Matrix& H, const ColumnVector& q,
 
   // Computing the ???
 
-  EIG eigH (H);
+  EIG eigH;
 
-  if (error_state)
+  try
     {
-      error ("qp: failed to compute eigenvalues of H");
-      return -1;
+      eigH = EIG (H);
+    }
+  catch (octave::execution_exception& e)
+    {
+      error (e, "qp: failed to compute eigenvalues of H");
     }
 
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
-  Matrix eigenvecH = real (eigH.eigenvectors ());
+  Matrix eigenvecH = real (eigH.right_eigenvectors ());
   double minReal = eigenvalH.min ();
   octave_idx_type indminR = 0;
   for (octave_idx_type i = 0; i < n; i++)
@@ -188,11 +191,11 @@ qp (const Matrix& H, const ColumnVector& q,
               // factorization since the Hessian is positive
               // definite.
 
-              CHOL cholH (H);
+              octave::math::chol<Matrix> cholH (H);
 
               R = cholH.chol_matrix ();
 
-              Matrix Hinv = chol2inv (R);
+              Matrix Hinv = octave::math::chol2inv (R);
 
               // Computing the unconstrained step.
               // p = -Hinv * g;
@@ -247,7 +250,7 @@ qp (const Matrix& H, const ColumnVector& q,
               // Computing the Cholesky factorization (pR = 0 means
               // that the reduced Hessian was positive definite).
 
-              CHOL cholrH (rH, pR);
+              octave::math::chol<Matrix> cholrH (rH, pR);
               Matrix tR = cholrH.chol_matrix ();
               if (pR == 0)
                 R = tR;
@@ -262,7 +265,7 @@ qp (const Matrix& H, const ColumnVector& q,
                 {
                   // Using the Cholesky factorization to invert rH
 
-                  Matrix rHinv = chol2inv (R);
+                  Matrix rHinv = octave::math::chol2inv (R);
 
                   ColumnVector pz = -rHinv * Zt * g;
 
@@ -281,16 +284,19 @@ qp (const Matrix& H, const ColumnVector& q,
 
               // Searching for the most negative curvature.
 
-              EIG eigrH (rH);
+              EIG eigrH;
 
-              if (error_state)
+              try
                 {
-                  error ("qp: failed to compute eigenvalues of rH");
-                  return -1;
+                  eigrH = EIG (rH);
+                }
+              catch (octave::execution_exception& e)
+                {
+                  error (e, "qp: failed to compute eigenvalues of rH");
                 }
 
               ColumnVector eigenvalrH = real (eigrH.eigenvalues ());
-              Matrix eigenvecrH = real (eigrH.eigenvectors ());
+              Matrix eigenvecrH = real (eigrH.right_eigenvectors ());
               double mRrH = eigenvalrH.min ();
               indminR = 0;
               for (octave_idx_type i = 0; i < n; i++)
@@ -480,56 +486,38 @@ qp (const Matrix& H, const ColumnVector& q,
 }
 
 DEFUN (__qp__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  if (args.length () == 8)
-    {
-      const ColumnVector x0  (args(0) . vector_value ());
-      const Matrix H         (args(1) . matrix_value ());
-      const ColumnVector q   (args(2) . vector_value ());
-      const Matrix Aeq       (args(3) . matrix_value ());
-      const ColumnVector beq (args(4) . vector_value ());
-      const Matrix Ain       (args(5) . matrix_value ());
-      const ColumnVector bin (args(6) . vector_value ());
-      const int maxit        (args(7) . int_value ());
-
-      if (! error_state)
-        {
-          int iter = 0;
-
-          // Copying the initial guess in the working variable
-          ColumnVector x = x0;
-
-          // Reordering the Lagrange multipliers
-          ColumnVector lambda;
-
-          int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
-
-          if (! error_state)
-            {
-              retval(3) = iter;
-              retval(2) = info;
-              retval(1) = lambda;
-              retval(0) = x;
-            }
-          else
-            error ("qp: internal error");
-        }
-      else
-        error ("__qp__: invalid arguments");
-    }
-  else
+  if (args.length () != 8)
     print_usage ();
 
-  return retval;
+  const ColumnVector x0  (args(0).vector_value ());
+  const Matrix H         (args(1).matrix_value ());
+  const ColumnVector q   (args(2).vector_value ());
+  const Matrix Aeq       (args(3).matrix_value ());
+  const ColumnVector beq (args(4).vector_value ());
+  const Matrix Ain       (args(5).matrix_value ());
+  const ColumnVector bin (args(6).vector_value ());
+  const int maxit        (args(7).int_value ());
+
+  int iter = 0;
+
+  // Copy the initial guess into the working variable
+  ColumnVector x = x0;
+
+  // Reordering the Lagrange multipliers
+  ColumnVector lambda;
+
+  int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
+
+  return ovl (x, lambda, info, iter);
 }
 
 /*
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

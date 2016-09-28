@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_symtab_h)
+#if ! defined (octave_symtab_h)
 #define octave_symtab_h 1
+
+#include "octave-config.h"
 
 #include <deque>
 #include <list>
@@ -36,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 class tree_argument_list;
 class octave_user_function;
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "workspace-element.h"
 #include "oct-refcount.h"
 #include "ov.h"
@@ -95,11 +97,7 @@ public:
         create_instance ();
 
       if (! instance)
-        {
-          ::error ("unable to create scope_id_cache object!");
-
-          retval = false;
-        }
+        error ("unable to create scope_id_cache object!");
 
       return retval;
     }
@@ -148,13 +146,11 @@ public:
     {
       set_iterator p = in_use.find (scope);
 
-      if (p != in_use.end ())
-        {
-          in_use.erase (p);
-          free_list.insert (scope);
-        }
-      else
+      if (p == in_use.end ())
         error ("free_scope: scope %d not found!", scope);
+
+      in_use.erase (p);
+      free_list.insert (scope);
     }
 
     std::list<scope_id> do_scopes (void) const
@@ -181,7 +177,7 @@ public:
     static const unsigned int local = 1;
 
     // varargin, argn, .nargin., .nargout.
-    // (FIXME -- is this really used now?)
+    // (FIXME: is this really used now?)
     static const unsigned int automatic = 2;
 
     // formal parameter
@@ -399,15 +395,15 @@ public:
       {
         if (is_persistent ())
           error ("can't make persistent variable %s global", name.c_str ());
-        else
-          storage_class |= global;
+
+        storage_class |= global;
       }
       void mark_persistent (void)
       {
         if (is_global ())
           error ("can't make global variable %s persistent", name.c_str ());
-        else
-          storage_class |= persistent;
+
+        storage_class |= persistent;
       }
       void mark_added_static (void) { storage_class |= added_static; }
 
@@ -489,7 +485,7 @@ public:
   public:
 
     symbol_record (scope_id s = xcurrent_scope,
-                   const std::string& nm = std::string (),
+                   const std::string& nm = "",
                    const octave_value& v = octave_value (),
                    unsigned int sc = local)
       : rep (new symbol_record_rep (s, nm, v, sc)) { }
@@ -646,7 +642,7 @@ public:
     void set_curr_fcn (octave_user_function *fcn) { rep->set_curr_fcn (fcn); }
 
     void
-    dump (std::ostream& os, const std::string& prefix = std::string ()) const
+    dump (std::ostream& os, const std::string& prefix = "") const
     {
       rep->dump (os, prefix);
     }
@@ -858,7 +854,7 @@ public:
         built_in_function = f;
       }
 
-      template <class T>
+      template <typename T>
       void
       clear_map (std::map<T, octave_value>& map, bool force = false)
       {
@@ -883,6 +879,8 @@ public:
       // "user defined"
       void clear_user_function (bool force = false)
       {
+        clear_autoload_function (force);
+
         if (force || ! function_on_path.islocked ())
           function_on_path = octave_value ();
 
@@ -988,7 +986,7 @@ public:
 
   public:
 
-    fcn_info (const std::string& nm = std::string ())
+    fcn_info (const std::string& nm = "")
       : rep (new fcn_info_rep (nm)) { }
 
     fcn_info (const fcn_info& fi) : rep (fi.rep)
@@ -1149,7 +1147,7 @@ public:
     }
 
     void
-    dump (std::ostream& os, const std::string& prefix = std::string ()) const
+    dump (std::ostream& os, const std::string& prefix = "") const
     {
       rep->dump (os, prefix);
     }
@@ -1172,7 +1170,8 @@ public:
   {
     if (scope == xglobal_scope)
       error ("can't set scope to global");
-    else if (scope != xcurrent_scope)
+
+    if (scope != xcurrent_scope)
       {
         all_instances_iterator p = all_instances.find (scope);
 
@@ -1195,26 +1194,22 @@ public:
   {
     if (scope == xglobal_scope)
       error ("can't set scope to global");
-    else
+
+    if (scope != xcurrent_scope)
       {
-        if (scope != xcurrent_scope)
-          {
-            all_instances_iterator p = all_instances.find (scope);
+        all_instances_iterator p = all_instances.find (scope);
 
-            if (p == all_instances.end ())
-              error ("scope not found!");
-            else
-              {
-                instance = p->second;
+        if (p == all_instances.end ())
+          error ("scope not found!");
 
-                xcurrent_scope = scope;
+        instance = p->second;
 
-                xcurrent_context = context;
-              }
-          }
-        else
-          xcurrent_context = context;
+        xcurrent_scope = scope;
+
+        xcurrent_context = context;
       }
+    else
+      xcurrent_context = context;
   }
 
   static void erase_scope (scope_id scope)
@@ -1344,11 +1339,10 @@ public:
       inst->do_assign (name, value, context, force_add);
   }
 
-  // Use assign (name, value, scope, context, force_add) instead.
+  OCTAVE_DEPRECATED ("use 'assign' instead")
   static octave_value&
   varref (const std::string& name, scope_id scope = xcurrent_scope,
           context_id context = xdefault_context, bool force_add = false)
-          GCC_ATTR_DEPRECATED
   {
     symbol_table *inst = get_instance (scope);
 
@@ -1366,10 +1360,10 @@ public:
     assign (name, value, scope, context, true);
   }
 
-  // Use force_assign (name, value, scope, context) instead.
+  OCTAVE_DEPRECATED ("use 'force_assign' instead")
   static octave_value&
   force_varref (const std::string& name, scope_id scope = xcurrent_scope,
-                context_id context = xdefault_context) GCC_ATTR_DEPRECATED
+                context_id context = xdefault_context)
   {
     symbol_table *inst = get_instance (scope);
 
@@ -1398,9 +1392,9 @@ public:
       p->second = value;
   }
 
-  // Use global_assign (name, value) instead.
+  OCTAVE_DEPRECATED ("use 'global_assign' instead")
   static octave_value&
-  global_varref (const std::string& name) GCC_ATTR_DEPRECATED
+  global_varref (const std::string& name)
 
   {
     global_table_iterator p = global_table.find (name);
@@ -1423,9 +1417,9 @@ public:
     assign (name, value, top_scope (), 0);
   }
 
-  // Use top_level_assign (name, value) instead.
+  OCTAVE_DEPRECATED ("use 'top_level_assign' instead")
   static octave_value&
-  top_level_varref (const std::string& name) GCC_ATTR_DEPRECATED
+  top_level_varref (const std::string& name)
   {
     symbol_table *inst = get_instance (top_scope ());
 
@@ -1439,42 +1433,52 @@ public:
   }
 
   static void
-  persistent_assign (const std::string& name,
+  persistent_assign (const std::string& name, scope_id scope,
                      const octave_value& value = octave_value ())
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_persistent_assign (name, value);
   }
 
-  // Use persistent_assign (name, value) instead.
-  static octave_value& persistent_varref (const std::string& name)
-  GCC_ATTR_DEPRECATED
+  static void
+  persistent_assign (const std::string& name,
+                     const octave_value& value = octave_value ())
+  {
+    persistent_assign (name, xcurrent_scope, value);
+  }
+
+  OCTAVE_DEPRECATED ("use 'persistent_assign' instead")
+  static octave_value&
+  persistent_varref (const std::string& name)
   {
     symbol_table *inst = get_instance (xcurrent_scope);
 
     return inst ? inst->do_persistent_varref (name) : dummy_octave_value;
   }
 
-  static octave_value persistent_varval (const std::string& name)
+  static octave_value persistent_varval (const std::string& name,
+                                         scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_persistent_varval (name) : octave_value ();
   }
 
-  static void erase_persistent (const std::string& name)
+  static void erase_persistent (const std::string& name,
+                                scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_erase_persistent (name);
   }
 
-  static bool is_variable (const std::string& name)
+  static bool is_variable (const std::string& name,
+                           scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_is_variable (name) : false;
   }
@@ -1493,12 +1497,22 @@ public:
     fcn_table_const_iterator p = fcn_table.find (name);
 
     if (p != fcn_table.end ())
-      return p->second.find_method (dispatch_type);
+      {
+        octave_value fcn = p->second.find_method (dispatch_type);
+
+        if (! fcn.is_defined ())
+          fcn = find_submethod (name, dispatch_type);
+
+        return fcn;
+      }
     else
       {
         fcn_info finfo (name);
 
         octave_value fcn = finfo.find_method (dispatch_type);
+
+        if (! fcn.is_defined ())
+          fcn = find_submethod (name, dispatch_type);
 
         if (fcn.is_defined ())
           fcn_table[name] = finfo;
@@ -1506,6 +1520,9 @@ public:
         return fcn;
       }
   }
+
+  static octave_value
+  find_submethod (const std::string& name, const std::string& dispatch_type);
 
   static octave_value
   find_built_in_function (const std::string& name)
@@ -1536,6 +1553,14 @@ public:
 
     return (p != fcn_table.end ())
            ? p->second.find_user_function () : octave_value ();
+  }
+
+  static octave_value find_cmdline_function (const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    return (p != fcn_table.end ())
+           ? p->second.find_cmdline_function () : octave_value ();
   }
 
   static void install_cmdline_function (const std::string& name,
@@ -1651,6 +1676,10 @@ public:
     clear_functions (force);
   }
 
+  // This is written as two separate functions instead of a single
+  // function with default values so that it will work properly with
+  // unwind_protect.
+
   static void clear_variables (scope_id scope)
   {
     symbol_table *inst = get_instance (scope);
@@ -1659,7 +1688,6 @@ public:
       inst->do_clear_variables ();
   }
 
-  // This is split for unwind_protect.
   static void clear_variables (void)
   {
     clear_variables (xcurrent_scope);
@@ -1684,17 +1712,19 @@ public:
     clear_user_function (name);
   }
 
-  static void clear_global (const std::string& name)
+  static void clear_global (const std::string& name,
+                            scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_global (name);
   }
 
-  static void clear_variable (const std::string& name)
+  static void clear_variable (const std::string& name,
+                              scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variable (name);
@@ -1719,25 +1749,28 @@ public:
       }
   }
 
-  static void clear_global_pattern (const std::string& pat)
+  static void clear_global_pattern (const std::string& pat,
+                                    scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_global_pattern (pat);
   }
 
-  static void clear_variable_pattern (const std::string& pat)
+  static void clear_variable_pattern (const std::string& pat,
+                                      scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variable_pattern (pat);
   }
 
-  static void clear_variable_regexp (const std::string& pat)
+  static void clear_variable_regexp (const std::string& pat,
+                                     scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_clear_variable_regexp (pat);
@@ -1766,7 +1799,7 @@ public:
     //   error ("clear: no such function '%s'", name.c_str ());
   }
 
-  // This clears oct and mex files, incl. autoloads.
+  // This clears oct and mex files, including autoloads.
   static void clear_dld_function (const std::string& name)
   {
     fcn_table_iterator p = fcn_table.find (name);
@@ -1889,54 +1922,60 @@ public:
     return retval;
   }
 
-  static void push_context (void)
+  static void push_context (scope_id scope = xcurrent_scope)
   {
-    if (xcurrent_scope == xglobal_scope || xcurrent_scope == xtop_scope)
-      error ("invalid call to xymtab::push_context");
-    else
-      {
-        symbol_table *inst = get_instance (xcurrent_scope);
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("invalid call to symtab::push_context");
 
-        if (inst)
-          inst->do_push_context ();
-      }
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_push_context ();
   }
 
-  static void pop_context (void)
-  {
-    if (xcurrent_scope == xglobal_scope || xcurrent_scope == xtop_scope)
-      error ("invalid call to xymtab::pop_context");
-    else
-      {
-        symbol_table *inst = get_instance (xcurrent_scope);
+  // This is written as two separate functions instead of a single
+  // function with default values so that it will work properly with
+  // unwind_protect.
 
-        if (inst)
-          inst->do_pop_context ();
-      }
+  static void pop_context (scope_id scope)
+  {
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("invalid call to symtab::pop_context");
+
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_pop_context ();
   }
 
-  // For unwind_protect.
+  static void pop_context (void) { pop_context (xcurrent_scope); }
+
+  // For unwind_protect where a pointer argument is needed.
+
   static void pop_context (void *) { pop_context (); }
 
-  static void mark_automatic (const std::string& name)
+  static void mark_automatic (const std::string& name,
+                              scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_mark_automatic (name);
   }
 
-  static void mark_hidden (const std::string& name)
+  static void mark_hidden (const std::string& name,
+                           scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_mark_hidden (name);
   }
 
-  static void mark_global (const std::string& name)
+  static void mark_global (const std::string& name,
+                           scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     if (inst)
       inst->do_mark_global (name);
@@ -1956,30 +1995,34 @@ public:
            : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> glob (const std::string& pattern)
+  static std::list<symbol_record> glob (const std::string& pattern,
+                                        scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_glob (pattern) : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> regexp (const std::string& pattern)
+  static std::list<symbol_record> regexp (const std::string& pattern,
+                                          scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_regexp (pattern) : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> glob_variables (const std::string& pattern)
+  static std::list<symbol_record> glob_variables (const std::string& pattern,
+                                                  scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_glob (pattern, true) : std::list<symbol_record> ();
   }
 
-  static std::list<symbol_record> regexp_variables (const std::string& pattern)
+  static std::list<symbol_record> regexp_variables (const std::string& pattern,
+                                                    scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_regexp (pattern, true) : std::list<symbol_record> ();
   }
@@ -2012,7 +2055,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    ::regexp pat (pattern);
+    octave::regexp pat (pattern);
 
     for (global_table_const_iterator p = global_table.begin ();
          p != global_table.end (); p++)
@@ -2034,7 +2077,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    size_t len = patterns.length ();
+    size_t len = patterns.numel ();
 
     for (size_t i = 0; i < len; i++)
       {
@@ -2051,7 +2094,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    size_t len = patterns.length ();
+    size_t len = patterns.numel ();
 
     for (size_t i = 0; i < len; i++)
       {
@@ -2100,9 +2143,9 @@ public:
     return inst ? inst->do_variable_names () : std::list<std::string> ();
   }
 
-  static std::list<std::string> variable_names (void)
+  static std::list<std::string> variable_names (scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst ? inst->do_variable_names () : std::list<std::string> ();
   }
@@ -2145,33 +2188,35 @@ public:
     return retval;
   }
 
-  static bool is_local_variable (const std::string& name)
+  static bool is_local_variable (const std::string& name,
+                                 scope_id scope = xcurrent_scope)
   {
-    if (xcurrent_scope == xglobal_scope)
+    if (scope == xglobal_scope)
       return false;
     else
       {
-        symbol_table *inst = get_instance (xcurrent_scope);
+        symbol_table *inst = get_instance (scope);
 
         return inst ? inst->do_is_local_variable (name) : false;
       }
   }
 
-  static bool is_global (const std::string& name)
+  static bool is_global (const std::string& name,
+                         scope_id scope = xcurrent_scope)
   {
-    if (xcurrent_scope == xglobal_scope)
+    if (scope == xglobal_scope)
       return true;
     else
       {
-        symbol_table *inst = get_instance (xcurrent_scope);
+        symbol_table *inst = get_instance (scope);
 
         return inst ? inst->do_is_global (name) : false;
       }
   }
 
-  static std::list<workspace_element> workspace_info (void)
+  static std::list<workspace_element> workspace_info (scope_id scope = xcurrent_scope)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
+    symbol_table *inst = get_instance (scope);
 
     return inst
            ? inst->do_workspace_info () : std::list<workspace_element> ();
@@ -2229,8 +2274,8 @@ public:
   {
     if (scope == xglobal_scope || scope == xtop_scope)
       error ("can't free global or top-level scopes!");
-    else
-      symbol_table::scope_id_cache::free (scope);
+
+    symbol_table::scope_id_cache::free (scope);
   }
 
   static void stash_dir_name_for_subfunctions (scope_id scope,
@@ -2281,7 +2326,7 @@ public:
     symbol_table *inst = get_instance (scope);
     // FIXME: normally, functions should not usurp each other's scope.
     // If for any incredible reason this is needed, call
-    // set_user_function (0, scope) first. This may cause problems with
+    // set_user_function (0, scope) first.  This may cause problems with
     // nested functions, as the curr_fcn of symbol_records must be updated.
     assert (inst->curr_fcn == 0 || curr_fcn == 0);
     inst->curr_fcn = curr_fcn;
@@ -2325,8 +2370,8 @@ private:
   // The scope of this symbol table.
   scope_id my_scope;
 
-  // Name for this table (usually the file name of the function
-  // corresponding to the scope);
+  // Name for this table
+  // (usually the filename of the function corresponding to the scope);
   std::string table_name;
 
   // Map from symbol names to symbol info.
@@ -2453,7 +2498,7 @@ private:
 
   void add_nest_child (symbol_table& st)
   {
-    assert (!st.nest_parent);
+    assert (! st.nest_parent);
     nest_children.push_back (&st);
     st.nest_parent = this;
   }
@@ -2730,8 +2775,6 @@ private:
         else
           q++;
       }
-
-
   }
 
   void do_clear_variable_pattern (const std::string& pat)
@@ -2752,7 +2795,7 @@ private:
 
   void do_clear_variable_regexp (const std::string& pat)
   {
-    ::regexp pattern (pat);
+    octave::regexp pattern (pat);
 
     for (table_iterator p = table.begin (); p != table.end (); p++)
       {
@@ -2829,7 +2872,7 @@ private:
   {
     std::list<symbol_record> retval;
 
-    ::regexp pat (pattern);
+    octave::regexp pat (pattern);
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
       {
@@ -2905,7 +2948,7 @@ private:
 };
 
 extern bool out_of_date_check (octave_value& function,
-                               const std::string& dispatch_type = std::string (),
+                               const std::string& dispatch_type = "",
                                bool check_relative = true);
 
 extern OCTINTERP_API std::string
@@ -2914,3 +2957,4 @@ extern OCTINTERP_API std::string
 get_dispatch_type (const octave_value_list& args, builtin_type_t& builtin_type);
 
 #endif
+

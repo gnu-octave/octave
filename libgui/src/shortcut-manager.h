@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2014-2015 Torsten <ttl@justmail.de>
+Copyright (C) 2014-2016 Torsten <ttl@justmail.de>
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef SHORTCUT_MANAGER_H
-#define SHORTCUT_MANAGER_H
+#if ! defined (octave_shortcut_manager_h)
+#define octave_shortcut_manager_h 1
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -38,7 +38,7 @@ public:
   enter_shortcut (QWidget *p = 0);
   ~enter_shortcut ();
 
-  virtual void  keyPressEvent (QKeyEvent *e);
+  virtual void keyPressEvent (QKeyEvent *e);
 
 public slots:
   void handle_direct_shortcut (int);
@@ -54,6 +54,14 @@ class shortcut_manager : public QWidget
   Q_OBJECT
 
 public:
+
+  enum
+  {
+    OSC_IMPORT  = 0,
+    OSC_EXPORT  = 1,
+    OSC_DEFAULT = 2
+  };
+
   shortcut_manager ();
   ~shortcut_manager ();
 
@@ -63,10 +71,10 @@ public:
       instance->do_init_data ();
   }
 
-  static void write_shortcuts (int set, QSettings *settings, bool closing)
+  static void write_shortcuts (QSettings *settings, bool closing)
   {
     if (instance_ok ())
-      instance->do_write_shortcuts (set, settings, closing);
+      instance->do_write_shortcuts (settings, closing);
   }
 
   static void set_shortcut (QAction *action, const QString& key)
@@ -81,13 +89,17 @@ public:
       instance->do_fill_treewidget (tree_view);
   }
 
-  static void import_export (bool import, int set)
+  static void import_export (int action)
   {
     if (instance_ok ())
-      instance->do_import_export (import, set);
+      instance->do_import_export (action);
   }
 
+  static shortcut_manager *instance;
+
 public slots:
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
 signals:
 
@@ -101,24 +113,19 @@ protected slots:
 
 private:
 
-  static shortcut_manager *instance;
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
   // No copying!
-
-  shortcut_manager (const shortcut_manager&);
-  shortcut_manager& operator = (const shortcut_manager&);
 
   static bool instance_ok (void);
 
-  void init (QString, QString, QKeySequence);
+  void init (const QString&, const QString&, const QKeySequence&);
   void do_init_data ();
-  void do_write_shortcuts (int set, QSettings *settings, bool closing);
+  void do_write_shortcuts (QSettings *settings, bool closing);
   void do_set_shortcut (QAction *action, const QString& key);
   void do_fill_treewidget (QTreeWidget *tree_view);
-  void do_import_export (bool import, int set);
+  bool do_import_export (int action);
   void shortcut_dialog (int);
-  void import_shortcuts (int set, QSettings *settings);
+  void import_shortcuts (QSettings *settings);
+  bool overwrite_all_shortcuts (void);
 
   class shortcut_t
   {
@@ -126,25 +133,15 @@ private:
 
     shortcut_t (void)
       : tree_item (0), description (), settings_key (),
-        actual_sc (new QKeySequence[2]), default_sc (new QKeySequence[2])
-    {
-      actual_sc[0] = QKeySequence ();
-      actual_sc[1] = QKeySequence ();
-
-      default_sc[0] = QKeySequence ();
-      default_sc[1] = QKeySequence ();
-    }
+        actual_sc (QKeySequence ()), default_sc (QKeySequence ())
+    {  }
 
     shortcut_t (const shortcut_t& x)
       : tree_item (x.tree_item), description (x.description),
-        settings_key (x.settings_key),
-        actual_sc (new QKeySequence[2]), default_sc (new QKeySequence[2])
+        settings_key (x.settings_key)
     {
-      actual_sc[0] = x.actual_sc[0];
-      actual_sc[1] = x.actual_sc[1];
-
-      default_sc[0] = x.default_sc[0];
-      default_sc[1] = x.default_sc[1];
+      actual_sc = x.actual_sc;
+      default_sc = x.default_sc;
     }
 
     shortcut_t& operator = (const shortcut_t& x)
@@ -155,30 +152,24 @@ private:
           description = x.description;
           settings_key = x.settings_key;
 
-          actual_sc = new QKeySequence[2];
-          default_sc = new QKeySequence[2];
+          actual_sc = QKeySequence ();
+          default_sc = QKeySequence ();
 
-          actual_sc[0] = x.actual_sc[0];
-          actual_sc[1] = x.actual_sc[1];
-
-          default_sc[0] = x.default_sc[0];
-          default_sc[1] = x.default_sc[1];
+          actual_sc = x.actual_sc;
+          default_sc = x.default_sc;
         }
 
       return *this;
     }
 
     ~shortcut_t (void)
-    {
-      delete [] actual_sc;
-      delete [] default_sc;
-    }
+    { }
 
     QTreeWidgetItem *tree_item;
     QString description;
     QString settings_key;
-    QKeySequence *actual_sc;
-    QKeySequence *default_sc;
+    QKeySequence actual_sc;
+    QKeySequence default_sc;
   };
 
   QList<shortcut_t> _sc;
@@ -194,9 +185,8 @@ private:
   int _handled_index;
 
   QSettings *_settings;
-  int _selected_set;
 
 };
 
+#endif
 
-#endif // SHORTCUT_MANAGER_H

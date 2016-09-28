@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imagesc (@var{img})
-## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{img})
-## @deftypefnx {Function File} {} imagesc (@dots{}, @var{climits})
-## @deftypefnx {Function File} {} imagesc (@dots{}, "@var{prop}", @var{val}, @dots{})
-## @deftypefnx {Function File} {} imagesc ("@var{prop1}", @var{val1}, @dots{})
-## @deftypefnx {Function File} {} imagesc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
+## @deftypefn  {} {} imagesc (@var{img})
+## @deftypefnx {} {} imagesc (@var{x}, @var{y}, @var{img})
+## @deftypefnx {} {} imagesc (@dots{}, @var{climits})
+## @deftypefnx {} {} imagesc (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {} {} imagesc ("@var{prop1}", @var{val1}, @dots{})
+## @deftypefnx {} {} imagesc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} imagesc (@dots{})
 ## Display a scaled version of the matrix @var{img} as a color image.
 ##
 ## The colormap is scaled so that the entries of the matrix occupy the entire
@@ -151,7 +151,7 @@ endfunction
 %! imagesc (g, g+12, cos (h/2));
 %! axis ([0 10 0 22]);
 %! hold off;
-%! title ("two consecutive images");
+%! title ("two consecutive images w/hold()");
 
 %!demo
 %! clf;
@@ -159,12 +159,12 @@ endfunction
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! imagesc (g, g, sin (h));
-%! hold all;
+%! hold on;
 %! plot (g, 11.0 * ones (size (g)));
 %! imagesc (g, g+12, cos (h/2));
 %! axis ([0 10 0 22]);
 %! hold off;
-%! title ("image, line, image");
+%! title ("image, line, image w/hold()");
 
 %!demo
 %! clf;
@@ -172,12 +172,19 @@ endfunction
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! plot (g, 10.5 * ones (size (g)));
-%! hold all;
+%! hold on;
 %! imagesc (g, g, sin (h));
 %! plot (g, 11.0 * ones (size (g)));
 %! imagesc (g, g+12, cos (h/2));
 %! plot (g, 11.5 * ones (size (g)));
 %! axis ([0 10 0 22]);
 %! hold off;
-%! title ("line, image, line, image, line");
+%! title ("line, image, line, image, line w/hold()");
+
+%!demo  # bug #48879
+%! clf;
+%! img = reshape (1:100, 10, 10);
+%! imagesc (img);
+%! colormap (prism (10));
+%! title ("10 vertical color bars");
 

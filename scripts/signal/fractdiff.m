@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fractdiff (@var{x}, @var{d})
+## @deftypefn {} {} fractdiff (@var{x}, @var{d})
 ## Compute the fractional differences @math{(1-L)^d x} where @math{L}
 ## denotes the lag-operator and @math{d} is greater than -1.
 ## @end deftypefn

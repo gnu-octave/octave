@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John Donoghue
+Copyright (C) 2013-2016 John Donoghue
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QPushButton>
@@ -125,7 +125,11 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _file_list->horizontalHeader ()->restoreState (
     settings->value ("findfiles/column_state").toByteArray ());
   _file_list->horizontalHeader ()->setSortIndicatorShown (true);
+#if defined (HAVE_QT4)
   _file_list->horizontalHeader ()->setClickable (true);
+#else
+  _file_list->horizontalHeader ()->setSectionsClickable (true);
+#endif
   _file_list->horizontalHeader ()->setStretchLastSection (true);
   _file_list->sortByColumn (
                 settings->value ("findfiles/sort_files_by_column",0).toInt (),
@@ -139,11 +143,11 @@ find_files_dialog::find_files_dialog (QWidget * p)
   _status_bar = new QStatusBar;
   _status_bar->showMessage (tr ("Idle."));
 
-  _find_button =  new QPushButton (tr ("Find"));
+  _find_button = new QPushButton (tr ("Find"));
   _find_button->setToolTip (tr ("Start search for matching files"));
   connect (_find_button, SIGNAL (clicked ()), this, SLOT (start_find ()));
 
-  _stop_button =  new QPushButton (tr ("Stop"));
+  _stop_button = new QPushButton (tr ("Stop"));
   _stop_button->setToolTip (tr ("Stop searching"));
   _stop_button->setEnabled (false);
   connect (_stop_button, SIGNAL (clicked ()), this, SLOT (stop_find ()));
@@ -159,7 +163,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
            this,          SLOT (close ()));
 
   // name options
-  QGroupBox * name_group = new QGroupBox (tr ("File name/location"));
+  QGroupBox * name_group = new QGroupBox (tr ("Filename/location"));
   QGridLayout * name_layout = new QGridLayout;
   name_group->setLayout (name_layout);
 
@@ -193,15 +197,18 @@ find_files_dialog::find_files_dialog (QWidget * p)
   main_layout->setRowStretch (2,1);
   main_layout->addWidget (_status_bar,3,0,1,-1);
 
-
   setLayout (main_layout);
 
   connect (this, SIGNAL (finished (int)), this, SLOT (handle_done (int)));
 }
 
-find_files_dialog::~find_files_dialog ()
+void
+find_files_dialog::save_settings (void)
 {
   QSettings *settings = resource_manager::get_settings ();
+
+  if (! settings)
+    return;
 
   int sort_column = _file_list->horizontalHeader ()->sortIndicatorSection ();
   Qt::SortOrder sort_order
@@ -226,7 +233,10 @@ find_files_dialog::~find_files_dialog ()
                       _content_case_check->isChecked ());
 
   settings->sync ();
+}
 
+find_files_dialog::~find_files_dialog ()
+{
   if (_dir_iterator)
     delete _dir_iterator;
 }
@@ -255,9 +265,9 @@ find_files_dialog::start_find ()
   if (_recurse_dirs_check->isChecked ())
     flags |= QDirIterator::Subdirectories;
 
-  QDir::Filters filters = QDir::Dirs|QDir::NoDotAndDotDot|QDir::Files;
-  if (!_name_case_check->isChecked ())
-    filters |=  QDir::CaseSensitive;
+  QDir::Filters filters = QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files;
+  if (! _name_case_check->isChecked ())
+    filters |= QDir::CaseSensitive;
 
   QStringList nameFilters;
   nameFilters.append (_file_name_edit->text ());
@@ -368,7 +378,7 @@ bool find_files_dialog::is_match (const QFileInfo &info)
   bool match = true;
   if (info.isDir ())
     {
-      if (!_include_dirs_check->isChecked ()) match = false;
+      if (! _include_dirs_check->isChecked ()) match = false;
       if (_contains_text_check->isChecked ()) match = false;
     }
   else
@@ -394,7 +404,7 @@ bool find_files_dialog::is_match (const QFileInfo &info)
                   line = stream.readLine ();
                   match = line.contains (match_str, cs);
                 }
-              while (!line.isNull () && match == false);
+              while (! line.isNull () && match == false);
             }
 
         }

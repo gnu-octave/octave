@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Michael Goffioul
+## Copyright (C) 2008-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{fig} =} gcbf ()
+## @deftypefn {} {@var{fig} =} gcbf ()
 ## Return a handle to the figure containing the object whose callback is
 ## currently executing.
 ##

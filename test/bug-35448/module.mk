@@ -1,7 +1,7 @@
-bug_35448_FCN_FILES = \
-  bug-35448/fA.m \
-  bug-35448/fB.m \
-  bug-35448/fC.m \
-  bug-35448/bug-35448.tst
+bug_35448_TEST_FILES = \
+  test/bug-35448/fA.m \
+  test/bug-35448/fB.m \
+  test/bug-35448/fC.m \
+  test/bug-35448/bug-35448.tst
 
-FCN_FILES += $(bug_35448_FCN_FILES)
+TEST_FILES += $(bug_35448_TEST_FILES)

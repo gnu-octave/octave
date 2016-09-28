@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 Leopoldo Cerbaro <redbliss@libero.it>
+Copyright (C) 2013-2016 Leopoldo Cerbaro <redbliss@libero.it>
 
 This file is part of Octave.
 
@@ -20,140 +20,97 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "error.h"
 #include "lo-specfun.h"
 
-static void
-gripe_ellipj_arg (const char *arg)
-{
-  error ("ellipj: expecting scalar or matrix as %s argument", arg);
-}
+DEFUN (ellipj, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})
+@deftypefnx {} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})
+Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}
+of complex argument @var{u} and real parameter @var{m}.
 
-DEFUN (ellipj, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
-@deftypefnx {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\
-Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}\n\
-of complex argument @var{u} and real parameter @var{m}.\n\
-\n\
-If @var{m} is a scalar, the results are the same size as @var{u}.\n\
-If @var{u} is a scalar, the results are the same size as @var{m}.\n\
-If @var{u} is a column vector and @var{m} is a row vector, the\n\
-results are matrices with @code{length (@var{u})} rows and\n\
-@code{length (@var{m})} columns.  Otherwise, @var{u} and\n\
-@var{m} must conform in size and the results will be the same size as the\n\
-inputs.\n\
-\n\
-The value of @var{u} may be complex.\n\
-The value of @var{m} must be 0 @leq{} @var{m} @leq{} 1.\n\
-\n\
-The optional input @var{tol} is currently ignored (@sc{matlab} uses this to\n\
-allow faster, less accurate approximation).\n\
-\n\
-If requested, @var{err} contains the following status information\n\
-and is the same size as the result.\n\
-\n\
-@enumerate 0\n\
-@item\n\
-Normal return.\n\
-\n\
-@item\n\
-Error---no computation, algorithm termination condition not met,\n\
-return @code{NaN}.\n\
-@end enumerate\n\
-\n\
-Reference: Milton @nospell{Abramowitz} and Irene A @nospell{Stegun},\n\
-@cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,\n\
-and 16.15), Dover, 1965.\n\
-\n\
-@seealso{ellipke}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+If @var{m} is a scalar, the results are the same size as @var{u}.
+If @var{u} is a scalar, the results are the same size as @var{m}.
+If @var{u} is a column vector and @var{m} is a row vector, the
+results are matrices with @code{length (@var{u})} rows and
+@code{length (@var{m})} columns.  Otherwise, @var{u} and
+@var{m} must conform in size and the results will be the same size as the
+inputs.
 
+The value of @var{u} may be complex.
+The value of @var{m} must be 0 @leq{} @var{m} @leq{} 1.
+
+The optional input @var{tol} is currently ignored (@sc{matlab} uses this to
+allow faster, less accurate approximation).
+
+If requested, @var{err} contains the following status information
+and is the same size as the result.
+
+@enumerate 0
+@item
+Normal return.
+
+@item
+Error---no computation, algorithm termination condition not met,
+return @code{NaN}.
+@end enumerate
+
+Reference: Milton @nospell{Abramowitz} and Irene A @nospell{Stegun},
+@cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,
+and 16.15), Dover, 1965.
+
+@seealso{ellipke}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   if (nargin < 2 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
   octave_value u_arg = args(0);
   octave_value m_arg = args(1);
 
   if (m_arg.is_scalar_type ())
     {
-      double m = args(1).double_value ();
-
-      if (error_state)
-        {
-          gripe_ellipj_arg ("second");
-          return retval;
-        }
+      double m = args(1).xdouble_value ("ellipj: M must be a scalar or matrix");
 
       if (u_arg.is_scalar_type ())
         {
           if (u_arg.is_real_type ())
             {
               // u real, m scalar
-              double u = args(0).double_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              double u = args(0).xdouble_value ("ellipj: U must be a scalar or matrix");
 
               double sn, cn, dn;
               double err = 0;
 
-              ellipj (u, m, sn, cn, dn, err);
+              octave::math::ellipj (u, m, sn, cn, dn, err);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              return ovl (sn, cn, dn, err);
             }
           else
             {
               // u complex, m scalar
-              Complex u = u_arg.complex_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              Complex u = u_arg.xcomplex_value ("ellipj: U must be a scalar or matrix");
 
               Complex sn, cn, dn;
               double err = 0;
 
-              ellipj (u, m, sn, cn, dn, err);
+              octave::math::ellipj (u, m, sn, cn, dn, err);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              return ovl (sn, cn, dn, err);
             }
         }
       else
         {
           // u is matrix, m is scalar
-          ComplexNDArray u = u_arg.complex_array_value ();
-
-          if (error_state)
-            {
-              gripe_ellipj_arg ("first");
-              return retval;
-            }
+          ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: U must be a scalar or matrix");
 
           dim_vector sz_u = u.dims ();
 
@@ -168,24 +125,14 @@ and 16.15), Dover, 1965.\n\
           octave_idx_type nel = u.numel ();
 
           for (octave_idx_type i = 0; i < nel; i++)
-            ellipj (pu[i], m, psn[i], pcn[i], pdn[i], perr[i]);
+            octave::math::ellipj (pu[i], m, psn[i], pcn[i], pdn[i], perr[i]);
 
-          if (nargout > 3)
-            retval(3) = err;
-          retval(2) = dn;
-          retval(1) = cn;
-          retval(0) = sn;
+          return ovl (sn, cn, dn, err);
         }
     }
   else
     {
-      NDArray m = args(1).array_value ();
-
-      if (error_state)
-        {
-          gripe_ellipj_arg ("second");
-          return retval;
-        }
+      NDArray m = args(1).xarray_value ("ellipj: M must be a scalar or matrix");
 
       dim_vector sz_m = m.dims ();
 
@@ -195,13 +142,7 @@ and 16.15), Dover, 1965.\n\
           if (u_arg.is_real_type ())
             {
               // u is real scalar, m is array
-              double u = u_arg.double_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              double u = u_arg.xdouble_value ("ellipj: U must be a scalar or matrix");
 
               NDArray sn (sz_m), cn (sz_m), dn (sz_m);
               NDArray err (sz_m);
@@ -214,24 +155,14 @@ and 16.15), Dover, 1965.\n\
               octave_idx_type nel = m.numel ();
 
               for (octave_idx_type i = 0; i < nel; i++)
-                ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                octave::math::ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              return ovl (sn, cn, dn, err);
             }
           else
             {
               // u is complex scalar, m is array
-              Complex u = u_arg.complex_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              Complex u = u_arg.xcomplex_value ("ellipj: U must be a scalar or matrix");
 
               ComplexNDArray sn (sz_m), cn (sz_m), dn (sz_m);
               NDArray err (sz_m);
@@ -244,13 +175,9 @@ and 16.15), Dover, 1965.\n\
               octave_idx_type nel = m.numel ();
 
               for (octave_idx_type i = 0; i < nel; i++)
-                ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                octave::math::ellipj (u, pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-              if (nargout > 3)
-                retval(3) = err;
-              retval(2) = dn;
-              retval(1) = cn;
-              retval(0) = sn;
+              return ovl (sn, cn, dn, err);
             }
         }
       else
@@ -259,17 +186,11 @@ and 16.15), Dover, 1965.\n\
           if (u_arg.is_real_type ())
             {
               // u is real array, m is array
-              NDArray u = u_arg.array_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("first");
-                  return retval;
-                }
+              NDArray u = u_arg.xarray_value ("ellipj: U must be a scalar or matrix");
 
               dim_vector sz_u = u.dims ();
 
-              if (sz_u.length () == 2 && sz_m.length () == 2
+              if (sz_u.ndims () == 2 && sz_m.ndims () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
                 {
                   // u is real column vector, m is row vector
@@ -285,14 +206,9 @@ and 16.15), Dover, 1965.\n\
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
-                              err(i,j));
+                      octave::math::ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  return ovl (sn, cn, dn, err);
                 }
               else if (sz_m == sz_u)
                 {
@@ -308,13 +224,9 @@ and 16.15), Dover, 1965.\n\
                   octave_idx_type nel = m.numel ();
 
                   for (octave_idx_type i = 0; i < nel; i++)
-                    ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                    octave::math::ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  return ovl (sn, cn, dn, err);
                 }
               else
                 error ("ellipj: Invalid size combination for U and M");
@@ -322,17 +234,11 @@ and 16.15), Dover, 1965.\n\
           else
             {
               // u is complex array, m is array
-              ComplexNDArray u = u_arg.complex_array_value ();
-
-              if (error_state)
-                {
-                  gripe_ellipj_arg ("second");
-                  return retval;
-                }
+              ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: U must be a scalar or matrix");
 
               dim_vector sz_u = u.dims ();
 
-              if (sz_u.length () == 2 && sz_m.length () == 2
+              if (sz_u.ndims () == 2 && sz_m.ndims () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
                 {
                   // u is complex column vector, m is row vector
@@ -348,14 +254,9 @@ and 16.15), Dover, 1965.\n\
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
-                              err(i,j));
+                      octave::math::ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  return ovl (sn, cn, dn, err);
                 }
               else if (sz_m == sz_u)
                 {
@@ -371,13 +272,9 @@ and 16.15), Dover, 1965.\n\
                   octave_idx_type nel = m.numel ();
 
                   for (octave_idx_type i = 0; i < nel; i++)
-                    ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
+                    octave::math::ellipj (pu[i], pm[i], psn[i], pcn[i], pdn[i], perr[i]);
 
-                  if (nargout > 3)
-                    retval(3) = err;
-                  retval(2) = dn;
-                  retval(1) = cn;
-                  retval(0) = sn;
+                  return ovl (sn, cn, dn, err);
                 }
               else
                 error ("ellipj: Invalid size combination for U and M");
@@ -385,7 +282,7 @@ and 16.15), Dover, 1965.\n\
         }
     }  // m matrix
 
-  return retval;
+  return ovl ();
 }
 
 /*
@@ -919,8 +816,8 @@ and 16.15), Dover, 1965.\n\
 %! assert (cn, C, 8*eps);
 %! assert (dn, D, 8*eps);
 
-%!test
-%! ## Test continuity of dn when cn is near zero (bug #43344)
+%!test <43344>
+%! ## Test continuity of dn when cn is near zero
 %! m = 0.5;
 %! u = ellipke (0.5);
 %! x = [-1e-3, -1e-12, 0, 1e-12, 1e-3];
@@ -931,18 +828,18 @@ and 16.15), Dover, 1965.\n\
 %!error ellipj ()
 %!error ellipj (1)
 %!error ellipj (1,2,3,4)
-%!warning <expecting 0 <= M <= 1> ellipj (1,2);
-## FIXME: errors commented out untill lasterr() truly returns the last error.
-%!#error <expecting scalar or matrix as second argument> ellipj (1, "1")
-%!#error <expecting scalar or matrix as first argument> ellipj ("1", 1)
-%!#error <expecting scalar or matrix as first argument> ellipj ({1}, 1)
-%!#error <expecting scalar or matrix as first argument> ellipj ({1, 2}, 1)
-%!#error <expecting scalar or matrix as second argument> ellipj (1, {1, 2})
-%!#error <expecting scalar or matrix as first argument> ellipj ("1", [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ({1}, [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ({1}, [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ("1,2", [1, 2])
-%!#error <expecting scalar or matrix as first argument> ellipj ({1, 2}, [1, 2])
+%!warning <required value 0 <= M <= 1> ellipj (1,2);
+## FIXME: errors commented out until lasterr() truly returns the last error.
+%!#error <M must be a scalar or matrix> ellipj (1, "1")
+%!#error <U must be a scalar or matrix> ellipj ("1", 1)
+%!#error <U must be a scalar or matrix> ellipj ({1}, 1)
+%!#error <U must be a scalar or matrix> ellipj ({1, 2}, 1)
+%!#error <M must be a scalar or matrix> ellipj (1, {1, 2})
+%!#error <U must be a scalar or matrix> ellipj ("1", [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ({1}, [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ({1}, [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ("1,2", [1, 2])
+%!#error <U must be a scalar or matrix> ellipj ({1, 2}, [1, 2])
 %!error <Invalid size combination for U and M> ellipj ([1:4], [1:3])
 %!error <Invalid size combination for U and M> ellipj (complex (1:4,1:4), [1:3])
 

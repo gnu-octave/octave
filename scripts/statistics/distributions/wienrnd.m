@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wienrnd (@var{t}, @var{d}, @var{n})
+## @deftypefn {} {} wienrnd (@var{t}, @var{d}, @var{n})
 ## Return a simulated realization of the @var{d}-dimensional Wiener Process
 ## on the interval [0, @var{t}].
 ##

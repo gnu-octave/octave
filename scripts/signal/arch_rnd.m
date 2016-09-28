@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} arch_rnd (@var{a}, @var{b}, @var{t})
+## @deftypefn {} {} arch_rnd (@var{a}, @var{b}, @var{t})
 ## Simulate an ARCH sequence of length @var{t} with AR coefficients @var{b} and
 ## CH coefficients @var{a}.
 ##
@@ -63,14 +63,14 @@ function y = arch_rnd (a, b, t)
   a  = reshape (a, 1, la);
   if (la == 1)
     a  = [a, 0];
-    la = la + 1;
+    la += 1;
   endif
 
   lb = length (b);
   b  = reshape (b, 1, lb);
   if (lb == 1)
     b  = [b, 0];
-    lb = lb + 1;
+    lb += 1;
   endif
   m = max ([la, lb]);
 

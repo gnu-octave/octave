@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Bill Denney
+## Copyright (C) 2008-2016 Bill Denney
 ## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} nargoutchk (@var{minargs}, @var{maxargs})
-## @deftypefnx {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs})
-## @deftypefnx {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
-## @deftypefnx {Function File} {@var{msgstruct} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
+## @deftypefn  {} {} nargoutchk (@var{minargs}, @var{maxargs})
+## @deftypefnx {} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs})
+## @deftypefnx {} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
+## @deftypefnx {} {@var{msgstruct} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
 ## Check for correct number of output arguments.
 ##
 ## In the first form, return an error if the number of arguments is not between
@@ -47,8 +47,8 @@
 function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
   ## before matlab's 2011b, nargoutchk would return an error message (just the
-  ## message in a string). With 2011b, it no longer returns anything, it simply
-  ## gives an error if the args number is incorrect.
+  ## message in a string).  With 2011b, it no longer returns anything, it
+  ## simply gives an error if the args number is incorrect.
   ## To try to keep compatibility with both versions, check nargout and nargin
   ## to guess if the caller is expecting a value (old syntax)
   ## or none (new syntax).
@@ -84,19 +84,19 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
   elseif (nargout == 0 && nargin == 2)
 
     if (! isnumeric (minargs) || ! isscalar (minargs))
-      error ("minargs must be a numeric scalar");
+      error ("nargoutchk: minargs must be a numeric scalar");
     elseif (! isnumeric (maxargs) || ! isscalar (maxargs))
-      error ("maxargs must be a numeric scalar");
+      error ("nargoutchk: maxargs must be a numeric scalar");
     elseif (minargs > maxargs)
-      error ("minargs cannot be larger than maxargs");
+      error ("nargoutchk: minargs cannot be larger than maxargs");
     endif
 
     args = evalin ("caller", "nargout;");
 
     if (args < minargs)
-      error ("Not enough output arguments.");
+      error ("nargoutchk: Not enough output arguments.");
     elseif (args > maxargs)
-      error ("Too many output arguments.");
+      error ("nargoutchk: Too many output arguments.");
     endif
 
   else

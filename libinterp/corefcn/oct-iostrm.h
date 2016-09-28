@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_iostrm_h)
+#if ! defined (octave_oct_iostrm_h)
 #define octave_oct_iostrm_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 
@@ -32,10 +34,10 @@ octave_base_iostream : public octave_base_stream
 {
 public:
 
-  octave_base_iostream (const std::string& n = std::string (),
-                        std::ios::openmode m = std::ios::in|std::ios::out,
-                        oct_mach_info::float_format ff
-                          = oct_mach_info::native_float_format ())
+  octave_base_iostream (const std::string& n = "",
+                        std::ios::openmode m = std::ios::in | std::ios::out,
+                        octave::mach_info::float_format ff
+                          = octave::mach_info::native_float_format ())
     : octave_base_stream (m, ff), nm (n) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
@@ -78,14 +80,14 @@ octave_istream : public octave_base_iostream
 {
 public:
 
-  octave_istream (std::istream *arg = 0, const std::string& n = std::string ())
+  octave_istream (std::istream *arg = 0, const std::string& n = "")
     : octave_base_iostream (n, std::ios::in,
-                            oct_mach_info::native_float_format ()),
+                            octave::mach_info::native_float_format ()),
       is (arg)
   { }
 
   static octave_stream
-  create (std::istream *arg = 0, const std::string& n = std::string ());
+  create (std::istream *arg = 0, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
 
@@ -117,14 +119,14 @@ octave_ostream : public octave_base_iostream
 {
 public:
 
-  octave_ostream (std::ostream *arg, const std::string& n = std::string ())
+  octave_ostream (std::ostream *arg, const std::string& n = "")
     : octave_base_iostream (n, std::ios::out,
-                            oct_mach_info::native_float_format ()),
+                            octave::mach_info::native_float_format ()),
       os (arg)
   { }
 
   static octave_stream
-  create (std::ostream *arg, const std::string& n = std::string ());
+  create (std::ostream *arg, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
 
@@ -152,3 +154,4 @@ private:
 };
 
 #endif
+

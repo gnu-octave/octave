@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} plot3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{prop}, @var{value}, @dots{})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{y}, @var{z}, @var{fmt})
-## @deftypefnx {Function File} {} plot3 (@var{x}, @var{cplx})
-## @deftypefnx {Function File} {} plot3 (@var{cplx})
-## @deftypefnx {Function File} {} plot3 (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} plot3 (@dots{})
+## @deftypefn  {} {} plot3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} plot3 (@var{x}, @var{y}, @var{z}, @var{prop}, @var{value}, @dots{})
+## @deftypefnx {} {} plot3 (@var{x}, @var{y}, @var{z}, @var{fmt})
+## @deftypefnx {} {} plot3 (@var{x}, @var{cplx})
+## @deftypefnx {} {} plot3 (@var{cplx})
+## @deftypefnx {} {} plot3 (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} plot3 (@dots{})
 ## Produce 3-D plots.
 ##
 ## Many different combinations of arguments are possible.  The simplest
@@ -377,14 +377,14 @@ endfunction
 %!demo
 %! clf;
 %! z = [0:0.05:5];
-%! plot3 (cos (2*pi*z), sin (2*pi*z), z)
-%! legend ('helix');
-%! title ('plot3() of a helix');
+%! plot3 (cos (2*pi*z), sin (2*pi*z), z);
+%! legend ("helix");
+%! title ("plot3() of a helix");
 
 %!demo
 %! clf;
 %! z = [0:0.05:5];
 %! plot3 (z, exp (2i*pi*z));
-%! legend ('complex sinusoid');
-%! title ('plot3() with complex input');
+%! legend ("complex sinusoid");
+%! title ("plot3() with complex input");
 

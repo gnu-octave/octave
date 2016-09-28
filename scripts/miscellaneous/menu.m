@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,20 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{choice} =} menu (@var{title}, @var{opt1}, @dots{})
-## @deftypefnx {Function File} {@var{choice} =} menu (@var{title}, @{@var{opt1}, @dots{}@})
+## @deftypefn  {} {@var{choice} =} menu (@var{title}, @var{opt1}, @dots{})
+## @deftypefnx {} {@var{choice} =} menu (@var{title}, @{@var{opt1}, @dots{}@})
 ## Display a menu with heading @var{title} and options @var{opt1}, @dots{},
 ## and wait for user input.
 ##
-## If the GUI is running, or Java is available, the menu is displayed
-## graphically using @code{listdlg}.  Otherwise, the title and menu options
-## are printed on the console.
+## If the GUI is running, the menu is displayed graphically using
+## @code{listdlg}.  Otherwise, the title and menu options are printed on the
+## console.
 ##
 ## @var{title} is a string and the options may be input as individual strings
 ## or as a cell array of strings.
 ##
 ## The return value @var{choice} is the number of the option selected by the
-## user counting from 1.
+## user counting from 1.  If the user aborts the dialog or makes an invalid
+## selection then 0 is returned.
 ##
 ## This function is useful for interactive programs.  There is no limit to the
 ## number of options that may be passed in, but it may be confusing to present
@@ -54,38 +55,41 @@ function choice = menu (title, varargin)
     error ("menu: OPTIONS must be string or cell array of strings");
   endif
 
-  if (isguirunning () || usejava ("awt"))
+  if (__octave_link_enabled__ ())  # GUI menu
     [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
                             "ListString", varargin, "SelectionMode", "Single");
     if (! ok)
-      choice = 1;
+      choice = 0;
     endif
   else  # console menu
     ## Force pending output to appear before the menu.
     fflush (stdout);
 
-    ## Don't send the menu through the pager since doing that can cause
-    ## major confusion.
-    page_screen_output (0, "local");
+    ## Don't send the menu through the pager as that can cause major confusion.
+    page_screen_output (false, "local");
 
     if (! isempty (title))
       printf ("%s\n", title);
     endif
 
+    ## Handle case where choices are given as a cell array
+    if (iscellstr (varargin{1}))
+      varargin = varargin{1};
+    endif
+
     nopt = numel (varargin);
-    while (1)
-      for i = 1:nopt
-        printf ("  [%2d] %s\n", i, varargin{i});
-      endfor
-      printf ("\n");
-      s = input ("Select a number: ", "s");
-      choice = sscanf (s, "%d");
-      if (! isscalar (choice) || choice < 1 || choice > nopt)
-        printf ("\nerror: input invalid or out of range\n\n");
-      else
-        break;
-      endif
-    endwhile
+    for i = 1:nopt
+      printf ("  [%2d] %s\n", i, varargin{i});
+    endfor
+    printf ("\n");
+
+    s = input ("Select a number: ", "s");
+    choice = sscanf (s, "%d");
+
+    if (! isscalar (choice) || choice < 1 || choice > nopt)
+      warning ("menu: input invalid or out of range\n");
+      choice = 0;
+    endif
   endif
 
 endfunction

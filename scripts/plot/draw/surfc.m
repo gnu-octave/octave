@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} surfc (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} surfc (@var{z})
-## @deftypefnx {Function File} {} surfc (@dots{}, @var{c})
-## @deftypefnx {Function File} {} surfc (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} surfc (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} surfc (@dots{})
+## @deftypefn  {} {} surfc (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} surfc (@var{z})
+## @deftypefnx {} {} surfc (@dots{}, @var{c})
+## @deftypefnx {} {} surfc (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} surfc (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} surfc (@dots{})
 ## Plot a 3-D surface mesh with underlying contour lines.
 ##
 ## The surface mesh is plotted using shaded rectangles.  The vertices of the
@@ -93,7 +93,7 @@ function h = surfc (varargin)
     if (isempty (stop_idx))
       stop_idx = nargin;
     else
-      stop_idx--;
+      stop_idx -= 1;
     endif
 
     if (stop_idx - 1 == 1 || stop_idx - 1 == 3)
@@ -121,28 +121,28 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = peaks ();
 %! surfc (Z);
-%! title ('surfc() combines surf/contour plots');
+%! title ("surfc() combines surf/contour plots");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! Z = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surfc (Z, Fx+Fy);
 %! shading interp;
-%! title ({'surfc() plot of sombrero() function'; ...
-%!         'facecolor is interpolated, color determined by gradient of Z'});
+%! title ({"surfc() plot of sombrero() function"; ...
+%!         "facecolor is interpolated, color determined by gradient of Z"});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [X,Y,Z] = sombrero ();
 %! [~,Fy] = gradient (Z);
 %! surfc (X,Y,Z,Fy);
 %! shading interp;
-%! title ({'surfc() plot of peaks() function'; ...
-%!         'facecolor is interpolated, color determined by Y-gradient of Z'});
+%! title ({"surfc() plot of peaks() function"; ...
+%!         "facecolor is interpolated, color determined by Y-gradient of Z"});
 

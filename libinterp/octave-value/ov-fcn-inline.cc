@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 
 This file is part of Octave.
 
@@ -24,8 +24,8 @@ Open Source Initiative (www.opensource.org)
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <istream>
@@ -35,9 +35,10 @@ Open Source Initiative (www.opensource.org)
 
 #include "oct-locbuf.h"
 
+#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
@@ -46,11 +47,11 @@ Open Source Initiative (www.opensource.org)
 #include "pr-output.h"
 #include "variables.h"
 #include "parse.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
@@ -70,7 +71,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
   buf << "@(";
 
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       if (i > 0)
         buf << ", ";
@@ -128,12 +129,12 @@ octave_fcn_inline::map_value (void) const
 
   string_vector args = fcn_arg_names ();
 
-  m.assign ("numArgs", args.length ());
+  m.assign ("numArgs", args.numel ());
   m.assign ("args", args);
 
   std::ostringstream buf;
 
-  for (int i = 0; i < args.length (); i++)
+  for (int i = 0; i < args.numel (); i++)
     buf << args(i) << " = INLINE_INPUTS_{" << i + 1 << "}; ";
 
   m.assign ("inputExpr", buf.str ());
@@ -144,8 +145,8 @@ octave_fcn_inline::map_value (void) const
 bool
 octave_fcn_inline::save_ascii (std::ostream& os)
 {
-  os << "# nargs: " <<  ifargs.length () << "\n";
-  for (int i = 0; i < ifargs.length (); i++)
+  os << "# nargs: " <<  ifargs.numel () << "\n";
+  for (int i = 0; i < ifargs.numel (); i++)
     os << ifargs(i) << "\n";
   if (nm.length () < 1)
     // Write an invalid value to flag empty fcn handle name.
@@ -195,9 +196,9 @@ octave_fcn_inline::load_ascii (std::istream& is)
 bool
 octave_fcn_inline::save_binary (std::ostream& os, bool&)
 {
-  int32_t tmp = ifargs.length ();
+  int32_t tmp = ifargs.numel ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       tmp = ifargs(i).length ();
       os.write (reinterpret_cast<char *> (&tmp), 4);
@@ -214,7 +215,7 @@ octave_fcn_inline::save_binary (std::ostream& os, bool&)
 
 bool
 octave_fcn_inline::load_binary (std::istream& is, bool swap,
-                                oct_mach_info::float_format)
+                                octave::mach_info::float_format)
 {
   int32_t nargs;
   if (! is.read (reinterpret_cast<char *> (&nargs), 4))
@@ -283,15 +284,16 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   hid_t group_hid = -1;
 
-#if HAVE_HDF5_18
-  group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                         octave_H5P_DEFAULT);
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
 #endif
   if (group_hid < 0) return false;
 
   size_t len = 0;
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     if (len < ifargs(i).length ())
       len = ifargs(i).length ();
 
@@ -304,7 +306,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
-  hdims[1] = ifargs.length ();
+  hdims[1] = ifargs.numel ();
   hdims[0] = len + 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);
@@ -313,12 +315,12 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "args", H5T_NATIVE_CHAR, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "args", H5T_NATIVE_CHAR, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -327,10 +329,10 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (char, s, ifargs.length () * (len + 1));
+  OCTAVE_LOCAL_BUFFER (char, s, ifargs.numel () * (len + 1));
 
   // Save the args as a null teminated list
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       const char * cptr = ifargs(i).c_str ();
       for (size_t j = 0; j < ifargs(i).length (); j++)
@@ -338,13 +340,13 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       s[ifargs(i).length ()] = '\0';
     }
 
-  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, s) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, s) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
-  if (!retval)
+  if (! retval)
     {
       H5Gclose (group_hid);
       return false;
@@ -367,14 +369,16 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Gclose (group_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+                        octave_H5P_DEFAULT);
 #endif
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-                                H5P_DEFAULT, nm.c_str ()) < 0)
+  if (data_hid < 0
+      || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, nm.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -391,15 +395,16 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "iftext",  type_hid, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
-  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-                                H5P_DEFAULT, iftext.c_str ()) < 0)
+  if (data_hid < 0
+      || H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,
+                   octave_H5P_DEFAULT, iftext.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -413,7 +418,10 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   H5Gclose (group_hid);
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -428,15 +436,15 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   hsize_t rank;
   int slen;
 
-#if HAVE_HDF5_18
-  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
   if (group_hid < 0) return false;
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "args", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "args", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "args");
 #endif
@@ -460,8 +468,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   OCTAVE_LOCAL_BUFFER (char, s1, hdims[0] * hdims[1]);
 
-  if (H5Dread (data_hid, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, s1) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_UCHAR, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, s1) < 0)
     {
       H5Dclose (data_hid);
       H5Sclose (space_hid);
@@ -475,8 +483,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   for (size_t i = 0; i < hdims[1]; i++)
     ifargs(i) = std::string (s1 + i*hdims[0]);
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nm", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "nm", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nm");
 #endif
@@ -526,7 +534,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, nm_tmp) < 0)
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, nm_tmp) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -537,8 +546,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
   nm = nm_tmp;
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "iftext", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "iftext", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "iftext");
 #endif
@@ -588,7 +597,8 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   st_id = H5Tcopy (H5T_C_S1);
   H5Tset_size (st_id, slen);
 
-  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, iftext_tmp) < 0)
+  if (H5Dread (data_hid, st_id, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, iftext_tmp) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -605,7 +615,11 @@ octave_fcn_inline::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return true;
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
   return false;
 #endif
 }
@@ -627,7 +641,7 @@ octave_fcn_inline::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   else
     buf << nm << "(";
 
-  for (int i = 0; i < ifargs.length (); i++)
+  for (int i = 0; i < ifargs.numel (); i++)
     {
       if (i)
         buf << ", ";
@@ -648,200 +662,165 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 }
 
 DEFUNX ("inline", Finline, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} inline (@var{str})\n\
-@deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\
-@deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
-Create an inline function from the character string @var{str}.\n\
-\n\
-If called with a single argument, the arguments of the generated function\n\
-are extracted from the function itself.  The generated function arguments\n\
-will then be in alphabetical order.  It should be noted that i and j are\n\
-ignored as arguments due to the ambiguity between their use as a variable or\n\
-their use as an built-in constant.  All arguments followed by a parenthesis\n\
-are considered to be functions.  If no arguments are found, a function\n\
-taking a single argument named @code{x} will be created.\n\
-\n\
-If the second and subsequent arguments are character strings, they are the\n\
-names of the arguments of the function.\n\
-\n\
-If the second argument is an integer @var{n}, the arguments are\n\
-@qcode{\"x\"}, @qcode{\"P1\"}, @dots{}, @qcode{\"P@var{N}\"}.\n\
-\n\
-Programming Note: The use of @code{inline} is discouraged and it may be\n\
-removed from a future version of Octave.  The preferred way to create\n\
-functions from strings is through the use of anonymous functions\n\
-(@pxref{Anonymous Functions}) or @code{str2func}.\n\
-@seealso{argnames, formula, vectorize, str2func}\n\
-@end deftypefn")
-{
-  octave_value retval;
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} inline (@var{str})
+@deftypefnx {} {} inline (@var{str}, @var{arg1}, @dots{})
+@deftypefnx {} {} inline (@var{str}, @var{n})
+Create an inline function from the character string @var{str}.
 
+If called with a single argument, the arguments of the generated function
+are extracted from the function itself.  The generated function arguments
+will then be in alphabetical order.  It should be noted that i and j are
+ignored as arguments due to the ambiguity between their use as a variable or
+their use as an built-in constant.  All arguments followed by a parenthesis
+are considered to be functions.  If no arguments are found, a function
+taking a single argument named @code{x} will be created.
+
+If the second and subsequent arguments are character strings, they are the
+names of the arguments of the function.
+
+If the second argument is an integer @var{n}, the arguments are
+@qcode{"x"}, @qcode{"P1"}, @dots{}, @qcode{"P@var{N}"}.
+
+Programming Note: The use of @code{inline} is discouraged and it may be
+removed from a future version of Octave.  The preferred way to create
+functions from strings is through the use of anonymous functions
+(@pxref{Anonymous Functions}) or @code{str2func}.
+@seealso{argnames, formula, vectorize, str2func}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin > 0)
+  if (nargin == 0)
+    print_usage ();
+
+  std::string fun = args(0).xstring_value ("inline: STR argument must be a string");
+
+  string_vector fargs;
+
+  if (nargin == 1)
     {
-      if (args(0).is_string ())
+      bool is_arg = false;
+      bool in_string = false;
+      std::string tmp_arg;
+      size_t i = 0;
+      size_t fun_length = fun.length ();
+
+      while (i < fun_length)
         {
-          std::string fun = args(0).string_value ();
-          string_vector fargs;
+          bool terminate_arg = false;
+          char c = fun[i++];
 
-          if (nargin == 1)
+          if (in_string)
             {
-              bool is_arg = false;
-              bool in_string = false;
-              std::string tmp_arg;
-              size_t i = 0;
-              size_t fun_length = fun.length ();
-
-              while (i < fun_length)
-                {
-                  bool terminate_arg = false;
-                  char c = fun[i++];
-
-                  if (in_string)
-                    {
-                      if (c == '\'' || c == '\"')
-                        in_string = false;
-                    }
-                  else if (c == '\'' || c == '\"')
-                    {
-                      in_string = true;
-                      if (is_arg)
-                        terminate_arg = true;
-                    }
-                  else if (! isalpha (c) && c != '_')
-                    if (! is_arg)
-                      continue;
-                    else if (isdigit (c))
-                      tmp_arg.append (1, c);
-                    else
-                      {
-                        // Before we do anything remove trailing whitespaces.
-                        while (i < fun_length && isspace (c))
-                          c = fun[i++];
-
-                        // Do we have a variable or a function?
-                        if (c != '(')
-                          terminate_arg = true;
-                        else
-                          {
-                            tmp_arg = std::string ();
-                            is_arg = false;
-                          }
-                      }
-                  else if (! is_arg)
-                    {
-                      if (c == 'e' || c == 'E')
-                        {
-                          // possible number in exponent form, not arg
-                          if (isdigit (fun[i])
-                              || fun[i] == '-' || fun[i] == '+')
-                            continue;
-                        }
-                      is_arg = true;
-                      tmp_arg.append (1, c);
-                    }
-                  else
-                    {
-                      tmp_arg.append (1, c);
-                    }
-
-                  if (terminate_arg || (i == fun_length && is_arg))
-                    {
-                      bool have_arg = false;
-
-                      for (int j = 0; j < fargs.length (); j++)
-                        if (tmp_arg == fargs (j))
-                          {
-                            have_arg = true;
-                            break;
-                          }
-
-                      if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
-                          && tmp_arg != "NaN" && tmp_arg != "nan"
-                          && tmp_arg != "Inf" && tmp_arg != "inf"
-                          && tmp_arg != "NA" && tmp_arg != "pi"
-                          && tmp_arg != "e" && tmp_arg != "eps")
-                        fargs.append (tmp_arg);
-
-                      tmp_arg = std::string ();
-                      is_arg = false;
-                    }
-                }
-
-              // Sort the arguments into ascii order.
-              fargs.sort ();
-
-              if (fargs.length () == 0)
-                fargs.append (std::string ("x"));
-
+              if (c == '\'' || c == '\"')
+                in_string = false;
             }
-          else if (nargin == 2 && args(1).is_numeric_type ())
+          else if (c == '\'' || c == '\"')
             {
-              if (! args(1).is_scalar_type ())
+              in_string = true;
+              if (is_arg)
+                terminate_arg = true;
+            }
+          else if (! isalpha (c) && c != '_')
+            if (! is_arg)
+              continue;
+            else if (isdigit (c))
+              tmp_arg.append (1, c);
+            else
+              {
+                // Before we do anything remove trailing whitespaces.
+                while (i < fun_length && isspace (c))
+                  c = fun[i++];
+
+                // Do we have a variable or a function?
+                if (c != '(')
+                  terminate_arg = true;
+                else
+                  {
+                    tmp_arg = "";
+                    is_arg = false;
+                  }
+              }
+          else if (! is_arg)
+            {
+              if (c == 'e' || c == 'E')
                 {
-                  error ("inline: N must be an integer");
-                  return retval;
+                  // possible number in exponent form, not arg
+                  if (isdigit (fun[i]) || fun[i] == '-' || fun[i] == '+')
+                    continue;
                 }
-
-              int n = args(1).int_value ();
-
-              if (! error_state)
-                {
-                  if (n >= 0)
-                    {
-                      fargs.resize (n+1);
-
-                      fargs(0) = "x";
-
-                      for (int i = 1; i < n+1; i++)
-                        {
-                          std::ostringstream buf;
-                          buf << "P" << i;
-                          fargs(i) = buf.str ();
-                        }
-                    }
-                  else
-                    {
-                      error ("inline: N must be a positive integer or zero");
-                      return retval;
-                    }
-                }
-              else
-                {
-                  error ("inline: N must be an integer");
-                  return retval;
-                }
+              is_arg = true;
+              tmp_arg.append (1, c);
             }
           else
             {
-              fargs.resize (nargin - 1);
-
-              for (int i = 1; i < nargin; i++)
-                {
-                  if (args(i).is_string ())
-                    {
-                      std::string s = args(i).string_value ();
-                      fargs(i-1) = s;
-                    }
-                  else
-                    {
-                      error ("inline: expecting string arguments");
-                      return retval;
-                    }
-                }
+              tmp_arg.append (1, c);
             }
 
-          retval = octave_value (new octave_fcn_inline (fun, fargs));
+          if (terminate_arg || (i == fun_length && is_arg))
+            {
+              bool have_arg = false;
+
+              for (int j = 0; j < fargs.numel (); j++)
+                if (tmp_arg == fargs (j))
+                  {
+                    have_arg = true;
+                    break;
+                  }
+
+              if (! have_arg && tmp_arg != "i" && tmp_arg != "j"
+                  && tmp_arg != "NaN" && tmp_arg != "nan"
+                  && tmp_arg != "Inf" && tmp_arg != "inf"
+                  && tmp_arg != "NA" && tmp_arg != "pi"
+                  && tmp_arg != "e" && tmp_arg != "eps")
+                fargs.append (tmp_arg);
+
+              tmp_arg = "";
+              is_arg = false;
+            }
         }
-      else
-        error ("inline: STR argument must be a string");
+
+      // Sort the arguments into ascii order.
+      fargs.sort ();
+
+      if (fargs.is_empty ())
+        fargs.append (std::string ("x"));
+
+    }
+  else if (nargin == 2 && args(1).is_numeric_type ())
+    {
+      if (! args(1).is_scalar_type ())
+        error ("inline: N must be an integer");
+
+      int n = args(1).int_value ("inline: N must be an integer");
+
+      if (n < 0)
+        error ("inline: N must be a positive integer or zero");
+
+      fargs.resize (n+1);
+
+      fargs(0) = "x";
+
+      for (int i = 1; i < n+1; i++)
+        {
+          std::ostringstream buf;
+          buf << "P" << i;
+          fargs(i) = buf.str ();
+        }
     }
   else
-    print_usage ();
+    {
+      fargs.resize (nargin - 1);
 
-  return retval;
+      for (int i = 1; i < nargin; i++)
+        {
+          std::string s = args(i).xstring_value ("inline: additional arguments must be strings");
+          fargs(i-1) = s;
+        }
+    }
+
+  return ovl (new octave_fcn_inline (fun, fargs));
 }
 
 /*
@@ -858,36 +837,28 @@ functions from strings is through the use of anonymous functions\n\
 %!error <STR argument must be a string> inline (1)
 %!error <N must be an integer> inline ("2", ones (2,2))
 %!error <N must be a positive integer> inline ("2", -1)
-%!error <expecting string arguments> inline ("2", "x", -1, "y")
+%!error <additional arguments must be strings> inline ("2", "x", -1, "y")
 */
 
 DEFUN (formula, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} formula (@var{fun})\n\
-Return a character string representing the inline function @var{fun}.\n\
-\n\
-Note that @code{char (@var{fun})} is equivalent to\n\
-@code{formula (@var{fun})}.\n\
-@seealso{char, argnames, inline, vectorize}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} formula (@var{fun})
+Return a character string representing the inline function @var{fun}.
+
+Note that @code{char (@var{fun})} is equivalent to
+@code{formula (@var{fun})}.
+@seealso{char, argnames, inline, vectorize}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_fcn_inline* fn = args(0).fcn_inline_value (true);
-
-      if (fn)
-        retval = octave_value (fn->fcn_text ());
-      else
-        error ("formula: FUN must be an inline function");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_fcn_inline* fn = args(0).fcn_inline_value (true);
+
+  if (! fn)
+    error ("formula: FUN must be an inline function");
+
+  return ovl (fn->fcn_text ());
 }
 
 /*
@@ -901,39 +872,29 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 */
 
 DEFUN (argnames, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} argnames (@var{fun})\n\
-Return a cell array of character strings containing the names of the\n\
-arguments of the inline function @var{fun}.\n\
-@seealso{inline, formula, vectorize}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} argnames (@var{fun})
+Return a cell array of character strings containing the names of the
+arguments of the inline function @var{fun}.
+@seealso{inline, formula, vectorize}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_fcn_inline *fn = args(0).fcn_inline_value (true);
-
-      if (fn)
-        {
-          string_vector t1 = fn->fcn_arg_names ();
-
-          Cell t2 (dim_vector (t1.length (), 1));
-
-          for (int i = 0; i < t1.length (); i++)
-            t2(i) = t1(i);
-
-          retval = t2;
-        }
-      else
-        error ("argnames: FUN must be an inline function");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_fcn_inline *fn = args(0).fcn_inline_value (true);
+
+  if (! fn)
+    error ("argnames: FUN must be an inline function");
+
+  string_vector t1 = fn->fcn_arg_names ();
+
+  Cell t2 (dim_vector (t1.numel (), 1));
+
+  for (int i = 0; i < t1.numel (); i++)
+    t2(i) = t1(i);
+
+  return ovl (t2);
 }
 
 /*
@@ -948,85 +909,73 @@ arguments of the inline function @var{fun}.\n\
 */
 
 DEFUN (vectorize, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
-Create a vectorized version of the inline function @var{fun} by replacing\n\
-all occurrences of @code{*}, @code{/}, etc., with @code{.*}, @code{./}, etc.\n\
-\n\
-This may be useful, for example, when using inline functions with numerical\n\
-integration or optimization where a vector-valued function is expected.\n\
-\n\
-@example\n\
-@group\n\
-fcn = vectorize (inline (\"x^2 - 1\"))\n\
-   @result{} fcn = f(x) = x.^2 - 1\n\
-quadv (fcn, 0, 3)\n\
-   @result{} 6\n\
-@end group\n\
-@end example\n\
-@seealso{inline, formula, argnames}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} vectorize (@var{fun})
+Create a vectorized version of the inline function @var{fun} by replacing
+all occurrences of @code{*}, @code{/}, etc., with @code{.*}, @code{./}, etc.
+
+This may be useful, for example, when using inline functions with numerical
+integration or optimization where a vector-valued function is expected.
+
+@example
+@group
+fcn = vectorize (inline ("x^2 - 1"))
+   @result{} fcn = f(x) = x.^2 - 1
+quadv (fcn, 0, 3)
+   @result{} 6
+@end group
+@end example
+@seealso{inline, formula, argnames}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string old_func;
-      octave_fcn_inline* old = 0;
-      bool func_is_string = true;
-
-      if (args(0).is_string ())
-        old_func = args(0).string_value ();
-      else
-        {
-          old = args(0).fcn_inline_value (true);
-          func_is_string = false;
-
-          if (old)
-            old_func = old->fcn_text ();
-          else
-            error ("vectorize: FUN must be a string or inline function");
-        }
-
-      if (! error_state)
-        {
-          std::string new_func;
-          size_t i = 0;
-
-          while (i < old_func.length ())
-            {
-              std::string t1 = old_func.substr (i, 1);
-
-              if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
-                {
-                  if (i && old_func.substr (i-1, 1) != ".")
-                    new_func.append (".");
-
-                  // Special case for ** operator.
-                  if (t1 == "*" && i < (old_func.length () - 1)
-                      && old_func.substr (i+1, 1) == "*")
-                    {
-                      new_func.append ("*");
-                      i++;
-                    }
-                }
-              new_func.append (t1);
-              i++;
-            }
-
-          if (func_is_string)
-            retval = octave_value (new_func);
-          else
-            retval = octave_value (new octave_fcn_inline
-                                   (new_func, old->fcn_arg_names ()));
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string old_func;
+  octave_fcn_inline* old = 0;
+  bool func_is_string = true;
+
+  if (args(0).is_string ())
+    old_func = args(0).string_value ();
+  else
+    {
+      old = args(0).fcn_inline_value (true);
+      func_is_string = false;
+
+      if (old)
+        old_func = old->fcn_text ();
+      else
+        error ("vectorize: FUN must be a string or inline function");
+    }
+
+  std::string new_func;
+  size_t i = 0;
+
+  while (i < old_func.length ())
+    {
+      std::string t1 = old_func.substr (i, 1);
+
+      if (t1 == "*" || t1 == "/" || t1 == "\\" || t1 == "^")
+        {
+          if (i && old_func.substr (i-1, 1) != ".")
+            new_func.append (".");
+
+          // Special case for ** operator.
+          if (t1 == "*" && i < (old_func.length () - 1)
+              && old_func.substr (i+1, 1) == "*")
+            {
+              new_func.append ("*");
+              i++;
+            }
+        }
+      new_func.append (t1);
+      i++;
+    }
+
+  if (func_is_string)
+    return ovl (new_func);
+  else
+    return ovl (new octave_fcn_inline (new_func, old->fcn_arg_names ()));
 }
 
 /*
@@ -1042,3 +991,4 @@ quadv (fcn, 0, 3)\n\
 %!error vectorize (1, 2)
 %!error <FUN must be a string or inline function> vectorize (1)
 */
+

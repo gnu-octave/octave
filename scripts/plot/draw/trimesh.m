@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} trimesh (@var{tri}, @var{x}, @var{y})
-## @deftypefnx {Function File} {} trimesh (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} trimesh (@dots{})
+## @deftypefn  {} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} trimesh (@var{tri}, @var{x}, @var{y})
+## @deftypefnx {} {} trimesh (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} trimesh (@dots{})
 ## Plot a 3-D triangular wireframe mesh.
 ##
 ## In contrast to @code{mesh}, which plots a mesh using rectangles,
@@ -82,9 +82,10 @@ function h = trimesh (tri, x, y, z, varargin)
     ## Tag object as "trimesh" so that hidden() can find it.
     htmp = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
                   "FaceVertexCdata", c, "EdgeColor", "flat", "FaceColor", "w",
+                  "FaceLighting", "none", "EdgeLighting", "flat",
                   "Tag", "trimesh", varargin{:});
     if (! ishold ())
-      set (hax, "view", [-37.5, 30], "box", "off",
+      set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   endif
@@ -98,10 +99,10 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
-%! old_state = rand ('state');
-%! restore_state = onCleanup (@() rand ('state', old_state));
-%! rand ('state', 10);
+%! colormap ("default");
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 10);
 %! N = 10;
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{beta}, @var{sigma}, @var{r}] =} ols (@var{y}, @var{x})
+## @deftypefn {} {[@var{beta}, @var{sigma}, @var{r}] =} ols (@var{y}, @var{x})
 ## Ordinary least squares estimation.
 ##
 ## OLS applies to the multivariate model
@@ -41,7 +41,8 @@
 ## @math{t} by @math{p} matrix.
 ## @end ifnottex
 ##
-## Each row of @var{y} and @var{x} is an observation and each column a variable.
+## Each row of @var{y} and @var{x} is an observation and each column a
+## variable.
 ##
 ## The return values @var{beta}, @var{sigma}, and @var{r} are defined as
 ## follows.
@@ -140,7 +141,7 @@ endfunction
 %! x = [1:5]';
 %! y = 3*x + 2;
 %! x = [x, ones(5,1)];
-%! assert (ols (y,x), [3; 2], 50*eps)
+%! assert (ols (y,x), [3; 2], 50*eps);
 
 %!test
 %! x = [1, 2; 3, 4];

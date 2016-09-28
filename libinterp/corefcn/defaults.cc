@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cstdlib>
@@ -29,9 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <iostream>
 #include <string>
-
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "dir-ops.h"
 #include "oct-env.h"
@@ -43,14 +40,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "help.h"
 #include "input.h"
 #include "load-path.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "parse.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "variables.h"
 #include <version.h>
@@ -108,15 +105,15 @@ subst_octave_home (const std::string& s)
 
   if (Voctave_home != prefix)
     {
-      octave_idx_type len = prefix.length ();
+      size_t len = prefix.length ();
 
       if (s.substr (0, len) == prefix)
         retval.replace (0, len, Voctave_home);
     }
 
-  if (file_ops::dir_sep_char () != '/')
+  if (octave::sys::file_ops::dir_sep_char () != '/')
     std::replace (retval.begin (), retval.end (), '/',
-                  file_ops::dir_sep_char ());
+                  octave::sys::file_ops::dir_sep_char ());
 
   return retval;
 }
@@ -124,7 +121,7 @@ subst_octave_home (const std::string& s)
 static void
 set_octave_home (void)
 {
-  std::string oh = octave_env::getenv ("OCTAVE_HOME");
+  std::string oh = octave::sys::env::getenv ("OCTAVE_HOME");
 
   Voctave_home = oh.empty () ? std::string (OCTAVE_PREFIX) : oh;
 }
@@ -255,13 +252,13 @@ set_exec_path (const std::string& path_arg)
   std::string tpath = path_arg;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_EXEC_PATH");
+    tpath = octave::sys::env::getenv ("OCTAVE_EXEC_PATH");
 
   if (tpath.empty ())
-    tpath = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
-            + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
-            + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
-            + Varch_lib_dir + dir_path::path_sep_str ()
+    tpath = Vlocal_ver_arch_lib_dir + octave::directory_path::path_sep_str ()
+            + Vlocal_api_arch_lib_dir + octave::directory_path::path_sep_str ()
+            + Vlocal_arch_lib_dir + octave::directory_path::path_sep_str ()
+            + Varch_lib_dir + octave::directory_path::path_sep_str ()
             + Vbin_dir;
 
   VEXEC_PATH = tpath;
@@ -280,12 +277,12 @@ set_exec_path (const std::string& path_arg)
   // This is static so that even if set_exec_path is called more than
   // once, shell_path is the original PATH from the environment,
   // before we start modifying it.
-  static std::string shell_path = octave_env::getenv ("PATH");
+  static std::string shell_path = octave::sys::env::getenv ("PATH");
 
   if (! shell_path.empty ())
-    tpath = shell_path + dir_path::path_sep_str () + tpath;
+    tpath = shell_path + octave::directory_path::path_sep_str () + tpath;
 
-  octave_env::putenv ("PATH", tpath);
+  octave::sys::env::putenv ("PATH", tpath);
 }
 
 void
@@ -296,15 +293,15 @@ set_image_path (const std::string& path)
   std::string tpath = path;
 
   if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_IMAGE_PATH");
+    tpath = octave::sys::env::getenv ("OCTAVE_IMAGE_PATH");
 
   if (! tpath.empty ())
-    VIMAGE_PATH += dir_path::path_sep_str () + tpath;
+    VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
 
   tpath = genpath (Vimage_dir, "");
 
   if (! tpath.empty ())
-    VIMAGE_PATH += dir_path::path_sep_str () + tpath;
+    VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
 }
 
 static void
@@ -314,7 +311,7 @@ set_default_doc_cache_file (void)
     {
       std::string def_file = subst_octave_home (OCTAVE_DOC_CACHE_FILE);
 
-      std::string env_file = octave_env::getenv ("OCTAVE_DOC_CACHE_FILE");
+      std::string env_file = octave::sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
       Vdoc_cache_file = env_file.empty () ? def_file : env_file;
     }
@@ -327,7 +324,7 @@ set_default_texi_macros_file (void)
     {
       std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
 
-      std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+      std::string env_file = octave::sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 
       Vtexi_macros_file = env_file.empty () ? def_file : env_file;
     }
@@ -340,7 +337,7 @@ set_default_info_file (void)
     {
       std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
 
-      std::string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
+      std::string oct_info_file = octave::sys::env::getenv ("OCTAVE_INFO_FILE");
 
       Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
     }
@@ -351,7 +348,7 @@ set_default_info_prog (void)
 {
   if (Vinfo_program.empty ())
     {
-      std::string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
+      std::string oct_info_prog = octave::sys::env::getenv ("OCTAVE_INFO_PROGRAM");
 
       if (oct_info_prog.empty ())
         Vinfo_program = "info";
@@ -365,7 +362,7 @@ set_default_editor (void)
 {
   VEDITOR = "emacs";
 
-  std::string env_editor = octave_env::getenv ("EDITOR");
+  std::string env_editor = octave::sys::env::getenv ("EDITOR");
 
   if (! env_editor.empty ())
     VEDITOR = env_editor;
@@ -374,7 +371,7 @@ set_default_editor (void)
 static void
 set_local_site_defaults_file (void)
 {
-  std::string lsf = octave_env::getenv ("OCTAVE_SITE_INITFILE");
+  std::string lsf = octave::sys::env::getenv ("OCTAVE_SITE_INITFILE");
 
   if (lsf.empty ())
     {
@@ -389,7 +386,7 @@ set_local_site_defaults_file (void)
 static void
 set_site_defaults_file (void)
 {
-  std::string sf = octave_env::getenv ("OCTAVE_VERSION_INITFILE");
+  std::string sf = octave::sys::env::getenv ("OCTAVE_VERSION_INITFILE");
 
   if (sf.empty ())
     {
@@ -405,11 +402,11 @@ set_built_in_docstrings_file (void)
 {
   if (Vbuilt_in_docstrings_file.empty ())
     {
-      std::string df = octave_env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
+      std::string df = octave::sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
 
       if (df.empty ())
         Vbuilt_in_docstrings_file
-          = Voct_etc_dir + file_ops::dir_sep_str () + "built-in-docstrings";
+          = Voct_etc_dir + octave::sys::file_ops::dir_sep_str () + "built-in-docstrings";
       else
         Vbuilt_in_docstrings_file = df;
     }
@@ -475,22 +472,22 @@ install_defaults (void)
 }
 
 DEFUN (EDITOR, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the default text editor.\n\
-\n\
-The default value is taken from the environment variable @w{@env{EDITOR}}\n\
-when Octave starts.  If the environment variable is not initialized,\n\
-@w{@env{EDITOR}} will be set to @qcode{\"emacs\"}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-@seealso{edit, edit_history}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} EDITOR ()
+@deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val})
+@deftypefnx {} {} EDITOR (@var{new_val}, "local")
+Query or set the internal variable that specifies the default text editor.
+
+The default value is taken from the environment variable @w{@env{EDITOR}}
+when Octave starts.  If the environment variable is not initialized,
+@w{@env{EDITOR}} will be set to @qcode{"emacs"}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{edit, edit_history}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
 }
@@ -508,24 +505,24 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (EXEC_PATH, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies a colon separated\n\
-list of directories to append to the shell PATH when executing external\n\
-programs.\n\
-\n\
-The initial value of is taken from the environment variable\n\
-@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by the command\n\
-line argument @option{--exec-path PATH}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-@seealso{IMAGE_PATH, OCTAVE_HOME}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} EXEC_PATH ()
+@deftypefnx {} {@var{old_val} =} EXEC_PATH (@var{new_val})
+@deftypefnx {} {} EXEC_PATH (@var{new_val}, "local")
+Query or set the internal variable that specifies a colon separated
+list of directories to append to the shell PATH when executing external
+programs.
+
+The initial value of is taken from the environment variable
+@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by the command
+line argument @option{--exec-path PATH}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{IMAGE_PATH, OCTAVE_HOME}
+@end deftypefn */)
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
 
@@ -548,19 +545,19 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (IMAGE_PATH, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies a colon separated\n\
-list of directories in which to search for image files.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-\n\
-@seealso{EXEC_PATH, OCTAVE_HOME}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} IMAGE_PATH ()
+@deftypefnx {} {@var{old_val} =} IMAGE_PATH (@var{new_val})
+@deftypefnx {} {} IMAGE_PATH (@var{new_val}, "local")
+Query or set the internal variable that specifies a colon separated
+list of directories in which to search for image files.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+
+@seealso{EXEC_PATH, OCTAVE_HOME}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
 }
@@ -578,20 +575,16 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (OCTAVE_HOME, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
-Return the name of the top-level Octave installation directory.\n\
-@seealso{EXEC_PATH, IMAGE_PATH}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} OCTAVE_HOME ()
+Return the name of the top-level Octave installation directory.
+@seealso{EXEC_PATH, IMAGE_PATH}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 0)
-    retval = Voctave_home;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return ovl (Voctave_home);
 }
 
 /*
@@ -600,25 +593,20 @@ Return the name of the top-level Octave installation directory.\n\
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
-Return the version number of Octave as a string.\n\
-@seealso{ver, version}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} OCTAVE_VERSION ()
+Return the version number of Octave as a string.
+@seealso{ver, version}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    retval = OCTAVE_VERSION;
-  else
+  if (args.length () != 0)
     print_usage ();
 
-  return retval;
+  return ovl (OCTAVE_VERSION);
 }
 
 /*
 %!assert (ischar (OCTAVE_VERSION ()))
 %!error OCTAVE_VERSION (1)
 */
+

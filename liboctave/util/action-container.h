@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_action_container_h)
+#if ! defined (octave_action_container_h)
 #define octave_action_container_h 1
+
+#include "octave-config.h"
 
 // This class allows registering actions in a list for later
 // execution, either explicitly or when the container goes out of
@@ -35,7 +37,7 @@ action_container
 {
 public:
 
-  // A generic unwind_protect element. Knows how to run itself and
+  // A generic unwind_protect element.  Knows how to run itself and
   // discard itself.  Also, contains a pointer to the next element.
   class elem
   {
@@ -74,7 +76,7 @@ public:
   // An element that stores a variable of type T along with a void (*) (T)
   // function pointer, and calls the function with the parameter.
 
-  template <class T>
+  template <typename T>
   class fcn_arg_elem : public elem
   {
   public:
@@ -99,7 +101,7 @@ public:
   // void (*) (const T&) function pointer, and calls the function with
   // the parameter.
 
-  template <class T>
+  template <typename T>
   class fcn_crefarg_elem : public elem
   {
   public:
@@ -115,7 +117,7 @@ public:
 
   // An element for calling a member function.
 
-  template <class T>
+  template <typename T>
   class method_elem : public elem
   {
   public:
@@ -138,7 +140,7 @@ public:
 
   // An element for calling a member function with a single argument
 
-  template <class T, class A>
+  template <typename T, typename A>
   class method_arg_elem : public elem
   {
   public:
@@ -162,7 +164,7 @@ public:
 
   // An element for calling a member function with a single argument
 
-  template <class T, class A>
+  template <typename T, typename A>
   class method_crefarg_elem : public elem
   {
   public:
@@ -186,7 +188,7 @@ public:
 
   // An element that stores arbitrary variable, and restores it.
 
-  template <class T>
+  template <typename T>
   class restore_var_elem : public elem
   {
   public:
@@ -208,7 +210,7 @@ public:
 
   // Deletes a class allocated using new.
 
-  template <class T>
+  template <typename T>
   class delete_ptr_elem : public elem
   {
   public:
@@ -241,35 +243,35 @@ public:
   }
 
   // Call to void func (T).
-  template <class T>
+  template <typename T>
   void add_fcn (void (*action) (T), T val)
   {
     add (new fcn_arg_elem<T> (action, val));
   }
 
   // Call to void func (const T&).
-  template <class T>
+  template <typename T>
   void add_fcn (void (*action) (const T&), const T& val)
   {
     add (new fcn_crefarg_elem<T> (action, val));
   }
 
   // Call to T::method (void).
-  template <class T>
+  template <typename T>
   void add_method (T *obj, void (T::*method) (void))
   {
     add (new method_elem<T> (obj, method));
   }
 
   // Call to T::method (A).
-  template <class T, class A>
+  template <typename T, typename A>
   void add_method (T *obj, void (T::*method) (A), A arg)
   {
     add (new method_arg_elem<T, A> (obj, method, arg));
   }
 
   // Call to T::method (const A&).
-  template <class T, class A>
+  template <typename T, typename A>
   void add_method (T *obj, void (T::*method) (const A&), const A& arg)
   {
     add (new method_crefarg_elem<T, A> (obj, method, arg));
@@ -277,21 +279,21 @@ public:
 
   // Call to delete (T*).
 
-  template <class T>
+  template <typename T>
   void add_delete (T *obj)
   {
     add (new delete_ptr_elem<T> (obj));
   }
 
   // Protect any variable.
-  template <class T>
+  template <typename T>
   void protect_var (T& var)
   {
     add (new restore_var_elem<T> (var, var));
   }
 
   // Protect any variable, value given.
-  template <class T>
+  template <typename T>
   void protect_var (T& var, const T& val)
   {
     add (new restore_var_elem<T> (var, val));
@@ -339,3 +341,4 @@ private:
 };
 
 #endif
+

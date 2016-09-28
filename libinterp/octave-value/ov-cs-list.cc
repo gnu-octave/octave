@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ov-cs-list.h"
 #include "unwind-prot.h"
 
@@ -40,22 +40,19 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list", "cs-list");
 
 octave_cs_list::octave_cs_list (const Cell& c)
   : octave_base_value (), lst (c)
-{
-}
+{ }
 
 octave_value
 octave_cs_list::subsref (const std::string&,
                          const std::list<octave_value_list>&)
 {
-  gripe_indexed_cs_list ();
-  return octave_value ();
+  err_indexed_cs_list ();
 }
 
 octave_value_list
 octave_cs_list::subsref (const std::string&,
                          const std::list<octave_value_list>&, int)
 {
-  gripe_indexed_cs_list ();
-  return octave_value_list ();
+  err_indexed_cs_list ();
 }
 

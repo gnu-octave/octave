@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Ben Abbott
+## Copyright (C) 2010-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{has_terminal} =} __gnuplot_has_terminal__ (@var{terminal})
+## @deftypefn {} {@var{has_terminal} =} __gnuplot_has_terminal__ (@var{terminal})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -29,34 +29,19 @@ function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
   term = strtrim (term);
   term = lower (strtok (term, " "));
 
-  if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
-    if (nargin < 2)
-      plot_stream = __gnuplot_open_stream__ (2);
+  if (nargin < 2)
+    plot_stream = __gnuplot_open_stream__ (2);
+  endif
+  available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
+  available_terminals = regexp (available_terminals, '\w+', "match");
+  if (nargin < 2 && ! isempty (plot_stream))
+    pclose (plot_stream(1));
+    if (numel (plot_stream) > 1)
+      pclose (plot_stream(2));
     endif
-    available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
-    available_terminals = regexp (available_terminals, '\w+', "match");
-    if (nargin < 2 && ! isempty (plot_stream))
-      pclose (plot_stream(1));
-      if (numel (plot_stream) > 1)
-        pclose (plot_stream(2));
-      endif
-      if (numel (plot_stream) > 2)
-        waitpid (plot_stream(3));
-      endif
+    if (numel (plot_stream) > 2)
+      waitpid (plot_stream(3));
     endif
-  else
-    ## Gnuplot 4.0 terminals. No new terminals were added until 4.4 which
-    ## allows the list of terminals to be obtained from GPVAL_TERMINALS.
-    available_terminals = {"aifm", "aqua", "canvas", "cgm", "corel", ...
-                           "dumb", "dxf", "eepic", "emf", "epslatex", ...
-                           "epson_180dpi", "fig", "gif", "gnugraph", ...
-                           "gpic", "hp2623A", "hp2648", "hp500c", ...
-                           "hpgl", "hpljii", "hppj", "imagen", "jpeg", ...
-                           "latex", "mf", "mif", "mp", "pbm", "pdf", ...
-                           "pm", "png", "postscript", "pslatex", ...
-                           "pstex", "pstricks", "qms", "regis", "rgip", ...
-                           "svg", "texdraw", "tgif", "tkcanvas", ...
-                           "tpic", "windows", "x11", "xlib", "xterm"};
   endif
 
   gnuplot_supports_term = any (strcmp (term, available_terminals));

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_hist_h)
+#if ! defined (octave_oct_hist_h)
 #define octave_oct_hist_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -36,3 +38,4 @@ extern void octave_history_write_timestamp (void);
 extern bool input_from_tmp_history_file;
 
 #endif
+

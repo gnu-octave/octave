@@ -1,26 +1,24 @@
-## Copyright (C) 2013-2015 Michael D. Godfrey
+## Copyright (C) 2013-2016 Michael D. Godfrey
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public
-## License as published by the Free Software Foundation;
-## either version 3 of the License, or (at your option) any
-## later version.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied
-## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-## PURPOSE. See the GNU General Public License for more
-## details.
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public
-## License along with Octave; see the file COPYING. If not,
-## see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} printd (@var{obj}, @var{filename})
-## @deftypefnx {Function File} {@var{out_file} =} printd (@dots{})
+## @deftypefn  {} {} printd (@var{obj}, @var{filename})
+## @deftypefnx {} {@var{out_file} =} printd (@dots{})
 ##
 ## Convert any object acceptable to @code{disp} into the format selected by
 ## the suffix of @var{filename}.
@@ -43,7 +41,7 @@ function pr_out = printd (obj, filename)
 
   ## Extract .suffix from filename
   if ((sufix = rindex (filename, ".")) <= 0)
-    error ("The output filename: %s requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
+    error ("printd: output filename '%s' requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
   endif
   opt = substr (filename, sufix+1);
   [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);
@@ -76,27 +74,28 @@ function pr_out = printd (obj, filename)
     otherwise
       fclose (pf);
       delete (tempf);
-      error ("Unknown conversion type: %s.\nOptions are: pdf ps eps txt jpg jpeg", opt);
+      error ("printd: unknown conversion type: %s.\nOptions are: pdf ps eps txt jpg jpeg", opt);
 
   endswitch
   fclose (pf);
   delete (tempf);
   pr_out = sprintf ("%s file %s written\n", opt, filename);
+
 endfunction
 
 
 %!demo
 %! r2 = char ( ...
-%! 'stem step: 10, data: unsorted.', ...
-%! 'Hinges:    lo: 12, hi: 42'     , ...
-%! '   1 | 22118'                  , ...
-%! '   2 | 28'                     , ...
-%! '   3 | 98'                     , ...
-%! '   4 | 244'                    , ...
-%! '   5 | 2'                      );
-%! printd (r2, 'test_p.txt');
-%! system ('cat test_p.txt');
-%! delete ('test_p.txt');
+%! "stem step: 10, data: unsorted.", ...
+%! "Hinges:    lo: 12, hi: 42"     , ...
+%! "   1 | 22118"                  , ...
+%! "   2 | 28"                     , ...
+%! "   3 | 98"                     , ...
+%! "   4 | 244"                    , ...
+%! "   5 | 2"                      );
+%! printd (r2, "test_p.txt");
+%! system ("cat test_p.txt");
+%! delete ("test_p.txt");
 
 %!test
 %! r2 = char (

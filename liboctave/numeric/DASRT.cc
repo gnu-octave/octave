@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -53,15 +53,15 @@ typedef octave_idx_type (*dasrt_constr_ptr) (const octave_idx_type&,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddasrt, DDASRT) (dasrt_fcn_ptr, const octave_idx_type&,
-                             double&, double*, double*, const double&,
-                             octave_idx_type*, const double*,
-                             const double*, octave_idx_type&, double*,
-                             const octave_idx_type&, octave_idx_type*,
-                             const octave_idx_type&, double*,
-                             octave_idx_type*, dasrt_jac_ptr,
-                             dasrt_constr_ptr, const octave_idx_type&,
-                             octave_idx_type*);
+  F77_FUNC (ddasrt, DDASRT) (dasrt_fcn_ptr, const F77_INT&,
+                             F77_DBLE&, F77_DBLE*, F77_DBLE*, const F77_DBLE&,
+                             F77_INT*, const F77_DBLE*,
+                             const F77_DBLE*, F77_INT&, F77_DBLE*,
+                             const F77_INT&, F77_INT*,
+                             const F77_INT&, F77_DBLE*,
+                             F77_INT*, dasrt_jac_ptr,
+                             dasrt_constr_ptr, const F77_INT&,
+                             F77_INT*);
 }
 
 static DAEFunc::DAERHSFunc user_fsub;
@@ -87,7 +87,7 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 
   ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, ires);
 
-  if (tmp_fval.length () == 0)
+  if (tmp_fval.is_empty ())
     ires = -2;
   else
     {
@@ -153,8 +153,6 @@ ddasrt_g (const octave_idx_type& neq, const double& t, const double *state,
 void
 DASRT::integrate (double tout)
 {
-  DASRT_result retval;
-
   // I suppose this is the safe thing to do.  If this is the first
   // call, or if anything about the problem has changed, we should
   // start completely fresh.
@@ -182,7 +180,7 @@ DASRT::integrate (double tout)
       if (user_csub)
         {
           ColumnVector tmp = (*user_csub) (x, t);
-          ng = tmp.length ();
+          ng = tmp.numel ();
         }
       else
         ng = 0;
@@ -233,7 +231,7 @@ DASRT::integrate (double tout)
 
           ColumnVector fval = (*user_fsub) (x, xdot, t, ires);
 
-          if (fval.length () != x.length ())
+          if (fval.numel () != x.numel ())
             {
               (*current_liboctave_error_handler)
                 ("dasrt: inconsistent sizes for state and residual vectors");
@@ -290,8 +288,8 @@ DASRT::integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      octave_idx_type abs_tol_len = abs_tol.length ();
-      octave_idx_type rel_tol_len = rel_tol.length ();
+      octave_idx_type abs_tol_len = abs_tol.numel ();
+      octave_idx_type rel_tol_len = rel_tol.numel ();
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -337,7 +335,7 @@ DASRT::integrate (double tout)
   switch (istate)
     {
     case 1: // A step was successfully taken in intermediate-output
-            // mode. The code has not yet reached TOUT.
+            // mode.  The code has not yet reached TOUT.
     case 2: // The integration to TOUT was successfully completed
             // (T=TOUT) by stepping exactly to TOUT.
     case 3: // The integration to TOUT was successfully completed
@@ -369,8 +367,8 @@ DASRT::integrate (double tout)
               // returned to the calling program.
     case -12: // DASSL failed to compute the initial YPRIME.
     case -33: // The code has encountered trouble from which it cannot
-              // recover. A message is printed explaining the trouble
-              // and control is returned to the calling program. For
+              // recover.  A message is printed explaining the trouble
+              // and control is returned to the calling program.  For
               // example, this occurs when invalid input is detected.
       integration_error = true;
       break;
@@ -393,7 +391,7 @@ DASRT::integrate (const ColumnVector& tout)
   Matrix xdot_out;
   ColumnVector t_out = tout;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -452,7 +450,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   Matrix xdot_out;
   ColumnVector t_outs = tout;
 
-  octave_idx_type n_out = tout.capacity ();
+  octave_idx_type n_out = tout.numel ();
   octave_idx_type n = size ();
 
   if (n_out > 0 && n > 0)
@@ -460,7 +458,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
       x_out.resize (n_out, n);
       xdot_out.resize (n_out, n);
 
-      octave_idx_type n_crit = tcrit.capacity ();
+      octave_idx_type n_crit = tcrit.numel ();
 
       if (n_crit > 0)
         {
@@ -649,3 +647,4 @@ DASRT::error_message (void) const
 
   return retval;
 }
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Nathan Podlich
+## Copyright (C) 2014-2016 Nathan Podlich
 ##
 ## This file is part of Octave.
 ##
@@ -16,9 +16,9 @@
 ## along with Octave; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} qmr (@var{A}, @var{b}, @dots{})
+## @deftypefn  {} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
+## @deftypefnx {} {@var{x} =} qmr (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} qmr (@var{A}, @var{b}, @dots{})
 ## Solve @code{A x = b} using the Quasi-Minimal Residual iterative method
 ## (without look-ahead).
 ##
@@ -101,7 +101,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       Ax  = @(x) A  * x;
       Atx = @(x) A' * x;
     else
-      error ("qmr: A must be a function or square matrix");
+      error ("qmr: A must be a square matrix or function");
     endif
 
     if (nargin < 3 || isempty (tol))
@@ -177,9 +177,9 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     for iter=1:1:maxit
       ## If rho0 == 0 or xi1 == 0, method fails.
       v = vt / rho0;
-      y = y / rho0;
+      y /= rho0;
       w = wt / xi1;
-      z = z / xi1;
+      z /= xi1;
 
       delta1 = z' * y;   # If delta1 == 0, method fails.
 
@@ -222,7 +222,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       res1 = norm (r) / bnorm;
       if (nargout > 4)
         resvec(iter + 1, 1) = norm (r);
-      end
+      endif
 
       if (res1 < tol)
         ## Convergence achieved.
@@ -263,6 +263,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
   else
     print usage();
   endif
+
 endfunction
 
 

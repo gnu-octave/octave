@@ -1,8 +1,8 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
-Copyright (C) 2011-2015 John P. Swensen
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
+Copyright (C) 2011-2016 John P. Swensen
 
 This file is part of Octave.
 
@@ -22,16 +22,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "cmd-edit.h"
 #include "defun.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
+#include "pager.h"
 #include "singleton-cleanup.h"
-#include "toplev.h"
+#include "interpreter.h"
 
 #include "octave-link.h"
 
@@ -52,7 +53,12 @@ octave_link::octave_link (void)
   : event_queue_mutex (new octave_mutex ()), gui_event_queue (),
     debugging (false), link_enabled (true)
 {
-  command_editor::add_event_hook (octave_readline_hook);
+  octave::command_editor::add_event_hook (octave_readline_hook);
+}
+
+octave_link::~octave_link (void)
+{
+  delete event_queue_mutex;
 }
 
 void
@@ -73,15 +79,14 @@ void
 octave_link::connect_link (octave_link* obj)
 {
   if (obj && instance)
-    ::error ("octave_link is already linked!");
-  else
-    instance = obj;
+    error ("octave_link is already linked!");
+
+  instance = obj;
 }
 
 void
 octave_link::do_generate_events (void)
-{
-}
+{ }
 
 void
 octave_link::do_process_events (void)
@@ -104,349 +109,290 @@ octave_link::do_discard_events (void)
 }
 
 DEFUN (__octave_link_enabled__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_enabled__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_enabled__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  return octave_value (octave_link::enabled ());
+  return ovl (octave_link::enabled ());
 }
 
 DEFUN (__octave_link_edit_file__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_edit_file__ (@var{file})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_edit_file__ (@var{file})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
   if (args.length () == 1)
     {
-      std::string file = args(0).string_value ();
+      std::string file = args(0).xstring_value ("first argument must be filename");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::edit_file (file);
-        }
-      else
-        error ("expecting file name as argument");
+      retval = octave_link::edit_file (file);
     }
   else if (args.length () == 2)
     {
-      std::string file = args(0).string_value ();
+      std::string file = args(0).xstring_value ("first argument must be filename");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::prompt_new_edit_file (file);
-        }
-      else
-        error ("expecting file name as first argument");
+      retval = octave_link::prompt_new_edit_file (file);
     }
 
   return retval;
 }
 
 DEFUN (__octave_link_message_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
   if (args.length () == 3)
     {
-      std::string dlg   = args(0).string_value ();
-      std::string msg   = args(1).string_value ();
-      std::string title = args(2).string_value ();
+      std::string dlg = args(0).xstring_value ("invalid arguments");
+      std::string msg = args(1).xstring_value ("invalid arguments");
+      std::string title = args(2).xstring_value ("invalid arguments");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::message_dialog (dlg, msg, title);
-        }
-      else
-        error ("invalid arguments");
+      retval = octave_link::message_dialog (dlg, msg, title);
     }
 
   return retval;
 }
 
 DEFUN (__octave_link_question_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
 
   if (args.length () == 6)
     {
-      std::string msg    = args(0).string_value ();
-      std::string title  = args(1).string_value ();
-      std::string btn1   = args(2).string_value ();
-      std::string btn2   = args(3).string_value ();
-      std::string btn3   = args(4).string_value ();
-      std::string btndef = args(5).string_value ();
+      std::string msg = args(0).xstring_value ("invalid arguments");
+      std::string title = args(1).xstring_value ("invalid arguments");
+      std::string btn1 = args(2).xstring_value ("invalid arguments");
+      std::string btn2 = args(3).xstring_value ("invalid arguments");
+      std::string btn3 = args(4).xstring_value ("invalid arguments");
+      std::string btndef = args(5).xstring_value ("invalid arguments");
 
-      if (! error_state)
-        {
-          flush_octave_stdout ();
+      flush_octave_stdout ();
 
-          retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
-                                                 btndef);
-        }
-      else
-        error ("invalid arguments");
+      retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
+                                             btndef);
     }
 
   return retval;
 }
 
 DEFUN (__octave_link_file_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
+  if (args.length () != 6)
+    return ovl ();
 
-  if (args.length () == 6)
+  octave_value_list retval (3);
+
+  const Array<std::string> flist = args(0).cellstr_value ();
+  std::string title = args(1).string_value ();
+  std::string filename = args(2).string_value ();
+  Matrix pos = args(3).matrix_value ();
+  std::string multi_on = args(4).string_value (); // on, off, create
+  std::string pathname = args(5).string_value ();
+
+  octave_idx_type nel;
+  octave_link::filter_list filter_lst;
+
+  for (octave_idx_type i = 0; i < flist.rows (); i++)
+    filter_lst.push_back (std::make_pair (flist(i,0),
+                                          (flist.columns () > 1
+                                           ? flist(i,1) : "")));
+
+  flush_octave_stdout ();
+
+  std::list<std::string> items_lst
+    = octave_link::file_dialog (filter_lst, title, filename, pathname,
+                                multi_on);
+
+  nel = items_lst.size ();
+
+  // If 3, then retval is filename, directory, and selected index.
+  if (nel <= 3)
     {
-
-      const Array<std::string> flist = args(0).cellstr_value ();
-      std::string title = args(1).string_value ();
-      std::string filename = args(2).string_value ();
-      Matrix pos = args(3).matrix_value ();
-      std::string multi_on = args(4).string_value (); // on, off, create
-      std::string pathname = args(5).string_value ();
-
-      octave_idx_type nel;
-      octave_link::filter_list filter_lst;
-
-      for (octave_idx_type i = 0; i < flist.rows (); i++)
-        filter_lst.push_back (std::make_pair (flist(i,0),
-                                              (flist.columns () > 1
-                                               ? flist(i,1) : "")));
-
-      if (! error_state)
+      if (items_lst.front ().empty ())
+        retval = ovl (octave_value (0.), octave_value (0.), octave_value (0.));
+      else
         {
-          flush_octave_stdout ();
-
-          std::list<std::string> items_lst
-            = octave_link::file_dialog (filter_lst, title, filename, pathname,
-                                        multi_on);
-
-          nel = items_lst.size ();
-
-          retval.resize (3);
-
-          // If 3, then retval is filename, directory, and selected index.
-          if (nel <= 3)
+          int idx = 0;
+          for (std::list<std::string>::iterator it = items_lst.begin ();
+               it != items_lst.end (); it++)
             {
-              int idx = 0;
-              for (std::list<std::string>::iterator it = items_lst.begin ();
-                   it != items_lst.end (); it++)
-                {
-                  retval(idx++) = *it;
-
-                  if (idx == 1 && retval(0).string_value ().length () == 0)
-                    retval(0) = 0;
-
-                  if (idx == 3)
-                    retval(2) = atoi (retval(2).string_value ().c_str ());
-                }
-            }
-          else
-            {
-              // Multiple files.
-              nel = items_lst.size () - 2;
-              Cell items (dim_vector (1, nel));
-
-              std::list<std::string>::iterator it = items_lst.begin ();
-
-              for (int idx = 0; idx < nel; idx++)
-                {
-                  items.xelem (idx) = *it;
-                  it++;
-                }
-
-              retval(0) = items;
-              retval(1) = *it++;
-              retval(2) = atoi (it->c_str ());
+              if (idx != 2)
+                retval(idx++) = *it;
+              else
+                retval(idx++) = atoi (it->c_str ());
             }
         }
-      else
-        error ("invalid arguments");
+    }
+  else
+    {
+      // Multiple files.
+      nel -= 2;
+      Cell items (dim_vector (1, nel));
+
+      std::list<std::string>::iterator it = items_lst.begin ();
+
+      for (int idx = 0; idx < nel; idx++, it++)
+        items.xelem (idx) = *it;
+
+      retval = ovl (items, *it++, atoi (it->c_str ()));
     }
 
   return retval;
 }
 
 DEFUN (__octave_link_list_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
+  if (args.length () != 8)
+    return ovl ();
 
-  if (args.length () == 8)
+  Cell list = args(0).cell_value ();
+  const Array<std::string> tlist = list.cellstr_value ();
+  octave_idx_type nel = tlist.numel ();
+  std::list<std::string> list_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    list_lst.push_back (tlist(i));
+
+  std::string mode = args(1).string_value ();
+
+  Matrix size_matrix = args(2).matrix_value ();
+  int width = size_matrix(0);
+  int height = size_matrix(1);
+
+  Matrix initial_matrix = args(3).matrix_value ();
+  nel = initial_matrix.numel ();
+  std::list<int> initial_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    initial_lst.push_back (initial_matrix(i));
+
+  std::string name = args(4).string_value ();
+  list = args(5).cell_value ();
+  const Array<std::string> plist = list.cellstr_value ();
+  nel = plist.numel ();
+  std::list<std::string> prompt_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    prompt_lst.push_back (plist(i));
+  std::string ok_string = args(6).string_value ();
+  std::string cancel_string = args(7).string_value ();
+
+  flush_octave_stdout ();
+
+  std::pair<std::list<int>, int> result
+    = octave_link::list_dialog (list_lst, mode, width, height,
+                                initial_lst, name, prompt_lst,
+                                ok_string, cancel_string);
+
+  std::list<int> items_lst = result.first;
+  nel = items_lst.size ();
+  Matrix items (dim_vector (1, nel));
+  octave_idx_type i = 0;
+  for (std::list<int>::iterator it = items_lst.begin ();
+       it != items_lst.end (); it++)
     {
-      Cell list = args(0).cell_value ();
-      const Array<std::string> tlist = list.cellstr_value ();
-      octave_idx_type nel = tlist.numel ();
-      std::list<std::string> list_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        list_lst.push_back (tlist(i));
-
-      std::string mode = args(1).string_value ();
-
-      Matrix size_matrix = args(2).matrix_value ();
-      int width = size_matrix(0);
-      int height = size_matrix(1);
-
-      Matrix initial_matrix = args(3).matrix_value ();
-      nel = initial_matrix.numel ();
-      std::list<int> initial_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        initial_lst.push_back (initial_matrix(i));
-
-      std::string name = args(4).string_value ();
-      list = args(5).cell_value ();
-      const Array<std::string> plist = list.cellstr_value ();
-      nel = plist.numel ();
-      std::list<std::string> prompt_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        prompt_lst.push_back (plist(i));
-      std::string ok_string = args(6).string_value ();
-      std::string cancel_string = args(7).string_value ();
-
-      if (! error_state)
-        {
-          flush_octave_stdout ();
-
-          std::pair<std::list<int>, int> result
-            = octave_link::list_dialog (list_lst, mode, width, height,
-                                        initial_lst, name, prompt_lst,
-                                        ok_string, cancel_string);
-
-          std::list<int> items_lst = result.first;
-          nel = items_lst.size ();
-          Matrix items (dim_vector (1, nel));
-          octave_idx_type i = 0;
-          for (std::list<int>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
-            {
-              items.xelem(i++) = *it;
-            }
-
-          retval(1) = result.second;
-          retval(0) = items;
-        }
-      else
-        error ("invalid arguments");
+      items.xelem(i++) = *it;
     }
 
-  return retval;
+  return ovl (items, result.second);
 }
 
 DEFUN (__octave_link_input_dialog__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
+  if (args.length () != 4)
+    return ovl ();
 
-  if (args.length () == 4)
+  Cell prompt = args(0).cell_value ();
+  Array<std::string> tmp = prompt.cellstr_value ();
+  octave_idx_type nel = tmp.numel ();
+  std::list<std::string> prompt_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    prompt_lst.push_back (tmp(i));
+
+  std::string title = args(1).string_value ();
+
+  Matrix rc = args(2).matrix_value ();
+  nel = rc.rows ();
+  std::list<float> nr;
+  std::list<float> nc;
+  for (octave_idx_type i = 0; i < nel; i++)
     {
-      Cell prompt = args(0).cell_value ();
-      Array<std::string> tmp = prompt.cellstr_value ();
-      octave_idx_type nel = tmp.numel ();
-      std::list<std::string> prompt_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        prompt_lst.push_back (tmp(i));
-
-      std::string title = args(1).string_value ();
-
-      Matrix rc = args(2).matrix_value ();
-      nel = rc.rows ();
-      std::list<float> nr;
-      std::list<float> nc;
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          nr.push_back (rc(i,0));
-          nc.push_back (rc(i,1));
-        }
-
-      Cell defaults = args(3).cell_value ();
-      tmp = defaults.cellstr_value ();
-      nel = tmp.numel ();
-      std::list<std::string> defaults_lst;
-      for (octave_idx_type i = 0; i < nel; i++)
-        defaults_lst.push_back (tmp(i));
-
-      if (! error_state)
-        {
-          flush_octave_stdout ();
-
-          std::list<std::string> items_lst
-            = octave_link::input_dialog (prompt_lst, title, nr, nc,
-                                         defaults_lst);
-
-          nel = items_lst.size ();
-          Cell items (dim_vector (nel, 1));
-          octave_idx_type i = 0;
-          for (std::list<std::string>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
-            {
-              items.xelem(i++) = *it;
-            }
-
-          retval = items;
-        }
-      else
-        error ("invalid arguments");
+      nr.push_back (rc(i,0));
+      nc.push_back (rc(i,1));
     }
 
-  return retval;
+  Cell defaults = args(3).cell_value ();
+  tmp = defaults.cellstr_value ();
+  nel = tmp.numel ();
+  std::list<std::string> defaults_lst;
+  for (octave_idx_type i = 0; i < nel; i++)
+    defaults_lst.push_back (tmp(i));
+
+  flush_octave_stdout ();
+
+  std::list<std::string> items_lst
+    = octave_link::input_dialog (prompt_lst, title, nr, nc,
+                                 defaults_lst);
+
+  nel = items_lst.size ();
+  Cell items (dim_vector (nel, 1));
+  octave_idx_type i = 0;
+  for (std::list<std::string>::iterator it = items_lst.begin ();
+       it != items_lst.end (); it++)
+    {
+      items.xelem(i++) = *it;
+    }
+
+  return ovl (items);
 }
 
 DEFUN (__octave_link_show_preferences__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_show_preferences__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_show_preferences__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
-
-  retval = octave_link::show_preferences ();
-
-  return retval;
+  return ovl (octave_link::show_preferences ());
 }
 
 DEFUN (__octave_link_show_doc__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_show_doc__ (@var{filename})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_show_doc__ (@var{filename})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
   std::string file;
 
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  retval = octave_link::show_doc (file);
-
-  return retval;
+  return ovl (octave_link::show_doc (file));
 }
-
-
 

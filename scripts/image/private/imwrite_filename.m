@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Carnë Draug
+## Copyright (C) 2013-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -45,14 +45,14 @@ function [filename, ext, cmap, options] = imwrite_filename (varargin)
 
   ## Next, we get the file extension.
   ## if we have an odd number of leftover arguments, and the next argument
-  ## is a string, we consider it the file extension. Otherwise we will
+  ## is a string, we consider it the file extension.  Otherwise we will
   ## extract what we can from the previously found filename.
   options_idx = filename_idx + 1;
   if (numel (varargin) > filename_idx
       && rem (length (varargin) - filename_idx, 2) != 0
       && ischar (varargin{filename_idx + 1}))
     ext = varargin{filename_idx + 1};
-    options_idx++;
+    options_idx += 1;
   else
     [~, ~, ext] = fileparts (filename);
     if (! isempty (ext))

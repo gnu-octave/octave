@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cctype>
@@ -34,47 +34,49 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ov.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "unwind-prot.h"
 #include "utils.h"
 
+#include "oct-string.h"
+
 DEFUN (char, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} char (@var{x})\n\
-@deftypefnx {Built-in Function} {} char (@var{x}, @dots{})\n\
-@deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
-@deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
-Create a string array from one or more numeric matrices, character\n\
-matrices, or cell arrays.\n\
-\n\
-Arguments are concatenated vertically.  The returned values are padded with\n\
-blanks as needed to make each row of the string array have the same length.\n\
-Empty input strings are significant and will concatenated in the output.\n\
-\n\
-For numerical input, each element is converted to the corresponding ASCII\n\
-character.  A range error results if an input is outside the ASCII range\n\
-(0-255).\n\
-\n\
-For cell arrays, each element is concatenated separately.  Cell arrays\n\
-converted through @code{char} can mostly be converted back with\n\
-@code{cellstr}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
-   @result{} [\"abc    \"\n\
-       \"       \"\n\
-       \"98     \"\n\
-       \"99     \"\n\
-       \"d      \"\n\
-       \"str1   \"\n\
-       \"half   \"]\n\
-@end group\n\
-@end example\n\
-@seealso{strvcat, cellstr}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} char (@var{x})
+@deftypefnx {} {} char (@var{x}, @dots{})
+@deftypefnx {} {} char (@var{s1}, @var{s2}, @dots{})
+@deftypefnx {} {} char (@var{cell_array})
+Create a string array from one or more numeric matrices, character
+matrices, or cell arrays.
+
+Arguments are concatenated vertically.  The returned values are padded with
+blanks as needed to make each row of the string array have the same length.
+Empty input strings are significant and will concatenated in the output.
+
+For numerical input, each element is converted to the corresponding ASCII
+character.  A range error results if an input is outside the ASCII range
+(0-255).
+
+For cell arrays, each element is concatenated separately.  Cell arrays
+converted through @code{char} can mostly be converted back with
+@code{cellstr}.  For example:
+
+@example
+@group
+char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
+   @result{} ["abc    "
+       "       "
+       "98     "
+       "99     "
+       "d      "
+       "str1   "
+       "half   "]
+@end group
+@end example
+@seealso{strvcat, cellstr}
+@end deftypefn */)
 {
   octave_value retval;
 
@@ -95,16 +97,10 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
       for (int i = 0; i < nargin; i++)
         {
-          string_vector s = args(i).all_strings ();
+          string_vector s = args(i).xstring_vector_value ("char: unable to convert some args to strings");
 
-          if (error_state)
-            {
-              error ("char: unable to convert some args to strings");
-              return retval;
-            }
-
-          if (s.length () > 0)
-            n_elts += s.length ();
+          if (s.numel () > 0)
+            n_elts += s.numel ();
           else
             n_elts += 1;
 
@@ -125,7 +121,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
           string_vector s = args_as_strings.front ();
           args_as_strings.pop ();
 
-          int n = s.length ();
+          int n = s.numel ();
 
           if (n > 0)
             {
@@ -151,8 +147,8 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 }
 
 /*
-%!assert (char (), '');
-%!assert (char (100), "d");
+%!assert (char (), '')
+%!assert (char (100), "d")
 %!assert (char (100,100), ["d";"d"])
 %!assert (char ({100,100}), ["d";"d"])
 %!assert (char ([100,100]), ["dd"])
@@ -172,123 +168,106 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 */
 
 DEFUN (strvcat, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} strvcat (@var{x})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{x}, @dots{})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
-@deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
-Create a character array from one or more numeric matrices, character\n\
-matrices, or cell arrays.\n\
-\n\
-Arguments are concatenated vertically.  The returned values are padded with\n\
-blanks as needed to make each row of the string array have the same length.\n\
-Unlike @code{char}, empty strings are removed and will not appear in the\n\
-output.\n\
-\n\
-For numerical input, each element is converted to the corresponding ASCII\n\
-character.  A range error results if an input is outside the ASCII range\n\
-(0-255).\n\
-\n\
-For cell arrays, each element is concatenated separately.  Cell arrays\n\
-converted through @code{strvcat} can mostly be converted back with\n\
-@code{cellstr}.  For example:\n\
-\n\
-@example\n\
-@group\n\
-strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
-      @result{} [\"abc    \"\n\
-          \"98     \"\n\
-          \"99     \"\n\
-          \"d      \"\n\
-          \"str1   \"\n\
-          \"half   \"]\n\
-@end group\n\
-@end example\n\
-@seealso{char, strcat, cstrcat}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} strvcat (@var{x})
+@deftypefnx {} {} strvcat (@var{x}, @dots{})
+@deftypefnx {} {} strvcat (@var{s1}, @var{s2}, @dots{})
+@deftypefnx {} {} strvcat (@var{cell_array})
+Create a character array from one or more numeric matrices, character
+matrices, or cell arrays.
+
+Arguments are concatenated vertically.  The returned values are padded with
+blanks as needed to make each row of the string array have the same length.
+Unlike @code{char}, empty strings are removed and will not appear in the
+output.
+
+For numerical input, each element is converted to the corresponding ASCII
+character.  A range error results if an input is outside the ASCII range
+(0-255).
+
+For cell arrays, each element is concatenated separately.  Cell arrays
+converted through @code{strvcat} can mostly be converted back with
+@code{cellstr}.  For example:
+
+@example
+@group
+strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
+      @result{} ["abc    "
+          "98     "
+          "99     "
+          "d      "
+          "str1   "
+          "half   "]
+@end group
+@end example
+@seealso{char, strcat, cstrcat}
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
+  int n_elts = 0;
+  size_t max_len = 0;
+  std::queue<string_vector> args_as_strings;
 
-  if (nargin > 0)
+  for (int i = 0; i < nargin; i++)
     {
-      int n_elts = 0;
+      string_vector s = args(i).xstring_vector_value ("strvcat: unable to convert some args to strings");
 
-      size_t max_len = 0;
+      size_t n = s.numel ();
 
-      std::queue<string_vector> args_as_strings;
-
-      for (int i = 0; i < nargin; i++)
+      // do not count empty strings in calculation of number of elements
+      if (n > 0)
         {
-          string_vector s = args(i).all_strings ();
-
-          if (error_state)
+          for (size_t j = 0; j < n; j++)
             {
-              error ("strvcat: unable to convert some args to strings");
-              return retval;
-            }
-
-          size_t n = s.length ();
-
-          // do not count empty strings in calculation of number of elements
-          if (n > 0)
-            {
-              for (size_t j = 0; j < n; j++)
-                {
-                  if (s[j].length () > 0)
-                    n_elts++;
-                }
-            }
-
-          size_t s_max_len = s.max_length ();
-
-          if (s_max_len > max_len)
-            max_len = s_max_len;
-
-          args_as_strings.push (s);
-        }
-
-      string_vector result (n_elts);
-
-      octave_idx_type k = 0;
-
-      for (int i = 0; i < nargin; i++)
-        {
-          string_vector s = args_as_strings.front ();
-          args_as_strings.pop ();
-
-          size_t n = s.length ();
-
-          if (n > 0)
-            {
-              for (size_t j = 0; j < n; j++)
-                {
-                  std::string t = s[j];
-                  if (t.length () > 0)
-                    {
-                      size_t t_len = t.length ();
-
-                      if (max_len > t_len)
-                        t += std::string (max_len - t_len, ' ');
-
-                      result[k++] = t;
-                    }
-                }
+              if (s[j].length () > 0)
+                n_elts++;
             }
         }
 
-      retval = octave_value (result, '\'');
+      size_t s_max_len = s.max_length ();
+
+      if (s_max_len > max_len)
+        max_len = s_max_len;
+
+      args_as_strings.push (s);
     }
-  else
-    print_usage ();
 
-  return retval;
+  string_vector result (n_elts);
+
+  octave_idx_type k = 0;
+
+  for (int i = 0; i < nargin; i++)
+    {
+      string_vector s = args_as_strings.front ();
+      args_as_strings.pop ();
+
+      size_t n = s.numel ();
+
+      if (n > 0)
+        {
+          for (size_t j = 0; j < n; j++)
+            {
+              std::string t = s[j];
+              if (t.length () > 0)
+                {
+                  size_t t_len = t.length ();
+
+                  if (max_len > t_len)
+                    t += std::string (max_len - t_len, ' ');
+
+                  result[k++] = t;
+                }
+            }
+        }
+    }
+
+  // Cannot use ovl.  Relies on overloaded octave_value call.
+  return octave_value (result, '\'');
 }
 
 /*
-%!assert (strvcat (""), "");
-%!assert (strvcat (100) == "d");
+%!assert (strvcat (""), "")
+%!assert (strvcat (100) == "d")
 %!assert (strvcat (100,100), ["d";"d"])
 %!assert (strvcat ({100,100}), ["d";"d"])
 %!assert (strvcat ([100,100]), ["dd"])
@@ -298,28 +277,20 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 %!assert (strvcat ({100,{100, {""}}}), ["d";"d"])
 %!assert (strvcat (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
 %!assert (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
-
-%!error strvcat ()
+%!assert (strvcat (), "")
 */
 
-
 DEFUN (ischar, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ischar (@var{x})\n\
-Return true if @var{x} is a character array.\n\
-@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} ischar (@var{x})
+Return true if @var{x} is a character array.
+@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).is_string ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return ovl (args(0).is_string ());
 }
 
 /*
@@ -342,10 +313,10 @@ Return true if @var{x} is a character array.\n\
 static octave_value
 do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
                octave_idx_type n, const char *fcn_name,
-               bool (*array_op) (const charNDArray&, const charNDArray&,
+               bool (*array_op) (const Array<char>&, const Array<char>&,
                                  octave_idx_type),
                bool (*str_op) (const std::string&, const std::string&,
-                               octave_idx_type))
+                               std::string::size_type))
 
 {
   octave_value retval;
@@ -373,8 +344,8 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
         }
 
       const Cell cell = cell_val.cell_value ();
-      const string_vector str = str_val.all_strings ();
-      octave_idx_type r = str.length ();
+      const string_vector str = str_val.string_vector_value ();
+      octave_idx_type r = str.numel ();
 
       if (r == 0 || r == 1)
         {
@@ -382,18 +353,18 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
           boolNDArray output (cell_val.dims (), false);
 
-          std::string s = r == 0 ? std::string () : str[0];
+          std::string s = r == 0 ? "" : str[0];
 
           if (cell_val.is_cellstr ())
             {
               const Array<std::string> cellstr = cell_val.cellstr_value ();
-              for (octave_idx_type i = 0; i < cellstr.length (); i++)
+              for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                 output(i) = str_op (cellstr(i), s, n);
             }
           else
             {
               // FIXME: should we warn here?
-              for (octave_idx_type i = 0; i < cell.length (); i++)
+              for (octave_idx_type i = 0; i < cell.numel (); i++)
                 {
                   if (cell(i).is_string ())
                     output(i) = str_op (cell(i).string_value (), s, n);
@@ -404,7 +375,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
         }
       else if (r > 1)
         {
-          if (cell.length () == 1)
+          if (cell.numel () == 1)
             {
               // Broadcast the cell.
 
@@ -427,13 +398,13 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
               boolNDArray output (cell.dims (), false);
 
-              if (cell.length () == r)
+              if (cell.numel () == r)
                 {
                   if (cell_val.is_cellstr ())
                     {
                       const Array<std::string> cellstr
                         = cell_val.cellstr_value ();
-                      for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                      for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                         output(i) = str_op (str[i], cellstr(i), n);
                     }
                   else
@@ -493,7 +464,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
               if (cell1_val.is_cellstr ())
                 {
                   const Array<std::string> cellstr = cell1_val.cellstr_value ();
-                  for (octave_idx_type i = 0; i < cellstr.length (); i++)
+                  for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                     output(i) = str_op (cellstr(i), str2, n);
                 }
               else
@@ -513,10 +484,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
       else
         {
           if (size1 != size2)
-            {
-              error ("%s: nonconformant cell arrays", fcn_name);
-              return retval;
-            }
+            error ("%s: nonconformant cell arrays", fcn_name);
 
           if (cell1.is_cellstr () && cell2.is_cellstr ())
             {
@@ -548,51 +516,44 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
   return retval;
 }
 
-// If both args are arrays, dimensions may be significant.
-static bool
-strcmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
-{
-  return (s1.dims () == s2.dims ()
-          && std::equal (s1.data (), s1.data () + s1.numel (), s2.data ()));
-}
 
-// Otherwise, just use strings.
+// These are required so that they match the same signature as strncmp
+// and strncmpi and can therefore be used in do_strcmp_fun.
+
+template <typename T, typename T_size_type>
 static bool
-strcmp_str_op (const std::string& s1, const std::string& s2,
-               octave_idx_type)
-{
-  return s1 == s2;
-}
+strcmp_ignore_n (const T& s1, const T& s2, T_size_type)
+{ return octave::string::strcmp (s1, s2); }
+
+template <typename T, typename T_size_type>
+static bool
+strcmpi_ignore_n (const T& s1, const T& s2, T_size_type)
+{ return octave::string::strcmpi (s1, s2); }
+
 
 DEFUN (strcmp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strcmp (@var{s1}, @var{s2})\n\
-Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
-and 0 otherwise.\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-@seealso{strcmpi, strncmp, strncmpi}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} strcmp (@var{s1}, @var{s2})
+Return 1 if the character strings @var{s1} and @var{s2} are the same,
+and 0 otherwise.
 
-  if (args.length () == 2)
-    {
-      retval = do_strcmp_fun (args(0), args(1), 0,
-                              "strcmp", strcmp_array_op, strcmp_str_op);
-    }
-  else
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+@seealso{strcmpi, strncmp, strncmpi}
+@end deftypefn */)
+{
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmp",
+                             strcmp_ignore_n, strcmp_ignore_n));
 }
 
 /*
@@ -643,82 +604,49 @@ This is just the opposite of the corresponding C library function.\n\
 %!error strcmp ("foo", "bar", 3)
 */
 
-// Apparently, Matlab ignores the dims with strncmp. It also
-static bool
-strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
-                  octave_idx_type n)
-{
-  octave_idx_type l1 = s1.numel ();
-  octave_idx_type l2 = s2.numel ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data ()));
-}
-
-// Otherwise, just use strings. Note that we neither extract substrings (which
-// would mean a copy, at least in GCC), nor use string::compare (which is a
-// 3-way compare).
-static bool
-strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
-{
-  octave_idx_type l1 = s1.length ();
-  octave_idx_type l2 = s2.length ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data ()));
-}
-
 DEFUN (strncmp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
-Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are\n\
-the same, and 0 otherwise.\n\
-\n\
-@example\n\
-@group\n\
-strncmp (\"abce\", \"abcd\", 3)\n\
-      @result{} 1\n\
-@end group\n\
-@end example\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@example\n\
-@group\n\
-strncmp (\"abce\", @{\"abcd\", \"bca\", \"abc\"@}, 3)\n\
-     @result{} [1, 0, 1]\n\
-@end group\n\
-@end example\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmp\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-@seealso{strncmpi, strcmp, strcmpi}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} strncmp (@var{s1}, @var{s2}, @var{n})
+Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2}
+are the same, and 0 otherwise.
+
+@example
+@group
+strncmp ("abce", "abcd", 3)
+      @result{} 1
+@end group
+@end example
+
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@example
+@group
+strncmp ("abce", @{"abcd", "bca", "abc"@}, 3)
+     @result{} [1, 0, 1]
+@end group
+@end example
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmp
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+@seealso{strncmpi, strcmp, strcmpi}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 3)
-    {
-      octave_idx_type n = args(2).idx_type_value ();
-
-      if (! error_state)
-        {
-          if (n > 0)
-            {
-              retval = do_strcmp_fun (args(0), args(1), n, "strncmp",
-                                      strncmp_array_op, strncmp_str_op);
-            }
-          else
-            error ("strncmp: N must be greater than 0");
-        }
-    }
-  else
+  if (args.length () != 3)
     print_usage ();
 
-  return retval;
+  octave_idx_type n = args(2).idx_type_value ();
+
+  if (n > 0)
+    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmp",
+                               octave::string::strncmp,
+                               octave::string::strncmp));
+  else
+    error ("strncmp: N must be greater than 0");
 }
 
 /*
@@ -734,134 +662,68 @@ This is just the opposite of the corresponding C library function.\n\
 %!error strncmp ("abc", "def")
 */
 
-// case-insensitive character equality functor
-struct icmp_char_eq : public std::binary_function<char, char, bool>
-{
-  bool operator () (char x, char y) const
-  { return std::toupper (x) == std::toupper (y); }
-};
-
-// strcmpi is equivalent to strcmp in that it checks all dims.
-static bool
-strcmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
-{
-  return (s1.dims () == s2.dims ()
-          && std::equal (s1.data (), s1.data () + s1.numel (), s2.data (),
-                         icmp_char_eq ()));
-}
-
-// Ditto for string.
-static bool
-strcmpi_str_op (const std::string& s1, const std::string& s2,
-                octave_idx_type)
-{
-  return (s1.size () == s2.size ()
-          && std::equal (s1.data (), s1.data () + s1.size (), s2.data (),
-                         icmp_char_eq ()));
-}
-
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strcmpi (@var{s1}, @var{s2})\n\
-Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
-disregarding case of alphabetic characters, and 0 otherwise.\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-\n\
-@strong{Caution:} National alphabets are not supported.\n\
-@seealso{strcmp, strncmp, strncmpi}\n\
-@end deftypefn")
-{
-  octave_value retval;
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} strcmpi (@var{s1}, @var{s2})
+Return 1 if the character strings @var{s1} and @var{s2} are the same,
+disregarding case of alphabetic characters, and 0 otherwise.
 
-  if (args.length () == 2)
-    {
-      retval = do_strcmp_fun (args(0), args(1), 0,
-                              "strcmpi", strcmpi_array_op, strcmpi_str_op);
-    }
-  else
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+
+@strong{Caution:} National alphabets are not supported.
+@seealso{strcmp, strncmp, strncmpi}
+@end deftypefn */)
+{
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  return ovl (do_strcmp_fun (args(0), args(1), 0, "strcmpi",
+                             strcmpi_ignore_n, strcmpi_ignore_n));
 }
 
 /*
 %!assert (strcmpi ("abc123", "ABC123"), true)
 */
 
-// Like strncmp.
-static bool
-strncmpi_array_op (const charNDArray& s1, const charNDArray& s2,
-                   octave_idx_type n)
-{
-  octave_idx_type l1 = s1.numel ();
-  octave_idx_type l2 = s2.numel ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data (),
-                         icmp_char_eq ()));
-}
-
-// Ditto.
-static bool
-strncmpi_str_op (const std::string& s1, const std::string& s2,
-                 octave_idx_type n)
-{
-  octave_idx_type l1 = s1.length ();
-  octave_idx_type l2 = s2.length ();
-  return (n > 0 && n <= l1 && n <= l2
-          && std::equal (s1.data (), s1.data () + n, s2.data (),
-                         icmp_char_eq ()));
-}
-
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
-Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
-same, disregarding case of alphabetic characters, and 0 otherwise.\n\
-\n\
-If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
-of the same size is returned, containing the values described above for\n\
-every member of the cell array.  The other argument may also be a cell\n\
-array of strings (of the same size or with only one element), char matrix\n\
-or character string.\n\
-\n\
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi\n\
-function returns 1 if the character strings are equal, and 0 otherwise.\n\
-This is just the opposite of the corresponding C library function.\n\
-\n\
-@strong{Caution:} National alphabets are not supported.\n\
-@seealso{strncmp, strcmp, strcmpi}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn {} {} strncmpi (@var{s1}, @var{s2}, @var{n})
+Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the
+same, disregarding case of alphabetic characters, and 0 otherwise.
+
+If either @var{s1} or @var{s2} is a cell array of strings, then an array
+of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size or with only one element), char matrix
+or character string.
+
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
+
+@strong{Caution:} National alphabets are not supported.
+@seealso{strncmp, strcmp, strcmpi}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 3)
-    {
-      octave_idx_type n = args(2).idx_type_value ();
-
-      if (! error_state)
-        {
-          if (n > 0)
-            {
-              retval = do_strcmp_fun (args(0), args(1), n, "strncmpi",
-                                      strncmpi_array_op, strncmpi_str_op);
-            }
-          else
-            error ("strncmpi: N must be greater than 0");
-        }
-    }
-  else
+  if (args.length () != 3)
     print_usage ();
 
-  return retval;
+  octave_idx_type n = args(2).idx_type_value ();
+
+  if (n > 0)
+    return ovl (do_strcmp_fun (args(0), args(1), n, "strncmpi",
+                               octave::string::strncmpi,
+                               octave::string::strncmpi));
+  else
+    error ("strncmpi: N must be greater than 0");
 }
 
 /*
@@ -869,92 +731,63 @@ This is just the opposite of the corresponding C library function.\n\
 */
 
 DEFUN (list_in_columns, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
-Return a string containing the elements of @var{arg} listed in columns with\n\
-an overall maximum width of @var{width} and optional prefix @var{prefix}.\n\
-\n\
-The argument @var{arg} must be a cell array of character strings or a\n\
-character array.\n\
-\n\
-If @var{width} is not specified or is an empty matrix, or less than or equal\n\
-to zero, the width of the terminal screen is used.  Newline characters are\n\
-used to break the lines in the output string.  For example:\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-@group\n\
-list_in_columns (@{\"abc\", \"def\", \"ghijkl\", \"mnop\", \"qrs\", \"tuv\"@}, 20)\n\
-     @result{} abc     mnop\n\
-        def     qrs\n\
-        ghijkl  tuv\n\
-\n\
-whos ans\n\
-     @result{}\n\
-     Variables in the current scope:\n\
-\n\
-       Attr Name        Size                     Bytes  Class\n\
-       ==== ====        ====                     =====  =====\n\
-            ans         1x37                        37  char\n\
-\n\
-     Total is 37 elements using 37 bytes\n\
-@end group\n\
-@end smallexample\n\
-\n\
-@seealso{terminal_size}\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})
+Return a string containing the elements of @var{arg} listed in columns with
+an overall maximum width of @var{width} and optional prefix @var{prefix}.
 
+The argument @var{arg} must be a cell array of character strings or a
+character array.
+
+If @var{width} is not specified or is an empty matrix, or less than or equal
+to zero, the width of the terminal screen is used.  Newline characters are
+used to break the lines in the output string.  For example:
+@c Set example in small font to prevent overfull line
+
+@smallexample
+@group
+list_in_columns (@{"abc", "def", "ghijkl", "mnop", "qrs", "tuv"@}, 20)
+     @result{} abc     mnop
+        def     qrs
+        ghijkl  tuv
+
+whos ans
+     @result{}
+     Variables in the current scope:
+
+       Attr Name        Size                     Bytes  Class
+       ==== ====        ====                     =====  =====
+            ans         1x37                        37  char
+
+     Total is 37 elements using 37 bytes
+@end group
+@end smallexample
+
+@seealso{terminal_size}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  string_vector s = args(0).all_strings ();
-
-  if (error_state)
-    {
-      error ("list_in_columns: ARG must be a cellstr or char array");
-      return retval;
-    }
+  string_vector s = args(0).xstring_vector_value ("list_in_columns: ARG must be a cellstr or char array");
 
   int width = -1;
 
   if (nargin > 1 && ! args(1).is_empty ())
-    {
-      width = args(1).int_value ();
-
-      if (error_state)
-        {
-          error ("list_in_columns: WIDTH must be an integer");
-          return retval;
-        }
-    }
+    width = args(1).xint_value ("list_in_columns: WIDTH must be an integer");
 
   std::string prefix;
 
   if (nargin > 2)
-    {
-      if (args(2).is_string ())
-        prefix = args(2).string_value ();
-      else
-        {
-          error ("list_in_columns: PREFIX must be a string");
-          return retval;
-        }
-    }
+    prefix = args(2).xstring_value ("list_in_columns: PREFIX must be a string");
 
   std::ostringstream buf;
 
   s.list_in_columns (buf, width, prefix);
 
-  retval = buf.str ();
-
-  return retval;
+  return ovl (buf.str ());
 }
 
 /*
@@ -974,5 +807,6 @@ whos ans\n\
 %!error list_in_columns ()
 %!error list_in_columns (["abc", "def"], 20, 2)
 %!error list_in_columns (["abc", "def"], 20, "  ", 3)
-%!error <invalid conversion from string to real scalar> list_in_columns (["abc", "def"], "a")
+%!error <list_in_columns: WIDTH must be an integer> list_in_columns (["abc", "def"], "a")
 */
+

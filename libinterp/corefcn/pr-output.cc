@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -48,9 +48,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "oct-stream.h"
+#include "octave-preserve-stream-state.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "sysdep.h"
@@ -217,18 +218,21 @@ calc_scale_exp (const int& x)
     return x;
   else
     return x - 3*static_cast<int> (x/3);
-  /* The expression above is equivalent to x - (x % 3).
-   * According to the ISO specification for C++ the modulo operator is
-   * compiler dependent if any of the arguments are negative.  Since this
-   * function will need to work on negative arguments, and we want to avoid
-   * portability issues, we re-implement the modulo function to the desired
-   * behavior (truncation).  There may be a gnulib replacement.
-   *
-   * ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO, IEC. 2003 .
-   * "the binary % operator yields the remainder from the division of the first
-   * expression by the second. .... If both operands are nonnegative then the
-   * remainder is nonnegative; if not, the sign of the remainder is
-   * implementation-defined".  */
+
+  // The expression above is equivalent to x - (x % 3).
+
+  // According to the ISO specification for C++ the modulo operator is
+  // compiler dependent if any of the arguments are negative.  Since
+  // this function will need to work on negative arguments, and we want
+  // to avoid portability issues, we re-implement the modulo function to
+  // the desired behavior (truncation).  There may be a gnulib
+  // replacement.
+
+  // ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO,
+  // IEC. 2003 . "the binary % operator yields the remainder from the
+  // division of the first expression by the second. .... If both
+  // operands are nonnegative then the remainder is nonnegative; if not,
+  // the sign of the remainder is implementation-defined".
 }
 
 static int
@@ -238,9 +242,9 @@ engineering_exponent (const double& x)
   if (x != 0)
     {
       double absval = (x < 0.0 ? -x : x);
-      int logabsval = static_cast<int> (gnulib::floor (log10 (absval)));
-      /* Avoid using modulo function with negative arguments for portability.
-       * See extended comment at calc_scale_exp */
+      int logabsval = static_cast<int> (std::floor (log10 (absval)));
+      // Avoid using modulo function with negative arguments for
+      // portability.  See extended comment at calc_scale_exp
       if (logabsval < 0.0)
         ex = logabsval - 2 + ((-logabsval + 2) % 3);
       else
@@ -254,7 +258,7 @@ num_digits (const double& x)
 {
   return 1 + (print_eng
               ? engineering_exponent (x)
-              : static_cast<int> (gnulib::floor (log10 (x))));
+              : static_cast<int> (std::floor (log10 (x))));
 }
 
 class
@@ -350,24 +354,24 @@ rational_approx (double val, int len)
   if (len <= 0)
     len = 10;
 
-  if (xisinf (val))
+  if (octave::math::isinf (val))
     s = "1/0";
-  else if (xisnan (val))
+  else if (octave::math::isnan (val))
     s = "0/0";
   else if (val < std::numeric_limits<int>::min ()
            || val > std::numeric_limits<int>::max ()
-           || D_NINT (val) == val)
+           || octave::math::x_nint (val) == val)
     {
       std::ostringstream buf;
       buf.flags (std::ios::fixed);
-      buf << std::setprecision (0) << xround (val);
+      buf << std::setprecision (0) << octave::math::round (val);
       s = buf.str ();
     }
   else
     {
       double lastn = 1.;
       double lastd = 0.;
-      double n = xround (val);
+      double n = octave::math::round (val);
       double d = 1.;
       double frac = val - n;
       int m = 0;
@@ -380,12 +384,12 @@ rational_approx (double val, int len)
       while (1)
         {
           double flip = 1. / frac;
-          double step = xround (flip);
+          double step = octave::math::round (flip);
           double nextn = n;
           double nextd = d;
 
           // Have we converged to 1/intmax ?
-          if (fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
+          if (std::abs (flip) > static_cast<double> (std::numeric_limits<int>::max ()))
             {
               lastn = n;
               lastd = d;
@@ -393,8 +397,8 @@ rational_approx (double val, int len)
             }
 
           frac = flip - step;
-          n = n * step + lastn;
-          d = d * step + lastd;
+          n = step * n + lastn;
+          d = step * d + lastd;
           lastn = nextn;
           lastd = nextd;
 
@@ -413,8 +417,8 @@ rational_approx (double val, int len)
           else if (buf.str ().length () > static_cast<unsigned int>(len))
             break;
 
-          if (fabs (n) > std::numeric_limits<int>::max ()
-              || fabs (d) > std::numeric_limits<int>::max ())
+          if (std::abs (n) > std::numeric_limits<int>::max ()
+              || std::abs (d) > std::numeric_limits<int>::max ())
             break;
 
           s = buf.str ();
@@ -506,7 +510,7 @@ pr_max_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (! xfinite (val))
+        if (! octave::math::finite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -535,7 +539,7 @@ pr_min_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (! xfinite (val))
+        if (! octave::math::finite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -656,9 +660,9 @@ set_format (double d, int& fw)
   if (free_format)
     return;
 
-  bool inf_or_nan = (xisinf (d) || xisnan (d));
+  bool inf_or_nan = (octave::math::isinf (d) || octave::math::isnan (d));
 
-  bool int_only = (! inf_or_nan && D_NINT (d) == d);
+  bool int_only = (! inf_or_nan && octave::math::x_nint (d) == d);
 
   double d_abs = d < 0.0 ? -d : d;
 
@@ -943,7 +947,7 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
 
           if (print_eng)
             {
-              i_fw =  3 + prec + ex;
+              i_fw = 3 + prec + ex;
               r_fw = i_fw + 1;
               if (inf_or_nan && i_fw < 5)
                 {
@@ -1000,16 +1004,19 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double rp = c.real ();
   double ip = c.imag ();
 
-  bool inf_or_nan = (xisinf (c) || xisnan (c));
+  bool inf_or_nan = (octave::math::isinf (c) || octave::math::isnan (c));
 
-  bool int_only = (D_NINT (rp) == rp && D_NINT (ip) == ip);
+  bool int_only = (octave::math::x_nint (rp) == rp
+                   && octave::math::x_nint (ip) == ip);
 
   double r_abs = rp < 0.0 ? -rp : rp;
   double i_abs = ip < 0.0 ? -ip : ip;
 
-  int r_x = (! xfinite (rp) || r_abs == 0.0) ? 0 : num_digits (r_abs);
+  int r_x = (! octave::math::finite (rp)
+             || r_abs == 0.0) ? 0 : num_digits (r_abs);
 
-  int i_x = (! xfinite (ip) || i_abs == 0.0) ? 0 : num_digits (i_abs);
+  int i_x = (! octave::math::finite (ip)
+             || i_abs == 0.0) ? 0 : num_digits (i_abs);
 
   int x_max, x_min;
 
@@ -1413,40 +1420,40 @@ union equiv
   unsigned char i[sizeof (double)];
 };
 
-#define PRINT_CHAR_BITS(os, c) \
-  do \
-    { \
-      unsigned char ctmp = c; \
-      char stmp[9]; \
-      stmp[0] = (ctmp & 0x80) ? '1' : '0'; \
-      stmp[1] = (ctmp & 0x40) ? '1' : '0'; \
-      stmp[2] = (ctmp & 0x20) ? '1' : '0'; \
-      stmp[3] = (ctmp & 0x10) ? '1' : '0'; \
-      stmp[4] = (ctmp & 0x08) ? '1' : '0'; \
-      stmp[5] = (ctmp & 0x04) ? '1' : '0'; \
-      stmp[6] = (ctmp & 0x02) ? '1' : '0'; \
-      stmp[7] = (ctmp & 0x01) ? '1' : '0'; \
-      stmp[8] = '\0'; \
-      os << stmp; \
-    } \
+#define PRINT_CHAR_BITS(os, c)                  \
+  do                                            \
+    {                                           \
+      unsigned char ctmp = c;                   \
+      char stmp[9];                             \
+      stmp[0] = (ctmp & 0x80) ? '1' : '0';      \
+      stmp[1] = (ctmp & 0x40) ? '1' : '0';      \
+      stmp[2] = (ctmp & 0x20) ? '1' : '0';      \
+      stmp[3] = (ctmp & 0x10) ? '1' : '0';      \
+      stmp[4] = (ctmp & 0x08) ? '1' : '0';      \
+      stmp[5] = (ctmp & 0x04) ? '1' : '0';      \
+      stmp[6] = (ctmp & 0x02) ? '1' : '0';      \
+      stmp[7] = (ctmp & 0x01) ? '1' : '0';      \
+      stmp[8] = '\0';                           \
+      os << stmp;                               \
+    }                                           \
   while (0)
 
-#define PRINT_CHAR_BITS_SWAPPED(os, c) \
-  do \
-    { \
-      unsigned char ctmp = c; \
-      char stmp[9]; \
-      stmp[0] = (ctmp & 0x01) ? '1' : '0'; \
-      stmp[1] = (ctmp & 0x02) ? '1' : '0'; \
-      stmp[2] = (ctmp & 0x04) ? '1' : '0'; \
-      stmp[3] = (ctmp & 0x08) ? '1' : '0'; \
-      stmp[4] = (ctmp & 0x10) ? '1' : '0'; \
-      stmp[5] = (ctmp & 0x20) ? '1' : '0'; \
-      stmp[6] = (ctmp & 0x40) ? '1' : '0'; \
-      stmp[7] = (ctmp & 0x80) ? '1' : '0'; \
-      stmp[8] = '\0'; \
-      os << stmp; \
-    } \
+#define PRINT_CHAR_BITS_SWAPPED(os, c)          \
+  do                                            \
+    {                                           \
+      unsigned char ctmp = c;                   \
+      char stmp[9];                             \
+      stmp[0] = (ctmp & 0x01) ? '1' : '0';      \
+      stmp[1] = (ctmp & 0x02) ? '1' : '0';      \
+      stmp[2] = (ctmp & 0x04) ? '1' : '0';      \
+      stmp[3] = (ctmp & 0x08) ? '1' : '0';      \
+      stmp[4] = (ctmp & 0x10) ? '1' : '0';      \
+      stmp[5] = (ctmp & 0x20) ? '1' : '0';      \
+      stmp[6] = (ctmp & 0x40) ? '1' : '0';      \
+      stmp[7] = (ctmp & 0x80) ? '1' : '0';      \
+      stmp[8] = '\0';                           \
+      os << stmp;                               \
+    }                                           \
   while (0)
 
 static void
@@ -1473,14 +1480,14 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           // interrupted before resetting the format flags and fill
           // character?
 
-          oct_mach_info::float_format flt_fmt =
-            oct_mach_info::native_float_format ();
+          octave::mach_info::float_format flt_fmt =
+            octave::mach_info::native_float_format ();
 
           os.fill ('0');
           os.flags (std::ios::right | std::ios::hex);
 
           if (hex_format > 1
-              || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
+              || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
             {
               for (size_t i = 0; i < sizeof (double); i++)
                 os << std::setw (2) << static_cast<int> (tmp.i[i]);
@@ -1496,10 +1503,10 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           equiv tmp;
           tmp.d = d;
 
-          oct_mach_info::float_format flt_fmt =
-            oct_mach_info::native_float_format ();
+          octave::mach_info::float_format flt_fmt =
+            octave::mach_info::native_float_format ();
 
-          if (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
+          if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
             {
               for (size_t i = 0; i < sizeof (double); i++)
                 PRINT_CHAR_BITS (os, tmp.i[i]);
@@ -1518,7 +1525,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
                 }
             }
         }
-      else if (octave_is_NA (d))
+      else if (octave::math::is_NA (d))
         {
           octave_preserve_stream_state stream_state (os);
 
@@ -1529,7 +1536,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         }
       else if (rat_format)
         os << pr_rational_float (*fmt, d);
-      else if (xisinf (d))
+      else if (octave::math::isinf (d))
         {
           octave_preserve_stream_state stream_state (os);
 
@@ -1544,7 +1551,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           else
             os << s;
         }
-      else if (xisnan (d))
+      else if (octave::math::isnan (d))
         {
           octave_preserve_stream_state stream_state (os);
 
@@ -1658,7 +1665,7 @@ pr_scale_header (std::ostream& os, double scale)
 
       os << "  "
          << std::setw (8) << std::setprecision (1)
-         << std::setiosflags (std::ios::scientific|std::ios::left)
+         << std::setiosflags (std::ios::scientific | std::ios::left)
          << scale
          << " *\n";
 
@@ -1699,7 +1706,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
     }
 }
 
-template <class T>
+template <typename T>
 /* static */ inline void
 pr_plus_format (std::ostream& os, const T& val)
 {
@@ -1766,7 +1773,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
       set_format (m, fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -1902,7 +1909,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
       set_format (Matrix (m.diag ()), fw, scale);
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -1978,7 +1985,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
           pr_scale_header (os, scale);
 
-          // kluge. Get the true width of a number.
+          // kluge.  Get the true width of a number.
           int zero_fw;
 
           {
@@ -2184,7 +2191,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
       column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2322,7 +2329,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
       column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2398,7 +2405,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
           pr_scale_header (os, scale);
 
-          // kluge. Get the true width of a number.
+          // kluge.  Get the true width of a number.
           int zero_fw;
 
           {
@@ -2467,7 +2474,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
       int fw = 2;
       int column_width = fw + 2;
       octave_idx_type total_width = nc * column_width;
-      octave_idx_type max_width = command_editor::terminal_cols ();
+      octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
         max_width -= 4;
@@ -2594,7 +2601,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 void
 octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, double (d), pr_as_read_syntax);
+  octave_print_internal (os, octave_uint8 (d), pr_as_read_syntax);
 }
 
 // FIXME: write single precision versions of the printing functions.
@@ -2664,7 +2671,7 @@ octave_print_internal (std::ostream& os, const Range& r,
   double base = r.base ();
   double increment = r.inc ();
   double limit = r.limit ();
-  octave_idx_type num_elem = r.nelem ();
+  octave_idx_type num_elem = r.numel ();
 
   if (plus_format && ! pr_as_read_syntax)
     {
@@ -2710,7 +2717,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 
           int column_width = fw + 2;
           octave_idx_type total_width = num_elem * column_width;
-          octave_idx_type max_width = command_editor::terminal_cols ();
+          octave_idx_type max_width = octave::command_editor::terminal_cols ();
 
           if (free_format)
             {
@@ -2777,7 +2784,7 @@ octave_print_internal (std::ostream& os, const boolMatrix& bm,
                        bool pr_as_read_syntax,
                        int extra_indent)
 {
-  Matrix tmp (bm);
+  uint8NDArray tmp (bm);
   octave_print_internal (os, tmp, pr_as_read_syntax, extra_indent);
 }
 
@@ -2804,7 +2811,7 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
 void
 octave_print_internal (std::ostream& os, const charMatrix& chm,
                        bool pr_as_read_syntax,
-                       int /* extra_indent FIXME */,
+                       int /* FIXME: extra_indent */,
                        bool pr_as_string)
 {
   if (pr_as_string)
@@ -2882,11 +2889,11 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
                        bool pr_as_read_syntax, int /* extra_indent */)
 {
   // FIXME: this mostly duplicates the code in the print_nd_array<>
-  // function. Can fix this with std::is_same from C++11.
+  // function.  Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
-  else if (nda.length () == 1)
+  else if (nda.numel () == 1)
     {
       os << nda(0);
     }
@@ -2966,7 +2973,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
     }
 }
 
-template <class T>
+template <typename T>
 class
 octave_print_conv
 {
@@ -2974,13 +2981,13 @@ public:
   typedef T print_conv_type;
 };
 
-#define PRINT_CONV(T1, T2) \
-  template <> \
-  class \
-  octave_print_conv<T1> \
-  { \
-  public: \
-    typedef T2 print_conv_type; \
+#define PRINT_CONV(T1, T2)                      \
+  template <>                                   \
+  class                                         \
+  octave_print_conv<T1>                         \
+  {                                             \
+  public:                                       \
+    typedef T2 print_conv_type;                 \
   }
 
 PRINT_CONV (octave_int8, octave_int16);
@@ -2988,7 +2995,7 @@ PRINT_CONV (octave_uint8, octave_uint16);
 
 #undef PRINT_CONV
 
-template <class T>
+template <typename T>
 /* static */ inline void
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
@@ -3007,7 +3014,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 
       os.flags (std::ios::right | std::ios::hex);
 
-      if (hex_format > 1 || oct_mach_info::words_big_endian ())
+      if (hex_format > 1 || octave::mach_info::words_big_endian ())
         {
           for (size_t i = 0; i < sz; i++)
             os << std::setw (2) << static_cast<int> (tmpi[i]);
@@ -3020,7 +3027,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
   else if (bit_format)
     {
-      if (oct_mach_info::words_big_endian ())
+      if (octave::mach_info::words_big_endian ())
         {
           for (size_t i = 0; i < sz; i++)
             PRINT_CHAR_BITS (os, tmpi[i]);
@@ -3057,14 +3064,14 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 //
 // from GCC.  Isn't there a better way?
 
-template <class T>
+template <typename T>
 /* static */ inline T
 abs (T x)
 {
   return x < 0 ? -x : x;
 }
 
-#define INSTANTIATE_ABS(T) \
+#define INSTANTIATE_ABS(T)                      \
   template /* static */ T abs (T)
 
 INSTANTIATE_ABS(signed char);
@@ -3073,12 +3080,12 @@ INSTANTIATE_ABS(int);
 INSTANTIATE_ABS(long);
 INSTANTIATE_ABS(long long);
 
-#define SPECIALIZE_UABS(T) \
-  template <> \
-  /* static */ inline unsigned T \
-  abs (unsigned T x) \
-  { \
-    return x; \
+#define SPECIALIZE_UABS(T)                      \
+  template <>                                   \
+  /* static */ inline unsigned T                \
+  abs (unsigned T x)                            \
+  {                                             \
+    return x;                                   \
   }
 
 SPECIALIZE_UABS(char)
@@ -3111,7 +3118,7 @@ pr_int (std::ostream&, const octave_uint32&, int);
 template void
 pr_int (std::ostream&, const octave_uint64&, int);
 
-template <class T>
+template <typename T>
 void
 octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
                                 bool)
@@ -3129,11 +3136,11 @@ octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
     }
 }
 
-#define PRINT_INT_SCALAR_INTERNAL(TYPE) \
-  OCTINTERP_API void \
+#define PRINT_INT_SCALAR_INTERNAL(TYPE)                                 \
+  OCTINTERP_API void                                                    \
   octave_print_internal (std::ostream& os, const octave_int<TYPE>& val, bool dummy) \
-  { \
-    octave_print_internal_template (os, val, dummy); \
+  {                                                                     \
+    octave_print_internal_template (os, val, dummy);                    \
   }
 
 PRINT_INT_SCALAR_INTERNAL (int8_t)
@@ -3145,17 +3152,17 @@ PRINT_INT_SCALAR_INTERNAL (uint32_t)
 PRINT_INT_SCALAR_INTERNAL (int64_t)
 PRINT_INT_SCALAR_INTERNAL (uint64_t)
 
-template <class T>
+template <typename T>
 /* static */ inline void
 octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                                 bool pr_as_read_syntax, int extra_indent)
 {
   // FIXME: this mostly duplicates the code in the print_nd_array<>
-  // function. Can fix this with std::is_same from C++11.
+  // function.  Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
-  else if (nda.length () == 1)
+  else if (nda.numel () == 1)
     octave_print_internal_template (os, nda(0), pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
@@ -3258,7 +3265,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
             {
               int new_digits
                 = static_cast<int>
-                  (gnulib::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
+                  (std::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
 
               if (new_digits > digits)
                 digits = new_digits;
@@ -3272,7 +3279,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
       int column_width = fw + (rat_format ?  0 : (bank_format ? 5 : 2));
       octave_idx_type total_width = nc * column_width;
-      int max_width = command_editor::terminal_cols () - extra_indent;
+      int max_width = octave::command_editor::terminal_cols () - extra_indent;
       octave_idx_type inc = nc;
       if (total_width > max_width && Vsplit_long_rows)
         {
@@ -3374,11 +3381,11 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
     }
 }
 
-#define PRINT_INT_ARRAY_INTERNAL(TYPE) \
-  OCTINTERP_API void \
+#define PRINT_INT_ARRAY_INTERNAL(TYPE)                                  \
+  OCTINTERP_API void                                                    \
   octave_print_internal (std::ostream& os, const intNDArray<TYPE>& nda, \
-                         bool pr_as_read_syntax, int extra_indent) \
-  { \
+                         bool pr_as_read_syntax, int extra_indent)      \
+  {                                                                     \
     octave_print_internal_template (os, nda, pr_as_read_syntax, extra_indent); \
   }
 
@@ -3403,184 +3410,159 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
   panic_impossible ();
 }
 
-DEFUN (rats, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rats (@var{x}, @var{len})\n\
-Convert @var{x} into a rational approximation represented as a string.\n\
-\n\
-The string can be converted back into a matrix as follows:\n\
-\n\
-@example\n\
-@group\n\
-r = rats (hilb (4));\n\
-x = str2num (r)\n\
-@end group\n\
-@end example\n\
-\n\
-The optional second argument defines the maximum length of the string\n\
-representing the elements of @var{x}.  By default @var{len} is 9.\n\
-\n\
-If the length of the smallest possible rational approximation exceeds\n\
-@var{len}, an asterisk (*) padded with spaces will be returned instead.\n\
-@seealso{format, rat}\n\
-@end deftypefn")
-{
-  octave_value retval;
+DEFUN (rats, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} rats (@var{x}, @var{len})
+Convert @var{x} into a rational approximation represented as a string.
 
+The string can be converted back into a matrix as follows:
+
+@example
+@group
+r = rats (hilb (4));
+x = str2num (r)
+@end group
+@end example
+
+The optional second argument defines the maximum length of the string
+representing the elements of @var{x}.  By default @var{len} is 9.
+
+If the length of the smallest possible rational approximation exceeds
+@var{len}, an asterisk (*) padded with spaces will be returned instead.
+@seealso{format, rat}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2 || nargout > 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
-  else
+
+  octave_value arg = args(0);
+
+  if (! arg.is_numeric_type ())
+    error ("rats: X must be numeric");
+
+  octave::unwind_protect frame;
+
+  frame.protect_var (rat_string_len);
+
+  rat_string_len = 9;
+  if (nargin == 2)
+    rat_string_len = args(1).nint_value ();
+
+  frame.protect_var (rat_format);
+
+  rat_format = true;
+
+  std::ostringstream buf;
+  arg.print (buf);
+  std::string s = buf.str ();
+
+  std::list<std::string> lst;
+
+  size_t n = 0;
+  size_t s_len = s.length ();
+
+  while (n < s_len)
     {
-      unwind_protect frame;
+      size_t m = s.find ('\n',  n);
 
-      frame.protect_var (rat_string_len);
-
-      rat_string_len = 9;
-
-      if (nargin == 2)
-        rat_string_len = args(1).nint_value ();
-
-      if (! error_state)
+      if (m == std::string::npos)
         {
-          octave_value arg = args(0);
-
-          if (arg.is_numeric_type ())
-            {
-              frame.protect_var (rat_format);
-
-              rat_format = true;
-
-              std::ostringstream buf;
-              arg.print (buf);
-              std::string s = buf.str ();
-
-              std::list<std::string> lst;
-
-              size_t n = 0;
-              size_t s_len = s.length ();
-
-              while (n < s_len)
-                {
-                  size_t m = s.find ('\n',  n);
-
-                  if (m == std::string::npos)
-                    {
-                      lst.push_back (s.substr (n));
-                      break;
-                    }
-                  else
-                    {
-                      lst.push_back (s.substr (n, m - n));
-                      n = m + 1;
-                    }
-                }
-
-              retval = string_vector (lst);
-            }
-          else
-            error ("rats: X must be numeric");
+          lst.push_back (s.substr (n));
+          break;
+        }
+      else
+        {
+          lst.push_back (s.substr (n, m - n));
+          n = m + 1;
         }
     }
 
-  return retval;
+  return ovl (string_vector (lst));
 }
 
 DEFUN (disp, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} disp (@var{x})\n\
-Display the value of @var{x}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-disp (\"The value of pi is:\"), disp (pi)\n\
-\n\
-     @print{} the value of pi is:\n\
-     @print{} 3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that the output from @code{disp} always ends with a newline.\n\
-\n\
-If an output value is requested, @code{disp} prints nothing and returns the\n\
-formatted output in a string.\n\
-@seealso{fdisp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} disp (@var{x})
+Display the value of @var{x}.
+
+For example:
+
+@example
+@group
+disp ("The value of pi is:"), disp (pi)
+
+     @print{} the value of pi is:
+     @print{} 3.1416
+@end group
+@end example
+
+@noindent
+Note that the output from @code{disp} always ends with a newline.
+
+If an output value is requested, @code{disp} prints nothing and returns the
+formatted output in a string.
+@seealso{fdisp}
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
   octave_value_list retval;
 
-  int nargin = args.length ();
+  octave_value arg = args(0);
 
-  if (nargin == 1 && nargout < 2)
-    {
-      octave_value arg = args(0);
-
-      if (nargout == 0)
-        arg.print (octave_stdout);
-      else
-        {
-          std::ostringstream buf;
-          arg.print (buf);
-          retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
-        }
-    }
+  if (nargout == 0)
+    arg.print (octave_stdout);
   else
-    print_usage ();
+    {
+      std::ostringstream buf;
+      arg.print (buf);
+      retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
+    }
 
   return retval;
 }
 
 DEFUN (fdisp, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fdisp (@var{fid}, @var{x})\n\
-Display the value of @var{x} on the stream @var{fid}.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-fdisp (stdout, \"The value of pi is:\"), fdisp (stdout, pi)\n\
-\n\
-     @print{} the value of pi is:\n\
-     @print{} 3.1416\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that the output from @code{fdisp} always ends with a newline.\n\
-@seealso{disp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fdisp (@var{fid}, @var{x})
+Display the value of @var{x} on the stream @var{fid}.
+
+For example:
+
+@example
+@group
+fdisp (stdout, "The value of pi is:"), fdisp (stdout, pi)
+
+     @print{} the value of pi is:
+     @print{} 3.1416
+@end group
+@end example
+
+@noindent
+Note that the output from @code{fdisp} always ends with a newline.
+@seealso{disp}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 2)
-    {
-      int fid = octave_stream_list::get_file_number (args(0));
-
-      octave_stream os = octave_stream_list::lookup (fid, "fdisp");
-
-      if (! error_state)
-        {
-          std::ostream *osp = os.output_stream ();
-
-          octave_value arg = args(1);
-
-          if (osp)
-            arg.print (*osp);
-          else
-            error ("fdisp: stream FID not open for writing");
-        }
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  int fid = octave_stream_list::get_file_number (args(0));
+
+  octave_stream os = octave_stream_list::lookup (fid, "fdisp");
+
+  std::ostream *osp = os.output_stream ();
+
+  octave_value arg = args(1);
+
+  if (osp)
+    arg.print (*osp);
+  else
+    error ("fdisp: stream FID not open for writing");
+
+  return ovl ();
 }
 
 /*
@@ -3629,7 +3611,7 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  Voutput_precision =  prec;
+  Voutput_precision = prec;
   Voutput_max_field_width = fw;
 }
 
@@ -3681,11 +3663,7 @@ set_format_style (int argc, const string_vector& argv)
                   print_eng = true;
                 }
               else
-                {
-                  error ("format: unrecognized option 'short %s'",
-                         arg.c_str ());
-                  return;
-                }
+                error ("format: unrecognized option 'short %s'", arg.c_str ());
             }
           else
             init_format_state ();
@@ -3759,11 +3737,7 @@ set_format_style (int argc, const string_vector& argv)
                   print_eng = true;
                 }
               else
-                {
-                  error ("format: unrecognized option 'long %s'",
-                         arg.c_str ());
-                  return;
-                }
+                error ("format: unrecognized option 'long %s'", arg.c_str ());
             }
           else
             init_format_state ();
@@ -3832,10 +3806,7 @@ set_format_style (int argc, const string_vector& argv)
               if (arg.length () == 3)
                 plus_format_chars = arg;
               else
-                {
-                  error ("format: invalid option for plus format");
-                  return;
-                }
+                error ("format: invalid option for plus format");
             }
           else
             plus_format_chars = "+- ";
@@ -3874,10 +3845,7 @@ set_format_style (int argc, const string_vector& argv)
           return;
         }
       else
-        {
-          error ("format: unrecognized format state '%s'", arg.c_str ());
-          return;
-        }
+        error ("format: unrecognized format state '%s'", arg.c_str ());
     }
   else
     {
@@ -3889,355 +3857,350 @@ set_format_style (int argc, const string_vector& argv)
   format_string = format;
 }
 
-
 DEFUN (format, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Command} {} format\n\
-@deftypefnx {Command} {} format options\n\
-Reset or specify the format of the output produced by @code{disp} and\n\
-Octave's normal echoing mechanism.\n\
-\n\
-This command only affects the display of numbers but not how they are stored\n\
-or computed.  To change the internal representation from the default double\n\
-use one of the conversion functions such as @code{single}, @code{uint8},\n\
-@code{int64}, etc.\n\
-\n\
-By default, Octave displays 5 significant digits in a human readable form\n\
-(option @samp{short} paired with @samp{loose} format for matrices).\n\
-If @code{format} is invoked without any options, this default format\n\
-is restored.\n\
-\n\
-Valid formats for floating point numbers are listed in the following\n\
-table.\n\
-\n\
-@table @code\n\
-@item short\n\
-Fixed point format with 5 significant figures in a field that is a maximum\n\
-of 10 characters wide.  (default).\n\
-\n\
-If Octave is unable to format a matrix so that columns line up on the\n\
-decimal point and all numbers fit within the maximum field width then\n\
-it switches to an exponential @samp{e} format.\n\
-\n\
-@item long\n\
-Fixed point format with 15 significant figures in a field that is a maximum\n\
-of 20 characters wide.\n\
-\n\
-As with the @samp{short} format, Octave will switch to an exponential\n\
-@samp{e} format if it is unable to format a matrix properly using the\n\
-current format.\n\
-\n\
-@item  short e\n\
-@itemx long e\n\
-Exponential format.  The number to be represented is split between a mantissa\n\
-and an exponent (power of 10).  The mantissa has 5 significant digits in the\n\
-short format and 15 digits in the long format.\n\
-For example, with the @samp{short e} format, @code{pi} is displayed as\n\
-@code{3.1416e+00}.\n\
-\n\
-@item  short E\n\
-@itemx long E\n\
-Identical to @samp{short e} or @samp{long e} but displays an uppercase\n\
-@samp{E} to indicate the exponent.\n\
-For example, with the @samp{long E} format, @code{pi} is displayed as\n\
-@code{3.14159265358979E+00}.\n\
-\n\
-@item  short g\n\
-@itemx long g\n\
-Optimally choose between fixed point and exponential format based on\n\
-the magnitude of the number.\n\
-For example, with the @samp{short g} format,\n\
-@code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
-\n\
-@example\n\
-@group\n\
-ans =\n\
-\n\
-      9.8696\n\
-      97.409\n\
-      9488.5\n\
-  9.0032e+07\n\
-  8.1058e+15\n\
-@end group\n\
-@end example\n\
-\n\
-@item  short eng\n\
-@itemx long eng\n\
-Identical to @samp{short e} or @samp{long e} but displays the value\n\
-using an engineering format, where the exponent is divisible by 3. For\n\
-example, with the @samp{short eng} format, @code{10 * pi} is displayed as\n\
-@code{31.4159e+00}.\n\
-\n\
-@item  long G\n\
-@itemx short G\n\
-Identical to @samp{short g} or @samp{long g} but displays an uppercase\n\
-@samp{E} to indicate the exponent.\n\
-\n\
-@item  free\n\
-@itemx none\n\
-Print output in free format, without trying to line up columns of\n\
-matrices on the decimal point.  This also causes complex numbers to be\n\
-formatted as numeric pairs like this @samp{(0.60419, 0.60709)} instead\n\
-of like this @samp{0.60419 + 0.60709i}.\n\
-@end table\n\
-\n\
-The following formats affect all numeric output (floating point and\n\
-integer types).\n\
-\n\
-@table @code\n\
-@item  \"+\"\n\
-@itemx \"+\" @var{chars}\n\
-@itemx plus\n\
-@itemx plus @var{chars}\n\
-Print a @samp{+} symbol for matrix elements greater than zero, a\n\
-@samp{-} symbol for elements less than zero and a space for zero matrix\n\
-elements.  This format can be very useful for examining the structure\n\
-of a large sparse matrix.\n\
-\n\
-The optional argument @var{chars} specifies a list of 3 characters to use\n\
-for printing values greater than zero, less than zero and equal to zero.\n\
-For example, with the @samp{\"+\" \"+-.\"} format,\n\
-@code{[1, 0, -1; -1, 0, 1]} is displayed as\n\
-\n\
-@example\n\
-@group\n\
-ans =\n\
-\n\
-+.-\n\
--.+\n\
-@end group\n\
-@end example\n\
-\n\
-@item bank\n\
-Print in a fixed format with two digits to the right of the decimal\n\
-point.\n\
-\n\
-@item native-hex\n\
-Print the hexadecimal representation of numbers as they are stored in\n\
-memory.  For example, on a workstation which stores 8 byte real values\n\
-in IEEE format with the least significant byte first, the value of\n\
-@code{pi} when printed in @code{native-hex} format is\n\
-@code{400921fb54442d18}.\n\
-\n\
-@item hex\n\
-The same as @code{native-hex}, but always print the most significant\n\
-byte first.\n\
-\n\
-@item native-bit\n\
-Print the bit representation of numbers as stored in memory.\n\
-For example, the value of @code{pi} is\n\
-\n\
-@example\n\
-@group\n\
-01000000000010010010000111111011\n\
-01010100010001000010110100011000\n\
-@end group\n\
-@end example\n\
-\n\
-(shown here in two 32 bit sections for typesetting purposes) when\n\
-printed in native-bit format on a workstation which stores 8 byte real values\n\
-in IEEE format with the least significant byte first.\n\
-\n\
-@item bit\n\
-The same as @code{native-bit}, but always print the most significant\n\
-bits first.\n\
-\n\
-@item rat\n\
-Print a rational approximation, i.e., values are approximated\n\
-as the ratio of small integers.\n\
-For example, with the @samp{rat} format,\n\
-@code{pi} is displayed as @code{355/113}.\n\
-@end table\n\
-\n\
-The following two options affect the display of all matrices.\n\
-\n\
-@table @code\n\
-@item compact\n\
-Remove blank lines around column number labels and between\n\
-matrices producing more compact output with more data per page.\n\
-\n\
-@item loose\n\
-Insert blank lines above and below column number labels and between matrices\n\
-to produce a more readable output with less data per page.  (default).\n\
-@end table\n\
-@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} format
+@deftypefnx {} {} format options
+Reset or specify the format of the output produced by @code{disp} and
+Octave's normal echoing mechanism.
 
+This command only affects the display of numbers but not how they are stored
+or computed.  To change the internal representation from the default double
+use one of the conversion functions such as @code{single}, @code{uint8},
+@code{int64}, etc.
+
+By default, Octave displays 5 significant digits in a human readable form
+(option @samp{short} paired with @samp{loose} format for matrices).
+If @code{format} is invoked without any options, this default format
+is restored.
+
+Valid formats for floating point numbers are listed in the following
+table.
+
+@table @code
+@item short
+Fixed point format with 5 significant figures in a field that is a maximum
+of 10 characters wide.  (default).
+
+If Octave is unable to format a matrix so that columns line up on the
+decimal point and all numbers fit within the maximum field width then
+it switches to an exponential @samp{e} format.
+
+@item long
+Fixed point format with 15 significant figures in a field that is a maximum
+of 20 characters wide.
+
+As with the @samp{short} format, Octave will switch to an exponential
+@samp{e} format if it is unable to format a matrix properly using the
+current format.
+
+@item  short e
+@itemx long e
+Exponential format.  The number to be represented is split between a
+mantissa and an exponent (power of 10).  The mantissa has 5 significant
+digits in the short format and 15 digits in the long format.  For example,
+with the @samp{short e} format, @code{pi} is displayed as
+@code{3.1416e+00}.
+
+@item  short E
+@itemx long E
+Identical to @samp{short e} or @samp{long e} but displays an uppercase
+@samp{E} to indicate the exponent.
+For example, with the @samp{long E} format, @code{pi} is displayed as
+@code{3.14159265358979E+00}.
+
+@item  short g
+@itemx long g
+Optimally choose between fixed point and exponential format based on
+the magnitude of the number.
+For example, with the @samp{short g} format,
+@code{pi .^ [2; 4; 8; 16; 32]} is displayed as
+
+@example
+@group
+ans =
+
+      9.8696
+      97.409
+      9488.5
+  9.0032e+07
+  8.1058e+15
+@end group
+@end example
+
+@item  short eng
+@itemx long eng
+Identical to @samp{short e} or @samp{long e} but displays the value
+using an engineering format, where the exponent is divisible by 3.  For
+example, with the @samp{short eng} format, @code{10 * pi} is displayed as
+@code{31.4159e+00}.
+
+@item  long G
+@itemx short G
+Identical to @samp{short g} or @samp{long g} but displays an uppercase
+@samp{E} to indicate the exponent.
+
+@item  free
+@itemx none
+Print output in free format, without trying to line up columns of
+matrices on the decimal point.  This also causes complex numbers to be
+formatted as numeric pairs like this @samp{(0.60419, 0.60709)} instead
+of like this @samp{0.60419 + 0.60709i}.
+@end table
+
+The following formats affect all numeric output (floating point and
+integer types).
+
+@table @code
+@item  "+"
+@itemx "+" @var{chars}
+@itemx plus
+@itemx plus @var{chars}
+Print a @samp{+} symbol for matrix elements greater than zero, a
+@samp{-} symbol for elements less than zero and a space for zero matrix
+elements.  This format can be very useful for examining the structure
+of a large sparse matrix.
+
+The optional argument @var{chars} specifies a list of 3 characters to use
+for printing values greater than zero, less than zero and equal to zero.
+For example, with the @samp{"+" "+-."} format,
+@code{[1, 0, -1; -1, 0, 1]} is displayed as
+
+@example
+@group
+ans =
+
++.-
+-.+
+@end group
+@end example
+
+@item bank
+Print in a fixed format with two digits to the right of the decimal
+point.
+
+@item native-hex
+Print the hexadecimal representation of numbers as they are stored in
+memory.  For example, on a workstation which stores 8 byte real values
+in IEEE format with the least significant byte first, the value of
+@code{pi} when printed in @code{native-hex} format is
+@code{400921fb54442d18}.
+
+@item hex
+The same as @code{native-hex}, but always print the most significant
+byte first.
+
+@item native-bit
+Print the bit representation of numbers as stored in memory.
+For example, the value of @code{pi} is
+
+@example
+@group
+01000000000010010010000111111011
+01010100010001000010110100011000
+@end group
+@end example
+
+(shown here in two 32 bit sections for typesetting purposes) when
+printed in native-bit format on a workstation which stores 8 byte real
+values in IEEE format with the least significant byte first.
+
+@item bit
+The same as @code{native-bit}, but always print the most significant
+bits first.
+
+@item rat
+Print a rational approximation, i.e., values are approximated
+as the ratio of small integers.
+For example, with the @samp{rat} format,
+@code{pi} is displayed as @code{355/113}.
+@end table
+
+The following two options affect the display of all matrices.
+
+@table @code
+@item compact
+Remove blank lines around column number labels and between
+matrices producing more compact output with more data per page.
+
+@item loose
+Insert blank lines above and below column number labels and between matrices
+to produce a more readable output with less data per page.  (default).
+@end table
+@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}
+@end deftypefn */)
+{
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("format");
 
-  if (error_state)
-    return retval;
-
   set_format_style (argc, argv);
 
-  return retval;
+  return ovl ();
 }
 
 DEFUN (__compactformat__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} __compactformat__ ()\n\
-@deftypefnx {Built-in Function} {} __compactformat__ (@var{TRUE|FALSE})\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} __compactformat__ ()
+@deftypefnx {} {} __compactformat__ (@var{TRUE|FALSE})
+Undocumented internal function
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (compact_format);
 }
 
 DEFUN (__formatstring__, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} __formatstring__ ()\n\
-Undocumented internal function\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} __formatstring__ ()
+Undocumented internal function
+@end deftypefn */)
 {
   return ovl (format_string);
 }
 
 DEFUN (fixed_point_format, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} fixed_point_format ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} fixed_point_format (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave will\n\
-use a scaled format to print matrix values.\n\
-\n\
-The scaled format prints a scaling factor on the first line of output chosen\n\
-such that the largest matrix element can be written with a single leading\n\
-digit.  For example:\n\
-\n\
-@example\n\
-@group\n\
-logspace (1, 7, 5)'\n\
-ans =\n\
-\n\
-  1.0e+07  *\n\
-\n\
-  0.00000\n\
-  0.00003\n\
-  0.00100\n\
-  0.03162\n\
-  1.00000\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-Notice that the first value appears to be 0 when it is actually 1.  Because\n\
-of the possibility for confusion you should be careful about enabling\n\
-@code{fixed_point_format}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format, output_max_field_width, output_precision}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} fixed_point_format ()
+@deftypefnx {} {@var{old_val} =} fixed_point_format (@var{new_val})
+@deftypefnx {} {} fixed_point_format (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave will
+use a scaled format to print matrix values.
+
+The scaled format prints a scaling factor on the first line of output chosen
+such that the largest matrix element can be written with a single leading
+digit.  For example:
+
+@example
+@group
+logspace (1, 7, 5)'
+ans =
+
+  1.0e+07  *
+
+  0.00000
+  0.00003
+  0.00100
+  0.03162
+  1.00000
+@end group
+@end example
+
+@noindent
+Notice that the first value appears to be 0 when it is actually 1.  Because
+of the possibility for confusion you should be careful about enabling
+@code{fixed_point_format}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format, output_max_field_width, output_precision}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (fixed_point_format);
 }
 
 DEFUN (print_empty_dimensions, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether the dimensions of\n\
-empty matrices are printed along with the empty matrix symbol, @samp{[]}.\n\
-\n\
-For example, the expression\n\
-\n\
-@example\n\
-zeros (3, 0)\n\
-@end example\n\
-\n\
-@noindent\n\
-will print\n\
-\n\
-@example\n\
-ans = [](3x0)\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} print_empty_dimensions ()
+@deftypefnx {} {@var{old_val} =} print_empty_dimensions (@var{new_val})
+@deftypefnx {} {} print_empty_dimensions (@var{new_val}, "local")
+Query or set the internal variable that controls whether the dimensions of
+empty matrices are printed along with the empty matrix symbol, @samp{[]}.
+
+For example, the expression
+
+@example
+zeros (3, 0)
+@end example
+
+@noindent
+will print
+
+@example
+ans = [](3x0)
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (print_empty_dimensions);
 }
 
 DEFUN (split_long_rows, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} split_long_rows ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} split_long_rows (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether rows of a matrix\n\
-may be split when displayed to a terminal window.\n\
-\n\
-If the rows are split, Octave will display the matrix in a series of smaller\n\
-pieces, each of which can fit within the limits of your terminal width and\n\
-each set of rows is labeled so that you can easily see which columns are\n\
-currently being displayed.  For example:\n\
-\n\
-@example\n\
-@group\n\
-octave:13> rand (2,10)\n\
-ans =\n\
-\n\
- Columns 1 through 6:\n\
-\n\
-  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467\n\
-  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201\n\
-\n\
- Columns 7 through 10:\n\
-\n\
-  0.90174  0.11854  0.72313  0.73326\n\
-  0.44672  0.94303  0.56564  0.82150\n\
-@end group\n\
-@end example\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} split_long_rows ()
+@deftypefnx {} {@var{old_val} =} split_long_rows (@var{new_val})
+@deftypefnx {} {} split_long_rows (@var{new_val}, "local")
+Query or set the internal variable that controls whether rows of a matrix
+may be split when displayed to a terminal window.
+
+If the rows are split, Octave will display the matrix in a series of smaller
+pieces, each of which can fit within the limits of your terminal width and
+each set of rows is labeled so that you can easily see which columns are
+currently being displayed.  For example:
+
+@example
+@group
+octave:13> rand (2,10)
+ans =
+
+ Columns 1 through 6:
+
+  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467
+  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201
+
+ Columns 7 through 10:
+
+  0.90174  0.11854  0.72313  0.73326
+  0.44672  0.94303  0.56564  0.82150
+@end group
+@end example
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (split_long_rows);
 }
 
 DEFUN (output_max_field_width, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} output_max_field_width ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} output_max_field_width (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the maximum width\n\
-of a numeric output field.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format, fixed_point_format, output_precision}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} output_max_field_width ()
+@deftypefnx {} {@var{old_val} =} output_max_field_width (@var{new_val})
+@deftypefnx {} {} output_max_field_width (@var{new_val}, "local")
+Query or set the internal variable that specifies the maximum width
+of a numeric output field.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format, fixed_point_format, output_precision}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0,
                                             std::numeric_limits<int>::max ());
 }
 
 DEFUN (output_precision, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} output_precision ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} output_precision (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the minimum number of\n\
-significant figures to display for numeric output.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{format, fixed_point_format, output_max_field_width}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} output_precision ()
+@deftypefnx {} {@var{old_val} =} output_precision (@var{new_val})
+@deftypefnx {} {} output_precision (@var{new_val}, "local")
+Query or set the internal variable that specifies the minimum number of
+significant figures to display for numeric output.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{format, fixed_point_format, output_max_field_width}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1,
                                             std::numeric_limits<int>::max ());
 }
+

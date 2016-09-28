@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidpdf (@var{x}, @var{n})
+## @deftypefn {} {} unidpdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of a discrete uniform distribution which assumes
 ## the integer values 1--@var{n} with equal probability.
 ##
 ## Warning: The underlying implementation uses the double class and will only
-## be accurate for @var{n} @leq{} @code{bitmax} (@w{@math{2^{53} - 1}} on
+## be accurate for @var{n} < @code{flintmax} (@w{@math{2^{53}}} on
 ## IEEE 754 compatible systems).
 ## @end deftypefn
 
@@ -54,7 +54,7 @@ function pdf = unidpdf (x, n)
   k = isnan (x) | ! (n > 0 & n == fix (n));
   pdf(k) = NaN;
 
-  k = !k & (x >= 1) & (x <= n) & (x == fix (x));
+  k = ! k & (x >= 1) & (x <= n) & (x == fix (x));
   if (isscalar (n))
     pdf(k) = 1 / n;
   else

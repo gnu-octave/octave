@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman
+## Copyright (C) 2006-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cosd (@var{x})
+## @deftypefn {} {} cosd (@var{x})
 ## Compute the cosine for each element of @var{x} in degrees.
 ##
 ## Returns zero for elements where @code{(@var{x}-90)/180} is an integer.
@@ -34,7 +34,7 @@ function y = cosd (x)
 
   I = x / 180;
   y = cos (I .* pi);
-  I = I + 0.5;
+  I += 0.5;
   y(I == fix (I) & isfinite (I)) = 0;
 
 endfunction

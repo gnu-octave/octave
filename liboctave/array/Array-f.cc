@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate Arrays of float values.
@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.cc"
 #include "oct-locbuf.h"
 
-#define INLINE_ASCENDING_SORT
-#define INLINE_DESCENDING_SORT
+#define INLINE_ASCENDING_SORT 1
+#define INLINE_DESCENDING_SORT 1
 #include "oct-sort.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
@@ -46,19 +46,19 @@ template <>
 inline bool
 sort_isnan<float> (float x)
 {
-  return xisnan (x);
+  return octave::math::isnan (x);
 }
 
 static bool
 nan_ascending_compare (float x, float y)
 {
-  return xisnan (y) ? ! xisnan (x) : x < y;
+  return octave::math::isnan (y) ? ! octave::math::isnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (float x, float y)
 {
-  return xisnan (x) ? ! xisnan (y) : x > y;
+  return octave::math::isnan (x) ? ! octave::math::isnan (y) : x > y;
 }
 
 Array<float>::compare_fcn_type
@@ -69,7 +69,7 @@ safe_comparator (sortmode mode, const Array<float>& a , bool allow_chk)
   if (allow_chk)
     {
       octave_idx_type k = 0;
-      for (; k < a.numel () && ! xisnan (a(k)); k++) ;
+      for (; k < a.numel () && ! octave::math::isnan (a(k)); k++) ;
       if (k == a.numel ())
         {
           if (mode == ASCENDING)
@@ -107,7 +107,7 @@ Array<float>::is_sorted (sortmode mode) const
   if (! mode)
     {
       // Auto-detect mode.
-      if (el[n-1] < el[0] || xisnan (el[0]))
+      if (el[n-1] < el[0] || octave::math::isnan (el[0]))
         mode = DESCENDING;
       else
         mode = ASCENDING;
@@ -120,7 +120,7 @@ Array<float>::is_sorted (sortmode mode) const
       // Sort out NaNs.
       do
         r = el[j++];
-      while (xisnan (r) && j < n);
+      while (octave::math::isnan (r) && j < n);
 
       // Orient the test so that NaN will not pass through.
       for (; j < n; j++)
@@ -138,7 +138,7 @@ Array<float>::is_sorted (sortmode mode) const
   else if (mode == ASCENDING)
     {
       // Sort out NaNs.
-      while (n > 0 && xisnan (el[n-1]))
+      while (n > 0 && octave::math::isnan (el[n-1]))
         n--;
 
       if (n > 0)
@@ -172,3 +172,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<float>;
+

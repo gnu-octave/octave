@@ -1,5 +1,5 @@
-## Copyright (C) 2008-2015 John W. Eaton
-## Copyright (C) 2013-2015 Carnë Draug
+## Copyright (C) 2008-2016 John W. Eaton
+## Copyright (C) 2013-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{ext})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename})
-## @deftypefnx {Function File} {} imwrite (@dots{}, @var{param1}, @var{val1}, @dots{})
+## @deftypefn  {} {} imwrite (@var{img}, @var{filename})
+## @deftypefnx {} {} imwrite (@var{img}, @var{filename}, @var{ext})
+## @deftypefnx {} {} imwrite (@var{img}, @var{map}, @var{filename})
+## @deftypefnx {} {} imwrite (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Write images in various file formats.
 ##
 ## The image @var{img} can be a binary, grayscale, RGB, or multi-dimensional
@@ -45,6 +45,12 @@
 ## same class, and number of rows and columns of @var{img}.  In case of a
 ## multipage image, the size of the 4th dimension must also match and the third
 ## dimension must be a singleton.  By default, image will be completely opaque.
+##
+## @item Compression
+## Compression to use one the image.  Can be one of the following: "none"
+## (default), "bzip", "fax3", "fax4", "jpeg", "lzw", "rle", or "deflate".
+## Note that not all compression types are available for all image formats
+## in which it defaults to your @nospell{Magick} library.
 ##
 ## @item DelayTime
 ## For formats that accept animations (such as GIF), controls for how long a
@@ -91,9 +97,11 @@
 ## @end deftypefn
 
 function imwrite (varargin)
+
   if (nargin < 2)
     print_usage ();
   endif
+
   [filename, ext] = imwrite_filename (varargin{2:end});
 
   fmt = imformats (ext);
@@ -104,7 +112,7 @@ function imwrite (varargin)
       error ("imwrite: no extension found for %s to identify the image format",
              filename);
     endif
-    warning ("imwrite: unlisted image format %s (see imformats). Trying to save anyway.",
+    warning ("imwrite: unlisted image format %s (see imformats).  Trying to save anyway.",
              ext);
     __imwrite__ (varargin{:});
   else
@@ -112,6 +120,7 @@ function imwrite (varargin)
   endif
 
 endfunction
+
 
 ## Test input validation
 %!error imwrite ()                            # Wrong # of args
@@ -136,67 +145,96 @@ endfunction
 
 ## typical usage with grayscale uint8 images
 %!testif HAVE_MAGICK
-%! gray  = randi (255, 10, 10, 1, "uint8");
-%! r  = write_and_read (".tif", gray);
-%! assert (r, gray)
+%! gray = randi (255, 10, 10, 1, "uint8");
+%! r = write_and_read (".tif", gray);
+%! assert (r, gray);
 
 ## grayscale uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! gray  = randi (255, 10, 10, 1, "uint8");
 %! alpha = randi (255, 10, 10, 1, "uint8");
 %! [r, ~, a] = write_and_read (".tif", gray, "Alpha", alpha);
-%! assert (r, gray)
-%! assert (a, alpha)
+%! assert (r, gray);
+%! assert (a, alpha);
 
 ## multipage grayscale uint8 images
 %!testif HAVE_MAGICK
-%! gray  = randi (255, 10, 10, 1, 5, "uint8");
-%! r     = write_and_read (".tif", gray);
-%! assert (r, gray)
+%! gray = randi (255, 10, 10, 1, 5, "uint8");
+%! r    = write_and_read (".tif", gray);
+%! assert (r, gray);
 
 ## multipage RGB uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! gray  = randi (255, 10, 10, 3, 5, "uint8");
 %! alpha = randi (255, 10, 10, 1, 5, "uint8");
 %! [r, ~, a] = write_and_read (".tif", gray, "Alpha", alpha);
-%! assert (r, gray)
-%! assert (a, alpha)
+%! assert (r, gray);
+%! assert (a, alpha);
 
 ## typical usage with RGB uint8 images
 %!testif HAVE_MAGICK
 %! rgb = randi (255, 10, 10, 3, "uint8");
 %! r = write_and_read (".tif", rgb);
-%! assert (r, rgb)
+%! assert (r, rgb);
 
 ## RGB uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! rgb   = randi (255, 10, 10, 3, "uint8");
 %! alpha = randi (255, 10, 10, 1, "uint8");
 %! [r, ~, a] = write_and_read (".tif", rgb, "Alpha", alpha);
-%! assert (r, rgb)
-%! assert (a, alpha)
+%! assert (r, rgb);
+%! assert (a, alpha);
 
 ## multipage RGB uint8 images
 %!testif HAVE_MAGICK
 %! rgb = randi (255, 10, 10, 3, 5, "uint8");
 %! r = write_and_read (".tif", rgb);
-%! assert (r, rgb)
+%! assert (r, rgb);
 
 ## multipage RGB uint8 images with alpha channel
 %!testif HAVE_MAGICK
 %! rgb   = randi (255, 10, 10, 3, 5, "uint8");
 %! alpha = randi (255, 10, 10, 1, 5, "uint8");
 %! [r, ~, a] = write_and_read (".tif", rgb, "Alpha", alpha);
-%! assert (r, rgb)
-%! assert (a, alpha)
+%! assert (r, rgb);
+%! assert (a, alpha);
 
 %!testif HAVE_MAGICK
 %! gray = repmat (uint8 (0:255), 100, 1);
 %! [g] = write_and_read (".jpeg", gray);
-%! assert (g, gray, 2)
+%! assert (g, gray, 2);
 
 %!testif HAVE_MAGICK
 %! gray = repmat (uint8 (0:255), 100, 1);
 %! [g] = write_and_read (".jpeg", gray, "quality", 100);
-%! assert (g, gray)
+%! assert (g, gray);
 
+%!function [compression] = get_bmp_compression (ext, cmap = [], varargin)
+%!  gray = repmat (uint8 (0:255), 100, 1);
+%!  filename = [tempname() ext];
+%!  unwind_protect
+%!    if (isempty (cmap))
+%!      imwrite (gray, filename, varargin{1:end});
+%!    else
+%!      imwrite (gray, cmap, filename, varargin{1:end});
+%!    endif
+%!    fid = fopen (filename);
+%!    unwind_protect
+%!      compression = fread (fid, 31)(end);
+%!    unwind_protect_cleanup
+%!      fclose (fid);
+%!    end_unwind_protect
+%!  unwind_protect_cleanup
+%!    unlink (filename);
+%!  end_unwind_protect
+%!endfunction
+
+## BMP images must be saved uncompressed by default
+%!testif HAVE_MAGICK <45565>
+%! assert (get_bmp_compression ("", [], "BMP"), 0);
+%! assert (get_bmp_compression ("", [], "bmp"), 0);
+%! assert (get_bmp_compression (".BMP"), 0);
+%! assert (get_bmp_compression (".bmp"), 0);
+%! assert (get_bmp_compression (".bmp", [], "bmp"), 0);
+%! assert (get_bmp_compression ("", gray (256), "bmp"), 0);
+%! assert (get_bmp_compression (".bmp", gray (256), "Compression", "rle"), 1);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -22,10 +22,12 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Max Brister <max@2bass.com>
 
-#if !defined (octave_jit_ir_h)
+#if ! defined (octave_jit_ir_h)
 #define octave_jit_ir_h 1
 
-#ifdef HAVE_LLVM
+#include "octave-config.h"
+
+#if defined (HAVE_LLVM)
 
 #include <list>
 #include <stack>
@@ -72,7 +74,7 @@ JIT_VISIT_IR_NOTEMPLATE
 
 #undef JIT_METH
 
-// ABCs which aren't included in  JIT_VISIT_IR_ALL
+// ABCs which aren't included in JIT_VISIT_IR_ALL
 class jit_instruction;
 class jit_terminator;
 
@@ -100,7 +102,9 @@ class
 jit_factory
 {
   typedef std::list<jit_value *> value_list;
+
 public:
+
   ~jit_factory (void);
 
   const value_list& constants (void) const { return mconstants; }
@@ -114,6 +118,7 @@ public:
   }
 
 #define DECL_ARG(n) const ARG ## n& arg ## n
+
 #define JIT_CREATE(N)                                           \
   template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
   T *create (OCT_MAKE_LIST (DECL_ARG, N))                       \
@@ -130,7 +135,9 @@ public:
 
 #undef JIT_CREATE
 #undef DECL_ARG
+
 private:
+
   void track_value (jit_value *v);
 
   value_list all_values;
@@ -189,7 +196,7 @@ jit_value : public jit_internal_list<jit_value, jit_use>
 {
 public:
   jit_value (void) : llvm_value (0), ty (0), mlast_use (0),
-                     min_worklist (false) {}
+                     min_worklist (false) { }
 
   virtual ~jit_value (void);
 
@@ -338,6 +345,7 @@ public:
   }
 
 #define STASH_ARG(i) stash_argument (i, arg ## i);
+
 #define JIT_INSTRUCTION_CTOR(N)                                         \
   jit_instruction (OCT_MAKE_DECL_LIST (jit_value *, arg, N))            \
   : already_infered (N), marguments (N), mid (next_id ()), mparent (0)  \
@@ -730,8 +738,8 @@ public:
   // used to prevent visiting the same node twice in the graph
   size_t visit_count (void) const { return mvisit_count; }
 
-  // check if this node has been visited yet at the given visit count. If we
-  // have not been visited yet, mark us as visited.
+  // check if this node has been visited yet at the given visit count.
+  // If we have not been visited yet, mark us as visited.
   bool visited (size_t avisit_count)
   {
     if (mvisit_count <= avisit_count)
@@ -807,8 +815,8 @@ public:
 
   const std::string &name (void) const { return mname; }
 
-  // manipulate the value_stack, for use during SSA construction. The top of
-  // the  value stack represents the current value for this variable
+  // manipulate the value_stack, for use during SSA construction.  The top of
+  // the value stack represents the current value for this variable
   bool has_top (void) const
   {
     return ! value_stack.empty ();
@@ -870,7 +878,7 @@ public:
   jit_assign_base (jit_variable *adest) : jit_instruction (), mdest (adest) { }
 
   jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
-                                                        mdest (adest) {}
+                                                        mdest (adest) { }
 
   jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
     : jit_instruction (arg0, arg1), mdest (adest) { }
@@ -917,7 +925,7 @@ public:
   }
 
   // variables don't get modified in an SSA, but COW requires we modify
-  // variables. An artificial assign is for when a variable gets modified. We
+  // variables.  An artificial assign is for when a variable gets modified.  We
   // need an assign in the SSA, but the reference counts shouldn't be updated.
   bool artificial (void) const { return martificial; }
 
@@ -1020,10 +1028,11 @@ class
 jit_terminator : public jit_instruction
 {
 public:
-#define JIT_TERMINATOR_CONST(N)                                         \
-  jit_terminator (size_t asuccessor_count,                              \
-                  OCT_MAKE_DECL_LIST (jit_value *, arg, N))             \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),                     \
+
+#define JIT_TERMINATOR_CONST(N)                                 \
+  jit_terminator (size_t asuccessor_count,                      \
+                  OCT_MAKE_DECL_LIST (jit_value *, arg, N))     \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),             \
       malive (asuccessor_count, false) { }
 
   JIT_TERMINATOR_CONST (1)
@@ -1414,7 +1423,7 @@ jit_ir_walker
 public:
   virtual ~jit_ir_walker () { }
 
-#define JIT_METH(clname) \
+#define JIT_METH(clname)                        \
   virtual void visit (jit_ ## clname&) = 0;
 
   JIT_VISIT_IR_CLASSES;
@@ -1433,3 +1442,4 @@ jit_const<T, EXTRACT_T, PASS_T, QUOTE>::accept (jit_ir_walker& walker)
 
 #endif
 #endif
+

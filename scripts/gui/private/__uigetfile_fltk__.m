@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Michael Goffioul
+## Copyright (C) 2012-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uigetfile_fltk__ ()
+## @deftypefn {} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uigetfile_fltk__ ()
 ## Undocumented internal function.
 ## @end deftypefn
 

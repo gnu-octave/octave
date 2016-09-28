@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isfigure (@var{h})
+## @deftypefn {} {} isfigure (@var{h})
 ## Return true if @var{h} is a figure graphics handle and false otherwise.
 ##
 ## If @var{h} is a matrix then return a logical array which is true where the
-## elements of @var{h} are figure graphics handles and false where they are not.
+## elements of @var{h} are figure graphics handles and false where they are
+## not.
 ## @seealso{isaxes, ishandle}
 ## @end deftypefn
 

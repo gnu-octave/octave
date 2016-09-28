@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <algorithm>
@@ -35,10 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 // The bulk of the work.
-template <class T>
+template <typename T>
 static Array<T>
 do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
@@ -80,7 +80,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
     }
 }
 
-template <class T>
+template <typename T>
 static Array<T>
 do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
@@ -126,15 +126,12 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 // These two are by David Bateman.
 // FIXME: optimizations possible. "pack" support missing.
 
-template <class T>
+template <typename T>
 static Sparse<T>
 do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
-    {
-      error ("tril: \"pack\" not implemented for sparse matrices");
-      return Sparse<T> ();
-    }
+    error ("tril: \"pack\" not implemented for sparse matrices");
 
   Sparse<T> m = a;
   octave_idx_type nc = m.cols ();
@@ -145,18 +142,16 @@ do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
         m.data(i) = 0.;
 
   m.maybe_compress (true);
+
   return m;
 }
 
-template <class T>
+template <typename T>
 static Sparse<T>
 do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
-    {
-      error ("triu: \"pack\" not implemented for sparse matrices");
-      return Sparse<T> ();
-    }
+    error ("triu: \"pack\" not implemented for sparse matrices");
 
   Sparse<T> m = a;
   octave_idx_type nc = m.cols ();
@@ -171,14 +166,14 @@ do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 }
 
 // Convenience dispatchers.
-template <class T>
+template <typename T>
 static Array<T>
 do_trilu (const Array<T>& a, octave_idx_type k, bool lower, bool pack)
 {
   return lower ? do_tril (a, k, pack) : do_triu (a, k, pack);
 }
 
-template <class T>
+template <typename T>
 static Sparse<T>
 do_trilu (const Sparse<T>& a, octave_idx_type k, bool lower, bool pack)
 {
@@ -189,227 +184,214 @@ static octave_value
 do_trilu (const std::string& name,
           const octave_value_list& args)
 {
-  bool lower = name == "tril";
+  bool lower = (name == "tril");
 
-  octave_value retval;
   int nargin = args.length ();
-  octave_idx_type k = 0;
   bool pack = false;
+
   if (nargin >= 2 && args(nargin-1).is_string ())
     {
-      pack = args(nargin-1).string_value () == "pack";
+      pack = (args(nargin-1).string_value () == "pack");
       nargin--;
-    }
-
-  if (nargin == 2)
-    {
-      k = args(1).int_value (true);
-
-      if (error_state)
-        return retval;
     }
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  else
+
+  octave_idx_type k = 0;
+  if (nargin == 2)
+    k = args(1).idx_type_value (true);
+
+  octave_value arg = args(0);
+
+  dim_vector dims = arg.dims ();
+  if (dims.ndims () != 2)
+    error ("%s: need a 2-D matrix", name.c_str ());
+  else if (k < -dims(0) || k > dims(1))
+    error ("%s: requested diagonal out of range", name.c_str ());
+
+  octave_value retval;
+
+  switch (arg.builtin_type ())
     {
-      octave_value arg = args(0);
-
-      dim_vector dims = arg.dims ();
-      if (dims.length () != 2)
-        error ("%s: need a 2-D matrix", name.c_str ());
-      else if (k < -dims (0) || k > dims(1))
-        error ("%s: requested diagonal out of range", name.c_str ());
+    case btyp_double:
+      if (arg.is_sparse_type ())
+        retval = do_trilu (arg.sparse_matrix_value (), k, lower, pack);
       else
-        {
-          switch (arg.builtin_type ())
-            {
-            case btyp_double:
-              if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_matrix_value (), k, lower, pack);
-              else
-                retval = do_trilu (arg.array_value (), k, lower, pack);
-              break;
-            case btyp_complex:
-              if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
-                                   pack);
-              else
-                retval = do_trilu (arg.complex_array_value (), k, lower, pack);
-              break;
-            case btyp_bool:
-              if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
-                                   pack);
-              else
-                retval = do_trilu (arg.bool_array_value (), k, lower, pack);
-              break;
-#define ARRAYCASE(TYP) \
-            case btyp_ ## TYP: \
-              retval = do_trilu (arg.TYP ## _array_value (), k, lower, pack); \
-              break
-            ARRAYCASE (float);
-            ARRAYCASE (float_complex);
-            ARRAYCASE (int8);
-            ARRAYCASE (int16);
-            ARRAYCASE (int32);
-            ARRAYCASE (int64);
-            ARRAYCASE (uint8);
-            ARRAYCASE (uint16);
-            ARRAYCASE (uint32);
-            ARRAYCASE (uint64);
-            ARRAYCASE (char);
+        retval = do_trilu (arg.array_value (), k, lower, pack);
+      break;
+
+    case btyp_complex:
+      if (arg.is_sparse_type ())
+        retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
+                           pack);
+      else
+        retval = do_trilu (arg.complex_array_value (), k, lower, pack);
+      break;
+
+    case btyp_bool:
+      if (arg.is_sparse_type ())
+        retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
+                           pack);
+      else
+        retval = do_trilu (arg.bool_array_value (), k, lower, pack);
+      break;
+
+#define ARRAYCASE(TYP)                                                  \
+      case btyp_ ## TYP:                                                \
+        retval = do_trilu (arg.TYP ## _array_value (), k, lower, pack); \
+        break
+
+      ARRAYCASE (float);
+      ARRAYCASE (float_complex);
+      ARRAYCASE (int8);
+      ARRAYCASE (int16);
+      ARRAYCASE (int32);
+      ARRAYCASE (int64);
+      ARRAYCASE (uint8);
+      ARRAYCASE (uint16);
+      ARRAYCASE (uint32);
+      ARRAYCASE (uint64);
+      ARRAYCASE (char);
+
 #undef ARRAYCASE
-            default:
+
+    default:
+      {
+        // Generic code that works on octave-values, that is slow
+        // but will also work on arbitrary user types
+        if (pack) // FIXME
+          error ("%s: \"pack\" not implemented for class %s",
+                 name.c_str (), arg.class_name ().c_str ());
+
+        octave_value tmp = arg;
+        if (arg.is_empty ())
+          return arg;
+
+        octave_idx_type nr = dims(0);
+        octave_idx_type nc = dims(1);
+
+        // The sole purpose of this code is to force the correct matrix size.
+        // This would not be necessary if the octave_value resize function
+        // allowed a fill_value.  It also allows odd attributes in some user
+        // types to be handled.  With a fill_value, it should be replaced with
+        //
+        // octave_value_list ov_idx;
+        // tmp = tmp.resize(dim_vector (0,0)).resize (dims, fill_value);
+
+        octave_value_list ov_idx;
+        std::list<octave_value_list> idx_tmp;
+        ov_idx(1) = static_cast<double> (nc+1);
+        ov_idx(0) = Range (1, nr);
+        idx_tmp.push_back (ov_idx);
+        ov_idx(1) = static_cast<double> (nc);
+        tmp = tmp.resize (dim_vector (0,0));
+        tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
+        tmp = tmp.resize (dims);
+
+        if (lower)
+          {
+            octave_idx_type st = nc < nr + k ? nc : nr + k;
+
+            for (octave_idx_type j = 1; j <= st; j++)
               {
-                // Generic code that works on octave-values, that is slow
-                // but will also work on arbitrary user types
+                octave_idx_type nr_limit = 1 > j - k ? 1 : j - k;
+                ov_idx(1) = static_cast<double> (j);
+                ov_idx(0) = Range (nr_limit, nr);
+                std::list<octave_value_list> idx;
+                idx.push_back (ov_idx);
 
-                if (pack) // FIXME
-                  {
-                    error ("%s: \"pack\" not implemented for class %s",
-                           name.c_str (), arg.class_name ().c_str ());
-                    return octave_value ();
-                  }
-
-                octave_value tmp = arg;
-                if (arg.numel () == 0)
-                  return arg;
-
-                octave_idx_type nr = dims(0);
-                octave_idx_type nc = dims(1);
-
-                // The sole purpose of the below is to force the correct
-                // matrix size. This would not be necessary if the
-                // octave_value resize function allowed a fill_value.
-                // It also allows odd attributes in some user types
-                // to be handled. With a fill_value ot should be replaced
-                // with
-                //
-                // octave_value_list ov_idx;
-                // tmp = tmp.resize(dim_vector (0,0)).resize (dims, fill_value);
-
-                octave_value_list ov_idx;
-                std::list<octave_value_list> idx_tmp;
-                ov_idx(1) = static_cast<double> (nc+1);
-                ov_idx(0) = Range (1, nr);
-                idx_tmp.push_back (ov_idx);
-                ov_idx(1) = static_cast<double> (nc);
-                tmp = tmp.resize (dim_vector (0,0));
-                tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
-                tmp = tmp.resize (dims);
-
-                if (lower)
-                  {
-                    octave_idx_type st = nc < nr + k ? nc : nr + k;
-
-                    for (octave_idx_type j = 1; j <= st; j++)
-                      {
-                        octave_idx_type nr_limit = 1 > j - k ? 1 : j - k;
-                        ov_idx(1) = static_cast<double> (j);
-                        ov_idx(0) = Range (nr_limit, nr);
-                        std::list<octave_value_list> idx;
-                        idx.push_back (ov_idx);
-
-                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
-
-                        if (error_state)
-                          return retval;
-                      }
-                  }
-                else
-                  {
-                    octave_idx_type st = k + 1 > 1 ? k + 1 : 1;
-
-                    for (octave_idx_type j = st; j <= nc; j++)
-                      {
-                        octave_idx_type nr_limit = nr < j - k ? nr : j - k;
-                        ov_idx(1) = static_cast<double> (j);
-                        ov_idx(0) = Range (1, nr_limit);
-                        std::list<octave_value_list> idx;
-                        idx.push_back (ov_idx);
-
-                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
-
-                        if (error_state)
-                          return retval;
-                      }
-                  }
-
-                retval = tmp;
+                tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
               }
-            }
-        }
+          }
+        else
+          {
+            octave_idx_type st = k + 1 > 1 ? k + 1 : 1;
+
+            for (octave_idx_type j = st; j <= nc; j++)
+              {
+                octave_idx_type nr_limit = nr < j - k ? nr : j - k;
+                ov_idx(1) = static_cast<double> (j);
+                ov_idx(0) = Range (1, nr_limit);
+                std::list<octave_value_list> idx;
+                idx.push_back (ov_idx);
+
+                tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
+              }
+          }
+
+        retval = tmp;
+      }
     }
 
   return retval;
 }
 
 DEFUN (tril, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} tril (@var{A})\n\
-@deftypefnx {Function File} {} tril (@var{A}, @var{k})\n\
-@deftypefnx {Function File} {} tril (@var{A}, @var{k}, @var{pack})\n\
-@deftypefnx {Function File} {} triu (@var{A})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
-Return a new matrix formed by extracting the lower (@code{tril})\n\
-or upper (@code{triu}) triangular part of the matrix @var{A}, and\n\
-setting all other elements to zero.\n\
-\n\
-The second argument is optional, and specifies how many diagonals above or\n\
-below the main diagonal should also be set to zero.\n\
-\n\
-The default value of @var{k} is zero, so that @code{triu} and @code{tril}\n\
-normally include the main diagonal as part of the result.\n\
-\n\
-If the value of @var{k} is nonzero integer, the selection of elements starts\n\
-at an offset of @var{k} diagonals above or below the main diagonal; above\n\
-for positive @var{k} and below for negative @var{k}.\n\
-\n\
-The absolute value of @var{k} must not be greater than the number of\n\
-subdiagonals or superdiagonals.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-tril (ones (3), -1)\n\
-     @result{}  0  0  0\n\
-         1  0  0\n\
-         1  1  0\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-and\n\
-\n\
-@example\n\
-@group\n\
-tril (ones (3), 1)\n\
-     @result{}  1  1  0\n\
-         1  1  1\n\
-         1  1  1\n\
-@end group\n\
-@end example\n\
-\n\
-If the option @qcode{\"pack\"} is given as third argument, the extracted\n\
-elements are not inserted into a matrix, but rather stacked column-wise one\n\
-above other.\n\
-@seealso{diag}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} tril (@var{A})
+@deftypefnx {} {} tril (@var{A}, @var{k})
+@deftypefnx {} {} tril (@var{A}, @var{k}, @var{pack})
+@deftypefnx {} {} triu (@var{A})
+@deftypefnx {} {} triu (@var{A}, @var{k})
+@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})
+Return a new matrix formed by extracting the lower (@code{tril})
+or upper (@code{triu}) triangular part of the matrix @var{A}, and
+setting all other elements to zero.
+
+The second argument is optional, and specifies how many diagonals above or
+below the main diagonal should also be set to zero.
+
+The default value of @var{k} is zero, so that @code{triu} and @code{tril}
+normally include the main diagonal as part of the result.
+
+If the value of @var{k} is nonzero integer, the selection of elements starts
+at an offset of @var{k} diagonals above or below the main diagonal; above
+for positive @var{k} and below for negative @var{k}.
+
+The absolute value of @var{k} must not be greater than the number of
+subdiagonals or superdiagonals.
+
+For example:
+
+@example
+@group
+tril (ones (3), -1)
+     @result{}  0  0  0
+         1  0  0
+         1  1  0
+@end group
+@end example
+
+@noindent
+and
+
+@example
+@group
+tril (ones (3), 1)
+     @result{}  1  1  0
+         1  1  1
+         1  1  1
+@end group
+@end example
+
+If the option @qcode{"pack"} is given as third argument, the extracted
+elements are not inserted into a matrix, but rather stacked column-wise one
+above other.
+@seealso{diag}
+@end deftypefn */)
 {
   return do_trilu ("tril", args);
 }
 
 DEFUN (triu, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} triu (@var{A})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
-@deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
-See the documentation for the @code{tril} function (@pxref{tril}).\n\
-@seealso{tril}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} triu (@var{A})
+@deftypefnx {} {} triu (@var{A}, @var{k})
+@deftypefnx {} {} triu (@var{A}, @var{k}, @var{pack})
+See the documentation for the @code{tril} function (@pxref{tril}).
+@seealso{tril}
+@end deftypefn */)
 {
   return do_trilu ("triu", args);
 }
@@ -436,3 +418,4 @@ See the documentation for the @code{tril} function (@pxref{tril}).\n\
 
 %!error tril ()
 */
+

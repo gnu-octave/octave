@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2015 John W. Eaton
+## Copyright (C) 1998-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isletter (@var{s})
+## @deftypefn {} {} isletter (@var{s})
 ## Return a logical array which is true where the elements of @var{s}
 ## are letters and false where they are not.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} union (@var{a}, @var{b})
-## @deftypefnx {Function File} {@var{c} =} union (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@dots{})
+## @deftypefn  {} {@var{c} =} union (@var{a}, @var{b})
+## @deftypefnx {} {@var{c} =} union (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} union (@dots{})
 ##
 ## Return the unique elements that are in either @var{a} or @var{b} sorted in
 ## ascending order.
@@ -51,7 +51,7 @@ function [y, ia, ib] = union (a, b, varargin)
   [a, b] = validsetargs ("union", a, b, varargin{:});
 
   by_rows = nargin == 3;
-  isrowvec = isvector (a) && isvector (b) && isrow (a) && isrow (b);
+  isrowvec = isrow (a) && isrow (b);
 
   if (by_rows)
     y = [a; b];
@@ -67,7 +67,11 @@ function [y, ia, ib] = union (a, b, varargin)
     y = unique (y, varargin{:});
   else
     [y, idx] = unique (y, varargin{:});
-    na = numel (a);
+    if (by_rows)
+      na = rows (a);
+    else
+      na = numel (a);
+    end
     ia = idx(idx <= na);
     ib = idx(idx > na) - na;
   endif
@@ -79,6 +83,8 @@ endfunction
 %!assert (union ([1; 2; 4], [2, 3, 5]), [1; 2; 3; 4; 5])
 %!assert (union ([1; 2; 4], [2; 3; 5]), [1; 2; 3; 4; 5])
 %!assert (union ([1, 2, 3], [5; 7; 9]), [1; 2; 3; 5; 7; 9])
+%!assert (union ([1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
+%!        [1 2; 2 3; 3 4; 4 5; 5 6])
 
 ## Test multi-dimensional arrays
 %!test
@@ -93,6 +99,18 @@ endfunction
 %! [y, ia, ib] = union (a, b.');
 %! assert (y, [1; 2; 3; 4; 5]);
 %! assert (y, sort ([a(ia)'; b(ib)']));
+
+%!assert (nthargout (2:3, @union, [1, 2, 4], [2, 3, 5]), {[1, 3], [1, 2, 3]})
+%!assert (nthargout (2:3, @union, [1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
+%!        {[1; 3], [1; 2; 3]})
+
+## Test empty cell string array unions
+%!assert (union ({}, []), cell (0,1))
+%!assert (union ([], {}), cell (0,1))
+%!assert (union ([], {'a', 'b'}), {'a';'b'})
+%!assert (union ({'a', 'b'}, []), {'a';'b'})
+%!assert (union (['a', 'b'], {}), {'ab'})
+%!assert (union ({}, ['a', 'b']), {'ab'})
 
 ## Test common input validation for set routines contained in validsetargs
 %!error <cell array of strings cannot be combined> union ({"a"}, 1)

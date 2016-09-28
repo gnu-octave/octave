@@ -1,6 +1,6 @@
 /* -*- C++ -*-
 
-Copyright (C) 2009-2015 Jason Riedy
+Copyright (C) 2009-2016 Jason Riedy
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Sparse_perm_op_defs_h)
+#if ! defined (octave_Sparse_perm_op_defs_h)
 #define octave_Sparse_perm_op_defs_h 1
+
+#include "octave-config.h"
 
 // Matrix multiplication
 
@@ -62,10 +64,8 @@ SM octinternal_do_mul_pm_sm (const PermMatrix& p, const SM& a)
 {
   const octave_idx_type nr = a.rows ();
   if (p.cols () != nr)
-    {
-      gripe_nonconformant ("operator *", p.rows (), p.cols (), a.rows (), a.cols ());
-      return SM ();
-    }
+    octave::err_nonconformant ("operator *",
+                               p.rows (), p.cols (), a.rows (), a.cols ());
 
   return octinternal_do_mul_colpm_sm (p.col_perm_vec ().data (), a);
 }
@@ -148,12 +148,11 @@ SM octinternal_do_mul_sm_pm (const SM& a, const PermMatrix& p)
 {
   const octave_idx_type nc = a.cols ();
   if (p.rows () != nc)
-    {
-      gripe_nonconformant ("operator *", a.rows (), a.cols (), p.rows (), p.cols ());
-      return SM ();
-    }
+    octave::err_nonconformant ("operator *",
+                               a.rows (), a.cols (), p.rows (), p.cols ());
 
   return octinternal_do_mul_sm_colpm (a, p.col_perm_vec ().data ());
 }
 
-#endif // octave_Sparse_perm_op_defs_h
+#endif
+

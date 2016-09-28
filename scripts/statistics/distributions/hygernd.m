@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1997-2015 Kurt Hornik
+## Copyright (C) 1997-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hygernd (@var{t}, @var{m}, @var{n})
-## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r})
-## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, [@var{sz}])
+## @deftypefn  {} {} hygernd (@var{t}, @var{m}, @var{n})
+## @deftypefnx {} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r})
+## @deftypefnx {} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} hygernd (@var{t}, @var{m}, @var{n}, [@var{sz}])
 ## Return a matrix of random samples from the hypergeometric distribution
 ## with parameters @var{t}, @var{m}, and @var{n}.
 ##

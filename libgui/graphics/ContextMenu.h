@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ContextMenu__
-#define __QtHandles_ContextMenu__ 1
+#if ! defined (octave_ContextMenu_h)
+#define octave_ContextMenu_h 1
 
 #include <QPoint>
 
@@ -33,29 +33,30 @@ class QMenu;
 namespace QtHandles
 {
 
-class ContextMenu : public Object, public MenuContainer
-{
-  Q_OBJECT
+  class ContextMenu : public Object, public MenuContainer
+  {
+    Q_OBJECT
 
-public:
-  ContextMenu (const graphics_object& go, QMenu* menu);
-  ~ContextMenu (void);
+  public:
+    ContextMenu (const graphics_object& go, QMenu* menu);
+    ~ContextMenu (void);
 
-  static ContextMenu* create (const graphics_object& go);
-  static void executeAt (const base_properties& props, const QPoint& pt);
+    static ContextMenu* create (const graphics_object& go);
+    static void executeAt (const base_properties& props, const QPoint& pt);
 
-  Container* innerContainer (void) { return 0; }
+    Container* innerContainer (void) { return 0; }
 
-  QWidget* menu (void);
+    QWidget* menu (void);
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private slots:
-  void aboutToShow (void);
-  void aboutToHide (void);
-};
+  private slots:
+    void aboutToShow (void);
+    void aboutToHide (void);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

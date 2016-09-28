@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_chNDArray_h)
+#if ! defined (octave_chNDArray_h)
 #define octave_chNDArray_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -122,3 +124,4 @@ NDND_BOOL_OP_DECLS (charNDArray, charNDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (charNDArray, OCTAVE_API)
 
 #endif
+

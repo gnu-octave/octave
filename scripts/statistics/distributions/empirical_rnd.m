@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} empirical_rnd (@var{data})
-## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r})
-## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} empirical_rnd (@var{data}, [@var{sz}])
+## @deftypefn  {} {} empirical_rnd (@var{data})
+## @deftypefnx {} {} empirical_rnd (@var{data}, @var{r})
+## @deftypefnx {} {} empirical_rnd (@var{data}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} empirical_rnd (@var{data}, [@var{sz}])
 ## Return a matrix of random samples from the empirical distribution obtained
 ## from the univariate sample @var{data}.
 ##

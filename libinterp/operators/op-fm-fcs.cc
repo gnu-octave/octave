@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "mx-fm-fcs.h"
@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-fnda-fcs.h"
 #include "mx-fcs-fnda.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-flt-re-mat.h"
@@ -51,12 +51,13 @@ DEFNDBINOP_OP (mul, float_matrix, float_complex, float_array, float_complex, *)
 
 DEFBINOP (div, float_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_complex&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplex d = v2.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_array_value () / d);
 }
@@ -65,7 +66,8 @@ DEFBINOP_FN (pow, float_matrix, float_complex, xpow)
 
 DEFBINOP (ldiv, float_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_complex&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatMatrix m1 = v1.float_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -95,12 +97,13 @@ DEFNDBINOP_OP (el_mul, float_matrix, float_complex, float_array,
 
 DEFBINOP (el_div, float_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_complex&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplex d = v2.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_array_value () / d);
 }
@@ -110,7 +113,8 @@ DEFNDBINOP_FN (el_pow, float_matrix, float_complex, float_array,
 
 DEFBINOP (el_ldiv, float_matrix, flaot_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_complex&);
+  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   return x_el_div (v2.float_complex_value (), v1.float_array_value ());
 }
@@ -161,3 +165,4 @@ install_fm_fcs_ops (void)
   INSTALL_ASSIGNCONV (octave_matrix, octave_float_complex,
                       octave_complex_matrix);
 }
+

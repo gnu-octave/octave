@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 David Bateman
+## Copyright (C) 2009-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binary (@var{f})
+## @deftypefn {} {} binary (@var{f})
 ## Set the FTP connection @var{f} to use binary mode for transfers.
 ##
 ## In binary mode there is no conversion of newlines from the remote

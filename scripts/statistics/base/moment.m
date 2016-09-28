@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} moment (@var{x}, @var{p})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{type})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{dim})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
-## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
+## @deftypefn  {} {} moment (@var{x}, @var{p})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
+## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
 ## Compute the @var{p}-th central moment of the vector @var{x}.
 ##
 ## @tex
@@ -151,7 +151,7 @@ function m = moment (x, p, opt1, opt2)
       type = opt2;
       dim = opt1;
     else
-      error ("moment: expecting TYPE to be a string");
+      error ("moment: TYPE must be a string");
     endif
   endif
 
@@ -161,12 +161,12 @@ function m = moment (x, p, opt1, opt2)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (! (isscalar (dim) && dim == fix (dim)) || ! (1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("moment: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
 
   if (! any (type == "r"))
     x = center (x, dim);
@@ -191,6 +191,8 @@ endfunction
 
 %!assert (moment (single ([1 2 3]), 1, "r"), single (2))
 
+%!assert (moment (1, 2, 4), 0)
+
 ## Test input validation
 %!error moment ()
 %!error moment (1)
@@ -199,8 +201,7 @@ endfunction
 %!error <X must be a non-empty numeric matrix> moment (ones (2,0,3), 2)
 %!error <P must be a numeric scalar> moment (1, true)
 %!error <P must be a numeric scalar> moment (1, ones (2,2))
-%!error <expecting TYPE to be a string> moment (1, 2, 3, 4)
+%!error <TYPE must be a string> moment (1, 2, 3, 4)
 %!error <DIM must be an integer and a valid dimension> moment (1, 2, ones (2,2))
 %!error <DIM must be an integer and a valid dimension> moment (1, 2, 1.5)
-%!error <DIM must be an integer and a valid dimension> moment (1, 2, 4)
 

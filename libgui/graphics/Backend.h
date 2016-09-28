@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_Backend__
-#define __QtHandles_Backend__ 1
+#if ! defined (octave_Backend_h)
+#define octave_Backend_h 1
 
 #include <QObject>
 
@@ -30,43 +30,44 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-class Object;
-class ObjectProxy;
+  class Object;
+  class ObjectProxy;
 
-class Backend :
+  class Backend :
   public QObject,
   public base_graphics_toolkit
-{
-  Q_OBJECT
+  {
+    Q_OBJECT
 
-public:
-  Backend (void);
+  public:
+    Backend (void);
 
-  ~Backend (void);
+    ~Backend (void);
 
-  bool is_valid (void) const { return true; }
+    bool is_valid (void) const { return true; }
 
-  void redraw_figure (const graphics_object& h) const;
+    void redraw_figure (const graphics_object& h) const;
 
-  void update (const graphics_object& obj, int pId);
+    void update (const graphics_object& obj, int pId);
 
-  bool initialize (const graphics_object& obj);
+    bool initialize (const graphics_object& obj);
 
-  void finalize (const graphics_object& obj);
+    void finalize (const graphics_object& obj);
 
-  void print_figure (const graphics_object& go,
-                     const std::string& term,
-                     const std::string& file_cmd, bool /*mono*/,
-                     const std::string& /*debug_file*/) const;
+    void print_figure (const graphics_object& go,
+                       const std::string& term,
+                       const std::string& file_cmd,
+                       const std::string& /*debug_file*/) const;
 
-  static Object* toolkitObject (const graphics_object& go);
+    static Object* toolkitObject (const graphics_object& go);
 
-  static ObjectProxy* toolkitObjectProxy (const graphics_object& go);
+    static ObjectProxy* toolkitObjectProxy (const graphics_object& go);
 
-signals:
-  void createObject (double handle);
-};
+  signals:
+    void createObject (double handle);
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

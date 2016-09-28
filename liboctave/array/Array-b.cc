@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate Arrays of bool values.
@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
-#define INLINE_ASCENDING_SORT
-#define INLINE_DESCENDING_SORT
+#define INLINE_ASCENDING_SORT 1
+#define INLINE_DESCENDING_SORT 1
 #include "oct-sort.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
@@ -41,7 +41,7 @@ extern template class OCTAVE_API Array<octave_idx_type>;
 
 // Specialize bool sorting (aka stable partitioning).
 
-template<bool desc>
+template <bool desc>
 static void do_bool_partition (bool *data, octave_idx_type nel)
 {
   octave_idx_type k = 0;
@@ -52,7 +52,7 @@ static void do_bool_partition (bool *data, octave_idx_type nel)
     data[i] = ! desc;
 }
 
-template<bool desc>
+template <bool desc>
 static void do_bool_partition (bool *data, octave_idx_type *idx,
                                octave_idx_type nel)
 {
@@ -79,7 +79,8 @@ static void do_bool_partition (bool *data, octave_idx_type *idx,
     }
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type nel,
                          std::less<bool>)
@@ -87,7 +88,8 @@ octave_sort<bool>::sort (bool *data, octave_idx_type nel,
   do_bool_partition<false> (data, nel);
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type nel,
                          std::greater<bool>)
@@ -95,7 +97,8 @@ octave_sort<bool>::sort (bool *data, octave_idx_type nel,
   do_bool_partition<true> (data, nel);
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
                          std::less<bool>)
@@ -103,7 +106,8 @@ octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
   do_bool_partition<false> (data, idx, nel);
 }
 
-template <> template <>
+template <>
+template <>
 void
 octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
                          std::greater<bool>)
@@ -122,3 +126,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<bool>;
+

@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -43,7 +43,7 @@ boolMatrix::operator == (const boolMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return mx_inline_equal (length (), data (), a.data ());
+  return mx_inline_equal (numel (), data (), a.data ());
 }
 
 bool
@@ -88,3 +88,4 @@ MM_BOOL_OPS (boolMatrix, boolMatrix)
 MS_BOOL_OPS (boolMatrix, bool)
 SM_BOOL_OPS (bool, boolMatrix)
 MM_CMP_OPS (boolMatrix, boolMatrix)
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_syscalls_h)
+#if ! defined (octave_oct_syscalls_h)
 #define octave_oct_syscalls_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -29,47 +31,106 @@ class string_vector;
 
 #include <sys/types.h>
 
-struct
-OCTAVE_API
-octave_syscalls
+namespace octave
 {
-  static int dup2 (int, int);
-  static int dup2 (int, int, std::string&);
+  namespace sys
+  {
+    extern OCTAVE_API int dup2 (int, int);
+    extern OCTAVE_API int dup2 (int, int, std::string&);
 
-  static int execvp (const std::string&, const string_vector&);
-  static int execvp (const std::string&, const string_vector&, std::string&);
+    extern OCTAVE_API int execvp (const std::string&, const string_vector&);
+    extern OCTAVE_API int execvp (const std::string&, const string_vector&,
+                                  std::string&);
 
-  static pid_t fork (std::string&);
-  static pid_t vfork (std::string&);
+    extern OCTAVE_API pid_t fork (std::string&);
 
-  static pid_t getpgrp (std::string&);
+    extern OCTAVE_API pid_t vfork (std::string&);
 
-  static pid_t getpid (void);
-  static pid_t getppid (void);
+    extern OCTAVE_API pid_t getpgrp (std::string&);
 
-  static gid_t getgid (void);
-  static gid_t getegid (void);
+    extern OCTAVE_API pid_t getpid (void);
 
-  static uid_t getuid (void);
-  static uid_t geteuid (void);
+    extern OCTAVE_API pid_t getppid (void);
 
-  static int pipe (int *);
-  static int pipe (int *, std::string&);
+    extern OCTAVE_API gid_t getgid (void);
 
-  static pid_t waitpid (pid_t, int *status, int);
-  static pid_t waitpid (pid_t, int *status, int, std::string&);
+    extern OCTAVE_API gid_t getegid (void);
 
-  static int kill (pid_t, int);
-  static int kill (pid_t, int, std::string&);
+    extern OCTAVE_API uid_t getuid (void);
 
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *);
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *,
-                       std::string&);
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *,
-                       std::string&, bool &interactive);
-};
+    extern OCTAVE_API uid_t geteuid (void);
+
+    extern OCTAVE_API int pipe (int *);
+    extern OCTAVE_API int pipe (int *, std::string&);
+
+    extern OCTAVE_API pid_t waitpid (pid_t, int *status, int);
+    extern OCTAVE_API pid_t waitpid (pid_t, int *status, int, std::string&);
+
+    extern OCTAVE_API int wcontinue (void);
+
+    extern OCTAVE_API int wcoredump (int status);
+
+    extern OCTAVE_API bool wifcontinued (int status);
+
+    extern OCTAVE_API bool wifexited (int status);
+
+    extern OCTAVE_API bool wifsignaled (int status);
+
+    extern OCTAVE_API bool wifstopped (int status);
+
+    extern OCTAVE_API int wexitstatus (int status);
+
+    extern OCTAVE_API int wnohang (void);
+
+    extern OCTAVE_API int wstopsig (int status);
+
+    extern OCTAVE_API int wtermsig (int status);
+
+    extern OCTAVE_API int wuntraced (void);
+
+    extern OCTAVE_API int kill (pid_t, int);
+    extern OCTAVE_API int kill (pid_t, int, std::string&);
+
+    extern OCTAVE_API pid_t
+    popen2 (const std::string&, const string_vector&, bool, int *);
+
+    extern OCTAVE_API pid_t
+    popen2 (const std::string&, const string_vector&, bool, int *,
+            std::string&);
+
+    extern OCTAVE_API int fcntl (int, int, long);
+    extern OCTAVE_API int fcntl (int, int, long, std::string&);
+  }
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+inline pid_t
+octave_popen2 (const std::string& cmd, const string_vector& args,
+               bool sync_mode, int *filedes)
+{
+  return octave::sys::popen2 (cmd, args, sync_mode, filedes);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+inline pid_t
+popen2 (const std::string& cmd, const string_vector& args,
+        bool sync_mode, int *filedes, std::string& msg)
+{
+  return octave::sys::popen2 (cmd, args, sync_mode, filedes, msg);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::sys::popen2' instead")
+inline pid_t
+popen2 (const std::string& cmd, const string_vector& args,
+        bool sync_mode, int *filedes, std::string& msg,
+        bool &/*interactive*/)
+{
+  return octave::sys::popen2 (cmd, args, sync_mode, filedes, msg);
+}
 
 #endif
 
-extern OCTAVE_API int octave_fcntl (int, int, long);
-extern OCTAVE_API int octave_fcntl (int, int, long, std::string&);
+#endif
+

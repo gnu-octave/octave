@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 VZLU Prague a.s., Czech Republic
+Copyright (C) 2008-2016 VZLU Prague a.s., Czech Republic
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Jaroslav Hajek <highegg@gmail.com>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cctype>
@@ -36,8 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 
 static
@@ -83,7 +83,7 @@ stri_comp_gt (const std::string& a, const std::string& b)
 }
 #endif
 
-template <class T>
+template <typename T>
 inline sortmode
 get_sort_mode (const Array<T>& array,
                typename octave_sort<T>::compare_fcn_type desc_comp
@@ -98,15 +98,15 @@ get_sort_mode (const Array<T>& array,
 
 // FIXME: perhaps there should be octave_value::lookup?
 // The question is, how should it behave w.r.t. the second argument's type.
-// We'd need a dispatch on two arguments. Hmmm...
+// We'd need a dispatch on two arguments.  Hmmm...
 
-#define INT_ARRAY_LOOKUP(TYPE) \
-  (table.is_ ## TYPE ## _type () && y.is_ ## TYPE ## _type ()) \
-    retval = do_numeric_lookup (table.TYPE ## _array_value (), \
-                                y.TYPE ## _array_value (), \
-                                left_inf, right_inf, \
+#define INT_ARRAY_LOOKUP(TYPE)                                  \
+  (table.is_ ## TYPE ## _type () && y.is_ ## TYPE ## _type ())  \
+    retval = do_numeric_lookup (table.TYPE ## _array_value (),  \
+                                y.TYPE ## _array_value (),      \
+                                left_inf, right_inf,            \
                                 match_idx, match_bool);
-template <class ArrayT>
+template <typename ArrayT>
 static octave_value
 do_numeric_lookup (const ArrayT& array, const ArrayT& values,
                    bool left_inf, bool right_inf,
@@ -146,7 +146,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
         }
       else if (left_inf && right_inf)
         {
-          // Results in valid indices. Optimize using lazy index.
+          // Results in valid indices.  Optimize using lazy index.
           octave_idx_type zero = 0;
           for (octave_idx_type i = 0; i < nval; i++)
             {
@@ -158,7 +158,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
         }
       else if (left_inf)
         {
-          // Results in valid indices. Optimize using lazy index.
+          // Results in valid indices.  Optimize using lazy index.
           octave_idx_type zero = 0;
           for (octave_idx_type i = 0; i < nval; i++)
             {
@@ -188,70 +188,67 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 }
 
 DEFUN (lookup, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
-Lookup values in a sorted table.\n\
-\n\
-This function is usually used as a prelude to interpolation.\n\
-\n\
-If table is increasing and @code{idx = lookup (table, y)}, then\n\
-@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within\n\
-the table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If\n\
-@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is\n\
-@code{n}.\n\
-\n\
-If the table is decreasing, then the tests are reversed.\n\
-For non-strictly monotonic tables, empty intervals are always skipped.\n\
-The result is undefined if @var{table} is not monotonic, or if\n\
-@var{table} contains a NaN.\n\
-\n\
-The complexity of the lookup is O(M*log(N)) where N is the size of\n\
-@var{table} and M is the size of @var{y}.  In the special case when @var{y}\n\
-is also sorted, the complexity is O(min(M*log(N),M+N)).\n\
-\n\
-@var{table} and @var{y} can also be cell arrays of strings\n\
-(or @var{y} can be a single string).  In this case, string lookup\n\
-is performed using lexicographical comparison.\n\
-\n\
-If @var{opts} is specified, it must be a string with letters indicating\n\
-additional options.\n\
-\n\
-@table @code\n\
-@item m\n\
-@code{table(idx(i)) == val(i)} if @code{val(i)}\n\
-occurs in table; otherwise, @code{idx(i)} is zero.\n\
-\n\
-@item b\n\
-@code{idx(i)} is a logical 1 or 0, indicating whether\n\
-@code{val(i)} is contained in table or not.\n\
-\n\
-@item l\n\
-For numeric lookups\n\
-the leftmost subinterval shall be extended to infinity (i.e., all indices\n\
-at least 1)\n\
-\n\
-@item r\n\
-For numeric lookups\n\
-the rightmost subinterval shall be extended to infinity (i.e., all indices\n\
-at most n-1).\n\
-@end table\n\
-@end deftypefn")
-{
-  octave_value retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{idx} =} lookup (@var{table}, @var{y})
+@deftypefnx {} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})
+Lookup values in a sorted table.
 
+This function is usually used as a prelude to interpolation.
+
+If table is increasing and @code{idx = lookup (table, y)}, then
+@code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)} within
+the table.  If @code{y(i) < table(1)} then @code{idx(i)} is 0.  If
+@code{y(i) >= table(end)} or @code{isnan (y(i))} then @code{idx(i)} is
+@code{n}.
+
+If the table is decreasing, then the tests are reversed.
+For non-strictly monotonic tables, empty intervals are always skipped.
+The result is undefined if @var{table} is not monotonic, or if
+@var{table} contains a NaN.
+
+The complexity of the lookup is O(M*log(N)) where N is the size of
+@var{table} and M is the size of @var{y}.  In the special case when @var{y}
+is also sorted, the complexity is O(min(M*log(N),M+N)).
+
+@var{table} and @var{y} can also be cell arrays of strings
+(or @var{y} can be a single string).  In this case, string lookup
+is performed using lexicographical comparison.
+
+If @var{opts} is specified, it must be a string with letters indicating
+additional options.
+
+@table @code
+@item m
+@code{table(idx(i)) == val(i)} if @code{val(i)}
+occurs in table; otherwise, @code{idx(i)} is zero.
+
+@item b
+@code{idx(i)} is a logical 1 or 0, indicating whether
+@code{val(i)} is contained in table or not.
+
+@item l
+For numeric lookups
+the leftmost subinterval shall be extended to infinity (i.e., all indices
+at least 1)
+
+@item r
+For numeric lookups
+the rightmost subinterval shall be extended to infinity (i.e., all indices
+at most n-1).
+@end table
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 3 || (nargin == 3 && ! args(2).is_string ()))
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
 
   octave_value table = args(0);
   octave_value y = args(1);
   if (table.ndims () > 2 || (table.columns () > 1 && table.rows () > 1))
     warning ("lookup: table is not a vector");
+
+  octave_value retval;
 
   bool num_case = ((table.is_numeric_type () && y.is_numeric_type ())
                    || (table.is_char_matrix () && y.is_char_matrix ()));
@@ -263,17 +260,14 @@ at most n-1).\n\
 
   if (nargin == 3)
     {
-      std::string opt = args(2).string_value ();
+      std::string opt = args(2).xstring_value ("lookup: OPT must be a string");
       left_inf = contains_char (opt, 'l');
       right_inf = contains_char (opt, 'r');
       match_idx = contains_char (opt, 'm');
       match_bool = contains_char (opt, 'b');
       if (opt.find_first_not_of ("lrmb") != std::string::npos)
-        {
-          error ("lookup: unrecognized option: %c",
-                 opt[opt.find_first_not_of ("lrmb")]);
-          return retval;
-        }
+        error ("lookup: unrecognized option: %c",
+               opt[opt.find_first_not_of ("lrmb")]);
     }
 
   if ((match_idx || match_bool) && (left_inf || right_inf))
@@ -283,15 +277,10 @@ at most n-1).\n\
   else if (str_case && (left_inf || right_inf))
     error ("lookup: l, r are not recognized for string lookups");
 
-  if (error_state)
-    return retval;
-
   if (num_case)
     {
-
       // In the case of a complex array, absolute values will be used for
       // compatibility (though it's not too meaningful).
-
       if (table.is_complex_type ())
         table = table.abs ();
 
@@ -324,7 +313,6 @@ at most n-1).\n\
                                     y.array_value (),
                                     left_inf, right_inf,
                                     match_idx, match_bool);
-
     }
   else if (str_case)
     {
@@ -373,7 +361,6 @@ at most n-1).\n\
     print_usage ();
 
   return retval;
-
 }
 
 /*
@@ -399,3 +386,4 @@ at most n-1).\n\
 %!assert (lookup ({"apple","lemon","orange"}, "potato"), 3)
 %!assert (lookup ({"orange","lemon","apple"}, "potato"), 0)
 */
+

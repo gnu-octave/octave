@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_scalar_h)
+#if ! defined (octave_ov_scalar_h)
 #define octave_ov_scalar_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -34,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "str-vec.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "ov-base.h"
 #include "ov-re-mat.h"
 #include "ov-base-scalar.h"
@@ -122,10 +124,12 @@ public:
   uint64_array_value (void) const
   { return uint64NDArray (dim_vector (1, 1), scalar); }
 
-#define DEFINE_INT_SCALAR_VALUE(TYPE) \
-  octave_ ## TYPE \
-  TYPE ## _scalar_value (void) const \
-    { return octave_ ## TYPE (scalar); }
+#define DEFINE_INT_SCALAR_VALUE(TYPE)           \
+  octave_ ## TYPE                               \
+  TYPE ## _scalar_value (void) const            \
+  {                                             \
+    return octave_ ## TYPE (scalar);            \
+  }
 
   DEFINE_INT_SCALAR_VALUE (int8)
   DEFINE_INT_SCALAR_VALUE (int16)
@@ -163,7 +167,7 @@ public:
   SparseMatrix sparse_matrix_value (bool = false) const
   { return SparseMatrix (Matrix (1, 1, scalar)); }
 
-  // FIXME Need SparseComplexMatrix (Matrix) constructor!!!
+  // FIXME: Need SparseComplexMatrix (Matrix) constructor!
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
   { return SparseComplexMatrix (sparse_matrix_value ()); }
 
@@ -174,10 +178,10 @@ public:
   FloatComplex float_complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return  ComplexMatrix (1, 1, Complex (scalar)); }
+  { return ComplexMatrix (1, 1, Complex (scalar)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return  FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
+  { return FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
@@ -195,23 +199,36 @@ public:
 
   bool bool_value (bool warn = false) const
   {
-    if (xisnan (scalar))
-      gripe_nan_to_logical_conversion ();
-    else if (warn && scalar != 0 && scalar != 1)
-      gripe_logical_conversion ();
+    if (octave::math::isnan (scalar))
+      octave::err_nan_to_logical_conversion ();
+    if (warn && scalar != 0 && scalar != 1)
+      warn_logical_conversion ();
 
     return scalar;
   }
 
   boolNDArray bool_array_value (bool warn = false) const
   {
-    if (xisnan (scalar))
-      gripe_nan_to_logical_conversion ();
-    else if (warn && scalar != 0 && scalar != 1)
-      gripe_logical_conversion ();
+    if (octave::math::isnan (scalar))
+      octave::err_nan_to_logical_conversion ();
+    if (warn && scalar != 0 && scalar != 1)
+      warn_logical_conversion ();
 
     return boolNDArray (dim_vector (1, 1), scalar);
   }
+
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
@@ -228,7 +245,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -236,7 +253,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   {
     return os.write (array_value (), block_size, output_type,
                      skip, flt_fmt);
@@ -250,8 +267,8 @@ public:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

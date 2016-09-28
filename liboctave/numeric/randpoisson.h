@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2015 John W. Eaton
+Copyright (C) 2006-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,20 +23,22 @@ along with Octave; see the file COPYING.  If not, see
 /* Original version written by Paul Kienzle distributed as free
    software in the in the public domain.  */
 
-#ifndef _RANDPOISSON_H
+#if ! defined (octave_randpoisson_h)
+#define octave_randpoisson_h 1
 
-#ifdef  __cplusplus
-extern "C" {
+#include "octave-config.h"
+
+extern OCTAVE_API double
+oct_randp (double L);
+
+extern OCTAVE_API void
+oct_fill_randp (double L, octave_idx_type n, double *p);
+
+extern OCTAVE_API float
+oct_float_randp (float L);
+
+extern OCTAVE_API void
+oct_fill_float_randp (float L, octave_idx_type n, float *p);
+
 #endif
 
-extern OCTAVE_API double oct_randp (double L);
-extern OCTAVE_API void oct_fill_randp (double L, octave_idx_type n, double *p);
-
-extern OCTAVE_API float oct_float_randp (float L);
-extern OCTAVE_API void oct_fill_float_randp (float L, octave_idx_type n,
-                                             float *p);
-
-#ifdef  __cplusplus
-}
-#endif
-#endif

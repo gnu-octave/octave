@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 Michael Goffioul
+Copyright (C) 2013-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "txt-eng.h"
@@ -37,3 +37,4 @@ text_element_symbol::get_symbol_code (void) const
 
   return code;
 }
+

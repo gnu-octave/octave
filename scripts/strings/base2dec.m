@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Daniel Calvelo
+## Copyright (C) 2000-2016 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} base2dec (@var{s}, @var{base})
+## @deftypefn {} {} base2dec (@var{s}, @var{base})
 ## Convert @var{s} from a string of digits in base @var{base} to a decimal
 ## integer (base 10).
 ##
@@ -121,8 +121,7 @@ endfunction
 %!assert (base2dec ("-1", 2), NaN)
 %!assert (base2dec ({"A1", "1A"}, 16), [161; 26])
 
-## Bug #35621
-%!assert (base2dec (["0"; "1"], 2), [0; 1])
+%!assert <35621> (base2dec (["0"; "1"], 2), [0; 1])
 
 ## Test input validation
 %!error base2dec ()

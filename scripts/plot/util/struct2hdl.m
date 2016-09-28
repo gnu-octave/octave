@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 pdiribarne
+## Copyright (C) 2012-2016 pdiribarne
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} struct2hdl (@var{s})
-## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p})
-## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p}, @var{hilev})
+## @deftypefn  {} {@var{h} =} struct2hdl (@var{s})
+## @deftypefnx {} {@var{h} =} struct2hdl (@var{s}, @var{p})
+## @deftypefnx {} {@var{h} =} struct2hdl (@var{s}, @var{p}, @var{hilev})
 ## Construct a graphics handle object @var{h} from the structure @var{s}.
 ##
 ## The structure must contain the fields @qcode{"handle"}, @qcode{"type"},
@@ -101,7 +101,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   names = fieldnames (s.properties);
   n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
   n = (n | strcmp (names, "activepositionproperty"));
-  names = [names(!n); names(n)];
+  names = [names(! n); names(n)];
   if (strcmp (s.type, "axes"))
     n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
     if (strcmp (s.properties.activepositionproperty, "position"))
@@ -153,7 +153,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   elseif (strcmp (s.type, "hggroup"))
     [h, s, p] = createhg (s, p, par, hilev);
   else
-    error ("struct2hdl: %s objects are not implemented yet", s.type)
+    error ("struct2hdl: %s objects are not implemented yet", s.type);
   endif
 
   ## children
@@ -162,11 +162,11 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   nkids = length (kids);
   ii = 0;
   while (nkids)
-    ii++;
+    ii += 1;
     if (! any (ii == s.special))
       [h2, p] = struct2hdl (s.children(ii), [p [s.handle; h]], hilev);
     endif
-    nkids--;
+    nkids -= 1;
   endwhile
 
   ## paste properties
@@ -177,8 +177,9 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 endfunction
 
 function [h, sout] = createaxes (s, p, par)
-  ## regular axes
+
   if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
+    ## regular axes
     propval = {"position", s.properties.position};
     hid = {"autopos_tag", "looseinset"};
     for ii = 1:numel (hid)
@@ -257,8 +258,8 @@ function [h, sout] = createaxes (s, p, par)
       legend ("hide");
     endif
 
-    ## remove all properties such as "textposition" that redefines
-    ## the entire legend. Also remove chidren
+    ## remove all properties such as "textposition" that redefine
+    ## the entire legend.  Also remove chidren.
     s.properties = rmfield (s.properties, ...
                               {"userdata", "xlabel",...
                                "ylabel", "zlabel", "location", ...
@@ -283,7 +284,9 @@ function [h, sout] = createaxes (s, p, par)
       error ("hdl2struct: didn't find an object");
     endif
   endif
+
   sout = s;
+
 endfunction
 
 function h = createline (s, par)
@@ -292,6 +295,7 @@ function h = createline (s, par)
 endfunction
 
 function [h, sout] = createpatch (s, par)
+
   prp.faces = s.properties.faces;
   prp.vertices = s.properties.vertices;
   prp.facevertexcdata = s.properties.facevertexcdata;
@@ -305,6 +309,7 @@ function [h, sout] = createpatch (s, par)
   s.properties = rmfield (s.properties, {"xdata", "ydata", "zdata", "cdata"});
   addmissingprops (h, s.properties);
   sout = s;
+
 endfunction
 
 function h = createtext (s, par)
@@ -357,11 +362,14 @@ function [h, sout, pout] = createhg (s, p, par, hilev)
     addmissingprops (h, s.properties);
     s.special = [];
   endif
+
   sout = s;
   pout = p;
+
 endfunction
 
 function [h, sout, pout] = createhg_hilev (s, p, par)
+
   fields = s.properties;
   if (isfield (fields, "contourmatrix"))
     ## contours
@@ -542,16 +550,19 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
                               {"xdata", "ydata", ...
                                "xdatasource", "ydatasource"});
   else
-    warning ("struct2hdl: could not infer the hggroup type. Will build objects but listener/callback functions will be lost");
+    warning ("struct2hdl: could not infer the hggroup type.  Will build objects but listener/callback functions will be lost");
     h = hggroup ("parent", par);
     addmissingprops (h, s.properties);
     s.special = [];           # children will be treated as normal children
   endif
+
   sout = s;
   pout = p;
+
 endfunction
 
 function setprops (s, h, p, hilev)
+
   if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     specs = s.children(s.special);
     if (isempty (specs))
@@ -565,7 +576,7 @@ function setprops (s, h, p, hilev)
       set (h, s.properties);
     else
       ## Specials are objects that where automatically constructed with
-      ## current object. Among them are "x(yz)labels", "title", high
+      ## current object.  Among them are "x(yz)labels", "title", high
       ## level hggroup children
       fields = fieldnames (s.properties);
       vals = struct2cell (s.properties);
@@ -575,7 +586,7 @@ function setprops (s, h, p, hilev)
       ## set all properties but special handles
       set (h, s.properties);
 
-      ## find  props with val == (one of special handles)
+      ## find props with val == (one of special handles)
       nf = length (idx);
       fields = fields(idx);
       vals = vals(idx);
@@ -587,11 +598,11 @@ function setprops (s, h, p, hilev)
            h2 = get (h , field);
            set (h2, spec.properties);
         endif
-        nf--;
+        nf -= 1;
       endwhile
 
-      ## If hggroup children  were created by high level functions,
-      ## copy only usefull properties.
+      ## If hggroup children were created by high level functions,
+      ## copy only useful properties.
       if (hilev)
         if (strcmp (s.type, "hggroup"))
           nold = numel (s.children);
@@ -607,7 +618,7 @@ function setprops (s, h, p, hilev)
               catch
                 sprintf ("struct2hdl: couldn't set hggroup children #%d props.", ii);
               end_try_catch
-              ii ++;
+              ii += 1;
             endwhile
 
           else
@@ -624,14 +635,17 @@ function setprops (s, h, p, hilev)
 endfunction
 
 function out = valcomp (x, hdls)
+
   if (isfloat (x) && isscalar (x))
     out = any (x == hdls);
   else
     out = 0;
   endif
+
 endfunction
 
 function addmissingprops (h, props)
+
   hid = {"autopos_tag", "looseinset"};
   oldfields = fieldnames (props);
   curfields = fieldnames (get (h));
@@ -643,6 +657,7 @@ function addmissingprops (h, props)
       addproperty (prop, h, "any");
     endif
   endfor
+
 endfunction
 
 

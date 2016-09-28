@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} assert (@var{cond})
-## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg})
-## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
-## @deftypefnx {Function File} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
-## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected})
-## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected}, @var{tol})
+## @deftypefn  {} {} assert (@var{cond})
+## @deftypefnx {} {} assert (@var{cond}, @var{errmsg})
+## @deftypefnx {} {} assert (@var{cond}, @var{errmsg}, @dots{})
+## @deftypefnx {} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
+## @deftypefnx {} {} assert (@var{observed}, @var{expected})
+## @deftypefnx {} {} assert (@var{observed}, @var{expected}, @var{tol})
 ##
 ## Produce an error if the specified condition is not met.
 ##
@@ -77,7 +77,7 @@ function assert (cond, varargin)
 
   unwind_protect
 
-    call_depth++;
+    call_depth += 1;
 
     if (call_depth == 0)
       errmsg = "";
@@ -271,7 +271,7 @@ function assert (cond, varargin)
 
           errvec = (  isnan (real (A)) != isnan (real (B))
                     | isnan (imag (A)) != isnan (imag (B)));
-          erridx = find (errvec & !errseen);
+          erridx = find (errvec & ! errseen);
           if (! isempty (erridx))
             err.index(end+1:end+length (erridx)) = ...
               ind2tuple (size (A), erridx);
@@ -288,7 +288,7 @@ function assert (cond, varargin)
                       & (real (A) != real (B)))             ...
                    | ((isinf (imag (A)) | isinf (imag (B))) ...
                       & (imag (A) != imag (B)));
-          erridx = find (errvec & !errseen);
+          erridx = find (errvec & ! errseen);
           if (! isempty (erridx))
             err.index(end+1:end+length (erridx)) = ...
               ind2tuple (size (A), erridx);
@@ -399,7 +399,7 @@ function assert (cond, varargin)
     endif
 
   unwind_protect_cleanup
-    call_depth--;
+    call_depth -= 1;
   end_unwind_protect
 
   if (call_depth == -1)
@@ -447,20 +447,20 @@ endfunction
 %!error <Abs err 4.4409e-0?16 exceeds tol> assert (3, 3+2*eps, eps)
 
 ## vectors
-%!assert ([1,2,3],[1,2,3]);
-%!assert ([1;2;3],[1;2;3]);
-%!error <Abs err 1 exceeds tol 0> assert ([2,2,3,3],[1,2,3,4]);
-%!error <Abs err 1 exceeds tol 0.5> assert ([2,2,3,3],[1,2,3,4],0.5);
-%!error <Rel err 1 exceeds tol 0.1> assert ([2,2,3,5],[1,2,3,4],-0.1);
-%!error <Abs err 1 exceeds tol 0> assert ([6;6;7;7],[5;6;7;8]);
-%!error <Abs err 1 exceeds tol 0.5> assert ([6;6;7;7],[5;6;7;8],0.5);
-%!error <Rel err .* exceeds tol 0.1> assert ([6;6;7;7],[5;6;7;8],-0.1);
-%!error <Dimensions don't match> assert ([1,2,3],[1;2;3]);
-%!error <Dimensions don't match> assert ([1,2],[1,2,3]);
-%!error <Dimensions don't match> assert ([1;2;3],[1;2]);
+%!assert ([1,2,3],[1,2,3])
+%!assert ([1;2;3],[1;2;3])
+%!error <Abs err 1 exceeds tol 0> assert ([2,2,3,3],[1,2,3,4])
+%!error <Abs err 1 exceeds tol 0.5> assert ([2,2,3,3],[1,2,3,4],0.5)
+%!error <Rel err 1 exceeds tol 0.1> assert ([2,2,3,5],[1,2,3,4],-0.1)
+%!error <Abs err 1 exceeds tol 0> assert ([6;6;7;7],[5;6;7;8])
+%!error <Abs err 1 exceeds tol 0.5> assert ([6;6;7;7],[5;6;7;8],0.5)
+%!error <Rel err .* exceeds tol 0.1> assert ([6;6;7;7],[5;6;7;8],-0.1)
+%!error <Dimensions don't match> assert ([1,2,3],[1;2;3])
+%!error <Dimensions don't match> assert ([1,2],[1,2,3])
+%!error <Dimensions don't match> assert ([1;2;3],[1;2])
 
 ## matrices
-%!assert ([1,2;3,4],[1,2;3,4]);
+%!assert ([1,2;3,4],[1,2;3,4])
 %!error <\(1,2\)\s+4\s+2> assert ([1,4;3,4],[1,2;3,4])
 %!error <Dimensions don't match> assert ([1,3;2,4;3,5],[1,2;3,4])
 %!test  # 2-D matrix
@@ -480,10 +480,10 @@ endfunction
 %!error <Rel err .* exceeds tol> assert (100, 100+300*eps, -2*eps)
 
 ## test relative vs. absolute tolerances
-%!test  assert (0.1+eps, 0.1,  2*eps);
-%!error <Rel err 2.2204e-0?15 exceeds tol> assert (0.1+eps, 0.1, -2*eps);
+%!test  assert (0.1+eps, 0.1, 2*eps);
+%!error <Rel err 2.2204e-0?15 exceeds tol> assert (0.1+eps, 0.1, -2*eps)
 %!test  assert (100+100*eps, 100, -2*eps);
-%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100,  2*eps);
+%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100, 2*eps)
 
 ## Corner case of relative tolerance with 0 divider
 %!error <Abs err 2 exceeds tol 0.1> assert (2, 0, -0.1)

@@ -1,5 +1,5 @@
-## Copyright (C) 2012-2015 Rik Wehbring
-## Copyright (C) 2012-2015 Carnë Draug
+## Copyright (C) 2012-2016 Rik Wehbring
+## Copyright (C) 2012-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rgbplot (@var{cmap})
-## @deftypefnx {Function File} {} rgbplot (@var{cmap}, @var{style})
-## @deftypefnx {Function File} {@var{h} =} rgbplot (@dots{})
+## @deftypefn  {} {} rgbplot (@var{cmap})
+## @deftypefnx {} {} rgbplot (@var{cmap}, @var{style})
+## @deftypefnx {} {@var{h} =} rgbplot (@dots{})
 ## Plot the components of a colormap.
 ##
 ## Two different @var{style}s are available for displaying the @var{cmap}:
@@ -29,7 +29,7 @@
 ## @item profile (default)
 ## Plot the RGB line profile of the colormap for each of the channels (red,
 ## green and blue) with the plot lines colored appropriately.  Each line
-## represents the intensity of each RGB components across the colormap.
+## represents the intensity of an RGB component across the colormap.
 ##
 ## @item composite
 ## Draw the colormap across the X-axis so that the actual index colors are
@@ -58,11 +58,13 @@ function h = rgbplot (cmap, style = "profile")
 
   switch (tolower (style))
     case "profile"
-      htmp = plot (cmap(:,1),"r", cmap(:,2),"g", cmap(:,3),"b");
-      set (gca, 'ytick', 0:0.1:1);
+      x = 1:rows (cmap);
+      htmp = plot (x,cmap(:,1),"r", x,cmap(:,2),"g", x,cmap(:,3),"b");
+      set (gca (), "ytick", 0:0.1:1);
+      set (gca (), "xlim", [0 rows(cmap)]);
     case "composite"
-      htmp = image (1:rows(cmap));
-      set (gca, 'ytick', []);
+      htmp = image (1:rows (cmap));
+      set (gca, "ytick", []);
       colormap (cmap);
     otherwise
       error ("rgbplot: unknown style '%s'", style);
@@ -79,9 +81,9 @@ endfunction
 %!demo
 %! clf;
 %! subplot (1, 2, 1);
-%! rgbplot (ocean, "profile");
+%!  rgbplot (ocean, "profile");
 %! subplot (1, 2, 2);
-%! rgbplot (ocean, "composite");
+%!  rgbplot (ocean, "composite");
 
 ## Test input validation
 %!error rgbplot ()

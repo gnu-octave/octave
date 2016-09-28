@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2015 Nir Krakauer
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2014-2016 Nir Krakauer
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -19,13 +19,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@var{y}, @var{xi})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, "left")
-## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, "right")
-## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, "pp")
+## @deftypefn  {} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+## @deftypefnx {} {@var{yi} =} interp1 (@var{y}, @var{xi})
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, @var{method})
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, @var{extrap})
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, "left")
+## @deftypefnx {} {@var{yi} =} interp1 (@dots{}, "right")
+## @deftypefnx {} {@var{pp} =} interp1 (@dots{}, "pp")
 ##
 ## One-dimensional interpolation.
 ##
@@ -75,8 +75,8 @@
 ## be supplied and @code{interp1} returns a piecewise polynomial object.  This
 ## object can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
-## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x}, @var{y},
-## @var{xi}, @var{method}, @qcode{"extrap"})}.
+## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x},
+## @var{y}, @var{xi}, @var{method}, @qcode{"extrap"})}.
 ##
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## may be at most 2 consecutive points with the same value.
@@ -467,7 +467,7 @@ endfunction
 %! h = plot (x, interp1 (x1, y1, x), 'b', x1, y1, 'sb');
 %! hold on
 %! g = plot (x, interp1 (x2, y2, x), 'r', x2, y2, '*r');
-%! axis ([0.5 3.5 -0.5 1.5])
+%! axis ([0.5 3.5 -0.5 1.5]);
 %! legend ([h(1), g(1)], {'left-continuous', 'right-continuous'}, ...
 %!         'location', 'northwest')
 %! legend boxoff
@@ -634,8 +634,8 @@ endfunction
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
-%!assert (interp1 ([1 2 2 3], [1 2 3 4], 2), 3);
-%!assert (interp1 ([3 2 2 1], [4 3 2 1], 2), 2);
+%!assert (interp1 ([1 2 2 3], [1 2 3 4], 2), 3)
+%!assert (interp1 ([3 2 2 1], [4 3 2 1], 2), 2)
 %!error interp1 (1,1,1, style)
 ## ENDBLOCK
 
@@ -793,5 +793,5 @@ endfunction
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "pchip")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "cubic")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "spline")
-%!error <invalid method 'bogus'> interp1 (1:2,1:2,1, "bogus")
+%!error <invalid method 'invalid'> interp1 (1:2,1:2,1, "invalid")
 

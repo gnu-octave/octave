@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lo_utils_h)
+#if ! defined (octave_lo_utils_h)
 #define octave_lo_utils_h 1
+
+#include "octave-config.h"
 
 #include <cstdio>
 
@@ -35,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Generic any/all test functionality with arbitrary predicate.
 
-template <class F, class T, bool zero>
+template <typename F, typename T, bool zero>
 bool
 any_all_test (F fcn, const T *m, octave_idx_type len)
 {
@@ -135,52 +137,5 @@ octave_write_float (std::ostream& os, float dval);
 extern OCTAVE_API void
 octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
 
-// Maybe this is overkill, but it allos
-
-class
-octave_wait
-{
-public:
-
-  static bool ifexited (int status)
-  {
-    return octave_wifexited (status);
-  }
-
-  static int exitstatus (int status)
-  {
-    return octave_wexitstatus (status);
-  }
-
-  static bool ifsignaled (int status)
-  {
-    return octave_wifsignaled (status);
-  }
-
-  static int termsig (int status)
-  {
-    return octave_wtermsig (status);
-  }
-
-  static bool coredump (int status)
-  {
-    return octave_wcoredump (status);
-  }
-
-  static bool ifstopped (int status)
-  {
-    return octave_wifstopped (status);
-  }
-
-  static int stopsig (int status)
-  {
-    return octave_wstopsig (status);
-  }
-
-  static bool ifcontinued (int status)
-  {
-    return octave_wifcontinued (status);
-  }
-};
-
 #endif
+

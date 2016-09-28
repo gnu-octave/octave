@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,17 +20,24 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_error_h)
+#if ! defined (octave_error_h)
 #define octave_error_h 1
+
+#include "octave-config.h"
 
 #include <cstdarg>
 #include <string>
 
+#include "unwind-prot.h"
+
 class octave_map;
 class octave_value_list;
-class unwind_protect;
+namespace octave
+{
+  class execution_exception;
+}
 
-#define panic_impossible() \
+#define panic_impossible()                                              \
   panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
 extern OCTINTERP_API void reset_error_handler (void);
@@ -42,20 +49,37 @@ vmessage (const char *name, const char *fmt, va_list args);
 
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
-extern OCTINTERP_API void vusage (const char *fmt, va_list args);
-extern OCTINTERP_API void usage (const char *fmt, ...);
+OCTAVE_DEPRECATED ("use 'print_usage' or 'verror' instead")
+OCTAVE_NORETURN OCTINTERP_API extern
+void vusage (const char *fmt, va_list args);
+
+OCTAVE_DEPRECATED ("use 'print_usage' or 'error' instead")
+OCTAVE_NORETURN OCTINTERP_API extern
+void usage (const char *fmt, ...);
 
 extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
 extern OCTINTERP_API void warning (const char *fmt, ...);
 
-extern OCTINTERP_API void verror (const char *fmt, va_list args);
-extern OCTINTERP_API void error (const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void verror (const char *fmt, va_list args);
 
-extern OCTINTERP_API void verror_with_cfn (const char *fmt, va_list args);
-extern OCTINTERP_API void error_with_cfn (const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void error (const char *fmt, ...);
 
-extern OCTINTERP_API void vparse_error (const char *fmt, va_list args);
-extern OCTINTERP_API void parse_error (const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void verror (octave::execution_exception&, const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void error (octave::execution_exception&, const char *fmt, ...);
+
+OCTAVE_NORETURN OCTINTERP_API extern
+void verror_with_cfn (const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void error_with_cfn (const char *fmt, ...);
+
+OCTAVE_NORETURN OCTINTERP_API extern
+void vparse_error (const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void parse_error (const char *fmt, ...);
 
 extern OCTINTERP_API void
 vmessage_with_id (const char *id, const char *name,
@@ -64,11 +88,11 @@ vmessage_with_id (const char *id, const char *name,
 extern OCTINTERP_API void
 message_with_id (const char *id, const char *name, const char *fmt, ...);
 
-extern OCTINTERP_API void
-vusage_with_id (const char *id, const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void vusage_with_id (const char *id, const char *fmt, va_list args);
 
-extern OCTINTERP_API void
-usage_with_id (const char *id, const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void usage_with_id (const char *id, const char *fmt, ...);
 
 extern OCTINTERP_API void
 vwarning_with_id (const char *id, const char *fmt, va_list args);
@@ -76,25 +100,26 @@ vwarning_with_id (const char *id, const char *fmt, va_list args);
 extern OCTINTERP_API void
 warning_with_id (const char *id, const char *fmt, ...);
 
-extern OCTINTERP_API void
-verror_with_id (const char *id, const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void verror_with_id (const char *id, const char *fmt, va_list args);
 
-extern OCTINTERP_API void
-error_with_id (const char *id, const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void error_with_id (const char *id, const char *fmt, ...);
 
-extern OCTINTERP_API void
-verror_with_id_cfn (const char *id, const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void verror_with_id_cfn (const char *id, const char *fmt, va_list args);
 
-extern OCTINTERP_API void
-error_with_id_cfn (const char *id, const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void error_with_id_cfn (const char *id, const char *fmt, ...);
 
-extern OCTINTERP_API void
-vparse_error_with_id (const char *id, const char *fmt, va_list args);
+OCTAVE_NORETURN OCTINTERP_API extern
+void vparse_error_with_id (const char *id, const char *fmt, va_list args);
 
-extern OCTINTERP_API void
-parse_error_with_id (const char *id, const char *fmt, ...);
+OCTAVE_NORETURN OCTINTERP_API extern
+void parse_error_with_id (const char *id, const char *fmt, ...);
 
-extern OCTINTERP_API void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
+OCTAVE_NORETURN OCTINTERP_API extern
+void panic (const char *fmt, ...);
 
 // Helper function for print_usage defined in defun.cc.
 extern OCTINTERP_API void defun_usage_message (const std::string& msg);
@@ -113,6 +138,10 @@ extern OCTINTERP_API void initialize_default_warning_state (void);
 // traceback message (you will only see the top-level error message).
 extern OCTINTERP_API bool Vdebug_on_error;
 
+// TRUE means that Octave will try to enter the debugger when an error
+// is encountered within the 'try' section of a 'try' / 'catch' block.
+extern OCTINTERP_API bool Vdebug_on_caught;
+
 // TRUE means that Octave will try to enter the debugger when a warning
 // is encountered.
 extern OCTINTERP_API bool Vdebug_on_warning;
@@ -128,6 +157,10 @@ extern OCTINTERP_API int warning_state;
 // the 'unwind_protect' statement.
 extern OCTINTERP_API int buffer_error_messages;
 
+// The number of layers of try / catch blocks we're in.  Used to print
+// "caught error" instead of "error" when "dbstop if caught error" is on.
+extern OCTINTERP_API int in_try_catch;
+
 // TRUE means error messages are turned off.
 extern OCTINTERP_API bool discard_error_messages;
 
@@ -141,6 +174,7 @@ extern OCTINTERP_API octave_map last_error_stack (void);
 extern OCTINTERP_API std::string last_warning_message (void);
 extern OCTINTERP_API std::string last_warning_id (void);
 
-extern OCTINTERP_API void interpreter_try (unwind_protect&);
+extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
 #endif
+

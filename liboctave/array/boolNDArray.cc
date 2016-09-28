@@ -1,7 +1,7 @@
-// N-D Array  manipulations.
+// N-D Array manipulations.
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "Array-util.h"
@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "lo-ieee.h"
 #include "mx-op-defs.h"
-#include "MArray-defs.h"
 
 #include "bsxfun-defs.cc"
 
@@ -169,3 +168,4 @@ mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
 
 BSXFUN_OP_DEF_MXLOOP (and, boolNDArray, mx_inline_and)
 BSXFUN_OP_DEF_MXLOOP (or, boolNDArray, mx_inline_or)
+

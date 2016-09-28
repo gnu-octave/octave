@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_BaseControl__
-#define __QtHandles_BaseControl__ 1
+#if ! defined (octave_BaseControl_h)
+#define octave_BaseControl_h 1
 
 #include "Object.h"
 
@@ -31,25 +31,26 @@ class QObject;
 namespace QtHandles
 {
 
-class BaseControl : public Object
-{
-public:
-  BaseControl (const graphics_object& go, QWidget* w);
-  ~BaseControl (void);
+  class BaseControl : public Object
+  {
+  public:
+    BaseControl (const graphics_object& go, QWidget* w);
+    ~BaseControl (void);
 
-  Container* innerContainer (void) { return 0; }
+    Container* innerContainer (void) { return 0; }
 
-  bool eventFilter (QObject* watched, QEvent* e);
+    bool eventFilter (QObject* watched, QEvent* e);
 
-protected:
-  void init (QWidget* w, bool callBase = false);
-  void update (int pId);
+  protected:
+    void init (QWidget* w, bool callBase = false);
+    void update (int pId);
 
-private:
-  bool m_normalizedFont;
-  bool m_keyPressHandlerDefined;
-};
+  private:
+    bool m_normalizedFont;
+    bool m_keyPressHandlerDefined;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Søren Hauberg
+## Copyright (C) 2005-2016 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unload_packages (@var{files}, @var{handle_deps}, @var{local_list}, @var{global_list})
+## @deftypefn {} {} unload_packages (@var{files}, @var{handle_deps}, @var{local_list}, @var{global_list})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function unload_packages (files, handle_deps, local_list, global_list)
+
   installed_pkgs_lst = installed_packages (local_list, global_list);
   num_packages = length (installed_pkgs_lst);
 
@@ -37,23 +38,17 @@ function unload_packages (files, handle_deps, local_list, global_list)
   ## Get the current octave path.
   p = strtrim (ostrsplit (path (), pathsep ()));
 
-  if (length (files) == 1 && strcmp (files{1}, "all"))
-    ## Unload all.
-    dirs = pdirs;
-    desc = installed_pkgs_lst;
-  else
-    ## Unload package_name1 ...
-    dirs = {};
-    desc = {};
-    for i = 1:length (files)
-      idx = strcmp (pnames, files{i});
-      if (! any (idx))
-        error ("package %s is not installed", files{i});
-      endif
-        dirs{end+1} = pdirs{idx};
-        desc{end+1} = installed_pkgs_lst{idx};
-      endfor
-  endif
+  ## Unload package_name1 ...
+  dirs = {};
+  desc = {};
+  for i = 1:length (files)
+    idx = strcmp (pnames, files{i});
+    if (! any (idx))
+      error ("package %s is not installed", files{i});
+    endif
+    dirs{end+1} = pdirs{idx};
+    desc{end+1} = installed_pkgs_lst{idx};
+  endfor
 
   ## Check for architecture dependent directories.
   archdirs = {};
@@ -76,5 +71,5 @@ function unload_packages (files, handle_deps, local_list, global_list)
       ## FIXME: We should also check if we need to remove items from EXEC_PATH.
     endif
   endfor
-endfunction
 
+endfunction

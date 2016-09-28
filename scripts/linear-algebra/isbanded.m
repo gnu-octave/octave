@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Massimiliano Fasi
+## Copyright (C) 2014-2016 Massimiliano Fasi
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isbanded (@var{A}, @var{lower}, @var{upper})
+## @deftypefn {} {} isbanded (@var{A}, @var{lower}, @var{upper})
 ## Return true if @var{A} is a matrix with entries confined between
 ## @var{lower} diagonals below the main diagonal and @var{upper} diagonals
 ## above the main diagonal.
@@ -70,9 +70,9 @@ endfunction
 %!assert (isbanded (logical (eye (10)),1,1))
 
 %! A = [2 3 0 0 0; 1 2 3 0 0; 0 1 2 3 0; 0 0 1 2 3; 0 0 0 1 2];
-%! assert (isbanded (A,1,1))
-%! assert (! isbanded (A,0,1))
-%! assert (! isbanded (A,1,0))
+%! assert (isbanded (A,1,1));
+%! assert (! isbanded (A,0,1));
+%! assert (! isbanded (A,1,0));
 
 ## Test input validation
 %!error isbanded ()

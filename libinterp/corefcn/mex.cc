@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2015 John W. Eaton
+Copyright (C) 2006-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,7 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
 #include <cfloat>
 #include <csetjmp>
@@ -36,17 +38,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "Cell.h"
+#include "call-stack.h"
+#include "error.h"
+#include "interpreter.h"
 // mxArray must be declared as a class before including mexproto.h.
 #include "mxarray.h"
 #include "mexproto.h"
 #include "oct-map.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
-#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -90,26 +94,17 @@ valid_key (const char *key)
           for (int i = 1; i < nel; i++)
             {
               if (! (isalnum (key[i]) || key[i] == '_'))
-                goto done;
+                return retval;
             }
 
           retval = 1;
         }
     }
 
-done:
-
   return retval;
 }
 
 // ------------------------------------------------------------------
-
-void
-mxArray_base::error (const char *msg) const
-{
-  // FIXME
-  ::error ("%s", msg);
-}
 
 static mwIndex
 calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
@@ -301,14 +296,24 @@ public:
 
   void set_n (mwSize /*n*/) { request_mutation (); }
 
-  void set_dimensions (mwSize */*dims_arg*/, mwSize /*ndims_arg*/)
+  int set_dimensions (mwSize * /*dims_arg*/, mwSize /*ndims_arg*/)
   {
     request_mutation ();
+
+    return 0; 
   }
 
   mwSize get_number_of_elements (void) const { return val.numel (); }
 
   int is_empty (void) const { return val.is_empty (); }
+
+  bool is_scalar (void) const
+  {
+    // Force dims and ndims to be cached.
+    get_dimensions ();
+
+    return ndims == 2 && dims[0] == 1 && dims[1] == 1;
+  }  
 
   mxClassID get_class_id (void) const
   {
@@ -316,18 +321,20 @@ public:
 
     std::string cn = val.class_name ();
 
-    if (cn == "cell")
-      id = mxCELL_CLASS;
-    else if (cn == "struct")
-      id = mxSTRUCT_CLASS;
-    else if (cn == "logical")
-      id = mxLOGICAL_CLASS;
-    else if (cn == "char")
-      id = mxCHAR_CLASS;
-    else if (cn == "double")
+    if (cn == "double")
       id = mxDOUBLE_CLASS;
     else if (cn == "single")
       id = mxSINGLE_CLASS;
+    else if (cn == "char")
+      id = mxCHAR_CLASS;
+    else if (cn == "logical")
+      id = mxLOGICAL_CLASS;
+    else if (cn == "cell")
+      id = mxCELL_CLASS;
+    else if (cn == "struct")
+      id = mxSTRUCT_CLASS;
+    else if (cn == "function_handle")
+      id = mxFUNCTION_CLASS;
     else if (cn == "int8")
       id = mxINT8_CLASS;
     else if (cn == "uint8")
@@ -344,8 +351,6 @@ public:
       id = mxINT64_CLASS;
     else if (cn == "uint64")
       id = mxUINT64_CLASS;
-    else if (cn == "function_handle")
-      id = mxFUNCTION_CLASS;
 
     return id;
   }
@@ -362,7 +367,7 @@ public:
   }
 
   // Not allowed.
-  void set_class_name (const char */*name_arg*/) { request_mutation (); }
+  void set_class_name (const char * /*name_arg*/) { request_mutation (); }
 
   mxArray *get_cell (mwIndex /*idx*/) const
   {
@@ -371,9 +376,27 @@ public:
   }
 
   // Not allowed.
-  void set_cell (mwIndex /*idx*/, mxArray */*val*/) { request_mutation (); }
+  void set_cell (mwIndex /*idx*/, mxArray * /*val*/) { request_mutation (); }
 
-  double get_scalar (void) const { return val.scalar_value (true); }
+  double get_scalar (void) const
+  {
+    if (val.is_sparse_type ())
+      {
+        // For sparse arrays, return the first non-zero value. 
+        void * data = val.mex_get_data (); 
+        if (data == NULL)
+          return 0.0;
+
+        if (val.is_bool_type ())
+          return *static_cast<bool *> (data);
+        else if (val.is_real_type ())
+          return *static_cast<double *> (data);
+        else  // Complex type, only return real part
+          return *static_cast<double *> (data);
+      }
+    else
+      return val.scalar_value (true);
+  }
 
   void *get_data (void) const
   {
@@ -400,10 +423,10 @@ public:
   }
 
   // Not allowed.
-  void set_data (void */*pr*/) { request_mutation (); }
+  void set_data (void * /*pr*/) { request_mutation (); }
 
   // Not allowed.
-  void set_imag_data (void */*pi*/) { request_mutation (); }
+  void set_imag_data (void * /*pi*/) { request_mutation (); }
 
   mwIndex *get_ir (void) const
   {
@@ -418,16 +441,16 @@ public:
   mwSize get_nzmax (void) const { return val.nzmax (); }
 
   // Not allowed.
-  void set_ir (mwIndex */*ir*/) { request_mutation (); }
+  void set_ir (mwIndex * /*ir*/) { request_mutation (); }
 
   // Not allowed.
-  void set_jc (mwIndex */*jc*/) { request_mutation (); }
+  void set_jc (mwIndex * /*jc*/) { request_mutation (); }
 
   // Not allowed.
   void set_nzmax (mwSize /*nzmax*/) { request_mutation (); }
 
   // Not allowed.
-  int add_field (const char */*key*/)
+  int add_field (const char * /*key*/)
   {
     request_mutation ();
     return 0;
@@ -444,7 +467,7 @@ public:
 
   // Not allowed.
   void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
-                            mxArray */*val*/)
+                            mxArray * /*val*/)
   {
     request_mutation ();
   }
@@ -457,7 +480,7 @@ public:
     return 0;
   }
 
-  int get_field_number (const char */*key*/) const
+  int get_field_number (const char * /*key*/) const
   {
     request_mutation ();
     return 0;
@@ -488,7 +511,7 @@ public:
 
   char *array_to_string (void) const
   {
-    // FIXME: this is suposed to handle multi-byte character strings.
+    // FIXME: this is supposed to handle multi-byte character strings.
 
     char *buf = 0;
 
@@ -529,12 +552,13 @@ public:
 
     switch (id)
       {
-      case mxCELL_CLASS: return sizeof (mxArray *);
-      case mxSTRUCT_CLASS: return sizeof (mxArray *);
-      case mxLOGICAL_CLASS: return sizeof (mxLogical);
-      case mxCHAR_CLASS: return sizeof (mxChar);
       case mxDOUBLE_CLASS: return sizeof (double);
       case mxSINGLE_CLASS: return sizeof (float);
+      case mxCHAR_CLASS: return sizeof (mxChar);
+      case mxLOGICAL_CLASS: return sizeof (mxLogical);
+      case mxCELL_CLASS: return sizeof (mxArray *);
+      case mxSTRUCT_CLASS: return sizeof (mxArray *);
+      case mxFUNCTION_CLASS: return 0;
       case mxINT8_CLASS: return 1;
       case mxUINT8_CLASS: return 1;
       case mxINT16_CLASS: return 2;
@@ -543,7 +567,8 @@ public:
       case mxUINT32_CLASS: return 4;
       case mxINT64_CLASS: return 8;
       case mxUINT64_CLASS: return 8;
-      case mxFUNCTION_CLASS: return 0;
+      // FIXME: user-defined objects need their own class ID.
+      //        What should they return, size of pointer?
       default: return 0;
       }
   }
@@ -615,10 +640,15 @@ protected:
       ndims (ndims_arg < 2 ? 2 : ndims_arg),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
-    if (ndims_arg < 2)
+    if (ndims_arg == 0)
       {
         dims[0] = 0;
         dims[1] = 0;
+      }
+    else if (ndims_arg < 2)
+      {
+        dims[0] = 1;
+        dims[1] = 1;
       }
 
     for (mwIndex i = 0; i < ndims_arg; i++)
@@ -635,7 +665,7 @@ protected:
 
   mxArray_matlab (mxClassID id_arg, const dim_vector& dv)
     : mxArray_base (), class_name (0), id (id_arg),
-      ndims (dv.length ()),
+      ndims (dv.ndims ()),
       dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < ndims; i++)
@@ -735,10 +765,30 @@ public:
 
   void set_n (mwSize n) { dims[1] = n; }
 
-  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
+  int set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
   {
-    dims = dims_arg;
     ndims = ndims_arg;
+
+    mxFree (dims);
+
+    if (ndims > 0)
+      {
+        dims
+          = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
+        
+        if (dims == NULL)
+          return 1;
+
+        for (int i = 0; i < ndims; i++)
+          dims[i] = dims_arg[i];
+
+        return 0;
+      }
+    else
+      {
+        dims = 0;
+        return 0;
+      }
   }
 
   mwSize get_number_of_elements (void) const
@@ -753,18 +803,24 @@ public:
 
   int is_empty (void) const { return get_number_of_elements () == 0; }
 
+  bool is_scalar (void) const
+  {
+    return ndims == 2 && dims[0] == 1 && dims[1] == 1;
+  }
+
   mxClassID get_class_id (void) const { return id; }
 
   const char *get_class_name (void) const
   {
     switch (id)
       {
-      case mxCELL_CLASS: return "cell";
-      case mxSTRUCT_CLASS: return "struct";
-      case mxLOGICAL_CLASS: return "logical";
-      case mxCHAR_CLASS: return "char";
       case mxDOUBLE_CLASS: return "double";
       case mxSINGLE_CLASS: return "single";
+      case mxCHAR_CLASS: return "char";
+      case mxLOGICAL_CLASS: return "logical";
+      case mxCELL_CLASS: return "cell";
+      case mxSTRUCT_CLASS: return "struct";
+      case mxFUNCTION_CLASS: return "function_handle";
       case mxINT8_CLASS: return "int8";
       case mxUINT8_CLASS: return "uint8";
       case mxINT16_CLASS: return "int16";
@@ -773,7 +829,8 @@ public:
       case mxUINT32_CLASS: return "uint32";
       case mxINT64_CLASS: return "int64";
       case mxUINT64_CLASS: return "uint64";
-      case mxFUNCTION_CLASS: return "function_handle";
+      case mxUNKNOWN_CLASS: return "unknown";
+      // FIXME: should return the classname of user-defined objects
       default: return "unknown";
       }
   }
@@ -787,126 +844,113 @@ public:
 
   mxArray *get_cell (mwIndex /*idx*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
-  void set_cell (mwIndex /*idx*/, mxArray */*val*/)
+  void set_cell (mwIndex /*idx*/, mxArray * /*val*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   double get_scalar (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void *get_data (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void *get_imag_data (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
-  void set_data (void */*pr*/)
+  void set_data (void * /*pr*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
-  void set_imag_data (void */*pi*/)
+  void set_imag_data (void * /*pi*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   mwIndex *get_ir (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   mwIndex *get_jc (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   mwSize get_nzmax (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
-  void set_ir (mwIndex */*ir*/)
+  void set_ir (mwIndex * /*ir*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
-  void set_jc (mwIndex */*jc*/)
+  void set_jc (mwIndex * /*jc*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   void set_nzmax (mwSize /*nzmax*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
-  int add_field (const char */*key*/)
+  int add_field (const char * /*key*/)
   {
-    invalid_type_error ();
-    return -1;
+    err_invalid_type ();
   }
 
   void remove_field (int /*key_num*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   mxArray *get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
-                            mxArray */*val*/)
+                            mxArray * /*val*/)
   {
-    invalid_type_error ();
+    err_invalid_type ();
   }
 
   int get_number_of_fields (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   const char *get_field_name_by_number (int /*key_num*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
-  int get_field_number (const char */*key*/) const
+  int get_field_number (const char * /*key*/) const
   {
     return -1;
   }
 
-  int get_string (char */*buf*/, mwSize /*buflen*/) const
+  int get_string (char * /*buf*/, mwSize /*buflen*/) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   char *array_to_string (void) const
   {
-    invalid_type_error ();
-    return 0;
+    err_invalid_type ();
   }
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
@@ -933,6 +977,8 @@ public:
       case mxINT64_CLASS: return 8;
       case mxUINT64_CLASS: return 8;
       case mxFUNCTION_CLASS: return 0;
+      // FIXME: user-defined objects need their own class ID.
+      //        What should they return, size of pointer?
       default: return 0;
       }
   }
@@ -973,13 +1019,14 @@ private:
   mwSize ndims;
   mwSize *dims;
 
-  void invalid_type_error (void) const
+  OCTAVE_NORETURN void err_invalid_type (void) const
   {
     error ("invalid type for operation");
   }
 
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
+  // No assignment!
+  // FIXME: should this be implemented?
+  //        Note that we *do* have a copy constructor.
 
   mxArray_matlab& operator = (const mxArray_matlab&);
 };
@@ -991,12 +1038,18 @@ class mxArray_number : public mxArray_matlab
 public:
 
   mxArray_number (mxClassID id_arg, mwSize ndims_arg, const mwSize *dims_arg,
-                  mxComplexity flag = mxREAL)
+                  mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (id_arg, ndims_arg, dims_arg),
-      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
-                                               get_element_size ())
-                            : 0) { }
+      pr (init ? mxArray::calloc (get_number_of_elements (),
+                                  get_element_size ())
+               : mxArray::malloc (get_number_of_elements ()
+                                  * get_element_size ())),
+      pi (flag == mxCOMPLEX
+            ? (init ? mxArray::calloc (get_number_of_elements (),
+                                       get_element_size ())
+                    : mxArray::malloc (get_number_of_elements ()
+                                       * get_element_size ()))
+            : 0) { }
 
   mxArray_number (mxClassID id_arg, const dim_vector& dv,
                   mxComplexity flag = mxREAL)
@@ -1004,15 +1057,23 @@ public:
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
       pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
                                                get_element_size ())
-                            : 0) { }
+                            : 0)
+  { }
 
   mxArray_number (mxClassID id_arg, mwSize m, mwSize n,
-                  mxComplexity flag = mxREAL)
+                  mxComplexity flag = mxREAL, bool init = true)
     : mxArray_matlab (id_arg, m, n),
-      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
-                                               get_element_size ())
-                            : 0) { }
+      pr (init ? mxArray::calloc (get_number_of_elements (),
+                                  get_element_size ())
+               : mxArray::malloc (get_number_of_elements ()
+                                  * get_element_size ())),
+      pi (flag == mxCOMPLEX
+            ? (init ? mxArray::calloc (get_number_of_elements (),
+                                       get_element_size ())
+                    : mxArray::malloc (get_number_of_elements ()
+                                       * get_element_size ()))
+            : 0)
+  { }
 
   mxArray_number (mxClassID id_arg, double val)
     : mxArray_matlab (id_arg, 1, 1),
@@ -1087,20 +1148,20 @@ public:
 
     switch (get_class_id ())
       {
-      case mxLOGICAL_CLASS:
-        retval = *(static_cast<bool *> (pr));
-        break;
-
-      case mxCHAR_CLASS:
-        retval = *(static_cast<mxChar *> (pr));
+      case mxDOUBLE_CLASS:
+        retval = *(static_cast<double *> (pr));
         break;
 
       case mxSINGLE_CLASS:
         retval = *(static_cast<float *> (pr));
         break;
 
-      case mxDOUBLE_CLASS:
-        retval = *(static_cast<double *> (pr));
+      case mxCHAR_CLASS:
+        retval = *(static_cast<mxChar *> (pr));
+        break;
+
+      case mxLOGICAL_CLASS:
+        retval = *(static_cast<bool *> (pr));
         break;
 
       case mxINT8_CLASS:
@@ -1178,7 +1239,7 @@ public:
 
   char *array_to_string (void) const
   {
-    // FIXME: this is suposed to handle multi-byte character strings.
+    // FIXME: this is supposed to handle multi-byte character strings.
 
     mwSize nel = get_number_of_elements ();
 
@@ -1205,24 +1266,36 @@ public:
 
     switch (get_class_id ())
       {
-      case mxLOGICAL_CLASS:
-        retval = int_to_ov<mxLogical, boolNDArray, bool> (dv);
-        break;
-
-      case mxCHAR_CLASS:
+      case mxDOUBLE_CLASS:
         {
           mwSize nel = get_number_of_elements ();
 
-          mxChar *ppr = static_cast<mxChar *> (pr);
+          double *ppr = static_cast<double *> (pr);
 
-          charNDArray val (dv);
+          if (pi)
+            {
+              ComplexNDArray val (dv);
 
-          char *ptr = val.fortran_vec ();
+              Complex *ptr = val.fortran_vec ();
 
-          for (mwIndex i = 0; i < nel; i++)
-            ptr[i] = static_cast<char> (ppr[i]);
+              double *ppi = static_cast<double *> (pi);
 
-          retval = val;
+              for (mwIndex i = 0; i < nel; i++)
+                ptr[i] = Complex (ppr[i], ppi[i]);
+
+              retval = val;
+            }
+          else
+            {
+              NDArray val (dv);
+
+              double *ptr = val.fortran_vec ();
+
+              for (mwIndex i = 0; i < nel; i++)
+                ptr[i] = ppr[i];
+
+              retval = val;
+            }
         }
         break;
 
@@ -1259,37 +1332,25 @@ public:
         }
         break;
 
-      case mxDOUBLE_CLASS:
+      case mxCHAR_CLASS:
         {
           mwSize nel = get_number_of_elements ();
 
-          double *ppr = static_cast<double *> (pr);
+          mxChar *ppr = static_cast<mxChar *> (pr);
 
-          if (pi)
-            {
-              ComplexNDArray val (dv);
+          charNDArray val (dv);
 
-              Complex *ptr = val.fortran_vec ();
+          char *ptr = val.fortran_vec ();
 
-              double *ppi = static_cast<double *> (pi);
+          for (mwIndex i = 0; i < nel; i++)
+            ptr[i] = static_cast<char> (ppr[i]);
 
-              for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = Complex (ppr[i], ppi[i]);
-
-              retval = val;
-            }
-          else
-            {
-              NDArray val (dv);
-
-              double *ptr = val.fortran_vec ();
-
-              for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = ppr[i];
-
-              retval = val;
-            }
+          retval = val;
         }
+        break;
+
+      case mxLOGICAL_CLASS:
+        retval = int_to_ov<mxLogical, boolNDArray, bool> (dv);
         break;
 
       case mxINT8_CLASS:
@@ -1337,27 +1398,21 @@ protected:
   octave_value
   int_to_ov (const dim_vector& dv) const
   {
-    octave_value retval;
+    if (pi)
+      error ("complex integer types are not supported");
 
     mwSize nel = get_number_of_elements ();
 
     ELT_T *ppr = static_cast<ELT_T *> (pr);
 
-    if (pi)
-      error ("complex integer types are not supported");
-    else
-      {
-        ARRAY_T val (dv);
+    ARRAY_T val (dv);
 
-        ARRAY_ELT_T *ptr = val.fortran_vec ();
+    ARRAY_ELT_T *ptr = val.fortran_vec ();
 
-        for (mwIndex i = 0; i < nel; i++)
-          ptr[i] = ppr[i];
+    for (mwIndex i = 0; i < nel; i++)
+      ptr[i] = ppr[i];
 
-        retval = val;
-      }
-
-    return retval;
+    return octave_value (val);
   }
 
   mxArray_number (const mxArray_number& val)
@@ -1444,30 +1499,6 @@ public:
 
     switch (get_class_id ())
       {
-      case mxLOGICAL_CLASS:
-        {
-          bool *ppr = static_cast<bool *> (pr);
-
-          SparseBoolMatrix val (get_m (), get_n (),
-                                static_cast<octave_idx_type> (nzmax));
-
-          for (mwIndex i = 0; i < nzmax; i++)
-            {
-              val.xdata (i) = ppr[i];
-              val.xridx (i) = ir[i];
-            }
-
-          for (mwIndex i = 0; i < get_n () + 1; i++)
-            val.xcidx (i) = jc[i];
-
-          retval = val;
-        }
-        break;
-
-      case mxSINGLE_CLASS:
-        error ("single precision sparse data type not supported");
-        break;
-
       case mxDOUBLE_CLASS:
         {
           if (pi)
@@ -1508,6 +1539,30 @@ public:
               retval = val;
             }
         }
+        break;
+
+      case mxLOGICAL_CLASS:
+        {
+          bool *ppr = static_cast<bool *> (pr);
+
+          SparseBoolMatrix val (get_m (), get_n (),
+                                static_cast<octave_idx_type> (nzmax));
+
+          for (mwIndex i = 0; i < nzmax; i++)
+            {
+              val.xdata (i) = ppr[i];
+              val.xridx (i) = ir[i];
+            }
+
+          for (mwIndex i = 0; i < get_n () + 1; i++)
+            val.xcidx (i) = jc[i];
+
+          retval = val;
+        }
+        break;
+
+      case mxSINGLE_CLASS:
+        error ("single precision sparse data type not supported");
         break;
 
       default:
@@ -1843,7 +1898,7 @@ public:
   {
     mwSize nel = get_number_of_elements ();
 
-    for  (mwIndex i = 0; i < nel; i++)
+    for (mwIndex i = 0; i < nel; i++)
       delete data[i];
 
     mxFree (data);
@@ -1906,14 +1961,15 @@ mxArray::mxArray (const octave_value& ov)
   : rep (new mxArray_octave_value (ov)), name (0) { }
 
 mxArray::mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
-                  mxComplexity flag)
-  : rep (new mxArray_number (id, ndims, dims, flag)), name (0) { }
+                  mxComplexity flag, bool init)
+  : rep (new mxArray_number (id, ndims, dims, flag, init)), name (0) { }
 
 mxArray::mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag)
   : rep (new mxArray_number (id, dv, flag)), name (0) { }
 
-mxArray::mxArray (mxClassID id, mwSize m, mwSize n, mxComplexity flag)
-  : rep (new mxArray_number (id, m, n, flag)), name (0) { }
+mxArray::mxArray (mxClassID id, mwSize m, mwSize n,
+                  mxComplexity flag, bool init)
+  : rep (new mxArray_number (id, m, n, flag, init)), name (0) { }
 
 mxArray::mxArray (mxClassID id, double val)
   : rep (new mxArray_number (id, val)), name (0) { }
@@ -2011,7 +2067,23 @@ public:
 
   ~mex (void)
   {
-    if (! memlist.empty ())
+    // We can't use mex::free here because it modifies memlist.
+    while (! memlist.empty ())
+      {
+        std::set<void *>::iterator p = memlist.begin ();
+        xfree (*p);
+        memlist.erase (p);
+      }
+
+    // We can't use mex::free_value here because it modifies arraylist.
+    while (! arraylist.empty ())
+      {
+        std::set<mxArray *>::iterator p = arraylist.begin ();
+        delete *p;
+        arraylist.erase (p);
+      }
+
+    if (! (memlist.empty () && arraylist.empty ()))
       error ("mex: %s: cleanup failed", function_name ());
 
     mxFree (fname);
@@ -2035,39 +2107,16 @@ public:
     return fname;
   }
 
-  // Free all unmarked pointers obtained from malloc and calloc.
-  static void cleanup (void *ptr)
-  {
-    mex *context = static_cast<mex *> (ptr);
-
-    // We can't use mex::free here because it modifies memlist.
-    for (std::set<void *>::iterator p = context->memlist.begin ();
-         p != context->memlist.end (); p++)
-      xfree (*p);
-
-    context->memlist.clear ();
-
-    // We can't use mex::free_value here because it modifies arraylist.
-    for (std::set<mxArray *>::iterator p = context->arraylist.begin ();
-         p != context->arraylist.end (); p++)
-      delete *p;
-
-    context->arraylist.clear ();
-  }
-
   // Allocate memory.
   void *malloc_unmarked (size_t n)
   {
-    void *ptr = gnulib::malloc (n);
+    void *ptr = std::malloc (n);
 
     if (! ptr)
       {
         // FIXME: could use "octave_new_handler();" instead
-
         error ("%s: failed to allocate %d bytes of memory",
                function_name (), n);
-
-        abort ();
       }
 
     global_mark (ptr);
@@ -2105,16 +2154,16 @@ public:
     return ptr;
   }
 
-  // Reallocate a pointer obtained from malloc or calloc. If the
-  // pointer is NULL, allocate using malloc.  We don't need an
-  // "unmarked" version of this.
+  // Reallocate a pointer obtained from malloc or calloc.
+  // If the pointer is NULL, allocate using malloc.
+  // We don't need an "unmarked" version of this.
   void *realloc (void *ptr, size_t n)
   {
     void *v;
 
     if (ptr)
       {
-        v = gnulib::realloc (ptr, n);
+        v = std::realloc (ptr, n);
 
         std::set<void *>::iterator p = memlist.find (ptr);
 
@@ -2159,7 +2208,7 @@ public:
 
             if (p != foreign_memlist.end ())
               foreign_memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
             else
               warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
 #endif
@@ -2170,7 +2219,7 @@ public:
   // Mark a pointer to be freed on exit.
   void mark (void *ptr)
   {
-#ifdef DEBUG
+#if defined (DEBUG)
     if (memlist.find (ptr) != memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -2186,7 +2235,7 @@ public:
 
     if (p != memlist.end ())
       memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
@@ -2209,7 +2258,7 @@ public:
   // Mark a pointer as one we allocated.
   void mark_foreign (void *ptr)
   {
-#ifdef DEBUG
+#if defined (DEBUG)
     if (foreign_memlist.find (ptr) != foreign_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -2224,7 +2273,7 @@ public:
 
     if (p != foreign_memlist.end ())
       foreign_memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
@@ -2251,7 +2300,7 @@ public:
         arraylist.erase (p);
         delete ptr;
       }
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("mex::free_value: skipping memory not allocated by mex::make_value");
 #endif
@@ -2265,13 +2314,7 @@ public:
   }
 
   // 1 if error should be returned to MEX file, 0 if abort.
-  int trap_feval_error;
-
-  // longjmp return point if mexErrMsgTxt or error.
-  jmp_buf jump;
-
-  // Trigger a long jump back to the mex calling function.
-  void abort (void) { longjmp (jump, 1); }
+  int trap_feval_error = 0;
 
 private:
 
@@ -2297,7 +2340,7 @@ private:
   // Mark a pointer as one we allocated.
   void global_mark (void *ptr)
   {
-#ifdef DEBUG
+#if defined (DEBUG)
     if (global_memlist.find (ptr) != global_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -2312,7 +2355,7 @@ private:
 
     if (p != global_memlist.end ())
       global_memlist.erase (p);
-#ifdef DEBUG
+#if defined (DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
@@ -2335,7 +2378,7 @@ mex *mex_context = 0;
 void *
 mxArray::malloc (size_t n)
 {
-  return mex_context ? mex_context->malloc_unmarked (n) : gnulib::malloc (n);
+  return mex_context ? mex_context->malloc_unmarked (n) : std::malloc (n);
 }
 
 void *
@@ -2391,19 +2434,19 @@ mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 
 // Floating point predicates.
 
-int
+bool
 mxIsFinite (const double v)
 {
   return lo_ieee_finite (v) != 0;
 }
 
-int
+bool
 mxIsInf (const double v)
 {
   return lo_ieee_isinf (v) != 0;
 }
 
-int
+bool
 mxIsNaN (const double v)
 {
   return lo_ieee_isnan (v) != 0;
@@ -2437,14 +2480,14 @@ mxCalloc (size_t n, size_t size)
 void *
 mxMalloc (size_t n)
 {
-  return mex_context ? mex_context->malloc (n) : gnulib::malloc (n);
+  return mex_context ? mex_context->malloc (n) : std::malloc (n);
 }
 
 void *
 mxRealloc (void *ptr, size_t size)
 {
   return mex_context ? mex_context->realloc (ptr, size)
-                     : gnulib::realloc (ptr, size);
+                     : std::realloc (ptr, size);
 }
 
 void
@@ -2532,6 +2575,20 @@ mxCreateNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
 }
 
 mxArray *
+mxCreateUninitNumericArray (mwSize ndims, const mwSize *dims,
+                            mxClassID class_id, mxComplexity flag)
+{
+  return maybe_mark_array (new mxArray (class_id, ndims, dims, flag, false));
+}
+
+mxArray *
+mxCreateUninitNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
+                             mxComplexity flag)
+{
+  return maybe_mark_array (new mxArray (class_id, m, n, flag, false));
+}
+
+mxArray *
 mxCreateSparse (mwSize m, mwSize n, mwSize nzmax, mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (mxDOUBLE_CLASS, m, n, nzmax, flag));
@@ -2578,147 +2635,154 @@ mxDestroyArray (mxArray *ptr)
 }
 
 // Type Predicates.
-int
+bool
 mxIsCell (const mxArray *ptr)
 {
   return ptr->is_cell ();
 }
 
-int
+bool
 mxIsChar (const mxArray *ptr)
 {
   return ptr->is_char ();
 }
 
-int
+bool
 mxIsClass (const mxArray *ptr, const char *name)
 {
   return ptr->is_class (name);
 }
 
-int
+bool
 mxIsComplex (const mxArray *ptr)
 {
   return ptr->is_complex ();
 }
 
-int
+bool
 mxIsDouble (const mxArray *ptr)
 {
   return ptr->is_double ();
 }
 
-int
+bool
 mxIsFunctionHandle (const mxArray *ptr)
 {
   return ptr->is_function_handle ();
 }
 
-int
+bool
 mxIsInt16 (const mxArray *ptr)
 {
   return ptr->is_int16 ();
 }
 
-int
+bool
 mxIsInt32 (const mxArray *ptr)
 {
   return ptr->is_int32 ();
 }
 
-int
+bool
 mxIsInt64 (const mxArray *ptr)
 {
   return ptr->is_int64 ();
 }
 
-int
+bool
 mxIsInt8 (const mxArray *ptr)
 {
   return ptr->is_int8 ();
 }
 
-int
+bool
 mxIsLogical (const mxArray *ptr)
 {
   return ptr->is_logical ();
 }
 
-int
+bool
 mxIsNumeric (const mxArray *ptr)
 {
   return ptr->is_numeric ();
 }
 
-int
+bool
 mxIsSingle (const mxArray *ptr)
 {
   return ptr->is_single ();
 }
 
-int
+bool
 mxIsSparse (const mxArray *ptr)
 {
   return ptr->is_sparse ();
 }
 
-int
+bool
 mxIsStruct (const mxArray *ptr)
 {
   return ptr->is_struct ();
 }
 
-int
+bool
 mxIsUint16 (const mxArray *ptr)
 {
   return ptr->is_uint16 ();
 }
 
-int
+bool
 mxIsUint32 (const mxArray *ptr)
 {
   return ptr->is_uint32 ();
 }
 
-int
+bool
 mxIsUint64 (const mxArray *ptr)
 {
   return ptr->is_uint64 ();
 }
 
-int
+bool
 mxIsUint8 (const mxArray *ptr)
 {
   return ptr->is_uint8 ();
 }
 
 // Odd type+size predicate.
-int
+bool
 mxIsLogicalScalar (const mxArray *ptr)
 {
   return ptr->is_logical_scalar ();
 }
 
 // Odd type+size+value predicate.
-int
+bool
 mxIsLogicalScalarTrue (const mxArray *ptr)
 {
   return ptr->is_logical_scalar_true ();
 }
 
 // Size predicate.
-int
+bool
 mxIsEmpty (const mxArray *ptr)
 {
   return ptr->is_empty ();
 }
 
-// Just plain odd thing to ask of a value.
-int
-mxIsFromGlobalWS (const mxArray */*ptr*/)
+bool
+mxIsScalar (const mxArray *ptr)
 {
-  // FIXME
-  abort ();
+  return ptr->is_scalar ();
+}
+
+// FIXME: Just plain odd thing to ask of a value.
+// Still, Octave is incompatible because it does not implement this.
+bool
+mxIsFromGlobalWS (const mxArray * /*ptr*/)
+{
+  mexErrMsgTxt ("mxIsFromGlobalWS() is unimplemented");
+
   return 0;
 }
 
@@ -2735,7 +2799,7 @@ mxGetN (const mxArray *ptr)
   return ptr->get_n ();
 }
 
-mwSize *
+const mwSize *
 mxGetDimensions (const mxArray *ptr)
 {
   return ptr->get_dimensions ();
@@ -2766,12 +2830,12 @@ mxSetN (mxArray *ptr, mwSize n)
   ptr->set_n (n);
 }
 
-void
+int
 mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
 {
-  ptr->set_dimensions (static_cast<mwSize *>
-                       (maybe_unmark (const_cast<mwSize *> (dims))),
-                       ndims);
+  return (ptr->set_dimensions (static_cast<mwSize *>
+                               (maybe_unmark (const_cast<mwSize *> (dims))),
+                               ndims));
 }
 
 // Data extractors.
@@ -2796,7 +2860,10 @@ mxGetScalar (const mxArray *ptr)
 mxChar *
 mxGetChars (const mxArray *ptr)
 {
-  return static_cast<mxChar *> (ptr->get_data ());
+  if (mxIsChar (ptr))
+    return static_cast<mxChar *> (ptr->get_data ());
+  else
+    return NULL;
 }
 
 mxLogical *
@@ -3002,6 +3069,8 @@ octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
           int nargout_arg, octave_mex_function *curr_mex_fcn)
 {
+  octave_quit ();
+
   // Use at least 1 for nargout since even for zero specified args,
   // still want to be able to return an ans.
 
@@ -3017,59 +3086,48 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   for (int i = 0; i < nout; i++)
     argout[i] = 0;
 
-  unwind_protect_safe frame;
+  octave::unwind_protect_safe frame;
 
   // Save old mex pointer.
   frame.protect_var (mex_context);
 
   mex context (curr_mex_fcn);
 
-  frame.add_fcn (mex::cleanup, static_cast<void *> (&context));
-
   for (int i = 0; i < nargin; i++)
     argin[i] = context.make_value (args(i));
 
-  if (setjmp (context.jump) == 0)
+  mex_context = &context;
+
+  if (have_fmex)
     {
-      mex_context = &context;
+      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (f);
 
-      if (have_fmex)
-        {
-          fmex_fptr fcn = FCN_PTR_CAST (fmex_fptr, f);
+      int tmp_nargout = nargout;
+      int tmp_nargin = nargin;
 
-          int tmp_nargout = nargout;
-          int tmp_nargin = nargin;
+      fcn (tmp_nargout, argout, tmp_nargin, argin);
+    }
+  else
+    {
+      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (f);
 
-          fcn (tmp_nargout, argout, tmp_nargin, argin);
-        }
-      else
-        {
-          cmex_fptr fcn = FCN_PTR_CAST (cmex_fptr, f);
-
-          fcn (nargout, argout, nargin, argin);
-        }
+      fcn (nargout, argout, nargin, argin);
     }
 
   // Convert returned array entries back into octave values.
 
   octave_value_list retval;
 
-  if (! error_state)
+  if (nargout == 0 && argout[0])
     {
-      if (nargout == 0 && argout[0])
-        {
-          // We have something for ans.
-          nargout = 1;
-        }
-
-      retval.resize (nargout);
-
-      for (int i = 0; i < nargout; i++)
-        retval(i) = mxArray::as_octave_value (argout[i]);
+      // We have something for ans.
+      nargout = 1;
     }
 
-  // Clean up mex resources.
-  frame.run ();
+  retval.resize (nargout);
+
+  for (int i = 0; i < nargout; i++)
+    retval(i) = mxArray::as_octave_value (argout[i]);
 
   return retval;
 }
@@ -3091,28 +3149,38 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   // FIXME: do we need unwind protect to clean up args?  Off hand, I
   // would say that this problem is endemic to Octave and we will
   // continue to have memory leaks after Ctrl-C until proper exception
-  // handling is implemented.  longjmp() only clears the stack, so any
-  // class which allocates data on the heap is going to leak.
+  // handling is implemented.
 
+  // FIXME: Proper exception handling has been implemented (Jan. 2016).
+  //        Can this code be re-factored?
   args.resize (nargin);
 
   for (int i = 0; i < nargin; i++)
     args(i) = mxArray::as_octave_value (argin[i]);
 
-  octave_value_list retval = feval (fname, args, nargout);
+  bool execution_error = false;
 
-  if (error_state && mex_context->trap_feval_error == 0)
+  octave_value_list retval;
+
+  try
     {
-      // FIXME: is this the correct way to clean up?  abort() is
-      // going to trigger a long jump, so the normal class destructors
-      // will not be called.  Hopefully this will reduce things to a
-      // tiny leak.  Maybe create a new octave memory tracer type
-      // which prints a friendly message every time it is
-      // created/copied/deleted to check this.
+      retval = feval (fname, args, nargout);
+    }
+  catch (const octave::execution_exception&)
+    {
+      if (mex_context->trap_feval_error)
+        {
+          recover_from_exception ();
 
-      args.resize (0);
-      retval.resize (0);
-      mex_context->abort ();
+          execution_error = true;
+        }
+      else
+        {
+          args.resize (0);
+          retval.resize (0);
+
+          throw;
+        }
     }
 
   int num_to_copy = retval.length ();
@@ -3126,19 +3194,37 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
       // but there is no way to steal memory from a matrix, never mind
       // that matrix memory is allocated by new[] and mxArray memory
       // is allocated by malloc().
-      argout[i] = mex_context->make_value (retval (i));
+      argout[i] = mex_context->make_value (retval(i));
     }
 
   while (num_to_copy < nargout)
     argout[num_to_copy++] = 0;
 
-  if (error_state)
+  return execution_error ? 1 : 0;
+}
+
+mxArray *
+mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
+                       mxArray *argin[], const char *fname)
+{
+  mxArray *mx = NULL;
+
+  int old_flag = mex_context ? mex_context->trap_feval_error : 0;
+  mexSetTrapFlag (1);
+  if (mexCallMATLAB (nargout, argout, nargin, argin, fname))
     {
-      error_state = 0;
-      return 1;
+      const char *field_names[] = {"identifier", "message", "case", "stack"};
+      mx = mxCreateStructMatrix (1, 1, 4, field_names);
+      mxSetFieldByNumber (mx, 0, 0, mxCreateString ("Octave:MEX"));
+      std::string msg = "mexCallMATLABWithTrap: function call <"
+                        + std::string (fname) + "> failed";
+      mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
+      mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
     }
-  else
-    return 0;
+  mexSetTrapFlag (old_flag);
+
+  return mx;
 }
 
 void
@@ -3154,19 +3240,61 @@ mexEvalString (const char *s)
   int retval = 0;
 
   int parse_status;
+  bool execution_error = false;
 
   octave_value_list ret;
 
-  ret = eval_string (s, false, parse_status, 0);
-
-  if (parse_status || error_state)
+  try
     {
-      error_state = 0;
+      ret = eval_string (s, false, parse_status, 0);
+    }
+  catch (const octave::execution_exception&)
+    {
+      recover_from_exception ();
 
-      retval = 1;
+      execution_error = true;
     }
 
+  if (parse_status || execution_error)
+    retval = 1;
+
   return retval;
+}
+
+mxArray *
+mexEvalStringWithTrap (const char *s)
+{
+  mxArray *mx = NULL;
+
+  int parse_status;
+  bool execution_error = false;
+
+  octave_value_list ret;
+
+  try
+    {
+      ret = eval_string (s, false, parse_status, 0);
+    }
+  catch (const octave::execution_exception&)
+    {
+      recover_from_exception ();
+
+      execution_error = true;
+    }
+
+  if (parse_status || execution_error)
+    {
+      const char *field_names[] = {"identifier", "message", "case", "stack"};
+      mx = mxCreateStructMatrix (1, 1, 4, field_names);
+      mxSetFieldByNumber (mx, 0, 0, mxCreateString ("Octave:MEX"));
+      std::string msg = "mexEvalStringWithTrap: eval of <"
+                        + std::string (s) + "> failed";
+      mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
+      mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+    }
+
+  return mx;
 }
 
 void
@@ -3180,8 +3308,6 @@ mexErrMsgTxt (const char *s)
       // Octave's error routine requires a non-null input so use a SPACE.
       error (" ");
     }
-
-  mex_context->abort ();
 }
 
 void
@@ -3204,8 +3330,6 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
       // Octave's error routine requires a non-null input so use a SPACE.
       error (" ");
     }
-
-  mex_context->abort ();
 }
 
 void
@@ -3257,7 +3381,7 @@ mexGetVariable (const char *space, const char *name)
     {
       // FIXME: should this be in variables.cc?
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3270,9 +3394,6 @@ mexGetVariable (const char *space, const char *name)
           if (base)
             {
               octave_call_stack::goto_base_frame ();
-
-              if (error_state)
-                return retval;
 
               frame.add_fcn (octave_call_stack::pop);
             }
@@ -3320,7 +3441,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
     {
       // FIXME: should this be in variables.cc?
 
-      unwind_protect frame;
+      octave::unwind_protect frame;
 
       bool caller = ! strcmp (space, "caller");
       bool base = ! strcmp (space, "base");
@@ -3333,9 +3454,6 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
           if (base)
             {
               octave_call_stack::goto_base_frame ();
-
-              if (error_state)
-                return 1;
 
               frame.add_fcn (octave_call_stack::pop);
             }
@@ -3380,10 +3498,12 @@ const mxArray *
 mexGet (double handle, const char *property)
 {
   mxArray *m = 0;
+
   octave_value ret = get_property_from_handle (handle, property, "mexGet");
 
-  if (!error_state && ret.is_defined ())
+  if (ret.is_defined ())
     m = ret.as_mxArray ();
+
   return m;
 }
 
@@ -3457,3 +3577,4 @@ mexUnlock (void)
         }
     }
 }
+

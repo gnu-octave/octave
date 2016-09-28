@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} feather (@var{u}, @var{v})
-## @deftypefnx {Function File} {} feather (@var{z})
-## @deftypefnx {Function File} {} feather (@dots{}, @var{style})
-## @deftypefnx {Function File} {} feather (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} feather (@dots{})
+## @deftypefn  {} {} feather (@var{u}, @var{v})
+## @deftypefnx {} {} feather (@var{z})
+## @deftypefnx {} {} feather (@dots{}, @var{style})
+## @deftypefnx {} {} feather (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} feather (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
 ## from equidistant points on the x-axis.
@@ -87,9 +87,9 @@ function h = feather (varargin)
     endif
   endif
 
-  ## Matlab draws feather plots, with the arrow head as one continous
-  ## line, and each arrow separately. This is completely different from
-  ## quiver and quite ugly.
+  ## Matlab draws feather plots, with the arrow head as one continuous line,
+  ## and each arrow separately.  This is completely different from quiver and
+  ## quite ugly.
   n = length (u);
   xend = [1 : n] + u;
   xtmp = [1 : n] + u .* (1 - arrowsize);
@@ -125,7 +125,7 @@ endfunction
 %! phi = [0 : 15 : 360] * pi/180;
 %! feather (sin (phi), cos (phi));
 %! axis tight;
-%! title ('feather plot');
+%! title ("feather plot");
 
 ## Test input validation
 %!error feather ()

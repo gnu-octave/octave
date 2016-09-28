@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gampdf (@var{x}, @var{a}, @var{b})
+## @deftypefn {} {} gampdf (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, return the probability density function
 ## (PDF) at @var{x} of the Gamma distribution with shape parameter @var{a} and
 ## scale @var{b}.

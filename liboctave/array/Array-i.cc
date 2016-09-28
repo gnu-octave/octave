@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "oct-inttypes.h"
@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
-#define INLINE_ASCENDING_SORT
-#define INLINE_DESCENDING_SORT
+#define INLINE_ASCENDING_SORT 1
+#define INLINE_DESCENDING_SORT 1
 #include "oct-sort.cc"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
@@ -42,13 +42,13 @@ extern template class OCTAVE_API Array<idx_vector>;
 
 template class OCTAVE_API octave_sort<int>;
 template class OCTAVE_API octave_sort<long>;
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
 template class OCTAVE_API octave_sort<long long>;
 #endif
 
 INSTANTIATE_ARRAY (int, OCTAVE_API);
 INSTANTIATE_ARRAY (long, OCTAVE_API);
-#if defined (HAVE_LONG_LONG_INT)
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
 INSTANTIATE_ARRAY (long long, OCTAVE_API);
 #endif
 
@@ -76,3 +76,4 @@ INSTANTIATE_ARRAY (octave_uint64, OCTAVE_API);
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<int>;
+

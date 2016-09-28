@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "mx-m-cs.h"
@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-nda-cs.h"
 #include "mx-cs-nda.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-flt-re-mat.h"
@@ -50,12 +50,13 @@ DEFNDBINOP_OP (mul, matrix, complex, array, complex, *)
 
 DEFBINOP (div, matrix, complex)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.array_value () / d);
 }
@@ -64,7 +65,8 @@ DEFBINOP_FN (pow, matrix, complex, xpow)
 
 DEFBINOP (ldiv, matrix, complex)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Matrix m1 = v1.matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -87,12 +89,13 @@ DEFNDBINOP_OP (el_mul, matrix, complex, array, complex, *)
 
 DEFBINOP (el_div, matrix, complex)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   Complex d = v2.complex_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.array_value () / d);
 }
@@ -101,7 +104,8 @@ DEFNDBINOP_FN (el_pow, matrix, complex, array, complex, elem_xpow)
 
 DEFBINOP (el_ldiv, matrix, complex)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
   return x_el_div (v2.complex_value (), v1.array_value ());
 }
@@ -139,3 +143,4 @@ install_m_cs_ops (void)
   INSTALL_ASSIGNCONV (octave_float_matrix, octave_complex,
                       octave_float_complex_matrix);
 }
+

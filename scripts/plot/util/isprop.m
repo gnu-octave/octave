@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Ben Abbott
+## Copyright (C) 2010-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{res} =} isprop (@var{obj}, "@var{prop}")
+## @deftypefn {} {@var{res} =} isprop (@var{obj}, "@var{prop}")
 ## Return true if @var{prop} is a property of the object @var{obj}.
 ##
 ## @var{obj} may also be an array of objects in which case @var{res} will be a
@@ -49,6 +49,7 @@ function res = isprop (h, prop)
       res(i) = true;
     end_try_catch
   endfor
+
 endfunction
 
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_int_traits_h)
+#if ! defined (octave_ov_int_traits_h)
 #define octave_ov_int_traits_h 1
+
+#include "octave-config.h"
 
 #include "ov-int8.h"
 #include "ov-int16.h"
@@ -33,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 
-template <class T>
+template <typename T>
 class
 octave_value_int_traits
 {
@@ -41,13 +43,13 @@ public:
   typedef T scalar_type;
 };
 
-#define OCTAVE_VALUE_INT_TRAITS(MT, ST) \
-  template<> \
-  class \
-  octave_value_int_traits<MT> \
-  { \
-  public: \
-    typedef ST scalar_type; \
+#define OCTAVE_VALUE_INT_TRAITS(MT, ST)         \
+  template <>                                   \
+  class                                         \
+  octave_value_int_traits<MT>                   \
+  {                                             \
+  public:                                       \
+    typedef ST scalar_type;                     \
   }
 
 OCTAVE_VALUE_INT_TRAITS(int8NDArray, octave_int8_scalar);
@@ -61,3 +63,4 @@ OCTAVE_VALUE_INT_TRAITS(uint32NDArray, octave_uint32_scalar);
 OCTAVE_VALUE_INT_TRAITS(uint64NDArray, octave_uint64_scalar);
 
 #endif
+

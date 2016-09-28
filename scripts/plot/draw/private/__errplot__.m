@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Teemu Ikonen
+## Copyright (C) 2000-2016 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -17,17 +17,69 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} __errplot__ (@var{fstr}, @var{hax}, @dots{})
+## @deftypefn {} {@var{h} =} __errplot__ (@var{fstr}, @var{hax}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
+function retval = __errplot__ (caller, hax, varargin)
 
-function h = __errplot__ (fstr, hax, varargin)
+  if (nargin < 4)
+    print_usage (caller);
+  endif
 
-  fmt = __pltopt__ ("__errplot__", fstr);
+  retval = [];
+  data = cell (6,1);
+  nargs = numel (varargin);
+  k = 1;
+  while (k <= nargs)
+    arg = varargin{k++};
+    if (! isnumeric (arg))
+      error ("%s: data argument %d must be numeric", caller, k-1);
+    endif
+    if (isvector (arg))
+      arg = arg(:);
+    endif
+    sz = size (arg);
+    ndata = 1;
+    data{ndata} = arg;
+    while (k <= nargs)
+      arg = varargin{k++};
+      if (ischar (arg) || iscellstr (arg))
+        retval = [retval; __do_errplot__(arg, hax, data{1:ndata})];
+        break;
+      endif
+      if (! isnumeric (arg))
+        error ("%s: data argument %d must be numeric", caller, k-1);
+      endif
+      if (isvector (arg))
+        arg = arg(:);
+      endif
+      if (! isscalar (arg) && ((isvector (arg) && numel (arg) != prod (sz))
+          || any (size (arg) != sz)))
+        error ("%s: size of argument %d does not match others", caller, k-1);
+      endif
+      data{++ndata} = arg;
+      if (ndata > 6)
+        error ("%s: too many arguments to plot", caller);
+      endif
+    endwhile
+  endwhile
+
+  ## No format code found, use yerrorbar
+  if (! (ischar (arg) || iscellstr (arg)))
+    retval = [retval; __do_errplot__("~", hax, data{1:ndata})];
+  endif
+
+  drawnow ();
+
+endfunction
+
+function h = __do_errplot__ (fstr, hax, varargin)
+
+  fmt = __pltopt__ ("__do_errplot__", fstr);
 
   ## Set the plot type based on linestyle.
   switch (fmt.errorstyle)
@@ -66,7 +118,7 @@ function h = __errplot__ (fstr, hax, varargin)
     ## Must occur after __next_line_color__ in order to work correctly.
     hg = hggroup ("parent", hax);
     h = [h; hg];
-    args = __add_datasource__ ("__errplot__", hg,
+    args = __add_datasource__ ("__do_errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});
 
     hl = [(__line__ (hg, "color", lc, "linestyle", "-", "marker", "none")),
@@ -231,8 +283,12 @@ endfunction
 function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
                                          xldata, xudata, ifmt,
                                          xscale, yscale)
+
   if (strcmp (xscale, "linear"))
     dx = 0.01 * (max (xdata(:)) - min (xdata(:)));
+    if (dx == 0)
+      dx = .1;
+    endif
     xlo = xdata - dx;
     xhi = xdata + dx;
   else
@@ -247,6 +303,9 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
   endif
   if (strcmp (yscale, "linear"))
     dy = 0.01 * (max (ydata(:)) - min (ydata(:)));
+    if (dy == 0)
+      dy = .1;
+    endif
     ylo = ydata - dy;
     yhi = ydata + dy;
   else
@@ -259,6 +318,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     ylo = ydata/ry;
     yhi = ydata*ry;
   endif
+
   nans = NaN + xdata(:);  # fast way to do NaN (size (xdata(:)))
   if (strcmp (ifmt, "yerr"))
     xdata = [xdata, xdata, nans, ...
@@ -307,6 +367,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
 endfunction
 
 function update_props (hg, ~, hl)
+
   set (hl, "color", get (hg, "color"),
            "linewidth", get (hg, "linewidth"));
   set (hl(2), "linestyle", get (hg, "linestyle"),
@@ -314,6 +375,7 @@ function update_props (hg, ~, hl)
               "markeredgecolor", get (hg, "markeredgecolor"),
               "markerfacecolor", get (hg, "markerfacecolor"),
               "markersize", get (hg, "markersize"));
+
 endfunction
 
 function update_data (hg, ~, hl)

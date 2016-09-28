@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "terminal-dock-widget.h"
@@ -69,3 +69,9 @@ terminal_dock_widget::terminal_interrupt (void)
 {
   emit interrupt_signal ();
 }
+
+terminal_dock_widget::~terminal_dock_widget (void)
+{
+  delete terminal;
+}
+

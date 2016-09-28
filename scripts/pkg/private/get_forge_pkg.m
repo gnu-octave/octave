@@ -1,5 +1,5 @@
-## Copyright (C) 2005-2015 Søren Hauberg
-## Copyright (C) 2010-2015 VZLU Prague, a.s.
+## Copyright (C) 2005-2016 Søren Hauberg
+## Copyright (C) 2010-2016 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
+## @deftypefn {} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
 ## Try to discover the current version of an OctaveForge package from the web,
 ## using a working internet connection and the urlread function.
 ## If two output arguments are requested, also return an address from which
@@ -42,7 +42,7 @@ function [ver, url] = get_forge_pkg (name)
   if (succ)
     ## Remove blanks for simpler matching.
     html(isspace(html)) = [];
-    ## Good. Let's grep for the version.
+    ## Good.  Let's grep for the version.
     pat = "<tdclass=""package_table"">PackageVersion:</td><td>([\\d.]*)</td>";
     t = regexp (html, pat, "tokens");
     if (isempty (t) || isempty (t{1}))
@@ -61,21 +61,28 @@ function [ver, url] = get_forge_pkg (name)
     endif
   else
     ## Try get the list of all packages.
-    [html, succ] = urlread ("http://packages.octave.org/packages.php");
-    if (succ)
-      t = regexp (html, "<div class=""package"" id=""(\\w+)"">", "tokens");
-      t = horzcat (t{:});
-      if (any (strcmp (t, name)))
-        error ("get_forge_pkg: package NAME exists, but index page not available");
-      else
-        ## Try a simplistic method to determine close names.
-        dist = cellfun (@(n) length (setdiff (name, n)), t);
-        [~, i] = min (dist);
-        error ("get_forge_pkg: package not found: ""%s"". Maybe you meant ""%s?""", name, t{i});
-      endif
-    else
+    [html, succ] = urlread ("http://packages.octave.org/list_packages.php");
+    if (! succ)
       error ("get_forge_pkg: could not read URL, please verify internet connection");
     endif
+    t = strsplit (html);
+    if (any (strcmp (t, name)))
+      error ("get_forge_pkg: package NAME exists, but index page not available");
+    endif
+    ## Try a simplistic method to determine similar names.
+    function d = fdist (x)
+      len1 = length (name);
+      len2 = length (x);
+      if (len1 <= len2)
+        d = sum (abs (name(1:len1) - x(1:len1))) + sum (x(len1+1:end));
+      else
+        d = sum (abs (name(1:len2) - x(1:len2))) + sum (name(len2+1:end));
+      endif
+    endfunction
+    dist = cellfun ("fdist", t);
+    [~, i] = min (dist);
+    error ("get_forge_pkg: package not found: ""%s"".  Maybe you meant ""%s?""",
+           name, t{i});
   endif
 
 endfunction

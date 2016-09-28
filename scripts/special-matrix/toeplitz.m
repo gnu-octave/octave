@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} toeplitz (@var{c})
-## @deftypefnx {Function File} {} toeplitz (@var{c}, @var{r})
+## @deftypefn  {} {} toeplitz (@var{c})
+## @deftypefnx {} {} toeplitz (@var{c}, @var{r})
 ## Return the Toeplitz matrix constructed from the first column @var{c},
 ## and (optionally) the first row @var{r}.
 ##

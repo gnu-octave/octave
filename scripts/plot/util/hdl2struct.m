@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 pdiribarne
+## Copyright (C) 2012-2016 pdiribarne
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} hdl2struct (@var{h})
+## @deftypefn {} {@var{s} =} hdl2struct (@var{h})
 ## Return a structure, @var{s}, whose fields describe the properties
 ## of the object, and its children, associated with the handle, @var{h}.
 ##
@@ -59,10 +59,10 @@ function s = hdl2struct (h)
   while (nkids)
     if (! any (kids (nkids) == lg) && ! any (kids (nkids) == cb)
           && ! any (kids (nkids) == ui) && ! strcmp (main.type, "hggroup"))
-      ii++;
+      ii += 1;
       s.children(ii) = hdl2struct (kids(nkids));
     endif
-    nkids--;
+    nkids -= 1;
   endwhile
 
   ## add non "children" children objects (title, xlabel, ...) and
@@ -74,10 +74,10 @@ function s = hdl2struct (h)
   special = [special getspecial(h)];
   nsp = length (special);
   while (nsp)
-    ii++;
+    ii += 1;
     s.children(ii) = hdl2struct (special(nsp));
     s.special(nsp) = ii;
-    nsp--;
+    nsp -= 1;
   endwhile
 
   ## look for legends and colorbars among "main"'s brothers and add them
@@ -91,7 +91,7 @@ function s = hdl2struct (h)
     endif
     nlg = length (lg);
     if (nlg == 1)
-      ii++;
+      ii += 1;
       s.children(ii) = hdl2struct (lg);
     elseif (nlg > 1)
       error ("hdl2struct: more than one legend found");
@@ -105,7 +105,7 @@ function s = hdl2struct (h)
 
     ncb = length (cb);
     if (ncb == 1)
-      ii++;
+      ii += 1;
       s.children(ii) = hdl2struct (cb);
     elseif (nlg > 1)
       error ("hdl2struct: more than one colorbar found");
@@ -117,14 +117,13 @@ function s = hdl2struct (h)
 endfunction
 
 function hdlist = getspecial (h)
-  obj = get (h);
+
   ## return handles to special children
-  fields = fieldnames (obj);
   hdlist = [];
 
-  regkids = get ( h, "children");
+  regkids = get (h, "children");
   set (0, "showhiddenhandles", "on");
-  allkids = get ( h, "children");
+  allkids = get (h, "children");
   set (0, "showhiddenhandles", "off");
   speckids = arrayfun (@(x) ! any (x == regkids), allkids);
   hdlist = allkids (find (speckids));
@@ -133,8 +132,9 @@ function hdlist = getspecial (h)
 endfunction
 
 function prpstr = getprops (h)
+
   obj = get (h);
-  ## get usefull properties rejecting readonly, children, handles ...
+  ## get useful properties rejecting readonly, children, handles ...
   fields = fieldnames (obj);
   hdlist = [];
 
@@ -152,11 +152,11 @@ function prpstr = getprops (h)
   while (nflds)
     prop = fields{nflds};
     val = obj.(fields{nflds});
-    ii++;
+    ii += 1;
     if (! any (strcmp (prop, forbid)))
       prpstr.(prop) = val;
     endif
-    nflds--;
+    nflds -= 1;
   endwhile
 
   ## hidden properties

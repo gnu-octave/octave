@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -32,27 +32,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "quit.h"
 
-#include "defun.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
 #include "oct-lvalue.h"
 #include "oct-hdf5.h"
 #include "ops.h"
 #include "ov-base.h"
 
 #if defined (HAVE_HDF5)
-#define HDF5_SAVE_TYPE H5T_NATIVE_INT32
+#  define HDF5_SAVE_TYPE H5T_NATIVE_INT32
 #endif
 
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
 #include "ov-int32.h"
-#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 
 #include "byte-swap.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
@@ -61,11 +58,9 @@ along with Octave; see the file COPYING.  If not, see
 
 extern template class OCTINTERP_API octave_base_scalar<double>;
 
-
 template class octave_base_matrix<int32NDArray>;
 
 template class octave_base_int_matrix<int32NDArray>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int32_matrix,
                                      "int32 matrix", "int32");
@@ -74,25 +69,6 @@ template class octave_base_scalar<octave_int32>;
 
 template class octave_base_int_scalar<octave_int32>;
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int32_scalar,
                                      "int32 scalar", "int32");
 
-DEFUN (int32, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} int32 (@var{x})\n\
-Convert @var{x} to 32-bit integer type.\n\
-@seealso{int8, uint8, int16, uint16, uint32, int64, uint64}\n\
-@end deftypefn")
-{
-  OCTAVE_TYPE_CONV_BODY (int32);
-}
-
-/*
-%!assert (class (int32 (1)), "int32")
-%!assert (int32 (1.25), int32 (1))
-%!assert (int32 (1.5), int32 (2))
-%!assert (int32 (-1.5), int32 (-2))
-%!assert (int32 (2^33), int32 (2^32-1))
-%!assert (int32 (-2^33), int32 (-2^32))
-*/

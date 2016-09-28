@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Instantiate Arrays of octave_values.
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "Array.h"
@@ -52,3 +52,4 @@ INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
 
 NO_INSTANTIATE_ARRAY_SORT (cdef_object);
 INSTANTIATE_ARRAY (cdef_object, OCTINTERP_API);
+

@@ -88,7 +88,7 @@ public:
   Complex complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return  ComplexMatrix (1, 1, Complex (scalar)); }
+  { return ComplexMatrix (1, 1, Complex (scalar)); }
 
   octave_value gnot (void) const { return octave_value ((double) ! scalar); }
 
@@ -119,15 +119,16 @@ octave_integer::print (std::ostream& os, bool pr_as_read_syntax)
   newline (os);
 }
 
-#ifdef DEFUNOP_OP
+#if defined (DEFUNOP_OP)
 #undef DEFUNOP_OP
 #endif
 
-#define DEFUNOP_OP(name, t, op) \
-  UNOPDECL (name, a) \
-  { \
-    CAST_UNOP_ARG (const octave_ ## t&); \
-    return octave_value (new octave_integer (op v.t ## _value ())); \
+#define DEFUNOP_OP(name, t, op)                                         \
+  static octave_value                                                   \
+  CONCAT2(oct_unop_, name) (const octave_base_value& a)                 \
+  {                                                                     \
+    const octave_ ## t& v = dynamic_cast<const octave_ ## t&> (a);      \
+    return octave_value (new octave_integer (op v.t ## _value ()));     \
   }
 
 DEFUNOP_OP (gnot, integer, !)
@@ -138,16 +139,19 @@ DEFUNOP_OP (hermitian, integer, /* no-op */)
 DEFNCUNOP_METHOD (incr, integer, increment)
 DEFNCUNOP_METHOD (decr, integer, decrement)
 
-#ifdef DEFBINOP_OP
+#if defined (DEFBINOP_OP)
 #undef DEFBINOP_OP
 #endif
 
-#define DEFBINOP_OP(name, t1, t2, op) \
-  BINOPDECL (name, a1, a2) \
-  { \
-    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
-    return octave_value \
-      (new octave_integer (v1.t1 ## _value () op v2.t2 ## _value ())); \
+#define DEFBINOP_OP(name, t1, t2, op)                                   \
+  static octave_value                                                   \
+  CONCAT2(oct_binop_, name) (const octave_base_value& a1,               \
+                             const octave_base_value& a2)               \
+  {                                                                     \
+    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1);  \
+    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2);  \
+    return octave_value                                                 \
+      (new octave_integer (v1.t1 ## _value () op v2.t2 ## _value ()));  \
   }
 
 // integer by integer ops.
@@ -158,7 +162,8 @@ DEFBINOP_OP (mul, integer, integer, *)
 
 DEFBINOP (div, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v2.integer_value ();
 
@@ -171,7 +176,8 @@ DEFBINOP (div, integer, integer)
 
 DEFBINOP (i_s_div, integer, scalar)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_scalar&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
   double d = v2.double_value ();
 
@@ -183,7 +189,8 @@ DEFBINOP (i_s_div, integer, scalar)
 
 DEFBINOP (ldiv, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v1.integer_value ();
 
@@ -204,7 +211,8 @@ DEFBINOP_OP (el_mul, integer, integer, !=)
 
 DEFBINOP (el_div, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v2.integer_value ();
 
@@ -216,7 +224,8 @@ DEFBINOP (el_div, integer, integer)
 
 DEFBINOP (el_ldiv, integer, integer)
 {
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+  const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
+  const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
   int d = v1.integer_value ();
 
@@ -278,11 +287,10 @@ Creates an integer variable from VAL.")
     {
       double d = args(0).double_value ();
 
-      if (! error_state)
-        retval = octave_value (new octave_integer (NINT (d)));
+      retval = octave_value (new octave_integer (octave::math::nint (d)));
     }
   else
-    usage ("make_int");
+    print_usage ();
 
   return retval;
 }

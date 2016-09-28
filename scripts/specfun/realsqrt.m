@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} realsqrt (@var{x})
+## @deftypefn {} {} realsqrt (@var{x})
 ## Return the real-valued square root of each element of @var{x}.
 ##
 ## If any element results in a complex return value @code{realsqrt} aborts and

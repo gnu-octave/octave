@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gaminv (@var{x}, @var{a}, @var{b})
+## @deftypefn {} {} gaminv (@var{x}, @var{a}, @var{b})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the Gamma distribution with shape parameter @var{a} and
 ## scale @var{b}.
@@ -58,7 +58,7 @@ function inv = gaminv (x, a, b)
   inv(k) = Inf;
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (a < Inf) & (b > 0) & (b < Inf));
-  if (any (k))
+  if (! isempty (k))
     if (! isscalar (a) || ! isscalar (b))
       a = a(k);
       b = b(k);
@@ -79,8 +79,10 @@ function inv = gaminv (x, a, b)
       y(l) = sqrt (myeps) * ones (length (l), 1);
     endif
 
-    y_old = y;
-    for i = 1 : 100
+    y_new = y;
+    loopcnt = 0;
+    do
+      y_old = y_new;
       h     = (gamcdf (y_old, a, b) - x) ./ gampdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= myeps);
@@ -88,13 +90,14 @@ function inv = gaminv (x, a, b)
         y_new(ind) = y_old(ind) / 10;
         h = y_old - y_new;
       endif
-      if (max (abs (h)) < sqrt (myeps))
-        break;
-      endif
-      y_old = y_new;
-    endfor
+    until (max (abs (h)) < sqrt (myeps) || ++loopcnt == 40)
+
+    if (loopcnt == 40)
+      warning ("gaminv: calculation failed to converge for some values");
+    endif
 
     inv(k) = y_new;
+
   endif
 
 endfunction

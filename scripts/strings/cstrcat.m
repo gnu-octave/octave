@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cstrcat (@var{s1}, @var{s2}, @dots{})
+## @deftypefn {} {} cstrcat (@var{s1}, @var{s2}, @dots{})
 ## Return a string containing all the arguments concatenated horizontally
 ## with trailing white space preserved.
 ##
@@ -45,13 +45,15 @@
 
 function st = cstrcat (varargin)
 
-  if (nargin < 1)
-    print_usage ();
-  elseif (! iscellstr (varargin))
-    error ("cstrcat: expecting arguments to character strings");
+  if (nargin == 0)
+    ## Special because if varargin is empty, iscellstr still returns
+    ## true but then "[varargin{:}]" would be of class double.
+    st = "";
+  elseif (iscellstr (varargin))
+    st = [varargin{:}];
+  else
+    error ("cstrcat: arguments must be character strings");
   endif
-
-  st = [varargin{:}];
 
 endfunction
 
@@ -65,7 +67,8 @@ endfunction
 %!assert (cstrcat ("foo", "bar"), "foobar")
 %!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
+%!assert (cstrcat (), "")
+
 ## Test input validation
-%!error cstrcat ()
 %!error cstrcat (1, 2)
 

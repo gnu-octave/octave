@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,8 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 // HDF5 support by Steven G. Johnson <stevenj@alum.mit.edu>
 // Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -38,8 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#include "strftime.h"
-
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "file-ops.h"
@@ -48,18 +46,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
-#include "oct-locbuf.h"
+#include "strftime-wrapper.h"
 
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-path.h"
 #include "load-save.h"
-#include "oct-obj.h"
+#include "oct-hdf5.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
@@ -76,19 +76,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-mat-ascii.h"
 #include "ls-mat4.h"
 #include "ls-mat5.h"
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-oct-binary.h"
 
 // Remove gnulib definitions, if any.
-#ifdef close
-#undef close
+#if defined (close)
+#  undef close
 #endif
-#ifdef open
-#undef open
+#if defined (open)
+#  undef open
 #endif
 
-#ifdef HAVE_ZLIB
-#include "zfstream.h"
+#if defined (HAVE_ZLIB)
+#  include "zfstream.h"
 #endif
 
 // Write octave-workspace file if Octave crashes or is killed by a signal.
@@ -114,9 +114,9 @@ default_save_header_format (void)
   return
     std::string ("# Created by Octave " OCTAVE_VERSION
                  ", %a %b %d %H:%M:%S %Y %Z <")
-    + octave_env::get_user_name ()
+    + octave::sys::env::get_user_name ()
     + std::string ("@")
-    + octave_env::get_host_name ()
+    + octave::sys::env::get_host_name ()
     + std::string (">");
 }
 
@@ -125,8 +125,9 @@ default_save_header_format (void)
 // no newline characters.
 static std::string Vsave_header_format_string = default_save_header_format ();
 
-static void
-gripe_file_open (const std::string& fcn, const std::string& file)
+OCTAVE_NORETURN static
+void
+err_file_open (const std::string& fcn, const std::string& file)
 {
   if (fcn == "load")
     error ("%s: unable to open input file '%s'", fcn.c_str (), file.c_str ());
@@ -173,7 +174,7 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 
 int
 read_binary_file_header (std::istream& is, bool& swap,
-                         oct_mach_info::float_format& flt_fmt, bool quiet)
+                         octave::mach_info::float_format& flt_fmt, bool quiet)
 {
   const int magic_len = 10;
   char magic[magic_len+1];
@@ -181,13 +182,14 @@ read_binary_file_header (std::istream& is, bool& swap,
   magic[magic_len] = '\0';
 
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
-    swap = oct_mach_info::words_big_endian ();
+    swap = octave::mach_info::words_big_endian ();
   else if (strncmp (magic, "Octave-1-B", magic_len) == 0)
-    swap = ! oct_mach_info::words_big_endian ();
+    swap = ! octave::mach_info::words_big_endian ();
   else
     {
       if (! quiet)
-        error ("load: unable to read read binary file");
+        error ("load: unable to read binary file");
+
       return -1;
     }
 
@@ -196,7 +198,7 @@ read_binary_file_header (std::istream& is, bool& swap,
 
   flt_fmt = mopt_digit_to_float_format (tmp);
 
-  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
+  if (flt_fmt == octave::mach_info::flt_fmt_unknown)
     {
       if (! quiet)
         error ("load: unrecognized binary format!");
@@ -207,12 +209,13 @@ read_binary_file_header (std::istream& is, bool& swap,
   return 0;
 }
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
 static bool
 check_gzip_magic (const std::string& fname)
 {
   bool retval = false;
-  std::ifstream file (fname.c_str ());
+
+  std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
   OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
   if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f
@@ -229,7 +232,7 @@ get_file_format (std::istream& file, const std::string& filename)
 {
   load_save_format retval = LS_UNKNOWN;
 
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
@@ -269,7 +272,7 @@ get_file_format (std::istream& file, const std::string& filename)
               std::string type_val = extract_keyword (file, "type");
 
               if (name_val.empty () != true && type_val.empty () != true)
-                retval = LS_ASCII;
+                retval = LS_TEXT;
               else
                 {
                   file.clear ();
@@ -297,13 +300,13 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 {
   load_save_format retval = LS_UNKNOWN;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
   // check this before we open the file
   if (H5Fis_hdf5 (fname.c_str ()) > 0)
     return LS_HDF5;
-#endif /* HAVE_HDF5 */
+#endif
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
   use_zlib = check_gzip_magic (fname);
 #else
   use_zlib = false;
@@ -311,26 +314,26 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
   if (! use_zlib)
     {
-      std::ifstream file (fname.c_str ());
+      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
       if (file)
         {
           retval = get_file_format (file, orig_fname);
           file.close ();
         }
       else if (! quiet)
-        gripe_file_open ("load", orig_fname);
+        err_file_open ("load", orig_fname);
     }
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
   else
     {
-      gzifstream gzfile (fname.c_str ());
+      gzifstream gzfile (fname.c_str (), std::ios::in | std::ios::binary);
       if (gzfile)
         {
           retval = get_file_format (gzfile, orig_fname);
           gzfile.close ();
         }
       else if (! quiet)
-        gripe_file_open ("load", orig_fname);
+        err_file_open ("load", orig_fname);
     }
 #endif
 
@@ -339,7 +342,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
 octave_value
 do_load (std::istream& stream, const std::string& orig_fname,
-         load_save_format format, oct_mach_info::float_format flt_fmt,
+         load_save_format format, octave::mach_info::float_format flt_fmt,
          bool list_only, bool swap, bool verbose,
          const string_vector& argv, int argv_idx, int argc, int nargout)
 {
@@ -362,8 +365,8 @@ do_load (std::istream& stream, const std::string& orig_fname,
 
       switch (format.type)
         {
-        case LS_ASCII:
-          name = read_ascii_data (stream, orig_fname, global, tc, count);
+        case LS_TEXT:
+          name = read_text_data (stream, orig_fname, global, tc, count);
           break;
 
         case LS_BINARY:
@@ -379,12 +382,12 @@ do_load (std::istream& stream, const std::string& orig_fname,
           name = read_mat_binary_data (stream, orig_fname, tc);
           break;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
         case LS_HDF5:
           name = read_hdf5_data (stream, orig_fname, global, tc, doc,
                                  argv, argv_idx, argc);
           break;
-#endif /* HAVE_HDF5 */
+#endif
 
         case LS_MAT5_BINARY:
         case LS_MAT7_BINARY:
@@ -393,74 +396,64 @@ do_load (std::istream& stream, const std::string& orig_fname,
           break;
 
         default:
-          gripe_unrecognized_data_fmt ("load");
+          err_unrecognized_data_fmt ("load");
           break;
         }
 
-      if (error_state || stream.eof () || name.empty ())
+      if (stream.eof () || name.empty ())
         break;
-      else if (! error_state && ! name.empty ())
-        {
-          if (tc.is_defined ())
-            {
-              if (format == LS_MAT_ASCII && argv_idx < argc)
-                warning ("load: loaded ASCII file '%s' -- ignoring extra args",
-                         orig_fname.c_str ());
-
-              if (format == LS_MAT_ASCII
-                  || argv_idx == argc
-                  || matches_patterns (argv, argv_idx, argc, name))
-                {
-                  count++;
-                  if (list_only)
-                    {
-                      if (verbose)
-                        {
-                          if (count == 1)
-                            output_buf
-                              << "type               rows   cols   name\n"
-                              << "====               ====   ====   ====\n";
-
-                          output_buf
-                            << std::setiosflags (std::ios::left)
-                            << std::setw (16) << tc.type_name () . c_str ()
-                            << std::setiosflags (std::ios::right)
-                            << std::setw (7) << tc.rows ()
-                            << std::setw (7) << tc.columns ()
-                            << "   " << name << "\n";
-                        }
-                      else
-                        symbol_names.push_back (name);
-                    }
-                  else
-                    {
-                      if (nargout == 1)
-                        {
-                          if (format == LS_MAT_ASCII)
-                            retval = tc;
-                          else
-                            retstruct.assign (name, tc);
-                        }
-                      else
-                        install_loaded_variable (name, tc, global, doc);
-                    }
-                }
-
-              // Only attempt to read one item from a headless text file.
-
-              if (format == LS_MAT_ASCII)
-                break;
-            }
-          else
-            error ("load: unable to load variable '%s'", name.c_str ());
-        }
       else
         {
-          if (count == 0)
-            error ("load: are you sure '%s' is an Octave data file?",
-                   orig_fname.c_str ());
+          if (! tc.is_defined ())
+            error ("load: unable to load variable '%s'", name.c_str ());
 
-          break;
+          if (format == LS_MAT_ASCII && argv_idx < argc)
+            warning ("load: loaded ASCII file '%s' -- ignoring extra args",
+                     orig_fname.c_str ());
+
+          if (format == LS_MAT_ASCII
+              || argv_idx == argc
+              || matches_patterns (argv, argv_idx, argc, name))
+            {
+              count++;
+              if (list_only)
+                {
+                  if (verbose)
+                    {
+                      if (count == 1)
+                        output_buf
+                          << "type               rows   cols   name\n"
+                          << "====               ====   ====   ====\n";
+
+                      output_buf
+                        << std::setiosflags (std::ios::left)
+                        << std::setw (16) << tc.type_name ().c_str ()
+                        << std::setiosflags (std::ios::right)
+                        << std::setw (7) << tc.rows ()
+                        << std::setw (7) << tc.columns ()
+                        << "   " << name << "\n";
+                    }
+                  else
+                    symbol_names.push_back (name);
+                }
+              else
+                {
+                  if (nargout == 1)
+                    {
+                      if (format == LS_MAT_ASCII)
+                        retval = tc;
+                      else
+                        retstruct.assign (name, tc);
+                    }
+                  else
+                    install_loaded_variable (name, tc, global, doc);
+                }
+            }
+
+          // Only attempt to read one item from a headless text file.
+
+          if (format == LS_MAT_ASCII)
+            break;
         }
     }
 
@@ -501,7 +494,7 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
   std::string fname = find_data_file_in_load_path ("load", name, true);
 
   size_t dot_pos = fname.rfind (".");
-  size_t sep_pos = fname.find_last_of (file_ops::dir_sep_chars ());
+  size_t sep_pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());
 
   if (dot_pos == std::string::npos
       || (sep_pos != std::string::npos && dot_pos < sep_pos))
@@ -509,14 +502,14 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
       // Either no '.' in name or no '.' appears after last directory
       // separator.
 
-      file_stat fs (fname);
+      octave::sys::file_stat fs (fname);
 
       if (! (fs.exists () && fs.is_reg ()))
         fname = find_file_to_load (fname + ".mat", orig_name);
     }
   else
     {
-      file_stat fs (fname);
+      octave::sys::file_stat fs (fname);
 
       if (! (fs.exists () && fs.is_reg ()))
         {
@@ -537,112 +530,109 @@ is_octave_data_file (const std::string& fname)
 }
 
 DEFUN (load, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Command} {} load file\n\
-@deftypefnx {Command} {} load options file\n\
-@deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
-@deftypefnx {Command} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
-@deftypefnx {Command} {} load file options\n\
-@deftypefnx {Command} {} load file options v1 v2 @dots{}\n\
-@deftypefnx {Command} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
-Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
-@var{file}.\n\
-\n\
-If no variables are specified then all variables found in the\n\
-file will be loaded.  As with @code{save}, the list of variables to extract\n\
-can be full names or use a pattern syntax.  The format of the file is\n\
-automatically detected but may be overridden by supplying the appropriate\n\
-option.\n\
-\n\
-If load is invoked using the functional form\n\
-\n\
-@example\n\
-load (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
-@end example\n\
-\n\
-@noindent\n\
-then the @var{options}, @var{file}, and variable name arguments\n\
-(@var{v1}, @dots{}) must be specified as character strings.\n\
-\n\
-If a variable that is not marked as global is loaded from a file when a\n\
-global symbol with the same name already exists, it is loaded in the\n\
-global symbol table.  Also, if a variable is marked as global in a file\n\
-and a local symbol exists, the local symbol is moved to the global\n\
-symbol table and given the value from the file.\n\
-\n\
-If invoked with a single output argument, Octave returns data instead\n\
-of inserting variables in the symbol table.  If the data file contains\n\
-only numbers (TAB- or space-delimited columns), a matrix of values is\n\
-returned.  Otherwise, @code{load} returns a structure with members\n\
- corresponding to the names of the variables in the file.\n\
-\n\
-The @code{load} command can read data stored in Octave's text and\n\
-binary formats, and @sc{matlab}'s binary format.  If compiled with zlib\n\
-support, it can also load gzip-compressed files.  It will automatically\n\
-detect the type of file and do conversion from different floating point\n\
-formats (currently only IEEE big and little endian, though other formats\n\
-may be added in the future).\n\
-\n\
-Valid options for @code{load} are listed in the following table.\n\
-\n\
-@table @code\n\
-@item -force\n\
-This option is accepted for backward compatibility but is ignored.\n\
-Octave now overwrites variables currently in memory with\n\
-those of the same name found in the file.\n\
-\n\
-@item -ascii\n\
-Force Octave to assume the file contains columns of numbers in text format\n\
-without any header or other information.  Data in the file will be loaded\n\
-as a single numeric matrix with the name of the variable derived from the\n\
-name of the file.\n\
-\n\
-@item -binary\n\
-Force Octave to assume the file is in Octave's binary format.\n\
-\n\
-@item -hdf5\n\
-Force Octave to assume the file is in @sc{hdf5} format.\n\
-(@sc{hdf5} is a free, portable binary format developed by the National\n\
-Center for Supercomputing Applications at the University of Illinois.)\n\
-Note that Octave can read @sc{hdf5} files not created by itself, but may\n\
-skip some datasets in formats that it cannot support.  This format is\n\
-only available if Octave was built with a link to the @sc{hdf5} libraries.\n\
-\n\
-@item -import\n\
-This option is accepted for backward compatibility but is ignored.\n\
-Octave can now support multi-dimensional HDF data and automatically\n\
-modifies variable names if they are invalid Octave identifiers.\n\
-\n\
-@item  -mat\n\
-@itemx -mat-binary\n\
-@itemx -6\n\
-@itemx -v6\n\
-@itemx -7\n\
-@itemx -v7\n\
-Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary\n\
-format.\n\
-\n\
-@item  -mat4-binary\n\
-@itemx -4\n\
-@itemx -v4\n\
-@itemx -V4\n\
-Force Octave to assume the file is in the binary format written by\n\
-@sc{matlab} version 4.\n\
-\n\
-@item -text\n\
-Force Octave to assume the file is in Octave's text format.\n\
-@end table\n\
-@seealso{save, dlmwrite, csvwrite, fwrite}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} load file
+@deftypefnx {} {} load options file
+@deftypefnx {} {} load options file v1 v2 @dots{}
+@deftypefnx {} {S =} load ("options", "file", "v1", "v2", @dots{})
+@deftypefnx {} {} load file options
+@deftypefnx {} {} load file options v1 v2 @dots{}
+@deftypefnx {} {S =} load ("file", "options", "v1", "v2", @dots{})
+Load the named variables @var{v1}, @var{v2}, @dots{}, from the file
+@var{file}.
+
+If no variables are specified then all variables found in the
+file will be loaded.  As with @code{save}, the list of variables to extract
+can be full names or use a pattern syntax.  The format of the file is
+automatically detected but may be overridden by supplying the appropriate
+option.
+
+If load is invoked using the functional form
+
+@example
+load ("-option1", @dots{}, "file", "v1", @dots{})
+@end example
+
+@noindent
+then the @var{options}, @var{file}, and variable name arguments
+(@var{v1}, @dots{}) must be specified as character strings.
+
+If a variable that is not marked as global is loaded from a file when a
+global symbol with the same name already exists, it is loaded in the
+global symbol table.  Also, if a variable is marked as global in a file
+and a local symbol exists, the local symbol is moved to the global
+symbol table and given the value from the file.
+
+If invoked with a single output argument, Octave returns data instead
+of inserting variables in the symbol table.  If the data file contains
+only numbers (TAB- or space-delimited columns), a matrix of values is
+returned.  Otherwise, @code{load} returns a structure with members
+ corresponding to the names of the variables in the file.
+
+The @code{load} command can read data stored in Octave's text and
+binary formats, and @sc{matlab}'s binary format.  If compiled with zlib
+support, it can also load gzip-compressed files.  It will automatically
+detect the type of file and do conversion from different floating point
+formats (currently only IEEE big and little endian, though other formats
+may be added in the future).
+
+Valid options for @code{load} are listed in the following table.
+
+@table @code
+@item -force
+This option is accepted for backward compatibility but is ignored.
+Octave now overwrites variables currently in memory with
+those of the same name found in the file.
+
+@item -ascii
+Force Octave to assume the file contains columns of numbers in text format
+without any header or other information.  Data in the file will be loaded
+as a single numeric matrix with the name of the variable derived from the
+name of the file.
+
+@item -binary
+Force Octave to assume the file is in Octave's binary format.
+
+@item -hdf5
+Force Octave to assume the file is in @sc{hdf5} format.
+(@sc{hdf5} is a free, portable binary format developed by the National
+Center for Supercomputing Applications at the University of Illinois.)
+Note that Octave can read @sc{hdf5} files not created by itself, but may
+skip some datasets in formats that it cannot support.  This format is
+only available if Octave was built with a link to the @sc{hdf5} libraries.
+
+@item -import
+This option is accepted for backward compatibility but is ignored.
+Octave can now support multi-dimensional HDF data and automatically
+modifies variable names if they are invalid Octave identifiers.
+
+@item  -mat
+@itemx -mat-binary
+@itemx -6
+@itemx -v6
+@itemx -7
+@itemx -v7
+Force Octave to assume the file is in @sc{matlab}'s version 6 or 7 binary
+format.
+
+@item  -mat4-binary
+@itemx -4
+@itemx -v4
+@itemx -V4
+Force Octave to assume the file is in the binary format written by
+@sc{matlab} version 4.
+
+@item -text
+Force Octave to assume the file is in Octave's text format.
+@end table
+@seealso{save, dlmwrite, csvwrite, fwrite}
+@end deftypefn */)
 {
   octave_value_list retval;
 
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("load");
-
-  if (error_state)
-    return retval;
 
   int i = 1;
   std::string orig_fname = "";
@@ -663,7 +653,6 @@ Force Octave to assume the file is in Octave's text format.\n\
   bool list_only = false;
   bool verbose = false;
 
-  //for (i; i < argc; i++)
   for (; i < argc; i++)
     {
       if (argv[i] == "-force" || argv[i] == "-f")
@@ -703,12 +692,11 @@ Force Octave to assume the file is in Octave's text format.\n\
         }
       else if (argv[i] == "-hdf5" || argv[i] == "-h")
         {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           format = LS_HDF5;
-#else /* ! HAVE_HDF5 */
-          error ("load: octave executable was not linked with HDF5 library");
-          return retval;
-#endif /* ! HAVE_HDF5 */
+#else
+          err_disabled_feature ("load", "HDF5");
+#endif
         }
       else if (argv[i] == "-import" || argv[i] == "-i")
         {
@@ -716,7 +704,7 @@ Force Octave to assume the file is in Octave's text format.\n\
         }
       else if (argv[i] == "-text" || argv[i] == "-t")
         {
-          format = LS_ASCII;
+          format = LS_TEXT;
         }
       else
         break;
@@ -725,17 +713,14 @@ Force Octave to assume the file is in Octave's text format.\n\
   if (orig_fname == "")
     {
       if (i == argc)
-        {
-          print_usage ();
-          return retval;
-        }
-      else
-        orig_fname = argv[i];
+        print_usage ();
+
+      orig_fname = argv[i];
     }
   else
     i--;
 
-  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
+  octave::mach_info::float_format flt_fmt = octave::mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
@@ -743,11 +728,11 @@ Force Octave to assume the file is in Octave's text format.\n\
     {
       i++;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         error ("load: cannot read HDF5 format from stdin");
       else
-#endif /* HAVE_HDF5 */
+#endif
       if (format != LS_UNKNOWN)
         {
           // FIXME: if we have already seen EOF on a previous call,
@@ -764,38 +749,33 @@ Force Octave to assume the file is in Octave's text format.\n\
     }
   else
     {
-      std::string fname = file_ops::tilde_expand (orig_fname);
+      std::string fname = octave::sys::file_ops::tilde_expand (orig_fname);
 
       fname = find_file_to_load (fname, orig_fname);
-
-      if (error_state)
-        return retval;
 
       bool use_zlib = false;
 
       if (format == LS_UNKNOWN)
         format = get_file_format (fname, orig_fname, use_zlib);
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         {
           i++;
 
           hdf5_ifstream hdf5_file (fname.c_str ());
 
-          if (hdf5_file.file_id >= 0)
-            {
-              retval = do_load (hdf5_file, orig_fname, format,
-                                flt_fmt, list_only, swap, verbose,
-                                argv, i, argc, nargout);
+          if (hdf5_file.file_id < 0)
+            err_file_open ("load", orig_fname);
 
-              hdf5_file.close ();
-            }
-          else
-            gripe_file_open ("load", orig_fname);
+          retval = do_load (hdf5_file, orig_fname, format,
+                            flt_fmt, list_only, swap, verbose,
+                            argv, i, argc, nargout);
+
+          hdf5_file.close ();
         }
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any statements here; the "else" above has to
         // go with the "if" below!!!!!
       if (format != LS_UNKNOWN)
@@ -806,83 +786,78 @@ Force Octave to assume the file is in Octave's text format.\n\
           // line-endings explicitly.
           std::ios::openmode mode = std::ios::in | std::ios::binary;
 
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
           if (use_zlib)
             {
               gzifstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  if (format == LS_BINARY)
-                    {
-                      if (read_binary_file_header (file, swap, flt_fmt) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-                  else if (format == LS_MAT5_BINARY
-                           || format == LS_MAT7_BINARY)
-                    {
-                      if (read_mat5_binary_file_header (file, swap, false,
-                                                        orig_fname) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
+              if (! file)
+                err_file_open ("load", orig_fname);
 
-                  retval = do_load (file, orig_fname, format,
-                                    flt_fmt, list_only, swap, verbose,
+              if (format == LS_BINARY)
+                {
+                  if (read_binary_file_header (file, swap, flt_fmt) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+              else if (format == LS_MAT5_BINARY
+                       || format == LS_MAT7_BINARY)
+                {
+                  if (read_mat5_binary_file_header (file, swap, false,
+                                                    orig_fname) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+
+              retval = do_load (file, orig_fname, format,
+                                flt_fmt, list_only, swap, verbose,
                                 argv, i, argc, nargout);
 
-                  file.close ();
-                }
-              else
-                gripe_file_open ("load", orig_fname);
+              file.close ();
             }
           else
 #endif
             {
               std::ifstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  if (format == LS_BINARY)
-                    {
-                      if (read_binary_file_header (file, swap, flt_fmt) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-                  else if (format == LS_MAT5_BINARY
-                           || format == LS_MAT7_BINARY)
-                    {
-                      if (read_mat5_binary_file_header (file, swap, false,
-                                                        orig_fname) < 0)
-                        {
-                          if (file) file.close ();
-                          return retval;
-                        }
-                    }
-
-                  retval = do_load (file, orig_fname, format,
-                                    flt_fmt, list_only, swap, verbose,
-                                    argv, i, argc, nargout);
-
-                  file.close ();
-                }
-              else
+              if (! file)
                 error ("load: unable to open input file '%s'",
                        orig_fname.c_str ());
+
+              if (format == LS_BINARY)
+                {
+                  if (read_binary_file_header (file, swap, flt_fmt) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+              else if (format == LS_MAT5_BINARY
+                       || format == LS_MAT7_BINARY)
+                {
+                  if (read_mat5_binary_file_header (file, swap, false,
+                                                    orig_fname) < 0)
+                    {
+                      if (file) file.close ();
+                      return retval;
+                    }
+                }
+
+              retval = do_load (file, orig_fname, format,
+                                flt_fmt, list_only, swap, verbose,
+                                argv, i, argc, nargout);
+
+              file.close ();
             }
         }
       else
-        {
-          error ("load: unable to determine file format of '%s'",
-                 orig_fname.c_str ());
-        }
+        error ("load: unable to determine file format of '%s'",
+               orig_fname.c_str ());
+
     }
 
   return retval;
@@ -935,8 +910,8 @@ do_save (std::ostream& os, const octave_value& tc,
 {
   switch (fmt.type)
     {
-    case LS_ASCII:
-      save_ascii_data (os, tc, name, global, 0);
+    case LS_TEXT:
+      save_text_data (os, tc, name, global, 0);
       break;
 
     case LS_BINARY:
@@ -953,11 +928,11 @@ do_save (std::ostream& os, const octave_value& tc,
       save_mat_binary_data (os, tc, name);
       break;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
     case LS_HDF5:
       save_hdf5_data (os, tc, name, help, global, save_as_floats);
       break;
-#endif /* HAVE_HDF5 */
+#endif
 
     case LS_MAT5_BINARY:
       save_mat5_binary_element (os, tc, name, global, false, save_as_floats);
@@ -968,7 +943,7 @@ do_save (std::ostream& os, const octave_value& tc,
       break;
 
     default:
-      gripe_unrecognized_data_fmt ("save");
+      err_unrecognized_data_fmt ("save");
       break;
     }
 }
@@ -1037,9 +1012,6 @@ save_vars (std::ostream& os, const std::string& pattern,
     {
       do_save (os, *p, fmt, save_as_floats);
 
-      if (error_state)
-        break;
-
       saved++;
     }
 
@@ -1051,8 +1023,12 @@ parse_save_options (const string_vector &argv,
                     load_save_format &format, bool &append,
                     bool &save_as_floats, bool &use_zlib)
 {
+#if ! defined (HAVE_ZLIB)
+  octave_unused_parameter (use_zlib);
+#endif
+
   string_vector retval;
-  int argc = argv.length ();
+  int argc = argv.numel ();
 
   bool do_double = false;
   bool do_tabs = false;
@@ -1077,7 +1053,7 @@ parse_save_options (const string_vector &argv,
         }
       else if (argv[i] == "-text" || argv[i] == "-t")
         {
-          format = LS_ASCII;
+          format = LS_TEXT;
         }
       else if (argv[i] == "-binary" || argv[i] == "-b")
         {
@@ -1085,11 +1061,11 @@ parse_save_options (const string_vector &argv,
         }
       else if (argv[i] == "-hdf5" || argv[i] == "-h")
         {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           format = LS_HDF5;
-#else /* ! HAVE_HDF5 */
-          error ("save: octave executable was not linked with HDF5 library");
-#endif /* ! HAVE_HDF5 */
+#else
+          err_disabled_feature ("save", "HDF5");
+#endif
         }
       else if (argv[i] == "-mat-binary" || argv[i] == "-mat"
                || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6"
@@ -1097,7 +1073,7 @@ parse_save_options (const string_vector &argv,
         {
           format = LS_MAT5_BINARY;
         }
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
       else if (argv[i] == "-mat7-binary" || argv[i] == "-7"
                || argv[i] == "-v7" || argv[i] == "-V7")
         {
@@ -1116,17 +1092,17 @@ parse_save_options (const string_vector &argv,
         }
       else if (argv[i] == "-float-hdf5")
         {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           format = LS_HDF5;
           save_as_floats = true;
-#else /* ! HAVE_HDF5 */
-          error ("save: octave executable was not linked with HDF5 library");
-#endif /* ! HAVE_HDF5 */
+#else
+          err_disabled_feature ("save", "HDF5");
+#endif
         }
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
       else if (argv[i] == "-zip" || argv[i] == "-z")
         {
-          use_zlib  = true;
+          use_zlib = true;
         }
 #endif
       else if (argv[i] == "-struct")
@@ -1162,8 +1138,7 @@ parse_save_options (const string_vector &argv,
 
 static string_vector
 parse_save_options (const std::string &arg, load_save_format &format,
-                    bool &append, bool &save_as_floats,
-                    bool &use_zlib)
+                    bool &append, bool &save_as_floats, bool &use_zlib)
 {
   std::istringstream is (arg);
   std::string str;
@@ -1175,8 +1150,7 @@ parse_save_options (const std::string &arg, load_save_format &format,
       argv.append (str);
     }
 
-  return parse_save_options (argv, format, append, save_as_floats,
-                             use_zlib);
+  return parse_save_options (argv, format, append, save_as_floats, use_zlib);
 }
 
 void
@@ -1186,11 +1160,11 @@ write_header (std::ostream& os, load_save_format format)
     {
     case LS_BINARY:
       {
-        os << (oct_mach_info::words_big_endian ()
+        os << (octave::mach_info::words_big_endian ()
                ? "Octave-1-B" : "Octave-1-L");
 
-        oct_mach_info::float_format flt_fmt =
-          oct_mach_info::native_float_format ();
+        octave::mach_info::float_format flt_fmt =
+          octave::mach_info::native_float_format ();
 
         char tmp = static_cast<char> (float_format_to_mopt_digit (flt_fmt));
 
@@ -1203,16 +1177,17 @@ write_header (std::ostream& os, load_save_format format)
       {
         char const * versionmagic;
         int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
-        struct tm bdt;
-        time_t now;
         char headertext[128];
+        octave::sys::gmtime now;
 
-        time (&now);
-        bdt = *gnulib::gmtime (&now);
-        memset (headertext, ' ', 124);
         // ISO 8601 format date
-        nstrftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
-                   OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt, 0, 0);
+        const char *matlab_format = "MATLAB 5.0 MAT-file, written by Octave "
+            OCTAVE_VERSION ", %Y-%m-%d %T UTC";
+        std::string comment_string = now.strftime (matlab_format);
+
+        size_t len = std::min (comment_string.length (), static_cast<size_t> (124));
+        memset (headertext, ' ', 124);
+        memcpy (headertext, comment_string.data (), len);
 
         // The first pair of bytes give the version of the MAT file
         // format.  The second pair of bytes form a magic number which
@@ -1232,25 +1207,25 @@ write_header (std::ostream& os, load_save_format format)
 
       break;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
     case LS_HDF5:
-#endif /* HAVE_HDF5 */
-    case LS_ASCII:
+#endif
+    case LS_TEXT:
       {
-        octave_localtime now;
+        octave::sys::localtime now;
 
         std::string comment_string = now.strftime (Vsave_header_format_string);
 
         if (! comment_string.empty ())
           {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
             if (format == LS_HDF5)
               {
                 hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
                 H5Gset_comment (hs.file_id, "/", comment_string.c_str ());
               }
             else
-#endif /* HAVE_HDF5 */
+#endif
               os << comment_string << "\n";
           }
       }
@@ -1264,7 +1239,7 @@ write_header (std::ostream& os, load_save_format format)
 void
 octave_prepare_hdf5 (void)
 {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
   H5dont_atexit ();
 #endif
 }
@@ -1272,7 +1247,7 @@ octave_prepare_hdf5 (void)
 void
 octave_finalize_hdf5 (void)
 {
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
   H5close ();
 #endif
 }
@@ -1292,27 +1267,18 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
   else if (argv[argv_idx] == "-struct")
     {
       if (++argv_idx >= argc)
-        {
-          error ("save: missing struct name");
-          return;
-        }
+        error ("save: missing struct name");
 
       std::string struct_name = argv[argv_idx];
 
       if (! symbol_table::is_variable (struct_name))
-        {
-          error ("save: no such variable: '%s'", struct_name.c_str ());
-          return;
-        }
+        error ("save: no such variable: '%s'", struct_name.c_str ());
 
       octave_value struct_var = symbol_table::varval (struct_name);
 
       if (! struct_var.is_map () || struct_var.numel () != 1)
-        {
-          error ("save: '%s' is not a scalar structure",
-                 struct_name.c_str ());
-          return;
-        }
+        error ("save: '%s' is not a scalar structure", struct_name.c_str ());
+
       octave_scalar_map struct_var_map = struct_var.scalar_map_value ();
 
       ++argv_idx;
@@ -1378,9 +1344,6 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
               save_mem_size += val_size;
 
               do_save (os, val, name, help, global, fmt, save_as_floats);
-
-              if (error_state)
-                break;
             }
         }
     }
@@ -1393,7 +1356,7 @@ dump_octave_core (void)
 {
   if (Vcrash_dumps_octave_core)
     {
-      // FIXME: should choose better file name?
+      // FIXME: should choose better filename?
 
       const char *fname = Voctave_core_file_name.c_str ();
 
@@ -1417,7 +1380,7 @@ dump_octave_core (void)
         use_zlib = false;
 
       if (format == LS_BINARY
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           || format == LS_HDF5
 #endif
           || format == LS_MAT_BINARY
@@ -1427,7 +1390,7 @@ dump_octave_core (void)
 
       mode |= append ? std::ios::ate : std::ios::trunc;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         {
           hdf5_ofstream file (fname, mode);
@@ -1439,14 +1402,15 @@ dump_octave_core (void)
               file.close ();
             }
           else
-            warning ("unable to open '%s' for writing...", fname);
+            warning ("dump_octave_core: unable to open '%s' for writing...",
+                     fname);
         }
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any commands here!  The open brace below must
         // go with the else above!
         {
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
           if (use_zlib)
             {
               gzofstream file (fname, mode);
@@ -1458,7 +1422,8 @@ dump_octave_core (void)
                   file.close ();
                 }
               else
-                warning ("unable to open '%s' for writing...", fname);
+                warning ("dump_octave_core: unable to open '%s' for writing...",
+                         fname);
             }
           else
 #endif
@@ -1472,159 +1437,149 @@ dump_octave_core (void)
                   file.close ();
                 }
               else
-                warning ("unable to open '%s' for writing...", fname);
+                warning ("dump_octave_core: unable to open '%s' for writing...",
+                         fname);
             }
         }
     }
 }
 
 DEFUN (save, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Command} {} save file\n\
-@deftypefnx {Command} {} save options file\n\
-@deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
-@deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
-@deftypefnx {Command} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
-@deftypefnx {Built-in Function} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
-Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.\n\
-\n\
-The special filename @samp{-} may be used to return the\n\
-content of the variables as a string.  If no variable names are listed,\n\
-Octave saves all the variables in the current scope.  Otherwise, full\n\
-variable names or pattern syntax can be used to specify the variables to\n\
-save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}\n\
-@dots{} of the scalar structure @var{STRUCT} are saved as if they were\n\
-variables with corresponding names.  Valid options for the @code{save}\n\
-command are listed in the following table.  Options that modify the output\n\
-format override the format specified by @code{save_default_options}.\n\
-\n\
-If save is invoked using the functional form\n\
-\n\
-@example\n\
-save (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
-@end example\n\
-\n\
-@noindent\n\
-then the @var{options}, @var{file}, and variable name arguments\n\
-(@var{v1}, @dots{}) must be specified as character strings.\n\
-\n\
-If called with a filename of @qcode{\"-\"}, write the output to stdout\n\
-if nargout is 0, otherwise return the output in a character string.\n\
-\n\
-@table @code\n\
-@item -append\n\
-Append to the destination instead of overwriting.\n\
-\n\
-@item -ascii\n\
-Save a single matrix in a text file without header or any other information.\n\
-\n\
-@item -binary\n\
-Save the data in Octave's binary data format.\n\
-\n\
-@item -float-binary\n\
-Save the data in Octave's binary data format but only using single\n\
-precision.  Only use this format if you know that all the\n\
-values to be saved can be represented in single precision.\n\
-\n\
-@item -hdf5\n\
-Save the data in @sc{hdf5} format.\n\
-(HDF5 is a free, portable binary format developed by the National\n\
-Center for Supercomputing Applications at the University of Illinois.)\n\
-This format is only available if Octave was built with a link to the\n\
-@sc{hdf5} libraries.\n\
-\n\
-@item -float-hdf5\n\
-Save the data in @sc{hdf5} format but only using single precision.\n\
-Only use this format if you know that all the\n\
-values to be saved can be represented in single precision.\n\
-\n\
-@item  -V7\n\
-@itemx -v7\n\
-@itemx -7\n\
-@itemx -mat7-binary\n\
-Save the data in @sc{matlab}'s v7 binary data format.\n\
-\n\
-@item  -V6\n\
-@itemx -v6\n\
-@itemx -6\n\
-@itemx -mat\n\
-@itemx -mat-binary\n\
-Save the data in @sc{matlab}'s v6 binary data format.\n\
-\n\
-@item  -V4\n\
-@itemx -v4\n\
-@itemx -4\n\
-@itemx -mat4-binary\n\
-Save the data in the binary format written by @sc{matlab} version 4.\n\
-\n\
-@item -text\n\
-Save the data in Octave's text data format.  (default).\n\
-\n\
-@item  -zip\n\
-@itemx -z\n\
-Use the gzip algorithm to compress the file.  This works equally on files\n\
-that are compressed with gzip outside of octave, and gzip can equally be\n\
-used to convert the files for backward compatibility.\n\
-This option is only available if Octave was built with a link to the zlib\n\
-libraries.\n\
-@end table\n\
-\n\
-The list of variables to save may use wildcard patterns containing\n\
-the following special characters:\n\
-\n\
-@table @code\n\
-@item ?\n\
-Match any single character.\n\
-\n\
-@item *\n\
-Match zero or more characters.\n\
-\n\
-@item [ @var{list} ]\n\
-Match the list of characters specified by @var{list}.  If the first\n\
-character is @code{!} or @code{^}, match all characters except those\n\
-specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will\n\
-match all lower and uppercase alphabetic characters.\n\
-\n\
-Wildcards may also be used in the field name specifications when using\n\
-the @option{-struct} modifier (but not in the struct name itself).\n\
-\n\
-@end table\n\
-\n\
-Except when using the @sc{matlab} binary data file format or the\n\
-@samp{-ascii} format, saving global\n\
-variables also saves the global status of the variable.  If the variable\n\
-is restored at a later time using @samp{load}, it will be restored as a\n\
-global variable.\n\
-\n\
-The command\n\
-\n\
-@example\n\
-save -binary data a b*\n\
-@end example\n\
-\n\
-@noindent\n\
-saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
-the file @file{data} in Octave's binary format.\n\
-@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} save file
+@deftypefnx {} {} save options file
+@deftypefnx {} {} save options file @var{v1} @var{v2} @dots{}
+@deftypefnx {} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}
+@deftypefnx {} {} save @code{"-"} @var{v1} @var{v2} @dots{}
+@deftypefnx {} {@var{s} =} save (@code{"-"} @var{v1} @var{v2} @dots{})
+Save the named variables @var{v1}, @var{v2}, @dots{}, in the file
+@var{file}.
+
+The special filename @samp{-} may be used to return the
+content of the variables as a string.  If no variable names are listed,
+Octave saves all the variables in the current scope.  Otherwise, full
+variable names or pattern syntax can be used to specify the variables to
+save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}
+@dots{} of the scalar structure @var{STRUCT} are saved as if they were
+variables with corresponding names.  Valid options for the @code{save}
+command are listed in the following table.  Options that modify the output
+format override the format specified by @code{save_default_options}.
+
+If save is invoked using the functional form
+
+@example
+save ("-option1", @dots{}, "file", "v1", @dots{})
+@end example
+
+@noindent
+then the @var{options}, @var{file}, and variable name arguments
+(@var{v1}, @dots{}) must be specified as character strings.
+
+If called with a filename of @qcode{"-"}, write the output to stdout
+if nargout is 0, otherwise return the output in a character string.
+
+@table @code
+@item -append
+Append to the destination instead of overwriting.
+
+@item -ascii
+Save a single matrix in a text file without header or any other information.
+
+@item -binary
+Save the data in Octave's binary data format.
+
+@item -float-binary
+Save the data in Octave's binary data format but only using single
+precision.  Only use this format if you know that all the
+values to be saved can be represented in single precision.
+
+@item -hdf5
+Save the data in @sc{hdf5} format.
+(HDF5 is a free, portable binary format developed by the National
+Center for Supercomputing Applications at the University of Illinois.)
+This format is only available if Octave was built with a link to the
+@sc{hdf5} libraries.
+
+@item -float-hdf5
+Save the data in @sc{hdf5} format but only using single precision.
+Only use this format if you know that all the
+values to be saved can be represented in single precision.
+
+@item  -V7
+@itemx -v7
+@itemx -7
+@itemx -mat7-binary
+Save the data in @sc{matlab}'s v7 binary data format.
+
+@item  -V6
+@itemx -v6
+@itemx -6
+@itemx -mat
+@itemx -mat-binary
+Save the data in @sc{matlab}'s v6 binary data format.
+
+@item  -V4
+@itemx -v4
+@itemx -4
+@itemx -mat4-binary
+Save the data in the binary format written by @sc{matlab} version 4.
+
+@item -text
+Save the data in Octave's text data format.  (default).
+
+@item  -zip
+@itemx -z
+Use the gzip algorithm to compress the file.  This works equally on files
+that are compressed with gzip outside of octave, and gzip can equally be
+used to convert the files for backward compatibility.
+This option is only available if Octave was built with a link to the zlib
+libraries.
+@end table
+
+The list of variables to save may use wildcard patterns containing
+the following special characters:
+
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will
+match all lower and uppercase alphabetic characters.
+
+Wildcards may also be used in the field name specifications when using
+the @option{-struct} modifier (but not in the struct name itself).
+
+@end table
+
+Except when using the @sc{matlab} binary data file format or the
+@samp{-ascii} format, saving global
+variables also saves the global status of the variable.  If the variable
+is restored at a later time using @samp{load}, it will be restored as a
+global variable.
+
+The command
+
+@example
+save -binary data a b*
+@end example
+
+@noindent
+saves the variable @samp{a} and all variables beginning with @samp{b} to
+the file @file{data} in Octave's binary format.
+@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  string_vector argv = args.make_argv ();
-
-  if (error_state)
-    return retval;
-
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
-
+  load_save_format format = LS_TEXT;
   bool save_as_floats = false;
-
-  load_save_format format = LS_ASCII;
-
   bool append = false;
-
   bool use_zlib = false;
 
   // get default options
@@ -1632,35 +1587,30 @@ the file @file{data} in Octave's binary format.\n\
                       use_zlib);
 
   // override from command line
-  argv = parse_save_options (argv, format, append, save_as_floats,
-                             use_zlib);
-  int argc = argv.length ();
+  string_vector argv = args.make_argv ();
+
+  argv = parse_save_options (argv, format, append, save_as_floats, use_zlib);
+
+  int argc = argv.numel ();
   int i = 0;
 
-  if (error_state)
-    return retval;
-
   if (i == argc)
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
 
-  if (save_as_floats && format == LS_ASCII)
-    {
-      error ("save: cannot specify both -ascii and -float-binary");
-      return retval;
-    }
+  if (save_as_floats && format == LS_TEXT)
+    error ("save: cannot specify both -text and -float-binary");
+
+  octave_value_list retval;
 
   if (argv[i] == "-")
     {
       i++;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         error ("save: cannot write HDF5 format to stdout");
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any commands here!  the brace below must go
         // with the "else" above!
         {
@@ -1681,13 +1631,10 @@ the file @file{data} in Octave's binary format.\n\
   // Guard against things like 'save a*', which are probably mistakes...
 
   else if (i == argc - 1 && glob_pattern_p (argv[i]))
-    {
-      print_usage ();
-      return retval;
-    }
+    print_usage ();
   else
     {
-      std::string fname = file_ops::tilde_expand (argv[i]);
+      std::string fname = octave::sys::file_ops::tilde_expand (argv[i]);
 
       i++;
 
@@ -1699,7 +1646,7 @@ the file @file{data} in Octave's binary format.\n\
         = append ? (std::ios::app | std::ios::ate) : std::ios::out;
 
       if (format == LS_BINARY
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
           || format == LS_HDF5
 #endif
           || format == LS_MAT_BINARY
@@ -1707,78 +1654,60 @@ the file @file{data} in Octave's binary format.\n\
           || format == LS_MAT7_BINARY)
         mode |= std::ios::binary;
 
-#ifdef HAVE_HDF5
+#if defined (HAVE_HDF5)
       if (format == LS_HDF5)
         {
           // FIXME: It should be possible to append to HDF5 files.
           if (append)
-            {
-              error ("save: appending to HDF5 files is not implemented");
-              return retval;
-            }
+            error ("save: appending to HDF5 files is not implemented");
 
           bool write_header_info
             = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
 
-          if (hdf5_file.file_id != -1)
-            {
-              save_vars (argv, i, argc, hdf5_file, format,
-                         save_as_floats, write_header_info);
+          if (hdf5_file.file_id == -1)
+            err_file_open ("save", fname);
 
-              hdf5_file.close ();
-            }
-          else
-            {
-              gripe_file_open ("save", fname);
-              return retval;
-            }
+          save_vars (argv, i, argc, hdf5_file, format,
+                     save_as_floats, write_header_info);
+
+          hdf5_file.close ();
         }
       else
-#endif /* HAVE_HDF5 */
+#endif
         // don't insert any statements here!  The brace below must go
         // with the "else" above!
         {
-#ifdef HAVE_ZLIB
+#if defined (HAVE_ZLIB)
           if (use_zlib)
             {
               gzofstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  bool write_header_info = ! file.tellp ();
+              if (! file)
+                err_file_open ("save", fname);
 
-                  save_vars (argv, i, argc, file, format,
-                             save_as_floats, write_header_info);
+              bool write_header_info = ! file.tellp ();
 
-                  file.close ();
-                }
-              else
-                {
-                  gripe_file_open ("save", fname);
-                  return retval;
-                }
+              save_vars (argv, i, argc, file, format,
+                         save_as_floats, write_header_info);
+
+              file.close ();
             }
           else
 #endif
             {
               std::ofstream file (fname.c_str (), mode);
 
-              if (file)
-                {
-                  bool write_header_info = ! file.tellp ();
+              if (! file)
+                err_file_open ("save", fname);
 
-                  save_vars (argv, i, argc, file, format,
-                             save_as_floats, write_header_info);
+              bool write_header_info = ! file.tellp ();
 
-                  file.close ();
-                }
-              else
-                {
-                  gripe_file_open ("save", fname);
-                  return retval;
-                }
+              save_vars (argv, i, argc, file, format,
+                         save_as_floats, write_header_info);
+
+              file.close ();
             }
         }
     }
@@ -1787,131 +1716,132 @@ the file @file{data} in Octave's binary format.\n\
 }
 
 DEFUN (crash_dumps_octave_core, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file @file{octave-workspace} if it\n\
-crashes or receives a hangup, terminate or similar signal.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} crash_dumps_octave_core ()
+@deftypefnx {} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})
+@deftypefnx {} {} crash_dumps_octave_core (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave tries
+to save all current variables to the file @file{octave-workspace} if it
+crashes or receives a hangup, terminate or similar signal.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (crash_dumps_octave_core);
 }
 
 DEFUN (save_default_options, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} save_default_options ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} save_default_options (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the default options\n\
-for the @code{save} command, and defines the default format.\n\
-\n\
-Typical values include @qcode{\"-ascii\"}, @qcode{\"-text -zip\"}.\n\
-The default value is @option{-text}.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} save_default_options ()
+@deftypefnx {} {@var{old_val} =} save_default_options (@var{new_val})
+@deftypefnx {} {} save_default_options (@var{new_val}, "local")
+Query or set the internal variable that specifies the default options
+for the @code{save} command, and defines the default format.
+
+Typical values include @qcode{"-ascii"}, @qcode{"-text -zip"}.
+The default value is @option{-text}.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{save}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (save_default_options);
 }
 
 DEFUN (octave_core_file_limit, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} octave_core_file_limit (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the maximum amount\n\
-of memory (in kilobytes) of the top-level workspace that Octave will\n\
-attempt to save when writing data to the crash dump file (the name of\n\
-the file is specified by @var{octave_core_file_name}).\n\
-\n\
-If @var{octave_core_file_options} flags specify a binary format,\n\
-then @var{octave_core_file_limit} will be approximately the maximum\n\
-size of the file.  If a text file format is used, then the file could\n\
-be much larger than the limit.  The default value is -1 (unlimited)\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} octave_core_file_limit ()
+@deftypefnx {} {@var{old_val} =} octave_core_file_limit (@var{new_val})
+@deftypefnx {} {} octave_core_file_limit (@var{new_val}, "local")
+Query or set the internal variable that specifies the maximum amount
+of memory (in kilobytes) of the top-level workspace that Octave will
+attempt to save when writing data to the crash dump file (the name of
+the file is specified by @var{octave_core_file_name}).
+
+If @var{octave_core_file_options} flags specify a binary format,
+then @var{octave_core_file_limit} will be approximately the maximum
+size of the file.  If a text file format is used, then the file could
+be much larger than the limit.  The default value is -1 (unlimited)
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (octave_core_file_limit);
 }
 
 DEFUN (octave_core_file_name, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the name of the file\n\
-used for saving data from the top-level workspace if Octave aborts.\n\
-\n\
-The default value is @qcode{\"octave-workspace\"}\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} octave_core_file_name ()
+@deftypefnx {} {@var{old_val} =} octave_core_file_name (@var{new_val})
+@deftypefnx {} {} octave_core_file_name (@var{new_val}, "local")
+Query or set the internal variable that specifies the name of the file
+used for saving data from the top-level workspace if Octave aborts.
+
+The default value is @qcode{"octave-workspace"}
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (octave_core_file_name);
 }
 
 DEFUN (octave_core_file_options, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} octave_core_file_options (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the options used for\n\
-saving the workspace data if Octave aborts.\n\
-\n\
-The value of @code{octave_core_file_options} should follow the same format\n\
-as the options for the @code{save} function.  The default value is Octave's\n\
-binary format.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} octave_core_file_options ()
+@deftypefnx {} {@var{old_val} =} octave_core_file_options (@var{new_val})
+@deftypefnx {} {} octave_core_file_options (@var{new_val}, "local")
+Query or set the internal variable that specifies the options used for
+saving the workspace data if Octave aborts.
+
+The value of @code{octave_core_file_options} should follow the same format
+as the options for the @code{save} function.  The default value is Octave's
+binary format.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}
+@end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (octave_core_file_options);
 }
 
 DEFUN (save_header_format_string, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} save_header_format_string ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} save_header_format_string (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the format\n\
-string used for the comment line written at the beginning of\n\
-text-format data files saved by Octave.\n\
-\n\
-The format string is passed to @code{strftime} and should begin with the\n\
-character @samp{#} and contain no newline characters.  If the value of\n\
-@code{save_header_format_string} is the empty string, the header comment is\n\
-omitted from text-format data files.  The default value is\n\
-@c Set example in small font to prevent overfull line\n\
-\n\
-@smallexample\n\
-\"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
-@end smallexample\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{strftime, save}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} save_header_format_string ()
+@deftypefnx {} {@var{old_val} =} save_header_format_string (@var{new_val})
+@deftypefnx {} {} save_header_format_string (@var{new_val}, "local")
+Query or set the internal variable that specifies the format
+string used for the comment line written at the beginning of
+text-format data files saved by Octave.
+
+The format string is passed to @code{strftime} and should begin with the
+character @samp{#} and contain no newline characters.  If the value of
+@code{save_header_format_string} is the empty string, the header comment is
+omitted from text-format data files.  The default value is
+@c Set example in small font to prevent overfull line
+
+@smallexample
+"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+@end smallexample
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{strftime, save}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (save_header_format_string);
 }
+

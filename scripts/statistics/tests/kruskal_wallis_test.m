@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{k}, @var{df}] =} kruskal_wallis_test (@var{x1}, @dots{})
+## @deftypefn {} {[@var{pval}, @var{k}, @var{df}] =} kruskal_wallis_test (@var{x1}, @dots{})
 ## Perform a @nospell{Kruskal-Wallis} one-factor analysis of variance.
 ##
 ## Suppose a variable is observed for @var{k} > 1 different groups, and let
@@ -37,7 +37,8 @@
 ## total number of values in the input data.  For more info on this
 ## adjustment see @nospell{William H. Kruskal and W. Allen Wallis},
 ## @cite{Use of Ranks in One-Criterion Variance Analysis},
-## Journal of the American Statistical Association, Vol. 47, No. 260 (Dec 1952).
+## Journal of the American Statistical Association, Vol. 47, No. 260 (Dec
+## 1952).
 ##
 ## The p-value (1 minus the CDF of this distribution at @var{k}) is returned
 ## in @var{pval}.
@@ -73,7 +74,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
   k = 0;
   j = 0;
   for i = 1 : m;
-    k = k + (sum (r ((j + 1) : (j + n(i))))) ^ 2 / n(i);
+    k += (sum (r ((j + 1) : (j + n(i))))) ^ 2 / n(i);
     j = j + n(i);
   endfor
 
@@ -82,7 +83,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
 
   ## Adjust the result to takes ties into account.
   sum_ties = sum (polyval ([1, 0, -1, 0], runlength (sort (p))));
-  k = k / (1 - sum_ties / (n^3 - n));
+  k /= (1 - sum_ties / (n^3 - n));
 
   df = m - 1;
   pval = 1 - chi2cdf (k, df);

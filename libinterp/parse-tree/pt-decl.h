@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_decl_h)
+#if ! defined (octave_pt_decl_h)
 #define octave_pt_decl_h 1
+
+#include "octave-config.h"
 
 class tree_expression;
 class tree_identifier;
@@ -74,8 +76,8 @@ public:
 
     if (nargout > 1)
       error ("invalid number of output arguments in declaration list");
-    else
-      retval = rvalue1 (nargout);
+
+    retval = rvalue1 (nargout);
 
     return retval;
   }
@@ -109,7 +111,7 @@ private:
 };
 
 class
-tree_decl_init_list : public octave_base_list<tree_decl_elt *>
+tree_decl_init_list : public octave::base_list<tree_decl_elt *>
 {
 public:
 
@@ -241,3 +243,4 @@ private:
 };
 
 #endif
+

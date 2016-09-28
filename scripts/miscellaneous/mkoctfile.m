@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Keith Goodman
+## Copyright (C) 2006-2016 Keith Goodman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
-## @deftypefnx {Function File} {[@var{output}, @var{status}] =} mkoctfile (@dots{})
+## @deftypefn  {} {} mkoctfile [-options] file @dots{}
+## @deftypefnx {} {[@var{output}, @var{status}] =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C, C++, or
 ## Fortran.  Depending on the options used with @code{mkoctfile}, the
@@ -31,7 +31,7 @@
 ## the exit status in the @var{status} variable.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
-## except for the file name of the code you wish to compile:
+## except for the filename of the code you wish to compile:
 ##
 ## @table @samp
 ## @item -I DIR
@@ -69,7 +69,7 @@
 ##
 ## @item  -o FILE
 ## @itemx --output FILE
-## Output file name.  Default extension is .oct (or .mex if @samp{--mex} is
+## Output filename.  Default extension is .oct (or .mex if @samp{--mex} is
 ## specified) unless linking a stand-alone executable.
 ##
 ## @item  -p VAR
@@ -144,8 +144,8 @@
 
 function [output, status] = mkoctfile (varargin)
 
-  bindir = octave_config_info ("bindir");
-  ext = octave_config_info ("EXEEXT");
+  bindir = __octave_config_info__ ("bindir");
+  ext = __octave_config_info__ ("EXEEXT");
 
   shell_script = fullfile (bindir,
                            sprintf ("mkoctfile-%s%s", OCTAVE_VERSION, ext));
@@ -168,7 +168,7 @@ function [output, status] = mkoctfile (varargin)
   endif
 
   if (sys != 0)
-    warning ("mkoctfile exited with failure status");
+    warning ("mkoctfile: building exited with failure status\n");
   endif
 
 endfunction

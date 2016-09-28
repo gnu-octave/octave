@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
-## @deftypefnx {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} trisurf (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} trisurf (@dots{})
+## @deftypefn  {} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefnx {} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefnx {} {} trisurf (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} trisurf (@dots{})
 ## Plot a 3-D triangular surface.
 ##
 ## In contrast to @code{surf}, which plots a surface mesh using rectangles,
@@ -68,17 +68,9 @@ function h = trisurf (tri, x, y, z, varargin)
   else
     c = z(:);
   endif
-  ## FIXME: Is all this extra input parsing necessary?
-  ##        Is it for Matlab compatibility?
+  ## For Matlab compatibility:
   if (! any (strcmpi (varargin, "FaceColor")))
-    nfc = numel (varargin) + 1;
-    varargin(nfc+(0:1)) = {"FaceColor", "flat"};
-  else
-    nfc = find (any (strcmpi (varargin, "FaceColor")), 1);
-  endif
-  if (! any (strcmpi (varargin, "EdgeColor"))
-      && strcmpi (varargin{nfc+1}, "interp"))
-    varargin(end+(1:2)) = {"EdgeColor", "none"};
+    varargin(end+(1:2)) = {"FaceColor", "flat"};
   endif
 
   hax = newplot ();
@@ -87,7 +79,7 @@ function h = trisurf (tri, x, y, z, varargin)
                 "FaceVertexCData", c, varargin{:});
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30], "box", "off",
+    set (hax, "view", [-37.5, 30],
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
@@ -100,34 +92,36 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! N = 31;
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
-%! h = trisurf (tri, x, y, z, 'facecolor', 'interp');
+%! h = trisurf (tri, x, y, z, "facecolor", "interp");
 %! axis tight;
 %! zlim auto;
-%! title (sprintf ('facecolor = %s', get (h, 'facecolor')));
+%! title (sprintf ("facecolor = %s", get (h, "facecolor")));
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! N = 31;
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x(:), y(:));
 %! z = peaks (N);
-%! h = trisurf (tri, x, y, z, 'facecolor', 'flat');
+%! h = trisurf (tri, x, y, z, "facecolor", "flat");
 %! axis tight;
 %! zlim auto;
-%! title (sprintf ('facecolor = %s', get (h, 'facecolor')));
+%! title (sprintf ("facecolor = %s", get (h, "facecolor")));
+
+## FIXME: The demos below should each have a title
 
 %!demo
 %! clf;
-%! colormap ('default');
-%! old_state = rand ('state');
-%! restore_state = onCleanup (@() rand ('state', old_state));
-%! rand ('state', 10);
+%! colormap ("default");
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 10);
 %! N = 10;
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);
@@ -137,7 +131,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
@@ -146,21 +140,21 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, 'facecolor', 'interp');
+%! trisurf (tri, x, y, z, "facecolor", "interp");
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, 'facecolor', 'interp', 'edgecolor', 'k');
+%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k");
 
 ## Test input validation
 %!error trisurf ()

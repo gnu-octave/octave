@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,22 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} axis ()
-## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi])
-## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi])
-## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi @var{z}_lo @var{z}_hi])
-## @deftypefnx {Function File} {} axis (@var{option})
-## @deftypefnx {Function File} {} axis (@dots{}, @var{option})
-## @deftypefnx {Function File} {} axis (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{limits} =} axis ()
+## @deftypefn  {} {} axis ()
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi}])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi}])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi} @var{z_lo} @var{z_hi}])
+## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi} @var{z_lo} @var{z_hi} @var{c_lo} @var{c_hi}])
+## @deftypefnx {} {} axis (@var{option})
+## @deftypefnx {} {} axis (@dots{}, @var{option})
+## @deftypefnx {} {} axis (@var{hax}, @dots{})
+## @deftypefnx {} {@var{limits} =} axis ()
 ## Set axis limits and appearance.
 ##
-## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The
+## The argument @var{limits} should be a 2-, 4-, 6-, or 8-element vector.  The
 ## first and second elements specify the lower and upper limits for the
-## x-axis.  The third and fourth specify the limits for the y-axis, and the
-## fifth and sixth specify the limits for the z-axis.  The special values
-## -Inf and Inf may be used to indicate that the limit should automatically be
-## computed based on the data in the axis.
+## x-axis.  The third and fourth specify the limits for the y-axis, the fifth
+## and sixth specify the limits for the z-axis, and the seventh and eighth
+## specify the limits for the color axis.  The special values -Inf and Inf may
+## be used to indicate that the limit should automatically be computed based
+## on the data in the axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
@@ -54,17 +56,18 @@
 ## @end example
 ##
 ## @noindent
-## turns tic marks on for all axes and tic mark labels on for the y-axis only.
+## turns tick marks on for all axes and tick mark labels on for the y-axis
+## only.
 ##
 ## @noindent
 ## The following options control the aspect ratio of the axes.
 ##
 ## @table @asis
 ## @item @qcode{"square"}
-## Force a square aspect ratio.
+## Force a square axis aspect ratio.
 ##
 ## @item @qcode{"equal"}
-## Force x distance to equal y-distance.
+## Force x-axis unit distance to equal y-axis (and z-axis) unit distance.
 ##
 ## @item @qcode{"normal"}
 ## Restore default aspect ratio.
@@ -74,7 +77,7 @@
 ## The following options control the way axis limits are interpreted.
 ##
 ## @table @asis
-## @item @qcode{"auto"}
+## @item @qcode{"auto[xyz]"}
 ## Set the specified axes to have nice limits around the data or all if no
 ## axes are specified.
 ##
@@ -89,28 +92,28 @@
 ## @end table
 ##
 ## @noindent
-## The following options affect the appearance of tic marks.
+## The following options affect the appearance of tick marks.
 ##
 ## @table @asis
 ## @item @qcode{"on"}
-## Turn tic marks and labels on for all axes.
+## Turn tick marks and labels on for all axes.
 ##
 ## @item @qcode{"off"}
-## Turn tic marks off for all axes.
+## Turn tick marks off for all axes.
 ##
 ## @item @qcode{"tic[xyz]"}
-## Turn tic marks on for all axes, or turn them on for the specified axes and
+## Turn tick marks on for all axes, or turn them on for the specified axes and
 ## off for the remainder.
 ##
 ## @item @qcode{"label[xyz]"}
-## Turn tic labels on for all axes, or turn them on for the specified axes
+## Turn tick labels on for all axes, or turn them on for the specified axes
 ## and off for the remainder.
 ##
 ## @item @qcode{"nolabel"}
-## Turn tic labels off for all axes.
+## Turn tick labels off for all axes.
 ## @end table
 ##
-## Note, if there are no tic marks for an axis, there can be no labels.
+## Note, if there are no tick marks for an axis, there can be no labels.
 ##
 ## @noindent
 ## The following options affect the direction of increasing values on the axes.
@@ -126,7 +129,7 @@
 ## If the first argument @var{hax} is an axes handle, then operate on this
 ## axes rather than the current axes returned by @code{gca}.
 ##
-## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid}
+## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid, caxis}
 ## @end deftypefn
 
 ## Author: jwe
@@ -191,15 +194,26 @@ function limits = __axis__ (ca, ax, varargin)
       set (ca, "dataaspectratiomode", "auto",
                "plotboxaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "equal"))
-      if (strcmp (get (ancestor (ca, "figure"), "__graphics_toolkit__"), "gnuplot"))
-        ## FIXME: gnuplot applies the aspect ratio activepostionproperty.
-        set (ca, "activepositionproperty", "position");
-        ## The following line is a trick used to trigger the recalculation of
-        ## aspect related magnitudes even if the aspect ratio is the same
-        ## (useful with the x11 gnuplot terminal after a window resize)
-        set (ca, "dataaspectratiomode", "auto");
+      ## Get position of axis in pixels
+      ca_units = get (ca, "units");
+      set (ca, "units", "pixels");
+      axis_pos = get (ca, "position");
+      set (ca, "units", ca_units);
+
+      pbar = get (ca, "PlotBoxAspectRatio");
+      dx = diff (__get_tight_lims__ (ca, "x"));
+      dy = diff (__get_tight_lims__ (ca, "y"));
+      dz = diff (__get_tight_lims__ (ca, "z"));
+      new_pbar = [dx dy dz];
+      if (dx/pbar(1) < dy/pbar(2))
+        set (ca, "xlimmode", "auto");
+        new_pbar(1) = dy / axis_pos(4)*axis_pos(3);
+      else
+        set (ca, "ylimmode", "auto");
+        new_pbar(2) = dx / axis_pos(3)*axis_pos(4);
       endif
-      set (ca, "dataaspectratio", [1, 1, 1], "plotboxaspectratio", [5 4 4]);
+      set (ca, "dataaspectratio", [1, 1, 1],
+               "plotboxaspectratio", new_pbar);
 
     elseif (strcmpi (ax, "normal"))
       ## Set plotboxaspectratio to something obtuse so that switching
@@ -229,7 +243,7 @@ function limits = __axis__ (ca, ax, varargin)
     elseif (strcmpi (ax, "tight"))
       ## sets the axis limits to the min and max of all data.
       __do_tight_option__ (ca);
-      ## tic marks
+      ## tick marks
     elseif (strcmpi (ax, "on") || strcmpi (ax, "tic"))
       set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
       if (strcmpi (ax, "on"))
@@ -279,20 +293,20 @@ function limits = __axis__ (ca, ax, varargin)
       endif
 
     else
-      warning ("unknown axis option '%s'", ax);
+      warning ("axis: unknown option '%s'", ax);
     endif
 
-  elseif (isvector (ax))
+  elseif (isnumeric (ax) && isvector (ax))
 
     len = length (ax);
 
-    if (len != 2 && len != 4 && len != 6)
-      error ("axis: expecting vector with 2, 4, or 6 elements");
+    if (len != 2 && len != 4 && len != 6 && len != 8)
+      error ("axis: LIMITS vector must have 2, 4, 6, or 8 elements");
     endif
 
     for i = 1:2:len
       if (ax(i) >= ax(i+1))
-        error ("axis: limits(%d) must be less than limits(%d)", i, i+1);
+        error ("axis: LIMITS(%d) must be less than LIMITS(%d)", i, i+1);
       endif
     endfor
 
@@ -308,8 +322,12 @@ function limits = __axis__ (ca, ax, varargin)
       zlim (ca, ax(5:6));
     endif
 
+    if (len > 7)
+      clim (ca, ax(7:8));
+    endif
+
   else
-    error ("axis: expecting no args, or a vector with 2, 4, or 6 elements");
+    error ("axis: expecting no args, or a numeric vector with 2, 4, 6, or 8 elements");
   endif
 
   if (! isempty (varargin))
@@ -322,19 +340,19 @@ function lims = __get_tight_lims__ (ca, ax)
 
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
-  kids = findobj (ca, "-property", strcat (ax, "data"));
+  kids = findobj (ca, "-property", [ax "data"]);
   ## The data properties for hggroups mirror their children.
   ## Exclude the redundant hgroup values.
   hg_kids = findobj (kids, "type", "hggroup");
   kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
-    lims = get (ca, strcat (ax, "lim"));
+    lims = get (ca, [ax "lim"]);
   else
-    data = get (kids, strcat (ax, "data"));
+    data = get (kids, [ax "data"]);
     types = get (kids, "type");
 
-    scale = get (ca, strcat (ax, "scale"));
+    scale = get (ca, [ax "scale"]);
     if (! iscell (data))
       data = {data};
     endif
@@ -375,15 +393,15 @@ function __do_tight_option__ (ca)
   if (all (xlim == 0))
     xlim = eps () * [-1 1];
   elseif (diff (xlim == 0))
-    xlim = xlim .* (1 + eps () * [-1, 1]);
+    xlim .*= (1 + eps () * [-1, 1]);
   endif
   ylim = __get_tight_lims__ (ca, "y");
   if (all (ylim == 0))
     ylim = eps () * [-1 1];
   elseif (diff (ylim == 0))
-    ylim = ylim .* (1 + eps () * [-1, 1]);
+    ylim .*= (1 + eps () * [-1, 1]);
   endif
-  set (ca, "xlim", xlim, "ylim", ylim)
+  set (ca, "xlim", xlim, "ylim", ylim);
   nd = __calc_dimensions__ (ca);
   is3dview = (get (ca, "view")(2) != 90);
   if (nd > 2 && is3dview)
@@ -391,7 +409,7 @@ function __do_tight_option__ (ca)
     if (all (zlim == 0))
       zlim = eps () * [-1 1];
     elseif (diff (zlim == 0))
-      zlim = zlim .* (1 + eps () * [-1, 1]);
+      zlim .*= (1 + eps () * [-1, 1]);
     endif
     set (ca, "zlim", zlim);
   endif
@@ -406,22 +424,22 @@ endfunction
 %!
 %! subplot (221);
 %!  plot (t, x);
-%!  title ('normal plot');
+%!  title ("normal plot");
 %!
 %! subplot (222);
 %!  plot (t, x);
-%!  title ('square plot');
-%!  axis ('square');
+%!  title ("axis square");
+%!  axis ("square");
 %!
 %! subplot (223);
 %!  plot (t, x);
-%!  title ('equal plot');
-%!  axis ('equal');
+%!  title ("axis equal");
+%!  axis ("equal");
 %!
 %! subplot (224);
 %!  plot (t, x);
-%!  title ('normal plot again');
-%!  axis ('normal');
+%!  title ("normal plot again");
+%!  axis ("normal");
 
 %!demo
 %! clf;
@@ -430,13 +448,16 @@ endfunction
 %!
 %! subplot (121);
 %!  plot (t, x);
-%!  title ('ij plot');
-%!  axis ('ij');
+%!  title ({"axis ij", "Y-axis reversed"});
+%!  axis ("ij");
+%!  legend ("sine");
 %!
 %! subplot (122);
 %!  plot (t, x);
-%!  title ('xy plot');
-%!  axis ('xy');
+%!  title ("axis xy");
+%!  title ({"axis ij", "Y-axis normal"});
+%!  axis ("xy");
+%!  legend ("sine");
 
 %!demo
 %! clf;
@@ -445,48 +466,48 @@ endfunction
 %!
 %! subplot (331);
 %!  plot (t, x);
-%!  title ('x tics and labels');
-%!  axis ('ticx');
+%!  title ("x ticks and labels");
+%!  axis ("ticx");
 %!
 %! subplot (332);
 %!  plot (t, x);
-%!  title ('y tics and labels');
-%!  axis ('ticy');
+%!  title ("y ticks and labels");
+%!  axis ("ticy");
 %!
 %! subplot (333);
 %!  plot (t, x);
-%!  title ('axis off');
-%!  axis ('off');
+%!  title ("axis off");
+%!  axis ("off");
 %!
 %! subplot (334);
 %!  plot (t, x);
-%!  title ('x and y tics, x labels');
-%!  axis ('labelx','tic');
+%!  title ("x and y ticks, x labels");
+%!  axis ("labelx","tic");
 %!
 %! subplot (335);
 %!  plot (t, x);
-%!  title ('x and y tics, y labels');
-%!  axis ('labely','tic');
+%!  title ("x and y ticks, y labels");
+%!  axis ("labely","tic");
 %!
 %! subplot (336);
 %!  plot (t, x);
-%!  title ('all tics but no labels');
-%!  axis ('nolabel','tic');
+%!  title ("all ticks but no labels");
+%!  axis ("nolabel","tic");
 %!
 %! subplot (337);
 %!  plot (t, x);
-%!  title ('x tics, no labels');
-%!  axis ('nolabel','ticx');
+%!  title ("x ticks, no labels");
+%!  axis ("nolabel","ticx");
 %!
 %! subplot (338);
 %!  plot (t, x);
-%!  title ('y tics, no labels');
-%!  axis ('nolabel','ticy');
+%!  title ("y ticks, no labels");
+%!  axis ("nolabel","ticy");
 %!
 %! subplot (339);
 %!  plot (t, x);
-%!  title ('all tics and labels');
-%!  axis ('on');
+%!  title ("all ticks and labels");
+%!  axis ("on");
 
 %!demo
 %! clf;
@@ -495,47 +516,47 @@ endfunction
 %!
 %! subplot (321);
 %!  plot (t, x);
-%!  title ('axes at [0 3 0 1]');
+%!  title ("axes at [0 3 0 1]");
 %!  axis ([0,3,0,1]);
 %!
 %! subplot (322);
 %!  plot (t, x);
-%!  title ('auto');
-%!  axis ('auto');
+%!  title ("auto");
+%!  axis ("auto");
 %!
 %! subplot (323);
-%!  plot (t, x, ';sine [0:2pi];'); hold on;
-%!  plot (-3:3,-3:3, ';line (-3,-3)->(3,3);'); hold off;
-%!  title ('manual');
-%!  axis ('manual');
+%!  plot (t, x, ";sine [0:2pi];"); hold on;
+%!  plot (-3:3,-3:3, ";line (-3,-3)->(3,3);"); hold off;
+%!  title ("manual");
+%!  axis ("manual");
 %!
 %! subplot (324);
-%!  plot (t, x, ';sine [0:2pi];');
-%!  title ('axes at [0 3 0 1], then autox');
+%!  plot (t, x, ";sine [0:2pi];");
+%!  title ("axes at [0 3 0 1], then autox");
 %!  axis ([0,3,0,1]);
-%!  axis ('autox');
+%!  axis ("autox");
 %!
 %! subplot (325);
-%!  plot (t, x, ';sine [0:2pi];');
-%!  title ('axes at [3 6 0 1], then autoy');
+%!  plot (t, x, ";sine [0:2pi];");
+%!  title ("axes at [3 6 0 1], then autoy");
 %!  axis ([3,6,0,1]);
-%!  axis ('autoy');
+%!  axis ("autoy");
 %!
 %! subplot (326);
 %!  plot (t, sin(t), t, -2*sin(t/2));
-%!  axis ('tight');
-%!  title ('tight');
+%!  axis ("tight");
+%!  title ("tight");
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
 %! plot (x, sin(x));
 %! axis image;
-%! title ({'image', 'equivalent to "tight" & "equal"'});
+%! title ({"image", 'equivalent to "tight" & "equal"'});
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! [x,y,z] = peaks (50);
 %! x1 = max (x(:));
 %! pcolor (x-x1, y-x1/2, z);
@@ -549,13 +570,13 @@ endfunction
 %! clf;
 %! x = -10:10;
 %! plot (x,x, x,-x);
-%! set (gca, 'yscale', 'log');
-%! legend ({'x >= 1', 'x <= 1'}, 'location', 'north');
-%! title ('ylim = [1, 10]');
+%! set (gca, "yscale", "log");
+%! legend ({"x >= 1", "x <= 1"}, "location", "north");
+%! title ("ylim = [1, 10]");
 
 %!demo
 %! clf;
-%! loglog (1:20, '-s');
+%! loglog (1:20, "-s");
 %! axis tight;
 
 %!demo
@@ -563,57 +584,57 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! set (gca, 'xaxislocation', 'zero');
-%! set (gca, 'yaxislocation', 'zero');
+%! set (gca, "xaxislocation", "origin");
+%! set (gca, "yaxislocation", "origin");
 %! box off;
-%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = zero'});
+%! title ({"no plot box", "xaxislocation = origin, yaxislocation = origin"});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! set (gca, 'xaxislocation', 'zero');
-%! set (gca, 'yaxislocation', 'left');
+%! set (gca, "xaxislocation", "origin");
+%! set (gca, "yaxislocation", "left");
 %! box off;
-%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = left'});
+%! title ({"no plot box", "xaxislocation = origin, yaxislocation = left"});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ('no plot box');
-%! set (gca, 'xaxislocation', 'zero');
-%! set (gca, 'yaxislocation', 'right');
+%! title ("no plot box");
+%! set (gca, "xaxislocation", "origin");
+%! set (gca, "yaxislocation", "right");
 %! box off;
-%! title ({'no plot box', 'xaxislocation = zero, yaxislocation = right'});
+%! title ({"no plot box", "xaxislocation = origin, yaxislocation = right"});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! set (gca, 'xaxislocation', 'bottom');
-%! set (gca, 'yaxislocation', 'zero');
+%! set (gca, "xaxislocation", "bottom");
+%! set (gca, "yaxislocation", "origin");
 %! box off;
-%! title ({'no plot box', 'xaxislocation = bottom, yaxislocation = zero'});
+%! title ({"no plot box", "xaxislocation = bottom, yaxislocation = origin"});
 
 %!demo
 %! clf;
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! set (gca, 'xaxislocation', 'top');
-%! set (gca, 'yaxislocation', 'zero');
+%! set (gca, "xaxislocation", "top");
+%! set (gca, "yaxislocation", "origin");
 %! box off;
-%! title ({'no plot box', 'xaxislocation = top, yaxislocation = zero'});
+%! title ({"no plot box", "xaxislocation = top, yaxislocation = origin"});
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (11:20, [21:24, NaN, -Inf, 27:30]);
-%!   hold all;
+%!   hold on;
 %!   plot (11:20, 25.5 + rand (10));
 %!   axis tight;
 %!   assert (axis (), [11 20 21 30]);
@@ -633,8 +654,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test 'axis tight' with differently oriented, differently numbered data vecs
-## Bug #40036.
-%!test
+%!test <40036>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   Z = peaks (linspace (-3, 3, 49), linspace (-2, 2, 29));
@@ -645,3 +665,20 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## Even on errors, axis can display a figure.
+
+%!error <LIMITS vector must have .* elements>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axis (1:5)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <expecting no args, or a numeric vector with .* elements>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   axis ({1,2})
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ## Copyright (C) 2003 Alberto Terruzzi
 ##
 ## This file is part of Octave.
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pareto (@var{y})
-## @deftypefnx {Function File} {} pareto (@var{y}, @var{x})
-## @deftypefnx {Function File} {} pareto (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} pareto (@dots{})
+## @deftypefn  {} {} pareto (@var{y})
+## @deftypefnx {} {} pareto (@var{y}, @var{x})
+## @deftypefnx {} {} pareto (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} pareto (@dots{})
 ## Draw a Pareto chart.
 ##
 ## A Pareto chart is a bar graph that arranges information in such a way
@@ -119,15 +119,15 @@ endfunction
 %!demo
 %! clf;
 %! colormap (jet (64));
-%! Cheese = {'Cheddar', 'Swiss', 'Camembert', 'Munster', 'Stilton', 'Blue'};
+%! Cheese = {"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", "Blue"};
 %! Sold = [105, 30, 70, 10, 15, 20];
 %! pareto (Sold, Cheese);
 
 %!demo
 %! clf;
-%! % Suppose that we want establish which products makes 80% of turnover.
-%! Codes = {'AB4','BD7','CF8','CC5','AD11','BB5','BB3','AD8','DF3','DE7'};
-%! Value = [2.35 7.9 2.45 1.1 0.15 13.45 5.4 2.05 0.85  1.65]';
+%! ## Suppose that we want establish which products makes 80% of turnover.
+%! Codes = {"AB4","BD7","CF8","CC5","AD11","BB5","BB3","AD8","DF3","DE7"};
+%! Value = [2.35 7.9 2.45 1.1 0.15 13.45 5.4 2.05 0.85 1.65]';
 %! SoldUnits = [54723 41114 16939 1576091 168000 687197 120222 168195, ...
 %!              1084118 55576]';
 %! pareto (Value.*SoldUnits, Codes);

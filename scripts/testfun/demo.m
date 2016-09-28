@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} demo @var{name}
-## @deftypefnx {Command} {} demo @var{name} @var{n}
-## @deftypefnx {Function File} {} demo ("@var{name}")
-## @deftypefnx {Function File} {} demo ("@var{name}", @var{n})
+## @deftypefn  {} {} demo @var{name}
+## @deftypefnx {} {} demo @var{name} @var{n}
+## @deftypefnx {} {} demo ("@var{name}")
+## @deftypefnx {} {} demo ("@var{name}", @var{n})
 ##
 ## Run example code block @var{n} associated with the function @var{name}.
 ##
@@ -108,6 +108,9 @@ function demo (name, n = 0)
     error ("demo: N must be a scalar integer");
   endif
 
+  ## Paging causes Qt graphics to hang on some demos.
+  page_screen_output (false, "local");
+
   [code, idx] = test (name, "grabdemo");
 
   if (idx == -1)
@@ -126,10 +129,12 @@ function demo (name, n = 0)
   else
     doidx = 1:(length (idx) - 1);
   endif
+  clear_figures ();
   for i = 1:length (doidx)
     ## Pause between demos
     if (i > 1)
       input ("Press <enter> to continue: ", "s");
+      clear_figures ();
     endif
 
     ## Process each demo without failing
@@ -146,6 +151,22 @@ function demo (name, n = 0)
     end_try_catch
     clear __demo__;
   endfor
+
+endfunction
+
+function clear_figures ()
+
+  ## Prevent proliferation of figure windows.  If any figure windows exist,
+  ## close all but one and clear the one remaining.
+  figs = __go_figure_handles__ ();
+  if (! isempty (figs))
+    if (numel (figs) > 1)
+      figs = sort (figs);
+      figs(1) = [];
+      close (figs);
+    endif
+    clf ("reset");
+  endif
 
 endfunction
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Jaroslav Hajek
+## Copyright (C) 2009-2016 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{cstr}] =} ostrsplit (@var{s}, @var{sep})
-## @deftypefnx {Function File} {[@var{cstr}] =} ostrsplit (@var{s}, @var{sep}, @var{strip_empty})
+## @deftypefn  {} {[@var{cstr}] =} ostrsplit (@var{s}, @var{sep})
+## @deftypefnx {} {[@var{cstr}] =} ostrsplit (@var{s}, @var{sep}, @var{strip_empty})
 ## Split the string @var{s} using one or more separators @var{sep} and return
 ## a cell array of strings.
 ##

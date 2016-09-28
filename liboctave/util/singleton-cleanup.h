@@ -1,5 +1,7 @@
-#if !defined (octave_singleton_cleanup_h)
+#if ! defined (octave_singleton_cleanup_h)
 #define octave_singleton_cleanup_h 1
+
+#include "octave-config.h"
 
 #include <set>
 
@@ -48,3 +50,4 @@ private:
 };
 
 #endif
+

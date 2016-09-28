@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{p} =} polyfit (@var{x}, @var{y}, @var{n})
-## @deftypefnx {Function File} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
-## @deftypefnx {Function File} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
+## @deftypefn  {} {@var{p} =} polyfit (@var{x}, @var{y}, @var{n})
+## @deftypefnx {} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
+## @deftypefnx {} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes the least-squares-error of the fit to the points
 ## @code{[@var{x}, @var{y}]}.
@@ -136,8 +136,8 @@ function [p, s, mu] = polyfit (x, y, n)
 
     ## r.'*r is positive definite if X(:, polymask) is of full rank.
     ## Invert it by cholinv to avoid taking the square root of squared
-    ## quantities. If cholinv fails, then X(:, polymask) is rank
-    ## deficient and not invertible.
+    ## quantities.  If cholinv fails, then X(:, polymask) is rank deficient
+    ## and not invertible.
     try
       C = cholinv (r.'*r)(k, k);
     catch
@@ -146,7 +146,7 @@ function [p, s, mu] = polyfit (x, y, n)
 
     if (n != m)
       ## fill matrices if required
-      s.X(:, !polymask) = 0;
+      s.X(:, ! polymask) = 0;
       s.R = zeros (n+1, n+1); s.R(polymask, polymask) = r;
       s.C = zeros (n+1, n+1); s.C(polymask, polymask) = C;
     else
@@ -170,7 +170,7 @@ endfunction
 %!fail ("polyfit (x, x.^2+x+1)")
 %!fail ("polyfit (x, x.^2+x+1, [])")
 
-## Test difficult case where scaling is really needed. This example
+## Test difficult case where scaling is really needed.  This example
 ## demonstrates the rather poor result which occurs when the dependent
 ## variable is not normalized properly.
 ## Also check the usage of 2nd & 3rd output arguments.

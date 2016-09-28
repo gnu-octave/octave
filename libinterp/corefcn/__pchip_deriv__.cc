@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 Kai Habel
+Copyright (C) 2002-2016 Kai Habel
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -21,43 +21,30 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include "lo-slatec-proto.h"
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "utils.h"
 #include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, const double *x,
-                             const double *f, double *d,
-                             const octave_idx_type &incfd,
-                             octave_idx_type *ierr);
-
-  F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, const float *x,
-                           const float *f, float *d,
-                           const octave_idx_type& incfd,
-                           octave_idx_type *ierr);
-}
 
 // Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates
 // for piecewise polynomials.
 
 DEFUN (__pchip_deriv__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})
+Undocumented internal function.
+@end deftypefn */)
 {
   octave_value retval;
-  const int nargin = args.length ();
+  int nargin = args.length ();
 
   bool rows = (nargin == 3 && args(2).uint_value () == 2);
 
@@ -68,22 +55,16 @@ Undocumented internal function.\n\
           FloatColumnVector xvec (args(0).float_vector_value ());
           FloatMatrix ymat (args(1).float_matrix_value ());
 
-          octave_idx_type nx = xvec.length ();
+          octave_idx_type nx = xvec.numel ();
 
           if (nx < 2)
-            {
-              error ("__pchip_deriv__: X must be at least of length 2");
-              return retval;
-            }
+            error ("__pchip_deriv__: X must be at least of length 2");
 
           octave_idx_type nyr = ymat.rows ();
           octave_idx_type nyc = ymat.columns ();
 
           if (nx != (rows ? nyc : nyr))
-            {
-              error ("__pchip_deriv__: X and Y dimension mismatch");
-              return retval;
-            }
+            error ("__pchip_deriv__: X and Y dimension mismatch");
 
           FloatMatrix dmat (nyr, nyc);
 
@@ -102,10 +83,7 @@ Undocumented internal function.\n\
               k++;
 
               if (ierr < 0)
-                {
-                  error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
-                  return retval;
-                }
+                error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
             }
 
           retval = dmat;
@@ -115,22 +93,16 @@ Undocumented internal function.\n\
           ColumnVector xvec (args(0).vector_value ());
           Matrix ymat (args(1).matrix_value ());
 
-          octave_idx_type nx = xvec.length ();
+          octave_idx_type nx = xvec.numel ();
 
           if (nx < 2)
-            {
-              error ("__pchip_deriv__: X must be at least of length 2");
-              return retval;
-            }
+            error ("__pchip_deriv__: X must be at least of length 2");
 
           octave_idx_type nyr = ymat.rows ();
           octave_idx_type nyc = ymat.columns ();
 
           if (nx != (rows ? nyc : nyr))
-            {
-              error ("__pchip_deriv__: X and Y dimension mismatch");
-              return retval;
-            }
+            error ("__pchip_deriv__: X and Y dimension mismatch");
 
           Matrix dmat (nyr, nyc);
 
@@ -148,10 +120,7 @@ Undocumented internal function.\n\
               k++;
 
               if (ierr < 0)
-                {
-                  error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
-                  return retval;
-                }
+                error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
             }
 
           retval = dmat;
@@ -165,3 +134,4 @@ Undocumented internal function.\n\
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

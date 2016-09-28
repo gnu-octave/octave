@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Kai Habel
+## Copyright (C) 2010-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{hui} =} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uimenu (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
 ## Create a uimenu object and return a handle to it.
 ##
 ## If @var{h} is omitted then a top-level menu for the current figure is
@@ -103,7 +103,10 @@ endfunction
 %! uimenu (f, 'label', 'Close', 'accelerator', 'q', 'callback', 'close (gcf)');
 %! uimenu (e, 'label', 'Toggle &Grid', 'accelerator', 'g', 'callback', 'grid (gca)');
 
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -120,7 +123,10 @@ endfunction
 %! end_unwind_protect
 
 ## check for top level menus file and edit
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -133,7 +139,10 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -834,8 +834,9 @@ x(1, :) = @{[]@}
 @end example
 
 The indexing operations operate on the cell array and not on the objects
-within the cell array.  By contrast, @code{cellindexmat} applies matrix indexing
-to the objects within each cell array entry and returns the requested values.
+within the cell array.  By contrast, @code{cellindexmat} applies matrix
+indexing to the objects within each cell array entry and returns the requested
+values.
 
 @DOCSTRING(cellindexmat)
 
@@ -891,8 +892,9 @@ The following string functions support cell arrays of strings:
 Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
 @code{strncmpi} (@pxref{Comparing Strings}), @code{str2double},
 @code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
-@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating 
-Strings}) and @code{str2double} (@pxref{String Conversions}).
+@code{strmatch}, , @code{regexp}, @code{regexpi}
+(@pxref{Manipulating Strings}) and @code{str2double}
+(@pxref{String Conversions}).
 
 The function @code{iscellstr} can be used to test if an object is a
 cell array of strings.

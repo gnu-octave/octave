@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 Ross Lippert and Paul Kienzle
+Copyright (C) 2001-2016 Ross Lippert and Paul Kienzle
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,25 +21,22 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include <float.h>
-
-#include "CmplxSCHUR.h"
-#include "fCmplxSCHUR.h"
+#include "schur.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "oct-norm.h"
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "utils.h"
 #include "xnorm.h"
 
-template <class Matrix>
+template <typename Matrix>
 static void
 sqrtm_utri_inplace (Matrix& T)
 {
@@ -88,7 +85,7 @@ sqrtm_utri_inplace (Matrix& T)
                      "sqrtm: matrix is singular, may not have a square root");
 }
 
-template <class Matrix, class ComplexMatrix, class ComplexSCHUR>
+template <typename Matrix, typename ComplexMatrix, typename ComplexSCHUR>
 static octave_value
 do_sqrtm (const octave_value& arg)
 {
@@ -177,9 +174,9 @@ do_sqrtm (const octave_value& arg)
 
             do
               {
-                ComplexSCHUR schur (x, std::string (), true);
-                x = schur.schur_matrix ();
-                u = schur.unitary_matrix ();
+                ComplexSCHUR schur_fact (x, "", true);
+                x = schur_fact.schur_matrix ();
+                u = schur_fact.unitary_matrix ();
               }
             while (0); // schur no longer needed.
 
@@ -201,26 +198,19 @@ do_sqrtm (const octave_value& arg)
 }
 
 DEFUN (sqrtm, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} sqrtm (@var{A})\n\
-@deftypefnx {Built-in Function} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})\n\
-Compute the matrix square root of the square matrix @var{A}.\n\
-\n\
-Ref: @nospell{N.J. Higham}.  @cite{A New sqrtm for @sc{matlab}}.  Numerical\n\
-Analysis Report No. 336, Manchester @nospell{Centre} for Computational\n\
-Mathematics, Manchester, England, January 1999.\n\
-@seealso{expm, logm}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{s} =} sqrtm (@var{A})
+@deftypefnx {} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})
+Compute the matrix square root of the square matrix @var{A}.
+
+Ref: @nospell{N.J. Higham}.  @cite{A New sqrtm for @sc{matlab}}.  Numerical
+Analysis Report No. 336, Manchester @nospell{Centre} for Computational
+Mathematics, Manchester, England, January 1999.
+@seealso{expm, logm}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (args.length () != 1)
+    print_usage ();
 
   octave_value arg = args(0);
 
@@ -228,14 +218,14 @@ Mathematics, Manchester, England, January 1999.\n\
   octave_idx_type nc = arg.columns ();
 
   if (n != nc || arg.ndims () > 2)
-    {
-      gripe_square_matrix_required ("sqrtm");
-      return retval;
-    }
+    err_square_matrix_required ("sqrtm", "A");
+
+  octave_value_list retval (nargout > 1 ? 3 : 1);
 
   if (nargout > 1)
     {
-      retval.resize (1, 2);
+      // FIXME: Octave does not calculate a condition number with respect to
+      //        sqrtm.  Should this return NaN instead of -1?
       retval(2) = -1.0;
     }
 
@@ -243,12 +233,13 @@ Mathematics, Manchester, England, January 1999.\n\
     // sqrtm of a diagonal matrix is just sqrt.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
-    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR>
-                 (arg);
+    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix,
+                         octave::math::schur<FloatComplexMatrix> > (arg);
   else if (arg.is_numeric_type ())
-    retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
+    retval(0) = do_sqrtm<Matrix, ComplexMatrix,
+                         octave::math::schur<ComplexMatrix> > (arg);
 
-  if (nargout > 1 && ! error_state)
+  if (nargout > 1)
     {
       // This corresponds to generic code
       //
@@ -266,6 +257,7 @@ Mathematics, Manchester, England, January 1999.\n\
 
 ## The following two tests are from the reference in the docstring above.
 %!test
+%! warning ("off", "Octave:sqrtm:SingularMatrix", "local");
 %! x = [0 1; 0 0];
 %! assert (any (isnan (sqrtm (x))(:)));
 
@@ -276,3 +268,4 @@ Mathematics, Manchester, England, January 1999.\n\
 %! assert (y, z);
 %! assert (err, 0);   # Yes, this one has to hold exactly
 */
+

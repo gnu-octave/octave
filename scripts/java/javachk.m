@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Philip Nienhuis
+## Copyright (C) 2014-2016 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javachk (@var{feature})
-## @deftypefnx {Function File} {} javachk (@var{feature}, @var{component})
-## @deftypefnx {Function File} {@var{msg} =} javachk (@dots{})
+## @deftypefn  {} {} javachk (@var{feature})
+## @deftypefnx {} {} javachk (@var{feature}, @var{component})
+## @deftypefnx {} {@var{msg} =} javachk (@dots{})
 ## Check for the presence of the Java @var{feature} in the current session
 ## and print or return an error message if it is not.
 ##
@@ -142,6 +142,9 @@ endfunction
 %! assert (msg.identifier, "Java DESKTOP");
 
 %!testif HAVE_JAVA
+%! if (! usejava ("jvm"))
+%!   return;
+%! endif
 %! assert (javachk ("jvm"), "");
 
 ## Test input validation

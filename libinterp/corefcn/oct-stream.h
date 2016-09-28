@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,307 +20,37 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_stream_h)
+#if ! defined (octave_oct_stream_h)
 #define octave_oct_stream_h 1
 
-class Matrix;
-class string_vector;
-class octave_value;
-class octave_value_list;
+#include "octave-config.h"
 
 #include <iosfwd>
-#include <sstream>
-#include <string>
 #include <list>
 #include <map>
+#include <string>
 
-#include "Array.h"
+// These are only needed as arguments to private functions, so they
+// are also treated as private.
+
+class scanf_format_elt;
+class scanf_format_list;
+
+class printf_format_elt;
+class printf_format_list;
+
+// These only appear as reference arguments or return values.
+
+template <typename T> class Array;
+class Cell;
+class octave_value_list;
+class string_vector;
+
 #include "data-conv.h"
-#include "lo-utils.h"
 #include "mach-info.h"
 #include "oct-refcount.h"
 
-class
-OCTINTERP_API
-scanf_format_elt
-{
-public:
-
-  enum special_conversion
-  {
-    whitespace_conversion = 1,
-    literal_conversion = 2
-  };
-
-  scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
-                    char typ = '\0', char mod = '\0',
-                    const std::string& ch_class = std::string ())
-    : text (strsave (txt)), width (w), discard (d), type (typ),
-      modifier (mod), char_class (ch_class) { }
-
-  scanf_format_elt (const scanf_format_elt& e)
-    : text (strsave (e.text)), width (e.width), discard (e.discard),
-      type (e.type), modifier (e.modifier), char_class (e.char_class) { }
-
-  scanf_format_elt& operator = (const scanf_format_elt& e)
-  {
-    if (this != &e)
-      {
-        text = strsave (e.text);
-        width = e.width;
-        discard = e.discard;
-        type = e.type;
-        modifier = e.modifier;
-        char_class = e.char_class;
-      }
-
-    return *this;
-  }
-
-  ~scanf_format_elt (void) { delete [] text; }
-
-  // The C-style format string.
-  const char *text;
-
-  // The maximum field width.
-  int width;
-
-  // TRUE if we are not storing the result of this conversion.
-  bool discard;
-
-  // Type of conversion -- 'd', 'i', 'o', 'u', 'x', 'e', 'f', 'g',
-  // 'c', 's', 'p', '%', or '['.
-  char type;
-
-  // A length modifier -- 'h', 'l', or 'L'.
-  char modifier;
-
-  // The class of characters in a '[' format.
-  std::string char_class;
-};
-
-class
-OCTINTERP_API
-scanf_format_list
-{
-public:
-
-  scanf_format_list (const std::string& fmt = std::string ());
-
-  ~scanf_format_list (void);
-
-  octave_idx_type num_conversions (void) { return nconv; }
-
-  // The length can be different than the number of conversions.
-  // For example, "x %d y %d z" has 2 conversions but the length of
-  // the list is 3 because of the characters that appear after the
-  // last conversion.
-
-  octave_idx_type length (void) { return list.length (); }
-
-  const scanf_format_elt *first (void)
-  {
-    curr_idx = 0;
-    return current ();
-  }
-
-  const scanf_format_elt *current (void) const
-  { return list.length () > 0 ? list.elem (curr_idx) : 0; }
-
-  const scanf_format_elt *next (bool cycle = true)
-  {
-    curr_idx++;
-
-    if (curr_idx >= list.length ())
-      {
-        if (cycle)
-          curr_idx = 0;
-        else
-          return 0;
-      }
-    return current ();
-  }
-
-  void printme (void) const;
-
-  bool ok (void) const { return (nconv >= 0); }
-
-  operator bool () const { return ok (); }
-
-  bool all_character_conversions (void);
-
-  bool all_numeric_conversions (void);
-
-private:
-
-  // Number of conversions specified by this format string, or -1 if
-  // invalid conversions have been found.
-  octave_idx_type nconv;
-
-  // Index to current element;
-  octave_idx_type curr_idx;
-
-  // FIXME: maybe LIST should be a std::list object?
-  // List of format elements.
-  Array<scanf_format_elt*> list;
-
-  // Temporary buffer.
-  std::ostringstream *buf;
-
-  void add_elt_to_list (int width, bool discard, char type, char modifier,
-                        octave_idx_type& num_elts,
-                        const std::string& char_class = std::string ());
-
-  void process_conversion (const std::string& s, size_t& i, size_t n,
-                           int& width, bool& discard, char& type,
-                           char& modifier, octave_idx_type& num_elts);
-
-  int finish_conversion (const std::string& s, size_t& i, size_t n,
-                         int& width, bool discard, char& type,
-                         char modifier, octave_idx_type& num_elts);
-  // No copying!
-
-  scanf_format_list (const scanf_format_list&);
-
-  scanf_format_list& operator = (const scanf_format_list&);
-};
-
-class
-printf_format_elt
-{
-public:
-
-  printf_format_elt (const char *txt = 0, int n = 0, int w = -1,
-                     int p = -1, const std::string& f = std::string (),
-                     char typ = '\0', char mod = '\0')
-    : text (strsave (txt)), args (n), fw (w), prec (p), flags (f),
-      type (typ), modifier (mod) { }
-
-  printf_format_elt (const printf_format_elt& e)
-    : text (strsave (e.text)), args (e.args), fw (e.fw), prec (e.prec),
-      flags (e.flags), type (e.type), modifier (e.modifier) { }
-
-  printf_format_elt& operator = (const printf_format_elt& e)
-  {
-    if (this != &e)
-      {
-        text = strsave (e.text);
-        args = e.args;
-        fw = e.fw;
-        prec = e.prec;
-        flags = e.flags;
-        type = e.type;
-        modifier = e.modifier;
-      }
-
-    return *this;
-  }
-
-  ~printf_format_elt (void) { delete [] text; }
-
-  // The C-style format string.
-  const char *text;
-
-  // How many args do we expect to consume?
-  int args;
-
-  // Field width.
-  int fw;
-
-  // Precision.
-  int prec;
-
-  // Flags -- '-', '+', ' ', '0', or '#'.
-  std::string flags;
-
-  // Type of conversion -- 'd', 'i', 'o', 'x', 'X', 'u', 'c', 's',
-  // 'f', 'e', 'E', 'g', 'G', 'p', or '%'
-  char type;
-
-  // A length modifier -- 'h', 'l', or 'L'.
-  char modifier;
-};
-
-class
-OCTINTERP_API
-printf_format_list
-{
-public:
-
-  printf_format_list (const std::string& fmt = std::string ());
-
-  ~printf_format_list (void);
-
-  octave_idx_type num_conversions (void) { return nconv; }
-
-  const printf_format_elt *first (void)
-  {
-    curr_idx = 0;
-    return current ();
-  }
-
-  const printf_format_elt *current (void) const
-  { return list.length () > 0 ? list.elem (curr_idx) : 0; }
-
-  const printf_format_elt *next (bool cycle = true)
-  {
-    curr_idx++;
-
-    if (curr_idx >= list.length ())
-      {
-        if (cycle)
-          curr_idx = 0;
-        else
-          return 0;
-      }
-
-    return current ();
-  }
-
-  bool last_elt_p (void) { return (curr_idx + 1 == list.length ()); }
-
-  void printme (void) const;
-
-  bool ok (void) const { return (nconv >= 0); }
-
-  operator bool () const { return ok (); }
-
-private:
-
-  // Number of conversions specified by this format string, or -1 if
-  // invalid conversions have been found.
-  octave_idx_type nconv;
-
-  // Index to current element;
-  octave_idx_type curr_idx;
-
-  // FIXME: maybe LIST should be a std::list object?
-  // List of format elements.
-  Array<printf_format_elt*> list;
-
-  // Temporary buffer.
-  std::ostringstream *buf;
-
-  void add_elt_to_list (int args, const std::string& flags, int fw,
-                        int prec, char type, char modifier,
-                        octave_idx_type& num_elts);
-
-  void process_conversion (const std::string& s, size_t& i, size_t n,
-                           int& args, std::string& flags, int& fw,
-                           int& prec, char& modifier, char& type,
-                           octave_idx_type& num_elts);
-
-  void finish_conversion (const std::string& s, size_t& i, int args,
-                          const std::string& flags, int fw, int prec,
-                          char modifier, char& type,
-                          octave_idx_type& num_elts);
-
-  // No copying!
-
-  printf_format_list (const printf_format_list&);
-
-  printf_format_list& operator = (const printf_format_list&);
-};
+#include "ov.h"
 
 // Provide an interface for Octave streams.
 
@@ -332,9 +62,9 @@ octave_base_stream
 
 public:
 
-  octave_base_stream (std::ios::openmode arg_md = std::ios::in|std::ios::out,
-                      oct_mach_info::float_format ff
-                        = oct_mach_info::native_float_format ())
+  octave_base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
+                      octave::mach_info::float_format ff
+                        = octave::mach_info::native_float_format ())
     : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true),
       errmsg ()
   { }
@@ -411,7 +141,7 @@ protected:
 
   int mode (void) const { return md; }
 
-  oct_mach_info::float_format float_format (void) const { return flt_fmt; }
+  octave::mach_info::float_format float_format (void) const { return flt_fmt; }
 
   // Set current error state and set fail to TRUE.
 
@@ -436,7 +166,7 @@ private:
   int md;
 
   // Data format.
-  oct_mach_info::float_format flt_fmt;
+  octave::mach_info::float_format flt_fmt;
 
   // TRUE if an error has occurred.
   bool fail;
@@ -472,6 +202,10 @@ private:
 
   octave_value_list oscanf (const std::string& fmt,
                             const std::string& who /* = "scanf" */);
+
+  octave_value do_textscan (const std::string& fmt, octave_idx_type ntimes,
+                            const octave_value_list& options,
+                            const std::string& who, octave_idx_type& count);
 
   // Functions that are defined for all output streams (output streams
   // are those that define os).
@@ -547,23 +281,23 @@ public:
   octave_value read (const Array<double>& size, octave_idx_type block_size,
                      oct_data_conv::data_type input_type,
                      oct_data_conv::data_type output_type,
-                     octave_idx_type skip, oct_mach_info::float_format flt_fmt,
+                     octave_idx_type skip, octave::mach_info::float_format flt_fmt,
                      octave_idx_type& count);
 
   octave_idx_type write (const octave_value& data, octave_idx_type block_size,
                          oct_data_conv::data_type output_type,
                          octave_idx_type skip,
-                         oct_mach_info::float_format flt_fmt);
+                         octave::mach_info::float_format flt_fmt);
 
   bool write_bytes (const void *data, size_t n_elts);
 
   bool skip_bytes (size_t n_elts);
 
-  template <class T>
+  template <typename T>
   octave_idx_type write (const Array<T>& data, octave_idx_type block_size,
                          oct_data_conv::data_type output_type,
                          octave_idx_type skip,
-                         oct_mach_info::float_format flt_fmt);
+                         octave::mach_info::float_format flt_fmt);
 
   octave_value scanf (const std::string& fmt, const Array<double>& size,
                       octave_idx_type& count, const std::string& who /* = "scanf" */);
@@ -576,6 +310,10 @@ public:
 
   octave_value_list oscanf (const octave_value& fmt,
                             const std::string& who /* = "scanf" */);
+
+  octave_value textscan (const std::string& fmt, octave_idx_type ntimes,
+                         const octave_value_list& options,
+                         const std::string& who, octave_idx_type& count);
 
   int printf (const std::string& fmt, const octave_value_list& args,
               const std::string& who /* = "printf" */);
@@ -618,7 +356,7 @@ public:
 
   int mode (void) const;
 
-  oct_mach_info::float_format float_format (void) const;
+  octave::mach_info::float_format float_format (void) const;
 
   static std::string mode_as_string (int mode);
 
@@ -667,7 +405,7 @@ private:
                  octave_idx_type nr, octave_idx_type nc,
                  oct_data_conv::data_type input_type,
                  oct_data_conv::data_type output_type,
-                 oct_mach_info::float_format ffmt);
+                 octave::mach_info::float_format ffmt);
 };
 
 class
@@ -687,14 +425,14 @@ public:
   static int insert (octave_stream& os);
 
   static octave_stream
-  lookup (int fid, const std::string& who = std::string ());
+  lookup (int fid, const std::string& who = "");
 
   static octave_stream
-  lookup (const octave_value& fid, const std::string& who = std::string ());
+  lookup (const octave_value& fid, const std::string& who = "");
 
-  static int remove (int fid, const std::string& who = std::string ());
+  static int remove (int fid, const std::string& who = "");
   static int remove (const octave_value& fid,
-                     const std::string& who = std::string ());
+                     const std::string& who = "");
 
   static void clear (bool flush = true);
 
@@ -722,13 +460,13 @@ private:
   int do_insert (octave_stream& os);
 
   octave_stream do_lookup (int fid,
-                           const std::string& who = std::string ()) const;
+                           const std::string& who = "") const;
   octave_stream do_lookup (const octave_value& fid,
-                           const std::string& who = std::string ()) const;
+                           const std::string& who = "") const;
 
-  int do_remove (int fid, const std::string& who = std::string ());
+  int do_remove (int fid, const std::string& who = "");
   int do_remove (const octave_value& fid,
-                 const std::string& who = std::string ());
+                 const std::string& who = "");
 
   void do_clear (bool flush = true);
 
@@ -743,3 +481,4 @@ private:
 };
 
 #endif
+

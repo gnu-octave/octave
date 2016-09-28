@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 John W. Eaton
+## Copyright (C) 2012-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@
 %! d = derived ();
 %! o = other ();
 %!
-%!error method (o);
+%!error method (o)
 
 %!test
 %! ctrace = {'begin parent/method';
@@ -35,14 +35,14 @@
 %!           'end parent/parent';
 %!           'end derived/parent';
 %!           'end parent/method'};
-%! __trace__ (); %% clear call trace info
+%! __trace__ ();  # clear call trace info
 %! method (d);
 %! assert (__trace__ (), ctrace);
 
 %!test
 %! ctrace = {'begin other/parent';
 %!           'end other/parent'};
-%! __trace__ (); %% clear call trace info
+%! __trace__ ();  # clear call trace info
 %! parent (o);
 %! assert (__trace__ (), ctrace);
 
@@ -51,6 +51,6 @@
 %!           'begin parent/parent';
 %!           'end parent/parent';
 %!           'end derived/parent'};
-%! __trace__ (); %% clear call trace info
+%! __trace__ ();  # clear call trace info
 %! parent (d);
 %! assert (__trace__ (), ctrace);

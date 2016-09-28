@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -52,14 +52,15 @@ octave_shlib_list
 {
 public:
 
-  typedef std::list<octave_shlib>::iterator iterator;
-  typedef std::list<octave_shlib>::const_iterator const_iterator;
+  typedef std::list<octave::dynamic_library>::iterator iterator;
+  typedef std::list<octave::dynamic_library>::const_iterator const_iterator;
 
-  static void append (const octave_shlib& shl);
+  static void append (const octave::dynamic_library& shl);
 
-  static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
+  static void remove (octave::dynamic_library& shl,
+                      octave::dynamic_library::close_hook cl_hook = 0);
 
-  static octave_shlib find_file (const std::string& file_name);
+  static octave::dynamic_library find_file (const std::string& file_name);
 
   static void display (void);
 
@@ -69,11 +70,12 @@ private:
 
   ~octave_shlib_list (void) { }
 
-  void do_append (const octave_shlib& shl);
+  void do_append (const octave::dynamic_library& shl);
 
-  void do_remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
+  void do_remove (octave::dynamic_library& shl,
+                  octave::dynamic_library::close_hook cl_hook = 0);
 
-  octave_shlib do_find_file (const std::string& file_name) const;
+  octave::dynamic_library do_find_file (const std::string& file_name) const;
 
   void do_display (void) const;
 
@@ -84,7 +86,7 @@ private:
   static bool instance_ok (void);
 
   // List of libraries we have loaded.
-  std::list<octave_shlib> lib_list;
+  std::list<octave::dynamic_library> lib_list;
 
   // No copying!
 
@@ -96,14 +98,14 @@ private:
 octave_shlib_list *octave_shlib_list::instance = 0;
 
 void
-octave_shlib_list::do_append (const octave_shlib& shl)
+octave_shlib_list::do_append (const octave::dynamic_library& shl)
 {
   lib_list.push_back (shl);
 }
 
 void
-octave_shlib_list::do_remove (octave_shlib& shl,
-                              octave_shlib::close_hook cl_hook)
+octave_shlib_list::do_remove (octave::dynamic_library& shl,
+                              octave::dynamic_library::close_hook cl_hook)
 {
   for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
@@ -120,10 +122,10 @@ octave_shlib_list::do_remove (octave_shlib& shl,
     }
 }
 
-octave_shlib
+octave::dynamic_library
 octave_shlib_list::do_find_file (const std::string& file_name) const
 {
-  octave_shlib retval;
+  octave::dynamic_library retval;
 
   for (const_iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
@@ -159,35 +161,31 @@ octave_shlib_list::instance_ok (void)
     }
 
   if (! instance)
-    {
-      ::error ("unable to create shared library list object!");
-
-      retval = false;
-    }
+    error ("unable to create shared library list object!");
 
   return retval;
 }
 
 void
-octave_shlib_list::append (const octave_shlib& shl)
+octave_shlib_list::append (const octave::dynamic_library& shl)
 {
   if (instance_ok ())
     instance->do_append (shl);
 }
 
 void
-octave_shlib_list::remove (octave_shlib& shl,
-                           octave_shlib::close_hook cl_hook)
+octave_shlib_list::remove (octave::dynamic_library& shl,
+                           octave::dynamic_library::close_hook cl_hook)
 {
   if (instance_ok ())
     instance->do_remove (shl, cl_hook);
 }
 
-octave_shlib
+octave::dynamic_library
 octave_shlib_list::find_file (const std::string& file_name)
 {
   return (instance_ok ())
-         ? instance->do_find_file (file_name) : octave_shlib ();
+         ? instance->do_find_file (file_name) : octave::dynamic_library ();
 }
 
 void
@@ -215,11 +213,7 @@ octave_dynamic_loader::instance_ok (void)
     }
 
   if (! instance)
-    {
-      ::error ("unable to create dynamic loader object!");
-
-      retval = false;
-    }
+    error ("unable to create dynamic loader object!");
 
   return retval;
 }
@@ -233,7 +227,7 @@ do_clear_function (const std::string& fcn_name)
 }
 
 static void
-clear (octave_shlib& oct_file)
+clear (octave::dynamic_library& oct_file)
 {
   if (oct_file.number_of_functions_loaded () > 1)
     {
@@ -254,13 +248,13 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (octave_dynamic_loader::doing_load);
 
   doing_load = true;
 
-  octave_shlib oct_file = octave_shlib_list::find_file (file_name);
+  octave::dynamic_library oct_file = octave_shlib_list::find_file (file_name);
 
   if (oct_file && oct_file.is_out_of_date ())
     clear (oct_file);
@@ -269,39 +263,33 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
     {
       oct_file.open (file_name);
 
-      if (! error_state && oct_file)
+      if (oct_file)
         octave_shlib_list::append (oct_file);
     }
 
-  if (! error_state)
+  if (! oct_file)
+    error ("%s is not a valid shared library", file_name.c_str ());
+
+  void *function = oct_file.search (fcn_name, name_mangler);
+
+  if (! function)
     {
-      if (oct_file)
-        {
-          void *function = oct_file.search (fcn_name, name_mangler);
+      // FIXME: can we determine this C mangling scheme
+      // automatically at run time or configure time?
 
-          if (! function)
-            {
-              // FIXME: can we determine this C mangling scheme
-              // automatically at run time or configure time?
+      function = oct_file.search (fcn_name, name_uscore_mangler);
+    }
 
-              function = oct_file.search (fcn_name, name_uscore_mangler);
-            }
+  if (function)
+    {
+      octave_dld_fcn_getter f
+        = reinterpret_cast<octave_dld_fcn_getter> (function);
 
-          if (function)
-            {
-              octave_dld_fcn_getter f
-                = FCN_PTR_CAST (octave_dld_fcn_getter, function);
+      retval = f (oct_file, relative);
 
-              retval = f (oct_file, relative);
-
-              if (! retval)
-                ::error ("failed to install .oct file function '%s'",
-                         fcn_name.c_str ());
-            }
-        }
-      else
-        ::error ("%s is not a valid shared library",
-                 file_name.c_str ());
+      if (! retval)
+        error ("failed to install .oct file function '%s'",
+               fcn_name.c_str ());
     }
 
   return retval;
@@ -314,13 +302,13 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  unwind_protect frame;
+  octave::unwind_protect frame;
 
   frame.protect_var (octave_dynamic_loader::doing_load);
 
   doing_load = true;
 
-  octave_shlib mex_file = octave_shlib_list::find_file (file_name);
+  octave::dynamic_library mex_file = octave_shlib_list::find_file (file_name);
 
   if (mex_file && mex_file.is_out_of_date ())
     clear (mex_file);
@@ -329,54 +317,46 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
     {
       mex_file.open (file_name);
 
-      if (! error_state && mex_file)
+      if (mex_file)
         octave_shlib_list::append (mex_file);
     }
 
-  if (! error_state)
+  if (! mex_file)
+    error ("%s is not a valid shared library", file_name.c_str ());
+
+  void *function = 0;
+
+  bool have_fmex = false;
+
+  function = mex_file.search (fcn_name, mex_mangler);
+
+  if (! function)
     {
-      if (mex_file)
+      // FIXME: can we determine this C mangling scheme
+      // automatically at run time or configure time?
+
+      function = mex_file.search (fcn_name, mex_uscore_mangler);
+
+      if (! function)
         {
-          void *function = 0;
-
-          bool have_fmex = false;
-
-          function = mex_file.search (fcn_name, mex_mangler);
-
-          if (! function)
-            {
-              // FIXME: can we determine this C mangling scheme
-              // automatically at run time or configure time?
-
-              function = mex_file.search (fcn_name, mex_uscore_mangler);
-
-              if (! function)
-                {
-                  function = mex_file.search (fcn_name, mex_f77_mangler);
-
-                  if (function)
-                    have_fmex = true;
-                }
-            }
+          function = mex_file.search (fcn_name, mex_f77_mangler);
 
           if (function)
-            retval = new octave_mex_function (function, have_fmex,
-                                              mex_file, fcn_name);
-          else
-            ::error ("failed to install .mex file function '%s'",
-                     fcn_name.c_str ());
+            have_fmex = true;
         }
-      else
-        ::error ("%s is not a valid shared library",
-                 file_name.c_str ());
     }
+
+  if (function)
+    retval = new octave_mex_function (function, have_fmex, mex_file, fcn_name);
+  else
+    error ("failed to install .mex file function '%s'", fcn_name.c_str ());
 
   return retval;
 }
 
 bool
 octave_dynamic_loader::do_remove_oct (const std::string& fcn_name,
-                                      octave_shlib& shl)
+                                      octave::dynamic_library& shl)
 {
   bool retval = false;
 
@@ -396,7 +376,7 @@ octave_dynamic_loader::do_remove_oct (const std::string& fcn_name,
 
 bool
 octave_dynamic_loader::do_remove_mex (const std::string& fcn_name,
-                                      octave_shlib& shl)
+                                      octave::dynamic_library& shl)
 {
   bool retval = false;
 
@@ -434,14 +414,14 @@ octave_dynamic_loader::load_mex (const std::string& fcn_name,
 
 bool
 octave_dynamic_loader::remove_oct (const std::string& fcn_name,
-                                   octave_shlib& shl)
+                                   octave::dynamic_library& shl)
 {
   return (instance_ok ()) ? instance->do_remove_oct (fcn_name, shl) : false;
 }
 
 bool
 octave_dynamic_loader::remove_mex (const std::string& fcn_name,
-                                   octave_shlib& shl)
+                                   octave::dynamic_library& shl)
 {
   return (instance_ok ()) ? instance->do_remove_mex (fcn_name, shl) : false;
 }
@@ -475,3 +455,4 @@ octave_dynamic_loader::mex_f77_mangler (const std::string&)
 {
   return STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION));
 }
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Carnë Draug
+## Copyright (C) 2012-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} iscolormap (@var{cmap})
+## @deftypefn {} {} iscolormap (@var{cmap})
 ## Return true if @var{cmap} is a colormap.
 ##
-## A colormap is a real matrix with @var{n} rows and 3 columns.  Each row
-## represents a single color.  The columns contain red, green, and blue
-## intensities respectively.  All entries must be between 0 and 1 inclusive.
+## A colormap is a real matrix, of class single or double, with 3 columns.
+## Each row represents a single color.  The 3 columns contain red, green,
+## and blue intensities respectively.
+##
+## All values in a colormap should be in the [0 1] range but this is not
+## enforced.  Each function must decide what to do for values outside this
+## range.
+##
 ## @seealso{colormap, rgbplot}
 ## @end deftypefn
 
@@ -34,9 +39,9 @@ function retval = iscolormap (cmap)
     print_usage;
   endif
 
-  retval = (isnumeric (cmap) && isreal (cmap) && ndims (cmap) == 2
-            && columns (cmap) == 3 && isa (cmap, "double")
-            && min (cmap(:)) >= 0 && max (cmap(:)) <= 1);
+  retval = (isnumeric (cmap) && isreal (cmap)
+            && ndims (cmap) == 2 && columns (cmap) == 3
+            && isfloat (cmap));
 
 endfunction
 
@@ -46,7 +51,3 @@ endfunction
 %!assert (iscolormap ([0 1i 0]), false)
 %!assert (iscolormap (ones (3,3,3)), false)
 %!assert (iscolormap (ones (3,4)), false)
-%!assert (iscolormap (single (jet (64))), false)
-%!assert (iscolormap ([0 0 -2]), false)
-%!assert (iscolormap ([0 0 2]), false)
-

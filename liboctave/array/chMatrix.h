@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2015 John W. Eaton
+Copyright (C) 1995-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_chMatrix_h)
+#if ! defined (octave_chMatrix_h)
 #define octave_chMatrix_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -108,3 +110,4 @@ MM_CMP_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
 
 #endif
+

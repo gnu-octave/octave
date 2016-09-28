@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "Quad.h"
@@ -44,36 +44,36 @@ typedef octave_idx_type (*quad_float_fcn_ptr) (float*, int&, float*);
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const double&, const double&,
-                           const octave_idx_type&, const double*,
-                           const double&, const double&, double&,
-                           double&, octave_idx_type&, octave_idx_type&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           octave_idx_type&, octave_idx_type*, double*);
+  F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const F77_DBLE&, const F77_DBLE&,
+                           const F77_INT&, const F77_DBLE*,
+                           const F77_DBLE&, const F77_DBLE&, F77_DBLE&,
+                           F77_DBLE&, F77_INT&, F77_INT&,
+                           const F77_INT&, const F77_INT&,
+                           F77_INT&, F77_INT*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&,
-                           const octave_idx_type&, const double&,
-                           const double&, double&, double&,
-                           octave_idx_type&, octave_idx_type&,
-                           const octave_idx_type&, const octave_idx_type&,
-                           octave_idx_type&, octave_idx_type*, double*);
+  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const F77_DBLE&,
+                           const F77_INT&, const F77_DBLE&,
+                           const F77_DBLE&, F77_DBLE&, F77_DBLE&,
+                           F77_INT&, F77_INT&,
+                           const F77_INT&, const F77_INT&,
+                           F77_INT&, F77_INT*, F77_DBLE*);
 
   F77_RET_T
-  F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const float&, const float&,
-                         const octave_idx_type&, const float*, const float&,
-                         const float&, float&, float&, octave_idx_type&,
-                         octave_idx_type&, const octave_idx_type&,
-                         const octave_idx_type&, octave_idx_type&,
-                         octave_idx_type*, float*);
+  F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const F77_REAL&, const F77_REAL&,
+                         const F77_INT&, const F77_REAL*, const F77_REAL&,
+                         const F77_REAL&, F77_REAL&, F77_REAL&, F77_INT&,
+                         F77_INT&, const F77_INT&,
+                         const F77_INT&, F77_INT&,
+                         F77_INT*, F77_REAL*);
 
   F77_RET_T
-  F77_FUNC (qagi, QAGI) (quad_float_fcn_ptr, const float&,
-                         const octave_idx_type&, const float&,
-                         const float&, float&, float&, octave_idx_type&,
-                         octave_idx_type&, const octave_idx_type&,
-                         const octave_idx_type&, octave_idx_type&,
-                         octave_idx_type*, float*);
+  F77_FUNC (qagi, QAGI) (quad_float_fcn_ptr, const F77_REAL&,
+                         const F77_INT&, const F77_REAL&,
+                         const F77_REAL&, F77_REAL&, F77_REAL&, F77_INT&,
+                         F77_INT&, const F77_INT&,
+                         const F77_INT&, F77_INT&,
+                         F77_INT*, F77_REAL*);
 }
 
 static octave_idx_type
@@ -126,7 +126,7 @@ double
 DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr)
 {
-  octave_idx_type npts = singularities.capacity () + 2;
+  octave_idx_type npts = singularities.numel () + 2;
   double *points = singularities.fortran_vec ();
   double result = 0.0;
 
@@ -156,7 +156,6 @@ float
 DefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 double
@@ -210,21 +209,19 @@ float
 IndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 double
 FloatDefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 float
 FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                             float& abserr)
 {
-  octave_idx_type npts = singularities.capacity () + 2;
+  octave_idx_type npts = singularities.numel () + 2;
   float *points = singularities.fortran_vec ();
   float result = 0.0;
 
@@ -254,7 +251,6 @@ double
 FloatIndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
-  return 0.0;
 }
 
 float
@@ -303,3 +299,4 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   return result;
 }
+

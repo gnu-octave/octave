@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_array_list_h)
+#if ! defined (octave_pt_array_list_h)
 #define octave_pt_array_list_h 1
+
+#include "octave-config.h"
 
 #include "base-list.h"
 #include "pt-arg-list.h"
@@ -32,15 +34,15 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 tree_array_list : public tree_expression,
-                  public octave_base_list<tree_argument_list *>
+                  public octave::base_list<tree_argument_list *>
 {
 public:
 
-  typedef octave_base_list<tree_argument_list *>::iterator iterator;
-  typedef octave_base_list<tree_argument_list *>::const_iterator const_iterator;
+  typedef octave::base_list<tree_argument_list *>::iterator iterator;
+  typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
 
   tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_expression (l, c), octave_base_list<tree_argument_list *> ()
+    : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
   {
     if (row)
       append (row);
@@ -51,6 +53,13 @@ public:
   bool all_elements_are_constant (void) const;
 
   bool has_magic_end (void) const;
+
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using tree_expression::copy_base;
 
   void copy_base (const tree_array_list& array_list);
 
@@ -73,3 +82,4 @@ private:
 };
 
 #endif
+

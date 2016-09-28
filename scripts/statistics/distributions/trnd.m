@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trnd (@var{n})
-## @deftypefnx {Function File} {} trnd (@var{n}, @var{r})
-## @deftypefnx {Function File} {} trnd (@var{n}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} trnd (@var{n}, [@var{sz}])
+## @deftypefn  {} {} trnd (@var{n})
+## @deftypefnx {} {} trnd (@var{n}, @var{r})
+## @deftypefnx {} {} trnd (@var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} trnd (@var{n}, [@var{sz}])
 ## Return a matrix of random samples from the t (Student) distribution with
 ## @var{n} degrees of freedom.
 ##

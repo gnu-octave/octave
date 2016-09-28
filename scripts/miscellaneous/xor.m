@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{z} =} xor (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{z} =} xor (@var{x1}, @var{x2}, @dots{})
+## @deftypefn  {} {@var{z} =} xor (@var{x}, @var{y})
+## @deftypefnx {} {@var{z} =} xor (@var{x1}, @var{x2}, @dots{})
 ## Return the @dfn{exclusive or} of @var{x} and @var{y}.
 ##
 ## For boolean expressions @var{x} and @var{y},

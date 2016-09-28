@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb})
-## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol})
-## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf})
-## @deftypefnx {Function File} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf}, @dots{})
+## @deftypefn  {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb})
+## @deftypefnx {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol})
+## @deftypefnx {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf})
+## @deftypefnx {} {} dblquad (@var{f}, @var{xa}, @var{xb}, @var{ya}, @var{yb}, @var{tol}, @var{quadf}, @dots{})
 ## Numerically evaluate the double integral of @var{f}.
 ##
 ## @var{f} is a function handle, inline function, or string containing the name
@@ -65,6 +65,7 @@ function q = dblquad (f, xa, xb, ya, yb, tol = 1e-6, quadf = @quadcc, varargin)
 
   q = feval (quadf, @(y) inner (y, f, xa, xb, tol, quadf,
                                 varargin{:}), ya, yb, tol);
+
 endfunction
 
 function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)

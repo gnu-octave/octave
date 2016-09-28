@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -42,14 +42,10 @@ tree_expression::is_logically_true (const char *warn_for)
 
   octave_value t1 = rvalue1 ();
 
-  if (! error_state)
-    {
-      if (t1.is_defined ())
-        return t1.is_true ();
-      else
-        ::error ("%s: undefined value used in conditional expression",
-                 warn_for);
-    }
+  if (t1.is_defined ())
+    return t1.is_true ();
+  else
+    error ("%s: undefined value used in conditional expression", warn_for);
 
   return expr_value;
 }
@@ -57,15 +53,13 @@ tree_expression::is_logically_true (const char *warn_for)
 octave_value
 tree_expression::rvalue1 (int)
 {
-  ::error ("invalid rvalue function called in expression");
-  return octave_value ();
+  error ("invalid rvalue function called in expression");
 }
 
 octave_value_list
 tree_expression::rvalue (int)
 {
-  ::error ("invalid rvalue function called in expression");
-  return octave_value_list ();
+  error ("invalid rvalue function called in expression");
 }
 
 octave_value_list
@@ -77,12 +71,12 @@ tree_expression::rvalue (int nargout, const std::list<octave_lvalue> *)
 octave_lvalue
 tree_expression::lvalue (void)
 {
-  ::error ("invalid lvalue function called in expression");
-  return octave_lvalue ();
+  error ("invalid lvalue function called in expression");
 }
 
 std::string
 tree_expression::original_text (void) const
 {
-  return std::string ();
+  return "";
 }
+

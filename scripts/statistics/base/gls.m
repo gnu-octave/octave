@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{beta}, @var{v}, @var{r}] =} gls (@var{y}, @var{x}, @var{o})
+## @deftypefn {} {[@var{beta}, @var{v}, @var{r}] =} gls (@var{y}, @var{x}, @var{o})
 ## Generalized least squares model.
 ##
 ## Perform a generalized least squares estimation for the multivariate model
@@ -99,7 +99,7 @@ function [beta, v, r] = gls (y, x, o)
   endif
 
   ## Start of algorithm
-  o = o^(-1/2);
+  o ^= -1/2;
   z = kron (eye (cy), x);
   z = o * z;
   y1 = o * reshape (y, ry*cy, 1);

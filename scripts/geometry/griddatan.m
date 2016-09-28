@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi})
-## @deftypefnx {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method})
-## @deftypefnx {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
+## @deftypefn  {} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi})
+## @deftypefnx {} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method})
+## @deftypefnx {} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
 ##

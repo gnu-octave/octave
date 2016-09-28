@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "ov-null-mat.h"
@@ -37,7 +37,7 @@ static octave_base_value *
 default_null_matrix_numeric_conversion_function (const octave_base_value& a)
 {
   // The cast is not necessary?
-  // CAST_CONV_ARG (const octave_null_matrix&);
+  // const octave_null_matrix& v = dynamic_cast<const octave_null_matrix&> (a);
 
   return a.empty_clone ();
 }
@@ -58,7 +58,7 @@ static octave_base_value *
 default_null_str_numeric_conversion_function (const octave_base_value& a)
 {
   // The cast is not necessary?
-  // CAST_CONV_ARG (const octave_null_str&);
+  // const octave_null_str& v = dynamic_cast<const octave_null_str&> (a);
 
   return a.empty_clone ();
 }
@@ -80,7 +80,7 @@ static octave_base_value *
 default_null_sq_str_numeric_conversion_function (const octave_base_value& a)
 {
   // The cast is not necessary?
-  // CAST_CONV_ARG (const octave_null_sq_str&);
+  // const octave_null_sq_str& v = dynamic_cast<const octave_null_sq_str&> (a);
 
   return a.empty_clone ();
 }
@@ -94,36 +94,30 @@ octave_null_sq_str::numeric_conversion_function (void) const
 }
 
 DEFUN (isnull, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isnull (@var{x})\n\
-Return true if @var{x} is a special null matrix, string, or single quoted\n\
-string.\n\
-\n\
-Indexed assignment with such a value on the right-hand side should delete\n\
-array elements.  This function should be used when overloading indexed\n\
-assignment for user-defined classes instead of @code{isempty}, to\n\
-distinguish the cases:\n\
-\n\
-@table @asis\n\
-@item @code{A(I) = []}\n\
-This should delete elements if @code{I} is nonempty.\n\
-\n\
-@item @code{X = []; A(I) = X}\n\
-This should give an error if @code{I} is nonempty.\n\
-@end table\n\
-@seealso{isempty, isindex}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isnull (@var{x})
+Return true if @var{x} is a special null matrix, string, or single quoted
+string.
+
+Indexed assignment with such a value on the right-hand side should delete
+array elements.  This function should be used when overloading indexed
+assignment for user-defined classes instead of @code{isempty}, to
+distinguish the cases:
+
+@table @asis
+@item @code{A(I) = []}
+This should delete elements if @code{I} is nonempty.
+
+@item @code{X = []; A(I) = X}
+This should give an error if @code{I} is nonempty.
+@end table
+@seealso{isempty, isindex}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).is_null_value ();
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  return ovl (args(0).is_null_value ());
 }
 
 /*
@@ -138,3 +132,4 @@ This should give an error if @code{I} is nonempty.\n\
 %! x = [];
 %! assert (isnull (x), false);
 */
+

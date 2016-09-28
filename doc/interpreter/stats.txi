@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -118,8 +118,9 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(histc)
 
-@c FIXME: really want to put a reference to unique here
-@c @DOCSTRING(values)
+@noindent
+@code{unique} function documented at @ref{XREFunique,,unique} is often
+useful for statistics.
 
 @DOCSTRING(nchoosek)
 
@@ -136,8 +137,6 @@ different measures from those of the basic descriptive statistics.
 @DOCSTRING(logit)
 
 @DOCSTRING(cloglog)
-
-@DOCSTRING(mahalanobis)
 
 @DOCSTRING(table)
 

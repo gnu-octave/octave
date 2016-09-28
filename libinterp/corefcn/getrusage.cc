@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,187 +20,136 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include <sys/time.h>
-#include <sys/times.h>
-#include <sys/types.h>
-
-#ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
-#endif
-
-#if defined (HAVE_SYS_PARAM_H)
-#include <sys/param.h>
-#endif
+#include "oct-time.h"
 
 #include "defun.h"
 #include "oct-map.h"
-#include "sysdep.h"
 #include "ov.h"
-#include "oct-obj.h"
-#include "utils.h"
-
-#if !defined (HZ)
-#if defined (CLK_TCK)
-#define HZ CLK_TCK
-#elif defined (USG)
-#define HZ 100
-#else
-#define HZ 60
-#endif
-#endif
-
-#ifndef RUSAGE_SELF
-#define RUSAGE_SELF 0
-#endif
-
-// System resource functions.
+#include "ovl.h"
 
 DEFUN (getrusage, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} getrusage ()\n\
-Return a structure containing a number of statistics about the current\n\
-Octave process.\n\
-\n\
-Not all fields are available on all systems.  If it is not possible to get\n\
-CPU time statistics, the CPU time slots are set to zero.  Other missing data\n\
-are replaced by NaN@.  The list of possible fields is:\n\
-\n\
-@table @code\n\
-@item idrss\n\
-Unshared data size.\n\
-\n\
-@item inblock\n\
-Number of block input operations.\n\
-\n\
-@item isrss\n\
-Unshared stack size.\n\
-\n\
-@item ixrss\n\
-Shared memory size.\n\
-\n\
-@item majflt\n\
-Number of major page faults.\n\
-\n\
-@item maxrss\n\
-Maximum data size.\n\
-\n\
-@item minflt\n\
-Number of minor page faults.\n\
-\n\
-@item msgrcv\n\
-Number of messages received.\n\
-\n\
-@item msgsnd\n\
-Number of messages sent.\n\
-\n\
-@item nivcsw\n\
-Number of involuntary context switches.\n\
-\n\
-@item nsignals\n\
-Number of signals received.\n\
-\n\
-@item nswap\n\
-Number of swaps.\n\
-\n\
-@item nvcsw\n\
-Number of voluntary context switches.\n\
-\n\
-@item oublock\n\
-Number of block output operations.\n\
-\n\
-@item stime\n\
-A structure containing the system CPU time used.  The structure has the\n\
-elements @code{sec} (seconds) @code{usec} (microseconds).\n\
-\n\
-@item utime\n\
-A structure containing the user CPU time used.  The structure has the\n\
-elements @code{sec} (seconds) @code{usec} (microseconds).\n\
-@end table\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} getrusage ()
+Return a structure containing a number of statistics about the current
+Octave process.
+
+Not all fields are available on all systems.  If it is not possible to get
+CPU time statistics, the CPU time slots are set to zero.  Other missing data
+are replaced by NaN@.  The list of possible fields is:
+
+@table @code
+@item idrss
+Unshared data size.
+
+@item inblock
+Number of block input operations.
+
+@item isrss
+Unshared stack size.
+
+@item ixrss
+Shared memory size.
+
+@item majflt
+Number of major page faults.
+
+@item maxrss
+Maximum data size.
+
+@item minflt
+Number of minor page faults.
+
+@item msgrcv
+Number of messages received.
+
+@item msgsnd
+Number of messages sent.
+
+@item nivcsw
+Number of involuntary context switches.
+
+@item nsignals
+Number of signals received.
+
+@item nswap
+Number of swaps.
+
+@item nvcsw
+Number of voluntary context switches.
+
+@item oublock
+Number of block output operations.
+
+@item stime
+A structure containing the system CPU time used.  The structure has the
+elements @code{sec} (seconds) @code{usec} (microseconds).
+
+@item utime
+A structure containing the user CPU time used.  The structure has the
+elements @code{sec} (seconds) @code{usec} (microseconds).
+@end table
+@end deftypefn */)
 {
-  octave_scalar_map m;
-  octave_scalar_map tv_tmp;
+  octave_scalar_map ru_map;
+  octave_scalar_map tv_map;
 
-  // FIXME: maybe encapsulate all of this in a liboctave class
-#if defined (HAVE_GETRUSAGE)
+  octave::sys::resource_usage rusage;
 
-  struct rusage ru;
+  octave::sys::cpu_time cpu = rusage.cpu ();
 
-  getrusage (RUSAGE_SELF, &ru);
+  tv_map.assign ("sec", cpu.user_sec ());
+  tv_map.assign ("usec", cpu.user_usec ());
+  ru_map.assign ("utime", octave_value (tv_map));
 
-  tv_tmp.assign ("sec", static_cast<double> (ru.ru_utime.tv_sec));
-  tv_tmp.assign ("usec", static_cast<double> (ru.ru_utime.tv_usec));
-  m.assign ("utime", octave_value (tv_tmp));
+  tv_map.assign ("sec", cpu.system_sec ());
+  tv_map.assign ("usec", cpu.system_usec ());
+  ru_map.assign ("stime", octave_value (tv_map));
 
-  tv_tmp.assign ("sec", static_cast<double> (ru.ru_stime.tv_sec));
-  tv_tmp.assign ("usec", static_cast<double> (ru.ru_stime.tv_usec));
-  m.assign ("stime", octave_value (tv_tmp));
+  ru_map.assign ("maxrss", static_cast<double> (rusage.maxrss ()));
+  ru_map.assign ("ixrss", static_cast<double> (rusage.ixrss ()));
+  ru_map.assign ("idrss", static_cast<double> (rusage.idrss ()));
+  ru_map.assign ("isrss", static_cast<double> (rusage.isrss ()));
+  ru_map.assign ("minflt", static_cast<double> (rusage.minflt ()));
+  ru_map.assign ("majflt", static_cast<double> (rusage.majflt ()));
+  ru_map.assign ("nswap", static_cast<double> (rusage.nswap ()));
+  ru_map.assign ("inblock", static_cast<double> (rusage.inblock ()));
+  ru_map.assign ("oublock", static_cast<double> (rusage.oublock ()));
+  ru_map.assign ("msgsnd", static_cast<double> (rusage.msgsnd ()));
+  ru_map.assign ("msgrcv", static_cast<double> (rusage.msgrcv ()));
+  ru_map.assign ("nsignals", static_cast<double> (rusage.nsignals ()));
+  ru_map.assign ("nvcsw", static_cast<double> (rusage.nvcsw ()));
+  ru_map.assign ("nivcsw", static_cast<double> (rusage.nivcsw ()));
 
-#if ! defined (RUSAGE_TIMES_ONLY)
-  m.assign ("maxrss", static_cast<double> (ru.ru_maxrss));
-  m.assign ("ixrss", static_cast<double> (ru.ru_ixrss));
-  m.assign ("idrss", static_cast<double> (ru.ru_idrss));
-  m.assign ("isrss", static_cast<double> (ru.ru_isrss));
-  m.assign ("minflt", static_cast<double> (ru.ru_minflt));
-  m.assign ("majflt", static_cast<double> (ru.ru_majflt));
-  m.assign ("nswap", static_cast<double> (ru.ru_nswap));
-  m.assign ("inblock", static_cast<double> (ru.ru_inblock));
-  m.assign ("oublock", static_cast<double> (ru.ru_oublock));
-  m.assign ("msgsnd", static_cast<double> (ru.ru_msgsnd));
-  m.assign ("msgrcv", static_cast<double> (ru.ru_msgrcv));
-  m.assign ("nsignals", static_cast<double> (ru.ru_nsignals));
-  m.assign ("nvcsw", static_cast<double> (ru.ru_nvcsw));
-  m.assign ("nivcsw", static_cast<double> (ru.ru_nivcsw));
-#endif
-
-#else
-
-  struct tms t;
-
-  times (&t);
-
-  unsigned long ticks;
-  unsigned long seconds;
-  unsigned long fraction;
-
-  ticks = t.tms_utime + t.tms_cutime;
-  fraction = ticks % HZ;
-  seconds = ticks / HZ;
-
-  tv_tmp.assign ("sec", static_cast<double> (seconds));
-  tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
-  m.assign ("utime", octave_value (tv_tmp));
-
-  ticks = t.tms_stime + t.tms_cstime;
-  fraction = ticks % HZ;
-  seconds = ticks / HZ;
-
-  tv_tmp.assign ("sec", static_cast<double> (seconds));
-  tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
-  m.assign ("stime", octave_value (tv_tmp));
-
-  double tmp = lo_ieee_nan_value ();
-
-  m.assign ("maxrss", tmp);
-  m.assign ("ixrss", tmp);
-  m.assign ("idrss", tmp);
-  m.assign ("isrss", tmp);
-  m.assign ("minflt", tmp);
-  m.assign ("majflt", tmp);
-  m.assign ("nswap", tmp);
-  m.assign ("inblock", tmp);
-  m.assign ("oublock", tmp);
-  m.assign ("msgsnd", tmp);
-  m.assign ("msgrcv", tmp);
-  m.assign ("nsignals", tmp);
-  m.assign ("nvcsw", tmp);
-  m.assign ("nivcsw", tmp);
-
-#endif
-
-  return octave_value (m);
+  return ovl (ru_map);
 }
+
+/*
+%!test
+%! r = getrusage ();
+%! assert (isstruct (r));
+%! assert (isfield (r, "idrss"));
+%! assert (isfield (r, "inblock"));
+%! assert (isfield (r, "isrss"));
+%! assert (isfield (r, "ixrss"));
+%! assert (isfield (r, "majflt"));
+%! assert (isfield (r, "maxrss"));
+%! assert (isfield (r, "minflt"));
+%! assert (isfield (r, "msgrcv"));
+%! assert (isfield (r, "msgsnd"));
+%! assert (isfield (r, "nivcsw"));
+%! assert (isfield (r, "nsignals"));
+%! assert (isfield (r, "nswap"));
+%! assert (isfield (r, "nvcsw"));
+%! assert (isfield (r, "oublock"));
+%! assert (isfield (r, "stime"));
+%! assert (isfield (r, "utime"));
+%! assert (isfield (r.stime, "sec"));
+%! assert (isfield (r.stime, "usec"));
+%! assert (isfield (r.utime, "sec"));
+%! assert (isfield (r.utime, "usec"));
+*/
+

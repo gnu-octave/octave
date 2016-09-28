@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2015 Ariel Tankus
+## Copyright (C) 1998-2016 Ariel Tankus
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
-## @deftypefnx {Function File} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})
+## @deftypefn  {} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
+## @deftypefnx {} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})
 ##
 ## Copy the input parameters into the corresponding output parameters.
 ##

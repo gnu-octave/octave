@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_pt_cbinop_h)
+#if ! defined (octave_pt_cbinop_h)
 #define octave_pt_cbinop_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
@@ -81,3 +83,4 @@ maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
                                   = octave_value::unknown_binary_op);
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 2012-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{val} =} java_get (@var{obj}, @var{name})
+## @deftypefn {} {@var{val} =} java_get (@var{obj}, @var{name})
 ## Get the value of the field @var{name} of the Java object @var{obj}.
 ##
 ## For static fields, @var{obj} can be a string representing the fully

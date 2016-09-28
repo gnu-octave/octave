@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} logspace (@var{a}, @var{b})
-## @deftypefnx {Function File} {} logspace (@var{a}, @var{b}, @var{n})
-## @deftypefnx {Function File} {} logspace (@var{a}, pi, @var{n})
+## @deftypefn  {} {} logspace (@var{a}, @var{b})
+## @deftypefnx {} {} logspace (@var{a}, @var{b}, @var{n})
+## @deftypefnx {} {} logspace (@var{a}, pi, @var{n})
 ## Return a row vector with @var{n} elements logarithmically spaced from
 ## @tex
 ## $10^{a}$ to $10^{b}$.

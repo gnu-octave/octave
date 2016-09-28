@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 John W. Eaton
+## Copyright (C) 1995-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
-## @deftypefnx {Function File} {} subplot (@var{rcn})
-## @deftypefnx {Function File} {} subplot (@var{hax})
-## @deftypefnx {Function File} {} subplot (@dots{}, "align")
-## @deftypefnx {Function File} {} subplot (@dots{}, "replace")
-## @deftypefnx {Function File} {} subplot (@dots{}, "position", @var{pos})
-## @deftypefnx {Function File} {} subplot (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{hax} =} subplot (@dots{})
+## @deftypefn  {} {} subplot (@var{rows}, @var{cols}, @var{index})
+## @deftypefnx {} {} subplot (@var{rcn})
+## @deftypefnx {} {} subplot (@var{hax})
+## @deftypefnx {} {} subplot (@dots{}, "align")
+## @deftypefnx {} {} subplot (@dots{}, "replace")
+## @deftypefnx {} {} subplot (@dots{}, "position", @var{pos})
+## @deftypefnx {} {} subplot (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {@var{hax} =} subplot (@dots{})
 ## Set up a plot grid with @var{rows} by @var{cols} subwindows and set the
 ## current axes for plotting (@code{gca}) to the location given by @var{index}.
 ##
@@ -148,7 +148,7 @@ function h = subplot (varargin)
       varargin(1) = [];
       initial_args_decoded = true;
     else
-      error ("subplot: expecting axes handle or RCN argument");
+      error ("subplot: invalid axes handle or RCN argument");
     endif
   endif
 
@@ -166,7 +166,7 @@ function h = subplot (varargin)
     endif
 
     if (rows < 1 || cols < 1 || index < 1)
-      error ("subplot: ROWS, COLS, and INDEX must be be positive");
+      error ("subplot: ROWS, COLS, and INDEX must be positive");
     endif
   endif
 
@@ -368,10 +368,11 @@ endfunction
 
 function subplot_align (h, d, rmupdate = false)
   persistent updating = false;
+
   if (! updating)
     if (rmupdate)
-      ## The "position" property has been changed from outside this
-      ## routine. Don't update anymore.
+      ## The "position" property has been changed from outside this routine.
+      ## Don't update anymore.
       if (isappdata (h, "__subplotposition__"))
         rmappdata (h, "__subplotposition__");
         rmappdata (h, "__subplotouterposition__");
@@ -396,8 +397,8 @@ function subplot_align (h, d, rmupdate = false)
       hsubplots = children(do_align);
 
 
-      ## There may be mixed subplot series (e.g. 2-by-6 and 1-by-6) in
-      ## the same figure. Only subplots that have the same width and
+      ## There may be mixed subplot series (e.g., 2-by-6 and 1-by-6) in
+      ## the same figure.  Only subplots that have the same width and
       ## height as this one are updated.
       if (any (h == hsubplots))
         width = pos(h == hsubplots, 3);
@@ -454,96 +455,96 @@ endfunction
 %! clf;
 %! r = 3;
 %! c = 3;
-%! fmt = {'horizontalalignment', 'center', 'verticalalignment', 'middle'};
+%! fmt = {"horizontalalignment", "center", "verticalalignment", "middle"};
 %! for n = 1 : r*c
 %!   subplot (r, c, n);
-%!   xlabel (sprintf ('xlabel #%d', n));
-%!   ylabel (sprintf ('ylabel #%d', n));
-%!   title (sprintf ('title #%d', n));
-%!   text (0.5, 0.5, sprintf ('subplot(%d,%d,%d)', r, c, n), fmt{:});
-%!   axis ([0 1 0 1]);
-%! end
+%!    xlabel (sprintf ("xlabel #%d", n));
+%!    ylabel (sprintf ("ylabel #%d", n));
+%!    title (sprintf ("title #%d", n));
+%!    text (0.5, 0.5, sprintf ("subplot(%d,%d,%d)", r, c, n), fmt{:});
+%!    axis ([0 1 0 1]);
+%! endfor
 %! subplot (r, c, 1:3);
-%! xlabel (sprintf ('xlabel #%d:%d', 1, 3));
-%! ylabel (sprintf ('ylabel #%d:%d', 1, 3));
-%! title (sprintf ('title #%d:%d', 1, 3));
-%! text (0.5, 0.5, sprintf ('subplot(%d,%d,%d:%d)', r, c, 1, 3), fmt{:});
+%!  xlabel (sprintf ("xlabel #%d:%d", 1, 3));
+%!  ylabel (sprintf ("ylabel #%d:%d", 1, 3));
+%!  title (sprintf ("title #%d:%d", 1, 3));
+%!  text (0.5, 0.5, sprintf ("subplot(%d,%d,%d:%d)", r, c, 1, 3), fmt{:});
 %! axis ([0 1 0 1]);
 
 %!demo
 %! clf;
 %! x = 0:1;
 %! for n = 1:4
-%!   subplot (2,2,n, 'align');
-%!   plot (x, x);
-%!   xlabel (sprintf ('xlabel (2,2,%d)', n));
-%!   ylabel (sprintf ('ylabel (2,2,%d)', n));
-%!   title (sprintf ('title (2,2,%d)', n));
-%! end
-%! subplot (1,2,1, 'align');
-%! plot (x, x);
-%! xlabel ('xlabel (1,2,1)');
-%! ylabel ('ylabel (1,2,1)');
-%! title ('title (1,2,1)');
+%!   subplot (2,2,n, "align");
+%!    plot (x, x);
+%!    xlabel (sprintf ("xlabel (2,2,%d)", n));
+%!    ylabel (sprintf ("ylabel (2,2,%d)", n));
+%!    title (sprintf ("title (2,2,%d)", n));
+%! endfor
+%! subplot (1,2,1, "align");
+%!  plot (x, x);
+%!  xlabel ("xlabel (1,2,1)");
+%!  ylabel ("ylabel (1,2,1)");
+%!  title ("title (1,2,1)");
 
 %!demo
 %! clf;
 %! x = 0:10;
 %! ax(1) = subplot (221);
-%! set (ax(1), 'tag', '1');
-%! plot (x, rand (3, 11))
-%! title ('x & y labels & ticklabels');
-%! xlabel xlabel
-%! ylabel ylabel
+%! set (ax(1), "tag", "1");
+%! plot (x, rand (3, 11));
+%! title ("x & y labels & ticklabels");
+%! xlabel xlabel;
+%! ylabel ylabel;
 %! ax(2) = subplot (222);
-%! set (ax(2), 'tag', '2');
-%! plot (x, rand (3, 11))
-%! title ('no labels');
-%! axis ('nolabel','tic')
+%! set (ax(2), "tag", "2");
+%! plot (x, rand (3, 11));
+%! title ("no labels");
+%! axis ("nolabel","tic");
 %! ax(3) = subplot (223);
-%! set (ax(3), 'tag', '3');
-%! plot (x, rand (3, 11))
-%! title ('no labels');
-%! axis ('nolabel','tic')
+%! set (ax(3), "tag", "3");
+%! plot (x, rand (3, 11));
+%! title ("no labels");
+%! axis ("nolabel","tic");
 %! ax(4) = subplot (224);
-%! set (ax(4), 'tag', '4');
-%! plot (x, rand (3, 11))
-%! title ('x & y labels & ticklabels');
-%! xlabel xlabel
-%! ylabel ylabel
+%! set (ax(4), "tag", "4");
+%! plot (x, rand (3, 11));
+%! title ("x & y labels & ticklabels");
+%! xlabel xlabel;
+%! ylabel ylabel;
 
 %!demo
 %! x = 0:10;
 %! subplot (221);
-%! plot (x, rand (3, 11))
-%! ylim ([0, 1]);
-%! text (0.5, 0.5, '{x,y}labels & {x,y}ticklabels', ...
-%!       'horizontalalignment', 'center', ...
-%!       'units', 'normalized');
-%! xlabel xlabel
-%! ylabel ylabel
-%! title title
+%!  plot (x, rand (3, 11));
+%!  ylim ([0, 1]);
+%!  text (0.5, 0.5, "{x,y}labels & {x,y}ticklabels", ...
+%!                  "horizontalalignment", "center", ...
+%!                  "units", "normalized");
+%!  xlabel xlabel;
+%!  ylabel ylabel;
+%!  title title;
 %! subplot (222);
-%! plot (x, rand (3, 11))
-%! axis ('labely');
-%! ylabel ylabel
-%! text (0.5, 0.5, 'no xlabels, xticklabels', ...
-%!       'horizontalalignment', 'center', ...
-%!       'units', 'normalized');
+%!  plot (x, rand (3, 11));
+%!  axis ("labely");
+%!  ylabel ylabel;
+%!  text (0.5, 0.5, "no xlabels, xticklabels", ...
+%!                  "horizontalalignment", "center", ...
+%!                  "units", "normalized");
 %! subplot (223);
-%! plot (x, rand (3, 11))
-%! axis ('labelx');
-%! text (0.5, 0.5, 'no ylabels, yticklabels', ...
-%!       'horizontalalignment', 'center', ...
-%!       'units', 'normalized');
-%! xlabel xlabel
-%! title title
+%!  plot (x, rand (3, 11));
+%!  axis ("labelx");
+%!  text (0.5, 0.5, "no ylabels, yticklabels", ...
+%!                  "horizontalalignment", "center", ...
+%!                  "units", "normalized");
+%!  xlabel xlabel;
+%!  title title;
 %! subplot (224);
-%! plot (x, rand (3, 11))
-%! axis ('nolabel','tic');
-%! text (0.5, 0.5, 'no {x,y}labels, {x,y}ticklabels', ...
-%!       'horizontalalignment', 'center', ...
-%!       'units', 'normalized');
+%!  plot (x, rand (3, 11));
+%!  axis ("nolabel", "tic");
+%!  text (0.5, 0.5, "no {x,y}labels, {x,y}ticklabels", ...
+%!                  "horizontalalignment", "center", ...
+%!                  "units", "normalized");
 
 ## Test recognition/deletion of previous axes
 ## Default mode

@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sombrero ()
-## @deftypefnx {Function File} {} sombrero (@var{n})
-## @deftypefnx {Function File} {@var{z} =} sombrero (@dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} sombrero (@dots{})
+## @deftypefn  {} {} sombrero ()
+## @deftypefnx {} {} sombrero (@var{n})
+## @deftypefnx {} {@var{z} =} sombrero (@dots{})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} sombrero (@dots{})
 ## Plot the familiar 3-D sombrero function.
 ##
 ## The function plotted is
@@ -76,9 +76,9 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! sombrero ();
-%! title ('sombrero() function');
+%! title ("sombrero() function");
 
 ## Test input validation
 %!error sombrero (1,2,3)

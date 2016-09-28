@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mx_defs_h)
+#if ! defined (octave_mx_defs_h)
 #define octave_mx_defs_h 1
+
+#include "octave-config.h"
 
 // Classes we declare.
 
@@ -56,60 +58,35 @@ class FloatComplexDiagMatrix;
 
 class PermMatrix;
 
-class AEPBALANCE;
-class ComplexAEPBALANCE;
-class FloatAEPBALANCE;
-class FloatComplexAEPBALANCE;
+template <typename T> class aepbalance;
 
-class GEPBALANCE;
-class ComplexGEPBALANCE;
-class FloatGEPBALANCE;
-class FloatComplexGEPBALANCE;
+template <typename T> class gepbalance;
 
-class CHOL;
-class ComplexCHOL;
-class FloatCHOL;
-class FloatComplexCHOL;
+template <typename T> class chol;
 
 class EIG;
 
-class HESS;
-class ComplexHESS;
-class FloatHESS;
-class FloatComplexHESS;
+template <typename T> class gsvd;
 
-class SCHUR;
-class ComplexSCHUR;
-class FloatSCHUR;
-class FloatComplexSCHUR;
+template <typename T> class hess;
 
-class SVD;
-class ComplexSVD;
-class FloatSVD;
-class FloatComplexSVD;
+template <typename T> class schur;
 
-class LU;
-class ComplexLU;
-class FloatLU;
-class FloatComplexLU;
+template <typename T> class svd;
 
-class QR;
-class ComplexQR;
-class FloatQR;
-class FloatComplexQR;
+template <typename T> class lu;
 
-class QRP;
-class ComplexQRP;
-class FloatQRP;
-class FloatComplexQRP;
+template <typename T> class qr;
+
+template <typename T> class qrp;
 
 // Other data types we use but that don't always need to have full
 // declarations.
 
 #include "oct-cmplx.h"
 
-#ifndef MAPPER_FCN_TYPEDEFS
-#define MAPPER_FCN_TYPEDEFS 1
+#if ! defined (MAPPER_FCN_TYPEDEFS)
+#  define MAPPER_FCN_TYPEDEFS 1
 
 typedef bool (*b_d_Mapper)(double);
 typedef bool (*b_c_Mapper)(const Complex&);
@@ -138,7 +115,7 @@ get_blas_char (blas_trans_type transt)
   return static_cast<char> (transt);
 }
 
+#  endif
 
 #endif
 
-#endif

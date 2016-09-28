@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2015 John W. Eaton
+Copyright (C) 1998-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_base_mat_h)
+#if ! defined (octave_ov_base_mat_h)
 #define octave_ov_base_mat_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -34,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MatrixType.h"
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -42,7 +44,7 @@ class tree_walker;
 
 // Real matrix values.
 
-template <class MT>
+template <typename MT>
 class
 octave_base_matrix : public octave_base_value
 {
@@ -91,6 +93,13 @@ public:
 
   octave_value_list do_multi_index_op (int, const octave_value_list& idx)
   { return do_index_op (idx); }
+
+  // FIXME: should we import the functions from the base class and
+  // overload them here, or should we use a different name so we don't
+  // have to do this?  Without the using declaration or a name change,
+  // the base class functions will be hidden.  That may be OK, but it
+  // can also cause some confusion.
+  using octave_base_value::assign;
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
@@ -204,3 +213,4 @@ private:
 };
 
 #endif
+

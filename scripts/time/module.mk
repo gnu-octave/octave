@@ -1,23 +1,27 @@
-FCN_FILE_DIRS += time
+FCN_FILE_DIRS += scripts/time
 
-time_FCN_FILES = \
-  time/addtodate.m \
-  time/asctime.m \
-  time/calendar.m \
-  time/clock.m \
-  time/ctime.m \
-  time/date.m \
-  time/datenum.m \
-  time/datestr.m \
-  time/datevec.m \
-  time/eomday.m \
-  time/etime.m \
-  time/is_leap_year.m \
-  time/now.m \
-  time/weekday.m
+scripts_time_FCN_FILES = \
+  scripts/time/addtodate.m \
+  scripts/time/asctime.m \
+  scripts/time/calendar.m \
+  scripts/time/clock.m \
+  scripts/time/ctime.m \
+  scripts/time/date.m \
+  scripts/time/datenum.m \
+  scripts/time/datestr.m \
+  scripts/time/datevec.m \
+  scripts/time/eomday.m \
+  scripts/time/etime.m \
+  scripts/time/is_leap_year.m \
+  scripts/time/now.m \
+  scripts/time/weekday.m
 
-FCN_FILES += $(time_FCN_FILES)
+scripts_timedir = $(fcnfiledir)/time
 
-PKG_ADD_FILES += time/PKG_ADD
+scripts_time_DATA = $(scripts_time_FCN_FILES)
 
-DIRSTAMP_FILES += time/$(octave_dirstamp)
+FCN_FILES += $(scripts_time_FCN_FILES)
+
+PKG_ADD_FILES += scripts/time/PKG_ADD
+
+DIRSTAMP_FILES += scripts/time/$(octave_dirstamp)

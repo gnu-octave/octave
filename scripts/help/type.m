@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} type @var{name} @dots{}
-## @deftypefnx {Command} {} type -q @var{name} @dots{}
-## @deftypefnx {Function File} {text =} type ("@var{name}", @dots{})
+## @deftypefn  {} {} type @var{name} @dots{}
+## @deftypefnx {} {} type -q @var{name} @dots{}
+## @deftypefnx {} {text =} type ("@var{name}", @dots{})
 ## Display the contents of @var{name} which may be a file, function (m-file),
 ## variable, operator, or keyword.
 ##
@@ -97,6 +97,19 @@ function text = type (varargin)
       txt = sprintf ("%s is a dynamically-linked function", name);
     elseif (e == 5)
       txt = sprintf ("%s is a built-in function", name);
+    elseif (e == 103)
+      contents = __get_cmdline_fcn_txt__ (name);
+      if (isempty (contents))
+        txt = sprintf ("%s is a command-line function with no definition",
+                       name);
+      else
+        if (quiet)
+          txt = contents;
+        else
+          txt = sprintf ("%s is the command-line function:\n\n%s",
+                         name, contents);
+        endif
+      endif
     elseif (any (strcmp (__operators__ (), name)))
       txt = sprintf ("%s is an operator", name);
     elseif (any (strcmp (__keywords__ (), name)))
@@ -111,6 +124,7 @@ function text = type (varargin)
       text{n} = txt;
     endif
   endfor
+
 endfunction
 
 

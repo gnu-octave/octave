@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} what
-## @deftypefnx {Command} {} what @var{dir}
-## @deftypefnx {Function File} {w =} what (@var{dir})
+## @deftypefn  {} {} what
+## @deftypefnx {} {} what @var{dir}
+## @deftypefnx {} {w =} what (@var{dir})
 ## List the Octave specific files in directory @var{dir}.
 ##
 ## If @var{dir} is not specified then the current directory is used.
@@ -116,7 +116,7 @@ function retval = what (dir)
         w.oct{end+1} = n;
       elseif (strcmp (e, mexext ()))
         w.mex{end+1} = n;
-      elseif (n(1) == "@" && isdir (n))
+      elseif (n(1) == "@" && isdir (fullfile (dir, n)))
         w.classes{end+1} = n;
       endif
     endif
@@ -147,7 +147,7 @@ function __display_filenames__ (msg, p, f)
 
     nrows = ceil (length (f) / ncols);
     for i = 1 : nrows
-      args  = f(i:nrows:end);
+      args = f(i:nrows:end);
       if (length (args) < ncols)
         args(end+1 : ncols) = {""};
       endif

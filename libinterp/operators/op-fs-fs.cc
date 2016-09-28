@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "Array-util.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
@@ -42,10 +42,11 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUNOP (not, float_scalar)
 {
-  CAST_UNOP_ARG (const octave_float_scalar&);
+  const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
   float x = v.float_value ();
-  if (xisnan (x))
-    gripe_nan_to_logical_conversion ();
+  if (octave::math::isnan (x))
+    octave::err_nan_to_logical_conversion ();
+
   return octave_value (x == 0.0f);
 }
 
@@ -65,12 +66,13 @@ DEFBINOP_OP (mul, float_scalar, float_scalar, *)
 
 DEFBINOP (div, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_value () / d);
 }
@@ -79,12 +81,13 @@ DEFBINOP_FN (pow, float_scalar, float_scalar, xpow)
 
 DEFBINOP (ldiv, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v1.float_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_value () / d);
 }
@@ -100,12 +103,13 @@ DEFBINOP_OP (el_mul, float_scalar, float_scalar, *)
 
 DEFBINOP (el_div, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v2.float_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_value () / d);
 }
@@ -114,12 +118,13 @@ DEFBINOP_FN (el_pow, float_scalar, float_scalar, xpow)
 
 DEFBINOP (el_ldiv, float_scalar, float_scalar)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_scalar&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
   float d = v1.float_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_value () / d);
 }
@@ -131,14 +136,6 @@ DEFNDCATOP_FN (fs_fs, float_scalar, float_scalar, float_array, float_array,
                concat)
 DEFNDCATOP_FN (s_fs, scalar, float_scalar, float_array, float_array, concat)
 DEFNDCATOP_FN (fs_s, float_scalar, scalar, float_array, float_array, concat)
-
-CONVDECL (float_to_scalar)
-{
-  CAST_CONV_ARG (const octave_float_scalar&);
-
-  return new octave_matrix (Matrix (1, 1,
-                                    static_cast<double>(v.float_value ())));
-}
 
 void
 install_fs_fs_ops (void)
@@ -185,6 +182,5 @@ install_fs_fs_ops (void)
                       octave_float_matrix);
   INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_sq_str,
                       octave_float_matrix);
-
-  INSTALL_CONVOP (octave_float_scalar, octave_matrix, float_to_scalar);
 }
+

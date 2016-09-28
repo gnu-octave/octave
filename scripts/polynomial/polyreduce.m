@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyreduce (@var{c})
+## @deftypefn {} {} polyreduce (@var{c})
 ## Reduce a polynomial coefficient vector to a minimum number of terms by
 ## stripping off any leading zeros.
 ## @seealso{polyout}

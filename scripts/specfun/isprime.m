@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Paul Kienzle
+## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isprime (@var{x})
+## @deftypefn {} {} isprime (@var{x})
 ## Return a logical array which is true where the elements of @var{x} are prime
 ## numbers and false where they are not.
 ##
@@ -131,6 +131,7 @@ function t = isprime (x)
 endfunction
 
 function t = isgaussianprime (z)
+
   ## Assume prime unless proven otherwise
   t = true (size (z));
 
@@ -149,6 +150,7 @@ function t = isgaussianprime (z)
   zidx = ! (xidx | yidx);          # Skip entries that were already evaluated
   zabs = x(zidx).^2 + y(zidx).^2;
   t(zidx) &= isprime (zabs);
+
 endfunction
 
 

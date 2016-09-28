@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Michel D. Schmid
+## Copyright (C) 2006-2016 Michel D. Schmid
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} stem (@var{y})
-## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
-## @deftypefnx {Function File} {} stem (@dots{}, @var{linespec})
-## @deftypefnx {Function File} {} stem (@dots{}, "filled")
-## @deftypefnx {Function File} {} stem (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} stem (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} stem (@dots{})
+## @deftypefn  {} {} stem (@var{y})
+## @deftypefnx {} {} stem (@var{x}, @var{y})
+## @deftypefnx {} {} stem (@dots{}, @var{linespec})
+## @deftypefnx {} {} stem (@dots{}, "filled")
+## @deftypefnx {} {} stem (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} stem (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} stem (@dots{})
 ## Plot a 2-D stem graph.
 ##
 ## If only one argument is given, it is taken as the y-values and the
@@ -137,58 +137,58 @@ endfunction
 %! clf;
 %! y = 1:10;
 %! stem (y);
-%! title ('stem plot of y-values only');
+%! title ("stem plot of y-values only");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
 %! stem (x, y);
-%! title ('stem plot of x and y-values');
+%! title ("stem plot of x and y-values");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, 'r');
-%! title ('stem plot with modified color');
+%! h = stem (x, y, "r");
+%! title ("stem plot with modified color");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, '-.k');
-%! title ('stem plot with modified line style and color');
+%! h = stem (x, y, "-.k");
+%! title ("stem plot with modified line style and color");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, '-.ks');
-%! title ('stem plot with modified line style, color, and marker');
+%! h = stem (x, y, "-.ks");
+%! title ("stem plot with modified line style, color, and marker");
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, 'filled');
+%! h = stem (x, y, "filled");
 %! title ('stem plot with "filled" markers');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, 'markerfacecolor', [1 0 1]);
-%! title ('stem plot modified with property/value pair');
+%! h = stem (x, y, "markerfacecolor", [1 0 1]);
+%! title ("stem plot modified with property/value pair");
 
 %!demo
 %! clf;
 %! x = (0 : 10)';
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);
-%! set (h(2), 'color', 'g');
-%! set (h(1), 'basevalue', -0.75);
-%! title ('stem plots modified through hggroup handle');
+%! set (h(2), "color", "g");
+%! set (h(1), "basevalue", -0.75);
+%! title ("stem plots modified through hggroup handle");
 
 %!demo
 %! clf;
@@ -196,25 +196,25 @@ endfunction
 %! x = 0:(N-1);
 %! y = rand (1, N);
 %! hs = stem (x(1), y(1));
-%! set (gca (), 'xlim', [1, N-1], 'ylim', [0, 1]);
-%! title ('stem plot data modified through hggroup handle');
+%! set (gca (), "xlim", [1, N-1], "ylim", [0, 1]);
+%! title ("stem plot data modified through hggroup handle");
 %! for k=2:N
-%!   set (hs, 'xdata', x(1:k), 'ydata', y(1:k))
+%!   set (hs, "xdata", x(1:k), "ydata", y(1:k));
 %!   drawnow ();
 %!   pause (0.2);
-%! end
+%! endfor
 
 %!test
 %! ## stemseries share the same baseline and basevalue
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = stem ([1 2; 1.5 2.5], [1 1;2 2]);
-%!   assert (get (h(1), "baseline"), get (h(2), "baseline"))
+%!   assert (get (h(1), "baseline"), get (h(2), "baseline"));
 %!   bv = 0.3;
-%!   set (h(1), "basevalue", bv)
-%!   assert (get (get (h(1), "baseline"), "basevalue"), bv)
-%!   assert (get (h(1), "basevalue"), bv)
-%!   assert (get (h(2), "basevalue"), bv)
+%!   set (h(1), "basevalue", bv);
+%!   assert (get (get (h(1), "baseline"), "basevalue"), bv);
+%!   assert (get (h(1), "basevalue"), bv);
+%!   assert (get (h(2), "basevalue"), bv);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

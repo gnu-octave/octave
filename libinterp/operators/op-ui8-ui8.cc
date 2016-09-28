@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "mx-ui8nda-i8.h"
@@ -66,8 +66,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-ui8-fnda.h"
 #include "mx-fnda-ui8.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-int16.h"
 #include "ov-int32.h"
@@ -156,3 +156,4 @@ install_ui8_ui8_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint8, int64);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint8, uint64);
 }
+

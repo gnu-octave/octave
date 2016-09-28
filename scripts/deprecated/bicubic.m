@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Hoxide Ma
+## Copyright (C) 2005-2016 Hoxide Ma
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{zi} =} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
+## @deftypefn {} {@var{zi} =} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 ##
 ## @code{bicubic} is deprecated and will be removed in Octave version 4.4.
 ## Use @code{interp2 (@dots{}, "spline")} for the equivalent functionality.
@@ -88,7 +88,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     z = x;
     [rz, cz] = size (z);
   elseif (nargin == 5 || nargin == 6)
-    [rz, cz] = size (z) ;
+    [rz, cz] = size (z);
     if (isvector (x) && isvector (y))
       if (rz != length (y) || cz != length (x))
         error ("bicubic: length of X and Y must match the size of Z");
@@ -187,7 +187,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
   p(:,1) =    (6*(1-a))*p(:,2)    - 3*p(:,3)  + (6*a-2)*p(:,4);
   p(:,cz+2) = (6*(1-a))*p(:,cz+1) - 3*p(:,cz) + (6*a-2)*p(:,cz-1);
 
-  ## Calculte the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s).
+  ## Calculate the C1(t) C2(t) C3(t) C4(t) and C1(s) C2(s) C3(s) C4(s).
   t2 = t.*t;
   t3 = t2.*t;
 
@@ -256,5 +256,5 @@ endfunction
 %! z2 = interp2 (fliplr (xx), flipud (yy), fliplr (flipud(z)),
 %!               fliplr (xx2), flipud (yy2), "spline");
 %! z2 = fliplr (flipud (z2));
-%! assert (z1, z2, 100 * eps ())
+%! assert (z1, z2, 100 * eps ());
 

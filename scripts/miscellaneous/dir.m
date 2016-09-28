@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 John W. Eaton
+## Copyright (C) 2004-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dir
-## @deftypefnx {Function File} {} dir (@var{directory})
-## @deftypefnx {Function File} {[@var{list}] =} dir (@var{directory})
+## @deftypefn  {} {} dir
+## @deftypefnx {} {} dir (@var{directory})
+## @deftypefnx {} {[@var{list}] =} dir (@var{directory})
 ## Display file listing for directory @var{directory}.
 ##
 ## If @var{directory} is not specified then list the present working directory.
@@ -91,7 +91,7 @@ function retval = dir (directory)
     flst = {"."};
     nf = 1;
   else
-    flst = glob (directory);
+    flst = __wglob__ (directory);
     nf = numel (flst);
   endif
 

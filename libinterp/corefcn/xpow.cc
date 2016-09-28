@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
@@ -48,16 +48,29 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 #include "xpow.h"
 
 #include "bsxfun.h"
 
+
+static void
+err_failed_diagonalization (void)
+{
+  error ("Failed to diagonalize matrix while calculating matrix exponential");
+}
+
+static void
+err_nonsquare_matrix (void)
+{
+  error ("for x^A, A must be a square matrix.  Use .^ for elementwise power.");
+}
+
 static inline int
 xisint (double x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
@@ -103,34 +116,34 @@ xpow (double a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  try
     {
       EIG b_eig (b);
 
-      if (! error_state)
+      ComplexColumnVector lambda (b_eig.eigenvalues ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
+
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          ComplexColumnVector lambda (b_eig.eigenvalues ());
-          ComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          ComplexDiagMatrix D (lambda);
-
-          ComplexMatrix C = Q * D * Q.inverse ();
-          if (a > 0)
-            retval = real (C);
+          Complex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
           else
-            retval = C;
+            lambda(i) = std::pow (a, elt);
         }
+      ComplexDiagMatrix D (lambda);
+
+      ComplexMatrix C = Q * D * Q.inverse ();
+      if (a > 0)
+        retval = real (C);
       else
-        error ("xpow: matrix diagonalization failed");
+        retval = C;
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -154,30 +167,30 @@ xpow (double a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  EIG b_eig (b);
+
+  try
     {
-      EIG b_eig (b);
+      ComplexColumnVector lambda (b_eig.eigenvalues ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          ComplexColumnVector lambda (b_eig.eigenvalues ());
-          ComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          ComplexDiagMatrix D (lambda);
-
-          retval = ComplexMatrix (Q * D * Q.inverse ());
+          Complex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
+          else
+            lambda(i) = std::pow (a, elt);
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      ComplexDiagMatrix D (lambda);
+
+      retval = ComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -193,75 +206,74 @@ xpow (const Matrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  if (static_cast<int> (b) == b)
     {
-      if (static_cast<int> (b) == b)
+      int btmp = static_cast<int> (b);
+      if (btmp == 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              retval = DiagMatrix (nr, nr, 1.0);
-            }
-          else
-            {
-              // Too much copying?
-              // FIXME: we shouldn't do this if the exponent is large...
-
-              Matrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
-
-                  octave_idx_type info;
-                  double rcond = 0.0;
-                  MatrixType mattype (a);
-
-                  atmp = a.inverse (mattype, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              Matrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
+          retval = DiagMatrix (nr, nr, 1.0);
         }
       else
         {
-          EIG a_eig (a);
+          // Too much copying?
+          // FIXME: we shouldn't do this if the exponent is large...
 
-          if (! error_state)
+          Matrix atmp;
+          if (btmp < 0)
             {
-              ComplexColumnVector lambda (a_eig.eigenvalues ());
-              ComplexMatrix Q (a_eig.eigenvectors ());
+              btmp = -btmp;
 
-              for (octave_idx_type i = 0; i < nr; i++)
-                lambda(i) = std::pow (lambda(i), b);
+              octave_idx_type info;
+              double rcond = 0.0;
+              MatrixType mattype (a);
 
-              ComplexDiagMatrix D (lambda);
+              atmp = a.inverse (mattype, info, rcond, 1);
 
-              retval = ComplexMatrix (Q * D * Q.inverse ());
+              if (info == -1)
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
-            error ("xpow: matrix diagonalization failed");
+            atmp = a;
+
+          Matrix result (atmp);
+
+          btmp--;
+
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+
+          retval = result;
+        }
+    }
+  else
+    {
+      EIG a_eig (a);
+
+      try
+        {
+          ComplexColumnVector lambda (a_eig.eigenvalues ());
+          ComplexMatrix Q (a_eig.right_eigenvectors ());
+
+          for (octave_idx_type i = 0; i < nr; i++)
+            lambda(i) = std::pow (lambda(i), b);
+
+          ComplexDiagMatrix D (lambda);
+
+          retval = ComplexMatrix (Q * D * Q.inverse ());
+        }
+      catch (const octave::execution_exception&)
+        {
+          err_failed_diagonalization ();
         }
     }
 
@@ -278,23 +290,21 @@ xpow (const DiagMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
+
+  if (static_cast<int> (b) == b)
+    {
+      DiagMatrix r (nr, nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        r.dgelem (i) = std::pow (a.dgelem (i), b);
+      retval = r;
+    }
   else
     {
-      if (static_cast<int> (b) == b)
-        {
-          DiagMatrix r (nr, nc);
-          for (octave_idx_type i = 0; i < nc; i++)
-            r.dgelem (i) = std::pow (a.dgelem (i), b);
-          retval = r;
-        }
-      else
-        {
-          ComplexDiagMatrix r (nr, nc);
-          for (octave_idx_type i = 0; i < nc; i++)
-            r.dgelem (i) = std::pow (static_cast<Complex> (a.dgelem (i)), b);
-          retval = r;
-        }
+      ComplexDiagMatrix r (nr, nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        r.dgelem (i) = std::pow (static_cast<Complex> (a.dgelem (i)), b);
+      retval = r;
     }
 
   return retval;
@@ -304,7 +314,6 @@ xpow (const DiagMatrix& a, double b)
 octave_value
 xpow (const PermMatrix& a, double b)
 {
-  octave_value retval;
   int btmp = static_cast<int> (b);
   if (btmp == b)
     return a.power (btmp);
@@ -322,25 +331,25 @@ xpow (const Matrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  EIG a_eig (a);
+
+  try
     {
-      EIG a_eig (a);
+      ComplexColumnVector lambda (a_eig.eigenvalues ());
+      ComplexMatrix Q (a_eig.right_eigenvectors ());
 
-      if (! error_state)
-        {
-          ComplexColumnVector lambda (a_eig.eigenvalues ());
-          ComplexMatrix Q (a_eig.eigenvectors ());
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (lambda(i), b);
 
-          for (octave_idx_type i = 0; i < nr; i++)
-            lambda(i) = std::pow (lambda(i), b);
+      ComplexDiagMatrix D (lambda);
 
-          ComplexDiagMatrix D (lambda);
-
-          retval = ComplexMatrix (Q * D * Q.inverse ());
-        }
-      else
-        error ("xpow: matrix diagonalization failed");
+      retval = ComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -370,30 +379,30 @@ xpow (const Complex& a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  EIG b_eig (b);
+
+  try
     {
-      EIG b_eig (b);
+      ComplexColumnVector lambda (b_eig.eigenvalues ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          ComplexColumnVector lambda (b_eig.eigenvalues ());
-          ComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          ComplexDiagMatrix D (lambda);
-
-          retval = ComplexMatrix (Q * D * Q.inverse ());
+          Complex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
+          else
+            lambda(i) = std::pow (a, elt);
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      ComplexDiagMatrix D (lambda);
+
+      retval = ComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -418,30 +427,30 @@ xpow (const Complex& a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  EIG b_eig (b);
+
+  try
     {
-      EIG b_eig (b);
+      ComplexColumnVector lambda (b_eig.eigenvalues ());
+      ComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          ComplexColumnVector lambda (b_eig.eigenvalues ());
-          ComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              Complex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          ComplexDiagMatrix D (lambda);
-
-          retval = ComplexMatrix (Q * D * Q.inverse ());
+          Complex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
+          else
+            lambda(i) = std::pow (a, elt);
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      ComplexDiagMatrix D (lambda);
+
+      retval = ComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -457,75 +466,74 @@ xpow (const ComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  if (static_cast<int> (b) == b)
     {
-      if (static_cast<int> (b) == b)
+      int btmp = static_cast<int> (b);
+      if (btmp == 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              retval = DiagMatrix (nr, nr, 1.0);
-            }
-          else
-            {
-              // Too much copying?
-              // FIXME: we shouldn't do this if the exponent is large...
-
-              ComplexMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
-
-                  octave_idx_type info;
-                  double rcond = 0.0;
-                  MatrixType mattype (a);
-
-                  atmp = a.inverse (mattype, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              ComplexMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
+          retval = DiagMatrix (nr, nr, 1.0);
         }
       else
         {
-          EIG a_eig (a);
+          // Too much copying?
+          // FIXME: we shouldn't do this if the exponent is large...
 
-          if (! error_state)
+          ComplexMatrix atmp;
+          if (btmp < 0)
             {
-              ComplexColumnVector lambda (a_eig.eigenvalues ());
-              ComplexMatrix Q (a_eig.eigenvectors ());
+              btmp = -btmp;
 
-              for (octave_idx_type i = 0; i < nr; i++)
-                lambda(i) = std::pow (lambda(i), b);
+              octave_idx_type info;
+              double rcond = 0.0;
+              MatrixType mattype (a);
 
-              ComplexDiagMatrix D (lambda);
+              atmp = a.inverse (mattype, info, rcond, 1);
 
-              retval = ComplexMatrix (Q * D * Q.inverse ());
+              if (info == -1)
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
-            error ("xpow: matrix diagonalization failed");
+            atmp = a;
+
+          ComplexMatrix result (atmp);
+
+          btmp--;
+
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+
+          retval = result;
+        }
+    }
+  else
+    {
+      EIG a_eig (a);
+
+      try
+        {
+          ComplexColumnVector lambda (a_eig.eigenvalues ());
+          ComplexMatrix Q (a_eig.right_eigenvectors ());
+
+          for (octave_idx_type i = 0; i < nr; i++)
+            lambda(i) = std::pow (lambda(i), b);
+
+          ComplexDiagMatrix D (lambda);
+
+          retval = ComplexMatrix (Q * D * Q.inverse ());
+        }
+      catch (const octave::execution_exception&)
+        {
+          err_failed_diagonalization ();
         }
     }
 
@@ -542,25 +550,25 @@ xpow (const ComplexMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  EIG a_eig (a);
+
+  try
     {
-      EIG a_eig (a);
+      ComplexColumnVector lambda (a_eig.eigenvalues ());
+      ComplexMatrix Q (a_eig.right_eigenvectors ());
 
-      if (! error_state)
-        {
-          ComplexColumnVector lambda (a_eig.eigenvalues ());
-          ComplexMatrix Q (a_eig.eigenvectors ());
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (lambda(i), b);
 
-          for (octave_idx_type i = 0; i < nr; i++)
-            lambda(i) = std::pow (lambda(i), b);
+      ComplexDiagMatrix D (lambda);
 
-          ComplexDiagMatrix D (lambda);
-
-          retval = ComplexMatrix (Q * D * Q.inverse ());
-        }
-      else
-        error ("xpow: matrix diagonalization failed");
+      retval = ComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -576,14 +584,12 @@ xpow (const ComplexDiagMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
-    {
-      ComplexDiagMatrix r (nr, nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-        r(i, i) = std::pow (a(i, i), b);
-      retval = r;
-    }
+    err_nonsquare_matrix ();
+
+  ComplexDiagMatrix r (nr, nc);
+  for (octave_idx_type i = 0; i < nc; i++)
+    r(i, i) = std::pow (a(i, i), b);
+  retval = r;
 
   return retval;
 }
@@ -600,7 +606,6 @@ xpow (const DiagMatrix& a, const Complex& b)
 {
   return xpow (ComplexDiagMatrix (a), b);
 }
-
 
 // Safer pow functions that work elementwise for matrices.
 //
@@ -705,10 +710,10 @@ elem_xpow (double a, const Range& r)
 
   // Only optimize powers with ranges that are integer and monotonic in
   // magnitude.
-  if (r.nelem () > 1 && r.all_elements_are_ints ()
+  if (r.numel () > 1 && r.all_elements_are_ints ()
       && same_sign (r.base (), r.limit ()))
     {
-      octave_idx_type n = r.nelem ();
+      octave_idx_type n = r.numel ();
       Matrix result (1, n);
       if (same_sign (r.base (), r.inc ()))
         {
@@ -791,10 +796,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -874,10 +876,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   ComplexMatrix result (nr, nc);
 
@@ -940,10 +939,10 @@ elem_xpow (const Complex& a, const Range& r)
 
   // Only optimize powers with ranges that are integer and monotonic in
   // magnitude.
-  if (r.nelem () > 1 && r.all_elements_are_ints ()
+  if (r.numel () > 1 && r.all_elements_are_ints ()
       && same_sign (r.base (), r.limit ()))
     {
-      octave_idx_type n = r.nelem ();
+      octave_idx_type n = r.numel ();
       ComplexMatrix result (1, n);
 
       if (same_sign (r.base (), r.inc ()))
@@ -968,7 +967,6 @@ elem_xpow (const Complex& a, const Range& r)
     }
   else
     retval = elem_xpow (a, r.matrix_value ());
-
 
   return retval;
 }
@@ -1015,10 +1013,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   ComplexMatrix result (nr, nc);
 
@@ -1066,10 +1061,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   ComplexMatrix result (nr, nc);
 
@@ -1083,7 +1075,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
-// Safer pow functions that work elementwise for N-d arrays.
+// Safer pow functions that work elementwise for N-D arrays.
 //
 //       op2 \ op1:   s   nd  cs   cnd
 //            +--   +---+---+----+----+
@@ -1121,7 +1113,7 @@ elem_xpow (double a, const NDArray& b)
     {
       Complex atmp (a);
       ComplexNDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (atmp, b(i));
@@ -1132,7 +1124,7 @@ elem_xpow (double a, const NDArray& b)
   else
     {
       NDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result (i) = std::pow (a, b(i));
@@ -1150,7 +1142,7 @@ elem_xpow (double a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -1171,7 +1163,7 @@ elem_xpow (const NDArray& a, double b)
         {
           ComplexNDArray result (a.dims ());
 
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
 
@@ -1185,7 +1177,7 @@ elem_xpow (const NDArray& a, double b)
       else
         {
           NDArray result (a.dims ());
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), b);
@@ -1201,22 +1193,22 @@ elem_xpow (const NDArray& a, double b)
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = 1.0 / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), ib);
@@ -1240,24 +1232,19 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          //Potentially complex results
-          NDArray xa = octave_value_extract<NDArray> (a);
-          NDArray xb = octave_value_extract<NDArray> (b);
-          if (! xb.all_integers () && xa.any_element_is_negative ())
-            return octave_value (bsxfun_pow (ComplexNDArray (xa), xb));
-          else
-            return octave_value (bsxfun_pow (xa, xb));
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      //Potentially complex results
+      NDArray xa = octave_value_extract<NDArray> (a);
+      NDArray xb = octave_value_extract<NDArray> (b);
+      if (! xb.all_integers () && xa.any_element_is_negative ())
+        return octave_value (bsxfun_pow (ComplexNDArray (xa), xb));
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        return octave_value (bsxfun_pow (xa, xb));
     }
 
-  int len = a.length ();
+  int len = a.numel ();
 
   bool convert_to_complex = false;
 
@@ -1310,7 +1297,7 @@ elem_xpow (const NDArray& a, const Complex& b)
 {
   ComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -1328,20 +1315,15 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   ComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -1356,7 +1338,7 @@ elem_xpow (const Complex& a, const NDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       double btmp = b(i);
@@ -1375,7 +1357,7 @@ elem_xpow (const Complex& a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -1394,12 +1376,12 @@ elem_xpow (const ComplexNDArray& a, double b)
     {
       if (b == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result.xelem (i) = 1.0 / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), static_cast<int> (b));
@@ -1408,7 +1390,7 @@ elem_xpow (const ComplexNDArray& a, double b)
     }
   else
     {
-      for (octave_idx_type i = 0; i < a.length (); i++)
+      for (octave_idx_type i = 0; i < a.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (a(i), b);
@@ -1427,20 +1409,15 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   ComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       double btmp = b(i);
@@ -1459,7 +1436,7 @@ elem_xpow (const ComplexNDArray& a, const Complex& b)
 {
   ComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -1477,20 +1454,15 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   ComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -1502,7 +1474,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 static inline int
 xisint (float x)
 {
-  return (D_NINT (x) == x
+  return (octave::math::x_nint (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
@@ -1548,35 +1520,35 @@ xpow (float a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  FloatEIG b_eig (b);
+
+  try
     {
-      FloatEIG b_eig (b);
+      FloatComplexColumnVector lambda (b_eig.eigenvalues ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-          FloatComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          FloatComplexDiagMatrix D (lambda);
-
-          FloatComplexMatrix C = Q * D * Q.inverse ();
-
-          if (a > 0)
-            retval = real (C);
+          FloatComplex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
           else
-            retval = C;
+            lambda(i) = std::pow (a, elt);
         }
+      FloatComplexDiagMatrix D (lambda);
+
+      FloatComplexMatrix C = Q * D * Q.inverse ();
+
+      if (a > 0)
+        retval = real (C);
       else
-        error ("xpow: matrix diagonalization failed");
+        retval = C;
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1600,30 +1572,30 @@ xpow (float a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  FloatEIG b_eig (b);
+
+  try
     {
-      FloatEIG b_eig (b);
+      FloatComplexColumnVector lambda (b_eig.eigenvalues ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-          FloatComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          FloatComplexDiagMatrix D (lambda);
-
-          retval = FloatComplexMatrix (Q * D * Q.inverse ());
+          FloatComplex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
+          else
+            lambda(i) = std::pow (a, elt);
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      FloatComplexDiagMatrix D (lambda);
+
+      retval = FloatComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1639,75 +1611,74 @@ xpow (const FloatMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  if (static_cast<int> (b) == b)
     {
-      if (static_cast<int> (b) == b)
+      int btmp = static_cast<int> (b);
+      if (btmp == 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              retval = FloatDiagMatrix (nr, nr, 1.0);
-            }
-          else
-            {
-              // Too much copying?
-              // FIXME: we shouldn't do this if the exponent is large...
-
-              FloatMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
-
-                  octave_idx_type info;
-                  float rcond = 0.0;
-                  MatrixType mattype (a);
-
-                  atmp = a.inverse (mattype, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              FloatMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
+          retval = FloatDiagMatrix (nr, nr, 1.0);
         }
       else
         {
-          FloatEIG a_eig (a);
+          // Too much copying?
+          // FIXME: we shouldn't do this if the exponent is large...
 
-          if (! error_state)
+          FloatMatrix atmp;
+          if (btmp < 0)
             {
-              FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-              FloatComplexMatrix Q (a_eig.eigenvectors ());
+              btmp = -btmp;
 
-              for (octave_idx_type i = 0; i < nr; i++)
-                lambda(i) = std::pow (lambda(i), b);
+              octave_idx_type info;
+              float rcond = 0.0;
+              MatrixType mattype (a);
 
-              FloatComplexDiagMatrix D (lambda);
+              atmp = a.inverse (mattype, info, rcond, 1);
 
-              retval = FloatComplexMatrix (Q * D * Q.inverse ());
+              if (info == -1)
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
-            error ("xpow: matrix diagonalization failed");
+            atmp = a;
+
+          FloatMatrix result (atmp);
+
+          btmp--;
+
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+
+          retval = result;
+        }
+    }
+  else
+    {
+      FloatEIG a_eig (a);
+
+      try
+        {
+          FloatComplexColumnVector lambda (a_eig.eigenvalues ());
+          FloatComplexMatrix Q (a_eig.right_eigenvectors ());
+
+          for (octave_idx_type i = 0; i < nr; i++)
+            lambda(i) = std::pow (lambda(i), b);
+
+          FloatComplexDiagMatrix D (lambda);
+
+          retval = FloatComplexMatrix (Q * D * Q.inverse ());
+        }
+      catch (const octave::execution_exception&)
+        {
+          err_failed_diagonalization ();
         }
     }
 
@@ -1724,24 +1695,22 @@ xpow (const FloatDiagMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
+    err_nonsquare_matrix ();
+
+  if (static_cast<int> (b) == b)
+    {
+      FloatDiagMatrix r (nr, nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        r.dgelem (i) = std::pow (a.dgelem (i), b);
+      retval = r;
+    }
   else
     {
-      if (static_cast<int> (b) == b)
-        {
-          FloatDiagMatrix r (nr, nc);
-          for (octave_idx_type i = 0; i < nc; i++)
-            r.dgelem (i) = std::pow (a.dgelem (i), b);
-          retval = r;
-        }
-      else
-        {
-          FloatComplexDiagMatrix r (nr, nc);
-          for (octave_idx_type i = 0; i < nc; i++)
-            r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)),
-                                                                b);
-          retval = r;
-        }
+      FloatComplexDiagMatrix r (nr, nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)),
+                                                            b);
+      retval = r;
     }
 
   return retval;
@@ -1757,25 +1726,25 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  FloatEIG a_eig (a);
+
+  try
     {
-      FloatEIG a_eig (a);
+      FloatComplexColumnVector lambda (a_eig.eigenvalues ());
+      FloatComplexMatrix Q (a_eig.right_eigenvectors ());
 
-      if (! error_state)
-        {
-          FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-          FloatComplexMatrix Q (a_eig.eigenvectors ());
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (lambda(i), b);
 
-          for (octave_idx_type i = 0; i < nr; i++)
-            lambda(i) = std::pow (lambda(i), b);
+      FloatComplexDiagMatrix D (lambda);
 
-          FloatComplexDiagMatrix D (lambda);
-
-          retval = FloatComplexMatrix (Q * D * Q.inverse ());
-        }
-      else
-        error ("xpow: matrix diagonalization failed");
+      retval = FloatComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1805,30 +1774,30 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  FloatEIG b_eig (b);
+
+  try
     {
-      FloatEIG b_eig (b);
+      FloatComplexColumnVector lambda (b_eig.eigenvalues ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-          FloatComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          FloatComplexDiagMatrix D (lambda);
-
-          retval = FloatComplexMatrix (Q * D * Q.inverse ());
+          FloatComplex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
+          else
+            lambda(i) = std::pow (a, elt);
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      FloatComplexDiagMatrix D (lambda);
+
+      retval = FloatComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1853,30 +1822,30 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  FloatEIG b_eig (b);
+
+  try
     {
-      FloatEIG b_eig (b);
+      FloatComplexColumnVector lambda (b_eig.eigenvalues ());
+      FloatComplexMatrix Q (b_eig.right_eigenvectors ());
 
-      if (! error_state)
+      for (octave_idx_type i = 0; i < nr; i++)
         {
-          FloatComplexColumnVector lambda (b_eig.eigenvalues ());
-          FloatComplexMatrix Q (b_eig.eigenvectors ());
-
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              FloatComplex elt = lambda(i);
-              if (std::imag (elt) == 0.0)
-                lambda(i) = std::pow (a, std::real (elt));
-              else
-                lambda(i) = std::pow (a, elt);
-            }
-          FloatComplexDiagMatrix D (lambda);
-
-          retval = FloatComplexMatrix (Q * D * Q.inverse ());
+          FloatComplex elt = lambda(i);
+          if (std::imag (elt) == 0.0)
+            lambda(i) = std::pow (a, std::real (elt));
+          else
+            lambda(i) = std::pow (a, elt);
         }
-      else
-        error ("xpow: matrix diagonalization failed");
+      FloatComplexDiagMatrix D (lambda);
+
+      retval = FloatComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -1892,75 +1861,74 @@ xpow (const FloatComplexMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  if (static_cast<int> (b) == b)
     {
-      if (static_cast<int> (b) == b)
+      int btmp = static_cast<int> (b);
+      if (btmp == 0)
         {
-          int btmp = static_cast<int> (b);
-          if (btmp == 0)
-            {
-              retval = FloatDiagMatrix (nr, nr, 1.0);
-            }
-          else
-            {
-              // Too much copying?
-              // FIXME: we shouldn't do this if the exponent is large...
-
-              FloatComplexMatrix atmp;
-              if (btmp < 0)
-                {
-                  btmp = -btmp;
-
-                  octave_idx_type info;
-                  float rcond = 0.0;
-                  MatrixType mattype (a);
-
-                  atmp = a.inverse (mattype, info, rcond, 1);
-
-                  if (info == -1)
-                    warning ("inverse: matrix singular to machine\
- precision, rcond = %g", rcond);
-                }
-              else
-                atmp = a;
-
-              FloatComplexMatrix result (atmp);
-
-              btmp--;
-
-              while (btmp > 0)
-                {
-                  if (btmp & 1)
-                    result = result * atmp;
-
-                  btmp >>= 1;
-
-                  if (btmp > 0)
-                    atmp = atmp * atmp;
-                }
-
-              retval = result;
-            }
+          retval = FloatDiagMatrix (nr, nr, 1.0);
         }
       else
         {
-          FloatEIG a_eig (a);
+          // Too much copying?
+          // FIXME: we shouldn't do this if the exponent is large...
 
-          if (! error_state)
+          FloatComplexMatrix atmp;
+          if (btmp < 0)
             {
-              FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-              FloatComplexMatrix Q (a_eig.eigenvectors ());
+              btmp = -btmp;
 
-              for (octave_idx_type i = 0; i < nr; i++)
-                lambda(i) = std::pow (lambda(i), b);
+              octave_idx_type info;
+              float rcond = 0.0;
+              MatrixType mattype (a);
 
-              FloatComplexDiagMatrix D (lambda);
+              atmp = a.inverse (mattype, info, rcond, 1);
 
-              retval = FloatComplexMatrix (Q * D * Q.inverse ());
+              if (info == -1)
+                warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
             }
           else
-            error ("xpow: matrix diagonalization failed");
+            atmp = a;
+
+          FloatComplexMatrix result (atmp);
+
+          btmp--;
+
+          while (btmp > 0)
+            {
+              if (btmp & 1)
+                result = result * atmp;
+
+              btmp >>= 1;
+
+              if (btmp > 0)
+                atmp = atmp * atmp;
+            }
+
+          retval = result;
+        }
+    }
+  else
+    {
+      FloatEIG a_eig (a);
+
+      try
+        {
+          FloatComplexColumnVector lambda (a_eig.eigenvalues ());
+          FloatComplexMatrix Q (a_eig.right_eigenvectors ());
+
+          for (octave_idx_type i = 0; i < nr; i++)
+            lambda(i) = std::pow (lambda(i), b);
+
+          FloatComplexDiagMatrix D (lambda);
+
+          retval = FloatComplexMatrix (Q * D * Q.inverse ());
+        }
+      catch (const octave::execution_exception&)
+        {
+          err_failed_diagonalization ();
         }
     }
 
@@ -1977,25 +1945,25 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
+    err_nonsquare_matrix ();
+
+  FloatEIG a_eig (a);
+
+  try
     {
-      FloatEIG a_eig (a);
+      FloatComplexColumnVector lambda (a_eig.eigenvalues ());
+      FloatComplexMatrix Q (a_eig.right_eigenvectors ());
 
-      if (! error_state)
-        {
-          FloatComplexColumnVector lambda (a_eig.eigenvalues ());
-          FloatComplexMatrix Q (a_eig.eigenvectors ());
+      for (octave_idx_type i = 0; i < nr; i++)
+        lambda(i) = std::pow (lambda(i), b);
 
-          for (octave_idx_type i = 0; i < nr; i++)
-            lambda(i) = std::pow (lambda(i), b);
+      FloatComplexDiagMatrix D (lambda);
 
-          FloatComplexDiagMatrix D (lambda);
-
-          retval = FloatComplexMatrix (Q * D * Q.inverse ());
-        }
-      else
-        error ("xpow: matrix diagonalization failed");
+      retval = FloatComplexMatrix (Q * D * Q.inverse ());
+    }
+  catch (const octave::execution_exception&)
+    {
+      err_failed_diagonalization ();
     }
 
   return retval;
@@ -2011,14 +1979,12 @@ xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
-  else
-    {
-      FloatComplexDiagMatrix r (nr, nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-        r(i, i) = std::pow (a(i, i), b);
-      retval = r;
-    }
+    err_nonsquare_matrix ();
+
+  FloatComplexDiagMatrix r (nr, nc);
+  for (octave_idx_type i = 0; i < nc; i++)
+    r(i, i) = std::pow (a(i, i), b);
+  retval = r;
 
   return retval;
 }
@@ -2181,10 +2147,7 @@ elem_xpow (const FloatMatrix& a, const FloatMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -2264,10 +2227,7 @@ elem_xpow (const FloatMatrix& a, const FloatComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   FloatComplexMatrix result (nr, nc);
 
@@ -2365,10 +2325,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   FloatComplexMatrix result (nr, nc);
 
@@ -2416,10 +2373,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   octave_idx_type b_nc = b.cols ();
 
   if (nr != b_nr || nc != b_nc)
-    {
-      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-      return octave_value ();
-    }
+    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
 
   FloatComplexMatrix result (nr, nc);
 
@@ -2433,7 +2387,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   return result;
 }
 
-// Safer pow functions that work elementwise for N-d arrays.
+// Safer pow functions that work elementwise for N-D arrays.
 //
 //       op2 \ op1:   s   nd  cs   cnd
 //            +--   +---+---+----+----+
@@ -2471,7 +2425,7 @@ elem_xpow (float a, const FloatNDArray& b)
     {
       FloatComplex atmp (a);
       FloatComplexNDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (atmp, b(i));
@@ -2482,7 +2436,7 @@ elem_xpow (float a, const FloatNDArray& b)
   else
     {
       FloatNDArray result (b.dims ());
-      for (octave_idx_type i = 0; i < b.length (); i++)
+      for (octave_idx_type i = 0; i < b.numel (); i++)
         {
           octave_quit ();
           result (i) = std::pow (a, b(i));
@@ -2500,7 +2454,7 @@ elem_xpow (float a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -2521,7 +2475,7 @@ elem_xpow (const FloatNDArray& a, float b)
         {
           FloatComplexNDArray result (a.dims ());
 
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
 
@@ -2535,7 +2489,7 @@ elem_xpow (const FloatNDArray& a, float b)
       else
         {
           FloatNDArray result (a.dims ());
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), b);
@@ -2551,22 +2505,22 @@ elem_xpow (const FloatNDArray& a, float b)
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result(i) = 1.0f / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), ib);
@@ -2590,24 +2544,19 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          //Potentially complex results
-          FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
-          FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
-          if (! xb.all_integers () && xa.any_element_is_negative ())
-            return octave_value (bsxfun_pow (FloatComplexNDArray (xa), xb));
-          else
-            return octave_value (bsxfun_pow (xa, xb));
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      //Potentially complex results
+      FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
+      FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
+      if (! xb.all_integers () && xa.any_element_is_negative ())
+        return octave_value (bsxfun_pow (FloatComplexNDArray (xa), xb));
       else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+        return octave_value (bsxfun_pow (xa, xb));
     }
 
-  int len = a.length ();
+  int len = a.numel ();
 
   bool convert_to_complex = false;
 
@@ -2660,7 +2609,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplex& b)
 {
   FloatComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -2678,20 +2627,15 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   FloatComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -2706,7 +2650,7 @@ elem_xpow (const FloatComplex& a, const FloatNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       float btmp = b(i);
@@ -2725,7 +2669,7 @@ elem_xpow (const FloatComplex& a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a, b(i));
@@ -2744,12 +2688,12 @@ elem_xpow (const FloatComplexNDArray& a, float b)
     {
       if (b == -1)
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             result.xelem (i) = 1.0f / a(i);
         }
       else
         {
-          for (octave_idx_type i = 0; i < a.length (); i++)
+          for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
               result(i) = std::pow (a(i), static_cast<int> (b));
@@ -2758,7 +2702,7 @@ elem_xpow (const FloatComplexNDArray& a, float b)
     }
   else
     {
-      for (octave_idx_type i = 0; i < a.length (); i++)
+      for (octave_idx_type i = 0; i < a.numel (); i++)
         {
           octave_quit ();
           result(i) = std::pow (a(i), b);
@@ -2777,20 +2721,15 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   FloatComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       float btmp = b(i);
@@ -2809,7 +2748,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplex& b)
 {
   FloatComplexNDArray result (a.dims ());
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b);
@@ -2827,20 +2766,15 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
-        {
-          return bsxfun_pow (a, b);
-        }
-      else
-        {
-          gripe_nonconformant ("operator .^", a_dims, b_dims);
-          return octave_value ();
-        }
+      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        octave::err_nonconformant ("operator .^", a_dims, b_dims);
+
+      return bsxfun_pow (a, b);
     }
 
   FloatComplexNDArray result (a_dims);
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     {
       octave_quit ();
       result(i) = std::pow (a(i), b(i));
@@ -2848,3 +2782,4 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   return result;
 }
+

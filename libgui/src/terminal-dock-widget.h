@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef TERMINALDOCKWIDGET_H
-#define TERMINALDOCKWIDGET_H
+#if ! defined (octave_terminal_dock_widget_h)
+#define octave_terminal_dock_widget_h 1
 
 #include <QString>
 
@@ -36,6 +36,8 @@ class terminal_dock_widget : public octave_dock_widget
 public:
 
   terminal_dock_widget (QWidget *parent = 0);
+
+  ~terminal_dock_widget (void);
 
   bool has_focus (void) const;
 
@@ -54,4 +56,5 @@ private:
   QTerminal *terminal;
 };
 
-#endif // TERMINALDOCKWIDGET_H
+#endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Carlo de Falco
+## Copyright (C) 2009-2016 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
-## @deftypefnx {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@dots{})
+## @deftypefn  {} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
+## @deftypefnx {} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{P})
+## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@dots{})
 ## Solve @code{A x = b} using the Preconditioned GMRES iterative method with
 ## restart, a.k.a. PGMRES(m).
 ##
@@ -179,8 +179,8 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
       break;
     endif
 
-    restart_it++ ;
-    iter++;
+    restart_it += 1;
+    iter += 1;
   endwhile
 
   if (nargout > 1)

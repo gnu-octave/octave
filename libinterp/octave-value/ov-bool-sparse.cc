@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "ops.h"
 #include "oct-locbuf.h"
 
@@ -51,14 +51,14 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTINTERP_API octave_base_sparse<SparseBoolMatrix>;
 
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix,
                                      "sparse bool matrix", "logical");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_sparse_bool_matrix&);
+  const octave_sparse_bool_matrix& v =
+    dynamic_cast<const octave_sparse_bool_matrix&> (a);
 
   return
     new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
@@ -100,41 +100,27 @@ octave_sparse_bool_matrix::try_narrowing_conversion (void)
 double
 octave_sparse_bool_matrix::double_value (bool) const
 {
-  double retval = lo_ieee_nan_value ();
+  if (is_empty ())
+    err_invalid_conversion ("bool sparse matrix", "real scalar");
 
-  if (numel () > 0)
-    {
-      if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "bool sparse matrix", "real scalar");
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "bool sparse matrix", "real scalar");
 
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("bool sparse matrix", "real scalar");
-
-  return retval;
+  return matrix(0, 0);
 }
 
 Complex
 octave_sparse_bool_matrix::complex_value (bool) const
 {
-  double tmp = lo_ieee_nan_value ();
+  if (rows () == 0 || columns () == 0)
+    err_invalid_conversion ("bool sparse matrix", "complex scalar");
 
-  Complex retval (tmp, tmp);
+  if (numel () > 1)
+    warn_implicit_conversion ("Octave:array-to-scalar",
+                              "bool sparse matrix", "complex scalar");
 
-  if (rows () > 0 && columns () > 0)
-    {
-      if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-to-scalar",
-                                   "bool sparse matrix", "complex scalar");
-
-      retval = matrix (0, 0);
-    }
-  else
-    gripe_invalid_conversion ("bool sparse matrix", "complex scalar");
-
-  return retval;
+  return Complex (matrix(0, 0), 0);
 }
 
 octave_value
@@ -197,7 +183,6 @@ octave_sparse_bool_matrix::bool_array_value (bool) const
   return boolNDArray (matrix.matrix_value ());
 }
 
-
 SparseMatrix
 octave_sparse_bool_matrix::sparse_matrix_value (bool) const
 {
@@ -210,18 +195,24 @@ octave_sparse_bool_matrix::sparse_complex_matrix_value (bool) const
   return SparseComplexMatrix (this->matrix);
 }
 
+octave_value
+octave_sparse_bool_matrix::as_double (void) const
+{
+  return SparseMatrix (this->matrix);
+}
+
 bool
 octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 {
-  dim_vector d = this->dims ();
-  if (d.length () < 1)
+  dim_vector dv = this->dims ();
+  if (dv.ndims () < 1)
     return false;
 
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 
-  int nr = d(0);
-  int nc = d(1);
+  int nr = dv(0);
+  int nc = dv(1);
   int nz = nnz ();
 
   int32_t itmp;
@@ -266,7 +257,7 @@ octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format /* fmt */)
+                                        octave::mach_info::float_format /* fmt */)
 {
   int32_t nz, nc, nr, tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 4))
@@ -276,10 +267,7 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   if (tmp != -2)
-    {
-      error ("load: only 2-D sparse matrices are supported");
-      return false;
-    }
+    error ("load: only 2-D sparse matrices are supported");
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
     return false;
@@ -319,7 +307,7 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
       m.ridx (i) = tmp;
     }
 
-  if (error_state || ! is)
+  if (! is)
     return false;
 
   OCTAVE_LOCAL_BUFFER (char, htmp, nz);
@@ -339,7 +327,8 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
 }
 
 bool
-octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
+octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                                      bool)
 {
   bool retval = false;
 
@@ -352,9 +341,9 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
 
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
-#if HAVE_HDF5_18
-  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT,
-                               H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT,
+                               octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   hid_t group_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -373,12 +362,13 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
       H5Gclose (group_hid);
       return false;
     }
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -388,22 +378,23 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
     }
 
   tmp = m.rows ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL,
-                     H5S_ALL, H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL,
+                     octave_H5S_ALL, octave_H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -413,22 +404,23 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
     }
 
   tmp = m.cols ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -438,10 +430,10 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
     }
 
   tmp = m.nnz ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -461,12 +453,13 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -476,10 +469,10 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
     }
 
   octave_idx_type * itmp = m.xcidx ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, itmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, itmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
@@ -499,12 +492,13 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -514,22 +508,23 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
     }
 
   itmp = m.xridx ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, itmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, itmp) >= 0;
   H5Dclose (data_hid);
-  if (!retval)
+  if (! retval)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (group_hid, "data", H5T_NATIVE_HBOOL, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT,
+                        octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "data", H5T_NATIVE_HBOOL, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -542,14 +537,17 @@ octave_sparse_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, b
   for (int i = 0; i < m.nnz (); i++)
     htmp[i] = m.xdata(i);
 
-  retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, htmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, htmp) >= 0;
   H5Dclose (data_hid);
   H5Sclose (space_hid);
   H5Gclose (group_hid);
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -573,15 +571,15 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   if (empty)
     return (empty > 0);
 
-#if HAVE_HDF5_18
-  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  group_hid = H5Gopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
   if (group_hid < 0) return false;
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nr", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "nr", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nr");
 #endif
@@ -595,7 +593,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nr)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &nr)
       < 0)
     {
       H5Dclose (data_hid);
@@ -605,8 +604,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   H5Dclose (data_hid);
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nc", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "nc", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nc");
 #endif
@@ -620,7 +619,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nc)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &nc)
       < 0)
     {
       H5Dclose (data_hid);
@@ -630,8 +630,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   H5Dclose (data_hid);
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "nz", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "nz", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "nz");
 #endif
@@ -645,7 +645,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nz)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &nz)
       < 0)
     {
       H5Dclose (data_hid);
@@ -659,8 +660,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                       static_cast<octave_idx_type> (nc),
                       static_cast<octave_idx_type> (nz));
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "cidx", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "cidx", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "cidx");
 #endif
@@ -690,7 +691,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   octave_idx_type *itmp = m.xcidx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, itmp)
       < 0)
     {
       H5Sclose (space_hid);
@@ -702,8 +704,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Sclose (space_hid);
   H5Dclose (data_hid);
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "ridx", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "ridx", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "ridx");
 #endif
@@ -730,8 +732,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   itmp = m.xridx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, itmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -742,8 +744,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Sclose (space_hid);
   H5Dclose (data_hid);
 
-#if HAVE_HDF5_18
-  data_hid = H5Dopen (group_hid, "data", H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  data_hid = H5Dopen (group_hid, "data", octave_H5P_DEFAULT);
 #else
   data_hid = H5Dopen (group_hid, "data");
 #endif
@@ -771,8 +773,8 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nz);
 
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, htmp) >= 0
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, htmp) >= 0
       && m.indices_ok ())
     {
       retval = true;
@@ -788,7 +790,10 @@ octave_sparse_bool_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Gclose (group_hid);
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
 #endif
 
   return retval;
@@ -815,3 +820,4 @@ octave_sparse_bool_matrix::as_mxArray (void) const
 
   return retval;
 }
+

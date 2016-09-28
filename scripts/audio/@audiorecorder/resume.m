@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} resume (@var{recorder})
+## @deftypefn {} {} resume (@var{recorder})
 ## Resume recording with the paused audiorecorder object @var{recorder}.
 ## @end deftypefn
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "byte-swap.h"
@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-mat.h"
 #include "ls-utils.h"
 
-template class octave_base_diag<ComplexDiagMatrix, ComplexMatrix>;
 
+template class octave_base_diag<ComplexDiagMatrix, ComplexMatrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix,
                                      "complex diagonal matrix", "double");
@@ -43,7 +43,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v =
+    dynamic_cast<const octave_complex_diag_matrix&> (a);
 
   return new octave_complex_matrix (v.complex_matrix_value ());
 }
@@ -59,7 +60,8 @@ octave_complex_diag_matrix::numeric_conversion_function (void) const
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_complex_diag_matrix&);
+  const octave_complex_diag_matrix& v =
+    dynamic_cast<const octave_complex_diag_matrix&> (a);
 
   return new octave_float_complex_diag_matrix
                (v.float_complex_diag_matrix_value ());
@@ -102,8 +104,8 @@ octave_complex_diag_matrix::diag_matrix_value (bool force_conversion) const
   DiagMatrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               type_name (), "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              type_name (), "real matrix");
 
   retval = ::real (matrix);
 
@@ -116,8 +118,8 @@ octave_complex_diag_matrix::float_diag_matrix_value (bool force_conversion) cons
   DiagMatrix retval;
 
   if (! force_conversion)
-    gripe_implicit_conversion ("Octave:imag-to-real",
-                               type_name (), "real matrix");
+    warn_implicit_conversion ("Octave:imag-to-real",
+                              type_name (), "real matrix");
 
   retval = ::real (matrix);
 
@@ -132,6 +134,18 @@ octave_complex_diag_matrix::complex_diag_matrix_value (bool) const
 
 FloatComplexDiagMatrix
 octave_complex_diag_matrix::float_complex_diag_matrix_value (bool) const
+{
+  return FloatComplexDiagMatrix (matrix);
+}
+
+octave_value
+octave_complex_diag_matrix::as_double (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_complex_diag_matrix::as_single (void) const
 {
   return FloatComplexDiagMatrix (matrix);
 }
@@ -199,7 +213,7 @@ octave_complex_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
-                                         oct_mach_info::float_format fmt)
+                                         octave::mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;
@@ -218,8 +232,10 @@ octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   octave_idx_type len = m.length ();
   read_doubles (is, reinterpret_cast<double *> (im),
                 static_cast<save_type> (tmp), 2 * len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;
@@ -236,8 +252,5 @@ octave_complex_diag_matrix::chk_valid_scalar (const octave_value& val,
 }
 
 /*
-
-%% bug #36368
-%!assert (diag ([1+i, 1-i])^2 , diag ([2i, -2i]), 4*eps);
-
+%!assert <36368> (diag ([1+i, 1-i])^2 , diag ([2i, -2i]), 4*eps)
 */

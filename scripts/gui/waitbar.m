@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 John W. Eaton
+## Copyright (C) 2012-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,26 +17,34 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} waitbar (@var{frac})
-## @deftypefnx {Function File} {@var{h} =} waitbar (@var{frac}, @var{msg})
-## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, "FigureProperty", "Value", @dots{})
-## @deftypefnx {Function File} {} waitbar (@var{frac})
-## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar})
-## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
-## Return a handle @var{h} to a new waitbar object.
+## @deftypefn  {} {@var{h} =} waitbar (@var{frac})
+## @deftypefnx {} {@var{h} =} waitbar (@var{frac}, @var{msg})
+## @deftypefnx {} {@var{h} =} waitbar (@dots{}, "createcancelbtn", @var{fcn}, @dots{})
+## @deftypefnx {} {@var{h} =} waitbar (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} waitbar (@var{frac})
+## @deftypefnx {} {} waitbar (@var{frac}, @var{h})
+## @deftypefnx {} {} waitbar (@var{frac}, @var{h}, @var{msg})
+## Return a handle @var{h} to a new progress indicator ("waitbar") object.
 ##
 ## The waitbar is filled to fraction @var{frac} which must be in the range
 ## [0, 1].
 ##
 ## The optional message @var{msg} is centered and displayed above the waitbar.
 ##
+## A cancel button can be added to the bottom of the waitbar using the
+## @qcode{"createcancelbtn"} property of waitbar figures.  The action to be
+## executed when the user presses the button is specified using a string or
+## function handle @var{fcn}.
+##
 ## The appearance of the waitbar figure window can be configured by passing
-## property/value pairs to the function.
+## @var{prop}/@var{val} pairs to the function.
 ##
 ## When called with a single input the current waitbar, if it exists, is
 ## updated to the new value @var{frac}.  If there are multiple outstanding
-## waitbars they can be updated individually by passing the handle @var{hwbar}
+## waitbars they can be updated individually by passing the handle @var{h}
 ## of the specific waitbar to modify.
+##
+## @seealso{delete}
 ## @end deftypefn
 
 ## Author: jwe
@@ -115,13 +123,20 @@ function h = waitbar (varargin)
                  "menubar", "none", "toolbar", "none",
                  "integerhandle", "off",
                  "handlevisibility", "callback",
-                 "tag", "waitbar",
-                 varargin{:});
+                 "tag", "waitbar");
 
     ax = axes ("parent", hf,
                "xtick", [], "ytick", [],
                "xlim", [0, 1], "ylim", [0, 1],
                "position", [0.1, 0.3, 0.8, 0.2]);
+
+    ## Add createcancelbtn property
+    addproperty ("createcancelbtn", hf, "figurebuttondownfcn");
+    addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
+
+    if (! isempty (varargin))
+      set (hf, varargin{:});
+    endif
 
     hp = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
@@ -147,33 +162,76 @@ function h = waitbar (varargin)
 
 endfunction
 
+function updatecancelbutton (hf, dummy, hax)
+
+  if (! strcmpi (get (hf, "__graphics_toolkit__"), "qt"))
+    return
+  endif
+
+  hbtn = findobj (hf, "type", "uicontrol", "-and", "style", "pushbutton");
+  cb = get (hf, "createcancelbtn");
+  if (! isempty (cb))
+    if (isempty (hbtn))
+      units = get (hax, "units");
+      fpos = get (hf, "position");
+      set (hax, "units", "pixels");
+      apos = get (hax, "position");
+
+      fpos (2) -= 40;
+      fpos (4) += 40;
+      apos (2) += 40;
+      set (hf, "position", fpos);
+      set (hax, "position", apos, "units", units);
+
+      hbtn = uicontrol ("style", "pushbutton", "string", "Cancel", ...
+                        "position", [fpos(3)-100 10 60 25],...
+                        "callback", cb, "parent", hf);
+    else
+      set (hbtn, "callback", cb);
+    endif
+  elseif (! isempty (hbtn))
+    delete (hbtn);
+    units = get (hax, "units");
+    fpos = get (hf, "position");
+    set (hax, "units", "pixels");
+    apos = get (hax, "position");
+
+    fpos (2) += 40;
+    fpos (4) -= 40;
+    apos (2) -= 40;
+    set (hf, "position", fpos);
+    set (hax, "position", apos, "units", units);
+  endif
+
+endfunction
+
 
 %!demo
 %! h = waitbar (0, '0.00%');
 %! for i = 0:0.01:1
 %!   waitbar (i, h, sprintf ('%.2f%%', 100*i));
-%! end
+%! endfor
 %! close (h);
 
 %!demo
 %! h = waitbar (0, 'please wait...');
 %! for i = 0:0.01:0.6
 %!   waitbar (i);
-%! end
+%! endfor
 %! i = 0.3;
 %! waitbar (i, h, 'don''t you hate taking a step backward?');
 %! pause (0.5);
 %! for i = i:0.005:0.7
 %!   waitbar (i, h);
-%! end
+%! endfor
 %! waitbar (i, h, 'or stalling?');
 %! pause (1);
 %! for i = i:0.003:0.8
 %!   waitbar (i, h, 'just a little longer now');
-%! end
+%! endfor
 %! for i = i:0.001:1
 %!   waitbar (i, h, 'please don''t be impatient');
-%! end
+%! endfor
 %! close (h);
 
 %!demo
@@ -188,10 +246,55 @@ endfunction
 %!   pause (0.5);
 %!   waitbar (i/4, h2);
 %!   pause (0.5);
-%! end
+%! endfor
 %! pause (0.5);
 %! close (h1);
 %! close (h2);
+
+%!demo
+%! clf ();
+%! niter = 9;
+%! l = 1;
+%! xx = [0 l];
+%! yy = [0 0];
+%! hli = plot (xx, yy);
+%!
+%! disp ("Push the cancel to stop the process.");
+%! hf = waitbar(0,"0","Name","Building Koch curve ...",...
+%!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
+%! for ii = 1:niter
+%!   ## Check cancel request
+%!   if (! ishandle (hf))
+%!     break;
+%!   elseif (getappdata (hf, "interrupt"))
+%!     delete (hf);
+%!     break;
+%!   else
+%!     waitbar (ii/niter, hf, sprintf ("Step %d/%d", ii, niter));
+%!   endif
+%!
+%!   ## Increasingly lengthy computation
+%!   l /= 3;
+%!   theta = angle (complex (diff (xx), diff (yy)));
+%!
+%!   xy = @(th, x0, y0) [cos(th) -sin(th) x0
+%!                       sin(th) cos(th) y0] * [0 l l*3/2      2*l;
+%!                                              0 0 l*(3)^.5/2 0;
+%!                                              1 1 1          1];
+%!   tmp = arrayfun (xy, theta, xx(1:end-1), yy(1:end-1),
+%!                  "uniformoutput", false);
+%!
+%!   tmp = cell2mat (tmp);
+%!   xx = [tmp(1,:) xx(end)];
+%!   yy = [tmp(2,:) yy(end)];
+%!   set (hli, "xdata", xx, "ydata", yy);
+%!   drawnow ();
+%!   pause (0.5);
+%! endfor
+%!
+%! if (ishandle (hf))
+%!   delete (hf);
+%! endif
 
 ## Test input validation
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)

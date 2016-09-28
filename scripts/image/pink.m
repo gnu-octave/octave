@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2015 Kai Habel
+## Copyright (C) 2000-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} pink ()
-## @deftypefnx {Function File} {@var{map} =} pink (@var{n})
+## @deftypefn  {} {@var{map} =} pink ()
+## @deftypefnx {} {@var{map} =} pink (@var{n})
 ## Create color colormap.  This colormap varies from black to white with
 ## shades of gray-pink.
 ##
@@ -30,9 +30,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-
-## PKG_ADD: colormap ("register", "pink");
-## PKG_DEL: colormap ("unregister", "pink");
 
 function map = pink (n = rows (colormap ()))
 
@@ -73,8 +70,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'pink' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (pink (64));
-
+%! ## Show the 'pink' colormap profile and as an image
+%! cmap = pink (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

@@ -23,7 +23,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include "config.h"
 #endif
 
 #include "unix/kpty_p.h"
@@ -176,14 +176,12 @@ KPtyPrivate::~KPtyPrivate()
 {
 }
 
-#ifndef HAVE_OPENPTY
 bool KPtyPrivate::chownpty(bool)
 {
 //    return !QProcess::execute(KStandardDirs::findExe("kgrantpty"),
 //        QStringList() << (grant?"--grant":"--revoke") << QString::number(masterFd));
     return true;
 }
-#endif
 
 /////////////////////////////
 // public member functions //

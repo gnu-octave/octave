@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 VZLU Prague, a.s.
+## Copyright (C) 2008-2016 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
+## @deftypefn {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
 ## Find a minimum point of a univariate function.
 ##
 ## @var{fun} should be a function handle or name.  @var{a}, @var{b} specify a
@@ -98,7 +98,6 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   info = 0;
   niter = 0;
   nfev = 0;
-  sqrteps = eps (class (xmin + xmax));
 
   c = 0.5*(3 - sqrt (5));
   a = xmin; b = xmax;
@@ -106,7 +105,13 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   w = x = v;
   e = 0;
   fv = fw = fval = fun (x);
-  nfev++;
+  nfev += 1;
+
+  if (isa (xmin, "single") || isa (xmax, "single") || isa (fval, "single"))
+    sqrteps = eps ("single");
+  else
+    sqrteps = eps ("double");
+  endif
 
   ## Only for display purposes.
   iter(1).funccount = nfev;
@@ -117,7 +122,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     xm = 0.5*(a+b);
     ## FIXME: the golden section search can actually get closer than sqrt(eps)
     ## sometimes.  Sometimes not, it depends on the function.  This is the
-    ## strategy from the Netlib code.  Something yet smarter would be good.
+    ## strategy from the Netlib code.  Something smarter would be good.
     tol = 2 * sqrteps * abs (x) + tolx / 3;
     if (abs (x - xm) <= (2*tol - 0.5*(b-a)))
       info = 1;
@@ -157,7 +162,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
       ## Default to golden section step.
 
       ## WARNING: This is also the "initial" procedure following
-      ## MATLAB nomenclature. After the loop we'll fix the string
+      ## MATLAB nomenclature.  After the loop we'll fix the string
       ## for the first step.
       iter(niter+1).procedure = "golden";
 
@@ -169,13 +174,13 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     u = x + max (abs (d), tol) * (sign (d) + (d == 0));
     fu = fun (u);
 
-    niter++;
+    niter += 1;
 
     iter(niter).funccount = nfev++;
     iter(niter).x = u;
     iter(niter).fx = fu;
 
-    ## update  a, b, v, w, and x
+    ## update a, b, v, w, and x
 
     if (fu < fval)
       if (u < x)
@@ -231,7 +236,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     case "off"
       "skip";
     otherwise
-      warning ("unknown option for Display: '%s'", displ);
+      warning ("fminbnd: unknown option for Display: '%s'", displ);
   endswitch
 
   output.iterations = niter;
@@ -241,8 +246,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
 
 endfunction
 
-## An assistant function that evaluates a function handle and checks for
-## bad results.
+## A helper function that evaluates a function and checks for bad results.
 function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
@@ -278,7 +282,7 @@ function print_exit_msg (info, opt=struct())
     case -1
       "FIXME"; # FIXME: what's the message MATLAB prints for this case?
     otherwise
-      error ("internal error - fminbnd() is bug, sorry!");
+      error ("fminbnd: internal error, info return code was %d", info);
   endswitch
   printf ("\n");
 endfunction

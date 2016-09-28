@@ -1,5 +1,5 @@
 ## Copyright (C) 2004 Josep Mones i Teixidor
-## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 2012-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map})
-## @deftypefnx {Function File} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map}, @var{index})
+## @deftypefn  {} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map})
+## @deftypefnx {} {[@var{Y}, @var{newmap}] =} cmpermute (@var{X}, @var{map}, @var{index})
 ## Reorder colors in a colormap.
 ##
 ## When called with only two arguments, @code{cmpermute} randomly rearranges
@@ -53,7 +53,7 @@ function [Y, newmap] = cmpermute (X, map, index)
     error ("cmpermute: X must be an indexed image");
   endif
 
-  if (! iscolormap (map))
+  if (! iscolormap (map) || min (map(:)) < 0 || max (map(:)) > 1)
     error ("cmpermute: MAP must be a valid colormap");
   endif
 

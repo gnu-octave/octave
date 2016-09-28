@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 David Bateman
+## Copyright (C) 2006-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} svds (@var{A})
-## @deftypefnx {Function File} {@var{s} =} svds (@var{A}, @var{k})
-## @deftypefnx {Function File} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma})
-## @deftypefnx {Function File} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}] =} svds (@dots{})
-## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
+## @deftypefn  {} {@var{s} =} svds (@var{A})
+## @deftypefnx {} {@var{s} =} svds (@var{A}, @var{k})
+## @deftypefnx {} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{s} =} svds (@var{A}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {[@var{u}, @var{s}, @var{v}] =} svds (@dots{})
+## @deftypefnx {} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
 ##
 ## Find a few singular values of the matrix @var{A}.
 ##
@@ -162,7 +162,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     b_opts.issym = true;
     b_sigma = sigma;
     if (! ischar (b_sigma))
-      b_sigma = b_sigma / max_a;
+      b_sigma /= max_a;
     endif
 
     if (b_sigma == 0)
@@ -171,7 +171,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       ## As we are only interested in the positive eigenvalues, we have to
       ## double k and then throw out the k negative eigenvalues.
       ## Separately, if sigma is nonzero, but smaller than the smallest
-      ## singular value, ARPACK may not return k eigenvalues. However, as
+      ## singular value, ARPACK may not return k eigenvalues.  However, as
       ## computation scales with k we'd like to avoid doubling k for all
       ## scalar values of sigma.
       b_k = 2 * k;
@@ -193,10 +193,10 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       norma = normest (A);
     endif
     ## We wish to exclude all eigenvalues that are less than zero as these
-    ## are artifacts of the way the matrix passed to eigs is formed. There
+    ## are artifacts of the way the matrix passed to eigs is formed.  There
     ## is also the possibility that the value of sigma chosen is exactly
     ## a singular value, and in that case we're dead!! So have to rely on
-    ## the warning from eigs. We exclude the singular values which are
+    ## the warning from eigs.  We exclude the singular values which are
     ## less than or equal to zero to within some tolerance scaled by the
     ## norm since if we don't we might end up with too many singular
     ## values.
@@ -227,13 +227,13 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     s = s(ind);
 
     if (length (s) < k)
-      warning ("returning fewer singular values than requested");
+      warning ("svds: returning fewer singular values than requested");
       if (! ischar (sigma))
-        warning ("try increasing the value of sigma");
+        warning ("svds: try increasing the value of sigma");
       endif
     endif
 
-    s = s * max_a;
+    s *= max_a;
   endif
 
   if (nargout < 2)
@@ -267,26 +267,24 @@ endfunction
 %! s = s(idx);
 %! u = u(:, idx);
 %! v = v(:, idx);
-%! randn_state = randn ("state");
 %! rand_state = rand ("state");
-%! randn ("state", 42);      % Initialize to make normest function reproducible
 %! rand ("state", 42);
-%! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
-%!                         % to guarantee reproducible results
+%! opts.v0 = rand (2*n,1);  # Initialize eigs ARPACK starting vector
+%!                          # to guarantee reproducible results
 %!
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (A,k);
 %! s2 = diag (s2);
-%! assert (flag, !1);
+%! assert (flag, ! 1);
 %! tol = 10 * eps() * norm(s2, 1);
 %! assert (s2, s(end:-1:end-k+1), tol);
 %!
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! [u2,s2,v2,flag] = svds (A,k,0,opts);
 %! s2 = diag (s2);
-%! assert (flag, !1);
-%! tol = 100 * eps() * norm(s2, 1);
-%! assert (s2, s(length(s2):-1:1), tol);
+%! assert (flag, ! 1);
+%! tol = 10 * eps() * norm(s2, 1);
+%! assert (s2, s(k:-1:1), tol);
 %!
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! idx = floor (n/2);
@@ -294,7 +292,7 @@ endfunction
 %! sigma = 0.99*s(idx) + 0.01*s(idx+1);
 %! [u2,s2,v2,flag] = svds (A,k,sigma,opts);
 %! s2 = diag (s2);
-%! assert (flag, !1);
+%! assert (flag, ! 1);
 %! tol = 10 * eps() * norm(s2, 1);
 %! assert (s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), tol);
 %!
@@ -309,7 +307,6 @@ endfunction
 %! assert (s, ones (6, 1), 8*eps);
 
 %!test
-%! ## Restore random number generator seeds at end of tests
+%! ## Restore random number generator seed at end of tests
 %! rand ("state", rand_state);
-%! randn ("state", randn_state);
 

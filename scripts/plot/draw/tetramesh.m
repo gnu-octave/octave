@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Martin Helm
+## Copyright (C) 2012-2016 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} tetramesh (@var{T}, @var{X})
-## @deftypefnx {Function File} {} tetramesh (@var{T}, @var{X}, @var{C})
-## @deftypefnx {Function File} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} tetramesh (@dots{})
-## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D patches.
+## @deftypefn  {} {} tetramesh (@var{T}, @var{X})
+## @deftypefnx {} {} tetramesh (@var{T}, @var{X}, @var{C})
+## @deftypefnx {} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
+## @deftypefnx {} {@var{h} =} tetramesh (@dots{})
+## Display the tetrahedrons defined in the m-by-4 matrix @var{T} as 3-D
+## patches.
 ##
 ## @var{T} is typically the output of a Delaunay triangulation of a 3-D set
 ## of points.  Every row of @var{T} contains four indices into the n-by-3
@@ -105,7 +106,7 @@ function h = tetramesh (varargin)
   endif
 
   if (! ishold ())
-    set (hax, "view", [-37.5, 30], "box", "off");
+    set (hax, "view", [-37.5, 30]);
   endif
 
   if (nargout > 0)
@@ -134,11 +135,11 @@ endfunction
 %! X = [x(:) y(:) z(:)];
 %! colormap (jet (64));
 %! h = tetramesh (tetra, X);
-%! set (h(1:2:end), 'Visible', 'off');
+%! set (h(1:2:end), "visible", "off");
 %! axis equal;
 %! view (30, 20);
-%! title ({'tetramesh() plot', ...
-%!         'colormap = jet (64), every other tetrahedron invisible'});
+%! title ({"tetramesh() plot", ...
+%!         "colormap = jet (64), every other tetrahedron invisible"});
 
 %!demo
 %! clf;
@@ -150,9 +151,9 @@ endfunction
 %! tetra = delaunay (x, y, z);
 %! X = [x(:) y(:) z(:)];
 %! colormap (gray (256));
-%! tetramesh (tetra, X, 21:20:241, 'EdgeColor', 'w');
+%! tetramesh (tetra, X, 21:20:241, "EdgeColor", "w");
 %! axis equal;
 %! view (30, 20);
-%! title ({'tetramesh() plot', ...
-%!         'colormap = gray (256) with white edges'});
+%! title ({"tetramesh() plot", ...
+%!         "colormap = gray (256) with white edges"});
 

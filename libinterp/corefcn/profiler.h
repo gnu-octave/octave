@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2014-2015 Julien Bect
-Copyright (C) 2012-2015 Daniel Kraft
+Copyright (C) 2014-2016 Julien Bect
+Copyright (C) 2012-2016 Daniel Kraft
 
 This file is part of Octave.
 
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_profiler_h)
+#if ! defined (octave_profiler_h)
 #define octave_profiler_h 1
+
+#include "octave-config.h"
 
 #include <cstddef>
 #include <map>
@@ -40,7 +42,7 @@ public:
 
   // This is a utility class that can be used to call the enter/exit
   // functions in a manner protected from stack unwinding.
-  template<class T> class enter
+  template <typename T> class enter
   {
   private:
 
@@ -206,11 +208,12 @@ extern OCTINTERP_API profile_data_accumulator profiler;
 
 // Helper macro to profile a block of code.
 
-#define BEGIN_PROFILER_BLOCK(classname) \
-  { \
+#define BEGIN_PROFILER_BLOCK(classname)                                 \
+  {                                                                     \
     profile_data_accumulator::enter<classname> pe (profiler, *this);
 
-#define END_PROFILER_BLOCK \
-  }  // end of block => call pe's destructor
+#define END_PROFILER_BLOCK                      \
+    }  // end of block => call pe's destructor
 
 #endif
+

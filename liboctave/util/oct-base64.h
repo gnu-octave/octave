@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 John W. Eaton
+Copyright (C) 2012-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_base64_h)
+#if ! defined (octave_oct_base64_h)
 #define octave_oct_base64_h 1
+
+#include "octave-config.h"
 
 #include <string>
 
-template<class T> class Array;
+template <typename T> class Array;
 
 extern OCTAVE_API bool
 octave_base64_encode (const char *inc, const size_t inlen, char **out);

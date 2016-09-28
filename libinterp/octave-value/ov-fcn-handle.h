@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,13 +21,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_fcn_handle_h)
+#if ! defined (octave_ov_fcn_handle_h)
 #define octave_ov_fcn_handle_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
 #include <memory>
-
 
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -144,7 +145,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -161,7 +162,6 @@ private:
 
   bool set_fcn (const std::string &octaveroot, const std::string& fpath);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
 protected:
@@ -175,7 +175,7 @@ protected:
   // Whether the function is overloaded at all.
   bool has_overloads;
 
-  // Overloads for builtin types. We use array to make lookup faster.
+  // Overloads for builtin types.  We use array to make lookup faster.
   octave_value builtin_overloads[btyp_num_types];
 
   // Overloads for other classes.
@@ -217,3 +217,4 @@ protected:
   int expected_nargin;
 };
 #endif
+

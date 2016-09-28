@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
+## @deftypefn {} {[@var{h}, @var{needusage}] =} __ezplot__ (@var{pltfunc}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -140,7 +140,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       yarg = args{2};
     endif
   else
-    error ("%s: expecting string, inline function, or function handle", ezfunc);
+    error ("%s: F must be string, inline function, or function handle", ezfunc);
   endif
 
   if (nargin > 2 || (nargin == 2 && isplot))
@@ -222,7 +222,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
           error ("%s: expecting a function of %d arguments", ezfunc, nargs);
         endif
       else
-        error ("%s: parametric plots expect 3 functions", ezfunc);
+        error ("%s: parametric plots require 3 functions", ezfunc);
       endif
     endif
   endif
@@ -250,14 +250,14 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       circ = true;
     elseif (ischar (arg) && strcmp (arg, "animate"))
       animate = true;
-    elseif (isscalar (arg))
+    elseif (isscalar (arg) && (n == 60 || n == 500))
       n = arg;
-    elseif (numel (arg) == 2)
+    elseif (numel (arg) == 2 && isempty (domain))
       domain = [arg(1) arg(2) arg(1) arg(2)];
-    elseif (numel (arg) == 4)
+    elseif (numel (arg) == 4 && isempty (domain))
       domain = arg(:).';
     else
-      error ("%s: expecting scalar, 2-, or 4-element vector", ezfunc);
+      error ("%s: expecting scalar N, or 2-/4-element vector DOM", ezfunc);
     endif
   endwhile
 
@@ -285,13 +285,15 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     else
       fstrz = regexprep (regexprep (regexprep (fstrz,
            '\s*\.?(?:\^|\*\*)\s*','^'), '\.([/+-])', '$1'), '\s*\.?\*\s*', ' ');
-      fstr = ["x = " fstrx ",y = " fstry ", z = " fstrz];
+      fstr = ["x = " fstrx ", y = " fstry ", z = " fstrz];
     endif
   else
     fstr = regexprep (regexprep (regexprep (fstr,
            '\s*\.?(?:\^|\*\*)\s*','^'), '\.([/+-])', '$1'), '\s*\.?\*\s*', ' ');
     if (isplot && nargs == 2)
       fstr = [fstr " = 0"];  # make title string of implicit function
+    elseif (ispolar)
+      fstr = ["r = " fstr];
     endif
   endif
 
@@ -422,9 +424,12 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       h = zeros (length (XX), 1);
       hold_state = get (hax, "nextplot");
       for i = 1 : length (XX)
-        h(i) = plot(hax, XX{i}, YY{i});
         if (i == 1)
+          h(1) = plot (hax, XX{1}, YY{1});
           set (hax, "nextplot", "add");
+          color = get (h(1), "color");
+        else
+          h(i) = plot (hax, XX{i}, YY{i}, "color", color);
         endif
       endfor
       set (hax, "nextplot", hold_state);
@@ -444,7 +449,6 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         comet3 (hax, X, Y, Z, .05);
       endif
       h = feval (pltfunc, hax, X, Y, Z);
-      set (hax, "box", "off");
       grid (hax, "on");
       zlabel (hax, "z");
     else  # mesh and surf plots
@@ -499,15 +503,6 @@ function domain = find_valid_domain (X, Y, Z);
       domain(3:4) = [XX(1), XX(end)];
     endif
 
-    #{
-    ## FIXME: Old algorithm for removing singularities
-    ## Deprecated in 3.8.  Can be removed if no problems appear in ezplot.
-    idx = 2 : length (Z);
-    idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
-                ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange(2) / 2)));
-    Z(idx) = NaN;
-    #}
-
   else
     ## 3-D data such as mesh, surf
     Zfinite = ! isnan (Z);
@@ -520,10 +515,10 @@ function domain = find_valid_domain (X, Y, Z);
 
     ## Handle nasty case of all NaNs
     if (isempty (rmin))
-      rmin = 1, rmax = rows (Z);
+      rmin = 1; rmax = rows (Z);
     endif
     if (isempty (cmin))
-      cmin = 1, cmax = columns (Z);
+      cmin = 1; cmax = columns (Z);
     endif
 
     if (   ! any (isnan (Z([rmin, rmax],:)(:)))

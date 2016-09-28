@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "ov.h"
 #include "profiler.h"
@@ -50,9 +50,9 @@ tree_prefix_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("prefix operator '%s': invalid number of output arguments",
-           oper () . c_str ());
-  else
-    retval = rvalue1 (nargout);
+           oper ().c_str ());
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -62,32 +62,25 @@ tree_prefix_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (op)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
         {
           octave_lvalue ref = op->lvalue ();
 
-          if (! error_state)
-            {
-              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+          BEGIN_PROFILER_BLOCK (tree_prefix_expression)
 
-              ref.do_unary_op (etype);
+          ref.do_unary_op (etype);
 
-              if (! error_state)
-                retval = ref.value ();
+          retval = ref.value ();
 
-              END_PROFILER_BLOCK
-            }
+          END_PROFILER_BLOCK
         }
       else
         {
           octave_value val = op->rvalue1 ();
 
-          if (! error_state && val.is_defined ())
+          if (val.is_defined ())
             {
               BEGIN_PROFILER_BLOCK (tree_prefix_expression)
 
@@ -97,9 +90,6 @@ tree_prefix_expression::rvalue1 (int)
                 retval = val.do_non_const_unary_op (etype);
               else
                 retval = ::do_unary_op (etype, val);
-
-              if (error_state)
-                retval = octave_value ();
 
               END_PROFILER_BLOCK
             }
@@ -137,9 +127,9 @@ tree_postfix_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("postfix operator '%s': invalid number of output arguments",
-           oper () . c_str ());
-  else
-    retval = rvalue1 (nargout);
+           oper ().c_str ());
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -149,38 +139,29 @@ tree_postfix_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (error_state)
-    return retval;
-
   if (op)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
         {
           octave_lvalue ref = op->lvalue ();
 
-          if (! error_state)
-            {
-              retval = ref.value ();
+          retval = ref.value ();
 
-              BEGIN_PROFILER_BLOCK (tree_postfix_expression)
+          BEGIN_PROFILER_BLOCK (tree_postfix_expression)
 
-              ref.do_unary_op (etype);
+          ref.do_unary_op (etype);
 
-              END_PROFILER_BLOCK
-            }
+          END_PROFILER_BLOCK
         }
       else
         {
           octave_value val = op->rvalue1 ();
 
-          if (! error_state && val.is_defined ())
+          if (val.is_defined ())
             {
               BEGIN_PROFILER_BLOCK (tree_postfix_expression)
 
               retval = ::do_unary_op (etype, val);
-
-              if (error_state)
-                retval = octave_value ();
 
               END_PROFILER_BLOCK
             }
@@ -208,3 +189,4 @@ tree_postfix_expression::accept (tree_walker& tw)
 {
   tw.visit_postfix_expression (*this);
 }
+

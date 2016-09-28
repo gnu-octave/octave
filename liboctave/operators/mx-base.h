@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mx_base_h)
+#if ! defined (octave_mx_base_h)
 #define octave_mx_base_h 1
+
+#include "octave-config.h"
 
 // Matrix Type class
 
@@ -66,7 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dSparse.h"
 #include "CSparse.h"
 
-// N-d Array classes.
+// N-D Array classes.
 
 #include "boolNDArray.h"
 #include "chNDArray.h"
@@ -86,3 +88,4 @@ along with Octave; see the file COPYING.  If not, see
 #include "uint64NDArray.h"
 
 #endif
+

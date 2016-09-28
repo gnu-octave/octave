@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} postpad (@var{x}, @var{l})
-## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
+## @deftypefn  {} {} postpad (@var{x}, @var{l})
+## @deftypefnx {} {} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
 ## Append the scalar value @var{c} to the vector @var{x} until it is of length
 ## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##
@@ -73,7 +73,15 @@ function y = postpad (x, l, c, dim)
 
   d = sz(dim);
 
-  if (d >= l)
+  if (d == l)
+    ## This optimization makes sense because the function is used to match
+    ## the length between two vectors not knowing a priori is larger, and
+    ## allow for:
+    ##    ml = max (numel (v1), numel (v2));
+    ##    v1 = postpad (v1, ml);
+    ##    v2 = postpad (v2, ml);
+    y = x;
+  elseif (d >= l)
     idx = repmat ({':'}, nd, 1);
     idx{dim} = 1:l;
     y = x(idx{:});
@@ -93,8 +101,12 @@ endfunction
 %!assert (postpad ([1;2], 2, 2, 3), reshape ([1;2;2;2], 2, 1, 2))
 %!assert (postpad ([1,2], 2, 2, 3), reshape ([1,2,2,2], 1, 2, 2))
 
-%! ## Test with string concatenation (bug #44162)
-%!assert (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
+%!assert (postpad ([1 2], 2), [1 2])
+%!assert (postpad ([1; 2], 2), [1; 2])
+%!assert (postpad ([1; 2], 2, 3, 2), [1 3; 2 3])
+
+%! ## Test with string concatenation
+%!assert <44162> (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
 %!assert (postpad ("Octave", 4), "Octa")
 
 %!error postpad ()

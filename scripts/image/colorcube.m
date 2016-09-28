@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Rik Wehbring
+## Copyright (C) 2012-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} colorcube ()
-## @deftypefnx {Function File} {@var{map} =} colorcube (@var{n})
+## @deftypefn  {} {@var{map} =} colorcube ()
+## @deftypefnx {} {@var{map} =} colorcube (@var{n})
 ## Create color colormap.  This colormap is composed of as many equally
 ## spaced colors (not grays) in the RGB color space as possible.
 ##
-## If there are not a perfect number @var{n} of regularly spaced colors then the
-## remaining entries in the colormap are gradients of pure red, green, blue,
-## and gray.
+## If there are not a perfect number @var{n} of regularly spaced colors then
+## the remaining entries in the colormap are gradients of pure red, green,
+## blue, and gray.
 ##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
@@ -93,6 +93,7 @@ endfunction
 %!demo
 %! ## Show the 'colorcube' colormap as an image
 %! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! axis ([1, 64, 0, 1], "xy");
+%! set (gca, "xtick", []);
 %! colormap (colorcube (64));
 

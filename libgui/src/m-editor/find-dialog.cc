@@ -1,8 +1,8 @@
-/****************************************************************************
+/*
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2015 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2016 Torsten <ttl@justmail.de>
 Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)
@@ -56,19 +56,30 @@ along with Octave; see the file COPYING.  If not, see
 ** Nokia at qt-info@nokia.com.
 ** $QT_END_LICENSE$
 **
-****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+*/
+
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#ifdef HAVE_QSCINTILLA
+#if defined (HAVE_QSCINTILLA)
 
-#include <QtGui>
+#include <QCheckBox>
+#include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QGridLayout>
 #include <QIcon>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include "find-dialog.h"
 
-find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
+find_dialog::find_dialog (QsciScintilla* edit_area,
+                          QList<QAction *> find_actions, QWidget *p)
   : QDialog (p)
 {
   setWindowTitle (tr ("Find and Replace"));
@@ -107,7 +118,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _regex_check_box = new QCheckBox (tr ("Regular E&xpressions"));
   _backward_check_box = new QCheckBox (tr ("Search &backward"));
   _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
   _search_selection_check_box->setCheckable (true);
   _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
 #else
@@ -133,7 +144,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   connect (_search_line_edit,   SIGNAL (textChanged (QString)),
            this,                SLOT (handle_search_text_changed (QString)));
 
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
   connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this,       SLOT (handle_selection_changed (bool)));
   connect (_search_selection_check_box, SIGNAL (stateChanged (int)),
@@ -174,6 +185,9 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _rep_all = 0;
   _rep_active = false;
 
+  // set the actions
+  addActions (find_actions);
+
   // move dialog to side of the parent if there is room on the desktop to do so.
   int xp = p->x () +20;
   int yp = p->y () + p->frameGeometry ().height () - sizeHint ().height () -20;
@@ -203,14 +217,19 @@ find_dialog::handle_search_text_changed (QString)
     _find_result_available = false;
 }
 
-#ifdef HAVE_QSCI_FINDSELECTION
+#if defined (HAVE_QSCI_FINDSELECTION)
 void
 find_dialog::handle_sel_search_changed (int selected)
 {
   _from_start_check_box->setEnabled (! selected);
   _find_result_available = false;
 }
+#else
+void
+find_dialog::handle_sel_search_changed (int /* selected */) { }
+#endif
 
+#if defined (HAVE_QSCI_FINDSELECTION)
 void
 find_dialog::handle_selection_changed (bool has_selected)
 {
@@ -222,6 +241,9 @@ find_dialog::handle_selection_changed (bool has_selected)
   if (! has_selected)
     _search_selection_check_box->setChecked (false);
 }
+#else
+void
+find_dialog::handle_selection_changed (bool /* has_selected */) { }
 #endif
 
 // initialize search text with selected text if this is in one single line
@@ -239,12 +261,16 @@ find_dialog::init_search_text ()
   // set focus to "Find what" and select all text
   _search_line_edit->setFocus();
   _search_line_edit->selectAll();
+
+  // Default to "find" next time.
+  // Otherwise, it defaults to the last action, which may be "replace all".
+  _find_next_button->setDefault (true);
 }
 
 void
 find_dialog::find_next ()
 {
-  find (!_backward_check_box->isChecked ());
+  find (! _backward_check_box->isChecked ());
 }
 
 void
@@ -294,17 +320,17 @@ find_dialog::find (bool forward)
         }
       else if (! do_forward)
         {
-           // search from position before search characters text length
-           // if search backward on existing results,
-           _edit_area->getCursorPosition (&line,&col);
-           if (_find_result_available && _edit_area->hasSelectedText ())
-             {
-               int currpos = _edit_area->positionFromLineIndex(line,col);
-               currpos -= (_search_line_edit->text ().length ());
-               if (currpos < 0)
-                 currpos = 0;
-               _edit_area->lineIndexFromPosition(currpos, &line,&col);
-             }
+          // search from position before search characters text length
+          // if search backward on existing results,
+          _edit_area->getCursorPosition (&line,&col);
+          if (_find_result_available && _edit_area->hasSelectedText ())
+            {
+              int currpos = _edit_area->positionFromLineIndex(line,col);
+              currpos -= (_search_line_edit->text ().length ());
+              if (currpos < 0)
+                currpos = 0;
+              _edit_area->lineIndexFromPosition(currpos, &line,&col);
+            }
         }
     }
 
@@ -313,10 +339,10 @@ find_dialog::find (bool forward)
       if (_edit_area->hasSelectedText ()
           && _search_selection_check_box->isChecked ())
         {
-#ifdef HAVE_QSCI_FINDSELECTION
-           if (_find_result_available)
-             _find_result_available = _edit_area->findNext ();
-           else
+#if defined (HAVE_QSCI_FINDSELECTION)
+          if (_find_result_available)
+            _find_result_available = _edit_area->findNext ();
+          else
             _find_result_available
               = _edit_area->findFirstInSelection (
                                       _search_line_edit->text (),
@@ -325,7 +351,7 @@ find_dialog::find (bool forward)
                                       _whole_words_check_box->isChecked (),
                                       do_forward,
                                       true
-#ifdef HAVE_QSCI_VERSION_2_6_0
+#if defined (HAVE_QSCI_VERSION_2_6_0)
                                       , true
 #endif
                                       );
@@ -335,15 +361,15 @@ find_dialog::find (bool forward)
         {
           _find_result_available
             = _edit_area->findFirst (_search_line_edit->text (),
-                                    _regex_check_box->isChecked (),
-                                    _case_check_box->isChecked (),
-                                    _whole_words_check_box->isChecked (),
-                                    do_wrap,
-                                    do_forward,
-                                    line,col,
-                                    true
-#ifdef HAVE_QSCI_VERSION_2_6_0
-                                    , true
+                                     _regex_check_box->isChecked (),
+                                     _case_check_box->isChecked (),
+                                     _whole_words_check_box->isChecked (),
+                                     do_wrap,
+                                     do_forward,
+                                     line,col,
+                                     true
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+                                     , true
 #endif
                                     );
         }
@@ -422,5 +448,5 @@ find_dialog::no_matches_message ()
   msg_box.exec ();
 }
 
-
 #endif
+

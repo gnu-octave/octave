@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fCNDArray_h)
+#if ! defined (octave_fCNDArray_h)
 #define octave_fCNDArray_h 1
+
+#include "octave-config.h"
 
 #include "MArray.h"
 
@@ -45,10 +47,10 @@ public:
   FloatComplexNDArray (const FloatComplexNDArray& a)
     : MArray<FloatComplex> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexNDArray (const MArray<U>& a) : MArray<FloatComplex> (a) { }
 
-  template <class U>
+  template <typename U>
   FloatComplexNDArray (const Array<U>& a) : MArray<FloatComplex> (a) { }
 
   FloatComplexNDArray (const charNDArray&);
@@ -181,3 +183,4 @@ BSXFUN_STDREL_DECLS (FloatComplexNDArray, OCTAVE_API)
 BSXFUN_OP_DECL (pow, FloatComplexNDArray, OCTAVE_API)
 
 #endif
+

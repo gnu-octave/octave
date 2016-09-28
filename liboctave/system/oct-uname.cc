@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2015 John W. Eaton
+Copyright (C) 2005-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,32 +20,39 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cerrno>
 #include <cstring>
 
-#include <sys/utsname.h>
-
 #include "oct-uname.h"
+#include "uname-wrapper.h"
 
-void
-octave_uname::init (void)
+namespace octave
 {
-  struct utsname unm;
-
-  err = ::uname (&unm);
-
-  if (err < 0)
-    msg = gnulib::strerror (errno);
-  else
+  namespace sys
+  {
+    void
+    uname::init (void)
     {
-      utsname_sysname = unm.sysname;
-      utsname_nodename = unm.nodename;
-      utsname_release = unm.release;
-      utsname_version = unm.version;
-      utsname_machine = unm.machine;
+      char *sysname, *nodename, *release, *version, *machine;
+
+      err = octave_uname_wrapper (&sysname, &nodename, &release,
+                                  &version, &machine);
+
+      if (err < 0)
+        msg = std::strerror (errno);
+      else
+        {
+          m_sysname = sysname;
+          m_nodename = nodename;
+          m_release = release;
+          m_version = version;
+          m_machine = machine;
+        }
     }
+  }
 }
+

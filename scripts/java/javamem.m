@@ -1,4 +1,4 @@
-## Copyright (C) 2010, 2013 Philip Nienhuis
+## Copyright (C) 2010-2016 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javamem ()
-## @deftypefnx {Function File} {@var{jmem} =} javamem ()
+## @deftypefn  {} {} javamem ()
+## @deftypefnx {} {@var{jmem} =} javamem ()
 ## Show the current memory usage of the Java virtual machine (JVM) and run the
 ## garbage collector.
 ##

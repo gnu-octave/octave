@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Bill Denney
+## Copyright (C) 2006-2016 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{files} =} unpack (@var{file})
-## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir})
-## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir}, @var{filetype})
+## @deftypefn  {} {@var{files} =} unpack (@var{file})
+## @deftypefnx {} {@var{files} =} unpack (@var{file}, @var{dir})
+## @deftypefnx {} {@var{files} =} unpack (@var{file}, @var{dir}, @var{filetype})
 ## Unpack the archive @var{file} based on its extension to the directory
 ## @var{dir}.
 ##
@@ -86,11 +86,14 @@ function filelist = unpack (file, dir = ".", filetype = "")
     file = cellstr (file);
   endif
   if (numel (file) == 1)
-    gfile = glob (file);
-    if (isempty (gfile))
-      error ('unpack: file "%s" not found', file{1});
-    else
-      file = gfile;
+    if (isempty (strfind (file{1}, "://")))
+      ## FIXME: The above code is not a perfect test for a URL
+      gfile = glob (file);
+      if (isempty (gfile))
+        error ('unpack: file "%s" not found', file{1});
+      else
+        file = gfile;
+      endif
     endif
   endif
 
@@ -135,7 +138,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     if (! isempty (strfind (file, "://")))
       ## FIXME: The above code is not a perfect test for a URL
       urlfile = file;
-      tmpfile = [tempname ext];
+      tmpfile = fullfile (tempdir (), [name ext]);
       [file, success, msg] = urlwrite (urlfile, tmpfile);
       if (! success)
         error ('unpack: could not fetch "%s": %s', urlfile, msg);
@@ -278,7 +281,7 @@ function files = __parse_zip__ (output)
   ## Skip first line which is Archive header.
   files = char (output(2:end));
   ## Trim constant width prefix and return cell array.
-  files = cellstr (files(:,14:end))
+  files = cellstr (files(:,14:end));
 endfunction
 
 function output = __parse_tar__ (output)
@@ -287,21 +290,21 @@ endfunction
 
 function files = __parse_gzip__ (output)
   ## Parse the output from gzip and gunzip returning the files
-  ## commpressed (or decompressed).
+  ## compressed (or decompressed).
 
-  files = regexprep (output, '^.+ with (.*)$', '$1');
+  files = regexprep (output, '^.+ -- replaced with (.*)$', '$1');
 endfunction
 
 function files = __parse_bzip2__ (output)
   ## Parse the output from bzip2 and bunzip2 returning the files
-  ## commpressed (or decompressed).
+  ## compressed (or decompressed).
 
-  ## Strip leading blanks and .bz2 extension from file name
+  ## Strip leading blanks and .bz2 extension from filename
   files = regexprep (output, '^\s+(.*)\.bz2: .*', '$1');
 endfunction
 
 
-%!test
+%!testif HAVE_ZLIB
 %! ## Create temporary directory and file for packing and unpacking
 %! dirname = tempname ();
 %! assert (mkdir (dirname));
@@ -315,7 +318,7 @@ endfunction
 %!   copyfile (filename, [filename ".orig"]);
 %!   gzip (filename, dirname);
 %!   [~, f] = fileparts (filename);
-%!   filelist = unpack (fullfile (dirname, [f ".gz"]), P_tmpdir);
+%!   filelist = unpack (fullfile (dirname, [f ".gz"]), tempdir);
 %!   assert (filelist{1}, filename);
 %!   fid = fopen ([filename ".orig"], "rb");
 %!   assert (fid >= 0);
@@ -331,7 +334,8 @@ endfunction
 %! unwind_protect_cleanup
 %!   unlink (filename);
 %!   unlink ([filename ".orig"]);
-%!   rmdir (dirname);
+%!   confirm_recursive_rmdir (false, "local");
+%!   rmdir (dirname, "s");
 %! end_unwind_protect
 
 ## Test input validation

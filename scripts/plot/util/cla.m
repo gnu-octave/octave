@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Ben Abbott
+## Copyright (C) 2008-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} cla
-## @deftypefnx {Command} {} cla reset
-## @deftypefnx {Function File} {} cla (@var{hax})
-## @deftypefnx {Function File} {} cla (@var{hax}, "reset")
+## @deftypefn  {} {} cla
+## @deftypefnx {} {} cla reset
+## @deftypefnx {} {} cla (@var{hax})
+## @deftypefnx {} {} cla (@var{hax}, "reset")
 ## Clear the current axes.
 ##
 ## @code{cla} operates by deleting child graphic objects with visible
@@ -92,16 +92,16 @@ endfunction
 %! unwind_protect
 %!   hax = gca;
 %!   plot (hax, 1:10);
-%!   set (hax, "interpreter", "tex");
+%!   set (hax, "ticklabelinterpreter", "none");
 %!   cla (hax);
 %!   kids = get (hax, "children");
 %!   assert (numel (kids), 0);
-%!   assert (get (hax, "interpreter"), "tex");
+%!   assert (get (hax, "ticklabelinterpreter"), "none");
 %!   plot (hax, 1:10);
 %!   cla (hax, "reset");
 %!   kids = get (hax, "children");
 %!   assert (numel (kids), 0);
-%!   assert (get (hax, "interpreter"), "none");
+%!   assert (get (hax, "ticklabelinterpreter"), "tex");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

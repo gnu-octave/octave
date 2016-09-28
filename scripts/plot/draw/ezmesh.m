@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ezmesh (@var{f})
-## @deftypefnx {Function File} {} ezmesh (@var{fx}, @var{fy}, @var{fz})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{dom})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, "circ")
-## @deftypefnx {Function File} {} ezmesh (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} ezmesh (@dots{})
+## @deftypefn  {} {} ezmesh (@var{f})
+## @deftypefnx {} {} ezmesh (@var{fx}, @var{fy}, @var{fz})
+## @deftypefnx {} {} ezmesh (@dots{}, @var{dom})
+## @deftypefnx {} {} ezmesh (@dots{}, @var{n})
+## @deftypefnx {} {} ezmesh (@dots{}, "circ")
+## @deftypefnx {} {} ezmesh (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} ezmesh (@dots{})
 ##
 ## Plot the mesh defined by a function.
 ##
@@ -90,13 +90,13 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezmesh (f, [-3, 3]);
 
 %!demo
 %! clf;
-%! colormap ('default');
+%! colormap ("default");
 %! fx = @(s,t) cos (s) .* cos (t);
 %! fy = @(s,t) sin (s) .* cos (t);
 %! fz = @(s,t) sin (t);

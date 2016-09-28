@@ -1,7 +1,7 @@
-// N-D Array  manipulations.
+// N-D Array manipulations.
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "uint16NDArray.h"
@@ -57,3 +57,4 @@ BSXFUN_STDREL_DEFS_MXLOOP (uint16NDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, uint16NDArray, mx_inline_pow)
 BSXFUN_POW_MIXED_MXLOOP (uint16NDArray)
+

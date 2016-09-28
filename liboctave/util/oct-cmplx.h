@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2015 John W. Eaton
+Copyright (C) 1995-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_cmplx_h)
+#if ! defined (octave_oct_cmplx_h)
 #define octave_oct_cmplx_h 1
+
+#include "octave-config.h"
 
 #include <complex>
 
@@ -40,60 +42,60 @@ typedef std::complex<float> FloatComplex;
 // non-unique representation for numbers along the negative real axis branch
 // cut.  Change this to principal value (-pi,pi] by mapping -pi to pi.
 
-#define DEF_COMPLEXR_COMP(OP, OPS) \
-template <class T> \
-inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
-{ \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
-  if (ax == bx) \
-    { \
-      FLOAT_TRUNCATE const T ay = std::arg (a); \
-      FLOAT_TRUNCATE const T by = std::arg (b); \
-      if (ay == static_cast<T> (-M_PI)) \
-        { \
-          if (by != static_cast<T> (-M_PI)) \
-            return static_cast<T> (M_PI) OP by; \
-        } \
-      else if (by == static_cast<T> (-M_PI)) \
-        { \
-          return ay OP static_cast<T> (M_PI); \
-        } \
-      return ay OP by; \
-    } \
-  else \
-    return ax OPS bx; \
-} \
-template <class T> \
-inline bool operator OP (const std::complex<T>& a, T b) \
-{ \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
-  if (ax == bx) \
-    { \
-      FLOAT_TRUNCATE const T ay = std::arg (a); \
-      if (ay == static_cast<T> (-M_PI)) \
-        return static_cast<T> (M_PI) OP 0; \
-      return ay OP 0; \
-    } \
-  else \
-    return ax OPS bx; \
-} \
-template <class T> \
-inline bool operator OP (T a, const std::complex<T>& b) \
-{ \
-  FLOAT_TRUNCATE const T ax = std::abs (a); \
-  FLOAT_TRUNCATE const T bx = std::abs (b); \
-  if (ax == bx) \
-    { \
-      FLOAT_TRUNCATE const T by = std::arg (b); \
-      if (by == static_cast<T> (-M_PI)) \
-        return 0 OP static_cast<T> (M_PI); \
-      return 0 OP by; \
-    } \
-  else \
-    return ax OPS bx; \
-}
+#define DEF_COMPLEXR_COMP(OP, OPS)                                      \
+  template <typename T>                                                 \
+  inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
+  {                                                                     \
+    OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a);                    \
+    OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b);                    \
+    if (ax == bx)                                                       \
+      {                                                                 \
+        OCTAVE_FLOAT_TRUNCATE const T ay = std::arg (a);                \
+        OCTAVE_FLOAT_TRUNCATE const T by = std::arg (b);                \
+        if (ay == static_cast<T> (-M_PI))                               \
+          {                                                             \
+            if (by != static_cast<T> (-M_PI))                           \
+              return static_cast<T> (M_PI) OP by;                       \
+          }                                                             \
+        else if (by == static_cast<T> (-M_PI))                          \
+          {                                                             \
+            return ay OP static_cast<T> (M_PI);                         \
+          }                                                             \
+        return ay OP by;                                                \
+      }                                                                 \
+    else                                                                \
+      return ax OPS bx;                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline bool operator OP (const std::complex<T>& a, T b)               \
+  {                                                                     \
+    OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a);                    \
+    OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b);                    \
+    if (ax == bx)                                                       \
+      {                                                                 \
+        OCTAVE_FLOAT_TRUNCATE const T ay = std::arg (a);                \
+        if (ay == static_cast<T> (-M_PI))                               \
+          return static_cast<T> (M_PI) OP 0;                            \
+        return ay OP 0;                                                 \
+      }                                                                 \
+    else                                                                \
+      return ax OPS bx;                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline bool operator OP (T a, const std::complex<T>& b)               \
+  {                                                                     \
+    OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a);                    \
+    OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b);                    \
+    if (ax == bx)                                                       \
+      {                                                                 \
+        OCTAVE_FLOAT_TRUNCATE const T by = std::arg (b);                \
+        if (by == static_cast<T> (-M_PI))                               \
+          return 0 OP static_cast<T> (M_PI);                            \
+        return 0 OP by;                                                 \
+      }                                                                 \
+    else                                                                \
+      return ax OPS bx;                                                 \
+  }
 
 DEF_COMPLEXR_COMP (>, >)
 DEF_COMPLEXR_COMP (<, <)
@@ -101,3 +103,4 @@ DEF_COMPLEXR_COMP (<=, <)
 DEF_COMPLEXR_COMP (>=, >)
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 Paul Kienzle
+## Copyright (C) 2004-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -20,9 +20,9 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sprandn (@var{m}, @var{n}, @var{d})
-## @deftypefnx {Function File} {} sprandn (@var{m}, @var{n}, @var{d}, @var{rc})
-## @deftypefnx {Function File} {} sprandn (@var{s})
+## @deftypefn  {} {} sprandn (@var{m}, @var{n}, @var{d})
+## @deftypefnx {} {} sprandn (@var{m}, @var{n}, @var{d}, @var{rc})
+## @deftypefnx {} {} sprandn (@var{s})
 ## Generate a sparse matrix with normally distributed random values.
 ##
 ## The size of the matrix is @var{m}x@var{n} with a density of values @var{d}.
@@ -45,11 +45,11 @@
 function s = sprandn (m, n, d, rc)
 
   if (nargin == 1 )
-    s = __sprand_impl__ (m, @randn);
+    s = __sprand__ (m, @randn);
   elseif ( nargin == 3)
-    s = __sprand_impl__ (m, n, d, "sprandn", @randn);
+    s = __sprand__ (m, n, d, "sprandn", @randn);
   elseif (nargin == 4)
-    s = __sprand_impl__ (m, n, d, rc, "sprandn", @randn);
+    s = __sprand__ (m, n, d, rc, "sprandn", @randn);
   else
     print_usage ();
   endif

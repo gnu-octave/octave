@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 Kurt Hornik
+## Copyright (C) 1996-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strtrim (@var{s})
+## @deftypefn {} {} strtrim (@var{s})
 ## Remove leading and trailing whitespace from @var{s}.
 ##
 ## If @var{s} is a matrix, @var{strtrim} trims each row to the length of

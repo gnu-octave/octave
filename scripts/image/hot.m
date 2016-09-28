@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} hot ()
-## @deftypefnx {Function File} {@var{map} =} hot (@var{n})
+## @deftypefn  {} {@var{map} =} hot ()
+## @deftypefnx {} {@var{map} =} hot (@var{n})
 ## Create color colormap.  This colormap ranges from black through dark red,
 ## red, orange, yellow, to white.
 ##
@@ -28,9 +28,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-
-## PKG_ADD: colormap ("register", "hot");
-## PKG_DEL: colormap ("unregister", "hot");
 
 function map = hot (n = rows (colormap ()))
 
@@ -71,8 +68,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'hot' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (hot (64));
-
+%! ## Show the 'hot' colormap profile and as an image
+%! cmap = hot (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} __clabel__ (@var{c}, @var{v}, @var{hparent}, @var{label_spacing}, @var{z}, @var{varargin})
+## @deftypefn {} {@var{h} =} __clabel__ (@var{c}, @var{v}, @var{hparent}, @var{label_spacing}, @var{z}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -101,8 +101,8 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
 
       if (   tpos(1) != xmin && tpos(1) != xmax
           && tpos(2) != ymin && tpos(2) != ymax)
-        trot = 180 / pi * atan2 (diff (c(2,i+j-1:i+j)),
-                                 diff (c(1,i+j-1:i+j)));
+        trot = 180 / pi * atan2 (diff (c(2,i+j-1:i+j)) * yspacing,
+                                 diff (c(1,i+j-1:i+j)) * xspacing);
         if (abs (trot) > 90)
           trot += 180;
         endif

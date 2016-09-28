@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Søren Hauberg
+## Copyright (C) 2009-2016 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} print_usage ()
-## @deftypefnx {Function File} {} print_usage (@var{name})
+## @deftypefn  {} {} print_usage ()
+## @deftypefnx {} {} print_usage (@var{name})
 ## Print the usage message for the function @var{name}.
 ##
 ## When called with no input arguments the @code{print_usage} function displays
@@ -27,6 +27,7 @@
 ## @end deftypefn
 
 function print_usage (name)
+
   x = dbstack ();
   ## Handle input
   if (nargin == 0)
@@ -100,11 +101,12 @@ function [retval, status] = get_usage_plain_text (help_text, max_len)
 endfunction
 
 function [retval, status] = get_usage_texinfo (help_text, max_len)
+
   ## Lines ending with "@\n" are continuation lines, so they should be
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
 
-  ## Find, and keep, lines that start with @def or @end def. This should
+  ## Find, and keep, lines that start with @def or @end def.  This should
   ## include things such as @deftypefn, @deftypefnx, @defvar, etc. and their
   ## corresponding @end's.
   def_idx = strfind (help_text, "@def");
@@ -116,9 +118,9 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
     for k = 1:length (def_idx)
       endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        buffer = strcat (buffer, help_text (def_idx(k):end), "\n");
+        buffer = [buffer, help_text(def_idx(k):end), "\n"];
       else
-        buffer = strcat (buffer, help_text (def_idx(k):endl));
+        buffer = [buffer, help_text(def_idx(k):endl)];
       endif
     endfor
   else
@@ -127,6 +129,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
 
   ## Run makeinfo to generate plain text
   [retval, status] = __makeinfo__ (buffer, "plain text");
+
 endfunction
 
 function [retval, status] = get_usage_html (help_text, max_len)

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} figure
-## @deftypefnx {Command} {} figure @var{n}
-## @deftypefnx {Function File} {} figure (@var{n})
-## @deftypefnx {Function File} {} figure (@dots{}, "@var{property}", @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} figure (@dots{})
+## @deftypefn  {} {} figure
+## @deftypefnx {} {} figure @var{n}
+## @deftypefnx {} {} figure (@var{n})
+## @deftypefnx {} {} figure (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefnx {} {@var{h} =} figure (@dots{})
 ## Create a new figure window for plotting.
 ##
 ## If no arguments are specified, a new figure with the next available number
@@ -57,12 +57,12 @@ function h = figure (varargin)
       f = arg;
       init_new_figure = false;
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     elseif (isscalar (arg) && isnumeric (arg) && arg > 0 && arg == fix (arg))
       f = arg;
       init_new_figure = true;
       varargin(1) = [];
-      nargs--;
+      nargs -= 1;
     else
       error ("figure: N must be figure handle or figure number");
     endif

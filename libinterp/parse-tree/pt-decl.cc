@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
@@ -56,12 +56,9 @@ tree_decl_elt::eval (void)
 
       octave_value init_val = expr->rvalue1 ();
 
-      if (! error_state)
-        {
-          ult.assign (octave_value::op_asn_eq, init_val);
+      ult.assign (octave_value::op_asn_eq, init_val);
 
-          retval = true;
-        }
+      retval = true;
     }
 
   return retval;
@@ -146,3 +143,4 @@ tree_persistent_command::accept (tree_walker& tw)
 {
   tw.visit_persistent_command (*this);
 }
+

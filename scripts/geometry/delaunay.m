@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tri} =} delaunay (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{tetr} =} delaunay (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{tri} =} delaunay (@var{x})
-## @deftypefnx {Function File} {@var{tri} =} delaunay (@dots{}, @var{options})
+## @deftypefn  {} {@var{tri} =} delaunay (@var{x}, @var{y})
+## @deftypefnx {} {@var{tetr} =} delaunay (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {@var{tri} =} delaunay (@var{x})
+## @deftypefnx {} {@var{tri} =} delaunay (@dots{}, @var{options})
 ## Compute the Delaunay triangulation for a 2-D or 3-D set of points.
 ##
 ## For 2-D sets, the return value @var{tri} is a set of triangles which
@@ -195,7 +195,7 @@ endfunction
 ## Test 3-D input
 %!testif HAVE_QHULL
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
-%! assert (sortrows (sort (delaunay (x, y, z), 2)), [1,2,3,4;1,2,4,5])
+%! assert (sortrows (sort (delaunay (x, y, z), 2)), [1,2,3,4;1,2,4,5]);
 
 ## Input validation tests
 %!error delaunay ()

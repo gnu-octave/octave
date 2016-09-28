@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dDiagMatrix_h)
+#if ! defined (octave_dDiagMatrix_h)
 #define octave_dDiagMatrix_h 1
+
+#include "octave-config.h"
 
 #include "MDiagArray2.h"
 
@@ -35,9 +37,6 @@ class
 OCTAVE_API
 DiagMatrix : public MDiagArray2<double>
 {
-  friend class SVD;
-  friend class ComplexSVD;
-
 public:
 
   DiagMatrix (void) : MDiagArray2<double> () { }
@@ -52,7 +51,7 @@ public:
 
   DiagMatrix (const MDiagArray2<double>& a) : MDiagArray2<double> (a) { }
 
-  template <class U>
+  template <typename U>
   DiagMatrix (const DiagArray2<U>& a) : MDiagArray2<double> (a) { }
 
   explicit DiagMatrix (const Array<double>& a) : MDiagArray2<double> (a) { }
@@ -126,3 +125,4 @@ operator * (const DiagMatrix& a, const DiagMatrix& b);
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, DiagMatrix, double)
 
 #endif
+

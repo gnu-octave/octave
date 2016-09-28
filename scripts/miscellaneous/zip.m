@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2015 Sylvain Pelissier
+## Copyright (C) 2006-2016 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filelist} =} zip (@var{zipfile}, @var{files})
-## @deftypefnx {Function File} {@var{filelist} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
+## @deftypefn  {} {@var{filelist} =} zip (@var{zipfile}, @var{files})
+## @deftypefnx {} {@var{filelist} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
 ## Compress the list of files and directories specified in @var{files} into the
 ## ZIP archive @var{zipfile}.
 ##
@@ -55,7 +55,16 @@ function filelist = zip (zipfile, files, rootdir = ".")
 
   zipfile = make_absolute_filename (zipfile);
 
-  cmd = sprintf ("zip -r %s %s", zipfile, sprintf (" %s", files{:}));
+  ## FIXME: This is a lot of processing that could be done by the shell
+  ##        if Octave had a way to call system without passing a single string.
+  ## Escape bad shell characters
+  files = regexprep (files, "([|&;<>()$`\\'\" ])", '\\$1');
+  files = sprintf (' %s', files{:});   # convert to space separated list
+  zipfile = regexprep (zipfile, "'", "\\'");  # escape single quotes
+  cmd = sprintf ("zip -r '%s' %s", zipfile, files);
+  if (ispc () && ! isunix ())
+    cmd = strrep (cmd, "\\", "/");
+  endif
 
   origdir = pwd ();
   cd (rootdir);
@@ -67,7 +76,7 @@ function filelist = zip (zipfile, files, rootdir = ".")
   endif
 
   if (nargout > 0)
-    cmd = ["unzip -Z -1 " zipfile];
+    cmd = sprintf ("unzip -Z -1 '%s'", zipfile);
     [status, filelist] = system (cmd);
     if (status)
       error ("zip: zipinfo failed with exit status = %d", status);
@@ -111,6 +120,8 @@ endfunction
 %! unwind_protect_cleanup
 %!   unlink (filename);
 %!   unlink ([dirname, filesep, basename, ext]);
+%!   unlink (zipfile);
+%!   unlink ([zipfile ".zip"]);
 %!   rmdir (dirname);
 %! end_unwind_protect
 

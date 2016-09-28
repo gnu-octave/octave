@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "mx-m-cm.h"
@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-nda-cnda.h"
 #include "mx-cnda-nda.h"
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-flt-re-mat.h"
@@ -50,7 +50,9 @@ DEFBINOP_OP (mul, matrix, complex_matrix, *)
 
 DEFBINOP (trans_mul, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   Matrix m1 = v1.matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -61,7 +63,9 @@ DEFBINOP (trans_mul, matrix, complex_matrix)
 
 DEFBINOP (div, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v2.matrix_type ();
 
   ComplexMatrix ret = xdiv (v1.matrix_value (),
@@ -74,12 +78,13 @@ DEFBINOP (div, matrix, complex_matrix)
 DEFBINOPX (pow, matrix, complex_matrix)
 {
   error ("can't do A ^ B for A and B both matrices");
-  return octave_value ();
 }
 
 DEFBINOP (ldiv, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.matrix_value (),
@@ -91,7 +96,9 @@ DEFBINOP (ldiv, matrix, complex_matrix)
 
 DEFBINOP (trans_ldiv, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
   MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.matrix_value (),
@@ -114,7 +121,9 @@ DEFNDBINOP_FN (el_pow, matrix, complex_matrix, array, complex_array, elem_xpow)
 
 DEFBINOP (el_ldiv, matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
+  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
+  const octave_complex_matrix& v2
+    = dynamic_cast<const octave_complex_matrix&> (a2);
 
   return quotient (v2.complex_array_value (), v1.array_value ());
 }
@@ -126,7 +135,7 @@ DEFNDCATOP_FN (m_cm, matrix, complex_matrix, array, complex_array, concat)
 
 DEFCONV (complex_matrix_conv, matrix, complex_matrix)
 {
-  CAST_CONV_ARG (const octave_matrix&);
+  const octave_matrix& v = dynamic_cast<const octave_matrix&> (a);
 
   return new octave_complex_matrix (ComplexNDArray (v.array_value ()));
 }
@@ -168,3 +177,4 @@ install_m_cm_ops (void)
 
   INSTALL_WIDENOP (octave_matrix, octave_complex_matrix, complex_matrix_conv);
 }
+

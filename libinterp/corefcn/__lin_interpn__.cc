@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2015 Alexander Barth
+Copyright (C) 2007-2016 Alexander Barth
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-ieee.h"
@@ -30,20 +30,20 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 // equivalent to isvector.m
 
-template <class T>
+template <typename T>
 bool
 isvector (const T& array)
 {
   const dim_vector dv = array.dims ();
-  return dv.length () == 2 && (dv(0) == 1 || dv(1) == 1);
+  return dv.ndims () == 2 && (dv(0) == 1 || dv(1) == 1);
 }
 
 // lookup a value in a sorted table (lookup.m)
-template <class T>
+template <typename T>
 octave_idx_type
 lookup (const T *x, octave_idx_type n, T y)
 {
@@ -56,7 +56,7 @@ lookup (const T *x, octave_idx_type n, T y)
       if (y > x[n-1] || y < x[0])
         return -1;
 
-#ifdef EXHAUSTIF
+#if defined (EXHAUSTIF)
       for (j = 0; j < n - 1; j++)
         {
           if (x[j] <= y && y <= x[j+1])
@@ -91,7 +91,7 @@ lookup (const T *x, octave_idx_type n, T y)
       if (y > x[0] || y < x[n-1])
         return -1;
 
-#ifdef EXHAUSTIF
+#if defined (EXHAUSTIF)
       for (j = 0; j < n - 1; j++)
         {
           if (x[j+1] <= y && y <= x[j])
@@ -122,7 +122,7 @@ lookup (const T *x, octave_idx_type n, T y)
 
 // n-dimensional linear interpolation
 
-template <class T>
+template <typename T>
 void
 lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
              octave_idx_type Ni, T extrapval, const T **x,
@@ -153,7 +153,6 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
             }
         }
 
-
       if (out)
         vi[m] = extrapval;
       else
@@ -181,7 +180,7 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
     }
 }
 
-template <class T, class M>
+template <typename T, typename M>
 octave_value
 lin_interpn (int n, M *X, const M V, M *Y)
 {
@@ -195,7 +194,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
   for (int i = 0; i < n; i++)
     {
       y[i] = Y[i].data ();
-      size[i] =  V.dims ()(i);
+      size[i] = V.dims ()(i);
     }
 
   OCTAVE_LOCAL_BUFFER (const T *, x, n);
@@ -222,31 +221,23 @@ lin_interpn (int n, M *X, const M V, M *Y)
       for (int i = 0; i < n; i++)
         {
           if (X[i].dims () != V.dims ())
-            {
-              error ("interpn: incompatible size of argument number %d", i+1);
-              return retval;
-            }
-          else
-            {
-              M tmp = M (dim_vector (size[i], 1));
+            error ("interpn: incompatible size of argument number %d", i+1);
 
-              for (octave_idx_type j = 0; j < size[i]; j++)
-                tmp(j) =  X[i](scale[i]*j);
+          M tmp = M (dim_vector (size[i], 1));
 
-              X[i] = tmp;
-            }
+          for (octave_idx_type j = 0; j < size[i]; j++)
+            tmp(j) = X[i](scale[i]*j);
+
+          X[i] = tmp;
         }
     }
 
   for (int i = 0; i < n; i++)
     {
       if (! isvector (X[i]) && X[i].numel () != size[i])
-        {
-          error ("interpn: incompatible size of argument number %d", i+1);
-          return retval;
-        }
-      else
-        x[i] = X[i].data ();
+        error ("interpn: incompatible size of argument number %d", i+1);
+
+      x[i] = X[i].data ();
     }
 
   lin_interpn (n, size, scale, Ni, extrapval, x, v, y, vi);
@@ -258,7 +249,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
 
 // Perform @var{n}-dimensional interpolation.  Each element of then
 // @var{n}-dimensional array @var{v} represents a value at a location
-// given by the parameters @var{x1}, @var{x2},...,@var{xn}. The parameters
+// given by the parameters @var{x1}, @var{x2},...,@var{xn}.  The parameters
 // @var{x1}, @var{x2}, @dots{}, @var{xn} are either @var{n}-dimensional
 // arrays of the same size as the array @var{v} in the \"ndgrid\" format
 // or vectors.  The parameters @var{y1}, @var{y2}, @dots{}, @var{yn} are
@@ -268,20 +259,17 @@ lin_interpn (int n, M *X, const M V, M *Y)
 //This function only performs linear interpolation.
 
 DEFUN (__lin_interpn__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{vi} =} __lin_interpn__ (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{vi} =} __lin_interpn__ (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
-  if (nargin < 2 ||  nargin % 2 == 0)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin < 2 || nargin % 2 == 0)
+    print_usage ();
+
+  octave_value retval;
 
   // dimension of the problem
   int n = (nargin-1)/2;
@@ -293,28 +281,13 @@ Undocumented internal function.\n\
 
       const FloatNDArray V = args(n).float_array_value ();
 
-      if (error_state)
-        {
-          print_usage ();
-          return retval;
-        }
-
       for (int i = 0; i < n; i++)
         {
           X[i] = args(i).float_array_value ();
           Y[i] = args(n+i+1).float_array_value ();
 
-          if (error_state)
-            {
-              print_usage ();
-              return retval;
-            }
-
           if (Y[0].dims () != Y[i].dims ())
-            {
-              error ("interpn: incompatible size of argument number %d", n+i+2);
-              return retval;
-            }
+            error ("interpn: incompatible size of argument number %d", n+i+2);
         }
 
       retval = lin_interpn<float, FloatNDArray> (n, X, V, Y);
@@ -326,28 +299,13 @@ Undocumented internal function.\n\
 
       const NDArray V = args(n).array_value ();
 
-      if (error_state)
-        {
-          print_usage ();
-          return retval;
-        }
-
       for (int i = 0; i < n; i++)
         {
           X[i] = args(i).array_value ();
           Y[i] = args(n+i+1).array_value ();
 
-          if (error_state)
-            {
-              print_usage ();
-              return retval;
-            }
-
           if (Y[0].dims () != Y[i].dims ())
-            {
-              error ("interpn: incompatible size of argument number %d", n+i+2);
-              return retval;
-            }
+            error ("interpn: incompatible size of argument number %d", n+i+2);
         }
 
       retval = lin_interpn<double, NDArray> (n, X, V, Y);
@@ -360,3 +318,4 @@ Undocumented internal function.\n\
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

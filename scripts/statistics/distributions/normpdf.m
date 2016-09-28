@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} normpdf (@var{x})
-## @deftypefnx {Function File} {} normpdf (@var{x}, @var{mu}, @var{sigma})
+## @deftypefn  {} {} normpdf (@var{x})
+## @deftypefnx {} {} normpdf (@var{x}, @var{mu}, @var{sigma})
 ## For each element of @var{x}, compute the probability density function (PDF)
 ## at @var{x} of the normal distribution with mean @var{mu} and
 ## standard deviation @var{sigma}.

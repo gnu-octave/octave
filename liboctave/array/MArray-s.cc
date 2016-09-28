@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2015 John W. Eaton
+Copyright (C) 1995-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate MArrays of short int values.
@@ -31,10 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTAVE_API MArray<short>;
 
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 // Explicit instantiation, as this seems to be required by weird compilers
-// like MSVC. This should be harmless on other compilers.
+// like MSVC.  This should be harmless on other compilers.
 template short xmin<short> (short, short);
 template short xmax<short> (short, short);
+#endif
 
 INSTANTIATE_MARRAY_FRIENDS (short, OCTAVE_API)
 
@@ -44,3 +46,4 @@ INSTANTIATE_MARRAY_FRIENDS (short, OCTAVE_API)
 template class OCTAVE_API MDiagArray2<short>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (short, OCTAVE_API)
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 // Instantiate Arrays of Complex values.
@@ -44,7 +44,7 @@ template <>
 inline bool
 sort_isnan<Complex> (const Complex& x)
 {
-  return xisnan (x);
+  return octave::math::isnan (x);
 }
 
 // Sort Criteria: 1) isnan, 2) magnitude of z, 3) phase of z in range (-pi, pi]
@@ -52,13 +52,13 @@ sort_isnan<Complex> (const Complex& x)
 static bool
 nan_ascending_compare (const Complex& x, const Complex& y)
 {
-  return xisnan (y) ? ! xisnan (x) : x < y;
+  return octave::math::isnan (y) ? ! octave::math::isnan (x) : x < y;
 }
 
 static bool
 nan_descending_compare (const Complex& x, const Complex& y)
 {
-  return xisnan (x) ? ! xisnan (y) : x > y;
+  return octave::math::isnan (x) ? ! octave::math::isnan (y) : x > y;
 }
 
 Array<Complex>::compare_fcn_type
@@ -69,7 +69,7 @@ safe_comparator (sortmode mode, const Array<Complex>& a , bool allow_chk)
   if (allow_chk)
     {
       octave_idx_type k = 0;
-      for (; k < a.numel () && ! xisnan (a(k)); k++) ;
+      for (; k < a.numel () && ! octave::math::isnan (a(k)); k++) ;
       if (k == a.numel ())
         {
           if (mode == ASCENDING)
@@ -101,3 +101,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&,
 #include "DiagArray2.cc"
 
 template class OCTAVE_API DiagArray2<Complex>;
+

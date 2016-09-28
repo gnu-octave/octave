@@ -1,7 +1,7 @@
 // Template sparse classes
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -23,8 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Sparse_h)
+#if ! defined (octave_Sparse_h)
 #define octave_Sparse_h 1
+
+#include "octave-config.h"
 
 #include <cassert>
 #include <cstddef>
@@ -45,7 +47,7 @@ class PermMatrix;
 // Two dimensional sparse class.  Handles the reference counting for
 // all the derived classes.
 
-template <class T>
+template <typename T>
 class
 Sparse
 {
@@ -134,6 +136,8 @@ protected:
 
     bool indices_ok (void) const;
 
+    bool any_element_is_nan (void) const;
+
   private:
 
     // No assignment!
@@ -199,8 +203,8 @@ public:
   // is their only common ancestor.
   explicit Sparse (const PermMatrix& a);
 
-  // Type conversion case. Preserves capacity ().
-  template <class U>
+  // Type conversion case.  Preserves capacity ().
+  template <typename U>
   Sparse (const Sparse<U>& a)
     : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols,
            a.rep->nzmx)),
@@ -236,11 +240,16 @@ public:
 
   Sparse<T>& operator = (const Sparse<T>& a);
 
-  // Note that nzmax and capacity are the amount of storage for
-  // nonzero elements, while nnz is the actual number of nonzero
-  // terms.
+  //! Amount of storage for nonzero elements.
+  //! This may differ from the actual number of elements, see nnz().
   octave_idx_type nzmax (void) const { return rep->length (); }
+
+  //! Amount of storage for nonzero elements.
+  //! Synonymous with nzmax().
+  OCTAVE_DEPRECATED ("use 'nzmax' instead")
   octave_idx_type capacity (void) const { return nzmax (); }
+
+  //! Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
   // Querying the number of elements (incl. zeros) may overflow the index type,
@@ -250,7 +259,10 @@ public:
     return dimensions.safe_numel ();
   }
 
-  octave_idx_type nelem (void) const { return capacity (); }
+  OCTAVE_DEPRECATED ("use 'nzmax' instead")
+  octave_idx_type nelem (void) const { return nzmax (); }
+
+  OCTAVE_DEPRECATED ("use 'numel' instead")
   octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
@@ -272,7 +284,7 @@ public:
   size_t byte_size (void) const
   {
     return (static_cast<size_t>(cols () + 1) * sizeof (octave_idx_type)
-            + static_cast<size_t> (capacity ())
+            + static_cast<size_t> (nzmax ())
             * (sizeof (T) + sizeof (octave_idx_type)));
   }
 
@@ -282,14 +294,18 @@ public:
 
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
-  T range_error (const char *fcn, octave_idx_type n) const;
-  T& range_error (const char *fcn, octave_idx_type n);
+  OCTAVE_NORETURN T range_error (const char *fcn, octave_idx_type n) const;
+  OCTAVE_NORETURN T& range_error (const char *fcn, octave_idx_type n);
 
-  T range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const;
-  T& range_error (const char *fcn, octave_idx_type i, octave_idx_type j);
+  OCTAVE_NORETURN T range_error (const char *fcn,
+                                 octave_idx_type i, octave_idx_type j) const;
+  OCTAVE_NORETURN T& range_error (const char *fcn,
+                                  octave_idx_type i, octave_idx_type j);
 
-  T range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const;
-  T& range_error (const char *fcn, const Array<octave_idx_type>& ra_idx);
+  OCTAVE_NORETURN T range_error (const char *fcn,
+                                 const Array<octave_idx_type>& ra_idx) const;
+  OCTAVE_NORETURN T& range_error (const char *fcn,
+                                  const Array<octave_idx_type>& ra_idx);
 
   // No checking, even for multiple references, ever.
 
@@ -370,7 +386,7 @@ public:
   T& elem (const Array<octave_idx_type>& ra_idx)
   { return Sparse<T>::elem (compute_index (ra_idx)); }
 
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   T& operator () (octave_idx_type n)
   {
     return checkelem (n);
@@ -437,7 +453,7 @@ public:
   T elem (const Array<octave_idx_type>& ra_idx) const
   { return Sparse<T>::elem (compute_index (ra_idx)); }
 
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   T operator () (octave_idx_type n) const { return checkelem (n); }
   T operator () (octave_idx_type i, octave_idx_type j) const
   {
@@ -537,7 +553,7 @@ public:
   // FIXME: shouldn't this be returning const octave_idx_type*?
   octave_idx_type* cidx (void) const { return rep->c; }
 
-  octave_idx_type ndims (void) const { return dimensions.length (); }
+  octave_idx_type ndims (void) const { return dimensions.ndims (); }
 
   void delete_elements (const idx_vector& i);
 
@@ -583,18 +599,18 @@ public:
   Array<T> array_value (void) const;
 
   // Generic any/all test functionality with arbitrary predicate.
-  template <class F, bool zero>
+  template <typename F, bool zero>
   bool test (F fcn) const
   {
     return any_all_test<F, T, zero> (fcn, data (), nnz ());
   }
 
   // Simpler calls.
-  template <class F>
+  template <typename F>
   bool test_any (F fcn) const
   { return test<F, false> (fcn); }
 
-  template <class F>
+  template <typename F>
   bool test_all (F fcn) const
   { return test<F, true> (fcn); }
 
@@ -611,7 +627,7 @@ public:
   bool test_all (bool (&fcn) (const T&)) const
   { return test<bool (&) (const T&), true> (fcn); }
 
-  template <class U, class F>
+  template <typename U, typename F>
   Sparse<U>
   map (F fcn) const
   {
@@ -667,106 +683,26 @@ public:
   }
 
   // Overloads for function references.
-  template <class U>
+  template <typename U>
   Sparse<U>
   map (U (&fcn) (T)) const
   { return map<U, U (&) (T)> (fcn); }
 
-  template <class U>
+  template <typename U>
   Sparse<U>
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&)> (fcn); }
 
   bool indices_ok (void) const { return rep->indices_ok (); }
+
+  bool any_element_is_nan (void) const
+  { return rep->any_element_is_nan (); }
 };
 
-template<typename T>
+template <typename T>
 std::istream&
 read_sparse_matrix (std::istream& is, Sparse<T>& a,
-                    T (*read_fcn) (std::istream&))
-{
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-  octave_idx_type nz = a.nzmax ();
-
-  if (nr > 0 && nc > 0)
-    {
-      octave_idx_type itmp;
-      octave_idx_type jtmp;
-      octave_idx_type iold = 0;
-      octave_idx_type jold = 0;
-      octave_idx_type ii = 0;
-      T tmp;
-
-      a.cidx (0) = 0;
-      for (octave_idx_type i = 0; i < nz; i++)
-        {
-          itmp = 0; jtmp = 0;
-          is >> itmp;
-          itmp--;
-
-          is >> jtmp;
-          jtmp--;
-
-          if (itmp < 0 || itmp >= nr)
-            {
-              (*current_liboctave_error_handler)
-                ("invalid sparse matrix: row index = %d out of range",
-                 itmp + 1);
-              is.setstate (std::ios::failbit);
-              goto done;
-            }
-
-          if (jtmp < 0 || jtmp >= nc)
-            {
-              (*current_liboctave_error_handler)
-                ("invalid sparse matrix: column index = %d out of range",
-                 jtmp + 1);
-              is.setstate (std::ios::failbit);
-              goto done;
-            }
-
-          if (jtmp < jold)
-            {
-              (*current_liboctave_error_handler)
-                ("invalid sparse matrix: column indices must appear in ascending order");
-              is.setstate (std::ios::failbit);
-              goto done;
-            }
-          else if (jtmp > jold)
-            {
-              for (octave_idx_type j = jold; j < jtmp; j++)
-                a.cidx (j+1) = ii;
-            }
-          else if (itmp < iold)
-            {
-              (*current_liboctave_error_handler)
-                ("invalid sparse matrix: row indices must appear in ascending order in each column");
-              is.setstate (std::ios::failbit);
-              goto done;
-            }
-
-          iold = itmp;
-          jold = jtmp;
-
-          tmp = read_fcn (is);
-
-          if (is)
-            {
-              a.data (ii) = tmp;
-              a.ridx (ii++) = itmp;
-            }
-          else
-            goto done;
-        }
-
-      for (octave_idx_type j = jold; j < nc; j++)
-        a.cidx (j+1) = ii;
-    }
-
-done:
-
-  return is;
-}
+                    T (*read_fcn) (std::istream&));
 
 #endif
+

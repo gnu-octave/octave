@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imshow (@var{im})
-## @deftypefnx {Function File} {} imshow (@var{im}, @var{limits})
-## @deftypefnx {Function File} {} imshow (@var{im}, @var{map})
-## @deftypefnx {Function File} {} imshow (@var{rgb}, @dots{})
-## @deftypefnx {Function File} {} imshow (@var{filename})
-## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} imshow (@dots{})
+## @deftypefn  {} {} imshow (@var{im})
+## @deftypefnx {} {} imshow (@var{im}, @var{limits})
+## @deftypefnx {} {} imshow (@var{im}, @var{map})
+## @deftypefnx {} {} imshow (@var{rgb}, @dots{})
+## @deftypefnx {} {} imshow (@var{filename})
+## @deftypefnx {} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
+## @deftypefnx {} {@var{h} =} imshow (@dots{})
 ## Display the image @var{im}, where @var{im} can be a 2-dimensional
 ## (grayscale image) or a 3-dimensional (RGB image) matrix.
 ##
@@ -35,7 +35,7 @@
 ## If @var{map} is a valid color map, the image will be shown as an indexed
 ## image using the supplied color map.
 ##
-## If a file name is given instead of an image, the file will be read and shown.
+## If a filename is given instead of an image, the file will be read and shown.
 ##
 ## If given, the parameter @var{string_param1} has value @var{value1}.
 ## @var{string_param1} can be any of the following:
@@ -50,12 +50,14 @@
 ## @item @qcode{"xdata"}
 ## If @var{value1} is a two element vector, it must contain horizontal axis
 ## limits in the form [xmin xmax]; Otherwise @var{value1} must be a vector and
-## only the first and last elements will be used for xmin and xmax respectively.
+## only the first and last elements will be used for xmin and xmax
+## respectively.
 ##
 ## @item @qcode{"ydata"}
 ## If @var{value1} is a two element vector, it must contain vertical axis
 ## limits in the form [ymin ymax]; Otherwise @var{value1} must be a vector and
-## only the first and last elements will be used for ymin and ymax respectively.
+## only the first and last elements will be used for ymin and ymax
+## respectively.
 ##
 ## @end table
 ##
@@ -77,6 +79,7 @@ function h = imshow (im, varargin)
   truecolor = false;
   indexed = false;
   xdata = ydata = [];
+  prop_val_args = {};
 
   ## Get the image.
   if (ischar (im))
@@ -102,7 +105,7 @@ function h = imshow (im, varargin)
       error ("imshow: TrueColor image must be uint8, uint16, double, or single");
     endif
   else
-    error ("imshow: expecting MxN or MxNx3 matrix for image");
+    error ("imshow: image must be MxN or MxNx3 matrix");
   endif
 
   narg = 1;
@@ -113,7 +116,7 @@ function h = imshow (im, varargin)
         display_range = arg;
       elseif (columns (arg) == 3)
         indexed = true;
-        if (iscolormap (arg))
+        if (iscolormap (arg) && min (arg) >= 0 || max (arg) <= 1)
           colormap (arg);
         else
           error ("imshow: invalid colormap MAP");
@@ -123,34 +126,44 @@ function h = imshow (im, varargin)
       endif
     elseif (ischar (arg))
       switch (tolower (arg))
+        case "border"
+          warning ("imshow: border argument is not implemented");
+          narg += 1;
         case "colormap"
           map = varargin{narg++};
-          if (iscolormap (map))
+          if (iscolormap (map) && min (map) >= 0 || max (map) <= 1)
             colormap (map);
           else
             error ("imshow: invalid colormap");
           endif
         case "displayrange"
           display_range = varargin{narg++};
+        case {"initialmagnification"}
+          warning ("imshow: zoom argument ignored -- use GUI features");
+          narg += 1;
         case "parent"
-          warning ("imshow: parent argument is not implemented");
-        case {"truesize", "initialmagnification"}
-          warning ("image: zoom argument ignored -- use GUI features");
+          prop_val_args(end+(1:2)) = {"parent", varargin{narg++}};
+          if (! isaxes (prop_val_args{end}))
+            error ("imshow: parent must be an axes handle");
+          endif
+        case "reduce"
+          warning ("imshow: reduce argument is not implemented");
+          narg += 1;
         case "xdata"
           xdata = varargin{narg++};
           if (! isvector (xdata))
-            error ("imshow: xdata must be a vector")
+            error ("imshow: xdata must be a vector");
           endif
           xdata = [xdata(1) xdata(end)];
         case "ydata"
           ydata = varargin{narg++};
           if (! isvector (ydata))
-            error ("imshow: ydata must be a vector")
+            error ("imshow: ydata must be a vector");
           endif
           ydata = [ydata(1) ydata(end)];
         otherwise
           warning ("imshow: unrecognized property %s", arg);
-          narg++;
+          narg += 1;
       endswitch
     else
       error ("imshow: argument number %d is invalid", narg);
@@ -187,25 +200,14 @@ function h = imshow (im, varargin)
     endif
   endif
 
-  ## FIXME: Commented out 2014/05/01.  imagesc and 'clim' will automatically
-  ## take care of displaying out-of-range data clamped to the limits.
-  ## Eventually, this can be deleted if no problems arise.
-  ## Clamp the image to the range boundaries
-  ##if (! (truecolor || indexed || islogical (im)))
-  ##  low = display_range(1);
-  ##  high = display_range(2);
-  ##  im(im < low) = low;
-  ##  im(im > high) = high;
-  ##endif
-
   if (truecolor || indexed)
-    htmp = image (xdata, ydata, im);
+    htmp = image (xdata, ydata, im, prop_val_args{:});
   else
-    htmp = imagesc (xdata, ydata, im, display_range);
-    set (gca (), "clim", display_range);
+    htmp = imagesc (xdata, ydata, im, display_range, prop_val_args{:});
+    set (get (htmp, "parent"), "clim", display_range);
   endif
-  set (gca (), "visible", "off", "view", [0, 90],
-               "ydir", "reverse", "layer", "top");
+  set (get (htmp, "parent"), "visible", "off", "view", [0, 90],
+                             "ydir", "reverse", "layer", "top");
   axis ("image");
 
   if (nargout > 0)
@@ -238,36 +240,41 @@ endfunction
 %!demo
 %! clf;
 %! imshow (rand (100, 100));
-
-%!demo
-%! clf;
-%! imshow (rand (100, 100, 3));
-
-%!demo
-%! clf;
-%! imshow (100*rand (100, 100, 3));
+%! title ({"imshow with random 100x100 matrix", "black and white"});
 
 %!demo
 %! clf;
 %! imshow (rand (100, 100));
 %! colormap (jet (64));
+%! title ({"imshow with random 100x100 matrix", "colormap() makes color image"});
+
+%!demo
+%! clf;
+%! imshow (rand (100, 100, 3));
+%! title ({"imshow with random 100x100x3 matrix", "RGB color"});
+
+%!demo
+%! clf;
+%! imshow (100*rand (100, 100, 3));
+%! title ({"imshow with random 100x100x3 matrix", "RGB values > 1 are clipped"});
 
 ## Test input validation
 %!error imshow ()
 %!error <IM must be an image> imshow ({"cell"})
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "uint32"))
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "int16"))
-%!error <expecting MxN or MxNx3 matrix> imshow (ones (4,4,4))
+%!error <image must be MxN or MxNx3 matrix> imshow (ones (4,4,4))
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   fail ("imshow ([1,1], [2 0 0])", "invalid colormap MAP");
+%!   fail ("imshow ([1,1], [2 0 0])", "all MAP values must be in the range");
 %!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid");
-%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap");
+%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "all MAP values must be in the range");
+%!   fail ('imshow ([1,1], "parent", -1)', "must be an axes handle");
 %!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector");
 %!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector");
-%!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar")
+%!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar");
 %!   fail ("imshow ([1,1], {1})", "argument number 2 is invalid");
 %!   fail ("imshow ([1+i,1-i])", "warning", "only showing real part of complex image");
 %! unwind_protect_cleanup

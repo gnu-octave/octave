@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Michael Goffioul
+Copyright (C) 2009-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (txt_eng_h)
-#define txt_eng_h 1
+#if ! defined (octave_txt_eng_h)
+#define octave_txt_eng_h 1
+
+#include "octave-config.h"
 
 #include <memory>
 #include <string>
@@ -106,14 +108,14 @@ private:
 class
 OCTINTERP_API
 text_element_list
-  : public text_element, public octave_base_list<text_element *>
+  : public text_element, public octave::base_list<text_element *>
 {
 public:
   text_element_list (void)
-    : text_element (), octave_base_list<text_element*> () { }
+    : text_element (), octave::base_list<text_element*> () { }
 
   text_element_list (text_element* e)
-    : text_element (), octave_base_list<text_element*> ()
+    : text_element (), octave::base_list<text_element*> ()
   { push_back (e); }
 
   ~text_element_list (void)
@@ -350,10 +352,12 @@ protected:
   virtual ~text_processor (void) { }
 };
 
-#define TEXT_ELEMENT_ACCEPT(cls) \
-inline void \
-cls::accept (text_processor& p) \
-{ p.visit (*this); }
+#define TEXT_ELEMENT_ACCEPT(cls)                \
+  inline void                                   \
+  cls::accept (text_processor& p)               \
+  {                                             \
+    p.visit (*this);                            \
+  }
 
 TEXT_ELEMENT_ACCEPT(text_element_string)
 TEXT_ELEMENT_ACCEPT(text_element_symbol)
@@ -438,7 +442,7 @@ private:
 inline text_element*
 text_parser::parse (const std::string& s, const caseless_str& interpreter)
 {
-  std::auto_ptr<text_parser> parser;
+  std::unique_ptr<text_parser> parser;
 
   if (interpreter.compare ("tex"))
     parser.reset (new text_parser_tex ());
@@ -449,3 +453,4 @@ text_parser::parse (const std::string& s, const caseless_str& interpreter)
 }
 
 #endif
+

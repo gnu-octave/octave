@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} spaugment (@var{A}, @var{c})
+## @deftypefn {} {@var{s} =} spaugment (@var{A}, @var{c})
 ## Create the augmented matrix of @var{A}.
 ##
 ## This is given by
@@ -75,12 +75,13 @@
 ## @end deftypefn
 
 function s = spaugment (A, c)
+
   if (nargin < 2)
     if (issparse (A))
       c = max (max (abs (A))) / 1000;
     else
       if (ndims (A) != 2)
-        error ("spaugment: expecting 2-dimenisional matrix");
+        error ("spaugment: A must be a 2-D matrix");
       else
         c = max (abs (A(:))) / 1000;
       endif
@@ -91,6 +92,7 @@ function s = spaugment (A, c)
 
   [m, n] = size (A);
   s = [ c * speye(m, m), A; A', sparse(n, n)];
+
 endfunction
 
 

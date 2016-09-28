@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2014-2015 Eduardo Ramos Fernández <eduradical951@gmail.com>
-Copyright (C) 2013-2015 Kai T. Ohlhus <k.ohlhus@gmail.com>
+Copyright (C) 2014-2016 Eduardo Ramos Fernández <eduradical951@gmail.com>
+Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "oct-locbuf.h"
@@ -35,11 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 Complex ichol_mult_complex (Complex a, Complex b)
 {
 #if defined (HAVE_CXX_COMPLEX_SETTERS)
-  b.imag (-std::imag (b));
+  b.imag (-b.imag ());
 #elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
-  b.imag () = -std::imag (b);
+  b.imag () = -b.imag ();
 #else
-  b = std::conj (b);
+  b = b.conj ();
 #endif
   return a * b;
 }
@@ -52,25 +52,18 @@ double ichol_mult_real (double a, double b)
 bool ichol_checkpivot_complex (Complex pivot)
 {
   if (pivot.imag () != 0)
-    {
-      error ("ichol: non-real pivot encountered.  The matrix must be hermitian.");
-      return false;
-    }
+    error ("ichol: non-real pivot encountered.  The matrix must be Hermitian.");
   else if (pivot.real () < 0)
-    {
-      error ("ichol: negative pivot encountered");
-      return false;
-    }
+    error ("ichol: negative pivot encountered");
+
   return true;
 }
 
 bool ichol_checkpivot_real (double pivot)
 {
   if (pivot < 0)
-    {
-      error ("ichol: negative pivot encountered");
-      return false;
-    }
+    error ("ichol: negative pivot encountered");
+
   return true;
 }
 
@@ -78,10 +71,10 @@ template <typename octave_matrix_t, typename T, T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
 void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 {
-
   const octave_idx_type n = sm.cols ();
   octave_idx_type j1, jend, j2, jrow, jjrow, j, jw, i, k, jj, r;
   T tl;
+
   char opt;
   enum {OFF, ON};
   if (michol == "on")
@@ -109,7 +102,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
       dropsums[i] = 0;
     }
 
-  // Main loop
+  // Loop over all columns
   for (k = 0; k < n; k++)
     {
       j1 = cidx[k];
@@ -117,7 +110,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
       for (j = j1; j < j2; j++)
         iw[ridx[j]] = j;
 
-      jrow = Llist [k];
+      jrow = Llist[k];
       // Iterate over each non-zero element in the actual row.
       while (jrow != -1)
         {
@@ -155,11 +148,9 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
       if (opt == ON)
         data[j1] += dropsums[k];
 
-      if (ridx[j1] != k)
-        {
-          error ("ichol: encountered a pivot equal to 0");
-          break;
-        }
+      // Test for j1 == j2 must be first to avoid invalid ridx[j1] access
+      if (j1 == j2 || ridx[j1] != k)
+        error ("ichol: encountered a pivot equal to 0");
 
       if (! ichol_checkpivot (data[j1]))
         break;
@@ -188,61 +179,47 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
     }
 }
 
-DEFUN (__ichol0__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{L} =} __ichol0__ (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
-Undocumented internal function.\n\
-@end deftypefn")
-
+DEFUN (__ichol0__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{L} =} __ichol0__ (@var{A})
+@deftypefnx {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
   std::string michol = "off";
-
-  if (nargout > 1 || nargin < 1 || nargin > 2)
-    {
-      print_usage ();
-      return retval;
-    }
-
-  if (nargin == 2)
+  if (args.length ())
     michol = args(1).string_value ();
 
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved
-  // so it's structure does not change during the algorithm.  The same input
+  // so its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
-  octave_value_list param_list;
-  if (!args(0).is_complex_type ())
+  octave_value_list arg_list;
+  if (! args(0).is_complex_type ())
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
-      param_list.append (sm);
-      sm = feval ("tril", param_list)(0).sparse_matrix_value ();
+      arg_list.append (sm);
+      sm = feval ("tril", arg_list)(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
-      if (! error_state)
-        retval(0) = sm;
+
+      return ovl (sm);
     }
   else
     {
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
-      param_list.append (sm);
-      sm = feval ("tril", param_list)(0).sparse_complex_matrix_value ();
+      arg_list.append (sm);
+      sm = feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
-      if (! error_state)
-        retval(0) = sm;
-    }
 
-  return retval;
+      return ovl (sm);
+    }
 }
 
 template <typename octave_matrix_t, typename T,  T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
 void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
               const T droptol, const std::string michol = "off")
-
 {
 
   const octave_idx_type n = sm.cols ();
@@ -324,7 +301,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
                   vec[ind] = j;
                   ind++;
                 }
-              w_data[j] -=  ichol_mult (data_l[jj], data_l[jjrow]);
+              w_data[j] -= ichol_mult (data_l[jj], data_l[jjrow]);
             }
           // Update the actual column first element and
           // update the linked list of the jrow row.
@@ -392,26 +369,22 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
         data_l[total_len] += col_drops[k];
 
       if (data_l[total_len] == zero)
-        {
-          error ("ichol: encountered a pivot equal to 0");
-          break;
-        }
-      else if (! ichol_checkpivot (data_l[total_len]))
+        error ("ichol: encountered a pivot equal to 0");
+
+      if (! ichol_checkpivot (data_l[total_len]))
         break;
 
       // Once elements are dropped and compensation of column sums are done,
       // scale the elements by the pivot.
       data_l[total_len] = std::sqrt (data_l[total_len]);
       for (jj = total_len + 1; jj < (total_len + w_len); jj++)
-        data_l[jj] /=  data_l[total_len];
+        data_l[jj] /= data_l[total_len];
       total_len += w_len;
       // Check if there are too many elements to be indexed with
       // octave_idx_type type due to fill-in during the process.
       if (total_len < 0)
-        {
-          error ("ichol: integer overflow.  Too many fill-in elements in L");
-          break;
-        }
+        error ("ichol: integer overflow.  Too many fill-in elements in L");
+
       cidx_l[k+1] = cidx_l[k] - cidx_l[0] + w_len;
 
       // Update Llist and Lfirst with the k-column information.
@@ -428,88 +401,77 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
         }
     }
 
-  if (! error_state)
+  // Build the output matrices
+  L = octave_matrix_t (n, n, total_len);
+
+  for (i = 0; i <= n; i++)
+    L.cidx (i) = cidx_l[i];
+
+  for (i = 0; i < total_len; i++)
     {
-      // Build the output matrices
-      L = octave_matrix_t (n, n, total_len);
-      for (i = 0; i <= n; i++)
-        L.cidx (i) = cidx_l[i];
-      for (i = 0; i < total_len; i++)
-        {
-          L.ridx (i) = ridx_l[i];
-          L.data (i) = data_l[i];
-        }
+      L.ridx (i) = ridx_l[i];
+      L.data (i) = data_l[i];
     }
 }
 
-DEFUN (__icholt__, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{L} =} __icholt__ (@var{A})\n\
-@deftypefnx {Built-in Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\
-@deftypefnx {Built-in Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+DEFUN (__icholt__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{L} =} __icholt__ (@var{A})
+@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol})
+@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value_list retval;
   int nargin = args.length ();
   // Default values of parameters
   std::string michol = "off";
   double droptol = 0;
 
-  if (nargout > 1 || nargin < 1 || nargin > 3)
-    {
-      print_usage ();
-      return retval;
-    }
-
   // Don't repeat input validation of arguments done in ichol.m
-
   if (nargin >= 2)
     droptol = args(1).double_value ();
 
   if (nargin == 3)
     michol = args(2).string_value ();
 
-  octave_value_list param_list;
+  octave_value_list arg_list;
   if (! args(0).is_complex_type ())
     {
       Array <double> cols_norm;
       SparseMatrix L;
-      param_list.append (args(0).sparse_matrix_value ());
+      arg_list.append (args(0).sparse_matrix_value ());
       SparseMatrix sm_l =
-        feval ("tril", param_list)(0).sparse_matrix_value ();
-      param_list(0) = sm_l;
-      param_list(1) = 1;
-      param_list(2) = "cols";
-      cols_norm = feval ("norm", param_list)(0).vector_value ();
-      param_list.clear ();
+        feval ("tril", arg_list)(0).sparse_matrix_value ();
+      arg_list(0) = sm_l;
+      arg_list(1) = 1;
+      arg_list(2) = "cols";
+      cols_norm = feval ("norm", arg_list)(0).vector_value ();
+      arg_list.clear ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
                (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
-      if (! error_state)
-        retval(0) = L;
+
+      return ovl (L);
     }
   else
     {
       Array <Complex> cols_norm;
       SparseComplexMatrix L;
-      param_list.append (args(0).sparse_complex_matrix_value ());
+      arg_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_l =
-        feval ("tril", param_list)(0).sparse_complex_matrix_value ();
-      param_list(0) = sm_l;
-      param_list(1) = 1;
-      param_list(2) = "cols";
-      cols_norm = feval ("norm", param_list)(0).complex_vector_value ();
-      param_list.clear ();
+        feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+      arg_list(0) = sm_l;
+      arg_list(1) = 1;
+      arg_list(2) = "cols";
+      cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
+      arg_list.clear ();
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>
                (sm_l, L, cols_norm.fortran_vec (),
                 Complex (droptol), michol);
-      if (! error_state)
-        retval(0) = L;
-    }
 
-  return retval;
+      return ovl (L);
+    }
 }
 
 /*

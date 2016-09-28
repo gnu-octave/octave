@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_range_h)
+#if ! defined (octave_ov_range_h)
 #define octave_ov_range_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -58,15 +60,15 @@ public:
   octave_range (double base, double limit, double inc)
     : octave_base_value (), range (base, limit, inc), idx_cache ()
   {
-    if (range.nelem () < 0)
-      ::error ("invalid range");
+    if (range.numel () < 0)
+      error ("invalid range");
   }
 
   octave_range (const Range& r)
     : octave_base_value (), range (r), idx_cache ()
   {
-    if (range.nelem () < 0 && range.nelem () != -2)
-      ::error ("invalid range");
+    if (range.numel () < 0 && range.numel () != -2)
+      error ("invalid range");
   }
 
   octave_range (const octave_range& r)
@@ -107,12 +109,11 @@ public:
 
   dim_vector dims (void) const
   {
-    octave_idx_type n = range.nelem ();
+    octave_idx_type n = range.numel ();
     return dim_vector (n > 0, n);
   }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
-
 
   size_t byte_size (void) const { return 3 * sizeof (double); }
 
@@ -248,6 +249,19 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -263,7 +277,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -271,7 +285,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   {
     // FIXME: could be more memory efficient by having a
     // special case of the octave_stream::write method for ranges.
@@ -311,8 +325,8 @@ private:
 
   octave_range& operator = (const octave_range&);
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

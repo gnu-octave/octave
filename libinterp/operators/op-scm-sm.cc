@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,12 +21,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -47,15 +47,17 @@ DEFBINOP_OP (mul, sparse_complex_matrix, sparse_matrix, *)
 
 DEFBINOP (div, sparse_complex_matrix, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_sparse_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_matrix& v2
+    = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
       double d = v2.scalar_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v1.sparse_complex_matrix_value () / d);
     }
@@ -73,20 +75,21 @@ DEFBINOP (div, sparse_complex_matrix, sparse_matrix)
 DEFBINOPX (pow, sparse_complex_matrix, sparse_matrix)
 {
   error ("can't do A ^ B for A and B both matrices");
-  return octave_value ();
 }
 
 DEFBINOP (ldiv, sparse_complex_matrix, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_sparse_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_matrix& v2
+    = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
       Complex d = v1.complex_value ();
 
       if (d == 0.0)
-        gripe_divide_by_zero ();
+        warn_divide_by_zero ();
 
       return octave_value (v2.sparse_matrix_value () / d);
     }
@@ -115,8 +118,10 @@ DEFBINOP_FN (el_pow, sparse_complex_matrix, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, sparse_complex_matrix, sparse_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
-                   const octave_sparse_matrix&);
+  const octave_sparse_complex_matrix& v1
+    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+  const octave_sparse_matrix& v2
+    = dynamic_cast<const octave_sparse_matrix&> (a2);
 
   return octave_value (quotient (v2.sparse_matrix_value (),
                                  v1.sparse_complex_matrix_value ()));
@@ -174,3 +179,4 @@ install_scm_sm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_complex_matrix,
                     octave_sparse_matrix, assign);
 }
+

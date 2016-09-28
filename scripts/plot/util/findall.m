@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Bill Denney
+## Copyright (C) 2008-2016 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} findall ()
-## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
-## @deftypefnx {Function File} {@var{h} =} findall ("-property", @var{prop_name})
-## @deftypefnx {Function File} {@var{h} =} findall ("-regexp", @var{prop_name}, @var{pattern})
-## @deftypefnx {Function File} {@var{h} =} findall (@var{hlist}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} findall (@var{hlist}, "flat", @dots{})
-## @deftypefnx {Function File} {@var{h} =} findall (@var{hlist}, "-depth", @var{d}, @dots{})
+## @deftypefn  {} {@var{h} =} findall ()
+## @deftypefnx {} {@var{h} =} findall (@var{prop_name}, @var{prop_value}, @dots{})
+## @deftypefnx {} {@var{h} =} findall (@var{prop_name}, @var{prop_value}, "-@var{logical_op}", @var{prop_name}, @var{prop_value})
+## @deftypefnx {} {@var{h} =} findall ("-property", @var{prop_name})
+## @deftypefnx {} {@var{h} =} findall ("-regexp", @var{prop_name}, @var{pattern})
+## @deftypefnx {} {@var{h} =} findall (@var{hlist}, @dots{})
+## @deftypefnx {} {@var{h} =} findall (@var{hlist}, "flat", @dots{})
+## @deftypefnx {} {@var{h} =} findall (@var{hlist}, "-depth", @var{d}, @dots{})
 ## Find graphics object, including hidden ones, with specified property values.
 ##
 ## The return value @var{h} is a list of handles to the found graphic objects.
@@ -50,7 +50,10 @@ function h = findall (varargin)
 endfunction
 
 
-%!testif HAVE_FLTK
+%!testif HAVE_OPENGL, HAVE_FLTK
+%! if (! have_window_system)
+%!  return;
+%! endif
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect

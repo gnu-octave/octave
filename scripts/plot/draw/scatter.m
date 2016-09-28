@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} scatter (@var{x}, @var{y})
-## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s})
-## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c})
-## @deftypefnx {Function File} {} scatter (@dots{}, @var{style})
-## @deftypefnx {Function File} {} scatter (@dots{}, "filled")
-## @deftypefnx {Function File} {} scatter (@dots{}, @var{prop}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} scatter (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} scatter (@dots{})
+## @deftypefn  {} {} scatter (@var{x}, @var{y})
+## @deftypefnx {} {} scatter (@var{x}, @var{y}, @var{s})
+## @deftypefnx {} {} scatter (@var{x}, @var{y}, @var{s}, @var{c})
+## @deftypefnx {} {} scatter (@dots{}, @var{style})
+## @deftypefnx {} {} scatter (@dots{}, "filled")
+## @deftypefnx {} {} scatter (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} scatter (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} scatter (@dots{})
 ## Draw a 2-D scatter plot.
 ##
 ## A marker is plotted at each point defined by the coordinates in the vectors
@@ -32,16 +32,16 @@
 ##
 ## The size of the markers is determined by @var{s}, which can be a scalar
 ## or a vector of the same length as @var{x} and @var{y}.  If @var{s}
-## is not given, or is an empty matrix, then a default value of 8 points is
-## used.
+## is not given, or is an empty matrix, then a default value of 36 square
+## points is used (The marker size itself is @code{sqrt (s)}).
 ##
 ## The color of the markers is determined by @var{c}, which can be a string
 ## defining a fixed color; a 3-element vector giving the red, green, and blue
 ## components of the color; a vector of the same length as @var{x} that gives
-## a scaled index into the current colormap; or an @nospell{Nx3} matrix defining
-## the RGB color of each marker individually.
+## a scaled index into the current colormap; or an @nospell{Nx3} matrix
+## defining the RGB color of each marker individually.
 ##
-## The marker to use can be changed with the @var{style} argument, that is a
+## The marker to use can be changed with the @var{style} argument; it is a
 ## string defining a marker in the same manner as the @code{plot} command.
 ## If no marker is specified it defaults to @qcode{"o"} or circles.
 ## If the argument @qcode{"filled"} is given then the markers are filled.
@@ -52,8 +52,8 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle to the created patch
-## object.
+## The optional return value @var{h} is a graphics handle to the created
+## scatter object.
 ##
 ## Example:
 ##
@@ -68,7 +68,7 @@
 ## @seealso{scatter3, patch, plot}
 ## @end deftypefn
 
-function retval = scatter (varargin)
+function h = scatter (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("scatter", varargin{:});
 
@@ -91,7 +91,7 @@ function retval = scatter (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction
@@ -101,24 +101,24 @@ endfunction
 %! clf;
 %! x = randn (100, 1);
 %! y = randn (100, 1);
-%! scatter (x, y, 'r');
-%! title ('scatter() plot with red bubbles');
+%! scatter (x, y, "r");
+%! title ("scatter() plot with red bubbles");
 
 %!demo
 %! clf;
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! c = x .* y;
-%! scatter (x, y, 20, c, 'filled');
-%! title ('scatter() with colored filled bubbles');
+%! scatter (x, y, 50, c, "filled");
+%! title ("scatter() with colored filled bubbles");
 
 %!demo
 %! clf;
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! scatter (x, y, [], sqrt (x.^2 + y.^2));
-%! title ({'scatter() plot'; ...
-%!         'bubble color determined by distance from origin'});
+%! title ({"scatter() plot"; ...
+%!         "bubble color determined by distance from origin"});
 
 %!demo
 %! clf;
@@ -126,10 +126,9 @@ endfunction
 %! rand_10x1_data6 = [0.37460, 0.25027, 0.19510, 0.51182, 0.54704, 0.56087, 0.24853, 0.75443, 0.42712, 0.44273];
 %! x = rand_10x1_data5;
 %! y = rand_10x1_data6;
-%! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, [], 'r', 's');
-%! title ({'scatter() plot'; ...
-%!         'marker is square, color is red'});
+%! h = scatter (x, y, [], "r", "s");
+%! title ({"scatter() plot"; ...
+%!         "color is red, marker is square"});
 
 %!demo
 %! clf;
@@ -137,10 +136,9 @@ endfunction
 %! rand_10x1_data4 = [0.020207, 0.527193, 0.443472, 0.061683, 0.370277, 0.947349, 0.249591, 0.666304, 0.134247, 0.920356];
 %! x = rand_10x1_data3;
 %! y = rand_10x1_data4;
-%! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, [], 'r', 's', 'filled');
-%! title ({'scatter() plot'; ...
-%!         'marker is square, marker is filled, color is red'});
+%! h = scatter (x, y, [], "r", "s", "filled");
+%! title ({"scatter() plot"; ...
+%!         "color is red, marker is square, marker is filled"});
 
 %!demo
 %! clf;
@@ -148,10 +146,10 @@ endfunction
 %! rand_10x1_data2 = [0.75495, 0.83991, 0.80850, 0.73603, 0.19360, 0.72573, 0.69371, 0.74388, 0.13837, 0.54143];
 %! x = rand_10x1_data1;
 %! y = rand_10x1_data2;
-%! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, s, s, 's', 'filled');
-%! title ({'scatter() plot with filled square markers', ...
-%!         'size and color of markers determined by algorithm'});
+%! s = 36 - 30*log (x.^2 + y.^2);
+%! h = scatter (x, y, s, s, "s", "filled");
+%! title ({"scatter() plot with filled square markers", ...
+%!         "size and color of markers determined by algorithm"});
 
 %!demo
 %! clf;
@@ -161,28 +159,28 @@ endfunction
 %!     x = rand (n, 1);
 %!     y = rand (n, 1);
 %!     if (m > 1)
-%!       str = 'Three Colors';
+%!       str = "Three Colors";
 %!       idx = ceil (rand (n, 1) * 3);
 %!       colors = eye (3);
 %!       colors = colors(idx, :);
 %!     else
-%!       str = 'Random Colors';
+%!       str = "Random Colors";
 %!       colors = rand (n, m);
-%!     end
+%!     endif
 %!     if (n == 1)
-%!       str = sprintf ('%s: 1 point', str);
+%!       str = sprintf ("%s: 1 point", str);
 %!     elseif (n < 100)
-%!       str = sprintf ('%s: < 100 points', str);
+%!       str = sprintf ("%s: < 100 points", str);
 %!     else
-%!       str = sprintf ('%s: > 100 points', str);
-%!     end
+%!       str = sprintf ("%s: > 100 points", str);
+%!     endif
 %!     subplot (2,3,k);
 %!     k = k + 1;
-%!     scatter (x, y, 15, colors, 'filled');
+%!     scatter (x, y, [], colors, "filled");
 %!     axis ([0 1 0 1]);
 %!     title (str);
-%!   end
-%! end
+%!   endfor
+%! endfor
 
 %!demo
 %! clf;
@@ -192,26 +190,26 @@ endfunction
 %!     x = rand (n, 1);
 %!     y = rand (n, 1);
 %!     if (m > 1)
-%!       str = 'Three Colors';
+%!       str = "Three Colors";
 %!       idx = ceil (rand (n, 1) * 3);
 %!       colors = eye (3);
 %!       colors = colors(idx, :);
 %!     else
-%!       str = 'Random Colors';
+%!       str = "Random Colors";
 %!       colors = rand (n, m);
-%!     end
+%!     endif
 %!     if (n == 1)
-%!       str = sprintf ('%s: 1 point', str);
+%!       str = sprintf ("%s: 1 point", str);
 %!     elseif (n < 100)
-%!       str = sprintf ('%s: < 100 points', str);
+%!       str = sprintf ("%s: < 100 points", str);
 %!     else
-%!       str = sprintf ('%s: > 100 points', str);
-%!     end
+%!       str = sprintf ("%s: > 100 points", str);
+%!     endif
 %!     subplot (2,3,k);
 %!     k = k + 1;
-%!     scatter (x, y, 15, colors);
+%!     scatter (x, y, [], colors);
 %!     axis ([0 1 0 1]);
 %!     title (str);
-%!   end
-%! end
+%!   endfor
+%! endfor
 

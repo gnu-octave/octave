@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_re_mat_h)
+#if ! defined (octave_ov_re_mat_h)
 #define octave_ov_re_mat_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -175,6 +177,19 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   octave_value diag (octave_idx_type k = 0) const;
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
@@ -211,7 +226,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -219,7 +234,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
   // Unsafe.  This function exists to support the MEX interface.
@@ -236,3 +251,4 @@ private:
 };
 
 #endif
+

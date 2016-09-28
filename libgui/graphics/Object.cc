@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QString>
@@ -34,158 +34,154 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-Object::Object (const graphics_object& go, QObject* obj)
-  : QObject (), m_handle (go.get_handle ()), m_qobject (0)
-{
-  gh_manager::auto_lock lock (false);
+  Object::Object (const graphics_object& go, QObject* obj)
+    : QObject (), m_handle (go.get_handle ()), m_qobject (0)
+  {
+    gh_manager::auto_lock lock (false);
 
-  if (! lock)
-    qCritical ("QtHandles::Object::Object: "
-               "creating Object (h=%g) without a valid lock!!!",
-               m_handle.value ());
+    if (! lock)
+      qCritical ("QtHandles::Object::Object: "
+                 "creating Object (h=%g) without a valid lock!!!",
+                 m_handle.value ());
 
-  init (obj);
-}
+    init (obj);
+  }
 
-void
-Object::init (QObject* obj, bool)
-{
-  if (m_qobject)
-    qCritical ("QtHandles::Object::init: "
-               "resetting QObject while in invalid state");
+  void
+  Object::init (QObject* obj, bool)
+  {
+    if (m_qobject)
+      qCritical ("QtHandles::Object::init: "
+                 "resetting QObject while in invalid state");
 
-  m_qobject = obj;
+    m_qobject = obj;
 
-  if (m_qobject)
-    {
-      m_qobject->setProperty ("QtHandles::Object",
-                              qVariantFromValue<void*> (this));
-      connect (m_qobject, SIGNAL (destroyed (QObject*)),
-               SLOT (objectDestroyed (QObject*)));
-    }
-}
+    if (m_qobject)
+      {
+        m_qobject->setProperty ("QtHandles::Object",
+                                qVariantFromValue<void*> (this));
+        connect (m_qobject, SIGNAL (destroyed (QObject*)),
+                 SLOT (objectDestroyed (QObject*)));
+      }
+  }
 
-Object::~Object (void)
-{
-}
+  Object::~Object (void)
+  { }
 
-graphics_object
-Object::object (void) const
-{
-  gh_manager::auto_lock lock (false);
+  graphics_object
+  Object::object (void) const
+  {
+    gh_manager::auto_lock lock (false);
 
-  if (! lock)
-    qCritical ("QtHandles::Object::object: "
-               "accessing graphics object (h=%g) without a valid lock!!!",
-               m_handle.value ());
+    if (! lock)
+      qCritical ("QtHandles::Object::object: "
+                 "accessing graphics object (h=%g) without a valid lock!!!",
+                 m_handle.value ());
 
-  return gh_manager::get_object (m_handle);
-}
+    return gh_manager::get_object (m_handle);
+  }
 
-void
-Object::slotUpdate (int pId)
-{
-  gh_manager::auto_lock lock;
+  void
+  Object::slotUpdate (int pId)
+  {
+    gh_manager::auto_lock lock;
 
-  switch (pId)
-    {
-    // Special case for objects being deleted, as it's very likely
-    // that the graphics_object already has been destroyed when this
-    // is executed (because of the async behavior).
-    case base_properties::ID_BEINGDELETED:
-      beingDeleted ();
-      break;
+    switch (pId)
+      {
+      // Special case for objects being deleted, as it's very likely
+      // that the graphics_object already has been destroyed when this
+      // is executed (because of the async behavior).
+      case base_properties::ID_BEINGDELETED:
+        beingDeleted ();
+        break;
 
-    default:
-      if (object ().valid_object ())
-        update (pId);
-      break;
-    }
-}
+      default:
+        if (object ().valid_object ())
+          update (pId);
+        break;
+      }
+  }
 
-void
-Object::slotFinalize (void)
-{
-  gh_manager::auto_lock lock;
+  void
+  Object::slotFinalize (void)
+  {
+    gh_manager::auto_lock lock;
 
-  finalize ();
-}
+    finalize ();
+  }
 
-void
-Object::slotRedraw (void)
-{
-  gh_manager::auto_lock lock;
+  void
+  Object::slotRedraw (void)
+  {
+    gh_manager::auto_lock lock;
 
-  if (object ().valid_object ())
-    redraw ();
-}
+    if (object ().valid_object ())
+      redraw ();
+  }
 
-void
-Object::slotPrint (const QString& file_cmd, const QString& term)
-{
-  gh_manager::auto_lock lock;
+  void
+  Object::slotPrint (const QString& file_cmd, const QString& term)
+  {
+    gh_manager::auto_lock lock;
 
-  if (object ().valid_object ())
-    print (file_cmd, term);
-}
+    if (object ().valid_object ())
+      print (file_cmd, term);
+  }
 
-void
-Object::update (int /* pId */)
-{
-}
+  void
+  Object::update (int /* pId */)
+  { }
 
-void
-Object::finalize (void)
-{
-  if (m_qobject)
-    {
-      delete m_qobject;
+  void
+  Object::finalize (void)
+  {
+    if (m_qobject)
+      {
+        delete m_qobject;
+        m_qobject = 0;
+      }
+    deleteLater ();
+  }
+
+  void
+  Object::redraw (void)
+  { }
+
+  void
+  Object::print (const QString& /* file_cmd */, const QString& /* term */)
+  { }
+
+  void
+  Object::beingDeleted (void)
+  { }
+
+  void Object::objectDestroyed (QObject* obj)
+  {
+    if (obj && obj == m_qobject)
       m_qobject = 0;
-    }
-  deleteLater ();
+  }
+
+  Object*
+  Object::parentObject (const graphics_object& go)
+  {
+    gh_manager::auto_lock lock;
+
+    Object* parent = Backend::toolkitObject
+                     (gh_manager::get_object (go.get_parent ()));
+
+    return parent;
+  }
+
+  Object*
+  Object::fromQObject (QObject* obj)
+  {
+    QVariant v = obj->property ("QtHandles::Object");
+
+    if (v.isValid ())
+      return reinterpret_cast<Object*> (qvariant_cast<void*> (v));
+
+    return 0;
+  }
+
 }
 
-void
-Object::redraw (void)
-{
-}
-
-void
-Object::print (const QString& /* file_cmd */, const QString& /* term */)
-{
-}
-
-void
-Object::beingDeleted (void)
-{
-}
-
-void Object::objectDestroyed (QObject* obj)
-{
-  if (obj && obj == m_qobject)
-    m_qobject = 0;
-}
-
-Object*
-Object::parentObject (const graphics_object& go)
-{
-  gh_manager::auto_lock lock;
-
-  Object* parent = Backend::toolkitObject
-    (gh_manager::get_object (go.get_parent ()));
-
-  return parent;
-}
-
-Object*
-Object::fromQObject (QObject* obj)
-{
-  QVariant v = obj->property ("QtHandles::Object");
-
-  if (v.isValid ())
-    return reinterpret_cast<Object*> (qVariantValue<void*> (v));
-
-  return 0;
-}
-
-}; // namespace QtHandles

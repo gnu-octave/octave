@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2015 John W. Eaton
+Copyright (C) 2003-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,14 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
+#include "call-stack.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-fcn-handle.h"
 #include "pt-fcn-handle.h"
 #include "pager.h"
@@ -62,8 +63,8 @@ tree_fcn_handle::rvalue (int nargout)
 
   if (nargout > 1)
     error ("invalid number of output arguments for function handle expression");
-  else
-    retval = rvalue1 (nargout);
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -181,8 +182,8 @@ tree_anon_fcn_handle::rvalue (int nargout)
 
   if (nargout > 1)
     error ("invalid number of output arguments for anonymous function handle expression");
-  else
-    retval = rvalue1 (nargout);
+
+  retval = rvalue1 (nargout);
 
   return retval;
 }
@@ -218,3 +219,4 @@ tree_anon_fcn_handle::accept (tree_walker& tw)
 {
   tw.visit_anon_fcn_handle (*this);
 }
+

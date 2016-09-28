@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_CollocWt_h)
+#if ! defined (octave_CollocWt_h)
 #define octave_CollocWt_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 
@@ -150,14 +152,14 @@ public:
   double alpha (void) const { return Alpha; }
   double beta (void) const { return Beta; }
 
-  ColumnVector roots (void) { if (!initialized) init (); return r; }
-  ColumnVector quad (void) { if (!initialized) init (); return q; }
+  ColumnVector roots (void) { if (! initialized) init (); return r; }
+  ColumnVector quad (void) { if (! initialized) init (); return q; }
 
   ColumnVector quad_weights (void) { return quad (); }
 
-  Matrix first (void) { if (!initialized) init (); return A; }
+  Matrix first (void) { if (! initialized) init (); return A; }
 
-  Matrix second (void) { if (!initialized) init (); return B; }
+  Matrix second (void) { if (! initialized) init (); return B; }
 
   friend std::ostream& operator << (std::ostream&, const CollocWt&);
 
@@ -188,3 +190,4 @@ protected:
 };
 
 #endif
+

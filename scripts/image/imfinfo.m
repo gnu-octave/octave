@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Soren Hauberg
+## Copyright (C) 2008-2016 Soren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{info} =} imfinfo (@var{filename})
-## @deftypefnx {Function File} {@var{info} =} imfinfo (@var{url})
-## @deftypefnx {Function File} {@var{info} =} imfinfo (@dots{}, @var{ext})
+## @deftypefn  {} {@var{info} =} imfinfo (@var{filename})
+## @deftypefnx {} {@var{info} =} imfinfo (@var{url})
+## @deftypefnx {} {@var{info} =} imfinfo (@dots{}, @var{ext})
 ## Read image information from a file.
 ##
 ## @code{imfinfo} returns a structure containing information about the image
@@ -73,8 +73,8 @@
 ## Number of iterations to loop an animation.
 ##
 ## @item ByteOrder
-## Endian option for formats that support it.  Value is @qcode{"little-endian"},
-## @qcode{"big-endian"}, or @qcode{"undefined"}.
+## Endian option for formats that support it.  Value is
+## @qcode{"little-endian"}, @qcode{"big-endian"}, or @qcode{"undefined"}.
 ##
 ## @item Gamma
 ## Gamma level of the image.  The same color image displayed on two different
@@ -149,6 +149,7 @@
 ## Author: Soren Hauberg <hauberg@gmail.com>
 
 function info = imfinfo (filename, varargin)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   elseif (! ischar (filename))
@@ -156,12 +157,16 @@ function info = imfinfo (filename, varargin)
   elseif (nargin > 1 && ! ischar (ext))
     error ("imfinfo: EXT must be a string");
   endif
+
   info = imageIO ("imfinfo", @__imfinfo__, "info", filename, varargin{:});
+
 endfunction
 
-## This test is the same as the similar one in imread. imfinfo must check
-## if file exists before calling __imfinfo_. This test confirm this.
+
+## This test is the same as the similar one in imread.  imfinfo must check
+## if file exists before calling __imfinfo_.  This BIST test confirms this.
 %!testif HAVE_MAGICK
+%! warning ("off", "Octave:GraphicsMagic-Quantum-Depth", "local");
 %! fmt = fmt_ori = imformats ("jpg");
 %! fmt.info = @true;
 %! error_thrown = false;

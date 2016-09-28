@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2015 Andy Adler
+## Copyright (C) 1998-2016 Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} spy (@var{x})
-## @deftypefnx {Function File} {} spy (@dots{}, @var{markersize})
-## @deftypefnx {Function File} {} spy (@dots{}, @var{line_spec})
+## @deftypefn  {} {} spy (@var{x})
+## @deftypefnx {} {} spy (@dots{}, @var{markersize})
+## @deftypefnx {} {} spy (@dots{}, @var{line_spec})
 ## Plot the sparsity pattern of the sparse matrix @var{x}.
 ##
 ## If the argument @var{markersize} is given as a scalar value, it is used to

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dump_prefs ()
-## @deftypefnx {Function File} {} dump_prefs (@var{fid})
+## @deftypefn  {} {} dump_prefs ()
+## @deftypefnx {} {} dump_prefs (@var{fid})
 ##
 ## @code{dump_prefs} is deprecated and will be removed in Octave version 4.4.
 ## Please use individual preference get/set routines in all new code.
@@ -28,7 +28,6 @@
 ##
 ## If the optional argument @var{fid} is given then the results are written to
 ## the file specified by file descriptor @var{fid}.
-## @seealso{octave_config_info}
 ## @end deftypefn
 
 ## Author: jwe
@@ -56,51 +55,67 @@ function dump_prefs (fid)
   ## directly from Octave so that we wouldn't have to remember to update it
   ## each time the list of preference variables changes
 
-  ## FIXME: Update this list for 4.2.0 release
-  ##        Example, 'gnuplot_command_end' is no longer valid.
-
   pref_list = {"EDITOR"
               "EXEC_PATH"
               "IMAGE_PATH"
               "PAGER"
+              "PAGER_FLAGS"
               "PS1"
               "PS2"
               "PS4"
+              "allow_noninteger_range_as_index"
               "beep_on_error"
+              "built_in_docstrings_file"
               "completion_append_char"
+              "confirm_recursive_rmdir"
               "crash_dumps_octave_core"
+              "debug_java"
+              "debug_on_error"
+              "debug_on_interrupt"
+              "debug_on_warning"
+              "disable_diagonal_matrix"
+              "disable_permutation_matrix"
+              "disable_range"
+              "do_braindead_shortcircuit_evaluation"
+              "doc_cache_file"
               "echo_executing_commands"
               "fixed_point_format"
               "gnuplot_binary"
-              "gnuplot_command_end"
-              "gnuplot_command_plot"
-              "gnuplot_command_replot"
-              "gnuplot_command_splot"
-              "gnuplot_command_title"
-              "gnuplot_command_using"
-              "gnuplot_command_with"
               "history_file"
+              "history_save"
               "history_size"
+              "history_timestamp_format_string"
               "ignore_function_time_stamp"
               "info_file"
               "info_program"
+              "java_matrix_autoconversion"
+              "java_unsigned_autoconversion"
               "makeinfo_program"
               "max_recursion_depth"
+              "missing_component_hook"
+              "missing_function_hook"
+              "octave_core_file_limit"
+              "octave_core_file_name"
+              "octave_core_file_options"
+              "optimize_subsasgn_calls"
               "output_max_field_width"
               "output_precision"
               "page_output_immediately"
               "page_screen_output"
-              "print_answer_id_name"
               "print_empty_dimensions"
+              "print_struct_array_contents"
+              "save_default_options"
+              "save_header_format_string"
               "save_precision"
-              "saving_history"
               "sighup_dumps_octave_core"
               "sigterm_dumps_octave_core"
               "silent_functions"
+              "sparse_auto_mutate"
               "split_long_rows"
               "string_fill_char"
               "struct_levels_to_print"
-              "suppress_verbose_help_message"};
+              "suppress_verbose_help_message"
+              "texi_macros_file"};
 
   for i = 1:rows (pref_list)
     pref = pref_list{i};

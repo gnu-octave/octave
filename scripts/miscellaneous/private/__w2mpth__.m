@@ -1,4 +1,4 @@
-## Copyright (C) 2015 Philip Nienhuis
+## Copyright (C) 2016 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{mingwpath} =} __w2mpth__ (@var{winpath})
+## @deftypefn {} {@var{mingwpath} =} __w2mpth__ (@var{winpath})
 ## Convert a Windows-style relative or full path name to MinGW style.
 ##
 ## @strong{Caution:} __w2mpth__ does not check the validity of the path.
@@ -47,7 +47,7 @@ function mingwpath = __w2mpth__ (winpath)
 
   ## Check for platform
   if (! ispc)
-    error ("__w2mpth__ should only be called on Windows platforms\n");
+    error ("__w2mpth__: function must only be called on Windows platforms\n");
   endif
 
   ## Replace backslash file separators by forward slashes

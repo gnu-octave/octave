@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cerrno>
@@ -33,13 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
 #include "oct-env.h"
+#include "oct-glob.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 
@@ -48,15 +46,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "dir-ops.h"
 #include "dirfns.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "input.h"
 #include "load-path.h"
+#include "octave.h"
 #include "octave-link.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "pager.h"
 #include "procstream.h"
 #include "sysdep.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -66,84 +65,80 @@ along with Octave; see the file COPYING.  If not, see
 static bool Vconfirm_recursive_rmdir = true;
 
 // The time we last time we changed directories.
-octave_time Vlast_chdir_time = 0.0;
+octave::sys::time Vlast_chdir_time = 0.0;
 
 static int
 octave_change_to_directory (const std::string& newdir)
 {
-  std::string xdir = file_ops::tilde_expand (newdir);
+  std::string xdir = octave::sys::file_ops::tilde_expand (newdir);
 
-  int cd_ok = octave_env::chdir (xdir);
+  int cd_ok = octave::sys::env::chdir (xdir);
 
-  if (cd_ok)
-    {
-      Vlast_chdir_time.stamp ();
+  if (! cd_ok)
+    error ("%s: %s", newdir.c_str (), std::strerror (errno));
 
-      // FIXME: should these actions be handled as a list of functions
-      // to call so users can add their own chdir handlers?
+  Vlast_chdir_time.stamp ();
 
-      load_path::update ();
+  // FIXME: should these actions be handled as a list of functions
+  // to call so users can add their own chdir handlers?
 
-      octave_link::change_directory (octave_env::get_current_directory ());
-    }
-  else
-    error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));
+  load_path::update ();
+
+  octave_link::change_directory (octave::sys::env::get_current_directory ());
 
   return cd_ok;
 }
 
 DEFUN (cd, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Command} {} cd @var{dir}\n\
-@deftypefnx {Command} {} cd\n\
-@deftypefnx {Built-in Function} {@var{old_dir} =} cd (@var{dir})\n\
-@deftypefnx {Command} {} chdir @dots{}\n\
-Change the current working directory to @var{dir}.\n\
-\n\
-If @var{dir} is omitted, the current directory is changed to the user's home\n\
-directory (@qcode{\"~\"}).\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-cd ~/octave\n\
-@end example\n\
-\n\
-@noindent\n\
-changes the current working directory to @file{~/octave}.  If the\n\
-directory does not exist, an error message is printed and the working\n\
-directory is not changed.\n\
-\n\
-@code{chdir} is an alias for @code{cd} and can be used in all of the same\n\
-calling formats.\n\
-\n\
-Compatibility Note: When called with no arguments, @sc{matlab} prints the\n\
-present working directory rather than changing to the user's home directory.\n\
-@seealso{pwd, mkdir, rmdir, dir, ls}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} cd @var{dir}
+@deftypefnx {} {} cd
+@deftypefnx {} {@var{old_dir} =} cd (@var{dir})
+@deftypefnx {} {} chdir @dots{}
+Change the current working directory to @var{dir}.
+
+If @var{dir} is omitted, the current directory is changed to the user's home
+directory (@qcode{"~"}).
+
+For example,
+
+@example
+cd ~/octave
+@end example
+
+@noindent
+changes the current working directory to @file{~/octave}.  If the
+directory does not exist, an error message is printed and the working
+directory is not changed.
+
+@code{chdir} is an alias for @code{cd} and can be used in all of the same
+calling formats.
+
+Compatibility Note: When called with no arguments, @sc{matlab} prints the
+present working directory rather than changing to the user's home directory.
+@seealso{pwd, mkdir, rmdir, dir, ls}
+@end deftypefn */)
 {
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
   octave_value_list retval;
 
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("cd");
-
-  if (error_state)
-    return retval;
-
   if (nargout > 0)
-    retval = octave_value (octave_env::get_current_directory ());
+    retval = octave_value (octave::sys::env::get_current_directory ());
 
-  if (argc > 1)
+  if (nargin == 1)
     {
-      std::string dirname = argv[1];
+      std::string dirname = args(0).xstring_value ("cd: DIR must be a string");
 
-      if (dirname.length () > 0)
+      if (! dirname.empty ())
         octave_change_to_directory (dirname);
     }
   else
     {
-      std::string home_dir = octave_env::get_home_directory ();
+      std::string home_dir = octave::sys::env::get_home_directory ();
 
       if (! home_dir.empty ())
         octave_change_to_directory (home_dir);
@@ -155,60 +150,49 @@ present working directory rather than changing to the user's home directory.\n\
 DEFALIAS (chdir, cd);
 
 DEFUN (pwd, , ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} pwd ()\n\
-@deftypefnx {Built-in Function} {@var{dir} =} pwd ()\n\
-Return the current working directory.\n\
-@seealso{cd, dir, ls, mkdir, rmdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pwd ()
+@deftypefnx {} {@var{dir} =} pwd ()
+Return the current working directory.
+@seealso{cd, dir, ls, mkdir, rmdir}
+@end deftypefn */)
 {
-  return octave_value (octave_env::get_current_directory ());
+  return ovl (octave::sys::env::get_current_directory ());
 }
 
 DEFUN (readdir, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{files} =} readdir (@var{dir})\n\
-@deftypefnx {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
-Return the names of files in the directory @var{dir} as a cell array of\n\
-strings.\n\
-\n\
-If an error occurs, return an empty cell array in @var{files}.\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{ls, dir, glob, what}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{files} =} readdir (@var{dir})
+@deftypefnx {} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})
+Return the names of files in the directory @var{dir} as a cell array of
+strings.
+
+If an error occurs, return an empty cell array in @var{files}.
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{ls, dir, glob, what}
+@end deftypefn */)
 {
-  octave_value_list retval;
+  if (args.length () != 1)
+    print_usage ();
 
-  retval(2) = std::string ();
-  retval(1) = -1.0;
-  retval(0) = Cell ();
+  std::string dirname = args(0).xstring_value ("readdir: DIR must be a string");
 
-  if (args.length () == 1)
+  octave_value_list retval = ovl (Cell (), -1.0, "");
+
+  dirname = octave::sys::file_ops::tilde_expand (dirname);
+
+  octave::sys::dir_entry dir (dirname);
+
+  if (dir)
     {
-      std::string dirname = args(0).string_value ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("readdir", args(0));
-      else
-        {
-          dir_entry dir (dirname);
-
-          if (dir)
-            {
-              string_vector dirlist = dir.read ();
-              retval(1) = 0.0;
-              retval(0) = Cell (dirlist.sort ());
-            }
-          else
-            {
-              retval(2) = dir.error ();
-            }
-        }
+      string_vector dirlist = dir.read ();
+      retval(0) = Cell (dirlist.sort ());
+      retval(1) = 0.0;
     }
   else
-    print_usage ();
+    retval(2) = dir.error ();
 
   return retval;
 }
@@ -216,428 +200,358 @@ error message.\n\
 // FIXME: should maybe also allow second arg to specify mode?
 //        OTOH, that might cause trouble with compatibility later...
 
-DEFUNX ("mkdir", Fmkdir, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} mkdir @var{dir}\n\
-@deftypefnx {Built-in Function} {} mkdir (@var{parent}, @var{dir})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@dots{})\n\
-Create a directory named @var{dir} in the directory @var{parent}.\n\
-\n\
-If no @var{parent} directory is specified the present working directory is\n\
-used.\n\
-\n\
-If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
-character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-system-dependent error message, and @var{msgid} contains a unique message\n\
-identifier.\n\
-\n\
-When creating a directory permissions will be set to\n\
-@code{0777 - @var{umask}}.\n\
-@seealso{rmdir, pwd, cd, umask}\n\
-@end deftypefn")
+DEFUN (__mkdir__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __mkdir__ (@var{parent}, @var{dir})
+Internal function called by mkdir.m.
+@seealso{mkdir, rmdir, pwd, cd, umask}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(2) = std::string ();
-  retval(1) = std::string ();
-  retval(0) = false;
-
   int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ("mkdir");
 
   std::string dirname;
 
   if (nargin == 2)
     {
-      std::string parent = args(0).string_value ();
-      std::string dir = args(1).string_value ();
+      std::string parent = args(0).xstring_value ("mkdir: PARENT must be a string");
+      std::string dir = args(1).xstring_value ("mkdir: DIR must be a string");
 
-      if (error_state)
-        {
-          gripe_wrong_type_arg ("mkdir", args(0));
-          return retval;
-        }
-      else
-        dirname = file_ops::concat (parent, dir);
+      dirname = octave::sys::file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
+    dirname = args(0).xstring_value ("mkdir: DIR must be a string");
+
+  dirname = octave::sys::file_ops::tilde_expand (dirname);
+
+  octave::sys::file_stat fs (dirname);
+
+  if (fs && fs.is_dir ())
     {
-      dirname = args(0).string_value ();
-
-      if (error_state)
-        {
-          gripe_wrong_type_arg ("mkdir", args(0));
-          return retval;
-        }
+      // For Matlab compatibility, return true when directory already exists.
+      return ovl (true, "directory exists", "mkdir");
     }
-
-  if (nargin == 1 || nargin == 2)
+  else
     {
       std::string msg;
 
-      dirname = file_ops::tilde_expand (dirname);
+      int status = octave::sys::mkdir (dirname, 0777, msg);
 
-      file_stat fs (dirname);
-
-      if (fs && fs.is_dir ())
-        {
-          // For compatibility with Matlab, we return true when the
-          // directory already exists.
-
-          retval(2) = "mkdir";
-          retval(1) = "directory exists";
-          retval(0) = true;
-        }
+      if (status < 0)
+        return ovl (false, msg, "mkdir");
       else
-        {
-          int status = octave_mkdir (dirname, 0777, msg);
-
-          if (status < 0)
-            {
-              retval(2) = "mkdir";
-              retval(1) = msg;
-            }
-          else
-            retval(0) = true;
-        }
+        return ovl (true, "", "");
     }
-  else
-    print_usage ();
-
-  return retval;
 }
 
 DEFUNX ("rmdir", Frmdir, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} rmdir @var{dir}\n\
-@deftypefnx {Built-in Function} {} rmdir (@var{dir}, \"s\")\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})\n\
-Remove the directory named @var{dir}.\n\
-\n\
-If the optional second parameter is supplied with value @qcode{\"s\"},\n\
-recursively remove all subdirectories as well.\n\
-\n\
-If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty\n\
-character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-system-dependent error message, and @var{msgid} contains a unique message\n\
-identifier.\n\
-\n\
-@seealso{mkdir, confirm_recursive_rmdir, pwd}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} rmdir @var{dir}
+@deftypefnx {} {} rmdir (@var{dir}, "s")
+@deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})
+Remove the directory named @var{dir}.
+
+If the optional second parameter is supplied with value @qcode{"s"},
+recursively remove all subdirectories as well.
+
+If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
+character strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
+system-dependent error message, and @var{msgid} contains a unique message
+identifier.
+
+@seealso{mkdir, confirm_recursive_rmdir, pwd}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(2) = std::string ();
-  retval(1) = std::string ();
-  retval(0) = false;
-
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
-    {
-      std::string dirname = args(0).string_value ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("rmdir", args(0));
-      else
-        {
-          std::string fulldir = file_ops::tilde_expand (dirname);
-          int status = -1;
-          std::string msg;
-
-          if (nargin == 2)
-            {
-              if (args(1).string_value () == "s")
-                {
-                  bool doit = true;
-
-                  if (interactive && ! forced_interactive
-                      && Vconfirm_recursive_rmdir)
-                    {
-                      std::string prompt
-                        = "remove entire contents of " + fulldir + "? ";
-
-                      doit = octave_yes_or_no (prompt);
-                    }
-
-                  if (doit)
-                    status = octave_recursive_rmdir (fulldir, msg);
-                }
-              else
-                error ("rmdir: expecting second argument to be \"s\"");
-            }
-          else
-            status = octave_rmdir (fulldir, msg);
-
-          if (status < 0)
-            {
-              retval(2) = "rmdir";
-              retval(1) = msg;
-            }
-          else
-            retval(0) = true;
-        }
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  return retval;
+  std::string dirname = args(0).xstring_value ("rmdir: DIR must be a string");
+
+  std::string fulldir = octave::sys::file_ops::tilde_expand (dirname);
+  int status = -1;
+  std::string msg;
+
+  if (nargin == 2)
+    {
+      if (args(1).string_value () != "s")
+        error ("rmdir: second argument must be \"s\" for recursive removal");
+
+      bool doit = true;
+
+      if (octave::application::interactive ()
+          && ! octave::application::forced_interactive ()
+          && Vconfirm_recursive_rmdir)
+        {
+          std::string prompt = "remove entire contents of " + fulldir + "? ";
+
+          doit = octave_yes_or_no (prompt);
+        }
+
+      if (doit)
+        status = octave::sys::recursive_rmdir (fulldir, msg);
+    }
+  else
+    status = octave::sys::rmdir (fulldir, msg);
+
+  if (status < 0)
+    return ovl (false, msg, "rmdir");
+  else
+    return ovl (true, "", "");
 }
 
 DEFUNX ("link", Flink, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} link @var{old} @var{new}\n\
-@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
-Create a new link (also known as a hard link) to an existing file.\n\
-\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{symlink, unlink, readlink, lstat}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} link @var{old} @var{new}
+@deftypefnx {} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})
+Create a new link (also known as a hard link) to an existing file.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{symlink, unlink, readlink, lstat}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  if (args.length () == 2)
-    {
-      std::string from = args(0).string_value ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("link", args(0));
-      else
-        {
-          std::string to = args(1).string_value ();
-
-          if (error_state)
-            gripe_wrong_type_arg ("link", args(1));
-          else
-            {
-              std::string msg;
-
-              int status = octave_link (from, to, msg);
-
-              if (status < 0)
-                retval(1) = msg;
-              retval(0) = status;
-            }
-        }
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  std::string from = args(0).xstring_value ("link: OLD must be a string");
+  std::string to = args(1).xstring_value ("link: NEW must be a string");
+
+  from = octave::sys::file_ops::tilde_expand (from);
+  to = octave::sys::file_ops::tilde_expand (to);
+
+  std::string msg;
+
+  int status = octave::sys::link (from, to, msg);
+
+  if (status < 0)
+    return ovl (-1.0, msg);
+  else
+    return ovl (status, "");
 }
 
 DEFUNX ("symlink", Fsymlink, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} symlink @var{old} @var{new}\n\
-@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
-Create a symbolic link @var{new} which contains the string @var{old}.\n\
-\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{link, unlink, readlink, lstat}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} symlink @var{old} @var{new}
+@deftypefnx {} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})
+Create a symbolic link @var{new} which contains the string @var{old}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{link, unlink, readlink, lstat}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  if (args.length () == 2)
-    {
-      std::string from = args(0).string_value ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("symlink", args(0));
-      else
-        {
-          std::string to = args(1).string_value ();
-
-          if (error_state)
-            gripe_wrong_type_arg ("symlink", args(1));
-          else
-            {
-              std::string msg;
-
-              int status = octave_symlink (from, to, msg);
-
-              if (status < 0)
-                retval(1) = msg;
-              retval(0) = status;
-            }
-        }
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  std::string from = args(0).xstring_value ("symlink: OLD must be a string");
+  std::string to = args(1).xstring_value ("symlink: NEW must be a string");
+
+  from = octave::sys::file_ops::tilde_expand (from);
+  to = octave::sys::file_ops::tilde_expand (to);
+
+  std::string msg;
+
+  int status = octave::sys::symlink (from, to, msg);
+
+  if (status < 0)
+    return ovl (-1.0, msg);
+  else
+    return ovl (status, "");
 }
 
 DEFUNX ("readlink", Freadlink, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} readlink @var{symlink}\n\
-@deftypefnx {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
-Read the value of the symbolic link @var{symlink}.\n\
-\n\
-If successful, @var{result} contains the contents of the symbolic link\n\
-@var{symlink}, @var{err} is 0, and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{lstat, symlink, link, unlink, delete}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} readlink @var{symlink}
+@deftypefnx {} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})
+Read the value of the symbolic link @var{symlink}.
+
+If successful, @var{result} contains the contents of the symbolic link
+@var{symlink}, @var{err} is 0, and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{lstat, symlink, link, unlink, delete}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(2) = std::string ();
-  retval(1) = -1.0;
-  retval(0) = std::string ();
-
-  if (args.length () == 1)
-    {
-      std::string symlink = args(0).string_value ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("readlink", args(0));
-      else
-        {
-          std::string result;
-          std::string msg;
-
-          int status = octave_readlink (symlink, result, msg);
-
-          if (status < 0)
-            retval(2) = msg;
-          retval(1) = status;
-          retval(0) = result;
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string symlink = args(0).xstring_value ("readlink: SYMLINK must be a string");
+
+  symlink = octave::sys::file_ops::tilde_expand (symlink);
+
+  std::string result, msg;
+
+  int status = octave::sys::readlink (symlink, result, msg);
+
+  if (status < 0)
+    return ovl ("", -1.0, msg);
+  else
+    return ovl (result, status, "");
 }
 
 DEFUNX ("rename", Frename, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} rename @var{old} @var{new}\n\
-@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
-Change the name of file @var{old} to @var{new}.\n\
-\n\
-If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
-Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent\n\
-error message.\n\
-@seealso{movefile, copyfile, ls, dir}\n\
-@end deftypefn")
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} rename @var{old} @var{new}
+@deftypefnx {} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})
+Change the name of file @var{old} to @var{new}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a system-dependent
+error message.
+@seealso{movefile, copyfile, ls, dir}
+@end deftypefn */)
 {
-  octave_value_list retval;
-
-  retval(1) = std::string ();
-  retval(0) = -1.0;
-
-  if (args.length () == 2)
-    {
-      std::string from = args(0).string_value ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("rename", args(0));
-      else
-        {
-          std::string to = args(1).string_value ();
-
-          if (error_state)
-            gripe_wrong_type_arg ("rename", args(1));
-          else
-            {
-              std::string msg;
-
-              int status = octave_rename (from, to, msg);
-
-              if (status < 0)
-                retval(1) = msg;
-              retval(0) = status;
-            }
-        }
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  std::string from = args(0).xstring_value ("rename: OLD must be a string");
+  std::string to = args(1).xstring_value ("rename: NEW must be a string");
+
+  from = octave::sys::file_ops::tilde_expand (from);
+  to = octave::sys::file_ops::tilde_expand (to);
+
+  std::string msg;
+
+  int status = octave::sys::rename (from, to, msg);
+
+  if (status < 0)
+    return ovl (-1.0, msg);
+  else
+    return ovl (status, "");
 }
 
 DEFUN (glob, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} glob (@var{pattern})\n\
-Given an array of pattern strings (as a char array or a cell array) in\n\
-@var{pattern}, return a cell array of file names that match any of\n\
-them, or an empty cell array if no patterns match.\n\
-\n\
-The pattern strings are interpreted as filename globbing patterns (as they\n\
-are used by Unix shells).\n\
-\n\
-Within a pattern\n\
-\n\
-@table @code\n\
-@item *\n\
-matches any string, including the null string,\n\
-\n\
-@item ?\n\
-matches any single character, and\n\
-\n\
-@item [@dots{}]\n\
-matches any of the enclosed characters.\n\
-@end table\n\
-\n\
-Tilde expansion is performed on each of the patterns before looking for\n\
-matching file names.  For example:\n\
-\n\
-@example\n\
-ls\n\
-   @result{}\n\
-      file1  file2  file3  myfile1 myfile1b\n\
-glob (\"*file1\")\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = file1\n\
-        [2,1] = myfile1\n\
-      @}\n\
-glob (\"myfile?\")\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = myfile1\n\
-      @}\n\
-glob (\"file[12]\")\n\
-   @result{}\n\
-      @{\n\
-        [1,1] = file1\n\
-        [2,1] = file2\n\
-      @}\n\
-@end example\n\
-@seealso{ls, dir, readdir, what}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} glob (@var{pattern})
+Given an array of pattern strings (as a char array or a cell array) in
+@var{pattern}, return a cell array of filenames that match any of
+them, or an empty cell array if no patterns match.
+
+The pattern strings are interpreted as filename globbing patterns (as they
+are used by Unix shells).
+
+Within a pattern
+
+@table @code
+@item *
+matches any string, including the null string,
+
+@item ?
+matches any single character, and
+
+@item [@dots{}]
+matches any of the enclosed characters.
+@end table
+
+Tilde expansion is performed on each of the patterns before looking for
+matching filenames.  For example:
+
+@example
+ls
+   @result{}
+      file1  file2  file3  myfile1 myfile1b
+glob ("*file1")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = myfile1
+      @}
+glob ("myfile?")
+   @result{}
+      @{
+        [1,1] = myfile1
+      @}
+glob ("file[12]")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = file2
+      @}
+@end example
+@seealso{ls, dir, readdir, what}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      string_vector pat = args(0).all_strings ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("glob", args(0));
-      else
-        {
-          glob_match pattern (file_ops::tilde_expand (pat));
-
-          retval = Cell (pattern.glob ());
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  string_vector pat = args(0).xstring_vector_value ("glob: PATTERN must be a string");
+
+  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
+
+  return ovl (Cell (pattern.glob ()));
+}
+
+
+DEFUN (__wglob__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __wglob__ (@var{pattern})
+Windows-like glob for dir.
+
+Given an array of pattern strings (as a char array or a cell array) in
+@var{pattern}, return a cell array of filenames that match any of
+them, or an empty cell array if no patterns match.
+
+The pattern strings are interpreted as filename globbing patterns
+(roughly as they are used by Windows dir).
+
+Within a pattern
+
+@table @code
+@item *
+matches any string, including the null string,
+
+@item ?
+matches any single character, and
+
+@item *.*
+matches any string, even if no . is present.
+@end table
+
+Tilde expansion is performed on each of the patterns before looking for
+matching filenames.  For example:
+
+@example
+ls
+   @result{}
+      file1  file2  file3  myfile1 myfile1b
+glob ("*file1")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = myfile1
+      @}
+glob ("myfile?")
+   @result{}
+      @{
+        [1,1] = myfile1
+      @}
+glob ("*.*")
+   @result{}
+      @{
+        [1,1] = file1
+        [2,1] = file2
+        [3,1] = file3
+        [4,1] = myfile1
+        [5,1] = myfile1b
+      @}
+@end example
+@seealso{glob, dir}
+@end deftypefn */)
+{
+  if (args.length () == 0)
+    return ovl ();
+
+  string_vector pat = args(0).string_vector_value ();
+
+  string_vector pattern (octave::sys::file_ops::tilde_expand (pat));
+
+  return ovl (Cell (octave::sys::windows_glob (pattern)));
 }
 
 /*
@@ -673,139 +587,123 @@ glob (\"file[12]\")\n\
 */
 
 DEFUN (__fnmatch__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
-Return true or false for each element of @var{string} that matches any of\n\
-the elements of the string array @var{pattern}, using the rules of\n\
-\n\
-filename pattern matching.  For example:\n\
-\n\
-@example\n\
-@group\n\
-fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
-     @result{} [ 1; 1; 0 ]\n\
-@end group\n\
-@end example\n\
-@seealso{glob, regexp}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} fnmatch (@var{pattern}, @var{string})
+Return true or false for each element of @var{string} that matches any of
+the elements of the string array @var{pattern}, using the rules of
+filename pattern matching.
+
+For example:
+
+@example
+@group
+fnmatch ("a*b", @{"ab"; "axyzb"; "xyzab"@})
+     @result{} [ 1; 1; 0 ]
+@end group
+@end example
+@seealso{glob, regexp}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 2)
-    {
-      string_vector pat = args(0).all_strings ();
-      string_vector str = args(1).all_strings ();
-
-      if (error_state)
-        gripe_wrong_type_arg ("fnmatch", args(0));
-      else
-        {
-          glob_match pattern (file_ops::tilde_expand (pat));
-
-          retval = pattern.match (str);
-        }
-    }
-  else
+  if (args.length () != 2)
     print_usage ();
 
-  return retval;
+  string_vector pat = args(0).string_vector_value ();
+  string_vector str = args(1).string_vector_value ();
+
+  glob_match pattern (octave::sys::file_ops::tilde_expand (pat));
+
+  return ovl (pattern.match (str));
 }
 
 DEFUN (filesep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} filesep ()\n\
-@deftypefnx {Built-in Function} {} filesep (\"all\")\n\
-Return the system-dependent character used to separate directory names.\n\
-\n\
-If @qcode{\"all\"} is given, the function returns all valid file separators\n\
-in the form of a string.  The list of file separators is system-dependent.\n\
-It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
-@samp{\\} (forward and backward slashes) under Windows.\n\
-@seealso{pathsep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} filesep ()
+@deftypefnx {} {} filesep ("all")
+Return the system-dependent character used to separate directory names.
+
+If @qcode{"all"} is given, the function returns all valid file separators
+in the form of a string.  The list of file separators is system-dependent.
+It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and
+@samp{\} (forward and backward slashes) under Windows.
+@seealso{pathsep}
+@end deftypefn */)
 {
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
   octave_value retval;
 
-  if (args.length () == 0)
-    retval = file_ops::dir_sep_str ();
-  else if (args.length () == 1)
-    {
-      std::string s = args(0).string_value ();
-
-      if (! error_state)
-        {
-          if (s == "all")
-            retval = file_ops::dir_sep_chars ();
-          else
-            gripe_wrong_type_arg ("filesep", args(0));
-        }
-      else
-        gripe_wrong_type_arg ("filesep", args(0));
-    }
+  if (nargin == 0)
+    retval = octave::sys::file_ops::dir_sep_str ();
   else
-    print_usage ();
+    {
+      std::string s = args(0).xstring_value ("filesep: argument must be a string");
+      if (s != "all")
+        error ("filesep: argument must be \"all\"");
+
+      retval = octave::sys::file_ops::dir_sep_chars ();
+    }
 
   return retval;
 }
 
 DEFUN (pathsep, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} pathsep ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
-Query or set the character used to separate directories in a path.\n\
-@seealso{filesep}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} pathsep ()
+@deftypefnx {} {@var{old_val} =} pathsep (@var{new_val})
+Query or set the character used to separate directories in a path.
+@seealso{filesep}
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
+  if (nargin > 1)
+    print_usage ();
+
+  octave_value retval;
+
   if (nargout > 0 || nargin == 0)
-    retval = dir_path::path_sep_str ();
+    retval = octave::directory_path::path_sep_str ();
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
+      std::string sval = args(0).xstring_value ("pathsep: argument must be a single character");
 
-      if (! error_state)
+      switch (sval.length ())
         {
-          switch (sval.length ())
-            {
-            case 1:
-              dir_path::path_sep_char (sval[0]);
-              break;
+        case 1:
+          octave::directory_path::path_sep_char (sval[0]);
+          break;
 
-            case 0:
-              dir_path::path_sep_char ('\0');
-              break;
+        case 0:
+          octave::directory_path::path_sep_char ('\0');
+          break;
 
-            default:
-              error ("pathsep: argument must be a single character");
-              break;
-            }
+        default:
+          error ("pathsep: argument must be a single character");
+          break;
         }
-      else
-        error ("pathsep: argument must be a single character");
     }
-  else if (nargin > 1)
-    print_usage ();
 
   return retval;
 }
 
 DEFUN (confirm_recursive_rmdir, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave\n\
-will ask for confirmation before recursively removing a directory tree.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.\n\
-The original variable value is restored when exiting the function.\n\
-@seealso{rmdir}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} confirm_recursive_rmdir ()
+@deftypefnx {} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})
+@deftypefnx {} {} confirm_recursive_rmdir (@var{new_val}, "local")
+Query or set the internal variable that controls whether Octave
+will ask for confirmation before recursively removing a directory tree.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{rmdir}
+@end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);
 }
+

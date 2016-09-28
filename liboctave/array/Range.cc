@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -40,41 +40,31 @@ bool
 Range::all_elements_are_ints (void) const
 {
   // If the base and increment are ints, the final value in the range
-  // will also be an integer, even if the limit is not. If there is one
+  // will also be an integer, even if the limit is not.  If there is one
   // or fewer elements only the base needs to be an integer
 
-  return (! (xisnan (rng_base) || xisnan (rng_inc))
-          && (NINTbig (rng_base) == rng_base || rng_nelem < 1)
-          && (NINTbig (rng_inc) == rng_inc || rng_nelem <= 1));
+  return (! (octave::math::isnan (rng_base) || octave::math::isnan (rng_inc))
+          && (octave::math::nint_big (rng_base) == rng_base || rng_numel < 1)
+          && (octave::math::nint_big (rng_inc) == rng_inc || rng_numel <= 1));
 }
 
 Matrix
 Range::matrix_value (void) const
 {
-  if (rng_nelem > 0 && cache.nelem () == 0)
+  if (rng_numel > 0 && cache.is_empty ())
     {
-      cache.resize (1, rng_nelem);
+      cache.resize (1, rng_numel);
+
+      // The first element must always be *exactly* the base.
+      // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
+      cache(0) = rng_base;
+
       double b = rng_base;
       double increment = rng_inc;
-      if (rng_nelem > 0)
-        {
-          // The first element must always be *exactly* the base.
-          // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
-          cache(0) = b;
-          for (octave_idx_type i = 1; i < rng_nelem; i++)
-            cache(i) = b + i * increment;
-        }
+      for (octave_idx_type i = 1; i < rng_numel - 1; i++)
+        cache(i) = b + i * increment;
 
-      // On some machines (x86 with extended precision floating point
-      // arithmetic, for example) it is possible that we can overshoot
-      // the limit by approximately the machine precision even though
-      // we were very careful in our calculation of the number of
-      // elements.  The tests need equality (>= rng_limit or <= rng_limit)
-      // to have expressions like -5:1:-0 result in a -0 endpoint.
-
-      if ((rng_inc > 0 && cache(rng_nelem-1) >= rng_limit)
-          || (rng_inc < 0 && cache(rng_nelem-1) <= rng_limit))
-        cache(rng_nelem-1) = rng_limit;
+      cache(rng_numel - 1) = rng_limit;
     }
 
   return cache;
@@ -83,43 +73,29 @@ Range::matrix_value (void) const
 double
 Range::checkelem (octave_idx_type i) const
 {
-  if (i < 0 || i >= rng_nelem)
-    gripe_index_out_of_range (1, 1, i+1, rng_nelem);
+  if (i < 0 || i >= rng_numel)
+    octave::err_index_out_of_range (1, 1, i+1, rng_numel);
 
   if (i == 0)
     return rng_base;
-  else if (i < rng_nelem - 1)
+  else if (i < rng_numel - 1)
     return rng_base + i * rng_inc;
   else
-    {
-      double end = rng_base + i * rng_inc;
-      if ((rng_inc > 0 && end >= rng_limit)
-          || (rng_inc < 0 && end <= rng_limit))
-        return rng_limit;
-      else
-        return end;
-    }
+    return rng_limit;
 }
 
 double
 Range::elem (octave_idx_type i) const
 {
-#if defined (BOUNDS_CHECKING)
+#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
   return checkelem (i);
 #else
   if (i == 0)
     return rng_base;
-  else if (i < rng_nelem - 1)
+  else if (i < rng_numel - 1)
     return rng_base + i * rng_inc;
   else
-    {
-      double end = rng_base + i * rng_inc;
-      if ((rng_inc > 0 && end >= rng_limit)
-          || (rng_inc < 0 && end <= rng_limit))
-        return rng_limit;
-      else
-        return end;
-    }
+    return rng_limit;
 #endif
 }
 
@@ -137,13 +113,7 @@ public:
     else if (i < nmax)
       *array++ = base + i * inc;
     else
-      {
-        double end = base + i * inc;
-        if ((inc > 0 && end >= limit) || (inc < 0 && end <= limit))
-          *array++ = limit;
-        else
-          *array++ = end;
-      }
+      *array++ = limit;
   }
 
 private:
@@ -158,16 +128,16 @@ Range::index (const idx_vector& i) const
 {
   Array<double> retval;
 
-  octave_idx_type n = rng_nelem;
+  octave_idx_type n = rng_numel;
 
   if (i.is_colon ())
     {
-      retval = matrix_value ().reshape (dim_vector (rng_nelem, 1));
+      retval = matrix_value ().reshape (dim_vector (rng_numel, 1));
     }
   else
     {
       if (i.extent (n) != n)
-        gripe_index_out_of_range (1, 1, i.extent (n), n); // throws
+        octave::err_index_out_of_range (1, 1, i.extent (n), n); // throws
 
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);
@@ -181,28 +151,28 @@ Range::index (const idx_vector& i) const
       // idx_vector loop across all values in i,
       // executing __rangeidx_helper (i) for each i
       i.loop (n, __rangeidx_helper (retval.fortran_vec (),
-                                    rng_base, rng_inc, rng_limit, rng_nelem));
+                                    rng_base, rng_inc, rng_limit, rng_numel));
     }
 
   return retval;
 }
 
-// NOTE: max and min only return useful values if nelem > 0.
-//       do_minmax_body() in max.cc avoids calling Range::min/max if nelem == 0.
+// NOTE: max and min only return useful values if numel > 0.
+//       do_minmax_body() in max.cc avoids calling Range::min/max if numel == 0.
 
 double
 Range::min (void) const
 {
   double retval = 0.0;
-  if (rng_nelem > 0)
+  if (rng_numel > 0)
     {
       if (rng_inc > 0)
         retval = rng_base;
       else
         {
-          retval = rng_base + (rng_nelem - 1) * rng_inc;
+          retval = rng_base + (rng_numel - 1) * rng_inc;
 
-          // See the note in the matrix_value method above.
+          // Require '<=' test.  See note in max ().
           if (retval <= rng_limit)
             retval = rng_limit;
         }
@@ -215,13 +185,19 @@ double
 Range::max (void) const
 {
   double retval = 0.0;
-  if (rng_nelem > 0)
+  if (rng_numel > 0)
     {
       if (rng_inc > 0)
         {
-          retval = rng_base + (rng_nelem - 1) * rng_inc;
+          retval = rng_base + (rng_numel - 1) * rng_inc;
 
-          // See the note in the matrix_value method above.
+          // On some machines (x86 with extended precision floating point
+          // arithmetic, for example) it is possible that we can overshoot the
+          // limit by approximately the machine precision even though we were
+          // very careful in our calculation of the number of elements.
+          // Therefore, we clip the result to the limit if it overshoots.
+          // The test also includes equality (>= rng_limit) to have expressions
+          // such as -5:1:-0 result in a -0 endpoint.
           if (retval >= rng_limit)
             retval = rng_limit;
         }
@@ -234,19 +210,10 @@ Range::max (void) const
 void
 Range::sort_internal (bool ascending)
 {
-  if (ascending && rng_base > rng_limit && rng_inc < 0.0)
+  if ((ascending && rng_base > rng_limit && rng_inc < 0.0)
+      || (! ascending && rng_base < rng_limit && rng_inc > 0.0))
     {
-      double tmp = rng_base;
-      rng_base = min ();
-      rng_limit = tmp;
-      rng_inc = -rng_inc;
-      clear_cache ();
-    }
-  else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
-    {
-      double tmp = max ();
-      rng_limit = min ();
-      rng_base = tmp;
+      std::swap (rng_base, rng_limit);
       rng_inc = -rng_inc;
       clear_cache ();
     }
@@ -255,7 +222,7 @@ Range::sort_internal (bool ascending)
 void
 Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 {
-  octave_idx_type nel = nelem ();
+  octave_idx_type nel = numel ();
 
   sidx.resize (dim_vector (1, nel));
 
@@ -263,20 +230,10 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 
   bool reverse = false;
 
-  if (ascending && rng_base > rng_limit && rng_inc < 0.0)
+  if ((ascending && rng_base > rng_limit && rng_inc < 0.0)
+      || (! ascending && rng_base < rng_limit && rng_inc > 0.0))
     {
-      double tmp = rng_base;
-      rng_base = min ();
-      rng_limit = tmp;
-      rng_inc = -rng_inc;
-      clear_cache ();
-      reverse = true;
-    }
-  else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
-    {
-      double tmp = max ();
-      rng_limit = min ();
-      rng_base = tmp;
+      std::swap (rng_base, rng_limit);
       rng_inc = -rng_inc;
       clear_cache ();
       reverse = true;
@@ -336,9 +293,9 @@ Range::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
 sortmode
 Range::is_sorted (sortmode mode) const
 {
-  if (rng_nelem > 1 && rng_inc > 0)
+  if (rng_numel > 1 && rng_inc > 0)
     mode = (mode == DESCENDING) ? UNSORTED : ASCENDING;
-  else if (rng_nelem > 1 && rng_inc < 0)
+  else if (rng_numel > 1 && rng_inc < 0)
     mode = (mode == ASCENDING) ? UNSORTED : DESCENDING;
   else
     mode = mode ? mode : ASCENDING;
@@ -346,12 +303,45 @@ Range::is_sorted (sortmode mode) const
   return mode;
 }
 
+void
+Range::set_base (double b)
+{
+  if (rng_base != b)
+    {
+      rng_base = b;
+
+      init ();
+    }
+}
+
+void
+Range::set_limit (double l)
+{
+  if (rng_limit != l)
+    {
+      rng_limit = l;
+
+      init ();
+    }
+}
+
+void
+Range::set_inc (double i)
+{
+  if (rng_inc != i)
+    {
+      rng_inc = i;
+
+      init ();
+    }
+}
+
 std::ostream&
 operator << (std::ostream& os, const Range& a)
 {
   double b = a.base ();
   double increment = a.inc ();
-  octave_idx_type num_elem = a.nelem ();
+  octave_idx_type num_elem = a.numel ();
 
   if (num_elem > 1)
     {
@@ -361,8 +351,8 @@ operator << (std::ostream& os, const Range& a)
         os << b + i * increment << " ";
     }
 
-  // Prevent overshoot.  See comment in the matrix_value method above.
-  os << (increment > 0 ? a.max () : a.min ()) << "\n";
+  // Print out exactly the last element, rather than a calculated last element.
+  os << a.rng_limit << "\n";
 
   return os;
 }
@@ -373,12 +363,14 @@ operator >> (std::istream& is, Range& a)
   is >> a.rng_base;
   if (is)
     {
-      is >> a.rng_limit;
+      double tmp_rng_limit;
+      is >> tmp_rng_limit;
+
       if (is)
-        {
-          is >> a.rng_inc;
-          a.rng_nelem = a.nelem_internal ();
-        }
+        is >> a.rng_inc;
+
+      // Clip the rng_limit to the true limit and rebuild numel, clear cache
+      a.set_limit (tmp_rng_limit);
     }
 
   return is;
@@ -387,13 +379,13 @@ operator >> (std::istream& is, Range& a)
 Range
 operator - (const Range& r)
 {
-  return Range (-r.base (), -r.limit (), -r.inc (), r.nelem ());
+  return Range (-r.base (), -r.limit (), -r.inc (), r.numel ());
 }
 
 Range operator + (double x, const Range& r)
 {
-  Range result (x + r.base (), x + r.limit (), r.inc (), r.nelem ());
-  if (result.rng_nelem < 0)
+  Range result (x + r.base (), x + r.limit (), r.inc (), r.numel ());
+  if (result.rng_numel < 0)
     result.cache = x + r.matrix_value ();
 
   return result;
@@ -401,8 +393,8 @@ Range operator + (double x, const Range& r)
 
 Range operator + (const Range& r, double x)
 {
-  Range result (r.base () + x, r.limit () + x, r.inc (), r.nelem ());
-  if (result.rng_nelem < 0)
+  Range result (r.base () + x, r.limit () + x, r.inc (), r.numel ());
+  if (result.rng_numel < 0)
     result.cache = r.matrix_value () + x;
 
   return result;
@@ -410,8 +402,8 @@ Range operator + (const Range& r, double x)
 
 Range operator - (double x, const Range& r)
 {
-  Range result (x - r.base (), x - r.limit (), -r.inc (), r.nelem ());
-  if (result.rng_nelem < 0)
+  Range result (x - r.base (), x - r.limit (), -r.inc (), r.numel ());
+  if (result.rng_numel < 0)
     result.cache = x - r.matrix_value ();
 
   return result;
@@ -419,8 +411,8 @@ Range operator - (double x, const Range& r)
 
 Range operator - (const Range& r, double x)
 {
-  Range result (r.base () - x, r.limit () - x, r.inc (), r.nelem ());
-  if (result.rng_nelem < 0)
+  Range result (r.base () - x, r.limit () - x, r.inc (), r.numel ());
+  if (result.rng_numel < 0)
     result.cache = r.matrix_value () - x;
 
   return result;
@@ -428,8 +420,8 @@ Range operator - (const Range& r, double x)
 
 Range operator * (double x, const Range& r)
 {
-  Range result (x * r.base (), x * r.limit (), x * r.inc (), r.nelem ());
-  if (result.rng_nelem < 0)
+  Range result (x * r.base (), x * r.limit (), x * r.inc (), r.numel ());
+  if (result.rng_numel < 0)
     result.cache = x * r.matrix_value ();
 
   return result;
@@ -437,13 +429,12 @@ Range operator * (double x, const Range& r)
 
 Range operator * (const Range& r, double x)
 {
-  Range result (r.base () * x, r.limit () * x, r.inc () * x, r.nelem ());
-  if (result.rng_nelem < 0)
+  Range result (r.base () * x, r.limit () * x, r.inc () * x, r.numel ());
+  if (result.rng_numel < 0)
     result.cache = r.matrix_value () * x;
 
   return result;
 }
-
 
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.
 // C
@@ -495,11 +486,11 @@ tfloor (double x, double ct)
 
   double rmax = q / (2.0 - ct);
 
-  double t1 = 1.0 + gnulib::floor (x);
+  double t1 = 1.0 + std::floor (x);
   t1 = (ct / q) * (t1 < 0.0 ? -t1 : t1);
   t1 = rmax < t1 ? rmax : t1;
   t1 = ct > t1 ? ct : t1;
-  t1 = gnulib::floor (x + t1);
+  t1 = std::floor (x + t1);
 
   if (x <= 0.0 || (t1 - x) < rmax)
     return t1;
@@ -524,7 +515,7 @@ teq (double u, double v,
 }
 
 octave_idx_type
-Range::nelem_internal (void) const
+Range::numel_internal (void) const
 {
   octave_idx_type retval = -1;
 
@@ -568,3 +559,26 @@ Range::nelem_internal (void) const
 
   return retval;
 }
+
+double
+Range::limit_internal (void) const
+{
+  double tmp_limit = rng_limit;
+
+  if (rng_inc > 0)
+    tmp_limit = max ();
+  else
+    tmp_limit = min ();
+
+  return (tmp_limit != rng_limit) ? tmp_limit : rng_limit;
+}
+
+void
+Range::init (void)
+{
+  rng_numel = numel_internal ();
+  rng_limit = limit_internal ();
+
+  clear_cache ();
+}
+

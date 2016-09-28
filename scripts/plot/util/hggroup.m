@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Michael Goffioul
+## Copyright (C) 2008-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hggroup ()
-## @deftypefnx {Function File} {} hggroup (@var{hax})
-## @deftypefnx {Function File} {} hggroup (@dots{}, @var{property}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} hggroup (@dots{})
+## @deftypefn  {} {} hggroup ()
+## @deftypefnx {} {} hggroup (@var{hax})
+## @deftypefnx {} {} hggroup (@dots{}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{h} =} hggroup (@dots{})
 ## Create handle graphics group object with axes parent @var{hax}.
 ##
 ## If no parent is specified, the group is created in the current axes.

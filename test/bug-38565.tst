@@ -6,4 +6,4 @@
 %!  endif
 %!endfunction
 
-%!assert (eval ("f 10;"), "10");
+%!assert (eval ("f 10;"), "10")

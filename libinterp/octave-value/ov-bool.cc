@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,18 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
+#include "oct-inttypes.h"
+
 #include "mx-base.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
 #include "oct-hdf5.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ops.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
@@ -42,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "pr-output.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
@@ -50,16 +52,14 @@ along with Octave; see the file COPYING.  If not, see
 
 extern template class OCTINTERP_API octave_base_scalar<double>;
 
-
 template class octave_base_scalar<bool>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool", "logical");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_bool&);
+  const octave_bool& v = dynamic_cast<const octave_bool&> (a);
 
   return new octave_scalar (v.bool_value ());
 }
@@ -88,6 +88,66 @@ octave_bool::do_index_op (const octave_value_list& idx, bool resize_ok)
   octave_value tmp (new octave_bool_matrix (bool_matrix_value ()));
 
   return tmp.do_index_op (idx, resize_ok);
+}
+
+octave_value
+octave_bool::as_double (void) const
+{
+  return static_cast<double> (scalar);
+}
+
+octave_value
+octave_bool::as_single (void) const
+{
+  return static_cast<float> (scalar);
+}
+
+octave_value
+octave_bool::as_int8 (void) const
+{
+  return octave_int8 (scalar);
+}
+
+octave_value
+octave_bool::as_int16 (void) const
+{
+  return octave_int16 (scalar);
+}
+
+octave_value
+octave_bool::as_int32 (void) const
+{
+  return octave_int32 (scalar);
+}
+
+octave_value
+octave_bool::as_int64 (void) const
+{
+  return octave_int64 (scalar);
+}
+
+octave_value
+octave_bool::as_uint8 (void) const
+{
+  return octave_uint8 (scalar);
+}
+
+octave_value
+octave_bool::as_uint16 (void) const
+{
+  return octave_uint16 (scalar);
+}
+
+octave_value
+octave_bool::as_uint32 (void) const
+{
+  return octave_uint32 (scalar);
+}
+
+octave_value
+octave_bool::as_uint64 (void) const
+{
+  return octave_uint64 (scalar);
 }
 
 octave_value
@@ -135,11 +195,8 @@ octave_bool::load_ascii (std::istream& is)
 {
   scalar = (octave_read_value<double> (is) != 0.);
 
-  if (!is)
-    {
-      error ("load: failed to load scalar constant");
-      return false;
-    }
+  if (! is)
+    error ("load: failed to load scalar constant");
 
   return true;
 }
@@ -155,7 +212,7 @@ octave_bool::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_bool::load_binary (std::istream& is, bool /* swap */,
-                          oct_mach_info::float_format /* fmt */)
+                          octave::mach_info::float_format /* fmt */)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -178,12 +235,12 @@ octave_bool::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -192,14 +249,17 @@ octave_bool::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   double tmp = double_value ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -210,8 +270,8 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
 #if defined (HAVE_HDF5)
 
-#if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -226,8 +286,8 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   double dtmp;
-  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, &dtmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &dtmp) < 0)
     {
       H5Dclose (data_hid);
       return false;
@@ -238,7 +298,10 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   H5Dclose (data_hid);
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
 #endif
 
   return true;
@@ -255,3 +318,4 @@ octave_bool::as_mxArray (void) const
 
   return retval;
 }
+

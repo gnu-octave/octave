@@ -1,25 +1,39 @@
-FCN_FILE_DIRS += help
+FCN_FILE_DIRS += \
+  scripts/help \
+  scripts/help/private
 
-help_PRIVATE_FCN_FILES = \
-  help/private/__additional_help_message__.m \
-  help/private/__strip_html_tags__.m
+scripts_help_PRIVATE_FCN_FILES = \
+  scripts/help/private/__additional_help_message__.m \
+  scripts/help/private/__strip_html_tags__.m
 
-help_FCN_FILES = \
-  help/__gripe_missing_component__.m \
-  help/__makeinfo__.m \
-  help/__unimplemented__.m \
-  help/doc.m \
-  help/doc_cache_create.m \
-  help/get_first_help_sentence.m \
-  help/help.m \
-  help/lookfor.m \
-  help/print_usage.m \
-  help/type.m \
-  help/which.m \
-  $(help_PRIVATE_FCN_FILES)
+scripts_help_FCN_FILES = \
+  scripts/help/__gripe_missing_component__.m \
+  scripts/help/__makeinfo__.m \
+  scripts/help/__unimplemented__.m \
+  scripts/help/ans.m \
+  scripts/help/doc.m \
+  scripts/help/doc_cache_create.m \
+  scripts/help/get_first_help_sentence.m \
+  scripts/help/error_ids.m \
+  scripts/help/help.m \
+  scripts/help/lookfor.m \
+  scripts/help/print_usage.m \
+  scripts/help/type.m \
+  scripts/help/warning_ids.m \
+  scripts/help/which.m
 
-FCN_FILES += $(help_FCN_FILES)
+scripts_helpdir = $(fcnfiledir)/help
 
-PKG_ADD_FILES += help/PKG_ADD
+scripts_help_DATA = $(scripts_help_FCN_FILES)
 
-DIRSTAMP_FILES += help/$(octave_dirstamp)
+scripts_help_privatedir = $(fcnfiledir)/help/private
+
+scripts_help_private_DATA = $(scripts_help_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_help_FCN_FILES) \
+  $(scripts_help_PRIVATE_FCN_FILES)
+
+PKG_ADD_FILES += scripts/help/PKG_ADD
+
+DIRSTAMP_FILES += scripts/help/$(octave_dirstamp)

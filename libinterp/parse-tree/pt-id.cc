@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
 #include "pt-bp.h"
@@ -46,16 +46,14 @@ tree_identifier::eval_undefined_error (void)
   int c = column ();
 
   maybe_missing_function_hook (name ());
-  if (error_state)
-    return;
 
   if (l == -1 && c == -1)
-    ::error_with_id ("Octave:undefined-function",
-                     "'%s' undefined", name ().c_str ());
+    error_with_id ("Octave:undefined-function",
+                   "'%s' undefined", name ().c_str ());
   else
-    ::error_with_id ("Octave:undefined-function",
-                     "'%s' undefined near line %d column %d",
-                     name ().c_str (), l, c);
+    error_with_id ("Octave:undefined-function",
+                   "'%s' undefined near line %d column %d",
+                   name ().c_str (), l, c);
 }
 
 octave_value_list
@@ -63,9 +61,6 @@ tree_identifier::rvalue (int nargout,
                          const std::list<octave_lvalue> *lvalue_list)
 {
   octave_value_list retval;
-
-  if (error_state)
-    return retval;
 
   octave_value val = sym->find ();
 
@@ -99,7 +94,7 @@ tree_identifier::rvalue (int nargout,
       else
         {
           if (print_result () && nargout == 0
-              && tree_evaluator::statement_printing_enabled ())
+              && octave::tree_evaluator::statement_printing_enabled ())
             val.print_with_name (octave_stdout, name ());
 
           retval = val;
@@ -159,3 +154,4 @@ tree_identifier::accept (tree_walker& tw)
 {
   tw.visit_identifier (*this);
 }
+

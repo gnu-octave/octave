@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Ben Abbott
+## Copyright (C) 2009-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{stream} =} __gnuplot_open_stream__ (@var{npipes}, @var{h})
+## @deftypefn {} {@var{stream} =} __gnuplot_open_stream__ (@var{npipes}, @var{h})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -25,7 +25,9 @@
 ## Created: 2009-04-11
 
 function plot_stream = __gnuplot_open_stream__ (npipes, h)
+
   [prog, args] = gnuplot_binary ();
+
   if (npipes > 1)
     [plot_stream(1), plot_stream(2), pid] = popen2 (prog, args{:});
     if (pid < 0)
@@ -39,8 +41,10 @@ function plot_stream = __gnuplot_open_stream__ (npipes, h)
       error ("__gnuplot_open_stream__: failed to open connection to gnuplot");
     endif
   endif
+
   if (nargin > 1)
     set (h, "__plot_stream__", plot_stream);
   endif
+
 endfunction
 

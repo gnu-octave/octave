@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
@@ -101,7 +101,7 @@ dif (octave_idx_type nt, double *root, double *dif1, double *dif2,
 //
 //   nd     : the dimension of the vectors dif1, dif2, dif3, and root
 //
-//   n      : the degree of the jacobi polynomial, (i.e. the number
+//   n      : the degree of the jacobi polynomial, (i.e., the number
 //            of interior interpolation points)
 //
 //   n0     : determines whether x = 0 is included as an
@@ -175,9 +175,9 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
             dif2[i] = (ab + ap + z1) / z / z / (z + 1.0);
           else
             {
-              z = z * z;
+              z *= z;
               double y = z1 * (ab + z1);
-              y = y * (ap + y);
+              y *= (ap + y);
               dif2[i] = y / z / (z - 1.0);
             }
         }
@@ -218,16 +218,16 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
           if (i != 0)
             {
               for (octave_idx_type j = 1; j <= i; j++)
-                zc = zc - z / (x - root[j-1]);
+                zc -= z / (x - root[j-1]);
             }
 
-          z = z / zc;
-          x = x - z;
+          z /= zc;
+          x -= z;
 
           // Famous last words:  100 iterations should be more than
           // enough in all cases.
 
-          if (++k > 100 || xisnan (z))
+          if (++k > 100 || octave::math::isnan (z))
             return false;
 
           if (std::abs (z) <= 100 * std::numeric_limits<double>::epsilon ())
@@ -235,7 +235,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
         }
 
       root[i] = x;
-      x = x + sqrt (std::numeric_limits<double>::epsilon ());
+      x += sqrt (std::numeric_limits<double>::epsilon ());
     }
 
   // Add interpolation points at x = 0 and/or x = 1.
@@ -264,7 +264,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 //
 //   nd     : the dimension of the vectors dif1, dif2, dif3, and root
 //
-//   n      : the degree of the jacobi polynomial, (i.e. the number
+//   n      : the degree of the jacobi polynomial, (i.e., the number
 //            of interior interpolation points)
 //
 //   n0     : determines whether x = 0 is included as an
@@ -350,7 +350,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
       for (octave_idx_type j = 0; j < nt; j++)
         {
-          double x  = root[j];
+          double x = root[j];
 
           double ax = x * (1.0 - x);
 
@@ -362,7 +362,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
           vect[j] = ax / (dif1[j] * dif1[j]);
 
-          y = y + vect[j];
+          y += vect[j];
         }
 
       for (octave_idx_type j = 0; j < nt; j++)
@@ -375,17 +375,14 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 void
 CollocWt::error (const char* msg)
 {
-  (*current_liboctave_error_handler) ("fatal CollocWt error: %s", msg);
+  (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
 }
 
 CollocWt&
 CollocWt::set_left (double val)
 {
   if (val >= rb)
-    {
-      error ("left bound greater than right bound");
-      return *this;
-    }
+    error ("CollocWt: left bound greater than right bound");
 
   lb = val;
   initialized = 0;
@@ -396,10 +393,7 @@ CollocWt&
 CollocWt::set_right (double val)
 {
   if (val <= lb)
-    {
-      error ("right bound less than left bound");
-      return *this;
-    }
+    error ("CollocWt: right bound less than left bound");
 
   rb = val;
   initialized = 0;
@@ -414,17 +408,14 @@ CollocWt::init (void)
   double wid = rb - lb;
   if (wid <= 0.0)
     {
-      error ("width less than or equal to zero");
+      error ("CollocWt: width less than or equal to zero");
       return;
     }
 
   octave_idx_type nt = n + inc_left + inc_right;
 
   if (nt < 0)
-    {
-      error ("total number of collocation points less than zero");
-      return;
-    }
+    error ("CollocWt: total number of collocation points less than zero");
   else if (nt == 0)
     return;
 
@@ -450,10 +441,7 @@ CollocWt::init (void)
   // Compute roots.
 
   if (! jcobi (n, inc_left, inc_right, Alpha, Beta, pdif1, pdif2, pdif3, pr))
-    {
-      error ("jcobi: newton iteration failed");
-      return;
-    }
+    error ("jcobi: newton iteration failed");
 
   octave_idx_type id;
 
@@ -511,3 +499,4 @@ operator << (std::ostream& os, const CollocWt& a)
 
   return os;
 }
+

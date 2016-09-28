@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2015 Julien Bect
-## Copyright (C) 2009-2015 Robert T. Short
+## Copyright (C) 2013-2016 Julien Bect
+## Copyright (C) 2009-2016 Robert T. Short
 ##
 ## This file is part of Octave.
 ##
@@ -240,13 +240,13 @@
 
 %% Test overloaded mpower (^) for the Snork class
 %!test  s = s1 ^ 3;   assert (isa (s, 'Snork') && isequal (s.gick, x1 ^ 3));
-%!error <mpower Snork!!!>  s = s1 ^ s1;
-%!error <mpower Snork!!!>  s = 20 ^ s1;
+%!error <mpower Snork!!!>  s = s1 ^ s1
+%!error <mpower Snork!!!>  s = 20 ^ s1
 
 %% Test overloaded power (.^) for the Snork class
 %!test  s = s1 .^ 2;   assert (isa (s, 'Snork') && isequal (s.gick, x1 .^ 2));
-%!error <power Snork!!!>  s = s1 .^ s1;
-%!error <power Snork!!!>  s = 20 .^ s1;
+%!error <power Snork!!!>  s = s1 .^ s1
+%!error <power Snork!!!>  s = 20 .^ s1
 
 %% Test overloaded rdivide (./) for the Snork class
 %!test  s = s1 ./ s2;  assert (isa (s, 'Snork') && isequal (s.gick, x1 ./ x2));
@@ -309,30 +309,35 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Test overloaded vertcat() for the Snork class
-%% See bug #38128 (http://savannah.gnu.org/bugs/?38128)
-%!test   s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!xtest  s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!xtest  s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
+%!test <38128>
+%! s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
+%!test <38128>
+%! s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
+%!test <38128>
+%! s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 
 %% Test overloaded horzcat() for the Snork class
-%% See bug #38128 (http://savannah.gnu.org/bugs/?38128)
-%!test   s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!xtest  s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!xtest  s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+%!test <38128>
+%! s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+%!test <38128>
+%! s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
+%!test <38128>
+%! s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 
-%% Test with the Blork class, where neither vertcat() nor horzcat() is overloaded
+%% Test with the Blork class, where neither vertcat() nor horzcat()
+%% is overloaded
 %!shared x1, x2, x3
 %!test x1 = Blork ();
 %!test x2 = [x1 x1];
-%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
+%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]))
 %!test x2 = [x1 51];
-%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]));
+%!assert (isa (x2, 'Blork') && isequal (size (x2), [1 2]))
 %!test x3 = [x2; x2];
-%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]));
+%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
 %!test x3 = [x2; [51 x1]];
-%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]));
-%!error <dimension mismatch> x4 = [x1  x3];
-%!error <dimension mismatch> x4 = [x1; x3];
+%!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
+%!error <dimension mismatch> x4 = [x1, x3]
+%!error <dimension mismatch> x4 = [x1; x3]
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %% Testing precedence %%
@@ -351,7 +356,7 @@
 %!assert (isequal (tattack (A, B), 'CPrecedenceTester2'))
 %!assert (isequal (tattack (B, A), 'CPrecedenceTester2'))
 %% Trying to change to CPrecendenceTester < Snork
-%!error D = CPrecedenceTester2 (2);
+%!error D = CPrecedenceTester2 (2)
 
 %!shared A, B
 %!test A = Snork (rand (2));
@@ -359,7 +364,7 @@
 %!assert (isequal (tattack (A, B), 'Snork'))
 %!assert (isequal (tattack (B, A), 'Snork'))
 %% Trying to change to CPrecendenceTester3 > Snork
-%!error D = CPrecedenceTester3 (1);
+%!error D = CPrecedenceTester3 (1)
 
 ##############################################
 ## Testing overridden size+numel method     ##
@@ -369,8 +374,8 @@
 
 %!shared st
 %!test st = SizeTester ([1 1]);
-%! assert (isequal (size (st), [1 1]))
-%! assert (isequal (numel (st), 1))
+%! assert (isequal (size (st), [1 1]));
+%! assert (isequal (numel (st), 1));
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
 %!assert (isequal (columns (st), 1))
@@ -379,31 +384,31 @@
 %!assert (isvector (st))
 
 %!test st = SizeTester ([1 2]);
-%! assert (isequal (size (st), [1 2]))
-%! assert (isequal (numel (st), 2))
+%! assert (isequal (size (st), [1 2]));
+%! assert (isequal (numel (st), 2));
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
 %!xtest assert (isequal (columns (st), 2))
-%!assert (isequal (st, st))                # bug #44334
-%!xtest assert (not (isscalar (st)))       # bug #44498
+%!assert <44334> (isequal (st, st))
+%!assert <44498> (not (isscalar (st)))
 %!assert (isvector (st))
 
 %!test st = SizeTester ([2 3]);
-%! assert (isequal (size (st), [2 3]))
-%! assert (isequal (numel (st), 6))
+%! assert (isequal (size (st), [2 3]));
+%! assert (isequal (numel (st), 6));
 %!assert (isequal (ndims (st), 2))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
-%!assert (isequal (st, st))                # bug #44334
-%!xtest assert (not (isscalar (st)))       # bug #44498
-%!xtest assert (not (isvector (st)))       # bug #44498
+%!assert <44334> (isequal (st, st))
+%!assert <44498> (not (isscalar (st)))
+%!assert <44498> (not (isvector (st)))
 
 %!test st = SizeTester ([2 3 4]);
-%! assert (isequal (size (st), [2 3 4]))
-%! assert (isequal (numel (st), 24))
+%! assert (isequal (size (st), [2 3 4]));
+%! assert (isequal (numel (st), 24));
 %!xtest assert (isequal (ndims (st), 3))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
-%!assert (isequal (st, st))                # bug #44334
-%!xtest assert (not (isscalar (st)))       # bug #44498
-%!xtest assert (not (isvector (st)))       # bug #44498
+%!assert <44334> (isequal (st, st))
+%!assert <44498> (not (isscalar (st)))
+%!assert <44498> (not (isvector (st)))

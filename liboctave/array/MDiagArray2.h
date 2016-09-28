@@ -1,7 +1,7 @@
 // Template array classes with like-type math ops
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -22,21 +22,33 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_MDiagArray2_h)
+#if ! defined (octave_MDiagArray2_h)
 #define octave_MDiagArray2_h 1
+
+#include "octave-config.h"
 
 #include "DiagArray2.h"
 #include "MArray.h"
 
-// Two dimensional diagonal array with math ops.
+template <typename T> class MDiagArray2;
 
-// But first, some preprocessor abuse...
+template <typename T> MDiagArray2<T> operator + (const MDiagArray2<T>&);
+template <typename T> MDiagArray2<T> operator - (const MDiagArray2<T>&);
+template <typename T> MDiagArray2<T> operator * (const MDiagArray2<T>&,
+                                                 const T&);
+template <typename T> MDiagArray2<T> operator / (const MDiagArray2<T>&,
+                                                 const T&);
+template <typename T> MDiagArray2<T> operator * (const T&,
+                                                 const MDiagArray2<T>&);
+template <typename T> MDiagArray2<T> operator + (const MDiagArray2<T>&,
+                                                 const MDiagArray2<T>&);
+template <typename T> MDiagArray2<T> operator - (const MDiagArray2<T>&,
+                                                 const MDiagArray2<T>&);
+template <typename T> MDiagArray2<T> product (const MDiagArray2<T>&,
+                                              const MDiagArray2<T>&);
 
-#include "MArray-decl.h"
-
-MDIAGARRAY2_OPS_FORWARD_DECLS (MDiagArray2, )
-
-template <class T>
+//! Template for two dimensional diagonal array with math operators.
+template <typename T>
 class
 MDiagArray2 : public DiagArray2<T>
 {
@@ -53,7 +65,7 @@ public:
 
   MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
 
-  template <class U>
+  template <typename U>
   MDiagArray2 (const DiagArray2<U>& a) : DiagArray2<T> (a) { }
 
   explicit MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
@@ -103,8 +115,64 @@ public:
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  MDIAGARRAY2_OPS_FRIEND_DECLS (MDiagArray2, )
+  friend MDiagArray2<T> operator + <> (const MDiagArray2<T>&);
+  friend MDiagArray2<T> operator - <> (const MDiagArray2<T>&);
+  friend MDiagArray2<T> operator * <> (const MDiagArray2<T>&, const T&);
+  friend MDiagArray2<T> operator / <> (const MDiagArray2<T>&, const T&);
+  friend MDiagArray2<T> operator * <> (const T&, const MDiagArray2<T>&);
+  friend MDiagArray2<T> operator + <> (const MDiagArray2<T>&,
+                                       const MDiagArray2<T>&);
+  friend MDiagArray2<T> operator - <> (const MDiagArray2<T>&,
+                                       const MDiagArray2<T>&);
+  friend MDiagArray2<T> product <> (const MDiagArray2<T>&,
+                                    const MDiagArray2<T>&);
 
 };
 
+#define MDIAGARRAY2_FORWARD_DEFS(B, R, T)                               \
+  inline R                                                              \
+  operator + (const R& x)                                               \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x)));              \
+  }                                                                     \
+  inline R                                                              \
+  operator - (const R& x)                                               \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x)));              \
+  }                                                                     \
+  inline R                                                              \
+  operator * (const R& x, const T& y)                                   \
+  {                                                                     \
+    return R (operator * (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R                                                              \
+  operator / (const R& x, const T& y)                                   \
+  {                                                                     \
+    return R (operator / (dynamic_cast<const B<T>&> (x), (y)));         \
+  }                                                                     \
+  inline R                                                              \
+  operator * (const T& x, const R& y)                                   \
+  {                                                                     \
+    return R (operator * ( (x), dynamic_cast<const B<T>&> (y)));        \
+  }                                                                     \
+  inline R                                                              \
+  operator + (const R& x, const R& y)                                   \
+  {                                                                     \
+    return R (operator + (dynamic_cast<const B<T>&> (x),                \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R                                                              \
+  operator - (const R& x, const R& y)                                   \
+  {                                                                     \
+    return R (operator - (dynamic_cast<const B<T>&> (x),                \
+                          dynamic_cast<const B<T>&> (y)));              \
+  }                                                                     \
+  inline R                                                              \
+  product (const R& x, const R& y)                                      \
+  {                                                                     \
+    return R (product (dynamic_cast<const B<T>&> (x),                   \
+                       dynamic_cast<const B<T>&> (y)));                 \
+  }
+
 #endif
+

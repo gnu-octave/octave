@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2016 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, @dots{})
+## @deftypefn {} {} isequal (@var{x1}, @var{x2}, @dots{})
 ## Return true if all of @var{x1}, @var{x2}, @dots{} are equal.
 ## @seealso{isequaln}
 ## @end deftypefn

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ## Copyright (C) 2009-2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
-## @deftypefnx {Function File} {} accumarray (@var{subs}, @var{vals}, @dots{})
+## @deftypefn  {} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
+## @deftypefnx {} {} accumarray (@var{subs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.
@@ -164,8 +164,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
   if (issparse)
 
-    ## Sparse case. Avoid linearizing the subscripts, because it could
-    ## overflow.
+    ## Sparse case.
+    ## Avoid linearizing the subscripts, because it could overflow.
 
     if (fillval != 0)
       error ("accumarray: FILLVAL must be zero in the sparse case");
@@ -191,7 +191,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     if (! (isempty (func) || func == @sum))
 
-      ## Reduce values. This is not needed if we're about to sum them,
+      ## Reduce values.  This is not needed if we're about to sum them,
       ## because "sparse" can do that.
 
       ## Sort indices.
@@ -324,7 +324,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       endif
     else
 
-      ## The general case. Reduce values.
+      ## The general case.  Reduce values.
       n = rows (subs);
       if (numel (vals) == 1)
         vals = vals(ones (1, n), 1);
@@ -336,19 +336,23 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       [subs, idx] = sort (subs);
       ## Identify runs.
       jdx = find (subs(1:n-1) != subs(2:n));
-      jdx = [jdx; n];
+      if (n != 0) # bug #47287
+        jdx = [jdx; n];
+      endif
       vals = mat2cell (vals(idx), diff ([0; jdx]));
-      ## Optimize the case when function is @(x) {x}, i.e. we just want
+      ## Optimize the case when function is @(x) {x}, i.e., we just want
       ## to collect the values to cells.
       persistent simple_cell_str = func2str (@(x) {x});
       if (! strcmp (func2str (func), simple_cell_str))
         vals = cellfun (func, vals);
       endif
+
       subs = subs(jdx);
 
       if (isempty (sz))
         sz = max (subs);
-        if (length (sz) == 1)
+        ## If subs is empty, sz will be too, and length will be 0, hence "<= 1"
+        if (length (sz) <= 1)
           sz(2) = 1;
         endif
       endif
@@ -366,44 +370,79 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       A(subs) = vals;
     endif
   endif
+
 endfunction
 
 
-%!assert (accumarray ([1;2;4;2;4],101:105), [101;206;0;208])
-%!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105), cat (3, [101,0,0;0,0,0],[0,0,0;206,0,208]))
-%!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105,[],@(x)sin(sum(x))), sin (cat (3, [101,0,0;0,0,0],[0,0,0;206,0,208])))
-%!assert (accumarray ({[1 3 3 2 3 1 2 2 3 3 1 2],[3 4 2 1 4 3 4 2 2 4 3 4],[1 1 2 2 1 1 2 1 1 1 2 2]},101:112), cat (3, [0,0,207,0;0,108,0,0;0,109,0,317], [0,0,111,0;104,0,0,219;0,103,0,0]))
-%!assert (accumarray ([1,1;2,1;2,3;2,1;2,3],101:105,[2,4],@max,NaN), [101,NaN,NaN,NaN;104,NaN,105,NaN])
-%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105, [], @prod), [101, 0, 0; 10608, 0, 10815])
-%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2 4],@prod,0,true), sparse ([1,2,2],[1,1,3],[101,10608,10815],2,4))
-%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],1,[2,4]), [1,0,0,0;2,0,2,0])
-%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x)length(x)>1), [false,false,false,false;true,false,true,false])
+%!assert (accumarray ([1; 2; 4; 2; 4], 101:105), [101; 206; 0; 208])
+%!assert (accumarray ([1 1 1; 2 1 2; 2 3 2; 2 1 2; 2 3 2], 101:105),
+%!                    cat (3, [101 0 0; 0 0 0], [0 0 0; 206 0 208]))
+
+%!assert (accumarray ([1 1 1; 2 1 2; 2 3 2; 2 1 2; 2 3 2], 101:105, [], @(x) sin (sum (x))),
+%!        sin (cat (3, [101,0,0;0,0,0],[0,0,0;206,0,208])))
+
+%!assert (accumarray ({[1 3 3 2 3 1 2 2 3 3 1 2], [3 4 2 1 4 3 4 2 2 4 3 4], [1 1 2 2 1 1 2 1 1 1 2 2]}, 101:112),
+%!        cat (3, [0 0 207 0; 0 108 0 0; 0 109 0 317], [0 0 111 0; 104 0 0 219; 0 103 0 0]))
+
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2 4], @max, NaN),
+%!        [101 NaN NaN NaN; 104 NaN 105 NaN])
+
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [], @prod),
+%!        [101 0 0; 10608 0 10815])
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2 4], @prod, 0, true),
+%!        sparse ([1 2 2], [1 1 3], [101 10608 10815], 2, 4))
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 1, [2 4]), [1 0 0 0; 2 0 2 0])
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2 4], @(x) length (x) > 1),
+%!        [false false false false; true false true false])
+
 %!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 0), [3; 4])
 %!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 1), sparse ([3; 4]))
 %!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 0), [3, 4])
 %!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 1), sparse ([3, 4]))
+
 %!test
-%! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2,4], @(x){x});
-%! assert (A{2},[102;104]);
+%! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2,4], @(x) {x});
+%! assert (A{2},[102; 104]);
+
 %!test
 %! subs = ceil (rand (2000, 3)*10);
 %! vals = rand (2000, 1);
-%! assert (accumarray (subs, vals, [], @max), accumarray (subs, vals, [], @(x) max (x)));
+%! assert (accumarray (subs, vals, [], @max),
+%!         accumarray (subs, vals, [], @(x) max (x)));
+
 %!test
 %! subs = ceil (rand (2000, 1)*100);
 %! vals = rand (2000, 1);
-%! assert (accumarray (subs, vals, [100, 1], @min, NaN), accumarray (subs, vals, [100, 1], @(x) min (x), NaN));
+%! assert (accumarray (subs, vals, [100, 1], @min, NaN),
+%!         accumarray (subs, vals, [100, 1], @(x) min (x), NaN));
+
 %!test
 %! subs = ceil (rand (2000, 2)*30);
 %! subsc = num2cell (subs, 1);
 %! vals = rand (2000, 1);
-%! assert (accumarray (subsc, vals, [], [], 0, true), accumarray (subs, vals, [], [], 0, true));
+%! assert (accumarray (subsc, vals, [], [], 0, true),
+%!         accumarray (subs, vals, [], [], 0, true));
+
 %!test
 %! subs = ceil (rand (2000, 3)*10);
 %! subsc = num2cell (subs, 1);
 %! vals = rand (2000, 1);
-%! assert (accumarray (subsc, vals, [], @max), accumarray (subs, vals, [], @max));
+%! assert (accumarray (subsc, vals, [], @max),
+%!         accumarray (subs, vals, [], @max));
 
 %!error (accumarray (1:5))
 %!error (accumarray ([1,2,3],1:2))
 
+## Handle empty arrays
+%!test <47287>
+%! ## min, max, and sum are special cases within accumarray so test them.
+%! funcs = {@(x) length (x) > 1, @min, @max, @sum};
+%! for idx = 1:numel (funcs)
+%!   assert (accumarray (zeros (0, 1), [], [0 1] , funcs{idx}), zeros (0, 1));
+%!   assert (accumarray (zeros (0, 1), [], [1 0] , funcs{idx}), zeros (1, 0));
+%!   assert (accumarray (zeros (0, 1), [], [] , funcs{idx}), zeros (0, 1));
+%! endfor
+
+## Matlab returns an array of doubles even though FUNC returns cells.  In
+## Octave, we do not have that bug, at least for this case.
+%!assert (accumarray (zeros (0, 1), [], [0 1] , @(x) {x}), cell (0, 1))

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidinv (@var{x}, @var{n})
+## @deftypefn {} {} unidinv (@var{x}, @var{n})
 ## For each element of @var{x}, compute the quantile (the inverse of the CDF)
 ## at @var{x} of the discrete uniform distribution which assumes
 ## the integer values 1--@var{n} with equal probability.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,18 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dNDArray_h)
+#if ! defined (octave_dNDArray_h)
 #define octave_dNDArray_h 1
 
+#include "octave-config.h"
+
 #include "MArray.h"
-#include "intNDArray.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 #include "bsxfun-decl.h"
+
+template <typename T> class intNDArray;
 
 class
 OCTAVE_API
@@ -48,13 +51,13 @@ public:
   NDArray (const Array<octave_idx_type>& a, bool zero_based = false,
            bool negative_to_nan = false);
 
-  template <class U>
+  template <typename U>
   NDArray (const MArray<U>& a) : MArray<double> (a) { }
 
-  template <class U>
+  template <typename U>
   NDArray (const Array<U>& a) : MArray<double> (a) { }
 
-  template <class U>
+  template <typename U>
   explicit NDArray (const intNDArray<U>& a) : MArray<double> (a) { }
 
   NDArray (const charNDArray&);
@@ -191,3 +194,4 @@ BSXFUN_OP2_DECL (pow, ComplexNDArray, NDArray,
                  ComplexNDArray, OCTAVE_API)
 
 #endif
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2015 John W. Eaton and Paul Kienzle
+Copyright (C) 2001-2016 John W. Eaton and Paul Kienzle
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <list>
@@ -40,92 +40,68 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 DEFUN (__dispatch__, args, nargout,
-       "Undocumented internal function")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __dispatch__ ()
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
 
   std::string f, r, t;
 
-  if (nargin > 0 && nargin < 4)
+  f = args(0).xstring_value ("__dispatch__: first argument must be a function name");
+
+  if (nargin > 1)
+    r = args(1).xstring_value ("__dispatch__: second argument must be a function name");
+
+  if (nargin > 2)
+    t = args(2).xstring_value ("__dispatch__: third argument must be a type name");
+
+  octave_value retval;
+
+  if (nargin == 1)
     {
-      if (nargin > 0)
+      if (nargout > 0)
         {
-          f = args(0).string_value ();
+          symbol_table::fcn_info::dispatch_map_type dm
+            = symbol_table::get_dispatch (f);
 
-          if (error_state)
+          size_t len = dm.size ();
+
+          Cell type_field (len, 1);
+          Cell name_field (len, 1);
+
+          symbol_table::fcn_info::dispatch_map_type::const_iterator p
+            = dm.begin ();
+
+          for (size_t i = 0; i < len; i++)
             {
-              error ("__dispatch__: first argument must be a function name");
-              return retval;
+              type_field(i) = p->first;
+              name_field(i) = p->second;
+
+              p++;
             }
-        }
 
-      if (nargin > 1)
-        {
-          r = args(1).string_value ();
+          octave_scalar_map m;
 
-          if (error_state)
-            {
-              error ("__dispatch__: second argument must be a function name");
-              return retval;
-            }
-        }
+          m.assign ("type", type_field);
+          m.assign ("name", name_field);
 
-      if (nargin > 2)
-        {
-          t = args(2).string_value ();
-
-          if (error_state)
-            {
-              error ("__dispatch__: third argument must be a type name");
-              return retval;
-            }
-        }
-
-      if (nargin == 1)
-        {
-          if (nargout > 0)
-            {
-              symbol_table::fcn_info::dispatch_map_type dm
-                = symbol_table::get_dispatch (f);
-
-              size_t len = dm.size ();
-
-              Cell type_field (len, 1);
-              Cell name_field (len, 1);
-
-              symbol_table::fcn_info::dispatch_map_type::const_iterator p
-                = dm.begin ();
-
-              for (size_t i = 0; i < len; i++)
-                {
-                  type_field(i) = p->first;
-                  name_field(i) = p->second;
-
-                  p++;
-                }
-
-              octave_scalar_map m;
-
-              m.assign ("type", type_field);
-              m.assign ("name", name_field);
-
-              retval = m;
-            }
-          else
-            symbol_table::print_dispatch (octave_stdout, f);
-        }
-      else if (nargin == 2)
-        {
-          t = r;
-          symbol_table::clear_dispatch (f, t);
+          retval = m;
         }
       else
-        symbol_table::add_dispatch (f, t, r);
+        symbol_table::print_dispatch (octave_stdout, f);
+    }
+  else if (nargin == 2)
+    {
+      t = r;
+      symbol_table::clear_dispatch (f, t);
     }
   else
-    print_usage ();
+    symbol_table::add_dispatch (f, t, r);
 
   return retval;
 }
@@ -134,3 +110,4 @@ DEFUN (__dispatch__, args, nargout,
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

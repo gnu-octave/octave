@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 John W. Eaton
+Copyright (C) 2009-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "singleton-cleanup.h"
@@ -63,11 +63,8 @@ display_info::instance_ok (bool query)
     }
 
   if (! instance)
-    {
-      ::error ("unable to create display_info object!");
-
-      retval = false;
-    }
+    error ("unable to create display_info object!");
 
   return retval;
 }
+

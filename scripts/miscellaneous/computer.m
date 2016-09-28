@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 John W. Eaton
+## Copyright (C) 2004-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} computer ()
-## @deftypefnx {Function File} {@var{c} =} computer ()
-## @deftypefnx {Function File} {[@var{c}, @var{maxsize}] =} computer ()
-## @deftypefnx {Function File} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
-## @deftypefnx {Function File} {@var{arch} =} computer ("arch")
+## @deftypefn  {} {} computer ()
+## @deftypefnx {} {@var{c} =} computer ()
+## @deftypefnx {} {[@var{c}, @var{maxsize}] =} computer ()
+## @deftypefnx {} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
+## @deftypefnx {} {@var{arch} =} computer ("arch")
 ## Print or return a string of the form @var{cpu}-@var{vendor}-@var{os} that
 ## identifies the type of computer that Octave is running on.
 ##
@@ -60,7 +60,7 @@ function [c, maxsize, endian] = computer (a)
   endif
 
   if (nargin == 0)
-    msg = octave_config_info ("canonical_host_type");
+    msg = __octave_config_info__ ("canonical_host_type");
 
     if (strcmp (msg, "unknown"))
       msg = "Hi Dave, I'm a HAL-9000";
@@ -71,16 +71,16 @@ function [c, maxsize, endian] = computer (a)
     else
       c = msg;
       if (isargout (2))
-        if (strcmp (octave_config_info ("USE_64_BIT_IDX_T"), "true"))
+        if (__octave_config_info__ ("ENABLE_64"))
           maxsize = 2^63-1;
         else
           maxsize = 2^31-1;
         endif
       endif
       if (isargout (3))
-        if (octave_config_info ("words_big_endian"))
+        if (__octave_config_info__ ("words_big_endian"))
           endian = "B";
-        elseif (octave_config_info ("words_little_endian"))
+        elseif (__octave_config_info__ ("words_little_endian"))
           endian = "L";
         else
           endian = "?";
@@ -89,7 +89,7 @@ function [c, maxsize, endian] = computer (a)
     endif
   else
     ## "arch" argument asked for
-    tmp = ostrsplit (octave_config_info ("canonical_host_type"), "-");
+    tmp = ostrsplit (__octave_config_info__ ("canonical_host_type"), "-");
     if (numel (tmp) == 4)
       c = sprintf ("%s-%s-%s", tmp{4}, tmp{3}, tmp{1});
     else
@@ -102,7 +102,7 @@ endfunction
 
 
 %!assert (ischar (computer ()))
-%!assert (computer (), octave_config_info ("canonical_host_type"))
+%!assert (computer (), __octave_config_info__ ("canonical_host_type"))
 %!assert (ischar (computer ("arch")))
 
 %!error computer (1,2)

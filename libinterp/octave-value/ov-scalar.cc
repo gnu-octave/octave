@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,11 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
+
+#include "oct-inttypes.h"
 
 #include "data-conv.h"
 #include "mach-info.h"
@@ -32,9 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #include "defun.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "mxarray.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-hdf5.h"
 #include "oct-stream.h"
 #include "ov-scalar.h"
@@ -49,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "xpow.h"
 #include "ops.h"
 
-#include "ls-oct-ascii.h"
+#include "ls-oct-text.h"
 #include "ls-hdf5.h"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
@@ -57,16 +59,14 @@ along with Octave; see the file COPYING.  If not, see
 
 extern template class OCTINTERP_API octave_base_scalar<float>;
 
-
 template class octave_base_scalar<double>;
-
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar", "double");
 
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_scalar&);
+  const octave_scalar& v = dynamic_cast<const octave_scalar&> (a);
 
   return new octave_float_scalar (v.float_value ());
 }
@@ -121,6 +121,66 @@ octave_scalar::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
+octave_scalar::as_double (void) const
+{
+  return scalar;
+}
+
+octave_value
+octave_scalar::as_single (void) const
+{
+  return static_cast<float> (scalar);
+}
+
+octave_value
+octave_scalar::as_int8 (void) const
+{
+  return octave_int8 (scalar);
+}
+
+octave_value
+octave_scalar::as_int16 (void) const
+{
+  return octave_int16 (scalar);
+}
+
+octave_value
+octave_scalar::as_int32 (void) const
+{
+  return octave_int32 (scalar);
+}
+
+octave_value
+octave_scalar::as_int64 (void) const
+{
+  return octave_int64 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint8 (void) const
+{
+  return octave_uint8 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint16 (void) const
+{
+  return octave_uint16 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint32 (void) const
+{
+  return octave_uint32 (scalar);
+}
+
+octave_value
+octave_scalar::as_uint64 (void) const
+{
+  return octave_uint64 (scalar);
+}
+
+octave_value
 octave_scalar::diag (octave_idx_type m, octave_idx_type n) const
 {
   return DiagMatrix (Array<double> (dim_vector (1, 1), scalar), m, n);
@@ -131,23 +191,21 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
 
-  if (xisnan (scalar))
-    gripe_nan_to_character_conversion ();
-  else
+  if (octave::math::isnan (scalar))
+    octave::err_nan_to_character_conversion ();
+
+  int ival = octave::math::nint (scalar);
+
+  if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
     {
-      int ival = NINT (scalar);
+      // FIXME: is there something better we could do?
 
-      if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-        {
-          // FIXME: is there something better we could do?
+      ival = 0;
 
-          ival = 0;
-
-          ::warning ("range error for conversion to character value");
-        }
-
-      retval = octave_value (std::string (1, static_cast<char> (ival)), type);
+      ::warning ("range error for conversion to character value");
     }
+
+  retval = octave_value (std::string (1, static_cast<char> (ival)), type);
 
   return retval;
 }
@@ -168,11 +226,9 @@ bool
 octave_scalar::load_ascii (std::istream& is)
 {
   scalar = octave_read_value<double> (is);
-  if (!is)
-    {
-      error ("load: failed to load scalar constant");
-      return false;
-    }
+
+  if (! is)
+    error ("load: failed to load scalar constant");
 
   return true;
 }
@@ -190,7 +246,7 @@ octave_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_scalar::load_binary (std::istream& is, bool swap,
-                            oct_mach_info::float_format fmt)
+                            octave::mach_info::float_format fmt)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -198,7 +254,8 @@ octave_scalar::load_binary (std::istream& is, bool swap,
 
   double dtmp;
   read_doubles (is, &dtmp, static_cast<save_type> (tmp), 1, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
 
   scalar = dtmp;
@@ -220,12 +277,12 @@ octave_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
 
-#if HAVE_HDF5_18
+#if defined (HAVE_HDF5_18)
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid,
-                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        octave_H5P_DEFAULT, octave_H5P_DEFAULT, octave_H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid,
-                        H5P_DEFAULT);
+                        octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -234,14 +291,17 @@ octave_scalar::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
 
   double tmp = double_value ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
+                     octave_H5P_DEFAULT, &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
 #else
-  gripe_save ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_save ("hdf5");
 #endif
 
   return retval;
@@ -252,8 +312,8 @@ octave_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
 #if defined (HAVE_HDF5)
 
-#if HAVE_HDF5_18
-  hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
+#if defined (HAVE_HDF5_18)
+  hid_t data_hid = H5Dopen (loc_id, name, octave_H5P_DEFAULT);
 #else
   hid_t data_hid = H5Dopen (loc_id, name);
 #endif
@@ -268,8 +328,8 @@ octave_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   double dtmp;
-  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, &dtmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, octave_H5S_ALL, octave_H5S_ALL,
+               octave_H5P_DEFAULT, &dtmp) < 0)
     {
       H5Dclose (data_hid);
       return false;
@@ -282,7 +342,11 @@ octave_scalar::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return true;
 
 #else
-  gripe_load ("hdf5");
+  octave_unused_parameter (loc_id);
+  octave_unused_parameter (name);
+
+  warn_load ("hdf5");
+
   return false;
 #endif
 }
@@ -311,53 +375,53 @@ octave_scalar::map (unary_mapper_t umap) const
     case umap_conj:
       return scalar;
 
-#define SCALAR_MAPPER(UMAP, FCN) \
-    case umap_ ## UMAP: \
+#define SCALAR_MAPPER(UMAP, FCN)              \
+    case umap_ ## UMAP:                       \
       return octave_value (FCN (scalar))
 
-      SCALAR_MAPPER (abs, ::fabs);
-      SCALAR_MAPPER (acos, rc_acos);
-      SCALAR_MAPPER (acosh, rc_acosh);
-      SCALAR_MAPPER (angle, ::arg);
-      SCALAR_MAPPER (arg, ::arg);
-      SCALAR_MAPPER (asin, rc_asin);
-      SCALAR_MAPPER (asinh, ::asinh);
-      SCALAR_MAPPER (atan, ::atan);
-      SCALAR_MAPPER (atanh, rc_atanh);
-      SCALAR_MAPPER (erf, ::erf);
-      SCALAR_MAPPER (erfinv, ::erfinv);
-      SCALAR_MAPPER (erfcinv, ::erfcinv);
-      SCALAR_MAPPER (erfc, ::erfc);
-      SCALAR_MAPPER (erfcx, ::erfcx);
-      SCALAR_MAPPER (erfi, ::erfi);
-      SCALAR_MAPPER (dawson, ::dawson);
-      SCALAR_MAPPER (gamma, xgamma);
-      SCALAR_MAPPER (lgamma, rc_lgamma);
-      SCALAR_MAPPER (cbrt, ::cbrt);
-      SCALAR_MAPPER (ceil, ::ceil);
-      SCALAR_MAPPER (cos, ::cos);
-      SCALAR_MAPPER (cosh, ::cosh);
-      SCALAR_MAPPER (exp, ::exp);
-      SCALAR_MAPPER (expm1, ::expm1);
-      SCALAR_MAPPER (fix, ::fix);
-      SCALAR_MAPPER (floor, gnulib::floor);
-      SCALAR_MAPPER (log, rc_log);
-      SCALAR_MAPPER (log2, rc_log2);
-      SCALAR_MAPPER (log10, rc_log10);
-      SCALAR_MAPPER (log1p, rc_log1p);
-      SCALAR_MAPPER (round, xround);
-      SCALAR_MAPPER (roundb, xroundb);
-      SCALAR_MAPPER (signum, ::signum);
-      SCALAR_MAPPER (sin, ::sin);
-      SCALAR_MAPPER (sinh, ::sinh);
-      SCALAR_MAPPER (sqrt, rc_sqrt);
-      SCALAR_MAPPER (tan, ::tan);
-      SCALAR_MAPPER (tanh, ::tanh);
-      SCALAR_MAPPER (finite, xfinite);
-      SCALAR_MAPPER (isinf, xisinf);
-      SCALAR_MAPPER (isna, octave_is_NA);
-      SCALAR_MAPPER (isnan, xisnan);
-      SCALAR_MAPPER (xsignbit, xsignbit);
+    SCALAR_MAPPER (abs, ::fabs);
+    SCALAR_MAPPER (acos, octave::math::rc_acos);
+    SCALAR_MAPPER (acosh, octave::math::rc_acosh);
+    SCALAR_MAPPER (angle, octave::math::arg);
+    SCALAR_MAPPER (arg,octave::math ::arg);
+    SCALAR_MAPPER (asin, octave::math::rc_asin);
+    SCALAR_MAPPER (asinh, octave::math::asinh);
+    SCALAR_MAPPER (atan, ::atan);
+    SCALAR_MAPPER (atanh, octave::math::rc_atanh);
+    SCALAR_MAPPER (erf, octave::math::erf);
+    SCALAR_MAPPER (erfinv, octave::math::erfinv);
+    SCALAR_MAPPER (erfcinv, octave::math::erfcinv);
+    SCALAR_MAPPER (erfc, octave::math::erfc);
+    SCALAR_MAPPER (erfcx, octave::math::erfcx);
+    SCALAR_MAPPER (erfi, octave::math::erfi);
+    SCALAR_MAPPER (dawson, octave::math::dawson);
+    SCALAR_MAPPER (gamma, octave::math::gamma);
+    SCALAR_MAPPER (lgamma, octave::math::rc_lgamma);
+    SCALAR_MAPPER (cbrt, octave::math::cbrt);
+    SCALAR_MAPPER (ceil, ::ceil);
+    SCALAR_MAPPER (cos, ::cos);
+    SCALAR_MAPPER (cosh, ::cosh);
+    SCALAR_MAPPER (exp, ::exp);
+    SCALAR_MAPPER (expm1, octave::math::expm1);
+    SCALAR_MAPPER (fix, octave::math::fix);
+    SCALAR_MAPPER (floor, std::floor);
+    SCALAR_MAPPER (log, octave::math::rc_log);
+    SCALAR_MAPPER (log2, octave::math::rc_log2);
+    SCALAR_MAPPER (log10, octave::math::rc_log10);
+    SCALAR_MAPPER (log1p, octave::math::rc_log1p);
+    SCALAR_MAPPER (round, octave::math::round);
+    SCALAR_MAPPER (roundb, octave::math::roundb);
+    SCALAR_MAPPER (signum, octave::math::signum);
+    SCALAR_MAPPER (sin, ::sin);
+    SCALAR_MAPPER (sinh, ::sinh);
+    SCALAR_MAPPER (sqrt, octave::math::rc_sqrt);
+    SCALAR_MAPPER (tan, ::tan);
+    SCALAR_MAPPER (tanh, ::tanh);
+    SCALAR_MAPPER (isfinite, octave::math::finite);
+    SCALAR_MAPPER (isinf, octave::math::isinf);
+    SCALAR_MAPPER (isna, octave::math::is_NA);
+    SCALAR_MAPPER (isnan, octave::math::isnan);
+    SCALAR_MAPPER (xsignbit, octave::math::signbit);
 
     // Special cases for Matlab compatibility.
     case umap_xtolower:
@@ -379,7 +443,7 @@ octave_scalar::map (unary_mapper_t umap) const
     case umap_xtoascii:
       {
         octave_value str_conv = convert_to_str (true, true);
-        return error_state ? octave_value () : str_conv.map (umap);
+        return str_conv.map (umap);
       }
 
     default:
@@ -405,3 +469,4 @@ octave_scalar::fast_elem_insert_self (void *where, builtin_type_t btyp) const
   else
     return false;
 }
+

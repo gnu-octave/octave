@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -33,35 +33,32 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/types.h>
-#include <unistd.h>
-
 #if defined (HAVE_TERMIOS_H)
-#include <termios.h>
+#  include <termios.h>
 #elif defined (HAVE_TERMIO_H)
-#include <termio.h>
+#  include <termio.h>
 #elif defined (HAVE_SGTTY_H)
-#include <sgtty.h>
+#  include <sgtty.h>
 #endif
 
 #if defined (HAVE_CONIO_H)
-#include <conio.h>
+#  include <conio.h>
 #endif
 
 #if defined (HAVE_SYS_IOCTL_H)
-#include <sys/ioctl.h>
+#  include <sys/ioctl.h>
 #endif
 
 #if defined (HAVE_FLOATINGPOINT_H)
-#include <floatingpoint.h>
+#  include <floatingpoint.h>
 #endif
 
 #if defined (HAVE_IEEEFP_H)
-#include <ieeefp.h>
+#  include <ieeefp.h>
 #endif
 
 #if defined (HAVE_OMP_H)
-#include <omp.h>
+#  include <omp.h>
 #endif
 
 #include "cmd-edit.h"
@@ -71,46 +68,51 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "oct-env.h"
 #include "quit.h"
+#include "unistd-wrappers.h"
+#include "unsetenv-wrapper.h"
 
+#include "builtin-defun-decls.h"
 #include "Cell.h"
-#include "builtins.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
+#include "errwarn.h"
 #include "input.h"
-#include "oct-obj.h"
+#include "octave.h"
 #include "ov.h"
+#include "ovl.h"
 #include "pager.h"
 #include "parse.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "toplev.h"
+#include "interpreter.h"
 #include "utils.h"
 #include "file-stat.h"
 
-#ifndef STDIN_FILENO
-#define STDIN_FILENO 1
+#if ! defined (STDIN_FILENO)
+#  define STDIN_FILENO 1
 #endif
 
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 static void
 BSD_init (void)
 {
-#if defined (HAVE_FLOATINGPOINT_H)
+#  if defined (HAVE_FLOATINGPOINT_H)
   // Disable trapping on common exceptions.
-#ifndef FP_X_DNML
-#define FP_X_DNML 0
-#endif
+#    if ! defined (FP_X_DNML)
+#      define FP_X_DNML 0
+#    endif
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
-#endif
+#  endif
 }
 #endif
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (__MINGW32__) || defined (_MSC_VER)
 
 #define WIN32_LEAN_AND_MEAN
-#include <tlhelp32.h>
 #include <windows.h>
+#include <tlhelp32.h>
+#include <shellapi.h>
 
 static void
 w32_set_octave_home (void)
@@ -118,7 +120,7 @@ w32_set_octave_home (void)
   std::string bin_dir;
 
   HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
-#ifdef TH32CS_SNAPMODULE32
+#if defined (TH32CS_SNAPMODULE32)
                                        | TH32CS_SNAPMODULE32
 #endif
                                        , 0);
@@ -155,24 +157,8 @@ w32_set_octave_home (void)
       size_t pos = bin_dir.rfind ("\\bin\\");
 
       if (pos != std::string::npos)
-        octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+        octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
     }
-}
-
-void
-w32_set_quiet_shutdown (void)
-{
-  // Let the user close the console window or shutdown without the
-  // pesky dialog.
-  //
-  // FIXME: should this be user configurable?
-  SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
-}
-
-void
-MINGW_signal_cleanup (void)
-{
-  w32_set_quiet_shutdown ();
 }
 
 static void
@@ -180,49 +166,78 @@ w32_init (void)
 {
   w32_set_octave_home ();
 
-  command_editor::prefer_env_winsize (true);
+  octave::command_editor::prefer_env_winsize (true);
 }
 
 static bool
 w32_shell_execute (const std::string& file)
-{
-}
+{ }
+
 #endif
+
+// Set app id if we have the SetCurrentProcessExplicitAppUserModelID
+// available (>= Win7).  FIXME: Could we check for existence of this
+// function in the configure script instead of dynamically loading
+// shell32.dll?
+
+void
+set_application_id (void)
+{
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+  typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
+
+  HMODULE hShell = LoadLibrary ("shell32.dll");
+
+  if (hShell != NULL)
+    {
+      SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
+        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
+                                           "SetCurrentProcessExplicitAppUserModelID"));
+
+      if (pfnSetCurrentProcessExplicitAppUserModelID)
+        pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave");
+
+      FreeLibrary (hShell);
+    }
+
+#endif
+}
 
 DEFUN (__open_with_system_app__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __open_with_system_app__ (@var{file})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __open_with_system_app__ (@var{file})
+Undocumented internal function.
+@end deftypefn */)
 {
+  if (args.length () != 1)
+    print_usage ();
+
+  std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
+
   octave_value retval;
 
-  if (args.length () == 1)
-    {
-      std::string file = args(0).string_value ();
+#if defined (OCTAVE_USE_WINDOWS_API)
+  HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
+                                   SW_SHOWNORMAL);
 
-      if (! error_state)
-        {
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-          HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
-                                           SW_SHOWNORMAL);
+  // ShellExecute returns a value greater than 32 if successful.
+  retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+#elif defined (__APPLE__)
+  octave_value_list tmp
+    = Fsystem (ovl ("open " + file + " 2> /dev/null",
+                    false, "async"),
+               1);
 
-          // ShellExecute returns a value greater than 32 if successful.
-          retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+  retval = (tmp(0).double_value () == 0);
 #else
-          octave_value_list tmp
-            = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
-                            false, "async"),
-                       1);
+  octave_value_list tmp
+    = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
+                    false, "async"),
+               1);
 
-          retval = (tmp(0).double_value () == 0);
+  retval = (tmp(0).double_value () == 0);
 #endif
-        }
-      else
-        error ("__open_with_system_app__: argument must be a file name");
-    }
-  else
-    print_usage ();
 
   return retval;
 }
@@ -243,13 +258,12 @@ MSVC_init (void)
 }
 #endif
 
-
 // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
 
 bool
 same_file_internal (const std::string& file1, const std::string& file2)
 {
-#ifdef OCTAVE_USE_WINDOWS_API
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   bool retval = false;
 
@@ -299,8 +313,8 @@ same_file_internal (const std::string& file1, const std::string& file2)
 
   // POSIX Code
 
-  file_stat fs_file1 (file1);
-  file_stat fs_file2 (file2);
+  octave::sys::file_stat fs_file1 (file1);
+  octave::sys::file_stat fs_file2 (file2);
 
   return (fs_file1 && fs_file2
           && fs_file1.ino () == fs_file2.ino ()
@@ -312,10 +326,11 @@ same_file_internal (const std::string& file1, const std::string& file2)
 void
 sysdep_init (void)
 {
-#if defined (HAVE_OPENMP)
+  // Use a function from libgomp to force loading of OpenMP library.
+  // Otherwise, a dynamically loaded library making use of OpenMP such
+  // as GraphicsMagick will segfault on exit (bug #41699).
 #if defined (HAVE_OMP_GET_NUM_THREADS)
   omp_get_num_threads ();
-#endif
 #endif
 
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
@@ -330,7 +345,10 @@ sysdep_init (void)
 void
 sysdep_cleanup (void)
 {
-  MINGW_SIGNAL_CLEANUP ();
+#if defined (OCTAVE_USE_WINDOWS_API)
+  // Let us fail immediately without displaying any dialog.
+  SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
+#endif
 }
 
 // Set terminal in raw mode.  From less-177.
@@ -351,11 +369,11 @@ raw_mode (bool on, bool wait)
   static bool curr_on = false;
 
   int tty_fd = STDIN_FILENO;
-  if (! gnulib::isatty (tty_fd))
+  if (! octave_isatty_wrapper (tty_fd))
     {
-      if (interactive && ! forced_interactive)
+      if (octave::application::interactive ()
+          && ! octave::application::forced_interactive ())
         error ("stdin is not a tty!");
-      return;
     }
 
   if (on == curr_on)
@@ -381,8 +399,8 @@ raw_mode (bool on, bool wait)
 
         // Set the modes to the way we want them.
 
-        s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-        s.c_oflag |=  (OPOST|ONLCR);
+        s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
+        s.c_oflag |=  (OPOST | ONLCR);
 #if defined (OCRNL)
         s.c_oflag &= ~(OCRNL);
 #endif
@@ -424,8 +442,8 @@ raw_mode (bool on, bool wait)
 
         // Set the modes to the way we want them.
 
-        s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-        s.c_oflag |=  (OPOST|ONLCR);
+        s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
+        s.c_oflag |=  (OPOST | ONLCR);
 #if defined (OCRNL)
         s.c_oflag &= ~(OCRNL);
 #endif
@@ -479,7 +497,7 @@ raw_mode (bool on, bool wait)
     ioctl (tty_fd, TIOCSETN, &s);
   }
 #else
-  warning ("no support for raw mode console I/O on this system");
+  warn_disabled_feature ("", "raw mode console I/O");
 
   // Make sure the current mode doesn't toggle.
   on = curr_on;
@@ -536,13 +554,13 @@ octave_kbhit (bool wait)
   raw_mode (true, wait);
 
   // Get current handler.
-  octave_interrupt_handler saved_interrupt_handler
-    = octave_ignore_interrupts ();
+  octave::interrupt_handler saved_interrupt_handler
+    = octave::ignore_interrupts ();
 
   // Restore it, disabling system call restarts (if possible) so the
   // read can be interrupted.
 
-  octave_set_interrupt_handler (saved_interrupt_handler, false);
+  octave::set_interrupt_handler (saved_interrupt_handler, false);
 
   int c = std::cin.get ();
 
@@ -550,7 +568,7 @@ octave_kbhit (bool wait)
     std::cin.clear ();
 
   // Restore it, enabling system call restarts (if possible).
-  octave_set_interrupt_handler (saved_interrupt_handler, true);
+  octave::set_interrupt_handler (saved_interrupt_handler, true);
 
   raw_mode (false, true);
 #endif
@@ -561,7 +579,7 @@ octave_kbhit (bool wait)
 std::string
 get_P_tmpdir (void)
 {
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   std::string retval;
 
@@ -575,10 +593,10 @@ get_P_tmpdir (void)
 
   if (retval.empty () || retval == "\\")
     {
-      retval = octave_env::getenv ("TEMP");
+      retval = octave::sys::env::getenv ("TEMP");
 
       if (retval.empty ())
-        retval = octave_env::getenv ("TMP");
+        retval = octave::sys::env::getenv ("TMP");
 
       if (retval.empty ())
         retval = "c:\\temp";
@@ -598,52 +616,43 @@ get_P_tmpdir (void)
 }
 
 DEFUN (clc, , ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} clc ()\n\
-@deftypefnx {Built-in Function} {} home ()\n\
-Clear the terminal screen and move the cursor to the upper left corner.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} clc ()
+@deftypefnx {} {} home ()
+Clear the terminal screen and move the cursor to the upper left corner.
+@end deftypefn */)
 {
   bool skip_redisplay = true;
 
-  command_editor::clear_screen (skip_redisplay);
+  octave::command_editor::clear_screen (skip_redisplay);
 
-  return octave_value_list ();
+  return ovl ();
 }
 
 DEFALIAS (home, clc);
 
 DEFUN (getenv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} getenv (@var{var})\n\
-Return the value of the environment variable @var{var}.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-getenv (\"PATH\")\n\
-@end example\n\
-\n\
-@noindent\n\
-returns a string containing the value of your path.\n\
-@seealso{setenv, unsetenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} getenv (@var{var})
+Return the value of the environment variable @var{var}.
+
+For example,
+
+@example
+getenv ("PATH")
+@end example
+
+@noindent
+returns a string containing the value of your path.
+@seealso{setenv, unsetenv}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        retval = octave_env::getenv (name);
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string name = args(0).string_value ();
+
+  return ovl (octave::sys::env::getenv (name));
 }
 
 /*
@@ -651,42 +660,31 @@ returns a string containing the value of your path.\n\
 */
 
 DEFUN (setenv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} setenv (@var{var}, @var{value})\n\
-@deftypefnx {Built-in Function} {} setenv (@var{var})\n\
-@deftypefnx {Built-in Function} {} putenv (@dots{})\n\
-Set the value of the environment variable @var{var} to @var{value}.\n\
-\n\
-If no @var{value} is specified then the variable will be assigned the null\n\
-string.\n\
-@seealso{unsetenv, getenv}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} setenv (@var{var}, @var{value})
+@deftypefnx {} {} setenv (@var{var})
+@deftypefnx {} {} putenv (@dots{})
+Set the value of the environment variable @var{var} to @var{value}.
 
+If no @var{value} is specified then the variable will be assigned the null
+string.
+@seealso{unsetenv, getenv}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 1)
-    {
-      if (args(0).is_string ())
-        {
-          std::string var = args(0).string_value ();
-
-          std::string val = (nargin == 2
-                             ? args(1).string_value () : std::string ());
-
-          if (! error_state)
-            octave_env::putenv (var, val);
-          else
-            error ("setenv: VALUE must be a string");
-        }
-      else
-        error ("setenv: VAR must be a string");
-    }
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  return retval;
+  std::string var = args(0).xstring_value ("setenv: VAR must be a string");
+
+  std::string val = (nargin == 2
+                     ? args(1).xstring_value ("setenv: VALUE must be a string")
+                     : "");
+
+  octave::sys::env::putenv (var, val);
+
+  return ovl ();
 }
 
 DEFALIAS (putenv, setenv);
@@ -700,33 +698,21 @@ DEFALIAS (putenv, setenv);
 */
 
 DEFUN (unsetenv, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{status} =} unsetenv (@var{var})\n\
-Delete the environment variable @var{var}.\n\
-\n\
-Return 0 if the variable was deleted, or did not exist, and -1 if an error\n\
-occurred.\n\
-@seealso{setenv, getenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{status} =} unsetenv (@var{var})
+Delete the environment variable @var{var}.
+
+Return 0 if the variable was deleted, or did not exist, and -1 if an error
+occurred.
+@seealso{setenv, getenv}
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      std::string tmp = args(0).string_value ();
-
-      if (! error_state)
-        {
-          int status = gnulib::unsetenv (tmp.c_str ());
-          retval = status;
-        }
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  std::string tmp = args(0).string_value ();
+
+  return ovl (octave_unsetenv_wrapper (tmp.c_str ()));
 }
 
 /*
@@ -736,38 +722,38 @@ occurred.\n\
 // FIXME: perhaps kbhit should also be able to print a prompt?
 
 DEFUN (kbhit, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} kbhit ()\n\
-@deftypefnx {Built-in Function} {} kbhit (1)\n\
-Read a single keystroke from the keyboard.\n\
-\n\
-If called with an argument, don't wait for a keypress.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-x = kbhit ();\n\
-@end example\n\
-\n\
-@noindent\n\
-will set @var{x} to the next character typed at the keyboard as soon as\n\
-it is typed.\n\
-\n\
-@example\n\
-x = kbhit (1);\n\
-@end example\n\
-\n\
-@noindent\n\
-is identical to the above example, but doesn't wait for a keypress,\n\
-returning the empty string if no key is available.\n\
-@seealso{input, pause}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} kbhit ()
+@deftypefnx {} {} kbhit (1)
+Read a single keystroke from the keyboard.
+
+If called with an argument, don't wait for a keypress.
+
+For example,
+
+@example
+x = kbhit ();
+@end example
+
+@noindent
+will set @var{x} to the next character typed at the keyboard as soon as
+it is typed.
+
+@example
+x = kbhit (1);
+@end example
+
+@noindent
+is identical to the above example, but doesn't wait for a keypress,
+returning the empty string if no key is available.
+@seealso{input, pause}
+@end deftypefn */)
 {
-  octave_value retval;
+  octave_value retval = "";
 
   // FIXME: add timeout and default value args?
 
-  if (interactive)
+  if (octave::application::interactive ())
     {
       Fdrawnow ();
 
@@ -785,59 +771,60 @@ returning the empty string if no key is available.\n\
 }
 
 DEFUN (pause, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} pause ()\n\
-@deftypefnx {Built-in Function} {} pause (@var{n})\n\
-Suspend the execution of the program for @var{n} seconds.\n\
-\n\
-@var{n} is a positive real value and may be a fraction of a second.\n\
-\n\
-If invoked without an input arguments then the program is suspended until a\n\
-character is typed.\n\
-\n\
-The following example prints a message and then waits 5 seconds before\n\
-clearing the screen.\n\
-\n\
-@example\n\
-@group\n\
-fprintf (stderr, \"wait please...\\n\");\n\
-pause (5);\n\
-clc;\n\
-@end group\n\
-@end example\n\
-@seealso{kbhit, sleep}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} pause ()
+@deftypefnx {} {} pause (@var{n})
+Suspend the execution of the program for @var{n} seconds.
 
+If invoked without an input arguments then the program is suspended until a
+character is typed.
+
+@var{n} is a positive real value and may be a fraction of a second,
+for example:
+
+@example
+@group
+tic; pause (0.05); toc
+     @print{} Elapsed time is 0.05039 seconds.
+@end group
+@end example
+
+The following example prints a message and then waits 5 seconds before
+clearing the screen.
+
+@example
+@group
+disp ("wait please...");
+pause (5);
+clc;
+@end group
+@end example
+
+@seealso{kbhit}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (! (nargin == 0 || nargin == 1))
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin > 1)
+    print_usage ();
 
   if (nargin == 1)
     {
       double dval = args(0).double_value ();
 
-      if (! error_state)
+      if (octave::math::isnan (dval))
+        warning ("pause: NaN is an invalid delay");
+      else
         {
-          if (! xisnan (dval))
-            {
-              Fdrawnow ();
+          Fdrawnow ();
 
-              if (xisinf (dval))
-                {
-                  flush_octave_stdout ();
-                  octave_kbhit ();
-                }
-              else
-                octave_sleep (dval);
+          if (octave::math::isinf (dval))
+            {
+              flush_octave_stdout ();
+              octave_kbhit ();
             }
           else
-            warning ("pause: NaN is an invalid delay");
+            octave_sleep (dval);
         }
     }
   else
@@ -847,7 +834,7 @@ clc;\n\
       octave_kbhit ();
     }
 
-  return retval;
+  return ovl ();
 }
 
 /*
@@ -857,107 +844,23 @@ clc;\n\
 %!error (pause (1, 2))
 */
 
-DEFUN (sleep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
-Suspend the execution of the program for the given number of seconds.\n\
-@seealso{usleep, pause}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (args.length () == 1)
-    {
-      double dval = args(0).double_value ();
-
-      if (! error_state)
-        {
-          if (xisnan (dval))
-            warning ("sleep: NaN is an invalid delay");
-          else
-            {
-              Fdrawnow ();
-              octave_sleep (dval);
-            }
-        }
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-/*
-%!test
-%! sleep (1);
-
-%!error (sleep ())
-%!error (sleep (1, 2))
-*/
-
-DEFUN (usleep, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} usleep (@var{microseconds})\n\
-Suspend the execution of the program for the given number of\n\
-microseconds.\n\
-\n\
-On systems where it is not possible to sleep for periods of time less than\n\
-one second, @code{usleep} will pause the execution for @code{round\n\
-(@var{microseconds} / 1e6)} seconds.\n\
-@seealso{sleep, pause}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (args.length () == 1)
-    {
-      double dval = args(0).double_value ();
-
-      if (! error_state)
-        {
-          if (xisnan (dval))
-            warning ("usleep: NaN is an invalid delay");
-          else
-            {
-              Fdrawnow ();
-
-              int delay = NINT (dval);
-
-              if (delay > 0)
-                octave_usleep (delay);
-            }
-        }
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-/*
-%!test
-%! usleep (1000);
-
-%!error (usleep ())
-%!error (usleep (1, 2))
-*/
-
 // FIXME: maybe this should only return 1 if IEEE floating
 // point functions really work.
 
 DEFUN (isieee, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isieee ()\n\
-Return true if your computer @emph{claims} to conform to the IEEE standard\n\
-for floating point calculations.\n\
-\n\
-No actual tests are performed.\n\
-@end deftypefn")
-{
-  oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} isieee ()
+Return true if your computer @emph{claims} to conform to the IEEE standard
+for floating point calculations.
 
-  return octave_value (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
-                       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+No actual tests are performed.
+@end deftypefn */)
+{
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::native_float_format ();
+
+  return ovl (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian
+              || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
 }
 
 /*
@@ -965,14 +868,15 @@ No actual tests are performed.\n\
 */
 
 DEFUN (native_float_format, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} native_float_format ()\n\
-Return the native floating point format as a string.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} native_float_format ()
+Return the native floating point format as a string.
+@end deftypefn */)
 {
-  oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt =
+    octave::mach_info::native_float_format ();
 
-  return octave_value (oct_mach_info::float_format_as_string (flt_fmt));
+  return ovl (octave::mach_info::float_format_as_string (flt_fmt));
 }
 
 /*
@@ -980,55 +884,46 @@ Return the native floating point format as a string.\n\
 */
 
 DEFUN (tilde_expand, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} tilde_expand (@var{string})\n\
-Perform tilde expansion on @var{string}.\n\
-\n\
-If @var{string} begins with a tilde character, (@samp{~}), all of the\n\
-characters preceding the first slash (or all characters, if there is no\n\
-slash) are treated as a possible user name, and the tilde and the following\n\
-characters up to the slash are replaced by the home directory of the named\n\
-user.  If the tilde is followed immediately by a slash, the tilde is\n\
-replaced by the home directory of the user running Octave.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-tilde_expand (\"~joeuser/bin\")\n\
-     @result{} \"/home/joeuser/bin\"\n\
-tilde_expand (\"~/bin\")\n\
-     @result{} \"/home/jwe/bin\"\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} tilde_expand (@var{string})
+@deftypefnx {} {} tilde_expand (@var{cellstr})
+Perform tilde expansion on @var{string}.
+
+If @var{string} begins with a tilde character, (@samp{~}), all of the
+characters preceding the first slash (or all characters, if there is no
+slash) are treated as a possible user name, and the tilde and the following
+characters up to the slash are replaced by the home directory of the named
+user.  If the tilde is followed immediately by a slash, the tilde is
+replaced by the home directory of the user running Octave.
+
+If the input is a cell array of strings @var{cellstr} then tilde expansion
+is performed on each string element.
+
+Examples:
+
+@example
+@group
+tilde_expand ("~joeuser/bin")
+     @result{} "/home/joeuser/bin"
+tilde_expand ("~/bin")
+     @result{} "/home/jwe/bin"
+@end group
+@end example
+@end deftypefn */)
 {
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      string_vector sv = arg.all_strings ();
-
-      if (! error_state)
-        {
-          sv = file_ops::tilde_expand (sv);
-
-          if (arg.is_cellstr ())
-            retval = Cell (arg.dims (), sv);
-          else
-            retval = sv;
-        }
-      else
-        error ("tilde_expand: expecting argument to be char or cellstr object");
-    }
-  else
+  if (args.length () != 1)
     print_usage ();
 
-  return retval;
+  octave_value arg = args(0);
+
+  string_vector sv = arg.xstring_vector_value ("tilde_expand: argument must be char or cellstr object");
+
+  sv = octave::sys::file_ops::tilde_expand (sv);
+
+  if (arg.is_cellstr ())
+    return ovl (Cell (arg.dims (), sv));
+  else
+    return ovl (sv);
 }
 
 /*
@@ -1040,18 +935,18 @@ tilde_expand (\"~/bin\")\n\
 */
 
 DEFUN (get_home_directory, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{homedir} =} get_home_directory ()\n\
-Return the current home directory.\n\
-\n\
-On most systems, this is equivalent to @code{getenv (\"HOME\")}.  On Windows\n\
-systems, if the environment variable @env{HOME} is not set then it is\n\
-equivalent to\n\
-@code{fullfile (getenv (\"HOMEDRIVE\"), getenv (\"HOMEPATH\"))}\n\
-@seealso{getenv}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{homedir} =} get_home_directory ()
+Return the current home directory.
+
+On most systems, this is equivalent to @code{getenv ("HOME")}.  On Windows
+systems, if the environment variable @env{HOME} is not set then it is
+equivalent to
+@code{fullfile (getenv ("HOMEDRIVE"), getenv ("HOMEPATH"))}
+@seealso{getenv}
+@end deftypefn */)
 {
-  return octave_value (octave_env::get_home_directory ());
+  return ovl (octave::sys::env::get_home_directory ());
 }
 
 /*
@@ -1066,12 +961,13 @@ equivalent to\n\
 // needed for X11 and Carbon functions.
 
 DEFUN (have_window_system, , ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} have_window_system ()\n\
-Return true if a window system is available (X11, Windows, or Apple OS X)\n\
-and false otherwise.\n\
-@seealso{isguirunning}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} have_window_system ()
+Return true if a window system is available (X11, Windows, or Apple OS X)
+and false otherwise.
+@seealso{isguirunning}
+@end deftypefn */)
 {
-  return octave_value (display_info::display_available ());
+  return ovl (display_info::display_available ());
 }
+

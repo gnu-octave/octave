@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -22,177 +22,142 @@ along with Octave; see the file COPYING.  If not, see
 
 // Originally written by A. S. Hodel <scotte@eng.auburn.edu>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
 DEFUN (givens, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{G} =} givens (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
-Compute the Givens rotation matrix @var{G}.\n\
-\n\
-@tex\n\
-The Givens matrix is a $2\\times 2$ orthogonal matrix\n\
-$$\n\
- G = \\left[\\matrix{c & s\\cr -s'& c\\cr}\\right]\n\
-$$\n\
-such that\n\
-$$\n\
- G \\left[\\matrix{x\\cr y}\\right] = \\left[\\matrix{\\ast\\cr 0}\\right]\n\
-$$\n\
-with $x$ and $y$ scalars.\n\
-@end tex\n\
-@ifnottex\n\
-The Givens matrix is a 2 by 2 orthogonal matrix\n\
-\n\
-@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]}\n\
-\n\
-such that\n\
-\n\
-@code{@var{g} [@var{x}; @var{y}] = [*; 0]}\n\
-\n\
-with @var{x} and @var{y} scalars.\n\
-@end ifnottex\n\
-\n\
-If two output arguments are requested, return the factors @var{c} and\n\
-@var{s} rather than the Givens rotation matrix.\n\
-\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-givens (1, 1)\n\
-   @result{}   0.70711   0.70711\n\
-       -0.70711   0.70711\n\
-@end group\n\
-@end example\n\
-@seealso{planerot}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{G} =} givens (@var{x}, @var{y})
+@deftypefnx {} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})
+Compute the Givens rotation matrix @var{G}.
+
+@tex
+The Givens matrix is a $2\times 2$ orthogonal matrix
+$$
+ G = \left[\matrix{c & s\cr -s'& c\cr}\right]
+$$
+such that
+$$
+ G \left[\matrix{x\cr y}\right] = \left[\matrix{\ast\cr 0}\right]
+$$
+with $x$ and $y$ scalars.
+@end tex
+@ifnottex
+The Givens matrix is a 2 by 2 orthogonal matrix
+
+@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]}
+
+such that
+
+@code{@var{g} [@var{x}; @var{y}] = [*; 0]}
+
+with @var{x} and @var{y} scalars.
+@end ifnottex
+
+If two output arguments are requested, return the factors @var{c} and
+@var{s} rather than the Givens rotation matrix.
+
+For example:
+
+@example
+@group
+givens (1, 1)
+   @result{}   0.70711   0.70711
+       -0.70711   0.70711
+@end group
+@end example
+@seealso{planerot}
+@end deftypefn */)
 {
+  if (args.length () != 2)
+    print_usage ();
+
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2 || nargout > 2)
+  if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      print_usage ();
-      return retval;
-    }
-  else
-    {
-      if (args(0).is_single_type () || args(1).is_single_type ())
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          FloatComplex cx = args(0).float_complex_value ();
+          FloatComplex cy = args(1).float_complex_value ();
+
+          FloatComplexMatrix result = Givens (cx, cy);
+
+          switch (nargout)
             {
-              FloatComplex cx = args(0).float_complex_value ();
-              FloatComplex cy = args(1).float_complex_value ();
+            case 0:
+            case 1:
+              retval = ovl (result);
+              break;
 
-              if (! error_state)
-                {
-                  FloatComplexMatrix result = Givens (cx, cy);
-
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
-                }
-            }
-          else
-            {
-              float x = args(0).float_value ();
-              float y = args(1).float_value ();
-
-              if (! error_state)
-                {
-                  FloatMatrix result = Givens (x, y);
-
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
-                }
+            case 2:
+              retval = ovl (result(0, 0), result(0, 1));
+              break;
             }
         }
       else
         {
-          if (args(0).is_complex_type () || args(1).is_complex_type ())
+          float x = args(0).float_value ();
+          float y = args(1).float_value ();
+
+          FloatMatrix result = Givens (x, y);
+
+          switch (nargout)
             {
-              Complex cx = args(0).complex_value ();
-              Complex cy = args(1).complex_value ();
+            case 0:
+            case 1:
+              retval = ovl (result);
+              break;
 
-              if (! error_state)
-                {
-                  ComplexMatrix result = Givens (cx, cy);
-
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
-
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
-                }
+            case 2:
+              retval = ovl (result(0, 0), result(0, 1));
+              break;
             }
-          else
+        }
+    }
+  else
+    {
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
+        {
+          Complex cx = args(0).complex_value ();
+          Complex cy = args(1).complex_value ();
+
+          ComplexMatrix result = Givens (cx, cy);
+
+          switch (nargout)
             {
-              double x = args(0).double_value ();
-              double y = args(1).double_value ();
+            case 0:
+            case 1:
+              retval = ovl (result);
+              break;
 
-              if (! error_state)
-                {
-                  Matrix result = Givens (x, y);
+            case 2:
+              retval = ovl (result(0, 0), result(0, 1));
+              break;
+            }
+        }
+      else
+        {
+          double x = args(0).double_value ();
+          double y = args(1).double_value ();
 
-                  if (! error_state)
-                    {
-                      switch (nargout)
-                        {
-                        case 0:
-                        case 1:
-                          retval(0) = result;
-                          break;
+          Matrix result = Givens (x, y);
 
-                        case 2:
-                          retval(1) = result (0, 1);
-                          retval(0) = result (0, 0);
-                          break;
-                        }
-                    }
-                }
+          switch (nargout)
+            {
+            case 0:
+            case 1:
+              retval = ovl (result);
+              break;
+
+            case 2:
+              retval = ovl (result(0, 0), result(0, 1));
+              break;
             }
         }
     }
@@ -209,3 +174,4 @@ givens (1, 1)\n\
 %!error givens (1)
 %!error [a,b,c] = givens (1, 1)
 */
+

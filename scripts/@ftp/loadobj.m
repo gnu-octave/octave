@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 David Bateman
+## Copyright (C) 2009-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function b = loadobj (a)
+
   b = a;
   if (isfield (b, "jobject"))
     b = rmfield (b, "jobject");
@@ -29,9 +30,10 @@ function b = loadobj (a)
     b = rmfield (b, "dir");
   elseif (isfield (b, "remotePwd"))
     ## FIXME: Can we read matlab java stringBuffer objects?
-    warning ("can not change remote directory in loaded FTP object");
+    warning ("@ftp/loadobj: can not change remote directory in loaded FTP object");
     b = rmfield (b, "remotePwd");
   endif
+
 endfunction
 
 

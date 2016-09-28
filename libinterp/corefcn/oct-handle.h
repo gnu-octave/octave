@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2015 John W. Eaton
+Copyright (C) 2007-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_oct_handle_h)
+#if ! defined (octave_oct_handle_h)
 #define octave_oct_handle_h 1
+
+#include "octave-config.h"
 
 #include "dMatrix.h"
 #include "lo-ieee.h"
@@ -33,21 +35,23 @@ along with Octave; see the file COPYING.  If not, see
 class octave_handle
 {
 public:
-  octave_handle (void) : val (octave_NaN) { }
+  octave_handle (void) : val (octave::numeric_limits<double>::NaN ()) { }
 
   octave_handle (const octave_value& a)
-    : val (octave_NaN)
+    : val (octave::numeric_limits<double>::NaN ())
   {
     if (a.is_empty ())
-      /* do nothing */;
+      ; // do nothing
     else
       {
-        double tval = a.double_value ();
-
-        if (! error_state)
-          val = tval;
-        else
-          error ("invalid handle");
+        try
+          {
+            val = a.double_value ();
+          }
+        catch (octave::execution_exception& e)
+          {
+            error (e, "invalid handle");
+          }
       }
   }
 
@@ -102,7 +106,7 @@ public:
     return old_value;
   }
 
-  bool ok (void) const { return ! xisnan (val); }
+  bool ok (void) const { return ! octave::math::isnan (val); }
 
 private:
   double val;
@@ -145,3 +149,4 @@ operator > (const octave_handle& a, const octave_handle& b)
 }
 
 #endif
+

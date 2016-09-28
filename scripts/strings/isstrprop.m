@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 John W. Eaton
+## Copyright (C) 2008-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isstrprop (@var{str}, @var{prop})
+## @deftypefn {} {} isstrprop (@var{str}, @var{prop})
 ## Test character string properties.
 ##
 ## For example:

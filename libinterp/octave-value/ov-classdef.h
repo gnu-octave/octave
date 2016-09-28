@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Michael Goffioul
+Copyright (C) 2012-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_classdef_h)
+#if ! defined (octave_classdef_h)
 #define octave_classdef_h 1
+
+#include "octave-config.h"
 
 #include <map>
 #include <set>
@@ -57,30 +59,26 @@ public:
   virtual cdef_class get_class (void) const;
 
   virtual void set_class (const cdef_class&)
-  { gripe_invalid_object ("set_class"); }
+  { err_invalid_object ("set_class"); }
 
   virtual cdef_object_rep* clone (void) const
   {
-    gripe_invalid_object ("clone");
-    return new cdef_object_rep ();
+    err_invalid_object ("clone");
   }
 
   virtual cdef_object_rep* empty_clone (void) const
   {
-    gripe_invalid_object ("empty_clone");
-    return new cdef_object_rep ();
+    err_invalid_object ("empty_clone");
   }
 
   virtual cdef_object_rep* copy (void) const
   {
-    gripe_invalid_object ("copy");
-    return new cdef_object_rep ();
+    err_invalid_object ("copy");
   }
 
   virtual cdef_object_rep* make_array (void) const
   {
-    gripe_invalid_object ("make_array");
-    return new cdef_object_rep ();
+    err_invalid_object ("make_array");
   }
 
   virtual bool is_array (void) const { return false; }
@@ -93,33 +91,29 @@ public:
 
   virtual Array<cdef_object> array_value (void) const
   {
-    gripe_invalid_object ("array_value");
-    return Array<cdef_object> ();
+    err_invalid_object ("array_value");
   }
 
   virtual void put (const std::string&, const octave_value&)
-  { gripe_invalid_object ("put"); }
+  { err_invalid_object ("put"); }
 
   virtual octave_value get (const std::string&) const
   {
-    gripe_invalid_object ("get");
-    return octave_value ();
+    err_invalid_object ("get");
   }
 
   virtual octave_value_list
   subsref (const std::string&, const std::list<octave_value_list>&,
            int, size_t&, const cdef_class&, bool)
   {
-    gripe_invalid_object ("subsref");
-    return octave_value_list ();
+    err_invalid_object ("subsref");
   }
 
   virtual octave_value
   subsasgn (const std::string&, const std::list<octave_value_list>&,
             const octave_value&)
   {
-    gripe_invalid_object ("subsasgn");
-    return octave_value ();
+    err_invalid_object ("subsasgn");
   }
 
   virtual string_vector map_keys (void) const;
@@ -129,30 +123,33 @@ public:
   std::string class_name (void) const;
 
   virtual void mark_for_construction (const cdef_class&)
-  { gripe_invalid_object ("mark_for_construction"); }
+  {
+    err_invalid_object ("mark_for_construction");
+  }
 
   virtual bool is_constructed_for (const cdef_class&) const
   {
-    gripe_invalid_object ("is_constructed_for");
-    return false;
+    err_invalid_object ("is_constructed_for");
   }
 
   virtual bool is_partially_constructed_for (const cdef_class&) const
   {
-    gripe_invalid_object ("is_partially_constructed_for");
-    return false;
+    err_invalid_object ("is_partially_constructed_for");
   }
 
   virtual void mark_as_constructed (void)
-  { gripe_invalid_object ("mark_as_constructed"); }
+  {
+    err_invalid_object ("mark_as_constructed");
+  }
 
   virtual void mark_as_constructed (const cdef_class&)
-  { gripe_invalid_object ("mark_as_constructed"); }
+  {
+    err_invalid_object ("mark_as_constructed");
+  }
 
   virtual bool is_constructed (void) const
   {
-    gripe_invalid_object ("is_constructed");
-    return false;
+    err_invalid_object ("is_constructed");
   }
 
   virtual octave_idx_type static_count (void) const { return 0; }
@@ -168,19 +165,19 @@ public:
   virtual dim_vector dims (void) const { return dim_vector (); }
 
 protected:
-  /* reference count */
+  // Reference count
   octave_refcount<octave_idx_type> refcount;
 
 protected:
-  /* Restricted copying */
+  // Restricted copying
   cdef_object_rep (const cdef_object_rep&)
     : refcount (1) { }
 
 private:
-  /* No assignment */
+  // No assignment
   cdef_object_rep& operator = (const cdef_object_rep& );
 
-  void gripe_invalid_object (const char *who) const
+  OCTAVE_NORETURN void err_invalid_object (const char *who) const
   { error ("%s: invalid object", who); }
 };
 
@@ -188,7 +185,7 @@ class
 cdef_object
 {
 public:
-  /* FIXME: use a null object */
+  // FIXME: use a null object
   cdef_object (void)
     : rep (new cdef_object_rep ()) { }
 
@@ -412,13 +409,10 @@ public:
   {
     Cell val = map.contents (pname);
 
-    if (val.numel () > 0)
-      return val(0, 0);
-    else
-      {
-        error ("get: unknown slot: %s", pname.c_str ());
-        return octave_value ();
-      }
+    if (val.numel () < 1)
+      error ("get: unknown slot: %s", pname.c_str ());
+
+    return val(0, 0);
   }
 
   octave_value_list
@@ -546,8 +540,7 @@ public:
                 const std::list<octave_value_list>& /* idx */,
                 int /* nargout */)
   {
-    ::error ("subsref: invalid meta object");
-    return octave_value_list ();
+    error ("subsref: invalid meta object");
   }
 
   virtual void meta_release (void) { }
@@ -737,12 +730,12 @@ private:
     // The number of members in this class (methods, properties...)
     octave_idx_type member_count;
 
-    // TRUE if this class is a handle class. A class is a handle
+    // TRUE if this class is a handle class.  A class is a handle
     // class when the abstract "handle" class is one of its superclasses.
     bool handle_class;
 
     // The list of super-class constructors that are called implicitly by the
-    // the classdef engine when creating an object. These constructors are not
+    // the classdef engine when creating an object.  These constructors are not
     // called explicitly by the class constructor.
     std::list<cdef_class> implicit_ctor_list;
 
@@ -942,15 +935,15 @@ private:
     bool is_constant (void) const { return get("Constant").bool_value (); }
 
     octave_value get_value (bool do_check_access = true,
-                            const std::string& who = std::string ());
+                            const std::string& who = "");
 
     octave_value get_value (const cdef_object& obj,
                             bool do_check_access = true,
-                            const std::string& who = std::string ());
+                            const std::string& who = "");
 
     void set_value (cdef_object& obj, const octave_value& val,
                     bool do_check_access = true,
-                    const std::string& who = std::string ());
+                    const std::string& who = "");
 
     bool check_get_access (void) const;
 
@@ -996,16 +989,16 @@ public:
   }
 
   octave_value get_value (const cdef_object& obj, bool do_check_access = true,
-                          const std::string& who = std::string ())
+                          const std::string& who = "")
   { return get_rep ()->get_value (obj, do_check_access, who); }
 
   octave_value get_value (bool do_check_access = true,
-                          const std::string& who = std::string ())
+                          const std::string& who = "")
   { return get_rep ()->get_value (do_check_access, who); }
 
   void set_value (cdef_object& obj, const octave_value& val,
                   bool do_check_access = true,
-                  const std::string& who = std::string ())
+                  const std::string& who = "")
   { get_rep ()->set_value (obj, val, do_check_access, who); }
 
   bool check_get_access (void) const
@@ -1064,12 +1057,12 @@ private:
 
     octave_value_list execute (const octave_value_list& args, int nargout,
                                bool do_check_access = true,
-                               const std::string& who = std::string ());
+                               const std::string& who = "");
 
     octave_value_list execute (const cdef_object& obj,
                                const octave_value_list& args, int nargout,
                                bool do_check_access = true,
-                               const std::string& who = std::string ());
+                               const std::string& who = "");
 
     bool is_constructor (void) const;
 
@@ -1128,17 +1121,17 @@ public:
     return *this;
   }
 
-  /* normal invokation */
+  // normal invocation
   octave_value_list execute (const octave_value_list& args, int nargout,
                              bool do_check_access = true,
-                             const std::string& who = std::string ())
+                             const std::string& who = "")
   { return get_rep ()->execute (args, nargout, do_check_access, who); }
 
-  /* dot-invokation: object is pushed as 1st argument */
+  // dot-invocation: object is pushed as 1st argument
   octave_value_list execute (const cdef_object& obj,
                              const octave_value_list& args, int nargout,
                              bool do_check_access = true,
-                             const std::string& who = std::string ())
+                             const std::string& who = "")
   { return get_rep ()->execute (obj, args, nargout, do_check_access, who); }
 
   bool check_access (void) const { return get_rep ()->check_access (); }
@@ -1172,8 +1165,7 @@ private:
 inline cdef_class
 cdef_object_rep::get_class (void) const
 {
-  gripe_invalid_object ("get_class");
-  return cdef_class ();
+  err_invalid_object ("get_class");
 }
 
 inline std::string
@@ -1208,7 +1200,7 @@ cdef_object_base::register_object (void)
     {
       cdef_class cls (get_class ());
 
-      if (! error_state && cls.ok ())
+      if (cls.ok ())
         cls.register_object ();
     }
 }
@@ -1220,7 +1212,7 @@ cdef_object_base::unregister_object (void)
     {
       cdef_class cls (get_class ());
 
-      if (! error_state && cls.ok ())
+      if (cls.ok ())
         cls.unregister_object ();
     }
 }
@@ -1510,27 +1502,19 @@ to_ov (const octave_value& ov)
 inline cdef_object
 to_cdef (const octave_value& val)
 {
-  if (val.type_name () == "object")
-    return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
-  else
-    {
-      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
-      return cdef_object ();
-    }
+  if (val.type_name () != "object")
+    error ("cannot convert `%s' into `object'", val.type_name().c_str ());
+
+  return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
 }
 
 inline cdef_object&
 to_cdef_ref (const octave_value& val)
 {
-  static cdef_object empty;
+  if (val.type_name () != "object")
+    error ("cannot convert `%s' into `object'", val.type_name().c_str ());
 
-  if (val.type_name () == "object")
-    return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
-  else
-    {
-      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
-      return empty;
-    }
+  return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
 }
 
 inline cdef_object
@@ -1627,11 +1611,7 @@ private:
       create_instance ();
 
     if (! instance)
-      {
-        ::error ("unable to create cdef_manager!");
-
-        retval = false;
-      }
+      error ("unable to create cdef_manager!");
 
     return retval;
   }
@@ -1686,3 +1666,4 @@ private:
 ;;; mode: C++ ***
 ;;; End: ***
 */
+

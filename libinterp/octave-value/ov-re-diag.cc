@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "byte-swap.h"
@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ls-utils.h"
 
-template class octave_base_diag<DiagMatrix, Matrix>;
 
+template class octave_base_diag<DiagMatrix, Matrix>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
                                      "double");
@@ -42,7 +42,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }
@@ -57,7 +57,7 @@ octave_diag_matrix::numeric_conversion_function (void) const
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
-  CAST_CONV_ARG (const octave_diag_matrix&);
+  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
 
   return new octave_float_diag_matrix (v.float_diag_matrix_value ());
 }
@@ -92,11 +92,13 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
   // vectors.
   if (! resize_ok && idx.length () == 2 && matrix.is_multiple_of_identity (1))
     {
-      idx_vector idx0 = idx(0).index_vector ();
-      idx_vector idx1 = idx(1).index_vector ();
-
-      if (! error_state)
+      int k = 0;        // index we're accesing when index_vector throws
+      try
         {
+          idx_vector idx0 = idx(0).index_vector ();
+          k = 1;
+          idx_vector idx1 = idx(1).index_vector ();
+
           bool left = idx0.is_permutation (matrix.rows ());
           bool right = idx1.is_permutation (matrix.cols ());
 
@@ -117,10 +119,15 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
                 }
             }
         }
+      catch (octave::index_exception& e)
+        {
+          // Rethrow to allow more info to be reported later.
+          e.set_pos_if_unset (2, k+1);
+          throw;
+        }
     }
 
-  // if error_state is set, we've already griped.
-  if (! error_state && retval.is_undefined ())
+  if (retval.is_undefined ())
     retval = octave_base_diag<DiagMatrix, Matrix>::do_index_op (idx, resize_ok);
 
   return retval;
@@ -151,6 +158,66 @@ octave_diag_matrix::float_complex_diag_matrix_value (bool) const
 }
 
 octave_value
+octave_diag_matrix::as_double (void) const
+{
+  return matrix;
+}
+
+octave_value
+octave_diag_matrix::as_single (void) const
+{
+  return FloatDiagMatrix (matrix);
+}
+
+octave_value
+octave_diag_matrix::as_int8 (void) const
+{
+  return int8_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_int16 (void) const
+{
+  return int16_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_int32 (void) const
+{
+  return int32_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_int64 (void) const
+{
+  return int64_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_uint8 (void) const
+{
+  return uint8_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_uint16 (void) const
+{
+  return uint16_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_uint32 (void) const
+{
+  return uint32_array_value ();
+}
+
+octave_value
+octave_diag_matrix::as_uint64 (void) const
+{
+  return uint64_array_value ();
+}
+
+octave_value
 octave_diag_matrix::map (unary_mapper_t umap) const
 {
   switch (umap)
@@ -164,7 +231,7 @@ octave_diag_matrix::map (unary_mapper_t umap) const
       return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
     case umap_sqrt:
       {
-        ComplexColumnVector tmp = matrix.extract_diag ().map<Complex> (rc_sqrt);
+        ComplexColumnVector tmp = matrix.extract_diag ().map<Complex> (octave::math::rc_sqrt);
         ComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;
@@ -210,7 +277,7 @@ octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_diag_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                 octave::mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;
@@ -228,8 +295,10 @@ octave_diag_matrix::load_binary (std::istream& is, bool swap,
   double *re = m.fortran_vec ();
   octave_idx_type len = m.length ();
   read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
-  if (error_state || ! is)
+
+  if (! is)
     return false;
+
   matrix = m;
 
   return true;
@@ -244,3 +313,4 @@ octave_diag_matrix::chk_valid_scalar (const octave_value& val,
     x = val.double_value ();
   return retval;
 }
+

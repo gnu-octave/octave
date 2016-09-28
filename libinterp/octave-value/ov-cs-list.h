@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_cs_list_h)
+#if ! defined (octave_ov_cs_list_h)
 #define octave_ov_cs_list_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -33,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "ov-typeinfo.h"
 
 class tree_walker;
@@ -82,8 +84,8 @@ private:
   // The list of Octave values.
   octave_value_list lst;
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif
+

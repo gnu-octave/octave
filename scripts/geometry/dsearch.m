@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi}, @var{s})
+## @deftypefn  {} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi})
+## @deftypefnx {} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi}, @var{s})
 ## Return the index @var{idx} of the closest point in @code{@var{x}, @var{y}}
 ## to the elements @code{[@var{xi}(:), @var{yi}(:)]}.
 ##
@@ -27,10 +27,13 @@
 ## @end deftypefn
 
 function idx = dsearch (x, y, tri, xi, yi, s)
+
   if (nargin < 5 || nargin > 6)
     print_usage ();
   endif
+
   idx = __dsearchn__ ([x(:), y(:)], [xi(:), yi(:)]);
+
 endfunction
 
 

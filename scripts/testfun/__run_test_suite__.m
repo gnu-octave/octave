@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 David Bateman
+## Copyright (C) 2005-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,16 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
+## @deftypefn {} {} __run_test_suite__ (@var{fcndirs}, @var{fixedtestdirs})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function __run_test_suite__ (fcndirs, fixedtestdirs)
-  testsdir = octave_config_info ("octtestsdir");
+function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
+
+  testsdir = __octave_config_info__ ("octtestsdir");
   libinterptestdir = fullfile (testsdir, "libinterp");
   liboctavetestdir = fullfile (testsdir, "liboctave");
   fixedtestdir = fullfile (testsdir, "fixed");
-  fcnfiledir = octave_config_info ("fcnfiledir");
+  fcnfiledir = __octave_config_info__ ("fcnfiledir");
   if (nargin == 0)
     fcndirs = { liboctavetestdir, libinterptestdir, fcnfiledir };
     fixedtestdirs = { fixedtestdir };
@@ -49,7 +50,7 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
     try
       fid = fopen (logfile, "wt");
       if (fid < 0)
-        error ("could not open %s for writing", logfile);
+        error ("__run_test_suite__: could not open %s for writing", logfile);
       endif
       test ("", "explain", fid);
       dp = dn = dxf = dsk = 0;
@@ -83,8 +84,10 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
       printf ("See the file %s for additional details.\n", logfile);
       if (dxf > 0)
         puts ("\n");
-        puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
-        puts ("Please help improve Octave by contributing fixes for them.\n");
+        puts ("Items listed as XFAIL above are known bugs.\n");
+        puts ("Bug report numbers for them may be found in the log file:\n");
+        puts (logfile);
+        puts ("\nPlease help improve Octave by contributing fixes for them.\n");
       endif
       if (dsk > 0)
         puts ("\n");
@@ -117,6 +120,14 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
     warning (orig_wstate);
     page_screen_output (pso);
   end_unwind_protect
+
+  if (nargout > 0)
+    pass = np;
+    fail = nfail;
+    xfail = dxf;
+    skip = xsk;
+  endif
+
 endfunction
 
 function print_test_file_name (nm)
@@ -125,6 +136,7 @@ function print_test_file_name (nm)
 endfunction
 
 function print_pass_fail (p, n, xf, sk)
+
   if ((n + sk) > 0)
     printf (" PASS   %4d/%-4d", p, n);
     nfail = n - p - xf;
@@ -139,43 +151,48 @@ function print_pass_fail (p, n, xf, sk)
     endif
   endif
   puts ("\n");
+
 endfunction
 
 function retval = has_functions (f)
+
   n = length (f);
   if (n > 3 && strcmpi (f((end-2):end), ".cc"))
     fid = fopen (f);
-    if (fid >= 0)
-      str = fread (fid, "*char")';
-      fclose (fid);
-      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
-                                      'lineanchors', 'once'));
-    else
-      error ("fopen failed: %s", f);
+    if (fid < 0)
+      error ("__run_test_suite__: fopen failed: %s", f);
     endif
+    str = fread (fid, "*char")';
+    fclose (fid);
+    retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\>',
+                                    'lineanchors', 'once'));
   elseif (n > 2 && strcmpi (f((end-1):end), ".m"))
     retval = true;
   else
     retval = false;
   endif
+
 endfunction
 
 function retval = has_tests (f)
+
   fid = fopen (f);
-  if (fid >= 0)
-    str = fread (fid, "*char")';
-    fclose (fid);
-    retval = ! isempty (regexp (str,
-                                '^%!(assert|error|fail|test|xtest|warning)',
-                                'lineanchors', 'once'));
-  else
-    error ("fopen failed: %s", f);
+  if (fid < 0)
+    error ("__run_test_suite__: fopen failed: %s", f);
   endif
+
+  str = fread (fid, "*char")';
+  fclose (fid);
+  retval = ! isempty (regexp (str,
+                              '^%!(assert|error|fail|test|xtest|warning)',
+                              'lineanchors', 'once'));
+
 endfunction
 
 function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   global files_with_tests;
   global files_with_no_tests;
+
   lst = dir (d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
@@ -189,6 +206,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
       dsk += sk;
     endif
   endfor
+
   saved_dir = pwd ();
   unwind_protect
     cd (d);
@@ -214,6 +232,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   unwind_protect_cleanup
     cd (saved_dir);
   end_unwind_protect
+
 endfunction
 
 function [dp, dn, dxf, dsk] = run_test_script (fid, d);
@@ -221,6 +240,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   global files_with_no_tests;
   global topsrcdir;
   global topbuilddir;
+
   lst = dir (d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
@@ -233,6 +253,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       dsk += sk;
     endif
   endfor
+
   for i = 1:length (lst)
     nm = lst(i).name;
     ## Ignore hidden files
@@ -265,6 +286,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
     endif
   endfor
   ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
+
 endfunction
 
 function n = num_elts_matching_pattern (lst, pat)

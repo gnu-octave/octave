@@ -1,5 +1,5 @@
-## Copyright (C) 2007, 2013 Michael Goffioul
-## Copyright (C) 2010, 2013 Martin Hepperle
+## Copyright (C) 2007-2016 Michael Goffioul
+## Copyright (C) 2010-2016 Martin Hepperle
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} javaclasspath ()
-## @deftypefnx {Function File} {@var{dpath} =} javaclasspath ()
-## @deftypefnx {Function File} {[@var{dpath}, @var{spath}] =} javaclasspath ()
-## @deftypefnx {Function File} {@var{clspath} =} javaclasspath (@var{what})
+## @deftypefn  {} {} javaclasspath ()
+## @deftypefnx {} {@var{dpath} =} javaclasspath ()
+## @deftypefnx {} {[@var{dpath}, @var{spath}] =} javaclasspath ()
+## @deftypefnx {} {@var{clspath} =} javaclasspath (@var{what})
 ## Return the class path of the Java virtual machine in the form of a cell
 ## array of strings.
 ##
@@ -93,7 +93,7 @@ function [path1, path2] = javaclasspath (which)
   else
     if (! nargin)
       ## This is to allow retrieval of both paths in separate variables with
-      ## a single call to javaclasspath(). Matlab returns only the -dynamic
+      ## a single call to javaclasspath().  Matlab returns only the -dynamic
       ## path in this case but this won't break compatibility.
       path1 = cellstr (dynamic_path_list);
       path2 = cellstr (static_path_list);

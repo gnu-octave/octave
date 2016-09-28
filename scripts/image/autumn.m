@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Kai Habel
+## Copyright (C) 1999-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} autumn ()
-## @deftypefnx {Function File} {@var{map} =} autumn (@var{n})
+## @deftypefn  {} {@var{map} =} autumn ()
+## @deftypefnx {} {@var{map} =} autumn (@var{n})
 ## Create color colormap.
 ## This colormap ranges from red through orange to yellow.
 ##
@@ -28,9 +28,6 @@
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
-
-## PKG_ADD: colormap ("register", "autumn");
-## PKG_DEL: colormap ("unregister", "autumn");
 
 function map = autumn (n = rows (colormap ()))
 
@@ -56,8 +53,9 @@ endfunction
 
 
 %!demo
-%! ## Show the 'autumn' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
-%! axis ([1, 64, 0, 1], "ticy", "xy");
-%! colormap (autumn (64));
-
+%! ## Show the 'autumn' colormap profile and as an image
+%! cmap = autumn (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2015 David Bateman
+## Copyright (C) 2004-2016 David Bateman
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} flipdim (@var{x})
-## @deftypefnx {Function File} {} flipdim (@var{x}, @var{dim})
+## @deftypefn  {} {} flipdim (@var{x})
+## @deftypefnx {} {} flipdim (@var{x}, @var{dim})
 ## Flip array across dimension @var{dim}.
 ##
 ## This function is an alias for @code{flip} and exists for backwards and

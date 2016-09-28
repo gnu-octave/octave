@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ## Copyright (C) 2009-2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} median (@var{x})
-## @deftypefnx {Function File} {} median (@var{x}, @var{dim})
+## @deftypefn  {} {} median (@var{x})
+## @deftypefnx {} {} median (@var{x}, @var{dim})
 ## Compute the median value of the elements of the vector @var{x}.
 ##
 ## When the elements of @var{x} are sorted, the median is defined as
@@ -41,6 +41,9 @@
 ## @end example
 ##
 ## @end ifnottex
+## If @var{x} is of a discrete type such as integer or logical, then
+## the case of even N rounds up (or toward @code{true}).
+##
 ## If @var{x} is a matrix, compute the median value for each column and
 ## return them in a row vector.
 ##
@@ -70,21 +73,25 @@ function retval = median (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("median: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = sz(dim);
+  n = size (x, dim);
   k = floor ((n+1) / 2);
   if (mod (n, 2) == 1)
     retval = nth_element (x, k, dim);
   else
-    retval = mean (nth_element (x, k:k+1, dim), dim);
+    retval = sum (nth_element (x, k:k+1, dim), dim, "native") / 2;
+    if (islogical (x))
+      retval = logical (retval);
+    endif
   endif
   ## Inject NaNs where needed, to be consistent with Matlab.
-  retval(any (isnan (x), dim)) = NaN;
+  if (isfloat (x))
+    retval(any (isnan (x), dim)) = NaN;
+  endif
 
 endfunction
 
@@ -102,23 +109,31 @@ endfunction
 
 %!assert (median (single ([1,2,3])), single (2))
 %!assert (median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN])
+%!assert (median ([1,2], 3), [1,2])
 
-## Test multidimensional arrays (bug #35679)
+## Test multidimensional arrays
 %!shared a, b, x, y
 %! rand ("seed", 2);
 %! a = rand (2,3,4,5);
 %! b = rand (3,4,6,5);
 %! x = sort (a, 4);
 %! y = sort (b, 3);
-%!assert (median (a, 4), x(:, :, :, 3));
-%!assert (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2);
+%!assert <35679> (median (a, 4), x(:, :, :, 3))
+%!assert <35679> (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
+
+## Test non-floating point types
+%!assert (median ([true, false]), true)
+%!assert (median (uint8 ([1, 3])), uint8 (2))
+%!assert (median (int8 ([1, 3, 4])), int8 (3))
+%!assert (median (single ([1, 3, 4])), single (3))
+%!assert (median (single ([1, 3, NaN])), single (NaN))
 
 ## Test input validation
 %!error median ()
 %!error median (1, 2, 3)
-%!error median ({1:5})
-%!error median (['A'; 'B'])
-%!error median (1, ones (2,2))
-%!error median (1, 1.5)
-%!error median (1, 0)
+%!error <X must be a numeric> median ({1:5})
+%!error <X cannot be an empty matrix> median ([])
+%!error <DIM must be an integer> median (1, ones (2,2))
+%!error <DIM must be an integer> median (1, 1.5)
+%!error <DIM must be .* a valid dimension> median (1, 0)
 

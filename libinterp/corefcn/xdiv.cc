@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2008 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fDiagMatrix.h"
 #include "CDiagMatrix.h"
 #include "fCDiagMatrix.h"
-#include "lo-array-gripes.h"
+#include "lo-array-errwarn.h"
 #include "quit.h"
 
 #include "error.h"
@@ -59,10 +59,10 @@ result_ok (octave_idx_type info)
 static void
 solve_singularity_warning (double rcond)
 {
-  gripe_singular_matrix (rcond);
+  octave::warn_singular_matrix (rcond);
 }
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
 {
@@ -75,14 +75,13 @@ mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
                                                          : a.rows ();
       octave_idx_type b_nc = b.cols ();
 
-      gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
-      return false;
+      octave::err_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
 }
 
-#define INSTANTIATE_MX_LEFTDIV_CONFORM(T1, T2) \
+#define INSTANTIATE_MX_LEFTDIV_CONFORM(T1, T2)                          \
   template bool mx_leftdiv_conform (const T1&, const T2&, blas_trans_type)
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, Matrix);
@@ -90,7 +89,7 @@ INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, ComplexMatrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexMatrix, Matrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexMatrix, ComplexMatrix);
 
-template <class T1, class T2>
+template <typename T1, typename T2>
 bool
 mx_div_conform (const T1& a, const T2& b)
 {
@@ -102,14 +101,13 @@ mx_div_conform (const T1& a, const T2& b)
       octave_idx_type a_nr = a.rows ();
       octave_idx_type b_nr = b.rows ();
 
-      gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
-      return false;
+      octave::err_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
     }
 
   return true;
 }
 
-#define INSTANTIATE_MX_DIV_CONFORM(T1, T2) \
+#define INSTANTIATE_MX_DIV_CONFORM(T1, T2)              \
   template bool mx_div_conform (const T1&, const T2&)
 
 INSTANTIATE_MX_DIV_CONFORM (Matrix, Matrix);
@@ -279,9 +277,9 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 //
 //          op2 \ op1:   s   cs
 //               +--   +---+----+
-//   N-d array         | 1 |  3 |
+//   N-D array         | 1 |  3 |
 //                     +---+----+
-//   complex N-d array | 2 |  4 |
+//   complex N-D array | 2 |  4 |
 //                     +---+----+
 
 NDArray
@@ -289,7 +287,7 @@ x_el_div (double a, const NDArray& b)
 {
   NDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -303,7 +301,7 @@ x_el_div (double a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -317,7 +315,7 @@ x_el_div (const Complex a, const NDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -331,7 +329,7 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 {
   ComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -405,7 +403,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
 static void
 solve_singularity_warning (float rcond)
 {
-  gripe_singular_matrix (rcond);
+  octave::warn_singular_matrix (rcond);
 }
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (FloatMatrix, FloatMatrix);
@@ -580,9 +578,9 @@ x_el_div (const FloatComplex a, const FloatComplexMatrix& b)
 //
 //          op2 \ op1:   s   cs
 //               +--   +---+----+
-//   N-d array         | 1 |  3 |
+//   N-D array         | 1 |  3 |
 //                     +---+----+
-//   complex N-d array | 2 |  4 |
+//   complex N-D array | 2 |  4 |
 //                     +---+----+
 
 FloatNDArray
@@ -590,7 +588,7 @@ x_el_div (float a, const FloatNDArray& b)
 {
   FloatNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -604,7 +602,7 @@ x_el_div (float a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -618,7 +616,7 @@ x_el_div (const FloatComplex a, const FloatNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -632,7 +630,7 @@ x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
 {
   FloatComplexNDArray result (b.dims ());
 
-  for (octave_idx_type i = 0; i < b.length (); i++)
+  for (octave_idx_type i = 0; i < b.numel (); i++)
     {
       octave_quit ();
       result (i) = a / b (i);
@@ -705,7 +703,7 @@ xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
 // Diagonal matrix division.
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 mdm_div_impl (const MT& a, const DMT& d)
 {
@@ -788,7 +786,7 @@ FloatComplexMatrix
 xdiv (const FloatComplexMatrix& a, const FloatComplexDiagMatrix& b)
 { return mdm_div_impl (a, b); }
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 dmm_leftdiv_impl (const DMT& d, const MT& a)
 {
@@ -868,7 +866,7 @@ xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexMatrix& b)
 
 // Diagonal by diagonal matrix division.
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 dmdm_div_impl (const MT& a, const DMT& d)
 {
@@ -943,7 +941,7 @@ FloatComplexDiagMatrix
 xdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 { return dmdm_div_impl (a, b); }
 
-template <class MT, class DMT>
+template <typename MT, typename DMT>
 MT
 dmdm_leftdiv_impl (const DMT& d, const MT& a)
 {
@@ -1017,3 +1015,4 @@ xleftdiv (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
 FloatComplexDiagMatrix
 xleftdiv (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 { return dmdm_leftdiv_impl (a, b); }
+

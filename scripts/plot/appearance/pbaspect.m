@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Ben Abbott
+## Copyright (C) 2010-2016 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{plot_box_aspect_ratio} =} pbaspect ( )
-## @deftypefnx {Function File} {} pbaspect (@var{plot_box_aspect_ratio})
-## @deftypefnx {Function File} {} pbaspect (@var{mode})
-## @deftypefnx {Function File} {@var{plot_box_aspect_ratio_mode} =} pbaspect ("mode")
-## @deftypefnx {Function File} {} pbaspect (@var{hax}, @dots{})
+## @deftypefn  {} {@var{plot_box_aspect_ratio} =} pbaspect ( )
+## @deftypefnx {} {} pbaspect (@var{plot_box_aspect_ratio})
+## @deftypefnx {} {} pbaspect (@var{mode})
+## @deftypefnx {} {@var{plot_box_aspect_ratio_mode} =} pbaspect ("mode")
+## @deftypefnx {} {} pbaspect (@var{hax}, @dots{})
 ##
 ## Query or set the plot box aspect ratio of the current axes.
 ##
@@ -103,14 +103,14 @@ endfunction
 %! x = 0:0.01:4;
 %! plot (x,cos(x), x,sin(x));
 %! pbaspect ([1 1 1]);
-%! title ('plot box is square');
+%! title ("plot box is square");
 
 %!demo
 %! clf;
 %! x = 0:0.01:4;;
 %! plot (x,cos(x), x,sin(x));
 %! pbaspect ([2 1 1]);
-%! title ('plot box aspect ratio is 2x1');
+%! title ("plot box aspect ratio is 2x1");
 
 %!demo
 %! clf;
@@ -118,5 +118,5 @@ endfunction
 %! plot (x,cos(x), x,sin(x));
 %! daspect ([1 1 1]);
 %! pbaspect ([2 1 1]);
-%! title ('plot box is 2x1, and axes [0 4 -1 1]');
+%! title ("plot box is 2x1, and axes [0 4 -1 1]");
 

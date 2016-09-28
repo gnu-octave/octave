@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} clf
-## @deftypefnx {Command} {} clf reset
-## @deftypefnx {Function File} {} clf (@var{hfig})
-## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
-## @deftypefnx {Function File} {@var{h} =} clf (@dots{})
+## @deftypefn  {} {} clf
+## @deftypefnx {} {} clf reset
+## @deftypefnx {} {} clf (@var{hfig})
+## @deftypefnx {} {} clf (@var{hfig}, "reset")
+## @deftypefnx {} {@var{h} =} clf (@dots{})
 ## Clear the current figure window.
 ##
 ## @code{clf} operates by deleting child graphics objects with visible
@@ -110,7 +110,7 @@ endfunction
 %! end_unwind_protect
 
 %!xtest
-%! set (0, "defaultfigurevisible", "off")
+%! set (0, "defaultfigurevisible", "off");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (1:10);
@@ -124,7 +124,7 @@ endfunction
 %!   assert (isempty (get (gcf, "children")));
 %!   assert (get (hf, "papertype"), "usletter");
 %! unwind_protect_cleanup
-%!   set (0, "defaultfigurevisible", "remove")
+%!   set (0, "defaultfigurevisible", "remove");
 %!   close (hf);
 %! end_unwind_protect
 

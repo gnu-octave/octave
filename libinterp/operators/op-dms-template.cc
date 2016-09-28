@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2015 Jaroslav Hajek
+Copyright (C) 2008-2016 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,24 +20,24 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "ops.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "xpow.h"
 #include SINCLUDE
 #include MINCLUDE
 
 // matrix by diag matrix ops.
 
-#ifndef SCALARV
-#define SCALARV SCALAR
+#if ! defined (SCALARV)
+#  define SCALARV SCALAR
 #endif
 
-#ifndef MATRIXV
-#define MATRIXV MATRIX
+#if ! defined (MATRIXV)
+#  define MATRIXV MATRIX
 #endif
 
 DEFNDBINOP_OP (sdmmul, SCALAR, MATRIX, SCALARV, MATRIXV, *)
@@ -48,32 +48,36 @@ DEFNDBINOP_OP (dmsmul, MATRIX, SCALAR, MATRIXV, SCALARV, *)
 #define MATRIX_VALUE CONCAT2(MATRIXV, _value)
 #define SCALAR_VALUE CONCAT2(SCALARV, _value)
 
-template <class T>
+template <typename T>
 static T
 gripe_if_zero (T x)
 {
   if (x == T ())
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
+
   return x;
 }
 
 DEFBINOP (dmsdiv, MATRIX, SCALAR)
 {
-  CAST_BINOP_ARGS (const OCTAVE_MATRIX&, const OCTAVE_SCALAR&);
+  const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
+  const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
 
   return v1.MATRIX_VALUE () / gripe_if_zero (v2.SCALAR_VALUE ());
 }
 
 DEFBINOP (sdmldiv, SCALAR, MATRIX)
 {
-  CAST_BINOP_ARGS (const OCTAVE_SCALAR&, const OCTAVE_MATRIX&);
+  const OCTAVE_SCALAR& v1 = dynamic_cast<const OCTAVE_SCALAR&> (a1);
+  const OCTAVE_MATRIX& v2 = dynamic_cast<const OCTAVE_MATRIX&> (a2);
 
   return v2.MATRIX_VALUE () / gripe_if_zero (v1.SCALAR_VALUE ());
 }
 
 DEFBINOP (dmspow, MATRIX, SCALAR)
 {
-  CAST_BINOP_ARGS (const OCTAVE_MATRIX&, const OCTAVE_SCALAR&);
+  const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
+  const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
 
   return xpow (v1.MATRIX_VALUE (), v2.SCALAR_VALUE ());
 }
@@ -90,3 +94,4 @@ INST_NAME (void)
   INSTALL_BINOP (op_ldiv, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmldiv);
   INSTALL_BINOP (op_pow, OCTAVE_MATRIX, OCTAVE_SCALAR, dmspow);
 }
+

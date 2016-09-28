@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <QLineEdit>
@@ -34,227 +34,230 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-EditControl*
-EditControl::create (const graphics_object& go)
-{
-  Object* parent = Object::parentObject (go);
+  EditControl*
+  EditControl::create (const graphics_object& go)
+  {
+    Object* parent = Object::parentObject (go);
 
-  if (parent)
-    {
-      Container* container = parent->innerContainer ();
+    if (parent)
+      {
+        Container* container = parent->innerContainer ();
 
-      if (container)
-        {
-          uicontrol::properties& up = Utils::properties<uicontrol> (go);
+        if (container)
+          {
+            uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
-          if ((up.get_max () - up.get_min ()) > 1)
-            return new EditControl (go, new TextEdit (container));
-          else
-            return new EditControl (go, new QLineEdit (container));
-        }
-    }
+            if ((up.get_max () - up.get_min ()) > 1)
+              return new EditControl (go, new TextEdit (container));
+            else
+              return new EditControl (go, new QLineEdit (container));
+          }
+      }
 
-  return 0;
-}
+    return 0;
+  }
 
-EditControl::EditControl (const graphics_object& go, QLineEdit* edit)
-     : BaseControl (go, edit), m_multiLine (false), m_textChanged (false)
-{
-  init (edit);
-}
+  EditControl::EditControl (const graphics_object& go, QLineEdit* edit)
+    : BaseControl (go, edit), m_multiLine (false), m_textChanged (false)
+  {
+    init (edit);
+  }
 
-void
-EditControl::init (QLineEdit* edit, bool callBase)
-{
-  if (callBase)
-    BaseControl::init (edit, callBase);
+  void
+  EditControl::init (QLineEdit* edit, bool callBase)
+  {
+    if (callBase)
+      BaseControl::init (edit, callBase);
 
-  m_multiLine = false;
-  initCommon (edit);
+    m_multiLine = false;
+    initCommon (edit);
 
-  uicontrol::properties& up = properties<uicontrol> ();
+    uicontrol::properties& up = properties<uicontrol> ();
 
-  edit->setText (Utils::fromStdString (up.get_string_string ()));
-  edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-                                          up.get_verticalalignment ()));
+    edit->setText (Utils::fromStdString (up.get_string_string ()));
+    edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                                            up.get_verticalalignment ()));
 
-  connect (edit, SIGNAL (textEdited (const QString&)),
-           SLOT (textChanged (void)));
-  connect (edit, SIGNAL (editingFinished (void)),
-           SLOT (editingFinished (void)));
-  connect (edit, SIGNAL (returnPressed (void)),
-           SLOT (returnPressed (void)));
-}
+    connect (edit, SIGNAL (textEdited (const QString&)),
+             SLOT (textChanged (void)));
+    connect (edit, SIGNAL (editingFinished (void)),
+             SLOT (editingFinished (void)));
+    connect (edit, SIGNAL (returnPressed (void)),
+             SLOT (returnPressed (void)));
+  }
 
-EditControl::EditControl (const graphics_object& go, TextEdit* edit)
-  : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
-{
-  init (edit);
-}
+  EditControl::EditControl (const graphics_object& go, TextEdit* edit)
+    : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
+  {
+    init (edit);
+  }
 
-void
-EditControl::init (TextEdit* edit, bool callBase)
-{
-  if (callBase)
-    BaseControl::init (edit, callBase);
+  void
+  EditControl::init (TextEdit* edit, bool callBase)
+  {
+    if (callBase)
+      BaseControl::init (edit, callBase);
 
-  m_multiLine = true;
-  initCommon (edit);
+    m_multiLine = true;
+    initCommon (edit);
 
-  uicontrol::properties& up = properties<uicontrol> ();
+    uicontrol::properties& up = properties<uicontrol> ();
 
-  edit->setAcceptRichText (false);
-  edit->setPlainText (Utils::fromStringVector (up.get_string_vector()).join("\n"));
+    edit->setAcceptRichText (false);
+    edit->setPlainText (Utils::fromStringVector (
+                          up.get_string_vector()).join("\n"));
 
-  connect (edit, SIGNAL (textChanged (void)),
-           SLOT (textChanged (void)));
-  connect (edit, SIGNAL (editingFinished (void)),
-           SLOT (editingFinished (void)));
-  connect (edit, SIGNAL (returnPressed (void)),
-           SLOT (returnPressed (void)));
-}
+    connect (edit, SIGNAL (textChanged (void)),
+             SLOT (textChanged (void)));
+    connect (edit, SIGNAL (editingFinished (void)),
+             SLOT (editingFinished (void)));
+    connect (edit, SIGNAL (returnPressed (void)),
+             SLOT (returnPressed (void)));
+  }
 
-EditControl::~EditControl (void)
-{
-}
+  EditControl::~EditControl (void)
+  { }
 
-void
-EditControl::initCommon (QWidget*)
-{
-  m_textChanged = false;
-}
+  void
+  EditControl::initCommon (QWidget*)
+  {
+    m_textChanged = false;
+  }
 
-void
-EditControl::update (int pId)
-{
-  bool handled = false;
+  void
+  EditControl::update (int pId)
+  {
+    bool handled = false;
 
-  if (m_multiLine)
-    handled = updateMultiLine (pId);
-  else
-    handled = updateSingleLine (pId);
+    if (m_multiLine)
+      handled = updateMultiLine (pId);
+    else
+      handled = updateSingleLine (pId);
 
-  if (! handled)
-    {
-      switch (pId)
-        {
-        default:
-          BaseControl::update (pId);
-          break;
-        }
-    }
-}
+    if (! handled)
+      {
+        switch (pId)
+          {
+          default:
+            BaseControl::update (pId);
+            break;
+          }
+      }
+  }
 
-bool
-EditControl::updateSingleLine (int pId)
-{
-  uicontrol::properties& up = properties<uicontrol> ();
-  QLineEdit* edit = qWidget<QLineEdit> ();
+  bool
+  EditControl::updateSingleLine (int pId)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+    QLineEdit* edit = qWidget<QLineEdit> ();
 
-  switch (pId)
-    {
-    case uicontrol::properties::ID_STRING:
-      edit->setText (Utils::fromStdString (up.get_string_string ()));
-      return true;
+    switch (pId)
+      {
+      case uicontrol::properties::ID_STRING:
+        edit->setText (Utils::fromStdString (up.get_string_string ()));
+        return true;
 
-    case uicontrol::properties::ID_HORIZONTALALIGNMENT:
-    case uicontrol::properties::ID_VERTICALALIGNMENT:
-      edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-                                              up.get_verticalalignment ()));
-      return true;
+      case uicontrol::properties::ID_HORIZONTALALIGNMENT:
+      case uicontrol::properties::ID_VERTICALALIGNMENT:
+        edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                                                up.get_verticalalignment ()));
+        return true;
 
-    case uicontrol::properties::ID_MIN:
-    case uicontrol::properties::ID_MAX:
-      if ((up.get_max () - up.get_min ()) > 1)
-        {
-          QWidget* container = edit->parentWidget ();
+      case uicontrol::properties::ID_MIN:
+      case uicontrol::properties::ID_MAX:
+        if ((up.get_max () - up.get_min ()) > 1)
+          {
+            QWidget* container = edit->parentWidget ();
 
-          delete edit;
-          init (new TextEdit (container), true);
-        }
-      return true;
+            delete edit;
+            init (new TextEdit (container), true);
+          }
+        return true;
 
-    default:
-      break;
-    }
+      default:
+        break;
+      }
 
-  return false;
-}
+    return false;
+  }
 
-bool
-EditControl::updateMultiLine (int pId)
-{
-  uicontrol::properties& up = properties<uicontrol> ();
-  TextEdit* edit = qWidget<TextEdit> ();
+  bool
+  EditControl::updateMultiLine (int pId)
+  {
+    uicontrol::properties& up = properties<uicontrol> ();
+    TextEdit* edit = qWidget<TextEdit> ();
 
-  switch (pId)
-    {
-    case uicontrol::properties::ID_STRING:
-      edit->setPlainText (Utils::fromStringVector (up.get_string_vector()).join("\n"));
-      return true;
+    switch (pId)
+      {
+      case uicontrol::properties::ID_STRING:
+        edit->setPlainText (Utils::fromStringVector (
+                              up.get_string_vector()).join("\n"));
+        return true;
 
-    case uicontrol::properties::ID_MIN:
-    case uicontrol::properties::ID_MAX:
-      if ((up.get_max () - up.get_min ()) <= 1)
-        {
-          QWidget* container = edit->parentWidget ();
+      case uicontrol::properties::ID_MIN:
+      case uicontrol::properties::ID_MAX:
+        if ((up.get_max () - up.get_min ()) <= 1)
+          {
+            QWidget* container = edit->parentWidget ();
 
-          delete edit;
-          init (new QLineEdit (container), true);
-        }
-      return true;
+            delete edit;
+            init (new QLineEdit (container), true);
+          }
+        return true;
 
-    default:
-      break;
-    }
+      default:
+        break;
+      }
 
-  return false;
-}
+    return false;
+  }
 
-void
-EditControl::textChanged (void)
-{
-  m_textChanged = true;
-}
+  void
+  EditControl::textChanged (void)
+  {
+    m_textChanged = true;
+  }
 
-void
-EditControl::returnPressed (void)
-{
-  QString txt = (m_multiLine
-                 ? qWidget<TextEdit> ()->toPlainText ()
-                 : qWidget<QLineEdit> ()->text ());
+  void
+  EditControl::returnPressed (void)
+  {
+    QString txt = (m_multiLine
+                   ? qWidget<TextEdit> ()->toPlainText ()
+                   : qWidget<QLineEdit> ()->text ());
 
-  if (m_textChanged)
-    {
-      if (m_multiLine)
-        gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")), false);
-      else
-        gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+    if (m_textChanged)
+      {
+        if (m_multiLine)
+          gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")),
+                                false);
+        else
+          gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
 
-      m_textChanged = false;
-    }
+        m_textChanged = false;
+      }
 
-  if (txt.length () > 0)
-    gh_manager::post_callback (m_handle, "callback");
-}
-
-void
-EditControl::editingFinished (void)
-{
-  if (m_textChanged)
-    {
-      QString txt = (m_multiLine
-                     ? qWidget<TextEdit> ()->toPlainText ()
-                     : qWidget<QLineEdit> ()->text ());
-      if (m_multiLine)
-        gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")), false);
-      else
-        gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+    if (txt.length () > 0)
       gh_manager::post_callback (m_handle, "callback");
+  }
 
-      m_textChanged = false;
-    }
+  void
+  EditControl::editingFinished (void)
+  {
+    if (m_textChanged)
+      {
+        QString txt = (m_multiLine
+                       ? qWidget<TextEdit> ()->toPlainText ()
+                       : qWidget<QLineEdit> ()->text ());
+        if (m_multiLine)
+          gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")),
+                                false);
+        else
+          gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+        gh_manager::post_callback (m_handle, "callback");
+
+        m_textChanged = false;
+      }
+  }
+
 }
-
-}; // namespace QtHandles
 

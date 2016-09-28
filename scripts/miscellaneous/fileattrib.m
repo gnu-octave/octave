@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 John W. Eaton
+## Copyright (C) 2005-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{status}, @var{result}, @var{msgid}] =} fileattrib (@var{file})
+## @deftypefn  {} {} fileattrib (@var{file})
+## @deftypefnx {} {} fileattrib ()
+## @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@dots{})
 ## Return information about @var{file}.
 ##
-## If successful, @var{status} is 1, with @var{result} containing a structure
-## with the following fields:
+## If successful, @var{status} is 1 and @var{msg} is a structure with the
+## following fields:
 ##
 ## @table @code
 ## @item Name
@@ -58,6 +60,9 @@
 ## If an attribute does not apply (i.e., archive on a Unix system) then the
 ## field is set to NaN.
 ##
+## If @code{attrib} fails, @var{msg} is a non-empty string containing an
+## error message and @var{msg_id} is the non-empty string @qcode{"fileattrib"}.
+##
 ## With no input arguments, return information about the current directory.
 ##
 ## If @var{file} contains globbing characters, return information about all
@@ -65,78 +70,111 @@
 ## @seealso{glob}
 ## @end deftypefn
 
-function [status, msg, msgid] = fileattrib (file)
+function [status, msg, msgid] = fileattrib (file = ".")
+
+  if (nargin > 1)
+    print_usage ();
+  endif
+
+  if (! ischar (file))
+    error ("fileattrib: FILE must be a string");
+  endif
 
   status = true;
   msg = "";
   msgid = "";
 
-  if (nargin == 0)
-    file = ".";
+  files = glob (file);
+  if (isempty (files))
+    files = {file};
   endif
+  nfiles = numel (files);
 
-  if (ischar (file))
-    files = glob (file);
-    if (isempty (files))
-      files = {file};
-      nfiles = 1;
+  for i = [nfiles, 1:nfiles-1]  # first time in loop extends the struct array
+    [info, err, msg] = stat (files{i});
+    if (! err)
+      r(i).Name = canonicalize_file_name (files{i});
+
+      if (isunix ())
+        r(i).archive = NaN;
+        r(i).system = NaN;
+        r(i).hidden = NaN;
+      else
+        [~, attrib] = dos (sprintf ('attrib "%s"', r(i).Name));
+        ## dos never returns error status so have to check it indirectly
+        if (! isempty (strfind (attrib, " -")))
+          status = false;
+          msgid = "fileattrib";
+          break;
+        endif
+        attrib = regexprep (attrib, '\S+:.*', "");
+        r(i).archive = any (attrib == "A");
+        r(i).system = any (attrib == "S");
+        r(i).hidden = any (attrib == "H");
+      endif
+
+      r(i).directory = S_ISDIR (info.mode);
+
+      modestr = info.modestr;
+      r(i).UserRead = (modestr(2) == "r");
+      r(i).UserWrite = (modestr(3) == "w");
+      r(i).UserExecute = (modestr(4) == "x");
+      if (isunix ())
+        r(i).GroupRead = (modestr(5) == "r");
+        r(i).GroupWrite = (modestr(6) == "w");
+        r(i).GroupExecute = (modestr(7) == "x");
+        r(i).OtherRead = (modestr(8) == "r");
+        r(i).OtherWrite = (modestr(9) == "w");
+        r(i).OtherExecute = (modestr(10) == "x");
+      else
+        r(i).GroupRead = NaN;
+        r(i).GroupWrite = NaN;
+        r(i).GroupExecute = NaN;
+        r(i).OtherRead = NaN;
+        r(i).OtherWrite = NaN;
+        r(i).OtherExecute = NaN;
+      endif
     else
-      nfiles = length (files);
+      status = false;
+      msgid = "fileattrib";
+      break;
     endif
-  else
-    error ("fileattrib: expecting first argument to be a character string");
-  endif
+  endfor
 
-  if (nargin == 0 || nargin == 1)
-
-    r_n = r_a = r_s = r_h = r_d ...
-        = r_u_r = r_u_w = r_u_x ...
-        = r_g_r = r_g_w = r_g_x ...
-        = r_o_r = r_o_w = r_o_x = cell (nfiles, 1);
-
-    curr_dir = pwd ();
-
-    for i = 1:nfiles
-      [info, err, msg] = stat (files{i});
-      if (! err)
-        r_n{i} = canonicalize_file_name (files{i});
-        r_a{i} = NaN;
-        r_s{i} = NaN;
-        r_h{i} = NaN;
-        r_d{i} = S_ISDIR (info.mode);
-        ## FIXME: Maybe we should have S_IRUSR etc. masks?
-        modestr = info.modestr;
-        r_u_r{i} = modestr(2) == "r";
-        r_u_w{i} = modestr(3) == "w";
-        r_u_x{i} = modestr(4) == "x";
-        r_g_r{i} = modestr(5) == "r";
-        r_g_w{i} = modestr(6) == "w";
-        r_g_x{i} = modestr(7) == "x";
-        r_o_r{i} = modestr(8) == "r";
-        r_o_w{i} = modestr(9) == "w";
-        r_o_x{i} = modestr(10) == "x";
-      else
-        status = false;
-        msgid = "fileattrib";
-        break;
-      endif
-    endfor
-    if (status)
-      r = struct ("Name", r_n, "archive", r_a, "system", r_s,
-                  "hidden", r_s, "directory", r_d, "UserRead", r_u_r,
-                  "UserWrite", r_u_w, "UserExecute", r_u_x,
-                  "GroupRead", r_g_r, "GroupWrite", r_g_w,
-                  "GroupExecute", r_g_x, "OtherRead", r_o_r,
-                  "OtherWrite", r_o_w, "OtherExecute", r_o_x);
-      if (nargout == 0)
-        status = r;
-      else
-        msg = r;
-      endif
+  if (status)
+    if (nargout == 0)
+      status = r;
+    else
+      msg = r;
     endif
-  else
-    print_usage ();
   endif
 
 endfunction
+
+
+%!test
+%! def_tmpdir = P_tmpdir ();
+%! while (length (def_tmpdir) > 2 && strfind (filesep ("all"), def_tmpdir(end)))
+%!   def_tmpdir(end) = [];
+%! endwhile
+%! [status, attr] = fileattrib (P_tmpdir ());
+%! assert (status);
+%! assert (isstruct (attr));
+%! assert (numfields (attr), 14);
+%! assert (attr.Name, def_tmpdir);
+%! assert (attr.directory);
+%! if (ispc ())
+%!   assert (! isnan (attr.archive));
+%! else
+%!   assert (isnan (attr.archive));
+%! endif
+%! assert (attr.UserRead);
+%! if (ispc ())
+%!   assert (isnan (attr.GroupRead));
+%! else
+%!   assert (! isnan (attr.GroupRead));
+%! endif
+
+%!error fileattrib (1, 2)
+%!error <FILE must be a string> fileattrib (1)
 

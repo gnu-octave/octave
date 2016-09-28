@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hg} =} __scatter__ (@dots{})
+## @deftypefn {} {@var{hg} =} __scatter__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -39,13 +39,13 @@ function hg = __scatter__ (varargin)
   if (istart <= nargin)
     s = varargin{istart}(:);
     if (isempty (s) || ischar (s))
-      s = 6;
+      s = 36;
     endif
     if (! ischar (varargin{istart}))
-      istart++;
+      istart += 1;
     endif
   else
-    s = 6;
+    s = 36;
   endif
 
   ## Remove NaNs
@@ -76,10 +76,14 @@ function hg = __scatter__ (varargin)
       c = c(:);
     endif
   elseif (firstnonnumeric == istart && ischar (varargin{istart})
-          && ! (   strcmpi (varargin{istart}, "filled")
-                || strcmpi (varargin{istart}, "fill")))
-    c = varargin{istart};
-    firstnonnumeric++;
+          && any (tolower (varargin{istart}(1)) == "ymcrgbwk"))
+    [linespec, valid] = __pltopt__ (fcn, varargin{istart}, false);
+    if (valid)
+      c = varargin{istart};
+      firstnonnumeric += 1;
+    else
+      c = [];
+    endif
   else
     c = [];
   endif
@@ -111,18 +115,24 @@ function hg = __scatter__ (varargin)
     elseif ((ischar (arg) || iscellstr (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ (fcn, arg, false);
       if (valid)
+        ## Valid linestyle, but possibly not valid marker
         have_marker = true;
         marker = linespec.marker;
         if (strcmp (marker, "none"))
           marker = "o";
         elseif (isempty (marker))
           have_marker = false;
-          [~, marker] = __next_line_style__ ();
+          marker = "o";
         endif
       else
-        error ("%s: invalid linespec", fcn);
+        ## Prop/Val pair
+        newargs{end+1} = arg;
+        if (iarg <= nargin)
+          newargs{end+1} = varargin{iarg++};
+        endif
       endif
     else
+      ## Prop/Val pair
       newargs{end+1} = arg;
       if (iarg <= nargin)
         newargs{end+1} = varargin{iarg++};
@@ -156,6 +166,7 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "sizedata", @update_data);
 
   one_explicit_color = ischar (c) || isequal (size (c), [1, 3]);
+  s = sqrt (s);  # size adjustment for visual compatibility w/Matlab
 
   if (numel (x) <= 100)
 
@@ -284,14 +295,15 @@ function hg = __scatter__ (varargin)
 endfunction
 
 function render_size_color (hg, vert, s, c, marker, filled, isflat)
+
   if (isscalar (s))
     x = vert(:,1);
     y = vert(:,2);
     z = vert(:,3:end);
     toolkit = get (ancestor (hg, "figure"), "__graphics_toolkit__");
     ## Does gnuplot only support triangles with different vertex colors ?
-    ## TODO: Verify gnuplot can only support one color.  If RGB triplets
-    ##       can be assigned to each vertex, then fix __go_draw_axes__.m
+    ## FIXME: Verify gnuplot can only support one color.  If RGB triplets
+    ##        can be assigned to each vertex, then fix __gnuplot_draw_axes__.m
     gnuplot_hack = (numel (x) > 1 && columns (c) == 3
                     && strcmp (toolkit, "gnuplot"));
     if (ischar (c) || ! isflat || gnuplot_hack)
@@ -342,9 +354,11 @@ function render_size_color (hg, vert, s, c, marker, filled, isflat)
                              marker, filled, isflat);
     endfor
   endif
+
 endfunction
 
 function update_props (h, d)
+
   lw = get (h, "linewidth");
   m  = get (h, "marker");
   fc = get (h, "markerfacecolor");
@@ -353,36 +367,103 @@ function update_props (h, d)
 
   set (kids, "linewidth", lw, "marker", m,
              "markerfacecolor", fc, "markeredgecolor", ec);
+
 endfunction
 
+## FIXME: This callback routine doesn't handle the case where N > 100.
 function update_data (h, d)
+
   x = get (h, "xdata");
   y = get (h, "ydata");
   z = get (h, "zdata");
-  c = get (h, "cdata");
-  if (rows (c) == 1)
-    c = repmat (c, numel (x), 1);
+  if (numel (x) > 100)
+    error ("scatter: cannot update data with more than 100 points.  Call scatter (x, y, ...) with new data instead.");
   endif
+  c = get (h, "cdata");
+  one_explicit_color = ischar (c) || isequal (size (c), [1, 3]);
+  if (! one_explicit_color)
+    if (rows (c) == 1)
+      c = repmat (c, numel (x), 1);
+    endif
+  endif
+  filled = ! strcmp (get (h, "markerfacecolor"), "none");
   s = get (h, "sizedata");
+  s = sqrt (s);  # size adjustment for visual compatibility w/Matlab 
   if (numel (s) == 1)
     s = repmat (s, numel (x), 1);
   endif
   hlist = get (h, "children");
 
-  if (isempty (z))
-    for i = 1 : length (hlist)
-      set (hlist(i), "vertices", [x(i), y(i)],
-                     "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
-                     "facevertexcdata", c(i,:),
-                     "markersize", s(i));
-    endfor
+  if (one_explicit_color)
+    if (filled)
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", c);
+
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", c);
+        endfor
+      endif
+    else
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", "none");
+
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", c, "markerfacecolor", "none");
+        endfor
+      endif
+    endif
   else
-    for i = 1 : length (hlist)
-      set (hlist(i), "vertices", [x(i), y(i), z(i)],
-                     "cdata", reshape (cd(i,:),[1, size(cd)(2:end)]),
-                     "facevertexcdata", cd(i,:),
-                     "markersize", s(i));
-    endfor
+    if (filled)
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "none", "markerfacecolor", "flat",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "none", "markerfacecolor", "flat",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      endif
+    else
+      if (isempty (z))
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "flat", "markerfacecolor", "none",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      else
+        for i = 1 : length (hlist)
+          set (hlist(i), "vertices", [x(i), y(i), z(i)],
+                         "markersize", s(i),
+                         "markeredgecolor", "flat", "markerfacecolor", "none",
+                         "cdata", reshape (c(i,:),[1, size(c)(2:end)]),
+                         "facevertexcdata", c(i,:));
+        endfor
+      endif
+    endif
   endif
 
 endfunction

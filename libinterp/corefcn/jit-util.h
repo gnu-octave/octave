@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2015 Max Brister
+Copyright (C) 2012-2016 Max Brister
 
 This file is part of Octave.
 
@@ -24,15 +24,17 @@ along with Octave; see the file COPYING.  If not, see
 
 // Some utility classes and functions used throughout jit
 
-#if !defined (octave_jit_util_h)
+#if ! defined (octave_jit_util_h)
 #define octave_jit_util_h 1
 
-#ifdef HAVE_LLVM
+#include "octave-config.h"
+
+#if defined (HAVE_LLVM)
 
 #include <stdexcept>
 
-#if defined(HAVE_LLVM_IR_DATALAYOUT_H) || defined(HAVE_LLVM_DATALAYOUT_H)
-#define HAVE_LLVM_DATALAYOUT
+#if defined (HAVE_LLVM_IR_DATALAYOUT_H) || defined (HAVE_LLVM_DATALAYOUT_H)
+#  define HAVE_LLVM_DATALAYOUT
 #endif
 
 // we don't want to include llvm headers here, as they require
@@ -42,8 +44,9 @@ namespace llvm
 {
   class Value;
   class Module;
-#ifdef LEGACY_PASSMANAGER
-  namespace legacy {
+#if defined (LEGACY_PASSMANAGER)
+  namespace legacy
+  {
     class FunctionPassManager;
     class PassManager;
   }
@@ -101,8 +104,8 @@ template <typename HOLDER_T, typename SUB_T>
 class jit_internal_node;
 
 // jit_internal_list and jit_internal_node implement generic embedded doubly
-// linked lists. List items extend from jit_internal_list, and can be placed
-// in nodes of type jit_internal_node. We use CRTP twice.
+// linked lists.  List items extend from jit_internal_list, and can be placed
+// in nodes of type jit_internal_node.  We use CRTP twice.
 template <typename LIST_T, typename NODE_T>
 class
 jit_internal_list
@@ -214,3 +217,4 @@ bool isa (U *value)
 
 #endif
 #endif
+

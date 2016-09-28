@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 David Bateman
+## Copyright (C) 2008-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} refreshdata ()
-## @deftypefnx {Function File} {} refreshdata (@var{h})
-## @deftypefnx {Function File} {} refreshdata (@var{h}, @var{workspace})
+## @deftypefn  {} {} refreshdata ()
+## @deftypefnx {} {} refreshdata (@var{h})
+## @deftypefnx {} {} refreshdata (@var{h}, @var{workspace})
 ## Evaluate any @samp{datasource} properties of the current figure and update
 ## the plot if the corresponding data has changed.
 ##
@@ -101,6 +101,7 @@ function refreshdata (h, workspace)
       set (h(i), pdname, val);
     endfor
   endfor
+
 endfunction
 
 
@@ -108,12 +109,12 @@ endfunction
 %! clf;
 %! x = 0:0.1:10;
 %! y = sin (x);
-%! plot (x, y, 'ydatasource', 'y');
-%! title ('refreshdata() showing moving sine curve');
+%! plot (x, y, "ydatasource", "y");
+%! title ("refreshdata() showing moving sine curve");
 %! axis manual;
 %! for i = 1 : 100
 %!   pause (0);
 %!   y = sin (x + 0.1 * i);
-%!   refreshdata (gcf, 'caller');
-%! end
+%!   refreshdata (gcf, "caller");
+%! endfor
 

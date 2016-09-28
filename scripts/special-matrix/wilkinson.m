@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2015 Peter Ekberg
+## Copyright (C) 1999-2016 Peter Ekberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wilkinson (@var{n})
+## @deftypefn {} {} wilkinson (@var{n})
 ## Return the Wilkinson matrix of order @var{n}.
 ##
 ## Wilkinson matrices are symmetric and tridiagonal with pairs of nearly, but

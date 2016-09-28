@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fCColVector_h)
+#if ! defined (octave_fCColVector_h)
 #define octave_fCColVector_h 1
+
+#include "octave-config.h"
 
 #include "MArray.h"
 
@@ -156,3 +158,4 @@ public:
 MARRAY_FORWARD_DEFS (MArray, FloatComplexColumnVector, FloatComplex)
 
 #endif
+

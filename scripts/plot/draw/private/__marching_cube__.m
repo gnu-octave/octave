@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Martin Helm
+## Copyright (C) 2009-2016 Martin Helm
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {Function File} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
+## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
+## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ##
 ## Return the triangulation information @var{t} at points @var{p} for
 ## the isosurface values resp. the volume data @var{val} and the iso
@@ -60,7 +60,7 @@
 ## @end group
 ## @end example
 ##
-## Instead of the @command{trimesh} function the @command{patch}
+## Instead of the @code{trimesh} function the @code{patch}
 ## function can be used to visualize the geometry.  For example:
 ##
 ## @example
@@ -204,10 +204,11 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
       endif
     endif
   endfor
+
 endfunction
 
-function p = vertex_interp (isolevel,p1x, p1y, p1z,...
-  p2x, p2y, p2z,valp1,valp2, col1, col2)
+function p = vertex_interp (isolevel, p1x, p1y, p1z, ...
+                            p2x, p2y, p2z,valp1,valp2, col1, col2)
 
   if (nargin == 9)
     p = zeros (length (p1x), 3);
@@ -216,7 +217,7 @@ function p = vertex_interp (isolevel,p1x, p1y, p1z,...
   else
     error ("__marching_cube__: wrong number of arguments");
   endif
-  mu = zeros (length (p1x), 1);
+
   id = abs (valp1-valp2) < (10*eps) .* (abs (valp1) .+ abs (valp2));
   if (any (id))
     p(id, 1:3) = [ p1x(id), p1y(id), p1z(id) ];
@@ -224,7 +225,9 @@ function p = vertex_interp (isolevel,p1x, p1y, p1z,...
       p(id, 4) = col1(id);
     endif
   endif
-  nid = !id;
+
+  mu = zeros (length (p1x), 1);
+  nid = ! id;
   if (any (nid))
     mu(nid) = (isolevel - valp1(nid)) ./ (valp2(nid) - valp1(nid));
     p(nid, 1:3) = [p1x(nid) + mu(nid) .* (p2x(nid) - p1x(nid)), ...
@@ -234,9 +237,11 @@ function p = vertex_interp (isolevel,p1x, p1y, p1z,...
       p(nid, 4) = col1(nid) + mu(nid) .* (col2(nid) - col1(nid));
     endif
   endif
+
 endfunction
 
 function [edge_table, tri_table] = init_mc ()
+
   edge_table = [
   0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c, ...
   0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00, ...
@@ -528,5 +533,6 @@ function [edge_table, tri_table] = init_mc ()
   0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
   0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 ] + 1;
+
 endfunction
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cassert>
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-sort.h"
 
 // A simple class and instantiation of the octave merge sort class
-// to sort sparse data before matrix creation. This is significantly
+// to sort sparse data before matrix creation.  This is significantly
 // faster than using octave_qsort.
 
 bool
@@ -61,3 +61,4 @@ octave_idx_vector_comp (octave_idx_vector_sort* i,
 }
 
 template class octave_sort<octave_idx_vector_sort *>;
+

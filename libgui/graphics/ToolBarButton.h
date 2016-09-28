@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_ToolBarButton__
-#define __QtHandles_ToolBarButton__ 1
+#if ! defined (octave_ToolBarButton_h)
+#define octave_ToolBarButton_h 1
 
 #include "Object.h"
 
@@ -30,24 +30,25 @@ class QAction;
 namespace QtHandles
 {
 
-class Container;
+  class Container;
 
-template <class T>
-class ToolBarButton : public Object
-{
-public:
-  ToolBarButton (const graphics_object& go, QAction* action);
-  ~ToolBarButton (void);
+  template <typename T>
+  class ToolBarButton : public Object
+  {
+  public:
+    ToolBarButton (const graphics_object& go, QAction* action);
+    ~ToolBarButton (void);
 
-  Container* innerContainer (void) { return 0; }
+    Container* innerContainer (void) { return 0; }
 
-protected:
-  void update (int pId);
+  protected:
+    void update (int pId);
 
-private:
-  QAction* m_separator;
-};
+  private:
+    QAction* m_separator;
+  };
 
 };
 
 #endif
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2015 John W. Eaton
+## Copyright (C) 2002-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} close
-## @deftypefnx {Command} {} close (@var{h})
-## @deftypefnx {Command} {} close @var{h}
-## @deftypefnx {Command} {} close all
-## @deftypefnx {Command} {} close all hidden
-## @deftypefnx {Command} {} close all force
+## @deftypefn  {} {} close
+## @deftypefnx {} {} close @var{h}
+## @deftypefnx {} {} close (@var{h})
+## @deftypefnx {} {} close (@var{h}, "force")
+## @deftypefnx {} {} close all
+## @deftypefnx {} {} close all hidden
+## @deftypefnx {} {} close all force
 ## Close figure window(s).
 ##
 ## When called with no arguments, close the current figure.  This is equivalent
@@ -35,9 +36,8 @@
 ## If the argument @qcode{"all hidden"} is given then all figures, including
 ## hidden ones, are closed.
 ##
-## If the argument @qcode{"all force"} is given then all figures are closed
-## even when @qcode{"closerequestfcn"} has been altered to prevent closing
-## the window.
+## If the argument @qcode{"force"} is given then figures are closed even when
+## @qcode{"closerequestfcn"} has been altered to prevent closing the window.
 ##
 ## Implementation Note: @code{close} operates by calling the function specified
 ## by the @qcode{"closerequestfcn"} property for each figure.  By default, the
@@ -81,8 +81,12 @@ function retval = close (arg1, arg2)
     if (ischar (arg1) && strcmpi (arg1, "all"))
       figs = (allchild (0))';
       figs = figs(isfigure (figs));
+    elseif (any (isfigure (arg1)))
+      figs = arg1(isfigure (arg1));
+    elseif (isempty (arg1))
+      figs = [];  # Silently accept null argument for Matlab compatibility
     else
-      error ('close: first argument must be "all" with "hidden" or "force"');
+      error ('close: first argument must be "all" or a figure handle');
     endif
     if (strcmpi (arg2, "force"))
       delete (figs);
@@ -92,9 +96,7 @@ function retval = close (arg1, arg2)
     error ('close: second argument must be "hidden" or "force"');
   endif
 
-  for h = figs
-    __go_execute_callback__ (h, "closerequestfcn");
-  endfor
+  __go_execute_callback__ (figs, "closerequestfcn");
 
   if (nargout > 0)
     retval = 1;
@@ -120,8 +122,6 @@ endfunction
 %!error <first argument must be "all" or a figure> close ({"all"})
 %!error <first argument must be "all" or a figure> close ("all_and_more")
 %!error <first argument must be "all" or a figure> close (-1)
-%!error <first argument must be "all" with "hidden"> close foo hidden
-%!error <first argument must be "all" with "hidden"> close foo force
 %!error <second argument must be "hidden"> close all hid
 %!error <second argument must be "hidden"> close all for
 

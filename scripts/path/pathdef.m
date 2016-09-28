@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 Bill Denney
+## Copyright (C) 2005-2016 Bill Denney
 ## Copyright (C) 2007-2009 Ben Abbott
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{val} =} pathdef ()
+## @deftypefn {} {@var{val} =} pathdef ()
 ## Return the default path for Octave.
 ##
 ## The path information is extracted from one of four sources.
@@ -63,7 +63,7 @@ function val = pathdef ()
   endif
 
   ## No user octaverc file, locate the site octaverc file.
-  pathdir = octave_config_info ("localstartupfiledir");
+  pathdir = __octave_config_info__ ("localstartupfiledir");
   site_octaverc = fullfile (pathdir, "octaverc");
   site_path = __extractpath__ (site_octaverc);
   if (! isempty (site_path))

@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2015 Vytautas Jančauskas
+## Copyright (C) 2013-2016 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} set (@var{recorder}, @var{name}, @var{value})
-## @deftypefnx {Function File} {} set (@var{recorder}, @var{properties})
-## @deftypefnx {Function File} {@var{properties} =} set (@var{recorder})
+## @deftypefn  {} {} set (@var{recorder}, @var{name}, @var{value})
+## @deftypefnx {} {} set (@var{recorder}, @var{properties})
+## @deftypefnx {} {@var{properties} =} set (@var{recorder})
 ## Set the value of property specified by @var{name} to a given @var{value}.
 ##
 ## If @var{name} and @var{value} are cell arrays of the same size, set each
@@ -50,7 +50,7 @@ function settable = set (varargin)
       index = 1;
       for property = varargin{2}
         setproperty (recorder, char (property), varargin{3}{index});
-        index = index + 1;
+        index += 1;
       endfor
     else
       setproperty (recorder, varargin{2}, varargin{3});

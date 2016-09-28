@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,21 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles__KeyMap__
-#define __QtHandles__KeyMap__ 1
+#if ! defined (octave_KeyMap_h)
+#define octave_KeyMap_h 1
 
 #include <string>
 
 namespace QtHandles
 {
 
-namespace KeyMap
-{
+  namespace KeyMap
+  {
+    std::string qKeyToKeyString (int key);
+  }
 
-std::string qKeyToKeyString (int key);
-
-}; // namespace KeyMap
-
-}; // namespace QtHandles
+}
 
 #endif
+

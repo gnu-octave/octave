@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -49,9 +49,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
+#include "errwarn.h"
 #include "load-save.h"
-#include "oct-obj.h"
+#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
@@ -110,10 +110,10 @@ along with Octave; see the file COPYING.  If not, see
 //   type                 string    type_length
 //
 // The string "type" is then used with octave_value_typeinfo::lookup_type
-// to create an octave_value of the correct type. The specific load/save
+// to create an octave_value of the correct type.  The specific load/save
 // function is then called.
 //
-// For backward compatiablity "data type" can also be a value between 1
+// For backward compatibility "data type" can also be a value between 1
 // and 7, where this defines a hardcoded octave_value of the type
 //
 //   data type                  octave_value
@@ -128,11 +128,11 @@ along with Octave; see the file COPYING.  If not, see
 //
 // Except for "data type" equal 5 that requires special treatment, these
 // old style "data type" value also cause the specific load/save functions
-// to be called. FILENAME is used for error messages.
+// to be called.  FILENAME is used for error messages.
 
 std::string
 read_binary_data (std::istream& is, bool swap,
-                  oct_mach_info::float_format fmt,
+                  octave::mach_info::float_format fmt,
                   const std::string& filename, bool& global,
                   octave_value& tc, std::string& doc)
 {
@@ -158,13 +158,13 @@ read_binary_data (std::istream& is, bool swap,
     OCTAVE_LOCAL_BUFFER (char, name, name_len+1);
     name[name_len] = '\0';
     if (! is.read (reinterpret_cast<char *> (name), name_len))
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
     retval = name;
   }
 
   is.read (reinterpret_cast<char *> (&doc_len), 4);
   if (! is)
-    goto data_read_error;
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
   if (swap)
     swap_bytes<4> (&doc_len);
 
@@ -172,17 +172,17 @@ read_binary_data (std::istream& is, bool swap,
     OCTAVE_LOCAL_BUFFER (char, tdoc, doc_len+1);
     tdoc[doc_len] = '\0';
     if (! is.read (reinterpret_cast<char *> (tdoc), doc_len))
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
     doc = tdoc;
   }
 
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
-    goto data_read_error;
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
   global = tmp ? 1 : 0;
 
   tmp = 0;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
-    goto data_read_error;
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
 
   // All cases except 255 kept for backwards compatibility
   switch (tmp)
@@ -206,16 +206,16 @@ read_binary_data (std::istream& is, bool swap,
     case 5:
       {
         // FIXME:
-        // This is cruft, since its for a save type that is old. Maybe
-        // this is taking backward compatibility too far!!
+        // This is cruft, since its for a save type that is old.
+        // Maybe this is taking backward compatibility too far!
         int32_t len;
         if (! is.read (reinterpret_cast<char *> (&len), 4))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         if (swap)
           swap_bytes<4> (&len);
         OCTAVE_LOCAL_BUFFER (char, s, len+1);
         if (! is.read (reinterpret_cast<char *> (s), len))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         tc = s;
 
@@ -237,27 +237,24 @@ read_binary_data (std::istream& is, bool swap,
         // Read the saved variable type
         int32_t len;
         if (! is.read (reinterpret_cast<char *> (&len), 4))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         if (swap)
           swap_bytes<4> (&len);
         OCTAVE_LOCAL_BUFFER (char, s, len+1);
         if (! is.read (s, len))
-          goto data_read_error;
+          error ("load: trouble reading binary file '%s'", filename.c_str ());
         s[len] = '\0';
         std::string typ = s;
         tc = octave_value_typeinfo::lookup_type (typ);
       }
       break;
     default:
-      goto data_read_error;
+      error ("load: trouble reading binary file '%s'", filename.c_str ());
       break;
     }
 
-  if (!tc.load_binary (is, swap, fmt))
-    {
-    data_read_error:
-      error ("load: trouble reading binary file '%s'", filename.c_str ());
-    }
+  if (! tc.load_binary (is, swap, fmt))
+    error ("load: trouble reading binary file '%s'", filename.c_str ());
 
   return retval;
 }
@@ -297,7 +294,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
   const char *btmp = typ.data ();
   os.write (btmp, len);
 
-  // The octave_value of tc is const. Make a copy...
+  // The octave_value of tc is const.  Make a copy...
   octave_value val = tc;
 
   // Call specific save function
@@ -305,3 +302,4 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 
   return (os && success);
 }
+

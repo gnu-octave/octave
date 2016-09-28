@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 David Bateman
+## Copyright (C) 2005-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,12 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __prog_output_assert__ (@var{str})
+## @deftypefn {} {} __prog_output_assert__ (@var{str})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function ret = __prog_output_assert__ (str)
   global _assert_printf = "";
+
   if (isempty (_assert_printf))
     ret = isempty (str);
   elseif (_assert_printf(end) == "\n")
@@ -30,7 +31,9 @@ function ret = __prog_output_assert__ (str)
   else
     ret = strcmp (_assert_printf, str);
   endif
+
   _assert_printf = "";
+
 endfunction
 
 

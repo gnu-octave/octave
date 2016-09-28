@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-# Copyright (C) 2002-2015 John W. Eaton
+# Copyright (C) 2002-2016 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -155,7 +155,6 @@ sub parse_option_block
           {
             $DOC_ITEM[$OPT_NUM] .= $_;
           }
-          $DOC_ITEM[$OPT_NUM] =~ s/\n/\\n\\\n/g;
         }
       elsif (/^\s*TYPE\s*=\s*"(.*)"\s*$/)
         {
@@ -231,14 +230,14 @@ sub process_data
 
   if (not defined $DOC_STRING)
     {
-      $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.\\n\\
-\\n\\
-When called with no arguments, the names of all available options and\\n\\
-their current values are displayed.\\n\\
-\\n\\
-Given one argument, return the value of the option \@var{opt}.\\n\\
-\\n\\
-When called with two arguments, \@code{$OPT_FCN_NAME} sets the option\\n\\
+      $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.
+
+When called with no arguments, the names of all available options and
+their current values are displayed.
+
+Given one argument, return the value of the option \@var{opt}.
+
+When called with two arguments, \@code{$OPT_FCN_NAME} sets the option
 \@var{opt} to value \@var{val}.";
     }
 }
@@ -372,7 +371,7 @@ sub emit_opt_class_header
 // DO NOT EDIT!
 // Generated automatically from $DEFN_FILE.
 
-#if !defined (octave_${CLASS_NAME}_h)
+#if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
 
 #include <cfloat>
@@ -507,9 +506,9 @@ sub emit_opt_handler_fcns
 // DO NOT EDIT!
 // Generated automatically from $DEFN_FILE.
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include <iomanip>
 #include <iostream>
@@ -519,7 +518,7 @@ sub emit_opt_handler_fcns
 #include "defun.h"
 #include "pr-output.h"
 
-#include "oct-obj.h"
+#include "ovl.h"
 #include "utils.h"
 #include "pager.h"
 
@@ -623,7 +622,7 @@ sub emit_option_table_entry
 
 sub emit_print_function
 {
-  ## FIXME -- determine the width of the table automatically.
+  ## FIXME: determine the width of the table automatically.
 
   print qq|static void
 print_$CLASS_NAME (std::ostream& os)
@@ -676,14 +675,14 @@ print_$CLASS_NAME (std::ostream& os)
               $elt_type = "octave_idx_type";
             }
           print qq|    Array<$elt_type> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
-          print qq|    if (val.length () == 1)
+          print qq|    if (val.numel () == 1)
       {
         os << val(0) << "\\n";
       }
     else
       {
         os << "\\n\\n";
-        octave_idx_type len = val.length ();
+        octave_idx_type len = val.numel ();
         Matrix tmp (len, 1);
         for (octave_idx_type i = 0; i < len; i++)
           tmp(i,0) = val(i);
@@ -694,7 +693,7 @@ print_$CLASS_NAME (std::ostream& os)
       elsif ($TYPE[$i] eq "Array<double>")
         {
           print qq|    Array<double> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
-          print qq|    if (val.length () == 1)
+          print qq|    if (val.numel () == 1)
       {
         os << val(0) << "\\n";
       }
@@ -709,7 +708,7 @@ print_$CLASS_NAME (std::ostream& os)
       elsif ($TYPE[$i] eq "Array<float>")
         {
           print qq|    Array<float> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
-          print qq|    if (val.length () == 1)
+          print qq|    if (val.numel () == 1)
       {
         os << val(0) << "\\n";
       }
@@ -752,44 +751,37 @@ set_$CLASS_NAME (const std::string& keyword, const octave_value& val)
       if ($TYPE[$i] eq "double")
         {
           print "      double tmp = val.double_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "float")
         {
           print "      float tmp = val.float_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "int" or $TYPE[$i] eq "octave_idx_type")
         {
           print "      int tmp = val.int_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "std::string")
         {
           print "      std::string tmp = val.string_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "Array<int>" or $TYPE[$i] eq "Array<octave_idx_type>")
         {
           print "      Array<int> tmp = val.int_vector_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "Array<double>")
         {
           print "      Array<double> tmp = val.vector_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       elsif ($TYPE[$i] eq "Array<float>")
         {
           print "      Array<float> tmp = val.float_vector_value ();\n\n";
-          print "      if (! error_state)
-        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
+          print "      $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       else
         {
@@ -856,13 +848,13 @@ show_$CLASS_NAME (const std::string& keyword)
               $elt_type = "octave_idx_type";
             }
           print "      Array<$elt_type> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
-          print "      if (val.length () == 1)
+          print "      if (val.numel () == 1)
         {
           retval = static_cast<double> (val(0));
         }
       else
         {
-          octave_idx_type len = val.length ();
+          octave_idx_type len = val.numel ();
           ColumnVector tmp (len);
           for (octave_idx_type i = 0; i < len; i++)
             tmp(i) = val(i);
@@ -872,7 +864,7 @@ show_$CLASS_NAME (const std::string& keyword)
       elsif ($TYPE[$i] eq "Array<double>")
         {
           print "      Array<double> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
-          print "      if (val.length () == 1)
+          print "      if (val.numel () == 1)
         {
           retval = val(0);
         }
@@ -884,7 +876,7 @@ show_$CLASS_NAME (const std::string& keyword)
       elsif ($TYPE[$i] eq "Array<float>")
         {
           print "      Array<float> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
-          print "      if (val.length () == 1)
+          print "      if (val.numel () == 1)
         {
           retval = val(0);
         }
@@ -913,52 +905,48 @@ sub emit_options_function
 {
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
 DEFUN ($OPT_FCN_NAME, args, ,
-  "-*- texinfo -*-\\n\\
-\@deftypefn  {Built-in Function} {} $OPT_FCN_NAME ()\\n\\
-\@deftypefnx {Built-in Function} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
-\@deftypefnx {Built-in Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
-$DOC_STRING\\n\\
-\\n\\
-Options include\\n\\
-\\n\\
-\@table \@code\\n\\
+       doc: /* -*- texinfo -*-
+\@deftypefn  {} {} $OPT_FCN_NAME ()
+\@deftypefnx {} {val =} $OPT_FCN_NAME (\@var{opt})
+\@deftypefnx {} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})
+$DOC_STRING
+
+Options include
+
+\@table \@code
 _END_EMIT_OPTIONS_FUNCTION_HDR_
 # FIXME: Add extra newline above
 
   for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print '@item @qcode{\"', $NAME[$i], '\"}\n\\', "\n";
+      print '@item @qcode{"', $NAME[$i], '"}', "\n";
       print $DOC_ITEM[$i] if $DOC_ITEM[$i];
     }
 
   print <<"_END_EMIT_OPTIONS_FUNCTION_BODY_";
-\@end table\\n\\
-\@end deftypefn")
+\@end table
+\@end deftypefn */)
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
+  if (nargin > 2)
+    print_usage ();
+
   if (nargin == 0)
     {
       print_$CLASS_NAME (octave_stdout);
     }
-  else if (nargin == 1 || nargin == 2)
-    {
-      std::string keyword = args(0).string_value ();
-
-      if (! error_state)
-        {
-          if (nargin == 1)
-            retval = show_$CLASS_NAME (keyword);
-          else
-            set_$CLASS_NAME (keyword, args(1));
-        }
-      else
-        error ("$OPT_FCN_NAME: expecting keyword as first argument");
-    }
   else
-    print_usage ();
+    {
+      std::string keyword = args(0).xstring_value ("$OPT_FCN_NAME: expecting keyword as first argument");
+
+      if (nargin == 1)
+        retval = show_$CLASS_NAME (keyword);
+      else
+        set_$CLASS_NAME (keyword, args(1));
+    }
 
   return retval;
 }

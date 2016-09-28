@@ -1,4 +1,4 @@
-## Copyright (C) 2011-2014 Carnë Draug
+## Copyright (C) 2011-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -9,7 +9,7 @@
 ##
 ## Octave is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} inputParser ()
+## @deftypefn {} {@var{p} =} inputParser ()
 ## Create object @var{p} of the inputParser class.
 ##
 ## This class is designed to allow easy parsing of function arguments.  The
@@ -28,7 +28,7 @@
 ##
 ## @item optional (see @command{addOptional});
 ##
-## @item named (see @command{addParamValue});
+## @item named (see @command{addParameter});
 ##
 ## @item switch (see @command{addSwitch}).
 ## @end enumerate
@@ -38,45 +38,45 @@
 ## accessed with the @command{Results} accessor.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.Parameters
+## @deftypefn {} {} inputParser.Parameters
 ## Return list of parameter names already defined.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.Results
+## @deftypefn {} {} inputParser.Results
 ## Return structure with argument names as fieldnames and corresponding values.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.Unmatched
+## @deftypefn {} {} inputParser.Unmatched
 ## Return structure similar to @command{Results}, but for unmatched parameters.
 ## See the @command{KeepUnmatched} property.
 ##
 ## @end deftypefn
-## @deftypefn {Accessor method} {} inputParser.UsingDefaults
+## @deftypefn {} {} inputParser.UsingDefaults
 ## Return cell array with the names of arguments that are using default values.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.CaseSensitive = @var{boolean}
+## @deftypefn {} {} inputParser.CaseSensitive = @var{boolean}
 ## Set whether matching of argument names should be case sensitive.  Defaults
 ## to false.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.FunctionName = @var{name}
+## @deftypefn {} {} inputParser.FunctionName = @var{name}
 ## Set function name to be used in error messages; Defaults to empty string.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.KeepUnmatched = @var{boolean}
+## @deftypefn {} {} inputParser.KeepUnmatched = @var{boolean}
 ## Set whether an error should be given for non-defined arguments.  Defaults to
 ## false.  If set to true, the extra arguments can be accessed through
 ## @code{Unmatched} after the @code{parse} method.  Note that since
-## @command{Switch} and @command{ParamValue} arguments can be mixed, it is
+## @command{Switch} and @command{Parameter} arguments can be mixed, it is
 ## not possible to know the unmatched type.  If argument is found unmatched
-## it is assumed to be of the @command{ParamValue} type and it is expected to
+## it is assumed to be of the @command{Parameter} type and it is expected to
 ## be followed by a value.
 ##
 ## @end deftypefn
-## @deftypefn {Class property} {} inputParser.StructExpand = @var{boolean}
+## @deftypefn {} {} inputParser.StructExpand = @var{boolean}
 ## Set whether a structure can be passed to the function instead of
-## parameter/value pairs.  Defaults to true.  Not implemented yet.
+## parameter/value pairs.  Defaults to true.
 ##
 ## The following example shows how to use this class:
 ##
@@ -93,11 +93,11 @@
 ##   val_mat = @@(x) isvector (x) && all (x <= 1) && all (x >= 0);
 ##   p.addOptional ("mat", [0 0], val_mat);
 ##
-##   ## create two arguments of type "ParamValue"
+##   ## create two arguments of type "Parameter"
 ##   val_type = @@(x) any (strcmp (x, @{"linear", "quadratic"@}));
-##   p.addParamValue ("type", "linear", val_type);
+##   p.addParameter ("type", "linear", val_type);
 ##   val_verb = @@(x) any (strcmp (x, @{"low", "medium", "high"@}));
-##   p.addParamValue ("tolerance", "low", val_verb);
+##   p.addParameter ("tolerance", "low", val_verb);
 ##
 ##   ## create a switch type of argument
 ##   p.addSwitch ("verbose");
@@ -108,7 +108,10 @@
 ##   ## for example, get the tolerance input with p.Results.tolerance
 ## endfunction
 ## @end group
+## @end example
 ##
+## @example
+## @group
 ## check ("mech");           # valid, use defaults for other arguments
 ## check ();                 # error, one argument is mandatory
 ## check (1);                # error, since ! ischar
@@ -117,35 +120,36 @@
 ## check ("mech", "~/dev", [0 1 0 0], "type", "linear");  # valid
 ##
 ## ## following is also valid.  Note how the Switch argument type can
-## ## be mixed into or before the ParamValue argument type (but it
+## ## be mixed into or before the Parameter argument type (but it
 ## ## must still appear after any Optional argument).
 ## check ("mech", "~/dev", [0 1 0 0], "verbose", "tolerance", "high");
 ##
 ## ## following returns an error since not all optional arguments,
 ## ## `path' and `mat', were given before the named argument `type'.
 ## check ("mech", "~/dev", "type", "linear");
+## @end group
 ## @end example
 ##
 ## @emph{Note 1}: A function can have any mixture of the four API types but
 ## they must appear in a specific order.  @command{Required} arguments must be
 ## first and can be followed by any @command{Optional} arguments.  Only
-## the @command{ParamValue} and @command{Switch} arguments may be mixed
+## the @command{Parameter} and @command{Switch} arguments may be mixed
 ## together and they must appear at the end.
 ##
-## @emph{Note 2}: If both @command{Optional} and @command{ParamValue} arguments
+## @emph{Note 2}: If both @command{Optional} and @command{Parameter} arguments
 ## are mixed in a function API then once a string Optional argument fails to
 ## validate it will be considered the end of the @command{Optional}
 ## arguments.  The remaining arguments will be compared against any
-## @command{ParamValue} or @command{Switch} arguments.
+## @command{Parameter} or @command{Switch} arguments.
 ##
 ## @seealso{nargin, validateattributes, validatestring, varargin}
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addOptional (@var{argname}, @var{default})
-## @deftypefnx {Function File} {} addOptional (@var{argname}, @var{default}, @var{validator})
-## Add new optional argument to the object @var{parser} of the class inputParser
-## to implement an ordered arguments type of API
+## @deftypefn  {} {} addOptional (@var{argname}, @var{default})
+## @deftypefnx {} {} addOptional (@var{argname}, @var{default}, @var{validator})
+## Add new optional argument to the object @var{parser} of the class
+## inputParser to implement an ordered arguments type of API
 ##
 ## @var{argname} must be a string with the name of the new argument.  The order
 ## in which new arguments are added with @command{addOptional}, represents the
@@ -168,8 +172,8 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addParamValue (@var{argname}, @var{default})
-## @deftypefnx {Function File} {} addParamValue (@var{argname}, @var{default}, @var{validator})
+## @deftypefn  {} {} addParameter (@var{argname}, @var{default})
+## @deftypefnx {} {} addParameter (@var{argname}, @var{default}, @var{validator})
 ## Add new parameter to the object @var{parser} of the class inputParser to
 ## implement a name/value pair type of API.
 ##
@@ -186,8 +190,19 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addRequired (@var{argname})
-## @deftypefnx {Function File} {} addRequired (@var{argname}, @var{validator})
+## @deftypefn  {} {} addParamValue (@var{argname}, @var{default})
+## @deftypefnx {} {} addParamValue (@var{argname}, @var{default}, @var{validator})
+## Add new parameter to the object @var{parser} of the class inputParser to
+## implement a name/value pair type of API.
+##
+## This is an alias for @command{addParameter} method without the
+## @qcode{"PartialMatchPriority"} option.  See it for the help text.
+##
+## @end deftypefn
+
+## -*- texinfo -*-
+## @deftypefn  {} {} addRequired (@var{argname})
+## @deftypefnx {} {} addRequired (@var{argname}, @var{validator})
 ## Add new mandatory argument to the object @var{parser} of inputParser class.
 ##
 ## This method belongs to the inputParser class and implements an ordered
@@ -209,7 +224,7 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} addSwitch (@var{argname})
+## @deftypefn {} {} addSwitch (@var{argname})
 ## Add new switch type of argument to the object @var{parser} of inputParser
 ## class.
 ##
@@ -218,7 +233,7 @@
 ##
 ## @var{argname} must be a string with the name of the new argument.  Arguments
 ## of this type can be specified at the end, after @code{Required} and
-## @code{Optional}, and mixed between the @code{ParamValue}.  They default to
+## @code{Optional}, and mixed between the @code{Parameter}.  They default to
 ## false.  If one of the arguments supplied is a string like @var{argname},
 ## then after parsing the value of @var{parse}.Results.@var{argname} will be
 ## true.
@@ -228,7 +243,7 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} parse (@var{varargin})
+## @deftypefn {} {} parse (@var{varargin})
 ## Parses and validates list of arguments according to object @var{parser} of
 ## the class inputParser.
 ##
@@ -241,12 +256,12 @@
 
 classdef inputParser < handle
   properties
-    ## TODO set input checking for this properties
-    CaseSensitive     = false;
-    FunctionName      = "";
-    KeepUnmatched     = false;
-    # PartialMatching = true;   # TODO unimplemented
-    # StructExpand    = true;   # TODO unimplemented
+    ## FIXME: set input checking for these properties
+    CaseSensitive = false;
+    FunctionName  = "";
+    KeepUnmatched = false;
+    PartialMatching = false; # FIXME: unimplemented (and default should be true)
+    StructExpand    = true;
   endproperties
 
   properties (SetAccess = protected)
@@ -261,19 +276,19 @@ classdef inputParser < handle
     ## structs with the fields "name", "def" (default), and "val" (validator).
     Required   = cell ();
     Optional   = cell ();
-    ## ParamValue and Swicth are unordered so we have a struct whose fieldnames
+    ## Parameter and Switch are unordered so we have a struct whose fieldnames
     ## are the argname, and values are a struct with fields "def" and "val"
-    ParamValue = struct ();
+    Parameter  = struct ();
     Switch     = struct ();
 
-    ## List of ParamValues and Switch names to ease searches
-    ParamValueNames = cell ();
+    ## List of Parameter and Switch names to ease searches
+    ParameterNames = cell ();
     SwitchNames     = cell ();
 
     ## When checking for fieldnames in a Case Insensitive way, this variable
     ## holds the correct identifier for the last searched named using the
     ## is_argname method.
-    last_name  = "";
+    last_name = "";
   endproperties
 
   properties (Access = protected, Constant = true)
@@ -282,13 +297,19 @@ classdef inputParser < handle
   endproperties
 
   methods
+    function set.PartialMatching (this, val)
+      if (val)
+        error ("inputParser: PartialMatching is not yet implemented");
+      endif
+    endfunction
+
     function addRequired (this, name, val = inputParser.def_val)
       if (nargin < 2 || nargin > 3)
         print_usage ();
-      elseif (numel (this.Optional) || numel (fieldnames (this.ParamValue))
-              || numel (fieldnames (this.Switch)))
+      elseif (numel (this.Optional) || numfields (this.Parameter)
+              || numfields (this.Switch))
         error (["inputParser.addRequired: can't have a Required argument " ...
-                "after Optional, ParamValue, or Switch"]);
+                "after Optional, Parameter, or Switch"]);
       endif
       this.validate_name ("Required", name);
       this.Required{end+1} = struct ("name", name, "val", val);
@@ -297,13 +318,11 @@ classdef inputParser < handle
     function addOptional (this, name, def, val = inputParser.def_val)
       if (nargin < 3 || nargin > 4)
         print_usage ();
-      elseif (numel (fieldnames (this.ParamValue))
-              || numel (fieldnames (this.Switch)))
+      elseif (numfields (this.Parameter) || numfields (this.Switch))
         error (["inputParser.Optional: can't have Optional arguments " ...
-                "after ParamValue or Switch"]);
+                "after Parameter or Switch"]);
       endif
       this.validate_name ("Optional", name);
-      this.validate_default ("Optional", name, def, val);
       this.Optional{end+1} = struct ("name", name, "def", def, "val", val);
     endfunction
 
@@ -311,10 +330,37 @@ classdef inputParser < handle
       if (nargin < 3 || nargin > 4)
         print_usage ();
       endif
-      this.validate_name ("ParamValue", name);
-      this.validate_default ("ParamValue", name, def, val);
-      this.ParamValue.(name).def = def;
-      this.ParamValue.(name).val = val;
+      this.addParameter (name, def, val);
+    endfunction
+
+    function addParameter (this, name, def, varargin)
+      if (nargin < 3 || nargin > 6)
+        print_usage ();
+      endif
+
+      n_opt = numel (varargin);
+
+      if (n_opt == 0 || n_opt == 2)
+        val = inputParser.def_val;
+      else # n_opt is 1 or 3
+        val = varargin{1};
+      endif
+
+      if (n_opt == 0 || n_opt == 1)
+        match_priority = 1;
+      else # n_opt is 2 or 3
+        if (! strcmpi (varargin{end-1}, "PartialMatchPriority"))
+          error ("inputParser.addParameter: unrecognized option");
+        endif
+        match_priority = varargin{end};
+        validateattributes (match_priority, {"numeric"}, {"positive", "integer"},
+                            "inputParser.addParameter",
+                            "PartialMatchPriority");
+      endif
+
+      this.validate_name ("Parameter", name);
+      this.Parameter.(name).def = def;
+      this.Parameter.(name).val = val;
     endfunction
 
     function addSwitch (this, name)
@@ -326,16 +372,17 @@ classdef inputParser < handle
     endfunction
 
     function parse (this, varargin)
+      this.Results = struct ();
       if (numel (varargin) < numel (this.Required))
         if (this.FunctionName)
           print_usage (this.FunctionName);
         else
-          this.error ("not enough input arguments");
+          this.error ("inputParser.parse: not enough input arguments");
         endif
       endif
       pnargin = numel (varargin);
 
-      this.ParamValueNames = fieldnames (this.ParamValue);
+      this.ParameterNames  = fieldnames (this.Parameter);
       this.SwitchNames     = fieldnames (this.Switch);
 
       ## Evaluate the Required arguments first
@@ -353,14 +400,21 @@ classdef inputParser < handle
       while (vidx < pnargin && idx < nOpt)
         opt = this.Optional{++idx};
         in  = varargin{++vidx};
-        if (! opt.val (in))
+        try
+          valid_option = opt.val (in);
+        catch
+          valid_option = false;
+        end_try_catch
+        if (! valid_option)
           ## If it does not match there's two options:
           ##    1) input is actually wrong and we should error;
-          ##    2) it's a ParamValue or Switch name and we should use the
+          ##    2) it's a Parameter or Switch name and we should use the
           ##       the default for the rest.
-          if (ischar (in))
-            idx--;
-            vidx--;
+          ##    3) it's a struct with the Parameter pairs.
+          if (ischar (in) || (this.StructExpand && isstruct (in)
+                              && isscalar (in)))
+            idx -= 1;
+            vidx -= 1;
             break
           else
             this.error (sprintf ("failed validation of %s",
@@ -377,16 +431,26 @@ classdef inputParser < handle
         this.Results.(opt.name) = opt.def;
       endwhile
 
-      ## Search unordered Options (Switch and ParamValue)
+      ## Search unordered Options (Switch and Parameter)
       while (vidx++ < pnargin)
         name = varargin{vidx};
-        if (this.is_argname ("ParamValue", name))
+
+        if (this.StructExpand && isstruct (name) && isscalar (name))
+          expanded_options = [fieldnames(name) struct2cell(name)]'(:);
+          n_new_args = numel (expanded_options) -1;
+          pnargin += n_new_args;
+          varargin(vidx+n_new_args+1:pnargin) = varargin(vidx+1:end);
+          varargin(vidx:vidx+n_new_args) = expanded_options;
+          name = varargin{vidx};
+        endif
+
+        if (this.is_argname ("Parameter", name))
           if (vidx++ > pnargin)
             this.error (sprintf ("no matching value for option '%s'",
                                  toupper (name)));
           endif
           this.validate_arg (this.last_name,
-                             this.ParamValue.(this.last_name).val,
+                             this.Parameter.(this.last_name).val,
                              varargin{vidx});
         elseif (this.is_argname ("Switch", name))
           this.Results.(this.last_name) = true;
@@ -400,7 +464,7 @@ classdef inputParser < handle
         endif
       endwhile
       ## Add them to the UsingDeafults list
-      this.add_missing ("ParamValue");
+      this.add_missing ("Parameter");
       this.add_missing ("Switch");
 
     endfunction
@@ -433,13 +497,6 @@ classdef inputParser < handle
                type, name);
       endif
       this.Parameters{end+1} = name;
-    endfunction
-
-    function validate_default (this, type, name, def, val)
-      if (! feval (val, def))
-        error ("inputParser.add%s: failed validation for '%s' default value",
-               type, name);
-      endif
     endfunction
 
     function validate_arg (this, name, val, in)
@@ -490,7 +547,7 @@ endclassdef
 %!  p.addOptional ("op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  p.addOptional ("op2", 78, @(x) x > 50);
 %!  p.addSwitch ("verbose");
-%!  p.addParamValue ("line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%!  p.addParameter ("line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
 %!endfunction
 
 ## check normal use, only required are given
@@ -501,7 +558,7 @@ endclassdef
 %! assert (r.req1, "file");
 %! assert (sort (p.UsingDefaults), sort ({"op1", "op2", "verbose", "line"}));
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
-%!        {"file", "val", 78,    false,     "tree"});
+%!         {"file", "val", 78,    false,     "tree"});
 
 ## check normal use, but give values different than defaults
 %!test
@@ -511,7 +568,7 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
 
-## check optional is skipped and considered ParamValue if unvalidated string
+## check optional is skipped and considered Parameter if unvalidated string
 %!test
 %! p = create_p ();
 %! p.parse ("file", "line", "circle");
@@ -533,7 +590,7 @@ endclassdef
 %! p = create_p ();
 %! p.KeepUnmatched = true;
 %! p.parse ("file", "foo", 80, "line", "circle", "verbose", "extra", 50);
-%! assert (p.Unmatched.extra, 50)
+%! assert (p.Unmatched.extra, 50);
 
 ## check error when missing required
 %!error <not enough input arguments>
@@ -550,7 +607,7 @@ endclassdef
 %! p = create_p ();
 %! p.parse ("file", "no-val");
 
-## check error when given ParamValue does not validate
+## check error when given Parameter does not validate
 %!error <failed validation of >
 %! p = create_p ();
 %! p.parse ("file", "foo", 51, "line", "round");
@@ -562,7 +619,7 @@ endclassdef
 %!  addOptional (p2, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  addOptional (p2, "op2", 78, @(x) x > 50);
 %!  addSwitch (p2, "verbose");
-%!  addParamValue (p2, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%!  addParameter (p2, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
 %!endfunction
 
 ## check normal use, only required are given
@@ -582,10 +639,105 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
 
+## We must not perform validation of default values
+%!test <45837>
+%! p = inputParser;
+%! p.addParameter ("Dir", [], @ischar);
+%! p.parse ();
+%! assert (p.Results.Dir, []);
+
+%!test
+%! p = inputParser;
+%! p.addParameter ("positive", -1, @(x) x > 5);
+%! p.parse ();
+%! assert (p.Results.positive, -1);
+
+## Throw an error on validation of optional argument to check that it
+## is caught without preventing continuation into param/value pairs.
+%!test
+%! p = inputParser ();
+%! p.addOptional ("err", "foo", @error);
+%! p.addParameter ("not_err", "bar", @ischar);
+%! p.parse ("not_err", "qux");
+%! assert (p.Results.err, "foo")
+%! assert (p.Results.not_err, "qux")
+
+
+## With more Parameters to test StructExpand
+%!function p3 = create_p3 ();
+%!  p3 = inputParser;
+%!  addOptional (p3, "op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
+%!  addOptional (p3, "op2", 78, @(x) x > 50);
+%!  addSwitch (p3, "verbose");
+%!  addParameter (p3, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%!  addParameter (p3, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
+%!  addParameter (p3, "style", "tt", @(x) any (strcmp (x, {"tt", "f", "i"})));
+%!endfunction
+
+## Test StructExpand
+%!test
+%! p3 = create_p3 ();
+%! p3.parse (struct ("line", "circle", "color", "green"));
+%! assert (p3.Results, struct ("op1", "val", "op2", 78, "verbose", false,
+%!                             "line", "circle", "color", "green",
+%!                             "style", "tt"))
+
+%!test
+%! p3 = create_p3 ();
+%! p3.parse (struct ("line", "circle", "color", "green"), "line", "tree");
+%! assert (p3.Results.line, "tree")
+%! p3.parse ("line", "tree", struct ("line", "circle", "color", "green"));
+%! assert (p3.Results.line, "circle")
+
+%!test # unmatched parameters with StructExpand
+%! p3 = create_p3 ();
+%! p3.KeepUnmatched = true;
+%! p3.parse (struct ("line", "circle", "color", "green", "bar", "baz"));
+%! assert (p3.Unmatched.bar, "baz")
+
+## The validation for the second optional argument throws an error with
+## a struct so check that we can handle it.
+%!test
+%! p3 = create_p3 ();
+%! p3.parse ("foo", struct ("color", "green"), "line", "tree");
+%! assert (p3.Results.op1, "foo")
+%! assert (p3.Results.line, "tree")
+%! assert (p3.Results.color, "green")
+%! assert (p3.Results.verbose, false)
+
+
+## Some simple tests for addParamValue since all the other ones use add
+## addParameter but they use the same codepath.
+%!test
+%! p = inputParser;
+%! addParameter (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%! addParameter (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
+%! p.parse ("line", "circle");
+%! assert ({p.Results.line, p.Results.color}, {"circle", "red"})
+
+%!function r = foobar (varargin)
+%!  p = inputParser ();
+%!  p.addParameter ("foo", "bar", @ischar);
+%!  p.parse (varargin{2:end});
+%!  r = p.Results;
+%!endfunction
+
+%!xtest assert (foobar (), struct ("foo", "bar"))
+%!xtest assert (foobar ([], "foo", "qux"), struct ("foo", "qux"))
+
 ## FIXME: This somehow works in Matlab
-#%!test
-#%! p = inputParser;
-#%! p.addOptional ("op1", "val");
-#%! p.addParamValue ("line", "tree");
-#%! p.parse ("line", "circle");
-#%! assert (p.Results, struct ("op1", "val", "line", "circle"));
+%!xtest
+%! p = inputParser;
+%! p.addOptional ("op1", "val");
+%! p.addParameter ("line", "tree");
+%! p.parse ("line", "circle");
+%! assert (p.Results, struct ("op1", "val", "line", "circle"));
+
+%!test
+%! p = inputParser;
+%! p.addParameter ("a", []);
+%! p.addParameter ("b", []);
+%! p.parse ("a", 1);
+%! p.parse ("b", 1);
+%! assert (p.Results, struct ("a", [], "b", 1));
+

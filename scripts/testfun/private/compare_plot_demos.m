@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Ben Abbott  <bpabbott@mac.com>
+## Copyright (C) 2016 Ben Abbott  <bpabbott@mac.com>
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} compare_plot_demos ()
-## @deftypefnx {Function File} {} compare_plot_demos ("toolkits", @{@var{toolkit1}, @var{toolkit2}, @dots{}@})
+## @deftypefn  {} {} compare_plot_demos ()
+## @deftypefnx {} {} compare_plot_demos ("toolkits", @{@var{toolkit1}, @var{toolkit2}, @dots{}@})
 ##
 ## Uses @code{dump_demos} and @code{html_compare_plot_demos} to produce an
 ## html comparison of the plot demos for each of Octave's graphics toolkits.
@@ -46,7 +46,8 @@
 function compare_plot_demos (varargin)
 
   arg.toolkits = available_graphics_toolkits ();
-  arg.directories = {"plot/appearance", "plot/draw", "plot/util", "image"};
+  arg.directories = fullfile ("plot", {"appearance", "draw", "util"});
+  arg.directories(end + 1) = "image";
   arg.fmt = "png";
   arg.fcn_file = "dump_plot_demos.m";
   arg.replace_images = false;
@@ -108,6 +109,7 @@ function compare_plot_demos (varargin)
   unwind_protect_cleanup
     rmpath (cwd);
   end_unwind_protect
+
   if (! strcmp (arg.toolkits, "matlab"))
     ## Generate the html comparison of the images
     html_compare_plot_demos (arg.toolkits);
@@ -116,5 +118,6 @@ function compare_plot_demos (varargin)
     printf ('\nNow run %s in Matlab.\nAfter this run html_compare_plot_demos,\n', arg.fcn_file);
     printf ('for example html_compare_plot_demos ({"fltk", "gnuplot", "matlab"}), to create the html page.\n');
   endif
+
 endfunction
 

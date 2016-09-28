@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} mode (@var{x})
-## @deftypefnx {Function File} {} mode (@var{x}, @var{dim})
-## @deftypefnx {Function File} {[@var{m}, @var{f}, @var{c}] =} mode (@dots{})
+## @deftypefn  {} {} mode (@var{x})
+## @deftypefnx {} {} mode (@var{x}, @var{dim})
+## @deftypefnx {} {[@var{m}, @var{f}, @var{c}] =} mode (@dots{})
 ## Compute the most frequently occurring value in a dataset (mode).
 ##
 ## @code{mode} determines the frequency of values along the first non-singleton
@@ -52,10 +52,17 @@ function [m, f, c] = mode (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("mode: DIM must be an integer and a valid dimension");
     endif
+  endif
+
+  if (dim > nd)
+    ## Special case of mode over non-existent dimension.
+    m = x;
+    f = ones (size (x));
+    c = num2cell (x);
+    return;
   endif
 
   sz2 = sz;
@@ -96,6 +103,7 @@ function [m, f, c] = mode (x, dim)
     c{i} = xs(t2(:, i) == f(i), i);
     m(i) = c{i}(1);
   endfor
+
 endfunction
 
 
@@ -111,13 +119,14 @@ endfunction
 %! assert (c, {[1;2;3;4;5];[2];[2;3];[2];[1;2;3;4;5]});
 %!test
 %! a = sprandn (32, 32, 0.05);
+%! sp0 = sparse (0);
 %! [m, f, c] = mode (a);
 %! [m2, f2, c2] = mode (full (a));
 %! assert (m, sparse (m2));
 %! assert (f, sparse (f2));
-%! c_exp(1:length (a)) = { sparse (0) };
+%! c_exp(1:length (a)) = { sp0 };
 %! assert (c ,c_exp);
-%! assert (c2,c_exp );
+%! assert (c2,c_exp);
 
 %!assert (mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4])
 %!assert (mode ([2,3,1,2,3,4],2),2)
@@ -128,6 +137,13 @@ endfunction
 %!assert (mode ([2;3;1;2;3;4],1),2)
 %!assert (mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4])
 %!assert (mode ([2;3;1;2;3;4]),2)
+
+%!test
+%! x = magic (3);
+%! [m, f, c] = mode (x, 3);
+%! assert (m, x);
+%! assert (f, ones (3,3));
+%! assert (c, num2cell (x));
 
 %!shared x
 %! x(:,:,1) = toeplitz (1:3);
@@ -161,10 +177,8 @@ endfunction
 ## Test input validation
 %!error mode ()
 %!error mode (1, 2, 3)
-%!error mode ({1 2 3})
-%!error mode (['A'; 'B'])
-%!error mode (1, ones (2,2))
-%!error mode (1, 1.5)
-%!error mode (1, 0)
-%!error mode (1, 3)
+%!error <X must be a numeric> mode ({1 2 3})
+%!error <DIM must be an integer> mode (1, ones (2,2))
+%!error <DIM must be an integer> mode (1, 1.5)
+%!error <DIM must be .* a valid dimension> mode (1, 0)
 

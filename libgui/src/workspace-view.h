@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013-2015 John W. Eaton
-Copyright (C) 2011-2015 Jacob Dawid
+Copyright (C) 2013-2016 John W. Eaton
+Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_workspace_view_h)
+#if ! defined (octave_workspace_view_h)
 #define octave_workspace_view_h 1
 
 #include <QItemDelegate>
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QComboBox>
 #include <QSortFilterProxyModel>
 #include <QCheckBox>
+#include <QSignalMapper>
 
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
@@ -42,13 +43,15 @@ public:
 
   workspace_view (QWidget *parent = 0);
 
-  ~workspace_view (void);
+  ~workspace_view (void) { }
 
 public slots:
 
   void notice_settings (const QSettings *);
 
   void setModel (workspace_model *model);
+
+  void save_settings (void);
 
 signals:
 
@@ -70,6 +73,10 @@ protected slots:
   void handle_contextmenu_disp (void);
   void handle_contextmenu_plot (void);
   void handle_contextmenu_stem (void);
+  void handle_contextmenu_filter (void);
+
+  void header_contextmenu_requested (const QPoint& mpos);
+  void toggle_header (int column);
 
   void handle_model_changed (void);
 
@@ -92,7 +99,15 @@ private:
   QSortFilterProxyModel _filter_model;
   QCheckBox *_filter_checkbox;
   QComboBox *_filter;
+  QWidget *_filter_widget;
+  bool _filter_shown;
+
   enum { MaxFilterHistory = 10 };
+
+  QStringList _columns_shown;
+  QStringList _columns_shown_keys;
+  QSignalMapper *_sig_mapper;
 };
 
 #endif
+

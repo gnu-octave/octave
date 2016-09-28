@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Rik Wehbring
+## Copyright (C) 2014-2016 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nfields (@var{s})
+## @deftypefn {} {} nfields (@var{s})
 ## Return the number of fields of the structure @var{s}.
 ##
 ## @strong{Warning:} @code{nfields} is scheduled for removal in version 4.4.

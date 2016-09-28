@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Massimiliano Fasi
+## Copyright (C) 2014-2016 Massimiliano Fasi
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hgsave (@var{filename})
-## @deftypefnx {Function File} {} hgsave (@var{h}, @var{filename})
-## @deftypefnx {Function File} {} hgsave (@var{h}, @var{filename}, @var{fmt})
+## @deftypefn  {} {} hgsave (@var{filename})
+## @deftypefnx {} {} hgsave (@var{h}, @var{filename})
+## @deftypefnx {} {} hgsave (@var{h}, @var{filename}, @var{fmt})
 ## Save the graphics handle @var{h} to the file @var{filename} in the format
 ## @var{fmt}.
 ##

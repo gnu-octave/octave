@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 E. Jason Riedy
+## Copyright (C) 2009-2016 E. Jason Riedy
 ##
 ## This file is part of Octave.
 ##
@@ -181,15 +181,15 @@
 %! assert (typeinfo (Dslice), "diagonal matrix");
 
 ## preserve dense matrix structure when scaling
-%!assert (typeinfo (rand (8) * (3 * eye (8))), "matrix");
-%!assert (typeinfo ((3 * eye (8)) * rand (8)), "matrix");
+%!assert (typeinfo (rand (8) * (3 * eye (8))), "matrix")
+%!assert (typeinfo ((3 * eye (8)) * rand (8)), "matrix")
 
 ## preserve sparse matrix structure when scaling
-%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))), "sparse matrix");
-%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))'), "sparse matrix");
-%!assert (typeinfo (((3 + 2 * I ()) * eye (8)) * sprand (8, 8, .5)), "sparse complex matrix");
-%!assert (typeinfo (((3 + 2 * I ()) * eye (8))' * sprand (8, 8, .5)), "sparse complex matrix");
-%!assert (typeinfo (sprand (8, 8, .5) * ((3 + 2 * I ()) * eye (8)).'), "sparse complex matrix");
+%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))), "sparse matrix")
+%!assert (typeinfo (sprand (8, 8, .5) * (3 * eye (8))'), "sparse matrix")
+%!assert (typeinfo (((3 + 2 * I ()) * eye (8)) * sprand (8, 8, .5)), "sparse complex matrix")
+%!assert (typeinfo (((3 + 2 * I ()) * eye (8))' * sprand (8, 8, .5)), "sparse complex matrix")
+%!assert (typeinfo (sprand (8, 8, .5) * ((3 + 2 * I ()) * eye (8)).'), "sparse complex matrix")
 
 ## scaling a matrix with exceptional values does not introduce new ones.
 %!test
@@ -263,3 +263,27 @@
 %! A = A * I () + A;
 %! A(6, 4) = nan ();
 %! assert (full (D - A), D - full (A));
+
+## inverse preserves diagonal structure even for singular matrices (bug #46103)
+%!test
+%! x = diag (1:3);
+%! assert (inv (x), diag ([1 1/2 1/3]));
+%! x = diag (0:2);
+%! assert (inv (x), diag ([Inf 1 1/2]));
+
+## assignment to diagonal elements preserves diagonal structure (bug #36932)
+%!test
+%! x = diag (1:3);
+%! x(1,1) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+%! x(3,3) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+
+%!test
+%! x = diag (1:3);
+%! x(1) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+%! x(9) = -1;
+%! assert (typeinfo (x), "diagonal matrix");
+
+

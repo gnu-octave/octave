@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2015 Sébastien Villemot <sebastien@debian.org>
+Copyright (C) 2016 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 
@@ -20,150 +20,96 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dtrsen, DTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             double*, double*, octave_idx_type&, double&, double&, double*,
-                             const octave_idx_type&, octave_idx_type*,
-                             const octave_idx_type&, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (ztrsen, ZTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             Complex*, octave_idx_type&, double&, double&, Complex*,
-                             const octave_idx_type&, octave_idx_type &);
-
-  F77_RET_T
-  F77_FUNC (strsen, STRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             float*, const octave_idx_type&, float*, const octave_idx_type&,
-                             float*, float*, octave_idx_type&, float&, float&, float*,
-                             const octave_idx_type&, octave_idx_type*,
-                             const octave_idx_type&, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (ctrsen, CTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type*, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&, FloatComplex*, const octave_idx_type&,
-                             FloatComplex*, octave_idx_type&, float&, float&, FloatComplex*,
-                             const octave_idx_type&, octave_idx_type &);
-}
+#include "lo-lapack-proto.h"
+#include "ovl.h"
 
 DEFUN (ordschur, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})\n\
-Reorders the real Schur factorization (@var{U},@var{S}) obtained with the\n\
-@code{schur} function, so that selected eigenvalues appear in the upper left\n\
-diagonal blocks of the quasi triangular Schur matrix.\n\
-\n\
-The logical vector @var{select} specifies the selected eigenvalues as they\n\
-appear along @var{S}'s diagonal.\n\
-\n\
-For example, given the matrix @code{@var{A} = [1, 2; 3, 4]}, and its Schur\n\
-decomposition\n\
-\n\
-@example\n\
-[@var{U}, @var{S}] = schur (@var{A})\n\
-@end example\n\
-\n\
-@noindent\n\
-which returns\n\
-\n\
-@example\n\
-@group\n\
-@var{U} =\n\
-\n\
-  -0.82456  -0.56577\n\
-   0.56577  -0.82456\n\
-\n\
-@var{S} =\n\
-\n\
-  -0.37228  -1.00000\n\
-   0.00000   5.37228\n\
-\n\
-@end group\n\
-@end example\n\
-\n\
-It is possible to reorder the decomposition so that the positive eigenvalue\n\
-is in the upper left corner, by doing:\n\
-\n\
-@example\n\
-[@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])\n\
-@end example\n\
-\n\
-@seealso{schur}\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {[@var{UR}, @var{SR}] =} ordschur (@var{U}, @var{S}, @var{select})
+Reorders the real Schur factorization (@var{U},@var{S}) obtained with the
+@code{schur} function, so that selected eigenvalues appear in the upper left
+diagonal blocks of the quasi triangular Schur matrix.
+
+The logical vector @var{select} specifies the selected eigenvalues as they
+appear along @var{S}'s diagonal.
+
+For example, given the matrix @code{@var{A} = [1, 2; 3, 4]}, and its Schur
+decomposition
+
+@example
+[@var{U}, @var{S}] = schur (@var{A})
+@end example
+
+@noindent
+which returns
+
+@example
+@group
+@var{U} =
+
+  -0.82456  -0.56577
+   0.56577  -0.82456
+
+@var{S} =
+
+  -0.37228  -1.00000
+   0.00000   5.37228
+
+@end group
+@end example
+
+It is possible to reorder the decomposition so that the positive eigenvalue
+is in the upper left corner, by doing:
+
+@example
+[@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])
+@end example
+
+@seealso{schur}
+@end deftypefn */)
 {
-  const octave_idx_type nargin = args.length ();
-  octave_value_list retval;
+  if (args.length () != 3)
+    print_usage ();
 
-  if (nargin != 3)
-    {
-      print_usage ();
-      return retval;
-    }
+  const Array<octave_idx_type> sel = args(2).octave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
 
-  const Array<octave_idx_type> sel = args(2).octave_idx_type_vector_value ();
-  if (error_state)
-    {
-      error ("ordschur: SELECT must be an array of integers");
-      return retval;
-    }
   const octave_idx_type n = sel.numel ();
 
   const dim_vector dimU = args(0).dims ();
   const dim_vector dimS = args(1).dims ();
+
   if (n != dimU(0))
-    {
-      error ("ordschur: SELECT must have same length as the sides of U and S");
-      return retval;
-    }
+    error ("ordschur: SELECT must have same length as the sides of U and S");
   else if (n != dimU(0) || n != dimS(0) || n != dimU(1) || n != dimS(1))
-    {
-      error ("ordschur: U and S must be square and of equal sizes");
-      return retval;
-    }
+    error ("ordschur: U and S must be square and of equal sizes");
+
+  octave_value_list retval;
 
   const bool double_type  = args(0).is_double_type ()
                             || args(1).is_double_type ();
   const bool complex_type = args(0).is_complex_type ()
                             || args(1).is_complex_type ();
 
-#define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND) \
-          TYPE ## Matrix U = args(0).TYPE_M ## _value (); \
-          TYPE ## Matrix S = args(1).TYPE_M ## _value (); \
-          if (error_state) \
-            { \
-              error ("ordschur: U and S must be real or complex floating point matrices"); \
-              return retval; \
-            } \
-          TYPE ## Matrix w (dim_vector (n, 1)); \
-          TYPE ## Matrix work (dim_vector (n, 1)); \
-          octave_idx_type m; \
-          octave_idx_type info; \
-          TYPE_COND cond1, cond2;
+#define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND)                           \
+  TYPE ## Matrix U = args(0).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
+  TYPE ## Matrix S = args(1).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
+  TYPE ## Matrix w (dim_vector (n, 1));                                 \
+  TYPE ## Matrix work (dim_vector (n, 1));                              \
+  octave_idx_type m;                                                    \
+  octave_idx_type info;                                                 \
+  TYPE_COND cond1, cond2;
 
-#define PREPARE_OUTPUT()\
-          if (info != 0) \
-            { \
-              error ("ordschur: trsen failed"); \
-              return retval; \
-            } \
-          retval(0) = U; \
-          retval(1) = S;
+#define PREPARE_OUTPUT()                        \
+  if (info != 0)                                \
+    error ("ordschur: trsen failed");           \
+                                                \
+  retval = ovl (U, S);
 
   if (double_type)
     {
@@ -173,9 +119,12 @@ is in the upper left corner, by doing:\n\
 
           F77_XFCN (ztrsen, ztrsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
-                     sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
-                     w.fortran_vec (), m, cond1, cond2, work.fortran_vec (), n,
+                     sel.data (), n, F77_DBLE_CMPLX_ARG (S.fortran_vec ()), n,
+                     F77_DBLE_CMPLX_ARG (U.fortran_vec ()), n,
+                     F77_DBLE_CMPLX_ARG (w.fortran_vec ()), m, cond1, cond2,
+                     F77_DBLE_CMPLX_ARG (work.fortran_vec ()), n,
                      info));
+
           PREPARE_OUTPUT()
         }
       else
@@ -189,6 +138,7 @@ is in the upper left corner, by doing:\n\
                      sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
                      w.fortran_vec (), wi.fortran_vec (), m, cond1, cond2,
                      work.fortran_vec (), n, iwork.fortran_vec (), n, info));
+
           PREPARE_OUTPUT ()
         }
     }
@@ -200,9 +150,12 @@ is in the upper left corner, by doing:\n\
 
           F77_XFCN (ctrsen, ctrsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
-                     sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
-                     w.fortran_vec (), m, cond1, cond2, work.fortran_vec (), n,
+                     sel.data (), n, F77_CMPLX_ARG (S.fortran_vec ()), n,
+                     F77_CMPLX_ARG (U.fortran_vec ()), n,
+                     F77_CMPLX_ARG (w.fortran_vec ()), m, cond1, cond2,
+                     F77_CMPLX_ARG (work.fortran_vec ()), n,
                      info));
+
           PREPARE_OUTPUT ()
         }
       else
@@ -216,6 +169,7 @@ is in the upper left corner, by doing:\n\
                      sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
                      w.fortran_vec (), wi.fortran_vec (), m, cond1, cond2,
                      work.fortran_vec (), n, iwork.fortran_vec (), n, info));
+
           PREPARE_OUTPUT ()
         }
     }
@@ -232,28 +186,29 @@ is in the upper left corner, by doing:\n\
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4 ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (U, T, [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps))
+%! assert (US*TS*US', A, sqrt (eps));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps));
 
 %!test
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4 ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (single (U), single (T), [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps ("single")))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")))
+%! assert (US*TS*US', A, sqrt (eps ("single")));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 %!test
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4+3i ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (U, T, [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps))
+%! assert (US*TS*US', A, sqrt (eps));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps));
 
 %!test
 %! A = [1, 2, 3, -2; 4, 5, 6, -5 ; 7, 8, 9, -5; 10, 11, 12, 4+3i ];
 %! [U, T] = schur (A);
 %! [US, TS] = ordschur (single (U), single (T), [ 0, 0, 1, 1 ]);
-%! assert (US*TS*US', A, sqrt (eps ("single")))
-%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")))
+%! assert (US*TS*US', A, sqrt (eps ("single")));
+%! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 */
+

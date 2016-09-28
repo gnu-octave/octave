@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Mapping Function} {} lcm (@var{x}, @var{y})
-## @deftypefnx {Mapping Function} {} lcm (@var{x}, @var{y}, @dots{})
+## @deftypefn  {} {} lcm (@var{x}, @var{y})
+## @deftypefnx {} {} lcm (@var{x}, @var{y}, @dots{})
 ## Compute the least common multiple of @var{x} and @var{y}, or of the list of
 ## all arguments.
 ##

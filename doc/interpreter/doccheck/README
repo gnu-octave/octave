@@ -8,7 +8,7 @@ consistent documentation formats and avoiding misspellings.
 
 The scripts provide 3 services:
 
-1) A spellchecker, built atop GNU Aspell with a private dictionary of keywords
+1) A spellchecker, built atop GNU aspell with a private dictionary of keywords
    specific to Octave.
 
 2) A grammarchecker designed from scratch in Perl to ensure a common format
@@ -37,15 +37,18 @@ mk_undocumented_list : Perl script to make undocumented function list
 
 SPELLING:
 
-From the doc/interpreter/ directory, type 'doccheck/spellcheck FILENAME.texi'.
-This will produce a list of misspelled words on stdout.
+From the top-level <OCTAVE_DIR>, type 'make spellcheck'.
+If there are any misspellings in <filename>.texi they will be listed in the
+file doc/interpreter/<filename>.scheck
+
+To spellcheck a single file, type 'make doc/interpreter/<filename>.scheck'
+where the file to check is <filename>.texi (for example, "tips.texi").
 
 +Sample Flow
 
-cd doc/interpreter
-doccheck/spellcheck arith.texi > misspellings
-vi arith.texi
-vi misspellings
+make doc/interpreter/arith.scheck
+vi doc/interpreter/arith.scheck
+vi doc/interpreter/arith.texi
 ....
   Review misspellings and identify where to correct the source (.m, .cc, .txi)
   The original source file is marked with a comment:
@@ -53,9 +56,8 @@ vi misspellings
   @c FUNCTION_NAME SRC_DIR/SRC_FILE
 
   When there is no source file comment, the source file is the .txi source.
-  Make corrections to source files, *not* arith.texi which is derived.
+  Make corrections to the source files, *not* arith.texi which is derived.
 ....
-cd ../../  # top-level of Octave development tree
 make       # propagate changes to arith.texi
   repeat spellcheck until the words that remain are not misspellings.
 
@@ -67,7 +69,7 @@ Octave-specific spellings and should be added to the Octave private dictionary.
 doccheck/add_to_aspell_dict misspellings
 
 Words which are misspellings, but which can't be changed in the original
-source, should be marked with the @nospell{WORD} macro.  This will cause Aspell
+source, should be marked with the @nospell{WORD} macro.  This will cause aspell
 to ignore this particular instance of the word.
 
 For example, in linalg.texi there is a citation of a paper from the
@@ -76,7 +78,7 @@ in the en_US locale is Center.  This word is not an Octave-specific exception
 which can be added to the private dictionary.  Instead the source is marked up:
 Manchester @nospell{Centre} for Computational Mathematics.
 
-Now Aspell no longer reports any misspellings for linalg.texi.
+aspell will no longer reports any misspellings for linalg.texi.
 
 GRAMMAR:
 
@@ -84,8 +86,8 @@ To be added
 
 UNDOCUMENTED FUNCTIONS:
 
-From the doc/interpreter/ directory, type 'make undocumented_list'.
-This will produce the undocumented_list file with the undocumented functions.
+From the top-level <OCTAVE_DIR>, type 'make doc/interpreter/undocumented_list'.
+This will produce an "undocumented_list" file with any undocumented functions.
 
 Functions which don't require an @DOCSTRING reference can be added to the list
 of exceptions at the bottom of the mk_undocumented_list script.  This is often

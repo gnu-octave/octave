@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,16 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "quit.h"
 
 #include "defun.h"
 #include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 
 // Find at most N_TO_FIND nonzero elements in NDA.  Search forward if
 // DIRECTION is 1, backward if it is -1.  NARGOUT is the number of
@@ -61,7 +61,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     case 2:
       {
         Array<octave_idx_type> jdx (idx.dims ());
-        octave_idx_type n = idx.length ();
+        octave_idx_type n = idx.numel ();
         octave_idx_type nr = nda.rows ();
         for (octave_idx_type i = 0; i < n; i++)
           {
@@ -318,93 +318,86 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 }
 
 DEFUN (find, args, nargout,
-       "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{idx} =} find (@var{x})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} find (@var{x}, @var{n})\n\
-@deftypefnx {Built-in Function} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
-@deftypefnx {Built-in Function} {[i, j] =} find (@dots{})\n\
-@deftypefnx {Built-in Function} {[i, j, v] =} find (@dots{})\n\
-Return a vector of indices of nonzero elements of a matrix, as a row if\n\
-@var{x} is a row vector or as a column otherwise.\n\
-\n\
-To obtain a single index for each matrix element, Octave pretends that the\n\
-columns of a matrix form one long vector (like Fortran arrays are stored).\n\
-For example:\n\
-\n\
-@example\n\
-@group\n\
-find (eye (2))\n\
-  @result{} [ 1; 4 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If two inputs are given, @var{n} indicates the maximum number of elements to\n\
-find from the beginning of the matrix or vector.\n\
-\n\
-If three inputs are given, @var{direction} should be one of\n\
-@qcode{\"first\"} or @qcode{\"last\"}, requesting only the first or last\n\
-@var{n} indices, respectively.  However, the indices are always returned in\n\
-ascending order.\n\
-\n\
-If two outputs are requested, @code{find} returns the row and column\n\
-indices of nonzero elements of a matrix.  For example:\n\
-\n\
-@example\n\
-@group\n\
-[i, j] = find (2 * eye (2))\n\
-    @result{} i = [ 1; 2 ]\n\
-    @result{} j = [ 1; 2 ]\n\
-@end group\n\
-@end example\n\
-\n\
-If three outputs are requested, @code{find} also returns a vector\n\
-containing the nonzero values.  For example:\n\
-\n\
-@example\n\
-@group\n\
-[i, j, v] = find (3 * eye (2))\n\
-       @result{} i = [ 1; 2 ]\n\
-       @result{} j = [ 1; 2 ]\n\
-       @result{} v = [ 3; 3 ]\n\
-@end group\n\
-@end example\n\
-\n\
-Note that this function is particularly useful for sparse matrices, as\n\
-it extracts the nonzero elements as vectors, which can then be used to\n\
-create the original matrix.  For example:\n\
-\n\
-@example\n\
-@group\n\
-sz = size (a);\n\
-[i, j, v] = find (a);\n\
-b = sparse (i, j, v, sz(1), sz(2));\n\
-@end group\n\
-@end example\n\
-@seealso{nonzeros}\n\
-@end deftypefn")
-{
-  octave_value_list retval;
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{idx} =} find (@var{x})
+@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n})
+@deftypefnx {} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})
+@deftypefnx {} {[i, j] =} find (@dots{})
+@deftypefnx {} {[i, j, v] =} find (@dots{})
+Return a vector of indices of nonzero elements of a matrix, as a row if
+@var{x} is a row vector or as a column otherwise.
 
+To obtain a single index for each matrix element, Octave pretends that the
+columns of a matrix form one long vector (like Fortran arrays are stored).
+For example:
+
+@example
+@group
+find (eye (2))
+  @result{} [ 1; 4 ]
+@end group
+@end example
+
+If two inputs are given, @var{n} indicates the maximum number of elements to
+find from the beginning of the matrix or vector.
+
+If three inputs are given, @var{direction} should be one of
+@qcode{"first"} or @qcode{"last"}, requesting only the first or last
+@var{n} indices, respectively.  However, the indices are always returned in
+ascending order.
+
+If two outputs are requested, @code{find} returns the row and column
+indices of nonzero elements of a matrix.  For example:
+
+@example
+@group
+[i, j] = find (2 * eye (2))
+    @result{} i = [ 1; 2 ]
+    @result{} j = [ 1; 2 ]
+@end group
+@end example
+
+If three outputs are requested, @code{find} also returns a vector
+containing the nonzero values.  For example:
+
+@example
+@group
+[i, j, v] = find (3 * eye (2))
+       @result{} i = [ 1; 2 ]
+       @result{} j = [ 1; 2 ]
+       @result{} v = [ 3; 3 ]
+@end group
+@end example
+
+Note that this function is particularly useful for sparse matrices, as
+it extracts the nonzero elements as vectors, which can then be used to
+create the original matrix.  For example:
+
+@example
+@group
+sz = size (a);
+[i, j, v] = find (a);
+b = sparse (i, j, v, sz(1), sz(2));
+@end group
+@end example
+@seealso{nonzeros}
+@end deftypefn */)
+{
   int nargin = args.length ();
 
-  if (nargin > 3 || nargin < 1)
-    {
-      print_usage ();
-      return retval;
-    }
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
 
   // Setup the default options.
   octave_idx_type n_to_find = -1;
   if (nargin > 1)
     {
-      double val = args(1).scalar_value ();
+      double val = args(1).xscalar_value ("find: N must be an integer");
 
-      if (error_state || (val < 0 || (! xisinf (val) && val != xround (val))))
-        {
-          error ("find: N must be a non-negative integer");
-          return retval;
-        }
-      else if (! xisinf (val))
+      if (val < 0 || (! octave::math::isinf (val)
+                      && val != octave::math::round (val)))
+        error ("find: N must be a non-negative integer");
+      else if (! octave::math::isinf (val))
         n_to_find = val;
     }
 
@@ -416,20 +409,15 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 
       std::string s_arg = args(2).string_value ();
 
-      if (! error_state)
-        {
-          if (s_arg == "first")
-            direction = 1;
-          else if (s_arg == "last")
-            direction = -1;
-        }
-
-      if (direction == 0)
-        {
-          error ("find: DIRECTION must be \"first\" or \"last\"");
-          return retval;
-        }
+      if (s_arg == "first")
+        direction = 1;
+      else if (s_arg == "last")
+        direction = -1;
+      else
+        error ("find: DIRECTION must be \"first\" or \"last\"");
     }
+
+  octave_value_list retval;
 
   octave_value arg = args(0);
 
@@ -439,35 +427,32 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           SparseBoolMatrix v = arg.sparse_bool_matrix_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else if (nargout <= 1 && n_to_find == -1 && direction == 1)
         {
           // This case is equivalent to extracting indices from a logical
-          // matrix. Try to reuse the possibly cached index vector.
+          // matrix.  Try to reuse the possibly cached index vector.
+
+          // No need to catch index_exception, since arg is bool.
+          // Out-of-range errors have already set pos, and will be caught later.
           retval(0) = arg.index_vector ().unmask ();
         }
       else
         {
           boolNDArray v = arg.bool_array_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
     }
   else if (arg.is_integer_type ())
     {
-#define DO_INT_BRANCH(INTT) \
-      else if (arg.is_ ## INTT ## _type ()) \
-        { \
-          INTT ## NDArray v = arg.INTT ## _array_value (); \
-          \
-          if (! error_state) \
-            retval = find_nonzero_elem_idx (v, nargout, \
-                                            n_to_find, direction);\
+#define DO_INT_BRANCH(INTT)                                             \
+      else if (arg.is_ ## INTT ## _type ())                             \
+        {                                                               \
+          INTT ## NDArray v = arg.INTT ## _array_value ();              \
+                                                                        \
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction); \
         }
 
       if (false)
@@ -489,34 +474,28 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           SparseMatrix v = arg.sparse_matrix_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else if (arg.is_complex_type ())
         {
           SparseComplexMatrix v = arg.sparse_complex_matrix_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout,
-                                            n_to_find, direction);
+          retval = find_nonzero_elem_idx (v, nargout, n_to_find, direction);
         }
       else
-        gripe_wrong_type_arg ("find", arg);
+        err_wrong_type_arg ("find", arg);
     }
   else if (arg.is_perm_matrix ())
     {
       PermMatrix P = arg.perm_matrix_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
     }
   else if (arg.is_string ())
     {
       charNDArray chnda = arg.char_array_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (chnda, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (chnda, nargout, n_to_find, direction);
     }
   else if (arg.is_single_type ())
     {
@@ -524,35 +503,29 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
         {
           FloatNDArray nda = arg.float_array_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (nda, nargout, n_to_find,
-                                            direction);
+          retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
         }
       else if (arg.is_complex_type ())
         {
           FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-          if (! error_state)
-            retval = find_nonzero_elem_idx (cnda, nargout, n_to_find,
-                                            direction);
+          retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
         }
     }
   else if (arg.is_real_type ())
     {
       NDArray nda = arg.array_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
     }
   else if (arg.is_complex_type ())
     {
       ComplexNDArray cnda = arg.complex_array_value ();
 
-      if (! error_state)
-        retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
+      retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
     }
   else
-    gripe_wrong_type_arg ("find", arg);
+    err_wrong_type_arg ("find", arg);
 
   return retval;
 }
@@ -607,3 +580,4 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 
 %!error find ()
 */
+

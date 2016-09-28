@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2015 John W. Eaton
+## Copyright (C) 1993-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} num2str (@var{x})
-## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
-## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
+## @deftypefn  {} {} num2str (@var{x})
+## @deftypefnx {} {} num2str (@var{x}, @var{precision})
+## @deftypefnx {} {} num2str (@var{x}, @var{format})
 ## Convert a number (or array) to a string (or a character array).
 ##
 ## The optional second argument may either give the number of significant
@@ -52,17 +52,23 @@
 ## @end group
 ## @end example
 ##
-## Notes:
+## The @code{num2str} function is not very flexible.  For better control
+## over the results, use @code{sprintf} (@pxref{Formatted Output}).
+##
+## Programming Notes:
 ##
 ## For @sc{matlab} compatibility, leading spaces are stripped before returning
 ## the string.
 ##
-## The @code{num2str} function is not very flexible.  For better control
-## over the results, use @code{sprintf} (@pxref{Formatted Output}).
+## Integers larger than @code{flintmax} may not be displayed correctly.
 ##
 ## For complex @var{x}, the format string may only contain one output
 ## conversion specification and nothing else.  Otherwise, results will be
 ## unpredictable.
+##
+## Any optional @var{format} specified by the programmer is used without
+## modification.  This is in contrast to @sc{matlab} which tampers with the
+## @var{format} based on internal heuristics.
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
@@ -91,70 +97,79 @@ function retval = num2str (x, arg)
       endif
     else
       if (isnumeric (x))
-        ## Setup a suitable format string, ignoring inf entries
-        dgt = floor (log10 (max (abs (x(! isinf (x(:)))))));
-        if (isempty (dgt))
-          ## If the whole input array is inf...
-          dgt = 1;
+        ## Set up a suitable format string while ignoring Inf/NaN entries
+        valid = isfinite (x(:));
+        ndgt = floor (log10 (max (abs (x(valid)))));
+        if (isempty (ndgt) || ndgt == -Inf)
+          ndgt = 0;  # All Inf or all zero array
         endif
 
-        if (any (x(:) != fix (x(:))))
+        if (any (x(valid) != fix (x(valid))))
           ## Floating point input
-          dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
-          dgt = min (dgt, 16);      # Cap significant digits at 16
-          fmt = sprintf ("%%%d.%dg", dgt+7+any (x(:) < 0), dgt);
+          ndgt = max (ndgt + 5, 5);   # Keep at least 5 significant digits
+          ndgt = min (ndgt, 16);      # Cap significant digits at 16
+          fmt = sprintf ("%%%d.%dg", ndgt+7, ndgt);
         else
           ## Integer input
-          dgt = max (dgt + 1, 1);
-          ## FIXME: Integers should be masked to show only 16 significant digits
-          ##        See %!xtest below
-          fmt = sprintf ("%%%d.%dg", dgt+2+any (x(:) < 0), dgt);
+          ndgt += 3;
+          if (any (! valid))
+            ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
+          endif
+          ## FIXME: Integers must be masked to show only 16 significant digits
+          ##        See test case for bug #36133 below
+          fmt = sprintf ("%%%d.0f", ndgt);
         endif
       else
         ## Logical input
         fmt = "%3d";
       endif
     endif
-    fmt = [deblank(repmat(fmt, 1, columns(x))), "\n"];
+    fmt = do_string_escapes (fmt);  # required now that '\n' is interpreted.
     nd = ndims (x);
-    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
-    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
+    nc = columns (x) * (nd - 1);    # ND-arrays are expanded in columns
+    x  = permute (x, [2, 3:nd, 1]);
+    if (! (sum (fmt == "%") > 1 || any (strcmp (fmt, {"%s", "%c"}))))
+      fmt = [deblank(repmat (fmt, 1, nc)), "\n"];
+    endif
+    strtmp = sprintf (fmt, x);
+    retval = strtrim (char (ostrsplit (strtmp, "\n", true)));
   else   # Complex matrix input
     if (nargin == 2)
       if (ischar (arg))
-        fmt = [arg "%-+" arg(2:end) "i"];
+        fmt = [deblank(arg) "%-+" arg(2:end) "i"];
       elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
         fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");
       endif
     else
-      ## Setup a suitable format string
-      dgt = floor (log10 (max (max (abs (real (x(! isinf (real (x(:))))))),
-                               max (abs (imag (x(! isinf (imag (x(:))))))))));
-      if (isempty (dgt))
-        ## If the whole input array is inf...
-        dgt = 1;
+      ## Set up a suitable format string while ignoring Inf/NaN entries
+      valid_real = isfinite (real (x(:)));
+      valid_imag = isfinite (imag (x(:)));
+      ndgt = floor (log10 (max (max (abs (real (x(valid_real)))),
+                                max (abs (imag (x(valid_imag)))))));
+      if (isempty (ndgt) || ndgt == -Inf)
+        ndgt = 0;  # All Inf or all zero array
       endif
 
-      if (any (x(:) != fix (x(:))))
+      if (any (x(valid_real & valid_imag) != fix (x(valid_real & valid_imag))))
         ## Floating point input
-          dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
-          dgt = min (dgt, 16);      # Cap significant digits at 16
-          fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", dgt+7, dgt, dgt+7, dgt);
+        ndgt = max (ndgt + 5, 5);   # Keep at least 5 significant digits
+        ndgt = min (ndgt, 16);      # Cap significant digits at 16
+        fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", ndgt+7, ndgt, ndgt+7, ndgt);
       else
         ## Integer input
-        dgt = max (1 + dgt, 1);
-        ## FIXME: Integers should be masked to show only 16 significant digits
-        ##        See %!xtest below
-        fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", dgt+2, dgt, dgt+2, dgt);
+        ndgt += 3;
+        ## FIXME: Integers must be masked to show only 16 significant digits
+        ##        See test case for bug #36133 below
+        fmt = sprintf ("%%%d.0f%%-+%d.0fi", ndgt, ndgt);
       endif
     endif
 
     ## Manipulate the complex value to have real values in the odd
     ## columns and imaginary values in the even columns.
-    nc = columns (x);
     nd = ndims (x);
+    nc = columns (x);
     idx = repmat ({':'}, nd, 1);
     perm(1:2:2*nc) = 1:nc;
     perm(2:2:2*nc) = nc + (1:nc);
@@ -162,8 +177,8 @@ function retval = num2str (x, arg)
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
 
-    fmt = [deblank(repmat(fmt, 1, nc)), "\n"];
-    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
+    fmt = [deblank(repmat(fmt, 1, nc * (nd - 1))), "\n"];
+    tmp = sprintf (fmt, permute (x, [2, 3:nd, 1]));
 
     ## Put the "i"'s where they are supposed to be.
     tmp = regexprep (tmp, " +i\n", "i\n");
@@ -178,17 +193,19 @@ endfunction
 %!assert (num2str (123), "123")
 %!assert (num2str (1.23), "1.23")
 %!assert (num2str (123.456, 4), "123.5")
-%!assert (num2str ([1, 1.34; 3, 3.56], "%5.1f"),  ["1.0  1.3"; "3.0  3.6"])
+%!assert (num2str ([1, 1.34; 3, 3.56], "%5.1f"), ["1.0  1.3"; "3.0  3.6"])
 %!assert (num2str (1.234 + 27.3i), "1.234+27.3i")
-%!assert (num2str ([true false true]), "1  0  1");
+%!assert (num2str ([true false true]), "1  0  1")
 
 %!assert (num2str (19440606), "19440606")
 %!assert (num2str (2^33), "8589934592")
 %!assert (num2str (-2^33), "-8589934592")
 %!assert (num2str (2^33+1i), "8589934592+1i")
 %!assert (num2str (-2^33+1i), "-8589934592+1i")
+%!assert (num2str ([0 0 0]), "0  0  0")
 %!assert (num2str (inf), "Inf")
 %!assert (num2str ([inf -inf]), "Inf -Inf")
+%!assert (num2str ([inf NaN -inf]), "Inf  NaN -Inf")
 %!assert (num2str ([complex(Inf,0), complex(0,-Inf)]), "Inf+0i   0-Infi")
 %!assert (num2str (complex(Inf,1)), "Inf+1i")
 %!assert (num2str (complex(1,Inf)), "1+Infi")
@@ -199,18 +216,50 @@ endfunction
 %!assert (num2str (complex (NA, 1)), "NA+1i")
 %!assert (num2str (complex (1, NA)), "1+NAi")
 
-## FIXME: Integers greater than bitmax() should be masked to show just
+## ND-arrays are concatenated in columns
+%!shared m, x
+%! m = magic (3);
+%! x = cat (3, m, -m);
+
+## real case
+%!test
+%! y = num2str (x);
+%! assert (rows (y) == 3);
+%! assert (y, ["8  1  6 -8 -1 -6"
+%!             "3  5  7 -3 -5 -7"
+%!             "4  9  2 -4 -9 -2"]);
+
+## complex case
+%!test
+%! x(1,1,2) = -8+2i;
+%! y = num2str (x);
+%! assert (rows (y) == 3);
+%! assert (y, ["8+0i   1+0i   6+0i  -8+2i  -1+0i  -6+0i"
+%!             "3+0i   5+0i   7+0i  -3+0i  -5+0i  -7+0i"
+%!             "4+0i   9+0i   2+0i  -4+0i  -9+0i  -2+0i"]);
+
+## Clear shared variables
+%!shared
+
+## FIXME: Integers greater than flintmax() - 1 should be masked to show just
 ##        16 digits of precision.
-%!xtest
+%!test <36133>
 %! assert (num2str (1e23), "100000000000000000000000");
+
+## Test for extra rows generated from newlines in format
+%!assert <44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
+
+%!assert <45174> (num2str ([65 66 67], "%s"), "ABC")
 
 %!error num2str ()
 %!error num2str (1, 2, 3)
 %!error <X must be a numeric> num2str ({1})
-%!error <PRECISION must be a scalar integer> num2str (1, {1})
-%!error <PRECISION must be a scalar integer> num2str (1, ones (2))
-%!error <PRECISION must be a scalar integer> num2str (1, -1)
-%!error <PRECISION must be a scalar integer> num2str (1+1i, {1})
-%!error <PRECISION must be a scalar integer> num2str (1+1i, ones (2))
-%!error <PRECISION must be a scalar integer> num2str (1+1i, -1)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, {1})
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, ones (2))
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, -1)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1, 1.5)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, {1})
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, ones (2))
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, -1)
+%!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, 1.5)
 

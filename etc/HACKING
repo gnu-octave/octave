@@ -123,8 +123,7 @@ should output no difference.
 
 The most important advice is to follow any conventions you detect in the
 file being edited.  In addition, Octave maintainers have written a lot
-on the subject.  See "Appendix C: Tips and Standards" and
-"Appendix D: Contributing Guidelines" in the PDF documentation.
+on the subject.  See http://wiki.octave.org/Contribution_guidelines
 
 * Bugs and patches
 
@@ -148,7 +147,7 @@ An overview of the directory layout of Octave's source files:
                    programming interface)
 
 
-  gnulib-hg     -- gnulib subrepo.  This is a clone of the gnulib source
+  gnulib        -- gnulib subrepo.  This is a clone of the gnulib source
                    tree maintained by the Octave project.  The default
                    branch is identical to the upstream gnulib sources.
                    There is also an "octave-stable" branch that may
@@ -343,7 +342,7 @@ Last updated: Tue, 29 Oct 2013 11:42:47 PDT
 
 ################################################################################
 
-Copyright (C) 2009-2015 John W. Eaton
+Copyright (C) 2009-2016 John W. Eaton
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 David Bateman
+## Copyright (C) 2012-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rectangle ()
-## @deftypefnx {Function File} {} rectangle (@dots{}, "Position", @var{pos})
-## @deftypefnx {Function File} {} rectangle (@dots{}, "Curvature", @var{curv})
-## @deftypefnx {Function File} {} rectangle (@dots{}, "EdgeColor", @var{ec})
-## @deftypefnx {Function File} {} rectangle (@dots{}, "FaceColor", @var{fc})
-## @deftypefnx {Function File} {} rectangle (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
+## @deftypefn  {} {} rectangle ()
+## @deftypefnx {} {} rectangle (@dots{}, "Position", @var{pos})
+## @deftypefnx {} {} rectangle (@dots{}, "Curvature", @var{curv})
+## @deftypefnx {} {} rectangle (@dots{}, "EdgeColor", @var{ec})
+## @deftypefnx {} {} rectangle (@dots{}, "FaceColor", @var{fc})
+## @deftypefnx {} {} rectangle (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} rectangle (@dots{})
 ## Draw a rectangular patch defined by @var{pos} and @var{curv}.
 ##
 ## The variable @code{@var{pos}(1:2)} defines the lower left-hand corner of
@@ -80,6 +80,7 @@ function h = rectangle (varargin)
   if (nargout > 0)
     h = htmp;
   endif
+
 endfunction
 
 function hg = __rectangle__ (hax, varargin)
@@ -119,10 +120,10 @@ function hg = __rectangle__ (hax, varargin)
         parent = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
       else
-        iarg ++;
+        iarg += 1;
       endif
     else
-      iarg ++;
+      iarg += 1;
     endif
   endwhile
 
@@ -175,6 +176,7 @@ function hg = __rectangle__ (hax, varargin)
   addlistener (hg, "linewidth", @update_props);
   addlistener (hg, "linestyle", @update_props);
   addlistener (hg, "facecolor", @update_props);
+
 endfunction
 
 function update_data (h, ~)
@@ -221,32 +223,32 @@ function update_data (h, ~)
       recursion = false;
     end_unwind_protect
   endif
+
 endfunction
 
 function update_props (h, ~)
   kids = get (h, "children");
   set (kids, {"edgecolor", "linewidth", "linestyle", "facecolor"},
      get (h, {"edgecolor", "linewidth", "linestyle", "facecolor"}));
-
 endfunction
 
 
 %!demo
 %! clf;
 %! axis equal;
-%! rectangle ('Position', [0.05, 0.05, 0.9, 0.9], 'Curvature', [0.5, 0.5]);
-%! title ('rectangle() with corners curved');
+%! rectangle ("Position", [0.05, 0.05, 0.9, 0.9], "Curvature", [0.5, 0.5]);
+%! title ("rectangle() with corners curved");
 
 %!demo
 %! clf;
 %! axis equal;
-%! rectangle ('Position', [0.05, 0.05, 0.9, 0.4], 'Curvature', 1.0);
-%! title ('rectangle() with sides as complete arcs');
+%! rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature", 1.0);
+%! title ("rectangle() with sides as complete arcs");
 
 %!demo
 %! clf;
 %! axis equal;
-%! h = rectangle ('Position', [0.05, 0.05, 0.9, 0.4], 'Curvature', 1.0);
-%! set (h, 'FaceColor', [0, 1, 0]);
-%! title ('rectangle() with FaceColor = green');
+%! h = rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature", 1.0);
+%! set (h, "FaceColor", [0, 1, 0]);
+%! title ("rectangle() with FaceColor = green");
 

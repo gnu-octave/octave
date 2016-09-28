@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
@@ -46,12 +46,13 @@ DEFBINOP_OP (mul, float_scalar, float_complex, *)
 
 DEFBINOP (div, float_scalar, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplex d = v2.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_value () / d);
 }
@@ -60,12 +61,13 @@ DEFBINOP_FN (pow, float_scalar, float_complex, xpow)
 
 DEFBINOP (ldiv, float_scalar, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   float d = v1.float_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_complex_value () / d);
 }
@@ -81,12 +83,13 @@ DEFBINOP_OP (el_mul, float_scalar, float_complex, *)
 
 DEFBINOP (el_div, float_scalar, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   FloatComplex d = v2.float_complex_value ();
 
   if (d == 0.0f)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v1.float_value () / d);
 }
@@ -95,19 +98,21 @@ DEFBINOP_FN (el_pow, float_scalar, float_complex, xpow)
 
 DEFBINOP (el_ldiv, float_scalar, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   float d = v1.float_value ();
 
   if (d == 0.0)
-    gripe_divide_by_zero ();
+    warn_divide_by_zero ();
 
   return octave_value (v2.float_complex_value () / d);
 }
 
 DEFBINOP (el_and, float_scalar, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   return octave_value (v1.float_scalar_value ()
                        && (v2.float_complex_value () != 0.0f));
@@ -115,7 +120,8 @@ DEFBINOP (el_and, float_scalar, float_complex)
 
 DEFBINOP (el_or, float_scalar, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
+  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
+  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
   return octave_value (v1.float_scalar_value ()
                        || (v2.float_complex_value () != 0.0f));
@@ -162,3 +168,4 @@ install_fs_fcs_ops (void)
   INSTALL_ASSIGNCONV (octave_scalar, octave_float_complex,
                       octave_complex_matrix);
 }
+

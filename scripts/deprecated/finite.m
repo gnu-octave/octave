@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 John W. Eaton
+## Copyright (C) 2014-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} finite (@var{x})
+## @deftypefn {} {} finite (@var{x})
 ##
 ## @code{finite} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{isfinite} in all new code.

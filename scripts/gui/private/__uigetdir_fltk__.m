@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 Michael Goffioul
+## Copyright (C) 2012-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dirname} =} __uigetdir_fltk__ (@var{start_path}, @var{dialog_title})
+## @deftypefn {} {@var{dirname} =} __uigetdir_fltk__ (@var{start_path}, @var{dialog_title})
 ## Undocumented internal function.
 ## @end deftypefn
 

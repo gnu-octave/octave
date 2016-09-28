@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,20 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{idx} =} tsearchn (@var{x}, @var{t}, @var{xi})
-## @deftypefnx {Function File} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
+## @deftypefn  {} {@var{idx} =} tsearchn (@var{x}, @var{t}, @var{xi})
+## @deftypefnx {} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
 ## Search for the enclosing Delaunay convex hull.
 ##
 ## For @code{@var{t} = delaunayn (@var{x})}, finds the index in @var{t}
 ## containing the points @var{xi}.  For points outside the convex hull,
 ## @var{idx} is NaN.
 ##
-## If requested @code{tsearchn} also returns the Barycentric coordinates @var{p}
-## of the enclosing triangles.
+## If requested @code{tsearchn} also returns the Barycentric coordinates
+## @var{p} of the enclosing triangles.
 ## @seealso{delaunay, delaunayn}
 ## @end deftypefn
 
 function [idx, p] = tsearchn (x, t, xi)
+
   if (nargin != 3)
     print_usage ();
   endif
@@ -48,14 +49,15 @@ function [idx, p] = tsearchn (x, t, xi)
     b = cart2bary (x (t (i, :), :), xi(ni,:));
 
     ## Our points xi are in the current triangle if
-    ## (all (b >= 0) && all (b <= 1)). However as we impose that
-    ## sum (b,2) == 1 we only need to test all(b>=0). Note need to add
+    ## (all (b >= 0) && all (b <= 1)).  However as we impose that
+    ## sum (b,2) == 1 we only need to test all(b>=0).  Note need to add
     ## a small margin for rounding errors
     intri = all (b >= -1e-12, 2);
     idx(ni(intri)) = i;
     p(ni(intri),:) = b(intri, :);
     ni(intri) = [];
   endfor
+
 endfunction
 
 function Beta = cart2bary (T, P)
@@ -66,7 +68,7 @@ function Beta = cart2bary (T, P)
   ##
   ## P = Beta * T
   ##
-  ## Where Beta is a N+1 vector of the barycentric coordinates. A criteria
+  ## Where Beta is a N+1 vector of the barycentric coordinates.  A criteria
   ## on Beta is that
   ##
   ## sum (Beta) == 1
@@ -84,6 +86,7 @@ function Beta = cart2bary (T, P)
   [M, N] = size (P);
   Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:));
   Beta (:,end+1) = 1 - sum (Beta, 2);
+
 endfunction
 
 

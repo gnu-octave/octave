@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_flt_complex_h)
+#if ! defined (octave_ov_flt_complex_h)
 #define octave_ov_flt_complex_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -32,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "str-vec.h"
 
-#include "gripes.h"
+#include "errwarn.h"
 #include "error.h"
 #include "ov-base.h"
 #include "ov-flt-cx-mat.h"
@@ -80,8 +82,8 @@ public:
   octave_value any (int = 0) const
   {
     return (scalar != FloatComplex (0, 0)
-            && ! (lo_ieee_isnan (std::real (scalar))
-                  || lo_ieee_isnan (std::imag (scalar))));
+            && ! (lo_ieee_isnan (scalar.real ())
+                  || lo_ieee_isnan (scalar.imag ())));
   }
 
   builtin_type_t builtin_type (void) const { return btyp_float_complex; }
@@ -134,23 +136,26 @@ public:
 
   bool bool_value (bool warn = false) const
   {
-    if (xisnan (scalar))
-      gripe_nan_to_logical_conversion ();
-    else if (warn && scalar != 0.0f && scalar != 1.0f)
-      gripe_logical_conversion ();
+    if (octave::math::isnan (scalar))
+      octave::err_nan_to_logical_conversion ();
+    if (warn && scalar != 0.0f && scalar != 1.0f)
+      warn_logical_conversion ();
 
     return scalar != 0.0f;
   }
 
   boolNDArray bool_array_value (bool warn = false) const
   {
-    if (xisnan (scalar))
-      gripe_nan_to_logical_conversion ();
-    else if (warn && scalar != 0.0f && scalar != 1.0f)
-      gripe_logical_conversion ();
+    if (octave::math::isnan (scalar))
+      octave::err_nan_to_logical_conversion ();
+    if (warn && scalar != 0.0f && scalar != 1.0f)
+      warn_logical_conversion ();
 
     return boolNDArray (dim_vector (1, 1), scalar != 1.0f);
   }
+
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
@@ -165,7 +170,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
+                    octave::mach_info::float_format fmt);
 
   bool save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
@@ -173,7 +178,7 @@ public:
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
-             oct_mach_info::float_format flt_fmt) const
+             octave::mach_info::float_format flt_fmt) const
   {
     // Yes, for compatibility, we drop the imaginary part here.
     return os.write (array_value (true), block_size, output_type,
@@ -186,10 +191,10 @@ public:
 
 private:
 
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 typedef octave_float_complex octave_float_complex_scalar;
 
 #endif
+

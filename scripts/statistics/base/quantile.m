@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2015 Ben Abbott and Jaroslav Hajek
+## Copyright (C) 2008-2016 Ben Abbott and Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} quantile (@var{x})
-## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p})
-## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
-## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
+## @deftypefn  {} {@var{q} =} quantile (@var{x})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
 ## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
 ## the cumulative probability values in @var{p}.  All non-numeric values (NaNs)
 ## of @var{x} are ignored.
@@ -81,7 +81,7 @@
 ##
 ## @itemize @bullet
 ## @item @nospell{Becker, R. A., Chambers, J. M. and Wilks, A. R.} (1988)
-## The New S Language.  Wadsworth & Brooks/Cole.
+## The New S Language.  @nospell{Wadsworth & Brooks/Cole}.
 ##
 ## @item @nospell{Hyndman, R. J. and Fan, Y.} (1996) Sample quantiles in
 ## statistical packages, American Statistician, 50, 361--365.
@@ -321,8 +321,7 @@ endfunction
 %! yexp = median (x, dim);
 %! assert (yobs, yexp);
 
-## Bug #45455 
-%!assert (quantile ([1 3 2], 0.5, 1), [1 3 2])
+%!assert <45455> (quantile ([1 3 2], 0.5, 1), [1 3 2])
 
 ## Test input validation
 %!error quantile ()
@@ -340,7 +339,7 @@ endfunction
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (http://www.r-project.org/). The default is @var{method} = 7.
+## (http://www.r-project.org/).  The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
 ## Author: Ben Abbott <bpabbott@mac.com>

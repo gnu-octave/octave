@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 John W. Eaton
+## Copyright (C) 2012-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} loadprefs ()
-## Undocumented internal function.
+## @deftypefn {} {@var{prefs} =} loadprefs ()
+## Return a structure containing all user configured preferences.
 ## @end deftypefn
 
 ## Author: jwe
@@ -31,15 +31,10 @@ function retval = loadprefs ()
 
   if (isstruct (s) && S_ISREG (s.mode))
     tmp = load (file);
-    retval= tmp.prefs;
+    retval = tmp.prefs;
   else
     retval = [];
   endif
 
 endfunction
-
-
-## Testing these functions will require some care to avoid wiping out
-## existing (or creating unwanted) preferences for the user running the
-## tests.
 

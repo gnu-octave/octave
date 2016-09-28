@@ -1,4 +1,4 @@
-## Copyright (C) 2015 Carnë Draug
+## Copyright (C) 2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{area} =} rectint (@var{a}, @var{b})
+## @deftypefn {} {@var{area} =} rectint (@var{a}, @var{b})
 ## Compute area or volume of intersection of rectangles or N-D boxes.
 ##
 ## Compute the area of intersection of rectangles in @var{a} and rectangles in
@@ -75,6 +75,7 @@ function dists = rectint (a, b)
 
 endfunction
 
+
 ## Exactly overlapping
 %!assert (rectint ([0 0 1 1], [0 0 1 1]), 1)
 ## rect2 completely enclosed by rect1
@@ -93,11 +94,10 @@ endfunction
 %!assert (rectint ([0 0 1 1;0.5 0.5 1 1;-1 -1 2 2], [1 1 2 2]), [0;0.25;0])
 %!assert (rectint ([1 1 2 2], [0 0 1 1;0.5 0.5 1 1;-1 -1 2 2]), [0 0.25 0])
 
-## bug #44904
-%!assert (rectint ([0 0 5 5], [6 6 5 5]), 0)
-%!assert (rectint ([0 0 5 5], [0 6 5 5]), 0)
-%!assert (rectint ([0 0 5 5], [6 0 5 5]), 0)
-%!assert (rectint ([0 0 0 5 5 5], [0 0 6 5 5 5]), 0)
+%!assert <44904> (rectint ([0 0 5 5], [6 6 5 5]), 0)
+%!assert <44904> (rectint ([0 0 5 5], [0 6 5 5]), 0)
+%!assert <44904> (rectint ([0 0 5 5], [6 0 5 5]), 0)
+%!assert <44904> (rectint ([0 0 0 5 5 5], [0 0 6 5 5 5]), 0)
 
 ## Test volumes
 %!shared r1, r2, r3, r4, r5

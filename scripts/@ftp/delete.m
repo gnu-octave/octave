@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 David Bateman
+## Copyright (C) 2009-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} delete (@var{f}, @var{file})
+## @deftypefn {} {} delete (@var{f}, @var{file})
 ## Delete the remote file @var{file} over the FTP connection @var{f}.
 ##
 ## @var{f} is an FTP object returned by the @code{ftp} function.

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 John W. Eaton
+## Copyright (C) 2010-2016 John W. Eaton
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{txt} =} __unimplemented__ (@var{fcn})
+## @deftypefn {} {@var{txt} =} __unimplemented__ (@var{fcn})
 ## Return specific help text for the unimplemented function @var{fcn}.
 ##
 ## This is usually a suggestion for an existing compatible function to use in
@@ -49,11 +49,6 @@ function txt = __unimplemented__ (fcn)
       txt = ["exifread is deprecated.  " ...
              "The functionality is available in the imfinfo function."];
 
-    case "gsvd"
-      txt = ["gsvd is not currently part of core Octave.  ", ...
-             "See the linear-algebra package at ", ...
-             "@url{http://octave.sourceforge.net/linear-algebra/}."];
-
     case "funm"
       txt = ["funm is not currently part of core Octave.  ", ...
              "See the linear-algebra package at ", ...
@@ -82,10 +77,9 @@ function txt = __unimplemented__ (fcn)
       txt = ["matlabrc is not implemented.  ", ...
              'Octave uses the file ".octaverc" instead.'];
 
-    case {"ode113", "ode15i", "ode15s", "ode23", "ode23s", "ode23t", ...
-          "ode23tb", "ode45", "odeget", "odeset"}
-      txt = ["Octave provides lsode for solving differential equations.  ", ...
-             "For more information try @code{help lsode}.  ", ...
+    case {"ode113", "ode15i", "ode15s", "ode23s", "ode23t", "ode23tb"}
+      txt = ["Octave provides lsode and ode45 for solving differential equations. ", ...
+             "For more information try @code{help lsode}, @code{help ode45}.  ", ...
              "Matlab-compatible ODE functions are provided by the odepkg ", ...
              "package.  See @url{http://octave.sourceforge.net/odepkg/}."];
 
@@ -521,12 +515,13 @@ function txt = __unimplemented__ (fcn)
   endif
 
   if (nargout == 0)
-    warning ("Octave:missing-function", "%s", txt);
+    warning ("Octave:missing-function", "%s\n", txt);
   endif
 
 endfunction
 
 function txt = check_package (fcn, name)
+
   txt = sprintf ("the '%s' function belongs to the %s package from Octave Forge",
                  fcn, name);
 
@@ -535,7 +530,7 @@ function txt = check_package (fcn, name)
     case "loaded",
       txt = sprintf ("%s but has not yet been implemented.", txt);
     case "not loaded",
-      txt = sprintf (["%s which you have installed but not loaded. To ", ...
+      txt = sprintf (["%s which you have installed but not loaded.  To ", ...
                       "load the package, run `pkg load %s' from the ", ...
                       "Octave prompt."], txt, name);
     otherwise
@@ -543,26 +538,25 @@ function txt = check_package (fcn, name)
       ## the output of describe
       txt = sprintf ("%s which seems to not be installed in your system.", txt);
   endswitch
+
 endfunction
 
 function list = missing_functions ()
   persistent list = {
-  "MException",
-  "RandStream",
-  "Tiff",
-  "VideoReader",
-  "VideoWriter",
-  "addCause",
   "addcats",
+  "addCause",
   "align",
   "alim",
   "alpha",
   "alphamap",
+  "alphaShape",
+  "animatedLine",
   "array2table",
   "bar3",
   "bar3h",
   "bench",
   "bicgstabl",
+  "boundary",
   "brush",
   "builddocsearchdb",
   "bvp4c",
@@ -571,11 +565,10 @@ function list = missing_functions ()
   "bvpinit",
   "bvpset",
   "bvpxtend",
-  "callSoapService",
   "calllib",
+  "callSoapService",
   "camdolly",
   "cameratoolbar",
-  "camlight",
   "camlookat",
   "camorbit",
   "campan",
@@ -606,7 +599,6 @@ function list = missing_functions ()
   "colormapeditor",
   "commandhistory",
   "commandwindow",
-  "condeig",
   "coneplot",
   "containers.Map",
   "contourslice",
@@ -616,6 +608,7 @@ function list = missing_functions ()
   "createSoapMessage",
   "customverctrl",
   "datacursormode",
+  "datastore",
   "dbmex",
   "dde23",
   "ddeget",
@@ -628,7 +621,8 @@ function list = missing_functions ()
   "depfun",
   "details",
   "deval",
-  "dialog",
+  "digraph",
+  "discretize",
   "dither",
   "docsearch",
   "dragrect",
@@ -636,12 +630,12 @@ function list = missing_functions ()
   "echodemo",
   "empty",
   "enumeration",
-  "evalc",
   "events",
   "export2wsdlg",
   "figurepalette",
   "filebrowser",
   "fill3",
+  "findgroups",
   "findprop",
   "fitsdisp",
   "fitsinfo",
@@ -651,14 +645,13 @@ function list = missing_functions ()
   "freqspace",
   "funm",
   "gammaincinv",
-  "getReport",
   "getframe",
   "getpixelposition",
+  "getReport",
   "gobjects",
-  "grabcode",
+  "graph",
   "graymon",
   "griddedInterpolant",
-  "gsvd",
   "guide",
   "h5create",
   "h5disp",
@@ -674,6 +667,10 @@ function list = missing_functions ()
   "hgexport",
   "hgsetget",
   "hgtransform",
+  "histcounts",
+  "histcounts2",
+  "histogram",
+  "histogram2",
   "im2java",
   "imapprox",
   "import",
@@ -684,11 +681,11 @@ function list = missing_functions ()
   "integral2",
   "integral3",
   "interpstreamspeed",
-  "isKey",
   "iscategorical",
   "iscategory",
+  "isenum",
+  "isKey",
   "ismissing",
-  "isocaps",
   "isordinal",
   "isprotected",
   "isstudent",
@@ -706,30 +703,38 @@ function list = missing_functions ()
   "libisloaded",
   "libpointer",
   "libstruct",
-  "light",
   "lightangle",
-  "lighting",
   "linkdata",
   "listfonts",
   "loadlibrary",
   "localfunctions",
   "lsqr",
   "makehgtform",
-  "material",
+  "mapreduce",
   "matfile",
   "matlabrc",
   "memmapfile",
   "memory",
   "mergecats",
   "methodsview",
+  "MException",
+  "milliseconds",
   "minres",
   "mlintrpt",
   "mmfileinfo",
   "movegui",
   "movie",
   "movie2avi",
+  "movmax",
+  "movmean",
+  "movmedian",
+  "movmin",
+  "movstd"
+  "movsum",
+  "movvar",
   "multibandread",
   "multibandwrite",
+  "NaT",
   "native2unicode",
   "nccreate",
   "ncdisp",
@@ -739,6 +744,7 @@ function list = missing_functions ()
   "ncwrite",
   "ncwriteatt",
   "ncwriteschema",
+  "nearestNeighbor",
   "netcdf",
   "noanimate",
   "notebook",
@@ -746,13 +752,9 @@ function list = missing_functions ()
   "ode113",
   "ode15i",
   "ode15s",
-  "ode23",
   "ode23s",
   "ode23t",
   "ode23tb",
-  "ode45",
-  "odeget",
-  "odeset",
   "odextend",
   "openfig",
   "opengl",
@@ -760,8 +762,8 @@ function list = missing_functions ()
   "ordeig",
   "ordqz",
   "outerjoin",
-  "padecoef",
   "parseSoapResponse",
+  "partition",
   "pathtool",
   "pcode",
   "pdepe",
@@ -769,6 +771,7 @@ function list = missing_functions ()
   "plotbrowser",
   "plotedit",
   "plottools",
+  "pointLocation",
   "printdlg",
   "printopt",
   "printpreview",
@@ -777,12 +780,10 @@ function list = missing_functions ()
   "properties",
   "propertyeditor",
   "psi",
-  "publish",
   "quad2d",
+  "RandStream",
   "rbbox",
   "readtable",
-  "reducepatch",
-  "reducevolume",
   "remove",
   "removecats",
   "renamecats",
@@ -796,8 +797,8 @@ function list = missing_functions ()
   "serial",
   "setpixelposition",
   "showplottool",
-  "smooth3",
   "snapnow",
+  "splitapply",
   "ss2tf",
   "stack",
   "standardizeMissing",
@@ -824,14 +825,16 @@ function list = missing_functions ()
   "tfqmr",
   "throw",
   "throwAsCaller",
+  "Tiff",
   "timeit",
+  "timeofday",
   "timer",
   "timeseries",
+  "timezones",
   "todatenum",
   "toolboxdir",
   "triangulation",
   "tscollection",
-  "uibuttongroup",
   "uigetpref",
   "uiimport",
   "uiopen",
@@ -853,12 +856,17 @@ function list = missing_functions ()
   "userpath",
   "values",
   "varfun",
-  "verLessThan",
   "verctrl",
+  "verLessThan",
+  "VideoReader",
+  "VideoWriter",
   "viewmtx",
   "visdiff",
   "volumebounds",
   "web",
+  "webread",
+  "websave",
+  "webwrite",
   "width",
   "winopen",
   "winqueryreg",
@@ -881,4 +889,3 @@ endfunction
 %! assert (str(1:51), "quad2d is not implemented.  Consider using dblquad.");
 %! str = __unimplemented__ ("MException");
 %! assert (str(1:58), "the 'MException' function is not yet implemented in Octave");
-

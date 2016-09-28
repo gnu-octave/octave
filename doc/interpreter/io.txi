@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2015 John W. Eaton
+@c Copyright (C) 1996-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -111,8 +111,7 @@ function, and you can turn paging off by using the function
 
 @DOCSTRING(fflush)
 
-@c FIXME -- maybe this would be a good place to describe the
-@c following message:
+@c FIXME: maybe this would be a good place to describe the following message:
 @c
 @c warning: connection to external pager (pid = 9334) lost --
 @c warning: pending computations and output may be lost
@@ -269,7 +268,7 @@ functionality of the C programming language's standard I/O library.  The
 argument lists for some of the input functions are slightly different,
 however, because Octave has no way of passing arguments by reference.
 
-In the following, @var{file} refers to a file name and @code{fid} refers
+In the following, @var{file} refers to a filename and @code{fid} refers
 to an integer file number, as returned by @code{fopen}.
 
 There are three files that are always available.  Although these files

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2015 John W. Eaton
+Copyright (C) 2002-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_dae_h)
+#if ! defined (octave_base_dae_h)
 #define octave_base_dae_h 1
+
+#include "octave-config.h"
 
 #include "base-de.h"
 
@@ -34,7 +36,7 @@ public:
     : base_diff_eqn (), xdot () { }
 
   base_diff_alg_eqn (const ColumnVector& xx, double tt)
-    : base_diff_eqn (xx, tt), xdot (xx.length (), 0.0) { }
+    : base_diff_eqn (xx, tt), xdot (xx.numel (), 0.0) { }
 
   base_diff_alg_eqn (const ColumnVector& xx, const ColumnVector& xxdot,
                      double tt)
@@ -58,7 +60,7 @@ public:
   void initialize (const ColumnVector& x0, double t0)
   {
     base_diff_eqn::initialize (x0, t0);
-    xdot = ColumnVector (x0.length (), 0.0);
+    xdot = ColumnVector (x0.numel (), 0.0);
   }
 
   void initialize (const ColumnVector& x0, const ColumnVector& xdot0,
@@ -76,3 +78,4 @@ protected:
 };
 
 #endif
+

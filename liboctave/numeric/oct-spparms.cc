@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 David Bateman
+Copyright (C) 2004-2016 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include "lo-error.h"
@@ -47,12 +47,8 @@ octave_sparse_params::instance_ok (void)
     }
 
   if (! instance)
-    {
-      (*current_liboctave_error_handler)
-        ("unable to create octave_sparse_params object!");
-
-      retval = false;
-    }
+    (*current_liboctave_error_handler)
+      ("unable to create octave_sparse_params object!");
 
   return retval;
 }
@@ -98,7 +94,8 @@ octave_sparse_params::set_key (const std::string& key, const double& val)
 double
 octave_sparse_params::get_key (const std::string& key)
 {
-  return instance_ok () ? instance->do_get_key (key) : octave_NaN;
+  return instance_ok () ? instance->do_get_key (key)
+                        : octave::numeric_limits<double>::NaN ();
 }
 
 double
@@ -177,22 +174,16 @@ octave_sparse_params::do_get_bandden (void)
 bool
 octave_sparse_params::do_set_vals (const NDArray& vals)
 {
-  octave_idx_type len = vals.length ();
+  octave_idx_type len = vals.numel ();
 
   if (len > OCTAVE_SPARSE_CONTROLS_SIZE)
-    {
-      (*current_liboctave_error_handler)
-        ("octave_sparse_params::do_set_vals: too many values");
+    (*current_liboctave_error_handler)
+      ("octave_sparse_params::do_set_vals: too many values");
 
-      return false;
-    }
-  else
-    {
-      for (int i = 0; i < len; i++)
-        params(i) = vals(i);
+  for (int i = 0; i < len; i++)
+    params(i) = vals(i);
 
-      return true;
-    }
+  return true;
 }
 
 bool
@@ -219,7 +210,7 @@ octave_sparse_params::do_get_key (const std::string& key)
         return params(i);
     }
 
-  return octave_NaN;
+  return octave::numeric_limits<double>::NaN ();
 }
 
 void
@@ -229,3 +220,4 @@ octave_sparse_params::do_print_info (std::ostream& os,
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
     os << prefix << keys(i) << ": " << params(i) << "\n";
 }
+

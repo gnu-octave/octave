@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2015 John W. Eaton
+Copyright (C) 2004-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,12 +20,12 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#include "gripes.h"
-#include "oct-obj.h"
+#include "errwarn.h"
+#include "ovl.h"
 #include "ov.h"
 #include "ov-int8.h"
 #include "ov-int16.h"
@@ -316,3 +316,4 @@ install_int_concat_ops (void)
   OCTAVE_INSTALL_CHAR_INT_CONCAT_FN (uint32);
   OCTAVE_INSTALL_CHAR_INT_CONCAT_FN (uint64);
 }
+

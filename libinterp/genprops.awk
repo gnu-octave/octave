@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 John W. Eaton
+## Copyright (C) 2007-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -45,8 +45,7 @@
 ##   void
 ##   set_NAME (const TYPE& val)
 ##   {
-##     if (! error_state)
-##       NAME = val;
+##     NAME = val;
 ##   }
 ##
 ##   void
@@ -365,7 +364,16 @@ function emit_declarations ()
   {
     if (emit_set[i])
     {
-      printf ("  void set_%s (const octave_value& val)", name[i], type[i]);
+      ## Allow mutable properties to be set from const methods by
+      ## declaring the corresponding set method const.  The idea here is
+      ## to allow "constant" properties to be set after initialization.
+      ## For example, info about the OpenGL context for a figure can
+      ## only be set once the context is established, and that happens
+      ## after the figure object is created.  Properties handled this
+      ## way should probably also be declared read only.
+
+      printf ("  void set_%s (const octave_value& val)%s",
+              name[i], mutable[i] ? " const" : "");
 
       if (emit_set[i] == "definition")
       {
@@ -374,7 +382,7 @@ function emit_declarations ()
         else
           has_builtin_listeners = 0;
 
-        printf ("\n  {\n    if (! error_state)\n      {\n        if (%s.set (val, %s))\n          {\n",
+        printf ("\n  {\n      {\n        if (%s.set (val, %s))\n          {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
         if (mode[i])
           printf ("            set_%smode (\"manual\");\n", name[i]);
@@ -384,7 +392,8 @@ function emit_declarations ()
           printf ("            update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
           printf ("            %s.run_listeners (POSTSET);\n", name[i]);
-        printf ("            mark_modified ();\n");
+        if (! mutable[i])
+          printf ("            mark_modified ();\n");
         printf ("          }\n");
         if (mode[i])
           printf ("        else\n          set_%smode (\"manual\");\n", name[i]);
@@ -470,7 +479,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n  else if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
+        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
 
     first = 1;
 
@@ -524,7 +533,7 @@ function emit_source ()
     printf ("  octave_value retval;\n\n");
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return retval;\n\n");
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n");
 
     for (i = 1; i<= idx; i++)
     {
@@ -549,7 +558,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return property ();\n\n");
+      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n");
 
     for (i = 1; i<= idx; i++)
     {

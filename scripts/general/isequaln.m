@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2015 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2016 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isequaln (@var{x1}, @var{x2}, @dots{})
+## @deftypefn {} {} isequaln (@var{x1}, @var{x2}, @dots{})
 ## Return true if all of @var{x1}, @var{x2}, @dots{} are equal under the
 ## additional assumption that NaN == NaN (no comparison of NaN placeholders
 ## in dataset).

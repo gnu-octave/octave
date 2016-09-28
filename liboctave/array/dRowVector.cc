@@ -1,7 +1,7 @@
 // RowVector manipulations.
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,45 +21,27 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <iostream>
 
 #include "Array-util.h"
-#include "f77-fcn.h"
 #include "functor.h"
+#include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
-
-// Fortran functions we call.
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&,
-                           const double&, const double*,
-                           const octave_idx_type&, const double*,
-                           const octave_idx_type&, const double&,
-                           double*, const octave_idx_type&
-                           F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (xddot, XDDOT) (const octave_idx_type&, const double*,
-                           const octave_idx_type&, const double*,
-                           const octave_idx_type&, double&);
-}
 
 // Row Vector class.
 
 bool
 RowVector::operator == (const RowVector& a) const
 {
-  octave_idx_type len = length ();
-  if (len != a.length ())
+  octave_idx_type len = numel ();
+  if (len != a.numel ())
     return 0;
   return mx_inline_equal (len, data (), a.data ());
 }
@@ -73,13 +55,10 @@ RowVector::operator != (const RowVector& a) const
 RowVector&
 RowVector::insert (const RowVector& a, octave_idx_type c)
 {
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
-  if (c < 0 || c + a_len > length ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+  if (c < 0 || c + a_len > numel ())
+    (*current_liboctave_error_handler) ("range error for insert");
 
   if (a_len > 0)
     {
@@ -95,7 +74,7 @@ RowVector::insert (const RowVector& a, octave_idx_type c)
 RowVector&
 RowVector::fill (double val)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (len > 0)
     {
@@ -111,13 +90,10 @@ RowVector::fill (double val)
 RowVector&
 RowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
 
   if (c1 < 0 || c2 < 0 || c1 >= len || c2 >= len)
-    {
-      (*current_liboctave_error_handler) ("range error for fill");
-      return *this;
-    }
+    (*current_liboctave_error_handler) ("range error for fill");
 
   if (c1 > c2) { std::swap (c1, c2); }
 
@@ -135,9 +111,9 @@ RowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 RowVector
 RowVector::append (const RowVector& a) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   octave_idx_type nc_insert = len;
-  RowVector retval (len + a.length ());
+  RowVector retval (len + a.numel ());
   retval.insert (*this, 0);
   retval.insert (a, nc_insert);
   return retval;
@@ -194,31 +170,29 @@ operator * (const RowVector& v, const Matrix& a)
 {
   RowVector retval;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
 
   if (a_nr != len)
-    gripe_nonconformant ("operator *", 1, len, a_nr, a_nc);
+    octave::err_nonconformant ("operator *", 1, len, a_nr, a_nc);
+
+  if (len == 0)
+    retval.resize (a_nc, 0.0);
   else
     {
-      if (len == 0)
-        retval.resize (a_nc, 0.0);
-      else
-        {
-          // Transpose A to form A'*x == (x'*A)'
+      // Transpose A to form A'*x == (x'*A)'
 
-          octave_idx_type ld = a_nr;
+      octave_idx_type ld = a_nr;
 
-          retval.resize (a_nc);
-          double *y = retval.fortran_vec ();
+      retval.resize (a_nc);
+      double *y = retval.fortran_vec ();
 
-          F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
-                                   a_nr, a_nc, 1.0, a.data (),
-                                   ld, v.data (), 1, 0.0, y, 1
-                                   F77_CHAR_ARG_LEN (1)));
-        }
+      F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
+                               a_nr, a_nc, 1.0, a.data (),
+                               ld, v.data (), 1, 0.0, y, 1
+                               F77_CHAR_ARG_LEN (1)));
     }
 
   return retval;
@@ -229,7 +203,7 @@ operator * (const RowVector& v, const Matrix& a)
 double
 RowVector::min (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0;
 
@@ -245,7 +219,7 @@ RowVector::min (void) const
 double
 RowVector::max (void) const
 {
-  octave_idx_type len = length ();
+  octave_idx_type len = numel ();
   if (len == 0)
     return 0;
 
@@ -263,7 +237,7 @@ operator << (std::ostream& os, const RowVector& a)
 {
 //  int field_width = os.precision () + 7;
 
-  for (octave_idx_type i = 0; i < a.length (); i++)
+  for (octave_idx_type i = 0; i < a.numel (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;
 }
@@ -271,7 +245,7 @@ operator << (std::ostream& os, const RowVector& a)
 std::istream&
 operator >> (std::istream& is, RowVector& a)
 {
-  octave_idx_type len = a.length ();
+  octave_idx_type len = a.numel ();
 
   if (len > 0)
     {
@@ -293,14 +267,19 @@ operator >> (std::istream& is, RowVector& a)
 RowVector
 linspace (double x1, double x2, octave_idx_type n)
 {
-  if (n < 1) n = 1;
+  NoAlias<RowVector> retval;
 
-  NoAlias<RowVector> retval (n);
+  if (n < 1)
+    return retval;
+  else
+    retval.clear (n);
+
+  retval(0) = x1;
 
   double delta = (x2 - x1) / (n - 1);
-  retval(0) = x1;
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + i*delta;
+
   retval(n-1) = x2;
 
   return retval;
@@ -313,13 +292,14 @@ operator * (const RowVector& v, const ColumnVector& a)
 {
   double retval = 0.0;
 
-  octave_idx_type len = v.length ();
+  octave_idx_type len = v.numel ();
 
-  octave_idx_type a_len = a.length ();
+  octave_idx_type a_len = a.numel ();
 
   if (len != a_len)
-    gripe_nonconformant ("operator *", len, a_len);
-  else if (len != 0)
+    octave::err_nonconformant ("operator *", len, a_len);
+
+  if (len != 0)
     F77_FUNC (xddot, XDDOT) (len, v.data (), 1, a.data (), 1, retval);
 
   return retval;
@@ -331,3 +311,4 @@ operator * (const RowVector& v, const ComplexColumnVector& a)
   ComplexRowVector tmp (v);
   return tmp * a;
 }
+

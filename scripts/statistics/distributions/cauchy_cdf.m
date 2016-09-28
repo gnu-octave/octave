@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cauchy_cdf (@var{x})
-## @deftypefnx {Function File} {} cauchy_cdf (@var{x}, @var{location}, @var{scale})
+## @deftypefn  {} {} cauchy_cdf (@var{x})
+## @deftypefnx {} {} cauchy_cdf (@var{x}, @var{location}, @var{scale})
 ## For each element of @var{x}, compute the cumulative distribution function
 ## (CDF) at @var{x} of the Cauchy distribution with location parameter
 ## @var{location} and scale parameter @var{scale}.

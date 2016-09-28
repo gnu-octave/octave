@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cctype>
@@ -37,55 +37,55 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
 
-#if defined HAVE_LONG_LONG_INT
-#define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
-  do \
-    { \
-      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-      if (sizeof (TQ char) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## char; \
-      else if (sizeof (TQ short) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## short; \
-      else if (sizeof (TQ int) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## int; \
-      else if (sizeof (TQ long) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## long; \
-      else if (sizeof (TQ long long) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## longlong; \
-      else \
-        VAL = oct_data_conv::dt_unknown; \
-    } \
+#if defined (OCTAVE_HAVE_LONG_LONG_INT)
+#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q)                         \
+  do                                                                    \
+    {                                                                   \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits;       \
+      if (sizeof (TQ char) == sz)                                       \
+        VAL = oct_data_conv::dt_ ## Q ## char;                          \
+      else if (sizeof (TQ short) == sz)                                 \
+        VAL = oct_data_conv::dt_ ## Q ## short;                         \
+      else if (sizeof (TQ int) == sz)                                   \
+        VAL = oct_data_conv::dt_ ## Q ## int;                           \
+      else if (sizeof (TQ long) == sz)                                  \
+        VAL = oct_data_conv::dt_ ## Q ## long;                          \
+      else if (sizeof (TQ long long) == sz)                             \
+        VAL = oct_data_conv::dt_ ## Q ## longlong;                      \
+      else                                                              \
+        VAL = oct_data_conv::dt_unknown;                                \
+    }                                                                   \
   while (0)
 #else
-#define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
-  do \
-    { \
-      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-      if (sizeof (TQ char) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## char; \
-      else if (sizeof (TQ short) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## short; \
-      else if (sizeof (TQ int) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## int; \
-      else if (sizeof (TQ long) == sz) \
-        VAL = oct_data_conv::dt_ ## Q ## long; \
-      else \
-        VAL = oct_data_conv::dt_unknown; \
-    } \
+#  define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q)                         \
+  do                                                                    \
+    {                                                                   \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits;       \
+      if (sizeof (TQ char) == sz)                                       \
+        VAL = oct_data_conv::dt_ ## Q ## char;                          \
+      else if (sizeof (TQ short) == sz)                                 \
+        VAL = oct_data_conv::dt_ ## Q ## short;                         \
+      else if (sizeof (TQ int) == sz)                                   \
+        VAL = oct_data_conv::dt_ ## Q ## int;                           \
+      else if (sizeof (TQ long) == sz)                                  \
+        VAL = oct_data_conv::dt_ ## Q ## long;                          \
+      else                                                              \
+        VAL = oct_data_conv::dt_unknown;                                \
+    }                                                                   \
   while (0)
 #endif
 
-#define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
-  do \
-    { \
-      int sz = BITS / std::numeric_limits<unsigned char>::digits; \
-      if (sizeof (float) == sz) \
-        VAL = oct_data_conv::dt_float; \
-      else if (sizeof (double) == sz) \
-        VAL = oct_data_conv::dt_double; \
-      else \
-        VAL = oct_data_conv::dt_unknown; \
-    } \
+#define FIND_SIZED_FLOAT_TYPE(VAL, BITS)                                \
+  do                                                                    \
+    {                                                                   \
+      int sz = BITS / std::numeric_limits<unsigned char>::digits;       \
+      if (sizeof (float) == sz)                                         \
+        VAL = oct_data_conv::dt_float;                                  \
+      else if (sizeof (double) == sz)                                   \
+        VAL = oct_data_conv::dt_double;                                 \
+      else                                                              \
+        VAL = oct_data_conv::dt_unknown;                                \
+    }                                                                   \
   while (0)
 
 // I'm not sure it is worth the trouble, but let's use a lookup table
@@ -146,32 +146,32 @@ strip_spaces (const std::string& str)
   return s;
 }
 
-#define GET_SIZED_INT_TYPE(T, U) \
-  do \
-    { \
-      switch (sizeof (T)) \
-        { \
-        case 1: \
-          retval = dt_ ## U ## int8; \
-          break; \
- \
-        case 2: \
-          retval = dt_ ## U ## int16; \
-          break; \
- \
-        case 4: \
-          retval = dt_ ## U ## int32; \
-          break; \
- \
-        case 8: \
-          retval = dt_ ## U ## int64; \
-          break; \
- \
-        default: \
-          retval = dt_unknown; \
-          break; \
-        } \
-    } \
+#define GET_SIZED_INT_TYPE(T, U)                \
+  do                                            \
+    {                                           \
+      switch (sizeof (T))                       \
+        {                                       \
+        case 1:                                 \
+          retval = dt_ ## U ## int8;            \
+          break;                                \
+                                                \
+        case 2:                                 \
+          retval = dt_ ## U ## int16;           \
+          break;                                \
+                                                \
+        case 4:                                 \
+          retval = dt_ ## U ## int32;           \
+          break;                                \
+                                                \
+        case 8:                                 \
+          retval = dt_ ## U ## int64;           \
+          break;                                \
+                                                \
+        default:                                \
+          retval = dt_unknown;                  \
+          break;                                \
+        }                                       \
+    }                                           \
   while (0)
 
 size_t
@@ -390,12 +390,8 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
               s = s.substr (pos+1);
             }
           else
-            {
-              (*current_liboctave_error_handler)
-                ("invalid repeat count in '%s'", str.c_str ());
-
-              return;
-            }
+            (*current_liboctave_error_handler)
+              ("invalid repeat count in '%s'", str.c_str ());
         }
     }
 
@@ -461,12 +457,8 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
           s = s.substr (pos+1);
         }
       else
-        {
-          (*current_liboctave_error_handler)
-            ("invalid repeat count in '%s'", str.c_str ());
-
-          return;
-        }
+        (*current_liboctave_error_handler)
+          ("invalid repeat count in '%s'", str.c_str ());
     }
 
   output_type = string_to_data_type (s);
@@ -580,45 +572,46 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
   return retval;
 }
 
-#define LS_DO_READ(TYPE, swap, data, size, len, stream) \
-  do \
-    { \
-      if (len > 0) \
-        { \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+#define LS_DO_READ(TYPE, swap, data, size, len, stream)                 \
+  do                                                                    \
+    {                                                                   \
+      if (len > 0)                                                      \
+        {                                                               \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
           std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
-          if (swap) \
-            swap_bytes< size > (ptr, len); \
-          for (octave_idx_type i = 0; i < len; i++) \
-            data[i] = ptr[i]; \
-        } \
-    } \
+          stream.read (reinterpret_cast<char *> (ptr), n_bytes);        \
+          if (swap)                                                     \
+            swap_bytes< size > (ptr, len);                              \
+          for (octave_idx_type i = 0; i < len; i++)                     \
+            data[i] = ptr[i];                                           \
+        }                                                               \
+    }                                                                   \
   while (0)
 
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data ().
 
-#define LS_DO_WRITE(TYPE, data, size, len, stream) \
-  do \
-    { \
-      if (len > 0) \
-        { \
-          char tmp_type = type; \
-          stream.write (&tmp_type, 1); \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-          for (octave_idx_type i = 0; i < len; i++) \
-            ptr[i] = static_cast<TYPE> (data[i]);         \
-          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
-        } \
-    } \
+#define LS_DO_WRITE(TYPE, data, size, len, stream)                      \
+  do                                                                    \
+    {                                                                   \
+     if (len > 0)                                                       \
+       {                                                                \
+        char tmp_type = type;                                           \
+        stream.write (&tmp_type, 1);                                    \
+        OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                           \
+        for (octave_idx_type i = 0; i < len; i++)                       \
+          ptr[i] = static_cast<TYPE> (data[i]);                         \
+        std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
+        stream.write (reinterpret_cast<char *> (ptr), n_bytes);         \
+        }                                                               \
+     }                                                                  \
   while (0)
 
 // Loading variables from files.
 
-static void
-gripe_unrecognized_float_fmt (void)
+OCTAVE_NORETURN static
+void
+err_unrecognized_float_fmt (void)
 {
   (*current_liboctave_error_handler)
     ("unrecognized floating point format requested");
@@ -659,39 +652,39 @@ IEEE_little_float_to_IEEE_big_float (void *d, octave_idx_type len)
 
 void
 do_double_format_conversion (void *data, octave_idx_type len,
-                             oct_mach_info::float_format from_fmt,
-                             oct_mach_info::float_format to_fmt)
+                             octave::mach_info::float_format from_fmt,
+                             octave::mach_info::float_format to_fmt)
 {
   switch (to_fmt)
     {
-    case oct_mach_info::flt_fmt_ieee_little_endian:
+    case octave::mach_info::flt_fmt_ieee_little_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           IEEE_big_double_to_IEEE_little_double (data, len);
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
 
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           IEEE_little_double_to_IEEE_big_double (data, len);
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
@@ -706,39 +699,39 @@ do_double_format_conversion (void *data, octave_idx_type len,
 
 void
 do_float_format_conversion (void *data, octave_idx_type len,
-                            oct_mach_info::float_format from_fmt,
-                            oct_mach_info::float_format to_fmt)
+                            octave::mach_info::float_format from_fmt,
+                            octave::mach_info::float_format to_fmt)
 {
   switch (to_fmt)
     {
-    case oct_mach_info::flt_fmt_ieee_little_endian:
+    case octave::mach_info::flt_fmt_ieee_little_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           IEEE_big_float_to_IEEE_little_float (data, len);
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
 
-    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case octave::mach_info::flt_fmt_ieee_big_endian:
       switch (from_fmt)
         {
-        case oct_mach_info::flt_fmt_ieee_little_endian:
+        case octave::mach_info::flt_fmt_ieee_little_endian:
           IEEE_little_float_to_IEEE_big_float (data, len);
           break;
 
-        case oct_mach_info::flt_fmt_ieee_big_endian:
+        case octave::mach_info::flt_fmt_ieee_big_endian:
           break;
 
         default:
-          gripe_unrecognized_float_fmt ();
+          err_unrecognized_float_fmt ();
           break;
         }
       break;
@@ -753,8 +746,8 @@ do_float_format_conversion (void *data, octave_idx_type len,
 
 void
 do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
-                            oct_mach_info::float_format from_fmt,
-                            oct_mach_info::float_format to_fmt)
+                            octave::mach_info::float_format from_fmt,
+                            octave::mach_info::float_format to_fmt)
 {
   switch (sz)
     {
@@ -777,7 +770,7 @@ do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
 void
 read_doubles (std::istream& is, double *data, save_type type,
               octave_idx_type len, bool swap,
-              oct_mach_info::float_format fmt)
+              octave::mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -828,7 +821,7 @@ read_doubles (std::istream& is, double *data, save_type type,
       break;
 
     default:
-      is.clear (std::ios::failbit|is.rdstate ());
+      is.clear (std::ios::failbit | is.rdstate ());
       break;
     }
 }
@@ -836,7 +829,7 @@ read_doubles (std::istream& is, double *data, save_type type,
 void
 read_floats (std::istream& is, float *data, save_type type,
              octave_idx_type len, bool swap,
-             oct_mach_info::float_format fmt)
+             octave::mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -884,7 +877,7 @@ read_floats (std::istream& is, float *data, save_type type,
       break;
 
     default:
-      is.clear (std::ios::failbit|is.rdstate ());
+      is.clear (std::ios::failbit | is.rdstate ());
       break;
     }
 }
@@ -928,7 +921,7 @@ write_doubles (std::ostream& os, const double *data, save_type type,
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
         std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
-        os.write (reinterpret_cast <const char *> (data), n_bytes);
+        os.write (reinterpret_cast<const char *> (data), n_bytes);
       }
       break;
 
@@ -974,7 +967,7 @@ write_floats (std::ostream& os, const float *data, save_type type,
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
         std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
-        os.write (reinterpret_cast <const char *> (data), n_bytes);
+        os.write (reinterpret_cast<const char *> (data), n_bytes);
       }
       break;
 
@@ -988,3 +981,4 @@ write_floats (std::ostream& os, const float *data, save_type type,
       break;
     }
 }
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2015 Michael Goffioul
+Copyright (C) 2011-2016 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,20 +20,21 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef __QtHandles_MenuContainer__
-#define __QtHandles_MenuContainer__ 1
+#if ! defined (octave_MenuContainer_h)
+#define octave_MenuContainer_h 1
 
 class QWidget;
 
 namespace QtHandles
 {
 
-class MenuContainer
-{
-public:
-  virtual QWidget* menu (void) = 0;
-};
+  class MenuContainer
+  {
+  public:
+    virtual QWidget* menu (void) = 0;
+  };
 
-}; // namespace QtHandles
+}
 
 #endif
+

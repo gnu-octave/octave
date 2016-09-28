@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2015 Carnë Draug
+## Copyright (C) 2014-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{map} =} cubehelix ()
-## @deftypefnx {Function File} {@var{map} =} cubehelix (@var{n})
+## @deftypefn  {} {@var{map} =} cubehelix ()
+## @deftypefnx {} {@var{map} =} cubehelix (@var{n})
 ## Create cubehelix colormap.
 ##
 ## This colormap varies from black to white going though blue, green, and red
 ## tones while maintaining a monotonically increasing perception of intensity.
-## This is achieved by transversing a color cube from black to white through
+## This is achieved by traversing a color cube from black to white through
 ## a helix, hence the name cubehelix, while taking into account the perceived
 ## brightness of each channel according to the NTSC specifications from 1953.
 ##
@@ -43,33 +43,29 @@
 
 ## Author: Carnë Draug <carandraug@octave.org>
 
-## PKG_ADD: colormap ("register", "cubehelix");
-## PKG_DEL: colormap ("unregister", "cubehelix");
-
 function map = cubehelix (n = rows (colormap ()), start = 0.5,
                           rots = -1.5, hue = 1, gamma = 1)
 
   if (nargin > 5)
-    print_usage ()
+    print_usage ();
   elseif (! isscalar (n))
     error ("cubehelix: N must be a scalar");
   endif
-  n = double (n);
 
+  n = double (n);
   if (n > 1)
     coeff = [ -0.14861  -0.29227   1.97294
                1.78277  -0.90649   0.00000];
 
     fract = ((0:n-1) / (n-1))';
     angle = 2 * pi * (start/3 + 1 + rots*fract);
-    fract = fract .^ gamma;
+    fract .^= gamma;
     amp   = hue * fract .* (1-fract) /2;
     map   = fract + amp .* ([cos(angle) sin(angle)] * coeff);
 
     ## Clip values (only in case users have changed values of hue or gamma)
     map(map < 0) = 0;
     map(map > 1) = 1;
-
   elseif (n > 0)
     map = [0, 0, 0];
   else
@@ -79,9 +75,13 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
 endfunction
 
 
+## A better demo of this colormap would be a 3D plot in NTSC instead of
+## RGB values.  That would really show what this colormap is about.
 %!demo
-%! subplot (1, 2, 1)
-%! rgbplot (cubehelix (256), "composite")
-%! subplot (1, 2, 2)
-%! rgbplot (cubehelix (256))
+%! ## Show the 'cubehelix' colormap profile and as an image
+%! cmap = cubehelix (256);
+%! subplot (2, 1, 1);
+%!  rgbplot (cmap, "composite");
+%! subplot (2, 1, 2);
+%!  rgbplot (cmap);
 

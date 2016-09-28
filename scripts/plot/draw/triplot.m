@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} triplot (@var{tri}, @var{x}, @var{y})
-## @deftypefnx {Function File} {} triplot (@var{tri}, @var{x}, @var{y}, @var{linespec})
-## @deftypefnx {Function File} {@var{h} =} triplot (@dots{})
+## @deftypefn  {} {} triplot (@var{tri}, @var{x}, @var{y})
+## @deftypefnx {} {} triplot (@var{tri}, @var{x}, @var{y}, @var{linespec})
+## @deftypefnx {} {@var{h} =} triplot (@dots{})
 ## Plot a 2-D triangular mesh.
 ##
 ## @var{tri} is typically the output of a Delaunay triangulation over the
@@ -55,9 +55,9 @@ endfunction
 
 %!demo
 %! clf;
-%! old_state = rand ('state');
-%! restore_state = onCleanup (@() rand ('state', old_state));
-%! rand ('state', 2);
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 2);
 %! N = 20;
 %! x = rand (N, 1);
 %! y = rand (N, 1);

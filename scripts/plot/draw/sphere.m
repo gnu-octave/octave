@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 Michael Goffioul
+## Copyright (C) 2007-2016 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} sphere ()
-## @deftypefnx {Function File} {} sphere (@var{n})
-## @deftypefnx {Function File} {} sphere (@var{hax}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} sphere (@dots{})
+## @deftypefn  {} {} sphere ()
+## @deftypefnx {} {} sphere (@var{n})
+## @deftypefnx {} {} sphere (@var{hax}, @dots{})
+## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} sphere (@dots{})
 ## Plot a 3-D unit sphere.
 ##
 ## The optional input @var{n} determines the number of faces around the

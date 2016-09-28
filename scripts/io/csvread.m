@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2015 Paul Kienzle
+## Copyright (C) 2001-2016 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -17,17 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} csvread (@var{filename})
-## @deftypefnx {Function File} {@var{x} =} csvread (@var{filename}, @var{dlm_opts})
-## Read the comma-separated-value file @var{filename} into the matrix @var{x}.
+## @deftypefn  {} {@var{x} =} csvread (@var{filename})
+## @deftypefnx {} {@var{x} =} csvread (@var{filename}, @var{dlm_opt1}, @dots{})
+## Read the comma-separated-value (CSV) file @var{filename} into the matrix
+## @var{x}.
+##
+## Note: only CSV files containing numeric data can be read.
 ##
 ## This function is equivalent to
 ##
 ## @example
-## @var{x} = dlmread (@var{filename}, "," , @dots{})
+## @var{x} = dlmread (@var{filename}, "," , @var{dlm_opt1}, @dots{})
 ## @end example
 ##
-## @seealso{csvwrite, dlmread, dlmwrite}
+## Any optional arguments are passed directly to @code{dlmread}
+## (@pxref{XREFdlmread,,dlmread}).
+## @seealso{dlmread, textread, textscan, csvwrite, dlmwrite}
 ## @end deftypefn
 
 function x = csvread (filename, varargin)

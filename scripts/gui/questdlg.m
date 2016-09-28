@@ -1,4 +1,4 @@
-## Copyright (C) 2010, 2013 Martin Hepperle
+## Copyright (C) 2010-2016 Martin Hepperle
 ##
 ## This file is part of Octave.
 ##
@@ -17,21 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{btn} =} questdlg (@var{msg})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{default})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{default})
-## @deftypefnx {Function File} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+## @deftypefn  {} {@var{btn} =} questdlg (@var{msg})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{default})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{default})
+## @deftypefnx {} {@var{btn} =} questdlg (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
 ## Display @var{msg} using a question dialog box and return the caption of
 ## the activated button.
-##
-## The dialog may contain two or three buttons which will all close the dialog.
 ##
 ## The message may have multiple lines separated by newline characters ("\n"),
 ## or it may be a cellstr array with one element for each line.
 ##
-## The optional @var{title} (character string) can be used to decorate the
-## dialog caption.
+## The optional @var{title} (character string) can be used to specify the
+## dialog caption.  It defaults to @qcode{"Question Dialog"}.
+##
+## The dialog may contain two or three buttons which will all close the dialog.
 ##
 ## The string @var{default} identifies the default button, which is activated
 ## by pressing the @key{ENTER} key.  It must match one of the strings given
@@ -43,7 +43,18 @@
 ## If only two button captions, @var{btn1} and @var{btn2}, are specified the
 ## dialog will have only these two buttons.
 ##
-## @seealso{errordlg, helpdlg, inputdlg, listdlg, warndlg}
+## Examples:
+##
+## @example
+## @group
+## btn = questdlg ("Close Octave?", "Some fancy title", "Yes", "No", "No");
+## if (strcmp (btn, "Yes"))
+##   exit ();
+## endif
+## @end group
+## @end example
+##
+## @seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, warndlg}
 ## @end deftypefn
 
 function btn = questdlg (msg, title = "Question Dialog", varargin)
@@ -53,16 +64,16 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
   endif
 
   if (! ischar (msg))
-    if (iscell (msg))
-      msg = sprintf ("%s\n", msg{:});
-      msg(end) = "";
-    else
+    if (! iscell (msg))
       error ("questdlg: MSG must be a character string or cellstr array");
     endif
+
+    msg = sprintf ("%s\n", msg{:});
+    msg(end) = "";
   endif
 
   if (! ischar (title))
-    error ("questdlg: TITLES must be a character string");
+    error ("questdlg: TITLE must be a character string");
   endif
 
   options{1} = "Yes";      # button1
@@ -103,17 +114,11 @@ function btn = questdlg (msg, title = "Question Dialog", varargin)
         error (defbtn_error_msg);
       endif
 
-    otherwise
-      print_usage ();
-
   endswitch
 
   if (__octave_link_enabled__ ())
     btn = __octave_link_question_dialog__ (msg, title, options{1}, options{2},
                                            options{3}, options{4});
-  elseif (__have_feature__ ("JAVA"))
-    btn = javaMethod ("questdlg", "org.octave.JDialogBox", msg,
-                      title, options);
   else
     error ("questdlg is not available in this version of Octave");
   endif
@@ -134,11 +139,11 @@ endfunction
 %! disp ('- test questdlg with message and title only.');
 %! a = 'No';
 %! c = 0;
-%! while (strcmp (a, 'No') || !c)
+%! while (strcmp (a, 'No') || ! c)
 %!   a = questdlg ('Close this Question Dialog?', 'Reductio Ad Absurdum');
 %!   if (strcmp (a, 'Yes'))
 %!     q = 'Are you sure?';
-%!     while (strcmp (a, 'Yes') && !c)
+%!     while (strcmp (a, 'Yes') && ! c)
 %!       a = questdlg (q, 'Reductio Ad Absurdum');
 %!       word = ' really';
 %!       i = strfind (q, word);
@@ -172,4 +177,15 @@ endfunction
 %!     endif
 %!   endif
 %! endif
+
+## Test input validation
+%!error questdlg ()
+%!error questdlg (1,2,3,4,5,6,7)
+%!error <MSG must be a character string or cellstr array> questdlg (1)
+%!error <TITLE must be a character string> questdlg ("msg", 1)
+%!error <DEFAULT must match one of the button> questdlg ("msg", "title", "ABC")
+%!error <DEFAULT must match one of the button>
+%! questdlg ("msg", "title", "btn1", "btn2", "ABC");
+%!error <DEFAULT must match one of the button>
+%! questdlg ("msg", "title", "btn1", "btn2", "btn3", "ABC");
 

@@ -1,5 +1,5 @@
-## Copyright (C) 2005-2015 John W. Eaton
-## Copyright (C) 2013-2015 Arun Giridhar
+## Copyright (C) 2005-2016 John W. Eaton
+## Copyright (C) 2013-2016 Arun Giridhar
 ##
 ## This file is part of Octave.
 ##
@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x0}, @var{phi})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tol})
+## @deftypefn  {} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x0}, @var{phi})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
+## @deftypefnx {} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tol})
 ## Minimize an objective function using sequential quadratic programming (SQP).
 ##
 ## Solve the nonlinear program
@@ -408,6 +408,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     g = -ce;
     d = -ci;
 
+    old_lambda = lambda;
     [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
                                     Inf (size (d)));
 
@@ -425,6 +426,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
                  INFO.solveiter);
       case 6
         warning (id, "sqp: QP subproblem is infeasible");
+        lambda = old_lambda;  # The return value was size 0x0 in this case.
     endswitch
 
     ## Choose mu such that p is a descent direction for the chosen
@@ -540,7 +542,7 @@ function [merit, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, ...
 
   if (isempty (obj))
     obj = feval (obj_fun, x);
-    globals.nfun++;
+    globals.nfun += 1;
   endif
 
   merit = obj;
@@ -554,8 +556,7 @@ endfunction
 
 
 function [x_new, alpha, obj, globals] = ...
-      linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
-                     obj, globals)
+   linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, obj, globals)
 
   ## Choose parameters
   ##

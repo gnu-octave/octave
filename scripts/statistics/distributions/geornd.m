@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2015 Kurt Hornik
+## Copyright (C) 1995-2016 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} geornd (@var{p})
-## @deftypefnx {Function File} {} geornd (@var{p}, @var{r})
-## @deftypefnx {Function File} {} geornd (@var{p}, @var{r}, @var{c}, @dots{})
-## @deftypefnx {Function File} {} geornd (@var{p}, [@var{sz}])
+## @deftypefn  {} {} geornd (@var{p})
+## @deftypefnx {} {} geornd (@var{p}, @var{r})
+## @deftypefnx {} {} geornd (@var{p}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {} {} geornd (@var{p}, [@var{sz}])
 ## Return a matrix of random samples from the geometric distribution with
 ## parameter @var{p}.
 ##

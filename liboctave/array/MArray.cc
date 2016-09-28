@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,18 +21,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// This file should not include config.h.  It is only included in other
+// C++ source files that should have included config.h before including
+// this file.
 
 #include "MArray.h"
 #include "Array-util.h"
 #include "lo-error.h"
 
-#include "MArray-defs.h"
-#include "mx-inlines.cc"
-
-template <class T>
+template <typename T>
 struct _idxadds_helper
 {
   T *array;
@@ -42,7 +39,7 @@ struct _idxadds_helper
   { array[i] += val; }
 };
 
-template <class T>
+template <typename T>
 struct _idxadda_helper
 {
   T *array;
@@ -52,11 +49,11 @@ struct _idxadda_helper
   { array[i] += *vals++; }
 };
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_add (const idx_vector& idx, T val)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -70,11 +67,11 @@ MArray<T>::idx_add (const idx_vector& idx, T val)
   idx.loop (len, _idxadds_helper<T> (this->fortran_vec (), val));
 }
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -84,12 +81,12 @@ MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
 
   octave_quit ();
 
-  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  octave_idx_type len = std::min (idx.length (n), vals.numel ());
   idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
 }
 
-template <class T, T op (typename ref_param<T>::type,
-                         typename ref_param<T>::type)>
+template <typename T, T op (typename ref_param<T>::type,
+                            typename ref_param<T>::type)>
 struct _idxbinop_helper
 {
   T *array;
@@ -99,11 +96,11 @@ struct _idxbinop_helper
   { array[i] = op (array[i], *vals++); }
 };
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -113,16 +110,16 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
 
   octave_quit ();
 
-  octave_idx_type len = std::min (idx.length (n), vals.length ());
-  idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (),
-                                            vals.data ()));
+  octave_idx_type len = std::min (idx.length (n), vals.numel ());
+  idx.loop (len, _idxbinop_helper<T, octave::math::min> (this->fortran_vec (),
+                                                         vals.data ()));
 }
 
-template <class T>
+template <typename T>
 void
 MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 {
-  octave_idx_type n = this->length ();
+  octave_idx_type n = this->numel ();
   octave_idx_type ext = idx.extent (n);
   if (ext > n)
     {
@@ -132,14 +129,14 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
 
   octave_quit ();
 
-  octave_idx_type len = std::min (idx.length (n), vals.length ());
-  idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (),
-                                            vals.data ()));
+  octave_idx_type len = std::min (idx.length (n), vals.numel ());
+  idx.loop (len, _idxbinop_helper<T, octave::math::max> (this->fortran_vec (),
+                                                         vals.data ()));
 }
 
 #include <iostream>
 
-template <class T>
+template <typename T>
 void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
                             int dim)
 {
@@ -153,7 +150,7 @@ void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
   dim_vector ddv = Array<T>::dims ().redim (nd);
   dim_vector sdv = vals.dims ().redim (nd);
 
-  octave_idx_type ext = idx.extent (ddv (dim));
+  octave_idx_type ext = idx.extent (ddv(dim));
 
   if (ext > ddv(dim))
     {
@@ -168,8 +165,7 @@ void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
 
   sdv(dim) = ddv(dim) = 0;
   if (ddv != sdv)
-    (*current_liboctave_error_handler)
-      ("accumdim: dimension mismatch");
+    (*current_liboctave_error_handler) ("accumdim: dimension mismatch");
 
   T *dst = Array<T>::fortran_vec ();
   const T *src = vals.data ();
@@ -203,7 +199,7 @@ void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
 }
 
 // N-dimensional array with math ops.
-template <class T>
+template <typename T>
 void
 MArray<T>::changesign (void)
 {
@@ -215,7 +211,7 @@ MArray<T>::changesign (void)
 
 // Element by element MArray by scalar ops.
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator += (MArray<T>& a, const T& s)
 {
@@ -226,7 +222,7 @@ operator += (MArray<T>& a, const T& s)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator -= (MArray<T>& a, const T& s)
 {
@@ -237,7 +233,7 @@ operator -= (MArray<T>& a, const T& s)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator *= (MArray<T>& a, const T& s)
 {
@@ -248,7 +244,7 @@ operator *= (MArray<T>& a, const T& s)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator /= (MArray<T>& a, const T& s)
 {
@@ -261,7 +257,7 @@ operator /= (MArray<T>& a, const T& s)
 
 // Element by element MArray by MArray ops.
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator += (MArray<T>& a, const MArray<T>& b)
 {
@@ -272,7 +268,7 @@ operator += (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 operator -= (MArray<T>& a, const MArray<T>& b)
 {
@@ -283,8 +279,7 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
-
-template <class T>
+template <typename T>
 MArray<T>&
 product_eq (MArray<T>& a, const MArray<T>& b)
 {
@@ -295,7 +290,7 @@ product_eq (MArray<T>& a, const MArray<T>& b)
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>&
 quotient_eq (MArray<T>& a, const MArray<T>& b)
 {
@@ -308,11 +303,11 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
 
 // Element by element MArray by scalar ops.
 
-#define MARRAY_NDS_OP(OP, FN) \
-  template <class T> \
-  MArray<T> \
-  operator OP (const MArray<T>& a, const T& s) \
-  { \
+#define MARRAY_NDS_OP(OP, FN)                   \
+  template <typename T>                         \
+  MArray<T>                                     \
+  operator OP (const MArray<T>& a, const T& s)  \
+  {                                             \
     return do_ms_binary_op<T, T, T> (a, s, FN); \
   }
 
@@ -323,11 +318,11 @@ MARRAY_NDS_OP (/, mx_inline_div)
 
 // Element by element scalar by MArray ops.
 
-#define MARRAY_SND_OP(OP, FN) \
-  template <class T> \
-  MArray<T> \
-  operator OP (const T& s, const MArray<T>& a) \
-  { \
+#define MARRAY_SND_OP(OP, FN)                   \
+  template <typename T>                         \
+  MArray<T>                                     \
+  operator OP (const T& s, const MArray<T>& a)  \
+  {                                             \
     return do_sm_binary_op<T, T, T> (s, a, FN); \
   }
 
@@ -339,7 +334,7 @@ MARRAY_SND_OP (/, mx_inline_div)
 // Element by element MArray by MArray ops.
 
 #define MARRAY_NDND_OP(FCN, OP, FN) \
-  template <class T> \
+  template <typename T> \
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
@@ -351,16 +346,17 @@ MARRAY_NDND_OP (operator -, -, mx_inline_sub)
 MARRAY_NDND_OP (product,    *, mx_inline_mul)
 MARRAY_NDND_OP (quotient,   /, mx_inline_div)
 
-template <class T>
+template <typename T>
 MArray<T>
 operator + (const MArray<T>& a)
 {
   return a;
 }
 
-template <class T>
+template <typename T>
 MArray<T>
 operator - (const MArray<T>& a)
 {
   return do_mx_unary_op<T, T> (a, mx_inline_uminus);
 }
+

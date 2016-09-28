@@ -1,7 +1,7 @@
 // DO NOT EDIT!  Generated automatically from oct-errno.in.cc by configure
 /*
 
-Copyright (C) 2005-2015 John W. Eaton
+Copyright (C) 2005-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cerrno>
@@ -302,11 +302,7 @@ octave_errno::instance_ok (void)
     }
 
   if (! instance)
-    {
-      ::error ("unable to create errno object!");
-
-      retval = false;
-    }
+    error ("unable to create errno object!");
 
   return retval;
 }
@@ -343,3 +339,4 @@ octave_errno::do_list (void)
 
   return retval;
 }
+

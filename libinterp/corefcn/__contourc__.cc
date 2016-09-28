@@ -1,6 +1,6 @@
 /* Contour lines for function evaluated on a grid.
 
-Copyright (C) 2007-2015 Kai Habel
+Copyright (C) 2007-2016 Kai Habel
 Copyright (C) 2004, 2007 Shai Ayal
 
 Adapted to an oct file from the stand alone contourl by Victro Munoz
@@ -11,8 +11,8 @@ http://plplot.org/
 
 Copyright (C) 1995, 2000, 2001 Maurice LeBrun
 Copyright (C) 2000, 2002 Joao Cardoso
-Copyright (C) 2000, 2001, 2002, 2004  Alan W. Irwin
-Copyright (C) 2004  Andrew Ross
+Copyright (C) 2000, 2001, 2002, 2004 Alan W. Irwin
+Copyright (C) 2004 Andrew Ross
 
 This file is part of Octave.
 
@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
 #include <cfloat>
@@ -42,8 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-obj.h"
+#include "ovl.h"
 
+// FIXME: this looks like trouble...
 static Matrix this_contour;
 static Matrix contourc;
 static int elem;
@@ -151,7 +152,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
         {
           tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
-          if (xisnan (tmp))
+          if (octave::math::isnan (tmp))
             ct_x = ct_y = 0.5;
           else
             {
@@ -180,7 +181,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
       pt[1] = (pt[0] + 1) % 4;
       tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
 
-      if (xisnan (tmp))
+      if (octave::math::isnan (tmp))
         ct_x = ct_y = 0.5;
       else
         {
@@ -298,41 +299,31 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 }
 
 DEFUN (__contourc__, args, ,
-       "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})\n\
-Undocumented internal function.\n\
-@end deftypefn")
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
+Undocumented internal function.
+@end deftypefn */)
 {
-  octave_value retval;
-
-  if (args.length () == 4)
-    {
-      RowVector X = args(0).row_vector_value ();
-      RowVector Y = args(1).row_vector_value ();
-      Matrix Z = args(2).matrix_value ();
-      RowVector L = args(3).row_vector_value ();
-
-      if (! error_state)
-        {
-          contourc.resize (2, 0);
-
-          for (int i = 0; i < L.length (); i++)
-            cntr (X, Y, Z, L (i));
-
-          end_contour ();
-
-          retval = contourc;
-        }
-      else
-        error ("__contourc__: invalid argument values");
-    }
-  else
+  if (args.length () != 4)
     print_usage ();
 
-  return retval;
+  RowVector X = args(0).row_vector_value ();
+  RowVector Y = args(1).row_vector_value ();
+  Matrix Z = args(2).matrix_value ();
+  RowVector L = args(3).row_vector_value ();
+
+  contourc.resize (2, 0);
+
+  for (int i = 0; i < L.numel (); i++)
+    cntr (X, Y, Z, L (i));
+
+  end_contour ();
+
+  return octave_value (contourc);
 }
 
 /*
 ## No test needed for internal helper function.
 %!assert (1)
 */
+

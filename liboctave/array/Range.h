@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Range_h)
+#if ! defined (octave_Range_h)
 #define octave_Range_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 
@@ -35,33 +37,54 @@ Range
 public:
 
   Range (void)
-    : rng_base (0), rng_limit (0), rng_inc (0), rng_nelem (0), cache (1, 0) { }
+    : rng_base (0), rng_limit (0), rng_inc (0), rng_numel (0), cache (1, 0) { }
 
   Range (const Range& r)
     : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
-      rng_nelem (r.rng_nelem), cache (r.cache) { }
+      rng_numel (r.rng_numel), cache (r.cache) { }
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),
-      rng_nelem (nelem_internal ()), cache () { }
+      rng_numel (numel_internal ()), cache ()
+  {
+    rng_limit = limit_internal ();
+  }
 
   Range (double b, double l, double i)
     : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_nelem (nelem_internal ()), cache () { }
+      rng_numel (numel_internal ()), cache ()
+  {
+    rng_limit = limit_internal ();
+  }
 
   // For operators' usage (to preserve element count).
   Range (double b, double i, octave_idx_type n)
     : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
-      rng_nelem (n), cache ()
+      rng_numel (n), cache ()
   {
-    if (! xfinite (b) || ! xfinite (i) || ! xfinite (rng_limit))
-      rng_nelem = -2;
+    if (! octave::math::finite (b) || ! octave::math::finite (i)
+        || ! octave::math::finite (rng_limit))
+      rng_numel = -2;
+    else
+      {
+        // Code below is only needed if the resulting range must be 100%
+        // correctly constructed.  If the Range object created is only
+        // a temporary one used by operators this may be unnecessary.
+
+        rng_limit = limit_internal ();
+      }
   }
 
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
-  octave_idx_type nelem (void) const { return rng_nelem; }
+
+  OCTAVE_DEPRECATED ("use 'numel' instead")
+  octave_idx_type nelem (void) const { return numel (); }
+
+  octave_idx_type numel (void) const { return rng_numel; }
+
+  bool is_empty (void) const { return numel () == 0; }
 
   bool all_elements_are_ints (void) const;
 
@@ -90,32 +113,11 @@ public:
 
   Array<double> index (const idx_vector& i) const;
 
-  void set_base (double b)
-  {
-    if (rng_base != b)
-      {
-        rng_base = b;
-        clear_cache ();
-      }
-  }
+  void set_base (double b);
 
-  void set_limit (double l)
-  {
-    if (rng_limit != l)
-      {
-        rng_limit = l;
-        clear_cache ();
-      }
-  }
+  void set_limit (double l);
 
-  void set_inc (double i)
-  {
-    if (rng_inc != i)
-      {
-        rng_inc = i;
-        clear_cache ();
-      }
-  }
+  void set_inc (double i);
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os,
                                                const Range& r);
@@ -129,19 +131,21 @@ public:
   friend OCTAVE_API Range operator * (double x, const Range& r);
   friend OCTAVE_API Range operator * (const Range& r, double x);
 
-  void print_range (void);
-
 private:
 
   double rng_base;
   double rng_limit;
   double rng_inc;
 
-  octave_idx_type rng_nelem;
+  octave_idx_type rng_numel;
 
   mutable Matrix cache;
 
-  octave_idx_type nelem_internal (void) const;
+  octave_idx_type numel_internal (void) const;
+
+  double limit_internal (void) const;
+
+  void init (void);
 
   void clear_cache (void) const { cache.resize (0, 0); }
 
@@ -150,10 +154,11 @@ protected:
   // For operators' usage (to allow all values to be set directly).
   Range (double b, double l, double i, octave_idx_type n)
     : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_nelem (n), cache ()
+      rng_numel (n), cache ()
   {
-    if (! xfinite (b) || ! xfinite (i) || ! xfinite (l))
-      rng_nelem = -2;
+    if (! octave::math::finite (b) || ! octave::math::finite (i)
+        || ! octave::math::finite (l))
+      rng_numel = -2;
   }
 };
 
@@ -172,3 +177,4 @@ extern OCTAVE_API Range operator * (double x, const Range& r);
 extern OCTAVE_API Range operator * (const Range& r, double x);
 
 #endif
+

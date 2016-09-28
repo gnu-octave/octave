@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2015 Friedrich Leisch
+## Copyright (C) 1995-2016 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} triangle_lw (@var{n}, @var{b})
+## @deftypefn {} {} triangle_lw (@var{n}, @var{b})
 ## Triangular lag window.  Subfunction used for spectral density
 ## estimation.
 ## @end deftypefn

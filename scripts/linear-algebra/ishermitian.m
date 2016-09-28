@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2015 John W. Eaton
+## Copyright (C) 1996-2016 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ishermitian (@var{A})
-## @deftypefnx {Function File} {} ishermitian (@var{A}, @var{tol})
+## @deftypefn  {} {} ishermitian (@var{A})
+## @deftypefnx {} {} ishermitian (@var{A}, @var{tol})
 ## Return true if @var{A} is Hermitian within the tolerance specified by
 ## @var{tol}.
 ##

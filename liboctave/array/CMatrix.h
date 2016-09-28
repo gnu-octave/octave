@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2015 John W. Eaton
+Copyright (C) 1994-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_CMatrix_h)
+#if ! defined (octave_CMatrix_h)
 #define octave_CMatrix_h 1
+
+#include "octave-config.h"
 
 #include "MArray.h"
 #include "MDiagArray2.h"
@@ -42,6 +44,18 @@ public:
   typedef ComplexColumnVector column_vector_type;
   typedef ComplexRowVector row_vector_type;
 
+  typedef ColumnVector real_column_vector_type;
+  typedef RowVector real_row_vector_type;
+
+  typedef Matrix real_matrix_type;
+  typedef ComplexMatrix complex_matrix_type;
+
+  typedef DiagMatrix real_diag_matrix_type;
+  typedef ComplexDiagMatrix complex_diag_matrix_type;
+
+  typedef double real_elt_type;
+  typedef Complex complex_elt_type;
+
   typedef void (*solve_singularity_handler) (double rcon);
 
   ComplexMatrix (void) : ComplexNDArray () { }
@@ -59,10 +73,10 @@ public:
 
   ComplexMatrix (const ComplexMatrix& a) : ComplexNDArray (a) { }
 
-  template <class U>
+  template <typename U>
   ComplexMatrix (const MArray<U>& a) : ComplexNDArray (a.as_matrix ()) { }
 
-  template <class U>
+  template <typename U>
   ComplexMatrix (const Array<U>& a) : ComplexNDArray (a.as_matrix ()) { }
 
   ComplexMatrix (const Matrix& re, const Matrix& im);
@@ -175,22 +189,22 @@ public:
 
 private:
   ComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
-                          double& rcon, int force, int calc_cond) const;
+                          double& rcon, bool force, bool calc_cond) const;
 
   ComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
-                          double& rcon, int force, int calc_cond) const;
+                          double& rcon, bool force, bool calc_cond) const;
 
 public:
   ComplexMatrix inverse (void) const;
   ComplexMatrix inverse (octave_idx_type& info) const;
-  ComplexMatrix inverse (octave_idx_type& info, double& rcon, int force = 0,
-                         int calc_cond = 1) const;
+  ComplexMatrix inverse (octave_idx_type& info, double& rcon,
+                         bool force = false, bool calc_cond = true) const;
 
   ComplexMatrix inverse (MatrixType &mattype) const;
   ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
-                         double& rcon, int force = 0,
-                         int calc_cond = 1) const;
+                         double& rcon, bool force = false,
+                         bool calc_cond = true) const;
 
   ComplexMatrix pseudo_inverse (double tol = 0.0) const;
 
@@ -203,9 +217,9 @@ public:
   ComplexDET determinant (void) const;
   ComplexDET determinant (octave_idx_type& info) const;
   ComplexDET determinant (octave_idx_type& info, double& rcon,
-                          int calc_cond = 1) const;
+                          bool calc_cond = true) const;
   ComplexDET determinant (MatrixType &mattype, octave_idx_type& info,
-                          double& rcon, int calc_cond = 1) const;
+                          double& rcon, bool calc_cond = true) const;
 
   double rcond (void) const;
   double rcond (MatrixType &mattype) const;
@@ -443,7 +457,6 @@ extern OCTAVE_API ComplexMatrix linspace (const ComplexColumnVector& x1,
                                           const ComplexColumnVector& x2,
                                           octave_idx_type n);
 
-
 MS_CMP_OP_DECLS (ComplexMatrix, Complex, OCTAVE_API)
 MS_BOOL_OP_DECLS (ComplexMatrix, Complex, OCTAVE_API)
 
@@ -456,3 +469,4 @@ MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray, ComplexMatrix, Complex)
 
 #endif
+

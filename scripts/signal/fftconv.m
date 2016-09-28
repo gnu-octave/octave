@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2015 John W. Eaton
+## Copyright (C) 1994-2016 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fftconv (@var{x}, @var{y})
-## @deftypefnx {Function File} {} fftconv (@var{x}, @var{y}, @var{n})
+## @deftypefn  {} {} fftconv (@var{x}, @var{y})
+## @deftypefnx {} {} fftconv (@var{x}, @var{y}, @var{n})
 ## Convolve two vectors using the FFT for computation.
 ##
 ## @code{c = fftconv (@var{x}, @var{y})} returns a vector of length equal to

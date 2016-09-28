@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2015 John W. Eaton
+Copyright (C) 1996-2016 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ov_ch_mat_h)
+#if ! defined (octave_ov_ch_mat_h)
 #define octave_ov_ch_mat_h 1
+
+#include "octave-config.h"
 
 #include <cstdlib>
 
@@ -146,6 +148,19 @@ public:
   octave_value convert_to_str_internal (bool, bool, char type) const
   { return octave_value (matrix, type); }
 
+  octave_value as_double (void) const;
+  octave_value as_single (void) const;
+
+  octave_value as_int8 (void) const;
+  octave_value as_int16 (void) const;
+  octave_value as_int32 (void) const;
+  octave_value as_int64 (void) const;
+
+  octave_value as_uint8 (void) const;
+  octave_value as_uint16 (void) const;
+  octave_value as_uint32 (void) const;
+  octave_value as_uint64 (void) const;
+
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   // Unsafe.  This function exists to support the MEX interface.
@@ -158,3 +173,4 @@ public:
 };
 
 #endif
+

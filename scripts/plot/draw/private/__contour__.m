@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,52 +17,55 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
+## @deftypefn {} {[@var{c}, @var{hg}] =} __contour__ (@dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
 function [c, hg] = __contour__ (varargin)
+
   ax = varargin{1};
   zlevel = varargin{2};
   filled = "off";
 
   linespec.color = "auto";
   linespec.linestyle = "-";
-  for i = 3:2:nargin
-    arg = varargin{i};
-    if (ischar (arg) || iscellstr (arg))
-      [lspec, valid] = __pltopt__ ("__contour__", arg, false);
-      if (valid)
-        have_line_spec = true;
-        varargin(i) = [];
-        linespec = lspec;
-        if (isempty (linespec.color))
-          linespec.color = "auto";
-        endif
-        if (isempty (linespec.linestyle))
-          linespec.linestyle = "-";
-        endif
-        break;
-      endif
-    endif
-  endfor
-
   opts = {};
   i = 3;
-  while (i < length (varargin))
-    if (ischar (varargin{i}))
-      if (strcmpi (varargin{i}, "fill"))
-        filled = varargin{i+1};
-        varargin(i:i+1) = [];
-      elseif (strcmpi (varargin{i}, "linecolor"))
-        linespec.color = varargin{i+1};
-        varargin(i:i+1) = [];
-      else
-        opts(end+(1:2)) = varargin(i:i+1);
-        varargin(i:i+1) = [];
+  while (i <= length (varargin))
+    if (ischar (varargin{i}) || iscellstr (varargin{i}))
+      arg = varargin{i};
+      if (i < length (varargin))
+        if (strcmpi (arg, "fill"))
+          filled = varargin{i+1};
+          varargin(i:i+1) = [];
+          continue;
+        elseif (strcmpi (arg, "linecolor"))
+          linespec.color = varargin{i+1};
+          varargin(i:i+1) = [];
+          continue;
+        endif
       endif
-    else
-      i++;
+
+      [lspec, valid] = __pltopt__ ("__contour__", arg, false);
+      if (valid)
+        varargin(i) = [];
+        if (! isempty (lspec.color))
+          linespec.color = lspec.color;
+        endif
+        if (! isempty (lspec.linestyle))
+          linespec.linestyle = lspec.linestyle;
+        endif
+      else  # unrecognized option, pass unmodified in opts cell array
+        if (i < length (varargin))
+          opts(end+(1:2)) = varargin(i:i+1);
+          varargin(i:i+1) = [];
+        else
+          error ("__contour__: Uneven number of PROP/VAL pairs");
+        endif
+      endif
+
+    else  # skip numeric arguments
+      i += 1;
     endif
   endwhile
 
@@ -204,6 +207,7 @@ function [c, hg] = __contour__ (varargin)
 endfunction
 
 function add_patch_children (hg)
+
   c = get (hg, "contourmatrix");
   lev = get (hg, "levellist");
   fill = get (hg, "fill");
@@ -231,7 +235,7 @@ function add_patch_children (hg)
     i = 1;
     ncont = 0;
     while (i < columns (c))
-      ncont++;
+      ncont += 1;
       cont_lev(ncont) = c(1, i);
       cont_len(ncont) = c(2, i);
       cont_idx(ncont) = i+1;
@@ -242,7 +246,7 @@ function add_patch_children (hg)
 
     ## Handle for each level the case where we have (a) hole(s) in a patch.
     ## Those are to be filled with the color of level below or with the
-    ## background colour.
+    ## background color.
     for k = 1:numel (lev)
       lvl_idx = find (abs (cont_lev - lev(k)) < lvl_eps);
       len = numel (lvl_idx);
@@ -262,11 +266,11 @@ function add_patch_children (hg)
           in = inpolygon (next_ct_pt_vec(1,:), next_ct_pt_vec(2,:),
                           curr_ct(1, :), curr_ct(2, :));
           mark(b_vec(in)) = ! mark(b_vec(in));
-          a++;
+          a += 1;
         endwhile
         if (numel (mark) > 0)
           ## All marked contours describe a hole in a larger contour of
-          ## the same level and must be filled with colour of level below.
+          ## the same level and must be filled with color of level below.
           ma_idx = lvl_idx(mark);
           if (k > 1)
             ## Find color of level below.
@@ -377,6 +381,7 @@ function add_patch_children (hg)
 endfunction
 
 function update_zlevel (h, ~)
+
   z = get (h, "zlevel");
   zmode = get (h, "zlevelmode");
   kids = get (h, "children");
@@ -394,15 +399,18 @@ function update_zlevel (h, ~)
         set (kids(i), "zdata", z .* ones (size (get (kids(i), "xdata"))));
       endfor
   endswitch
+
 endfunction
 
 function update_line (h, ~)
+
   lc = get (h, "linecolor");
   if (strcmp (lc, "auto"))
     lc = "flat";
   endif
   set (findobj (h, "type", "patch"), "edgecolor", lc,
        "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"));
+
 endfunction
 
 function update_data (h, ~, prop = "")
@@ -415,9 +423,9 @@ function update_data (h, ~, prop = "")
 
     switch (prop)
       case "levellist"
-        set (h, "levellistmode", "manual")
+        set (h, "levellistmode", "manual");
       case "levelstep"
-        set (h, "levelstepmode", "manual")
+        set (h, "levelstepmode", "manual");
       case "fill"
         ## Switching from filled ('k' linespec) to unfilled, reset linecolor
         if (strcmp (get (h, "fill"), "off"))
@@ -501,9 +509,9 @@ function update_text (h, ~, prop = "")
 
     switch (prop)
       case "textlist"
-        set (h, "textlistmode", "manual")
+        set (h, "textlistmode", "manual");
       case "textstep"
-        set (h, "textstepmode", "manual")
+        set (h, "textstepmode", "manual");
     endswitch
 
     if (strcmp (get (h, "textlistmode"), "manual"))
@@ -538,9 +546,11 @@ function update_text (h, ~, prop = "")
 
     recursive = false;
   endif
+
 endfunction
 
 function lvl_eps = get_lvl_eps (lev)
+
   ## FIXME: is this the right thing to do for this tolerance?  Should
   ## it be an absolute or relative tolerance, or switch from one to the
   ## other depending on the value of lev?
@@ -554,5 +564,6 @@ function lvl_eps = get_lvl_eps (lev)
       lvl_eps = tmp / 1000.0;
     endif
   endif
+
 endfunction
 

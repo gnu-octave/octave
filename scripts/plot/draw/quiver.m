@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2015 David Bateman
+## Copyright (C) 2007-2016 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} quiver (@var{u}, @var{v})
-## @deftypefnx {Function File} {} quiver (@var{x}, @var{y}, @var{u}, @var{v})
-## @deftypefnx {Function File} {} quiver (@dots{}, @var{s})
-## @deftypefnx {Function File} {} quiver (@dots{}, @var{style})
-## @deftypefnx {Function File} {} quiver (@dots{}, "filled")
-## @deftypefnx {Function File} {} quiver (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
+## @deftypefn  {} {} quiver (@var{u}, @var{v})
+## @deftypefnx {} {} quiver (@var{x}, @var{y}, @var{u}, @var{v})
+## @deftypefnx {} {} quiver (@dots{}, @var{s})
+## @deftypefnx {} {} quiver (@dots{}, @var{style})
+## @deftypefnx {} {} quiver (@dots{}, "filled")
+## @deftypefnx {} {} quiver (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} quiver (@dots{})
 ##
 ## Plot a 2-D vector field with arrows.
 ##
@@ -80,6 +80,13 @@ function h = quiver (varargin)
   unwind_protect
     hax = newplot (hax);
     htmp = __quiver__ (hax, false, varargin{:});
+
+    ## FIXME: This should be moved into __quiver__ when problem with
+    ##        re-initialization of title object is fixed.
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -97,7 +104,7 @@ endfunction
 %! clf;
 %! [x,y] = meshgrid (1:2:20);
 %! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
-%! title ('quiver plot')
+%! title ("quiver plot");
 
 %!demo
 %! clf;
@@ -106,6 +113,6 @@ endfunction
 %! theta = 2*pi*x + pi/2;
 %! quiver (x, y, sin (theta)/10, cos (theta)/10, 0.4);
 %! axis equal tight;
-%! hold on; plot (x,y,'r'); hold off;
-%! title ('quiver() with scaled arrows');
+%! hold on; plot (x,y,"r"); hold off;
+%! title ("quiver() with scaled arrows");
 

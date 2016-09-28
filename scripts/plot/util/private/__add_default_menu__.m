@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2015 Kai Habel
+## Copyright (C) 2010-2016 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __add_default_menu__ (@var{fig})
+## @deftypefn {} {} __add_default_menu__ (@var{fig})
 ## Add default menu to figure.
 ##
 ## All uimenu handles have their @qcode{"HandleVisibility"} property set to
@@ -60,6 +60,7 @@ function __add_default_menu__ (fig)
 
 endfunction
 
+
 function save_cb (h, e)
   [hcbo, hfig] = gcbo ();
   lbl = get (hcbo, "label");
@@ -75,6 +76,7 @@ function save_cb (h, e)
   endif
 endfunction
 
+
 function __save_as__ (caller)
   [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
                                     "Supported Graphic Formats"},
@@ -82,7 +84,7 @@ function __save_as__ (caller)
                                    [pwd, filesep, "untitled.pdf"]);
   if (filename != 0)
     fname = [filedir filesep() filename];
-    set (gcbf, "filename", fname)
+    set (gcbf, "filename", fname);
     saveas (caller, fname);
   endif
 endfunction
@@ -96,6 +98,7 @@ function [hax, fig] = __get_axes__ (h)
   hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
 endfunction
 
+
 function grid_cb (h, e)
   hax = __get_axes__ (h);
   id = get (h, "tag");
@@ -108,30 +111,33 @@ function grid_cb (h, e)
   drawnow ();
 endfunction
 
+
 function autoscale_cb (h, e)
   hax = __get_axes__ (h);
-  arrayfun (@(h) axis (h, "auto"), hax)
+  arrayfun (@(h) axis (h, "auto"), hax);
   drawnow ();
 endfunction
+
 
 function guimode_cb (h, e)
   [hax, fig] = __get_axes__ (h);
   id = get (h, "tag");
   switch (id)
     case "pan_on"
-      pan (fig, "on")
+      pan (fig, "on");
     case "pan_xon"
-      pan (fig, "xon")
+      pan (fig, "xon");
     case "pan_yon"
-      pan (fig, "yon")
+      pan (fig, "yon");
     case "rotate3d"
-      rotate3d (fig, "on")
+      rotate3d (fig, "on");
     case "no_pan_rotate"
-      pan (fig, "off")
-      rotate3d (fig, "off")
+      pan (fig, "off");
+      rotate3d (fig, "off");
     case "zoom_on"
       arrayfun (@(h) set (h, "mousewheelzoom", 0.05), hax);
     case "zoom_off"
       arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
 endfunction
+

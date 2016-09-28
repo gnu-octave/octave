@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2015 Eric Chassande-Mottin, CNRS (France)
+## Copyright (C) 2009-2016 Eric Chassande-Mottin, CNRS (France)
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{a}, @dots{}] =} textread (@var{filename})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{prop1}, @var{value1}, @dots{})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n}, @var{prop1}, @var{value1}, @dots{})
+## @deftypefn  {} {[@var{a}, @dots{}] =} textread (@var{filename})
+## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format})
+## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n})
+## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{prop1}, @var{value1}, @dots{})
+## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n}, @var{prop1}, @var{value1}, @dots{})
 ## Read data from a text file.
 ##
 ## The file @var{filename} is read and parsed according to @var{format}.  The
@@ -58,21 +58,26 @@
 ## Examples:
 ##
 ## @example
+## @group
 ##   Assume a data file like:
 ##   1 a 2 b
 ##   3 c 4 d
 ##   5 e
+## @end group
 ## @end example
 ##
 ## @example
+## @group
 ##   [a, b] = textread (f, "%f %s")
 ##   returns two columns of data, one with doubles, the other a
 ##   cellstr array:
 ##   a = [1; 2; 3; 4; 5]
 ##   b = @{"a"; "b"; "c"; "d"; "e"@}
+## @end group
 ## @end example
 ##
 ## @example
+## @group
 ##   [a, b] = textread (f, "%f %s", 3)
 ##   (read data into two culumns, try to use the format string
 ##   three times)
@@ -80,9 +85,11 @@
 ##   a = [1; 2; 3]
 ##   b = @{"a"; "b"; "c"@}
 ##
+## @end group
 ## @end example
 ##
 ## @example
+## @group
 ##   With a data file like:
 ##   1
 ##   a
@@ -92,9 +99,10 @@
 ##   [a, b] = textread (f, "%f %s", 2)
 ##   returns a = 1 and b = @{"a"@}; i.e., the format string is used
 ##   only once because the format string refers to 2 lines of the
-##   data file. To obtain 2x1 data output columns, specify N = 4
+##   data file.  To obtain 2x1 data output columns, specify N = 4
 ##   (number of data lines containing all requested data) rather
 ##   than 2.
+## @end group
 ## @end example
 ##
 ## @seealso{strread, load, dlmread, fscanf, textscan}
@@ -134,9 +142,9 @@ function varargout = textread (filename, format = "%f", varargin)
   headerlines = find (strcmpi (varargin, "headerlines"), 1);
   if (! isempty (headerlines))
     ## Beware of missing or wrong headerline value
-    if (headerlines  == numel (varargin)
+    if (headerlines == numel (varargin)
        || ! isnumeric (varargin{headerlines + 1}))
-      error ("missing or illegal value for 'headerlines'" );
+      error ("textread: missing or invalid value for 'headerlines'" );
     endif
     ## Avoid conveying floats to fskipl
     varargin{headerlines + 1} = round (varargin{headerlines + 1});
@@ -150,7 +158,7 @@ function varargout = textread (filename, format = "%f", varargin)
   endif
   st_pos = ftell (fid);
 
-  ## Read a first file chunk. Rest follows after endofline processing
+  ## Read a first file chunk.  Rest follows after endofline processing
   [str, count] = fscanf (fid, "%c", BUFLENGTH);
   if (isempty (str) || count < 1)
     warning ("textread: empty file");
@@ -167,15 +175,15 @@ function varargout = textread (filename, format = "%f", varargin)
         eol_char = do_string_escapes (eol_char);
       endif
       if (! any (strcmp (eol_char, {"", "\n", "\r", "\r\n"})))
-        error ("textscan: illegal EndOfLine character value specified");
+        error ("textread: invalid EndOfLine character value specified");
       endif
     else
-      error ("character value required for EndOfLine");
+      error ("textread: character value required for EndOfLine");
     endif
   else
     ## Determine EOL from file.
     ## Search for EOL candidates in the first BUFLENGTH chars
-    ## FIXME Ignore risk of 2-byte EOL (\r\n) being split at exactly BUFLENGTH
+    ## FIXME: Ignore risk of 2-byte EOL (\r\n) being split at exactly BUFLENGTH
     eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind (str(1 : eol_srch_len), "\r\n")))
@@ -218,7 +226,7 @@ function varargout = textread (filename, format = "%f", varargin)
       eoi = [ eoi (length (str)) ];
       ++n_eoi;
     endif
-    ## Found EOL delimiting last requested line. Compute ptr (incl. EOL)
+    ## Found EOL delimiting last requested line.  Compute ptr (incl. EOL)
     if (isempty (eoi))
       eoi_pos = nblks * BUFLENGTH + count;
     else
@@ -414,89 +422,89 @@ endfunction
 %! [a, b] = textread (f, "%d %s", 4);
 %! assert (a, int32 ([10; 20; 30; 40]));
 %! assert (b, {"a"; "b"; "c"; ""});
-#%! [a, b] = textread (f, "%d %s", 5);
-#%! assert (a, int32 ([10; 20; 30; 40]));
-#%! assert (b, {"a"; "b"; "c"; ""});
+%! [a, b] = textread (f, "%d %s", 5);
+%! assert (a, int32 ([10; 20; 30; 40]));
+%! assert (b, {"a"; "b"; "c"; ""});
 %! unlink (f);
 
-## Tests with format repeat count #5, nr of data lines = limiting factor
-%!test
-%! f = tempname ();
-%! fid = fopen (f, "w");
-%! fprintf (fid, "%2d\n%s\n%2dn%s", ...
-%!                1, "a", 2, "b");
-%! fclose (fid);
-%! [a, b] = textread (f, "%d %s", 2);
-%! assert (a, int32 (1));
-%! assert (b, {"a"});
+### Tests with format repeat count #5, nr of data lines = limiting factor
+#%!test
+#%! f = tempname ();
+#%! fid = fopen (f, "w");
+#%! fprintf (fid, "%2d\n%s\n%2dn%s", ...
+#%!                1, "a", 2, "b");
+#%! fclose (fid);
+#%! [a, b] = textread (f, "%d %s", 2);
+#%! assert (a, int32 (1));
+#%! assert (b, {"a"});
 
-## Read multiple lines using empty format string, missing data (should be 0)
-%!test
-%! f = tempname ();
-%! unlink (f);
-%! fid = fopen (f, "w");
-%! d = rand (1, 4);
-%! fprintf (fid, "%f, %f, ,  %f,  %f ", d);
-%! fclose (fid);
-%! A = textread (f, "");
-%! unlink (f);
-%! assert (A, [ d(1:2) 0 d(3:4)], 1e-6);
+### Read multiple lines using empty format string, missing data (should be 0)
+#%!test
+#%! f = tempname ();
+#%! unlink (f);
+#%! fid = fopen (f, "w");
+#%! d = rand (1, 4);
+#%! fprintf (fid, "%f, %f, ,  %f,  %f ", d);
+#%! fclose (fid);
+#%! A = textread (f, "");
+#%! unlink (f);
+#%! assert (A, [ d(1:2) 0 d(3:4)], 1e-6);
 
-## Test with empty positions - ML returns 0 for empty fields
-%!test
-%! f = tempname ();
-%! unlink (f);
-%! fid = fopen (f, "w");
-%! d = rand (1, 4);
-%! fprintf (fid, ",2,,4\n5,,7,\n");
-%! fclose (fid);
-%! A = textread (f, "", "delimiter", ",");
-%! unlink (f);
-%! assert (A, [0 2 0 4; 5 0 7 0], 1e-6);
+### Test with empty positions - ML returns 0 for empty fields
+#%!test
+#%! f = tempname ();
+#%! unlink (f);
+#%! fid = fopen (f, "w");
+#%! d = rand (1, 4);
+#%! fprintf (fid, ",2,,4\n5,,7,\n");
+#%! fclose (fid);
+#%! A = textread (f, "", "delimiter", ",");
+#%! unlink (f);
+#%! assert (A, [0 2 0 4; 5 0 7 0], 1e-6);
 
-## Another test with empty format + positions, now with more incomplete lower
-## row (must be appended with zeros to get rectangular matrix)
-%!test
-%! f = tempname ();
-%! unlink (f);
-%! fid = fopen (f, "w");
-%! d = rand (1, 4);
-%! fprintf (fid, ",2,,4\n5,\n");
-%! fclose (fid);
-%! A = textread (f, "", "delimiter", ",");
-%! unlink (f);
-%! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
+### Another test with empty format + positions, now with more incomplete lower
+### row (must be appended with zeros to get rectangular matrix)
+#%!test
+#%! f = tempname ();
+#%! unlink (f);
+#%! fid = fopen (f, "w");
+#%! d = rand (1, 4);
+#%! fprintf (fid, ",2,,4\n5,\n");
+#%! fclose (fid);
+#%! A = textread (f, "", "delimiter", ",");
+#%! unlink (f);
+#%! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
 
-## Test endofline
-%!test
-%! f = tempname ();
-%! fid = fopen (f, "w");
-%! fprintf (fid, "a\rb\rc");
-%! fclose (fid);
-%! ## Test EOL detection
-%! d = textread (f, "%s");
-%! assert (d, {"a";"b";"c"});
-%! ## Test explicit EOL specification (bug #45046)
-%! d = textread (f, "%s", "endofline", "\r");
-%! assert (d, {"a"; "b"; "c"});
-%! unlink (f);
+### Test endofline
+#%!test <45046>
+#%! f = tempname ();
+#%! fid = fopen (f, "w");
+#%! fprintf (fid, "a\rb\rc");
+#%! fclose (fid);
+#%! ## Test EOL detection
+#%! d = textread (f, "%s");
+#%! assert (d, {"a";"b";"c"});
+#%! ## Test explicit EOL specification (bug #45046)
+#%! d = textread (f, "%s", "endofline", "\r");
+#%! assert (d, {"a"; "b"; "c"});
+#%! unlink (f);
 
-## Properly process single-quoted EOL args (bug #46477)
-%!test
-%! f = tempname ();
-%! fid = fopen (f, "w");
-%! fprintf (fid, "hello, world!");
-%! fclose (fid);
-%! [a, b] = textread (f, "%s%s", "endofline", '\n');
-%! assert (a{1}, "hello,");
-%! assert (b{1}, "world!");
+### Properly process single-quoted EOL args
+#%!test <46477>
+#%! f = tempname ();
+#%! fid = fopen (f, "w");
+#%! fprintf (fid, "hello, world!");
+#%! fclose (fid);
+#%! [a, b] = textread (f, "%s%s", "endofline", '\n');
+#%! assert (a{1}, "hello,");
+#%! assert (b{1}, "world!");
 
-## Test input validation
-%!error textread ()
-%!error textread (1)
-%!error <arguments must be strings> textread (1, "%f")
-%!error <arguments must be strings> textread ("fname", 1)
-%!error <missing or illegal value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
-%!error <missing or illegal value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
-%!error <character value required for> textread (file_in_loadpath ("textread.m"), "%s", "endofline", true)
+### Test input validation
+#%!error textread ()
+#%!error textread (1)
+#%!error <arguments must be strings> textread (1, "%f")
+#%!error <arguments must be strings> textread ("fname", 1)
+#%!error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines")
+#%!error <missing or invalid value for> textread (file_in_loadpath ("textread.m"), "", "headerlines", 'hh')
+#%!error <character value required for> textread (file_in_loadpath ("textread.m"), "%s", "endofline", true)
 

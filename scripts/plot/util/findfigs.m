@@ -1,5 +1,5 @@
 ## Copyright (C) 2008 Bill Denney
-## Copyright (C) 2012-2015 Carnë Draug
+## Copyright (C) 2012-2016 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} findfigs ()
+## @deftypefn {} {} findfigs ()
 ## Find all visible figures that are currently off the screen and move them
 ## onto the screen.
 ## @seealso{allchild, figure, get, set}

@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2015 pdiribarne
+## Copyright (C) 2012-2016 pdiribarne
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{hnew} =} copyobj (@var{horig})
-## @deftypefnx {Function File} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
-## Construct a copy of the graphic object associated with handle @var{horig}
-## and return a handle @var{hnew} to the new object.
+## @deftypefn  {} {@var{hnew} =} copyobj (@var{horig})
+## @deftypefnx {} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
+## Construct a copy of the graphic objects associated with the handles
+## @var{horig} and return new handles @var{hnew} to the new objects.
 ##
 ## If a parent handle @var{hparent} (root, figure, axes, or hggroup) is
 ## specified, the copied object will be created as a child of @var{hparent}.
+##
+## If @var{horig} is a vector of handles, and @var{hparent} is a scalar,
+## then each handle in the vector @var{hnew} has its @qcode{"Parent"} property
+## set to @var{hparent}.  Conversely, if @var{horig} is a scalar and
+## @var{hparent} a vector, then each parent object will receive a copy of
+## @var{horig}.  If @var{horig} and @var{hparent} are both vectors with the
+## same number of elements then @code{@var{hnew}(i)} will have parent
+## @code{@var{hparent}(i)}.
 ## @seealso{struct2hdl, hdl2struct, findobj}
 ## @end deftypefn
 
@@ -40,8 +48,17 @@ function hnew = copyobj (horig, hparent = 0)
     print_usage ();
   elseif (! ishandle (hparent))
     hparent = figure (fix (hparent));
-  elseif (! any (strcmpi (get (hparent).type, partypes)))
-    print_usage ();
+  else
+    for hp = hparent(:)'
+      if (! any (strcmpi (get (hp, "type"), partypes)))
+        print_usage ();
+      endif
+    endfor
+  endif
+
+  if (numel (horig) != numel (hparent)
+      && ! (isscalar (hparent) || isscalar (horig)))
+    error ("copyobj: size of HORIG and HPARENT must match, or one must be a scalar");
   endif
 
   ## current figure and axes
@@ -49,24 +66,47 @@ function hnew = copyobj (horig, hparent = 0)
   ca = get (cf, "currentaxes");
 
   ## compatibility of input handles
-  kididx = find (strcmp (alltypes, get (horig).type));
-  paridx = find (strcmp (alltypes, get (hparent).type));
+  for i = 1:numel (horig)
+    kididx(i) = find (strcmp (alltypes, get (horig(i), "type")));
+  endfor
+
+  for i = 1:numel (hparent)
+    paridx(i) = find (strcmp (alltypes, get (hparent(i), "type")));
+  endfor
 
   if (kididx <= paridx)
-    error ("copyobj: %s object can't be children to %s.",
+    error ("copyobj: %s object can't be a child of %s.",
            alltypes{kididx}, alltypes{paridx});
-  elseif (nargin == 1)
+  endif
+
+  ## loop over vector inputs
+  if (nargin == 1)
+    ## No parent specified
+    for i = numel (horig)
+      str = hdl2struct (horig(i));
+      hnew(i) = struct2hdl (str);
+    endfor
+  elseif (isscalar (hparent))
+    for i = 1:numel (horig)
+      str = hdl2struct (horig(i));
+      hnew(i) = struct2hdl (str, hparent);
+    endfor
+  elseif (isscalar (horig))
     str = hdl2struct (horig);
-    hnew = struct2hdl (str);
+    for i = 1:numel (hparent)
+      hnew(i) = struct2hdl (str, hparent(i));
+    endfor
   else
-    str = hdl2struct (horig);
-    hnew = struct2hdl (str, hparent);
+    for i = 1:numel (horig)
+      str = hdl2struct (horig(i));
+      hnew(i) = struct2hdl (str, hparent(i));
+    endfor
   endif
 
   ## reset current figure (and eventually axes) to original
   set (0, "currentfigure", cf);
-  if (ancestor (hnew, "figure") == cf && ! isempty (ca))
-    set (cf, "currentaxes", ca)
+  if (ancestor (hnew(1), "figure") == cf && ! isempty (ca))
+    set (cf, "currentaxes", ca);
   endif
 
 endfunction
@@ -76,55 +116,57 @@ endfunction
 ## with FLTK backend which is not respecting the set ('position') call.
 
 %!demo
-%! hobj = figure ('name', 'Original', 'numbertitle', 'off');
+%! hobj = clf;
+%! set (hobj, "name", "Original", "numbertitle", "off");
 %! hold on;
 %! x = 1:10;
 %! y = x.^2;
 %! dy = 2 * (.2 * x);
 %! y2 = (x - 3).^2;
 %! hg = errorbar (x, y, dy);
-%! set (hg, 'marker', '^', 'markerfacecolor', rand (1,3));
-%! plot (x, y2, 'ok-');
-%! legend ('errorbar', 'line');
+%! set (hg, "marker", "^", "markerfacecolor", rand (1,3));
+%! plot (x, y2, "ok-");
+%! legend ("errorbar", "line");
 %! drawnow ();
-%! pos = get (hobj, 'position');
-%! scrn = get (0, 'screensize');
-%! set (hobj, 'position', [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! pos = get (hobj, "position");
+%! scrn = get (0, "screensize");
+%! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 %! hnew = copyobj (hobj);
 %! drawnow ();
-%! set (hnew, 'name', 'Copyobj');
+%! set (hnew, "name", "Copyobj");
 %! drawnow ();
-%! set (hnew, 'position', [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
 %!demo
-%! hobj = figure ('name', 'Original', 'numbertitle', 'off');
+%! hobj = clf;
+%! set (hobj, "name", "Original", "numbertitle", "off");
 %! subplot (2,2,1);
-%! hold on;
-%! contourf (rand (10, 10));
-%! colorbar ();
+%!  hold on;
+%!  contourf (rand (10, 10));
+%!  colorbar ();
 %! subplot (2,2,2);
-%! quiver (rand (10, 10), rand (10, 10));
+%!  quiver (rand (10, 10), rand (10, 10));
 %! subplot (2,2,3);
-%! colormap (jet (64));
-%! hold on;
-%! sombrero ();
-%! colorbar ('peer', gca, 'NorthOutside');
+%!  colormap (jet (64));
+%!  hold on;
+%!  sombrero ();
+%!  colorbar ("peer", gca, "NorthOutside");
 %! subplot (2,2,4);
-%! imagesc (rand (30, 30));
-%! text (15, 15, 'Rotated text', ...
-%!       'HorizontAlalignment', 'Center', 'Rotation', 30);
+%!  imagesc (rand (30, 30));
+%!  text (15, 15, "Rotated text", ...
+%!        "HorizontAlalignment", "Center", "Rotation", 30);
 %! drawnow ();
-%! pos = get (hobj, 'position');
-%! scrn = get (0, 'screensize');
-%! set (hobj, 'position', [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! pos = get (hobj, "position");
+%! scrn = get (0, "screensize");
+%! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 %! hnew = copyobj (hobj);
 %! drawnow ();
-%! set (hnew, 'name', 'Copyobj');
+%! set (hnew, "name", "Copyobj");
 %! drawnow ();
-%! set (hnew, 'position', [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
+%! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
 %!testif HAVE_MAGICK
@@ -174,11 +216,11 @@ endfunction
 %!   hf = figure ("visible", "off");
 %!   hax = axes ("tag", tag);
 %!   hpa = patch ();
-%!   set (hpa, "facecolor", [.5 .5 .5], "tag", tag)
+%!   set (hpa, "facecolor", [.5 .5 .5], "tag", tag);
 %!   hax2 = copyobj (hax, hf);
-%!   assert (get (hax2, "tag"), tag)
+%!   assert (get (hax2, "tag"), tag);
 %!   hpa2 = get (hax2, "children");
-%!   assert (get (hpa2, "facecolor"), [.5 .5 .5])
+%!   assert (get (hpa2, "facecolor"), [.5 .5 .5]);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect

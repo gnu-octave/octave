@@ -1,22 +1,33 @@
-FCN_FILE_DIRS += prefs
+FCN_FILE_DIRS += \
+  scripts/prefs \
+  scripts/prefs/private
 
-prefs_PRIVATE_FCN_FILES = \
-  prefs/private/loadprefs.m \
-  prefs/private/prefsfile.m \
-  prefs/private/saveprefs.m
+scripts_prefs_PRIVATE_FCN_FILES = \
+  scripts/prefs/private/loadprefs.m \
+  scripts/prefs/private/prefsfile.m \
+  scripts/prefs/private/saveprefs.m
 
-prefs_FCN_FILES = \
-  prefs/addpref.m \
-  prefs/getpref.m \
-  prefs/ispref.m \
-  prefs/prefdir.m \
-  prefs/preferences.m \
-  prefs/rmpref.m \
-  prefs/setpref.m \
-  $(prefs_PRIVATE_FCN_FILES)
+scripts_prefs_FCN_FILES = \
+  scripts/prefs/addpref.m \
+  scripts/prefs/getpref.m \
+  scripts/prefs/ispref.m \
+  scripts/prefs/prefdir.m \
+  scripts/prefs/preferences.m \
+  scripts/prefs/rmpref.m \
+  scripts/prefs/setpref.m
 
-FCN_FILES += $(prefs_FCN_FILES)
+scripts_prefsdir = $(fcnfiledir)/prefs
 
-PKG_ADD_FILES += prefs/PKG_ADD
+scripts_prefs_DATA = $(scripts_prefs_FCN_FILES)
 
-DIRSTAMP_FILES += prefs/$(octave_dirstamp)
+scripts_prefs_privatedir = $(fcnfiledir)/prefs/private
+
+scripts_prefs_private_DATA = $(scripts_prefs_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(scripts_prefs_FCN_FILES) \
+  $(scripts_prefs_PRIVATE_FCN_FILES)
+
+PKG_ADD_FILES += scripts/prefs/PKG_ADD
+
+DIRSTAMP_FILES += scripts/prefs/$(octave_dirstamp)

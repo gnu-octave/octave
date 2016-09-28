@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2015 Benjamin Lindner
+Copyright (C) 2009-2016 Benjamin Lindner
 
 This file is part of Octave.
 
@@ -20,8 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ls_ascii_helper_h)
+#if ! defined (octave_ls_ascii_helper_h)
 #define octave_ls_ascii_helper_h 1
+
+#include "octave-config.h"
 
 #include <iosfwd>
 #include <string>
@@ -36,3 +38,4 @@ extern OCTINTERP_API std::string
 read_until_newline (std::istream& is, bool keep_newline = false);
 
 #endif
+

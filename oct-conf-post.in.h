@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2015 John W. Eaton
+Copyright (C) 1993-2016 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,31 +20,45 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (GNULIB_NAMESPACE)
-#define GNULIB_NAMESPACE gnulib
-#endif
+/* The C++ standard is evolving to allow attribute hints in a
+   compiler-independent manner.  In C++ 2011 support for noreturn was
+   added.  In C++ 2014 support for deprecated was added.  The Octave
+   code base has been future-proofed by using macros of the form
+   OCTAVE_ATTRIBUTE_NAME in place of vendor specific attribute
+   mechanisms.  As compilers evolve, the underlying implementation can
+   be changed with the macro definitions below.  FIXME: Update macros
+   to use C++ standard attribute syntax when Octave moves to C++ 2011
+   standard.  */
 
 #if defined (__GNUC__)
-#define GCC_ATTR_DEPRECATED __attribute__ ((__deprecated__))
-#define HAVE_ATTR_DEPRECATED
+   /* The following attributes are used with gcc and clang compilers.  */
+#  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__ (msg)))
+#  else
+#    define OCTAVE_DEPRECATED(msg) __attribute__ ((__deprecated__))
+#  endif
+#  define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
-#define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))
-#define HAVE_ATTR_NORETURN
+#  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
+#  define HAVE_OCTAVE_NORETURN_ATTR 1
 
-#define GCC_ATTR_UNUSED __attribute__ ((__unused__))
-#define HAVE_ATTR_UNUSED
+#  define OCTAVE_UNUSED __attribute__ ((__unused__))
+#  define HAVE_OCTAVE_UNUSED_ATTR 1
 #else
-#define GCC_ATTR_DEPRECATED
-#define GCC_ATTR_NORETURN
-#define GCC_ATTR_UNUSED
+#  define OCTAVE_DEPRECATED(msg)
+#  define OCTAVE_NORETURN
+#  define OCTAVE_UNUSED
 #endif
 
-#define X_CAST(T, E) (T) (E)
+#define OCTAVE_USE_DEPRECATED_FUNCTIONS 1
 
-#if defined (CXX_BROKEN_REINTERPRET_CAST)
-#define FCN_PTR_CAST(T, E) (T) (E)
+#if defined (__cplusplus)
+template <typename T>
+static inline void
+octave_unused_parameter (const T&)
+{ }
 #else
-#define FCN_PTR_CAST(T, E) reinterpret_cast<T> (E)
+#  define octave_unused_parameter(param) (void) param;
 #endif
 
 #if ! defined (HAVE_DEV_T)
@@ -56,117 +70,129 @@ typedef unsigned long ino_t;
 #endif
 
 #if defined (_MSC_VER)
-#define __WIN32__
-#define WIN32
-/* missing parameters in macros */
-#pragma warning (disable: 4003)
-/* missing implementations in template instantiation */
-#pragma warning (disable: 4996)
-/* deprecated function names (FIXME?) */
-#pragma warning (disable: 4661)
+#  define __WIN32__ 1
+#  define WIN32 1
+   /* missing parameters in macros */
+#  pragma warning (disable: 4003)
+   /* missing implementations in template instantiation */
+#  pragma warning (disable: 4996)
+   /* deprecated function names (FIXME: ???) */
+#  pragma warning (disable: 4661)
 #endif
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#elif defined (__CYGWIN__)
-#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
-#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
-#else
-#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
+#if defined (__APPLE__) && defined (__MACH__)
+#  define OCTAVE_USE_OS_X_API 1
 #endif
 
 /* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-#define OCTAVE_USE_WINDOWS_API 1
+#  define OCTAVE_USE_WINDOWS_API 1
 #endif
 
-#if defined (__APPLE__) && defined (__MACH__)
-#define OCTAVE_USE_OS_X_API 1
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
+#elif defined (__CYGWIN__)
+#  define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
+#  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
+#else
+#  define OCTAVE_HAVE_POSIX_FILESYSTEM 1
 #endif
 
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
-#define OCTAVE_HAVE_SIG_JUMP
+#  define OCTAVE_HAVE_SIG_JUMP 1
 #endif
 
-#if defined (_UNICOS)
-#define F77_USES_CRAY_CALLING_CONVENTION
-#endif
-
-#if 0
-#define F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION
-#endif
-
-#ifdef USE_64_BIT_IDX_T
-#define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
+#if defined (OCTAVE_ENABLE_64)
+#  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
 #else
-#define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
+#  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
 #endif
 
 /* To be able to use long doubles for 64-bit mixed arithmetics, we need
    them at least 80 bits wide and we need roundl declared in math.h.
    FIXME: Maybe substitute this by a more precise check in the future?  */
 #if (SIZEOF_LONG_DOUBLE >= 10) && defined (HAVE_ROUNDL)
-# define OCTAVE_INT_USE_LONG_DOUBLE
-# if (SIZEOF_LONG_DOUBLE < 16 \
-      && (defined __i386__ || defined __x86_64__) && defined __GNUC__)
-#define OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED 1
-# endif
+#  define OCTAVE_INT_USE_LONG_DOUBLE
+#  if (SIZEOF_LONG_DOUBLE < 16                                          \
+       && (defined __i386__ || defined __x86_64__) && defined __GNUC__)
+#    define OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED 1
+#  endif
 #endif
-
-#define OCTAVE_EMPTY_CPP_ARG
 
 /* oct-dlldefs.h */
 
+/* FIXME: GCC supports visibility attributes as well, even using the
+   same __declspec declaration if desired.  The build system should be
+   extended to support GCC and visibility attributes.  */
 #if defined (_MSC_VER)
-#define OCTAVE_EXPORT __declspec(dllexport)
-#define OCTAVE_IMPORT __declspec(dllimport)
+#  define OCTAVE_EXPORT __declspec(dllexport)
+#  define OCTAVE_IMPORT __declspec(dllimport)
 #else
-/* All other compilers, at least for now. */
-#define OCTAVE_EXPORT
-#define OCTAVE_IMPORT
-#endif
-
-/* API macro for libcruft */
-#ifdef CRUFT_DLL
-#define CRUFT_API OCTAVE_EXPORT
-#else
-#define CRUFT_API OCTAVE_IMPORT
+   /* All other compilers, at least for now. */
+#  define OCTAVE_EXPORT
+#  define OCTAVE_IMPORT
 #endif
 
 /* API macro for liboctave */
-#ifdef OCTAVE_DLL
-#define OCTAVE_API OCTAVE_EXPORT
+#if defined (OCTAVE_DLL)
+#  define OCTAVE_API OCTAVE_EXPORT
 #else
-#define OCTAVE_API OCTAVE_IMPORT
+#  define OCTAVE_API OCTAVE_IMPORT
 #endif
 
 /* API macro for libinterp */
-#ifdef OCTINTERP_DLL
-#define OCTINTERP_API OCTAVE_EXPORT
+#if defined (OCTINTERP_DLL)
+#  define OCTINTERP_API OCTAVE_EXPORT
 #else
-#define OCTINTERP_API OCTAVE_IMPORT
+#  define OCTINTERP_API OCTAVE_IMPORT
 #endif
 
 /* API macro for libinterp/graphics */
-#ifdef OCTGRAPHICS_DLL
-#define OCTGRAPHICS_API OCTAVE_EXPORT
+#if defined (OCTGRAPHICS_DLL)
+#  define OCTGRAPHICS_API OCTAVE_EXPORT
 #else
-#define OCTGRAPHICS_API OCTAVE_IMPORT
+#  define OCTGRAPHICS_API OCTAVE_IMPORT
 #endif
 
 /* API macro for libgui */
-#ifdef OCTGUI_DLL
-#define OCTGUI_API OCTAVE_EXPORT
+#if defined (OCTGUI_DLL)
+#  define OCTGUI_API OCTAVE_EXPORT
 #else
-#define OCTGUI_API OCTAVE_IMPORT
+#  define OCTGUI_API OCTAVE_IMPORT
 #endif
 
-/* oct-types.h */
+/* Backward compatibility */
 
-#include <stdint.h>
+#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
+#  define USE_ATOMIC_REFCOUNT 1
+#endif
+
+#if defined (OCTAVE_ENABLE_64)
+#  define USE_64_BIT_IDX_T 1
+#endif
+
+#if defined (OCTAVE_ENABLE_OPENMP)
+#  define HAVE_OPENMP 1
+#endif
+
+#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
+#  define OCTAVE_FLOAT_TRUNCATE volatile
+#else
+#  define OCTAVE_FLOAT_TRUNCATE
+#endif
+
+#if defined (__cplusplus)
+#  include <cstdint>
+#else
+#  include <stdint.h>
+#endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 
-/* Tag indicating Octave config.h has been included */
-#define OCTAVE_CONFIG_INCLUDED 1
+/* Tag indicating Octave's autoconf-generated config.h has been
+   included.  This symbol is provided because autoconf-generated
+   config.h files do not define a multiple-inclusion guard.  See also
+   the notes at the top of the generated octave-config.h file.  */
+
+#define OCTAVE_AUTOCONFIG_H_INCLUDED 1

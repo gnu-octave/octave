@@ -22,12 +22,11 @@
 %!   sin (i);
 %! endfor
 %! [t2, u2, s2] = cputime ();
-%! assert (t1, u1 + s1);
-%! assert (t2 == u2 + s2);
+%! assert (t1, u1 + s1, 2*eps (t1));
+%! assert (t2, u2 + s2, 2*eps (t2));
 %! assert (t2 >= t1);
 %! assert (u2 >= u2);
 %! assert (s2 >= s2);
-%!#assert (t1 == u1 + s1 && t2 == u2 + s2 && t2 >= t1 && u2 >= u2 && s2 >= s2);
 
 %!test
 %! tic ();

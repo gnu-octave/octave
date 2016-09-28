@@ -82,8 +82,8 @@
 function player = audioplayer (varargin)
 
   if (nargin < 1 || nargin > 4
-      || (nargin < 2 && (isa (varargin{1}, "function_handle")
-                         || ischar (varargin{1}))))
+      || (nargin < 2 && ! (is_function_handle (varargin{1})
+                           || ischar (varargin{1}))))
     print_usage ();
   endif
 

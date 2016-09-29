@@ -421,7 +421,16 @@ raw_help_from_docstrings_file (const std::string& nm, std::string& h,
           file.ignore (std::numeric_limits<std::streamsize>::max(), 0x1d);
 
           // Position of end of help text.
-          std::streamoff len = file.tellg () - beg - 1;
+          std::streamoff len;
+
+          if (! file.eof ())
+            len = file.tellg () - beg - 1;
+          else
+            {
+              file.seekg (0, file.end);
+              len = file.tellg () - beg - 1;
+              file.setstate (file.eofbit);  // reset eof flag
+            }
 
           help_txt_map[name] = txt_limits_type (beg, len);
         }

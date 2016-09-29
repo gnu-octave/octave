@@ -38,6 +38,7 @@ see <http://www.gnu.org/licenses/>.
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QUrl>
+#include <QMimeData>
 
 #include <fcntl.h>
 #include <io.h>

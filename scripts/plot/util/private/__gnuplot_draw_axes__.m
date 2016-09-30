@@ -1982,9 +1982,14 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         endif
         fprintf (plot_stream, "set style line %d default;\n", idx);
         fprintf (plot_stream, "set style line %d", idx);
-        if (isnumeric (obj.markeredgecolor))
+        if (isnumeric (obj.markeredgecolor) || strcmp (obj.markeredgecolor, "auto"))
+          if (isnumeric (obj.markeredgecolor))
+            edgecolor = obj.markeredgecolor;
+          else
+            edgecolor = obj.color;
+          end
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                   round (255*obj.markeredgecolor));
+                   round (255*edgecolor));
         else
           fprintf (plot_stream, " palette");
         endif

@@ -173,7 +173,7 @@ endfunction
 %! imformats ("update", "jpg", fmt);
 %! unwind_protect
 %!   try
-%!     imread ("I sure hope this file does not exist.jpg");
+%!     imread ("I_sure_hope_this_file_does_not_exist.jpg");
 %!   catch
 %!     error_thrown = true;
 %!   end_try_catch

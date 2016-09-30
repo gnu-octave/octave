@@ -373,6 +373,8 @@ classdef inputParser < handle
 
     function parse (this, varargin)
       this.Results = struct ();
+      this.Unmatched = struct ();
+      this.UsingDefaults = cell ();
       if (numel (varargin) < numel (this.Required))
         if (this.FunctionName)
           print_usage (this.FunctionName);
@@ -740,4 +742,13 @@ endclassdef
 %! p.parse ("a", 1);
 %! p.parse ("b", 1);
 %! assert (p.Results, struct ("a", [], "b", 1));
+%! assert (p.UsingDefaults, {"a"});
 
+%!test
+%! p = inputParser;
+%! p.addParameter ("b", []);
+%! p.KeepUnmatched = true;
+%! p.parse ("a", 1);
+%! p.parse ("b", 1);
+%! assert (p.Results, struct ("b", 1));
+%! assert (p.Unmatched, struct ());

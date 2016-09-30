@@ -2849,21 +2849,27 @@ endfunction
 
 function retval = mapcdata (cdata, mode, clim, cmap_sz)
   if (ndims (cdata) == 3)
-    # True color, clamp data to 8-bit
+    ## True Color, clamp data to 8-bit
     cdata = double (cdata);
-    cdata = uint8 (255*(cdata-clim(1))/(clim(2)-clim(1)));
-    # Scale using inverse of gnuplot's cbrange mapping
-    retval = 1 + double (cdata)*(cmap_sz-1)/255;
+    cdata = 255 * (cdata - clim(1)) / (clim(2)-clim(1));
+    cdata(cdata < 0) = 0;  cdata(cdata > 255) = 255;
+    ## Scale using inverse of gnuplot's cbrange mapping
+    retval = 1 + cdata * (cmap_sz-1)/255;
   else
     if (islogical (cdata))
       cdata += 1;
     elseif (strcmp (mode, "scaled"))
       cdata = double (cdata);
       clim = double (clim);
-      cdata = 1 + fix ((cmap_sz-1)*(cdata-clim(1))/(clim(2)-clim(1)));
+      cdata = 1 + fix (cmap_sz * (cdata - clim(1)) / (clim(2) - clim(1)));
     else
-      cdata = round (cdata);
+      if (isinteger (cdata))
+        cdata += 1;
+      else
+        cdata = fix (cdata);
+      endif
     endif
     retval = max (1, min (cdata, cmap_sz));
   endif
 endfunction
+

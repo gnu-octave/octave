@@ -1982,9 +1982,14 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
         endif
         fprintf (plot_stream, "set style line %d default;\n", idx);
         fprintf (plot_stream, "set style line %d", idx);
-        if (isnumeric (obj.markeredgecolor))
+        if (isnumeric (obj.markeredgecolor) || strcmp (obj.markeredgecolor, "auto"))
+          if (isnumeric (obj.markeredgecolor))
+            edgecolor = obj.markeredgecolor;
+          else
+            edgecolor = obj.color;
+          end
           fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                   round (255*obj.markeredgecolor));
+                   round (255*edgecolor));
         else
           fprintf (plot_stream, " palette");
         endif
@@ -2850,18 +2855,29 @@ endfunction
 function retval = mapcdata (cdata, mode, clim, cmap_sz)
   if (ndims (cdata) == 3)
     ## True Color, clamp data to 8-bit
+    clim = double (clim);
     cdata = double (cdata);
-    cdata = 255 * (cdata - clim(1)) / (clim(2)-clim(1));
-    cdata(cdata < 0) = 0;  cdata(cdata > 255) = 255;
+    clim_rng = clim(2) - clim(1);
+    if (clim_rng != 0)
+      cdata = 255 * (cdata - clim(1)) / clim_rng;
+      cdata(cdata < 0) = 0;  cdata(cdata > 255) = 255;
+    else
+      cdata(:) = 255;
+    endif
     ## Scale using inverse of gnuplot's cbrange mapping
     retval = 1 + cdata * (cmap_sz-1)/255;
   else
     if (islogical (cdata))
       cdata += 1;
     elseif (strcmp (mode, "scaled"))
-      cdata = double (cdata);
       clim = double (clim);
-      cdata = 1 + fix (cmap_sz * (cdata - clim(1)) / (clim(2) - clim(1)));
+      cdata = double (cdata);
+      clim_rng = clim(2) - clim(1);
+      if (clim_rng != 0)
+        cdata = 1 + fix (cmap_sz * (cdata - clim(1)) / clim_rng);
+      else
+        cdata(:) = cmap_sz;
+      endif
     else
       if (isinteger (cdata))
         cdata += 1;

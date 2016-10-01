@@ -118,7 +118,6 @@ COREFCN_SRC = \
   libinterp/corefcn/__contourc__.cc \
   libinterp/corefcn/__dispatch__.cc \
   libinterp/corefcn/__dsearchn__.cc \
-  libinterp/corefcn/__gsvd__.cc \
   libinterp/corefcn/__ichol__.cc \
   libinterp/corefcn/__ilu__.cc \
   libinterp/corefcn/__lin_interpn__.cc \
@@ -174,6 +173,7 @@ COREFCN_SRC = \
   libinterp/corefcn/gl2ps-print.cc \
   libinterp/corefcn/graphics.cc \
   libinterp/corefcn/gripes.cc \
+  libinterp/corefcn/gsvd.cc \
   libinterp/corefcn/hash.cc \
   libinterp/corefcn/help.cc \
   libinterp/corefcn/hess.cc \

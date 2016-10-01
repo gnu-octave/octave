@@ -160,7 +160,9 @@
 ##
 ##   @item fig
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
-## @option{-textspecial} or @option{-textnormal} can be used to control whether the special flag should be set for the text in the figure.  (default is @option{-textnormal})
+## @option{-textspecial} or @option{-textnormal} can be used to control
+## whether the special flag should be set for the text in the figure.
+## (default is @option{-textnormal})
 ##
 ##   @item gif
 ##     GIF image (only available for the Gnuplot graphics toolkit)

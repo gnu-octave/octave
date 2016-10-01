@@ -9,7 +9,6 @@ scripts_linear_algebra_FCN_FILES = \
   scripts/linear-algebra/cross.m \
   scripts/linear-algebra/duplication_matrix.m \
   scripts/linear-algebra/expm.m \
-  scripts/linear-algebra/gsvd.m \
   scripts/linear-algebra/housh.m \
   scripts/linear-algebra/isbanded.m \
   scripts/linear-algebra/isdefinite.m \

@@ -75,11 +75,127 @@ function_gsvd (const T& A, const T& B, const octave_idx_type nargout)
   return retval;
 }
 
-DEFUN (__gsvd__, args, nargout,
+DEFUN (gsvd, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{s} =} __gsvd__ (@var{a}, @var{b})
-@deftypefnx {} {[@var{u}, @var{v}, @var{x}, @var{c}, @var{s}, @var{r}] =} __gsvd__ (@var{a}, @var{b})
-Undocumented internal function.
+@deftypefn  {} {@var{s} =} gsvd (@var{a}, @var{b})
+@deftypefnx {} {[@var{u}, @var{v}, @var{x}, @var{c}, @var{s}, @var{r}] =} gsvd (@var{a}, @var{b})
+@cindex generalized singular value decomposition
+Compute the generalized singular value decomposition of (@var{a}, @var{b}):
+@tex
+$$
+ U^H A X = [I 0; 0 C] [0 R]
+ V^H B X = [0 S; 0 0] [0 R]
+ C*C + S*S = eye (columns (A))
+ I and 0 are padding matrices of suitable size
+ R is upper triangular
+$$
+@end tex
+@ifinfo
+
+@example
+@group
+u' * a * x = [I 0; 0 c] * [0 r]
+v' * b * x = [0 s; 0 0] * [0 r]
+c * c + s * s = eye (columns (a))
+I and 0 are padding matrices of suitable size
+r is upper triangular
+@end group
+@end example
+
+@end ifinfo
+
+The function @code{gsvd} normally returns the vector of generalized singular
+values
+@tex
+diag (C) ./ diag (S).
+@end tex
+@ifinfo
+diag (r) ./ diag (s).
+@end ifinfo
+If asked for five return values, it computes
+@tex
+$U$, $V$, and $X$.
+@end tex
+@ifinfo
+U, V, and X.
+@end ifinfo
+With a sixth output argument, it also returns
+@tex
+R,
+@end tex
+@ifinfo
+r,
+@end ifinfo
+The common upper triangular right term.  Other authors, like
+@nospell{S. Van Huffel}, define this transformation as the simultaneous
+diagonalization of the input matrices, this can be achieved by multiplying
+@tex
+X
+@end tex
+@ifinfo
+x
+@end ifinfo
+by the inverse of
+@tex
+[I 0; 0 R].
+@end tex
+@ifinfo
+[I 0; 0 r].
+@end ifinfo
+
+For example,
+
+@example
+gsvd (hilb (3), [1 2 3; 3 2 1])
+
+@result{}
+  0.1055705
+  0.0031759
+@end example
+
+@noindent
+and
+
+@example
+[u, v, c, s, x, r] = gsvd (hilb (3), [1 2 3; 3 2 1])
+@result{}
+
+u =
+
+  -0.965609   0.240893   0.097825
+  -0.241402  -0.690927  -0.681429
+  -0.096561  -0.681609   0.725317
+
+v =
+
+  -0.41974   0.90765
+  -0.90765  -0.41974
+
+x =
+
+   0.408248   0.902199   0.139179
+  -0.816497   0.429063  -0.386314
+   0.408248  -0.044073  -0.911806
+
+c =
+
+   0.10499   0.00000
+   0.00000   0.00318
+
+s =
+   0.99447   0.00000
+   0.00000   0.99999
+
+r =
+  -0.14093  -1.24345   0.43737
+   0.00000  -3.90043   2.57818
+   0.00000   0.00000  -2.52599
+
+@end example
+
+The code is a wrapper to the corresponding @sc{lapack} dggsvd and zggsvd
+routines.
+
 @end deftypefn */)
 {
   if (args.length () !=  2)
@@ -152,27 +268,26 @@ Undocumented internal function.
             }
         }
       else
-        error ("gsvd: A and B must be real or complex matrices");
+        {
+          // Actually, can't tell which arg is at fault
+          err_wrong_type_arg ("gsvd", argA);
+          //err_wrong_type_arg ("gsvd", argB);
+        }
     }
 
   return retval;
 }
 
 /*
-## FIXME: All tests are commented out for the 4.2.0 release.
-## The m-file gsvd.m needs to be replaced with C++ code that achieves Matlab
-## compatible outputs, and the BIST tests need to be updated to reflect the new
-## outputs.
-
 ## a few tests for gsvd.m
-%!#shared A, A0, B, B0, U, V, C, S, X, R, D1, D2
+%!shared A, A0, B, B0, U, V, C, S, X, R, D1, D2
 %! A0 = randn (5, 3);
 %! B0 = diag ([1 2 4]);
 %! A = A0;
 %! B = B0;
 
 ## A (5x3) and B (3x3) are full rank
-%!#test
+%!test
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
@@ -181,7 +296,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 full rank, B: 3x3 rank deficient
-%!#test
+%!test
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
@@ -191,7 +306,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 rank deficient, B: 3x3 full rank
-%!#test
+%!test
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -202,7 +317,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A and B are both rank deficient
-%!#test
+%!test
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
@@ -212,7 +327,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*[zeros(2, 1) R]) <= 1e-6);
 
 ## A (now 3x5) and B (now 5x5) are full rank
-%!#test
+%!test
 %! A = A0.';
 %! B0 = diag ([1 2 4 8 16]);
 %! B = B0;
@@ -224,7 +339,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 full rank, B: 5x5 rank deficient
-%!#test
+%!test
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
@@ -234,7 +349,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 rank deficient, B: 5x5 full rank
-%!#test
+%!test
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -245,7 +360,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A and B are both rank deficient
-%!#test
+%!test
 %! A = A0.'; B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
@@ -257,7 +372,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
 
 ## A: 5x3 complex full rank, B: 3x3 complex full rank
-%!#test
+%!test
 %! A0 = A0 + j*randn (5, 3);
 %! B0 = diag ([1 2 4]) + j*diag ([4 -2 -1]);
 %! A = A0;
@@ -270,7 +385,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 complex full rank, B: 3x3 complex rank deficient
-%!#test
+%!test
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
@@ -280,7 +395,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 complex rank deficient, B: 3x3 complex full rank
-%!#test
+%!test
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -291,7 +406,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A (5x3) and B (3x3) are both complex rank deficient
-%!#test
+%!test
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
@@ -302,7 +417,7 @@ Undocumented internal function.
 
 ## A (now 3x5) complex and B (now 5x5) complex are full rank
 ## now, A is 3x5
-%!#test
+%!test
 %! A = A0.';
 %! B0 = diag ([1 2 4 8 16]) + j*diag ([-5 4 -3 2 -1]);
 %! B = B0;
@@ -314,7 +429,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 complex full rank, B: 5x5 complex rank deficient
-%!#test
+%!test
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
@@ -324,7 +439,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 complex rank deficient, B: 5x5 complex full rank
-%!#test
+%!test
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -335,7 +450,7 @@ Undocumented internal function.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A and B are both complex rank deficient
-%!#test
+%!test
 %! A = A0.';
 %! B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);

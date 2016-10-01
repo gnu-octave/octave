@@ -115,7 +115,8 @@ function opts = __gnuplot_print__ (opts)
       local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
     case {"cairolatex", "epscairo", "epscairolatex", ...
           "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
-          "pdfcairolatexstandalone", "pngcairo"}
+          "pdfcairolatexstandalone", "pngcairo", ...
+          "pdflatexstandalone", "pdflatex"}
       term = opts.devopt;
       if (strfind (term, "standalone"))
         gp_opts = sprintf ("standalone %s", gp_opts);
@@ -124,9 +125,10 @@ function opts = __gnuplot_print__ (opts)
       if (strfind (term, "epscairolatex"))
         gp_opts = sprintf ("eps %s", gp_opts);
         term = strrep (term, "epscairolatex", "cairolatex");
-      elseif (strfind (term, "pdfcairolatex"))
+      elseif (strfind (term, "pdfcairolatex") || strfind (term, "pdflatex"))
         gp_opts = sprintf ("pdf %s", gp_opts);
         term = strrep (term, "pdfcairolatex", "cairolatex");
+        term = strrep (term, "pdflatex", "cairolatex");
       endif
       if (__gnuplot_has_terminal__ (term))
         local_drawnow ([term " " gp_opts], opts.name, opts);
@@ -273,7 +275,8 @@ function f = font_spec (opts, varargin)
       endif
     case {"cairolatex", "epscairo", "epscairolatex", ...
           "epscairolatexstandalone", "pdfcairo", "pdfcairolatex", ...
-          "pdfcairolatexstandalone", "pngcairo"}
+          "pdfcairolatexstandalone", "pngcairo", ...
+          "pdflatexstandalone", "pdflatex"}
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
         f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
       elseif (! isempty (opts.font))

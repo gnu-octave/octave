@@ -173,7 +173,6 @@ COREFCN_SRC = \
   libinterp/corefcn/gl2ps-print.cc \
   libinterp/corefcn/graphics.cc \
   libinterp/corefcn/gripes.cc \
-  libinterp/corefcn/gsvd.cc \
   libinterp/corefcn/hash.cc \
   libinterp/corefcn/help.cc \
   libinterp/corefcn/hess.cc \

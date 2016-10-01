@@ -66,8 +66,6 @@ template <typename T> class chol;
 
 class EIG;
 
-template <typename T> class gsvd;
-
 template <typename T> class hess;
 
 template <typename T> class schur;

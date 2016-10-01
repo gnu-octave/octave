@@ -108,8 +108,6 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(givens)
 
-@DOCSTRING(gsvd)
-
 @DOCSTRING(planerot)
 
 @DOCSTRING(inv)

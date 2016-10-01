@@ -18,7 +18,6 @@ NUMERIC_INC = \
   liboctave/numeric/DASSL.h \
   liboctave/numeric/DET.h \
   liboctave/numeric/EIG.h \
-  liboctave/numeric/gsvd.h \
   liboctave/numeric/LSODE.h \
   liboctave/numeric/ODE.h \
   liboctave/numeric/ODEFunc.h \
@@ -70,7 +69,6 @@ NUMERIC_SRC = \
   liboctave/numeric/DASRT.cc \
   liboctave/numeric/DASSL.cc \
   liboctave/numeric/EIG.cc \
-  liboctave/numeric/gsvd.cc \
   liboctave/numeric/LSODE.cc \
   liboctave/numeric/ODES.cc \
   liboctave/numeric/Quad.cc \

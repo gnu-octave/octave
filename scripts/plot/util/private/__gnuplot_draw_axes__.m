@@ -2335,7 +2335,10 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
 
   if (isempty (t.fontname) || strcmp (t.fontname, "*"))
     if (ispc ())
-      fnt = "Helvetica";
+      ## FIXME: Should really test for "windows" terminal which is the
+      ## only terminal to have a problem with a null font specification.
+      ## See Bug #49135.
+      fnt = "Arial";
     else
       fnt = "";
     endif

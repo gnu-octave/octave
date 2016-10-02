@@ -77,129 +77,60 @@ function_gsvd (const T& A, const T& B, const octave_idx_type nargout)
 
 DEFUN (gsvd, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{s} =} gsvd (@var{a}, @var{b})
-@deftypefnx {} {[@var{u}, @var{v}, @var{x}, @var{c}, @var{s}, @var{r}] =} gsvd (@var{a}, @var{b})
-@cindex generalized singular value decomposition
-Compute the generalized singular value decomposition of (@var{a}, @var{b}):
+@deftypefn  {} {@var{S} =} gsvd (@var{A}, @var{B})
+@deftypefnx {} {[@var{U}, @var{V}, @var{X}, @var{C}, @var{S}] =} gsvd (@var{A}, @var{B})
+@deftypefnx {} {[@var{U}, @var{V}, @var{X}, @var{C}, @var{S}] =} gsvd (@var{A}, @var{B}, 0)
+Compute the generalized singular value decomposition of (@var{A}, @var{B}):
+
 @tex
-$$
- U^H A X = [I 0; 0 C] [0 R]
- V^H B X = [0 S; 0 0] [0 R]
- C*C + S*S = eye (columns (A))
- I and 0 are padding matrices of suitable size
- R is upper triangular
-$$
+$$ A = U C X^\dagger $$
+$$ B = V S X^\dagger $$
+$$ C^\dagger C + S^\dagger S = eye (columns (A)) $$
 @end tex
-@ifinfo
+@ifnottex
 
 @example
 @group
-u' * a * x = [I 0; 0 c] * [0 r]
-v' * b * x = [0 s; 0 0] * [0 r]
-c * c + s * s = eye (columns (a))
-I and 0 are padding matrices of suitable size
-r is upper triangular
+A = U*C*X'
+B = V*S*X'
+C'*C + S'*S = eye (columns (A))
 @end group
 @end example
 
-@end ifinfo
+@end ifnottex
 
-The function @code{gsvd} normally returns the vector of generalized singular
-values
+The function @code{gsvd} normally returns just the vector of generalized singular values
 @tex
-diag (C) ./ diag (S).
+$$ \sqrt{{{diag (C^\dagger C)} \over {diag (S^\dagger S)}}} $$
 @end tex
-@ifinfo
-diag (r) ./ diag (s).
-@end ifinfo
-If asked for five return values, it computes
+@ifnottex
+@code{sqrt (diag (C'*C) ./ diag (S'*S))}.
+@end ifnottex
+If asked for five return values, it also computes
 @tex
-$U$, $V$, and $X$.
+$U$, $V$, $X$, and $C$.
 @end tex
-@ifinfo
-U, V, and X.
-@end ifinfo
-With a sixth output argument, it also returns
-@tex
-R,
-@end tex
-@ifinfo
-r,
-@end ifinfo
-The common upper triangular right term.  Other authors, like
-@nospell{S. Van Huffel}, define this transformation as the simultaneous
-diagonalization of the input matrices, this can be achieved by multiplying
-@tex
-X
-@end tex
-@ifinfo
-x
-@end ifinfo
-by the inverse of
-@tex
-[I 0; 0 R].
-@end tex
-@ifinfo
-[I 0; 0 r].
-@end ifinfo
+@ifnottex
+U, V, X, and C.
+@end ifnottex
 
-For example,
+If the optional third input is present, @code{gsvd} constructs the
+"economy-sized" decomposition where the number of columns of @var{U}, @var{V}
+and the number of rows of @var{C}, @var{S} is less than or equal to the number
+of columns of @var{A}.  This option is not yet implemented.
 
-@example
-gsvd (hilb (3), [1 2 3; 3 2 1])
+Programming Note: the code is a wrapper to the corresponding @sc{lapack} dggsvd
+and zggsvd routines.
 
-@result{}
-  0.1055705
-  0.0031759
-@end example
-
-@noindent
-and
-
-@example
-[u, v, c, s, x, r] = gsvd (hilb (3), [1 2 3; 3 2 1])
-@result{}
-
-u =
-
-  -0.965609   0.240893   0.097825
-  -0.241402  -0.690927  -0.681429
-  -0.096561  -0.681609   0.725317
-
-v =
-
-  -0.41974   0.90765
-  -0.90765  -0.41974
-
-x =
-
-   0.408248   0.902199   0.139179
-  -0.816497   0.429063  -0.386314
-   0.408248  -0.044073  -0.911806
-
-c =
-
-   0.10499   0.00000
-   0.00000   0.00318
-
-s =
-   0.99447   0.00000
-   0.00000   0.99999
-
-r =
-  -0.14093  -1.24345   0.43737
-   0.00000  -3.90043   2.57818
-   0.00000   0.00000  -2.52599
-
-@end example
-
-The code is a wrapper to the corresponding @sc{lapack} dggsvd and zggsvd
-routines.
-
+@seealso{svd}
 @end deftypefn */)
 {
-  if (args.length () !=  2)
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
     print_usage ();
+  else if (nargin == 3)
+    warning ("gsvd: economy-sized decomposition is not yet implemented, returning full decomposition");
 
   octave_value_list retval;
 
@@ -211,13 +142,13 @@ routines.
 
   octave_idx_type np = argB.columns ();
 
-  // This "special" case should be handled in the gsvd class, not here
+  // FIXME: This "special" case should be handled in the gsvd class, not here
   if (nr == 0 || nc == 0)
     {
       retval = octave_value_list (nargout);
-      if (nargout < 2) // S = gsvd (A, B)
+      if (nargout < 2)  // S = gsvd (A, B)
         retval(0) = Matrix (0, 1);
-      else // [U, V, X, C, S, R] = gsvd (A, B)
+      else  // [U, V, X, C, S, R] = gsvd (A, B)
         {
           retval(0) = identity_matrix (nc, nc);
           retval(1) = identity_matrix (nc, nc);
@@ -236,49 +167,54 @@ routines.
       if (nc != np)
         print_usage ();
 
+      // FIXME: Remove when interface to gsvd single class has been written
+      if (argA.is_single_type () && argB.is_single_type ())
+        warning ("gsvd: no implementation for single matrices, converting to double");
+
       if (argA.is_real_type () && argB.is_real_type ())
         {
-          Matrix tmpA = argA.matrix_value ();
-          Matrix tmpB = argB.matrix_value ();
+          Matrix tmpA = argA.xmatrix_value ("gsvd: A must be a real or complex matrix");
+          Matrix tmpB = argB.xmatrix_value ("gsvd: B must be a real or complex matrix");
 
-          // FIXME: This code is still using error_state
-          if (! error_state)
-            {
-              if (tmpA.any_element_is_inf_or_nan ())
-                error ("gsvd: B cannot have Inf or NaN values");
-              if (tmpB.any_element_is_inf_or_nan ())
-                error ("gsvd: B cannot have Inf or NaN values");
+          if (tmpA.any_element_is_inf_or_nan ())
+            error ("gsvd: A cannot have Inf or NaN values");
+          if (tmpB.any_element_is_inf_or_nan ())
+            error ("gsvd: B cannot have Inf or NaN values");
 
-              retval = function_gsvd (tmpA, tmpB, nargout);
-            }
+          retval = function_gsvd (tmpA, tmpB, nargout);
         }
       else if (argA.is_complex_type () || argB.is_complex_type ())
         {
-          ComplexMatrix ctmpA = argA.complex_matrix_value ();
-          ComplexMatrix ctmpB = argB.complex_matrix_value ();
+          ComplexMatrix ctmpA = argA.xcomplex_matrix_value ("gsvd: A must be a real or complex matrix");
+          ComplexMatrix ctmpB = argB.xcomplex_matrix_value ("gsvd: B must be a real or complex matrix");
 
-          if (! error_state)
-            {
-              if (ctmpA.any_element_is_inf_or_nan ())
-                error ("gsvd: A cannot have Inf or NaN values");
-              if (ctmpB.any_element_is_inf_or_nan ())
-                error ("gsvd: B cannot have Inf or NaN values");
+          if (ctmpA.any_element_is_inf_or_nan ())
+            error ("gsvd: A cannot have Inf or NaN values");
+          if (ctmpB.any_element_is_inf_or_nan ())
+            error ("gsvd: B cannot have Inf or NaN values");
 
-              retval = function_gsvd (ctmpA, ctmpB, nargout);
-            }
+          retval = function_gsvd (ctmpA, ctmpB, nargout);
         }
       else
-        {
-          // Actually, can't tell which arg is at fault
-          err_wrong_type_arg ("gsvd", argA);
-          //err_wrong_type_arg ("gsvd", argB);
-        }
+        error ("gsvd: A and B must be real or complex matrices");
     }
 
   return retval;
 }
 
 /*
+
+## Basic test of decomposition
+%!test <48807>
+%! A = reshape (1:15,5,3);
+%! B = magic (3);
+%! [U,V,X,C,S] = gsvd (A,B);
+%! assert (U*C*X', A, 50*eps);
+%! assert (V*S*X', B, 50*eps);
+%! S0 = gsvd (A, B);
+%! S1 = svd (A / B);
+%! assert (S0, S1, 10*eps);
+
 ## a few tests for gsvd.m
 %!shared A, A0, B, B0, U, V, C, S, X, R, D1, D2
 %! A0 = randn (5, 3);
@@ -287,7 +223,7 @@ routines.
 %! B = B0;
 
 ## A (5x3) and B (3x3) are full rank
-%!test
+%!test <48807>
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (5, 3);  D1(1:3, 1:3) = C;
 %! D2 = S;
@@ -296,7 +232,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 full rank, B: 3x3 rank deficient
-%!test
+%!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros (5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
@@ -306,7 +242,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 rank deficient, B: 3x3 full rank
-%!test
+%!test <48807>
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -317,7 +253,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A and B are both rank deficient
-%!test
+%!test <48807>
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
@@ -327,7 +263,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*[zeros(2, 1) R]) <= 1e-6);
 
 ## A (now 3x5) and B (now 5x5) are full rank
-%!test
+%!test <48807>
 %! A = A0.';
 %! B0 = diag ([1 2 4 8 16]);
 %! B = B0;
@@ -339,7 +275,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 full rank, B: 5x5 rank deficient
-%!test
+%!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5); D1(1, 1) = 1; D1(2:3, 2:3) = C;
@@ -349,7 +285,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 rank deficient, B: 5x5 full rank
-%!test
+%!test <48807>
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -360,7 +296,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A and B are both rank deficient
-%!test
+%!test <48807>
 %! A = A0.'; B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
@@ -372,7 +308,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
 
 ## A: 5x3 complex full rank, B: 3x3 complex full rank
-%!test
+%!test <48807>
 %! A0 = A0 + j*randn (5, 3);
 %! B0 = diag ([1 2 4]) + j*diag ([4 -2 -1]);
 %! A = A0;
@@ -385,7 +321,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 complex full rank, B: 3x3 complex rank deficient
-%!test
+%!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 3);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
@@ -395,7 +331,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 5x3 complex rank deficient, B: 3x3 complex full rank
-%!test
+%!test <48807>
 %! B = B0;
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -406,7 +342,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A (5x3) and B (3x3) are both complex rank deficient
-%!test
+%!test <48807>
 %! B(:, 3) = 2*B(:, 1) - B(:, 2);
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(5, 2);  D1(1:2, 1:2) = C;
@@ -417,7 +353,7 @@ routines.
 
 ## A (now 3x5) complex and B (now 5x5) complex are full rank
 ## now, A is 3x5
-%!test
+%!test <48807>
 %! A = A0.';
 %! B0 = diag ([1 2 4 8 16]) + j*diag ([-5 4 -3 2 -1]);
 %! B = B0;
@@ -429,7 +365,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 complex full rank, B: 5x5 complex rank deficient
-%!test
+%!test <48807>
 %! B(2, 2) = 0;
 %! [U, V, X, C, S, R] = gsvd (A, B);
 %! D1 = zeros(3, 5);  D1(1, 1) = 1;  D1(2:3, 2:3) = C;
@@ -439,7 +375,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A: 3x5 complex rank deficient, B: 5x5 complex full rank
-%!test
+%!test <48807>
 %! B = B0;
 %! A(3, :) = 2*A(1, :) - A(2, :);
 %! [U, V, X, C, S, R] = gsvd (A, B);
@@ -450,7 +386,7 @@ routines.
 %! assert (norm ((V'*B*X) - D2*R) <= 1e-6);
 
 ## A and B are both complex rank deficient
-%!test
+%!test <48807>
 %! A = A0.';
 %! B = B0.';
 %! A(:, 3) = 2*A(:, 1) - A(:, 2);
@@ -461,5 +397,6 @@ routines.
 %! assert (norm (diag (C).^2 + diag (S).^2 - ones (3, 1)) <= 1e-6);
 %! assert (norm ((U'*A*X) - D1*[zeros(4, 1) R]) <= 1e-6);
 %! assert (norm ((V'*B*X) - D2*[zeros(4, 1) R]) <= 1e-6);
+
 */
 

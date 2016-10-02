@@ -400,14 +400,16 @@ function print (varargin)
       hax = findall (opts.figure, "-depth", 1, "type", "axes",
                                   "-not", "tag", "legend",
                                   "-not", "color", "none");
-      m = numel (props);
-      for n = 1:numel(hax)
-        props(m+n).h = hax(n);
-        props(m+n).name = "color";
-        props(m+n).value{1} = get(hax(n), "color");
-        set (hax(n), "color", "white");
-      endfor
-      nfig += n;
+      if (! isempty (hax))
+        m = numel (props);
+        for n = 1:numel (hax)
+          props(m+n).h = hax(n);
+          props(m+n).name = "color";
+          props(m+n).value{1} = get(hax(n), "color");
+          set (hax(n), "color", "white");
+        endfor
+        nfig += n;
+      endif
     endif
 
     if (opts.force_solid != 0)

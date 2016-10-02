@@ -775,14 +775,16 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                     ccol = cdat;
                   endif
                   if (strcmp (obj.facecolor, "flat"))
-                    ccdat = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                     if (isequal (size (ccol), [1, 3]))
                       ## RGB Triplet
                       color = ccol;
-                    elseif (nd == 3 && numel (xcol) == 3)
-                      color = cmap(ccdat(1), :);
                     else
-                      color = cmap(ccdat, :);
+                      ccdat = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
+                      if (nd == 3 && numel (xcol) == 3)
+                        color = cmap(ccdat(1), :);
+                      else
+                        color = cmap(ccdat, :);
+                      endif
                     endif
                   elseif (strcmp (obj.facecolor, "interp"))
                     if (nd == 3 && numel (xcol) == 3)
@@ -894,10 +896,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   ccol = cdat;
                 endif
                 if (strcmp (ec, "flat"))
-                  ccol = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
                   if (isequal (size (ccol), [1, 3]))
                     color = ccol;
                   else
+                    if (columns (ccol) != 3)
+                      ccol = mapcdata (ccol, obj.cdatamapping, clim, cmap_sz);
+                    endif
                     if (isscalar (ccol))
                       ccol = repmat (ccol, numel (xcol), 1);
                     endif

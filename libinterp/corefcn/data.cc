@@ -3549,6 +3549,49 @@ complex ([1, 2], [3, 4])
   return retval;
 }
 
+/*
+%!error <undefined> 1+Infj
+%!error <undefined> 1+Infi
+
+%!test <31974>
+%! assert (Inf + Inf*i, complex (Inf, Inf))
+%!
+%! assert (1 + Inf*i, complex (1, Inf))
+%! assert (1 + Inf*j, complex (1, Inf))
+%!
+%! ## whitespace should not affect parsing
+%! assert (1+Inf*i, complex (1, Inf))
+%! assert (1+Inf*j, complex (1, Inf))
+%!
+%! assert (NaN*j, complex (0, NaN))
+%!
+%! assert (Inf * 4j, complex (0, Inf))
+
+%!test <31974>
+%! x = Inf;
+%! assert (x * j, complex (0, Inf))
+%! j = complex (0, 1);
+%! assert (Inf * j, complex (0, Inf))
+
+%!test <31974>
+%! exp = complex (zeros (2, 2), Inf (2, 2));
+%! assert (Inf (2, 2) * j, exp)
+%! assert (Inf (2, 2) .* j, exp)
+%! assert (Inf * (ones (2, 2) * j), exp)
+%! assert (Inf (2, 2) .* (ones (2, 2) * j), exp)
+
+%!test <31974>
+%! assert ([Inf; 0] * [i, 0], complex ([NaN NaN; 0 0], [Inf NaN; 0 0]))
+%! assert ([Inf, 0] * [i; 0], complex (NaN, Inf))
+%! assert ([Inf, 0] .* [i, 0], complex ([0 0], [Inf 0]))
+
+%!test <31974>
+%! m = @(x, y) x * y;
+%! d = @(x, y) x / y;
+%! assert (m (Inf, i), complex (0, +Inf))
+%! assert (d (Inf, i), complex (0, -Inf))
+*/
+
 DEFUN (isreal, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isreal (@var{x})

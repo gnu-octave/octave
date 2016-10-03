@@ -335,10 +335,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, "set border front;\n");
   else
     fputs (plot_stream, "set grid layerdefault;\n");
-    ## FIXME: The gnuplot help says that "layerdefault" should work
-    ##        for set border too, but it fails for me with gnuplot 4.2.5.
-    ##        So, use "back" instead.
-    fputs (plot_stream, "set border back;\n");
   endif
 
   xlogscale = strcmp (axis_obj.xscale, "log");

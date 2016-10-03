@@ -2416,7 +2416,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
   endif
 
   if (enhanced)
-    str = regexprep (str, '(?<!\\)@', '\@');
+    str = regexprep (str, '(?<!\\)@', '\\@');
   endif
 
   if (enhanced)

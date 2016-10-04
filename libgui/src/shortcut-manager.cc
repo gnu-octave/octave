@@ -172,7 +172,6 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
   init (tr ("Report Bug"), "main_help:report_bug", QKeySequence ());
   init (tr ("Octave Packages"), "main_help:packages", QKeySequence ());
-  init (tr ("Share Code"), "main_help:agora", QKeySequence ());
   init (tr ("Contribute to Octave"), "main_help:contribute", QKeySequence ());
   init (tr ("Octave Developer Resources"), "main_help:developer",
         QKeySequence ());
@@ -780,4 +779,3 @@ enter_shortcut::keyPressEvent (QKeyEvent *e)
       setText (QKeySequence(key).toString ());
     }
 }
-

@@ -630,12 +630,6 @@ main_window::open_octave_packages_page (void)
 }
 
 void
-main_window::open_agora_page (void)
-{
-  QDesktopServices::openUrl (QUrl ("http://agora.octave.org"));
-}
-
-void
 main_window::open_contribute_page (void)
 {
   QDesktopServices::openUrl (QUrl ("http://octave.org/contribute.html"));
@@ -2007,9 +2001,6 @@ main_window::construct_help_menu (QMenuBar *p)
   _octave_packages_action = add_action (help_menu, QIcon (),
             tr ("Octave Packages"), SLOT (open_octave_packages_page ()));
 
-  _agora_action = add_action (help_menu, QIcon (),
-            tr ("Share Code"), SLOT (open_agora_page ()));
-
   _contribute_action = add_action (help_menu, QIcon (),
             tr ("Contribute"), SLOT (open_contribute_page ()));
 
@@ -2280,7 +2271,6 @@ main_window::configure_shortcuts ()
   shortcut_manager::set_shortcut (_online_doc_action, "main_help:online_doc");
   shortcut_manager::set_shortcut (_report_bug_action, "main_help:report_bug");
   shortcut_manager::set_shortcut (_octave_packages_action, "main_help:packages");
-  shortcut_manager::set_shortcut (_agora_action, "main_help:agora");
   shortcut_manager::set_shortcut (_contribute_action, "main_help:contribute");
   shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
   shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
@@ -2337,7 +2327,6 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _online_doc_action->setShortcut (no_key);
       _report_bug_action->setShortcut (no_key);
       _octave_packages_action->setShortcut (no_key);
-      _agora_action->setShortcut (no_key);
       _contribute_action->setShortcut (no_key);
       _developer_action->setShortcut (no_key);
       _about_octave_action->setShortcut (no_key);
@@ -2400,4 +2389,3 @@ main_window::clear_clipboard ()
 {
   _clipboard->clear (QClipboard::Clipboard);
 }
-

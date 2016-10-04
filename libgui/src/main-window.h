@@ -131,7 +131,6 @@ public slots:
   void display_community_news (const QString& news);
   void open_bug_tracker_page (void);
   void open_octave_packages_page (void);
-  void open_agora_page (void);
   void open_contribute_page (void);
   void open_donate_page (void);
   void process_settings_dialog_request (const QString& desired_tab
@@ -362,7 +361,6 @@ private:
   QAction *_online_doc_action;
   QAction *_report_bug_action;
   QAction *_octave_packages_action;
-  QAction *_agora_action;
   QAction *_contribute_action;
   QAction *_developer_action;
   QAction *_about_octave_action;
@@ -437,4 +435,3 @@ private:
 };
 
 #endif
-

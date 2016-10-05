@@ -36,13 +36,13 @@
 ## @seealso{odepkg}
 
 function h = starting_stepsize (order, func, t0, x0,
-                                AbsTol, RelTol, normcontrol)
+                                AbsTol, RelTol, normcontrol, args)
 
   ## compute norm of initial conditions
   d0 = AbsRel_Norm (x0, x0, AbsTol, RelTol, normcontrol);
 
   ## compute norm of the function evaluated at initial conditions
-  y = func (t0, x0);
+  y = func (t0, x0, args{:});
   if (iscell (y))
     y = y{1};
   endif
@@ -58,7 +58,7 @@ function h = starting_stepsize (order, func, t0, x0,
   x1 = x0 + h0 * y;
 
   ## approximate the derivative norm
-  yh = func (t0+h0, x1);
+  yh = func (t0+h0, x1, args{:});
   if (iscell (yh))
     yh = yh{1};
   endif

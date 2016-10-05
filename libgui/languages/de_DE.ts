@@ -121,7 +121,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1779"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1780"/>
         <source>copied selection to clipboard</source>
         <translation>Auswahl in die Zwischenablage kopiert</translation>
     </message>
@@ -129,7 +129,7 @@
 <context>
     <name>QtHandles::Figure</name>
     <message>
-        <location filename="../graphics/Figure.cc" line="+298"/>
+        <location filename="../graphics/Figure.cc" line="+297"/>
         <source>Figure ToolBar</source>
         <translation>Werkzeugleiste</translation>
     </message>
@@ -180,17 +180,17 @@
     </message>
     <message>
         <location line="+7"/>
-        <location line="+463"/>
+        <location line="+465"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-465"/>
+        <location line="-467"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location line="+504"/>
+        <location line="+506"/>
         <location line="+69"/>
         <source>Save Figure As</source>
         <translation>Abbildung speichern unter</translation>
@@ -409,12 +409,12 @@
         <location line="+25"/>
         <location line="+62"/>
         <location line="+28"/>
-        <location line="+79"/>
+        <location line="+81"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-462"/>
+        <location line="-464"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;Alle Dateien (*)</translation>
     </message>
@@ -440,12 +440,12 @@ is already open in the editor</source>
 ist im Editor bereits geöffnet</translation>
     </message>
     <message>
-        <location line="+492"/>
+        <location line="+494"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location line="+480"/>
+        <location line="+481"/>
         <source>&amp;Save File</source>
         <translation>Datei &amp;speichern</translation>
     </message>
@@ -547,7 +547,7 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Gehe zu Zeile...</translation>
     </message>
     <message>
-        <location line="-1341"/>
+        <location line="-1344"/>
         <source>Could not start custom file editor
 %1</source>
         <translation>Externer Editor kann nicht gestartet werden:
@@ -564,7 +564,7 @@ ist im Editor bereits geöffnet</translation>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location line="+1041"/>
+        <location line="+1044"/>
         <source>&amp;Recent Editor Files</source>
         <translation>&amp;Zuletzt bearbeitete Dateien</translation>
     </message>
@@ -746,23 +746,23 @@ ist im Editor bereits geöffnet</translation>
         <translation>Z&amp;eilenenden anzeigen</translation>
     </message>
     <message>
-        <location line="-1467"/>
+        <location line="-1470"/>
         <source>File Encoding:</source>
         <translation>Zeichenkodierung:</translation>
     </message>
     <message>
-        <location line="+403"/>
+        <location line="+404"/>
         <source>%1 is a built-in function</source>
         <translation>%1 ist eine eingebaute Funktion</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+37"/>
         <source>Can not find function %1</source>
         <translatorcomment>Schreibfehler im Englischen: &quot;Can not&quot; -&gt; &quot;Cannot&quot;</translatorcomment>
         <translation>Kann Funktion %1 nicht finden</translation>
     </message>
     <message>
-        <location line="+911"/>
+        <location line="+912"/>
         <source>Find &amp;Next...</source>
         <translation>&amp;Nächsten suchen...</translation>
     </message>
@@ -817,7 +817,7 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Dokumentation zum Schlüsselwort</translation>
     </message>
     <message>
-        <location line="-1305"/>
+        <location line="-1308"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -851,7 +851,7 @@ konnte nicht zum Schreiben geöffnet werden:
         <translation>Der zugehörige Editor-Reiter ist nicht mehr vorhanden.</translation>
     </message>
     <message>
-        <location line="+928"/>
+        <location line="+931"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -894,7 +894,14 @@ konnte nicht zum Schreiben geöffnet werden:
         <translation>Spalte:</translation>
     </message>
     <message>
-        <location line="+1146"/>
+        <location line="+339"/>
+        <source>Cannot add breakpoint to modified file.
+Save and add breakpoint, or cancel?</source>
+        <translation>Haltepunkt kann nicht in einer geänderten Datei gesetzt werden.
+Speichern und Haltepunkt setzen oder abbrechen?</translation>
+    </message>
+    <message>
+        <location line="+812"/>
         <source>Goto line</source>
         <translation>Gehe zu Zeile</translation>
     </message>
@@ -961,18 +968,18 @@ Debuggen abbrechen und speichern?</translation>
         <translation>Änderungen speichern, verwerfen oder Schließen abbrechen?</translation>
     </message>
     <message>
-        <location line="-1342"/>
+        <location line="-1347"/>
         <source>encoding:</source>
         <translation>Kodierung:</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="+243"/>
         <source>Breakpoint condition</source>
         <translation>Bedingung für Haltepunkt</translation>
     </message>
     <message>
         <location line="+88"/>
-        <location line="+1024"/>
+        <location line="+1025"/>
         <location line="+372"/>
         <location line="+215"/>
         <location line="+21"/>
@@ -982,14 +989,7 @@ Debuggen abbrechen und speichern?</translation>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-1737"/>
-        <source>Cannot add breakpoint to modified file.
-Save and add breakpoint, or canel?</source>
-        <translation>Haltepunkt kann nicht in einer geänderten Datei gesetzt werden.
-Speichern und Haltepunkt setzen oder abbrechen?</translation>
-    </message>
-    <message>
-        <location line="+1611"/>
+        <location line="-126"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1078,7 +1078,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     </message>
     <message>
         <location line="+4"/>
-        <location line="+373"/>
+        <location line="+377"/>
         <source>Find Files...</source>
         <translation>Dateien suchen...</translation>
     </message>
@@ -1093,12 +1093,12 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <translation>Im Texteditor öffnen</translation>
     </message>
     <message>
-        <location line="+389"/>
+        <location line="+391"/>
         <source>New Directory</source>
         <translation>Neues Verzeichnis</translation>
     </message>
     <message>
-        <location line="-773"/>
+        <location line="-779"/>
         <source>Show Octave directory</source>
         <translation>Aktuelles Octave Verzeichnis anzeigen</translation>
     </message>
@@ -1113,32 +1113,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <translation>Alternierende Farben für die Zeilen verwenden</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>filesdockwidget/showFileSize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/showFileType</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/showLastModified</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/showHiddenFiles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/useAlternatingRowColors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+36"/>
         <source>One directory up</source>
         <translation>Ein Verzeichnis höher</translation>
     </message>
@@ -1159,23 +1134,23 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     </message>
     <message>
         <location line="+20"/>
-        <location line="+382"/>
+        <location line="+386"/>
         <source>New File...</source>
         <translation>Neue Datei...</translation>
     </message>
     <message>
-        <location line="-379"/>
-        <location line="+382"/>
+        <location line="-383"/>
+        <location line="+386"/>
         <source>New Directory...</source>
         <translation>Neues Verzeichnis...</translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-332"/>
         <source>Activate to open in editor, right click for alternatives</source>
         <translation>Doppelklick zum Öffnen im Editor, Rechtsklick für mehr Optionen</translation>
     </message>
     <message>
-        <location line="-136"/>
+        <location line="-137"/>
         <source>File size</source>
         <translation>Dateigröße</translation>
     </message>
@@ -1195,7 +1170,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <translation>Verborgene Dateien anzeigen</translation>
     </message>
     <message>
-        <location line="+415"/>
+        <location line="+419"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
@@ -1266,12 +1241,12 @@ zu: </translation>
         <translation>Verzeichnis ist nicht leer und kann daher nicht gelöscht werden</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="+146"/>
         <source>Set directory of file browser</source>
         <translation>Setze aktuelles Browser Verzeichnis</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+30"/>
         <source>Create File</source>
         <translation>Neue Datei</translation>
     </message>
@@ -1664,7 +1639,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Befehlsverlauf</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+109"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
@@ -1729,12 +1704,12 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
     </message>
     <message>
         <location line="+758"/>
-        <location line="+975"/>
+        <location line="+980"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-301"/>
+        <location line="-298"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -1779,7 +1754,7 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="-1537"/>
+        <location line="-1545"/>
         <source>Save Workspace As</source>
         <translation>Arbeitsumgebung speichern unter</translation>
     </message>
@@ -1804,12 +1779,12 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <translation>Neuigkeiten aus der Octave Community</translation>
     </message>
     <message>
-        <location line="+206"/>
+        <location line="+201"/>
         <source>Are you sure you want to exit Octave?</source>
         <translation>Octave wirklich beenden?</translation>
     </message>
     <message>
-        <location line="+916"/>
+        <location line="+929"/>
         <source>Open an existing file in editor</source>
         <translation>Öffne eine vorhandene Datei im Editor</translation>
     </message>
@@ -1879,7 +1854,7 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <translation>Dateibrowser</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+33"/>
         <source>Contribute</source>
         <translation>Zum Projekt beitragen</translation>
     </message>
@@ -1889,17 +1864,17 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <translation>Für Octave spenden</translation>
     </message>
     <message>
-        <location line="-123"/>
+        <location line="-120"/>
         <source>Step In</source>
         <translation>Hineinspringen</translation>
     </message>
     <message>
-        <location line="-1082"/>
+        <location line="-1095"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location line="+926"/>
+        <location line="+939"/>
         <source>Load Workspace...</source>
         <translation>Lade Arbeitsumgebung...</translation>
     </message>
@@ -1927,11 +1902,6 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <location line="+16"/>
         <source>Octave Packages</source>
         <translation>Octave Pakete</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Share Code</source>
-        <translation>Code teilen</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1980,13 +1950,13 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
         <translation>Ein Verzeichnis höher</translation>
     </message>
     <message>
-        <location line="-1198"/>
-        <location line="+1201"/>
+        <location line="-1206"/>
+        <location line="+1209"/>
         <source>Browse directories</source>
         <translation>Verzeichnisse durchsuchen</translation>
     </message>
     <message>
-        <location line="-175"/>
+        <location line="-172"/>
         <source>Quit Debug Mode</source>
         <translation>Debug-Modus beenden</translation>
     </message>
@@ -2042,12 +2012,12 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
     </message>
     <message>
         <location line="+3"/>
-        <location line="+41"/>
+        <location line="+38"/>
         <source>Documentation</source>
         <translation>Dokumentation</translation>
     </message>
     <message>
-        <location line="-30"/>
+        <location line="-27"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
@@ -2060,7 +2030,7 @@ Klicke auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Octave 
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1492"/>
+        <location line="-1500"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -2119,18 +2089,18 @@ oder aktiviere die Internetverbindung in den Einstellungen unter Netzwerk.
 <context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+67"/>
-        <location line="+201"/>
+        <location filename="../src/octave-dock-widget.cc" line="+69"/>
+        <location line="+205"/>
         <source>Undock widget</source>
         <translation>Fenster lösen</translation>
     </message>
     <message>
-        <location line="-191"/>
+        <location line="-195"/>
         <source>Hide widget</source>
         <translation>Fenster verbergen</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="+137"/>
         <source>Dock widget</source>
         <translation>Fenster andocken</translation>
     </message>
@@ -2224,7 +2194,7 @@ existiert nicht. Soll sie erzeugt werden?</translation>
 <context>
     <name>resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+246"/>
+        <location filename="../src/resource-manager.cc" line="+247"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -2919,7 +2889,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>shortcut_manager</name>
     <message>
-        <location filename="../src/shortcut-manager.cc" line="+106"/>
+        <location filename="../src/shortcut-manager.cc" line="+105"/>
         <source>New File</source>
         <translation>Neue Datei</translation>
     </message>
@@ -2950,12 +2920,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+16"/>
-        <location line="+143"/>
+        <location line="+142"/>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location line="-158"/>
+        <location line="-157"/>
         <source>Exit Octave</source>
         <translation>Octave beenden</translation>
     </message>
@@ -3076,12 +3046,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+2"/>
-        <location line="+234"/>
+        <location line="+233"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="-232"/>
+        <location line="-231"/>
         <source>Documentation</source>
         <translation>Dokumentation</translation>
     </message>
@@ -3099,11 +3069,6 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+3"/>
         <source>Octave Packages</source>
         <translation>Octave Pakete</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Share Code</source>
-        <translation>Code teilen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3352,7 +3317,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <translation>Gehe zu Zeile</translation>
     </message>
     <message>
-        <location line="-125"/>
+        <location line="-124"/>
         <source>Step</source>
         <translatorcomment>Armin: Vorher &quot;Überspringen&quot; im Kontrast zu &quot;Hineinspringen&quot;</translatorcomment>
         <translation>Einzelschritt</translation>
@@ -3369,7 +3334,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <translation>Fehler melden</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Close Other Files</source>
         <translation>Andere Dokumente schließen</translation>
     </message>
@@ -3624,7 +3589,7 @@ verwendet. Soll das Tastenkürzel trotzdem verwendet werden und damit von der vo
         <translation>Globale Suche</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>

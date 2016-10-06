@@ -251,6 +251,12 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
 %!assert (svd ([1, 2; 2, 1]), [3; 1], sqrt (eps))
 
 %!test
+a = [1, 2; 3, 4] + [5, 6; 7, 8]*i;
+[u,s,v] = svd (a);
+assert (a, u * s * v', 128 * eps);
+
+
+%!test
 %! [u, s, v] = svd ([1, 2; 2, 1]);
 %! x = 1 / sqrt (2);
 %! assert (u, [-x, -x; -x, x], sqrt (eps));

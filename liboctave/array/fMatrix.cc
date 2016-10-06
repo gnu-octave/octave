@@ -2103,6 +2103,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
       float dminmn = static_cast<float> (minmn);
       float dsmlsizp1 = static_cast<float> (smlsiz+1);
       float tmp = octave::math::log2 (dminmn / dsmlsizp1);
+      float anorm = 0.0;
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -2158,17 +2159,28 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (work(0));
       work.resize (dim_vector (lwork, 1));
 
-      F77_XFCN (sgelsd, SGELSD, (m, n, nrhs, tmp_data, m, pretval,
-                                 maxmn, ps, rcon, rank,
-                                 work.fortran_vec (), lwork,
-                                 piwork, info));
+      anorm = xnorm (*this, 1);
 
-      if (s.elem (0) == 0.0)
-        rcon = 0.0;
+      if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
+        {
+          rcon = 0.0;
+          octave::warn_singular_matrix ();
+          retval = Matrix (n, m, 0.0);
+        }
       else
-        rcon = s.elem (minmn - 1) / s.elem (0);
+        {
+          F77_XFCN (sgelsd, SGELSD, (m, n, nrhs, tmp_data, m, pretval,
+                                     maxmn, ps, rcon, rank,
+                                     work.fortran_vec (), lwork,
+                                     piwork, info));
 
-      retval.resize (n, nrhs);
+          if (s.elem (0) == 0.0)
+            rcon = 0.0;
+          else
+            rcon = s.elem (minmn - 1) / s.elem (0);
+
+          retval.resize (n, nrhs);
+        }
     }
 
   return retval;

@@ -17,9 +17,4 @@
 %! ## This statement caused an error in LAPACK and eventually caused
 %! ## a segmentation fault.
 %! ## Triggers "warning: matrix singular to machine precision"
-%! ## FIXME: LAPACK errors become fatal crashes on Windows, don't test this
-%! if (ispc ())
-%!   warning ("unable to test for bug #46330 on Windows");
-%! else
-%!   assert (c / (i * Inf * eye (4) - a) * b, zeros (2, 2))
-%! endif
+%! assert (c / (i * Inf * eye (4) - a) * b, zeros (2, 2))

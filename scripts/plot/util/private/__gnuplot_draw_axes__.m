@@ -500,7 +500,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   while (! isempty (kids))
 
-    obj = get (kids(end));
+    h_obj = kids(end);
+    kids = kids(1:(end-1));
+
+    obj = get (h_obj);
 
     if (isfield (obj, "xdata"))
       obj.xdata = double (obj.xdata);
@@ -515,13 +518,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (isfield (obj, "units"))
       units = obj.units;
       unwind_protect
-        set (kids(end), "units", "data");
-        obj = get (kids(end));
+        set (h_obj, "units", "data");
+        obj = get (h_obj);
       unwind_protect_cleanup
-        set (kids(end), "units", units);
+        set (h_obj, "units", units);
       end_unwind_protect
     endif
-    kids = kids(1:(end-1));
 
     if (strcmp (obj.visible, "off"))
       continue;
@@ -538,10 +540,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (zlogscale && isfield (obj, "zdata"))
       obj.zdata = axis_obj.zsgn * obj.zdata;
       obj.zdata(obj.zdata<=0) = NaN;
-    endif
-
-    if (strcmp (get (obj.parent, "type"), "hggroup"))
-      obj.displayname = get (obj.parent, "displayname");
     endif
 
     switch (obj.type)
@@ -634,7 +632,6 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = ['title "' tmp '"'];
         endif
         usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
-        errbars = "";
         if (nd == 3)
           xdat = obj.xdata(:);
           ydat = obj.ydata(:);
@@ -657,7 +654,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         endif
 
         [style, sidx] = do_linestyle_command (obj, obj.color, data_idx,
-                                              plot_stream, errbars);
+                                              plot_stream);
 
         if isempty (style{1})
           style{1} = "points";
@@ -689,6 +686,43 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
                                           style{3}, sidx(3));
+        endif
+
+        if (strcmp (get (obj.parent, "type"), "hggroup"))
+          hg = get (obj.parent, "children");
+          if (hg(1) == h_obj)
+            # Place phantom errorbar data for legend
+            data_idx += 1;
+            is_image_data(data_idx) = is_image_data(data_idx - 1);
+            parametric(data_idx) = parametric(data_idx - 1);
+            have_cdata(data_idx) = have_cdata(data_idx - 1);
+            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+            obj.displayname = get (obj.parent, "displayname");
+            if (isempty (get (obj.parent, "displayname")))
+              titlespec{data_idx} = "title \"\"";
+            else
+              tmp = undo_string_escapes (
+                      __maybe_munge_text__ (enhanced, obj, "displayname")
+                    );
+              titlespec{data_idx} = ['title "' tmp '"'];
+            endif
+            data{data_idx} = nan (4,1);
+            usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3):($4)");
+            switch (get (obj.parent, "format"))
+              case {"box" "boxy" "boxxy"}
+                errbars = "boxxy";
+              case "xyerr"
+                errbars = "xyerrorbars";
+              case "yerr"
+                errbars = "yerrorbars";
+              case "xerr"
+                errbars = "xerrorbars";
+              otherwise
+                errbars = "xerrorbars";
+            endswitch
+            withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                            errbars, sidx(1));
+          endif
         endif
 
       case "patch"
@@ -1850,7 +1884,7 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
 endfunction
 
 function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
-                                                plot_stream, errbars = "")
+                                                plot_stream)
   idx = idx + 8;
   style = {};
   ltidx = [];
@@ -1882,9 +1916,6 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   if (! isempty (lt))
     fprintf (plot_stream, " %s", lt);
   endif
-  if (! isempty (errbars))
-    found_style = true;
-  endif
 
   if (isfield (obj, "linewidth"))
     fprintf (plot_stream, " linewidth %f", obj.linewidth);
@@ -1898,111 +1929,105 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   endif
 
   sidx = 1;
-  if (isempty (errbars))
-    if (isempty (lt))
-      style{sidx} = "";
-    else
-      style{sidx} = "lines";
-    endif
-    ltidx(sidx) = idx;
+  if (isempty (lt))
+    style{sidx} = "";
+  else
+    style{sidx} = "lines";
+  endif
+  ltidx(sidx) = idx;
 
-    facesame = true;
-    if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
-        && ! strcmp (obj.markerfacecolor, "none"))
-      if (strcmp (obj.markerfacecolor, "auto")
-          || (isnumeric (obj.markerfacecolor)
-              && isequal (color, obj.markerfacecolor)))
-        if (! isempty (pt2))
-          fprintf (plot_stream, " pointtype %s", pt2);
-          style{sidx} = [style{sidx} "points"];
-        endif
-        if (isfield (obj, "markersize"))
-          fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-        endif
+  facesame = true;
+  if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
+      && ! strcmp (obj.markerfacecolor, "none"))
+    if (strcmp (obj.markerfacecolor, "auto")
+        || (isnumeric (obj.markerfacecolor)
+            && isequal (color, obj.markerfacecolor)))
+      if (! isempty (pt2))
+        fprintf (plot_stream, " pointtype %s", pt2);
+        style{sidx} = [style{sidx} "points"];
+      endif
+      if (isfield (obj, "markersize"))
+        fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
+      endif
+    else
+      facesame = false;
+      if (! found_style)
+        fputs (plot_stream, " default");
+      endif
+      fputs (plot_stream, ";\n");
+      if (! isempty (style{sidx}))
+        sidx += 1;
+        idx += 1;
       else
-        facesame = false;
-        if (! found_style)
-          fputs (plot_stream, " default");
-        endif
         fputs (plot_stream, ";\n");
-        if (! isempty (style{sidx}))
-          sidx += 1;
-          idx += 1;
-        else
-          fputs (plot_stream, ";\n");
-        endif
-        fprintf (plot_stream, "set style line %d default;\n", idx);
-        fprintf (plot_stream, "set style line %d", idx);
-        if (isnumeric (obj.markerfacecolor))
-          fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                   round (255*obj.markerfacecolor));
-        else
-          fprintf (plot_stream, " palette");
-        endif
-        if (! isempty (pt2))
-          style{sidx} = "points";
-          ltidx(sidx) = idx;
-          fprintf (plot_stream, " pointtype %s", pt2);
-        endif
-        if (isfield (obj, "markersize"))
-          fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-        endif
+      endif
+      fprintf (plot_stream, "set style line %d default;\n", idx);
+      fprintf (plot_stream, "set style line %d", idx);
+      if (isnumeric (obj.markerfacecolor))
+        fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                 round (255*obj.markerfacecolor));
+      else
+        fprintf (plot_stream, " palette");
+      endif
+      if (! isempty (pt2))
+        style{sidx} = "points";
+        ltidx(sidx) = idx;
+        fprintf (plot_stream, " pointtype %s", pt2);
+      endif
+      if (isfield (obj, "markersize"))
+        fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
       endif
     endif
-    if (! isempty(pt) && isfield (obj, "markeredgecolor")
-        && ! strcmp (obj.markeredgecolor, "none"))
-      if (facesame && ! isempty (pt)
-          && (strcmp (obj.markeredgecolor, "auto")
-              || (isnumeric (obj.markeredgecolor)
-                  && isequal (color, obj.markeredgecolor))))
-        if (sidx == 1 && ((length (style{sidx}) == 5
-            && strncmp (style{sidx}, "lines", 5)) || isempty (style{sidx})))
-          if (! isempty (pt))
-            style{sidx} = [style{sidx} "points"];
-            fprintf (plot_stream, " pointtype %s", pt);
-          endif
-          if (isfield (obj, "markersize"))
-            fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-          endif
-        endif
-      else
-        if (! found_style)
-          fputs (plot_stream, " default");
-        endif
-        fputs (plot_stream, ";\n");
-        if (! isempty (style{sidx}))
-          sidx += 1;
-          idx += 1;
-        else
-          fputs (plot_stream, ";\n");
-        endif
-        fprintf (plot_stream, "set style line %d default;\n", idx);
-        fprintf (plot_stream, "set style line %d", idx);
-        if (isnumeric (obj.markeredgecolor) || strcmp (obj.markeredgecolor, "auto"))
-          if (isnumeric (obj.markeredgecolor))
-            edgecolor = obj.markeredgecolor;
-          else
-            edgecolor = obj.color;
-          end
-          fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-                   round (255*edgecolor));
-        else
-          fprintf (plot_stream, " palette");
-        endif
+  endif
+  if (! isempty(pt) && isfield (obj, "markeredgecolor")
+      && ! strcmp (obj.markeredgecolor, "none"))
+    if (facesame && ! isempty (pt)
+        && (strcmp (obj.markeredgecolor, "auto")
+            || (isnumeric (obj.markeredgecolor)
+                && isequal (color, obj.markeredgecolor))))
+      if (sidx == 1 && ((length (style{sidx}) == 5
+          && strncmp (style{sidx}, "lines", 5)) || isempty (style{sidx})))
         if (! isempty (pt))
-          style{sidx} = "points";
-          ltidx(sidx) = idx;
+          style{sidx} = [style{sidx} "points"];
           fprintf (plot_stream, " pointtype %s", pt);
         endif
         if (isfield (obj, "markersize"))
           fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
         endif
       endif
+    else
+      if (! found_style)
+        fputs (plot_stream, " default");
+      endif
+      fputs (plot_stream, ";\n");
+      if (! isempty (style{sidx}))
+        sidx += 1;
+        idx += 1;
+      else
+        fputs (plot_stream, ";\n");
+      endif
+      fprintf (plot_stream, "set style line %d default;\n", idx);
+      fprintf (plot_stream, "set style line %d", idx);
+      if (isnumeric (obj.markeredgecolor) || strcmp (obj.markeredgecolor, "auto"))
+        if (isnumeric (obj.markeredgecolor))
+          edgecolor = obj.markeredgecolor;
+        else
+          edgecolor = obj.color;
+        end
+        fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                 round (255*edgecolor));
+      else
+        fprintf (plot_stream, " palette");
+      endif
+      if (! isempty (pt))
+        style{sidx} = "points";
+        ltidx(sidx) = idx;
+        fprintf (plot_stream, " pointtype %s", pt);
+      endif
+      if (isfield (obj, "markersize"))
+        fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
+      endif
     endif
-  else
-    style{1} = errbars;
-    ltidx(1) = idx;
-    fputs (plot_stream, " pointtype 0");
   endif
 
   if (! found_style && isempty (style{1}))
@@ -2106,7 +2131,7 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
         ## FIXME: Should be 6 pt start, using "*" instead
         pt = pt2 = "3";
       case "none"
-        pt = pt2 = "";
+        pt = pt2 = "-1";
       otherwise
         pt = pt2 = "";
     endswitch

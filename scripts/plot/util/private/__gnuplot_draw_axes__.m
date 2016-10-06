@@ -1659,7 +1659,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         if (! is_image_data (i-1))
           fputs (plot_stream, "; ");
           if (bg_is_set)
-            fputs (plot_stream, "unset obj 1; \\\n");
+            fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
             bg_is_set = false;
           endif
           if (fg_is_set)
@@ -1682,7 +1682,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         endif
       elseif (is_image_data (i-1))
         if (bg_is_set)
-          fputs (plot_stream, "unset obj 1; \\\n");
+          fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
           bg_is_set = false;
         endif
         if (fg_is_set)
@@ -1730,7 +1730,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   if (bg_is_set)
-    fputs (plot_stream, "unset obj 1;\n");
+    fputs (plot_stream, "if (GPVAL_TERM eq \"qt\") unset obj 1;\n");
     bg_is_set = false;
   endif
 

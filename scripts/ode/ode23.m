@@ -1,3 +1,4 @@
+## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2014-2016 Jacopo Corno <jacopo.corno@gmail.com>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2006-2016 Thomas Treichl <treichl@users.sourceforge.net>
@@ -21,7 +22,6 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{t}, @var{y}] =} ode23 (@var{fun}, @var{trange}, @var{init})
 ## @deftypefnx {} {[@var{t}, @var{y}] =} ode23 (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
-## @deftypefnx {} {[@var{t}, @var{y}] =} ode23 (@dots{}, @var{par1}, @var{par2}, @dots{})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode23 (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode23 (@dots{})
 ##
@@ -39,16 +39,12 @@
 ## evaluated.  Typically, it is a two-element vector specifying the initial and
 ## final times (@code{[tinit, tfinal]}).  If there are more than two elements
 ## then the solution will also be evaluated at these intermediate time
-## instances unless the integrate function specified is
-## @code{integrate_n_steps}.
+## instances.
 ##
 ## By default, @code{ode23} uses an adaptive timestep with the
 ## @code{integrate_adaptive} algorithm.  The tolerance for the timestep
-## computation may be changed by using the option @qcode{"Tau"}, that has a
-## default value of @math{1e-6}.  If the ODE option @qcode{"TimeStepSize"} is
-## not empty, then the stepper called will be @code{integrate_const}.  If, in
-## addition, the option @qcode{"TimeStepNumber"} is also specified then the
-## integrate function @code{integrate_n_steps} will be used.
+## computation may be changed by using the options @qcode{"RelTol"},
+## and @qcode{"AbsTol"},. 
 ##
 ## @var{init} contains the initial value for the unknowns.  If it is a row
 ## vector then the solution @var{y} will be a matrix in which each column is
@@ -106,25 +102,25 @@ function varargout = ode23 (fun, trange, init, varargin)
     print_usage ();
   endif
 
-  order = 3;
+  order  = 3;
   solver = "ode23";
 
   if (nargin >= 4)
     if (! isstruct (varargin{1}))
       ## varargin{1:len} are parameters for fun
       odeopts = odeset ();
-      odeopts.funarguments = varargin;
+      funarguments = varargin;
     elseif (length (varargin) > 1)
       ## varargin{1} is an ODE options structure opt
-      odeopts = ode_struct_value_check ("ode23", varargin{1}, "ode23");
-      odeopts.funarguments = {varargin{2:length(varargin)}};
+      odeopts = varargin{1};
+      funarguments = {varargin{2:length(varargin)}};
     else  # if (isstruct (varargin{1}))
-      odeopts = ode_struct_value_check ("ode23", varargin{1}, "ode23");
-      odeopts.funarguments = {};
+      odeopts = varargin{1};
+      funarguments = {};
     endif
   else  # nargin == 3
     odeopts = odeset ();
-    odeopts.funarguments = {};
+    funarguments = {};
   endif
 
   if (! isnumeric (trange) || ! isvector (trange))
@@ -132,17 +128,14 @@ function varargout = ode23 (fun, trange, init, varargin)
            "ode23: TRANGE must be a numeric vector");
   endif
 
-  TimeStepNumber = odeget (odeopts, "TimeStepNumber", [], "fast");
-  TimeStepSize = odeget (odeopts, "TimeStepSize", [], "fast");
-  if (length (trange) < 2
-      && (isempty (TimeStepSize) || isempty (TimeStepNumber)))
+  if (length (trange) < 2)
     error ("Octave:invalid-input-arg",
            "ode23: TRANGE must contain at least 2 elements");
   elseif (trange(2) == trange(1))
     error ("Octave:invalid-input-arg",
            "ode23: invalid time span, TRANGE(1) == TRANGE(2)");
   else
-    odeopts.direction = sign (trange(2) - trange(1));
+    direction = sign (trange(2) - trange(1));
   endif
   trange = trange(:);
 
@@ -164,54 +157,33 @@ function varargout = ode23 (fun, trange, init, varargin)
            "ode23: FUN must be a valid function handle");
   endif
 
+
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set
-  if (isempty (TimeStepNumber) && isempty (TimeStepSize))
-    integrate_func = "adaptive";
-    odeopts.stepsizefixed = false;
-  elseif (! isempty (TimeStepNumber) && ! isempty (TimeStepSize))
-    integrate_func = "n_steps";
-    odeopts.stepsizefixed = true;
-    if (sign (TimeStepSize) != odeopts.direction)
-      warning ("Octave:invalid-input-arg",
-               ["ode23: option \"TimeStepSize\" has the wrong sign, ", ...
-                "but will be corrected automatically\n"]);
-      TimeStepSize = -TimeStepSize;
-    endif
-  elseif (isempty (TimeStepNumber) && ! isempty (TimeStepSize))
-    integrate_func = "const";
-    odeopts.stepsizefixed = true;
-    if (sign (TimeStepSize) != odeopts.direction)
-      warning ("Octave:invalid-input-arg",
-               ["ode23: option \"TimeStepSize\" has the wrong sign, ",
-                "but will be corrected automatically\n"]);
-      TimeStepSize = -TimeStepSize;
-    endif
-  else
-    warning ("Octave:invalid-input-arg",
-             "ode23: assuming an adaptive integrate function\n");
-    integrate_func = "adaptive";
-  endif
 
-  if (isempty (odeopts.RelTol) && ! odeopts.stepsizefixed)
-    odeopts.RelTol = 1e-3;
-  elseif (! isempty (odeopts.RelTol) && odeopts.stepsizefixed)
-    warning ("Octave:invalid-input-arg",
-             ["ode23: option \"RelTol\" is ignored", ...
-              " when fixed time stamps are given\n"]);
-  endif
 
-  if (isempty (odeopts.AbsTol) && ! odeopts.stepsizefixed)
-    odeopts.AbsTol = 1e-6;
-  elseif (! isempty (odeopts.AbsTol) && odeopts.stepsizefixed)
-    warning ("Octave:invalid-input-arg",
-             ["ode23: option \"AbsTol\" is ignored", ...
-              " when fixed time stamps are given\n"]);
-  else
-    odeopts.AbsTol = odeopts.AbsTol(:);  # Create column vector
-  endif
+  persistent defaults   = [];
+  persistent classes    = [];
+  persistent attributes = [];
 
-  odeopts.normcontrol = strcmp (odeopts.NormControl, "on");
+
+  [defaults, classes, attributes] = odedefaults (numel (init), trange(1),
+                                                 trange(end));
+
+  defaults   = rmfield (defaults,   {"Jacobian", "JPattern", "Vectorized", ...
+                                     "MvPattern", "MassSingular", ...
+                                     "InitialSlope", "MaxOrder", "BDF"});
+  classes    = rmfield (classes,    {"Jacobian", "JPattern", "Vectorized", ...
+                                     "MvPattern", "MassSingular", ...
+                                     "InitialSlope", "MaxOrder", "BDF"});
+  attributes = rmfield (attributes, {"Jacobian", "JPattern", "Vectorized", ...
+                                     "MvPattern", "MassSingular", ...
+                                     "InitialSlope", "MaxOrder", "BDF"});
+
+  odeopts = odemergeopts (odeopts, defaults, classes, attributes, 'ode23');
+
+  odeopts.funarguments = funarguments;
+  odeopts.direction    = direction;
 
   if (! isempty (odeopts.NonNegative))
     if (isempty (odeopts.Mass))
@@ -233,47 +205,15 @@ function varargout = ode23 (fun, trange, init, varargin)
     odeopts.haveoutputfunction = ! isempty (odeopts.OutputFcn);
   endif
 
-  odeopts.haveoutputselection = ! isempty (odeopts.OutputSel);
-
-  if (odeopts.Refine > 0)
-    odeopts.haverefine = true;
-  else
-    odeopts.haverefine = false;
-  endif
-
-  if (isempty (odeopts.InitialStep) && strcmp (integrate_func, "adaptive"))
+  if (isempty (odeopts.InitialStep))
     odeopts.InitialStep = odeopts.direction * ...
                           starting_stepsize (order, fun, trange(1),
                                              init, odeopts.AbsTol,
                                              odeopts.RelTol,
-                                             odeopts.normcontrol);
-  elseif (isempty (odeopts.InitialStep))
-    odeopts.InitialStep = TimeStepSize;
+                                             strcmp (odeopts.NormControl,
+                                             "on"));
   endif
 
-  if (isempty (odeopts.MaxStep) && ! odeopts.stepsizefixed)
-    odeopts.MaxStep = abs (trange(end) - trange(1)) / 10;
-  endif
-
-  odeopts.haveeventfunction = ! isempty (odeopts.Events);
-
-  ## The options 'Jacobian', 'JPattern' and 'Vectorized' will be ignored
-  ## by this solver because this solver uses an explicit Runge-Kutta method
-  ## and therefore no Jacobian calculation is necessary
-  if (! isempty (odeopts.Jacobian))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"Jacobian\" is ignored by this solver\n");
-  endif
-
-  if (! isempty (odeopts.JPattern))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"JPattern\" is ignored by this solver\n");
-  endif
-
-  if (! isempty (odeopts.Vectorized))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"Vectorized\" is ignored by this solver\n");
-  endif
 
   if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
     havemasshandle = false;
@@ -284,75 +224,38 @@ function varargout = ode23 (fun, trange, init, varargin)
     havemasshandle = false; # mass = diag (ones (length (init), 1), 0);
   endif
 
-  massdependence = ! strcmp (odeopts.MStateDependence, "none");
-
-  ## Other options that are not used by this solver.
-  if (! isempty (odeopts.MvPattern))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"MvPattern\" is ignored by this solver\n");
-  endif
-
-  if (! isempty (odeopts.MassSingular))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"MassSingular\" is ignored by this solver\n");
-  endif
-
-  if (! isempty (odeopts.InitialSlope))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"InitialSlope\" is ignored by this solver\n");
-  endif
-
-  if (! isempty (odeopts.MaxOrder))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"MaxOrder\" is ignored by this solver\n");
-  endif
-
-  if (! isempty (odeopts.BDF))
-    warning ("Octave:invalid-input-arg",
-             "ode23: option \"BDF\" is ignored by this solver\n");
-  endif
 
   ## Starting the initialization of the core solver ode23
 
   if (havemasshandle)   # Handle only the dynamic mass matrix,
-    if (massdependence) # constant mass matrices have already
+    if (! strcmp (odeopts.MStateDependence, "none")) # constant mass matrices have already
       mass = @(t,x) odeopts.Mass (t, x, odeopts.funarguments{:});
       fun = @(t,x) mass (t, x, odeopts.funarguments{:}) ...
         \ fun (t, x, odeopts.funarguments{:});
-    else                 # if (massdependence == false)
+    else                 # if ((! strcmp (odeopts.MStateDependence, "none")) == false)
       mass = @(t) odeopts.Mass (t, odeopts.funarguments{:});
       fun = @(t,x) mass (t, odeopts.funarguments{:}) ...
         \ fun (t, x, odeopts.funarguments{:});
     endif
   endif
 
-  switch (integrate_func)
-    case "adaptive"
-      solution = integrate_adaptive (@runge_kutta_23, ...
-                                     order, fun, trange, init, odeopts);
-    case "n_steps"
-      solution = integrate_n_steps (@runge_kutta_23, ...
-                                    fun, trange(1), init, ...
-                                    TimeStepSize, TimeStepNumber, odeopts);
-    case "const"
-      solution = integrate_const (@runge_kutta_23, ...
-                                  fun, trange, init, ...
-                                  TimeStepSize, odeopts);
-  endswitch
+  
+  solution = integrate_adaptive (@runge_kutta_23, ...
+                                 order, fun, trange, init, odeopts);
+    
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter
     feval (odeopts.OutputFcn, solution.t(end), ...
            solution.x(end,:)', "done", odeopts.funarguments{:});
   endif
-  if (odeopts.haveeventfunction)   # Cleanup event function handling
+  if (! isempty (odeopts.Events))   # Cleanup event function handling
     ode_event_handler (odeopts.Events, solution.t(end), ...
-                         solution.x(end,:)', "done", odeopts.funarguments{:});
+                       solution.x(end,:)', "done", odeopts.funarguments{:});
   endif
 
   ## Print additional information if option Stats is set
   if (strcmp (odeopts.Stats, "on"))
-    havestats = true;
     nsteps    = solution.cntloop;             # cntloop from 2..end
     nfailed   = solution.cntcycles - nsteps;  # cntcycl from 1..end
     nfevals   = 3 * solution.cntcycles + 1;   # number of ode evaluations
@@ -365,8 +268,6 @@ function varargout = ode23 (fun, trange, init, varargin)
       printf ("Number of failed attempts:  %d\n", nfailed);
       printf ("Number of function calls:   %d\n", nfevals);
     endif
-  else
-    havestats = false;
   endif
 
   if (nargout == 2)
@@ -376,12 +277,12 @@ function varargout = ode23 (fun, trange, init, varargin)
     varargout{1}.x = solution.t;    # Time stamps are saved in field x
     varargout{1}.y = solution.x;    # Results are saved in field y
     varargout{1}.solver = solver;   # Solver name is saved in field solver
-    if (odeopts.haveeventfunction)
+    if (! isempty (odeopts.Events))
       varargout{1}.ie = solution.event{2};  # Index info which event occurred
       varargout{1}.xe = solution.event{3};  # Time info when an event occurred
       varargout{1}.ye = solution.event{4};  # Results when an event occurred
     endif
-    if (havestats)
+    if (strcmp (odeopts.Stats, "on"))
       varargout{1}.stats = struct ();
       varargout{1}.stats.nsteps   = nsteps;
       varargout{1}.stats.nfailed  = nfailed;
@@ -394,7 +295,7 @@ function varargout = ode23 (fun, trange, init, varargin)
     varargout = cell (1,5);
     varargout{1} = solution.t;
     varargout{2} = solution.x;
-    if (odeopts.haveeventfunction)
+    if (! isempty (odeopts.Events))
       varargout{3} = solution.event{3};  # Time info when an event occurred
       varargout{4} = solution.event{4};  # Results when an event occurred
       varargout{5} = solution.event{2};  # Index info which event occurred
@@ -489,10 +390,6 @@ endfunction
 %! opt = odeset;
 %! [t, y] = ode23 (@fpol, [0 2], [2 0], opt, 12, 13, "KL");
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
-%!test  # Solve vdp in fixed step sizes
-%! opt = odeset("TimeStepSize",0.1);
-%! [t, y] = ode23 (@fpol, [0,2], [2 0], opt);
-%! assert (t(:), [0:0.1:2]', 1e-3);
 %!test  # Solve another anonymous function below zero
 %! ref = [0, 14.77810590694212];
 %! [t, y] = ode23 (@(t,y) y, [-2 0], 2);
@@ -612,7 +509,4 @@ endfunction
 %!  ode23 (@fpol, [0 25], [3 15 1; 3 15 1]);
 %!error <FUN must be a valid function handle>
 %!  ode23 (1, [0 25], [3 15 1]);
-%!error  # strange ODEOPT structure
-%!  opt = struct ("foo", 1);
-%!  [t, y] = ode23 (@fpol, [0 2], [2 0], opt);
 

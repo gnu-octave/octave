@@ -1,3 +1,5 @@
+## Copyright (C) 2016, Carlo de Falco
+## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
 ##
@@ -39,79 +41,19 @@
 
 function val = odeget (ode_opt, field, default = [], opt = "")
 
-  ## Shortcut for quickly extracting option
-  if (strncmp (opt, "fast", 4))
-    try
-      val = ode_opt.(field);
-      if (strcmp (opt, "fast_not_empty") && isempty (val))
-        val = default;
-      endif
-    catch
-      val = default;
-    end_try_catch
-    return;
-  endif
-
-  if (nargin < 1 || nargin > 4)
-    print_usage ();
-  endif
-
-  ## Shortcut for empty option structures
-  if (isempty (ode_opt))
-    if (nargin < 3)
-      val = [];
-    else
-      val = default;
-    endif
-    return;
-  endif
-
-  if (! isstruct (ode_opt))
-    error ("odeget: ODE_OPT must be a valid ODE_STRUCT");
-  elseif (! ischar (field))
-    error ("odeget: FIELD must be a string");
-  endif
-
-  ## Check if the given struct is a valid ODEOPT struct
-  ode_struct_value_check ("odeget", ode_opt);
-
-  ## Define all the possible ODEOPT fields
-  persistent options = known_option_names ();
-
-  exactmatch = true;
-  match = find (strcmpi (field, options));
-  if (isempty (match))
-    match = find (strncmpi (field, options, length (field)));
-    exactmatch = false;
-  endif
-
-  if (isempty (match))
-    ## Possibly a custom user-defined option
-    try
-      val = ode_opt.(field);
-    catch
-      warning ("Octave:invalid-input-arg",
-               "odeget: no field '%s' exists in ODE_OPT\n", field);
-      val = default;
-    end_try_catch
-  elseif (numel (match) == 1)
-    if (! exactmatch)
-      warning ("odeget:NoExactMatching",
-               "odeget: no exact match for '%s'.  Assuming '%s'.\n",
-               field, options{match});
-    endif
-    val = [];
-    try
-      val = ode_opt.(options{match});
-    end_try_catch
-    if (isempty (val))
-      val = default;
-    endif
+  validateattributes (ode_opt, {'struct'}, {'nonempty'});
+  validateattributes (field, {'char'}, {'nonempty'});
+  
+  if (! isfield (ode_opt, field))
+    error ('Octave:odeget:InvalidPropName',
+           'odeget: Unrecognized property name "%s".', field);
   else
-    error ("odeget: no exact match for '%s'.  Possible fields found: %s.",
-           field, strjoin (options(match), ", "));
+    val = ode_opt.(field);
+    if (isempty (val)) 
+      val = default;
+    endif
   endif
-
+  
 endfunction
 
 
@@ -129,16 +71,14 @@ endfunction
 %!assert (odeget (odeset (), "Stats"), [])
 %!assert (odeget (odeset (), "Stats", "on"), "on")
 %!assert (odeget (odeset (), "Mass"), [])
-%!assert (odeget (odeset (), "AbsTol", 1e-6, "fast"), [])
-%!assert (odeget (odeset (), "AbsTol", 1e-6, "fast_not_empty"), 1e-6)
 %!assert (odeget (odeset (), "AbsTol", 1e-9), 1e-9)
+%!assert (odeget (odeset ("AbsTol", 1e-9), "AbsTol", []), 1e-9)
+%!assert (odeget (odeset ('foo', 42), 'foo'), 42)
 
 %!error odeget ()
 %!error odeget (1)
 %!error odeget (1,2,3,4,5)
-%!error <ODE_OPT must be a valid ODE_STRUCT> odeget (1, "opt1")
-%!error <FIELD must be a string> odeget (struct ("opt1", 1), 1)
-%!warning <no field 'foo' exists> odeget (struct ("opt1", 1), "foo");
-%!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeget (struct ("RelTol", 1), "Rel");
-%!error <Possible fields found: InitialSlope, InitialStep> odeget (odeset (), "Initial")
+%!error odeget (1, "opt1")
+%!error odeget (struct ("opt1", 1), 1)
+%!error odeget (struct ("opt1", 1), "foo");
 

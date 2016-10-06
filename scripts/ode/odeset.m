@@ -1,3 +1,5 @@
+## Copyright (C) 2016, Carlo de Falco
+## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
 ##
@@ -47,168 +49,59 @@
 
 function odestruct = odeset (varargin)
 
-  ## Column vector of all possible ODE options
-  persistent options = known_option_names ();
+  persistent p;
 
-  if (nargin == 0)
-    ## Special calling syntax to display defaults
-    if (nargout == 0)
-      print_options ();
-    else
-      odestruct = cell2struct (cell (numel (options), 1), options);
-    endif
-    return;
+  if (isempty (p))
+
+    p = inputParser ();
+    p.addParameter ("AbsTol", []);
+    p.addParameter ("BDF", []);
+    p.addParameter ("Events", []);
+    p.addParameter ("InitialSlope", []);
+    p.addParameter ("InitialStep", []);
+    p.addParameter ("Jacobian", []);
+    p.addParameter ("JConstant", []);
+    p.addParameter ("JPattern", []);
+    p.addParameter ("Mass", []);
+    p.addParameter ("MassConstant", []);
+    p.addParameter ("MassSingular", []);
+    p.addParameter ("MaxOrder", []);
+    p.addParameter ("MaxStep", []);
+    p.addParameter ("MStateDependence", []);
+    p.addParameter ("MvPattern", []);
+    p.addParameter ("NonNegative", []);
+    p.addParameter ("NormControl", []);
+    p.addParameter ("OutputFcn", []);
+    p.addParameter ("OutputSel", []);
+    p.addParameter ("Refine", []);
+    p.addParameter ("RelTol", []);
+    p.addParameter ("Stats", []);
+    p.addParameter ("Vectorized", []);
+    p.KeepUnmatched = true;
+    
   endif
 
-  ## initialize output
-  odestruct = cell2struct (cell (numel (options), 1), options);
-
-  if (isstruct (varargin{1}))
-    oldstruct = varargin{1};
-
-    ## Copy oldstruct values into output odestruct
-    for [val, name] = oldstruct
-
-      exactmatch = true;
-      match = find (strcmpi (name, options));
-      if (isempty (match))
-        match = find (strncmpi (name, options, length (name)));
-        exactmatch = false;
-      endif
-
-      if (isempty (match))
-        odestruct.(name) = val;
-      elseif (numel (match) == 1)
-        if (! exactmatch)
-          warning ("odeset:NoExactMatching",
-                   "no exact match for '%s'.  Assuming '%s'.",
-                   name, options{match});
-        endif
-        odestruct.(options{match}) = val;
-      else
-        error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
-               name, strjoin (options(match), ", "));
-      endif
-
-      if (nargin == 1)
-        ## Check if all changes have resulted in a valid ODEOPT struct
-        ode_struct_value_check ("odeset", odestruct);
-        return;
-      endif
-
-    endfor
-
-    ## At this point, odestruct has been initialized with default values,
-    ## and if oldstruct was present it has overwritten fields in odestruct.
-
-    if (nargin == 2 && isstruct (varargin{2}))
-      newstruct = varargin{2};
-
-      ## Update the first struct with the values from the second one
-      for [val, name] = newstruct
-
-        exactmatch = true;
-        match = find (strcmpi (name, options));
-        if (isempty (match))
-          match = find (strncmpi (name, options, length (name)));
-          exactmatch = false;
-        endif
-
-        if (isempty (match))
-          odestruct.(name) = val;
-        elseif (numel (match) == 1)
-          if (! exactmatch)
-            warning ("odeset:NoExactMatching",
-                     "no exact match for '%s'.  Assuming '%s'.",
-                     name, options{match});
-          endif
-          odestruct.(options{match}) = val;
-        else
-          error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
-                 name, strjoin (options(match), ", "));
-        endif
-      endfor
-
-      ## Check if all changes have resulted in a valid ODEOPT struct
-      ode_struct_value_check ("odeset", odestruct);
-      return;
-    endif
-
-    ## Second argument is not a struct
-    if (mod (nargin, 2) != 1)
-      error ("odeset: FIELD/VALUE arguments must occur in pairs");
-    endif
-    if (! all (cellfun ("isclass", varargin(2:2:end), "char")))
-      error ("odeset: All FIELD names must be strings");
-    endif
-
-    ## Write new field/value pairs into odestruct
-    for i = 2:2:nargin
-      name = varargin{i};
-
-      exactmatch = true;
-      match = find (strcmpi (name, options));
-      if (isempty (match))
-        match = find (strncmpi (name, options, length (name)));
-        exactmatch = false;
-      endif
-
-      if (isempty (match))
-        odestruct.(name) = varargin{i+1};
-      elseif (numel (match) == 1)
-        if (! exactmatch)
-          warning ("odeset:NoExactMatching",
-                   "no exact match for '%s'.  Assuming '%s'.",
-                   name, options{match});
-        endif
-        odestruct.(options{match}) = varargin{i+1};
-      else
-        error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
-               name, strjoin (options(match), ", "));
-      endif
-    endfor
-
-    ## Check if all changes have resulted in a valid ODEOPT struct
-    ode_struct_value_check ("odeset", odestruct);
-
+  if (nargin == 0 && nargout == 0)
+    print_options ();
   else
-    ## First input argument was not a struct, must be field/value pairs
-    if (mod (nargin, 2) != 0)
-      error ("odeset: FIELD/VALUE arguments must occur in pairs");
-    elseif (! all (cellfun ("isclass", varargin(1:2:end), "char")))
-      error ("odeset: All FIELD names must be strings");
-    endif
+    p.parse (varargin{:});
+    odestruct = p.Results;
+    odestruct_extra = p.Unmatched;
 
-    for i = 1:2:nargin
-      name = varargin{i};
+    s1 = cellfun (@(x) ifelse (iscell(x), {x}, x),
+                  struct2cell(odestruct),
+                  'UniformOutput', false);
 
-      exactmatch = true;
-      match = find (strcmpi (name, options));
-      if (isempty (match))
-        match = find (strncmpi (name, options, length (name)));
-        exactmatch = false;
-      endif
-
-      if (isempty (match))
-        odestruct.(name) = varargin{i+1};
-      elseif (numel (match) == 1)
-        if (! exactmatch)
-          warning ("odeset:NoExactMatching",
-                   "no exact match for '%s'.  Assuming '%s'.",
-                   name, options{match});
-        endif
-        odestruct.(options{match}) = varargin{i+1};
-      else
-        error ("odeset: no exact match for '%s'.  Possible fields found: %s.",
-               name, strjoin (options(match), ", "));
-      endif
-    endfor
-
-    ## Check if all changes have resulted in a valid ODEOPT struct
-    ode_struct_value_check ("odeset", odestruct);
-
+    s2 = cellfun (@(x) ifelse (iscell(x), {x}, x),
+                  struct2cell(odestruct_extra),
+                  'UniformOutput', false);
+    
+    C = [fieldnames(odestruct)       s1;
+         fieldnames(odestruct_extra) s2];
+    
+    odestruct = struct (C'{:});
   endif
-
+  
 endfunction
 
 ## function to print all possible options
@@ -262,11 +155,7 @@ endfunction
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 %! odeoptC = odeset (odeoptB, "NormControl", "on");
 
-## All tests that are needed to check if a valid option has been set are
-## implemented in ode_struct_value_check.m
-## FIXME: xtest currently fails as there are two extra options to control
-##        fixed step integration options.
-%!xtest
+%!test
 %! odeoptA = odeset ();
 %! assert (isstruct (odeoptA));
 %! assert (numfields (odeoptA), 23);
@@ -298,10 +187,13 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error <FIELD/VALUE arguments must occur in pairs> odeset ("opt1")
-%!error <FIELD names must be strings> odeset (1, 1)
-%!error <FIELD/VALUE arguments must occur in pairs> odeset (odeset (), "opt1")
-%!error <FIELD names must be strings> odeset (odeset (), 1, 1)
-%!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
-%!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
+%!error <argument 'OPT1' is not a valid parameter> odeset ("opt1")
+%!error  odeset (1, 1)
+%!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
+%!error  odeset (odeset (), 1, 1)
+
+##FIXME: Add not exact match option 
+## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
+## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
+
 

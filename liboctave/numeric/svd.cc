@@ -399,7 +399,7 @@ namespace octave
         abort ();
 
       if (! (jobv == 'N' || jobv == 'O'))
-        right_sm = right_sm.transpose ();
+        right_sm = right_sm.hermitian ();
     }
 
     // Instantiations we need.

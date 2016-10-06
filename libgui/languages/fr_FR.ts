@@ -121,7 +121,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1779"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1780"/>
         <source>copied selection to clipboard</source>
         <translation>sélection copiée vers le presse-papiers</translation>
     </message>
@@ -129,7 +129,7 @@
 <context>
     <name>QtHandles::Figure</name>
     <message>
-        <location filename="../graphics/Figure.cc" line="+298"/>
+        <location filename="../graphics/Figure.cc" line="+297"/>
         <source>Figure ToolBar</source>
         <translatorcomment>This may be long depending on the context.</translatorcomment>
         <translation>Barre d&apos;Outils de la Figure</translation>
@@ -181,17 +181,17 @@
     </message>
     <message>
         <location line="+7"/>
-        <location line="+463"/>
+        <location line="+465"/>
         <source>About Octave</source>
         <translation>À propos d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-465"/>
+        <location line="-467"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location line="+504"/>
+        <location line="+506"/>
         <location line="+69"/>
         <source>Save Figure As</source>
         <translation>Enregistrer la Figure Sous</translation>
@@ -407,12 +407,12 @@
         <location line="+25"/>
         <location line="+62"/>
         <location line="+28"/>
-        <location line="+79"/>
+        <location line="+81"/>
         <source>Octave Editor</source>
         <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-462"/>
+        <location line="-464"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Fichiers Octave (*.m);;Tous les fichiers (*)</translation>
     </message>
@@ -437,12 +437,12 @@ is already open in the editor</source>
 est déjà ouvert dans l&apos;éditeur</translation>
     </message>
     <message>
-        <location line="+492"/>
+        <location line="+494"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location line="+480"/>
+        <location line="+481"/>
         <source>&amp;Save File</source>
         <translation>&amp;Enregistrer</translation>
     </message>
@@ -542,7 +542,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
         <translation>&amp;Aller à la ligne...</translation>
     </message>
     <message>
-        <location line="-1341"/>
+        <location line="-1344"/>
         <source>Could not start custom file editor
 %1</source>
         <translation>Impossible de démarrer l&apos;éditeur
@@ -559,7 +559,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location line="+1041"/>
+        <location line="+1044"/>
         <source>&amp;Recent Editor Files</source>
         <translation>Fichiers &amp;récents</translation>
     </message>
@@ -739,22 +739,22 @@ est déjà ouvert dans l&apos;éditeur</translation>
         <translation>Afficher les Fins de Lign&amp;es</translation>
     </message>
     <message>
-        <location line="-1467"/>
+        <location line="-1470"/>
         <source>File Encoding:</source>
         <translation>Encodage :</translation>
     </message>
     <message>
-        <location line="+403"/>
+        <location line="+404"/>
         <source>%1 is a built-in function</source>
         <translation>%1 est une fonction interne</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+37"/>
         <source>Can not find function %1</source>
         <translation>Impossible de trouver la fonction %1</translation>
     </message>
     <message>
-        <location line="+911"/>
+        <location line="+912"/>
         <source>Find &amp;Next...</source>
         <translation>Trouver le Suiva&amp;nt...</translation>
     </message>
@@ -809,7 +809,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
         <translation>&amp;Documentation sur le mot de clés</translation>
     </message>
     <message>
-        <location line="-1305"/>
+        <location line="-1308"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -841,7 +841,7 @@ pour écrire : %2.</translation>
         <translation>L&apos;onglet éditeur de fichier associé a disparu.</translation>
     </message>
     <message>
-        <location line="+928"/>
+        <location line="+931"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
@@ -884,7 +884,14 @@ pour écrire : %2.</translation>
         <translation>col:</translation>
     </message>
     <message>
-        <location line="+1146"/>
+        <location line="+339"/>
+        <source>Cannot add breakpoint to modified file.
+Save and add breakpoint, or cancel?</source>
+        <translation>Impossible d&apos;ajouter un point d&apos;arrêt à un fichier modifié.
+Sauvegarder et ajouter le point d&apos;arrêt ou annuler?</translation>
+    </message>
+    <message>
+        <location line="+812"/>
         <source>Goto line</source>
         <translation>Aller à la ligne</translation>
     </message>
@@ -950,18 +957,18 @@ Quitter le mode déboguage et sauver?</translation>
         <translation>Voulez vous annuler la fermeture, enregistrer ou supprimer les modifications ?</translation>
     </message>
     <message>
-        <location line="-1342"/>
+        <location line="-1347"/>
         <source>encoding:</source>
         <translation>encodage :</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="+243"/>
         <source>Breakpoint condition</source>
         <translation>Condition de point d&apos;arrêt</translation>
     </message>
     <message>
         <location line="+88"/>
-        <location line="+1024"/>
+        <location line="+1025"/>
         <location line="+372"/>
         <location line="+215"/>
         <location line="+21"/>
@@ -971,14 +978,7 @@ Quitter le mode déboguage et sauver?</translation>
         <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1737"/>
-        <source>Cannot add breakpoint to modified file.
-Save and add breakpoint, or canel?</source>
-        <translation>Impossible d&apos;ajouter un point d&apos;arrêt à un fichier modifié.
-Sauvegarder et ajouter le point d&apos;arrêt ou annuler?</translation>
-    </message>
-    <message>
-        <location line="+1611"/>
+        <location line="-126"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1067,7 +1067,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
     </message>
     <message>
         <location line="+4"/>
-        <location line="+373"/>
+        <location line="+377"/>
         <source>Find Files...</source>
         <translation>Rechercher des fichiers...</translation>
     </message>
@@ -1082,12 +1082,12 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
         <translation>Ouvrir dans l&apos;éditeur de texte</translation>
     </message>
     <message>
-        <location line="+389"/>
+        <location line="+391"/>
         <source>New Directory</source>
         <translation>Nouveau répertoire</translation>
     </message>
     <message>
-        <location line="-773"/>
+        <location line="-779"/>
         <source>Show Octave directory</source>
         <translation>Revenir au répertoire d&apos;Octave</translation>
     </message>
@@ -1102,37 +1102,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
         <translation>Alterner les couleurs des lignes</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>filesdockwidget/showFileSize</source>
-        <translatorcomment>Not translated</translatorcomment>
-        <translation>filesdockwidget/showFileSize</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/showFileType</source>
-        <translatorcomment>Not translated</translatorcomment>
-        <translation>filesdockwidget/showFileType</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/showLastModified</source>
-        <translatorcomment>Not translated</translatorcomment>
-        <translation>filesdockwidget/showLastModified</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/showHiddenFiles</source>
-        <translatorcomment>Not translated</translatorcomment>
-        <translation>filesdockwidget/showHiddenFiles</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>filesdockwidget/useAlternatingRowColors</source>
-        <translatorcomment>Not translated</translatorcomment>
-        <translation>filesdockwidget/useAlternatingRowColors</translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+36"/>
         <source>One directory up</source>
         <translation>Monter au répertoire parent</translation>
     </message>
@@ -1153,23 +1123,23 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
     </message>
     <message>
         <location line="+20"/>
-        <location line="+382"/>
+        <location line="+386"/>
         <source>New File...</source>
         <translation>Nouveau fichier...</translation>
     </message>
     <message>
-        <location line="-379"/>
-        <location line="+382"/>
+        <location line="-383"/>
+        <location line="+386"/>
         <source>New Directory...</source>
         <translation>Nouveau répertoire...</translation>
     </message>
     <message>
-        <location line="-329"/>
+        <location line="-332"/>
         <source>Activate to open in editor, right click for alternatives</source>
         <translation>Activer pour ouvrir dans l&apos;éditeur, click droit pour les alternatives</translation>
     </message>
     <message>
-        <location line="-136"/>
+        <location line="-137"/>
         <source>File size</source>
         <translation>Taille du fichier</translation>
     </message>
@@ -1189,7 +1159,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
         <translation>Afficher les fichiers cachés</translation>
     </message>
     <message>
-        <location line="+415"/>
+        <location line="+419"/>
         <source>Open</source>
         <translation>Ouvrir</translation>
     </message>
@@ -1261,12 +1231,12 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
         <translation>Impossible de supprimer un répertoire qui n&apos;est pas vide</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="+146"/>
         <source>Set directory of file browser</source>
         <translation>Définir le répertoire de l&apos;explorateur de fichiers</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+30"/>
         <source>Create File</source>
         <translation>Créer un fichier</translation>
     </message>
@@ -1658,7 +1628,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Historique des commandes</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+109"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
@@ -1723,12 +1693,12 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     </message>
     <message>
         <location line="+758"/>
-        <location line="+975"/>
+        <location line="+980"/>
         <source>About Octave</source>
         <translation>À propos d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-301"/>
+        <location line="-298"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
@@ -1773,7 +1743,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <translation>Coller</translation>
     </message>
     <message>
-        <location line="-1537"/>
+        <location line="-1545"/>
         <source>Save Workspace As</source>
         <translation>Enregistrer l&apos;espace de travail sous</translation>
     </message>
@@ -1798,12 +1768,12 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <translation>Nouvelles de la communauté Octave</translation>
     </message>
     <message>
-        <location line="+206"/>
+        <location line="+201"/>
         <source>Are you sure you want to exit Octave?</source>
         <translation>Voulez vous vraiment quitter Octave ?</translation>
     </message>
     <message>
-        <location line="+916"/>
+        <location line="+929"/>
         <source>Open an existing file in editor</source>
         <translation>Ouvrir un fichier existant dans l&apos;éditeur</translation>
     </message>
@@ -1873,7 +1843,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <translation>Explorateur de fichiers</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+33"/>
         <source>Contribute</source>
         <translation>Contribuer</translation>
     </message>
@@ -1883,17 +1853,17 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <translation>Donner à Octave</translation>
     </message>
     <message>
-        <location line="-123"/>
+        <location line="-120"/>
         <source>Step In</source>
         <translation>Avancer d&apos;un pas avec entrée</translation>
     </message>
     <message>
-        <location line="-1082"/>
+        <location line="-1095"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location line="+926"/>
+        <location line="+939"/>
         <source>Load Workspace...</source>
         <translation>Charger l&apos;espace de travail...</translation>
     </message>
@@ -1921,11 +1891,6 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <location line="+16"/>
         <source>Octave Packages</source>
         <translation>Paquets d&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Share Code</source>
-        <translation>Partager Code</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1973,13 +1938,13 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <translation>Monter au répertoire parent</translation>
     </message>
     <message>
-        <location line="-1198"/>
-        <location line="+1201"/>
+        <location line="-1206"/>
+        <location line="+1209"/>
         <source>Browse directories</source>
         <translation>Naviguer dans les répertoires</translation>
     </message>
     <message>
-        <location line="-175"/>
+        <location line="-172"/>
         <source>Quit Debug Mode</source>
         <translation>Quitter le mode Déboguage</translation>
     </message>
@@ -2035,12 +2000,12 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     </message>
     <message>
         <location line="+3"/>
-        <location line="+41"/>
+        <location line="+38"/>
         <source>Documentation</source>
         <translation>Documentation</translation>
     </message>
     <message>
-        <location line="-30"/>
+        <location line="-27"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
@@ -2053,7 +2018,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1492"/>
+        <location line="-1500"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -2112,18 +2077,18 @@ ou activez la connexion aux nouvelles dans l&apos;onglet &quot;Réseau&quot; du 
 <context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+67"/>
-        <location line="+201"/>
+        <location filename="../src/octave-dock-widget.cc" line="+69"/>
+        <location line="+205"/>
         <source>Undock widget</source>
         <translation>Détacher la fenêtre</translation>
     </message>
     <message>
-        <location line="-191"/>
+        <location line="-195"/>
         <source>Hide widget</source>
         <translation>Cacher la fenêtre</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="+137"/>
         <source>Dock widget</source>
         <translation>Attacher la fenêtre</translation>
     </message>
@@ -2217,7 +2182,7 @@ n&apos;existe pas. Voulez-vous le créer ?</translation>
 <context>
     <name>resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+246"/>
+        <location filename="../src/resource-manager.cc" line="+247"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -2908,7 +2873,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>shortcut_manager</name>
     <message>
-        <location filename="../src/shortcut-manager.cc" line="+106"/>
+        <location filename="../src/shortcut-manager.cc" line="+105"/>
         <source>New File</source>
         <translation>Nouveau Fichier</translation>
     </message>
@@ -2939,12 +2904,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+16"/>
-        <location line="+143"/>
+        <location line="+142"/>
         <source>Preferences</source>
         <translation>Préférences</translation>
     </message>
     <message>
-        <location line="-158"/>
+        <location line="-157"/>
         <source>Exit Octave</source>
         <translation>Quitter Octave</translation>
     </message>
@@ -3065,12 +3030,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+2"/>
-        <location line="+234"/>
+        <location line="+233"/>
         <source>Editor</source>
         <translation>Éditeur</translation>
     </message>
     <message>
-        <location line="-232"/>
+        <location line="-231"/>
         <source>Documentation</source>
         <translation>Documentation</translation>
     </message>
@@ -3088,11 +3053,6 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+3"/>
         <source>Octave Packages</source>
         <translation>Paquets d&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Share Code</source>
-        <translation>Partager du Code</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3359,7 +3319,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Exporter les raccourcis vers un fichier ...</translation>
     </message>
     <message>
-        <location line="-571"/>
+        <location line="-570"/>
         <source>Step</source>
         <translation>Avancer d&apos;un pas</translation>
     </message>
@@ -3374,7 +3334,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Signaler un bogue</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Close Other Files</source>
         <translation>Fermer les autres fichiers</translation>
     </message>
@@ -3609,7 +3569,7 @@ voulez l&apos;affecter à la présente action et le retirer de la précédente ?
         <translation>Recherche globale</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>

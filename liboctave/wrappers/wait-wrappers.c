@@ -49,7 +49,14 @@ along with Octave; see the file COPYING.  If not, see
 pid_t
 octave_waitpid_wrapper (pid_t pid, int *statusp, int options)
 {
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  // gnulib's waitpid replacement currently uses _cwait, which
+  // apparently only works with console applications.
+  *statusp = 0;
+  return -1;
+#else
   return waitpid (pid, statusp, options);
+#endif
 }
 
 int

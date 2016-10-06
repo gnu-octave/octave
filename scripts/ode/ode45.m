@@ -22,7 +22,6 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{t}, @var{y}] =} ode45 (@var{fun}, @var{trange}, @var{init})
 ## @deftypefnx {} {[@var{t}, @var{y}] =} ode45 (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
-## @deftypefnx {} {[@var{t}, @var{y}] =} ode45 (@dots{}, @var{par1}, @var{par2}, @dots{})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode45 (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode45 (@dots{})
 ##
@@ -38,13 +37,12 @@
 ## evaluated.  Typically, it is a two-element vector specifying the initial and
 ## final times (@code{[tinit, tfinal]}).  If there are more than two elements
 ## then the solution will also be evaluated at these intermediate time
-## instances unless the integrate function specified is
-## @code{integrate_n_steps}.
+## instances.
 ##
 ## By default, @code{ode45} uses an adaptive timestep with the
 ## @code{integrate_adaptive} algorithm.  The tolerance for the timestep
-## computation may be changed by using the option @qcode{"Tau"}, that has a
-## default value of @math{1e-6}.
+## computation may be changed by using the options @qcode{"RelTol"},
+## and @qcode{"AbsTol"}.
 ##
 ## @var{init} contains the initial value for the unknowns.  If it is a row
 ## vector then the solution @var{y} will be a matrix in which each column is

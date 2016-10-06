@@ -62,7 +62,7 @@
 ##
 ## @end deftypefn
 ##
-## @seealso{integrate_const, integrate_n_steps}
+## @seealso{ode45, ode23}
 
 function solution = integrate_adaptive (stepper, order, func, tspan, x0,
                                         options)

@@ -71,7 +71,7 @@ public:
 
     std::string fcn_name (bool print_subfn = true) const;
 
-    bool operator== (const stack_frame &rhs) const;
+    bool operator == (const stack_frame &rhs) const;
 
   private:
 

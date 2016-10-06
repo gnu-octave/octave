@@ -602,7 +602,7 @@ main (int argc, char **argv)
     }
 
   if (output_ext ==  ".mex"
-      && vars["ALL_CFLAGS"].find ("-g") != std::string::npos) 
+      && vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
     {
       defs += " -DMEX_DEBUG";
     }

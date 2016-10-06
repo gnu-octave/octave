@@ -300,7 +300,7 @@ public:
   {
     request_mutation ();
 
-    return 0; 
+    return 0;
   }
 
   mwSize get_number_of_elements (void) const { return val.numel (); }
@@ -313,7 +313,7 @@ public:
     get_dimensions ();
 
     return ndims == 2 && dims[0] == 1 && dims[1] == 1;
-  }  
+  }
 
   mxClassID get_class_id (void) const
   {
@@ -382,8 +382,8 @@ public:
   {
     if (val.is_sparse_type ())
       {
-        // For sparse arrays, return the first non-zero value. 
-        void * data = val.mex_get_data (); 
+        // For sparse arrays, return the first non-zero value.
+        void * data = val.mex_get_data ();
         if (data == NULL)
           return 0.0;
 
@@ -775,7 +775,7 @@ public:
       {
         dims
           = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
-        
+
         if (dims == NULL)
           return 1;
 

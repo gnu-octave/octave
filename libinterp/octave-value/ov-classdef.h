@@ -784,7 +784,7 @@ public:
 
   cdef_class& operator = (const cdef_class& cls)
   {
-    cdef_object::operator= (cls);
+    cdef_object::operator = (cls);
 
     return *this;
   }
@@ -983,7 +983,7 @@ public:
 
   cdef_property& operator = (const cdef_property& prop)
   {
-    cdef_object::operator= (prop);
+    cdef_object::operator = (prop);
 
     return *this;
   }
@@ -1116,7 +1116,7 @@ public:
 
   cdef_method& operator = (const cdef_method& meth)
   {
-    cdef_object::operator= (meth);
+    cdef_object::operator = (meth);
 
     return *this;
   }
@@ -1351,7 +1351,7 @@ public:
 
   cdef_package& operator = (const cdef_package& pack)
   {
-    cdef_object::operator= (pack);
+    cdef_object::operator = (pack);
 
     return *this;
   }

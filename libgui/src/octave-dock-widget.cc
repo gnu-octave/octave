@@ -211,7 +211,7 @@ octave_dock_widget::make_window ()
 
   // remove parent and adjust the (un)dock icon
   setParent (0, Qt::Window);
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock" 
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
                                 + _icon_color + ".png"));
   _dock_action->setToolTip (tr ("Dock widget"));
 

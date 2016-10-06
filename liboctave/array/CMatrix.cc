@@ -2364,7 +2364,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
-  if (m== 0 || n == 0 || b.cols () == 0)
+  if (m == 0 || n == 0 || b.cols () == 0)
     retval = ComplexMatrix (n, b.cols (), Complex (0.0, 0.0));
   else
     {
@@ -2415,6 +2415,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
       double tmp = octave::math::log2 (dminmn / dsmlsizp1);
+      double anorm = 0.0;
 
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
@@ -2473,18 +2474,29 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (octave::math::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
-      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data), m,
-                                 F77_DBLE_CMPLX_ARG (pretval),
-                                 maxmn, ps, rcon, rank,
-                                 F77_DBLE_CMPLX_ARG (work.fortran_vec ()), lwork,
-                                 prwork, piwork, info));
+      anorm = xnorm (*this, 1);
 
-      if (s.elem (0) == 0.0)
-        rcon = 0.0;
+      if (octave::math::isinf (anorm) || octave::math::isnan (anorm))
+        {
+          rcon = 0.0;
+          octave::warn_singular_matrix ();
+          retval = Matrix (n, m, 0.0);
+        }
       else
-        rcon = s.elem (minmn - 1) / s.elem (0);
+        {
+          F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, F77_DBLE_CMPLX_ARG (tmp_data),
+                                     m, F77_DBLE_CMPLX_ARG (pretval),
+                                     maxmn, ps, rcon, rank,
+                                     F77_DBLE_CMPLX_ARG (work.fortran_vec ()),
+                                     lwork, prwork, piwork, info));
 
-      retval.resize (n, nrhs);
+          if (s.elem (0) == 0.0)
+            rcon = 0.0;
+          else
+            rcon = s.elem (minmn - 1) / s.elem (0);
+
+          retval.resize (n, nrhs);
+        }
     }
 
   return retval;

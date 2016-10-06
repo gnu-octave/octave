@@ -1014,7 +1014,7 @@ void
 main_window::handle_update_breakpoint_marker_request (bool insert,
                                                       const QString& file,
                                                       int line,
-						      const QString& cond)
+                                                      const QString& cond)
 {
   bool cmd_focus = command_window_has_focus ();
 
@@ -1446,12 +1446,12 @@ main_window::construct (void)
 
       connect (this,
                SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
-	                                                int, const QString&)),
+                                                        int, const QString&)),
                editor_window,
                SLOT (handle_update_breakpoint_marker_request (bool,
                                                               const QString&,
                                                               int,
-							                                                const QString&)));
+                                                                                                        const QString&)));
 #endif
 
       octave_link::post_event (this,
@@ -1595,12 +1595,12 @@ main_window::construct_octave_qt_link (void)
 
       connect (_octave_qt_link,
                SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
-	                                                      int, const QString&)),
+                                                              int, const QString&)),
                this,
                SLOT (handle_update_breakpoint_marker_request (bool,
-	                                                            const QString&,
+                                                                    const QString&,
                                                               int,
-							                                                const QString&)));
+                                                                                                        const QString&)));
 
       connect (_octave_qt_link,
                SIGNAL (show_doc_signal (const QString &)),

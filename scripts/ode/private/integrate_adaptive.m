@@ -76,7 +76,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   dt = odeget (options, "InitialStep", [], "fast");
   if (isempty (dt))
     dt = starting_stepsize (order, func, t, x, options.AbsTol, options.RelTol,
-                            strcmp (options.NormControl, "on"));
+                            strcmp (options.NormControl, "on"), options.funarguments);
   endif
 
   dir = odeget (options, "direction", [], "fast");

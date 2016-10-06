@@ -36,7 +36,8 @@
 ## @seealso{odepkg}
 
 function h = starting_stepsize (order, func, t0, x0,
-                                AbsTol, RelTol, normcontrol, args)
+                                AbsTol, RelTol, normcontrol,
+                                args = {})
 
   ## compute norm of initial conditions
   d0 = AbsRel_Norm (x0, x0, AbsTol, RelTol, normcontrol);

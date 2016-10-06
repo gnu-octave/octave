@@ -73,13 +73,13 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   x_new = x_old = x = x0(:);
 
   ## Get first initial timestep
-  dt = odeget (options, "InitialStep", [], "fast");
+  dt = options.InitialStep;
   if (isempty (dt))
     dt = starting_stepsize (order, func, t, x, options.AbsTol, options.RelTol,
                             strcmp (options.NormControl, "on"), options.funarguments);
   endif
 
-  dir = odeget (options, "direction", [], "fast");
+  dir = options.direction;
   dt = dir * min (abs (dt), options.MaxStep);
 
   options.comp = 0.0;

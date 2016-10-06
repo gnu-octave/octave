@@ -1124,7 +1124,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
 %!assert (regexp ("\n", "\n"), 1)
 
 # Test escape sequences are silently converted
-%!test <45407> 
+%!test <45407>
 %! assert (regexprep ('s', 's', 'x\.y'), 'x.y');
 %! assert (regexprep ('s', '(s)', 'x\$1y'), 'x$1y');
 %! assert (regexprep ('s', '(s)', 'x\\$1y'), 'x\sy');

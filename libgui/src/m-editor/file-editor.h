@@ -71,7 +71,8 @@ public:
     QString index;
     QString file_name;
     QString encoding;
-    bool operator<(const session_data &other) const
+
+    bool operator < (const session_data &other) const
     {
       return index < other.index;
     }

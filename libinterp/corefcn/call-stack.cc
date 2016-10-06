@@ -65,7 +65,7 @@ octave_call_stack::stack_frame::fcn_name (bool print_subfn) const
 }
 
 bool
-octave_call_stack::stack_frame::operator== (const octave_call_stack::stack_frame &rhs) const
+octave_call_stack::stack_frame::operator == (const octave_call_stack::stack_frame &rhs) const
 {
   if (this->line () != rhs.line ())
     return false;

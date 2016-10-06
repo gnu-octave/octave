@@ -2381,7 +2381,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
-  if (m== 0 || n == 0 || b.cols () == 0)
+  if (m == 0 || n == 0 || b.cols () == 0)
     retval = FloatComplexMatrix (n, b.cols (), FloatComplex (0.0, 0.0));
   else
     {

@@ -2364,7 +2364,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
-  if (m== 0 || n == 0 || b.cols () == 0)
+  if (m == 0 || n == 0 || b.cols () == 0)
     retval = ComplexMatrix (n, b.cols (), Complex (0.0, 0.0));
   else
     {

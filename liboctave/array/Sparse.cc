@@ -2201,7 +2201,8 @@ Sparse<T>::assign (const idx_vector& idx_i,
       else
         assign (idx_i, idx_j, Sparse<T> (n, m));
     }
-  else if (idx_i.length (nr) == m && idx_j.length (nc) == n && (n==1 || m==1))
+  else if (idx_i.length (nr) == m && idx_j.length (nc) == n
+           && (n == 1 || m == 1))
     {
       assign (idx_i, idx_j, rhs.transpose ());
     }

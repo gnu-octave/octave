@@ -51,7 +51,9 @@ namespace QtHandles
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
     else if (props.style_is ("pushbutton")
-             || props.style_is ("togglebutton"))
+             || props.style_is ("togglebutton")
+             || props.style_is ("radiobutton")
+             || props.style_is ("checkbox"))
       {
         p.setColor (QPalette::Button,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));

@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QThread>
 #include <QTranslator>
 #include <QtGlobal>
+#include <QStyleFactory>
 
 #include <cstdio>
 
@@ -156,6 +157,11 @@ namespace octave
     // Set the codec for all strings (before wizard or any GUI object)
 #if ! defined (Q_OS_WIN32)
     QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
+#endif
+
+    // set windows style for windows
+#if defined (Q_OS_WIN32)
+    qt_app.setStyle(QStyleFactory::create("Windows"));
 #endif
 
     bool start_gui = start_gui_p ();

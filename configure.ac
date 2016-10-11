@@ -1689,7 +1689,8 @@ PKG_CHECK_MODULES([FT2], [freetype2], [
   else
     AC_MSG_RESULT(no)
     warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
-  fi])
+  fi],
+  [warn_freetype="FreeType library not found.  OpenGL graphics will not be fully functional."])
 
 if test -n "$warn_freetype"; then
   OCTAVE_CONFIGURE_WARNING([warn_freetype])

@@ -211,7 +211,7 @@ function varargout = ode23 (fun, trange, init, varargin)
                                              init, odeopts.AbsTol,
                                              odeopts.RelTol,
                                              strcmp (odeopts.NormControl,
-                                             "on"));
+                                             "on"), odeopts.funarguments);
   endif
 
 

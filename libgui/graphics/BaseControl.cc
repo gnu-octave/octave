@@ -42,18 +42,35 @@ namespace QtHandles
     QPalette p = w->palette ();
 
     if (props.style_is ("edit")
-        || props.style_is ("listbox")
-        || props.style_is ("popupmenu"))
+        || props.style_is ("listbox"))
       {
         p.setColor (QPalette::Base,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));
         p.setColor (QPalette::Text,
                     Utils::fromRgb (props.get_foregroundcolor_rgb ()));
       }
-    else if (props.style_is ("pushbutton")
-             || props.style_is ("togglebutton")
-             || props.style_is ("radiobutton")
+    else if (props.style_is ("popupmenu"))
+      {
+        // popumenu (QComboBox) is a listbox with a button, so needs set colors for both
+        p.setColor (QPalette::Base,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::Text,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+        p.setColor (QPalette::Button,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::ButtonText,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+      }
+    else if (props.style_is ("radiobutton")
              || props.style_is ("checkbox"))
+      {
+        p.setColor (QPalette::Button,
+                    Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+        p.setColor (QPalette::WindowText,
+                    Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+      }
+    else if (props.style_is ("pushbutton")
+             || props.style_is ("togglebutton"))
       {
         p.setColor (QPalette::Button,
                     Utils::fromRgb (props.get_backgroundcolor_rgb ()));

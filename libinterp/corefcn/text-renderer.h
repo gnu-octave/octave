@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 #include <string>
+#include <vector>
 
 #include "caseless-str.h"
 #include "dMatrix.h"
@@ -129,13 +130,13 @@ namespace octave
     public:
 
       string (const std::string& s, font& f, const double x0, const double y0)
-        : str (s), fnt (f), x (x0), y (y0), z (0.0), code (0),
-          color (Matrix (1,3,0.0))
+        : str (s), family (f.get_name ()), fnt (f), x (x0), y (y0), z (0.0),
+          xdata (), code (0), color (Matrix (1,3,0.0))
       { }
 
       string (const string& s)
-        : str (s.str), fnt (s.fnt), x (s.x), y (s.y), code (s.code),
-          color (s.color)
+        : str (s.str), family (s.family), fnt (s.fnt), x (s.x), y (s.y),
+          xdata (s.xdata), code (s.code), color (s.color)
       { }
 
       ~string (void) = default;
@@ -145,9 +146,11 @@ namespace octave
         if (&s != this)
           {
             str = s.str;
+            family = s.family;
             fnt = s.fnt;
             x = s.x;
             y = s.y;
+            xdata = s.xdata;
             code = s.code;
             color = s.color;
           }
@@ -161,6 +164,10 @@ namespace octave
 
       std::string get_name (void) const { return fnt.get_name (); }
 
+      std::string get_family (void) const { return family; }
+
+      void set_family (const std::string& nm) { family = nm; }
+
       std::string get_weight (void) const { return fnt.get_weight (); }
 
       std::string get_angle (void) const { return fnt.get_angle (); }
@@ -170,6 +177,10 @@ namespace octave
       void set_x (const double x0) { x = x0; }
 
       double get_x (void) const { return x; }
+
+      void set_xdata (const std::vector<double>& x0) { xdata = x0; }
+
+      std::vector<double> get_xdata (void) const { return xdata; }
 
       void set_y (const double y0) { y = y0; }
 
@@ -195,8 +206,10 @@ namespace octave
     private:
 
       std::string str;
+      std::string family;
       font fnt;
       double x, y, z;
+      std::vector<double> xdata;
       uint32_t code;
       Matrix color;
     };

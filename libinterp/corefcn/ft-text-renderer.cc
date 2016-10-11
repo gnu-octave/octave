@@ -857,8 +857,9 @@ namespace octave
         mbstate_t ps;
         memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
         wchar_t wc;
-
+        std::string fname = font.get_face ()->family_name;
         text_renderer::string fs (str, font, xoffset, yoffset);
+        std::vector<double> xdata;
 
         while (n > 0)
           {
@@ -873,7 +874,7 @@ namespace octave
 
                 if (wc == L'\n')
                   {
-                    // Finish previous string in srtlist before processing
+                    // Finish previous string in strlist before processing
                     // the newline character
                     fs.set_y (line_yoffset + yoffset);
                     fs.set_color (color);
@@ -881,9 +882,13 @@ namespace octave
                     if (! s.empty ())
                       {
                         fs.set_string (s);
+                        fs.set_xdata (xdata);
+                        fs.set_family (fname);
                         strlist.push_back (fs);
                       }
                   }
+                else
+                  xdata.push_back (xoffset);
 
                 glyph_index = process_character (wc, previous);
 
@@ -892,9 +897,9 @@ namespace octave
                     previous = 0;
                     // Start a new string in strlist
                     idx = curr;
+                    xdata.clear ();
                     fs = text_renderer::string (str.substr (idx), font,
                                                 line_xoffset, yoffset);
-
                   }
                 else
                   previous = glyph_index;
@@ -913,6 +918,8 @@ namespace octave
           {
             fs.set_y (line_yoffset + yoffset);
             fs.set_color (color);
+            fs.set_xdata (xdata);
+            fs.set_family (fname);
             strlist.push_back (fs);
           }
       }
@@ -1056,12 +1063,14 @@ namespace octave
   {
     uint32_t code = e.get_symbol_code ();
 
+    std::vector<double> xdata (1, xoffset);
     text_renderer::string fs ("-", font, xoffset, yoffset);
 
     if (code != text_element_symbol::invalid_code && font.is_valid ())
       {
         process_character (code);
         fs.set_code (code);
+        fs.set_xdata (xdata);
       }
     else if (font.is_valid ())
       ::warning ("ignoring unknown symbol: %d", e.get_symbol ());
@@ -1070,6 +1079,7 @@ namespace octave
       {
         fs.set_y (line_yoffset + yoffset);
         fs.set_color (color);
+        fs.set_family (font.get_face ()->family_name);
         strlist.push_back (fs);
       }
   }

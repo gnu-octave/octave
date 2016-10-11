@@ -5,6 +5,40 @@ Summary of important user-visible changes for version 4.4:
 
       gsvd
 
+ ** Deprecated functions.
+
+    The following functions have been deprecated in Octave 4.4 and will
+    be removed from Octave 4.8 (or whatever version is the second major
+    release after 4.4):
+
+      Function             | Replacement
+      ---------------------|------------------
+
+
+ ** The following functions were deprecated in Octave 4.0 and have been
+    removed from Octave 4.4.
+
+      allow_noninteger_range_as_index
+      bicubic              
+      delaunay3            
+      do_braindead_shortcircuit_evaluation
+      dump_prefs           
+      find_dir_in_path     
+      finite               
+      fmod                 
+      fnmatch              
+      gmap40               
+      loadaudio            
+      luinc                
+      mouse_wheel_zoom     
+      nfields              
+      octave_tmp_file_name 
+      playaudio            
+      saveaudio            
+      setaudio
+      syl                  
+      usage                
+
 
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------

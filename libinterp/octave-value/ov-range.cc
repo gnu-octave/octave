@@ -57,8 +57,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-// If TRUE, allow ranges with non-integer elements as array indices.
-static bool Vallow_noninteger_range_as_index = true;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
 
@@ -173,9 +171,7 @@ octave_range::index_vector (bool require_integers) const
     return *idx_cache;
   else
     {
-      if (require_integers
-          || ! Vallow_noninteger_range_as_index
-          || range.all_elements_are_ints ())
+      if (require_integers || range.all_elements_are_ints ())
         return set_idx_cache (idx_vector (range));
       else
         {
@@ -779,53 +775,4 @@ octave_range::fast_elem_extract (octave_idx_type n) const
   return (n < range.numel ()) ? octave_value (range.elem (n))
                               : octave_value ();
 }
-
-DEFUN (allow_noninteger_range_as_index, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} allow_noninteger_range_as_index ()
-@deftypefnx {} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})
-@deftypefnx {} {} allow_noninteger_range_as_index (@var{new_val}, "local")
-Query or set the internal variable that controls whether non-integer
-ranges are allowed as indices.
-
-This might be useful for @sc{matlab} compatibility; however, it is still not
-entirely compatible because @sc{matlab} treats the range expression
-differently in different contexts.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  static bool warned = false;
-  if (! warned)
-    {
-      warned = true;
-      warning_with_id ("Octave:deprecated-function",
-                       "allow_noninteger_range_as_index is obsolete and will be removed from a future version of Octave");
-    }
-
-  return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
-}
-
-/*
-%!test
-%! x = 0:10;
-%! warning ("off", "Octave:deprecated-function", "local");
-%! save = allow_noninteger_range_as_index ();
-%! warn_state = warning ("query", "Octave:noninteger-range-as-index");
-%! unwind_protect
-%!   allow_noninteger_range_as_index (false);
-%!   fail ("x(2.1:5)");
-%!   assert (x(2:5), 1:4);
-%!   allow_noninteger_range_as_index (true);
-%!   warning ("off", "Octave:noninteger-range-as-index");
-%!   assert (x(2.49:5), 1:3);
-%!   assert (x(2.5:5), 2:4);
-%!   assert (x(2.51:5), 2:4);
-%! unwind_protect_cleanup
-%!   allow_noninteger_range_as_index (save);
-%!   warning (warn_state.state, warn_state.identifier);
-%! end_unwind_protect
-*/
 

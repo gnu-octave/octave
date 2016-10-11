@@ -34,9 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "variables.h"
 
-// TRUE means we mark | and & expressions for braindead short-circuit
-// behavior.
-static bool Vdo_braindead_shortcircuit_evaluation = true;
 
 // Binary expressions.
 
@@ -69,8 +66,7 @@ tree_binary_expression::rvalue1 (int)
 {
   octave_value retval;
 
-  if (Vdo_braindead_shortcircuit_evaluation
-      && eligible_for_braindead_shortcircuit)
+  if (eligible_for_braindead_shortcircuit)
     {
       if (op_lhs)
         {
@@ -258,48 +254,4 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 
   return new_be;
 }
-
-DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} do_braindead_shortcircuit_evaluation ()
-@deftypefnx {} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})
-@deftypefnx {} {} do_braindead_shortcircuit_evaluation (@var{new_val}, "local")
-Query or set the internal variable that controls whether Octave will
-do short-circuit evaluation of @samp{|} and @samp{&} operators inside the
-conditions of if or while statements.
-
-This feature is only provided for compatibility with @sc{matlab} and should
-not be used unless you are porting old code that relies on this feature.
-
-To obtain short-circuit behavior for logical expressions in new programs,
-you should always use the @samp{&&} and @samp{||} operators.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@end deftypefn */)
-{
-  static bool warned = false;
-  if (! warned)
-    {
-      warned = true;
-      warning_with_id ("Octave:deprecated-function",
-                       "do_braindead_shortcircuit_evaluation is obsolete and will be removed from a future version of Octave");
-    }
-
-  return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);
-}
-
-/*
-%!test
-%! x = 0;
-%! do_braindead_shortcircuit_evaluation (0);
-%! if (1 | (x = 1))
-%! endif
-%! assert (x, 1);
-%! do_braindead_shortcircuit_evaluation (1);
-%! if (1 | (x = 0))
-%! endif
-%! assert (x, 1);
-*/
 

@@ -286,7 +286,8 @@ libinterp/DOCSTRINGS: $(LIBINTERP_DEFUN_FILES) libinterp/op-kw-docs | libinterp/
 
 OCTAVE_INTERPRETER_TARGETS += \
   $(OCT_FILES) \
-  $(DLDFCN_PKG_ADD_FILE)
+  $(DLDFCN_PKG_ADD_FILE) \
+  $(LIBINTERP_TST_FILES)
 
 DIRSTAMP_FILES += libinterp/$(octave_dirstamp)
 

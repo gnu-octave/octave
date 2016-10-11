@@ -38,13 +38,22 @@ static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
 static typename octave::math::svd<T>::Type
-svd_type (int nargin, int nargout)
+svd_type (int nargin, int nargout, const octave_value_list & args, const T & A)
 {
-  return ((nargout == 0 || nargout == 1)
-          ? octave::math::svd<T>::Type::sigma_only
-          : ((nargin == 2)
-             ? octave::math::svd<T>::Type::economy
-             : octave::math::svd<T>::Type::std));
+  if (nargout == 0 || nargout == 1)
+    return octave::math::svd<T>::Type::sigma_only;
+  else if (nargin == 1)
+    return octave::math::svd<T>::Type::std;
+  else
+    if (! args(1).is_real_scalar ())
+      return octave::math::svd<T>::Type::economy;
+    else
+      {
+        if (A.rows () > A.columns ())
+          return octave::math::svd<T>::Type::economy;
+        else
+          return octave::math::svd<T>::Type::std;
+      }
 }
 
 template <typename T>
@@ -60,7 +69,8 @@ DEFUN (svd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} svd (@var{A})
 @deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})
-@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})
+@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, "econ")
+@deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, 0)
 @cindex singular value decomposition
 Compute the singular value decomposition of @var{A}
 @tex
@@ -135,9 +145,14 @@ v =
 @end group
 @end example
 
-If given a second argument, @code{svd} returns an economy-sized
+When given a second argument that is not 0, @code{svd} returns an economy-sized
 decomposition, eliminating the unnecessary rows or columns of @var{U} or
 @var{V}.
+
+If the second argument is exactly 0, then the choice of decomposition is based
+on the matrix @var{A}.  If @var{A} has more rows than columns then an
+economy-sized decomposition is returned, otherwise a regular decomposition 
+is calculated.
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
 @end deftypefn */)
 {
@@ -165,7 +180,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           octave::math::svd<FloatMatrix> result
-            (tmp, svd_type<FloatMatrix> (nargin, nargout),
+            (tmp,
+             svd_type<FloatMatrix> (nargin, nargout, args, tmp),
              svd_driver<FloatMatrix> ());
 
           FloatDiagMatrix sigma = result.singular_values ();
@@ -185,7 +201,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           octave::math::svd<FloatComplexMatrix> result
-            (ctmp, svd_type<FloatComplexMatrix> (nargin, nargout),
+            (ctmp,
+             svd_type<FloatComplexMatrix> (nargin, nargout, args, ctmp),
              svd_driver<FloatComplexMatrix> ());
 
           FloatDiagMatrix sigma = result.singular_values ();
@@ -208,7 +225,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           octave::math::svd<Matrix> result
-            (tmp, svd_type<Matrix> (nargin, nargout),
+            (tmp,
+             svd_type<Matrix> (nargin, nargout, args, tmp),
              svd_driver<Matrix> ());
 
           DiagMatrix sigma = result.singular_values ();
@@ -228,7 +246,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
             error ("svd: cannot take SVD of matrix containing Inf or NaN values");
 
           octave::math::svd<ComplexMatrix> result
-            (ctmp, svd_type<ComplexMatrix> (nargin, nargout),
+            (ctmp,
+             svd_type<ComplexMatrix> (nargin, nargout, args, ctmp),
              svd_driver<ComplexMatrix> ());
 
           DiagMatrix sigma = result.singular_values ();
@@ -254,7 +273,6 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
 a = [1, 2; 3, 4] + [5, 6; 7, 8]*i;
 [u,s,v] = svd (a);
 assert (a, u * s * v', 128 * eps);
-
 
 %!test
 %! [u, s, v] = svd ([1, 2; 2, 1]);
@@ -325,6 +343,12 @@ assert (a, u * s * v', 128 * eps);
 %! assert (size (u), [5, 0]);
 %! assert (size (s), [0, 0]);
 %! assert (size (v), [0, 0]);
+
+%!test <49309>
+%! [~,~,v] = svd ([1, 1, 1], 0);
+%! assert (size (v), [3 3]);
+%! [~,~,v] = svd ([1, 1, 1], "econ");
+%! assert (size (v), [3 1]);
 
 %!error svd ()
 %!error svd ([1, 2; 4, 5], 2, 3)

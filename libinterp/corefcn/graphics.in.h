@@ -5517,7 +5517,7 @@ public:
       radio_property style S , "{pushbutton}|togglebutton|radiobutton|checkbox|edit|text|slider|frame|listbox|popupmenu"
       string_property tooltipstring , ""
       radio_property units u , "normalized|inches|centimeters|points|{pixels}|characters"
-      row_vector_property value , Matrix (1, 1, 1.0)
+      row_vector_property value , Matrix (1, 1, 0.0)
       radio_property verticalalignment , "top|{middle}|bottom"
     END_PROPERTIES
 

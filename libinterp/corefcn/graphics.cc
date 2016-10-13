@@ -8809,6 +8809,14 @@ uicontrol::properties::set_style (const octave_value& st)
     error ("set: cannot change the style of a uicontrol object after creation.");
 
   style = st;
+
+  // if we know know what we are, can override value for listbox and popupmenu
+  if (style_is ("listbox") || style_is ("popupmenu"))
+    {
+      Matrix v = value.get ().matrix_value ();
+      if(v.numel () == 1 && v (0) == 0)
+        value.set (octave_value (1));
+    }
 }
 
 Matrix

@@ -117,6 +117,9 @@ liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc HG-ID | 
 	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
 	$(simple_move_if_change_rule)
 
+OCTAVE_INTERPRETER_TARGETS += \
+  $(LIBOCTAVE_TST_FILES)
+
 DIRSTAMP_FILES += liboctave/$(octave_dirstamp)
 
 EXTRA_DIST += $(liboctave_EXTRA_DIST)

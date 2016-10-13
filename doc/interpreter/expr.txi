@@ -319,8 +319,6 @@ result.
 
 @DOCSTRING(isindex)
 
-@DOCSTRING(allow_noninteger_range_as_index)
-
 @node Calling Functions
 @section Calling Functions
 
@@ -1009,12 +1007,10 @@ operands for the operator @samp{&}.
 
 @sc{matlab} has special behavior that allows the operators @samp{&} and
 @samp{|} to short-circuit when used in the truth expression for @code{if} and
-@code{while} statements.  Octave also behaves the same way by default,
-though the use of the @samp{&} and @samp{|} operators in this way is
-strongly discouraged.  Instead, you should use the @samp{&&} and @samp{||}
-operators that always have short-circuit behavior.
-
-@DOCSTRING(do_braindead_shortcircuit_evaluation)
+@code{while} statements.  Octave behaves the same way for compatibility,
+however, the use of the @samp{&} and @samp{|} operators in this way is
+strongly discouraged and a warning will be issued.  Instead, you should use
+the @samp{&&} and @samp{||} operators that always have short-circuit behavior.
 
 Finally, the ternary operator (?:) is not supported in Octave.  If
 short-circuiting is not important, it can be replaced by the @code{ifelse}

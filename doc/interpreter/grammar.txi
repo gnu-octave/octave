@@ -64,8 +64,7 @@ identifier is reserved by Octave.
 
 The parser has a number of variables that affect its internal operation.
 These variables are generally documented in the manual alongside the code that
-they affect.  For example, @code{allow_noninteger_range_as_index} is discussed
-in the section on index expressions.
+they affect.
 
 In addition, there are three non-specific parser customization functions.
 @code{add_input_event_hook} can be used to schedule a user function for

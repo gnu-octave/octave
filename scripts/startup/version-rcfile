@@ -11,6 +11,16 @@ readline_read_init_file (sprintf ("%s%s%s",
                                   __octave_config_info__ ("startupfiledir"),
                                   filesep, "inputrc"));
 
+## Re-read user's personal inputrc to give precedence over Octave's default.
+inputrc = getenv ("INPUTRC");
+if (isempty (inputrc) && exist ("~/.inputrc", "file"))
+  inputrc = "~/.inputrc";
+endif
+if (! isempty (inputrc))
+  readline_read_init_file (inputrc);
+endif
+clear ("inputrc");
+
 ## Configure LESS pager if present
 if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
   PAGER_FLAGS ('-e -X -P"-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$"');

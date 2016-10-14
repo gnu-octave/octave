@@ -302,8 +302,10 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       // correspond to whitespace as delimter.
       if (! sep.length ())
         {
-          size_t n = line.find_first_of (",:; \t",
-                                         line.find_first_of ("0123456789"));
+          // Skip leading whitespace.
+          size_t pos1 = line.find_first_not_of (" \t");
+
+          size_t n = line.find_first_of (",:; \t", pos1);
           if (n == std::string::npos)
             {
               sep = " \t";

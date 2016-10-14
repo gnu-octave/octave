@@ -1376,7 +1376,7 @@ namespace octave
                               && (minorgridstyle != "none"));
         bool do_xminortick = props.is_xminortick ();
         Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
-        Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
+        Matrix xmticks = xform.xscale (props.get_xminortickvalues ().matrix_value ());
         string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
@@ -1513,7 +1513,7 @@ namespace octave
                               && (minorgridstyle != "none"));
         bool do_yminortick = props.is_yminortick ();
         Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
-        Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
+        Matrix ymticks = xform.yscale (props.get_yminortickvalues ().matrix_value ());
         string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;
@@ -1641,7 +1641,7 @@ namespace octave
                               && (minorgridstyle != "none"));
         bool do_zminortick = props.is_zminortick ();
         Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
-        Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
+        Matrix zmticks = xform.zscale (props.get_zminortickvalues ().matrix_value ());
         string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
         int wmax = 0;
         int hmax = 0;

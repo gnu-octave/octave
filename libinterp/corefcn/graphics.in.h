@@ -3937,9 +3937,9 @@ public:
       array_property x_normrendertransform h , Matrix (4, 4, 0.0)
       array_property x_rendertransform h , Matrix (4, 4, 0.0)
       // hidden properties for minor ticks
-      row_vector_property xmtick h , Matrix ()
-      row_vector_property ymtick h , Matrix ()
-      row_vector_property zmtick h , Matrix ()
+      row_vector_property xminortickvalues h , Matrix ()
+      row_vector_property yminortickvalues h , Matrix ()
+      row_vector_property zminortickvalues h , Matrix ()
       // hidden property for text rendering
       double_property __fontsize_points__ hgr , 0
    END_PROPERTIES
@@ -4036,8 +4036,8 @@ public:
     {
       if (xtickmode.is ("auto"))
         {
-          calc_ticks_and_lims (xlim, xtick, xmtick, xlimmode.is ("auto"),
-                               xscale.is ("log"));
+          calc_ticks_and_lims (xlim, xtick, xminortickvalues,
+                               xlimmode.is ("auto"), xscale.is ("log"));
           update_xtick ();
         }
     }
@@ -4045,8 +4045,8 @@ public:
     {
       if (ytickmode.is ("auto"))
         {
-          calc_ticks_and_lims (ylim, ytick, ymtick, ylimmode.is ("auto"),
-                               yscale.is ("log"));
+          calc_ticks_and_lims (ylim, ytick, yminortickvalues,
+                               ylimmode.is ("auto"), yscale.is ("log"));
           update_ytick ();
         }
     }
@@ -4054,8 +4054,8 @@ public:
     {
       if (ztickmode.is ("auto"))
         {
-          calc_ticks_and_lims (zlim, ztick, zmtick, zlimmode.is ("auto"),
-                               zscale.is ("log"));
+          calc_ticks_and_lims (zlim, ztick, zminortickvalues,
+                               zlimmode.is ("auto"), zscale.is ("log"));
           update_ztick ();
         }
     }
@@ -4218,8 +4218,8 @@ public:
     void update_xlim ()
     {
       if (xtickmode.is ("auto"))
-        calc_ticks_and_lims (xlim, xtick, xmtick, xlimmode.is ("auto"),
-                             xscale.is ("log"));
+        calc_ticks_and_lims (xlim, xtick, xminortickvalues,
+                             xlimmode.is ("auto"), xscale.is ("log"));
       if (xticklabelmode.is ("auto"))
         calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
 
@@ -4233,8 +4233,8 @@ public:
     void update_ylim (void)
     {
       if (ytickmode.is ("auto"))
-        calc_ticks_and_lims (ylim, ytick, ymtick, ylimmode.is ("auto"),
-                             yscale.is ("log"));
+        calc_ticks_and_lims (ylim, ytick, yminortickvalues,
+                             ylimmode.is ("auto"), yscale.is ("log"));
       if (yticklabelmode.is ("auto"))
         calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
 
@@ -4248,8 +4248,8 @@ public:
     void update_zlim (void)
     {
       if (ztickmode.is ("auto"))
-        calc_ticks_and_lims (zlim, ztick, zmtick, zlimmode.is ("auto"),
-                             zscale.is ("log"));
+        calc_ticks_and_lims (zlim, ztick, zminortickvalues,
+                             zlimmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
 

@@ -268,7 +268,7 @@ function hax = buildoverlay (hf)
 
   ## hidden property to store figure size in absolute (points)
   ## coordinates
-  addproperty ("figsize_points", hax, "axesxmtick", []);
+  addproperty ("figsize_points", hax, "axesxminortickvalues", []);
   update_figsize_points (hf, {}, hax);
 
 

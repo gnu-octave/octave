@@ -181,7 +181,7 @@ function [h, sout] = createaxes (s, p, par)
   if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     ## regular axes
     propval = {"position", s.properties.position};
-    hid = {"autopos_tag", "looseinset"};
+    hid = {"__autopos_tag__", "looseinset"};
     for ii = 1:numel (hid)
       prop = hid{ii};
       if (isfield (s.properties, prop))
@@ -646,7 +646,7 @@ endfunction
 
 function addmissingprops (h, props)
 
-  hid = {"autopos_tag", "looseinset"};
+  hid = {"__autopos_tag__", "looseinset"};
   oldfields = fieldnames (props);
   curfields = fieldnames (get (h));
   missing = ! ismember (oldfields, curfields);

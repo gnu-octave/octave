@@ -124,7 +124,7 @@ namespace QtHandles
           mapsInitialized = true;
         }
 
-      f.setPointSizeF (props.get_fontsize_points (height));
+      f.setPointSizeF (props.get___fontsize_points__ (height));
       f.setWeight (weightMap[props.get_fontweight ()]);
       f.setStyle (angleMap[props.get_fontangle ()]);
 

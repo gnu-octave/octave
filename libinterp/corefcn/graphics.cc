@@ -4552,10 +4552,10 @@ axes::properties::init (void)
   xset (zlabel.handle_value (), "clipping", "off");
   xset (title.handle_value (), "clipping", "off");
 
-  xset (xlabel.handle_value (), "autopos_tag", "xlabel");
-  xset (ylabel.handle_value (), "autopos_tag", "ylabel");
-  xset (zlabel.handle_value (), "autopos_tag", "zlabel");
-  xset (title.handle_value (), "autopos_tag", "title");
+  xset (xlabel.handle_value (), "__autopos_tag__", "xlabel");
+  xset (ylabel.handle_value (), "__autopos_tag__", "ylabel");
+  xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
+  xset (title.handle_value (), "__autopos_tag__", "title");
 
   adopt (xlabel.handle_value ());
   adopt (ylabel.handle_value ());
@@ -4743,7 +4743,7 @@ axes::properties::set_xlabel (const octave_value& v)
   xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (xlabel.handle_value (), "clipping", "off");
   xset (xlabel.handle_value (), "color", get_xcolor ());
-  xset (xlabel.handle_value (), "autopos_tag", "xlabel");
+  xset (xlabel.handle_value (), "__autopos_tag__", "xlabel");
   update_xlabel_position ();
 }
 
@@ -4757,7 +4757,7 @@ axes::properties::set_ylabel (const octave_value& v)
   xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "clipping", "off");
   xset (ylabel.handle_value (), "color", get_ycolor ());
-  xset (ylabel.handle_value (), "autopos_tag", "ylabel");
+  xset (ylabel.handle_value (), "__autopos_tag__", "ylabel");
   update_ylabel_position ();
 }
 
@@ -4771,7 +4771,7 @@ axes::properties::set_zlabel (const octave_value& v)
   xset (zlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (zlabel.handle_value (), "clipping", "off");
   xset (zlabel.handle_value (), "color", get_zcolor ());
-  xset (zlabel.handle_value (), "autopos_tag", "zlabel");
+  xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
   update_zlabel_position ();
 }
 
@@ -4785,7 +4785,7 @@ axes::properties::set_title (const octave_value& v)
   xset (title.handle_value (), "verticalalignment", "bottom");
   xset (title.handle_value (), "verticalalignmentmode", "auto");
   xset (title.handle_value (), "clipping", "off");
-  xset (title.handle_value (), "autopos_tag", "title");
+  xset (title.handle_value (), "__autopos_tag__", "title");
   update_title_position ();
 }
 
@@ -5013,10 +5013,10 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   xset (zlabel.handle_value (), "clipping", "off");
   xset (title.handle_value (), "clipping", "off");
 
-  xset (xlabel.handle_value (), "autopos_tag", "xlabel");
-  xset (ylabel.handle_value (), "autopos_tag", "ylabel");
-  xset (zlabel.handle_value (), "autopos_tag", "zlabel");
-  xset (title.handle_value (), "autopos_tag", "title");
+  xset (xlabel.handle_value (), "__autopos_tag__", "xlabel");
+  xset (ylabel.handle_value (), "__autopos_tag__", "ylabel");
+  xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
+  xset (title.handle_value (), "__autopos_tag__", "title");
 
   update_transform ();
   sync_positions ();
@@ -6264,7 +6264,7 @@ axes::properties::update_font (void)
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
-                         get ("fontsize_points").double_value ());
+                         get ("__fontsize_points__").double_value ());
 }
 
 // The INTERNAL flag defines whether position or outerposition is used.
@@ -6588,7 +6588,7 @@ axes::properties::update_fontunits (const caseless_str& old_units)
 }
 
 double
-axes::properties::get_fontsize_points (double box_pix_height) const
+axes::properties::get___fontsize_points__ (double box_pix_height) const
 {
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
@@ -8040,7 +8040,7 @@ text::properties::update_font (void)
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
-                         get ("fontsize_points").double_value ());
+                         get ("__fontsize_points__").double_value ());
 
   txt_renderer.set_color (get_color_rgb ());
 }
@@ -8082,17 +8082,17 @@ text::properties::update_text_extent (void)
   // performed in get_extent.
   set_extent (bbox);
 
-  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel")
-      || autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
+  if (__autopos_tag___is ("xlabel") || __autopos_tag___is ("ylabel")
+      || __autopos_tag___is ("zlabel") || __autopos_tag___is ("title"))
     update_autopos ("sync");
 }
 
 void
 text::properties::request_autopos (void)
 {
-  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel")
-      || autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
-    update_autopos (get_autopos_tag ());
+  if (__autopos_tag___is ("xlabel") || __autopos_tag___is ("ylabel")
+      || __autopos_tag___is ("zlabel") || __autopos_tag___is ("title"))
+    update_autopos (get___autopos_tag__ ());
 }
 
 void
@@ -8131,7 +8131,7 @@ text::properties::update_units (void)
 }
 
 double
-text::properties::get_fontsize_points (double box_pix_height) const
+text::properties::get___fontsize_points__ (double box_pix_height) const
 {
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
@@ -8863,7 +8863,7 @@ uicontrol::properties::update_fontunits (const caseless_str& old_units)
 }
 
 double
-uicontrol::properties::get_fontsize_points (double box_pix_height) const
+uicontrol::properties::get___fontsize_points__ (double box_pix_height) const
 {
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
@@ -8995,7 +8995,7 @@ uibuttongroup::properties::update_fontunits (const caseless_str& old_units)
 }
 
 double
-uibuttongroup::properties::get_fontsize_points (double box_pix_height) const
+uibuttongroup::properties::get___fontsize_points__ (double box_pix_height) const
 {
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
@@ -9166,7 +9166,7 @@ uipanel::properties::update_fontunits (const caseless_str& old_units)
 }
 
 double
-uipanel::properties::get_fontsize_points (double box_pix_height) const
+uipanel::properties::get___fontsize_points__ (double box_pix_height) const
 {
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;

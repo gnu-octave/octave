@@ -423,7 +423,7 @@ public:
 
   void delete_entry (uimenu::properties& uimenup)
   {
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     int idx = find_index_by_name (fltk_label.c_str ());
 
     if (idx >= 0)
@@ -432,7 +432,7 @@ public:
 
   void update_accelerator (uimenu::properties& uimenup)
   {
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
@@ -451,7 +451,7 @@ public:
 
   void update_callback (uimenu::properties& uimenup)
   {
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
@@ -469,7 +469,7 @@ public:
 
   void update_enable (uimenu::properties& uimenup)
   {
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
@@ -486,7 +486,7 @@ public:
 
   void update_foregroundcolor (uimenu::properties& uimenup)
   {
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
@@ -509,7 +509,7 @@ public:
     // Matlab places the separator before the current
     // menu entry, while fltk places it after.  So we need to find
     // the previous item in this menu/submenu. (Kai)
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
         int itemflags = 0, idx;
@@ -539,7 +539,7 @@ public:
 
   void update_visible (uimenu::properties& uimenup)
   {
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
@@ -563,7 +563,7 @@ public:
   void add_entry (uimenu::properties& uimenup)
   {
 
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
 
     if (! fltk_label.empty ())
       {
@@ -606,7 +606,7 @@ public:
               }
           }
         while (! item_added);
-        uimenup.set_fltk_label (fltk_label);
+        uimenup.set___fltk_label__ (fltk_label);
       }
   }
 
@@ -615,7 +615,7 @@ public:
     std::vector<int> delayed_menus;
     Matrix kids = find_uimenu_children (uimenup);
     int len = kids.numel ();
-    std::string fltk_label = uimenup.get_fltk_label ();
+    std::string fltk_label = uimenup.get___fltk_label__ ();
     int count = 0;
 
     add_entry (uimenup);
@@ -897,7 +897,7 @@ public:
       {
         uimenu::properties& uimenup =
           dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
-        std::string fltk_label = uimenup.get_fltk_label ();
+        std::string fltk_label = uimenup.get___fltk_label__ ();
         graphics_object fig = uimenu_obj.get_ancestor ("figure");
         figure::properties& figp =
           dynamic_cast<figure::properties&> (fig.get_properties ());
@@ -2218,7 +2218,7 @@ public:
       }
   }
 
-  void uimenu_set_fltk_label (graphics_object uimenu_obj)
+  void uimenu_set___fltk_label__ (graphics_object uimenu_obj)
   {
     if (uimenu_obj.valid_object ())
       {
@@ -2228,7 +2228,7 @@ public:
         graphics_object go = gh_manager::get_object (uimenu_obj.get_parent ());
         if (go.isa ("uimenu"))
           fltk_label = dynamic_cast<const uimenu::properties&>
-                       (go.get_properties ()).get_fltk_label ()
+                       (go.get_properties ()).get___fltk_label__ ()
                        + "/"
                        + fltk_label;
         else if (go.isa ("figure") || go.isa ("uicontextmenu"))
@@ -2236,7 +2236,7 @@ public:
         else
           error ("invalid parent object\n");
 
-        uimenup.set_fltk_label (fltk_label);
+        uimenup.set___fltk_label__ (fltk_label);
       }
   }
 
@@ -2295,7 +2295,7 @@ public:
     else if (go.isa ("uimenu"))
       {
         if (id == uimenu::properties::ID_LABEL)
-          uimenu_set_fltk_label (go);
+          uimenu_set___fltk_label__ (go);
 
         graphics_object fig = go.get_ancestor ("figure");
         figure_manager::uimenu_update (fig.get_handle (), go.get_handle (), id);

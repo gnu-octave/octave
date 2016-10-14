@@ -160,7 +160,7 @@ function prpstr = getprops (h)
   endwhile
 
   ## hidden properties
-  hidden = {"autopos_tag", "looseinset"};
+  hidden = {"__autopos_tag__", "looseinset"};
   for ii = 1:numel (hidden)
     if (isprop (h, hidden{ii}))
       prpstr.(hidden{ii}) = get (h, hidden{ii});

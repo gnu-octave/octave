@@ -678,7 +678,7 @@ namespace octave
     if (props.has_property ("interpreter"))
       set_interpreter (props.get ("interpreter").string_value ());
 
-    fontsize = props.get ("fontsize_points").double_value ();
+    fontsize = props.get ("__fontsize_points__").double_value ();
 
     caseless_str fn = props.get ("fontname").xtolower ().string_value ();
     bool isbold =

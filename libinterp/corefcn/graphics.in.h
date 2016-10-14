@@ -3661,7 +3661,7 @@ public:
     Matrix get_extent (bool with_text = false,
                        bool only_text_height=false) const;
 
-    double get_fontsize_points (double box_pix_height = 0) const;
+    double get___fontsize_points__ (double box_pix_height = 0) const;
 
     void update_boundingbox (void)
     {
@@ -3927,7 +3927,7 @@ public:
       // Octave-specific properties
       double_property mousewheelzoom , 0.5
       // hidden properties for alignment of subplots
-      radio_property autopos_tag h , "{none}|subplot"
+      radio_property __autopos_tag__ h , "{none}|subplot"
       // hidden properties for inset
       array_property looseinset hu , Matrix (1, 4, 0.0)
       // hidden properties for transformation computation
@@ -3941,7 +3941,7 @@ public:
       row_vector_property ymtick h , Matrix ()
       row_vector_property zmtick h , Matrix ()
       // hidden property for text rendering
-      double_property fontsize_points hgr , 0
+      double_property __fontsize_points__ hgr , 0
    END_PROPERTIES
 
   protected:
@@ -4447,7 +4447,7 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    double get_fontsize_points (double box_pix_height = 0) const;
+    double get___fontsize_points__ (double box_pix_height = 0) const;
 
     void set_position (const octave_value& val)
     {
@@ -4510,9 +4510,9 @@ public:
       radio_property rotationmode hu , "{auto}|manual"
       radio_property horizontalalignmentmode hu , "{auto}|manual"
       radio_property verticalalignmentmode hu , "{auto}|manual"
-      radio_property autopos_tag h , "{none}|xlabel|ylabel|zlabel|title"
+      radio_property __autopos_tag__ h , "{none}|xlabel|ylabel|zlabel|title"
       // hidden property for text rendering
-      double_property fontsize_points hgr , 0
+      double_property __fontsize_points__ hgr , 0
     END_PROPERTIES
 
     Matrix get_data_position (void) const;
@@ -5375,7 +5375,7 @@ public:
       double_property position , 0
       bool_property separator , "off"
       // Octave-specific properties
-      string_property fltk_label h , ""
+      string_property __fltk_label__ h , ""
     END_PROPERTIES
 
   protected:
@@ -5486,7 +5486,7 @@ public:
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get_fontsize_points (double box_pix_height = 0) const;
+    double get___fontsize_points__ (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5584,7 +5584,7 @@ public:
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get_fontsize_points (double box_pix_height = 0) const;
+    double get___fontsize_points__ (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5669,7 +5669,7 @@ public:
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 
-    double get_fontsize_points (double box_pix_height = 0) const;
+    double get___fontsize_points__ (double box_pix_height = 0) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.

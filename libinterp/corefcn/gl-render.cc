@@ -3587,7 +3587,7 @@ namespace octave
     txt_renderer.set_font (props.get ("fontname").string_value (),
                            props.get ("fontweight").string_value (),
                            props.get ("fontangle").string_value (),
-                           props.get ("fontsize_points").double_value ());
+                           props.get ("__fontsize_points__").double_value ());
   }
 
   void

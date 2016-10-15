@@ -32,11 +32,11 @@ function options = odemergeopts  (useroptions, options, classes,
 
       else
         error ("Octave:invalid-input-arg",
-                [fun_name ": invalid value assigned to field '%s'"], key);
+               [fun_name ": invalid value assigned to field '%s'"], key);
       endif
-      
-    options.(key) = useroptions.(key);
-    
+
+      options.(key) = useroptions.(key);
+
     endif
   endfor
 endfunction

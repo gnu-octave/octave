@@ -1,3 +1,4 @@
+## Copyright (C) 2016, Carlo de Falco
 ## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2014-2016 Jacopo Corno <jacopo.corno@gmail.com>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
@@ -41,7 +42,7 @@
 ##
 ## By default, @code{ode45} uses an adaptive timestep with the
 ## @code{integrate_adaptive} algorithm.  The tolerance for the timestep
-## computation may be changed by using the options @qcode{"RelTol"},
+## computation may be changed by using the options @qcode{"RelTol"}
 ## and @qcode{"AbsTol"}.
 ##
 ## @var{init} contains the initial value for the unknowns.  If it is a row
@@ -162,7 +163,7 @@ function varargout = ode45 (fun, trange, init, varargin)
                                      "InitialSlope", "MaxOrder", "BDF"});
   attributes = rmfield (attributes, {"Jacobian", "JPattern", "Vectorized", ...
                                      "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"}); 
+                                     "InitialSlope", "MaxOrder", "BDF"});
 
   odeopts = odemergeopts (odeopts, defaults, classes, attributes, 'ode45');
 
@@ -195,8 +196,8 @@ function varargout = ode45 (fun, trange, init, varargin)
                                              init, odeopts.AbsTol,
                                              odeopts.RelTol,
                                              strcmp (odeopts.NormControl,
-                                             "on"), odeopts.funarguments);
-  endif 
+                                                     "on"), odeopts.funarguments);
+  endif
 
 
   if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
@@ -215,18 +216,18 @@ function varargout = ode45 (fun, trange, init, varargin)
     if (! strcmp (odeopts.MStateDependence, "none")) # constant mass matrices have already
       mass = @(t,x) odeopts.Mass (t, x, odeopts.funarguments{:});
       fun = @(t,x) mass (t, x, odeopts.funarguments{:}) ...
-             \ fun (t, x, odeopts.funarguments{:});
+            \ fun (t, x, odeopts.funarguments{:});
     else                 # if ((! strcmp (odeopts.MStateDependence, "none")) == false)
       mass = @(t) odeopts.Mass (t, odeopts.funarguments{:});
       fun = @(t,x) mass (t, odeopts.funarguments{:}) ...
-             \ fun (t, x, odeopts.funarguments{:});
+            \ fun (t, x, odeopts.funarguments{:});
     endif
   endif
 
- 
+
   solution = integrate_adaptive (@runge_kutta_45_dorpri,
                                  order, fun, trange, init, odeopts);
-  
+
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter

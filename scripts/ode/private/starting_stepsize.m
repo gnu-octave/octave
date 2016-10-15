@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{@@func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol})
+## @deftypefn {} {@var{h} =} starting_stepsize (@var{order}, @var{func}, @var{t0}, @var{x0}, @var{AbsTol}, @var{RelTol}, @var{normcontrol})
 ##
 ## Determine a good initial timestep for an ODE solver of order @var{order}
 ## using the algorithm described in reference [1].
 ##
-## The input argument @var{@@func}, is the function describing the differential
+## The input argument @var{func}, is the function describing the differential
 ## equations, @var{t0} is the initial time, and @var{x0} is the initial
 ## condition.  @var{AbsTol} and @var{RelTol} are the absolute and relative
 ## tolerance on the ODE integration taken from an ode options structure.
@@ -67,12 +67,12 @@ function h = starting_stepsize (order, func, t0, x0,
        AbsRel_Norm (yh - y, yh - y, AbsTol, RelTol, normcontrol);
 
   if (max (d1, d2) <= 1e-15)
-    h1 = max (1e-6, h0*1e-3);
+    h1 = max (1e-6, h0 * 1e-3);
   else
     h1 = (1e-2 / max (d1, d2)) ^(1 / (order+1));
   endif
 
-  h = min (100*h0, h1);
+  h = min (100 * h0, h1);
 
 endfunction
 

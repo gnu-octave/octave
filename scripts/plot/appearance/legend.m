@@ -1364,11 +1364,17 @@ endfunction
 
 %!demo
 %! clf;
+%! subplot (2,1,1);
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
 %! ylim ([0 1.0]);
 %! title ("legend() works for bar graphs (hggroups)");
-%! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
+%! legend ({"1st Bar", "2nd Bar", "3rd Bar"}, "location", "northwest");
+%! subplot (2,1,2);
+%! x = linspace (0, 10);
+%! stem (0.5+x.*rand (size (x)) / max (x));
+%! title ("legend() works for stem plots (hggroups)");
+%! legend ("Stem Rand", "location", "northwest");
 
 %!demo
 %! clf;

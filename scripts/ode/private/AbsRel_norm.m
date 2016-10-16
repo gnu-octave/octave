@@ -18,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {retval =} AbsRel_Norm (@var{x}, @var{x_old}, @var{AbsTol}, @var{RelTol}, @var{normcoontrol}, @var{y})
+## @deftypefn {} {retval =} AbsRel_norm (@var{x}, @var{x_old}, @var{AbsTol}, @var{RelTol}, @var{normcoontrol}, @var{y})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function retval = AbsRel_Norm (x, x_old, AbsTol, RelTol, normcontrol, y = zeros (size (x)))
+function retval = AbsRel_norm (x, x_old, AbsTol, RelTol, normcontrol, y = zeros (size (x)))
 
   n = numel (x);
-  
+
   sc = AbsTol + max (abs (x), abs (x_old)) .* RelTol;
   if (normcontrol)
     retval = max (abs (x - y) ./ sc);

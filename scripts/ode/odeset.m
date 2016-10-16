@@ -1,5 +1,5 @@
-## Copyright (C) 2016, Carlo de Falco
-## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
+## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2016 Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
 ##
@@ -20,15 +20,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} odeset ()
+## @deftypefn  {} {@var{odestruct} =} odeset ()
 ## @deftypefnx {} {@var{odestruct} =} odeset (@var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
 ## @deftypefnx {} {@var{odestruct} =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
 ## @deftypefnx {} {@var{odestruct} =} odeset (@var{oldstruct}, @var{newstruct})
+## @deftypefnx {} {} odeset ()
 ##
 ## Create or modify an ODE options structure.
 ##
-## When called without an input argument, return a new ODE options structure
-## that contains all possible fields initialized to their default values.
+## When called with no input argument and one output argument, return a new ODE
+## options structure that contains all possible fields initialized to their
+## default values.  If no output argument is requested, display a list of
+## the common ODE solver options along with their default value.
 ##
 ## If called with string input arguments @var{"field1"}, @var{"field2"},
 ## @dots{} identifying valid ODE options then return a new ODE options
@@ -44,6 +47,7 @@
 ## @var{newstruct} overwrite all values from the structure @var{oldstruct} with
 ## new values from the structure @var{newstruct}.  Empty values in
 ## @var{newstruct} will not overwrite values in @var{oldstruct}.
+##
 ## @seealso{odeget}
 ## @end deftypefn
 
@@ -52,7 +56,6 @@ function odestruct = odeset (varargin)
   persistent p;
 
   if (isempty (p))
-
     p = inputParser ();
     p.addParameter ("AbsTol", []);
     p.addParameter ("BDF", []);
@@ -63,6 +66,7 @@ function odestruct = odeset (varargin)
     p.addParameter ("JConstant", []);
     p.addParameter ("JPattern", []);
     p.addParameter ("Mass", []);
+    ## FIXME: MassConstant does not appear in Matlab documentation for odeset
     p.addParameter ("MassConstant", []);
     p.addParameter ("MassSingular", []);
     p.addParameter ("MaxOrder", []);
@@ -78,7 +82,6 @@ function odestruct = odeset (varargin)
     p.addParameter ("Stats", []);
     p.addParameter ("Vectorized", []);
     p.KeepUnmatched = true;
-    
   endif
 
   if (nargin == 0 && nargout == 0)
@@ -88,20 +91,24 @@ function odestruct = odeset (varargin)
     odestruct = p.Results;
     odestruct_extra = p.Unmatched;
 
-    s1 = cellfun (@(x) ifelse (iscell(x), {x}, x),
-                  struct2cell(odestruct),
-                  'UniformOutput', false);
+    ## FIXME: For speed, shouldn't this merge of structures only occur
+    ##        when there is something in odestruct_extra?
+    ## FIXME: Should alphabetical order of fieldnames be maintained
+    ##        by using sort?
+    s1 = cellfun (@(x) ifelse (iscell (x), {x}, x),
+                  struct2cell (odestruct),
+                  "UniformOutput", false);
 
-    s2 = cellfun (@(x) ifelse (iscell(x), {x}, x),
-                  struct2cell(odestruct_extra),
-                  'UniformOutput', false);
-    
+    s2 = cellfun (@(x) ifelse (iscell (x), {x}, x),
+                  struct2cell (odestruct_extra),
+                  "UniformOutput", false);
+
     C = [fieldnames(odestruct)       s1;
          fieldnames(odestruct_extra) s2];
-    
+
     odestruct = struct (C'{:});
   endif
-  
+
 endfunction
 
 ## function to print all possible options
@@ -110,29 +117,29 @@ function print_options ()
   disp ("List of the most common ODE solver options.");
   disp ("Default values are in square brackets.");
   disp ("");
-  disp ("             AbsTol:  scalar or vector, >0, [1e-6]");
-  disp ("                BDF:  binary, {'on', ['off']}");
-  disp ("             Events:  function_handle, []");
-  disp ("       InitialSlope:  vector, []");
-  disp ("        InitialStep:  scalar, >0, []");
-  disp ("           Jacobian:  matrix or function_handle, []");
-  disp ("          JConstant:  binary, {'on', ['off']}");
-  disp ("           JPattern:  sparse matrix, []");
-  disp ("               Mass:  matrix or function_handle, []");
-  disp ("       MassConstant:  binary, {'on', ['off']}");
-  disp ("       MassSingular:  switch, {'yes', ['maybe'], 'no'}");
-  disp ("           MaxOrder:  switch, {1, 2, 3, 4, [5]}");
-  disp ("            MaxStep:  scalar, >0, []");
-  disp ("   MStateDependence:  switch, {'none', ['weak'], 'strong'}");
-  disp ("          MvPattern:  sparse matrix, []");
-  disp ("        NonNegative:  vector of integers, []");
-  disp ("        NormControl:  binary, {'on', ['off']}");
-  disp ("          OutputFcn:  function_handle, []");
-  disp ("          OutputSel:  scalar or vector, []");
-  disp ("             Refine:  scalar, integer, >0, []");
-  disp ("             RelTol:  scalar, >0, [1e-3]");
-  disp ("              Stats:  binary, {'on', ['off']}");
-  disp ("         Vectorized:  binary, {'on', ['off']}");
+  disp ('             AbsTol:  scalar or vector, >0, [1e-6]');
+  disp ('                BDF:  binary, {["off"], "on"}');
+  disp ('             Events:  function_handle, []');
+  disp ('       InitialSlope:  vector, []');
+  disp ('        InitialStep:  scalar, >0, []');
+  disp ('           Jacobian:  matrix or function_handle, []');
+  disp ('          JConstant:  binary, {["off"], "on"}');
+  disp ('           JPattern:  sparse matrix, []');
+  disp ('               Mass:  matrix or function_handle, []');
+  disp ('       MassConstant:  binary, {["off"], "on"}');
+  disp ('       MassSingular:  switch, {["maybe"], "no", "yes"}');
+  disp ('           MaxOrder:  switch, {[5], 1, 2, 3, 4, }');
+  disp ('            MaxStep:  scalar, >0, []');
+  disp ('   MStateDependence:  switch, {["weak"], "none", "strong"}');
+  disp ('          MvPattern:  sparse matrix, []');
+  disp ('        NonNegative:  vector of integers, []');
+  disp ('        NormControl:  binary, {["off"], "on"}');
+  disp ('          OutputFcn:  function_handle, []');
+  disp ('          OutputSel:  scalar or vector, []');
+  disp ('             Refine:  scalar, integer, >0, []');
+  disp ('             RelTol:  scalar, >0, [1e-3]');
+  disp ('              Stats:  binary, {["off"], "on"}');
+  disp ('         Vectorized:  binary, {["off"], "on"}');
 
 endfunction
 
@@ -192,8 +199,7 @@ endfunction
 %!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
 %!error  odeset (odeset (), 1, 1)
 
-##FIXME: Add not exact match option 
+## FIXME: Add inexact match option
 ## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
 ## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
-
 

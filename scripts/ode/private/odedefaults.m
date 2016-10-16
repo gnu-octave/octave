@@ -1,5 +1,5 @@
-## Copyright (C) 2016, Carlo de Falco
-## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
+## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2016 Francesco Faccio <francesco.faccio@mail.polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{d}, @var{c}, @var{a}] =} odedefaults (@var{n}, @var{t0}, @var{tf})
+## @deftypefn {} {[@var{defaults}, @var{classes}, @var{attributes}] =} odedefaults (@var{n}, @var{t0}, @var{tf})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -27,7 +27,7 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
   persistent defaults = struct ("AbsTol", 1e-6,
                                 "BDF", "off",
                                 "Events", [],
-                                "InitialSlope", zeros(n,1),
+                                "InitialSlope", zeros (n,1),
                                 "InitialStep", [],
                                 "Jacobian", [],
                                 "JConstant", "off",
@@ -43,13 +43,13 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                 "NormControl", "off",
                                 "OutputFcn", [],
                                 "OutputSel", [],
-                                "Refine", 1,  
+                                "Refine", 1,
                                 "RelTol", 1e-3,
                                 "Stats", "off",
                                 "Vectorized", "off");
-  
+
   defaults.MaxStep = (0.1 * abs (t0-tf));
-  
+
   persistent classes = struct ("AbsTol", {{"float"}},
                                "BDF", "char",
                                "Events", {{"function_handle"}},
@@ -73,7 +73,7 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                "RelTol", {{"float"}},
                                "Stats", "char",
                                "Vectorized", "char");
-  
+
   persistent attributes = struct ("AbsTol", {{"real", "vector", "positive"}},
                                   "BDF", {{"on", "off"}},
                                   "Events", {{}},
@@ -99,3 +99,4 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                   "Stats", {{"on", "off"}},
                                   "Vectorized", {{"on", "off"}});
 endfunction
+

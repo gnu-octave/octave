@@ -40,14 +40,14 @@ function h = starting_stepsize (order, func, t0, x0,
                                 args = {})
 
   ## compute norm of initial conditions
-  d0 = AbsRel_Norm (x0, x0, AbsTol, RelTol, normcontrol);
+  d0 = AbsRel_norm (x0, x0, AbsTol, RelTol, normcontrol);
 
   ## compute norm of the function evaluated at initial conditions
   y = func (t0, x0, args{:});
   if (iscell (y))
     y = y{1};
   endif
-  d1 = AbsRel_Norm (y, y, AbsTol, RelTol, normcontrol);
+  d1 = AbsRel_norm (y, y, AbsTol, RelTol, normcontrol);
 
   if (d0 < 1e-5 || d1 < 1e-5)
     h0 = 1e-6;
@@ -64,7 +64,7 @@ function h = starting_stepsize (order, func, t0, x0,
     yh = yh{1};
   endif
   d2 = (1 / h0) * ...
-       AbsRel_Norm (yh - y, yh - y, AbsTol, RelTol, normcontrol);
+       AbsRel_norm (yh - y, yh - y, AbsTol, RelTol, normcontrol);
 
   if (max (d1, d2) <= 1e-15)
     h1 = max (1e-6, h0 * 1e-3);

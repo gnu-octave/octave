@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{sol} =} ode_event_handler (@var{@@evtfun}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
+## @deftypefn {} {@var{retval} =} ode_event_handler (@var{@@evtfun}, @var{t}, @var{y}, @var{flag}, @var{par1}, @var{par2}, @dots{})
 ##
 ## Return the solution of the event function that is specified as the first
 ## input argument @var{@@evtfun} in the form of a function handle.
@@ -36,7 +36,7 @@
 ##
 ## @item  @qcode{"calc"}
 ## then do the evaluation of the event function and return the solution
-## @var{sol} as type cell array of size 4,
+## @var{retval} as type cell array of size 4,
 ##
 ## @item  @qcode{"done"}
 ## then cleanup internal variables of the function
@@ -52,8 +52,6 @@
 ## is only little error detection implemented in this function file to
 ## achieve the highest performance.
 ## @end deftypefn
-##
-## @seealso{odepkg}
 
 function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
 
@@ -72,7 +70,6 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
   ## yold    the ODE result
   ## retcell the return values cell array
   ## evtcnt  the counter for how often this function has been called
-  ## has been called
   persistent evtold told yold retcell evtcnt;
 
   ## Call the event function if an event function has been defined to

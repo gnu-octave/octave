@@ -612,6 +612,52 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         withclause{data_idx} = sprintf ("with %s;", imagetype);
 
       case "line"
+        if (strcmp (get (obj.parent, "type"), "hggroup"))
+          hg = get (obj.parent, "children");
+          if (hg(1) == h_obj && ! isempty (get (obj.parent, "displayname")))
+            data_idx += 1;
+            is_image_data(data_idx) = false;
+            parametric(data_idx) = false;
+            have_cdata(data_idx) = false;
+            have_3d_patch(data_idx) = false;
+            tmpdispname = obj.displayname;
+            obj.displayname = get (obj.parent, "displayname");
+            tmp = undo_string_escapes (
+                    __maybe_munge_text__ (enhanced, obj, "displayname")
+                  );
+            titlespec{data_idx} = ['title "' tmp '"'];
+            obj.displayname = tmpdispname;
+            if (! isempty (findobj (obj.parent, "-property", "format", "-depth", 0)))
+              # Place phantom errorbar data for legend
+              data{data_idx} = nan (4,1);
+              usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3):($4)");
+              switch (get (obj.parent, "format"))
+                case {"box" "boxy" "boxxy"}
+                  errbars = "boxxy";
+                case "xyerr"
+                  errbars = "xyerrorbars";
+                case "yerr"
+                  errbars = "yerrorbars";
+                case "xerr"
+                  errbars = "xerrorbars";
+                otherwise
+                  errbars = "xerrorbars";
+              endswitch
+              withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                              errbars, sidx(1));
+            else
+              ## Place phantom stemseries data for legend
+              data{data_idx} = nan (2,1);
+              usingclause{data_idx} = sprintf ("record=1 using ($1):($2)");
+              hgobj = get (obj.parent);
+              [hgstyle, hgsidx] = do_linestyle_command (hgobj, hgobj.color, data_idx,
+                                                        plot_stream);
+              withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                              hgstyle{1}, hgsidx(1));
+            endif
+          endif
+        endif
+
         if (strcmp (obj.linestyle, "none")
             && (! isfield (obj, "marker")
                 || (isfield (obj, "marker")
@@ -688,44 +734,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                           style{3}, sidx(3));
         endif
 
+      case "patch"
         if (strcmp (get (obj.parent, "type"), "hggroup"))
-          hg = get (obj.parent, "children");
-          if (hg(1) == h_obj)
-            # Place phantom errorbar data for legend
-            data_idx += 1;
-            is_image_data(data_idx) = is_image_data(data_idx - 1);
-            parametric(data_idx) = parametric(data_idx - 1);
-            have_cdata(data_idx) = have_cdata(data_idx - 1);
-            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-            obj.displayname = get (obj.parent, "displayname");
-            if (isempty (get (obj.parent, "displayname")))
-              titlespec{data_idx} = "title \"\"";
-            else
-              tmp = undo_string_escapes (
-                      __maybe_munge_text__ (enhanced, obj, "displayname")
-                    );
-              titlespec{data_idx} = ['title "' tmp '"'];
-            endif
-            data{data_idx} = nan (4,1);
-            usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3):($4)");
-            switch (get (obj.parent, "format"))
-              case {"box" "boxy" "boxxy"}
-                errbars = "boxxy";
-              case "xyerr"
-                errbars = "xyerrorbars";
-              case "yerr"
-                errbars = "yerrorbars";
-              case "xerr"
-                errbars = "xerrorbars";
-              otherwise
-                errbars = "xerrorbars";
-            endswitch
-            withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                            errbars, sidx(1));
-          endif
+          obj.displayname = get (obj.parent, "displayname");
         endif
 
-      case "patch"
         [nr, nc] = size (obj.xdata);
 
         if (! isempty (obj.cdata))
@@ -1183,13 +1196,22 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
       case "surface"
         view_map = true;
-        if (isempty (obj.displayname))
-          tspec = "title \"\"";
-        else
+        tspec = 'title ""';
+        if (! isempty (obj.displayname))
+          ## Place phantom line data for approximate legend symbol
+          data_idx += 1;
+          is_image_data(data_idx) = false;
+          parametric(data_idx) = false;
+          have_cdata(data_idx) = false;
+          have_3d_patch(data_idx) = false;
           tmp = undo_string_escapes (
                   __maybe_munge_text__ (enhanced, obj, "displayname")
                 );
-          tspec = ['title "' tmp '"'];
+          titlespec{data_idx} = ['title "' tmp '"'];
+          data{data_idx} = nan (3,1);
+          usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3)");
+          withclause{data_idx} = sprintf ("with line linewidth 10 linecolor rgb \"#%02x%02x%02x\"",
+                                          round (255*cmap(end/2,:)));
         endif
 
         xdat = obj.xdata;
@@ -1981,16 +2003,13 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
   endif
   if (! isempty(pt) && isfield (obj, "markeredgecolor")
       && ! strcmp (obj.markeredgecolor, "none"))
-    if (facesame && ! isempty (pt)
-        && (strcmp (obj.markeredgecolor, "auto")
-            || (isnumeric (obj.markeredgecolor)
-                && isequal (color, obj.markeredgecolor))))
+    if (facesame && (strcmp (obj.markeredgecolor, "auto")
+        || (isnumeric (obj.markeredgecolor)
+            && isequal (color, obj.markeredgecolor))))
       if (sidx == 1 && ((length (style{sidx}) == 5
           && strncmp (style{sidx}, "lines", 5)) || isempty (style{sidx})))
-        if (! isempty (pt))
-          style{sidx} = [style{sidx} "points"];
-          fprintf (plot_stream, " pointtype %s", pt);
-        endif
+        style{sidx} = [style{sidx} "points"];
+        fprintf (plot_stream, " pointtype %s", pt);
         if (isfield (obj, "markersize"))
           fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
         endif
@@ -2019,11 +2038,9 @@ function [style, ltidx] = do_linestyle_command (obj, linecolor, idx,
       else
         fprintf (plot_stream, " palette");
       endif
-      if (! isempty (pt))
-        style{sidx} = "points";
-        ltidx(sidx) = idx;
-        fprintf (plot_stream, " pointtype %s", pt);
-      endif
+      style{sidx} = "points";
+      ltidx(sidx) = idx;
+      fprintf (plot_stream, " pointtype %s", pt);
       if (isfield (obj, "markersize"))
         fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
       endif

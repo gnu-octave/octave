@@ -1371,10 +1371,13 @@ endfunction
 %! title ("legend() works for bar graphs (hggroups)");
 %! legend ({"1st Bar", "2nd Bar", "3rd Bar"}, "location", "northwest");
 %! subplot (2,1,2);
-%! x = linspace (0, 10);
-%! stem (0.5+x.*rand (size (x)) / max (x));
+%! x = linspace (0, 10, 20);
+%! stem (x, 0.5+x.*rand (size (x))/max (x), "markeredgecolor", [0 0.7 0]);
+%! hold on;
+%! stem (x+10/(2*20), x.*(1.0+rand (size (x)))/max (x));
+%! xlim ([0 10+10/(2*20)]);
 %! title ("legend() works for stem plots (hggroups)");
-%! legend ("Stem Rand", "location", "northwest");
+%! legend ({"Multicolor", "Unicolor"}, "location", "northwest");
 
 %!demo
 %! clf;

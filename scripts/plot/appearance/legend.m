@@ -1369,6 +1369,12 @@ endfunction
 %! ylim ([0 1.0]);
 %! title ("legend() works for bar graphs (hggroups)");
 %! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
+%! x = linspace (0, 10, 20);
+%! stem (x, 0.5+x.*rand (size (x))/max (x), "markeredgecolor", [0 0.7 0]);
+%! hold on;
+%! stem (x+10/(2*20), x.*(1.0+rand (size (x)))/max (x));
+%! xlim ([0 10+10/(2*20)]);
+%! legend ({"Multicolor", "Unicolor"}, "location", "northwest");
 
 %!demo
 %! clf;

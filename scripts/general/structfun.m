@@ -121,8 +121,8 @@ endfunction
 %! assert (o, l);
 
 %!function [a, b] = __twoouts (x)
-%! a = x + x;
-%! b = x * x;
+%!  a = x + x;
+%!  b = x * x;
 %!endfunction
 
 %!test

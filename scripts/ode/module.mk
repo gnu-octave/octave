@@ -3,10 +3,9 @@ FCN_FILE_DIRS += \
   scripts/ode/private
 
 scripts_ode_PRIVATE_FCN_FILES = \
-  scripts/ode/private/AbsRel_Norm.m \
+  scripts/ode/private/AbsRel_norm.m \
   scripts/ode/private/integrate_adaptive.m \
   scripts/ode/private/kahan.m \
-  scripts/ode/private/known_option_names.m \
   scripts/ode/private/odedefaults.m \
   scripts/ode/private/odemergeopts.m \
   scripts/ode/private/ode_event_handler.m \

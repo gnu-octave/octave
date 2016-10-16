@@ -1,4 +1,5 @@
-## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
+## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2016 Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2014-2016 Jacopo Corno <jacopo.corno@gmail.com>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
@@ -41,7 +42,7 @@
 ##
 ## By default, @code{ode45} uses an adaptive timestep with the
 ## @code{integrate_adaptive} algorithm.  The tolerance for the timestep
-## computation may be changed by using the options @qcode{"RelTol"},
+## computation may be changed by using the options @qcode{"RelTol"}
 ## and @qcode{"AbsTol"}.
 ##
 ## @var{init} contains the initial value for the unknowns.  If it is a row
@@ -76,7 +77,7 @@
 ## [@var{t},@var{y}] = ode45 (fvdp, [0, 20], [2, 0]);
 ## @end group
 ## @end example
-## @seealso{odeset, odeget}
+## @seealso{odeset, odeget, ode23}
 ## @end deftypefn
 
 function varargout = ode45 (fun, trange, init, varargin)
@@ -93,10 +94,10 @@ function varargout = ode45 (fun, trange, init, varargin)
       ## varargin{1:len} are parameters for fun
       odeopts = odeset ();
       funarguments = varargin;
-    elseif (length (varargin) > 1)
+    elseif (numel (varargin) > 1)
       ## varargin{1} is an ODE options structure opt
       odeopts = varargin{1};
-      funarguments = {varargin{2:length(varargin)}};
+      funarguments = {varargin{2:numel (varargin)}};
     else  # if (isstruct (varargin{1}))
       odeopts = varargin{1};
       funarguments = {};
@@ -111,8 +112,7 @@ function varargout = ode45 (fun, trange, init, varargin)
            "ode45: TRANGE must be a numeric vector");
   endif
 
-
-  if (length (trange) < 2)
+  if (numel (trange) < 2)
     error ("Octave:invalid-input-arg",
            "ode45: TRANGE must contain at least 2 elements");
   elseif (trange(1) == trange(2))
@@ -141,19 +141,17 @@ function varargout = ode45 (fun, trange, init, varargin)
            "ode45: FUN must be a valid function handle");
   endif
 
-
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set
-
+  ## FIXME: Why persistent when it is changed with every run of ode45?
   persistent defaults   = [];
   persistent classes    = [];
   persistent attributes = [];
 
+  [defaults, classes, attributes] = odedefaults (numel (init),
+                                                 trange(1), trange(end));
 
-  [defaults, classes, attributes] = odedefaults (numel (init), trange(1),
-                                                 trange(end));
-
-  defaults   = odeset (defaults, 'Refine', 4);
+  defaults   = odeset (defaults, "Refine", 4);
   defaults   = rmfield (defaults,   {"Jacobian", "JPattern", "Vectorized", ...
                                      "MvPattern", "MassSingular", ...
                                      "InitialSlope", "MaxOrder", "BDF"});
@@ -162,9 +160,9 @@ function varargout = ode45 (fun, trange, init, varargin)
                                      "InitialSlope", "MaxOrder", "BDF"});
   attributes = rmfield (attributes, {"Jacobian", "JPattern", "Vectorized", ...
                                      "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"}); 
+                                     "InitialSlope", "MaxOrder", "BDF"});
 
-  odeopts = odemergeopts (odeopts, defaults, classes, attributes, 'ode45');
+  odeopts = odemergeopts ("ode45", odeopts, defaults, classes, attributes);
 
   odeopts.funarguments = funarguments;
   odeopts.direction    = direction;
@@ -175,7 +173,7 @@ function varargout = ode45 (fun, trange, init, varargin)
     else
       odeopts.havenonnegative = false;
       warning ("Octave:invalid-input-arg",
-               ["ode45: option 'NonNegative' is ignored", ...
+               ['ode45: option "NonNegative" is ignored', ...
                 " when mass matrix is set\n"]);
     endif
   else
@@ -191,13 +189,11 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   if (isempty (odeopts.InitialStep))
     odeopts.InitialStep = odeopts.direction * ...
-                          starting_stepsize (order, fun, trange(1),
-                                             init, odeopts.AbsTol,
-                                             odeopts.RelTol,
-                                             strcmp (odeopts.NormControl,
-                                             "on"), odeopts.funarguments);
-  endif 
-
+                          starting_stepsize (order, fun, trange(1), init,
+                                             odeopts.AbsTol, odeopts.RelTol,
+                                             strcmp (odeopts.NormControl, "on"),
+                                             odeopts.funarguments);
+  endif
 
   if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
     havemasshandle = false;
@@ -208,33 +204,31 @@ function varargout = ode45 (fun, trange, init, varargin)
     havemasshandle = false;   # mass = diag (ones (length (init), 1), 0);
   endif
 
-
   ## Starting the initialization of the core solver ode45
 
   if (havemasshandle)   # Handle only the dynamic mass matrix,
-    if (! strcmp (odeopts.MStateDependence, "none")) # constant mass matrices have already
+    if (! strcmp (odeopts.MStateDependence, "none"))
+      ### constant mass matrices have already
       mass = @(t,x) odeopts.Mass (t, x, odeopts.funarguments{:});
       fun = @(t,x) mass (t, x, odeopts.funarguments{:}) ...
-             \ fun (t, x, odeopts.funarguments{:});
-    else                 # if ((! strcmp (odeopts.MStateDependence, "none")) == false)
+                   \ fun (t, x, odeopts.funarguments{:});
+    else
       mass = @(t) odeopts.Mass (t, odeopts.funarguments{:});
       fun = @(t,x) mass (t, odeopts.funarguments{:}) ...
-             \ fun (t, x, odeopts.funarguments{:});
+                   \ fun (t, x, odeopts.funarguments{:});
     endif
   endif
 
- 
   solution = integrate_adaptive (@runge_kutta_45_dorpri,
                                  order, fun, trange, init, odeopts);
-  
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter
-    feval (odeopts.OutputFcn, solution.t(end), ...
+    feval (odeopts.OutputFcn, solution.t(end),
            solution.x(end,:)', "done", odeopts.funarguments{:});
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
-    ode_event_handler (odeopts.Events, solution.t(end), ...
+    ode_event_handler (odeopts.Events, solution.t(end),
                        solution.x(end,:)', "done", odeopts.funarguments{:});
   endif
 
@@ -290,7 +284,6 @@ endfunction
 
 
 %!demo
-%!
 %! ## Demonstrate convergence order for ode45
 %! tol = 1e-5 ./ 10.^[0:8];
 %! for i = 1 : numel (tol)
@@ -307,7 +300,7 @@ endfunction
 %! loglog (h, tol, "-ob",
 %!         h, err, "-b",
 %!         h, (h/h(end)) .^ 4 .* tol(end), "k--",
-%!         h, (h/h(end)) .^ 5 .* tol(end), "k-")
+%!         h, (h/h(end)) .^ 5 .* tol(end), "k-");
 %! axis tight
 %! xlabel ("h");
 %! ylabel ("err(h)");
@@ -315,49 +308,49 @@ endfunction
 %! legend ("imposed tolerance", "ode45 (relative) error",
 %!         "order 4", "order 5", "location", "northwest");
 
-## We are using the "Van der Pol" implementation for all tests that are done
+## We are using the Van der Pol equation for all tests that are done
 ## for this function.
 ## For further tests we also define a reference solution (computed at high
 ## accuracy)
-%!function ydot = fpol (t, y)  # The Van der Pol
-%! ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%!function ydot = fpol (t, y)  # The Van der Pol ODE
+%!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!function ref = fref ()       # The computed reference solution
-%! ref = [0.32331666704577, -1.83297456798624];
+%!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
 %!function jac = fjac (t, y, varargin)  # its Jacobian
-%! jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
+%!  jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
 %!endfunction
 %!function jac = fjcc (t, y, varargin)  # sparse type
-%! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
+%!  jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%! val = fpol (t, y, varargin);    # We use the derivatives
-%! trm = zeros (2,1);              # that's why component 2
-%! dir = ones (2,1);               # seems to not be exact
+%!  val = fpol (t, y, varargin);    # We use the derivatives
+%!  trm = zeros (2,1);              # that's why component 2
+%!  dir = ones (2,1);               # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%! val = fpol (t, y, varargin);    # We use the derivatives
-%! trm = ones (2,1);               # that's why component 2
-%! dir = ones (2,1);               # seems to not be exact
+%!  val = fpol (t, y, varargin);    # We use the derivatives
+%!  trm = ones (2,1);               # that's why component 2
+%!  dir = ones (2,1);               # does not seem to be exact
 %!endfunction
 %!function mas = fmas (t, y, varargin)
-%! mas = [1, 0; 0, 1];            # Dummy mass matrix for tests
+%!  mas = [1, 0; 0, 1];            # Dummy mass matrix for tests
 %!endfunction
 %!function mas = fmsa (t, y, varargin)
-%! mas = sparse ([1, 0; 0, 1]);   # A sparse dummy matrix
+%!  mas = sparse ([1, 0; 0, 1]);   # A sparse dummy matrix
 %!endfunction
 %!function out = fout (t, y, flag, varargin)
-%! if (regexp (char (flag), 'init') == 1)
-%!   if (any (size (t) != [2, 1])) error ('"fout" step "init"'); endif
-%! elseif (isempty (flag))
-%!   if (any (size (t) != [1, 1])) error ('"fout" step "calc"'); endif
-%!   out = false;
-%! elseif (regexp (char (flag), 'done') == 1)
-%!   if (any (size (t) != [1, 1])) error ('"fout" step "done"'); endif
-%! else
-%!   error ('"fout" invalid flag');
-%! endif
+%!  if (regexp (char (flag), "init") == 1)
+%!    if (any (size (t) != [2, 1])) error ('"fout" step "init"'); endif
+%!  elseif (isempty (flag))
+%!    if (any (size (t) != [1, 1])) error ('"fout" step "calc"'); endif
+%!    out = false;
+%!  elseif (regexp (char (flag), 'done') == 1)
+%!    if (any (size (t) != [1, 1])) error ('"fout" step "done"'); endif
+%!  else
+%!    error ('"fout" invalid flag');
+%!  endif
 %!endfunction
 %!
 %!test  # two output arguments
@@ -488,21 +481,19 @@ endfunction
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
 
+## FIXME: Missing tests.
+## test for MvPattern option is missing
+## test for InitialSlope option is missing
+## test for MaxOrder option is missing
+
 %!error ode45 ()
 %!error ode45 (1)
 %!error ode45 (1,2)
-%!error <TRANGE must be a numeric>
-%!  ode45 (@fpol, {[0 25]}, [3 15 1]);
-%!error <TRANGE must be a .* vector>
-%!  ode45 (@fpol, [0 25; 25 0], [3 15 1]);
-%!error <TRANGE must contain at least 2 elements>
-%!  ode45 (@fpol, [1], [3 15 1]);
-%!error <invalid time span>
-%!  ode45 (@fpol, [1 1], [3 15 1]);
-%!error <INIT must be a numeric>
-%!  ode45 (@fpol, [0 25], {[3 15 1]});
-%!error <INIT must be a .* vector>
-%!  ode45 (@fpol, [0 25], [3 15 1; 3 15 1]);
-%!error <FUN must be a valid function handle>
-%!  ode45 (1, [0 25], [3 15 1]);
+%!error <TRANGE must be a numeric> ode45 (@fpol, {[0 25]}, [3 15 1])
+%!error <TRANGE must be a .* vector> ode45 (@fpol, [0 25; 25 0], [3 15 1])
+%!error <TRANGE must contain at least 2 elements> ode45 (@fpol, [1], [3 15 1])
+%!error <invalid time span> ode45 (@fpol, [1 1], [3 15 1])
+%!error <INIT must be a numeric> ode45 (@fpol, [0 25], {[3 15 1]})
+%!error <INIT must be a .* vector> ode45 (@fpol, [0 25], [3 15 1; 3 15 1])
+%!error <FUN must be a valid function handle> ode45 (1, [0 25], [3 15 1])
 

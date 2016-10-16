@@ -1,4 +1,4 @@
-## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
+## Copyright (C) 2016 Francesco Faccio <francesco.faccio@mail.polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function options = odemergeopts  (useroptions, options, classes,
-                                  attributes, fun_name);
+function options = odemergeopts (caller, useroptions, options, classes,
+                                 attributes);
 
   for [value, key] = options;
 
@@ -25,18 +25,21 @@ function options = odemergeopts  (useroptions, options, classes,
 
       if (! strcmp (classes.(key), "char"))
         validateattributes (useroptions.(key), classes.(key),
-                            attributes.(key), fun_name, key);
+                            attributes.(key), caller, key);
 
       elseif (ischar (useroptions.(key)))
-        validatestring (useroptions.(key), attributes.(key), fun_name, key);
+        validatestring (useroptions.(key), attributes.(key), caller, key);
 
       else
         error ("Octave:invalid-input-arg",
-                [fun_name ": invalid value assigned to field '%s'"], key);
+               [caller ": invalid value assigned to field '%s'"], key);
       endif
-      
-    options.(key) = useroptions.(key);
-    
+
+      options.(key) = useroptions.(key);
+
     endif
+
   endfor
+
 endfunction
+

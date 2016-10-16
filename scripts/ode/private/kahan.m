@@ -27,14 +27,14 @@
 ## obtained by adding a sequence of finite precision floating point numbers,
 ## compared to the straightforward approach.  For more details
 ## see @url{http://en.wikipedia.org/wiki/Kahan_summation_algorithm}.
-## This function is called by @code{integrate_adaptive} and
-## @code{integrate_const} to better catch equality comparisons.
+## This function is called by @code{integrate_adaptive} to better catch
+## equality comparisons.
 ##
-## The first input argument is the variable that will contain the summation,
-## so that is also returned as first output argument in order to reuse it in
-## next calls to @code{kahan} function.
+## The first input argument is the variable that will contain the summation.
+## This variable is also returned as the first output argument in order to
+## reuse it in subsequent calls to @code{kahan} function.
 ##
-## The second input argument contains the compensation term and it is returned
+## The second input argument contains the compensation term and is returned
 ## as the second output argument so that it can be reused in future calls of
 ## the same summation.
 ##

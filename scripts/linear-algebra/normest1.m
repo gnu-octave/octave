@@ -248,28 +248,28 @@ function [est, v, w, k] = normest1 (A, t = [], X = [], varargin)
 endfunction
 
 %!function z = afun_A (flag, x, A, n)
-%! switch flag
-%! case {"dim"}
-%!   z = n;
-%! case {"real"}
-%!   z = isreal (A);
-%! case {"transp"}
-%!   z = A' * x;
-%! case {"notransp"}
-%!   z = A * x;
-%! endswitch
+%!  switch flag
+%!  case {"dim"}
+%!    z = n;
+%!  case {"real"}
+%!    z = isreal (A);
+%!  case {"transp"}
+%!    z = A' * x;
+%!  case {"notransp"}
+%!    z = A * x;
+%!  endswitch
 %!endfunction
 %!function z = afun_A_P (flag, x, A, m)
-%! switch flag
-%! case "dim"
-%!   z = length (A);
-%! case "real"
-%!   z = isreal (A);
-%! case "transp"
-%!   z = x; for i = 1:m, z = A' * z;, endfor
-%! case "notransp"
-%!   z = x; for i = 1:m, z = A * z;, endfor
-%! endswitch
+%!  switch flag
+%!  case "dim"
+%!    z = length (A);
+%!  case "real"
+%!    z = isreal (A);
+%!  case "transp"
+%!    z = x; for i = 1:m, z = A' * z;, endfor
+%!  case "notransp"
+%!    z = x; for i = 1:m, z = A * z;, endfor
+%!  endswitch
 %!endfunction
 
 %!test

@@ -1,4 +1,5 @@
-## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2014-2016 Jacopo Corno <jacopo.corno@gmail.com>
+## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.
 ##
@@ -17,19 +18,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{val} =} known_option_names ()
-## Return a list of known names for ode options.
-## @seealso{odeset, odeget}
+## @deftypefn {} {retval =} AbsRel_norm (@var{x}, @var{x_old}, @var{AbsTol}, @var{RelTol}, @var{normcoontrol}, @var{y})
+## Undocumented internal function.
 ## @end deftypefn
 
-function ret = known_option_names ()
+function retval = AbsRel_norm (x, x_old, AbsTol, RelTol, normcontrol, y = zeros (size (x)))
 
-ret = {"AbsTol"; "BDF"; "Events"; "InitialSlope";
-       "InitialStep"; "Jacobian"; "JConstant"; "JPattern";
-       "Mass"; "MassConstant"; "MassSingular"; "MaxOrder";
-       "MaxStep"; "MStateDependence"; "MvPattern";
-       "NonNegative"; "NormControl"; "OutputFcn"; "OutputSel";
-       "Refine"; "RelTol"; "Stats"; "Vectorized";
-       "TimeStepSize"; "TimeStepNumber"};
+  n = numel (x);
+
+  sc = AbsTol + max (abs (x), abs (x_old)) .* RelTol;
+  if (normcontrol)
+    retval = max (abs (x - y) ./ sc);
+  else
+    retval = sqrt ((1 / n) * sumsq ((x - y) ./ sc));
+  endif
 
 endfunction
+

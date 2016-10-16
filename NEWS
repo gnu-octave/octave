@@ -70,6 +70,10 @@ Summary of important user-visible changes for version 4.2:
     "luminance profile" and is also more similar to Matlab's new default
     colormap "parula".
 
+ ** The colormap function no longer supports the input argument "list"
+    to show built-in colormaps.  Use "help colormap" to find the
+    built-in colormaps.
+
  ** The graphics command "hold on" now ensures that each new plot added
     to an existing plot has a different color or linestyle according to
     the "ColorOrder" and/or "LineStyleOrder" properties.  This is

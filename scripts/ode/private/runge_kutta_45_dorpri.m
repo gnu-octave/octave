@@ -27,17 +27,6 @@
 ## For the definition of this method see
 ## @url{http://en.wikipedia.org/wiki/Dormand%E2%80%93Prince_method}.
 ##
-## First output argument is the final integration time value.
-##
-## Second output parameter is the higher order computed solution at time
-## @var{t_next} (local extrapolation).
-##
-## Third output parameter is a lower order solution for the estimation of the
-## error.
-##
-## Fourth output parameter is matrix containing the Runge-Kutta evaluations
-## to use in an FSAL scheme or for dense output.
-##
 ## First input argument is the function describing the system of ODEs to be
 ## integrated.
 ##
@@ -53,9 +42,18 @@
 ##
 ## Sixth input parameter is optional and describes the Runge-Kutta evaluations
 ## of the previous step to use in an FSAL scheme.
-## @end deftypefn
 ##
-## @seealso{odepkg}
+## First output argument is the final integration time value.
+##
+## Second output parameter is the higher order computed solution at time
+## @var{t_next} (local extrapolation).
+##
+## Third output parameter is a lower order solution for the estimation of the
+## error.
+##
+## Fourth output parameter is matrix containing the Runge-Kutta evaluations
+## to use in an FSAL scheme or for dense output.
+## @end deftypefn
 
 function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
                                                              options = [],
@@ -68,10 +66,12 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
                   44/45      -56/15      32/9        0        0          0;
                   19372/6561 -25360/2187 64448/6561 -212/729  0          0;
                   9017/3168  -355/33     46732/5247  49/176  -5103/18656 0];
-  persistent b = [0 1/5 3/10 4/5 8/9 1 1];
-  persistent c = [(35/384) 0 (500/1113) (125/192) (-2187/6784) (11/84)];
-  persistent c_prime = [(5179/57600) 0 (7571/16695) (393/640), ...
-                        (-92097/339200) (187/2100)  (1/40)];
+  persistent b = [0, 1/5, 3/10, 4/5, 8/9, 1, 1];
+  persistent c = [35/384, 0, 500/1113, 125/192, -2187/6784, 11/84];
+  persistent c_prime = [5179/57600, 0, 7571/16695, 393/640, ...
+                        -92097/339200, 187/2100, 1/40];
+  ## FIXME: Which source is c_prime derived from?
+  ##        Can't the Shampine clause be deleted if it will never be used?
   ## According to Shampine 1986:
   ## persistent c_prime = [(1951/21600) 0 (22642/50085) (451/720), ...
   ##                       (-12231/42400) (649/6300) (1/60)];

@@ -1,5 +1,5 @@
-## Copyright (C) 2016, Carlo de Falco
-## Copyright (C) 2016, Francesco Faccio <francesco.faccio@mail.polimi.it>
+## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2016 Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>
 ## Copyright (C) 2006-2012 Thomas Treichl <treichl@users.sourceforge.net>
 ##
@@ -41,19 +41,19 @@
 
 function val = odeget (ode_opt, field, default = [], opt = "")
 
-  validateattributes (ode_opt, {'struct'}, {'nonempty'});
-  validateattributes (field, {'char'}, {'nonempty'});
-  
+  validateattributes (ode_opt, {"struct"}, {"nonempty"});
+  validateattributes (field, {"char"}, {"nonempty"});
+
   if (! isfield (ode_opt, field))
-    error ('Octave:odeget:InvalidPropName',
+    error ("Octave:odeget:InvalidPropName",
            'odeget: Unrecognized property name "%s".', field);
   else
     val = ode_opt.(field);
-    if (isempty (val)) 
+    if (isempty (val))
       val = default;
     endif
   endif
-  
+
 endfunction
 
 
@@ -73,12 +73,12 @@ endfunction
 %!assert (odeget (odeset (), "Mass"), [])
 %!assert (odeget (odeset (), "AbsTol", 1e-9), 1e-9)
 %!assert (odeget (odeset ("AbsTol", 1e-9), "AbsTol", []), 1e-9)
-%!assert (odeget (odeset ('foo', 42), 'foo'), 42)
+%!assert (odeget (odeset ("foo", 42), "foo"), 42)
 
 %!error odeget ()
 %!error odeget (1)
 %!error odeget (1,2,3,4,5)
 %!error odeget (1, "opt1")
 %!error odeget (struct ("opt1", 1), 1)
-%!error odeget (struct ("opt1", 1), "foo");
+%!error odeget (struct ("opt1", 1), "foo")
 

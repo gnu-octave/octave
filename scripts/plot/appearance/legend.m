@@ -1428,7 +1428,8 @@ endfunction
 %! xlabel ("Indices");
 %! ylabel ("Random Values");
 %! title ('Legend "off" deletes the legend');
-%! legend (cellstr (num2str ((1:10)")), "location", "northeastoutside");
+%! legend (cellstr (num2str ((0:10)')), "location", "northeastoutside");
+%! pause (1);
 %! legend off;
 %! axis ([0, 10, 0 1]);
 

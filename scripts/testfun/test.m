@@ -885,19 +885,19 @@ endfunction
 
 ## Test 'function' keyword
 %!function x = __test_a (y)
-%! x = 2*y;
+%!  x = 2*y;
 %!endfunction
 %!assert (__test_a (2), 4)  # Test a test function
 
 %!function __test_a (y)
-%! x = 2*y;
+%!  x = 2*y;
 %!endfunction
 %!test
 %! __test_a (2);            # Test a test function with no return value
 
 %!function [x,z] = __test_a (y)
-%! x = 2*y;
-%! z = 3*y;
+%!  x = 2*y;
+%!  z = 3*y;
 %!endfunction
 %!test
 %! [x,z] = __test_a (3);    # Test a test function with multiple returns

@@ -21,10 +21,10 @@
 ## @deftypefn {} {@var{solution} =} integrate_adaptive (@var{@@stepper}, @var{order}, @var{@@func}, @var{tspan}, @var{x0}, @var{options})
 ##
 ## This function file can be called by an ODE solver function in order to
-## integrate the set of ODEs on the interval @var{[t0, t1]} with an
-## adaptive timestep.
+## integrate the set of ODEs on the interval @var{[t0, t1]} with an adaptive
+## timestep.
 ##
-## The function returns a structure @var{solution} with two fieldss: @var{t}
+## The function returns a structure @var{solution} with two fields: @var{t}
 ## and @var{y}.  @var{t} is a column vector and contains the time stamps.
 ## @var{y} is a matrix in which each column refers to a different unknown
 ## of the problem and the row number is the same as the @var{t} row number.
@@ -61,8 +61,6 @@
 ## stepper.
 ##
 ## @end deftypefn
-##
-## @seealso{ode45, ode23}
 
 function solution = integrate_adaptive (stepper, order, func, tspan, x0,
                                         options)
@@ -75,8 +73,10 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   ## Get first initial timestep
   dt = options.InitialStep;
   if (isempty (dt))
-    dt = starting_stepsize (order, func, t, x, options.AbsTol, options.RelTol,
-                            strcmp (options.NormControl, "on"), options.funarguments);
+    dt = starting_stepsize (order, func, t, x,
+                            options.AbsTol, options.RelTol,
+                            strcmp (options.NormControl, "on"),
+                            options.funarguments);
   endif
 
   dir = options.direction;
@@ -118,13 +118,13 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
   k_vals = [];
   iout = istep = 1;
-  
+
   while (dir * t_old < dir * tspan(end))
 
     ## Compute integration step from t_old to t_new = t_old + dt
     [t_new, options.comp] = kahan (t_old, options.comp, dt);
     [t_new, x_new, x_est, new_k_vals] = ...
-    stepper (func, t_old, x_old, dt, options, k_vals, t_new);
+      stepper (func, t_old, x_old, dt, options, k_vals, t_new);
 
     solution.cntcycles += 1;
 
@@ -133,7 +133,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
       x_est(nn, end) = abs (x_est(nn, end));
     endif
 
-    err = AbsRel_Norm (x_new, x_old, options.AbsTol, options.RelTol,
+    ## FIXME: Take strcmp out of while loop and calculate just once
+    err = AbsRel_norm (x_new, x_old, options.AbsTol, options.RelTol,
                        strcmp (options.NormControl, "on"), x_est);
 
     ## Accept solution only if err <= 1.0
@@ -153,9 +154,9 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           t(t_caught) = tspan(t_caught);
           iout = max (t_caught);
           x(:, t_caught) = ...
-          runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
-                                   t(t_caught), new_k_vals, dt, func,
-                                   options.funarguments);
+            runge_kutta_interpolate (order, [t_old t_new], [x_old x_new],
+                                     t(t_caught), new_k_vals, dt, func,
+                                     options.funarguments);
 
           istep += 1;
 
@@ -167,8 +168,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
               id = t_caught(idenseout);
               td = t(id);
               solution.event = ...
-              ode_event_handler (options.Events, t(id), x(:, id), [],
-                                 options.funarguments{:});
+                ode_event_handler (options.Events, t(id), x(:, id), [],
+                                   options.funarguments{:});
               if (! isempty (solution.event{1}) && solution.event{1} == 1)
                 t(id) = solution.event{3}(end);
                 t = t(1:id);
@@ -191,7 +192,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
             approxtime = linspace (t_old, t_new, cnt);
             approxvals = interp1 ([t_old, t(t_caught), t_new],
                                   [x_old, x(:, t_caught), x_new] .',
-                                  approxtime, 'linear') .';
+                                  approxtime, "linear") .';
             if (! isempty (options.OutputSel))
               approxvals = approxvals(options.OutputSel, :);
             endif
@@ -208,7 +209,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
         endif
 
-      else
+      else   # not fixed times
 
         t(++istep)  = t_new;
         x(:, istep) = x_new;
@@ -218,8 +219,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
         ## Stop integration if eventbreak is true.
         if (! isempty (options.Events))
           solution.event = ...
-          ode_event_handler (options.Events, t(istep), x(:, istep), [],
-                             options.funarguments{:});
+            ode_event_handler (options.Events, t(istep), x(:, istep), [],
+                               options.funarguments{:});
           if (! isempty (solution.event{1}) && solution.event{1} == 1)
             t(istep) = solution.event{3}(end);
             x(:, istep) = solution.event{4}(end, :).';
@@ -235,7 +236,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           approxtime = linspace (t_old, t_new, cnt);
           approxvals = interp1 ([t_old, t_new],
                                 [x_old, x_new] .',
-                                approxtime, 'linear') .';
+                                approxtime, "linear") .';
           if (! isempty (options.OutputSel))
             approxvals = approxvals(options.OutputSel, :);
           endif
@@ -256,12 +257,12 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
       x_old = x_new;
       k_vals = new_k_vals;
 
-    else
+    else  # error condition
 
       ireject += 1;
 
-      ## Stop solving because, in the last 5,000 steps, no successful valid
-      ## value has been found
+      ## Stop solving if, in the last 5,000 steps, no successful valid
+      ## value has been found.
       if (ireject >= 5_000)
         error (["integrate_adaptive: Solving was not successful. ", ...
                 " The iterative integration loop exited at time", ...
@@ -280,10 +281,10 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
     dt = dir * min (abs (dt), options.MaxStep);
     if (! (abs (dt) > eps (t (end))))
-      break
+      break;
     endif
-    
-    ## make sure we don't go past tpan(end)
+
+    ## Make sure we don't go past tpan(end)
     dt = dir * min (abs (dt), abs (tspan(end) - t_old));
 
   endwhile

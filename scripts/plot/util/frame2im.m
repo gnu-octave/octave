@@ -59,11 +59,11 @@ endfunction
 
 
 %!function f = make_rgb_f ()
-%! f = randi ([0 255], 10, 20, 3);
+%!  f = randi ([0 255], 10, 20, 3);
 %!endfunction
 
 %!function f = make_ind_f ()
-%! f = randi ([1 100], 10, 20, 3);
+%!  f = randi ([1 100], 10, 20, 3);
 %!endfunction
 
 %!test

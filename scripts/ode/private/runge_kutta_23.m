@@ -65,12 +65,12 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
                                                       k_vals = [],
                                                       t_next = t + dt)
 
-  persistent a = [0           0          0;
-                  1/2         0          0;
-                  0           3/4        0];
-  persistent b = [0 1/2 3/4 1];
-  persistent c = [(2/9) (1/3) (4/9)];
-  persistent c_prime = [(7/24) (1/4) (1/3) (1/8)];
+  persistent a = [0   0   0;
+                  1/2 0   0;
+                  0   3/4 0];
+  persistent b = [0, 1/2, 3/4, 1];
+  persistent c = [2/9, 1/3, 4/9];
+  persistent c_prime = [7/24, 1/4, 1/3, 1/8];
 
   s = t + dt * b;
   cc = dt * c;
@@ -92,9 +92,9 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
   k(:,2) = feval (f, s(2), x + k(:,1) * aa(2, 1).', args{:});
   k(:,3) = feval (f, s(3), x + k(:,2) * aa(3, 2).', args{:});
 
-  ## compute new time and new values for the unkwnowns
+  ## compute new time and new values for the unknowns
   ## t_next = t + dt;
-  x_next = x + k(:,1:3) * cc(:); # 3rd order approximation
+  x_next = x + k(:,1:3) * cc(:);  # 3rd order approximation
 
   ## if the estimation of the error is required
   if (nargout >= 3)
@@ -105,3 +105,4 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
   endif
 
 endfunction
+

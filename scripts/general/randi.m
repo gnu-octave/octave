@@ -163,13 +163,13 @@ endfunction
 
 ## Test that no warning thrown if IMAX is exactly on the limits of the range
 %!function test_no_warning (func, varargin)
-%! state = warning ("query");
-%! unwind_protect
-%!   warning ("error", "all");
-%!   func (varargin{:});
-%! unwind_protect_cleanup
-%!   warning (state);
-%! end_unwind_protect
+%!  state = warning ("query");
+%!  unwind_protect
+%!    warning ("error", "all");
+%!    func (varargin{:});
+%!  unwind_protect_cleanup
+%!    warning (state);
+%!  end_unwind_protect
 %!endfunction
 %!test test_no_warning (@randi, max_int8, "int8");
 %!test test_no_warning (@randi, max_uint8, "uint8");

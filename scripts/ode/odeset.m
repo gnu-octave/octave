@@ -35,20 +35,31 @@
 ##
 ## If called with name-value input argument pairs @var{"field1"},
 ## @var{"value1"}, @var{"field2"}, @var{"value2"}, @dots{} return a new
-## ODE options structure with all the most commont options fields
-## initialized @strong{and} set the values of the fields @var{"field1"},
+## ODE options structure with all the most common option fields
+## initialized, @strong{and} set the values of the fields @var{"field1"},
 ## @var{"field2"}, @dots{} to the values @var{value1}, @var{value2},
 ## @dots{}.
 ##
-## The most commonly used ODE options which are always assigned a value
-## by @qcode{odeset} are the following:
+## If called with an input structure @var{oldstruct} then overwrite the
+## values of the options @var{"field1"}, @var{"field2"}, @dots{} with
+## new values @var{value1}, @var{value2}, @dots{} and return the
+## modified structure.
+##
+## When called with two input ODE options structures @var{oldstruct} and
+## @var{newstruct} overwrite all values from the structure
+## @var{oldstruct} with new values from the structure @var{newstruct}.
+## Empty values in @var{newstruct} will not overwrite values in
+## @var{oldstruct}.
+##
+## The most commonly used ODE options, which are always assigned a value
+## by @qcode{odeset}, are the following:
 ##
 ## @table @asis
 ## @item AbsTol
 ## Absolute error tolerance.
 ##
 ## @item BDF
-## Used BDF formulas in implicit multistep methods.
+## Use BDF formulas in implicit multistep methods.
 ##
 ## @item Events
 ## Event function. An event function must have the form
@@ -62,22 +73,22 @@
 ##
 ## @item Jacobian
 ## Jacobian matrix, specified as a constant matrix or a function of
-## thime and state.
+## time and state.
 ##
 ## @item JConstant
-## Specifiy whether the Jacobian is a constant matrix or depends on the
+## Specify whether the Jacobian is a constant matrix or depends on the
 ## state.
 ##
 ## @item JPattern
-## If the Jacobian matrix is sparse and non constant but maintains a
+## If the Jacobian matrix is sparse and non-constant but maintains a
 ## constant sparsity pattern, specify the sparsity pattern.
 ##
 ## @item Mass
-## Mass matrix specified as a constant matrix or a function of
-## thime and state.
+## Mass matrix, specified as a constant matrix or a function of
+## time and state.
 ##
 ## @item MassConstant
-## Specifiy whether the Mass matrix is a constant matrix or depends on
+## Specify whether the mass matrix is a constant matrix or depends on
 ## the state.
 ##
 ## @item MassSingular
@@ -94,7 +105,7 @@
 ## Specify whether the mass matrix depends on the state or only on time.
 ##
 ## @item MvPattern
-## If the Mass matrix is sparse and non constant but maintains a
+## If the mass matrix is sparse and non-constant but maintains a
 ## constant sparsity pattern, specify the sparsity pattern.
 ##
 ## @item NonNegative
@@ -102,7 +113,7 @@
 ## nonnegative during the simulation.
 ##
 ## @item NormControl
-## Control error relative to the 2-norm of the solution rather than its
+## Control error relative to the 2-norm of the solution, rather than its
 ## absolute value.
 ##
 ## @item OutputFcn
@@ -133,17 +144,6 @@
 ##
 ## Field names that are not in the above list are also accepted and
 ## added to the result structure.
-##
-## If called with an input structure @var{oldstruct} then overwrite the
-## values of the options @var{"field1"}, @var{"field2"}, @dots{} with
-## new values @var{value1}, @var{value2}, @dots{} and return the
-## modified structure.
-##
-## When called with two input ODE options structures @var{oldstruct} and
-## @var{newstruct} overwrite all values from the structure
-## @var{oldstruct} with new values from the structure @var{newstruct}.
-## Empty values in @var{newstruct} will not overwrite values in
-## @var{oldstruct}.
 ##
 ## @seealso{odeget}
 ## @end deftypefn

@@ -19,7 +19,7 @@
 ## Author: Thomas Treichl <treichl@users.sourceforge.net>
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{ret} =} odeplot (@var{t}, @var{y}, @var{flag})
+## @deftypefn {} {@var{retval} =} odeplot (@var{t}, @var{y}, @var{flag})
 ##
 ## Open a new figure window and plot input @var{y} over time during the
 ## solving of an ode problem.
@@ -54,45 +54,50 @@
 ##
 ## @example
 ## @group
-## fvdb = @@(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+## fvdp = @@(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
 ##
 ## opt = odeset ("OutputFcn", @@odeplot, "RelTol", 1e-6);
-## sol = ode45 (fvdb, [0 20], [2 0], opt);
+## sol = ode45 (fvdp, [0 20], [2 0], opt);
 ## @end group
 ## @end example
 ##
 ## @seealso{odeset, odeget}
 ## @end deftypefn
 
-function ret = odeplot (t, y, flag, varargin)
+function retval = odeplot (t, y, flag)
 
-  ## No input argument check is done for a higher processing speed
-  persistent fig told yold counter;
+  ## No input argument checking is done for better performance
+  persistent hlines num_lines told yold;
+  persistent idx = 1;   # Don't remove.  Required for Octave parser.
 
-  if (strcmp (flag, "init"))
-    ## Nothing to return, t is either the time slot [tstart tstop]
-    ## or [t0, t1, ..., tn], y is the initial value vector "init"
-    counter = 1;
-    fig = figure ();
+  if (isempty (flag))
+    ## Default case, plot and return a value
+    ## FALSE for "not stopping the integration"
+    ## TRUE  for "stopping the integration"
+    idx += 1;
+    told(idx,1) = t(1,1);
+    yold(:,idx) = y(:,1);
+    for i = 1:num_lines
+      set (hlines(i), "xdata", told, "ydata", yold(i,:));
+    endfor
+    drawnow;
+
+    retval = false;
+
+  elseif (strcmp (flag, "init"))
+    ## Nothing to return
+    ## t is either the time slot [tstart tstop] or [t0, t1, ..., tn]
+    ## y is the initial value vector "init"
+    idx = 1;
     told = t(1,1);
     yold = y(:,1);
-
-  elseif (isempty (flag))
-    ## Return something, either false for "not stopping
-    ## the integration" or true for "stopping the integration"
-    counter += 1;
-    figure (fig);
-    told(counter,1) = t(1,1);
-    yold(:,counter) = y(:,1);
-    ## FIXME: Why not use '.' rather than 'o' and skip the markersize?
-    ## FIXME: Why not just update the xdata, ydata properties?
-    ##        Calling plot involves a lot of overhead.
-    plot (told, yold, "-o", "markersize", 1); drawnow;
-    ret = false;
+    figure ();
+    hlines = plot (told, yold, "-", "marker", ".", "markersize", 9);
+    num_lines = numel (hlines);
 
   elseif (strcmp (flag, "done"))
     ## Cleanup after ode solver has finished.
-    clear ("figure", "told", "yold", "counter");
+    hlines = num_lines = told = yold = idx = [];
 
   endif
 
@@ -100,9 +105,9 @@ endfunction
 
 
 %!demo
-%! # Solve an anonymous implementation of the Van der Pol equation
-%! # and display the results while solving
-%! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! ## Solve an anonymous implementation of the Van der Pol equation
+%! ## and display the results while solving
+%! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %! opt = odeset ("OutputFcn", @odeplot, "RelTol", 1e-6);
-%! sol = ode45 (fvdb, [0 20], [2 0], opt);
+%! sol = ode45 (fvdp, [0 20], [2 0], opt);
 

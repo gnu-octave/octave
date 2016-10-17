@@ -154,7 +154,7 @@ function odestruct = odeset (varargin)
 
   if (isempty (p))
     ## FIXME: Add an inexact match option once it is available in inputParser.
-    ## See bug #49364. 
+    ## See bug #49364.
     p = inputParser ();
     p.addParameter ("AbsTol", []);
     p.addParameter ("BDF", []);
@@ -293,7 +293,7 @@ endfunction
 %! end_unwind_protect
 
 ## FIXME: Add an inexact match option once it is available in inputParser.
-## See bug #49364. 
+## See bug #49364.
 ## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
 ## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
 

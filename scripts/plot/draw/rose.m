@@ -98,7 +98,7 @@ function [thout, rout] = rose (varargin)
   if (isvector (counts))
     counts = counts(:);
   endif
-  
+
   binedge = binctr(1:end-1) + diff (binctr) / 2;
   binedge = [binedge ; zeros(size(binedge)); zeros(size(binedge)); binedge];
   binedge = binedge(:);

@@ -181,10 +181,6 @@ function odestruct = odeset (varargin)
     p.addParameter ("Stats", []);
     p.addParameter ("Vectorized", []);
     p.KeepUnmatched = true;
-<<<<<<< local
-=======
-
->>>>>>> other
   endif
 
   if (nargin == 0 && nargout == 0)
@@ -202,15 +198,9 @@ function odestruct = odeset (varargin)
                   struct2cell (odestruct),
                   "UniformOutput", false);
 
-<<<<<<< local
     s2 = cellfun (@(x) ifelse (iscell (x), {x}, x),
                   struct2cell (odestruct_extra),
                   "UniformOutput", false);
-=======
-    s2 = cellfun (@(x) ifelse (iscell(x), {x}, x),
-                  struct2cell(odestruct_extra),
-                  'UniformOutput', false);
->>>>>>> other
 
     C = [fieldnames(odestruct)       s1;
          fieldnames(odestruct_extra) s2];
@@ -313,11 +303,8 @@ endfunction
 %!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
 %!error  odeset (odeset (), 1, 1)
 
-<<<<<<< local
-=======
 ##FIXME: Add not exact match option
 ## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
 ## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
 
 
->>>>>>> other

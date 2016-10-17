@@ -223,9 +223,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             otherwise
               size_str = "";
           endswitch
-          if (strcmp (term, "x11") || strcmp (term, "windows") 
+          if (strcmp (term, "x11") || strcmp (term, "windows")
               || (strcmp (term, "wxt")
-                  && __gnuplot_has_feature__ ("wxt_figure_position")) 
+                  && __gnuplot_has_feature__ ("wxt_figure_position"))
               || (strcmp (term, "qt")
                   && __gnuplot_has_feature__ ("qt_figure_position")))
             ## X11/Windows/qt/wxt (=> ver 5) allows the window to be positioned.

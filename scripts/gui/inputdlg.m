@@ -99,11 +99,11 @@ function cstr = inputdlg (prompt, varargin)
   if (nargin > 3)
     defaults = varargin{3};
   endif
-  
+
   if (nargin > 4)
     warning ("inputdlg: 5th 'options' argument ignored");
   endif
-  
+
   ## specification of text field sizes as in Matlab
   ## Matlab requires a matrix for linespec, not a cell array...
   ## rc = [1,10; 2,20; 3,30];

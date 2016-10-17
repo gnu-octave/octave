@@ -33,20 +33,117 @@
 ## default values.  If no output argument is requested, display a list of
 ## the common ODE solver options along with their default value.
 ##
-## If called with string input arguments @var{"field1"}, @var{"field2"},
-## @dots{} identifying valid ODE options then return a new ODE options
-## structure with all possible fields initialized @strong{and} set the values
-## of the fields @var{"field1"}, @var{"field2"}, @dots{} to the values
-## @var{value1}, @var{value2}, @dots{}
+## If called with name-value input argument pairs @var{"field1"},
+## @var{"value1"}, @var{"field2"}, @var{"value2"}, @dots{} return a new
+## ODE options structure with all the most common option fields
+## initialized, @strong{and} set the values of the fields @var{"field1"},
+## @var{"field2"}, @dots{} to the values @var{value1}, @var{value2},
+## @dots{}.
 ##
-## If called with an input structure @var{oldstruct} then overwrite the values
-## of the options @var{"field1"}, @var{"field2"}, @dots{} with new values
-## @var{value1}, @var{value2}, @dots{} and return the modified structure.
+## If called with an input structure @var{oldstruct} then overwrite the
+## values of the options @var{"field1"}, @var{"field2"}, @dots{} with
+## new values @var{value1}, @var{value2}, @dots{} and return the
+## modified structure.
 ##
 ## When called with two input ODE options structures @var{oldstruct} and
-## @var{newstruct} overwrite all values from the structure @var{oldstruct} with
-## new values from the structure @var{newstruct}.  Empty values in
-## @var{newstruct} will not overwrite values in @var{oldstruct}.
+## @var{newstruct} overwrite all values from the structure
+## @var{oldstruct} with new values from the structure @var{newstruct}.
+## Empty values in @var{newstruct} will not overwrite values in
+## @var{oldstruct}.
+##
+## The most commonly used ODE options, which are always assigned a value
+## by @qcode{odeset}, are the following:
+##
+## @table @asis
+## @item AbsTol
+## Absolute error tolerance.
+##
+## @item BDF
+## Use BDF formulas in implicit multistep methods.
+##
+## @item Events
+## Event function. An event function must have the form
+## @code{[value, isterminal, direction] = my_events_f (t, y)}
+##
+## @item InitialSlope
+## Consistent initial slope vector for DAE solvers.
+##
+## @item InitialStep
+## Initial time step size.
+##
+## @item Jacobian
+## Jacobian matrix, specified as a constant matrix or a function of
+## time and state.
+##
+## @item JConstant
+## Specify whether the Jacobian is a constant matrix or depends on the
+## state.
+##
+## @item JPattern
+## If the Jacobian matrix is sparse and non-constant but maintains a
+## constant sparsity pattern, specify the sparsity pattern.
+##
+## @item Mass
+## Mass matrix, specified as a constant matrix or a function of
+## time and state.
+##
+## @item MassConstant
+## Specify whether the mass matrix is a constant matrix or depends on
+## the state.
+##
+## @item MassSingular
+## Specify whether the mass matrix is singular. Accepted values include
+## @qcode{"yes"}, @qcode{"no"}, @qcode{"maybe"}.
+##
+## @item MaxOrder
+## Maximum order of formula.
+##
+## @item MaxStep
+## Maximum time step value.
+##
+## @item MStateDependence
+## Specify whether the mass matrix depends on the state or only on time.
+##
+## @item MvPattern
+## If the mass matrix is sparse and non-constant but maintains a
+## constant sparsity pattern, specify the sparsity pattern.
+##
+## @item NonNegative
+## Specify elements of the state vector that are expected to remain
+## nonnegative during the simulation.
+##
+## @item NormControl
+## Control error relative to the 2-norm of the solution, rather than its
+## absolute value.
+##
+## @item OutputFcn
+## Function to monitor the state during the simulation. For the form of
+## the function to use see @qcode{odeplot}.
+##
+## @item OutputSel
+## Indices of elements of the state vector to be passed to the output
+## monitoring function.
+##
+## @item Refine
+## Specify whether output should be returned only at the end of each
+## time step or also at intermediate time instances. The value should be
+## a scalar indicating the number of equally spaced time points to use
+## within each timestep at which to return output.
+##
+## @item RelTol
+## Relative error tolerance.
+##
+## @item Stats
+## Print solver statistics after simulation.
+##
+## @item Vectorized
+## Specify whether @qcode{odefun} can be passed multiple values of the
+## state at once.
+##
+## @end table
+##
+## Field names that are not in the above list are also accepted and
+## added to the result structure.
 ##
 ## @seealso{odeget}
 ## @end deftypefn
@@ -56,6 +153,8 @@ function odestruct = odeset (varargin)
   persistent p;
 
   if (isempty (p))
+    ## FIXME: Add an inexact match option once it is available in inputParser.
+    ## See bug #49364.
     p = inputParser ();
     p.addParameter ("AbsTol", []);
     p.addParameter ("BDF", []);
@@ -193,13 +292,19 @@ endfunction
 %!   warning (wstate);
 %! end_unwind_protect
 
+## FIXME: Add an inexact match option once it is available in inputParser.
+## See bug #49364.
+## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
+## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
+
 ## Test input validation
 %!error <argument 'OPT1' is not a valid parameter> odeset ("opt1")
 %!error  odeset (1, 1)
 %!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
 %!error  odeset (odeset (), 1, 1)
 
-## FIXME: Add inexact match option
+##FIXME: Add not exact match option
 ## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
 ## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
+
 

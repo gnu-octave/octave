@@ -388,7 +388,8 @@ function update_data (h, d)
   endif
   filled = ! strcmp (get (h, "markerfacecolor"), "none");
   s = get (h, "sizedata");
-  s = sqrt (s);  # size adjustment for visual compatibility w/Matlab 
+  ## Size adjustment for visual compatibility with Matlab.
+  s = sqrt (s);
   if (numel (s) == 1)
     s = repmat (s, numel (x), 1);
   endif

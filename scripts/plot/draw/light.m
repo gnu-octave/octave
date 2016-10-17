@@ -415,7 +415,7 @@ endfunction
 %! val(x>0 & (y-x)>0) = NaN;
 %! fv = isosurface (x, y, z, val, iso);
 %! vn = isonormals (x, y, z, val, fv.vertices);
-%! 
+%!
 %! clf;
 %! subplot (2, 3, 1);
 %! view (140, 20);
@@ -425,7 +425,7 @@ endfunction
 %! hl = light ("Position", [1 0 .5]);
 %! lighting gouraud
 %! title ({"BackFaceLighting", '"reverselit"', 'isonormals(...,"negate")'});
-%! 
+%!
 %! subplot (2, 3, 2);
 %! view (140, 20);
 %! axis equal
@@ -434,7 +434,7 @@ endfunction
 %! hl = light ("Position", [1 0 .5]);
 %! lighting gouraud
 %! title ({"BackFaceLighting", '"lit"', 'isonormals(...,"negate")'});
-%! 
+%!
 %! subplot (2, 3, 3);
 %! view (140, 20);
 %! axis equal
@@ -443,7 +443,7 @@ endfunction
 %! hl = light ("Position", [1 0 .5]);
 %! lighting gouraud
 %! title ({"BackFaceLighting", '"unlit"', 'isonormals(...,"negate")'});
-%! 
+%!
 %! subplot (2, 3, 4);
 %! view (140, 20);
 %! axis equal
@@ -452,7 +452,7 @@ endfunction
 %! hl = light ("Position", [1 0 .5]);
 %! lighting gouraud
 %! title ({"BackFaceLighting", '"reverselit"', "isonormals(...)"});
-%! 
+%!
 %! subplot (2, 3, 5);
 %! view (140, 20);
 %! axis equal
@@ -461,7 +461,7 @@ endfunction
 %! hl = light ("Position", [1 0 .5]);
 %! lighting gouraud
 %! title ({"BackFaceLighting", '"lit"', "isonormals(...)"});
-%! 
+%!
 %! subplot (2, 3, 6);
 %! view (140, 20);
 %! axis equal

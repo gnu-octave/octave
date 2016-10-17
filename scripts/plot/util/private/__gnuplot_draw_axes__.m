@@ -1666,9 +1666,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       ## Wrap view correctly to match Matlab
       if (axis_obj.view(2) <= 90)
         rot_x = 90 - axis_obj.view(2);
-      else 
+      else
         rot_x = axis_obj.view(2) - 90;
-      endif  
+      endif
       rot_x = mod (rot_x, 360);
       while (rot_x < 0)
         rot_x += 360;
@@ -1677,7 +1677,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         rot_z = axis_obj.view(1);
       else
         rot_z = axis_obj.view(1) + 180;
-      endif  
+      endif
       rot_z = mod (rot_z, 360);
       while (rot_z < 0)
         rot_z += 360;

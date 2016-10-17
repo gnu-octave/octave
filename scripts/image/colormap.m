@@ -76,7 +76,7 @@
 ## @item prism @tab cyclic 6-color map of red, orange, yellow, green, blue, violet.
 ## @item ------------- @tab ---------------------------------------------------------------------------------------------
 ## @item white @tab all white colormap (no colors).
-## @end multitable  
+## @end multitable
 ## @seealso{viridis, jet, cubehelix, hsv, rainbow, hot, cool, spring, summer, autumn, winter, gray, bone, copper, pink, ocean, colorcube, flag, lines, prism, white}
 ## @end deftypefn
 

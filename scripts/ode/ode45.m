@@ -224,8 +224,7 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter
-    feval (odeopts.OutputFcn, solution.t(end),
-           solution.x(end,:)', "done", odeopts.funarguments{:});
+    feval (odeopts.OutputFcn, [], [], "done", odeopts.funarguments{:});
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
     ode_event_handler (odeopts.Events, solution.t(end),
@@ -341,15 +340,21 @@ endfunction
 %!  mas = sparse ([1, 0; 0, 1]);   # A sparse dummy matrix
 %!endfunction
 %!function out = fout (t, y, flag, varargin)
-%!  if (regexp (char (flag), "init") == 1)
-%!    if (any (size (t) != [2, 1])) error ('"fout" step "init"'); endif
+%!  out = false;
+%!  if (strcmp (flag, "init"))
+%!    if (! isequal (size (t), [2, 1]))
+%!      error ('fout: step "init"');
+%!    endif
 %!  elseif (isempty (flag))
-%!    if (any (size (t) != [1, 1])) error ('"fout" step "calc"'); endif
-%!    out = false;
-%!  elseif (regexp (char (flag), 'done') == 1)
-%!    if (any (size (t) != [1, 1])) error ('"fout" step "done"'); endif
+%!    if (! isequal (size (t), [1, 1]))
+%!      error ('fout: step "calc"');
+%!    endif
+%!  elseif (strcmp (flag, "done"))
+%!    if (! isempty (t))
+%!      warning ('fout: step "done"');
+%!    endif
 %!  else
-%!    error ('"fout" invalid flag');
+%!    error ("fout: invalid flag <%s>", flag);
 %!  endif
 %!endfunction
 %!

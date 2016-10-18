@@ -96,8 +96,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     else
       solution.retout = x;
     endif
-    feval (options.OutputFcn, tspan, solution.retout,
-           "init", options.funarguments{:});
+    feval (options.OutputFcn, tspan, solution.retout, "init",
+           options.funarguments{:});
   endif
 
   ## Initialize the EventFcn
@@ -186,7 +186,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           endif
 
           ## Call OutputFcn only if a valid result has been found.
-          ## Stop integration if function returns false.
+          ## Stop integration if function returns true.
           if (options.haveoutputfunction)
             cnt = options.Refine + 1;
             approxtime = linspace (t_old, t_new, cnt);
@@ -196,12 +196,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
             if (! isempty (options.OutputSel))
               approxvals = approxvals(options.OutputSel, :);
             endif
+            stop_solve = false;
             for ii = 1:numel (approxtime)
-              pltret = feval (options.OutputFcn, approxtime(ii),
-                              approxvals(:, ii), [],
-                              options.funarguments{:});
+              stop_solve = feval (options.OutputFcn,
+                                  approxtime(ii), approxvals(:, ii), [],
+                                  options.funarguments{:});
+              if (stop_solve)
+                break;  # break from inner loop
+              endif
             endfor
-            if (pltret)  # Leave main loop
+            if (stop_solve)  # Leave main loop
               solution.unhandledtermination = false;
               break;
             endif
@@ -230,7 +234,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
         endif
 
         ## Call OutputFcn only if a valid result has been found.
-        ## Stop integration if function returns false.
+        ## Stop integration if function returns true.
         if (options.haveoutputfunction)
           cnt = options.Refine + 1;
           approxtime = linspace (t_old, t_new, cnt);
@@ -240,11 +244,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           if (! isempty (options.OutputSel))
             approxvals = approxvals(options.OutputSel, :);
           endif
+          stop_solve = false;
           for ii = 1:numel (approxtime)
-            pltret = feval (options.OutputFcn, approxtime(ii),
-                            approxvals(:, ii), [], options.funarguments{:});
+            stop_solve = feval (options.OutputFcn,
+                                approxtime(ii), approxvals(:, ii), [],
+                                options.funarguments{:});
+            if (stop_solve)
+              break;  # break from inner loop
+            endif
           endfor
-          if (pltret)  # Leave main loop
+          if (stop_solve)  # Leave main loop
             solution.unhandledtermination = false;
             break;
           endif

@@ -35,7 +35,7 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                 "Mass", [],
                                 "MassSingular", "maybe",
                                 "MaxOrder", 5,
-                                "MaxStep", 0.1 * abs (t0-tf),
+                                "MaxStep", 0.1 * abs (tf - t0),
                                 "MStateDependence", "weak",
                                 "MvPattern", [],
                                 "NonNegative", [],
@@ -47,7 +47,7 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                 "Stats", "off",
                                 "Vectorized", "off");
 
-  defaults.MaxStep = (0.1 * abs (t0-tf));
+  defaults.MaxStep = 0.1 * abs (tf -t0);
 
   persistent classes = struct ("AbsTol", {{"float"}},
                                "BDF", "char",

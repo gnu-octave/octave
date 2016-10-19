@@ -161,12 +161,6 @@ function varargout = ode23 (fun, trange, init, varargin)
 
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set.
-  ## FIXME: Why persistent?  Won't these have different values for every
-  ##        run of ode23?
-  persistent defaults   = [];
-  persistent classes    = [];
-  persistent attributes = [];
-
   [defaults, classes, attributes] = odedefaults (numel (init),
                                                  trange(1), trange(end));
 

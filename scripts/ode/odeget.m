@@ -37,9 +37,7 @@
 ## @seealso{odeset}
 ## @end deftypefn
 
-## FIXME: 4th input argument "opt" is undocumented.
-
-function val = odeget (ode_opt, field, default = [], opt = "")
+function val = odeget (ode_opt, field, default = [])
 
   validateattributes (ode_opt, {"struct"}, {"nonempty"});
   validateattributes (field, {"char"}, {"nonempty"});

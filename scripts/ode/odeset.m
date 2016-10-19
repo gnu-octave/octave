@@ -232,19 +232,19 @@ endfunction
 
 
 %!demo
-%! # A new ODE options structure with default values is created.
+%! ## A new ODE options structure with default values is created.
 %!
 %! odeoptA = odeset ();
 
 %!demo
-%! # A new ODE options structure with manually set options
-%! # for "AbsTol" and "RelTol" is created.
+%! ## A new ODE options structure with manually set options
+%! ## for "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 
 %!demo
-%! # A new ODE options structure is created from odeoptB with
-%! # a modified value for option "NormControl".
+%! ## A new ODE options structure is created from odeoptB with
+%! ## a modified value for option "NormControl".
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 %! odeoptC = odeset (odeoptB, "NormControl", "on");
@@ -252,7 +252,7 @@ endfunction
 %!test
 %! odeoptA = odeset ();
 %! assert (isstruct (odeoptA));
-%! assert (numfields (odeoptA), 23);
+%! assert (numfields (odeoptA), 22);
 %! assert (all (structfun ("isempty", odeoptA)));
 
 %!shared odeoptB, odeoptC
@@ -272,13 +272,9 @@ endfunction
 
 ## Test custom user-defined option
 %!test
-%! wstate = warning ("off", "Octave:invalid-input-arg");
-%! unwind_protect
-%!   odeopt = odeset ("NewtonTol", 3);
-%!   assert (odeopt.NewtonTol, 3);
-%! unwind_protect_cleanup
-%!   warning (wstate);
-%! end_unwind_protect
+%! warning ("off", "Octave:invalid-input-arg", "local");
+%! odeopt = odeset ("NewtonTol", 3);
+%! assert (odeopt.NewtonTol, 3);
 
 ## FIXME: Add an inexact match option once it is available in inputParser.
 ## See bug #49364.
@@ -287,12 +283,7 @@ endfunction
 
 ## Test input validation
 %!error <argument 'OPT1' is not a valid parameter> odeset ("opt1")
-%!error  odeset (1, 1)
+%!error odeset (1, 1)
 %!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
-%!error  odeset (odeset (), 1, 1)
-
-##FIXME: Add not exact match option
-## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
-## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
-
+%!error odeset (odeset (), 1, 1)
 

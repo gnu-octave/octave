@@ -296,9 +296,6 @@ endfunction
 %!   err(i) = norm (y .* exp (t) - 1, Inf);
 %! endfor
 %!
-%! ## Estimate order numerically
-%! p = diff (log (err)) ./ diff (log (h))
-%!
 %! ## Estimate order visually
 %! loglog (h, tol, "-ob",
 %!         h, err, "-b",
@@ -310,6 +307,9 @@ endfunction
 %! title ("Convergence plot for ode23");
 %! legend ("imposed tolerance", "ode23 (relative) error",
 %!         "order 2", "order 3", "location", "northwest");
+%!
+%! ## Estimate order numerically
+%! p = diff (log (err)) ./ diff (log (h))
 
 ## We are using the "Van der Pol" implementation for all tests that are done
 ## for this function.

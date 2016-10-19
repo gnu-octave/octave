@@ -190,22 +190,14 @@ function odestruct = odeset (varargin)
     odestruct = p.Results;
     odestruct_extra = p.Unmatched;
 
-    ## FIXME: For speed, shouldn't this merge of structures only occur
-    ##        when there is something in odestruct_extra?
-    ## FIXME: Should alphabetical order of fieldnames be maintained
-    ##        by using sort?
-    s1 = cellfun (@(x) ifelse (iscell (x), {x}, x),
-                  struct2cell (odestruct),
-                  "UniformOutput", false);
+    xtra_fields = fieldnames (odestruct_extra);
+    if (! isempty (xtra_fields))
+      ## Merge extra fields into existing odestruct
+      for fldname = sort (xtra_fields.')
+        odestruct.(fldname{1}) = odestruct_extra.(fldname{1});
+      endfor
+    endif
 
-    s2 = cellfun (@(x) ifelse (iscell (x), {x}, x),
-                  struct2cell (odestruct_extra),
-                  "UniformOutput", false);
-
-    C = [fieldnames(odestruct)       s1;
-         fieldnames(odestruct_extra) s2];
-
-    odestruct = struct (C'{:});
   endif
 
 endfunction

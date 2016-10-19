@@ -360,8 +360,8 @@ endfunction
 %! [t, y] = ode45 (@fpol, [0 2], [2 0]);
 %! assert (size (t) < 20);
 %!test  # anonymous function instead of real function
-%! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%! [t, y] = ode45 (fvdb, [0 2], [2 0]);
+%! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! [t, y] = ode45 (fvdp, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # string instead of function
 %! [t, y] = ode45 ("fpol", [0 2], [2 0]);
@@ -482,9 +482,9 @@ endfunction
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
 
 ## FIXME: Missing tests.
-## test for MvPattern option is missing
 ## test for InitialSlope option is missing
 ## test for MaxOrder option is missing
+## test for MvPattern option is missing
 
 %!error ode45 ()
 %!error ode45 (1)

@@ -89,15 +89,6 @@
 ## @seealso{odeset, odeget, ode45}
 ## @end deftypefn
 
-## FIXME: We store ChangeLog information in Mercurial.  Can this be deleted?
-## ChangeLog:
-##   20010703 the function file "ode23.m" was written by Marc Compere
-##     under the GPL for the use with this software.  This function has been
-##     taken as a base for the following implementation.
-##   20060810, Thomas Treichl
-##     This function was adapted to the new syntax that is used by the
-##     new OdePkg for Octave and is compatible to Matlab's ode23.
-
 function varargout = ode23 (fun, trange, init, varargin)
 
   if (nargin < 3)
@@ -375,8 +366,8 @@ endfunction
 %! [t, y] = ode23 (@fpol, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # anonymous function instead of real function
-%! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%! [t, y] = ode23 (fvdb, [0 2], [2 0]);
+%! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! [t, y] = ode23 (fvdp, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # extra input arguments passed through
 %! [t, y] = ode23 (@fpol, [0 2], [2 0], 12, 13, "KL");
@@ -483,9 +474,9 @@ endfunction
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
 
 ## FIXME: Missing tests.
-## test for MvPattern option is missing
 ## test for InitialSlope option is missing
 ## test for MaxOrder option is missing
+## test for MvPattern option is missing
 
 ## Test input validation
 %!error ode23 ()

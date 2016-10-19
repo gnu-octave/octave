@@ -87,10 +87,6 @@
 ## Mass matrix, specified as a constant matrix or a function of
 ## time and state.
 ##
-## @item MassConstant
-## Specify whether the mass matrix is a constant matrix or depends on
-## the state.
-##
 ## @item MassSingular
 ## Specify whether the mass matrix is singular. Accepted values include
 ## @qcode{"yes"}, @qcode{"no"}, @qcode{"maybe"}.
@@ -165,8 +161,6 @@ function odestruct = odeset (varargin)
     p.addParameter ("JConstant", []);
     p.addParameter ("JPattern", []);
     p.addParameter ("Mass", []);
-    ## FIXME: MassConstant does not appear in Matlab documentation for odeset
-    p.addParameter ("MassConstant", []);
     p.addParameter ("MassSingular", []);
     p.addParameter ("MaxOrder", []);
     p.addParameter ("MaxStep", []);
@@ -220,7 +214,6 @@ function print_options ()
   disp ('          JConstant:  binary, {["off"], "on"}');
   disp ('           JPattern:  sparse matrix, []');
   disp ('               Mass:  matrix or function_handle, []');
-  disp ('       MassConstant:  binary, {["off"], "on"}');
   disp ('       MassSingular:  switch, {["maybe"], "no", "yes"}');
   disp ('           MaxOrder:  switch, {[5], 1, 2, 3, 4, }');
   disp ('            MaxStep:  scalar, >0, []');

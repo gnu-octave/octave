@@ -116,6 +116,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   solution.unhandledtermination = true;
   ireject = 0;
 
+  NormControl = strcmp (options.NormControl, "on");
   k_vals = [];
   iout = istep = 1;
 
@@ -133,9 +134,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
       x_est(nn, end) = abs (x_est(nn, end));
     endif
 
-    ## FIXME: Take strcmp out of while loop and calculate just once
     err = AbsRel_norm (x_new, x_old, options.AbsTol, options.RelTol,
-                       strcmp (options.NormControl, "on"), x_est);
+                       NormControl, x_est);
 
     ## Accept solution only if err <= 1.0
     if (err <= 1)
@@ -289,7 +289,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     err += eps;  # avoid divisions by zero
     dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
     dt = dir * min (abs (dt), options.MaxStep);
-    if (! (abs (dt) > eps (t (end))))
+    if (! (abs (dt) > eps (t(end))))
       break;
     endif
 

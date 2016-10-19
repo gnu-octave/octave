@@ -19,80 +19,93 @@
 ## Author: Thomas Treichl <treichl@users.sourceforge.net>
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{ret} =} odeplot (@var{t}, @var{y}, @var{flag})
+## @deftypefn {} {@var{stop_solve} =} odeplot (@var{t}, @var{y}, @var{flag})
 ##
-## Open a new figure window and plot input @var{y} over time during the
-## solving of an ode problem.
+## Open a new figure window and plot the solution of an ode problem at each
+## time step during the integration.
 ##
-## The input @var{y} is a column vector.  The types and values of the input
-## parameter @var{t} and output parameter @var{ret} depend on the input
-## @var{flag} that is of type string.  If @var{flag} is
+## The types and values of the input parameters @var{t} and @var{y} depend on
+## the input @var{flag} that is of type string.  Valid values of @var{flag}
+## are:
 ##
 ## @table @option
 ## @item @qcode{"init"}
-## then @var{t} must be a column vector of length 2 with the first and
-## the last time step;  Nothing is returned from this function.
+## The input @var{t} must be a column vector of length 2 with the first and
+## last time step (@code{[@var{tfirst} @var{tlast}]}.  The input @var{y}
+## contains the initial conditions for the ode problem (@var{y0}).
 ##
 ## @item @qcode{""}
-## then @var{t} must be a scalar double specifying the actual time step;
-## The return value is false (resp. value 0) for @qcode{"not stop solving"}.
+## The input @var{t} must be a scalar double specifying the time for which
+## the solution in input @var{y} was calculated.
 ##
 ## @item @qcode{"done"}
-## then @var{t} must be a scalar double specifying the last time step;
-## Nothing is returned from this function.
+## The inputs should be empty, but are ignored if they are present.
 ## @end table
 ##
-## This function is called by an ode solver function if it was specified in
-## an options structure with @code{odeset}.  This function is an internal
-## helper function; It should never be necessary for this function to be
-## directly called by a user.  There is only minimal error detection
-## implemented in order to to achieve the highest performance.
+## @code{odeplot} always returns false, i.e., don't stop the ode solver.
 ##
-## For example, solve an anonymous implementation of the
+## Example: solve an anonymous implementation of the
 ## @nospell{@qcode{"Van der Pol"}} equation and display the results while
-## solving
+## solving.
 ##
 ## @example
 ## @group
-## fvdb = @@(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+## fvdp = @@(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
 ##
 ## opt = odeset ("OutputFcn", @@odeplot, "RelTol", 1e-6);
-## sol = ode45 (fvdb, [0 20], [2 0], opt);
+## sol = ode45 (fvdp, [0 20], [2 0], opt);
 ## @end group
 ## @end example
 ##
-## @seealso{odeset, odeget}
+## Background Information:
+## This function is called by an ode solver function if it was specified in
+## the @qcode{"OutputFcn"} property of an options structure created with
+## @code{odeset}.  The ode solver will initially call the function with the
+## syntax @code{odeplot ([@var{tfirst}, @var{tlast}], @var{y0}, "init")}.  The
+## function initializes internal variables, creates a new figure window, and
+## sets the x limits of the plot.  Subsequently, at each time step during the
+## integration the ode solver calls @code{odeplot (@var{t}, @var{y}, [])}.
+## At the end of the solution the ode solver calls
+## @code{odeplot ([], [], "end")} so that odeplot can perform any clean-up
+## actions required.
+## @seealso{odeset, odeget, ode23, ode45}
 ## @end deftypefn
 
-function ret = odeplot (t, y, flag, varargin)
+function stop_solve = odeplot (t, y, flag)
 
-  ## No input argument check is done for a higher processing speed
-  persistent fig told yold counter;
+  ## No input argument checking is done for better performance
+  persistent hlines num_lines told yold;
+  persistent idx = 1;   # Don't remove.  Required for Octave parser.
 
-  if (strcmp (flag, "init"))
-    ## Nothing to return, t is either the time slot [tstart tstop]
-    ## or [t0, t1, ..., tn], y is the initial value vector "init"
-    counter = 1;
-    fig = figure ();
+  ## odeplot never stops the integration
+  stop_solve = false;
+
+  if (isempty (flag))
+    ## Default case, plot and return a value
+    idx += 1;
+    told(idx,1) = t(1,1);
+    yold(:,idx) = y(:,1);
+    for i = 1:num_lines
+      set (hlines(i), "xdata", told, "ydata", yold(i,:));
+    endfor
+    drawnow;
+
+    retval = false;
+
+  elseif (strcmp (flag, "init"))
+    ## t is either the time slot [tstart tstop] or [t0, t1, ..., tn]
+    ## y is the initial value vector for the ode solution
+    idx = 1;
     told = t(1,1);
     yold = y(:,1);
-
-  elseif (isempty (flag))
-    ## Return something, either false for "not stopping
-    ## the integration" or true for "stopping the integration"
-    counter += 1;
-    figure (fig);
-    told(counter,1) = t(1,1);
-    yold(:,counter) = y(:,1);
-    ## FIXME: Why not use '.' rather than 'o' and skip the markersize?
-    ## FIXME: Why not just update the xdata, ydata properties?
-    ##        Calling plot involves a lot of overhead.
-    plot (told, yold, "-o", "markersize", 1); drawnow;
-    ret = false;
+    figure ();
+    hlines = plot (told, yold, "-", "marker", ".", "markersize", 9);
+    xlim ([t(1), t(end)]);  # Fix limits which also speeds up plotting
+    num_lines = numel (hlines);
 
   elseif (strcmp (flag, "done"))
     ## Cleanup after ode solver has finished.
-    clear ("figure", "told", "yold", "counter");
+    hlines = num_lines = told = yold = idx = [];
 
   endif
 
@@ -100,9 +113,9 @@ endfunction
 
 
 %!demo
-%! # Solve an anonymous implementation of the Van der Pol equation
-%! # and display the results while solving
-%! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! ## Solve an anonymous implementation of the Van der Pol equation
+%! ## and display the results while solving
+%! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %! opt = odeset ("OutputFcn", @odeplot, "RelTol", 1e-6);
-%! sol = ode45 (fvdb, [0 20], [2 0], opt);
+%! sol = ode45 (fvdp, [0 20], [2 0], opt);
 

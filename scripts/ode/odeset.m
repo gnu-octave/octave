@@ -87,10 +87,6 @@
 ## Mass matrix, specified as a constant matrix or a function of
 ## time and state.
 ##
-## @item MassConstant
-## Specify whether the mass matrix is a constant matrix or depends on
-## the state.
-##
 ## @item MassSingular
 ## Specify whether the mass matrix is singular. Accepted values include
 ## @qcode{"yes"}, @qcode{"no"}, @qcode{"maybe"}.
@@ -165,8 +161,6 @@ function odestruct = odeset (varargin)
     p.addParameter ("JConstant", []);
     p.addParameter ("JPattern", []);
     p.addParameter ("Mass", []);
-    ## FIXME: MassConstant does not appear in Matlab documentation for odeset
-    p.addParameter ("MassConstant", []);
     p.addParameter ("MassSingular", []);
     p.addParameter ("MaxOrder", []);
     p.addParameter ("MaxStep", []);
@@ -190,22 +184,17 @@ function odestruct = odeset (varargin)
     odestruct = p.Results;
     odestruct_extra = p.Unmatched;
 
-    ## FIXME: For speed, shouldn't this merge of structures only occur
-    ##        when there is something in odestruct_extra?
-    ## FIXME: Should alphabetical order of fieldnames be maintained
-    ##        by using sort?
-    s1 = cellfun (@(x) ifelse (iscell (x), {x}, x),
-                  struct2cell (odestruct),
-                  "UniformOutput", false);
+    xtra_fields = fieldnames (odestruct_extra);
+    if (! isempty (xtra_fields))
+      ## Merge extra fields into existing odestruct
+      for fldname = sort (xtra_fields.')
+        fldname = fldname{1};
+        warning ("Octave:invalid-input-arg",
+                 "odeset: unknown option \"%s\"\n", fldname);
+        odestruct.(fldname) = odestruct_extra.(fldname);
+      endfor
+    endif
 
-    s2 = cellfun (@(x) ifelse (iscell (x), {x}, x),
-                  struct2cell (odestruct_extra),
-                  "UniformOutput", false);
-
-    C = [fieldnames(odestruct)       s1;
-         fieldnames(odestruct_extra) s2];
-
-    odestruct = struct (C'{:});
   endif
 
 endfunction
@@ -225,7 +214,6 @@ function print_options ()
   disp ('          JConstant:  binary, {["off"], "on"}');
   disp ('           JPattern:  sparse matrix, []');
   disp ('               Mass:  matrix or function_handle, []');
-  disp ('       MassConstant:  binary, {["off"], "on"}');
   disp ('       MassSingular:  switch, {["maybe"], "no", "yes"}');
   disp ('           MaxOrder:  switch, {[5], 1, 2, 3, 4, }');
   disp ('            MaxStep:  scalar, >0, []');
@@ -244,19 +232,19 @@ endfunction
 
 
 %!demo
-%! # A new ODE options structure with default values is created.
+%! ## A new ODE options structure with default values is created.
 %!
 %! odeoptA = odeset ();
 
 %!demo
-%! # A new ODE options structure with manually set options
-%! # for "AbsTol" and "RelTol" is created.
+%! ## A new ODE options structure with manually set options
+%! ## for "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 
 %!demo
-%! # A new ODE options structure is created from odeoptB with
-%! # a modified value for option "NormControl".
+%! ## A new ODE options structure is created from odeoptB with
+%! ## a modified value for option "NormControl".
 %!
 %! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
 %! odeoptC = odeset (odeoptB, "NormControl", "on");
@@ -264,7 +252,7 @@ endfunction
 %!test
 %! odeoptA = odeset ();
 %! assert (isstruct (odeoptA));
-%! assert (numfields (odeoptA), 23);
+%! assert (numfields (odeoptA), 22);
 %! assert (all (structfun ("isempty", odeoptA)));
 
 %!shared odeoptB, odeoptC
@@ -284,13 +272,9 @@ endfunction
 
 ## Test custom user-defined option
 %!test
-%! wstate = warning ("off", "Octave:invalid-input-arg");
-%! unwind_protect
-%!   odeopt = odeset ("NewtonTol", 3);
-%!   assert (odeopt.NewtonTol, 3);
-%! unwind_protect_cleanup
-%!   warning (wstate);
-%! end_unwind_protect
+%! warning ("off", "Octave:invalid-input-arg", "local");
+%! odeopt = odeset ("NewtonTol", 3);
+%! assert (odeopt.NewtonTol, 3);
 
 ## FIXME: Add an inexact match option once it is available in inputParser.
 ## See bug #49364.
@@ -299,12 +283,7 @@ endfunction
 
 ## Test input validation
 %!error <argument 'OPT1' is not a valid parameter> odeset ("opt1")
-%!error  odeset (1, 1)
+%!error odeset (1, 1)
 %!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
-%!error  odeset (odeset (), 1, 1)
-
-##FIXME: Add not exact match option
-## %!warning <no exact match for 'Rel'.  Assuming 'RelTol'> odeset ("Rel", 1);
-## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
-
+%!error odeset (odeset (), 1, 1)
 

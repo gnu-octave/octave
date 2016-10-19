@@ -143,11 +143,6 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set
-  ## FIXME: Why persistent when it is changed with every run of ode45?
-  persistent defaults   = [];
-  persistent classes    = [];
-  persistent attributes = [];
-
   [defaults, classes, attributes] = odedefaults (numel (init),
                                                  trange(1), trange(end));
 
@@ -224,8 +219,7 @@ function varargout = ode45 (fun, trange, init, varargin)
 
   ## Postprocessing, do whatever when terminating integration algorithm
   if (odeopts.haveoutputfunction)  # Cleanup plotter
-    feval (odeopts.OutputFcn, solution.t(end),
-           solution.x(end,:)', "done", odeopts.funarguments{:});
+    feval (odeopts.OutputFcn, [], [], "done", odeopts.funarguments{:});
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
     ode_event_handler (odeopts.Events, solution.t(end),
@@ -293,9 +287,6 @@ endfunction
 %!   err(i) = norm (y .* exp (t) - 1, Inf);
 %! endfor
 %!
-%! ## Estimate order numerically
-%! p = diff (log (err)) ./ diff (log (h))
-%!
 %! ## Estimate order visually
 %! loglog (h, tol, "-ob",
 %!         h, err, "-b",
@@ -307,6 +298,9 @@ endfunction
 %! title ("Convergence plot for ode45");
 %! legend ("imposed tolerance", "ode45 (relative) error",
 %!         "order 4", "order 5", "location", "northwest");
+%!
+%! ## Estimate order numerically
+%! p = diff (log (err)) ./ diff (log (h))
 
 ## We are using the Van der Pol equation for all tests that are done
 ## for this function.
@@ -341,15 +335,21 @@ endfunction
 %!  mas = sparse ([1, 0; 0, 1]);   # A sparse dummy matrix
 %!endfunction
 %!function out = fout (t, y, flag, varargin)
-%!  if (regexp (char (flag), "init") == 1)
-%!    if (any (size (t) != [2, 1])) error ('"fout" step "init"'); endif
+%!  out = false;
+%!  if (strcmp (flag, "init"))
+%!    if (! isequal (size (t), [2, 1]))
+%!      error ('fout: step "init"');
+%!    endif
 %!  elseif (isempty (flag))
-%!    if (any (size (t) != [1, 1])) error ('"fout" step "calc"'); endif
-%!    out = false;
-%!  elseif (regexp (char (flag), 'done') == 1)
-%!    if (any (size (t) != [1, 1])) error ('"fout" step "done"'); endif
+%!    if (! isequal (size (t), [1, 1]))
+%!      error ('fout: step "calc"');
+%!    endif
+%!  elseif (strcmp (flag, "done"))
+%!    if (! isempty (t))
+%!      warning ('fout: step "done"');
+%!    endif
 %!  else
-%!    error ('"fout" invalid flag');
+%!    error ("fout: invalid flag <%s>", flag);
 %!  endif
 %!endfunction
 %!
@@ -360,8 +360,8 @@ endfunction
 %! [t, y] = ode45 (@fpol, [0 2], [2 0]);
 %! assert (size (t) < 20);
 %!test  # anonymous function instead of real function
-%! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%! [t, y] = ode45 (fvdb, [0 2], [2 0]);
+%! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! [t, y] = ode45 (fvdp, [0 2], [2 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 %!test  # string instead of function
 %! [t, y] = ode45 ("fpol", [0 2], [2 0]);
@@ -482,9 +482,9 @@ endfunction
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
 
 ## FIXME: Missing tests.
-## test for MvPattern option is missing
 ## test for InitialSlope option is missing
 ## test for MaxOrder option is missing
+## test for MvPattern option is missing
 
 %!error ode45 ()
 %!error ode45 (1)

@@ -96,8 +96,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     else
       solution.retout = x;
     endif
-    feval (options.OutputFcn, tspan, solution.retout,
-           "init", options.funarguments{:});
+    feval (options.OutputFcn, tspan, solution.retout, "init",
+           options.funarguments{:});
   endif
 
   ## Initialize the EventFcn
@@ -116,6 +116,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   solution.unhandledtermination = true;
   ireject = 0;
 
+  NormControl = strcmp (options.NormControl, "on");
   k_vals = [];
   iout = istep = 1;
 
@@ -133,9 +134,8 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
       x_est(nn, end) = abs (x_est(nn, end));
     endif
 
-    ## FIXME: Take strcmp out of while loop and calculate just once
     err = AbsRel_norm (x_new, x_old, options.AbsTol, options.RelTol,
-                       strcmp (options.NormControl, "on"), x_est);
+                       NormControl, x_est);
 
     ## Accept solution only if err <= 1.0
     if (err <= 1)
@@ -186,7 +186,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           endif
 
           ## Call OutputFcn only if a valid result has been found.
-          ## Stop integration if function returns false.
+          ## Stop integration if function returns true.
           if (options.haveoutputfunction)
             cnt = options.Refine + 1;
             approxtime = linspace (t_old, t_new, cnt);
@@ -196,12 +196,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
             if (! isempty (options.OutputSel))
               approxvals = approxvals(options.OutputSel, :);
             endif
+            stop_solve = false;
             for ii = 1:numel (approxtime)
-              pltret = feval (options.OutputFcn, approxtime(ii),
-                              approxvals(:, ii), [],
-                              options.funarguments{:});
+              stop_solve = feval (options.OutputFcn,
+                                  approxtime(ii), approxvals(:, ii), [],
+                                  options.funarguments{:});
+              if (stop_solve)
+                break;  # break from inner loop
+              endif
             endfor
-            if (pltret)  # Leave main loop
+            if (stop_solve)  # Leave main loop
               solution.unhandledtermination = false;
               break;
             endif
@@ -230,7 +234,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
         endif
 
         ## Call OutputFcn only if a valid result has been found.
-        ## Stop integration if function returns false.
+        ## Stop integration if function returns true.
         if (options.haveoutputfunction)
           cnt = options.Refine + 1;
           approxtime = linspace (t_old, t_new, cnt);
@@ -240,11 +244,16 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           if (! isempty (options.OutputSel))
             approxvals = approxvals(options.OutputSel, :);
           endif
+          stop_solve = false;
           for ii = 1:numel (approxtime)
-            pltret = feval (options.OutputFcn, approxtime(ii),
-                            approxvals(:, ii), [], options.funarguments{:});
+            stop_solve = feval (options.OutputFcn,
+                                approxtime(ii), approxvals(:, ii), [],
+                                options.funarguments{:});
+            if (stop_solve)
+              break;  # break from inner loop
+            endif
           endfor
-          if (pltret)  # Leave main loop
+          if (stop_solve)  # Leave main loop
             solution.unhandledtermination = false;
             break;
           endif
@@ -280,7 +289,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
     err += eps;  # avoid divisions by zero
     dt *= min (facmax, max (facmin, fac * (1 / err)^(1 / (order + 1))));
     dt = dir * min (abs (dt), options.MaxStep);
-    if (! (abs (dt) > eps (t (end))))
+    if (! (abs (dt) > eps (t(end))))
       break;
     endif
 

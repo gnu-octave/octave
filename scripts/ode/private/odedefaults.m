@@ -33,10 +33,9 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                 "JConstant", "off",
                                 "JPattern", [],
                                 "Mass", [],
-                                "MassConstant", "off",
                                 "MassSingular", "maybe",
                                 "MaxOrder", 5,
-                                "MaxStep", 0.1 * abs (t0-tf),
+                                "MaxStep", 0.1 * abs (tf - t0),
                                 "MStateDependence", "weak",
                                 "MvPattern", [],
                                 "NonNegative", [],
@@ -48,7 +47,7 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                 "Stats", "off",
                                 "Vectorized", "off");
 
-  defaults.MaxStep = (0.1 * abs (t0-tf));
+  defaults.MaxStep = 0.1 * abs (tf -t0);
 
   persistent classes = struct ("AbsTol", {{"float"}},
                                "BDF", "char",
@@ -59,7 +58,6 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                "JConstant", "char",
                                "JPattern", {{"float"}},
                                "Mass", {{"float", "function_handle"}},
-                               "MassConstant", "char",
                                "MassSingular", "char",
                                "MaxOrder", {{"float"}},
                                "MaxStep", {{"float"}},
@@ -83,7 +81,6 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                   "JConstant", {{"on", "off"}},
                                   "JPattern", {{"vector"}},
                                   "Mass", {{}},
-                                  "MassConstant", {{"on", "off"}},
                                   "MassSingular", {{"no", "maybe", "yes"}},
                                   "MaxOrder", {{">=", 0, "<=", 5, "integer"}},
                                   "MaxStep", {{"positive", "scalar", "real"}},

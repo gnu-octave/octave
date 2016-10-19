@@ -37,9 +37,7 @@
 ## @seealso{odeset}
 ## @end deftypefn
 
-## FIXME: 4th input argument "opt" is undocumented.
-
-function val = odeget (ode_opt, field, default = [], opt = "")
+function val = odeget (ode_opt, field, default = [])
 
   validateattributes (ode_opt, {"struct"}, {"nonempty"});
   validateattributes (field, {"char"}, {"nonempty"});
@@ -58,9 +56,9 @@ endfunction
 
 
 %!demo
-%! # Return the manually changed value RelTol of the ODE options
-%! # structure A.  If RelTol wouldn't have been changed then an
-%! # empty matrix value would have been returned.
+%! ## Return the manually changed value RelTol of the ODE options
+%! ## structure A.  If RelTol wouldn't have been changed then an
+%! ## empty matrix value would have been returned.
 %!
 %! A = odeset ("RelTol", 1e-1, "AbsTol", 1e-2);
 %! odeget (A, "RelTol", [])
@@ -73,7 +71,9 @@ endfunction
 %!assert (odeget (odeset (), "Mass"), [])
 %!assert (odeget (odeset (), "AbsTol", 1e-9), 1e-9)
 %!assert (odeget (odeset ("AbsTol", 1e-9), "AbsTol", []), 1e-9)
-%!assert (odeget (odeset ("foo", 42), "foo"), 42)
+%!test
+%! warning ("off", "Octave:invalid-input-arg", "local");
+%! assert (odeget (odeset ("foo", 42), "foo"), 42);
 
 %!error odeget ()
 %!error odeget (1)

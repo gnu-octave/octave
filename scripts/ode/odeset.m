@@ -194,7 +194,10 @@ function odestruct = odeset (varargin)
     if (! isempty (xtra_fields))
       ## Merge extra fields into existing odestruct
       for fldname = sort (xtra_fields.')
-        odestruct.(fldname{1}) = odestruct_extra.(fldname{1});
+        fldname = fldname{1};
+        warning ("Octave:invalid-input-arg",
+                 "odeset: unknown option \"%s\"\n", fldname);
+        odestruct.(fldname) = odestruct_extra.(fldname);
       endfor
     endif
 

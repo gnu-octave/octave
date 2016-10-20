@@ -113,7 +113,6 @@ namespace QtHandles
           keyMapper[Qt::Key_Direction_L] = "direction_l";
           keyMapper[Qt::Key_Direction_R] = "direction_r";
           keyMapper[Qt::Key_Space] = "space";
-          keyMapper[Qt::Key_Any] = "any";
           keyMapper[Qt::Key_Exclam] = "exclam";
           keyMapper[Qt::Key_QuoteDbl] = "quotedbl";
           keyMapper[Qt::Key_NumberSign] = "numbersign";

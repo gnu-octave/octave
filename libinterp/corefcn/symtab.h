@@ -733,8 +733,6 @@ public:
   {
   public:
 
-    typedef std::map<std::string, std::string> dispatch_map_type;
-
     typedef std::map<scope_id, octave_value>::const_iterator
       scope_val_const_iterator;
     typedef std::map<scope_id, octave_value>::iterator scope_val_iterator;
@@ -742,9 +740,6 @@ public:
     typedef std::map<std::string, octave_value>::const_iterator
       str_val_const_iterator;
     typedef std::map<std::string, octave_value>::iterator str_val_iterator;
-
-    typedef dispatch_map_type::const_iterator dispatch_map_const_iterator;
-    typedef dispatch_map_type::iterator dispatch_map_iterator;
 
   private:
 
@@ -755,9 +750,9 @@ public:
 
       fcn_info_rep (const std::string& nm)
         : name (nm), package_name (), subfunctions (), private_functions (),
-          class_constructors (), class_methods (), dispatch_map (),
-          cmdline_function (), autoload_function (), function_on_path (),
-          built_in_function (), count (1)
+          class_constructors (), class_methods (), cmdline_function (),
+          autoload_function (), function_on_path (), built_in_function (),
+          count (1)
       {
         size_t pos = name.rfind ('.');
 
@@ -911,25 +906,6 @@ public:
         clear_package ();
       }
 
-      void add_dispatch (const std::string& type, const std::string& fname)
-      {
-        dispatch_map[type] = fname;
-      }
-
-      void clear_dispatch (const std::string& type)
-      {
-        dispatch_map_iterator p = dispatch_map.find (type);
-
-        if (p != dispatch_map.end ())
-          dispatch_map.erase (p);
-      }
-
-      void print_dispatch (std::ostream& os) const;
-
-      std::string help_for_dispatch (void) const;
-
-      dispatch_map_type get_dispatch (void) const { return dispatch_map; }
-
       void dump (std::ostream& os, const std::string& prefix) const;
 
       std::string full_name (void) const
@@ -955,9 +931,6 @@ public:
 
       // Dispatch type to function object.
       std::map<std::string, octave_value> class_methods;
-
-      // Legacy dispatch map (dispatch type name to function name).
-      dispatch_map_type dispatch_map;
 
       octave_value cmdline_function;
 
@@ -1122,29 +1095,6 @@ public:
     }
 
     void clear_mex_function (void) { rep->clear_mex_function (); }
-
-    void add_dispatch (const std::string& type, const std::string& fname)
-    {
-      rep->add_dispatch (type, fname);
-    }
-
-    void clear_dispatch (const std::string& type)
-    {
-      rep->clear_dispatch (type);
-    }
-
-    void print_dispatch (std::ostream& os) const
-    {
-      rep->print_dispatch (os);
-    }
-
-    std::string help_for_dispatch (void) const
-    { return rep->help_for_dispatch (); }
-
-    dispatch_map_type get_dispatch (void) const
-    {
-      return rep->get_dispatch ();
-    }
 
     void
     dump (std::ostream& os, const std::string& prefix = "") const
@@ -1843,83 +1793,6 @@ public:
       }
     else
       panic ("alias: '%s' is undefined", name.c_str ());
-  }
-
-  static void add_dispatch (const std::string& name, const std::string& type,
-                            const std::string& fname)
-  {
-    fcn_table_iterator p = fcn_table.find (name);
-
-    if (p != fcn_table.end ())
-      {
-        fcn_info& finfo = p->second;
-
-        finfo.add_dispatch (type, fname);
-      }
-    else
-      {
-        fcn_info finfo (name);
-
-        finfo.add_dispatch (type, fname);
-
-        fcn_table[name] = finfo;
-      }
-  }
-
-  static void clear_dispatch (const std::string& name, const std::string& type)
-  {
-    fcn_table_iterator p = fcn_table.find (name);
-
-    if (p != fcn_table.end ())
-      {
-        fcn_info& finfo = p->second;
-
-        finfo.clear_dispatch (type);
-      }
-  }
-
-  static void print_dispatch (std::ostream& os, const std::string& name)
-  {
-    fcn_table_iterator p = fcn_table.find (name);
-
-    if (p != fcn_table.end ())
-      {
-        fcn_info& finfo = p->second;
-
-        finfo.print_dispatch (os);
-      }
-  }
-
-  static fcn_info::dispatch_map_type get_dispatch (const std::string& name)
-  {
-    fcn_info::dispatch_map_type retval;
-
-    fcn_table_iterator p = fcn_table.find (name);
-
-    if (p != fcn_table.end ())
-      {
-        fcn_info& finfo = p->second;
-
-        retval = finfo.get_dispatch ();
-      }
-
-    return retval;
-  }
-
-  static std::string help_for_dispatch (const std::string& name)
-  {
-    std::string retval;
-
-    fcn_table_iterator p = fcn_table.find (name);
-
-    if (p != fcn_table.end ())
-      {
-        fcn_info& finfo = p->second;
-
-        retval = finfo.help_for_dispatch ();
-      }
-
-    return retval;
   }
 
   static void push_context (scope_id scope = xcurrent_scope)
@@ -2953,6 +2826,7 @@ extern bool out_of_date_check (octave_value& function,
 
 extern OCTINTERP_API std::string
 get_dispatch_type (const octave_value_list& args);
+
 extern OCTINTERP_API std::string
 get_dispatch_type (const octave_value_list& args, builtin_type_t& builtin_type);
 

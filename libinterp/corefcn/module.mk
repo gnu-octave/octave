@@ -116,7 +116,6 @@ NOINSTALL_COREFCN_INC = \
 COREFCN_SRC = \
   libinterp/corefcn/Cell.cc \
   libinterp/corefcn/__contourc__.cc \
-  libinterp/corefcn/__dispatch__.cc \
   libinterp/corefcn/__dsearchn__.cc \
   libinterp/corefcn/__ichol__.cc \
   libinterp/corefcn/__ilu__.cc \

@@ -550,41 +550,6 @@ symbol_table::fcn_info::fcn_info_rep::mark_subfunction_in_scope_as_private
     }
 }
 
-void
-symbol_table::fcn_info::fcn_info_rep::print_dispatch (std::ostream& os) const
-{
-  if (dispatch_map.empty ())
-    os << "dispatch: " << name << " is not overloaded" << std::endl;
-  else
-    {
-      os << "Overloaded function " << name << ":\n\n";
-
-      for (dispatch_map_const_iterator p = dispatch_map.begin ();
-           p != dispatch_map.end (); p++)
-        os << "  " << name << " (" << p->first << ", ...) -> "
-           << p->second << " (" << p->first << ", ...)\n";
-
-      os << std::endl;
-    }
-}
-
-std::string
-symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
-{
-  std::string retval;
-
-  if (! dispatch_map.empty ())
-    {
-      retval = "Overloaded function:\n\n";
-
-      for (dispatch_map_const_iterator p = dispatch_map.begin ();
-           p != dispatch_map.end (); p++)
-        retval += "  " + p->second + " (" + p->first + ", ...)\n\n";
-    }
-
-  return retval;
-}
-
 // :-) JWE, can you parse this? Returns a 2D array with second dimension equal
 // to btyp_num_types (static constant).  Only the leftmost dimension can be
 // variable in C/C++.  Typedefs are boring.
@@ -687,7 +652,6 @@ get_dispatch_type (const octave_value_list& args)
 //   private function
 //   class method
 //   class constructor
-//   legacy dispatch
 //   command-line function
 //   autoload function
 //   function on the path
@@ -824,31 +788,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         }
     }
 
-  // Legacy dispatch.
-
-  if (! args.empty () && ! dispatch_map.empty ())
-    {
-      std::string dispatch_type = args(0).type_name ();
-
-      std::string fname;
-
-      dispatch_map_iterator p = dispatch_map.find (dispatch_type);
-
-      if (p == dispatch_map.end ())
-        p = dispatch_map.find ("any");
-
-      if (p != dispatch_map.end ())
-        {
-          fname = p->second;
-
-          octave_value fcn
-            = symbol_table::find_function (fname, args);
-
-          if (fcn.is_defined ())
-            return fcn;
-        }
-    }
-
   // Command-line function.
 
   if (cmdline_function.is_defined ())
@@ -896,8 +835,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 // But since the list of built-in functions is different in Octave and
 // Matlab, we also search up the precedence list until we find
 // something that matches.  Note that we are only searching by name,
-// so class methods, constructors, and legacy dispatch functions are
-// skipped.
+// so class methods and constructors are skipped.
 
 octave_value
 symbol_table::fcn_info::fcn_info_rep::builtin_find (void)
@@ -1222,14 +1160,6 @@ symbol_table::fcn_info::fcn_info_rep::dump (std::ostream& os,
       for (str_val_const_iterator p = class_methods.begin ();
            p != class_methods.end (); p++)
         os << tprefix << "method: " << fcn_file_name (p->second)
-           << " [" << p->first << "]\n";
-    }
-
-  if (! dispatch_map.empty ())
-    {
-      for (dispatch_map_const_iterator p = dispatch_map.begin ();
-           p != dispatch_map.end (); p++)
-        os << tprefix << "dispatch: " << fcn_file_name (p->second)
            << " [" << p->first << "]\n";
     }
 }

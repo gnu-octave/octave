@@ -2039,28 +2039,19 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                         bad = true;
                       else
                         {
-                          // Function handles can't handle legacy
-                          // dispatch, so we make sure it's not
-                          // defined.
+                          // Simulate try/catch.
+                          octave::unwind_protect frame;
+                          interpreter_try (frame);
 
-                          if (symbol_table::get_dispatch (head_name).size () > 0)
-                            bad = true;
-                          else
+                          try
                             {
-                              // Simulate try/catch.
-                              octave::unwind_protect frame;
-                              interpreter_try (frame);
+                              root_val = make_fcn_handle (head_name);
+                            }
+                          catch (const octave::execution_exception&)
+                            {
+                              recover_from_exception ();
 
-                              try
-                                {
-                                  root_val = make_fcn_handle (head_name);
-                                }
-                              catch (const octave::execution_exception&)
-                                {
-                                  recover_from_exception ();
-
-                                  bad = true;
-                                }
+                              bad = true;
                             }
                         }
                     }

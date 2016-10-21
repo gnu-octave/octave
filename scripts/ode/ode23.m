@@ -60,8 +60,9 @@
 ## unknown of the problem and each row corresponds to a time in @var{t}.
 ##
 ## The output can also be returned as a structure @var{solution} which
-## has field @var{x} containing the time where the solution was evaluated and
-## field @var{y} containing the solution matrix for the times in @var{x}.
+## has a field @var{x} containing a row vector of times where the solution
+## was evaluated and a field @var{y} containing the solution matrix such
+## that each column corresponds to a time in @var{x}.
 ## Use @code{fieldnames (@var{solution})} to see the other fields and
 ## additional information returned.
 ##
@@ -255,8 +256,8 @@ function varargout = ode23 (fun, trange, init, varargin)
     varargout{1} = solution.t;      # Time stamps are first output argument
     varargout{2} = solution.x;      # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t;    # Time stamps are saved in field x
-    varargout{1}.y = solution.x;    # Results are saved in field y
+    varargout{1}.x = solution.t';   # Time stamps are saved in field x (row vector)
+    varargout{1}.y = solution.x';   # Results are saved in field y (row vector)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
       varargout{1}.ie = solution.event{2};  # Index info which event occurred
@@ -391,41 +392,41 @@ endfunction
 %!test  # Solve in backward direction starting at t=0
 %! ref = [-1.205364552835178, 0.951542399860817];
 %! sol = ode23 (@fpol, [0 -2], [2 0]);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 5e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref'], 5e-3);
 %!test  # Solve in backward direction starting at t=2
 %! ref = [-1.205364552835178, 0.951542399860817];
 %! sol = ode23 (@fpol, [2 0 -2], fref);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 2e-2);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref'], 2e-2);
 %!test  # Solve another anonymous function in backward direction
 %! ref = [-1, 0.367879437558975];
 %! sol = ode23 (@(t,y) y, [0 -1], 1);
-%! assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
+%! assert ([sol.x(end); sol.y(:,end)], ref', 1e-2);
 %!test  # Solve another anonymous function below zero
 %! ref = [0, 14.77810590694212];
 %! sol = ode23 (@(t,y) y, [-2 0], 2);
-%! assert ([sol.x(end), sol.y(end,:)], ref, 1e-2);
+%! assert ([sol.x(end); sol.y(:,end)], ref', 1e-2);
 %!test  # Solve in backward direction starting at t=0 with MaxStep option
 %! ref = [-1.205364552835178, 0.951542399860817];
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode23 (@fpol, [0 -2], [2 0], opt);
 %! assert ([abs(sol.x(8)-sol.x(7))], [1e-3], 1e-3);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; ref'], 1e-3);
 %!test  # AbsTol option
 %! opt = odeset ("AbsTol", 1e-5);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # AbsTol and RelTol option
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # RelTol and NormControl option -- higher accuracy
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-4);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-4);
 %!test  # Keeps initial values while integrating
 %! opt = odeset ("NonNegative", 2);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, 2, 0], 1e-1);
+%! assert ([sol.x(end); sol.y(:,end)], [2; 2; 0], 1e-1);
 %!test  # Details of OutputSel and Refine can't be tested
 %! opt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
@@ -455,23 +456,23 @@ endfunction
 %!test  # Mass option as function
 %! opt = odeset ("Mass", @fmas);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as matrix
 %! opt = odeset ("Mass", eye (2,2));
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as sparse matrix
 %! opt = odeset ("Mass", sparse (eye (2,2)));
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as function and sparse matrix
 %! opt = odeset ("Mass", @fmsa);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as function and MStateDependence
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "strong");
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 
 ## FIXME: Missing tests.
 ## test for InitialSlope option is missing

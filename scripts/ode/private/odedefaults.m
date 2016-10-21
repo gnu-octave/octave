@@ -47,6 +47,7 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                 "Stats", "off",
                                 "Vectorized", "off");
 
+  defaults.InitialSlope = zeros (n,1);
   defaults.MaxStep = 0.1 * abs (tf -t0);
 
   persistent classes = struct ("AbsTol", {{"float"}},
@@ -95,5 +96,9 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
                                   "RelTol", {{"scalar", "positive", "real"}},
                                   "Stats", {{"on", "off"}},
                                   "Vectorized", {{"on", "off"}});
+
+  attributes.InitialSlope = {"real", "vector", "numel", n};
+  attributes.OutputSel = {"vector", "integer", "positive", ">", 0, "<=", n};
+
 endfunction
 

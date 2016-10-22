@@ -22,7 +22,7 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, a
   switch (order)
 
     case 1
-      u_interp = interp1 (z, u', t, "linear");
+      u_interp = interp1 (z, u.', t, "linear");
 
     case 2
       if (! isempty (k_vals))

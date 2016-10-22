@@ -233,7 +233,7 @@ function varargout = ode23 (fun, trange, init, varargin)
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
     ode_event_handler (odeopts.Events, solution.t(end),
-                       solution.x(end,:)', "done", odeopts.funarguments{:});
+                       solution.x(end,:).', "done", odeopts.funarguments{:});
   endif
 
   ## Print additional information if option Stats is set
@@ -256,8 +256,8 @@ function varargout = ode23 (fun, trange, init, varargin)
     varargout{1} = solution.t;      # Time stamps are first output argument
     varargout{2} = solution.x;      # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t';   # Time stamps are saved in field x (row vector)
-    varargout{1}.y = solution.x';   # Results are saved in field y (row vector)
+    varargout{1}.x = solution.t.';   # Time stamps are saved in field x (row vector)
+    varargout{1}.y = solution.x.';   # Results are saved in field y (row vector)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
       varargout{1}.ie = solution.event{2};  # Index info which event occurred
@@ -478,6 +478,12 @@ endfunction
 ## test for InitialSlope option is missing
 ## test for MaxOrder option is missing
 ## test for MvPattern option is missing
+
+%!test # Check that imaginary part of solution does not get inverted
+%! sol = ode23 (@(x,y) 1, [0 1], 1i);
+%! assert (imag (sol.y), ones (size (sol.y)))
+%! [x, y] = ode23 (@(x,y) 1, [0 1], 1i);
+%! assert (imag (y), ones (size (y)))
 
 ## Test input validation
 %!error ode23 ()

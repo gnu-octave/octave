@@ -360,9 +360,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
           while (pos2 != std::string::npos);
 
           if (iscmplx)
-            cdata.resize (rmax, cmax);
+            cdata.resize (rmax, cmax, empty_value);
           else
-            rdata.resize (rmax, cmax);
+            rdata.resize (rmax, cmax, empty_value);
         }
 
       r = (r > i + 1 ? r : i + 1);
@@ -398,9 +398,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
               rmax = 2*r;
               cmax = c;
               if (iscmplx)
-                cdata.resize (rmax, cmax);
+                cdata.resize (rmax, cmax, empty_value);
               else
-                rdata.resize (rmax, cmax);
+                rdata.resize (rmax, cmax, empty_value);
             }
 
           tmp_stream.str (str);
@@ -504,7 +504,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   fclose (fid);
 %!
 %!   assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
-%!   assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ","), [1,2,3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
 %!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
 %!   assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
 %!   assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
@@ -527,7 +527,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   assert (dlmread (file, " "), [ 0,  0, 0, 0, 0,
 %!                                  0,  1, 2, 0, 0,
 %!                                 11, 22, 0, 0, 0,
-%!                                  0,  0, 0, 0, 0]); 
+%!                                  0,  0, 0, 0, 0]);
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect

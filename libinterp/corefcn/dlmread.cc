@@ -279,37 +279,39 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   ComplexMatrix cdata;
 
   bool iscmplx = false;
-  bool sepflag = false;
+  bool sep_is_wspace = (sep.find_first_of (" \t") != std::string::npos);
+  bool auto_sep_is_wspace = false;
 
   std::string line;
 
-  // Skip the r0 leading lines as these might be a header.
+  // Skip the r0 leading lines (header)
   for (octave_idx_type m = 0; m < r0; m++)
     getline (*input, line);
   r1 -= r0;
 
   std::istringstream tmp_stream;
 
-  // Read in the data one field at a time, growing the data matrix
-  // as needed.
+  // Read the data one field at a time, growing the data matrix as needed.
   while (getline (*input, line))
     {
       // Skip blank lines for compatibility.
-      if (line.find_first_not_of (" \t") == std::string::npos)
+      if ((! sep_is_wspace || auto_sep_is_wspace)
+          && line.find_first_not_of (" \t") == std::string::npos)
         continue;
 
-      // To be compatible with matlab, blank separator should
-      // correspond to whitespace as delimter.
-      if (! sep.length ())
+      // Infer separator from file if delimiter is blank.
+      if (sep.empty ())
         {
           // Skip leading whitespace.
           size_t pos1 = line.find_first_not_of (" \t");
 
+          // For Matlab compatibility, blank delimiter should
+          // correspond to whitespace (space and tab).
           size_t n = line.find_first_of (",:; \t", pos1);
           if (n == std::string::npos)
             {
               sep = " \t";
-              sepflag = true;
+              auto_sep_is_wspace = true;
             }
           else
             {
@@ -319,8 +321,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                 {
                 case ' ':
                 case '\t':
-                  sepflag = true;
                   sep = " \t";
+                  auto_sep_is_wspace = true;
                   break;
 
                 default:
@@ -332,32 +334,30 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       if (cmax == 0)
         {
-          // Try to estimate the number of columns.  Skip leading
-          // whitespace.
-          size_t pos1 = line.find_first_not_of (" \t");
+          // Try to estimate the number of columns.
+          size_t pos1, pos2;
+          if (auto_sep_is_wspace)
+            pos1 = line.find_first_not_of (" \t");
+          else
+            pos1 = 0;
+
           do
             {
-              size_t pos2 = line.find_first_of (sep, pos1);
+              pos2 = line.find_first_of (sep, pos1);
 
-              if (sepflag && pos2 != std::string::npos)
-                // Treat consecutive separators as one.
+              if (auto_sep_is_wspace && pos2 != std::string::npos)
                 {
+                  // Treat consecutive separators as one.
                   pos2 = line.find_first_not_of (sep, pos2);
                   if (pos2 != std::string::npos)
                     pos2 -= 1;
-                  else
-                    pos2 = line.length () - 1;
                 }
 
               cmax++;
 
-              if (pos2 != std::string::npos)
-                pos1 = pos2 + 1;
-              else
-                pos1 = std::string::npos;
-
+              pos1 = pos2 + 1;
             }
-          while (pos1 != std::string::npos);
+          while (pos2 != std::string::npos);
 
           if (iscmplx)
             cdata.resize (rmax, cmax);
@@ -367,24 +367,34 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       r = (r > i + 1 ? r : i + 1);
       j = 0;
-      // Skip leading whitespace.
-      size_t pos1 = line.find_first_not_of (" \t");
+
+      size_t pos1, pos2;
+      if (auto_sep_is_wspace)
+        pos1 = line.find_first_not_of (" \t");  // Skip leading whitespace.
+      else
+        pos1 = 0;
+
       do
         {
           octave_quit ();
 
-          size_t pos2 = line.find_first_of (sep, pos1);
+          pos2 = line.find_first_of (sep, pos1);
           std::string str = line.substr (pos1, pos2 - pos1);
 
-          if (sepflag && pos2 != std::string::npos)
-            // Treat consecutive separators as one.
-            pos2 = line.find_first_not_of (sep, pos2) - 1;
+          if (auto_sep_is_wspace && pos2 != std::string::npos)
+            {
+              // Treat consecutive separators as one.
+              pos2 = line.find_first_not_of (sep, pos2);
+              if (pos2 != std::string::npos)
+                pos2 -= 1;
+              else
+                pos2 = line.length () - 1;
+            }
 
           c = (c > j + 1 ? c : j + 1);
           if (r > rmax || c > cmax)
             {
-              // Use resize_and_fill for the case of not-equal
-              // length rows.
+              // Use resize_and_fill for the case of unequal length rows.
               rmax = 2*r;
               cmax = c;
               if (iscmplx)
@@ -435,13 +445,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
           else
             rdata(i,j++) = empty_value;
 
-          if (pos2 != std::string::npos)
-            pos1 = pos2 + 1;
-          else
-            pos1 = std::string::npos;
-
+          pos1 = pos2 + 1;
         }
-      while (pos1 != std::string::npos);
+      while (pos2 != std::string::npos);
 
       if (i == r1)
         break;
@@ -470,42 +476,61 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 }
 
 /*
-%!shared file
+%!test
 %! file = tempname ();
-%! fid = fopen (file, "wt");
-%! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
-%! fclose (fid);
-
-%!assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12])
-%!assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8])
-%!assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6])
-%!assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6])
-%!assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6])
-%!assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12])
-%!assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12])
-%!error (dlmread (file, ",", [0 1]))
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12]);
+%!   assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6]);
+%!   assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6]);
+%!   assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6]);
+%!   assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!   assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!   fail ('dlmread (file, ",", [0 1])');
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
 
 %!test
-%! unlink (file);
-
-%!shared file
 %! file = tempname ();
-%! fid = fopen (file, "wt");
-%! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
-%! fclose (fid);
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   fail ('dlmread (file, ",", [0 1])');
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
 
-%!assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!error (dlmread (file, ",", [0 1]))
+%!test <42025>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "    \n 1 2\n11 22\n ");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2; 11, 22]);
+%!   assert (dlmread (file, " "), [ 0,  0, 0, 0, 0,
+%!                                  0,  1, 2, 0, 0,
+%!                                 11, 22, 0, 0, 0,
+%!                                  0,  0, 0, 0, 0]); 
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
 
-%!test
-%! unlink (file);
 */
 

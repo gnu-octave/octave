@@ -159,6 +159,10 @@ namespace octave
     QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
 #endif
 
+#if defined (HAVE_QT4)
+    QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+#endif
+
     // set windows style for windows
 #if defined (Q_OS_WIN32)
     qt_app.setStyle(QStyleFactory::create("Windows"));

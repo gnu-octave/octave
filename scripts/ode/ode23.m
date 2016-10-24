@@ -210,8 +210,7 @@ function varargout = ode23 (fun, trange, init, varargin)
 
   if (havemasshandle)   # Handle only the dynamic mass matrix,
     if (! strcmp (odeopts.MStateDependence, "none"))
-      ## FIXME: How is this comment supposed to end?
-      ## constant mass matrices have already
+      ## constant mass matrices have already been handled
       mass = @(t,x) odeopts.Mass (t, x, odeopts.funarguments{:});
       fun = @(t,x) mass (t, x, odeopts.funarguments{:}) ...
                    \ fun (t, x, odeopts.funarguments{:});

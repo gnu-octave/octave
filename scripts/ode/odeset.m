@@ -60,6 +60,7 @@
 ##
 ## @item BDF
 ## Use BDF formulas in implicit multistep methods.
+## @strong{Note:} This option is not yet implemented.
 ##
 ## @item Events
 ## Event function. An event function must have the form
@@ -103,6 +104,7 @@
 ## @item MvPattern
 ## If the mass matrix is sparse and non-constant but maintains a
 ## constant sparsity pattern, specify the sparsity pattern.
+## @strong{Note:} This option is not yet implemented.
 ##
 ## @item NonNegative
 ## Specify elements of the state vector that are expected to remain
@@ -125,6 +127,7 @@
 ## time step or also at intermediate time instances. The value should be
 ## a scalar indicating the number of equally spaced time points to use
 ## within each timestep at which to return output.
+## @strong{Note:} This option is not yet implemented.
 ##
 ## @item RelTol
 ## Relative error tolerance.

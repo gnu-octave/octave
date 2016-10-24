@@ -147,16 +147,16 @@ function varargout = ode45 (fun, trange, init, varargin)
   [defaults, classes, attributes] = odedefaults (numel (init),
                                                  trange(1), trange(end));
 
-  defaults   = odeset (defaults, "Refine", 4);
-  defaults   = rmfield (defaults,   {"Jacobian", "JPattern", "Vectorized", ...
-                                     "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"});
-  classes    = rmfield (classes,    {"Jacobian", "JPattern", "Vectorized", ...
-                                     "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"});
-  attributes = rmfield (attributes, {"Jacobian", "JPattern", "Vectorized", ...
-                                     "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"});
+  ## FIXME: Refine is not correctly implemented yet
+  defaults = odeset (defaults, "Refine", 4);
+
+  persistent ode45_ignore_options = ...
+    {"BDF", "InitialSlope", "Jacobian", "JPattern",
+     "MassSingular", "MaxOrder", "MvPattern", "Vectorized"};
+
+  defaults   = rmfield (defaults, ode45_ignore_options);
+  classes    = rmfield (classes, ode45_ignore_options);
+  attributes = rmfield (attributes, ode45_ignore_options);
 
   odeopts = odemergeopts ("ode45", odeopts, defaults, classes, attributes);
 
@@ -322,12 +322,6 @@ endfunction
 %!function ref = fref ()       # The computed reference solution
 %!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
-%!function jac = fjac (t, y, varargin)  # its Jacobian
-%!  jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
-%!endfunction
-%!function jac = fjcc (t, y, varargin)  # sparse type
-%!  jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
-%!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
 %!  val = fpol (t, y, varargin);    # We use the derivatives
 %!  trm = zeros (2,1);              # that's why component 2
@@ -491,10 +485,17 @@ endfunction
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 
-## FIXME: Missing tests.
-## test for InitialSlope option is missing
-## test for MaxOrder option is missing
-## test for MvPattern option is missing
+## Note: The following options have no effect on this solver
+##       therefore it makes no sense to test them here:
+##
+## "BDF"
+## "InitialSlope"
+## "JPattern"
+## "Jacobian"
+## "MassSingular"
+## "MaxOrder"
+## "MvPattern"
+## "Vectorized"
 
 %!test # Check that imaginary part of solution does not get inverted
 %! sol = ode45 (@(x,y) 1, [0 1], 1i);

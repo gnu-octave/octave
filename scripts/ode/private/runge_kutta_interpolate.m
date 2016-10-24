@@ -22,7 +22,7 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, a
   switch (order)
 
     case 1
-      u_interp = interp1 (z, u', t, "linear");
+      u_interp = interp1 (z, u.', t, "linear");
 
     case 2
       if (! isempty (k_vals))
@@ -35,15 +35,6 @@ function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals, dt, func, a
     case 3
       u_interp = hermite_cubic_interpolation (z, u, k_vals, t);
 
-    ## FIXME: Do we need an algorithm for order = 4?
-    #{
-    case 4
-      ## if ode45 is used without local extrapolation this function
-      ## doesn't require a new function evaluation.
-      u_interp = dorpri_interpolation ([z(i-1) z(i)],
-                                       [u(:,i-1) u(:,i)],
-                                       k_vals, tspan(counter));
-    #}
     case 5
       ## ode45 with Dormand-Prince scheme:
       u_interp = hermite_quartic_interpolation (z, u, k_vals, t);

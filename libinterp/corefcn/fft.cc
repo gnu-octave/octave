@@ -49,8 +49,9 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
   octave_value retval;
   octave_value arg = args(0);
-  dim_vector dims = arg.dims ();
   octave_idx_type n_points = -1;
+  dim_vector dims = arg.dims ();
+  int ndims = dims.ndims ();
   int dim = -1;
 
   if (nargin > 1)
@@ -72,7 +73,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       double dval = args(2).double_value ();
       if (octave::math::isnan (dval))
         error ("%s: DIM cannot be NaN", fcn);
-      else if (dval < 1 || dval > dims.ndims ())
+      else if (dval < 1 || dval > ndims)
         error ("%s: DIM must be a valid dimension along which to perform FFT",
                fcn);
       else
@@ -80,21 +81,19 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         dim = octave::math::nint (dval) - 1;
     }
 
-  for (octave_idx_type i = 0; i < dims.ndims (); i++)
+  // FIXME: This seems strange and unnecessary (10/21/16).
+  // How would you ever arrive at an octave_value object without correct dims?
+  // We certainly don't make this check every other place in Octave.
+  for (octave_idx_type i = 0; i < ndims; i++)
     if (dims(i) < 0)
       return retval;
 
   if (dim < 0)
     {
-      for (octave_idx_type i = 0; i < dims.ndims (); i++)
-        if (dims(i) > 1)
-          {
-            dim = i;
-            break;
-          }
+      dim = dims.first_non_singleton ();
 
       // And if the first argument is scalar?
-      if (dim < 0)
+      if (dim == ndims)
         dim = 1;
     }
 
@@ -103,12 +102,22 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
   else
     dims(dim) = n_points;
 
-  if (dims.any_zero () || n_points == 0)
+  if (n_points == 0 || dims.any_zero ())
     {
       if (arg.is_single_type ())
         return octave_value (FloatNDArray (dims));
       else
         return octave_value (NDArray (dims));
+    }
+
+  if (n_points == 1)
+    {
+      octave_value_list idx (ndims);
+      for (octave_idx_type i = 0; i < ndims; i++)
+        idx(i) = idx_vector::colon;
+      idx(dim) = idx_vector (0);
+
+      return arg.do_index_op (idx);
     }
 
   if (arg.is_single_type ())
@@ -230,9 +239,9 @@ dimension of the matrix along which the inverse FFT is performed
 }
 
 /*
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! N = 64;
 %! n = 4;
@@ -246,9 +255,9 @@ dimension of the matrix along which the inverse FFT is performed
 %!
 %! assert (S, answer, 4*N*eps);
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! N = 64;
 %! n = 7;
@@ -261,9 +270,9 @@ dimension of the matrix along which the inverse FFT is performed
 %!
 %! assert (ifft (S), s, 4*N*eps);
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! N = 64;
 %! n = 4;
@@ -277,9 +286,9 @@ dimension of the matrix along which the inverse FFT is performed
 %!
 %! assert (S, answer, 4*N*eps ("single"));
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! N = 64;
 %! n = 7;

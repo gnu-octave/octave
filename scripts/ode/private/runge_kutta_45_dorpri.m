@@ -60,6 +60,9 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
                                                              k_vals = [],
                                                              t_next = t + dt)
 
+  ## Reference: Hairer, Ernst; Nørsett, Syvert Paul; Wanner, Gerhard (2008),
+  ## Solving ordinary differential equations I: Nonstiff problems,
+  ## Berlin, New York: Springer-Verlag, ISBN 978-3-540-56670-0
   persistent a = [0           0          0           0        0          0;
                   1/5         0          0           0        0          0;
                   3/40        9/40       0           0        0          0;
@@ -70,18 +73,13 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
   persistent c = [35/384, 0, 500/1113, 125/192, -2187/6784, 11/84];
   persistent c_prime = [5179/57600, 0, 7571/16695, 393/640, ...
                         -92097/339200, 187/2100, 1/40];
-  ## FIXME: Which source is c_prime derived from?
-  ##        Can't the Shampine clause be deleted if it will never be used?
-  ## According to Shampine 1986:
-  ## persistent c_prime = [(1951/21600) 0 (22642/50085) (451/720), ...
-  ##                       (-12231/42400) (649/6300) (1/60)];
 
   s = t + dt * b;
   cc = dt * c;
   aa = dt * a;
   k = zeros (rows (x), 7);
 
-  if (! isempty (options))  # extra arguments for function evaluator
+  if (! isempty (options))   # extra arguments for function evaluator
     args = options.funarguments;
   else
     args = {};

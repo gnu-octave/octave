@@ -88,7 +88,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     [evt, term, dir] = feval (inpargs{:});
 
     ## We require that all return values be row vectors
-    evt = evt(:)'; term = term(:)'; dir = dir(:)';
+    evt = evt(:).'; term = term(:).'; dir = dir(:).';
 
     ## Check if one or more signs of the event has changed
     signum = (sign (evtold) != sign (evt));
@@ -115,7 +115,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
         ## calculate new values for the integration results, we do both by
         ## a linear interpolation
         tnew = t - evt(1,idx) * (t - told) / (evt(1,idx) - evtold(1,idx));
-        ynew = (y - (t - tnew) * (y - yold) / (t - told))';
+        ynew = (y - (t - tnew) * (y - yold) / (t - told)).';
         retcell{3}(evtcnt,1) = tnew;
         retcell{4}(evtcnt,:) = ynew;
         evtcnt += 1;
@@ -142,7 +142,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     [evtold, ~, ~] = feval (inpargs{:});
 
     ## We require that all return values be row vectors
-    evtold = evtold(:)'; told = t; yold = y;
+    evtold = evtold(:).'; told = t; yold = y;
     evtcnt = 1;
     retval = retcell = cell (1,4);
 

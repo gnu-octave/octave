@@ -58,8 +58,9 @@
 ## unknown of the problem and each row corresponds to a time in @var{t}.
 ##
 ## The output can also be returned as a structure @var{solution} which
-## has field @var{x} containing the time where the solution was evaluated and
-## field @var{y} containing the solution matrix for the times in @var{x}.
+## has a field @var{x} containing a row vector of times where the solution
+## was evaluated and a field @var{y} containing the solution matrix such
+## that each column corresponds to a time in @var{x}.
 ## Use @code{fieldnames (@var{solution})} to see the other fields and
 ## additional information returned.
 ##
@@ -146,16 +147,16 @@ function varargout = ode45 (fun, trange, init, varargin)
   [defaults, classes, attributes] = odedefaults (numel (init),
                                                  trange(1), trange(end));
 
-  defaults   = odeset (defaults, "Refine", 4);
-  defaults   = rmfield (defaults,   {"Jacobian", "JPattern", "Vectorized", ...
-                                     "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"});
-  classes    = rmfield (classes,    {"Jacobian", "JPattern", "Vectorized", ...
-                                     "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"});
-  attributes = rmfield (attributes, {"Jacobian", "JPattern", "Vectorized", ...
-                                     "MvPattern", "MassSingular", ...
-                                     "InitialSlope", "MaxOrder", "BDF"});
+  ## FIXME: Refine is not correctly implemented yet
+  defaults = odeset (defaults, "Refine", 4);
+
+  persistent ode45_ignore_options = ...
+    {"BDF", "InitialSlope", "Jacobian", "JPattern",
+     "MassSingular", "MaxOrder", "MvPattern", "Vectorized"};
+
+  defaults   = rmfield (defaults, ode45_ignore_options);
+  classes    = rmfield (classes, ode45_ignore_options);
+  attributes = rmfield (attributes, ode45_ignore_options);
 
   odeopts = odemergeopts ("ode45", odeopts, defaults, classes, attributes);
 
@@ -214,6 +215,15 @@ function varargout = ode45 (fun, trange, init, varargin)
     endif
   endif
 
+  if (nargout == 1)
+    ## Single output requires auto-selected intermediate times,
+    ## which is obtained by NOT specifying specific solution times.
+    trange = [trange(1); trange(end)];
+    odeopts.Refine = [];  # disable Refine when single output requested
+  elseif (numel (trange) > 2)
+    odeopts.Refine = [];  # disable Refine when specific times requested
+  endif
+
   solution = integrate_adaptive (@runge_kutta_45_dorpri,
                                  order, fun, trange, init, odeopts);
 
@@ -223,7 +233,7 @@ function varargout = ode45 (fun, trange, init, varargin)
   endif
   if (! isempty (odeopts.Events))   # Cleanup event function handling
     ode_event_handler (odeopts.Events, solution.t(end),
-                       solution.x(end,:)', "done", odeopts.funarguments{:});
+                       solution.x(end,:).', "done", odeopts.funarguments{:});
   endif
 
   ## Print additional information if option Stats is set
@@ -246,8 +256,8 @@ function varargout = ode45 (fun, trange, init, varargin)
     varargout{1} = solution.t;      # Time stamps are first output argument
     varargout{2} = solution.x;      # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t;    # Time stamps are saved in field x
-    varargout{1}.y = solution.x;    # Results are saved in field y
+    varargout{1}.x = solution.t.';   # Time stamps are saved in field x (row vector)
+    varargout{1}.y = solution.x.';   # Results are saved in field y (row vector)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
       varargout{1}.ie = solution.event{2};  # Index info which event occurred
@@ -311,12 +321,6 @@ endfunction
 %!endfunction
 %!function ref = fref ()       # The computed reference solution
 %!  ref = [0.32331666704577, -1.83297456798624];
-%!endfunction
-%!function jac = fjac (t, y, varargin)  # its Jacobian
-%!  jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
-%!endfunction
-%!function jac = fjcc (t, y, varargin)  # sparse type
-%!  jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
 %!  val = fpol (t, y, varargin);    # We use the derivatives
@@ -385,54 +389,54 @@ endfunction
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode45 (@fpol, [0 0.2], [2 0], opt);
 %! assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-3);
-%!test  # Solve with intermidiate step
-%! sol = ode45 (@fpol, [0 1 2], [2 0]);
-%! assert (any((sol.x-1) == 0));
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%!test  # Solve with intermediate step
+%! [t, y] = ode45 (@fpol, [0 1 2], [2 0]);
+%! assert (any((t-1) == 0));
+%! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # Solve in backward direction starting at t=0
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! sol = ode45 (@fpol, [0 -2], [2 0]);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, vref], 1e-2);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; vref'], 1e-2);
 %!test  # Solve in backward direction starting at t=2
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! sol = ode45 (@fpol, [2 -2], fref);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, vref], 1e-2);
-%!test  # Solve in backward direction starting at t=2, with intermidiate step
+%! assert ([sol.x(end); sol.y(:,end)], [-2; vref'], 1e-2);
+%!test  # Solve in backward direction starting at t=2, with intermediate step
 %! vref = [-1.205364552835178, 0.951542399860817];
-%! sol = ode45 (@fpol, [2 0 -2], fref);
-%! idx = find(sol.x < 0, 1, "first") - 1;
-%! assert ([sol.x(idx), sol.y(idx,:)], [0 2 0], 1e-2);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, vref], 1e-2);
+%! [t, y] = ode45 (@fpol, [2 0 -2], fref);
+%! idx = find(y < 0, 1, "first") - 1;
+%! assert ([t(idx), y(idx,:)], [0,2,0], 1e-2);
+%! assert ([t(end), y(end,:)], [-2, vref], 1e-2);
 %!test  # Solve another anonymous function in backward direction
 %! vref = [-1, 0.367879437558975];
 %! sol = ode45 (@(t,y) y, [0 -1], 1);
-%! assert ([sol.x(end), sol.y(end,:)], vref, 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], vref', 1e-3);
 %!test  # Solve another anonymous function below zero
 %! vref = [0, 14.77810590694212];
 %! sol = ode45 (@(t,y) y, [-2 0], 2);
-%! assert ([sol.x(end), sol.y(end,:)], vref, 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], vref', 1e-3);
 %!test  # Solve in backward direction starting at t=0 with MaxStep option
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode45 (@fpol, [0 -2], [2 0], opt);
 %! assert ([abs(sol.x(8)-sol.x(7))], [1e-3], 1e-3);
-%! assert ([sol.x(end), sol.y(end,:)], [-2, vref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [-2; vref'], 1e-3);
 %!test  # AbsTol option
 %! opt = odeset ("AbsTol", 1e-5);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # AbsTol and RelTol option
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # RelTol and NormControl option -- higher accuracy
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-5);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-5);
 %!test  # Keeps initial values while integrating
 %! opt = odeset ("NonNegative", 2);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, 2, 0], 0.5);
+%! assert ([sol.x(end); sol.y(:,end)], [2; 2; 0], 0.5);
 %!test  # Details of OutputSel and Refine can't be tested
 %! opt = odeset ("OutputFcn", @fout, "OutputSel", 1, "Refine", 5);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
@@ -463,28 +467,41 @@ endfunction
 %!test  # Mass option as function
 %! opt = odeset ("Mass", @fmas);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as matrix
 %! opt = odeset ("Mass", eye (2,2));
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as sparse matrix
 %! opt = odeset ("Mass", sparse (eye (2,2)));
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as function and sparse matrix
 %! opt = odeset ("Mass", @fmsa);
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 %!test  # Mass option as function and MStateDependence
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "strong");
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
-%! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
+%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
 
-## FIXME: Missing tests.
-## test for InitialSlope option is missing
-## test for MaxOrder option is missing
-## test for MvPattern option is missing
+## Note: The following options have no effect on this solver
+##       therefore it makes no sense to test them here:
+##
+## "BDF"
+## "InitialSlope"
+## "JPattern"
+## "Jacobian"
+## "MassSingular"
+## "MaxOrder"
+## "MvPattern"
+## "Vectorized"
+
+%!test # Check that imaginary part of solution does not get inverted
+%! sol = ode45 (@(x,y) 1, [0 1], 1i);
+%! assert (imag (sol.y), ones (size (sol.y)))
+%! [x, y] = ode45 (@(x,y) 1, [0 1], 1i);
+%! assert (imag (y), ones (size (y)))
 
 %!error ode45 ()
 %!error ode45 (1)

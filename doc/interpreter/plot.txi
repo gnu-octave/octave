@@ -1137,31 +1137,34 @@ ans = figure
 get (h, "");
 error: get: ambiguous figure property name ; possible matches:
 
-__enhanced__           hittest                resize
-__graphics_toolkit__   integerhandle          resizefcn
-__guidata__            interruptible          selected
-__modified__           inverthardcopy         selectionhighlight
-__myhandle__           keypressfcn            selectiontype
-__plot_stream__        keyreleasefcn          tag
-alphamap               menubar                toolbar
-beingdeleted           mincolormap            type
-busyaction             name                   uicontextmenu
-buttondownfcn          nextplot               units
-children               numbertitle            userdata
-clipping               outerposition          visible
-closerequestfcn        paperorientation       windowbuttondownfcn
-color                  paperposition          windowbuttonmotionfcn
-colormap               paperpositionmode      windowbuttonupfcn
-createfcn              papersize              windowkeypressfcn
-currentaxes            papertype              windowkeyreleasefcn
-currentcharacter       paperunits             windowscrollwheelfcn
-currentobject          parent                 windowstyle
-currentpoint           pointer                wvisual
-deletefcn              pointershapecdata      wvisualmode
-dockcontrols           pointershapehotspot    xdisplay
-doublebuffer           position               xvisual
-filename               renderer               xvisualmode
-handlevisibility       renderermode
+__gl_extensions__      dockcontrols           renderer
+__gl_renderer__        doublebuffer           renderermode
+__gl_vendor__          filename               resize
+__gl_version__         graphicssmoothing      resizefcn
+__graphics_toolkit__   handlevisibility       selected
+__guidata__            hittest                selectionhighlight
+__modified__           integerhandle          selectiontype
+__mouse_mode__         interruptible          sizechangedfcn
+__myhandle__           inverthardcopy         tag
+__pan_mode__           keypressfcn            toolbar
+__plot_stream__        keyreleasefcn          type
+__rotate_mode__        menubar                uicontextmenu
+__zoom_mode__          mincolormap            units
+alphamap               name                   userdata
+beingdeleted           nextplot               visible
+busyaction             numbertitle            windowbuttondownfcn
+buttondownfcn          outerposition          windowbuttonmotionfcn
+children               paperorientation       windowbuttonupfcn
+clipping               paperposition          windowkeypressfcn
+closerequestfcn        paperpositionmode      windowkeyreleasefcn
+color                  papersize              windowscrollwheelfcn
+colormap               papertype              windowstyle
+createfcn              paperunits             wvisual
+currentaxes            parent                 wvisualmode
+currentcharacter       pointer                xdisplay
+currentobject          pointershapecdata      xvisual
+currentpoint           pointershapehotspot    xvisualmode
+deletefcn              position
 @end smallexample
 
 The root figure has index 0.  Its properties may be displayed by:

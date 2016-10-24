@@ -224,10 +224,13 @@ function varargout = ode23 (fun, trange, init, varargin)
     endif
   endif
 
-  ## Single output requires auto-selected intermediate times,
-  ## which is obtained by NOT specifying specific solution times.
-  if (nargout == 1 && numel (trange > 2))
-    trange = [trange(1) trange(end)];
+  if (nargout == 1)
+    ## Single output requires auto-selected intermediate times,
+    ## which is obtained by NOT specifying specific solution times.
+    trange = [trange(1); trange(end)];
+    odeopts.Refine = [];  # disable Refine when single output requested
+  elseif (numel (trange) > 2)
+    odeopts.Refine = [];  # disable Refine when specific times requested
   endif
 
   solution = integrate_adaptive (@runge_kutta_23,

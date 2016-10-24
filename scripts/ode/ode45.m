@@ -215,10 +215,13 @@ function varargout = ode45 (fun, trange, init, varargin)
     endif
   endif
 
-  ## Single output requires auto-selected intermediate times,
-  ## which is obtained by NOT specifying specific solution times.
-  if (nargout == 1 && numel (trange > 2))
-    trange = [trange(1) trange(end)];
+  if (nargout == 1)
+    ## Single output requires auto-selected intermediate times,
+    ## which is obtained by NOT specifying specific solution times.
+    trange = [trange(1); trange(end)];
+    odeopts.Refine = [];  # disable Refine when single output requested
+  elseif (numel (trange) > 2)
+    odeopts.Refine = [];  # disable Refine when specific times requested
   endif
 
   solution = integrate_adaptive (@runge_kutta_45_dorpri,
@@ -392,10 +395,10 @@ endfunction
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode45 (@fpol, [0 0.2], [2 0], opt);
 %! assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-3);
-%!test  # Solve with intermidiate step
-%! sol = ode45 (@fpol, [0 1 2], [2 0]);
-%! assert (any((sol.x-1) == 0));
-%! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
+%!test  # Solve with intermediate step
+%! [t, y] = ode45 (@fpol, [0 1 2], [2 0]);
+%! assert (any((t-1) == 0));
+%! assert ([t(end), y(end,:)], [2, fref], 1e-3);
 %!test  # Solve in backward direction starting at t=0
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! sol = ode45 (@fpol, [0 -2], [2 0]);
@@ -404,12 +407,12 @@ endfunction
 %! vref = [-1.205364552835178, 0.951542399860817];
 %! sol = ode45 (@fpol, [2 -2], fref);
 %! assert ([sol.x(end); sol.y(:,end)], [-2; vref'], 1e-2);
-%!test  # Solve in backward direction starting at t=2, with intermidiate step
+%!test  # Solve in backward direction starting at t=2, with intermediate step
 %! vref = [-1.205364552835178, 0.951542399860817];
-%! sol = ode45 (@fpol, [2 0 -2], fref);
-%! idx = find(sol.x < 0, 1, "first") - 1;
-%! assert ([sol.x(idx); sol.y(:,idx)], [0;2;0], 1e-2);
-%! assert ([sol.x(end); sol.y(:,end)], [-2; vref'], 1e-2);
+%! [t, y] = ode45 (@fpol, [2 0 -2], fref);
+%! idx = find(y < 0, 1, "first") - 1;
+%! assert ([t(idx), y(idx,:)], [0,2,0], 1e-2);
+%! assert ([t(end), y(end,:)], [-2, vref], 1e-2);
 %!test  # Solve another anonymous function in backward direction
 %! vref = [-1, 0.367879437558975];
 %! sol = ode45 (@(t,y) y, [0 -1], 1);

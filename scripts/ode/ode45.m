@@ -215,6 +215,12 @@ function varargout = ode45 (fun, trange, init, varargin)
     endif
   endif
 
+  ## Single output requires auto-selected intermediate times,
+  ## which is obtained by NOT specifying specific solution times.
+  if (nargout == 1 && numel (trange > 2))
+    trange = [trange(1) trange(end)];
+  endif
+
   solution = integrate_adaptive (@runge_kutta_45_dorpri,
                                  order, fun, trange, init, odeopts);
 

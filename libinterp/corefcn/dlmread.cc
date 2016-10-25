@@ -272,10 +272,11 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   octave_idx_type j = 0;
   octave_idx_type r = 1;
   octave_idx_type c = 1;
-  octave_idx_type rmax = 0;
+  // Start with a reasonable size to avoid constant resizing of matrix.
+  octave_idx_type rmax = 32;
   octave_idx_type cmax = 0;
 
-  Matrix rdata;
+  Matrix rdata (rmax, cmax, empty_value);
   ComplexMatrix cdata;
 
   bool iscmplx = false;
@@ -332,9 +333,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
             }
         }
 
+      // Estimate the number of columns from first line of data.
       if (cmax == 0)
         {
-          // Try to estimate the number of columns.
           size_t pos1, pos2;
           if (auto_sep_is_wspace)
             pos1 = line.find_first_not_of (" \t");
@@ -353,12 +354,16 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                     pos2 -= 1;
                 }
 
-              cmax++;
+              // Separator followed by EOL doesn't generate extra column
+              if (pos2 != std::string::npos)
+                cmax++;
 
               pos1 = pos2 + 1;
             }
           while (pos2 != std::string::npos);
 
+          // FIXME: Should always be the case that iscmplx == false.
+          //        Flag is initialized that way and no data has been read.
           if (iscmplx)
             cdata.resize (rmax, cmax, empty_value);
           else
@@ -391,12 +396,16 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                 pos2 = line.length () - 1;
             }
 
+          // Separator followed by EOL doesn't generate extra column
+          if (pos2 == std::string::npos && str.empty ())
+            break;
+
           c = (c > j + 1 ? c : j + 1);
           if (r > rmax || c > cmax)
             {
               // Use resize_and_fill for the case of unequal length rows.
-              rmax = 2*r;
-              cmax = c;
+              rmax = 2 * std::max (r-1, 1);  // keep rmax a power of 2
+              cmax = std::max (c, cmax);
               if (iscmplx)
                 cdata.resize (rmax, cmax, empty_value);
               else
@@ -524,10 +533,10 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   fclose (fid);
 %!
 %!   assert (dlmread (file), [1, 2; 11, 22]);
-%!   assert (dlmread (file, " "), [ 0,  0, 0, 0, 0,
-%!                                  0,  1, 2, 0, 0,
-%!                                 11, 22, 0, 0, 0,
-%!                                  0,  0, 0, 0, 0]);
+%!   assert (dlmread (file, " "), [ 0,  0, 0, 0
+%!                                  0,  1, 2, 0
+%!                                 11, 22, 0, 0
+%!                                  0,  0, 0, 0]);
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect

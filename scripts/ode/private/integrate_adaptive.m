@@ -193,7 +193,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
             approxvals = interp1 ([t_old, t(t_caught), t_new],
                                   [x_old, x(:, t_caught), x_new] .',
                                   approxtime, "linear") .';
-            if (isvector (approxvals))
+            if (isvector (approxvals) && ! isscalar (approxtime))
               approxvals = approxvals.';
             endif
             if (! isempty (options.OutputSel))
@@ -244,7 +244,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
           approxvals = interp1 ([t_old, t_new],
                                 [x_old, x_new] .',
                                 approxtime, "linear") .';
-          if (isvector (approxvals))
+          if (isvector (approxvals) && ! isscalar (approxtime))
             approxvals = approxvals.';
           endif
           if (! isempty (options.OutputSel))

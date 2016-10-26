@@ -7004,8 +7004,9 @@ axes::properties::calc_ticklabels (const array_property& ticks,
 
       for (int i = 0; i < values.numel (); i++)
         {
-          exp_max = std::max (exp_max, std::log10 (values(i)));
-          exp_min = std::max (exp_min, std::log10 (values(i)));
+          double exp = std::log10 (values(i));
+          exp_min = std::min (exp_min, exp);
+          exp_max = std::max (exp_max, exp);
         }
 
       for (int i = 0; i < values.numel (); i++)
@@ -7018,8 +7019,8 @@ axes::properties::calc_ticklabels (const array_property& ticks,
 
           os.str ("");
           if ((std::abs (significand) - 1) >
-              std::numeric_limits<double>::epsilon())
-            os << significand << ".";
+              10*std::numeric_limits<double>::epsilon())
+            os << significand << "x";
           else if (significand < 0)
             os << "-";
 

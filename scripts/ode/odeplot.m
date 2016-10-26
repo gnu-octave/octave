@@ -75,16 +75,14 @@ function stop_solve = odeplot (t, y, flag)
 
   ## No input argument checking is done for better performance
   persistent hlines num_lines told yold;
-  persistent idx = 1;   # Don't remove.  Required for Octave parser.
 
   ## odeplot never stops the integration
   stop_solve = false;
 
   if (isempty (flag))
     ## Default case, plot and return a value
-    idx += 1;
-    told(idx,1) = t(1,1);
-    yold(:,idx) = y(:,1);
+    told = [told; t(:)];
+    yold = [yold, y];
     for i = 1:num_lines
       set (hlines(i), "xdata", told, "ydata", yold(i,:));
     endfor
@@ -95,11 +93,10 @@ function stop_solve = odeplot (t, y, flag)
   elseif (strcmp (flag, "init"))
     ## t is either the time slot [tstart tstop] or [t0, t1, ..., tn]
     ## y is the initial value vector for the ode solution
-    idx = 1;
-    told = t(1,1);
+    told = t(1);
     yold = y(:,1);
     figure ();
-    hlines = plot (told, yold, "-", "marker", ".", "markersize", 9);
+    hlines = plot (told, yold, "o-");
     xlim ([t(1), t(end)]);  # Fix limits which also speeds up plotting
     num_lines = numel (hlines);
 

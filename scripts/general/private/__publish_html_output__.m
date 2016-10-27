@@ -208,76 +208,108 @@ function outstr = syntax_highlight (str)
 
   outstr = "";
   i = 1;
+  placeholder_cstr = {};
+  plh = 0;
   while (i <= length(str))
     ## Block comment
     if (any (strncmp (str(i:end), {"%{", "#{"}, 2)))
-      outstr = [outstr, "<span class=\"comment\">", str(i:i+1)];
+      plh_str = ["<span class=\"comment\">", str(i:i+1)];
       i = i + 2;
       while ((i <= length(str)) ...
              && ! (any (strncmp (str(i:end), {"%}", "#}"}, 2))))
-        outstr = [outstr, str(i)];
+        plh_str = [plh_str, str(i)];
         i++;
       endwhile
       if (i < length(str))
-        outstr = [outstr, str(i:i+1), "</span>"];
+        plh_str = [plh_str, str(i:i+1), "</span>"];
         i = i + 2;
       else
-        outstr = [outstr, "</span>"];
+        plh_str = [plh_str, "</span>"];
       endif
+      plh = plh + 1;
+      placeholder_cstr{plh} = plh_str;
+      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
     ## Line comment
     elseif (any (strcmp (str(i), {"%", "#"})))
-      outstr = [outstr, "<span class=\"comment\">"];
+      plh_str = "<span class=\"comment\">";
       while ((i <= length(str)) && (! strcmp (str(i), "\n")))
-        outstr = [outstr, str(i)];
+        plh_str = [plh_str, str(i)];
         i++;
       endwhile
-      outstr = [outstr, "</span>\n"];
+      plh_str = [plh_str, "</span>\n"];
       i++;
+      plh = plh + 1;
+      placeholder_cstr{plh} = plh_str;
+      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
     ## Single quoted string
     elseif (strcmp (str(i), "'"))
-      outstr = [outstr, "<span class=\"string\">'"];
+      plh_str = "<span class=\"string\">'";
       i++;
       while (i <= length(str))
         ## Ignore escaped string terminations
         if (strncmp (str(i:end), "''", 2))
-          outstr = [outstr, "''"];
+          plh_str = [plh_str, "''"];
           i = i + 2;
         ## Is string termination
         elseif (strcmp (str(i), "'"))
-          outstr = [outstr, "'</span>"];
+          plh_str = [plh_str, "'</span>"];
           i++;
+          break;
+        ## Is string termination by line break
+        elseif (strcmp (str(i), "\n"))
+          plh_str = [plh_str, "</span>"];
           break;
         ## String content
         else
-          outstr = [outstr, str(i)];
+          plh_str = [plh_str, str(i)];
           i++;
         endif
       endwhile
+      plh = plh + 1;
+      placeholder_cstr{plh} = plh_str;
+      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
     ## Double quoted string
     elseif (strcmp (str(i), "\""))
-      outstr = [outstr, "<span class=\"string\">\""];
+      plh_str = "<span class=\"string\">\"";
       i++;
       while (i <= length(str))
         ## Is string termination
         if (strcmp (str(i), "\"") && ! strcmp (str(i - 1), "\\"))
-          outstr = [outstr, "\"</span>"];
+          plh_str = [plh_str, "\"</span>"];
           i++;
+          break;
+        ## Is string termination by line break
+        elseif (strcmp (str(i), "\n"))
+          plh_str = [plh_str, "</span>"];
           break;
         ## String content
         else
-          outstr = [outstr, str(i)];
+          plh_str = [plh_str, str(i)];
           i++;
         endif
       endwhile
+      plh = plh + 1;
+      placeholder_cstr{plh} = plh_str;
+      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
     else
       outstr = [outstr, str(i)];
       i++;
     endif
   endwhile
   kwords = iskeyword ();
+  ## TODO: remove hack for regexp (bug #38149)
+  outstr = [" ", strrep(outstr, "\n", " \n "), " "];
   for i = 1:length(kwords)
     outstr = regexprep (outstr, ...
-      ['(?!<span[^>]*?>)(\s|^)(', kwords{i},')(\s|$)(?![^<]*?<\/span>)'], ...
+      ['(\s)(', kwords{i},')(\s|\()'], ...
       ["$1<span class=\"keyword\">$2</span>$3"]);
+  endfor
+  ## TODO: remove hack for regexp (bug #38149)
+  outstr = strrep(outstr(2:end-1), " \n ", "\n");
+
+  ## Restore placeholders
+  for i = plh:-1:1
+    outstr = strrep (outstr, [" PUBLISHPLACEHOLDER", num2str(i), " "], ...
+      placeholder_cstr{i});
   endfor
 endfunction

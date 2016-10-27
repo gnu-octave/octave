@@ -345,7 +345,6 @@ replace_links (QString& text)
       url_link.replace (QRegExp ("  +")," ");
       url_link.replace ("<b>","");
       url_link.replace ("</b>","");
-      url_link = QUrl::toPercentEncoding (url_link, "", "'");
 
       href += "<font style=\"color:DarkGray; font-weight:bold;\">&raquo;</font>";
       href +=  "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
@@ -426,13 +425,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
         "<b>Next Section:</b> <a href='%4'>%5</a><br>"
         "<b>Up:</b> <a href='%6'>%7</a><br>\n"
         )
-      .arg (nodeName)
-      .arg (QString (QUrl::toPercentEncoding (nodePrev, "", "'")))
-      .arg (nodePrev)
-      .arg (QString (QUrl::toPercentEncoding (nodeNext, "", "'")))
-      .arg (nodeNext)
-      .arg (QString (QUrl::toPercentEncoding (nodeUp, "", "'")))
-      .arg (nodeUp);
+    .arg (nodeName, nodePrev, nodePrev, nodeNext, nodeNext, nodeUp, nodeUp);
 
   text.prepend ("<hr>\n<pre style=\"font-family:monospace\">");
   text.append ("</pre>\n<hr><hr>\n");
@@ -648,7 +641,7 @@ parser::global_search (const QString& text, int max_founds)
                 {
                   results.append(
                     "<br>\n<font style=\"color:DarkGray; font-weight:bold;\">&raquo;</font> <a href='"
-                    + QString(QUrl::toPercentEncoding(node,"","'")) +
+                    + node +
                     "'>");
                   results.append (node);
                   results.append ("</a><br>\n");

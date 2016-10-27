@@ -27,12 +27,15 @@
 ## @seealso{atexit}
 ## @end deftypefn
 
-## No function declaration, this is an Octave script.  This means we are
-## still in the base workspace with access to all user variables.
+function __finish__ ()
 
-if (exist ("finish", "file"))
-  finish;  # No arg list here since finish might be a script.
-endif
+  if (exist ("finish", "file"))
+    ## Must use evalin for access to base workspace and user variables.
+    ## No argument list for finish because it might be a script, not function.
+    evalin ("base", "finish;");
+  endif
+
+endfunction
 
 
 ## No test needed for internal helper m-file.

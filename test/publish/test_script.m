@@ -189,8 +189,8 @@ plot (x,y)
 %% Links
 % <https://www.gnu.org/software/octave>
 % <https://www.gnu.org/software/octave GNU Octave Homepage>
-% <octave:FUNCTION DISPLAYED TEXT>
-% <octave:FUNCTION Nested markup and newline
+% <octave:plot DISPLAYED TEXT FOR PLOT FUNCTION>
+% <octave:abs Nested markup and newline
 % PLAIN TEXT(TM) _ITALIC TEXT_(R) *BOLD TEXT* |MONOSPACED TEXT|>
 % <https://www.gnu.org/software/octave Nested markup and newline
 % PLAIN TEXT(TM) _ITALIC TEXT_(R) *BOLD TEXT* |MONOSPACED TEXT|>
@@ -199,8 +199,8 @@ plot (x,y)
 ## Links
 # <https://www.gnu.org/software/octave>
 # <https://www.gnu.org/software/octave GNU Octave Homepage>
-# <octave:FUNCTION DISPLAYED TEXT>
-# <octave:FUNCTION Nested markup and newline
+# <octave:plot DISPLAYED TEXT FOR PLOT FUNCTION>
+# <octave:abs Nested markup and newline
 # PLAIN TEXT(TM) _ITALIC TEXT_(R) *BOLD TEXT* |MONOSPACED TEXT|>
 # <https://www.gnu.org/software/octave Nested markup and newline
 # PLAIN TEXT(TM) _ITALIC TEXT_(R) *BOLD TEXT* |MONOSPACED TEXT|>

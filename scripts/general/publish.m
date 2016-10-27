@@ -726,7 +726,7 @@ function ofile = create_output (doc_struct, options)
     [~,title_str] = fileparts (doc_struct.m_source_file_name);
   endif
 
-  content = formatter ("header", format_text(title_str, formatter), ...
+  content = formatter ("header", title_str, ...
     format_output (doc_struct.intro, formatter, options), ...
     get_toc (doc_struct.body, formatter));
   content = [content, format_output(doc_struct.body, formatter, options)];
@@ -807,41 +807,86 @@ function str = format_text (str, formatter)
   ##   These are: links, bold, italic, monospaced, (TM), (R)
   ##
 
-  ## Links "<http://www.someurl.com>"
-  str = regexprep (str, '<(\S{3,}[^\s<>]*)>', ...
-    formatter ("link", "$1", "$1"));
-  ## Links "<octave:Function TEXT>"
-  ## TODO: better pointer to the function documentation
-  str = regexprep (str, '<octave:([^\s<>]*) *([^<>$]*)>', ...
-    formatter ("link", ["https://www.gnu.org/software/octave/", ...
-      "doc/interpreter/Function-Index.html"], "$2"));
-  ## Links "<http://www.someurl.com TEXT>"
-  str = regexprep (str, '<(\S{3,}[^\s<>]*) *([^<>$]*)>', ...
-    formatter ("link", "$1", "$2"));
-  oldstr = str;
-  ## Save inline "$" and block "$$" LaTeX math
-  [~,~,~,math_cstr] = regexp (str, '\${1,2}.*?\${1,2}');
-  for i = 1:length(math_cstr)
-    str = regexprep (str, '\${1,2}(.*?)\${1,2}', ...
-      ["PUBLISHMATH", num2str(i)], "once");
+  ## Regular expressions for the formats:
+  ##
+  ## * Links "<http://www.someurl.com>"
+  ## * Links "<octave:Function TEXT>"
+  ## * Links "<http://www.someurl.com TEXT>"
+  ## * inline "$" and block "$$" LaTeX math
+  ##
+  regexes = {'<\S{3,}[^\s<>]*>', ...
+             '<octave:[^\s<>]* *[^<>$]*>', ...
+             '<\S{3,}[^\s<>]* *[^<>$]*>', ...
+             '\${1,2}.*?\${1,2}', ...
+             '\*[^*]*\*', ...  # Bold
+             '_[^_]*_', ...    # Italic
+             '\|[^|]*\|'};     # Monospaced
+             
+
+  ##  Helper function to escape some special characters for the GNU Octave
+  ##  manual, see https://www.gnu.org/software/texinfo/manual/texinfo/html_node/HTML-Xref-Node-Name-Expansion.html
+  texinfo_esc = @(str) strrep (strrep (str, "-", "_002d"), "_", "_005f");
+
+  ## Substitute all occurances with placeholders
+  placeholder_cstr = {};
+  plh = 0;
+  for i = 1:length(regexes)
+    [~,~,~,cstr] = regexp (str, regexes{i});
+    for j = 1:length(cstr)
+      plh = plh + 1;
+      str = regexprep (str, regexes{i}, ...
+        ["PUBLISHPLACEHOLDER", num2str(plh)], "once");
+      switch (i)
+        case 1
+          # Links "<http://www.someurl.com>"
+          url = cstr{j};
+          cstr{j} = formatter ("link", url(2:end-1), url(2:end-1));
+        case 2
+          # Links "<octave:Function TEXT>"
+          idx = strfind (cstr{j}, " ");
+          url = cstr{j};
+          url = ["https://www.gnu.org/software/octave/doc/interpreter/", ...
+                 "XREF", texinfo_esc(url(9:idx-1)), ".html"];
+          txt = cstr{j};
+          txt = format_text (txt(idx+1:end-1), formatter);
+          cstr{j} = formatter ("link", url, txt);
+        case 3
+          # Links "<http://www.someurl.com TEXT>"
+          idx = strfind (cstr{j}, " ");
+          url = cstr{j};
+          url = url(2:idx-1);
+          txt = cstr{j};
+          txt = format_text (txt(idx+1:end-1), formatter);
+          cstr{j} = formatter ("link", url, txt);
+        case 4
+          # inline "$" and block "$$" LaTeX math --> do nothing
+        case 5
+          # Bold
+          txt = cstr{j};
+          cstr{j} = formatter ("bold", format_text (txt(2:end-1), formatter));
+        case 6
+          # Italic
+          txt = cstr{j};
+          cstr{j} = formatter ("italic", format_text (txt(2:end-1), formatter));
+        case 7
+          # Monospaced
+          txt = cstr{j};
+          cstr{j} = formatter ("monospaced", format_text (txt(2:end-1), ...
+            formatter));
+      endswitch
+    endfor
+    placeholder_cstr = [placeholder_cstr, cstr];
   endfor
-  ## Loop because of inlined expressions, e.g. *BOLD _ITALIC_*
-  do
-    oldstr = str;
-    ## Bold
-    str = regexprep (str, '\*([^*$_|]*)\*', formatter ("bold", "$1"));
-    ## Italic
-    str = regexprep (str, '_([^_$|*]*)_', formatter ("italic", "$1"));
-    ## Monospaced
-    str = regexprep (str, '\|([^|$_*]*)\|', formatter ("monospaced", "$1"));
-  until (strcmp (str, oldstr))
-  ## Restore inline "$" and block "$$" LaTeX math
-  for i = length(math_cstr):-1:1
-    str = strrep (str, ["PUBLISHMATH", num2str(i)], math_cstr{i});
-  endfor
+
   ## Replace special symbols
   str = strrep (str, "(TM)", formatter("TM"));
   str = strrep (str, "(R)", formatter("R"));
+
+  ## Restore placeholders
+  for i = plh:-1:1
+    str = strrep (str, ["PUBLISHPLACEHOLDER", num2str(i)], ...
+      placeholder_cstr{i});
+  endfor
 endfunction
 
 

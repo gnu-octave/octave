@@ -870,6 +870,10 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
 
       case "linewidth"
         s.doc = "Width of the line object measured in points.";
+        
+      case "linejoin"
+        s.doc = "Control the shape of the junction of line segments. \
+This property currently only affects the printed output.";
 
       case "marker"
         s.doc = "Shape of the marker for each data point.  \

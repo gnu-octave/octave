@@ -1746,6 +1746,11 @@ AC_CHECK_HEADERS([gl2ps.h],
 
 if test -n "$warn_gl2ps"; then
   OCTAVE_CONFIGURE_WARNING([warn_gl2ps])
+else
+  save_LIBS="$LIBS"
+  LIBS="$GL2PS_LIBS $LIBS"
+  AC_CHECK_FUNCS([gl2psLineJoin])
+  LIBS="$save_LIBS"
 fi
 
 AC_SUBST(GL2PS_LIBS)

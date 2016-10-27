@@ -2077,6 +2077,7 @@ namespace octave
         set_color (props.get_color_rgb ());
         set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
         set_linewidth (props.get_linewidth ());
+        set_linejoin (props.get_linejoin ());
 
         if (has_z)
           {
@@ -2504,6 +2505,7 @@ namespace octave
             set_linestyle (props.get_linestyle (), false,
                            props.get_linewidth ());
             set_linewidth (props.get_linewidth ());
+            set_linejoin ("miter");
 
             // Mesh along Y-axis
 
@@ -3086,6 +3088,7 @@ namespace octave
             double linewidth = props.get_linewidth ();
             set_linestyle (props.get_linestyle (), false, linewidth);
             set_linewidth (linewidth);
+            set_linejoin ("miter");
 
             // NOTE: patch contour cannot be offset.  Offset must occur with the
             // filled portion of the patch above.  The tesselator uses

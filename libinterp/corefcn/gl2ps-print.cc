@@ -124,6 +124,20 @@ namespace octave
         gl2psEnable (GL2PS_LINE_STIPPLE);
     }
 
+    void set_linejoin (const std::string& s)
+    {
+      octave::opengl_renderer::set_linejoin (s);
+      
+#if defined (HAVE_GL2PSLINEJOIN)
+      if (s == "round")
+        gl2psLineJoin (GL2PS_LINE_JOIN_ROUND);
+      else if (s == "miter")
+        gl2psLineJoin (GL2PS_LINE_JOIN_MITER);
+      else if (s == "chamfer")
+        gl2psLineJoin (GL2PS_LINE_JOIN_BEVEL);
+#endif
+    }
+
     void set_polygon_offset (bool on, float offset = 0.0f)
     {
       if (on)

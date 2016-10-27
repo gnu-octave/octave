@@ -4386,6 +4386,7 @@ public:
       // FIXME: interpreter is not a property of Matlab line objects.
       //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
+      radio_property linejoin , "{round}|miter|chamfer"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"

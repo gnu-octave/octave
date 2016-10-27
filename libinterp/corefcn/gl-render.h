@@ -82,6 +82,7 @@ namespace octave
     virtual void set_linewidth (float w);
     virtual void set_linestyle (const std::string& s, bool stipple = false,
                                 double linewidth = 0.5);
+    virtual void set_linejoin (const std::string& /*s*/) { };
     virtual void set_clipbox (double x1, double x2, double y1, double y2,
                               double z1, double z2);
     virtual void set_clipping (bool on);

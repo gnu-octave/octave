@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{prog}, @var{args}] =} gnuplot_binary ()
+## @deftypefnx {} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog})
 ## @deftypefnx {} {[@var{old_prog}, @var{old_args}] =} gnuplot_binary (@var{new_prog}, @var{arg1}, @dots{})
 ## Query or set the name of the program invoked by the plot command when the
 ## graphics toolkit is set to @qcode{"gnuplot"}.
@@ -32,7 +33,7 @@
 
 function [prog, args] = gnuplot_binary (new_prog, varargin)
 
-  mlock ()
+  mlock ();
   persistent gp_binary = %OCTAVE_CONF_GNUPLOT%;
   persistent gp_args = {};
 
@@ -41,11 +42,12 @@ function [prog, args] = gnuplot_binary (new_prog, varargin)
     args = gp_args;
   endif
 
-  if (nargin == 1)
+  if (nargin > 0)
     if (! ischar (new_prog) || isempty (new_prog))
       error ("gnuplot_binary: NEW_PROG must be a non-empty string");
     endif
     gp_binary = new_prog;
+    gp_args = {};
   endif
 
   if (nargin > 1)
@@ -59,10 +61,13 @@ endfunction
 
 
 %!test
-%! orig_val = gnuplot_binary ();
-%! old_val = gnuplot_binary ("__foobar__");
+%! [orig_val, orig_args] = gnuplot_binary ();
+%! [old_val, old_args] = gnuplot_binary ("__foobar__", "-opt1");
 %! assert (orig_val, old_val);
+%! assert (orig_args, old_args);
 %! assert (gnuplot_binary (), "__foobar__");
-%! gnuplot_binary (orig_val);
+%! [~, new_args] = gnuplot_binary ();
+%! assert (new_args, {"-opt1"});
+%! gnuplot_binary (orig_val, orig_args{:});
 %! assert (gnuplot_binary (), orig_val);
 

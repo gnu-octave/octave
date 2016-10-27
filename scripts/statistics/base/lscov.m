@@ -105,7 +105,7 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
     if (k == 1)
       S = mse * s;
     else
-      S = nan (p, p, k);
+      S = NaN (p, p, k);
       for i = 1:k
         S(:, :, i) = mse(i) * s;
       endfor

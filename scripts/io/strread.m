@@ -174,7 +174,7 @@
 ##
 ## @table @asis
 ## @item last character = @qcode{"@xbackslashchar{}n"}
-## Data columns are padded with empty fields or Nan so that all columns have
+## Data columns are padded with empty fields or NaN so that all columns have
 ## equal length
 ##
 ## @item last character is not @qcode{"@xbackslashchar{}n"}

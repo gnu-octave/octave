@@ -629,7 +629,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             obj.displayname = tmpdispname;
             if (! isempty (findobj (obj.parent, "-property", "format", "-depth", 0)))
               # Place phantom errorbar data for legend
-              data{data_idx} = nan (4,1);
+              data{data_idx} = NaN (4,1);
               usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3):($4)");
               switch (get (obj.parent, "format"))
                 case {"box" "boxy" "boxxy"}
@@ -647,7 +647,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                                               errbars, sidx(1));
             else
               ## Place phantom stemseries data for legend
-              data{data_idx} = nan (2,1);
+              data{data_idx} = NaN (2,1);
               usingclause{data_idx} = sprintf ("record=1 using ($1):($2)");
               hgobj = get (obj.parent);
               [hgstyle, hgsidx] = do_linestyle_command (hgobj, hgobj.color, data_idx,
@@ -1208,7 +1208,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                   __maybe_munge_text__ (enhanced, obj, "displayname")
                 );
           titlespec{data_idx} = ['title "' tmp '"'];
-          data{data_idx} = nan (3,1);
+          data{data_idx} = NaN (3,1);
           usingclause{data_idx} = sprintf ("record=1 using ($1):($2):($3)");
           withclause{data_idx} = sprintf ("with line linewidth 10 linecolor rgb \"#%02x%02x%02x\"",
                                           round (255*cmap(end/2,:)));

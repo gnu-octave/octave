@@ -244,7 +244,7 @@ function outstr = syntax_highlight (str)
     ## Single quoted string
     elseif (strcmp (str(i), "'"))
       plh_str = "<span class=\"string\">'";
-      i++;
+      i = i + 1;
       while (i <= length(str))
         ## Ignore escaped string terminations
         if (strncmp (str(i:end), "''", 2))
@@ -252,42 +252,42 @@ function outstr = syntax_highlight (str)
           i = i + 2;
         ## Is string termination
         elseif (strcmp (str(i), "'"))
-          plh_str = [plh_str, "'</span>"];
-          i++;
+          plh_str = [plh_str, "'"];
+          i = i + 1;
           break;
         ## Is string termination by line break
         elseif (strcmp (str(i), "\n"))
-          plh_str = [plh_str, "</span>"];
           break;
         ## String content
         else
           plh_str = [plh_str, str(i)];
-          i++;
+          i = i + 1;
         endif
       endwhile
+      plh_str = [plh_str, "</span>"];
       plh = plh + 1;
       placeholder_cstr{plh} = plh_str;
       outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
     ## Double quoted string
     elseif (strcmp (str(i), "\""))
       plh_str = "<span class=\"string\">\"";
-      i++;
+      i = i + 1;
       while (i <= length(str))
         ## Is string termination
         if (strcmp (str(i), "\"") && ! strcmp (str(i - 1), "\\"))
-          plh_str = [plh_str, "\"</span>"];
-          i++;
+          plh_str = [plh_str, "\""];
+          i = i + 1;
           break;
         ## Is string termination by line break
         elseif (strcmp (str(i), "\n"))
-          plh_str = [plh_str, "</span>"];
           break;
         ## String content
         else
           plh_str = [plh_str, str(i)];
-          i++;
+          i = i + 1;
         endif
       endwhile
+      plh_str = [plh_str, "</span>"];
       plh = plh + 1;
       placeholder_cstr{plh} = plh_str;
       outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];

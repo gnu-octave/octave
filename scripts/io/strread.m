@@ -235,6 +235,9 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Parse options.  First initialize defaults
   comment_flag = false;
+  open_comment = false;
+  ## Default line ending.  FIXME: we ignore old Macintosh CR eol.
+  cmt_eol = "\n";
   delimiter_str = "";
   empty_str = "";
   eol_char = "";
@@ -253,15 +256,19 @@ function varargout = strread (str, format = "%f", varargin)
           case "c"
             [comment_start, comment_end] = deal ("/*", "*/");
           case "c++"
-            [comment_start, comment_end] = deal ("//", "eol_char");
+            [comment_start, comment_end] = deal ("//", "cmt_eol");
+            open_comment = true;
           case "shell"
-            [comment_start, comment_end] = deal ("#" , "eol_char");
+            [comment_start, comment_end] = deal ("#" , "cmt_eol");
+            open_comment = true;
           case "matlab"
-            [comment_start, comment_end] = deal ("%" , "eol_char");
+            [comment_start, comment_end] = deal ("%" , "cmt_eol");
+            open_comment = true;
           otherwise
             if (ischar (varargin{n+1})
                 || (numel (varargin{n+1}) == 1 && iscellstr (varargin{n+1})))
-              [comment_start, comment_end] = deal (char (varargin{n+1}), "eol_char");
+              [comment_start, comment_end] = deal (char (varargin{n+1}), "cmt_eol");
+            open_comment = true;
             elseif (iscellstr (varargin{n+1}) && numel (varargin{n+1}) == 2)
               [comment_start, comment_end] = deal (varargin{n+1}{:});
             else
@@ -291,6 +298,8 @@ function varargout = strread (str, format = "%f", varargin)
         if (strcmp (typeinfo (eol_char), "sq_string"))
           eol_char = do_string_escapes (eol_char);
         endif
+        cmt_eol = eol_char;
+        open_comment = false;
       case "returnonerror"
         err_action = varargin{n+1};
       case "multipledelimsasone"
@@ -361,10 +370,13 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Remove comments in str
   if (comment_flag)
-    ## Expand 'eol_char' here, after option processing which may have set value
-    comment_end = strrep (comment_end, "eol_char", eol_char);
+    ## Expand 'cmt_eol' here, after option processing which may have set value
+    comment_end = strrep (comment_end, "cmt_eol", cmt_eol);
     cstart = strfind (str, comment_start);
     cstop  = strfind (str, comment_end);
+    if (open_comment)
+      cstop -= 1;
+    endif
     ## Treat end of string as additional comment stop
     if (isempty (cstop) || cstop(end) != length (str))
       cstop(end+1) = length (str);
@@ -882,6 +894,11 @@ endfunction
 %! assert (strread ("Hello World! # this is comment", "%s",...
 %!                  "commentstyle", "shell"), ...
 %!         {"Hello"; "World!"});
+
+%!test <49454>
+%! assert (strread ("hello%foo\nworld, another%bar\r\nday", "%s", ...
+%!                  "commentstyle", "matlab", "delimiter", " ,"),...
+%!         {"hello"; "world"; "another"; "day"});
 
 %!test
 %! str = sprintf ("Tom 100 miles/hr\nDick 90 miles/hr\nHarry 80 miles/hr");

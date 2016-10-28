@@ -6867,7 +6867,9 @@ void
 axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& ticks,
                                        array_property& mticks,
-                                       bool limmode_is_auto, bool is_logscale)
+                                       bool limmode_is_auto,
+                                       bool tickmode_is_auto,
+                                       bool is_logscale)
 {
   // FIXME: add log ticks and lims
 
@@ -6897,73 +6899,83 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         }
     }
 
-  double tick_sep;
-
-  if (is_logscale)
+  Matrix tmp_ticks;
+  if (tickmode_is_auto)
     {
-      if (! (octave::math::isinf (hi) || octave::math::isinf (lo)))
-        tick_sep = 1;  // Tick is every order of magnitude (bug #39449)
-      else
-        tick_sep = 0;
-    }
-  else
-    tick_sep = calc_tick_sep (lo, hi);
-
-  double i1 = std::floor (lo / tick_sep);
-  double i2 = std::ceil (hi / tick_sep);
-
-  if (limmode_is_auto)
-    {
-      // Adjust limits to include min and max ticks
-      Matrix tmp_lims (1,2);
-      tmp_lims(0) = std::min (tick_sep * i1, lo);
-      tmp_lims(1) = std::max (tick_sep * i2, hi);
+      double tick_sep;
 
       if (is_logscale)
         {
-          tmp_lims(0) = std::pow (10., tmp_lims(0));
-          tmp_lims(1) = std::pow (10., tmp_lims(1));
-          if (tmp_lims(0) <= 0)
-            tmp_lims(0) = std::pow (10., lo);
-          if (is_negative)
-            {
-              double tmp = tmp_lims(0);
-              tmp_lims(0) = -tmp_lims(1);
-              tmp_lims(1) = -tmp;
-            }
+          if (! (octave::math::isinf (hi) || octave::math::isinf (lo)))
+            tick_sep = 1;  // Tick is every order of magnitude (bug #39449)
+          else
+            tick_sep = 0;
         }
-      lims = tmp_lims;
+      else
+        tick_sep = calc_tick_sep (lo, hi);
+
+      double i1 = std::floor (lo / tick_sep);
+      double i2 = std::ceil (hi / tick_sep);
+
+      if (limmode_is_auto)
+        {
+          // Adjust limits to include min and max ticks
+          Matrix tmp_lims (1,2);
+          tmp_lims(0) = std::min (tick_sep * i1, lo);
+          tmp_lims(1) = std::max (tick_sep * i2, hi);
+
+          if (is_logscale)
+            {
+              tmp_lims(0) = std::pow (10., tmp_lims(0));
+              tmp_lims(1) = std::pow (10., tmp_lims(1));
+              if (tmp_lims(0) <= 0)
+                tmp_lims(0) = std::pow (10., lo);
+              if (is_negative)
+                {
+              double tmp = tmp_lims(0);
+                  tmp_lims(0) = -tmp_lims(1);
+                  tmp_lims(1) = -tmp;
+                }
+            }
+          lims = tmp_lims;
+        }
+      else
+        {
+          // adjust min and max ticks to be within limits
+          if (i1*tick_sep < lo)
+            i1++;
+          if (i2*tick_sep > hi && i2 > i1)
+            i2--;
+        }
+
+      tmp_ticks = Matrix (1, i2-i1+1);
+      for (int i = 0; i <= static_cast<int> (i2-i1); i++)
+        {
+          tmp_ticks(i) = tick_sep * (i+i1);
+          if (is_logscale)
+            tmp_ticks(i) = std::pow (10., tmp_ticks(i));
+        }
+      if (is_logscale && is_negative)
+        {
+          Matrix rev_ticks (1, i2-i1+1);
+          rev_ticks = -tmp_ticks;
+          for (int i = 0; i <= static_cast<int> (i2-i1); i++)
+            tmp_ticks(i) = rev_ticks(i2-i1-i);
+        }
+
+      ticks = tmp_ticks;
     }
   else
-    {
-      // adjust min and max ticks to be within limits
-      if (i1*tick_sep < lo)
-        i1++;
-      if (i2*tick_sep > hi && i2 > i1)
-        i2--;
-    }
+    tmp_ticks = ticks.get ().matrix_value ();
 
-  Matrix tmp_ticks (1, i2-i1+1);
-  for (int i = 0; i <= static_cast<int> (i2-i1); i++)
-    {
-      tmp_ticks(i) = tick_sep * (i+i1);
-      if (is_logscale)
-        tmp_ticks(i) = std::pow (10., tmp_ticks(i));
-    }
-  if (is_logscale && is_negative)
-    {
-      Matrix rev_ticks (1, i2-i1+1);
-      rev_ticks = -tmp_ticks;
-      for (int i = 0; i <= static_cast<int> (i2-i1); i++)
-        tmp_ticks(i) = rev_ticks(i2-i1-i);
-    }
-
-  ticks = tmp_ticks;
+  octave_idx_type n_ticks = tmp_ticks.numel ();
+  if (n_ticks < 2)
+    return;
 
   int n = is_logscale ? 8 : 4;
-  Matrix tmp_mticks (1, n * (tmp_ticks.numel () - 1));
+  Matrix tmp_mticks (1, n * (n_ticks - 1));
 
-  for (int i = 0; i < tmp_ticks.numel ()-1; i++)
+  for (int i = 0; i < n_ticks-1; i++)
     {
       double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
       for (int j = 0; j < n; j++)

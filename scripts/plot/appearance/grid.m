@@ -82,7 +82,6 @@ function grid (varargin)
       minor_auto = false;
     elseif (strcmpi (arg1, "on"))
       grid_on = true;
-      minor_on = false;
       minor_auto = true;
     elseif (strcmpi (arg1, "minor"))
       minor_auto = false;
@@ -179,6 +178,18 @@ endfunction
 %!  semilogy (1:100);
 %!  set (gca, "xminorgrid", "on");
 %!  set (gca, "yminorgrid", "on");
+
+%!demo
+%! clf;
+%! plot3 (1:10, 1:10, 1:10);
+%! set (gca, "xtick", [0, pi/2, 4.7, 8, 10]);
+%! set (gca, "ytick", [0, 1, pi, 7.3, 10]);
+%! set (gca, "ztick", [0, exp(1), 5, 9.1, 10]);
+%! set (gca, "xminorgrid", "on");
+%! set (gca, "yminorgrid", "on");
+%! set (gca, "zminorgrid", "on");
+%! view (3);
+%! title ("Minor grid adapts to xticks (bug #45850)")
 
 ## linear scaling
 %!test <48533>

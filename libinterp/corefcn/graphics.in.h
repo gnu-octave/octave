@@ -4015,18 +4015,24 @@ public:
 
     void update_xtick (void)
     {
+      calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
+                           xtickmode.is ("auto"), xscale.is ("log"));
       if (xticklabelmode.is ("auto"))
         calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
       sync_positions ();
     }
     void update_ytick (void)
     {
+      calc_ticks_and_lims (ylim, ytick, yminortickvalues, ylimmode.is ("auto"),
+                           ytickmode.is ("auto"), yscale.is ("log"));
       if (yticklabelmode.is ("auto"))
         calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
       sync_positions ();
     }
     void update_ztick (void)
     {
+      calc_ticks_and_lims (zlim, ztick, zminortickvalues, zlimmode.is ("auto"),
+                           ztickmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
       sync_positions ();
@@ -4035,29 +4041,17 @@ public:
     void update_xtickmode (void)
     {
       if (xtickmode.is ("auto"))
-        {
-          calc_ticks_and_lims (xlim, xtick, xminortickvalues,
-                               xlimmode.is ("auto"), xscale.is ("log"));
-          update_xtick ();
-        }
+        update_xtick ();
     }
     void update_ytickmode (void)
     {
       if (ytickmode.is ("auto"))
-        {
-          calc_ticks_and_lims (ylim, ytick, yminortickvalues,
-                               ylimmode.is ("auto"), yscale.is ("log"));
-          update_ytick ();
-        }
+        update_ytick ();
     }
     void update_ztickmode (void)
     {
       if (ztickmode.is ("auto"))
-        {
-          calc_ticks_and_lims (zlim, ztick, zminortickvalues,
-                               zlimmode.is ("auto"), zscale.is ("log"));
-          update_ztick ();
-        }
+        update_ztick ();
     }
 
     void update_xticklabelmode (void)
@@ -4180,8 +4174,8 @@ public:
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks,
-                              array_property& mticks,
-                              bool limmode_is_auto, bool is_logscale);
+                              array_property& mticks, bool limmode_is_auto,
+                              bool tickmode_is_auto, bool is_logscale);
     void calc_ticklabels (const array_property& ticks, any_property& labels,
                           bool is_logscale);
     Matrix get_ticklabel_extents (const Matrix& ticks,
@@ -4217,9 +4211,8 @@ public:
 
     void update_xlim ()
     {
-      if (xtickmode.is ("auto"))
-        calc_ticks_and_lims (xlim, xtick, xminortickvalues,
-                             xlimmode.is ("auto"), xscale.is ("log"));
+      calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
+                           xtickmode.is ("auto"), xscale.is ("log"));
       if (xticklabelmode.is ("auto"))
         calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
 
@@ -4232,9 +4225,8 @@ public:
 
     void update_ylim (void)
     {
-      if (ytickmode.is ("auto"))
-        calc_ticks_and_lims (ylim, ytick, yminortickvalues,
-                             ylimmode.is ("auto"), yscale.is ("log"));
+      calc_ticks_and_lims (ylim, ytick, yminortickvalues, ylimmode.is ("auto"),
+                           ytickmode.is ("auto"), yscale.is ("log"));
       if (yticklabelmode.is ("auto"))
         calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
 
@@ -4247,9 +4239,8 @@ public:
 
     void update_zlim (void)
     {
-      if (ztickmode.is ("auto"))
-        calc_ticks_and_lims (zlim, ztick, zminortickvalues,
-                             zlimmode.is ("auto"), zscale.is ("log"));
+      calc_ticks_and_lims (zlim, ztick, zminortickvalues, zlimmode.is ("auto"),
+                           ztickmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
 

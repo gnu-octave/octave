@@ -236,8 +236,8 @@ function varargout = strread (str, format = "%f", varargin)
   ## Parse options.  First initialize defaults
   comment_flag = false;
   open_comment = false;
-  ## Default line ending.  FIXME: we ignore old Macintosh CR eol.
-  cmt_eol = "\n";
+  ## Default line ending.
+  cmt_eol = ifelse (ismac (), "\r", "\n");
   delimiter_str = "";
   empty_str = "";
   eol_char = "";

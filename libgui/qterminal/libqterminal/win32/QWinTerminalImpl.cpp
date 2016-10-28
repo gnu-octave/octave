@@ -383,6 +383,9 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   l->addWidget (m_horizontalScrollBar, 1, 0);
   l->addWidget (m_verticalScrollBar, 0, 1);
 
+  SetConsoleCP (65001);
+  SetConsoleOutputCP (65001);
+
   // Choose 15 (0xF) as index into the Windows console color map for the
   // background and 0 (0x0) as the index for the foreground.  This
   // selection corresponds to the indices used in the foregroundColor,

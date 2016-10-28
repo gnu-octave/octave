@@ -108,20 +108,41 @@ function h = fill (varargin)
             error ("fill: X annd Y must have same number of rows");
           endif
         endif
+
+        if (isrow (x))
+          x = x(:);
+        endif
+        if (isrow (y))
+          y = y(:);
+        endif
+
+        if (ischar (cdata) || isequal (size (cdata), [1, 3]))
+          one_color = true;
+        else
+          one_color = false;
+        endif
+
         ## For Matlab compatibility, replicate cdata to match size of data
-        if (iscolumn (cdata) && ! ischar (cdata))
+        if (! one_color && iscolumn (cdata))
           sz = size (x);
           if (all (sz > 1))
             cdata = repmat (cdata, [1, sz(2)]);
           endif
         endif
 
-        [htmp, fail] = __patch__ (hax, x, y, cdata, opts{:});
-        if (fail)
-          print_usage ();
-        endif
+        ## For Matlab compatibility, return 1 patch object for each column
+        for j = 1 : columns (x)
+          if (one_color)
+            [htmp, err] = __patch__ (hax, x(:,j), y(:,j), cdata, opts{:});
+          else
+            [htmp, err] = __patch__ (hax, x(:,j), y(:,j), cdata(:,j), opts{:});
+          endif
+          if (err)
+            print_usage ();
+          endif
+          hlist(end+1, 1) = htmp;
+        endfor
 
-        hlist(end+1, 1) = htmp;
       endfor
 
     unwind_protect_cleanup

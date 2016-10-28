@@ -236,8 +236,7 @@ function varargout = strread (str, format = "%f", varargin)
   ## Parse options.  First initialize defaults
   comment_flag = false;
   open_comment = false;
-  ## Default line ending.
-  cmt_eol = ifelse (ismac (), "\r", "\n");
+  cmt_eol = "\n";
   delimiter_str = "";
   empty_str = "";
   eol_char = "";

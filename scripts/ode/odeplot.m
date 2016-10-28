@@ -93,9 +93,8 @@ function stop_solve = odeplot (t, y, flag)
   elseif (strcmp (flag, "init"))
     ## t is either the time slot [tstart tstop] or [t0, t1, ..., tn]
     ## y is the initial value vector for the ode solution
-    idx = 1;
     told = t(1);
-    yold = y(:,1);
+    yold = y(:);
     figure ();
     hlines = plot (told, yold, "o-");
     xlim ([t(1), t(end)]);  # Fix limits which also speeds up plotting
@@ -103,7 +102,7 @@ function stop_solve = odeplot (t, y, flag)
 
   elseif (strcmp (flag, "done"))
     ## Cleanup after ode solver has finished.
-    hlines = num_lines = told = yold = idx = [];
+    hlines = num_lines = told = yold = [];
 
   endif
 

@@ -66,7 +66,7 @@
 ## sets the x limits of the plot.  Subsequently, at each time step during the
 ## integration the ode solver calls @code{odeplot (@var{t}, @var{y}, [])}.
 ## At the end of the solution the ode solver calls
-## @code{odeplot ([], [], "end")} so that odeplot can perform any clean-up
+## @code{odeplot ([], [], "done")} so that odeplot can perform any clean-up
 ## actions required.
 ## @seealso{odeset, odeget, ode23, ode45}
 ## @end deftypefn
@@ -96,7 +96,7 @@ function stop_solve = odeplot (t, y, flag)
     ## t is either the time slot [tstart tstop] or [t0, t1, ..., tn]
     ## y is the initial value vector for the ode solution
     idx = 1;
-    told = t(1,1);
+    told = t(1);
     yold = y(:,1);
     figure ();
     hlines = plot (told, yold, "-", "marker", ".", "markersize", 9);

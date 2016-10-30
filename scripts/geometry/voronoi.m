@@ -59,16 +59,6 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
-## First Release: 20/08/2000
-
-## 2002-01-04 Paul Kienzle <pkienzle@users.sf.net>
-## * limit the default graph to the input points rather than the whole diagram
-## * provide example
-## * use unique(x,"rows") rather than __unique_rows__
-
-## 2003-12-14 Rafael Laboissiere <rafael@laboissiere.net>
-## Added optional fourth argument to pass options to the underlying
-## qhull command
 
 function [vx, vy] = voronoi (varargin)
 
@@ -108,55 +98,66 @@ function [vx, vy] = voronoi (varargin)
     linespec = varargin(narg);
   endif
 
-  if (length (x) != length (y))
+  if (! isvector (x) || ! isvector (y) || numel (x) != numel (y))
     error ("voronoi: X and Y must be vectors of the same length");
-  elseif (length (x) < 2)
-    error ("voronoi: minimum of 2 points needed");
+  elseif (numel (x) < 2)
+    error ("voronoi: minimum of 2 points required");
   endif
+  x = x(:);
+  y = y(:);
 
   ## Add box to approximate rays to infinity.  For Voronoi diagrams the
-  ## box can (and should) be close to the points themselves.  To make the
-  ## job of finding the exterior edges it should be at least two times the
-  ## delta below however
-  xmax = max (x(:));
-  xmin = min (x(:));
-  ymax = max (y(:));
-  ymin = min (y(:));
+  ## box should be close to the points themselves.  To make the job of
+  ## finding the exterior edges easier it should be bigger than the area
+  ## enclosed by the points themselves.
+  ## NOTE: Octave uses a factor of 2 although we don't have an mathematical
+  ## justification for that.
+
+  xmin = min (x);
+  xmax = max (x);
+  ymin = min (y);
+  ymax = max (y);
+  ## Factor for size of bounding box
+  scale = 2;
   xdelta = xmax - xmin;
   ydelta = ymax - ymin;
-  scale = 2;
-
-  xbox = [xmin - scale * xdelta; xmin - scale * xdelta; ...
+  xbox = [xmin - scale * xdelta; xmin - scale * xdelta;
           xmax + scale * xdelta; xmax + scale * xdelta];
-  ybox = [ymin - scale * ydelta; ymax + scale * ydelta; ...
+  ybox = [ymin - scale * ydelta; ymax + scale * ydelta;
           ymax + scale * ydelta; ymin - scale * ydelta];
 
-  [p, c, infi] = __voronoi__ ("voronoi",
-                              [[x(:) ; xbox(:)], [y(:); ybox(:)]],
-                              opts{:});
+  [p, c, infi] = __voronoi__ ("voronoi", [[x; xbox], [y; ybox]], opts{:});
 
+  ## Build list of edges from points in facet.
   c = c(! infi).';
-  ## Delete null entries which cause problems in next cellfun function
-  c(cellfun ("isempty", c)) = [];
-  edges = cell2mat (cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
-                             "uniformoutput", false));
+  edges = zeros (2, 0);
+  for i = 1:numel (c)
+    facet = c{i};
+    if (isempty (facet)) 
+      continue;
+    endif
+    edges = [edges, [facet; [facet(end), facet(1:end-1)]]];
+  endfor
 
-  ## Identify the unique edges of the Voronoi diagram
+  ## Keep only the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';
-  edges = edges(:, [(edges(1, 1 :end - 1) != edges(1, 2 : end) | ...
-                     edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
+  edges = edges(:, [any(diff(edges, 1, 2)), true]);
 
   if (numel (x) > 2)
-    ## Eliminate the edges of the diagram representing the box
-    poutside = (1:rows (p)) ...
-        (p(:, 1) < xmin - xdelta | p(:, 1) > xmax + xdelta | ...
-         p(:, 2) < ymin - ydelta | p(:, 2) > ymax + ydelta);
-    edgeoutside = ismember (edges(1, :), poutside) & ...
-                  ismember (edges(2, :), poutside);
-    edges(:, edgeoutside) = [];
+    ## Eliminate the edges of the diagram representing the box.
+    ## Exclude points outside a certain radius from the center of distribution.
+    ## FIXME: Factor should be at least 1.0.  Octave uses 1.1 for margin.
+    ## There is no theoretical justification for this choice.
+    ctr = [(xmax + xmin)/2 , (ymax + ymin)/2];
+    radius = 1.1 * sumsq ([xmin, ymin] - ctr);
+    dist = sumsq (p - ctr, 2);
+
+    p_inside = (1:rows (p))(dist < radius); 
+    edge_inside = any (ismember (edges, p_inside));
+    edges = edges(:, edge_inside);
   else
     ## look for the edge between the two given points
-    for edge = edges(1:2,:)
+    for edge = edges
       if (det ([[[1;1],p(edge,1:2)];1,x(1),y(1)])
           * det ([[[1;1],p(edge,1:2)];1,x(2),y(2)]) < 0)
         edges = edge;
@@ -199,12 +200,23 @@ endfunction
 %! assert (vx(2,:), zeros (1, columns (vx)), eps);
 %! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
-%!testif HAVE_QHULL
+%!testif HAVE_QHULL <40996>
 %! ## Special case of just 2 points
 %! x = [0 1];  y = [1 0];
 %! [vx, vy] = voronoi (x,y);
 %! assert (vx, [-0.7; 1.7], eps);
 %! assert (vy, [-0.7; 1.7], eps);
+
+%!testif HAVE_QHULL <38295>
+%! x = [1,2,3];  y = [2,3,1];
+%! [vx, vy] = voronoi (x,y);
+%! assert (columns (vx), 3);
+
+%!testif HAVE_QHULL <37270> 
+%! ## Duplicate points can cause an internal error
+%! x = [1,2,3, 3];  y = [2,3,1, 1];
+%! [vx, vy] = voronoi (x,y);
+
 
 ## Input validation tests
 %!error voronoi ()
@@ -212,5 +224,5 @@ endfunction
 %!error voronoi (ones (3,1), ones (3,1), "invalid1", "invalid2", "invalid3")
 %!error <HAX argument must be an axes object> voronoi (0, ones (3,1), ones (3,1))
 %!error <X and Y must be vectors of the same length> voronoi (ones (3,1), ones (4,1))
-%!error <minimum of 2 points needed> voronoi (2.5, 3.5)
+%!error <minimum of 2 points required> voronoi (2.5, 3.5)
 

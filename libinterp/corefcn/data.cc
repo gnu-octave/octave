@@ -2744,28 +2744,33 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.
 
 DEFUN (size, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} size (@var{a})
-@deftypefnx {} {} size (@var{a}, @var{dim})
-Return the number of rows and columns of @var{a}.
+@deftypefn  {} {@var{sz} =} size (@var{a})
+@deftypefnx {} {@var{dim_sz} =} size (@var{a}, @var{dim})
+@deftypefnx {} {[@var{rows}, @var{cols}, @dots{}, @var{dim_N_sz}] =} size (@dots{})
+Return a row vector with the size (number of elements) of each dimension for
+the object @var{a}.
 
-With one input argument and one output argument, the result is returned
-in a row vector.  If there are multiple output arguments, the number of
-rows is assigned to the first, and the number of columns to the second,
-etc.  For example:
+When given a second argument, @var{dim}, return the size of the corresponding
+dimension.
+
+With a single output argument, @code{size} returns a row vector.  When called
+with multiple output arguments, @code{size} returns the size of dimension N
+in the Nth argument.  The number of rows, dimension 1, is returned in the
+first argument, the number of columns, dimension 2, is returned in the
+second argument, etc.  If there are more dimensions in @var{a} then there are
+output arguments, @code{size} returns the total number of elements in the
+remaining dimensions in the final output argument.
+
+Example 1: single row vector output
 
 @example
 @group
 size ([1, 2; 3, 4; 5, 6])
    @result{} [ 3, 2 ]
-
-[nr, nc] = size ([1, 2; 3, 4; 5, 6])
-    @result{} nr = 3
-    @result{} nc = 2
 @end group
 @end example
 
-If given a second argument, @code{size} will return the size of the
-corresponding dimension.  For example,
+Example 2: number of elements in 2nd dimension (columns)
 
 @example
 @group
@@ -2774,8 +2779,26 @@ size ([1, 2; 3, 4; 5, 6], 2)
 @end group
 @end example
 
-@noindent
-returns the number of columns in the given matrix.
+Example 3: number of output arguments == number of dimensions
+
+@example
+@group
+[nr, nc] = size ([1, 2; 3, 4; 5, 6])
+    @result{} nr = 3
+    @result{} nc = 2
+@end group
+@end example
+
+Example 4: number of output arguments != number of dimensions
+
+@example
+@group
+[nr, remainder] = size (ones (2, 3, 4, 5)
+    @result{} nr = 2
+    @result{} remainder = 60
+@end group
+@end example
+
 @seealso{numel, ndims, length, rows, columns, size_equal, common_size}
 @end deftypefn */)
 {

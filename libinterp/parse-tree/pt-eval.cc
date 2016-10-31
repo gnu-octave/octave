@@ -115,8 +115,7 @@ namespace octave
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
-    if (statement_context == function || statement_context == script
-        || in_loop_command)
+    if (in_loop_command)
       tree_continue_command::continuing = 1;
   }
 

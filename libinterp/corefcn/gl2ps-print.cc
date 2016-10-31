@@ -217,7 +217,7 @@ namespace octave
             std::fseek (tmpf, 0, SEEK_SET);
             octave_ftruncate_wrapper (fileno (tmpf), 0);
 
-            // For LaTeX output the fltk print process uses 2 drawnow() commands.
+            // For LaTeX output the print process uses 2 drawnow() commands.
             // The first one is for the pdf/ps/eps graph to be included.  The
             // print_cmd is saved as old_print_cmd.  Then the second drawnow()
             // outputs the tex-file and the graphic filename to be included is
@@ -262,6 +262,9 @@ namespace octave
               }
 
             octave::opengl_renderer::draw (go);
+
+            if (buffer_overflow)
+              warning ("gl2ps_renderer::draw: retrying with buffer size: %.1E B\n", double (2*buffsize));
 
             if (! buffer_overflow)
               old_print_cmd = print_cmd;

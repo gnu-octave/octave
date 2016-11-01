@@ -175,7 +175,7 @@ function whitebg (varargin)
           ## Remove applied default from root
           defaultfield = strrep (factoryfield, "factory", "default");
           set (0, defaultfield, "remove");
-        endfor 
+        endfor
       endif
 
       hlist = sort (findobj (fig));
@@ -204,7 +204,7 @@ endfunction
 ## This algorithm maintains at least 90 degrees separation between corig and bg
 ## in Hue rotation space.  No modifications are done for saturation or value.
 function cnew = calc_contrast_color (bg, corig)
-  
+
   hsv = rgb2hsv (corig);
   contrast_hue = mod (bg(1) + 0.5, 1);  # Generate a contrasting bg color
 
@@ -219,7 +219,7 @@ function cnew = calc_contrast_color (bg, corig)
   ## No modifications to saturation or value.
   cnew(2:3) = hsv(2:3);
 
-  cnew = hsv2rgb (cnew);   
+  cnew = hsv2rgb (cnew);
 
 endfunction
 

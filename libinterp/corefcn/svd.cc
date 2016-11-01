@@ -151,7 +151,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or
 
 If the second argument is exactly 0, then the choice of decomposition is based
 on the matrix @var{A}.  If @var{A} has more rows than columns then an
-economy-sized decomposition is returned, otherwise a regular decomposition 
+economy-sized decomposition is returned, otherwise a regular decomposition
 is calculated.
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
 @end deftypefn */)

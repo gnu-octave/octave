@@ -474,9 +474,9 @@ and zggsvd routines.
 %! assert (class (S), "single");
 %! assert (class (R), "single");
 %!
-%! s = gsvd (single (A), B); 
+%! s = gsvd (single (A), B);
 %! assert (class (s), "single");
-%! [U,V,X,C,S,R] = gsvd (single (A), B); 
+%! [U,V,X,C,S,R] = gsvd (single (A), B);
 %! assert (class (U), "single");
 %! assert (class (V), "single");
 %! assert (class (X), "single");

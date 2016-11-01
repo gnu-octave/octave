@@ -133,7 +133,7 @@ function [vx, vy] = voronoi (varargin)
   edges = zeros (2, 0);
   for i = 1:numel (c)
     facet = c{i};
-    if (isempty (facet)) 
+    if (isempty (facet))
       continue;
     endif
     edges = [edges, [facet; [facet(end), facet(1:end-1)]]];
@@ -152,7 +152,7 @@ function [vx, vy] = voronoi (varargin)
     radius = 1.1 * sumsq ([xmin, ymin] - ctr);
     dist = sumsq (p - ctr, 2);
 
-    p_inside = (1:rows (p))(dist < radius); 
+    p_inside = (1:rows (p))(dist < radius);
     edge_inside = any (ismember (edges, p_inside));
     edges = edges(:, edge_inside);
   else
@@ -212,7 +212,7 @@ endfunction
 %! [vx, vy] = voronoi (x,y);
 %! assert (columns (vx), 3);
 
-%!testif HAVE_QHULL <37270> 
+%!testif HAVE_QHULL <37270>
 %! ## Duplicate points can cause an internal error
 %! x = [1,2,3, 3];  y = [2,3,1, 1];
 %! [vx, vy] = voronoi (x,y);

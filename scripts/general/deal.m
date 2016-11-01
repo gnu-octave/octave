@@ -64,7 +64,7 @@
 ## @example
 ## @group
 ## c = @{[1 2], "Three", 4@};
-## [x, y, z ] = c@{:@}
+## [x, y, z] = c@{:@}
 ## @result{}
 ##    x =
 ##

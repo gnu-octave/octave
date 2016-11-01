@@ -1027,7 +1027,7 @@ example:
 @example
 @group
 arrayfun (@@atan2, [1, 0], [0, 1])
-     @result{} [ 1.5708   0.0000 ]
+     @result{} [ 1.57080   0.00000 ]
 @end group
 @end example
 

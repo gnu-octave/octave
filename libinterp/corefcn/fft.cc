@@ -115,7 +115,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       octave_value_list idx (ndims);
       for (octave_idx_type i = 0; i < ndims; i++)
         idx(i) = idx_vector::colon;
-      idx(dim) = idx_vector (0);
+      idx(dim) = idx_vector (static_cast<octave_idx_type> (0));
 
       return arg.do_index_op (idx);
     }
@@ -301,4 +301,3 @@ dimension of the matrix along which the inverse FFT is performed
 %!
 %! assert (ifft (S), s, 4*N*eps ("single"));
 */
-

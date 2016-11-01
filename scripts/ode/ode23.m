@@ -159,7 +159,7 @@ function varargout = ode23 (fun, trange, init, varargin)
   persistent ode23_ignore_options = ...
     {"BDF", "InitialSlope", "Jacobian", "JPattern",
      "MassSingular", "MaxOrder", "MvPattern", "Vectorized"};
-  
+
   defaults   = rmfield (defaults, ode23_ignore_options);
   classes    = rmfield (classes, ode23_ignore_options);
   attributes = rmfield (attributes, ode23_ignore_options);

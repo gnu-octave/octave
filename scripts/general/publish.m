@@ -821,7 +821,6 @@ function str = format_text (str, formatter)
              '\*[^*]*\*', ...  # Bold
              '_[^_]*_', ...    # Italic
              '\|[^|]*\|'};     # Monospaced
-             
 
   ##  Helper function to escape some special characters for the GNU Octave
   ##  manual, see https://www.gnu.org/software/texinfo/manual/texinfo/html_node/HTML-Xref-Node-Name-Expansion.html

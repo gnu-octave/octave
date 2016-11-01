@@ -151,27 +151,24 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     endif
   endif
 
-  persistent defaults   = [];
-  persistent classes    = [];
-  persistent attributes = [];
+  [defaults, classes, attributes] = ...
+  odedefaults (n, trange(1), trange(end));
 
-  [defaults, classes, attributes] = odedefaults (n, trange(1),
-                                                 trange(end));
-
-  defaults   = rmfield (defaults,   {"NonNegative", "Mass", ...
-                                     "MStateDependence", "MvPattern", ...
-                                     "MassSingular", "InitialSlope", "BDF"});
-  classes    = rmfield (classes,    {"NonNegative", "Mass", ...
-                                     "MStateDependence", "MvPattern", ...
-                                     "MassSingular", "InitialSlope", "BDF"});
-  attributes = rmfield (attributes, {"NonNegative", "Mass", ...
-                                     "MStateDependence", "MvPattern", ...
-                                     "MassSingular", "InitialSlope", "BDF"});
+  persistent ignorefields = {"NonNegative", "Mass", ...
+                             "MStateDependence", "MvPattern", ...
+                             "MassSingular", "InitialSlope", "BDF"};
+  
+  defaults   = rmfield (defaults, ignorefields);
+  classes    = rmfield (classes, ignorefields);
+  attributes = rmfield (attributes, ignorefields);
 
   classes        = odeset (classes, 'Vectorized', {});
-  attributes     = odeset (attributes, 'Jacobian', {}, 'Vectorized', {});
+  attributes     = ...
+  odeset (attributes, 'Jacobian', {}, 'Vectorized', {});
 
-  options = odemergeopts (options, defaults, classes, attributes, solver);
+  options = ...
+  odemergeopts ("ode15i", options, defaults,
+                classes, attributes, solver);
 
   ## Jacobian
   options.havejac       = false;

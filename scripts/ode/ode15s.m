@@ -158,17 +158,16 @@ function varargout = ode15s (fun, trange, y0, varargin)
     endif
   endif
 
-  persistent defaults   = [];
-  persistent classes    = [];
-  persistent attributes = [];
 
-  [defaults, classes, attributes] = odedefaults (n, trange(1),
-                                                 trange(end));
+  [defaults, classes, attributes] = ...
+  odedefaults (n, trange(1), trange(end));
 
   classes    = odeset (classes, 'Vectorized', {});
   attributes = odeset (attributes, 'Jacobian', {}, 'Vectorized', {});
 
-  options = odemergeopts (options, defaults, classes, attributes, solver);
+  options = ...
+  odemergeopts ("ode15s", options, defaults,
+                classes, attributes, solver);
 
   ## Mass
 

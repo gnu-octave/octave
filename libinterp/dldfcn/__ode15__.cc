@@ -323,7 +323,7 @@ namespace octave
     if (havejacsparse)
       {
         int flag =
-          IDAKLU (mem, num, num*num);
+          IDAKLU (mem, num, num*num, CSC_MAT);
         if (flag != 0)
           {
             error ("IDAKLU solver not initialized");
@@ -396,15 +396,15 @@ namespace octave
     else
       jac = (*jacspcell) (spdfdy, spdfdyp, cj);
 
-    SlsSetToZero (Jac);
+    SparseSetMatToZero (Jac);
 
     for (int i = 0; i < num + 1; i++)
-      Jac -> colptrs [i] = jac.cidx (i);
+      *(Jac -> colptrs)[i] = jac.cidx(i);
 
     for (int i = 0; i < jac.nnz (); i++)
       {
-        Jac -> rowvals [i] = jac.ridx (i);
-        Jac -> data [i] = jac.data (i);
+        *(Jac -> rowvals)[i] = jac.ridx (i);
+        Jac -> data[i] = jac.data (i);
       }    
 
     END_INTERRUPT_WITH_EXCEPTIONS;

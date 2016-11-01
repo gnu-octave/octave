@@ -1,315 +1,332 @@
-function outstr = __publish_html_output__ (varargin)
+function outstr = __publish_html_output__ (type, varargin)
+  ## Recognized types are:
   ##
-  ## Types to handle are:
-  ##
-  ## * "header" (title_str, intro_str, toc_cstr)
-  ## * "footer" ()
-  ## * "code" (str)
-  ## * "code_output" (str)
-  ## * "section" (str)
-  ## * "preformatted_code" (str)
-  ## * "preformatted_text" (str)
-  ## * "bulleted_list" (cstr)
-  ## * "numbered_list" (cstr)
-  ## * "graphic" (str)
-  ## * "html" (str)
-  ## * "latex" (str)
-  ## * "text" (str)
-  ## * "bold" (str)
-  ## * "italic" (str)
-  ## * "monospaced" (str)
-  ## * "link" (url_str, url_str, str)
-  ## * "TM" ()
-  ## * "R" ()
-  ##
-  eval (["outstr = handle_", varargin{1}, " (varargin{2:end});"]);
+  ## "header" (title_str, intro_str, toc_cstr)
+  ## "footer" ()
+  ## "code" (str)
+  ## "code_output" (str)
+  ## "section" (str)
+  ## "preformatted_code" (str)
+  ## "preformatted_text" (str)
+  ## "bulleted_list" (cstr)
+  ## "numbered_list" (cstr)
+  ## "graphic" (str)
+  ## "html" (str)
+  ## "latex" (str)
+  ## "text" (str)
+  ## "bold" (str)
+  ## "italic" (str)
+  ## "monospaced" (str)
+  ## "link" (url_str, url_str, str)
+  ## "TM" ()
+  ## "R" ()
+
+  outstr = feval (["do_" type], varargin{:});
 endfunction
 
-function outstr = handle_header (title_str, intro_str, toc_cstr)
-  mathjax_str = ["<script type=\"text/x-mathjax-config\">\n", ...
-    "MathJax.Hub.Config({\n", ...
-    "  tex2jax: { inlineMath: [['$','$'], ['\\\\(','\\\\)']] },\n", ...
-    "  TeX: { equationNumbers: { autoNumber: 'all' } }\n", ...
-    "});\n", ...
-    "</script>\n", ...
-    "<script type=\"text/javascript\" async ", ...
-    "src=\"https://cdn.mathjax.org/mathjax/latest/MathJax.js?", ...
-    "config=TeX-MML-AM_CHTML\"></script>\n"];
-  stylesheet_str = ["<style>\n", ...
-    "body > * {\n", ...
-    "  max-width: 42em;\n", ...
-    "}\n", ...
-    "body {\n", ...
-    "  font-family: \"Roboto Condensed\", sans-serif;\n", ...
-    "  padding-left: 7.5em;\n", ...
-    "  padding-right: 7.5em;\n", ...
-    "}\n", ...
-    "pre, code {\n", ...
-    "  max-width: 50em;\n", ...
-    "  font-family: monospace;\n", ...
-    "}\n", ...
-    "pre.oct-code {\n", ...
-    "  border: 1px solid Grey;\n", ...
-    "  padding: 5px;\n", ...
-    "}\n", ...
-    "pre.oct-code-output {\n", ...
-    "  margin-left: 2em;\n", ...
-    "}\n", ...
-    "span.comment {\n", ...
-    "  color: ForestGreen;\n", ...
-    "}\n",...
-    "span.keyword {\n", ...
-    "  color: Blue;\n", ...
-    "}\n",...
-    "span.string {\n", ...
-    "  color: DarkOrchid;\n", ...
-    "}\n",...
-    "footer {\n", ...
-    "  margin-top: 2em;\n", ...
-    "  font-size: 80%;\n", ...
-    "}\n", ...
-    "a, a:visited {\n", ...
-    "  color: Blue;\n", ...
-    "}\n", ...
-    "h2 {\n", ...
-    "  font-family: \"Roboto Condensed\", serif;\n", ...
-    "  margin-top: 1.5em;\n", ...
-    "}\n", ...
-    "h2 a, h2 a:visited {\n", ...
-    "  color: Black;\n", ...
-    "}\n", ...
-    "</style>\n"];
-  outstr = ["<!DOCTYPE html>\n", ...
-    "<html>\n", ...
-    "<head>\n", ...
-    "<meta charset=\"UTF-8\">\n", ...
-    "<title>", title_str, "</title>\n", ...
-    mathjax_str, ...
-    stylesheet_str, ...
-    "</head>\n", ...
-    "<body>\n", ...
-    "<h1>", title_str, "</h1>\n", ...
-    intro_str];
+
+function outstr = do_header (title_str, intro_str, toc_cstr)
+
+  mathjax_str = sprintf ("%s\n",
+"<script type=\"text/x-mathjax-config\">",
+"MathJax.Hub.Config({",
+"  tex2jax: { inlineMath: [['$','$'], ['\\\\(','\\\\)']] },",
+"  TeX: { equationNumbers: { autoNumber: 'all' } }",
+"});",
+"</script>",
+["<script type=\"text/javascript\" async ", ...
+ "src=\"https://cdn.mathjax.org/mathjax/latest/MathJax.js?", ...
+ "config=TeX-MML-AM_CHTML\"></script>"]);
+
+  stylesheet_str = sprintf ("%s\n",
+"<style>",
+"body > * {",
+"  max-width: 42em;",
+"}",
+"body {",
+"  font-family: \"Roboto Condensed\", sans-serif;",
+"  padding-left: 7.5em;",
+"  padding-right: 7.5em;",
+"}",
+"pre, code {",
+"  max-width: 50em;",
+"  font-family: monospace;",
+"}",
+"pre.oct-code {",
+"  border: 1px solid Grey;",
+"  padding: 5px;",
+"}",
+"pre.oct-code-output {",
+"  margin-left: 2em;",
+"}",
+"span.comment {",
+"  color: ForestGreen;",
+"}",...
+"span.keyword {",
+"  color: Blue;",
+"}",...
+"span.string {",
+"  color: DarkOrchid;",
+"}",...
+"footer {",
+"  margin-top: 2em;",
+"  font-size: 80%;",
+"}",
+"a, a:visited {",
+"  color: Blue;",
+"}",
+"h2 {",
+"  font-family: \"Roboto Condensed\", serif;",
+"  margin-top: 1.5em;",
+"}",
+"h2 a, h2 a:visited {",
+"  color: Black;",
+"}",
+"</style>");
+
+  outstr = sprintf ("%s\n",
+"<!DOCTYPE html>",
+"<html>",
+"<head>",
+"<meta charset=\"UTF-8\">",
+["<title>" title_str "</title>"],
+mathjax_str,
+stylesheet_str,
+"</head>",
+"<body>",
+["<h1>" title_str "</h1>"],
+intro_str);
 
   if (! isempty (toc_cstr))
-    for i = 1:length(toc_cstr)
-      toc_cstr{i} = handle_link (["#node", num2str(i)], toc_cstr{i});
+    for i = 1:numel (toc_cstr)
+      toc_cstr{i} = do_link (["#node" sprintf("%d", i)], toc_cstr{i});
     endfor
-    outstr = [outstr, "<h2>Contents</h2>", ...
-      handle_bulleted_list(toc_cstr)];
+    outstr = [outstr, "<h2>Contents</h2>", do_bulleted_list(toc_cstr)];
   endif
 
   ## Reset section counter
-  handle_section ();
+  do_section ();
+
 endfunction
 
-function outstr = handle_footer (m_source_str)
-  outstr = ["\n", ...
-    "<footer><hr>", ...
-    "<a href=\"http://www.octave.org\">Published with GNU Octave ", ...
-    version(), "</a></footer>\n", ...
-    "<!--\n", ...
-    "##### SOURCE BEGIN #####\n", ...
-    m_source_str, ...
-    "\n##### SOURCE END #####\n", ...
-    "-->\n", ...
-    "</body>\n", ...
-    "</html>\n"];
+function outstr = do_footer (m_source_str)
+  outstr = sprintf ("%s\n",
+"",
+"<footer>",
+"<hr>",
+["<a href=\"http://www.octave.org\">Published with GNU Octave " version() "</a>"],
+"</footer>",
+"<!--",
+"##### SOURCE BEGIN #####",
+m_source_str,
+"##### SOURCE END #####",
+"-->",
+"</body>",
+"</html>");
 endfunction
 
-function outstr = handle_code (str)
-  outstr = ["<pre class=\"oct-code\">", syntax_highlight(str), "</pre>"];
+function outstr = do_code (str)
+  outstr = ["\n", '<pre class="oct-code">' syntax_highlight(str) "</pre>\n"];
 endfunction
 
-function outstr = handle_code_output (str)
-  outstr = ["<pre class=\"oct-code-output\">", str, "</pre>"];
+function outstr = do_code_output (str)
+  outstr = ["\n", '<pre class="oct-code-output">' str "</pre>\n"];
 endfunction
 
-function outstr = handle_section (varargin)
+function outstr = do_section (varargin)
   persistent counter = 1;
+
   if (nargin == 0)
-    counter = 1;
     outstr = "";
+    counter = 1;
     return;
   endif
-  outstr = ["<h2><a id=\"node", num2str(counter), "\">", varargin{1}, ...
-    "</a></h2>"];
+
+  outstr = ['<h2><a id="node' sprintf("%d", counter) '">', ...
+            varargin{1}, ...
+            "</a></h2>"];
+
   counter++;
+
 endfunction
 
-function outstr = handle_preformatted_code (str)
-  outstr = ["<pre class=\"pre-code\">", syntax_highlight(str), "</pre>"];
+function outstr = do_preformatted_code (str)
+  outstr = ["\n", '<pre class="pre-code">' syntax_highlight(str) "</pre>\n"];
 endfunction
 
-function outstr = handle_preformatted_text (str)
-  outstr = ["<pre class=\"pre-text\">", str, "</pre>"];
+function outstr = do_preformatted_text (str)
+  outstr = ["\n", '<pre class="pre-text">' str "</pre>\n"];
 endfunction
 
-function outstr = handle_bulleted_list (cstr)
-  outstr = "<ul>";
-  for i = 1:length(cstr)
-    outstr = [outstr, "<li>", cstr{i}, "</li>"];
+function outstr = do_bulleted_list (cstr)
+  outstr = "\n<ul>\n";
+  for i = 1:numel (cstr)
+    outstr = [outstr, "<li>" cstr{i} "</li>\n"];
   endfor
-  outstr = [outstr, "</ul>"];
+  outstr = [outstr, "</ul>\n"];
 endfunction
 
-function outstr = handle_numbered_list (cstr)
-  outstr = "<ol>";
-  for i = 1:length(cstr)
-    outstr = [outstr, "<li>", cstr{i}, "</li>"];
+function outstr = do_numbered_list (cstr)
+  outstr = "\n<ol>\n";
+  for i = 1:numel (cstr)
+    outstr = [outstr, "<li>" cstr{i} "</li>\n"];
   endfor
-  outstr = [outstr, "</ol>"];
+  outstr = [outstr, "</ol>\n"];
 endfunction
 
-function outstr = handle_graphic (str)
-  outstr = ["<img src=\"", str,"\" alt=\"", str, "\">"];
+function outstr = do_graphic (str)
+  outstr = ['<img src="' str '" alt="' str '">'];
 endfunction
 
-function outstr = handle_html (str)
+function outstr = do_html (str)
   outstr = str;
 endfunction
 
-function outstr = handle_latex (str)
+function outstr = do_latex (str)
   outstr = "";
 endfunction
 
-function outstr = handle_link (url_str, str)
-  outstr = ["<a href=\"", url_str,"\">", str, "</a>"];
+function outstr = do_link (url_str, str)
+  outstr = ['<a href="' url_str '">' str "</a>"];
 endfunction
 
-function outstr = handle_text (str)
-  outstr = ["<p>", str, "</p>"];
+function outstr = do_text (str)
+  outstr = ["\n<p>" str "</p>\n"];
 endfunction
 
-function outstr = handle_bold (str)
-  outstr = ["<b>", str, "</b>"];
+function outstr = do_bold (str)
+  outstr = ["<b>" str "</b>"];
 endfunction
 
-function outstr = handle_italic (str)
-  outstr = ["<i>", str, "</i>"];
+function outstr = do_italic (str)
+  outstr = ["<i>" str "</i>"];
 endfunction
 
-function outstr = handle_monospaced (str)
-  outstr = ["<code>", str, "</code>"];
+function outstr = do_monospaced (str)
+  outstr = ["<code>" str "</code>"];
 endfunction
 
-function outstr = handle_TM ()
+function outstr = do_TM ()
   outstr = "&trade;";
 endfunction
 
-function outstr = handle_R ()
+function outstr = do_R ()
   outstr = "&reg;";
 endfunction
 
+## SYNTAX_HIGHLIGHT: A primitive parser to highlight syntax via <span> tags.
+## FIXME: Needs to be replaced by a better solution.
 function outstr = syntax_highlight (str)
-  ## SYNTAX_HIGHLIGHT a primitive parser to add syntax highlight via <span>
-  ##   tags. Should be replaced by a better solution.
-  ##
-
   outstr = "";
-  i = 1;
   placeholder_cstr = {};
+  i = 1;
   plh = 0;
-  while (i <= length(str))
+
+  while (i <= numel (str))
     ## Block comment
     if (any (strncmp (str(i:end), {"%{", "#{"}, 2)))
-      plh_str = ["<span class=\"comment\">", str(i:i+1)];
-      i = i + 2;
-      while ((i <= length(str)) ...
+      plh_str = ['<span class="comment">', str(i:i+1)];
+      i += 2;
+      while (i <= numel (str)
              && ! (any (strncmp (str(i:end), {"%}", "#}"}, 2))))
         plh_str = [plh_str, str(i)];
-        i++;
+        i += 1;
       endwhile
-      if (i < length(str))
+      if (i < numel (str))
         plh_str = [plh_str, str(i:i+1), "</span>"];
-        i = i + 2;
+        i += 2;
       else
         plh_str = [plh_str, "</span>"];
       endif
-      plh = plh + 1;
+      plh += 1;
       placeholder_cstr{plh} = plh_str;
-      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
+      outstr = [outstr, " PUBLISHPLACEHOLDER", sprintf("%d", plh), " "];
     ## Line comment
-    elseif (any (strcmp (str(i), {"%", "#"})))
-      plh_str = "<span class=\"comment\">";
-      while ((i <= length(str)) && (! strcmp (str(i), "\n")))
-        plh_str = [plh_str, str(i)];
-        i++;
-      endwhile
+    elseif (str(i) == "#" || str(i) == "%")
+      plh_str = '<span class="comment">';
+      idx = find (str(i:end) == "\n", 1);
+      if (isempty (idx))
+        plh_str = [plh_str, str(i:end)];
+        i = numel (str) + 1;
+      else
+        plh_str = [plh_str, str(i:i+idx-2)];
+        i += idx;
+      endif
       plh_str = [plh_str, "</span>\n"];
-      i++;
-      plh = plh + 1;
+      plh += 1;
       placeholder_cstr{plh} = plh_str;
-      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
+      outstr = [outstr, " PUBLISHPLACEHOLDER", sprintf("%d", plh), " "];
     ## Single quoted string
-    elseif (strcmp (str(i), "'"))
+    elseif (str(i) == "'")
       plh_str = "<span class=\"string\">'";
-      i = i + 1;
-      while (i <= length(str))
+      i += 1;
+      while (i <= numel (str))
         ## Ignore escaped string terminations
         if (strncmp (str(i:end), "''", 2))
           plh_str = [plh_str, "''"];
-          i = i + 2;
-        ## Is string termination
-        elseif (strcmp (str(i), "'"))
+          i += 2;
+        ## Is char a string termination?
+        elseif (str(i) == "'")
           plh_str = [plh_str, "'"];
-          i = i + 1;
+          i += 1;
           break;
-        ## Is string termination by line break
-        elseif (strcmp (str(i), "\n"))
+        ## Is string terminated by line break?
+        elseif (str(i) == "\n")
           break;
         ## String content
         else
           plh_str = [plh_str, str(i)];
-          i = i + 1;
+          i += 1;
         endif
       endwhile
       plh_str = [plh_str, "</span>"];
-      plh = plh + 1;
+      plh += 1;
       placeholder_cstr{plh} = plh_str;
-      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
+      outstr = [outstr, " PUBLISHPLACEHOLDER", sprintf("%d", plh), " "];
     ## Double quoted string
-    elseif (strcmp (str(i), "\""))
-      plh_str = "<span class=\"string\">\"";
-      i = i + 1;
-      while (i <= length(str))
-        ## Is string termination
-        if (strcmp (str(i), "\"") && ! strcmp (str(i - 1), "\\"))
-          plh_str = [plh_str, "\""];
-          i = i + 1;
+    elseif (str(i) == '"')
+      plh_str = '<span class="string">"';
+      i += 1;
+      while (i <= numel (str))
+        ## Is char a string termination?
+        if (str(i) == '"' && str(i-1) != '\')
+          plh_str = [plh_str, '"'];
+          i += 1;
           break;
-        ## Is string termination by line break
-        elseif (strcmp (str(i), "\n"))
+        ## Is string terminated by line break?
+        elseif (str(i) == "\n")
           break;
         ## String content
         else
           plh_str = [plh_str, str(i)];
-          i = i + 1;
+          i += 1;
         endif
       endwhile
       plh_str = [plh_str, "</span>"];
-      plh = plh + 1;
+      plh += 1;
       placeholder_cstr{plh} = plh_str;
-      outstr = [outstr, " PUBLISHPLACEHOLDER", num2str(plh), " "];
+      outstr = [outstr, " PUBLISHPLACEHOLDER", sprintf("%d", plh), " "];
     else
       outstr = [outstr, str(i)];
-      i++;
+      i += 1;
     endif
   endwhile
-  kwords = iskeyword ();
-  ## TODO: remove hack for regexp (bug #38149)
+
+  persistent kword_ptn = strjoin (iskeyword (), '|');
+
+  ## FIXME: remove hack for regexprep once bug #38149 is solved
   outstr = [" ", strrep(outstr, "\n", " \n "), " "];
-  for i = 1:length(kwords)
-    outstr = regexprep (outstr, ...
-      ['(\s)(', kwords{i},')(\s|\()'], ...
-      ["$1<span class=\"keyword\">$2</span>$3"]);
-  endfor
-  ## TODO: remove hack for regexp (bug #38149)
-  outstr = strrep(outstr(2:end-1), " \n ", "\n");
+  outstr = regexprep (outstr,
+                      ['(\s)(' kword_ptn ')(\s|\()'],
+                      ['$1<span class="keyword">$2</span>$3']);
+  ## FIXME: remove hack for regexprep once bug #38149 is solved
+  outstr = strrep (outstr(2:end-1), " \n ", "\n");
 
   ## Restore placeholders
   for i = plh:-1:1
-    outstr = strrep (outstr, [" PUBLISHPLACEHOLDER", num2str(i), " "], ...
-      placeholder_cstr{i});
+    outstr = strrep (outstr, [" PUBLISHPLACEHOLDER", sprintf("%d", i), " "],
+                             placeholder_cstr{i});
   endfor
+
 endfunction
+

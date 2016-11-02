@@ -397,13 +397,15 @@ namespace octave
       jac = (*jacspcell) (spdfdy, spdfdyp, cj);
 
     SparseSetMatToZero (Jac);
-
+    int *colptrs = *(Jac -> colptrs);
+    int *rowvals = *(Jac -> rowvals);
+    
     for (int i = 0; i < num + 1; i++)
-      *(Jac -> colptrs)[i] = jac.cidx(i);
+      colptrs[i] = jac.cidx(i);
 
     for (int i = 0; i < jac.nnz (); i++)
       {
-        *(Jac -> rowvals)[i] = jac.ridx (i);
+        rowvals[i] = jac.ridx (i);
         Jac -> data[i] = jac.data (i);
       }    
 

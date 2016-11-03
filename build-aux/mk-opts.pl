@@ -913,7 +913,7 @@ $DOC_STRING
 
 Options include
 
-\@table \@code
+\@table \@asis
 _END_EMIT_OPTIONS_FUNCTION_HDR_
 # FIXME: Add extra newline above
 

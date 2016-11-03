@@ -2651,7 +2651,7 @@ Start a process and create a pipe.
 The name of the command to run is given by @var{command}.  The argument
 @var{mode} may be
 
-@table @code
+@table @asis
 @item @qcode{"r"}
 The pipe will be connected to the standard output of the process, and
 open for reading.

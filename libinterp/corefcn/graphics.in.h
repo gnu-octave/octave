@@ -3843,7 +3843,7 @@ public:
       color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{-}|--|:|-.|none"
-      double_property labelfontsizemultiplier , 1.1
+      double_property labelfontsizemultiplier u , 1.1
       radio_property layer u , "{bottom}|top"
       // FIXME: should be kind of string array.
       any_property linestyleorder S , "-"
@@ -3869,8 +3869,8 @@ public:
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
-      double_property titlefontsizemultiplier , 1.1
-      radio_property titlefontweight , "{bold}|normal"
+      double_property titlefontsizemultiplier u , 1.1
+      radio_property titlefontweight u , "{bold}|normal"
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
@@ -4070,25 +4070,43 @@ public:
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
     }
 
-    void update_font (void);
+    void update_font (std::string prop = "");
     void update_fontname (void)
     {
-      update_font ();
+      update_font ("fontname");
       sync_positions ();
     }
     void update_fontsize (void)
     {
-      update_font ();
+      update_font ("fontsize");
       sync_positions ();
     }
     void update_fontangle (void)
     {
-      update_font ();
+      update_font ("fontangle");
       sync_positions ();
     }
     void update_fontweight (void)
     {
-      update_font ();
+      update_font ("fontweight");
+      sync_positions ();
+    }
+
+    void update_titlefontsizemultiplier (void)
+    {
+      update_font ("fontsize");
+      sync_positions ();
+    }
+
+    void update_labelfontsizemultiplier (void)
+    {
+      update_font ("fontsize");
+      sync_positions ();
+    }
+
+    void update_titlefontweight (void)
+    {
+      update_font ("fontweight");
       sync_positions ();
     }
 

@@ -6259,8 +6259,29 @@ axes::properties::update_aspectratios (void)
 }
 
 void
-axes::properties::update_font (void)
+axes::properties::update_font (std::string prop)
 {
+  if (! prop.empty ())
+    {
+      octave_value val = get (prop);
+      octave_value tval = val;
+      if (prop == "fontsize")
+        {
+          tval = octave_value (val.double_value () *
+                               get_titlefontsizemultiplier ());
+          val  = octave_value (val.double_value () *
+                               get_labelfontsizemultiplier ());
+        }
+      else if (prop == "fontweight")
+        tval = get ("titlefontweight");
+
+      gh_manager::get_object (get_xlabel ()).set (prop, val);
+      gh_manager::get_object (get_ylabel ()).set (prop, val);
+      gh_manager::get_object (get_zlabel ()).set (prop, val);
+      gh_manager::get_object (get_title ()).set (prop, tval);
+        
+    }
+  
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),

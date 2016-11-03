@@ -122,3 +122,14 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+%!test <49469>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ht = title ("Test FontSize Property");
+%!   set (gca, "fontname", "Liberation Serif")
+%!   set (gca, "fontsize", 13)
+%!   assert (get (ht, "fontname"), "Liberation Serif");
+%!   assert (get (ht, "fontsize"), 13 * get (gca, "titlefontsizemultiplier"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

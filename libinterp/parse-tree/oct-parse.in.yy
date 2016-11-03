@@ -4786,16 +4786,7 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
   if (fcn.is_defined ())
     retval = fcn.do_multi_index_op (nargout, args);
   else
-    {
-      try
-        {
-          maybe_missing_function_hook (name);
-        }
-      catch (octave::execution_exception& e)
-        {
-          error (e, "feval: function '%s' not found", name.c_str ());
-        }
-    }
+    error ("feval: function '%s' not found", name.c_str ());
 
   return retval;
 }

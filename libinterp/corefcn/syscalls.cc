@@ -206,7 +206,7 @@ DEFUNX ("popen2", Fpopen2, args, ,
 Start a subprocess with two-way communication.
 
 The name of the process is given by @var{command}, and @var{args} is an
-array of strings containing options for the command.
+array or cell array of strings containing options for the command.
 
 The file identifiers for the input and output streams of the subprocess are
 returned in @var{in} and @var{out}.  If execution of the command is

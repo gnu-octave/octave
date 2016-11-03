@@ -2362,10 +2362,14 @@ Given a cell array of matrices @var{x}, this function computes
 @group
 Y = cell (size (X));
 for i = 1:numel (X)
-  Y@{i@} = X@{i@}(varargin@{:@});
+  Y@{i@} = X@{i@}(varargin@{1@}, varargin@{2@}, @dots{}, varargin@{N@});
 endfor
 @end group
 @end example
+
+The indexing arguments may be scalar (@code{2}), arrays (@code{[1, 3]}),
+ranges (@code{1:3}), or the colon operator (@qcode{":"}).  However, the
+indexing keyword @code{end} is not available.
 @seealso{cellslices, cellfun}
 @end deftypefn */)
 {

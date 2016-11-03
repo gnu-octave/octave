@@ -123,18 +123,6 @@ BEGIN {
           eqne_ops = index (op_type, "E") != 0;
           bool_ops = index (op_type, "L") != 0;
 
-          if (cmp_ops)
-            {
-              lhs_conv = $(++n);
-              rhs_conv = $(++n);
-            }
-
-          if (lhs_conv == "NONE")
-            lhs_conv = "";
-
-          if (rhs_conv == "NONE")
-            rhs_conv = "";
-
           k = 0
           while (NF > n)
             bool_headers[k++] = $(++n);
@@ -393,12 +381,12 @@ BEGIN {
 
               if (cmp_ops)
                 emit_cmp_ops(sparse, lhs_class, rhs_class,
-                             lhs_type, rhs_type, lhs_conv, rhs_conv,
+                             lhs_type, rhs_type,
                              lhs_scalar_zero_val, rhs_scalar_zero_val);
 
               if (eqne_ops)
                 emit_eqne_ops(sparse, lhs_class, rhs_class,
-                              lhs_type, rhs_type, lhs_conv, rhs_conv,
+                              lhs_type, rhs_type,
                               lhs_scalar_zero_val, rhs_scalar_zero_val);
 
               if (bool_ops)
@@ -658,28 +646,27 @@ function emit_bin_ops (sparse, lhs_class, rhs_class,
 }
 
 function emit_cmp_ops (sparse, lhs_class, rhs_class,
-                       lhs_type, rhs_type, lhs_conv, rhs_conv,
+                       lhs_type, rhs_type,
                        lhs_scalar_zero_val, rhs_scalar_zero_val)
 {
   if (sparse)
-    printf ("SPARSE_%s%s_CMP_OPS (%s, %s, %s, %s, %s, %s)\n",
+    printf ("SPARSE_%s%s_CMP_OPS (%s, %s, %s, %s)\n",
             lhs_class, rhs_class, lhs_type,
-            lhs_scalar_zero_val, lhs_conv, rhs_type,
-            rhs_scalar_zero_val, rhs_conv);
+            lhs_scalar_zero_val, rhs_type,
+            rhs_scalar_zero_val);
   else
     printf ("%s%s_CMP_OPS (%s, %s)\n",
             lhs_class, rhs_class, lhs_type, rhs_type);
 }
 
-function emit_eqne_ops (sparse, lhs_class, rhs_class,
-                        lhs_type, rhs_type, lhs_conv, rhs_conv,
+function emit_eqne_ops (sparse, lhs_class, rhs_class, lhs_type, rhs_type,
                         lhs_scalar_zero_val, rhs_scalar_zero_val)
 {
   if (sparse)
-    printf ("SPARSE_%s%s_EQNE_OPS (%s, %s, %s, %s, %s, %s)\n",
+    printf ("SPARSE_%s%s_EQNE_OPS (%s, %s, %s, %s)\n",
             lhs_class, rhs_class, lhs_type,
-            lhs_scalar_zero_val, lhs_conv, rhs_type,
-            rhs_scalar_zero_val, rhs_conv);
+            lhs_scalar_zero_val, rhs_type,
+            rhs_scalar_zero_val);
 
   ## No separate eqne ops for full-matrix or vector.
 }

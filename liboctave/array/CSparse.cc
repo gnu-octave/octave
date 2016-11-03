@@ -7933,15 +7933,11 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
   return r;
 }
 
-SPARSE_SMS_CMP_OPS (SparseComplexMatrix, 0.0, real, Complex,
-                    0.0, real)
+SPARSE_SMS_CMP_OPS (SparseComplexMatrix, 0.0, Complex, 0.0)
 SPARSE_SMS_BOOL_OPS (SparseComplexMatrix, Complex)
 
-SPARSE_SSM_CMP_OPS (Complex, 0.0, real, SparseComplexMatrix,
-                    0.0, real)
+SPARSE_SSM_CMP_OPS (Complex, 0.0, SparseComplexMatrix, 0.0)
 SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix)
 
-SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, real, SparseComplexMatrix,
-                     0.0, real)
-
+SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, SparseComplexMatrix, 0.0)
 SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix)

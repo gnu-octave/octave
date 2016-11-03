@@ -41,7 +41,7 @@ cm ComplexMatrix M CMatrix.h YES 0.0
 #
 # sparse-matrix operators
 #
-# result_t_1 result_t_2 lhs_t rhs_t op-type lhs_conv rhs_conv headers ...
+# result_t_1 result_t_2 lhs_t rhs_t op-type headers ...
 #
 # op-type is one of
 #
@@ -50,19 +50,19 @@ cm ComplexMatrix M CMatrix.h YES 0.0
 #   E: == != (Only one of C or E can be used!!)
 #   L: logical ops, & |
 #
-cm scm sm cs BCL NONE real boolSparse.h
-cm scm cs sm BCL real NONE boolSparse.h
-cm scm scm s BCL real NONE boolSparse.h
-cm scm s scm BCL NONE real boolSparse.h
-scm scm scm sm BCL real NONE boolSparse.h
-scm scm sm scm BCL NONE real boolSparse.h
-m sm m sm BCL NONE NONE boolSparse.h
-cm scm m scm BCL NONE real boolSparse.h
-cm scm cm sm BCL real NONE boolSparse.h
-cm scm cm scm BCL real real boolSparse.h
-m sm sm m BCL NONE NONE boolSparse.h
-cm scm scm m BCL real NONE boolSparse.h
-cm scm sm cm BCL NONE real boolSparse.h
-cm scm scm cm BCL real real boolSparse.h
+cm scm sm cs BCL boolSparse.h
+cm scm cs sm BCL boolSparse.h
+cm scm scm s BCL boolSparse.h
+cm scm s scm BCL boolSparse.h
+scm scm scm sm BCL boolSparse.h
+scm scm sm scm BCL boolSparse.h
+m sm m sm BCL boolSparse.h
+cm scm m scm BCL boolSparse.h
+cm scm cm sm BCL boolSparse.h
+cm scm cm scm BCL boolSparse.h
+m sm sm m BCL boolSparse.h
+cm scm scm m BCL boolSparse.h
+cm scm sm cm BCL boolSparse.h
+cm scm scm cm BCL boolSparse.h
 bm sbm bm sbm EL
 bm sbm sbm bm EL

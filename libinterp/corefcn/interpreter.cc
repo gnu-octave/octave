@@ -1070,15 +1070,17 @@ namespace octave
         else
           {
             // What should we do here?  We might be called from some
-            // location other than the end of octave_execute_interpreter,
+            // location other than the end of octave::interpreter::execute
             // so it might not be safe to return.
 
             // We have nothing else to do at this point, and the
             // octave_link::exit function is supposed to take care of
-            // exiting for us.  Assume that job won't take more than a
-            // day...
+            // exiting for us.  Hang here forever so we never return.
 
-            octave_sleep (86400); // FIXME: really needed?
+            while (true)
+              {
+                octave_sleep (1);
+              }
           }
       }
     else

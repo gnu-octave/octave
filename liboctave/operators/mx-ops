@@ -21,7 +21,7 @@
 
 # types
 #
-# key typename object-type header fwd-decl-ok scalar-zero core-type
+# key typename object-type header fwd-decl-ok core-type
 #
 # object-type is one of
 #
@@ -37,43 +37,43 @@
 # core-type is only used for the octave_int types, and is the template
 # parameter: octave_int8 is octave_int<int8_t>
 #
-x NONE NONE NONE NO 0
-b bool S NONE NO false
-bm boolMatrix ND boolMatrix.h YES false
-bnda boolNDArray ND boolNDArray.h YES false
-cdm ComplexDiagMatrix DM CDiagMatrix.h YES 0.0
-cm ComplexMatrix M CMatrix.h YES 0.0
-cnda ComplexNDArray ND CNDArray.h YES 0.0
-cs Complex S oct-cmplx.h NO 0.0
-dm DiagMatrix DM dDiagMatrix.h YES 0.0
-m Matrix M dMatrix.h YES 0.0
-nda NDArray ND dNDArray.h YES 0.0
-s double S NONE NO 0.0
-fcdm FloatComplexDiagMatrix DM fCDiagMatrix.h YES 0.0f
-fcm FloatComplexMatrix M fCMatrix.h YES 0.0f
-fcnda FloatComplexNDArray ND fCNDArray.h YES 0.0f
-fcs FloatComplex S oct-cmplx.h NO 0.0f
-fdm FloatDiagMatrix DM fDiagMatrix.h YES 0.0f
-fm FloatMatrix M fMatrix.h YES 0.0f
-fnda FloatNDArray ND fNDArray.h YES 0.0f
-fs float S NONE NO 0.0f
-i8 octave_int8 S oct-inttypes.h YES octave_int8::zero int8_t
-ui8 octave_uint8 S oct-inttypes.h YES octave_uint8::zero uint8_t
-i16 octave_int16 S oct-inttypes.h YES octave_int16::zero int16_t
-ui16 octave_uint16 S oct-inttypes.h YES octave_uint16::zero uint16_t
-i32 octave_int32 S oct-inttypes.h YES octave_int32::zero int32_t
-ui32 octave_uint32 S oct-inttypes.h YES octave_uint32::zero uint32_t
-i64 octave_int64 S oct-inttypes.h YES octave_int64::zero int64_t
-ui64 octave_uint64 S oct-inttypes.h YES octave_uint64::zero uint64_t
-i8nda int8NDArray ND int8NDArray.h YES octave_int8::zero int8_t
-ui8nda uint8NDArray ND uint8NDArray.h YES octave_uint8::zero uint8_t
-i16nda int16NDArray ND int16NDArray.h YES octave_int16::zero int16_t
-ui16nda uint16NDArray ND uint16NDArray.h YES octave_uint16::zero uint16_t
-i32nda int32NDArray ND int32NDArray.h YES octave_int32::zero int32_t
-ui32nda uint32NDArray ND uint32NDArray.h YES octave_uint32::zero uint32_t
-i64nda int64NDArray ND int64NDArray.h YES octave_int64::zero int64_t
-ui64nda uint64NDArray ND uint64NDArray.h YES octave_uint64::zero uint64_t
-pm PermMatrix PM PermMatrix.h YES static_cast<octave_idx_type>(0)
+x NONE NONE NONE NO
+b bool S NONE NO
+bm boolMatrix ND boolMatrix.h YES
+bnda boolNDArray ND boolNDArray.h YES
+cdm ComplexDiagMatrix DM CDiagMatrix.h YES
+cm ComplexMatrix M CMatrix.h YES
+cnda ComplexNDArray ND CNDArray.h YES
+cs Complex S oct-cmplx.h NO
+dm DiagMatrix DM dDiagMatrix.h YES
+m Matrix M dMatrix.h YES
+nda NDArray ND dNDArray.h YES
+s double S NONE NO
+fcdm FloatComplexDiagMatrix DM fCDiagMatrix.h YES
+fcm FloatComplexMatrix M fCMatrix.h YES
+fcnda FloatComplexNDArray ND fCNDArray.h YES
+fcs FloatComplex S oct-cmplx.h NO
+fdm FloatDiagMatrix DM fDiagMatrix.h YES
+fm FloatMatrix M fMatrix.h YES
+fnda FloatNDArray ND fNDArray.h YES
+fs float S NONE NO
+i8 octave_int8 S oct-inttypes.h YES int8_t
+ui8 octave_uint8 S oct-inttypes.h YES uint8_t
+i16 octave_int16 S oct-inttypes.h YES int16_t
+ui16 octave_uint16 S oct-inttypes.h YES uint16_t
+i32 octave_int32 S oct-inttypes.h YES int32_t
+ui32 octave_uint32 S oct-inttypes.h YES uint32_t
+i64 octave_int64 S oct-inttypes.h YES int64_t
+ui64 octave_uint64 S oct-inttypes.h YES uint64_t
+i8nda int8NDArray ND int8NDArray.h YES int8_t
+ui8nda uint8NDArray ND uint8NDArray.h YES uint8_t
+i16nda int16NDArray ND int16NDArray.h YES int16_t
+ui16nda uint16NDArray ND uint16NDArray.h YES uint16_t
+i32nda int32NDArray ND int32NDArray.h YES int32_t
+ui32nda uint32NDArray ND uint32NDArray.h YES uint32_t
+i64nda int64NDArray ND int64NDArray.h YES int64_t
+ui64nda uint64NDArray ND uint64NDArray.h YES uint64_t
+pm PermMatrix PM PermMatrix.h YES
 #
 # full-matrix operators
 #

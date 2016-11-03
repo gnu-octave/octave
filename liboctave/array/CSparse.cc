@@ -7526,61 +7526,61 @@ operator * (const SparseComplexMatrix& m, const SparseComplexMatrix& a)
 ComplexMatrix
 operator * (const ComplexMatrix& m, const SparseMatrix& a)
 {
-  FULL_SPARSE_MUL (ComplexMatrix, double, Complex (0.,0.));
+  FULL_SPARSE_MUL (ComplexMatrix, double);
 }
 
 ComplexMatrix
 operator * (const Matrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  FULL_SPARSE_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 operator * (const ComplexMatrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  FULL_SPARSE_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 mul_trans (const ComplexMatrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, Complex (0.,0.), );
+  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, );
 }
 
 ComplexMatrix
 mul_herm (const ComplexMatrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, Complex (0.,0.), conj);
+  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, conj);
 }
 
 ComplexMatrix
 operator * (const SparseComplexMatrix& m, const Matrix& a)
 {
-  SPARSE_FULL_MUL (ComplexMatrix, double, Complex (0.,0.));
+  SPARSE_FULL_MUL (ComplexMatrix, double);
 }
 
 ComplexMatrix
 operator * (const SparseMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  SPARSE_FULL_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 operator * (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  SPARSE_FULL_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 trans_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), );
+  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, );
 }
 
 ComplexMatrix
 herm_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), conj);
+  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, conj);
 }
 
 // diag * sparse and sparse * diag
@@ -7933,11 +7933,11 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
   return r;
 }
 
-SPARSE_SMS_CMP_OPS (SparseComplexMatrix, 0.0, Complex, 0.0)
+SPARSE_SMS_CMP_OPS (SparseComplexMatrix, Complex)
 SPARSE_SMS_BOOL_OPS (SparseComplexMatrix, Complex)
 
-SPARSE_SSM_CMP_OPS (Complex, 0.0, SparseComplexMatrix, 0.0)
+SPARSE_SSM_CMP_OPS (Complex, SparseComplexMatrix)
 SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix)
 
-SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, SparseComplexMatrix, 0.0)
+SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, SparseComplexMatrix)
 SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix)

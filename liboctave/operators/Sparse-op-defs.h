@@ -77,7 +77,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_SMS_BIN_OP_2 (R2, operator *, *, M, S) \
   SPARSE_SMS_BIN_OP_2 (R2, operator /, /, M, S)
 
-#define SPARSE_SMS_CMP_OP(F, OP, M, MZ, S, SZ)                          \
+#define SPARSE_SMS_CMP_OP(F, OP, M, S)                                  \
   SparseBoolMatrix                                                      \
   F (const M& m, const S& s)                                            \
   {                                                                     \
@@ -85,7 +85,9 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type nc = m.cols ();                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
-    if (MZ OP s)                                                        \
+    M::element_type m_zero = M::element_type ();                        \
+                                                                        \
+    if (m_zero OP s)                                                    \
       {                                                                 \
         r = SparseBoolMatrix (nr, nc, true);                            \
         for (octave_idx_type j = 0; j < nc; j++)                        \
@@ -114,17 +116,17 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMS_CMP_OPS(M, MZ, S, SZ)                \
-  SPARSE_SMS_CMP_OP (mx_el_lt, <,  M, MZ, S, SZ)        \
-  SPARSE_SMS_CMP_OP (mx_el_le, <=, M, MZ, S, SZ)        \
-  SPARSE_SMS_CMP_OP (mx_el_ge, >=, M, MZ, S, SZ)        \
-  SPARSE_SMS_CMP_OP (mx_el_gt, >,  M, MZ, S, SZ)        \
-  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, MZ, S, SZ)        \
-  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, MZ, S, SZ)
+#define SPARSE_SMS_CMP_OPS(M, S)                \
+  SPARSE_SMS_CMP_OP (mx_el_lt, <,  M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_le, <=, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_ge, >=, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_gt, >,  M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, S)
 
-#define SPARSE_SMS_EQNE_OPS(M, MZ, S, SZ)               \
-  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, MZ, S, SZ)        \
-  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, MZ, S, SZ)
+#define SPARSE_SMS_EQNE_OPS(M, S)               \
+  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, S)
 
 #define SPARSE_SMS_BOOL_OR_OP(M, S)                                     \
   SparseBoolMatrix                                                      \
@@ -248,7 +250,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_SSM_BIN_OP_2 (R2, operator *, *, S, M) \
   SPARSE_SSM_BIN_OP_2 (R2, operator /, /, S, M)
 
-#define SPARSE_SSM_CMP_OP(F, OP, S, SZ, M, MZ)                          \
+#define SPARSE_SSM_CMP_OP(F, OP, S, M)                                  \
   SparseBoolMatrix                                                      \
   F (const S& s, const M& m)                                            \
   {                                                                     \
@@ -256,7 +258,9 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type nc = m.cols ();                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
-    if (s OP MZ)                                                        \
+    M::element_type m_zero = M::element_type ();                        \
+                                                                        \
+    if (s OP m_zero)                                                    \
       {                                                                 \
         r = SparseBoolMatrix (nr, nc, true);                            \
         for (octave_idx_type j = 0; j < nc; j++)                        \
@@ -285,17 +289,17 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SSM_CMP_OPS(S, SZ, M, MZ)                \
-  SPARSE_SSM_CMP_OP (mx_el_lt, <,  S, SZ, M, MZ)        \
-  SPARSE_SSM_CMP_OP (mx_el_le, <=, S, SZ, M, MZ)        \
-  SPARSE_SSM_CMP_OP (mx_el_ge, >=, S, SZ, M, MZ)        \
-  SPARSE_SSM_CMP_OP (mx_el_gt, >,  S, SZ, M, MZ)        \
-  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, SZ, M, MZ)        \
-  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, SZ, M, MZ)
+#define SPARSE_SSM_CMP_OPS(S, M)                \
+  SPARSE_SSM_CMP_OP (mx_el_lt, <,  S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_le, <=, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_ge, >=, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_gt, >,  S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, M)
 
-#define SPARSE_SSM_EQNE_OPS(S, SZ, M, MZ)               \
-  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, SZ, M, MZ)        \
-  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, SZ, M, MZ)
+#define SPARSE_SSM_EQNE_OPS(S, M)               \
+  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, M)
 
 #define SPARSE_SSM_BOOL_OR_OP(S, M)                                     \
   SparseBoolMatrix                                                      \
@@ -718,7 +722,7 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: this macro duplicates the bodies of the template functions
 // defined in the SPARSE_SSM_CMP_OP and SPARSE_SMS_CMP_OP macros.
 
-#define SPARSE_SMSM_CMP_OP(F, OP, M1, Z1, M2, Z2)                       \
+#define SPARSE_SMSM_CMP_OP(F, OP, M1, M2)                               \
   SparseBoolMatrix                                                      \
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
@@ -729,6 +733,9 @@ along with Octave; see the file COPYING.  If not, see
                                                                         \
     octave_idx_type m2_nr = m2.rows ();                                 \
     octave_idx_type m2_nc = m2.cols ();                                 \
+                                                                        \
+    M1::element_type Z1 = M1::element_type ();                          \
+    M2::element_type Z2 = M2::element_type ();                          \
                                                                         \
     if (m1_nr == 1 && m1_nc == 1)                                       \
       {                                                                 \
@@ -882,17 +889,17 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMSM_CMP_OPS(M1, Z1, M2, Z2)             \
-  SPARSE_SMSM_CMP_OP (mx_el_lt, <,  M1, Z1, M2, Z2)     \
-  SPARSE_SMSM_CMP_OP (mx_el_le, <=, M1, Z1, M2, Z2)     \
-  SPARSE_SMSM_CMP_OP (mx_el_ge, >=, M1, Z1, M2, Z2)     \
-  SPARSE_SMSM_CMP_OP (mx_el_gt, >,  M1, Z1, M2, Z2)     \
-  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, Z1, M2, Z2)     \
-  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, Z1, M2, Z2)
+#define SPARSE_SMSM_CMP_OPS(M1, M2)             \
+  SPARSE_SMSM_CMP_OP (mx_el_lt, <,  M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_le, <=, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_ge, >=, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_gt, >,  M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_SMSM_EQNE_OPS(M1, Z1, M2, Z2)            \
-  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, Z1, M2, Z2)     \
-  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, Z1, M2, Z2)
+#define SPARSE_SMSM_EQNE_OPS(M1, M2)            \
+  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
 #define SPARSE_SMSM_BOOL_AND_OP(M1, M2)                                 \
   extern SparseBoolMatrix mx_el_and (const M1&, const M2::element_type&); \
@@ -1114,7 +1121,6 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-// FIXME: Pass a specific ZERO value
 #define SPARSE_MSM_BIN_OPS(R1, R2, M1, M2)              \
   SPARSE_MSM_BIN_OP_1 (R1, operator +,  +, M1, M2)      \
   SPARSE_MSM_BIN_OP_1 (R1, operator -,  -, M1, M2)      \
@@ -1173,7 +1179,7 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_MSM_CMP_OPS(M1, Z1, M2, Z2)      \
+#define SPARSE_MSM_CMP_OPS(M1, M2)              \
   SPARSE_MSM_CMP_OP (mx_el_lt, <,  M1, M2)      \
   SPARSE_MSM_CMP_OP (mx_el_le, <=, M1, M2)      \
   SPARSE_MSM_CMP_OP (mx_el_ge, >=, M1, M2)      \
@@ -1181,7 +1187,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1, M2)      \
   SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_MSM_EQNE_OPS(M1, Z1, M2, Z2)     \
+#define SPARSE_MSM_EQNE_OPS(M1, M2)             \
   SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1, M2)      \
   SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
@@ -1386,7 +1392,7 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMM_CMP_OPS(M1, Z1, M2, Z2)      \
+#define SPARSE_SMM_CMP_OPS(M1, M2)              \
   SPARSE_SMM_CMP_OP (mx_el_lt, <,  M1, M2)      \
   SPARSE_SMM_CMP_OP (mx_el_le, <=, M1, M2)      \
   SPARSE_SMM_CMP_OP (mx_el_ge, >=, M1, M2)      \
@@ -1394,7 +1400,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1, M2)      \
   SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_SMM_EQNE_OPS(M1, Z1, M2, Z2)     \
+#define SPARSE_SMM_EQNE_OPS(M1, M2)             \
   SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1, M2)      \
   SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1, M2)
 
@@ -1919,7 +1925,7 @@ along with Octave; see the file COPYING.  If not, see
         }                                                               \
     }
 
-#define SPARSE_FULL_MUL(RET_TYPE, EL_TYPE, ZERO)                        \
+#define SPARSE_FULL_MUL(RET_TYPE, EL_TYPE)                              \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -1935,7 +1941,9 @@ along with Octave; see the file COPYING.  If not, see
     octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
   else                                                                  \
     {                                                                   \
-      RET_TYPE retval (nr, a_nc, ZERO);                                 \
+      RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
+                                                                        \
+      RET_TYPE retval (nr, a_nc, zero);                                 \
                                                                         \
       for (octave_idx_type i = 0; i < a_nc ; i++)                       \
         {                                                               \
@@ -1951,7 +1959,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval;                                                    \
     }
 
-#define SPARSE_FULL_TRANS_MUL(RET_TYPE, EL_TYPE, ZERO, CONJ_OP)         \
+#define SPARSE_FULL_TRANS_MUL(RET_TYPE, EL_TYPE, CONJ_OP)               \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -1975,7 +1983,7 @@ along with Octave; see the file COPYING.  If not, see
             {                                                           \
               octave_quit ();                                           \
                                                                         \
-              EL_TYPE acc = ZERO;                                       \
+              EL_TYPE acc = EL_TYPE ();                                 \
               for (octave_idx_type k = m.cidx (j) ; k < m.cidx (j+1); k++) \
                 acc += a.elem (m.ridx (k),i) * CONJ_OP (m.data (k));    \
               retval.xelem (j,i) = acc;                                 \
@@ -1984,7 +1992,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval;                                                    \
     }
 
-#define FULL_SPARSE_MUL(RET_TYPE, EL_TYPE, ZERO)                        \
+#define FULL_SPARSE_MUL(RET_TYPE, EL_TYPE)                              \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -2000,7 +2008,9 @@ along with Octave; see the file COPYING.  If not, see
     octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
   else                                                                  \
     {                                                                   \
-      RET_TYPE retval (nr, a_nc, ZERO);                                 \
+      RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
+                                                                        \
+      RET_TYPE retval (nr, a_nc, zero);                                 \
                                                                         \
       for (octave_idx_type i = 0; i < a_nc ; i++)                       \
         {                                                               \
@@ -2017,7 +2027,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval;                                                    \
     }
 
-#define FULL_SPARSE_MUL_TRANS(RET_TYPE, EL_TYPE, ZERO, CONJ_OP)         \
+#define FULL_SPARSE_MUL_TRANS(RET_TYPE, EL_TYPE, CONJ_OP)               \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -2033,7 +2043,9 @@ along with Octave; see the file COPYING.  If not, see
     octave::err_nonconformant ("operator *", nr, nc, a_nc, a_nr);               \
   else                                                                  \
     {                                                                   \
-      RET_TYPE retval (nr, a_nr, ZERO);                                 \
+      RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
+                                                                        \
+      RET_TYPE retval (nr, a_nr, zero);                                 \
                                                                         \
       for (octave_idx_type i = 0; i < a_nc ; i++)                       \
         {                                                               \

@@ -7545,25 +7545,25 @@ operator * (const SparseMatrix& m, const SparseMatrix& a)
 Matrix
 operator * (const Matrix& m, const SparseMatrix& a)
 {
-  FULL_SPARSE_MUL (Matrix, double, 0.);
+  FULL_SPARSE_MUL (Matrix, double);
 }
 
 Matrix
 mul_trans (const Matrix& m, const SparseMatrix& a)
 {
-  FULL_SPARSE_MUL_TRANS (Matrix, double, 0., );
+  FULL_SPARSE_MUL_TRANS (Matrix, double, );
 }
 
 Matrix
 operator * (const SparseMatrix& m, const Matrix& a)
 {
-  SPARSE_FULL_MUL (Matrix, double, 0.);
+  SPARSE_FULL_MUL (Matrix, double);
 }
 
 Matrix
 trans_mul (const SparseMatrix& m, const Matrix& a)
 {
-  SPARSE_FULL_TRANS_MUL (Matrix, double, 0., );
+  SPARSE_FULL_TRANS_MUL (Matrix, double, );
 }
 
 // diag * sparse and sparse * diag
@@ -7924,11 +7924,11 @@ max (const SparseMatrix& a, const SparseMatrix& b)
   return r;
 }
 
-SPARSE_SMS_CMP_OPS (SparseMatrix, 0.0, double, 0.0)
+SPARSE_SMS_CMP_OPS (SparseMatrix, double)
 SPARSE_SMS_BOOL_OPS (SparseMatrix, double)
 
-SPARSE_SSM_CMP_OPS (double, 0.0, SparseMatrix, 0.0)
+SPARSE_SSM_CMP_OPS (double, SparseMatrix)
 SPARSE_SSM_BOOL_OPS (double, SparseMatrix)
 
-SPARSE_SMSM_CMP_OPS (SparseMatrix, 0.0, SparseMatrix, 0.0)
+SPARSE_SMSM_CMP_OPS (SparseMatrix, SparseMatrix)
 SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix)

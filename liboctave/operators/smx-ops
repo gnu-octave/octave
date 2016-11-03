@@ -21,7 +21,7 @@
 
 # types
 #
-# key typename object-type header fwd-decl-ok scalar-zero
+# key typename object-type header fwd-decl-ok
 #
 #   S:  scalar
 #   M:  matrix
@@ -29,15 +29,15 @@
 #   ND: N-d array
 #   SM: sparse matrix
 #
-sm SparseMatrix SM dSparse.h YES 0.0
-scm SparseComplexMatrix SM CSparse.h YES 0.0
-sbm SparseBoolMatrix SM boolSparse.h YES false
-b bool S NONE NO false
-bm boolMatrix M boolMatrix.h YES false
-s double S NONE NO 0.0
-cs Complex S oct-cmplx.h NO 0.0
-m Matrix M dMatrix.h YES 0.0
-cm ComplexMatrix M CMatrix.h YES 0.0
+sm SparseMatrix SM dSparse.h YES
+scm SparseComplexMatrix SM CSparse.h YES
+sbm SparseBoolMatrix SM boolSparse.h YES
+b bool S NONE NO
+bm boolMatrix M boolMatrix.h YES
+s double S NONE NO
+cs Complex S oct-cmplx.h NO
+m Matrix M dMatrix.h YES
+cm ComplexMatrix M CMatrix.h YES
 #
 # sparse-matrix operators
 #

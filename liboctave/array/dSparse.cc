@@ -7925,10 +7925,10 @@ max (const SparseMatrix& a, const SparseMatrix& b)
 }
 
 SPARSE_SMS_CMP_OPS (SparseMatrix, 0.0, , double, 0.0, )
-SPARSE_SMS_BOOL_OPS (SparseMatrix, double, 0.0)
+SPARSE_SMS_BOOL_OPS (SparseMatrix, double)
 
 SPARSE_SSM_CMP_OPS (double, 0.0, , SparseMatrix, 0.0, )
-SPARSE_SSM_BOOL_OPS (double, SparseMatrix, 0.0)
+SPARSE_SSM_BOOL_OPS (double, SparseMatrix)
 
 SPARSE_SMSM_CMP_OPS (SparseMatrix, 0.0, , SparseMatrix, 0.0, )
-SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix, 0.0)
+SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix)

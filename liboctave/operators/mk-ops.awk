@@ -180,9 +180,6 @@ BEGIN {
           lhs_core_type = core_type[lhs_num];
           rhs_core_type = core_type[rhs_num];
 
-          result_scalar_zero_val_1 = scalar_zero_val[result_num_1];
-          if (sparse)
-            result_scalar_zero_val_2 = scalar_zero_val[result_num_2];
           lhs_scalar_zero_val = scalar_zero_val[lhs_num];
           rhs_scalar_zero_val = scalar_zero_val[rhs_num];
 
@@ -392,8 +389,7 @@ BEGIN {
 
               if (bin_ops)
                 emit_bin_ops(sparse, lhs_class, rhs_class,
-                             result_type_1, result_type_2,
-                             lhs_type, rhs_type, result_scalar_zero_val_1);
+                             result_type_1, result_type_2, lhs_type, rhs_type);
 
               if (cmp_ops)
                 emit_cmp_ops(sparse, lhs_class, rhs_class,
@@ -407,8 +403,7 @@ BEGIN {
 
               if (bool_ops)
                 emit_bool_ops(sparse, lhs_class, rhs_class,
-                              lhs_type, rhs_type,
-                              lhs_scalar_zero_val, rhs_scalar_zero_val);
+                              lhs_type, rhs_type);
 
               exit (0);
             }
@@ -619,11 +614,10 @@ function emit_sparse_bin_ops (lhs_class, rhs_class, result_type_1,
 }
 
 function emit_dm_bin_ops (lhs_class, rhs_class, result_type_1,
-                          lhs_type, rhs_type, result_scalar_zero_val_1)
+                          lhs_type, rhs_type)
 {
-  printf ("%s%s_BIN_OPS (%s, %s, %s, %s)\n",
-          lhs_class, rhs_class, result_type_1,
-          lhs_type, rhs_type, result_scalar_zero_val_1);
+  printf ("%s%s_BIN_OPS (%s, %s, %s)\n",
+          lhs_class, rhs_class, result_type_1, lhs_type, rhs_type);
 }
 
 function emit_mm_bin_op (result_t, op, lhs_t, rhs_t, fcn)
@@ -647,8 +641,7 @@ function emit_mm_bin_ops (result_t, lhs_t, rhs_t)
 }
 
 function emit_bin_ops (sparse, lhs_class, rhs_class,
-                       result_type_1, result_type_2,
-                       lhs_type, rhs_type, result_scalar_zero_val_1)
+                       result_type_1, result_type_2, lhs_type, rhs_type)
 {
   if (sparse)
     emit_sparse_bin_ops(lhs_class, rhs_class, result_type_1,
@@ -656,7 +649,7 @@ function emit_bin_ops (sparse, lhs_class, rhs_class,
  else if ((lhs_class == "DM" && rhs_class == "M") \
           || (lhs_class == "M" && rhs_class == "DM"))
     emit_dm_bin_ops(lhs_class, rhs_class, result_type_1,
-                    lhs_type, rhs_type, result_scalar_zero_val_1);
+                    lhs_type, rhs_type);
   else if (lhs_class == "M" && rhs_class == "M")
     emit_mm_bin_ops(result_type_1, lhs_type, rhs_type);
   else
@@ -691,13 +684,11 @@ function emit_eqne_ops (sparse, lhs_class, rhs_class,
   ## No separate eqne ops for full-matrix or vector.
 }
 
-function emit_bool_ops (sparse, lhs_class, rhs_class, lhs_type, rhs_type,
-                        lhs_scalar_zero_val, rhs_scalar_zero_val)
+function emit_bool_ops (sparse, lhs_class, rhs_class, lhs_type, rhs_type)
 {
   if (sparse)
-    printf ("SPARSE_%s%s_BOOL_OPS2 (%s, %s, %s, %s)\n",
-            lhs_class, rhs_class, lhs_type, rhs_type,
-            lhs_scalar_zero_val, rhs_scalar_zero_val);
+    printf ("SPARSE_%s%s_BOOL_OPS (%s, %s)\n",
+            lhs_class, rhs_class, lhs_type, rhs_type);
   else
     printf ("%s%s_BOOL_OPS (%s, %s)\n",
             lhs_class, rhs_class, lhs_type, rhs_type);

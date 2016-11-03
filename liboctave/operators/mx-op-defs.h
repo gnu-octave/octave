@@ -421,11 +421,13 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                   \
   }
 
-#define MDM_MULTIPLY_OP(R, M, DM, R_ZERO)                               \
+#define MDM_MULTIPLY_OP(R, M, DM)                                       \
   R                                                                     \
   operator * (const M& m, const DM& dm)                                 \
   {                                                                     \
     R r;                                                                \
+                                                                        \
+    R::element_type r_zero = R::element_type ();                        \
                                                                         \
     octave_idx_type m_nr = m.rows ();                                   \
     octave_idx_type m_nc = m.cols ();                                   \
@@ -447,15 +449,15 @@ along with Octave; see the file COPYING.  If not, see
         mx_inline_mul (m_nr, rd, md, dd[i]);                            \
         rd += m_nr; md += m_nr;                                         \
       }                                                                 \
-    mx_inline_fill (m_nr * (dm_nc - len), rd, R_ZERO);                  \
+    mx_inline_fill (m_nr * (dm_nc - len), rd, r_zero);                  \
                                                                         \
     return r;                                                           \
   }
 
-#define MDM_BIN_OPS(R, M, DM, R_ZERO)           \
+#define MDM_BIN_OPS(R, M, DM)                   \
   MDM_BIN_OP (R, operator +, M, DM, +=)         \
   MDM_BIN_OP (R, operator -, M, DM, -=)         \
-  MDM_MULTIPLY_OP (R, M, DM, R_ZERO)
+  MDM_MULTIPLY_OP (R, M, DM)
 
 // diagonal matrix by matrix operations.
 
@@ -491,11 +493,13 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                   \
   }
 
-#define DMM_MULTIPLY_OP(R, DM, M, R_ZERO)                               \
+#define DMM_MULTIPLY_OP(R, DM, M)                                       \
   R                                                                     \
   operator * (const DM& dm, const M& m)                                 \
   {                                                                     \
     R r;                                                                \
+                                                                        \
+    R::element_type r_zero = R::element_type ();                        \
                                                                         \
     octave_idx_type dm_nr = dm.rows ();                                 \
     octave_idx_type dm_nc = dm.cols ();                                 \
@@ -516,17 +520,17 @@ along with Octave; see the file COPYING.  If not, see
       {                                                                 \
         mx_inline_mul (len, rd, md, dd);                                \
         rd += len; md += m_nr;                                          \
-        mx_inline_fill (dm_nr - len, rd, R_ZERO);                       \
+        mx_inline_fill (dm_nr - len, rd, r_zero);                       \
         rd += dm_nr - len;                                              \
       }                                                                 \
                                                                         \
     return r;                                                           \
   }
 
-#define DMM_BIN_OPS(R, DM, M, R_ZERO)           \
+#define DMM_BIN_OPS(R, DM, M)                   \
   DMM_BIN_OP (R, operator +, DM, M, +=, )       \
   DMM_BIN_OP (R, operator -, DM, M, +=, -)      \
-  DMM_MULTIPLY_OP (R, DM, M, R_ZERO)
+  DMM_MULTIPLY_OP (R, DM, M)
 
 // diagonal matrix by diagonal matrix operations.
 

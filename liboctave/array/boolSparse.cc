@@ -322,10 +322,10 @@ SparseBoolMatrix::ipermute (const Array<octave_idx_type>& vec) const
 }
 
 SPARSE_SMS_EQNE_OPS (SparseBoolMatrix, false, , bool, false, )
-SPARSE_SMS_BOOL_OPS (SparseBoolMatrix, bool, false)
+SPARSE_SMS_BOOL_OPS (SparseBoolMatrix, bool)
 
 SPARSE_SSM_EQNE_OPS (bool, false, , SparseBoolMatrix, false, )
-SPARSE_SSM_BOOL_OPS (bool, SparseBoolMatrix, false)
+SPARSE_SSM_BOOL_OPS (bool, SparseBoolMatrix)
 
 SPARSE_SMSM_EQNE_OPS (SparseBoolMatrix, false, , SparseBoolMatrix, false, )
-SPARSE_SMSM_BOOL_OPS (SparseBoolMatrix, SparseBoolMatrix, false)
+SPARSE_SMSM_BOOL_OPS (SparseBoolMatrix, SparseBoolMatrix)

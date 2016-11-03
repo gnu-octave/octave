@@ -545,25 +545,20 @@ namespace QtHandles
     if (! visible)
       visible = hasUiMenuChildren (properties<figure> ());
 
-    if (! m_menuBar->isHidden ())
-      {
-        int dy = qMax (h1, h2);
-        QRect r = qWidget<QWidget> ()->geometry ();
+    int dy = qMax (h1, h2);
+    QRect r = qWidget<QWidget> ()->geometry ();
 
-        //qDebug () << "Figure::showMenuBar:" << r;
-        if (! visible)
-          r.adjust (0, dy, 0, 0);
-        else
-          r.adjust (0, -dy, 0, 0);
-        //qDebug () << "Figure::showMenuBar(adjusted):" << r;
+    if (! visible)
+      r.adjust (0, dy, 0, 0);
+    else
+      r.adjust (0, -dy, 0, 0);
 
-        m_blockUpdates = true;
-        qWidget<QWidget> ()->setGeometry (r);
-        m_menuBar->setVisible (visible);
-        m_blockUpdates = false;
+    m_blockUpdates = true;
+    qWidget<QWidget> ()->setGeometry (r);
+    m_menuBar->setVisible (visible);
+    m_blockUpdates = false;
 
-        updateBoundingBox (false);
-      }
+    updateBoundingBox (false);
   }
 
   void

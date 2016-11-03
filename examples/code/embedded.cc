@@ -2,7 +2,7 @@
 #include <octave/oct.h>
 #include <octave/octave.h>
 #include <octave/parse.h>
-#include <octave/toplev.h>
+#include <octave/interpreter.h>
 
 int
 main (void)

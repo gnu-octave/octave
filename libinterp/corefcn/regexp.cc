@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 // is different from those used in the *printf functions.
 
 static std::string
-do_regexp_ptn_string_escapes (const std::string& s)
+do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
 {
   std::string retval;
 
@@ -67,7 +67,14 @@ do_regexp_ptn_string_escapes (const std::string& s)
           switch (s[++j])
             {
             case 'b': // backspace
-              retval[i] = '\b';
+              if (is_sq_str)
+                retval[i] = '\b';
+              else
+                {
+                  // Pass escape sequence through
+                  retval[i] = '\\';
+                  retval[++i] = 'b';
+                }
               break;
 
             // Translate \< and \> to PCRE word boundary
@@ -335,9 +342,8 @@ octregexp (const octave_value_list &args, int nargout,
 
   std::string pattern = args(1).string_value ();
 
-  // Matlab compatibility.
-  if (args(1).is_sq_string ())
-    pattern = do_regexp_ptn_string_escapes (pattern);
+  // Rewrite pattern for PCRE
+  pattern = do_regexp_ptn_string_escapes (pattern, args(1).is_sq_string ());
 
   octave::regexp::opts options;
   options.case_insensitive (case_insensitive);
@@ -1297,9 +1303,8 @@ octregexprep (const octave_value_list &args, const std::string &who)
 
   std::string pattern = args(1).string_value ();
 
-  // Matlab compatibility.
-  if (args(1).is_sq_string ())
-    pattern = do_regexp_ptn_string_escapes (pattern);
+  // Rewrite pattern for PCRE
+  pattern = do_regexp_ptn_string_escapes (pattern, args(1).is_sq_string ());
 
   std::string replacement = args(2).string_value ();
 

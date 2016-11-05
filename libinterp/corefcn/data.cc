@@ -3277,6 +3277,48 @@ Octave are double precision floating point values.
   return ovl (args(0).is_integer_type ());
 }
 
+/*
+%!assert (isinteger (int8 (16)))
+%!assert (isinteger (int16 (16)))
+%!assert (isinteger (int32 (16)))
+%!assert (isinteger (int64 (16)))
+
+%!assert (isinteger (uint8 (16)))
+%!assert (isinteger (uint16 (16)))
+%!assert (isinteger (uint32 (16)))
+%!assert (isinteger (uint64 (16)))
+
+%!assert (isinteger (intmax ("int8")))
+%!assert (isinteger (intmax ("int16")))
+%!assert (isinteger (intmax ("int32")))
+%!assert (isinteger (intmax ("int64")))
+
+%!assert (isinteger (intmax ("uint8")))
+%!assert (isinteger (intmax ("uint16")))
+%!assert (isinteger (intmax ("uint32")))
+%!assert (isinteger (intmax ("uint64")))
+
+%!assert (isinteger (intmin ("int8")))
+%!assert (isinteger (intmin ("int16")))
+%!assert (isinteger (intmin ("int32")))
+%!assert (isinteger (intmin ("int64")))
+
+%!assert (isinteger (intmin ("uint8")))
+%!assert (isinteger (intmin ("uint16")))
+%!assert (isinteger (intmin ("uint32")))
+%!assert (isinteger (intmin ("uint64")))
+
+%!assert (isinteger (uint8 ([1:10])))
+%!assert (isinteger (uint8 ([1:10; 1:10])))
+
+%!assert (! isinteger (16))
+%!assert (! isinteger ("parrot"))
+%!assert (! isinteger ([1, 2, 3]))
+
+%!error isinteger ()
+%!error isinteger ("multiple", "parameters")
+*/
+
 DEFUN (iscomplex, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscomplex (@var{x})

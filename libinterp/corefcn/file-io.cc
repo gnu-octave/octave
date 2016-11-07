@@ -2603,7 +2603,7 @@ DEFUNX ("ferror", Fferror, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{msg} =} ferror (@var{fid})
 @deftypefnx {} {[@var{msg}, @var{err}] =} ferror (@var{fid})
-@deftypefnx {} {[@var{dots}] =} ferror (@var{fid}, "clear")
+@deftypefnx {} {[@dots{}] =} ferror (@var{fid}, "clear")
 Query the error status of the stream specified by file descriptor @var{fid}
 
 If an error condition exists then return a string @var{msg} describing the
@@ -2651,7 +2651,7 @@ Start a process and create a pipe.
 The name of the command to run is given by @var{command}.  The argument
 @var{mode} may be
 
-@table @code
+@table @asis
 @item @qcode{"r"}
 The pipe will be connected to the standard output of the process, and
 open for reading.

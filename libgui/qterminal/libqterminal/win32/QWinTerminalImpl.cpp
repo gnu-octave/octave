@@ -49,6 +49,7 @@ see <http://www.gnu.org/licenses/>.
 #define _WIN32_WINNT 0x0500
 #endif
 #include <windows.h>
+#include <versionhelpers.h>
 #include <cstring>
 #include <csignal>
 #include <limits>
@@ -383,8 +384,11 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   l->addWidget (m_horizontalScrollBar, 1, 0);
   l->addWidget (m_verticalScrollBar, 0, 1);
 
-  SetConsoleCP (65001);
-  SetConsoleOutputCP (65001);
+  if (IsWindows7OrGreater ())
+    {
+      SetConsoleCP (65001);
+      SetConsoleOutputCP (65001);
+    }
 
   // Choose 15 (0xF) as index into the Windows console color map for the
   // background and 0 (0x0) as the index for the foreground.  This

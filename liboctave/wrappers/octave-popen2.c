@@ -206,7 +206,7 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
       else
         perror ("popen2 (child)");
 
-      exit (0);
+      _exit (127);
     }
   else if (pid > 0)
     {

@@ -97,8 +97,8 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
   ext = lower (ext);
 
   switch (ext)
-    case {".au", ".snd", ".flac", ".ogg"}
-      error ("importdata: not implemented for file format %s", ext);
+    case {".au", ".snd", ".flac", ".ogg", ".wav", ".wave"}
+      [output.data, output.fs] = audioread (fname);
     case {".avi", ".mj2", ".mpg", ".asf", ".asx", ".wmv", ".mp4", ".m4v", ...
           ".mov"}
       error ("importdata: not implemented for file format %s", ext);
@@ -123,10 +123,6 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
         ## Fall back to unimplemented.m.
         output = xlsread (fname);
       end_try_catch
-    case {".wav", ".wave"}
-      delimiter = NaN;
-      header_rows = 0;
-      [output.data, output.fs] = wavread (fname);
     otherwise
       ## Assume the file is in ASCII format.
       [output, delimiter, header_rows] = ...

@@ -221,11 +221,17 @@ function ZI = interp2 (varargin)
 
       ## Get 2D index.
       idx = sub2ind (size (a), yidx, xidx);
-      ## We can dispose of the 1D indices at this point to save memory.
+      ## Dispose of the 1D indices at this point to save memory.
       clear xidx yidx;
 
-      ## apply plane equation
-      ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
+      ## Apply plane equation
+      ## Handle case where idx and coefficients are both vectors and resulting
+      ## coeff(idx) follows orientation of coeff, rather than that of idx.
+      forient = @(x) reshape (x, size (idx));
+      ZI =   forient (a(idx))        ...
+           + forient (b(idx)) .* Xsc ...
+           + forient (c(idx)) .* Ysc ...
+           + forient (d(idx)) .* Xsc.*Ysc;
 
     elseif (strcmp (method, "nearest"))
       ii = (XI - X(xidx) >= X(xidx + 1) - XI);
@@ -527,7 +533,6 @@ endfunction
 %! assert (interp2 (x,y,orig, xi, yi,"linear", 0+1i), [0+1i,0+1i;0+1i,0+1i]);
 %! assert (interp2 (x,y,orig, xi, yi,"spline"), [27,43;512,528]);
 
-
 %!test  # for values at boundaries
 %! A = [1,2;3,4];
 %! x = [0,1];
@@ -542,6 +547,9 @@ endfunction
 ## re-order monotonically decreasing
 %!assert <41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
 %!assert <41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
+
+## Linear interpretation with vector XI doesn't lead to matrix output
+%!assert <49506> (interp2 ([2 3], [2 3 4], [1 2; 3 4; 5 6], [2 3], 3, "linear"), [3 4])
 
 %!shared z, zout, tol
 %! z = [1 3 5; 3 5 7; 5 7 9];

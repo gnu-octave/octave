@@ -243,10 +243,10 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
   ## Now, let the efficient built-in routine do the bulk of the work.
   if (delimiter == " ")
     output.data = dlmread (fname, "", header_rows, header_cols,
-                           "emptyvalue", NA);
+                           "emptyvalue", NaN);
   else
     output.data = dlmread (fname, delimiter, header_rows, header_cols,
-                           "emptyvalue", NA);
+                           "emptyvalue", NaN);
   endif
 
   ## Go back and correct any individual values that did not convert.

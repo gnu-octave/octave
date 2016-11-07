@@ -177,22 +177,21 @@ function ZI = interp2 (varargin)
   if (any (strcmp (method, {"nearest", "linear", "pchip", "cubic"})))
 
     ## If Xi and Yi are vectors of different orientation build a grid
-    if ((rows (XI) == 1 && columns (YI) == 1)
-        || (columns (XI) == 1 && rows (YI) == 1))
+    if ((isrow (XI) && iscolumn (YI)) || (iscolumn (XI) && isrow (YI)))
       [XI, YI] = meshgrid (XI, YI);
     elseif (! size_equal (XI, YI))
       error ("interp2: XI and YI must be matrices of equal size");
     endif
 
     ## if XI, YI are vectors, X and Y should share their orientation.
-    if (rows (XI) == 1)
+    if (isrow (XI))
       if (rows (X) != 1)
         X = X.';
       endif
       if (rows (Y) != 1)
         Y = Y.';
       endif
-    elseif (columns (XI) == 1)
+    elseif (iscolumn (XI))
       if (columns (X) != 1)
         X = X.';
       endif
@@ -343,32 +342,7 @@ endfunction
 
 function b = isgriddata (X)
   d1 = diff (X, 1, 1);
-  b = all (d1(:) == 0);
-endfunction
-
-## Compute the bicubic interpolation coefficients
-function o = bc (x)
-  x = abs (x);
-  o = zeros (size (x));
-  idx1 = (x < 1);
-  idx2 = ! idx1 & (x < 2);
-  o(idx1) = 1 - 2.*x(idx1).^2 + x(idx1).^3;
-  o(idx2) = 4 - 8.*x(idx2) + 5.*x(idx2).^2 - x(idx2).^3;
-endfunction
-
-## This version of sub2ind behaves as if the data was symmetrically padded
-function ind = sym_sub2ind (sz, Y, X)
-  Y(Y < 1) = 1 - Y(Y < 1);
-  while (any (Y(:) > 2*sz(1)))
-    Y(Y > 2*sz(1)) = round (Y(Y > 2*sz(1)) / 2);
-  endwhile
-  Y(Y > sz(1)) = 1 + 2*sz(1) - Y(Y > sz(1));
-  X(X < 1) = 1 - X(X < 1);
-  while (any (X(:) > 2*sz(2)))
-    X(X > 2 * sz(2)) = round (X(X > 2*sz(2)) / 2);
-  endwhile
-  X(X > sz(2)) = 1 + 2*sz(2) - X(X > sz(2));
-  ind = sub2ind (sz, Y, X);
+  b = ! any (d1(:) != 0);
 endfunction
 
 

@@ -243,10 +243,10 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
   ## Now, let the efficient built-in routine do the bulk of the work.
   if (delimiter == " ")
     output.data = dlmread (fname, "", header_rows, header_cols,
-                           "emptyvalue", NaN);
+                           "emptyvalue", NA);
   else
     output.data = dlmread (fname, delimiter, header_rows, header_cols,
-                           "emptyvalue", NaN);
+                           "emptyvalue", NA);
   endif
 
   ## Go back and correct any individual values that did not convert.
@@ -267,11 +267,20 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
         fields = ostrsplit (row, delimiter);
       endif
 
-      text = fields(na_idx(ridx,:));
+      missing_idx = na_idx(ridx,:);
+      if (! size_equal (missing_idx, fields))
+        ## Fields completely missing at end of line.  Replace with NA.
+        col = columns (fields);
+        output.data(ridx, (col+1):end) = NA;
+        missing_idx = missing_idx(1:col);
+      endif
+      text = fields(missing_idx);
+
       text = text(! strcmpi (text, "NA"));  #  Remove valid "NA" entries
       if (! isempty (text))
-        output.textdata(end+1:end+numel (text), 1) = text;
+        output.textdata = [output.textdata; text(:)];
       endif
+
       if (header_cols)
         output.rowheaders(end+1, :) = fields(1:header_cols);
       endif

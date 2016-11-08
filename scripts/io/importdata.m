@@ -568,6 +568,5 @@ endfunction
 %!error <DELIMITER must be a single character> importdata ("foo", "ab")
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", "1")
 %!error <HEADER_ROWS must be an integer> importdata ("foo", " ", 1.5)
-%!error <not implemented for file format .au> importdata ("foo.au")
 %!error <not implemented for file format .avi> importdata ("foo.avi")
 

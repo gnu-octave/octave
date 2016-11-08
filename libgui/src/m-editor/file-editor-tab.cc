@@ -775,7 +775,16 @@ QString
 file_editor_tab::comment_string (const QString& lexer)
 {
   if (lexer == "octave" || lexer == "matlab")
-    return QString("%");
+    {
+      QSettings *settings = resource_manager::get_settings ();
+      int comment_index = settings->value ("editor/octave_comment_string", 0).toInt ();
+      if (comment_index == 1)
+      	return QString("#");
+      else if (comment_index == 2)
+        return QString("%");
+      else
+        return QString("##");  // default and for index 0
+    }
   else if (lexer == "perl" || lexer == "bash" || lexer == "diff")
     return QString("#");
   else if (lexer == "cpp")

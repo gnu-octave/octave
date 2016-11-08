@@ -438,6 +438,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_eol_chars",false).toBool ());
   ui->cb_show_hscrollbar->setChecked (
     settings->value ("editor/show_hscroll_bar",true).toBool ());
+  ui->combo_oct_comment_str->setCurrentIndex (
+    settings->value ("editor/octave_comment_string", 0).toInt ());
 
 #if defined (HAVE_QSCINTILLA)
 #  if defined (Q_OS_WIN32)
@@ -816,6 +818,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode",
                       ui->combo_eol_mode->currentIndex ());
+  settings->setValue ("editor/octave_comment_string",
+                      ui->combo_oct_comment_str->currentIndex ());
   settings->setValue ("editor/default_encoding",
                       ui->editor_combo_encoding->currentText ());
   settings->setValue ("editor/auto_indent",

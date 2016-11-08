@@ -210,7 +210,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
 %! assert (dot (x, y, 2), [17; 53]);
 %! assert (dot (x, y, 3), [5 12; 21 32]);
 
-%% Test input validation
+## Test input validation
 %!error dot ()
 %!error dot (1)
 %!error dot (1,2,3,4)
@@ -347,7 +347,7 @@ endfor
 %! assert (blkmm (single (x), single (x)), single (z));
 %! assert (blkmm (x, single (x)), single (z));
 
-%% Test input validation
+## Test input validation
 %!error blkmm ()
 %!error blkmm (1)
 %!error blkmm (1,2,3)

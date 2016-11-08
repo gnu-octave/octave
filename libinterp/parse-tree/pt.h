@@ -73,7 +73,7 @@ public:
   bool meets_bp_condition (void) const;
 
   bool is_breakpoint (bool check_active = false) const
-  { return bp && (!check_active || meets_bp_condition ()); }
+  { return bp && (! check_active || meets_bp_condition ()); }
 
   // breakpoint condition, or "0" (i.e., "false") if no breakpoint.
   // To distinguish "0" from a disabled breakpoint, test "is_breakpoint" too.

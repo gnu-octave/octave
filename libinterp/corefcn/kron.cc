@@ -311,9 +311,8 @@ Since the Kronecker product is associative, this is well-defined.
 
 %!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
 
-%% Test for two diag matrices.  See the comments above in
-%% dispatch_kron for this case.
-%%
+## Test for two diag matrices.
+## See the comments above in dispatch_kron for this case.
 %!test
 %! expected = zeros (16, 16);
 %! expected (1, 11) = 3;

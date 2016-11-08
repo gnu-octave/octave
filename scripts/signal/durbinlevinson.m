@@ -68,7 +68,7 @@ function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
     endfor
     newv = (1 - newphi(1)^2) * oldv;
 
-  elseif(nargin == 1)
+  elseif (nargin == 1)
 
     tt = length (c)-1;
     oldphi = c(2) / c(1);

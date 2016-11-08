@@ -744,7 +744,7 @@ dimensionality as the other array.
 %!assert (bsxfun (f, a, d), a - repmat (d, [1, 1, 4]))
 %!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
 
-%% The test below is a very hard case to treat
+## The test below is a very hard case to treat
 %!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
@@ -770,7 +770,7 @@ dimensionality as the other array.
 %!assert (bsxfun (@and, a > 0, b > 0), (aa > 0) & (bb > 0))
 %!assert (bsxfun (@or, a > 0, b > 0), (aa > 0) | (bb > 0))
 
-%% Test automatic bsxfun
+## Test automatic bsxfun
 %
 %!test
 %! funs = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, ...

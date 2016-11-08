@@ -233,7 +233,7 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6], "full"),
 %!        conv2 (1:3, 1:2, [1,2;3,4;5,6]));
 
-%% Test shapes
+## Test shapes
 %!shared A, B, C
 %! A = rand (3, 4);
 %! B = rand (4);
@@ -251,10 +251,10 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert (conv2 (A,B, "valid"), zeros (0, 0))
 %!assert (size (conv2 (B,A, "valid")), [3 2])
 
-%% Clear shared variables so they are not reported for tests below
+## Clear shared variables so they are not reported for tests below
 %!shared
 
-%% Test cases from Bug #34893
+## Test cases from Bug #34893
 %!assert <34893> (conv2 ([1:5;1:5], [1:2], "same"),
 %!                [4 7 10 13 10; 4 7 10 13 10])
 %!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "same"),
@@ -272,12 +272,12 @@ When the third argument is a matrix, return the convolution of the matrix
 %! B = conv2 (x, y, "valid");
 %! assert (B, A);   # Yes, this test is for *exact* equivalence.
 
-%% Test input validation
+## Test input validation
 %!error conv2 ()
 %!error conv2 (1)
 %!error <must be 1-D vectors or 2-D matrices> conv2 (ones (2), ones (2,2,2))
 %!error <SHAPE type not valid> conv2 (1,2, "NOT_A_SHAPE")
-%% Test alternate calling form which should be 2 vectors and a matrix
+## Test alternate calling form which should be 2 vectors and a matrix
 %!error conv2 (ones (2), 1, 1)
 %!error conv2 (1, ones (2), 1)
 */

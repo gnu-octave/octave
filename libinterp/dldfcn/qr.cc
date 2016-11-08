@@ -812,7 +812,7 @@ permutation vector instead of a permutation matrix.
 %! [c,r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%% Test under-determined systems!!
+## Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = sprandn (n,n+1,d) + speye (n,n+1);
@@ -847,7 +847,7 @@ permutation vector instead of a permutation matrix.
 %! [c,r] = qr (a, b);
 %! assert (r\c, full (a)\b, 10e-10);
 
-%% Test under-determined systems!!
+## Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
 %! a = 1i*sprandn (n,n+1,d) + speye (n,n+1);

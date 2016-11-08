@@ -194,7 +194,7 @@ longer running time.
 %! assert (spparms ("exact_d"), 5);
 %! spparms (old_vals);     # restore state
 
-%% Test input validation
+## Test input validation
 %!error <too many input arguments> spparms (1, 2, 3)
 %!error <too many output arguments> [x, y, z] = spparms ()
 %!error <KEY not recognized> spparms ("UNKNOWN_KEY")

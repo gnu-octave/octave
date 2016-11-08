@@ -375,7 +375,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
   bool valid = false;
   std::string prompt = "dbstop if";
   bool ok;
-  while (!valid)
+  while (! valid)
     {
       QString new_condition
         = QInputDialog::getText (this, tr ("Breakpoint condition"),
@@ -1770,7 +1770,7 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
     }
 
   // Return early if this file is not loaded in the symbol table
-  if (!sym.is_defined () || !sym.is_user_code ())
+  if (! sym.is_defined () || ! sym.is_user_code ())
     return true;
 
   octave_user_code *fcn = sym.user_code_value ();
@@ -1840,7 +1840,7 @@ file_editor_tab::save_file (const QString& saveFileName,
     {
       file_to_save = file_info.canonicalFilePath ();
       // Force reparse of this function next time it is used (bug #46632)
-      if (!exit_debug_and_clear (file_to_save, file_info.baseName ()))
+      if (! exit_debug_and_clear (file_to_save, file_info.baseName ()))
         return;
     }
   else

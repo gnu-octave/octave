@@ -2211,7 +2211,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
 %! assert (q, 0, 1e-6);
 %! assert (err, 0, 15*eps);
 
-%% Test input validation
+## Test input validation
 %!error (quadcc ())
 %!error (quadcc (@sin))
 %!error (quadcc (@sin, 0))

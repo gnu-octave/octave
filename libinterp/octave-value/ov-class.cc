@@ -1785,7 +1785,7 @@ is derived.
 %! jobj = javaObject ("java.lang.StringBuffer");
 %! assert (class (jobj), "java.lang.StringBuffer");
 
-%% Test Input Validation
+## Test Input Validation
 %!error class ()
 */
 

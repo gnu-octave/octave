@@ -598,7 +598,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %!assert (filter (1, ones (10,1) / 10, zeros (0,10)), zeros (0,10))
 %!assert (filter (1, ones (10,1) / 10, single (1:5)), repmat (single (10), 1, 5))
 
-%% Test using initial conditions
+## Test using initial conditions
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]), [2 2])
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]'), [2 2])
 %!assert (filter ([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]), [5 7; 6 10; 14 18])

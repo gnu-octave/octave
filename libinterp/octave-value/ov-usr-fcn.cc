@@ -1123,18 +1123,18 @@ element-by-element and a logical array is returned.  At the top level,
 %!
 %!error [~, ~] = try_isargout ()
 %!
-%% Check to see that isargout isn't sticky:
+## Check to see that isargout isn't sticky:
 %!test
 %! [x, y] = try_isargout ();
 %! assert ([x, y], [1, 2]);
 %!
-%% It should work without ():
+## It should work without ():
 %!test
 %! [~, y] = try_isargout;
 %! assert (y, -2);
 %!
-%% It should work in function handles, anonymous functions, and cell
-%% arrays of handles or anonymous functions.
+## It should work in function handles, anonymous functions, and cell
+## arrays of handles or anonymous functions.
 %!test
 %! fh = @try_isargout;
 %! af = @() try_isargout;

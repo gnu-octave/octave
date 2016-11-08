@@ -189,18 +189,18 @@ namespace QtHandles
       m_selectionChanged = true;
   }
 
-  void 
+  void
   ListBoxControl::itemActivated (const QModelIndex &)
   {
     m_selectionChanged = true;
   }
-  void 
+  void
   ListBoxControl::itemPressed (QListWidgetItem*)
   {
     m_selectionChanged = true;
   }
 
-  bool 
+  bool
   ListBoxControl::eventFilter (QObject* watched, QEvent* e)
   {
     // listbox change
@@ -213,11 +213,11 @@ namespace QtHandles
                 sendSelectionChange ();
               m_selectionChanged = false;
               break;
- 
+
             default:
               break;
-          } 
-          
+          }
+
         return Object::eventFilter (watched, e);
       }
     // listbox viewport
@@ -228,7 +228,7 @@ namespace QtHandles
 
         switch (e->type ())
           {
-            case QEvent::MouseButtonPress: 
+            case QEvent::MouseButtonPress:
               {
                 QMouseEvent* m = dynamic_cast<QMouseEvent*> (e);
 
@@ -236,7 +236,8 @@ namespace QtHandles
                   override_return = true;
                 else
                   {
-                    if(!list->indexAt(m->pos()).isValid()) override_return = true;
+                    if (! list->indexAt(m->pos()).isValid())
+                      override_return = true;
                     m_selectionChanged = true;
                   }
                 break;
@@ -244,25 +245,25 @@ namespace QtHandles
             case QEvent::MouseButtonRelease:
               {
                 QMouseEvent* m = dynamic_cast<QMouseEvent*> (e);
-  
+
                 if (m->button () & Qt::RightButton)
                   override_return = true;
 
-                else if(!list->indexAt(m->pos()).isValid()) 
+                else if (! list->indexAt(m->pos()).isValid())
                   {
-                    list->setCurrentRow(list->count()-1); 
+                    list->setCurrentRow(list->count()-1);
                     override_return = true;
                   }
 
                 if (m_selectionChanged)
                   sendSelectionChange ();
                 m_selectionChanged = false;
-              
+
                 break;
               }
             default:
               break;
- 
+
           }
         return BaseControl::eventFilter (watched, e) || override_return;
       }

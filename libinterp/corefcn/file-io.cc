@@ -1557,12 +1557,12 @@ as the name of the function when reporting errors.
 %! c = textscan ("L1\nL2", "%s", "endofline", "");
 %! assert (int8 ([c{:}{:}]), int8 ([76, 49, 10, 76, 50]));
 
-###  Matlab fails this test.  A literal after a conversion is not a delimiter
-#%!test
-#%! ## No delimiters at all besides EOL.  Skip fields, even empty fields
-#%! str = "Text1Text2Text\nTextText4Text\nText57Text";
-#%! c = textscan (str, "Text%*dText%dText");
-#%! assert (c{1}, int32 ([2; 4; 0]));
+##  Matlab fails this test.  A literal after a conversion is not a delimiter
+%!#test
+%! ## No delimiters at all besides EOL.  Skip fields, even empty fields
+%! str = "Text1Text2Text\nTextText4Text\nText57Text";
+%! c = textscan (str, "Text%*dText%dText");
+%! assert (c{1}, int32 ([2; 4; 0]));
 
 ## CollectOutput test
 %!test
@@ -1629,19 +1629,19 @@ as the name of the function when reporting errors.
 %! assert (c{1}, int32 ([99; 88]));
 %! assert (c{2}, {"2 "; "4564"});
 
-## FIXME: Following two tests still fail (4/13/2016)?
-### Delimiters as part of literals, and following literals
-#%!test
-#%! str = "12 R&D & 7";
-#%! c = textscan (str, "%f R&D %f", "delimiter", "&", "collectOutput", 1,
-#%!                    "EmptyValue", -99);
-#%! assert (c, {[12, -99; 7, -99]});
-#
-### Delimiters as part of literals, and before literals
-#%!test
-#%! str = "12 & R&D 7";
-#%! c = textscan (str, "%f R&D %f", "delimiter", "&", "collectOutput", 1);
-#%! assert (c, {[12 7]});
+## FIXME: Following two tests still fail (4/13/2016).
+## Delimiters as part of literals, and following literals
+%!#test
+%! str = "12 R&D & 7";
+%! c = textscan (str, "%f R&D %f", "delimiter", "&", "collectOutput", 1,
+%!                    "EmptyValue", -99);
+%! assert (c, {[12, -99; 7, -99]});
+
+## Delimiters as part of literals, and before literals
+%!#test
+%! str = "12 & R&D 7";
+%! c = textscan (str, "%f R&D %f", "delimiter", "&", "collectOutput", 1);
+%! assert (c, {[12 7]});
 
 ## Check number of lines read, not number of passes through format string
 %!test
@@ -1740,11 +1740,11 @@ as the name of the function when reporting errors.
 %! assert (c, {1, 2, 3});
 
 ## FIXME: This test fails (4/14/16)
-### Test incomplete first data line
-#%!test
-#%! R = textscan (['Empty1' char(10)], 'Empty%d %f');
-#%! assert (R{1}, int32 (1));
-#%! assert (isempty (R{2}), true);
+## Test incomplete first data line
+%!#test
+%! R = textscan (['Empty1' char(10)], 'Empty%d %f');
+%! assert (R{1}, int32 (1));
+%! assert (isempty (R{2}), true);
 
 %!test <37023>
 %! data = textscan ("   1. 1 \n 2 3\n", '%f %f');
@@ -1880,7 +1880,7 @@ as the name of the function when reporting errors.
 %! try
 %!   C = textscan (fid, "", "headerlines");
 %! end_try_catch;
-%! assert (!feof (fid));
+%! assert (! feof (fid));
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);
@@ -1982,14 +1982,15 @@ as the name of the function when reporting errors.
 %!               "MultipleDelimsAsOne", 1);
 %! assert (c{1}, {"home"; "foo"});
 
-## FIXME: Test still fails (4/13/2016)?
+## FIXME: Test still fails (4/13/2016).
 ## Allow cuddling %sliteral, but warn it is ambiguous
-#%!test
-#%! C = textscan ("abcxyz51\nxyz83\n##xyz101", "%s xyz %d");
-#%! assert (C{1}([1 3]), {"abc"; "##"});
-#%! assert (isempty (C{1}{2}), true);
-#%! assert (C{2}, int32 ([51; 83; 101]));
-### Literals are not delimiters.
+%!#test
+%! C = textscan ("abcxyz51\nxyz83\n##xyz101", "%s xyz %d");
+%! assert (C{1}([1 3]), {"abc"; "##"});
+%! assert (isempty (C{1}{2}), true);
+%! assert (C{2}, int32 ([51; 83; 101]));
+
+## Literals are not delimiters.
 
 ## Test for false positives in check for non-supported format specifiers
 %!test
@@ -2109,7 +2110,7 @@ as the name of the function when reporting errors.
 %! C = textscan ("1 2\t3 4", '%f %[^\t] %f %f');
 %! assert (C, {1, {"2"}, 3, 4});
 
-%% Check a non-empty line with no valid conversion registers empytValue
+## Check a non-empty line with no valid conversion registers empytValue
 %!test
 %! C = textscan ("Empty\n", "Empty%f %f");
 %! assert (C, { NaN, NaN });
@@ -2187,10 +2188,10 @@ as the name of the function when reporting errors.
 %! assert (C{5}, [4; 7]);
 
 ## FIXME: Almost passes.  Second return value is {"/"}.  Tested 4/14/16.
-### Test start of comment as string
-#%!test
-#%! c = textscan ("1 / 2 // 3", "%n %s %u8", "CommentStyle", {"//"});
-#%! assert (c(1), {1, "/", 2});
+## Test start of comment as string
+%!#test
+%! c = textscan ("1 / 2 // 3", "%n %s %u8", "CommentStyle", {"//"});
+%! assert (c(1), {1, "/", 2});
 
 %!assert (textscan (["1 2 3 4"; "5 6 7 8"], "%f"), {[15; 26; 37; 48]})
 

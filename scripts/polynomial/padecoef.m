@@ -165,7 +165,7 @@ endfunction
 ## For checking in Wolfram Alpha (look at Alternate forms -> more):
 ## PadeApproximant[Exp[-x * T], {x, 0, {n, n}}]
 
-%% Test input validation
+## Test input validation
 %!error padecoef ()
 %!error padecoef (1,2,3)
 %!error <T must be a non-negative scalar> padecoef ([1,2])

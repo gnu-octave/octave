@@ -179,9 +179,9 @@ of @var{A} is treated separately
 }
 
 /*
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 16;
 %! N = 8;
@@ -198,9 +198,9 @@ of @var{A} is treated separately
 %! answer = kron (fft (sx)', fft (sy));
 %! assert (S, answer, 4*M*N*eps);
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 12;
 %! N = 7;
@@ -220,9 +220,9 @@ of @var{A} is treated separately
 %!
 %! assert (s, answer, 30*eps);
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 16;
 %! N = 8;
@@ -239,9 +239,9 @@ of @var{A} is treated separately
 %! answer = kron (fft (sx)', fft (sy));
 %! assert (S, answer, 4*M*N*eps ("single"));
 
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         02 May 2000
 %!test
 %! M = 12;
 %! N = 7;

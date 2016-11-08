@@ -198,7 +198,7 @@ endfunction
 
 %!demo
 %! clf;
-%! N = 10;  % N intervals per axis
+%! N = 10;  # N intervals per axis
 %! [x, y, z] = meshgrid (linspace (-4,4,N+1));
 %! val = x.^3 + y.^3 + z.^3;
 %! fv = isosurface (x, y, z, val, 3, z, "noshare");

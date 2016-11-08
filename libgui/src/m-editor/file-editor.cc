@@ -474,7 +474,7 @@ file_editor::request_open_file (const QString& openFileName,
             }
 
           // If <unnamed> was absent or modified, create a new tab.
-          if (!fileEditorTab)
+          if (! fileEditorTab)
             fileEditorTab = new file_editor_tab ();
 
           if (fileEditorTab)
@@ -485,7 +485,7 @@ file_editor::request_open_file (const QString& openFileName,
                 {
                   // Supply empty title then have the file_editor_tab update
                   // with full or short name.
-                  if (!reusing)
+                  if (! reusing)
                     add_file_editor_tab (fileEditorTab, "");
                   fileEditorTab->update_window_title (false);
                   // file already loaded, add file to mru list here

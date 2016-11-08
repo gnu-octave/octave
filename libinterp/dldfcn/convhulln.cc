@@ -310,7 +310,7 @@ convex hull is calculated.
 %! h = sortrows (sort (h, 2), [1:3]);
 %! assert (h, [1 2 4; 1 2 6; 1 4 8; 1 5 6; 1 5 8; 2 3 4; 2 3 7; 2 6 7; 3 4 7; 4 7 8; 5 6 7; 5 7 8]);
 %! assert (v, 1, 10*eps);
-%! [h2, v2] = convhulln (cube); % Test defaut option = "Qt"
+%! [h2, v2] = convhulln (cube);  # Test default option = "Qt"
 %! assert (size (h2), size (h));
 %! h2 = sortrows (sort (h2, 2), [1:3]);
 %! assert (h2, h);
@@ -331,7 +331,7 @@ convex hull is calculated.
 %! assert (v, 8/3, 10*eps);
 
 %!testif HAVE_QHULL
-%! triangle=[0 0; 1 1; 1 0; 1 2];
+%! triangle = [0 0; 1 1; 1 0; 1 2];
 %! h = convhulln (triangle);
 %! assert (size (h), [3 2]);
 */

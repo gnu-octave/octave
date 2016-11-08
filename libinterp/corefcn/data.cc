@@ -1434,7 +1434,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (cell (3,3), 4), cell (0, 1))
 %!assert (diag (sparse (ones (3,3)), 4), sparse (zeros (0, 1)))
 
-%% Test input validation
+## Test input validation
 %!error <Invalid call to diag> diag ()
 %!error <Invalid call to diag> diag (1,2,3,4)
 %!error diag (ones (2), 3, 3)
@@ -1598,7 +1598,7 @@ in double precision even for single precision inputs.
 %!assert (prod (single ([i, 2+i, -3+2i, 4])), single (-4 - 32i))
 %!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single ([-1+i, -8+8i, -27+27i]))
 
-%% Test sparse
+## Test sparse
 %!assert (prod (sparse ([1, 2, 3])), sparse (6))
 %!assert (prod (sparse ([-1; -2; -3])), sparse (-6))
 ## Commented out until bug #42290 is fixed
@@ -1635,13 +1635,13 @@ in double precision even for single precision inputs.
 %!assert (prod (zeros (0, 2, "single"), 1), single ([1, 1]))
 %!assert (prod (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
 
-%% Test "double" type argument
+## Test "double" type argument
 %!assert (prod (single ([1, 2, 3]), "double"), 6)
 %!assert (prod (single ([-1; -2; -3]), "double"), -6)
 %!assert (prod (single ([i, 2+i, -3+2i, 4]), "double"), -4 - 32i)
 %!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), "double"), [-1+i, -8+8i, -27+27i])
 
-%% Test "native" type argument
+## Test "native" type argument
 %!assert (prod (uint8 ([1, 2, 3]), "native"), uint8 (6))
 %!assert (prod (uint8 ([-1; -2; -3]), "native"), uint8 (0))
 %!assert (prod (int8 ([1, 2, 3]), "native"), int8 (6))
@@ -1649,7 +1649,7 @@ in double precision even for single precision inputs.
 %!assert (prod ([true false; true true], "native"), [true false])
 %!assert (prod ([true false; true true], 2, "native"), [false; true])
 
-%% Test input validation
+## Test input validation
 %!error prod ()
 %!error prod (1,2,3)
 %!error <unrecognized type argument 'foobar'> prod (1, "foobar")
@@ -3646,7 +3646,7 @@ zero).
 }
 
 /*
-%% Debian bug #706376
+## Debian bug #706376
 %!assert (isempty (speye(2^16)), false)
 */
 
@@ -3709,7 +3709,7 @@ Return true if @var{x} is a scalar.
 %! s.a = 1;
 %! assert (isscalar (s));
 
-%% Test input validation
+## Test input validation
 %!error isscalar ()
 %!error isscalar (1, 2)
 */
@@ -3747,7 +3747,7 @@ consequence a 1x1 array, or scalar, is also a vector.
 %! s.a = 1;
 %! assert (isvector (s), true);
 
-%% Test input validation
+## Test input validation
 %!error isvector ()
 %!error isvector ([1, 2], 2)
 */
@@ -3791,7 +3791,7 @@ Return true if @var{x} is a row vector 1xN with non-negative N.
 %! s.a = 1;
 %! assert (isrow (s), true);
 
-%% Test input validation
+## Test input validation
 %!error isrow ()
 %!error isrow ([1, 2], 2)
 */
@@ -3835,7 +3835,7 @@ Return true if @var{x} is a column vector Nx1 with non-negative N.
 %! s.a = 1;
 %! assert (iscolumn (s));
 
-%% Test input validation
+## Test input validation
 %!error iscolumn ()
 %!error iscolumn ([1, 2], 2)
 */
@@ -3914,7 +3914,7 @@ Return true if @var{x} is a square matrix.
 %!assert (issquare ({1, 2; 3, 4}))
 %!assert (sparse (([1, 2; 3, 4])))
 
-%% Test input validation
+## Test input validation
 %!error issquare ()
 %!error issquare ([1, 2; 3, 4], 2)
 */

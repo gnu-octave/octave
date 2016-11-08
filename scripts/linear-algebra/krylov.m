@@ -165,7 +165,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
         ## Reduce V per the reflection.
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
-        if(iter > 1)
+        if (iter > 1)
           ## FIXME: not done correctly for block case.
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif

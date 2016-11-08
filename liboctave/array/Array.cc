@@ -1721,8 +1721,8 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
 /*
 
-%% Tranpose tests for matrices of the tile size and plus or minus a row
-%% and with four tiles.
+## Tranpose tests for matrices of the tile size and plus or minus a row
+## and with four tiles.
 
 %!shared m7, mt7, m8, mt8, m9, mt9
 %! m7 = reshape (1 : 7*8, 8, 7);

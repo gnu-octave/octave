@@ -6279,9 +6279,9 @@ axes::properties::update_font (std::string prop)
       gh_manager::get_object (get_ylabel ()).set (prop, val);
       gh_manager::get_object (get_zlabel ()).set (prop, val);
       gh_manager::get_object (get_title ()).set (prop, tval);
-        
+
     }
-  
+
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),

@@ -192,7 +192,7 @@ endfunction
 %! disp ('- test inputdlg with prescribed vector [1,2,3] for # of lines per text field and defaults.');
 %! prompt = {'Width', 'Height', 'Depth'};
 %! default = {'1.10', '2.10', '3.10'};
-%! rc = [1,2,3];  % NOTE: must be an array
+%! rc = [1,2,3];  # NOTE: must be an array
 %! dims = inputdlg (prompt, 'Enter Box Dimensions', rc, default);
 %! if (isempty (dims))
 %!   helpdlg ('Canceled by user', 'Information');
@@ -209,7 +209,7 @@ endfunction
 %! disp ('- test inputdlg with prescribed row by column sizes and defaults.');
 %! prompt = {'Width', 'Height', 'Depth'};
 %! default = {'1.10', '2.20', '3.30'};
-%! rc = [1,10; 2,20; 3,30];  % NOTE: must be an array
+%! rc = [1,10; 2,20; 3,30];  # NOTE: must be an array
 %! dims = inputdlg (prompt, 'Enter Box Dimensions', rc, default);
 %! if (isempty (dims))
 %!   helpdlg ('Canceled by user', 'Information');

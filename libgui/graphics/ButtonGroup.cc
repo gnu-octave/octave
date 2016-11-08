@@ -443,7 +443,7 @@ namespace QtHandles
   ButtonGroup::buttonToggled (bool toggled)
   {
     Q_UNUSED (toggled);
-    if (!m_blockUpdates)
+    if (! m_blockUpdates)
       {
         gh_manager::auto_lock lock;
         uibuttongroup::properties& bp = properties<uibuttongroup> ();

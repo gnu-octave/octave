@@ -61,7 +61,7 @@ function y = polyout (c, x)
   endif
 
   n = length (c);
-  if(n > 0)
+  if (n > 0)
     n1 = n+1;
 
     tmp = coeff (c(1));

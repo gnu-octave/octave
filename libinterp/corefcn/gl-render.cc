@@ -1347,6 +1347,8 @@ namespace octave
   void
   opengl_renderer::draw_axes_x_grid (const axes::properties& props)
   {
+#if defined (HAVE_OPENGL)
+
     int xstate = props.get_xstate ();
 
     if (props.is_visible () && xstate != AXE_DEPTH_DIR)
@@ -1494,11 +1496,24 @@ namespace octave
       }
     else
       gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
+
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
   }
 
   void
   opengl_renderer::draw_axes_y_grid (const axes::properties& props)
   {
+#if defined (HAVE_OPENGL)
+
     int ystate = props.get_ystate ();
 
     if (ystate != AXE_DEPTH_DIR && props.is_visible ())
@@ -1644,6 +1659,17 @@ namespace octave
       }
     else
       gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
+
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
   }
 
   void

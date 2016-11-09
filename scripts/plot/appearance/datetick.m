@@ -88,8 +88,17 @@ endfunction
 %! datetick ("x", 2, "keepticks");
 %! set (ax, "ytick", 12:16);
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   plot ([213:364 0:28], randn (1,181));
+%!   datetick ("x", 3);
+%!   xticks = get (hax, "xtick");
+%!   assert (xticks, [-30 32 92 153 214 275 336 398]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 function __datetick__ (varargin)
 
@@ -201,19 +210,23 @@ function __datetick__ (varargin)
         xmin = sep * floor (xmin / sep);
         xmax = sep * ceil (xmax / sep);
         nticks = (xmax - xmin) / sep + 1;
+        ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
       elseif (maxyear - minyear < N)
-        sep = __calc_tick_sep__ (minmonth , maxmonth);
-        xmin = datenum (ymin, sep * floor (minmonth / sep), 1);
-        xmax = datenum (ymax, sep * ceil (maxmonth / sep), 1);
-        nticks = ceil (maxmonth / sep) - floor (minmonth / sep) + 1;
+        sep = __calc_tick_sep__ (minmonth, maxmonth);
+        minmonth = sep * floor (minmonth / sep);
+        maxmonth = sep * ceil (maxmonth / sep);
+        xmin = datenum (ymin, minmonth, 1);
+        tick_years = datevec (datenum (floor (minyear), minmonth:maxmonth, 1))(:,1)';
+        tick_month = 12 - mod (-(minmonth:maxmonth), 12);
+        ticks = xmin + [0 cumsum(eomday(tick_years, tick_month))(sep:sep:end)];
       else
         sep = __calc_tick_sep__ (minyear , maxyear);
         xmin = datenum (sep * floor (minyear / sep), 1, 1);
         xmax = datenum (sep * ceil (maxyear / sep), 1, 1);
         nticks = ceil (maxyear / sep) - floor (minyear / sep) + 1;
+        ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
       endif
     endif
-    ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
   endif
 
   if (isempty (form))

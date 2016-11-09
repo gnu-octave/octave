@@ -102,7 +102,7 @@ namespace QtHandles
   private:
     void createFigureToolBarAndMenuBar (void);
     void showFigureToolBar (bool visible);
-    void showMenuBar (bool visible);
+    void showMenuBar (bool visible, int height = -1);
     void addCustomToolBar (QToolBar* bar, bool visible);
     void showCustomToolBar (QToolBar* bar, bool visible);
 
@@ -122,7 +122,7 @@ namespace QtHandles
     void fileCloseFigure (void);
     void editCopy (bool choose_format = false);
     void helpAboutOctave (void);
-    void updateMenuBar (void);
+    void updateMenuBar (int height = -1);
     void updateContainer (void);
     void toggleAxes (void);
     void toggleGrid (void);
@@ -140,6 +140,7 @@ namespace QtHandles
     QRect m_innerRect;
     QRect m_outerRect;
     MouseModeActionGroup* m_mouseModeGroup;
+    int m_previousHeight;
   };
 
 }

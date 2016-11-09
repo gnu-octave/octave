@@ -1840,7 +1840,8 @@ file_editor_tab::save_file (const QString& saveFileName,
     {
       file_to_save = file_info.canonicalFilePath ();
       // Force reparse of this function next time it is used (bug #46632)
-      if (! exit_debug_and_clear (file_to_save, file_info.baseName ()))
+      if ((Fisdebugmode ())(0).is_true ()
+          && ! exit_debug_and_clear (file_to_save, file_info.baseName ()))
         return;
     }
   else

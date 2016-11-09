@@ -140,7 +140,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
 
   ## Set start of year to March by moving Jan. and Feb. to previous year.
   ## Correct for months > 12 by moving to subsequent years.
-  year += fix ((month-14)/12);
+  year += ceil ((month-14)/12);
 
   ## Lookup number of days since start of the current year.
   if (numel (month) == 1 || numel (day) == 1)

@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "gl2ps-print.h"
 
-#if defined (HAVE_GL2PS_H)
+#if defined (HAVE_GL2PS_H) && defined (HAVE_OPENGL)
 
 #include <cstdio>
 
@@ -802,7 +802,7 @@ namespace octave
   gl2ps_print (const graphics_object& fig, const std::string& stream,
                const std::string& term)
   {
-#if defined (HAVE_GL2PS_H)
+#if defined (HAVE_GL2PS_H) && defined (HAVE_OPENGL)
 
     // FIXME: should we have a way to create a file that begins with the
     // character '|'?
@@ -846,6 +846,10 @@ namespace octave
     rend.finish ();
 
 #else
+    octave_unused_parameter (fig);
+    octave_unused_parameter (stream);
+    octave_unused_parameter (term);
+
     err_disabled_feature ("gl2ps_print", "gl2ps");
 #endif
   }

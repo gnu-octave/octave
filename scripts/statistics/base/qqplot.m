@@ -51,6 +51,7 @@
 ## @var{dist}.
 ##
 ## If no output arguments are given, the data are plotted directly.
+## @seealso{ppplot}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -110,4 +111,11 @@ function [qout, sout] = qqplot (x, dist, varargin)
   endif
 
 endfunction
+
+
+## Test input validation
+%!error qqplot ()
+%!error <X must be a numeric> qqplot ({1})
+%!error <X must be a .* vector> qqplot (ones (2,2))
+%!error <no inverse CDF found> qqplot (1, "foobar")
 

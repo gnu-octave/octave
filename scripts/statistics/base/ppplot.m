@@ -44,6 +44,7 @@
 ## calculates the CDF of distribution @var{dist} exists.
 ##
 ## If no output is requested then the data are plotted immediately.
+## @seealso{qqplot}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -64,9 +65,12 @@ function [p, y] = ppplot (x, dist, varargin)
   p = ((1 : n)' - 0.5) / n;
   if (nargin == 1)
     F = @stdnormal_cdf;
+  else if (! ischar (dist))
+    error ("ppplot: DIST must me a string");
   else
-    F = str2func (sprintf ("%scdf", dist));
+    F = str2func ([dist "cdf"]);
   endif;
+
   if (nargin <= 2)
     y = feval (F, s);
   else
@@ -84,4 +88,5 @@ endfunction
 ## Test input validation
 %!error ppplot ()
 %!error ppplot (ones (2,2))
+%!error <DIST must be a string> ppplot (1, 2)
 

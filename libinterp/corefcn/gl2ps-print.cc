@@ -164,6 +164,7 @@ namespace octave
   {
     static bool in_draw = false;
     static std::string old_print_cmd;
+    static GLint buffsize;
 
     if (! in_draw)
       {
@@ -207,13 +208,19 @@ namespace octave
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
 
-        GLint buffsize = 2*1024*1024;
+        // Reset buffsize, unless this is 2nd pass of a texstandalone print.
+        if (term.find ("tex") == std::string::npos)
+          buffsize = 2*1024*1024;
+        else
+          buffsize /= 2;
+
         buffer_overflow = true;
 
         while (buffer_overflow)
           {
             buffer_overflow = false;
             buffsize *= 2;
+
             std::fseek (tmpf, 0, SEEK_SET);
             octave_ftruncate_wrapper (fileno (tmpf), 0);
 

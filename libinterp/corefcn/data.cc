@@ -1286,7 +1286,7 @@ See @code{sum} for an explanation of the optional parameters
         }
       else
         {
-          NDArray cs = arg.bool_array_value ().cumsum (dim);
+          NDArray cs = arg.array_value ().cumsum (dim);
           if (isnative)
             retval = cs != 0.0;
           else
@@ -3116,7 +3116,7 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
       else if (isnative)
         retval = arg.bool_array_value ().any (dim);
       else
-        retval = arg.bool_array_value ().sum (dim);
+        retval = arg.array_value ().sum (dim);
       break;
 
     default:

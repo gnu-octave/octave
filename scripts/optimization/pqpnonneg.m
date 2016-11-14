@@ -26,32 +26,35 @@
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
-## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >= 0}.
+## Minimize @code{1/2*@var{x}'*@var{c}*@var{x} + @var{d}'*@var{x}} subject to
+## @code{@var{x} >= 0}.
 ##
-## @var{c} and @var{d} must be real, and @var{c} must be symmetric and
+## @var{c} and @var{d} must be real matrices, and @var{c} must be symmetric and
 ## positive definite.
 ##
-## @var{x0} is an optional initial guess for @var{x}.
+## @var{x0} is an optional initial guess for the solution @var{x}.
 ##
 ## @var{options} is an options structure to change the behavior of the
 ## algorithm.
 ##
 ## Outputs:
 ##
-## @itemize @bullet
-## @item minval
+## @table @var
 ##
-## The minimum attained model value, 1/2*xmin'*c*xmin + d'*xmin
+## @item x
+## The solution matrix
+##
+## @item minval
+## The minimum attained model value,
+## @code{1/2*@var{xmin}'*@var{c}*@var{xmin} + @var{d}'*@var{xmin}}
 ##
 ## @item exitflag
-##
 ## An indicator of convergence.  0 indicates that the iteration count was
 ## exceeded, and therefore convergence was not reached; >0 indicates that the
 ## algorithm converged.  (The algorithm is stable and will converge given
 ## enough iterations.)
 ##
 ## @item output
-##
 ## A structure with two fields:
 ##
 ## @itemize @bullet
@@ -61,47 +64,50 @@
 ## @end itemize
 ##
 ## @item lambda
-##
-## Not implemented.
-## @end itemize
-## @seealso{optimset, lsqnonneg, qp}
+## @c FIXME: Something is output from the function, but what is it?
+## Undocumented output
+## @end table
+## @seealso{lsqnonneg, qp, optimset}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("pqpnonneg");
 
-## This is analogical to the lsqnonneg implementation, which is
-## implemented from Lawson and Hanson's 1973 algorithm on page
-## 161 of Solving Least Squares Problems.
-## It shares the convergence guarantees.
+## This is analogical to the lsqnonneg implementation, which is implemented
+## from Lawson and Hanson's 1973 algorithm on page 161 of Solving Least Squares
+## Problems.  It shares the convergence guarantees.
 
-function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], options = struct ())
+function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [], options = struct ())
 
-  if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
+  ## Special case: called to find default optimization options
+  if (nargin == 1 && ischar (c) && strcmp (c, "defaults"))
     x = optimset ("MaxIter", 1e5);
     return;
   endif
 
-  if (nargin < 2 || nargin > 4
-      || ! (isnumeric (c) && ismatrix (c))
-      || ! (isnumeric (d) && ismatrix (d))
-      || ! isstruct (options))
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
-  ## Lawson-Hanson Step 1 (LH1): initialize the variables.
-  m = rows (c);
-  n = columns (c);
-  if (m != n)
-    error ("pqpnonneg: matrix must be square");
+  if (! (isnumeric (c) && ismatrix (c)) || ! (isnumeric (d) && ismatrix (d)))
+    error ("pqpnonneg: C and D must be numeric matrices");
+  endif
+  if (! issquare (c))
+    error ("pqpnonneg: C must be a square matrix");
   endif
 
-  if (isempty (x))
-    ## Initial guess is 0s.
+  if (! isstruct (options))
+    error ("pqpnonneg: OPTIONS must be a struct");
+  endif
+
+  ## Lawson-Hanson Step 1 (LH1): initialize the variables.
+  n = columns (c);
+  if (isempty (x0))
+    ## Initial guess is all zeros.
     x = zeros (n, 1);
   else
     ## ensure nonnegative guess.
-    x = max (x, 0);
+    x = max (x0, 0);
   endif
 
   max_iter = optimget (options, "MaxIter", 1e5);
@@ -136,7 +142,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
       else
         ## LH8, LH9: find the scaling factor.
         pidx = p(idx);
-        sf = x(pidx)./(x(pidx) - xtmp(idx));
+        sf = x(pidx) ./ (x(pidx) - xtmp(idx));
         alpha = min (sf);
         ## LH10: adjust X.
         xx = zeros (n, 1);
@@ -159,7 +165,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
     if (! any (w > 0))
       if (usechol)
         ## verify the solution achieved using qr updating.
-        ## in the best case, this should only take a single step.
+        ## In the best case, this should only take a single step.
         usechol = false;
         continue;
       else
@@ -193,17 +199,20 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
   ## LH12: complete.
 
   ## Generate the additional output arguments.
-  if (nargout > 1)
+  if (isargout (2))
     minval = 1/2*(x'*c*x) + d'*x;
   endif
-  exitflag = iter;
-  if (nargout > 2 && iter >= max_iter)
-    exitflag = 0;
+  if (isargout (3))
+    if (iter >= max_iter)
+      exitflag = 0;
+    else
+      exitflag = iter;
+    endif
   endif
-  if (nargout > 3)
+  if (isargout (4))
     output = struct ("algorithm", "nnls-pqp", "iterations", iter);
   endif
-  if (nargout > 4)
+  if (isargout (5))
     lambda = zeros (size (x));
     lambda(p) = w;
   endif
@@ -221,4 +230,15 @@ endfunction
 %! C = rand (20, 10);
 %! d = rand (20, 1);
 %! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
+
+# Test input validation
+%!error pqpnonneg ()
+%!error pqpnonneg (1)
+%!error pqpnonneg (1,2,3,4,5)
+%!error <C .* must be numeric matrices> pqpnonneg ({1},2)
+%!error <C .* must be numeric matrices> pqpnonneg (ones (2,2,2),2)
+%!error <D must be numeric matrices> pqpnonneg (1,{2})
+%!error <D must be numeric matrices> pqpnonneg (1, ones (2,2,2))
+%!error <C must be a square matrix> pqpnonneg ([1 2], 2)
+%!error <OPTIONS must be a struct> pqpnonneg (1, 2, [], 3)
 

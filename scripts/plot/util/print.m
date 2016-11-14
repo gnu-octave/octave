@@ -341,58 +341,60 @@ function print (varargin)
 
     ## Modify properties as specified by options
     props = [];
+    nfig = 0;
 
     drawnow ();
 
     ## print() requires children of axes to have units = "normalized", or "data"
     hobj = findall (opts.figure, "-not", "type", "figure", ...
-      "-not", "type", "axes", "-property", "units", ...
-      "-not", "units", "normalized", "-not", "units", "data");
+                    "-not", "type", "axes", "-property", "units", ...
+                    "-not", "units", "normalized", "-not", "units", "data");
+    hobj = hobj(! strncmp (get (hobj, "type"), "ui", 2));
     for n = 1:numel(hobj)
       props(n).h = hobj(n);
       props(n).name = "units";
       props(n).value = {get(hobj(n), "units")};
       set (hobj(n), "units", "data");
+      nfig += 1;
     endfor
 
     ## print() requires axes units = "normalized"
     hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
       "-not", "units", "normalized");
-    m = numel (props);
     for n = 1:numel(hax)
-      props(m+n).h = hax(n);
-      props(m+n).name = "units";
-      props(m+n).value = {get(hax(n), "units")};
+      props(end+1).h = hax(n);
+      props(end).name = "units";
+      props(end).value = {get(hax(n), "units")};
       set (hax(n), "units", "normalized");
+      nfig += 1;
     endfor
 
     ## print() requires figure units to be "pixels"
-    m = numel (props);
-    props(m+1).h = opts.figure;
-    props(m+1).name = "units";
-    props(m+1).value = {get(opts.figure, "units")};
+    props(end+1).h = opts.figure;
+    props(end).name = "units";
+    props(end).value = {get(opts.figure, "units")};
     set (opts.figure, "units", "pixels");
+    nfig += 1;
 
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
-    props(m+2).h = opts.figure;
-    props(m+2).name = "position";
-    props(m+2).value = {fpos};
+    props(end+1).h = opts.figure;
+    props(end).name = "position";
+    props(end).value = {fpos};
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos);
+    nfig += 1;
 
     ## Implement InvertHardCopy option
     do_hardcopy = strcmp (get (opts.figure, "inverthardcopy"), "on");
 
     if (do_hardcopy)
       ## Set figure background to white.
-      props(m+3).h = opts.figure;
-      props(m+3).name = "color";
-      props(m+3).value{1} = get (props(m+3).h, props(m+3).name);
-      set (props(m+3).h, "color", "white");
-      nfig = m + 3;
-    else
-      nfig = m + 2;
+      props(end+1).h = opts.figure;
+      props(end).name = "color";
+      props(end).value{1} = get (opts.figure, "color");
+      set (opts.figure, "color", "white");
+      nfig += 1;
     endif
 
     if (do_hardcopy)
@@ -401,14 +403,13 @@ function print (varargin)
                                   "-not", "tag", "legend",
                                   "-not", "color", "none");
       if (! isempty (hax))
-        m = numel (props);
         for n = 1:numel (hax)
-          props(m+n).h = hax(n);
-          props(m+n).name = "color";
-          props(m+n).value{1} = get(hax(n), "color");
+          props(end+1).h = hax(n);
+          props(end).name = "color";
+          props(end).value{1} = get(hax(n), "color");
           set (hax(n), "color", "white");
+          nfig += 1;
         endfor
-        nfig += n;
       endif
     endif
 

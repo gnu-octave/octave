@@ -22,7 +22,8 @@
 ## Save graphic object @var{h} to the file @var{filename} in graphic format
 ## @var{fmt}.
 ##
-## @var{fmt} should be one of the following formats:
+## All device formats accepted by @code{print} may be used.  Common formats
+## are:
 ##
 ## @table @code
 ##   @item ps
@@ -30,6 +31,9 @@
 ##
 ##   @item eps
 ##     Encapsulated PostScript
+##
+##   @item pdf
+##     Portable Document Format
 ##
 ##   @item jpg
 ##     JPEG Image
@@ -40,13 +44,11 @@
 ##   @item emf
 ##     Enhanced Meta File
 ##
-##   @item pdf
-##     Portable Document Format
 ## @end table
 ##
-## All device formats specified in @code{print} may also be used.  If
-## @var{fmt} is omitted it is extracted from the extension of @var{filename}.
-## The default format is @qcode{"pdf"}.
+## If @var{fmt} is omitted it is extracted from the extension of
+## @var{filename}.  The default format when there is no extension is
+## @qcode{"pdf"}.
 ##
 ## @example
 ## @group
@@ -61,40 +63,40 @@
 
 ## Author: Kai Habel
 
-function saveas (h, filename, fmt = "pdf")
+function saveas (h, filename, fmt)
 
   if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
-  if (ishandle (h))
-    if (isfigure (h))
-      fig = h;
-    else
-      fig = ancestor (h, "figure");
-    endif
-  else
-    error ("saveas: first argument H must be a graphics handle");
+  if (! ishandle (h))
+    error ("saveas: H must be a graphics handle");
   endif
-
   if (! ischar (filename))
     error ("saveas: FILENAME must be a string");
   endif
 
+  if (isfigure (h))
+    fig = h;
+  else
+    fig = ancestor (h, "figure");
+  endif
+
   if (nargin == 2)
+    ## Attempt to infer format from filename
     [~, ~, ext] = fileparts (filename);
     if (! isempty (ext))
       fmt = ext(2:end);
+    else
+      fmt = "pdf";
     endif
   endif
 
   if (nargin == 3)
-    if (! ischar (filename))
-      error ("saveas: EXT must be a string");
+    if (! ischar (fmt))
+      error ("saveas: FMT must be a string");
     endif
-
     [~, ~, ext] = fileparts (filename);
-
     if (isempty (ext))
       filename = [filename "." fmt];
     endif
@@ -105,4 +107,13 @@ function saveas (h, filename, fmt = "pdf")
   print (fig, filename, prt_opt);
 
 endfunction
+
+
+## Test input validation
+%!error saveas ()
+%!error saveas (1)
+%!error saveas (1,2,3,4)
+%!error <H must be a graphics handle> saveas (Inf, "tst.pdf")
+%!error <FILENAME must be a string> saveas (0, 1)
+%!error <FMT must be a string> saveas (0, "tst.pdf", 1)
 

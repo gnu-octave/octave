@@ -48,7 +48,7 @@ function retval = get (varargin)
         retval{i} = getfield (properties, pnames{i});
       endfor
     else
-      error ("@audioplayer/get: invalid name argument");
+      error ("@audioplayer/get: invalid NAME argument");
     endif
   endif
 

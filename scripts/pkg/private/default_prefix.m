@@ -21,7 +21,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [prefix, archprefix] = default_prefix (global_install, desc)
+function [prefix, archprefix] = default_prefix (global_install)
 
   if (global_install)
     prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");

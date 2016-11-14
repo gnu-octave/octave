@@ -81,7 +81,7 @@ function retval = savepath (file)
   ## Write the results.
   [fid, msg] = fopen (file, "wt");
   if (fid < 0)
-    error ("savepath: unable to open file for writing, %s, %s", file, msg);
+    error ("savepath: unable to open FILE for writing, %s, %s", file, msg);
   endif
   unwind_protect
     fprintf (fid, "%s\n", pre{:});

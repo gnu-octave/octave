@@ -78,7 +78,7 @@ function rotate (h, direction, alpha, origin)
 
   if (nargin == 4)
     if (! (isnumeric (origin) && numel (origin) == 3))
-       error ("rotate: invalid origin");
+       error ("rotate: invalid ORIGIN");
     endif
   else
     ## Should Z limit be considered when computing origin?

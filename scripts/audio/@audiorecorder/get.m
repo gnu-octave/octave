@@ -48,7 +48,7 @@ function retval = get (varargin)
         retval{i} = getfield (properties, pnames{i});
       endfor
     else
-      error ("@audiorecorder/get: invalid name argument");
+      error ("@audiorecorder/get: invalid NAME argument");
     endif
   endif
 

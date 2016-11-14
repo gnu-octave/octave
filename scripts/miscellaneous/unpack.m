@@ -90,7 +90,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
       ## FIXME: The above code is not a perfect test for a URL
       gfile = glob (file);
       if (isempty (gfile))
-        error ('unpack: file "%s" not found', file{1});
+        error ('unpack: FILE "%s" not found', file{1});
       else
         file = gfile;
       endif

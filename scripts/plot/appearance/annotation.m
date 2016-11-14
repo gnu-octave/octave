@@ -208,7 +208,7 @@ function varargout = annotation (varargin)
         endif
       endif
     otherwise
-      error ("annotation: unknown annotation type %s", objtype);
+      error ("annotation: unknown annotation TYPE %s", objtype);
   endswitch
 
   ## options

@@ -88,7 +88,7 @@ function pbratio = pbaspect (varargin)
         case "mode"
           pbratio = get (hax, "plotboxaspectratiomode");
         otherwise
-          error ("pbaspect: Invalid mode <%s>", arg);
+          error ("pbaspect: Invalid MODE <%s>", arg);
       endswitch
     else
       print_usage ();

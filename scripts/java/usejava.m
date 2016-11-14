@@ -77,7 +77,7 @@ function retval = usejava (feature)
         retval = ! javaMethod ("isHeadless", "java.awt.GraphicsEnvironment");
       end_try_catch
     otherwise
-      error ("usejava: unrecognized feature '%s'", feature);
+      error ("usejava: unrecognized FEATURE '%s'", feature);
   endswitch
 
 endfunction

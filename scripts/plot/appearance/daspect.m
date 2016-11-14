@@ -87,7 +87,7 @@ function daratio = daspect (varargin)
         case "mode"
           daratio = get (hax, "dataaspectratiomode");
         otherwise
-          error ("daspect: Invalid mode <%s>", arg);
+          error ("daspect: Invalid MODE <%s>", arg);
       endswitch
     else
       print_usage ();

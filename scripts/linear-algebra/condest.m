@@ -231,7 +231,7 @@ function [est, v] = condest (varargin)
 endfunction
 
 function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
-  switch flag
+  switch (flag)
     case "dim"
       value = n;
     case "real"
@@ -244,7 +244,7 @@ function value = solve_sparse (flag, x, n, real_op, L , U , P , Pc)
 endfunction
 
 function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
-  switch flag
+  switch (flag)
     case "dim"
       value = n;
     case "real"

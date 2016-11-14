@@ -91,7 +91,7 @@ function h = imshow (im, varargin)
   nd = ndims (im);
 
   if (! ((isnumeric (im) || islogical (im)) && (nd == 2 || nd == 3)))
-    error ("imshow: IM must be an image or the filename of an image");
+    error ("imshow: IM must be an image or the FILENAME of an image");
   endif
 
   if (nd == 2)

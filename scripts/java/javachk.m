@@ -109,7 +109,7 @@ function msg = javachk (feature, component = "")
         chk = true;
       end_try_catch
     otherwise
-      error ("javachk: unrecognized feature '%s', can be one of 'awt'|'desktop'|'jvm'|'swing'\n", feature);
+      error ("javachk: unrecognized FEATURE '%s', can be one of 'awt'|'desktop'|'jvm'|'swing'\n", feature);
   endswitch
 
   if (! chk)

@@ -238,7 +238,7 @@ function yi = interp1 (x, y, varargin)
           warning ("interp1: multiple discontinuities at the same X value");
         endif
       else
-        error ("interp1: discontinuities not supported for method '%s'",
+        error ("interp1: discontinuities not supported for METHOD '%s'",
                                                                    method);
       endif
     endif
@@ -366,7 +366,7 @@ function yi = interp1 (x, y, varargin)
       endif
 
     otherwise
-      error ("interp1: invalid method '%s'", method);
+      error ("interp1: invalid METHOD '%s'", METHOD);
 
   endswitch
 

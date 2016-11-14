@@ -702,7 +702,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         [style, sidx] = do_linestyle_command (obj, obj.color, data_idx,
                                               plot_stream);
 
-        if isempty (style{1})
+        if (isempty (style{1}))
           style{1} = "points";
           data{data_idx} = {};
         endif
@@ -1383,7 +1383,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
               titlespec{data_idx} = tspec;
               usingclause{data_idx} = sprintf ("record=%dx1 using ($1):($2):($3)%s",
                                                yrec, ccol);
-              if isempty (style{i_stl})
+              if (isempty (style{i_stl}))
                 style{i_stl} = "points";
                 data{data_idx} = {};
               else

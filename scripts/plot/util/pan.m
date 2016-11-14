@@ -96,7 +96,7 @@ function pan (varargin)
           set (hfig, "__pan_mode__", pm);
           update_mouse_mode (hfig, arg);
         otherwise
-          error ("pan: unrecognized option '%s'", arg);
+          error ("pan: unrecognized OPTION '%s'", arg);
       endswitch
     else
       error ("pan: wrong type argument '%s'", class (arg));

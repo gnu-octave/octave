@@ -31,7 +31,7 @@ function [ver, url] = get_forge_pkg (name)
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
     error ("get_forge_pkg: package NAME must be a string");
   elseif (! all (isalnum (name) | name == "-" | name == "." | name == "_"))
-    error ("get_forge_pkg: invalid package name: %s", name);
+    error ("get_forge_pkg: invalid package NAME: %s", name);
   endif
 
   name = tolower (name);

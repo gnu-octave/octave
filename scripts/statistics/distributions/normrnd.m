@@ -47,7 +47,7 @@ function rnd = normrnd (mu, sigma, varargin)
   if (! isscalar (mu) || ! isscalar (sigma))
     [retval, mu, sigma] = common_size (mu, sigma);
     if (retval > 0)
-      error ("normrnd: mu and sigma must be of common size or scalars");
+      error ("normrnd: MU and SIGMA must be of common size or scalars");
     endif
   endif
 
@@ -73,7 +73,7 @@ function rnd = normrnd (mu, sigma, varargin)
   endif
 
   if (! isscalar (mu) && ! isequal (size (mu), sz))
-    error ("normrnd: mu and sigma must be scalar or of size SZ");
+    error ("normrnd: MU and SIGMA must be scalar or of size SZ");
   endif
 
   if (isa (mu, "single") || isa (sigma, "single"))

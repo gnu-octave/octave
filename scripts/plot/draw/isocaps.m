@@ -165,7 +165,7 @@ function varargout = isocaps (varargin)
                        vertices(:,1), vertices(:,2), vertices(:,3))';
   endif
 
-  switch nargout
+  switch (nargout)
     case 0
       hp = patch ("Faces", faces, "Vertices", vertices, ...
                   "FaceVertexCData", fvcdata, ...
@@ -269,7 +269,7 @@ function [x, y, z, v, isoval, which_caps, which_plane, verbose] = ...
 
   ## check x
   if (isvector (x) && length (x) == v_sz(2))
-    x = repmat (x(:)', [v_sz(1) 1 v_sz(3)]);
+    x = repmat (x(:).', [v_sz(1) 1 v_sz(3)]);
   elseif (! size_equal (v, x))
     error ("isocaps: X must match the size of V");
   endif

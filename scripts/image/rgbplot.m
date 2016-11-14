@@ -67,7 +67,7 @@ function h = rgbplot (cmap, style = "profile")
       set (gca, "ytick", []);
       colormap (cmap);
     otherwise
-      error ("rgbplot: unknown style '%s'", style);
+      error ("rgbplot: unknown STYLE '%s'", style);
   endswitch
   xlabel ("color index");
 

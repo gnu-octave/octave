@@ -105,7 +105,7 @@ function ri = randi (bounds, varargin)
       maxval = double (flintmax (rclass));
       minval = -maxval;
     else
-      error ("randi: unknown requested output class '%s'", rclass);
+      error ("randi: unknown requested output CLASS '%s'", rclass);
     endif
     if (imax > maxval)
       warning (["randi: integer IMAX exceeds requested type.  ", ...

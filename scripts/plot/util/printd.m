@@ -41,7 +41,7 @@ function pr_out = printd (obj, filename)
 
   ## Extract .suffix from filename
   if ((sufix = rindex (filename, ".")) <= 0)
-    error ("printd: output filename '%s' requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
+    error ("printd: output FILENAME '%s' requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
   endif
   opt = substr (filename, sufix+1);
   [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);

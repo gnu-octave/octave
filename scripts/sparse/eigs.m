@@ -287,53 +287,53 @@ function out = select (args, k, sigma, real_valued, symmetric)
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "descend");
         else
-          error ('eigs: sigma = "la" requires real symmetric problem');
+          error ('eigs: SIGMA = "la" requires real symmetric problem');
         endif
 
       case "sa"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('eigs: sigma = "sa" requires real symmetric problem');
+          error ('eigs: SIGMA = "sa" requires real symmetric problem');
         endif
 
       case "be"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('eigs: sigma = "be" requires real symmetric problem');
+          error ('eigs: SIGMA = "be" requires real symmetric problem');
         endif
 
       case "lr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "descend");
         else
-          error ('eigs: sigma = "lr" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
-          error ('eigs: sigma = "sr" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
-          error ('eigs: sigma = "li" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
-          error ('eigs: sigma = "si" requires complex or unsymmetric problem');
+          error ('eigs: SIGMA = "si" requires complex or unsymmetric problem');
         endif
 
       otherwise
-        error ("eigs: unrecognized value for sigma: %s", sigma);
+        error ("eigs: unrecognized value for SIGMA: %s", sigma);
     endswitch
   else
     ## numeric sigma, find k closest values

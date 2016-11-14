@@ -84,11 +84,11 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
   elseif (nargout == 0 && nargin == 2)
 
     if (! isnumeric (minargs) || ! isscalar (minargs))
-      error ("nargoutchk: minargs must be a numeric scalar");
+      error ("nargoutchk: MINARGS must be a numeric scalar");
     elseif (! isnumeric (maxargs) || ! isscalar (maxargs))
-      error ("nargoutchk: maxargs must be a numeric scalar");
+      error ("nargoutchk: MAXARGS must be a numeric scalar");
     elseif (minargs > maxargs)
-      error ("nargoutchk: minargs cannot be larger than maxargs");
+      error ("nargoutchk: MINARGS cannot be larger than MAXARGS");
     endif
 
     args = evalin ("caller", "nargout;");

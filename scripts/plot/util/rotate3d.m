@@ -85,7 +85,7 @@ function rotate3d (varargin)
           set (hfig, "__rotate_mode__", rm);
           update_mouse_mode (hfig, arg);
         otherwise
-          error ("rotate3d: unrecognized option '%s'", arg);
+          error ("rotate3d: unrecognized OPTION '%s'", arg);
       endswitch
     else
       error ("rotate3d: wrong type argument '%s'", class (arg));

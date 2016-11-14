@@ -52,7 +52,7 @@ function addpref (group, pref, val)
 
   if (ischar (pref))
     if (isfield (prefs, group) && isfield (prefs.(group), pref))
-      error ("addpref: preference %s already exists in group %s", pref, group);
+      error ("addpref: preference %s already exists in GROUP %s", pref, group);
     else
       prefs.(group).(pref) = val;
     endif
@@ -62,7 +62,7 @@ function addpref (group, pref, val)
     endif
     for i = 1:numel (pref)
       if (isfield (prefs, group) && isfield (prefs.(group), pref{i}))
-        error ("addpref: preference %s already exists in group %s",
+        error ("addpref: preference %s already exists in GROUP %s",
                pref{i}, group);
       else
         prefs.(group).(pref{i}) = val{i};

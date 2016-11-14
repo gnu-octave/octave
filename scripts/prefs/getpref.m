@@ -81,7 +81,7 @@ function retval = getpref (group, pref, default)
         addpref (group, pref, default);
         retval = default;
       else
-        error ("getpref: preference %s does not exist in group %s",
+        error ("getpref: preference %s does not exist in GROUP %s",
                pref, group);
       endif
     else
@@ -96,7 +96,7 @@ function retval = getpref (group, pref, default)
           addpref (group, pref{i}, default{i});
           retval{i} = default{i};
         else
-          error ("getpref: preference %s does not exist in group %s",
+          error ("getpref: preference %s does not exist in GROUP %s",
                  pref{i}, group);
         endif
       endfor

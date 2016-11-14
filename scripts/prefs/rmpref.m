@@ -47,7 +47,7 @@ function rmpref (group, pref)
 
   if (nargin == 1)
     if (! ispref (group))
-      error ("rmpref: group %s does not exist", group);
+      error ("rmpref: GROUP %s does not exist", group);
     endif
     prefs = loadprefs ();
     prefs = rmfield (prefs, group);
@@ -60,7 +60,7 @@ function rmpref (group, pref)
       saveprefs (prefs);
     else
       if (! ispref (group))
-        error ("rmpref: group %s does not exist", group);
+        error ("rmpref: GROUP %s does not exist", group);
       elseif (ischar (pref))
         error ("rmpref: preference %s does not exist", pref);
       else

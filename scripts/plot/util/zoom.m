@@ -103,10 +103,10 @@ function zoom (varargin)
         case 1
           xfactor = yfactor = factor;
         otherwise
-          error ("zoom: invalid factor");
+          error ("zoom: invalid FACTOR");
       endswitch
       if (xfactor < 0 || yfactor < 0)
-        error ("zoom: factor must be greater than 1");
+        error ("zoom: FACTOR must be greater than 1");
       elseif (xfactor == 1 && yfactor == 1)
         return;
       endif
@@ -153,7 +153,7 @@ function zoom (varargin)
             __zoom__ (cax, "reset");
           endif
         otherwise
-          error ("zoom: unrecognized option '%s'", arg);
+          error ("zoom: unrecognized OPTION '%s'", arg);
       endswitch
     else
       error ("zoom: wrong type argument '%s'", class (arg));

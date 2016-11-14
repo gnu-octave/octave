@@ -30,22 +30,22 @@
 
 ## Author: Ben Abbott  <bpabbott@mac.com>
 
-function res = isprop (h, prop)
+function res = isprop (obj, prop)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (! all (ishandle (h)))
-    error ("isprop: H must be a graphics handle or vector of handles");
+  if (! all (ishandle (obj)))
+    error ("isprop: OBJ must be a graphics handle, vector of handles, or instance of a class");
   elseif (! ischar (prop))
     error ("isprop: PROP name must be a string");
   endif
 
-  res = false (size (h));
+  res = false (size (obj));
   for i = 1:numel (res)
     try
-      v = get (h(i), prop);
+      v = get (obj(i), prop);
       res(i) = true;
     end_try_catch
   endfor
@@ -60,6 +60,6 @@ endfunction
 %!error isprop ()
 %!error isprop (1)
 %!error isprop (1,2,3)
-%!error <H must be a graphics handle> isprop ({1}, "visible")
+%!error <OBJ must be a graphics handle> isprop ({1}, "visible")
 %!error <PROP name must be a string> isprop (0, {"visible"})
 

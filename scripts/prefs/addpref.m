@@ -88,11 +88,11 @@ endfunction
 %!   assert (getpref ("group2", "prefB"), {"StringB"});
 %!
 %!   fail ('addpref ("group1", "pref1", 4)', ...
-%!         "preference pref1 already exists in group group1");
+%!         "preference pref1 already exists in GROUP group1");
 %!   fail ('setpref ("group1", {"p1", "p2"}, 1)', ...
 %!         "size mismatch for PREF and VAL");
 %!   fail ('addpref ("group2", {"prefC", "prefA"}, {1, 2})',
-%!         "preference prefA already exists in group group2");
+%!         "preference prefA already exists in GROUP group2");
 %!
 %! unwind_protect_cleanup
 %!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));

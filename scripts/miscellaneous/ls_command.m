@@ -25,7 +25,7 @@
 
 ## Author: jwe
 
-function old_cmd = ls_command (cmd)
+function old_val = ls_command (new_val)
 
   global __ls_command__;
 
@@ -41,14 +41,14 @@ function old_cmd = ls_command (cmd)
 
   if (nargin == 0 || nargin == 1)
 
-    old_cmd = __ls_command__;
+    old_val = __ls_command__;
 
     if (nargin == 1)
-      if (ischar (cmd))
-        __ls_command__ = cmd;
-      else
+      if (! ischar (new_val))
         error ("ls_command: argument must be a character string");
       endif
+
+      __ls_command__ = new_val;
     endif
 
   endif

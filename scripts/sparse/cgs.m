@@ -68,7 +68,7 @@
 ## @seealso{pcg, bicgstab, bicg, gmres, qmr}
 ## @end deftypefn
 
-function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
+function [x, flag, relres, iter, resvec] = cgs (A, b, rtol, maxit, M1, M2, x0)
 
   if (nargin >= 2 && nargin <= 7 && isvector (full (b)))
 
@@ -82,8 +82,8 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       error ("cgs: A must be a square matrix or function");
     endif
 
-    if (nargin < 3 || isempty (tol))
-      tol = 1e-6;
+    if (nargin < 3 || isempty (rtol))
+      rtol = 1e-6;
     endif
 
     if (nargin < 4 || isempty (maxit))
@@ -128,7 +128,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
     ## Vector of the residual norms for each iteration.
     resvec = norm (res) / norm_b;
     ro = 0;
-    ## Default behavior we don't reach tolerance tol within maxit iterations.
+    ## Default behavior we don't reach tolerance rtol within maxit iterations.
     flag = 1;
     for iter = 1:maxit
 
@@ -152,8 +152,8 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       relres = norm (res) / norm_b;
       resvec = [resvec; relres];
 
-      if (relres <= tol)
-        ## We reach tolerance tol within maxit iterations.
+      if (relres <= rtol)
+        ## We reach tolerance rtol within maxit iterations.
         flag = 0;
         break
       elseif (resvec(end) == resvec(end - 1))
@@ -171,12 +171,12 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
         printf (["cgs stopped at iteration %i without converging to the desired tolerance %e\n",
                  "because the method stagnated.\n",
                  "The iterate returned (number %i) has relative residual %e\n"],
-                iter, tol, iter, relres);
+                iter, rtol, iter, relres);
       else
         printf (["cgs stopped at iteration %i without converging to the desired tolerance %e\n",
                  "because the maximum number of iterations was reached.\n",
                  "The iterate returned (number %i) has relative residual %e\n"],
-                iter, tol, iter, relres);
+                iter, rtol, iter, relres);
       endif
     endif
 
@@ -199,25 +199,25 @@ endfunction
 %! n = 100;
 %! A = spdiags ([-ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
 %! b = sum (A, 2);
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! maxit = 1000;
 %! M = 4*eye (n);
-%! [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M);
+%! [x, flag, relres, iter, resvec] = cgs (A, b, rtol, maxit, M);
 %! assert (x, ones (size (b)), 1e-7);
 %!
 %!test
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! maxit = 15;
 %!
-%! [x, flag, relres, iter, resvec] = cgs (@(x) A * x, b, tol, maxit, M);
+%! [x, flag, relres, iter, resvec] = cgs (@(x) A * x, b, rtol, maxit, M);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test
 %! n = 100;
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! a = sprand (n, n, .1);
 %! A = a'*a + 100 * eye (n);
 %! b = sum (A, 2);
-%! [x, flag, relres, iter, resvec] = cgs (A, b, tol, [], diag (diag (A)));
+%! [x, flag, relres, iter, resvec] = cgs (A, b, rtol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
 

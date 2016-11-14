@@ -60,7 +60,7 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fminbnd");
 
-function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ())
+function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
@@ -73,7 +73,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
     print_usage ();
   endif
 
-  if (xmin > xmax)
+  if (a > b)
     error ("Octave:invalid-input-arg",
            "fminbnd: the lower bound cannot be greater than the upper one");
   endif
@@ -100,14 +100,13 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   nfev = 0;
 
   c = 0.5*(3 - sqrt (5));
-  a = xmin; b = xmax;
   v = a + c*(b-a);
   w = x = v;
   e = 0;
   fv = fw = fval = fun (x);
   nfev += 1;
 
-  if (isa (xmin, "single") || isa (xmax, "single") || isa (fval, "single"))
+  if (isa (a, "single") || isa (b, "single") || isa (fval, "single"))
     sqrteps = eps ("single");
   else
     sqrteps = eps ("double");

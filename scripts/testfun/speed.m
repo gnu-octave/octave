@@ -144,6 +144,10 @@
 ## @kbd{demo ("speed")} to run them.
 ## @end deftypefn
 
+## Programming Note: All variables for speed() must use the internal prefix "__".
+## Shared variables are eval'ed into the current workspace and therefore might
+## collide with the names used in the speed.m function itself.
+
 ## FIXME: consider two dimensional speedup surfaces for functions like kron.
 function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 100, __f2 = "", __tol = eps)
 

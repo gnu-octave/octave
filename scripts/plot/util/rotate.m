@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rotate (@var{h}, @var{dir}, @var{alpha})
+## @deftypefn  {} {} rotate (@var{h}, @var{direction}, @var{alpha})
 ## @deftypefnx {} {} rotate (@dots{}, @var{origin})
 ## Rotate the plot object @var{h} through @var{alpha} degrees around the line
-## with direction @var{dir} and origin @var{origin}.
+## with direction @var{direction} and origin @var{origin}.
 ##
 ## The default value of @var{origin} is the center of the axes object that is
 ## the parent of @var{h}.
@@ -180,10 +180,11 @@ endfunction
 %!error <all handles must be children of the same axes object> rotate ([o1, o2], [0,0,0], 90)
 %!error <invalid direction> rotate (o1, "foo", 90)
 %!error <invalid rotation angle> rotate (o1, [0,0,0], "foo")
-%!error <invalid origin> rotate (o1, [0,0,0], 90, "foo")
+%!error <invalid ORIGIN> rotate (o1, [0,0,0], 90, "foo")
 %!error rotate (o1, [0,0,0], 90, [0,0,0], 1)
 %!error <H must be an array of one or more graphics handles> rotate (NaN, [0,0,0], 90)
 %!error <expecting image, line, patch, or surface objects> rotate (o3, [0,0,0], 90)
 %!test
 %! close (h1);
 %! close (h2);
+

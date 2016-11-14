@@ -1525,7 +1525,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error <unknown annotation type foo> annotation ("foo")
+%!error <unknown annotation TYPE foo> annotation ("foo")
 %!error annotation ([], "foo")
 %!error annotation ({})
 %!error annotation ("line", [.5 .6])

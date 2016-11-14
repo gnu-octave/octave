@@ -79,35 +79,35 @@
 ## Created: 24 December 1993
 ## Adapted-By: jwe
 
-function r = roots (v)
+function r = roots (c)
 
-  if (nargin != 1 || (! isvector (v) && ! isempty (v)))
+  if (nargin != 1 || (! isvector (c) && ! isempty (c)))
     print_usage ();
-  elseif (any (! isfinite (v)))
+  elseif (any (! isfinite (c)))
     error ("roots: inputs must not contain Inf or NaN");
   endif
 
-  v = v(:);
-  n = numel (v);
+  c = c(:);
+  n = numel (c);
 
-  ## If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ],
+  ## If c = [ 0 ... 0 c(k+1) ... c(k+l) 0 ... 0 ],
   ## we can remove the leading k zeros,
   ## and n - k - l roots of the polynomial are zero.
 
-  v_max = max (abs (v));
-  if (isempty (v) || v_max == 0)
+  c_max = max (abs (c));
+  if (isempty (c) || c_max == 0)
     r = [];
     return;
   endif
 
-  f = find (v ./ v_max);
+  f = find (c ./ c_max);
   m = numel (f);
 
-  v = v(f(1):f(m));
-  l = numel (v);
+  c = c(f(1):f(m));
+  l = numel (c);
   if (l > 1)
     A = diag (ones (1, l-2), -1);
-    A(1,:) = -v(2:l) ./ v(1);
+    A(1,:) = -c(2:l) ./ c(1);
     r = eig (A);
     if (f(m) < n)
       r = [r; zeros(n - f(m), 1)];

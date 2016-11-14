@@ -74,7 +74,7 @@
 ## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
 ## Author: Carlo de Falco
 
-function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
+function [x, flag, res1, k, resvec] = bicg (A, b, rtol, maxit, M1, M2, x0)
 
   if (nargin >= 2 && isvector (full (b)))
 
@@ -92,8 +92,8 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       error ("bicg: A must be a square matrix or function");
     endif
 
-    if (nargin < 3 || isempty (tol))
-      tol = 1e-6;
+    if (nargin < 3 || isempty (rtol))
+      rtol = 1e-6;
     endif
 
     if (nargin < 4 || isempty (maxit))
@@ -176,7 +176,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
         s0 = s1;
 
         res1 = norm (b - Ax (x)) / bnorm;
-        if (res1 < tol)
+        if (res1 < rtol)
           flag = 0;
           if (nargout < 2)
             printf ("bicg converged at iteration %i ", k);
@@ -188,7 +188,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
         if (res0 <= res1)
           flag = 3;
           printf ("bicg stopped at iteration %i ", k);
-          printf ("without converging to the desired tolerance %e\n", tol);
+          printf ("without converging to the desired tolerance %e\n", rtol);
           printf ("because the method stagnated.\n");
           printf ("The iterate returned (number %i) ", k-1);
           printf ("has relative residual %e\n", res0);
@@ -203,7 +203,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       if (k == maxit)
         flag = 1;
         printf ("bicg stopped at iteration %i ", maxit);
-        printf ("without converging to the desired tolerance %e\n", tol);
+        printf ("without converging to the desired tolerance %e\n", rtol);
         printf ("because the maximum number of iterations was reached. ");
         printf ("The iterate returned (number %i) has ", maxit);
         printf ("relative residual %e\n", res1);
@@ -227,11 +227,11 @@ endfunction;
 %! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
 %! b = sum (A, 2);
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! maxit = 15;
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
-%! [x, flag, relres, iter, resvec] = bicg (A, b, tol, maxit, M1, M2);
+%! [x, flag, relres, iter, resvec] = bicg (A, b, rtol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!function y = afun (x, t, a)
@@ -247,21 +247,21 @@ endfunction;
 %! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
 %! b = sum (A, 2);
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! maxit = 15;
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %!
 %! [x, flag, relres, iter, resvec] = bicg (@(x, t) afun (x, t, A),
-%!                                         b, tol, maxit, M1, M2);
+%!                                         b, rtol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test
 %! n = 100;
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! a = sprand (n, n, .1);
 %! A = a' * a + 100 * eye (n);
 %! b = sum (A, 2);
-%! [x, flag, relres, iter, resvec] = bicg (A, b, tol, [], diag (diag (A)));
+%! [x, flag, relres, iter, resvec] = bicg (A, b, rtol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
 

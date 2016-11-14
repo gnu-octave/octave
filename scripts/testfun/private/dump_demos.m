@@ -50,7 +50,7 @@
 
 ## Author: Søren Hauberg  <soren@hauberg.org>
 
-function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, output="dump_plot_demos.m", fmt="png")
+function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")
 
   if (nargin > 3)
     print_usage ();
@@ -66,13 +66,13 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}
     dirs = strrep (dirs, "/", filesep ());
   endif
 
-  [~, funcname, ext] = fileparts (output);
+  [~, funcname, ext] = fileparts (mfile);
   if (isempty (ext))
-    output = [output ".m"];
+    mfile = [mfile ".m"];
   endif
 
   ## Create script beginning (close figures, etc.)
-  fid = fopen (output, "w");
+  fid = fopen (mfile, "w");
   fprintf (fid, "%% DO NOT EDIT!  Generated automatically by dump_demos.m\n");
   fprintf (fid, "function %s ()\n", funcname);
   fprintf (fid, "set (0, 'DefaultAxesColorOrder', ...\n");

@@ -89,9 +89,9 @@ endfunction
 %!   assert (! ispref ("group2", "prefB"));
 %!
 %!   fail ('rmpref ("group3")', ...
-%!         "group group3 does not exist");
+%!         "GROUP group3 does not exist");
 %!   fail ('rmpref ("group3", "prefA")', ...
-%!         "group group3 does not exist");
+%!         "GROUP group3 does not exist");
 %!   fail ('rmpref ("group2", "prefB")',
 %!         "preference prefB does not exist");
 %!   fail ('rmpref ("group2", {"prefA", "prefB"})',

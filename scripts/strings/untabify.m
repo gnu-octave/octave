@@ -51,7 +51,7 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-10-15
 
-function s = untabify (t, tw = 8, dblank = false)
+function s = untabify (t, tw = 8, deblank_arg = false)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -65,7 +65,7 @@ function s = untabify (t, tw = 8, dblank = false)
     s = cellfun (@replace_tabs, t, {tw}, "uniformoutput", false);
   endif
 
-  if (dblank)
+  if (deblank_arg)
     s = deblank (s);
   endif
 

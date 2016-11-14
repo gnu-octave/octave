@@ -148,5 +148,5 @@ endfunction
 %! assert (javachk ("jvm"), "");
 
 ## Test input validation
-%!error <javachk: unrecognized feature 'foobar'> javachk ("foobar")
+%!error <javachk: unrecognized FEATURE 'foobar'> javachk ("foobar")
 

@@ -87,7 +87,7 @@
 
 ## Author: Nathan Podlich <nathan.podlich@gmail.com>
 
-function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
+function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
 
   if (nargin >= 2 && isvector (full (b)))
 
@@ -105,8 +105,8 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       error ("qmr: A must be a square matrix or function");
     endif
 
-    if (nargin < 3 || isempty (tol))
-      tol = 1e-6;
+    if (nargin < 3 || isempty (rtol))
+      rtol = 1e-6;
     endif
 
     if (nargin < 4 || isempty (maxit))
@@ -225,7 +225,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
         resvec(iter + 1, 1) = norm (r);
       endif
 
-      if (res1 < tol)
+      if (res1 < rtol)
         ## Convergence achieved.
         flag = 0;
         break;
@@ -244,7 +244,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     if (flag == 1)
       if (nargout < 2)
         printf ("qmr stopped at iteration %i ", iter);
-        printf ("without converging to the desired tolerance %e\n", tol);
+        printf ("without converging to the desired tolerance %e\n", rtol);
         printf ("because the maximum number of iterations was reached. ");
         printf ("The iterate returned (number %i) has ", maxit);
         printf ("relative residual %e\n", res1);
@@ -252,7 +252,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     elseif (flag == 3)
       if (nargout < 2)
         printf ("qmr stopped at iteration %i ", iter);
-        printf (" without converging to the desired tolerance %e\n", tol);
+        printf (" without converging to the desired tolerance %e\n", rtol);
         printf ("because the method stagnated.\n");
         printf ("The iterate returned (number %i) ", iter);
         printf ("has relative residual %e\n", res1);
@@ -278,11 +278,11 @@ endfunction
 %! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
 %! b = sum (A, 2);
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! maxit = 15;
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
-%! [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2);
+%! [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!function y = afun (x, t, a)
@@ -298,22 +298,22 @@ endfunction
 %! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
 %! b = sum (A, 2);
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! maxit = 15;
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %!
 %! [x, flag, relres, iter, resvec] = qmr (@(x, t) afun (x, t, A),
-%!                                         b, tol, maxit, M1, M2);
+%!                                         b, rtol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test
 %! n = 100;
-%! tol = 1e-8;
+%! rtol = 1e-8;
 %! a = sprand (n, n, .1);
 %! A = a' * a + 100 * eye (n);
 %! b = sum (A, 2);
-%! [x, flag, relres, iter, resvec] = qmr (A, b, tol, [], diag (diag (A)));
+%! [x, flag, relres, iter, resvec] = qmr (A, b, rtol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test

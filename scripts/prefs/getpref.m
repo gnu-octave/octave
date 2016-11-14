@@ -129,7 +129,7 @@ endfunction
 %!   assert (getpref ("group1", "pref2", "New_Value"), "New_Value");
 %!   assert (getpref ("group1", "pref2"), "New_Value");
 %!   fail ('getpref ("group1", "no_such_pref")', ...
-%!         "preference no_such_pref does not exist in group group1");
+%!         "preference no_such_pref does not exist in GROUP group1");
 %!
 %!   assert (getpref ("group2", {"prefA", "prefB"}), {"StringA", {"StringB"}});
 %!   assert (getpref ("group2", {"prefA", "prefC"}, {1, "StringC"}),
@@ -138,7 +138,7 @@ endfunction
 %!   fail ('getpref ("group1", {"p1", "p2"}, 1)', ...
 %!         "size mismatch for PREF and DEFAULT");
 %!   fail ('getpref ("group2", {"prefA", "prefD"})',
-%!         "preference prefD does not exist in group group2");
+%!         "preference prefD does not exist in GROUP group2");
 %!
 %! unwind_protect_cleanup
 %!   unlink (fullfile (P_tmpdir (), ".octave_prefs"));

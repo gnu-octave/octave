@@ -22,8 +22,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [pkg_desc_list, flag] = describe (pkgnames, verbose,
-                                           local_list, global_list)
+function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global_list)
 
   ## Get the list of installed packages.
   installed_pkgs_lst = installed_packages(local_list, global_list);

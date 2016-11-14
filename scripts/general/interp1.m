@@ -366,7 +366,7 @@ function yi = interp1 (x, y, varargin)
       endif
 
     otherwise
-      error ("interp1: invalid METHOD '%s'", METHOD);
+      error ("interp1: invalid METHOD '%s'", method);
 
   endswitch
 
@@ -793,5 +793,5 @@ endfunction
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "pchip")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "cubic")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "spline")
-%!error <invalid method 'invalid'> interp1 (1:2,1:2,1, "invalid")
+%!error <invalid METHOD 'invalid'> interp1 (1:2,1:2,1, "invalid")
 

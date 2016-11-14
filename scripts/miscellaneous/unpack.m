@@ -342,9 +342,9 @@ endfunction
 %!error unpack ()
 %!error unpack (1,2,3,4)
 %!error <FILE must be a string or cell array of strings> unpack (1)
-%!error <file "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
-%!error <file "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
-%!error <file "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
+%!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
+%!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
+%!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
 %!error <FILETYPE must be given for a directory>
 %! if (isunix || ismac)
 %!   unpack ("/");

@@ -17,40 +17,40 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{c} =} normest1 (@var{a})
-## @deftypefnx {} {@var{c} =} normest1 (@var{a}, @var{t})
-## @deftypefnx {} {@var{c} =} normest1 (@var{a}, @var{t}, @var{x0})
-## @deftypefnx {} {@var{c} =} normest1 (@var{afun}, @var{t}, @var{x0}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {} {[@var{c}, @var{v}] =} normest1 (@var{a}, @dots{})
-## @deftypefnx {} {[@var{c}, @var{v}, @var{w}] =} normest1 (@var{a}, @dots{})
-## @deftypefnx {} {[@var{c}, @var{v}, @var{w}, @var{it}] =} normest1 (@var{a}, @dots{})
-## Estimate the 1-norm of the matrix @var{a} using a block algorithm.
+## @deftypefn  {} {@var{c} =} normest1 (@var{A})
+## @deftypefnx {} {@var{c} =} normest1 (@var{A}, @var{t})
+## @deftypefnx {} {@var{c} =} normest1 (@var{A}, @var{t}, @var{x0})
+## @deftypefnx {} {@var{c} =} normest1 (@var{Afun}, @var{t}, @var{x0}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{v}] =} normest1 (@var{A}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{v}, @var{w}] =} normest1 (@var{A}, @dots{})
+## @deftypefnx {} {[@var{c}, @var{v}, @var{w}, @var{it}] =} normest1 (@var{A}, @dots{})
+## Estimate the 1-norm of the matrix @var{A} using a block algorithm.
 ##
-## For a medium size matrix @var{a}, @code{norm (@var{a}, 1)} should be
+## For a medium size matrix @var{A}, @code{norm (@var{A}, 1)} should be
 ## used instead.  For a large sparse matrix, when only an estimate of the norm
-## is needed, @code{normest1 (@var{a})} might be faster.  Moreover, it can be
+## is needed, @code{normest1 (@var{A})} might be faster.  Moreover, it can be
 ## used for the estimate of the 1-norm of a linear
-## operator @var{a} when matrix-vector products @code{@var{a} * @var{x}} and
-## @code{@var{a}' * @var{x}} can be cheaply computed.  In this case,
-## instead of the matrix @var{a}, a function
-## @code{@var{afun} (@var{flag}, @var{x})} can be used.  It should return:
+## operator @var{A} when matrix-vector products @code{@var{A} * @var{x}} and
+## @code{@var{A}' * @var{x}} can be cheaply computed.  In this case,
+## instead of the matrix @var{A}, a function
+## @code{@var{Afun} (@var{flag}, @var{x})} can be used.  It should return:
 ##
 ## @itemize @bullet
 ## @item
-## the dimension @var{n} of @var{a}, if @var{flag} is @qcode{"dim"}
+## the dimension @var{n} of @var{A}, if @var{flag} is @qcode{"dim"}
 ##
 ## @item
-## true if @var{a} is a real operator, if @var{flag} is @qcode{"real"}
+## true if @var{A} is a real operator, if @var{flag} is @qcode{"real"}
 ##
 ## @item
-## the result @code{@var{a} * @var{x}}, if @var{flag} is @qcode{"notransp"}
+## the result @code{@var{A} * @var{x}}, if @var{flag} is @qcode{"notransp"}
 ##
 ## @item
-## the result @code{@var{a}' * @var{x}}, if @var{flag} is @qcode{"transp"}
+## the result @code{@var{A}' * @var{x}}, if @var{flag} is @qcode{"transp"}
 ## @end itemize
 ##
-## A typical case is @var{a} defined by @code{@var{b} ^ @var{m}},
-## in which the result @code{@var{a} * @var{x}} can be computed without
+## A typical case is @var{A} defined by @code{@var{b} ^ @var{m}},
+## in which the result @code{@var{A} * @var{x}} can be computed without
 ## even forming explicitly @code{@var{b} ^ @var{m}} by:
 ##
 ## @example
@@ -63,7 +63,7 @@
 ## @end example
 ##
 ## The parameters @var{p1}, @var{p2}, @dots{} are arguments of
-## @code{@var{afun} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}.
+## @code{@var{Afun} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}.
 ##
 ## The default value for @var{t} is 2. The algorithm requires
 ## matrix-matrix products with sizes @var{n} x @var{n} and
@@ -78,12 +78,12 @@
 ## random generator should be fixed before invoking @code{normest1}.
 ##
 ## On output, @var{c} is the desired estimate, @var{v} and @var{w}
-## vectors such that @code{@var{w} = @var{a} * @var{v}}, with
+## vectors such that @code{@var{w} = @var{A} * @var{v}}, with
 ## @code{norm (@var{w}, 1)} = @code{@var{c} * norm (@var{v}, 1)}.
 ## @var{it} contains in @code{@var{it}(1)} the number of iterations
 ## (the maximum number is hardcoded to 5) and in  @code{@var{it}(2)}
-## the total number of products @code{@var{a} * @var{x}} or
-## @code{@var{a}' * @var{x}} performed by the algorithm.
+## the total number of products @code{@var{A} * @var{x}} or
+## @code{@var{A}' * @var{x}} performed by the algorithm.
 ##
 ## Reference: @nospell{N. J. Higham and F. Tisseur},
 ## @cite{A block algorithm for matrix 1-norm estimation, with and
@@ -97,7 +97,7 @@
 ## Ideally, we would set t and X to their default values but Matlab
 ## compatibility would require we set the default even when they are
 ## empty.
-function [est, v, w, k] = normest1 (A, t = [], X = [], varargin)
+function [est, v, w, k] = normest1 (A, t = [], x0 = [], varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -137,7 +137,7 @@ function [est, v, w, k] = normest1 (A, t = [], X = [], varargin)
 
   t = min (t, n);
 
-  if (isempty (X))
+  if (isempty (x0))
     X = [ones(n, 1), sign(2 * rand(n, t - 1) - 1)];
     i = 2;
     imax = min (t, 2 ^ (n - 1));
@@ -151,8 +151,10 @@ function [est, v, w, k] = normest1 (A, t = [], X = [], varargin)
       endif
     endwhile
     X /= n;
-  elseif (columns (X) < t)
+  elseif (columns (x0) < t)
     error ("normest1: X should have %d columns", t);
+  else
+    X = x0;
   endif
 
   itmax = 5;
@@ -245,7 +247,9 @@ function [est, v, w, k] = normest1 (A, t = [], X = [], varargin)
   endwhile
   v = zeros (n, 1);
   v(ind_best) = 1;
+
 endfunction
+
 
 %!function z = afun_A (flag, x, A, n)
 %!  switch flag
@@ -370,3 +374,4 @@ endfunction
 %! assert (iscolumn (it))
 %! [~, ~, ~, it] = normest1 (rand (50), 20);
 %! assert (iscolumn (it))
+

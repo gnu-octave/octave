@@ -54,7 +54,7 @@
 ## @seealso{javaaddpath, javarmpath}
 ## @end deftypefn
 
-function [path1, path2] = javaclasspath (which)
+function [path1, path2] = javaclasspath (what = "")
 
   if (nargin > 1)
     print_usage ();
@@ -77,9 +77,9 @@ function [path1, path2] = javaclasspath (which)
 
   if (nargout == 0)
     if (! nargin)
-      which = "-all";
+      what = "-all";
     endif
-    switch (tolower (which))
+    switch (tolower (what))
       case "-dynamic", disp_path_list ("DYNAMIC", dynamic_path_list);
       case "-static",  disp_path_list ("STATIC", static_path_list);
       case "-all"
@@ -98,7 +98,7 @@ function [path1, path2] = javaclasspath (which)
       path1 = cellstr (dynamic_path_list);
       path2 = cellstr (static_path_list);
     else
-      switch (tolower (which))
+      switch (tolower (what))
         case "-all",     path1 = cellstr ([static_path_list,dynamic_path_list]);
         case "-dynamic", path1 = cellstr (dynamic_path_list);
         case "-static",  path1 = cellstr (static_path_list);
@@ -112,8 +112,8 @@ endfunction
 
 ## Display cell array of paths
 
-function disp_path_list (which, path_list)
-  printf ("   %s JAVA PATH\n\n", which);
+function disp_path_list (what, path_list)
+  printf ("   %s JAVA PATH\n\n", what);
   if (numel (path_list) > 0)
     printf ("      %s\n", path_list{:});
   else

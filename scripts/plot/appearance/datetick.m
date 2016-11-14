@@ -197,6 +197,7 @@ function __datetick__ (varargin)
       nticks = (xmax - xmin) / sep + 1;
       xmin *= scl;
       xmax *= scl;
+      ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
     else
       [ymin, mmin, dmin] = datevec (xmin);
       [ymax, mmax, dmax] = datevec (xmax);
@@ -213,18 +214,20 @@ function __datetick__ (varargin)
         ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
       elseif (maxyear - minyear < N)
         sep = __calc_tick_sep__ (minmonth, maxmonth);
+        minyear = floor (minyear);
         minmonth = sep * floor (minmonth / sep);
+        minmonth = ifelse (minmonth == 0, 1, minmonth);
         maxmonth = sep * ceil (maxmonth / sep);
-        xmin = datenum (ymin, minmonth, 1);
-        tick_years = datevec (datenum (floor (minyear), minmonth:maxmonth, 1))(:,1)';
-        tick_month = 12 - mod (-(minmonth:maxmonth), 12);
-        ticks = xmin + [0 cumsum(eomday(tick_years, tick_month))(sep:sep:end)];
+        rangemonth = (minmonth:sep:maxmonth)';
+        ticks = datenum ([repmat(minyear, size(rangemonth)), ...
+                          rangemonth, ...
+                          ones(size (rangemonth))]);
       else
-        sep = __calc_tick_sep__ (minyear , maxyear);
-        xmin = datenum (sep * floor (minyear / sep), 1, 1);
-        xmax = datenum (sep * ceil (maxyear / sep), 1, 1);
-        nticks = ceil (maxyear / sep) - floor (minyear / sep) + 1;
-        ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
+        sep = __calc_tick_sep__ (minyear, maxyear);
+        minyear = sep * floor (minyear / sep);
+        maxyear = sep * ceil (maxyear / sep);
+        rangeyear = (minyear:sep:maxyear)';
+        ticks = datenum ([rangeyear, ones(rows(rangeyear),2)]);
       endif
     endif
   endif

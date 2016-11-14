@@ -667,12 +667,12 @@ specified option.
 
 /*
 %!assert (ischar (__octave_config_info__ ("version")))
+%!assert (__octave_config_info__ ("version"), OCTAVE_VERSION ())
 %!test
 %! x = __octave_config_info__ ();
 %! assert (isstruct (x));
 %! assert (! isempty (x));
-
-%!assert (__octave_config_info__ ("fftw_version"), __octave_config_info__ ("fftwf_version"))
+%! assert (x.version, OCTAVE_VERSION ());
 
 %!error __octave_config_info__ (1, 2)
 */

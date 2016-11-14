@@ -93,7 +93,7 @@ namespace QtHandles
       {
         graphics_object go (gh_manager::get_object (kids(i)));
 
-        if (go && go.isa ("uimenu") && 
+        if (go && go.isa ("uimenu") &&
             go.get ("visible").string_value () == "on")
           return true;
       }
@@ -535,7 +535,7 @@ namespace QtHandles
   void
   Figure::showMenuBar (bool visible, int h1)
   {
-    // Get the height before and after toggling the visibility of builtin menus 
+    // Get the height before and after toggling the visibility of builtin menus
     if (h1 <= 0)
       h1 = m_menuBar->sizeHint ().height ();
 
@@ -548,12 +548,12 @@ namespace QtHandles
     // Keep the menubar visible if it contains custom menus
     if (! visible)
       visible = hasUiMenuChildren (properties<figure> ());
-    
+
     if (m_menuBar->isVisible () ^ visible)
       {
         int dy = qMax (h1, h2);
         QRect r = qWidget<QWidget> ()->geometry ();
-        
+
         if (! visible)
           r.adjust (0, dy, 0, 0);
         else
@@ -574,7 +574,7 @@ namespace QtHandles
     graphics_object go = object ();
 
     if (go.valid_object ())
-      showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"), 
+      showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"),
                    height);
   }
 

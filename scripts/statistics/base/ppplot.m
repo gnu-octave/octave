@@ -65,11 +65,11 @@ function [p, y] = ppplot (x, dist, varargin)
   p = ((1 : n)' - 0.5) / n;
   if (nargin == 1)
     F = @stdnormal_cdf;
-  else if (! ischar (dist))
-    error ("ppplot: DIST must me a string");
+  elseif (! ischar (dist))
+    error ("ppplot: DIST must be a string");
   else
     F = str2func ([dist "cdf"]);
-  endif;
+  endif
 
   if (nargin <= 2)
     y = feval (F, s);

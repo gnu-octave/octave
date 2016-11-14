@@ -55,7 +55,7 @@
 
 ## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
-function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
+function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
 
   if (isa (A, "single") || isa (V, "single"))
     defeps = 1e-6;

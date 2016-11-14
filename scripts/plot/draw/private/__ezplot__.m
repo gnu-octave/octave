@@ -482,7 +482,7 @@ endfunction
 
 ## Find: 1) range of function where there are not NaN values,
 ##       2) function is changing (not just flat surface)
-function domain = find_valid_domain (X, Y, Z);
+function domain = find_valid_domain (X, Y, Z)
 
   if (isvector (Z))
     ## 2-D data for isplot

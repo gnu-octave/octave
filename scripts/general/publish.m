@@ -986,7 +986,7 @@ function doc = eval_code (doc, options)
 endfunction
 
 
-function ___cstr___ = eval_code_helper (___context___, ___code___);
+function ___cstr___ = eval_code_helper (___context___, ___code___)
   ## EVAL_CODE_HELPER evaluates a given string with Octave code in an extra
   ##   temporary context and returns a cellstring with the eval output.
 

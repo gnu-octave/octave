@@ -71,7 +71,7 @@
 ## @seealso{cellfun, arrayfun, spfun}
 ## @end deftypefn
 
-function varargout = structfun (func, S, varargin);
+function varargout = structfun (func, S, varargin)
 
   if (nargin < 2)
     print_usage ();

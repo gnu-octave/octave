@@ -81,7 +81,7 @@ function smoothed_data = smooth3 (data, method = "box", sz = 3, std_dev = 0.65)
 
 endfunction
 
-function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, method, sz, std_dev);
+function [data, conv_kernel, sz, std_dev] = __get_check_smooth3_args__ (data, method, sz, std_dev)
 
   if (! isnumeric (data) || ndims (data) != 3)
     error ("smooth3: DATA must be a 3-D numeric matrix");

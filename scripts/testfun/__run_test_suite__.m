@@ -189,7 +189,7 @@ function retval = has_tests (f)
 
 endfunction
 
-function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
+function [dp, dn, dxf, dsk] = run_test_dir (fid, d)
   global files_with_tests;
   global files_with_no_tests;
 
@@ -235,7 +235,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
 
 endfunction
 
-function [dp, dn, dxf, dsk] = run_test_script (fid, d);
+function [dp, dn, dxf, dsk] = run_test_script (fid, d)
   global files_with_tests;
   global files_with_no_tests;
   global topsrcdir;

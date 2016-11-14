@@ -121,7 +121,7 @@ endfunction
 ##
 ## Modifications for Octave by A.Adler 2003
 
-function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x );
+function [stopit, savit, dirn, trace, tol, maxiter] = parse_options (options, x )
 
   ## Tolerance for cgce test based on relative size of simplex.
   stopit(1) = tol = optimget (options, "TolX", 1e-4);

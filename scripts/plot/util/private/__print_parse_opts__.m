@@ -628,7 +628,7 @@ function value = convert2points (value, units)
 
 endfunction
 
-function device_list = gs_device_list ();
+function device_list = gs_device_list ()
   ## Graphics formats/languages, not printers.
   device_list = {"bmp16"; "bmp16m"; "bmp256"; "bmp32b"; "bmpgray"; ...
                  "epswrite"; "eps2write"; "jpeg"; "jpegcymk"; "jpeggray";
@@ -642,7 +642,7 @@ function device_list = gs_device_list ();
                  "tiffgray"; "tifflzw"; "tiffpack"; "tiffsep"};
 endfunction
 
-function aliases = gs_aliases ();
+function aliases = gs_aliases ()
   ## Aliases for other devices: "bmp", "png", "tiff", "tiffn", "pdf",
   ##                            "ps", "ps2", "psc", "psc2"
   ##

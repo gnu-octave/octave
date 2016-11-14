@@ -23,7 +23,7 @@
 ## The axis is specified by the vector DIR and the point ORIGIN.
 ## @end deftypefn
 
-function [xr, yr, zr] = __rotate_around_axis__ (x, y, z, angle, dir, origin);
+function [xr, yr, zr] = __rotate_around_axis__ (x, y, z, angle, dir, origin)
 
   dir /= norm (dir);
   u = dir(1);

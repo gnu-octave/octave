@@ -53,37 +53,39 @@ inline void mx_inline_fill (size_t n, R *r, S s) throw ()
     r[i] = s;
 }
 
-#define DEFMXUNOP(F, OP)                                \
-  template <typename R, typename X>                     \
-  inline void F (size_t n, R *r, const X *x) throw ()   \
-  {                                                     \
-    for (size_t i = 0; i < n; i++)                      \
-      r[i] = OP x[i];                                   \
-  }
+template <typename R, typename X>
+inline void
+mx_inline_uminus (size_t n, R *r, const X *x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = -x[i];
+}
 
-DEFMXUNOP (mx_inline_uminus, -)
+template <typename R>
+inline void
+mx_inline_uminus2 (size_t n, R *r) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = -r[i];
+}
 
-#define DEFMXUNOPEQ(F, OP)                      \
-  template <typename R>                         \
-  inline void F (size_t n, R *r) throw ()       \
-  {                                             \
-    for (size_t i = 0; i < n; i++)              \
-      r[i] = OP r[i];                           \
-  }
+template <typename X>
+inline void
+mx_inline_iszero (size_t n, bool *r, const X *x) throw ()
+{
+  const X zero = X ();
+  for (size_t i = 0; i < n; i++)
+    r[i] = x[i] == zero;
+}
 
-DEFMXUNOPEQ (mx_inline_uminus2, -)
-
-#define DEFMXUNBOOLOP(F, OP)                                    \
-  template <typename X>                                         \
-  inline void F (size_t n, bool *r, const X *x) throw ()        \
-  {                                                             \
-    const X zero = X ();                                        \
-    for (size_t i = 0; i < n; i++)                              \
-      r[i] = x[i] OP zero;                                      \
-  }
-
-DEFMXUNBOOLOP (mx_inline_iszero, ==)
-DEFMXUNBOOLOP (mx_inline_notzero, !=)
+template <typename X>
+inline void
+mx_inline_notzero (size_t n, bool *r, const X *x) throw ()
+{
+  const X zero = X ();
+  for (size_t i = 0; i < n; i++)
+    r[i] = x[i] != zero;
+}
 
 #define DEFMXBINOP(F, OP)                                               \
   template <typename R, typename X, typename Y>                         \
@@ -221,22 +223,37 @@ DEFMXBOOLOP (mx_inline_not_or, !, |, )
 DEFMXBOOLOP (mx_inline_and_not, , &, !)
 DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
-#define DEFMXBOOLOPEQ(F, OP)                                    \
-  template <typename X>                                         \
-  inline void F (size_t n, bool *r, const X *x) throw ()        \
-  {                                                             \
-    for (size_t i = 0; i < n; i++)                              \
-      r[i] OP logical_value (x[i]);                             \
-  }                                                             \
-  template <typename X>                                         \
-  inline void F (size_t n, bool *r, X x) throw ()               \
-  {                                                             \
-    for (size_t i = 0; i < n; i++)                              \
-      r[i] OP x;                                                \
-  }
+template <typename X>
+inline void
+mx_inline_and2 (size_t n, bool *r, const X *x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] &= logical_value (x[i]);
+}
 
-DEFMXBOOLOPEQ (mx_inline_and2, &=)
-DEFMXBOOLOPEQ (mx_inline_or2, |=)
+template <typename X>
+inline void
+mx_inline_and2 (size_t n, bool *r, X x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] &= x;
+}
+
+template <typename X>
+inline void
+mx_inline_or2 (size_t n, bool *r, const X *x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] |= logical_value (x[i]);
+}
+
+template <typename X>
+inline void
+mx_inline_or2 (size_t n, bool *r, X x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] |= x;
+}
 
 template <typename T>
 inline bool
@@ -303,14 +320,6 @@ mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()
   return true;
 }
 
-#define DEFMXMAPPER(F, FUN)                             \
-  template <typename T>                                 \
-  inline void F (size_t n, T *r, const T *x) throw ()   \
-  {                                                     \
-    for (size_t i = 0; i < n; i++)                      \
-      r[i] = FUN (x[i]);                                \
-  }
-
 template <typename T>
 inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x) throw ()
 {
@@ -325,29 +334,53 @@ inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x) throw ()
     r[i] = x[i].imag ();
 }
 
-// Pairwise minimums/maximums
-#define DEFMXMAPPER2(F, FUN)                                            \
-  template <typename T>                                                 \
-  inline void F (size_t n, T *r, const T *x, const T *y) throw ()       \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = FUN (x[i], y[i]);                                          \
-  }                                                                     \
-  template <typename T>                                                 \
-  inline void F (size_t n, T *r, const T *x, T y) throw ()              \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = FUN (x[i], y);                                             \
-  }                                                                     \
-  template <typename T>                                                 \
-  inline void F (size_t n, T *r, T x, const T *y) throw ()              \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = FUN (x, y[i]);                                             \
-  }
+template <typename T>
+inline void
+mx_inline_xmin (size_t n, T *r, const T *x, const T *y) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x[i], y[i]);
+}
 
-DEFMXMAPPER2 (mx_inline_xmin, octave::math::min)
-DEFMXMAPPER2 (mx_inline_xmax, octave::math::max)
+template <typename T>
+inline void
+mx_inline_xmin (size_t n, T *r, const T *x, T y) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x[i], y);
+}
+
+template <typename T>
+inline void
+mx_inline_xmin (size_t n, T *r, T x, const T *y) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x, y[i]);
+}
+
+template <typename T>
+inline void
+mx_inline_xmax (size_t n, T *r, const T *x, const T *y) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x[i], y[i]);
+}
+
+template <typename T>
+inline void
+mx_inline_xmax (size_t n, T *r, const T *x, T y) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x[i], y);
+}
+
+template <typename T>
+inline void
+mx_inline_xmax (size_t n, T *r, T x, const T *y) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x, y[i]);
+}
 
 // Specialize array-scalar max/min
 #define DEFMINMAXSPEC(T, F, OP)                                 \
@@ -375,31 +408,38 @@ DEFMINMAXSPEC (double, mx_inline_xmax, >=)
 DEFMINMAXSPEC (float, mx_inline_xmin, <=)
 DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 
-// Pairwise power
-#define DEFMXMAPPER2X(F, FUN)                                           \
-  template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, const X *x, const Y *y) throw ()       \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = FUN (x[i], y[i]);                                          \
-  }                                                                     \
-  template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, const X *x, Y y) throw ()              \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = FUN (x[i], y);                                             \
-  }                                                                     \
-  template <typename R, typename X, typename Y>                         \
-  inline void F (size_t n, R *r, X x, const Y *y) throw ()              \
-  {                                                                     \
-    for (size_t i = 0; i < n; i++)                                      \
-      r[i] = FUN (x, y[i]);                                             \
-  }
-
 // Let the compiler decide which pow to use, whichever best matches the
 // arguments provided.
-using std::pow;
-DEFMXMAPPER2X (mx_inline_pow, pow)
+
+template <typename R, typename X, typename Y>
+inline void
+mx_inline_pow (size_t n, R *r, const X *x, const Y *y) throw ()
+{
+  using std::pow;
+
+  for (size_t i = 0; i < n; i++)
+    r[i] = pow (x[i], y[i]);
+}
+
+template <typename R, typename X, typename Y>
+inline void
+mx_inline_pow (size_t n, R *r, const X *x, Y y) throw ()
+{
+  using std::pow;
+
+  for (size_t i = 0; i < n; i++)
+    r[i] = pow (x[i], y);
+}
+
+template <typename R, typename X, typename Y>
+inline void
+mx_inline_pow (size_t n, R *r, X x, const Y *y) throw ()
+{
+  using std::pow;
+
+  for (size_t i = 0; i < n; i++)
+    r[i] = pow (x, y[i]);
+}
 
 // Arbitrary function appliers.
 // The function is a template parameter to enable inlining.

@@ -18,9 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals})
+## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals}, @var{t_next})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@dots{})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@dots{})
 ##
 ## This function can be used to integrate a system of ODEs with a given initial
 ## condition @var{x} from @var{t} to @var{t+dt} with the Dormand-Prince method.
@@ -43,6 +46,9 @@
 ## Sixth input parameter is optional and describes the Runge-Kutta evaluations
 ## of the previous step to use in an FSAL scheme.
 ##
+## Seventh input parameter is optional and is the time (@var{t_next}) to
+## integrate to.  The default is @code{@var{t} + @var{dt}}.
+##
 ## First output argument is the final integration time value.
 ##
 ## Second output parameter is the higher order computed solution at time
@@ -55,7 +61,7 @@
 ## to use in an FSAL scheme or for dense output.
 ## @end deftypefn
 
-function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
+function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fun, t, x, dt,
                                                              options = [],
                                                              k_vals = [],
                                                              t_next = t + dt)
@@ -88,14 +94,14 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
   if (! isempty (k_vals))    # k values from previous step are passed
     k(:,1) = k_vals(:,end);  # FSAL property
   else
-    k(:,1) = feval (f, t, x, args{:});
+    k(:,1) = feval (fun, t, x, args{:});
   endif
 
-  k(:,2) = feval (f, s(2), x + k(:,1)   * aa(2, 1).'  , args{:});
-  k(:,3) = feval (f, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
-  k(:,4) = feval (f, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
-  k(:,5) = feval (f, s(5), x + k(:,1:4) * aa(5, 1:4).', args{:});
-  k(:,6) = feval (f, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
+  k(:,2) = feval (fun, s(2), x + k(:,1)   * aa(2, 1).'  , args{:});
+  k(:,3) = feval (fun, s(3), x + k(:,1:2) * aa(3, 1:2).', args{:});
+  k(:,4) = feval (fun, s(4), x + k(:,1:3) * aa(4, 1:3).', args{:});
+  k(:,5) = feval (fun, s(5), x + k(:,1:4) * aa(5, 1:4).', args{:});
+  k(:,6) = feval (fun, s(6), x + k(:,1:5) * aa(6, 1:5).', args{:});
 
   ## compute new time and new values for the unknowns
   ## t_next = t + dt;
@@ -104,7 +110,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (f, t, x, dt,
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
-    k(:,7) = feval (f, t_next, x_next, args{:});
+    k(:,7) = feval (fun, t_next, x_next, args{:});
     cc_prime = dt * c_prime;
     x_est = x + k * cc_prime(:);
   endif

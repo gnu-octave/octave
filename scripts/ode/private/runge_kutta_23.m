@@ -20,8 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in})
-## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals_in}, @var{t_next})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_23 (@var{fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals}, @var{t_next})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_23 (@dots{})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_23 (@dots{})
 ##
@@ -60,7 +60,7 @@
 ## @seealso{runge_kutta_45_dorpri}
 ## @end deftypefn
 
-function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
+function [t_next, x_next, x_est, k] = runge_kutta_23 (fun, t, x, dt,
                                                       options = [],
                                                       k_vals = [],
                                                       t_next = t + dt)
@@ -86,11 +86,11 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
   if (! isempty (k_vals))    # k values from previous step are passed
     k(:,1) = k_vals(:,end);  # FSAL property
   else
-    k(:,1) = feval (f, t, x, args{:});
+    k(:,1) = feval (fun, t, x, args{:});
   endif
 
-  k(:,2) = feval (f, s(2), x + k(:,1) * aa(2, 1).', args{:});
-  k(:,3) = feval (f, s(3), x + k(:,2) * aa(3, 2).', args{:});
+  k(:,2) = feval (fun, s(2), x + k(:,1) * aa(2, 1).', args{:});
+  k(:,3) = feval (fun, s(3), x + k(:,2) * aa(3, 2).', args{:});
 
   ## compute new time and new values for the unknowns
   ## t_next = t + dt;
@@ -99,7 +99,7 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (f, t, x, dt,
   ## if the estimation of the error is required
   if (nargout >= 3)
     ## new solution to be compared with the previous one
-    k(:,4) = feval (f, t_next, x_next, args{:});
+    k(:,4) = feval (fun, t_next, x_next, args{:});
     cc_prime = dt * c_prime;
     x_est = x + k * cc_prime(:);
   endif

@@ -56,8 +56,6 @@ dt
 @noindent
 using @nospell{Hindmarsh's} ODE solver @sc{lsode}.
 
-
-
 @DOCSTRING(lsode)
 
 @DOCSTRING(lsode_options)

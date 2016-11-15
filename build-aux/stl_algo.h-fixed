@@ -5262,8 +5262,6 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
 			      std::__iterator_category(__first));
     }
 
-
-
   /**
    *  @brief Sort the smallest elements of a sequence.
    *  @ingroup sorting_algorithms

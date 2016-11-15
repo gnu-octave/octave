@@ -397,6 +397,3 @@ plot (xi, yi);
 
 @DOCSTRING(polyreduce)
 
-
-
-

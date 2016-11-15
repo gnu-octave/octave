@@ -26,6 +26,7 @@
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
+##
 ## Minimize @code{1/2*@var{x}'*@var{c}*@var{x} + @var{d}'*@var{x}} subject to
 ## @code{@var{x} >= 0}.
 ##
@@ -35,7 +36,8 @@
 ## @var{x0} is an optional initial guess for the solution @var{x}.
 ##
 ## @var{options} is an options structure to change the behavior of the
-## algorithm.
+## algorithm (@pxref{XREFoptimset,,optimset}.  @code{pqpnonneg} recognizes
+## one option: @qcode{"MaxIter"}.
 ##
 ## Outputs:
 ##
@@ -77,7 +79,8 @@
 ## from Lawson and Hanson's 1973 algorithm on page 161 of Solving Least Squares
 ## Problems.  It shares the convergence guarantees.
 
-function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [], options = struct ())
+function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
+                                                            options = struct ())
 
   ## Special case: called to find default optimization options
   if (nargin == 1 && ischar (c) && strcmp (c, "defaults"))

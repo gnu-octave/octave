@@ -27,37 +27,34 @@
 ## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
 ## @deftypefnx {} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
-## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
+##
+## Minimize @code{norm (@var{c}*@var{x} - @var{d})} subject to
 ## @code{@var{x} >= 0}.
 ##
-## @var{c} and @var{d} must be real.
+## @var{c} and @var{d} must be real matrices.
 ##
-## @var{x0} is an optional initial guess for @var{x}.
+## @var{x0} is an optional initial guess for the solution @var{x}.
 ##
-## Currently, @code{lsqnonneg} recognizes these options: @qcode{"MaxIter"},
-## @qcode{"TolX"}.  For a description of these options, see
-## @ref{XREFoptimset,,optimset}.
+## @var{options} is an options structure to change the behavior of the
+## algorithm (@pxref{XREFoptimset,,optimset}.  @code{lsqnonneg} recognizes
+## these options: @qcode{"MaxIter"}, @qcode{"TolX"}.
 ##
 ## Outputs:
 ##
-## @itemize @bullet
+## @itemize @var
 ## @item resnorm
-##
-## The squared 2-norm of the residual: norm (@var{c}*@var{x}-@var{d})^2
+## The squared 2-norm of the residual: @code{norm (@var{c}*@var{x}-@var{d})^2}
 ##
 ## @item residual
-##
-## The residual: @var{d}-@var{c}*@var{x}
+## The residual: @code{@var{d}-@var{c}*@var{x}}
 ##
 ## @item exitflag
-##
 ## An indicator of convergence.  0 indicates that the iteration count was
 ## exceeded, and therefore convergence was not reached; >0 indicates that the
 ## algorithm converged.  (The algorithm is stable and will converge given
 ## enough iterations.)
 ##
 ## @item output
-##
 ## A structure with two fields:
 ##
 ## @itemize @bullet
@@ -67,44 +64,52 @@
 ## @end itemize
 ##
 ## @item lambda
-##
-## Not implemented.
-## @end itemize
-## @seealso{optimset, pqpnonneg, lscov}
+## @c FIXME: Something is output from the function, but what is it?
+## Undocumented output
+## @end table
+## @seealso{pqpnonneg, lscov, optimset}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("lsqnonneg");
 
-## This is implemented from Lawson and Hanson's 1973 algorithm on page
-## 161 of Solving Least Squares Problems.
+## This is implemented from Lawson and Hanson's 1973 algorithm on page 161 of
+## Solving Least Squares Problems.
 
-function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x = [], options = struct ())
+function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d,
+                                                                       x0 = [],
+                                                                       options = struct ())
 
-  if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
+  ## Special case: called to find default optimization options
+  if (nargin == 1 && ischar (c) && strcmp (c, "defaults"))
     x = optimset ("MaxIter", 1e5);
     return;
   endif
 
-  if (nargin < 2 || nargin > 4
-      || ! (isnumeric (c) && ismatrix (c))
-      || ! (isnumeric (d) && ismatrix (d))
-      || ! isstruct (options))
+  if (nargin < 2 || nargin > 4)
     print_usage ();
+  endif
+
+  if (! (isnumeric (c) && ismatrix (c)) || ! (isnumeric (d) && ismatrix (d)))
+    error ("lsqnonneg: C and D must be numeric matrices");
+  endif
+
+  if (! isstruct (options))
+    error ("lsqnonneg: OPTIONS must be a struct");
   endif
 
   ## Lawson-Hanson Step 1 (LH1): initialize the variables.
   m = rows (c);
   n = columns (c);
-  if (isempty (x))
-    ## Initial guess is 0s.
+  if (isempty (x0))
+    ## Initial guess is all zeros.
     x = zeros (n, 1);
   else
     ## ensure nonnegative guess.
-    x = max (x, 0);
+    x = max (x0, 0);
   endif
 
-  useqr = m >= n;
+  useqr = (m >= n);
   max_iter = optimget (options, "MaxIter", 1e5);
 
   ## Initialize P, according to zero pattern of x.
@@ -138,7 +143,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
       else
         ## LH8, LH9: find the scaling factor.
         pidx = p(idx);
-        sf = x(pidx)./(x(pidx) - xtmp(idx));
+        sf = x(pidx) ./ (x(pidx) - xtmp(idx));
         alpha = min (sf);
         ## LH10: adjust X.
         xx = zeros (n, 1);
@@ -192,20 +197,23 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
   ## LH12: complete.
 
   ## Generate the additional output arguments.
-  if (nargout > 1)
+  if (isargout (2))
     resnorm = norm (c*x - d) ^ 2;
   endif
-  if (nargout > 2)
+  if (isargout (3))
     residual = d - c*x;
   endif
-  exitflag = iter;
-  if (nargout > 3 && iter >= max_iter)
-    exitflag = 0;
+  if (isargout (4))
+    if (iter >= max_iter)
+      exitflag = 0;
+    else
+      exitflag = iter;
+    endif
   endif
-  if (nargout > 4)
+  if (isargout (5))
     output = struct ("algorithm", "nnls", "iterations", iter);
   endif
-  if (nargout > 5)
+  if (isargout (6))
     lambda = zeros (size (x));
     lambda(p) = w;
   endif
@@ -223,4 +231,14 @@ endfunction
 %! d = [0.8587;0.1781;0.0747;0.8405];
 %! xnew = [0;0.6929];
 %! assert (lsqnonneg (C, d), xnew, 0.0001);
+
+# Test input validation
+%!error lsqnonneg ()
+%!error lsqnonneg (1)
+%!error lsqnonneg (1,2,3,4,5)
+%!error <C .* must be numeric matrices> lsqnonneg ({1},2)
+%!error <C .* must be numeric matrices> lsqnonneg (ones (2,2,2),2)
+%!error <D must be numeric matrices> lsqnonneg (1,{2})
+%!error <D must be numeric matrices> lsqnonneg (1, ones (2,2,2))
+%!error <OPTIONS must be a struct> lsqnonneg (1, 2, [], 3)
 

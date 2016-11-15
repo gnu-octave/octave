@@ -41,7 +41,7 @@
 ##
 ## Outputs:
 ##
-## @itemize @var
+## @table @var
 ## @item resnorm
 ## The squared 2-norm of the residual: @code{norm (@var{c}*@var{x}-@var{d})^2}
 ##

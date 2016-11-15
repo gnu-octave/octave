@@ -1567,7 +1567,8 @@ public:
     return *this;
   }
 
-  void invalidate (void) { current_val = octave::numeric_limits<double>::NaN (); }
+  void invalidate (void)
+  { current_val = octave::numeric_limits<double>::NaN (); }
 
   base_property* clone (void) const { return new handle_property (*this); }
 
@@ -3850,7 +3851,7 @@ public:
       row_vector_property alim m , default_lim ()
       radio_property alimmode , "{auto}|manual"
       color_property ambientlightcolor , color_values (1, 1, 1)
-      bool_property box , "off"
+      bool_property box u , "off"
       radio_property boxstyle , "{back}|full"
       row_vector_property cameraposition m , Matrix (1, 3, 0.0)
       radio_property camerapositionmode , "{auto}|manual"
@@ -4030,6 +4031,21 @@ public:
     void update_plotboxaspectratiomode (void) { sync_positions (); }
 
     void update_layer (void) { update_axes_layout (); }
+    void update_box (void)
+    {
+      calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                       xaxislocation_is ("origin"),
+                       yscale.is ("log") ? 2 :
+                         (yaxislocation_is ("origin") ? 0 :
+                           (yaxislocation_is ("left") ? -1 : 1)),
+                       xlim);
+      calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                       yaxislocation_is ("origin"),
+                       xscale.is ("log") ? 2 :
+                         (xaxislocation_is ("origin") ? 0 :
+                           (xaxislocation_is ("bottom") ? -1 : 1)),
+                       ylim);
+    }
     void update_yaxislocation (void)
     {
       // FIXME: Remove warning with "zero" in 4.6
@@ -4039,6 +4055,18 @@ public:
                          "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
+      calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                       xaxislocation_is ("origin"),
+                       yscale.is ("log") ? 2 :
+                         (yaxislocation_is ("origin") ? 0 :
+                           (yaxislocation_is ("left") ? -1 : 1)),
+                       xlim);
+      calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                       yaxislocation_is ("origin"),
+                       xscale.is ("log") ? 2 :
+                         (xaxislocation_is ("origin") ? 0 :
+                           (xaxislocation_is ("bottom") ? -1 : 1)),
+                       ylim);
       update_ylabel_position ();
     }
     void update_xaxislocation (void)
@@ -4050,6 +4078,18 @@ public:
                          "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
+      calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                       xaxislocation_is ("origin"),
+                       yscale.is ("log") ? 2 :
+                         (yaxislocation_is ("origin") ? 0 :
+                           (yaxislocation_is ("left") ? -1 : 1)),
+                       xlim);
+      calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                       yaxislocation_is ("origin"),
+                       xscale.is ("log") ? 2 :
+                         (xaxislocation_is ("origin") ? 0 :
+                           (xaxislocation_is ("bottom") ? -1 : 1)),
+                       ylim);
       update_xlabel_position ();
     }
 
@@ -4066,7 +4106,12 @@ public:
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
                            xtickmode.is ("auto"), xscale.is ("log"));
       if (xticklabelmode.is ("auto"))
-        calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
+        calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                         xaxislocation_is ("origin"),
+                         yscale.is ("log") ? 2 :
+                           (yaxislocation_is ("origin") ? 0 :
+                             (yaxislocation_is ("left") ? -1 : 1)),
+                         xlim);
       sync_positions ();
     }
     void update_ytick (void)
@@ -4074,7 +4119,12 @@ public:
       calc_ticks_and_lims (ylim, ytick, yminortickvalues, ylimmode.is ("auto"),
                            ytickmode.is ("auto"), yscale.is ("log"));
       if (yticklabelmode.is ("auto"))
-        calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
+        calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                         yaxislocation_is ("origin"),
+                         xscale.is ("log") ? 2 :
+                           (xaxislocation_is ("origin") ? 0 :
+                             (xaxislocation_is ("bottom") ? -1 : 1)),
+                         ylim);
       sync_positions ();
     }
     void update_ztick (void)
@@ -4082,7 +4132,7 @@ public:
       calc_ticks_and_lims (zlim, ztick, zminortickvalues, zlimmode.is ("auto"),
                            ztickmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))
-        calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+        calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
       sync_positions ();
     }
 
@@ -4105,17 +4155,27 @@ public:
     void update_xticklabelmode (void)
     {
       if (xticklabelmode.is ("auto"))
-        calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
+        calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                         xaxislocation_is ("origin"),
+                         yscale.is ("log") ? 2 :
+                           (yaxislocation_is ("origin") ? 0 :
+                             (yaxislocation_is ("left") ? -1 : 1)),
+                         xlim);
     }
     void update_yticklabelmode (void)
     {
       if (yticklabelmode.is ("auto"))
-        calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
+        calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                         yaxislocation_is ("origin"),
+                         xscale.is ("log") ? 2 :
+                           (xaxislocation_is ("origin") ? 0 :
+                             (xaxislocation_is ("bottom") ? -1 : 1)),
+                         ylim);
     }
     void update_zticklabelmode (void)
     {
       if (zticklabelmode.is ("auto"))
-        calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+        calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
     }
 
     void update_font (std::string prop = "");
@@ -4243,7 +4303,9 @@ public:
                               array_property& mticks, bool limmode_is_auto,
                               bool tickmode_is_auto, bool is_logscale);
     void calc_ticklabels (const array_property& ticks, any_property& labels,
-                          bool is_logscale);
+                          bool is_logscale, const bool is_origin,
+                          const int other_axislocation,
+                          const array_property& axis_lims);
     Matrix get_ticklabel_extents (const Matrix& ticks,
                                   const string_vector& ticklabels,
                                   const Matrix& limits);
@@ -4280,7 +4342,12 @@ public:
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
                            xtickmode.is ("auto"), xscale.is ("log"));
       if (xticklabelmode.is ("auto"))
-        calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
+        calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                         xaxislocation.is ("origin"),
+                         yscale.is ("log") ? 2 :
+                           (yaxislocation_is ("origin") ? 0 :
+                             (yaxislocation_is ("left") ? -1 : 1)),
+                         xlim);
 
       fix_limits (xlim);
 
@@ -4294,7 +4361,12 @@ public:
       calc_ticks_and_lims (ylim, ytick, yminortickvalues, ylimmode.is ("auto"),
                            ytickmode.is ("auto"), yscale.is ("log"));
       if (yticklabelmode.is ("auto"))
-        calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
+        calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                         yaxislocation_is ("origin"),
+                         xscale.is ("log") ? 2 :
+                           (xaxislocation_is ("origin") ? 0 :
+                             (xaxislocation_is ("bottom") ? -1 : 1)),
+                         ylim);
 
       fix_limits (ylim);
 
@@ -4308,7 +4380,7 @@ public:
       calc_ticks_and_lims (zlim, ztick, zminortickvalues, zlimmode.is ("auto"),
                            ztickmode.is ("auto"), zscale.is ("log"));
       if (zticklabelmode.is ("auto"))
-        calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+        calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
 
       fix_limits (zlim);
 
@@ -4605,17 +4677,18 @@ public:
       Matrix lim;
 
       lim = Matrix (1, 3, pos(0));
-      lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+      lim(2) = lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2);
       set_xlim (lim);
 
       lim = Matrix (1, 3, pos(1));
-      lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+      lim(2) = lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2);
       set_ylim (lim);
 
       if (pos.numel () == 3)
         {
           lim = Matrix (1, 3, pos(2));
-          lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+          lim(2) = lim(2) <= 0 ? octave::numeric_limits<double>::Inf ()
+                               : lim(2);
           set_zliminclude ("on");
           set_zlim (lim);
         }

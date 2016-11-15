@@ -4563,9 +4563,15 @@ axes::properties::init (void)
   sy = "linear";
   sz = "linear";
 
-  calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
-  calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
-  calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+  calc_ticklabels (xtick, xticklabel, xscale.is ("log"),
+                   xaxislocation_is ("origin"),
+                   yscale.is ("log") ? 2 : (yaxislocation_is ("origin") ? 0 :
+                   (yaxislocation_is ("left") ? -1 : 1)), xlim);
+  calc_ticklabels (ytick, yticklabel, yscale.is ("log"),
+                   yaxislocation_is ("origin"),
+                   xscale.is ("log") ? 2 : (xaxislocation_is ("origin") ? 0 :
+                   (xaxislocation_is ("bottom") ? -1 : 1)), ylim);
+  calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
 
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");
@@ -5693,14 +5699,20 @@ axes::properties::update_axes_layout (void)
   layer2Dtop = false;
   if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
     {
-      if (xaxislocation_is ("top"))
+      Matrix ylimits = get_ylim ().matrix_value ();
+      if (xaxislocation_is ("top") ||
+          (yscale_is ("log") && xaxislocation_is ("origin")
+           && (ylimits(1) < 0.)))
         {
           std::swap (yPlane, yPlaneN);
           x2Dtop = true;
         }
       ypTick = yPlaneN;
       ypTickN = yPlane;
-      if (yaxislocation_is ("right"))
+      Matrix xlimits = get_xlim ().matrix_value ();
+      if (yaxislocation_is ("right") || 
+          (xscale_is ("log") && yaxislocation_is ("origin")
+           && (xlimits(1) < 0.)))
         {
           std::swap (xPlane, xPlaneN);
           y2Dright = true;
@@ -7149,11 +7161,35 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
 void
 axes::properties::calc_ticklabels (const array_property& ticks,
-                                   any_property& labels, bool logscale)
+                                   any_property& labels, bool logscale,
+                                   const bool is_origin,
+                                   const int other_axislocation,
+                                   const array_property& axis_lims)
 {
   Matrix values = ticks.get ().matrix_value ();
+  Matrix lims = axis_lims.get ().matrix_value ();
   Cell c (values.dims ());
   std::ostringstream os;
+
+  // omit tick labels depending on location of other axis
+  ColumnVector omit_ticks (3, octave::numeric_limits<double>::NaN ());
+  if (get_is2D () && is_origin)
+    {
+      if (other_axislocation == 0)
+        {
+          omit_ticks(0) = octave::math::max (octave::math::min (0., lims(1)),
+                                             lims(0));
+        }
+      else if (other_axislocation == 1)
+        omit_ticks(0) = lims(1);
+      else if (other_axislocation == -1)
+        omit_ticks(0) = lims(0);
+      if (is_box ())
+        {
+          omit_ticks(1) = lims(0);
+          omit_ticks(2) = lims(1);
+        }
+    }
 
   if (logscale)
     {
@@ -7171,6 +7207,16 @@ axes::properties::calc_ticklabels (const array_property& ticks,
 
       for (int i = 0; i < values.numel (); i++)
         {
+          bool omit_tick = false;
+          for (int i_omit = 0; i_omit < omit_ticks.numel (); i_omit++)
+            if (values(i) == omit_ticks(i_omit))
+              omit_tick = true;
+          if (omit_tick)
+            {
+              c(i) = "";
+              continue;
+            }
+
           if (values(i) < 0.0)
             exponent = std::floor (std::log10 (-values(i)));
           else
@@ -7201,9 +7247,18 @@ axes::properties::calc_ticklabels (const array_property& ticks,
     {
       for (int i = 0; i < values.numel (); i++)
         {
-          os.str ("");
-          os << values(i);
-          c(i) = os.str ();
+          bool omit_tick = false;
+          for (int i_omit = 0; i_omit < omit_ticks.numel (); i_omit++)
+            if (values(i) == omit_ticks(i_omit))
+              omit_tick = true;
+          if (omit_tick)
+            c(i) = "";
+          else
+            {
+              os.str ("");
+              os << values(i);
+              c(i) = os.str ();
+            }
         }
     }
 

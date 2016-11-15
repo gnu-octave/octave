@@ -1212,8 +1212,10 @@ namespace octave
     bool xySym = props.get_xySym ();
     bool layer2Dtop = props.get_layer2Dtop ();
     bool is2d = props.get_is2D ();
-    bool isXOrigin = props.xaxislocation_is ("origin");
-    bool isYOrigin = props.yaxislocation_is ("origin");
+    bool isXOrigin = props.xaxislocation_is ("origin")
+                       && ! props.yscale_is ("log");
+    bool isYOrigin = props.yaxislocation_is ("origin")
+                       && ! props.xscale_is ("log");
     bool boxFull = (props.get_boxstyle () == "full");
     double linewidth = props.get_linewidth ();
     double xPlane = props.get_xPlane ();
@@ -1364,6 +1366,8 @@ namespace octave
         double fz = props.get_fz ();
         double x_min = props.get_x_min ();
         double x_max = props.get_x_max ();
+        double y_min = props.get_y_min ();
+        double y_max = props.get_y_max ();
         double yPlane = props.get_yPlane ();
         double yPlaneN = props.get_yPlaneN ();
         double ypTick = props.get_ypTick ();
@@ -1386,7 +1390,9 @@ namespace octave
         bool do_xminorgrid = (props.is_xminorgrid ()
                               && (minorgridstyle != "none"));
         bool do_xminortick = props.is_xminortick ();
-        bool is_origin = props.xaxislocation_is ("origin") && props.get_is2D ();
+        bool is_origin = props.xaxislocation_is ("origin") && props.get_is2D ()
+                         && ! props.yscale_is ("log");
+        bool is_origin_low = is_origin && (y_min + y_max) < 0;
         Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
         Matrix xmticks = xform.xscale (props.get_xminortickvalues ().matrix_value ());
         string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
@@ -1432,11 +1438,15 @@ namespace octave
         set_color (props.get_xcolor_rgb ());
 
         // axis line
+        double y_axis_pos = 0.;
         if (is_origin)
           {
+            y_axis_pos = octave::math::max (octave::math::min (0., y_max),
+                                            y_min);
             glBegin (GL_LINES);
-            glVertex3d (x_min, 0, zpTick);
-            glVertex3d (x_max, 0, zpTick);
+            set_color (props.get_ycolor_rgb ());
+            glVertex3d (x_min, y_axis_pos, zpTick);
+            glVertex3d (x_max, y_axis_pos, zpTick);
             glEnd ();
           }
 
@@ -1445,50 +1455,56 @@ namespace octave
           {
             if (tick_along_z)
               render_tickmarks (xmticks, x_min, x_max,
-                                (is_origin ? 0. : ypTick), ypTick,
+                                is_origin ? y_axis_pos : ypTick, ypTick,
                                 zpTick, zpTickN, 0., 0.,
+                                (is_origin_low ? -1. : 1.) * 
                                 octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
-                                0, mirror);
+                                0, ! is_origin && mirror);
             else
               render_tickmarks (xmticks, x_min, x_max,
-                                (is_origin ? 0. : ypTick), ypTickN,
+                                is_origin ? y_axis_pos : ypTick, ypTickN,
                                 zpTick, zpTick, 0.,
+                                (is_origin_low ? -1. : 1.) * 
                                 octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
-                                0., 0, mirror);
+                                0., 0, ! is_origin && mirror);
           }
 
         // tick marks
         if (tick_along_z)
-          {
-            render_tickmarks (xticks, x_min, x_max,
-                              (is_origin ? 0. : ypTick), ypTick,
-                              zpTick, zpTickN, 0., 0.,
-                              octave::math::signum (zpTick-zpTickN)*fz*xticklen,
-                              0, mirror);
-          }
+          render_tickmarks (xticks, x_min, x_max,
+                            is_origin ? y_axis_pos : ypTick, ypTick,
+                            zpTick, zpTickN, 0., 0.,
+                            (is_origin_low ? -1. : 1.) * 
+                            octave::math::signum (zpTick-zpTickN)*fz*xticklen,
+                            0, ! is_origin && mirror);
         else
-          {
-            render_tickmarks (xticks, x_min, x_max,
-                              (is_origin ? 0. : ypTick), ypTickN,
-                              zpTick, zpTick, 0.,
-                              octave::math::signum (ypTick-ypTickN)*fy*xticklen,
-                              0., 0, mirror);
-          }
+          render_tickmarks (xticks, x_min, x_max,
+                            is_origin ? y_axis_pos : ypTick, ypTickN,
+                            zpTick, zpTick, 0.,
+                            (is_origin_low ? -1. : 1.) * 
+                            octave::math::signum (ypTick-ypTickN)*fy*xticklen,
+                            0., 0, ! is_origin && mirror);
 
         // tick texts
         if (xticklabels.numel () > 0)
           {
-            int halign = (xstate == AXE_HORZ_DIR ? 1 : (xyzSym ? 0 : 2));
-            int valign = (xstate == AXE_VERT_DIR ? 1 : (x2Dtop ? 0 : 2));
+            int halign = (xstate == AXE_HORZ_DIR ? 1 :
+                          (xyzSym || is_origin_low ? 0 : 2));
+            int valign = (xstate == AXE_VERT_DIR ? 1 :
+                          (x2Dtop || is_origin_low ? 0 : 2));
 
             if (tick_along_z)
               render_ticktexts (xticks, xticklabels, x_min, x_max,
-                                (is_origin ? 0. : ypTick),
-                                zpTick+octave::math::signum (zpTick-zpTickN)*fz*xtickoffset,
+                                is_origin ? y_axis_pos : ypTick,
+                                zpTick +
+                                (is_origin_low ? -1. : 1.) * 
+                                octave::math::signum (zpTick-zpTickN)*fz*xtickoffset,
                                 0, halign, valign, wmax, hmax);
             else
               render_ticktexts (xticks, xticklabels, x_min, x_max,
-                                (is_origin ? 0. : ypTick) + octave::math::signum (ypTick-ypTickN)*fy*xtickoffset,
+                                (is_origin ? y_axis_pos : ypTick) +
+                                (is_origin_low ?  -1. : 1.) *
+                                octave::math::signum (ypTick-ypTickN)*fy*xtickoffset,
                                 zpTick, 0, halign, valign, wmax, hmax);
           }
 
@@ -1533,6 +1549,8 @@ namespace octave
         double xpTickN = props.get_xpTickN ();
         double y_min = props.get_y_min ();
         double y_max = props.get_y_max ();
+        double x_min = props.get_x_min ();
+        double x_max = props.get_x_max ();
         double zPlane = props.get_zPlane ();
         double zPlaneN = props.get_zPlaneN ();
         double zpTick = props.get_zpTick ();
@@ -1551,7 +1569,9 @@ namespace octave
         bool do_yminorgrid = (props.is_yminorgrid ()
                               && (minorgridstyle != "none"));
         bool do_yminortick = props.is_yminortick ();
-        bool is_origin = props.yaxislocation_is ("origin") && props.get_is2D ();
+        bool is_origin = props.yaxislocation_is ("origin") && props.get_is2D ()
+                         && ! props.xscale_is ("log");
+        bool is_origin_low = is_origin && (x_min + x_max) < 0;
         Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
         Matrix ymticks = xform.yscale (props.get_yminortickvalues ().matrix_value ());
         string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
@@ -1598,11 +1618,15 @@ namespace octave
         set_color (props.get_ycolor_rgb ());
 
         // axis line
+        double x_axis_pos = 0.;
         if (is_origin)
           {
+            x_axis_pos = octave::math::max (octave::math::min (0., x_max),
+                                            x_min);
             glBegin (GL_LINES);
-            glVertex3d (0., y_min, zpTick);
-            glVertex3d (0., y_max, zpTick);
+            set_color (props.get_ycolor_rgb ());
+            glVertex3d (x_axis_pos, y_min, zpTick);
+            glVertex3d (x_axis_pos, y_max, zpTick);
             glEnd ();
           }
 
@@ -1611,47 +1635,56 @@ namespace octave
           {
             if (tick_along_z)
               render_tickmarks (ymticks, y_min, y_max,
-                                (is_origin ? 0. : xpTick), xpTick,
+                                is_origin ? x_axis_pos : xpTick, xpTick,
                                 zpTick, zpTickN, 0., 0.,
+                                (is_origin_low ? -1. : 1.) * 
                                 octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
-                                1, mirror);
+                                1, ! is_origin && mirror);
             else
               render_tickmarks (ymticks, y_min, y_max,
-                                (is_origin ? 0. : xpTick), xpTickN,
+                                is_origin ? x_axis_pos : xpTick, xpTickN,
                                 zpTick, zpTick,
+                                (is_origin_low ? -1. : 1.) * 
                                 octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
-                                0., 0., 1, mirror);
+                                0., 0., 1, ! is_origin && mirror);
           }
 
         // tick marks
         if (tick_along_z)
           render_tickmarks (yticks, y_min, y_max,
-                            (is_origin ? 0. : xpTick), xpTick,
+                            is_origin ? x_axis_pos : xpTick, xpTick,
                             zpTick, zpTickN, 0., 0.,
+                            (is_origin_low ? -1. : 1.) * 
                             octave::math::signum (zpTick-zpTickN)*fz*yticklen,
-                            1, mirror);
+                            1, ! is_origin && mirror);
         else
           render_tickmarks (yticks, y_min, y_max,
-                            (is_origin ? 0. : xpTick), xpTickN,
+                            is_origin ? x_axis_pos : xpTick, xpTickN,
                             zpTick, zpTick,
+                            (is_origin_low ? -1. : 1.) * 
                             octave::math::signum (xPlaneN-xPlane)*fx*yticklen,
-                            0., 0., 1, mirror);
+                            0., 0., 1, ! is_origin && mirror);
 
         // tick texts
         if (yticklabels.numel () > 0)
           {
-            int halign = (ystate == AXE_HORZ_DIR
-                          ? 1 : (! xyzSym || y2Dright ? 0 : 2));
-            int valign = (ystate == AXE_VERT_DIR ? 1 : 2);
+            int halign = (ystate == AXE_HORZ_DIR ? 1 :
+                          (! xyzSym || y2Dright || is_origin_low ? 0 : 2));
+            int valign = (ystate == AXE_VERT_DIR ? 1 :
+                          (is_origin_low ? 0 : 2));
 
             if (tick_along_z)
               render_ticktexts (yticks, yticklabels, y_min, y_max,
-                                (is_origin ? 0. : xpTick),
-                                zpTick+octave::math::signum (zpTick-zpTickN)*fz*ytickoffset,
+                                is_origin ? x_axis_pos : xpTick,
+                                zpTick +
+                                (is_origin_low ? -1. : 1.) * 
+                                octave::math::signum (zpTick-zpTickN)*fz*ytickoffset,
                                 1, halign, valign, wmax, hmax);
             else
               render_ticktexts (yticks, yticklabels, y_min, y_max,
-                                (is_origin ? 0. : xpTick) + octave::math::signum (xpTick-xpTickN)*fx*ytickoffset,
+                                (is_origin ? x_axis_pos : xpTick) +
+                                (is_origin_low ?  -1. : 1.) *
+                                octave::math::signum (xpTick-xpTickN)*fx*ytickoffset,
                                 zpTick, 1, halign, valign, wmax, hmax);
           }
 

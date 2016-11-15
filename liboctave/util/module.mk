@@ -17,7 +17,6 @@ UTIL_INC = \
   liboctave/util/lo-math.h \
   liboctave/util/lo-traits.h \
   liboctave/util/lo-utils.h \
-  liboctave/util/oct-alloc.h \
   liboctave/util/oct-base64.h \
   liboctave/util/oct-binmap.h \
   liboctave/util/oct-cmplx.h \

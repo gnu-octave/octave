@@ -39,6 +39,10 @@ Summary of important user-visible changes for version 4.4:
       syl                  
       usage                
 
+ ** The header file oct-alloc.h has been removed along with the macros
+    that it defined (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
+    and DEFINE_OCTAVE_ALLOCATOR2).
+
 
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
@@ -606,13 +610,6 @@ Summary of important user-visible changes for version 4.0:
  ** The internal class Octave_map was deprecated in Octave 3.8 and has
     been removed from Octave 4.0.  Replacement classes are octave_map
     (struct array) or octave_scalar_map for a single structure.
-
- ** The configure option --enable-octave-allocator has been removed.
-    The internal class octave_allocator declared in oct-alloc.h has been
-    removed.  The header remains, but is deprecated.  The macros to
-    access the class (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
-    and DEFINE_OCTAVE_ALLOCATOR2) are now unconditionally defined to be
-    empty.
 
  ** Octave now has OpenMP enabled by default if the system provides a
     working OpenMP implementation.  This allows oct-file modules to take

@@ -2213,8 +2213,6 @@ Undocumented internal function.
                         "audio playback and recording through PortAudio");
 #else
 
-  int nargin = args.length ();
-
   audioplayer* recorder = new audioplayer ();
 
   if (! recorder)
@@ -2229,7 +2227,7 @@ Undocumented internal function.
   recorder->set_y (args(0));
   recorder->set_fs (args(1).int_value ());
 
-  switch (nargin)
+  switch (args.length ())
     {
     case 3:
       recorder->set_nbits (args(2).int_value ());

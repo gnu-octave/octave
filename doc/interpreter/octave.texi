@@ -92,7 +92,7 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 4 for Octave version @value{VERSION}
-@subtitle September 2016
+@subtitle November 2016
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item

@@ -204,7 +204,7 @@ typecast (@var{x}, "uint8")
                                old_dims, frame);
     }
   else
-    error ("typecast: invalid input class: %s",
+    error ("typecast: invalid input CLASS: %s",
            array.class_name ().c_str ());
 
   std::string numclass = args(1).string_value ();

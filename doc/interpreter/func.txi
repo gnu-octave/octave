@@ -1309,8 +1309,8 @@ The counterpart to @code{publish} is @code{grabcode}:
 @subsubsection Using Publishing Markup in Script Files
 
 To use Publishing Markup, start by typing @samp{##} or @samp{%%} at the
-beginning of a new line.  For @sc{matlab} compatibility @samp{%%} is treated
-the same way as @samp{##}.
+beginning of a new line.  For @sc{matlab} compatibility @samp{%%%} is treated
+the same way as @samp{%%}.
 
 The lines following @samp{##} or @samp{%%} start with one of either
 @samp{#} or @samp{%} followed by at least one space.  These lines are
@@ -1374,7 +1374,7 @@ A section is started by typing @samp{##} or @samp{%%} at the beginning of
 a new line.  A section title can be provided by writing it, separated by a
 space, in the first line after @samp{##} or @samp{%%}.  Without a section
 title, the section is interpreted as a continuation of the previous section.
-For @sc{matlab} compatibility @samp{%%} is treated the same way as @samp{%%}.
+For @sc{matlab} compatibility @samp{%%%} is treated the same way as @samp{%%}.
 
 @example
 @group
@@ -1391,9 +1391,9 @@ some_code ();
 
 some_code ();
 
-### Section 3
-#
-#
+%%% Section 3
+%
+%
 @end group
 @end example
 

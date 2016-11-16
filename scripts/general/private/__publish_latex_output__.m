@@ -1,26 +1,75 @@
-function outstr = __publish_latex_output__ (type, varargin)
-  ## Recognized types are:
-  ##
-  ## * "header" (title_str, intro_str, toc_cstr)
-  ## * "footer" ()
-  ## * "code" (str)
-  ## * "code_output" (str)
-  ## * "section" (str)
-  ## * "preformatted_code" (str)
-  ## * "preformatted_text" (str)
-  ## * "bulleted_list" (cstr)
-  ## * "numbered_list" (cstr)
-  ## * "graphic" (str)
-  ## * "html" (str)
-  ## * "latex" (str)
-  ## * "text" (str)
-  ## * "bold" (str)
-  ## * "italic" (str)
-  ## * "monospaced" (str)
-  ## * "link" (url_str, url_str, str)
-  ## * "TM" ()
-  ## * "R" ()
+## Copyright (C) 2016 Kai T. Ohlhus
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {} {@var{outstr} =} __publish_latex_output__ (@var{type}, @var{varargin})
+##
+## Internal function.
+##
+## The first input argument @var{type} defines the required strings
+## (@samp{str}) or cell-strings (@samp{cstr}) in @var{varargin} in order
+## to produce LaTeX output.
+##
+## @var{type} is one of
+##
+## @itemize @bullet
+## @item
+## @samp{header} (title_str, intro_str, toc_cstr)
+## @item
+## @samp{footer} ()
+## @item
+## @samp{code} (str)
+## @item
+## @samp{code_output} (str)
+## @item
+## @samp{section} (str)
+## @item
+## @samp{preformatted_code} (str)
+## @item
+## @samp{preformatted_text} (str)
+## @item
+## @samp{bulleted_list} (cstr)
+## @item
+## @samp{numbered_list} (cstr)
+## @item
+## @samp{graphic} (str)
+## @item
+## @samp{html} (str)
+## @item
+## @samp{latex} (str)
+## @item
+## @samp{text} (str)
+## @item
+## @samp{bold} (str)
+## @item
+## @samp{italic} (str)
+## @item
+## @samp{monospaced} (str)
+## @item
+## @samp{link} (url_str, url_str, str)
+## @item
+## @samp{TM} ()
+## @item
+## @samp{R} ()
+## @end itemize
+## @end deftypefn
+
+function outstr = __publish_latex_output__ (type, varargin)
   outstr = feval (["do_" type], varargin{:});
 endfunction
 

@@ -571,9 +571,9 @@ v = cellfun (@@det, a); # faster
           if (nargout > 0 && tmp.length () < nargout)
             error ("cellfun: function returned fewer than nargout values");
 
-          if  (nargout > 0
-               || (nargout == 0
-                   && tmp.length () > 0 && tmp(0).is_defined ()))
+          if (nargout > 0
+              || (nargout == 0
+                  && tmp.length () > 0 && tmp(0).is_defined ()))
             {
               int num_to_copy = tmp.length ();
 
@@ -652,9 +652,9 @@ v = cellfun (@@det, a); # faster
           if (nargout > 0 && tmp.length () < nargout)
             error ("cellfun: function returned fewer than nargout values");
 
-          if  (nargout > 0
-               || (nargout == 0
-                   && tmp.length () > 0 && tmp(0).is_defined ()))
+          if (nargout > 0
+              || (nargout == 0
+                  && tmp.length () > 0 && tmp(0).is_defined ()))
             {
               int num_to_copy = tmp.length ();
 
@@ -1255,9 +1255,9 @@ arrayfun (@@str2num, [1234],
                 error_with_id ("Octave:invalid-fun-call",
                                "arrayfun: function returned fewer than nargout values");
 
-              if  (nargout > 0
-                   || (nargout == 0
-                       && tmp.length () > 0 && tmp(0).is_defined ()))
+              if (nargout > 0
+                  || (nargout == 0
+                      && tmp.length () > 0 && tmp(0).is_defined ()))
                 {
                   int num_to_copy = tmp.length ();
 
@@ -1347,9 +1347,9 @@ arrayfun (@@str2num, [1234],
                 error_with_id ("Octave:invalid-fun-call",
                                "arrayfun: function returned fewer than nargout values");
 
-              if  (nargout > 0
-                   || (nargout == 0
-                       && tmp.length () > 0 && tmp(0).is_defined ()))
+              if (nargout > 0
+                  || (nargout == 0
+                      && tmp.length () > 0 && tmp(0).is_defined ()))
                 {
                   int num_to_copy = tmp.length ();
 

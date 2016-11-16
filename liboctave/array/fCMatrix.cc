@@ -1506,7 +1506,7 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
           if (info != 0)
             rcon = 0;
         }
-      else if  (typ == MatrixType::Permuted_Upper)
+      else if (typ == MatrixType::Permuted_Upper)
         (*current_liboctave_error_handler)
           ("permuted triangular matrix not implemented");
       else if (typ == MatrixType::Lower)

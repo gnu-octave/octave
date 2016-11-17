@@ -170,7 +170,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     stop = outfcn (x, optimvalues, state);
     if (stop)
       info = -1;
-      break;
+      return;
     endif
   endif
 

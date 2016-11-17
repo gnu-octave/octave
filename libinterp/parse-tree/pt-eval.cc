@@ -98,9 +98,10 @@ namespace octave
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
-    if (statement_context == function || statement_context == script
-        || in_loop_command)
+    if (in_loop_command)
       tree_break_command::breaking = 1;
+    else
+      error ("break must appear in a loop in the same file as loop command");
   }
 
   void

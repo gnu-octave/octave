@@ -1176,7 +1176,10 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
 // =======
 
 jump_command    : BREAK
-                  { $$ = parser.make_break_command ($1); }
+                  {
+                    if (! ($$ = parser.make_break_command ($1)))
+                      YYABORT;
+                  }
                 | CONTINUE
                   { $$ = parser.make_continue_command ($1); }
                 | FUNC_RET
@@ -2787,7 +2790,13 @@ namespace octave
     int l = break_tok->line ();
     int c = break_tok->column ();
 
-    return new tree_break_command (l, c);
+    if (! lexer.looping)
+      {
+        bison_error ("break must appear in a loop in the same file as loop command");
+        return 0;
+      }
+    else
+      return new tree_break_command (l, c);
   }
 
   // Build a continue command.

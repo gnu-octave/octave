@@ -217,7 +217,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     stop = outfcn (x, optimvalues, state);
     if (stop)
       info = -1;
-      break;
+      return;
     endif
   endif
 

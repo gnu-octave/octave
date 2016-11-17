@@ -100,9 +100,9 @@ function varargout = isonormals (varargin)
   endif
 
   if (negate)
-    normals = __interp_cube__ (x, y, z, val, v, "normals");
+    normals = __interp_cube__ ("isonormals", x, y, z, val, v, "normals");
   else
-    normals = -__interp_cube__ (x, y, z, val, v, "normals");
+    normals = -__interp_cube__ ("isonormals", x, y, z, val, v, "normals");
   endif
 
   switch (nargout)

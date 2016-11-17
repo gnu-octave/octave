@@ -17,36 +17,36 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{cd}] =} isocolors (@var{c}, @var{v})
-## @deftypefnx {} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
-## @deftypefnx {} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {} {[@var{cd}] =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
-## @deftypefnx {} {[@var{cd}] =} isocolors (@dots{}, @var{p})
+## @deftypefn  {} {@var{cdat} =} isocolors (@var{c}, @var{v})
+## @deftypefnx {} {@var{cdat} =} isocolors (@var{x}, @var{y}, @var{z}, @var{c}, @var{v})
+## @deftypefnx {} {@var{cdat} =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
+## @deftypefnx {} {@var{cdat} =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
+## @deftypefnx {} {@var{cdat} =} isocolors (@dots{}, @var{p})
 ## @deftypefnx {} {} isocolors (@dots{})
 ##
 ## Compute isosurface colors.
 ##
-## If called with one output argument and the first input argument
-## @var{c} is a three-dimensional array that contains color values and
-## the second input argument @var{v} keeps the vertices of a geometry
-## then return a matrix @var{cd} with color data information for the
-## geometry at computed points
-## @code{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
-## @var{cd} can be taken to manually set FaceVertexCData of a patch.
+## If called with one output argument, and the first input argument @var{c}
+## is a three-dimensional array that contains indexed color values, and the
+## second input argument @var{v} are the vertices of an isosurface geometry,
+## then return a matrix @var{cdat} with color data information for the geometry
+## at computed points @code{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output
+## argument @var{cdat} can be used to manually set the
+## @qcode{"FaceVertexCData"} property of an isosurface patch object.
 ##
-## If called with further input arguments @var{x}, @var{y} and @var{z}
-## which are three--dimensional arrays of the same size than @var{c}
-## then the color data is taken at those given points.  Instead of the
-## color data @var{c} this function can also be called with RGB values
-## @var{r}, @var{g}, @var{b}.  If input argumnets @var{x}, @var{y},
-## @var{z} are not given then again @code{meshgrid} computed values
-## are taken.
+## If called with additional input arguments @var{x}, @var{y} and @var{z} which
+## are three-dimensional arrays of the same size as @var{c} then the
+## color data is taken at those specified points.
 ##
-## Optionally, the patch handle @var{p} can be given as the last input
-## argument to all variations of function calls instead of the vertices
-## data @var{v}.  Finally, if no output argument is given then directly
-## change the colors of a patch that is given by the patch handle
-## @var{p}.
+## Instead of indexed color data @var{c}, @code{isocolors} can also be called
+## with RGB values @var{r}, @var{g}, @var{b}.  If input arguments @var{x},
+## @var{y}, @var{z} are not given then @code{meshgrid} computed values are
+## used.
+##
+## Optionally, a patch handle @var{p} can be given as the last input argument
+## to all function call variations and the vertex data will be extracted
+## from the isosurface patch object.  Finally, if no output argument is given
+## then the colors of the patch given by the patch handle @var{p} are changed.
 ##
 ## For example:
 ##
@@ -66,27 +66,27 @@
 ## c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
 ## figure (); # Open another figure window
 ##
-## subplot (2,2,1); view (-38, 20);
+## subplot (2,2,1);  view (-38, 20);
 ## [f, v] = isosurface (x, y, z, c, iso);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
 ## cdat = rand (size (c));       # Compute random patch color data
 ## isocolors (x, y, z, cdat, p); # Directly set colors of patch
 ## isofinish (p);                # Call user function isofinish
 ##
-## subplot (2,2,2); view (-38, 20);
+## subplot (2,2,2);  view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
 ## [r, g, b] = meshgrid (lin, 2-lin, 2-lin);
 ## cdat = isocolors (x, y, z, c, v); # Compute color data vertices
 ## set (p, "FaceVertexCData", cdat); # Set color data manually
 ## isofinish (p);
 ##
-## subplot (2,2,3); view (-38, 20);
+## subplot (2,2,3);  view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
 ## cdat = isocolors (r, g, b, c, p); # Compute color data patch
 ## set (p, "FaceVertexCData", cdat); # Set color data manually
 ## isofinish (p);
 ##
-## subplot (2,2,4); view (-38, 20);
+## subplot (2,2,4);  view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
 ## r = g = b = repmat ([1:N] / N, [N, 1, N]); # Black to white
 ## cdat = isocolors (x, y, z, r, g, b, v);
@@ -99,7 +99,7 @@
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-function varargout = isocolors (varargin)
+function cdat = isocolors (varargin)
 
   calc_rgb = false;
   switch (nargin)
@@ -140,33 +140,29 @@ function varargout = isocolors (varargin)
   if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
-  elseif ( ishandle (vp) )
+  elseif (ishandle (vp) && strcmp (get (vp, "type"), "patch"))
     pa = vp;
     v = get (pa, "Vertices");
   else
-    error ("isocolors: last argument is not a vertex list or patch handle");
+    error ("isocolors: last argument must be a vertex list or patch handle");
   endif
 
   if (calc_rgb)
-    new_col = zeros (rows (v), 3);
-    new_col(:,1) = __interp_cube__ (x, y, z, R, v, "values" );
-    new_col(:,2) = __interp_cube__ (x, y, z, G, v, "values" );
-    new_col(:,3) = __interp_cube__ (x, y, z, B, v, "values" );
+    new_colors = zeros (rows (v), 3);
+    new_colors(:,1) = __interp_cube__ ("isocolors", x, y, z, R, v, "values");
+    new_colors(:,2) = __interp_cube__ ("isocolors", x, y, z, G, v, "values");
+    new_colors(:,3) = __interp_cube__ ("isocolors", x, y, z, B, v, "values");
   else
-    new_col = __interp_cube__ (x, y, z, c, v, "values" );
+    new_colors = __interp_cube__ ("isocolors", x, y, z, c, v, "values");
   endif
 
-  ## FIXME: No reason to actually error out if an extra argout is used.
-  switch (nargout)
-    case 0
-      if (! isempty (pa))
-        set (pa, "FaceVertexCData", new_col);
-      endif
-    case 1
-      varargout = {new_col};
-    otherwise
-      print_usage ();
-  endswitch
+  if (nargout == 0)
+    if (! isempty (pa))
+      set (pa, "FaceVertexCData", new_colors);
+    endif
+  else
+    cdat = new_colors;
+  endif
 
 endfunction
 
@@ -177,5 +173,13 @@ endfunction
 %! [f, v] = isosurface (x, y, z, c, .4);
 %! cdat = isocolors (x, y, z, c, v);
 %! assert (rows (cdat) == rows (v));
-## Can't create a patch handle for tests without a figure
+
+## Test input validation
+%!error isocolors ()
+%!error isocolors (1)
+%!error isocolors (1,2,3)
+%!error isocolors (1,2,3,4,5,6)
+%!error isocolors (1,2,3,4,5,6,7,8)
+%!error <last argument must be a vertex list> isocolors (1, {1})
+%!error <last argument must be a .*patch handle> isocolors (1, 0)
 

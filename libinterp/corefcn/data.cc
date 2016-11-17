@@ -5675,7 +5675,7 @@ compute the norms of each column and return a row vector.
 {
   int nargin = args.length ();
 
-  if (nargin < 1 && nargin > 3)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
 
   octave_value x_arg = args(0);
@@ -5821,6 +5821,14 @@ compute the norms of each column and return a row vector.
 %! A = sparse (2,2);
 %! A(2,1) = 1;
 %! assert (norm (A), 1);
+
+## Test input validation
+%!error norm ()
+%!error norm (1,2,3,4)
+%!error <unrecognized option> norm (1, "invalid")
+%!error <unrecognized option> norm (1, "rows", "invalid")
+%!error <invalid combination of options> norm (1, "rows", "rows")
+%!error <invalid combination of options> norm (1, "invalid", "rows")
 */
 
 static octave_value
@@ -7021,7 +7029,7 @@ Undocumented internal function.
 {
   int nargin = args.length ();
 
-  if (nargin < 2 && nargin > 3)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
 
   if (! args(0).is_numeric_type ())
@@ -7110,7 +7118,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 {
   int nargin = args.length ();
 
-  if (nargin < 3 && nargin > 4)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
 
   if (! args(0).is_numeric_type ())
@@ -7244,7 +7252,7 @@ Undocumented internal function.
 {
   int nargin = args.length ();
 
-  if (nargin < 2 && nargin > 4)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
 
   if (! args(0).is_numeric_type ())

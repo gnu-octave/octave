@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} dialog (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefn  {} {@var{h} =} dialog ()
+## @deftypefnx {} {@var{h} =} dialog ("@var{property}", @var{value}, @dots{})
 ##
-## Create an empty modal dialog window that other uicontrols can be added to.
+## Create an empty modal dialog window to which other uicontrols can be added.
 ##
 ## The dialog box is a figure object with properties as recommended for a
 ## dialog box.
@@ -28,7 +29,7 @@
 ##
 ## @table @asis
 ## @item buttondownfcn
-## @code{if isempty(allchild(gcbf)), close(gcbf), end}
+## @code{if isempty (allchild(gcbf)), close (gcbf), endif}
 ##
 ## @item colormap
 ## []
@@ -60,9 +61,6 @@
 ## @item resize
 ## off
 ##
-## @item visible
-## on
-##
 ## @item windowstyle
 ## modal
 ##
@@ -73,54 +71,50 @@
 ## they must appear in pairs.
 ##
 ## The return value @var{h} is a graphics handle to the created figure.
-## object.
 ##
-## Examples:
+## Example:
 ##
 ## @example
 ## @group
-##
-## % create an empty dialog window titled 'Dialog Example'
+## ## create an empty dialog window titled "Dialog Example"
 ## h = dialog ("name", "Dialog Example");
 ##
-## % create a button (default style)
-## b = uicontrol (h, "string", "OK", "position",[10 10 150 40], "callback","delete(gcf)");
+## ## create a button (default style)
+## b = uicontrol (h, "string", "OK",
+##                   "position", [10 10 150 40],
+##                   "callback", "delete (gcf)");
 ##
-## % wait for dialog to resume or close
+## ## wait for dialog to resume or close
 ## uiwait (h);
-##
 ## @end group
 ## @end example
 ##
-## @seealso{figure, uiwait}
-##
+## @seealso{errordlg, msgbox, questdlg, warndlg, figure, uiwait}
 ## @end deftypefn
 
 ## Author: jdonoghue
 
 function h = dialog (varargin)
 
-  tmph = figure ( ...
-    "buttondownfcn", "if isempty(allchild(gcbf)), close(gcbf), endif", ...
-    "color",  get(0,"defaultuicontrolbackgroundcolor"), ...
-    "colormap", [],  ...
-    "dockcontrols", "off", ...
-    "handlevisibility", "callback", ...
-    "integerhandle", "off", ...
-    "inverthardcopy", "off", ...
-    "menubar", "none", ...
-    "numbertitle", "off", ...
-    "paperpositionmode", "auto", ...
-    "resize", "off", ...
-    "toolbar", "none", ...
-    "visible", "on",
-    "windowstyle", "modal", ...
-    varargin{:} );
-
-  if (nargout > 0)
-    h = tmph;
-  endif
+  h = figure ( ...
+    "buttondownfcn", "if isempty (allchild (gcbf)), close (gcbf), endif",
+    "color", get (0,"defaultuicontrolbackgroundcolor"),
+    "colormap", [],
+    "dockcontrols", "off",
+    "handlevisibility", "callback",
+    "integerhandle", "off",
+    "inverthardcopy", "off",
+    "menubar", "none",
+    "numbertitle", "off",
+    "paperpositionmode", "auto",
+    "resize", "off",
+    "toolbar", "none",
+    "windowstyle", "modal",
+    varargin{:});
 
 endfunction
 
+
+## No BIST tests.  This function just dispatches to figure().
+%!assert (1)
 

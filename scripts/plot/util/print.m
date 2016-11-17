@@ -349,7 +349,7 @@ function print (varargin)
     hobj = findall (opts.figure, "-not", "type", "figure", ...
                     "-not", "type", "axes", "-property", "units", ...
                     "-not", "units", "normalized", "-not", "units", "data");
-    hobj = hobj(! strncmp (get (hobj, "type"), "ui", 2));
+    hobj(strncmp (get (hobj, "type"), "ui", 2)) = [];
     for n = 1:numel(hobj)
       props(n).h = hobj(n);
       props(n).name = "units";

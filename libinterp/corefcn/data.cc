@@ -5827,8 +5827,9 @@ compute the norms of each column and return a row vector.
 %!error norm (1,2,3,4)
 %!error <unrecognized option> norm (1, "invalid")
 %!error <unrecognized option> norm (1, "rows", "invalid")
+%!error <unrecognized option> norm (1, "invalid", "rows")
+%!error <invalid combination of options> norm (1, "cols", "rows")
 %!error <invalid combination of options> norm (1, "rows", "rows")
-%!error <invalid combination of options> norm (1, "invalid", "rows")
 */
 
 static octave_value

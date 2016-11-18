@@ -48,10 +48,6 @@
 ## from the isosurface patch object.  Finally, if no output argument is given
 ## then the colors of the patch given by the patch handle @var{p} are changed.
 ##
-## For example:
-##
-## @example
-##
 ## @seealso{isosurface, isonormals}
 ## @end deftypefn
 

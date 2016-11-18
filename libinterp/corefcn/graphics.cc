@@ -11603,6 +11603,10 @@ In all cases, typing CTRL-C stops program execution immediately.
   if (args.length () == 0)
     print_usage ();
 
+  // return immediately if the graphics handle is invalid
+  if (args(0).is_empty ())
+    return ovl ();
+
   double h = args(0).xdouble_value ("waitfor: invalid handle value");
 
   caseless_str pname;

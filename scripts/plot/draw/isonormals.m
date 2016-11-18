@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{vn}] =} isonormals (@var{val}, @var{vert})
-## @deftypefnx {} {[@var{vn}] =} isonormals (@var{val}, @var{hp})
-## @deftypefnx {} {[@var{vn}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{vert})
-## @deftypefnx {} {[@var{vn}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{hp})
-## @deftypefnx {} {[@var{vn}] =} isonormals (@dots{}, "negate")
+## @deftypefn  {} {@var{vn} =} isonormals (@var{val}, @var{vert})
+## @deftypefnx {} {@var{vn} =} isonormals (@var{val}, @var{hp})
+## @deftypefnx {} {@var{vn} =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{vert})
+## @deftypefnx {} {@var{vn} =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{hp})
+## @deftypefnx {} {@var{vn} =} isonormals (@dots{}, "negate")
 ## @deftypefnx {} {} isonormals (@var{val}, @var{hp})
 ## @deftypefnx {} {} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{hp})
 ## @deftypefnx {} {} isonormals (@dots{}, "negate")
@@ -29,24 +29,24 @@
 ## Calculate normals to an isosurface.
 ##
 ## The vertex normals @var{vn} are calculated from the gradient of the
-## 3-dimensional array @var{val} (size: lxmxn) with the data for an
-## isosurface geometry.  The normals point towards lower values in @var{val}.
+## 3-dimensional array @var{val} (size: lxmxn) containing the data for an
+## isosurface geometry.  The normals point towards smaller values in @var{val}.
 ##
-## If called with one output argument @var{vn} and the second input argument
-## @var{vert} holds the vertices of an isosurface, the normals @var{vn} are
-## calculated at the vertices @var{vert} on a grid given by
+## If called with one output argument @var{vn}, and the second input argument
+## @var{vert} holds the vertices of an isosurface, then the normals @var{vn}
+## are calculated at the vertices @var{vert} on a grid given by
 ## @code{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output argument
 ## @var{vn} has the same size as @var{vert} and can be used to set the
 ## @qcode{"VertexNormals"} property of the corresponding patch.
 ##
-## If called with further input arguments @var{x}, @var{y}, and @var{z}
+## If called with additional input arguments @var{x}, @var{y}, and @var{z},
 ## which are 3-dimensional arrays with the same size as @var{val},
-## the volume data is taken at these points.  Instead of the vertex data
-## @var{vert}, a patch handle @var{hp} can be passed to this function.
+## then the volume data is taken at these points.  Instead of the vertex data
+## @var{vert}, a patch handle @var{hp} can be passed to the function.
 ##
 ## If the last input argument is the string @qcode{"negate"}, compute the
 ## reverse vector normals of an isosurface geometry (i.e., pointed towards
-## higher values in @var{val}).
+## larger values in @var{val}).
 ##
 ## If no output argument is given, the property @qcode{"VertexNormals"} of
 ## the patch associated with the patch handle @var{hp} is changed directly.
@@ -56,20 +56,20 @@
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-function varargout = isonormals (varargin)
+function vn = isonormals (varargin)
 
-  na = nargin;
+  narg = nargin;
   negate = false;
-  if (ischar (varargin{na}))
-    if (strcmpi (varargin{na}, "negate"))
+  if (ischar (varargin{narg}))
+    if (strcmpi (varargin{narg}, "negate"))
       negate = true;
+      narg -= 1;
     else
-      error ("isonormals: Unknown option '%s'", varargin{nargin});
+      error ("isonormals: Unknown option '%s'", varargin{narg});
     endif
-    na = nargin-1;
   endif
 
-  switch (na)
+  switch (narg)
     case 2
       val = varargin{1};
       vp = varargin{2};
@@ -105,19 +105,13 @@ function varargout = isonormals (varargin)
     normals = -__interp_cube__ ("isonormals", x, y, z, val, v, "normals");
   endif
 
-  switch (nargout)
-    case 0
-      if (! isempty (pa))
-        set (pa, "VertexNormals", normals);
-      endif
-
-    case 1
-      varargout = {normals};
-
-    otherwise
-      print_usage ();
-
-  endswitch
+  if (nargout == 0)
+    if (! isempty (pa))
+      set (pa, "VertexNormals", normals);
+    endif
+  else
+    vn = normals;
+  endif
 
 endfunction
 
@@ -137,7 +131,7 @@ endfunction
 %! lin = linspace (0, 2, N);
 %! [x, y, z] = meshgrid (lin, lin, lin);
 %! val = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
-%! clf;
+%! figure (); # Open another figure window
 %!
 %! subplot (2,2,1);
 %!  view (-38, 20);
@@ -191,7 +185,21 @@ endfunction
 %! dirn = vert ./ vn;
 %! assert (all (dirn(isfinite (dirn)) <= 0));
 
-%!error <Unknown option 'foo'> n = isonormals (x, y, z, val, vert, "foo")
-%!error <input must be a list of vertices or a patch handle>
-%! n = isonormals (x, y, z, val, x);
+## Test input validation
+%!error isonormals ()
+%!error isonormals (1)
+%!error isonormals (1,2,3)
+%!error isonormals (1,2,3,4)
+%!error isonormals (1,2,3,4,5,6)
+%!error <Unknown option 'foo'> isonormals (x, y, z, val, vert, "foo")
+%!error <must be a list of vertices> isonormals (1, {1})
+%!error <must be a list of vertices> isonormals (1, [1 2 3 4])
+%!error <must be a .* patch handle> isonormals (x, y, z, val, x)
+## Test validation of private function __interp_cube__ 
+%!error <X, Y, Z have unequal dimensions> isonormals ({x}, y, z, val, vert)
+%!error <X, Y, Z have unequal dimensions> isonormals (x, {y}, z, val, vert)
+%!error <X, Y, Z have unequal dimensions> isonormals (x, y, {z}, val, vert)
+%!error <X, Y, Z have unequal dimensions> isonormals (x, y, z(1), val, vert)
+%!error <X, Y, Z have unequal dimensions> isonormals (x(:), y(:), z, val, vert)
+%!error <VAL dimensions must match those of X, Y, and Z> isonormals (1, 2, 3, val, vert)
 

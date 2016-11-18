@@ -124,6 +124,20 @@ namespace octave
         gl2psEnable (GL2PS_LINE_STIPPLE);
     }
 
+    void set_linecap (const std::string& s)
+      {
+        octave::opengl_renderer::set_linejoin (s);
+      
+#if defined (HAVE_GL2PSLINEJOIN)
+        if (s == "butt")
+          gl2psLineCap (GL2PS_LINE_CAP_BUTT);
+        else if (s == "square")
+          gl2psLineCap (GL2PS_LINE_CAP_SQUARE);
+        else if (s == "round")
+          gl2psLineCap (GL2PS_LINE_CAP_ROUND);
+#endif
+      }
+
     void set_linejoin (const std::string& s)
     {
       octave::opengl_renderer::set_linejoin (s);

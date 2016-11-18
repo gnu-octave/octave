@@ -2010,6 +2010,7 @@ namespace octave
 
     set_font (props);
     set_interpreter (props.get_ticklabelinterpreter ());
+    set_linecap ("square");
     set_linewidth (props.get_linewidth ());
 
     // draw axes object
@@ -2077,6 +2078,7 @@ namespace octave
         set_color (props.get_color_rgb ());
         set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
         set_linewidth (props.get_linewidth ());
+        set_linecap ("butt");
         set_linejoin (props.get_linejoin ());
 
         if (has_z)
@@ -2505,6 +2507,7 @@ namespace octave
             set_linestyle (props.get_linestyle (), false,
                            props.get_linewidth ());
             set_linewidth (props.get_linewidth ());
+            set_linecap ("butt");
             set_linejoin ("miter");
 
             // Mesh along Y-axis
@@ -3088,6 +3091,7 @@ namespace octave
             double linewidth = props.get_linewidth ();
             set_linestyle (props.get_linestyle (), false, linewidth);
             set_linewidth (linewidth);
+            set_linecap ("butt");
             set_linejoin ("miter");
 
             // NOTE: patch contour cannot be offset.  Offset must occur with the

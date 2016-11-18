@@ -157,7 +157,7 @@ MessageDialog::MessageDialog (const QString& message,
     addButton (QMessageBox::Ok);
   else
     {
-      for (int i = N-1; i >= 0; i--)
+      for (int i = 0; i < N; i++)
         {
           // Interpret the button role string, because enumeration
           // QMessageBox::ButtonRole can't be made to pass through a signal.

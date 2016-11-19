@@ -172,9 +172,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     if (isempty (delimiter))
       ## This pattern can be fooled, but mostly does the job just fine.
       delim = regexpi (row, '[-+\d.e*ij ]+([^-+\de.ij])[-+\de*.ij ]',
-                      'tokens', 'once');
-      #delim = regexp (row, '[+-\d.eE\*ij ]+([^+-\d.ij])[+-\d.ij]',
-      #                     'tokens', 'once');
+                       'tokens', 'once');
       if (! isempty (delim))
         delimiter = delim{1};
       endif
@@ -186,9 +184,16 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
       row_entries = ostrsplit (row, delimiter);
     endif
     row_data = str2double (row_entries);
-    if (all (isnan (row_data)) || header_rows < num_header_rows)
+    if (header_rows < num_header_rows)
       header_rows += 1;
       output.textdata{end+1, 1} = row;
+    elseif (all (isnan (row_data)) && header_rows < 25)
+      header_rows += 1;
+      output.textdata{end+1, 1} = row;
+    elseif (all (isnan (row_data)))
+      ## Failed to find any numeric input in first 25 lines
+      row = -1;
+      break;
     else
       if (! isempty (output.textdata))
         if (delimiter == " ")
@@ -228,9 +233,9 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     delimiter = "";
     header_rows = numel (output);
     return;
-  else
-    fclose (fid);
   endif
+
+  fclose (fid);
 
   if (num_header_rows >= 0)
     header_rows = num_header_rows;

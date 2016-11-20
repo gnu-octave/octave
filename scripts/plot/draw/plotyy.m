@@ -283,10 +283,12 @@ endfunction
 %! xlabel ("X");
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");
+%! lcolor = get (gca, "ColorOrder")(1,:);
+%! rcolor = get (gca, "ColorOrder")(2,:);
 %! text (0.5, 0.5, "Left Axis", ...
-%!       "color", [0 0 1], "horizontalalignment", "center", "parent", ax(1));
+%!       "color", lcolor, "horizontalalignment", "center", "parent", ax(1));
 %! text (4.5, 80, "Right Axis", ...
-%!       "color", [0 0.5 0], "horizontalalignment", "center", "parent", ax(2));
+%!       "color", rcolor, "horizontalalignment", "center", "parent", ax(2));
 %! title ({"plotyy() example"; "left axis uses @plot, right axis uses @semilogy"});
 
 %!demo
@@ -315,5 +317,5 @@ endfunction
 %! xlabel (hax(1), "xlabel");
 %! title (hax(2), 'Two plotyy graphs on same figure using "hold on"');
 %! ylabel (hax(1), "Left axis is Blue");
-%! ylabel (hax(2), "Right axis is Green");
+%! ylabel (hax(2), "Right axis is Orange");
 

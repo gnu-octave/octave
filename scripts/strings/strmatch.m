@@ -67,7 +67,9 @@ function idx = strmatch (s, A, exact)
   endif
 
   ## Trim blanks and nulls from search string
-  s = regexprep (s, "[ \\0]+$", '');
+  if (any (s != " " & s != "\0"))
+    s = regexprep (s, "[ \\0]+$", '');
+  endif
   len = length (s);
 
   exact = nargin == 3 && ischar (exact) && strcmp (exact, "exact");
@@ -109,7 +111,14 @@ endfunction
 %!assert (strmatch ("a", "a \0", "exact"), 1)
 %!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1)
 %!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
-%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4])
+%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, "exact"), [1,4])
+
+## Weird Matlab corner cases
+%!test <49601>
+%! assert (strmatch (" ", " "), 1);
+%! assert (strmatch (" ", "   "), 1);
+%! assert (strmatch ("  ", " "), []);
+%! assert (strmatch ("  ", "  "), 1);
 
 ## Test input validation
 %!error <Invalid call to strmatch> strmatch ()

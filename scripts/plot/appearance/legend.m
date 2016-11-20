@@ -1244,17 +1244,17 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am Red;");
+%! plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am yellow;");
 %! h = legend ("location", "northeastoutside");
 %! ## Placing legend inside should return axes to original size
 %! legend (h, "location", "northeast");
-%! title ("Blue and Red keys, with Green missing");
+%! title ("Blue and Yellow keys, with Orange missing");
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ("incline is blue and decline is green");
-%! legend ({"I am blue", "I am green"}, "location", "east");
+%! title ("incline is blue and decline is orange");
+%! legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend hide
 %! legend show
 
@@ -1262,7 +1262,7 @@ endfunction
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ("Legend with keys in horizontal orientation");
-%! legend ({"I am blue", "I am green"}, ...
+%! legend ({"I am blue", "I am orange"}, ...
 %!         "location", "east", "orientation", "horizontal");
 %! legend boxoff
 %! legend boxon
@@ -1271,14 +1271,14 @@ endfunction
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ("Legend with box off");
-%! legend ({"I am blue", "I am green"}, "location", "east");
+%! legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend boxoff
 
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ("Legend with text to the left of key");
-%! legend ({"I am blue", "I am green"}, "location", "east");
+%! legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend left
 
 %!demo
@@ -1286,7 +1286,7 @@ endfunction
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ({"Use properties to place legend text to the left of key", ...
 %!         "Legend text color is magenta"});
-%! h = legend ({"I am blue", "I am green"}, "location", "east");
+%! h = legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend ("right");
 %! set (h, "textposition", "left");
 %! set (h, "textcolor", [1 0 1]);
@@ -1295,13 +1295,13 @@ endfunction
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
 %! title ("Legend is hidden");
-%! legend ({"I am blue", "I am green"}, "location", "east");
+%! legend ({"I am blue", "I am orange"}, "location", "east");
 %! legend hide
 
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,";I am Blue;", x,2*x,";I am Green;", x,3*x,";I am Red;");
+%! plot (x,x,";I am Blue;", x,2*x,";I am Orange;", x,3*x,";I am Yellow;");
 %! title ({"Labels are embedded in call to plot", ...
 %!         "Legend is hidden and then shown"});
 %! legend boxon
@@ -1462,8 +1462,8 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ("plotyy legend test #1: Blue and Green labels");
-%! legend ([h1, h2], {"Blue", "Green"}, "location", "south");
+%! title ("plotyy legend test #1: Blue and Orange labels");
+%! legend ([h1, h2], {"Blue", "Orange}, "location", "south");
 
 %!demo
 %! clf;
@@ -1471,8 +1471,8 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ("plotyy legend test #2: Blue and Green labels");
-%! legend ({"Blue", "Green"}, "location", "south");
+%! title ("plotyy legend test #2: Blue and Orange labels");
+%! legend ({"Blue", "Orange"}, "location", "south");
 
 %!demo
 %! clf;
@@ -1480,8 +1480,8 @@ endfunction
 %! y1 = rand (size (x));
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
-%! title ("plotyy legend test #3: Blue and Green labels");
-%! legend ("Blue", "Green", "location", "south");
+%! title ("plotyy legend test #3: Blue and Orange labels");
+%! legend ("Blue", "Orange", "location", "south");
 
 %!demo
 %! clf;

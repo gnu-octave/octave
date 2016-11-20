@@ -18,48 +18,48 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} light ()
-## @deftypefnx {} {} light (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} light (@dots{}, "@var{prop}", @var{val}, @dots{})
 ## @deftypefnx {} {} light (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} light (@dots{})
-## Create light object in the current axes or for axes @var{hax}.
+## Create a light object in the current axes or for axes @var{hax}.
 ##
-## When a light object is present in an axes object and the properties
+## When a light object is present in an axes object, and the properties
 ## @qcode{"EdgeLighting"} or @qcode{"FaceLighting"} of a @code{patch} or
 ## @code{surface} object are set to a value other than @qcode{"none"}, these
-## objects are drawn with light and shadow effects.  Supported values for these
-## properties are @qcode{"none"} (no lighting effects), @qcode{"flat"}
-## (faceted look of the objects) and @qcode{"gouraud"} (linear interpolation
-## of the lighting effects between the vertices).
-## For @code{patch} objects, the normals must be set manually (property
-## @qcode{"VertexNormals"}).
+## objects are drawn with light and shadow effects.  Supported values for
+## Lighting properties are @qcode{"none"} (no lighting effects), @qcode{"flat"}
+## (faceted look of the objects), and @qcode{"gouraud"} (linear interpolation
+## of the lighting effects between the vertices).  For @code{patch} objects,
+## the normals must be set manually (property @qcode{"VertexNormals"}).
 ##
 ## Up to eight light objects are supported per axes.
 ##
-## Lighting is only supported for graphics toolkits supporting OpenGL (i.e.
-## @qcode{"fltk"} and @qcode{"qt"}).
+## Lighting is only supported for OpenGL graphic toolkits (i.e., @qcode{"fltk"}
+## and @qcode{"qt"}).
 ##
-## The following properties specific to the light object can be passed with
-## their respective values:
+## A light object has the following properties which alter the appearance of
+## the plot.
 ##
 ## @table @asis
-## @item @qcode{"Color":} The color of the light object can be passed as an
+## @item @qcode{"Color":} The color of the light can be passed as an
 ## RGB-vector (e.g., @code{[1 0 0]} for red) or as a string (e.g., @qcode{"r"}
 ## for red).  The default color is white (@code{[1 1 1]}).
 ##
-## @item @qcode{"Position":} The direction from which the light emanates as an
+## @item @qcode{"Position":} The direction from which the light emanates as a
 ## 1x3-vector.  The default direction is @code{[1 0 1]}.
 ##
 ## @item @qcode{"Style":} This string defines whether the light emanates from a
 ## light source at infinite distance (@qcode{"infinite"}) or from a local point
-## source (@qcode{"local"}).
+## source (@qcode{"local"}).  The default is @qcode{"infinite"}.
 ## @end table
 ##
-## If @code{light} is called with an axes handle @var{hax}, it must be passed
-## as the first argument.
+## If the first argument @var{hax} is an axes handle, then add the light object
+## to this axes, rather than the current axes returned by @code{gca}.
 ##
-## Optionally, the handle to the light object is returned in @var{h}.
+## The optional return value @var{h} is a graphics handle to the created light
+## object.
 ##
-## @seealso{get, set, patch, surface, lighting, material}
+## @seealso{lighting, material, patch, surface}
 ## @end deftypefn
 
 ## Author: mmuetzel

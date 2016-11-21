@@ -192,7 +192,8 @@ octave_qt_link::do_question_dialog (const std::string& msg,
 {
   QStringList btn;
   QStringList role;
-  role << "AcceptRole" << "AcceptRole" << "AcceptRole";
+  // Must use ResetRole which is left-aligned for all OS and WM.
+  role << "ResetRole" << "ResetRole" << "ResetRole";
   btn << QString::fromStdString (btn1);
   if (btn2 == "")
     role.removeAt (0);

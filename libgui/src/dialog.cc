@@ -163,7 +163,9 @@ MessageDialog::MessageDialog (const QString& message,
           // QMessageBox::ButtonRole can't be made to pass through a signal.
           QString srole = role.at (i);
           QMessageBox::ButtonRole erole = QMessageBox::InvalidRole;
-          if (srole == "YesRole")
+          if (srole == "ResetRole")
+            erole = QMessageBox::ResetRole;
+          else if (srole == "YesRole")
             erole = QMessageBox::YesRole;
           else if (srole == "NoRole")
             erole = QMessageBox::NoRole;

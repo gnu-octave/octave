@@ -268,33 +268,71 @@ pr_where_1 (std::ostream& os, const char *fmt, ...)
   va_end (args);
 }
 
-static void
-pr_where (std::ostream& os, const char *who)
+struct
+error_stack_frame
 {
-  std::list<octave_call_stack::stack_frame> frames
-    = octave_call_stack::backtrace_frames ();
+  std::string name;
+  int line;
+  int column;
+};
 
+static void
+pr_where (std::ostream& os, const char *who,
+          const std::list<error_stack_frame>& frames)
+{
   size_t nframes = frames.size ();
 
   if (nframes > 0)
     pr_where_1 (os, "%s: called from\n", who);
 
+  for (std::list<error_stack_frame>::const_iterator p = frames.begin ();
+       p != frames.end (); p++)
+    {
+      const error_stack_frame& elt = *p;
+
+      std::string fcn_name = elt.name;
+      int line = elt.line;
+      int column = elt.column;
+
+      if (line > 0)
+        {
+          if (column > 0)
+            pr_where_1 (os, "    %s at line %d column %d\n",
+                        fcn_name.c_str (), line, column);
+          else
+            pr_where_1 (os, "    %s at line %d\n", fcn_name.c_str (), line);
+        }
+      else
+        pr_where_1 (os, "    %s\n", fcn_name.c_str ());
+    }
+}
+
+static void
+pr_where (std::ostream& os, const char *who)
+{
+  std::list<octave_call_stack::stack_frame> call_stack_frames
+    = octave_call_stack::backtrace_frames ();
+
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
-  frames.unique ();
+  call_stack_frames.unique ();
 
-  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
-       p != frames.end (); p++)
+  std::list<error_stack_frame> frames;
+  for (std::list<octave_call_stack::stack_frame>::const_iterator p = call_stack_frames.begin ();
+       p != call_stack_frames.end (); p++)
     {
       const octave_call_stack::stack_frame& elt = *p;
 
-      std::string fcn_name = elt.fcn_name ();
-      int line = elt.line ();
-      int column = elt.column ();
+      error_stack_frame frame;
 
-      pr_where_1 (os, "    %s at line %d column %d\n",
-                  fcn_name.c_str (), line, column);
+      frame.name = elt.fcn_name ();
+      frame.line = elt.line ();
+      frame.column = elt.column ();
+
+      frames.push_back (frame);
     }
+
+    pr_where (os, who, frames);
 }
 
 static octave::execution_exception
@@ -809,6 +847,86 @@ rethrow_error (const char *id, const char *fmt, ...)
   va_end (args);
 }
 
+static std::list<error_stack_frame>
+make_stack_frame_list (const octave_map& stack)
+{
+  std::list<error_stack_frame> frames;
+
+  Cell name = stack.contents ("name");
+  Cell line = stack.contents ("line");
+  Cell column;
+  bool have_column = false;
+  if (stack.contains ("column"))
+    {
+      have_column = true;
+      column = stack.contents ("column");
+    }
+
+  octave_idx_type nel = name.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      error_stack_frame frame;
+
+      frame.name = name(i).string_value ();
+      frame.line = line(i).int_value ();
+      frame.column = have_column ? column(i).int_value () : -1;
+
+      frames.push_back (frame);
+    }
+
+  return frames;
+}
+
+static void
+rethrow_error_1 (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror (false, std::cerr, 0, id, fmt, args);
+  va_end (args);
+}
+
+OCTAVE_NORETURN static
+void
+rethrow_error (const std::string& id, const std::string& msg,
+               const octave_map& stack)
+{
+  octave::execution_exception e = make_execution_exception ("error");
+
+  if (! stack.is_empty ()
+      && ! (stack.contains ("file") && stack.contains ("name")
+            && stack.contains ("line")))
+    error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
+
+  Vlast_error_id = id;
+  Vlast_error_message = msg;
+  Vlast_error_stack = stack;
+
+  size_t len = msg.length ();
+
+  std::string tmp_msg (msg);
+  if (len > 1 && tmp_msg[len-1] == '\n')
+    {
+      tmp_msg.erase (len - 1);
+
+      rethrow_error_1 (id.c_str (), "%s\n", tmp_msg.c_str ());
+    }
+  else
+    rethrow_error_1 (id.c_str (), "%s", tmp_msg.c_str ());
+
+  if (! stack.is_empty ())
+    {
+      std::ostringstream buf;
+
+      pr_where (buf, "error", make_stack_frame_list (stack));
+
+      e.set_stack_trace (buf.str ());
+    }
+
+  throw e;
+}
+
 void
 panic (const char *fmt, ...)
 {
@@ -917,121 +1035,18 @@ error.  Typically @var{err} is returned from @code{lasterror}.
 
   const octave_scalar_map err = args(0).scalar_map_value ();
 
-  if (! err.contains ("message") || ! err.contains ("identifier"))
-    error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
+  if (! (err.contains ("message") && err.contains ("identifier")))
+    error ("rethrow: ERR struct must contain the fields 'message' and 'identifier'");
 
   std::string msg = err.contents ("message").string_value ();
   std::string id = err.contents ("identifier").string_value ();
-  int len = msg.length ();
-
-  std::string file;
-  std::string nm;
-  int l = -1;
-  int c = -1;
 
   octave_map err_stack = initialize_last_error_stack ();
 
   if (err.contains ("stack"))
-    {
-      err_stack = err.contents ("stack").map_value ();
+    err_stack = err.contents ("stack").xmap_value ("ERR.STACK must be a struct");
 
-      if (err_stack.numel () > 0)
-        {
-          if (err_stack.contains ("file"))
-            file = err_stack.contents ("file")(0).string_value ();
-
-          if (err_stack.contains ("name"))
-            nm = err_stack.contents ("name")(0).string_value ();
-
-          if (err_stack.contains ("line"))
-            l = err_stack.contents ("line")(0).nint_value ();
-
-          if (err_stack.contains ("column"))
-            c = err_stack.contents ("column")(0).nint_value ();
-        }
-    }
-
-  // Ugh.
-  std::string tmp_msg (msg);
-  if (tmp_msg[len-1] == '\n')
-    {
-      if (len > 1)
-        {
-          tmp_msg.erase (len - 1);
-          rethrow_error (id.c_str (), "%s\n", tmp_msg.c_str ());
-        }
-    }
-  else
-    rethrow_error (id.c_str (), "%s", tmp_msg.c_str ());
-
-  // FIXME: is this the right thing to do for Vlast_error_stack?
-  //        Should it be saved and restored with unwind_protect?
-
-  Vlast_error_stack = err_stack;
-
-  if (err.contains ("stack"))
-    {
-      if (file.empty ())
-        {
-          if (nm.empty ())
-            {
-              if (l > 0)
-                {
-                  if (c > 0)
-                    pr_where_1 (std::cerr,
-                                "error: near line %d, column %d",
-                                l, c);
-                  else
-                    pr_where_1 (std::cerr, "error: near line %d", l);
-                }
-            }
-          else
-            {
-              if (l > 0)
-                {
-                  if (c > 0)
-                    pr_where_1 (std::cerr,
-                                "error: called from '%s' near line %d, column %d",
-                                nm.c_str (), l, c);
-                  else
-                    pr_where_1 (std::cerr,
-                                "error: called from '%d' near line %d",
-                                nm.c_str (), l);
-                }
-            }
-        }
-      else
-        {
-          if (nm.empty ())
-            {
-              if (l > 0)
-                {
-                  if (c > 0)
-                    pr_where_1 (std::cerr,
-                                "error: in file %s near line %d, column %d",
-                                file.c_str (), l, c);
-                  else
-                    pr_where_1 (std::cerr,
-                                "error: in file %s near line %d",
-                                file.c_str (), l);
-                }
-            }
-          else
-            {
-              if (l > 0)
-                {
-                  if (c > 0)
-                    pr_where_1 (std::cerr,
-                                "error: called from '%s' in file %s near line %d, column %d",
-                                nm.c_str (), file.c_str (), l, c);
-                  else
-                    pr_where_1 (std::cerr,
-                                "error: called from '%d' in file %s near line %d",
-                                nm.c_str (), file.c_str (), l);
-                }
-            }
-        }
-    }
+  rethrow_error (id, msg, err_stack);
 
   return ovl ();
 }
@@ -1115,14 +1130,13 @@ function h () nargin == 1 || error ("nargin != 1"); end
 
 @noindent
 calling the function @code{f} will result in a list of messages that
-can help you to quickly locate the exact location of the error:
+can help you to quickly find the exact location of the error:
 
 @example
 @group
 f ()
 error: nargin != 1
 error: called from:
-error:   error at line -1, column -1
 error:   h at line 1, column 27
 error:   g at line 1, column 15
 error:   f at line 1, column 15
@@ -2173,5 +2187,3 @@ interpreter_try (octave::unwind_protect& frame)
   Vdebug_on_warning = false;
   // leave Vdebug_on_caught as it was, so errors in try/catch are still caught
 }
-
-

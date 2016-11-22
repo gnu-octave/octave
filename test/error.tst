@@ -89,3 +89,55 @@
 %! w = warning;
 %! assert (w, w0);
 
+## Test usage() function
+
+%!function g ()
+%!  usage ("foo");
+%!endfunction
+%!function f ()
+%!  g ();
+%!endfunction
+%!error <foo> f ()
+
+%!function g ()
+%!  usage ("foo");
+%!endfunction
+%!function f ()
+%!  g
+%!endfunction
+%!error <foo> f ()
+
+%!error usage ()
+
+%!error <foo> usage ("foo\n")
+
+%!error <ERR struct must contain the fields> rethrow (struct ())
+
+%!error <STACK struct must contain the fields>
+%! rethrow (struct ("message", "foo", "identifier", "", "stack", struct ()))
+
+%!test
+%! try
+%!   union ({'a'}, 1);
+%! catch
+%!   x = lasterror ();
+%!   try
+%!     rethrow (lasterror ());
+%!   catch
+%!     assert (x, lasterror ());
+%!   end_try_catch
+%! end_try_catch
+
+%!test
+%! try
+%!   union ({'a'}, 1);
+%! catch
+%!   x = lasterror ();
+%!   try
+%!     y = struct ("message", "msg", "identifier", "", "stack",
+%!                 struct ("file", "foo.m", "name", "foo", "line", 13));
+%!     rethrow (y);
+%!   catch
+%!     assert (y, lasterror ());
+%!   end_try_catch
+%! end_try_catch

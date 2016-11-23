@@ -89,28 +89,6 @@
 %! w = warning;
 %! assert (w, w0);
 
-## Test usage() function
-
-%!function g ()
-%!  usage ("foo");
-%!endfunction
-%!function f ()
-%!  g ();
-%!endfunction
-%!error <foo> f ()
-
-%!function g ()
-%!  usage ("foo");
-%!endfunction
-%!function f ()
-%!  g
-%!endfunction
-%!error <foo> f ()
-
-%!error usage ()
-
-%!error <foo> usage ("foo\n")
-
 %!error <ERR struct must contain the fields> rethrow (struct ())
 
 %!error <STACK struct must contain the fields>

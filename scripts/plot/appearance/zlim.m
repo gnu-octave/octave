@@ -33,12 +33,19 @@
 ##
 ## If passed a 2-element vector [@var{z_lo} @var{z_hi}], the limits of the
 ## x-axis are set to these values and the mode is set to @qcode{"manual"}.
+## The special values -Inf and Inf can be used to indicate that either
+## the lower axis limit or upper axis limit should be automatically calculated.
 ##
 ## The current plotting mode can be changed by using either @qcode{"auto"}
 ## or @qcode{"manual"} as the argument.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
+##
+## Programming Note: The @code{zlim} function operates by modifying the
+## @qcode{"zlim"} and @qcode{"zlimmode"} properties of an axes object.  These
+## properties can be be directly inspected and altered with
+## @code{get}/@code{set}.
 ## @seealso{xlim, ylim, axis, set, get, gca}
 ## @end deftypefn
 
@@ -74,7 +81,7 @@ endfunction
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! zlim ("auto");
+%! zlim auto;
 %! title ("zlim is auto");
 
 %!test

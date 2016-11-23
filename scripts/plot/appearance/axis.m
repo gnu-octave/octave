@@ -326,7 +326,7 @@ function limits = __axis__ (ca, ax, varargin)
     endif
 
     if (len > 7)
-      clim (ca, ax(7:8));
+      caxis (ca, ax(7:8));
     endif
 
   else

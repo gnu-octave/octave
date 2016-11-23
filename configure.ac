@@ -1776,6 +1776,15 @@ AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
      ;;
    esac])
 
+check_qscintilla=yes
+AC_ARG_WITH([qscintilla],
+  [AS_HELP_STRING([--without-qscintilla], [disable QScintilla editor])],
+  [if test x"$withval" = xno; then
+     check_qscintilla=no
+     warn_qscintilla_disabled="--without-qscintilla specified.  The GUI editor will be disabled."
+     OCTAVE_CONFIGURE_WARNING([warn_qscintilla_disabled])
+   fi])
+
 OCTAVE_CHECK_QT([$QT_VERSIONS])
 
 ## Check for FLTK (www.fltk.org) library

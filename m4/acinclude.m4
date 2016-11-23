@@ -1315,6 +1315,89 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
   fi
 ])
 dnl
+dnl Check whether we have QScintilla for the given Qt VERSION.
+dnl
+AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
+  qt_version="$1";
+  use_qscintilla=no
+  warn_qscintilla=""
+
+  ## Check for Qt libraries
+  case "$qt_version" in
+    4)
+      octave_qscintilla_libnames=qscintilla2
+    ;;
+    5)
+      octave_qscintilla_libnames="qscintilla2-qt5 qt5scintilla2"
+    ;;
+    *)
+      AC_MSG_ERROR([Unrecognized Qt version $qt_version])
+    ;;
+  esac
+
+  if test $build_qt_gui = yes && test $check_qscintilla = yes; then
+
+    ## Check for QScintilla library which is used in the Qt GUI editor.
+    AC_CACHE_CHECK([for the QScintilla library for Qt $qt_version],
+      [octave_cv_lib_qscintilla],
+      [save_CPPFLAGS="$CPPFLAGS"
+      save_CXXFLAGS="$CXXFLAGS"
+      save_LDFLAGS="$LDFLAGS"
+      save_LIBS="$LIBS"
+      CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+      CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
+      AC_LANG_PUSH(C++)
+      for octave_qscintilla_try in $octave_qscintilla_libnames; do
+        LIBS="$QT_LIBS -l$octave_qscintilla_try"
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+          #include <Qsci/qsciapis.h>
+          #include <Qsci/qscilexercpp.h>
+          ]], [[
+          QsciLexer *lexer = new QsciLexerCPP ();
+          QsciAPIs *lexer_apis = new QsciAPIs (lexer);
+          ]])],
+          octave_cv_lib_qscintilla="-l$octave_qscintilla_try",
+          octave_cv_lib_qscintilla=no)
+        if test $octave_cv_lib_qscintilla != no; then
+          break
+        fi
+      done
+      CPPFLAGS="$save_CPPFLAGS"
+      CXXFLAGS="$save_CXXFLAGS"
+      LDFLAGS="$save_LDFLAGS"
+      LIBS="$save_LIBS"
+      AC_LANG_POP([C++])
+    ])
+
+    if test $octave_cv_lib_qscintilla = no; then
+      warn_qscintilla="QScintilla library not found; disabling built-in Qt GUI editor"
+    else
+      ## Let's assume QScintilla library is at the same location as
+      ## other regular Qt libraries.
+      QT_LIBS="$QT_LIBS $octave_cv_lib_qscintilla"
+      OCTAVE_CHECK_QSCINTILLA_VERSION
+      AC_DEFINE(HAVE_QSCINTILLA, 1,
+        [Define to 1 if the QScintilla library and header files are available.])
+
+      save_CPPFLAGS="$CPPFLAGS"
+      save_CXXFLAGS="$CXXFLAGS"
+      CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+      CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+      AC_LANG_PUSH(C++)
+      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
+      AC_LANG_POP(C++)
+      CPPFLAGS="$save_CPPFLAGS"
+      CXXFLAGS="$save_CXXFLAGS"
+
+      OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+      OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
+
+      use_qscintilla=yes
+    fi
+  fi
+])
+dnl
 dnl Check whether Qt VERSION is present, supports QtOpenGL and
 dnl QScintilla and will work for Octave.
 dnl
@@ -1329,7 +1412,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   build_qt_gui=yes
   build_qt_graphics=no
-  use_qscintilla=no
   win32_terminal=no
 
   warn_qt_libraries=""
@@ -1340,17 +1422,14 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   warn_qt_lib_fcns=""
   warn_qt_abstract_item_model=""
   warn_qt_opengl=""
-  warn_qscintilla=""
 
   ## Check for Qt libraries
   case "$qt_version" in
     4)
       QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
-      octave_qscintilla_libnames=qscintilla2
     ;;
     5)
       QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport"
-      octave_qscintilla_libnames="qscintilla2-qt5 qt5scintilla2"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
@@ -1492,63 +1571,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       fi
     fi
 
-    ## Check for QScintilla library which is used in the Qt GUI editor.
-    AC_CACHE_CHECK([for the QScintilla library for Qt $qt_version],
-      [octave_cv_lib_qscintilla],
-      [save_CPPFLAGS="$CPPFLAGS"
-      save_CXXFLAGS="$CXXFLAGS"
-      save_LDFLAGS="$LDFLAGS"
-      save_LIBS="$LIBS"
-      CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-      CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-      LDFLAGS="$QT_LDFLAGS $LDFLAGS"
-      AC_LANG_PUSH(C++)
-      for octave_qscintilla_try in $octave_qscintilla_libnames; do
-        LIBS="$QT_LIBS -l$octave_qscintilla_try"
-        AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-          #include <Qsci/qsciapis.h>
-          #include <Qsci/qscilexercpp.h>
-          ]], [[
-          QsciLexer *lexer = new QsciLexerCPP ();
-          QsciAPIs *lexer_apis = new QsciAPIs (lexer);
-          ]])],
-          octave_cv_lib_qscintilla="-l$octave_qscintilla_try",
-          octave_cv_lib_qscintilla=no)
-        if test $octave_cv_lib_qscintilla != no; then
-          break
-        fi
-      done
-      CPPFLAGS="$save_CPPFLAGS"
-      CXXFLAGS="$save_CXXFLAGS"
-      LDFLAGS="$save_LDFLAGS"
-      LIBS="$save_LIBS"
-      AC_LANG_POP([C++])
-    ])
+    OCTAVE_CHECK_QSCINTILLA([$qt_version])
 
-    if test $octave_cv_lib_qscintilla = no; then
-      warn_qscintilla="QScintilla library not found; disabling built-in Qt GUI editor"
-    else
-      ## Let's assume QScintilla library is at the same location as
-      ## other regular Qt libraries.
-      QT_LIBS="$QT_LIBS $octave_cv_lib_qscintilla"
-      OCTAVE_CHECK_QSCINTILLA_VERSION
-      AC_DEFINE(HAVE_QSCINTILLA, 1,
-        [Define to 1 if the QScintilla library and header files are available.])
-
-      save_CPPFLAGS="$CPPFLAGS"
-      save_CXXFLAGS="$CXXFLAGS"
-      CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-      CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-      AC_LANG_PUSH(C++)
-      AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
-      AC_LANG_POP(C++)
-      CPPFLAGS="$save_CPPFLAGS"
-      CXXFLAGS="$save_CXXFLAGS"
-
-      OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
-      OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
-      use_qscintilla=yes
-    fi
   fi
   AC_SUBST(MOCFLAGS)
   AC_SUBST(UICFLAGS)

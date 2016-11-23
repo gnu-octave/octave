@@ -23,7 +23,7 @@
 ## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi} @var{z_lo} @var{z_hi}])
 ## @deftypefnx {} {} axis ([@var{x_lo} @var{x_hi} @var{y_lo} @var{y_hi} @var{z_lo} @var{z_hi} @var{c_lo} @var{c_hi}])
 ## @deftypefnx {} {} axis (@var{option})
-## @deftypefnx {} {} axis (@dots{}, @var{option})
+## @deftypefnx {} {} axis (@var{option1}, @var{option2}, @dots{})
 ## @deftypefnx {} {} axis (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{limits} =} axis ()
 ## Set axis limits and appearance.
@@ -33,7 +33,7 @@
 ## x-axis.  The third and fourth specify the limits for the y-axis, the fifth
 ## and sixth specify the limits for the z-axis, and the seventh and eighth
 ## specify the limits for the color axis.  The special values -Inf and Inf may
-## be used to indicate that the limit should automatically be computed based
+## be used to indicate that the limit should be automatically computed based
 ## on the data in the axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
@@ -42,24 +42,8 @@
 ## axis limits.
 ##
 ## The vector argument specifying limits is optional, and additional string
-## arguments may be used to specify various axis properties.  For example,
+## arguments may be used to specify various axis properties.
 ##
-## @example
-## axis ([1, 2, 3, 4], "square");
-## @end example
-##
-## @noindent
-## forces a square aspect ratio, and
-##
-## @example
-## axis ("tic", "labely");
-## @end example
-##
-## @noindent
-## turns tick marks on for all axes and tick mark labels on for the y-axis
-## only.
-##
-## @noindent
 ## The following options control the aspect ratio of the axes.
 ##
 ## @table @asis
@@ -77,7 +61,8 @@
 ## The following options control the way axis limits are interpreted.
 ##
 ## @table @asis
-## @item @qcode{"auto[xyz]"}
+## @item  @qcode{"auto"}
+## @itemx @qcode{"auto[xyz]"}
 ## Set the specified axes to have nice limits around the data or all if no
 ## axes are specified.
 ##
@@ -95,12 +80,6 @@
 ## The following options affect the appearance of tick marks.
 ##
 ## @table @asis
-## @item @qcode{"on"}
-## Turn tick marks and labels on for all axes.
-##
-## @item @qcode{"off"}
-## Turn tick marks off for all axes.
-##
 ## @item @qcode{"tic[xyz]"}
 ## Turn tick marks on for all axes, or turn them on for the specified axes and
 ## off for the remainder.
@@ -113,23 +92,47 @@
 ## Turn tick labels off for all axes.
 ## @end table
 ##
-## Note, if there are no tick marks for an axis, there can be no labels.
+## Note: If there are no tick marks for an axis then there can be no labels.
 ##
 ## @noindent
 ## The following options affect the direction of increasing values on the axes.
 ##
 ## @table @asis
-## @item @qcode{"ij"}
-## Reverse y-axis, so lower values are nearer the top.
-##
 ## @item @qcode{"xy"}
-## Restore y-axis, so higher values are nearer the top.
+## Default y-axis, larger values are near the top.
+##
+## @item @qcode{"ij"}
+## Reverse y-axis, smaller values are near the top.
+## @end table
+##
+## @noindent
+## The following options affects the visibility of the axes.
+##
+## @table @asis
+## @item @qcode{"on"}
+## Make the axes visible.
+##
+## @item @qcode{"off"}
+## Hide the axes.
 ## @end table
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on this
 ## axes rather than the current axes returned by @code{gca}.
 ##
-## @seealso{xlim, ylim, zlim, daspect, pbaspect, box, grid, caxis}
+## Example 1: set X/Y limits and force a square aspect ratio
+##
+## @example
+## axis ([1, 2, 3, 4], "square");
+## @end example
+##
+## Example 2: enable tick marks on all axes,
+##            enable tick mark labels only on the y-axis
+##
+## @example
+## axis ("tic", "labely");
+## @end example
+##
+## @seealso{xlim, ylim, zlim, caxis, daspect, pbaspect, box, grid}
 ## @end deftypefn
 
 ## Author: jwe

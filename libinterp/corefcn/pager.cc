@@ -508,12 +508,13 @@ open_diary_file (void)
     error ("diary: can't open diary file '%s'", diary_file.c_str ());
 }
 
-DEFUN (diary, args, ,
+DEFUN (diary, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} diary
 @deftypefnx {} {} diary on
 @deftypefnx {} {} diary off
 @deftypefnx {} {} diary @var{filename}
+@deftypefnx {} {[@var{status}, @var{diaryfile}] =} diary
 Record a list of all commands @emph{and} the output they produce, mixed
 together just as they appear on the terminal.
 
@@ -521,8 +522,8 @@ Valid options are:
 
 @table @asis
 @item on
-Start recording a session in a file called @file{diary} in the
-current working directory.
+Start recording a session in a file called @file{diary} in the current working
+directory.
 
 @item off
 Stop recording the session in the diary file.
@@ -531,7 +532,13 @@ Stop recording the session in the diary file.
 Record the session in the file named @var{filename}.
 @end table
 
-With no arguments, @code{diary} toggles the current diary state.
+With no input or output arguments, @code{diary} toggles the current diary
+state.
+
+If output arguments are requested, @code{diary} ignores inputs and returns
+the current status.  The boolean @var{status} indicates whether recording is on
+or off, and @var{diaryfile} is the name of the file where the session is
+stored.  
 @seealso{history, evalc}
 @end deftypefn */)
 {
@@ -542,6 +549,15 @@ With no arguments, @code{diary} toggles the current diary state.
 
   if (diary_file.empty ())
     diary_file = "diary";
+
+  if (nargout > 0)
+    {
+      // Querying diary variables
+      if (nargout == 1)
+        return ovl (write_to_diary_file);
+      else
+        return ovl (write_to_diary_file, diary_file);
+    }
 
   if (nargin == 0)
     {
@@ -571,24 +587,6 @@ With no arguments, @code{diary} toggles the current diary state.
     }
 
   return ovl ();
-}
-
-DEFUN (__diaryfile__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{fname} =} __diaryfile__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (diary_file);
-}
-
-DEFUN (__diarystate__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{state} =} __diarystate__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (write_to_diary_file);
 }
 
 DEFUN (more, args, ,

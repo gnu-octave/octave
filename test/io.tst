@@ -727,3 +727,11 @@
 %!assert (sprintf ("%s", repmat ("blah", 2, 1)), "bbllaahh")
 %!assert (sprintf ("%c", repmat ("blah", 2, 1)), "bbllaahh")
 %!assert (sprintf ("%c %c %s", repmat ("blah", 2, 1)), "b b llaahh")
+
+## bug #39735
+%!assert (sprintf ("a %d b", []), "a  b")
+%!assert (sprintf ("a %d b", ''), "a  b")
+%!assert (sprintf ("a %d b", ' '), "a 32 b")
+%!assert (sprintf ("a %s b", []), "a  b")
+%!assert (sprintf ("a %s b", ''), "a  b")
+%!assert (sprintf ("a %s b", ' '), "a   b")

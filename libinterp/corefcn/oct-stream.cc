@@ -5429,9 +5429,13 @@ printf_value_cache::get_next_value (char type)
 
           if (n_elts == 0)
             {
-              if (elt_idx == 0 && (type == 's' || type == 'c'))
+              if (elt_idx == 0)
                 {
-                  retval = "";
+                  if (type == 's' || type == 'c')
+                    retval = "";
+                  else
+                    retval = Matrix ();
+
                   break;
                 }
 
@@ -5800,8 +5804,11 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
               octave_value val = val_cache.get_next_value ();
 
               if (val_cache)
-                retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
-                                                  sa_2, val, who);
+                {
+                  if (! val.is_empty ())
+                    retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
+                                                      sa_2, val, who);
+                }
               else
                 break;
             }

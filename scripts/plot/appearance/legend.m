@@ -1463,7 +1463,7 @@ endfunction
 %! y2 = rand (size (x));
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
 %! title ("plotyy legend test #1: Blue and Orange labels");
-%! legend ([h1, h2], {"Blue", "Orange}, "location", "south");
+%! legend ([h1, h2], {"Blue", "Orange"}, "location", "south");
 
 %!demo
 %! clf;

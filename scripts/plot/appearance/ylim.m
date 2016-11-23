@@ -33,12 +33,19 @@
 ##
 ## If passed a 2-element vector [@var{y_lo} @var{y_hi}], the limits of the
 ## y-axis are set to these values and the mode is set to @qcode{"manual"}.
+## The special values -Inf and Inf can be used to indicate that either
+## the lower axis limit or upper axis limit should be automatically calculated.
 ##
 ## The current plotting mode can be changed by using either @qcode{"auto"}
 ## or @qcode{"manual"} as the argument.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
+##
+## Programming Note: The @code{ylim} function operates by modifying the
+## @qcode{"ylim"} and @qcode{"ylimmode"} properties of an axes object.  These
+## properties can be be directly inspected and altered with
+## @code{get}/@code{set}.
 ## @seealso{xlim, zlim, axis, set, get, gca}
 ## @end deftypefn
 
@@ -62,7 +69,7 @@ endfunction
 %!demo
 %! clf;
 %! line ();
-%! ylim ("auto");
+%! ylim auto;
 %! title ("ylim is auto");
 
 %!demo

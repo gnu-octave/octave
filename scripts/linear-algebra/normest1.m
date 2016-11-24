@@ -95,9 +95,8 @@
 ## @end deftypefn
 
 ## Ideally, we would set t and X to their default values but Matlab
-## compatibility would require we set the default even when they are
-## empty.
-function [est, v, w, k] = normest1 (A, t = [], x0 = [], varargin)
+## compatibility would require we set the default even when they are empty.
+function [nest, v, w, iter] = normest1 (A, t = [], x0 = [], varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -109,26 +108,25 @@ function [est, v, w, k] = normest1 (A, t = [], x0 = [], varargin)
 
   ## FIXME: t < 0 should print trace information
   if (isnumeric (A) && issquare (A))
-    Aisnum = true;
+    Aismat = true;
+    Aisreal = isreal (A);
     n = rows (A);
-    if ((n <= 4) || (t == n))
-      ## compute directly
-      [est, idx] = max (sum (abs (A), 1), [] ,2);
+    if (n <= 4 || t == n)
+      ## small input, compute directly
+      [nest, idx] = max (sum (abs (A), 1), [] , 2);
       v = zeros (n, 1);
       v(idx) = 1;
       w = A(:, idx);
-      ## Matlab incompatible on purpose.  Matlab returns k as a row vector
+      ## Matlab incompatible on purpose.  Matlab returns iter as a row vector
       ## for this special case, but a column vector in all other cases.
       ## This is obviously a bug in Matlab that we don't reproduce.
-      k = [0; 1];
-      return
-    else
-      realm = isreal (A);
+      iter = [0; 1];
+      return;
     endif
   elseif (is_function_handle (A))
-    Aisnum = false;
+    Aismat = false;
+    Aisreal = A ("real", [], varargin{:});
     n = A ("dim", [], varargin{:});
-    realm = A ("real", [], varargin{:});
     Afun = @(x) A ("notransp", x, varargin{:});
     A1fun = @(x) A ("transp", x, varargin{:});
   else
@@ -140,58 +138,59 @@ function [est, v, w, k] = normest1 (A, t = [], x0 = [], varargin)
   if (isempty (x0))
     X = [ones(n, 1), sign(2 * rand(n, t - 1) - 1)];
     i = 2;
-    imax = min (t, 2 ^ (n - 1));
+    imax = min (t, 2^(n-1));
     ## There are at most 2^(n-1) unparallel columns, see later.
     while (i <= imax)
       if (any (abs (X(:,i)' * X(:,1:i-1)) == n))
-        ## column i is parallel to a colum 1:i-1. Change it.
+        ## column i is parallel to a colum 1:i-1.  Change it.
         X(:,i) = sign (2 * rand (n, 1) - 1);
       else
         i++;
       endif
     endwhile
     X /= n;
-  elseif (columns (x0) < t)
-    error ("normest1: X should have %d columns", t);
   else
+    if (columns (x0) < t)
+      error ("normest1: X0 must have %d columns", t);
+    endif
     X = x0;
   endif
 
   itmax = 5;
-  ind_hist = zeros (n, 1);
-  est_old = 0;
-  ind = zeros (n, 1);
+  idx_hist = zeros (n, 1);
+  nest_old = 0;
+  idx = zeros (n, 1);
   S = zeros (n, t);
-  k = [0; 0];
-  conv = false;
-  while ((! conv) && (k(1) < itmax))
-    k(1)++;
-    if (Aisnum)
+  iter = [0; 0];
+  converged = false;
+  while (! converged && (iter(1) < itmax))
+    iter(1)++;
+    if (Aismat)
       Y = A * X;
     else
       Y = Afun (X);
     endif
-    k(2)++;
-    [est, j] = max (sum (abs (Y), 1), [], 2);
-    if ((est > est_old) || (k(1) == 2))
-      ind_best = ind(j);
-      w = Y(:, j); # there is an error in Algorithm 2.4
+    iter(2)++;
+    [nest, j] = max (sum (abs (Y), 1), [], 2);
+    if ((nest > nest_old) || (iter(1) == 2))
+      idx_best = idx(j);
+      w = Y(:, j);  # there is an error in Algorithm 2.4
     endif
-    if ((est <= est_old) && (k(1) >= 2)) # (1) of Algorithm 2.4
-      est = est_old;
-      break; # while
+    if (nest <= nest_old && iter(1) >= 2)  # (1) of Algorithm 2.4
+      nest = nest_old;
+      break;  # while
     endif
-    est_old = est;
+    nest_old = nest;
     Sold = S;
     S = sign (Y);
     S(S==0) = 1;
     possible_break = false;
-    if (realm)
+    if (Aisreal)
       ## test parallel (only real case)
-      if (all (any (abs (Sold' * S) == n))) # (2) of Algorithm 2.4
+      if (all (any (abs (Sold' * S) == n)))  # (2) of Algorithm 2.4
         ## all columns of S parallel to a column of Sold, exit
         possible_break = true;
-        conv = true;
+        converged = true;
       else
         if (t > 1)
           ## at least two columns of S are not parallel
@@ -216,43 +215,43 @@ function [est, v, w, k] = normest1 (A, t = [], x0 = [], varargin)
       endif
     endif
     if (! possible_break)
-      if (Aisnum)
+      if (Aismat)
         Z = A' * S;
       else
-        Z = A1fun (S); # (3) of Algorithm 2.4
+        Z = A1fun (S);  # (3) of Algorithm 2.4
       endif
-      k(2)++;
+      iter(2)++;
       h = max (abs (Z), [], 2);
-      ind = (1:n)';
-      if ((k(1) >= 2) && (max (h, [], 1) == h(ind_best))) # (4) of Alg. 2.4
-        break; # while
+      idx = (1:n)';
+      if (iter(1) >= 2 && (max (h, [], 1) == h(idx_best)))  # (4) of Alg. 2.4
+        break;  # while
       endif
-      [h, ind] = sort (h, "descend");
+      [h, idx] = sort (h, "descend");
       if (t > 1)
-       if (all (ind_hist(ind(1:t)))) # (5) of Algorithm 2.4
-          break; # while
+       if (all (idx_hist(idx(1:t)))) # (5) of Algorithm 2.4
+          break;  # while
         endif
-        ind = ind(! ind_hist(ind));
-        ## length(ind) could be less than t, especially if t is not << n.
+        idx = idx(! idx_hist(idx));
+        ## length(idx) could be less than t, especially if t is not << n.
         ## This is not considered in point (5) of Algorithm 2.4.
-        tmax = min (numel (ind), t);
-        ind = ind(1:tmax);
+        tmax = min (numel (idx), t);
+        idx = idx(1:tmax);
       else
         tmax = 1;
       endif
       X = zeros (n, tmax);
-      X(sub2ind (size (X), ind(1:tmax), (1:tmax)')) = 1;
-      ind_hist(ind(1:tmax)) = 1;
+      X(sub2ind (size (X), idx(1:tmax), (1:tmax)')) = 1;
+      idx_hist(idx(1:tmax)) = 1;
     endif
   endwhile
   v = zeros (n, 1);
-  v(ind_best) = 1;
+  v(idx_best) = 1;
 
 endfunction
 
 
 %!function z = afun_A (flag, x, A, n)
-%!  switch flag
+%!  switch (flag)
 %!  case {"dim"}
 %!    z = n;
 %!  case {"real"}
@@ -264,7 +263,7 @@ endfunction
 %!  endswitch
 %!endfunction
 %!function z = afun_A_P (flag, x, A, m)
-%!  switch flag
+%!  switch (flag)
 %!  case "dim"
 %!    z = length (A);
 %!  case "real"
@@ -278,12 +277,12 @@ endfunction
 
 %!test
 %! A = reshape ((1:16)-8, 4, 4);
-%! assert (normest1 (A), norm (A, 1), eps)
+%! assert (normest1 (A), norm (A, 1), eps);
 
 ## test t=1
 %!test
 %! A = rand (4); # for positive matrices always work
-%! assert (normest1 (A, 1), norm (A,1), 2 * eps)
+%! assert (normest1 (A, 1), norm (A,1), 2 * eps);
 
 ## test t=3
 %!test
@@ -292,25 +291,25 @@ endfunction
 %!       1.39857  -0.34046   2.28617   0.68089
 %!       0.31205   1.50529  -0.75804  -1.22476];
 %! X = [1,1,-1;1,1,1;1,1,-1;1,-1,-1]/3;
-%! assert (normest1 (A, 3, X), norm (A, 1), 2 * eps)
+%! assert (normest1 (A, 3, X), norm (A, 1), 2 * eps);
 
-## test afun
+## test Afun
 %!test
 %! A = rand (10);
 %! n = length (A);
-%! afun = @(flag, x) afun_A (flag, x, A, n);
-%! assert (normest1 (afun), norm (A, 1), 2 * eps)
+%! Afun = @(flag, x) afun_A (flag, x, A, n);
+%! assert (normest1 (Afun), norm (A, 1), 2 * eps);
 
-## test afun with parameters
+## test Afun with parameters
 %!test
 %! A = rand (10);
-%! assert (normest1 (@afun_A_P, [], [], A, 3), norm (A ^ 3, 1), 1000 * eps)
+%! assert (normest1 (@afun_A_P, [], [], A, 3), norm (A ^ 3, 1), 1000 * eps);
 
 ## test output
 %!test
 %! A = reshape (1:16,4,4);
-%! [c, v, w, it] = normest1 (A);
-%! assert (norm (w, 1), c * norm (v, 1), eps)
+%! [nest, v, w, iter] = normest1 (A);
+%! assert (norm (w, 1), nest * norm (v, 1), eps);
 
 ## test output
 %!test
@@ -318,38 +317,38 @@ endfunction
 %! A(A <= 1/3) = -1;
 %! A(A > 1/3 & A <= 2/3) = 0;
 %! A(A > 2/3) = 1;
-%! [c, v, w, it] = normest1 (A, 10);
-%! assert (w, A * v, eps)
+%! [nest, v, w, iter] = normest1 (A, 10);
+%! assert (w, A * v, eps);
 
 %!test
 %! A = rand (5);
-%! c = normest1 (A, 6);
-%! assert (c, norm (A,1), eps)
+%! nest = normest1 (A, 6);
+%! assert (nest, norm (A,1), eps);
 
 %!test
 %! A = rand (5);
-%! c = normest1 (A, 2, ones (5, 2) / 5);
-%! assert (c, norm (A,1), eps)
+%! nest = normest1 (A, 2, ones (5, 2) / 5);
+%! assert (nest, norm (A,1), eps);
 
 %!test
 %! N = 10;
 %! A = ones (N);
 %! [nm1, v1, w1] = normest1 (A);
 %! [nminf, vinf, winf] = normest1 (A', 6);
-%! assert (nm1, N, -2*eps)
-%! assert (nminf, N, -2*eps)
-%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! assert (nm1, N, -2*eps);
+%! assert (nminf, N, -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
 %! N = 5;
 %! A = hilb (N);
 %! [nm1, v1, w1] = normest1 (A);
 %! [nminf, vinf, winf] = normest1 (A', 6);
-%! assert (nm1, norm (A, 1), -2*eps)
-%! assert (nminf, norm (A, inf), -2*eps)
-%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! assert (nm1, norm (A, 1), -2*eps);
+%! assert (nminf, norm (A, inf), -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 ## Only likely to be within a factor of 10.
 %!test
@@ -360,18 +359,24 @@ endfunction
 %!   A = rand (N);
 %!   [nm1, v1, w1] = normest1 (A);
 %!   [nminf, vinf, winf] = normest1 (A', 6);
-%!   assert (nm1, norm (A, 1), -.1)
-%!   assert (nminf, norm (A, inf), -.1)
-%!   assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!   assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%!   assert (nm1, norm (A, 1), -.1);
+%!   assert (nminf, norm (A, inf), -.1);
+%!   assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%!   assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 %! unwind_protect_cleanup
 %!   rand ("state", old_state);
 %! end_unwind_protect
 
-## Check IT is always a column vector.
+## Check ITER is always a column vector.
 %!test
 %! [~, ~, ~, it] = normest1 (rand (3), 3);
-%! assert (iscolumn (it))
+%! assert (iscolumn (it));
 %! [~, ~, ~, it] = normest1 (rand (50), 20);
-%! assert (iscolumn (it))
+%! assert (iscolumn (it));
+
+## Test input validation
+%!error normest1 ()
+%!error <A must be a square matrix or a function handle> normest1 ({1})
+%!error <A must be a square matrix> normest1 ([1 2])
+%!error <X0 must have 2 columns> normest1 (magic (5), :, [1])
 

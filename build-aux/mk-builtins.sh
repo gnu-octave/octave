@@ -182,10 +182,12 @@ EOF
       const=false
       case $type in
         fun)
+          ## We use the name appended to the "external-doc" tag to find
+          ## the docstring for aliases to this function.
           if $const; then
-            echo "  install_builtin_function ($fname, \"$name\", file, \"external-doc\", true);"
+            echo "  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\", true);"
           else
-            echo "  install_builtin_function ($fname, \"$name\", file, \"external-doc\");"
+            echo "  install_builtin_function ($fname, \"$name\", file, \"external-doc:$name\");"
           fi
           unset type fname name const
         ;;

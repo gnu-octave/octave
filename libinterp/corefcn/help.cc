@@ -485,8 +485,11 @@ raw_help (const std::string& nm, bool& symbol_found)
   if (! found)
     found = raw_help_from_file (nm, h, f, symbol_found);
 
-  if (! found || h == "external-doc")
-    raw_help_from_docstrings_file (nm, h, symbol_found);
+  bool external_doc = h.compare (0, 13, "external-doc:") == 0;
+
+  if (! found || external_doc)
+    raw_help_from_docstrings_file (external_doc ? h.substr (13) : nm,
+                                   h, symbol_found);
 
   return h;
 }

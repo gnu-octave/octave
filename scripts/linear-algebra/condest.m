@@ -18,23 +18,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} condest (@var{A})
-## @deftypefnx {} {} condest (@var{A}, @var{t})
-## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@dots{})
-## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {} {[@var{est}, @var{v}] =} condest (@var{afun}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
+## @deftypefn  {} {@var{cest} =} condest (@var{A})
+## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{t})
+## @deftypefnx {} {@var{cest} =} condest (@var{A}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {@var{cest} =} condest (@var{Afcn}, @var{solvefun}, @var{t}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {} {[@var{cest}, @var{v}] =} condest (@dots{})
 ##
-## Estimate the 1-norm condition number of a matrix @var{A} using @var{t} test
-## vectors using a randomized 1-norm estimator.
+## Estimate the 1-norm condition number of a square matrix @var{A} using
+## @var{t} test vectors and a randomized 1-norm estimator.
 ##
-## If @var{t} exceeds 5, then only 5 test vectors are used.
+## The optional input @var{t} specifies the number of test vectors (default 5).
 ##
-## If the matrix is not explicit, e.g., when estimating the condition
-## number of @var{A} given an LU@tie{}factorization, @code{condest} uses the
-## following functions:
+## If the matrix is not explicit, e.g., when estimating the condition number of
+## @var{A} given an LU@tie{}factorization, @code{condest} uses the following
+## functions:
 ##
 ## @itemize @minus
-## @item @var{afun} which should returns
+## @item @var{Afcn} which must return
 ##
 ## @itemize @bullet
 ## @item
@@ -50,7 +50,7 @@
 ## the result @code{@var{a}' * @var{x}}, if @var{flag} is "transp"
 ## @end itemize
 ##
-## @item @var{solvefun} which should returns
+## @item @var{solvefun} which must return
 ##
 ## @itemize @bullet
 ## @item
@@ -68,19 +68,20 @@
 ## @end itemize
 ##
 ## The parameters @var{p1}, @var{p2}, @dots{} are arguments of
-## @code{@var{afun} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}
-## and @code{@var{solvefun} (@var{flag}, @var{x}, @var{p1}, @var{p2},
+## @code{@var{Afcn} (@var{flag}, @var{x}, @var{p1}, @var{p2}, @dots{})}
+## and @code{@var{solvefcn} (@var{flag}, @var{x}, @var{p1}, @var{p2},
 ## @dots{})}.
 ##
-## @code{condest} uses a randomized algorithm to approximate the
-## 1-norms.  Therefore, if consistent results are required, the
-## @qcode{"state"} of the random generator should be fixed before invoking
-## @code{normest1}.
+## The principal output is the 1-norm condition number estimate @var{cest}.
 ##
-## @code{condest} returns the 1-norm condition estimate @var{est} and a vector
-## @var{v} satisfying @code{norm (A*v, 1) == norm (A, 1) * norm
-## (@var{v}, 1) / @var{est}}.  When @var{est} is large, @var{v} is an
-## approximate null vector.
+## The optional second output is an approximate null vector when @var{cest} is
+## large; it satisfies the equation
+## @code{norm (A*v, 1) == norm (A, 1) * norm (@var{v}, 1) / @var{est}}.
+##
+## Algorithm Note:  @code{condest} uses a randomized algorithm to approximate
+## the 1-norms.  Therefore, if consistent results are required, the
+## @qcode{"state"} of the random generator should be fixed before invoking
+## @code{condest}.
 ##
 ## References:
 ##
@@ -97,7 +98,7 @@
 ## Pseudospectra}. @url{http://citeseer.ist.psu.edu/223007.html}
 ## @end itemize
 ##
-## @seealso{cond, norm, normest1}
+## @seealso{cond, norm, normest1, normest}
 ## @end deftypefn
 
 ## Code originally licensed under:

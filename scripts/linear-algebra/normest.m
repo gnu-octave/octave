@@ -35,13 +35,13 @@
 ## @seealso{normest1, norm, cond, condest}
 ## @end deftypefn
 
-function [n, c] = normest (A, tol = 1e-6)
+function [nest, iter] = normest (A, tol = 1e-6)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
-  if (! (isnumeric (A) && ndims (A) == 2))
+  if (! isnumeric (A) || ndims (A) != 2)
     error ("normest: A must be a numeric 2-D matrix");
   endif
 
@@ -60,10 +60,10 @@ function [n, c] = normest (A, tol = 1e-6)
   ncols = columns (A);
   ## Randomize y to avoid bad guesses for important matrices.
   y = rand (ncols, 1);
-  c = 0;
-  n = 0;
+  iter = 0;
+  nest = 0;
   do
-    n0 = n;
+    n0 = nest;
     x = A * y;
     normx = norm (x);
     if (normx == 0)
@@ -72,9 +72,9 @@ function [n, c] = normest (A, tol = 1e-6)
       x /= normx;
     endif
     y = A' * x;
-    n = norm (y);
-    c += 1;
-  until (abs (n - n0) <= tol * n)
+    nest = norm (y);
+    iter += 1;
+  until (abs (nest - n0) <= tol * nest)
 
   rand ("state", v);    # restore state of random number generator
 
@@ -92,8 +92,8 @@ endfunction
 ## Test input validation
 %!error normest ()
 %!error normest (1, 2, 3)
-%!error normest ([true true])
-%!error normest (ones (3,3,3))
-%!error normest (1, [1, 2])
-%!error normest (1, 1+1i)
+%!error <A must be a numeric .* matrix> normest ([true true])
+%!error <A must be .* 2-D matrix> normest (ones (3,3,3))
+%!error <TOL must be a real scalar> normest (1, [1, 2])
+%!error <TOL must be a real scalar> normest (1, 1+1i)
 

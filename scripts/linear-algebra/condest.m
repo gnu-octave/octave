@@ -78,7 +78,7 @@
 ## large; it satisfies the equation
 ## @code{norm (A*v, 1) == norm (A, 1) * norm (@var{v}, 1) / @var{est}}.
 ##
-## Algorithm Note:  @code{condest} uses a randomized algorithm to approximate
+## Algorithm Note: @code{condest} uses a randomized algorithm to approximate
 ## the 1-norms.  Therefore, if consistent results are required, the
 ## @qcode{"state"} of the random generator should be fixed before invoking
 ## @code{condest}.

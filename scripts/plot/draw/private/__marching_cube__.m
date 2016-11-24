@@ -19,29 +19,23 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
 ## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
-## Undocumented internal function.
-## @end deftypefn
-
-## -*- texinfo -*-
-## @deftypefn  {} {[@var{t}, @var{p}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso})
-## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col})
 ##
-## Return the triangulation information @var{t} at points @var{p} for
-## the isosurface values resp. the volume data @var{val} and the iso
-## level @var{iso}.  It is considered that the volume data @var{val} is
-## given at the points @var{x}, @var{y} and @var{z} which are of type
-## three--dimensional numeric arrays.  The orientation of the triangles
-## is choosen such that the normals point from the higher values to the
-## lower values.
+## Return the triangulation information @var{t} at points @var{p} for the
+## isosurface values resp. the volume data @var{val} and the iso level
+## @var{iso}.  It is considered that the volume data @var{val} is given at
+## the points @var{x}, @var{y} and @var{z} which are of type
+## three-dimensional numeric arrays.  The orientation of the triangles is
+## choosen such that the normals point from the higher values to the lower
+## values.
 ##
 ## Optionally the color data @var{col} can be passed to this function
 ## whereas computed vertices color data @var{c} is returned as third
 ## argument.
 ##
 ## The marching cube algorithm is well known and described, for example, at
-## Wikipedia.  The triangulation lookup table and the edge table used
-## here are based on Cory Gene Bloyd's implementation and can be found
-## beyond other surface and geometry stuff at Paul Bourke's website
+## Wikipedia.  The triangulation lookup table and the edge table used here
+## are based on Cory Gene Bloyd's implementation and can be found beyond
+## other surface and geometry stuff at Paul Bourke's website
 ## @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise}.
 ##
 ## For example:
@@ -60,21 +54,22 @@
 ## @end group
 ## @end example
 ##
-## Instead of the @code{trimesh} function the @code{patch}
-## function can be used to visualize the geometry.  For example:
+## Instead of the @code{trimesh} function the @code{patch} function can be
+## used to visualize the geometry.  For example:
 ##
 ## @example
 ## @group
-## figure (); view (-38, 20);
-## pa = patch ("Faces", t, "Vertices", p, "FaceVertexCData", p, ...
+## figure ();
+## view (-38, 20);
+## pa = patch ("Faces", t, "Vertices", p, "FaceVertexCData", p,
 ##             "FaceColor", "interp", "EdgeColor", "none");
 ##
 ## ## Revert normals
 ## set (pa, "VertexNormals", -get (pa, "VertexNormals"));
 ##
-## ## Set lightning (available with the JHandles package)
-## # set (pa, "FaceLighting", "gouraud");
-## # light ( "Position", [1 1 5]);
+## ## Set lighting
+## set (pa, "FaceLighting", "gouraud");
+## light ( "Position", [1 1 5]);
 ## @end group
 ## @end example
 ##
@@ -84,8 +79,8 @@
 
 function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
 
-  persistent edge_table=[];
-  persistent tri_table=[];
+  persistent edge_table = [];
+  persistent tri_table = [];
 
   calc_cols = false;
   lindex = 4;
@@ -94,6 +89,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     [edge_table, tri_table] = init_mc ();
   endif
 
+  ## FIXME: Do we need all of the following validation on an internal function?
   if ((nargin != 5 && nargin != 6) || (nargout != 2 && nargout != 3))
     print_usage ();
   endif
@@ -101,7 +97,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   if (! isnumeric (xx) || ! isnumeric (yy) || ! isnumeric (zz)
       || ! isnumeric (c) || ndims (xx) != 3 || ndims (yy) != 3
       || ndims (zz) != 3 || ndims (c) != 3)
-    error ("__marching_cube__: XX, YY, ZZ, C must be matrices of dim 3");
+    error ("__marching_cube__: XX, YY, ZZ, C must be 3-D matrices");
   endif
 
   if (! size_equal (xx, yy, zz, c))
@@ -117,8 +113,8 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   endif
 
   if (nargin == 6)
-    if ( ! isnumeric (colors) || ndims (colors) != 3 || size (colors) != size (c) )
-      error ( "COLORS must be a matrix of dim 3 and of same size as C" );
+    if (! isnumeric (colors) || ndims (colors) != 3 || ! size_equal (colors, c))
+      error ( "COLORS must be a 3-D matrix with the same size as C" );
     endif
     calc_cols = true;
     lindex = 5;
@@ -127,40 +123,40 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   n = size (c) - 1;
 
   ## phase I: assign information to each voxel which edges are intersected by
-  ## the isosurface
+  ## the isosurface.
   cc = zeros (n(1), n(2), n(3), "uint16");
   cedge = zeros (size (cc), "uint16");
 
   vertex_idx = {1:n(1), 1:n(2), 1:n(3); ...
-    2:n(1)+1, 1:n(2), 1:n(3); ...
-    2:n(1)+1, 2:n(2)+1, 1:n(3); ...
-    1:n(1), 2:n(2)+1, 1:n(3); ...
-    1:n(1), 1:n(2), 2:n(3)+1; ...
-    2:n(1)+1, 1:n(2), 2:n(3)+1; ...
-    2:n(1)+1, 2:n(2)+1, 2:n(3)+1; ...
-    1:n(1), 2:n(2)+1, 2:n(3)+1 };
+                2:n(1)+1, 1:n(2), 1:n(3); ...
+                2:n(1)+1, 2:n(2)+1, 1:n(3); ...
+                1:n(1), 2:n(2)+1, 1:n(3); ...
+                1:n(1), 1:n(2), 2:n(3)+1; ...
+                2:n(1)+1, 1:n(2), 2:n(3)+1; ...
+                2:n(1)+1, 2:n(2)+1, 2:n(3)+1; ...
+                1:n(1), 2:n(2)+1, 2:n(3)+1 };
 
   ## calculate which vertices have values higher than iso
-  for ii=1:8
+  for ii = 1:8
     idx = c(vertex_idx{ii, :}) > iso;
     cc(idx) = bitset (cc(idx), ii);
   endfor
 
-  cedge = edge_table(cc+1); # assign the info about intersected edges
-  id = find (cedge); # select only voxels which are intersected
+  cedge = edge_table(cc+1);  # assign the info about intersected edges
+  id = find (cedge);         # select only voxels which are intersected
   if (isempty (id))
     T = p = col = [];
     return;
   endif
 
   ## phase II: calculate the list of intersection points
-  xyz_off = [1, 1, 1; 2, 1, 1; 2, 2, 1; 1, 2, 1; 1, 1, 2;  2, 1, 2; 2, 2, 2; 1, 2, 2];
+  xyz_off = [1, 1, 1; 2, 1, 1; 2, 2, 1; 1, 2, 1; 1, 1, 2; 2, 1, 2; 2, 2, 2; 1, 2, 2];
   edges = [1 2; 2 3; 3 4; 4 1; 5 6; 6 7; 7 8; 8 5; 1 5; 2 6; 3 7; 4 8];
-  offset = sub2ind (size (c), xyz_off(:, 1), xyz_off(:, 2), xyz_off(:, 3)) -1;
+  offset = sub2ind (size (c), xyz_off(:, 1), xyz_off(:, 2), xyz_off(:, 3)) - 1;
   pp = zeros (length (id), lindex, 12);
   ccedge = [vec(cedge(id)), id];
   ix_offset=0;
-  for jj=1:12
+  for jj = 1:12
     id__ = bitget (ccedge(:, 1), jj);
     id_ = ccedge(id__, 2);
     [ix iy iz] = ind2sub (size (cc), id_);
@@ -182,9 +178,9 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   ## phase III: calculate the triangulation from the point list
   T = [];
   tri = tri_table(cc(id)+1, :);
-  for jj=1:3:15
-    id_ = find (tri(:, jj)>0);
-    p = [id_, lindex*ones(rows (id_), 1),tri(id_, jj:jj+2)];
+  for jj = 1:3:15
+    id_ = find (tri(:, jj) > 0);
+    p = [id_, lindex*ones(rows (id_), 1), tri(id_, jj:jj+2)];
     if (! isempty (p))
       p1 = sub2ind (size (pp), p(:,1), p(:,2), p(:,3));
       p2 = sub2ind (size (pp), p(:,1), p(:,2), p(:,4));
@@ -207,7 +203,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
 
 endfunction
 
-function p = vertex_interp (isolevel, p1x, p1y, p1z, ...
+function p = vertex_interp (isolevel, p1x, p1y, p1z,
                             p2x, p2y, p2z,valp1,valp2, col1, col2)
 
   if (nargin == 9)
@@ -215,6 +211,7 @@ function p = vertex_interp (isolevel, p1x, p1y, p1z, ...
   elseif (nargin == 11)
     p = zeros (length (p1x), 4);
   else
+    ## FIXME: Do we need input validation on internal functions?
     error ("__marching_cube__: wrong number of arguments");
   endif
 
@@ -276,7 +273,7 @@ function [edge_table, tri_table] = init_mc ()
   0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c, ...
   0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   ];
 
-  tri_table =[
+  tri_table = [
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
   0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
   0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;

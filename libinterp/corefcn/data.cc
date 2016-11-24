@@ -5509,7 +5509,7 @@ DEFUN (norm, args, ,
 @deftypefnx {} {} norm (@var{A}, @var{p}, @var{opt})
 Compute the p-norm of the matrix @var{A}.
 
-If the second argument is missing, @w{@code{p = 2}} is assumed.
+If the second argument is not given, @w{@code{p = 2}} is used.
 
 If @var{A} is a matrix (or sparse matrix):
 
@@ -5546,7 +5546,7 @@ If @var{A} is a vector or a scalar:
 Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.
 
 @item @var{p} = 0
-Hamming norm - the number of nonzero elements.
+Hamming norm---the number of nonzero elements.
 
 @item other @var{p}, @code{@var{p} > 1}
 p-norm of @var{A}, @code{(sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})}.
@@ -5559,7 +5559,7 @@ If @var{opt} is the value @qcode{"rows"}, treat each row as a vector and
 compute its norm.  The result is returned as a column vector.
 Similarly, if @var{opt} is @qcode{"columns"} or @qcode{"cols"} then
 compute the norms of each column and return a row vector.
-@seealso{cond, svd}
+@seealso{normest, normest1, cond, svd}
 @end deftypefn */)
 {
   int nargin = args.length ();

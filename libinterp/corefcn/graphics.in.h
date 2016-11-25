@@ -1155,10 +1155,14 @@ public:
   double_property (const std::string& nm, const graphics_handle& h,
                    double d = 0)
     : base_property (nm, h),
-      current_val (d) { }
+      current_val (d),
+      minval (std::pair<double, bool> (octave_NaN, true)),
+      maxval (std::pair<double, bool> (octave_NaN, true)) { }
 
   double_property (const double_property& p)
-    : base_property (p), current_val (p.current_val) { }
+    : base_property (p), current_val (p.current_val),
+      minval (std::pair<double, bool> (octave_NaN, true)),
+      maxval (std::pair<double, bool> (octave_NaN, true)) { }
 
   octave_value get (void) const { return octave_value (current_val); }
 
@@ -1172,6 +1176,14 @@ public:
 
   base_property* clone (void) const { return new double_property (*this); }
 
+  void add_constraint (const std::string& type, double val, bool inclusive)
+  { 
+    if (type == "min")
+      minval = std::pair<double, bool> (val, inclusive);
+    else if (type == "max")
+      maxval = std::pair<double, bool> (val, inclusive);
+  }
+
 protected:
   bool do_set (const octave_value& v)
   {
@@ -1180,6 +1192,27 @@ protected:
              get_name ().c_str ());
 
     double new_val = v.double_value ();
+
+    // Check min and max
+    if (! octave::math::isnan (minval.first))
+      {
+        if (minval.second && minval.first > new_val)
+          error ("set: \"%s\" must be greater than or equal to %g",
+                 get_name ().c_str (), minval.first);
+        else if (! minval.second && minval.first >= new_val)
+          error ("set: \"%s\" must be greater than %g",
+                 get_name ().c_str (), minval.first);
+      }
+
+    if (! octave::math::isnan (maxval.first))
+      {
+        if (maxval.second && maxval.first < new_val)
+          error ("set: \"%s\" must be less than or equal to %g",
+                 get_name ().c_str (), maxval.first);
+        else if (! maxval.second && maxval.first <= new_val)
+          error ("set: \"%s\" must be less than %g",
+                 get_name ().c_str (), maxval.first);
+      }
 
     if (new_val != current_val)
       {
@@ -1192,6 +1225,7 @@ protected:
 
 private:
   double current_val;
+  std::pair<double, bool> minval, maxval;
 };
 
 // ---------------------------------------------------------------------
@@ -1537,8 +1571,12 @@ public:
 
   base_property* clone (void) const { return new handle_property (*this); }
 
+  void add_constraint (const std::string& type)
+  { type_constraints.insert (type); }
+
 protected:
   OCTINTERP_API bool do_set (const octave_value& v);
+  std::set<std::string> type_constraints;
 
 private:
   graphics_handle current_val;
@@ -2639,7 +2677,10 @@ protected:
   void insert_static_property (const std::string& name, base_property& p)
   { insert_property (name, property (&p, true)); }
 
-  virtual void init (void) { }
+  virtual void init (void) 
+  { 
+    uicontextmenu.add_constraint ("uicontextmenu");
+  }
 };
 
 class OCTINTERP_API base_graphics_object
@@ -4409,6 +4450,13 @@ public:
       bool_property zliminclude hl , "off"
     END_PROPERTIES
 
+  protected:
+    void init (void)
+      {
+        linewidth.add_constraint ("min", 0, false);
+        markersize.add_constraint ("min", 0, false);
+      }
+
   private:
     Matrix compute_xlim (void) const;
     Matrix compute_ylim (void) const;
@@ -4536,6 +4584,9 @@ public:
     void init (void)
     {
       position.add_constraint (dim_vector (1, 3));
+      fontsize.add_constraint ("min", 0.0, false);
+      linewidth.add_constraint ("min", 0.0, false);
+      margin.add_constraint ("min", 0.0, false);
       cached_units = get_units ();
       update_font ();
     }
@@ -4982,6 +5033,18 @@ public:
       facenormals.add_constraint (dim_vector (0, 0));
       vertexnormals.add_constraint (dim_vector (-1, 3));
       vertexnormals.add_constraint (dim_vector (0, 0));
+
+      ambientstrength.add_constraint ("min", 0.0, true);
+      ambientstrength.add_constraint ("max", 1.0, true);
+      diffusestrength.add_constraint ("min", 0.0, true);
+      diffusestrength.add_constraint ("max", 1.0, true);
+      linewidth.add_constraint ("min", 0.0, false);
+      markersize.add_constraint ("min", 0.0, false);
+      specularcolorreflectance.add_constraint ("min", 0.0, true);
+      specularcolorreflectance.add_constraint ("max", 1.0, true);
+      specularexponent.add_constraint ("min", 0.0, false);
+      specularstrength.add_constraint ("min", 0.0, true);
+      specularstrength.add_constraint ("max", 1.0, true);
     }
 
   private:
@@ -5184,6 +5247,18 @@ public:
       facenormals.add_constraint (dim_vector (0, 0));
       vertexnormals.add_constraint (dim_vector (-1, -1, 3));
       vertexnormals.add_constraint (dim_vector (0, 0));
+
+      ambientstrength.add_constraint ("min", 0.0, true);
+      ambientstrength.add_constraint ("max", 1.0, true);
+      diffusestrength.add_constraint ("min", 0.0, true);
+      diffusestrength.add_constraint ("max", 1.0, true);
+      linewidth.add_constraint ("min", 0.0, false);
+      markersize.add_constraint ("min", 0.0, false);
+      specularcolorreflectance.add_constraint ("min", 0.0, true);
+      specularcolorreflectance.add_constraint ("max", 1.0, true);
+      specularexponent.add_constraint ("min", 0.0, false);
+      specularstrength.add_constraint ("min", 0.0, true);
+      specularstrength.add_constraint ("max", 1.0, true);
     }
 
   private:
@@ -5390,7 +5465,9 @@ public:
 
   protected:
     void init (void)
-    { }
+    {
+      position.add_constraint ("min", 0, false);
+    }
   };
 
 private:
@@ -5542,6 +5619,7 @@ public:
       cdata.add_constraint (dim_vector (-1, -1, 3));
       position.add_constraint (dim_vector (1, 4));
       sliderstep.add_constraint (dim_vector (1, 2));
+      fontsize.add_constraint ("min", 0.0, false);
       cached_units = get_units ();
     }
 
@@ -5628,6 +5706,8 @@ public:
     void init (void)
     {
       position.add_constraint (dim_vector (1, 4));
+      borderwidth.add_constraint ("min", 0.0, true);
+      fontsize.add_constraint ("min", 0.0, false);
     }
 
     // void update_text_extent (void);
@@ -5708,6 +5788,8 @@ public:
   protected:
     void init (void)
     {
+      borderwidth.add_constraint ("min", 0.0, true);
+      fontsize.add_constraint ("min", 0.0, false);
       position.add_constraint (dim_vector (1, 4));
     }
 

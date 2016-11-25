@@ -1582,9 +1582,32 @@ handle_property::do_set (const octave_value& v)
 
   graphics_handle gh = gh_manager::lookup (dv);
 
-  if (! (octave::math::isnan (gh.value ()) || gh.ok ()))
-    error ("set: invalid graphics handle (= %g) for property \"%s\"",
-           dv, get_name ().c_str ());
+  // Check the object type if necessary
+  bool type_ok = true;
+  if (gh.ok () && ! type_constraints.empty ())
+    {
+      type_ok = false;
+      graphics_object obj = gh_manager::get_object (gh);
+
+      for (std::set<std::string>::const_iterator
+           p = type_constraints.begin ();
+           p != type_constraints.end (); p++)
+        if (obj.isa (*p))
+          {
+            type_ok = true;
+            break;
+          }
+    }
+
+  if (! octave::math::isnan (gh.value ()) && ! (gh.ok () && type_ok))
+    {
+      if (type_ok)
+        error ("set: invalid graphics handle (= %g) for property \"%s\"",
+               dv, get_name ().c_str ());
+      else
+        error ("set: invalid graphics object type for property \"%s\"",
+               get_name ().c_str ());
+    }
 
   if (current_val != gh)
     {
@@ -1594,6 +1617,24 @@ handle_property::do_set (const octave_value& v)
 
   return false;
 }
+
+/*
+## Test validation of uicontextmenu property 
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hpa = patch ("parent", hax);
+%!   try 
+%!     set (hax, "uicontextmenu", hpa);
+%!   catch
+%!     err = lasterr ();
+%!   end_try_catch
+%!   assert (err, "set: invalid graphics object type for property \"uicontextmenu\"");
+%! unwind_protect_cleanup
+%!   delete (hf)
+%! end_unwind_protect   
+*/
 
 Matrix
 children_property::do_get_children (bool return_hidden) const
@@ -4508,6 +4549,17 @@ axes::properties::init (void)
   cameraupvector = upv;
   cameraupvector.add_constraint (dim_vector (1, 3));
   currentpoint.add_constraint (dim_vector (2, 3));
+
+  // Range constraints for double properties
+  fontsize.add_constraint ("min", 0.0, false);
+  gridalpha.add_constraint ("min", 0.0, true);
+  gridalpha.add_constraint ("max", 1.0, true);
+  labelfontsizemultiplier.add_constraint ("min", 0.0, false);
+  linewidth.add_constraint ("min", 0.0, false);
+  minorgridalpha.add_constraint ("min", 0.0, true);
+  minorgridalpha.add_constraint ("max", 1.0, true);
+  titlefontsizemultiplier.add_constraint ("min", 0.0, false);
+
   // No constraints for hidden transform properties
   update_font ();
 
@@ -4567,6 +4619,29 @@ axes::properties::init (void)
   tlooseinset(3) = 1-tlooseinset(1)-tlooseinset(3);
   looseinset = tlooseinset;
 }
+
+/*
+## Test validation of axes double properties range 
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax =  axes ("parent", hf);
+%!   try 
+%!     set (hax, "linewidth", -1);
+%!   catch
+%!     err = lasterr ();
+%!   end_try_catch
+%!   assert (err, "set: \"linewidth\" must be greater than 0")
+%!   try 
+%!     set (hax, "minorgridalpha", 1.5);
+%!   catch
+%!     err = lasterr ();
+%!   end_try_catch
+%!   assert (err, "set: \"minorgridalpha\" must be less than or equal to 1")
+%! unwind_protect_cleanup
+%!   delete (hf)
+%! end_unwind_protect   
+*/
 
 Matrix
 axes::properties::calc_tightbox (const Matrix& init_pos)

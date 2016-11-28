@@ -7477,12 +7477,27 @@ octave_stream_list::do_clear (bool flush)
 string_vector
 octave_stream_list::do_get_info (int fid) const
 {
-  octave_stream os = do_lookup (fid);
+  string_vector retval (3);
+
+  if (fid < 0)
+    return retval;
+
+  octave_stream os;
+  if (lookup_cache != list.end () && lookup_cache->first == fid)
+    os = lookup_cache->second;
+  else
+    {
+      ostrl_map::const_iterator iter = list.find (fid);
+
+      if (iter == list.end ())
+        return retval;
+
+      os = iter->second;
+      lookup_cache = iter;
+    }
 
   if (! os.is_valid ())
-    ::error ("invalid file id = %d", fid);
-
-  string_vector retval (3);
+    return retval;
 
   retval(0) = os.name ();
   retval(1) = octave_stream::mode_as_string (os.mode ());

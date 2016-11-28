@@ -657,6 +657,20 @@ When opening a new file that does not yet exist, permissions will be set to
   return retval;
 }
 
+/*
+## FIXME: Only have tests for query mode.  Need others for regular fopen call.
+%!test   # Uses hardcoded value of 1 for stdout
+%! [name, mode, arch] = fopen (1);
+%! assert (name, "stdout");
+%! assert (mode, "w");
+
+%!test   # Query of non-existent stream returns all ""
+%! [name, mode, arch] = fopen (-1);
+%! assert (name, "");
+%! assert (mode, "");
+%! assert (arch, "");
+*/
+
 DEFUN (freport, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} freport ()

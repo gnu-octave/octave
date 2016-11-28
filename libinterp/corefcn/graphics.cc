@@ -1589,10 +1589,8 @@ handle_property::do_set (const octave_value& v)
       type_ok = false;
       graphics_object obj = gh_manager::get_object (gh);
 
-      for (std::set<std::string>::const_iterator
-           p = type_constraints.begin ();
-           p != type_constraints.end (); p++)
-        if (obj.isa (*p))
+      for (const auto& type : type_constraints)
+        if (obj.isa (type))
           {
             type_ok = true;
             break;
@@ -1630,9 +1628,9 @@ handle_property::do_set (const octave_value& v)
 %!   catch
 %!     err = lasterr ();
 %!   end_try_catch
-%!   assert (err, "set: invalid graphics object type for property \"uicontextmenu\"");
+%!   assert (err, 'set: invalid graphics object type for property "uicontextmenu"');
 %! unwind_protect_cleanup
-%!   delete (hf)
+%!   delete (hf);
 %! end_unwind_protect   
 */
 
@@ -4625,21 +4623,21 @@ axes::properties::init (void)
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   hax =  axes ("parent", hf);
+%!   hax = axes ("parent", hf);
 %!   try 
 %!     set (hax, "linewidth", -1);
 %!   catch
 %!     err = lasterr ();
 %!   end_try_catch
-%!   assert (err, "set: \"linewidth\" must be greater than 0")
+%!   assert (err, 'set: "linewidth" must be greater than 0');
 %!   try 
 %!     set (hax, "minorgridalpha", 1.5);
 %!   catch
 %!     err = lasterr ();
 %!   end_try_catch
-%!   assert (err, "set: \"minorgridalpha\" must be less than or equal to 1")
+%!   assert (err, 'set: "minorgridalpha" must be less than or equal to 1');
 %! unwind_protect_cleanup
-%!   delete (hf)
+%!   delete (hf);
 %! end_unwind_protect   
 */
 

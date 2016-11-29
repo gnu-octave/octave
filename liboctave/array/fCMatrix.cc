@@ -2680,7 +2680,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
           else
             rcon = s.elem (minmn - 1) / s.elem (0);
 
-          retval.resize (n, nrhs);
+          retval.resize (n);
         }
     }
 

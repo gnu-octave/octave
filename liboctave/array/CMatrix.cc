@@ -2660,7 +2660,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
           else
             rcon = s.elem (minmn - 1) / s.elem (0);
 
-          retval.resize (n, nrhs);
+          retval.resize (n);
         }
     }
 

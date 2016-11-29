@@ -2335,7 +2335,7 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
             rcon = s.elem (minmn - 1) / s.elem (0);
         }
 
-      retval.resize (n, nrhs);
+      retval.resize (n);
     }
 
   return retval;

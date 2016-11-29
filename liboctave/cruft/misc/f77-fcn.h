@@ -328,13 +328,13 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #endif
 
-#define F77_DBLE double
-#define F77_REAL float
-#define F77_DBLE_CMPLX double _Complex
-#define F77_CMPLX float _Complex
-#define F77_INT octave_idx_type
-#define F77_INT4 int32_t
-#define F77_LOGICAL octave_idx_type
+typedef double F77_DBLE;
+typedef float F77_REAL;
+typedef double _Complex F77_DBLE_CMPLX;
+typedef float _Complex F77_CMPLX;
+typedef octave_idx_type F77_INT;
+typedef int32_t F77_INT4;
+typedef octave_idx_type F77_LOGICAL;
 
 #define F77_CMPLX_ARG(x)                        \
   reinterpret_cast<float _Complex *> (x)

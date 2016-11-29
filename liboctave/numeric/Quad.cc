@@ -38,8 +38,8 @@ static float_integrand_fcn float_user_fcn;
 // function, and the user wants us to quit.
 int quad_integration_error = 0;
 
-typedef octave_idx_type (*quad_fcn_ptr) (double*, int&, double*);
-typedef octave_idx_type (*quad_float_fcn_ptr) (float*, int&, float*);
+typedef F77_INT (*quad_fcn_ptr) (double*, int&, double*);
+typedef F77_INT (*quad_float_fcn_ptr) (float*, int&, float*);
 
 extern "C"
 {
@@ -76,7 +76,7 @@ extern "C"
                          F77_INT*, F77_REAL*);
 }
 
-static octave_idx_type
+static F77_INT
 user_function (double *x, int& ierr, double *result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
@@ -105,7 +105,7 @@ user_function (double *x, int& ierr, double *result)
   return 0;
 }
 
-static octave_idx_type
+static F77_INT
 float_user_function (float *x, int& ierr, float *result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
@@ -126,28 +126,39 @@ double
 DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr)
 {
-  octave_idx_type npts = singularities.numel () + 2;
+  F77_INT npts = to_f77_int (singularities.numel () + 2);
   double *points = singularities.fortran_vec ();
   double result = 0.0;
 
-  octave_idx_type leniw = 183*npts - 122;
-  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT leniw = 183*npts - 122;
+  Array<F77_INT> iwork (dim_vector (leniw, 1));
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  octave_idx_type lenw = 2*leniw - npts;
+  F77_INT lenw = 2*leniw - npts;
   Array<double> work (dim_vector (lenw, 1));
   double *pwork = work.fortran_vec ();
 
   user_fcn = f;
-  octave_idx_type last;
+  F77_INT last;
 
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
+  // NEVAL and IER are output only parameters and F77_INT can not be a
+  // wider type than octave_idx_type so we can create local variables
+  // here that are the correct type for the Fortran subroutine and then
+  // copy them to the function parameters without needing to preserve
+  // and pass the values to the Fortran subroutine.
+
+  F77_INT xneval, xier;
+
   F77_XFCN (dqagp, DQAGP, (user_function, lower_limit, upper_limit,
                            npts, points, abs_tol, rel_tol, result,
-                           abserr, neval, ier, leniw, lenw, last,
+                           abserr, xneval, xier, leniw, lenw, last,
                            piwork, pwork));
+
+  neval = xneval;
+  ier = xier;
 
   return result;
 }
@@ -164,18 +175,18 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 {
   double result = 0.0;
 
-  octave_idx_type leniw = 128;
-  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT leniw = 128;
+  Array<F77_INT> iwork (dim_vector (leniw, 1));
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  octave_idx_type lenw = 8*leniw;
+  F77_INT lenw = 8*leniw;
   Array<double> work (dim_vector (lenw, 1));
   double *pwork = work.fortran_vec ();
 
   user_fcn = f;
-  octave_idx_type last;
+  F77_INT last;
 
-  octave_idx_type inf;
+  F77_INT inf;
   switch (type)
     {
     case bound_to_inf:
@@ -198,9 +209,20 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
+  // NEVAL and IER are output only parameters and F77_INT can not be a
+  // wider type than octave_idx_type so we can create local variables
+  // here that are the correct type for the Fortran subroutine and then
+  // copy them to the function parameters without needing to preserve
+  // and pass the values to the Fortran subroutine.
+
+  F77_INT xneval, xier;
+
   F77_XFCN (dqagi, DQAGI, (user_function, bound, inf, abs_tol, rel_tol,
-                           result, abserr, neval, ier, leniw, lenw,
+                           result, abserr, xneval, xier, leniw, lenw,
                            last, piwork, pwork));
+
+  neval = xneval;
+  ier = xier;
 
   return result;
 }
@@ -221,28 +243,39 @@ float
 FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                             float& abserr)
 {
-  octave_idx_type npts = singularities.numel () + 2;
+  F77_INT npts = to_f77_int (singularities.numel () + 2);
   float *points = singularities.fortran_vec ();
   float result = 0.0;
 
-  octave_idx_type leniw = 183*npts - 122;
-  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT leniw = 183*npts - 122;
+  Array<F77_INT> iwork (dim_vector (leniw, 1));
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  octave_idx_type lenw = 2*leniw - npts;
+  F77_INT lenw = 2*leniw - npts;
   Array<float> work (dim_vector (lenw, 1));
   float *pwork = work.fortran_vec ();
 
   float_user_fcn = ff;
-  octave_idx_type last;
+  F77_INT last;
 
   float abs_tol = single_precision_absolute_tolerance ();
   float rel_tol = single_precision_relative_tolerance ();
 
+  // NEVAL and IER are output only parameters and F77_INT can not be a
+  // wider type than octave_idx_type so we can create local variables
+  // here that are the correct type for the Fortran subroutine and then
+  // copy them to the function parameters without needing to preserve
+  // and pass the values to the Fortran subroutine.
+
+  F77_INT xneval, xier;
+
   F77_XFCN (qagp, QAGP, (float_user_function, lower_limit, upper_limit,
                          npts, points, abs_tol, rel_tol, result,
-                         abserr, neval, ier, leniw, lenw, last,
+                         abserr, xneval, xier, leniw, lenw, last,
                          piwork, pwork));
+
+  neval = xneval;
+  ier = xier;
 
   return result;
 }
@@ -259,18 +292,18 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 {
   float result = 0.0;
 
-  octave_idx_type leniw = 128;
-  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
-  octave_idx_type *piwork = iwork.fortran_vec ();
+  F77_INT leniw = 128;
+  Array<F77_INT> iwork (dim_vector (leniw, 1));
+  F77_INT *piwork = iwork.fortran_vec ();
 
-  octave_idx_type lenw = 8*leniw;
+  F77_INT lenw = 8*leniw;
   Array<float> work (dim_vector (lenw, 1));
   float *pwork = work.fortran_vec ();
 
   float_user_fcn = ff;
-  octave_idx_type last;
+  F77_INT last;
 
-  octave_idx_type inf;
+  F77_INT inf;
   switch (type)
     {
     case bound_to_inf:
@@ -293,9 +326,20 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   float abs_tol = single_precision_absolute_tolerance ();
   float rel_tol = single_precision_relative_tolerance ();
 
+  // NEVAL and IER are output only parameters and F77_INT can not be a
+  // wider type than octave_idx_type so we can create local variables
+  // here that are the correct type for the Fortran subroutine and then
+  // copy them to the function parameters without needing to preserve
+  // and pass the values to the Fortran subroutine.
+
+  F77_INT xneval, xier;
+
   F77_XFCN (qagi, QAGI, (float_user_function, bound, inf, abs_tol, rel_tol,
-                         result, abserr, neval, ier, leniw, lenw,
+                         result, abserr, xneval, xier, leniw, lenw,
                          last, piwork, pwork));
+
+  neval = xneval;
+  ier = xier;
 
   return result;
 }

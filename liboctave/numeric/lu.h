@@ -91,12 +91,16 @@ namespace octave
 
     protected:
 
+      // The result of getp is passed to other Octave Matrix
+      // fucntions, so we use octave_idx_type.
       Array<octave_idx_type> getp (void) const;
 
       T a_fact;
       T l_fact;
 
-      Array<octave_idx_type> ipvt;
+      // This is internal storage that is passed to Fortran, so we
+      // need a Fortran INTEGER.
+      Array<octave_f77_int_type> ipvt;
     };
   }
 }

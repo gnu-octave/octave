@@ -78,7 +78,7 @@ namespace octave
       if (packed ())
         {
           octave_idx_type a_nr = a_fact.rows ();
-          octave_idx_type a_nc = a_fact.cols ();
+          octave_idx_type a_nc = a_fact.columns ();
           octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
 
           T l (a_nr, mn, ELT_T (0.0));
@@ -105,7 +105,7 @@ namespace octave
       if (packed ())
         {
           octave_idx_type a_nr = a_fact.rows ();
-          octave_idx_type a_nc = a_fact.cols ();
+          octave_idx_type a_nc = a_fact.columns ();
           octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
 
           T u (mn, a_nc, ELT_T (0.0));
@@ -252,21 +252,21 @@ namespace octave
     template <>
     lu<Matrix>::lu (const Matrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
-      octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
+      F77_INT *pipvt = ipvt.fortran_vec ();
 
       a_fact = a;
       double *tmp_data = a_fact.fortran_vec ();
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       F77_XFCN (dgetrf, DGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
-      for (octave_idx_type i = 0; i < mn; i++)
+      for (F77_INT i = 0; i < mn; i++)
         pipvt[i] -= 1;
     }
 
@@ -282,11 +282,14 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       ColumnVector utmp = u;
@@ -305,14 +308,20 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           ColumnVector utmp = u.column (i);
           ColumnVector vtmp = v.column (i);
@@ -332,22 +341,25 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       ColumnVector utmp = u;
       ColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (dlup1up, DLUP1UP, (m, n, l.fortran_vec (),
                                    m, r.fortran_vec (), k,
                                    ipvt.fortran_vec (),
                                    utmp.data (), vtmp.data (), w));
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -360,16 +372,22 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (double, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           ColumnVector utmp = u.column (i);
           ColumnVector vtmp = v.column (i);
@@ -378,7 +396,7 @@ namespace octave
                                        ipvt.fortran_vec (),
                                        utmp.data (), vtmp.data (), w));
         }
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
 #endif
@@ -386,21 +404,21 @@ namespace octave
     template <>
     lu<FloatMatrix>::lu (const FloatMatrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
-      octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
+      F77_INT *pipvt = ipvt.fortran_vec ();
 
       a_fact = a;
       float *tmp_data = a_fact.fortran_vec ();
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       F77_XFCN (sgetrf, SGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
-      for (octave_idx_type i = 0; i < mn; i++)
+      for (F77_INT i = 0; i < mn; i++)
         pipvt[i] -= 1;
     }
 
@@ -416,11 +434,14 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       FloatColumnVector utmp = u;
@@ -440,14 +461,20 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           FloatColumnVector utmp = u.column (i);
           FloatColumnVector vtmp = v.column (i);
@@ -468,22 +495,25 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       FloatColumnVector utmp = u;
       FloatColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (float, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (slup1up, SLUP1UP, (m, n, l.fortran_vec (),
                                    m, r.fortran_vec (), k,
                                    ipvt.fortran_vec (),
                                    utmp.data (), vtmp.data (), w));
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -496,16 +526,22 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (float, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           FloatColumnVector utmp = u.column (i);
           FloatColumnVector vtmp = v.column (i);
@@ -514,7 +550,7 @@ namespace octave
                                        ipvt.fortran_vec (),
                                        utmp.data (), vtmp.data (), w));
         }
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
 #endif
@@ -522,22 +558,22 @@ namespace octave
     template <>
     lu<ComplexMatrix>::lu (const ComplexMatrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
-      octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
+      F77_INT *pipvt = ipvt.fortran_vec ();
 
       a_fact = a;
       Complex *tmp_data = a_fact.fortran_vec ();
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, F77_DBLE_CMPLX_ARG (tmp_data), a_nr,
                                  pipvt, info));
 
-      for (octave_idx_type i = 0; i < mn; i++)
+      for (F77_INT i = 0; i < mn; i++)
         pipvt[i] -= 1;
     }
 
@@ -554,11 +590,14 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       ComplexColumnVector utmp = u;
@@ -579,14 +618,20 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           ComplexColumnVector utmp = u.column (i);
           ComplexColumnVector vtmp = v.column (i);
@@ -608,23 +653,26 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       ComplexColumnVector utmp = u;
       ComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
                                    F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
                                    F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -637,16 +685,22 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           ComplexColumnVector utmp = u.column (i);
           ComplexColumnVector vtmp = v.column (i);
@@ -656,7 +710,7 @@ namespace octave
                                        F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
                                        F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
         }
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
 #endif
@@ -664,22 +718,22 @@ namespace octave
     template <>
     lu<FloatComplexMatrix>::lu (const FloatComplexMatrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
-      octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
+      F77_INT *pipvt = ipvt.fortran_vec ();
 
       a_fact = a;
       FloatComplex *tmp_data = a_fact.fortran_vec ();
 
-      octave_idx_type info = 0;
+      F77_INT info = 0;
 
       F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, F77_CMPLX_ARG (tmp_data), a_nr, pipvt,
                                  info));
 
-      for (octave_idx_type i = 0; i < mn; i++)
+      for (F77_INT i = 0; i < mn; i++)
         pipvt[i] -= 1;
     }
 
@@ -696,20 +750,21 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () == m && v.numel () == n)
-        {
-          FloatComplexColumnVector utmp = u;
-          FloatComplexColumnVector vtmp = v;
-          F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()), m,
-                                     F77_CMPLX_ARG (r.fortran_vec ()), k,
-                                     F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
-        }
-      else
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
+
+      FloatComplexColumnVector utmp = u;
+      FloatComplexColumnVector vtmp = v;
+      F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()), m,
+                                 F77_CMPLX_ARG (r.fortran_vec ()), k,
+                                 F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
     }
 
     template <>
@@ -723,14 +778,20 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           FloatComplexColumnVector utmp = u.column (i);
           FloatComplexColumnVector vtmp = v.column (i);
@@ -751,23 +812,26 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.numel () != m || v.numel () != n)
+      F77_INT u_nel = to_f77_int (u.numel ());
+      F77_INT v_nel = to_f77_int (v.numel ());
+
+      if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       FloatComplexColumnVector utmp = u;
       FloatComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
                                    F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()),
                                    F77_CMPLX_ARG (w)));
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
     template <>
@@ -781,16 +845,22 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      octave_idx_type m = l.rows ();
-      octave_idx_type n = r.columns ();
-      octave_idx_type k = l.columns ();
+      F77_INT m = to_f77_int (l.rows ());
+      F77_INT n = to_f77_int (r.columns ());
+      F77_INT k = to_f77_int (l.columns ());
 
-      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
+      F77_INT u_nr = to_f77_int (u.rows ());
+      F77_INT u_nc = to_f77_int (u.columns ());
+
+      F77_INT v_nr = to_f77_int (v.rows ());
+      F77_INT v_nc = to_f77_int (v.columns ());
+
+      if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      for (volatile octave_idx_type i = 0; i < u.cols (); i++)
+      for (F77_INT i = 0; i < m; i++) ipvt(i) += 1; // increment
+      for (volatile F77_INT i = 0; i < u_nc; i++)
         {
           FloatComplexColumnVector utmp = u.column (i);
           FloatComplexColumnVector vtmp = v.column (i);
@@ -800,7 +870,7 @@ namespace octave
                                        F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()),
                                        F77_CMPLX_ARG (w)));
         }
-      for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
+      for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
 #endif

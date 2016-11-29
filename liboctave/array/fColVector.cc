@@ -179,10 +179,10 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
 {
   FloatColumnVector retval;
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = to_f77_int (m.rows ());
+  F77_INT nc = to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -214,10 +214,10 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
 {
   FloatColumnVector retval;
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = to_f77_int (m.rows ());
+  F77_INT nc = to_f77_int (m.cols ());
 
-  octave_idx_type a_len = a.numel ();
+  F77_INT a_len = to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);

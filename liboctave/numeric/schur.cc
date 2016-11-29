@@ -38,33 +38,57 @@ namespace octave
   {
     // For real types.
 
-    template <typename T>
-    static octave_idx_type
-    select_ana (const T& a, const T&)
+    static F77_INT
+    select_ana (const double& a, const double&)
     {
       return (a < 0.0);
     }
 
-    template <typename T>
-    static octave_idx_type
-    select_dig (const T& a, const T& b)
+    static F77_INT
+    select_dig (const double& a, const double& b)
+    {
+      return (hypot (a, b) < 1.0);
+    }
+
+    static F77_INT
+    select_ana (const float& a, const float&)
+    {
+      return (a < 0.0);
+    }
+
+    static F77_INT
+    select_dig (const float& a, const float& b)
     {
       return (hypot (a, b) < 1.0);
     }
 
     // For complex types.
 
-    template <typename T>
-    static octave_idx_type
-    select_ana (const T& a)
+    static F77_INT
+    select_ana (const F77_DBLE_CMPLX& a_arg)
     {
+      const Complex a = reinterpret_cast<const Complex&> (a_arg);
       return a.real () < 0.0;
     }
 
-    template <typename T>
-    static octave_idx_type
-    select_dig (const T& a)
+    static F77_INT
+    select_dig (const F77_DBLE_CMPLX& a_arg)
     {
+      const Complex& a = reinterpret_cast<const Complex&> (a_arg);
+      return (abs (a) < 1.0);
+    }
+
+    static F77_INT
+    select_ana (const F77_CMPLX& a_arg)
+    {
+      const FloatComplex& a = reinterpret_cast<const FloatComplex&> (a_arg);
+      return a.real () < 0.0;
+    }
+
+    static F77_INT
+    select_dig (const F77_CMPLX& a_arg)
+    {
+      const FloatComplex& a = reinterpret_cast<const FloatComplex&> (a_arg);
       return (abs (a) < 1.0);
     }
 
@@ -104,9 +128,9 @@ namespace octave
 
       volatile double_selector selector = 0;
       if (ord_char == 'A' || ord_char == 'a')
-        selector = select_ana<double>;
+        selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
-        selector = select_dig<double>;
+        selector = select_dig;
 
       octave_idx_type n = a_nc;
       octave_idx_type lwork = 8 * n;
@@ -191,9 +215,9 @@ namespace octave
 
       volatile float_selector selector = 0;
       if (ord_char == 'A' || ord_char == 'a')
-        selector = select_ana<float>;
+        selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
-        selector = select_dig<float>;
+        selector = select_dig;
 
       octave_idx_type n = a_nc;
       octave_idx_type lwork = 8 * n;
@@ -278,9 +302,9 @@ namespace octave
 
       volatile complex_selector selector = 0;
       if (ord_char == 'A' || ord_char == 'a')
-        selector = select_ana<Complex>;
+        selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
-        selector = select_dig<Complex>;
+        selector = select_dig;
 
       octave_idx_type n = a_nc;
       octave_idx_type lwork = 8 * n;
@@ -386,9 +410,9 @@ namespace octave
 
       volatile float_complex_selector selector = 0;
       if (ord_char == 'A' || ord_char == 'a')
-        selector = select_ana<FloatComplex>;
+        selector = select_ana;
       else if (ord_char == 'D' || ord_char == 'd')
-        selector = select_dig<FloatComplex>;
+        selector = select_dig;
 
       octave_idx_type n = a_nc;
       octave_idx_type lwork = 8 * n;

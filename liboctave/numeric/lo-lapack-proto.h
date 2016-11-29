@@ -354,10 +354,10 @@ extern "C"
 
   // GEESX
 
-  typedef octave_idx_type (*double_selector) (const double&, const double&);
-  typedef octave_idx_type (*float_selector) (const float&, const float&);
-  typedef octave_idx_type (*complex_selector) (const Complex&);
-  typedef octave_idx_type (*float_complex_selector) (const FloatComplex&);
+  typedef F77_INT (*double_selector) (const F77_DBLE&, const F77_DBLE&);
+  typedef F77_INT (*float_selector) (const F77_REAL&, const F77_REAL&);
+  typedef F77_INT (*complex_selector) (const F77_DBLE_CMPLX&);
+  typedef F77_INT (*float_complex_selector) (const F77_CMPLX&);
 
   F77_RET_T
   F77_FUNC (cgeesx, CGEESX) (F77_CONST_CHAR_ARG_DECL,

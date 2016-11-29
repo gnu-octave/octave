@@ -81,7 +81,7 @@ namespace octave
     // yet...  So we provide our own wrappers for real-valued arguments.
 
     inline double arg (double x) { return signbit (x) ? M_PI : 0; }
-    inline float arg (float x) { return signbit (x) ? M_PI : 0; }
+    inline float arg (float x) { return signbit (x) ? static_cast<float> (M_PI) : 0; }
 
     template <typename T>
     T

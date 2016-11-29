@@ -93,11 +93,11 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    F77_INT
     schur<Matrix>::init (const Matrix& a, const std::string& ord, bool calc_unitary)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("schur: requires square matrix");
@@ -132,11 +132,11 @@ namespace octave
       else if (ord_char == 'D' || ord_char == 'd')
         selector = select_dig;
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 8 * n;
-      octave_idx_type liwork = 1;
-      octave_idx_type info;
-      octave_idx_type sdim;
+      F77_INT n = a_nc;
+      F77_INT lwork = 8 * n;
+      F77_INT liwork = 1;
+      F77_INT info;
+      F77_INT sdim;
       double rconde;
       double rcondv;
 
@@ -158,12 +158,12 @@ namespace octave
       double *pwork = work.fortran_vec ();
 
       // BWORK is not referenced for the non-ordered Schur routine.
-      octave_idx_type ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-      Array<octave_idx_type> bwork (dim_vector (ntmp, 1));
-      octave_idx_type *pbwork = bwork.fortran_vec ();
+      F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
+      Array<F77_INT> bwork (dim_vector (ntmp, 1));
+      F77_INT *pbwork = bwork.fortran_vec ();
 
-      Array<octave_idx_type> iwork (dim_vector (liwork, 1));
-      octave_idx_type *piwork = iwork.fortran_vec ();
+      Array<F77_INT> iwork (dim_vector (liwork, 1));
+      F77_INT *piwork = iwork.fortran_vec ();
 
       F77_XFCN (dgeesx, DGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                                  F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -179,12 +179,12 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    F77_INT
     schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
                               bool calc_unitary)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -219,11 +219,11 @@ namespace octave
       else if (ord_char == 'D' || ord_char == 'd')
         selector = select_dig;
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 8 * n;
-      octave_idx_type liwork = 1;
-      octave_idx_type info;
-      octave_idx_type sdim;
+      F77_INT n = a_nc;
+      F77_INT lwork = 8 * n;
+      F77_INT liwork = 1;
+      F77_INT info;
+      F77_INT sdim;
       float rconde;
       float rcondv;
 
@@ -245,12 +245,12 @@ namespace octave
       float *pwork = work.fortran_vec ();
 
       // BWORK is not referenced for the non-ordered Schur routine.
-      octave_idx_type ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-      Array<octave_idx_type> bwork (dim_vector (ntmp, 1));
-      octave_idx_type *pbwork = bwork.fortran_vec ();
+      F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
+      Array<F77_INT> bwork (dim_vector (ntmp, 1));
+      F77_INT *pbwork = bwork.fortran_vec ();
 
-      Array<octave_idx_type> iwork (dim_vector (liwork, 1));
-      octave_idx_type *piwork = iwork.fortran_vec ();
+      Array<F77_INT> iwork (dim_vector (liwork, 1));
+      F77_INT *piwork = iwork.fortran_vec ();
 
       F77_XFCN (sgeesx, SGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                                  F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -266,12 +266,12 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    F77_INT
     schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
                                 bool calc_unitary)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -306,10 +306,10 @@ namespace octave
       else if (ord_char == 'D' || ord_char == 'd')
         selector = select_dig;
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 8 * n;
-      octave_idx_type info;
-      octave_idx_type sdim;
+      F77_INT n = a_nc;
+      F77_INT lwork = 8 * n;
+      F77_INT info;
+      F77_INT sdim;
       double rconde;
       double rcondv;
 
@@ -330,9 +330,9 @@ namespace octave
       Complex *pwork = work.fortran_vec ();
 
       // BWORK is not referenced for non-ordered Schur.
-      octave_idx_type ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-      Array<octave_idx_type> bwork (dim_vector (ntmp, 1));
-      octave_idx_type *pbwork = bwork.fortran_vec ();
+      F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
+      Array<F77_INT> bwork (dim_vector (ntmp, 1));
+      F77_INT *pbwork = bwork.fortran_vec ();
 
       F77_XFCN (zgeesx, ZGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                                  F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -355,7 +355,7 @@ namespace octave
       ComplexMatrix s (s_arg);
       ComplexMatrix u (u_arg);
 
-      octave_idx_type n = s.rows ();
+      F77_INT n = to_f77_int (s.rows ());
 
       if (s.columns () != n || u.rows () != n || u.columns () != n)
         (*current_liboctave_error_handler)
@@ -374,12 +374,12 @@ namespace octave
     }
 
     template <>
-    octave_idx_type
+    F77_INT
     schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                                      const std::string& ord, bool calc_unitary)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -414,10 +414,10 @@ namespace octave
       else if (ord_char == 'D' || ord_char == 'd')
         selector = select_dig;
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 8 * n;
-      octave_idx_type info;
-      octave_idx_type sdim;
+      F77_INT n = a_nc;
+      F77_INT lwork = 8 * n;
+      F77_INT info;
+      F77_INT sdim;
       float rconde;
       float rcondv;
 
@@ -438,9 +438,9 @@ namespace octave
       FloatComplex *pwork = work.fortran_vec ();
 
       // BWORK is not referenced for non-ordered Schur.
-      octave_idx_type ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-      Array<octave_idx_type> bwork (dim_vector (ntmp, 1));
-      octave_idx_type *pbwork = bwork.fortran_vec ();
+      F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
+      Array<F77_INT> bwork (dim_vector (ntmp, 1));
+      F77_INT *pbwork = bwork.fortran_vec ();
 
       F77_XFCN (cgeesx, CGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                                  F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -464,7 +464,7 @@ namespace octave
       FloatComplexMatrix s (s_arg);
       FloatComplexMatrix u (u_arg);
 
-      octave_idx_type n = s.rows ();
+      F77_INT n = to_f77_int (s.rows ());
 
       if (s.columns () != n || u.rows () != n || u.columns () != n)
         (*current_liboctave_error_handler)

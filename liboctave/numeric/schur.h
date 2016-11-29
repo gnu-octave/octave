@@ -52,7 +52,7 @@ namespace octave
         init (a, ord, calc_unitary);
       }
 
-      schur (const T& a, const std::string& ord, octave_idx_type& info,
+      schur (const T& a, const std::string& ord, octave_f77_int_type& info,
              bool calc_unitary = true)
         : schur_mat (), unitary_mat ()
       {
@@ -93,7 +93,7 @@ namespace octave
       T schur_mat;
       T unitary_mat;
 
-      octave_idx_type
+      octave_f77_int_type
       init (const T& a, const std::string& ord, bool calc_unitary);
     };
 

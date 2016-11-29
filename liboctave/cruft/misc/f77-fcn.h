@@ -25,7 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "lo-error.h"
 #include "quit.h"
+
+#if defined (__cplusplus)
+#  include <limits>
+#endif
 
 #if defined (__cplusplus)
 extern "C" {
@@ -362,6 +367,24 @@ OCTAVE_NORETURN OCTAVE_API extern
 F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
                            F77_CHAR_ARG_LEN_DECL);
+
+#if defined (__cplusplus)
+
+inline F77_INT
+to_f77_int (octave_idx_type x)
+{
+  // FIXME: How to do this job in C, not knowing in advance the actual
+  // type of F77_INT?
+
+  if (x < std::numeric_limits<F77_INT>::min ()
+      || x > std::numeric_limits<F77_INT>::max ())
+    (*current_liboctave_error_handler)
+      ("integer dimension or index out of range for Fortran INTEGER type");
+
+  return static_cast<F77_INT> (x);
+}
+
+#endif
 
 #if defined (__cplusplus)
 }

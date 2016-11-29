@@ -189,6 +189,7 @@ typedef unsigned long ino_t;
 #endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
+typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 
 /* Tag indicating Octave's autoconf-generated config.h has been
    included.  This symbol is provided because autoconf-generated

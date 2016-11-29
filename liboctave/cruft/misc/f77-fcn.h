@@ -332,9 +332,9 @@ typedef double F77_DBLE;
 typedef float F77_REAL;
 typedef double _Complex F77_DBLE_CMPLX;
 typedef float _Complex F77_CMPLX;
-typedef octave_idx_type F77_INT;
+typedef octave_f77_int_type F77_INT;
 typedef int32_t F77_INT4;
-typedef octave_idx_type F77_LOGICAL;
+typedef octave_f77_int_type F77_LOGICAL;
 
 #define F77_CMPLX_ARG(x)                        \
   reinterpret_cast<float _Complex *> (x)

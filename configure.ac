@@ -355,6 +355,10 @@ fi
 AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
   [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
+OCTAVE_F77_INT_TYPE=$OCTAVE_IDX_TYPE
+AC_SUBST(OCTAVE_F77_INT_TYPE)
+AC_DEFINE_UNQUOTED(OCTAVE_F77_INT_TYPE, [$OCTAVE_F77_INT_TYPE],
+  [Define to the type of octave_f77_int_type (64 or 32 bit signed integer).])
 if test $ENABLE_64 = yes; then
   AC_DEFINE(OCTAVE_ENABLE_64, 1,
     [Define to 1 if using 64-bit integers for array dimensions and indexing.])

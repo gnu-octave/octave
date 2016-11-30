@@ -632,8 +632,10 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
       if (! mattype.is_hermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
-        ret = Matrix (rows (), columns (), octave::numeric_limits<double>::Inf ());
+      if ((calc_cond || mattype.is_hermitian ()) && rcon == 0.
+          && ! (numel () == 1))
+        ret = Matrix (rows (), columns (),
+                      octave::numeric_limits<double>::Inf ());
     }
 
   return ret;

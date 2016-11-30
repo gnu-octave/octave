@@ -926,9 +926,14 @@ FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
       if (! mattype.is_hermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
-        ret = FloatComplexMatrix (rows (), columns (),
-                                  FloatComplex (octave::numeric_limits<float>::Inf (), 0.));
+      if ((calc_cond || mattype.is_hermitian ()) && rcon == 0.)
+        {
+          if (numel () == 1)
+            ret = FloatComplexMatrix (1, 1, 0.);
+          else
+            ret = FloatComplexMatrix (rows (), columns (),
+                                      FloatComplex (octave::numeric_limits<float>::Inf (), 0.));
+        }
     }
 
   return ret;

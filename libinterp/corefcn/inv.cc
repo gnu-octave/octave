@@ -207,19 +207,28 @@ sparse matrix if possible.
 %!assert (inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], sqrt (eps))
 %!assert (inv (single ([1, 2; 3, 4])), single ([-2, 1; 1.5, -0.5]), sqrt (eps ("single")))
 
+## Test special inputs
+%!assert (inv (zeros (2,0)), [])
+%!warning <matrix singular> assert (inv (Inf), 0)
+%!warning <matrix singular> assert (inv (-Inf), -0)
+%!warning <matrix singular> assert (inv (single (Inf)), single (0))
+%!warning <matrix singular> assert (inv (complex (1, Inf)), 0)
+%!warning <matrix singular> assert (inv (single (complex (1,Inf))), single (0))
+
+%!test
+%! [xinv, rcond] = inv (single ([1,2;3,4]));
+%! assert (isa (xinv, "single"));
+%! assert (isa (rcond, "single"));
+
+%!test
+%! [xinv, rcond] = inv ([1,2;3,4]);
+%! assert (isa (xinv, "double"));
+%! assert (isa (rcond, "double"));
+
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 
-%!test
-%! [xinv, rcond] = inv (single ([1,2;3,4]));
-%! assert (isa (xinv, 'single'));
-%! assert (isa (rcond, 'single'));
-
-%!test
-%! [xinv, rcond] = inv ([1,2;3,4]);
-%! assert (isa (xinv, 'double'));
-%! assert (isa (rcond, 'double'));
 */
 
 // FIXME: this should really be done with an alias, but

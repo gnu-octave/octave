@@ -100,7 +100,7 @@ single call to @code{sub2ind}.
 s1 = [2, 2];
 s2 = [1, 3];
 ind = sub2ind ([3, 3], s1, s2)
-@result{} ind =  2   8
+    @result{} ind =  2   8
 @end group
 @end example
 @seealso{ind2sub, size}

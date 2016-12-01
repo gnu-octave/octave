@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} setpref ("@var{group}", "@var{pref}", @var{val})
-## @deftypefnx {} {} addpref ("@var{group}", @{"@var{pref1}", "@var{pref2}", @dots{}@}, @{@var{val1}, @var{val2}, @dots{}@})
+## @deftypefnx {} {} setpref ("@var{group}", @{"@var{pref1}", "@var{pref2}", @dots{}@}, @{@var{val1}, @var{val2}, @dots{}@})
 ## Set the preference @var{pref} to the given @var{val} in the named preference
 ## group @var{group}.
 ##

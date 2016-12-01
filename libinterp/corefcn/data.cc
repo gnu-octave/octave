@@ -2639,7 +2639,7 @@ Example 4: number of output arguments != number of dimensions
 
 @example
 @group
-[nr, remainder] = size (ones (2, 3, 4, 5)
+[nr, remainder] = size (ones (2, 3, 4, 5))
     @result{} nr = 2
     @result{} remainder = 60
 @end group

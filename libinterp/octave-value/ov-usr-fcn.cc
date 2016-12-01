@@ -915,7 +915,7 @@ will cause @code{nargout} to return 2 inside the function @code{f}.
 In the second usage,
 
 @example
-nargout (@@histc) \% or nargout ("histc")
+nargout (@@histc)   # or nargout ("histc") using a string input
 @end example
 
 @noindent

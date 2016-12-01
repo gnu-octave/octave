@@ -20,15 +20,17 @@
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
-GNU Octave is a high-level language, primarily intended for numerical
+GNU Octave is a high-level language primarily intended for numerical
 computations.  It is typically used for such problems as solving
 linear and nonlinear equations, numerical linear algebra, statistical
 analysis, and for performing other numerical experiments.  It may also
 be used as a batch-oriented language for automated data processing.
 
-Until recently GNU Octave provided a command-line interface only with
-graphical plots displayed in separate windows.  However, by default
-the current version runs with a graphical user interface.
+The current version of Octave executes in a graphical user interface
+(GUI).  The GUI hosts an Integrated Development Environment (IDE)
+which includes a code editor with syntax highlighting, built-in
+debugger, documentation browser, as well as the interpreter for the
+language itself.  A command-line interface for Octave is also available.
 
 GNU Octave is freely redistributable software.  You may redistribute
 it and/or modify it under the terms of the GNU General Public License
@@ -51,12 +53,13 @@ This document corresponds to Octave version @value{VERSION}.
 @section Running Octave
 
 On most systems, Octave is started with the shell command @samp{octave}.
-This starts the graphical user interface (GUI).  The central window in
-the GUI is the Octave command-line interface.  In this window Octave
-displays an initial message and then a prompt indicating it is ready to
-accept input.  If you have chosen the traditional command-line interface
-then only the command prompt appears in the same window that was running
-a shell.  In any case, you can immediately begin typing Octave commands.
+This starts the graphical user interface.  The central window in the GUI
+is the Octave command-line interface.  In this window Octave displays an
+initial message and then a prompt indicating it is ready to accept
+input.  If you have chosen the traditional command-line interface then
+only the command prompt appears in the same window that was running
+a shell.  In either case, you can immediately begin typing Octave
+commands.
 
 If you get into trouble, you can usually interrupt Octave by typing
 @kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets
@@ -79,9 +82,9 @@ before doing that, it might be helpful to give a sampling of some of its
 capabilities.
 
 If you are new to Octave, we recommend that you try these examples to
-begin learning Octave by using it.  Lines marked like so, @samp{octave:13>},
-are lines you type, ending each with a carriage return.  Octave will
-respond with an answer, or by displaying a graph.
+begin learning Octave by using it.  Lines marked like so,
+@samp{octave:13>}, are lines you type, ending each with a carriage
+return.  Octave will respond with an answer, or by displaying a graph.
 
 @subsection Elementary Calculations
 
@@ -116,9 +119,9 @@ octave:1> exp (i*pi)
 
 @subsection Creating a Matrix
 
-Vectors and matrices are the basic building blocks for numerical analysis.
-To create a new matrix and store it in a variable so that you can
-refer to it later, type the command
+Vectors and matrices are the basic building blocks for numerical
+analysis.  To create a new matrix and store it in a variable so that you
+can refer to it later, type the command
 
 @example
 octave:1> A = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
@@ -149,9 +152,10 @@ octave:3> B
 
 @subsection Matrix Arithmetic
 
-Octave has a convenient operator notation for performing matrix
-arithmetic.  For example, to multiply the matrix @code{A} by a scalar
-value, type the command
+Octave uses standard mathematical notation with the advantage over
+low-level languages that operators may act on scalars, vector, matrices,
+or N-dimensional arrays.  For example, to multiply the matrix @code{A}
+by a scalar value, type the command
 
 @example
 octave:4> 2 * A
@@ -348,8 +352,7 @@ octave:1> plot (t, x)
 @end example
 
 @noindent
-If you are using a graphical user interface, Octave will automatically create
-a separate window to display the plot.
+Octave will automatically create a separate window to display the plot.
 
 To save a plot once it has been displayed on the screen, use the print
 command.  For example,
@@ -369,20 +372,6 @@ help print
 @noindent
 explains more options for the @code{print} command and provides a list
 of additional output file formats.
-
-@subsection Editing What You Have Typed
-
-At the Octave prompt, you can recall, edit, and reissue previous
-commands using Emacs- or vi-style editing commands.  The default
-keybindings use Emacs-style commands.  For example, to recall the
-previous command, press @kbd{Control-p} (written @kbd{C-p} for
-short).  Doing this will normally bring back the previous line of input.
-@kbd{C-n} will bring up the next line of input, @kbd{C-b} will move
-the cursor backward on the line, @kbd{C-f} will move the cursor forward
-on the line, etc.
-
-A complete description of the command line editing capability is given
-in this manual, @pxref{Command Line Editing}.
 
 @subsection Help and Documentation
 
@@ -420,6 +409,20 @@ program called Info.  When you invoke Info you will be put into a menu
 driven program that contains the entire Octave manual.  Help for using
 Info is provided in this manual, @pxref{Getting Help}.
 
+@subsection Editing What You Have Typed
+
+At the Octave prompt, you can recall, edit, and reissue previous
+commands using Emacs- or vi-style editing commands.  The default
+keybindings use Emacs-style commands.  For example, to recall the
+previous command, press @kbd{Control-p} (written @kbd{C-p} for
+short).  Doing this will normally bring back the previous line of input.
+@kbd{C-n} will bring up the next line of input, @kbd{C-b} will move
+the cursor backward on the line, @kbd{C-f} will move the cursor forward
+on the line, etc.
+
+A complete description of the command line editing capability is given
+in this manual, @pxref{Command Line Editing}.
+
 @node Conventions
 @section Conventions
 
@@ -438,12 +441,12 @@ manual.  You may want to skip this section and refer back to it later.
 @subsection Fonts
 @cindex documentation fonts
 
-Examples of Octave code appear in this font or form: @code{svd (a)}.
-Names that represent variables or function arguments appear
-in this font or form: @var{first-number}.  Commands that you type at the
-shell prompt appear in this font or form: @samp{octave --no-init-file}.
-Commands that you type at the Octave prompt sometimes appear in this font
-or form: @kbd{foo --bar --baz}.  Specific keys on your keyboard appear
+Examples of Octave code appear in this font or form: @w{@code{svd (a)}}.
+Names that represent variables or function arguments appear in this font
+or form: @var{first-number}.  Commands that you type at the shell prompt
+appear in this font or form: @w{@samp{octave --no-init-file}}.  Commands
+that you type at the Octave prompt sometimes appear in this font or
+form: @w{@kbd{foo --bar --baz}}.  Specific keys on your keyboard appear
 in this font or form: @key{RET}.
 
 @node Evaluation Notation
@@ -489,9 +492,9 @@ eye (3)
 @noindent
 in order to clearly show the structure of the result.
 
-Sometimes to help describe one expression, another expression is
-shown that produces identical results.  The exact equivalence of
-expressions is indicated with @samp{@equiv{}}.  For example:
+Sometimes to help describe one expression, another expression is shown
+that produces identical results.  The exact equivalence of expressions
+is indicated with @samp{@equiv{}}.  For example:
 
 @example
 @group
@@ -507,11 +510,11 @@ rot90 ([1, 2; 3, 4], 7)
 @subsection Printing Notation
 @cindex printing notation
 
-Many of the examples in this manual print text when they are
-evaluated.  In this manual the printed text resulting from an example
-is indicated by @samp{@print{}}.  The value that is returned by
-evaluating the expression is displayed with @samp{@result{}}
-(@code{1} in the next example) and follows on a separate line.
+Many of the examples in this manual print text when they are evaluated.
+In this manual the printed text resulting from an example is indicated
+by @samp{@print{}}.  The value that is returned by evaluating the
+expression is displayed with @samp{@result{}} (@code{1} in the next
+example) and follows on a separate line.
 
 @example
 @group
@@ -540,11 +543,10 @@ error: fieldnames: Invalid input argument
 @subsection Format of Descriptions
 @cindex description format
 
-Functions and commands are described in this manual in a
-uniform format.  The first line of a description contains the name of
-the item followed by its arguments, if any.
-If there are multiple ways to invoke the function then each allowable
-form is listed.
+Functions and commands are described in this manual in a uniform format.
+The first line of a description contains the name of the item followed
+by its arguments, if any.  If there are multiple ways to invoke the
+function then each allowable form is listed.
 
 The description follows on succeeding lines, sometimes with examples.
 
@@ -575,10 +577,12 @@ Here is a description of an imaginary function @code{foo}:
 @deftypefn  {} {} foo (@var{x})
 @deftypefnx {} {} foo (@var{x}, @var{y})
 @deftypefnx {} {} foo (@var{x}, @var{y}, @dots{})
-The function @code{foo} subtracts @var{x} from @var{y}, then adds the
-remaining arguments to the result.
+Subtract @var{x} from @var{y}, then add any remaining arguments to the
+result.
 
-If @var{y} is not supplied, then the number 19 is used by default.
+The input @var{x} must be a numeric scalar, vector, or array.
+
+The optional input @var{y} defaults to 19 if it is not supplied.
 
 Example:
 
@@ -612,35 +616,6 @@ specifically in the description of the function.  In some sections,
 features common to parameters of several functions are described at the
 beginning.
 
-Functions in Octave may be defined in several different ways:
-
-@table @asis
-@item Function File
-@cindex function file
-The function described is defined using Octave commands stored in a text
-file.  @xref{Function Files}.
-
-@item Built-in Function
-@cindex built-in function
-The function described is written in a language like C++, C, or Fortran,
-and is part of the compiled Octave binary.
-
-@item Loadable Function
-@cindex loadable function
-The function described is written in a language like C++, C, or Fortran.
-On systems that support dynamic linking of user-supplied functions, it
-may be automatically linked while Octave is running, but only if it is
-needed.  @xref{External Code Interface}.
-
-@item Mapping Function
-@cindex mapping function
-The function described works element-by-element for matrix and vector
-arguments.
-@end table
-
-Use @code{which} or @code{exist} to determine the category of a function
-and where it resides.
-
 @node A Sample Command Description
 @subsubsection A Sample Command Description
 @cindex command descriptions
@@ -673,5 +648,6 @@ Record the session in the file named @var{filename}.
 @end table
 
 With no arguments, @code{diary} toggles the current diary state.
-@seealso{history}
+@seealso{history, evalc}
 @end deftypefn
+

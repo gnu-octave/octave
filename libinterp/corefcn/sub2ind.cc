@@ -64,11 +64,20 @@ DEFUN (sub2ind, args, ,
 @deftypefnx {} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})
 Convert subscripts to linear indices.
 
-Assume the following 3-by-3 matrices.  The left matrix contains the
-subscript tuples for each matrix element.  Those are converted to
-linear indices shown in the right matrix.  The matrices are linearly
-indexed moving from one column to next, filling up all rows in each
-column.
+The input @var{dims} is a dimension vector where each element is the size of
+the array in the respective dimension (@pxref{XREFsize,,size}).  The remaining
+inputs are scalars or vectors of subscripts to be converted.
+
+The output vector @var{ind} contains the converted linear indices.
+
+Background: Array elements can be specified either by a linear index which
+starts at 1 and runs through the number of elements in the array, or they may
+be specified with subscripts for the row, column, page, etc.  The functions
+@code{ind2sub} and @code{sub2ind} interconvert between the two forms.
+
+The linear index traverses dimension 1 (rows), then dimension 2 (columns), then
+dimension 3 (pages), etc. until it has numbered all of the elements.  Consider
+the following 3-by-3 matrices:
 
 @example
 @group
@@ -78,18 +87,23 @@ column.
 @end group
 @end example
 
+@noindent
+The left matrix contains the subscript tuples for each matrix element.  The
+right matrix shows the linear indices for the same matrix.
+
 The following example shows how to convert the two-dimensional indices
-@code{(2,1)} and @code{(2,3)} of a 3-by-3 matrix to a linear index.
+@code{(2,1)} and @code{(2,3)} of a 3-by-3 matrix to linear indices with a
+single call to @code{sub2ind}.
 
 @example
 @group
 s1 = [2, 2];
 s2 = [1, 3];
 ind = sub2ind ([3, 3], s1, s2)
-@result{} ind =  2   8
+    @result{} ind =  2   8
 @end group
 @end example
-@seealso{ind2sub}
+@seealso{ind2sub, size}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -174,11 +188,20 @@ DEFUN (ind2sub, args, nargout,
 @deftypefn {} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
 Convert linear indices to subscripts.
 
-Assume the following 3-by-3 matrices.  The left matrix contains
-the linear indices @var{ind} for each matrix element.  Those are
-converted to subscript tuples shown in the right matrix.  The
-matrices are linearly indexed moving from one column to next,
-filling up all rows in each column.
+The input @var{dims} is a dimension vector where each element is the size of
+the array in the respective dimension (@pxref{XREFsize,,size}).  The second
+input @var{ind} contains linear indies to be converted.
+
+The outputs @var{s1}, @dots{}, @var{sN} contain the converted subscripts.
+
+Background: Array elements can be specified either by a linear index which
+starts at 1 and runs through the number of elements in the array, or they may
+be specified with subscripts for the row, column, page, etc.  The functions
+@code{ind2sub} and @code{sub2ind} interconvert between the two forms.
+
+The linear index traverses dimension 1 (rows), then dimension 2 (columns), then
+dimension 3 (pages), etc. until it has numbered all of the elements.  Consider
+the following 3-by-3 matrices:
 
 @example
 @group
@@ -188,8 +211,16 @@ filling up all rows in each column.
 @end group
 @end example
 
-The following example shows how to convert the linear indices
-@code{2} and @code{8} in a 3-by-3 matrix into a subscripts.
+@noindent
+The left matrix contains the linear indices for each matrix element.  The right
+matrix shows the subscript tuples for the same matrix.
+
+The following example shows how to convert the two-dimensional indices
+@code{(2,1)} and @code{(2,3)} of a 3-by-3 matrix to linear indices with a
+single call to @code{sub2ind}.
+
+The following example shows how to convert the linear indices @code{2} and
+@code{8} in a 3-by-3 matrix into subscripts.
 
 @example
 @group
@@ -200,26 +231,27 @@ ind = [2, 8];
 @end group
 @end example
 
-If the number of subscripts exceeds the number of dimensions, the
-exceeded dimensions are treated as @code{1}.  On the other hand,
-if less subscripts than dimensions are provided, the exceeding
-dimensions are merged.  For clarity see the following examples:
+If the number of output subscripts exceeds the number of dimensions, the
+exceeded dimensions are set to @code{1}.  On the other hand, if fewer
+subscripts than dimensions are provided, the exceeding dimensions are merged
+into the final requested dimension.  For clarity, consider the following
+examples:
 
-@example
+@example%
 @group
-ind = [2, 8];
+ind  = [2, 8];
 dims = [3, 3];
-% same as dims = [3, 3, 1]
+## same as dims = [3, 3, 1]
 [r, c, s] = ind2sub (dims, ind)
     @result{} r =  2   2
     @result{} c =  1   3
     @result{} s =  1   1
-% same as dims = 9
+## same as dims = [9]
 r = ind2sub (dims, ind)
     @result{} r =  2   8
 @end group
 @end example
-@seealso{sub2ind}
+@seealso{ind2sub, size}
 @end deftypefn */)
 {
   if (args.length () != 2)

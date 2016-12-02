@@ -182,15 +182,23 @@ namespace octave
     public:
 
       // Store an "unlimited" number of tokens.
-      token_cache (size_t sz_arg = std::numeric_limits<size_t>::max ())
-        : buffer (), sz (sz_arg)
-      { }
+
+      // Tokens are allocated with new.  Delete them when they are
+      // removed from the cache.
+      //
+      // One of the reasons for using this class instead of std::deque
+      // directly is that we can ensure that memory is cleaned up
+      // properly.  It's more tedious to do that with deque since the
+      // deque destructor and clear method don't call delete on the
+      // elements that it stores.  Another reason is that it makes it
+      // easier to change the implementation later if needed.
+
+      token_cache (void) : buffer () { }
+
+      ~token_cache (void) { clear (); }
 
       void push (token *tok)
       {
-        if (buffer.size () == sz)
-          pop ();
-
         buffer.push_front (tok);
       }
 
@@ -235,7 +243,7 @@ namespace octave
         return empty () ? 0 : buffer.back ();
       }
 
-      // Number of elements currently in the buffer, max of sz.
+      // Number of elements currently in the buffer.
       size_t size (void) const { return buffer.size (); }
 
       bool empty (void) const { return buffer.empty (); }
@@ -249,8 +257,6 @@ namespace octave
     private:
 
       std::deque<token *> buffer;
-
-      size_t sz;
 
       // No copying!
 

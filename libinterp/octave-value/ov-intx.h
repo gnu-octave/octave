@@ -558,7 +558,7 @@ public:
   complex_array_value (bool = false) const
   {
     ComplexNDArray retval (dim_vector (1, 1));
-    retval(0) = FloatComplex (scalar.double_value ());
+    retval(0) = Complex (scalar.double_value ());
     return retval;
   }
 

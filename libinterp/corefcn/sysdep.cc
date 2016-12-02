@@ -512,10 +512,8 @@ octave_popen (const char *command, const char *mode)
 #if defined (__MINGW32__) || defined (_MSC_VER)
   if (mode && mode[0] && ! mode[1])
     {
-      char tmode[3];
-      tmode[0] = mode[0];
-      tmode[1] = 'b';
-      tmode[2] = 0;
+      // Use binary mode on Windows if unspecified
+      char tmode[3] = {mode[0], 'b', '\0'};
 
       return _popen (command, tmode);
     }

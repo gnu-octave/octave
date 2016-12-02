@@ -2145,30 +2145,26 @@ namespace octave
   int
   lexical_feedback::previous_token_value (void) const
   {
-    const token *tok = tokens.front ();
-    return tok ? tok->token_value () : 0;
+    return tokens.empty () ? 0 : tokens.front ()->token_value ();
   }
 
   bool
   lexical_feedback::previous_token_value_is (int tok_val) const
   {
-    const token *tok = tokens.front ();
-    return tok ? tok->token_value_is (tok_val) : false;
+    return tokens.empty () ? false : tokens.front ()->token_value_is (tok_val);
   }
 
   void
   lexical_feedback::mark_previous_token_trailing_space (void)
   {
-    token *tok = tokens.front ();
-    if (tok && ! previous_token_value_is ('\n'))
-      tok->mark_trailing_space ();
+    if (! tokens.empty () && ! previous_token_value_is ('\n'))
+      tokens.front ()->mark_trailing_space ();
   }
 
   bool
   lexical_feedback::space_follows_previous_token (void) const
   {
-    const token *tok = tokens.front ();
-    return tok ? tok->space_follows_token () : false;
+    return tokens.empty () ? false : tokens.front ()->space_follows_token ();
   }
 
   bool
@@ -2194,24 +2190,25 @@ namespace octave
   bool
   lexical_feedback::previous_token_is_keyword (void) const
   {
-    const token *tok = tokens.front ();
-    return tok ? tok->is_keyword () : false;
+    return tokens.empty () ? false : tokens.front ()->is_keyword ();
   }
 
   bool
   lexical_feedback::previous_token_may_be_command (void) const
   {
-    const token *tok = tokens.front ();
-    return tok ? tok->may_be_command () : false;
+    return tokens.empty () ? false : tokens.front ()->may_be_command ();
   }
 
   void
   lexical_feedback::maybe_mark_previous_token_as_variable (void)
   {
-    token *tok = tokens.front ();
+    if (! tokens.empty ())
+    {
+      token *tok = tokens.front ();
 
-    if (tok && tok->is_symbol ())
-      pending_local_variables.insert (tok->symbol_name ());
+      if (tok->is_symbol ())
+        pending_local_variables.insert (tok->symbol_name ());
+    }
   }
 
   void
@@ -3203,7 +3200,7 @@ namespace octave
   {
     YYSTYPE *lval = yyget_lval (scanner);
     lval->tok_val = tok;
-    tokens.push (tok);
+    tokens.push_front (tok);
   }
 
   token *

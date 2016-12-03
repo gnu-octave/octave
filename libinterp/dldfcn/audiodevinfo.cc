@@ -1108,7 +1108,8 @@ audioplayer::playblocking (void)
 
   for (unsigned int i = start; i < end; i += buffer_size)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       if (octave_callback_function != 0)
         octave_play_callback (0, buffer, buffer_size, 0, 0, this);
       else
@@ -1728,7 +1729,8 @@ audiorecorder::recordblocking (float seconds)
 
   for (unsigned int i = 0; i < frames; i += buffer_size)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       Pa_ReadStream (get_stream (), buffer, buffer_size);
 
       if (octave_callback_function != 0)

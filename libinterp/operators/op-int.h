@@ -399,7 +399,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a, b(i));                             \
       }                                                         \
     return octave_value (result);                               \
@@ -411,7 +411,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a, b(i));                             \
       }                                                         \
     return octave_value (result);                               \
@@ -423,7 +423,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a, b(i));                             \
       }                                                         \
     return octave_value (result);                               \
@@ -435,7 +435,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a, b(i));                            \
       }                                                         \
     return octave_value (result);                               \
@@ -447,7 +447,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (b.dims ());                           \
     for (int i = 0; i < b.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a, b(i));                            \
       }                                                         \
     return octave_value (result);                               \
@@ -568,7 +568,7 @@ along with Octave; see the file COPYING.  If not, see
    T1 ## NDArray result (a.dims ());                            \
    for (int i = 0; i < a.numel (); i++)                         \
      {                                                          \
-       OCTAVE_QUIT;                                             \
+       octave_quit ();                                          \
        result (i) = pow (a(i), b);                              \
      }                                                          \
    return octave_value (result);                                \
@@ -579,7 +579,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b);                             \
       }                                                         \
     return octave_value (result);                               \
@@ -590,7 +590,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b);                             \
       }                                                         \
     return octave_value (result);                               \
@@ -601,7 +601,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b);                            \
       }                                                         \
     return octave_value (result);                               \
@@ -612,7 +612,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a.dims ());                           \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b);                            \
       }                                                         \
     return octave_value (result);                               \
@@ -738,7 +738,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b(i));                          \
       }                                                         \
     return octave_value (result);                               \
@@ -759,7 +759,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b(i));                          \
       }                                                         \
     return octave_value (result);                               \
@@ -780,7 +780,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = pow (a(i), b(i));                          \
       }                                                         \
     return octave_value (result);                               \
@@ -801,7 +801,7 @@ along with Octave; see the file COPYING.  If not, see
     T1 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b(i));                         \
       }                                                         \
     return octave_value (result);                               \
@@ -822,7 +822,7 @@ along with Octave; see the file COPYING.  If not, see
     T2 ## NDArray result (a_dims);                              \
     for (int i = 0; i < a.numel (); i++)                        \
       {                                                         \
-        OCTAVE_QUIT;                                            \
+        octave_quit ();                                         \
         result (i) = powf (a(i), b(i));                         \
       }                                                         \
     return octave_value (result);                               \

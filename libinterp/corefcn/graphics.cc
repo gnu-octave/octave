@@ -11855,7 +11855,7 @@ In all cases, typing CTRL-C stops program execution immediately.
 
       octave_sleep (0.1); // FIXME: really needed?
 
-      OCTAVE_QUIT;
+      octave_quit ();
 
       octave::command_editor::run_event_hooks ();
 

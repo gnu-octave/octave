@@ -270,7 +270,7 @@ namespace octave
 
     while (true)
       {
-        OCTAVE_QUIT;
+        octave_quit ();
 
         int matches = pcre_exec (re, 0, buffer.c_str (),
                                  buffer.length (), idx,
@@ -296,7 +296,7 @@ namespace octave
             while (matches == PCRE_ERROR_MATCHLIMIT
                    && i++ < PCRE_MATCHLIMIT_MAX)
               {
-                OCTAVE_QUIT;
+                octave_quit ();
 
                 pe.match_limit *= 10;
                 matches = pcre_exec (re, &pe, buffer.c_str (),
@@ -511,7 +511,7 @@ namespace octave
         regexp::match_data::const_iterator p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
 
             double start = p->start ();
             double end = p->end ();
@@ -537,7 +537,7 @@ namespace octave
         p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
 
             double start = p->start ();
             double end = p->end ();
@@ -587,7 +587,8 @@ namespace octave
         regexp::match_data::const_iterator p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             delta += static_cast<int> (replen)
                      - static_cast<int> (p->end () - p->start () + 1);
             p++;
@@ -599,7 +600,8 @@ namespace octave
         p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             rep.append (&buffer[from],
                         static_cast<size_t> (p->start () - 1) - from);
             from = static_cast<size_t> (p->end ());

@@ -126,7 +126,8 @@ convex hull, @var{idx} is NaN.
       // it doesn't, so go through all elements
       for (k = 0; k < nelem; k++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           if (xt >= minx(k) && xt <= maxx(k) && yt >= miny(k) && yt <= maxy(k))
             {
               // element inside the minimum rectangle: examine it closely

@@ -111,7 +111,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
     {
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           if (v.cidx (j) == 0 && v.cidx (j+1) != 0)
             start_nc = j;
           if (v.cidx (j+1) >= n_to_find)
@@ -125,7 +126,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
     {
       for (octave_idx_type j = nc; j > 0; j--)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           if (v.cidx (j) == nz && v.cidx (j-1) != nz)
             end_nc = j;
           if (nz - v.cidx (j-1) >= n_to_find)
@@ -169,7 +171,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
         for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             if (direction < 0 && i < nz - count)
               continue;
             i_idx(cx) = static_cast<double> (v.ridx (i) + 1);
@@ -263,7 +266,8 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
       const Array<octave_idx_type>& p = v.col_perm_vec ();
       for (octave_idx_type k = 0; k < count; k++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           const octave_idx_type j = start_nc + k;
           const octave_idx_type i = p(j);
           i_idx(k) = static_cast<double> (1+i);

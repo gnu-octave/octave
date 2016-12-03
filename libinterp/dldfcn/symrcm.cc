@@ -230,7 +230,7 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
           octave_idx_type j2 = cidx2[i];
           while (j1 < cidx[i+1] || j2 < cidx2[i+1])
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               if (j1 == cidx[i+1])
                 {
@@ -339,7 +339,8 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
     {
       for (octave_idx_type i = cidx[j]; i < cidx[j+1]; i++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           octave_idx_type k = ridx[i];
           // there is a nonzero element (k,j)
           D[k]++;
@@ -352,7 +353,7 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
               bool found = false;
               for (octave_idx_type l = cidx[k]; l < cidx[k + 1]; l++)
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   if (ridx[l] == j)
                     {
@@ -393,7 +394,8 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
   nz = 0;
   for (octave_idx_type i = 0; i < N; i++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       cidx2[i] = nz;
       nz += w[i];
       w[i] = cidx2[i];
@@ -404,7 +406,8 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
   for (octave_idx_type j = 0; j < N; j++)
     for (octave_idx_type k = cidx[j]; k < cidx[j + 1]; k++)
       {
-        OCTAVE_QUIT;
+        octave_quit ();
+
         octave_idx_type q = w[ridx[k]]++;
         ridx2[q] = j;
       }
@@ -575,10 +578,12 @@ Mathematics, ISBN 0-13-165274-5, 1981.
           octave_idx_type j1 = cidx[i];
           octave_idx_type j2 = cidx2[i];
 
-          OCTAVE_QUIT;
+          octave_quit ();
+
           while (j1 < cidx[i+1] || j2 < cidx2[i+1])
             {
-              OCTAVE_QUIT;
+              octave_quit ();
+
               if (j1 == cidx[i+1])
                 {
                   octave_idx_type r2 = ridx2[j2++];
@@ -640,7 +645,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.
           // add the neighbors to the queue (sorted by node degree)
           while (! H_empty (S, s))
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               // locate a neighbor of i with minimal degree in O(log(N))
               v = H_remove_min (S, s, 1);

@@ -147,7 +147,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 {
                   for (octave_idx_type j = 0; j < si_len - 1; j++)
                     {
-                      OCTAVE_QUIT;
+                      octave_quit ();
 
                       psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
                     }
@@ -156,7 +156,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 }
               else
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   psi[0] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
                 }
@@ -182,7 +182,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 {
                   for (octave_idx_type j = 0; j < si_len - 1; j++)
                     {
-                      OCTAVE_QUIT;
+                      octave_quit ();
 
                       psi[j] = psi[j+1] + pb[j+1] * px[idx];
                     }
@@ -191,7 +191,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                 }
               else
                 {
-                  OCTAVE_QUIT;
+                  octave_quit ();
 
                   psi[0] = pb[1] * px[idx];
                 }

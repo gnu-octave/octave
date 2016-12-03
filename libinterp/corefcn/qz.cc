@@ -354,7 +354,8 @@ compatibility with @sc{matlab}.
     for (octave_idx_type ii = 0; ii < nn; ii++)
       for (octave_idx_type jj = 0; jj < nn; jj++)
         {
-          OCTAVE_QUIT;
+          octave_quit ();
+
           QQ(ii,jj) = ZZ(ii,jj) = (ii == jj ? 1.0 : 0.0);
         }
 
@@ -924,7 +925,7 @@ compatibility with @sc{matlab}.
 
           while (jj < nn)
             {
-              OCTAVE_QUIT;
+              octave_quit ();
 
               // See if real or complex eigenvalue.
 

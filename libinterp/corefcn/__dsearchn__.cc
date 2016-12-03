@@ -84,7 +84,7 @@ Undocumented internal function.
               d0 = d;
               *pidx = static_cast<double>(j + 1);
             }
-          OCTAVE_QUIT;
+          octave_quit ();
         }
 
       *pdist++ = d0;

@@ -246,7 +246,8 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   octave_idx_type idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                              col_cache, row_cache);
 
@@ -451,7 +452,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -479,7 +481,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -509,7 +512,8 @@ read_images (std::vector<Magick::Image>& imvec,
         const octave_idx_type frame_stride = color_stride * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -551,7 +555,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type a_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -588,7 +593,8 @@ read_images (std::vector<Magick::Image>& imvec,
         const octave_idx_type frame_stride = color_stride * 4;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -632,7 +638,8 @@ read_images (std::vector<Magick::Image>& imvec,
         octave_idx_type a_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (col_start, row_start,
                                                        col_cache, row_cache);
@@ -957,7 +964,8 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                 Magick::PaletteType,
                                                 Magick::PseudoClass);
@@ -1013,7 +1021,8 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
   octave_idx_type img_idx = 0;
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       // For some reason, we can't set the type to Magick::BilevelType or
       // the output image will be black, changing to white has no effect.
       // However, this will still work fine and a binary image will be
@@ -1105,7 +1114,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       {
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1135,7 +1145,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
       {
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1170,7 +1181,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type B_offset = nCols * nRows * 2;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1205,7 +1217,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type B_offset = nCols * nRows * 2;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1243,7 +1256,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type K_offset = nCols * nRows * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1280,7 +1294,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type K_offset = nCols * nRows * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
-            OCTAVE_QUIT;
+            octave_quit ();
+
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
                                                       type,
                                                       Magick::DirectClass);
@@ -1922,7 +1937,8 @@ Use @code{imfinfo} instead.
 
   for (octave_idx_type frame = 0; frame < nFrames; frame++)
     {
-      OCTAVE_QUIT;
+      octave_quit ();
+
       octave_scalar_map info_frame (template_info);
       const Magick::Image img = imvec[frame];
 

@@ -1753,7 +1753,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
               && err - err_final < fabs (igral) * tol))
     {
       // Allow the user to interrupt.
-      OCTAVE_QUIT;
+      octave_quit ();
 
       // Put our finger on the interval with the largest error.
       iv = &(ivals[heap[0]]);

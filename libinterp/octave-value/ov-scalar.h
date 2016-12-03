@@ -150,19 +150,19 @@ public:
   double scalar_value (bool = false) const { return scalar; }
 
   float float_scalar_value (bool = false) const
-  { return static_cast<float> (scalar); }
+  { return float_value (); }
 
   Matrix matrix_value (bool = false) const
   { return Matrix (1, 1, scalar); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (1, 1, scalar); }
+  { return FloatMatrix (1, 1, float_value ()); }
 
   NDArray array_value (bool = false) const
   { return NDArray (dim_vector (1, 1), scalar); }
 
   FloatNDArray float_array_value (bool = false) const
-  { return FloatNDArray (dim_vector (1, 1), scalar); }
+  { return FloatNDArray (dim_vector (1, 1), float_value ()); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
   { return SparseMatrix (Matrix (1, 1, scalar)); }
@@ -175,19 +175,23 @@ public:
 
   Complex complex_value (bool = false) const { return scalar; }
 
-  FloatComplex float_complex_value (bool = false) const { return scalar; }
+  FloatComplex float_complex_value (bool = false) const
+  { return FloatComplex (float_value ()); }
 
   ComplexMatrix complex_matrix_value (bool = false) const
   { return ComplexMatrix (1, 1, Complex (scalar)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
+  { return FloatComplexMatrix (1, 1, FloatComplex (float_value ())); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-  { return FloatComplexNDArray (dim_vector (1, 1), FloatComplex (scalar)); }
+  {
+    return FloatComplexNDArray (dim_vector (1, 1),
+                                FloatComplex (float_value ()));
+  }
 
   charNDArray
   char_array_value (bool = false) const

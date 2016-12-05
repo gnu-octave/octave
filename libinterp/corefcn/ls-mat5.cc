@@ -2190,8 +2190,8 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
             {
               const Cell elts = m.contents (i);
 
-              ret += 8 + save_mat5_element_length (elts(j), "",
-                                               save_as_floats, mat7_format);
+              ret += 8 + save_mat5_element_length (elts(j), "", save_as_floats,
+                                                   mat7_format);
             }
         }
     }

@@ -127,11 +127,11 @@ octave_shlib_list::do_find_file (const std::string& file_name) const
 {
   octave::dynamic_library retval;
 
-  for (const_iterator p = lib_list.begin (); p != lib_list.end (); p++)
+  for (const auto& lib : lib_list)
     {
-      if (p->file_name () == file_name)
+      if (lib.file_name () == file_name)
         {
-          retval = *p;
+          retval = lib;
           break;
         }
     }
@@ -143,8 +143,8 @@ void
 octave_shlib_list::do_display (void) const
 {
   std::cerr << "current shared libraries:" << std::endl;
-  for (const_iterator p = lib_list.begin (); p != lib_list.end (); p++)
-    std::cerr << "  " << p->file_name () << std::endl;
+  for (const auto& lib : lib_list)
+    std::cerr << "  " << lib.file_name () << std::endl;
 }
 
 bool

@@ -1390,12 +1390,11 @@ public:
 
         octave_stdout << "\n";
 
-        for (std::list<symbol_info>::const_iterator p = lst.begin ();
-             p != lst.end (); p++)
+        for (const auto& syminfo : lst)
           {
-            p->display_line (os, params);
+            syminfo.display_line (os, params);
 
-            octave_value val = p->varval;
+            octave_value val = syminfo.varval;
 
             elements += val.numel ();
             bytes += val.byte_size ();
@@ -1451,18 +1450,17 @@ public:
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column
 
-    for (std::list<symbol_info>::const_iterator p = lst.begin ();
-         p != lst.end (); p++)
+    for (const auto& syminfo : lst)
       {
         std::stringstream ss1, ss2;
         std::string str;
 
-        str = p->name;
+        str = syminfo.name;
         param_length(pos_n) = ((str.length ()
                                 > static_cast<size_t> (param_length(pos_n)))
                                ? str.length () : param_length(pos_n));
 
-        octave_value val = p->varval;
+        octave_value val = syminfo.varval;
 
         str = val.type_name ();
         param_length(pos_t) = ((str.length ()
@@ -1553,10 +1551,9 @@ public:
                 int first = param.first_parameter_length;
                 int total = param.parameter_length;
 
-                for (std::list<symbol_info>::const_iterator p = lst.begin ();
-                     p != lst.end (); p++)
+                for (const auto& syminfo : lst)
                   {
-                    octave_value val = p->varval;
+                    octave_value val = syminfo.varval;
                     std::string dims_str = get_dims_str (val);
                     int first1 = dims_str.find ('x');
                     int total1 = dims_str.length ();
@@ -1717,15 +1714,14 @@ do_who (int argc, const string_vector& argv, bool return_list,
             ? symbol_table::regexp_global_variables (pat)
             : symbol_table::regexp_variables (pat);
 
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = tmp.begin (); p != tmp.end (); p++)
+          for (const auto& symrec : tmp)
             {
-              if (p->is_variable ())
+              if (symrec.is_variable ())
                 {
                   if (verbose)
-                    symbol_stats.append (*p);
+                    symbol_stats.append (symrec);
                   else
-                    symbol_names.push_back (p->name ());
+                    symbol_names.push_back (symrec.name ());
                 }
             }
         }
@@ -1769,15 +1765,14 @@ do_who (int argc, const string_vector& argv, bool return_list,
                 ? symbol_table::glob_global_variables (pat)
                 : symbol_table::glob_variables (pat);
 
-              for (std::list<symbol_table::symbol_record>::const_iterator
-                   p = tmp.begin (); p != tmp.end (); p++)
+              for (const auto& symrec : tmp)
                 {
-                  if (p->is_variable ())
+                  if (symrec.is_variable ())
                     {
                       if (verbose)
-                        symbol_stats.append (*p);
+                        symbol_stats.append (symrec);
                       else
-                        symbol_names.push_back (p->name ());
+                        symbol_names.push_back (symrec.name ());
                     }
                 }
             }

@@ -1214,22 +1214,22 @@ std::string
 radio_values::values_as_string (void) const
 {
   std::string retval;
-  for (std::set<caseless_str>::const_iterator it = possible_vals.begin ();
-       it != possible_vals.end (); it++)
+
+  for (const auto& val : possible_vals)
     {
       if (retval.empty ())
         {
-          if (*it == default_value ())
-            retval = "{" + *it + "}";
+          if (val == default_value ())
+            retval = "{" + val + "}";
           else
-            retval = *it;
+            retval = val;
         }
       else
         {
-          if (*it == default_value ())
-            retval += " | {" + *it + "}";
+          if (val == default_value ())
+            retval += " | {" + val + "}";
           else
-            retval += " | " + *it;
+            retval += " | " + val;
         }
     }
 
@@ -1244,9 +1244,10 @@ radio_values::values_as_cell (void) const
 {
   octave_idx_type i = 0;
   Cell retval (nelem (), 1);
-  for (std::set<caseless_str>::const_iterator it = possible_vals.begin ();
-       it != possible_vals.end (); it++)
-    retval(i++) = std::string (*it);
+
+  for (const auto& val : possible_vals)
+    retval(i++) = std::string (val);
+
   return retval;
 }
 
@@ -2215,10 +2216,8 @@ property_list::as_struct (const std::string& prefix_arg) const
     {
       std::string prefix = prefix_arg + p->first;
 
-      const pval_map_type pval_map = p->second;
-
-      for (const auto& prop_val_p : pval_map)
-        m.assign (prefix + prop_val_p.first, prop_val_p.second);
+      for (const auto& prop_val : p->second)
+        m.assign (prefix + prop_val.first, prop_val.second);
     }
 
   return m;
@@ -2904,17 +2903,13 @@ xreset_default_properties (graphics_handle h,
   property_list::pval_map_type pval;
   go.build_user_defaults_map (pval, go_name);
 
-  for (property_list::pval_map_const_iterator p = pval.begin ();
-       p != pval.end (); p++)
-    {
-      factory_pval[p->first] = p->second;
-    }
+  for (const auto& p : pval)
+    factory_pval[p.first] = p.second;
 
   // Reset defaults
-  for (property_list::pval_map_const_iterator it = factory_pval.begin ();
-       it != factory_pval.end (); it++)
+  for (const auto& p : factory_pval)
     {
-      std::string pname = it->first;
+      std::string pname = p.first;
 
       // Don't reset internal properties and handle_properties
       if (! go.has_readonly_property (pname)
@@ -2923,16 +2918,15 @@ xreset_default_properties (graphics_handle h,
         {
           // Store *mode prop/val in order to set them last
           if (pname.find ("mode") == (pname.length () - 4))
-            pval[pname] = it->second;
+            pval[pname] = p.second;
           else
-            go.set (pname, it->second);
+            go.set (pname, p.second);
         }
     }
 
   // set *mode properties
-  for (property_list::pval_map_const_iterator it = pval.begin ();
-       it != pval.end (); it++)
-    go.set (it->first, it->second);
+  for (const auto& p : pval)
+    go.set (p.first, p.second);
 }
 
 // ---------------------------------------------------------------------
@@ -2949,13 +2943,13 @@ base_properties::set_from_list (base_graphics_object& bgo,
     {
       const property_list::pval_map_type pval_map = plist->second;
 
-      for (const auto& prop_val_p : pval_map)
+      for (const auto& prop_val : pval_map)
         {
-          std::string pname = prop_val_p.first;
+          std::string pname = prop_val.first;
 
           try
             {
-              bgo.set (pname, prop_val_p.second);
+              bgo.set (pname, prop_val.second);
             }
           catch (octave::execution_exception& e)
             {
@@ -3251,7 +3245,7 @@ base_graphics_object::remove_all_listeners (void)
 {
   octave_map m = get (true).map_value ();
 
-  for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+  for (const auto& pm : m)
     {
       // FIXME: there has to be a better way.  I think we want to
       // ask whether it is OK to delete the listener for the given
@@ -3269,7 +3263,7 @@ base_graphics_object::remove_all_listeners (void)
 
       try
         {
-          property p = get_properties ().get_property (pa->first);
+          property p = get_properties ().get_property (pm.first);
 
           if (p.ok ())
             p.delete_listener ();
@@ -3289,12 +3283,12 @@ base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def
 
   if (it != local_defaults.end ())
     {
-      property_list::pval_map_type pval = it->second;
-      for (const auto& prop_val_p : pval)
+      property_list::pval_map_type pval_lst = it->second;
+      for (const auto& prop_val : pval_lst)
         {
-          std::string pname = prop_val_p.first;
+          std::string pname = prop_val.first;
           if (def.find (pname) == def.end ())
-            def[pname] = prop_val_p.second;
+            def[pname] = prop_val.second;
         }
     }
 
@@ -3331,23 +3325,23 @@ base_graphics_object::reset_default_properties (void)
 std::string
 base_graphics_object::values_as_string (void)
 {
-  std::string retval;
-
   if (! valid_object ())
     error ("base_graphics_object::values_as_string: invalid graphics object");
 
+  std::string retval;
   octave_map m = get ().map_value ();
   graphics_object go = gh_manager::get_object (get_handle ());
 
-  for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+  for (const auto& pm : m)
     {
-      if (pa->first != "children" && ! go.has_readonly_property (pa->first))
+      const auto& pname = pm.first;
+      if (pname != "children" && ! go.has_readonly_property (pname))
         {
-          property p = get_properties ().get_property (pa->first);
+          property p = get_properties ().get_property (pname);
 
           if (p.ok () && ! p.is_hidden ())
             {
-              retval += "\n\t" + std::string (pa->first) + ":  ";
+              retval += "\n\t" + std::string (pname) + ":  ";
               if (p.is_radio ())
                 retval += p.values_as_string ();
             }
@@ -3398,13 +3392,12 @@ base_graphics_object::values_as_struct (void)
   octave_scalar_map m = get ().scalar_map_value ();
   graphics_object go = gh_manager::get_object (get_handle ());
 
-  for (octave_scalar_map::const_iterator pa = m.begin ();
-       pa != m.end (); pa++)
+  for (const auto& pm : m)
     {
-      if (pa->first != "children"
-          && ! go.has_readonly_property (pa->first))
+      const auto& pname = pm.first;
+      if (pname != "children" && ! go.has_readonly_property (pname))
         {
-          property p = get_properties ().get_property (pa->first);
+          property p = get_properties ().get_property (pname);
 
           if (p.ok () && ! p.is_hidden ())
             {

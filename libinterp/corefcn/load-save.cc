@@ -978,13 +978,13 @@ save_fields (std::ostream& os, const octave_scalar_map& m,
 
   size_t saved = 0;
 
-  for (octave_scalar_map::const_iterator p = m.begin (); p != m.end (); p++)
+  for (octave_scalar_map::const_iterator it = m.begin (); it != m.end (); it++)
     {
       std::string empty_str;
 
-      if (pat.match (m.key (p)))
+      if (pat.match (m.key (it)))
         {
-          do_save (os, m.contents (p), m.key (p), empty_str,
+          do_save (os, m.contents (it), m.key (it), empty_str,
                    0, fmt, save_as_floats);
 
           saved++;
@@ -1005,12 +1005,9 @@ save_vars (std::ostream& os, const std::string& pattern,
 
   size_t saved = 0;
 
-  typedef std::list<symbol_table::symbol_record>::const_iterator
-    const_vars_iterator;
-
-  for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
+  for (const auto& var : vars)
     {
-      do_save (os, *p, fmt, save_as_floats);
+      do_save (os, var, fmt, save_as_floats);
 
       saved++;
     }
@@ -1321,18 +1318,15 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
   double save_mem_size = 0;
 
-  typedef std::list<symbol_table::symbol_record>::const_iterator
-    const_vars_iterator;
-
-  for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
+  for (const auto& var : vars)
     {
-      octave_value val = p->varval ();
+      octave_value val = var.varval ();
 
       if (val.is_defined ())
         {
-          std::string name = p->name ();
+          std::string name = var.name ();
           std::string help;
-          bool global = p->is_global ();
+          bool global = var.is_global ();
 
           double val_size = val.byte_size () / 1024;
 

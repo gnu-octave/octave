@@ -1133,34 +1133,30 @@ symbol_table::fcn_info::fcn_info_rep::dump (std::ostream& os,
 
   if (! subfunctions.empty ())
     {
-      for (scope_val_const_iterator p = subfunctions.begin ();
-           p != subfunctions.end (); p++)
-        os << tprefix << "subfunction: " << fcn_file_name (p->second)
-           << " [" << p->first << "]\n";
+      for (const auto& scope_val : subfunctions)
+        os << tprefix << "subfunction: " << fcn_file_name (scope_val.second)
+           << " [" << scope_val.first << "]\n";
     }
 
   if (! private_functions.empty ())
     {
-      for (str_val_const_iterator p = private_functions.begin ();
-           p != private_functions.end (); p++)
-        os << tprefix << "private: " << fcn_file_name (p->second)
-           << " [" << p->first << "]\n";
+      for (const auto& str_val : private_functions)
+        os << tprefix << "private: " << fcn_file_name (str_val.second)
+           << " [" << str_val.first << "]\n";
     }
 
   if (! class_constructors.empty ())
     {
-      for (str_val_const_iterator p = class_constructors.begin ();
-           p != class_constructors.end (); p++)
-        os << tprefix << "constructor: " << fcn_file_name (p->second)
-           << " [" << p->first << "]\n";
+      for (const auto& str_val : class_constructors)
+        os << tprefix << "constructor: " << fcn_file_name (str_val.second)
+           << " [" << str_val.first << "]\n";
     }
 
   if (! class_methods.empty ())
     {
-      for (str_val_const_iterator p = class_methods.begin ();
-           p != class_methods.end (); p++)
-        os << tprefix << "method: " << fcn_file_name (p->second)
-           << " [" << p->first << "]\n";
+      for (const auto& str_val : class_methods)
+        os << tprefix << "method: " << fcn_file_name (str_val.second)
+           << " [" << str_val.first << "]\n";
     }
 }
 
@@ -1335,11 +1331,10 @@ symbol_table::dump_global (std::ostream& os)
     {
       os << "*** dumping global symbol table\n\n";
 
-      for (global_table_const_iterator p = global_table.begin ();
-           p != global_table.end (); p++)
+      for (const auto& str_val : global_table)
         {
-          std::string nm = p->first;
-          octave_value val = p->second;
+          std::string nm = str_val.first;
+          octave_value val = str_val.second;
 
           os << "  " << nm << " ";
           val.dump (os);
@@ -1356,9 +1351,8 @@ symbol_table::dump_functions (std::ostream& os)
       os << "*** dumping globally visible functions from symbol table\n"
          << "    (c=commandline, b=built-in)\n\n";
 
-      for (fcn_table_const_iterator p = fcn_table.begin ();
-           p != fcn_table.end (); p++)
-        p->second.dump (os, "  ");
+      for (const auto& nm_fi : fcn_table)
+        nm_fi.second.dump (os, "  ");
 
       os << "\n";
     }
@@ -1372,11 +1366,10 @@ symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
   // better if we had a map from scope to list of subfunctions
   // stored with the function.  Do we?
 
-  for (fcn_table_const_iterator p = fcn_table.begin ();
-       p != fcn_table.end (); p++)
+  for (const auto& nm_fi : fcn_table)
     {
       std::pair<std::string, octave_value> tmp
-        = p->second.subfunction_defined_in_scope (scope);
+        = nm_fi.second.subfunction_defined_in_scope (scope);
 
       std::string nm = tmp.first;
 
@@ -1470,10 +1463,10 @@ symbol_table::do_workspace_info (void) const
 {
   std::list<workspace_element> retval;
 
-  for (table_const_iterator p = table.begin (); p != table.end (); p++)
+  for (const auto& nm_sr : table)
     {
-      std::string nm = p->first;
-      symbol_record sr = p->second;
+      std::string nm = nm_sr.first;
+      symbol_record sr = nm_sr.second;
 
       if (! sr.is_hidden ())
         {
@@ -1526,11 +1519,10 @@ symbol_table::do_dump (std::ostream& os)
     {
       os << "  persistent variables in this scope:\n\n";
 
-      for (persistent_table_const_iterator p = persistent_table.begin ();
-           p != persistent_table.end (); p++)
+      for (const auto& nm_val : persistent_table)
         {
-          std::string nm = p->first;
-          octave_value val = p->second;
+          std::string nm = nm_val.first;
+          octave_value val = nm_val.second;
 
           os << "    " << nm << " ";
           val.dump (os);
@@ -1545,8 +1537,8 @@ symbol_table::do_dump (std::ostream& os)
       os << "  other symbols in this scope (l=local; a=auto; f=formal\n"
          << "    h=hidden; i=inherited; g=global; p=persistent)\n\n";
 
-      for (table_const_iterator p = table.begin (); p != table.end (); p++)
-        p->second.dump (os, "    ");
+      for (const auto& nm_sr : table)
+        nm_sr.second.dump (os, "    ");
 
       os << "\n";
     }
@@ -1557,15 +1549,14 @@ void symbol_table::cleanup (void)
   clear_all (true);
 
   // Delete all possibly remaining scopes.
-  for (all_instances_iterator iter = all_instances.begin ();
-       iter != all_instances.end (); iter++)
+  for (auto& scope_stp : all_instances)
     {
       // First zero the table entry to avoid possible duplicate delete.
-      symbol_table *inst = iter->second;
-      iter->second = 0;
+      symbol_table *inst = scope_stp.second;
+      scope_stp.second = 0;
 
-      // Now delete the scope.  Note that there may be side effects, such as
-      // deleting other scopes.
+      // Now delete the scope.
+      // Note that there may be side effects, such as deleting other scopes.
       delete inst;
     }
 
@@ -1585,12 +1576,12 @@ symbol_table::do_update_nest (void)
   if (nest_parent)
     {
       // fix bad symbol_records
-      for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
+      for (auto& nm_sr : table)
         {
-          symbol_record &ours = ti->second;
+          symbol_record &ours = nm_sr.second;
           symbol_record parents;
           if (! ours.is_formal ()
-              && nest_parent->look_nonlocal (ti->first, parents))
+              && nest_parent->look_nonlocal (nm_sr.first, parents))
             {
               if (ours.is_global () || ours.is_persistent ())
                 error ("global and persistent may only be used in the topmost level in which a nested variable is used");
@@ -1598,7 +1589,7 @@ symbol_table::do_update_nest (void)
               if (! ours.is_formal ())
                 {
                   ours.invalidate ();
-                  ti->second = parents;
+                  nm_sr.second = parents;
                 }
             }
           else
@@ -1608,13 +1599,12 @@ symbol_table::do_update_nest (void)
   else if (nest_children.size ())
     {
       static_workspace = true;
-      for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
-        ti->second.set_curr_fcn (curr_fcn);
+      for (auto& nm_sr : table)
+        nm_sr.second.set_curr_fcn (curr_fcn);
     }
 
-  for (std::vector<symbol_table*>::iterator iter = nest_children.begin ();
-       iter != nest_children.end (); ++iter)
-    (*iter)->do_update_nest ();
+  for (auto& symtab_p : nest_children)
+    symtab_p->do_update_nest ();
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,
@@ -1731,9 +1721,8 @@ Undocumented internal function.
 
       std::list<symbol_table::scope_id> lst = symbol_table::scopes ();
 
-      for (std::list<symbol_table::scope_id>::const_iterator p = lst.begin ();
-           p != lst.end (); p++)
-        symbol_table::dump (octave_stdout, *p);
+      for (const auto& scope_id : lst)
+        symbol_table::dump (octave_stdout, scope_id);
     }
   else
     {
@@ -1751,9 +1740,8 @@ Undocumented internal function.
 
               octave_idx_type k = 0;
 
-              for (std::list<symbol_table::scope_id>::const_iterator
-                   p = lst.begin (); p != lst.end (); p++)
-                v.xelem (k++) = *p;
+              for (const auto& scope_id : lst)
+                v.xelem (k++) = scope_id;
 
               retval = v;
             }

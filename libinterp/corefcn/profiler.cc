@@ -45,11 +45,9 @@ profile_data_accumulator::stats::function_set_value (const function_set& list)
 
   RowVector retval (n);
   octave_idx_type i = 0;
-  for (function_set::const_iterator p = list.begin (); p != list.end (); ++p)
-    {
-      retval(i) = *p;
-      ++i;
-    }
+  for (const auto& nm : list)
+    retval(i++) = nm;
+
   assert (i == n);
 
   return retval;
@@ -61,8 +59,8 @@ profile_data_accumulator::tree_node::tree_node (tree_node* p, octave_idx_type f)
 
 profile_data_accumulator::tree_node::~tree_node ()
 {
-  for (child_map::iterator i = children.begin (); i != children.end (); ++i)
-    delete i->second;
+  for (auto& idx_tnode : children)
+    delete idx_tnode.second;
 }
 
 profile_data_accumulator::tree_node*
@@ -122,9 +120,8 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
     }
 
   // Recurse on children.
-  for (child_map::const_iterator i = children.begin ();
-       i != children.end (); ++i)
-    i->second->build_flat (data);
+  for (const auto& idx_tnode : children)
+    idx_tnode.second->build_flat (data);
 }
 
 octave_value
@@ -144,13 +141,12 @@ profile_data_accumulator::tree_node::get_hierarchical (double* total) const
   Cell rv_children (n, 1);
 
   octave_idx_type i = 0;
-  for (child_map::const_iterator p = children.begin ();
-       p != children.end (); ++p)
+  for (const auto& idx_tnode : children)
     {
-      const tree_node& entry = *p->second;
+      const tree_node& entry = *idx_tnode.second;
       double child_total = entry.time;
 
-      rv_indices(i) = octave_value (p->first);
+      rv_indices(i) = octave_value (idx_tnode.first);
       rv_times(i) = octave_value (entry.time);
       rv_calls(i) = octave_value (entry.calls);
       rv_children(i) = entry.get_hierarchical (&child_total);

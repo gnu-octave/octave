@@ -374,26 +374,26 @@ namespace octave
                                         Matrix box, double rotation,
                                         std::list<octave::text_renderer::string>& lst)
   {
-    for (std::list<octave::text_renderer::string>::iterator p = lst.begin ();
-         p != lst.end (); p++)
+    for (auto& txtobj : lst)
       {
         // Get pixel coordinates
         ColumnVector coord_pix = get_transform ().transform (x, y, z, false);
 
         // Translate and rotate
         double rot = rotation * 4.0 * atan (1.0) / 180;
-        coord_pix(0) += ((*p).get_x () + box(0))*cos (rot)
-                        - ((*p).get_y () + box(1))*sin (rot);
-        coord_pix(1) -= ((*p).get_y () + box(1))*cos (rot)
-                        + ((*p).get_x () + box(0))*sin (rot);;
+        coord_pix(0) += (txtobj.get_x () + box(0))*cos (rot)
+                        - (txtobj.get_y () + box(1))*sin (rot);
+        coord_pix(1) -= (txtobj.get_y () + box(1))*cos (rot)
+                        + (txtobj.get_x () + box(0))*sin (rot);
 
         // Turn coordinates back into current gl coordinates
-        ColumnVector coord =
-          get_transform ().untransform (coord_pix(0), coord_pix(1),
-                                        coord_pix(2), false);
-        (*p).set_x (coord(0));
-        (*p).set_y (coord(1));
-        (*p).set_z (coord(2));
+        ColumnVector coord = get_transform ().untransform (coord_pix(0),
+                                                           coord_pix(1),
+                                                           coord_pix(2),
+                                                           false);
+        txtobj.set_x (coord(0));
+        txtobj.set_y (coord(1));
+        txtobj.set_z (coord(2));
       }
   }
 }
@@ -647,7 +647,7 @@ namespace octave
 
         glRasterPos3d (x, y, z);
 
-        // Escape parenthesis until gl2ps does it (see bug ##45301).
+        // Escape parentheses until gl2ps does it (see bug #45301).
         if (term.find ("svg") == std::string::npos
             && term.find ("tex") == std::string::npos)
           {
@@ -663,13 +663,12 @@ namespace octave
     // Translate and rotate coordinates in order to use bottom-left alignment
     fix_strlist_position (x, y, z, bbox, rotation, lst);
 
-    for (std::list<octave::text_renderer::string>::iterator p = lst.begin ();
-         p != lst.end (); p++)
+    for (const auto& txtobj : lst)
       {
-        fontname = select_font ((*p).get_name (),
-                                (*p).get_weight () == "bold",
-                                (*p).get_angle () == "italic");
-        if ((*p).get_code ())
+        fontname = select_font (txtobj.get_name (),
+                                txtobj.get_weight () == "bold",
+                                txtobj.get_angle () == "italic");
+        if (txtobj.get_code ())
           {
             // This is only one character represented by a uint32 (utf8) code.
             // We replace it by the corresponding character in the
@@ -677,18 +676,18 @@ namespace octave
             if (term.find ("svg") == std::string::npos)
               {
                 fontname = "Symbol";
-                str = code_to_symbol ((*p).get_code ());
+                str = code_to_symbol (txtobj.get_code ());
               }
             else
               {
                 std::stringstream ss;
-                ss << (*p).get_code ();
+                ss << txtobj.get_code ();
                 str = "&#" + ss.str () + ";";
               }
           }
         else
           {
-            str = (*p).get_string ();
+            str = txtobj.get_string ();
             // Escape parenthesis until gl2ps does it (see bug ##45301).
             if (term.find ("svg") == std::string::npos)
               {
@@ -697,9 +696,9 @@ namespace octave
               }
           }
 
-        set_color ((*p).get_color ());
-        glRasterPos3d ((*p).get_x (), (*p).get_y (), (*p).get_z ());
-        gl2psTextOpt (str.c_str (), fontname.c_str (), (*p).get_size (),
+        set_color (txtobj.get_color ());
+        glRasterPos3d (txtobj.get_x (), txtobj.get_y (), txtobj.get_z ());
+        gl2psTextOpt (str.c_str (), fontname.c_str (), txtobj.get_size (),
                       GL2PS_TEXT_BL, rotation);
       }
 

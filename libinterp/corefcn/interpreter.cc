@@ -267,12 +267,12 @@ octave_remove_atexit_function (const std::string& fname)
 {
   bool found = false;
 
-  for (std::list<std::string>::iterator p = octave_atexit_functions.begin ();
-       p != octave_atexit_functions.end (); p++)
+  for (auto it = octave_atexit_functions.begin ();
+       it != octave_atexit_functions.end (); it++)
     {
-      if (*p == fname)
+      if (*it == fname)
         {
-          octave_atexit_functions.erase (p);
+          octave_atexit_functions.erase (it);
           found = true;
           break;
         }
@@ -583,9 +583,8 @@ namespace octave
 
     std::list<std::string> command_line_path = options.command_line_path ();
 
-    for (std::list<std::string>::const_iterator it = command_line_path.begin ();
-         it != command_line_path.end (); it++)
-      load_path::set_command_line_path (*it);
+    for (const auto& pth : command_line_path)
+      load_path::set_command_line_path (pth);
 
     std::string exec_path = options.exec_path ();
     if (! exec_path.empty ())

@@ -601,16 +601,15 @@ namespace octave
         break;
 
       default:
-        for (std::list<Matrix>::const_iterator it = line_bbox.begin ();
-             it != line_bbox.end (); ++it)
+        for (const auto& lbox : line_bbox)
           {
             if (bbox.is_empty ())
-              bbox = it->extract (0, 0, 0, 3);
+              bbox = lbox.extract (0, 0, 0, 3);
             else
               {
-                bbox(1) -= (*it)(3);
-                bbox(3) += (*it)(3);
-                bbox(2) = octave::math::max (bbox(2), (*it)(2));
+                bbox(1) -= lbox(3);
+                bbox(3) += lbox(3);
+                bbox(2) = octave::math::max (bbox(2), lbox(2));
               }
           }
         break;
@@ -1075,10 +1074,10 @@ namespace octave
     int saved_xoffset = xoffset;
     int max_xoffset = xoffset;
 
-    for (text_element_combined::iterator it = e.begin (); it != e.end (); ++it)
+    for (auto *txt_elt : e)
       {
         xoffset = saved_xoffset;
-        (*it)->accept (*this);
+        txt_elt->accept (*this);
         max_xoffset = octave::math::max (xoffset, max_xoffset);
       }
 

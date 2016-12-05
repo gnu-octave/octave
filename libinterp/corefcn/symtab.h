@@ -157,8 +157,8 @@ public:
     {
       std::list<scope_id> retval;
 
-      for (set_const_iterator p = in_use.begin (); p != in_use.end (); p++)
-        retval.push_back (*p);
+      for (const auto& scope_id : in_use)
+        retval.push_back (scope_id);
 
       retval.sort ();
 
@@ -1182,16 +1182,16 @@ public:
 
   static void erase_subfunctions_in_scope (scope_id scope)
   {
-    for (fcn_table_iterator q = fcn_table.begin (); q != fcn_table.end (); q++)
-      q->second.erase_subfunction (scope);
+    for (auto& nm_finfo : fcn_table)
+      nm_finfo.second.erase_subfunction (scope);
   }
 
   static void
   mark_subfunctions_in_scope_as_private (scope_id scope,
                                          const std::string& class_name)
   {
-    for (fcn_table_iterator q = fcn_table.begin (); q != fcn_table.end (); q++)
-      q->second.mark_subfunction_in_scope_as_private (scope, class_name);
+    for (auto& nm_finfo : fcn_table)
+      nm_finfo.second.mark_subfunction_in_scope_as_private (scope, class_name);
   }
 
   static scope_id dup_scope (scope_id scope)
@@ -1653,8 +1653,8 @@ public:
 
   static void clear_functions (bool force = false)
   {
-    for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
-      p->second.clear (force);
+    for (auto& nm_finfo : fcn_table)
+      nm_finfo.second.clear (force);
   }
 
   static void clear_function (const std::string& name)
@@ -1692,10 +1692,10 @@ public:
   {
     glob_match pattern (pat);
 
-    for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
+    for (auto& nm_finfo : fcn_table)
       {
-        if (pattern.match (p->first))
-          p->second.clear_user_function ();
+        if (pattern.match (nm_finfo.first))
+          nm_finfo.second.clear_user_function ();
       }
   }
 
@@ -1765,12 +1765,8 @@ public:
 
   static void clear_mex_functions (void)
   {
-    for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
-      {
-        fcn_info& finfo = p->second;
-
-        finfo.clear_mex_function ();
-      }
+    for (auto& nm_finfo : fcn_table)
+      nm_finfo.second.clear_mex_function ();
   }
 
   static bool set_class_relationship (const std::string& sup_class,
@@ -1907,16 +1903,14 @@ public:
 
     glob_match pat (pattern);
 
-    for (global_table_const_iterator p = global_table.begin ();
-         p != global_table.end (); p++)
+    for (const auto& nm_val : global_table)
       {
-        // We generate a list of symbol_record objects so that
-        // the results from glob_variables and glob_global_variables
-        // may be handled the same way.
-
-        if (pat.match (p->first))
+        // We generate a list of symbol_record objects so that the results from
+        // glob_variables and glob_global_variables may be handled the same
+        // way.
+        if (pat.match (nm_val.first))
           retval.push_back (symbol_record (xglobal_scope,
-                                           p->first, p->second,
+                                           nm_val.first, nm_val.second,
                                            symbol_record::global));
       }
 
@@ -1930,16 +1924,14 @@ public:
 
     octave::regexp pat (pattern);
 
-    for (global_table_const_iterator p = global_table.begin ();
-         p != global_table.end (); p++)
+    for (const auto& nm_val : global_table)
       {
-        // We generate a list of symbol_record objects so that
-        // the results from regexp_variables and regexp_global_variables
-        // may be handled the same way.
-
-        if (pat.is_match (p->first))
+        // We generate a list of symbol_record objects so that the results from
+        // regexp_variables and regexp_global_variables may be handled the same
+        // way.
+        if (pat.is_match (nm_val.first))
           retval.push_back (symbol_record (xglobal_scope,
-                                           p->first, p->second,
+                                           nm_val.first, nm_val.second,
                                            symbol_record::global));
       }
 
@@ -1983,11 +1975,10 @@ public:
   {
     std::list<std::string> retval;
 
-    for (fcn_table_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
+    for (const auto& nm_finfo : fcn_table)
       {
-        if (p->second.is_user_function_defined ())
-          retval.push_back (p->first);
+        if (nm_finfo.second.is_user_function_defined ())
+          retval.push_back (nm_finfo.first);
       }
 
     if (! retval.empty ())
@@ -2000,9 +1991,8 @@ public:
   {
     std::list<std::string> retval;
 
-    for (global_table_const_iterator p = global_table.begin ();
-         p != global_table.end (); p++)
-      retval.push_back (p->first);
+    for (const auto& nm_val : global_table)
+      retval.push_back (nm_val.first);
 
     retval.sort ();
 
@@ -2027,13 +2017,12 @@ public:
   {
     std::list<std::string> retval;
 
-    for (fcn_table_const_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
+    for (const auto& nm_finfo : fcn_table)
       {
-        octave_value fcn = p->second.find_built_in_function ();
+        octave_value fcn = nm_finfo.second.find_built_in_function ();
 
         if (fcn.is_defined ())
-          retval.push_back (p->first);
+          retval.push_back (nm_finfo.first);
       }
 
     if (! retval.empty ())
@@ -2046,13 +2035,12 @@ public:
   {
     std::list<std::string> retval;
 
-    for (fcn_table_const_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
+    for (const auto& nm_finfo : fcn_table)
       {
-        octave_value fcn = p->second.find_cmdline_function ();
+        octave_value fcn = nm_finfo.second.find_cmdline_function ();
 
         if (fcn.is_defined ())
-          retval.push_back (p->first);
+          retval.push_back (nm_finfo.first);
       }
 
     if (! retval.empty ())
@@ -2111,16 +2099,14 @@ public:
 
   static void lock_subfunctions (scope_id scope = xcurrent_scope)
   {
-    for (fcn_table_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
-      p->second.lock_subfunction (scope);
+    for (auto& nm_finfo : fcn_table)
+      nm_finfo.second.lock_subfunction (scope);
   }
 
   static void unlock_subfunctions (scope_id scope = xcurrent_scope)
   {
-    for (fcn_table_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
-      p->second.unlock_subfunction (scope);
+    for (auto& nm_finfo : fcn_table)
+      nm_finfo.second.unlock_subfunction (scope);
   }
 
   static std::map<std::string, octave_value>
@@ -2128,11 +2114,10 @@ public:
   {
     std::map<std::string, octave_value> retval;
 
-    for (fcn_table_const_iterator p = fcn_table.begin ();
-         p != fcn_table.end (); p++)
+    for (const auto& nm_finfo : fcn_table)
       {
         std::pair<std::string, octave_value> tmp
-          = p->second.subfunction_defined_in_scope (scope);
+          = nm_finfo.second.subfunction_defined_in_scope (scope);
 
         std::string nm = tmp.first;
 
@@ -2170,14 +2155,13 @@ public:
     if (it != parent_map.end ())
       retval = it->second;
 
-    for (std::list<std::string>::const_iterator lit = retval.begin ();
-         lit != retval.end (); lit++)
+    for (const auto& nm : retval)
       {
         // Search for parents of parents and append them to the list.
 
         // FIXME: should we worry about a circular inheritance graph?
 
-        std::list<std::string> parents = parent_classes (*lit);
+        std::list<std::string> parents = parent_classes (nm);
 
         if (! parents.empty ())
           retval.insert (retval.end (), parents.begin (), parents.end ());
@@ -2384,9 +2368,9 @@ private:
   void
   do_dup_scope (symbol_table& new_symbol_table) const
   {
-    for (table_const_iterator p = table.begin (); p != table.end (); p++)
-      new_symbol_table.insert_symbol_record (p->second.dup (new_symbol_table
-                                                            .my_scope));
+    for (const auto& nm_sr : table)
+      new_symbol_table.insert_symbol_record (nm_sr.second.dup (new_symbol_table
+                                                               .my_scope));
   }
 
   symbol_record do_find_symbol (const std::string& name)
@@ -2401,9 +2385,9 @@ private:
 
   void do_inherit (symbol_table& donor_table, context_id donor_context)
   {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
+    for (auto& nm_sr : table)
       {
-        symbol_record& sr = p->second;
+        symbol_record& sr = nm_sr.second;
 
         if (! (sr.is_automatic () || sr.is_formal ()))
           {
@@ -2566,37 +2550,37 @@ private:
 
   void do_push_context (void)
   {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
-      p->second.push_context (my_scope);
+    for (auto& nm_sr : table)
+      nm_sr.second.push_context (my_scope);
   }
 
   void do_pop_context (void)
   {
-    table_iterator p = table.begin ();
+    table_iterator tbl_it = table.begin ();
 
-    while (p != table.end ())
+    while (tbl_it != table.end ())
       {
-        if (p->second.pop_context (my_scope) == 0)
-          table.erase (p++);
+        if (tbl_it->second.pop_context (my_scope) == 0)
+          table.erase (tbl_it++);
         else
-          p++;
+          tbl_it++;
       }
   }
 
   void do_clear_variables (void)
   {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
-      p->second.clear (my_scope);
+    for (auto& nm_sr : table)
+      nm_sr.second.clear (my_scope);
   }
 
   void do_clear_objects (void)
   {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
+    for (auto& nm_sr : table)
       {
-        symbol_record& sr = p->second;
+        symbol_record& sr = nm_sr.second;
         octave_value val = sr.varval ();
         if (val.is_object ())
-          p->second.clear (my_scope);
+          nm_sr.second.clear (my_scope);
       }
   }
 
@@ -2631,9 +2615,9 @@ private:
   {
     glob_match pattern (pat);
 
-    for (table_iterator p = table.begin (); p != table.end (); p++)
+    for (auto& nm_sr : table)
       {
-        symbol_record& sr = p->second;
+        symbol_record& sr = nm_sr.second;
 
         if (sr.is_global () && pattern.match (sr.name ()))
           sr.unmark_global ();
@@ -2654,9 +2638,9 @@ private:
   {
     glob_match pattern (pat);
 
-    for (table_iterator p = table.begin (); p != table.end (); p++)
+    for (auto& nm_sr : table)
       {
-        symbol_record& sr = p->second;
+        symbol_record& sr = nm_sr.second;
 
         if (sr.is_defined () || sr.is_global ())
           {
@@ -2670,9 +2654,9 @@ private:
   {
     octave::regexp pattern (pat);
 
-    for (table_iterator p = table.begin (); p != table.end (); p++)
+    for (auto& nm_sr : table)
       {
-        symbol_record& sr = p->second;
+        symbol_record& sr = nm_sr.second;
 
         if (sr.is_defined () || sr.is_global ())
           {
@@ -2703,9 +2687,9 @@ private:
   {
     std::list<symbol_record> retval;
 
-    for (table_const_iterator p = table.begin (); p != table.end (); p++)
+    for (const auto& nm_sr : table)
       {
-        const symbol_record& sr = p->second;
+        const symbol_record& sr = nm_sr.second;
 
         if ((defined_only && ! sr.is_defined (context))
             || (sr.xstorage_class () & exclude))
@@ -2724,11 +2708,11 @@ private:
 
     glob_match pat (pattern);
 
-    for (table_const_iterator p = table.begin (); p != table.end (); p++)
+    for (const auto& nm_sr : table)
       {
-        if (pat.match (p->first))
+        if (pat.match (nm_sr.first))
           {
-            const symbol_record& sr = p->second;
+            const symbol_record& sr = nm_sr.second;
 
             if (vars_only && ! sr.is_variable ())
               continue;
@@ -2747,11 +2731,11 @@ private:
 
     octave::regexp pat (pattern);
 
-    for (table_const_iterator p = table.begin (); p != table.end (); p++)
+    for (const auto& nm_sr : table)
       {
-        if (pat.is_match (p->first))
+        if (pat.is_match (nm_sr.first))
           {
-            const symbol_record& sr = p->second;
+            const symbol_record& sr = nm_sr.second;
 
             if (vars_only && ! sr.is_variable ())
               continue;
@@ -2767,10 +2751,10 @@ private:
   {
     std::list<std::string> retval;
 
-    for (table_const_iterator p = table.begin (); p != table.end (); p++)
+    for (const auto& nm_sr : table)
       {
-        if (p->second.is_variable ())
-          retval.push_back (p->first);
+        if (nm_sr.second.is_variable ())
+          retval.push_back (nm_sr.first);
       }
 
     retval.sort ();

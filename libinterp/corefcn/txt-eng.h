@@ -321,10 +321,9 @@ public:
 
   virtual void visit (text_element_list& e)
   {
-    for (text_element_list::iterator it = e.begin ();
-         it != e.end (); ++it)
+    for (auto& el_p : e)
       {
-        (*it)->accept (*this);
+        el_p->accept (*this);
       }
   }
 

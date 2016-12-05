@@ -2646,16 +2646,15 @@ namespace octave
     if (collect_output)
       {
         int prev_type = -1;
-        for (std::list<octave_value>::iterator col = out.begin ();
-             col != out.end (); col++)
+        for (const auto& col : out)
           {
-            if (col->type_id () == prev_type
+            if (col.type_id () == prev_type
                 || (fmt_list.set_from_first && prev_type != -1))
-              merge_with_prev [conv++] = true;
+              merge_with_prev[conv++] = true;
             else
-              merge_with_prev [conv++] = false;
+              merge_with_prev[conv++] = false;
 
-            prev_type = col->type_id ();
+            prev_type = col.type_id ();
           }
       }
 
@@ -2672,9 +2671,8 @@ namespace octave
             if (row == 0 || row >= size)
               {
                 size += size+1;
-                for (std::list<octave_value>::iterator col = out.begin ();
-                     col != out.end (); col++)
-                  *col = (*col).resize (dim_vector (size, 1), 0);
+                for (auto& col : out)
+                  col = col.resize (dim_vector (size, 1), 0);
               }
 
             row_idx(0) = row;
@@ -2719,16 +2717,16 @@ namespace octave
     if (! collect_output)
       {
         retval = Cell (dim_vector (1, out.size ()));
-        for (std::list<octave_value>::iterator col = out.begin ();
-             col != out.end (); col++, i++)
+        for (auto& col : out)
           {
             // trim last columns if that was requested
             if (i == done_after && uneven_columns)
               dv = dim_vector (std::max (valid_rows - 1, 0), 1);
 
             ra_idx(1) = i;
-            retval = do_cat_op (retval, octave_value (Cell (col->resize (dv,0))),
+            retval = do_cat_op (retval, octave_value (Cell (col.resize (dv,0))),
                                 ra_idx);
+            i++;
           }
       }
     else  // group adjacent cells of the same type into a single cell
@@ -2739,10 +2737,9 @@ namespace octave
 
         conv = 0;
         retval = Cell ();
-        for (std::list<octave_value>::iterator col = out.begin ();
-             col != out.end (); col++)
+        for (auto& col : out)
           {
-            if (! merge_with_prev [conv++])  // including first time
+            if (! merge_with_prev[conv++])  // including first time
               {
                 if (prev_type != -1)
                   {
@@ -2750,14 +2747,14 @@ namespace octave
                     retval = do_cat_op (retval, octave_value (Cell (cur)),
                                         ra_idx);
                   }
-                cur = octave_value (col->resize (dv,0));
+                cur = octave_value (col.resize (dv,0));
                 group_size = 1;
-                prev_type = col->type_id ();
+                prev_type = col.type_id ();
               }
             else
               {
                 ra_idx(1) = group_size++;
-                cur = do_cat_op (cur, octave_value (col->resize (dv,0)),
+                cur = do_cat_op (cur, octave_value (col.resize (dv,0)),
                                  ra_idx);
               }
           }
@@ -7528,13 +7525,13 @@ octave_stream_list::do_list_open_files (void) const
       << "  number  mode  arch       name\n"
       << "  ------  ----  ----       ----\n";
 
-  for (ostrl_map::const_iterator p = list.begin (); p != list.end (); p++)
+  for (const auto& fid_strm : list)
     {
-      octave_stream os = p->second;
+      octave_stream os = fid_strm.second;
 
       buf << "  "
           << std::setiosflags (std::ios::right)
-          << std::setw (4) << p->first << "     "
+          << std::setw (4) << fid_strm.first << "     "
           // reset necessary in addition to setiosflags since this is one stmt.
           << std::resetiosflags (std::ios::adjustfield)
           << std::setiosflags (std::ios::left)
@@ -7559,11 +7556,11 @@ octave_stream_list::do_open_file_numbers (void) const
 
   int num_open = 0;
 
-  for (ostrl_map::const_iterator p = list.begin (); p != list.end (); p++)
+  for (const auto& fid_strm : list)
     {
       // Skip stdin, stdout, and stderr.
-      if (p->first > 2 && p->second)
-        retval(0,num_open++) = p->first;
+      if (fid_strm.first > 2 && fid_strm.second)
+        retval(0, num_open++) = fid_strm.first;
     }
 
   retval.resize ((num_open > 0), num_open);
@@ -7580,16 +7577,16 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
     {
       std::string nm = fid.string_value ();
 
-      for (ostrl_map::const_iterator p = list.begin (); p != list.end (); p++)
+      for (const auto& fid_strm : list)
         {
           // stdin, stdout, and stderr are unnamed.
-          if (p->first > 2)
+          if (fid_strm.first > 2)
             {
-              octave_stream os = p->second;
+              octave_stream os = fid_strm.second;
 
               if (os && os.name () == nm)
                 {
-                  retval = p->first;
+                  retval = fid_strm.first;
                   break;
                 }
             }

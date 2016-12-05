@@ -330,11 +330,9 @@ octave_errno::do_list (void)
 {
   octave_scalar_map retval;
 
-  for (std::map<std::string, int>::const_iterator p = errno_tbl.begin ();
-       p != errno_tbl.end ();
-       p++)
+  for (const auto& p : errno_tbl)
     {
-      retval.assign (p->first, p->second);
+      retval.assign (p.first, p.second);
     }
 
   return retval;

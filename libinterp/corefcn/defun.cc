@@ -153,17 +153,17 @@ bool defun_isargout (int nargout, int iout)
 {
   const std::list<octave_lvalue> *lvalue_list
     = octave_builtin::curr_lvalue_list;
+
   if (iout >= std::max (nargout, 1))
     return false;
   else if (lvalue_list)
     {
       int k = 0;
-      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-           p != lvalue_list->end (); p++)
+      for (const auto& lval : *lvalue_list)
         {
           if (k == iout)
-            return ! p->is_black_hole ();
-          k += p->numel ();
+            return ! lval.is_black_hole ();
+          k += lval.numel ();
           if (k > iout)
             break;
         }
@@ -182,14 +182,13 @@ void defun_isargout (int nargout, int nout, bool *isargout)
   if (lvalue_list)
     {
       int k = 0;
-      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-           p != lvalue_list->end () && k < nout; p++)
+      for (const auto& lval : *lvalue_list)
         {
-          if (p->is_black_hole ())
+          if (lval.is_black_hole ())
             isargout[k++] = false;
           else
             {
-              int l = std::min (k + p->numel (),
+              int l = std::min (k + lval.numel (),
                                 static_cast<octave_idx_type> (nout));
               while (k < l)
                 isargout[k++] = true;

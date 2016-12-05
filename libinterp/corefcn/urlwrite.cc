@@ -198,9 +198,9 @@ private:
     Matrix retval (1, handle_map.size ());
 
     octave_idx_type i = 0;
-    for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
+    for (const auto& h_obj : handle_map)
       {
-        curl_handle h = p->first;
+        curl_handle h = h_obj.first;
 
         retval(i++) = h.value ();
       }

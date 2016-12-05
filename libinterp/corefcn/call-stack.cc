@@ -419,17 +419,14 @@ octave_call_stack::do_backtrace (size_t nskip,
 
   octave_idx_type k = 0;
 
-  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
-       p != frames.end (); p++)
+  for (const auto& frm : frames)
     {
-      const stack_frame& elt = *p;
-
-      scope(k) = elt.m_scope;
-      context(k) = elt.m_context;
-      file(k) = elt.fcn_file_name ();
-      name(k) = elt.fcn_name (print_subfn);
-      line(k) = elt.m_line;
-      column(k) = elt.m_column;
+      scope(k)   = frm.m_scope;
+      context(k) = frm.m_context;
+      file(k)    = frm.fcn_file_name ();
+      name(k)    = frm.fcn_name (print_subfn);
+      line(k)    = frm.m_line;
+      column(k)  = frm.m_column;
 
       k++;
     }

@@ -208,11 +208,9 @@ local_functions (void)
 
   // Loop over them.
   size_t i = 0;
-  for (std::list<std::string>::const_iterator p = names.begin ();
-       p != names.end (); p++)
-    retval(i++) = *p;
+  for (const auto& nm : names)
+    retval(i++) = nm;
 
-  retval.resize (i);
   return retval;
 }
 
@@ -706,13 +704,12 @@ included in the list.  This is a known issue.
 
   // loop over them.
   size_t i = 0;
-  for (std::list<std::string>::const_iterator p = names.begin ();
-       p != names.end (); p++)
+  for (const auto& nm : names)
     {
-      std::map<std::string, octave_value>::const_iterator q = h.find (*p);
-      if (q != h.end () &&
-          ! q->second.user_function_value ()->is_nested_function ())
-        retval(i++) = octave_value (new octave_fcn_handle (q->second, *p));
+      std::map<std::string, octave_value>::const_iterator nm_fcn = h.find (nm);
+      if (nm_fcn != h.end () &&
+          ! nm_fcn->second.user_function_value ()->is_nested_function ())
+        retval(i++) = octave_value (new octave_fcn_handle (nm_fcn->second, nm));
     }
 
   // remove pre-allocation for nested functions

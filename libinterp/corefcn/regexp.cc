@@ -380,10 +380,9 @@ octregexp (const octave_value_list &args, int nargout,
           Cell tmp (dim_vector (1, sz));
 
           i = 0;
-          for (octave::regexp::match_data::const_iterator p = rx_lst.begin ();
-               p != rx_lst.end (); p++)
+          for (const auto& match_data : rx_lst)
             {
-              string_vector named_tokens = p->named_tokens ();
+              string_vector named_tokens = match_data.named_tokens ();
 
               tmp(i++) = named_tokens(j);
             }
@@ -433,16 +432,15 @@ octregexp (const octave_value_list &args, int nargout,
       size_t sp_start = 0;
 
       i = 0;
-      for (octave::regexp::match_data::const_iterator p = rx_lst.begin ();
-           p != rx_lst.end (); p++)
+      for (const auto& match_data : rx_lst)
         {
-          double s = p->start ();
-          double e = p->end ();
+          double s = match_data.start ();
+          double e = match_data.end ();
 
-          string_vector tmp = p->tokens ();
+          string_vector tmp = match_data.tokens ();
           tokens(i) = Cell (dim_vector (1, tmp.numel ()), tmp);
-          match_string(i) = p->match_string ();
-          token_extents(i) = p->token_extents ();
+          match_string(i) = match_data.match_string ();
+          token_extents(i) = match_data.token_extents ();
           end(i) = e;
           start(i) = s;
           split(i) = buffer.substr (sp_start, s-sp_start-1);

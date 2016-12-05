@@ -94,10 +94,10 @@ octave_fields::rmfield (const std::string& field)
       octave_idx_type n = p->second;
       make_unique ();
       rep->erase (field);
-      for (fields_rep::iterator q = rep->begin (); q != rep->end (); q++)
+      for (auto& fld_idx : *rep)
         {
-          if (q->second >= n)
-            q->second--;
+          if (fld_idx.second >= n)
+            fld_idx.second--;
         }
 
       return n;
@@ -112,10 +112,10 @@ octave_fields::orderfields (Array<octave_idx_type>& perm)
 
   make_unique ();
   octave_idx_type i = 0;
-  for (fields_rep::iterator q = rep->begin (); q != rep->end (); q++)
+  for (auto& fld_idx : *rep)
     {
-      octave_idx_type j = q->second;
-      q->second = i;
+      octave_idx_type j = fld_idx.second;
+      fld_idx.second = i;
       perm(i++) = j;
     }
 }
@@ -161,8 +161,8 @@ octave_fields::fieldnames (void) const
   octave_idx_type n = nfields ();
   string_vector retval(n);
 
-  for (iterator p = begin (); p != end (); p++)
-    retval.xelem (p->second) = p->first;
+  for (auto& fld_idx : *this)
+    retval.xelem (fld_idx.second) = fld_idx.first;
 
   return retval;
 }
@@ -1294,7 +1294,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
     {
       for (const_iterator pa = begin (); pa != end (); pa++)
         {
-          const_iterator pb = rb.seek (key(pa));
+          const_iterator pb = rb.seek (key (pa));
 
           if (pb == rb.end ())
             error ("field name mismatch in structure concatenation");

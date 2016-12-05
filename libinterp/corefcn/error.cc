@@ -285,14 +285,11 @@ pr_where (std::ostream& os, const char *who,
   if (nframes > 0)
     pr_where_1 (os, "%s: called from\n", who);
 
-  for (std::list<error_stack_frame>::const_iterator p = frames.begin ();
-       p != frames.end (); p++)
+  for (const auto& frm : frames)
     {
-      const error_stack_frame& elt = *p;
-
-      std::string fcn_name = elt.name;
-      int line = elt.line;
-      int column = elt.column;
+      std::string fcn_name = frm.name;
+      int line = frm.line;
+      int column = frm.column;
 
       if (line > 0)
         {
@@ -318,16 +315,13 @@ pr_where (std::ostream& os, const char *who)
   call_stack_frames.unique ();
 
   std::list<error_stack_frame> frames;
-  for (std::list<octave_call_stack::stack_frame>::const_iterator p = call_stack_frames.begin ();
-       p != call_stack_frames.end (); p++)
+  for (const auto& frm : call_stack_frames)
     {
-      const octave_call_stack::stack_frame& elt = *p;
-
       error_stack_frame frame;
 
-      frame.name = elt.fcn_name ();
-      frame.line = elt.line ();
-      frame.column = elt.column ();
+      frame.name = frm.fcn_name ();
+      frame.line = frm.line ();
+      frame.column = frm.column ();
 
       frames.push_back (frame);
     }

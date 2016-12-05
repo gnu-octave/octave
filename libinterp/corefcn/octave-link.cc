@@ -235,13 +235,12 @@ Undocumented internal function.
       else
         {
           int idx = 0;
-          for (std::list<std::string>::iterator it = items_lst.begin ();
-               it != items_lst.end (); it++)
+          for (auto& str : items_lst)
             {
               if (idx != 2)
-                retval(idx++) = *it;
+                retval(idx++) = str;
               else
-                retval(idx++) = atoi (it->c_str ());
+                retval(idx++) = atoi (str.c_str ());
             }
         }
     }
@@ -311,11 +310,8 @@ Undocumented internal function.
   nel = items_lst.size ();
   Matrix items (dim_vector (1, nel));
   octave_idx_type i = 0;
-  for (std::list<int>::iterator it = items_lst.begin ();
-       it != items_lst.end (); it++)
-    {
-      items.xelem(i++) = *it;
-    }
+  for (const auto& int_el : items_lst)
+    items.xelem(i++) = int_el;
 
   return ovl (items, result.second);
 }
@@ -364,11 +360,8 @@ Undocumented internal function.
   nel = items_lst.size ();
   Cell items (dim_vector (nel, 1));
   octave_idx_type i = 0;
-  for (std::list<std::string>::iterator it = items_lst.begin ();
-       it != items_lst.end (); it++)
-    {
-      items.xelem(i++) = *it;
-    }
+  for (const auto& str_el : items_lst)
+    items.xelem(i++) = str_el;
 
   return ovl (items);
 }

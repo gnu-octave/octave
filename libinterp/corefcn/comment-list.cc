@@ -34,12 +34,8 @@ octave_comment_list::dup (void) const
 {
   octave_comment_list *new_cl = new octave_comment_list ();
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const octave_comment_elt elt = *p;
-
-      new_cl->append (elt);
-    }
+  for (const auto& elt : *this)
+    new_cl->append (elt);
 
   return new_cl;
 }

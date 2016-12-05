@@ -157,36 +157,92 @@ get_region_range (const octave_value& region)
   return output;
 }
 
-static std::map<std::string, octave_idx_type>
-calculate_region (const octave_scalar_map& options)
+class
+image_region
 {
-  std::map<std::string, octave_idx_type> region;
-  const Cell pixel_region = options.getfield ("region").cell_value ();
+public:
 
-  // Subtract 1 to account for 0 indexing.
-  const Range rows    = get_region_range (pixel_region (0));
-  const Range cols    = get_region_range (pixel_region (1));
-  region["row_start"] = rows.base () -1;
-  region["col_start"] = cols.base () -1;
-  region["row_end"]   = rows.max ()  -1;
-  region["col_end"]   = cols.max ()  -1;
+  image_region (const octave_scalar_map& options)
+  {
+    // FIXME: should we have better checking on the input map and values
+    // or is that expected to be done elsewhere?
+
+    const Cell pixel_region = options.getfield ("region").cell_value ();
+
+    // Subtract 1 to account for 0 indexing.
+
+    const Range rows = get_region_range (pixel_region (0));
+    const Range cols = get_region_range (pixel_region (1));
+
+    m_row_start = rows.base () - 1;
+    m_col_start = cols.base () - 1;
+    m_row_end = rows.max () - 1;
+    m_col_end = cols.max () - 1;
+
+    m_row_cache = m_row_end - m_row_start + 1;
+    m_col_cache = m_col_end - m_col_start + 1;
+
+    m_row_shift = m_col_cache * rows.inc ();
+    m_col_shift = m_col_cache * (m_row_cache + rows.inc () - 1) - cols.inc ();
+
+    m_row_out = rows.numel ();
+    m_col_out = cols.numel ();
+  }
+
+  // Default copy, move, and delete methods are all OK for this class.
+
+  image_region (const image_region&) = default;
+  image_region (image_region&&) = default;
+
+  image_region& operator = (const image_region&) = default;
+  image_region& operator = (image_region&&) = default;
+
+  ~image_region (void) = default;
+
+  octave_idx_type row_start (void) const { return m_row_start; }
+  octave_idx_type col_start (void) const { return m_col_start; }
+  octave_idx_type row_end (void) const { return m_row_end; }
+  octave_idx_type col_end (void) const { return m_col_end; }
 
   // Length of the area to load into the Image Pixel Cache.  We use max and
   // min to account for cases where last element of range is the range limit.
-  region["row_cache"] = region["row_end"] - region["row_start"] +1;
-  region["col_cache"] = region["col_end"] - region["col_start"] +1;
+
+  octave_idx_type row_cache (void) const { return m_row_cache; }
+  octave_idx_type col_cache (void) const { return m_col_cache; }
 
   // How much we have to shift in the memory when doing the loops.
-  region["row_shift"] = region["col_cache"] * rows.inc ();
-  region["col_shift"] = region["col_cache"] *
-                        (region["row_cache"] + rows.inc () -1) - cols.inc ();
+
+  octave_idx_type row_shift (void) const { return m_row_shift; }
+  octave_idx_type col_shift (void) const { return m_col_shift; }
 
   // The actual height and width of the output image
-  region["row_out"] = rows.numel ();
-  region["col_out"] = cols.numel ();
 
-  return region;
-}
+  octave_idx_type row_out (void) const { return m_row_out; }
+  octave_idx_type col_out (void) const { return m_col_out; }
+
+private:
+
+  octave_idx_type m_row_start;
+  octave_idx_type m_col_start;
+  octave_idx_type m_row_end;
+  octave_idx_type m_col_end;
+
+  // Length of the area to load into the Image Pixel Cache.  We use max and
+  // min to account for cases where last element of range is the range limit.
+
+  octave_idx_type m_row_cache;
+  octave_idx_type m_col_cache;
+
+  // How much we have to shift in the memory when doing the loops.
+
+  octave_idx_type m_row_shift;
+  octave_idx_type m_col_shift;
+
+  // The actual height and width of the output image
+
+  octave_idx_type m_row_out;
+  octave_idx_type m_col_out;
+};
 
 static octave_value_list
 read_maps (Magick::Image& img)
@@ -220,10 +276,11 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
 
   octave_value_list retval (1);
 
-  std::map<std::string, octave_idx_type> region = calculate_region (options);
+  image_region region (options);
+
   const octave_idx_type nFrames = frameidx.numel ();
-  const octave_idx_type nRows = region["row_out"];
-  const octave_idx_type nCols = region["col_out"];
+  const octave_idx_type nRows = region.row_out ();
+  const octave_idx_type nCols = region.col_out ();
 
   // imvec has all of the pages of a file, even the ones we are not
   // interested in.  We will use the first image that we will be actually
@@ -233,12 +290,12 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   T img       = T (dim_vector (nRows, nCols, 1, nFrames));
   P* img_fvec = img.fortran_vec ();
 
-  const octave_idx_type row_start = region["row_start"];
-  const octave_idx_type col_start = region["col_start"];
-  const octave_idx_type row_shift = region["row_shift"];
-  const octave_idx_type col_shift = region["col_shift"];
-  const octave_idx_type row_cache = region["row_cache"];
-  const octave_idx_type col_cache = region["col_cache"];
+  const octave_idx_type row_start = region.row_start ();
+  const octave_idx_type col_start = region.col_start ();
+  const octave_idx_type row_shift = region.row_shift ();
+  const octave_idx_type col_shift = region.col_shift ();
+  const octave_idx_type row_cache = region.row_cache ();
+  const octave_idx_type col_cache = region.col_cache ();
 
   // When reading PixelPackets from the Image Pixel Cache, they come in
   // row major order.  So we keep moving back and forth there so we can
@@ -316,10 +373,11 @@ read_images (std::vector<Magick::Image>& imvec,
 
   octave_value_list retval (3, Matrix ());
 
-  std::map<std::string, octave_idx_type> region = calculate_region (options);
+  image_region region (options);
+
   const octave_idx_type nFrames = frameidx.numel ();
-  const octave_idx_type nRows = region["row_out"];
-  const octave_idx_type nCols = region["col_out"];
+  const octave_idx_type nRows = region.row_out ();
+  const octave_idx_type nCols = region.col_out ();
   T img;
 
   // imvec has all of the pages of a file, even the ones we are not
@@ -327,12 +385,12 @@ read_images (std::vector<Magick::Image>& imvec,
   // reading to get information about the image.
   const octave_idx_type def_elem = frameidx(0);
 
-  const octave_idx_type row_start = region["row_start"];
-  const octave_idx_type col_start = region["col_start"];
-  const octave_idx_type row_shift = region["row_shift"];
-  const octave_idx_type col_shift = region["col_shift"];
-  const octave_idx_type row_cache = region["row_cache"];
-  const octave_idx_type col_cache = region["col_cache"];
+  const octave_idx_type row_start = region.row_start ();
+  const octave_idx_type col_start = region.col_start ();
+  const octave_idx_type row_shift = region.row_shift ();
+  const octave_idx_type col_shift = region.col_shift ();
+  const octave_idx_type row_cache = region.row_cache ();
+  const octave_idx_type col_cache = region.col_cache ();
 
   // GraphicsMagick (GM) keeps the image values in memory using whatever
   // QuantumDepth it was built with independently of the original image

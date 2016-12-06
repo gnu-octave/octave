@@ -46,7 +46,7 @@ public:
 
     virtual void run (void) { }
 
-    virtual ~elem (void) { }
+    virtual ~elem (void) = default;
 
     friend class action_container;
 
@@ -232,7 +232,7 @@ public:
 
   action_container (void) { }
 
-  virtual ~action_container (void) { }
+  virtual ~action_container (void) = default;
 
   virtual void add (elem *new_elem) = 0;
 

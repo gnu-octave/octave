@@ -214,7 +214,7 @@ public:
 
   octave_base_value (const octave_base_value&) : count (1) { }
 
-  virtual ~octave_base_value (void) { }
+  virtual ~octave_base_value (void) = default;
 
   // Unconditional clone.  Always clones.
   virtual octave_base_value *

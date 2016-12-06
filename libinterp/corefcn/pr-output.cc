@@ -165,7 +165,7 @@ public:
     return *this;
   }
 
-  ~float_format (void) { }
+  ~float_format (void) = default;
 
   float_format& scientific (void) { fmt = std::ios::scientific; return *this; }
   float_format& fixed (void) { fmt = std::ios::fixed; return *this; }

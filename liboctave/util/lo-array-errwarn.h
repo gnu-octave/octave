@@ -47,7 +47,7 @@ namespace octave
       : index (index_arg), nd (nd_arg), dim (dim_arg), var (var_arg)
     { }
 
-    ~index_exception (void) { }
+    ~index_exception (void) = default;
 
     // Erroneous index value.  Called in what, and by external code
     // (e.g., nth_element) to make a custom error message.

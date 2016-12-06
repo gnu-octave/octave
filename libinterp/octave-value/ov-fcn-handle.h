@@ -67,7 +67,7 @@ public:
     overloads = fh.overloads;
   }
 
-  ~octave_fcn_handle (void) { }
+  ~octave_fcn_handle (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_fcn_handle (*this); }

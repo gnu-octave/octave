@@ -77,7 +77,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~sparse_lu (void) { }
+      virtual ~sparse_lu (void) = default;
 
       lu_type L (void) const { return Lfact; }
 

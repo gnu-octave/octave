@@ -47,7 +47,7 @@ public:
     : x (a.x), t (a.t), stop_time (0.0), stop_time_set (false),
       restart (true), integration_error (false), istate (0) { }
 
-  virtual ~base_diff_eqn (void) { }
+  virtual ~base_diff_eqn (void) = default;
 
   base_diff_eqn& operator = (const base_diff_eqn& a)
   {

@@ -97,7 +97,7 @@ public:
                             = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
-  ~tree_prefix_expression (void) { }
+  ~tree_prefix_expression (void) = default;
 
   bool rvalue_ok (void) const { return true; }
 
@@ -136,7 +136,7 @@ public:
                              = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
-  ~tree_postfix_expression (void) { }
+  ~tree_postfix_expression (void) = default;
 
   bool rvalue_ok (void) const { return true; }
 

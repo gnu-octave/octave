@@ -52,7 +52,7 @@ namespace octave
       : m_interp_context (interp_context)
     { }
 
-    ~tree_evaluator (void) { }
+    ~tree_evaluator (void) = default;
 
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 

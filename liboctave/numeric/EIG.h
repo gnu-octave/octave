@@ -112,7 +112,7 @@ public:
     return *this;
   }
 
-  ~EIG (void) { }
+  ~EIG (void) = default;
 
   ComplexColumnVector eigenvalues (void) const { return lambda; }
   ComplexMatrix right_eigenvectors (void) const { return v; }

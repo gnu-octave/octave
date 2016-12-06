@@ -50,7 +50,7 @@ public:
     : tree_array_list (row, l, c)
   { }
 
-  ~tree_matrix (void) { }
+  ~tree_matrix (void) = default;
 
   bool is_matrix (void) const { return true; }
 

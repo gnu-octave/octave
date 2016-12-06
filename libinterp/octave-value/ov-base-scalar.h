@@ -55,7 +55,7 @@ public:
   octave_base_scalar (const octave_base_scalar& s)
     : octave_base_value (), scalar (s.scalar) { }
 
-  ~octave_base_scalar (void) { }
+  ~octave_base_scalar (void) = default;
 
   octave_value squeeze (void) const { return scalar; }
 

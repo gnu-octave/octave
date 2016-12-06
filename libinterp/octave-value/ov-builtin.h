@@ -54,7 +54,7 @@ public:
                   const std::string& ds)
     : octave_function (nm, ds), f (ff), file (fnm), jtype (0) { }
 
-  ~octave_builtin (void) { }
+  ~octave_builtin (void) = default;
 
   std::string src_file_name (void) const { return file; }
 

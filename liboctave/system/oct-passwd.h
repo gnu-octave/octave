@@ -67,7 +67,7 @@ namespace octave
         return *this;
       }
 
-      ~password (void) { }
+      ~password (void) = default;
 
       std::string name (void) const;
 

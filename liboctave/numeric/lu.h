@@ -63,7 +63,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~lu (void) { }
+      virtual ~lu (void) = default;
 
       bool packed (void) const;
 

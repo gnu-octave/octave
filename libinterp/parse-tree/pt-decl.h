@@ -193,7 +193,7 @@ public:
   tree_global_command (tree_decl_init_list *t, int l = -1, int c = -1)
     : tree_decl_command ("global", t, l, c) { }
 
-  ~tree_global_command (void) { }
+  ~tree_global_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;
@@ -224,7 +224,7 @@ public:
   tree_persistent_command (tree_decl_init_list *t, int l = -1, int c = -1)
     : tree_decl_command ("persistent", t, l, c) { }
 
-  ~tree_persistent_command (void) { }
+  ~tree_persistent_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;

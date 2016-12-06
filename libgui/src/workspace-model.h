@@ -45,7 +45,7 @@ public:
 
   workspace_model (QObject *parent = 0);
 
-  ~workspace_model (void) { }
+  ~workspace_model (void) = default;
 
   static QList<QColor> storage_class_default_colors (void);
 

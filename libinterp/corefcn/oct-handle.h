@@ -69,7 +69,7 @@ public:
     return *this;
   }
 
-  ~octave_handle (void) { }
+  ~octave_handle (void) = default;
 
   double value (void) const { return val; }
 

@@ -57,7 +57,7 @@ public:
     return *this;
   }
 
-  virtual ~DAE (void) { }
+  virtual ~DAE (void) = default;
 };
 
 #endif

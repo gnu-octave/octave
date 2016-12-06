@@ -68,7 +68,7 @@ public:
     return *this;
   }
 
-  virtual ~DAEFunc (void) { }
+  virtual ~DAEFunc (void) = default;
 
   DAERHSFunc function (void) const { return fun; }
 

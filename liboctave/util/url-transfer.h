@@ -70,7 +70,7 @@ namespace octave
         ascii_mode (false), ok (true), errmsg (),
         curr_istream (&std::cin), curr_ostream (&os) { }
 
-    virtual ~base_url_transfer (void) { }
+    virtual ~base_url_transfer (void) = default;
 
     bool is_valid (void) const { return valid; }
 

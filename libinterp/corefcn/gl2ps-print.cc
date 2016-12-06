@@ -61,7 +61,7 @@ namespace octave
         fontname (), buffer_overflow (false)
     { }
 
-    ~gl2ps_renderer (void) { }
+    ~gl2ps_renderer (void) = default;
 
     // FIXME: should we import the functions from the base class and
     // overload them here, or should we use a different name so we don't

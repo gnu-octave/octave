@@ -96,7 +96,7 @@ namespace octave
         return *this;
       }
 
-      ~time (void) { }
+      ~time (void) = default;
 
       void stamp (void);
 
@@ -217,7 +217,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~base_tm (void) { }
+      virtual ~base_tm (void) = default;
 
       int usec (void) const { return m_usec; }
       int sec (void) const { return m_sec; }
@@ -312,7 +312,7 @@ namespace octave
         return *this;
       }
 
-      ~localtime (void) { }
+      ~localtime (void) = default;
 
     private:
 
@@ -337,7 +337,7 @@ namespace octave
         return *this;
       }
 
-      ~gmtime (void) { }
+      ~gmtime (void) = default;
 
     private:
 
@@ -368,7 +368,7 @@ namespace octave
 
       int characters_converted (void) const { return nchars; }
 
-      ~strptime (void) { }
+      ~strptime (void) = default;
 
     private:
 

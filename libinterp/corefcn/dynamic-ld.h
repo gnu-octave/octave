@@ -40,7 +40,7 @@ protected:
 
 public:
 
-  virtual ~octave_dynamic_loader (void) { }
+  virtual ~octave_dynamic_loader (void) = default;
 
   static octave_function *
   load_oct (const std::string& fcn_name,

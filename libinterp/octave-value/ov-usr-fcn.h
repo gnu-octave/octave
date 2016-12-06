@@ -57,7 +57,7 @@ public:
   octave_user_code (void)
     : octave_function () { }
 
-  ~octave_user_code (void) { }
+  ~octave_user_code (void) = default;
 
   bool is_user_code (void) const { return true; }
 

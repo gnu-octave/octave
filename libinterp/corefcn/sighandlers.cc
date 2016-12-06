@@ -90,7 +90,7 @@ namespace octave
 
     base_interrupt_manager (void) { }
 
-    virtual ~base_interrupt_manager (void) { }
+    virtual ~base_interrupt_manager (void) = default;
 
     virtual void do_jump_to_enclosing_context (void) = 0;
 
@@ -124,7 +124,7 @@ namespace octave
                        DUPLICATE_SAME_ACCESS);
     }
 
-    ~w32_interrupt_manager (void) { }
+    ~w32_interrupt_manager (void) = default;
 
     static void jump_to_enclosing_context_sync (void)
     {
@@ -217,7 +217,7 @@ namespace octave
       : base_interrupt_manager ()
     { }
 
-    ~posix_interrupt_manager (void) { }
+    ~posix_interrupt_manager (void) = default;
 
     void do_jump_to_enclosing_context (void)
     {
@@ -248,7 +248,7 @@ namespace octave
   {
   public:
 
-    ~interrupt_manager (void) { }
+    ~interrupt_manager (void) = default;
 
     static bool init (void) { return instance_ok (); }
 

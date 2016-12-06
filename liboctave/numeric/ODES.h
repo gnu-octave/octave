@@ -60,7 +60,7 @@ public:
     return *this;
   }
 
-  ~ODES (void) { }
+  ~ODES (void) = default;
 
   ColumnVector parameter_vector (void) { return theta; }
 

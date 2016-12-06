@@ -291,7 +291,7 @@ namespace octave
       : application (argc, argv)
     { }
 
-    ~cli_application (void) { }
+    ~cli_application (void) = default;
 
     int execute (void);
 
@@ -316,7 +316,7 @@ namespace octave
       : application (argc, argv)
     { }
 
-    ~embedded_application (void) { }
+    ~embedded_application (void) = default;
 
     void create_interpreter (void);
 

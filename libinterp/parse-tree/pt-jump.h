@@ -40,7 +40,7 @@ public:
   tree_break_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
-  ~tree_break_command (void) { }
+  ~tree_break_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;
@@ -68,7 +68,7 @@ public:
   tree_continue_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
-  ~tree_continue_command (void) { }
+  ~tree_continue_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;
@@ -96,7 +96,7 @@ public:
   tree_return_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
-  ~tree_return_command (void) { }
+  ~tree_return_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;

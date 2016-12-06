@@ -43,7 +43,7 @@ namespace octave
 
   public:
 
-    virtual ~command_history (void) { }
+    virtual ~command_history (void) = default;
 
     static void initialize (bool, const std::string&, int, const std::string&);
 

@@ -45,7 +45,7 @@ public:
     : tree (l, c), num_parens (0), postfix_index_type ('\0'),
       for_cmd_expr (false), print_flag (false) { }
 
-  virtual ~tree_expression (void) { }
+  virtual ~tree_expression (void) = default;
 
   virtual bool has_magic_end (void) const = 0;
 

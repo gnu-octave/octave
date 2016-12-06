@@ -80,7 +80,7 @@ namespace octave
       return *this;
     }
 
-    ~execution_exception (void) { }
+    ~execution_exception (void) = default;
 
     virtual void set_stack_trace (const std::string& st)
     {
@@ -126,7 +126,7 @@ namespace octave
       return *this;
     }
 
-    ~exit_exception (void) { }
+    ~exit_exception (void) = default;
 
     int exit_status (void) const { return m_exit_status; }
 

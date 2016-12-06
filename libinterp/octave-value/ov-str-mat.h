@@ -84,7 +84,7 @@ public:
   octave_char_matrix_str (const octave_char_matrix_str& chms)
     : octave_char_matrix (chms) { }
 
-  ~octave_char_matrix_str (void) { }
+  ~octave_char_matrix_str (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_char_matrix_str (*this); }
@@ -213,7 +213,7 @@ public:
   octave_char_matrix_sq_str (const octave_char_matrix_sq_str& chms)
     : octave_char_matrix_str (chms) { }
 
-  ~octave_char_matrix_sq_str (void) { }
+  ~octave_char_matrix_sq_str (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_char_matrix_sq_str (*this); }

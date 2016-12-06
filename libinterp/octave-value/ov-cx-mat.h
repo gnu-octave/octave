@@ -81,7 +81,7 @@ public:
   octave_complex_matrix (const octave_complex_matrix& cm)
     : octave_base_matrix<ComplexNDArray> (cm) { }
 
-  ~octave_complex_matrix (void) { }
+  ~octave_complex_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_complex_matrix (*this); }

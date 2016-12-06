@@ -67,7 +67,7 @@ public:
     return *this;
   }
 
-  ~octave_sparse_params (void) { }
+  ~octave_sparse_params (void) = default;
 
   static bool instance_ok (void);
 

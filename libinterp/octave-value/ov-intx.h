@@ -64,7 +64,7 @@ public:
     : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
         (intNDArray<OCTAVE_INT_T> (nda)) { }
 
-  ~OCTAVE_VALUE_INT_MATRIX_T (void) { }
+  ~OCTAVE_VALUE_INT_MATRIX_T (void) = default;
 
   octave_base_value *clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (*this); }
@@ -387,7 +387,7 @@ public:
   OCTAVE_VALUE_INT_SCALAR_T (const OCTAVE_INT_T& nda)
     : octave_base_int_scalar<OCTAVE_INT_T> (nda) { }
 
-  ~OCTAVE_VALUE_INT_SCALAR_T (void) { }
+  ~OCTAVE_VALUE_INT_SCALAR_T (void) = default;
 
   octave_base_value *clone (void) const
   { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }

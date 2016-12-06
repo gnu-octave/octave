@@ -73,7 +73,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~qr (void) { }
+      virtual ~qr (void) = default;
 
       T Q (void) const { return q; }
 

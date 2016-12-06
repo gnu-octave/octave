@@ -74,7 +74,7 @@ private:
   public:
     idx_base_rep (void) : count (1), err (false) { }
 
-    virtual ~idx_base_rep (void) { }
+    virtual ~idx_base_rep (void) = default;
 
     // Non-range-checking element query.
     virtual octave_idx_type xelem (octave_idx_type i) const = 0;

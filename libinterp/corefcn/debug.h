@@ -52,7 +52,7 @@ private:
 
   bp_table (void) : bp_set () { }
 
-  ~bp_table (void) { }
+  ~bp_table (void) = default;
 
 public:
 

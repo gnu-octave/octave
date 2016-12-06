@@ -34,7 +34,7 @@ namespace QtHandles
 
   public:
     TextEdit (QWidget* xparent) : QTextEdit(xparent) { }
-    ~TextEdit (void) { }
+    ~TextEdit (void) = default;
 
   signals:
     void editingFinished (void);

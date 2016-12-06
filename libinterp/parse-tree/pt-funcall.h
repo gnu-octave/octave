@@ -48,7 +48,7 @@ public:
       error ("tree_funcall: invalid function");
   }
 
-  ~tree_funcall (void) { }
+  ~tree_funcall (void) = default;
 
   bool has_magic_end (void) const { return false; }
 

@@ -52,7 +52,7 @@ public:
 
   files_dock_widget (QWidget *parent = 0);
 
-  ~files_dock_widget (void) { }
+  ~files_dock_widget (void) = default;
 
 public slots:
 

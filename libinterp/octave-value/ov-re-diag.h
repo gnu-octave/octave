@@ -48,7 +48,7 @@ public:
   octave_diag_matrix (const octave_diag_matrix& m)
     : octave_base_diag<DiagMatrix, Matrix> (m) { }
 
-  ~octave_diag_matrix (void) { }
+  ~octave_diag_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_diag_matrix (*this); }

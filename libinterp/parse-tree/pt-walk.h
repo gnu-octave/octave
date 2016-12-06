@@ -272,7 +272,7 @@ protected:
 
   tree_walker (void) { }
 
-  virtual ~tree_walker (void) { }
+  virtual ~tree_walker (void) = default;
 
 private:
 

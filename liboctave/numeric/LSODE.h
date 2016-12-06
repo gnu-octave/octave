@@ -45,7 +45,7 @@ public:
       maxord (0), itask (0), iopt (0), itol (0), liw (0), lrw (0),
       iwork (), rwork (), rel_tol (0.0), abs_tol () { }
 
-  ~LSODE (void) { }
+  ~LSODE (void) = default;
 
   ColumnVector do_integrate (double t);
 

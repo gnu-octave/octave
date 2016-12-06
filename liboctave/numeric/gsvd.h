@@ -72,7 +72,7 @@ namespace octave
         return *this;
       }
 
-      ~gsvd (void) { }
+      ~gsvd (void) = default;
 
       typename T::real_diag_matrix_type
       singular_values_A (void) const { return sigmaA; }

@@ -63,7 +63,7 @@ namespace octave
 
     typedef void (*user_accept_line_fcn) (const std::string&);
 
-    virtual ~command_editor (void) { }
+    virtual ~command_editor (void) = default;
 
     static void set_name (const std::string& n);
 

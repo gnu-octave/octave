@@ -39,7 +39,7 @@ public:
   tree_checker (void)
     : do_lvalue_check (false), file_name () { }
 
-  ~tree_checker (void) { }
+  ~tree_checker (void) = default;
 
   void visit_argument_list (tree_argument_list&);
 

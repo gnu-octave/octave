@@ -155,7 +155,7 @@ public:
                          int l = -1, int c = -1)
     : tree_while_command (e, lst, lc, tc, l, c) { }
 
-  ~tree_do_until_command (void) { }
+  ~tree_do_until_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;

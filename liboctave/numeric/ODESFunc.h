@@ -73,7 +73,7 @@ public:
     return *this;
   }
 
-  virtual ~ODESFunc (void) { }
+  virtual ~ODESFunc (void) = default;
 
   ODES_fsub fsub_function (void) const { return fsub; }
 

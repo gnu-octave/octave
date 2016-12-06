@@ -124,7 +124,7 @@ public:
 
 protected:
 
-  ~octave_stdiostream (void) { }
+  ~octave_stdiostream (void) = default;
 
 private:
 
@@ -164,7 +164,7 @@ public:
 
 protected:
 
-  ~octave_zstdiostream (void) { }
+  ~octave_zstdiostream (void) = default;
 
 private:
 

@@ -105,7 +105,7 @@ public:
   tree_classdef_superclass (const std::string& cname)
     : cls_name (cname) { }
 
-  ~tree_classdef_superclass (void) { }
+  ~tree_classdef_superclass (void) = default;
 
   std::string class_name (void) { return cls_name; }
 
@@ -265,7 +265,7 @@ public:
                                   int l = -1, int c = -1)
     : tree_classdef_element<tree_classdef_property *> (a, plist, lc, tc, l, c) { }
 
-  ~tree_classdef_properties_block (void) { }
+  ~tree_classdef_properties_block (void) = default;
 
   void accept (tree_walker&);
 
@@ -289,7 +289,7 @@ public:
   tree_classdef_methods_list (const octave::base_list<octave_value>& a)
     : octave::base_list<octave_value> (a) { }
 
-  ~tree_classdef_methods_list (void) { }
+  ~tree_classdef_methods_list (void) = default;
 
   void accept (tree_walker&);
 
@@ -312,7 +312,7 @@ public:
                                octave_comment_list *tc, int l = -1, int c = -1)
     : tree_classdef_element<octave_value> (a, mlist, lc, tc, l, c) { }
 
-  ~tree_classdef_methods_block (void) { }
+  ~tree_classdef_methods_block (void) = default;
 
   void accept (tree_walker&);
 
@@ -386,7 +386,7 @@ public:
                               octave_comment_list *tc, int l = -1, int c = -1)
     : tree_classdef_element<tree_classdef_event *> (a, elist, lc, tc, l, c) { }
 
-  ~tree_classdef_events_block (void) { }
+  ~tree_classdef_events_block (void) = default;
 
   void accept (tree_walker&);
 
@@ -467,7 +467,7 @@ public:
                             octave_comment_list *tc, int l = -1, int c = -1)
     : tree_classdef_element<tree_classdef_enum *> (a, elist, lc, tc, l, c) { }
 
-  ~tree_classdef_enum_block (void) { }
+  ~tree_classdef_enum_block (void) = default;
 
   void accept (tree_walker&);
 

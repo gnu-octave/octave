@@ -60,7 +60,7 @@ public:
 
 protected:
 
-  ~octave_base_strstream (void) { }
+  ~octave_base_strstream (void) = default;
 
 private:
 
@@ -116,7 +116,7 @@ public:
 
 protected:
 
-  ~octave_istrstream (void) { }
+  ~octave_istrstream (void) = default;
 
 private:
 
@@ -162,7 +162,7 @@ public:
 
 protected:
 
-  ~octave_ostrstream (void) { }
+  ~octave_ostrstream (void) = default;
 
 private:
 

@@ -47,7 +47,7 @@ public:
     : tree_array_list (row, l, c)
   { }
 
-  ~tree_cell (void) { }
+  ~tree_cell (void) = default;
 
   bool is_cell (void) const { return true; }
 

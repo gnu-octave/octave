@@ -61,7 +61,7 @@ public:
     return *this;
   }
 
-  ~octave_lvalue (void) { }
+  ~octave_lvalue (void) = default;
 
   bool is_black_hole (void) const { return sym.is_black_hole (); }
 

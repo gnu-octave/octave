@@ -124,7 +124,7 @@ namespace octave
       return *this;
     }
 
-    virtual ~base_list (void) { }
+    virtual ~base_list (void) = default;
 
   private:
 

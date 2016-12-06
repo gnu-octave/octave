@@ -58,7 +58,7 @@ public:
   octave_base_diag (const octave_base_diag& m)
     : octave_base_value (), matrix (m.matrix), dense_cache () { }
 
-  ~octave_base_diag (void) { }
+  ~octave_base_diag (void) = default;
 
   size_t byte_size (void) const { return matrix.byte_size (); }
 

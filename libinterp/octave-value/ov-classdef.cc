@@ -1097,7 +1097,7 @@ public:
   octave_classdef_superclass_ref (const octave_value_list& a)
     : octave_function (), args (a) { }
 
-  ~octave_classdef_superclass_ref (void) { }
+  ~octave_classdef_superclass_ref (void) = default;
 
   octave_function* function_value (bool = false) { return this; }
 

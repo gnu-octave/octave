@@ -80,7 +80,7 @@ namespace octave
 
     gnu_readline (void);
 
-    ~gnu_readline (void) { }
+    ~gnu_readline (void) = default;
 
     void do_set_name (const std::string& n);
 
@@ -923,7 +923,7 @@ namespace octave
     default_command_editor (void)
       : command_editor (), input_stream (stdin), output_stream (stdout) { }
 
-    ~default_command_editor (void) { }
+    ~default_command_editor (void) = default;
 
     std::string do_readline (const std::string& prompt, bool& eof);
 

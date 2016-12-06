@@ -153,7 +153,7 @@ public:
                            int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (a, b, l, c), etype (t) { }
 
-  ~tree_boolean_expression (void) { }
+  ~tree_boolean_expression (void) = default;
 
   bool is_boolean_expression (void) const { return true; }
 

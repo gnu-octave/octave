@@ -64,7 +64,7 @@ public:
   octave_cell (const octave_cell& c)
     : octave_base_matrix<Cell> (c), cellstr_cache () { }
 
-  ~octave_cell (void) { }
+  ~octave_cell (void) = default;
 
   octave_base_value *clone (void) const { return new octave_cell (*this); }
   octave_base_value *empty_clone (void) const { return new octave_cell (); }

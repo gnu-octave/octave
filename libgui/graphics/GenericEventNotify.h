@@ -38,7 +38,7 @@ namespace QtHandles
   {
   public:
     GenericEventNotifySender (void) : m_receivers () { }
-    virtual ~GenericEventNotifySender (void) { }
+    virtual ~GenericEventNotifySender (void) = default;
 
     void addReceiver (GenericEventNotifyReceiver* r)
     { m_receivers.insert (r); }
@@ -58,7 +58,7 @@ namespace QtHandles
   {
   public:
     GenericEventNotifyReceiver (void) { }
-    virtual ~GenericEventNotifyReceiver (void) { }
+    virtual ~GenericEventNotifyReceiver (void) = default;
 
     virtual bool eventNotifyBefore (QObject* obj, QEvent* evt) = 0;
     virtual void eventNotifyAfter (QObject* obj, QEvent* evt) = 0;
@@ -87,7 +87,7 @@ class T : public B, public GenericEventNotifySender \
 { \
 public: \
   T (QWidget* xparent) : B (xparent), GenericEventNotifySender () { } \
-  ~ T (void) { } \
+  ~ T (void) = default; \
 \
   bool event (QEvent* evt) \
     { \

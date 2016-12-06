@@ -44,7 +44,7 @@ namespace octave
 
     base_text_renderer (void) : text_processor () { }
 
-    virtual ~base_text_renderer (void) { }
+    virtual ~base_text_renderer (void) = default;
 
     virtual Matrix
     get_extent (text_element *elt, double rotation) = 0;

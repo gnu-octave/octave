@@ -67,7 +67,7 @@ namespace octave
         return *this;
       }
 
-      ~uname (void) { }
+      ~uname (void) = default;
 
       std::string sysname (void) const { return m_sysname; }
       std::string nodename (void) const { return m_nodename; }

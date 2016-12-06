@@ -45,7 +45,7 @@ public:
   octave_integer (const octave_integer& s)
     : octave_base_value (), scalar (s.scalar) { }
 
-  ~octave_integer (void) { }
+  ~octave_integer (void) = default;
 
   octave_base_value *clone (void) { return new octave_integer (*this); }
 

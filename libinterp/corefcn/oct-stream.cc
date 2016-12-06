@@ -1801,7 +1801,7 @@ namespace octave
 
     textscan (const std::string& who_arg = "textscan");
 
-    ~textscan (void) { }
+    ~textscan (void) = default;
 
     octave_value scan (std::istream& isp, const std::string& fmt,
                        octave_idx_type ntimes,
@@ -5297,7 +5297,7 @@ public:
       }
   }
 
-  ~printf_value_cache (void) { }
+  ~printf_value_cache (void) = default;
 
   // Get the current value as a double and advance the internal pointer.
   octave_value get_next_value (char type = 0);

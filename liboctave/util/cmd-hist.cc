@@ -60,7 +60,7 @@ namespace octave
     gnu_history (void)
       : command_history (), mark (0) { }
 
-    ~gnu_history (void) { }
+    ~gnu_history (void) = default;
 
     void do_process_histcontrol (const std::string&);
 

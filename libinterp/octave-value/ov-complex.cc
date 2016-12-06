@@ -72,7 +72,7 @@ namespace octave
     complex_index_exception (const std::string& value)
       : index_exception (value) { }
 
-    ~complex_index_exception (void) { }
+    ~complex_index_exception (void) = default;
 
     std::string details (void) const
     {

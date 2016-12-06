@@ -58,7 +58,7 @@ public:
   octave_struct (const octave_struct& s)
     : octave_base_value (), map (s.map) { }
 
-  ~octave_struct (void) { }
+  ~octave_struct (void) = default;
 
   octave_base_value *clone (void) const { return new octave_struct (*this); }
   octave_base_value *empty_clone (void) const { return new octave_struct (); }
@@ -178,7 +178,7 @@ public:
   octave_scalar_struct (const octave_scalar_struct& s)
     : octave_base_value (), map (s.map) { }
 
-  ~octave_scalar_struct (void) { }
+  ~octave_scalar_struct (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_scalar_struct (*this); }

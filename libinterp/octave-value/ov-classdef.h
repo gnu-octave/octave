@@ -54,7 +54,7 @@ public:
 public:
   cdef_object_rep (void) : refcount (1) { }
 
-  virtual ~cdef_object_rep (void) { }
+  virtual ~cdef_object_rep (void) = default;
 
   virtual cdef_class get_class (void) const;
 
@@ -398,7 +398,7 @@ cdef_object_scalar : public cdef_object_base
 public:
   cdef_object_scalar (void) : cdef_object_base () { }
 
-  ~cdef_object_scalar (void) { }
+  ~cdef_object_scalar (void) = default;
 
   dim_vector dims (void) const { return dim_vector (1, 1); }
 
@@ -520,7 +520,7 @@ public:
   cdef_meta_object_rep (void)
     : handle_cdef_object () { }
 
-  ~cdef_meta_object_rep (void) { }
+  ~cdef_meta_object_rep (void) = default;
 
   cdef_object_rep* copy (void) const
   { return new cdef_meta_object_rep (*this); }
@@ -575,7 +575,7 @@ public:
   cdef_meta_object (const cdef_object& obj)
     : cdef_object (obj) { }
 
-  ~cdef_meta_object (void) { }
+  ~cdef_meta_object (void) = default;
 
   bool is_class (void) const { return get_rep ()->is_class (); }
 
@@ -1249,7 +1249,7 @@ private:
     cdef_package_rep (void)
       : cdef_meta_object_rep (), member_count (0) { }
 
-    ~cdef_package_rep (void) { }
+    ~cdef_package_rep (void) = default;
 
     cdef_object_rep* copy (void) const { return new cdef_package_rep (*this); }
 
@@ -1599,7 +1599,7 @@ private:
 
   cdef_manager& operator = (const cdef_manager&);
 
-  ~cdef_manager (void) { }
+  ~cdef_manager (void) = default;
 
   static void create_instance (void);
 

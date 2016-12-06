@@ -64,7 +64,7 @@ public:
     return *this;
   }
 
-  ~glob_match (void) { }
+  ~glob_match (void) = default;
 
   void set_pattern (const std::string& p) { pat = p; }
 

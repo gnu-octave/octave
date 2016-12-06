@@ -154,7 +154,7 @@ namespace octave
 
     protected:
 
-      virtual ~base_file_stat (void) { }
+      virtual ~base_file_stat (void) = default;
 
       // TRUE means we have already called stat.
       bool initialized;
@@ -235,7 +235,7 @@ namespace octave
         return *this;
       }
 
-      ~file_stat (void) { }
+      ~file_stat (void) = default;
 
       void get_stats (bool force = false)
       {
@@ -293,7 +293,7 @@ namespace octave
         return *this;
       }
 
-      ~file_fstat (void) { }
+      ~file_fstat (void) = default;
 
       void get_stats (bool force = false)
       {

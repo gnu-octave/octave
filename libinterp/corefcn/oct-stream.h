@@ -69,7 +69,7 @@ public:
       errmsg ()
   { }
 
-  virtual ~octave_base_stream (void) { }
+  virtual ~octave_base_stream (void) = default;
 
   // The remaining functions are not specific to input or output only,
   // and must be provided by the derived classes.
@@ -418,7 +418,7 @@ protected:
 
 public:
 
-  ~octave_stream_list (void) { }
+  ~octave_stream_list (void) = default;
 
   static bool instance_ok (void);
 

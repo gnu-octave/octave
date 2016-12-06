@@ -58,7 +58,7 @@ public:
 
 protected:
 
-  ~octave_base_iostream (void) { }
+  ~octave_base_iostream (void) = default;
 
   void invalid_operation (void) const;
 
@@ -99,7 +99,7 @@ public:
 
 protected:
 
-  ~octave_istream (void) { }
+  ~octave_istream (void) = default;
 
 private:
 
@@ -138,7 +138,7 @@ public:
 
 protected:
 
-  ~octave_ostream (void) { }
+  ~octave_ostream (void) = default;
 
 private:
 

@@ -53,7 +53,7 @@ public:
     nesting.push ('n');
   }
 
-  ~tree_print_code (void) { }
+  ~tree_print_code (void) = default;
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 

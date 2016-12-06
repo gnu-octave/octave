@@ -40,7 +40,7 @@ public:
 
   octave_interpreter (octave::application *app_context);
 
-  ~octave_interpreter (void) { }
+  ~octave_interpreter (void) = default;
 
 signals:
 

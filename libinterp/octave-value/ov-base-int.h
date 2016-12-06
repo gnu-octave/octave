@@ -51,7 +51,7 @@ public:
 
   octave_base_int_matrix (const T& nda) : octave_base_matrix<T> (nda) { }
 
-  ~octave_base_int_matrix (void) { }
+  ~octave_base_int_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_base_int_matrix (*this); }
@@ -110,7 +110,7 @@ public:
 
   octave_base_int_scalar (const T& s) : octave_base_scalar<T> (s) { }
 
-  ~octave_base_int_scalar (void) { }
+  ~octave_base_int_scalar (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_base_int_scalar (*this); }

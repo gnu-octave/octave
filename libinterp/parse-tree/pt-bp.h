@@ -45,7 +45,7 @@ public:
   tree_breakpoint (int l, action a, const std::string& c = pt_bp_empty_string)
     : line (l), act (a), condition (c), found (false), bp_list () { }
 
-  ~tree_breakpoint (void) { }
+  ~tree_breakpoint (void) = default;
 
   bool success (void) const { return found; }
 

@@ -45,7 +45,7 @@ public:
   octave_lazy_index (const octave_lazy_index& i)
     : octave_base_value (), index (i.index), value (i.value) { }
 
-  ~octave_lazy_index (void) { }
+  ~octave_lazy_index (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_lazy_index (*this); }

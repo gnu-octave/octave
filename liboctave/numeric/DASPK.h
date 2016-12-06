@@ -49,7 +49,7 @@ public:
       liw (0), lrw (0), info (), iwork (), rwork (), abs_tol (),
       rel_tol () { }
 
-  ~DASPK (void) { }
+  ~DASPK (void) = default;
 
   ColumnVector do_integrate (double t);
 

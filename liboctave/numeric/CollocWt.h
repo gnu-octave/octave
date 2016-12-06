@@ -84,7 +84,7 @@ public:
     return *this;
   }
 
-  ~CollocWt (void) { }
+  ~CollocWt (void) = default;
 
   CollocWt& resize (octave_idx_type nc)
   {

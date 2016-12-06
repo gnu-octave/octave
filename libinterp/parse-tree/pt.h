@@ -44,7 +44,7 @@ public:
   tree (int l = -1, int c = -1)
     : line_num (l), column_num (c), bp (NULL) { }
 
-  virtual ~tree (void) { }
+  virtual ~tree (void) = default;
 
   virtual int line (void) const { return line_num; }
 

@@ -52,7 +52,7 @@ public:
     return *this;
   }
 
-  virtual ~ODE (void) { }
+  virtual ~ODE (void) = default;
 
   // Derived classes must provide functions to actually do the
   // integration.

@@ -110,7 +110,7 @@ public:
       _queue (QList<octave_cmd *> ()),
       _processing (1),
       _queue_mutex () { };
-  ~octave_command_queue (void) { };
+  ~octave_command_queue (void) = default;;
 
   /**
    * Adds a new octave command to the command queue.

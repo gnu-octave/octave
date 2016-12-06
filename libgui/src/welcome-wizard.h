@@ -38,7 +38,7 @@ public:
 
   welcome_wizard (QWidget *parent = 0);
 
-  ~welcome_wizard (void) { }
+  ~welcome_wizard (void) = default;
 
 private:
 
@@ -67,7 +67,7 @@ public:
 
   initial_page (welcome_wizard *wizard);
 
-  ~initial_page (void) { }
+  ~initial_page (void) = default;
 
   static QWidget *
   create (welcome_wizard *wizard) { return new initial_page (wizard); }
@@ -90,7 +90,7 @@ public:
 
   setup_community_news (welcome_wizard *wizard);
 
-  ~setup_community_news (void) { }
+  ~setup_community_news (void) = default;
 
   static QWidget *
   create (welcome_wizard *wizard) { return new setup_community_news (wizard); }
@@ -116,7 +116,7 @@ public:
 
   final_page (welcome_wizard *wizard);
 
-  ~final_page (void) { }
+  ~final_page (void) = default;
 
   static QWidget *
   create (welcome_wizard *wizard) { return new final_page (wizard); }

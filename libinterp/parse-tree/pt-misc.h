@@ -143,7 +143,7 @@ public:
 
   tree_va_return_list (void) { }
 
-  ~tree_va_return_list (void) { }
+  ~tree_va_return_list (void) = default;
 
 private:
 

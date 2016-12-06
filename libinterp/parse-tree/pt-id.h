@@ -56,7 +56,7 @@ public:
                    symbol_table::scope_id sc = symbol_table::current_scope ())
     : tree_expression (l, c), sym (s, sc) { }
 
-  ~tree_identifier (void) { }
+  ~tree_identifier (void) = default;
 
   bool has_magic_end (void) const { return (name () == "end"); }
 

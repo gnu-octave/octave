@@ -68,7 +68,7 @@ private:
 
   octave_shlib_list (void) : lib_list () { }
 
-  ~octave_shlib_list (void) { }
+  ~octave_shlib_list (void) = default;
 
   void do_append (const octave::dynamic_library& shl);
 

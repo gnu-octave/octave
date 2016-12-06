@@ -58,7 +58,7 @@ public:
   octave_cs_list (const octave_cs_list& l)
     : octave_base_value (), lst (l.lst) { }
 
-  ~octave_cs_list (void) { }
+  ~octave_cs_list (void) = default;
 
   octave_base_value *clone (void) const { return new octave_cs_list (*this); }
   octave_base_value *empty_clone (void) const { return new octave_cs_list (); }

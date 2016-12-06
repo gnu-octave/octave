@@ -85,7 +85,7 @@ private:
         first_elem_is_struct (false), class_nm (), ok (false)
     { init (row); }
 
-    ~tm_row_const_rep (void) { }
+    ~tm_row_const_rep (void) = default;
 
     octave_refcount<int> count;
 
@@ -473,7 +473,7 @@ public:
       any_class (false), class_nm (), ok (false)
   { init (tm); }
 
-  ~tm_const (void) { }
+  ~tm_const (void) = default;
 
   octave_idx_type rows (void) const { return dv.elem (0); }
   octave_idx_type cols (void) const { return dv.elem (1); }

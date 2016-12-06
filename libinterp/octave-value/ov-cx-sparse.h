@@ -86,7 +86,7 @@ public:
   octave_sparse_complex_matrix (const octave_sparse_complex_matrix& cm)
     : octave_base_sparse<SparseComplexMatrix> (cm) { }
 
-  ~octave_sparse_complex_matrix (void) { }
+  ~octave_sparse_complex_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_sparse_complex_matrix (*this); }

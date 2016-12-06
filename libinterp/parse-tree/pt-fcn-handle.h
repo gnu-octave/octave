@@ -53,7 +53,7 @@ public:
   tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
     : tree_expression (l, c), nm (n) { }
 
-  ~tree_fcn_handle (void) { }
+  ~tree_fcn_handle (void) = default;
 
   bool has_magic_end (void) const { return false; }
 

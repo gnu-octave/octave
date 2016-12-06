@@ -66,7 +66,7 @@ namespace octave
       return *this;
     }
 
-    ~child (void) { }
+    ~child (void) = default;
 
     // The process id of this child.
     pid_t pid;
@@ -103,7 +103,7 @@ namespace octave
 
   public:
 
-    ~child_list (void) { }
+    ~child_list (void) = default;
 
     static void insert (pid_t pid, child::child_event_handler f);
 

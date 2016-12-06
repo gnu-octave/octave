@@ -84,7 +84,7 @@ public:
   octave_sparse_matrix (const octave_sparse_matrix& m)
     : octave_base_sparse<SparseMatrix> (m) { }
 
-  ~octave_sparse_matrix (void) { }
+  ~octave_sparse_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_sparse_matrix (*this); }

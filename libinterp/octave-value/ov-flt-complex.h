@@ -62,7 +62,7 @@ public:
   octave_float_complex (const octave_float_complex& c)
     : octave_base_scalar<FloatComplex> (c) { }
 
-  ~octave_float_complex (void) { }
+  ~octave_float_complex (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_float_complex (*this); }

@@ -1304,7 +1304,7 @@ public:
     return *this;
   }
 
-  ~symbol_info_list (void) { }
+  ~symbol_info_list (void) = default;
 
   void append (const symbol_table::symbol_record& sr)
   {

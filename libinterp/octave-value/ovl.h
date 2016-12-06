@@ -70,7 +70,7 @@ public:
   // Concatenation constructor.
   octave_value_list (const std::list<octave_value_list>&);
 
-  ~octave_value_list (void) { }
+  ~octave_value_list (void) = default;
 
   octave_value_list& operator = (const octave_value_list& obj)
   {

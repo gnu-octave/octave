@@ -79,7 +79,7 @@ namespace octave
         return *this;
       }
 
-      ~svd (void) { }
+      ~svd (void) = default;
 
       T left_singular_matrix (void) const;
 

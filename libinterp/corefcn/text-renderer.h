@@ -85,7 +85,7 @@ namespace octave
           size (ft.size)
       { }
 
-      ~font (void) { }
+      ~font (void) = default;
 
       font& operator = (const font& ft)
       {
@@ -132,7 +132,7 @@ namespace octave
           color (s.color)
       { }
 
-      ~string (void) { }
+      ~string (void) = default;
 
       string& operator = (const string& s)
       {

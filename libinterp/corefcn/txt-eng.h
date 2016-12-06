@@ -53,7 +53,7 @@ text_element
 public:
   text_element (void) { }
 
-  virtual ~text_element (void) { }
+  virtual ~text_element (void) = default;
 
   virtual void accept (text_processor& p) = 0;
 
@@ -69,7 +69,7 @@ public:
   text_element_string (const std::string& s = "")
     : text_element (), str (s) { }
 
-  ~text_element_string (void) { }
+  ~text_element_string (void) = default;
 
   std::string string_value (void) const { return str; }
 
@@ -93,7 +93,7 @@ public:
   text_element_symbol (int sym)
     : text_element (), symbol (sym) { }
 
-  ~text_element_symbol (void) { }
+  ~text_element_symbol (void) = default;
 
   int get_symbol (void) const { return symbol; }
 
@@ -214,7 +214,7 @@ public:
   text_element_fontstyle (fontstyle st)
     : text_element (), style (st) { }
 
-  ~text_element_fontstyle (void) { }
+  ~text_element_fontstyle (void) = default;
 
   fontstyle get_fontstyle (void) const { return style; }
 
@@ -235,7 +235,7 @@ public:
   text_element_fontname (const std::string& fname)
     : text_element (), name (fname) { }
 
-  ~text_element_fontname (void) { }
+  ~text_element_fontname (void) = default;
 
   const std::string& get_fontname (void) const { return name; }
 
@@ -256,7 +256,7 @@ public:
   text_element_fontsize (double fsize)
     : text_element (), size (fsize) { }
 
-  ~text_element_fontsize (void) { }
+  ~text_element_fontsize (void) = default;
 
   double get_fontsize (void) const { return size; }
 
@@ -300,7 +300,7 @@ public:
 #undef ASSIGN_COLOR
   }
 
-  ~text_element_color (void) { }
+  ~text_element_color (void) = default;
 
   Matrix get_color (void) { return rgb; }
 
@@ -348,7 +348,7 @@ public:
 protected:
   text_processor (void) { }
 
-  virtual ~text_processor (void) { }
+  virtual ~text_processor (void) = default;
 };
 
 #define TEXT_ELEMENT_ACCEPT(cls)                \
@@ -376,7 +376,7 @@ text_parser
 public:
   text_parser (void) { }
 
-  virtual ~text_parser (void) { }
+  virtual ~text_parser (void) = default;
 
   virtual text_element* parse (const std::string& s) = 0;
 
@@ -392,7 +392,7 @@ text_parser_none : public text_parser
 public:
   text_parser_none (void) : text_parser () { }
 
-  ~text_parser_none (void) { }
+  ~text_parser_none (void) = default;
 
   // FIXME: is it possible to use reference counting to manage the
   // memory for the object returned by the text parser?  That would be

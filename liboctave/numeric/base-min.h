@@ -38,7 +38,7 @@ public:
 
   base_minimizer (const base_minimizer& a) : x (a.x) { }
 
-  virtual ~base_minimizer (void) { }
+  virtual ~base_minimizer (void) = default;
 
   base_minimizer& operator = (const base_minimizer& a)
   {

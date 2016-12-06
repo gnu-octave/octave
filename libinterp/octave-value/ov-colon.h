@@ -54,7 +54,7 @@ public:
   octave_magic_colon (const octave_magic_colon&)
     : octave_base_value () { }
 
-  ~octave_magic_colon (void) { }
+  ~octave_magic_colon (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_magic_colon (*this); }

@@ -42,7 +42,7 @@ namespace octave
   public:
     opengl_selector (void) : size (5) { }
 
-    virtual ~opengl_selector (void) { }
+    virtual ~opengl_selector (void) = default;
 
     graphics_object select (const graphics_object& ax, int x, int y,
                             int flags = 0);

@@ -86,7 +86,7 @@ public:
   iprocstream (const char *name, int mode = std::ios::in)
     : std::istream (0), procstreambase (name, mode) { }
 
-  ~iprocstream (void) { }
+  ~iprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::in)
   { procstreambase::open (name, mode); }
@@ -116,7 +116,7 @@ public:
   oprocstream (const char *name, int mode = std::ios::out)
     : std::ostream (0), procstreambase (name, mode) { }
 
-  ~oprocstream (void) { }
+  ~oprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::out)
   { procstreambase::open (name, mode); }
@@ -146,7 +146,7 @@ public:
   procstream (const char *name, int mode)
     : std::iostream (0), procstreambase (name, mode) { }
 
-  ~procstream (void) { }
+  ~procstream (void) = default;
 
   void open (const std::string& name, int mode)
   { procstreambase::open (name, mode); }

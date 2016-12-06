@@ -68,7 +68,7 @@ public:
   DiagArray2 (const DiagArray2<U>& a)
     : Array<T> (a.extract_diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
-  ~DiagArray2 (void) { }
+  ~DiagArray2 (void) = default;
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
   {

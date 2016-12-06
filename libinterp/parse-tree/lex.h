@@ -116,7 +116,7 @@ namespace octave
         return *this;
       }
 
-      ~bbp_nesting_level (void) { }
+      ~bbp_nesting_level (void) = default;
 
       void reset (void)
       {

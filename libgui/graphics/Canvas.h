@@ -49,7 +49,7 @@ namespace QtHandles
     };
 
   public:
-    virtual ~Canvas (void) { }
+    virtual ~Canvas (void) = default;
 
     void redraw (bool sync = false);
     void blockRedraw (bool block = true);

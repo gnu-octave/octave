@@ -52,7 +52,7 @@ public:
   Quad (float_integrand_fcn fcn)
     : Quad_options (), f (), ff (fcn) { }
 
-  virtual ~Quad (void) { }
+  virtual ~Quad (void) = default;
 
   virtual double integrate (void)
   {
@@ -139,7 +139,7 @@ public:
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
       singularities (sing) { }
 
-  ~DefQuad (void) { }
+  ~DefQuad (void) = default;
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
@@ -169,7 +169,7 @@ public:
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), bound (b), type (t) { }
 
-  ~IndefQuad (void) { }
+  ~IndefQuad (void) = default;
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
@@ -204,7 +204,7 @@ public:
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
       singularities (sing) { }
 
-  ~FloatDefQuad (void) { }
+  ~FloatDefQuad (void) = default;
 
   OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
                                        octave_idx_type& neval, double& abserr);
@@ -234,7 +234,7 @@ public:
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), bound (b), type (t) { }
 
-  ~FloatIndefQuad (void) { }
+  ~FloatIndefQuad (void) = default;
 
   OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
                                        octave_idx_type& neval, double& abserr);

@@ -45,7 +45,7 @@ public:
   base_diff_alg_eqn (const base_diff_alg_eqn& a)
     : base_diff_eqn (a), xdot (a.xdot) { }
 
-  virtual ~base_diff_alg_eqn (void) { }
+  virtual ~base_diff_alg_eqn (void) = default;
 
   base_diff_alg_eqn& operator = (const base_diff_alg_eqn& a)
   {

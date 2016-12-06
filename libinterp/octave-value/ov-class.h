@@ -68,7 +68,7 @@ public:
     : octave_base_value (s), map (s.map), c_name (s.c_name),
       parent_list (s.parent_list), obsolete_copies (0)  { }
 
-  ~octave_class (void) { }
+  ~octave_class (void) = default;
 
   octave_base_value *clone (void) const { return new octave_class (*this); }
 

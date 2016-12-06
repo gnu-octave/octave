@@ -52,7 +52,7 @@ public:
                  int l = -1, int c = -1)
     : tree_expression (l, c), val (v), orig_text (ot) { }
 
-  ~tree_constant (void) { }
+  ~tree_constant (void) = default;
 
   bool has_magic_end (void) const { return false; }
 

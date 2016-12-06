@@ -167,7 +167,7 @@ namespace octave
         return *this;
       }
 
-      ~opts (void) { }
+      ~opts (void) = default;
 
       void case_insensitive (bool val) { x_case_insensitive = val; }
       void dotexceptnewline (bool val) { x_dotexceptnewline = val; }
@@ -256,7 +256,7 @@ namespace octave
         return *this;
       }
 
-      ~match_data (void) { }
+      ~match_data (void) = default;
 
       string_vector named_patterns (void) { return named_pats; }
 

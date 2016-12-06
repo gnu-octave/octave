@@ -38,7 +38,7 @@ namespace octave
 
     opengl_renderer (void);
 
-    virtual ~opengl_renderer (void) { }
+    virtual ~opengl_renderer (void) = default;
 
     virtual void draw (const graphics_object& go, bool toplevel = true);
 

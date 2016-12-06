@@ -74,7 +74,7 @@ public:
     return *this;
   }
 
-  ~string_vector (void) { }
+  ~string_vector (void) = default;
 
   bool empty (void) const { return numel () == 0; }
 

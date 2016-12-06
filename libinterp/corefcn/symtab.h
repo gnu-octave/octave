@@ -69,7 +69,7 @@ public:
 
   public:
 
-    ~scope_id_cache (void) { }
+    ~scope_id_cache (void) = default;
 
     static scope_id alloc (void)
     {
@@ -2293,7 +2293,7 @@ private:
       nest_parent (0), curr_fcn (0), static_workspace (false),
       persistent_table () { }
 
-  ~symbol_table (void) { }
+  ~symbol_table (void) = default;
 
   static symbol_table *get_instance (scope_id scope, bool create = true)
   {

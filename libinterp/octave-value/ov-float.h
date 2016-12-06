@@ -64,7 +64,7 @@ public:
   octave_float_scalar (const octave_float_scalar& s)
     : octave_base_scalar<float> (s) { }
 
-  ~octave_float_scalar (void) { }
+  ~octave_float_scalar (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_float_scalar (*this); }

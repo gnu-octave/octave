@@ -43,7 +43,7 @@ public:
 
   workspace_view (QWidget *parent = 0);
 
-  ~workspace_view (void) { }
+  ~workspace_view (void) = default;
 
 public slots:
 

@@ -82,7 +82,7 @@ protected:
 
 public:
 
-  ~octave_char_matrix (void) { }
+  ~octave_char_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_char_matrix (*this); }

@@ -351,7 +351,7 @@ namespace octave
         color (dim_vector (1, 3), 0)
     { }
 
-    ~ft_text_renderer (void) { }
+    ~ft_text_renderer (void) = default;
 
     void visit (text_element_string& e);
 

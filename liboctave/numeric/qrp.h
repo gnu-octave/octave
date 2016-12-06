@@ -60,7 +60,7 @@ namespace octave
         return *this;
       }
 
-      ~qrp (void) { }
+      ~qrp (void) = default;
 
       void init (const T&, type = qr<T>::std);
 

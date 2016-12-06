@@ -43,7 +43,7 @@ protected:
 
 public:
 
-  ~octave_rand (void) { }
+  ~octave_rand (void) = default;
 
   static bool instance_ok (void);
 

@@ -70,7 +70,7 @@ public:
 
 protected:
 
-  ~octave_fstream (void) { }
+  ~octave_fstream (void) = default;
 
 private:
 

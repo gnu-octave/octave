@@ -63,7 +63,7 @@ public:
     return *this;
   }
 
-  virtual ~DAERTFunc (void) { }
+  virtual ~DAERTFunc (void) = default;
 
   DAERTConstrFunc constraint_function (void) const { return constr; }
 

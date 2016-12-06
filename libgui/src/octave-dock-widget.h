@@ -37,7 +37,7 @@ class octave_dock_widget : public QDockWidget
 public:
 
   octave_dock_widget (QWidget *p = 0);
-  virtual ~octave_dock_widget (void) { }
+  virtual ~octave_dock_widget (void) = default;
 
   virtual void connect_visibility_changed (void);
   void make_window (void);

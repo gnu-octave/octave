@@ -62,7 +62,7 @@ public:
   octave_bool (const octave_bool& s)
     : octave_base_scalar<bool> (s) { }
 
-  ~octave_bool (void) { }
+  ~octave_bool (void) = default;
 
   octave_base_value *clone (void) const { return new octave_bool (*this); }
   octave_base_value *empty_clone (void) const

@@ -206,7 +206,7 @@ protected:
       pref_assign_conv (dim_vector (init_tab_sz, init_tab_sz), -1),
       widening_ops (dim_vector (init_tab_sz, init_tab_sz), 0)  { }
 
-  ~octave_value_typeinfo (void) { }
+  ~octave_value_typeinfo (void) = default;
 
 private:
 

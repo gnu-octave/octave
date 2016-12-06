@@ -80,7 +80,7 @@ namespace octave
         return *this;
       }
 
-      ~schur (void) { }
+      ~schur (void) = default;
 
       T schur_matrix (void) const { return schur_mat; }
 

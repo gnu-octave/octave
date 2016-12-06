@@ -80,7 +80,7 @@ public:
   template <typename U>
   MArray (const Array<U>& a) : Array<T> (a) { }
 
-  ~MArray (void) { }
+  ~MArray (void) = default;
 
   MArray<T>& operator = (const MArray<T>& a)
   {

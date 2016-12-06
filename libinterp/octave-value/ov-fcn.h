@@ -50,7 +50,7 @@ public:
       xdispatch_class (), xpackage_name (), my_name (), my_dir_name (),
       doc () { }
 
-  ~octave_function (void) { }
+  ~octave_function (void) = default;
 
   octave_base_value *clone (void) const;
   octave_base_value *empty_clone (void) const;

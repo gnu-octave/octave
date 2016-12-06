@@ -49,7 +49,7 @@ public:
 
   static QStringList color_names (void);
 
-  virtual ~QTerminal (void) { }
+  virtual ~QTerminal (void) = default;
 
   virtual void setTerminalFont (const QFont& font) = 0;
 

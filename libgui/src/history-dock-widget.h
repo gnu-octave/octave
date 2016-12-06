@@ -39,7 +39,7 @@ class history_dock_widget : public octave_dock_widget
 public:
 
   history_dock_widget (QWidget *parent = 0);
-  ~history_dock_widget (void) { }
+  ~history_dock_widget (void) = default;
 
 public slots:
 

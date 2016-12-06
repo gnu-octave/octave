@@ -77,7 +77,7 @@ public:
   octave_bool_matrix (const octave_bool_matrix& bm)
     : octave_base_matrix<boolNDArray> (bm) { }
 
-  ~octave_bool_matrix (void) { }
+  ~octave_bool_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_bool_matrix (*this); }

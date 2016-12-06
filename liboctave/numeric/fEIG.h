@@ -112,7 +112,7 @@ public:
     return *this;
   }
 
-  ~FloatEIG (void) { }
+  ~FloatEIG (void) = default;
 
   FloatComplexColumnVector eigenvalues (void) const { return lambda; }
   FloatComplexMatrix right_eigenvectors (void) const { return v; }

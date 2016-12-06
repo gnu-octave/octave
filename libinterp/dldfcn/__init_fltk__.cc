@@ -123,7 +123,7 @@ public:
 #endif
   }
 
-  ~OpenGL_fltk (void) { }
+  ~OpenGL_fltk (void) = default;
 
   void zoom (bool z)
   {
@@ -2191,7 +2191,7 @@ public:
     Fl::visual (FL_RGB);
   }
 
-  ~fltk_graphics_toolkit (void) { }
+  ~fltk_graphics_toolkit (void) = default;
 
   bool is_valid (void) const { return true; }
 

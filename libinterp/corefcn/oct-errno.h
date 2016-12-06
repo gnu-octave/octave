@@ -41,7 +41,7 @@ protected:
 
 public:
 
-  ~octave_errno (void) { }
+  ~octave_errno (void) = default;
 
   static bool instance_ok (void);
 

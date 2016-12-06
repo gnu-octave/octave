@@ -69,7 +69,7 @@ public:
   MSparse (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz)
     : Sparse<T> (r, c, num_nz) { }
 
-  ~MSparse (void) { }
+  ~MSparse (void) = default;
 
   MSparse<T>& operator = (const MSparse<T>& a)
   {

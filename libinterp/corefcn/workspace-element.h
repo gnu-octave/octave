@@ -63,7 +63,7 @@ public:
     return *this;
   }
 
-  ~workspace_element (void) { }
+  ~workspace_element (void) = default;
 
   char scope (void) const { return xscope; }
 

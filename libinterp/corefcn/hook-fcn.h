@@ -44,7 +44,7 @@ public:
 
   base_hook_function (const base_hook_function&) : count (1) { }
 
-  virtual ~base_hook_function (void) { }
+  virtual ~base_hook_function (void) = default;
 
   virtual std::string id (void) { return ""; }
 
@@ -199,7 +199,7 @@ public:
 
   hook_function_list (void) : fcn_map () { }
 
-  ~hook_function_list (void) { }
+  ~hook_function_list (void) = default;
 
   hook_function_list (const hook_function_list& lst)
     : fcn_map (lst.fcn_map)

@@ -138,7 +138,7 @@ public:
 
   virtual mxArray *as_mxArray (void) const { return 0; }
 
-  virtual ~mxArray_base (void) { }
+  virtual ~mxArray_base (void) = default;
 
   virtual bool is_octave_value (void) const { return false; }
 

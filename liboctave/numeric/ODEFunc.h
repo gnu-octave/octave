@@ -59,7 +59,7 @@ public:
     return *this;
   }
 
-  virtual ~ODEFunc (void) { }
+  virtual ~ODEFunc (void) = default;
 
   ODERHSFunc function (void) const { return fun; }
 

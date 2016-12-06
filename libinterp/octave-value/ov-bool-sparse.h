@@ -75,7 +75,7 @@ public:
   octave_sparse_bool_matrix (const octave_sparse_bool_matrix& bm)
     : octave_base_sparse<SparseBoolMatrix> (bm) { }
 
-  ~octave_sparse_bool_matrix (void) { }
+  ~octave_sparse_bool_matrix (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_sparse_bool_matrix (*this); }

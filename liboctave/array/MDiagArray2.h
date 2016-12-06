@@ -73,7 +73,7 @@ public:
   MDiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
     : DiagArray2<T> (a, r, c) { }
 
-  ~MDiagArray2 (void) { }
+  ~MDiagArray2 (void) = default;
 
   MDiagArray2<T>& operator = (const MDiagArray2<T>& a)
   {

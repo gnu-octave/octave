@@ -39,7 +39,7 @@ public:
     : count (1)
   { }
 
-  virtual ~octave_base_thread_manager (void) { }
+  virtual ~octave_base_thread_manager (void) = default;
 
   virtual void register_current_thread (void) = 0;
 

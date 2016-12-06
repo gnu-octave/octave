@@ -96,7 +96,7 @@ public:
     set_idx_cache (cache);
   }
 
-  ~octave_matrix (void) { }
+  ~octave_matrix (void) = default;
 
   octave_base_value *clone (void) const { return new octave_matrix (*this); }
   octave_base_value *empty_clone (void) const { return new octave_matrix (); }

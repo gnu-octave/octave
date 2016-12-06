@@ -52,7 +52,7 @@ public:
   octave_fcn_inline (const octave_fcn_inline& fi)
     : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }
 
-  ~octave_fcn_inline (void) { }
+  ~octave_fcn_inline (void) = default;
 
   octave_base_value *clone (void) const
   { return new octave_fcn_inline (*this); }

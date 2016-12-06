@@ -101,7 +101,7 @@ public:
     : count (1), pflag (x.pflag), lexer (x.lexer)
   { }
 
-  virtual ~octave_base_reader (void) { }
+  virtual ~octave_base_reader (void) = default;
 
   virtual std::string get_input (bool& eof) = 0;
 

@@ -67,7 +67,7 @@ namespace octave
         return *this;
       }
 
-      ~gepbalance (void) { }
+      ~gepbalance (void) = default;
 
       T balanced_matrix (void) const { return balanced_mat; }
 

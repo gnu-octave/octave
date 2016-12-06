@@ -72,7 +72,7 @@ public:
 
   comment_type type (void) const { return typ; }
 
-  ~octave_comment_elt (void) { }
+  ~octave_comment_elt (void) = default;
 
 private:
 

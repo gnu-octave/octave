@@ -37,7 +37,7 @@ public:
 
   octave_base_mutex (void) : count (1) { }
 
-  virtual ~octave_base_mutex (void) { }
+  virtual ~octave_base_mutex (void) = default;
 
   virtual void lock (void);
 

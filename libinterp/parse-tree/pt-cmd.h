@@ -44,7 +44,7 @@ public:
   tree_command (int l = -1, int c = -1)
     : tree (l, c) { }
 
-  virtual ~tree_command (void) { }
+  virtual ~tree_command (void) = default;
 
   virtual tree_command *dup (symbol_table::scope_id,
                              symbol_table::context_id context) const = 0;
@@ -69,7 +69,7 @@ public:
                       int l = -1, int c = -1)
     : tree_command (l, c), eof (e), orig_cmd (cmd) { }
 
-  ~tree_no_op_command (void) { }
+  ~tree_no_op_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;
@@ -108,7 +108,7 @@ public:
   tree_function_def (octave_function *f, int l = -1, int c = -1)
     : tree_command (l, c), fcn (f) { }
 
-  ~tree_function_def (void) { }
+  ~tree_function_def (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;

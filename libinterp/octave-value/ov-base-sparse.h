@@ -72,7 +72,7 @@ public:
   octave_base_sparse (const octave_base_sparse& a)
     : octave_base_value (), matrix (a.matrix), typ (a.typ) { }
 
-  ~octave_base_sparse (void) { }
+  ~octave_base_sparse (void) = default;
 
   octave_idx_type numel (void) const { return dims ().safe_numel (); }
 

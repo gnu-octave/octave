@@ -54,7 +54,7 @@ public:
     return *this;
   }
 
-  ~DASRT_result (void) { }
+  ~DASRT_result (void) = default;
 
   Matrix state (void) const { return x; }
   Matrix deriv (void) const { return xdot; }
@@ -92,7 +92,7 @@ public:
       abs_tol (), rel_tol ()
   { }
 
-  ~DASRT (void) { }
+  ~DASRT (void) = default;
 
   DASRT_result integrate (const ColumnVector& tout);
 

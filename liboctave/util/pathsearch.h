@@ -66,7 +66,7 @@ namespace octave
       return *this;
     }
 
-    ~directory_path (void) { }
+    ~directory_path (void) = default;
 
     void set (const std::string& s)
     {

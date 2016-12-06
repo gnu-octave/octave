@@ -491,7 +491,7 @@ namespace octave
       : base_parser (lxr)
     { }
 
-    ~parser (void) { }
+    ~parser (void) = default;
 
     int run (void);
 
@@ -513,7 +513,7 @@ namespace octave
       : base_parser (*(new octave::push_lexer ()))
     { }
 
-    ~push_parser (void) { }
+    ~push_parser (void) = default;
 
     int run (const std::string& input, bool eof);
 

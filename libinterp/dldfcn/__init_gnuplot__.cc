@@ -54,7 +54,7 @@ public:
   gnuplot_graphics_toolkit (void)
     : base_graphics_toolkit ("gnuplot") { }
 
-  ~gnuplot_graphics_toolkit (void) { }
+  ~gnuplot_graphics_toolkit (void) = default;
 
   bool is_valid (void) const { return true; }
 

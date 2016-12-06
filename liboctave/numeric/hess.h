@@ -68,7 +68,7 @@ namespace octave
         return *this;
       }
 
-      ~hess (void) { }
+      ~hess (void) = default;
 
       T hess_matrix (void) const { return hess_mat; }
 

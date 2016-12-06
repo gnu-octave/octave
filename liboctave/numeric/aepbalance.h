@@ -60,7 +60,7 @@ namespace octave
         return *this;
       }
 
-      virtual ~aepbalance (void) { }
+      virtual ~aepbalance (void) = default;
 
       MT balancing_matrix (void) const;
 

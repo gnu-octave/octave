@@ -48,7 +48,7 @@ public:
 
   typedef void (*hook_fcn_ptr) (const std::string& dir);
 
-  ~load_path (void) { }
+  ~load_path (void) = default;
 
   static void initialize (bool set_initial_path = false)
   {
@@ -322,7 +322,7 @@ private:
         return *this;
       }
 
-      ~class_info (void) { }
+      ~class_info (void) = default;
 
       fcn_file_map_type method_file_map;
       fcn_file_map_type private_file_map;
@@ -369,7 +369,7 @@ private:
         method_file_map (di.method_file_map),
         package_dir_map (di.package_dir_map) { }
 
-    ~dir_info (void) { }
+    ~dir_info (void) = default;
 
     dir_info& operator = (const dir_info& di)
     {
@@ -431,7 +431,7 @@ private:
     file_info (const file_info& fi)
       : dir_name (fi.dir_name), types (fi.types) { }
 
-    ~file_info (void) { }
+    ~file_info (void) = default;
 
     file_info& operator = (const file_info& fi)
     {
@@ -506,7 +506,7 @@ private:
       : prefix (l.prefix), dir_list (l.dir_list),
         private_fcn_map (l.private_fcn_map), method_map (l.method_map) { }
 
-    ~loader (void) { }
+    ~loader (void) = default;
 
     loader& operator = (const loader& l)
     {

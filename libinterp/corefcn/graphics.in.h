@@ -60,7 +60,7 @@ class base_scaler
 public:
   base_scaler (void) { }
 
-  virtual ~base_scaler (void) { }
+  virtual ~base_scaler (void) = default;
 
   virtual Matrix scale (const Matrix&) const
   {
@@ -280,7 +280,7 @@ public:
       hidden (p.hidden), listeners ()
   { }
 
-  virtual ~base_property (void) { }
+  virtual ~base_property (void) = default;
 
   bool ok (void) const { return parent.ok (); }
 
@@ -2068,7 +2068,7 @@ public:
   property_list (const plist_map_type& m = plist_map_type ())
     : plist_map (m) { }
 
-  ~property_list (void) { }
+  ~property_list (void) = default;
 
   void set (const caseless_str& name, const octave_value& val);
 
@@ -2110,7 +2110,7 @@ public:
   base_graphics_toolkit (const std::string& nm)
     : name (nm), count (0) { }
 
-  virtual ~base_graphics_toolkit (void) { }
+  virtual ~base_graphics_toolkit (void) = default;
 
   std::string get_name (void) const { return name; }
 
@@ -2342,7 +2342,7 @@ private:
 
   gtk_manager (void) { }
 
-  ~gtk_manager (void) { }
+  ~gtk_manager (void) = default;
 
   OCTINTERP_API static void create_instance (void);
 
@@ -2462,7 +2462,7 @@ public:
                    const graphics_handle& mh = graphics_handle (),
                    const graphics_handle& p = graphics_handle ());
 
-  virtual ~base_properties (void) { }
+  virtual ~base_properties (void) = default;
 
   virtual std::string graphics_object_name (void) const { return "unknown"; }
 
@@ -2690,7 +2690,7 @@ public:
 
   base_graphics_object (void) : count (1), toolkit_flag (false) { }
 
-  virtual ~base_graphics_object (void) { }
+  virtual ~base_graphics_object (void) = default;
 
   virtual void mark_modified (void)
   {
@@ -3220,7 +3220,7 @@ public:
   root_figure (void)
     : xproperties (0, graphics_handle ()), default_properties () { }
 
-  ~root_figure (void) { }
+  ~root_figure (void) = default;
 
   void mark_modified (void) { }
 
@@ -3519,7 +3519,7 @@ public:
     : base_graphics_object (), xproperties (mh, p), default_properties ()
   { }
 
-  ~figure (void) { }
+  ~figure (void) = default;
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -3611,7 +3611,7 @@ public:
     : xform (g.xform), xform_inv (g.xform_inv), sx (g.sx),
       sy (g.sy), sz (g.sz), zlim (g.zlim) { }
 
-  ~graphics_xform (void) { }
+  ~graphics_xform (void) = default;
 
   graphics_xform& operator = (const graphics_xform& g)
   {
@@ -4319,7 +4319,7 @@ public:
     xproperties.update_transform ();
   }
 
-  ~axes (void) { }
+  ~axes (void) = default;
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -4477,7 +4477,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~line (void) { }
+  ~line (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -4651,7 +4651,7 @@ public:
     xproperties.set_clipping ("off");
   }
 
-  ~text (void) { }
+  ~text (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -4861,7 +4861,7 @@ public:
     xproperties.initialize_data ();
   }
 
-  ~image (void) { }
+  ~image (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -4910,7 +4910,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~light (void) { }
+  ~light (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5131,7 +5131,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~patch (void) { }
+  ~patch (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5323,7 +5323,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~surface (void) { }
+  ~surface (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5401,7 +5401,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~hggroup (void) { }
+  ~hggroup (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5475,7 +5475,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uimenu (void) { }
+  ~uimenu (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5641,7 +5641,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uicontrol (void) { }
+  ~uicontrol (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5727,7 +5727,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uibuttongroup (void) { }
+  ~uibuttongroup (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5803,7 +5803,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uipanel (void) { }
+  ~uipanel (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5849,7 +5849,7 @@ public:
     : base_graphics_object (), xproperties (mh, p), default_properties ()
   { }
 
-  ~uitoolbar (void) { }
+  ~uitoolbar (void) = default;
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -5958,7 +5958,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uipushtool (void) { }
+  ~uipushtool (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -6017,7 +6017,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   { }
 
-  ~uitoggletool (void) { }
+  ~uitoggletool (void) = default;
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -6056,7 +6056,7 @@ public:
 
   base_graphics_event (void) : count (1) { }
 
-  virtual ~base_graphics_event (void) { }
+  virtual ~base_graphics_event (void) = default;
 
   virtual void execute (void) = 0;
 

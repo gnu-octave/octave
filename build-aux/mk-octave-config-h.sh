@@ -153,9 +153,17 @@ if test -z "$octave_idx_type"; then
   exit 1
 fi
 
+octave_f77_int_type="`$SED -n 's/#define OCTAVE_F77_INT_TYPE \([_a-zA-Z][_a-zA-Z0-9]*\)/\1/p' $config_h_file`"
+
+if test -z "$octave_f77_int_type"; then
+  echo "mk-octave-config-h.sh: failed to find OCTAVE_F77_INT_TYPE in $config_h_file" 1>&2
+  exit 1
+fi
+
 cat << EOF
 
 typedef $octave_idx_type octave_idx_type;
+typedef $octave_f77_int_type octave_f77_int_type;
 
 EOF
 

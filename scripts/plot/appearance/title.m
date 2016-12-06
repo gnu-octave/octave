@@ -48,16 +48,7 @@ function h = title (varargin)
     print_usage ();
   endif
 
-  htmp = get (hax, "title");
-
-  set (htmp, "fontangle", get (hax, "fontangle"),
-             "fontname", get (hax, "fontname"),
-             "fontunits", get (hax, "fontunits"),   # must precede fontsize
-             "fontsize", get (hax, "TitleFontSizeMultiplier") *
-                         get (hax, "fontsize"),
-             "fontweight", get (hax, "titlefontweight"),
-             "string", varargin{1},
-             varargin{2:end});
+  htmp = __axis_label__ (hax, "title", varargin{:});
 
   if (nargout > 0)
     h = htmp;

@@ -27,20 +27,15 @@ function retval = __axis_label__ (hax, caller, txt, varargin)
 
   h = get (hax, caller);
 
-  set (h, "fontangle", get (hax, "fontangle"),
-          "fontname", get (hax, "fontname"),
-          "fontunits", get (hax, "fontunits"),   # must precede fontsize
-          "fontsize", get (hax, "LabelFontSizeMultiplier") *
-                      get (hax, "fontsize"),
-          "fontweight", get (hax, "fontweight"),
-          "string", txt,
-          varargin{:});
+  set (h, "string", txt, varargin{:});
 
   ## FIXME: It would be better to delete only the listener that [xyz]label
   ##        installed.  But this didn't work, so instead it deletes all
   ##        listener's on the [xyz]color property.
-  dellistener (hax, [caller(1) "color"]);
-  addlistener (hax, [caller(1) "color"], {@cb_color, h, caller(1)});
+  if (! strcmp (caller, "title"))
+    dellistener (hax, [caller(1) "color"]);
+    addlistener (hax, [caller(1) "color"], {@cb_color, h, caller(1)});
+  endif
 
   if (nargout > 0)
     retval = h;

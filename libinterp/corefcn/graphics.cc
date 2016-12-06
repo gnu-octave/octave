@@ -4600,6 +4600,15 @@ axes::properties::init (void)
   xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
   xset (title.handle_value (), "__autopos_tag__", "title");
 
+  double fs = labelfontsizemultiplier.double_value () * 
+    fontsize.double_value ();
+  xset (xlabel.handle_value (), "fontsize", octave_value (fs));
+  xset (ylabel.handle_value (), "fontsize", octave_value (fs));
+  xset (zlabel.handle_value (), "fontsize", octave_value (fs));
+  fs = titlefontsizemultiplier.double_value () * fontsize.double_value ();
+  xset (title.handle_value (), "fontsize", octave_value (fs));
+  xset (title.handle_value (), "fontweight", titlefontweight.get ());
+
   adopt (xlabel.handle_value ());
   adopt (ylabel.handle_value ());
   adopt (zlabel.handle_value ());
@@ -5083,6 +5092,15 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   xset (ylabel.handle_value (), "__autopos_tag__", "ylabel");
   xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
   xset (title.handle_value (), "__autopos_tag__", "title");
+
+  double fs = labelfontsizemultiplier.double_value () * 
+    fontsize.double_value ();
+  xset (xlabel.handle_value (), "fontsize", octave_value (fs));
+  xset (ylabel.handle_value (), "fontsize", octave_value (fs));
+  xset (zlabel.handle_value (), "fontsize", octave_value (fs));
+  fs = titlefontsizemultiplier.double_value () * fontsize.double_value ();
+  xset (title.handle_value (), "fontsize", octave_value (fs));
+  xset (title.handle_value (), "fontweight", titlefontweight.get ());
 
   update_transform ();
   sync_positions ();

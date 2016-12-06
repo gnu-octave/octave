@@ -102,6 +102,12 @@ namespace octave
 
     interpreter (application *app_context = 0, bool embedded = false);
 
+    // No copying, at least not yet...
+
+    interpreter (const interpreter&) = delete;
+
+    interpreter& operator = (const interpreter&) = delete;
+
     ~interpreter (void);
 
     int execute (void);
@@ -114,12 +120,6 @@ namespace octave
     void interactive (bool arg) { m_interactive = arg; }
 
   private:
-
-    // No copying, at least not yet...
-
-    interpreter (const interpreter&) = delete;
-
-    interpreter& operator = (const interpreter&) = delete;
 
     int main_loop (void);
 

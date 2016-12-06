@@ -50,6 +50,12 @@ public:
   octave_mex_function (void *fptr, bool fmex, const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
+  // No copying!
+
+  octave_mex_function (const octave_mex_function& fn) = delete;
+
+  octave_mex_function& operator = (const octave_mex_function& fn) = delete;
+
   ~octave_mex_function (void);
 
   octave_value subsref (const std::string& type,
@@ -107,12 +113,6 @@ private:
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
   bool system_fcn_file;
-
-  // No copying!
-
-  octave_mex_function (const octave_mex_function& fn) = delete;
-
-  octave_mex_function& operator = (const octave_mex_function& fn) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

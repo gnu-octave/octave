@@ -43,6 +43,12 @@ namespace octave
 
   public:
 
+    // No copying!
+
+    command_history (const command_history&) = delete;
+
+    command_history& operator = (const command_history&) = delete;
+
     virtual ~command_history (void) = default;
 
     static void initialize (bool, const std::string&, int, const std::string&);
@@ -118,12 +124,6 @@ namespace octave
     static void clean_up_and_save (const std::string& = "", int = -1);
 
   private:
-
-    // No copying!
-
-    command_history (const command_history&) = delete;
-
-    command_history& operator = (const command_history&) = delete;
 
     static bool instance_ok (void);
 

@@ -2690,6 +2690,12 @@ public:
 
   base_graphics_object (void) : count (1), toolkit_flag (false) { }
 
+  // No copying!
+
+  base_graphics_object (const base_graphics_object&) = delete;
+
+  base_graphics_object& operator = (const base_graphics_object&) = delete;
+
   virtual ~base_graphics_object (void) = default;
 
   virtual void mark_modified (void)
@@ -2925,12 +2931,6 @@ protected:
   // A flag telling whether this object is a valid object
   // in the backend context.
   bool toolkit_flag;
-
-  // No copying!
-
-  base_graphics_object (const base_graphics_object&) = delete;
-
-  base_graphics_object& operator = (const base_graphics_object&) = delete;
 };
 
 class OCTINTERP_API graphics_object
@@ -6362,8 +6362,6 @@ public:
                          : octave_mutex (),
                          wait)
     { }
-
-  private:
 
     // No copying!
 

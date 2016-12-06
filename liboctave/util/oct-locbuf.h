@@ -43,18 +43,19 @@ public:
       data = new T [size];
   }
 
-  ~octave_local_buffer (void) { delete [] data; }
-
-  operator T *() const { return data; }
-
-private:
-  T *data;
-
   // No copying!
 
   octave_local_buffer (const octave_local_buffer&) = delete;
 
   octave_local_buffer& operator = (const octave_local_buffer&) = delete;
+
+  ~octave_local_buffer (void) { delete [] data; }
+
+  operator T *() const { return data; }
+
+private:
+
+  T *data;
 };
 
 // For buffers of POD types, we'll be smarter.  There is one thing
@@ -75,6 +76,12 @@ class octave_chunk_buffer
 public:
 
   OCTAVE_API octave_chunk_buffer (size_t size);
+
+  // No copying!
+
+  octave_chunk_buffer (const octave_chunk_buffer&) = delete;
+
+  octave_chunk_buffer& operator = (const octave_chunk_buffer&) = delete;
 
   OCTAVE_API virtual ~octave_chunk_buffer (void);
 
@@ -105,12 +112,6 @@ private:
 
   // Pointer to the beginning of the most recent allocation.
   char *dat;
-
-  // No copying!
-
-  octave_chunk_buffer (const octave_chunk_buffer&) = delete;
-
-  octave_chunk_buffer& operator = (const octave_chunk_buffer&) = delete;
 };
 
 // This specializes octave_local_buffer to use the chunked buffer

@@ -57,6 +57,12 @@ namespace octave
 
       typedef std::string (*tilde_expansion_hook) (const std::string&);
 
+      // No copying!
+
+      file_ops (const file_ops&) = delete;
+
+      file_ops& operator = (const file_ops&) = delete;
+
       static tilde_expansion_hook tilde_expansion_preexpansion_hook;
 
       static tilde_expansion_hook tilde_expansion_failure_hook;
@@ -130,12 +136,6 @@ namespace octave
       static file_ops *instance;
 
       static void cleanup_instance (void) { delete instance; instance = 0; }
-
-      // No copying!
-
-      file_ops (const file_ops&) = delete;
-
-      file_ops& operator = (const file_ops&) = delete;
 
       static bool instance_ok (void);
 

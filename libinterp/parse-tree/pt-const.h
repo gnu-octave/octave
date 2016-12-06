@@ -52,6 +52,12 @@ public:
                  int l = -1, int c = -1)
     : tree_expression (l, c), val (v), orig_text (ot) { }
 
+  // No copying!
+
+  tree_constant (const tree_constant&) = delete;
+
+  tree_constant& operator = (const tree_constant&) = delete;
+
   ~tree_constant (void) = default;
 
   bool has_magic_end (void) const { return false; }
@@ -93,13 +99,6 @@ private:
 
   // The original text form of this constant.
   std::string orig_text;
-
-  // No copying!
-
-  tree_constant (const tree_constant&) = delete;
-
-  tree_constant& operator = (const tree_constant&) = delete;
-
 };
 
 #endif

@@ -53,6 +53,12 @@ public:
   tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
     : tree_expression (l, c), nm (n) { }
 
+  // No copying!
+
+  tree_fcn_handle (const tree_fcn_handle&) = delete;
+
+  tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
+
   ~tree_fcn_handle (void) = default;
 
   bool has_magic_end (void) const { return false; }
@@ -80,12 +86,6 @@ private:
 
   // The name of this function handle.
   std::string nm;
-
-  // No copying!
-
-  tree_fcn_handle (const tree_fcn_handle&) = delete;
-
-  tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
 };
 
 class
@@ -102,6 +102,12 @@ public:
     : tree_expression (l, c),
       fcn (new octave_user_function (sid, pl, rl, cl)),
       file_name () { }
+
+  // No copying!
+
+  tree_anon_fcn_handle (const tree_anon_fcn_handle&) = delete;
+
+  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 
   ~tree_anon_fcn_handle (void) { delete fcn; }
 
@@ -147,12 +153,6 @@ private:
 
   // Filename where the handle was defined.
   std::string file_name;
-
-  // No copying!
-
-  tree_anon_fcn_handle (const tree_anon_fcn_handle&) = delete;
-
-  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 };
 
 #endif

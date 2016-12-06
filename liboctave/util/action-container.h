@@ -42,21 +42,20 @@ public:
   class elem
   {
   public:
-    elem (void) { }
-
-    virtual void run (void) { }
-
-    virtual ~elem (void) = default;
 
     friend class action_container;
 
-  private:
+    elem (void) { }
 
     // No copying!
 
     elem (const elem&) = delete;
 
     elem& operator = (const elem&) = delete;
+
+    virtual ~elem (void) = default;
+
+    virtual void run (void) { }
   };
 
   // An element that merely runs a void (*)(void) function.
@@ -64,12 +63,14 @@ public:
   class fcn_elem : public elem
   {
   public:
+
     fcn_elem (void (*fptr) (void))
       : e_fptr (fptr) { }
 
     void run (void) { e_fptr (); }
 
   private:
+
     void (*e_fptr) (void);
   };
 
@@ -80,12 +81,9 @@ public:
   class fcn_arg_elem : public elem
   {
   public:
+
     fcn_arg_elem (void (*fcn) (T), T arg)
       : e_fcn (fcn), e_arg (arg) { }
-
-    void run (void) { e_fcn (e_arg); }
-
-  private:
 
     // No copying!
 
@@ -93,7 +91,12 @@ public:
 
     fcn_arg_elem& operator = (const fcn_arg_elem&) = delete;
 
+    void run (void) { e_fcn (e_arg); }
+
+  private:
+
     void (*e_fcn) (T);
+
     T e_arg;
   };
 
@@ -105,13 +108,16 @@ public:
   class fcn_crefarg_elem : public elem
   {
   public:
+
     fcn_crefarg_elem (void (*fcn) (const T&), const T& arg)
       : e_fcn (fcn), e_arg (arg) { }
 
     void run (void) { e_fcn (e_arg); }
 
   private:
+
     void (*e_fcn) (const T&);
+
     T e_arg;
   };
 
@@ -121,21 +127,23 @@ public:
   class method_elem : public elem
   {
   public:
+
     method_elem (T *obj, void (T::*method) (void))
       : e_obj (obj), e_method (method) { }
-
-    void run (void) { (e_obj->*e_method) (); }
-
-  private:
-
-    T *e_obj;
-    void (T::*e_method) (void);
 
     // No copying!
 
     method_elem (const method_elem&) = delete;
 
     method_elem operator = (const method_elem&) = delete;
+
+    void run (void) { (e_obj->*e_method) (); }
+
+  private:
+
+    T *e_obj;
+
+    void (T::*e_method) (void);
   };
 
   // An element for calling a member function with a single argument
@@ -144,22 +152,25 @@ public:
   class method_arg_elem : public elem
   {
   public:
+
     method_arg_elem (T *obj, void (T::*method) (A), A arg)
       : e_obj (obj), e_method (method), e_arg (arg) { }
-
-    void run (void) { (e_obj->*e_method) (e_arg); }
-
-  private:
-
-    T *e_obj;
-    void (T::*e_method) (A);
-    A e_arg;
 
     // No copying!
 
     method_arg_elem (const method_arg_elem&) = delete;
 
     method_arg_elem operator = (const method_arg_elem&) = delete;
+
+    void run (void) { (e_obj->*e_method) (e_arg); }
+
+  private:
+
+    T *e_obj;
+
+    void (T::*e_method) (A);
+
+    A e_arg;
   };
 
   // An element for calling a member function with a single argument
@@ -168,22 +179,25 @@ public:
   class method_crefarg_elem : public elem
   {
   public:
+
     method_crefarg_elem (T *obj, void (T::*method) (const A&), const A& arg)
       : e_obj (obj), e_method (method), e_arg (arg) { }
-
-    void run (void) { (e_obj->*e_method) (e_arg); }
-
-  private:
-
-    T *e_obj;
-    void (T::*e_method) (const A&);
-    A e_arg;
 
     // No copying!
 
     method_crefarg_elem (const method_crefarg_elem&) = delete;
 
     method_crefarg_elem operator = (const method_crefarg_elem&) = delete;
+
+    void run (void) { (e_obj->*e_method) (e_arg); }
+
+  private:
+
+    T *e_obj;
+
+    void (T::*e_method) (const A&);
+
+    A e_arg;
   };
 
   // An element that stores arbitrary variable, and restores it.
@@ -192,18 +206,19 @@ public:
   class restore_var_elem : public elem
   {
   public:
+
     restore_var_elem (T& ref, const T& val)
       : e_ptr (&ref), e_val (val) { }
-
-    void run (void) { *e_ptr = e_val; }
-
-  private:
 
     // No copying!
 
     restore_var_elem (const restore_var_elem&) = delete;
 
     restore_var_elem& operator = (const restore_var_elem&) = delete;
+
+    void run (void) { *e_ptr = e_val; }
+
+  private:
 
     T *e_ptr, e_val;
   };
@@ -214,23 +229,30 @@ public:
   class delete_ptr_elem : public elem
   {
   public:
+
     delete_ptr_elem (T *ptr)
       : e_ptr (ptr) { }
-
-    void run (void) { delete e_ptr; }
-
-  private:
-
-    T *e_ptr;
 
     // No copying!
 
     delete_ptr_elem (const delete_ptr_elem&) = delete;
 
     delete_ptr_elem operator = (const delete_ptr_elem&) = delete;
+
+    void run (void) { delete e_ptr; }
+
+  private:
+
+    T *e_ptr;
   };
 
   action_container (void) { }
+
+  // No copying!
+
+  action_container (const action_container&) = delete;
+
+  action_container& operator = (const action_container&) = delete;
 
   virtual ~action_container (void) = default;
 
@@ -330,14 +352,6 @@ public:
   virtual size_t size (void) const = 0;
 
   bool empty (void) const { return size () == 0; }
-
-private:
-
-  // No copying!
-
-  action_container (const action_container&) = delete;
-
-  action_container& operator = (const action_container&) = delete;
 };
 
 #endif

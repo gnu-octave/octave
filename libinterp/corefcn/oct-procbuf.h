@@ -45,6 +45,12 @@ public:
     : c_file_ptr_buf (0), wstatus (-1), open_p (false), proc_pid (-1),
       next (0) { open (command, mode); }
 
+  // No copying!
+
+  octave_procbuf (const octave_procbuf&) = delete;
+
+  octave_procbuf& operator = (const octave_procbuf&) = delete;
+
   ~octave_procbuf (void) { close (); }
 
   octave_procbuf *open (const char *command, int mode);
@@ -66,14 +72,6 @@ protected:
   pid_t proc_pid;
 
   octave_procbuf *next;
-
-private:
-
-  // No copying!
-
-  octave_procbuf (const octave_procbuf&) = delete;
-
-  octave_procbuf& operator = (const octave_procbuf&) = delete;
 };
 
 extern void symbols_of_oct_procbuf (void);

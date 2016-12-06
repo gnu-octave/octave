@@ -206,6 +206,12 @@ protected:
       pref_assign_conv (dim_vector (init_tab_sz, init_tab_sz), -1),
       widening_ops (dim_vector (init_tab_sz, init_tab_sz), 0)  { }
 
+  // No copying!
+
+  octave_value_typeinfo (const octave_value_typeinfo&) = delete;
+
+  octave_value_typeinfo& operator = (const octave_value_typeinfo&) = delete;
+
   ~octave_value_typeinfo (void) = default;
 
 private:
@@ -318,12 +324,6 @@ private:
   octave_scalar_map compound_binary_ops_map (void) const;
   octave_scalar_map assign_ops_map (void) const;
   octave_scalar_map assignany_ops_map (void) const;
-
-  // No copying!
-
-  octave_value_typeinfo (const octave_value_typeinfo&) = delete;
-
-  octave_value_typeinfo& operator = (const octave_value_typeinfo&) = delete;
 };
 
 #endif

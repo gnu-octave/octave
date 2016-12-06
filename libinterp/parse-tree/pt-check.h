@@ -39,6 +39,12 @@ public:
   tree_checker (void)
     : do_lvalue_check (false), file_name () { }
 
+  // No copying!
+
+  tree_checker (const tree_checker&) = delete;
+
+  tree_checker& operator = (const tree_checker&) = delete;
+
   ~tree_checker (void) = default;
 
   void visit_argument_list (tree_argument_list&);
@@ -134,12 +140,6 @@ private:
   void do_decl_command (tree_decl_command&);
 
   OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
-
-  // No copying!
-
-  tree_checker (const tree_checker&) = delete;
-
-  tree_checker& operator = (const tree_checker&) = delete;
 };
 
 #endif

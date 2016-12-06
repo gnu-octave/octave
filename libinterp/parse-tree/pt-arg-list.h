@@ -56,6 +56,12 @@ public:
       simple_assign_lhs (false)
   { append (t); }
 
+  // No copying!
+
+  tree_argument_list (const tree_argument_list&) = delete;
+
+  tree_argument_list& operator = (const tree_argument_list&) = delete;
+
   ~tree_argument_list (void);
 
   bool has_magic_end (void) const;
@@ -101,12 +107,6 @@ private:
   bool list_includes_magic_tilde;
 
   bool simple_assign_lhs;
-
-  // No copying!
-
-  tree_argument_list (const tree_argument_list&) = delete;
-
-  tree_argument_list& operator = (const tree_argument_list&) = delete;
 };
 
 #endif

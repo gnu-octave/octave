@@ -40,6 +40,18 @@ public:
                            = octave::mach_info::native_float_format ())
     : octave_base_stream (m, ff) { }
 
+  // No copying!
+
+  octave_base_strstream (const octave_base_strstream&) = delete;
+
+  octave_base_strstream& operator = (const octave_base_strstream&) = delete;
+
+protected:
+
+  ~octave_base_strstream (void) = default;
+
+public:
+
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (off_t, int);
@@ -57,18 +69,6 @@ public:
   virtual bool bad (void) const = 0;
 
   virtual void clear (void) = 0;
-
-protected:
-
-  ~octave_base_strstream (void) = default;
-
-private:
-
-  // No copying!
-
-  octave_base_strstream (const octave_base_strstream&) = delete;
-
-  octave_base_strstream& operator = (const octave_base_strstream&) = delete;
 };
 
 class
@@ -87,6 +87,19 @@ public:
                      octave::mach_info::float_format ff
                        = octave::mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), is (data.c_str ()) { }
+
+  // No copying!
+
+  octave_istrstream (const octave_istrstream&) = delete;
+
+  octave_istrstream& operator = (const octave_istrstream&) = delete;
+
+protected:
+
+  ~octave_istrstream (void) = default;
+
+public:
+
 
   static octave_stream
   create (const char *data, std::ios::openmode arg_md = std::ios::out,
@@ -114,19 +127,9 @@ public:
 
   void clear (void) { is.clear (); }
 
-protected:
-
-  ~octave_istrstream (void) = default;
-
 private:
 
   std::istringstream is;
-
-  // No copying!
-
-  octave_istrstream (const octave_istrstream&) = delete;
-
-  octave_istrstream& operator = (const octave_istrstream&) = delete;
 };
 
 class
@@ -138,6 +141,18 @@ public:
                      octave::mach_info::float_format ff
                        = octave::mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), os () { }
+
+  // No copying!
+
+  octave_ostrstream (const octave_ostrstream&) = delete;
+
+  octave_ostrstream& operator = (const octave_ostrstream&) = delete;
+
+protected:
+
+  ~octave_ostrstream (void) = default;
+
+public:
 
   static octave_stream
   create (std::ios::openmode arg_md = std::ios::out,
@@ -160,19 +175,9 @@ public:
 
   void clear (void) { os.clear (); }
 
-protected:
-
-  ~octave_ostrstream (void) = default;
-
 private:
 
   std::ostringstream os;
-
-  // No copying!
-
-  octave_ostrstream (const octave_ostrstream&) = delete;
-
-  octave_ostrstream& operator = (const octave_ostrstream&) = delete;
 };
 
 #endif

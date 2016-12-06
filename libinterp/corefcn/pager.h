@@ -62,6 +62,12 @@ protected:
 
 public:
 
+  // No copying!
+
+  octave_pager_stream (const octave_pager_stream&) = delete;
+
+  octave_pager_stream& operator = (const octave_pager_stream&) = delete;
+
   ~octave_pager_stream (void);
 
   static void flush_current_contents_to_diary (void);
@@ -87,12 +93,6 @@ private:
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
   octave_pager_buf *pb;
-
-  // No copying!
-
-  octave_pager_stream (const octave_pager_stream&) = delete;
-
-  octave_pager_stream& operator = (const octave_pager_stream&) = delete;
 };
 
 class
@@ -118,6 +118,12 @@ protected:
 
 public:
 
+  // No copying!
+
+  octave_diary_stream (const octave_diary_stream&) = delete;
+
+  octave_diary_stream& operator = (const octave_diary_stream&) = delete;
+
   ~octave_diary_stream (void);
 
   static std::ostream& stream (void);
@@ -135,12 +141,6 @@ private:
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
   octave_diary_buf *db;
-
-  // No copying!
-
-  octave_diary_stream (const octave_diary_stream&) = delete;
-
-  octave_diary_stream& operator = (const octave_diary_stream&) = delete;
 };
 
 #define octave_stdout (octave_pager_stream::stream ())

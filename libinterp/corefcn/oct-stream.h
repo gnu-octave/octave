@@ -69,6 +69,12 @@ public:
       errmsg ()
   { }
 
+  // No copying!
+
+  octave_base_stream (const octave_base_stream&) = delete;
+
+  octave_base_stream& operator = (const octave_base_stream&) = delete;
+
   virtual ~octave_base_stream (void) = default;
 
   // The remaining functions are not specific to input or output only,
@@ -229,12 +235,6 @@ private:
   // only has to provide that.
 
   void invalid_operation (const std::string& who, const char *rw);
-
-  // No copying!
-
-  octave_base_stream (const octave_base_stream&) = delete;
-
-  octave_base_stream& operator = (const octave_base_stream&) = delete;
 };
 
 class

@@ -63,6 +63,12 @@ namespace octave
 
     typedef void (*user_accept_line_fcn) (const std::string&);
 
+    // No copying!
+
+    command_editor (const command_editor&) = delete;
+
+    command_editor& operator = (const command_editor&) = delete;
+
     virtual ~command_editor (void) = default;
 
     static void set_name (const std::string& n);
@@ -192,12 +198,6 @@ namespace octave
     static int insert_initial_input (void);
 
   private:
-
-    // No copying!
-
-    command_editor (const command_editor&) = delete;
-
-    command_editor& operator = (const command_editor&) = delete;
 
     static bool instance_ok (void);
 

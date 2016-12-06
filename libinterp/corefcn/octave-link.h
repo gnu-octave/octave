@@ -53,6 +53,12 @@ protected:
 
 public:
 
+  // No copying!
+
+  octave_link (const octave_link&) = delete;
+
+  octave_link& operator = (const octave_link&) = delete;
+
   virtual ~octave_link (void);
 
   static void generate_events (void)
@@ -353,12 +359,6 @@ public:
 private:
 
   static octave_link *instance;
-
-  // No copying!
-
-  octave_link (const octave_link&) = delete;
-
-  octave_link& operator = (const octave_link&) = delete;
 
   static bool instance_ok (void) { return instance != 0; }
 

@@ -117,6 +117,12 @@ public:
 
   octave_sort (compare_fcn_type);
 
+  // No copying!
+
+  octave_sort (const octave_sort&) = delete;
+
+  octave_sort& operator = (const octave_sort&) = delete;
+
   ~octave_sort (void);
 
   void set_compare (compare_fcn_type comp) { compare = comp; }
@@ -188,6 +194,12 @@ private:
       : min_gallop (), a (0), ia (0), alloced (0), n (0)
     { reset (); }
 
+    // No copying!
+
+    MergeState (const MergeState&) = delete;
+
+    MergeState& operator = (const MergeState&) = delete;
+
     ~MergeState (void)
     { delete [] a; delete [] ia; }
 
@@ -220,12 +232,6 @@ private:
     // and keeping all the info explicit simplifies the code.
     octave_idx_type n;
     struct s_slice pending[MAX_MERGE_PENDING];
-
-    // No copying!
-
-    MergeState (const MergeState&) = delete;
-
-    MergeState& operator = (const MergeState&) = delete;
   };
 
   compare_fcn_type compare;
@@ -328,12 +334,6 @@ private:
   void nth_element (T *data, octave_idx_type nel,
                     octave_idx_type lo, octave_idx_type up,
                     Comp comp);
-
-  // No copying!
-
-  octave_sort (const octave_sort&) = delete;
-
-  octave_sort& operator = (const octave_sort&) = delete;
 };
 
 template <typename T>

@@ -40,6 +40,12 @@ public:
                   octave::mach_info::float_format flt_fmt
                     = octave::mach_info::native_float_format ());
 
+  // No copying!
+
+  octave_fstream (const octave_fstream&) = delete;
+
+  octave_fstream& operator = (const octave_fstream&) = delete;
+
   static octave_stream
   create (const std::string& nm_arg,
           std::ios::openmode arg_md = std::ios::in | std::ios::out,
@@ -77,12 +83,6 @@ private:
   std::string nm;
 
   std::fstream fs;
-
-  // No copying!
-
-  octave_fstream (const octave_fstream&) = delete;
-
-  octave_fstream& operator = (const octave_fstream&) = delete;
 };
 
 #endif

@@ -71,22 +71,28 @@ public:
         }
     }
 
-    ~enter ()
-    {
-      if (is_active)
-        acc.exit_function (fcn);
-    }
-
-  private:
-
     // No copying!
 
     enter (const enter&) = delete;
 
     enter& operator = (const enter&) = delete;
+
+    ~enter ()
+    {
+      if (is_active)
+        acc.exit_function (fcn);
+    }
   };
 
   profile_data_accumulator (void);
+
+  // No copying!
+
+  profile_data_accumulator (const profile_data_accumulator&) = delete;
+
+  profile_data_accumulator&
+  operator = (const profile_data_accumulator&) = delete;
+  
   virtual ~profile_data_accumulator ();
 
   bool is_active (void) const { return enabled; }
@@ -130,6 +136,12 @@ private:
     tree_node (tree_node*, octave_idx_type);
     virtual ~tree_node ();
 
+    // No copying!
+
+    tree_node (const tree_node&) = delete;
+
+    tree_node& operator = (const tree_node&) = delete;
+
     void add_time (double dt) { time += dt; }
 
     // Enter a child function.  It is created in the list of children if it
@@ -160,12 +172,6 @@ private:
     double time;
 
     unsigned calls;
-
-    // No copying!
-
-    tree_node (const tree_node&) = delete;
-
-    tree_node& operator = (const tree_node&) = delete;
   };
 
   // Each function we see in the profiler is given a unique index (which
@@ -201,12 +207,6 @@ private:
   // This is called from two different positions, thus it is useful to have
   // it as a seperate function.
   void add_current_time (void);
-
-  // No copying!
-
-  profile_data_accumulator (const profile_data_accumulator&) = delete;
-
-  profile_data_accumulator& operator = (const profile_data_accumulator&) = delete;
 };
 
 // The instance used.

@@ -332,6 +332,12 @@ namespace octave
       SETOPT (CURLOPT_HTTPGET, 1);
     }
 
+    // No copying!
+
+    curl_transfer (const curl_transfer&) = delete;
+
+    curl_transfer& operator = (const curl_transfer&) = delete;
+
     ~curl_transfer (void)
     {
       if (curl)
@@ -667,12 +673,6 @@ namespace octave
     // candidate for storing the strings as well. (bug #36717)
     std::string url;
     std::string userpwd;
-
-    // No copying!
-
-    curl_transfer (const curl_transfer&) = delete;
-
-    curl_transfer& operator = (const curl_transfer&) = delete;
 
     void init (const std::string& user, const std::string& passwd,
                std::istream& is, std::ostream& os)

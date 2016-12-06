@@ -70,6 +70,12 @@ namespace octave
         ascii_mode (false), ok (true), errmsg (),
         curr_istream (&std::cin), curr_ostream (&os) { }
 
+    // No copying!
+
+    base_url_transfer (const base_url_transfer&) = delete;
+
+    base_url_transfer& operator = (const base_url_transfer&) = delete;
+
     virtual ~base_url_transfer (void) = default;
 
     bool is_valid (void) const { return valid; }
@@ -153,14 +159,6 @@ namespace octave
     std::string errmsg;
     std::istream *curr_istream;
     std::ostream *curr_ostream;
-
-  private:
-
-    // No copying!
-
-    base_url_transfer (const base_url_transfer&) = delete;
-
-    base_url_transfer& operator = (const base_url_transfer&) = delete;
   };
 
   class
@@ -181,12 +179,6 @@ namespace octave
       rep->count++;
     }
 
-    ~url_transfer (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
-
     url_transfer& operator = (const url_transfer& h)
     {
       if (this != &h)
@@ -199,6 +191,12 @@ namespace octave
         }
 
       return *this;
+    }
+
+    ~url_transfer (void)
+    {
+      if (--rep->count == 0)
+        delete rep;
     }
 
     bool is_valid (void) const { return rep->is_valid (); }

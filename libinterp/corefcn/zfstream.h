@@ -55,9 +55,14 @@ public:
   //  Default constructor.
   gzfilebuf ();
 
+  // No copying!
+
+  gzfilebuf (const gzfilebuf&) = delete;
+
+  gzfilebuf& operator = (const gzfilebuf&) = delete;
+
   //  Destructor.
-  virtual
-  ~gzfilebuf ();
+  virtual ~gzfilebuf ();
 
   /**
    *  @brief  Set compression level and strategy on the fly.
@@ -199,12 +204,6 @@ protected:
 //  virtual int_type pbackfail(int_type c = traits_type::eof());
 
 private:
-
-  // No copying!
-
-  gzfilebuf (const gzfilebuf&) = delete;
-
-  gzfilebuf& operator = (const gzfilebuf&) = delete;
 
   /**
    *  @brief  Allocate internal buffer.

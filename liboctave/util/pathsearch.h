@@ -144,6 +144,12 @@ namespace octave
 
       static_members (void);
 
+      // No copying!
+
+      static_members (const static_members&) = delete;
+
+      static_members& operator = (const static_members&) = delete;
+
       static char path_sep_char (void)
       {
         return instance_ok () ? instance->xpath_sep_char : 0;
@@ -170,12 +176,6 @@ namespace octave
       static void cleanup_instance (void) { delete instance; instance = 0; }
 
       static bool instance_ok (void);
-
-      // No copying!
-
-      static_members (const static_members&) = delete;
-
-      static_members& operator = (const static_members&) = delete;
 
       char xpath_sep_char;
 

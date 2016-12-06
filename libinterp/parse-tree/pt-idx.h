@@ -57,6 +57,12 @@ public:
   tree_index_expression (tree_expression *e, tree_expression* df,
                          int l = -1, int c = -1);
 
+  // No copying!
+
+  tree_index_expression (const tree_index_expression&) = delete;
+
+  tree_index_expression& operator = (const tree_index_expression&) = delete;
+
   ~tree_index_expression (void);
 
   bool has_magic_end (void) const;
@@ -123,12 +129,6 @@ private:
   get_struct_index
     (std::list<string_vector>::const_iterator p_arg_nm,
      std::list<tree_expression *>::const_iterator p_dyn_field) const;
-
-  // No copying!
-
-  tree_index_expression (const tree_index_expression&) = delete;
-
-  tree_index_expression& operator = (const tree_index_expression&) = delete;
 };
 
 #endif

@@ -69,6 +69,12 @@ namespace octave
         info = init (a, natural, force);
       }
 
+      // No copying!
+
+      sparse_chol_rep (const sparse_chol_rep&) = delete;
+
+      sparse_chol_rep& operator = (const sparse_chol_rep&) = delete;
+
       ~sparse_chol_rep (void)
       {
 #if defined (HAVE_CHOLMOD)
@@ -125,12 +131,6 @@ namespace octave
 #endif
 
       octave_idx_type init (const chol_type& a, bool natural, bool force);
-
-      // No copying!
-
-      sparse_chol_rep (const sparse_chol_rep&) = delete;
-
-      sparse_chol_rep& operator = (const sparse_chol_rep&) = delete;
     };
 
 #if defined (HAVE_CHOLMOD)

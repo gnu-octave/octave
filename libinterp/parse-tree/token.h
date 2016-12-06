@@ -74,6 +74,12 @@ public:
   token (int tv, const std::string& mth, const std::string& cls,
          int l = -1, int c = -1);
 
+  // No copying!
+
+  token (const token& tok) = delete;
+
+  token& operator = (const token& tok) = delete;
+
   ~token (void);
 
   void mark_may_be_command (void) { maybe_cmd = true; }
@@ -111,12 +117,6 @@ public:
   std::string text_rep (void);
 
 private:
-
-  // No copying!
-
-  token (const token& tok) = delete;
-
-  token& operator = (const token& tok) = delete;
 
   bool maybe_cmd;
   bool tspc;

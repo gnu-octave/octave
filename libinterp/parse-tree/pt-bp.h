@@ -45,6 +45,12 @@ public:
   tree_breakpoint (int l, action a, const std::string& c = pt_bp_empty_string)
     : line (l), act (a), condition (c), found (false), bp_list () { }
 
+  // No copying!
+
+  tree_breakpoint (const tree_breakpoint&) = delete;
+
+  tree_breakpoint& operator = (const tree_breakpoint&) = delete;
+
   ~tree_breakpoint (void) = default;
 
   bool success (void) const { return found; }
@@ -167,12 +173,6 @@ private:
 
   // List of breakpoint conditions.
   octave_value_list bp_cond_list;
-
-  // No copying!
-
-  tree_breakpoint (const tree_breakpoint&) = delete;
-
-  tree_breakpoint& operator = (const tree_breakpoint&) = delete;
 };
 
 // TRUE means SIGINT should put us in the debugger at the next

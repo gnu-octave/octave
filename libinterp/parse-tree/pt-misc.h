@@ -64,6 +64,12 @@ public:
   tree_parameter_list (tree_identifier *id)
     : marked_for_varargs (0) { append (new tree_decl_elt (id)); }
 
+  // No copying!
+
+  tree_parameter_list (const tree_parameter_list&) = delete;
+
+  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
+
   ~tree_parameter_list (void);
 
   void mark_as_formal_parameters (void);
@@ -100,12 +106,6 @@ private:
   void mark_varargs (void) { marked_for_varargs = 1; }
 
   void mark_varargs_only (void) { marked_for_varargs = -1; }
-
-  // No copying!
-
-  tree_parameter_list (const tree_parameter_list&) = delete;
-
-  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
 };
 
 // Return lists.  Used to hold the right hand sides of multiple
@@ -120,20 +120,18 @@ public:
 
   tree_return_list (tree_index_expression *t) { append (t); }
 
+  // No copying!
+
+  tree_return_list (const tree_return_list&) = delete;
+
+  tree_return_list& operator = (const tree_return_list&) = delete;
+
   ~tree_return_list (void);
 
   tree_return_list *dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_return_list (const tree_return_list&) = delete;
-
-  tree_return_list& operator = (const tree_return_list&) = delete;
 };
 
 class
@@ -143,15 +141,13 @@ public:
 
   tree_va_return_list (void) { }
 
-  ~tree_va_return_list (void) = default;
-
-private:
-
   // No copying!
 
   tree_va_return_list (const tree_va_return_list&) = delete;
 
   tree_va_return_list& operator = (const tree_va_return_list&) = delete;
+
+  ~tree_va_return_list (void) = default;
 };
 
 #endif

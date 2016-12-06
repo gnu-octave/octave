@@ -45,6 +45,12 @@ public:
     : tree (l, c), num_parens (0), postfix_index_type ('\0'),
       for_cmd_expr (false), print_flag (false) { }
 
+  // No copying!
+
+  tree_expression (const tree_expression&) = delete;
+
+  tree_expression& operator = (const tree_expression&) = delete;
+
   virtual ~tree_expression (void) = default;
 
   virtual bool has_magic_end (void) const = 0;
@@ -156,14 +162,6 @@ protected:
 
   // Print result of rvalue for this expression?
   bool print_flag;
-
-private:
-
-  // No copying!
-
-  tree_expression (const tree_expression&) = delete;
-
-  tree_expression& operator = (const tree_expression&) = delete;
 };
 
 #endif

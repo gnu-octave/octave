@@ -44,6 +44,12 @@ public:
   tree (int l = -1, int c = -1)
     : line_num (l), column_num (c), bp (NULL) { }
 
+  // No copying!
+
+  tree (const tree&) = delete;
+
+  tree& operator = (const tree&) = delete;
+
   virtual ~tree (void) = default;
 
   virtual int line (void) const { return line_num; }
@@ -93,12 +99,6 @@ private:
 
   // Breakpoint flag: NULL if no breakpoint, or the condition if there is one
   std::string *bp;
-
-  // No copying!
-
-  tree (const tree&) = delete;
-
-  tree& operator = (const tree&) = delete;
 };
 
 #endif

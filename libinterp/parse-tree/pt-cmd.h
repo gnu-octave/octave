@@ -44,18 +44,16 @@ public:
   tree_command (int l = -1, int c = -1)
     : tree (l, c) { }
 
-  virtual ~tree_command (void) = default;
-
-  virtual tree_command *dup (symbol_table::scope_id,
-                             symbol_table::context_id context) const = 0;
-
-private:
-
   // No copying!
 
   tree_command (const tree_command&) = delete;
 
   tree_command& operator = (const tree_command&) = delete;
+
+  virtual ~tree_command (void) = default;
+
+  virtual tree_command *dup (symbol_table::scope_id,
+                             symbol_table::context_id context) const = 0;
 };
 
 // No-op.
@@ -68,6 +66,12 @@ public:
   tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
                       int l = -1, int c = -1)
     : tree_command (l, c), eof (e), orig_cmd (cmd) { }
+
+  // No copying!
+
+  tree_no_op_command (const tree_no_op_command&) = delete;
+
+  tree_no_op_command& operator = (const tree_no_op_command&) = delete;
 
   ~tree_no_op_command (void) = default;
 
@@ -90,12 +94,6 @@ private:
   bool eof;
 
   std::string orig_cmd;
-
-  // No copying!
-
-  tree_no_op_command (const tree_no_op_command&) = delete;
-
-  tree_no_op_command& operator = (const tree_no_op_command&) = delete;
 };
 
 // Function definition.
@@ -107,6 +105,12 @@ public:
 
   tree_function_def (octave_function *f, int l = -1, int c = -1)
     : tree_command (l, c), fcn (f) { }
+
+  // No copying!
+
+  tree_function_def (const tree_function_def&) = delete;
+
+  tree_function_def& operator = (const tree_function_def&) = delete;
 
   ~tree_function_def (void) = default;
 
@@ -123,12 +127,6 @@ private:
 
   tree_function_def (const octave_value& v, int l = -1, int c = -1)
     : tree_command (l, c), fcn (v) { }
-
-  // No copying!
-
-  tree_function_def (const tree_function_def&) = delete;
-
-  tree_function_def& operator = (const tree_function_def&) = delete;
 };
 
 #endif

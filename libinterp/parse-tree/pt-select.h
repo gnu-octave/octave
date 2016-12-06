@@ -54,6 +54,12 @@ public:
                   int l = -1, int c = -1)
     : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
 
+  // No copying!
+
+  tree_if_clause (const tree_if_clause&) = delete;
+
+  tree_if_clause& operator = (const tree_if_clause&) = delete;
+
   ~tree_if_clause (void);
 
   bool is_else_clause (void) { return ! expr; }
@@ -79,12 +85,6 @@ private:
 
   // Comment preceding ELSE or ELSEIF token.
   octave_comment_list *lead_comm;
-
-  // No copying!
-
-  tree_if_clause (const tree_if_clause&) = delete;
-
-  tree_if_clause& operator = (const tree_if_clause&) = delete;
 };
 
 class
@@ -95,6 +95,12 @@ public:
   tree_if_command_list (void) { }
 
   tree_if_command_list (tree_if_clause *t) { append (t); }
+
+  // No copying!
+
+  tree_if_command_list (const tree_if_command_list&) = delete;
+
+  tree_if_command_list& operator = (const tree_if_command_list&) = delete;
 
   ~tree_if_command_list (void)
   {
@@ -110,14 +116,6 @@ public:
                              symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_if_command_list (const tree_if_command_list&) = delete;
-
-  tree_if_command_list& operator = (const tree_if_command_list&) = delete;
 };
 
 class
@@ -131,6 +129,12 @@ public:
   tree_if_command (tree_if_command_list *lst, octave_comment_list *lc,
                    octave_comment_list *tc, int l = -1, int c = -1)
     : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
+
+  // No copying!
+
+  tree_if_command (const tree_if_command&) = delete;
+
+  tree_if_command& operator = (const tree_if_command&) = delete;
 
   ~tree_if_command (void);
 
@@ -155,12 +159,6 @@ private:
 
   // Comment preceding ENDIF token.
   octave_comment_list *trail_comm;
-
-  // No copying!
-
-  tree_if_command (const tree_if_command&) = delete;
-
-  tree_if_command& operator = (const tree_if_command&) = delete;
 };
 
 // Switch.
@@ -181,6 +179,12 @@ public:
                     octave_comment_list *lc = 0,
                     int l = -1, int c = -1)
     : tree (l, c), label (e), list (sl), lead_comm (lc) { }
+
+  // No copying!
+
+  tree_switch_case (const tree_switch_case&) = delete;
+
+  tree_switch_case& operator = (const tree_switch_case&) = delete;
 
   ~tree_switch_case (void);
 
@@ -209,12 +213,6 @@ private:
 
   // Comment preceding CASE or OTHERWISE token.
   octave_comment_list *lead_comm;
-
-  // No copying!
-
-  tree_switch_case (const tree_switch_case&) = delete;
-
-  tree_switch_case& operator = (const tree_switch_case&) = delete;
 };
 
 class
@@ -225,6 +223,12 @@ public:
   tree_switch_case_list (void) { }
 
   tree_switch_case_list (tree_switch_case *t) { append (t); }
+
+  // No copying!
+
+  tree_switch_case_list (const tree_switch_case_list&) = delete;
+
+  tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
 
   ~tree_switch_case_list (void)
   {
@@ -240,14 +244,6 @@ public:
                               symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_switch_case_list (const tree_switch_case_list&) = delete;
-
-  tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
 };
 
 class
@@ -264,6 +260,12 @@ public:
                        int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
       trail_comm (tc) { }
+
+  // No copying!
+
+  tree_switch_command (const tree_switch_command&) = delete;
+
+  tree_switch_command& operator = (const tree_switch_command&) = delete;
 
   ~tree_switch_command (void);
 
@@ -293,12 +295,6 @@ private:
 
   // Comment preceding ENDSWITCH token.
   octave_comment_list *trail_comm;
-
-  // No copying!
-
-  tree_switch_command (const tree_switch_command&) = delete;
-
-  tree_switch_command& operator = (const tree_switch_command&) = delete;
 };
 
 #endif

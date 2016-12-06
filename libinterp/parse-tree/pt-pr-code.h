@@ -53,6 +53,12 @@ public:
     nesting.push ('n');
   }
 
+  // No copying!
+
+  tree_print_code (const tree_print_code&) = delete;
+
+  tree_print_code& operator = (const tree_print_code&) = delete;
+
   ~tree_print_code (void) = default;
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle&);
@@ -189,12 +195,6 @@ private:
   // Must create with an output stream!
 
   tree_print_code (void);
-
-  // No copying!
-
-  tree_print_code (const tree_print_code&) = delete;
-
-  tree_print_code& operator = (const tree_print_code&) = delete;
 };
 
 #endif

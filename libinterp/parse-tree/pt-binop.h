@@ -59,6 +59,12 @@ public:
       eligible_for_braindead_shortcircuit (false),
       braindead_shortcircuit_warning_issued (false) { }
 
+  // No copying!
+
+  tree_binary_expression (const tree_binary_expression&) = delete;
+
+  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
+
   ~tree_binary_expression (void)
   {
     delete op_lhs;
@@ -124,12 +130,6 @@ private:
   bool braindead_shortcircuit_warning_issued;
 
   void matlab_style_short_circuit_warning (const char *op);
-
-  // No copying!
-
-  tree_binary_expression (const tree_binary_expression&) = delete;
-
-  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
 };
 
 // Boolean expressions.
@@ -153,6 +153,12 @@ public:
                            int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (a, b, l, c), etype (t) { }
 
+  // No copying!
+
+  tree_boolean_expression (const tree_boolean_expression&) = delete;
+
+  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
+
   ~tree_boolean_expression (void) = default;
 
   bool is_boolean_expression (void) const { return true; }
@@ -174,12 +180,6 @@ private:
 
   // The type of the expression.
   type etype;
-
-  // No copying!
-
-  tree_boolean_expression (const tree_boolean_expression&) = delete;
-
-  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
 };
 
 #endif

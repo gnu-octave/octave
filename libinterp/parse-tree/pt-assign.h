@@ -55,6 +55,12 @@ public:
                           bool plhs = false, int l = -1, int c = -1,
                           octave_value::assign_op t = octave_value::op_asn_eq);
 
+  // No copying!
+
+  tree_simple_assignment (const tree_simple_assignment&) = delete;
+
+  tree_simple_assignment& operator = (const tree_simple_assignment&) = delete;
+
   ~tree_simple_assignment (void);
 
   bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
@@ -101,12 +107,6 @@ private:
 
   // The type of the expression.
   octave_value::assign_op etype;
-
-  // No copying!
-
-  tree_simple_assignment (const tree_simple_assignment&) = delete;
-
-  tree_simple_assignment& operator = (const tree_simple_assignment&) = delete;
 };
 
 // Multi-valued assignment expressions.
@@ -121,6 +121,12 @@ public:
 
   tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
                          bool plhs = false, int l = -1, int c = -1);
+
+  // No copying!
+
+  tree_multi_assignment (const tree_multi_assignment&) = delete;
+
+  tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
 
   ~tree_multi_assignment (void);
 
@@ -158,12 +164,6 @@ private:
 
   // True if we should not delete the lhs.
   bool preserve;
-
-  // No copying!
-
-  tree_multi_assignment (const tree_multi_assignment&) = delete;
-
-  tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
 };
 
 #endif

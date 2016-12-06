@@ -92,7 +92,51 @@ namespace octave
   class
   ft_manager
   {
+  private:
+
+    ft_manager (void)
+      : library (), freetype_initialized (false), fontconfig_initialized (false)
+    {
+      if (FT_Init_FreeType (&library))
+        error ("unable to initialize FreeType library");
+      else
+        freetype_initialized = true;
+
+#if defined (HAVE_FONTCONFIG)
+      if (! FcInit ())
+        error ("unable to initialize fontconfig library");
+      else
+        fontconfig_initialized = true;
+#endif
+    }
+
   public:
+
+    // No copying!
+
+    ft_manager (const ft_manager&) = delete;
+
+    ft_manager& operator = (const ft_manager&) = delete;
+
+  private:
+
+    ~ft_manager (void)
+    {
+      if (freetype_initialized)
+        FT_Done_FreeType (library);
+
+#if defined (HAVE_FONTCONFIG)
+      // FIXME: Skip the call to FcFini because it can trigger the assertion
+      //
+      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
+      //
+      // if (fontconfig_initialized)
+      //   FcFini ();
+#endif
+    }
+
+  public:
+
     static bool instance_ok (void)
     {
       bool retval = true;
@@ -138,45 +182,6 @@ namespace octave
     // weak references to the fonts, strong references are only present
     // in class text_renderer.
     ft_cache cache;
-
-  private:
-
-    // No copying!
-
-    ft_manager (const ft_manager&) = delete;
-
-    ft_manager& operator = (const ft_manager&) = delete;
-
-    ft_manager (void)
-      : library (), freetype_initialized (false), fontconfig_initialized (false)
-    {
-      if (FT_Init_FreeType (&library))
-        error ("unable to initialize FreeType library");
-      else
-        freetype_initialized = true;
-
-#if defined (HAVE_FONTCONFIG)
-      if (! FcInit ())
-        error ("unable to initialize fontconfig library");
-      else
-        fontconfig_initialized = true;
-#endif
-    }
-
-    ~ft_manager (void)
-    {
-      if (freetype_initialized)
-        FT_Done_FreeType (library);
-
-#if defined (HAVE_FONTCONFIG)
-      // FIXME: Skip the call to FcFini because it can trigger the assertion
-      //
-      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
-      //
-      // if (fontconfig_initialized)
-      //   FcFini ();
-#endif
-    }
 
     FT_Face do_get_font (const std::string& name, const std::string& weight,
                          const std::string& angle, double size)
@@ -351,6 +356,12 @@ namespace octave
         color (dim_vector (1, 3), 0)
     { }
 
+    // No copying!
+
+    ft_text_renderer (const ft_text_renderer&) = delete;
+
+    ft_text_renderer& operator = (const ft_text_renderer&) = delete;
+
     ~ft_text_renderer (void) = default;
 
     void visit (text_element_string& e);
@@ -402,12 +413,6 @@ namespace octave
   private:
 
     int rotation_to_mode (double rotation) const;
-
-    // No copying!
-
-    ft_text_renderer (const ft_text_renderer&) = delete;
-
-    ft_text_renderer& operator = (const ft_text_renderer&) = delete;
 
     // Class to hold information about fonts and a strong
     // reference to the font objects loaded by FreeType.

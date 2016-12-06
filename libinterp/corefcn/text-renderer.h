@@ -47,6 +47,12 @@ namespace octave
 
     text_renderer (void);
 
+    // No copying!
+
+    text_renderer (const text_renderer&) = delete;
+
+    text_renderer& operator = (const text_renderer&) = delete;
+
     ~text_renderer (void);
 
     bool ok (void) const;
@@ -203,12 +209,6 @@ namespace octave
   private:
 
     base_text_renderer *rep;
-
-    // No copying!
-
-    text_renderer (const text_renderer&) = delete;
-
-    text_renderer& operator = (const text_renderer&) = delete;
   };
 }
 

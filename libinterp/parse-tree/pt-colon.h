@@ -56,6 +56,12 @@ public:
     : tree_expression (l, c), op_base (bas), op_limit (lim),
       op_increment (inc), save_base (false) { }
 
+  // No copying!
+
+  tree_colon_expression (const tree_colon_expression&) = delete;
+
+  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
+
   ~tree_colon_expression (void)
   {
     if (! save_base)
@@ -106,12 +112,6 @@ private:
   tree_expression *op_increment;
 
   bool save_base;
-
-  // No copying!
-
-  tree_colon_expression (const tree_colon_expression&) = delete;
-
-  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
 };
 
 #endif

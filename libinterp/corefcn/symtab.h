@@ -69,6 +69,12 @@ public:
 
   public:
 
+    // No copying!
+
+    scope_id_cache (const scope_id_cache&) = delete;
+
+    scope_id_cache& operator = (const scope_id_cache&) = delete;
+
     ~scope_id_cache (void) = default;
 
     static scope_id alloc (void)
@@ -103,12 +109,6 @@ public:
     }
 
   private:
-
-    // No copying!
-
-    scope_id_cache (const scope_id_cache&) = delete;
-
-    scope_id_cache& operator = (const scope_id_cache&) = delete;
 
     static scope_id_cache *instance;
 
@@ -213,6 +213,12 @@ public:
       {
         value_stack.push_back (v);
       }
+
+      // No copying!
+
+      symbol_record_rep (const symbol_record_rep& ov) = delete;
+
+      symbol_record_rep& operator = (const symbol_record_rep&) = delete;
 
       void assign (const octave_value& value,
                    context_id context = xdefault_context)
@@ -472,14 +478,6 @@ public:
       bool valid;
 
       octave_refcount<size_t> count;
-
-    private:
-
-      // No copying!
-
-      symbol_record_rep (const symbol_record_rep& ov) = delete;
-
-      symbol_record_rep& operator = (const symbol_record_rep&) = delete;
     };
 
   public:
@@ -763,6 +761,12 @@ public:
           }
       }
 
+      // No copying!
+
+      fcn_info_rep (const fcn_info_rep&) = delete;
+
+      fcn_info_rep& operator = (const fcn_info_rep&) = delete;
+
       octave_value load_private_function (const std::string& dir_name);
 
       octave_value load_class_constructor (void);
@@ -949,12 +953,6 @@ public:
       octave_value xfind (const octave_value_list& args, bool local_funcs);
 
       octave_value x_builtin_find (void);
-
-      // No copying!
-
-      fcn_info_rep (const fcn_info_rep&) = delete;
-
-      fcn_info_rep& operator = (const fcn_info_rep&) = delete;
     };
 
   public:
@@ -2193,12 +2191,6 @@ public:
 
 private:
 
-  // No copying!
-
-  symbol_table (const symbol_table&) = delete;
-
-  symbol_table& operator = (const symbol_table&) = delete;
-
   typedef std::map<std::string, symbol_record>::const_iterator
     table_const_iterator;
   typedef std::map<std::string, symbol_record>::iterator
@@ -2292,6 +2284,12 @@ private:
     : my_scope (scope), table_name (), table (), nest_children (),
       nest_parent (0), curr_fcn (0), static_workspace (false),
       persistent_table () { }
+
+  // No copying!
+
+  symbol_table (const symbol_table&) = delete;
+
+  symbol_table& operator = (const symbol_table&) = delete;
 
   ~symbol_table (void) = default;
 

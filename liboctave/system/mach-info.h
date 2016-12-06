@@ -39,6 +39,12 @@ namespace octave
 
   public:
 
+    // No copying!
+
+    mach_info (const mach_info&) = delete;
+
+    mach_info& operator = (const mach_info&) = delete;
+
     enum float_format
     {
       flt_fmt_unknown,
@@ -69,12 +75,6 @@ namespace octave
 
     // TRUE if the byte order on this system is big endian.
     mutable bool big_chief;
-
-    // No copying!
-
-    mach_info (const mach_info&) = delete;
-
-    mach_info& operator = (const mach_info&) = delete;
   };
 }
 

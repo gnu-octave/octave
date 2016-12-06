@@ -75,6 +75,12 @@ namespace octave
 
       sparse_qr_rep (const SPARSE_T& a, int order);
 
+      // No copying!
+
+      sparse_qr_rep (const sparse_qr_rep&) = delete;
+
+      sparse_qr_rep& operator = (const sparse_qr_rep&) = delete;
+
       ~sparse_qr_rep (void);
 
       bool ok (void) const
@@ -115,14 +121,6 @@ namespace octave
       template <typename RHS_T, typename RET_T>
       RET_T
       wide_solve (const RHS_T& b, octave_idx_type& info) const;
-
-    private:
-
-      // No copying!
-
-      sparse_qr_rep (const sparse_qr_rep&) = delete;
-
-      sparse_qr_rep& operator = (const sparse_qr_rep&) = delete;
     };
 
     template <typename SPARSE_T>

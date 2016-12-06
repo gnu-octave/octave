@@ -40,6 +40,18 @@ public:
                           = octave::mach_info::native_float_format ())
     : octave_base_stream (m, ff), nm (n) { }
 
+  // No copying!
+
+  octave_base_iostream (const octave_base_iostream&) = delete;
+
+  octave_base_iostream& operator = (const octave_base_iostream&) = delete;
+
+protected:
+
+  ~octave_base_iostream (void) = default;
+
+public:
+
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (off_t offset, int origin);
@@ -58,8 +70,6 @@ public:
 
 protected:
 
-  ~octave_base_iostream (void) = default;
-
   void invalid_operation (void) const;
 
 private:
@@ -67,12 +77,6 @@ private:
   std::string nm;
 
   virtual const char *stream_type (void) const = 0;
-
-  // No copying!
-
-  octave_base_iostream (const octave_base_iostream&) = delete;
-
-  octave_base_iostream& operator = (const octave_base_iostream&) = delete;
 };
 
 class

@@ -63,6 +63,13 @@ public:
   };
 
   shortcut_manager ();
+
+  // No copying!
+
+  shortcut_manager (const shortcut_manager&) = delete;
+
+  shortcut_manager& operator = (const shortcut_manager&) = delete;
+
   ~shortcut_manager ();
 
   static void init_data ()
@@ -112,12 +119,6 @@ protected slots:
   void shortcut_dialog_set_default ();
 
 private:
-
-  // No copying!
-
-  shortcut_manager (const shortcut_manager&) = delete;
-
-  shortcut_manager& operator = (const shortcut_manager&) = delete;
 
   static bool instance_ok (void);
 

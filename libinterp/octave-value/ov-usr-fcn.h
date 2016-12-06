@@ -53,9 +53,22 @@ class jit_function_info;
 class
 octave_user_code : public octave_function
 {
+protected:
+
+  octave_user_code (const std::string& nm,
+                    const std::string& ds = "")
+    : octave_function (nm, ds) { }
+
 public:
+
   octave_user_code (void)
     : octave_function () { }
+
+  // No copying!
+
+  octave_user_code (const octave_user_code& f) = delete;
+
+  octave_user_code& operator = (const octave_user_code& f) = delete;
 
   ~octave_user_code (void) = default;
 
@@ -64,20 +77,6 @@ public:
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   virtual tree_statement_list *body (void) = 0;
-
-protected:
-
-  octave_user_code (const std::string& nm,
-                    const std::string& ds = "")
-    : octave_function (nm, ds) { }
-
-private:
-
-  // No copying!
-
-  octave_user_code (const octave_user_code& f) = delete;
-
-  octave_user_code& operator = (const octave_user_code& f) = delete;
 };
 
 // Scripts.
@@ -95,6 +94,12 @@ public:
 
   octave_user_script (const std::string& fnm, const std::string& nm,
                       const std::string& ds = "");
+
+  // No copying!
+
+  octave_user_script (const octave_user_script& f) = delete;
+
+  octave_user_script& operator = (const octave_user_script& f) = delete;
 
   ~octave_user_script (void);
 
@@ -161,12 +166,6 @@ private:
   // Used to keep track of recursion depth.
   int call_depth;
 
-  // No copying!
-
-  octave_user_script (const octave_user_script& f) = delete;
-
-  octave_user_script& operator = (const octave_user_script& f) = delete;
-
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
@@ -181,6 +180,12 @@ public:
                         tree_parameter_list *pl = 0,
                         tree_parameter_list *rl = 0,
                         tree_statement_list *cl = 0);
+
+  // No copying!
+
+  octave_user_function (const octave_user_function& fn) = delete;
+
+  octave_user_function& operator = (const octave_user_function& fn) = delete;
 
   ~octave_user_function (void);
 
@@ -514,12 +519,6 @@ private:
                             const std::list<octave_lvalue> *lvalue_list);
 
   void restore_warning_states (void);
-
-  // No copying!
-
-  octave_user_function (const octave_user_function& fn) = delete;
-
-  octave_user_function& operator = (const octave_user_function& fn) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

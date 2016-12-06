@@ -48,6 +48,12 @@ public:
   tree_decl_elt (tree_identifier *i = 0, tree_expression *e = 0)
     : id (i), expr (e) { }
 
+  // No copying!
+
+  tree_decl_elt (const tree_decl_elt&) = delete;
+
+  tree_decl_elt& operator = (const tree_decl_elt&) = delete;
+
   ~tree_decl_elt (void);
 
   bool eval (void);
@@ -102,12 +108,6 @@ private:
 
   // An initializer expression (may be zero);
   tree_expression *expr;
-
-  // No copying!
-
-  tree_decl_elt (const tree_decl_elt&) = delete;
-
-  tree_decl_elt& operator = (const tree_decl_elt&) = delete;
 };
 
 class
@@ -118,6 +118,12 @@ public:
   tree_decl_init_list (void) { }
 
   tree_decl_init_list (tree_decl_elt *t) { append (t); }
+
+  // No copying!
+
+  tree_decl_init_list (const tree_decl_init_list&) = delete;
+
+  tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
 
   ~tree_decl_init_list (void)
   {
@@ -133,14 +139,6 @@ public:
                             symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_decl_init_list (const tree_decl_init_list&) = delete;
-
-  tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
 };
 
 // Base class for declaration commands -- global, static, etc.
@@ -157,6 +155,12 @@ public:
                      int l = -1, int c = -1)
     : tree_command (l, c), cmd_name (n), init_list (t) { }
 
+  // No copying!
+
+  tree_decl_command (const tree_decl_command&) = delete;
+
+  tree_decl_command& operator = (const tree_decl_command&) = delete;
+
   ~tree_decl_command (void);
 
   tree_decl_init_list *initializer_list (void) { return init_list; }
@@ -170,14 +174,6 @@ protected:
 
   // The list of variables or initializers in this declaration command.
   tree_decl_init_list *init_list;
-
-private:
-
-  // No copying!
-
-  tree_decl_command (const tree_decl_command&) = delete;
-
-  tree_decl_command& operator = (const tree_decl_command&) = delete;
 };
 
 // Global.
@@ -193,6 +189,12 @@ public:
   tree_global_command (tree_decl_init_list *t, int l = -1, int c = -1)
     : tree_decl_command ("global", t, l, c) { }
 
+  // No copying!
+
+  tree_global_command (const tree_global_command&) = delete;
+
+  tree_global_command& operator = (const tree_global_command&) = delete;
+
   ~tree_global_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
@@ -203,12 +205,6 @@ public:
 private:
 
   static void do_init (tree_decl_elt& elt);
-
-  // No copying!
-
-  tree_global_command (const tree_global_command&) = delete;
-
-  tree_global_command& operator = (const tree_global_command&) = delete;
 };
 
 // Persistent.
@@ -224,6 +220,12 @@ public:
   tree_persistent_command (tree_decl_init_list *t, int l = -1, int c = -1)
     : tree_decl_command ("persistent", t, l, c) { }
 
+  // No copying!
+
+  tree_persistent_command (const tree_persistent_command&) = delete;
+
+  tree_persistent_command& operator = (const tree_persistent_command&) = delete;
+
   ~tree_persistent_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
@@ -234,12 +236,6 @@ public:
 private:
 
   static void do_init (tree_decl_elt& elt);
-
-  // No copying!
-
-  tree_persistent_command (const tree_persistent_command&) = delete;
-
-  tree_persistent_command& operator = (const tree_persistent_command&) = delete;
 };
 
 #endif

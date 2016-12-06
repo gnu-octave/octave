@@ -39,6 +39,12 @@ public:
 
   typedef void (*fptr) (void);
 
+  // No copying!
+
+  singleton_cleanup_list (const singleton_cleanup_list&) = delete;
+
+  singleton_cleanup_list& operator = (const singleton_cleanup_list&) = delete;
+
   ~singleton_cleanup_list (void);
 
   static void add (fptr f)
@@ -63,12 +69,6 @@ private:
   {
     fcn_list.insert (f);
   }
-
-  // No copying!
-
-  singleton_cleanup_list (const singleton_cleanup_list&) = delete;
-
-  singleton_cleanup_list& operator = (const singleton_cleanup_list&) = delete;
 };
 
 #endif

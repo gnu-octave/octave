@@ -40,6 +40,12 @@ public:
   tree_break_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
+  // No copying!
+
+  tree_break_command (const tree_break_command&) = delete;
+
+  tree_break_command& operator = (const tree_break_command&) = delete;
+
   ~tree_break_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
@@ -48,14 +54,6 @@ public:
   void accept (tree_walker& tw);
 
   static int breaking;
-
-private:
-
-  // No copying!
-
-  tree_break_command (const tree_break_command&) = delete;
-
-  tree_break_command& operator = (const tree_break_command&) = delete;
 };
 
 // Continue.
@@ -68,6 +66,12 @@ public:
   tree_continue_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
+  // No copying!
+
+  tree_continue_command (const tree_continue_command&) = delete;
+
+  tree_continue_command& operator = (const tree_continue_command&) = delete;
+
   ~tree_continue_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
@@ -76,14 +80,6 @@ public:
   void accept (tree_walker& tw);
 
   static int continuing;
-
-private:
-
-  // No copying!
-
-  tree_continue_command (const tree_continue_command&) = delete;
-
-  tree_continue_command& operator = (const tree_continue_command&) = delete;
 };
 
 // Return.
@@ -96,6 +92,12 @@ public:
   tree_return_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
+  // No copying!
+
+  tree_return_command (const tree_return_command&) = delete;
+
+  tree_return_command& operator = (const tree_return_command&) = delete;
+
   ~tree_return_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
@@ -104,14 +106,6 @@ public:
   void accept (tree_walker& tw);
 
   static int returning;
-
-private:
-
-  // No copying!
-
-  tree_return_command (const tree_return_command&) = delete;
-
-  tree_return_command& operator = (const tree_return_command&) = delete;
 };
 
 #endif

@@ -54,6 +54,12 @@ public:
                   const std::string& ds)
     : octave_function (nm, ds), f (ff), file (fnm), jtype (0) { }
 
+  // No copying!
+
+  octave_builtin (const octave_builtin& ob) = delete;
+
+  octave_builtin& operator = (const octave_builtin& ob) = delete;
+
   ~octave_builtin (void) = default;
 
   std::string src_file_name (void) const { return file; }
@@ -105,12 +111,6 @@ protected:
   jit_type *jtype;
 
 private:
-
-  // No copying!
-
-  octave_builtin (const octave_builtin& ob) = delete;
-
-  octave_builtin& operator = (const octave_builtin& ob) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

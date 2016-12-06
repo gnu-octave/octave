@@ -77,6 +77,12 @@ public:
 #endif
   { }
 
+  // No copying!
+
+  tree_while_command (const tree_while_command&) = delete;
+
+  tree_while_command& operator = (const tree_while_command&) = delete;
+
   ~tree_while_command (void);
 
   tree_expression *condition (void) { return expr; }
@@ -125,12 +131,6 @@ private:
   // compiled version of the loop
   jit_info *compiled;
 #endif
-
-  // No copying!
-
-  tree_while_command (const tree_while_command&) = delete;
-
-  tree_while_command& operator = (const tree_while_command&) = delete;
 };
 
 // Do-Until.
@@ -155,20 +155,18 @@ public:
                          int l = -1, int c = -1)
     : tree_while_command (e, lst, lc, tc, l, c) { }
 
+  // No copying!
+
+  tree_do_until_command (const tree_do_until_command&) = delete;
+
+  tree_do_until_command& operator = (const tree_do_until_command&) = delete;
+
   ~tree_do_until_command (void) = default;
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_do_until_command (const tree_do_until_command&) = delete;
-
-  tree_do_until_command& operator = (const tree_do_until_command&) = delete;
 };
 
 // For.
@@ -200,6 +198,12 @@ public:
       , compiled (0)
 #endif
   { }
+
+  // No copying!
+
+  tree_simple_for_command (const tree_simple_for_command&) = delete;
+
+  tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
 
   ~tree_simple_for_command (void);
 
@@ -261,12 +265,6 @@ private:
 
   // compiled version of the loop
   jit_info *compiled;
-
-  // No copying!
-
-  tree_simple_for_command (const tree_simple_for_command&) = delete;
-
-  tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
 };
 
 class
@@ -285,6 +283,12 @@ public:
                             int l = -1, int c = -1)
     : tree_command (l, c), lhs (le), expr (re), list (lst),
       lead_comm (lc), trail_comm (tc) { }
+
+  // No copying!
+
+  tree_complex_for_command (const tree_complex_for_command&) = delete;
+
+  tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
 
   ~tree_complex_for_command (void);
 
@@ -319,12 +323,6 @@ private:
 
   // Comment preceding ENDFOR token.
   octave_comment_list *trail_comm;
-
-  // No copying!
-
-  tree_complex_for_command (const tree_complex_for_command&) = delete;
-
-  tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
 };
 
 #endif

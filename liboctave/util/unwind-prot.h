@@ -43,6 +43,12 @@ namespace octave
 
     unwind_protect (void) : lifo () { }
 
+    // No copying!
+
+    unwind_protect (const unwind_protect&) = delete;
+
+    unwind_protect& operator = (const unwind_protect&) = delete;
+
     // Destructor should not raise an exception, so all actions
     // registered should be exception-safe.  If you're not sure, see
     // unwind_protect_safe.
@@ -100,14 +106,6 @@ namespace octave
   protected:
 
     std::stack<elem *> lifo;
-
-  private:
-
-    // No copying!
-
-    unwind_protect (const unwind_protect&) = delete;
-
-    unwind_protect& operator = (const unwind_protect&) = delete;
   };
 
   // Like unwind_protect, but this one will guard against the possibility
@@ -126,6 +124,12 @@ namespace octave
 
     unwind_protect_safe (void) : unwind_protect () { }
 
+    // No copying!
+
+    unwind_protect_safe (const unwind_protect_safe&) = delete;
+
+    unwind_protect_safe& operator = (const unwind_protect_safe&) = delete;
+
     ~unwind_protect_safe (void)
     {
       while (! empty ())
@@ -140,14 +144,6 @@ namespace octave
             }
         }
     }
-
-  private:
-
-    // No copying!
-
-    unwind_protect_safe (const unwind_protect_safe&) = delete;
-
-    unwind_protect_safe& operator = (const unwind_protect_safe&) = delete;
   };
 }
 

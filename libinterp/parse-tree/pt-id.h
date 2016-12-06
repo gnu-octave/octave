@@ -56,6 +56,12 @@ public:
                    symbol_table::scope_id sc = symbol_table::current_scope ())
     : tree_expression (l, c), sym (s, sc) { }
 
+  // No copying!
+
+  tree_identifier (const tree_identifier&) = delete;
+
+  tree_identifier& operator = (const tree_identifier&) = delete;
+
   ~tree_identifier (void) = default;
 
   bool has_magic_end (void) const { return (name () == "end"); }
@@ -137,12 +143,6 @@ private:
 
   // The symbol record that this identifier references.
   symbol_table::symbol_reference sym;
-
-  // No copying!
-
-  tree_identifier (const tree_identifier&) = delete;
-
-  tree_identifier& operator = (const tree_identifier&) = delete;
 };
 
 class tree_black_hole : public tree_identifier

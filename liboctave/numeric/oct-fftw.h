@@ -40,6 +40,12 @@ protected:
 
 public:
 
+  // No copying!
+
+  octave_fftw_planner (const octave_fftw_planner&) = delete;
+
+  octave_fftw_planner& operator = (const octave_fftw_planner&) = delete;
+
   ~octave_fftw_planner (void);
 
   enum FftwMethod
@@ -99,12 +105,6 @@ public:
   }
 
 private:
-
-  // No copying!
-
-  octave_fftw_planner (const octave_fftw_planner&) = delete;
-
-  octave_fftw_planner& operator = (const octave_fftw_planner&) = delete;
 
   static octave_fftw_planner *instance;
 
@@ -185,6 +185,13 @@ protected:
 
 public:
 
+  // No copying!
+
+  octave_float_fftw_planner (const octave_float_fftw_planner&) = delete;
+
+  octave_float_fftw_planner&
+  operator = (const octave_float_fftw_planner&) = delete;
+
   ~octave_float_fftw_planner (void);
 
   enum FftwMethod
@@ -244,12 +251,6 @@ public:
   }
 
 private:
-
-  // No copying!
-
-  octave_float_fftw_planner (const octave_float_fftw_planner&) = delete;
-
-  octave_float_fftw_planner& operator = (const octave_float_fftw_planner&) = delete;
 
   static octave_float_fftw_planner *instance;
 
@@ -326,6 +327,14 @@ octave_fftw
 {
 public:
 
+  octave_fftw (void) = delete;
+
+  // No copying.
+
+  octave_fftw (const octave_fftw&) = delete;
+
+  octave_fftw& operator = (const octave_fftw&) = delete;
+
   static int fft (const double *in, Complex *out, size_t npts,
                   size_t nsamples = 1, octave_idx_type stride = 1,
                   octave_idx_type dist = -1);
@@ -357,11 +366,6 @@ public:
                     const dim_vector &);
   static int ifftNd (const FloatComplex*, FloatComplex*, const int,
                      const dim_vector &);
-
-private:
-  octave_fftw (void);
-  octave_fftw (const octave_fftw&);
-  octave_fftw& operator = (const octave_fftw&);
 };
 
 extern OCTAVE_API std::string octave_fftw_version (void);

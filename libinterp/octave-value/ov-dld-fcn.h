@@ -52,6 +52,12 @@ public:
                        const std::string& nm = "",
                        const std::string& ds = "");
 
+  // No copying!
+
+  octave_dld_function (const octave_dld_function& fn) = delete;
+
+  octave_dld_function& operator = (const octave_dld_function& fn) = delete;
+
   ~octave_dld_function (void);
 
   void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
@@ -88,12 +94,6 @@ private:
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
   bool system_fcn_file;
-
-  // No copying!
-
-  octave_dld_function (const octave_dld_function& fn) = delete;
-
-  octave_dld_function& operator = (const octave_dld_function& fn) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

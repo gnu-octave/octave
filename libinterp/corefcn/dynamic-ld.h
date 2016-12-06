@@ -40,6 +40,12 @@ protected:
 
 public:
 
+  // No copying!
+
+  octave_dynamic_loader (const octave_dynamic_loader&) = delete;
+
+  octave_dynamic_loader& operator = (const octave_dynamic_loader&) = delete;
+
   virtual ~octave_dynamic_loader (void) = default;
 
   static octave_function *
@@ -59,12 +65,6 @@ public:
                           octave::dynamic_library& shl);
 
 private:
-
-  // No copying!
-
-  octave_dynamic_loader (const octave_dynamic_loader&) = delete;
-
-  octave_dynamic_loader& operator = (const octave_dynamic_loader&) = delete;
 
   static octave_dynamic_loader *instance;
 

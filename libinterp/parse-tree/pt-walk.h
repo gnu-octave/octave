@@ -89,7 +89,19 @@ class tree_classdef;
 class
 tree_walker
 {
+protected:
+
+  tree_walker (void) { }
+
+  virtual ~tree_walker (void) = default;
+
 public:
+
+  // No copying!
+
+  tree_walker (const tree_walker&) = delete;
+
+  tree_walker& operator = (const tree_walker&) = delete;
 
   virtual void
   visit_anon_fcn_handle (tree_anon_fcn_handle&) = 0;
@@ -267,20 +279,6 @@ public:
 
   virtual void
   visit_classdef (tree_classdef&) { } // = 0;
-
-protected:
-
-  tree_walker (void) { }
-
-  virtual ~tree_walker (void) = default;
-
-private:
-
-  // No copying!
-
-  tree_walker (const tree_walker&) = delete;
-
-  tree_walker& operator = (const tree_walker&) = delete;
 };
 
 #endif

@@ -57,6 +57,12 @@ public:
   tree_statement (tree_expression *e, octave_comment_list *cl)
     : cmd (0), expr (e), comm (cl) { }
 
+  // No copying!
+
+  tree_statement (const tree_statement&) = delete;
+
+  tree_statement& operator = (const tree_statement&) = delete;
+
   ~tree_statement (void);
 
   void set_print_flag (bool print_flag);
@@ -118,12 +124,6 @@ private:
 
   // Comment associated with this statement.
   octave_comment_list *comm;
-
-  // No copying!
-
-  tree_statement (const tree_statement&) = delete;
-
-  tree_statement& operator = (const tree_statement&) = delete;
 };
 
 // A list of statements to evaluate.
@@ -140,6 +140,12 @@ public:
   tree_statement_list (tree_statement *s)
     : function_body (false), anon_function_body (false),
       script_body (false) { append (s); }
+
+  // No copying!
+
+  tree_statement_list (const tree_statement_list&) = delete;
+
+  tree_statement_list& operator = (const tree_statement_list&) = delete;
 
   ~tree_statement_list (void)
   {
@@ -192,12 +198,6 @@ private:
 
   // Does this list of statements make up the body of a script?
   bool script_body;
-
-  // No copying!
-
-  tree_statement_list (const tree_statement_list&) = delete;
-
-  tree_statement_list& operator = (const tree_statement_list&) = delete;
 };
 
 #endif

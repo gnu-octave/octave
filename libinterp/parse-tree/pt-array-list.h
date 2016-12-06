@@ -48,6 +48,12 @@ public:
       append (row);
   }
 
+  // No copying!
+
+  tree_array_list (const tree_array_list&) = delete;
+
+  tree_array_list& operator = (const tree_array_list&) = delete;
+
   ~tree_array_list (void);
 
   bool all_elements_are_constant (void) const;
@@ -71,14 +77,6 @@ public:
                         symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_array_list (const tree_array_list&) = delete;
-
-  tree_array_list& operator = (const tree_array_list&) = delete;
 };
 
 #endif

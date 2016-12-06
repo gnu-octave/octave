@@ -68,6 +68,12 @@ private:
 
   octave_shlib_list (void) : lib_list () { }
 
+  // No copying!
+
+  octave_shlib_list (const octave_shlib_list&) = delete;
+
+  octave_shlib_list& operator = (const octave_shlib_list&) = delete;
+
   ~octave_shlib_list (void) = default;
 
   void do_append (const octave::dynamic_library& shl);
@@ -87,12 +93,6 @@ private:
 
   // List of libraries we have loaded.
   std::list<octave::dynamic_library> lib_list;
-
-  // No copying!
-
-  octave_shlib_list (const octave_shlib_list&) = delete;
-
-  octave_shlib_list& operator = (const octave_shlib_list&) = delete;
 };
 
 octave_shlib_list *octave_shlib_list::instance = 0;

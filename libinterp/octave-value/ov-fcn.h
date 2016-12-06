@@ -50,6 +50,12 @@ public:
       xdispatch_class (), xpackage_name (), my_name (), my_dir_name (),
       doc () { }
 
+  // No copying!
+
+  octave_function (const octave_function& f) = delete;
+
+  octave_function& operator = (const octave_function& f) = delete;
+
   ~octave_function (void) = default;
 
   octave_base_value *clone (void) const;
@@ -215,15 +221,6 @@ protected:
 
   // The help text for this function.
   std::string doc;
-
-private:
-
-  // No copying!
-
-  octave_function (const octave_function& f) = delete;
-
-  octave_function& operator = (const octave_function& f) = delete;
-
 };
 
 #endif

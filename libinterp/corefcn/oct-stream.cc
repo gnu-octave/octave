@@ -242,6 +242,12 @@ public:
 
   scanf_format_list (const std::string& fmt = "");
 
+  // No copying!
+
+  scanf_format_list (const scanf_format_list&) = delete;
+
+  scanf_format_list& operator = (const scanf_format_list&) = delete;
+
   ~scanf_format_list (void);
 
   octave_idx_type num_conversions (void) { return nconv; }
@@ -317,11 +323,6 @@ private:
   int finish_conversion (const std::string& s, size_t& i, size_t n,
                          int& width, bool discard, char& type,
                          char modifier);
-  // No copying!
-
-  scanf_format_list (const scanf_format_list&) = delete;
-
-  scanf_format_list& operator = (const scanf_format_list&) = delete;
 };
 
 scanf_format_list::scanf_format_list (const std::string& s)
@@ -793,6 +794,12 @@ public:
 
   printf_format_list (const std::string& fmt = "");
 
+  // No copying!
+
+  printf_format_list (const printf_format_list&) = delete;
+
+  printf_format_list& operator = (const printf_format_list&) = delete;
+
   ~printf_format_list (void);
 
   octave_idx_type num_conversions (void) { return nconv; }
@@ -858,12 +865,6 @@ private:
   void finish_conversion (const std::string& s, size_t& i, int args,
                           const std::string& flags, int fw, int prec,
                           char modifier, char& type);
-
-  // No copying!
-
-  printf_format_list (const printf_format_list&) = delete;
-
-  printf_format_list& operator = (const printf_format_list&) = delete;
 };
 
 printf_format_list::printf_format_list (const std::string& s)
@@ -1224,6 +1225,12 @@ namespace octave
 
     delimited_stream (std::istream& is, const delimited_stream& ds);
 
+    // No copying!
+
+    delimited_stream (const delimited_stream&) = delete;
+
+    delimited_stream& operator = (const delimited_stream&) = delete;
+
     ~delimited_stream (void);
 
     // Called when optimized sequence of get is finished.  Ensures that
@@ -1338,12 +1345,6 @@ namespace octave
     char *progress_marker;
 
     std::ios_base::iostate flags;
-
-    // No copying!
-
-    delimited_stream (const delimited_stream&) = delete;
-
-    delimited_stream& operator = (const delimited_stream&) = delete;
   };
 
   // Create a delimited stream, reading from is, with delimiters delims,
@@ -1690,6 +1691,11 @@ namespace octave
 
     textscan_format_list (const std::string& fmt = std::string (),
                           const std::string& who = "textscan");
+    // No copying!
+
+    textscan_format_list (const textscan_format_list&) = delete;
+
+    textscan_format_list& operator = (const textscan_format_list&) = delete;
 
     ~textscan_format_list (void);
 
@@ -1778,11 +1784,6 @@ namespace octave
                            unsigned int& width, int& prec, int& bitwidth,
                            octave_value& val_type,
                            bool discard, char& type);
-    // No copying!
-
-    textscan_format_list (const textscan_format_list&) = delete;
-
-    textscan_format_list& operator = (const textscan_format_list&) = delete;
   };
 
   // Main class to implement textscan.  Read data and parse it
@@ -1800,6 +1801,12 @@ namespace octave
   public:
 
     textscan (const std::string& who_arg = "textscan");
+
+    // No copying!
+
+    textscan (const textscan&) = delete;
+
+    textscan& operator = (const textscan&) = delete;
 
     ~textscan (void) = default;
 
@@ -1930,12 +1937,6 @@ namespace octave
 
     // True if the only delimiter is whitespace.
     bool whitespace_delim (void) const { return delim_table.empty (); }
-
-    // No copying!
-
-    textscan (const textscan&) = delete;
-
-    textscan& operator = (const textscan&) = delete;
   };
 
   textscan_format_list::textscan_format_list (const std::string& s,
@@ -5297,6 +5298,12 @@ public:
       }
   }
 
+  // No copying!
+
+  printf_value_cache (const printf_value_cache&) = delete;
+
+  printf_value_cache& operator = (const printf_value_cache&) = delete;
+
   ~printf_value_cache (void) = default;
 
   // Get the current value as a double and advance the internal pointer.
@@ -5323,12 +5330,6 @@ private:
   // Must create value cache with values!
 
   printf_value_cache (void);
-
-  // No copying!
-
-  printf_value_cache (const printf_value_cache&) = delete;
-
-  printf_value_cache& operator = (const printf_value_cache&) = delete;
 };
 
 octave_value

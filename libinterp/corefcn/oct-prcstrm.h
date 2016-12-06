@@ -40,6 +40,12 @@ public:
                       octave::mach_info::float_format flt_fmt
                         = octave::mach_info::native_float_format ());
 
+  // No copying!
+
+  octave_iprocstream (const octave_iprocstream&) = delete;
+
+  octave_iprocstream& operator = (const octave_iprocstream&) = delete;
+
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
           octave::mach_info::float_format flt_fmt
@@ -48,14 +54,6 @@ public:
 protected:
 
   ~octave_iprocstream (void);
-
-private:
-
-  // No copying!
-
-  octave_iprocstream (const octave_iprocstream&) = delete;
-
-  octave_iprocstream& operator = (const octave_iprocstream&) = delete;
 };
 
 class
@@ -68,6 +66,12 @@ public:
                       octave::mach_info::float_format flt_fmt
                         = octave::mach_info::native_float_format ());
 
+  // No copying!
+
+  octave_oprocstream (const octave_oprocstream&) = delete;
+
+  octave_oprocstream& operator = (const octave_oprocstream&) = delete;
+
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format flt_fmt
@@ -76,14 +80,6 @@ public:
 protected:
 
   ~octave_oprocstream (void);
-
-private:
-
-  // No copying!
-
-  octave_oprocstream (const octave_oprocstream&) = delete;
-
-  octave_oprocstream& operator = (const octave_oprocstream&) = delete;
 };
 
 #endif

@@ -52,6 +52,12 @@ namespace octave
       : m_interp_context (interp_context)
     { }
 
+    // No copying!
+
+    tree_evaluator (const tree_evaluator&) = delete;
+
+    tree_evaluator& operator = (const tree_evaluator&) = delete;
+
     ~tree_evaluator (void) = default;
 
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
@@ -189,12 +195,6 @@ namespace octave
       do_keyboard (const octave_value_list& args = octave_value_list ()) const;
 
     interpreter *m_interp_context;
-
-    // No copying!
-
-    tree_evaluator (const tree_evaluator&) = delete;
-
-    tree_evaluator& operator = (const tree_evaluator&) = delete;
   };
 }
 

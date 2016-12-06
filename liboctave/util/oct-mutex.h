@@ -117,6 +117,12 @@ public:
       lock_result = mutex.try_lock ();
   }
 
+  // No copying.
+
+  octave_autolock (const octave_autolock&) = delete;
+
+  octave_autolock& operator = (const octave_autolock&) = delete;
+
   ~octave_autolock (void)
   {
     if (lock_result)
@@ -129,14 +135,8 @@ public:
 
 private:
 
-  // No copying.
-
-  octave_autolock (const octave_autolock&) = delete;
-
-  octave_autolock& operator = (const octave_autolock&) = delete;
-
-private:
   octave_mutex mutex;
+
   bool lock_result;
 };
 

@@ -37,6 +37,12 @@ public:
 
   event_queue (void) : fifo () { }
 
+  // No copying!
+
+  event_queue (const event_queue&) = delete;
+
+  event_queue& operator = (const event_queue&) = delete;
+
   // Destructor should not raise an exception, so all actions
   // registered should be exception-safe.  If you're not sure, see
   // event_queue_safe.
@@ -74,14 +80,6 @@ public:
 protected:
 
   std::queue<elem *> fifo;
-
-private:
-
-  // No copying!
-
-  event_queue (const event_queue&) = delete;
-
-  event_queue& operator = (const event_queue&) = delete;
 };
 
 // Like event_queue, but this one will guard against the
@@ -99,6 +97,12 @@ public:
 
   event_queue_safe (void) : event_queue () { }
 
+  // No copying!
+
+  event_queue_safe (const event_queue_safe&) = delete;
+
+  event_queue_safe& operator = (const event_queue_safe&) = delete;
+
   ~event_queue_safe (void)
   {
     while (! empty ())
@@ -113,14 +117,6 @@ public:
           }
       }
   }
-
-private:
-
-  // No copying!
-
-  event_queue_safe (const event_queue_safe&) = delete;
-
-  event_queue_safe& operator = (const event_queue_safe&) = delete;
 };
 
 #endif

@@ -357,6 +357,12 @@ public:
 
   }
 
+  // No copying!
+
+  rec_permute_helper (const rec_permute_helper&) = delete;
+
+  rec_permute_helper& operator = (const rec_permute_helper&) = delete;
+
   ~rec_permute_helper (void) { delete [] dim; }
 
   // Helper method for fast blocked transpose.
@@ -433,12 +439,6 @@ private:
 
     return dest;
   }
-
-  // No copying!
-
-  rec_permute_helper (const rec_permute_helper&) = delete;
-
-  rec_permute_helper& operator = (const rec_permute_helper&) = delete;
 
 public:
 
@@ -562,6 +562,12 @@ public:
       }
   }
 
+  // No copying!
+
+  rec_index_helper (const rec_index_helper&) = delete;
+
+  rec_index_helper& operator = (const rec_index_helper&) = delete;
+
   ~rec_index_helper (void) { delete [] idx; delete [] dim; }
 
 private:
@@ -614,12 +620,6 @@ private:
           do_fill (val, dest + d*idx[lev].xelem (i), lev-1);
       }
   }
-
-  // No copying!
-
-  rec_index_helper (const rec_index_helper&) = delete;
-
-  rec_index_helper& operator = (const rec_index_helper&) = delete;
 
 public:
 
@@ -675,6 +675,12 @@ public:
     cext[0] *= ld;
   }
 
+  // No copying!
+
+  rec_resize_helper (const rec_resize_helper&) = delete;
+
+  rec_resize_helper& operator = (const rec_resize_helper&) = delete;
+
   ~rec_resize_helper (void) { delete [] cext; }
 
 private:
@@ -699,12 +705,6 @@ private:
         std::fill_n (dest + k * dd, dext[lev] - k * dd, rfv);
       }
   }
-
-  // No copying!
-
-  rec_resize_helper (const rec_resize_helper&) = delete;
-
-  rec_resize_helper& operator = (const rec_resize_helper&) = delete;
 
 public:
 

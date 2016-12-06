@@ -729,18 +729,18 @@ public:
       menubar->clear ();
   }
 
+  // No copying!
+
+  fltk_uimenu (const fltk_uimenu&) = delete;
+
+  fltk_uimenu operator = (const fltk_uimenu&) = delete;
+
   ~fltk_uimenu (void)
   {
     delete menubar;
   }
 
 private:
-
-  // No copying!
-
-  fltk_uimenu (const fltk_uimenu&) = delete;
-
-  fltk_uimenu operator = (const fltk_uimenu&) = delete;
 
   Fl_Menu_Bar* menubar;
 };
@@ -854,6 +854,12 @@ public:
           hide_canvas ();
       }
   }
+
+  // No copying!
+
+  plot_window (const plot_window&) = delete;
+
+  plot_window& operator = (const plot_window&) = delete;
 
   ~plot_window (void)
   {
@@ -1033,12 +1039,6 @@ public:
   }
 
 private:
-
-  // No copying!
-
-  plot_window (const plot_window&) = delete;
-
-  plot_window& operator = (const plot_window&) = delete;
 
   // window name -- this must exists for the duration of the window's
   // life
@@ -1815,7 +1815,22 @@ private:
 
 class figure_manager
 {
+private:
+
+  figure_manager (void) = default;
+
 public:
+
+  // No copying!
+
+  figure_manager (const figure_manager&) = delete;
+
+  figure_manager& operator = (const figure_manager&) = delete;
+
+  ~figure_manager (void)
+  {
+    close_all ();
+  }
 
   static bool instance_ok (void)
   {
@@ -1828,11 +1843,6 @@ public:
       error ("unable to create figure_manager object!");
 
     return retval;
-  }
-
-  ~figure_manager (void)
-  {
-    close_all ();
   }
 
   static void close_all (void)
@@ -1948,19 +1958,14 @@ private:
 
   static figure_manager *instance;
 
-  figure_manager (void) { }
-
-  // No copying!
-
-  figure_manager (const figure_manager&) = delete;
-
-  figure_manager& operator = (const figure_manager&) = delete;
-
   // Singelton -- hide all of the above.
 
   static int curr_index;
+
   typedef std::map<int, plot_window*> window_map;
+
   typedef window_map::iterator wm_iterator;;
+
   window_map windows;
 
   static std::string fltk_idx_header;

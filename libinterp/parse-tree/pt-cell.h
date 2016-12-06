@@ -47,6 +47,12 @@ public:
     : tree_array_list (row, l, c)
   { }
 
+  // No copying!
+
+  tree_cell (const tree_cell&) = delete;
+
+  tree_cell& operator = (const tree_cell&) = delete;
+
   ~tree_cell (void) = default;
 
   bool is_cell (void) const { return true; }
@@ -61,14 +67,6 @@ public:
                         symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_cell (const tree_cell&) = delete;
-
-  tree_cell& operator = (const tree_cell&) = delete;
 };
 
 #endif

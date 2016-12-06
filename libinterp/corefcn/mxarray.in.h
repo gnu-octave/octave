@@ -357,6 +357,12 @@ public:
     return retval;
   }
 
+  // No copying!
+
+  mxArray (const mxArray&) = delete;
+
+  mxArray& operator = (const mxArray&) = delete;
+
   ~mxArray (void);
 
   bool is_octave_value (void) const { return rep->is_octave_value (); }
@@ -534,12 +540,6 @@ private:
     : rep (r), name (mxArray::strsave (n)) { }
 
   void maybe_mutate (void) const;
-
-  // No copying!
-
-  mxArray (const mxArray&) = delete;
-
-  mxArray& operator = (const mxArray&) = delete;
 };
 
 #undef DO_MUTABLE_METHOD

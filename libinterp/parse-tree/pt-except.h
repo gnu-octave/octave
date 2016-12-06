@@ -54,6 +54,12 @@ public:
     : tree_command (l, c), try_code (tc), catch_code (cc), expr_id (id),
       lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
 
+  // No copying!
+
+  tree_try_catch_command (const tree_try_catch_command&) = delete;
+
+  tree_try_catch_command& operator = (const tree_try_catch_command&) = delete;
+
   ~tree_try_catch_command (void);
 
   tree_identifier *identifier (void) { return expr_id; }
@@ -92,12 +98,6 @@ private:
 
   // Comment preceding END_TRY_CATCH token.
   octave_comment_list *trail_comm;
-
-  // No copying!
-
-  tree_try_catch_command (const tree_try_catch_command&) = delete;
-
-  tree_try_catch_command& operator = (const tree_try_catch_command&) = delete;
 };
 
 // Simple exception handling.
@@ -119,6 +119,13 @@ public:
                                int l = -1, int c = -1)
     : tree_command (l, c), unwind_protect_code (tc), cleanup_code (cc),
       lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
+
+  // No copying!
+
+  tree_unwind_protect_command (const tree_unwind_protect_command&) = delete;
+
+  tree_unwind_protect_command&
+  operator = (const tree_unwind_protect_command&) = delete;
 
   ~tree_unwind_protect_command (void);
 
@@ -154,12 +161,6 @@ private:
 
   // Comment preceding END_UNWIND_PROTECT token.
   octave_comment_list *trail_comm;
-
-  // No copying!
-
-  tree_unwind_protect_command (const tree_unwind_protect_command&) = delete;
-
-  tree_unwind_protect_command& operator = (const tree_unwind_protect_command&) = delete;
 };
 
 #endif

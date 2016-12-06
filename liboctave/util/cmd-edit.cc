@@ -923,6 +923,12 @@ namespace octave
     default_command_editor (void)
       : command_editor (), input_stream (stdin), output_stream (stdout) { }
 
+    // No copying!
+
+    default_command_editor (const default_command_editor&) = delete;
+
+    default_command_editor& operator = (const default_command_editor&) = delete;
+
     ~default_command_editor (void) = default;
 
     std::string do_readline (const std::string& prompt, bool& eof);
@@ -958,12 +964,6 @@ namespace octave
     FILE *input_stream;
 
     FILE *output_stream;
-
-    // No copying!
-
-    default_command_editor (const default_command_editor&) = delete;
-
-    default_command_editor& operator = (const default_command_editor&) = delete;
   };
 
   std::string

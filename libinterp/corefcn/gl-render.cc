@@ -270,6 +270,12 @@ namespace octave
 
     opengl_tesselator (void) : glu_tess (0), fill () { init (); }
 
+    // No copying!
+
+    opengl_tesselator (const opengl_tesselator&) = delete;
+
+    opengl_tesselator operator = (const opengl_tesselator&) = delete;
+
     virtual ~opengl_tesselator (void)
     { if (glu_tess) gluDeleteTess (glu_tess); }
 
@@ -349,12 +355,6 @@ namespace octave
     { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
 
   private:
-
-    // No copying!
-
-    opengl_tesselator (const opengl_tesselator&) = delete;
-
-    opengl_tesselator operator = (const opengl_tesselator&) = delete;
 
     GLUtesselator *glu_tess;
     bool fill;

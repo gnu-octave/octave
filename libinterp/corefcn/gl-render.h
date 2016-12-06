@@ -38,6 +38,12 @@ namespace octave
 
     opengl_renderer (void);
 
+    // No copying!
+
+    opengl_renderer (const opengl_renderer&) = delete;
+
+    opengl_renderer& operator = (const opengl_renderer&) = delete;
+
     virtual ~opengl_renderer (void) = default;
 
     virtual void draw (const graphics_object& go, bool toplevel = true);
@@ -138,12 +144,6 @@ namespace octave
                                    int& wmax, int& hmax);
 
   private:
-
-    // No copying!
-
-    opengl_renderer (const opengl_renderer&) = delete;
-
-    opengl_renderer& operator = (const opengl_renderer&) = delete;
 
     bool is_nan_or_inf (double x, double y, double z) const
     {

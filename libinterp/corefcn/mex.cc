@@ -159,6 +159,11 @@ public:
     : mxArray_base (), val (ov), mutate_flag (false),
       id (mxUNKNOWN_CLASS), class_name (0), ndims (-1), dims (0) { }
 
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_octave_value& operator = (const mxArray_octave_value&) = delete;
+
   mxArray_base *dup (void) const { return new mxArray_octave_value (*this); }
 
   mxArray *as_mxArray (void) const
@@ -618,11 +623,6 @@ private:
   mutable char *class_name;
   mutable mwSize ndims;
   mutable mwSize *dims;
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_octave_value& operator = (const mxArray_octave_value&);
 };
 
 // The base class for the Matlab-style representation, used to handle
@@ -688,7 +688,22 @@ protected:
     dims[1] = n;
   }
 
+  mxArray_matlab (const mxArray_matlab& val)
+    : mxArray_base (val), class_name (mxArray::strsave (val.class_name)),
+      id (val.id), ndims (val.ndims),
+      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
+  {
+    for (mwIndex i = 0; i < ndims; i++)
+      dims[i] = val.dims[i];
+  }
+
 public:
+
+  // No assignment!
+  // FIXME: should this be implemented?
+  //        Note that we *do* have a copy constructor.
+
+  mxArray_matlab& operator = (const mxArray_matlab&);
 
   ~mxArray_matlab (void)
   {
@@ -985,15 +1000,6 @@ public:
 
 protected:
 
-  mxArray_matlab (const mxArray_matlab& val)
-    : mxArray_base (val), class_name (mxArray::strsave (val.class_name)),
-      id (val.id), ndims (val.ndims),
-      dims (static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))))
-  {
-    for (mwIndex i = 0; i < ndims; i++)
-      dims[i] = val.dims[i];
-  }
-
   dim_vector
   dims_to_dim_vector (void) const
   {
@@ -1023,12 +1029,6 @@ private:
   {
     error ("invalid type for operation");
   }
-
-  // No assignment!
-  // FIXME: should this be implemented?
-  //        Note that we *do* have a copy constructor.
-
-  mxArray_matlab& operator = (const mxArray_matlab&);
 };
 
 // Matlab-style numeric, character, and logical data.
@@ -1131,6 +1131,31 @@ public:
           cpr[m*i+j] = static_cast<mxChar> (' ');
       }
   }
+
+protected:
+
+  mxArray_number (const mxArray_number& val)
+    : mxArray_matlab (val),
+      pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
+      pi (val.pi ? mxArray::malloc (get_number_of_elements ()
+                                    * get_element_size ())
+                 : 0)
+  {
+    size_t nbytes = get_number_of_elements () * get_element_size ();
+
+    if (pr)
+      memcpy (pr, val.pr, nbytes);
+
+    if (pi)
+      memcpy (pi, val.pi, nbytes);
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_number& operator = (const mxArray_number&);
 
   mxArray_base *dup (void) const { return new mxArray_number (*this); }
 
@@ -1415,31 +1440,10 @@ protected:
     return octave_value (val);
   }
 
-  mxArray_number (const mxArray_number& val)
-    : mxArray_matlab (val),
-      pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
-      pi (val.pi ? mxArray::malloc (get_number_of_elements ()
-                                    * get_element_size ())
-                 : 0)
-  {
-    size_t nbytes = get_number_of_elements () * get_element_size ();
-
-    if (pr)
-      memcpy (pr, val.pr, nbytes);
-
-    if (pi)
-      memcpy (pi, val.pi, nbytes);
-  }
-
 private:
 
   void *pr;
   void *pi;
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_number& operator = (const mxArray_number&);
 };
 
 // Matlab-style sparse arrays.
@@ -1456,6 +1460,37 @@ public:
       ir (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex)))),
       jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
   { }
+
+private:
+
+  mxArray_sparse (const mxArray_sparse& val)
+    : mxArray_matlab (val), nzmax (val.nzmax),
+      pr (mxArray::malloc (nzmax * get_element_size ())),
+      pi (val.pi ? mxArray::malloc (nzmax * get_element_size ()) : 0),
+      ir (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex)))),
+      jc (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex))))
+  {
+    size_t nbytes = nzmax * get_element_size ();
+
+    if (pr)
+      memcpy (pr, val.pr, nbytes);
+
+    if (pi)
+      memcpy (pi, val.pi, nbytes);
+
+    if (ir)
+      memcpy (ir, val.ir, nzmax * sizeof (mwIndex));
+
+    if (jc)
+      memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (mwIndex));
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_sparse& operator = (const mxArray_sparse&);
 
   mxArray_base *dup (void) const { return new mxArray_sparse (*this); }
 
@@ -1580,33 +1615,6 @@ private:
   void *pi;
   mwIndex *ir;
   mwIndex *jc;
-
-  mxArray_sparse (const mxArray_sparse& val)
-    : mxArray_matlab (val), nzmax (val.nzmax),
-      pr (mxArray::malloc (nzmax * get_element_size ())),
-      pi (val.pi ? mxArray::malloc (nzmax * get_element_size ()) : 0),
-      ir (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex)))),
-      jc (static_cast<mwIndex *> (mxArray::malloc (nzmax * sizeof (mwIndex))))
-  {
-    size_t nbytes = nzmax * get_element_size ();
-
-    if (pr)
-      memcpy (pr, val.pr, nbytes);
-
-    if (pi)
-      memcpy (pi, val.pi, nbytes);
-
-    if (ir)
-      memcpy (ir, val.ir, nzmax * sizeof (mwIndex));
-
-    if (jc)
-      memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (mwIndex));
-  }
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_sparse& operator = (const mxArray_sparse&);
 };
 
 // Matlab-style struct arrays.
@@ -1649,6 +1657,35 @@ public:
   {
     init (keys);
   }
+
+private:
+
+  mxArray_struct (const mxArray_struct& val)
+    : mxArray_matlab (val), nfields (val.nfields),
+      fields (static_cast<char **> (mxArray::malloc (nfields
+                                                     * sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::malloc (nfields *
+                                                      get_number_of_elements ()
+                                                      * sizeof (mxArray *))))
+  {
+    for (int i = 0; i < nfields; i++)
+      fields[i] = mxArray::strsave (val.fields[i]);
+
+    mwSize nel = get_number_of_elements ();
+
+    for (mwIndex i = 0; i < nel * nfields; i++)
+      {
+        mxArray *ptr = val.data[i];
+        data[i] = ptr ? ptr->dup () : 0;
+      }
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_struct& operator = (const mxArray_struct& val);
 
   void init (const char **keys)
   {
@@ -1844,31 +1881,6 @@ private:
   char **fields;
 
   mxArray **data;
-
-  mxArray_struct (const mxArray_struct& val)
-    : mxArray_matlab (val), nfields (val.nfields),
-      fields (static_cast<char **> (mxArray::malloc (nfields
-                                                     * sizeof (char *)))),
-      data (static_cast<mxArray **> (mxArray::malloc (nfields *
-                                                      get_number_of_elements ()
-                                                      * sizeof (mxArray *))))
-  {
-    for (int i = 0; i < nfields; i++)
-      fields[i] = mxArray::strsave (val.fields[i]);
-
-    mwSize nel = get_number_of_elements ();
-
-    for (mwIndex i = 0; i < nel * nfields; i++)
-      {
-        mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->dup () : 0;
-      }
-  }
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_struct& operator = (const mxArray_struct& val);
 };
 
 // Matlab-style cell arrays.
@@ -1891,6 +1903,29 @@ public:
     : mxArray_matlab (mxCELL_CLASS, m, n),
       data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (),
                                      sizeof (mxArray *)))) { }
+
+private:
+
+  mxArray_cell (const mxArray_cell& val)
+    : mxArray_matlab (val),
+      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements ()
+                                                      * sizeof (mxArray *))))
+  {
+    mwSize nel = get_number_of_elements ();
+
+    for (mwIndex i = 0; i < nel; i++)
+      {
+        mxArray *ptr = val.data[i];
+        data[i] = ptr ? ptr->dup () : 0;
+      }
+  }
+
+public:
+
+  // No assignment!  FIXME: should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_cell& operator = (const mxArray_cell&);
 
   mxArray_base *dup (void) const { return new mxArray_cell (*this); }
 
@@ -1934,25 +1969,6 @@ public:
 private:
 
   mxArray **data;
-
-  mxArray_cell (const mxArray_cell& val)
-    : mxArray_matlab (val),
-      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements ()
-                                                      * sizeof (mxArray *))))
-  {
-    mwSize nel = get_number_of_elements ();
-
-    for (mwIndex i = 0; i < nel; i++)
-      {
-        mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->dup () : 0;
-      }
-  }
-
-  // No assignment!  FIXME: should this be implemented?  Note that we
-  // do have a copy constructor.
-
-  mxArray_cell& operator = (const mxArray_cell&);
 };
 
 // ------------------------------------------------------------------
@@ -2064,6 +2080,12 @@ public:
 
   mex (octave_mex_function *f)
     : curr_mex_fcn (f), memlist (), arraylist (), fname (0) { }
+
+  // No copying!
+
+  mex (const mex&) = delete;
+
+  mex& operator = (const mex&) = delete;
 
   ~mex (void)
   {
@@ -2361,12 +2383,6 @@ private:
 #endif
 
   }
-
-  // No copying!
-
-  mex (const mex&) = delete;
-
-  mex& operator = (const mex&) = delete;
 };
 
 // List of memory resources we allocated.

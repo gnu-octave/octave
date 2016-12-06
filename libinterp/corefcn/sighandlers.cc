@@ -90,6 +90,12 @@ namespace octave
 
     base_interrupt_manager (void) { }
 
+    // No copying!
+
+    base_interrupt_manager (const base_interrupt_manager&) = delete;
+
+    base_interrupt_manager& operator = (const base_interrupt_manager&) = delete;
+
     virtual ~base_interrupt_manager (void) = default;
 
     virtual void do_jump_to_enclosing_context (void) = 0;
@@ -97,14 +103,6 @@ namespace octave
     virtual void do_user_abort (const char *sig_name, int sig_number) = 0;
 
     virtual void do_raise_sigint (void) = 0;
-
-  private:
-
-    // No copying!
-
-    base_interrupt_manager (const base_interrupt_manager&) = delete;
-
-    base_interrupt_manager& operator = (const base_interrupt_manager&) = delete;
   };
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -123,6 +121,12 @@ namespace octave
                        GetCurrentProcess (), &thread, 0, FALSE,
                        DUPLICATE_SAME_ACCESS);
     }
+
+    // No copying!
+
+    w32_interrupt_manager (const w32_interrupt_manager&) = delete;
+
+    w32_interrupt_manager& operator = (const w32_interrupt_manager&) = delete;
 
     ~w32_interrupt_manager (void) = default;
 
@@ -196,14 +200,6 @@ namespace octave
 
     // The ID of the thread that is running the octave interpreter.
     DWORD thread_id;
-
-  private:
-
-    // No copying!
-
-    w32_interrupt_manager (const w32_interrupt_manager&) = delete;
-
-    w32_interrupt_manager& operator = (const w32_interrupt_manager&) = delete;
   };
 
 #endif
@@ -216,6 +212,13 @@ namespace octave
     posix_interrupt_manager (void)
       : base_interrupt_manager ()
     { }
+
+    // No copying!
+
+    posix_interrupt_manager (const posix_interrupt_manager&) = delete;
+
+    posix_interrupt_manager&
+    operator = (const posix_interrupt_manager&) = delete;
 
     ~posix_interrupt_manager (void) = default;
 
@@ -233,14 +236,6 @@ namespace octave
     {
       octave_raise_wrapper (SIGINT);
     }
-
-  private:
-
-    // No copying!
-
-    posix_interrupt_manager (const posix_interrupt_manager&) = delete;
-
-    posix_interrupt_manager& operator = (const posix_interrupt_manager&) = delete;
   };
 
   class

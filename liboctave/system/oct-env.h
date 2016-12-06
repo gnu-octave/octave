@@ -41,6 +41,12 @@ namespace octave
 
     public:
 
+      // No copying!
+
+      env (const env&) = delete;
+
+      env& operator = (const env&) = delete;
+
       static std::string polite_directory_format (const std::string& name);
 
       static bool absolute_pathname (const std::string& s);
@@ -115,12 +121,6 @@ namespace octave
       void error (int) const;
 
       void error (const std::string&) const;
-
-      // No copying!
-
-      env (const env&) = delete;
-
-      env& operator = (const env&) = delete;
 
       // The real thing.
       static env *instance;

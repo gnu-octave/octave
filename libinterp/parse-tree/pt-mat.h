@@ -50,6 +50,12 @@ public:
     : tree_array_list (row, l, c)
   { }
 
+  // No copying!
+
+  tree_matrix (const tree_matrix&) = delete;
+
+  tree_matrix& operator = (const tree_matrix&) = delete;
+
   ~tree_matrix (void) = default;
 
   bool is_matrix (void) const { return true; }
@@ -64,14 +70,6 @@ public:
                         symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
-
-private:
-
-  // No copying!
-
-  tree_matrix (const tree_matrix&) = delete;
-
-  tree_matrix& operator = (const tree_matrix&) = delete;
 };
 
 // The character to fill with when creating string arrays.

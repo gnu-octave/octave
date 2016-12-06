@@ -36,6 +36,12 @@ namespace octave
         m_gui_running (false)
     { }
 
+    // No copying, at least not yet.
+
+    gui_application (const gui_application&) = delete;
+
+    gui_application& operator = (const gui_application&) = delete;
+
     // Should we start the GUI or fall back to the CLI?
     bool start_gui_p (void) const;
 
@@ -45,12 +51,6 @@ namespace octave
     void gui_running (bool arg) { m_gui_running = arg; }
 
   private:
-
-    // No copying, at least not yet.
-
-    gui_application (const gui_application&) = delete;
-
-    gui_application& operator = (const gui_application&) = delete;
 
     int m_argc;
     char **m_argv;

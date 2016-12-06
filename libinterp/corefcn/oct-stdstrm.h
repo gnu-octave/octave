@@ -43,6 +43,12 @@ public:
       s (f ? new STREAM_T (f, cf) : 0), fnum (fid)
   { }
 
+  // No copying!
+
+  octave_tstdiostream (const octave_tstdiostream&) = delete;
+
+  octave_tstdiostream& operator = (const octave_tstdiostream&) = delete;
+
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (off_t offset, int origin)
@@ -88,14 +94,6 @@ protected:
   int fnum;
 
   ~octave_tstdiostream (void) { delete s; }
-
-private:
-
-  // No copying!
-
-  octave_tstdiostream (const octave_tstdiostream&) = delete;
-
-  octave_tstdiostream& operator = (const octave_tstdiostream&) = delete;
 };
 
 class
@@ -122,17 +120,15 @@ public:
     return octave_stream (new octave_stdiostream (n, f, m, ff, cf));
   }
 
-protected:
-
-  ~octave_stdiostream (void) = default;
-
-private:
-
   // No copying!
 
   octave_stdiostream (const octave_stdiostream&) = delete;
 
   octave_stdiostream& operator = (const octave_stdiostream&) = delete;
+
+protected:
+
+  ~octave_stdiostream (void) = default;
 };
 
 #if defined (HAVE_ZLIB)
@@ -162,17 +158,15 @@ public:
     return octave_stream (new octave_zstdiostream (n, f, fid, m, ff, cf));
   }
 
-protected:
-
-  ~octave_zstdiostream (void) = default;
-
-private:
-
   // No copying!
 
   octave_zstdiostream (const octave_zstdiostream&) = delete;
 
   octave_zstdiostream& operator = (const octave_zstdiostream&) = delete;
+
+protected:
+
+  ~octave_zstdiostream (void) = default;
 };
 
 #endif

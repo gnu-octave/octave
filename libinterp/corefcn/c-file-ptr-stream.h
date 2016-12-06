@@ -44,6 +44,12 @@ public:
     : std::streambuf (), f (f_arg), cf (cf_arg)
   { }
 
+  // No copying!
+
+  c_file_ptr_buf (const c_file_ptr_buf&) = delete;
+
+  c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
+
   ~c_file_ptr_buf (void);
 
   int_type overflow (int_type);
@@ -89,12 +95,6 @@ protected:
 private:
 
   int_type underflow_common (bool);
-
-  // No copying!
-
-  c_file_ptr_buf (const c_file_ptr_buf&) = delete;
-
-  c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
 };
 
 // FIXME: the following three classes could probably share some code...
@@ -107,6 +107,12 @@ public:
 
   c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::file_close)
     : STREAM_T (0), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
+
+  // No copying!
+
+  c_file_ptr_stream (const c_file_ptr_stream&) = delete;
+
+  c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
 
   ~c_file_ptr_stream (void) { delete buf; buf = 0; }
 
@@ -124,12 +130,6 @@ public:
 private:
 
   BUF_T *buf;
-
-  // No copying!
-
-  c_file_ptr_stream (const c_file_ptr_stream&) = delete;
-
-  c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
 };
 
 typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf>
@@ -159,6 +159,12 @@ public:
   c_zfile_ptr_buf (gzFile f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
   { }
+
+  // No copying!
+
+  c_zfile_ptr_buf (const c_zfile_ptr_buf&) = delete;
+
+  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
 
   ~c_zfile_ptr_buf (void);
 
@@ -206,12 +212,6 @@ protected:
 private:
 
   int_type underflow_common (bool);
-
-  // No copying!
-
-  c_zfile_ptr_buf (const c_zfile_ptr_buf&) = delete;
-
-  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
 };
 
 typedef c_file_ptr_stream<std::istream, gzFile, c_zfile_ptr_buf>

@@ -40,6 +40,12 @@ public:
 
   resource_manager (void);
 
+  // No copying!
+
+  resource_manager (const resource_manager&) = delete;
+
+  resource_manager& operator = (const resource_manager&) = delete;
+
   ~resource_manager ();
 
   static QSettings *get_settings (void)
@@ -113,12 +119,6 @@ public slots:
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
 private:
-
-  // No copying!
-
-  resource_manager (const resource_manager&) = delete;
-
-  resource_manager& operator = (const resource_manager&) = delete;
   
   static bool instance_ok (void);
 

@@ -188,6 +188,12 @@ namespace octave
 
     application (int argc, char **argv);
 
+    // No copying, at least not yet...
+
+    application (const application&) = delete;
+
+    application& operator = (const application&) = delete;
+
     virtual ~application (void);
 
     void set_program_names (const std::string& pname);
@@ -237,12 +243,6 @@ namespace octave
 
   private:
 
-    // No copying, at least not yet...
-
-    application (const application&) = delete;
-
-    application& operator = (const application&) = delete;
-
     // The application instance;  There should be only one.
     static application *instance;
 
@@ -291,17 +291,15 @@ namespace octave
       : application (argc, argv)
     { }
 
-    ~cli_application (void) = default;
-
-    int execute (void);
-
-  private:
-
     // No copying, at least not yet...
 
     cli_application (const cli_application&) = delete;
 
     cli_application& operator = (const cli_application&) = delete;
+
+    ~cli_application (void) = default;
+
+    int execute (void);
   };
 
   class OCTINTERP_API embedded_application : public application
@@ -316,19 +314,17 @@ namespace octave
       : application (argc, argv)
     { }
 
-    ~embedded_application (void) = default;
-
-    void create_interpreter (void);
-
-    int execute (void);
-
-  private:
-
     // No copying, at least not yet...
 
     embedded_application (const embedded_application&) = delete;
 
     embedded_application& operator = (const embedded_application&) = delete;
+
+    ~embedded_application (void) = default;
+
+    void create_interpreter (void);
+
+    int execute (void);
   };
 }
 

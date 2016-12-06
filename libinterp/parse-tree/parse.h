@@ -151,6 +151,12 @@ namespace octave
 
     base_parser (base_lexer& lxr);
 
+    // No copying!
+
+    base_parser (const base_parser&) = delete;
+
+    base_parser& operator = (const base_parser&) = delete;
+
     ~base_parser (void);
 
     void reset (void);
@@ -460,14 +466,6 @@ namespace octave
 
     // Internal state of the Bison parser.
     void *parser_state;
-
-  private:
-
-    // No copying!
-
-    base_parser (const base_parser&) = delete;
-
-    base_parser& operator = (const base_parser&) = delete;
   };
 
   class
@@ -491,17 +489,15 @@ namespace octave
       : base_parser (lxr)
     { }
 
-    ~parser (void) = default;
-
-    int run (void);
-
-  private:
-
     // No copying!
 
     parser (const parser&) = delete;
 
     parser& operator = (const parser&) = delete;
+
+    ~parser (void) = default;
+
+    int run (void);
   };
 
   class
@@ -513,17 +509,15 @@ namespace octave
       : base_parser (*(new octave::push_lexer ()))
     { }
 
-    ~push_parser (void) = default;
-
-    int run (const std::string& input, bool eof);
-
-  private:
-
     // No copying!
 
     push_parser (const push_parser&) = delete;
 
     push_parser& operator = (const push_parser&) = delete;
+
+    ~push_parser (void) = default;
+
+    int run (const std::string& input, bool eof);
   };
 }
 

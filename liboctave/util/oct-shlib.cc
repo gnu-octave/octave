@@ -164,6 +164,12 @@ namespace octave
 
     octave_dlopen_shlib (const std::string& f);
 
+    // No copying!
+
+    octave_dlopen_shlib (const octave_dlopen_shlib&) = delete;
+
+    octave_dlopen_shlib& operator = (const octave_dlopen_shlib&) = delete;
+
     ~octave_dlopen_shlib (void);
 
     void *search (const std::string& name,
@@ -176,12 +182,6 @@ namespace octave
     bool is_open (void) const { return (library != 0); }
 
   private:
-
-    // No copying!
-
-    octave_dlopen_shlib (const octave_dlopen_shlib&) = delete;
-
-    octave_dlopen_shlib& operator = (const octave_dlopen_shlib&) = delete;
 
     void *library;
   };
@@ -255,6 +255,12 @@ namespace octave
 
     octave_shl_load_shlib (const std::string& f);
 
+    // No copying!
+
+    octave_shl_load_shlib (const octave_shl_load_shlib&) = delete;
+
+    octave_shl_load_shlib& operator = (const octave_shl_load_shlib&) = delete;
+
     ~octave_shl_load_shlib (void);
 
     void *search (const std::string& name,
@@ -263,12 +269,6 @@ namespace octave
     bool is_open (void) const { return (library != 0); }
 
   private:
-
-    // No copying!
-
-    octave_shl_load_shlib (const octave_shl_load_shlib&) = delete;
-
-    octave_shl_load_shlib& operator = (const octave_shl_load_shlib&) = delete;
 
     shl_t library;
   };
@@ -323,6 +323,12 @@ namespace octave
 
     octave_w32_shlib (const std::string& f);
 
+    // No copying!
+
+    octave_w32_shlib (const octave_w32_shlib&) = delete;
+
+    octave_w32_shlib& operator = (const octave_w32_shlib&) = delete;
+
     ~octave_w32_shlib (void);
 
     void *search (const std::string& name,
@@ -331,12 +337,6 @@ namespace octave
     bool is_open (void) const { return (handle != 0); }
 
   private:
-
-    // No copying!
-
-    octave_w32_shlib (const octave_w32_shlib&) = delete;
-
-    octave_w32_shlib& operator = (const octave_w32_shlib&) = delete;
 
     HINSTANCE handle;
   };
@@ -422,6 +422,12 @@ namespace octave
 
     octave_dyld_shlib (void);
 
+    // No copying!
+
+    octave_dyld_shlib (const octave_dyld_shlib&) = delete;
+
+    octave_dyld_shlib& operator = (const octave_dyld_shlib&) = delete;
+
     ~octave_dyld_shlib (void);
 
     void open (const std::string& f);
@@ -434,12 +440,6 @@ namespace octave
     bool is_open (void) const {return (handle != 0); }
 
   private:
-
-    // No copying!
-
-    octave_dyld_shlib (const octave_dyld_shlib&) = delete;
-
-    octave_dyld_shlib& operator = (const octave_dyld_shlib&) = delete;
 
     NSObjectFileImage img;
     NSModule handle;

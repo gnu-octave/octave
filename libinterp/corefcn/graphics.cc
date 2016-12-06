@@ -9491,9 +9491,20 @@ class
 function_event : public base_graphics_event
 {
 public:
+
+  // function_event objects must be created with at least a function.
+
+  function_event (void) = delete;
+
   function_event (graphics_event::event_fcn fcn, void* data = 0)
     : base_graphics_event (), function (fcn), function_data (data)
   { }
+
+  // No copying!
+
+  function_event (const function_event&) = delete;
+
+  function_event & operator = (const function_event&) = delete;
 
   void execute (void)
   {
@@ -9505,15 +9516,6 @@ private:
   graphics_event::event_fcn function;
 
   void* function_data;
-
-  // function_event objects must be created with at least a function.
-  function_event (void);
-
-  // No copying!
-
-  function_event (const function_event&) = delete;
-
-  function_event & operator = (const function_event&) = delete;
 };
 
 class

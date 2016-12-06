@@ -53,6 +53,12 @@ public:
                            = octave_value::unknown_unary_op)
     : tree_expression (l, c), op (e), etype (t) { }
 
+  // No copying!
+
+  tree_unary_expression (const tree_unary_expression&) = delete;
+
+  tree_unary_expression& operator = (const tree_unary_expression&) = delete;
+
   ~tree_unary_expression (void) { delete op; }
 
   bool is_unary_expression (void) const { return true; }
@@ -72,14 +78,6 @@ protected:
 
   // The type of the expression.
   octave_value::unary_op etype;
-
-private:
-
-  // No copying!
-
-  tree_unary_expression (const tree_unary_expression&) = delete;
-
-  tree_unary_expression& operator = (const tree_unary_expression&) = delete;
 };
 
 // Prefix expressions.
@@ -97,6 +95,12 @@ public:
                             = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
+  // No copying!
+
+  tree_prefix_expression (const tree_prefix_expression&) = delete;
+
+  tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
+
   ~tree_prefix_expression (void) = default;
 
   bool rvalue_ok (void) const { return true; }
@@ -111,14 +115,6 @@ public:
   void accept (tree_walker& tw);
 
   std::string profiler_name (void) const { return "prefix " + oper (); }
-
-private:
-
-  // No copying!
-
-  tree_prefix_expression (const tree_prefix_expression&) = delete;
-
-  tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
 };
 
 // Postfix expressions.
@@ -136,6 +132,12 @@ public:
                              = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
+  // No copying!
+
+  tree_postfix_expression (const tree_postfix_expression&) = delete;
+
+  tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
+
   ~tree_postfix_expression (void) = default;
 
   bool rvalue_ok (void) const { return true; }
@@ -150,14 +152,6 @@ public:
   void accept (tree_walker& tw);
 
   std::string profiler_name (void) const { return "postfix " + oper (); }
-
-private:
-
-  // No copying!
-
-  tree_postfix_expression (const tree_postfix_expression&) = delete;
-
-  tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
 };
 
 #endif

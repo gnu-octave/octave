@@ -44,6 +44,12 @@ namespace octave
 
     base_text_renderer (void) : text_processor () { }
 
+    // No copying!
+
+    base_text_renderer (const base_text_renderer&) = delete;
+
+    base_text_renderer& operator = (const base_text_renderer&) = delete;
+
     virtual ~base_text_renderer (void) = default;
 
     virtual Matrix
@@ -70,14 +76,6 @@ namespace octave
                      std::list<text_renderer::string>& lst,
                      Matrix& box, int halign, int valign, double rotation,
                      const caseless_str& interpreter = "tex") = 0;
-
-  private:
-
-    // No copying!
-
-    base_text_renderer (const base_text_renderer&) = delete;
-
-    base_text_renderer& operator = (const base_text_renderer&) = delete;
   };
 }
 

@@ -28,6 +28,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 #include <string>
 
+static inline double
+as_double (time_t sec, long usec)
+{
+  // Unix time will be exactly representable as a double for more than
+  // 100 million years, so no worry there, and microseconds has a
+  // range of 0-1e6, so we are safe there as well.
+
+  return (static_cast<double> (sec) + static_cast<double> (usec) / 1.0e6);
+}
+
 namespace octave
 {
   namespace sys
@@ -46,10 +56,10 @@ namespace octave
       time (time_t t)
         : ot_unix_time (t), ot_usec (0) { }
 
-      time (time_t t, int us)
+      time (time_t t, long us)
         : ot_unix_time (t), ot_usec ()
       {
-        int rem, extra;
+        long rem, extra;
 
         if (us >= 0)
           {
@@ -90,7 +100,10 @@ namespace octave
 
       void stamp (void);
 
-      double double_value (void) const { return ot_unix_time + ot_usec / 1e6; }
+      double double_value (void) const
+      {
+        return as_double (ot_unix_time, ot_usec);
+      }
 
       time_t unix_time (void) const { return ot_unix_time; }
 
@@ -400,14 +413,12 @@ namespace octave
 
       double user (void) const
       {
-        return (static_cast<double> (m_usr_sec)
-                + static_cast<double> (m_sys_usec) * 1e-6);
+        return as_double (m_usr_sec, m_usr_usec);
       }
 
       double system (void) const
       {
-        return (static_cast<double> (m_sys_sec)
-                + static_cast<double> (m_sys_usec) * 1e-6);
+        return as_double (m_sys_sec, m_sys_usec);
       }
 
       time_t user_sec (void) const { return m_usr_sec; }

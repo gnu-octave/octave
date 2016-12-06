@@ -239,9 +239,9 @@ namespace octave
 
     // No copying, at least not yet...
 
-    application (const application&);
+    application (const application&) = delete;
 
-    application& operator = (const application&);
+    application& operator = (const application&) = delete;
 
     // The application instance;  There should be only one.
     static application *instance;
@@ -299,9 +299,9 @@ namespace octave
 
     // No copying, at least not yet...
 
-    cli_application (const cli_application&);
+    cli_application (const cli_application&) = delete;
 
-    cli_application& operator = (const cli_application&);
+    cli_application& operator = (const cli_application&) = delete;
   };
 
   class OCTINTERP_API embedded_application : public application
@@ -326,9 +326,9 @@ namespace octave
 
     // No copying, at least not yet...
 
-    embedded_application (const embedded_application&);
+    embedded_application (const embedded_application&) = delete;
 
-    embedded_application& operator = (const embedded_application&);
+    embedded_application& operator = (const embedded_application&) = delete;
   };
 }
 

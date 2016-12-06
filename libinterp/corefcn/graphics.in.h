@@ -2928,12 +2928,9 @@ protected:
 
   // No copying!
 
-  base_graphics_object (const base_graphics_object&) : count (0) { }
+  base_graphics_object (const base_graphics_object&) = delete;
 
-  base_graphics_object& operator = (const base_graphics_object&)
-  {
-    return *this;
-  }
+  base_graphics_object& operator = (const base_graphics_object&) = delete;
 };
 
 class OCTINTERP_API graphics_object
@@ -6369,8 +6366,10 @@ public:
   private:
 
     // No copying!
-    auto_lock (const auto_lock&);
-    auto_lock& operator = (const auto_lock&);
+
+    auto_lock (const auto_lock&) = delete;
+
+    auto_lock& operator = (const auto_lock&) = delete;
   };
 
 private:

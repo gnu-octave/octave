@@ -79,9 +79,9 @@ private:
 
   // No copying!
 
-  event_queue (const event_queue&);
+  event_queue (const event_queue&) = delete;
 
-  event_queue& operator = (const event_queue&);
+  event_queue& operator = (const event_queue&) = delete;
 };
 
 // Like event_queue, but this one will guard against the
@@ -118,9 +118,9 @@ private:
 
   // No copying!
 
-  event_queue_safe (const event_queue_safe&);
+  event_queue_safe (const event_queue_safe&) = delete;
 
-  event_queue_safe& operator = (const event_queue_safe&);
+  event_queue_safe& operator = (const event_queue_safe&) = delete;
 };
 
 #endif

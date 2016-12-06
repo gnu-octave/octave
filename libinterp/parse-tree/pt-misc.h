@@ -103,9 +103,9 @@ private:
 
   // No copying!
 
-  tree_parameter_list (const tree_parameter_list&);
+  tree_parameter_list (const tree_parameter_list&) = delete;
 
-  tree_parameter_list& operator = (const tree_parameter_list&);
+  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
 };
 
 // Return lists.  Used to hold the right hand sides of multiple
@@ -131,9 +131,9 @@ private:
 
   // No copying!
 
-  tree_return_list (const tree_return_list&);
+  tree_return_list (const tree_return_list&) = delete;
 
-  tree_return_list& operator = (const tree_return_list&);
+  tree_return_list& operator = (const tree_return_list&) = delete;
 };
 
 class
@@ -149,9 +149,9 @@ private:
 
   // No copying!
 
-  tree_va_return_list (const tree_va_return_list&);
+  tree_va_return_list (const tree_va_return_list&) = delete;
 
-  tree_va_return_list& operator = (const tree_va_return_list&);
+  tree_va_return_list& operator = (const tree_va_return_list&) = delete;
 };
 
 #endif

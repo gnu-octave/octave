@@ -105,9 +105,9 @@ private:
 
   // No copying!
 
-  tree_decl_elt (const tree_decl_elt&);
+  tree_decl_elt (const tree_decl_elt&) = delete;
 
-  tree_decl_elt& operator = (const tree_decl_elt&);
+  tree_decl_elt& operator = (const tree_decl_elt&) = delete;
 };
 
 class
@@ -138,9 +138,9 @@ private:
 
   // No copying!
 
-  tree_decl_init_list (const tree_decl_init_list&);
+  tree_decl_init_list (const tree_decl_init_list&) = delete;
 
-  tree_decl_init_list& operator = (const tree_decl_init_list&);
+  tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
 };
 
 // Base class for declaration commands -- global, static, etc.
@@ -175,9 +175,9 @@ private:
 
   // No copying!
 
-  tree_decl_command (const tree_decl_command&);
+  tree_decl_command (const tree_decl_command&) = delete;
 
-  tree_decl_command& operator = (const tree_decl_command&);
+  tree_decl_command& operator = (const tree_decl_command&) = delete;
 };
 
 // Global.
@@ -206,9 +206,9 @@ private:
 
   // No copying!
 
-  tree_global_command (const tree_global_command&);
+  tree_global_command (const tree_global_command&) = delete;
 
-  tree_global_command& operator = (const tree_global_command&);
+  tree_global_command& operator = (const tree_global_command&) = delete;
 };
 
 // Persistent.
@@ -237,9 +237,9 @@ private:
 
   // No copying!
 
-  tree_persistent_command (const tree_persistent_command&);
+  tree_persistent_command (const tree_persistent_command&) = delete;
 
-  tree_persistent_command& operator = (const tree_persistent_command&);
+  tree_persistent_command& operator = (const tree_persistent_command&) = delete;
 };
 
 #endif

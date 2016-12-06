@@ -117,9 +117,9 @@ namespace octave
 
     // No copying, at least not yet...
 
-    interpreter (const interpreter&);
+    interpreter (const interpreter&) = delete;
 
-    interpreter& operator = (const interpreter&);
+    interpreter& operator = (const interpreter&) = delete;
 
     int main_loop (void);
 

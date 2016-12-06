@@ -80,8 +80,10 @@ public:
   private:
 
     // No copying!
-    enter (const enter&);
-    enter& operator = (const enter&);
+
+    enter (const enter&) = delete;
+
+    enter& operator = (const enter&) = delete;
   };
 
   profile_data_accumulator (void);
@@ -160,8 +162,10 @@ private:
     unsigned calls;
 
     // No copying!
-    tree_node (const tree_node&);
-    tree_node& operator = (const tree_node&);
+
+    tree_node (const tree_node&) = delete;
+
+    tree_node& operator = (const tree_node&) = delete;
   };
 
   // Each function we see in the profiler is given a unique index (which
@@ -199,8 +203,10 @@ private:
   void add_current_time (void);
 
   // No copying!
-  profile_data_accumulator (const profile_data_accumulator&);
-  profile_data_accumulator& operator = (const profile_data_accumulator&);
+
+  profile_data_accumulator (const profile_data_accumulator&) = delete;
+
+  profile_data_accumulator& operator = (const profile_data_accumulator&) = delete;
 };
 
 // The instance used.

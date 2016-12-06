@@ -465,9 +465,9 @@ namespace octave
 
     // No copying!
 
-    base_parser (const base_parser&);
+    base_parser (const base_parser&) = delete;
 
-    base_parser& operator = (const base_parser&);
+    base_parser& operator = (const base_parser&) = delete;
   };
 
   class
@@ -499,9 +499,9 @@ namespace octave
 
     // No copying!
 
-    parser (const parser&);
+    parser (const parser&) = delete;
 
-    parser& operator = (const parser&);
+    parser& operator = (const parser&) = delete;
   };
 
   class
@@ -521,9 +521,9 @@ namespace octave
 
     // No copying!
 
-    push_parser (const push_parser&);
+    push_parser (const push_parser&) = delete;
 
-    push_parser& operator = (const push_parser&);
+    push_parser& operator = (const push_parser&) = delete;
   };
 }
 

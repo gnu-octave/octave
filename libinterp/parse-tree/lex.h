@@ -260,9 +260,9 @@ namespace octave
 
       // No copying!
 
-      token_cache (const token_cache&);
+      token_cache (const token_cache&) = delete;
 
-      token_cache& operator = (const token_cache&);
+      token_cache& operator = (const token_cache&) = delete;
     };
 
     lexical_feedback (void)
@@ -464,9 +464,9 @@ namespace octave
 
     // No copying!
 
-    lexical_feedback (const lexical_feedback&);
+    lexical_feedback (const lexical_feedback&) = delete;
 
-    lexical_feedback& operator = (const lexical_feedback&);
+    lexical_feedback& operator = (const lexical_feedback&) = delete;
   };
 
   // base_lexer inherits from lexical_feedback because we will
@@ -712,9 +712,9 @@ namespace octave
 
     // No copying!
 
-    base_lexer (const base_lexer&);
+    base_lexer (const base_lexer&) = delete;
 
-    base_lexer& operator = (const base_lexer&);
+    base_lexer& operator = (const base_lexer&) = delete;
   };
 
   class
@@ -778,9 +778,9 @@ namespace octave
 
     // No copying!
 
-    lexer (const lexer&);
+    lexer (const lexer&) = delete;
 
-    lexer& operator = (const lexer&);
+    lexer& operator = (const lexer&) = delete;
   };
 
   class
@@ -851,9 +851,9 @@ namespace octave
 
     // No copying!
 
-    push_lexer (const push_lexer&);
+    push_lexer (const push_lexer&) = delete;
 
-    push_lexer& operator = (const push_lexer&);
+    push_lexer& operator = (const push_lexer&) = delete;
   };
 }
 

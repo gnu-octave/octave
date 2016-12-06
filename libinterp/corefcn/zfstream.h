@@ -202,9 +202,9 @@ private:
 
   // No copying!
 
-  gzfilebuf (const gzfilebuf&);
+  gzfilebuf (const gzfilebuf&) = delete;
 
-  gzfilebuf& operator = (const gzfilebuf&);
+  gzfilebuf& operator = (const gzfilebuf&) = delete;
 
   /**
    *  @brief  Allocate internal buffer.

@@ -51,8 +51,10 @@ private:
   T *data;
 
   // No copying!
-  octave_local_buffer (const octave_local_buffer&);
-  octave_local_buffer& operator = (const octave_local_buffer&);
+
+  octave_local_buffer (const octave_local_buffer&) = delete;
+
+  octave_local_buffer& operator = (const octave_local_buffer&) = delete;
 };
 
 // For buffers of POD types, we'll be smarter.  There is one thing
@@ -105,8 +107,10 @@ private:
   char *dat;
 
   // No copying!
-  octave_chunk_buffer (const octave_chunk_buffer&);
-  octave_chunk_buffer& operator = (const octave_chunk_buffer&);
+
+  octave_chunk_buffer (const octave_chunk_buffer&) = delete;
+
+  octave_chunk_buffer& operator = (const octave_chunk_buffer&) = delete;
 };
 
 // This specializes octave_local_buffer to use the chunked buffer

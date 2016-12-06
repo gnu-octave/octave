@@ -537,9 +537,9 @@ private:
 
   // No copying!
 
-  mxArray (const mxArray&);
+  mxArray (const mxArray&) = delete;
 
-  mxArray& operator = (const mxArray&);
+  mxArray& operator = (const mxArray&) = delete;
 };
 
 #undef DO_MUTABLE_METHOD

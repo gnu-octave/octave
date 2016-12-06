@@ -118,9 +118,9 @@ namespace octave
 
       // No copying!
 
-      env (const env&);
+      env (const env&) = delete;
 
-      env& operator = (const env&);
+      env& operator = (const env&) = delete;
 
       // The real thing.
       static env *instance;

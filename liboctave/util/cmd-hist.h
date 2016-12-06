@@ -121,9 +121,9 @@ namespace octave
 
     // No copying!
 
-    command_history (const command_history&);
+    command_history (const command_history&) = delete;
 
-    command_history& operator = (const command_history&);
+    command_history& operator = (const command_history&) = delete;
 
     static bool instance_ok (void);
 

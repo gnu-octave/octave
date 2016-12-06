@@ -102,9 +102,9 @@ private:
 
   // No copying!
 
-  octave_fftw_planner (const octave_fftw_planner&);
+  octave_fftw_planner (const octave_fftw_planner&) = delete;
 
-  octave_fftw_planner& operator = (const octave_fftw_planner&);
+  octave_fftw_planner& operator = (const octave_fftw_planner&) = delete;
 
   static octave_fftw_planner *instance;
 
@@ -247,9 +247,9 @@ private:
 
   // No copying!
 
-  octave_float_fftw_planner (const octave_float_fftw_planner&);
+  octave_float_fftw_planner (const octave_float_fftw_planner&) = delete;
 
-  octave_float_fftw_planner& operator = (const octave_float_fftw_planner&);
+  octave_float_fftw_planner& operator = (const octave_float_fftw_planner&) = delete;
 
   static octave_float_fftw_planner *instance;
 

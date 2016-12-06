@@ -66,9 +66,9 @@ private:
 
   // No copying!
 
-  tree_cell (const tree_cell&);
+  tree_cell (const tree_cell&) = delete;
 
-  tree_cell& operator = (const tree_cell&);
+  tree_cell& operator = (const tree_cell&) = delete;
 };
 
 #endif

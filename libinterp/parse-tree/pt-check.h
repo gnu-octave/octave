@@ -137,9 +137,9 @@ private:
 
   // No copying!
 
-  tree_checker (const tree_checker&);
+  tree_checker (const tree_checker&) = delete;
 
-  tree_checker& operator = (const tree_checker&);
+  tree_checker& operator = (const tree_checker&) = delete;
 };
 
 #endif

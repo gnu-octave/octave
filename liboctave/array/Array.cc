@@ -436,9 +436,9 @@ private:
 
   // No copying!
 
-  rec_permute_helper (const rec_permute_helper&);
+  rec_permute_helper (const rec_permute_helper&) = delete;
 
-  rec_permute_helper& operator = (const rec_permute_helper&);
+  rec_permute_helper& operator = (const rec_permute_helper&) = delete;
 
 public:
 
@@ -617,9 +617,9 @@ private:
 
   // No copying!
 
-  rec_index_helper (const rec_index_helper&);
+  rec_index_helper (const rec_index_helper&) = delete;
 
-  rec_index_helper& operator = (const rec_index_helper&);
+  rec_index_helper& operator = (const rec_index_helper&) = delete;
 
 public:
 
@@ -702,9 +702,9 @@ private:
 
   // No copying!
 
-  rec_resize_helper (const rec_resize_helper&);
+  rec_resize_helper (const rec_resize_helper&) = delete;
 
-  rec_resize_helper& operator = (const rec_resize_helper&);
+  rec_resize_helper& operator = (const rec_resize_helper&) = delete;
 
 public:
 

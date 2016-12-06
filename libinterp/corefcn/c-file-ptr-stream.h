@@ -92,9 +92,9 @@ private:
 
   // No copying!
 
-  c_file_ptr_buf (const c_file_ptr_buf&);
+  c_file_ptr_buf (const c_file_ptr_buf&) = delete;
 
-  c_file_ptr_buf& operator = (const c_file_ptr_buf&);
+  c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
 };
 
 // FIXME: the following three classes could probably share some code...
@@ -127,9 +127,9 @@ private:
 
   // No copying!
 
-  c_file_ptr_stream (const c_file_ptr_stream&);
+  c_file_ptr_stream (const c_file_ptr_stream&) = delete;
 
-  c_file_ptr_stream& operator = (const c_file_ptr_stream&);
+  c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
 };
 
 typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf>
@@ -209,9 +209,9 @@ private:
 
   // No copying!
 
-  c_zfile_ptr_buf (const c_zfile_ptr_buf&);
+  c_zfile_ptr_buf (const c_zfile_ptr_buf&) = delete;
 
-  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&);
+  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
 };
 
 typedef c_file_ptr_stream<std::istream, gzFile, c_zfile_ptr_buf>

@@ -110,9 +110,9 @@ private:
 
   // No copying!
 
-  octave_mex_function (const octave_mex_function& fn);
+  octave_mex_function (const octave_mex_function& fn) = delete;
 
-  octave_mex_function& operator = (const octave_mex_function& fn);
+  octave_mex_function& operator = (const octave_mex_function& fn) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

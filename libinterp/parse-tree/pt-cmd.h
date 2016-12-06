@@ -53,9 +53,9 @@ private:
 
   // No copying!
 
-  tree_command (const tree_command&);
+  tree_command (const tree_command&) = delete;
 
-  tree_command& operator = (const tree_command&);
+  tree_command& operator = (const tree_command&) = delete;
 };
 
 // No-op.
@@ -93,9 +93,9 @@ private:
 
   // No copying!
 
-  tree_no_op_command (const tree_no_op_command&);
+  tree_no_op_command (const tree_no_op_command&) = delete;
 
-  tree_no_op_command& operator = (const tree_no_op_command&);
+  tree_no_op_command& operator = (const tree_no_op_command&) = delete;
 };
 
 // Function definition.
@@ -126,9 +126,9 @@ private:
 
   // No copying!
 
-  tree_function_def (const tree_function_def&);
+  tree_function_def (const tree_function_def&) = delete;
 
-  tree_function_def& operator = (const tree_function_def&);
+  tree_function_def& operator = (const tree_function_def&) = delete;
 };
 
 #endif

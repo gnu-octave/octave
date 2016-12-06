@@ -173,9 +173,9 @@ namespace octave
 
       // No copying!
 
-      static_members (const static_members&);
+      static_members (const static_members&) = delete;
 
-      static_members& operator = (const static_members&);
+      static_members& operator = (const static_members&) = delete;
 
       char xpath_sep_char;
 

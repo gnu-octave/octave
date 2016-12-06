@@ -179,9 +179,9 @@ namespace octave
 
     // No copying!
 
-    octave_dlopen_shlib (const octave_dlopen_shlib&);
+    octave_dlopen_shlib (const octave_dlopen_shlib&) = delete;
 
-    octave_dlopen_shlib& operator = (const octave_dlopen_shlib&);
+    octave_dlopen_shlib& operator = (const octave_dlopen_shlib&) = delete;
 
     void *library;
   };
@@ -266,9 +266,9 @@ namespace octave
 
     // No copying!
 
-    octave_shl_load_shlib (const octave_shl_load_shlib&);
+    octave_shl_load_shlib (const octave_shl_load_shlib&) = delete;
 
-    octave_shl_load_shlib& operator = (const octave_shl_load_shlib&);
+    octave_shl_load_shlib& operator = (const octave_shl_load_shlib&) = delete;
 
     shl_t library;
   };
@@ -334,9 +334,9 @@ namespace octave
 
     // No copying!
 
-    octave_w32_shlib (const octave_w32_shlib&);
+    octave_w32_shlib (const octave_w32_shlib&) = delete;
 
-    octave_w32_shlib& operator = (const octave_w32_shlib&);
+    octave_w32_shlib& operator = (const octave_w32_shlib&) = delete;
 
     HINSTANCE handle;
   };
@@ -437,9 +437,9 @@ namespace octave
 
     // No copying!
 
-    octave_dyld_shlib (const octave_dyld_shlib&);
+    octave_dyld_shlib (const octave_dyld_shlib&) = delete;
 
-    octave_dyld_shlib& operator = (const octave_dyld_shlib&);
+    octave_dyld_shlib& operator = (const octave_dyld_shlib&) = delete;
 
     NSObjectFileImage img;
     NSModule handle;

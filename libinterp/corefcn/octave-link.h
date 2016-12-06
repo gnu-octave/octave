@@ -356,9 +356,9 @@ private:
 
   // No copying!
 
-  octave_link (const octave_link&);
+  octave_link (const octave_link&) = delete;
 
-  octave_link& operator = (const octave_link&);
+  octave_link& operator = (const octave_link&) = delete;
 
   static bool instance_ok (void) { return instance != 0; }
 

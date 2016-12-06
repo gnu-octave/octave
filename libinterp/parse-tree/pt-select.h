@@ -82,9 +82,9 @@ private:
 
   // No copying!
 
-  tree_if_clause (const tree_if_clause&);
+  tree_if_clause (const tree_if_clause&) = delete;
 
-  tree_if_clause& operator = (const tree_if_clause&);
+  tree_if_clause& operator = (const tree_if_clause&) = delete;
 };
 
 class
@@ -115,9 +115,9 @@ private:
 
   // No copying!
 
-  tree_if_command_list (const tree_if_command_list&);
+  tree_if_command_list (const tree_if_command_list&) = delete;
 
-  tree_if_command_list& operator = (const tree_if_command_list&);
+  tree_if_command_list& operator = (const tree_if_command_list&) = delete;
 };
 
 class
@@ -158,9 +158,9 @@ private:
 
   // No copying!
 
-  tree_if_command (const tree_if_command&);
+  tree_if_command (const tree_if_command&) = delete;
 
-  tree_if_command& operator = (const tree_if_command&);
+  tree_if_command& operator = (const tree_if_command&) = delete;
 };
 
 // Switch.
@@ -212,9 +212,9 @@ private:
 
   // No copying!
 
-  tree_switch_case (const tree_switch_case&);
+  tree_switch_case (const tree_switch_case&) = delete;
 
-  tree_switch_case& operator = (const tree_switch_case&);
+  tree_switch_case& operator = (const tree_switch_case&) = delete;
 };
 
 class
@@ -245,9 +245,9 @@ private:
 
   // No copying!
 
-  tree_switch_case_list (const tree_switch_case_list&);
+  tree_switch_case_list (const tree_switch_case_list&) = delete;
 
-  tree_switch_case_list& operator = (const tree_switch_case_list&);
+  tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
 };
 
 class
@@ -296,9 +296,9 @@ private:
 
   // No copying!
 
-  tree_switch_command (const tree_switch_command&);
+  tree_switch_command (const tree_switch_command&) = delete;
 
-  tree_switch_command& operator = (const tree_switch_command&);
+  tree_switch_command& operator = (const tree_switch_command&) = delete;
 };
 
 #endif

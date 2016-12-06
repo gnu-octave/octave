@@ -71,9 +71,9 @@ private:
 
   // No copying!
 
-  octave_procbuf (const octave_procbuf&);
+  octave_procbuf (const octave_procbuf&) = delete;
 
-  octave_procbuf& operator = (const octave_procbuf&);
+  octave_procbuf& operator = (const octave_procbuf&) = delete;
 };
 
 extern void symbols_of_oct_procbuf (void);

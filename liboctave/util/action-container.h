@@ -54,9 +54,9 @@ public:
 
     // No copying!
 
-    elem (const elem&);
+    elem (const elem&) = delete;
 
-    elem& operator = (const elem&);
+    elem& operator = (const elem&) = delete;
   };
 
   // An element that merely runs a void (*)(void) function.
@@ -89,9 +89,9 @@ public:
 
     // No copying!
 
-    fcn_arg_elem (const fcn_arg_elem&);
+    fcn_arg_elem (const fcn_arg_elem&) = delete;
 
-    fcn_arg_elem& operator = (const fcn_arg_elem&);
+    fcn_arg_elem& operator = (const fcn_arg_elem&) = delete;
 
     void (*e_fcn) (T);
     T e_arg;
@@ -133,9 +133,9 @@ public:
 
     // No copying!
 
-    method_elem (const method_elem&);
+    method_elem (const method_elem&) = delete;
 
-    method_elem operator = (const method_elem&);
+    method_elem operator = (const method_elem&) = delete;
   };
 
   // An element for calling a member function with a single argument
@@ -157,9 +157,9 @@ public:
 
     // No copying!
 
-    method_arg_elem (const method_arg_elem&);
+    method_arg_elem (const method_arg_elem&) = delete;
 
-    method_arg_elem operator = (const method_arg_elem&);
+    method_arg_elem operator = (const method_arg_elem&) = delete;
   };
 
   // An element for calling a member function with a single argument
@@ -181,9 +181,9 @@ public:
 
     // No copying!
 
-    method_crefarg_elem (const method_crefarg_elem&);
+    method_crefarg_elem (const method_crefarg_elem&) = delete;
 
-    method_crefarg_elem operator = (const method_crefarg_elem&);
+    method_crefarg_elem operator = (const method_crefarg_elem&) = delete;
   };
 
   // An element that stores arbitrary variable, and restores it.
@@ -201,9 +201,9 @@ public:
 
     // No copying!
 
-    restore_var_elem (const restore_var_elem&);
+    restore_var_elem (const restore_var_elem&) = delete;
 
-    restore_var_elem& operator = (const restore_var_elem&);
+    restore_var_elem& operator = (const restore_var_elem&) = delete;
 
     T *e_ptr, e_val;
   };
@@ -225,9 +225,9 @@ public:
 
     // No copying!
 
-    delete_ptr_elem (const delete_ptr_elem&);
+    delete_ptr_elem (const delete_ptr_elem&) = delete;
 
-    delete_ptr_elem operator = (const delete_ptr_elem&);
+    delete_ptr_elem operator = (const delete_ptr_elem&) = delete;
   };
 
   action_container (void) { }
@@ -335,9 +335,9 @@ private:
 
   // No copying!
 
-  action_container (const action_container&);
+  action_container (const action_container&) = delete;
 
-  action_container& operator = (const action_container&);
+  action_container& operator = (const action_container&) = delete;
 };
 
 #endif

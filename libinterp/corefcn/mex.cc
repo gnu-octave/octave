@@ -2364,9 +2364,9 @@ private:
 
   // No copying!
 
-  mex (const mex&);
+  mex (const mex&) = delete;
 
-  mex& operator = (const mex&);
+  mex& operator = (const mex&) = delete;
 };
 
 // List of memory resources we allocated.

@@ -143,9 +143,9 @@ namespace octave
 
     // No copying!
 
-    ft_manager (const ft_manager&);
+    ft_manager (const ft_manager&) = delete;
 
-    ft_manager& operator = (const ft_manager&);
+    ft_manager& operator = (const ft_manager&) = delete;
 
     ft_manager (void)
       : library (), freetype_initialized (false), fontconfig_initialized (false)
@@ -405,9 +405,9 @@ namespace octave
 
     // No copying!
 
-    ft_text_renderer (const ft_text_renderer&);
+    ft_text_renderer (const ft_text_renderer&) = delete;
 
-    ft_text_renderer& operator = (const ft_text_renderer&);
+    ft_text_renderer& operator = (const ft_text_renderer&) = delete;
 
     // Class to hold information about fonts and a strong
     // reference to the font objects loaded by FreeType.

@@ -106,9 +106,9 @@ public:
 
     // No copying!
 
-    scope_id_cache (const scope_id_cache&);
+    scope_id_cache (const scope_id_cache&) = delete;
 
-    scope_id_cache& operator = (const scope_id_cache&);
+    scope_id_cache& operator = (const scope_id_cache&) = delete;
 
     static scope_id_cache *instance;
 
@@ -477,9 +477,9 @@ public:
 
       // No copying!
 
-      symbol_record_rep (const symbol_record_rep& ov);
+      symbol_record_rep (const symbol_record_rep& ov) = delete;
 
-      symbol_record_rep& operator = (const symbol_record_rep&);
+      symbol_record_rep& operator = (const symbol_record_rep&) = delete;
     };
 
   public:
@@ -952,9 +952,9 @@ public:
 
       // No copying!
 
-      fcn_info_rep (const fcn_info_rep&);
+      fcn_info_rep (const fcn_info_rep&) = delete;
 
-      fcn_info_rep& operator = (const fcn_info_rep&);
+      fcn_info_rep& operator = (const fcn_info_rep&) = delete;
     };
 
   public:
@@ -2195,9 +2195,9 @@ private:
 
   // No copying!
 
-  symbol_table (const symbol_table&);
+  symbol_table (const symbol_table&) = delete;
 
-  symbol_table& operator = (const symbol_table&);
+  symbol_table& operator = (const symbol_table&) = delete;
 
   typedef std::map<std::string, symbol_record>::const_iterator
     table_const_iterator;

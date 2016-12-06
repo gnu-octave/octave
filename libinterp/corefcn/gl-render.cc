@@ -352,9 +352,9 @@ namespace octave
 
     // No copying!
 
-    opengl_tesselator (const opengl_tesselator&);
+    opengl_tesselator (const opengl_tesselator&) = delete;
 
-    opengl_tesselator operator = (const opengl_tesselator&);
+    opengl_tesselator operator = (const opengl_tesselator&) = delete;
 
     GLUtesselator *glu_tess;
     bool fill;
@@ -571,9 +571,9 @@ namespace octave
 
     // No copying!
 
-    patch_tesselator (const patch_tesselator&);
+    patch_tesselator (const patch_tesselator&) = delete;
 
-    patch_tesselator& operator = (const patch_tesselator&);
+    patch_tesselator& operator = (const patch_tesselator&) = delete;
 
     opengl_renderer *renderer;
     int color_mode;

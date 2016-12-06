@@ -96,9 +96,9 @@ private:
 
   // No copying!
 
-  tree (const tree&);
+  tree (const tree&) = delete;
 
-  tree& operator = (const tree&);
+  tree& operator = (const tree&) = delete;
 };
 
 #endif

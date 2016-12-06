@@ -72,9 +72,9 @@ namespace octave
 
     // No copying!
 
-    mach_info (const mach_info&);
+    mach_info (const mach_info&) = delete;
 
-    mach_info& operator = (const mach_info&);
+    mach_info& operator = (const mach_info&) = delete;
   };
 }
 

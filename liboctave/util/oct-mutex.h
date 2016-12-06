@@ -129,10 +129,11 @@ public:
 
 private:
 
-  // No copying or default constructor!
-  octave_autolock (void);
-  octave_autolock (const octave_autolock&);
-  octave_autolock& operator = (const octave_autolock&);
+  // No copying.
+
+  octave_autolock (const octave_autolock&) = delete;
+
+  octave_autolock& operator = (const octave_autolock&) = delete;
 
 private:
   octave_mutex mutex;

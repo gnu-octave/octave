@@ -66,9 +66,9 @@ private:
 
   // No copying!
 
-  octave_base_strstream (const octave_base_strstream&);
+  octave_base_strstream (const octave_base_strstream&) = delete;
 
-  octave_base_strstream& operator = (const octave_base_strstream&);
+  octave_base_strstream& operator = (const octave_base_strstream&) = delete;
 };
 
 class
@@ -124,9 +124,9 @@ private:
 
   // No copying!
 
-  octave_istrstream (const octave_istrstream&);
+  octave_istrstream (const octave_istrstream&) = delete;
 
-  octave_istrstream& operator = (const octave_istrstream&);
+  octave_istrstream& operator = (const octave_istrstream&) = delete;
 };
 
 class
@@ -170,9 +170,9 @@ private:
 
   // No copying!
 
-  octave_ostrstream (const octave_ostrstream&);
+  octave_ostrstream (const octave_ostrstream&) = delete;
 
-  octave_ostrstream& operator = (const octave_ostrstream&);
+  octave_ostrstream& operator = (const octave_ostrstream&) = delete;
 };
 
 #endif

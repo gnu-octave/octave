@@ -104,9 +104,9 @@ private:
 
   // No copying!
 
-  tree_argument_list (const tree_argument_list&);
+  tree_argument_list (const tree_argument_list&) = delete;
 
-  tree_argument_list& operator = (const tree_argument_list&);
+  tree_argument_list& operator = (const tree_argument_list&) = delete;
 };
 
 #endif

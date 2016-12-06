@@ -108,9 +108,9 @@ private:
 
   // No copying!
 
-  octave_builtin (const octave_builtin& ob);
+  octave_builtin (const octave_builtin& ob) = delete;
 
-  octave_builtin& operator = (const octave_builtin& ob);
+  octave_builtin& operator = (const octave_builtin& ob) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

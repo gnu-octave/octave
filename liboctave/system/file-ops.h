@@ -133,9 +133,9 @@ namespace octave
 
       // No copying!
 
-      file_ops (const file_ops&);
+      file_ops (const file_ops&) = delete;
 
-      file_ops& operator = (const file_ops&);
+      file_ops& operator = (const file_ops&) = delete;
 
       static bool instance_ok (void);
 

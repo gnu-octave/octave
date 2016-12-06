@@ -206,9 +206,9 @@ namespace octave
 
     // No copying!
 
-    text_renderer (const text_renderer&);
+    text_renderer (const text_renderer&) = delete;
 
-    text_renderer& operator = (const text_renderer&);
+    text_renderer& operator = (const text_renderer&) = delete;
   };
 }
 

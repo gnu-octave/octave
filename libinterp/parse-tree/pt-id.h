@@ -140,9 +140,9 @@ private:
 
   // No copying!
 
-  tree_identifier (const tree_identifier&);
+  tree_identifier (const tree_identifier&) = delete;
 
-  tree_identifier& operator = (const tree_identifier&);
+  tree_identifier& operator = (const tree_identifier&) = delete;
 };
 
 class tree_black_hole : public tree_identifier

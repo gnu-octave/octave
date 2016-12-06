@@ -116,6 +116,10 @@ private:
 
   // No copying!
 
+  resource_manager (const resource_manager&) = delete;
+
+  resource_manager& operator = (const resource_manager&) = delete;
+  
   static bool instance_ok (void);
 
   QString settings_directory;

@@ -105,9 +105,9 @@ namespace octave
 
     // No copying!
 
-    unwind_protect (const unwind_protect&);
+    unwind_protect (const unwind_protect&) = delete;
 
-    unwind_protect& operator = (const unwind_protect&);
+    unwind_protect& operator = (const unwind_protect&) = delete;
   };
 
   // Like unwind_protect, but this one will guard against the possibility
@@ -145,9 +145,9 @@ namespace octave
 
     // No copying!
 
-    unwind_protect_safe (const unwind_protect_safe&);
+    unwind_protect_safe (const unwind_protect_safe&) = delete;
 
-    unwind_protect_safe& operator = (const unwind_protect_safe&);
+    unwind_protect_safe& operator = (const unwind_protect_safe&) = delete;
   };
 }
 

@@ -220,9 +220,9 @@ private:
 
   // No copying!
 
-  octave_function (const octave_function& f);
+  octave_function (const octave_function& f) = delete;
 
-  octave_function& operator = (const octave_function& f);
+  octave_function& operator = (const octave_function& f) = delete;
 
 };
 

@@ -141,9 +141,9 @@ namespace octave
 
     // No copying!
 
-    opengl_renderer (const opengl_renderer&);
+    opengl_renderer (const opengl_renderer&) = delete;
 
-    opengl_renderer& operator = (const opengl_renderer&);
+    opengl_renderer& operator = (const opengl_renderer&) = delete;
 
     bool is_nan_or_inf (double x, double y, double z) const
     {

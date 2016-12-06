@@ -91,9 +91,9 @@ private:
 
   // No copying!
 
-  octave_dld_function (const octave_dld_function& fn);
+  octave_dld_function (const octave_dld_function& fn) = delete;
 
-  octave_dld_function& operator = (const octave_dld_function& fn);
+  octave_dld_function& operator = (const octave_dld_function& fn) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

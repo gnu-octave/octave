@@ -95,9 +95,9 @@ private:
 
   // No copying!
 
-  tree_try_catch_command (const tree_try_catch_command&);
+  tree_try_catch_command (const tree_try_catch_command&) = delete;
 
-  tree_try_catch_command& operator = (const tree_try_catch_command&);
+  tree_try_catch_command& operator = (const tree_try_catch_command&) = delete;
 };
 
 // Simple exception handling.
@@ -157,9 +157,9 @@ private:
 
   // No copying!
 
-  tree_unwind_protect_command (const tree_unwind_protect_command&);
+  tree_unwind_protect_command (const tree_unwind_protect_command&) = delete;
 
-  tree_unwind_protect_command& operator = (const tree_unwind_protect_command&);
+  tree_unwind_protect_command& operator = (const tree_unwind_protect_command&) = delete;
 };
 
 #endif

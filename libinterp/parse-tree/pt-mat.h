@@ -69,9 +69,9 @@ private:
 
   // No copying!
 
-  tree_matrix (const tree_matrix&);
+  tree_matrix (const tree_matrix&) = delete;
 
-  tree_matrix& operator = (const tree_matrix&);
+  tree_matrix& operator = (const tree_matrix&) = delete;
 };
 
 // The character to fill with when creating string arrays.

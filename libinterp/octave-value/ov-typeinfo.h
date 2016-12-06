@@ -321,9 +321,9 @@ private:
 
   // No copying!
 
-  octave_value_typeinfo (const octave_value_typeinfo&);
+  octave_value_typeinfo (const octave_value_typeinfo&) = delete;
 
-  octave_value_typeinfo& operator = (const octave_value_typeinfo&);
+  octave_value_typeinfo& operator = (const octave_value_typeinfo&) = delete;
 };
 
 #endif

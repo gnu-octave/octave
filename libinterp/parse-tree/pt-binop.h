@@ -127,9 +127,9 @@ private:
 
   // No copying!
 
-  tree_binary_expression (const tree_binary_expression&);
+  tree_binary_expression (const tree_binary_expression&) = delete;
 
-  tree_binary_expression& operator = (const tree_binary_expression&);
+  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
 };
 
 // Boolean expressions.
@@ -177,9 +177,9 @@ private:
 
   // No copying!
 
-  tree_boolean_expression (const tree_boolean_expression&);
+  tree_boolean_expression (const tree_boolean_expression&) = delete;
 
-  tree_boolean_expression& operator = (const tree_boolean_expression&);
+  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
 };
 
 #endif

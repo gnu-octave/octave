@@ -115,6 +115,10 @@ private:
 
   // No copying!
 
+  shortcut_manager (const shortcut_manager&) = delete;
+
+  shortcut_manager& operator = (const shortcut_manager&) = delete;
+
   static bool instance_ok (void);
 
   void init (const QString&, const QString&, const QKeySequence&);

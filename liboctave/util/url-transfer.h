@@ -158,9 +158,9 @@ namespace octave
 
     // No copying!
 
-    base_url_transfer (const base_url_transfer&);
+    base_url_transfer (const base_url_transfer&) = delete;
 
-    base_url_transfer& operator = (const base_url_transfer&);
+    base_url_transfer& operator = (const base_url_transfer&) = delete;
   };
 
   class

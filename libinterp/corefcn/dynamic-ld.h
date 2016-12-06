@@ -62,9 +62,9 @@ private:
 
   // No copying!
 
-  octave_dynamic_loader (const octave_dynamic_loader&);
+  octave_dynamic_loader (const octave_dynamic_loader&) = delete;
 
-  octave_dynamic_loader& operator = (const octave_dynamic_loader&);
+  octave_dynamic_loader& operator = (const octave_dynamic_loader&) = delete;
 
   static octave_dynamic_loader *instance;
 

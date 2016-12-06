@@ -128,9 +128,9 @@ namespace octave
 
       // No copying!
 
-      sparse_chol_rep (const sparse_chol_rep&);
+      sparse_chol_rep (const sparse_chol_rep&) = delete;
 
-      sparse_chol_rep& operator = (const sparse_chol_rep&);
+      sparse_chol_rep& operator = (const sparse_chol_rep&) = delete;
     };
 
 #if defined (HAVE_CHOLMOD)

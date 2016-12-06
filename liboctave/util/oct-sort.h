@@ -223,9 +223,9 @@ private:
 
     // No copying!
 
-    MergeState (const MergeState&);
+    MergeState (const MergeState&) = delete;
 
-    MergeState& operator = (const MergeState&);
+    MergeState& operator = (const MergeState&) = delete;
   };
 
   compare_fcn_type compare;
@@ -331,9 +331,9 @@ private:
 
   // No copying!
 
-  octave_sort (const octave_sort&);
+  octave_sort (const octave_sort&) = delete;
 
-  octave_sort& operator = (const octave_sort&);
+  octave_sort& operator = (const octave_sort&) = delete;
 };
 
 template <typename T>

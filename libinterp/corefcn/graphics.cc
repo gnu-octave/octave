@@ -9511,9 +9511,9 @@ private:
 
   // No copying!
 
-  function_event (const function_event&);
+  function_event (const function_event&) = delete;
 
-  function_event & operator = (const function_event&);
+  function_event & operator = (const function_event&) = delete;
 };
 
 class

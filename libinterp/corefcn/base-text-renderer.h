@@ -75,9 +75,9 @@ namespace octave
 
     // No copying!
 
-    base_text_renderer (const base_text_renderer&);
+    base_text_renderer (const base_text_renderer&) = delete;
 
-    base_text_renderer& operator = (const base_text_renderer&);
+    base_text_renderer& operator = (const base_text_renderer&) = delete;
   };
 }
 

@@ -90,9 +90,9 @@ private:
 
   // No copying!
 
-  octave_shlib_list (const octave_shlib_list&);
+  octave_shlib_list (const octave_shlib_list&) = delete;
 
-  octave_shlib_list& operator = (const octave_shlib_list&);
+  octave_shlib_list& operator = (const octave_shlib_list&) = delete;
 };
 
 octave_shlib_list *octave_shlib_list::instance = 0;

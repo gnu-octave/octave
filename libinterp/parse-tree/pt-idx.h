@@ -126,9 +126,9 @@ private:
 
   // No copying!
 
-  tree_index_expression (const tree_index_expression&);
+  tree_index_expression (const tree_index_expression&) = delete;
 
-  tree_index_expression& operator = (const tree_index_expression&);
+  tree_index_expression& operator = (const tree_index_expression&) = delete;
 };
 
 #endif

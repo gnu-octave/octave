@@ -48,9 +48,9 @@ namespace octave
 
     // No copying, at least not yet.
 
-    gui_application (const gui_application&);
+    gui_application (const gui_application&) = delete;
 
-    gui_application& operator = (const gui_application&);
+    gui_application& operator = (const gui_application&) = delete;
 
     int m_argc;
     char **m_argv;

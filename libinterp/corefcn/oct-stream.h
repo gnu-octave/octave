@@ -232,9 +232,9 @@ private:
 
   // No copying!
 
-  octave_base_stream (const octave_base_stream&);
+  octave_base_stream (const octave_base_stream&) = delete;
 
-  octave_base_stream& operator = (const octave_base_stream&);
+  octave_base_stream& operator = (const octave_base_stream&) = delete;
 };
 
 class

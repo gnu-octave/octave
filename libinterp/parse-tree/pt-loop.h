@@ -128,9 +128,9 @@ private:
 
   // No copying!
 
-  tree_while_command (const tree_while_command&);
+  tree_while_command (const tree_while_command&) = delete;
 
-  tree_while_command& operator = (const tree_while_command&);
+  tree_while_command& operator = (const tree_while_command&) = delete;
 };
 
 // Do-Until.
@@ -166,9 +166,9 @@ private:
 
   // No copying!
 
-  tree_do_until_command (const tree_do_until_command&);
+  tree_do_until_command (const tree_do_until_command&) = delete;
 
-  tree_do_until_command& operator = (const tree_do_until_command&);
+  tree_do_until_command& operator = (const tree_do_until_command&) = delete;
 };
 
 // For.
@@ -264,9 +264,9 @@ private:
 
   // No copying!
 
-  tree_simple_for_command (const tree_simple_for_command&);
+  tree_simple_for_command (const tree_simple_for_command&) = delete;
 
-  tree_simple_for_command& operator = (const tree_simple_for_command&);
+  tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
 };
 
 class
@@ -322,9 +322,9 @@ private:
 
   // No copying!
 
-  tree_complex_for_command (const tree_complex_for_command&);
+  tree_complex_for_command (const tree_complex_for_command&) = delete;
 
-  tree_complex_for_command& operator = (const tree_complex_for_command&);
+  tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
 };
 
 #endif

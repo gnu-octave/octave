@@ -114,8 +114,10 @@ private:
   private:
 
     // No copying!
-    idx_base_rep (const idx_base_rep&);
-    idx_base_rep& operator = (const idx_base_rep&);
+
+    idx_base_rep (const idx_base_rep&) = delete;
+
+    idx_base_rep& operator = (const idx_base_rep&) = delete;
   };
 
   // The magic colon index.
@@ -148,8 +150,10 @@ private:
   private:
 
     // No copying!
-    idx_colon_rep (const idx_colon_rep& idx);
-    idx_colon_rep& operator = (const idx_colon_rep& idx);
+
+    idx_colon_rep (const idx_colon_rep& idx) = delete;
+
+    idx_colon_rep& operator = (const idx_colon_rep& idx) = delete;
   };
 
   // To distinguish the "direct" constructors that blindly trust the data.
@@ -210,8 +214,10 @@ private:
   private:
 
     // No copying!
-    idx_range_rep (const idx_range_rep& idx);
-    idx_range_rep& operator = (const idx_range_rep& idx);
+
+    idx_range_rep (const idx_range_rep& idx) = delete;
+
+    idx_range_rep& operator = (const idx_range_rep& idx) = delete;
 
     octave_idx_type start, len, step;
 
@@ -265,8 +271,10 @@ private:
   private:
 
     // No copying!
-    idx_scalar_rep (const idx_scalar_rep& idx);
-    idx_scalar_rep& operator = (const idx_scalar_rep& idx);
+
+    idx_scalar_rep (const idx_scalar_rep& idx) = delete;
+
+    idx_scalar_rep& operator = (const idx_scalar_rep& idx) = delete;
 
     octave_idx_type data;
 
@@ -330,8 +338,10 @@ private:
   private:
 
     // No copying!
-    idx_vector_rep (const idx_vector_rep& idx);
-    idx_vector_rep& operator = (const idx_vector_rep& idx);
+
+    idx_vector_rep (const idx_vector_rep& idx) = delete;
+
+    idx_vector_rep& operator = (const idx_vector_rep& idx) = delete;
 
     const octave_idx_type *data;
     octave_idx_type len;
@@ -402,8 +412,10 @@ private:
   private:
 
     // No copying!
-    idx_mask_rep (const idx_mask_rep& idx);
-    idx_mask_rep& operator = (const idx_mask_rep& idx);
+
+    idx_mask_rep (const idx_mask_rep& idx) = delete;
+
+    idx_mask_rep& operator = (const idx_mask_rep& idx) = delete;
 
     const bool *data;
     octave_idx_type len;

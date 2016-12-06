@@ -109,9 +109,9 @@ private:
 
   // No copying!
 
-  tree_colon_expression (const tree_colon_expression&);
+  tree_colon_expression (const tree_colon_expression&) = delete;
 
-  tree_colon_expression& operator = (const tree_colon_expression&);
+  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
 };
 
 #endif

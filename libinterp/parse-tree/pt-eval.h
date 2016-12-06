@@ -192,9 +192,9 @@ namespace octave
 
     // No copying!
 
-    tree_evaluator (const tree_evaluator&);
+    tree_evaluator (const tree_evaluator&) = delete;
 
-    tree_evaluator& operator = (const tree_evaluator&);
+    tree_evaluator& operator = (const tree_evaluator&) = delete;
   };
 }
 

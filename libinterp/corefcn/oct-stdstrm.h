@@ -93,9 +93,9 @@ private:
 
   // No copying!
 
-  octave_tstdiostream (const octave_tstdiostream&);
+  octave_tstdiostream (const octave_tstdiostream&) = delete;
 
-  octave_tstdiostream& operator = (const octave_tstdiostream&);
+  octave_tstdiostream& operator = (const octave_tstdiostream&) = delete;
 };
 
 class
@@ -130,9 +130,9 @@ private:
 
   // No copying!
 
-  octave_stdiostream (const octave_stdiostream&);
+  octave_stdiostream (const octave_stdiostream&) = delete;
 
-  octave_stdiostream& operator = (const octave_stdiostream&);
+  octave_stdiostream& operator = (const octave_stdiostream&) = delete;
 };
 
 #if defined (HAVE_ZLIB)
@@ -170,9 +170,9 @@ private:
 
   // No copying!
 
-  octave_zstdiostream (const octave_zstdiostream&);
+  octave_zstdiostream (const octave_zstdiostream&) = delete;
 
-  octave_zstdiostream& operator = (const octave_zstdiostream&);
+  octave_zstdiostream& operator = (const octave_zstdiostream&) = delete;
 };
 
 #endif

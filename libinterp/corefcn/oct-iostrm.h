@@ -70,9 +70,9 @@ private:
 
   // No copying!
 
-  octave_base_iostream (const octave_base_iostream&);
+  octave_base_iostream (const octave_base_iostream&) = delete;
 
-  octave_base_iostream& operator = (const octave_base_iostream&);
+  octave_base_iostream& operator = (const octave_base_iostream&) = delete;
 };
 
 class
@@ -109,9 +109,9 @@ private:
 
   // No copying!
 
-  octave_istream (const octave_istream&);
+  octave_istream (const octave_istream&) = delete;
 
-  octave_istream& operator = (const octave_istream&);
+  octave_istream& operator = (const octave_istream&) = delete;
 };
 
 class
@@ -148,9 +148,9 @@ private:
 
   // No copying!
 
-  octave_ostream (const octave_ostream&);
+  octave_ostream (const octave_ostream&) = delete;
 
-  octave_ostream& operator = (const octave_ostream&);
+  octave_ostream& operator = (const octave_ostream&) = delete;
 };
 
 #endif

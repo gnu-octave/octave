@@ -195,9 +195,9 @@ namespace octave
 
     // No copying!
 
-    command_editor (const command_editor&);
+    command_editor (const command_editor&) = delete;
 
-    command_editor& operator = (const command_editor&);
+    command_editor& operator = (const command_editor&) = delete;
 
     static bool instance_ok (void);
 

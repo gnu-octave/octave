@@ -53,9 +53,9 @@ private:
 
   // No copying!
 
-  tree_break_command (const tree_break_command&);
+  tree_break_command (const tree_break_command&) = delete;
 
-  tree_break_command& operator = (const tree_break_command&);
+  tree_break_command& operator = (const tree_break_command&) = delete;
 };
 
 // Continue.
@@ -81,9 +81,9 @@ private:
 
   // No copying!
 
-  tree_continue_command (const tree_continue_command&);
+  tree_continue_command (const tree_continue_command&) = delete;
 
-  tree_continue_command& operator = (const tree_continue_command&);
+  tree_continue_command& operator = (const tree_continue_command&) = delete;
 };
 
 // Return.
@@ -109,9 +109,9 @@ private:
 
   // No copying!
 
-  tree_return_command (const tree_return_command&);
+  tree_return_command (const tree_return_command&) = delete;
 
-  tree_return_command& operator = (const tree_return_command&);
+  tree_return_command& operator = (const tree_return_command&) = delete;
 };
 
 #endif

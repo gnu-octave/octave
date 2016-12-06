@@ -114,9 +114,9 @@ private:
 
   // No copying!
 
-  token (const token& tok);
+  token (const token& tok) = delete;
 
-  token& operator = (const token& tok);
+  token& operator = (const token& tok) = delete;
 
   bool maybe_cmd;
   bool tspc;

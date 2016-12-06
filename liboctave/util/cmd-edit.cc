@@ -961,9 +961,9 @@ namespace octave
 
     // No copying!
 
-    default_command_editor (const default_command_editor&);
+    default_command_editor (const default_command_editor&) = delete;
 
-    default_command_editor& operator = (const default_command_editor&);
+    default_command_editor& operator = (const default_command_editor&) = delete;
   };
 
   std::string

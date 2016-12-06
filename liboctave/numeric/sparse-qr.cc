@@ -120,9 +120,9 @@ namespace octave
 
       // No copying!
 
-      sparse_qr_rep (const sparse_qr_rep&);
+      sparse_qr_rep (const sparse_qr_rep&) = delete;
 
-      sparse_qr_rep& operator = (const sparse_qr_rep&);
+      sparse_qr_rep& operator = (const sparse_qr_rep&) = delete;
     };
 
     template <typename SPARSE_T>

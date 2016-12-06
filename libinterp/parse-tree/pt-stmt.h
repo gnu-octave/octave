@@ -120,9 +120,10 @@ private:
   octave_comment_list *comm;
 
   // No copying!
-  tree_statement (const tree_statement&);
 
-  tree_statement& operator = (const tree_statement&);
+  tree_statement (const tree_statement&) = delete;
+
+  tree_statement& operator = (const tree_statement&) = delete;
 };
 
 // A list of statements to evaluate.
@@ -194,9 +195,9 @@ private:
 
   // No copying!
 
-  tree_statement_list (const tree_statement_list&);
+  tree_statement_list (const tree_statement_list&) = delete;
 
-  tree_statement_list& operator = (const tree_statement_list&);
+  tree_statement_list& operator = (const tree_statement_list&) = delete;
 };
 
 #endif

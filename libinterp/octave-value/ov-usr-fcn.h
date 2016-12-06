@@ -75,9 +75,9 @@ private:
 
   // No copying!
 
-  octave_user_code (const octave_user_code& f);
+  octave_user_code (const octave_user_code& f) = delete;
 
-  octave_user_code& operator = (const octave_user_code& f);
+  octave_user_code& operator = (const octave_user_code& f) = delete;
 };
 
 // Scripts.
@@ -163,9 +163,9 @@ private:
 
   // No copying!
 
-  octave_user_script (const octave_user_script& f);
+  octave_user_script (const octave_user_script& f) = delete;
 
-  octave_user_script& operator = (const octave_user_script& f);
+  octave_user_script& operator = (const octave_user_script& f) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -517,9 +517,9 @@ private:
 
   // No copying!
 
-  octave_user_function (const octave_user_function& fn);
+  octave_user_function (const octave_user_function& fn) = delete;
 
-  octave_user_function& operator = (const octave_user_function& fn);
+  octave_user_function& operator = (const octave_user_function& fn) = delete;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

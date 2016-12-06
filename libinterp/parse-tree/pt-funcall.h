@@ -92,9 +92,9 @@ private:
 
   // No copying!
 
-  tree_funcall (const tree_funcall&);
+  tree_funcall (const tree_funcall&) = delete;
 
-  tree_funcall& operator = (const tree_funcall&);
+  tree_funcall& operator = (const tree_funcall&) = delete;
 };
 
 #endif

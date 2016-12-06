@@ -96,9 +96,9 @@ private:
 
   // No copying!
 
-  tree_constant (const tree_constant&);
+  tree_constant (const tree_constant&) = delete;
 
-  tree_constant& operator = (const tree_constant&);
+  tree_constant& operator = (const tree_constant&) = delete;
 
 };
 

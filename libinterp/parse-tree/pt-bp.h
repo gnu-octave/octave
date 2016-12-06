@@ -170,9 +170,9 @@ private:
 
   // No copying!
 
-  tree_breakpoint (const tree_breakpoint&);
+  tree_breakpoint (const tree_breakpoint&) = delete;
 
-  tree_breakpoint& operator = (const tree_breakpoint&);
+  tree_breakpoint& operator = (const tree_breakpoint&) = delete;
 };
 
 // TRUE means SIGINT should put us in the debugger at the next

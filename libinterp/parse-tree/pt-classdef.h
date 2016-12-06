@@ -69,9 +69,9 @@ private:
 
   // No copying!
 
-  tree_classdef_attribute (const tree_classdef_attribute&);
+  tree_classdef_attribute (const tree_classdef_attribute&) = delete;
 
-  tree_classdef_attribute& operator = (const tree_classdef_attribute&);
+  tree_classdef_attribute& operator = (const tree_classdef_attribute&) = delete;
 };
 
 class tree_classdef_attribute_list : public octave::base_list<tree_classdef_attribute *>
@@ -93,9 +93,9 @@ private:
 
   // No copying!
 
-  tree_classdef_attribute_list (const tree_classdef_attribute_list&);
+  tree_classdef_attribute_list (const tree_classdef_attribute_list&) = delete;
 
-  tree_classdef_attribute_list& operator = (const tree_classdef_attribute_list&);
+  tree_classdef_attribute_list& operator = (const tree_classdef_attribute_list&) = delete;
 };
 
 class tree_classdef_superclass
@@ -117,9 +117,9 @@ private:
 
   // No copying!
 
-  tree_classdef_superclass (const tree_classdef_superclass&);
+  tree_classdef_superclass (const tree_classdef_superclass&) = delete;
 
-  tree_classdef_superclass& operator = (const tree_classdef_superclass&);
+  tree_classdef_superclass& operator = (const tree_classdef_superclass&) = delete;
 };
 
 class tree_classdef_superclass_list : public octave::base_list<tree_classdef_superclass *>
@@ -141,9 +141,9 @@ private:
 
   // No copying!
 
-  tree_classdef_superclass_list (const tree_classdef_superclass_list&);
+  tree_classdef_superclass_list (const tree_classdef_superclass_list&) = delete;
 
-  tree_classdef_superclass_list& operator = (const tree_classdef_superclass_list&);
+  tree_classdef_superclass_list& operator = (const tree_classdef_superclass_list&) = delete;
 };
 
 template <typename T>
@@ -193,9 +193,9 @@ private:
 
   // No copying!
 
-  tree_classdef_element (const tree_classdef_element&);
+  tree_classdef_element (const tree_classdef_element&) = delete;
 
-  tree_classdef_element& operator = (const tree_classdef_element&);
+  tree_classdef_element& operator = (const tree_classdef_element&) = delete;
 };
 
 class tree_classdef_property
@@ -224,9 +224,9 @@ private:
 
   // No copying!
 
-  tree_classdef_property (const tree_classdef_property&);
+  tree_classdef_property (const tree_classdef_property&) = delete;
 
-  tree_classdef_property& operator = (const tree_classdef_property&);
+  tree_classdef_property& operator = (const tree_classdef_property&) = delete;
 };
 
 class tree_classdef_property_list : public octave::base_list<tree_classdef_property *>
@@ -248,9 +248,9 @@ private:
 
   // No copying!
 
-  tree_classdef_property_list (const tree_classdef_property_list&);
+  tree_classdef_property_list (const tree_classdef_property_list&) = delete;
 
-  tree_classdef_property_list& operator = (const tree_classdef_property_list&);
+  tree_classdef_property_list& operator = (const tree_classdef_property_list&) = delete;
 };
 
 class tree_classdef_properties_block
@@ -273,9 +273,9 @@ private:
 
   // No copying!
 
-  tree_classdef_properties_block (const tree_classdef_properties_block&);
+  tree_classdef_properties_block (const tree_classdef_properties_block&) = delete;
 
-  tree_classdef_properties_block& operator = (const tree_classdef_properties_block&);
+  tree_classdef_properties_block& operator = (const tree_classdef_properties_block&) = delete;
 };
 
 class tree_classdef_methods_list : public octave::base_list<octave_value>
@@ -297,9 +297,9 @@ private:
 
   // No copying!
 
-  tree_classdef_methods_list (const tree_classdef_methods_list&);
+  tree_classdef_methods_list (const tree_classdef_methods_list&) = delete;
 
-  tree_classdef_methods_list& operator = (const tree_classdef_methods_list&);
+  tree_classdef_methods_list& operator = (const tree_classdef_methods_list&) = delete;
 };
 
 class tree_classdef_methods_block : public tree_classdef_element<octave_value>
@@ -320,9 +320,9 @@ private:
 
   // No copying!
 
-  tree_classdef_methods_block (const tree_classdef_methods_block&);
+  tree_classdef_methods_block (const tree_classdef_methods_block&) = delete;
 
-  tree_classdef_methods_block& operator = (const tree_classdef_methods_block&);
+  tree_classdef_methods_block& operator = (const tree_classdef_methods_block&) = delete;
 };
 
 class tree_classdef_event
@@ -346,9 +346,9 @@ private:
 
   // No copying!
 
-  tree_classdef_event (const tree_classdef_event&);
+  tree_classdef_event (const tree_classdef_event&) = delete;
 
-  tree_classdef_event& operator = (const tree_classdef_event&);
+  tree_classdef_event& operator = (const tree_classdef_event&) = delete;
 };
 
 class tree_classdef_events_list : public octave::base_list<tree_classdef_event *>
@@ -370,9 +370,9 @@ private:
 
   // No copying!
 
-  tree_classdef_events_list (const tree_classdef_events_list&);
+  tree_classdef_events_list (const tree_classdef_events_list&) = delete;
 
-  tree_classdef_events_list& operator = (const tree_classdef_events_list&);
+  tree_classdef_events_list& operator = (const tree_classdef_events_list&) = delete;
 };
 
 class tree_classdef_events_block
@@ -394,9 +394,9 @@ private:
 
   // No copying!
 
-  tree_classdef_events_block (const tree_classdef_events_block&);
+  tree_classdef_events_block (const tree_classdef_events_block&) = delete;
 
-  tree_classdef_events_block& operator = (const tree_classdef_events_block&);
+  tree_classdef_events_block& operator = (const tree_classdef_events_block&) = delete;
 };
 
 class tree_classdef_enum
@@ -427,9 +427,9 @@ private:
 
   // No copying!
 
-  tree_classdef_enum (const tree_classdef_enum&);
+  tree_classdef_enum (const tree_classdef_enum&) = delete;
 
-  tree_classdef_enum& operator = (const tree_classdef_enum&);
+  tree_classdef_enum& operator = (const tree_classdef_enum&) = delete;
 };
 
 class tree_classdef_enum_list : public octave::base_list<tree_classdef_enum *>
@@ -451,9 +451,9 @@ private:
 
   // No copying!
 
-  tree_classdef_enum_list (const tree_classdef_enum_list&);
+  tree_classdef_enum_list (const tree_classdef_enum_list&) = delete;
 
-  tree_classdef_enum_list& operator = (const tree_classdef_enum_list&);
+  tree_classdef_enum_list& operator = (const tree_classdef_enum_list&) = delete;
 };
 
 class tree_classdef_enum_block
@@ -475,9 +475,9 @@ private:
 
   // No copying!
 
-  tree_classdef_enum_block (const tree_classdef_enum_block&);
+  tree_classdef_enum_block (const tree_classdef_enum_block&) = delete;
 
-  tree_classdef_enum_block& operator = (const tree_classdef_enum_block&);
+  tree_classdef_enum_block& operator = (const tree_classdef_enum_block&) = delete;
 };
 
 class tree_classdef_body
@@ -579,9 +579,9 @@ private:
 
   // No copying!
 
-  tree_classdef_body (const tree_classdef_body&);
+  tree_classdef_body (const tree_classdef_body&) = delete;
 
-  tree_classdef_body& operator = (const tree_classdef_body&);
+  tree_classdef_body& operator = (const tree_classdef_body&) = delete;
 };
 
 // Classdef definition.
@@ -647,9 +647,9 @@ private:
 
   // No copying!
 
-  tree_classdef (const tree_classdef&);
+  tree_classdef (const tree_classdef&) = delete;
 
-  tree_classdef& operator = (const tree_classdef&);
+  tree_classdef& operator = (const tree_classdef&) = delete;
 };
 
 #endif

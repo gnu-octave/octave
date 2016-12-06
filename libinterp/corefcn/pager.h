@@ -90,9 +90,9 @@ private:
 
   // No copying!
 
-  octave_pager_stream (const octave_pager_stream&);
+  octave_pager_stream (const octave_pager_stream&) = delete;
 
-  octave_pager_stream& operator = (const octave_pager_stream&);
+  octave_pager_stream& operator = (const octave_pager_stream&) = delete;
 };
 
 class
@@ -138,9 +138,9 @@ private:
 
   // No copying!
 
-  octave_diary_stream (const octave_diary_stream&);
+  octave_diary_stream (const octave_diary_stream&) = delete;
 
-  octave_diary_stream& operator = (const octave_diary_stream&);
+  octave_diary_stream& operator = (const octave_diary_stream&) = delete;
 };
 
 #define octave_stdout (octave_pager_stream::stream ())

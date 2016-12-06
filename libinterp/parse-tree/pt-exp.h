@@ -161,9 +161,9 @@ private:
 
   // No copying!
 
-  tree_expression (const tree_expression&);
+  tree_expression (const tree_expression&) = delete;
 
-  tree_expression& operator = (const tree_expression&);
+  tree_expression& operator = (const tree_expression&) = delete;
 };
 
 #endif

@@ -102,9 +102,9 @@ namespace octave
 
     // No copying!
 
-    base_interrupt_manager (const base_interrupt_manager&);
+    base_interrupt_manager (const base_interrupt_manager&) = delete;
 
-    base_interrupt_manager& operator = (const base_interrupt_manager&);
+    base_interrupt_manager& operator = (const base_interrupt_manager&) = delete;
   };
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -201,9 +201,9 @@ namespace octave
 
     // No copying!
 
-    w32_interrupt_manager (const w32_interrupt_manager&);
+    w32_interrupt_manager (const w32_interrupt_manager&) = delete;
 
-    w32_interrupt_manager& operator = (const w32_interrupt_manager&);
+    w32_interrupt_manager& operator = (const w32_interrupt_manager&) = delete;
   };
 
 #endif
@@ -238,9 +238,9 @@ namespace octave
 
     // No copying!
 
-    posix_interrupt_manager (const posix_interrupt_manager&);
+    posix_interrupt_manager (const posix_interrupt_manager&) = delete;
 
-    posix_interrupt_manager& operator = (const posix_interrupt_manager&);
+    posix_interrupt_manager& operator = (const posix_interrupt_manager&) = delete;
   };
 
   class
@@ -276,9 +276,9 @@ namespace octave
 
     // No copying!
 
-    interrupt_manager (const interrupt_manager&);
+    interrupt_manager (const interrupt_manager&) = delete;
 
-    interrupt_manager& operator = (const interrupt_manager&);
+    interrupt_manager& operator = (const interrupt_manager&) = delete;
 
     static bool instance_ok (void)
     {

@@ -319,9 +319,9 @@ private:
                          char modifier);
   // No copying!
 
-  scanf_format_list (const scanf_format_list&);
+  scanf_format_list (const scanf_format_list&) = delete;
 
-  scanf_format_list& operator = (const scanf_format_list&);
+  scanf_format_list& operator = (const scanf_format_list&) = delete;
 };
 
 scanf_format_list::scanf_format_list (const std::string& s)
@@ -861,9 +861,9 @@ private:
 
   // No copying!
 
-  printf_format_list (const printf_format_list&);
+  printf_format_list (const printf_format_list&) = delete;
 
-  printf_format_list& operator = (const printf_format_list&);
+  printf_format_list& operator = (const printf_format_list&) = delete;
 };
 
 printf_format_list::printf_format_list (const std::string& s)
@@ -1341,9 +1341,9 @@ namespace octave
 
     // No copying!
 
-    delimited_stream (const delimited_stream&);
+    delimited_stream (const delimited_stream&) = delete;
 
-    delimited_stream& operator = (const delimited_stream&);
+    delimited_stream& operator = (const delimited_stream&) = delete;
   };
 
   // Create a delimited stream, reading from is, with delimiters delims,
@@ -1780,9 +1780,9 @@ namespace octave
                            bool discard, char& type);
     // No copying!
 
-    textscan_format_list (const textscan_format_list&);
+    textscan_format_list (const textscan_format_list&) = delete;
 
-    textscan_format_list& operator = (const textscan_format_list&);
+    textscan_format_list& operator = (const textscan_format_list&) = delete;
   };
 
   // Main class to implement textscan.  Read data and parse it
@@ -1933,9 +1933,9 @@ namespace octave
 
     // No copying!
 
-    textscan (const textscan&);
+    textscan (const textscan&) = delete;
 
-    textscan& operator = (const textscan&);
+    textscan& operator = (const textscan&) = delete;
   };
 
   textscan_format_list::textscan_format_list (const std::string& s,
@@ -5326,9 +5326,9 @@ private:
 
   // No copying!
 
-  printf_value_cache (const printf_value_cache&);
+  printf_value_cache (const printf_value_cache&) = delete;
 
-  printf_value_cache& operator = (const printf_value_cache&);
+  printf_value_cache& operator = (const printf_value_cache&) = delete;
 };
 
 octave_value

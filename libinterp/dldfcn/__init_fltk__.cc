@@ -738,9 +738,9 @@ private:
 
   // No copying!
 
-  fltk_uimenu (const fltk_uimenu&);
+  fltk_uimenu (const fltk_uimenu&) = delete;
 
-  fltk_uimenu operator = (const fltk_uimenu&);
+  fltk_uimenu operator = (const fltk_uimenu&) = delete;
 
   Fl_Menu_Bar* menubar;
 };
@@ -1036,9 +1036,9 @@ private:
 
   // No copying!
 
-  plot_window (const plot_window&);
+  plot_window (const plot_window&) = delete;
 
-  plot_window& operator = (const plot_window&);
+  plot_window& operator = (const plot_window&) = delete;
 
   // window name -- this must exists for the duration of the window's
   // life
@@ -1951,8 +1951,10 @@ private:
   figure_manager (void) { }
 
   // No copying!
-  figure_manager (const figure_manager&);
-  figure_manager& operator = (const figure_manager&);
+
+  figure_manager (const figure_manager&) = delete;
+
+  figure_manager& operator = (const figure_manager&) = delete;
 
   // Singelton -- hide all of the above.
 

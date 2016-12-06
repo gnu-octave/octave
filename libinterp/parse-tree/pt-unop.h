@@ -77,9 +77,9 @@ private:
 
   // No copying!
 
-  tree_unary_expression (const tree_unary_expression&);
+  tree_unary_expression (const tree_unary_expression&) = delete;
 
-  tree_unary_expression& operator = (const tree_unary_expression&);
+  tree_unary_expression& operator = (const tree_unary_expression&) = delete;
 };
 
 // Prefix expressions.
@@ -116,9 +116,9 @@ private:
 
   // No copying!
 
-  tree_prefix_expression (const tree_prefix_expression&);
+  tree_prefix_expression (const tree_prefix_expression&) = delete;
 
-  tree_prefix_expression& operator = (const tree_prefix_expression&);
+  tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
 };
 
 // Postfix expressions.
@@ -155,9 +155,9 @@ private:
 
   // No copying!
 
-  tree_postfix_expression (const tree_postfix_expression&);
+  tree_postfix_expression (const tree_postfix_expression&) = delete;
 
-  tree_postfix_expression& operator = (const tree_postfix_expression&);
+  tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
 };
 
 #endif

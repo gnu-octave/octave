@@ -76,9 +76,9 @@ private:
 
   // No copying!
 
-  tree_array_list (const tree_array_list&);
+  tree_array_list (const tree_array_list&) = delete;
 
-  tree_array_list& operator = (const tree_array_list&);
+  tree_array_list& operator = (const tree_array_list&) = delete;
 };
 
 #endif

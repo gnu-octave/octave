@@ -278,9 +278,9 @@ private:
 
   // No copying!
 
-  tree_walker (const tree_walker&);
+  tree_walker (const tree_walker&) = delete;
 
-  tree_walker& operator = (const tree_walker&);
+  tree_walker& operator = (const tree_walker&) = delete;
 };
 
 #endif

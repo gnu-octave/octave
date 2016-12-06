@@ -53,9 +53,9 @@ private:
 
   // No copying!
 
-  octave_iprocstream (const octave_iprocstream&);
+  octave_iprocstream (const octave_iprocstream&) = delete;
 
-  octave_iprocstream& operator = (const octave_iprocstream&);
+  octave_iprocstream& operator = (const octave_iprocstream&) = delete;
 };
 
 class
@@ -81,9 +81,9 @@ private:
 
   // No copying!
 
-  octave_oprocstream (const octave_oprocstream&);
+  octave_oprocstream (const octave_oprocstream&) = delete;
 
-  octave_oprocstream& operator = (const octave_oprocstream&);
+  octave_oprocstream& operator = (const octave_oprocstream&) = delete;
 };
 
 #endif

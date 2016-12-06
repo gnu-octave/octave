@@ -670,9 +670,9 @@ namespace octave
 
     // No copying!
 
-    curl_transfer (const curl_transfer&);
+    curl_transfer (const curl_transfer&) = delete;
 
-    curl_transfer& operator = (const curl_transfer&);
+    curl_transfer& operator = (const curl_transfer&) = delete;
 
     void init (const std::string& user, const std::string& passwd,
                std::istream& is, std::ostream& os)

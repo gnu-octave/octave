@@ -80,9 +80,9 @@ private:
 
   // No copying!
 
-  octave_fstream (const octave_fstream&);
+  octave_fstream (const octave_fstream&) = delete;
 
-  octave_fstream& operator = (const octave_fstream&);
+  octave_fstream& operator = (const octave_fstream&) = delete;
 };
 
 #endif

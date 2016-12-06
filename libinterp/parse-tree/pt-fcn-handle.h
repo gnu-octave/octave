@@ -83,9 +83,9 @@ private:
 
   // No copying!
 
-  tree_fcn_handle (const tree_fcn_handle&);
+  tree_fcn_handle (const tree_fcn_handle&) = delete;
 
-  tree_fcn_handle& operator = (const tree_fcn_handle&);
+  tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
 };
 
 class
@@ -150,9 +150,9 @@ private:
 
   // No copying!
 
-  tree_anon_fcn_handle (const tree_anon_fcn_handle&);
+  tree_anon_fcn_handle (const tree_anon_fcn_handle&) = delete;
 
-  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&);
+  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 };
 
 #endif

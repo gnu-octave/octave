@@ -201,10 +201,8 @@ tree_multi_assignment::rvalue (int)
 
       octave_idx_type n_out = 0;
 
-      for (std::list<octave_lvalue>::const_iterator p = lvalue_list.begin ();
-           p != lvalue_list.end ();
-           p++)
-        n_out += p->numel ();
+      for (const auto& lval : lvalue_list)
+        n_out += lval.numel ();
 
       // The following trick is used to keep rhs_val constant.
       const octave_value_list rhs_val1 = rhs->rvalue (n_out, &lvalue_list);
@@ -223,13 +221,9 @@ tree_multi_assignment::rvalue (int)
 
       tree_argument_list::iterator q = lhs->begin ();
 
-      for (std::list<octave_lvalue>::iterator p = lvalue_list.begin ();
-           p != lvalue_list.end ();
-           p++)
+      for (octave_lvalue ult : lvalue_list)
         {
           tree_expression *lhs_elt = *q++;
-
-          octave_lvalue ult = *p;
 
           octave_idx_type nel = ult.numel ();
 

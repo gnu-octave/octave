@@ -51,11 +51,8 @@ tree_parameter_list::~tree_parameter_list (void)
 void
 tree_parameter_list::mark_as_formal_parameters (void)
 {
-  for (iterator p = begin (); p != end (); p++)
-    {
-      tree_decl_elt *elt = *p;
-      elt->mark_as_formal_parameter ();
-    }
+  for (tree_decl_elt* elt : *this)
+    elt->mark_as_formal_parameter ();
 }
 
 bool
@@ -65,10 +62,8 @@ tree_parameter_list::validate (in_or_out type)
 
   std::set<std::string> dict;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (tree_decl_elt* elt : *this)
     {
-      tree_decl_elt *elt = *p;
-
       tree_identifier *id = elt->ident ();
 
       if (id)
@@ -129,12 +124,10 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
 
   octave_idx_type k = 0;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (tree_decl_elt* elt : *this)
     {
       if (++count > nargout)
         break;
-
-      tree_decl_elt *elt = *p;
 
       if (! elt->is_variable ())
         {
@@ -222,12 +215,8 @@ tree_parameter_list::variable_names (void) const
 {
   std::list<std::string> retval;
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      tree_decl_elt *elt = *p;
-
-      retval.push_back (elt->name ());
-    }
+  for (tree_decl_elt* elt : *this)
+    retval.push_back (elt->name ());
 
   return retval;
 }
@@ -248,9 +237,8 @@ tree_parameter_list::convert_to_const_vector (int nargout,
 
       int i = 0;
 
-      for (iterator p = begin (); p != end (); p++)
+      for (tree_decl_elt* elt : *this)
         {
-          tree_decl_elt *elt = *p;
           if (elt->is_defined ())
             retval(i++) = elt->rvalue1 ();
           else
@@ -265,11 +253,8 @@ tree_parameter_list::convert_to_const_vector (int nargout,
 
       int i = 0;
 
-      for (iterator p = begin (); p != end (); p++)
-        {
-          tree_decl_elt *elt = *p;
-          retval(i++) = elt->rvalue1 ();
-        }
+      for (tree_decl_elt* elt : *this)
+        retval(i++) = elt->rvalue1 ();
 
       for (octave_idx_type j = 0; j < vlen; j++)
         retval(i++) = varargout(j);
@@ -283,10 +268,8 @@ tree_parameter_list::is_defined (void)
 {
   bool status = true;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (tree_decl_elt* elt : *this)
     {
-      tree_decl_elt *elt = *p;
-
       if (! elt->is_variable ())
         {
           status = false;
@@ -306,12 +289,8 @@ tree_parameter_list::dup (symbol_table::scope_id scope,
   if (takes_varargs ())
     new_list->mark_varargs ();
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_decl_elt *elt = *p;
-
-      new_list->append (elt->dup (scope, context));
-    }
+  for (const tree_decl_elt* elt : *this)
+    new_list->append (elt->dup (scope, context));
 
   return new_list;
 }
@@ -340,12 +319,8 @@ tree_return_list::dup (symbol_table::scope_id scope,
 {
   tree_return_list *new_list = new tree_return_list ();
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_index_expression *elt = *p;
-
-      new_list->append (elt->dup (scope, context));
-    }
+  for (const tree_index_expression* elt : *this)
+    new_list->append (elt->dup (scope, context));
 
   return new_list;
 }

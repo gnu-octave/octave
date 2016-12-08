@@ -86,12 +86,8 @@ tree_decl_init_list::dup (symbol_table::scope_id scope,
 {
   tree_decl_init_list *new_dil = new tree_decl_init_list ();
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_decl_elt *elt = *p;
-
-      new_dil->append (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_decl_elt* elt : *this)
+    new_dil->append (elt ? elt->dup (scope, context) : 0);
 
   return new_dil;
 }

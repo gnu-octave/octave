@@ -42,11 +42,9 @@ tree_array_list::~tree_array_list (void)
 bool
 tree_array_list::all_elements_are_constant (void) const
 {
-  for (const_iterator p = begin (); p != end (); p++)
+  for (const tree_argument_list* elt : *this)
     {
       octave_quit ();
-
-      tree_argument_list *elt = *p;
 
       if (! elt->all_elements_are_constant ())
         return false;
@@ -58,11 +56,9 @@ tree_array_list::all_elements_are_constant (void) const
 bool
 tree_array_list::has_magic_end (void) const
 {
-  for (const_iterator p = begin (); p != end (); p++)
+  for (const tree_argument_list* elt : *this)
     {
       octave_quit ();
-
-      tree_argument_list *elt = *p;
 
       if (elt && elt->has_magic_end ())
         return true;
@@ -82,12 +78,8 @@ tree_array_list::copy_base (const tree_array_list& array_list,
                             symbol_table::scope_id scope,
                             symbol_table::context_id context)
 {
-  for (const_iterator p = array_list.begin (); p != array_list.end (); p++)
-    {
-      const tree_argument_list *elt = *p;
-
-      append (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_argument_list* elt : array_list)
+    append (elt ? elt->dup (scope, context) : 0);
 
   copy_base (*this);
 }

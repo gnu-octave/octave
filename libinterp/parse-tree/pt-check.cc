@@ -439,10 +439,8 @@ tree_checker::visit_statement (tree_statement& stmt)
 void
 tree_checker::visit_statement_list (tree_statement_list& lst)
 {
-  for (tree_statement_list::iterator p = lst.begin (); p != lst.end (); p++)
+  for (tree_statement* elt : lst)
     {
-      tree_statement *elt = *p;
-
       if (elt)
         elt->accept (*this);
     }

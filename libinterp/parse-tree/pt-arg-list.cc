@@ -59,10 +59,8 @@ tree_argument_list::~tree_argument_list (void)
 bool
 tree_argument_list::has_magic_end (void) const
 {
-  for (const_iterator p = begin (); p != end (); p++)
+  for (const tree_expression* elt : *this)
     {
-      tree_expression *elt = *p;
-
       if (elt && elt->has_magic_end ())
         return true;
     }
@@ -88,10 +86,8 @@ tree_argument_list::append (const element_type& s)
 bool
 tree_argument_list::all_elements_are_constant (void) const
 {
-  for (const_iterator p = begin (); p != end (); p++)
+  for (const tree_expression* elt : *this)
     {
-      tree_expression *elt = *p;
-
       if (! elt->is_constant ())
         return false;
     }
@@ -104,14 +100,11 @@ tree_argument_list::is_valid_lvalue_list (void) const
 {
   bool retval = true;
 
-  for (const_iterator p = begin (); p != end (); p++)
+  for (const tree_expression* elt : *this)
     {
-      tree_expression *elt = *p;
-
-      // There is no need for a separate check for the magic "~" because
-      // it represented by tree_black_hole, and that is derived from
+      // There is no need for a separate check for the magic "~" because it
+      // is represented by tree_black_hole, and that is derived from
       // tree_identifier.
-
       if (! (elt->is_identifier () || elt->is_index_expression ()))
         {
           retval = false;
@@ -266,14 +259,8 @@ tree_argument_list::lvalue_list (void)
 {
   std::list<octave_lvalue> retval;
 
-  for (tree_argument_list::iterator p = begin ();
-       p != end ();
-       p++)
-    {
-      tree_expression *elt = *p;
-
-      retval.push_back (elt->lvalue ());
-    }
+  for (tree_expression* elt : *this)
+    retval.push_back (elt->lvalue ());
 
   return retval;
 }
@@ -287,12 +274,8 @@ tree_argument_list::get_arg_names (void) const
 
   int k = 0;
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      tree_expression *elt = *p;
-
-      retval(k++) = elt->str_print_code ();
-    }
+  for (tree_expression* elt : *this)
+    retval(k++) = elt->str_print_code ();
 
   return retval;
 }
@@ -302,10 +285,8 @@ tree_argument_list::variable_names (void) const
 {
   std::list<std::string> retval;
 
-  for (const_iterator p = begin (); p != end (); p++)
+  for (tree_expression* elt : *this)
     {
-      tree_expression *elt = *p;
-
       if (elt->is_identifier ())
         {
           tree_identifier *id = dynamic_cast<tree_identifier *> (elt);
@@ -333,12 +314,8 @@ tree_argument_list::dup (symbol_table::scope_id scope,
   new_list->list_includes_magic_end = list_includes_magic_end;
   new_list->simple_assign_lhs = simple_assign_lhs;
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_expression *elt = *p;
-
-      new_list->append (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_expression* elt : *this)
+    new_list->append (elt ? elt->dup (scope, context) : 0);
 
   return new_list;
 }

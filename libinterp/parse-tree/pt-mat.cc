@@ -352,13 +352,9 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
   bool first_elem = true;
 
-  for (tree_argument_list::const_iterator p = row.begin ();
-       p != row.end ();
-       p++)
+  for (tree_expression* elt : row)
     {
       octave_quit ();
-
-      tree_expression *elt = *p;
 
       octave_value tmp = elt->rvalue1 ();
 
@@ -390,11 +386,9 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
   first_elem = true;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (const octave_value& val : *this)
     {
       octave_quit ();
-
-      octave_value val = *p;
 
       dim_vector this_elt_dv = val.dims ();
 
@@ -420,18 +414,18 @@ tm_row_const::tm_row_const_rep::cellify (void)
 {
   bool elt_changed = false;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (auto& elt : *this)
     {
       octave_quit ();
 
-      if (! p->is_cell ())
+      if (! elt.is_cell ())
         {
           elt_changed = true;
 
-          if (p->is_empty ())
-            *p = Cell ();
+          if (elt.is_empty ())
+            elt = Cell ();
           else
-            *p = Cell (*p);
+            elt = Cell (elt);
         }
     }
 
@@ -439,11 +433,9 @@ tm_row_const::tm_row_const_rep::cellify (void)
     {
       bool first_elem = true;
 
-      for (iterator p = begin (); p != end (); p++)
+      for (const octave_value& val : *this)
         {
           octave_quit ();
-
-          octave_value val = *p;
 
           dim_vector this_elt_dv = val.dims ();
 
@@ -541,16 +533,12 @@ tm_const::init (const tree_matrix& tm)
   bool first_elem = true;
   bool first_elem_is_struct = false;
 
-  // Just eval and figure out if what we have is complex or all
-  // strings.  We can't check columns until we know that this is a
-  // numeric matrix -- collections of strings can have elements of
-  // different lengths.
-
-  for (tree_matrix::const_iterator p = tm.begin (); p != tm.end (); p++)
+  // Just eval and figure out if what we have is complex or all strings.
+  // We can't check columns until we know that this is a numeric matrix --
+  // collections of strings can have elements of different lengths.
+  for (const tree_argument_list* elt : tm)
     {
       octave_quit ();
-
-      tree_argument_list *elt = *p;
 
       tm_row_const tmp (*elt);
 
@@ -603,21 +591,19 @@ tm_const::init (const tree_matrix& tm)
 
   if (any_cell && ! any_class && ! first_elem_is_struct)
     {
-      for (iterator q = begin (); q != end (); q++)
+      for (auto& elt : *this)
         {
           octave_quit ();
 
-          q->cellify ();
+          elt.cellify ();
         }
     }
 
   first_elem = true;
 
-  for (iterator q = begin (); q != end (); q++)
+  for (tm_row_const& elt : *this)
     {
       octave_quit ();
-
-      tm_row_const elt = *q;
 
       octave_idx_type this_elt_nr = elt.rows ();
       octave_idx_type this_elt_nc = elt.cols ();
@@ -676,20 +662,17 @@ single_type_concat (Array<T>& result,
   octave_idx_type r = 0;
   octave_idx_type c = 0;
 
-  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+  for (tm_row_const& row : tmp)
     {
-      tm_row_const row = *p;
       // Skip empty arrays to allow looser rules.
       if (row.dims ().any_zero ())
         continue;
 
-      for (tm_row_const::iterator q = row.begin ();
-           q != row.end ();
-           q++)
+      for (auto& elt : row)
         {
           octave_quit ();
 
-          TYPE ra = octave_value_extract<TYPE> (*q);
+          TYPE ra = octave_value_extract<TYPE> (elt);
 
           // Skip empty arrays to allow looser rules.
 
@@ -730,8 +713,8 @@ single_type_concat (Array<T>& result,
           result.clear (dv);
           assert (static_cast<size_t> (result.numel ()) == row.length ());
           octave_idx_type i = 0;
-          for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
-            result(i++) = octave_value_extract<T> (*q);
+          for (const auto& elt : row)
+            result(i++) = octave_value_extract<T> (elt);
 
           return;
         }
@@ -740,12 +723,11 @@ single_type_concat (Array<T>& result,
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
+      for (const auto& elt : row)
         {
           octave_quit ();
 
-          array_list[i] = octave_value_extract<TYPE> (*q);
-          i++;
+          array_list[i++] = octave_value_extract<TYPE> (elt);
         }
 
       result = Array<T>::cat (-2, ncols, array_list);
@@ -775,18 +757,17 @@ single_type_concat (Sparse<T>& result,
   octave_idx_type nrows = tmp.length ();
   octave_idx_type j = 0;
   OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_row_list, nrows);
-  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+  for (tm_row_const& row : tmp)
     {
-      tm_row_const row = *p;
       octave_idx_type ncols = row.length ();
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
+      for (auto& elt : row)
         {
           octave_quit ();
 
-          sparse_list[i] = octave_value_extract<TYPE> (*q);
+          sparse_list[i] = octave_value_extract<TYPE> (elt);
           i++;
         }
 
@@ -813,18 +794,17 @@ single_type_concat (octave_map& result,
   octave_idx_type nrows = tmp.length ();
   octave_idx_type j = 0;
   OCTAVE_LOCAL_BUFFER (octave_map, map_row_list, nrows);
-  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+  for (tm_row_const& row : tmp)
     {
-      tm_row_const row = *p;
       octave_idx_type ncols = row.length ();
       octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (MAP, map_list, ncols);
 
-      for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
+      for (auto& elt : row)
         {
           octave_quit ();
 
-          map_list[i] = octave_value_extract<MAP> (*q);
+          map_list[i] = octave_value_extract<MAP> (elt);
           i++;
         }
 
@@ -871,11 +851,9 @@ do_class_concat (tm_const& tmc)
   octave_value_list rows (tmc.length (), octave_value ());
 
   octave_idx_type j = 0;
-  for (tm_const::iterator p = tmc.begin (); p != tmc.end (); p++)
+  for (tm_row_const& tmrc : tmc)
     {
       octave_quit ();
-
-      tm_row_const tmrc = *p;
 
       if (tmrc.length () == 1)
         rows(j++) = *(tmrc.begin ());
@@ -884,8 +862,8 @@ do_class_concat (tm_const& tmc)
           octave_value_list row (tmrc.length (), octave_value ());
 
           octave_idx_type i = 0;
-          for (tm_row_const::iterator q = tmrc.begin (); q != tmrc.end (); q++)
-            row(i++) = *q;
+          for (auto& elt : tmrc)
+            row(i++) = elt;
 
           rows(j++) = do_class_concat (row, "horzcat", 1);
         }
@@ -1036,18 +1014,15 @@ tree_matrix::rvalue1 (int)
             }
           else
             {
-              for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+              for (tm_row_const& row : tmp)
                 {
                   octave_quit ();
 
-                  tm_row_const row = *p;
-
-                  for (tm_row_const::iterator q = row.begin ();
-                       q != row.end (); q++)
+                  for (auto& elt : row)
                     {
                       octave_quit ();
 
-                      ctmp = *q;
+                      ctmp = elt;
 
                       if (! ctmp.all_zero_dims ())
                         goto found_non_empty;
@@ -1069,19 +1044,13 @@ tree_matrix::rvalue1 (int)
           octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
           Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
 
-          for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+          for (tm_row_const& row : tmp)
             {
               octave_quit ();
 
-              tm_row_const row = *p;
-
-              for (tm_row_const::iterator q = row.begin ();
-                   q != row.end ();
-                   q++)
+              for (auto& elt : row)
                 {
                   octave_quit ();
-
-                  octave_value elt = *q;
 
                   if (elt.is_empty ())
                     continue;

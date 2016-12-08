@@ -310,12 +310,8 @@ tree_statement_list::dup (symbol_table::scope_id scope,
 
   new_list->function_body = function_body;
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_statement *elt = *p;
-
-      new_list->append (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_statement* elt : *this)
+    new_list->append (elt ? elt->dup (scope, context) : 0);
 
   return new_list;
 }

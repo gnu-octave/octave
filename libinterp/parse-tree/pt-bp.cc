@@ -223,10 +223,8 @@ tree_breakpoint::visit_if_command (tree_if_command& cmd)
 void
 tree_breakpoint::visit_if_command_list (tree_if_command_list& lst)
 {
-  for (tree_if_command_list::iterator p = lst.begin (); p != lst.end (); p++)
+  for (tree_if_clause* t : lst)
     {
-      tree_if_clause *t = *p;
-
       if (t->line () >= line)
         take_action (*t);
 
@@ -352,15 +350,13 @@ tree_breakpoint::visit_statement (tree_statement& stmt)
 }
 
 // Called by
-//      tree_statement_list::set_breakpoint (int line, std::string& condition)
-// with  lst  consisting of a user function in which to set a breakpoint.
+//   tree_statement_list::set_breakpoint (int line, std::string& condition)
+// with <lst> consisting of a user function in which to set a breakpoint.
 void
 tree_breakpoint::visit_statement_list (tree_statement_list& lst)
 {
-  for (tree_statement_list::iterator p = lst.begin (); p != lst.end (); p++)
+  for (tree_statement* elt : lst)
     {
-      tree_statement *elt = *p;
-
       if (elt)
         {
           elt->accept (*this);
@@ -380,10 +376,8 @@ tree_breakpoint::visit_switch_case (tree_switch_case&)
 void
 tree_breakpoint::visit_switch_case_list (tree_switch_case_list& lst)
 {
-  for (tree_switch_case_list::iterator p = lst.begin (); p != lst.end (); p++)
+  for (tree_switch_case* t : lst)
     {
-      tree_switch_case *t = *p;
-
       if (t->line () >= line)
         take_action (*t);
 

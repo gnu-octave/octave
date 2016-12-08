@@ -2217,11 +2217,8 @@ namespace octave
   void
   lexical_feedback::mark_as_variables (const std::list<std::string>& lst)
   {
-    for (std::list<std::string>::const_iterator p = lst.begin ();
-         p != lst.end (); p++)
-      {
-        pending_local_variables.insert (*p);
-      }
+    for (const auto& var : lst)
+      pending_local_variables.insert (var);
   }
 }
 
@@ -2457,10 +2454,9 @@ namespace octave
   {
     bool retval = false;
 
-    for (std::list<bool>::const_iterator i = looking_at_object_index.begin ();
-         i != looking_at_object_index.end (); i++)
+    for (const bool is_obj_idx : looking_at_object_index)
       {
-        if (*i)
+        if (is_obj_idx)
           {
             retval = true;
             break;

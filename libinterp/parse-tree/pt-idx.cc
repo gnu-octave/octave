@@ -125,12 +125,8 @@ tree_index_expression::~tree_index_expression (void)
 bool
 tree_index_expression::has_magic_end (void) const
 {
-  for (std::list<tree_argument_list *>::const_iterator p = args.begin ();
-       p != args.end ();
-       p++)
+  for (const tree_argument_list* elt : args)
     {
-      tree_argument_list *elt = *p;
-
       if (elt && elt->has_magic_end ())
         return true;
     }
@@ -666,14 +662,8 @@ tree_index_expression::dup (symbol_table::scope_id scope,
 
   std::list<tree_argument_list *> new_args;
 
-  for (std::list<tree_argument_list *>::const_iterator p = args.begin ();
-       p != args.end ();
-       p++)
-    {
-      const tree_argument_list *elt = *p;
-
-      new_args.push_back (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_argument_list* elt : args)
+    new_args.push_back (elt ? elt->dup (scope, context) : 0);
 
   new_idx_expr->args = new_args;
 
@@ -683,14 +673,8 @@ tree_index_expression::dup (symbol_table::scope_id scope,
 
   std::list<tree_expression *> new_dyn_field;
 
-  for (std::list<tree_expression *>::const_iterator p = dyn_field.begin ();
-       p != dyn_field.end ();
-       p++)
-    {
-      const tree_expression *elt = *p;
-
-      new_dyn_field.push_back (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_expression* elt : dyn_field)
+    new_dyn_field.push_back (elt ? elt->dup (scope, context) : 0);
 
   new_idx_expr->dyn_field = new_dyn_field;
 

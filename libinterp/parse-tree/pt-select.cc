@@ -67,12 +67,8 @@ tree_if_command_list::dup (symbol_table::scope_id scope,
 {
   tree_if_command_list *new_icl = new tree_if_command_list ();
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_if_clause *elt = *p;
-
-      new_icl->append (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_if_clause* elt : *this)
+    new_icl->append (elt ? elt->dup (scope, context) : 0);
 
   return new_icl;
 }
@@ -169,12 +165,8 @@ tree_switch_case_list::dup (symbol_table::scope_id scope,
 {
   tree_switch_case_list *new_scl = new tree_switch_case_list ();
 
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      const tree_switch_case *elt = *p;
-
-      new_scl->append (elt ? elt->dup (scope, context) : 0);
-    }
+  for (const tree_switch_case* elt : *this)
+    new_scl->append (elt ? elt->dup (scope, context) : 0);
 
   return new_scl;
 }

@@ -3059,11 +3059,8 @@ namespace octave
       {
         std::list<std::string> names = lhs->variable_names ();
 
-        for (std::list<std::string>::const_iterator it = names.begin ();
-             it != names.end (); it++)
+        for (const auto& kw : names)
           {
-            std::string kw = *it;
-
             if (is_keyword (kw))
               {
                 delete lhs;
@@ -3761,10 +3758,8 @@ namespace octave
 
     tree_array_list *al = dynamic_cast<tree_array_list *> (e);
 
-    for (tree_array_list::iterator i = al->begin (); i != al->end (); i++)
+    for (tree_argument_list* row : *al)
       {
-        tree_argument_list *row = *i;
-
         if (row && row->has_magic_tilde ())
           {
             retval = false;
@@ -4309,9 +4304,8 @@ autoloaded_functions (void)
   string_vector names (autoload_map.size ());
 
   octave_idx_type i = 0;
-  typedef std::map<std::string, std::string>::const_iterator am_iter;
-  for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
-    names[i++] = p->first;
+  for (const auto& fcn_fname : autoload_map)
+    names[i++] = fcn_fname.first;
 
   return names;
 }
@@ -4321,10 +4315,9 @@ reverse_lookup_autoload (const std::string& nm)
 {
   string_vector names;
 
-  typedef std::map<std::string, std::string>::const_iterator am_iter;
-  for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
-    if (nm == p->second)
-      names.append (p->first);
+  for (const auto& fcn_fname : autoload_map)
+    if (nm == fcn_fname.second)
+      names.append (fcn_fname.first);
 
   return names;
 }
@@ -4466,11 +4459,10 @@ not loaded anymore during the current Octave session.
       Cell file_names (dim_vector (autoload_map.size (), 1));
 
       octave_idx_type i = 0;
-      typedef std::map<std::string, std::string>::const_iterator am_iter;
-      for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
+      for (const auto& fcn_fname : autoload_map)
         {
-          func_names(i) = p->first;
-          file_names(i) = p->second;
+          func_names(i) = fcn_fname.first;
+          file_names(i) = fcn_fname.second;
 
           i++;
         }

@@ -198,13 +198,8 @@ namespace octave
   {
     if (init_list)
       {
-        for (tree_decl_init_list::iterator p = init_list->begin ();
-             p != init_list->end (); p++)
-          {
-            tree_decl_elt *elt = *p;
-
-            fcn (*elt);
-          }
+        for (tree_decl_elt* elt : *init_list)
+          fcn (*elt);
       }
   }
 
@@ -512,10 +507,8 @@ namespace octave
   void
   tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
   {
-    for (tree_if_command_list::iterator p = lst.begin (); p != lst.end (); p++)
+    for (tree_if_clause* tic : lst)
       {
-        tree_if_clause *tic = *p;
-
         tree_expression *expr = tic->condition ();
 
         if (statement_context == function || statement_context == script)
@@ -793,11 +786,8 @@ namespace octave
 
     if (lst)
       {
-        for (tree_switch_case_list::iterator p = lst->begin ();
-             p != lst->end (); p++)
+        for (tree_switch_case* t : *lst)
           {
-            tree_switch_case *t = *p;
-
             if (t->is_default_case () || t->label_matches (val))
               {
                 tree_statement_list *stmt_lst = t->commands ();

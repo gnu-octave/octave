@@ -46,10 +46,8 @@ tree_cell::rvalue1 (int)
 
   octave_idx_type i = 0;
 
-  for (iterator p = begin (); p != end (); p++)
+  for (tree_argument_list* elt : *this)
     {
-      tree_argument_list *elt = *p;
-
       octave_value_list row = elt->convert_to_const_vector ();
 
       if (nr == 1)

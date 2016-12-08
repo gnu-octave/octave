@@ -38,11 +38,10 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
   octave_idx_type nel = 0;
 
   // Determine number.
-  for (std::list<octave_value_list>::const_iterator p = lst.begin ();
-       p != lst.end (); p++)
+  for (const auto& ovl : lst)
     {
       n++;
-      nel += p->length ();
+      nel += ovl.length ();
     }
 
   // Optimize single-element case
@@ -52,11 +51,10 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
     {
       data.resize (dim_vector (1, nel));
       octave_idx_type k = 0;
-      for (std::list<octave_value_list>::const_iterator p = lst.begin ();
-           p != lst.end (); p++)
+      for (const auto& ovl : lst)
         {
-          data.assign (idx_vector (k, k + p->length ()), p->data);
-          k += p->length ();
+          data.assign (idx_vector (k, k + ovl.length ()), ovl.data);
+          k += ovl.length ();
         }
       assert (k == nel);
     }

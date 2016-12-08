@@ -824,11 +824,11 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
     {
-      std::string key = map.key (p);
+      std::string key = map.key (it);
 
-      octave_value val = octave_value (map.contents (p));
+      octave_value val = octave_value (map.contents (it));
 
       retval += val.byte_size ();
     }
@@ -869,11 +869,9 @@ octave_class::find_parent_class (const std::string& parent_class_name)
     retval = this;
   else
     {
-      for (std::list<std::string>::iterator pit = parent_list.begin ();
-           pit != parent_list.end ();
-           pit++)
+      for (auto& par : parent_list)
         {
-          octave_map::const_iterator smap = map.seek (*pit);
+          octave_map::const_iterator smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -900,11 +898,9 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
     retval = this;
   else
     {
-      for (std::list<std::string>::iterator pit = parent_list.begin ();
-           pit != parent_list.end ();
-           pit++)
+      for (auto& par : parent_list)
         {
-          octave_map::iterator smap = map.seek (*pit);
+          octave_map::iterator smap = map.seek (par);
 
           Cell& tmp = map.contents (smap);
 
@@ -938,11 +934,9 @@ octave_class::is_instance_of (const std::string& cls_name) const
     retval = true;
   else
     {
-      for (std::list<std::string>::const_iterator pit = parent_list.begin ();
-           pit != parent_list.end ();
-           pit++)
+      for (auto& par : parent_list)
         {
-          octave_map::const_iterator smap = map.seek (*pit);
+          octave_map::const_iterator smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -1129,10 +1123,10 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
     {
-      std::string key = map.key (p);
-      Cell        val = map.contents (p);
+      std::string key = map.key (it);
+      Cell        val = map.contents (it);
       if (val(0).is_object ())
         {
           dbgstr = "blork";
@@ -1156,12 +1150,10 @@ octave_class::reconstruct_parents (void)
         {
           octave_class::exemplar_info exmplr = it->second;
           parent_list = exmplr.parents ();
-          for (std::list<std::string>::iterator pit = parent_list.begin ();
-               pit != parent_list.end ();
-               pit++)
+          for (auto& par : parent_list)
             {
-              dbgstr = *pit;
-              bool dbgbool = map.contains (*pit);
+              dbgstr = par;
+              bool dbgbool = map.contains (par);
               if (! dbgbool)
                 {
                   retval = false;

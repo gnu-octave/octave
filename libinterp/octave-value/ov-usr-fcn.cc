@@ -290,10 +290,9 @@ octave_user_function::maybe_relocate_end (void)
 
   if (! fcns.empty ())
     {
-      for (std::map<std::string, octave_value>::iterator p = fcns.begin ();
-           p != fcns.end (); p++)
+      for (auto& nm_fnval : fcns)
         {
-          octave_user_function *f = (p->second).user_function_value ();
+          octave_user_function *f = nm_fnval.second.user_function_value ();
 
           if (f)
             f->maybe_relocate_end_internal ();
@@ -745,9 +744,8 @@ octave_user_function::bind_automatic_vars
   if (lvalue_list)
     {
       octave_idx_type nbh = 0;
-      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-           p != lvalue_list->end (); p++)
-        nbh += p->is_black_hole ();
+      for (const auto& lval : *lvalue_list)
+        nbh += lval.is_black_hole ();
 
       if (nbh > 0)
         {
@@ -755,12 +753,11 @@ octave_user_function::bind_automatic_vars
           Matrix bh (1, nbh);
           octave_idx_type k = 0;
           octave_idx_type l = 0;
-          for (std::list<octave_lvalue>::const_iterator
-               p = lvalue_list->begin (); p != lvalue_list->end (); p++)
+          for (const auto& lval : *lvalue_list)
             {
-              if (p->is_black_hole ())
+              if (lval.is_black_hole ())
                 bh(l++) = k+1;
-              k += p->numel ();
+              k += lval.numel ();
             }
 
           symbol_table::assign (".ignored.", bh);

@@ -207,9 +207,8 @@ to_ov (const std::list<cdef_class>& class_list)
   Cell cls (class_list.size (), 1);
   int i = 0;
 
-  for (std::list<cdef_class>::const_iterator it = class_list.begin ();
-       it != class_list.end (); ++it, ++i)
-    cls(i) = to_ov (*it);
+  for (const auto& cdef_cls : class_list)
+    cls(i) = to_ov (cdef_cls);
 
   return octave_value (cls);
 }
@@ -672,12 +671,11 @@ make_class (const std::string& name,
       bool all_handle_compatible = true;
       bool has_handle_class = false;
 
-      for (std::list<cdef_class>::const_iterator it = super_list.begin ();
-           it != super_list.end (); ++it)
+      for (const auto& cl : super_list)
         {
           all_handle_compatible = all_handle_compatible
-                                  && it->get ("HandleCompatible").bool_value ();
-          has_handle_class = has_handle_class || it->is_handle_class ();
+                                  && cl.get ("HandleCompatible").bool_value ();
+          has_handle_class = has_handle_class || cl.is_handle_class ();
         }
 
       if (has_handle_class && ! all_handle_compatible)
@@ -1254,8 +1252,8 @@ cdef_object::map_value (void) const
 
       props = cls.get_property_map (cdef_class::property_all);
 
-      for (std::map<std::string, cdef_property>::iterator it = props.begin ();
-           it != props.end (); ++it)
+      // FIXME: Why not const here?
+      for (auto& prop_val : props)
         {
           if (is_array ())
             {
@@ -1264,16 +1262,16 @@ cdef_object::map_value (void) const
               Cell cvalue (a_obj.dims ());
 
               for (octave_idx_type i = 0; i < a_obj.numel (); i++)
-                cvalue (i) = it->second.get_value (a_obj(i), false);
+                cvalue (i) = prop_val.second.get_value (a_obj(i), false);
 
-              retval.setfield (it->first, cvalue);
+              retval.setfield (prop_val.first, cvalue);
             }
           else
             {
               Cell cvalue (dim_vector (1, 1),
-                           it->second.get_value (*this, false));
+                           prop_val.second.get_value (*this, false));
 
-              retval.setfield (it->first, cvalue);
+              retval.setfield (prop_val.first, cvalue);
             }
         }
     }
@@ -1792,9 +1790,8 @@ cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
            || it->second.empty ())
     return true;
 
-  for (std::list<cdef_class>::const_iterator lit = it->second.begin ();
-       lit != it->second.end (); ++lit)
-    if (! is_constructed_for (*lit))
+  for (const auto& cdef_cls : it->second)
+    if (! is_constructed_for (cdef_cls))
       return false;
 
   return true;
@@ -1878,9 +1875,8 @@ public:
 
   void visit_statement_list (tree_statement_list& t)
   {
-    for (tree_statement_list::const_iterator it = t.begin ();
-         it != t.end (); ++it)
-      (*it)->accept (*this);
+    for (const auto& stmt_p : t)
+      stmt_p->accept (*this);
   }
 
   void visit_statement (tree_statement& t)
@@ -2019,17 +2015,14 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
               std::list<cdef_class> explicit_ctor_list
                 = a.get_constructor_list ();
 
-              for (std::list<cdef_class>::const_iterator
-                   it = explicit_ctor_list.begin ();
-                   it != explicit_ctor_list.end ();
-                   ++it)
+              for (const auto& cdef_cls : explicit_ctor_list)
                 {
 #if DEBUG_TRACE
                   std::cerr << "explicit superclass constructor: "
-                            << it->get_name () << std::endl;
+                            << cdef_cls.get_name () << std::endl;
 #endif
 
-                  implicit_ctor_list.remove (*it);
+                  implicit_ctor_list.remove (cdef_cls);
                 }
             }
         }
@@ -2053,9 +2046,8 @@ cdef_class::cdef_class_rep::get_methods (void)
 
   int idx = 0;
 
-  for (std::map<std::string,cdef_method>::const_iterator
-       it = meths.begin (); it != meths.end (); ++it, ++idx)
-    c (idx, 0) = to_ov (it->second);
+  for (const auto& nm_mthd : meths)
+    c(idx++, 0) = to_ov (nm_mthd.second);
 
   return c;
 }
@@ -2152,9 +2144,8 @@ cdef_class::cdef_class_rep::get_properties (int mode)
 
   int idx = 0;
 
-  for (std::map<std::string,cdef_property>::const_iterator
-       it = props.begin (); it != props.end (); ++it, ++idx)
-    c (idx, 0) = to_ov (it->second);
+  for (const auto& pname_prop : props)
+    c(idx++, 0) = to_ov (pname_prop.second);
 
   return c;
 }
@@ -2216,16 +2207,15 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 {
   load_all_methods ();
 
-  for (method_const_iterator it = method_map.begin ();
-       it != method_map.end(); ++it)
+  for (const auto& cls_fnmap : method_map)
     {
-      if (! it->second.is_constructor ())
+      if (! cls_fnmap.second.is_constructor ())
         {
-          std::string nm = it->second.get_name ();
+          std::string nm = cls_fnmap.second.get_name ();
 
           if (! all)
             {
-              octave_value acc = it->second.get ("Access");
+              octave_value acc = cls_fnmap.second.get ("Access");
 
               if (! acc.is_string()
                   || acc.string_value () != "public")
@@ -2236,14 +2226,13 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
         }
     }
 
-  for (property_const_iterator it = property_map.begin ();
-       it != property_map.end (); ++it)
+  for (const auto& pname_prop : property_map)
     {
-      std::string nm = it->second.get_name ();
+      std::string nm = pname_prop.second.get_name ();
 
       if (! all)
         {
-          octave_value acc = it->second.get ("GetAccess");
+          octave_value acc = pname_prop.second.get ("GetAccess");
 
           if (! acc.is_string()
               || acc.string_value () != "public")
@@ -2401,21 +2390,19 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
   std::list<cdef_class> super_classes = lookup_classes (
                                           get ("SuperClasses").cell_value ());
 
-  for (std::list<cdef_class>::iterator it = super_classes.begin ();
-       it != super_classes.end (); ++it)
-    it->initialize_object (obj);
+  for (auto& cls : super_classes)
+    cls.initialize_object (obj);
 
-  for (property_const_iterator it = property_map.begin ();
-       it != property_map.end (); ++it)
+  for (const auto& pname_prop : property_map)
     {
-      if (! it->second.get ("Dependent").bool_value ())
+      if (! pname_prop.second.get ("Dependent").bool_value ())
         {
-          octave_value pvalue = it->second.get ("DefaultValue");
+          octave_value pvalue = pname_prop.second.get ("DefaultValue");
 
           if (pvalue.is_defined ())
-            obj.put (it->first, pvalue);
+            obj.put (pname_prop.first, pvalue);
           else
-            obj.put (it->first, octave_value (Matrix ()));
+            obj.put (pname_prop.first, octave_value (Matrix ()));
         }
     }
 
@@ -2429,10 +2416,9 @@ cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
 {
   octave_value_list empty_args;
 
-  for (std::list<cdef_class>::const_iterator it = implicit_ctor_list.begin ();
-       it != implicit_ctor_list.end (); ++it)
+  for (const auto& cls : implicit_ctor_list)
     {
-      cdef_class supcls = lookup_class (*it);
+      cdef_class supcls = lookup_class (cls);
 
       supcls.run_constructor (obj, empty_args);
     }
@@ -2601,11 +2587,9 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   if (t->superclass_list ())
     {
-      for (tree_classdef_superclass_list::iterator it =
-             t->superclass_list ()->begin ();
-           it != t->superclass_list ()->end (); ++it)
+      for (auto& scls : (*t->superclass_list ()))
         {
-          std::string sclass_name = (*it)->class_name ();
+          std::string sclass_name = (scls)->class_name ();
 
 #if DEBUG_TRACE
           std::cerr << "superclass: " << sclass_name << std::endl;
@@ -2637,17 +2621,14 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
   if (t->attribute_list ())
     {
-      for (tree_classdef_attribute_list::iterator
-           it = t->attribute_list ()->begin ();
-           it != t->attribute_list ()->end ();
-           ++it)
+      for (const auto& attr : (*t->attribute_list ()))
         {
-          std::string aname = (*it)->ident ()->name ();
-          octave_value avalue = compute_attribute_value (*it);
+          std::string aname = attr->ident ()->name ();
+          octave_value avalue = compute_attribute_value (attr);
 
 #if DEBUG_TRACE
           std::cerr << "class attribute: " << aname << " = "
-                    << attribute_value_to_string (*it, avalue) << std::endl;
+                    << attribute_value_to_string (attr, avalue) << std::endl;
 #endif
 
           retval.put (aname, avalue);
@@ -2668,8 +2649,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
       std::list<tree_classdef_methods_block *> mb_list = b->methods_list ();
 
-      for (tree_classdef_body::methods_list_iterator it = mb_list.begin ();
-           it != mb_list.end (); ++it)
+      for (auto& mb_p : mb_list)
         {
           std::map<std::string, octave_value> amap;
 
@@ -2679,18 +2659,16 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Method attributes
 
-          if ((*it)->attribute_list ())
+          if (mb_p->attribute_list ())
             {
-              for (tree_classdef_attribute_list::iterator ait =
-                     (*it)->attribute_list ()->begin ();
-                   ait != (*it)->attribute_list ()->end (); ++ait)
+              for (auto& attr_p : *mb_p->attribute_list ())
                 {
-                  std::string aname = (*ait)->ident ()->name ();
-                  octave_value avalue = compute_attribute_value (*ait);
+                  std::string aname = attr_p->ident ()->name ();
+                  octave_value avalue = compute_attribute_value (attr_p);
 
 #if DEBUG_TRACE
                   std::cerr << "method attribute: " << aname << " = "
-                            << attribute_value_to_string (*ait, avalue)
+                            << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
 #endif
 
@@ -2700,24 +2678,22 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Methods
 
-          if ((*it)->element_list ())
+          if (mb_p->element_list ())
             {
-              for (tree_classdef_methods_list::iterator mit =
-                     (*it)->element_list ()->begin ();
-                   mit != (*it)->element_list ()->end (); ++mit)
+              for (auto& mtd : *mb_p->element_list ())
                 {
-                  std::string mname = mit->function_value ()->name ();
+                  std::string mname = mtd.function_value ()->name ();
                   std::string mprefix = mname.substr (0, 4);
 
                   if (mprefix == "get.")
                     get_methods[mname.substr (4)] =
-                      make_fcn_handle (*mit, full_class_name + ">" + mname);
+                      make_fcn_handle (mtd, full_class_name + ">" + mname);
                   else if (mprefix == "set.")
                     set_methods[mname.substr (4)] =
-                      make_fcn_handle (*mit, full_class_name + ">" + mname);
+                      make_fcn_handle (mtd, full_class_name + ">" + mname);
                   else
                     {
-                      cdef_method meth = make_method (retval, mname, *mit);
+                      cdef_method meth = make_method (retval, mname, mtd);
 
 #if DEBUG_TRACE
                       std::cerr << (mname == class_name ? "constructor"
@@ -2725,9 +2701,8 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                                 << ": " << mname << std::endl;
 #endif
 
-                      for (std::map<std::string, octave_value>::iterator
-                           ait = amap.begin (); ait != amap.end (); ++ait)
-                        meth.put (ait->first, ait->second);
+                      for (auto& attrnm_val : amap)
+                        meth.put (attrnm_val.first, attrnm_val.second);
 
                       retval.install_method (meth);
                     }
@@ -2740,33 +2715,28 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           // Look for all external methods visible on octave path at the
           // time of loading of the class.
           //
-          // FIXME: This is an "extension" to Matlab behavior, which only
-          // looks in the @-folder containing the original classdef
-          // file.  However, this is easier to implement it that way at
-          // the moment.
+          // FIXME: This is an "extension" to Matlab behavior, which only looks
+          // in the @-folder containing the original classdef file.  However,
+          // this is easier to implement it that way at the moment.
 
           std::list<std::string> external_methods =
             load_path::methods (full_class_name);
 
-          for (std::list<std::string>::const_iterator
-               it = external_methods.begin ();
-               it != external_methods.end ();
-               ++it)
+          for (const auto& mtdnm : external_methods)
             {
               // FIXME: should we issue a warning if the method is already
               // defined in the classdef file?
 
-              if (*it != class_name
-                  && ! retval.find_method (*it, true).ok ())
+              if (mtdnm != class_name
+                  && ! retval.find_method (mtdnm, true).ok ())
                 {
                   // Create a dummy method that is used until the actual
                   // method is loaded.
-
                   octave_user_function *fcn = new octave_user_function ();
 
-                  fcn->stash_function_name (*it);
+                  fcn->stash_function_name (mtdnm);
 
-                  cdef_method meth = make_method (retval, *it,
+                  cdef_method meth = make_method (retval, mtdnm,
                                                   octave_value (fcn));
 
                   retval.install_method (meth);
@@ -2784,8 +2754,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
       std::list<tree_classdef_properties_block *> pb_list
         = b->properties_list ();
 
-      for (tree_classdef_body::properties_list_iterator it = pb_list.begin ();
-           it != pb_list.end (); ++it)
+      for (auto& pb_p : pb_list)
         {
           std::map<std::string, octave_value> amap;
 
@@ -2795,18 +2764,16 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Property attributes
 
-          if ((*it)->attribute_list ())
+          if (pb_p->attribute_list ())
             {
-              for (tree_classdef_attribute_list::iterator ait =
-                     (*it)->attribute_list ()->begin ();
-                   ait != (*it)->attribute_list ()->end (); ++ait)
+              for (auto& attr_p : *pb_p->attribute_list ())
                 {
-                  std::string aname = (*ait)->ident ()->name ();
-                  octave_value avalue = compute_attribute_value (*ait);
+                  std::string aname = attr_p->ident ()->name ();
+                  octave_value avalue = compute_attribute_value (attr_p);
 
 #if DEBUG_TRACE
                   std::cerr << "property attribute: " << aname << " = "
-                            << attribute_value_to_string (*ait, avalue)
+                            << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
 #endif
 
@@ -2822,24 +2789,22 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
           // Properties
 
-          if ((*it)->element_list ())
+          if (pb_p->element_list ())
             {
-              for (tree_classdef_property_list::iterator pit =
-                     (*it)->element_list ()->begin ();
-                   pit != (*it)->element_list ()->end (); ++pit)
+              for (auto& prop_p : *pb_p->element_list ())
                 {
-                  std::string prop_name = (*pit)->ident ()->name ();
+                  std::string prop_name = prop_p->ident ()->name ();
 
                   cdef_property prop = ::make_property (retval, prop_name);
 
 #if DEBUG_TRACE
-                  std::cerr << "property: " << (*pit)->ident ()->name ()
+                  std::cerr << "property: " << prop_p->ident ()->name ()
                             << std::endl;
 #endif
 
-                  if ((*pit)->expression ())
+                  if (prop_p->expression ())
                     {
-                      octave_value pvalue = (*pit)->expression ()->rvalue1 ();
+                      octave_value pvalue = prop_p->expression ()->rvalue1 ();
 
 #if DEBUG_TRACE
                       std::cerr << "property default: "
@@ -2851,12 +2816,11 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                     }
 
                   // Install property attributes.  This is done before assigning
-                  // the property accessors so we can do validationby using
+                  // the property accessors so we can do validation by using
                   // cdef_property methods.
 
-                  for (std::map<std::string, octave_value>::iterator ait = amap.begin ();
-                       ait != amap.end (); ++ait)
-                    prop.put (ait->first, ait->second);
+                  for (auto& attrnm_val : amap)
+                    prop.put (attrnm_val.first, attrnm_val.second);
 
                   // Install property access methods, if any.  Remove the
                   // accessor methods from the temporary storage map, so we can
@@ -3247,18 +3211,15 @@ package_getAllPackages (const octave_value_list& /* args */, int /* nargout */)
   toplevel_packages["meta"] = cdef_manager::find_package ("meta", false,
                                                           false);
 
-  for (std::list<std::string>::const_iterator it = names.begin ();
-       it != names.end (); ++it)
-    toplevel_packages[*it] = cdef_manager::find_package (*it, false, true);
+  for (const auto& nm : names)
+    toplevel_packages[nm] = cdef_manager::find_package (nm, false, true);
 
   Cell c (toplevel_packages.size (), 1);
 
   int i = 0;
 
-  for (std::map<std::string, cdef_package>::const_iterator it =
-         toplevel_packages.begin ();
-       it != toplevel_packages.end (); ++it)
-    c(i++,0) = to_ov (it->second);
+  for (const auto& nm_pkg : toplevel_packages)
+    c(i++,0) = to_ov (nm_pkg.second);
 
   return octave_value_list (octave_value (c));
 }

@@ -259,12 +259,11 @@ namespace octave
           vm_args.nOptions = java_opts.size ();
           vm_args.options = new JavaVMOption [vm_args.nOptions];
 
-          for (std::list<std::string>::const_iterator it = java_opts.begin ();
-               it != java_opts.end (); ++it)
+          for (const auto& opt : java_opts)
             {
               if (Vdebug_java)
-                std::cout << *it << std::endl;
-              vm_args.options[index++].optionString = strsave ((*it).c_str ());
+                std::cout << opt << std::endl;
+              vm_args.options[index++].optionString = strsave (opt.c_str ());
             }
 
           java_opts.clear ();

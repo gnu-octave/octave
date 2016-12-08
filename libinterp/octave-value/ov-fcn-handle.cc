@@ -366,10 +366,10 @@ octave_fcn_handle::save_ascii (std::ostream& os)
         {
           os << "# length: " << varlen << "\n";
 
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
+          for (const auto& symrec : vars)
             {
-              if (! save_text_data (os, p->varval (0), p->name (), false, 0))
+              if (! save_text_data (os, symrec.varval (0), symrec.name (),
+                                    false, 0))
                 return ! os.fail ();
             }
         }
@@ -538,10 +538,9 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       if (varlen > 0)
         {
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
+          for (const auto& symrec : vars)
             {
-              if (! save_binary_data (os, p->varval (0), p->name (),
+              if (! save_binary_data (os, symrec.varval (0), symrec.name (),
                                       "", 0, save_as_floats))
                 return ! os.fail ();
             }
@@ -833,10 +832,9 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
               return false;
             }
 
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
+          for (const auto& symrec : vars)
             {
-              if (! add_hdf5_data (data_hid, p->varval (0), p->name (),
+              if (! add_hdf5_data (data_hid, symrec.varval (0), symrec.name (),
                                    "", false, save_as_floats))
                 break;
             }
@@ -1601,10 +1599,9 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
       octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
       retval = fh;
 
-      for (std::list<std::string>::iterator iter = classes.begin ();
-           iter != classes.end (); iter++)
+      for (auto& cls : classes)
         {
-          std::string class_name = *iter;
+          std::string class_name = cls;
           octave_value fmeth = symbol_table::find_method (tnm, class_name);
 
           bool is_builtin = false;
@@ -1765,11 +1762,8 @@ particular output.
       if (varlen > 0)
         {
           octave_scalar_map ws;
-          for (std::list<symbol_table::symbol_record>::const_iterator
-               p = vars.begin (); p != vars.end (); p++)
-            {
-              ws.assign (p->name (), p->varval (0));
-            }
+          for (const auto& symrec : vars)
+            ws.assign (symrec.name (), symrec.varval (0));
 
           m.setfield ("workspace", ws);
         }
@@ -1968,10 +1962,9 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
           if (param_list)
             {
-              for (tree_parameter_list::iterator it = param_list->begin ();
-                   it != param_list->end (); ++it, ++npar)
+              for (auto& param_p : *param_list)
                 {
-                  tree_decl_elt *elt = *it;
+                  tree_decl_elt *elt = param_p;
                   tree_identifier *id = elt ? elt->ident () : 0;
                   if (id && ! id->is_black_hole ())
                     arginmap[id->name ()] = npar;

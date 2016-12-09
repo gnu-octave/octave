@@ -49,11 +49,7 @@ function display (obj)
   endif
 
   ## Only reason we got here is that there was no overloaded display function.
-  ## If obj is truly an instance of a class then there is nothing to be done.
-  ## However, if obj is really a built-in like 'double' then we can display it.
-  if (isobject (obj))
-    error ('display: not defined for class "%s"', class (obj));
-  endif
+  ## Rely on built-in functions to display whatever obj is.
 
   varname = inputname (1);
   if (! isempty (varname))
@@ -76,3 +72,4 @@ endfunction
 ## Test input validation
 %!error display ()
 %!error display (1,2)
+

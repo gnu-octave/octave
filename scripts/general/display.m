@@ -49,13 +49,30 @@ function display (obj)
   endif
 
   ## Only reason we got here is that there was no overloaded display function.
-  ## This may mean it is a built-in class.
-  str = disp (obj);
-  if (isempty (strfind (str, "<class ")))
-    disp (str);
-  else
+  ## If obj is truly an instance of a class then there is nothing to be done.
+  ## However, if obj is really a built-in like 'double' then we can display it.
+  if (isobject (obj))
     error ('display: not defined for class "%s"', class (obj));
+  endif
+
+  varname = inputname (1);
+  if (! isempty (varname))
+    evalin ("caller", varname);
+  else
+    disp (obj);
   endif
 
 endfunction
 
+
+%!test
+%! str = evalc ("x = 1.1; display (x)");
+%! assert (str, "x =  1.1000\n");
+
+%!test
+%! str = evalc ("display (1.1)");
+%! assert (str, " 1.1000\n"); 
+
+## Test input validation
+%!error display ()
+%!error display (1,2)

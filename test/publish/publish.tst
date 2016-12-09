@@ -16,20 +16,26 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## publish
+## test for publish
 
 %!test
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   set (0, "defaultfigurevisible", "off");
-%!   if (ispc ())
-%!     graphics_toolkit ("gnuplot");
+%!   if (ispc () || ! __have_feature__ ("OSMESA"))
+%!     try
+%!       graphics_toolkit ("gnuplot");
+%!     catch
+%!       ## The system doesn't support OSMESA or gnuplot for drawing hidden
+%!       ## figures.  Just return and have test marked as passing.
+%!       return;
+%!     end_try_catch
 %!   endif
-%!   cases = dir ("test_script*.m");
-%!   cases = strsplit (strrep ([cases.name], ".m", ".m\n"));
-%!   for i = 1:length(cases)-1
-%!     publish (cases{i});
+%!   set (0, "defaultfigurevisible", "off");
+%!
+%!   scripts = dir ("test_script*.m");
+%!   for fname = {scripts.name}
+%!     publish (fname{1});
 %!   endfor
 %!   confirm_recursive_rmdir (false, "local");
 %!   rmdir ("html", "s");
@@ -38,22 +44,29 @@
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-## grabcode
+## test for grabcode
 
 %!test
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   set (0, "defaultfigurevisible", "off");
-%!   if (ispc ())
-%!     graphics_toolkit ("gnuplot");
+%!   if (ispc () || ! __have_feature__ ("OSMESA"))
+%!     try
+%!       graphics_toolkit ("gnuplot");
+%!     catch
+%!       ## The system doesn't support OSMESA or gnuplot for drawing hidden
+%!       ## figures.  Just return and have test marked as passing.
+%!       return;
+%!     end_try_catch
 %!   endif
+%!   set (0, "defaultfigurevisible", "off");
+%!
 %!   publish ("test_script.m");
 %!   str1 = fileread ("test_script.m");
 %!   str2 = grabcode ("html/test_script.html");
 %!   confirm_recursive_rmdir (false, "local");
 %!   rmdir ("html", "s");
-%!   # Canonicalize strings
+%!   ## Canonicalize strings
 %!   str1 = strjoin (deblank (strsplit (str1, "\n")), "\n");
 %!   str2 = strjoin (deblank (strsplit (str2, "\n")), "\n");
 %!   assert (hash ("md5", str1), hash ("md5", str2));

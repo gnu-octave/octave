@@ -801,8 +801,7 @@ namespace octave
       {
         recover_from_exception ();
 
-        std::cerr << "error: unhandled execution exception -- eval failed"
-                  << std::endl;
+        parse_status = 1;
       }
 
     return parse_status;

@@ -1745,7 +1745,7 @@ properties_block
 property_list
                 : class_property
                   { $$ = new tree_classdef_property_list ($1); }
-                | property_list opt_sep class_property
+                | property_list sep class_property
                   {
                     YYUSE ($2);
 
@@ -1756,7 +1756,7 @@ property_list
 
 class_property  : identifier
                   { $$ = new tree_classdef_property ($1); }
-                | identifier '=' decl_param_init expression ';'
+                | identifier '=' decl_param_init expression
                   {
                     YYUSE ($2);
 

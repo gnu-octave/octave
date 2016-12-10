@@ -71,3 +71,7 @@
 %! obj = foo_method_changes_property_size (3);
 %! obj = obj.move_element_to_end (2);
 %! assert (obj.element, [1 3 2]);
+
+%!error <parse error> plist_t1
+%!assert (class (plist_t2), "plist_t2")
+%!assert (class (plist_t3), "plist_t3")

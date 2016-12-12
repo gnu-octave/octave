@@ -398,7 +398,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
 
           elseif (auto_domain && ! auto_domain_done)
             valid_domain = find_valid_domain (X, Y, Z);
-            domain_ok = isequal (domain, valid_domain);
+            domain_ok = all (domain == valid_domain);
             domain = valid_domain;
             auto_domain_done = true;  # ensures only 1 round of do loop done
           else
@@ -501,6 +501,12 @@ function domain = find_valid_domain (X, Y, Z)
       domain(4) = min (XX(end) + d/8, irhi + d);
     else
       domain(3:4) = [XX(1), XX(end)];
+    endif
+
+    ## Handle exceptional case of constant function
+    if (domain(3) == domain(4)) 
+      domain(3) -= 1;
+      domain(4) += 1;
     endif
 
   else

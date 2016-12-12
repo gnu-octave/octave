@@ -3857,63 +3857,59 @@ set_format_style (int argc, const string_vector& argv)
   format_string = format;
 }
 
-DEFUN (format, args, ,
+DEFUN (format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} format
 @deftypefnx {} {} format options
-Reset or specify the format of the output produced by @code{disp} and
-Octave's normal echoing mechanism.
+@deftypefnx {} {[@var{format}, @var{formatspacing}] =} format
+Reset or specify the format of the output produced by @code{disp} and Octave's
+normal echoing mechanism.
 
-This command only affects the display of numbers but not how they are stored
-or computed.  To change the internal representation from the default double
-use one of the conversion functions such as @code{single}, @code{uint8},
+This command only affects the display of numbers, but not how they are stored
+or computed.  To change the internal representation from the default double use
+one of the conversion functions such as @code{single}, @code{uint8},
 @code{int64}, etc.
 
 By default, Octave displays 5 significant digits in a human readable form
-(option @samp{short} paired with @samp{loose} format for matrices).
-If @code{format} is invoked without any options, this default format
-is restored.
+(option @samp{short} paired with @samp{loose} format for matrices).  If
+@code{format} is invoked without any options, this default format is restored.
 
 Valid formats for floating point numbers are listed in the following
 table.
 
 @table @code
 @item short
-Fixed point format with 5 significant figures in a field that is a maximum
-of 10 characters wide.  (default).
+Fixed point format with 5 significant figures in a field that is a maximum of
+10 characters wide.  (default).
 
-If Octave is unable to format a matrix so that columns line up on the
-decimal point and all numbers fit within the maximum field width then
-it switches to an exponential @samp{e} format.
+If Octave is unable to format a matrix so that columns line up on the decimal
+point and all numbers fit within the maximum field width then it switches to an
+exponential @samp{e} format.
 
 @item long
-Fixed point format with 15 significant figures in a field that is a maximum
-of 20 characters wide.
+Fixed point format with 15 significant figures in a field that is a maximum of
+20 characters wide.
 
-As with the @samp{short} format, Octave will switch to an exponential
-@samp{e} format if it is unable to format a matrix properly using the
-current format.
+As with the @samp{short} format, Octave will switch to an exponential @samp{e}
+format if it is unable to format a matrix properly using the current format.
 
 @item  short e
 @itemx long e
-Exponential format.  The number to be represented is split between a
-mantissa and an exponent (power of 10).  The mantissa has 5 significant
-digits in the short format and 15 digits in the long format.  For example,
-with the @samp{short e} format, @code{pi} is displayed as
-@code{3.1416e+00}.
+Exponential format.  The number to be represented is split between a mantissa
+and an exponent (power of 10).  The mantissa has 5 significant digits in the
+short format and 15 digits in the long format.  For example, with the
+@samp{short e} format, @code{pi} is displayed as @code{3.1416e+00}.
 
 @item  short E
 @itemx long E
-Identical to @samp{short e} or @samp{long e} but displays an uppercase
-@samp{E} to indicate the exponent.
-For example, with the @samp{long E} format, @code{pi} is displayed as
-@code{3.14159265358979E+00}.
+Identical to @samp{short e} or @samp{long e} but displays an uppercase @samp{E}
+to indicate the exponent.  For example, with the @samp{long E} format,
+@code{pi} is displayed as @code{3.14159265358979E+00}.
 
 @item  short g
 @itemx long g
-Optimally choose between fixed point and exponential format based on
-the magnitude of the number.
-For example, with the @samp{short g} format,
+Optimally choose between fixed point and exponential format based on the
+magnitude of the number.  For example, with the @samp{short g} format,
 @code{pi .^ [2; 4; 8; 16; 32]} is displayed as
 
 @example
@@ -3930,41 +3926,39 @@ ans =
 
 @item  short eng
 @itemx long eng
-Identical to @samp{short e} or @samp{long e} but displays the value
-using an engineering format, where the exponent is divisible by 3.  For
-example, with the @samp{short eng} format, @code{10 * pi} is displayed as
-@code{31.4159e+00}.
+Identical to @samp{short e} or @samp{long e} but displays the value using an
+engineering format, where the exponent is divisible by 3.  For example, with
+the @samp{short eng} format, @code{10 * pi} is displayed as @code{31.4159e+00}.
 
 @item  long G
 @itemx short G
-Identical to @samp{short g} or @samp{long g} but displays an uppercase
-@samp{E} to indicate the exponent.
+Identical to @samp{short g} or @samp{long g} but displays an uppercase @samp{E}
+to indicate the exponent.
 
 @item  free
 @itemx none
-Print output in free format, without trying to line up columns of
-matrices on the decimal point.  This also causes complex numbers to be
-formatted as numeric pairs like this @samp{(0.60419, 0.60709)} instead
-of like this @samp{0.60419 + 0.60709i}.
+Print output in free format, without trying to line up columns of matrices on
+the decimal point.  This also causes complex numbers to be formatted as numeric
+pairs like this @samp{(0.60419, 0.60709)} instead of like this
+@samp{0.60419 + 0.60709i}.
 @end table
 
-The following formats affect all numeric output (floating point and
-integer types).
+The following formats affect all numeric output (floating point and integer
+types).
 
 @table @code
 @item  "+"
 @itemx "+" @var{chars}
 @itemx plus
 @itemx plus @var{chars}
-Print a @samp{+} symbol for matrix elements greater than zero, a
-@samp{-} symbol for elements less than zero and a space for zero matrix
-elements.  This format can be very useful for examining the structure
-of a large sparse matrix.
+Print a @samp{+} symbol for matrix elements greater than zero, a @samp{-}
+symbol for elements less than zero and a space for zero matrix elements.  This
+format can be very useful for examining the structure of a large sparse matrix.
 
-The optional argument @var{chars} specifies a list of 3 characters to use
-for printing values greater than zero, less than zero and equal to zero.
-For example, with the @samp{"+" "+-."} format,
-@code{[1, 0, -1; -1, 0, 1]} is displayed as
+The optional argument @var{chars} specifies a list of 3 characters to use for
+printing values greater than zero, less than zero and equal to zero.  For
+example, with the @samp{"+" "+-."} format, @code{[1, 0, -1; -1, 0, 1]} is
+displayed as
 
 @example
 @group
@@ -3976,23 +3970,21 @@ ans =
 @end example
 
 @item bank
-Print in a fixed format with two digits to the right of the decimal
-point.
+Print in a fixed format with two digits to the right of the decimal point.
 
 @item native-hex
-Print the hexadecimal representation of numbers as they are stored in
-memory.  For example, on a workstation which stores 8 byte real values
-in IEEE format with the least significant byte first, the value of
-@code{pi} when printed in @code{native-hex} format is
-@code{400921fb54442d18}.
+Print the hexadecimal representation of numbers as they are stored in memory.
+For example, on a workstation which stores 8 byte real values in IEEE format
+with the least significant byte first, the value of @code{pi} when printed in
+@code{native-hex} format is @code{400921fb54442d18}.
 
 @item hex
-The same as @code{native-hex}, but always print the most significant
-byte first.
+The same as @code{native-hex}, but always print the most significant byte
+first.
 
 @item native-bit
-Print the bit representation of numbers as stored in memory.
-For example, the value of @code{pi} is
+Print the bit representation of numbers as stored in memory.  For example, the
+value of @code{pi} is
 
 @example
 @group
@@ -4001,62 +3993,82 @@ For example, the value of @code{pi} is
 @end group
 @end example
 
-(shown here in two 32 bit sections for typesetting purposes) when
-printed in native-bit format on a workstation which stores 8 byte real
-values in IEEE format with the least significant byte first.
+(shown here in two 32 bit sections for typesetting purposes) when printed in
+native-bit format on a workstation which stores 8 byte real values in IEEE
+format with the least significant byte first.
 
 @item bit
-The same as @code{native-bit}, but always print the most significant
-bits first.
+The same as @code{native-bit}, but always print the most significant bits
+first.
 
 @item rat
-Print a rational approximation, i.e., values are approximated
-as the ratio of small integers.
-For example, with the @samp{rat} format,
-@code{pi} is displayed as @code{355/113}.
+Print a rational approximation, i.e., values are approximated as the ratio of
+small integers.  For example, with the @samp{rat} format, @code{pi} is
+displayed as @code{355/113}.
 @end table
 
 The following two options affect the display of all matrices.
 
 @table @code
 @item compact
-Remove blank lines around column number labels and between
-matrices producing more compact output with more data per page.
+Remove blank lines around column number labels and between matrices producing
+more compact output with more data per page.
 
 @item loose
-Insert blank lines above and below column number labels and between matrices
-to produce a more readable output with less data per page.  (default).
+Insert blank lines above and below column number labels and between matrices to
+produce a more readable output with less data per page.  (default).
 @end table
+
+If called with one or two output arguments, and no inputs, return the current
+format and format spacing.
+
 @seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, print_empty_dimensions, rats}
 @end deftypefn */)
 {
-  int argc = args.length () + 1;
+  octave_value_list retval (std::min (nargout, 2));
 
-  string_vector argv = args.make_argv ("format");
+  if (nargout == 0)
+    {
+      int argc = args.length () + 1;
 
-  set_format_style (argc, argv);
+      string_vector argv = args.make_argv ("format");
 
-  return ovl ();
+      set_format_style (argc, argv);
+    }
+  else
+    {
+      if (nargout >= 2)
+        retval(1) = Vcompact_format ? "compact" : "loose";
+
+      retval(0) = format_string;
+    }
+
+  return retval;
 }
 
-DEFUN (__compactformat__, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} __compactformat__ ()
-@deftypefnx {} {} __compactformat__ (@var{TRUE|FALSE})
-Undocumented internal function
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (compact_format);
-}
-
-DEFUN (__formatstring__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{val} =} __formatstring__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (format_string);
-}
+/*
+%!test
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   ## Test one of the formats
+%!   format long;
+%!   str = disp (pi);
+%!   assert (str, " 3.14159265358979\n");
+%!   new_fmt = format ();
+%!   assert (new_fmt, "long");
+%!   ## Test resetting format
+%!   format compact;
+%!   [~, new_spacing] = format ();
+%!   assert (new_spacing, "compact");
+%!   format;
+%!   [new_fmt, new_spacing] = format ();
+%!   assert (new_fmt, "short");
+%!   assert (new_spacing, "loose");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
+*/
 
 DEFUN (fixed_point_format, args, nargout,
        doc: /* -*- texinfo -*-

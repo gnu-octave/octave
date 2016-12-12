@@ -1191,7 +1191,7 @@ if test "$cross_compiling" = yes; then
   BUILD_CC="gcc"
   BUILD_CFLAGS="-O2 -g"
   BUILD_CXX="g++"
-  BUILD_CXXFLAGS="-O2 -g"
+  BUILD_CXXFLAGS="-O2 -g -std=c++11"
   BUILD_LDFLAGS=""
   BUILD_EXEEXT=""
 else

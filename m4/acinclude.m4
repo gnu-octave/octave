@@ -1669,12 +1669,13 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
           #include <assert.h>
           #include <stdint.h>
-          ]], [[
           #if defined (OCTAVE_ENABLE_64)
             typedef int64_t octave_idx_type;
           #else
             typedef int octave_idx_type;
           #endif
+          void F77_FUNC(foo,FOO) (octave_idx_type*, octave_idx_type**, octave_idx_type**);
+          ]], [[
           octave_idx_type n = 2;
           octave_idx_type in[2];
           octave_idx_type out[2];

@@ -483,11 +483,17 @@ raw_help (const std::string& nm, bool& symbol_found)
   if (! found)
     found = raw_help_from_file (nm, h, f, symbol_found);
 
-  bool external_doc = h.compare (0, 13, "external-doc:") == 0;
+  bool external_doc = h.compare (0, 12, "external-doc") == 0;
 
   if (! found || external_doc)
-    raw_help_from_docstrings_file (external_doc ? h.substr (13) : nm,
-                                   h, symbol_found);
+    {
+      std::string tmp_nm = nm;
+
+      if (external_doc && h.length () > 12 && h[12] == ':')
+        tmp_nm = h.substr (13);
+
+      raw_help_from_docstrings_file (tmp_nm, h, symbol_found);
+    }
 
   return h;
 }

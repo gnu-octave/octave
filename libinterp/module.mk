@@ -258,14 +258,14 @@ else
   mkbuiltins_dld_opt = --disable-dl
 endif
 
-libinterp/builtins.cc: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.sh | libinterp/$(octave_dirstamp)
+libinterp/builtins.cc: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.pl | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/build-aux/mk-builtins.sh --source $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
+	$(PERL) $(srcdir)/build-aux/mk-builtins.pl --source $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 
-libinterp/builtin-defun-decls.h: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.sh | libinterp/$(octave_dirstamp)
+libinterp/builtin-defun-decls.h: $(LIBINTERP_DEFUN_FILES) build-aux/mk-builtins.pl | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/build-aux/mk-builtins.sh --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
+	$(PERL) $(srcdir)/build-aux/mk-builtins.pl --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING

@@ -2796,7 +2796,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+1"/>
         <source>Unable to save settings.  Missing settings file or unknown directory.</source>
-        <translation>Die Einstellungen können nicht gespeichert werden.  Fehlende Datei oder unbekanntes Verzeichnis.</translation>
+        <translation>Die Einstellungen können nicht gespeichert werden. Fehlende Datei oder unbekanntes Verzeichnis.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2882,7 +2882,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
 &lt;head/&gt;&lt;body&gt;
-&lt;p&gt;Erlaube Octave beim Programmstart eine Verbindung zur Octave Webseite herzustellen um aktuelle Neuigkeiten und Informationen über Octave anzuzeigen.&lt;/p&gt;
+&lt;p&gt;Erlaube Octave beim Programmstart eine Verbindung zur Octave Webseite herzustellen, um aktuelle Neuigkeiten und Informationen über Octave anzuzeigen.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>

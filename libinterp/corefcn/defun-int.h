@@ -57,6 +57,9 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
 
+extern OCTINTERP_API void
+install_builtin_dispatch (const std::string& name, const std::string& klass);
+
 // Gets the shlib of the currently executing DLD function, if any.
 extern OCTINTERP_API octave::dynamic_library
 get_current_shlib (void);

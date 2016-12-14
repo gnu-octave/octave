@@ -66,6 +66,7 @@ svd_driver (void)
 }
 
 DEFUN (svd, args, nargout,
+       classes: double single
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} svd (@var{A})
 @deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})

@@ -178,28 +178,30 @@ $fcn (void)
     $name = "";
     $alias = "";
 
-    while (<$fh>)
+    %dispatch_map = ();
+
+    while ($line = <$fh>)
     {
-      if (/^ *DEFUN *\( *([^ ,]*) *,.*$/)
+      if ($line =~ /^ *DEFUN *\( *([^ ,]*) *,.*$/)
       {
         $type = "fun";
         $fname = "F$1";
         $name = "$1";
       }
-      elsif (/^ *DEFUNX *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
+      elsif ($line =~ /^ *DEFUNX *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
       {
         $type = "fun";
         $fname = "$2";
         $name = "$1";
       }
-      elsif (/^ *DEFCONSTFUN *\( *([^ ,]*) *,.*$/)
+      elsif ($line =~ /^ *DEFCONSTFUN *\( *([^ ,]*) *,.*$/)
       {
         $type = "fun";
         $fname = "F$1";
         $name = "$1";
         $const = 1;
       }
-      elsif (/^ *DEFALIAS *\( *([^ ,]*) *, *([^ )]*) *\).*$/)
+      elsif ($line =~ /^ *DEFALIAS *\( *([^ ,]*) *, *([^ )]*) *\).*$/)
       {
         $type = "alias";
         $alias = "$1";
@@ -207,13 +209,13 @@ $fcn (void)
       }
       elsif ($defun_dld_are_built_in)
       {
-        if (/^ *DEFUN_DLD *\( *([^ ,]*) *,.*$/)
+        if ($line =~ /^ *DEFUN_DLD *\( *([^ ,]*) *,.*$/)
         {
           $type = "fun";
           $fname = "F$1";
           $name = "$1";
         }
-        elsif (/^ *DEFUNX_DLD *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
+        elsif ($line =~ /^ *DEFUNX_DLD *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
         {
           $type = "fun";
           $fname = "$2";
@@ -223,6 +225,15 @@ $fcn (void)
 
       if ($type eq "fun")
       {
+        if (($line = <$fh>) =~ /^ *classes:/)
+        {
+          $line =~ s/\s*classes:\s*//;
+          $line =~ s/\s*$//;
+          @classes = split (/\s+/, $line);
+
+          $dispatch_map{$name} = [@classes];
+        }
+
         ## We use the name appended to the "external-doc" tag to find
         ## the docstring for aliases to this function.
 
@@ -244,11 +255,34 @@ $fcn (void)
       {
         print "  alias_builtin (\"$alias\", \"$name\");\n";
 
+        ## Preserve dispatch info (if any) that we have for the
+        ## original function.
+
+        @classes = @{$dispatch_map{$name}};
+
+        if (@classes)
+        {
+          $dispatch_map{$alias} = [@classes];
+        }
+
         $type = "";
         $name = "";
         $alias = "";
       }
     }
+
+    foreach $fcn (keys %dispatch_map)
+    {
+      print "\n";
+
+      @classes =  @{$dispatch_map{$fcn}};
+
+      foreach $class (@classes)
+      {
+        print "  install_builtin_dispatch (\"$fcn\", \"$class\");\n";
+      }
+    }
+
     print "}\n";
   }
 

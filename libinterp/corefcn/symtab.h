@@ -853,6 +853,21 @@ public:
         built_in_function = f;
       }
 
+      void install_built_in_dispatch (const std::string& klass)
+      {
+        if (built_in_function.is_defined ())
+          {
+            if (class_methods.find (klass) != class_methods.end ())
+              warning ("install_built_in_dispatch: '%s' already defined for class '%s'",
+                       name.c_str (), klass.c_str ());
+            else
+              class_methods[klass] = built_in_function;
+          }
+        else
+          error ("install_built_in_dispatch: '%s' is not a built-in function",
+                 name.c_str ());
+      }
+
       template <typename T>
       void
       clear_map (std::map<T, octave_value>& map, bool force = false)
@@ -1078,6 +1093,11 @@ public:
     void install_built_in_function (const octave_value& f)
     {
       rep->install_built_in_function (f);
+    }
+
+    void install_built_in_dispatch (const std::string& klass)
+    {
+      rep->install_built_in_dispatch (klass);
     }
 
     void clear (bool force = false) { rep->clear (force); }
@@ -1789,6 +1809,21 @@ public:
       panic ("alias: '%s' is undefined", name.c_str ());
   }
 
+  static void install_built_in_dispatch (const std::string& name,
+                                         const std::string& klass)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_built_in_dispatch (klass);
+      }
+    else
+      error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
+  }
+  
   static void push_context (scope_id scope = xcurrent_scope)
   {
     if (scope == xglobal_scope || scope == xtop_scope)

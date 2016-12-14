@@ -124,6 +124,12 @@ alias_builtin (const std::string& alias, const std::string& name)
   symbol_table::alias_built_in_function (alias, name);
 }
 
+void
+install_builtin_dispatch (const std::string& name, const std::string& klass)
+{
+  symbol_table::install_built_in_dispatch (name, klass);
+}
+
 octave::dynamic_library
 get_current_shlib (void)
 {

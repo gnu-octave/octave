@@ -46,15 +46,23 @@ FILE: foreach $fname (@ARGV)
   @func_list = ();
   @docstr = ();
 
-  LINE: while (<SRC_FH>)
+  LINE: while (my $line = <SRC_FH>)
   {
-    if (/^\s*DEF(?:CONSTFUN|UN|UN_DLD|UNX|UNX_DLD)\s*\(/)
+    if ($line =~ /^\s*DEF(?:CONSTFUN|UN|UN_DLD|UNX|UNX_DLD)\s*\(/)
     {
-      ($func) = /\("?(\w+)"?,/;
+      ($func) = $line =~ /\("?(\w+)"?,/;
       unless ($func) { die "Unable to parse $src_fname at line $.\n" }
       push (@func_list, $func);
 
-      if (<SRC_FH> =~ m#\s*doc:\s+\Q/*\E\s+\Q-*- texinfo -*-\E\s*$#)
+      ## Skip optional line that declares list of classes that this
+      ## function accepts.
+      $line = <SRC_FH>;
+      if ($line =~ m#\s*classes:#)
+      {
+        $line = <SRC_FH>;
+      }
+
+      if ($line =~ m#\s*doc:\s+\Q/*\E\s+\Q-*- texinfo -*-\E\s*$#)
       {
         $str = "-*- texinfo -*-\n";
         $reading_docstring = 1;
@@ -67,15 +75,15 @@ FILE: foreach $fname (@ARGV)
     }
     elsif ($reading_docstring)
     {
-      if (/^.*\s+\*\/\s*\)\s*$/)
+      if ($line =~ /^.*\s+\*\/\s*\)\s*$/)
       {
-        s#\s+\*/\s*\)\s*$##;
-        push (@docstr, $str . $_);
+        $line =~ s#\s+\*/\s*\)\s*$##;
+        push (@docstr, $str . $line);
         $reading_docstring = 0;
       }
       else
       {
-        $str .= $_;
+        $str .= $line;
       }
     }
   }

@@ -177,10 +177,9 @@ namespace octave
                  N_Vector& yyp, N_Vector& rr);
 
     static int
-    jacdense (long int Neq, realtype t,  realtype cj,
-              N_Vector yy, N_Vector yyp, N_Vector resvec,
-              DlsMat JJ, void *user_data, N_Vector tempv1,
-              N_Vector tempv2, N_Vector tempv3)
+    jacdense (long int Neq, realtype t,  realtype cj, N_Vector yy,
+              N_Vector yyp, N_Vector, DlsMat JJ, void *user_data,
+              N_Vector, N_Vector, N_Vector)
     {
       IDA *self =
         static_cast <IDA *> (user_data);
@@ -195,8 +194,8 @@ namespace octave
 
     static int
     jacsparse (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
-               N_Vector r, SlsMat Jac, void *user_data, N_Vector tmp1,
-               N_Vector tmp2, N_Vector tmp3)
+               N_Vector, SlsMat Jac, void *user_data, N_Vector,
+               N_Vector, N_Vector)
     {
       IDA *self =
         static_cast <IDA *> (user_data);

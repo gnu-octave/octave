@@ -102,7 +102,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
   ## Initialize the EventFcn
   if (! isempty (options.Events))
-    ode_event_handler (options.Events, tspan(end), x,
+    ode_event_handler (options.Events, tspan(1), x,
                        "init", options.funarguments{:});
   endif
 

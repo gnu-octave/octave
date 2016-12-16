@@ -1240,9 +1240,9 @@ namespace octave
 #endif
 
 
-DEFUN_DLD (__ode15__, args, nargout, doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{t}, @var{y} =} __ode15__ (@var{fun}, @
-@var{tspan}, @var{y0}, @var{yp0}, @var{options})
+DEFUN_DLD (__ode15__, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{t}, @var{y} =} __ode15__ (@var{fun}, @var{tspan}, @var{y0}, @var{yp0}, @var{options})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -1252,7 +1252,7 @@ Undocumented internal function.
   // Check number of parameters
   int nargin = args.length ();
 
-  if (nargin != 5 || nargout != 5)
+  if (nargin != 5)
     print_usage ();
 
   // Check odefun
@@ -1309,7 +1309,6 @@ Undocumented internal function.
 #else
 
   octave_unused_parameter (args);
-  octave_unused_parameter (nargout);
 
   err_disabled_feature ("__ode15__", "sundials_ida, sundials_nvecserial");
 

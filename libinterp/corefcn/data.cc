@@ -1812,11 +1812,21 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
 
       if (any_cell_p && ! any_class_p && ! first_elem_is_struct)
         {
+          int j = 0;
           for (int i = 0; i < n_args; i++)
             {
-              if (! args(i).is_cell ())
-                args(i) = Cell (args(i));
+              if (args(i).is_cell ())
+                args(j++) = args(i);
+              else
+                {
+                  if (args(i).is_empty ())
+                    continue;  // Delete empty non-cell arg
+                  else
+                    args(j++) = Cell (args(i));
+                }
             }
+          n_args = j;
+          args.resize (n_args);
         }
 
       if (any_class_p)
@@ -2411,6 +2421,12 @@ cat (4, ones (2, 2), zeros (2, 2))
 
 %!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]))
 %!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)))
+
+%!test <49759>
+%! A = [];
+%! B = {1; 2};
+%! assert (cat (1, A, B), {1; 2});
+%! assert (cat (2, A, B), {1; 2});
 
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4])
 %!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4])

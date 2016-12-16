@@ -889,7 +889,7 @@ namespace octave
 
     try
       {
-        tmp = ida_fc->do_multi_index_op (1, ovl (xdot, x, t));
+        tmp = ida_fc->do_multi_index_op (1, ovl (t, x, xdot));
       }
     catch (octave::execution_exception& e)
       {

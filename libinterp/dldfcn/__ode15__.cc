@@ -24,34 +24,29 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#if defined (HAVE_IDA_IDA_H)
-#include <ida/ida.h>
-#include <ida/ida_dense.h>
-#include <ida/ida_klu.h>
-#include <sundials/sundials_sparse.h>
-#endif
-
-#if defined (HAVE_NVECTOR_NVECTOR_SERIAL_H)
-#include <nvector/nvector_serial.h>
-#endif
-
-
-#include <oct.h>
-#include <parse.h>
-#include <time.h>
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 
 #include "defun-dld.h"
-#include "iostream"
 #include "error.h"
 #include "ov.h"
 #include "ov-struct.h"
+#include "parse.h"
 #include "errwarn.h"
 
-#include "algorithm"
-#include "iterator"
-
-
 #if defined (HAVE_SUNDIALS)
+
+#  if defined (HAVE_IDA_IDA_H)
+#    include <ida/ida.h>
+#    include <ida/ida_dense.h>
+#    include <ida/ida_klu.h>
+#    include <sundials/sundials_sparse.h>
+#  endif
+
+#  if defined (HAVE_NVECTOR_NVECTOR_SERIAL_H)
+#    include <nvector/nvector_serial.h>
+#  endif
 
 namespace octave
 {
@@ -1314,6 +1309,8 @@ Undocumented internal function.
 #else
 
   octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
   err_disabled_feature ("__ode15__", "sundials_ida, sundials_nvecserial");
 
 #endif

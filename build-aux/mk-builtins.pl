@@ -258,11 +258,14 @@ $fcn (void)
         ## Preserve dispatch info (if any) that we have for the
         ## original function.
 
-        @classes = @{$dispatch_map{$name}};
-
-        if (@classes)
+        if (exists $dispatch_map{$name})
         {
-          $dispatch_map{$alias} = [@classes];
+          @classes = @{$dispatch_map{$name}};
+
+          if (@classes)
+          {
+            $dispatch_map{$alias} = [@classes];
+          }
         }
 
         $type = "";

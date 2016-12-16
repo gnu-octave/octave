@@ -22,7 +22,7 @@
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode15i (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode15i (@dots{})
 ##
-## Solve a set of full-implicit Ordinary Differential Equations and 
+## Solve a set of full-implicit Ordinary Differential Equations and
 ## Differential Algebraic Equations (DAEs) of index 1, with the variable-step,
 ## variable order BDF (Backward Differentiation Formula) method, which
 ## ranges from order 1 to 5.
@@ -31,7 +31,7 @@
 ## name of the function that defines the ODE: @code{f(@var{t},@var{y},@var{yp})}.
 ## The function must accept three inputs where the first is time @var{t}, the
 ## second is a column vector of unknowns @var{y} and the third is a column
-## vector of unknowns @var{yp}. 
+## vector of unknowns @var{yp}.
 ##
 ## @var{trange} specifies the time interval over which the ODE will be
 ## evaluated.  Typically, it is a two-element vector specifying the initial and
@@ -92,14 +92,14 @@
 
 function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
-  solver = 'ode15i';  
- 
+  solver = 'ode15i';
+
   if (nargin < 4)
     print_usage ();
   endif
-  
+
   n = numel (y0);
-  
+
   if (nargin > 4)
    options = varargin{1};
   else
@@ -108,7 +108,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
   ## Check fun, trange, y0, yp0
   fun = check_default_input (fun, trange, solver, y0, yp0);
-  
+
   if (! isempty (options.Jacobian))
     if (ischar (options.Jacobian))
       try
@@ -157,7 +157,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   persistent ignorefields = {"NonNegative", "Mass", ...
                              "MStateDependence", "MvPattern", ...
                              "MassSingular", "InitialSlope", "BDF"};
-  
+
   defaults   = rmfield (defaults, ignorefields);
   classes    = rmfield (classes, ignorefields);
   attributes = rmfield (attributes, ignorefields);
@@ -177,7 +177,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
   if (! isempty (options.Jacobian))
     options.havejac = true;
-    if (iscell (options.Jacobian)) 
+    if (iscell (options.Jacobian))
       if (numel (options.Jacobian) == 2)
         if (issparse (options.Jacobian{1}) && issparse (options.Jacobian{2})) ## Jac is sparse cell
           options.havejacsparse = true;
@@ -197,7 +197,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
                [solver ": invalid value assigned to field '%s'"], "Jacobian");
       endif
 
-    elseif (isa (options.Jacobian, "function_handle"))  
+    elseif (isa (options.Jacobian, "function_handle"))
       options.havejacfun = true;
       if (nargin (options.Jacobian) == 3)
         [A, B] = options.Jacobian (trange(1), y0, yp0);
@@ -220,7 +220,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
                [solver ": invalid value assigned to field '%s'"], "Jacobian");
     endif
   endif
-  
+
   ## Abstol and Reltol
 
   options.haveabstolvec = false;
@@ -228,15 +228,15 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   if (numel (options.AbsTol) != 1 && numel (options.AbsTol) != n)
     error ("Octave:invalid-input-arg",
            [solver ": invalid value assigned to field '%s'"], "AbsTol");
-  
+
   elseif (numel (options.AbsTol) == n)
     options.haveabstolvec = true;
   endif
 
   ## Stats
-  options.havestats = false;    
+  options.havestats = false;
   if (strcmp (options.Stats, "on"))
-    options.havestats = true;    
+    options.havestats = true;
   endif
 
   ## Don't use Refine when the output is a structure
@@ -251,7 +251,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   else
     options.haveoutputfunction = ! isempty (options.OutputFcn);
   endif
-  
+
   options.haveoutputselection = ! isempty (options.OutputSel);
   if (options.haveoutputselection)
     options.OutputSel = options.OutputSel - 1;
@@ -262,7 +262,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
 
   [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options);
-  
+
 
   if (nargout == 2)
     varargout{1} = t;
@@ -270,7 +270,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   elseif (nargout == 1)
     varargout{1}.x = t;    # Time stamps are saved in field x
     varargout{1}.y = y;    # Results are saved in field y
-    varargout{1}.solver = solver; 
+    varargout{1}.solver = solver;
     if (options.haveeventfunction)
       varargout{1}.xe = te;  # Time info when an event occurred
       varargout{1}.ye = ye;  # Results when an event occurred
@@ -289,8 +289,8 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
 endfunction
 
-%!demo 
-%! 
+%!demo
+%!
 %! ##Solve Robertson's equations with ode15i
 %! fun = @ (t, y, yp) [-(yp(1) + 0.04*y(1) - 1e4*y(2)*y(3));
 %!                     -(yp(2) - 0.04*y(1) + 1e4*y(2)*y(3) + 3e7*y(2)^2);
@@ -300,7 +300,7 @@ endfunction
 %! y0 = [1; 0; 0];
 %! yp0 = [-1e-4; 1e-4; 0];
 %! tspan = [0 4*logspace(-6, 6)];
-%! 
+%!
 %! [t, y] = ode15i (fun, tspan, y0, yp0, opt);
 %!
 %! y (:,2) = 1e4 * y (:, 2);
@@ -331,7 +331,7 @@ endfunction
 %!              1,                  1,         1];
 %!  DFDYP = [-1,  0, 0;
 %!            0, -1, 0;
-%!            0,  0, 0];   
+%!            0,  0, 0];
 %!endfunction
 %!
 %!function [DFDY, DFDYP] = jacfunsparse(t, y, yp)
@@ -340,7 +340,7 @@ endfunction
 %!                      1,                  1,         1]);
 %!  DFDYP = sparse ([-1,  0, 0;
 %!                    0, -1, 0;
-%!                    0,  0, 0]);   
+%!                    0,  0, 0]);
 %!endfunction
 %!function [DFDY, DFDYP] = jacwrong(t, y, yp)
 %!  DFDY = [-0.04,           1e4*y(3);
@@ -355,7 +355,7 @@ endfunction
 %!  DFDYP = [-1,  0, 0;
 %!            0, -1, 0;
 %!            0,  0, 0];
-%!  A = DFDY;   
+%!  A = DFDY;
 %!endfunction
 %!function [val, isterminal, direction] = ff (t, y, yp)
 %!  isterminal = [0 1];
@@ -364,7 +364,7 @@ endfunction
 %!  else
 %!    val = [1 3];
 %!  endif
-%!  
+%!
 %!  direction = [1 0];
 %!endfunction
 
@@ -387,7 +387,7 @@ endfunction
 %! [t, y] = ode15i (@rob,[0 1e6 2e6 3e6 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
 %! opt = odeset();
-%!test  # Without options 
+%!test  # Without options
 %! [t, y] = ode15i (@rob,[0 1e6 2e6 3e6 4e6], [1;0;0], [-1e-4;1e-4;0]);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
 %!test  # InitialStep option
@@ -471,7 +471,7 @@ endfunction
 %!test  # Events option, five output arguments
 %! opt = odeset ("Events", @ff);
 %! [t, y, te, ye, ie] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
-%! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.2, 0.2, 0, 0]); 
+%! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.2, 0.2, 0, 0]);
 
 %!error  # Jacobian fun wrong dimension
 %! opt = odeset ("Jacobian", @jacwrong);
@@ -505,7 +505,7 @@ endfunction
 %!error  # Jacobian strange field
 %! opt = odeset ("Jacobian", "foo");
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!function ydot = fun (t, y, yp)  
+%!function ydot = fun (t, y, yp)
 %! ydot = [y - yp];
 %!endfunction
 %!error ode15i ();

@@ -1618,13 +1618,13 @@ handle_property::do_set (const octave_value& v)
 }
 
 /*
-## Test validation of uicontextmenu property 
+## Test validation of uicontextmenu property
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
 %!   hpa = patch ("parent", hax);
-%!   try 
+%!   try
 %!     set (hax, "uicontextmenu", hpa);
 %!   catch
 %!     err = lasterr ();
@@ -1632,7 +1632,7 @@ handle_property::do_set (const octave_value& v)
 %!   assert (err, 'set: invalid graphics object type for property "uicontextmenu"');
 %! unwind_protect_cleanup
 %!   delete (hf);
-%! end_unwind_protect   
+%! end_unwind_protect
 */
 
 Matrix
@@ -4612,18 +4612,18 @@ axes::properties::init (void)
 }
 
 /*
-## Test validation of axes double properties range 
+## Test validation of axes double properties range
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
-%!   try 
+%!   try
 %!     set (hax, "linewidth", -1);
 %!   catch
 %!     err = lasterr ();
 %!   end_try_catch
 %!   assert (err, 'set: "linewidth" must be greater than 0');
-%!   try 
+%!   try
 %!     set (hax, "minorgridalpha", 1.5);
 %!   catch
 %!     err = lasterr ();
@@ -4631,7 +4631,7 @@ axes::properties::init (void)
 %!   assert (err, 'set: "minorgridalpha" must be less than or equal to 1');
 %! unwind_protect_cleanup
 %!   delete (hf);
-%! end_unwind_protect   
+%! end_unwind_protect
 */
 
 Matrix

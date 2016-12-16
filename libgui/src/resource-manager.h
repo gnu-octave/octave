@@ -119,7 +119,7 @@ public slots:
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
 private:
-  
+
   static bool instance_ok (void);
 
   QString settings_directory;

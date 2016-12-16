@@ -1177,7 +1177,7 @@ public:
   base_property* clone (void) const { return new double_property (*this); }
 
   void add_constraint (const std::string& type, double val, bool inclusive)
-  { 
+  {
     if (type == "min")
       minval = std::pair<double, bool> (val, inclusive);
     else if (type == "max")
@@ -2677,8 +2677,8 @@ protected:
   void insert_static_property (const std::string& name, base_property& p)
   { insert_property (name, property (&p, true)); }
 
-  virtual void init (void) 
-  { 
+  virtual void init (void)
+  {
     uicontextmenu.add_constraint ("uicontextmenu");
   }
 };

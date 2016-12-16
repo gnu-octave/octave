@@ -538,7 +538,7 @@ state.
 If output arguments are requested, @code{diary} ignores inputs and returns
 the current status.  The boolean @var{status} indicates whether recording is on
 or off, and @var{diaryfile} is the name of the file where the session is
-stored.  
+stored.
 @seealso{history, evalc}
 @end deftypefn */)
 {

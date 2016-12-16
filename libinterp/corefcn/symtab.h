@@ -1810,7 +1810,7 @@ public:
     else
       error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
   }
-  
+
   static void push_context (scope_id scope = xcurrent_scope)
   {
     if (scope == xglobal_scope || scope == xtop_scope)

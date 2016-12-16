@@ -37,10 +37,10 @@ function [fun] = check_default_input (fun, trange, solver, varargin);
     error ("Octave:invalid-input-arg",
                [solver ": invalid value assigned to field '%s'"], "fun");
   endif
-  
-  ## Check trange 
+
+  ## Check trange
   validateattributes (trange, {"float"}, {"vector", "real"}, solver, "trange");
-  
+
   if (numel (trange) < 2)
        error ("Octave:invalid-input-arg",
                [solver ": invalid value assigned to field '%s'"], "trange");
@@ -61,5 +61,5 @@ function [fun] = check_default_input (fun, trange, solver, varargin);
   endif
 
   validateattributes (y0, {"float"}, {"numel", n}, solver, "y0");
- 
+
 endfunction

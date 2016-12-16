@@ -504,7 +504,7 @@ function domain = find_valid_domain (X, Y, Z)
     endif
 
     ## Handle exceptional case of constant function
-    if (domain(3) == domain(4)) 
+    if (domain(3) == domain(4))
       domain(3) -= 1;
       domain(4) += 1;
     endif

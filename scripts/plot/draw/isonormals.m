@@ -195,7 +195,7 @@ endfunction
 %!error <must be a list of vertices> isonormals (1, {1})
 %!error <must be a list of vertices> isonormals (1, [1 2 3 4])
 %!error <must be a .* patch handle> isonormals (x, y, z, val, x)
-## Test validation of private function __interp_cube__ 
+## Test validation of private function __interp_cube__
 %!error <X, Y, Z have unequal dimensions> isonormals ({x}, y, z, val, vert)
 %!error <X, Y, Z have unequal dimensions> isonormals (x, {y}, z, val, vert)
 %!error <X, Y, Z have unequal dimensions> isonormals (x, y, {z}, val, vert)

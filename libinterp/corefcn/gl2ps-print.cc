@@ -127,7 +127,7 @@ namespace octave
     void set_linecap (const std::string& s)
       {
         octave::opengl_renderer::set_linejoin (s);
-      
+
 #if defined (HAVE_GL2PSLINEJOIN)
         if (s == "butt")
           gl2psLineCap (GL2PS_LINE_CAP_BUTT);
@@ -141,7 +141,7 @@ namespace octave
     void set_linejoin (const std::string& s)
     {
       octave::opengl_renderer::set_linejoin (s);
-      
+
 #if defined (HAVE_GL2PSLINEJOIN)
       if (s == "round")
         gl2psLineJoin (GL2PS_LINE_JOIN_ROUND);

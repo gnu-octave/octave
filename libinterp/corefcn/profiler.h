@@ -92,7 +92,7 @@ public:
 
   profile_data_accumulator&
   operator = (const profile_data_accumulator&) = delete;
-  
+
   virtual ~profile_data_accumulator ();
 
   bool is_active (void) const { return enabled; }

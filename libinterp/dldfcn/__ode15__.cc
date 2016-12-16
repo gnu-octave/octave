@@ -81,9 +81,9 @@ namespace octave
     //Default
     IDA (void)
       : t0 (0.0), y0 (), yp0 (), havejac (false), havejacfun (false),
-        havejacsparse (false), mem (NULL), num (), ida_fun (NULL),
-        ida_jac (NULL), dfdy (NULL), dfdyp (NULL), spdfdy (NULL),
-        spdfdyp (NULL), fun (0), jacfun (NULL), jacspfun (0),
+        havejacsparse (false), mem (0), num (), ida_fun (0),
+        ida_jac (0), dfdy (0), dfdyp (0), spdfdy (0),
+        spdfdyp (0), fun (0), jacfun (0), jacspfun (0),
         jacdcell (0), jacspcell (0)
     { };
 
@@ -91,9 +91,9 @@ namespace octave
     IDA (realtype t, ColumnVector y, ColumnVector yp,
          octave_function *ida_fcn, DAERHSFuncIDA daefun)
       : t0 (t), y0 (y), yp0 (yp), havejac (false), havejacfun (false),
-        havejacsparse (false), mem (NULL), num (), ida_fun (ida_fcn),
-        ida_jac (NULL), dfdy (NULL), dfdyp (NULL), spdfdy (NULL),
-        spdfdyp (NULL), fun (daefun), jacfun (NULL), jacspfun (0),
+        havejacsparse (false), mem (0), num (), ida_fun (ida_fcn),
+        ida_jac (0), dfdy (0), dfdyp (0), spdfdy (0),
+        spdfdyp (0), fun (daefun), jacfun (0), jacspfun (0),
         jacdcell (0), jacspcell (0)
     { };
 
@@ -1192,7 +1192,7 @@ namespace octave
     bool haverefine =
       (refine > 1);
 
-    octave_function *output_fcn = NULL;
+    octave_function *output_fcn = 0;
     ColumnVector outputsel;
 
     // OutputFcn
@@ -1209,7 +1209,7 @@ namespace octave
     if (haveoutputsel)
       outputsel = options.getfield("OutputSel").vector_value ();
 
-    octave_function *event_fcn = NULL;
+    octave_function *event_fcn = 0;
 
     // Events
     bool haveeventfunction =
@@ -1256,7 +1256,7 @@ Undocumented internal function.
     print_usage ();
 
   // Check odefun
-  octave_function *ida_fcn = NULL;
+  octave_function *ida_fcn = 0;
 
   octave_value f_arg = args(0);
 

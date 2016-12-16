@@ -48,6 +48,25 @@ along with Octave; see the file COPYING.  If not, see
 #    include <nvector/nvector_serial.h>
 #  endif
 
+static inline realtype *
+nv_data_s (N_Vector& v)
+{
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Disable warning from GCC about old-style casts in Sundials macro
+// expansions.  Do this in a function so that this diagnostic may still
+// be enabled for the rest of the file.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
+  return NV_DATA_S (v);
+  
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+// Restore prevailing warning state for remainder of the file.
+#pragma GCC diagnostic pop
+#endif
+}
+
 namespace octave
 {
   class IDA
@@ -303,7 +322,7 @@ namespace octave
       (*fun) (y, yp, t, ida_fun);
 
     realtype *puntrr =
-      NV_DATA_S (rr);
+      nv_data_s (rr);
 
     for (octave_idx_type i = 0; i < num; i++)
       puntrr [i] = res (i);
@@ -411,7 +430,7 @@ namespace octave
   {
     ColumnVector data (n);
     realtype *punt;
-    punt = NV_DATA_S (v);
+    punt = nv_data_s (v);
 
     for (octave_idx_type i = 0; i < n; i++)
       data (i) = punt [i];
@@ -426,7 +445,7 @@ namespace octave
       N_VNew_Serial (n);
 
     realtype * punt;
-    punt = NV_DATA_S (v);
+    punt = nv_data_s (v);
 
     for (octave_idx_type i = 0; i < n; i++)
       punt [i] = data (i);

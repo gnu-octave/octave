@@ -223,9 +223,7 @@ initialize (void)
                                          %OCTAVE_CONF_FFTW3F_LDFLAGS%);
 
   vars["FFTW3F_LIBS"] = get_variable ("FFTW3F_LIBS", %OCTAVE_CONF_FFTW3F_LIBS%);
-  vars["KLU_LDFLAGS"] = get_variable ("KLU_LDFLAGS",
-                                        %OCTAVE_CONF_KLU_LDFLAGS%);
-  vars["KLU_LIBS"] = get_variable ("KLU_LIBS", %OCTAVE_CONF_KLU_LIBS%);
+
   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
 
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
@@ -253,13 +251,6 @@ initialize (void)
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
-  vars["SUNDIALS_IDA_LDFLAGS"] = get_variable ("SUNDIALS_IDA_LDFLAGS",
-                                        %OCTAVE_CONF_SUNDIALS_IDA_LDFLAGS%);
-  vars["SUNDIALS_IDA_LIBS"] = get_variable ("SUNDIALS_IDA_LIBS", %OCTAVE_CONF_SUNDIALS_IDA_LIBS%);
-  vars["SUNDIALS_NVECSERIAL_LDFLAGS"] = get_variable ("SUNDIALS_NVECSERIAL_LDFLAGS",
-                                        %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LDFLAGS%);
-  vars["SUNDIALS_NVECSERIAL_LIBS"] = get_variable ("SUNDIALS_NVECSERIAL_LIBS", %OCTAVE_CONF_SUNDIALS_NVECSERIAL_LIBS%);
-
   vars["ALL_FFLAGS"] = vars["FFLAGS"] + " " + vars["F77_INTEGER8_FLAG"];
 
   vars["ALL_CFLAGS"]
@@ -277,10 +268,6 @@ initialize (void)
 
   vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"] + " "
                       + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
-
-  vars["SUNDIALS_LIBS"] = vars["SUNDIALS_IDA_LDFLAGS"] + " " + vars["SUNDIALS_IDA_LIBS"] + " "
-                          + vars["KLU_LDFLAGS"] + " " + vars["KLU_LIBS"] + " "
-                          + vars["SUNDIALS_NVECSERIAL_LDFLAGS"] + " " + vars["SUNDIALS_NVECSERIAL_LIBS"];
 }
 
 static std::string usage_msg = "usage: mkoctfile [options] file ...";

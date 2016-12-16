@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
+#include "parse.h"
 #include "pt-bp.h"
 #include "pt-const.h"
 #include "pt-eval.h"
@@ -95,7 +96,14 @@ tree_identifier::rvalue (int nargout,
         {
           if (print_result () && nargout == 0
               && octave::tree_evaluator::statement_printing_enabled ())
-            val.print_with_name (octave_stdout, name ());
+            {
+              octave_value_list args = ovl (val, name ());
+              string_vector name_tags (2);
+              name_tags(0) = name ();
+              name_tags(1) = "name";
+              args.stash_name_tags (name_tags);
+              feval ("display", args);
+            }
 
           retval = val;
         }

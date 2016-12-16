@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "octave-preserve-stream-state.h"
 #include "pager.h"
+#include "parse.h"
 #include "pr-output.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -3483,6 +3484,7 @@ If the length of the smallest possible rational approximation exceeds
 }
 
 DEFUN (disp, args, nargout,
+       classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
 @deftypefn {} {} disp (@var{x})
 Display the value of @var{x}.
@@ -3526,6 +3528,7 @@ formatted output in a string.
 }
 
 DEFUN (fdisp, args, ,
+       classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
 @deftypefn {} {} fdisp (@var{fid}, @var{x})
 Display the value of @var{x} on the stream @var{fid}.
@@ -3590,6 +3593,82 @@ Note that the output from @code{fdisp} always ends with a newline.
 %!   expected = strrep (loose, "\n\n", "\n");
 %!   assert (expected, compact);
 %! endfor
+*/
+
+DEFUN (display, args, ,
+       classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} display (@var{obj})
+Display the contents of the object @var{obj}.
+
+The Octave interpreter calls the @code{display} function whenever it needs
+to present a class on-screen.  Typically, this would be a statement which
+does not end in a semicolon to suppress output.  For example:
+
+@example
+myobj = myclass (@dots{})
+@end example
+
+User-defined classes should overload the @code{display} method so that
+something useful is printed for a class object.  Otherwise, Octave will
+report only that the object is an instance of its class.
+
+@example
+@group
+myobj = myclass (@dots{})
+  @result{} myobj = <class myclass>
+@end group
+@end example
+
+@seealso{class, subsref, subsasgn}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+
+  std::string name;
+
+  if (nargin == 2)
+    name = args(1).xstring_value ("CALLER must be a string");
+  else
+    {
+      string_vector names = args.name_tags ();
+      std::string tmp = names(0);
+      name = valid_identifier (tmp) ? tmp : "ans";
+    }
+
+  // Only reason we got here is that there was no overloaded display
+  // function.  Rely on built-in functions to display whatever obj is.
+
+  octave_value value = args(0);
+  bool is_scalar = value.is_scalar_type ();
+
+  octave_stdout << name << (is_scalar ? " = " : " =\n\n");
+
+  // Use feval so that dispatch will also work for disp.
+
+  feval ("disp", ovl (value));
+
+  if (! is_scalar)
+    octave_stdout << std::endl;
+
+  return ovl ();
+}
+
+/*
+%!test
+%! str = evalc ("x = 1.1; display (x)");
+%! assert (str, "x =  1.1000\n");
+
+%!test
+%! str = evalc ("display (1.1)");
+%! assert (str, " 1.1000\n");
+
+## Test input validation
+%!error display ()
+%!error display (1,2)
 */
 
 static void

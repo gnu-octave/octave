@@ -943,24 +943,6 @@ octave_classdef::undef_subsasgn (const std::string& type,
 void
 octave_classdef::print (std::ostream& os, bool)
 {
-  if (! called_from_builtin ())
-    {
-      cdef_method meth = object.get_class ().find_method ("disp");
-
-      if (meth.ok ())
-        {
-          octave_value_list args;
-
-          count++;
-          args(0) = octave_value (this);
-
-          indent (os);
-          meth.execute (args, 0, true, "disp");
-
-          return;
-        }
-    }
-
   print_raw (os);
 }
 
@@ -986,25 +968,7 @@ void
 octave_classdef::print_with_name (std::ostream& os, const std::string& name,
                                   bool print_padding)
 {
-  cdef_method meth = object.get_class ().find_method ("display");
-
-  if (meth.ok ())
-    {
-      octave_value_list args;
-
-      count++;
-      args(0) = octave_value (this);
-
-      string_vector arg_names (1);
-
-      arg_names[0] = name;
-      args.stash_name_tags (arg_names);
-
-      indent (os);
-      meth.execute (args, 0, true, "display");
-    }
-  else
-    octave_base_value::print_with_name (os, name, print_padding);
+  octave_base_value::print_with_name (os, name, print_padding);
 }
 
 bool

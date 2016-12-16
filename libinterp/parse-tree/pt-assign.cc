@@ -33,8 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
-#include "pager.h"
 #include "ov.h"
+#include "pager.h"
+#include "parse.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
 #include "pt-assign.h"
@@ -117,8 +118,12 @@ tree_simple_assignment::rvalue1 (int)
 
               octave_value lhs_val = ult.value ();
 
-              lhs_val.print_with_name (octave_stdout,
-                                       lhs->name ());
+              octave_value_list args = ovl (lhs_val, lhs->name ());
+              string_vector name_tags (2);
+              name_tags(0) = lhs->name ();
+              name_tags(1) = "name";
+              args.stash_name_tags (name_tags);
+              feval ("display", args);
             }
         }
       catch (octave::index_exception& e)
@@ -324,7 +329,12 @@ tree_multi_assignment::rvalue (int)
 
               octave_value lhs_val = ult.value ();
 
-              lhs_val.print_with_name (octave_stdout, lhs_elt->name ());
+              octave_value_list args = ovl (lhs_val, lhs_elt->name ());
+              string_vector name_tags (2);
+              name_tags(0) = lhs_elt->name ();
+              name_tags(1) = "name";
+              args.stash_name_tags (name_tags);
+              feval ("display", args);
             }
         }
 

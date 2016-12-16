@@ -1952,7 +1952,7 @@ bind_ans (const octave_value& val, bool print)
           symbol_table::force_assign (ans, val);
 
           if (print)
-            val.print_with_name (octave_stdout, ans);
+            feval ("display", ovl (val, ans));
         }
     }
 }

@@ -1010,31 +1010,9 @@ octave_class::print_name_tag (std::ostream& os, const std::string& name) const
 
 void
 octave_class::print_with_name (std::ostream& os, const std::string& name,
-                               bool)
+                               bool print_padding)
 {
-  octave_value fcn = symbol_table::find_method ("display", class_name ());
-
-  if (fcn.is_defined ())
-    {
-      octave_value_list args;
-
-      count++;
-      args(0) = octave_value (this);
-
-      string_vector arg_names (1);
-
-      arg_names[0] = name;
-
-      args.stash_name_tags (arg_names);
-
-      feval (fcn.function_value (), args);
-    }
-  else
-    {
-      indent (os);
-      os << name << " = <class " << class_name () << ">";
-      newline (os);
-    }
+  octave_base_value::print_with_name (os, name, print_padding);
 }
 
 // Loading a class properly requires an exemplar map entry for success.

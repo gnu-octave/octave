@@ -30,7 +30,6 @@ scripts_general_FCN_FILES = \
   scripts/general/deal.m \
   scripts/general/deg2rad.m \
   scripts/general/del2.m \
-  scripts/general/display.m \
   scripts/general/divergence.m \
   scripts/general/fieldnames.m \
   scripts/general/flip.m \

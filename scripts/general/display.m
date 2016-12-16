@@ -67,7 +67,7 @@ endfunction
 
 %!test
 %! str = evalc ("display (1.1)");
-%! assert (str, " 1.1000\n"); 
+%! assert (str, " 1.1000\n");
 
 ## Test input validation
 %!error display ()

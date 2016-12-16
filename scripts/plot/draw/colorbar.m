@@ -238,6 +238,7 @@ function h = colorbar (varargin)
 
     set (cax, "deletefcn", {@resetaxis, ax, obj});
 
+    addlistener (cax, "yscale", @error_if_logscale);
     addlistener (hpar, "colormap", {@update_colorbar_cmap, hi, vertical, clen});
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical});
     addlistener (ax, "dataaspectratio", {@update_colorbar_axis, cax, obj});
@@ -254,7 +255,7 @@ function h = colorbar (varargin)
 
 endfunction
 
-function deletecolorbar (h, d, hc, orig_props)
+function deletecolorbar (h, ~, hc, orig_props)
   ## Don't delete the colorbar and reset the axis size
   ## if the parent figure is being deleted.
   if (isaxes (hc)
@@ -276,7 +277,14 @@ function deletecolorbar (h, d, hc, orig_props)
 
 endfunction
 
-function resetaxis (cax, d, ax, orig_props)
+function error_if_logscale (cax, ~)
+  if (strcmp (get (cax, "yscale"), "log"))
+    set (cax, "yscale", "linear");
+    error ("colorbar: Only linear colorbars are possible");
+  endif
+endfunction
+
+function resetaxis (cax, ~, ax, orig_props)
 
   if (isaxes (ax))
     ## FIXME: Probably don't want to delete everyone's listeners on colormap.
@@ -298,7 +306,7 @@ function resetaxis (cax, d, ax, orig_props)
 
 endfunction
 
-function update_colorbar_clim (hax, d, hi, vert)
+function update_colorbar_clim (hax, ~, hi, vert)
 
   if (isaxes (hax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"), "off")))
@@ -340,7 +348,7 @@ function update_colorbar_cmap (hf, d, hi, vert, init_sz)
 
 endfunction
 
-function update_colorbar_axis (h, d, cax, orig_props)
+function update_colorbar_axis (h, ~, cax, orig_props)
 
   if (isaxes (cax)
       && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off")))

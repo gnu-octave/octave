@@ -236,13 +236,13 @@ namespace octave
     bool
     outputfun (octave_function *output_fcn, bool haveoutputsel,
                const ColumnVector& output, realtype tout, realtype tend,
-               ColumnVector& outputsel, std::string flag);
+               ColumnVector& outputsel, const std::string& flag);
 
 
     bool
     event (octave_function *event_fcn,
            ColumnVector& te, Matrix& ye, ColumnVector& ie,
-           realtype tsol, const ColumnVector& y, std::string flag,
+           realtype tsol, const ColumnVector& y, const std::string& flag,
            const ColumnVector& yp, ColumnVector& oldval,
            ColumnVector& oldisterminal, ColumnVector& olddir,
            int cont, int& temp, realtype told, ColumnVector& yold);
@@ -627,7 +627,7 @@ namespace octave
   bool
   IDA::event (octave_function *event_fcn,
               ColumnVector& te, Matrix& ye, ColumnVector& ie,
-              realtype tsol, const ColumnVector& y, std::string flag,
+              realtype tsol, const ColumnVector& y, const std::string& flag,
               const ColumnVector& yp, ColumnVector& oldval,
               ColumnVector& oldisterminal, ColumnVector& olddir, int cont,
               int& temp, realtype told, ColumnVector& yold)
@@ -796,7 +796,7 @@ namespace octave
   IDA::outputfun (octave_function *output_fcn, bool haveoutputsel,
                   const ColumnVector& yout, realtype tsol,
                   realtype tend, ColumnVector& outputsel,
-                  std::string flag)
+                  const std::string& flag)
   {
     bool status = 0;
 

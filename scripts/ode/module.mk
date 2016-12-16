@@ -4,6 +4,7 @@ FCN_FILE_DIRS += \
 
 scripts_ode_PRIVATE_FCN_FILES = \
   scripts/ode/private/AbsRel_norm.m \
+  scripts/ode/private/check_default_input.m \
   scripts/ode/private/integrate_adaptive.m \
   scripts/ode/private/kahan.m \
   scripts/ode/private/odedefaults.m \

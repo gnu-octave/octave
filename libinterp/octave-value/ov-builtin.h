@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
+#include <set>
 #include <string>
 
 #include "ov-fcn.h"
@@ -97,6 +99,10 @@ public:
 
   fcn function (void) const;
 
+  void push_dispatch_class (const std::string& dispatch_type);
+
+  bool handles_dispatch_class (const std::string& dispatch_type) const;
+
   static const std::list<octave_lvalue> *curr_lvalue_list;
 
 protected:
@@ -106,6 +112,9 @@ protected:
 
   // The name of the file where this function was defined.
   std::string file;
+
+  // The types this function has been declared to handle (if any).
+  std::set<std::string> dispatch_classes;
 
   // A pointer to the jit type that represents the function.
   jit_type *jtype;

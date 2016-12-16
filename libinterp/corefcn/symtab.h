@@ -853,20 +853,7 @@ public:
         built_in_function = f;
       }
 
-      void install_built_in_dispatch (const std::string& klass)
-      {
-        if (built_in_function.is_defined ())
-          {
-            if (class_methods.find (klass) != class_methods.end ())
-              warning ("install_built_in_dispatch: '%s' already defined for class '%s'",
-                       name.c_str (), klass.c_str ());
-            else
-              class_methods[klass] = built_in_function;
-          }
-        else
-          error ("install_built_in_dispatch: '%s' is not a built-in function",
-                 name.c_str ());
-      }
+      void install_built_in_dispatch (const std::string& klass);
 
       template <typename T>
       void

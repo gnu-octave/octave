@@ -104,6 +104,14 @@ public:
 
   virtual bool takes_var_return (void) const { return false; }
 
+  // The next two functions are for dispatching to built-in
+  // functions given built-in classes.
+
+  virtual void push_dispatch_class (const std::string&) { }
+
+  virtual bool handles_dispatch_class (const std::string&) const
+  { return false; }
+
   void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
 
   std::string dispatch_class (void) const { return xdispatch_class; }

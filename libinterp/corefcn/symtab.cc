@@ -529,6 +529,24 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
                   it++;
                 }
             }
+
+          if (retval.is_undefined ())
+            {
+              // Search for built-in functions that are declared to
+              // handle specific types.
+
+              if (built_in_function.is_defined ())
+                {
+                  octave_function *fcn = built_in_function.function_value ();
+
+                  if (fcn && fcn->handles_dispatch_class (dispatch_type))
+                    {
+                      retval = built_in_function;
+
+                      class_methods[dispatch_type] = retval;
+                    }
+                }
+            }
         }
     }
 
@@ -1108,6 +1126,27 @@ fcn_file_name (const octave_value& fcn)
   const octave_function *f = fcn.function_value ();
 
   return f ? f->fcn_file_name () : "";
+}
+
+void
+symbol_table::fcn_info::fcn_info_rep::install_built_in_dispatch (const std::string& klass)
+{
+  if (built_in_function.is_defined ())
+    {
+      octave_function *fcn = built_in_function.function_value ();
+
+      if (fcn)
+        {
+          if (fcn->handles_dispatch_class (klass))
+            warning ("install_built_in_dispatch: '%s' already defined for class '%s'",
+                     name.c_str (), klass.c_str ());
+          else
+            fcn->push_dispatch_class (klass);
+        }
+    }
+  else
+    error ("install_built_in_dispatch: '%s' is not a built-in function",
+           name.c_str ());
 }
 
 void

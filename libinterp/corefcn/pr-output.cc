@@ -3635,8 +3635,7 @@ myobj = myclass (@dots{})
   else
     {
       string_vector names = args.name_tags ();
-      std::string tmp = names(0);
-      name = valid_identifier (tmp) ? tmp : "ans";
+      name = names(0);
     }
 
   // Only reason we got here is that there was no overloaded display
@@ -3645,7 +3644,8 @@ myobj = myclass (@dots{})
   octave_value value = args(0);
   bool is_scalar = value.is_scalar_type ();
 
-  octave_stdout << name << (is_scalar ? " = " : " =\n\n");
+  if (valid_identifier (name))
+    octave_stdout << name << (is_scalar ? " = " : " =\n\n");
 
   // Use feval so that dispatch will also work for disp.
 

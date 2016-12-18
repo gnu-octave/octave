@@ -355,14 +355,18 @@ namespace octave
         unsigned char buf_in[buf_len];
         unsigned char buf_out[buf_len];
 
-        while ((strm->avail_in = std::fread (buf_in, sizeof (buf_in[0]),
-                                             buf_len, source.fp)) != 0)
+        int flush;
+
+        do
           {
+            strm->avail_in = std::fread (buf_in, sizeof (buf_in[0]),
+                                         buf_len, source.fp);
+
             if (std::ferror (source.fp))
               throw std::runtime_error ("failed to read source file");
 
             strm->next_in = buf_in;
-            const int flush = std::feof (source.fp) ? Z_FINISH : Z_NO_FLUSH;
+            flush = std::feof (source.fp) ? Z_FINISH : Z_NO_FLUSH;
 
             // If deflate returns Z_OK and with zero avail_out, it must be
             // called again after making room in the output buffer because
@@ -383,8 +387,12 @@ namespace octave
             while (strm->avail_out == 0);
 
             if (strm->avail_in != 0)
-              throw std::runtime_error ("failed to wrote file");
-          }
+              throw std::runtime_error ("failed to write file");
+
+          } while (flush != Z_FINISH);
+
+          if (status != Z_STREAM_END)
+            throw std::runtime_error ("failed to write file");
       }
 
       void

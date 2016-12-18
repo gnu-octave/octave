@@ -2018,9 +2018,9 @@ be available to all users should be added to the @var{static classpath}.  The
 named @file{javaclasspath.txt} (or @file{classpath.txt} historically) when the
 Java Virtual Machine starts.  This file contains one line for each individual
 classpath to be added to the @var{static classpath}.  These lines can identify
-single class files, directories containing class files, or Java archives with
-complete class file hierarchies.  Comment lines starting with a @samp{#} or a
-@samp{%} character are ignored.
+directories containing class files, or Java archives with complete class file
+hierarchies.  Comment lines starting with a @samp{#} or a @samp{%} character
+are ignored.
 
 The search rules for the file @file{javaclasspath.txt}
 (or @file{classpath.txt}) are:

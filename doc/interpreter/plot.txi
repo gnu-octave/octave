@@ -1484,6 +1484,7 @@ struct2hdl (fig_struct);
 * Uicontextmenu Properties::
 * Uipanel Properties::
 * Uicontrol Properties::
+* Uitable Properties::
 * Uitoolbar Properties::
 * Uipushtool Properties::
 * Uitoggletool Properties::
@@ -1621,6 +1622,14 @@ The @code{uipanel} properties are:
 The @code{uicontrol} properties are:
 
 @include plot-uicontrolproperties.texi
+
+@node Uitable Properties
+@subsubsection Uitable Properties
+@cindex uitable properties
+
+The @code{uitable} properties are:
+
+@include plot-uitableproperties.texi
 
 @node Uitoolbar Properties
 @subsubsection Uitoolbar Properties

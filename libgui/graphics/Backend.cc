@@ -58,6 +58,7 @@ namespace QtHandles
              || go.isa ("uibuttongroup")
              || go.isa ("uimenu")
              || go.isa ("uicontextmenu")
+             || go.isa ("uitable")
              || go.isa ("uitoolbar")
              || go.isa ("uipushtool")
              || go.isa ("uitoggletool"))
@@ -90,6 +91,7 @@ namespace QtHandles
         || go.isa ("uibuttongroup")
         || go.isa ("uimenu")
         || go.isa ("uicontextmenu")
+        || go.isa ("uitable")
         || go.isa ("uitoolbar")
         || go.isa ("uipushtool")
         || go.isa ("uitoggletool"))
@@ -121,6 +123,7 @@ namespace QtHandles
         || pId == uibuttongroup::properties::ID___OBJECT__
         || pId == uimenu::properties::ID___OBJECT__
         || pId == uicontextmenu::properties::ID___OBJECT__
+        || pId == uitable::properties::ID___OBJECT__
         || pId == uitoolbar::properties::ID___OBJECT__
         || pId == uipushtool::properties::ID___OBJECT__
         || pId == uitoggletool::properties::ID___OBJECT__

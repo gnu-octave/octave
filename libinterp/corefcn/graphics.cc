@@ -566,6 +566,32 @@ default_light_position (void)
   return m;
 }
 
+static Matrix
+default_table_position (void)
+{
+  Matrix retval (1, 4);
+
+  retval(0) = 20;
+  retval(1) = 20;
+  retval(2) = 300;
+  retval(3) = 300;
+
+  return retval;
+}
+
+static Matrix
+default_table_backgroundcolor (void)
+{
+  Matrix retval (2, 3);
+  retval(0, 0) = 1;
+  retval(0, 1) = 1;
+  retval(0, 2) = 1;
+  retval(1, 0) = 0.94;
+  retval(1, 1) = 0.94;
+  retval(1, 2) = 0.94;
+  return retval;
+}
+
 static double
 convert_font_size (double font_size, const caseless_str& from_units,
                    const caseless_str& to_units, double parent_height = 0)
@@ -1073,7 +1099,7 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len >= 9)
                     {
@@ -1155,6 +1181,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new uibuttongroup (h, p);
   else if (type.compare ("uicontextmenu"))
     go = new uicontextmenu (h, p);
+  else if (type.compare ("uitable"))
+    go = new uitable (h, p);
   else if (type.compare ("uitoolbar"))
     go = new uitoolbar (h, p);
   else if (type.compare ("uipushtool"))
@@ -2160,7 +2188,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len > 9)
                     {
@@ -2233,6 +2261,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = uipanel::properties::has_core_property (pname);
           else if (pfx == "uicontextmenu")
             has_property = uicontextmenu::properties::has_core_property (pname);
+          else if (pfx == "uitable")
+            has_property = uitable::properties::has_core_property (pname);
           else if (pfx == "uitoolbar")
             has_property = uitoolbar::properties::has_core_property (pname);
           else if (pfx == "uipushtool")
@@ -2300,7 +2330,7 @@ property_list::lookup (const caseless_str& name) const
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len > 9)
                     {
@@ -10835,6 +10865,251 @@ uipanel::properties::get___fontsize_points__ (double box_pix_height) const
 
 // ---------------------------------------------------------------------
 
+Matrix
+uitable::properties::get_boundingbox (bool,
+                                      const Matrix& parent_pix_size) const
+{
+  Matrix pos = get_position ().matrix_value ();
+  Matrix parent_size (parent_pix_size);
+
+  if (parent_size.isempty ())
+    {
+      graphics_object go = gh_manager::get_object (get_parent ());
+
+      parent_size =
+        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    }
+
+  pos = convert_position (pos, get_units (), "pixels", parent_size);
+
+  pos(0)--;
+  pos(1)--;
+  pos(1) = parent_size(1) - pos(1) - pos(3);
+  return pos;
+}
+
+void
+uitable::properties::set_columnformat (const octave_value& val)
+{
+  /* Matlab only allows certain values for columnformat - here we will only
+     check the structure of the argument. Values will be checked in Table.cc */
+
+  if (val.iscellstr ())
+    {
+      if (columnformat.set (val, true))
+        {
+          mark_modified ();
+        }
+    }
+  else if (val.iscell ())
+    {
+      Cell cell_value = val.cell_value ();
+
+      for (int i = 0; i < cell_value.numel (); i++)
+        {
+          octave_value v = cell_value (i);
+          if (v.iscell ())
+            {
+              /* We are in a pop-up menu selection
+               * Matlab only allows non-empty strings here */
+              Cell popup = v.cell_value ();
+              for (int j = 0; j < popup.numel (); j++)
+                {
+                  octave_value p = popup (j);
+                  if (!p.is_string () || p.string_value ().length () == 0)
+                    {
+                      error ("set: pop-up menu definitions must be non-empty strings.");
+                    }
+                }
+            }
+          else if (!(v.is_string () || v.isempty ()))
+            {
+              error ("set: columnformat definintions must be a cellstr of "
+                "either 'char', 'short [e|g|eng]?', 'long [e|g|eng]?', "
+                "'numeric', 'bank', '+', 'rat', 'logical', or a cellstr of non-empty "
+                "pop-up menu definitions.");
+            }
+        }
+
+      if (columnformat.set (val, true))
+        {
+          mark_modified ();
+        }
+    }
+  else if (val.isempty ())
+    {
+      if (columnformat.set (Cell (), true))
+        {
+          mark_modified ();
+        }
+    }
+  else
+    {
+      error ("set: expecting cell of strings.");
+    }
+}
+
+void
+uitable::properties::set_columnwidth (const octave_value& val)
+{
+  bool error_exists = false;
+  if (val.is_string ()  && val.string_value (false) == "auto")
+    {
+      error_exists = false;
+    }
+  else if (val.iscell ())
+    {
+      Cell cell_value = val.cell_value ();
+      for (int i = 0; i < cell_value.numel (); i++)
+        {
+          octave_value v = cell_value (i);
+          if (v.is_string ())
+            {
+              if (v.string_value (false) != "auto")
+                error_exists = true;
+            }
+          else if (v.iscell ())
+            {
+              error_exists = true;
+            }
+          else if (!(v.is_scalar_type ()))
+            {
+              error_exists = true;
+            }
+        }
+    }
+  else
+    {
+      error_exists = true;
+    }
+
+  if (error_exists)
+    {
+      error ("set: expecting either 'auto' or a cell of pixel values or auto.");
+    }
+  else
+    {
+      if (columnwidth.set (val, true))
+        {
+          mark_modified ();
+        }
+    }
+}
+
+void
+uitable::properties::set_units (const octave_value& val)
+{
+  caseless_str old_units = get_units ();
+
+  if (units.set (val, true))
+    {
+      update_units (old_units);
+      mark_modified ();
+    }
+}
+
+void
+uitable::properties::update_units (const caseless_str& old_units)
+{
+  Matrix pos = get_position ().matrix_value ();
+
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+  Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+
+  pos = convert_position (pos, old_units, get_units (), parent_size);
+  set_position (pos);
+}
+
+void
+uitable::properties::set_fontunits (const octave_value& val)
+{
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
+    {
+      update_fontunits (old_fontunits);
+      mark_modified ();
+    }
+}
+
+void
+uitable::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double parent_height = get_boundingbox (false).elem (3);
+  double fontsz = get_fontsize ();
+
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
+
+  set_fontsize (octave_value (fontsz));
+}
+
+double
+uitable::properties::get___fontsize_points__ (double box_pix_height) const
+{
+  double fontsz = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem (3);
+
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
+}
+
+double
+uitable::properties::get_fontsize_pixels (double box_pix_height) const
+{
+  double fontsz = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem (3);
+
+  return convert_font_size (fontsz, get_fontunits (), "pixels", parent_height);
+}
+
+Matrix
+uitable::properties::get_backgroundcolor_rgb (void)
+{
+  Matrix bg = backgroundcolor.get ().matrix_value ();
+  return bg.row (0);
+}
+
+Matrix
+uitable::properties::get_alternatebackgroundcolor_rgb (void)
+{
+  int i = 0;
+  Matrix bg = backgroundcolor.get ().matrix_value ();
+  if (bg.rows () > 1)
+    i = 1;
+  return bg.row (i);
+}
+
+Matrix
+uitable::properties::get_extent_matrix (void) const
+{
+  return extent.get ().matrix_value ();
+}
+
+octave_value
+uitable::properties::get_extent (void) const
+{
+  // FIXME: Is it really acceptable to just let the toolkit update the extent?
+  Matrix m = extent.get ().matrix_value ();
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  if (parent_go)
+    {
+      Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+      Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+
+      return convert_position (m, "pixels", get_units (), parent_size);
+    }
+  return m;
+}
+
+// ---------------------------------------------------------------------
+
 octave_value
 uitoolbar::get_default (const caseless_str& pname) const
 {
@@ -12427,6 +12702,15 @@ Undocumented internal function.
 @end deftypefn */)
 {
   GO_BODY (uicontextmenu);
+}
+
+DEFUN (__go_uitable__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uitable__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
+{
+  GO_BODY (uitable);
 }
 
 DEFUN (__go_uitoolbar__, args, ,

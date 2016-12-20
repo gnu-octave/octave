@@ -37,6 +37,7 @@ FCN_FILE_DIRS += \
   %reldir%/uipushtool.m \
   %reldir%/uiputfile.m \
   %reldir%/uiresume.m \
+  %reldir%/uitable.m \
   %reldir%/uitoggletool.m \
   %reldir%/uitoolbar.m \
   %reldir%/uiwait.m \

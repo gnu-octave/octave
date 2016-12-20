@@ -34,7 +34,8 @@ function genpropdoc (objname, fname)
   objnames = {"root", "figure", "axes", "line", ...
               "text", "image", "patch", "surface", "light", ...
               "uimenu", "uibuttongroup", "uicontextmenu", "uipanel", ...
-              "uicontrol", "uitoolbar", "uipushtool", "uitoggletool"};
+              "uicontrol", "uitable", "uitoolbar", "uipushtool", ...
+              "uitoggletool"};
 
   ## Base properties
   base = getstructure ("base");
@@ -1656,6 +1657,41 @@ point source (@qcode{\"local\"}).";
       case "verticalalignment"
 
     endswitch
+
+  ## uitable Properties
+  elseif (strcmp (objname, "uitable"))
+      switch (field)
+        ## Overridden shared properties
+
+        ## Specific properties
+        case "backgroundcolor"
+        case "celleditcallback"
+        case "cellselectioncallback"
+        case "columneditable"
+        case "columnformat"
+        case "columnname"
+        case "columnwidth"
+        case "createfcn"
+        case "data"
+        case "deletefcn"
+        case "enable"
+        case "extent"
+        case "fontangle"
+        case "fontname"
+        case "fontsize"
+        case "fontunits"
+        case "fontweight"
+        case "foregroundcolor"
+        case "keypressfcn"
+        case "keyreleasefcn"
+        case "position"
+        case "rearrangeablecolumns"
+        case "rowname"
+        case "rowstriping"
+        case "tooltipstring"
+        case "units"
+
+      endswitch
 
   ## uitoolbar properties
   elseif (strcmp (objname, "uitoolbar"))

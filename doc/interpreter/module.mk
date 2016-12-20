@@ -15,6 +15,7 @@ GRAPH_PROP_TEXI_SRC = \
   %reldir%/plot-uicontextmenuproperties.texi \
   %reldir%/plot-uipanelproperties.texi \
   %reldir%/plot-uicontrolproperties.texi \
+  %reldir%/plot-uitableproperties.texi \
   %reldir%/plot-uitoolbarproperties.texi \
   %reldir%/plot-uipushtoolproperties.texi \
   %reldir%/plot-uitoggletoolproperties.texi
@@ -70,6 +71,9 @@ GRAPHICS_PROPS_SRC = libinterp/corefcn/graphics.in.h libinterp/corefcn/genprops.
 
 %reldir%/plot-uicontrolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontrol)
+
+%reldir%/plot-uitableproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
+	$(AM_V_GEN)$(call gen-propdoc-texi,uitable)
 
 %reldir%/plot-uitoolbarproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoolbar)

@@ -5739,6 +5739,105 @@ public:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API uitable : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
+
+    double get___fontsize_points__ (double box_pix_height = 0) const;
+
+    double get_fontsize_pixels (double box_pix_height = 0) const;
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
+
+    BEGIN_PROPERTIES (uitable)
+      any_property __object__ h , Matrix ()
+      array_property backgroundcolor , default_table_backgroundcolor ()
+      callback_property celleditcallback , Matrix ()
+      callback_property cellselectioncallback , Matrix ()
+      row_vector_property columneditable , Matrix ()
+      any_property columnformat S , Matrix ()
+      any_property columnname , "numbered"
+      any_property columnwidth S , "auto"
+      any_property data u , Matrix ()
+      radio_property enable , "{on}|inactive|off"
+      array_property extent rG , Matrix (1, 4, 0.0)
+      radio_property fontangle u , "{normal}|italic|oblique"
+      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize u , 10
+      radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontweight u , "light|{normal}|demi|bold"
+      color_property foregroundcolor , color_values (0, 0, 0)
+      callback_property keypressfcn , Matrix ()
+      callback_property keyreleasefcn , Matrix ()
+      array_property position , default_table_position ()
+      bool_property rearrangeablecolumns , "off"
+      any_property rowname , "numbered"
+      bool_property rowstriping , "on"
+      string_property tooltipstring , ""
+      radio_property units S , "normalized|inches|centimeters|points|{pixels}|characters"
+    END_PROPERTIES
+
+    Matrix get_extent_matrix (void) const;
+
+    Matrix get_backgroundcolor_rgb (void);
+
+    Matrix get_alternatebackgroundcolor_rgb (void);
+
+  protected:
+    void init (void)
+    {
+      position.add_constraint (dim_vector (1, 4));
+      extent.add_constraint (dim_vector (1, 4));
+      backgroundcolor.add_constraint (dim_vector (-1, 3));
+      backgroundcolor.add_constraint ("double");
+      columneditable.add_constraint ("logical");
+    }
+
+    void update_units (const caseless_str& old_units);
+    void update_fontunits (const caseless_str& old_units);
+    void update_table_extent (void) { };
+    void update_data (void) { update_table_extent (); }
+    void update_fontname (void) { update_table_extent (); }
+    void update_fontsize (void) { update_table_extent (); }
+    void update_fontangle (void) { update_table_extent (); }
+    void update_fontweight (void) { update_table_extent (); }
+
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uitable (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  { }
+
+  ~uitable (void) { }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+};
+
+// ---------------------------------------------------------------------
+
 class OCTINTERP_API uitoolbar : public base_graphics_object
 {
 public:

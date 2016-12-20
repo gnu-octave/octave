@@ -382,7 +382,7 @@ namespace QtHandles
               axesList.append (childObj);
           }
         else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel")
-                 || childObj.isa ("uibuttongroup"))
+                 || childObj.isa ("uibuttongroup") || childObj.isa ("uitable"))
           {
             Matrix bb = childObj.get_properties ().get_boundingbox (false);
             QRectF r (bb(0), bb(1), bb(2), bb(3));

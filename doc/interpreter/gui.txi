@@ -113,6 +113,8 @@ There is no support for the @code{gnuplot} toolkit.
 
 @DOCSTRING(uipanel)
 
+@DOCSTRING(uitable)
+
 @DOCSTRING(uipushtool)
 
 @DOCSTRING(uitoggletool)

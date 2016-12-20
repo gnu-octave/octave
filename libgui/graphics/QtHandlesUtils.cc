@@ -140,6 +140,10 @@ namespace QtHandles
     template QFont computeFont<uibuttongroup> (const uibuttongroup::properties&
         props,
         int height);
+
+    template QFont computeFont<uitable> (const uitable::properties& props,
+                                         int height);
+
     QColor
     fromRgb (const Matrix& rgb)
     {

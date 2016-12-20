@@ -1304,7 +1304,6 @@ function rlist = missing_functions ()
   "uiswitch",
   "uitab",
   "uitabgroup",
-  "uitable",
   "uitextarea",
   "uitogglebutton",
   "uitree",

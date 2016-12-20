@@ -21,6 +21,7 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-PushTool.cc \
   %reldir%/moc-SliderControl.cc \
   %reldir%/moc-TextEdit.cc \
+  %reldir%/moc-Table.cc \
   %reldir%/moc-ToggleTool.cc \
   %reldir%/moc-ToolBar.cc
 
@@ -77,6 +78,7 @@ noinst_HEADERS += \
   %reldir%/QtHandlesUtils.h \
   %reldir%/RadioButtonControl.h \
   %reldir%/SliderControl.h \
+  %reldir%/Table.h \
   %reldir%/TextControl.h \
   %reldir%/TextEdit.h \
   %reldir%/ToggleButtonControl.h \
@@ -117,6 +119,7 @@ noinst_HEADERS += \
   %reldir%/QtHandlesUtils.cc \
   %reldir%/RadioButtonControl.cc \
   %reldir%/SliderControl.cc \
+  %reldir%/Table.cc \
   %reldir%/TextControl.cc \
   %reldir%/TextEdit.cc \
   %reldir%/ToggleButtonControl.cc \

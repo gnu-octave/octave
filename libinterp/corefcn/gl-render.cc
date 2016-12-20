@@ -671,7 +671,8 @@ namespace octave
       draw_image (dynamic_cast<const image::properties&> (props));
     else if (go.isa ("uimenu") || go.isa ("uicontrol")
              || go.isa ("uicontextmenu") || go.isa ("uitoolbar")
-             || go.isa ("uipushtool") || go.isa ("uitoggletool"))
+             || go.isa ("uipushtool") || go.isa ("uitoggletool")
+             || go.isa ("uitable"))
       ; // SKIP
     else if (go.isa ("uipanel"))
       {

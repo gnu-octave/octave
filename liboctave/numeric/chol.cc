@@ -181,11 +181,11 @@ chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
       if (is_upper)
         for (octave_idx_type j = 0; j < r_nc; j++)
           for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = tmp.xelem (j, i);
+            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
       else
         for (octave_idx_type j = 0; j < r_nc; j++)
           for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = tmp.xelem (i, j);
+            tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
     }
 
   retval = tmp;
@@ -226,11 +226,11 @@ chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
       if (is_upper)
         for (octave_idx_type j = 0; j < r_nc; j++)
           for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = tmp.xelem (j, i);
+            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
       else
         for (octave_idx_type j = 0; j < r_nc; j++)
           for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = tmp.xelem (i, j);
+            tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
     }
 
   retval = tmp;

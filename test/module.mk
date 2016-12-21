@@ -11,6 +11,7 @@ TEST_FILES += \
   test/bug-38565.tst \
   test/bug-38576.tst \
   test/bug-46330.tst \
+  test/bug-49904.tst \
   test/colormaps.tst \
   test/command.tst \
   test/complex.tst \

@@ -30,7 +30,12 @@ function varargout = __bar__ (vertical, func, varargin)
   width = 0.8;
   group = true;
   histc = NA;
-  bv = 0;  # BaseValue
+  ## BaseValue
+  if (strcmp (get (hax, "yscale"), "log"))
+    bv = 1;
+  else
+    bv = 0;
+  endif
 
   if (nargin > 1 && isnumeric (varargin{2}))
     x = varargin{1};
@@ -336,6 +341,7 @@ function hglist = bars (hax, vertical, x, y, xb, yb, width, group, have_color_sp
   ## Add listeners outside of for loop to prevent constant updating during
   ## creation of plot when patch objects are added.
   addlistener (hax, "xlim", @update_xlim);
+  addlistener (hax, "yscale", {@update_basevalue_logscale, hg});
   addlistener (h_baseline, "ydata", @update_baseline);
   addlistener (h_baseline, "visible", @update_baseline);
 
@@ -355,6 +361,20 @@ function update_xlim (h, ~)
     endif
   endfor
 
+endfunction
+
+function update_basevalue_logscale (hax, ~, hg)
+  if (strcmp (get (hax, "yscale"), "log"))
+    warning ("off", "Octave:negative-data-log-axis", "local");
+    if (get (hg, "basevalue") == 0)
+      set (hg, "basevalue", 1);
+    endif
+  else
+#    warning ("off", "Octave:negative-data-log-axis", "local");
+    if (get (hg, "basevalue") == 1)
+      set (hg, "basevalue", 0);
+    endif
+  endif
 endfunction
 
 function update_baseline (h, ~)

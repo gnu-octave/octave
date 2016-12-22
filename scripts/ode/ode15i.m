@@ -342,12 +342,14 @@ endfunction
 %!                    0, -1, 0;
 %!                    0,  0, 0]);
 %!endfunction
+%!
 %!function [DFDY, DFDYP] = jacwrong(t, y, yp)
 %!  DFDY = [-0.04,           1e4*y(3);
 %!           0.04, -1e4*y(3)-6e7*y(2)];
 %!  DFDYP = [-1,  0;
 %!            0, -1];
 %!endfunction
+%!
 %!function [DFDY, DFDYP, A] = jacwrong2(t, y, yp)
 %!  DFDY = [-0.04,           1e4*y(3),  1e4*y(2);
 %!           0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
@@ -357,6 +359,7 @@ endfunction
 %!            0,  0, 0];
 %!  A = DFDY;
 %!endfunction
+%!
 %!function [val, isterminal, direction] = ff (t, y, yp)
 %!  isterminal = [0 1];
 %!  if (t < 1e1)
@@ -368,75 +371,110 @@ endfunction
 %!  direction = [1 0];
 %!endfunction
 
-%!test  # anonymous function instead of real function
+## anonymous function instead of real function
+%!testif HAVE_SUNDIALS
 %! ref = [0.049787079136413];
 %! ff = @(t, u, udot)  udot + 3 * u;
 %! [t, y] = ode15i (ff, 0:1, 1, -3);
 %! assert ([t(end), y(end)], [1, ref], 1e-3);
-%!test  # function passed as string
+
+## function passed as string
+%!testif HAVE_SUNDIALS
 %! [t, y] = ode15i ('rob',[0 100 200], [1;0;0], [-1e-4;1e-4;0]);
 %! assert ([t(2), y(2,:)], fref, 1e-3);
-%!test  #  solve in intermidiate step
+
+##  solve in intermidiate step
+%!testif HAVE_SUNDIALS
 %! [t, y] = ode15i (@rob,[0 100 200], [1;0;0], [-1e-4;1e-4;0]);
 %! assert ([t(2), y(2,:)], fref, 1e-3);
-%!test  # numel(trange) = 2 final value
+
+## numel(trange) = 2 final value
+%!testif HAVE_SUNDIALS
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0]);
 %! assert ([t(end), y(end,:)], fref, 1e-5);
-%!test  # With empty options
+
+## With empty options
+%!testif HAVE_SUNDIALS
 %! opt = odeset();
 %! [t, y] = ode15i (@rob,[0 1e6 2e6 3e6 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
 %! opt = odeset();
-%!test  # Without options
+
+## Without options
+%!testif HAVE_SUNDIALS
 %! [t, y] = ode15i (@rob,[0 1e6 2e6 3e6 4e6], [1;0;0], [-1e-4;1e-4;0]);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
-%!test  # InitialStep option
+
+## InitialStep option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("InitialStep", 1e-8);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(2)-t(1)], [1e-8], 1e-9);
-%!test  # MaxStep option
+
+## MaxStep option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("MaxStep", 1e-3);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0]);
 %! assert ([t(5)-t(4)], [1e-3], 1e-3);
-%!test  # AbsTol scalar option
+
+## AbsTol scalar option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-8);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # AbsTol scalar and RelTol option
+
+## AbsTol scalar and RelTol option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-6);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # AbsTol vector option
+
+## AbsTol vector option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", [1e-8, 1e-14,1e-6]);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # AbsTol vector and RelTol option
+
+## AbsTol vector and RelTol option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", [1e-8, 1e-14,1e-6], "RelTol", 1e-6);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # RelTol option
+
+## RelTol option
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", 1e-6);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # Jacobian fun dense
+
+## Jacobian fun dense
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacfundense);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # Jacobian fun dense as string
+
+## Jacobian fun dense as string
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", 'jacfundense');
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # Jacobian fun sparse
+
+## Jacobian fun sparse
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacfunsparse, "AbsTol", 1e-7, "RelTol", 1e-7);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
-%!test  # Solve in backward direction starting at t=100
+
+## Solve in backward direction starting at t=100
+%!testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0]);
 %! [t2, y2] = ode15i (@rob,[100 0], Yref', YPref);
 %! assert ([t2(end), y2(end,:)], [0 1 0 0], 2e-2);
-#%!test  # Solve in backward direction with MaxStep option
+
+## Solve in backward direction with MaxStep option
+#%!testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
 %! opt = odeset ('MaxStep', 1e-2);
@@ -444,23 +482,31 @@ endfunction
 %! [t2, y2] = ode15i (@rob,[100 0], Yref', YPref, opt);
 %! assert ([t2(end), y2(end,:)], [0 1 0 0], 2e-2);
 %! assert ([t2(9)-t2(10)], [1e-2], 1e-2);
-#%!test  # Solve in backward direction starting  with intermidiate step
+
+## Solve in backward direction starting  with intermidiate step
+#%!testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0]);
 %! [t2, y2] = ode15i (@rob,[100 5 0], Yref', YPref);
 %! assert ([t2(end), y2(end,:)], [0 1 0 0], 2e-2);
-%!test  # Refine
+
+## Refine
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Refine", 3);
 %! [t, y] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0]);
 %! [t2, y2] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([numel(t2)], numel(t)*3, 3);
-%!test  # Refine ignored if numel (trange) > 2
+
+## Refine ignored if numel (trange) > 2
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Refine", 3);
 %! [t, y] = ode15i (@rob,[0 10 100], [1;0;0], [-1e-4;1e-4;0]);
 %! [t2, y2] = ode15i (@rob,[0 10 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([numel(t2)], numel(t));
-%!test  # Events option add further elements in sol
+
+## Events option add further elements in sol
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Events", @ff);
 %! sol = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert (isfield (sol, "ie"));
@@ -468,15 +514,20 @@ endfunction
 %! assert (isfield (sol, "xe"));
 %! assert (isfield (sol, "ye"));
 %! assert (sol.x(end), 10, 1);
-%!test  # Events option, five output arguments
+
+## Events option, five output arguments
+%!testif HAVE_SUNDIALS
 %! opt = odeset ("Events", @ff);
 %! [t, y, te, ye, ie] = ode15i (@rob,[0 100], [1;0;0], [-1e-4;1e-4;0], opt);
 %! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.2, 0.2, 0, 0]);
 
-%!error  # Jacobian fun wrong dimension
+## Jacobian fun wrong dimension
+%!error
 %! opt = odeset ("Jacobian", @jacwrong);
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!error  # Jacobian cell dense wrong dimension
+
+## Jacobian cell dense wrong dimension
+%!error
 %!  DFDY = [-0.04, 1;
 %!           0.04, 1];
 %!  DFDYP = [-1,  0, 0;
@@ -484,7 +535,9 @@ endfunction
 %!            0,  0, 0];
 %! opt = odeset ("Jacobian", {DFDY, DFDYP});
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!error  # Jacobian cell sparse wrong dimension
+
+## Jacobian cell sparse wrong dimension
+%!error
 %!  DFDY = sparse ([-0.04, 1;
 %!                   0.04, 1]);
 %!  DFDYP = sparse ([-1,  0, 0;
@@ -492,22 +545,31 @@ endfunction
 %!                    0,  0, 0]);
 %! opt = odeset ("Jacobian", {DFDY, DFDYP});
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!error  # Jacobian cell wrong number of matrices
+
+## Jacobian cell wrong number of matrices
+%!error
 %! A = [1 2 3; 4 5 6; 7 8 9];
 %! opt = odeset ("Jacobian", {A,A,A});
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!error  # Jacobian single matrix
+
+## Jacobian single matrix
+%!error
 %! opt = odeset ("Jacobian", [1 2 3; 4 5 6; 7 8 9]);
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!error  # Jacobian single matrix wrong dimension
+
+## Jacobian single matrix wrong dimension
+%!error
 %! opt = odeset ("Jacobian", [1 2 3; 4 5 6]);
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
-%!error  # Jacobian strange field
+
+## Jacobian strange field
+%!error
 %! opt = odeset ("Jacobian", "foo");
 %! [t, y] = ode15i (@rob,[0 4e6], [1;0;0], [-1e-4;1e-4;0], opt);
 %!function ydot = fun (t, y, yp)
 %! ydot = [y - yp];
 %!endfunction
+
 %!error ode15i ();
 %!error ode15i (1);
 %!error ode15i (1, 1, 1);
@@ -518,21 +580,27 @@ endfunction
 %!error ode15i (@fun, 1, 1, 1);
 %!error ode15i (@fun, [1, 1], 1, 1);
 %!error ode15i (@fun, [1, 2], [1], [1, 2]);
+
 %!error
 %!  opt = odeset ('RelTol', "foo");
 %!  [t, y] = ode15i (@fun, [0 2], [2], [2], opt);
+
 %!error
 %!  opt = odeset ('RelTol', [1, 2]);
 %!  [t, y] = ode15i (@fun, [0 2], [2], [2], opt);
+
 %!error
 %!  opt = odeset ('RelTol', -2);
 %!  [t, y] = ode15i (@fun, [0 2], [2], [2], opt);
+
 %!error
 %!  opt = odeset ('AbsTol', "foo");
 %!  [t, y] = ode15i (@fun, [0 2], [2], [2], opt);
+
 %!error
 %!  opt = odeset ('AbsTol', -1);
 %!  [t, y] = ode15i (@fun, [0 2], [2], [2], opt);
+
 %!error
 %!  opt = odeset ('AbsTol', [1, 1, 1]);
 %!  [t, y] = ode15i (@fun, [0 2], [2], [2], opt);

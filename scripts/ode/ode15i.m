@@ -232,10 +232,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   endif
 
   ## Stats
-  options.havestats = false;
-  if (strcmp (options.Stats, "on"))
-    options.havestats = true;
-  endif
+  options.havestats = strcmpi (options.Stats, "on");
 
   ## Don't use Refine when the output is a structure
   if (nargout == 1)

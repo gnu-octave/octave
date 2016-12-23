@@ -151,7 +151,6 @@ function varargout = ode23 (fun, trange, init, varargin)
            "ode23: FUN must be a valid function handle");
   endif
 
-
   ## Start preprocessing, have a look which options are set in odeopts,
   ## check if an invalid or unused option is set.
   [defaults, classes, attributes] = odedefaults (numel (init),
@@ -194,7 +193,7 @@ function varargout = ode23 (fun, trange, init, varargin)
     odeopts.InitialStep = odeopts.direction * ...
                           starting_stepsize (order, fun, trange(1), init,
                                              odeopts.AbsTol, odeopts.RelTol,
-                                             strcmp (odeopts.NormControl, "on"),
+                                             strcmpi (odeopts.NormControl, "on"),
                                              odeopts.funarguments);
   endif
 
@@ -244,7 +243,7 @@ function varargout = ode23 (fun, trange, init, varargin)
   endif
 
   ## Print additional information if option Stats is set
-  if (strcmp (odeopts.Stats, "on"))
+  if (strcmpi (odeopts.Stats, "on"))
     nsteps    = solution.cntloop;             # cntloop from 2..end
     nfailed   = solution.cntcycles - nsteps;  # cntcycl from 1..end
     nfevals   = 3 * solution.cntcycles + 1;   # number of ode evaluations
@@ -269,7 +268,7 @@ function varargout = ode23 (fun, trange, init, varargin)
       varargout{1}.xe = solution.event{3};  # Time info when an event occurred
       varargout{1}.ye = solution.event{4};  # Results when an event occurred
     endif
-    if (strcmp (odeopts.Stats, "on"))
+    if (strcmpi (odeopts.Stats, "on"))
       varargout{1}.stats = struct ();
       varargout{1}.stats.nsteps   = nsteps;
       varargout{1}.stats.nfailed  = nfailed;

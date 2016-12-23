@@ -244,20 +244,18 @@ function varargout = ode45 (fun, trange, init, varargin)
     ndecomps  = 0;  # number of LU decompositions
     npds      = 0;  # number of partial derivatives
     nlinsols  = 0;  # no. of linear systems solutions
-    ## Print cost statistics if no output argument is given
-    if (nargout == 0)
-      printf ("Number of successful steps: %d\n", nsteps);
-      printf ("Number of failed attempts:  %d\n", nfailed);
-      printf ("Number of function calls:   %d\n", nfevals);
-    endif
+
+    printf ("Number of successful steps: %d\n", nsteps);
+    printf ("Number of failed attempts:  %d\n", nfailed);
+    printf ("Number of function calls:   %d\n", nfevals);
   endif
 
   if (nargout == 2)
     varargout{1} = solution.t;      # Time stamps are first output argument
     varargout{2} = solution.x;      # Results are second output argument
   elseif (nargout == 1)
-    varargout{1}.x = solution.t.';   # Time stamps are saved in field x (row vector)
-    varargout{1}.y = solution.x.';   # Results are saved in field y (row vector)
+    varargout{1}.x = solution.t.';  # Time stamps saved in field x (row vector)
+    varargout{1}.y = solution.x.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
       varargout{1}.ie = solution.event{2};  # Index info which event occurred
@@ -312,10 +310,8 @@ endfunction
 %! ## Estimate order numerically
 %! p = diff (log (err)) ./ diff (log (h))
 
-## We are using the Van der Pol equation for all tests that are done
-## for this function.
-## For further tests we also define a reference solution (computed at high
-## accuracy)
+## We are using the Van der Pol equation for all tests.
+## Further tests also define a reference solution (computed at high accuracy)
 %!function ydot = fpol (t, y)  # The Van der Pol ODE
 %!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
@@ -323,20 +319,20 @@ endfunction
 %!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
 %!function [val, trm, dir] = feve (t, y, varargin)
-%!  val = fpol (t, y, varargin);    # We use the derivatives
-%!  trm = zeros (2,1);              # that's why component 2
-%!  dir = ones (2,1);               # does not seem to be exact
+%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  trm = zeros (2,1);            # that's why component 2
+%!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function [val, trm, dir] = fevn (t, y, varargin)
-%!  val = fpol (t, y, varargin);    # We use the derivatives
-%!  trm = ones (2,1);               # that's why component 2
-%!  dir = ones (2,1);               # does not seem to be exact
+%!  val = fpol (t, y, varargin);  # We use the derivatives
+%!  trm = ones (2,1);             # that's why component 2
+%!  dir = ones (2,1);             # does not seem to be exact
 %!endfunction
 %!function mas = fmas (t, y, varargin)
-%!  mas = [1, 0; 0, 1];            # Dummy mass matrix for tests
+%!  mas = [1, 0; 0, 1];           # Dummy mass matrix for tests
 %!endfunction
 %!function mas = fmsa (t, y, varargin)
-%!  mas = sparse ([1, 0; 0, 1]);   # A sparse dummy matrix
+%!  mas = sparse ([1, 0; 0, 1]);  # A sparse dummy matrix
 %!endfunction
 %!function out = fout (t, y, flag, varargin)
 %!  out = false;
@@ -442,7 +438,8 @@ endfunction
 %! sol = ode45 (@fpol, [0 2], [2 0], opt);
 %!test  # Stats must add further elements in sol
 %! opt = odeset ("Stats", "on");
-%! sol = ode45 (@fpol, [0 2], [2 0], opt);
+%! stat_str = evalc ("sol = ode45 (@fpol, [0 2], [2 0], opt);");
+%! assert (strncmp (stat_str, "Number of successful steps:", 27));
 %! assert (isfield (sol, "stats"));
 %! assert (isfield (sol.stats, "nsteps"));
 %!test  # Events option add further elements in sol

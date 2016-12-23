@@ -85,7 +85,7 @@
 
 function varargout = ode15s (fun, trange, y0, varargin)
 
-  solver = 'ode15s';
+  solver = "ode15s";
 
   if (nargin < 3)
     print_usage ();
@@ -111,7 +111,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
       end_try_catch
       if (! isa (options.Mass, "function_handle"))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Mass");
+               [solver ": invalid value assigned to field 'Mass'"]);
       endif
     endif
   endif
@@ -125,7 +125,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
       end_try_catch
       if (! isa (options.Jacobian, "function_handle"))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'"]);
       endif
     endif
   endif
@@ -153,24 +153,20 @@ function varargout = ode15s (fun, trange, y0, varargin)
       end_try_catch
       if (! isa (options.Events, "function_handle"))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Events");
+               [solver ": invalid value assigned to field 'Events'"]);
       endif
     endif
   endif
 
+  [defaults, classes, attributes] = odedefaults (n, trange(1), trange(end));
 
-  [defaults, classes, attributes] = ...
-  odedefaults (n, trange(1), trange(end));
+  classes    = odeset (classes, "Vectorized", {});
+  attributes = odeset (attributes, "Jacobian", {}, "Vectorized", {});
 
-  classes    = odeset (classes, 'Vectorized', {});
-  attributes = odeset (attributes, 'Jacobian', {}, 'Vectorized', {});
-
-  options = ...
-  odemergeopts ("ode15s", options, defaults,
-                classes, attributes, solver);
+  options = odemergeopts ("ode15s", options, defaults,
+                          classes, attributes, solver);
 
   ## Mass
-
   options.havemassfun    = false;
   options.havestatedep   = false;
   options.havetimedep    = false;
@@ -185,7 +181,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
         options.havemasssparse = issparse (M);
         if (any (size (M) != [n n]) || ! isnumeric (M) || ! isreal (M))
           error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Mass");
+                 [solver ": invalid value assigned to field 'Mass'");
         endif
       elseif (nargin (options.Mass) == 1)
         options.havetimedep = true;
@@ -193,25 +189,24 @@ function varargout = ode15s (fun, trange, y0, varargin)
         options.havemasssparse = issparse (M);
         if (any (size (M) != [n n]) || ! isnumeric (M) || ! isreal (M))
           error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Mass");
+                 [solver ": invalid value assigned to field 'Mass'");
         endif
       else
         error ("Octave:invalid-input-arg",
-                [solver ": invalid value assigned to field '%s'"], "Mass");
+               [solver ": invalid value assigned to field 'Mass'");
       endif
     elseif (ismatrix (options.Mass))
       options.havemasssparse = issparse (options.Mass);
       if (any (size (options.Mass) != [n n]) ||
           ! isnumeric (options.Mass) || ! isreal (options.Mass))
         error ("Octave:invalid-input-arg",
-                [solver ": invalid value assigned to field '%s'"], "Mass");
+               [solver ": invalid value assigned to field 'Mass'");
       endif
     else
       error ("Octave:invalid-input-arg",
-              [solver ": invalid value assigned to field '%s'"], "Mass");
+             [solver ": invalid value assigned to field 'Mass'");
     endif
   endif
-
 
   ## Jacobian
   options.havejac       = false;
@@ -225,30 +220,29 @@ function varargout = ode15s (fun, trange, y0, varargin)
       if (nargin (options.Jacobian) == 2)
         [A] = options.Jacobian (trange(1), y0);
         if (issparse (A))
-          options.havejacsparse = true;  ## Jac is sparse fun
+          options.havejacsparse = true;  # Jac is sparse fun
         endif
         if (any (size (A) != [n n]) || ! isnumeric (A) || ! isreal (A))
           error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+                 [solver ": invalid value assigned to field 'Jacobian'");
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'");
       endif
     elseif (ismatrix (options.Jacobian))
       if (issparse (options.Jacobian))
-        options.havejacsparse = true;            ## Jac is sparse matrix
+        options.havejacsparse = true;    # Jac is sparse matrix
       endif
       if (! issquare (options.Jacobian))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'");
       endif
     else
       error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field '%s'"], "Jacobian");
+             [solver ": invalid value assigned to field 'Jacobian'");
     endif
   endif
-
 
   ## Derivative of M(t,y) for implicit problem not implemented yet
   if (! isempty (options.Mass) && ! isempty (options.Jacobian))
@@ -283,16 +277,12 @@ function varargout = ode15s (fun, trange, y0, varargin)
     endif
   endif
 
-
-
   ## Abstol and Reltol
-
   options.haveabstolvec = false;
 
   if (numel (options.AbsTol) != 1 && numel (options.AbsTol) != n)
     error ("Octave:invalid-input-arg",
-           [solver ": invalid value assigned to field '%s'"], "AbsTol");
-
+           [solver ": invalid value assigned to field 'AbsTol'");
   elseif (numel (options.AbsTol) == n)
     options.haveabstolvec = true;
   endif
@@ -326,7 +316,6 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
   yp0 = options.InitialSlope;
 
-
   [t, y, te, ye, ie] = __ode15__ (@ (t, y, yp) wrap (t, y, yp, options.Mass,
                                                      options.havetimedep,
                                                      options.havestatedep,
@@ -337,8 +326,8 @@ function varargout = ode15s (fun, trange, y0, varargin)
     varargout{1} = t;
     varargout{2} = y;
   elseif (nargout == 1)
-    varargout{1}.x = t;    # Time stamps are saved in field x
-    varargout{1}.y = y;    # Results are saved in field y
+    varargout{1}.x = t;  # Time stamps are saved in field x
+    varargout{1}.y = y;  # Results are saved in field y
     varargout{1}.solver = solver;
     if (options.haveeventfunction)
       varargout{1}.xe = te;  # Time info when an event occurred
@@ -392,8 +381,7 @@ endfunction
 
 
 %!demo
-%!
-%! ##Solve Robertson's equations with ode15s
+%! ## Solve Robertson's equations with ode15s
 %! fun = @ (t, y) [-0.04*y(1) + 1e4*y(2).*y(3);
 %!                  0.04*y(1) - 1e4*y(2).*y(3) - 3e7*y(2).^2;
 %!                  y(1) + y(2) + y(3) - 1 ];
@@ -402,84 +390,84 @@ endfunction
 %! tspan = [0 4*logspace(-6, 6)];
 %! M = [1 0 0; 0 1 0; 0 0 0];
 %!
-%! options = odeset ('RelTol', 1e-4, 'AbsTol', [1e-6 1e-10 1e-6],
-%!                   'MStateDependence', 'none', 'Mass', M);
+%! options = odeset ("RelTol", 1e-4, "AbsTol", [1e-6 1e-10 1e-6],
+%!                   "MStateDependence", "none", "Mass", M);
 %!
 %! [t, y] = ode15s (fun, tspan, y0, options);
 %!
-%! y (:,2) = 1e4 * y (:,2);
+%! y(:,2) = 1e4 * y(:,2);
 %! figure (2);
-%! semilogx (t, y, 'o')
-%! xlabel ('time');
-%! ylabel ('species concentration');
-%! title ('Robertson DAE problem with a Conservation Law');
-%! legend ('y1', 'y2', 'y3');
+%! semilogx (t, y, "o");
+%! xlabel ("time");
+%! ylabel ("species concentration");
+%! title ("Robertson DAE problem with a Conservation Law");
+%! legend ("y1", "y2", "y3");
 
-%!function ydot = fpol (t, y)  # The Van der Pol
-%! ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%!function ydot = fpol (t, y)  # Van der Pol equation
+%!  ydot = [y(2); (1 - y(1)^2) * y(2) - y(1)];
 %!endfunction
 %!
 %!function ref = fref ()       # The computed reference sol
-%! ref = [0.32331666704577, -1.83297456798624];
+%!  ref = [0.32331666704577, -1.83297456798624];
 %!endfunction
 %!
-%!function jac = fjac (t, y)  # its Jacobian
-%! jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
+%!function jac = fjac (t, y)   # its Jacobian
+%!  jac = [0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2];
 %!endfunction
 %!
-%!function jac = fjcc (t, y)  # sparse type
-%! jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
+%!function jac = fjcc (t, y)   # sparse type
+%!  jac = sparse ([0, 1; -1 - 2 * y(1) * y(2), 1 - y(1)^2]);
 %!endfunction
 %!
 %!function mas = fmas (t, y)
-%! mas = [1, 0; 0, 1];             # Dummy mass matrix for tests
+%!  mas = [1, 0; 0, 1];           # Dummy mass matrix for tests
 %!endfunction
 %!
 %!function mas = fmsa (t, y)
-%! mas = sparse ([1, 0; 0, 1]);    # A sparse dummy matrix
+%!  mas = sparse ([1, 0; 0, 1]);  # A sparse dummy matrix
 %!endfunction
 %!
 %!function res = rob (t, y)
-%! res = [-0.04*y(1) + 1e4*y(2).*y(3);
-%!         0.04*y(1) - 1e4*y(2).*y(3) - 3e7*y(2).^2;
-%!         y(1) + y(2) + y(3) - 1 ];
+%!  res = [-0.04*y(1) + 1e4*y(2).*y(3);
+%!          0.04*y(1) - 1e4*y(2).*y(3) - 3e7*y(2).^2;
+%!          y(1) + y(2) + y(3) - 1 ];
 %!endfunction
 %!
-%!function refrob = frefrob()
-%! refrob = [100, 0.617234887614937, 0.000006153591397, 0.382758958793666];
+%!function refrob = frefrob ()
+%!  refrob = [100, 0.617234887614937, 0.000006153591397, 0.382758958793666];
 %!endfunction
 %!
 %!function [val, isterminal, direction] = feve (t, y)
-%!  isterminal = [0 1];
+%!  isterminal = [0, 1];
 %!  if (t < 1e1)
 %!    val = [-1, -2];
 %!  else
-%!    val = [1 3];
+%!    val = [1, 3];
 %!  endif
 %!
-%!  direction = [1 0];
+%!  direction = [1, 0];
 %!endfunction
 %!
 %!function masrob = massdensefunstate (t, y)
-%! masrob = [1 0 0; 0 1 0; 0 0 0];
+%!  masrob = [1 0 0; 0 1 0; 0 0 0];
 %!endfunction
 %!
 %!function masrob = masssparsefunstate (t, y)
-%! masrob = sparse([1 0 0; 0 1 0; 0 0 0]);
+%!  masrob = sparse ([1 0 0; 0 1 0; 0 0 0]);
 %!endfunction
 %!
 %!function masrob = massdensefuntime (t)
-%! masrob = [1 0 0; 0 1 0; 0 0 0];
+%!  masrob = [1 0 0; 0 1 0; 0 0 0];
 %!endfunction
 %!
 %!function masrob = masssparsefuntime (t)
-%! masrob = sparse([1 0 0; 0 1 0; 0 0 0]);
+%!  masrob = sparse ([1 0 0; 0 1 0; 0 0 0]);
 %!endfunction
 %!
 %!function jac = jacfundense (t, y)
 %!  jac = [-0.04,           1e4*y(3),  1e4*y(2);
-%!           0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
-%!              1,                  1,         1];
+%!          0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
+%!             1,                  1,         1];
 %!endfunction
 %!
 %!function jac = jacfunsparse (t, y)
@@ -490,117 +478,117 @@ endfunction
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!                "Mass", [1 0 0; 0 1 0; 0 0 0]);
+%!               "Mass", [1 0 0; 0 1 0; 0 0 0]);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!                "Mass", sparse([1 0 0; 0 1 0; 0 0 0]));
+%!               "Mass", sparse ([1 0 0; 0 1 0; 0 0 0]));
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!                "Mass", @massdensefunstate);
+%!               "Mass", @massdensefunstate);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!                "Mass", @masssparsefunstate);
+%!               "Mass", @masssparsefunstate);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!                "Mass", 'massdensefuntime');
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
-%! assert ([t(end), y(end,:)], frefrob, 1e-3);
-
-%!testif HAVE_SUNDIALS
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", [1 0 0; 0 1 0; 0 0 0],
-%!                "Jacobian", 'jacfundense');
+%!               "Mass", "massdensefuntime");
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!                "Mass", sparse([1 0 0; 0 1 0; 0 0 0]),
-%!                "Jacobian", @jacfundense);
+%!               "Mass", [1 0 0; 0 1 0; 0 0 0],
+%!               "Jacobian", "jacfundense");
+%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! assert ([t(end), y(end,:)], frefrob, 1e-3);
+
+%!testif HAVE_SUNDIALS
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", sparse ([1 0 0; 0 1 0; 0 0 0]),
+%!               "Jacobian", @jacfundense);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! warning ("off", "ode15s:mass_state_dependent_provided", "local");
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @massdensefunstate,
-%!                "Jacobian", @jacfundense);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @massdensefunstate,
+%!               "Jacobian", @jacfundense);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! warning ("off", "ode15s:mass_state_dependent_provided", "local");
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @masssparsefunstate,
-%!                "Jacobian", @jacfundense);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @masssparsefunstate,
+%!               "Jacobian", @jacfundense);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @massdensefuntime,
-%!                "Jacobian", @jacfundense);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @massdensefuntime,
+%!               "Jacobian", @jacfundense);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", 'masssparsefuntime',
-%!                "Jacobian", 'jacfundense');
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
-%! assert ([t(end), y(end,:)], frefrob, 1e-3);
-
-%!testif HAVE_SUNDIALS
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", [1 0 0; 0 1 0; 0 0 0],
-%!                "Jacobian", @jacfunsparse);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", "masssparsefuntime",
+%!               "Jacobian", "jacfundense");
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", sparse([1 0 0; 0 1 0; 0 0 0]),
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", [1 0 0; 0 1 0; 0 0 0],
+%!               "Jacobian", @jacfunsparse);
+%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! assert ([t(end), y(end,:)], frefrob, 1e-3);
+
+%!testif HAVE_SUNDIALS
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", sparse ([1 0 0; 0 1 0; 0 0 0]),
 %!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! warning ("off", "ode15s:mass_state_dependent_provided", "local");
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @massdensefunstate,
-%!                "Jacobian", @jacfunsparse);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @massdensefunstate,
+%!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! warning ("off", "ode15s:mass_state_dependent_provided", "local");
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @masssparsefunstate,
-%!                "Jacobian", @jacfunsparse);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @masssparsefunstate,
+%!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @massdensefuntime,
-%!                "Jacobian", @jacfunsparse);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @massdensefuntime,
+%!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
-%!  opt = odeset ("MStateDependence", "none",
-%!                "Mass", @masssparsefuntime,
-%!                "Jacobian", @jacfunsparse);
+%! opt = odeset ("MStateDependence", "none",
+%!               "Mass", @masssparsefuntime,
+%!               "Jacobian", @jacfunsparse);
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
@@ -625,13 +613,13 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("InitialStep", 1e-8);
 %! [t, y] = ode15s (@fpol, [0 0.2], [2 0], opt);
-%! assert ([t(2)-t(1)], [1e-8], 1e-9);
+%! assert (t(2)-t(1), 1e-8, 1e-9);
 
 ## MaxStep option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode15s (@fpol, [0 0.2], [2 0], opt);
-%! assert ([sol.x(5)-sol.x(4)], [1e-3], 1e-3);
+%! assert (sol.x(5)-sol.x(4), 1e-3, 1e-3);
 
 ## Solve in backward direction starting at t=0
 %!testif HAVE_SUNDIALS
@@ -662,7 +650,7 @@ endfunction
 %! ref = [-1.205364552835178, 0.951542399860817];
 %! opt = odeset ("MaxStep", 1e-3);
 %! sol = ode15s (@fpol, [0 -2], [2 0], opt);
-%! assert ([abs(sol.x(8)-sol.x(7))], [1e-3], 1e-3);
+%! assert (abs (sol.x(8)-sol.x(7)), 1e-3, 1e-3);
 %! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
 
 ## AbsTol option
@@ -697,13 +685,13 @@ endfunction
 
 ## Mass option as sparse matrix
 %!testif HAVE_SUNDIALS
-%! opt = odeset ("Mass", sparse (eye (2,2)), "MStateDependence", "none");
+%! opt = odeset ("Mass", speye (2)), "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
 
 ## Mass option as function and sparse matrix
 %!testif HAVE_SUNDIALS
-%! opt = odeset ("Mass", 'fmsa', "MStateDependence", "none");
+%! opt = odeset ("Mass", "fmsa", "MStateDependence", "none");
 %! sol = ode15s (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
 
@@ -714,16 +702,16 @@ endfunction
 %! opt1 = odeset ("Mass", @massdensefunstate, "MStateDependence", "none");
 %! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt1);
 %! [t2, y2] = ode15s (@rob,[0 100], [1;0;0], opt2);
-%! assert ([numel(t2)], numel(t)*3, 3);
+%! assert (numel (t2), numel (t) * 3, 3);
 
 ## Refine ignored if numel (trange) > 2
 %!testif HAVE_SUNDIALS
-%! opt2 = odeset ("Refine", 3, "Mass", 'massdensefunstate',
+%! opt2 = odeset ("Refine", 3, "Mass", "massdensefunstate",
 %!                "MStateDependence", "none");
 %! opt1 = odeset ("Mass", @massdensefunstate, "MStateDependence", "none");
-%! [t, y] = ode15s ('rob',[0 10 100], [1;0;0], opt1);
-%! [t2, y2] = ode15s ('rob',[0 10 100], [1;0;0], opt2);
-%! assert ([numel(t2)], numel(t));
+%! [t, y] = ode15s ("rob", [0 10 100], [1;0;0], opt1);
+%! [t2, y2] = ode15s ("rob", [0 10 100], [1;0;0], opt2);
+%! assert (numel (t2), numel (t));
 
 ## Events option add further elements in sol
 %!testif HAVE_SUNDIALS
@@ -742,3 +730,4 @@ endfunction
 %!               "MStateDependence", "none");
 %! [t, y, te, ye, ie] = ode15s (@rob,[0 100], [1;0;0], opt);
 %! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.5, 0.5, 0, 0]);
+

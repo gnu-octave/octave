@@ -28,7 +28,8 @@
 ## ranges from order 1 to 5.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
-## name of the function that defines the ODE: @code{f(@var{t},@var{y},@var{yp})}.
+## name of the function that defines the ODE:
+## @code{f(@var{t},@var{y},@var{yp})}.
 ## The function must accept three inputs where the first is time @var{t}, the
 ## second is a column vector of unknowns @var{y} and the third is a column
 ## vector of unknowns @var{yp}.
@@ -92,7 +93,7 @@
 
 function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
-  solver = 'ode15i';
+  solver = "ode15i";
 
   if (nargin < 4)
     print_usage ();
@@ -118,7 +119,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       end_try_catch
       if (! isa (options.Jacobian, "function_handle"))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'"]);
       endif
     endif
   endif
@@ -132,7 +133,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       end_try_catch
       if (! isa (options.OutputFcn, "function_handle"))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "OutputFcn");
+               [solver ": invalid value assigned to field 'OutputFcn'");
       endif
     endif
   endif
@@ -144,15 +145,15 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       catch
         warning (lasterr);
       end_try_catch
-      if (! isa (options.Events, "function_handle") && ! ismatrix (options.Events))
+      if (! isa (options.Events, "function_handle")
+          && ! ismatrix (options.Events))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Events");
+               [solver ": invalid value assigned to field 'Events'");
       endif
     endif
   endif
 
-  [defaults, classes, attributes] = ...
-  odedefaults (n, trange(1), trange(end));
+  [defaults, classes, attributes] = odedefaults (n, trange(1), trange(end));
 
   persistent ignorefields = {"NonNegative", "Mass", ...
                              "MStateDependence", "MvPattern", ...
@@ -162,13 +163,11 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   classes    = rmfield (classes, ignorefields);
   attributes = rmfield (attributes, ignorefields);
 
-  classes        = odeset (classes, 'Vectorized', {});
-  attributes     = ...
-  odeset (attributes, 'Jacobian', {}, 'Vectorized', {});
+  classes    = odeset (classes, "Vectorized", {});
+  attributes = odeset (attributes, "Jacobian", {}, "Vectorized", {});
 
-  options = ...
-  odemergeopts ("ode15i", options, defaults,
-                classes, attributes, solver);
+  options = odemergeopts ("ode15i", options, defaults,
+                          classes, attributes, solver);
 
   ## Jacobian
   options.havejac       = false;
@@ -179,8 +178,8 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
     options.havejac = true;
     if (iscell (options.Jacobian))
       if (numel (options.Jacobian) == 2)
-        if (issparse (options.Jacobian{1}) && issparse (options.Jacobian{2})) ## Jac is sparse cell
-          options.havejacsparse = true;
+        if (issparse (options.Jacobian{1}) && issparse (options.Jacobian{2}))
+          options.havejacsparse = true;  # Jac is sparse cell
         endif
 
         if (any (size (options.Jacobian{1}) != [n n])
@@ -190,11 +189,11 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
             || ! isreal (options.Jacobian{1})
             || ! isreal (options.Jacobian{2}))
           error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+                 [solver ": invalid value assigned to field 'Jacobian'");
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'");
       endif
 
     elseif (isa (options.Jacobian, "function_handle"))
@@ -202,32 +201,31 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       if (nargin (options.Jacobian) == 3)
         [A, B] = options.Jacobian (trange(1), y0, yp0);
         if (issparse (A) && issparse (B))
-          options.havejacsparse = true;  ## Jac is sparse fun
+          options.havejacsparse = true;  # Jac is sparse fun
         endif
 
         if (any (size (A) != [n n]) || any (size (B) != [n n])
             || ! isnumeric (A) || ! isnumeric (B) || ! isreal (A)
             || ! isreal (B))
           error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+                 [solver ": invalid value assigned to field 'Jacobian'");
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'");
       endif
     else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field '%s'"], "Jacobian");
+               [solver ": invalid value assigned to field 'Jacobian'");
     endif
   endif
 
   ## Abstol and Reltol
-
   options.haveabstolvec = false;
 
   if (numel (options.AbsTol) != 1 && numel (options.AbsTol) != n)
     error ("Octave:invalid-input-arg",
-           [solver ": invalid value assigned to field '%s'"], "AbsTol");
+           [solver ": invalid value assigned to field 'AbsTol'");
 
   elseif (numel (options.AbsTol) == n)
     options.haveabstolvec = true;
@@ -260,16 +258,14 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
   ## Events
   options.haveeventfunction = ! isempty (options.Events);
 
-
   [t, y, te, ye, ie] = __ode15__ (fun, trange, y0, yp0, options);
-
 
   if (nargout == 2)
     varargout{1} = t;
     varargout{2} = y;
   elseif (nargout == 1)
-    varargout{1}.x = t;    # Time stamps are saved in field x
-    varargout{1}.y = y;    # Results are saved in field y
+    varargout{1}.x = t;  # Time stamps are saved in field x
+    varargout{1}.y = y;  # Results are saved in field y
     varargout{1}.solver = solver;
     if (options.haveeventfunction)
       varargout{1}.xe = te;  # Time info when an event occurred
@@ -289,27 +285,27 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
 
 endfunction
 
+
 %!demo
-%!
-%! ##Solve Robertson's equations with ode15i
+%! ## Solve Robertson's equations with ode15i
 %! fun = @(t, y, yp) [-(yp(1) + 0.04*y(1) - 1e4*y(2)*y(3));
 %!                    -(yp(2) - 0.04*y(1) + 1e4*y(2)*y(3) + 3e7*y(2)^2);
 %!                    y(1) + y(2) + y(3) - 1];
 %!
-%! opt = odeset ('RelTol',1e-4, 'AbsTol', [1e-8, 1e-14, 1e-6]);
+%! opt = odeset ("RelTol", 1e-4, "AbsTol", [1e-8, 1e-14, 1e-6]);
 %! y0 = [1; 0; 0];
 %! yp0 = [-1e-4; 1e-4; 0];
 %! tspan = [0 4*logspace(-6, 6)];
 %!
 %! [t, y] = ode15i (fun, tspan, y0, yp0, opt);
 %!
-%! y (:,2) = 1e4 * y (:, 2);
+%! y(:,2) = 1e4 * y(:, 2);
 %! figure (2);
-%! semilogx (t, y, 'o')
-%! xlabel ('time');
-%! ylabel ('species concentration');
-%! title ('Robertson DAE problem with a Conservation Law');
-%! legend ('y1', 'y2', 'y3');
+%! semilogx (t, y, "o");
+%! xlabel ("time");
+%! ylabel ("species concentration");
+%! title ("Robertson DAE problem with a Conservation Law");
+%! legend ("y1", "y2", "y3");
 
 %!function res = rob (t, y, yp)
 %!  res =[-(yp(1) + 0.04*y(1) - 1e4*y(2)*y(3));
@@ -317,15 +313,15 @@ endfunction
 %!        y(1) + y(2) + y(3) - 1];
 %!endfunction
 %!
-%!function ref = fref()
+%!function ref = fref ()
 %!  ref = [100, 0.617234887614937, 0.000006153591397, 0.382758958793666];
 %!endfunction
 %!
-%!function ref2 = fref2()
+%!function ref2 = fref2 ()
 %!  ref2 = [4e6 0 0 1];
 %!endfunction
 %!
-%!function [DFDY, DFDYP] = jacfundense(t, y, yp)
+%!function [DFDY, DFDYP] = jacfundense (t, y, yp)
 %!  DFDY = [-0.04,           1e4*y(3),  1e4*y(2);
 %!           0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
 %!              1,                  1,         1];
@@ -334,7 +330,7 @@ endfunction
 %!            0,  0, 0];
 %!endfunction
 %!
-%!function [DFDY, DFDYP] = jacfunsparse(t, y, yp)
+%!function [DFDY, DFDYP] = jacfunsparse (t, y, yp)
 %!  DFDY = sparse ([-0.04,           1e4*y(3),  1e4*y(2);
 %!                   0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
 %!                      1,                  1,         1]);
@@ -343,14 +339,14 @@ endfunction
 %!                    0,  0, 0]);
 %!endfunction
 %!
-%!function [DFDY, DFDYP] = jacwrong(t, y, yp)
+%!function [DFDY, DFDYP] = jacwrong (t, y, yp)
 %!  DFDY = [-0.04,           1e4*y(3);
 %!           0.04, -1e4*y(3)-6e7*y(2)];
 %!  DFDYP = [-1,  0;
 %!            0, -1];
 %!endfunction
 %!
-%!function [DFDY, DFDYP, A] = jacwrong2(t, y, yp)
+%!function [DFDY, DFDYP, A] = jacwrong2 (t, y, yp)
 %!  DFDY = [-0.04,           1e4*y(3),  1e4*y(2);
 %!           0.04, -1e4*y(3)-6e7*y(2), -1e4*y(2);
 %!              1,                  1,         1];
@@ -361,7 +357,7 @@ endfunction
 %!endfunction
 %!
 %!function [val, isterminal, direction] = ff (t, y, yp)
-%!  isterminal = [0 1];
+%!  isterminal = [0, 1];
 %!  if (t < 1e1)
 %!    val = [-1, -2];
 %!  else
@@ -380,7 +376,7 @@ endfunction
 
 ## function passed as string
 %!testif HAVE_SUNDIALS
-%! [t, y] = ode15i ('rob', [0, 100, 200], [1; 0; 0], [-1e-4; 1e-4; 0]);
+%! [t, y] = ode15i ("rob", [0, 100, 200], [1; 0; 0], [-1e-4; 1e-4; 0]);
 %! assert ([t(2), y(2,:)], fref, 1e-3);
 
 ##  solve in intermidiate step
@@ -403,7 +399,7 @@ endfunction
 
 ## Without options
 %!testif HAVE_SUNDIALS
-%! [t, y] = ode15i (@rob, [0, 1e6, 2e6, 3e6, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0]);
+%! [t, y] = ode15i (@rob, [0, 1e6, 2e6, 3e6, 4e6], [1; 0; 0],[-1e-4; 1e-4; 0]);
 %! assert ([t(end), y(end,:)], fref2, 1e-3);
 
 ## InitialStep option
@@ -456,7 +452,7 @@ endfunction
 
 ## Jacobian fun dense as string
 %!testif HAVE_SUNDIALS
-%! opt = odeset ("Jacobian", 'jacfundense');
+%! opt = odeset ("Jacobian", "jacfundense");
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
 
@@ -478,13 +474,13 @@ endfunction
 #%!testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
-%! opt = odeset ('MaxStep', 1e-2);
+%! opt = odeset ("MaxStep", 1e-2);
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0]);
 %! [t2, y2] = ode15i (@rob, [100, 0], Yref', YPref, opt);
 %! assert ([t2(end), y2(end,:)], [0, 1, 0, 0], 2e-2);
 %! assert (t2(9)-t2(10), 1e-2, 1e-2);
 
-## Solve in backward direction starting  with intermidiate step
+## Solve in backward direction starting with intermediate step
 #%!testif HAVE_SUNDIALS
 %! YPref = [-0.001135972751027; -0.000000027483627; 0.001136000234654];
 %! Yref = [0.617234887614937, 0.000006153591397, 0.382758958793666];
@@ -497,14 +493,14 @@ endfunction
 %! opt = odeset ("Refine", 3);
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0]);
 %! [t2, y2] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
-%! assert (numel(t2), numel(t)*3, 3);
+%! assert (numel (t2), numel (t) * 3, 3);
 
 ## Refine ignored if numel (trange) > 2
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Refine", 3);
 %! [t, y] = ode15i (@rob, [0, 10, 100], [1; 0; 0], [-1e-4; 1e-4; 0]);
 %! [t2, y2] = ode15i (@rob, [0, 10, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
-%! assert (numel(t2), numel(t));
+%! assert (numel (t2), numel (t));
 
 ## Events option add further elements in sol
 %!testif HAVE_SUNDIALS
@@ -527,7 +523,7 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", @jacwrong);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "ode15i: invalid value assigned to field 'Jacobian'")
+%!       "ode15i: invalid value assigned to field 'Jacobian'");
 
 ## Jacobian cell dense wrong dimension
 %!testif HAVE_SUNDIALS
@@ -538,7 +534,7 @@ endfunction
 %!           0,  0, 0];
 %! opt = odeset ("Jacobian", {DFDY, DFDYP});
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'")
+%!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian cell sparse wrong dimension
 %!testif HAVE_SUNDIALS
@@ -549,26 +545,26 @@ endfunction
 %!                   0,  0, 0]);
 %! opt = odeset ("Jacobian", {DFDY, DFDYP});
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'")
+%!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian cell wrong number of matrices
 %!testif HAVE_SUNDIALS
 %! A = [1 2 3; 4 5 6; 7 8 9];
 %! opt = odeset ("Jacobian", {A,A,A});
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'")
+%!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian single matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", [1 2 3; 4 5 6; 7 8 9]);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'")
+%!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian single matrix wrong dimension
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Jacobian", [1 2 3; 4 5 6]);
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'")
+%!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian strange field
 ## FIXME: we need a better way to silence the warning from odeset.
@@ -577,7 +573,7 @@ endfunction
 %! warning ("off", "all");
 %! opt = odeset ("Jacobian", "foo");
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'")
+%!       "invalid value assigned to field 'Jacobian'");
 %! warning (saved_opts);
 
 %!function ydot = fun (t, y, yp)
@@ -585,71 +581,65 @@ endfunction
 %!endfunction
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i ()",
-%!       "Invalid call to ode15i")
+%! fail ("ode15i ()", "Invalid call to ode15i");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1)",
-%!       "Invalid call to ode15i")
+%! fail ("ode15i (1)", "Invalid call to ode15i");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1)",
-%!       "Invalid call to ode15i")
+%! fail ("ode15i (1, 1)", "Invalid call to ode15i");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1)",
-%!       "Invalid call to ode15i")
+%! fail ("ode15i (1, 1, 1)", "Invalid call to ode15i");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1, 1)",
-%!       "ode15i: fun must be of class:")
+%! fail ("ode15i (1, 1, 1, 1)", "ode15i: fun must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1, 1, 1)",
-%!       "ode15i: fun must be of class:")
+%! fail ("ode15i (1, 1, 1, 1, 1)", "ode15i: fun must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! fail ("ode15i (1, 1, 1, 1, 1, 1)",
-%!       "ode15i: fun must be of class:")
+%! fail ("ode15i (1, 1, 1, 1, 1, 1)", "ode15i: fun must be of class:");
 
 %!testif HAVE_SUNDIALS
 %! fail ("ode15i (@fun, 1, 1, 1)",
-%!       "ode15i: invalid value assigned to field 'trange'")
+%!       "ode15i: invalid value assigned to field 'trange'");
 
 %!testif HAVE_SUNDIALS
 %! fail ("ode15i (@fun, [1, 1], 1, 1)",
-%!       "ode15i: invalid value assigned to field 'trange'")
+%!       "ode15i: invalid value assigned to field 'trange'");
 
 %!testif HAVE_SUNDIALS
 %! fail ("ode15i (@fun, [1, 2], 1, [1, 2])",
-%!       "ode15i: y0 must have 2 elements")
+%!       "ode15i: y0 must have 2 elements");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ('RelTol', "foo");
+%! opt = odeset ("RelTol", "foo");
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
-%!       "ode15i: RelTol must be of class:")
+%!       "ode15i: RelTol must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ('RelTol', [1, 2]);
+%! opt = odeset ("RelTol", [1, 2]);
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
-%!       "ode15i: RelTol must be scalar")
+%!       "ode15i: RelTol must be scalar");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ('RelTol', -2);
+%! opt = odeset ("RelTol", -2);
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
-%!       "ode15i: RelTol must be positive")
+%!       "ode15i: RelTol must be positive");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ('AbsTol', "foo");
+%! opt = odeset ("AbsTol", "foo");
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
-%!       "ode15i: AbsTol must be of class:")
+%!       "ode15i: AbsTol must be of class:");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ('AbsTol', -1);
+%! opt = odeset ("AbsTol", -1);
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
-%!       "ode15i: AbsTol must be positive")
+%!       "ode15i: AbsTol must be positive");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ('AbsTol', [1, 1, 1]);
+%! opt = odeset ("AbsTol", [1, 1, 1]);
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
-%!       "ode15i: invalid value assigned to field 'AbsTol'")
+%!       "ode15i: invalid value assigned to field 'AbsTol'");
+

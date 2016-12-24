@@ -381,13 +381,13 @@ endfunction
 %! ## Solve Robertson's equations with ode15s
 %! fun = @ (t, y) [-0.04*y(1) + 1e4*y(2).*y(3);
 %!                  0.04*y(1) - 1e4*y(2).*y(3) - 3e7*y(2).^2;
-%!                  y(1) + y(2) + y(3) - 1 ];
+%!                  y(1) + y(2) + y(3) - 1];
 %!
 %! y0 = [1; 0; 0];
-%! tspan = [0 4*logspace(-6, 6)];
-%! M = [1 0 0; 0 1 0; 0 0 0];
+%! tspan = [0, 4*logspace(-6, 6)];
+%! M = [1, 0, 0; 0, 1, 0; 0, 0, 0];
 %!
-%! options = odeset ("RelTol", 1e-4, "AbsTol", [1e-6 1e-10 1e-6],
+%! options = odeset ("RelTol", 1e-4, "AbsTol", [1e-6, 1e-10, 1e-6],
 %!                   "MStateDependence", "none", "Mass", M);
 %!
 %! [t, y] = ode15s (fun, tspan, y0, options);
@@ -427,7 +427,7 @@ endfunction
 %!function res = rob (t, y)
 %!  res = [-0.04*y(1) + 1e4*y(2).*y(3);
 %!          0.04*y(1) - 1e4*y(2).*y(3) - 3e7*y(2).^2;
-%!          y(1) + y(2) + y(3) - 1 ];
+%!          y(1) + y(2) + y(3) - 1];
 %!endfunction
 %!
 %!function refrob = frefrob ()
@@ -446,19 +446,19 @@ endfunction
 %!endfunction
 %!
 %!function masrob = massdensefunstate (t, y)
-%!  masrob = [1 0 0; 0 1 0; 0 0 0];
+%!  masrob = [1, 0, 0; 0, 1, 0; 0, 0, 0];
 %!endfunction
 %!
 %!function masrob = masssparsefunstate (t, y)
-%!  masrob = sparse ([1 0 0; 0 1 0; 0 0 0]);
+%!  masrob = sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]);
 %!endfunction
 %!
 %!function masrob = massdensefuntime (t)
-%!  masrob = [1 0 0; 0 1 0; 0 0 0];
+%!  masrob = [1, 0, 0; 0, 1, 0; 0, 0, 0];
 %!endfunction
 %!
 %!function masrob = masssparsefuntime (t)
-%!  masrob = sparse ([1 0 0; 0 1 0; 0 0 0]);
+%!  masrob = sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]);
 %!endfunction
 %!
 %!function jac = jacfundense (t, y)
@@ -475,46 +475,46 @@ endfunction
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!               "Mass", [1 0 0; 0 1 0; 0 0 0]);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%!               "Mass", [1, 0, 0; 0, 1, 0; 0, 0, 0]);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!               "Mass", sparse ([1 0 0; 0 1 0; 0 0 0]));
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%!               "Mass", sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]));
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefunstate);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @masssparsefunstate);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", "massdensefuntime");
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!               "Mass", [1 0 0; 0 1 0; 0 0 0],
+%!               "Mass", [1, 0, 0; 0, 1, 0; 0, 0, 0],
 %!               "Jacobian", "jacfundense");
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!               "Mass", sparse ([1 0 0; 0 1 0; 0 0 0]),
+%!               "Mass", sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]),
 %!               "Jacobian", @jacfundense);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
@@ -522,7 +522,7 @@ endfunction
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefunstate,
 %!               "Jacobian", @jacfundense);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
@@ -530,33 +530,33 @@ endfunction
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @masssparsefunstate,
 %!               "Jacobian", @jacfundense);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefuntime,
 %!               "Jacobian", @jacfundense);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", "masssparsefuntime",
 %!               "Jacobian", "jacfundense");
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!               "Mass", [1 0 0; 0 1 0; 0 0 0],
+%!               "Mass", [1, 0, 0; 0, 1, 0; 0, 0, 0],
 %!               "Jacobian", @jacfunsparse);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
-%!               "Mass", sparse ([1 0 0; 0 1 0; 0 0 0]),
+%!               "Mass", sparse ([1, 0, 0; 0, 1, 0; 0, 0, 0]),
 %!               "Jacobian", @jacfunsparse);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
@@ -564,7 +564,7 @@ endfunction
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefunstate,
 %!               "Jacobian", @jacfunsparse);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
@@ -572,62 +572,62 @@ endfunction
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @masssparsefunstate,
 %!               "Jacobian", @jacfunsparse);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @massdensefuntime,
 %!               "Jacobian", @jacfunsparse);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MStateDependence", "none",
 %!               "Mass", @masssparsefuntime,
 %!               "Jacobian", @jacfunsparse);
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), y(end,:)], frefrob, 1e-3);
 
 ## two output arguments
 %!testif HAVE_SUNDIALS
-%! [t, y] = ode15s (@fpol, [0 2], [2 0]);
+%! [t, y] = ode15s (@fpol, [0, 2], [2, 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 
 ## anonymous function instead of real function
 %!testif HAVE_SUNDIALS
 %! fvdb = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
-%! [t, y] = ode15s (fvdb, [0 2], [2 0]);
+%! [t, y] = ode15s (fvdb, [0, 2], [2, 0]);
 %! assert ([t(end), y(end,:)], [2, fref], 1e-2);
 
 ## Solve another anonymous function below zero
 %!testif HAVE_SUNDIALS
 %! ref = [0, 14.77810590694212];
-%! [t, y] = ode15s (@(t,y) y, [-2 0], 2);
+%! [t, y] = ode15s (@(t,y) y, [-2, 0], 2);
 %! assert ([t(end), y(end,:)], ref, 5e-2);
 
 ## InitialStep option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("InitialStep", 1e-8);
-%! [t, y] = ode15s (@fpol, [0 0.2], [2 0], opt);
+%! [t, y] = ode15s (@fpol, [0, 0.2], [2, 0], opt);
 %! assert (t(2)-t(1), 1e-8, 1e-9);
 
 ## MaxStep option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("MaxStep", 1e-3);
-%! sol = ode15s (@fpol, [0 0.2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 0.2], [2, 0], opt);
 %! assert (sol.x(5)-sol.x(4), 1e-3, 1e-3);
 
 ## Solve in backward direction starting at t=0
 %!testif HAVE_SUNDIALS
 %! ref = [-1.205364552835178, 0.951542399860817];
-%! sol = ode15s (@fpol, [0 -2], [2 0]);
+%! sol = ode15s (@fpol, [0 -2], [2, 0]);
 %! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 5e-3);
 
 ## Solve in backward direction starting at t=2
 %!testif HAVE_SUNDIALS
 %! ref = [-1.205364552835178, 0.951542399860817];
-%! sol = ode15s (@fpol, [2 0 -2], fref);
+%! sol = ode15s (@fpol, [2, 0 -2], fref);
 %! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 3e-2);
 
 ## Solve another anonymous function in backward direction
@@ -639,57 +639,57 @@ endfunction
 ## Solve another anonymous function below zero
 %!testif HAVE_SUNDIALS
 %! ref = [0, 14.77810590694212];
-%! sol = ode15s (@(t,y) y, [-2 0], 2);
+%! sol = ode15s (@(t,y) y, [-2, 0], 2);
 %! assert ([sol.x(end), sol.y(end,:)], ref, 5e-2);
 
 ## Solve in backward direction starting at t=0 with MaxStep option
 %!testif HAVE_SUNDIALS
 %! ref = [-1.205364552835178, 0.951542399860817];
 %! opt = odeset ("MaxStep", 1e-3);
-%! sol = ode15s (@fpol, [0 -2], [2 0], opt);
+%! sol = ode15s (@fpol, [0 -2], [2, 0], opt);
 %! assert (abs (sol.x(8)-sol.x(7)), 1e-3, 1e-3);
 %! assert ([sol.x(end), sol.y(end,:)], [-2, ref], 1e-3);
 
 ## AbsTol option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-5);
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 4e-3);
 
 ## AbsTol and RelTol option
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-3);
 
 ## RelTol option -- higher accuracy
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("RelTol", 1e-8);
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 1e-4);
 
 ## Mass option as function
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", @fmas, "MStateDependence", "none");
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
 
 ## Mass option as matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", eye (2,2), "MStateDependence", "none");
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
 
 ## Mass option as sparse matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", speye (2)), "MStateDependence", "none");
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
 
 ## Mass option as function and sparse matrix
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Mass", "fmsa", "MStateDependence", "none");
-%! sol = ode15s (@fpol, [0 2], [2 0], opt);
+%! sol = ode15s (@fpol, [0, 2], [2, 0], opt);
 %! assert ([sol.x(end), sol.y(end,:)], [2, fref], 3e-3);
 
 ## Refine
@@ -697,8 +697,8 @@ endfunction
 %! opt2 = odeset ("Refine", 3, "Mass", @massdensefunstate,
 %!                "MStateDependence", "none");
 %! opt1 = odeset ("Mass", @massdensefunstate, "MStateDependence", "none");
-%! [t, y] = ode15s (@rob,[0 100], [1;0;0], opt1);
-%! [t2, y2] = ode15s (@rob,[0 100], [1;0;0], opt2);
+%! [t, y] = ode15s (@rob, [0, 100], [1; 0; 0], opt1);
+%! [t2, y2] = ode15s (@rob, [0, 100], [1; 0; 0], opt2);
 %! assert (numel (t2), numel (t) * 3, 3);
 
 ## Refine ignored if numel (trange) > 2
@@ -706,15 +706,15 @@ endfunction
 %! opt2 = odeset ("Refine", 3, "Mass", "massdensefunstate",
 %!                "MStateDependence", "none");
 %! opt1 = odeset ("Mass", @massdensefunstate, "MStateDependence", "none");
-%! [t, y] = ode15s ("rob", [0 10 100], [1;0;0], opt1);
-%! [t2, y2] = ode15s ("rob", [0 10 100], [1;0;0], opt2);
+%! [t, y] = ode15s ("rob", [0, 10, 100], [1; 0; 0], opt1);
+%! [t2, y2] = ode15s ("rob", [0, 10, 100], [1; 0; 0], opt2);
 %! assert (numel (t2), numel (t));
 
 ## Events option add further elements in sol
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Events", @feve, "Mass", @massdensefunstate,
 %!               "MStateDependence", "none");
-%! sol = ode15s (@rob,[0 100], [1;0;0], opt);
+%! sol = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert (isfield (sol, "ie"));
 %! assert (sol.ie, [0;1]);
 %! assert (isfield (sol, "xe"));
@@ -725,6 +725,5 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! opt = odeset ("Events", @feve, "Mass", @massdensefunstate,
 %!               "MStateDependence", "none");
-%! [t, y, te, ye, ie] = ode15s (@rob,[0 100], [1;0;0], opt);
+%! [t, y, te, ye, ie] = ode15s (@rob, [0, 100], [1; 0; 0], opt);
 %! assert ([t(end), te', ie'], [10, 10, 10, 0, 1], [1, 0.5, 0.5, 0, 0]);
-

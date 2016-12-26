@@ -331,7 +331,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
       varargout{1}.ye = ye;  # Results when an event occurred
       varargout{1}.ie = ie;  # Index info which event occurred
     endif
-  elseif (nargout == 5)
+  elseif (nargout > 2)
     varargout = cell (1,5);
     varargout{1} = t;
     varargout{2} = y;

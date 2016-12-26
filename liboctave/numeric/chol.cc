@@ -61,8 +61,8 @@ chol2inv_internal (const Matrix& r, bool is_upper = true)
   if (r_nr != r_nc)
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-  octave_idx_type n = r_nc;
-  octave_idx_type info = 0;
+  F77_INT n = to_f77_int (r_nc);
+  F77_INT info = 0;
 
   Matrix tmp = r;
   double *v = tmp.fortran_vec ();
@@ -110,8 +110,8 @@ chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
   if (r_nr != r_nc)
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-  octave_idx_type n = r_nc;
-  octave_idx_type info = 0;
+  F77_INT n = to_f77_int (r_nc);
+  F77_INT info = 0;
 
   FloatMatrix tmp = r;
   float *v = tmp.fortran_vec ();
@@ -159,8 +159,8 @@ chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
   if (r_nr != r_nc)
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-  octave_idx_type n = r_nc;
-  octave_idx_type info;
+  F77_INT n = to_f77_int (r_nc);
+  F77_INT info;
 
   ComplexMatrix tmp = r;
 
@@ -204,8 +204,8 @@ chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
   if (r_nr != r_nc)
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-  octave_idx_type n = r_nc;
-  octave_idx_type info;
+  F77_INT n = to_f77_int (r_nc);
+  F77_INT info;
 
   FloatComplexMatrix tmp = r;
 
@@ -420,8 +420,8 @@ namespace octave
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("chol: requires square matrix");
 
-      octave_idx_type n = a_nc;
-      octave_idx_type info;
+      F77_INT n = to_f77_int (a_nc);
+      F77_INT info;
 
       is_upper = upper;
 
@@ -461,20 +461,19 @@ namespace octave
         chol_mat.resize (info - 1, info - 1);
       else if (calc_cond)
         {
-          octave_idx_type dpocon_info = 0;
+          F77_INT dpocon_info = 0;
 
           // Now calculate the condition number for non-singular matrix.
           Array<double> z (dim_vector (3*n, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (n, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          OCTAVE_LOCAL_BUFFER (F77_INT, iz, n);
           if (is_upper)
             F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-                                       n, anorm, xrcond, pz, piz, dpocon_info
+                                       n, anorm, xrcond, pz, iz, dpocon_info
                                        F77_CHAR_ARG_LEN (1)));
           else
             F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("L", 1), n, h,
-                                       n, anorm, xrcond, pz, piz, dpocon_info
+                                       n, anorm, xrcond, pz, iz, dpocon_info
                                        F77_CHAR_ARG_LEN (1)));
 
           if (dpocon_info != 0)
@@ -490,7 +489,7 @@ namespace octave
     void
     chol<Matrix>::update (const ColumnVector& u)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -499,7 +498,7 @@ namespace octave
 
       OCTAVE_LOCAL_BUFFER (double, w, n);
 
-      F77_XFCN (dch1up, DCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (dch1up, DCH1UP, (n, chol_mat.fortran_vec (), n,
                                  utmp.fortran_vec (), w));
     }
 
@@ -507,9 +506,9 @@ namespace octave
     octave_idx_type
     chol<Matrix>::downdate (const ColumnVector& u)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -518,7 +517,7 @@ namespace octave
 
       OCTAVE_LOCAL_BUFFER (double, w, n);
 
-      F77_XFCN (dch1dn, DCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (dch1dn, DCH1DN, (n, chol_mat.fortran_vec (), n,
                                  utmp.fortran_vec (), w, info));
 
       return info;
@@ -526,11 +525,12 @@ namespace octave
 
     template <>
     octave_idx_type
-    chol<Matrix>::insert_sym (const ColumnVector& u, octave_idx_type j)
+    chol<Matrix>::insert_sym (const ColumnVector& u, octave_idx_type j_arg)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (u.numel () != n + 1)
         (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
@@ -543,7 +543,7 @@ namespace octave
 
       chol_mat.resize (n+1, n+1);
 
-      F77_XFCN (dchinx, DCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (dchinx, DCHINX, (n, chol_mat.fortran_vec (), n,
                                  j + 1, utmp.fortran_vec (), w, info));
 
       return info;
@@ -551,33 +551,35 @@ namespace octave
 
     template <>
     void
-    chol<Matrix>::delete_sym (octave_idx_type j)
+    chol<Matrix>::delete_sym (octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("choldelete: index out of range");
 
       OCTAVE_LOCAL_BUFFER (double, w, n);
 
-      F77_XFCN (dchdex, DCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
-                                 j + 1, w));
+      F77_XFCN (dchdex, DCHDEX, (n, chol_mat.fortran_vec (), n, j + 1, w));
 
       chol_mat.resize (n-1, n-1);
     }
 
     template <>
     void
-    chol<Matrix>::shift_sym (octave_idx_type i, octave_idx_type j)
+    chol<Matrix>::shift_sym (octave_idx_type i_arg, octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT i = to_f77_int (i_arg);
+      F77_INT j = to_f77_int (j_arg);
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("cholshift: index out of range");
 
       OCTAVE_LOCAL_BUFFER (double, w, 2*n);
 
-      F77_XFCN (dchshx, DCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (dchshx, DCHSHX, (n, chol_mat.fortran_vec (), n,
                                  i + 1, j + 1, w));
     }
 
@@ -593,8 +595,8 @@ namespace octave
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("chol: requires square matrix");
 
-      octave_idx_type n = a_nc;
-      octave_idx_type info;
+      F77_INT n = to_f77_int (a_nc);
+      F77_INT info;
 
       is_upper = upper;
 
@@ -634,20 +636,19 @@ namespace octave
         chol_mat.resize (info - 1, info - 1);
       else if (calc_cond)
         {
-          octave_idx_type spocon_info = 0;
+          F77_INT spocon_info = 0;
 
           // Now calculate the condition number for non-singular matrix.
           Array<float> z (dim_vector (3*n, 1));
           float *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (n, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          OCTAVE_LOCAL_BUFFER (F77_INT, iz, n);
           if (is_upper)
             F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-                                       n, anorm, xrcond, pz, piz, spocon_info
+                                       n, anorm, xrcond, pz, iz, spocon_info
                                        F77_CHAR_ARG_LEN (1)));
           else
             F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("L", 1), n, h,
-                                       n, anorm, xrcond, pz, piz, spocon_info
+                                       n, anorm, xrcond, pz, iz, spocon_info
                                        F77_CHAR_ARG_LEN (1)));
 
           if (spocon_info != 0)
@@ -663,7 +664,7 @@ namespace octave
     void
     chol<FloatMatrix>::update (const FloatColumnVector& u)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -672,7 +673,7 @@ namespace octave
 
       OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      F77_XFCN (sch1up, SCH1UP, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (sch1up, SCH1UP, (n, chol_mat.fortran_vec (), n,
                                  utmp.fortran_vec (), w));
     }
 
@@ -680,9 +681,9 @@ namespace octave
     octave_idx_type
     chol<FloatMatrix>::downdate (const FloatColumnVector& u)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -691,7 +692,7 @@ namespace octave
 
       OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      F77_XFCN (sch1dn, SCH1DN, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (sch1dn, SCH1DN, (n, chol_mat.fortran_vec (), n,
                                  utmp.fortran_vec (), w, info));
 
       return info;
@@ -699,11 +700,13 @@ namespace octave
 
     template <>
     octave_idx_type
-    chol<FloatMatrix>::insert_sym (const FloatColumnVector& u, octave_idx_type j)
+    chol<FloatMatrix>::insert_sym (const FloatColumnVector& u,
+                                   octave_idx_type j_arg)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (u.numel () != n + 1)
         (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
@@ -716,7 +719,7 @@ namespace octave
 
       chol_mat.resize (n+1, n+1);
 
-      F77_XFCN (schinx, SCHINX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (schinx, SCHINX, (n, chol_mat.fortran_vec (), n,
                                  j + 1, utmp.fortran_vec (), w, info));
 
       return info;
@@ -724,16 +727,17 @@ namespace octave
 
     template <>
     void
-    chol<FloatMatrix>::delete_sym (octave_idx_type j)
+    chol<FloatMatrix>::delete_sym (octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("choldelete: index out of range");
 
       OCTAVE_LOCAL_BUFFER (float, w, n);
 
-      F77_XFCN (schdex, SCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (schdex, SCHDEX, (n, chol_mat.fortran_vec (), n,
                                  j + 1, w));
 
       chol_mat.resize (n-1, n-1);
@@ -741,16 +745,18 @@ namespace octave
 
     template <>
     void
-    chol<FloatMatrix>::shift_sym (octave_idx_type i, octave_idx_type j)
+    chol<FloatMatrix>::shift_sym (octave_idx_type i_arg, octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT i = to_f77_int (i_arg);
+      F77_INT j = to_f77_int (j_arg);
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("cholshift: index out of range");
 
       OCTAVE_LOCAL_BUFFER (float, w, 2*n);
 
-      F77_XFCN (schshx, SCHSHX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
+      F77_XFCN (schshx, SCHSHX, (n, chol_mat.fortran_vec (), n,
                                  i + 1, j + 1, w));
     }
 
@@ -766,8 +772,8 @@ namespace octave
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("chol: requires square matrix");
 
-      octave_idx_type n = a_nc;
-      octave_idx_type info;
+      F77_INT n = to_f77_int (a_nc);
+      F77_INT info;
 
       is_upper = upper;
 
@@ -809,7 +815,7 @@ namespace octave
         chol_mat.resize (info - 1, info - 1);
       else if (calc_cond)
         {
-          octave_idx_type zpocon_info = 0;
+          F77_INT zpocon_info = 0;
 
           // Now calculate the condition number for non-singular matrix.
           Array<Complex> z (dim_vector (2*n, 1));
@@ -817,8 +823,8 @@ namespace octave
           Array<double> rz (dim_vector (n, 1));
           double *prz = rz.fortran_vec ();
           F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                                     F77_DBLE_CMPLX_ARG (h),
-                                     n, anorm, xrcond, F77_DBLE_CMPLX_ARG (pz), prz, zpocon_info
+                                     F77_DBLE_CMPLX_ARG (h), n, anorm, xrcond,
+                                     F77_DBLE_CMPLX_ARG (pz), prz, zpocon_info
                                      F77_CHAR_ARG_LEN (1)));
 
           if (zpocon_info != 0)
@@ -834,7 +840,7 @@ namespace octave
     void
     chol<ComplexMatrix>::update (const ComplexColumnVector& u)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -843,18 +849,20 @@ namespace octave
 
       OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zch1up, ZCH1UP, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw));
+      F77_XFCN (zch1up, ZCH1UP, (n,
+                                 F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
+                                 n,
+                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
+                                 rw));
     }
 
     template <>
     octave_idx_type
     chol<ComplexMatrix>::downdate (const ComplexColumnVector& u)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -863,9 +871,11 @@ namespace octave
 
       OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zch1dn, ZCH1DN, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
+      F77_XFCN (zch1dn, ZCH1DN, (n,
+                                 F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
+                                 n,
+                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
+                                 rw, info));
 
       return info;
     }
@@ -873,11 +883,12 @@ namespace octave
     template <>
     octave_idx_type
     chol<ComplexMatrix>::insert_sym (const ComplexColumnVector& u,
-                                     octave_idx_type j)
+                                     octave_idx_type j_arg)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (u.numel () != n + 1)
         (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
@@ -890,36 +901,42 @@ namespace octave
 
       chol_mat.resize (n+1, n+1);
 
-      F77_XFCN (zchinx, ZCHINX, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 j + 1, F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
+      F77_XFCN (zchinx, ZCHINX, (n,
+                                 F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
+                                 n, j + 1,
+                                 F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
+                                 rw, info));
 
       return info;
     }
 
     template <>
     void
-    chol<ComplexMatrix>::delete_sym (octave_idx_type j)
+    chol<ComplexMatrix>::delete_sym (octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("choldelete: index out of range");
 
       OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zchdex, ZCHDEX, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 j + 1, rw));
+      F77_XFCN (zchdex, ZCHDEX, (n,
+                                 F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
+                                 n, j + 1, rw));
 
       chol_mat.resize (n-1, n-1);
     }
 
     template <>
     void
-    chol<ComplexMatrix>::shift_sym (octave_idx_type i, octave_idx_type j)
+    chol<ComplexMatrix>::shift_sym (octave_idx_type i_arg,
+                                    octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT i = to_f77_int (i_arg);
+      F77_INT j = to_f77_int (j_arg);
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("cholshift: index out of range");
@@ -927,9 +944,10 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (Complex, w, n);
       OCTAVE_LOCAL_BUFFER (double, rw, n);
 
-      F77_XFCN (zchshx, ZCHSHX, (n, F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 i + 1, j + 1, F77_DBLE_CMPLX_ARG (w), rw));
+      F77_XFCN (zchshx, ZCHSHX, (n,
+                                 F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
+                                 n, i + 1, j + 1,
+                                 F77_DBLE_CMPLX_ARG (w), rw));
     }
 
 #endif
@@ -945,8 +963,8 @@ namespace octave
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("chol: requires square matrix");
 
-      octave_idx_type n = a_nc;
-      octave_idx_type info;
+      F77_INT n = to_f77_int (a_nc);
+      F77_INT info;
 
       is_upper = upper;
 
@@ -975,12 +993,12 @@ namespace octave
         anorm = xnorm (a, 1);
 
       if (is_upper)
-        F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, F77_CMPLX_ARG (h),
-                                   n, info
+        F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                   n, F77_CMPLX_ARG (h), n, info
                                    F77_CHAR_ARG_LEN (1)));
       else
-        F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1), n, F77_CMPLX_ARG (h),
-                                   n, info
+        F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
+                                   n, F77_CMPLX_ARG (h), n, info
                                    F77_CHAR_ARG_LEN (1)));
 
       xrcond = 0.0;
@@ -988,15 +1006,16 @@ namespace octave
         chol_mat.resize (info - 1, info - 1);
       else if (calc_cond)
         {
-          octave_idx_type cpocon_info = 0;
+          F77_INT cpocon_info = 0;
 
           // Now calculate the condition number for non-singular matrix.
           Array<FloatComplex> z (dim_vector (2*n, 1));
           FloatComplex *pz = z.fortran_vec ();
           Array<float> rz (dim_vector (n, 1));
           float *prz = rz.fortran_vec ();
-          F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, F77_CMPLX_ARG (h),
-                                     n, anorm, xrcond, F77_CMPLX_ARG (pz), prz, cpocon_info
+          F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                     F77_CMPLX_ARG (h), n, anorm, xrcond,
+                                     F77_CMPLX_ARG (pz), prz, cpocon_info
                                      F77_CHAR_ARG_LEN (1)));
 
           if (cpocon_info != 0)
@@ -1012,7 +1031,7 @@ namespace octave
     void
     chol<FloatComplexMatrix>::update (const FloatComplexColumnVector& u)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -1022,17 +1041,16 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, rw, n);
 
       F77_XFCN (cch1up, CCH1UP, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 F77_CMPLX_ARG (utmp.fortran_vec ()), rw));
+                                 n, F77_CMPLX_ARG (utmp.fortran_vec ()), rw));
     }
 
     template <>
     octave_idx_type
     chol<FloatComplexMatrix>::downdate (const FloatComplexColumnVector& u)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n)
         (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -1042,8 +1060,8 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, rw, n);
 
       F77_XFCN (cch1dn, CCH1DN, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 F77_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
+                                 n, F77_CMPLX_ARG (utmp.fortran_vec ()),
+                                 rw, info));
 
       return info;
     }
@@ -1051,11 +1069,12 @@ namespace octave
     template <>
     octave_idx_type
     chol<FloatComplexMatrix>::insert_sym (const FloatComplexColumnVector& u,
-                                          octave_idx_type j)
+                                          octave_idx_type j_arg)
     {
-      octave_idx_type info = -1;
+      F77_INT info = -1;
+      F77_INT j = to_f77_int (j_arg);
 
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
 
       if (u.numel () != n + 1)
         (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
@@ -1069,17 +1088,19 @@ namespace octave
       chol_mat.resize (n+1, n+1);
 
       F77_XFCN (cchinx, CCHINX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 j + 1, F77_CMPLX_ARG (utmp.fortran_vec ()), rw, info));
+                                 n, j + 1,
+                                 F77_CMPLX_ARG (utmp.fortran_vec ()),
+                                 rw, info));
 
       return info;
     }
 
     template <>
     void
-    chol<FloatComplexMatrix>::delete_sym (octave_idx_type j)
+    chol<FloatComplexMatrix>::delete_sym (octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT j = to_f77_int (j_arg);
 
       if (j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("choldelete: index out of range");
@@ -1087,17 +1108,19 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, rw, n);
 
       F77_XFCN (cchdex, CCHDEX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 j + 1, rw));
+                                 n, j + 1, rw));
 
       chol_mat.resize (n-1, n-1);
     }
 
     template <>
     void
-    chol<FloatComplexMatrix>::shift_sym (octave_idx_type i, octave_idx_type j)
+    chol<FloatComplexMatrix>::shift_sym (octave_idx_type i_arg,
+                                         octave_idx_type j_arg)
     {
-      octave_idx_type n = chol_mat.rows ();
+      F77_INT n = to_f77_int (chol_mat.rows ());
+      F77_INT i = to_f77_int (i_arg);
+      F77_INT j = to_f77_int (j_arg);
 
       if (i < 0 || i > n-1 || j < 0 || j > n-1)
         (*current_liboctave_error_handler) ("cholshift: index out of range");
@@ -1106,8 +1129,7 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, rw, n);
 
       F77_XFCN (cchshx, CCHSHX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 chol_mat.rows (),
-                                 i + 1, j + 1, F77_CMPLX_ARG (w), rw));
+                                 n, i + 1, j + 1, F77_CMPLX_ARG (w), rw));
     }
 
 #endif

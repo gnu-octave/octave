@@ -25,6 +25,7 @@
 ## @deftypefnx {} {[@var{t}, @var{y}] =} ode45 (@var{fun}, @var{trange}, @var{init}, @var{ode_opt})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode45 (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode45 (@dots{})
+## @deftypefnx {} {} ode45 (@dots{})
 ##
 ## Solve a set of non-stiff Ordinary Differential Equations (non-stiff ODEs)
 ## with the well known explicit @nospell{Dormand-Prince} method of order 4.
@@ -63,6 +64,10 @@
 ## that each column corresponds to a time in @var{x}.
 ## Use @code{fieldnames (@var{solution})} to see the other fields and
 ## additional information returned.
+##
+## If no output arguments are requested, and no @code{OutputFcn} is
+## specified in @var{ode_opt}, then the @code{OutputFcn} is set to
+## @code{odeplot} and the results of the solver are plotted immediately.
 ##
 ## If using the @qcode{"Events"} option then three additional outputs may
 ## be returned.  @var{te} holds the time when an Event function returned a
@@ -271,7 +276,7 @@ function varargout = ode45 (fun, trange, init, varargin)
       varargout{1}.stats.ndecomps = ndecomps;
       varargout{1}.stats.nlinsols = nlinsols;
     endif
-  elseif (nargout == 5)
+  elseif (nargout > 2)
     varargout = cell (1,5);
     varargout{1} = solution.t;
     varargout{2} = solution.x;

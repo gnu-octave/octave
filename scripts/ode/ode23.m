@@ -279,7 +279,7 @@ function varargout = ode23 (fun, trange, init, varargin)
       varargout{1}.stats.ndecomps = ndecomps;
       varargout{1}.stats.nlinsols = nlinsols;
     endif
-  elseif (nargout == 5)
+  elseif (nargout > 2)
     varargout = cell (1,5);
     varargout{1} = solution.t;
     varargout{2} = solution.x;

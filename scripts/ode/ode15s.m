@@ -21,21 +21,23 @@
 ## @deftypefnx {} {[@var{t}, @var{y}] =} ode15s (@var{fun}, @var{trange}, @var{y0}, @var{ode_opt})
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode15s (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode15s (@dots{})
+## @deftypefnx {} {} ode15s (@dots{})
 ##
 ## Solve a set of stiff Ordinary Differential Equations and stiff semi-explicit
 ## Differential Algebraic Equations (DAEs) of index 1, with the variable-step,
-## variable order BDF (Backward Differentiation Formula) method, which
-## ranges from order 1 to 5.
+## variable order BDF (Backward Differentiation Formula) method, which ranges
+## from order 1 to 5.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
-## name of the function that defines the ODE: @code{f(@var{t},@var{y})}.
-## The function must accept two inputs where the first is time @var{t} and the
-## second is a column vector of unknowns @var{y}.
+## name of the function that defines the ODE: @code{y' = f(t,y)}.  The function
+## must accept two inputs where the first is time @var{t} and the second is a
+## column vector of unknowns @var{y}.
 ##
 ## @var{trange} specifies the time interval over which the ODE will be
 ## evaluated.  Typically, it is a two-element vector specifying the initial and
 ## final times (@code{[tinit, tfinal]}).  If there are more than two elements
-## then the solution will also be evaluated at these intermediate time.
+## then the solution will also be evaluated at these intermediate time
+## instances.
 ##
 ## @var{init} contains the initial value for the unknowns.  If it is a row
 ## vector then the solution @var{y} will be a matrix in which each column is
@@ -50,10 +52,15 @@
 ## unknown of the problem and each row corresponds to a time in @var{t}.
 ##
 ## The output can also be returned as a structure @var{solution} which
-## has field @var{x} containing the time where the solution was evaluated and
-## field @var{y} containing the solution matrix for the times in @var{x}.
+## has a field @var{x} containing a row vector of times where the solution
+## was evaluated and a field @var{y} containing the solution matrix such
+## that each column corresponds to a time in @var{x}.
 ## Use @code{fieldnames (@var{solution})} to see the other fields and
 ## additional information returned.
+##
+## If no output arguments are requested, and no @code{OutputFcn} is
+## specified in @var{ode_opt}, then the @code{OutputFcn} is set to
+## @code{odeplot} and the results of the solver are plotted immediately.
 ##
 ## If using the @qcode{"Events"} option then three additional outputs may
 ## be returned.  @var{te} holds the time when an Event function returned a
@@ -61,23 +68,17 @@
 ## contains an index indicating which Event function was triggered in the case
 ## of multiple Event functions.
 ##
-## This function can be called with two output arguments: @var{t} and @var{y}.
-## Variable @var{t} is a column vector and contains the time stamps, instead
-## @var{y} is a matrix in which each column refers to a different unknown of
-## the problem and the rows number is the same of @var{t} rows number so
-## that each row of @var{y} contains the values of all unknowns at the time
-## value contained in the corresponding row in @var{t}.
+## Example: Solve the @nospell{Robetson's} equations:
 ##
-## Example: Solve the @nospell{Robetson}'s equations:
 ## @example
 ## @group
-## function res = robertsidae(@var{t}, @var{y})
-## res = [-0.04*@var{y}(1) + 1e4*@var{y}(2)*@var{y}(3);
+## function r = robertsidae (@var{t}, @var{y})
+##   r = [-0.04*@var{y}(1) + 1e4*@var{y}(2)*@var{y}(3);
 ##         0.04*@var{y}(1) - 1e4*@var{y}(2)*@var{y}(3) - 3e7*@var{y}(2)^2;
 ##         @var{y}(1) + @var{y}(2) + @var{y}(3) - 1];
 ## endfunction
 ## opt = odeset ("Mass", [1 0 0; 0 1 0; 0 0 0], "MStateDependence", "none");
-## [@var{t},@var{y}] = ode15s (@@robertsidae, [0 1e3], [1; 0; 0], opt);
+## [@var{t},@var{y}] = ode15s (@@robertsidae, [0, 1e3], [1; 0; 0], opt);
 ## @end group
 ## @end example
 ## @seealso{decic, odeset, odeget}
@@ -181,7 +182,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
         options.havemasssparse = issparse (M);
         if (any (size (M) != [n n]) || ! isnumeric (M) || ! isreal (M))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Mass'");
+                 [solver ": invalid value assigned to field 'Mass'"]);
         endif
       elseif (nargin (options.Mass) == 1)
         options.havetimedep = true;
@@ -189,22 +190,22 @@ function varargout = ode15s (fun, trange, y0, varargin)
         options.havemasssparse = issparse (M);
         if (any (size (M) != [n n]) || ! isnumeric (M) || ! isreal (M))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Mass'");
+                 [solver ": invalid value assigned to field 'Mass'"]);
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Mass'");
+               [solver ": invalid value assigned to field 'Mass'"]);
       endif
     elseif (ismatrix (options.Mass))
       options.havemasssparse = issparse (options.Mass);
       if (any (size (options.Mass) != [n n]) ||
           ! isnumeric (options.Mass) || ! isreal (options.Mass))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Mass'");
+               [solver ": invalid value assigned to field 'Mass'"]);
       endif
     else
       error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'Mass'");
+             [solver ": invalid value assigned to field 'Mass'"]);
     endif
   endif
 
@@ -224,11 +225,11 @@ function varargout = ode15s (fun, trange, y0, varargin)
         endif
         if (any (size (A) != [n n]) || ! isnumeric (A) || ! isreal (A))
           error ("Octave:invalid-input-arg",
-                 [solver ": invalid value assigned to field 'Jacobian'");
+                 [solver ": invalid value assigned to field 'Jacobian'"]);
         endif
       else
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'");
+               [solver ": invalid value assigned to field 'Jacobian'"]);
       endif
     elseif (ismatrix (options.Jacobian))
       if (issparse (options.Jacobian))
@@ -236,11 +237,11 @@ function varargout = ode15s (fun, trange, y0, varargin)
       endif
       if (! issquare (options.Jacobian))
         error ("Octave:invalid-input-arg",
-               [solver ": invalid value assigned to field 'Jacobian'");
+               [solver ": invalid value assigned to field 'Jacobian'"]);
       endif
     else
       error ("Octave:invalid-input-arg",
-             [solver ": invalid value assigned to field 'Jacobian'");
+             [solver ": invalid value assigned to field 'Jacobian'"]);
     endif
   endif
 
@@ -282,7 +283,7 @@ function varargout = ode15s (fun, trange, y0, varargin)
 
   if (numel (options.AbsTol) != 1 && numel (options.AbsTol) != n)
     error ("Octave:invalid-input-arg",
-           [solver ": invalid value assigned to field 'AbsTol'");
+           [solver ": invalid value assigned to field 'AbsTol'"]);
   elseif (numel (options.AbsTol) == n)
     options.haveabstolvec = true;
   endif

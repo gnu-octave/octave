@@ -106,14 +106,14 @@ extern "C"
   // PCHIM
 
   F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const F77_INT& n, const F77_DBLE& x,
-                             const F77_DBLE& f, F77_DBLE& d,
-                             const F77_INT &incfd,
+  F77_FUNC (dpchim, DPCHIM) (const F77_INT& n, const F77_DBLE *x,
+                             const F77_DBLE *f, F77_DBLE *d,
+                             const F77_INT& incfd,
                              F77_INT& ierr);
 
   F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const F77_INT& n, const F77_REAL& x,
-                           const F77_REAL& f, F77_REAL& d,
+  F77_FUNC (pchim, PCHIM) (const F77_INT& n, const F77_REAL *x,
+                           const F77_REAL *f, F77_REAL *d,
                            const F77_INT& incfd,
                            F77_INT& ierr);
 

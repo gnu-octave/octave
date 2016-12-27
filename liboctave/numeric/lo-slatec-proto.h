@@ -106,28 +106,28 @@ extern "C"
   // PCHIM
 
   F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const F77_INT& n, const F77_DBLE *x,
-                             const F77_DBLE *f, F77_DBLE *d,
+  F77_FUNC (dpchim, DPCHIM) (const F77_INT& n, const F77_DBLE& x,
+                             const F77_DBLE& f, F77_DBLE& d,
                              const F77_INT &incfd,
-                             F77_INT *ierr);
+                             F77_INT& ierr);
 
   F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const F77_INT& n, const F77_REAL *x,
-                           const F77_REAL *f, F77_REAL *d,
+  F77_FUNC (pchim, PCHIM) (const F77_INT& n, const F77_REAL& x,
+                           const F77_REAL& f, F77_REAL& d,
                            const F77_INT& incfd,
-                           F77_INT *ierr);
+                           F77_INT& ierr);
 
   // PSIFN
 
   F77_RET_T
-  F77_FUNC (psifn, PSIFN) (const F77_REAL*, const F77_INT&,
+  F77_FUNC (psifn, PSIFN) (const F77_REAL&, const F77_INT&,
                            const F77_INT&, const F77_INT&,
-                           F77_REAL*, F77_INT*, F77_INT*);
+                           F77_REAL&, F77_INT&, F77_INT&);
 
   F77_RET_T
-  F77_FUNC (dpsifn, DPSIFN) (const F77_DBLE*, const F77_INT&,
+  F77_FUNC (dpsifn, DPSIFN) (const F77_DBLE&, const F77_INT&,
                              const F77_INT&, const F77_INT&,
-                             F77_DBLE*, F77_INT*, F77_INT*);
+                             F77_DBLE&, F77_INT&, F77_INT&);
 }
 
 #endif

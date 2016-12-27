@@ -775,12 +775,14 @@ namespace octave
           double yr = 0.0;
           double yi = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           double zr = z.real ();
           double zi = z.imag ();
 
-          F77_FUNC (zbesj, ZBESJ) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+          F77_FUNC (zbesj, ZBESJ) (zr, zi, alpha, 2, 1, &yr, &yi, nz, t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -833,7 +835,7 @@ namespace octave
           double yr = 0.0;
           double yi = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           double wr, wi;
 
@@ -850,7 +852,9 @@ namespace octave
           else
             {
               F77_FUNC (zbesy, ZBESY) (zr, zi, alpha, 2, 1, &yr, &yi, nz,
-                                       &wr, &wi, ierr);
+                                       &wr, &wi, t_ierr);
+
+              ierr = t_ierr;
 
               if (kode != 2)
                 {
@@ -904,12 +908,14 @@ namespace octave
           double yr = 0.0;
           double yi = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           double zr = z.real ();
           double zi = z.imag ();
 
-          F77_FUNC (zbesi, ZBESI) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+          F77_FUNC (zbesi, ZBESI) (zr, zi, alpha, 2, 1, &yr, &yi, nz, t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -969,7 +975,7 @@ namespace octave
           double yr = 0.0;
           double yi = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           double zr = z.real ();
           double zi = z.imag ();
@@ -983,7 +989,10 @@ namespace octave
             }
           else
             {
-              F77_FUNC (zbesk, ZBESK) (zr, zi, alpha, 2, 1, &yr, &yi, nz, ierr);
+              F77_FUNC (zbesk, ZBESK) (zr, zi, alpha, 2, 1, &yr, &yi, nz,
+                                       t_ierr);
+
+              ierr = t_ierr;
 
               if (kode != 2)
                 {
@@ -1024,12 +1033,15 @@ namespace octave
           double yr = 0.0;
           double yi = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           double zr = z.real ();
           double zi = z.imag ();
 
-          F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, 2, 1, 1, &yr, &yi, nz, ierr);
+          F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, 2, 1, 1, &yr, &yi, nz,
+                                   t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -1070,12 +1082,15 @@ namespace octave
           double yr = 0.0;
           double yi = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           double zr = z.real ();
           double zi = z.imag ();
 
-          F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, 2, 2, 1, &yr, &yi, nz, ierr);
+          F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, 2, 2, 1, &yr, &yi, nz,
+                                   t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -1413,10 +1428,12 @@ namespace octave
         {
           FloatComplex y = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           F77_FUNC (cbesj, CBESJ) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
-                                   F77_CMPLX_ARG (&y), nz, ierr);
+                                   F77_CMPLX_ARG (&y), nz, t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -1469,7 +1486,7 @@ namespace octave
         {
           FloatComplex y = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           FloatComplex w;
 
@@ -1482,7 +1499,10 @@ namespace octave
           else
             {
               F77_FUNC (cbesy, CBESY) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
-                                       F77_CMPLX_ARG (&y), nz, F77_CMPLX_ARG (&w), ierr);
+                                       F77_CMPLX_ARG (&y), nz,
+                                       F77_CMPLX_ARG (&w), t_ierr);
+
+              ierr = t_ierr;
 
               if (kode != 2)
                 {
@@ -1536,10 +1556,12 @@ namespace octave
         {
           FloatComplex y = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           F77_FUNC (cbesi, CBESI) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
-                                   F77_CMPLX_ARG (&y), nz, ierr);
+                                   F77_CMPLX_ARG (&y), nz, t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -1591,7 +1613,7 @@ namespace octave
         {
           FloatComplex y = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           ierr = 0;
 
@@ -1602,7 +1624,9 @@ namespace octave
           else
             {
               F77_FUNC (cbesk, CBESK) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1,
-                                       F77_CMPLX_ARG (&y), nz, ierr);
+                                       F77_CMPLX_ARG (&y), nz, t_ierr);
+
+              ierr = t_ierr;
 
               if (kode != 2)
                 {
@@ -1642,10 +1666,12 @@ namespace octave
         {
           FloatComplex y = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 1, 1,
-                                   F77_CMPLX_ARG (&y), nz, ierr);
+                                   F77_CMPLX_ARG (&y), nz, t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -1686,10 +1712,12 @@ namespace octave
         {
           FloatComplex y = 0.0;
 
-          octave_idx_type nz;
+          F77_INT nz, t_ierr;
 
           F77_FUNC (cbesh, CBESH) (F77_CONST_CMPLX_ARG (&z), alpha, 2, 2, 1,
-                                   F77_CMPLX_ARG (&y), nz, ierr);
+                                   F77_CMPLX_ARG (&y), nz, t_ierr);
+
+          ierr = t_ierr;
 
           if (kode != 2)
             {
@@ -1877,11 +1905,12 @@ namespace octave
       return retval;
     }
 
-#define SS_BESSEL(name, fcn)                                            \
-    FloatComplex                                                        \
-    name (float alpha, const FloatComplex& x, bool scaled, octave_idx_type& ierr) \
-    {                                                                   \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
+#define SS_BESSEL(name, fcn)                                    \
+    FloatComplex                                                \
+    name (float alpha, const FloatComplex& x, bool scaled,      \
+          octave_idx_type& ierr)                                \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
 #define SM_BESSEL(name, fcn)                                            \
@@ -1902,8 +1931,8 @@ namespace octave
 
 #define MM_BESSEL(name, fcn)                                            \
     FloatComplexMatrix                                                  \
-    name (const FloatMatrix& alpha, const FloatComplexMatrix& x, bool scaled, \
-          Array<octave_idx_type>& ierr)                                 \
+    name (const FloatMatrix& alpha, const FloatComplexMatrix& x,        \
+          bool scaled, Array<octave_idx_type>& ierr)                    \
     {                                                                   \
       return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
@@ -1916,28 +1945,29 @@ namespace octave
       return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define NS_BESSEL(name, fcn)                                            \
-    FloatComplexNDArray                                                 \
-    name (const FloatNDArray& alpha, const FloatComplex& x, bool scaled, \
-          Array<octave_idx_type>& ierr)                                 \
-    {                                                                   \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
+#define NS_BESSEL(name, fcn)                                    \
+    FloatComplexNDArray                                         \
+    name (const FloatNDArray& alpha, const FloatComplex& x,     \
+          bool scaled, Array<octave_idx_type>& ierr)            \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
 #define NN_BESSEL(name, fcn)                                            \
     FloatComplexNDArray                                                 \
-    name (const FloatNDArray& alpha, const FloatComplexNDArray& x, bool scaled, \
-          Array<octave_idx_type>& ierr)                                 \
+    name (const FloatNDArray& alpha, const FloatComplexNDArray& x,      \
+          bool scaled, Array<octave_idx_type>& ierr)                    \
     {                                                                   \
       return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
     }
 
-#define RC_BESSEL(name, fcn)                                            \
-    FloatComplexMatrix                                                  \
-    name (const FloatRowVector& alpha, const FloatComplexColumnVector& x, bool scaled, \
-          Array<octave_idx_type>& ierr)                                 \
-    {                                                                   \
-      return do_bessel (fcn, #name, alpha, x, scaled, ierr);            \
+#define RC_BESSEL(name, fcn)                                    \
+    FloatComplexMatrix                                          \
+    name (const FloatRowVector& alpha,                          \
+          const FloatComplexColumnVector& x, bool scaled,       \
+          Array<octave_idx_type>& ierr)                         \
+    {                                                           \
+      return do_bessel (fcn, #name, alpha, x, scaled, ierr);    \
     }
 
 #define ALL_BESSEL(name, fcn)                   \
@@ -1973,14 +2003,15 @@ namespace octave
       double ar = 0.0;
       double ai = 0.0;
 
-      octave_idx_type nz;
-
       double zr = z.real ();
       double zi = z.imag ();
 
-      octave_idx_type id = deriv ? 1 : 0;
+      F77_INT id = deriv ? 1 : 0;
+      F77_INT nz, t_ierr;
 
-      F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, ierr);
+      F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, t_ierr);
+
+      ierr = t_ierr;
 
       if (! scaled)
         {
@@ -2010,9 +2041,12 @@ namespace octave
       double zr = z.real ();
       double zi = z.imag ();
 
-      octave_idx_type id = deriv ? 1 : 0;
+      F77_INT id = deriv ? 1 : 0;
+      F77_INT t_ierr;
 
-      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, ierr);
+      F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, t_ierr);
+
+      ierr = t_ierr;
 
       if (! scaled)
         {
@@ -2102,16 +2136,18 @@ namespace octave
     }
 
     FloatComplex
-    airy (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
+    airy (const FloatComplex& z, bool deriv, bool scaled,
+          octave_idx_type& ierr)
     {
       FloatComplex a;
 
-      octave_idx_type nz;
+      F77_INT id = deriv ? 1 : 0;
+      F77_INT nz, t_ierr;
 
-      octave_idx_type id = deriv ? 1 : 0;
+      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
+                               F77_CMPLX_ARG (&a), nz, t_ierr);
 
-      F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a),
-                               nz, ierr);
+      ierr = t_ierr;
 
       float ar = a.real ();
       float ai = a.imag ();
@@ -2136,21 +2172,26 @@ namespace octave
     }
 
     FloatComplex
-    biry (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
+    biry (const FloatComplex& z, bool deriv, bool scaled,
+          octave_idx_type& ierr)
     {
       FloatComplex a;
 
-      octave_idx_type id = deriv ? 1 : 0;
+      F77_INT id = deriv ? 1 : 0;
+      F77_INT t_ierr;
 
-      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2, F77_CMPLX_ARG (&a),
-                               ierr);
+      F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
+                               F77_CMPLX_ARG (&a), t_ierr);
+
+      ierr = t_ierr;
 
       float ar = a.real ();
       float ai = a.imag ();
 
       if (! scaled)
         {
-          FloatComplex expz = exp (std::abs (std::real (2.0f / 3.0f * z * sqrt (z))));
+          FloatComplex expz
+            = exp (std::abs (std::real (2.0f / 3.0f * z * sqrt (z))));
 
           float rexpz = expz.real ();
           float iexpz = expz.imag ();
@@ -2381,7 +2422,8 @@ namespace octave
     }
 
     Array<double>
-    betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b)
+    betainc (const Array<double>& x, const Array<double>& a,
+             const Array<double>& b)
     {
       Array<double> retval;
       dim_vector dv = x.dims ();
@@ -2521,7 +2563,8 @@ namespace octave
     }
 
     Array<float>
-    betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b)
+    betainc (const Array<float>& x, const Array<float>& a,
+             const Array<float>& b)
     {
       Array<float> retval;
       dim_vector dv = x.dims ();
@@ -3765,34 +3808,39 @@ namespace octave
 
     template <typename T>
     static inline void
-    fortran_psifn (const T z, const octave_idx_type n, T* ans,
-                   octave_idx_type* ierr);
+    fortran_psifn (T z, octave_idx_type n, T& ans, octave_idx_type& ierr);
 
     template <>
     inline void
-    fortran_psifn<double> (const double z, const octave_idx_type n,
-                           double* ans, octave_idx_type* ierr)
+    fortran_psifn<double> (double z, octave_idx_type n_arg,
+                           double& ans, octave_idx_type& ierr)
     {
-      octave_idx_type flag = 0;
-      F77_XFCN (dpsifn, DPSIFN, (&z, n, 1, 1, ans, &flag, ierr));
+      F77_INT n = to_f77_int (n_arg);
+      F77_INT flag = 0;
+      F77_INT t_ierr;
+      F77_XFCN (dpsifn, DPSIFN, (z, n, 1, 1, ans, flag, t_ierr));
+      ierr = t_ierr;
     }
 
     template <>
     inline void
-    fortran_psifn<float> (const float z, const octave_idx_type n,
-                          float* ans, octave_idx_type* ierr)
+    fortran_psifn<float> (float z, octave_idx_type n_arg,
+                          float& ans, octave_idx_type& ierr)
     {
-      octave_idx_type flag = 0;
-      F77_XFCN (psifn, PSIFN, (&z, n, 1, 1, ans, &flag, ierr));
+      F77_INT n = to_f77_int (n_arg);
+      F77_INT flag = 0;
+      F77_INT t_ierr;
+      F77_XFCN (psifn, PSIFN, (z, n, 1, 1, ans, flag, t_ierr));
+      ierr = t_ierr;
     }
 
     template <typename T>
     T
-    xpsi (const octave_idx_type n, T z)
+    xpsi (octave_idx_type n, T z)
     {
       T ans;
       octave_idx_type ierr = 0;
-      fortran_psifn<T> (z, n, &ans, &ierr);
+      fortran_psifn<T> (z, n, ans, ierr);
       if (ierr == 0)
         {
           // Remember that psifn and dpsifn return scales values

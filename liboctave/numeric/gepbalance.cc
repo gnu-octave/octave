@@ -45,7 +45,7 @@ namespace octave
     gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
                               const std::string& balance_job)
     {
-      octave_idx_type n = a.cols ();
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler) ("GEPBALANCE requires square matrix");
@@ -53,9 +53,9 @@ namespace octave
       if (a.dims () != b.dims ())
         octave::err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
 
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       OCTAVE_LOCAL_BUFFER (double, plscale, n);
       OCTAVE_LOCAL_BUFFER (double, prscale, n);
@@ -75,7 +75,7 @@ namespace octave
 
       balancing_mat = Matrix (n, n, 0.0);
       balancing_mat2 = Matrix (n, n, 0.0);
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
           balancing_mat.elem (i ,i) = 1.0;
@@ -109,7 +109,7 @@ namespace octave
     gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
                                    const std::string& balance_job)
     {
-      octave_idx_type n = a.cols ();
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -118,9 +118,9 @@ namespace octave
       if (a.dims () != b.dims ())
         octave::err_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());
 
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       OCTAVE_LOCAL_BUFFER (float, plscale, n);
       OCTAVE_LOCAL_BUFFER (float, prscale, n);
@@ -140,7 +140,7 @@ namespace octave
 
       balancing_mat = FloatMatrix (n, n, 0.0);
       balancing_mat2 = FloatMatrix (n, n, 0.0);
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
           balancing_mat.elem (i ,i) = 1.0;
@@ -175,7 +175,7 @@ namespace octave
                                      const ComplexMatrix& b,
                                      const std::string& balance_job)
     {
-      octave_idx_type n = a.cols ();
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -184,9 +184,9 @@ namespace octave
       if (a.dims () != b.dims ())
         octave::err_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
 
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       OCTAVE_LOCAL_BUFFER (double, plscale, n);
       OCTAVE_LOCAL_BUFFER (double, prscale,  n);
@@ -206,7 +206,7 @@ namespace octave
 
       balancing_mat = Matrix (n, n, 0.0);
       balancing_mat2 = Matrix (n, n, 0.0);
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
           balancing_mat.elem (i ,i) = 1.0;
@@ -241,7 +241,7 @@ namespace octave
                                           const FloatComplexMatrix& b,
                                           const std::string& balance_job)
     {
-      octave_idx_type n = a.cols ();
+      F77_INT n = to_f77_int (a.cols ());
 
       if (a.rows () != n)
         {
@@ -253,9 +253,9 @@ namespace octave
       if (a.dims () != b.dims ())
         octave::err_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
 
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       OCTAVE_LOCAL_BUFFER (float, plscale, n);
       OCTAVE_LOCAL_BUFFER (float, prscale, n);
@@ -275,7 +275,7 @@ namespace octave
 
       balancing_mat = FloatMatrix (n, n, 0.0);
       balancing_mat2 = FloatMatrix (n, n, 0.0);
-      for (octave_idx_type i = 0; i < n; i++)
+      for (F77_INT i = 0; i < n; i++)
         {
           octave_quit ();
           balancing_mat.elem (i ,i) = 1.0;

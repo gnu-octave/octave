@@ -81,7 +81,7 @@
 ## [@var{y0_new},@var{yp0_new}] = decic (@@robertsidae, 0, [1; 0; 0], [1; 1; 0],
 ## [-1e-4; 1; 0], [0; 0; 0]);
 ## @end example
-## @seealso{ode1
+## @seealso{ode15i, odeset}
 ## @end deftypefn
 
 function [y0_new, yp0_new, resnorm] = decic (fun, t0,

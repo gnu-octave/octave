@@ -263,9 +263,9 @@ function varargout = ode45 (fun, trange, init, varargin)
     varargout{1}.y = solution.x.';  # Results are saved in field y (row vector)
     varargout{1}.solver = solver;   # Solver name is saved in field solver
     if (! isempty (odeopts.Events))
-      varargout{1}.ie = solution.event{2};  # Index info which event occurred
       varargout{1}.xe = solution.event{3};  # Time info when an event occurred
       varargout{1}.ye = solution.event{4};  # Results when an event occurred
+      varargout{1}.ie = solution.event{2};  # Index info which event occurred
     endif
     if (strcmpi (odeopts.Stats, "on"))
       varargout{1}.stats = struct ();

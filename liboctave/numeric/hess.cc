@@ -40,8 +40,8 @@ namespace octave
     octave_idx_type
     hess<Matrix>::init (const Matrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("hess: requires square matrix");
@@ -49,11 +49,11 @@ namespace octave
       char job = 'N';
       char side = 'R';
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 32 * n;
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT n = a_nc;
+      F77_INT lwork = 32 * n;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       hess_mat = a;
       double *h = hess_mat.fortran_vec ();
@@ -92,8 +92,8 @@ namespace octave
       // me know!
 
       if (n > 2)
-        for (octave_idx_type j = 0; j < a_nc; j++)
-          for (octave_idx_type i = j+2; i < a_nr; i++)
+        for (F77_INT j = 0; j < a_nc; j++)
+          for (F77_INT i = j+2; i < a_nr; i++)
             hess_mat.elem (i, j) = 0;
 
       return info;
@@ -103,8 +103,8 @@ namespace octave
     octave_idx_type
     hess<FloatMatrix>::init (const FloatMatrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("hess: requires square matrix");
@@ -112,11 +112,11 @@ namespace octave
       char job = 'N';
       char side = 'R';
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 32 * n;
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT n = a_nc;
+      F77_INT lwork = 32 * n;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       hess_mat = a;
       float *h = hess_mat.fortran_vec ();
@@ -155,8 +155,8 @@ namespace octave
       // me know!
 
       if (n > 2)
-        for (octave_idx_type j = 0; j < a_nc; j++)
-          for (octave_idx_type i = j+2; i < a_nr; i++)
+        for (F77_INT j = 0; j < a_nc; j++)
+          for (F77_INT i = j+2; i < a_nr; i++)
             hess_mat.elem (i, j) = 0;
 
       return info;
@@ -166,8 +166,8 @@ namespace octave
     octave_idx_type
     hess<ComplexMatrix>::init (const ComplexMatrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("hess: requires square matrix");
@@ -175,11 +175,11 @@ namespace octave
       char job = 'N';
       char side = 'R';
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 32 * n;
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT n = a_nc;
+      F77_INT lwork = 32 * n;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       hess_mat = a;
       Complex *h = hess_mat.fortran_vec ();
@@ -218,8 +218,8 @@ namespace octave
       // please let me know!
 
       if (n > 2)
-        for (octave_idx_type j = 0; j < a_nc; j++)
-          for (octave_idx_type i = j+2; i < a_nr; i++)
+        for (F77_INT j = 0; j < a_nc; j++)
+          for (F77_INT i = j+2; i < a_nr; i++)
             hess_mat.elem (i, j) = 0;
 
       return info;
@@ -229,8 +229,8 @@ namespace octave
     octave_idx_type
     hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      F77_INT a_nr = to_f77_int (a.rows ());
+      F77_INT a_nc = to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         {
@@ -241,11 +241,11 @@ namespace octave
       char job = 'N';
       char side = 'R';
 
-      octave_idx_type n = a_nc;
-      octave_idx_type lwork = 32 * n;
-      octave_idx_type info;
-      octave_idx_type ilo;
-      octave_idx_type ihi;
+      F77_INT n = a_nc;
+      F77_INT lwork = 32 * n;
+      F77_INT info;
+      F77_INT ilo;
+      F77_INT ihi;
 
       hess_mat = a;
       FloatComplex *h = hess_mat.fortran_vec ();
@@ -284,8 +284,8 @@ namespace octave
       // please let me know!
 
       if (n > 2)
-        for (octave_idx_type j = 0; j < a_nc; j++)
-          for (octave_idx_type i = j+2; i < a_nr; i++)
+        for (F77_INT j = 0; j < a_nc; j++)
+          for (F77_INT i = j+2; i < a_nr; i++)
             hess_mat.elem (i, j) = 0;
 
       return info;

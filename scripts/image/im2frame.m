@@ -34,7 +34,7 @@
 
 ## Author: Carnë Draug <carandraug@octave.org>
 
-function [frame] = im2frame (x, map = [])
+function frame = im2frame (x, map = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -58,7 +58,7 @@ function [frame] = im2frame (x, map = [])
     error ("im2frame: first argument must be indexed or RGB image");
   endif
 
-  ## support N dimensional images and return a struct array
+  ## support N-dimensional images and return a struct array
   if (ndims (x) == 4)
     x = reshape (num2cell (x, [1 2 3]), 1, size (x, 4));
   endif
@@ -73,7 +73,7 @@ endfunction
 %!endfunction
 
 %!function f = make_ind_f ()
-%!  f = randi ([1 100], 10, 20, 3);
+%!  f = randi ([1 100], 10, 20, 1);
 %!endfunction
 
 %!test

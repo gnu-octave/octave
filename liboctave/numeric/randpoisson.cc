@@ -63,7 +63,7 @@ xlgamma (double x)
   else if (x <= 0 || lo_ieee_isinf (x))
     result = octave_Inf;
   else
-    F77_XFCN (dlgams, DLGAMS, (&x, &result, &sgngam));
+    F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 #endif
   return result;
 }

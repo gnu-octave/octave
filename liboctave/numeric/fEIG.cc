@@ -41,12 +41,13 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   if (a.is_symmetric ())
     return symmetric_init (a, calc_rev, calc_lev);
 
-  octave_idx_type n = a.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT a_nc = to_f77_int (a.cols ());
 
-  if (n != a.cols ())
+  if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatMatrix atmp = a;
   float *tmp_data = atmp.fortran_vec ();
@@ -57,19 +58,19 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   Array<float> wi (dim_vector (n, 1));
   float *pwi = wi.fortran_vec ();
 
-  volatile octave_idx_type nvr = calc_rev ? n : 0;
+  volatile F77_INT nvr = calc_rev ? n : 0;
   FloatMatrix vr (nvr, nvr);
   float *pvr = vr.fortran_vec ();
 
-  volatile octave_idx_type nvl = calc_lev ? n : 0;
+  volatile F77_INT nvl = calc_lev ? n : 0;
   FloatMatrix vl (nvl, nvl);
   float *pvl = vl.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   float dummy_work;
 
-  octave_idx_type ilo;
-  octave_idx_type ihi;
+  F77_INT ilo;
+  F77_INT ihi;
 
   Array<float> scale (dim_vector (n, 1));
   float *pscale = scale.fortran_vec ();
@@ -82,7 +83,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   Array<float> rcondv (dim_vector (n, 1));
   float *prcondv = rcondv.fortran_vec ();
 
-  octave_idx_type dummy_iwork;
+  F77_INT dummy_iwork;
 
   F77_XFCN (sgeevx, SGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 ("N", 1),
@@ -100,7 +101,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   if (info != 0)
     (*current_liboctave_error_handler) ("sgeevx workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work);
+  lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
   float *pwork = work.fortran_vec ();
 
@@ -127,7 +128,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   v.resize (nvr, nvr);
   w.resize (nvl, nvl);
 
-  for (octave_idx_type j = 0; j < n; j++)
+  for (F77_INT j = 0; j < n; j++)
     {
       if (wi.elem (j) == 0.0)
         {
@@ -135,7 +136,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
           for (octave_idx_type i = 0; i < nvr; i++)
             v.elem (i, j) = vr.elem (i, j);
 
-          for (octave_idx_type i = 0; i < nvl; i++)
+          for (F77_INT i = 0; i < nvl; i++)
             w.elem (i, j) = vl.elem (i, j);
         }
       else
@@ -146,14 +147,14 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
           lambda.elem (j) = FloatComplex (wr.elem (j), wi.elem (j));
           lambda.elem (j+1) = FloatComplex (wr.elem (j+1), wi.elem (j+1));
 
-          for (octave_idx_type i = 0; i < nvr; i++)
+          for (F77_INT i = 0; i < nvr; i++)
             {
               float real_part = vr.elem (i, j);
               float imag_part = vr.elem (i, j+1);
               v.elem (i, j) = FloatComplex (real_part, imag_part);
               v.elem (i, j+1) = FloatComplex (real_part, -imag_part);
             }
-          for (octave_idx_type i = 0; i < nvl; i++)
+          for (F77_INT i = 0; i < nvl; i++)
             {
               float real_part = vl.elem (i, j);
               float imag_part = vl.elem (i, j+1);
@@ -170,12 +171,13 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
 octave_idx_type
 FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
 {
-  octave_idx_type n = a.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT a_nc = to_f77_int (a.cols ());
 
-  if (n != a.cols ())
+  if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatMatrix atmp = a;
   float *tmp_data = atmp.fortran_vec ();
@@ -183,7 +185,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
   FloatColumnVector wr (n);
   float *pwr = wr.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   float dummy_work;
 
   F77_XFCN (ssyev, SSYEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -195,7 +197,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
   if (info != 0)
     (*current_liboctave_error_handler) ("ssyev workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work);
+  lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
   float *pwork = work.fortran_vec ();
 
@@ -229,12 +231,13 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   if (a.is_hermitian ())
     return hermitian_init (a, calc_rev, calc_lev);
 
-  octave_idx_type n = a.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT a_nc = to_f77_int (a.cols ());
 
-  if (n != a.cols ())
+  if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatComplexMatrix atmp = a;
   FloatComplex *tmp_data = atmp.fortran_vec ();
@@ -242,23 +245,23 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   FloatComplexColumnVector wr (n);
   FloatComplex *pw = wr.fortran_vec ();
 
-  octave_idx_type nvr = calc_rev ? n : 0;
+  F77_INT nvr = calc_rev ? n : 0;
   FloatComplexMatrix vrtmp (nvr, nvr);
   FloatComplex *pvr = vrtmp.fortran_vec ();
 
-  octave_idx_type nvl = calc_lev ? n : 0;
+  F77_INT nvl = calc_lev ? n : 0;
   FloatComplexMatrix vltmp (nvl, nvl);
   FloatComplex *pvl = vltmp.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   FloatComplex dummy_work;
 
-  octave_idx_type lrwork = 2*n;
+  F77_INT lrwork = 2*n;
   Array<float> rwork (dim_vector (lrwork, 1));
   float *prwork = rwork.fortran_vec ();
 
-  octave_idx_type ilo;
-  octave_idx_type ihi;
+  F77_INT ilo;
+  F77_INT ihi;
 
   Array<float> scale (dim_vector (n, 1));
   float *pscale = scale.fortran_vec ();
@@ -287,7 +290,7 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   if (info != 0)
     (*current_liboctave_error_handler) ("cgeevx workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work.real ());
+  lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
   FloatComplex *pwork = work.fortran_vec ();
 
@@ -321,12 +324,13 @@ octave_idx_type
 FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
                           bool calc_lev)
 {
-  octave_idx_type n = a.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT a_nc = to_f77_int (a.cols ());
 
-  if (n != a.cols ())
+  if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatComplexMatrix atmp = a;
   FloatComplex *tmp_data = atmp.fortran_vec ();
@@ -334,10 +338,10 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
   FloatColumnVector wr (n);
   float *pwr = wr.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   FloatComplex dummy_work;
 
-  octave_idx_type lrwork = 3*n;
+  F77_INT lrwork = 3*n;
   Array<float> rwork (dim_vector (lrwork, 1));
   float *prwork = rwork.fortran_vec ();
 
@@ -352,7 +356,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
   if (info != 0)
     (*current_liboctave_error_handler) ("cheev workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work.real ());
+  lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
   FloatComplex *pwork = work.fortran_vec ();
 
@@ -384,16 +388,19 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
     (*current_liboctave_error_handler)
       ("EIG: matrix contains Inf or NaN values");
 
-  octave_idx_type n = a.rows ();
-  octave_idx_type nb = b.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT nb = to_f77_int (b.rows ());
 
-  if (n != a.cols () || nb != b.cols ())
+  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
   if (n != nb)
     (*current_liboctave_error_handler) ("EIG requires same size matrices");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatMatrix tmp = b;
   float *tmp_data = tmp.fortran_vec ();
@@ -423,15 +430,15 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   Array<float> beta (dim_vector (n, 1));
   float *pbeta = beta.fortran_vec ();
 
-  volatile octave_idx_type nvr = calc_rev ? n : 0;
+  volatile F77_INT nvr = calc_rev ? n : 0;
   FloatMatrix vr (nvr, nvr);
   float *pvr = vr.fortran_vec ();
 
-  volatile octave_idx_type nvl = calc_lev ? n : 0;
+  volatile F77_INT nvl = calc_lev ? n : 0;
   FloatMatrix vl (nvl, nvl);
   float *pvl = vl.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   float dummy_work;
 
   F77_XFCN (sggev, SGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -446,7 +453,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   if (info != 0)
     (*current_liboctave_error_handler) ("sggev workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work);
+  lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
   float *pwork = work.fortran_vec ();
 
@@ -470,15 +477,15 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   w.resize (nvl, nvl);
 
 
-  for (octave_idx_type j = 0; j < n; j++)
+  for (F77_INT j = 0; j < n; j++)
     {
       if (ai.elem (j) == 0.0)
         {
           lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j));
-          for (octave_idx_type i = 0; i < nvr; i++)
+          for (F77_INT i = 0; i < nvr; i++)
             v.elem (i, j) = vr.elem (i, j);
 
-          for (octave_idx_type i = 0; i < nvl; i++)
+          for (F77_INT i = 0; i < nvl; i++)
             w.elem (i, j) = vl.elem (i, j);
         }
       else
@@ -491,14 +498,14 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
           lambda.elem (j+1) = FloatComplex (ar.elem (j+1) / beta.elem (j+1),
                                             ai.elem (j+1) / beta.elem (j+1));
 
-          for (octave_idx_type i = 0; i < nvr; i++)
+          for (F77_INT i = 0; i < nvr; i++)
             {
               float real_part = vr.elem (i, j);
               float imag_part = vr.elem (i, j+1);
               v.elem (i, j) = FloatComplex (real_part, imag_part);
               v.elem (i, j+1) = FloatComplex (real_part, -imag_part);
             }
-          for (octave_idx_type i = 0; i < nvl; i++)
+          for (F77_INT i = 0; i < nvl; i++)
             {
               float real_part = vl.elem (i, j);
               float imag_part = vl.elem (i, j+1);
@@ -516,16 +523,19 @@ octave_idx_type
 FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
                           bool calc_rev, bool calc_lev)
 {
-  octave_idx_type n = a.rows ();
-  octave_idx_type nb = b.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT nb = to_f77_int (b.rows ());
 
-  if (n != a.cols () || nb != b.cols ())
+  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
   if (n != nb)
     (*current_liboctave_error_handler) ("EIG requires same size matrices");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatMatrix atmp = a;
   float *atmp_data = atmp.fortran_vec ();
@@ -536,7 +546,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
   FloatColumnVector wr (n);
   float *pwr = wr.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   float dummy_work;
 
   F77_XFCN (ssygv, SSYGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -550,7 +560,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
   if (info != 0)
     (*current_liboctave_error_handler) ("ssygv workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work);
+  lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
   float *pwork = work.fortran_vec ();
 
@@ -583,16 +593,19 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
     (*current_liboctave_error_handler)
       ("EIG: matrix contains Inf or NaN values");
 
-  octave_idx_type n = a.rows ();
-  octave_idx_type nb = b.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT nb = to_f77_int (b.rows ());
 
-  if (n != a.cols () || nb != b.cols ())
+  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
   if (n != nb)
     (*current_liboctave_error_handler) ("EIG requires same size matrices");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatComplexMatrix tmp = b;
   FloatComplex *tmp_data = tmp.fortran_vec ();
@@ -620,18 +633,18 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   FloatComplexColumnVector beta (n);
   FloatComplex *pbeta = beta.fortran_vec ();
 
-  octave_idx_type nvr = calc_rev ? n : 0;
+  F77_INT nvr = calc_rev ? n : 0;
   FloatComplexMatrix vrtmp (nvr, nvr);
   FloatComplex *pvr = vrtmp.fortran_vec ();
 
-  octave_idx_type nvl = calc_lev ? n : 0;
+  F77_INT nvl = calc_lev ? n : 0;
   FloatComplexMatrix vltmp (nvl, nvl);
   FloatComplex *pvl = vltmp.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   FloatComplex dummy_work;
 
-  octave_idx_type lrwork = 8*n;
+  F77_INT lrwork = 8*n;
   Array<float> rwork (dim_vector (lrwork, 1));
   float *prwork = rwork.fortran_vec ();
 
@@ -648,7 +661,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   if (info != 0)
     (*current_liboctave_error_handler) ("cggev workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work.real ());
+  lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
   FloatComplex *pwork = work.fortran_vec ();
 
@@ -670,7 +683,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   lambda.resize (n);
 
-  for (octave_idx_type j = 0; j < n; j++)
+  for (F77_INT j = 0; j < n; j++)
     lambda.elem (j) = alpha.elem (j) / beta.elem (j);
 
   v = vrtmp;
@@ -684,16 +697,19 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
                           const FloatComplexMatrix& b,
                           bool calc_rev, bool calc_lev)
 {
-  octave_idx_type n = a.rows ();
-  octave_idx_type nb = b.rows ();
+  F77_INT n = to_f77_int (a.rows ());
+  F77_INT nb = to_f77_int (b.rows ());
 
-  if (n != a.cols () || nb != b.cols ())
+  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 
   if (n != nb)
     (*current_liboctave_error_handler) ("EIG requires same size matrices");
 
-  octave_idx_type info = 0;
+  F77_INT info = 0;
 
   FloatComplexMatrix atmp = a;
   FloatComplex *atmp_data = atmp.fortran_vec ();
@@ -704,10 +720,10 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
   FloatColumnVector wr (n);
   float *pwr = wr.fortran_vec ();
 
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
   FloatComplex dummy_work;
 
-  octave_idx_type lrwork = 3*n;
+  F77_INT lrwork = 3*n;
   Array<float> rwork (dim_vector (lrwork, 1));
   float *prwork = rwork.fortran_vec ();
 
@@ -723,7 +739,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
   if (info != 0)
     (*current_liboctave_error_handler) ("zhegv workspace query failed");
 
-  lwork = static_cast<octave_idx_type> (dummy_work.real ());
+  lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
   FloatComplex *pwork = work.fortran_vec ();
 

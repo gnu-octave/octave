@@ -77,16 +77,17 @@ is in the upper left corner, by doing:
   if (args.length () != 3)
     print_usage ();
 
-  const Array<octave_idx_type> sel = args(2).octave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
+  const Array<octave_idx_type> sel_arg = args(2).octave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
 
-  const octave_idx_type n = sel.numel ();
+  const octave_idx_type sel_n = sel_arg.numel ();
 
   const dim_vector dimU = args(0).dims ();
   const dim_vector dimS = args(1).dims ();
 
-  if (n != dimU(0))
+  if (sel_n != dimU(0))
     error ("ordschur: SELECT must have same length as the sides of U and S");
-  else if (n != dimU(0) || n != dimS(0) || n != dimU(1) || n != dimS(1))
+  else if (sel_n != dimU(0) || sel_n != dimS(0) || sel_n != dimU(1)
+           || sel_n != dimS(1))
     error ("ordschur: U and S must be square and of equal sizes");
 
   octave_value_list retval;
@@ -97,12 +98,14 @@ is in the upper left corner, by doing:
                             || args(1).is_complex_type ();
 
 #define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND)                           \
-  TYPE ## Matrix U = args(0).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
-  TYPE ## Matrix S = args(1).x ## TYPE_M ## _value ("ordschur: U and S must be real or complex floating point matrices"); \
+  TYPE ## Matrix U = args(0).x ## TYPE_M ## _value                      \
+    ("ordschur: U and S must be real or complex floating point matrices"); \
+  TYPE ## Matrix S = args(1).x ## TYPE_M ## _value                      \
+    ("ordschur: U and S must be real or complex floating point matrices"); \
   TYPE ## Matrix w (dim_vector (n, 1));                                 \
   TYPE ## Matrix work (dim_vector (n, 1));                              \
-  octave_idx_type m;                                                    \
-  octave_idx_type info;                                                 \
+  F77_INT m;                                                            \
+  F77_INT info;                                                         \
   TYPE_COND cond1, cond2;
 
 #define PREPARE_OUTPUT()                        \
@@ -110,6 +113,11 @@ is in the upper left corner, by doing:
     error ("ordschur: trsen failed");           \
                                                 \
   retval = ovl (U, S);
+
+  F77_INT n = to_f77_int (sel_n);
+  Array<F77_INT> sel (dim_vector (n, 1));
+  for (F77_INT i = 0; i < n; i++)
+    sel.xelem (i) = to_f77_int (sel_arg.xelem (i));
 
   if (double_type)
     {
@@ -131,7 +139,7 @@ is in the upper left corner, by doing:
         {
           PREPARE_ARGS (, matrix, double)
           Matrix wi (dim_vector (n, 1));
-          Array<octave_idx_type> iwork (dim_vector (n, 1));
+          Array<F77_INT> iwork (dim_vector (n, 1));
 
           F77_XFCN (dtrsen, dtrsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
@@ -162,7 +170,7 @@ is in the upper left corner, by doing:
         {
           PREPARE_ARGS (Float, float_matrix, float)
           FloatMatrix wi (dim_vector (n, 1));
-          Array<octave_idx_type> iwork (dim_vector (n, 1));
+          Array<F77_INT> iwork (dim_vector (n, 1));
 
           F77_XFCN (strsen, strsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),

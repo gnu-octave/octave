@@ -44,7 +44,6 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/findall.m \
   scripts/plot/util/findfigs.m \
   scripts/plot/util/findobj.m \
-  scripts/plot/util/frame2im.m \
   scripts/plot/util/gca.m \
   scripts/plot/util/gcbf.m \
   scripts/plot/util/gcbo.m \
@@ -57,7 +56,6 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/hgload.m \
   scripts/plot/util/hgsave.m \
   scripts/plot/util/hold.m \
-  scripts/plot/util/im2frame.m \
   scripts/plot/util/isaxes.m \
   scripts/plot/util/isfigure.m \
   scripts/plot/util/ishghandle.m \

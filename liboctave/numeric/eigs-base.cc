@@ -139,8 +139,8 @@ vector_product (const SparseMatrix& m, const double* x, double* y)
 static bool
 vector_product (const Matrix& m, const double *x, double *y)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = to_f77_int (m.rows ());
+  F77_INT nc = to_f77_int (m.cols ());
 
   F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            nr, nc, 1.0,  m.data (), nr,
@@ -172,8 +172,8 @@ vector_product (const SparseComplexMatrix& m, const Complex* x,
 static bool
 vector_product (const ComplexMatrix& m, const Complex *x, Complex *y)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  F77_INT nr = to_f77_int (m.rows ());
+  F77_INT nc = to_f77_int (m.cols ());
 
   F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            nr, nc, 1.0, F77_CONST_DBLE_CMPLX_ARG (m.data ()),

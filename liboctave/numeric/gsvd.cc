@@ -45,17 +45,13 @@ namespace octave
   {
     template <>
     void
-    gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq,
-                         octave_idx_type m, octave_idx_type n,
-                         octave_idx_type p,
-                         octave_idx_type& k, octave_idx_type& l,
-                         double *tmp_dataA, octave_idx_type m1,
-                         double *tmp_dataB, octave_idx_type p1, Matrix& alpha,
-                         Matrix& beta, double *u, octave_idx_type nrow_u,
-                         double *v, octave_idx_type nrow_v, double *q,
-                         octave_idx_type nrow_q,
-                         Matrix& work, octave_idx_type* iwork,
-                         octave_idx_type& info)
+    gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
+                         F77_INT n, F77_INT p, F77_INT& k, F77_INT& l,
+                         double *tmp_dataA, F77_INT m1, double *tmp_dataB,
+                         F77_INT p1, Matrix& alpha, Matrix& beta, double *u,
+                         F77_INT nrow_u, double *v, F77_INT nrow_v, double *q,
+                         F77_INT nrow_q, Matrix& work, F77_INT* iwork,
+                         F77_INT& info)
     {
       F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -72,17 +68,14 @@ namespace octave
 
     template <>
     void
-    gsvd<FloatMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
-                              octave_idx_type m, octave_idx_type n,
-                              octave_idx_type p,
-                              octave_idx_type& k, octave_idx_type& l,
-                              float *tmp_dataA, octave_idx_type m1,
-                              float *tmp_dataB, octave_idx_type p1,
-                              FloatMatrix& alpha, FloatMatrix& beta, float *u,
-                              octave_idx_type nrow_u, float *v,
-                              octave_idx_type nrow_v, float *q,
-                              octave_idx_type nrow_q, FloatMatrix& work,
-                              octave_idx_type* iwork, octave_idx_type& info)
+    gsvd<FloatMatrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
+                              F77_INT n, F77_INT p, F77_INT& k, F77_INT& l,
+                              float *tmp_dataA, F77_INT m1, float *tmp_dataB,
+                              F77_INT p1, FloatMatrix& alpha,
+                              FloatMatrix& beta, float *u, F77_INT nrow_u,
+                              float *v, F77_INT nrow_v, float *q,
+                              F77_INT nrow_q, FloatMatrix& work,
+                              F77_INT* iwork, F77_INT& info)
     {
       F77_XFCN (sggsvd, SGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -100,16 +93,13 @@ namespace octave
     template <>
     void
     gsvd<ComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
-                                octave_idx_type m, octave_idx_type n,
-                                octave_idx_type p, octave_idx_type& k,
-                                octave_idx_type& l, Complex *tmp_dataA,
-                                octave_idx_type m1, Complex *tmp_dataB,
-                                octave_idx_type p1, Matrix& alpha,
-                                Matrix& beta, Complex *u,
-                                octave_idx_type nrow_u,
-                                Complex *v, octave_idx_type nrow_v, Complex *q,
-                                octave_idx_type nrow_q, ComplexMatrix& work,
-                                octave_idx_type* iwork, octave_idx_type& info)
+                                F77_INT m, F77_INT n, F77_INT p, F77_INT& k,
+                                F77_INT& l, Complex *tmp_dataA, F77_INT m1,
+                                Complex *tmp_dataB, F77_INT p1, Matrix& alpha,
+                                Matrix& beta, Complex *u, F77_INT nrow_u,
+                                Complex *v, F77_INT nrow_v, Complex *q,
+                                F77_INT nrow_q, ComplexMatrix& work,
+                                F77_INT* iwork, F77_INT& info)
     {
       Matrix rwork(2*n, 1);
       F77_XFCN (zggsvd, ZGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
@@ -131,20 +121,16 @@ namespace octave
     template <>
     void
     gsvd<FloatComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
-                                     octave_idx_type m, octave_idx_type n,
-                                     octave_idx_type p, octave_idx_type& k,
-                                     octave_idx_type& l,
-                                     FloatComplex *tmp_dataA,
-                                     octave_idx_type m1,
-                                     FloatComplex *tmp_dataB,
-                                     octave_idx_type p1, FloatMatrix& alpha,
-                                     FloatMatrix& beta, FloatComplex *u,
-                                     octave_idx_type nrow_u, FloatComplex *v,
-                                     octave_idx_type nrow_v, FloatComplex *q,
-                                     octave_idx_type nrow_q,
+                                     F77_INT m, F77_INT n, F77_INT p,
+                                     F77_INT& k, F77_INT& l,
+                                     FloatComplex *tmp_dataA, F77_INT m1,
+                                     FloatComplex *tmp_dataB, F77_INT p1,
+                                     FloatMatrix& alpha, FloatMatrix& beta,
+                                     FloatComplex *u, F77_INT nrow_u,
+                                     FloatComplex *v, F77_INT nrow_v,
+                                     FloatComplex *q, F77_INT nrow_q,
                                      FloatComplexMatrix& work,
-                                     octave_idx_type* iwork,
-                                     octave_idx_type& info)
+                                     F77_INT* iwork, F77_INT& info)
     {
       FloatMatrix rwork(2*n, 1);
       F77_XFCN (cggsvd, CGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
@@ -222,11 +208,11 @@ namespace octave
     template <typename T>
     gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
     {
-      octave_idx_type info;
+      F77_INT info;
 
-      octave_idx_type m = a.rows ();
-      octave_idx_type n = a.cols ();
-      octave_idx_type p = b.rows ();
+      F77_INT m = to_f77_int (a.rows ());
+      F77_INT n = to_f77_int (a.cols ());
+      F77_INT p = to_f77_int (b.rows ());
 
       T atmp = a;
       P *tmp_dataA = atmp.fortran_vec ();
@@ -238,11 +224,11 @@ namespace octave
       char jobv = 'V';
       char jobq = 'Q';
 
-      octave_idx_type nrow_u = m;
-      octave_idx_type nrow_v = p;
-      octave_idx_type nrow_q = n;
+      F77_INT nrow_u = m;
+      F77_INT nrow_v = p;
+      F77_INT nrow_q = n;
 
-      octave_idx_type k, l;
+      F77_INT k, l;
 
       switch (gsvd_type)
         {
@@ -283,7 +269,7 @@ namespace octave
 
       P *q = right_sm.fortran_vec ();
 
-      octave_idx_type lwork = 3*n;
+      F77_INT lwork = 3*n;
       lwork = lwork > m ? lwork : m;
       lwork = (lwork > p ? lwork : p) + n;
 
@@ -291,7 +277,7 @@ namespace octave
       real_matrix alpha (n, 1);
       real_matrix beta (n, 1);
 
-      std::vector<octave_idx_type> iwork (n);
+      std::vector<F77_INT> iwork (n);
 
       gsvd<T>::ggsvd (jobu, jobv, jobq, m, n, p, k, l,
                       tmp_dataA, m, tmp_dataB, p, alpha, beta, u,
@@ -310,7 +296,7 @@ namespace octave
               ("*ggsvd.f: Jacobi-type procedure failed to converge.");
           else
             {
-              octave_idx_type i, j;
+              F77_INT i, j;
 
               if (gsvd<T>::Type::std == gsvd_type)
                 {

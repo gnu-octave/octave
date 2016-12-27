@@ -95,13 +95,17 @@ namespace octave
       T left_smA, left_smB;
       T right_sm, R;
 
-      void ggsvd (char& jobu, char& jobv, char& jobq, octave_idx_type m,
-                  octave_idx_type n, octave_idx_type p, octave_idx_type& k,
-                  octave_idx_type& l, P *tmp_dataA, octave_idx_type m1,
-                  P *tmp_dataB, octave_idx_type p1, real_matrix& alpha,
-                  real_matrix& beta, P *u, octave_idx_type nrow_u, P *v,
-                  octave_idx_type nrow_v, P *q, octave_idx_type nrow_q, T& work,
-                  octave_idx_type* iwork, octave_idx_type& info);
+      void ggsvd (char& jobu, char& jobv, char& jobq, octave_f77_int_type m,
+                  octave_f77_int_type n, octave_f77_int_type p,
+                  octave_f77_int_type& k, octave_f77_int_type& l,
+                  P *tmp_dataA, octave_f77_int_type m1,
+                  P *tmp_dataB, octave_f77_int_type p1,
+                  real_matrix& alpha, real_matrix& beta,
+                  P *u, octave_f77_int_type nrow_u,
+                  P *v, octave_f77_int_type nrow_v,
+                  P *q, octave_f77_int_type nrow_q,
+                  T& work, octave_f77_int_type* iwork,
+                  octave_f77_int_type& info);
     };
   }
 }

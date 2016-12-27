@@ -542,8 +542,9 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (double, w, n);
 
       chol_mat.resize (n+1, n+1);
+      F77_INT ldcm = to_f77_int (chol_mat.rows ());
 
-      F77_XFCN (dchinx, DCHINX, (n, chol_mat.fortran_vec (), n,
+      F77_XFCN (dchinx, DCHINX, (n, chol_mat.fortran_vec (), ldcm,
                                  j + 1, utmp.fortran_vec (), w, info));
 
       return info;
@@ -718,8 +719,9 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, w, n);
 
       chol_mat.resize (n+1, n+1);
+      F77_INT ldcm = to_f77_int (chol_mat.rows ());
 
-      F77_XFCN (schinx, SCHINX, (n, chol_mat.fortran_vec (), n,
+      F77_XFCN (schinx, SCHINX, (n, chol_mat.fortran_vec (), ldcm,
                                  j + 1, utmp.fortran_vec (), w, info));
 
       return info;
@@ -900,10 +902,11 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (double, rw, n);
 
       chol_mat.resize (n+1, n+1);
+      F77_INT ldcm = to_f77_int (chol_mat.rows ());
 
       F77_XFCN (zchinx, ZCHINX, (n,
                                  F77_DBLE_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 n, j + 1,
+                                 ldcm, j + 1,
                                  F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
                                  rw, info));
 
@@ -1086,9 +1089,10 @@ namespace octave
       OCTAVE_LOCAL_BUFFER (float, rw, n);
 
       chol_mat.resize (n+1, n+1);
+      F77_INT ldcm = to_f77_int (chol_mat.rows ());
 
       F77_XFCN (cchinx, CCHINX, (n, F77_CMPLX_ARG (chol_mat.fortran_vec ()),
-                                 n, j + 1,
+                                 ldcm, j + 1,
                                  F77_CMPLX_ARG (utmp.fortran_vec ()),
                                  rw, info));
 

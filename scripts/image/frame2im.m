@@ -49,7 +49,7 @@ function [x, map] = frame2im (frame)
     map = frame(1).colormap;
   endif
 
-  ## support for N dimensional images if we receive a struct array
+  ## support for N-dimensional images if we receive a struct array
   if (n > 1)
     x = reshape (x, rows (x), columns (x) / n, n, size (frame(1).cdata, 3));
     x = permute (x, [1 2 4 3]);
@@ -63,7 +63,7 @@ endfunction
 %!endfunction
 
 %!function f = make_ind_f ()
-%!  f = randi ([1 100], 10, 20, 3);
+%!  f = randi ([1 100], 10, 20, 2);
 %!endfunction
 
 %!test

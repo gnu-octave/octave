@@ -383,7 +383,6 @@ to_f77_int (octave_idx_type x)
 
   return static_cast<F77_INT> (x);
 }
-
 #endif
 
 #if defined (__cplusplus)

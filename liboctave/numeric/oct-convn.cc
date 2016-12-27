@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 // 2d convolution with a matrix kernel.
 template <typename T, typename R>
 static void
-convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
-             const R *b, octave_idx_type mb, octave_idx_type nb,
+convolve_2d (const T *a, F77_INT ma, F77_INT na,
+             const R *b, F77_INT mb, F77_INT nb,
              T *c, bool inner);
 
 // Forward instances to our Fortran implementations.
@@ -44,15 +44,13 @@ convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
                      R_CONST_CAST, f, F)                                \
   extern "C"                                                            \
   F77_RET_T                                                             \
-  F77_FUNC (f##conv2o, F##CONV2O) (const F77_INT&,                      \
-                                   const F77_INT&,                      \
+  F77_FUNC (f##conv2o, F##CONV2O) (const F77_INT&, const F77_INT&,      \
                                    const T*, const F77_INT&,            \
                                    const F77_INT&, const R*, T *);      \
                                                                         \
   extern "C"                                                            \
   F77_RET_T                                                             \
-  F77_FUNC (f##conv2i, F##CONV2I) (const F77_INT&,                      \
-                                   const F77_INT&,                      \
+  F77_FUNC (f##conv2i, F##CONV2I) (const F77_INT&, const F77_INT&,      \
                                    const T*, const F77_INT&,            \
                                    const F77_INT&, const R*, T *);      \
                                                                         \
@@ -93,7 +91,15 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
                   T *c, const dim_vector& ccd, int nd, bool inner)
 {
   if (nd == 2)
-    convolve_2d<T, R> (a, ad(0), ad(1), b, bd(0), bd(1), c, inner);
+    {
+      F77_INT ad0 = to_f77_int (ad(0));
+      F77_INT ad1 = to_f77_int (ad(1));
+
+      F77_INT bd0 = to_f77_int (bd(0));
+      F77_INT bd1 = to_f77_int (bd(1));
+
+      convolve_2d<T, R> (a, ad0, ad1, b, bd0, bd1, c, inner);
+    }
   else
     {
       octave_idx_type ma = acd(nd-2);
@@ -101,6 +107,7 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
       octave_idx_type mb = bcd(nd-2);
       octave_idx_type nb = bd(nd-1);
       octave_idx_type ldc = ccd(nd-2);
+
       if (inner)
         {
           for (octave_idx_type ja = 0; ja < na - nb + 1; ja++)

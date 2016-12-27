@@ -25,19 +25,21 @@ scripts_image_FCN_FILES = \
   scripts/image/copper.m \
   scripts/image/cubehelix.m \
   scripts/image/flag.m \
+  scripts/image/frame2im.m \
   scripts/image/gray.m \
   scripts/image/gray2ind.m \
   scripts/image/hot.m \
   scripts/image/hsv.m \
   scripts/image/hsv2rgb.m \
-  scripts/image/iscolormap.m \
   scripts/image/im2double.m \
+  scripts/image/im2frame.m \
   scripts/image/image.m \
   scripts/image/imagesc.m \
   scripts/image/imfinfo.m \
   scripts/image/imformats.m \
   scripts/image/imread.m \
   scripts/image/imshow.m \
+  scripts/image/iscolormap.m \
   scripts/image/imwrite.m \
   scripts/image/ind2gray.m \
   scripts/image/ind2rgb.m \

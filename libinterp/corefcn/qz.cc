@@ -57,21 +57,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-typedef octave_idx_type (*sort_function) (const octave_idx_type& LSIZE,
-                                          const double& ALPHA,
-                                          const double& BETA, const double& S,
-                                          const double& P);
+typedef F77_INT (*sort_function) (const F77_INT& LSIZE,
+                                  const double& ALPHA, const double& BETA,
+                                  const double& S, const double& P);
 
 extern "C"
 {
   // Van Dooren's code (netlib.org: toms/590) for reordering
   // GEP.  Only processes Z, not Q.
   F77_RET_T
-  F77_FUNC (dsubsp, DSUBSP) (const F77_INT& NMAX,
-                             const F77_INT& N, F77_DBLE* A,
-                             F77_DBLE* B, F77_DBLE* Z, sort_function,
-                             const F77_DBLE& EPS, F77_INT& NDIM,
-                             F77_INT& FAIL, F77_INT* IND);
+  F77_FUNC (dsubsp, DSUBSP) (const F77_INT& NMAX, const F77_INT& N,
+                             F77_DBLE* A, F77_DBLE* B, F77_DBLE* Z,
+                             sort_function, const F77_DBLE& EPS,
+                             F77_INT& NDIM, F77_INT& FAIL, F77_INT* IND);
 }
 
 // fcrhp, fin, fout, folhp:
@@ -82,9 +80,9 @@ extern "C"
 //   fcrhp: real(lambda) >= 0
 //   folhp: real(lambda) < 0
 
-static octave_idx_type
-fcrhp (const octave_idx_type& lsize, const double& alpha,
-       const double& beta, const double& s, const double&)
+static F77_INT
+fcrhp (const F77_INT& lsize, const double& alpha, const double& beta,
+       const double& s, const double&)
 {
   if (lsize == 1)
     return (alpha * beta >= 0 ? 1 : -1);
@@ -92,11 +90,11 @@ fcrhp (const octave_idx_type& lsize, const double& alpha,
     return (s >= 0 ? 1 : -1);
 }
 
-static octave_idx_type
-fin (const octave_idx_type& lsize, const double& alpha,
-     const double& beta, const double&, const double& p)
+static F77_INT
+fin (const F77_INT& lsize, const double& alpha, const double& beta,
+     const double&, const double& p)
 {
-  octave_idx_type retval;
+  F77_INT retval;
 
   if (lsize == 1)
     retval = (fabs (alpha) < fabs (beta) ? 1 : -1);
@@ -110,9 +108,9 @@ fin (const octave_idx_type& lsize, const double& alpha,
   return retval;
 }
 
-static octave_idx_type
-folhp (const octave_idx_type& lsize, const double& alpha,
-       const double& beta, const double& s, const double&)
+static F77_INT
+folhp (const F77_INT& lsize, const double& alpha, const double& beta,
+       const double& s, const double&)
 {
   if (lsize == 1)
     return (alpha * beta < 0 ? 1 : -1);
@@ -120,9 +118,9 @@ folhp (const octave_idx_type& lsize, const double& alpha,
     return (s < 0 ? 1 : -1);
 }
 
-static octave_idx_type
-fout (const octave_idx_type& lsize, const double& alpha,
-      const double& beta, const double&, const double& p)
+static F77_INT
+fout (const F77_INT& lsize, const double& alpha, const double& beta,
+      const double&, const double& p)
 {
   if (lsize == 1)
     return (fabs (alpha) >= fabs (beta) ? 1 : -1);
@@ -287,11 +285,12 @@ compatibility with @sc{matlab}.
 #endif
 
   // Argument 1: check if it's okay dimensioned.
-  octave_idx_type nn = args(0).rows ();
+  F77_INT nn = to_f77_int (args(0).rows ());
+  F77_INT nc = to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
   std::cout << "argument 1 dimensions: ("
-            << nn << "," << args(0).columns () << ")"
+            << nn << "," << nc << ")"
             << std::endl;
 #endif
 
@@ -302,7 +301,7 @@ compatibility with @sc{matlab}.
       warn_empty_arg ("qz: parameter 1; continuing");
       return octave_value_list (2, Matrix ());
     }
-  else if (args(0).columns () != nn)
+  else if (nc != nn)
     err_square_matrix_required ("qz", "A");
 
   // Argument 1: dimensions look good; get the value.
@@ -319,7 +318,10 @@ compatibility with @sc{matlab}.
 #endif
 
   // Extract argument 2 (bb, or cbb if complex).
-  if ((nn != args(1).columns ()) || (nn != args(1).rows ()))
+  F77_INT b_nr = to_f77_int (args(1).rows ());
+  F77_INT b_nc = to_f77_int (args(1).columns ());
+
+  if (nn != b_nc || nn != b_nr)
     err_nonconformant ();
 
   Matrix bb;
@@ -345,14 +347,14 @@ compatibility with @sc{matlab}.
   RowVector alphar(nn), alphai(nn), betar(nn);
   ComplexRowVector xalpha(nn), xbeta(nn);
   ComplexMatrix CQ(nn,nn), CZ(nn,nn), CVR(nn,nn), CVL(nn,nn);
-  octave_idx_type ilo, ihi, info;
+  F77_INT ilo, ihi, info;
   char compq = (nargout >= 3 ? 'V' : 'N');
   char compz = ((nargout >= 4 || nargin == 3)? 'V' : 'N');
 
   // Initialize Q, Z to identity if we need either of them.
   if (compq == 'V' || compz == 'V')
-    for (octave_idx_type ii = 0; ii < nn; ii++)
-      for (octave_idx_type jj = 0; jj < nn; jj++)
+    for (F77_INT ii = 0; ii < nn; ii++)
+      for (F77_INT jj = 0; jj < nn; jj++)
         {
           octave_quit ();
 
@@ -660,7 +662,6 @@ compatibility with @sc{matlab}.
           break;
         }
 
-      octave_idx_type ndim, fail;
       double inf_norm;
 
       F77_XFCN (xdlange, XDLANGE,
@@ -690,7 +691,9 @@ compatibility with @sc{matlab}.
       std::cout << std::endl;
 #endif
 
-      Array<octave_idx_type> ind (dim_vector (nn, 1));
+      Array<F77_INT> ind (dim_vector (nn, 1));
+
+      F77_INT ndim, fail;
 
       F77_XFCN (dsubsp, DSUBSP,
                 (nn, nn, aa.fortran_vec (), bb.fortran_vec (),
@@ -711,7 +714,7 @@ compatibility with @sc{matlab}.
 #endif
 
       // Manually update alphar, alphai, betar.
-      static int jj;
+      static F77_INT jj;
 
       jj = 0;
       while (jj < nn)
@@ -721,7 +724,7 @@ compatibility with @sc{matlab}.
 #endif
 
           // Number of zeros in this block.
-          static int zcnt;
+          static F77_INT zcnt;
 
           if (jj == (nn-1))
             zcnt = 1;
@@ -754,9 +757,9 @@ compatibility with @sc{matlab}.
                         << setiosflags (std::ios::scientific)
                         << safmin << std::endl;
 
-              for (int idr = jj; idr <= jj+1; idr++)
+              for (F77_INT idr = jj; idr <= jj+1; idr++)
                 {
-                  for (int idc = jj; idc <= jj+1; idc++)
+                  for (F77_INT idc = jj; idc <= jj+1; idc++)
                     {
                       std::cout << "aa(" << idr << "," << idc << ")="
                                 << aa(idr,idc) << std::endl;
@@ -835,15 +838,15 @@ compatibility with @sc{matlab}.
     {
       if (complex_case)
         {
-          int cnt = 0;
+          F77_INT cnt = 0;
 
-          for (int ii = 0; ii < nn; ii++)
+          for (F77_INT ii = 0; ii < nn; ii++)
             cnt++;
 
           ComplexColumnVector tmp (cnt);
 
           cnt = 0;
-          for (int ii = 0; ii < nn; ii++)
+          for (F77_INT ii = 0; ii < nn; ii++)
             tmp(cnt++) = xalpha(ii) / xbeta(ii);
 
           gev = tmp;
@@ -855,16 +858,16 @@ compatibility with @sc{matlab}.
 #endif
 
           // Return finite generalized eigenvalues.
-          int cnt = 0;
+          F77_INT cnt = 0;
 
-          for (int ii = 0; ii < nn; ii++)
+          for (F77_INT ii = 0; ii < nn; ii++)
             if (betar(ii) != 0)
               cnt++;
 
           ComplexColumnVector tmp (cnt);
 
           cnt = 0;
-          for (int ii = 0; ii < nn; ii++)
+          for (F77_INT ii = 0; ii < nn; ii++)
             if (betar(ii) != 0)
               tmp(cnt++) = Complex(alphar(ii), alphai(ii))/betar(ii);
 
@@ -880,7 +883,7 @@ compatibility with @sc{matlab}.
       // Compute all of them and backtransform
       char howmny = 'B';
       // Dummy pointer; select is not used.
-      octave_idx_type *select = 0;
+      F77_INT *select = 0;
 
       if (complex_case)
         {
@@ -888,7 +891,7 @@ compatibility with @sc{matlab}.
           CVR = CZ;
           ComplexRowVector cwork2 (2 * nn);
           RowVector rwork2 (8 * nn);
-          octave_idx_type m;
+          F77_INT m;
 
           F77_XFCN (ztgevc, ZTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
@@ -909,7 +912,7 @@ compatibility with @sc{matlab}.
 
           VL = QQ;
           VR = ZZ;
-          octave_idx_type m;
+          F77_INT m;
 
           F77_XFCN (dtgevc, DTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
@@ -921,7 +924,7 @@ compatibility with @sc{matlab}.
                      F77_CHAR_ARG_LEN (1)));
 
           // Now construct the complex form of VV, WW.
-          int jj = 0;
+          F77_INT jj = 0;
 
           while (jj < nn)
             {
@@ -941,25 +944,25 @@ compatibility with @sc{matlab}.
               // Now copy the eigenvector (s) to CVR, CVL.
               if (cinc == 1)
                 {
-                  for (int ii = 0; ii < nn; ii++)
+                  for (F77_INT ii = 0; ii < nn; ii++)
                     CVR(ii,jj) = VR(ii,jj);
 
                   if (side == 'B')
-                    for (int ii = 0; ii < nn; ii++)
+                    for (F77_INT ii = 0; ii < nn; ii++)
                       CVL(ii,jj) = VL(ii,jj);
                 }
               else
                 {
                   // Double column; complex vector.
 
-                  for (int ii = 0; ii < nn; ii++)
+                  for (F77_INT ii = 0; ii < nn; ii++)
                     {
                       CVR(ii,jj) = Complex (VR(ii,jj), VR(ii,jj+1));
                       CVR(ii,jj+1) = Complex (VR(ii,jj), -VR(ii,jj+1));
                     }
 
                   if (side == 'B')
-                    for (int ii = 0; ii < nn; ii++)
+                    for (F77_INT ii = 0; ii < nn; ii++)
                       {
                         CVL(ii,jj) = Complex (VL(ii,jj), VL(ii,jj+1));
                         CVL(ii,jj+1) = Complex (VL(ii,jj), -VL(ii,jj+1));

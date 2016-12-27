@@ -105,14 +105,14 @@ private:
 
   bool initialized;
 
-  octave_idx_type liw;
-  octave_idx_type lrw;
+  octave_f77_int_type liw;
+  octave_f77_int_type lrw;
 
-  octave_idx_type ng;
+  octave_f77_int_type ng;
 
-  Array<octave_idx_type> info;
-  Array<octave_idx_type> iwork;
-  Array<octave_idx_type> jroot;
+  Array<octave_f77_int_type> info;
+  Array<octave_f77_int_type> iwork;
+  Array<octave_f77_int_type> jroot;
 
   Array<double> rwork;
 

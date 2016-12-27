@@ -37,12 +37,12 @@ public:
 
   LSODE (void)
     : ODE (), LSODE_options (), initialized (false), method_flag (0),
-      maxord (0), itask (0), iopt (0), itol (0), liw (0), lrw (0),
+      itask (0), iopt (0), itol (0), liw (0), lrw (0),
       iwork (), rwork (), rel_tol (0.0), abs_tol () { }
 
   LSODE (const ColumnVector& s, double tm, const ODEFunc& f)
     : ODE (s, tm, f), LSODE_options (), initialized (false), method_flag (0),
-      maxord (0), itask (0), iopt (0), itol (0), liw (0), lrw (0),
+      itask (0), iopt (0), itol (0), liw (0), lrw (0),
       iwork (), rwork (), rel_tol (0.0), abs_tol () { }
 
   ~LSODE (void) = default;
@@ -59,16 +59,15 @@ private:
 
   bool initialized;
 
-  octave_idx_type method_flag;
-  octave_idx_type maxord;
-  octave_idx_type itask;
-  octave_idx_type iopt;
-  octave_idx_type itol;
+  octave_f77_int_type method_flag;
+  octave_f77_int_type itask;
+  octave_f77_int_type iopt;
+  octave_f77_int_type itol;
 
-  octave_idx_type liw;
-  octave_idx_type lrw;
+  octave_f77_int_type liw;
+  octave_f77_int_type lrw;
 
-  Array<octave_idx_type> iwork;
+  Array<octave_f77_int_type> iwork;
   Array<double> rwork;
 
   double rel_tol;

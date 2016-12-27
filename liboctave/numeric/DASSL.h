@@ -68,11 +68,11 @@ private:
 
   bool initialized;
 
-  octave_idx_type liw;
-  octave_idx_type lrw;
+  octave_f77_int_type liw;
+  octave_f77_int_type lrw;
 
-  Array<octave_idx_type> info;
-  Array<octave_idx_type> iwork;
+  Array<octave_f77_int_type> info;
+  Array<octave_f77_int_type> iwork;
 
   Array<double> rwork;
 

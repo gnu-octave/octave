@@ -857,7 +857,7 @@ Oct-Files
 * Allocating Local Memory in Oct-Files::
 * Input Parameter Checking in Oct-Files::
 * Exception and Error Handling in Oct-Files::
-* Documentation and Test of Oct-Files::
+* Documentation and Testing of Oct-Files::
 
 Sparse Matrices in Oct-Files
 

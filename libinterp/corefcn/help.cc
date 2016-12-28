@@ -683,8 +683,7 @@ called.  Nested functions are @emph{not} included in the list.
 If the call is from the command line, an anonymous function, or a script,
 the return value is an empty cell array.
 
-Compatibility Note: Subfunctions which contain nested functions are not
-included in the list.  This is a known issue.
+@seealso{functions}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -699,9 +698,8 @@ included in the list.  This is a known issue.
     return ovl (retval);
 
   // Find the subfunctions of this function.
-  // FIXME: This includes all nested functions.
-  //        Once handles of nested functions are implemented,
-  //        we will need to exclude ones not in scope.
+  // 1) subfunction_names contains only valid subfunctions
+  // 2) subfunctions contains both nested functions and subfunctions
   const std::list<std::string> names = parent_fcn->subfunction_names ();
   const std::map<std::string, octave_value> h = parent_fcn->subfunctions ();
 
@@ -713,13 +711,9 @@ included in the list.  This is a known issue.
   for (const auto& nm : names)
     {
       std::map<std::string, octave_value>::const_iterator nm_fcn = h.find (nm);
-      if (nm_fcn != h.end () &&
-          ! nm_fcn->second.user_function_value ()->is_nested_function ())
+      if (nm_fcn != h.end ())
         retval(i++) = octave_value (new octave_fcn_handle (nm_fcn->second, nm));
     }
-
-  // remove pre-allocation for nested functions
-  retval.resize (dim_vector (i, 1));
 
   return ovl (retval);
 }
@@ -737,8 +731,8 @@ included in the list.  This is a known issue.
 %!   fclose (fid);
 %!   d = eval (fcn_name);
 %!   assert (size (d), [2, 1]);
-%!   assert (d{1}(3), 4);
-%!   assert (d{2}(3), 6);
+%!   assert (d{1} (3), 4);
+%!   assert (d{2} (3), 6);
 %! unwind_protect_cleanup
 %!   unlink (f);
 %! end_unwind_protect

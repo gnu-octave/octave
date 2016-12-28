@@ -3269,10 +3269,7 @@ namespace octave
 
         if (curr_fcn_depth > 1 || parsing_subfunctions)
           {
-            fcn->mark_as_subfunction ();
             fcn->stash_fcn_location (l, c);
-
-            subfunction_names.push_back (nm);
 
             if (endfunction_found && function_scopes.size () > 1)
               {
@@ -3283,8 +3280,13 @@ namespace octave
                                                     pscope);
               }
             else
-              symbol_table::install_subfunction (nm, octave_value (fcn),
-                                                 primary_fcn_scope);
+              {
+                fcn->mark_as_subfunction ();
+                subfunction_names.push_back (nm);
+
+                symbol_table::install_subfunction (nm, octave_value (fcn),
+                                                   primary_fcn_scope);
+               }
           }
 
         if (curr_fcn_depth == 1 && fcn)

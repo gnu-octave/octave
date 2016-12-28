@@ -471,8 +471,8 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 {
   Matrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
   if (nr != nc || nr == 0 || nc == 0)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -483,11 +483,15 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
   retval = *this;
   double *tmp_data = retval.fortran_vec ();
 
+  F77_INT tmp_info = 0;
+
   F77_XFCN (dtrtri, DTRTRI, (F77_CONST_CHAR_ARG2 (&uplo, 1),
                              F77_CONST_CHAR_ARG2 (&udiag, 1),
-                             nr, tmp_data, nr, info
+                             nr, tmp_data, nr, tmp_info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
+
+  info = tmp_info;
 
   // Throw-away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
@@ -495,11 +499,11 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     info = -1;
   else if (calc_cond)
     {
-      octave_idx_type dtrcon_info = 0;
+      F77_INT dtrcon_info = 0;
       char job = '1';
 
       OCTAVE_LOCAL_BUFFER (double, work, 3 * nr);
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, nr);
+      OCTAVE_LOCAL_BUFFER (F77_INT, iwork, nr);
 
       F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                  F77_CONST_CHAR_ARG2 (&uplo, 1),
@@ -526,31 +530,34 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 {
   Matrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
   if (nr != nc || nr == 0 || nc == 0)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
 
-  Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-  octave_idx_type *pipvt = ipvt.fortran_vec ();
+  Array<F77_INT> ipvt (dim_vector (nr, 1));
+  F77_INT *pipvt = ipvt.fortran_vec ();
 
   retval = *this;
   double *tmp_data = retval.fortran_vec ();
 
   Array<double> z (dim_vector (1, 1));
-  octave_idx_type lwork = -1;
+  F77_INT lwork = -1;
+
+  F77_INT tmp_info = 0;
 
   // Query the optimum work array size.
   F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
-                             z.fortran_vec (), lwork, info));
+                             z.fortran_vec (), lwork, tmp_info));
 
-  lwork = static_cast<octave_idx_type> (z(0));
+  lwork = static_cast<F77_INT> (z(0));
   lwork = (lwork < 2 *nc ? 2*nc : lwork);
   z.resize (dim_vector (lwork, 1));
   double *pz = z.fortran_vec ();
 
   info = 0;
+  tmp_info = 0;
 
   // Calculate the norm of the matrix, for later use.
   double anorm = 0;
@@ -558,7 +565,9 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
             .max ();
 
-  F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
+  F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, tmp_info));
+
+  info = tmp_info;
 
   // Throw-away extra info LAPACK gives so as to not change output.
   rcon = 0.0;
@@ -566,12 +575,12 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     info = -1;
   else if (calc_cond)
     {
-      octave_idx_type dgecon_info = 0;
+      F77_INT dgecon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
       char job = '1';
-      Array<octave_idx_type> iz (dim_vector (nc, 1));
-      octave_idx_type *piz = iz.fortran_vec ();
+      Array<F77_INT> iz (dim_vector (nc, 1));
+      F77_INT *piz = iz.fortran_vec ();
       F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                  nc, tmp_data, nr, anorm,
                                  rcon, pz, piz, dgecon_info
@@ -585,7 +594,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     retval = *this; // Restore matrix contents.
   else
     {
-      octave_idx_type dgetri_info = 0;
+      F77_INT dgetri_info = 0;
 
       F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
                                  pz, lwork, dgetri_info));
@@ -776,17 +785,18 @@ Matrix::fourier (void) const
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
+  octave_idx_type nsamples;
 
-  octave_idx_type npts, nsamples;
+  F77_INT npts;
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = to_f77_int (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
     {
-      npts = nr;
+      npts = to_f77_int (nr);
       nsamples = nc;
     }
 
@@ -818,17 +828,18 @@ Matrix::ifourier (void) const
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
+  octave_idx_type nsamples;
 
-  octave_idx_type npts, nsamples;
+  F77_INT npts;
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = to_f77_int (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
     {
-      npts = nr;
+      npts = to_f77_int (nr);
       nsamples = nc;
     }
 
@@ -861,10 +872,10 @@ Matrix::fourier2d (void) const
 {
   ComplexMatrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
-  octave_idx_type npts, nsamples;
+  F77_INT npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -877,7 +888,7 @@ Matrix::fourier2d (void) const
       nsamples = nc;
     }
 
-  octave_idx_type nn = 4*npts+15;
+  F77_INT nn = 4*npts+15;
 
   Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
@@ -887,7 +898,7 @@ Matrix::fourier2d (void) const
 
   F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
 
-  for (octave_idx_type j = 0; j < nsamples; j++)
+  for (F77_INT j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
@@ -907,17 +918,17 @@ Matrix::fourier2d (void) const
 
   F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
 
-  for (octave_idx_type j = 0; j < nsamples; j++)
+  for (F77_INT j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
-      for (octave_idx_type i = 0; i < npts; i++)
+      for (F77_INT i = 0; i < npts; i++)
         prow[i] = tmp_data[i*nr + j];
 
       F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow),
                                F77_DBLE_CMPLX_ARG (pwsave));
 
-      for (octave_idx_type i = 0; i < npts; i++)
+      for (F77_INT i = 0; i < npts; i++)
         tmp_data[i*nr + j] = prow[i];
     }
 
@@ -929,10 +940,10 @@ Matrix::ifourier2d (void) const
 {
   ComplexMatrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
-  octave_idx_type npts, nsamples;
+  F77_INT npts, nsamples;
 
   if (nr == 1 || nc == 1)
     {
@@ -945,7 +956,7 @@ Matrix::ifourier2d (void) const
       nsamples = nc;
     }
 
-  octave_idx_type nn = 4*npts+15;
+  F77_INT nn = 4*npts+15;
 
   Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
@@ -955,7 +966,7 @@ Matrix::ifourier2d (void) const
 
   F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
 
-  for (octave_idx_type j = 0; j < nsamples; j++)
+  for (F77_INT j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
@@ -963,7 +974,7 @@ Matrix::ifourier2d (void) const
                                F77_DBLE_CMPLX_ARG (pwsave));
     }
 
-  for (octave_idx_type j = 0; j < npts*nsamples; j++)
+  for (F77_INT j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
 
   npts = nc;
@@ -978,17 +989,17 @@ Matrix::ifourier2d (void) const
 
   F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
 
-  for (octave_idx_type j = 0; j < nsamples; j++)
+  for (F77_INT j = 0; j < nsamples; j++)
     {
       octave_quit ();
 
-      for (octave_idx_type i = 0; i < npts; i++)
+      for (F77_INT i = 0; i < npts; i++)
         prow[i] = tmp_data[i*nr + j];
 
       F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow),
                                F77_DBLE_CMPLX_ARG (pwsave));
 
-      for (octave_idx_type i = 0; i < npts; i++)
+      for (F77_INT i = 0; i < npts; i++)
         tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);
     }
 
@@ -1028,8 +1039,8 @@ Matrix::determinant (MatrixType& mattype,
   info = 0;
   rcon = 0.0;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
@@ -1047,7 +1058,7 @@ Matrix::determinant (MatrixType& mattype,
 
   if (typ == MatrixType::Lower || typ == MatrixType::Upper)
     {
-      for (octave_idx_type i = 0; i < nc; i++)
+      for (F77_INT i = 0; i < nc; i++)
         retval *= elem (i,i);
     }
   else if (typ == MatrixType::Hermitian)
@@ -1058,10 +1069,14 @@ Matrix::determinant (MatrixType& mattype,
       double anorm = 0;
       if (calc_cond) anorm = xnorm (*this, 1);
 
+      F77_INT tmp_info = 0;
+
       char job = 'L';
       F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
-                                 tmp_data, nr, info
+                                 tmp_data, nr, tmp_info
                                  F77_CHAR_ARG_LEN (1)));
+
+      info = tmp_info;
 
       if (info != 0)
         {
@@ -1073,18 +1088,20 @@ Matrix::determinant (MatrixType& mattype,
         {
           Array<double> z (dim_vector (3 * nc, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (nc, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
 
           F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                      nr, tmp_data, nr, anorm,
-                                     rcon, pz, piz, info
+                                     rcon, pz, piz, tmp_info
                                      F77_CHAR_ARG_LEN (1)));
+
+          info = tmp_info;
 
           if (info != 0)
             rcon = 0.0;
 
-          for (octave_idx_type i = 0; i < nc; i++)
+          for (F77_INT i = 0; i < nc; i++)
             retval *= atmp (i,i);
 
           retval = retval.square ();
@@ -1095,19 +1112,22 @@ Matrix::determinant (MatrixType& mattype,
 
   if (typ == MatrixType::Full)
     {
-      Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-      octave_idx_type *pipvt = ipvt.fortran_vec ();
+      Array<F77_INT> ipvt (dim_vector (nr, 1));
+      F77_INT *pipvt = ipvt.fortran_vec ();
 
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
       info = 0;
+      F77_INT tmp_info = 0;
 
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond) anorm = xnorm (*this, 1);
 
-      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, tmp_info));
+
+      info = tmp_info;
 
       // Throw-away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
@@ -1124,14 +1144,16 @@ Matrix::determinant (MatrixType& mattype,
               char job = '1';
               Array<double> z (dim_vector (4 * nc, 1));
               double *pz = z.fortran_vec ();
-              Array<octave_idx_type> iz (dim_vector (nc, 1));
-              octave_idx_type *piz = iz.fortran_vec ();
+              Array<F77_INT> iz (dim_vector (nc, 1));
+              F77_INT *piz = iz.fortran_vec ();
 
               F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                          nc, tmp_data, nr, anorm,
-                                         rcon, pz, piz, info
+                                         rcon, pz, piz, tmp_info
                                          F77_CHAR_ARG_LEN (1)));
             }
+
+          info = tmp_info;
 
           if (info != 0)
             {
@@ -1140,7 +1162,7 @@ Matrix::determinant (MatrixType& mattype,
             }
           else
             {
-              for (octave_idx_type i = 0; i < nc; i++)
+              for (F77_INT i = 0; i < nc; i++)
                 {
                   double c = atmp(i,i);
                   retval *= (ipvt(i) != (i+1)) ? -c : c;
@@ -1163,8 +1185,8 @@ double
 Matrix::rcond (MatrixType &mattype) const
 {
   double rcon = octave::numeric_limits<double>::NaN ();
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
@@ -1182,15 +1204,15 @@ Matrix::rcond (MatrixType &mattype) const
       if (typ == MatrixType::Upper)
         {
           const double *tmp_data = fortran_vec ();
-          octave_idx_type info = 0;
+          F77_INT info = 0;
           char norm = '1';
           char uplo = 'U';
           char dia = 'N';
 
           Array<double> z (dim_vector (3 * nc, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (nc, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
 
           F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
@@ -1210,15 +1232,15 @@ Matrix::rcond (MatrixType &mattype) const
       else if (typ == MatrixType::Lower)
         {
           const double *tmp_data = fortran_vec ();
-          octave_idx_type info = 0;
+          F77_INT info = 0;
           char norm = '1';
           char uplo = 'L';
           char dia = 'N';
 
           Array<double> z (dim_vector (3 * nc, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (nc, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
 
           F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
@@ -1241,7 +1263,7 @@ Matrix::rcond (MatrixType &mattype) const
 
           if (typ == MatrixType::Hermitian)
             {
-              octave_idx_type info = 0;
+              F77_INT info = 0;
               char job = 'L';
 
               Matrix atmp = *this;
@@ -1264,8 +1286,8 @@ Matrix::rcond (MatrixType &mattype) const
                 {
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nc, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nc, 1));
+                  F77_INT *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, tmp_data, nr, anorm,
@@ -1279,13 +1301,13 @@ Matrix::rcond (MatrixType &mattype) const
 
           if (typ == MatrixType::Full)
             {
-              octave_idx_type info = 0;
+              F77_INT info = 0;
 
               Matrix atmp = *this;
               double *tmp_data = atmp.fortran_vec ();
 
-              Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-              octave_idx_type *pipvt = ipvt.fortran_vec ();
+              Array<F77_INT> ipvt (dim_vector (nr, 1));
+              F77_INT *pipvt = ipvt.fortran_vec ();
 
               if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
@@ -1293,8 +1315,8 @@ Matrix::rcond (MatrixType &mattype) const
 
               Array<double> z (dim_vector (4 * nc, 1));
               double *pz = z.fortran_vec ();
-              Array<octave_idx_type> iz (dim_vector (nc, 1));
-              octave_idx_type *piz = iz.fortran_vec ();
+              Array<F77_INT> iz (dim_vector (nc, 1));
+              F77_INT *piz = iz.fortran_vec ();
 
               F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -1330,15 +1352,18 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 {
   Matrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
-  if (nr != b.rows ())
+  F77_INT b_nr = to_f77_int (b.rows ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
-  if (nr == 0 || nc == 0 || b.cols () == 0)
-    retval = Matrix (nc, b.cols (), 0.0);
+  if (nr == 0 || nc == 0 || b_nc == 0)
+    retval = Matrix (nc, b_nc, 0.0);
   else
     {
       volatile int typ = mattype.type ();
@@ -1346,7 +1371,6 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
       if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
         (*current_liboctave_error_handler) ("incorrect matrix type");
 
-      octave_idx_type b_nc = b.cols ();
       rcon = 1.;
       info = 0;
 
@@ -1363,14 +1387,18 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
       char trans = get_blas_char (transt);
       char dia = 'N';
 
+      F77_INT tmp_info = 0;
+
       F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
                                  F77_CONST_CHAR_ARG2 (&trans, 1),
                                  F77_CONST_CHAR_ARG2 (&dia, 1),
                                  nr, b_nc, tmp_data, nr,
-                                 result, nr, info
+                                 result, nr, tmp_info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
+
+      info = tmp_info;
 
       if (calc_cond)
         {
@@ -1380,17 +1408,19 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           Array<double> z (dim_vector (3 * nc, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (nc, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
 
           F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&dia, 1),
                                      nr, tmp_data, nr, rcon,
-                                     pz, piz, info
+                                     pz, piz, tmp_info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
+
+          info = tmp_info;
 
           if (info != 0)
             info = -2;
@@ -1419,15 +1449,18 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 {
   Matrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
-  if (nr != b.rows ())
+  F77_INT b_nr = to_f77_int (b.rows ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
-  if (nr == 0 || nc == 0 || b.cols () == 0)
-    retval = Matrix (nc, b.cols (), 0.0);
+  if (nr == 0 || nc == 0 || b_nc == 0)
+    retval = Matrix (nc, b_nc, 0.0);
   else
     {
       volatile int typ = mattype.type ();
@@ -1435,7 +1468,6 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
       if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
         (*current_liboctave_error_handler) ("incorrect matrix type");
 
-      octave_idx_type b_nc = b.cols ();
       rcon = 1.;
       info = 0;
 
@@ -1452,14 +1484,18 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
       char trans = get_blas_char (transt);
       char dia = 'N';
 
+      F77_INT tmp_info = 0;
+
       F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
                                  F77_CONST_CHAR_ARG2 (&trans, 1),
                                  F77_CONST_CHAR_ARG2 (&dia, 1),
                                  nr, b_nc, tmp_data, nr,
-                                 result, nr, info
+                                 result, nr, tmp_info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
+
+      info = tmp_info;
 
       if (calc_cond)
         {
@@ -1469,17 +1505,19 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           Array<double> z (dim_vector (3 * nc, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (nc, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
 
           F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&dia, 1),
                                      nr, tmp_data, nr, rcon,
-                                     pz, piz, info
+                                     pz, piz, tmp_info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
+
+          info = tmp_info;
 
           if (info != 0)
             info = -2;
@@ -1508,8 +1546,8 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 {
   Matrix retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
+  F77_INT nr = to_f77_int (rows ());
+  F77_INT nc = to_f77_int (cols ());
 
   if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
@@ -1534,9 +1572,13 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
+          F77_INT tmp_info = 0;
+
           F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
-                                     tmp_data, nr, info
+                                     tmp_data, nr, tmp_info
                                      F77_CHAR_ARG_LEN (1)));
+
+          info = tmp_info;
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
@@ -1553,13 +1595,15 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                 {
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();
-                  Array<octave_idx_type> iz (dim_vector (nc, 1));
-                  octave_idx_type *piz = iz.fortran_vec ();
+                  Array<F77_INT> iz (dim_vector (nc, 1));
+                  F77_INT *piz = iz.fortran_vec ();
 
                   F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, tmp_data, nr, anorm,
-                                             rcon, pz, piz, info
+                                             rcon, pz, piz, tmp_info
                                              F77_CHAR_ARG_LEN (1)));
+
+                  info = tmp_info;
 
                   if (info != 0)
                     info = -2;
@@ -1582,12 +1626,15 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   retval = b;
                   double *result = retval.fortran_vec ();
 
-                  octave_idx_type b_nc = b.cols ();
+                  F77_INT b_nr = to_f77_int (b.rows ());
+                  F77_INT b_nc = to_f77_int (b.cols ());
 
                   F77_XFCN (dpotrs, DPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, b_nc, tmp_data, nr,
-                                             result, b.rows (), info
+                                             result, b_nr, tmp_info
                                              F77_CHAR_ARG_LEN (1)));
+
+                  info = tmp_info;
                 }
               else
                 {
@@ -1601,8 +1648,8 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
         {
           info = 0;
 
-          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
-          octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<F77_INT> ipvt (dim_vector (nr, 1));
+          F77_INT *pipvt = ipvt.fortran_vec ();
 
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
@@ -1612,10 +1659,14 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           Array<double> z (dim_vector (4 * nc, 1));
           double *pz = z.fortran_vec ();
-          Array<octave_idx_type> iz (dim_vector (nc, 1));
-          octave_idx_type *piz = iz.fortran_vec ();
+          Array<F77_INT> iz (dim_vector (nc, 1));
+          F77_INT *piz = iz.fortran_vec ();
 
-          F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+          F77_INT tmp_info = 0;
+
+          F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, tmp_info));
+
+          info = tmp_info;
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
@@ -1639,8 +1690,10 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   char job = '1';
                   F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nc, tmp_data, nr, anorm,
-                                             rcon, pz, piz, info
+                                             rcon, pz, piz, tmp_info
                                              F77_CHAR_ARG_LEN (1)));
+
+                  info = tmp_info;
 
                   if (info != 0)
                     info = -2;
@@ -1663,13 +1716,16 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   retval = b;
                   double *result = retval.fortran_vec ();
 
-                  octave_idx_type b_nc = b.cols ();
+                  F77_INT b_nr = to_f77_int (b.rows ());
+                  F77_INT b_nc = to_f77_int (b.cols ());
 
                   char job = 'N';
                   F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, b_nc, tmp_data, nr,
-                                             pipvt, result, b.rows (), info
+                                             pipvt, result, b_nr, tmp_info
                                              F77_CHAR_ARG_LEN (1)));
+
+                  info = tmp_info;
                 }
               else
                 mattype.mark_as_rectangular ();
@@ -2020,28 +2076,31 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 {
   Matrix retval;
 
-  octave_idx_type nrhs = b.cols ();
+  F77_INT nrhs = to_f77_int (b.cols ());
 
-  octave_idx_type m = rows ();
-  octave_idx_type n = cols ();
+  F77_INT m = to_f77_int (rows ());
+  F77_INT n = to_f77_int (cols ());
 
-  if (m != b.rows ())
+  F77_INT b_nr = to_f77_int (b.rows ());
+  F77_INT b_nc = to_f77_int (b.cols ());
+
+  if (m != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
-  if (m == 0 || n == 0 || b.cols () == 0)
-    retval = Matrix (n, b.cols (), 0.0);
+  if (m == 0 || n == 0 || b_nc == 0)
+    retval = Matrix (n, b_nc, 0.0);
   else
     {
-      volatile octave_idx_type minmn = (m < n ? m : n);
-      octave_idx_type maxmn = m > n ? m : n;
+      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT maxmn = m > n ? m : n;
       rcon = -1.0;
       if (m != n)
         {
           retval = Matrix (maxmn, nrhs, 0.0);
 
-          for (octave_idx_type j = 0; j < nrhs; j++)
-            for (octave_idx_type i = 0; i < m; i++)
+          for (F77_INT j = 0; j < nrhs; j++)
+            for (F77_INT i = 0; i < m; i++)
               retval.elem (i, j) = b.elem (i, j);
         }
       else
@@ -2055,18 +2114,18 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       double *ps = s.fortran_vec ();
 
       // Ask DGELSD what the dimension of WORK should be.
-      octave_idx_type lwork = -1;
+      F77_INT lwork = -1;
 
       Array<double> work (dim_vector (1, 1));
 
-      octave_idx_type smlsiz;
+      F77_INT smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("DGELSD", 6),
                                    F77_CONST_CHAR_ARG2 (" ", 1),
                                    0, 0, 0, 0, smlsiz
                                    F77_CHAR_ARG_LEN (6)
                                    F77_CHAR_ARG_LEN (1));
 
-      octave_idx_type mnthr;
+      F77_INT mnthr;
       F77_FUNC (xilaenv, XILAENV) (6, F77_CONST_CHAR_ARG2 ("DGELSD", 6),
                                    F77_CONST_CHAR_ARG2 (" ", 1),
                                    m, n, nrhs, -1, mnthr
@@ -2080,19 +2139,25 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       double tmp = octave::math::log2 (dminmn / dsmlsizp1);
       double anorm = 0.0;
 
-      octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
+      F77_INT nlvl = static_cast<F77_INT> (tmp) + 1;
       if (nlvl < 0)
         nlvl = 0;
 
-      octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
+      F77_INT liwork = 3 * minmn * nlvl + 11 * minmn;
       if (liwork < 1)
         liwork = 1;
-      Array<octave_idx_type> iwork (dim_vector (liwork, 1));
-      octave_idx_type* piwork = iwork.fortran_vec ();
+      Array<F77_INT> iwork (dim_vector (liwork, 1));
+      F77_INT* piwork = iwork.fortran_vec ();
+
+      F77_INT tmp_info = 0;
+      F77_INT tmp_rank = 0;
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
-                                 ps, rcon, rank, work.fortran_vec (),
-                                 lwork, piwork, info));
+                                 ps, rcon, tmp_rank, work.fortran_vec (),
+                                 lwork, piwork, tmp_info));
+
+      info = tmp_info;
+      rank = tmp_rank;
 
       // The workspace query is broken in at least LAPACK 3.0.0
       // through 3.1.1 when n >= mnthr.  The obtuse formula below
@@ -2100,10 +2165,10 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       // efficiently.
       if (n > m && n >= mnthr)
         {
-          const octave_idx_type wlalsd
+          const F77_INT wlalsd
             = 9*m + 2*m*smlsiz + 8*m*nlvl + m*nrhs + (smlsiz+1)*(smlsiz+1);
 
-          octave_idx_type addend = m;
+          F77_INT addend = m;
 
           if (2*m-4 > addend)
             addend = 2*m-4;
@@ -2117,21 +2182,21 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
           if (wlalsd > addend)
             addend = wlalsd;
 
-          const octave_idx_type lworkaround = 4*m + m*m + addend;
+          const F77_INT lworkaround = 4*m + m*m + addend;
 
           if (work(0) < lworkaround)
             work(0) = lworkaround;
         }
       else if (m >= n)
         {
-          octave_idx_type lworkaround
+          F77_INT lworkaround
             = 12*n + 2*n*smlsiz + 8*n*nlvl + n*nrhs + (smlsiz+1)*(smlsiz+1);
 
           if (work(0) < lworkaround)
             work(0) = lworkaround;
         }
 
-      lwork = static_cast<octave_idx_type> (work(0));
+      lwork = static_cast<F77_INT> (work(0));
       work.resize (dim_vector (lwork, 1));
 
       anorm = xnorm (*this, 1);
@@ -2145,9 +2210,12 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       else
         {
           F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
-                                     maxmn, ps, rcon, rank,
+                                     maxmn, ps, rcon, tmp_rank,
                                      work.fortran_vec (), lwork,
-                                     piwork, info));
+                                     piwork, tmp_info));
+
+          info = tmp_info;
+          rank = tmp_rank;
 
           if (s.elem (0) == 0.0)
             rcon = 0.0;
@@ -2228,12 +2296,14 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 {
   ColumnVector retval;
 
-  octave_idx_type nrhs = 1;
+  F77_INT nrhs = 1;
 
-  octave_idx_type m = rows ();
-  octave_idx_type n = cols ();
+  F77_INT m = to_f77_int (rows ());
+  F77_INT n = to_f77_int (cols ());
 
-  if (m != b.numel ())
+  F77_INT b_nel = to_f77_int (b.numel ());
+
+  if (m != b_nel)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
 
@@ -2241,15 +2311,15 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
     retval = ColumnVector (n, 0.0);
   else
     {
-      volatile octave_idx_type minmn = (m < n ? m : n);
-      octave_idx_type maxmn = m > n ? m : n;
+      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT maxmn = m > n ? m : n;
       rcon = -1.0;
 
       if (m != n)
         {
           retval = ColumnVector (maxmn, 0.0);
 
-          for (octave_idx_type i = 0; i < m; i++)
+          for (F77_INT i = 0; i < m; i++)
             retval.elem (i) = b.elem (i);
         }
       else
@@ -2263,11 +2333,11 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
       double *ps = s.fortran_vec ();
 
       // Ask DGELSD what the dimension of WORK should be.
-      octave_idx_type lwork = -1;
+      F77_INT lwork = -1;
 
       Array<double> work (dim_vector (1, 1));
 
-      octave_idx_type smlsiz;
+      F77_INT smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("DGELSD", 6),
                                    F77_CONST_CHAR_ARG2 (" ", 1),
                                    0, 0, 0, 0, smlsiz
@@ -2280,27 +2350,36 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
       double tmp = octave::math::log2 (dminmn / dsmlsizp1);
 
-      octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
+      F77_INT nlvl = static_cast<F77_INT> (tmp) + 1;
       if (nlvl < 0)
         nlvl = 0;
 
-      octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
+      F77_INT liwork = 3 * minmn * nlvl + 11 * minmn;
       if (liwork < 1)
         liwork = 1;
-      Array<octave_idx_type> iwork (dim_vector (liwork, 1));
-      octave_idx_type* piwork = iwork.fortran_vec ();
+      Array<F77_INT> iwork (dim_vector (liwork, 1));
+      F77_INT* piwork = iwork.fortran_vec ();
+
+      F77_INT tmp_info = 0;
+      F77_INT tmp_rank = 0;
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
-                                 ps, rcon, rank, work.fortran_vec (),
-                                 lwork, piwork, info));
+                                 ps, rcon, tmp_rank, work.fortran_vec (),
+                                 lwork, piwork, tmp_info));
 
-      lwork = static_cast<octave_idx_type> (work(0));
+      info = tmp_info;
+      rank = tmp_rank;
+
+      lwork = static_cast<F77_INT> (work(0));
       work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
-                                 maxmn, ps, rcon, rank,
+                                 maxmn, ps, rcon, tmp_rank,
                                  work.fortran_vec (), lwork,
-                                 piwork, info));
+                                 piwork, tmp_info));
+
+      info = tmp_info;
+      rank = tmp_rank;
 
       if (rank < minmn)
         {
@@ -2397,11 +2476,11 @@ operator * (const ColumnVector& v, const RowVector& a)
 {
   Matrix retval;
 
-  octave_idx_type len = v.numel ();
+  F77_INT len = to_f77_int (v.numel ());
 
   if (len != 0)
     {
-      octave_idx_type a_len = a.numel ();
+      F77_INT a_len = to_f77_int (a.numel ());
 
       retval = Matrix (len, a_len);
       double *c = retval.fortran_vec ();
@@ -2790,11 +2869,11 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   // Solve the sylvester equation, back-transform, and return the solution.
 
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type b_nr = b.rows ();
+  F77_INT a_nr = to_f77_int (a.rows ());
+  F77_INT b_nr = to_f77_int (b.rows ());
 
   double scale;
-  octave_idx_type info;
+  F77_INT info;
 
   double *pa = sch_a.fortran_vec ();
   double *pb = sch_b.fortran_vec ();
@@ -2857,11 +2936,11 @@ xgemm (const Matrix& a, const Matrix& b,
   bool tra = transa != blas_no_trans;
   bool trb = transb != blas_no_trans;
 
-  octave_idx_type a_nr = tra ? a.cols () : a.rows ();
-  octave_idx_type a_nc = tra ? a.rows () : a.cols ();
+  F77_INT a_nr = to_f77_int (tra ? a.cols () : a.rows ());
+  F77_INT a_nc = to_f77_int (tra ? a.rows () : a.cols ());
 
-  octave_idx_type b_nr = trb ? b.cols () : b.rows ();
-  octave_idx_type b_nc = trb ? b.rows () : b.cols ();
+  F77_INT b_nr = to_f77_int (trb ? b.cols () : b.rows ());
+  F77_INT b_nc = to_f77_int (trb ? b.rows () : b.cols ());
 
   if (a_nc != b_nr)
     octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
@@ -2870,7 +2949,7 @@ xgemm (const Matrix& a, const Matrix& b,
     retval = Matrix (a_nr, b_nc, 0.0);
   else if (a.data () == b.data () && a_nr == b_nc && tra != trb)
     {
-      octave_idx_type lda = a.rows ();
+      F77_INT lda = to_f77_int (a.rows ());
 
       retval = Matrix (a_nr, b_nc);
       double *c = retval.fortran_vec ();
@@ -2889,10 +2968,10 @@ xgemm (const Matrix& a, const Matrix& b,
     }
   else
     {
-      octave_idx_type lda = a.rows ();
-      octave_idx_type tda = a.cols ();
-      octave_idx_type ldb = b.rows ();
-      octave_idx_type tdb = b.cols ();
+      F77_INT lda = to_f77_int (a.rows ());
+      F77_INT tda = to_f77_int (a.cols ());
+      F77_INT ldb = to_f77_int (b.rows ());
+      F77_INT tdb = to_f77_int (b.cols ());
 
       retval = Matrix (a_nr, b_nc);
       double *c = retval.fortran_vec ();

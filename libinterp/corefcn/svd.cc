@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-static std::string Vsvd_driver = "gesvd";
+static std::string Vsvd_driver = "gesdd";
 
 template <typename T>
 static typename octave::math::svd<T>::Type
@@ -154,6 +154,13 @@ If the second argument is exactly 0, then the choice of decomposition is based
 on the matrix @var{A}.  If @var{A} has more rows than columns then an
 economy-sized decomposition is returned, otherwise a regular decomposition
 is calculated.
+
+Algorithm Notes: When calculating the full decomposition (left and right
+singular matrices in addition to singular values) there is a choice of two
+routines in @sc{lapack}.  The default routine used by Octave is @code{gesdd}
+which is 5X faster than the alternative @code{gesvd}, but may use more memory
+and may be less accurate for some matrices.  See the documentation for
+@code{svd_driver} for more information.
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
 @end deftypefn */)
 {
@@ -363,12 +370,39 @@ DEFUN (svd_driver, args, nargout,
 @deftypefnx {} {} svd_driver (@var{new_val}, "local")
 Query or set the underlying @sc{lapack} driver used by @code{svd}.
 
-Currently recognized values are @qcode{"gesvd"} and @qcode{"gesdd"}.
-The default is @qcode{"gesvd"}.
+Currently recognized values are @qcode{"gesdd"} and @qcode{"gesvd"}.
+The default is @qcode{"gesdd"}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
+
+Algorithm Notes: The @sc{lapack} library provides two routines for calculating
+the full singular value decomposition (left and right singular matrices as
+well as singular values).  When calculating just the singular values the
+following discussion is not relevant.
+
+The default routine use by Octave is the newer @code{gesdd} which is based on a
+Divide-and-Conquer algorithm that is 5X faster than the alternative
+@code{gesvd}, which is based on QR factorization.  However, the new algorithm
+can use significantly more memory.  For an MxN input matrix the memory usage is
+of order O(min(M,N) ^ 2), whereas the alternative is of order O(max(M,N)).  In
+general, modern computers have abundant memory so Octave has chosen to
+prioritize speed.
+
+In addition, there have been instances in the past where some input matrices
+were not accurately decomposed by @code{gesdd}.  This appears to have been
+resolved with modern versions of @sc{lapack}.  However, if certainty is
+required the accuracy of the decomposition can always be tested after the fact
+with
+
+@example
+@group
+[@var{u}, @var{s}, @var{v}] = svd (@var{x});
+norm (@var{x} - @var{u}*@var{s}*@var{v'}, "fro")
+@end group
+@end example
+
 @seealso{svd}
 @end deftypefn */)
 {
@@ -384,9 +418,9 @@ The original variable value is restored when exiting the function.
 %! [U1, S1, V1] = svd (A);
 %! svd_driver ("gesdd");
 %! [U2, S2, V2] = svd (A);
+%! svd_driver (old_driver);
 %! assert (U1, U2, 5*eps);
 %! assert (S1, S2, 5*eps);
 %! assert (V1, V2, 5*eps);
-%! svd_driver (old_driver);
 */
 

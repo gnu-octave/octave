@@ -5115,9 +5115,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                   Array<octave_idx_type> iz (dim_vector (nr, 1));
                   octave_idx_type *piz = iz.fortran_vec ();
 
-                  F77_XFCN (dpbcon, DPBCON,
+                  F77_XFCN (dgbcon, DGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             nr, n_lower, tmp_data, ldm,
+                             nc, n_lower, n_upper, tmp_data, ldm, pipvt,
                              anorm, rcond, pz, piz, err
                              F77_CHAR_ARG_LEN (1)));
 

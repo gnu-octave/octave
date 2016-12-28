@@ -2529,7 +2529,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
 
       F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, F77_CMPLX_ARG (tmp_data), m,
                                  F77_CMPLX_ARG (pretval), maxmn,
-                                 ps, rcon, rank, F77_CMPLX_ARG (work.fortran_vec ()),
+                                 ps, rcon, tmp_rank, F77_CMPLX_ARG (work.fortran_vec ()),
                                  lwork, prwork, piwork, tmp_info));
 
       info = tmp_info;

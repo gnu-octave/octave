@@ -2824,8 +2824,8 @@ operator * (const FloatComplexColumnVector& v, const FloatComplexRowVector& a)
 FloatComplexMatrix&
 FloatComplexMatrix::operator += (const FloatDiagMatrix& a)
 {
-  F77_INT nr = rows ();
-  F77_INT nc = cols ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();

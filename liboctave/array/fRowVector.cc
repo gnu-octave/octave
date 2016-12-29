@@ -184,7 +184,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
     {
       // Transpose A to form A'*x == (x'*A)'
 
-      octave_idx_type ld = a_nr;
+      F77_INT ld = a_nr;
 
       retval.resize (a_nc);
       float *y = retval.fortran_vec ();

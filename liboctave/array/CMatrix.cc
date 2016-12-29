@@ -2783,7 +2783,7 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
 
   if (len != 0)
     {
-      F77_INT a_len = (a.numel ());
+      F77_INT a_len = to_f77_int (a.numel ());
 
       retval = ComplexMatrix (len, a_len);
       Complex *c = retval.fortran_vec ();

@@ -107,7 +107,7 @@ Undocumented internal function.
           Matrix dmat (nyr, nyc);
 
           F77_INT ierr;
-          const octave_idx_type incfd = rows ? nyr : 1;
+          const F77_INT incfd = rows ? to_f77_int (nyr) : 1;
           volatile const octave_idx_type inc = rows ? 1 : nyr;
           volatile octave_idx_type k = 0;
 

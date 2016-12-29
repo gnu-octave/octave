@@ -32,31 +32,36 @@ along with Octave; see the file COPYING.  If not, see
 
 static void
 get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
-              dim_vector& z, octave_idx_type& m, octave_idx_type& n,
-              octave_idx_type& k)
+              dim_vector& z, F77_INT& m, F77_INT& n, F77_INT& k)
 {
   int nd = x.ndims ();
   assert (nd == y.ndims ());
   z = dim_vector::alloc (nd);
-  m = 1, n = 1, k = 1;
+  octave_idx_type tmp_m = 1;
+  octave_idx_type tmp_n = 1;
+  octave_idx_type tmp_k = 1;
   for (int i = 0; i < nd; i++)
     {
       if (i < dim)
         {
           z(i) = x(i);
-          m *= x(i);
+          tmp_m *= x(i);
         }
       else if (i > dim)
         {
           z(i) = x(i);
-          n *= x(i);
+          tmp_n *= x(i);
         }
       else
         {
-          k = x(i);
+          tmp_k = x(i);
           z(i) = 1;
         }
     }
+
+  m = to_f77_int (tmp_m);
+  n = to_f77_int (tmp_n);
+  k = to_f77_int (tmp_k);
 }
 
 DEFUN (dot, args, ,
@@ -115,7 +120,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
   if (dim < 0)
     error ("dot: DIM must be a valid dimension");
 
-  octave_idx_type m, n, k;
+  F77_INT m, n, k;
   dim_vector dimz;
   if (argx.is_complex_type () || argy.is_complex_type ())
     {
@@ -255,10 +260,10 @@ endfor
   const dim_vector dimx = argx.dims ();
   const dim_vector dimy = argy.dims ();
   int nd = dimx.ndims ();
-  octave_idx_type m = dimx(0);
-  octave_idx_type k = dimx(1);
-  octave_idx_type n = dimy(1);
-  octave_idx_type np = 1;
+  F77_INT m = to_f77_int (dimx(0));
+  F77_INT k = to_f77_int (dimx(1));
+  F77_INT n = to_f77_int (dimy(1));
+  octave_idx_type tmp_np = 1;
   bool match = dimy(0) == k && nd == dimy.ndims ();
   dim_vector dimz = dim_vector::alloc (nd);
   dimz(0) = m;
@@ -267,8 +272,9 @@ endfor
     {
       match = match && dimx(i) == dimy(i);
       dimz(i) = dimx(i);
-      np *= dimz(i);
+      tmp_np *= dimz(i);
     }
+  F77_INT np = to_f77_int (tmp_np);
 
   if (! match)
     error ("blkmm: A and B dimensions don't match: (%s) and (%s)",

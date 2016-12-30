@@ -7,6 +7,13 @@ Summary of important user-visible changes for version 4.4:
     operations using the following libraries are limited to arrays with
     dimensions that are smaller than 2^31 elements:
 
+      BLAS  LAPACK  QRUPDATE  SuiteSparse  ARPACK
+
+    Additionally, the following libraries use "int" internally, so
+    maximum problem sizes are always limited:
+
+      glpk  Qhull
+
  ** Other new functions added in 4.4:
 
       gsvd

@@ -139,8 +139,8 @@ vector_product (const SparseMatrix& m, const double* x, double* y)
 static bool
 vector_product (const Matrix& m, const double *x, double *y)
 {
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
   F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            nr, nc, 1.0,  m.data (), nr,
@@ -172,8 +172,8 @@ vector_product (const SparseComplexMatrix& m, const Complex* x,
 static bool
 vector_product (const ComplexMatrix& m, const Complex *x, Complex *y)
 {
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
   F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            nr, nc, 1.0, F77_CONST_DBLE_CMPLX_ARG (m.data ()),
@@ -601,10 +601,10 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
                          std::ostream& os, double tol, bool rvec,
                          bool cholB, int disp, int maxit)
 {
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   M b(_b);
-  F77_INT n = to_f77_int (m.cols ());
+  F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 1;
   bool have_b = ! b.is_empty ();
   bool note3 = false;
@@ -729,7 +729,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dsaupd, DSAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -879,10 +879,10 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               std::ostream& os, double tol, bool rvec,
                               bool cholB, int disp, int maxit)
 {
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   M b(_b);
-  F77_INT n = to_f77_int (m.cols ());
+  F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 3;
   bool have_b = ! b.is_empty ();
   std::string typ = "LM";
@@ -990,7 +990,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dsaupd, DSAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -1174,9 +1174,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                        std::ostream& os, double tol, bool rvec,
                        bool /* cholB */, int disp, int maxit)
 {
-  F77_INT n = to_f77_int (n_arg);
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT n = octave::to_f77_int (n_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   std::string typ (_typ);
   bool have_sigma = (sigma ? true : false);
   char bmat = 'I';
@@ -1271,7 +1271,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dsaupd, DSAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -1419,10 +1419,10 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                             std::ostream& os, double tol, bool rvec,
                             bool cholB, int disp, int maxit)
 {
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   M b(_b);
-  F77_INT n = to_f77_int (m.cols ());
+  F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 1;
   bool have_b = ! b.is_empty ();
   bool note3 = false;
@@ -1548,7 +1548,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -1746,10 +1746,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  std::ostream& os, double tol, bool rvec,
                                  bool cholB, int disp, int maxit)
 {
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   M b(_b);
-  F77_INT n = to_f77_int (m.cols ());
+  F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 3;
   bool have_b = ! b.is_empty ();
   std::string typ = "LM";
@@ -1858,7 +1858,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -2095,9 +2095,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                           std::ostream& os, double tol, bool rvec,
                           bool /* cholB */, int disp, int maxit)
 {
-  F77_INT n = to_f77_int (n_arg);
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT n = octave::to_f77_int (n_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   std::string typ (_typ);
   bool have_sigma = (sigmar ? true : false);
   char bmat = 'I';
@@ -2193,7 +2193,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -2388,10 +2388,10 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                                std::ostream& os, double tol, bool rvec,
                                bool cholB, int disp, int maxit)
 {
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   M b(_b);
-  F77_INT n = to_f77_int (m.cols ());
+  F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 1;
   bool have_b = ! b.is_empty ();
   bool note3 = false;
@@ -2521,7 +2521,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (znaupd, ZNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -2674,10 +2674,10 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     std::ostream& os, double tol, bool rvec,
                                     bool cholB, int disp, int maxit)
 {
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   M b(_b);
-  F77_INT n = to_f77_int (m.cols ());
+  F77_INT n = octave::to_f77_int (m.cols ());
   F77_INT mode = 3;
   bool have_b = ! b.is_empty ();
   std::string typ = "LM";
@@ -2790,7 +2790,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (znaupd, ZNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -2985,9 +2985,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
                              double tol, bool rvec, bool /* cholB */,
                              int disp, int maxit)
 {
-  F77_INT n = to_f77_int (n_arg);
-  F77_INT k = to_f77_int (k_arg);
-  F77_INT p = to_f77_int (p_arg);
+  F77_INT n = octave::to_f77_int (n_arg);
+  F77_INT k = octave::to_f77_int (k_arg);
+  F77_INT p = octave::to_f77_int (p_arg);
   std::string typ (_typ);
   bool have_sigma = (std::abs (sigma) ? true : false);
   char bmat = 'I';
@@ -3088,7 +3088,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 
   do
     {
-      F77_INT tmp_info = to_f77_int (info);
+      F77_INT tmp_info = octave::to_f77_int (info);
 
       F77_FUNC (znaupd, ZNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,

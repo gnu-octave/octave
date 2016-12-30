@@ -282,8 +282,8 @@ namespace octave
     {
       F77_INT info;
 
-      F77_INT m = to_f77_int (a.rows ());
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT m = octave::to_f77_int (a.rows ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       if (m == 0 || n == 0)
         {

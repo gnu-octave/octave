@@ -759,8 +759,8 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc || nr == 0 || nc == 0)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -818,8 +818,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -1098,12 +1098,12 @@ ComplexMatrix::fourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = to_f77_int (nr > nc ? nr : nc);
+      npts = octave::to_f77_int (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
     {
-      npts = to_f77_int (nr);
+      npts = octave::to_f77_int (nr);
       nsamples = nc;
     }
 
@@ -1141,12 +1141,12 @@ ComplexMatrix::ifourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = to_f77_int (nr > nc ? nr : nc);
+      npts = octave::to_f77_int (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
     {
-      npts = to_f77_int (nr);
+      npts = octave::to_f77_int (nr);
       nsamples = nc;
     }
 
@@ -1179,8 +1179,8 @@ ComplexMatrix::fourier2d (void) const
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   F77_INT npts, nsamples;
 
@@ -1247,8 +1247,8 @@ ComplexMatrix::ifourier2d (void) const
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   F77_INT npts, nsamples;
 
@@ -1348,8 +1348,8 @@ ComplexMatrix::determinant (MatrixType& mattype,
   info = 0;
   rcon = 0.0;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
@@ -1501,8 +1501,8 @@ double
 ComplexMatrix::rcond (MatrixType &mattype) const
 {
   double rcon = octave::numeric_limits<double>::NaN ();
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
@@ -1675,11 +1675,11 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (nr != b_nr)
     (*current_liboctave_error_handler)
@@ -1773,11 +1773,11 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (nr != b_nr)
     (*current_liboctave_error_handler)
@@ -1871,11 +1871,11 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 {
   ComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (nr != nc || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -2423,13 +2423,13 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 {
   ComplexMatrix retval;
 
-  F77_INT nrhs = to_f77_int (b.cols ());
+  F77_INT nrhs = octave::to_f77_int (b.cols ());
 
-  F77_INT m = to_f77_int (rows ());
-  F77_INT n = to_f77_int (cols ());
+  F77_INT m = octave::to_f77_int (rows ());
+  F77_INT n = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (m != b_nr)
     (*current_liboctave_error_handler)
@@ -2649,10 +2649,10 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 
   F77_INT nrhs = 1;
 
-  F77_INT m = to_f77_int (rows ());
-  F77_INT n = to_f77_int (cols ());
+  F77_INT m = octave::to_f77_int (rows ());
+  F77_INT n = octave::to_f77_int (cols ());
 
-  F77_INT b_nel = to_f77_int (b.numel ());
+  F77_INT b_nel = octave::to_f77_int (b.numel ());
 
   if (m != b_nel)
     (*current_liboctave_error_handler)
@@ -2779,11 +2779,11 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
 {
   ComplexMatrix retval;
 
-  F77_INT len = to_f77_int (v.numel ());
+  F77_INT len = octave::to_f77_int (v.numel ());
 
   if (len != 0)
     {
-      F77_INT a_len = to_f77_int (a.numel ());
+      F77_INT a_len = octave::to_f77_int (a.numel ());
 
       retval = ComplexMatrix (len, a_len);
       Complex *c = retval.fortran_vec ();
@@ -3410,8 +3410,8 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   // Solve the sylvester equation, back-transform, and return the solution.
 
-  F77_INT a_nr = to_f77_int (a.rows ());
-  F77_INT b_nr = to_f77_int (b.rows ());
+  F77_INT a_nr = octave::to_f77_int (a.rows ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
 
   double scale;
   F77_INT info;
@@ -3494,11 +3494,11 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
   bool cja = transa == blas_conj_trans;
   bool cjb = transb == blas_conj_trans;
 
-  F77_INT a_nr = to_f77_int (tra ? a.cols () : a.rows ());
-  F77_INT a_nc = to_f77_int (tra ? a.rows () : a.cols ());
+  F77_INT a_nr = octave::to_f77_int (tra ? a.cols () : a.rows ());
+  F77_INT a_nc = octave::to_f77_int (tra ? a.rows () : a.cols ());
 
-  F77_INT b_nr = to_f77_int (trb ? b.cols () : b.rows ());
-  F77_INT b_nc = to_f77_int (trb ? b.rows () : b.cols ());
+  F77_INT b_nr = octave::to_f77_int (trb ? b.cols () : b.rows ());
+  F77_INT b_nc = octave::to_f77_int (trb ? b.rows () : b.cols ());
 
   if (a_nc != b_nr)
     octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
@@ -3507,7 +3507,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
     retval = ComplexMatrix (a_nr, b_nc, 0.0);
   else if (a.data () == b.data () && a_nr == b_nc && tra != trb)
     {
-      F77_INT lda = to_f77_int (a.rows ());
+      F77_INT lda = octave::to_f77_int (a.rows ());
 
       // FIXME: looking at the reference BLAS, it appears that it
       // should not be necessary to initialize the output matrix if
@@ -3547,10 +3547,10 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
     }
   else
     {
-      F77_INT lda = to_f77_int (a.rows ());
-      F77_INT tda = to_f77_int (a.cols ());
-      F77_INT ldb = to_f77_int (b.rows ());
-      F77_INT tdb = to_f77_int (b.cols ());
+      F77_INT lda = octave::to_f77_int (a.rows ());
+      F77_INT tda = octave::to_f77_int (a.cols ());
+      F77_INT ldb = octave::to_f77_int (b.rows ());
+      F77_INT tdb = octave::to_f77_int (b.cols ());
 
       retval = ComplexMatrix (a_nr, b_nc, 0.0);
       Complex *c = retval.fortran_vec ();

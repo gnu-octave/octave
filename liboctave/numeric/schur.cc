@@ -96,8 +96,8 @@ namespace octave
     F77_INT
     schur<Matrix>::init (const Matrix& a, const std::string& ord, bool calc_unitary)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.cols ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("schur: requires square matrix");
@@ -183,8 +183,8 @@ namespace octave
     schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
                               bool calc_unitary)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.cols ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -270,8 +270,8 @@ namespace octave
     schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
                                 bool calc_unitary)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.cols ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -355,7 +355,7 @@ namespace octave
       ComplexMatrix s (s_arg);
       ComplexMatrix u (u_arg);
 
-      F77_INT n = to_f77_int (s.rows ());
+      F77_INT n = octave::to_f77_int (s.rows ());
 
       if (s.columns () != n || u.rows () != n || u.columns () != n)
         (*current_liboctave_error_handler)
@@ -378,8 +378,8 @@ namespace octave
     schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
                                      const std::string& ord, bool calc_unitary)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.cols ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.cols ());
 
       if (a_nr != a_nc)
         (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -464,7 +464,7 @@ namespace octave
       FloatComplexMatrix s (s_arg);
       FloatComplexMatrix u (u_arg);
 
-      F77_INT n = to_f77_int (s.rows ());
+      F77_INT n = octave::to_f77_int (s.rows ());
 
       if (s.columns () != n || u.rows () != n || u.columns () != n)
         (*current_liboctave_error_handler)

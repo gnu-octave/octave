@@ -300,10 +300,10 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
 {
   ComplexColumnVector retval;
 
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -344,10 +344,10 @@ operator * (const Matrix& m, const ComplexColumnVector& a)
 ComplexColumnVector
 operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 {
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -369,10 +369,10 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 ComplexColumnVector
 operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
 {
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -394,10 +394,10 @@ operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
 ComplexColumnVector
 operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 {
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);

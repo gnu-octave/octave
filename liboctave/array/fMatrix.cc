@@ -477,8 +477,8 @@ FloatMatrix::tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 {
   FloatMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc || nr == 0 || nc == 0)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -536,8 +536,8 @@ FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 {
   FloatMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc || nr == 0 || nc == 0)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -798,12 +798,12 @@ FloatMatrix::fourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = to_f77_int (nr > nc ? nr : nc);
+      npts = octave::to_f77_int (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
     {
-      npts = to_f77_int (nr);
+      npts = octave::to_f77_int (nr);
       nsamples = nc;
     }
 
@@ -841,7 +841,7 @@ FloatMatrix::ifourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = to_f77_int (nr > nc ? nr : nc);
+      npts = octave::to_f77_int (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -879,8 +879,8 @@ FloatMatrix::fourier2d (void) const
 {
   FloatComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   F77_INT npts, nsamples;
 
@@ -946,8 +946,8 @@ FloatMatrix::ifourier2d (void) const
 {
   FloatComplexMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   F77_INT npts, nsamples;
 
@@ -1046,8 +1046,8 @@ FloatMatrix::determinant (MatrixType& mattype,
   info = 0;
   rcon = 0.0;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
@@ -1192,8 +1192,8 @@ float
 FloatMatrix::rcond (MatrixType &mattype) const
 {
   float rcon = octave::numeric_limits<float>::NaN ();
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
@@ -1360,11 +1360,11 @@ FloatMatrix::utsolve (MatrixType &mattype, const FloatMatrix& b,
 {
   FloatMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (nr != b_nr)
     (*current_liboctave_error_handler)
@@ -1463,11 +1463,11 @@ FloatMatrix::ltsolve (MatrixType &mattype, const FloatMatrix& b,
 {
   FloatMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (nr != b_nr)
     (*current_liboctave_error_handler)
@@ -1565,11 +1565,11 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b,
 {
   FloatMatrix retval;
 
-  F77_INT nr = to_f77_int (rows ());
-  F77_INT nc = to_f77_int (cols ());
+  F77_INT nr = octave::to_f77_int (rows ());
+  F77_INT nc = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (nr != nc || nr != b_nr)
     (*current_liboctave_error_handler)
@@ -2101,13 +2101,13 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
 {
   FloatMatrix retval;
 
-  F77_INT nrhs = to_f77_int (b.cols ());
+  F77_INT nrhs = octave::to_f77_int (b.cols ());
 
-  F77_INT m = to_f77_int (rows ());
-  F77_INT n = to_f77_int (cols ());
+  F77_INT m = octave::to_f77_int (rows ());
+  F77_INT n = octave::to_f77_int (cols ());
 
-  F77_INT b_nr = to_f77_int (b.rows ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (m != b_nr)
     (*current_liboctave_error_handler)
@@ -2323,8 +2323,8 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
 
   F77_INT nrhs = 1;
 
-  F77_INT m = to_f77_int (rows ());
-  F77_INT n = to_f77_int (cols ());
+  F77_INT m = octave::to_f77_int (rows ());
+  F77_INT n = octave::to_f77_int (cols ());
 
   if (m != b.numel ())
     (*current_liboctave_error_handler)
@@ -2498,11 +2498,11 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
 {
   FloatMatrix retval;
 
-  F77_INT len = to_f77_int (v.numel ());
+  F77_INT len = octave::to_f77_int (v.numel ());
 
   if (len != 0)
     {
-      F77_INT a_len = to_f77_int (a.numel ());
+      F77_INT a_len = octave::to_f77_int (a.numel ());
 
       retval = FloatMatrix (len, a_len);
       float *c = retval.fortran_vec ();
@@ -2878,8 +2878,8 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
   // Solve the sylvester equation, back-transform, and return the
   // solution.
 
-  F77_INT a_nr = to_f77_int (a.rows ());
-  F77_INT b_nr = to_f77_int (b.rows ());
+  F77_INT a_nr = octave::to_f77_int (a.rows ());
+  F77_INT b_nr = octave::to_f77_int (b.rows ());
 
   float scale;
   F77_INT info;
@@ -2940,11 +2940,11 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
   bool tra = transa != blas_no_trans;
   bool trb = transb != blas_no_trans;
 
-  F77_INT a_nr = to_f77_int (tra ? a.cols () : a.rows ());
-  F77_INT a_nc = to_f77_int (tra ? a.rows () : a.cols ());
+  F77_INT a_nr = octave::to_f77_int (tra ? a.cols () : a.rows ());
+  F77_INT a_nc = octave::to_f77_int (tra ? a.rows () : a.cols ());
 
-  F77_INT b_nr = to_f77_int (trb ? b.cols () : b.rows ());
-  F77_INT b_nc = to_f77_int (trb ? b.rows () : b.cols ());
+  F77_INT b_nr = octave::to_f77_int (trb ? b.cols () : b.rows ());
+  F77_INT b_nc = octave::to_f77_int (trb ? b.rows () : b.cols ());
 
   if (a_nc != b_nr)
     octave::err_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
@@ -2953,7 +2953,7 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
     retval = FloatMatrix (a_nr, b_nc, 0.0);
   else if (a.data () == b.data () && a_nr == b_nc && tra != trb)
     {
-      F77_INT lda = to_f77_int (a.rows ());
+      F77_INT lda = octave::to_f77_int (a.rows ());
 
       retval = FloatMatrix (a_nr, b_nc);
       float *c = retval.fortran_vec ();
@@ -2972,10 +2972,10 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
     }
   else
     {
-      F77_INT lda = to_f77_int (a.rows ());
-      F77_INT tda = to_f77_int (a.cols ());
-      F77_INT ldb = to_f77_int (b.rows ());
-      F77_INT tdb = to_f77_int (b.cols ());
+      F77_INT lda = octave::to_f77_int (a.rows ());
+      F77_INT tda = octave::to_f77_int (a.cols ());
+      F77_INT ldb = octave::to_f77_int (b.rows ());
+      F77_INT tdb = octave::to_f77_int (b.cols ());
 
       retval = FloatMatrix (a_nr, b_nc);
       float *c = retval.fortran_vec ();

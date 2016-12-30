@@ -285,8 +285,8 @@ compatibility with @sc{matlab}.
 #endif
 
   // Argument 1: check if it's okay dimensioned.
-  F77_INT nn = to_f77_int (args(0).rows ());
-  F77_INT nc = to_f77_int (args(0).columns ());
+  F77_INT nn = octave::to_f77_int (args(0).rows ());
+  F77_INT nc = octave::to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
   std::cout << "argument 1 dimensions: ("
@@ -318,8 +318,8 @@ compatibility with @sc{matlab}.
 #endif
 
   // Extract argument 2 (bb, or cbb if complex).
-  F77_INT b_nr = to_f77_int (args(1).rows ());
-  F77_INT b_nc = to_f77_int (args(1).columns ());
+  F77_INT b_nr = octave::to_f77_int (args(1).rows ());
+  F77_INT b_nc = octave::to_f77_int (args(1).columns ());
 
   if (nn != b_nc || nn != b_nr)
     err_nonconformant ();

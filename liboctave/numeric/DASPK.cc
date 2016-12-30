@@ -83,7 +83,7 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 
   tmp_delta = user_fun (tmp_state, tmp_deriv, time, tmp_ires);
 
-  ires = to_f77_int (tmp_ires);
+  ires = octave::to_f77_int (tmp_ires);
 
   if (ires >= 0)
     {
@@ -166,7 +166,7 @@ DASPK::do_integrate (double tout)
       for (F77_INT i = 0; i < 20; i++)
         info(i) = 0;
 
-      F77_INT n = to_f77_int (size ());
+      F77_INT n = octave::to_f77_int (size ());
 
       nn = n;
 
@@ -237,8 +237,8 @@ DASPK::do_integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      F77_INT abs_tol_len = to_f77_int (abs_tol.numel ());
-      F77_INT rel_tol_len = to_f77_int (rel_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -283,7 +283,7 @@ DASPK::do_integrate (double tout)
           if (maxord > 0 && maxord < 6)
             {
               info(8) = 1;
-              iwork(2) = to_f77_int (maxord);
+              iwork(2) = octave::to_f77_int (maxord);
             }
           else
             {
@@ -302,13 +302,13 @@ DASPK::do_integrate (double tout)
           {
             Array<octave_idx_type> ict = inequality_constraint_types ();
 
-            F77_INT ict_nel = to_f77_int (ict.numel ());
+            F77_INT ict_nel = octave::to_f77_int (ict.numel ());
 
             if (ict_nel == n)
               {
                 for (F77_INT i = 0; i < n; i++)
                   {
-                    F77_INT val = to_f77_int (ict(i));
+                    F77_INT val = octave::to_f77_int (ict(i));
                     if (val < -2 || val > 2)
                       {
                         // FIXME: Should this be a warning?
@@ -333,7 +333,7 @@ DASPK::do_integrate (double tout)
 
         case 0:
         case 2:
-          info(9) = to_f77_int (eiq);
+          info(9) = octave::to_f77_int (eiq);
           break;
 
         default:
@@ -352,7 +352,7 @@ DASPK::do_integrate (double tout)
 
               Array<octave_idx_type> av = algebraic_variables ();
 
-              F77_INT av_nel = to_f77_int (av.numel ());
+              F77_INT av_nel = octave::to_f77_int (av.numel ());
 
               if (av_nel == n)
                 {
@@ -385,7 +385,7 @@ DASPK::do_integrate (double tout)
               return retval;
             }
 
-          info(10) = to_f77_int (ccic);
+          info(10) = octave::to_f77_int (ccic);
         }
 
       if (eavfet)
@@ -396,7 +396,7 @@ DASPK::do_integrate (double tout)
 
           Array<octave_idx_type> av = algebraic_variables ();
 
-          F77_INT av_nel = to_f77_int (av.numel ());
+          F77_INT av_nel = octave::to_f77_int (av.numel ());
 
           if (av_nel == n)
             {
@@ -419,10 +419,10 @@ DASPK::do_integrate (double tout)
 
           if (ich.numel () == 6)
             {
-              iwork(31) = to_f77_int (octave::math::nint_big (ich(0)));
-              iwork(32) = to_f77_int (octave::math::nint_big (ich(1)));
-              iwork(33) = to_f77_int (octave::math::nint_big (ich(2)));
-              iwork(34) = to_f77_int (octave::math::nint_big (ich(3)));
+              iwork(31) = octave::to_f77_int (octave::math::nint_big (ich(0)));
+              iwork(32) = octave::to_f77_int (octave::math::nint_big (ich(1)));
+              iwork(33) = octave::to_f77_int (octave::math::nint_big (ich(2)));
+              iwork(34) = octave::to_f77_int (octave::math::nint_big (ich(3)));
 
               rwork(13) = ich(4);
               rwork(14) = ich(5);
@@ -445,7 +445,7 @@ DASPK::do_integrate (double tout)
         case 0:
         case 1:
         case 2:
-          info(17) = to_f77_int (pici);
+          info(17) = octave::to_f77_int (pici);
           break;
 
         default:
@@ -476,7 +476,7 @@ DASPK::do_integrate (double tout)
   double *dummy = 0;
   F77_INT *idummy = 0;
 
-  F77_INT tmp_istate = to_f77_int (istate);
+  F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, t, px, pxdot, tout, pinfo,
                              prel_tol, pabs_tol, tmp_istate, prwork, lrw,
@@ -555,7 +555,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  F77_INT n = to_f77_int (size ());
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
@@ -600,7 +600,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  F77_INT n = to_f77_int (size ());
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {

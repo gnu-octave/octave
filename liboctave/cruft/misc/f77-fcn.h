@@ -370,19 +370,20 @@ F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
 
 #if defined (__cplusplus)
 
-inline F77_INT
-to_f77_int (octave_idx_type x)
+namespace octave
 {
-  // FIXME: How to do this job in C, not knowing in advance the actual
-  // type of F77_INT?
+  inline F77_INT
+  to_f77_int (octave_idx_type x)
+  {
+    if (x < std::numeric_limits<F77_INT>::min ()
+        || x > std::numeric_limits<F77_INT>::max ())
+      (*current_liboctave_error_handler)
+        ("integer dimension or index out of range for Fortran INTEGER type");
 
-  if (x < std::numeric_limits<F77_INT>::min ()
-      || x > std::numeric_limits<F77_INT>::max ())
-    (*current_liboctave_error_handler)
-      ("integer dimension or index out of range for Fortran INTEGER type");
-
-  return static_cast<F77_INT> (x);
+    return static_cast<F77_INT> (x);
+  }
 }
+
 #endif
 
 #if defined (__cplusplus)

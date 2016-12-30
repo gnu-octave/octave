@@ -120,7 +120,7 @@ LSODE::do_integrate (double tout)
 
       istate = 1;
 
-      F77_INT n = to_f77_int (size ());
+      F77_INT n = octave::to_f77_int (size ());
 
       nn = n;
 
@@ -164,7 +164,7 @@ LSODE::do_integrate (double tout)
         {
           if (maxord > 0 && maxord <= max_maxord)
             {
-              iwork(4) = to_f77_int (maxord);
+              iwork(4) = octave::to_f77_int (maxord);
               iopt = 1;
             }
           else
@@ -220,7 +220,7 @@ LSODE::do_integrate (double tout)
       rel_tol = relative_tolerance ();
       abs_tol = absolute_tolerance ();
 
-      F77_INT abs_tol_len = to_f77_int (abs_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
 
       if (abs_tol_len == 1)
         itol = 1;
@@ -257,7 +257,7 @@ LSODE::do_integrate (double tout)
           iopt = 1;
         }
 
-      F77_INT sl = to_f77_int (step_limit ());
+      F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl > 0)
         {
           iwork(5) = sl;
@@ -274,7 +274,7 @@ LSODE::do_integrate (double tout)
   F77_INT *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();
 
-  F77_INT tmp_istate = to_f77_int (istate);
+  F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
                              pabs_tol, itask, tmp_istate, iopt, prwork, lrw,
@@ -384,7 +384,7 @@ LSODE::do_integrate (const ColumnVector& tout)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  F77_INT n = to_f77_int (size ());
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
@@ -414,7 +414,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  F77_INT n = to_f77_int (size ());
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {

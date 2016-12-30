@@ -50,8 +50,8 @@ namespace octave
     {
       assert (qr_type != qr<Matrix>::raw);
 
-      F77_INT m = to_f77_int (a.rows ());
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT m = octave::to_f77_int (a.rows ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       F77_INT min_mn = m < n ? m : n;
       OCTAVE_LOCAL_BUFFER (double, tau, min_mn);
@@ -118,8 +118,8 @@ namespace octave
     {
       assert (qr_type != qr<FloatMatrix>::raw);
 
-      F77_INT m = to_f77_int (a.rows ());
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT m = octave::to_f77_int (a.rows ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       F77_INT min_mn = m < n ? m : n;
       OCTAVE_LOCAL_BUFFER (float, tau, min_mn);
@@ -186,8 +186,8 @@ namespace octave
     {
       assert (qr_type != qr<ComplexMatrix>::raw);
 
-      F77_INT m = to_f77_int (a.rows ());
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT m = octave::to_f77_int (a.rows ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       F77_INT min_mn = m < n ? m : n;
       OCTAVE_LOCAL_BUFFER (Complex, tau, min_mn);
@@ -262,8 +262,8 @@ namespace octave
     {
       assert (qr_type != qr<FloatComplexMatrix>::raw);
 
-      F77_INT m = to_f77_int (a.rows ());
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT m = octave::to_f77_int (a.rows ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       F77_INT min_mn = m < n ? m : n;
       OCTAVE_LOCAL_BUFFER (FloatComplex, tau, min_mn);

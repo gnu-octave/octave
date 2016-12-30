@@ -41,8 +41,8 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   if (a.is_symmetric ())
     return symmetric_init (a, calc_rev, calc_lev);
 
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
 
   if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -171,8 +171,8 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
 octave_idx_type
 FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
 {
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
 
   if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -231,8 +231,8 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   if (a.is_hermitian ())
     return hermitian_init (a, calc_rev, calc_lev);
 
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
 
   if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -324,8 +324,8 @@ octave_idx_type
 FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
                           bool calc_lev)
 {
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
 
   if (n != a_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -388,11 +388,11 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
     (*current_liboctave_error_handler)
       ("EIG: matrix contains Inf or NaN values");
 
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT nb = to_f77_int (b.rows ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT nb = octave::to_f77_int (b.rows ());
 
-  F77_INT a_nc = to_f77_int (a.cols ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -523,11 +523,11 @@ octave_idx_type
 FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
                           bool calc_rev, bool calc_lev)
 {
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT nb = to_f77_int (b.rows ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT nb = octave::to_f77_int (b.rows ());
 
-  F77_INT a_nc = to_f77_int (a.cols ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -593,11 +593,11 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
     (*current_liboctave_error_handler)
       ("EIG: matrix contains Inf or NaN values");
 
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT nb = to_f77_int (b.rows ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT nb = octave::to_f77_int (b.rows ());
 
-  F77_INT a_nc = to_f77_int (a.cols ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
@@ -697,11 +697,11 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
                           const FloatComplexMatrix& b,
                           bool calc_rev, bool calc_lev)
 {
-  F77_INT n = to_f77_int (a.rows ());
-  F77_INT nb = to_f77_int (b.rows ());
+  F77_INT n = octave::to_f77_int (a.rows ());
+  F77_INT nb = octave::to_f77_int (b.rows ());
 
-  F77_INT a_nc = to_f77_int (a.cols ());
-  F77_INT b_nc = to_f77_int (b.cols ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
+  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
   if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");

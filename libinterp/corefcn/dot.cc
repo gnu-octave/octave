@@ -59,9 +59,9 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
         }
     }
 
-  m = to_f77_int (tmp_m);
-  n = to_f77_int (tmp_n);
-  k = to_f77_int (tmp_k);
+  m = octave::to_f77_int (tmp_m);
+  n = octave::to_f77_int (tmp_n);
+  k = octave::to_f77_int (tmp_k);
 }
 
 DEFUN (dot, args, ,
@@ -260,9 +260,9 @@ endfor
   const dim_vector dimx = argx.dims ();
   const dim_vector dimy = argy.dims ();
   int nd = dimx.ndims ();
-  F77_INT m = to_f77_int (dimx(0));
-  F77_INT k = to_f77_int (dimx(1));
-  F77_INT n = to_f77_int (dimy(1));
+  F77_INT m = octave::to_f77_int (dimx(0));
+  F77_INT k = octave::to_f77_int (dimx(1));
+  F77_INT n = octave::to_f77_int (dimy(1));
   octave_idx_type tmp_np = 1;
   bool match = dimy(0) == k && nd == dimy.ndims ();
   dim_vector dimz = dim_vector::alloc (nd);
@@ -274,7 +274,7 @@ endfor
       dimz(i) = dimx(i);
       tmp_np *= dimz(i);
     }
-  F77_INT np = to_f77_int (tmp_np);
+  F77_INT np = octave::to_f77_int (tmp_np);
 
   if (! match)
     error ("blkmm: A and B dimensions don't match: (%s) and (%s)",

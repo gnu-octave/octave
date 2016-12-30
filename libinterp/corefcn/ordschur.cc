@@ -114,10 +114,10 @@ is in the upper left corner, by doing:
                                                 \
   retval = ovl (U, S);
 
-  F77_INT n = to_f77_int (sel_n);
+  F77_INT n = octave::to_f77_int (sel_n);
   Array<F77_INT> sel (dim_vector (n, 1));
   for (F77_INT i = 0; i < n; i++)
-    sel.xelem (i) = to_f77_int (sel_arg.xelem (i));
+    sel.xelem (i) = octave::to_f77_int (sel_arg.xelem (i));
 
   if (double_type)
     {

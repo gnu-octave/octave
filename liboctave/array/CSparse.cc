@@ -3683,13 +3683,13 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   }
             }
 
-          F77_INT b_nr = to_f77_int (b.rows ());
-          F77_INT b_nc = to_f77_int (b.cols ());
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
 
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -3749,13 +3749,13 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   }
             }
 
-          F77_INT b_nr = to_f77_int (b.rows ());
-          F77_INT b_nc = to_f77_int (b.cols ());
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
 
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -3861,7 +3861,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                   }
             }
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -3887,7 +3887,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
             {
               char job = 'N';
               volatile octave_idx_type x_nz = b.nnz ();
-              F77_INT b_nr = to_f77_int (b.rows ());
+              F77_INT b_nr = octave::to_f77_int (b.rows ());
               octave_idx_type b_nc = b.cols ();
               retval = SparseComplexMatrix (nr, b_nc, x_nz);
               retval.xcidx (0) = 0;
@@ -4009,15 +4009,15 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   }
             }
 
-          F77_INT b_nr = to_f77_int (b.rows ());
-          F77_INT b_nc = to_f77_int (b.cols ());
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
 
           rcond = 1.;
 
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4075,15 +4075,15 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   }
             }
 
-          F77_INT b_nr = to_f77_int (b.rows ());
-          F77_INT b_nc = to_f77_int (b.cols ());
+          F77_INT b_nr = octave::to_f77_int (b.rows ());
+          F77_INT b_nc = octave::to_f77_int (b.cols ());
 
           rcond = 1.;
 
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4187,7 +4187,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
                   }
             }
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4213,7 +4213,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
             {
               rcond = 1.;
               char job = 'N';
-              F77_INT b_nr = to_f77_int (b.rows ());
+              F77_INT b_nr = octave::to_f77_int (b.rows ());
               octave_idx_type b_nc = b.cols ();
               OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
@@ -4311,7 +4311,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_lower + 1;
           ComplexMatrix m_band (ldm, nc);
           Complex *tmp_data = m_band.fortran_vec ();
@@ -4338,7 +4338,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4401,8 +4401,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   retval = ComplexMatrix (b);
                   Complex *result = retval.fortran_vec ();
 
-                  F77_INT b_nr = to_f77_int (b.rows ());
-                  F77_INT b_nc = to_f77_int (b.cols ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+                  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
                   F77_XFCN (zpbtrs, ZPBTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -4426,8 +4426,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          F77_INT n_upper = to_f77_int (mattype.nupper ());
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -4463,7 +4463,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
           Array<F77_INT> ipvt (dim_vector (nr, 1));
           F77_INT *pipvt = ipvt.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4498,7 +4498,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   Array<double> iz (dim_vector (nr, 1));
                   double *piz = iz.fortran_vec ();
 
-                  F77_INT tmp_nc = to_f77_int (nc);
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (zgbcon, ZGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -4534,8 +4534,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   retval = ComplexMatrix (b);
                   Complex *result = retval.fortran_vec ();
 
-                  F77_INT b_nr = to_f77_int (b.rows ());
-                  F77_INT b_nc = to_f77_int (b.cols ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+                  F77_INT b_nc = octave::to_f77_int (b.cols ());
 
                   char job = 'N';
                   F77_XFCN (zgbtrs, ZGBTRS,
@@ -4581,7 +4581,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -4609,7 +4609,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4667,7 +4667,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
               if (err == 0)
                 {
-                  F77_INT b_nr = to_f77_int (b.rows ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
@@ -4729,8 +4729,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          F77_INT n_upper = to_f77_int (mattype.nupper ());
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -4766,7 +4766,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
           Array<F77_INT> ipvt (dim_vector (nr, 1));
           F77_INT *pipvt = ipvt.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -4799,7 +4799,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                   Array<double> iz (dim_vector (nr, 1));
                   double *piz = iz.fortran_vec ();
 
-                  F77_INT tmp_nc = to_f77_int (nc);
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (zgbcon, ZGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -4834,7 +4834,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                 {
                   char job = 'N';
                   volatile octave_idx_type x_nz = b.nnz ();
-                  F77_INT b_nr = to_f77_int (b.rows ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   retval = SparseComplexMatrix (nr, b_nc, x_nz);
                   retval.xcidx (0) = 0;
@@ -4919,7 +4919,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -4947,7 +4947,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -5007,8 +5007,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
               if (err == 0)
                 {
-                  F77_INT b_nr = to_f77_int (b.rows ());
-                  F77_INT b_nc = to_f77_int (b.cols ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+                  F77_INT b_nc = octave::to_f77_int (b.cols ());
                   retval = ComplexMatrix (b);
                   Complex *result = retval.fortran_vec ();
 
@@ -5034,8 +5034,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          F77_INT n_upper = to_f77_int (mattype.nupper ());
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -5071,7 +5071,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
           Array<F77_INT> ipvt (dim_vector (nr, 1));
           F77_INT *pipvt = ipvt.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -5104,7 +5104,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                   Array<double> iz (dim_vector (nr, 1));
                   double *piz = iz.fortran_vec ();
 
-                  F77_INT tmp_nc = to_f77_int (nc);
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (zgbcon, ZGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -5138,8 +5138,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (err == 0)
                 {
                   char job = 'N';
-                  F77_INT b_nr = to_f77_int (b.rows ());
-                  F77_INT b_nc = to_f77_int (b.cols ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
+                  F77_INT b_nc = octave::to_f77_int (b.cols ());
                   retval = ComplexMatrix (b);
                   Complex *result = retval.fortran_vec ();
 
@@ -5186,7 +5186,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
         {
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -5214,7 +5214,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           if (calc_cond)
             anorm = m_band.abs ().sum ().row (0).max ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -5275,7 +5275,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
               if (err == 0)
                 {
-                  F77_INT b_nr = to_f77_int (b.rows ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
@@ -5342,8 +5342,8 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       if (typ == MatrixType::Banded)
         {
           // Create the storage for the banded form of the sparse matrix
-          F77_INT n_upper = to_f77_int (mattype.nupper ());
-          F77_INT n_lower = to_f77_int (mattype.nlower ());
+          F77_INT n_upper = octave::to_f77_int (mattype.nupper ());
+          F77_INT n_lower = octave::to_f77_int (mattype.nlower ());
           F77_INT ldm = n_upper + 2 * n_lower + 1;
 
           ComplexMatrix m_band (ldm, nc);
@@ -5379,7 +5379,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           Array<F77_INT> ipvt (dim_vector (nr, 1));
           F77_INT *pipvt = ipvt.fortran_vec ();
 
-          F77_INT tmp_nr = to_f77_int (nr);
+          F77_INT tmp_nr = octave::to_f77_int (nr);
 
           F77_INT tmp_err = 0;
 
@@ -5412,7 +5412,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   Array<double> iz (dim_vector (nr, 1));
                   double *piz = iz.fortran_vec ();
 
-                  F77_INT tmp_nc = to_f77_int (nc);
+                  F77_INT tmp_nc = octave::to_f77_int (nc);
 
                   F77_XFCN (zgbcon, ZGBCON,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -5447,7 +5447,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 {
                   char job = 'N';
                   volatile octave_idx_type x_nz = b.nnz ();
-                  F77_INT b_nr = to_f77_int (b.rows ());
+                  F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   retval = SparseComplexMatrix (nr, b_nc, x_nz);
                   retval.xcidx (0) = 0;

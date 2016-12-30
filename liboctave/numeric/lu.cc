@@ -252,8 +252,8 @@ namespace octave
     template <>
     lu<Matrix>::lu (const Matrix& a)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
@@ -282,12 +282,12 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -308,15 +308,15 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -341,12 +341,12 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -372,15 +372,15 @@ namespace octave
       Matrix& l = l_fact;
       Matrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -404,8 +404,8 @@ namespace octave
     template <>
     lu<FloatMatrix>::lu (const FloatMatrix& a)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
@@ -434,12 +434,12 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -461,15 +461,15 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -495,12 +495,12 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -526,15 +526,15 @@ namespace octave
       FloatMatrix& l = l_fact;
       FloatMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -558,8 +558,8 @@ namespace octave
     template <>
     lu<ComplexMatrix>::lu (const ComplexMatrix& a)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
@@ -590,12 +590,12 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -618,15 +618,15 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -653,12 +653,12 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -685,15 +685,15 @@ namespace octave
       ComplexMatrix& l = l_fact;
       ComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -718,8 +718,8 @@ namespace octave
     template <>
     lu<FloatComplexMatrix>::lu (const FloatComplexMatrix& a)
     {
-      F77_INT a_nr = to_f77_int (a.rows ());
-      F77_INT a_nc = to_f77_int (a.columns ());
+      F77_INT a_nr = octave::to_f77_int (a.rows ());
+      F77_INT a_nc = octave::to_f77_int (a.columns ());
       F77_INT mn = (a_nr < a_nc ? a_nr : a_nc);
 
       ipvt.resize (dim_vector (mn, 1));
@@ -750,12 +750,12 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -778,15 +778,15 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -812,12 +812,12 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nel = to_f77_int (u.numel ());
-      F77_INT v_nel = to_f77_int (v.numel ());
+      F77_INT u_nel = octave::to_f77_int (u.numel ());
+      F77_INT v_nel = octave::to_f77_int (v.numel ());
 
       if (u_nel != m || v_nel != n)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
@@ -845,15 +845,15 @@ namespace octave
       FloatComplexMatrix& l = l_fact;
       FloatComplexMatrix& r = a_fact;
 
-      F77_INT m = to_f77_int (l.rows ());
-      F77_INT n = to_f77_int (r.columns ());
-      F77_INT k = to_f77_int (l.columns ());
+      F77_INT m = octave::to_f77_int (l.rows ());
+      F77_INT n = octave::to_f77_int (r.columns ());
+      F77_INT k = octave::to_f77_int (l.columns ());
 
-      F77_INT u_nr = to_f77_int (u.rows ());
-      F77_INT u_nc = to_f77_int (u.columns ());
+      F77_INT u_nr = octave::to_f77_int (u.rows ());
+      F77_INT u_nc = octave::to_f77_int (u.columns ());
 
-      F77_INT v_nr = to_f77_int (v.rows ());
-      F77_INT v_nc = to_f77_int (v.columns ());
+      F77_INT v_nr = octave::to_f77_int (v.rows ());
+      F77_INT v_nc = octave::to_f77_int (v.columns ());
 
       if (u_nr != m || v_nr != n || u_nc != v_nc)
         (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");

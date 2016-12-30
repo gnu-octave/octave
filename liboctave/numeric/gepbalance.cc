@@ -45,7 +45,7 @@ namespace octave
     gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
                               const std::string& balance_job)
     {
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler) ("GEPBALANCE requires square matrix");
@@ -109,7 +109,7 @@ namespace octave
     gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
                                    const std::string& balance_job)
     {
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -175,7 +175,7 @@ namespace octave
                                      const ComplexMatrix& b,
                                      const std::string& balance_job)
     {
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
         (*current_liboctave_error_handler)
@@ -241,7 +241,7 @@ namespace octave
                                           const FloatComplexMatrix& b,
                                           const std::string& balance_job)
     {
-      F77_INT n = to_f77_int (a.cols ());
+      F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
         {

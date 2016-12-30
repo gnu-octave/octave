@@ -3815,7 +3815,7 @@ namespace octave
     fortran_psifn<double> (double z, octave_idx_type n_arg,
                            double& ans, octave_idx_type& ierr)
     {
-      F77_INT n = to_f77_int (n_arg);
+      F77_INT n = octave::to_f77_int (n_arg);
       F77_INT flag = 0;
       F77_INT t_ierr;
       F77_XFCN (dpsifn, DPSIFN, (z, n, 1, 1, ans, flag, t_ierr));
@@ -3827,7 +3827,7 @@ namespace octave
     fortran_psifn<float> (float z, octave_idx_type n_arg,
                           float& ans, octave_idx_type& ierr)
     {
-      F77_INT n = to_f77_int (n_arg);
+      F77_INT n = octave::to_f77_int (n_arg);
       F77_INT flag = 0;
       F77_INT t_ierr;
       F77_XFCN (psifn, PSIFN, (z, n, 1, 1, ans, flag, t_ierr));

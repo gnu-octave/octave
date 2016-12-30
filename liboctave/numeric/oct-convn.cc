@@ -92,11 +92,11 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
 {
   if (nd == 2)
     {
-      F77_INT ad0 = to_f77_int (ad(0));
-      F77_INT ad1 = to_f77_int (ad(1));
+      F77_INT ad0 = octave::to_f77_int (ad(0));
+      F77_INT ad1 = octave::to_f77_int (ad(1));
 
-      F77_INT bd0 = to_f77_int (bd(0));
-      F77_INT bd1 = to_f77_int (bd(1));
+      F77_INT bd0 = octave::to_f77_int (bd(0));
+      F77_INT bd1 = octave::to_f77_int (bd(1));
 
       convolve_2d<T, R> (a, ad0, ad1, b, bd0, bd1, c, inner);
     }

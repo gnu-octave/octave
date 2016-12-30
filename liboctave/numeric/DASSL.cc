@@ -80,7 +80,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 
   tmp_delta = user_fun (tmp_state, tmp_deriv, time, tmp_ires);
 
-  ires = to_f77_int (tmp_ires);
+  ires = octave::to_f77_int (tmp_ires);
 
   if (ires >= 0)
     {
@@ -142,7 +142,7 @@ DASSL::do_integrate (double tout)
       for (F77_INT i = 0; i < 15; i++)
         info(i) = 0;
 
-      F77_INT n = to_f77_int (size ());
+      F77_INT n = octave::to_f77_int (size ());
 
       liw = 21 + n;
       lrw = 40 + 9*n + n*n;
@@ -217,7 +217,7 @@ DASSL::do_integrate (double tout)
       else
         info(7) = 0;
 
-      F77_INT sl = to_f77_int (step_limit ());
+      F77_INT sl = octave::to_f77_int (step_limit ());
 
       if (sl >= 0)
         {
@@ -227,7 +227,7 @@ DASSL::do_integrate (double tout)
       else
         info(11) = 0;
 
-      F77_INT maxord = to_f77_int (maximum_order ());
+      F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
@@ -244,17 +244,17 @@ DASSL::do_integrate (double tout)
             }
         }
 
-      F77_INT enc = to_f77_int (enforce_nonnegativity_constraints ());
+      F77_INT enc = octave::to_f77_int (enforce_nonnegativity_constraints ());
       info(9) = enc ? 1 : 0;
 
-      F77_INT ccic = to_f77_int (compute_consistent_initial_condition ());
+      F77_INT ccic = octave::to_f77_int (compute_consistent_initial_condition ());
       info(10) = ccic ? 1 : 0;
 
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
-      F77_INT abs_tol_len = to_f77_int (abs_tol.numel ());
-      F77_INT rel_tol_len = to_f77_int (rel_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (abs_tol.numel ());
+      F77_INT rel_tol_len = octave::to_f77_int (rel_tol.numel ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
@@ -290,7 +290,7 @@ DASSL::do_integrate (double tout)
   double *dummy = 0;
   F77_INT *idummy = 0;
 
-  F77_INT tmp_istate = to_f77_int (istate);
+  F77_INT tmp_istate = octave::to_f77_int (istate);
 
   F77_XFCN (ddassl, DDASSL, (ddassl_f, nn, t, px, pxdot, tout, pinfo,
                              prel_tol, pabs_tol, tmp_istate, prwork, lrw,
@@ -360,7 +360,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  F77_INT n = to_f77_int (size ());
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {
@@ -405,7 +405,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
   Matrix retval;
 
   octave_idx_type n_out = tout.numel ();
-  F77_INT n = to_f77_int (size ());
+  F77_INT n = octave::to_f77_int (size ());
 
   if (n_out > 0 && n > 0)
     {

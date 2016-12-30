@@ -179,10 +179,10 @@ operator * (const Matrix& m, const ColumnVector& a)
 {
   ColumnVector retval;
 
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);
@@ -214,10 +214,10 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
 {
   ColumnVector retval;
 
-  F77_INT nr = to_f77_int (m.rows ());
-  F77_INT nc = to_f77_int (m.cols ());
+  F77_INT nr = octave::to_f77_int (m.rows ());
+  F77_INT nc = octave::to_f77_int (m.cols ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (nc != a_len)
     octave::err_nonconformant ("operator *", nr, nc, a_len, 1);

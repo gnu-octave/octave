@@ -282,10 +282,10 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
 {
   ComplexRowVector retval;
 
-  F77_INT len = to_f77_int (v.numel ());
+  F77_INT len = octave::to_f77_int (v.numel ());
 
-  F77_INT a_nr = to_f77_int (a.rows ());
-  F77_INT a_nc = to_f77_int (a.cols ());
+  F77_INT a_nr = octave::to_f77_int (a.rows ());
+  F77_INT a_nc = octave::to_f77_int (a.cols ());
 
   if (a_nr != len)
     octave::err_nonconformant ("operator *", 1, len, a_nr, a_nc);
@@ -406,9 +406,9 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 {
   Complex retval (0.0, 0.0);
 
-  F77_INT len = to_f77_int (v.numel ());
+  F77_INT len = octave::to_f77_int (v.numel ());
 
-  F77_INT a_len = to_f77_int (a.numel ());
+  F77_INT a_len = octave::to_f77_int (a.numel ());
 
   if (len != a_len)
     octave::err_nonconformant ("operator *", len, a_len);

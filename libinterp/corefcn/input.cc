@@ -1132,15 +1132,6 @@ With no arguments, @code{echo} toggles the current echo state.
 %!error echo ("on", "all", "all")
 */
 
-DEFUN (__echostate__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {@var{state} =} __echostate__ ()
-Undocumented internal function
-@end deftypefn */)
-{
-  return ovl (Vecho_executing_commands == ECHO_SCRIPTS);
-}
-
 DEFUN (completion_matches, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} completion_matches (@var{hint})

@@ -103,12 +103,6 @@ typedef unsigned long ino_t;
 #  define OCTAVE_HAVE_SIG_JUMP 1
 #endif
 
-#if defined (OCTAVE_ENABLE_64)
-#  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT64_T
-#else
-#  define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
-#endif
-
 /* To be able to use long doubles for 64-bit mixed arithmetics, we need
    them at least 80 bits wide and we need roundl declared in math.h.
    FIXME: Maybe substitute this by a more precise check in the future?  */

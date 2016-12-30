@@ -341,9 +341,6 @@ AC_ARG_ENABLE(64,
   [if test "$enableval" = yes; then ENABLE_64=yes; fi], [])
 if test $ENABLE_64 = yes; then
   AC_CHECK_SIZEOF([void *])
-  AC_CHECK_SIZEOF([int])
-  AC_CHECK_SIZEOF([long])
-  AC_CHECK_SIZEOF([int64_t])
   if test $ac_cv_sizeof_void_p -eq 8; then
     OCTAVE_IDX_TYPE=int64_t
   else
@@ -2288,14 +2285,7 @@ if test $ac_cv_type_unsigned_long_long_int = yes; then
     [Define to 1 if the system has the type 'unsigned long long int'.])
 fi
 
-## How big are ints and how are they oriented?
-## These could probably be eliminated in favor of run-time checks.
-
-AC_CHECK_SIZEOF([short])
-AC_CHECK_SIZEOF([int])
-AC_CHECK_SIZEOF([long])
-AC_CHECK_SIZEOF([long long])
-## Check for long double type (for 64-bit integers)
+## Check for long double type (may be used for 64-bit integer computations).
 AC_CHECK_SIZEOF([long double])
 
 ### Check structures and existence of necessary members

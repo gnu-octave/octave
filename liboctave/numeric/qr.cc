@@ -146,7 +146,7 @@ namespace octave
       octave_idx_type m = q.rows ();
       octave_idx_type n = r.cols ();
 
-      if (u_rows != m || v_rows != n || u_cols != v_cols)
+      if (u.rows () != m || v.rows () != n || u.cols () != v.cols ())
         (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
       init (q*r + u * v.hermitian (), get_type ());
@@ -259,7 +259,7 @@ namespace octave
       if (dups)
         (*current_liboctave_error_handler) ("qrinsert: duplicate index detected");
 
-      if (u.numel () != m || u_cols != nj)
+      if (u.numel () != m || u.cols () != nj)
         (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
 
       if (nj > 0 && (js(0) < 0 || js(nj-1) > n))

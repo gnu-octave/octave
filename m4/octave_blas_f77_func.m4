@@ -1,3 +1,10 @@
+# OCTAVE_BLAS_F77_FUNC
+#
+# The same as AX_BLAS_F77_FUNC (described below) except attempt to
+# determine whether the BLAS library uses 32- or 64-bit integers instead
+# of failing if the default size of Fortran integers does not appear to
+# match the size of integers used by the BLAS library.
+
 # ===========================================================================
 #     http://www.gnu.org/software/autoconf-archive/ax_blas_f77_func.html
 # ===========================================================================
@@ -54,8 +61,8 @@
 
 #serial 8
 
-AU_ALIAS([ACX_BLAS_F77_FUNC], [AX_BLAS_F77_FUNC])
-AC_DEFUN([AX_BLAS_F77_FUNC], [
+## Derived from 
+AC_DEFUN([OCTAVE_BLAS_F77_FUNC], [
 AC_PREREQ(2.50)
 AC_REQUIRE([AX_BLAS])
 
@@ -142,33 +149,34 @@ elif test x"$ax_blas_ok" = xyes; then
       ]]),[ax_blas_zdotu_fcall_ok=yes],
 	[ax_blas_zdotu_fcall_ok=no])
 	AC_MSG_RESULT([$ax_blas_zdotu_fcall_ok])
-# Check for correct integer size
+# Check BLAS library integer size.  If it does not appear to be
+# 8 bytes, we assume it is 4 bytes.
 # FIXME: this may fail with things like -ftrapping-math.
-        AC_MSG_CHECKING([whether the integer size is correct])
+        AC_MSG_CHECKING([BLAS library integer size])
         AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
-      integer n,nn(3)
+      integer*8 n
+      integer*4 n4
       real s,a(1),b(1),sdot
       a(1) = 1.0
       b(1) = 1.0
-c Generate -2**33 + 1, if possible
+c Generate -2**33 + 1.  With BLAS compiled to use 64-bit integers, SDOT
+c will return early, setting the result to 0.  With BLAS compiled to use
+c 32-bit integers, this value should be interpreted as 1 and SDOT will
+c return 1.
       n = 2
       n = -4 * (n ** 30)
       n = n + 1
-      if (n >= 0) goto 1
-c This means we're on 64-bit integers. Check whether the BLAS is, too.
+c Check that our expectation about the type conversion is correct.
+      n4 = n
+      if (n4 .ne. 1) then
+        print *, 'invalid assumption about integer type conversion'
+        stop 2
+      endif
       s = sdot(n,a,1,b,1)
       if (s .ne. 0.0) stop 1
-    1 continue
-c We may be on 32-bit integers, and the BLAS on 64 bits. This is almost bound
-c to have already failed, but just in case, we'll check.
-      nn(1) = -1
-      nn(2) = 1
-      nn(3) = -1
-      s = sdot(nn(2),a,1,b,1)
-      if (s .ne. 1.0) stop 1
-       ]]),[ax_blas_integer_size_ok=yes],
-	[ax_blas_integer_size_ok=no])
-	AC_MSG_RESULT([$ax_blas_integer_size_ok])
+       ]]),[ax_blas_integer_size=8],
+	[ax_blas_integer_size=4])
+	AC_MSG_RESULT([$ax_blas_integer_size])
 
 	AC_LANG_POP(Fortran 77)
 
@@ -177,8 +185,7 @@ c to have already failed, but just in case, we'll check.
 		-a $ax_blas_sdot_fcall_ok = yes \
 		-a $ax_blas_ddot_fcall_ok = yes \
 		-a $ax_blas_cdotu_fcall_ok = yes \
-		-a $ax_blas_zdotu_fcall_ok = yes \
-		-a $ax_blas_integer_size_ok = yes; then
+		-a $ax_blas_zdotu_fcall_ok = yes ; then
 		ax_blas_f77_func_ok=yes;
 		$1
 	else
@@ -190,11 +197,11 @@ fi
 
 ])dnl AX_BLAS_F77_FUNC
 
-AC_DEFUN([AX_BLAS_WITH_F77_FUNC], [
+AC_DEFUN([OCTAVE_BLAS_WITH_F77_FUNC], [
 AC_PREREQ(2.50)
 AX_BLAS([# disable special action], [])
 if test x$ax_blas_ok = xyes ; then
-	AX_BLAS_F77_FUNC(
+	OCTAVE_BLAS_F77_FUNC(
 	[ifelse([$1],,AC_DEFINE(HAVE_BLAS,1,[Define if you have a BLAS library.]),[$1])],
 	[ax_blas_ok=no; BLAS_LIBS=])
 fi

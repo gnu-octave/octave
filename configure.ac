@@ -333,34 +333,42 @@ AC_ARG_ENABLE([docs],
 
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
-ENABLE_64=no
-OCTAVE_IDX_TYPE=int
+AC_CHECK_SIZEOF([void *])
+if test $ac_cv_sizeof_void_p -ge 8; then
+  OCTAVE_IDX_TYPE=int64_t
+  ENABLE_64=yes
+else
+  OCTAVE_IDX_TYPE=int32_t
+  ENABLE_64=no
+fi
+     
 AC_ARG_ENABLE(64,
-  [AS_HELP_STRING([--enable-64],
-    [(EXPERIMENTAL) use 64-bit integers for array dimensions and indexing])],
-  [if test "$enableval" = yes; then ENABLE_64=yes; fi], [])
+  [AS_HELP_STRING([--disable-64],
+    [don't use 64-bit integers for array dimensions and indexing])],
+  [case $enableval in
+     yes) ENABLE_64=yes ;;
+     no) ENABLE_64=no ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-64]) ;;
+   esac])
+
 if test $ENABLE_64 = yes; then
-  AC_CHECK_SIZEOF([void *])
-  if test $ac_cv_sizeof_void_p -eq 8; then
-    OCTAVE_IDX_TYPE=int64_t
-  else
-    warn_64_bit="pointers are not 64-bits wide; disabling 64-bit features"
+  if test $ac_cv_sizeof_void_p -lt 8; then
+    warn_64_bit="--enable-64 option given but pointers are less than 64-bits wide; disabling 64-bit indexing"
     OCTAVE_CONFIGURE_WARNING([warn_64_bit])
+    OCTAVE_IDX_TYPE=int32_t
     ENABLE_64=no
   fi
 fi
-AC_SUBST(OCTAVE_IDX_TYPE)
-AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
-  [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
-OCTAVE_F77_INT_TYPE=$OCTAVE_IDX_TYPE
-AC_SUBST(OCTAVE_F77_INT_TYPE)
-AC_DEFINE_UNQUOTED(OCTAVE_F77_INT_TYPE, [$OCTAVE_F77_INT_TYPE],
-  [Define to the type of octave_f77_int_type (64 or 32 bit signed integer).])
+
+AC_SUBST(ENABLE_64)
 if test $ENABLE_64 = yes; then
   AC_DEFINE(OCTAVE_ENABLE_64, 1,
     [Define to 1 if using 64-bit integers for array dimensions and indexing.])
 fi
-AC_SUBST(ENABLE_64)
+
+AC_SUBST(OCTAVE_IDX_TYPE)
+AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
+  [Define to the type of octave_idx_type (64 or 32 bit signed integer).])
 
 ### It seems that there are some broken inline assembly functions in
 ### the GNU libc.  Since I'm not sure how to test whether we are using
@@ -940,9 +948,100 @@ if test $octave_cv_func_fortran_isnan = no; then
 fi
 AC_SUBST(F77_ISNAN_MACRO)
 
+### Check for BLAS and LAPACK libraries:
+
+## Need to adjust FFLAGS to include correct integer size.
+save_FFLAGS="$FFLAGS"
+FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+
+OCTAVE_BLAS_WITH_F77_FUNC([:], [:],
+  [ax_blas_ok=yes
+  AC_MSG_CHECKING([BLAS can be called from Fortran])
+  AC_MSG_RESULT([yes assumed for cross compilation])])
+AX_LAPACK([:], [:])
+
+## Restore FFLAGS.
+FFLAGS="$save_FFLAGS"
+
+## If necessary, try again with -ff2c in FFLAGS
+if test $ax_blas_ok = no; then
+  save_FFLAGS="$FFLAGS"
+  FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
+
+  OCTAVE_BLAS_WITH_F77_FUNC([:], [:])
+  AX_LAPACK([:], [:])
+
+  ## Restore FFLAGS, with -ff2c if that was helpful
+
+  if test $ax_blas_ok = yes; then
+    FFLAGS="-ff2c $save_FFLAGS"
+  else
+    FFLAGS="$save_FFLAGS"
+  fi
+fi
+
+## On OSX, try again with a wrapper library (without -ff2c!)
+if test $ax_blas_ok = no; then
+  case $host_os in
+    darwin*)
+      ## test if wrapper functions help
+      octave_blaswrap_save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS -DUSE_BLASWRAP"
+      AC_LANG_PUSH(C)
+      AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+          #include "liboctave/cruft/misc/blaswrap.c"
+        ]])],
+        [mv conftest.$ac_objext blaswrap.$ac_objext
+         octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
+         BLAS_LIBS="blaswrap.$ac_objext -framework vecLib"
+
+         save_FFLAGS="$FFLAGS"
+         FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+
+         OCTAVE_BLAS_WITH_F77_FUNC([:], [:])
+         AX_LAPACK([:], [:])
+
+         ## Restore FFLAGS.
+         FFLAGS="$save_FFLAGS"
+
+         ## remove temp file
+         rm -f blaswrap.$ac_objext],
+        [AC_MSG_FAILURE([cannot compile liboctave/cruft/misc/blaswrap.c])])
+      AC_LANG_POP(C)
+      CFLAGS="$octave_blaswrap_save_CFLAGS"
+
+      if test $ax_blas_ok = no; then
+        BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
+      else
+        ## wrapper in cruft, remove from BLAS_LIBS
+        BLAS_LIBS=`echo $BLAS_LIBS | $SED -e 's/blaswrap.[[^ ]]* //g'`
+        AC_DEFINE(USE_BLASWRAP, 1,
+          [Define to 1 if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])
+      fi
+    ;;
+  esac
+fi
+
+if test $ax_blas_ok = no || test $ax_lapack_ok = no; then
+  AC_MSG_ERROR([BLAS and LAPACK libraries are required])
+fi
+
+case $ax_blas_integer_size in
+  4 | 8)
+  ;;
+  *)
+    AC_MSG_ERROR([unrecognized BLAS library integer size])
+  ;;
+esac
+
+if test $ENABLE_64 = yes && test $ax_blas_integer_size -ne 8; then
+  warn_blas_integer_size="Your BLAS library doesn't seem to use 64-bit integers.  Some matrix operations will be limited to arrays with dimensions smaller than 2^31 elements."
+  OCTAVE_CONFIGURE_WARNING([warn_blas_integer_size])
+fi
+
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
-if test $octave_cv_sizeof_fortran_integer = no; then
-  if test $ENABLE_64 = yes; then
+if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
+  if test $ax_blas_integer_size -eq 8; then
     case $F77 in
       *gfortran*)
         case $F77_INTEGER_8_FLAG in
@@ -969,14 +1068,26 @@ if test $octave_cv_sizeof_fortran_integer = no; then
     if test -z "$octave_cv_sizeof_fortran_integer"; then
       OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
     fi
-    if test $octave_cv_sizeof_fortran_integer = no; then
-      AC_MSG_ERROR([to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
-    fi
-  else
-    AC_MSG_ERROR([your Fortran compiler must have an option to make integers the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])
+  fi
+  ## We intentionally don't attempt to fix things up if the default
+  ## Fortran integer size is 8 but BLAS appears to use 4-byte integers.
+  if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
+    AC_MSG_ERROR([your Fortran compiler must have an option for setting the default integer size to be the same size as your BLAS library uses ($ax_blas_integer_size bytes).  See the file INSTALL for more information.])
   fi
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)
+
+case $octave_cv_sizeof_fortran_integer in
+  8)
+    OCTAVE_F77_INT_TYPE=int64_t
+  ;;
+  4)
+    OCTAVE_F77_INT_TYPE=int32_t
+  ;;
+esac
+AC_SUBST(OCTAVE_F77_INT_TYPE)
+AC_DEFINE_UNQUOTED(OCTAVE_F77_INT_TYPE, [$OCTAVE_F77_INT_TYPE],
+  [Define to the type of octave_f77_int_type (64 or 32 bit signed integer).])
 
 OCTAVE_F77_FLAG([-ffloat-store], [
   AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
@@ -1922,93 +2033,6 @@ if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
   opengl_graphics=no
 else
   opengl_graphics=yes
-fi
-
-### Check for BLAS and LAPACK libraries:
-
-## Need to adjust FFLAGS to include correct integer size.
-save_FFLAGS="$FFLAGS"
-FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
-
-AX_BLAS_WITH_F77_FUNC([:], [:],
-  [ax_blas_ok=yes
-  AC_MSG_CHECKING([BLAS can be called from Fortran])
-  AC_MSG_RESULT([yes assumed for cross compilation])])
-AX_LAPACK([:], [:])
-
-## Restore FFLAGS.
-FFLAGS="$save_FFLAGS"
-
-## If necessary, try again with -ff2c in FFLAGS
-if test $ax_blas_ok = no; then
-  save_FFLAGS="$FFLAGS"
-  FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
-
-  AX_BLAS_WITH_F77_FUNC([:], [:])
-  AX_LAPACK([:], [:])
-
-  ## Restore FFLAGS, with -ff2c if that was helpful
-
-  if test $ax_blas_ok = yes; then
-    FFLAGS="-ff2c $save_FFLAGS"
-  else
-    FFLAGS="$save_FFLAGS"
-  fi
-fi
-
-## On OSX, try again with a wrapper library (without -ff2c!)
-if test $ax_blas_ok = no; then
-  case $host_os in
-    darwin*)
-      ## test if wrapper functions help
-      octave_blaswrap_save_CFLAGS="$CFLAGS"
-      CFLAGS="$CFLAGS -DUSE_BLASWRAP"
-      AC_LANG_PUSH(C)
-      AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-          #include "liboctave/cruft/misc/blaswrap.c"
-        ]])],
-        [mv conftest.$ac_objext blaswrap.$ac_objext
-         octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
-         BLAS_LIBS="blaswrap.$ac_objext -framework vecLib"
-
-         save_FFLAGS="$FFLAGS"
-         FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
-
-         AX_BLAS_WITH_F77_FUNC([:], [:])
-         AX_LAPACK([:], [:])
-
-         ## Restore FFLAGS.
-         FFLAGS="$save_FFLAGS"
-
-         ## remove temp file
-         rm -f blaswrap.$ac_objext],
-        [AC_MSG_FAILURE([cannot compile liboctave/cruft/misc/blaswrap.c])])
-      AC_LANG_POP(C)
-      CFLAGS="$octave_blaswrap_save_CFLAGS"
-
-      if test $ax_blas_ok = no; then
-        BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
-      else
-        ## wrapper in cruft, remove from BLAS_LIBS
-        BLAS_LIBS=`echo $BLAS_LIBS | $SED -e 's/blaswrap.[[^ ]]* //g'`
-        AC_DEFINE(USE_BLASWRAP, 1,
-          [Define to 1 if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])
-      fi
-    ;;
-  esac
-fi
-
-if test $ax_blas_ok = no; then
-  if test $ENABLE_64 = yes && test $ax_blas_integer_size_ok = no; then
-    ## Attempt to be more informative.
-    AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
-  else
-    AC_MSG_ERROR([A BLAS library was detected but found incompatible with your Fortran 77 compiler settings.])
-  fi
-fi
-
-if test $ax_blas_ok = no || test $ax_lapack_ok = no; then
-  AC_MSG_ERROR([BLAS and LAPACK libraries are required])
 fi
 
 ### Check for the qrupdate library
@@ -3367,22 +3391,6 @@ if test $ENABLE_DYNAMIC_LINKING = yes; then
     AC_MSG_WARN([Are you sure that is what you want to do?])
     warn_msg_printed=true
   fi
-fi
-
-if test $ENABLE_64 = yes; then
-  AC_MSG_WARN([])
-  AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
-  AC_MSG_WARN([Are you sure that is what you want to do?])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([Your Fortran compiler must have an option to generate])
-  AC_MSG_WARN([code with 8 byte signed INTEGER values.  This option])
-  AC_MSG_WARN([should be specified in the F77_INTEGER_8_FLAG variable])
-  AC_MSG_WARN([Make.  This should work automatically for gfortran.  If])
-  AC_MSG_WARN([you use another compiler, you will need to set this])
-  AC_MSG_WARN([variable on the configure command line.  You must also])
-  AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
-  AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
-  warn_msg_printed=true
 fi
 
 if test $opengl_graphics = no; then

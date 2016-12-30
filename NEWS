@@ -1,6 +1,12 @@
 Summary of important user-visible changes for version 4.4:
 ---------------------------------------------------------
 
+ ** On systems with 64-bit pointers, --enable-64 is now the default and
+    Octave always uses 64-bit indexing.  However, if the configure
+    script determines that the BLAS library uses 32-bit integers, then
+    operations using the following libraries are limited to arrays with
+    dimensions that are smaller than 2^31 elements:
+
  ** Other new functions added in 4.4:
 
       gsvd

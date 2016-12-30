@@ -344,12 +344,32 @@ of @var{prefix} is @file{/usr/local}.
 @item --srcdir=@var{dir}
 Look for Octave sources in the directory @var{dir}.
 
-@item --enable-64
-This is an @strong{experimental} option to enable Octave to use 64-bit
-integers for array dimensions and indexing on 64-bit platforms.  You
-probably don't want to use this option unless you know what you are
-doing.  @xref{Compiling Octave with 64-bit Indexing}, for more details
-about building Octave with this option.
+@item --disable-64
+Disable using 64-bit integers for indexing arrays and use 32-bit
+integers instead.  On systems with 32-bit pointers, this option is
+always disabled.  If he configure script determines that your BLAS
+library uses 32-bit integers, then operations using the following
+libraries are limited to arrays with dimensions that are smaller than
+@math{2^{31}} elements:
+
+@itemize @bullet
+@item @sc{blas}
+@item @sc{lapack}
+@item QRUPDATE
+@item SuiteSparse
+@item @sc{arpack}
+@end itemize
+
+Additionally, the following libraries use @code{int} internally, so
+maximum problem sizes are always limited:
+
+@itemize @bullet
+@item @sc{glpk}
+@item Qhull
+@end itemize
+
+@xref{Compiling Octave with 64-bit Indexing}, for more details
+about building Octave with more complete support for large arrays.
 
 @item --enable-bounds-check
 Enable bounds checking for indexing operators in the internal array
@@ -595,53 +615,37 @@ Note: the following only applies to systems that have 64-bit pointers.
 Configuring Octave with @option{--enable-64} cannot magically make a
 32-bit system have a 64-bit address space.
 
-On 64-bit systems, Octave is limited to (approximately) the following
-array sizes when using the default 32-bit indexing mode:
+On 64-bit systems, Octave uses 64-bit integers for indexing arrays
+by default.  If he configure script determines that your BLAS
+library uses 32-bit integers, then operations using the following
+libraries are limited to arrays with dimensions that are smaller than
+@math{2^{31}} elements:
 
-@example
-@group
-double:         16 GB
-single:          8 GB
-uint64, int64:  16 GB
-uint32, int32:   8 GB
-uint16, int16:   4 GB
-uint8, int8:     2 GB
-@end group
-@end example
+@itemize @bullet
+@item @sc{blas}
+@item @sc{lapack}
+@item QRUPDATE
+@item SuiteSparse
+@item @sc{arpack}
+@end itemize
 
-In each case, the limit is really (approximately) @math{2^{31}} elements
-because of the default type of the value used for indexing arrays
-(signed 32-bit integer, corresponding to the size of a Fortran INTEGER
-value).
+Additionally, the following libraries use @code{int} internally, so
+maximum problem sizes are always limited:
 
-Trying to create larger arrays will produce the following error:
+@itemize @bullet
+@item @sc{glpk}
+@item Qhull
+@end itemize
 
-@example
-@group
-octave:1> a = zeros (1024*1024*1024*3, 1, 'int8');
-error: memory exhausted or requested size too large
-       for range of Octave's index type --
-       trying to return to prompt
-@end group
-@end example
-
-@noindent
-You will obtain this error even if your system has enough memory to
-create this array (4 GB in the above case).
-
-To use arrays larger than 2 GB, Octave has to be configured with the
-option @option{--enable-64}.  This option is experimental and you are
-encouraged to submit bug reports if you find a problem.  With this
-option, Octave will use 64-bit integers internally for array dimensions
-and indexing.  However, all numerical libraries used by Octave will
-@strong{also} need to use 64-bit integers for array dimensions and
-indexing.  In most cases, this means they will need to be compiled from
-source since most (all?) distributions which package these libraries
-compile them with the default Fortran integer size, which is normally
-32-bits wide.
+Except for @sc{glpk} and Qhull, these libraries may also be configured
+to use 64-bit integers, but most systems do not provide packages built
+this way.  If you wish to experiment with large arrays, the following
+information may be helpful.
 
 The following instructions were tested with the development version of
-Octave and GCC 4.3.4 on an x86_64 Debian system.
+Octave and GCC 4.3.4 on an x86_64 Debian system and may be out of date
+now.  Please report any problems or corrections on the Octave bug
+tracker.
 
 The versions listed below are the versions used for testing.  If newer
 versions of these packages are available, you should try to use them,

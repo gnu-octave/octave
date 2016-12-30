@@ -1645,57 +1645,33 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
 ])
 dnl
 dnl Check if the default Fortran INTEGER is 64 bits wide.
+dnl If cross-compiling, assume 4 bytes unless the cache value
+dnl is already set.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
-  AC_CACHE_CHECK([whether $F77 generates correct size integers],
+  AC_CACHE_CHECK([default size of Fortran INTEGER],
     [octave_cv_sizeof_fortran_integer],
     [ac_octave_save_FFLAGS="$FFLAGS"
-    FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
-    AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE([[
-      subroutine foo(n, in, out)
-      integer n, in(n), out(n)
-      integer i
-      do 10 i = 1, n
-        out(i) = in(i)
-   10 continue
-      return
-      end
-      ]],
-      [mv conftest.$ac_objext fintsize.$ac_objext
-      ac_octave_save_LIBS="$LIBS"
-      LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
-      AC_LANG_PUSH(C)
-      AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-          #include <assert.h>
-          #include <stdint.h>
-          #if defined (OCTAVE_ENABLE_64)
-            typedef int64_t octave_idx_type;
-          #else
-            typedef int octave_idx_type;
-          #endif
-          void F77_FUNC(foo,FOO) (octave_idx_type*, octave_idx_type**, octave_idx_type**);
-          ]], [[
-          octave_idx_type n = 2;
-          octave_idx_type in[2];
-          octave_idx_type out[2];
-          in[0] = 13;
-          in[0] = 42;
-          F77_FUNC(foo,FOO) (&n, &in, &out);
-          assert (in[0] == out[0] && in[1] == out[1]);
-        ]])],
-        octave_cv_sizeof_fortran_integer=yes,
-        octave_cv_sizeof_fortran_integer=no,
-        octave_cv_sizeof_fortran_integer=yes)
-      AC_LANG_POP(C)
-      LIBS="$ac_octave_save_LIBS"
-      rm -f conftest.$ac_objext fintsize.$ac_objext],
-      [rm -f conftest.$ac_objext
-      AC_MSG_FAILURE([cannot compile a simple Fortran program])
-      octave_cv_sizeof_fortran_integer=no])
-    AC_LANG_POP(Fortran 77)
-    FFLAGS="$ac_octave_save_FFLAGS"
+     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+     AC_LANG_PUSH(Fortran 77)
+     AC_RUN_IFELSE([AC_LANG_PROGRAM(,[[
+      integer*8 n8
+      integer n
+c Generate -2**33 + 1.
+      n8 = 2
+      n8 = -4 * (n8 ** 30)
+      n8 = n8 + 1
+c Convert to default integer type.  If the values are no longer equal,
+c assume the default integer size is 32-bits.
+      n = n8
+      if (n .ne. n8) stop 1
+       ]])],
+       octave_cv_sizeof_fortran_integer=8,
+       octave_cv_sizeof_fortran_integer=4,
+       octave_cv_sizeof_fortran_integer=4)
   ])
+  AC_LANG_POP(Fortran 77)
+  FFLAGS="$ac_octave_save_FFLAGS"
 ])
 dnl
 dnl Check whether sundials_ida library is configured with double precision realtype

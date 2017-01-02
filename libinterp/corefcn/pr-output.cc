@@ -3642,16 +3642,19 @@ myobj = myclass (@dots{})
   // function.  Rely on built-in functions to display whatever obj is.
 
   octave_value value = args(0);
-  bool is_scalar = value.is_scalar_type ();
 
+  // If print_name_tag displays a newline, then also print one after
+  // disp is done.
+
+  bool print_newlines = false;
   if (valid_identifier (name))
-    octave_stdout << name << (is_scalar ? " = " : " =\n\n");
+    print_newlines = value.print_name_tag (octave_stdout, name);
 
   // Use feval so that dispatch will also work for disp.
 
   feval ("disp", ovl (value));
 
-  if (! is_scalar)
+  if (print_newlines)
     octave_stdout << std::endl;
 
   return ovl ();

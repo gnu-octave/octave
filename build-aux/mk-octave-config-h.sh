@@ -165,6 +165,8 @@ cat << EOF
 typedef $octave_idx_type octave_idx_type;
 typedef $octave_f77_int_type octave_f77_int_type;
 
+#  define OCTAVE_HAVE_F77_INT_TYPE 1
+
 EOF
 
 if grep "#define OCTAVE_ENABLE_FLOAT_TRUNCATE 1" $config_h_file > /dev/null; then

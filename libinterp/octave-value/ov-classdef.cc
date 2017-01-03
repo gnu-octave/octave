@@ -208,7 +208,7 @@ to_ov (const std::list<cdef_class>& class_list)
   int i = 0;
 
   for (const auto& cdef_cls : class_list)
-    cls(i) = to_ov (cdef_cls);
+    cls(i++) = to_ov (cdef_cls);
 
   return octave_value (cls);
 }

@@ -1699,9 +1699,10 @@ In addition, some function types may return more information in additional
 fields.
 
 @strong{Warning:} @code{functions} is provided for debugging purposes only.
-Its behavior may change in the future and programs should not depend on a
-particular output.
+Its behavior may change in the future and programs should not depend on any
+particular output format.
 
+@seealso{func2str, str2func}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1821,7 +1822,7 @@ Return a function handle constructed from the string @var{fcn_name}.
 
 If the optional @qcode{"global"} argument is passed, locally visible
 functions are ignored in the lookup.
-@seealso{func2str, inline}
+@seealso{func2str, inline, functions}
 @end deftypefn */)
 {
   int nargin = args.length ();

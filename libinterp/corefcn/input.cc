@@ -1032,6 +1032,8 @@ functions.
 
 @noindent
 With no arguments, @code{echo} toggles the current echo state.
+
+@seealso{echo_executing_commands}
 @end deftypefn */)
 {
   string_vector argv = args.make_argv ();
@@ -1480,6 +1482,8 @@ command or the command line option @option{--echo-commands}.
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
+
+@seealso{echo}
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);

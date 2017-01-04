@@ -6259,6 +6259,13 @@ axes::properties::update_aspectratios (void)
 }
 
 void
+axes::properties::update_label_color (handle_property label, 
+                                      color_property col)
+{
+  gh_manager::get_object (label.handle_value ()).set ("color", col.get ());
+}
+
+void
 axes::properties::update_font (void)
 {
   txt_renderer.set_font (get ("fontname").string_value (),

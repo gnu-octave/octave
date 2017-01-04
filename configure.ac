@@ -1027,17 +1027,16 @@ if test $ax_blas_ok = no || test $ax_lapack_ok = no; then
 fi
 
 case $ax_blas_integer_size in
-  4 | 8)
+  4)
+    HAVE_64_BIT_BLAS=no
+  ;;
+  8)
+    HAVE_64_BIT_BLAS=yes
   ;;
   *)
     AC_MSG_ERROR([unrecognized BLAS library integer size])
   ;;
 esac
-
-if test $ENABLE_64 = yes && test $ax_blas_integer_size -ne 8; then
-  warn_blas_integer_size="Your BLAS library doesn't seem to use 64-bit integers.  Some matrix operations will be limited to arrays with dimensions smaller than 2^31 elements."
-  OCTAVE_CONFIGURE_WARNING([warn_blas_integer_size])
-fi
 
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
 if test $octave_cv_sizeof_fortran_integer -ne $ax_blas_integer_size; then
@@ -3365,19 +3364,20 @@ Octave is now configured for $canonical_host_type
   Default pager:                 $DEFAULT_PAGER
   gnuplot:                       $GNUPLOT
 
-  Build Octave Qt GUI:                $build_qt_gui
-  JIT compiler for loops:             $ENABLE_JIT
-  Build Java interface:               $build_java
-  Do internal array bounds checking:  $ENABLE_BOUNDS_CHECK
-  Build static libraries:             $STATIC_LIBS
-  Build shared libraries:             $SHARED_LIBS
-  Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG
-  Include support for GNU readline:   $USE_READLINE
-  64-bit array dims and indexing:     $ENABLE_64
-  OpenMP SMP multithreading:          $ENABLE_OPENMP
-  Build cross tools:                  $cross_tools
-  Build docs:                         $ENABLE_DOCS
-  Truncate intermediate FP results:   $ENABLE_FLOAT_TRUNCATE
+  Build Octave Qt GUI:                  $build_qt_gui
+  JIT compiler for loops:               $ENABLE_JIT
+  Build Java interface:                 $build_java
+  Do internal array bounds checking:    $ENABLE_BOUNDS_CHECK
+  Build static libraries:               $STATIC_LIBS
+  Build shared libraries:               $SHARED_LIBS
+  Dynamic Linking:                      $ENABLE_DYNAMIC_LINKING $DL_API_MSG
+  Include support for GNU readline:     $USE_READLINE
+  64-bit array dims and indexing:       $ENABLE_64
+  64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
+  OpenMP SMP multithreading:            $ENABLE_OPENMP
+  Build cross tools:                    $cross_tools
+  Build docs:                           $ENABLE_DOCS
+  Truncate intermediate FP results:     $ENABLE_FLOAT_TRUNCATE
 ])
 
 warn_msg_printed=false

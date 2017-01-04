@@ -112,10 +112,10 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
   return retval;
 }
 
-static int
+static octave_idx_type
 get_size (double d, const std::string& who)
 {
-  int retval = -1;
+  octave_idx_type retval = -1;
 
   if (lo_ieee_isnan (d))
     ::error ("%s: NaN is invalid as size specification", who.c_str ());
@@ -128,7 +128,11 @@ get_size (double d, const std::string& who)
         ::error ("%s: negative value invalid as size specification",
                  who.c_str ());
 
-      retval = octave::math::nint (d);
+      if (d > std::numeric_limits<octave_idx_type>::max ())
+        ::error ("%s: dimension too large for Octave's index type",
+                 who.c_str ());
+
+      retval = octave::math::nint_big (d);
     }
 
   return retval;
@@ -6466,9 +6470,9 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
   // data_type enum in the oct_data_conv class.
 
   // Expose this in a future version?
-  octave_idx_type char_count = 0;
+  size_t char_count = 0;
 
-  count = 0;
+  ptrdiff_t tmp_count = 0;
 
   try
     {
@@ -6477,9 +6481,9 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
   catch (const octave::execution_exception&)
     {
       invalid_operation ("fread", "reading");
-    }
 
-  octave_idx_type elts_to_read;
+      return retval;
+    }
 
   if (one_elt_size_spec)
     {
@@ -6511,7 +6515,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
   // FIXME: Ensure that this does not overflow.
   //        Maybe try comparing nr * nc computed in double with
   //        std::numeric_limits<octave_idx_type>::max ();
-  elts_to_read = nr * nc;
+  octave_idx_type elts_to_read = nr * nc;
 
   bool read_to_eof = elts_to_read < 0;
 
@@ -6530,7 +6534,8 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
   octave_idx_type input_elt_size
     = oct_data_conv::data_type_size (input_type);
 
-  octave_idx_type input_buf_size = input_buf_elts * input_elt_size;
+  ptrdiff_t input_buf_size
+    = static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
 
   assert (input_buf_size >= 0);
 
@@ -6547,11 +6552,11 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
       std::list <void *> input_buf_list;
 
       while (is && ! is.eof ()
-             && (read_to_eof || count < elts_to_read))
+             && (read_to_eof || tmp_count < elts_to_read))
         {
           if (! read_to_eof)
             {
-              octave_idx_type remaining_elts = elts_to_read - count;
+              octave_idx_type remaining_elts = elts_to_read - tmp_count;
 
               if (remaining_elts < input_buf_elts)
                 input_buf_size = remaining_elts * input_elt_size;
@@ -6567,7 +6572,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
           octave_idx_type nel = gcount / input_elt_size;
 
-          count += nel;
+          tmp_count += nel;
 
           input_buf_list.push_back (input_buf);
 
@@ -6602,29 +6607,34 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
         {
           if (nc < 0)
             {
-              nc = count / nr;
+              nc = tmp_count / nr;
 
-              if (count % nr != 0)
+              if (tmp_count % nr != 0)
                 nc++;
             }
           else
-            nr = count;
+            nr = tmp_count;
         }
-      else if (count == 0)
+      else if (tmp_count == 0)
         {
           nr = 0;
           nc = 0;
         }
-      else if (count != nr * nc)
+      else if (tmp_count != nr * nc)
         {
-          if (count % nr != 0)
-            nc = count / nr + 1;
+          if (tmp_count % nr != 0)
+            nc = tmp_count / nr + 1;
           else
-            nc = count / nr;
+            nc = tmp_count / nr;
 
-          if (count < nr)
-            nr = count;
+          if (tmp_count < nr)
+            nr = tmp_count;
         }
+
+      if (tmp_count > std::numeric_limits<octave_idx_type>::max ())
+        error ("fread: number of elements read exceeds max index size");
+      else
+        count = static_cast<octave_idx_type> (tmp_count);
 
       retval = finalize_read (input_buf_list, input_buf_elts, count,
                               nr, nc, input_type, output_type, ffmt);

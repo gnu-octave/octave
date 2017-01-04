@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "fcntl-wrappers.h"
 #include "signal-wrappers.h"
-#include "strdup-wrapper.h"
 #include "unistd-wrappers.h"
 #include "wait-wrappers.h"
 

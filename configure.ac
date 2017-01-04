@@ -335,10 +335,8 @@ AC_ARG_ENABLE([docs],
 
 AC_CHECK_SIZEOF([void *])
 if test $ac_cv_sizeof_void_p -ge 8; then
-  OCTAVE_IDX_TYPE=int64_t
   ENABLE_64=yes
 else
-  OCTAVE_IDX_TYPE=int32_t
   ENABLE_64=no
 fi
      
@@ -352,12 +350,16 @@ AC_ARG_ENABLE(64,
    esac])
 
 if test $ENABLE_64 = yes; then
-  if test $ac_cv_sizeof_void_p -lt 8; then
+  if test $ac_cv_sizeof_void_p -ge 8; then
+    OCTAVE_IDX_TYPE=int64_t
+  else
     warn_64_bit="--enable-64 option given but pointers are less than 64-bits wide; disabling 64-bit indexing"
     OCTAVE_CONFIGURE_WARNING([warn_64_bit])
     OCTAVE_IDX_TYPE=int32_t
     ENABLE_64=no
   fi
+else
+  OCTAVE_IDX_TYPE=int32_t
 fi
 
 AC_SUBST(ENABLE_64)

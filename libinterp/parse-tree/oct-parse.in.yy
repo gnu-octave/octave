@@ -4367,7 +4367,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       if (autoload && ! fcn_name.empty ())
         nm = fcn_name;
 
-      retval = octave_dynamic_loader::load_oct (nm, file, relative_lookup);
+      retval = octave::dynamic_loader::load_oct (nm, file, relative_lookup);
     }
   else if (len > 4 && file.substr (len-4, len-1) == ".mex")
     {
@@ -4380,7 +4380,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
                                                 autoload, autoload,
                                                 relative_lookup, "");
 
-      retval = octave_dynamic_loader::load_mex (nm, file, relative_lookup);
+      retval = octave::dynamic_loader::load_mex (nm, file, relative_lookup);
 
       if (tmpfcn)
         retval->document (tmpfcn->doc_string ());

@@ -62,7 +62,7 @@ octave_mex_function::~octave_mex_function (void)
   if (exit_fcn_ptr)
     (*exit_fcn_ptr) ();
 
-  octave_dynamic_loader::remove_mex (my_name, sh_lib);
+  octave::dynamic_loader::remove_mex (my_name, sh_lib);
 }
 
 std::string

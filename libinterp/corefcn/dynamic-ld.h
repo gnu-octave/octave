@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
 
 #include "oct-shlib.h"
@@ -34,9 +35,44 @@ class octave_function;
 class
 octave_dynamic_loader
 {
+private:
+
+  class
+  loaded_shlibs_list
+  {
+  public:
+
+    typedef std::list<octave::dynamic_library>::iterator iterator;
+    typedef std::list<octave::dynamic_library>::const_iterator const_iterator;
+
+    loaded_shlibs_list (void) : lib_list () { }
+
+    ~loaded_shlibs_list (void) = default;
+
+    void append (const octave::dynamic_library& shl);
+
+    void remove (octave::dynamic_library& shl,
+                 octave::dynamic_library::close_hook cl_hook = 0);
+
+    octave::dynamic_library find_file (const std::string& file_name) const;
+
+    void display (void) const;
+
+  private:
+
+    // No copying!
+
+    loaded_shlibs_list (const loaded_shlibs_list&) = delete;
+
+    loaded_shlibs_list& operator = (const loaded_shlibs_list&) = delete;
+
+    // List of libraries we have loaded.
+    std::list<octave::dynamic_library> lib_list;
+  };
+
 protected:
 
-  octave_dynamic_loader (void) { }
+  octave_dynamic_loader (void) : loaded_shlibs () { }
 
 public:
 
@@ -72,6 +108,8 @@ private:
 
   static bool instance_ok (void);
 
+  void do_clear (octave::dynamic_library& oct_file);
+
   octave_function *
   do_load_oct (const std::string& fcn_name,
                const std::string& file_name = "",
@@ -89,6 +127,8 @@ private:
   static bool doing_load;
 
 protected:
+
+  loaded_shlibs_list loaded_shlibs;
 
   static std::string name_mangler (const std::string& name);
 

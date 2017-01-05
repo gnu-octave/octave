@@ -47,65 +47,17 @@ along with Octave; see the file COPYING.  If not, see
 #define STRINGIFY(s) STRINGIFY1(s)
 #define STRINGIFY1(s) #s
 
-class
-octave_shlib_list
-{
-public:
-
-  typedef std::list<octave::dynamic_library>::iterator iterator;
-  typedef std::list<octave::dynamic_library>::const_iterator const_iterator;
-
-  static void append (const octave::dynamic_library& shl);
-
-  static void remove (octave::dynamic_library& shl,
-                      octave::dynamic_library::close_hook cl_hook = 0);
-
-  static octave::dynamic_library find_file (const std::string& file_name);
-
-  static void display (void);
-
-private:
-
-  octave_shlib_list (void) : lib_list () { }
-
-  // No copying!
-
-  octave_shlib_list (const octave_shlib_list&) = delete;
-
-  octave_shlib_list& operator = (const octave_shlib_list&) = delete;
-
-  ~octave_shlib_list (void) = default;
-
-  void do_append (const octave::dynamic_library& shl);
-
-  void do_remove (octave::dynamic_library& shl,
-                  octave::dynamic_library::close_hook cl_hook = 0);
-
-  octave::dynamic_library do_find_file (const std::string& file_name) const;
-
-  void do_display (void) const;
-
-  static octave_shlib_list *instance;
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  static bool instance_ok (void);
-
-  // List of libraries we have loaded.
-  std::list<octave::dynamic_library> lib_list;
-};
-
-octave_shlib_list *octave_shlib_list::instance = 0;
-
 void
-octave_shlib_list::do_append (const octave::dynamic_library& shl)
+octave_dynamic_loader::loaded_shlibs_list::append
+  (const octave::dynamic_library& shl)
 {
   lib_list.push_back (shl);
 }
 
 void
-octave_shlib_list::do_remove (octave::dynamic_library& shl,
-                              octave::dynamic_library::close_hook cl_hook)
+octave_dynamic_loader::loaded_shlibs_list::remove
+  (octave::dynamic_library& shl,
+   octave::dynamic_library::close_hook cl_hook)
 {
   for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
@@ -123,7 +75,7 @@ octave_shlib_list::do_remove (octave::dynamic_library& shl,
 }
 
 octave::dynamic_library
-octave_shlib_list::do_find_file (const std::string& file_name) const
+octave_dynamic_loader::loaded_shlibs_list::find_file (const std::string& file_name) const
 {
   octave::dynamic_library retval;
 
@@ -140,59 +92,11 @@ octave_shlib_list::do_find_file (const std::string& file_name) const
 }
 
 void
-octave_shlib_list::do_display (void) const
+octave_dynamic_loader::loaded_shlibs_list::display (void) const
 {
   std::cerr << "current shared libraries:" << std::endl;
   for (const auto& lib : lib_list)
     std::cerr << "  " << lib.file_name () << std::endl;
-}
-
-bool
-octave_shlib_list::instance_ok (void)
-{
-  bool retval = true;
-
-  if (! instance)
-    {
-      instance = new octave_shlib_list ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
-
-  if (! instance)
-    error ("unable to create shared library list object!");
-
-  return retval;
-}
-
-void
-octave_shlib_list::append (const octave::dynamic_library& shl)
-{
-  if (instance_ok ())
-    instance->do_append (shl);
-}
-
-void
-octave_shlib_list::remove (octave::dynamic_library& shl,
-                           octave::dynamic_library::close_hook cl_hook)
-{
-  if (instance_ok ())
-    instance->do_remove (shl, cl_hook);
-}
-
-octave::dynamic_library
-octave_shlib_list::find_file (const std::string& file_name)
-{
-  return (instance_ok ())
-         ? instance->do_find_file (file_name) : octave::dynamic_library ();
-}
-
-void
-octave_shlib_list::display (void)
-{
-  if (instance_ok ())
-    instance->do_display ();
 }
 
 octave_dynamic_loader *octave_dynamic_loader::instance = 0;
@@ -226,8 +130,8 @@ do_clear_function (const std::string& fcn_name)
   symbol_table::clear_dld_function (fcn_name);
 }
 
-static void
-clear (octave::dynamic_library& oct_file)
+void
+octave_dynamic_loader::do_clear (octave::dynamic_library& oct_file)
 {
   if (oct_file.number_of_functions_loaded () > 1)
     {
@@ -235,10 +139,10 @@ clear (octave::dynamic_library& oct_file)
                        "reloading %s clears the following functions:",
                        oct_file.file_name ().c_str ());
 
-      octave_shlib_list::remove (oct_file, do_clear_function);
+      loaded_shlibs.remove (oct_file, do_clear_function);
     }
   else
-    octave_shlib_list::remove (oct_file, symbol_table::clear_dld_function);
+    loaded_shlibs.remove (oct_file, symbol_table::clear_dld_function);
 }
 
 octave_function *
@@ -254,17 +158,17 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
   doing_load = true;
 
-  octave::dynamic_library oct_file = octave_shlib_list::find_file (file_name);
+  octave::dynamic_library oct_file = loaded_shlibs.find_file (file_name);
 
   if (oct_file && oct_file.is_out_of_date ())
-    clear (oct_file);
+    do_clear (oct_file);
 
   if (! oct_file)
     {
       oct_file.open (file_name);
 
       if (oct_file)
-        octave_shlib_list::append (oct_file);
+        loaded_shlibs.append (oct_file);
     }
 
   if (! oct_file)
@@ -308,17 +212,17 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
   doing_load = true;
 
-  octave::dynamic_library mex_file = octave_shlib_list::find_file (file_name);
+  octave::dynamic_library mex_file = loaded_shlibs.find_file (file_name);
 
   if (mex_file && mex_file.is_out_of_date ())
-    clear (mex_file);
+    do_clear (mex_file);
 
   if (! mex_file)
     {
       mex_file.open (file_name);
 
       if (mex_file)
-        octave_shlib_list::append (mex_file);
+        loaded_shlibs.append (mex_file);
     }
 
   if (! mex_file)
@@ -368,7 +272,7 @@ octave_dynamic_loader::do_remove_oct (const std::string& fcn_name,
       retval = shl.remove (fcn_name);
 
       if (shl.number_of_functions_loaded () == 0)
-        octave_shlib_list::remove (shl);
+        loaded_shlibs.remove (shl);
     }
 
   return retval;
@@ -388,7 +292,7 @@ octave_dynamic_loader::do_remove_mex (const std::string& fcn_name,
       retval = shl.remove (fcn_name);
 
       if (shl.number_of_functions_loaded () == 0)
-        octave_shlib_list::remove (shl);
+        loaded_shlibs.remove (shl);
     }
 
   return retval;

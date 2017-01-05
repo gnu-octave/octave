@@ -109,9 +109,14 @@ function hax = newplot (hsave = [])
     endif
   endif
 
+  do_reset = true;
   if (isempty (cf))
     ## get current figure, or create a new one if necessary
-    cf = gcf ();
+    cf = get (0, "currentfigure");
+    if (isempty (cf))
+      cf = figure ();
+      do_reset = false;
+    endif
   else
     ## switch to figure provided without causing other updates
     set (0, "currentfigure", cf);
@@ -135,17 +140,24 @@ function hax = newplot (hsave = [])
       endif
       delete (kids);
     case "replace"
-      kids = allchild (cf);
-      if (! isempty (ca))
-        kids(kids == ca) = [];
+      if (do_reset)
+        kids = allchild (cf);
+        if (! isempty (ca))
+          kids(kids == ca) = [];
+        endif
+        delete (kids);
+        reset (cf);
       endif
-      delete (kids);
-      reset (cf);
   endswitch
   set (cf, "nextplot", "add");  # Matlab compatibility
 
+  do_reset = true;
   if (isempty (ca))
-    ca = gca ();
+    ca = get (cf, "currentaxes");
+    if (isempty (ca))
+      ca = axes ();
+      do_reset = false;
+    endif
     deleteall = true;
   else
     set (cf, "currentaxes", ca);
@@ -185,22 +197,11 @@ function hax = newplot (hsave = [])
           ## property created with addproperty short of deleting the object.
           delete (ca);
           ca = axes ();
-        else
-          __go_axes_init__ (ca, "replace");
-          __request_drawnow__ ();
+        elseif (do_reset)
+          delete (allchild (ca));
+          reset (ca);
         endif
       endif
-      ## FIXME: The code above should perform the following:
-      ###########################
-      ## delete (allchild (ca));
-      ## reset (ca);
-      ###########################
-      ## Actually, __go_axes_init__ does both less and more.
-      ## It doesn't really remove all children since it re-instantiates
-      ## xlabel, ylabel, zlabel, and title text objects.
-      ## Also it preserves font properties like fontsize.
-      ## For the time being, in order to have axis labels and title work,
-      ## the above code is required.
   endswitch
 
   ## Reset line and color styles when hold is not on

@@ -69,8 +69,8 @@ function cla (varargin)
   if (! do_reset)
     delete (get (hax, "children"));
   else
-    __go_axes_init__ (hax, "replace");
-    __request_drawnow__ ();
+    delete (allchild (hax));
+    reset (hax);
   endif
 
 endfunction

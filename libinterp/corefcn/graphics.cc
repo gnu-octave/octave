@@ -3311,6 +3311,7 @@ base_graphics_object::reset_default_properties (void)
       int old_dep_prop = warning_enabled ("Octave:deprecated-property");
       disable_warning ("Octave:deprecated-property");
 
+      remove_all_listeners ();
       xreset_default_properties (get_handle (), factory_pval);
 
       // re-enable warning state of "Octave:deprecated-property"
@@ -3633,6 +3634,7 @@ root_figure::reset_default_properties (void)
   // empty list of local defaults
   default_properties = property_list ();
 
+  remove_all_listeners ();
   xreset_default_properties (get_handle (),
                              xproperties.factory_defaults ());
 }
@@ -4503,6 +4505,7 @@ figure::reset_default_properties (void)
   plist.erase ("paperposition");
   plist.erase ("windowstyle");
 
+  remove_all_listeners ();
   xreset_default_properties (get_handle (), plist);
 }
 
@@ -4871,6 +4874,13 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   // FIXME: Should this have all properties in it?
   // Including ones we do don't implement?
 
+  // FIXME: This function is probably never called without mode == "reset"
+  //        Check that this is the case with an assert statement (1/6/2017).
+  //        If there are reports of problems then figure out what code is
+  //        calling it with the mode set to something else.  Otherwise,
+  //        delete branches of the code in this function that depend on mode.
+  assert (mode == "reset");
+
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
   alim = tlim;
@@ -5093,8 +5103,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
   xset (title.handle_value (), "__autopos_tag__", "title");
 
-  double fs = labelfontsizemultiplier.double_value () * 
-    fontsize.double_value ();
+  double fs;
+  fs = labelfontsizemultiplier.double_value () * fontsize.double_value ();
   xset (xlabel.handle_value (), "fontsize", octave_value (fs));
   xset (ylabel.handle_value (), "fontsize", octave_value (fs));
   xset (zlabel.handle_value (), "fontsize", octave_value (fs));
@@ -8049,6 +8059,7 @@ axes::reset_default_properties (void)
   default_properties = property_list ();
 
   // reset factory defaults
+  remove_all_listeners ();
   set_defaults ("reset");
 }
 
@@ -9335,6 +9346,7 @@ uitoolbar::reset_default_properties (void)
   // empty list of local defaults
   default_properties = property_list ();
 
+  remove_all_listeners ();
   xreset_default_properties (get_handle (), xproperties.factory_defaults ());
 }
 
@@ -10874,43 +10886,6 @@ Undocumented internal function.
     }
 
   delete_graphics_objects (vals);
-
-  return ovl ();
-}
-
-DEFUN (__go_axes_init__, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __go_axes_init__ (@var{h}, @var{mode})
-Undocumented internal function.
-@end deftypefn */)
-{
-  gh_manager::auto_lock guard;
-
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-
-  std::string mode;
-  if (nargin == 2)
-    mode = args(1).string_value ();
-
-  graphics_handle h = octave::numeric_limits<double>::NaN ();
-
-  double val = args(0).xdouble_value ("__go_axes_init__: invalid graphics object");
-
-  h = gh_manager::lookup (val);
-
-  if (! h.ok ())
-    error ("__go_axes_init__: invalid graphics object (= %g)", val);
-
-  graphics_object go = gh_manager::get_object (h);
-
-  go.set_defaults (mode);
-
-  h = gh_manager::lookup (val);
-  if (! h.ok ())
-    error ("__go_axes_init__: axis deleted during initialization (= %g)", val);
 
   return ovl ();
 }

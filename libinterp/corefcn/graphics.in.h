@@ -3914,7 +3914,7 @@ public:
       array_property view u , default_axes_view ()
       // FIXME: Remove "zero" in 4.6
       radio_property xaxislocation u , "{bottom}|top|origin|zero"
-      color_property xcolor m , color_values (0.15, 0.15, 0.15)
+      color_property xcolor mu , color_values (0.15, 0.15, 0.15)
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
@@ -3932,7 +3932,7 @@ public:
       radio_property xtickmode u , "{auto}|manual"
       // FIXME: Remove "zero" in 4.6
       radio_property yaxislocation u , "{left}|right|origin|zero"
-      color_property ycolor m , color_values (0.15, 0.15, 0.15)
+      color_property ycolor mu , color_values (0.15, 0.15, 0.15)
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
@@ -3947,7 +3947,7 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
-      color_property zcolor m , color_values (0.15, 0.15, 0.15)
+      color_property zcolor mu , color_values (0.15, 0.15, 0.15)
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"
@@ -4012,6 +4012,16 @@ public:
     {
       sz = get_scale (get_zscale (), zlim.get ().matrix_value ());
     }
+
+    void update_label_color (handle_property label, color_property col);
+    void update_xcolor (void)
+    { update_label_color (xlabel, xcolor); }
+
+    void update_ycolor (void)
+    { update_label_color (ylabel, ycolor); }
+
+    void update_zcolor (void)
+    { update_label_color (zlabel, zcolor); }
 
     void update_view (void) { sync_positions (); }
     void update_dataaspectratio (void) { sync_positions (); }

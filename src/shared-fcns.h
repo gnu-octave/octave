@@ -40,39 +40,16 @@ w32_get_octave_home (void)
 
   std::string bin_dir;
 
-  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
-#if defined (TH32CS_SNAPMODULE32)
-                                       | TH32CS_SNAPMODULE32
-#endif
-                                       , 0);
-
-  if (h != INVALID_HANDLE_VALUE)
+  char namebuf[MAX_PATH+1];
+  if (GetModuleFileName (GetModuleHandle (NULL), namebuf, MAX_PATH))
     {
-      MODULEENTRY32 mod_info;
+      namebuf[MAX_PATH] = '\0';
 
-      ZeroMemory (&mod_info, sizeof (mod_info));
-      mod_info.dwSize = sizeof (mod_info);
+      std::string exe_name = namebuf; 
+      size_t pos = exe_name.rfind ("\\");
 
-      if (Module32First (h, &mod_info))
-        {
-          do
-            {
-              std::string mod_name (mod_info.szModule);
-
-              if (mod_name.find ("octave") != std::string::npos)
-                {
-                  bin_dir = mod_info.szExePath;
-
-                  if (bin_dir[bin_dir.length () - 1] != '\\')
-                    bin_dir.append (1, '\\');
-
-                  break;
-                }
-            }
-          while (Module32Next (h, &mod_info));
-        }
-
-      CloseHandle (h);
+      if (pos != std::string::npos)
+        bin_dir = exe_name.substr (0, pos + 1);
     }
 
   if (! bin_dir.empty ())

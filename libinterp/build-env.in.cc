@@ -237,6 +237,8 @@ namespace octave
 
     const char *PCRE_CPPFLAGS = %OCTAVE_CONF_PCRE_CPPFLAGS%;
 
+    const char *PCRE_LDFLAGS = %OCTAVE_CONF_PCRE_LDFLAGS%;
+
     const char *PCRE_LIBS = %OCTAVE_CONF_PCRE_LIBS%;
 
     const char *PREFIX = %OCTAVE_CONF_PREFIX%;

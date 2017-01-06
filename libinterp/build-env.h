@@ -136,6 +136,7 @@ namespace octave
     extern const char *OSMESA_LDFLAGS;
     extern const char *OSMESA_LIBS;
     extern const char *PCRE_CPPFLAGS;
+    extern const char *PCRE_LDFLAGS;
     extern const char *PCRE_LIBS;
     extern const char *PREFIX;
     extern const char *PTHREAD_CFLAGS;

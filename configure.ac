@@ -1339,47 +1339,15 @@ OCTAVE_CHECK_LIB(qhull, QHull,
 
 ### Check for PCRE regex library.
 
-PCRE_LIBS=
-
-pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
-
-AC_CHECK_HEADERS([pcre.h pcre/pcre.h])
-
-AC_CACHE_CHECK([whether pcre.h defines the macros we need],
-  [ac_cv_pcre_h_macros_present],
-  [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
-    #if defined (HAVE_PCRE_H)
-    # include <pcre.h>
-    #elif defined (HAVE_PCRE_PCRE_H)
-    # include <pcre/pcre.h>
-    #error "NO PCRE HEADER"
-    #endif
-    #if defined (PCRE_INFO_NAMECOUNT) \
-      && defined (PCRE_INFO_NAMEENTRYSIZE) \
-      && defined (PCRE_INFO_NAMETABLE)
-      PCRE_HAS_MACROS_WE_NEED
-    #endif],
-    ac_cv_pcre_h_macros_present=yes, ac_cv_pcre_h_macros_present=no)])
-
-if test $ac_cv_pcre_h_macros_present = yes; then
-  ## check for pcre-config, and if so, get build variables
-  AC_CHECK_PROG(HAVE_PCRE_CONFIG, pcre-config, [yes], [no])
-  if test $HAVE_PCRE_CONFIG = yes; then
-    PCRE_CPPFLAGS=`pcre-config --cflags`
-    PCRE_LIBS=`pcre-config --libs`
-  else
-    PCRE_LIBS="-lpcre"
-  fi
-  save_LIBS="$LIBS"
-  LIBS="$PCRE_LIBS $LIBS"
-  AC_CHECK_FUNCS([pcre_compile],
-    [AC_SUBST(PCRE_CPPFLAGS)
-     AC_SUBST(PCRE_LIBS)],
-    [AC_MSG_ERROR([$pcre_fail_msg])])
-  LIBS="$save_LIBS"
-else
-  AC_MSG_ERROR([$pcre_fail_msg])
-fi
+PKG_CHECK_EXISTS([libpcre],
+  [AC_CHECK_HEADERS([pcre.h pcre/pcre.h])
+   PCRE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I libpcre`
+   PCRE_LDFLAGS=`$PKG_CONFIG --libs-only-L libpcre`
+   PCRE_LIBS=`$PKG_CONFIG --libs-only-l libpcre`
+   AC_SUBST(PCRE_CPPFLAGS)
+   AC_SUBST(PCRE_LDFLAGS)
+   AC_SUBST(PCRE_LIBS)],
+  [AC_MSG_ERROR([to build Octave, you must have the PCRE library and header files installed])])
 
 ### Check for ZLIB library.
 
@@ -1391,7 +1359,6 @@ OCTAVE_CHECK_LIB(z, ZLIB,
 if test -z "$warn_z"; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
-
 
 ### Check for BZIP2 library.
 
@@ -3024,7 +2991,7 @@ AC_SUBST(GNULIB_LINK_DEPS)
 
 LIBOCTAVE_LINK_DEPS="$GNULIB_LINK_DEPS $CURL_LIBS $SPARSE_XLIBS $ARPACK_LIBS $QRUPDATE_LIBS $FFTW_XLIBS $LAPACK_LIBS $BLAS_LIBS $READLINE_LIBS $TERM_LIBS $LIBGLOB $PCRE_LIBS $DL_LIBS $PTHREAD_LIBS $FLIBS $LIBS"
 
-LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LDFLAGS $FFTW_XLDFLAGS"
+LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LDFLAGS $FFTW_XLDFLAGS $PCRE_LDFLAGS"
 
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
@@ -3323,6 +3290,7 @@ Octave is now configured for $canonical_host_type
   OSMesa LDFLAGS:                $OSMESA_LDFLAGS
   OSMesa libraries:              $OSMESA_LIBS
   PCRE CPPFLAGS:                 $PCRE_CPPFLAGS
+  PCRE LDFLAGS:                  $PCRE_LDFLAGS
   PCRE libraries:                $PCRE_LIBS
   PortAudio CPPFLAGS:            $PORTAUDIO_CPPFLAGS
   PortAudio LDFLAGS:             $PORTAUDIO_LDFLAGS

@@ -523,6 +523,7 @@ specified option.
     { "OSMESA_LDFLAGS", octave::build_env::OSMESA_LDFLAGS },
     { "OSMESA_LIBS", octave::build_env::OSMESA_LIBS },
     { "PCRE_CPPFLAGS", octave::build_env::PCRE_CPPFLAGS },
+    { "PCRE_LDFLAGS", octave::build_env::PCRE_LDFLAGS },
     { "PCRE_LIBS", octave::build_env::PCRE_LIBS },
     { "PTHREAD_CFLAGS", octave::build_env::PTHREAD_CFLAGS },
     { "PTHREAD_LIBS", octave::build_env::PTHREAD_LIBS },

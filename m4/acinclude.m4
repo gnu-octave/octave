@@ -186,11 +186,8 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_CXSPARSE_VERSION_OK], [
   AC_CACHE_CHECK([whether CXSparse is version 2.2 or later],
     [octave_cv_cxsparse_version_ok],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    [ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CXSPARSE_CPPFLAGS $CPPFLAGS"
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_SUITESPARSE_CS_H)
         #include <suitesparse/cs.h>
@@ -212,8 +209,6 @@ AC_DEFUN([OCTAVE_CHECK_CXSPARSE_VERSION_OK], [
       octave_cv_cxsparse_version_ok=yes,
       octave_cv_cxsparse_version_ok=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
   ])
   if test $octave_cv_cxsparse_version_ok = yes; then
     AC_DEFINE(HAVE_CXSPARSE_VERSION_OK, 1,

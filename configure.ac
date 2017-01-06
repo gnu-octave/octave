@@ -365,7 +365,7 @@ fi
 AC_SUBST(ENABLE_64)
 if test $ENABLE_64 = yes; then
   AC_DEFINE(OCTAVE_ENABLE_64, 1,
-    [Define to 1 if using 64-bit integers for array dimensions and indexing.])
+    [Define to 1 to use 64-bit integers for array dimensions and indexing.])
 fi
 
 AC_SUBST(OCTAVE_IDX_TYPE)
@@ -1117,26 +1117,26 @@ if test $SHARED_LIBS = yes || test $ENABLE_DYNAMIC_LINKING = yes; then
       dlopen_api=yes
       DL_API_MSG="(dlopen)"
       AC_DEFINE(HAVE_DLOPEN_API, 1,
-        [Define to 1 if your system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
+        [Define to 1 if system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
       OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
     ;;
     shl_load)
       shl_load_api=yes
       DL_API_MSG="(shl_load)"
       AC_DEFINE(HAVE_SHL_LOAD_API, 1,
-        [Define to 1 if your system has shl_load and shl_findsym for dynamic linking.])
+        [Define to 1 if system has shl_load and shl_findsym for dynamic linking.])
     ;;
     LoadLibrary)
       loadlibrary_api=yes
       DL_API_MSG="(LoadLibrary)"
       AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
-        [Define to 1 if your system has LoadLibrary for dynamic linking.])
+        [Define to 1 if system has LoadLibrary for dynamic linking.])
     ;;
     dyld)
       dyld_api=yes
       DL_API_MSG="(dyld)"
       AC_DEFINE(HAVE_DYLD_API, 1,
-        [Define to 1 if your system has dyld for dynamic linking.])
+        [Define to 1 if system has dyld for dynamic linking.])
     ;;
   esac
 
@@ -1229,7 +1229,7 @@ AC_ARG_ENABLE([float-truncate],
   [if test "$enableval" = no; then ENABLE_FLOAT_TRUNCATE=no; fi], [])
 if test $ENABLE_FLOAT_TRUNCATE = yes; then
   AC_DEFINE(OCTAVE_ENABLE_FLOAT_TRUNCATE, 1,
-    [Define to 1 if you need to truncate intermediate FP results.])
+    [Define to 1 to truncate intermediate FP results.])
 fi
 
 ### Determine extra CFLAGS that may be necessary for Octave.
@@ -1560,7 +1560,7 @@ save_LIBS="$LIBS"
 CPPFLAGS="$KLU_CPPFLAGS $CPPFLAGS"
 LIBS="$KLU_LDFLAGS $KLU_LIBS $LIBS"
 OCTAVE_CHECK_LIB(sundials_ida, SUNDIALS_IDA,
-  [SUNDIALS_IDA library configured with klu not found. Solvers ode15i and ode15s will be disabled.],
+  [SUNDIALS_IDA library configured with klu not found.  Solvers ode15i and ode15s will be disabled.],
   [ida/ida.h ida.h], [IDAKLU], [], [],
   [warn_sundials_ida=
    OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE])
@@ -1569,11 +1569,11 @@ CPPFLAGS="$save_CPPFLAGS"
 
 ## Additional check for sundials_nvecserial library
 OCTAVE_CHECK_LIB(sundials_nvecserial, SUNDIALS_NVECSERIAL,
-  [SUNDIALS_NVECSERIAL library not found. Solvers ode15i and ode15s will be disabled.],
+  [SUNDIALS_NVECSERIAL library not found.  Solvers ode15i and ode15s will be disabled.],
   [nvector/nvector_serial.h nvector_serial.h ], [N_VNew_Serial],[],[],[])
 
 if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS" && test $octave_cv_sizeof_ida_double = yes; then
-  AC_DEFINE(HAVE_SUNDIALS, 1, [Define if you have both sundials_ida and sundials_nvecserial libraries.])
+  AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if both SUNDIALS_IDA and SUNDIALS_NVECSERIAL are available.])
 fi
 
 ### Check for GLPK library and header.
@@ -1724,7 +1724,7 @@ AC_SUBST(MAGICK_LIBS)
 
 AC_PATH_X
 if test "$have_x" = yes; then
-  AC_DEFINE(HAVE_X_WINDOWS, 1, [Define to 1 if you have X11.])
+  AC_DEFINE(HAVE_X_WINDOWS, 1, [Define to 1 if X11 is available.])
 
   if test "$x_includes" != "NONE"; then
     X11_INCFLAGS="$x_includes"
@@ -1783,7 +1783,7 @@ PKG_CHECK_MODULES([FT2], [freetype2], [
   ac_status=$?
   if test "$ac_status" = 0; then
     AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
+    AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if Freetype is available.])
     save_LIBS="$LIBS"
     LIBS="$FT2_LIBS $LIBS"
     AC_CHECK_FUNCS([FT_Reference_Face])
@@ -1809,7 +1809,7 @@ fi
 warn_xft=""
 if test "$have_x" = yes; then
   PKG_CHECK_MODULES(XFT, [xft],
-    [AC_DEFINE(HAVE_XFT, 1, [Define to 1 if Xft is present.])],
+    [AC_DEFINE(HAVE_XFT, 1, [Define to 1 if Xft is available.])],
     [warn_xft="Xft library not found.  OpenGL graphics will not be fully functional."])
 fi
 
@@ -1821,7 +1821,7 @@ fi
 
 warn_fontconfig=""
 PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
-  [AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present.])],
+  [AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is available.])],
   [warn_fontconfig="Fontconfig library not found.  OpenGL graphics will not be fully functional."])
 
 if test -n "$warn_fontconfig"; then
@@ -2243,7 +2243,7 @@ fi
 
 ## For MSVC compilers, avoid #define of min/max from windows.h header
 if test $have_msvc = yes; then
-  AC_DEFINE(NOMINMAX, 1, [Define to 1 if you want to avoid min/max macro definition in Windows headers.])
+  AC_DEFINE(NOMINMAX, 1, [Define to 1 to avoid min/max macro definition in Windows headers.])
 fi
 
 ### Determine types and size of types.
@@ -2483,7 +2483,7 @@ AC_CHECK_FUNCS([getrusage])
 case $host_os in
   cygwin*)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
-      [Define to 1 if your struct rusage only has time information.])
+      [Define to 1 if the struct rusage only has time information.])
   ;;
 esac
 

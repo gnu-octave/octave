@@ -651,7 +651,8 @@ AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
 dnl
 dnl Usage:
 dnl OCTAVE_CHECK_LIB(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
-dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME)
+dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME,
+dnl                  REQUIRED)
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB], [
   AC_ARG_WITH([$1-includedir],
@@ -667,9 +668,13 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   AC_SUBST(m4_toupper([$1])_LDFLAGS)
 
   AC_ARG_WITH([$1],
-    [m4_ifblank([$7],
-      [AS_HELP_STRING([--without-$1], [don't use $2 library])],
-      [AS_HELP_STRING([--without-$1], [$7])])],
+    [ifelse([$#], 10,
+       [m4_ifblank([$7],
+         [AS_HELP_STRING([--with-$1=<lib>], [use $2 library <lib>])],
+         [AS_HELP_STRING([--with-$1], [$7])])],
+       [m4_ifblank([$7],
+         [AS_HELP_STRING([--without-$1], [don't use $2 library])],
+         [AS_HELP_STRING([--without-$1], [$7])])])],
     with_$1=$withval, with_$1=yes)
 
   ac_octave_$1_pkg_check=no
@@ -677,8 +682,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   warn_$1="$3"
   case $with_$1 in
     no)
-      warn_$1="--without-$1 specified.  Functions or features that depend on $2 will be disabled."
-      m4_toupper([$1])_LIBS=
+      ifelse([$#], 10,
+        [AC_MSG_ERROR([--without-$1 specified but $2 is required.])],
+        [warn_$1="--without-$1 specified.  Functions or features that depend on $2 will be disabled."
+         m4_toupper([$1])_LIBS=])
     ;;
     yes | "")
       ac_octave_$1_pkg_check=yes
@@ -736,6 +743,10 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     octave_cv_lib_$1=no
   fi
 
+  ifelse([$#], 10, [
+    if test $octave_cv_lib_$1 = no; then
+      AC_MSG_ERROR([to build Octave, you must have the $2 library and header files installed])
+    fi])
   AC_SUBST(m4_toupper([$1])_LIBS)
   if test -n "$warn_$1"; then
     OCTAVE_CONFIGURE_WARNING([warn_$1])

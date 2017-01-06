@@ -166,7 +166,7 @@ public:
 
 protected:
   // Reference count
-  octave_refcount<octave_idx_type> refcount;
+  octave::refcount<octave_idx_type> refcount;
 
 protected:
   // Restricted copying
@@ -740,7 +740,7 @@ private:
     std::list<cdef_class> implicit_ctor_list;
 
     // The number of objects of this class.
-    octave_refcount<octave_idx_type> object_count;
+    octave::refcount<octave_idx_type> object_count;
 
     // TRUE if this class is a built-in meta class.
     bool meta;

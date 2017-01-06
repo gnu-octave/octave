@@ -165,7 +165,7 @@ protected:
 private:
 
   // A reference count.
-  octave_refcount<octave_idx_type> count;
+  octave::refcount<octave_idx_type> count;
 
   // The permission bits for the file.  Should be some combination of
   // std::ios::open_mode bits.

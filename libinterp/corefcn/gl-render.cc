@@ -127,7 +127,7 @@ namespace octave
       int tw, th;
       double tx, ty;
       bool valid;
-      octave_refcount<int> count;
+      octave::refcount<int> count;
     };
 
     texture_rep *rep;
@@ -378,7 +378,7 @@ namespace octave
       float specular_color_refl;
 
       // reference counter
-      octave_refcount<int> count;
+      octave::refcount<int> count;
 
       vertex_data_rep (void)
         : coords (), color (), normal (), alpha (),

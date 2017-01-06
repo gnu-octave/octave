@@ -148,7 +148,7 @@ namespace octave
   protected:
 
     // Reference count.
-    octave_refcount<size_t> count;
+    octave::refcount<size_t> count;
 
     // Host for ftp transfers or full URL for http requests.
     std::string host_or_url;

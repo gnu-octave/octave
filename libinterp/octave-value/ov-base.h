@@ -840,7 +840,7 @@ protected:
   // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
   // it is well possible to have more than MAX_INT copies of a single value
   // (think of an empty cell array with >2G elements).
-  octave_refcount<octave_idx_type> count;
+  octave::refcount<octave_idx_type> count;
 
   static const char *get_umap_name (unary_mapper_t);
 

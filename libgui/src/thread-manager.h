@@ -47,7 +47,7 @@ public:
 
 protected:
 
-  octave_refcount<int> count;
+  octave::refcount<int> count;
 };
 
 class octave_thread_manager

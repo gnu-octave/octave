@@ -138,7 +138,7 @@ public:
 
 private:
 
-  octave_refcount<int> count;
+  octave::refcount<int> count;
 
   int pflag;
 

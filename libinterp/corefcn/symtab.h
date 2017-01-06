@@ -477,7 +477,7 @@ public:
 
       bool valid;
 
-      octave_refcount<size_t> count;
+      octave::refcount<size_t> count;
     };
 
   public:
@@ -948,7 +948,7 @@ public:
 
       octave_value built_in_function;
 
-      octave_refcount<size_t> count;
+      octave::refcount<size_t> count;
 
     private:
 

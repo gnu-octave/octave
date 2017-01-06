@@ -46,7 +46,7 @@ public:
   virtual bool try_lock (void);
 
 private:
-  octave_refcount<int> count;
+  octave::refcount<int> count;
 };
 
 class

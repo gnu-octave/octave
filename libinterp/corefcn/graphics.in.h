@@ -405,7 +405,7 @@ private:
 
 private:
   int id;
-  octave_refcount<int> count;
+  octave::refcount<int> count;
   std::string name;
   graphics_handle parent;
   bool hidden;
@@ -2175,7 +2175,7 @@ public:
 
 private:
   std::string name;
-  octave_refcount<int> count;
+  octave::refcount<int> count;
 
 private:
   void gripe_if_tkit_invalid (const std::string& fname) const
@@ -2926,7 +2926,7 @@ protected:
 
 protected:
   // A reference count.
-  octave_refcount<int> count;
+  octave::refcount<int> count;
 
   // A flag telling whether this object is a valid object
   // in the backend context.
@@ -6071,7 +6071,7 @@ public:
   virtual void execute (void) = 0;
 
 private:
-  octave_refcount<int> count;
+  octave::refcount<int> count;
 };
 
 class

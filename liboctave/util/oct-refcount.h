@@ -66,53 +66,60 @@ along with Octave; see the file COPYING.  If not, see
 
 #endif
 
-// Encapsulates a reference counter.
-template <typename T>
-class octave_refcount
+namespace octave
 {
-public:
 
-  typedef T count_type;
+  // Encapsulates a reference counter.
 
-  octave_refcount (count_type initial_count)
-    : count (initial_count)
-  { }
-
-  // Increment/Decrement.  int is postfix.
-  count_type operator++ (void)
+  template <typename T>
+  class refcount
   {
-    return OCTAVE_ATOMIC_INCREMENT (&count);
-  }
+  public:
 
-  count_type operator++ (int)
-  {
-    return OCTAVE_ATOMIC_POST_INCREMENT (&count);
-  }
+    typedef T count_type;
 
-  count_type operator-- (void)
-  {
-    return OCTAVE_ATOMIC_DECREMENT (&count);
-  }
+    refcount (count_type initial_count)
+      : count (initial_count)
+    { }
 
-  count_type operator-- (int)
-  {
-    return OCTAVE_ATOMIC_POST_DECREMENT (&count);
-  }
+    // Increment/Decrement.  int is postfix.
+    count_type operator++ (void)
+    {
+      return OCTAVE_ATOMIC_INCREMENT (&count);
+    }
 
-  operator count_type (void) const
-  {
-    return static_cast<count_type const volatile&> (count);
-  }
+    count_type operator++ (int)
+    {
+      return OCTAVE_ATOMIC_POST_INCREMENT (&count);
+    }
 
-  count_type *get (void)
-  {
-    return &count;
-  }
+    count_type operator-- (void)
+    {
+      return OCTAVE_ATOMIC_DECREMENT (&count);
+    }
 
-private:
+    count_type operator-- (int)
+    {
+      return OCTAVE_ATOMIC_POST_DECREMENT (&count);
+    }
 
-  count_type count;
-};
+    operator count_type (void) const
+    {
+      return static_cast<count_type const volatile&> (count);
+    }
+
+    count_type *get (void)
+    {
+      return &count;
+    }
+
+  private:
+
+    count_type count;
+  };
+}
+
+template <typename T>
+using octave_refcount OCTAVE_DEPRECATED (("use 'octave::refcount' instead")) = octave::refcount<T>;
 
 #endif
-

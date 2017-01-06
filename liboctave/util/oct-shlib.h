@@ -90,7 +90,7 @@ namespace octave
 
     public:
 
-      octave_refcount<int> count;
+      octave::refcount<int> count;
 
     protected:
 

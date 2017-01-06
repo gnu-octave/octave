@@ -1560,7 +1560,7 @@ save_LIBS="$LIBS"
 CPPFLAGS="$KLU_CPPFLAGS $CPPFLAGS"
 LIBS="$KLU_LDFLAGS $KLU_LIBS $LIBS"
 OCTAVE_CHECK_LIB(sundials_ida, SUNDIALS_IDA,
-  [SUNDIALS_IDA library configured with klu not found.  Solvers ode15i and ode15s will be disabled.],
+  [SUNDIALS_IDA library with IDAKLU solver support not found.  Solvers ode15i and ode15s will be disabled.],
   [ida/ida.h ida.h], [IDAKLU], [], [],
   [warn_sundials_ida=
    OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE])

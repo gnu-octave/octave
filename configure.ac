@@ -1339,15 +1339,9 @@ OCTAVE_CHECK_LIB(qhull, QHull,
 
 ### Check for PCRE regex library.
 
-PKG_CHECK_EXISTS([libpcre],
-  [AC_CHECK_HEADERS([pcre.h pcre/pcre.h])
-   PCRE_CPPFLAGS=`$PKG_CONFIG --cflags-only-I libpcre`
-   PCRE_LDFLAGS=`$PKG_CONFIG --libs-only-L libpcre`
-   PCRE_LIBS=`$PKG_CONFIG --libs-only-l libpcre`
-   AC_SUBST(PCRE_CPPFLAGS)
-   AC_SUBST(PCRE_LDFLAGS)
-   AC_SUBST(PCRE_LIBS)],
-  [AC_MSG_ERROR([to build Octave, you must have the PCRE library and header files installed])])
+OCTAVE_CHECK_LIB(pcre, PCRE,
+  [], [pcre.h pcre/pcre.h], [pcre_compile], [], [], [],
+  [libpcre], [REQUIRED])
 
 ### Check for ZLIB library.
 

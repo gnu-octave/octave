@@ -1058,7 +1058,7 @@ namespace octave
         //
         // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
-        OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
+        OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
       }
 
     if (octave_link::exit (status))

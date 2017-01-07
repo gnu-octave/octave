@@ -1815,16 +1815,14 @@ fi
 
 ## Check for Xft library (when using X11)
 
-warn_xft=""
-if test "$have_x" = yes; then
-  PKG_CHECK_MODULES(XFT, [xft],
-    [AC_DEFINE(HAVE_XFT, 1, [Define to 1 if Xft is available.])],
-    [warn_xft="Xft library not found.  OpenGL graphics will not be fully functional."])
-fi
+## FIXME: We don't use this library directly, so there's no need to
+## check for the header file.  Do we even need to check for the library?
 
-if test -n "$warn_xft"; then
-  OCTAVE_CONFIGURE_WARNING([warn_xft])
-fi
+OCTAVE_CHECK_LIB(Xft, Xft,
+  [Xft library not found.  OpenGL graphics will not be fully functional.],
+  [], [XftFontOpen],
+  [], [don't use Xft library, OpenGL graphics will not be fully functional],
+  [], [xft])
 
 ## Check for fontconfig library
 

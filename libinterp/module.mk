@@ -237,9 +237,9 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 libinterp/build-env.cc: libinterp/build-env.in.cc build-aux/subst-config-vals.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-libinterp/build-env-features.cc: config.h libinterp/build-env-features.sh | libinterp/$(octave_dirstamp)
+libinterp/build-env-features.cc: config.h oct-conf-post.h libinterp/build-env-features.sh | libinterp/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/libinterp/build-env-features.sh $< > $@-t && \
+	$(SHELL) $(srcdir)/libinterp/build-env-features.sh config.h oct-conf-post.h > $@-t && \
 	mv $@-t $@
 
 libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinterp/$(octave_dirstamp)

@@ -26,8 +26,6 @@ set -e
 
 AWK=${AWK:-awk}
 
-conffile=$1
-
 cat << EOF
 // DO NOT EDIT!  Generated automatically from $conffile by Make."
 
@@ -56,16 +54,19 @@ namespace octave
 
 EOF
 
-$AWK \
-  '/#define (OCTAVE_HAVE|HAVE)_/ {
-     sub (/(OCTAVE_HAVE|HAVE)_/, "", $2);
-     printf ("          m.assign (\"%s\", ov_true);\n", $2);
-   }
-   /\/\* #undef (OCTAVE_HAVE|HAVE)_/ {
-     sub (/(OCTAVE_HAVE|HAVE)_/, "", $3);
-     printf ("          m.assign (\"%s\", ov_false);\n", $3);
-   } {
-   }' $conffile | sort
+for conffile in "$@"; do
+  $AWK \
+    '/# *define *(OCTAVE_HAVE|HAVE)_/ {
+       sub (/# *define */, "", $0);
+       sub (/(OCTAVE_HAVE|HAVE)_/, "", $1)
+       printf ("          m.assign (\"%s\", ov_true);\n", $1);
+     }
+     /\/\* #undef (OCTAVE_HAVE|HAVE)_/ {
+       sub (/(OCTAVE_HAVE|HAVE)_/, "", $3);
+       printf ("          m.assign (\"%s\", ov_false);\n", $3);
+     } {
+     }' $conffile
+done | sort
 
 cat << EOF
 

@@ -364,9 +364,15 @@ fi
 
 AC_SUBST(ENABLE_64)
 if test $ENABLE_64 = yes; then
+  octave_sizeof_octave_idx_type=8
   AC_DEFINE(OCTAVE_ENABLE_64, 1,
     [Define to 1 to use 64-bit integers for array dimensions and indexing.])
+else
+  octave_sizeof_octave_idx_type=4
 fi
+
+AC_DEFINE_UNQUOTED(OCTAVE_SIZEOF_IDX_TYPE, [$octave_sizeof_octave_idx_type],
+  [Define to the size of the octave_idx_type (8 or 4).])
 
 AC_SUBST(OCTAVE_IDX_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
@@ -1089,6 +1095,9 @@ esac
 AC_SUBST(OCTAVE_F77_INT_TYPE)
 AC_DEFINE_UNQUOTED(OCTAVE_F77_INT_TYPE, [$OCTAVE_F77_INT_TYPE],
   [Define to the type of octave_f77_int_type (64 or 32 bit signed integer).])
+AC_DEFINE_UNQUOTED(OCTAVE_SIZEOF_F77_INT_TYPE,
+  [$octave_cv_sizeof_fortran_integer],
+  [Define to the size of the octave_f77_int_type (8 or 4).])
 
 OCTAVE_F77_FLAG([-ffloat-store], [
   AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])

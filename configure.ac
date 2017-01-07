@@ -1826,20 +1826,10 @@ OCTAVE_CHECK_LIB(Xft, Xft,
 
 ## Check for fontconfig library
 
-warn_fontconfig=""
-PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
-  [AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is available.])],
-  [warn_fontconfig="Fontconfig library not found.  OpenGL graphics will not be fully functional."])
-
-if test -n "$warn_fontconfig"; then
-  OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
-else
-  FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
-  ## Alias CPPFLAGS to CFLAGS.  This is closer to the true meaning
-  ## of `pkg-config --cflags` output.
-  FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
-  AC_SUBST(FONTCONFIG_CPPFLAGS)
-fi
+OCTAVE_CHECK_LIB(fontconfig, fontconfig,
+  [Fontconfig library not found.  OpenGL graphics will not be fully functional.],
+  [fontconfig.h fontconfig/fontconfig.h], [FcInit],
+  [], [don't use fontconfig library, OpenGL graphics will not be fully functional])
 
 ## Check for OSMesa which is needed for offscreen rendering with OpenGL
 ## FIXME: Check for version >= 9.0.0

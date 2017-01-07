@@ -463,6 +463,12 @@ public:
   idx_vector (octave_idx_type i) : rep (new idx_scalar_rep (i))
   { chkerr (); }
 
+#if OCTAVE_SIZEOF_F77_INT_TYPE != OCTAVE_SIZEOF_IDX_TYPE
+  idx_vector (octave_f77_int_type i)
+    : rep (new idx_scalar_rep (static_cast<octave_idx_type> (i)))
+  { chkerr (); }
+#endif
+
   idx_vector (octave_idx_type start, octave_idx_type limit,
               octave_idx_type step = 1)
     : rep (new idx_range_rep (start, limit, step))

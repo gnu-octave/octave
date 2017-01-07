@@ -14,6 +14,10 @@ Summary of important user-visible changes for version 4.4:
 
       glpk  Qhull
 
+ ** The "names" option used in regular expressions now returns a struct
+    array, rather than a struct with a cell array for each field.  This
+    change was made for Matlab compatibility.
+
  ** Other new functions added in 4.4:
 
       gsvd

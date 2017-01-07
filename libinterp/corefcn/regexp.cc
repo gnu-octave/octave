@@ -359,39 +359,28 @@ octregexp (const octave_value_list &args, int nargout,
 
   // Converted the linked list in the correct form for the return values
 
-  octave_idx_type i = 0;
-  octave_scalar_map nmap;
+  octave_map nmap (dim_vector ((sz == 0 ? 0 : 1), sz), named_pats);
 
   retval.resize (7);
 
-  if (sz == 1)
-    {
-      string_vector named_tokens = rx_lst.begin ()->named_tokens ();
-
-      for (int j = 0; j < named_pats.numel (); j++)
-        nmap.assign (named_pats(j), named_tokens(j));
-
-      retval(5) = nmap;
-    }
-  else
+  if (sz != 0)
     {
       for (int j = 0; j < named_pats.numel (); j++)
         {
-          Cell tmp (dim_vector (1, sz));
+          Cell ctmp (dim_vector (1, sz));
+          octave_idx_type i = 0;
 
-          i = 0;
           for (const auto& match_data : rx_lst)
             {
               string_vector named_tokens = match_data.named_tokens ();
 
-              tmp(i++) = named_tokens(j);
+              ctmp(i++) = named_tokens(j);
             }
 
-          nmap.assign (named_pats(j), octave_value (tmp));
+          nmap.assign (named_pats(j), ctmp);
         }
-
-      retval(5) = nmap;
     }
+  retval(5) = nmap;
 
   if (options.once ())
     {
@@ -431,7 +420,7 @@ octregexp (const octave_value_list &args, int nargout,
       Cell split (dim_vector (1, sz+1));
       size_t sp_start = 0;
 
-      i = 0;
+      octave_idx_type i = 0;
       for (const auto& match_data : rx_lst)
         {
           double s = match_data.start ();
@@ -976,15 +965,15 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
 %!test
 %! [t, nm] = regexp ("John Davis\nRogers, James", '(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)', 'tokens', 'names');
 %! assert (size (t), [1, 2]);
-%! assert (t{1}{1}, 'John');
-%! assert (t{1}{2}, 'Davis');
-%! assert (t{2}{1}, 'Rogers');
-%! assert (t{2}{2}, 'James');
-%! assert (size (nm), [1, 1]);
-%! assert (nm.first{1}, 'John');
-%! assert (nm.first{2}, 'James');
-%! assert (nm.last{1}, 'Davis');
-%! assert (nm.last{2}, 'Rogers');
+%! assert (t{1}{1}, "John");
+%! assert (t{1}{2}, "Davis");
+%! assert (t{2}{1}, "Rogers");
+%! assert (t{2}{2}, "James");
+%! assert (size (nm), [1, 2]);
+%! assert (nm(1).first, "John");
+%! assert (nm(1).last, "Davis");
+%! assert (nm(2).first, "James");
+%! assert (nm(2).last, "Rogers");
 
 ## Tests for named tokens
 %!test

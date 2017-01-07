@@ -650,26 +650,26 @@ dnl                  LANG, DOC-STRING, EXTRA-CHECK, PKG-CONFIG-NAME,
 dnl                  REQUIRED)
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB], [
-  AC_ARG_WITH([$1-includedir],
-    [AS_HELP_STRING([--with-$1-includedir=DIR],
+  AC_ARG_WITH([m4_tolower($1)-includedir],
+    [AS_HELP_STRING([--with-m4_tolower($1)-includedir=DIR],
       [look for $2 include files in DIR])],
     [m4_toupper([$1])_CPPFLAGS="-I$withval"])
   AC_SUBST(m4_toupper([$1])_CPPFLAGS)
 
-  AC_ARG_WITH([$1-libdir],
-    [AS_HELP_STRING([--with-$1-libdir=DIR],
+  AC_ARG_WITH([m4_tolower($1)-libdir],
+    [AS_HELP_STRING([--with-m4_tolower($1)-libdir=DIR],
       [look for $2 libraries in DIR])],
     [m4_toupper([$1])_LDFLAGS="-L$withval"])
   AC_SUBST(m4_toupper([$1])_LDFLAGS)
 
-  AC_ARG_WITH([$1],
+  AC_ARG_WITH([m4_tolower($1)],
     [ifelse([$#], 10,
        [m4_ifblank([$7],
-         [AS_HELP_STRING([--with-$1=<lib>], [use $2 library <lib>])],
-         [AS_HELP_STRING([--with-$1], [$7])])],
+         [AS_HELP_STRING([--with-m4_tolower($1)=<lib>], [use $2 library <lib>])],
+         [AS_HELP_STRING([--with-m4_tolower($1)], [$7])])],
        [m4_ifblank([$7],
-         [AS_HELP_STRING([--without-$1], [don't use $2 library])],
-         [AS_HELP_STRING([--without-$1], [$7])])])],
+         [AS_HELP_STRING([--without-m4_tolower($1)], [don't use $2 library])],
+         [AS_HELP_STRING([--without-m4_tolower($1)], [$7])])])],
     with_$1=$withval, with_$1=yes)
 
   ac_octave_$1_pkg_check=no
@@ -678,8 +678,8 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   case $with_$1 in
     no)
       ifelse([$#], 10,
-        [AC_MSG_ERROR([--without-$1 specified but $2 is required.])],
-        [warn_$1="--without-$1 specified.  Functions or features that depend on $2 will be disabled."
+        [AC_MSG_ERROR([--without-m4_tolower($1) specified but $2 is required.])],
+        [warn_$1="--without-m4_tolower($1) specified.  Functions or features that depend on $2 will be disabled."
          m4_toupper([$1])_LIBS=])
     ;;
     yes | "")

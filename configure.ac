@@ -1557,34 +1557,6 @@ fi
 FFT_DIR="fftpack"
 AC_SUBST(FFT_DIR)
 
-### Check for KLU library and header.
-OCTAVE_CHECK_LIB(klu, KLU,
-  [KLU library not found.  This will result in some lack of functionality for sparse matrices],
-  [suitesparse/klu.h ufsparse/klu.h klu/klu.h klu.h], [klu_solve],
-  [], [don't use KLU library, disable some sparse matrix functionality])
-
-### Check for SUNDIALS_IDA library and header.
-save_CPPFLAGS="$CPPFLAGS"
-save_LIBS="$LIBS"
-CPPFLAGS="$KLU_CPPFLAGS $CPPFLAGS"
-LIBS="$KLU_LDFLAGS $KLU_LIBS $LIBS"
-OCTAVE_CHECK_LIB(sundials_ida, SUNDIALS_IDA,
-  [SUNDIALS_IDA library with IDAKLU solver support not found.  Solvers ode15i and ode15s will be disabled.],
-  [ida/ida.h ida.h], [IDAKLU], [], [],
-  [warn_sundials_ida=
-   OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE])
-LIBS="$save_LIBS"
-CPPFLAGS="$save_CPPFLAGS"
-
-## Additional check for sundials_nvecserial library
-OCTAVE_CHECK_LIB(sundials_nvecserial, SUNDIALS_NVECSERIAL,
-  [SUNDIALS_NVECSERIAL library not found.  Solvers ode15i and ode15s will be disabled.],
-  [nvector/nvector_serial.h nvector_serial.h ], [N_VNew_Serial],[],[],[])
-
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS" && test $octave_cv_sizeof_ida_double = yes; then
-  AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if both SUNDIALS_IDA and SUNDIALS_NVECSERIAL are available.])
-fi
-
 ### Check for GLPK library and header.
 
 save_CPPFLAGS="$CPPFLAGS"
@@ -2124,6 +2096,13 @@ if test -z "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+### Check for KLU library and header.
+
+OCTAVE_CHECK_LIB(klu, KLU,
+  [KLU library not found.  This will result in some lack of functionality for sparse matrices],
+  [suitesparse/klu.h ufsparse/klu.h klu/klu.h klu.h], [klu_solve],
+  [], [don't use KLU library, disable some sparse matrix functionality])
+
 ## If using SuiteSparse libraries, check for suitesparseconfig library.
 
 SUITESPARSE_CONFIG_LIBS=
@@ -2133,6 +2112,7 @@ if test x$octave_cv_lib_amd = xyes \
    || test x$octave_cv_lib_ccolamd = xyes \
    || test x$octave_cv_lib_cholmod = xyes \
    || test x$octave_cv_lib_cxsparse = xyes \
+   || test x$octave_cv_lib_klu = xyes \
    || test x$octave_cv_lib_umfpack = xyes; then
   ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time
   save_CPPFLAGS="$CPPFLAGS"
@@ -2159,6 +2139,35 @@ if test -n "$UMFPACK_LIBS"; then
   OCTAVE_UMFPACK_SEPARATE_SPLIT
   LIBS="$save_LIBS"
   CPPFLAGS="$save_CPPFLAGS"
+fi
+
+### Check for Sundials nvecserial library and header.
+
+OCTAVE_CHECK_LIB(sundials_nvecserial, [Sundials nvecserial],
+  [Sundials nvecserial library not found.  Solvers ode15i and ode15s will be disabled.],
+  [nvector/nvector_serial.h nvector_serial.h ], [N_VNew_Serial],
+  [], [don't use Sundials nvecserial library, solvers ode15i and ode15s will be disabled])
+
+if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+  AC_DEFINE(HAVE_SUNDIALS_NVECSERIAL, 1,
+    [Define to 1 if Sundials nvecserial is available.])
+fi
+
+### Check for Sundials IDA library and header.
+
+save_LIBS="$LIBS"
+LIBS="$SUNDIALS_NVECSERIAL_LIBS $BLAS_LIBS $FLIBS $LIBS"
+OCTAVE_CHECK_LIB(sundials_ida, [Sundials IDA],
+  [Sundials IDA library not found.  Solvers ode15i and ode15s will be disabled.],
+  [ida/ida.h ida.h], [IDAInit],
+  [], [don't use Sundials IDA library, solvers ode15i and ode15s will be disabled],
+  [warn_sundials_ida=
+   OCTAVE_CHECK_SIZEOF_SUNDIALS_IDA_REALTYPE
+   OCTAVE_CHECK_SUNDIALS_IDAKLU])
+LIBS="$save_LIBS"
+
+if test -n "$SUNDIALS_IDA_LIBS"; then
+  AC_DEFINE(HAVE_SUNDIALS_IDA, 1, [Define to 1 if Sundials IDA is available.])
 fi
 
 ### Check for ARPACK library.

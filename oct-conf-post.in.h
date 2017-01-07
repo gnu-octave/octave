@@ -193,3 +193,9 @@ typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
    the notes at the top of the generated octave-config.h file.  */
 
 #define OCTAVE_AUTOCONFIG_H_INCLUDED 1
+
+#if defined (HAVE_SUNDIALS_NVECSERIAL) \
+  && defined (HAVE_SUNDIALS_IDA) \
+  && defined (HAVE_SUNDIALS_IDA_DOUBLE)
+#  define HAVE_SUNDIALS 1
+#endif

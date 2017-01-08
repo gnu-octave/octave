@@ -452,7 +452,7 @@ endfunction
 %! assert ([t(end), y(end,:)], fref, 1e-3);
 
 ## Jacobian fun sparse
-%!testif HAVE_SUNDIALS
+%!testif HAVE_SUNDIALS_IDAKLU
 %! opt = odeset ("Jacobian", @jacfunsparse, "AbsTol", 1e-7, "RelTol", 1e-7);
 %! [t, y] = ode15i (@rob, [0, 100], [1; 0; 0], [-1e-4; 1e-4; 0], opt);
 %! assert ([t(end), y(end,:)], fref, 1e-3);
@@ -532,7 +532,7 @@ endfunction
 %!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian cell sparse wrong dimension
-%!testif HAVE_SUNDIALS
+%!testif HAVE_SUNDIALS_IDAKLU
 %! DFDY = sparse ([-0.04, 1;
 %!                  0.04, 1]);
 %! DFDYP = sparse ([-1,  0, 0;

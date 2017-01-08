@@ -40,6 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #  if defined (HAVE_IDA_IDA_H)
 #    include <ida/ida.h>
 #    include <ida/ida_dense.h>
+#  endif
+
+#  if defined (HAVE_IDA_IDA_KLU_H)
 #    include <ida/ida_klu.h>
 #    include <sundials/sundials_sparse.h>
 #  endif
@@ -205,6 +208,7 @@ namespace octave
     jacdense_impl (long int Neq, realtype t, realtype cj,
                    N_Vector& yy, N_Vector& yyp, DlsMat& JJ);
 
+#  if defined (HAVE_SUNDIALS_IDAKLU)
     static int
     jacsparse (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
                N_Vector, SlsMat Jac, void *user_data, N_Vector,
@@ -218,6 +222,7 @@ namespace octave
     void
     jacsparse_impl (realtype t, realtype cj, N_Vector& yy,
                     N_Vector& yyp, SlsMat& Jac);
+#endif
 
     void set_maxstep (realtype maxstep);
 
@@ -316,10 +321,14 @@ namespace octave
   {
     if (havejacsparse)
       {
+#  if defined (HAVE_SUNDIALS_IDAKLU)
         if (IDAKLU (mem, num, num*num, CSC_MAT) != 0)
           error ("IDAKLU solver not initialized");
 
         IDASlsSetSparseJacFn (mem, IDA::jacsparse);
+#  else
+        error ("IDAKLU is not available in this version of Octave");
+#  endif
       }
     else
       {
@@ -356,6 +365,7 @@ namespace octave
     END_INTERRUPT_WITH_EXCEPTIONS;
   }
 
+#  if defined (HAVE_SUNDIALS_IDAKLU)
   void
   IDA::jacsparse_impl (realtype t, realtype cj, N_Vector& yy, N_Vector& yyp,
                        SlsMat& Jac)
@@ -389,6 +399,7 @@ namespace octave
 
     END_INTERRUPT_WITH_EXCEPTIONS;
   }
+#endif
 
   ColumnVector
   IDA::NVecToCol (N_Vector& v, long int n)

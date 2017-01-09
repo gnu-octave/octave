@@ -2166,8 +2166,12 @@ OCTAVE_CHECK_LIB(sundials_ida, [Sundials IDA],
    OCTAVE_CHECK_SUNDIALS_IDAKLU])
 LIBS="$save_LIBS"
 
-if test -n "$SUNDIALS_IDA_LIBS"; then
-  AC_DEFINE(HAVE_SUNDIALS_IDA, 1, [Define to 1 if Sundials IDA is available.])
+## Define this way instead of with an #if in oct-conf-post.h so that
+## the build features script will get the correct value.
+if test -n "$SUNDIALS_IDA_LIBS" \
+    && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
+    && test $octave_cv_sizeof_ida_double = yes; then
+  AC_DEFINE(HAVE_SUNDIALS, 1, [Define Sundials is available.])
 fi
 
 ### Check for ARPACK library.

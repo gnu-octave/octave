@@ -24,13 +24,12 @@
 
 function retval = AbsRel_norm (x, x_old, AbsTol, RelTol, normcontrol, y = zeros (size (x)))
 
-  n = numel (x);
-
-  sc = AbsTol + max (abs (x), abs (x_old)) .* RelTol;
   if (normcontrol)
-    retval = max (abs (x - y) ./ sc);
+    sc = max (AbsTol, RelTol * max (sqrt (sumsq (x)), sqrt (sumsq (x_old))));
+    retval = sqrt (sumsq ((x - y))) / sc;
   else
-    retval = sqrt ((1 / n) * sumsq ((x - y) ./ sc));
+    sc = max (AbsTol, RelTol .* max (abs (x), abs (x_old)));
+    retval = max (abs (x - y) ./ sc);
   endif
 
 endfunction

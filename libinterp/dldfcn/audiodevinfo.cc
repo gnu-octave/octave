@@ -26,21 +26,26 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdint>
 
+#include <algorithm>
+#include <ostream>
 #include <string>
 #include <vector>
 
+#include "Matrix.h"
 #include "mach-info.h"
+#include "oct-locbuf.h"
+#include "quit.h"
+#include "unwind-prot.h"
 
+#include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "oct-locbuf.h"
-#include "ovl.h"
-#include "ov.h"
+#include "oct-map.h"
 #include "ov-int32.h"
-#include "ov-struct.h"
+#include "ov.h"
+#include "ovl.h"
 #include "parse.h"
-#include "unwind-prot.h"
 
 #if defined (HAVE_PORTAUDIO)
 
@@ -878,8 +883,8 @@ audioplayer::init_fn (void)
 void
 audioplayer::init (void)
 {
-  // Both of these variables are unused.  Should they be
-  // eliminated or is something not yet implemented?
+  // FIXME: Both of these variables are unused.
+  // Should they be eliminated or is something not yet implemented?
   //
   // int channels = y.rows ();
   // RowVector *sound_l = get_left ();

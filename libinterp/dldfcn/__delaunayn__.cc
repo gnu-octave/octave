@@ -42,17 +42,21 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <cstdio>
+
+#include <limits>
 #include <string>
 
+#include "Array.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "oct-locbuf.h"
+#include "unwind-prot.h"
 
-#include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
 
@@ -217,8 +221,8 @@ Undocumented internal function.
     }
   else if (n == dim + 1)
     {
-      // one should check if nx points span a simplex
-      // I will look at this later.
+      // FIXME: One should check if nx points span a simplex.
+      //        I will look at this later.
       RowVector vec (n);
       for (octave_idx_type i = 0; i < n; i++)
         vec(i) = i + 1.0;

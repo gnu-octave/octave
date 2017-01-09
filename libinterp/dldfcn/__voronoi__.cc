@@ -36,17 +36,22 @@ qhull command
 
 #include <cstdio>
 
-#include <list>
+#include <limits>
+#include <string>
 
+#include "Array.h"
+#include "boolMatrix.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "oct-locbuf.h"
-#include "lo-ieee.h"
+#include "unwind-prot.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
-#include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
 

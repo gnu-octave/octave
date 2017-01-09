@@ -25,18 +25,20 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <string>
+#include <algorithm>
 #include <map>
+#include <string>
 
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
 #include "ov.h"
-#include "ov-struct.h"
+#include "ovl.h"
 #include "pager.h"
 
 #if defined (HAVE_SNDFILE)
@@ -340,8 +342,7 @@ Comment.
   std::string title = "";
   std::string artist = "";
   std::string comment = "";
-  // Quality is currently unused?
-  //
+  // FIXME: Quality is currently unused?
   // float quality = 0.75;
   for (int i = 3; i < nargin; i += 2)
     {
@@ -373,8 +374,7 @@ Comment.
         }
       else if (keyword == "BitRate")
         ;
-      // Quality is currently unused?
-      //
+      // FIXME: Quality is currently unused?
       // else if (keyword == "Quality")
       //   quality = value_arg.int_value () * 0.01;
       else if (keyword == "Title")
@@ -602,6 +602,6 @@ with names that start with @var{format}.
 
 #endif
 
-  return octave_value ();
+  return octave_value_list ();
 }
 

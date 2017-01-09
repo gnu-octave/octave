@@ -24,17 +24,20 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "defun-dld.h"
+#include <limits>
+#include <string>
+
+#include "Matrix.h"
 #include "eigs-base.h"
+#include "unwind-prot.h"
+
+#include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
 #include "oct-map.h"
-#include "ov-cx-sparse.h"
-#include "ov-re-sparse.h"
 #include "ov.h"
+#include "ovl.h"
 #include "pager.h"
-#include "quit.h"
-#include "unwind-prot.h"
 #include "variables.h"
 
 #if defined (HAVE_ARPACK)

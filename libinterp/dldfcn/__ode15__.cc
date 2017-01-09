@@ -28,12 +28,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "dSparse.h"
 
+#include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "ov.h"
-#include "ov-struct.h"
-#include "parse.h"
 #include "errwarn.h"
+#include "oct-map.h"
+#include "ov.h"
+#include "ovl.h"
+#include "parse.h"
 
 #if defined (HAVE_SUNDIALS)
 

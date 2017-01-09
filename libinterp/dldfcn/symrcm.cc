@@ -54,17 +54,20 @@ Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
 #  include "config.h"
 #endif
 
-#include "ov.h"
-#include "defun-dld.h"
-#include "error.h"
-#include "errwarn.h"
-#include "utils.h"
-#include "oct-locbuf.h"
+#include <algorithm>
 
-#include "ov-re-mat.h"
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
+#include "CSparse.h"
+#include "boolNDArray.h"
+#include "dNDArray.h"
+#include "dSparse.h"
+#include "oct-locbuf.h"
 #include "oct-sparse.h"
+#include "quit.h"
+
+#include "defun-dld.h"
+#include "errwarn.h"
+#include "ov.h"
+#include "ovl.h"
 
 // A node struct for the Cuthill-McKee algorithm
 struct CMK_Node

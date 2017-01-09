@@ -26,6 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <string>
+
+#include "MArray.h"
+#include "Matrix.h"
 #include "qr.h"
 #include "qrp.h"
 #include "sparse-qr.h"
@@ -33,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
 
 template <typename MT>

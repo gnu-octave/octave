@@ -31,19 +31,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #include <string>
-#include <vector>
 
-#include "ov.h"
-#include "defun-dld.h"
-#include "errwarn.h"
-#include "pager.h"
-#include "ov-re-mat.h"
-
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
-
-#include "oct-sparse.h"
+#include "CSparse.h"
+#include "dNDArray.h"
+#include "dSparse.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
+
+#include "defun-dld.h"
+#include "error.h"
+#include "errwarn.h"
+#include "ovl.h"
+#include "pager.h"
 
 #if defined (OCTAVE_ENABLE_64)
 #  define COLAMD_NAME(name) colamd_l ## name

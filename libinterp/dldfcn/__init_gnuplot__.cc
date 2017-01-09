@@ -33,13 +33,19 @@ To initialize:
 #  include "config.h"
 #endif
 
+#include <string>
+
+#include "dMatrix.h"
+#include "file-stat.h"
+#include "oct-env.h"
+
 #include "build-env.h"
 #include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
-#include "file-stat.h"
 #include "graphics.h"
-#include "oct-env.h"
+#include "ov.h"
+#include "ovl.h"
 #include "parse.h"
 #include "utils.h"
 #include "variables.h"
@@ -212,8 +218,6 @@ DEFUN_DLD (__init_gnuplot__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave_value retval;
-
   if (! have_gnuplot_binary ())
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
   else if (! toolkit_loaded)
@@ -226,7 +230,7 @@ Undocumented internal function.
       toolkit_loaded = true;
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 DEFUN_DLD (__have_gnuplot__, , ,
@@ -235,11 +239,7 @@ DEFUN_DLD (__have_gnuplot__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave_value retval;
-
-  retval = have_gnuplot_binary ();
-
-  return retval;
+  return ovl (have_gnuplot_binary ());
 }
 
 /*

@@ -36,12 +36,9 @@ To initialize:
 #  include "config.h"
 #endif
 
-#include "builtin-defun-decls.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "oct-opengl.h"
-#include "ov-fcn-handle.h"
 
 #if defined (HAVE_FLTK)
 
@@ -49,10 +46,13 @@ To initialize:
 #  include <X11/Xlib.h>
 #endif
 
+#include <cmath>
+
+#include <locale>
 #include <map>
-#include <set>
 #include <sstream>
-#include <iostream>
+#include <string>
+#include <vector>
 
 #if defined (WIN32)
 #  define WIN32_LEAN_AND_MEAN
@@ -79,17 +79,26 @@ To initialize:
 // headers which may require Octave's Complex typedef.
 #undef Complex
 
+#include "Array.h"
 #include "cmd-edit.h"
+#include "dColVector.h"
+#include "dMatrix.h"
 #include "lo-ieee.h"
 #include "oct-env.h"
 
+#include "Cell.h"
+#include "builtin-defun-decls.h"
 #include "display.h"
-#include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
-#include "parse.h"
 #include "interpreter.h"
+#include "oct-map.h"
+#include "oct-opengl.h"
+#include "ov-fcn-handle.h"
+#include "ov.h"
+#include "ovl.h"
+#include "parse.h"
 #include "variables.h"
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
@@ -2406,7 +2415,7 @@ Undocumented internal function.  Calls Fl::check ()
   if (Vdrawnow_requested)
     Fdrawnow ();
 
-  return ovl ();
+  return octave_value_list ();
 #else
   err_disabled_feature ("__fltk_check__", "OpenGL and FLTK");
 #endif
@@ -2439,7 +2448,7 @@ Undocumented internal function.
       fltk->set_input_event_hook_id (id);
     }
 
-  return ovl ();
+  return octave_value_list ();
 
 #else
   err_disabled_feature ("__init_fltk__", "OpenGL and FLTK");

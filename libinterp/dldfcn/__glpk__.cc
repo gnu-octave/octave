@@ -28,14 +28,21 @@ along with Octave; see the file COPYING.  If not, see
 #include <cfloat>
 #include <ctime>
 
+#include <limits>
+
+#include "Array.h"
+#include "chMatrix.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 #include "lo-ieee.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
 #include "oct-map.h"
+#include "ov.h"
 #include "ovl.h"
-#include "pager.h"
 
 #if defined (HAVE_GLPK)
 

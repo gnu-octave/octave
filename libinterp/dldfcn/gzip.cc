@@ -52,12 +52,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 #include <cstring>
 
-#include <string>
-#include <list>
 #include <functional>
+#include <list>
 #include <stdexcept>
-#include <iostream>
-#include <fstream>
+#include <string>
+
+#include "Array.h"
+#include "dir-ops.h"
+#include "file-ops.h"
+#include "file-stat.h"
+#include "glob-match.h"
+#include "oct-env.h"
+#include "str-vec.h"
+
+#include "Cell.h"
+#include "defun-dld.h"
+#include "defun-int.h"
+#include "errwarn.h"
+#include "ov.h"
+#include "ovl.h"
 
 #if defined (HAVE_BZLIB_H)
 #  include <bzlib.h>
@@ -66,18 +79,6 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
 #endif
-
-#include "Array.h"
-#include "str-vec.h"
-#include "glob-match.h"
-#include "file-ops.h"
-#include "dir-ops.h"
-#include "file-stat.h"
-#include "oct-env.h"
-
-#include "defun-dld.h"
-#include "defun-int.h"
-#include "errwarn.h"
 
 namespace octave
 {

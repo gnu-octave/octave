@@ -33,15 +33,23 @@ from git://anongit.freedesktop.org/mesa/demos
 #  include <GL/osmesa.h>
 #endif
 
+#include <string>
+
+#include "Array.h"
+#include "dMatrix.h"
 #include "oct-locbuf.h"
+#include "uint8NDArray.h"
 #include "unwind-prot.h"
 
 #include "defun-dld.h"
+#include "error.h"
 #include "errwarn.h"
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
 #include "oct-opengl.h"
+#include "ov.h"
+#include "ovl.h"
 
 #if defined (HAVE_OSMESA)
 
@@ -188,7 +196,7 @@ instead.
 
       // Remove alpha channel
       idx(2) = idx_vector (0, 3);
-      retval = octave_value (img.permute (perm).index(idx));
+      retval(0) = octave_value (img.permute (perm).index(idx));
     }
 
   OSMesaDestroyContext (ctx);

@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
+#include <string>
 
 #if defined (HAVE_FFTW3_H)
 #  include <fftw3.h>
@@ -34,9 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun-dld.h"
 #include "error.h"
-#include "ov.h"
-
 #include "errwarn.h"
+#include "ov.h"
 
 DEFUN_DLD (fftw, args, ,
            doc: /* -*- texinfo -*-

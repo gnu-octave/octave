@@ -28,19 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "Matrix.h"
 #include "chol.h"
+#include "oct-string.h"
 #include "sparse-chol.h"
-#include "oct-spparms.h"
 #include "sparse-util.h"
 
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "ov.h"
 #include "ovl.h"
-
-#include "oct-string.h"
 
 template <typename CHOLT>
 static octave_value

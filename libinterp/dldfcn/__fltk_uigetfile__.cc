@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #  define WIN32_LEAN_AND_MEAN
 #endif
 
+#include <string>
+
 #include <FL/Fl.H>
 #include <FL/Fl_File_Chooser.H>
 
@@ -41,9 +43,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #endif
 
+#include "dMatrix.h"
+#include "file-ops.h"
+
+#include "Cell.h"
 #include "defun-dld.h"
 #include "errwarn.h"
-#include "file-ops.h"
+#include "ov.h"
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
            doc: /* -*- texinfo -*-
@@ -102,7 +108,7 @@ Undocumented internal function.
       int file_count = fc.count ();
       std::string fname;
 
-      //fltk uses forward slash even for windows
+      // FLTK uses forward slash even for Windows
       std::string sep = "/";
       size_t idx;
 

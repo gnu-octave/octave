@@ -29,21 +29,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#include <string>
-#include <vector>
-
-#include "ov.h"
-#include "defun-dld.h"
-#include "errwarn.h"
-#include "pager.h"
-#include "ov-re-mat.h"
-
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
-#include "oct-map.h"
-
-#include "oct-sparse.h"
+#include "CSparse.h"
+#include "Sparse.h"
+#include "dMatrix.h"
 #include "oct-locbuf.h"
+#include "oct-sparse.h"
+
+#include "defun-dld.h"
+#include "error.h"
+#include "errwarn.h"
+#include "oct-map.h"
+#include "ov.h"
+#include "ovl.h"
 
 #if defined (OCTAVE_ENABLE_64)
 #  define AMD_NAME(name) amd_l ## name

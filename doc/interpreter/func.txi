@@ -526,10 +526,50 @@ endfunction
 
 The value of @code{nargin} is not affected by using this declaration.
 
-Return arguments can also be ignored using the same syntax.  Functions may
-take advantage of ignored outputs to reduce the number of calculations
-performed.  To do so, use the @code{isargout} function to query whether the
-output argument is wanted.  For example:
+Return arguments can also be ignored using the same syntax.  For example, the
+sort function returns both the sorted values, and an index vector for the
+original input which will result in a sorted output.  Ignoring the second
+output is simple---don't request more than one output.  But ignoring the first,
+and calculating just the second output, requires the use of the @code{~}
+placeholder.
+
+@example
+@group
+x = [2, 3, 1];
+[s, i] = sort (x)
+@result{}
+s =
+
+   1   2   3
+
+i =
+
+   3   1   2
+
+[~, i] = sort (x)
+@result{}
+i =
+
+   3   1   2
+@end group
+@end example
+
+When using the @code{~} placeholder, commas---not whitespace---must be used
+to separate output arguments.  Otherwise, the interpreter will view @code{~} as
+the logical not operator.
+
+@example
+@group
+[~ i] = sort (x)
+parse error:
+
+  invalid left hand side of assignment
+@end group
+@end example
+
+Functions may take advantage of ignored outputs to reduce the number of
+calculations performed.  To do so, use the @code{isargout} function to query
+whether the output argument is wanted.  For example:
 
 @example
 @group

@@ -7102,11 +7102,36 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     {
       double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
       for (int j = 0; j < n; j++)
-        {
-          tmp_mticks(n*i+j) = tmp_ticks(i) + d * (j+1);
-        }
+        tmp_mticks(n*i+j) = tmp_ticks(i) + d * (j+1);
     }
-  mticks = tmp_mticks;
+
+  if (is_logscale)
+    mticks = tmp_mticks;
+  else
+    {
+      // add minor ticks above and below min and max ticks
+      double d_below = (tmp_ticks(1) - tmp_ticks(0)) / (n+1);
+      int n_below = static_cast<int> (std::floor ((tmp_ticks(0)-lo)
+                                                  / d_below));
+      if (n_below < 0)
+        n_below = 0;
+      int n_between = tmp_mticks.columns ();
+      double d_above = (tmp_ticks(n_ticks-1) - tmp_ticks(n_ticks-2)) / (n+1);
+      int n_above = static_cast<int> (std::floor ((hi-tmp_ticks(n_ticks-1))
+                                                  / d_above));
+      if (n_above < 0)
+        n_above = 0;
+
+      Matrix tmp_mticks2 (1, n_below + n_between + n_above);
+      for (int i_below = 0; i_below < n_below; i_below++)
+        tmp_mticks2(i_below) = tmp_ticks(0) - (n_below-i_below) * d_below;
+      for (int i_between = 0; i_between < n_between; i_between++)
+        tmp_mticks2(n_below+i_between) = tmp_mticks(i_between);
+      for (int i_above = 0; i_above < n_above; i_above++)
+        tmp_mticks2(n_below+n_between+i_above) = tmp_ticks(n_ticks-1)
+                                                 + (i_above + 1) * d_above;
+      mticks = tmp_mticks2;
+    }
 }
 
 /*

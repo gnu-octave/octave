@@ -81,49 +81,51 @@ function html_compare_plot_demos (toolkits, varargin)
 
   anchor = "<!-- ##ADD TABLE HERE## -->";
   n = findstr (template, anchor);
-  header = template(1:n-1);
-  trailer = template(n+numel(anchor):end);
+  header = strtrim (template(1:n-1));
+  trailer = strtrim (template(n+numel(anchor):end));
 
   page = 1;
   do
     start_fig = (page - 1) * in.plots_per_page + 1;
     stop_fig = page * in.plots_per_page;
-    last_page = stop_fig > numel (in.figfiles);
+    last_page = stop_fig >= numel (in.figfiles);
     if (last_page)
       stop_fig = numel (in.figfiles);
     endif
 
     fid = fopen (in.output_fmt (page), "w");
     unwind_protect
-      fputs (fid, header);
-      fprintf (fid, "<p><b>\nGenerated on %s by %s with GNU Octave %s</p>",
+      fprintf (fid, "%s\n", header);
+      fprintf (fid, "<h2>Generated on %s by %s with GNU Octave %s</h2>\n", ...
                datestr (now (), 0), mfilename, version);
 
       ## Create page previous/next
       if (page > 1)
-        previous_page_link = sprintf ('<a href="%s">previous page</a><br>', in.output_fmt (page - 1));
+        prev_page_link = sprintf ("<p><a href=\"%s\">%s</a></p>\n", ...
+                                  in.output_fmt (page - 1), "previous page");
       else
-        previous_page_link = "";
+        prev_page_link = "";
       endif
 
       if (! last_page)
-        next_page_link = sprintf ('<a href="%s">next page</a><br>', in.output_fmt (page + 1));
+        next_page_link = sprintf ("<p><a href=\"%s\">%s</a></p>\n", ...
+                                  in.output_fmt (page + 1), "next page");
       else
         next_page_link = "";
       endif
 
-      fprintf (fid, '%s%s<br>', previous_page_link, next_page_link);
+      fprintf (fid, "%s%s", prev_page_link, next_page_link);
 
       ## Create table header
-      fprintf (fid, "<table border='1'><tr>\n");
+      fprintf (fid, "<table>\n<tr>\n");
       for t = 1:numel(toolkits)
         ## set default
         column_header = upper (toolkits{t});
         if (isfield (in, toolkits{t}))
           column_header = [column_header, in.(toolkits{t})];
         endif
-        fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', ...
-                      column_header, toolkits{t});
+        fprintf (fid, "<th>%s <a href=\"%s/diary.log\">diary</a></th>\n", ...
+                 column_header, toolkits{t});
       endfor
       fprintf (fid, "</tr>\n");
       for m = start_fig:stop_fig
@@ -132,10 +134,11 @@ function html_compare_plot_demos (toolkits, varargin)
         fprintf (fid, "<tr id=\"%s\">\n", file);
         for k = toolkits
           ffn = fullfile (k{:}, fn);
-          fprintf (fid, "  <td>%s<br>", ffn);
+          fprintf (fid, "<td><span>%s</span><br>", ffn);
           if (exist (ffn, "file"))
-            fprintf (fid, "<img src='%s' style='width: %dpx;'>", ...
-                          ffn, in.column_width);
+            fprintf (fid, ...
+                     "<img alt=\"%s\" src=\"%s\" style=\"width:%dpx\">", ...
+                     file, ffn, in.column_width);
           else
             err_fn = strrep (ffn, ".png", ".err");
             if (! exist (err_fn, "file"))
@@ -144,7 +147,7 @@ function html_compare_plot_demos (toolkits, varargin)
               err_fid = fopen (err_fn);
               msg = char (fread (err_fid))';
               fclose (err_fid);
-              fprintf (fid, "%s", strrep (msg, "\n", "<br>"));
+              fprintf (fid, "<span>%s</span>", strrep (msg, "\n", "<br>"));
             endif
           endif
           fprintf (fid, "</td>\n");
@@ -152,10 +155,10 @@ function html_compare_plot_demos (toolkits, varargin)
         fprintf (fid, "</tr>\n");
       endfor
 
-      fprintf (fid, '</table>\n');
-      fprintf (fid, '%s%s<br>', previous_page_link, next_page_link);
+      fprintf (fid, "</table>\n");
+      fprintf (fid, "%s%s", prev_page_link, next_page_link);
 
-      fputs (fid, trailer);
+      fprintf (fid, "%s\n", trailer);
       page++;
     unwind_protect_cleanup
       fclose (fid);
@@ -163,3 +166,4 @@ function html_compare_plot_demos (toolkits, varargin)
   until (stop_fig == numel (in.figfiles))
 
 endfunction
+

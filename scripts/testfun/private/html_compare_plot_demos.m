@@ -88,7 +88,7 @@ function html_compare_plot_demos (toolkits, varargin)
   do
     start_fig = (page - 1) * in.plots_per_page + 1;
     stop_fig = page * in.plots_per_page;
-    last_page = stop_fig > numel (in.figfiles);
+    last_page = stop_fig >= numel (in.figfiles);
     if (last_page)
       stop_fig = numel (in.figfiles);
     endif

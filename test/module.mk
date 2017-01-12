@@ -49,6 +49,7 @@ include test/bug-36025/module.mk
 include test/bug-38236/module.mk
 include test/bug-38691/module.mk
 include test/bug-44940/module.mk
+include test/bug-50035/module.mk
 include test/class-concat/module.mk
 include test/classdef/module.mk
 include test/classdef-multiple-inheritance/module.mk

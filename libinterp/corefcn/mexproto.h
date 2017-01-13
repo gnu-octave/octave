@@ -308,7 +308,7 @@ extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
 #  define mxAssert(expr, msg)                                           \
   do                                                                    \
     {                                                                   \
-      if (! expr)                                                       \
+      if (! (expr))                                                     \
         {                                                               \
           if (msg != NULL && msg[0] != '\0')                            \
             mexErrMsgIdAndTxt ("Octave:MEX",                            \
@@ -325,7 +325,7 @@ extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
 #  define mxAssertS(expr, msg)                                          \
   do                                                                    \
     {                                                                   \
-      if (! expr)                                                       \
+      if (! (expr))                                                     \
         {                                                               \
           if (msg != NULL && msg[0] != '\0')                            \
             mexErrMsgIdAndTxt ("Octave:MEX",                            \
@@ -349,4 +349,3 @@ extern OCTINTERP_API size_t mxGetElementSize (const mxArray *ptr);
 #endif
 
 #endif
-

@@ -16,15 +16,33 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%!error <duplicate nested function>
-%! duplicate_nested_function ();
+%!error <duplicate subfunction or nested function name>
+%! duplicate_nested_function ()
 
-%!error <duplicate subfunction>
-%! duplicate_subfunction ();
+%!assert (duplicate_nested_in_subfunction_ok (), 3);
 
-%!error <nested function duplicates primary function name>
-%! duplicate_primary_nested_function ();
+%!error <duplicate subfunction or nested function name>
+%! duplicate_nested_parent_function ()
 
-%!error <subfunction duplicates primary function name>
-%! duplicate_primary_subfunction ();
+%!error <duplicate subfunction or nested function name>
+%! duplicate_parent_nested2 ()
 
+%!error <duplicate subfunction or nested function name>
+%! duplicate_parent_nested_function ()
+
+%!error <duplicate subfunction or nested function name>
+%! duplicate_primary_nested_function ()
+
+%!error <duplicate subfunction or nested function name>
+%! duplicate_primary_subfunction_old_syntax ()
+
+%!error <duplicate subfunction or nested function name>
+%! duplicate_primary_subfunction ()
+
+%!error <duplicate subfunction or nested function name>
+%! duplicate_subfunction ()
+
+%!error <duplicate subfunction or nested function name>
+%! duplicate_subfunction_old_syntax ()
+
+%!assert (duplicate_subfunction_separate_scope_ok (), 3);

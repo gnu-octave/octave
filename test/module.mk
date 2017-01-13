@@ -12,6 +12,7 @@ TEST_FILES += \
   test/bug-38576.tst \
   test/bug-46330.tst \
   test/bug-49904.tst \
+  test/bug-50014.tst \
   test/colormaps.tst \
   test/command.tst \
   test/complex.tst \
@@ -49,6 +50,7 @@ include test/bug-36025/module.mk
 include test/bug-38236/module.mk
 include test/bug-38691/module.mk
 include test/bug-44940/module.mk
+include test/bug-50014/module.mk
 include test/bug-50035/module.mk
 include test/class-concat/module.mk
 include test/classdef/module.mk

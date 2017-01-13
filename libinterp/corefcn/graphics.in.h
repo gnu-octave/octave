@@ -3852,11 +3852,11 @@ public:
       color_property ambientlightcolor , color_values (1, 1, 1)
       bool_property box , "off"
       radio_property boxstyle , "{back}|full"
-      array_property cameraposition m , Matrix (1, 3, 0.0)
+      row_vector_property cameraposition m , Matrix (1, 3, 0.0)
       radio_property camerapositionmode , "{auto}|manual"
-      array_property cameratarget m , Matrix (1, 3, 0.0)
+      row_vector_property cameratarget m , Matrix (1, 3, 0.0)
       radio_property cameratargetmode , "{auto}|manual"
-      array_property cameraupvector m , Matrix (1, 3, 0.0)
+      row_vector_property cameraupvector m , Matrix (1, 3, 0.0)
       radio_property cameraupvectormode , "{auto}|manual"
       double_property cameraviewangle m , 6.6086
       radio_property cameraviewanglemode , "{auto}|manual"
@@ -3867,7 +3867,7 @@ public:
       array_property colororder , default_colororder ()
       double_property colororderindex , 1.0
       array_property currentpoint , Matrix (2, 3, 0.0)
-      array_property dataaspectratio mu , Matrix (1, 3, 1.0)
+      row_vector_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
       radio_property drawmode , "{normal}|fast"
       radio_property fontangle u , "{normal}|italic"
@@ -3894,7 +3894,7 @@ public:
       radio_property minorgridlinestyle , "{:}|-|--|-.|none"
       radio_property nextplot , "{replace}|add|replacechildren"
       array_property outerposition u , default_axes_outerposition ()
-      array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
+      row_vector_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       radio_property pickableparts , "{visible}|all|none"
       array_property position u , default_axes_position ()

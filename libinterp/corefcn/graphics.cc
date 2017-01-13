@@ -4519,8 +4519,8 @@ axes::properties::init (void)
   tightinset.add_constraint (dim_vector (1, 4));
   looseinset.add_constraint (dim_vector (1, 4));
   colororder.add_constraint (dim_vector (-1, 3));
-  dataaspectratio.add_constraint (dim_vector (1, 3));
-  plotboxaspectratio.add_constraint (dim_vector (1, 3));
+  dataaspectratio.add_constraint (3);
+  plotboxaspectratio.add_constraint (3);
   // FIXME: Should these use dimension vectors?  Currently can set 'xlim' to
   // any matrix size, but only first two elements are used.
   alim.add_constraint (2);
@@ -4536,12 +4536,12 @@ axes::properties::init (void)
   vw(1) = 90;
   view = vw;
   view.add_constraint (dim_vector (1, 2));
-  cameraposition.add_constraint (dim_vector (1, 3));
-  cameratarget.add_constraint (dim_vector (1, 3));
+  cameraposition.add_constraint (3);
+  cameratarget.add_constraint (3);
   Matrix upv (1, 3, 0.0);
   upv(2) = 1.0;
   cameraupvector = upv;
-  cameraupvector.add_constraint (dim_vector (1, 3));
+  cameraupvector.add_constraint (3);
   currentpoint.add_constraint (dim_vector (2, 3));
 
   // Range constraints for double properties

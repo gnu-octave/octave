@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2013-2016 Carnë Draug
+  Copyright (C) 2013-2017 Carnë Draug
 
   This file is part of Octave.
 
@@ -18,11 +18,13 @@
   along with Octave; see the file COPYING.  If not, see
   <http://www.gnu.org/licenses/>.
 -->
-<application>
-  <id type="desktop">%OCTAVE_DESKTOP_FILE%</id>
-  <licence>GPLv3+</licence>
+<component type="desktop">
+  <id>%OCTAVE_DESKTOP_FILE%</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0+</project_license>
   <name>GNU Octave</name>
   <summary>Interactive programming environment for numerical computations</summary>
+
   <description>
     <p>
       GNU Octave is a high-level interpreted language, primarily intended for
@@ -44,16 +46,20 @@
       C++, C, Fortran, or other languages.
     </p>
   </description>
+
   <screenshots>
     <!--
-      From: http://people.freedesktop.org/~hughsient/appdata/
+      From: https://www.freedesktop.org/software/appstream/docs/
       All screenshots should have a 16:9 aspect ratio, and should have
       a width that is no smaller than 620px. Screenshots should be in PNG
       or JPEG format. PNG is the preferred format.
     -->
-    <screenshot type="default">http://www.gnu.org/software/octave/images/screenshot.png</screenshot>
+    <screenshot type="default">
+      <image>https://www.gnu.org/software/octave/img/screenshot.png</image>
+    </screenshot>
   </screenshots>
+
   <url type="homepage">http://www.octave.org</url>
-  <updatecontact>maintainers@octave.org</updatecontact>
+  <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
-</application>
+</component>

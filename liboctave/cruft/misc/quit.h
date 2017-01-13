@@ -146,7 +146,7 @@ namespace octave
 }
 
 OCTAVE_DEPRECATED ("use 'octave::execution_exception' instead")
-typedef octave::exit_exception octave_execution_exception;
+typedef octave::execution_exception octave_execution_exception;
 
 OCTAVE_DEPRECATED ("use 'octave::exit_exception' instead")
 typedef octave::exit_exception octave_exit_exception;

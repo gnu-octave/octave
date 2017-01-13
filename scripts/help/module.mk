@@ -18,6 +18,7 @@ scripts_help_FCN_FILES = \
   scripts/help/help.m \
   scripts/help/lookfor.m \
   scripts/help/print_usage.m \
+  scripts/help/slash.m \
   scripts/help/type.m \
   scripts/help/warning_ids.m \
   scripts/help/which.m

@@ -701,8 +701,8 @@ namespace octave
 
     GLenum gl_error = glGetError ();
     if (gl_error)
-      warning ("opengl_renderer: Error %d occurred drawing '%s' object",
-               gl_error, props.graphics_object_name ().c_str ());
+      warning ("opengl_renderer: Error '%s' (%d) occurred drawing '%s' object",
+               gluErrorString (gl_error), gl_error, props.graphics_object_name ().c_str ());
 
 #endif
   }
@@ -835,8 +835,8 @@ namespace octave
 
     GLenum gl_error = glGetError ();
     if (gl_error)
-      warning ("opengl_renderer: Error %d occurred in init_gl_context",
-               gl_error);
+      warning ("opengl_renderer: Error '%s' (%d) occurred in init_gl_context",
+               gluErrorString (gl_error), gl_error);
 
 #else
 

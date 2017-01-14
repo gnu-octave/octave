@@ -1243,8 +1243,7 @@ push_fcn_symtab : // empty
 
                     lexer.symtab_context.push (symbol_table::alloc_scope ());
 
-                    parser.function_scopes.push_back
-                     (lexer.symtab_context.curr_scope ());
+                    parser.function_scopes.push (lexer.symtab_context.curr_scope ());
 
                     if (! lexer.reading_script_file
                         && parser.curr_fcn_depth == 1
@@ -1462,7 +1461,17 @@ function        : function_beg stash_comment function1
 
 fcn_name        : identifier
                   {
-                    std::string id_name = $1->name ();
+                    std::string id = $1->name ();
+
+                    if (! parser.function_scopes.name_current_scope (id))
+                      {
+                        parser.bison_error ("duplicate subfunction or nested function name",
+                                            $1->line (), $1->column ());
+
+                        delete $1;
+
+                        YYABORT;
+                      }
 
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
@@ -2020,6 +2029,90 @@ yyerror (octave::base_parser& parser, const char *s)
 
 namespace octave
 {
+  size_t
+  base_parser::parent_scope_info::size (void) const
+  {
+    return info.size ();
+  }
+
+  void
+  base_parser::parent_scope_info::push (const value_type& elt)
+  {
+    info.push_back (elt);
+  }
+
+  void
+  base_parser::parent_scope_info::push (symbol_table::scope_id id)
+  {
+    push (value_type (id, ""));
+  }
+
+  void
+  base_parser::parent_scope_info::pop (void)
+  {
+    info.pop_back ();
+  }
+
+  bool
+  base_parser::parent_scope_info::name_ok (const std::string& name)
+  {
+    // Name can't be the same as any parent function or any other
+    // function we've already seen.  We could maintain a complex
+    // tree structure of names, or we can just store the set of
+    // full names of all the functions, which must be unique.
+
+    std::string full_name;
+
+    for (size_t i = 0; i < size()-1; i++)
+      {
+        const value_type& elt = info[i];
+
+        if (name == elt.second)
+          return false;
+
+        full_name += elt.second + ">";
+      }
+
+    full_name += name;
+
+    if (all_names.find (full_name) != all_names.end ())
+      return false;
+
+    all_names.insert (full_name);
+
+    return true;
+  }
+
+  bool
+  base_parser::parent_scope_info::name_current_scope (const std::string& name)
+  {
+    if (! name_ok (name))
+      return false;
+
+    if (size () > 0)
+      info.back().second = name;
+
+    return true;
+  }
+
+  symbol_table::scope_id
+  base_parser::parent_scope_info::parent_scope (void) const
+  {
+    return size () > 1 ? info[size()-2].first : 0;
+  }
+
+  std::string
+  base_parser::parent_scope_info::parent_name (void) const
+  {
+    return info[size()-2].second;
+  }
+
+  void base_parser::parent_scope_info::clear (void)
+  {
+    info.clear ();
+    all_names.clear ();
+  }
+
   base_parser::base_parser (base_lexer& lxr)
     : endfunction_found (false), autoloading (false),
       fcn_file_from_relative_lookup (false), parsing_subfunctions (false),
@@ -3191,7 +3284,7 @@ namespace octave
             fcn->stash_parent_fcn_name (lexer.fcn_file_name);
 
             if (curr_fcn_depth > 1)
-              fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
+              fcn->stash_parent_fcn_scope (function_scopes.parent_scope ());
             else
               fcn->stash_parent_fcn_scope (primary_fcn_scope);
           }
@@ -3274,7 +3367,7 @@ namespace octave
             if (endfunction_found && function_scopes.size () > 1)
               {
                 symbol_table::scope_id pscope
-                  = function_scopes[function_scopes.size ()-2];
+                  = function_scopes.parent_scope ();
 
                 symbol_table::install_nestfunction (nm, octave_value (fcn),
                                                     pscope);
@@ -3321,7 +3414,7 @@ namespace octave
       parsing_subfunctions = true;
 
     curr_fcn_depth--;
-    function_scopes.pop_back ();
+    function_scopes.pop ();
 
     lexer.defining_func--;
     lexer.parsed_function_name.pop ();

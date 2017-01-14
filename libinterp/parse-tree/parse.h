@@ -29,9 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <stack>
-#include <vector>
+#include <deque>
 #include <map>
+#include <set>
 
 #include "lex.h"
 #include "symtab.h"
@@ -147,6 +147,52 @@ namespace octave
   class
   base_parser
   {
+  private:
+
+    class parent_scope_info
+    {
+    public:
+
+      typedef std::pair<symbol_table::scope_id, std::string> value_type;
+
+      typedef std::deque<value_type>::iterator iterator;
+      typedef std::deque<value_type>::const_iterator const_iterator;
+
+      typedef std::deque<value_type>::reverse_iterator reverse_iterator;
+      typedef std::deque<value_type>::const_reverse_iterator const_reverse_iterator;
+
+      parent_scope_info (void) = default;
+
+      parent_scope_info (const parent_scope_info&) = default;
+
+      parent_scope_info& operator = (const parent_scope_info&) = default;
+
+      ~parent_scope_info (void) = default;
+
+      size_t size (void) const;
+
+      void push (const value_type& elt);
+
+      void push (symbol_table::scope_id id);
+
+      void pop (void);
+
+      bool name_ok (const std::string& name);
+
+      bool name_current_scope (const std::string& name);
+
+      symbol_table::scope_id parent_scope (void) const;
+
+      std::string parent_name (void) const;
+
+      void clear (void);
+
+    private:
+
+      std::deque<value_type> info;
+      std::set<std::string> all_names;
+    };
+
   public:
 
     base_parser (base_lexer& lxr);
@@ -442,10 +488,8 @@ namespace octave
     // in a package directory (+-directory).
     std::string curr_package_name;
 
-    // A stack holding the nested function scopes being parsed.
-    // We don't use std::stack, because we want the clear method.  Also, we
-    // must access one from the top
-    std::vector<symbol_table::scope_id> function_scopes;
+    // Nested function scopes and names currently being parsed.
+    parent_scope_info function_scopes;
 
     // Pointer to the primary user function or user script function.
     octave_function *primary_fcn_ptr;

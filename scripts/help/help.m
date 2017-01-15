@@ -117,7 +117,9 @@ function retval = help (name)
     endif
 
     if (nargout == 0)
-      evalin ("caller", ['which ("' undo_string_escapes(name) '")']);
+      if (! any (strcmp (name, {'./', '.\'})))
+        evalin ("caller", ['which ("' undo_string_escapes(name) '")']);
+      endif
       printf ("\n%s\n%s", text, __additional_help_message__ ());
     else
       retval = text;

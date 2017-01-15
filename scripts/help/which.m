@@ -54,8 +54,13 @@ function varargout = which (varargin)
         endif
       else
         if (isempty (m(i).type))
-          printf ("'%s' is the file %s\n",
-                  m(i).name, m(i).file);
+          if (isdir (m(i).file))
+            printf ("'%s' is the directory %s\n",
+                    m(i).name, m(i).file);
+          else
+            printf ("'%s' is the file %s\n",
+                    m(i).name, m(i).file);
+          endif
         else
           printf ("'%s' is a %s from the file %s\n",
                   m(i).name, m(i).type, m(i).file);

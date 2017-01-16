@@ -142,7 +142,7 @@ initialize_warning_options (const std::string& state)
 static octave_map
 initialize_last_error_stack (void)
 {
-  return octave_call_stack::empty_backtrace ();
+  return octave::call_stack::empty_backtrace ();
 }
 
 static void
@@ -187,7 +187,7 @@ verror (bool save_last_error, std::ostream& os,
   // 2. it is not already there (including the following colon)
   if (with_cfn)
     {
-      octave_function *curfcn = octave_call_stack::current ();
+      octave_function *curfcn = octave::call_stack::current ();
       if (curfcn)
         {
           std::string cfn = curfcn->name ();
@@ -212,13 +212,13 @@ verror (bool save_last_error, std::ostream& os,
       Vlast_error_id = id;
       Vlast_error_message = base_msg;
 
-      octave_user_code *fcn = octave_call_stack::caller_user_code ();
+      octave_user_code *fcn = octave::call_stack::caller_user_code ();
 
       if (fcn)
         {
           octave_idx_type curr_frame = -1;
 
-          Vlast_error_stack = octave_call_stack::backtrace (0, curr_frame);
+          Vlast_error_stack = octave::call_stack::backtrace (0, curr_frame);
         }
       else
         Vlast_error_stack = initialize_last_error_stack ();
@@ -307,8 +307,8 @@ pr_where (std::ostream& os, const char *who,
 static void
 pr_where (std::ostream& os, const char *who)
 {
-  std::list<octave_call_stack::stack_frame> call_stack_frames
-    = octave_call_stack::backtrace_frames ();
+  std::list<octave::call_stack::stack_frame> call_stack_frames
+    = octave::call_stack::backtrace_frames ();
 
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
@@ -351,7 +351,7 @@ maybe_enter_debugger (octave::execution_exception& e,
        || octave::application::forced_interactive ())
       && ((Vdebug_on_error && bp_table::debug_on_err (last_error_id ()))
           || (Vdebug_on_caught && bp_table::debug_on_caught (last_error_id ())))
-      && octave_call_stack::caller_user_code ())
+      && octave::call_stack::caller_user_code ())
     {
       octave::unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -359,7 +359,7 @@ maybe_enter_debugger (octave::execution_exception& e,
 
       octave::tree_evaluator::debug_mode = true;
 
-      octave::tree_evaluator::current_frame = octave_call_stack::current_frame ();
+      octave::tree_evaluator::current_frame = octave::call_stack::current_frame ();
 
       if (show_stack_trace)
         {
@@ -528,7 +528,7 @@ error_1 (octave::execution_exception& e, std::ostream& os,
                 {
                   verror (true, os, name, id, fmt, args, with_cfn);
 
-                  bool in_user_code = octave_call_stack::caller_user_code () != 0;
+                  bool in_user_code = octave::call_stack::caller_user_code () != 0;
 
                   if (in_user_code && ! discard_error_messages)
                     show_stack_trace = true;
@@ -748,7 +748,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
       else
         vwarning ("warning", id, fmt, args);
 
-      bool in_user_code = octave_call_stack::caller_user_code () != 0;
+      bool in_user_code = octave::call_stack::caller_user_code () != 0;
 
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning
@@ -765,7 +765,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
           octave::tree_evaluator::debug_mode = true;
 
-          octave::tree_evaluator::current_frame = octave_call_stack::current_frame ();
+          octave::tree_evaluator::current_frame = octave::call_stack::current_frame ();
 
           do_keyboard (octave_value_list ());
         }
@@ -1497,10 +1497,10 @@ disable escape sequence expansion use a second backslash before the sequence
               && ! symbol_table::at_top_level ())
             {
               symbol_table::scope_id scope
-                = octave_call_stack::current_scope ();
+                = octave::call_stack::current_scope ();
 
               symbol_table::context_id context
-                = octave_call_stack::current_context ();
+                = octave::call_stack::current_context ();
 
               octave_scalar_map val = warning_query (arg2);
 
@@ -1942,7 +1942,7 @@ fields are set to their default values.
               octave_idx_type curr_frame = -1;
 
               Vlast_error_stack
-                = octave_call_stack::backtrace (0, curr_frame);
+                = octave::call_stack::backtrace (0, curr_frame);
             }
         }
       else

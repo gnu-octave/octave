@@ -2115,7 +2115,7 @@ public:
   {
     if (! fname)
       {
-        octave_function *fcn = octave_call_stack::current ();
+        octave_function *fcn = octave::call_stack::current ();
 
         if (fcn)
           {
@@ -3409,9 +3409,9 @@ mexGetVariable (const char *space, const char *name)
 
           if (base)
             {
-              octave_call_stack::goto_base_frame ();
+              octave::call_stack::goto_base_frame ();
 
-              frame.add_fcn (octave_call_stack::pop);
+              frame.add_fcn (octave::call_stack::pop);
             }
 
           val = symbol_table::varval (name);
@@ -3469,9 +3469,9 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
           if (base)
             {
-              octave_call_stack::goto_base_frame ();
+              octave::call_stack::goto_base_frame ();
 
-              frame.add_fcn (octave_call_stack::pop);
+              frame.add_fcn (octave::call_stack::pop);
             }
 
           symbol_table::assign (name, mxArray::as_octave_value (ptr));

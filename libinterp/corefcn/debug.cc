@@ -182,7 +182,7 @@ get_user_code (const std::string& fname = "")
   octave_user_code *dbg_fcn = 0;
 
   if (fname.empty ())
-    dbg_fcn = octave_call_stack::debug_user_code ();
+    dbg_fcn = octave::call_stack::debug_user_code ();
   else
     {
       std::string name = fname;
@@ -1570,7 +1570,7 @@ is stopped.
 
   octave_stdout << "stopped in " << dbg_fcn->name () << " at ";
 
-  int l = octave_call_stack::debug_user_code_line ();
+  int l = octave::call_stack::debug_user_code_line ();
 
   if (l > 0)
     {
@@ -1819,7 +1819,7 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
       name = dbg_fcn->name ();
     }
 
-  int l = octave_call_stack::debug_user_code_line ();
+  int l = octave::call_stack::debug_user_code_line ();
 
   if (l > 0)
     {
@@ -1892,7 +1892,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   if (nargout == 0)
     {
-      octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
+      octave_map stk = octave::call_stack::backtrace (nskip, curr_frame);
       octave_idx_type nframes_to_display = stk.numel ();
 
       if (nframes_to_display > 0)
@@ -1938,7 +1938,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
     }
   else
     {
-      octave_map stk = octave_call_stack::backtrace (nskip, curr_frame, false);
+      octave_map stk = octave::call_stack::backtrace (nskip, curr_frame, false);
 
       retval = ovl (stk, curr_frame < 0 ? 1 : curr_frame + 1);
     }
@@ -2026,7 +2026,7 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
   if (who == "dbup")
     n = -n;
 
-  if (! octave_call_stack::goto_frame_relative (n, true))
+  if (! octave::call_stack::goto_frame_relative (n, true))
     error ("%s: invalid stack frame", who.c_str ());
 }
 

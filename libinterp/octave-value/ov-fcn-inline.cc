@@ -96,7 +96,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
           if (uf)
             {
-              octave_function *curr_fcn = octave_call_stack::current ();
+              octave_function *curr_fcn = octave::call_stack::current ();
 
               if (curr_fcn)
                 {

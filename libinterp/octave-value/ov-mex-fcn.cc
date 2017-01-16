@@ -138,9 +138,9 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   octave::unwind_protect frame;
 
-  octave_call_stack::push (this);
+  octave::call_stack::push (this);
 
-  frame.add_fcn (octave_call_stack::pop);
+  frame.add_fcn (octave::call_stack::pop);
 
   BEGIN_PROFILER_BLOCK (octave_mex_function)
 

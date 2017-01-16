@@ -4492,7 +4492,7 @@ not loaded anymore during the current Octave session.
 
       if (! octave::sys::env::absolute_pathname (nm))
         {
-          octave_user_code *fcn = octave_call_stack::caller_user_code ();
+          octave_user_code *fcn = octave::call_stack::caller_user_code ();
 
           bool found = false;
 
@@ -4594,13 +4594,13 @@ source_file (const std::string& file_name, const std::string& context,
   if (! context.empty ())
     {
       if (context == "caller")
-        octave_call_stack::goto_caller_frame ();
+        octave::call_stack::goto_caller_frame ();
       else if (context == "base")
-        octave_call_stack::goto_base_frame ();
+        octave::call_stack::goto_base_frame ();
       else
         error ("source: context must be \"caller\" or \"base\"");
 
-      frame.add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave::call_stack::pop);
     }
 
   octave_function *fcn = 0;
@@ -4710,7 +4710,7 @@ the filename and the extension.
 
   std::string fname;
 
-  octave_user_code *fcn = octave_call_stack::caller_user_code ();
+  octave_user_code *fcn = octave::call_stack::caller_user_code ();
 
   if (fcn)
     {
@@ -5208,13 +5208,13 @@ may be either @qcode{"base"} or @qcode{"caller"}.
   octave::unwind_protect frame;
 
   if (context == "caller")
-    octave_call_stack::goto_caller_frame ();
+    octave::call_stack::goto_caller_frame ();
   else if (context == "base")
-    octave_call_stack::goto_base_frame ();
+    octave::call_stack::goto_base_frame ();
   else
     error ("assignin: CONTEXT must be \"caller\" or \"base\"");
 
-  frame.add_fcn (octave_call_stack::pop);
+  frame.add_fcn (octave::call_stack::pop);
 
   std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
 
@@ -5262,13 +5262,13 @@ Like @code{eval}, except that the expressions are evaluated in the context
   octave::unwind_protect frame;
 
   if (context == "caller")
-    octave_call_stack::goto_caller_frame ();
+    octave::call_stack::goto_caller_frame ();
   else if (context == "base")
-    octave_call_stack::goto_base_frame ();
+    octave::call_stack::goto_base_frame ();
   else
     error ("evalin: CONTEXT must be \"caller\" or \"base\"");
 
-  frame.add_fcn (octave_call_stack::pop);
+  frame.add_fcn (octave::call_stack::pop);
 
   if (nargin > 2)
     {

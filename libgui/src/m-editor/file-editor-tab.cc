@@ -1784,7 +1784,7 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
   bool retval = true;
   octave_idx_type curr_frame = -1;
   size_t nskip = 0;
-  octave_map stk = octave_call_stack::backtrace (nskip, curr_frame, false);
+  octave_map stk = octave::call_stack::backtrace (nskip, curr_frame, false);
   Cell names = stk.contents ("name");
   for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
     {
@@ -1802,7 +1802,7 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
               while (names.numel () > i)
                 {
                   octave_sleep (0.01);
-                  stk = octave_call_stack::backtrace (nskip, curr_frame, false);
+                  stk = octave::call_stack::backtrace (nskip, curr_frame, false);
                   names = stk.contents ("name");
                 }
             }

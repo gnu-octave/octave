@@ -191,7 +191,7 @@ local_functions (void)
 {
   string_vector retval;
 
-  octave_user_code *curr_fcn = octave_call_stack::caller_user_code ();
+  octave_user_code *curr_fcn = octave::call_stack::caller_user_code ();
 
   if (! curr_fcn)
     return retval;
@@ -692,7 +692,7 @@ the return value is an empty cell array.
   Cell retval;
 
   // Find the main function we are in.
-  octave_user_code *parent_fcn = octave_call_stack::debug_user_code ();
+  octave_user_code *parent_fcn = octave::call_stack::debug_user_code ();
 
   if (! parent_fcn)
     return ovl (retval);

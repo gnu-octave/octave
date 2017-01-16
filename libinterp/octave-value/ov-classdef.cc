@@ -265,7 +265,7 @@ get_class_context (std::string& name, bool& in_constructor)
 {
   cdef_class cls;
 
-  octave_function* fcn = octave_call_stack::current ();
+  octave_function* fcn = octave::call_stack::current ();
 
   in_constructor = false;
 
@@ -422,7 +422,7 @@ is_dummy_method (const octave_value& fcn)
 bool
 is_method_executing (const octave_value& ov, const cdef_object& obj)
 {
-  octave_function* stack_fcn = octave_call_stack::current ();
+  octave_function* stack_fcn = octave::call_stack::current ();
 
   octave_function* method_fcn = ov.function_value (true);
 
@@ -1173,7 +1173,7 @@ public:
 private:
   bool is_constructed_object (const std::string nm)
   {
-    octave_function *of = octave_call_stack::current ();
+    octave_function *of = octave::call_stack::current ();
 
     if (of->is_classdef_constructor ())
       {

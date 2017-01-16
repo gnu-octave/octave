@@ -512,7 +512,7 @@ namespace octave
         tree_expression *expr = tic->condition ();
 
         if (statement_context == function || statement_context == script)
-          octave_call_stack::set_location (tic->line (), tic->column ());
+          octave::call_stack::set_location (tic->line (), tic->column ());
 
         if (debug_mode && ! tic->is_else_clause ())
           do_breakpoint (tic->is_breakpoint (true));
@@ -605,7 +605,7 @@ namespace octave
     // Act like dbcont.
 
     if (Vdebugging
-        && octave_call_stack::current_frame () == current_frame)
+        && octave::call_stack::current_frame () == current_frame)
       {
         Vdebugging = false;
 
@@ -642,11 +642,11 @@ namespace octave
             // the state of the program we are debugging.
 
             if (Vtrack_line_num)
-              octave_call_stack::set_location (stmt.line (), stmt.column ());
+              octave::call_stack::set_location (stmt.line (), stmt.column ());
 
             if ((statement_context == script
                  && ((Vecho_executing_commands & ECHO_SCRIPTS
-                      && octave_call_stack::all_scripts ())
+                      && octave::call_stack::all_scripts ())
                      || Vecho_executing_commands & ECHO_FUNCTIONS))
                 || (statement_context == function
                     && Vecho_executing_commands & ECHO_FUNCTIONS))
@@ -882,10 +882,10 @@ namespace octave
 
     // We want to preserve the last location info for possible
     // backtracking.
-    frame.add_fcn (octave_call_stack::set_line,
-                   octave_call_stack::current_line ());
-    frame.add_fcn (octave_call_stack::set_column,
-                   octave_call_stack::current_column ());
+    frame.add_fcn (octave::call_stack::set_line,
+                   octave::call_stack::current_line ());
+    frame.add_fcn (octave::call_stack::set_column,
+                   octave::call_stack::current_column ());
 
     // Similarly, if we have seen a return or break statement, allow all
     // the cleanup code to run before returning or handling the break.
@@ -1059,7 +1059,7 @@ namespace octave
         if (debug_mode)
           do_breakpoint (cmd.is_breakpoint (true));
 
-        octave_call_stack::set_location (until_line, until_column);
+        octave::call_stack::set_location (until_line, until_column);
 
         if (expr->is_logically_true ("do-until"))
           break;
@@ -1084,7 +1084,7 @@ namespace octave
 
         octave_debug_on_interrupt_state = false;
 
-        current_frame = octave_call_stack::current_frame ();
+        current_frame = octave::call_stack::current_frame ();
       }
     else if (is_breakpoint)
       {
@@ -1092,11 +1092,11 @@ namespace octave
 
         dbstep_flag = 0;
 
-        current_frame = octave_call_stack::current_frame ();
+        current_frame = octave::call_stack::current_frame ();
       }
     else if (dbstep_flag > 0)
       {
-        if (octave_call_stack::current_frame () == current_frame)
+        if (octave::call_stack::current_frame () == current_frame)
           {
             if (dbstep_flag == 1 || is_end_of_fcn_or_script)
               {
@@ -1119,11 +1119,11 @@ namespace octave
 
           }
         else if (dbstep_flag == 1
-                 && octave_call_stack::current_frame () < current_frame)
+                 && octave::call_stack::current_frame () < current_frame)
           {
             // We stepped out from the end of a function.
 
-            current_frame = octave_call_stack::current_frame ();
+            current_frame = octave::call_stack::current_frame ();
 
             break_on_this_statement = true;
 
@@ -1138,7 +1138,7 @@ namespace octave
 
         dbstep_flag = 0;
 
-        current_frame = octave_call_stack::current_frame ();
+        current_frame = octave::call_stack::current_frame ();
       }
     else if (dbstep_flag == -2)
       {
@@ -1149,7 +1149,7 @@ namespace octave
         // that frame.
 
         if (is_end_of_fcn_or_script
-            && octave_call_stack::current_frame () == current_frame)
+            && octave::call_stack::current_frame () == current_frame)
           dbstep_flag = -1;
       }
 

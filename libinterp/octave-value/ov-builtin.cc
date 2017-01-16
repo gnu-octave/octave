@@ -111,9 +111,9 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
   octave::unwind_protect frame;
 
-  octave_call_stack::push (this);
+  octave::call_stack::push (this);
 
-  frame.add_fcn (octave_call_stack::pop);
+  frame.add_fcn (octave::call_stack::pop);
 
   if (lvalue_list || curr_lvalue_list)
     {

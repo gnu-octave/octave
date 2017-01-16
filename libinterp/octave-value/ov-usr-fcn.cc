@@ -137,9 +137,9 @@ octave_user_script::do_multi_index_op (int nargout,
       if (call_depth >= Vmax_recursion_depth)
         error ("max_recursion_depth exceeded");
 
-      octave_call_stack::push (this);
+      octave::call_stack::push (this);
 
-      frame.add_fcn (octave_call_stack::pop);
+      frame.add_fcn (octave::call_stack::pop);
 
       // Update line number even if debugging.
       frame.protect_var (Vtrack_line_num);
@@ -506,11 +506,11 @@ octave_user_function::do_multi_index_op (int nargout,
 
   int context = active_context ();
 
-  octave_call_stack::push (this, local_scope, context);
+  octave::call_stack::push (this, local_scope, context);
 
   frame.protect_var (Vtrack_line_num);
   Vtrack_line_num = true;    // update source line numbers, even if debugging
-  frame.add_fcn (octave_call_stack::pop);
+  frame.add_fcn (octave::call_stack::pop);
 
   if (call_depth > 0 && ! is_anonymous_function ())
     {
@@ -598,7 +598,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
       if (expr)
         {
-          octave_call_stack::set_location (stmt->line (), stmt->column ());
+          octave::call_stack::set_location (stmt->line (), stmt->column ());
 
           retval = (lvalue_list
                     ? expr->rvalue (nargout, lvalue_list)

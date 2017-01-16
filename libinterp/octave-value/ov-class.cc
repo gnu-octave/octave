@@ -225,7 +225,7 @@ octave_class::get_current_method_class (void)
 
   if (nparents () > 0)
     {
-      octave_function *fcn = octave_call_stack::current ();
+      octave_function *fcn = octave::call_stack::current ();
 
       // Here we are just looking to see if FCN is a method or constructor
       // for any class, not specifically this one.
@@ -1618,7 +1618,7 @@ octave_class::as_mxArray (void) const
 bool
 octave_class::in_class_method (void)
 {
-  octave_function *fcn = octave_call_stack::current ();
+  octave_function *fcn = octave::call_stack::current ();
 
   return (fcn
           && (fcn->is_class_method ()
@@ -1710,7 +1710,7 @@ is derived.
       // Called as class constructor
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      octave_function *fcn = octave_call_stack::caller ();
+      octave_function *fcn = octave::call_stack::caller ();
 
       if (! fcn)
         error ("class: invalid call from outside class constructor or method");
@@ -1995,7 +1995,7 @@ may @emph{only} be called from a class constructor.
 @seealso{inferiorto}
 @end deftypefn */)
 {
-  octave_function *fcn = octave_call_stack::caller ();
+  octave_function *fcn = octave::call_stack::caller ();
   if (! fcn || ! fcn->is_class_constructor ())
     error ("superiorto: invalid call from outside class constructor");
 
@@ -2028,7 +2028,7 @@ may @emph{only} be called from a class constructor.
 @seealso{superiorto}
 @end deftypefn */)
 {
-  octave_function *fcn = octave_call_stack::caller ();
+  octave_function *fcn = octave::call_stack::caller ();
   if (! fcn || ! fcn->is_class_constructor ())
     error ("inferiorto: invalid call from outside class constructor");
 

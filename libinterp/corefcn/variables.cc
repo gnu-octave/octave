@@ -735,7 +735,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
 template <typename T>
 bool try_local_protect (T& var)
 {
-  octave_user_code *curr_usr_code = octave_call_stack::caller_user_code ();
+  octave_user_code *curr_usr_code = octave::call_stack::caller_user_code ();
   octave_user_function *curr_usr_fcn = 0;
   if (curr_usr_code && curr_usr_code->is_user_function ())
     curr_usr_fcn = dynamic_cast<octave_user_function *> (curr_usr_code);
@@ -1662,8 +1662,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
           symbol_table::set_scope (tmp_scope);
 
-          octave_call_stack::push (tmp_scope, 0);
-          frame.add_fcn (octave_call_stack::pop);
+          octave::call_stack::push (tmp_scope, 0);
+          frame.add_fcn (octave::call_stack::pop);
 
           frame.add_fcn (symbol_table::clear_variables);
 
@@ -1784,7 +1784,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
       if (verbose)
         {
           std::string caller_function_name;
-          octave_function *caller = octave_call_stack::caller ();
+          octave_function *caller = octave::call_stack::caller ();
           if (caller)
             caller_function_name = caller->name ();
 
@@ -1975,7 +1975,7 @@ bind_internal_variable (const std::string& fname, const octave_value& val)
 void
 mlock (void)
 {
-  octave_function *fcn = octave_call_stack::current ();
+  octave_function *fcn = octave::call_stack::current ();
 
   if (! fcn)
     error ("mlock: invalid use outside a function");
@@ -2025,7 +2025,7 @@ Lock the current function into memory so that it can't be cleared.
   if (args.length () != 0)
     print_usage ();
 
-  octave_function *fcn = octave_call_stack::caller ();
+  octave_function *fcn = octave::call_stack::caller ();
 
   if (! fcn)
     error ("mlock: invalid use outside a function");
@@ -2058,7 +2058,7 @@ If no function is named then unlock the current function.
     }
   else
     {
-      octave_function *fcn = octave_call_stack::caller ();
+      octave_function *fcn = octave::call_stack::caller ();
 
       if (! fcn)
         error ("munlock: invalid use outside a function");
@@ -2094,7 +2094,7 @@ If no function is named then return true if the current function is locked.
     }
   else
     {
-      octave_function *fcn = octave_call_stack::caller ();
+      octave_function *fcn = octave::call_stack::caller ();
 
       if (! fcn)
         error ("mislocked: invalid use outside a function");

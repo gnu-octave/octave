@@ -1516,7 +1516,7 @@ make_idx_args (const std::string& type,
 bool
 called_from_builtin (void)
 {
-  octave_function *fcn = octave_call_stack::caller ();
+  octave_function *fcn = octave::call_stack::caller ();
 
   // FIXME: we probably need a better check here, or some other
   // mechanism to avoid overloaded functions when builtin is used.

@@ -109,7 +109,7 @@ tree_anon_fcn_handle::rvalue1 (int)
                                 ret_list ? ret_list->dup (new_scope, 0) : 0,
                                 cmd_list ? cmd_list->dup (new_scope, 0) : 0);
 
-  octave_function *curr_fcn = octave_call_stack::current ();
+  octave_function *curr_fcn = octave::call_stack::current ();
 
   if (curr_fcn)
     {

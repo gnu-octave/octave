@@ -437,8 +437,8 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
       symbol_table::set_scope (local_scope);
 
-      octave_call_stack::push (local_scope, 0);
-      frame.add_fcn (octave_call_stack::pop);
+      octave::call_stack::push (local_scope, 0);
+      frame.add_fcn (octave::call_stack::pop);
 
       octave_idx_type len = 0;
 
@@ -620,8 +620,8 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
       symbol_table::set_scope (local_scope);
 
-      octave_call_stack::push (local_scope, 0);
-      frame.add_fcn (octave_call_stack::pop);
+      octave::call_stack::push (local_scope, 0);
+      frame.add_fcn (octave::call_stack::pop);
 
       if (len > 0)
         {
@@ -1136,8 +1136,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       symbol_table::set_scope (local_scope);
 
-      octave_call_stack::push (local_scope, 0);
-      frame.add_fcn (octave_call_stack::pop);
+      octave::call_stack::push (local_scope, 0);
+      frame.add_fcn (octave::call_stack::pop);
 
       if (len > 0 && success)
         {

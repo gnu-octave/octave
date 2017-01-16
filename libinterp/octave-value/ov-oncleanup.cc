@@ -98,7 +98,8 @@ octave_oncleanup::~octave_oncleanup (void)
     }
   catch (const octave::exit_exception&)
     {
-      throw;
+      // This shouldn't happen since we disabled quit above.
+      warning ("onCleanup: exit disabled while executing cleanup function");
     }
   catch (...) // Yes, the black hole.  We're in a d-tor.
     {

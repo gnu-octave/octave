@@ -4041,6 +4041,10 @@ namespace octave
         else
           error (e, "parse error in %s", file.c_str ());
       }
+    catch (const octave::exit_exception&)
+      {
+        throw;
+      }
     catch (octave::interrupt_exception &)
       {
         throw;
@@ -4100,6 +4104,10 @@ namespace octave
               error (e, "parse error");
             else
               error (e, "parse error in %s", file.c_str ());
+          }
+        catch (const octave::exit_exception&)
+          {
+            throw;
           }
         catch (octave::interrupt_exception &)
           {

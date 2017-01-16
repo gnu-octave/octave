@@ -96,6 +96,10 @@ octave_oncleanup::~octave_oncleanup (void)
                msg.c_str ());
 
     }
+  catch (const octave::exit_exception&)
+    {
+      throw;
+    }
   catch (...) // Yes, the black hole.  We're in a d-tor.
     {
       // This shouldn't happen, in theory.

@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} help @var{name}
-## @deftypefnx {} {} help @code{--list}
-## @deftypefnx {} {} help @code{.}
+## @deftypefnx {} {} help --list
+## @deftypefnx {} {} help .
 ## @deftypefnx {} {} help
 ## Display the help text for @var{name}.
 ##
@@ -53,7 +53,7 @@ function retval = help (name)
     help NAME\n\
 \n\
   (replace NAME with the name of the command or function you would\n\
-  like to learn more about; for an operator, enclose NAME in quotes).\n\
+  like to learn more about; for an operator, enclose \"NAME\" in quotes).\n\
 \n\
   For a more detailed introduction to GNU Octave, consult the manual.\n\
   The manual may be read from the prompt by typing\n\

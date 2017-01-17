@@ -283,12 +283,12 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const
   {
     // FIXME: could be more memory efficient by having a
-    // special case of the octave_stream::write method for ranges.
+    // special case of the octave::stream::write method for ranges.
 
     return os.write (matrix_value (), block_size, output_type, skip, flt_fmt);
   }

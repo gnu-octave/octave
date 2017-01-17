@@ -37,16 +37,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "idx-vector.h"
 #include "mach-info.h"
 #include "mx-base.h"
+#include "oct-sort.h"
 #include "oct-time.h"
 #include "str-vec.h"
-
-#include "oct-sort.h"
 
 class Cell;
 class mxArray;
 class octave_map;
 class octave_scalar_map;
-class octave_stream;
 class octave_function;
 class octave_user_function;
 class octave_fcn_handle;
@@ -54,6 +52,7 @@ class octave_fcn_inline;
 class octave_value_list;
 class octave_lvalue;
 
+#include "oct-stream.h"
 #include "ov-base.h"
 
 // Forward declarations of friend functions that have default arguments.
@@ -1292,7 +1291,7 @@ public:
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name)
   { return rep->load_hdf5 (loc_id, name); }
 
-  int write (octave_stream& os, int block_size,
+  int write (octave::stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const;
 

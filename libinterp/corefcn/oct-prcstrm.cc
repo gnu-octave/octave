@@ -29,11 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-prcstrm.h"
 #include "sysdep.h"
 
-octave_stream
+octave::stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
                             octave::mach_info::float_format ff)
 {
-  return octave_stream (new octave_iprocstream (n, arg_md, ff));
+  return octave::stream (new octave_iprocstream (n, arg_md, ff));
 }
 
 octave_iprocstream::octave_iprocstream (const std::string& n,
@@ -48,11 +48,11 @@ octave_iprocstream::~octave_iprocstream (void)
   do_close ();
 }
 
-octave_stream
+octave::stream
 octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
                             octave::mach_info::float_format ff)
 {
-  return octave_stream (new octave_oprocstream (n, arg_md, ff));
+  return octave::stream (new octave_oprocstream (n, arg_md, ff));
 }
 
 octave_oprocstream::octave_oprocstream (const std::string& n,

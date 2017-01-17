@@ -119,9 +119,9 @@ error message.
   if (args.length () != 2)
     print_usage ();
 
-  octave_stream old_stream = octave_stream_list::lookup (args(0), "dup2");
+  octave::stream old_stream = octave::stream_list::lookup (args(0), "dup2");
 
-  octave_stream new_stream = octave_stream_list::lookup (args(1), "dup2");
+  octave::stream new_stream = octave::stream_list::lookup (args(1), "dup2");
 
   int i_old = old_stream.file_number ();
   int i_new = new_stream.file_number ();
@@ -290,16 +290,14 @@ exit status, it will linger until Octave exits.
   FILE *ifile = fdopen (filedesc[1], "r");
   FILE *ofile = fdopen (filedesc[0], "w");
 
-  octave_stream is = octave_stdiostream::create (exec_file + "-in",
-                                                 ifile,
-                                                 std::ios::in);
+  octave::stream is
+    = octave_stdiostream::create (exec_file + "-in", ifile, std::ios::in);
 
-  octave_stream os = octave_stdiostream::create (exec_file + "-out",
-                                                 ofile,
-                                                 std::ios::out);
+  octave::stream os
+    = octave_stdiostream::create (exec_file + "-out", ofile, std::ios::out);
 
-  return ovl (octave_stream_list::insert (os),
-              octave_stream_list::insert (is),
+  return ovl (octave::stream_list::insert (os),
+              octave::stream_list::insert (is),
               pid);
 }
 
@@ -433,7 +431,7 @@ message.
   if (args.length () != 3)
     print_usage ();
 
-  octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
+  octave::stream strm = octave::stream_list::lookup (args(0), "fcntl");
 
   int fid = strm.file_number ();
 
@@ -742,14 +740,14 @@ error message.
       FILE *ifile = fdopen (fid[0], "r");
       FILE *ofile = fdopen (fid[1], "w");
 
-      octave_stream is
+      octave::stream is
         = octave_stdiostream::create ("pipe-in", ifile, std::ios::in);
 
-      octave_stream os
+      octave::stream os
         = octave_stdiostream::create ("pipe-out", ofile, std::ios::out);
 
-      return ovl (octave_stream_list::insert (is),
-                  octave_stream_list::insert (os),
+      return ovl (octave::stream_list::insert (is),
+                  octave::stream_list::insert (os),
                   status,
                   msg);
     }
@@ -858,7 +856,7 @@ For example:
 
   if (args(0).is_scalar_type ())
     {
-      int fid = octave_stream_list::get_file_number (args(0));
+      int fid = octave::stream_list::get_file_number (args(0));
 
       octave::sys::file_fstat fs (fid);
 

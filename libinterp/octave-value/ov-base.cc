@@ -1018,7 +1018,7 @@ octave_base_value::load_hdf5 (octave_hdf5_id, const char *)
 }
 
 int
-octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
+octave_base_value::write (octave::stream&, int, oct_data_conv::data_type,
                           int, octave::mach_info::float_format) const
 {
   err_wrong_type_arg ("octave_base_value::write()", type_name ());

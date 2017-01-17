@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 
 class
-octave_base_iostream : public octave_base_stream
+octave_base_iostream : public octave::base_stream
 {
 public:
 
@@ -38,7 +38,7 @@ public:
                         std::ios::openmode m = std::ios::in | std::ios::out,
                         octave::mach_info::float_format ff
                           = octave::mach_info::native_float_format ())
-    : octave_base_stream (m, ff), nm (n) { }
+    : octave::base_stream (m, ff), nm (n) { }
 
   // No copying!
 
@@ -90,7 +90,7 @@ public:
       is (arg)
   { }
 
-  static octave_stream
+  static octave::stream
   create (std::istream *arg = 0, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
@@ -129,7 +129,7 @@ public:
       os (arg)
   { }
 
-  static octave_stream
+  static octave::stream
   create (std::ostream *arg, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 
 class
-octave_fstream : public octave_base_stream
+octave_fstream : public octave::base_stream
 {
 public:
 
@@ -46,7 +46,7 @@ public:
 
   octave_fstream& operator = (const octave_fstream&) = delete;
 
-  static octave_stream
+  static octave::stream
   create (const std::string& nm_arg,
           std::ios::openmode arg_md = std::ios::in | std::ios::out,
           octave::mach_info::float_format flt_fmt

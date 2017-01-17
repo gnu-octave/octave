@@ -46,7 +46,7 @@ public:
 
   octave_iprocstream& operator = (const octave_iprocstream&) = delete;
 
-  static octave_stream
+  static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
           octave::mach_info::float_format flt_fmt
             = octave::mach_info::native_float_format ());
@@ -72,7 +72,7 @@ public:
 
   octave_oprocstream& operator = (const octave_oprocstream&) = delete;
 
-  static octave_stream
+  static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format flt_fmt
             = octave::mach_info::native_float_format ());

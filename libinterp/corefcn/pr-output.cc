@@ -3552,9 +3552,9 @@ Note that the output from @code{fdisp} always ends with a newline.
   if (args.length () != 2)
     print_usage ();
 
-  int fid = octave_stream_list::get_file_number (args(0));
+  int fid = octave::stream_list::get_file_number (args(0));
 
-  octave_stream os = octave_stream_list::lookup (fid, "fdisp");
+  octave::stream os = octave::stream_list::lookup (fid, "fdisp");
 
   std::ostream *osp = os.output_stream ();
 

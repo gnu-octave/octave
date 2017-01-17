@@ -226,7 +226,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
     }
   else if (args(0).is_scalar_type ())
     {
-      octave_stream is = octave_stream_list::lookup (args(0), "dlmread");
+      octave::stream is = octave::stream_list::lookup (args(0), "dlmread");
 
       input = is.input_stream ();
 

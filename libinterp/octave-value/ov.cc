@@ -2189,7 +2189,7 @@ octave_value::make_storable_value (void)
 }
 
 int
-octave_value::write (octave_stream& os, int block_size,
+octave_value::write (octave::stream& os, int block_size,
                      oct_data_conv::data_type output_type, int skip,
                      octave::mach_info::float_format flt_fmt) const
 {

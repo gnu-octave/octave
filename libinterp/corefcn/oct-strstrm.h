@@ -31,14 +31,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 
 class
-octave_base_strstream : public octave_base_stream
+octave_base_strstream : public octave::base_stream
 {
 public:
 
   octave_base_strstream (std::ios::openmode m = std::ios::out,
                          octave::mach_info::float_format ff
                            = octave::mach_info::native_float_format ())
-    : octave_base_stream (m, ff) { }
+    : octave::base_stream (m, ff) { }
 
   // No copying!
 
@@ -101,12 +101,12 @@ protected:
 public:
 
 
-  static octave_stream
+  static octave::stream
   create (const char *data, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format ());
 
-  static octave_stream
+  static octave::stream
   create (const std::string& data, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format ());
@@ -154,7 +154,7 @@ protected:
 
 public:
 
-  static octave_stream
+  static octave::stream
   create (std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format ());

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include "error.h"
 #include "oct-iostrm.h"
 
@@ -69,10 +71,10 @@ octave_istream::eof (void) const
   return is && is->eof ();
 }
 
-octave_stream
+octave::stream
 octave_istream::create (std::istream *arg, const std::string& n)
 {
-  return octave_stream (new octave_istream (arg, n));
+  return octave::stream (new octave_istream (arg, n));
 }
 
 // Return nonzero if EOF has been reached on this stream.
@@ -83,9 +85,9 @@ octave_ostream::eof (void) const
   return os && os->eof ();
 }
 
-octave_stream
+octave::stream
 octave_ostream::create (std::ostream *arg, const std::string& n)
 {
-  return octave_stream (new octave_ostream (arg, n));
+  return octave::stream (new octave_ostream (arg, n));
 }
 

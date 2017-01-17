@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "oct-hdf5-types.h"
+#include "oct-stream.h"
 
 class Cell;
 class mxArray;
@@ -46,7 +47,6 @@ class octave_map;
 class octave_scalar_map;
 class octave_value;
 class octave_value_list;
-class octave_stream;
 class octave_function;
 class octave_user_function;
 class octave_user_script;
@@ -668,7 +668,7 @@ public:
   load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
   virtual int
-  write (octave_stream& os, int block_size,
+  write (octave::stream& os, int block_size,
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
 

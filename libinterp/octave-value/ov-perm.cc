@@ -436,7 +436,7 @@ octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax)
 }
 
 int
-octave_perm_matrix::write (octave_stream& os, int block_size,
+octave_perm_matrix::write (octave::stream& os, int block_size,
                            oct_data_conv::data_type output_type, int skip,
                            octave::mach_info::float_format flt_fmt) const
 {

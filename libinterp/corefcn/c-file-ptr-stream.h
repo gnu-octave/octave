@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
+#include <iostream>
 #include <streambuf>
 
 class

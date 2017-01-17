@@ -82,9 +82,9 @@ static octave_value stdin_file;
 static octave_value stdout_file;
 static octave_value stderr_file;
 
-static octave_stream stdin_stream;
-static octave_stream stdout_stream;
-static octave_stream stderr_stream;
+static octave::stream stdin_stream;
+static octave::stream stdout_stream;
+static octave::stream stderr_stream;
 
 void
 initialize_file_io (void)
@@ -98,15 +98,15 @@ initialize_file_io (void)
 
   stderr_stream = octave_ostream::create (&std::cerr, "stderr");
 
-  stdin_file = octave_stream_list::insert (stdin_stream);
-  stdout_file = octave_stream_list::insert (stdout_stream);
-  stderr_file = octave_stream_list::insert (stderr_stream);
+  stdin_file = octave::stream_list::insert (stdin_stream);
+  stdout_file = octave::stream_list::insert (stdout_stream);
+  stderr_file = octave::stream_list::insert (stderr_stream);
 }
 
 void
 close_files (void)
 {
-  octave_stream_list::clear ();
+  octave::stream_list::clear ();
 }
 
 // List of files to delete when we exit or crash.
@@ -249,7 +249,7 @@ with gnuplot.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (octave_stream_list::remove (args(0), "fclose"));
+  return ovl (octave::stream_list::remove (args(0), "fclose"));
 }
 
 DEFUN (fclear, args, ,
@@ -263,9 +263,9 @@ Clear the stream state for the file specified by the file descriptor
   if (args.length () != 1)
     print_usage ();
 
-  int fid = octave_stream_list::get_file_number (args(0));
+  int fid = octave::stream_list::get_file_number (args(0));
 
-  octave_stream os = octave_stream_list::lookup (fid, "fclear");
+  octave::stream os = octave::stream_list::lookup (fid, "fclear");
 
   os.clearerr ();
 
@@ -293,7 +293,7 @@ always a good idea to flush the standard output stream before calling
   octave_value retval = -1;
 
   // FIXME: any way to avoid special case for stdout?
-  int fid = octave_stream_list::get_file_number (args(0));
+  int fid = octave::stream_list::get_file_number (args(0));
 
   if (fid == 1)
     {
@@ -303,7 +303,7 @@ always a good idea to flush the standard output stream before calling
     }
   else
     {
-      octave_stream os = octave_stream_list::lookup (fid, "fflush");
+      octave::stream os = octave::stream_list::lookup (fid, "fflush");
 
       retval = os.flush ();
     }
@@ -337,7 +337,7 @@ To read a line and return the terminating newline see @code{fgets}.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), who);
+  octave::stream os = octave::stream_list::lookup (args(0), who);
 
   octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -377,7 +377,7 @@ To read a line and discard the terminating newline see @code{fgetl}.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), who);
+  octave::stream os = octave::stream_list::lookup (args(0), who);
 
   octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -417,7 +417,7 @@ Returns the number of lines skipped (end-of-line sequences encountered).
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), who);
+  octave::stream os = octave::stream_list::lookup (args(0), who);
 
   octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
 
@@ -431,11 +431,11 @@ Returns the number of lines skipped (end-of-line sequences encountered).
     return ovl ();
 }
 
-static octave_stream
+static octave::stream
 do_stream_open (const std::string& name, const std::string& mode_arg,
                 const std::string& arch, int& fid)
 {
-  octave_stream retval;
+  octave::stream retval;
 
   fid = -1;
 
@@ -489,11 +489,11 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
   return retval;
 }
 
-static octave_stream
+static octave::stream
 do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
                 const octave_value& tc_arch, const char *fcn, int& fid)
 {
-  octave_stream retval;
+  octave::stream retval;
 
   fid = -1;
 
@@ -623,11 +623,11 @@ When opening a new file that does not yet exist, permissions will be set to
           // with MODE = "r".  To open a file called "all", you have
           // to supply more than one argument.
           if (nargout < 2 && args(0).string_value () == "all")
-            return octave_stream_list::open_file_numbers ();
+            return octave::stream_list::open_file_numbers ();
         }
       else
         {
-          string_vector tmp = octave_stream_list::get_info (args(0));
+          string_vector tmp = octave::stream_list::get_info (args(0));
 
           retval = ovl (tmp(0), tmp(1), tmp(2));
 
@@ -643,10 +643,10 @@ When opening a new file that does not yet exist, permissions will be set to
 
   int fid = -1;
 
-  octave_stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
+  octave::stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
 
   if (os)
-    retval = ovl (octave_stream_list::insert (os), "");
+    retval = ovl (octave::stream_list::insert (os), "");
   else
     {
       int error_number = 0;
@@ -697,7 +697,7 @@ freport ()
   if (args.length () > 0)
     warning ("freport: ignoring extra arguments");
 
-  octave_stdout << octave_stream_list::list_open_files ();
+  octave_stdout << octave::stream_list::list_open_files ();
 
   return ovl ();
 }
@@ -719,7 +719,7 @@ is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.
 
   int result = -1;
 
-  octave_stream os = octave_stream_list::lookup (args(0), "frewind");
+  octave::stream os = octave::stream_list::lookup (args(0), "frewind");
 
   result = os.rewind ();
 
@@ -753,7 +753,7 @@ be positive, negative, or zero but not all combinations of @var{origin} and
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), "fseek");
+  octave::stream os = octave::stream_list::lookup (args(0), "fseek");
 
   octave_value origin_arg = (nargin == 3) ? args(2) : octave_value (-1.0);
 
@@ -771,7 +771,7 @@ beginning of the file specified by file descriptor @var{fid}.
   if (args.length () != 1)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), "ftell");
+  octave::stream os = octave::stream_list::lookup (args(0), "ftell");
 
   return ovl (os.tell ());
 }
@@ -804,15 +804,15 @@ expanded even when the template string is defined with single quotes.
 
   int result;
 
-  octave_stream os;
+  octave::stream os;
   int fmt_n = 0;
 
   if (args(0).is_string ())
-    os = octave_stream_list::lookup (1, who);
+    os = octave::stream_list::lookup (1, who);
   else
     {
       fmt_n = 1;
-      os = octave_stream_list::lookup (args(0), who);
+      os = octave::stream_list::lookup (args(0), who);
     }
 
   if (! args(fmt_n).is_string ())
@@ -903,7 +903,7 @@ Return a non-negative number on success or EOF on error.
   if (args.length () != 2)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), who);
+  octave::stream os = octave::stream_list::lookup (args(0), who);
 
   return ovl (os.puts (args(1), who));
 }
@@ -957,8 +957,8 @@ expanded even when the template string is defined with single quotes.
   // from it to return.
   octave_ostrstream *ostr = new octave_ostrstream ();
 
-  // The octave_stream destructor will delete OSTR for us.
-  octave_stream os (ostr);
+  // The octave::stream destructor will delete OSTR for us.
+  octave::stream os (ostr);
 
   if (! os.is_valid ())
     error ("%s: unable to create output buffer", who.c_str ());
@@ -1051,7 +1051,7 @@ complete description of the syntax of the template string.
 
   octave_value_list retval;
 
-  octave_stream os = octave_stream_list::lookup (args(0), who);
+  octave::stream os = octave::stream_list::lookup (args(0), who);
 
   if (! args(1).is_string ())
     error ("%s: format TEMPLATE must be a string", who.c_str ());
@@ -1116,7 +1116,7 @@ character to be read is returned in @var{pos}.
 
   std::string data = get_scan_string_data (args(0), who);
 
-  octave_stream os = octave_istrstream::create (data);
+  octave::stream os = octave_istrstream::create (data);
 
   if (! os.is_valid ())
     error ("%s: unable to create temporary input buffer", who.c_str ());
@@ -1177,7 +1177,7 @@ textscan_internal (const std::string& who, const octave_value_list& args)
   if (args.length () < 1)
     print_usage (who);
 
-  octave_stream os;
+  octave::stream os;
 
   if (args(0).is_string ())
     {
@@ -1189,7 +1189,7 @@ textscan_internal (const std::string& who, const octave_value_list& args)
         error ("%s: unable to create temporary input buffer", who.c_str ());
     }
   else
-    os =octave_stream_list::lookup (args(0), who);
+    os =octave::stream_list::lookup (args(0), who);
 
   int nskip = 1;
 
@@ -2249,7 +2249,7 @@ as the name of the function when reporting errors.
 */
 
 static octave_value
-do_fread (octave_stream& os, const octave_value& size_arg,
+do_fread (octave::stream& os, const octave_value& size_arg,
           const octave_value& prec_arg, const octave_value& skip_arg,
           const octave_value& arch_arg, octave_idx_type& count)
 {
@@ -2469,7 +2469,7 @@ The optional return value @var{count} contains the number of elements read.
   if (nargin < 1 || nargin > 5)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), "fread");
+  octave::stream os = octave::stream_list::lookup (args(0), "fread");
 
   octave_value size = lo_ieee_inf_value ();
   octave_value prec = "uchar";
@@ -2503,7 +2503,7 @@ The optional return value @var{count} contains the number of elements read.
 }
 
 static int
-do_fwrite (octave_stream& os, const octave_value& data,
+do_fwrite (octave::stream& os, const octave_value& data,
            const octave_value& prec_arg, const octave_value& skip_arg,
            const octave_value& arch_arg)
 {
@@ -2567,7 +2567,7 @@ are too large to fit in the specified precision.
   if (nargin < 2 || nargin > 5)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), "fwrite");
+  octave::stream os = octave::stream_list::lookup (args(0), "fwrite");
 
   octave_value prec = "uchar";
   octave_value skip = 0;
@@ -2609,7 +2609,7 @@ end-of-file condition.
   if (args.length () != 1)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), "feof");
+  octave::stream os = octave::stream_list::lookup (args(0), "feof");
 
   return ovl (os.eof () ? 1.0 : 0.0);
 }
@@ -2640,7 +2640,7 @@ whether the next operation will result in an error condition.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave_stream os = octave_stream_list::lookup (args(0), "ferror");
+  octave::stream os = octave::stream_list::lookup (args(0), "ferror");
 
   bool clear = false;
 
@@ -2706,15 +2706,15 @@ endwhile
 
   if (mode == "r")
     {
-      octave_stream ips = octave_iprocstream::create (name);
+      octave::stream ips = octave_iprocstream::create (name);
 
-      retval = octave_stream_list::insert (ips);
+      retval = octave::stream_list::insert (ips);
     }
   else if (mode == "w")
     {
-      octave_stream ops = octave_oprocstream::create (name);
+      octave::stream ops = octave_oprocstream::create (name);
 
-      retval = octave_stream_list::insert (ops);
+      retval = octave::stream_list::insert (ops);
     }
   else
     error ("popen: invalid MODE specified");
@@ -2734,7 +2734,7 @@ The function @code{fclose} may also be used for the same purpose.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (octave_stream_list::remove (args(0), "pclose"));
+  return ovl (octave::stream_list::remove (args(0), "pclose"));
 }
 
 DEFUN (tempname, args, ,
@@ -2858,12 +2858,12 @@ system-dependent error message.
 
       std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-      octave_stream s = octave_stdiostream::create (nm, fid, md);
+      octave::stream s = octave_stdiostream::create (nm, fid, md);
 
       if (! s)
         error ("tmpfile: failed to create octave_stdiostream object");
 
-      retval = ovl (octave_stream_list::insert (s), "");
+      retval = ovl (octave::stream_list::insert (s), "");
     }
   else
     {
@@ -2933,12 +2933,12 @@ message.
 
           std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
 
-          octave_stream s = octave_stdiostream::create (nm, fid, md);
+          octave::stream s = octave_stdiostream::create (nm, fid, md);
 
           if (! s)
             error ("mkstemp: failed to create octave_stdiostream object");
 
-          retval(0) = octave_stream_list::insert (s);
+          retval(0) = octave::stream_list::insert (s);
           retval(1) = nm;
 
           if (nargin == 2 && args(1).is_true ())

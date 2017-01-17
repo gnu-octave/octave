@@ -30,22 +30,22 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-fstrm.h"
 
-octave_stream
+octave::stream
 octave_fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
                         octave::mach_info::float_format ff)
 {
-  return octave_stream (new octave_fstream (nm_arg, arg_md, ff));
+  return octave::stream (new octave_fstream (nm_arg, arg_md, ff));
 }
 
 octave_fstream::octave_fstream (const std::string& nm_arg,
                                 std::ios::openmode arg_md,
                                 octave::mach_info::float_format ff)
-  : octave_base_stream (arg_md, ff), nm (nm_arg)
+  : octave::base_stream (arg_md, ff), nm (nm_arg)
 {
   fs.open (nm.c_str (), arg_md);
 
   if (! fs)
-    // Note: error is inherited from octave_base_stream, not ::error.
+    // Note: error is inherited from octave::base_stream, not ::error.
     error (std::strerror (errno));
 }
 
@@ -54,7 +54,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 int
 octave_fstream::seek (off_t, int)
 {
-  // Note: error is inherited from octave_base_stream, not ::error.
+  // Note: error is inherited from octave::base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
   error ("fseek: invalid_operation");
   return -1;
@@ -65,7 +65,7 @@ octave_fstream::seek (off_t, int)
 off_t
 octave_fstream::tell (void)
 {
-  // Note: error is inherited from octave_base_stream, not ::error.
+  // Note: error is inherited from octave::base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
   error ("ftell: invalid_operation");
   return -1;

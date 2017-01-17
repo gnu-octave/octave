@@ -194,6 +194,8 @@ SORT_BRIEF_DOCS        = YES
 
 SORT_MEMBERS_CTORS_1ST = YES
 
+LOOKUP_CACHE_SIZE = 2
+
 #---------------------------------------------------------------------------
 # Configuration options related to the preprocessor
 #---------------------------------------------------------------------------

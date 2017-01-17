@@ -3578,7 +3578,7 @@ namespace octave
     if (input_buf.empty ())
       {
         bool eof = false;
-        current_input_line = input_reader.get_input (eof);
+        current_input_line = reader.get_input (eof);
         input_buf.fill (current_input_line, eof);
       }
 

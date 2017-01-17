@@ -479,7 +479,7 @@ namespace octave
 
     // Handle buffering of input for lexer.
 
-    class input_buffer
+   class input_buffer
     {
     public:
 
@@ -721,16 +721,16 @@ namespace octave
   public:
 
     lexer (interpreter *interp_context = 0)
-      : base_lexer (interp_context), input_reader (this)
+      : base_lexer (interp_context), reader (this)
     { }
 
     lexer (FILE *file, interpreter *interp_context = 0)
-      : base_lexer (interp_context), input_reader (file, this)
+      : base_lexer (interp_context), reader (file, this)
     { }
 
     lexer (const std::string& eval_string,
            interpreter *interp_context = 0)
-      : base_lexer (interp_context), input_reader (eval_string, this)
+      : base_lexer (interp_context), reader (eval_string, this)
     { }
 
     // No copying!
@@ -741,42 +741,42 @@ namespace octave
 
     void reset (void)
     {
-      input_reader.reset ();
+      reader.reset ();
 
       base_lexer::reset ();
     }
 
-    void increment_promptflag (void) { input_reader.increment_promptflag (); }
+    void increment_promptflag (void) { reader.increment_promptflag (); }
 
-    void decrement_promptflag (void) { input_reader.decrement_promptflag (); }
+    void decrement_promptflag (void) { reader.decrement_promptflag (); }
 
-    int promptflag (void) const { return input_reader.promptflag (); }
+    int promptflag (void) const { return reader.promptflag (); }
 
-    int promptflag (int n) { return input_reader.promptflag (n); }
+    int promptflag (int n) { return reader.promptflag (n); }
 
     std::string input_source (void) const
     {
-      return input_reader.input_source ();
+      return reader.input_source ();
     }
 
     bool input_from_terminal (void) const
     {
-      return input_reader.input_from_terminal ();
+      return reader.input_from_terminal ();
     }
 
     bool input_from_file (void) const
     {
-      return input_reader.input_from_file ();
+      return reader.input_from_file ();
     }
 
     bool input_from_eval_string (void) const
     {
-      return input_reader.input_from_eval_string ();
+      return reader.input_from_eval_string ();
     }
 
     int fill_flex_buffer (char *buf, unsigned int max_size);
 
-    octave_input_reader input_reader;
+    input_reader reader;
   };
 
   class

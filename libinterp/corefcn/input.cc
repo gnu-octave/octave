@@ -145,35 +145,38 @@ set_default_prompts (void)
   octave_link::set_default_prompts (VPS1, VPS2, VPS4);
 }
 
-void
-octave_base_reader::do_input_echo (const std::string& input_string) const
+namespace octave
 {
-  bool forced_interactive = octave::application::forced_interactive ();
+  void
+  base_reader::do_input_echo (const std::string& input_string) const
+  {
+    bool forced_interactive = octave::application::forced_interactive ();
 
-  int do_echo = reading_script_file ()
-    ? (Vecho_executing_commands & ECHO_SCRIPTS)
-    : ((Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive);
+    int do_echo = reading_script_file ()
+      ? (Vecho_executing_commands & ECHO_SCRIPTS)
+      : ((Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive);
 
-  if (do_echo)
-    {
-      if (forced_interactive)
-        {
-          if (pflag > 0)
-            octave_stdout << octave::command_editor::decode_prompt_string (VPS1);
-          else
-            octave_stdout << octave::command_editor::decode_prompt_string (VPS2);
-        }
-      else
-        octave_stdout << octave::command_editor::decode_prompt_string (VPS4);
+    if (do_echo)
+      {
+        if (forced_interactive)
+          {
+            if (pflag > 0)
+              octave_stdout << octave::command_editor::decode_prompt_string (VPS1);
+            else
+              octave_stdout << octave::command_editor::decode_prompt_string (VPS2);
+          }
+        else
+          octave_stdout << octave::command_editor::decode_prompt_string (VPS4);
 
-      if (! input_string.empty ())
-        {
-          octave_stdout << input_string;
+        if (! input_string.empty ())
+          {
+            octave_stdout << input_string;
 
-          if (input_string[input_string.length () - 1] != '\n')
-            octave_stdout << "\n";
-        }
-    }
+            if (input_string[input_string.length () - 1] != '\n')
+              octave_stdout << "\n";
+          }
+      }
+  }
 }
 
 static std::string
@@ -231,106 +234,109 @@ interactive_input (const std::string& s, bool& eof)
   return gnu_readline (s, eof);
 }
 
-std::string
-octave_base_reader::octave_gets (bool& eof)
+namespace octave
 {
-  octave_quit ();
+  std::string
+  base_reader::octave_gets (bool& eof)
+  {
+    octave_quit ();
 
-  eof = false;
+    eof = false;
 
-  std::string retval;
+    std::string retval;
 
-  // Process pre input event hook function prior to flushing output and
-  // printing the prompt.
+    // Process pre input event hook function prior to flushing output and
+    // printing the prompt.
 
-  if (octave::application::interactive ())
-    {
-      if (! Vdebugging)
-        octave_link::exit_debugger_event ();
+    if (octave::application::interactive ())
+      {
+        if (! Vdebugging)
+          octave_link::exit_debugger_event ();
 
-      octave_link::pre_input_event ();
+        octave_link::pre_input_event ();
 
-      octave_link::set_workspace ();
-    }
+        octave_link::set_workspace ();
+      }
 
-  bool history_skip_auto_repeated_debugging_command = false;
+    bool history_skip_auto_repeated_debugging_command = false;
 
-  std::string ps = (pflag > 0) ? VPS1 : VPS2;
+    std::string ps = (pflag > 0) ? VPS1 : VPS2;
 
-  std::string prompt = octave::command_editor::decode_prompt_string (ps);
+    std::string prompt = octave::command_editor::decode_prompt_string (ps);
 
-  octave::pipe_handler_error_count = 0;
+    octave::pipe_handler_error_count = 0;
 
-  octave::flush_stdout ();
+    octave::flush_stdout ();
 
-  octave::pager_stream::reset ();
-  octave::diary_stream::reset ();
+    octave::pager_stream::reset ();
+    octave::diary_stream::reset ();
 
-  octave_diary << prompt;
+    octave_diary << prompt;
 
-  retval = interactive_input (prompt, eof);
+    retval = interactive_input (prompt, eof);
 
-  // There is no need to update the load_path cache if there is no
-  // user input.
-  if (retval != "\n"
-      && retval.find_first_not_of (" \t\n\r") != std::string::npos)
-    {
-      load_path::update ();
+    // There is no need to update the load_path cache if there is no
+    // user input.
+    if (retval != "\n"
+        && retval.find_first_not_of (" \t\n\r") != std::string::npos)
+      {
+        load_path::update ();
 
-      if (Vdebugging)
-        last_debugging_command = retval;
-      else
-        last_debugging_command = "\n";
-    }
-  else if (Vdebugging)
-    {
-      retval = last_debugging_command;
-      history_skip_auto_repeated_debugging_command = true;
-    }
+        if (Vdebugging)
+          last_debugging_command = retval;
+        else
+          last_debugging_command = "\n";
+      }
+    else if (Vdebugging)
+      {
+        retval = last_debugging_command;
+        history_skip_auto_repeated_debugging_command = true;
+      }
 
-  if (retval != "\n")
-    {
-      if (! history_skip_auto_repeated_debugging_command)
-        {
-          if (octave::command_history::add (retval))
-            octave_link::append_history (retval);
-        }
+    if (retval != "\n")
+      {
+        if (! history_skip_auto_repeated_debugging_command)
+          {
+            if (octave::command_history::add (retval))
+              octave_link::append_history (retval);
+          }
 
-      octave_diary << retval;
+        octave_diary << retval;
 
-      if (retval[retval.length () - 1] != '\n')
-        octave_diary << "\n";
+        if (retval[retval.length () - 1] != '\n')
+          octave_diary << "\n";
 
-      do_input_echo (retval);
-    }
-  else
-    octave_diary << "\n";
+        do_input_echo (retval);
+      }
+    else
+      octave_diary << "\n";
 
-  // Process post input event hook function after the internal history
-  // list has been updated.
+    // Process post input event hook function after the internal history
+    // list has been updated.
 
-  if (octave::application::interactive ())
-    octave_link::post_input_event ();
+    if (octave::application::interactive ())
+      octave_link::post_input_event ();
 
-  return retval;
-}
+    return retval;
+  }
 
-bool
-octave_base_reader::reading_fcn_file (void) const
-{
-  return lexer ? lexer->reading_fcn_file : false;
-}
+  bool
+  base_reader::reading_fcn_file (void) const
+  {
+    return lexer ? lexer->reading_fcn_file : false;
+  }
 
-bool
-octave_base_reader::reading_classdef_file (void) const
-{
-  return lexer ? lexer->reading_classdef_file : false;
-}
+  bool
+  base_reader::reading_classdef_file (void) const
+  {
+    return lexer ? lexer->reading_classdef_file : false;
+  }
 
-bool
-octave_base_reader::reading_script_file (void) const
-{
-  return lexer ? lexer->reading_script_file : false;
+  bool
+  base_reader::reading_script_file (void) const
+  {
+    return lexer ? lexer->reading_script_file : false;
+  }
 }
 
 // Fix things up so that input can come from the standard input.  This
@@ -723,53 +729,56 @@ get_debug_input (const std::string& prompt)
     }
 }
 
-const std::string octave_base_reader::in_src ("invalid");
-
-const std::string octave_terminal_reader::in_src ("terminal");
-
-std::string
-octave_terminal_reader::get_input (bool& eof)
+namespace octave
 {
-  octave_quit ();
+  const std::string base_reader::in_src ("invalid");
 
-  eof = false;
+  const std::string terminal_reader::in_src ("terminal");
 
-  return octave_gets (eof);
-}
+  std::string
+  terminal_reader::get_input (bool& eof)
+  {
+    octave_quit ();
 
-const std::string octave_file_reader::in_src ("file");
+    eof = false;
 
-std::string
-octave_file_reader::get_input (bool& eof)
-{
-  octave_quit ();
+    return octave_gets (eof);
+  }
 
-  eof = false;
+  const std::string file_reader::in_src ("file");
 
-  return octave_fgets (file, eof);
-}
+  std::string
+  file_reader::get_input (bool& eof)
+  {
+    octave_quit ();
 
-const std::string octave_eval_string_reader::in_src ("eval_string");
+    eof = false;
 
-std::string
-octave_eval_string_reader::get_input (bool& eof)
-{
-  octave_quit ();
+    return octave_fgets (file, eof);
+  }
 
-  eof = false;
+  const std::string eval_string_reader::in_src ("eval_string");
 
-  std::string retval;
+  std::string
+  eval_string_reader::get_input (bool& eof)
+  {
+    octave_quit ();
 
-  retval = eval_string;
+    eof = false;
 
-  // Clear the eval string so that the next call will return
-  // an empty character string with EOF = true.
-  eval_string = "";
+    std::string retval;
 
-  if (retval.empty ())
-    eof = true;
+    retval = eval_string;
 
-  return retval;
+    // Clear the eval string so that the next call will return
+    // an empty character string with EOF = true.
+    eval_string = "";
+
+    if (retval.empty ())
+      eof = true;
+
+    return retval;
+  }
 }
 
 // If the user simply hits return, this will produce an empty matrix.

@@ -540,7 +540,7 @@ namespace octave
 
     string_vector all_args = options.all_args ();
 
-    octave_thread::init ();
+    octave::thread::init ();
 
     set_default_prompts ();
 

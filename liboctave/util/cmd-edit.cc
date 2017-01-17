@@ -61,7 +61,7 @@ namespace octave
 
   std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
 
-  static octave_mutex event_hook_lock;
+  static octave::mutex event_hook_lock;
 
 #if defined (USE_READLINE)
 
@@ -1538,7 +1538,7 @@ namespace octave
   void
   command_editor::add_event_hook (event_hook_fcn f)
   {
-    octave_autolock guard (event_hook_lock);
+    autolock guard (event_hook_lock);
 
     if (instance_ok ())
       {
@@ -1551,7 +1551,7 @@ namespace octave
   void
   command_editor::remove_event_hook (event_hook_fcn f)
   {
-    octave_autolock guard (event_hook_lock);
+    autolock guard (event_hook_lock);
 
     if (instance_ok ())
       {

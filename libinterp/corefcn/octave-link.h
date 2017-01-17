@@ -29,9 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "oct-mutex.h"
+
 #include "event-queue.h"
 
-class octave_mutex;
 class string_vector;
 class workspace_element;
 
@@ -365,7 +366,7 @@ private:
 protected:
 
   // Semaphore to lock access to the event queue.
-  octave_mutex *event_queue_mutex;
+  octave::mutex *event_queue_mutex;
 
   // Event Queue.
   event_queue gui_event_queue;

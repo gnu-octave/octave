@@ -50,7 +50,7 @@ octave_readline_hook (void)
 octave_link *octave_link::instance = 0;
 
 octave_link::octave_link (void)
-  : event_queue_mutex (new octave_mutex ()), gui_event_queue (),
+  : event_queue_mutex (new octave::mutex ()), gui_event_queue (),
     debugging (false), link_enabled (true)
 {
   octave::command_editor::add_event_hook (octave_readline_hook);

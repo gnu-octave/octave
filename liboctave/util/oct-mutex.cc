@@ -33,144 +33,146 @@ along with Octave; see the file COPYING.  If not, see
 #  include <pthread.h>
 #endif
 
-void
-octave_base_mutex::lock (void)
+namespace octave
 {
-  (*current_liboctave_error_handler) ("mutex not supported on this platform");
-}
+  void
+  base_mutex::lock (void)
+  {
+    (*current_liboctave_error_handler) ("mutex not supported on this platform");
+  }
 
-void
-octave_base_mutex::unlock (void)
-{
-  (*current_liboctave_error_handler) ("mutex not supported on this platform");
-}
+  void
+  base_mutex::unlock (void)
+  {
+    (*current_liboctave_error_handler) ("mutex not supported on this platform");
+  }
 
-bool
-octave_base_mutex::try_lock (void)
-{
-  (*current_liboctave_error_handler) ("mutex not supported on this platform");
+  bool
+  base_mutex::try_lock (void)
+  {
+    (*current_liboctave_error_handler) ("mutex not supported on this platform");
 
-  return false;
-}
+    return false;
+  }
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-class
-octave_w32_mutex : public octave_base_mutex
-{
-public:
-  octave_w32_mutex (void)
-    : octave_base_mutex ()
+  class
+  w32_mutex : public base_mutex
   {
-    InitializeCriticalSection (&cs);
+  public:
+    w32_mutex (void)
+      : base_mutex ()
+    {
+      InitializeCriticalSection (&cs);
+    }
+
+    ~w32_mutex (void)
+    {
+      DeleteCriticalSection (&cs);
+    }
+
+    void lock (void)
+    {
+      EnterCriticalSection (&cs);
+    }
+
+    void unlock (void)
+    {
+      LeaveCriticalSection (&cs);
+    }
+
+    bool try_lock (void)
+    {
+      return (TryEnterCriticalSection (&cs) != 0);
+    }
+
+  private:
+    CRITICAL_SECTION cs;
+  };
+
+  static DWORD thread_id = 0;
+
+  void
+  thread::init (void)
+  {
+    thread_id = GetCurrentThreadId ();
   }
 
-  ~octave_w32_mutex (void)
+  bool
+  thread::is_thread (void)
   {
-    DeleteCriticalSection (&cs);
+    return (GetCurrentThreadId () == thread_id);
   }
-
-  void lock (void)
-  {
-    EnterCriticalSection (&cs);
-  }
-
-  void unlock (void)
-  {
-    LeaveCriticalSection (&cs);
-  }
-
-  bool try_lock (void)
-  {
-    return (TryEnterCriticalSection (&cs) != 0);
-  }
-
-private:
-  CRITICAL_SECTION cs;
-};
-
-static DWORD octave_thread_id = 0;
-
-void
-octave_thread::init (void)
-{
-  octave_thread_id = GetCurrentThreadId ();
-}
-
-bool
-octave_thread::is_octave_thread (void)
-{
-  return (GetCurrentThreadId () == octave_thread_id);
-}
 
 #elif defined (HAVE_PTHREAD_H)
 
-class
-octave_pthread_mutex : public octave_base_mutex
-{
-public:
-  octave_pthread_mutex (void)
-    : octave_base_mutex (), pm ()
+  class
+  pthread_mutex : public base_mutex
   {
-    pthread_mutexattr_t attr;
+  public:
+    pthread_mutex (void)
+      : base_mutex (), pm ()
+    {
+      pthread_mutexattr_t attr;
 
-    pthread_mutexattr_init (&attr);
-    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init (&pm, &attr);
-    pthread_mutexattr_destroy (&attr);
+      pthread_mutexattr_init (&attr);
+      pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
+      pthread_mutex_init (&pm, &attr);
+      pthread_mutexattr_destroy (&attr);
+    }
+
+    ~pthread_mutex (void)
+    {
+      pthread_mutex_destroy (&pm);
+    }
+
+    void lock (void)
+    {
+      pthread_mutex_lock (&pm);
+    }
+
+    void unlock (void)
+    {
+      pthread_mutex_unlock (&pm);
+    }
+
+    bool try_lock (void)
+    {
+      return (pthread_mutex_trylock (&pm) == 0);
+    }
+
+  private:
+    pthread_mutex_t pm;
+  };
+
+  static pthread_t thread_id = 0;
+
+  void
+  thread::init (void)
+  {
+    thread_id = pthread_self ();
   }
 
-  ~octave_pthread_mutex (void)
+  bool
+  thread::is_thread (void)
   {
-    pthread_mutex_destroy (&pm);
+    return (pthread_equal (thread_id, pthread_self ()) != 0);
   }
-
-  void lock (void)
-  {
-    pthread_mutex_lock (&pm);
-  }
-
-  void unlock (void)
-  {
-    pthread_mutex_unlock (&pm);
-  }
-
-  bool try_lock (void)
-  {
-    return (pthread_mutex_trylock (&pm) == 0);
-  }
-
-private:
-  pthread_mutex_t pm;
-};
-
-static pthread_t octave_thread_id = 0;
-
-void
-octave_thread::init (void)
-{
-  octave_thread_id = pthread_self ();
-}
-
-bool
-octave_thread::is_octave_thread (void)
-{
-  return (pthread_equal (octave_thread_id, pthread_self ()) != 0);
-}
 
 #endif
 
-static octave_base_mutex *
-init_rep (void)
-{
+  static octave::base_mutex *
+  init_rep (void)
+  {
 #if defined (OCTAVE_USE_WINDOWS_API)
-  return new octave_w32_mutex ();
+    return new octave::w32_mutex ();
 #elif defined (HAVE_PTHREAD_H)
-  return new octave_pthread_mutex ();
+    return new octave::pthread_mutex ();
 #else
-  return new octave_base_mutex ();
+    return new octave::base_mutex ();
 #endif
+  }
+
+  mutex::mutex (void) : rep (init_rep ()) { }
 }
-
-octave_mutex::octave_mutex (void) : rep (init_rep ()) { }
-

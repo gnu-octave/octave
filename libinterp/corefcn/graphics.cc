@@ -9690,7 +9690,7 @@ void
 gh_manager::do_execute_listener (const graphics_handle& h,
                                  const octave_value& l)
 {
-  if (octave_thread::is_octave_thread ())
+  if (octave::thread::is_thread ())
     gh_manager::execute_callback (h, l, octave_value ());
   else
     {

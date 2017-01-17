@@ -6363,14 +6363,14 @@ public:
   }
 
 public:
-  class auto_lock : public octave_autolock
+  class auto_lock : public octave::autolock
   {
   public:
     auto_lock (bool wait = true)
-      : octave_autolock (instance_ok ()
-                         ? instance->graphics_lock
-                         : octave_mutex (),
-                         wait)
+      : octave::autolock (instance_ok ()
+                          ? instance->graphics_lock
+                          : octave::mutex (),
+                          wait)
     { }
 
     // No copying!
@@ -6408,7 +6408,7 @@ private:
   std::list<graphics_handle> figure_list;
 
   // The lock for accessing the graphics sytsem.
-  octave_mutex graphics_lock;
+  octave::mutex graphics_lock;
 
   // The list of events queued by graphics toolkits.
   std::list<graphics_event> event_queue;

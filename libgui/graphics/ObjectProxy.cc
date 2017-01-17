@@ -84,7 +84,7 @@ namespace QtHandles
   void
   ObjectProxy::update (int pId)
   {
-    if (octave_thread::is_octave_thread ())
+    if (octave::thread::is_thread ())
       emit sendUpdate (pId);
     else if (m_object)
       m_object->slotUpdate (pId);

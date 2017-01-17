@@ -31,123 +31,149 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 
-class
-OCTINTERP_API
-octave_pager_buf : public std::stringbuf
+namespace octave
 {
-public:
+  class
+  OCTINTERP_API
+  pager_buf : public std::stringbuf
+  {
+  public:
 
-  octave_pager_buf (void) : std::stringbuf (), diary_skip (0) { }
+    pager_buf (void) : std::stringbuf (), diary_skip (0) { }
 
-  void flush_current_contents_to_diary (void);
+    void flush_current_contents_to_diary (void);
 
-  void set_diary_skip (void);
+    void set_diary_skip (void);
 
-protected:
+  protected:
 
-  int sync (void);
+    int sync (void);
 
-private:
+  private:
 
-  size_t diary_skip;
-};
+    size_t diary_skip;
+  };
 
-class
-OCTINTERP_API
-octave_pager_stream : public std::ostream
+  class
+  OCTINTERP_API
+  pager_stream : public std::ostream
+  {
+  protected:
+
+    pager_stream (void);
+
+  public:
+
+    // No copying!
+
+    pager_stream (const pager_stream&) = delete;
+
+    pager_stream& operator = (const pager_stream&) = delete;
+
+    ~pager_stream (void);
+
+    static void flush_current_contents_to_diary (void);
+
+    static void set_diary_skip (void);
+
+    static std::ostream& stream (void);
+
+    static void reset (void);
+
+  private:
+
+    void do_flush_current_contents_to_diary (void);
+
+    void do_set_diary_skip (void);
+
+    void do_reset (void);
+
+    static pager_stream *instance;
+
+    static bool instance_ok (void);
+
+    static void cleanup_instance (void) { delete instance; instance = 0; }
+
+    pager_buf *pb;
+  };
+
+  class
+  OCTINTERP_API
+  diary_buf : public std::stringbuf
+  {
+  public:
+
+    diary_buf (void) : std::stringbuf () { }
+
+  protected:
+
+    int sync (void);
+  };
+
+  class
+  OCTINTERP_API
+  diary_stream : public std::ostream
+  {
+  protected:
+
+    diary_stream (void);
+
+  public:
+
+    // No copying!
+
+    diary_stream (const diary_stream&) = delete;
+
+    diary_stream& operator = (const diary_stream&) = delete;
+
+    ~diary_stream (void);
+
+    static std::ostream& stream (void);
+
+    static void reset (void);
+
+  private:
+
+    void do_reset (void);
+
+    static diary_stream *instance;
+
+    static bool instance_ok (void);
+
+    static void cleanup_instance (void) { delete instance; instance = 0; }
+
+    diary_buf *db;
+  };
+
+  extern OCTAVE_API void flush_stdout (void);
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::diary_buf' instead")
+typedef octave::diary_buf octave_diary_buf;
+
+OCTAVE_DEPRECATED ("use 'octave::diary_stream' instead")
+typedef octave::diary_stream octave_diary_stream;
+
+OCTAVE_DEPRECATED ("use 'octave::pager_buf' instead")
+typedef octave::pager_buf octave_pager_buf;
+
+OCTAVE_DEPRECATED ("use 'octave::pager_stream' instead")
+typedef octave::pager_stream octave_pager_stream;
+
+OCTAVE_DEPRECATED ("use 'octave::flush_stdout' instead")
+static inline void
+flush_octave_stdout (void)
 {
-protected:
+  return octave::flush_stdout ();
+}
 
-  octave_pager_stream (void);
+#endif
 
-public:
+#define octave_stdout (octave::pager_stream::stream ())
 
-  // No copying!
-
-  octave_pager_stream (const octave_pager_stream&) = delete;
-
-  octave_pager_stream& operator = (const octave_pager_stream&) = delete;
-
-  ~octave_pager_stream (void);
-
-  static void flush_current_contents_to_diary (void);
-
-  static void set_diary_skip (void);
-
-  static std::ostream& stream (void);
-
-  static void reset (void);
-
-private:
-
-  void do_flush_current_contents_to_diary (void);
-
-  void do_set_diary_skip (void);
-
-  void do_reset (void);
-
-  static octave_pager_stream *instance;
-
-  static bool instance_ok (void);
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  octave_pager_buf *pb;
-};
-
-class
-OCTINTERP_API
-octave_diary_buf : public std::stringbuf
-{
-public:
-
-  octave_diary_buf (void) : std::stringbuf () { }
-
-protected:
-
-  int sync (void);
-};
-
-class
-OCTINTERP_API
-octave_diary_stream : public std::ostream
-{
-protected:
-
-  octave_diary_stream (void);
-
-public:
-
-  // No copying!
-
-  octave_diary_stream (const octave_diary_stream&) = delete;
-
-  octave_diary_stream& operator = (const octave_diary_stream&) = delete;
-
-  ~octave_diary_stream (void);
-
-  static std::ostream& stream (void);
-
-  static void reset (void);
-
-private:
-
-  void do_reset (void);
-
-  static octave_diary_stream *instance;
-
-  static bool instance_ok (void);
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  octave_diary_buf *db;
-};
-
-#define octave_stdout (octave_pager_stream::stream ())
-
-#define octave_diary (octave_diary_stream::stream ())
-
-extern OCTINTERP_API void flush_octave_stdout (void);
+#define octave_diary (octave::diary_stream::stream ())
 
 #endif
 

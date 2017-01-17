@@ -154,7 +154,7 @@ verror (bool save_last_error, std::ostream& os,
     return;
 
   if (! buffer_error_messages || Vdebug_on_caught)
-    flush_octave_stdout ();
+    octave::flush_stdout ();
 
   // FIXME: we really want to capture the message before it has all the
   //        formatting goop attached to it.  We probably also want just the
@@ -385,7 +385,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
   if (discard_warning_messages)
     return;
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::ostringstream output_buf;
 

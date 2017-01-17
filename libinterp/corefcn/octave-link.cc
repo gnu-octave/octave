@@ -129,7 +129,7 @@ Undocumented internal function.
     {
       std::string file = args(0).xstring_value ("first argument must be filename");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::edit_file (file);
     }
@@ -137,7 +137,7 @@ Undocumented internal function.
     {
       std::string file = args(0).xstring_value ("first argument must be filename");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::prompt_new_edit_file (file);
     }
@@ -159,7 +159,7 @@ Undocumented internal function.
       std::string msg = args(1).xstring_value ("invalid arguments");
       std::string title = args(2).xstring_value ("invalid arguments");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::message_dialog (dlg, msg, title);
     }
@@ -184,7 +184,7 @@ Undocumented internal function.
       std::string btn3 = args(4).xstring_value ("invalid arguments");
       std::string btndef = args(5).xstring_value ("invalid arguments");
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
                                              btndef);
@@ -219,7 +219,7 @@ Undocumented internal function.
                                           (flist.columns () > 1
                                            ? flist(i,1) : "")));
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::list<std::string> items_lst
     = octave_link::file_dialog (filter_lst, title, filename, pathname,
@@ -299,7 +299,7 @@ Undocumented internal function.
   std::string ok_string = args(6).string_value ();
   std::string cancel_string = args(7).string_value ();
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::pair<std::list<int>, int> result
     = octave_link::list_dialog (list_lst, mode, width, height,
@@ -351,7 +351,7 @@ Undocumented internal function.
   for (octave_idx_type i = 0; i < nel; i++)
     defaults_lst.push_back (tmp(i));
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
   std::list<std::string> items_lst
     = octave_link::input_dialog (prompt_lst, title, nr, nc,

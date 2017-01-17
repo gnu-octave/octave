@@ -9926,7 +9926,7 @@ gh_manager::do_process_events (bool force)
   }
 
   if (events_executed)
-    flush_octave_stdout ();
+    octave::flush_stdout ();
 
   if (Vdrawnow_requested && ! old_Vdrawnow_requested)
     {

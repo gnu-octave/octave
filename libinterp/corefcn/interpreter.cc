@@ -993,7 +993,7 @@ namespace octave
 
         OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
-        OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+        OCTAVE_SAFE_CALL (octave::flush_stdout, ());
       }
 
     if (! deja_vu)
@@ -1034,16 +1034,16 @@ namespace octave
 
         OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
 
-        OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+        OCTAVE_SAFE_CALL (octave::flush_stdout, ());
 
         if (! m_quitting_gracefully && octave::application::interactive ())
           {
             octave_stdout << "\n";
 
             // Yes, we want this to be separate from the call to
-            // flush_octave_stdout above.
+            // octave::flush_stdout above.
 
-            OCTAVE_SAFE_CALL (flush_octave_stdout, ());
+            OCTAVE_SAFE_CALL (octave::flush_stdout, ());
           }
 
         // Don't call singleton_cleanup_list::cleanup until we have the

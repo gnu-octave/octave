@@ -217,7 +217,7 @@ interactive_input (const std::string& s, bool& eof)
             recover_from_exception ();
         }
 
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       // We set Vdrawnow_requested to false even if there is an error in
       // drawnow so that the error doesn't reappear at every prompt.
@@ -261,10 +261,10 @@ octave_base_reader::octave_gets (bool& eof)
 
   octave::pipe_handler_error_count = 0;
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
-  octave_pager_stream::reset ();
-  octave_diary_stream::reset ();
+  octave::pager_stream::reset ();
+  octave::diary_stream::reset ();
 
   octave_diary << prompt;
 
@@ -786,10 +786,10 @@ get_user_input (const octave_value_list& args, int nargout)
 
   std::string prompt = args(0).xstring_value ("input: unrecognized argument");
 
-  flush_octave_stdout ();
+  octave::flush_stdout ();
 
-  octave_pager_stream::reset ();
-  octave_diary_stream::reset ();
+  octave::pager_stream::reset ();
+  octave::diary_stream::reset ();
 
   octave_diary << prompt;
 

@@ -297,7 +297,7 @@ always a good idea to flush the standard output stream before calling
 
   if (fid == 1)
     {
-      flush_octave_stdout ();
+      octave::flush_stdout ();
 
       retval = 0;
     }

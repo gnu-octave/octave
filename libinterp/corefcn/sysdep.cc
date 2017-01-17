@@ -818,7 +818,7 @@ clc;
 
           if (octave::math::isinf (dval))
             {
-              flush_octave_stdout ();
+              octave::flush_stdout ();
               octave_kbhit ();
             }
           else
@@ -828,7 +828,7 @@ clc;
   else
     {
       Fdrawnow ();
-      flush_octave_stdout ();
+      octave::flush_stdout ();
       octave_kbhit ();
     }
 

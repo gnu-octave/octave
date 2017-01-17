@@ -64,18 +64,32 @@ install_builtin_dispatch (const std::string& name, const std::string& klass);
 extern OCTINTERP_API octave::dynamic_library
 get_current_shlib (void);
 
-// This is a convenience class that calls the above function automatically at
-// construction time.  When deriving new classes, you can either use it as a
-// field or as a parent (with multiple inheritance).
-
-class octave_auto_shlib : public octave::dynamic_library
+namespace octave
 {
-public:
-  octave_auto_shlib (void)
-    : octave::dynamic_library (get_current_shlib ()) { }
-  octave_auto_shlib (const octave::dynamic_library& shl)
-    : octave::dynamic_library (shl) { }
-};
+  // FIXME: this class doesn't seem to be used in Octave.  Is it
+  // really needed?
+
+  // This is a convenience class that calls the above function automatically at
+  // construction time.  When deriving new classes, you can either use it as a
+  // field or as a parent (with multiple inheritance).
+
+  class auto_shlib : public dynamic_library
+  {
+  public:
+
+    auto_shlib (void) : dynamic_library (get_current_shlib ()) { }
+
+    auto_shlib (const dynamic_library& shl) : dynamic_library (shl) { }
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::auto_shlib' instead")
+typedef octave::auto_shlib octave_auto_shlib;
+
+#endif
+
 
 extern OCTINTERP_API bool
 defun_isargout (int, int);

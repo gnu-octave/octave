@@ -42,10 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "nproc-wrapper.h"
 #endif
 
-#if defined (HAVE_FFTW)
-
 namespace octave
 {
+#if defined (HAVE_FFTW)
+
   fftw_planner *fftw_planner::instance = 0;
 
   // Helper class to create and cache FFTW plans for both 1D and

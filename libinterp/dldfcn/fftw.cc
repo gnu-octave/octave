@@ -157,65 +157,65 @@ used per default.
           std::string arg1 = args(1).xstring_value ("fftw: METHOD must be a string");
 
           std::transform (arg1.begin (), arg1.end (), arg1.begin (), tolower);
-          octave_fftw_planner::FftwMethod meth
-            = octave_fftw_planner::UNKNOWN;
-          octave_float_fftw_planner::FftwMethod methf
-            = octave_float_fftw_planner::UNKNOWN;
+          octave::fftw_planner::FftwMethod meth
+            = octave::fftw_planner::UNKNOWN;
+          octave::float_fftw_planner::FftwMethod methf
+            = octave::float_fftw_planner::UNKNOWN;
 
           if (arg1 == "estimate")
             {
-              meth = octave_fftw_planner::ESTIMATE;
-              methf = octave_float_fftw_planner::ESTIMATE;
+              meth = octave::fftw_planner::ESTIMATE;
+              methf = octave::float_fftw_planner::ESTIMATE;
             }
           else if (arg1 == "measure")
             {
-              meth = octave_fftw_planner::MEASURE;
-              methf = octave_float_fftw_planner::MEASURE;
+              meth = octave::fftw_planner::MEASURE;
+              methf = octave::float_fftw_planner::MEASURE;
             }
           else if (arg1 == "patient")
             {
-              meth = octave_fftw_planner::PATIENT;
-              methf = octave_float_fftw_planner::PATIENT;
+              meth = octave::fftw_planner::PATIENT;
+              methf = octave::float_fftw_planner::PATIENT;
             }
           else if (arg1 == "exhaustive")
             {
-              meth = octave_fftw_planner::EXHAUSTIVE;
-              methf = octave_float_fftw_planner::EXHAUSTIVE;
+              meth = octave::fftw_planner::EXHAUSTIVE;
+              methf = octave::float_fftw_planner::EXHAUSTIVE;
             }
           else if (arg1 == "hybrid")
             {
-              meth = octave_fftw_planner::HYBRID;
-              methf = octave_float_fftw_planner::HYBRID;
+              meth = octave::fftw_planner::HYBRID;
+              methf = octave::float_fftw_planner::HYBRID;
             }
           else
             error ("fftw: unrecognized planner METHOD");
 
-          meth = octave_fftw_planner::method (meth);
-          octave_float_fftw_planner::method (methf);
+          meth = octave::fftw_planner::method (meth);
+          octave::float_fftw_planner::method (methf);
 
-          if (meth == octave_fftw_planner::MEASURE)
+          if (meth == octave::fftw_planner::MEASURE)
             retval = octave_value ("measure");
-          else if (meth == octave_fftw_planner::PATIENT)
+          else if (meth == octave::fftw_planner::PATIENT)
             retval = octave_value ("patient");
-          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+          else if (meth == octave::fftw_planner::EXHAUSTIVE)
             retval = octave_value ("exhaustive");
-          else if (meth == octave_fftw_planner::HYBRID)
+          else if (meth == octave::fftw_planner::HYBRID)
             retval = octave_value ("hybrid");
           else
             retval = octave_value ("estimate");
         }
       else //planner getter
         {
-          octave_fftw_planner::FftwMethod meth =
-            octave_fftw_planner::method ();
+          octave::fftw_planner::FftwMethod meth =
+            octave::fftw_planner::method ();
 
-          if (meth == octave_fftw_planner::MEASURE)
+          if (meth == octave::fftw_planner::MEASURE)
             retval = octave_value ("measure");
-          else if (meth == octave_fftw_planner::PATIENT)
+          else if (meth == octave::fftw_planner::PATIENT)
             retval = octave_value ("patient");
-          else if (meth == octave_fftw_planner::EXHAUSTIVE)
+          else if (meth == octave::fftw_planner::EXHAUSTIVE)
             retval = octave_value ("exhaustive");
-          else if (meth == octave_fftw_planner::HYBRID)
+          else if (meth == octave::fftw_planner::HYBRID)
             retval = octave_value ("hybrid");
           else
             retval = octave_value ("estimate");
@@ -292,19 +292,19 @@ used per default.
             error ("fftw: number of threads must be >=1");
 
 #if defined (HAVE_FFTW3_THREADS)
-          octave_fftw_planner::threads (nthreads);
+          octave::fftw_planner::threads (nthreads);
 #else
           err_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
 #if defined (HAVE_FFTW3F_THREADS)
-          octave_float_fftw_planner::threads (nthreads);
+          octave::float_fftw_planner::threads (nthreads);
 #else
           err_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
         }
       else //threads getter
 #if defined (HAVE_FFTW3_THREADS)
-        retval = octave_value (octave_fftw_planner::threads());
+        retval = octave_value (octave::fftw_planner::threads());
 #else
         retval = 1;
 #endif

@@ -1021,7 +1021,7 @@ FloatComplexMatrix::fourier (void) const
   const FloatComplex *in (data ());
   FloatComplex *out (retval.fortran_vec ());
 
-  octave_fftw::fft (in, out, npts, nsamples);
+  octave::fftw::fft (in, out, npts, nsamples);
 
   return retval;
 }
@@ -1050,7 +1050,7 @@ FloatComplexMatrix::ifourier (void) const
   const FloatComplex *in (data ());
   FloatComplex *out (retval.fortran_vec ());
 
-  octave_fftw::ifft (in, out, npts, nsamples);
+  octave::fftw::ifft (in, out, npts, nsamples);
 
   return retval;
 }
@@ -1064,7 +1064,7 @@ FloatComplexMatrix::fourier2d (void) const
   const FloatComplex *in (data ());
   FloatComplex *out (retval.fortran_vec ());
 
-  octave_fftw::fftNd (in, out, 2, dv);
+  octave::fftw::fftNd (in, out, 2, dv);
 
   return retval;
 }
@@ -1078,7 +1078,7 @@ FloatComplexMatrix::ifourier2d (void) const
   const FloatComplex *in (data ());
   FloatComplex *out (retval.fortran_vec ());
 
-  octave_fftw::ifftNd (in, out, 2, dv);
+  octave::fftw::ifftNd (in, out, 2, dv);
 
   return retval;
 }

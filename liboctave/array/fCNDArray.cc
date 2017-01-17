@@ -79,8 +79,8 @@ FloatComplexNDArray::fourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::fft (in + k * stride * n, out + k * stride * n,
-                      n, howmany, stride, dist);
+    octave::fftw::fft (in + k * stride * n, out + k * stride * n,
+                       n, howmany, stride, dist);
 
   return retval;
 }
@@ -110,8 +110,8 @@ FloatComplexNDArray::ifourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::ifft (in + k * stride * n, out + k * stride * n,
-                       n, howmany, stride, dist);
+    octave::fftw::ifft (in + k * stride * n, out + k * stride * n,
+                        n, howmany, stride, dist);
 
   return retval;
 }
@@ -131,7 +131,7 @@ FloatComplexNDArray::fourier2d (void) const
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
-    octave_fftw::fftNd (in + i*dist, out + i*dist, 2, dv2);
+    octave::fftw::fftNd (in + i*dist, out + i*dist, 2, dv2);
 
   return retval;
 }
@@ -151,7 +151,7 @@ FloatComplexNDArray::ifourier2d (void) const
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
-    octave_fftw::ifftNd (in + i*dist, out + i*dist, 2, dv2);
+    octave::fftw::ifftNd (in + i*dist, out + i*dist, 2, dv2);
 
   return retval;
 }
@@ -166,7 +166,7 @@ FloatComplexNDArray::fourierNd (void) const
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
-  octave_fftw::fftNd (in, out, rank, dv);
+  octave::fftw::fftNd (in, out, rank, dv);
 
   return retval;
 }
@@ -181,7 +181,7 @@ FloatComplexNDArray::ifourierNd (void) const
   FloatComplexNDArray retval (dv);
   FloatComplex *out (retval.fortran_vec ());
 
-  octave_fftw::ifftNd (in, out, rank, dv);
+  octave::fftw::ifftNd (in, out, rank, dv);
 
   return retval;
 }

@@ -1019,7 +1019,7 @@ ComplexMatrix::fourier (void) const
   const Complex *in (data ());
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::fft (in, out, npts, nsamples);
+  octave::fftw::fft (in, out, npts, nsamples);
 
   return retval;
 }
@@ -1048,7 +1048,7 @@ ComplexMatrix::ifourier (void) const
   const Complex *in (data ());
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::ifft (in, out, npts, nsamples);
+  octave::fftw::ifft (in, out, npts, nsamples);
 
   return retval;
 }
@@ -1062,7 +1062,7 @@ ComplexMatrix::fourier2d (void) const
   const Complex *in (data ());
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::fftNd (in, out, 2, dv);
+  octave::fftw::fftNd (in, out, 2, dv);
 
   return retval;
 }
@@ -1076,7 +1076,7 @@ ComplexMatrix::ifourier2d (void) const
   const Complex *in (data ());
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::ifftNd (in, out, 2, dv);
+  octave::fftw::ifftNd (in, out, 2, dv);
 
   return retval;
 }

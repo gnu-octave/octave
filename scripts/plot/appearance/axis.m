@@ -213,6 +213,7 @@ function limits = __axis__ (ca, varargin)
         dy = diff (__get_tight_lims__ (ca, "y"));
         dz = diff (__get_tight_lims__ (ca, "z"));
         new_pbar = [dx dy dz];
+        new_pbar(new_pbar == 0) = 1;
         if (dx/pbar(1) < dy/pbar(2))
           set (ca, "xlimmode", "auto");
           new_pbar(1) = (dy / axis_pos(4)) * axis_pos(3);

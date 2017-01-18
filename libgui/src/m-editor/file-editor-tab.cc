@@ -682,7 +682,7 @@ file_editor_tab::update_lexer ()
               //         user preferences
 
               // keywords are always used
-              add_octave_apis (F__keywords__ ());       // add new entries
+              add_octave_apis (Fiskeyword ());            // add new entries
 
               if (octave_builtins)
                 add_octave_apis (F__builtins__ ());       // add new entries

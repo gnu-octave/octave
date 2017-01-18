@@ -143,7 +143,7 @@ function retval = do_list_functions ()
   operators = do_list_operators ();
 
   keywords = sprintf ("*** keywords:\n\n%s\n\n",
-                      list_in_columns (iskeyword ()));
+                      list_in_columns (__keywords__ ()));
 
   builtins = sprintf ("*** builtins:\n\n%s\n\n",
                       list_in_columns (__builtins__ ()));

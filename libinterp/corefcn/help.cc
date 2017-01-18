@@ -41,32 +41,33 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "str-vec.h"
 
-#include "call-stack.h"
-#include <defaults.h>
 #include "Cell.h"
+#include "builtin-defun-decls.h"
+#include "call-stack.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
 #include "help.h"
 #include "input.h"
+#include "interpreter.h"
 #include "load-path.h"
-#include "ovl.h"
-#include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
+#include "ov-usr-fcn.h"
+#include "ovl.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
 #include "pt-pr-code.h"
+#include "quit.h"
 #include "sighandlers.h"
 #include "symtab.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "quit.h"
+#include <defaults.h>
 
 // Name of the doc cache file specified on the command line.
 // (--doc-cache-file file)
@@ -144,46 +145,6 @@ const static char * const operators[] =
 
 const static string_vector operator_names (operators);
 
-const static char * const keywords[] =
-{
-  "break",
-  "case",
-  "catch",
-  "continue",
-  "do",
-  "else",
-  "elseif",
-  "end",
-  "end_try_catch",
-  "end_unwind_protect",
-  "endfor",
-  "endfunction",
-  "endif",
-  "endparfor",
-  "endswitch",
-  "endwhile",
-  "for",
-  "function",
-  "global",
-  "if",
-  "otherwise",
-  "parfor",
-  "persistent",
-  "return",
-  "static",
-  "switch",
-  "try",
-  "until",
-  "unwind_protect",
-  "unwind_protect_cleanup",
-  "varargin",
-  "varargout",
-  "while",
-  0
-};
-
-const static string_vector keyword_names (keywords);
-
 // Return a vector of all functions from this file,
 // for use in command line auto-completion.
 static string_vector
@@ -219,7 +180,8 @@ local_functions (void)
 string_vector
 make_name_list (void)
 {
-  const int key_len = keyword_names.numel ();
+  const static string_vector keywords = Fiskeyword ()(0).string_vector_value ();
+  const static int key_len = keywords.numel (); 
 
   const string_vector bif = symbol_table::built_in_function_names ();
   const int bif_len = bif.numel ();
@@ -248,8 +210,9 @@ make_name_list (void)
 
   int j = 0;
   int i = 0;
+
   for (i = 0; i < key_len; i++)
-    list[j++] = keyword_names[i];
+    list[j++] = keywords[i];
 
   for (i = 0; i < bif_len; i++)
     list[j++] = bif[i];
@@ -632,8 +595,7 @@ The format is a string which is one of @qcode{"texinfo"},
   return ovl (text, format);
 }
 
-// Return a cell array of strings containing the names of all
-// operators.
+// Return a cell array of strings containing the names of all operators.
 
 DEFUN (__operators__, , ,
        doc: /* -*- texinfo -*-
@@ -644,20 +606,13 @@ Undocumented internal function.
   return ovl (Cell (operator_names));
 }
 
-// Return a cell array of strings containing the names of all
-// keywords.
+// Return a cell array of strings containing the names of all keywords.
+// iskeyword() function is located in lex.ll and is based on what the parser
+// thinks is a keyword.
 
-DEFUN (__keywords__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __keywords__ ()
-Undocumented internal function.
-@end deftypefn */)
-{
-  return ovl (Cell (keyword_names));
-}
+DEFALIAS (__keywords__, iskeyword)
 
-// Return a cell array of strings containing the names of all builtin
-// functions.
+// Return a cell array of strings with the names of all builtin functions.
 
 DEFUN (__builtins__, , ,
        doc: /* -*- texinfo -*-

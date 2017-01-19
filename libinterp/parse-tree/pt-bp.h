@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 class tree;
 class tree_decl_command;
 
-static std::string pt_bp_empty_string ("");
 class
 tree_breakpoint : public tree_walker
 {
@@ -42,7 +41,7 @@ public:
 
   enum action { set = 1, clear = 2, list = 3 };
 
-  tree_breakpoint (int l, action a, const std::string& c = pt_bp_empty_string)
+  tree_breakpoint (int l, action a, const std::string& c = "")
     : line (l), act (a), condition (c), found (false), bp_list () { }
 
   // No copying!

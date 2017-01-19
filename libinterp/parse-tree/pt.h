@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 class octave_function;
 class tree_walker;
 class bp_table;
-bool meets_condition (std::string *);
 
 // Base class for the parse tree.
 

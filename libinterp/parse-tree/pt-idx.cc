@@ -272,11 +272,28 @@ tree_index_expression::rvalue (int nargout)
 static void
 final_index_error (octave::index_exception& e, const tree_expression *expr)
 {
+  std::string extra_message;
+
   if (expr->is_identifier ()
       && dynamic_cast<const tree_identifier *> (expr)->is_variable ())
-    e.set_var (expr->name ());
+    {
+      std::string var = expr->name ();
 
-  std::string msg = e.message ();
+      e.set_var (var);
+
+      octave_value fcn = symbol_table::find_function (var);
+
+      if (fcn.is_function ())
+        {
+          octave_function *fp = fcn.function_value ();
+
+          if (fp && fp->name () == var)
+            extra_message = " (note: variable '" + var + "' shadows function)";
+        }
+    }
+
+  std::string msg = e.message () + extra_message;
+
   error_with_id (e.err_id (), msg.c_str ());
 }
 

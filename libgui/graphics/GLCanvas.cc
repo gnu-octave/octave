@@ -46,7 +46,7 @@ namespace QtHandles
 #endif
   {
     setFocusPolicy (Qt::ClickFocus);
-    setFocus();
+    setFocus ();
   }
 
   GLCanvas::~GLCanvas (void)
@@ -63,7 +63,7 @@ namespace QtHandles
         octave::opengl_renderer r;
 
         r.set_viewport (width (), height ());
-        r.draw(go);
+        r.draw (go);
       }
   }
 

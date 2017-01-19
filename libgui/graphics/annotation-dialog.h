@@ -41,7 +41,7 @@ public:
   explicit annotation_dialog (QWidget * parent, const octave_value_list &pr);
   ~annotation_dialog ();
 
-  octave_value_list get_properties() const;
+  octave_value_list get_properties () const;
 
 private slots:
   // slots for dialog's buttons
@@ -50,7 +50,7 @@ private slots:
   void prompt_for_color ();
 
 private:
-  void init();
+  void init ();
 
   void get_gui_props ();
   void set_gui_props ();

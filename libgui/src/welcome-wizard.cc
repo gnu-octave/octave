@@ -286,7 +286,7 @@ welcome_wizard::welcome_wizard (QWidget *p)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   // HACK to forceshow of dialog if started minimized
-  ShowWindow((HWND)winId(), SW_SHOWNORMAL);
+  ShowWindow ((HWND)winId (), SW_SHOWNORMAL);
 #endif
 }
 

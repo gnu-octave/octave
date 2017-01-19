@@ -96,7 +96,7 @@ namespace QtHandles
       if (tmp.isEmpty ())
         tmp += "";
 
-      Cell v(toStringVector (tmp));
+      Cell v (toStringVector (tmp));
       return v;
     }
 
@@ -239,8 +239,8 @@ namespace QtHandles
 
           if (c)
             {
-              // FIXME: QCursor::pos() may give inaccurate results with asynchronous
-              //        window systems like X11 over ssh.
+              // FIXME: QCursor::pos() may give inaccurate results with
+              //        asynchronous window systems like X11 over ssh.
               QPoint qp = c->mapFromGlobal (QCursor::pos ());
 
               return tkFig->properties<figure> ().map_from_boundingbox (qp.x (),

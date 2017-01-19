@@ -101,7 +101,7 @@ namespace QtHandles
         graphics_object gObj (go);
 
         OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
-        gObj.get_properties ().set(toolkitObjectProperty (go), tmp);
+        gObj.get_properties ().set (toolkitObjectProperty (go), tmp);
 
         emit createObject (go.get_handle ().value ());
 

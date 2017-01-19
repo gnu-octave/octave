@@ -121,8 +121,8 @@ namespace QtHandles
      2) Used for QKeyEvents where cursor position must be determined.
   */
   void
-  Canvas::updateCurrentPoint(const graphics_object& fig,
-                             const graphics_object& obj, QMouseEvent* event)
+  Canvas::updateCurrentPoint (const graphics_object& fig,
+                              const graphics_object& obj, QMouseEvent* event)
   {
     gh_manager::auto_lock lock;
 
@@ -159,8 +159,8 @@ namespace QtHandles
   }
 
   void
-  Canvas::updateCurrentPoint(const graphics_object& fig,
-                             const graphics_object& obj)
+  Canvas::updateCurrentPoint (const graphics_object& fig,
+                              const graphics_object& obj)
   {
     gh_manager::auto_lock lock;
 
@@ -176,8 +176,8 @@ namespace QtHandles
 
         if (childObj.isa ("axes"))
           {
-            // FIXME: QCursor::pos() may give inaccurate results with asynchronous
-            //        window systems like X11 over ssh.
+            // FIXME: QCursor::pos() may give inaccurate results with
+            //        asynchronous window systems like X11 over ssh.
             QWidget *w = qWidget ();
             QPoint p = w->mapFromGlobal (QCursor::pos ());
             axes::properties& ap = Utils::properties<axes> (childObj);

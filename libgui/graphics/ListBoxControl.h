@@ -45,7 +45,7 @@ namespace QtHandles
   protected:
     void update (int pId);
     bool eventFilter (QObject* watched, QEvent* e);
-    void sendSelectionChange();
+    void sendSelectionChange ();
 
   private slots:
     void itemSelectionChanged (void);

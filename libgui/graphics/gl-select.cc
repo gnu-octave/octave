@@ -196,7 +196,7 @@ namespace octave
     // FIXME: probably more efficient to only compute bbox instead
     //        of doing full text rendering...
     text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
-    fake_text(x, y, z, bbox, false);
+    fake_text (x, y, z, bbox, false);
 
     return bbox;
   }

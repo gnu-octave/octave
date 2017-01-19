@@ -113,7 +113,7 @@ history_dock_widget::construct ()
   QSettings *settings = resource_manager::get_settings ();
 
   _filter_shown
-    = settings->value ("history_dock_widget/filter_shown",true).toBool();
+    = settings->value ("history_dock_widget/filter_shown",true).toBool ();
   _filter_widget->setVisible (_filter_shown);
 
   _filter->addItems (settings->value ("history_dock_widget/mru_list").toStringList ());

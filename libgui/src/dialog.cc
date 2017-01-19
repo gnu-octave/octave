@@ -489,7 +489,7 @@ FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
 }
 
 void
-FileDialog::rejectSelection(void)
+FileDialog::rejectSelection (void)
 {
   QStringList empty;
   emit finish_input (empty, "", 0);

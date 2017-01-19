@@ -94,7 +94,7 @@ workspace_view::workspace_view (QWidget *p)
 
   if (settings)
     {
-      _filter_shown = settings->value ("workspaceview/filter_shown",true).toBool();
+      _filter_shown = settings->value ("workspaceview/filter_shown",true).toBool ();
       _filter_widget->setVisible (_filter_shown);
 
       ws_layout->setMargin (2);
@@ -265,7 +265,7 @@ workspace_view::header_contextmenu_requested (const QPoint& mpos)
     {
       QAction *action = menu.addAction (_columns_shown.at (i),
                                         _sig_mapper, SLOT (map ()));
-      _sig_mapper->setMapping(action, i);
+      _sig_mapper->setMapping (action, i);
       action->setCheckable (true);
       action->setChecked (
             settings->value (_columns_shown_keys.at (i),true).toBool ());

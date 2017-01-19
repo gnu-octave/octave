@@ -105,7 +105,7 @@ namespace QtHandles
 
     edit->setAcceptRichText (false);
     edit->setPlainText (Utils::fromStringVector (
-                          up.get_string_vector()).join("\n"));
+                          up.get_string_vector ()).join ("\n"));
 
     connect (edit, SIGNAL (textChanged (void)),
              SLOT (textChanged (void)));
@@ -191,7 +191,7 @@ namespace QtHandles
       {
       case uicontrol::properties::ID_STRING:
         edit->setPlainText (Utils::fromStringVector (
-                              up.get_string_vector()).join("\n"));
+                              up.get_string_vector ()).join ("\n"));
         return true;
 
       case uicontrol::properties::ID_MIN:
@@ -228,10 +228,11 @@ namespace QtHandles
     if (m_textChanged)
       {
         if (m_multiLine)
-          gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")),
-                                false);
+          gh_manager::post_set (m_handle, "string",
+                                Utils::toCellString (txt.split ("\n")), false);
         else
-          gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+          gh_manager::post_set (m_handle, "string",
+                                Utils::toStdString (txt), false);
 
         m_textChanged = false;
       }
@@ -249,10 +250,11 @@ namespace QtHandles
                        ? qWidget<TextEdit> ()->toPlainText ()
                        : qWidget<QLineEdit> ()->text ());
         if (m_multiLine)
-          gh_manager::post_set (m_handle, "string", Utils::toCellString(txt.split("\n")),
-                                false);
+          gh_manager::post_set (m_handle, "string",
+                                Utils::toCellString (txt.split ("\n")), false);
         else
-          gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
+          gh_manager::post_set (m_handle, "string",
+                                Utils::toStdString (txt), false);
         gh_manager::post_callback (m_handle, "callback");
 
         m_textChanged = false;

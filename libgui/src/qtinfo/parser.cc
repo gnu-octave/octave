@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRegExp>
 #include <QBuffer>
 
-parser::parser(QObject *p)
+parser::parser (QObject *p)
   : QObject(p)
 {
   _compressors_map.insert ("bz2",  "bzip2 -dc \"%1\"");
@@ -178,7 +178,7 @@ parser::search_node (const QString& node_arg)
       seek (io, realPos);
 
       QString text = get_next_node (io);
-      if (! text.isEmpty())
+      if (! text.isEmpty ())
         {
           return text;
         }
@@ -228,7 +228,7 @@ parser::get_next_node (QIODevice *io)
           line_buffer = io->readLine ();  // image tag that is not needed
           line = io->readLine ();         // firsts line of text message
           for (i=1; i<line_buffer.size ()+6; i++)  // correct the size
-            line.insert (line.size ()-1,QByteArray(" "));   // by adding blanks
+            line.insert (line.size ()-1,QByteArray (" "));  // by adding blanks
         }
 
       if (line.at (0) == '"' && line.size () == 5)  // end of image construct
@@ -319,14 +319,14 @@ replace_links (QString& text)
           url_link = note;
         }
 
-      term.replace(":","");
-      note.replace(":","");
+      term.replace (":","");
+      note.replace (":","");
       note.replace (QRegExp ("`([^']+)'"),"\\1");   // no extra format in links
 
       QRegExp re_break ("(\n[ ]*)");
 
       if (note == "fig" || note == "tab")
-        url_link.prepend("#");
+        url_link.prepend ("#");
 
       QString href;
       if (type == "\n*")
@@ -338,7 +338,7 @@ replace_links (QString& text)
         href = re_break.cap (1) + " ";
       else if (re_break.indexIn (note) != -1)
         term += re_break.cap (1);
-      note.replace(re_break,"&nbsp;");
+      note.replace (re_break,"&nbsp;");
 
       url_link = url_link.trimmed ();
       url_link.replace ("\n"," ");

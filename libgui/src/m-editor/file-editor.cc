@@ -70,7 +70,7 @@ file_editor::file_editor (QWidget *p)
   _fetab_actions << _find_previous_action;
 
   setVisible (false);
-  setAcceptDrops(true);
+  setAcceptDrops (true);
 
   _file_encoding = QString ();  // for selecting an encoding in open dialog
 }
@@ -271,7 +271,7 @@ file_editor::request_open_file (void)
   // Giving trouble under KDE (problem is related to Qt signal handling on unix,
   // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
   // it had/has no effect on Windows, though)
-  fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
+  fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
 
   // define a new grid layout with the extra elements
   QGridLayout *extra = new QGridLayout (fileDialog);
@@ -681,7 +681,7 @@ file_editor::handle_edit_mfile_request (const QString& fname,
   QString message = QString ();
   QString filename = QString ();
 
-  if (type == QString("built-in function"))
+  if (type == QString ("built-in function"))
     {
       // built in function: can't edit
       message = tr ("%1 is a built-in function");
@@ -1502,9 +1502,9 @@ file_editor::add_action (QMenu *menu, const QIcon &icon, const QString &text,
 void
 file_editor::enable_menu_shortcuts (bool enable)
 {
-  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
+  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin ();
 
-  while (i != _hash_menu_text.constEnd())
+  while (i != _hash_menu_text.constEnd ())
     {
       i.key ()->setTitle (i.value ().at (! enable));
       ++i;
@@ -2351,7 +2351,7 @@ file_editor::dragEnterEvent (QDragEnterEvent *e)
 {
   if (e->mimeData ()->hasUrls ())
     {
-      e->acceptProposedAction();
+      e->acceptProposedAction ();
     }
 }
 

@@ -65,7 +65,7 @@ marker::handle_remove_via_original_linenr (int linenr)
 {
   if (_original_linenr == linenr)
     {
-      _edit_area->markerDeleteHandle(_mhandle);
+      _edit_area->markerDeleteHandle (_mhandle);
       delete this;
     }
 }
@@ -151,7 +151,7 @@ marker::handle_marker_line_deleted (int mhandle)
       if (_marker_type == breakpoint || _marker_type == debugger_position)
         {
           int editor_linenr = _edit_area->markerLine (_mhandle);
-          _edit_area->markerDeleteHandle(_mhandle);
+          _edit_area->markerDeleteHandle (_mhandle);
           _marker_type = _marker_type == breakpoint ? unsure_breakpoint
                                                     : unsure_debugger_position;
           _mhandle = _edit_area->markerAdd (editor_linenr, _marker_type);
@@ -174,7 +174,7 @@ marker::handle_marker_line_undeleted (int mhandle)
           || _marker_type == unsure_debugger_position)
         {
           int editor_linenr = _edit_area->markerLine (_mhandle);
-          _edit_area->markerDeleteHandle(_mhandle);
+          _edit_area->markerDeleteHandle (_mhandle);
           _marker_type = _marker_type == unsure_breakpoint ? breakpoint
                                                            : debugger_position;
           _mhandle = _edit_area->markerAdd (editor_linenr, _marker_type);

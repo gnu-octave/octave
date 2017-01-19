@@ -83,7 +83,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area,
   : QDialog (p)
 {
   setWindowTitle (tr ("Find and Replace"));
-  setWindowIcon (QIcon(":/actions/icons/find.png"));
+  setWindowIcon (QIcon (":/actions/icons/find.png"));
 
   _search_label = new QLabel (tr ("Find &what:"));
   _search_line_edit = new QLineEdit;
@@ -95,7 +95,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area,
   _case_check_box = new QCheckBox (tr ("Match &case"));
   _from_start_check_box = new QCheckBox (tr ("Search from &start"));
   _wrap_check_box = new QCheckBox (tr ("&Wrap while searching"));
-  _wrap_check_box->setChecked(true);
+  _wrap_check_box->setChecked (true);
   _find_next_button = new QPushButton (tr ("&Find Next"));
   _find_prev_button = new QPushButton (tr ("Find &Previous"));
   _replace_button = new QPushButton (tr ("&Replace"));
@@ -253,14 +253,14 @@ find_dialog::init_search_text ()
   if (_edit_area->hasSelectedText ())
     {
       int lbeg, lend, cbeg, cend;
-      _edit_area->getSelection(&lbeg,&cbeg,&lend,&cend);
+      _edit_area->getSelection (&lbeg,&cbeg,&lend,&cend);
       if (lbeg == lend)
         _search_line_edit->setText (_edit_area->selectedText ());
     }
 
   // set focus to "Find what" and select all text
-  _search_line_edit->setFocus();
-  _search_line_edit->selectAll();
+  _search_line_edit->setFocus ();
+  _search_line_edit->selectAll ();
 
   // Default to "find" next time.
   // Otherwise, it defaults to the last action, which may be "replace all".
@@ -325,11 +325,11 @@ find_dialog::find (bool forward)
           _edit_area->getCursorPosition (&line,&col);
           if (_find_result_available && _edit_area->hasSelectedText ())
             {
-              int currpos = _edit_area->positionFromLineIndex(line,col);
+              int currpos = _edit_area->positionFromLineIndex (line,col);
               currpos -= (_search_line_edit->text ().length ());
               if (currpos < 0)
                 currpos = 0;
-              _edit_area->lineIndexFromPosition(currpos, &line,&col);
+              _edit_area->lineIndexFromPosition (currpos, &line,&col);
             }
         }
     }
@@ -428,7 +428,7 @@ find_dialog::replace_all ()
         }
 
       QMessageBox msg_box (QMessageBox::Information, tr ("Replace Result"),
-                           tr ("%1 items replaced").arg(_rep_all-1),
+                           tr ("%1 items replaced").arg (_rep_all-1),
                            QMessageBox::Ok, this);
       msg_box.exec ();
 

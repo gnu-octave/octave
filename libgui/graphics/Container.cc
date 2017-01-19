@@ -58,7 +58,7 @@ namespace QtHandles
           {
             graphics_object fig = go.get_ancestor ("figure");
 
-            m_canvas = Canvas::create (fig.get("renderer").string_value (),
+            m_canvas = Canvas::create (fig.get ("renderer").string_value (),
                                        this, gh);
 
             QWidget* canvasWidget = m_canvas->qWidget ();

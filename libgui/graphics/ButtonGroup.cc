@@ -103,7 +103,7 @@ namespace QtHandles
 
         if (container)
           {
-            QFrame* frame = new QFrame(container);
+            QFrame* frame = new QFrame (container);
             return new ButtonGroup (go, new QButtonGroup (frame), frame);
           }
       }
@@ -435,7 +435,7 @@ namespace QtHandles
   void
   ButtonGroup::addButton (QAbstractButton* btn)
   {
-    m_buttongroup->addButton(btn);
+    m_buttongroup->addButton (btn);
     connect (btn, SIGNAL (toggled (bool)), SLOT (buttonToggled (bool)));
   }
 
@@ -448,14 +448,14 @@ namespace QtHandles
         gh_manager::auto_lock lock;
         uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
-        graphics_handle oldValue = bp.get_selectedobject();
+        graphics_handle oldValue = bp.get_selectedobject ();
 
-        QAbstractButton* checkedBtn = m_buttongroup->checkedButton();
+        QAbstractButton* checkedBtn = m_buttongroup->checkedButton ();
 
         graphics_handle newValue = graphics_handle ();
         if (checkedBtn != m_hiddenbutton)
           {
-            Object* checkedObj = Object::fromQObject(checkedBtn);
+            Object* checkedObj = Object::fromQObject (checkedBtn);
             newValue = checkedObj->properties ().get___myhandle__ ();
           }
 
@@ -468,15 +468,15 @@ namespace QtHandles
   void
   ButtonGroup::buttonClicked (QAbstractButton* btn)
   {
-    Q_UNUSED(btn);
+    Q_UNUSED (btn);
 
     gh_manager::auto_lock lock;
     uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
-    graphics_handle oldValue = bp.get_selectedobject();
+    graphics_handle oldValue = bp.get_selectedobject ();
 
-    QAbstractButton* checkedBtn = m_buttongroup->checkedButton();
-    Object* checkedObj = Object::fromQObject(checkedBtn);
+    QAbstractButton* checkedBtn = m_buttongroup->checkedButton ();
+    Object* checkedObj = Object::fromQObject (checkedBtn);
     graphics_handle newValue = checkedObj->properties ().get___myhandle__ ();
 
     if (oldValue != newValue)
@@ -488,7 +488,7 @@ namespace QtHandles
         eventData.setfield ("EventName", "SelectionChanged");
         octave_value selectionChangedEventObject = octave_value (new octave_struct (
               eventData));
-        gh_manager::post_callback(m_handle, "selectionchangedfcn",
+        gh_manager::post_callback (m_handle, "selectionchangedfcn",
                                   selectionChangedEventObject);
       }
   }

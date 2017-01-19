@@ -424,7 +424,7 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
     {
       shortcut_t sc = _sc.at (i);
 
-      QTreeWidgetItem* section = _level_hash[sc.settings_key.section(':',0,0)];
+      QTreeWidgetItem* section = _level_hash[sc.settings_key.section (':',0,0)];
       QTreeWidgetItem* tree_item = new QTreeWidgetItem (section);
 
       // set a slightly transparent foreground for default columns
@@ -507,7 +507,7 @@ shortcut_manager::shortcut_dialog (int index)
 
       _dialog->setWindowTitle (tr ("Enter new Shortcut"));
 
-      QVBoxLayout *box = new QVBoxLayout(_dialog);
+      QVBoxLayout *box = new QVBoxLayout (_dialog);
 
       QLabel *help = new QLabel (tr ("Apply the desired shortcut or click "
                                      "on the right button to reset the "
@@ -520,7 +520,7 @@ shortcut_manager::shortcut_dialog (int index)
       direct->setCheckState (Qt::Checked);
       box->addWidget (direct);
 
-      QGridLayout *grid = new QGridLayout();
+      QGridLayout *grid = new QGridLayout ();
 
       QLabel *actual = new QLabel (tr ("Actual shortcut"));
       _edit_actual = new enter_shortcut (_dialog);
@@ -546,8 +546,8 @@ shortcut_manager::shortcut_dialog (int index)
       QList<QAbstractButton *> buttons = button_box->buttons ();
       for (int i = 0; i < buttons.count (); i++)
         buttons.at (i)->setShortcut (QKeySequence ());
-      connect(button_box, SIGNAL (accepted ()), _dialog, SLOT (accept ()));
-      connect(button_box, SIGNAL (rejected ()), _dialog, SLOT (reject ()));
+      connect (button_box, SIGNAL (accepted ()), _dialog, SLOT (accept ()));
+      connect (button_box, SIGNAL (rejected ()), _dialog, SLOT (reject ()));
       box->addWidget (button_box);
 
       _dialog->setLayout (box);
@@ -575,16 +575,16 @@ shortcut_manager::shortcut_dialog_finished (int result)
     return;
 
   // check for duplicate
-  int double_index = _shortcut_hash[_edit_actual->text()] - 1;
+  int double_index = _shortcut_hash[_edit_actual->text ()] - 1;
 
   if (double_index >= 0 && double_index != _handled_index)
     {
-      int ret = QMessageBox::warning(this, tr("Double Shortcut"),
+      int ret = QMessageBox::warning (this, tr ("Double Shortcut"),
                   tr ("The chosen shortcut\n  \"%1\"\n"
                       "is already used for the action\n  \"%2\".\n"
                       "Do you want to use the shortcut anyhow removing it "
                       "from the previous action?")
-                     .arg (_edit_actual->text())
+                     .arg (_edit_actual->text ())
                      .arg (_sc.at (double_index).description),
                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
@@ -602,7 +602,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
   shortcut_t shortcut = _sc.at (_handled_index);
   if (! shortcut.actual_sc.isEmpty ())
     _shortcut_hash.remove (shortcut.actual_sc.toString ());
-  shortcut.actual_sc = _edit_actual->text();
+  shortcut.actual_sc = _edit_actual->text ();
   _sc.replace (_handled_index, shortcut);
 
   _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc.toString ());
@@ -648,14 +648,14 @@ bool
 shortcut_manager::overwrite_all_shortcuts ()
 {
   QMessageBox msg_box;
-  msg_box.setWindowTitle(tr ("Overwriting Shortcuts"));
+  msg_box.setWindowTitle (tr ("Overwriting Shortcuts"));
   msg_box.setIcon (QMessageBox::Warning);
-  msg_box.setText(tr ("You are about to overwrite all shortcuts.\n"
+  msg_box.setText (tr ("You are about to overwrite all shortcuts.\n"
      "Would you like to save the current shortcut set or cancel the action?"));
-  msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+  msg_box.setStandardButtons (QMessageBox::Save | QMessageBox::Cancel);
   QPushButton *discard = msg_box.addButton (tr ("Don't save"),
                                             QMessageBox::DestructiveRole);
-  msg_box.setDefaultButton(QMessageBox::Save);
+  msg_box.setDefaultButton (QMessageBox::Save);
 
   int ret = msg_box.exec ();
 
@@ -776,6 +776,6 @@ enter_shortcut::keyPressEvent (QKeyEvent *e)
       if (modifiers & Qt::MetaModifier)
         key += Qt::META;
 
-      setText (QKeySequence(key).toString ());
+      setText (QKeySequence (key).toString ());
     }
 }

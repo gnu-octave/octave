@@ -77,7 +77,7 @@ webinfo::webinfo (QWidget *p)
   hbox_layout = new QHBoxLayout ();
   vbox_layout->addLayout (hbox_layout);
 
-  _search_line_edit = new QLineEdit(this);
+  _search_line_edit = new QLineEdit (this);
 #if defined (HAVE_SETPLACEHOLDERTEXT)
   _search_line_edit->setPlaceholderText (
     tr ("Type here and press \'Return\' to search"));
@@ -107,7 +107,7 @@ webinfo::webinfo (QWidget *p)
       QString msg_text = QString (
           "<html><body><br><br><center><b>%1</b></center></body></html>").
           arg (tr ("The info file<p>%1<p>or compressed versions do not exist").
-          arg(QString::fromStdString (Vinfo_file)));
+          arg (QString::fromStdString (Vinfo_file)));
       msg->setHtml (msg_text);
     }
 }
@@ -129,7 +129,7 @@ webinfo::load_node (const QString& node_name)
 {
   // no XREF in the tabs
   QString tab_text = node_name;
-  tab_text.replace("XREF","");
+  tab_text.replace ("XREF","");
 
   //Check if node has been already opened.
   for (int i = 0; i < _tab_bar->count (); i++)
@@ -185,8 +185,8 @@ webinfo::addNewTab (const QString& name)
 
   connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this,
            SLOT (link_clicked (const QUrl &)));
-  disconnect(_tab_bar, SIGNAL (currentChanged(int)), this,
-             SLOT (current_tab_changed (int)));
+  disconnect (_tab_bar, SIGNAL (currentChanged (int)), this,
+              SLOT (current_tab_changed (int)));
 
   int ns = _stacked_widget->addWidget (_text_browser);
   _stacked_widget->setCurrentIndex (ns);
@@ -232,11 +232,11 @@ webinfo::load_ref (const QString &ref_name)
   else
     {
       // not found
-      load_node("Top");
+      load_node ("Top");
     }
 
   if (_text_browser)
-    _text_browser->setFocus();
+    _text_browser->setFocus ();
 }
 
 void
@@ -262,14 +262,14 @@ webinfo::search ()
 void
 webinfo::zoom_in ()
 {
-  _font_web.setPointSize (_font_web.pointSize() + 1);
+  _font_web.setPointSize (_font_web.pointSize () + 1);
   _text_browser->setFont (_font_web);
 }
 
 void
 webinfo::zoom_out ()
 {
-  _font_web.setPointSize (_font_web.pointSize() - 1);
+  _font_web.setPointSize (_font_web.pointSize () - 1);
   _text_browser->setFont (_font_web);
 }
 

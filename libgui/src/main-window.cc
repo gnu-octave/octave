@@ -400,7 +400,7 @@ main_window::display_release_notes (void)
       release_notes_window->setLayout (vlayout);
       release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
 
-      browser->document()->adjustSize ();
+      browser->document ()->adjustSize ();
 
       // center the window on the screen where octave is running
       QDesktopWidget *m_desktop = QApplication::desktop ();
@@ -1382,7 +1382,7 @@ main_window::construct (void)
                resource_manager::instance, SLOT (cleanup_instance ()));
 
       connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
-               this, SLOT(focus_changed (QWidget*, QWidget*)));
+               this, SLOT (focus_changed (QWidget*, QWidget*)));
 
       connect (this, SIGNAL (settings_changed (const QSettings *)),
                this, SLOT (notice_settings (const QSettings *)));
@@ -1681,9 +1681,9 @@ main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
 void
 main_window::disable_menu_shortcuts (bool disable)
 {
-  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
+  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin ();
 
-  while (i != _hash_menu_text.constEnd())
+  while (i != _hash_menu_text.constEnd ())
     {
       i.key ()->setTitle (i.value ().at (disable));
       ++i;

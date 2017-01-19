@@ -72,7 +72,7 @@ private slots:
 
 protected:
 
-  void focusInEvent(QFocusEvent *focusEvent);
+  void focusInEvent (QFocusEvent *focusEvent);
 
 private:
 

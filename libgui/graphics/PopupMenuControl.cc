@@ -80,7 +80,7 @@ namespace QtHandles
           box->clear ();
           box->addItems (Utils::fromStdString
                          (up.get_string_string ()).split ('|'));
-          if (box->count() > 0
+          if (box->count () > 0
               && oldCurrent >= 0
               && oldCurrent < box->count ())
             {

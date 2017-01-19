@@ -462,7 +462,7 @@ octave_dock_widget::handle_settings (const QSettings *settings)
   set_style (false);
 }
 
-bool octave_dock_widget::eventFilter(QObject *obj, QEvent *e)
+bool octave_dock_widget::eventFilter (QObject *obj, QEvent *e)
 {
   if (e->type () == QEvent::NonClientAreaMouseButtonDblClick)
     {

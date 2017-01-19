@@ -47,7 +47,7 @@ class tab_widget : public QTabWidget
 public:
   tab_widget (QWidget *p) : QTabWidget (p) { }
   ~tab_widget () { }
-  QTabBar* tabBar() const { return (QTabWidget::tabBar()); }
+  QTabBar* tabBar () const { return (QTabWidget::tabBar ()); }
 };
 
 class file_editor : public file_editor_interface
@@ -298,8 +298,8 @@ private slots:
 
 protected:
 
-  void dragEnterEvent(QDragEnterEvent *event);
-  void dropEvent(QDropEvent *event);
+  void dragEnterEvent (QDragEnterEvent *event);
+  void dropEvent (QDropEvent *event);
 
 private:
 

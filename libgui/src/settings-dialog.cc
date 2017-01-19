@@ -274,7 +274,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     }
 
   // restore last geometry
-  restoreGeometry (settings->value("settings/geometry").toByteArray ());
+  restoreGeometry (settings->value ("settings/geometry").toByteArray ());
 
   // look for available language files and the actual settings
   QString qm_dir_name = resource_manager::get_gui_translation_dir ();
@@ -1001,7 +1001,7 @@ settings_dialog::button_clicked (QAbstractButton *button)
 void
 settings_dialog::get_dir (QLineEdit *line_edit, const QString& title)
 {
-  QString dir = QFileDialog::getExistingDirectory(this,
+  QString dir = QFileDialog::getExistingDirectory (this,
                 title, line_edit->text (),
                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
   line_edit->setText (dir);

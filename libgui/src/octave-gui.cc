@@ -165,7 +165,7 @@ namespace octave
 
     // set windows style for windows
 #if defined (Q_OS_WIN32)
-    qt_app.setStyle(QStyleFactory::create("Windows"));
+    qt_app.setStyle (QStyleFactory::create ("Windows"));
 #endif
 
     bool start_gui = start_gui_p ();

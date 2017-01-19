@@ -314,7 +314,7 @@ find_files_dialog::stop_find ()
   _contains_text_edit->setEnabled (true);
 
   find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
-  QString res_str = QString (tr("%1 match(es)")).arg (m->rowCount ());
+  QString res_str = QString (tr ("%1 match (es)")).arg (m->rowCount ());
 
   _status_bar->showMessage (res_str);
 }

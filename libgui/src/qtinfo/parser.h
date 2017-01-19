@@ -100,10 +100,10 @@ private:
   QString get_node_prev (const QString& text);
 
   /** Parses info files and gets map of node positions.*/
-  void parse_info_map();
+  void parse_info_map ();
 
   /** Open info files and uncompress them. */
-  QIODevice *open_file(QFileInfo & fileInfo);
+  QIODevice *open_file (QFileInfo & fileInfo);
 
   /** Calculates real position of nodes.
     * @param pos position from info file.

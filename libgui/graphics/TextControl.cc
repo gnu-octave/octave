@@ -59,7 +59,7 @@ namespace QtHandles
     label->setWordWrap (false);
     label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
                          up.get_verticalalignment ()));
-    label->setText(Utils::fromStringVector (up.get_string_vector()).join("\n"));
+    label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
   }
 
   TextControl::~TextControl (void)
@@ -74,7 +74,7 @@ namespace QtHandles
     switch (pId)
       {
       case uicontrol::properties::ID_STRING:
-        label->setText(Utils::fromStringVector (up.get_string_vector()).join("\n"));
+        label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
         break;
 
       case uicontrol::properties::ID_HORIZONTALALIGNMENT:

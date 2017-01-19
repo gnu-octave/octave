@@ -162,7 +162,7 @@ namespace QtHandles
   }
 
   void
-  ListBoxControl::sendSelectionChange()
+  ListBoxControl::sendSelectionChange ()
   {
     if (! m_blockCallback)
       {
@@ -173,7 +173,7 @@ namespace QtHandles
         int i = 0;
 
         foreach (const QModelIndex& idx, l)
-        value(i++) = (idx.row () + 1);
+          value(i++) = idx.row () + 1;
 
         gh_manager::post_set (m_handle, "value", octave_value (value), false);
         gh_manager::post_callback (m_handle, "callback");
@@ -236,7 +236,7 @@ namespace QtHandles
                   override_return = true;
                 else
                   {
-                    if (! list->indexAt(m->pos()).isValid())
+                    if (! list->indexAt (m->pos ()).isValid ())
                       override_return = true;
                     m_selectionChanged = true;
                   }
@@ -249,9 +249,9 @@ namespace QtHandles
                 if (m->button () & Qt::RightButton)
                   override_return = true;
 
-                else if (! list->indexAt(m->pos()).isValid())
+                else if (! list->indexAt (m->pos ()).isValid ())
                   {
-                    list->setCurrentRow(list->count()-1);
+                    list->setCurrentRow (list->count () - 1);
                     override_return = true;
                   }
 

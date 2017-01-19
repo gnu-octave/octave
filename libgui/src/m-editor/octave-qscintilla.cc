@@ -296,7 +296,7 @@ octave_qscintilla::contextmenu_edit (bool)
 void
 octave_qscintilla::contextmenu_run (bool)
 {
-  QStringList commands = selectedText ().split (QRegExp("[\r\n]"),
+  QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
                                                 QString::SkipEmptyParts);
   for (int i = 0; i < commands.size (); i++)
     emit execute_command_in_terminal_signal (commands.at (i));
@@ -309,7 +309,7 @@ void
 octave_qscintilla::contextmenu_break_condition (bool)
 {
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-  QAction *action = qobject_cast<QAction *>(sender());
+  QAction *action = qobject_cast<QAction *>(sender ());
   QPoint local_pos = action->data ().value<QPoint> ();
 
   // pick point just right of margins, so lineAt doesn't give -1
@@ -335,11 +335,11 @@ octave_qscintilla::text_changed ()
 }
 
 // when edit area gets focus update information on undo/redo actions
-void octave_qscintilla::focusInEvent(QFocusEvent *focusEvent)
+void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
 {
   emit status_update (isUndoAvailable (), isRedoAvailable ());
 
-  QsciScintilla::focusInEvent(focusEvent);
+  QsciScintilla::focusInEvent (focusEvent);
 }
 
 #endif

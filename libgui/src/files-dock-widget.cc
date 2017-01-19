@@ -238,8 +238,8 @@ files_dock_widget::files_dock_widget (QWidget *p)
            SIGNAL (customContextMenuRequested (const QPoint &)),
            this, SLOT (contextmenu_requested (const QPoint &)));
 
-  _file_tree_view->header()->setContextMenuPolicy (Qt::CustomContextMenu);
-  connect (_file_tree_view->header(),
+  _file_tree_view->header ()->setContextMenuPolicy (Qt::CustomContextMenu);
+  connect (_file_tree_view->header (),
            SIGNAL (customContextMenuRequested (const QPoint &)),
            this, SLOT (headercontextmenu_requested (const QPoint &)));
 
@@ -389,7 +389,7 @@ files_dock_widget::display_directory (const QString& dir, bool set_octave_dir)
           QSettings *settings = resource_manager::get_settings ();
           QString ext = settings->value ("filesdockwidget/txt_file_extensions",
                                          "m;c;cc;cpp;h;txt").toString ();
-          QStringList extensions = ext.split(";", QString::SkipEmptyParts);
+          QStringList extensions = ext.split (";", QString::SkipEmptyParts);
 
           if (QFile::exists (abs_fname))
             {
@@ -456,7 +456,7 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
     {
       QAction *action = menu.addAction (_columns_shown.at (i),
                                         _sig_mapper, SLOT (map ()));
-      _sig_mapper->setMapping(action, i);
+      _sig_mapper->setMapping (action, i);
       action->setCheckable (true);
       action->setChecked (
             settings->value (_columns_shown_keys.at (i),true).toBool ());
@@ -487,10 +487,10 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
       if (! sel.contains (index))
         {
           // is not selected -> clear actual selection and select this item
-          m->setCurrentIndex(index,
-                             QItemSelectionModel::Clear
-                             | QItemSelectionModel::Select
-                             | QItemSelectionModel::Rows);
+          m->setCurrentIndex (index,
+                              QItemSelectionModel::Clear
+                              | QItemSelectionModel::Select
+                              | QItemSelectionModel::Rows);
         }
 
       // construct the context menu depending on item

@@ -101,7 +101,7 @@ protected slots:
   virtual void do_undo () {  }
 
   // event filter for double clicks into the window decoration elements
-  bool eventFilter(QObject *obj, QEvent *e);
+  bool eventFilter (QObject *obj, QEvent *e);
 
 private slots:
 

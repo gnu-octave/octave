@@ -324,7 +324,7 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
       _edit_area->setCursorPosition (line, pos_fct);
       _edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
                                                   // SCI_VISIBLEFROMDOCLINE
-      int vis_line = _edit_area->SendScintilla(2220, line);
+      int vis_line = _edit_area->SendScintilla (2220, line);
       _edit_area->SendScintilla (2613, vis_line); // SCI_SETFIRSTVISIBLELINE
       return;
     }
@@ -589,7 +589,7 @@ file_editor_tab::update_lexer ()
   QSettings *settings = resource_manager::get_settings ();
 
   // build information for auto completion (APIs)
-  _lexer_apis = new QsciAPIs(lexer);
+  _lexer_apis = new QsciAPIs (lexer);
 
   if (_lexer_apis)
     {
@@ -599,11 +599,11 @@ file_editor_tab::update_lexer ()
 #if defined (HAVE_QT4)
       QString prep_apis_path
         = QDesktopServices::storageLocation (QDesktopServices::HomeLocation)
-          + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+          + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
 #else
       QString prep_apis_path
         = QStandardPaths::writableLocation (QStandardPaths::HomeLocation)
-          + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+          + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
 #endif
 
       // get settings which infos are used for octave
@@ -698,7 +698,7 @@ file_editor_tab::update_lexer ()
 
               for (i=1; i<=3; i++) // test the first 5 keyword sets
                 {
-                  keyword = QString(lexer->keywords (i));           // get list
+                  keyword = QString (lexer->keywords (i));          // get list
                   keyword_list = keyword.split (QRegExp ("\\s+"));  // split
                   for (j = 0; j < keyword_list.size (); j++)        // add to API
                     _lexer_apis->add (keyword_list.at (j));
@@ -708,7 +708,7 @@ file_editor_tab::update_lexer ()
           // dsiconnect slot for saving prepared info if already connected
           disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), 0, 0);
           // check whether path for prepared info exists or can be created
-          if (QDir("/").mkpath (prep_apis_path))
+          if (QDir ("/").mkpath (prep_apis_path))
             {
               // path exists, apis info can be saved there
               connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
@@ -779,14 +779,14 @@ file_editor_tab::comment_string (const QString& lexer)
       QSettings *settings = resource_manager::get_settings ();
       int comment_index = settings->value ("editor/octave_comment_string", 0).toInt ();
       if (comment_index == 1)
-      	return QString("#");
+      	return QString ("#");
       else if (comment_index == 2)
-        return QString("%");
+        return QString ("%");
       else
-        return QString("##");  // default and for index 0
+        return QString ("##");  // default and for index 0
     }
   else if (lexer == "perl" || lexer == "bash" || lexer == "diff")
-    return QString("#");
+    return QString ("#");
   else if (lexer == "cpp")
     return ("//");
   else if (lexer == "batch")
@@ -1253,7 +1253,7 @@ file_editor_tab::find (const QWidget *ID, QList<QAction *> fetab_actions)
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
       QPoint p = _find_dialog->pos ();
-      _find_dialog->move(p.x ()+10, p.y ()+10);
+      _find_dialog->move (p.x ()+10, p.y ()+10);
     }
 
   _find_dialog->show ();
@@ -1606,7 +1606,7 @@ file_editor_tab::load_file (const QString& fileName)
   QTextStream in (&file);
   // set the desired codec
   QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
-  in.setCodec(codec);
+  in.setCodec (codec);
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
   _edit_area->setText (in.readAll ());
@@ -1623,7 +1623,7 @@ file_editor_tab::load_file (const QString& fileName)
   // FIXME: (BREAKPOINTS) At this point it would be nice to put any set
   // breakpoints on the margin.  In order to do this, somehow the
   // "dbstatus" command needs to be accessed.  All it would require is a
-  // routine that does "res = feval("dbstatus") and signals that result
+  // routine that does "res = feval ("dbstatus") and signals that result
   // to some slot.
   //
   // See patch #8016 for a general way to get Octave results from
@@ -1665,7 +1665,7 @@ file_editor_tab::detect_eol_mode ()
 #endif
   QSettings *settings = resource_manager::get_settings ();
   QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
-        settings->value("editor/default_eol_mode",os_eol_mode).toInt ());
+        settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
 
   int count_max = 0;
 
@@ -1750,7 +1750,7 @@ file_editor_tab::new_file (const QString &commands)
 #endif
   _edit_area->setEolMode (
     static_cast<QsciScintilla::EolMode> (
-      settings->value("editor/default_eol_mode",eol_mode).toInt ()));
+      settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
 
   update_eol_indicator ();
 
@@ -1958,7 +1958,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // Giving trouble under KDE (problem is related to Qt signal handling on unix,
   // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
   // it had/has no effect on Windows, though)
-  fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
+  fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
 
   // define a new grid layout with the extra elements
   QGridLayout *extra = new QGridLayout (fileDialog);
@@ -2301,7 +2301,7 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
     _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
 
   _edit_area->setEolVisibility (
-              settings->value("editor/show_eol_chars",false).toBool ());
+              settings->value ("editor/show_eol_chars",false).toBool ());
 
   if (settings->value ("editor/showLineNumbers", true).toBool ())
     {
@@ -2391,7 +2391,7 @@ file_editor_tab::change_editor_state (const QWidget *ID)
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
       QPoint p = _find_dialog->pos ();
-      _find_dialog->move(p.x ()+10, p.y ()+10);
+      _find_dialog->move (p.x ()+10, p.y ()+10);
       _find_dialog->show ();
     }
 
@@ -2697,13 +2697,13 @@ file_editor_tab::get_function_name ()
   for (int i = 0; i < lines.count (); i++)
     {
       if (rxfun1.indexIn (lines.at (i)) != -1)
-        return rxfun1.cap (1).remove (QRegExp("[ \t]*"));
+        return rxfun1.cap (1).remove (QRegExp ("[ \t]*"));
       else if (rxfun2.indexIn (lines.at (i)) != -1)
-        return rxfun2.cap (1).remove (QRegExp("[ \t]*"));
+        return rxfun2.cap (1).remove (QRegExp ("[ \t]*"));
       else if (rxfun3.indexIn (lines.at (i)) != -1)
-        return rxfun3.cap (1).remove (QRegExp("[ \t]*"));
+        return rxfun3.cap (1).remove (QRegExp ("[ \t]*"));
       else if (rxfun4.indexIn (lines.at (i)) != -1)
-        return rxfun4.cap (1).remove (QRegExp("[ \t]*"));
+        return rxfun4.cap (1).remove (QRegExp ("[ \t]*"));
     }
 
   return QString ();

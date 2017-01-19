@@ -126,8 +126,7 @@ namespace QtHandles
         Matrix oldValue = up.get_value ().matrix_value ();
         double newValue = (checked ? up.get_max () : up.get_min ());
 
-        if (oldValue.numel() != 1
-            || (newValue != oldValue(0)))
+        if (oldValue.numel () != 1 || (newValue != oldValue(0)))
           gh_manager::post_set (m_handle, "value", newValue, false);
         gh_manager::post_callback (m_handle, "callback");
       }

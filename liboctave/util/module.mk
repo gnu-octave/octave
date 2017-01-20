@@ -13,7 +13,6 @@ UTIL_INC = \
   liboctave/util/lo-cutils.h \
   liboctave/util/lo-hash.h \
   liboctave/util/lo-ieee.h \
-  liboctave/util/lo-macros.h \
   liboctave/util/lo-math.h \
   liboctave/util/lo-traits.h \
   liboctave/util/lo-utils.h \

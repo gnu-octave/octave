@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "lo-error.h"
-#include "lo-macros.h"
 #include "oct-refcount.h"
 
 //! Vector representing the dimensions (size) of an Array.

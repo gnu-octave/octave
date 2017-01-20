@@ -1461,6 +1461,54 @@ array_property::validate (const octave_value& v)
         }
     }
 
+  if (xok)
+    {
+      Matrix v_mat = v.matrix_value ();
+      // Check min and max
+      if (! octave::math::isnan (minval.first))
+        {
+          for (octave_idx_type i = 0; i < v_mat.numel (); i++)
+            if (minval.second && minval.first > v_mat(i))
+              error ("set: \"%s\" must be greater than or equal to %g",
+                     get_name ().c_str (), minval.first);
+            else if (! minval.second && minval.first >= v_mat(i))
+              error ("set: \"%s\" must be greater than %g",
+                     get_name ().c_str (), minval.first);
+        }
+
+      if (! octave::math::isnan (maxval.first))
+        {
+          for (octave_idx_type i = 0; i < v_mat.numel (); i++)
+            if (maxval.second && maxval.first < v_mat(i))
+              error ("set: \"%s\" must be less than or equal to %g",
+                     get_name ().c_str (), maxval.first);
+            else if (! maxval.second && maxval.first <= v_mat(i))
+              error ("set: \"%s\" must be less than %g",
+                     get_name ().c_str (), maxval.first);
+        }
+
+      if (finite_constraint == NO_CHECK) { /* do nothing */ }
+      else if (finite_constraint == FINITE)
+        {
+          for (octave_idx_type i = 0; i < v_mat.numel (); i++)
+            if (! octave::math::finite (v_mat(i)))
+              error ("set: \"%s\" must be finite", get_name ().c_str ());
+        }
+      else if (finite_constraint == NOT_NAN)
+        {
+          for (octave_idx_type i = 0; i < v_mat.numel (); i++)
+            if (octave::math::isnan (v_mat(i)))
+              error ("set: \"%s\" must not be nan", get_name ().c_str ());
+        }
+      else if (finite_constraint == NOT_INF)
+        {
+          for (octave_idx_type i = 0; i < v_mat.numel (); i++)
+            if (octave::math::isinf (v_mat(i)))
+              error ("set: \"%s\" must not be infinite", get_name ().c_str ());
+        }
+
+    }
+
   return xok;
 }
 
@@ -4520,28 +4568,44 @@ axes::properties::init (void)
   looseinset.add_constraint (dim_vector (1, 4));
   colororder.add_constraint (dim_vector (-1, 3));
   dataaspectratio.add_constraint (3);
+  dataaspectratio.add_constraint ("min", 0, false);
+  dataaspectratio.add_constraint (FINITE);
   plotboxaspectratio.add_constraint (3);
+  plotboxaspectratio.add_constraint ("min", 0, false);
+  plotboxaspectratio.add_constraint (FINITE);
   // FIXME: Should these use dimension vectors?  Currently can set 'xlim' to
   // any matrix size, but only first two elements are used.
   alim.add_constraint (2);
+  alim.add_constraint (NOT_NAN);
   clim.add_constraint (2);
+  clim.add_constraint (NOT_NAN);
   xlim.add_constraint (2);
+  xlim.add_constraint (NOT_NAN);
   ylim.add_constraint (2);
+  ylim.add_constraint (NOT_NAN);
   zlim.add_constraint (2);
+  zlim.add_constraint (NOT_NAN);
   xtick.add_constraint (dim_vector (1, -1));
+  xtick.add_constraint (FINITE);
   ytick.add_constraint (dim_vector (1, -1));
+  ytick.add_constraint (FINITE);
   ztick.add_constraint (dim_vector (1, -1));
+  ztick.add_constraint (FINITE);
   ticklength.add_constraint (dim_vector (1, 2));
   Matrix vw (1, 2, 0);
   vw(1) = 90;
   view = vw;
   view.add_constraint (dim_vector (1, 2));
   cameraposition.add_constraint (3);
+  cameraposition.add_constraint (FINITE);
   cameratarget.add_constraint (3);
+  cameratarget.add_constraint (FINITE);
   Matrix upv (1, 3, 0.0);
   upv(2) = 1.0;
   cameraupvector = upv;
   cameraupvector.add_constraint (3);
+  cameraupvector.add_constraint (FINITE);
+  cameraviewangle.add_constraint (FINITE);
   currentpoint.add_constraint (dim_vector (2, 3));
 
   // Range constraints for double properties

@@ -1149,18 +1149,26 @@ private:
 
 // ---------------------------------------------------------------------
 
+enum finite_type
+{
+  NO_CHECK,
+  FINITE,
+  NOT_NAN,
+  NOT_INF
+};
 class double_property : public base_property
 {
 public:
   double_property (const std::string& nm, const graphics_handle& h,
                    double d = 0)
     : base_property (nm, h),
-      current_val (d),
+      current_val (d), finite_constraint (NO_CHECK),
       minval (std::pair<double, bool> (octave_NaN, true)),
       maxval (std::pair<double, bool> (octave_NaN, true)) { }
 
   double_property (const double_property& p)
     : base_property (p), current_val (p.current_val),
+      finite_constraint (NO_CHECK),
       minval (std::pair<double, bool> (octave_NaN, true)),
       maxval (std::pair<double, bool> (octave_NaN, true)) { }
 
@@ -1174,7 +1182,16 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new double_property (*this); }
+  base_property* clone (void) const
+  {
+    double_property *p = new double_property (*this);
+
+    p->finite_constraint = finite_constraint;
+    p->minval = minval;
+    p->maxval = maxval;
+
+    return p;
+  }
 
   void add_constraint (const std::string& type, double val, bool inclusive)
   {
@@ -1183,6 +1200,9 @@ public:
     else if (type == "max")
       maxval = std::pair<double, bool> (val, inclusive);
   }
+
+  void add_constraint (const finite_type finite)
+  { finite_constraint = finite; }
 
 protected:
   bool do_set (const octave_value& v)
@@ -1214,6 +1234,23 @@ protected:
                  get_name ().c_str (), maxval.first);
       }
 
+      if (finite_constraint == NO_CHECK) { /* do nothing */ }
+      else if (finite_constraint == FINITE)
+        {
+          if (! octave::math::finite (new_val))
+            error ("set: \"%s\" must be finite", get_name ().c_str ());
+        }
+      else if (finite_constraint == NOT_NAN)
+        {
+          if (octave::math::isnan (new_val))
+            error ("set: \"%s\" must not be nan", get_name ().c_str ());
+        }
+      else if (finite_constraint == NOT_INF)
+        {
+          if (octave::math::isinf (new_val))
+            error ("set: \"%s\" must not be infinite", get_name ().c_str ());
+        }
+
     if (new_val != current_val)
       {
         current_val = new_val;
@@ -1225,6 +1262,7 @@ protected:
 
 private:
   double current_val;
+  finite_type finite_constraint;
   std::pair<double, bool> minval, maxval;
 };
 
@@ -1318,7 +1356,9 @@ public:
   array_property (void)
     : base_property ("", graphics_handle ()), data (Matrix ()),
       xmin (), xmax (), xminp (), xmaxp (),
-      type_constraints (), size_constraints ()
+      type_constraints (), size_constraints (), finite_constraint (NO_CHECK),
+      minval (std::pair<double, bool> (octave_NaN, true)),
+      maxval (std::pair<double, bool> (octave_NaN, true))
   {
     get_data_limits ();
   }
@@ -1327,7 +1367,9 @@ public:
                   const octave_value& m)
     : base_property (nm, h), data (m.is_sparse_type () ? m.full_value () : m),
       xmin (), xmax (), xminp (), xmaxp (),
-      type_constraints (), size_constraints ()
+      type_constraints (), size_constraints (), finite_constraint (NO_CHECK),
+      minval (std::pair<double, bool> (octave_NaN, true)),
+      maxval (std::pair<double, bool> (octave_NaN, true))
   {
     get_data_limits ();
   }
@@ -1338,7 +1380,9 @@ public:
   array_property (const array_property& p)
     : base_property (p), data (p.data),
       xmin (p.xmin), xmax (p.xmax), xminp (p.xminp), xmaxp (p.xmaxp),
-      type_constraints (), size_constraints ()
+      type_constraints (), size_constraints (), finite_constraint (NO_CHECK),
+      minval (std::pair<double, bool> (octave_NaN, true)),
+      maxval (std::pair<double, bool> (octave_NaN, true))
   { }
 
   octave_value get (void) const { return data; }
@@ -1348,6 +1392,17 @@ public:
 
   void add_constraint (const dim_vector& dims)
   { size_constraints.push_back (dims); }
+
+  void add_constraint (const finite_type finite)
+  { finite_constraint = finite; }
+
+  void add_constraint (const std::string& type, double val, bool inclusive)
+  {
+    if (type == "min")
+      minval = std::pair<double, bool> (val, inclusive);
+    else if (type == "max")
+      maxval = std::pair<double, bool> (val, inclusive);
+  }
 
   double min_val (void) const { return xmin; }
   double max_val (void) const { return xmax; }
@@ -1378,6 +1433,9 @@ public:
 
     p->type_constraints = type_constraints;
     p->size_constraints = size_constraints;
+    p->finite_constraint = finite_constraint;
+    p->minval = minval;
+    p->maxval = maxval;
 
     return p;
   }
@@ -1419,6 +1477,8 @@ protected:
   double xmaxp;
   std::set<std::string> type_constraints;
   std::list<dim_vector> size_constraints;
+  finite_type finite_constraint;
+  std::pair<double, bool> minval, maxval;
 };
 
 class row_vector_property : public array_property
@@ -1449,6 +1509,16 @@ public:
   void add_constraint (const dim_vector& dims)
   {
     array_property::add_constraint (dims);
+  }
+
+  void add_constraint (const finite_type finite)
+  {
+    array_property::add_constraint (finite);
+  }
+
+  void add_constraint (const std::string& type, double val, bool inclusive)
+  {
+    array_property::add_constraint (type, val, inclusive);
   }
 
   void add_constraint (octave_idx_type len)
@@ -3493,11 +3563,15 @@ public:
       alphamap.add_constraint (dim_vector (-1, 1));
       colormap.add_constraint (dim_vector (-1, 3));
       outerposition.add_constraint (dim_vector (1, 4));
+      outerposition.add_constraint (FINITE);
       paperposition.add_constraint (dim_vector (1, 4));
+      paperposition.add_constraint (FINITE);
       papersize.add_constraint (dim_vector (1, 2));
+      papersize.add_constraint (FINITE);
       pointershapecdata.add_constraint (dim_vector (16, 16));
       pointershapehotspot.add_constraint (dim_vector (1, 2));
       position.add_constraint (dim_vector (1, 4));
+      position.add_constraint (FINITE);
     }
 
   private:

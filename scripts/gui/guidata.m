@@ -64,4 +64,3 @@ endfunction
 %!error guidata (1,2,3)
 %!error <H must be a valid object handle> guidata ({1})
 %!error <no ancestor figure of H found> guidata (0)
-

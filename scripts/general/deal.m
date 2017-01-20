@@ -106,4 +106,3 @@ endfunction
 
 %!error deal ()
 %!error <nargin . 1 and nargin != nargout> y = deal (1, 2)
-

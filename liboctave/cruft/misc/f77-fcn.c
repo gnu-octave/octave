@@ -68,4 +68,3 @@ F77_FUNC (xstopx, XSTOPX) (const char *s, F77_CHAR_ARG_LEN_TYPE slen)
 
   F77_NORETURN (0)
 }
-

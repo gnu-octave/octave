@@ -45,4 +45,3 @@ endfunction
 
 %!error sind ()
 %!error sind (1, 2)
-

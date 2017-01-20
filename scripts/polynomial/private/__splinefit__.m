@@ -620,4 +620,3 @@ if beta > 0
         u = (y*spw)/(A*spw);
     end
 end
-

@@ -419,4 +419,3 @@ This is the developer documentation for Octave's own source code. It is
 intended to help for hacking Octave. It may also be useful for
 understanding the Octave API when writing your own .oct files.
 */
-

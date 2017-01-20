@@ -1529,4 +1529,3 @@ endfunction
 %!error annotation ("line", [.5 .6])
 %!error <X and Y must be 2-element vectors> annotation ("line", 1:3, 1:3)
 %!error <POS must be a 4-element vector> annotation ("textbox", 1:3)
-

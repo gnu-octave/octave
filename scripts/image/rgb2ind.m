@@ -145,4 +145,3 @@ endfunction
 %! [ind, map] = rgb2ind (rgb);
 %! assert (class (ind), "uint8");
 %! assert (class (map), "double");
-

@@ -71,4 +71,3 @@ octave_end_long_double_rounding (unsigned int oldcw)
 {
   END_LONG_DOUBLE_ROUNDING ();
 }
-

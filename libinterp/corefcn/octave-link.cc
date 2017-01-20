@@ -395,4 +395,3 @@ Undocumented internal function.
 
   return ovl (octave_link::show_doc (file));
 }
-

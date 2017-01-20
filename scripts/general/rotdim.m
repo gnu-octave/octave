@@ -159,4 +159,3 @@ endfunction
 
 %!error rotdim ()
 %!error rotdim (1, 2, 3, 4)
-

@@ -49,4 +49,3 @@ function retval = finite (varargin)
   retval = isfinite (varargin{:});
 
 endfunction
-

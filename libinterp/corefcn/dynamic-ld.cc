@@ -455,4 +455,3 @@ octave_dynamic_loader::mex_f77_mangler (const std::string&)
 {
   return STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION));
 }
-

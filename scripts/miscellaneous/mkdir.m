@@ -96,4 +96,3 @@ endfunction
 ## Test input validation
 %!error mkdir ()
 %!error mkdir ("a", "b", "c")
-

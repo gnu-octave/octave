@@ -53,4 +53,3 @@ endfunction
 %!error laplace_cdf ()
 %!error laplace_cdf (1,2)
 %!error laplace_cdf (i)
-

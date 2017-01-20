@@ -794,4 +794,3 @@ endfunction
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "cubic")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "spline")
 %!error <invalid method 'invalid'> interp1 (1:2,1:2,1, "invalid")
-

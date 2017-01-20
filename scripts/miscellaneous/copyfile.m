@@ -161,4 +161,3 @@ endfunction
 %!error <F1 must be a string> copyfile (1, "foobar")
 %!error <F2 must be a string> copyfile ("foobar", 1)
 %!error <F2 must be a directory> copyfile ({"a", "b"}, "%_NOT_A_DIR_%")
-

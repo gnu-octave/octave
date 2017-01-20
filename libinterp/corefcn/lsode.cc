@@ -509,4 +509,3 @@ parameters for @code{lsode}.
 
 %!error lsode_options ("foo", 1, 2)
 */
-

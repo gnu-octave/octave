@@ -39,4 +39,3 @@ octave_base64_decode_alloc_wrapper (const char *in, size_t inlen,
 #endif
 
 #endif
-

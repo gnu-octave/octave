@@ -50,4 +50,3 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
   endwhile
 
 endfunction
-

@@ -116,4 +116,3 @@ endfunction
 
 %!error bitget (1)
 %!error bitget (1, 2, 3)
-

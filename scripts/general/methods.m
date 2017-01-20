@@ -87,4 +87,3 @@ endfunction
 %! mtds = methods ("java.lang.Double");
 %! search = strfind (mtds, "java.lang.Double valueOf");
 %! assert (! isempty ([search{:}]));
-

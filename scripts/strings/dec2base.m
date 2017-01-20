@@ -169,4 +169,3 @@ endfunction
 %!error dec2base (1, ones (2))
 %!error dec2base (1, 1)
 %!error dec2base (1, 37)
-

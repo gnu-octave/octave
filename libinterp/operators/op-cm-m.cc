@@ -147,4 +147,3 @@ install_cm_m_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_matrix, assign);
 }
-

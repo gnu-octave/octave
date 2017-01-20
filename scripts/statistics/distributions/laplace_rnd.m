@@ -71,4 +71,3 @@ endfunction
 %!error laplace_rnd ([2 -1 2])
 %!error laplace_rnd (1, ones (2))
 %!error laplace_rnd (1, -1)
-

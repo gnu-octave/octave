@@ -57,4 +57,3 @@ function javarmpath (varargin)
   endfor
 
 endfunction
-

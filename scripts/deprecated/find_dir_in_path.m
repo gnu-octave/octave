@@ -37,4 +37,3 @@ function retval = find_dir_in_path (varargin)
   retval = dir_in_loadpath (varargin{:});
 
 endfunction
-

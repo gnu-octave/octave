@@ -470,4 +470,3 @@ function update_data (h, ~)
   set (kids(1), "xdata", x, "ydata", y, "zdata", z);
 
 endfunction
-

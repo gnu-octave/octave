@@ -816,4 +816,3 @@ namespace octave
     template class lu<FloatComplexMatrix>;
   }
 }
-

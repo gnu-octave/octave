@@ -52,4 +52,3 @@ function retval = mouse_wheel_zoom (val)
   endif
 
 endfunction
-

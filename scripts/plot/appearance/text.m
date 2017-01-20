@@ -347,4 +347,3 @@ endfunction
 %!error <Invalid combination> text ([1 2], [3, 4], {'a', 'b', 'c'})
 %!error <STRING must be a character string> text (1, 2, 3)
 %!error text ("abc")
-

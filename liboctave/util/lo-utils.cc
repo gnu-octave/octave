@@ -429,4 +429,3 @@ octave_write_float_complex (std::ostream& os, const FloatComplex& c)
   octave_write_float (os, imag (c));
   os << ")";
 }
-

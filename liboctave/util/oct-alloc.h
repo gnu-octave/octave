@@ -32,4 +32,3 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFINE_OCTAVE_ALLOCATOR2(t, s)
 
 #endif
-

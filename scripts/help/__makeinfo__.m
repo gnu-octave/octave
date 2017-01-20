@@ -160,4 +160,3 @@ endfunction
 
 ## No test needed for internal helper function.
 %!assert (1)
-

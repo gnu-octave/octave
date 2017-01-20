@@ -847,4 +847,3 @@ namespace octave
 #endif
   }
 }
-

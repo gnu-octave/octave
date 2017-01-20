@@ -78,4 +78,3 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   endif
 
 endfunction
-

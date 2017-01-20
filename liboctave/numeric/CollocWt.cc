@@ -499,4 +499,3 @@ operator << (std::ostream& os, const CollocWt& a)
 
   return os;
 }
-

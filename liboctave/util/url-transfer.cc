@@ -792,4 +792,3 @@ namespace octave
 #undef REP_CLASS
 
 }
-

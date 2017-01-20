@@ -387,4 +387,3 @@ endfunction
 %! plot3 (z, exp (2i*pi*z));
 %! legend ("complex sinusoid");
 %! title ("plot3() with complex input");
-

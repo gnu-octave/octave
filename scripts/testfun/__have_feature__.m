@@ -43,4 +43,3 @@ endfunction
 
 ## No test coverage for internal function.  It is tested through calling fcn.
 %!assert (1)
-

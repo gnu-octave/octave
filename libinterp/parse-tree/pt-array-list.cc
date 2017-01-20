@@ -105,4 +105,3 @@ tree_array_list::accept (tree_walker&)
 {
   panic_impossible ();
 }
-

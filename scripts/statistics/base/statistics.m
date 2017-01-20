@@ -97,4 +97,3 @@ endfunction
 %!error statistics (1, 0)
 %!error statistics (1, 3)
 %!error statistics (1)
-

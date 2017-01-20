@@ -36,4 +36,3 @@ endfunction
 
 
 %!assert (isempty (gcbf))
-

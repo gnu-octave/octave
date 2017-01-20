@@ -36,4 +36,3 @@ extern OCTAVE_API Array<double>
 octave_base64_decode (const std::string& str);
 
 #endif
-

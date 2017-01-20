@@ -42,4 +42,3 @@ function [dl, d2l] = logistic_regression_derivatives (x, z, z1, g, g1, p)
       - dlogp' * dlogp;
 
 endfunction
-

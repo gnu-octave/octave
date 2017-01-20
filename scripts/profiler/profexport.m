@@ -314,4 +314,3 @@ endfunction
 %!error profexport (1, 2, 3, 4)
 %!error <DIR must be a string> profexport (5)
 %!error <NAME must be a string> profexport ("dir", 5)
-

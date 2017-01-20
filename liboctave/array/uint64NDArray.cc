@@ -57,4 +57,3 @@ BSXFUN_STDREL_DEFS_MXLOOP (uint64NDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, uint64NDArray, mx_inline_pow)
 BSXFUN_POW_MIXED_MXLOOP (uint64NDArray)
-

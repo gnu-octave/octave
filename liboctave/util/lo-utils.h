@@ -138,4 +138,3 @@ extern OCTAVE_API void
 octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
 
 #endif
-

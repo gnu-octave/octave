@@ -80,4 +80,3 @@ endfunction
 %!test
 %! A = rand (round (rand (1, 2) * 10));
 %! assert (blkdiag (A), A);
-

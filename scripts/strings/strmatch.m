@@ -119,4 +119,3 @@ endfunction
 %!error <S must be a string> strmatch (char ("a", "bb"), "aaa")
 %!error <A must be a string> strmatch ("a", 1)
 %!error <A must be a string> strmatch ("a", {"hello", [1]})
-

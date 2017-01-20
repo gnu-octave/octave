@@ -52,4 +52,3 @@ endfunction
 ## Tests for this m-file are located in bzip2.m
 ## Remove from test statistics
 %!assert (1)
-

@@ -101,4 +101,3 @@ endfunction
 %! assert (convhull (x, y), [1;7;13;12;11;10;4;3;2;1]);
 
 ## FIXME: Need input validation tests
-

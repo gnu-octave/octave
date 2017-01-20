@@ -35,4 +35,3 @@ function info = __imfinfo__ (filename)
   info = __magick_finfo__ (filename);
 
 endfunction
-

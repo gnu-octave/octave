@@ -44,4 +44,3 @@ endfunction
 
 %!error acoth ()
 %!error acoth (1, 2)
-

@@ -83,4 +83,3 @@ endfunction
 %!error voronoin ()
 %!error voronoin (1,2,3)
 %!error <number of points must be greater than their dimension> voronoin ([1 2])
-

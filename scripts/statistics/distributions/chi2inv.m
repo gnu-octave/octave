@@ -68,4 +68,3 @@ endfunction
 %!error chi2inv (ones (2), ones (3))
 %!error chi2inv (i, 2)
 %!error chi2inv (2, i)
-

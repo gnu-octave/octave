@@ -122,4 +122,3 @@ endfunction
 %!error <DIM must be an integer> prepad ([1,2], 2, 2, 1.1)
 %!error <L must be a positive scalar> prepad ([1,2], ones (2))
 %!error <L must be a positive scalar> prepad ([1,2], -1)
-

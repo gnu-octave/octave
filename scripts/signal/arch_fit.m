@@ -118,4 +118,3 @@ function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
   endfor
 
 endfunction
-

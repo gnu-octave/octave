@@ -79,4 +79,3 @@ endfunction
 %!error strchr (1)
 %!error <STR argument must be a string> strchr (1, "aeiou")
 %!error <CHARS argument must be a string> strchr ("aeiou", 1)
-

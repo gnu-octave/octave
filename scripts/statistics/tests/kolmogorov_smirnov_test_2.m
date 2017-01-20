@@ -102,4 +102,3 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   endif
 
 endfunction
-

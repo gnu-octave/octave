@@ -345,4 +345,3 @@ public:
   octave_idx_type indx;
 };
 #endif
-

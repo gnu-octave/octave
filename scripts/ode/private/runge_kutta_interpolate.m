@@ -108,4 +108,3 @@ function x_out = hermite_quartic_interpolation (t, x, der, t_out)
           (         s.^2 -  3*s.^3 +  2*s.^4) .* (dt * der(:,end));
 
 endfunction
-

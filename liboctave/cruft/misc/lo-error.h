@@ -81,4 +81,3 @@ set_liboctave_warning_with_id_handler (liboctave_warning_with_id_handler f);
 #endif
 
 #endif
-

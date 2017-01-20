@@ -308,4 +308,3 @@ namespace octave
     const char *config_opts = %OCTAVE_CONF_config_opts%;
   }
 }
-

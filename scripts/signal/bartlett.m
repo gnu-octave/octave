@@ -63,4 +63,3 @@ endfunction
 %!error bartlett (0.5)
 %!error bartlett (-1)
 %!error bartlett (ones (1,4))
-

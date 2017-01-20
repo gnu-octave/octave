@@ -97,4 +97,3 @@ tree::meets_bp_condition () const
     }
   return retval;
 }
-

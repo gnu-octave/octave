@@ -337,4 +337,3 @@ typedef octave::sys::file_fstat file_fstat;
 #endif
 
 #endif
-

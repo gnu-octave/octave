@@ -71,4 +71,3 @@ template class octave_base_int_scalar<octave_int32>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int32_scalar,
                                      "int32 scalar", "int32");
-

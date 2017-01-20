@@ -150,4 +150,3 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   return retval;
 }
-

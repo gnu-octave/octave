@@ -246,4 +246,3 @@ namespace octave
     }
   }
 }
-

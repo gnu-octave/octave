@@ -383,4 +383,3 @@ used per default.
 %!error fftw ("threads", "invalid")
 %!error fftw ("threads", -3)
  */
-

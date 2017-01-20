@@ -66,4 +66,3 @@ endfunction
 %! endif
 
 %!error <argument must be a character string> ls_command (123)
-

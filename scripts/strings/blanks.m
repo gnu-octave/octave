@@ -64,4 +64,3 @@ endfunction
 %!error blanks (ones (2))
 %!error blanks (2.1)
 %!error blanks (-2)
-

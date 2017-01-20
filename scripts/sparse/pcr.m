@@ -443,4 +443,3 @@ endfunction
 %! assert (relres < 1e-6);
 %! assert (flag, 0);
 %! assert (iter, 1); # should converge in one iteration
-

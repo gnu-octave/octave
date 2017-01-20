@@ -376,4 +376,3 @@ resource_manager::do_combo_encoding (QComboBox *combo, QString current)
 
   combo->setMaxVisibleItems (12);
 }
-

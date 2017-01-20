@@ -100,4 +100,3 @@ endfunction
 %! vi = griddata3 (x, y, z, v, xi, yi, zi, "nearest");
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
 %! assert (max (abs (vv(:))), 0, 0.1);
-

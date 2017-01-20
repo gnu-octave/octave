@@ -175,4 +175,3 @@ namespace octave
 }
 
 #endif
-

@@ -120,4 +120,3 @@ function disp_path_list (which, path_list)
     printf ("      - empty -\n");
   endif
 endfunction
-

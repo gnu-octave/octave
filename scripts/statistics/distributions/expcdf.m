@@ -87,4 +87,3 @@ endfunction
 %!error expcdf (ones (2), ones (3))
 %!error expcdf (i, 2)
 %!error expcdf (2, i)
-

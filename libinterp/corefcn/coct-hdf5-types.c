@@ -40,4 +40,3 @@ const octave_hdf5_id octave_H5P_DEFAULT = H5P_DEFAULT;
 const octave_hdf5_id octave_H5S_ALL = H5S_ALL;
 
 #endif
-

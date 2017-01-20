@@ -302,4 +302,3 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 
   return (os && success);
 }
-

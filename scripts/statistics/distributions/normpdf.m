@@ -95,4 +95,3 @@ endfunction
 %!error normpdf (i, 2, 2)
 %!error normpdf (2, i, 2)
 %!error normpdf (2, 2, i)
-

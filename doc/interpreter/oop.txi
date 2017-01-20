@@ -798,4 +798,3 @@ the aggregation case might be
 
 For this example only the constructor needs changing, and all other class
 methods stay the same.
-

@@ -160,4 +160,3 @@ protected:
 };
 
 #endif
-

@@ -75,4 +75,3 @@ function setproperty (player, property, value)
   endswitch
 
 endfunction
-

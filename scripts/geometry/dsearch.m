@@ -43,4 +43,3 @@ endfunction
 %! tri = [1,2,3];
 %!assert (dsearch (x,y,tri,1,1/3), 3)
 %!assert (dsearch (x,y,tri,1/3,1), 2)
-

@@ -158,4 +158,3 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b);
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, ComplexDiagMatrix, Complex)
 
 #endif
-

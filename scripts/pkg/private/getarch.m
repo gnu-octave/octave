@@ -28,4 +28,3 @@ function arch = getarch ()
 
   arch = _arch;
 endfunction
-

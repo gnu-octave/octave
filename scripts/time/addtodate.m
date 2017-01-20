@@ -123,4 +123,3 @@ endfunction
 %!error <F must be a single character string> addtodate (1,2,3)
 %!error <F must be a single character string> addtodate (1,2,"month"')
 %!error <Invalid time unit> addtodate (1,2,"abc")
-

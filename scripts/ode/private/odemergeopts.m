@@ -42,4 +42,3 @@ function options = odemergeopts (caller, useroptions, options, classes,
   endfor
 
 endfunction
-

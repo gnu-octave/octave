@@ -757,4 +757,3 @@ octave_float_complex_matrix::map (unary_mapper_t umap) const
       return octave_base_value::map (umap);
     }
 }
-

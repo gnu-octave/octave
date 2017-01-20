@@ -129,4 +129,3 @@ octave_startup_message (bool html)
 
   return msg;
 }
-

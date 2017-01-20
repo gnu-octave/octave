@@ -53,4 +53,3 @@ singleton_cleanup_list::instance_ok (void)
 
   return retval;
 }
-

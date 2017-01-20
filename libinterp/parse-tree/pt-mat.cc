@@ -1391,4 +1391,3 @@ The original variable value is restored when exiting the function.
 
 %!error (string_fill_char (1, 2))
 */
-

@@ -129,4 +129,3 @@ endfunction
 %!error frnd (ones (2,2), 2, 3)
 %!error frnd (ones (2,2), 2, [3, 2])
 %!error frnd (ones (2,2), 2, 2, 3)
-

@@ -697,4 +697,3 @@ The following table summarizes the available random number generators
 @DOCSTRING(wblrnd)
 
 @DOCSTRING(wienrnd)
-

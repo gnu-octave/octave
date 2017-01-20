@@ -164,4 +164,3 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b);
 MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, FloatComplexDiagMatrix, FloatComplex)
 
 #endif
-

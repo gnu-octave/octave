@@ -96,4 +96,3 @@ endfunction
 %!error <X must be a vector> playaudio (magic (3))
 %!error <unsupported extension> playaudio ("file", "abc")
 %!error playaudio ({"abc"})
-

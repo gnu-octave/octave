@@ -67,4 +67,3 @@ endfunction
 %!error rindex ()
 %!error rindex ("foo")
 %!error rindex ("foo", "bar", "last")
-

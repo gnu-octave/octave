@@ -43,4 +43,3 @@ endfunction
 ## Test input validation
 %!error probit ()
 %!error probit (1, 2)
-

@@ -127,4 +127,3 @@ endfunction
 %!error betapdf (i, 2, 2)
 %!error betapdf (2, i, 2)
 %!error betapdf (2, 2, i)
-

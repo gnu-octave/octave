@@ -216,4 +216,3 @@ namespace octave
 }
 
 #endif
-

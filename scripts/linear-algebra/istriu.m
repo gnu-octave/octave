@@ -58,4 +58,3 @@ endfunction
 ## Test input validation
 %!error istriu ()
 %!error istriu (1,2)
-

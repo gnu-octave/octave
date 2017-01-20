@@ -151,4 +151,3 @@ endfunction
 %!error sortrows (1, ones (2,2))
 %!error sortrows (1, 0)
 %!error sortrows (1, 2)
-

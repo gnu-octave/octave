@@ -561,4 +561,3 @@ namespace octave
     }
   }
 }
-

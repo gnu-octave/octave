@@ -95,4 +95,3 @@ endfunction
 %!assert (strjoin ({'Octave','Scilab'},'\n'), "Octave\nScilab")
 %!assert (strjoin ({'Octave','Scilab'},{'\n'}), "Octave\\nScilab")
 %!assert (strjoin ({},'foo'), "")
-

@@ -52,4 +52,3 @@ endfunction
 ## Test input validation
 %!error waitforbuttonpress (1)
 %!error [a,b,c] = waitforbuttonpress ()
-

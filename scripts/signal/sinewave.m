@@ -55,4 +55,3 @@ endfunction
 %!assert (sinewave (3, 4), sinewave (3, 4, 0))
 
 %!error sinewave ()
-

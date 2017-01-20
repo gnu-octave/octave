@@ -126,4 +126,3 @@ endfunction
 %!error invhilb ()
 %!error invhilb (1, 2)
 %!error <N must be a scalar integer> invhilb ([1, 2])
-

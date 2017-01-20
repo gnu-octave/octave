@@ -197,4 +197,3 @@ function [fcns, help_texts] = search_cache (str, cache_file, search_type)
   endif
 
 endfunction
-

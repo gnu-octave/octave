@@ -570,4 +570,3 @@ operator != (const dim_vector& a, const dim_vector& b)
 }
 
 #endif
-

@@ -202,4 +202,3 @@ endfunction
 %! c = [1 2 3 4]';
 %! fill (x, y, [c c]);
 %! title ({"fill() function"; 'cdata = column vector produces FaceColor = "interp"'});
-

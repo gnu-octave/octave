@@ -257,4 +257,3 @@ endfunction
 %!               fliplr (xx2), flipud (yy2), "spline");
 %! z2 = fliplr (flipud (z2));
 %! assert (z1, z2, 100 * eps ());
-

@@ -8,4 +8,3 @@
 %! c.child = 500;
 %! assert (a.child, b.child);
 %! assert (a.child, c.child);
-

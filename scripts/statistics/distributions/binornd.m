@@ -151,4 +151,3 @@ endfunction
 %!error binornd (ones (2,2), 2, 3)
 %!error binornd (ones (2,2), 2, [3, 2])
 %!error binornd (ones (2,2), 2, 2, 3)
-

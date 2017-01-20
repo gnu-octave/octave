@@ -144,4 +144,3 @@ endfunction
 %! [aa, bb] = structfun (@__twoouts, s, "UniformOutput", false);
 %! assert (aa, c);
 %! assert (bb, d);
-

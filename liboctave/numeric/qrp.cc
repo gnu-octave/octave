@@ -305,4 +305,3 @@ namespace octave
     }
   }
 }
-

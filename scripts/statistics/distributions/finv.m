@@ -90,4 +90,3 @@ endfunction
 %!error finv (i, 2, 2)
 %!error finv (2, i, 2)
 %!error finv (2, 2, i)
-

@@ -33,4 +33,3 @@ function retval = AbsRel_norm (x, x_old, AbsTol, RelTol, normcontrol, y = zeros 
   endif
 
 endfunction
-

@@ -133,4 +133,3 @@ endfunction
 %!error feather (1, "-r", 2)
 %!error <invalid linestyle STYLE> feather (1, "abc")
 %!error <invalid linestyle STYLE> feather (1, {1})
-

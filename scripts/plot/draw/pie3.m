@@ -100,4 +100,3 @@ endfunction
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
 %! title ("pie3() with missing slice");
-

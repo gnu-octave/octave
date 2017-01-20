@@ -213,4 +213,3 @@ endfunction
 %! assert (p, expected, sqrt (eps));
 
 %!error <vectors of the same size> polyfit ([1, 2; 3, 4], [1, 2, 3, 4], 2)
-

@@ -32,4 +32,3 @@ along with Octave; see the file COPYING.  If not, see
 extern OCTAVE_API std::string liboctave_hg_id (void);
 
 #endif
-

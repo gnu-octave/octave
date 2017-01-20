@@ -172,4 +172,3 @@ Close the password database.
 
   return ovl (static_cast<double> (status), msg);
 }
-

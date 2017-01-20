@@ -86,4 +86,3 @@ function [d, dd] = diffpara (x, a, b)
   d = mean (dd);
 
 endfunction
-

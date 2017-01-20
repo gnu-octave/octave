@@ -422,4 +422,3 @@ The inverse is the value @var{x} such that
 %!error betaincinv ()
 %!error betaincinv (1, 2)
 */
-

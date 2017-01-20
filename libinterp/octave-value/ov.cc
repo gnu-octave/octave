@@ -3379,4 +3379,3 @@ The original variable value is restored when exiting the function.
 %!assert (typeinfo (__test_dr__ (false)), "range")
 %!assert (typeinfo (__test_dr__ (true)), "matrix")
 */
-

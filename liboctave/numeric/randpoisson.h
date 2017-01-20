@@ -41,4 +41,3 @@ extern OCTAVE_API void
 oct_fill_float_randp (float L, octave_idx_type n, float *p);
 
 #endif
-

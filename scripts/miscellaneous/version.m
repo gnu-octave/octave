@@ -124,4 +124,3 @@ endfunction
 %!warning <option '-blas' not implemented> version ("-blas");
 %!warning <option '-lapack' not implemented> version ("-lapack");
 %!error <invalid FEATURE> version ("-foobar")
-

@@ -48,4 +48,3 @@ function retval = fmod (varargin)
   retval = rem (varargin{:});
 
 endfunction
-

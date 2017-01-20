@@ -74,4 +74,3 @@ function findfigs ()
   endfor
 
 endfunction
-

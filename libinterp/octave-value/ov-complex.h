@@ -201,4 +201,3 @@ private:
 typedef octave_complex octave_complex_scalar;
 
 #endif
-

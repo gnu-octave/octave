@@ -364,4 +364,3 @@ The original variable value is restored when exiting the function.
 %! assert (V1, V2, 5*eps);
 %! svd_driver (old_driver);
 */
-

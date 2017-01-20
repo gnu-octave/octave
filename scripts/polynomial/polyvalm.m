@@ -65,4 +65,3 @@ endfunction
 %!assert (polyvalm ([1, 2, 3, 4], [3, -4, 1; -2, 0, 2; -1, 4, -3]), [117, -124, 11; -70, 36, 38; -43, 92, -45])
 
 %!error <must be a square matrix> polyvalm ([1, 1, 1], [1, 2; 3, 4; 5, 6])
-

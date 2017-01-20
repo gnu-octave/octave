@@ -447,4 +447,3 @@ octave_have_vfork (void)
   return false;
 #endif
 }
-

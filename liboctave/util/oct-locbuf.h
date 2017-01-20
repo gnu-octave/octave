@@ -213,4 +213,3 @@ public:
     buf[_buf_iter] = value
 
 #endif
-

@@ -572,4 +572,3 @@ endfunction
 %! fvc = isocaps (xx, yy, zz, val, iso);
 %!error <ISOVAL must be a scalar> isocaps (val, [iso iso])
 %!error <ISOVAL must be a scalar> isocaps (val, {iso})
-

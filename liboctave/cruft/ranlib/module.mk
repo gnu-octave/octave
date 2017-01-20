@@ -61,4 +61,3 @@ liboctave_EXTRA_DIST += \
   liboctave/cruft/ranlib/tstmid.for
 
 DIRSTAMP_FILES += liboctave/cruft/ranlib/$(octave_dirstamp)
-

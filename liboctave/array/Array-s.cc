@@ -47,4 +47,3 @@ INSTANTIATE_ARRAY (short, OCTAVE_API);
 #include "DiagArray2.cc"
 
 template class DiagArray2<short>;
-

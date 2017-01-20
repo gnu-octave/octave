@@ -46,4 +46,3 @@ endfunction
 
 %!error cosd ()
 %!error cosd (1, 2)
-

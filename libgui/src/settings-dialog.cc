@@ -1052,4 +1052,3 @@ settings_dialog::default_shortcut_set ()
 {
   shortcut_manager::import_export (shortcut_manager::OSC_DEFAULT);
 }
-

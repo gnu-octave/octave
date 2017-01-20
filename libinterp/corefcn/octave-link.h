@@ -480,4 +480,3 @@ protected:
 };
 
 #endif
-

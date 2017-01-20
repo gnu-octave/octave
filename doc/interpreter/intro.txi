@@ -650,4 +650,3 @@ Record the session in the file named @var{filename}.
 With no arguments, @code{diary} toggles the current diary state.
 @seealso{history, evalc}
 @end deftypefn
-

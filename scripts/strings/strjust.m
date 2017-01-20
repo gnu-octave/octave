@@ -110,4 +110,3 @@ endfunction
 %!error <Invalid call to strjust> strjust (["a";"ab"], "center", 1)
 %!error <S must be a string> strjust (ones (3,3))
 %!error <S must be a string> strjust (char (ones (3,3,3)))
-

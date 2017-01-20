@@ -54,4 +54,3 @@ endfunction
 %!error planerot (1,2)
 %!error <X must be a 2-element vector> planerot (ones (2,2))
 %!error <X must be a 2-element vector> planerot ([0 0 0])
-

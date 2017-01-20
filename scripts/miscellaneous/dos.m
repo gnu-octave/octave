@@ -66,4 +66,3 @@ endfunction
 
 %!error dos ()
 %!error dos (1, 2, 3)
-

@@ -3118,4 +3118,3 @@ SM_BOOL_OPS (double, Matrix)
 
 MM_CMP_OPS (Matrix, Matrix)
 MM_BOOL_OPS (Matrix, Matrix)
-

@@ -53,4 +53,3 @@ FCN_FILES += \
 PKG_ADD_FILES += scripts/plot/appearance/PKG_ADD
 
 DIRSTAMP_FILES += scripts/plot/appearance/$(octave_dirstamp)
-

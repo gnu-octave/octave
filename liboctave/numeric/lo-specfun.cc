@@ -3974,4 +3974,3 @@ Array<double> betaincinv (const Array<double>& x, const Array<double>& a, double
 Array<double> betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b) { return octave::math::betaincinv (x, a, b); }
 
 #endif
-

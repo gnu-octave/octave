@@ -204,4 +204,3 @@ endfunction
 %!error <X, Y, and Z must have the same dimensions> surfnorm ([1 2], 1, 1)
 %!error <X, Y, and Z must have the same dimensions> surfnorm (1, [1 2], 1)
 %!error <X, Y, and Z must have the same dimensions> surfnorm (1, 1, [1 2])
-

@@ -798,4 +798,3 @@ function generate_lookfor_cache (desc)
   endfor
 
 endfunction
-

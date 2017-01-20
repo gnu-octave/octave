@@ -152,4 +152,3 @@ endfunction
 %!error fftshift (1, 2, 3)
 %!error fftshift (0:3, -1)
 %!error fftshift (0:3, 0:3)
-

@@ -42,4 +42,3 @@ endfunction
 
 %!error sech ()
 %!error sech (1, 2)
-

@@ -433,4 +433,3 @@ endfunction
 %! [br, ar] = residue (r, p, k, e);
 %! assert (br, b, 1e-8);
 %! assert (ar, a, 1e-8);
-

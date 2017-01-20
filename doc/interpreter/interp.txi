@@ -175,4 +175,3 @@ The result of this code can be seen in @ref{fig:interpn}.
 @caption{Demonstration of the use of @code{interpn}}
 @end float
 @end ifnotinfo
-

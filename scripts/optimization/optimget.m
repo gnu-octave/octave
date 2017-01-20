@@ -76,4 +76,3 @@ endfunction
 %!error optimget (struct (), 2)
 %!warning <unrecognized option: foobar> (optimget (opts, "foobar"));
 %!warning <ambiguous option: Max> (optimget (opts, "Max"));
-

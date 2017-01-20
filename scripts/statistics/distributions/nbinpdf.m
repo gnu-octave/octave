@@ -98,4 +98,3 @@ endfunction
 %!error nbinpdf (i, 2, 2)
 %!error nbinpdf (2, i, 2)
 %!error nbinpdf (2, 2, i)
-

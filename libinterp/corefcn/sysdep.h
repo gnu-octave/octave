@@ -51,4 +51,3 @@ extern OCTINTERP_API bool same_file_internal (const std::string&,
                                               const std::string&);
 
 #endif
-

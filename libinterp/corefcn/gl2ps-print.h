@@ -48,4 +48,3 @@ gl2ps_print (const graphics_object& fig, const std::string& stream,
 #endif
 
 #endif
-

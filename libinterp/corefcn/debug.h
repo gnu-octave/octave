@@ -201,4 +201,3 @@ private:
 extern std::string get_file_line (const std::string& fname, size_t line);
 
 #endif
-

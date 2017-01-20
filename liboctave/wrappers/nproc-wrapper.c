@@ -55,4 +55,3 @@ octave_num_processors_wrapper (enum octave_nproc_query octave_query)
 
   return num_processors (query);
 }
-

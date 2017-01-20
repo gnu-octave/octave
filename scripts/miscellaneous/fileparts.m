@@ -108,4 +108,3 @@ endfunction
 %!error fileparts (1,2)
 %!error <FILENAME must be a single string> fileparts (1)
 %!error <FILENAME must be a single string> fileparts (["a"; "b"])
-

@@ -189,4 +189,3 @@ endfunction
 %!error fftfilt (ones (2), 1)
 %!error fftfilt (2, ones (3,3,3))
 %!error fftfilt (2, 1, ones (2))
-

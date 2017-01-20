@@ -113,4 +113,3 @@ endfunction
 %! [idx, p] = tsearchn (x,tri,[1,1]);
 %! assert (idx, NaN);
 %! assert (p, [NaN, NaN, NaN]);
-

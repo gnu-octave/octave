@@ -138,4 +138,3 @@ endfunction
 %! clf;
 %! h = bar (rand (5, 3), "stacked");
 %! title ("bar() graph with stacked style");
-

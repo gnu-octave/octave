@@ -228,4 +228,3 @@ endfunction
 %!   rmdir (test_dir, "s");
 %!   unlink (fname);
 %! end_unwind_protect
-

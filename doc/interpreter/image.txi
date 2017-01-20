@@ -259,5 +259,3 @@ and vice versa.
 @DOCSTRING(rgb2ntsc)
 
 @DOCSTRING(ntsc2rgb)
-
-

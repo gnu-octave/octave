@@ -91,4 +91,3 @@ endfunction
 %! xlim (x([1, end]));
 %! title ({"loglogerr(): loglog() plot with errorbars", ...
 %!         "Both axes are logarithmic"});
-

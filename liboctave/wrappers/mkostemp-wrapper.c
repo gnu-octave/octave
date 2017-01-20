@@ -38,4 +38,3 @@ octave_mkostemp_wrapper (char *tmpl)
 {
   return mkostemp (tmpl, O_BINARY);
 }
-

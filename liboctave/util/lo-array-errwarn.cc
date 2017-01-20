@@ -329,4 +329,3 @@ namespace octave
 }
 
 /* Tests in test/index.tst */
-

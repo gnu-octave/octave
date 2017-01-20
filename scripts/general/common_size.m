@@ -101,4 +101,3 @@ endfunction
 
 %!error common_size ()
 %!error common_size (1)
-

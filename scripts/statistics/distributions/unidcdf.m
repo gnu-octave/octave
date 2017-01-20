@@ -86,4 +86,3 @@ endfunction
 %!error unidcdf (ones (2), ones (3))
 %!error unidcdf (i, 2)
 %!error unidcdf (2, i)
-

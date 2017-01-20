@@ -86,4 +86,3 @@ function [retval, build_env_cell] = octave_config_info (option)
   endif
 
 endfunction
-

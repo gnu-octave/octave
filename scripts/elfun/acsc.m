@@ -44,4 +44,3 @@ endfunction
 
 %!error acsc ()
 %!error acsc (1, 2)
-

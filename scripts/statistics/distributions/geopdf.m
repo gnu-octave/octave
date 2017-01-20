@@ -85,4 +85,3 @@ endfunction
 %!error geopdf (ones (2), ones (3))
 %!error geopdf (i, 2)
 %!error geopdf (2, i)
-

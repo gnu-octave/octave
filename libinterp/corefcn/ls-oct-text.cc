@@ -414,4 +414,3 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,
                                             std::numeric_limits<int>::max ());
 }
-

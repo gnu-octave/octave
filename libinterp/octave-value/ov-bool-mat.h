@@ -248,4 +248,3 @@ protected:
 };
 
 #endif
-

@@ -28,4 +28,3 @@ endfunction
 
 
 %!assert (mexext (), "mex")
-

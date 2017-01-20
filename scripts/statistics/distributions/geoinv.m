@@ -85,4 +85,3 @@ endfunction
 %!error geoinv (ones (2), ones (3))
 %!error geoinv (i, 2)
 %!error geoinv (2, i)
-

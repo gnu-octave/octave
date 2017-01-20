@@ -122,5 +122,3 @@ function h = dialog (varargin)
   endif
 
 endfunction
-
-

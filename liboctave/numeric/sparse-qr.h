@@ -132,4 +132,3 @@ namespace octave
 }
 
 #endif
-

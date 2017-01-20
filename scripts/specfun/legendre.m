@@ -318,4 +318,3 @@ endfunction
 %!error <in the range -1 .= X .= 1> legendre (1, [-2, 0, 1])
 %!error <in the range -1 .= X .= 1> legendre (1, [-1, 0, 2])
 %!error <NORMALIZATION option must be> legendre (1, [-1, 0, 1], "badnorm")
-

@@ -80,4 +80,3 @@ endfunction
 
 ## Mark graphical function as tested by demo block
 %!assert (1)
-

@@ -490,4 +490,3 @@ function update_group (h, ~)
   endif
 
 endfunction
-

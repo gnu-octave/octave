@@ -100,4 +100,3 @@ along with Octave; see the file COPYING.  If not, see
   OCT_ITERATE_PARAM_MACRO(OCT_MAKE_DECL_LIST_HELPER, PREFIX, NUM)
 
 #endif
-

@@ -103,4 +103,3 @@ endfunction
 %! [rx, rcmap] = frame2im (movie);
 %! assert (rx, cat (4, f1, f2, f3, f4));
 %! assert (rcmap, cmap);
-

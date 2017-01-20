@@ -61,4 +61,3 @@ extern int octave_fnm_period_wrapper (void);
 #endif
 
 #endif
-

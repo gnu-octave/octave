@@ -149,4 +149,3 @@ endfunction
 
 ## Test input validation
 %!error <javachk: unrecognized feature 'foobar'> javachk ("foobar")
-

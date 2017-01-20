@@ -71,4 +71,3 @@ endfunction
 
 ## Test input validation
 %!error cstrcat (1, 2)
-

@@ -94,4 +94,3 @@ endfunction
 %!error kolmogorov_smirnov_cdf (1,2,3)
 %!error kolmogorov_smirnov_cdf (1, ones (2))
 %!error kolmogorov_smirnov_cdf ([], 1)
-

@@ -614,4 +614,3 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! y = filter ([1 1 1], 1, x, [], 3);
 %! assert (y, y0);
 */
-

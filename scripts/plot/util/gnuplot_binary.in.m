@@ -65,4 +65,3 @@ endfunction
 %! assert (gnuplot_binary (), "__foobar__");
 %! gnuplot_binary (orig_val);
 %! assert (gnuplot_binary (), orig_val);
-

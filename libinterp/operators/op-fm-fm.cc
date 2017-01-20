@@ -263,4 +263,3 @@ install_fm_fm_ops (void)
   INSTALL_ASSIGNOP (op_el_div_eq, octave_float_matrix, octave_float_matrix,
                     assign_el_div);
 }
-

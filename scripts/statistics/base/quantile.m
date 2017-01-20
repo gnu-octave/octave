@@ -444,4 +444,3 @@ function inv = __quantile__ (x, p, method = 5)
   endif
 
 endfunction
-

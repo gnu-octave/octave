@@ -716,4 +716,3 @@ __builtin_delete (void *ptr)
 }
 
 #endif
-

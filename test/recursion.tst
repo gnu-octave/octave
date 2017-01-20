@@ -39,4 +39,3 @@
 %!assert (f (5), 120)
 
 %%FIXME: Need test for maximum recursion depth
-

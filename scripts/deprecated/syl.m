@@ -63,4 +63,3 @@ function x = syl (A, B, C)
   x = -sylvester (A, B, C);
 
 endfunction
-

@@ -45,4 +45,3 @@ endfunction
 
 %!test
 %! assert (isempty (gcbo));
-

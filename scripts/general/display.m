@@ -72,4 +72,3 @@ endfunction
 ## Test input validation
 %!error display ()
 %!error display (1,2)
-

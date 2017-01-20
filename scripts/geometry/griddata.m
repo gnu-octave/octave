@@ -203,4 +203,3 @@ endfunction
 %!error <the columns and rows of Z> griddata (1:4, 1:3, ones (3,5), 1:3, 1:3)
 %!error <matrices of same size> griddata (1:3, 1:3, 1:3, 1:4, 1:3)
 %!error <matrices of same size> griddata (1:3, 1:3, 1:3, 1:3, 1:4)
-

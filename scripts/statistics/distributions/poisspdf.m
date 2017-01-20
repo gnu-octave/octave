@@ -82,4 +82,3 @@ endfunction
 %!error poisspdf (ones (2), ones (3))
 %!error poisspdf (i, 2)
 %!error poisspdf (2, i)
-

@@ -217,4 +217,3 @@ endfunction
 %! C = rand (20, 10);
 %! d = rand (20, 1);
 %! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
-

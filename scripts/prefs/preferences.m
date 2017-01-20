@@ -39,4 +39,3 @@ endfunction
 %!   return;
 %! endif
 %! fail ("preferences ()", "warning", "GUI must be running");
-

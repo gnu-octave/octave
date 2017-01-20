@@ -60,4 +60,3 @@ function hui = uipanel (varargin)
   hui = __go_uipanel__ (h, args{:});
 
 endfunction
-

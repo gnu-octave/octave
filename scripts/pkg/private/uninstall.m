@@ -150,4 +150,3 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   endif
 
 endfunction
-

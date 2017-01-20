@@ -87,4 +87,3 @@ endfunction
 %! assert (sortrows (sort (delaunay3 (x, y, z), 2)), [1,2,3,4;1,2,4,5]);
 
 ## FIXME: Need input validation tests
-

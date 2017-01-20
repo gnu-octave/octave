@@ -821,4 +821,3 @@ dimensionality as the other array.
 %! assert (a, zeros (0, 3));
 
 */
-

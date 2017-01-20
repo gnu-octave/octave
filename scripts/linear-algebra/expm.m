@@ -154,4 +154,3 @@ endfunction
 %!error expm ()
 %!error expm (1, 2)
 %!error <expm: A must be a square matrix> expm ([1 0;0 1; 2 2])
-

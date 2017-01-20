@@ -107,4 +107,3 @@ endfunction
 %!error hygecdf (2, i, 2, 2)
 %!error hygecdf (2, 2, i, 2)
 %!error hygecdf (2, 2, 2, i)
-

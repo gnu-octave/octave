@@ -83,4 +83,3 @@ function text = strip_superfluous_endlines (text)
   text = text(keep);
 
 endfunction
-

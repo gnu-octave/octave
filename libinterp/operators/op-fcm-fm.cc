@@ -190,4 +190,3 @@ install_fcm_fm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix,
                     octave_float_matrix, dbl_assign);
 }
-

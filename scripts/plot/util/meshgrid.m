@@ -132,4 +132,3 @@ endfunction
 %!error <X and Y must be vectors> meshgrid (ones (2,2), 1:3)
 %!error <X and Y must be vectors> meshgrid (1:3, ones (2,2))
 %!error <X, Y, and Z must be vectors> [X,Y,Z] = meshgrid (1:3, 1:3, ones (2,2))
-

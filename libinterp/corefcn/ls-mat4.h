@@ -45,4 +45,3 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
                       const std::string& name);
 
 #endif
-

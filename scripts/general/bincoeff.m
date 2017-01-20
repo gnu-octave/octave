@@ -117,4 +117,3 @@ endfunction
 %!error bincoeff (1, 2, 3)
 %!error bincoeff (ones (3),ones (2))
 %!error bincoeff (ones (2),ones (3))
-

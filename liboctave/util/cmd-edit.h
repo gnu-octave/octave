@@ -375,4 +375,3 @@ typedef octave::command_editor command_editor;
 #endif
 
 #endif
-

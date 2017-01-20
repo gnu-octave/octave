@@ -43,4 +43,3 @@ function closereq ()
   endif
 
 endfunction
-

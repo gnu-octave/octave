@@ -132,4 +132,3 @@ This should give an error if @code{I} is nonempty.
 %! x = [];
 %! assert (isnull (x), false);
 */
-

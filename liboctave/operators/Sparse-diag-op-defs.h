@@ -218,4 +218,3 @@ RT do_sub_sm_dm (const SM& a, const DM& d)
 }
 
 #endif
-

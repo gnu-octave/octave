@@ -101,4 +101,3 @@ endfunction
 %!error nbincdf (i, 2, 2)
 %!error nbincdf (2, i, 2)
 %!error nbincdf (2, 2, i)
-

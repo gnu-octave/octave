@@ -145,4 +145,3 @@ endfunction
 %!error hygernd (4*ones (2),2,2, 3)
 %!error hygernd (4*ones (2),2,2, [3, 2])
 %!error hygernd (4*ones (2),2,2, 3, 2)
-

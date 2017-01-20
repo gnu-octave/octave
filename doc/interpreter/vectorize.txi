@@ -718,4 +718,3 @@ Note the usage of colon indexing to flatten an intermediate result into
 a column vector.  This is a common vectorization trick.
 
 @end itemize
-

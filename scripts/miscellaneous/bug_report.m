@@ -47,4 +47,3 @@ endfunction
 
 ## Mark file as being tested.  No real test needed for this function.
 %!assert (1)
-

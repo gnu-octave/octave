@@ -59,4 +59,3 @@ endfunction
 %!error lcm (1)
 %!error <same size or scalar> lcm ([1 2], [1 2 3])
 %!error <arguments must be numeric> lcm ([1 2], {1 2})
-

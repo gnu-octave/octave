@@ -1384,4 +1384,3 @@ namespace octave
 #endif
   }
 }
-

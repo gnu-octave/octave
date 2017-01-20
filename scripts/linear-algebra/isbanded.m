@@ -83,4 +83,3 @@ endfunction
 %!error <LOWER and UPPER must be non-negative> isbanded (1, 1, -1)
 %!error <LOWER and UPPER must be non-negative> isbanded (1, {1}, 1)
 %!error <LOWER and UPPER must be non-negative> isbanded (1, 1, {1})
-

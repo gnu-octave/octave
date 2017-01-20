@@ -103,4 +103,3 @@ namespace octave
 }
 
 #endif
-

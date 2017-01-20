@@ -61,4 +61,3 @@
 %! assert (issorted (xs));
 %! assert (issorted (xfs));
 %! assert (double (xfs), xs);
-

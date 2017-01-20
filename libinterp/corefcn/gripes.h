@@ -233,4 +233,3 @@ OCTAVE_NORETURN OCTINTERP_API extern void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op);
 
 #endif
-

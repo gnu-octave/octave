@@ -220,4 +220,3 @@ detect a non-Hermitian matrix.
 @DOCSTRING(gmres)
 
 @DOCSTRING(qmr)
-

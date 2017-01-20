@@ -44,4 +44,3 @@ octave_ftello_wrapper (FILE *fp)
 {
   return ftello (fp);
 }
-

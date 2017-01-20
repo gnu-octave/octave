@@ -63,4 +63,3 @@ endfunction
 %!error <must be real non-negative integers> factorial (2i)
 %!error <must be real non-negative integers> factorial (-3)
 %!error <must be real non-negative integers> factorial (5.5)
-

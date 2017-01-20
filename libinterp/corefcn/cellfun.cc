@@ -2393,4 +2393,3 @@ indexing keyword @code{end} is not available.
 
   return octave_value (y);
 }
-

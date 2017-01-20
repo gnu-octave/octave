@@ -101,4 +101,3 @@ endfunction
 %!error discrete_rnd (1, ones (2,1), [1 -1])
 %!error discrete_rnd (1, ones (2,1), [1 NaN])
 %!error discrete_rnd (1, ones (2,1), [0  0])
-

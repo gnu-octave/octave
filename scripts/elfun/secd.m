@@ -41,4 +41,3 @@ endfunction
 
 %!error secd ()
 %!error secd (1, 2)
-

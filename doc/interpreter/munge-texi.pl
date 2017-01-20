@@ -126,4 +126,3 @@ sub extract_docstring
 
   return $docstring;
 }
-

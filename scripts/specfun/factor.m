@@ -114,4 +114,3 @@ endfunction
 %!error <Q must be a real integer> factor (6i)
 %!error <Q must be a real integer> factor ([1,2])
 %!error <Q must be a real integer> factor (1.5)
-

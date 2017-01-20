@@ -114,4 +114,3 @@ endfunction
 
 %!error rundemos ("foo", 1)
 %!error <DIRECTORY argument> rundemos ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
-

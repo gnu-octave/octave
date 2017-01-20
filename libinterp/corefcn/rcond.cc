@@ -103,4 +103,3 @@ instead.
 %!assert (rcond (sx*i) < eps ('single'))
 
 */
-

@@ -216,4 +216,3 @@ endfunction
 %! [xi, yi] = meshgrid (linspace (-7, 7));
 %! zi = xi + yi;
 %! slice (x, y, z, v, xi, yi, zi);
-

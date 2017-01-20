@@ -90,4 +90,3 @@ function X = loadaudio (name, ext, bps)
   fclose (num);
 
 endfunction
-

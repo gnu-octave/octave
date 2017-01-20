@@ -65,4 +65,3 @@ endfunction
 %!error empirical_rnd ()
 %!error empirical_rnd (ones (2), 1)
 %!error empirical_rnd (ones (2), 1, 1)
-

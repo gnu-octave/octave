@@ -7597,4 +7597,3 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
 
   return retval;
 }
-

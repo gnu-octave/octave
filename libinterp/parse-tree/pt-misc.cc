@@ -355,4 +355,3 @@ tree_return_list::accept (tree_walker& tw)
 {
   tw.visit_return_list (*this);
 }
-

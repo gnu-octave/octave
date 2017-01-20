@@ -102,4 +102,3 @@ endfunction
 %!   assert (polygcd (poly (-p1), poly (-p2)),
 %!           poly (- intersect (p1, p2)), sqrt (eps));
 %! endfor
-

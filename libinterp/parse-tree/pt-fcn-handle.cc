@@ -219,4 +219,3 @@ tree_anon_fcn_handle::accept (tree_walker& tw)
 {
   tw.visit_anon_fcn_handle (*this);
 }
-

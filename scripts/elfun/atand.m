@@ -39,4 +39,3 @@ endfunction
 
 %!error atand ()
 %!error atand (1, 2)
-

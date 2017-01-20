@@ -163,4 +163,3 @@ endfunction
 
 %!error rat ()
 %!error rat (1, 2, 3)
-

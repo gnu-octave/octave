@@ -85,4 +85,3 @@ endfunction
 function retval = is_white (color)
   retval = all (color == 1);
 endfunction
-

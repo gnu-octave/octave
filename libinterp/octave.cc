@@ -552,4 +552,3 @@ Return the last component of the value returned by
 %!assert (ischar (program_name ()))
 %!error program_name (1)
 */
-

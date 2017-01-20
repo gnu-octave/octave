@@ -1092,4 +1092,3 @@ iw = 1  2  2  4  4  4
 %!error cummax ()
 %!error cummax (1, 2, 3)
 */
-

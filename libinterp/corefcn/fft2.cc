@@ -261,4 +261,3 @@ of @var{A} is treated separately
 %!
 %! assert (s, answer, 30*eps ("single"));
 */
-

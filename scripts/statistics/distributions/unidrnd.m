@@ -109,4 +109,3 @@ endfunction
 %!error unidrnd (10, 2, ones (2))
 %!error unidrnd (10*ones (2), 2, 1)
 %!error unidrnd (i)
-

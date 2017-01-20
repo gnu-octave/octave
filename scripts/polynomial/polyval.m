@@ -163,4 +163,3 @@ endfunction
 %!error <S input is missing required fields>
 %!  [y, dy] = polyval (1, 1, struct ("T", 0, "normr", 1, "df", 2))
 %!error <S input must be a structure> [y, dy] = polyval (1, 1, 2)
-

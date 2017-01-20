@@ -278,4 +278,3 @@ octave_ieee_init (void)
       initialized = true;
     }
 }
-

@@ -82,4 +82,3 @@ endfunction
 %!assert (dblquad (@(x,y) exp (-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadgk), pi * erf (1).^2, 1e-6)
 %!assert (dblquad (@(x,y) exp (-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadl), pi * erf (1).^2, 1e-6)
 %!assert (dblquad (@(x,y) exp (-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadv), pi * erf (1).^2, 1e-6)
-

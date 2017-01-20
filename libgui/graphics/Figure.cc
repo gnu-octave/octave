@@ -1012,4 +1012,3 @@ namespace QtHandles
   }
 
 }
-

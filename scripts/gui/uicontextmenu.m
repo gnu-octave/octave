@@ -59,4 +59,3 @@ function hui = uicontextmenu (varargin)
   hui = __go_uicontextmenu__ (h, args{:});
 
 endfunction
-

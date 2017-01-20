@@ -29,4 +29,3 @@ function result = __is_function__ (func)
   result = (existval == 2 || existval == 3 || existval == 5);
 
 endfunction
-

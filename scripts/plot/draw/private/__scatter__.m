@@ -468,4 +468,3 @@ function update_data (h, d)
   endif
 
 endfunction
-

@@ -30,4 +30,3 @@ along with Octave; see the file COPYING.  If not, see
 template class OCTAVE_API MSparse<double>;
 
 INSTANTIATE_SPARSE_FRIENDS (double, OCTAVE_API);
-

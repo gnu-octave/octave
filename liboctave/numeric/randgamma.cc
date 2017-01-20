@@ -193,4 +193,3 @@ oct_float_randg (float a)
   oct_fill_float_randg (a,1,&ret);
   return ret;
 }
-

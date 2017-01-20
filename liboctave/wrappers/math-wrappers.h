@@ -38,4 +38,3 @@ octave_frexpf_wrapper (float x, int *expptr);
 #endif
 
 #endif
-

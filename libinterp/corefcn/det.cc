@@ -230,4 +230,3 @@ For that, use any of the condition number functions: @code{cond},
 %!error det (1, 2)
 %!error <must be a square matrix> det ([1, 2; 3, 4; 5, 6])
 */
-

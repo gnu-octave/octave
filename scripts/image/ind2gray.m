@@ -92,4 +92,3 @@ endfunction
 %!warning <contains colors outside of colormap> ind2gray ([0 1 2], gray (5));
 %!warning <contains colors outside of colormap> ind2gray ([1 2 6], gray (5));
 %!warning <contains colors outside of colormap> ind2gray (uint8 ([1 2 5]), gray (5));
-

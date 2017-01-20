@@ -107,4 +107,3 @@ endfunction
 %!error soundsc (1, 8000, [1 2 3])
 %!error soundsc (1, 8000, 8, [2 1])
 %!error soundsc (1, 8000, 8, [1 2 3])
-

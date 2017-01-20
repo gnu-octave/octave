@@ -77,4 +77,3 @@ endfunction
 %!error <N must be a positive integer> strtrunc ("abcd", ones (2,2))
 %!error <N must be a positive integer> strtrunc ("abcd", -1)
 %!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
-

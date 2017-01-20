@@ -79,4 +79,3 @@ protected:
 };
 
 #endif
-

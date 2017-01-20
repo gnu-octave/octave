@@ -37,4 +37,3 @@ text_element_symbol::get_symbol_code (void) const
 
   return code;
 }
-

@@ -265,4 +265,3 @@ private slots:
 };
 
 #endif
-

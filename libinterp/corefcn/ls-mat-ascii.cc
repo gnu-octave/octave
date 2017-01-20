@@ -410,4 +410,3 @@ looks_like_mat_ascii_file (std::istream& is, const std::string& filename)
 
   return retval;
 }
-

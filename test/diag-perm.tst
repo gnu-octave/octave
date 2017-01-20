@@ -285,5 +285,3 @@
 %! assert (typeinfo (x), "diagonal matrix");
 %! x(9) = -1;
 %! assert (typeinfo (x), "diagonal matrix");
-
-

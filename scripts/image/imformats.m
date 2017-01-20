@@ -419,4 +419,3 @@ endfunction
 %!   error_thrown = true;
 %! end_try_catch
 %! assert (error_thrown, true);
-

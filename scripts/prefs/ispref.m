@@ -96,4 +96,3 @@ endfunction
 %!error ispref (1,2,3)
 %!error <GROUP must be a string> ispref (1, "pref1")
 %!error <PREF must be a string> ispref ("group1", 1)
-

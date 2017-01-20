@@ -368,4 +368,3 @@ extern OCTAVE_API std::string octave_fftw_version (void);
 extern OCTAVE_API std::string octave_fftwf_version (void);
 
 #endif
-

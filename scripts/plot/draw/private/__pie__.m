@@ -200,4 +200,3 @@ function update_text_pos (all_handles)
   endif
 
 endfunction
-

@@ -57,4 +57,3 @@ extern octave_value elem_xpow (const SparseComplexMatrix& a,
                                const SparseComplexMatrix& b);
 
 #endif
-

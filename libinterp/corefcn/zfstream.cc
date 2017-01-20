@@ -613,4 +613,3 @@ gzofstream::close ()
 }
 
 #endif
-

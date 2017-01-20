@@ -2782,4 +2782,3 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   return result;
 }
-

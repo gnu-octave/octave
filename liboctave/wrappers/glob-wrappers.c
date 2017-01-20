@@ -108,4 +108,3 @@ octave_fnm_period_wrapper (void)
 {
   return FNM_PERIOD;
 }
-

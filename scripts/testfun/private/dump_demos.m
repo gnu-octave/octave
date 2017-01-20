@@ -299,4 +299,3 @@ function dump_helper_fcns (fid)
   fprintf (fid, "\n%s\n", repmat ("%", [1, 60]));
 
 endfunction
-

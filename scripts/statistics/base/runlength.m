@@ -70,4 +70,3 @@ endfunction
 %!error runlength (1, 2)
 %!error runlength (['A'; 'B'])
 %!error runlength (ones (2,2))
-

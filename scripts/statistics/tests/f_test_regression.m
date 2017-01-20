@@ -75,4 +75,3 @@ function [pval, f, df_num, df_den] = f_test_regression (y, x, rr, r)
   endif
 
 endfunction
-

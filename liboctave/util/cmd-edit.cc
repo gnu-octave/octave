@@ -1941,4 +1941,3 @@ namespace octave
     (*current_liboctave_error_handler) ("%s", s.c_str ());
   }
 }
-

@@ -864,4 +864,3 @@ oct_fill_float_rande (octave_idx_type n, float *p)
   for (i = 0; i < n; i++)
     p[i] = oct_float_rande ();
 }
-

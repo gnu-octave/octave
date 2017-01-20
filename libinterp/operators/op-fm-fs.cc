@@ -169,4 +169,3 @@ install_fm_fs_ops (void)
   INSTALL_ASSIGNOP (op_div_eq, octave_float_matrix, octave_float_scalar,
                     assign_div);
 }
-

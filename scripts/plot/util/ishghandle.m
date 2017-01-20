@@ -104,4 +104,3 @@ endfunction
 %!error ishghandle (1, 2, 3)
 %!error <TYPE must be a string> ishghandle (0, 1)
 %!error <TYPE must be a string> ishghandle (0, {1})
-

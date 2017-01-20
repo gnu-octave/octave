@@ -83,4 +83,3 @@ function descriptions = rebuild (prefix, archprefix, list, files, verbose)
   endif
 
 endfunction
-

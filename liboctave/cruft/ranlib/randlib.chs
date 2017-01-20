@@ -360,9 +360,3 @@ C
 C     All generators are initialized to NOT generate antithetic values.
 C
 C**********************************************************************
-
-
-
-
-
-

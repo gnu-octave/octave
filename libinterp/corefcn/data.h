@@ -34,4 +34,3 @@ extern OCTINTERP_API octave_value
 do_class_concat (const octave_value_list& ovl, std::string cattype, int dim);
 
 #endif
-

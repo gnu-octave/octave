@@ -314,4 +314,3 @@ r = ind2sub (dims, ind)
 %!error <index out of range> ind2sub ([2, 2, 2], 1:9);
 %!error <Invalid index> ind2sub ([2, 2, 2], -1:8);
 */
-

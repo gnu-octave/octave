@@ -108,4 +108,3 @@ function update_mouse_mode (hfig, arg)
   endif
 
 endfunction
-

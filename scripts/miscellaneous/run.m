@@ -94,4 +94,3 @@ endfunction
 %!error run ()
 %!error run ("a", "b")
 %!error <SCRIPT must exist> run ("__A_very_#unlikely#_file_name__")
-

@@ -115,4 +115,3 @@
 
 %!assert (sort (r, "descend"), [9 7 5 3 1])
 %!assert (sort (rrev, "ascend"), [2 4 6 8 10])
-

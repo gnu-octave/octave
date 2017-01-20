@@ -70,4 +70,3 @@ endfunction
 %!error swapbytes ()
 %!error swapbytes (1, 2)
 %!error <invalid object of class 'cell'> swapbytes ({1})
-

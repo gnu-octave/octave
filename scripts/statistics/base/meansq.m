@@ -87,4 +87,3 @@ endfunction
 %!error <DIM must be an integer> meansq (1, ones (2,2))
 %!error <DIM must be an integer> meansq (1, 1.5)
 %!error <DIM must be .* a valid dimension> meansq (1, 0)
-

@@ -155,4 +155,3 @@ endfunction
 %!error fail ()
 %!error fail (1,2,3,4)
 %!error fail (1, "nowarning", "foo")
-

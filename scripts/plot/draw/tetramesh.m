@@ -156,4 +156,3 @@ endfunction
 %! view (30, 20);
 %! title ({"tetramesh() plot", ...
 %!         "colormap = gray (256) with white edges"});
-

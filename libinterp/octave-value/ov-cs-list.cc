@@ -55,4 +55,3 @@ octave_cs_list::subsref (const std::string&,
 {
   err_indexed_cs_list ();
 }
-

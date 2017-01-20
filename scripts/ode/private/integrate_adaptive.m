@@ -331,4 +331,3 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   solution.x = x.';
 
 endfunction
-

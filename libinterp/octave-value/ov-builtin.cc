@@ -160,4 +160,3 @@ octave_builtin::function (void) const
 }
 
 const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;
-

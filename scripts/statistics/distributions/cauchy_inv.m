@@ -96,4 +96,3 @@ endfunction
 %!error cauchy_inv (i, 2, 2)
 %!error cauchy_inv (2, i, 2)
 %!error cauchy_inv (2, 2, i)
-

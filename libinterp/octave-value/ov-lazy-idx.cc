@@ -197,4 +197,3 @@ bool octave_lazy_index::load_binary (std::istream& is, bool swap,
 
   return true;
 }
-

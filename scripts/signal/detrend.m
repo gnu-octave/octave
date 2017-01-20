@@ -87,4 +87,3 @@ endfunction
 %! x = [t;4*t-3]';
 %! y = detrend (x);
 %! assert (abs (y(:)) < 20*eps);
-

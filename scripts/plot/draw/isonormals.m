@@ -194,4 +194,3 @@ endfunction
 %!error <Unknown option 'foo'> n = isonormals (x, y, z, val, vert, "foo")
 %!error <input must be a list of vertices or a patch handle>
 %! n = isonormals (x, y, z, val, x);
-

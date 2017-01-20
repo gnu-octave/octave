@@ -75,4 +75,3 @@ function h = starting_stepsize (order, func, t0, x0,
   h = min (100 * h0, h1);
 
 endfunction
-

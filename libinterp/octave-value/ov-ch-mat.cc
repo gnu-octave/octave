@@ -306,4 +306,3 @@ octave_char_matrix::map (unary_mapper_t umap) const
 
   return retval;
 }
-

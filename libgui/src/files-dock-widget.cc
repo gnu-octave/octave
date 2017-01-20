@@ -958,6 +958,3 @@ files_dock_widget::selectAll ()
         }
     }
 }
-
-
-

@@ -609,4 +609,3 @@ Return the version number of Octave as a string.
 %!assert (ischar (OCTAVE_VERSION ()))
 %!error OCTAVE_VERSION (1)
 */
-

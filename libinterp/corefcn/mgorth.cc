@@ -141,4 +141,3 @@ On exit, @var{y} is a unit vector such that:
 %! endfor
 %! assert (a' * a, eye (5), 1e10);
 */
-

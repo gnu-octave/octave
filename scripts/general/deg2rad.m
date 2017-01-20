@@ -64,4 +64,3 @@ endfunction
 %!error deg2rad (1, 2)
 %!error <DEG must be a floating point class> deg2rad (uint8 (1))
 %!error <DEG must be a floating point class> deg2rad ("A")
-

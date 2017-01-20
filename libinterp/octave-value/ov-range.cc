@@ -828,4 +828,3 @@ The original variable value is restored when exiting the function.
 %!   warning (warn_state.state, warn_state.identifier);
 %! end_unwind_protect
 */
-

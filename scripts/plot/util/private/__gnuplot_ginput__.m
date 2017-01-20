@@ -146,4 +146,3 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
   end_unwind_protect
 
 endfunction
-

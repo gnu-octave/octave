@@ -173,4 +173,3 @@ endfunction
 ## Test input validation
 %!error spdiags ()
 %!error spdiags (1,2,3,4,5)
-

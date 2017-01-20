@@ -299,4 +299,3 @@ intNDArray<T>::diff (octave_idx_type order, int dim) const
 {
   return do_mx_diff_op<T> (*this, dim, order, mx_inline_diff);
 }
-

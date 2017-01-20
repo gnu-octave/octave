@@ -103,4 +103,3 @@ endfunction
 %!error flip ()
 %!error flip (1, 2, 3)
 %!error <DIM must be a positive integer> flip (magic (3), -1)
-

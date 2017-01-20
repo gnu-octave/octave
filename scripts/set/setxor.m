@@ -166,4 +166,3 @@ endfunction
 %! b = a;
 %! b(1,1,1) = 2;
 %! assert (intersect (a, b), sort (a(2:end)'));
-

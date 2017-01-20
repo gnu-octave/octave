@@ -165,4 +165,3 @@ endfunction
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", "a")
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", 0)
 %!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", 80.1)
-

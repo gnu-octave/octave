@@ -140,4 +140,3 @@ endfunction
 %!error <N must be figure handle or figure number> figure ([1 2])
 %!error <N must be figure handle or figure number> figure (-1)
 %!error <N must be figure handle or figure number> figure (1.5)
-

@@ -181,4 +181,3 @@ endfunction
 %!error logm ()
 %!error logm (1, 2, 3)
 %!error <logm: A must be a square matrix> logm ([1 0;0 1; 2 2])
-

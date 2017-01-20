@@ -149,4 +149,3 @@ octave_chunk_buffer::clear (void)
          active);
     }
 }
-

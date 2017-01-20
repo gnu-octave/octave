@@ -631,4 +631,3 @@ xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
-

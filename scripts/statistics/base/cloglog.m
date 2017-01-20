@@ -56,4 +56,3 @@ endfunction
 ## Test input validation
 %!error cloglog ()
 %!error cloglog (1, 2)
-

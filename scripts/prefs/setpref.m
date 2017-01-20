@@ -102,4 +102,3 @@ endfunction
 %!error setpref (1,2,3,4)
 %!error <GROUP must be a string> setpref (1, "pref1", 2)
 %!error <PREF must be a string> setpref ("group1", 1, 2)
-

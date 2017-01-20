@@ -119,4 +119,3 @@ OCTAVE_API RowVector linspace (double x1, double x2, octave_idx_type n);
 MARRAY_FORWARD_DEFS (MArray, RowVector, double)
 
 #endif
-

@@ -70,4 +70,3 @@ endfunction
 %!error <STATE must be a character string> recycle (1)
 %!error <recycling files is not implemented> recycle ("on")
 %!error <invalid value of STATE = 'foobar'> recycle ("foobar")
-

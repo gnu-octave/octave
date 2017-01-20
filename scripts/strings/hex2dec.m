@@ -64,4 +64,3 @@ endfunction
 %!error hex2dec ()
 %!error hex2dec (1)
 %!error hex2dec ("1", 2)
-

@@ -42,4 +42,3 @@ endfunction
 %! assert (options.linestyle, []);
 %! assert (options.marker, []);
 %! assert (options.errorstyle, []);
-

@@ -223,4 +223,3 @@ endfunction
 %! d = [0.8587;0.1781;0.0747;0.8405];
 %! xnew = [0;0.6929];
 %! assert (lsqnonneg (C, d), xnew, 0.0001);
-

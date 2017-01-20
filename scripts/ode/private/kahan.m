@@ -50,4 +50,3 @@ function [sum, comp] = kahan (sum, comp, term)
   sum = t;
 
 endfunction
-

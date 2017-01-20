@@ -134,4 +134,3 @@ endfunction
 %!error isstrprop ("abc123")
 %!error isstrprop ("abc123", "alpha", "alpha")
 %!error <invalid string property> isstrprop ("abc123", "foo")
-

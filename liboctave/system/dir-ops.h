@@ -105,4 +105,3 @@ typedef octave::sys::dir_entry dir_entry;
 #endif
 
 #endif
-

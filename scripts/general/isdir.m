@@ -39,4 +39,3 @@ endfunction
 
 %!error isdir ()
 %!error isdir (1, 2)
-

@@ -121,4 +121,3 @@ endfunction
 %!error untabify ()
 %!error untabify (1,2,3,4)
 %!error <must be a string> untabify (1)
-

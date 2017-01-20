@@ -302,5 +302,3 @@ class boolNDArray;
   BIN_OP_DECL (R, operator *, M, PM, API);
 
 #endif
-
-

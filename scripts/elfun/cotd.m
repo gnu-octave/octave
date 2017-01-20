@@ -41,4 +41,3 @@ endfunction
 
 %!error cotd ()
 %!error cotd (1, 2)
-

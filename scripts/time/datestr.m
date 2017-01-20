@@ -353,4 +353,3 @@ endfunction
 ## Test input validation
 %!error datestr ()
 %!error datestr (1, 2, 3, 4)
-

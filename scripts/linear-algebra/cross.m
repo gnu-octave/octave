@@ -117,4 +117,3 @@ endfunction
 
 %!error cross (0,0)
 %!error cross ()
-

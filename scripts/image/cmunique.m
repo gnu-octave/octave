@@ -198,4 +198,3 @@ endfunction
 %!error <MAP must be a valid colormap> cmunique (1, ones (3,2))
 %!error <MAP must be a valid colormap> cmunique (1, [-1 1 1])
 %!error <MAP must be a valid colormap> cmunique (1, [2 1 1])
-

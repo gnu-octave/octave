@@ -302,4 +302,3 @@ The original variable value is restored when exiting the function.
 %! endif
 %! assert (x, 1);
 */
-

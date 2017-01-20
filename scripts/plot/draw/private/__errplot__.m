@@ -408,4 +408,3 @@ function update_data (hg, ~, hl)
   set (hl(1), "ydata", errorbar_ydata);
 
 endfunction
-

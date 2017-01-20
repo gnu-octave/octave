@@ -68,4 +68,3 @@ endfunction
 %!error sound (1,2,3,4)
 %!error sound (1, -1)
 %!error sound (1, [], 2)
-

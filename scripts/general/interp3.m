@@ -291,4 +291,3 @@ endfunction
 %!error <V must be a 3-D array> interp3 (1:2, 1:2, 1:2, rand (2,2), 1,1,1)
 %!error <X, Y, Z, and V dimensions must be equal> interp3 (ones(1,2,2), ones(2,2,2), ones(2,2,2), rand (2,2,2), 1,1,1)
 %!error <XI, YI, and ZI dimensions must be equal> interp3 (1:2, 1:2, 1:2, rand (2,2,2), 1,1, ones (2,2))
-

@@ -248,4 +248,3 @@ namespace octave
     return qt_app.exec ();
   }
 }
-

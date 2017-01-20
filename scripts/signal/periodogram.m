@@ -216,4 +216,3 @@ endfunction
 %!error <NFFT must be a scalar> periodogram (1:5, 1:5, 1:5)
 %!error <FS must be a scalar> periodogram (1:5, [], [], 1:5)
 %!error <"centered" range type is not implemented> periodogram (1:5, "centered")
-

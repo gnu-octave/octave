@@ -113,4 +113,3 @@ endfunction
 %! subplot (1,2,2);
 %!  ezsurf (f, [-2,2], "circ");
 %!  title ({"x^2 + y^2"; 'plotted over circular disk with "circ"'});
-

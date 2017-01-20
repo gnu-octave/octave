@@ -216,4 +216,3 @@ install_fm_fcm_ops (void)
   INSTALL_WIDENOP (octave_float_matrix, octave_float_complex_matrix,
                    float_complex_matrix_conv);
 }
-

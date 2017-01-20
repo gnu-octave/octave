@@ -129,4 +129,3 @@ endfunction
 %!error gaminv (i, 2, 2)
 %!error gaminv (2, i, 2)
 %!error gaminv (2, 2, i)
-

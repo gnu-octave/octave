@@ -168,4 +168,3 @@ install_fs_fcs_ops (void)
   INSTALL_ASSIGNCONV (octave_scalar, octave_float_complex,
                       octave_complex_matrix);
 }
-

@@ -93,4 +93,3 @@ endfunction
 %!error fcdf (i, 2, 2)
 %!error fcdf (2, i, 2)
 %!error fcdf (2, 2, i)
-

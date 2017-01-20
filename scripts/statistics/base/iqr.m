@@ -98,4 +98,3 @@ endfunction
 %!error iqr (1)
 %!error iqr (['A'; 'B'])
 %!error iqr (1:10, 3)
-

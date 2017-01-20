@@ -154,4 +154,3 @@ tree_identifier::accept (tree_walker& tw)
 {
   tw.visit_identifier (*this);
 }
-

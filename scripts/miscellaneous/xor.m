@@ -98,4 +98,3 @@ endfunction
 %!error xor ()
 %!error xor (1)
 %!error <X and Y must be of compatible size> xor (ones (3,2), ones (2,3))
-

@@ -204,4 +204,3 @@ endfunction
 %!error <TYPE must be a string> moment (1, 2, 3, 4)
 %!error <DIM must be an integer and a valid dimension> moment (1, 2, ones (2,2))
 %!error <DIM must be an integer and a valid dimension> moment (1, 2, 1.5)
-

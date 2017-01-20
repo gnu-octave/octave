@@ -78,4 +78,3 @@ endfunction
 
 %!error polyint ()
 %!error polyint (ones (2,2))
-

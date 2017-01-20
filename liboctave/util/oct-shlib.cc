@@ -530,4 +530,3 @@ namespace octave
 #endif
   }
 }
-

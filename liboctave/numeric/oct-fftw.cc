@@ -1153,4 +1153,3 @@ octave_fftwf_version (void)
   return "none";
 #endif
 }
-

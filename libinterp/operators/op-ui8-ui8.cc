@@ -156,4 +156,3 @@ install_ui8_ui8_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint8, int64);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint8, uint64);
 }
-

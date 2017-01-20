@@ -81,4 +81,3 @@ endfunction
 %!error str2num ()
 %!error str2num ("string", 1)
 %!error <S must be a string> str2num ({"string"})
-

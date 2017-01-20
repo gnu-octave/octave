@@ -173,4 +173,3 @@ endfunction
 %!error hadamard ()
 %!error hadamard (1,2)
 %!error <N must be 2\^k\*p> hadamard (5)
-

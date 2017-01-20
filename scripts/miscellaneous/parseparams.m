@@ -130,4 +130,3 @@ endfunction
 %!error <needs odd number of arguments> parseparams ({1}, "linewidth")
 %!error <must be given as name-value pairs> parseparams ({1, "color"}, "linewidth", 5)
 %!error <unrecognized option: color> parseparams ({1, "color", 5}, "linewidth", 5)
-

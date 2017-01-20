@@ -328,4 +328,3 @@ private:
 };
 
 #endif
-

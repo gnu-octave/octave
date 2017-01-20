@@ -210,4 +210,3 @@ endfunction
 %! clf;
 %! treeplot ([2 4 2 0 6 4 6], "b+", "g");
 %! % Plot a simple tree plot defining the edge and node styles
-

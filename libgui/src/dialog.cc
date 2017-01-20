@@ -530,4 +530,3 @@ void FileDialog::acceptSelection (void)
   // send the selected info
   emit finish_input (string_result, path, idx);
 }
-

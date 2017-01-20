@@ -135,4 +135,3 @@ endfunction
 %!test
 %! result = ver ("%_an_unknown_package_%");
 %! assert (isempty (result), true);
-

@@ -247,4 +247,3 @@ endfunction
 %! b = A * [1; 1];
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b);
 %! assert (x, [1; 1], 1e-6);
-

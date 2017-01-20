@@ -42,4 +42,3 @@ endfunction
 
 %!error asech ()
 %!error asech (1, 2)
-

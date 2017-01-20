@@ -110,4 +110,3 @@ endfunction
 %!error run_count (1:5, 3, ones (2,2))
 %!error run_count (1:5, 3, 1.5)
 %!error run_count (1:5, 3, 0)
-

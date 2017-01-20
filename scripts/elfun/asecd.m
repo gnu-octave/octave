@@ -39,4 +39,3 @@ endfunction
 
 %!error asecd ()
 %!error asecd (1, 2)
-

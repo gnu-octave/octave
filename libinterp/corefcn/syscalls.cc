@@ -1597,4 +1597,3 @@ child has been resumed by delivery of a @code{SIGCONT} signal.
 {
   return const_value (args, octave::sys::wcontinue ());
 }
-

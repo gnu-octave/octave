@@ -96,4 +96,3 @@ endfunction
 %!error normest (ones (3,3,3))
 %!error normest (1, [1, 2])
 %!error normest (1, 1+1i)
-

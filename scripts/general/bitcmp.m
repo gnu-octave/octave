@@ -123,4 +123,3 @@ endfunction
 %!assert (bitcmp (int8 (1)), int8 (-2))     # [1 0 0 0 0 0 0 0]
 %!assert (bitcmp (int8 (0)), int8 (-1))     # [0 0 0 0 0 0 0 0]
 %!assert (bitcmp (int8 (8)), int8 (-9))     # [0 0 0 1 0 0 0 0]
-

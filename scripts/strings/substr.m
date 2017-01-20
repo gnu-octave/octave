@@ -110,4 +110,3 @@ endfunction
 %!error substr ("foo", 1, 5)
 %!error substr ("foo", -1, 5)
 %!error substr ("foo", 2, -5)
-

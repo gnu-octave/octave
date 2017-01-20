@@ -63,4 +63,3 @@ function retval = usage (varargin)
   retval = __usage__ (varargin{:});
 
 endfunction
-

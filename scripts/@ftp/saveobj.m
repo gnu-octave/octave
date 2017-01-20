@@ -25,4 +25,3 @@ endfunction
 
 ## No test possible for interactive function.
 %!assert (1)
-

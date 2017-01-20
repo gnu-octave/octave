@@ -49,4 +49,3 @@ function retval = fnmatch (varargin)
   retval = __fnmatch__ (varargin{:});
 
 endfunction
-

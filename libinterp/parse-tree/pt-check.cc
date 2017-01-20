@@ -563,4 +563,3 @@ tree_checker::errmsg (const std::string& msg, int line)
   else
     error ("%s: %d: %s", file_name.c_str (), line, msg.c_str ());
 }
-

@@ -318,4 +318,3 @@ endfunction
 %! title (hax(2), 'Two plotyy graphs on same figure using "hold on"');
 %! ylabel (hax(1), "Left axis is Blue");
 %! ylabel (hax(2), "Right axis is Orange");
-

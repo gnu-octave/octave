@@ -385,5 +385,3 @@ warning ("example:non-negative-variable",
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example
-
-

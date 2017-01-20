@@ -64,4 +64,3 @@ endfunction
 %!error getfield ()
 %!error getfield (1)
 %!error <invalid index> getfield (1,2)
-

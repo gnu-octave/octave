@@ -57,4 +57,3 @@ function javaaddpath (varargin)
   endfor
 
 endfunction
-

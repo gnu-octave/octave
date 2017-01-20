@@ -331,4 +331,3 @@ libinterp_EXTRA_DIST += \
   libinterp/corefcn/oct-tex-lexer.in.ll \
   libinterp/corefcn/oct-tex-parser.in.yy \
   libinterp/corefcn/oct-tex-symbols.in
-

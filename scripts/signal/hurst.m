@@ -47,4 +47,3 @@ function H = hurst (x)
   H = log (RS) / log (xr);
 
 endfunction
-

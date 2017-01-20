@@ -38,4 +38,3 @@ function retval = isstr (varargin)
   retval = ischar (varargin{:});
 
 endfunction
-

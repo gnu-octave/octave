@@ -179,4 +179,3 @@ install_scm_sm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_complex_matrix,
                     octave_sparse_matrix, assign);
 }
-

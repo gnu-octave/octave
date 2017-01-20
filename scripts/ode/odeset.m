@@ -289,4 +289,3 @@ endfunction
 %!error odeset (1, 1)
 %!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
 %!error odeset (odeset (), 1, 1)
-

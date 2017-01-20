@@ -740,4 +740,3 @@ extern std::string
 genpath (const std::string& dir, const string_vector& skip = "private");
 
 #endif
-

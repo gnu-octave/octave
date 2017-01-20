@@ -54,4 +54,3 @@ function dir = prefdir ()
   endif
 
 endfunction
-

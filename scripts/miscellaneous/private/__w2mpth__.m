@@ -69,4 +69,3 @@ endfunction
 ##%!   assert (__w2mpth__ ('relative\path\to\file.dat'),
 ##%!                       'relative/path/to/file.dat')
 ##%! endif
-

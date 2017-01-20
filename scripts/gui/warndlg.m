@@ -76,4 +76,3 @@ endfunction
 %!error warndlg (1, 2, 3, 4)
 %!error <MSG must be a character string> warndlg (1)
 %!error <TITLE must be a character string> warndlg ("msg", 1)
-

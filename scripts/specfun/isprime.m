@@ -171,4 +171,3 @@ endfunction
 %!error isprime (1, 2)
 %!error <X contains non-integer entries> isprime (0.5i)
 %!error <X contains non-integer entries> isprime (0.5)
-

@@ -94,4 +94,3 @@ endfunction
 %! xlim ([0 10]);
 %! title ({"semilogyerr(): semilogy() plot with errorbars", ...
 %!         "Y-axis is logarithmic"});
-

@@ -210,4 +210,3 @@ such the numerical rank of the matrix @var{S} is bounded by
 
 %!error sprank (1,2)
 */
-

@@ -212,4 +212,3 @@ endfunction
 %! assert (class (r), "uint8");
 %! assert (isempty (cmap));
 %! assert (isempty (a));
-

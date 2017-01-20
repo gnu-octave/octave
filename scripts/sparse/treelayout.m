@@ -231,4 +231,3 @@ endfunction
 %! assert (y, [0, 0, 0, 3]);
 %! assert (h, 0);
 %! assert (s, 1);
-

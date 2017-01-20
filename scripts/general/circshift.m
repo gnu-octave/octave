@@ -119,4 +119,3 @@ endfunction
 %!error <N must be a vector> circshift (1, ones (2,2))
 %!error <no longer than the number of dimensions in X> circshift (1, [1 2 3])
 %!error <all values of N must be integers> circshift (1, 1.5)
-

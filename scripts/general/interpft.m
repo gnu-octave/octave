@@ -142,4 +142,3 @@ endfunction
 %!error <N must be a scalar integer> interpft (1,2.1)
 %!error <invalid dimension DIM> interpft (1,2,0)
 %!error <invalid dimension DIM> interpft (1,2,3)
-

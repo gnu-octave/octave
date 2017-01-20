@@ -355,4 +355,3 @@ Generalized eigenvalue problem balancing uses Ward's algorithm
 
   return retval;
 }
-

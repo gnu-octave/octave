@@ -162,4 +162,3 @@ function manova (x, g)
   printf ("\n");
 
 endfunction
-

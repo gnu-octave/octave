@@ -159,4 +159,3 @@ endfunction
 %!assert (strcat ("", 2), strcat ([], char (2)))
 
 %!assert (strcat (), "")
-

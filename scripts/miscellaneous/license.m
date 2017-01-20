@@ -185,4 +185,3 @@ endfunction
 %!error license ("not_inuse")
 %!error license ("not_test", "octave", "enable")
 %!error <TOGGLE must be enable or disable> license ("test", "octave", "invalid_toggle")
-

@@ -78,4 +78,3 @@ function uiwait (varargin)
   endif
 
 endfunction
-

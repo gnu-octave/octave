@@ -77,4 +77,3 @@ endfunction
 ## Test input validation
 %!error subsindex ()
 %!error subsindex (1, 2)
-

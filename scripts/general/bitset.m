@@ -123,4 +123,3 @@ endfunction
 %!error <N must be in the range \[1,64\]> bitset (uint64 (0), 65)
 %!error <N must be scalar or the same size as A> bitset (uint8 (1), [1 3])
 %!error <N must be scalar or the same size as A> bitset (uint8 (1:3), [1 3])
-

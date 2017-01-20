@@ -44,4 +44,3 @@ endfunction
 
 %!error acot ()
 %!error acot (1, 2)
-

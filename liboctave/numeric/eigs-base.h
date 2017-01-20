@@ -130,4 +130,3 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              int disp, int maxit);
 
 #endif
-

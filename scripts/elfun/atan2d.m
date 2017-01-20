@@ -38,4 +38,3 @@ endfunction
 
 %!error atan2d ()
 %!error atan2d (1)
-

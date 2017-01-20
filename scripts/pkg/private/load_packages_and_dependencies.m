@@ -91,4 +91,3 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
   endfor
 
 endfunction
-

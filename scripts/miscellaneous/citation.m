@@ -53,4 +53,3 @@ endfunction
 %!error citation (1, 2)
 %!error <citation: PACKAGE must be a string> citation (1)
 %!error <citation: package .* is not installed> citation ("__NOT_A_VALID_PKG_NAME__")
-

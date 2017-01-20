@@ -166,4 +166,3 @@ function html_compare_plot_demos (toolkits, varargin)
   until (stop_fig == numel (in.figfiles))
 
 endfunction
-

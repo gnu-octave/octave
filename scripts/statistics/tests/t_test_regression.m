@@ -96,4 +96,3 @@ function [pval, t, df] = t_test_regression (y, x, rr, r, alt)
   endif
 
 endfunction
-

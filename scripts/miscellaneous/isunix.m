@@ -36,4 +36,3 @@ endfunction
 %!assert (islogical (isunix ()))
 
 %!error isunix (1)
-

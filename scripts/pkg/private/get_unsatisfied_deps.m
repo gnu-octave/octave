@@ -54,4 +54,3 @@ function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
   endfor
 
 endfunction
-

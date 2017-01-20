@@ -115,4 +115,3 @@ endfunction
 %!error trnd (ones (2,2), 3)
 %!error trnd (ones (2,2), [3, 2])
 %!error trnd (ones (2,2), 2, 3)
-

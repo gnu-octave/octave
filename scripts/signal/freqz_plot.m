@@ -66,4 +66,3 @@ function freqz_plot (w, h, freq_norm = false)
   ylabel ("Phase (degrees)");
 
 endfunction
-

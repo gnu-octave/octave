@@ -357,4 +357,3 @@ I = q'*f(t,t)*q;
 It should be noted that the number of points determines the quality
 of the approximation.  If the integration needs to be performed between
 @math{a} and @math{b}, instead of 0 and 1, then a change of variables is needed.
-

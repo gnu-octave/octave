@@ -210,4 +210,3 @@ endfunction
 %!error poissinv (ones (2), ones (3))
 %!error poissinv (i, 2)
 %!error poissinv (2, i)
-

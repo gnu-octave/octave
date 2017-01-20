@@ -72,4 +72,3 @@ endfunction
 %!error table (ones (2,2), ones (2,1))
 %!error table (ones (2,1), ones (2,2))
 %!error table (ones (2,1), ones (3,1))
-

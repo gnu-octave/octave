@@ -93,4 +93,3 @@ endfunction
 %!error <N and T must be scalars> pascal (1, [1 2])
 %!error <T must be -1> pascal (3,-2)
 %!error <T must be .* or 2> pascal (3,4)
-

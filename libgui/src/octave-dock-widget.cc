@@ -498,4 +498,3 @@ octave_dock_widget::closeEvent (QCloseEvent *e)
   set_focus_predecessor ();
   QDockWidget::closeEvent (e);
 }
-

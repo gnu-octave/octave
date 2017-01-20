@@ -37,4 +37,3 @@ function retval = loadprefs ()
   endif
 
 endfunction
-

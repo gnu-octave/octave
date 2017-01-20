@@ -117,4 +117,3 @@ endfunction
 %!   y = sin (x + 0.1 * i);
 %!   refreshdata (gcf, "caller");
 %! endfor
-

@@ -162,4 +162,3 @@ endfunction
 
 %!error runtests ("foo", 1)
 %!error <DIRECTORY argument> runtests ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
-

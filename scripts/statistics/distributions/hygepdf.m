@@ -111,4 +111,3 @@ endfunction
 %!error hygepdf (2, i, 2, 2)
 %!error hygepdf (2, 2, i, 2)
 %!error hygepdf (2, 2, 2, i)
-

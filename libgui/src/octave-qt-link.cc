@@ -668,4 +668,3 @@ octave_qt_link::terminal_interrupt (void)
 {
   command_interpreter->interrupt ();
 }
-

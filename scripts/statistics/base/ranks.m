@@ -102,4 +102,3 @@ endfunction
 %!error ranks (1, 1.5)
 %!error ranks (1, 0)
 %!error ranks (1, 3)
-

@@ -149,4 +149,3 @@ endfunction
 %!error profile ()
 %!error profile ("on", 2)
 %!error profile ("INVALID_OPTION")
-

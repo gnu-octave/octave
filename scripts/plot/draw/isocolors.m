@@ -178,4 +178,3 @@ endfunction
 %! cdat = isocolors (x, y, z, c, v);
 %! assert (rows (cdat) == rows (v));
 ## Can't create a patch handle for tests without a figure
-

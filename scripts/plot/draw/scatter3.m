@@ -126,4 +126,3 @@ endfunction
 %! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), "s");
 %! title ({"scatter3() plot", ...
 %!         "marker is square, size and color determined by Z"});
-

@@ -82,4 +82,3 @@ namespace octave
 }
 
 #endif
-

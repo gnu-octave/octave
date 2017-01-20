@@ -604,4 +604,3 @@ install_dm_scm_ops (void)
   INSTALL_BINOP (op_sub, octave_sparse_complex_matrix,
                  octave_complex_diag_matrix, sub_scm_cdm);
 }
-

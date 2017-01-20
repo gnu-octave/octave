@@ -207,4 +207,3 @@ endfunction
 %!error <OPTIONS must be a string or cell array> delaunay (ones (2,2), ones (2,2), ones (2,2), struct())
 %!error <X and Y must be the same size> delaunay (1, [1 2])
 %!error <X, Y, and Z must be the same size> delaunay (1, [1 2], [1 2])
-

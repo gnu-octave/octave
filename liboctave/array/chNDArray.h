@@ -124,4 +124,3 @@ NDND_BOOL_OP_DECLS (charNDArray, charNDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (charNDArray, OCTAVE_API)
 
 #endif
-

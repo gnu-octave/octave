@@ -534,4 +534,3 @@ endfunction
 %! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
 %! opts.thresh = [];
 %! fail ("ilu (A_tiny, opts)", "THRESH must be a scalar");
-

@@ -89,4 +89,3 @@ endfunction
 %!error cauchy_cdf (i, 2, 2)
 %!error cauchy_cdf (2, i, 2)
 %!error cauchy_cdf (2, 2, i)
-

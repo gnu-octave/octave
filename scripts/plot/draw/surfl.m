@@ -208,4 +208,3 @@ endfunction
 %! surfl (X,Y,Z, [62.50,30], [0.2 0.6 0.4 25]);
 %! shading interp;
 %! title ("surfl() with lighting vector and material properties");
-

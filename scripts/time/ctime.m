@@ -55,4 +55,3 @@ endfunction
 
 %!error ctime ()
 %!error ctime (1, 2)
-

@@ -136,4 +136,3 @@ endfunction
 %!error <DIM must be an integer> median (1, ones (2,2))
 %!error <DIM must be an integer> median (1, 1.5)
 %!error <DIM must be .* a valid dimension> median (1, 0)
-

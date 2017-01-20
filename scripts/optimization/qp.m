@@ -431,4 +431,3 @@ endfunction
 %!
 %! assert (isstruct (INFO) && isfield (INFO, "info") && (INFO.info == 0));
 %! assert ([x obj_qp], [1.0 0.5], eps);
-

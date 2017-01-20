@@ -40,4 +40,3 @@ octave_strftime_wrapper (char *buf, size_t len, const char *fmt,
 {
   return nstrftime (buf, len, fmt, t, tz, ns);
 }
-

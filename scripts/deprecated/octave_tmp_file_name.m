@@ -50,4 +50,3 @@ endfunction
 
 
 %!assert (1)
-

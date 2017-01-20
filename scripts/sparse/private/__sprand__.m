@@ -142,4 +142,3 @@ function S = __sprand__ (varargin)
   endif
 
 endfunction
-

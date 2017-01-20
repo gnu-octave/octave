@@ -129,4 +129,3 @@ endfunction
 %!error unifrnd (ones (2,2), 2, 3)
 %!error unifrnd (ones (2,2), 2, [3, 2])
 %!error unifrnd (ones (2,2), 2, 2, 3)
-

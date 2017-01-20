@@ -345,4 +345,3 @@ operator << (std::ostream& os, const FloatDiagMatrix& a)
     }
   return os;
 }
-

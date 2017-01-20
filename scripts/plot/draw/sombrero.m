@@ -83,4 +83,3 @@ endfunction
 ## Test input validation
 %!error sombrero (1,2,3)
 %!error <N must be greater than 1> sombrero (1)
-

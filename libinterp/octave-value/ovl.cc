@@ -274,4 +274,3 @@ octave_value_list::make_storable_values (void)
         data(i) = tmp;
     }
 }
-

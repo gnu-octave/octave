@@ -47,4 +47,3 @@ function plot_stream = __gnuplot_open_stream__ (npipes, h)
   endif
 
 endfunction
-

@@ -112,4 +112,3 @@ endfunction
 %! assert (null (A,tol), zeros (2,0));
 
 %!error null ()
-

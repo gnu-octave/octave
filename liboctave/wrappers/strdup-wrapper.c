@@ -37,4 +37,3 @@ octave_strdup_wrapper (const char *str)
 {
   return strdup (str);
 }
-

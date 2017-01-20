@@ -613,4 +613,3 @@ namespace octave
     return retval;
   }
 }
-

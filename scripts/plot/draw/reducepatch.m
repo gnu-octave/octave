@@ -454,4 +454,3 @@ endfunction
 %! faces_new = faces;
 %! faces_new(1,3) = size (vertices, 1) + 1;
 %! reducepatch (faces_new, vertices);
-

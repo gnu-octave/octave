@@ -43,4 +43,3 @@ function retval = nfields (varargin)
   retval = numfields (varargin{:});
 
 endfunction
-

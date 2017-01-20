@@ -162,4 +162,3 @@ endfunction
 
 %!test
 %! close (hfig);
-

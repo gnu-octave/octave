@@ -109,4 +109,3 @@ endfunction
 %!error binopdf (i, 2, 2)
 %!error binopdf (2, i, 2)
 %!error binopdf (2, 2, i)
-

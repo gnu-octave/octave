@@ -237,4 +237,3 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
 }
 
 #endif
-

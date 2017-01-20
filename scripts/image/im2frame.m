@@ -101,4 +101,3 @@ endfunction
 %! cmap = bone (100);
 %! assert (im2frame (cat (4, ind1, ind2, ind3, ind4), cmap),
 %!         struct ("cdata", {ind1, ind2, ind3, ind4}, "colormap", cmap));
-

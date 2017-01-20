@@ -46,4 +46,3 @@ endfunction
 %!error realsqrt ()
 %!error realsqrt (1,2)
 %!error <produced complex result> realsqrt (-1)
-

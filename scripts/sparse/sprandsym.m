@@ -174,4 +174,3 @@ endfunction
 %!error sprandsym (0, 0.5)
 %!error sprandsym (3, -1)
 %!error sprandsym (3, 2)
-

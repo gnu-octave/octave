@@ -336,4 +336,3 @@ regexp_replace (const std::string& pat,
 #endif
 
 #endif
-

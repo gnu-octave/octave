@@ -432,4 +432,3 @@ Undocumented internal function.
   else
     return ovl (profiler.get_flat ());
 }
-

@@ -48,4 +48,3 @@ function version = __gnuplot_version__ ()
   version = __version__;
 
 endfunction
-

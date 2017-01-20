@@ -186,4 +186,3 @@ endfunction
 %!error <N must be a scalar integer> demo ("demo", 1.5)
 %!warning <no function .* found> demo ("_%NOT_A_FUNCTION%_");
 %!warning <only 1 demos available for demo> demo ("demo", 10);
-

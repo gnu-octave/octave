@@ -75,4 +75,3 @@ endfunction
 
 %!error fliplr()
 %!error fliplr (1, 2)
-

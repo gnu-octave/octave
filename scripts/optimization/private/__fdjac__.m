@@ -45,4 +45,3 @@ function fjac = __fdjac__ (fcn, x, fvec, typicalx, cdif, err = 0)
   endif
 
 endfunction
-

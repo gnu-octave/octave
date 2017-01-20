@@ -94,4 +94,3 @@ endfunction
 %!error celldisp ()
 %!error celldisp ({}, "name", 1)
 %!error <C must be a cell array> celldisp (1)
-

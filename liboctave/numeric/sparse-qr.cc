@@ -2357,4 +2357,3 @@ namespace octave
     template class sparse_qr<SparseComplexMatrix>;
   }
 }
-

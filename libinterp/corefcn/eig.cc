@@ -641,4 +641,3 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!error <wrong type argument>
 %!  eig ([1 2 ; 2 3], [1 2 ; 2 3], [1 2 ; 2 3])
 */
-

@@ -1097,4 +1097,3 @@ compatibility with @sc{matlab}.
 %! [AA, BB, Z2] = qz (A, B, '-');
 %! assert (Z1, Z2);
 */
-

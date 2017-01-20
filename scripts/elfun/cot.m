@@ -44,4 +44,3 @@ endfunction
 
 %!error cot ()
 %!error cot (1, 2)
-

@@ -490,4 +490,3 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, const R&))
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, y, fcn); }
 
 #endif
-

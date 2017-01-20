@@ -535,4 +535,3 @@ function [edge_table, tri_table] = init_mc ()
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 ] + 1;
 
 endfunction
-

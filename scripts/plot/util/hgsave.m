@@ -127,4 +127,3 @@ endfunction
 %!error hgsave ()
 %!error hgsave (1, 2, 3, 4)
 %!error hgsave ("abc", "def")
-

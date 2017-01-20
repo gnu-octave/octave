@@ -72,4 +72,3 @@ endfunction
 %!assert (polyarea ([x,x],[y,y]), [4,4], eps)
 %!assert (polyarea ([x,x],[y,y],1), [4,4], eps)
 %!assert (polyarea ([x,x]',[y,y]',2), [4;4], eps)
-

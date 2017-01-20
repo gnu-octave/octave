@@ -30,4 +30,3 @@ along with Octave; see the file COPYING.  If not, see
 #define MSHORT cdm
 
 #include "op-dms-template.cc"
-

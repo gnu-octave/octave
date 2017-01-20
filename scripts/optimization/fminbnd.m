@@ -298,4 +298,3 @@ endfunction
 %!assert (fminbnd (@(x) sin (x), 0, 0), 0, eps)
 
 %!error <lower bound cannot be greater> fminbnd (@(x) sin (x), 0, -pi)
-

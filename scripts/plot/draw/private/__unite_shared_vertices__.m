@@ -89,4 +89,3 @@ function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
   endif
 
 endfunction
-

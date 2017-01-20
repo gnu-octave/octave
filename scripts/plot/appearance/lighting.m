@@ -224,4 +224,3 @@ endfunction
 %!error <MODE must be a string> lighting ({})
 %!error <Invalid MODE "foo"> lighting foo
 %!error <Invalid call to lighting> lighting (-1, "flat")
-

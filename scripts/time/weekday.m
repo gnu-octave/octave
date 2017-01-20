@@ -124,4 +124,3 @@ endfunction
 %! [n, s] = weekday ("25-Dec-1994", "long");
 %! assert (n, 1);
 %! assert (s, "Sunday");
-

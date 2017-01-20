@@ -57,4 +57,3 @@ function isoval = __calc_isovalue_from_data__ (data)
   isoval = bin_centers(floor (numel (bin_centers) / 2));
 
 endfunction
-

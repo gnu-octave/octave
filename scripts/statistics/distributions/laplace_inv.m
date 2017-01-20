@@ -61,4 +61,3 @@ endfunction
 %!error laplace_inv ()
 %!error laplace_inv (1,2)
 %!error laplace_inv (i)
-

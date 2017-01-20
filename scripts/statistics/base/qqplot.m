@@ -110,4 +110,3 @@ function [qout, sout] = qqplot (x, dist, varargin)
   endif
 
 endfunction
-

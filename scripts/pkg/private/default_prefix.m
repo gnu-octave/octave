@@ -38,4 +38,3 @@ function [prefix, archprefix] = default_prefix (global_install, desc)
   endif
 
 endfunction
-

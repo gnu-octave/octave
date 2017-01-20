@@ -132,4 +132,3 @@ endfunction
 %!error <C must be a vector> toeplitz ([1, 2; 3, 4])
 %!error <C and R must be vectors> toeplitz ([1, 2; 3, 4], 1)
 %!error <C and R must be vectors> toeplitz (1, [1, 2; 3, 4])
-

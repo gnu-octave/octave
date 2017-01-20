@@ -412,4 +412,3 @@ bool find_files_dialog::is_match (const QFileInfo &info)
 
   return match;
 }
-

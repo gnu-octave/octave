@@ -1240,4 +1240,3 @@ The original variable value is restored when exiting the function.
 
 %!error (silent_functions (1, 2))
 */
-

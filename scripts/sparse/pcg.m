@@ -536,4 +536,3 @@ endfunction
 %! assert (flag, 0);
 %! assert (iter, 1);  # should converge in one iteration
 %! assert (isnan (eigest), isnan ([NaN, NaN]));
-

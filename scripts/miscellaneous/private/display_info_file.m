@@ -53,4 +53,3 @@ function display_info_file (func, package, file)
   fclose (fid);
 
 endfunction
-

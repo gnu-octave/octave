@@ -164,4 +164,3 @@ endfunction
 %!error linkaxes ()
 %!error linkaxes (1,2,3)
 %!error <HAX must be a vector of axes handles> linkaxes ([pi, e])
-

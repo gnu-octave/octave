@@ -300,4 +300,3 @@ operator >> (std::istream& is, FloatColumnVector& a)
     }
   return is;
 }
-

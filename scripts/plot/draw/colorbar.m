@@ -758,4 +758,3 @@ endfunction
 %! plot ([0, 2]);
 %! colorbar ("eastoutside");
 %! axis equal;
-

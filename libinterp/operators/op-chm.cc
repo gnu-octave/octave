@@ -107,4 +107,3 @@ install_chm_ops (void)
   INSTALL_CATOP (octave_scalar, octave_char_matrix, s_chm);
   INSTALL_CATOP (octave_matrix, octave_char_matrix, m_chm);
 }
-

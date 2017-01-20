@@ -173,4 +173,3 @@ endfunction
 %! assert (rgb2hsv (rgb_double), expected);
 %! assert (rgb2hsv (rgb_uint8), expected, 0.005);
 %! assert (rgb2hsv (single (rgb_double)), single (expected));
-

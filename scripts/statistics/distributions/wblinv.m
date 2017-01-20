@@ -96,4 +96,3 @@ endfunction
 %!error wblinv (i, 2, 2)
 %!error wblinv (2, i, 2)
 %!error wblinv (2, 2, i)
-

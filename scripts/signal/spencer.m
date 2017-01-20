@@ -50,4 +50,3 @@ function retval = spencer (x)
   retval = reshape (retval, xr, xc);
 
 endfunction
-

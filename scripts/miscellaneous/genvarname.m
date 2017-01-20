@@ -217,4 +217,3 @@ endfunction
 %!error <STR must be a string or cellstr> genvarname (1)
 %!error <more than one exclusion is given, it must be a cellstr> genvarname ("x", char ("a", "b", "c"))
 %!error <EXCLUSIONS must be a string or cellstr> genvarname ("x", 1)
-

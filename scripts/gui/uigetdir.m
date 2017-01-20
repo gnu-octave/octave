@@ -67,4 +67,3 @@ endfunction
 
 ## Remove from test statistics.  No real tests possible.
 %!assert (1)
-

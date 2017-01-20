@@ -87,4 +87,3 @@ octave_dld_function::create (octave_builtin::fcn ff,
 {
   return new octave_dld_function (ff, shl, nm, ds);
 }
-

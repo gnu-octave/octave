@@ -78,4 +78,3 @@ endfunction
 %!error unidinv (ones (2), ones (3))
 %!error unidinv (i, 2)
 %!error unidinv (2, i)
-

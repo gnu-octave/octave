@@ -179,4 +179,3 @@ function image_as_txt (d, nm)
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
-

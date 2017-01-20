@@ -184,4 +184,3 @@ install_str_str_ops (void)
                     null_assign);
 
 }
-

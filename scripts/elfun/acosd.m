@@ -39,4 +39,3 @@ endfunction
 
 %!error acosd ()
 %!error acosd (1, 2)
-

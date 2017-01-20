@@ -79,4 +79,3 @@ endfunction
 %!error <H must be a scalar .* graphic handle> rmappdata (-1, "hello")
 %!error <NAME must be a string> rmappdata (0, 1)
 %!error <appdata 'foobar' is not present> rmappdata (0, "foobar")
-

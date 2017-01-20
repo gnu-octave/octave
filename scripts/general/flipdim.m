@@ -37,4 +37,3 @@ endfunction
 
 ## No tests needed for alias.  All tests for functionality are in flip.m
 %!assert (1)
-

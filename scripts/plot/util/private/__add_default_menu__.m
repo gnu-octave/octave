@@ -140,4 +140,3 @@ function guimode_cb (h, e)
       arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
 endfunction
-

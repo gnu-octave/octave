@@ -59,4 +59,3 @@ endfunction
 %!error <N must be a non-negative integer> wilkinson (ones (2))
 %!error <N must be a non-negative integer> wilkinson (-1)
 %!error <N must be a non-negative integer> wilkinson (1.5)
-

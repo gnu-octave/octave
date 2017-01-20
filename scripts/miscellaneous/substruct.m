@@ -90,4 +90,3 @@ endfunction
 %!error substruct ("x", 1)
 %!error substruct ("()", [1,2,3])
 %!error substruct (".", {1,2,3})
-

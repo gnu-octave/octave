@@ -28,4 +28,3 @@ along with Octave; see the file COPYING.  If not, see
 #warning "config.h has been deprecated; there is no need to include it directly"
 
 #endif
-

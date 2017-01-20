@@ -440,4 +440,3 @@ parameters for @code{daspk}.
 
   return retval;
 }
-

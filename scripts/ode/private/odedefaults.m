@@ -101,4 +101,3 @@ function [defaults, classes, attributes] = odedefaults (n, t0, tf)
   attributes.OutputSel = {"vector", "integer", "positive", ">", 0, "<=", n};
 
 endfunction
-

@@ -73,4 +73,3 @@ CONV_DECLS (FloatComplex, Float);
 CONV_DECLS (FloatComplex, FloatComplex);
 
 #endif
-

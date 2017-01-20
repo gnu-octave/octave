@@ -295,4 +295,3 @@ endfunction
 %! [x,P] = unmkpp (pp);
 %! assert (P, [-1,2,0,0;0,-1,1,1;1,-1,-1,1], abserr);
 %! assert (pp2, pp);
-

@@ -299,4 +299,3 @@ endfunction
 %!error <Invalid call> camlight (rand (), 1, 2, 3)
 %!error <invalid light position 'foobar'> camlight ("foobar")
 %!error <invalid light position 'foobar'> camlight ("foobar", "local")
-

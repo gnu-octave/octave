@@ -64,4 +64,3 @@ endfunction
 %!error __gripe_missing_component__ ()
 %!error __gripe_missing_component__ ("fcn")
 %!error __gripe_missing_component__ ("fcn", 1 , 2)
-

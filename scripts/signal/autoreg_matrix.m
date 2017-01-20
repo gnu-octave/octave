@@ -62,4 +62,3 @@ endfunction
 %!error autoreg_matrix ()
 %!error autoreg_matrix (1)
 %!error autoreg_matrix (ones (4,1), 5)
-

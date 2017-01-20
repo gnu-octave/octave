@@ -86,4 +86,3 @@ get_save_type (float /* max_val */, float /* min_val */)
 
   return st;
 }
-

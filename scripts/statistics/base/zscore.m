@@ -106,4 +106,3 @@ endfunction
 %!error zscore (1, 1.5)
 %!error zscore (1, 1, 0)
 %!error zscore (1, 3)
-

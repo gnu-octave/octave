@@ -98,4 +98,3 @@ endfunction
 
 ## FIXME: Need some better BIST tests
 %!assert (ischar (pathdef ()))
-

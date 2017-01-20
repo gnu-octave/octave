@@ -82,4 +82,3 @@ endfunction
 
 %!error perms ()
 %!error perms (1, 2)
-

@@ -257,4 +257,3 @@ endfunction
 ## Close figure used for testing
 %!test
 %! close (hf);
-

@@ -33,4 +33,3 @@ endfunction
 
 
 %!assert (matlabroot (), OCTAVE_HOME ())
-

@@ -43,4 +43,3 @@ octave_comment_list::dup (void) const
 
   return new_cl;
 }
-

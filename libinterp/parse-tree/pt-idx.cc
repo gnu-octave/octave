@@ -704,4 +704,3 @@ tree_index_expression::accept (tree_walker& tw)
 {
   tw.visit_index_expression (*this);
 }
-

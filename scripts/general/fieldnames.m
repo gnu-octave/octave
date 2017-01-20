@@ -99,4 +99,3 @@ endfunction
 %! endif
 %! names = fieldnames (javaObject ("java.lang.String", "Hello"));
 %! assert (any (strcmp (names, "CASE_INSENSITIVE_ORDER")));
-

@@ -143,4 +143,3 @@ tree_persistent_command::accept (tree_walker& tw)
 {
   tw.visit_persistent_command (*this);
 }
-

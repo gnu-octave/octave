@@ -79,4 +79,3 @@ tree_expression::original_text (void) const
 {
   return "";
 }
-

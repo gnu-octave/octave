@@ -62,4 +62,3 @@ function retval = __fltk_file_filter__ (file_filter)
   retval = fltk_str;
 
 endfunction
-

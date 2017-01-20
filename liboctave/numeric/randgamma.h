@@ -36,4 +36,3 @@ extern OCTAVE_API void oct_fill_float_randg (float a, octave_idx_type n,
                                              float *p);
 
 #endif
-

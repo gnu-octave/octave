@@ -103,4 +103,3 @@ libinterp_parse_tree_libparse_tree_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 libinterp_EXTRA_DIST += \
   libinterp/parse-tree/oct-parse.in.yy \
   libinterp/parse-tree/octave.gperf
-

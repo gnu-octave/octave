@@ -54,4 +54,3 @@ endfunction
 %!error stdnormal_pdf ()
 %!error stdnormal_pdf (1,2)
 %!error stdnormal_pdf (i)
-

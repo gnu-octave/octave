@@ -895,4 +895,3 @@ Undocumented internal function.
 
   return ovl (octave_value_typeinfo::installed_type_info ());
 }
-

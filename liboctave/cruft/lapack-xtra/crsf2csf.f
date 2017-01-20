@@ -94,8 +94,3 @@ c apply a single rotation from the right to a pair of columns
          x(i) = t
        end do
        end subroutine
-
-
-
-
-

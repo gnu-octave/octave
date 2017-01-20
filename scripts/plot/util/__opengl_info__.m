@@ -122,4 +122,3 @@ endfunction
 %! a = __opengl_info__ ();
 %! assert (! isempty (a))
 %! assert (isfield (a, "version"))
-

@@ -54,4 +54,3 @@ endfunction
 %!assert (sinc (1/2), 2/pi, 1e-6)
 
 %!error sinc()
-

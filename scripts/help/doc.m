@@ -126,4 +126,3 @@ endfunction
 %! if (exist (ifile) != 2 && exist (sprintf ("%s.gz", ifile)) != 2)
 %!   error ("Info file %s or %s.gz does not exist!", ifile, ifile);
 %! endif
-

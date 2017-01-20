@@ -128,7 +128,7 @@ public:
     if (data.is_defined ())
       args.append (data);
 
-    feval (name, args, 0);
+    octave::feval (name, args, 0);
   }
 
   std::string id (void) { return name; }

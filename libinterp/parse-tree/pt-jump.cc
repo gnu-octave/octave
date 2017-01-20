@@ -32,57 +32,59 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-// Break.
-
-// Nonzero means we're breaking out of a loop or function body.
-int tree_break_command::breaking = 0;
-
-tree_command *
-tree_break_command::dup (symbol_table::scope_id,
-                         symbol_table::context_id) const
+namespace octave
 {
-  return new tree_break_command (line (), column ());
-}
+  // Break.
 
-void
-tree_break_command::accept (tree_walker& tw)
-{
-  tw.visit_break_command (*this);
-}
+  // Nonzero means we're breaking out of a loop or function body.
+  int tree_break_command::breaking = 0;
 
-// Continue.
+  tree_command *
+  tree_break_command::dup (symbol_table::scope_id,
+                           symbol_table::context_id) const
+  {
+    return new tree_break_command (line (), column ());
+  }
 
-// Nonzero means we're jumping to the end of a loop.
-int tree_continue_command::continuing = 0;
+  void
+  tree_break_command::accept (tree_walker& tw)
+  {
+    tw.visit_break_command (*this);
+  }
 
-tree_command *
-tree_continue_command::dup (symbol_table::scope_id,
+  // Continue.
+
+  // Nonzero means we're jumping to the end of a loop.
+  int tree_continue_command::continuing = 0;
+
+  tree_command *
+  tree_continue_command::dup (symbol_table::scope_id,
+                              symbol_table::context_id) const
+  {
+    return new tree_continue_command (line (), column ());
+  }
+
+  void
+  tree_continue_command::accept (tree_walker& tw)
+  {
+    tw.visit_continue_command (*this);
+  }
+
+  // Return.
+
+  // Nonzero means we're returning from a function.
+  int tree_return_command::returning = 0;
+
+  tree_command *
+  tree_return_command::dup (symbol_table::scope_id,
                             symbol_table::context_id) const
-{
-  return new tree_continue_command (line (), column ());
+  {
+    return new tree_return_command (line (), column ());
+  }
+
+  void
+  tree_return_command::accept (tree_walker& tw)
+  {
+    tw.visit_return_command (*this);
+  }
 }
-
-void
-tree_continue_command::accept (tree_walker& tw)
-{
-  tw.visit_continue_command (*this);
-}
-
-// Return.
-
-// Nonzero means we're returning from a function.
-int tree_return_command::returning = 0;
-
-tree_command *
-tree_return_command::dup (symbol_table::scope_id,
-                          symbol_table::context_id) const
-{
-  return new tree_return_command (line (), column ());
-}
-
-void
-tree_return_command::accept (tree_walker& tw)
-{
-  tw.visit_return_command (*this);
-}
-

@@ -29,85 +29,94 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 class octave_lvalue;
-class tree_expression;
-class tree_walker;
 
 #include "str-vec.h"
 
 #include "base-list.h"
 #include "symtab.h"
 
-// Argument lists.  Used to hold the list of expressions that are the
-// arguments in a function call or index expression.
-
-class
-tree_argument_list : public octave::base_list<tree_expression *>
+namespace octave
 {
-public:
+  class tree_expression;
 
-  typedef tree_expression* element_type;
+  class tree_walker;
 
-  tree_argument_list (void)
-    : list_includes_magic_end (false), list_includes_magic_tilde (false),
-      simple_assign_lhs (false) { }
+  // Argument lists.  Used to hold the list of expressions that are the
+  // arguments in a function call or index expression.
 
-  tree_argument_list (tree_expression *t)
-    : list_includes_magic_end (false), list_includes_magic_tilde (false),
-      simple_assign_lhs (false)
-  { append (t); }
-
-  // No copying!
-
-  tree_argument_list (const tree_argument_list&) = delete;
-
-  tree_argument_list& operator = (const tree_argument_list&) = delete;
-
-  ~tree_argument_list (void);
-
-  bool has_magic_end (void) const;
-
-  bool has_magic_tilde (void) const
-  { return list_includes_magic_tilde; }
-
-  tree_expression *remove_front (void)
+  class tree_argument_list : public octave::base_list<tree_expression *>
   {
-    iterator p = begin ();
-    tree_expression *retval = *p;
-    erase (p);
-    return retval;
-  }
+  public:
 
-  void append (const element_type& s);
+    typedef tree_expression* element_type;
 
-  void mark_as_simple_assign_lhs (void) { simple_assign_lhs = true; }
+    tree_argument_list (void)
+      : list_includes_magic_end (false), list_includes_magic_tilde (false),
+        simple_assign_lhs (false) { }
 
-  bool is_simple_assign_lhs (void) { return simple_assign_lhs; }
+    tree_argument_list (tree_expression *t)
+      : list_includes_magic_end (false), list_includes_magic_tilde (false),
+        simple_assign_lhs (false)
+    { append (t); }
 
-  bool all_elements_are_constant (void) const;
+    // No copying!
 
-  bool is_valid_lvalue_list (void) const;
+    tree_argument_list (const tree_argument_list&) = delete;
 
-  octave_value_list convert_to_const_vector (const octave_value *object = 0);
+    tree_argument_list& operator = (const tree_argument_list&) = delete;
 
-  std::list<octave_lvalue> lvalue_list (void);
+    ~tree_argument_list (void);
 
-  string_vector get_arg_names (void) const;
+    bool has_magic_end (void) const;
 
-  std::list<std::string> variable_names (void) const;
+    bool has_magic_tilde (void) const
+    { return list_includes_magic_tilde; }
 
-  tree_argument_list *dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_expression *remove_front (void)
+    {
+      iterator p = begin ();
+      tree_expression *retval = *p;
+      erase (p);
+      return retval;
+    }
 
-  void accept (tree_walker& tw);
+    void append (const element_type& s);
 
-private:
+    void mark_as_simple_assign_lhs (void) { simple_assign_lhs = true; }
 
-  bool list_includes_magic_end;
+    bool is_simple_assign_lhs (void) { return simple_assign_lhs; }
 
-  bool list_includes_magic_tilde;
+    bool all_elements_are_constant (void) const;
 
-  bool simple_assign_lhs;
-};
+    bool is_valid_lvalue_list (void) const;
+
+    octave_value_list convert_to_const_vector (const octave_value *object = 0);
+
+    std::list<octave_lvalue> lvalue_list (void);
+
+    string_vector get_arg_names (void) const;
+
+    std::list<std::string> variable_names (void) const;
+
+    tree_argument_list *dup (symbol_table::scope_id scope,
+                             symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+  private:
+
+    bool list_includes_magic_end;
+
+    bool list_includes_magic_tilde;
+
+    bool simple_assign_lhs;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+// tree_argument_list is derived from a template.
 
 #endif
 
+#endif

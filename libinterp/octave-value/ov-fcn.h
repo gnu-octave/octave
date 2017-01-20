@@ -35,7 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "symtab.h"
 
-class tree_walker;
+namespace octave
+{
+  class tree_walker;
+}
 
 // Functions.
 
@@ -190,7 +193,7 @@ public:
 
   virtual void unload (void) { }
 
-  virtual void accept (tree_walker&) { }
+  virtual void accept (octave::tree_walker&) { }
 
   virtual bool is_postfix_index_handled (char type) const
   { return (type == '(' || type == '{'); }

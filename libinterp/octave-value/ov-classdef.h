@@ -40,7 +40,10 @@ class cdef_property;
 class cdef_method;
 class cdef_package;
 
-class tree_classdef;
+namespace octave
+{
+  class tree_classdef;
+}
 
 // This is mainly a boostrap class to declare the expected interface.
 // The actual base class is cdef_class_base, which is declared after
@@ -829,7 +832,7 @@ public:
   void delete_object (cdef_object obj)
   { get_rep ()->delete_object (obj); }
 
-  static cdef_class make_meta_class (tree_classdef* t,
+  static cdef_class make_meta_class (octave::tree_classdef* t,
                                      bool is_at_folder = false);
 
   octave_function* get_method_function (const std::string& nm);

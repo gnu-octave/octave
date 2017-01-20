@@ -238,7 +238,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
   // elements already processed
   bool seen_in = false, seen_at = false, seen_if = false;
   int pos = 0;
-  dbstop_args token = dbstop_none;
+  dbstop_args tok = dbstop_none;
   while (pos < nargin)
     {
       // allow "in" and "at" to be implicit
@@ -247,34 +247,34 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
           std::string arg = args(pos).string_value ();
           if (arg == "in")
             {
-              token = dbstop_in;
+              tok = dbstop_in;
               pos++;
             }
           else if (arg == "at")
             {
-              token = dbstop_at;
+              tok = dbstop_at;
               pos++;
             }
           else if (arg == "if")
             {
-              token = dbstop_if;
+              tok = dbstop_if;
               pos++;
             }
           else if (atoi (args(pos).string_value ().c_str ()) > 0)
-            token = dbstop_at;
+            tok = dbstop_at;
           else
-            token = dbstop_in;
+            tok = dbstop_in;
         }
       else
-        token = dbstop_at;
+        tok = dbstop_at;
 
       if (pos >= nargin)
         error ("%s: '%s' missing argument", who,
-               ( token == dbstop_in ? "in" :
-                (token == dbstop_at ? "at" : "if")));
+               (tok == dbstop_in
+                ? "in" : (tok == dbstop_at ? "at" : "if")));
 
       // process the actual arguments
-      switch (token)
+      switch (tok)
         {
         case dbstop_in:
           symbol_name = args(pos).string_value ();
@@ -585,7 +585,7 @@ bp_table::do_add_breakpoint_1 (octave_user_code *fcn,
 {
   bool found = false;
 
-  tree_statement_list *cmds = fcn->body ();
+  octave::tree_statement_list *cmds = fcn->body ();
 
   std::string file = fcn->fcn_file_name ();
 
@@ -630,7 +630,7 @@ bp_table::condition_valid (const std::string& cond)
         error ("dbstop: Cannot parse condition '%s'", cond.c_str ());
       else
         {
-          tree_statement *stmt = 0;
+          octave::tree_statement *stmt = 0;
           if (! parser.stmt_list)
             error ("dbstop: "
                    "condition is not empty, but has nothing to evaluate");
@@ -640,7 +640,7 @@ bp_table::condition_valid (const std::string& cond)
                   && (stmt = parser.stmt_list->front ())
                   && stmt->is_expression ())
                 {
-                  tree_expression *expr = stmt->expression ();
+                  octave::tree_expression *expr = stmt->expression ();
                   if (expr->is_assignment_expression ())
                     error ("dbstop: condition cannot be an assignment.  "
                            "Did you mean '=='?");
@@ -768,7 +768,7 @@ bp_table::do_remove_breakpoint_1 (octave_user_code *fcn,
 
   std::string file = fcn->fcn_file_name ();
 
-  tree_statement_list *cmds = fcn->body ();
+  octave::tree_statement_list *cmds = fcn->body ();
 
   // FIXME: move the operation on cmds to the tree_statement_list class?
 
@@ -871,7 +871,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     {
       std::string file = dbg_fcn->fcn_file_name ();
 
-      tree_statement_list *cmds = dbg_fcn->body ();
+      octave::tree_statement_list *cmds = dbg_fcn->body ();
 
       if (cmds)
         {
@@ -942,7 +942,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 
           if (f)
             {
-              tree_statement_list *cmds = f->body ();
+              octave::tree_statement_list *cmds = f->body ();
 
               // FIXME: move the operation on cmds to the
               //        tree_statement_list class?

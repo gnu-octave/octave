@@ -32,142 +32,144 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-colon.h"
 #include "pt-walk.h"
 
-// Colon expressions.
-
-tree_colon_expression *
-tree_colon_expression::append (tree_expression *t)
+namespace octave
 {
-  tree_colon_expression *retval = 0;
+  // Colon expressions.
 
-  if (! op_base)
-    error ("invalid colon expression");
+  tree_colon_expression *
+  tree_colon_expression::append (tree_expression *t)
+  {
+    tree_colon_expression *retval = 0;
 
-  if (op_limit)
-    {
-      if (op_increment)
-        error ("invalid colon expression");
+    if (! op_base)
+      error ("invalid colon expression");
 
-      // Stupid syntax:
-      //
-      // base : limit
-      // base : increment : limit
+    if (op_limit)
+      {
+        if (op_increment)
+          error ("invalid colon expression");
 
-      op_increment = op_limit;
+        // Stupid syntax:
+        //
+        // base : limit
+        // base : increment : limit
+
+        op_increment = op_limit;
+        op_limit = t;
+      }
+    else
       op_limit = t;
-    }
-  else
-    op_limit = t;
 
-  retval = this;
+    retval = this;
 
-  return retval;
-}
-
-octave_value_list
-tree_colon_expression::rvalue (int nargout)
-{
-  if (nargout > 1)
-    error ("invalid number of output arguments for colon expression");
-
-  return rvalue1 (nargout);
-}
-
-octave_value
-tree_colon_expression::rvalue1 (int)
-{
-  octave_value retval;
-
-  if (! op_base || ! op_limit)
     return retval;
+  }
 
-  octave_value ov_base = op_base->rvalue1 ();
+  octave_value_list
+  tree_colon_expression::rvalue (int nargout)
+  {
+    if (nargout > 1)
+      error ("invalid number of output arguments for colon expression");
 
-  octave_value ov_limit = op_limit->rvalue1 ();
+    return rvalue1 (nargout);
+  }
 
-  if (ov_base.is_object () || ov_limit.is_object ())
-    {
-      octave_value_list tmp1;
+  octave_value
+  tree_colon_expression::rvalue1 (int)
+  {
+    octave_value retval;
 
-      if (op_increment)
-        {
-          octave_value ov_increment = op_increment->rvalue1 ();
+    if (! op_base || ! op_limit)
+      return retval;
 
-          tmp1(2) = ov_limit;
-          tmp1(1) = ov_increment;
-          tmp1(0) = ov_base;
-        }
-      else
-        {
-          tmp1(1) = ov_limit;
-          tmp1(0) = ov_base;
-        }
+    octave_value ov_base = op_base->rvalue1 ();
 
-      octave_value fcn = symbol_table::find_function ("colon", tmp1);
+    octave_value ov_limit = op_limit->rvalue1 ();
 
-      if (! fcn.is_defined ())
-        error ("can not find overloaded colon function");
+    if (ov_base.is_object () || ov_limit.is_object ())
+      {
+        octave_value_list tmp1;
 
-      octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+        if (op_increment)
+          {
+            octave_value ov_increment = op_increment->rvalue1 ();
 
-      retval = tmp2 (0);
-    }
-  else
-    {
-      octave_value ov_increment = 1.0;
+            tmp1(2) = ov_limit;
+            tmp1(1) = ov_increment;
+            tmp1(0) = ov_base;
+          }
+        else
+          {
+            tmp1(1) = ov_limit;
+            tmp1(0) = ov_base;
+          }
 
-      if (op_increment)
-        ov_increment = op_increment->rvalue1 ();
+        octave_value fcn = symbol_table::find_function ("colon", tmp1);
 
-      retval = do_colon_op (ov_base, ov_increment, ov_limit,
-                            is_for_cmd_expr ());
-    }
+        if (! fcn.is_defined ())
+          error ("can not find overloaded colon function");
 
-  return retval;
+        octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+
+        retval = tmp2 (0);
+      }
+    else
+      {
+        octave_value ov_increment = 1.0;
+
+        if (op_increment)
+          ov_increment = op_increment->rvalue1 ();
+
+        retval = do_colon_op (ov_base, ov_increment, ov_limit,
+                              is_for_cmd_expr ());
+      }
+
+    return retval;
+  }
+
+  void
+  tree_colon_expression::eval_error (const std::string& s) const
+  {
+    error ("%s", s.c_str ());
+  }
+
+  int
+  tree_colon_expression::line (void) const
+  {
+    return (op_base ? op_base->line ()
+            : (op_increment ? op_increment->line ()
+               : (op_limit ? op_limit->line ()
+                  : -1)));
+  }
+
+  int
+  tree_colon_expression::column (void) const
+  {
+    return (op_base ? op_base->column ()
+            : (op_increment ? op_increment->column ()
+               : (op_limit ? op_limit->column ()
+                  : -1)));
+  }
+
+  tree_expression *
+  tree_colon_expression::dup (symbol_table::scope_id scope,
+                              symbol_table::context_id context) const
+  {
+    tree_colon_expression *new_ce = new
+      tree_colon_expression (op_base ? op_base->dup (scope, context) : 0,
+                             op_limit ? op_limit->dup (scope, context) : 0,
+                             op_increment ? op_increment->dup (scope, context)
+                             : 0,
+                             line (), column ());
+
+    new_ce->copy_base (*new_ce);
+
+    return new_ce;
+  }
+
+  void
+  tree_colon_expression::accept (tree_walker& tw)
+  {
+    tw.visit_colon_expression (*this);
+  }
 }
-
-void
-tree_colon_expression::eval_error (const std::string& s) const
-{
-  error ("%s", s.c_str ());
-}
-
-int
-tree_colon_expression::line (void) const
-{
-  return (op_base ? op_base->line ()
-          : (op_increment ? op_increment->line ()
-             : (op_limit ? op_limit->line ()
-                : -1)));
-}
-
-int
-tree_colon_expression::column (void) const
-{
-  return (op_base ? op_base->column ()
-          : (op_increment ? op_increment->column ()
-             : (op_limit ? op_limit->column ()
-                : -1)));
-}
-
-tree_expression *
-tree_colon_expression::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
-{
-  tree_colon_expression *new_ce = new
-    tree_colon_expression (op_base ? op_base->dup (scope, context) : 0,
-                           op_limit ? op_limit->dup (scope, context) : 0,
-                           op_increment ? op_increment->dup (scope, context)
-                                        : 0,
-                           line (), column ());
-
-  new_ce->copy_base (*new_ce);
-
-  return new_ce;
-}
-
-void
-tree_colon_expression::accept (tree_walker& tw)
-{
-  tw.visit_colon_expression (*this);
-}
-

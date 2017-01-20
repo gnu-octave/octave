@@ -30,54 +30,62 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-exp.h"
 #include "symtab.h"
 
-// Base class for cell arrays and matrices.
-
-class
-tree_array_list : public tree_expression,
-                  public octave::base_list<tree_argument_list *>
+namespace octave
 {
-public:
+  // Base class for cell arrays and matrices.
 
-  typedef octave::base_list<tree_argument_list *>::iterator iterator;
-  typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
-
-  tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
+  class tree_array_list : public tree_expression,
+                          public octave::base_list<tree_argument_list *>
   {
-    if (row)
-      append (row);
-  }
+  public:
 
-  // No copying!
+    typedef octave::base_list<tree_argument_list *>::iterator iterator;
+    typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
 
-  tree_array_list (const tree_array_list&) = delete;
+    tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
+      : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
+    {
+      if (row)
+        append (row);
+    }
 
-  tree_array_list& operator = (const tree_array_list&) = delete;
+    // No copying!
 
-  ~tree_array_list (void);
+    tree_array_list (const tree_array_list&) = delete;
 
-  bool all_elements_are_constant (void) const;
+    tree_array_list& operator = (const tree_array_list&) = delete;
 
-  bool has_magic_end (void) const;
+    ~tree_array_list (void);
 
-  // FIXME: should we import the functions from the base class and
-  // overload them here, or should we use a different name so we don't
-  // have to do this?  Without the using declaration or a name change,
-  // the base class functions will be hidden.  That may be OK, but it
-  // can also cause some confusion.
-  using tree_expression::copy_base;
+    bool all_elements_are_constant (void) const;
 
-  void copy_base (const tree_array_list& array_list);
+    bool has_magic_end (void) const;
 
-  void copy_base (const tree_array_list& array_list,
-                  symbol_table::scope_id scope,
-                  symbol_table::context_id context);
+    // FIXME: should we import the functions from the base class and
+    // overload them here, or should we use a different name so we don't
+    // have to do this?  Without the using declaration or a name change,
+    // the base class functions will be hidden.  That may be OK, but it
+    // can also cause some confusion.
+    using tree_expression::copy_base;
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    void copy_base (const tree_array_list& array_list);
 
-  void accept (tree_walker& tw);
-};
+    void copy_base (const tree_array_list& array_list,
+                    symbol_table::scope_id scope,
+                    symbol_table::context_id context);
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_array_list' instead")
+typedef octave::tree_array_list tree_array_list;
 
 #endif
 
+#endif

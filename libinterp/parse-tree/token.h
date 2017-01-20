@@ -29,115 +29,125 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symtab.h"
 
-class
-token
+namespace octave
 {
-public:
-
-  enum token_type
+  class
+  token
   {
-    generic_token,
-    keyword_token,
-    string_token,
-    double_token,
-    ettype_token,
-    sym_rec_token,
-    scls_name_token,
-  };
+  public:
 
-  enum end_tok_type
-  {
-    simple_end,
-    classdef_end,
-    enumeration_end,
-    events_end,
-    for_end,
-    function_end,
-    if_end,
-    methods_end,
-    parfor_end,
-    properties_end,
-    switch_end,
-    try_catch_end,
-    unwind_protect_end,
-    while_end,
-  };
+    enum token_type
+      {
+        generic_token,
+        keyword_token,
+        string_token,
+        double_token,
+        ettype_token,
+        sym_rec_token,
+        scls_name_token,
+      };
 
-  token (int tv, int l = -1, int c = -1);
-  token (int tv, bool is_keyword, int l = -1, int c = -1);
-  token (int tv, const char *s, int l = -1, int c = -1);
-  token (int tv, const std::string& s, int l = -1, int c = -1);
-  token (int tv, double d, const std::string& s = "",
-         int l = -1, int c = -1);
-  token (int tv, end_tok_type t, int l = -1, int c = -1);
-  token (int tv, symbol_table::symbol_record *s, int l = -1, int c = -1);
-  token (int tv, const std::string& mth, const std::string& cls,
-         int l = -1, int c = -1);
+    enum end_tok_type
+      {
+        simple_end,
+        classdef_end,
+        enumeration_end,
+        events_end,
+        for_end,
+        function_end,
+        if_end,
+        methods_end,
+        parfor_end,
+        properties_end,
+        switch_end,
+        try_catch_end,
+        unwind_protect_end,
+        while_end,
+      };
 
-  // No copying!
+    token (int tv, int l = -1, int c = -1);
+    token (int tv, bool is_keyword, int l = -1, int c = -1);
+    token (int tv, const char *s, int l = -1, int c = -1);
+    token (int tv, const std::string& s, int l = -1, int c = -1);
+    token (int tv, double d, const std::string& s = "",
+           int l = -1, int c = -1);
+    token (int tv, end_tok_type t, int l = -1, int c = -1);
+    token (int tv, symbol_table::symbol_record *s, int l = -1, int c = -1);
+    token (int tv, const std::string& mth, const std::string& cls,
+           int l = -1, int c = -1);
 
-  token (const token& tok) = delete;
+    // No copying!
 
-  token& operator = (const token& tok) = delete;
+    token (const token& tok) = delete;
 
-  ~token (void);
+    token& operator = (const token& tok) = delete;
 
-  void mark_may_be_command (void) { maybe_cmd = true; }
-  bool may_be_command (void) const { return maybe_cmd; }
+    ~token (void);
 
-  void mark_trailing_space (void) { tspc = true; }
-  bool space_follows_token (void) const { return tspc; }
+    void mark_may_be_command (void) { maybe_cmd = true; }
+    bool may_be_command (void) const { return maybe_cmd; }
 
-  int token_value (void) const { return tok_val; }
-  bool token_value_is (int tv) const { return tv == tok_val; }
+    void mark_trailing_space (void) { tspc = true; }
+    bool space_follows_token (void) const { return tspc; }
 
-  int line (void) const { return line_num; }
-  int column (void) const { return column_num; }
+    int token_value (void) const { return tok_val; }
+    bool token_value_is (int tv) const { return tv == tok_val; }
 
-  bool is_keyword (void) const
-  {
-    return type_tag == keyword_token || type_tag == ettype_token;
-  }
+    int line (void) const { return line_num; }
+    int column (void) const { return column_num; }
 
-  bool is_symbol (void) const
-  {
-    return type_tag == sym_rec_token;
-  }
-
-  std::string text (void) const;
-  std::string symbol_name (void) const;
-  double number (void) const;
-  token_type ttype (void) const;
-  end_tok_type ettype (void) const;
-  symbol_table::symbol_record *sym_rec (void);
-
-  std::string superclass_method_name (void);
-  std::string superclass_class_name (void);
-
-  std::string text_rep (void);
-
-private:
-
-  bool maybe_cmd;
-  bool tspc;
-  int line_num;
-  int column_num;
-  int tok_val;
-  token_type type_tag;
-  union
-  {
-    std::string *str;
-    double num;
-    end_tok_type et;
-    symbol_table::symbol_record *sr;
-    struct
+    bool is_keyword (void) const
     {
-      std::string *method_nm;
-      std::string *class_nm;
-    } sc;
+      return type_tag == keyword_token || type_tag == ettype_token;
+    }
+
+    bool is_symbol (void) const
+    {
+      return type_tag == sym_rec_token;
+    }
+
+    std::string text (void) const;
+    std::string symbol_name (void) const;
+    double number (void) const;
+    token_type ttype (void) const;
+    end_tok_type ettype (void) const;
+    symbol_table::symbol_record *sym_rec (void);
+
+    std::string superclass_method_name (void);
+    std::string superclass_class_name (void);
+
+    std::string text_rep (void);
+
+  private:
+
+    bool maybe_cmd;
+    bool tspc;
+    int line_num;
+    int column_num;
+    int tok_val;
+    token_type type_tag;
+    union
+    {
+      std::string *str;
+      double num;
+      end_tok_type et;
+      symbol_table::symbol_record *sr;
+      struct
+      {
+        std::string *method_nm;
+        std::string *class_nm;
+      } sc;
+    };
+    std::string orig_text;
   };
-  std::string orig_text;
-};
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::token' instead")
+typedef octave::token token;
+
+#endif
 
 #endif
 

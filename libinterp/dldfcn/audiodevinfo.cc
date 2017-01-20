@@ -543,8 +543,9 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   if (! player)
     error ("audio player callback function called without player");
 
-  octave_value_list retval = feval (player->octave_callback_function,
-                                    ovl (static_cast<double> (frames)), 1);
+  octave_value_list retval
+    = octave::feval (player->octave_callback_function,
+                     ovl (static_cast<double> (frames)), 1);
 
   if (retval.length () < 2)
     error ("audio player callback function failed");
@@ -1368,7 +1369,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
     }
 
   octave_value_list retval
-    = feval (recorder->octave_callback_function, ovl (sound), 1);
+    = octave::feval (recorder->octave_callback_function, ovl (sound), 1);
 
   return retval(0).int_value ();
 }

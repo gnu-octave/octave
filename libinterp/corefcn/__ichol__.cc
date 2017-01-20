@@ -198,7 +198,7 @@ Undocumented internal function.
     {
       SparseMatrix sm = args(0).sparse_matrix_value ();
       arg_list.append (sm);
-      sm = feval ("tril", arg_list)(0).sparse_matrix_value ();
+      sm = octave::feval ("tril", arg_list)(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
 
@@ -208,7 +208,7 @@ Undocumented internal function.
     {
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
       arg_list.append (sm);
-      sm = feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+      sm = octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
 
@@ -441,11 +441,11 @@ Undocumented internal function.
       SparseMatrix L;
       arg_list.append (args(0).sparse_matrix_value ());
       SparseMatrix sm_l =
-        feval ("tril", arg_list)(0).sparse_matrix_value ();
+        octave::feval ("tril", arg_list)(0).sparse_matrix_value ();
       arg_list(0) = sm_l;
       arg_list(1) = 1;
       arg_list(2) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).vector_value ();
+      cols_norm = octave::feval ("norm", arg_list)(0).vector_value ();
       arg_list.clear ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
@@ -459,11 +459,11 @@ Undocumented internal function.
       SparseComplexMatrix L;
       arg_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_l =
-        feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+        octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
       arg_list(0) = sm_l;
       arg_list(1) = 1;
       arg_list(2) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
+      cols_norm = octave::feval ("norm", arg_list)(0).complex_vector_value ();
       arg_list.clear ();
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>

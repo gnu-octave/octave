@@ -160,12 +160,12 @@ Undocumented internal function.
       ilu_0 <SparseMatrix, double> (sm, milu);
 
       arg_list.append (sm);
-      retval(1) = feval ("triu", arg_list)(0).sparse_matrix_value ();
+      retval(1) = octave::feval ("triu", arg_list)(0).sparse_matrix_value ();
       SparseMatrix eye =
-        feval ("speye", ovl (sm.cols ()))(0).sparse_matrix_value ();
+        octave::feval ("speye", ovl (sm.cols ()))(0).sparse_matrix_value ();
       arg_list.append (-1);
       retval(0) = eye +
-                  feval ("tril", arg_list)(0).sparse_matrix_value ();
+        octave::feval ("tril", arg_list)(0).sparse_matrix_value ();
     }
   else
     {
@@ -173,12 +173,12 @@ Undocumented internal function.
       ilu_0 <SparseComplexMatrix, Complex> (sm, milu);
 
       arg_list.append (sm);
-      retval(1) = feval ("triu", arg_list)(0).sparse_complex_matrix_value ();
+      retval(1) = octave::feval ("triu", arg_list)(0).sparse_complex_matrix_value ();
       SparseComplexMatrix eye =
-        feval ("speye", ovl (sm.cols ()))(0).sparse_complex_matrix_value ();
+        octave::feval ("speye", ovl (sm.cols ()))(0).sparse_complex_matrix_value ();
       arg_list.append (-1);
       retval(0) = eye +
-                  feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+        octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
     }
 
   return retval;
@@ -494,13 +494,13 @@ Undocumented internal function.
     {
       Array<double> cols_norm, rows_norm;
       arg_list.append (args(0).sparse_matrix_value ());
-      SparseMatrix sm_u = feval ("triu", arg_list)(0).sparse_matrix_value ();
+      SparseMatrix sm_u = octave::feval ("triu", arg_list)(0).sparse_matrix_value ();
       arg_list.append (-1);
-      SparseMatrix sm_l = feval ("tril", arg_list)(0).sparse_matrix_value ();
+      SparseMatrix sm_l = octave::feval ("tril", arg_list)(0).sparse_matrix_value ();
       arg_list(1) = "rows";
-      rows_norm = feval ("norm", arg_list)(0).vector_value ();
+      rows_norm = octave::feval ("norm", arg_list)(0).vector_value ();
       arg_list(1) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).vector_value ();
+      cols_norm = octave::feval ("norm", arg_list)(0).vector_value ();
       arg_list.clear ();
       SparseMatrix U, L;
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
@@ -508,7 +508,7 @@ Undocumented internal function.
                                         rows_norm.fortran_vec (),
                                         droptol, milu);
       arg_list.append (octave_value (L.cols ()));
-      SparseMatrix eye = feval ("speye", arg_list)(0).sparse_matrix_value ();
+      SparseMatrix eye = octave::feval ("speye", arg_list)(0).sparse_matrix_value ();
       return ovl (L + eye, U);
     }
   else
@@ -516,14 +516,14 @@ Undocumented internal function.
       Array<Complex> cols_norm, rows_norm;
       arg_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_u =
-        feval ("triu", arg_list)(0).sparse_complex_matrix_value ();
+        octave::feval ("triu", arg_list)(0).sparse_complex_matrix_value ();
       arg_list.append (-1);
       SparseComplexMatrix sm_l =
-        feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+        octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
       arg_list(1) = "rows";
-      rows_norm = feval ("norm", arg_list)(0).complex_vector_value ();
+      rows_norm = octave::feval ("norm", arg_list)(0).complex_vector_value ();
       arg_list(1) = "cols";
-      cols_norm = feval ("norm", arg_list)(0).complex_vector_value ();
+      cols_norm = octave::feval ("norm", arg_list)(0).complex_vector_value ();
       arg_list.clear ();
       SparseComplexMatrix U, L;
       ilu_crout <SparseComplexMatrix, Complex>
@@ -532,7 +532,7 @@ Undocumented internal function.
 
       arg_list.append (octave_value (L.cols ()));
       SparseComplexMatrix eye =
-        feval ("speye", arg_list)(0).sparse_complex_matrix_value ();
+        octave::feval ("speye", arg_list)(0).sparse_complex_matrix_value ();
       return ovl (L + eye, U);
     }
 }
@@ -966,14 +966,14 @@ Undocumented internal function.
       Array <double> rc_norm;
       SparseMatrix sm = args(0).sparse_matrix_value ();
       arg_list.append (sm);
-      nnz_u =  (feval ("triu", arg_list)(0).sparse_matrix_value ()).nnz ();
+      nnz_u = (octave::feval ("triu", arg_list)(0).sparse_matrix_value ()).nnz ();
       arg_list.append (-1);
-      nnz_l =  (feval ("tril", arg_list)(0).sparse_matrix_value ()).nnz ();
+      nnz_l = (octave::feval ("tril", arg_list)(0).sparse_matrix_value ()).nnz ();
       if (milu == "row")
         arg_list (1) = "rows";
       else
         arg_list (1) = "cols";
-      rc_norm = feval ("norm", arg_list)(0).vector_value ();
+      rc_norm = octave::feval ("norm", arg_list)(0).vector_value ();
       arg_list.clear ();
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
       SparseMatrix U, L;
@@ -982,7 +982,7 @@ Undocumented internal function.
                                      perm, droptol, thresh, milu, udiag);
       arg_list.append (octave_value (L.cols ()));
       SparseMatrix eye =
-        feval ("speye", arg_list)(0).sparse_matrix_value ();
+        octave::feval ("speye", arg_list)(0).sparse_matrix_value ();
       if (milu == "row")
         {
           if (nargout == 3)
@@ -1015,15 +1015,15 @@ Undocumented internal function.
       SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
       arg_list.append (sm);
       nnz_u =
-        feval ("triu", arg_list)(0).sparse_complex_matrix_value ().nnz ();
+        octave::feval ("triu", arg_list)(0).sparse_complex_matrix_value ().nnz ();
       arg_list.append (-1);
       nnz_l =
-        feval ("tril", arg_list)(0).sparse_complex_matrix_value ().nnz ();
+        octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ().nnz ();
       if (milu == "row")
         arg_list(1) = "rows";
       else
         arg_list(1) = "cols";
-      rc_norm = feval ("norm", arg_list)(0).complex_vector_value ();
+      rc_norm = octave::feval ("norm", arg_list)(0).complex_vector_value ();
       arg_list.clear ();
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
       SparseComplexMatrix U, L;
@@ -1033,7 +1033,7 @@ Undocumented internal function.
 
       arg_list.append (octave_value (L.cols ()));
       SparseComplexMatrix eye =
-        feval ("speye", arg_list)(0).sparse_complex_matrix_value ();
+        octave::feval ("speye", arg_list)(0).sparse_complex_matrix_value ();
       if (milu == "row")
         {
           if (nargout == 3)

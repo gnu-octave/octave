@@ -28,302 +28,316 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 class octave_lvalue;
 
-class tree_argument_list;
-class tree_expression;
-class tree_statement_list;
-
-class tree_walker;
-
 #include "comment-list.h"
 #include "pt-cmd.h"
 #include "symtab.h"
 
 class jit_info;
 
-// While.
-
-class
-tree_while_command : public tree_command
+namespace octave
 {
-public:
+  class tree_argument_list;
+  class tree_expression;
+  class tree_statement_list;
 
-  tree_while_command (int l = -1, int c = -1)
-    : tree_command (l, c), expr (0), list (0), lead_comm (0),
-      trail_comm (0)
-#if defined (HAVE_LLVM)
-      , compiled (0)
-#endif
-  { }
+  class tree_walker;
 
-  tree_while_command (tree_expression *e,
-                      octave_comment_list *lc = 0,
-                      octave_comment_list *tc = 0,
-                      int l = -1, int c = -1)
-    : tree_command (l, c), expr (e), list (0), lead_comm (lc),
-      trail_comm (tc)
-#if defined (HAVE_LLVM)
-      , compiled (0)
-#endif
-  { }
+  // While.
 
-  tree_while_command (tree_expression *e, tree_statement_list *lst,
-                      octave_comment_list *lc = 0,
-                      octave_comment_list *tc = 0,
-                      int l = -1, int c = -1)
-    : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
-      trail_comm (tc)
-#if defined (HAVE_LLVM)
-      , compiled (0)
-#endif
-  { }
-
-  // No copying!
-
-  tree_while_command (const tree_while_command&) = delete;
-
-  tree_while_command& operator = (const tree_while_command&) = delete;
-
-  ~tree_while_command (void);
-
-  tree_expression *condition (void) { return expr; }
-
-  tree_statement_list *body (void) { return list; }
-
-  octave_comment_list *leading_comment (void) { return lead_comm; }
-
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
-
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-
-#if defined (HAVE_LLVM)
-  // some functions use by tree_jit
-  jit_info *get_info (void) const
+  class tree_while_command : public tree_command
   {
-    return compiled;
-  }
+  public:
 
-  void stash_info (jit_info *jinfo)
-  {
-    compiled = jinfo;
-  }
-#endif
-
-protected:
-
-  // Expression to test.
-  tree_expression *expr;
-
-  // List of commands to execute.
-  tree_statement_list *list;
-
-  // Comment preceding WHILE token.
-  octave_comment_list *lead_comm;
-
-  // Comment preceding ENDWHILE token.
-  octave_comment_list *trail_comm;
-
-private:
-
-#if defined (HAVE_LLVM)
-  // compiled version of the loop
-  jit_info *compiled;
-#endif
-};
-
-// Do-Until.
-
-class
-tree_do_until_command : public tree_while_command
-{
-public:
-
-  tree_do_until_command (int l = -1, int c = -1)
-    : tree_while_command (l, c) { }
-
-  tree_do_until_command (tree_expression *e,
-                         octave_comment_list *lc = 0,
-                         octave_comment_list *tc = 0,
-                         int l = -1, int c = -1)
-    : tree_while_command (e, lc, tc, l, c) { }
-
-  tree_do_until_command (tree_expression *e, tree_statement_list *lst,
-                         octave_comment_list *lc = 0,
-                         octave_comment_list *tc = 0,
-                         int l = -1, int c = -1)
-    : tree_while_command (e, lst, lc, tc, l, c) { }
-
-  // No copying!
-
-  tree_do_until_command (const tree_do_until_command&) = delete;
-
-  tree_do_until_command& operator = (const tree_do_until_command&) = delete;
-
-  ~tree_do_until_command (void) = default;
-
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-};
-
-// For.
-
-class
-tree_simple_for_command : public tree_command
-{
-public:
-
-  tree_simple_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), parallel (false), lhs (0), expr (0),
-      maxproc (0), list (0), lead_comm (0), trail_comm (0)
+    tree_while_command (int l = -1, int c = -1)
+      : tree_command (l, c), expr (0), list (0), lead_comm (0),
+        trail_comm (0)
 #if defined (HAVE_LLVM)
       , compiled (0)
 #endif
-  { }
+    { }
 
-  tree_simple_for_command (bool parallel_arg, tree_expression *le,
-                           tree_expression *re,
-                           tree_expression *maxproc_arg,
-                           tree_statement_list *lst,
+    tree_while_command (tree_expression *e,
+                        octave_comment_list *lc = 0,
+                        octave_comment_list *tc = 0,
+                        int l = -1, int c = -1)
+      : tree_command (l, c), expr (e), list (0), lead_comm (lc),
+        trail_comm (tc)
+#if defined (HAVE_LLVM)
+      , compiled (0)
+#endif
+    { }
+
+    tree_while_command (tree_expression *e, tree_statement_list *lst,
+                        octave_comment_list *lc = 0,
+                        octave_comment_list *tc = 0,
+                        int l = -1, int c = -1)
+      : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
+        trail_comm (tc)
+#if defined (HAVE_LLVM)
+      , compiled (0)
+#endif
+    { }
+
+    // No copying!
+
+    tree_while_command (const tree_while_command&) = delete;
+
+    tree_while_command& operator = (const tree_while_command&) = delete;
+
+    ~tree_while_command (void);
+
+    tree_expression *condition (void) { return expr; }
+
+    tree_statement_list *body (void) { return list; }
+
+    octave_comment_list *leading_comment (void) { return lead_comm; }
+
+    octave_comment_list *trailing_comment (void) { return trail_comm; }
+
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+#if defined (HAVE_LLVM)
+    // some functions use by tree_jit
+    jit_info *get_info (void) const
+    {
+      return compiled;
+    }
+
+    void stash_info (jit_info *jinfo)
+    {
+      compiled = jinfo;
+    }
+#endif
+
+  protected:
+
+    // Expression to test.
+    tree_expression *expr;
+
+    // List of commands to execute.
+    tree_statement_list *list;
+
+    // Comment preceding WHILE token.
+    octave_comment_list *lead_comm;
+
+    // Comment preceding ENDWHILE token.
+    octave_comment_list *trail_comm;
+
+  private:
+
+#if defined (HAVE_LLVM)
+    // compiled version of the loop
+    jit_info *compiled;
+#endif
+  };
+
+  // Do-Until.
+
+  class tree_do_until_command : public tree_while_command
+  {
+  public:
+
+    tree_do_until_command (int l = -1, int c = -1)
+      : tree_while_command (l, c) { }
+
+    tree_do_until_command (tree_expression *e,
                            octave_comment_list *lc = 0,
                            octave_comment_list *tc = 0,
                            int l = -1, int c = -1)
-    : tree_command (l, c), parallel (parallel_arg), lhs (le),
-      expr (re), maxproc (maxproc_arg), list (lst),
-      lead_comm (lc), trail_comm (tc)
+      : tree_while_command (e, lc, tc, l, c) { }
+
+    tree_do_until_command (tree_expression *e, tree_statement_list *lst,
+                           octave_comment_list *lc = 0,
+                           octave_comment_list *tc = 0,
+                           int l = -1, int c = -1)
+      : tree_while_command (e, lst, lc, tc, l, c) { }
+
+    // No copying!
+
+    tree_do_until_command (const tree_do_until_command&) = delete;
+
+    tree_do_until_command& operator = (const tree_do_until_command&) = delete;
+
+    ~tree_do_until_command (void) = default;
+
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+  };
+
+  // For.
+
+  class tree_simple_for_command : public tree_command
+  {
+  public:
+
+    tree_simple_for_command (int l = -1, int c = -1)
+      : tree_command (l, c), parallel (false), lhs (0), expr (0),
+        maxproc (0), list (0), lead_comm (0), trail_comm (0)
 #if defined (HAVE_LLVM)
       , compiled (0)
 #endif
-  { }
+    { }
 
-  // No copying!
+    tree_simple_for_command (bool parallel_arg, tree_expression *le,
+                             tree_expression *re,
+                             tree_expression *maxproc_arg,
+                             tree_statement_list *lst,
+                             octave_comment_list *lc = 0,
+                             octave_comment_list *tc = 0,
+                             int l = -1, int c = -1)
+      : tree_command (l, c), parallel (parallel_arg), lhs (le),
+        expr (re), maxproc (maxproc_arg), list (lst),
+        lead_comm (lc), trail_comm (tc)
+#if defined (HAVE_LLVM)
+      , compiled (0)
+#endif
+    { }
 
-  tree_simple_for_command (const tree_simple_for_command&) = delete;
+    // No copying!
 
-  tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
+    tree_simple_for_command (const tree_simple_for_command&) = delete;
 
-  ~tree_simple_for_command (void);
+    tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
 
-  bool in_parallel (void) { return parallel; }
+    ~tree_simple_for_command (void);
 
-  tree_expression *left_hand_side (void) { return lhs; }
+    bool in_parallel (void) { return parallel; }
 
-  tree_expression *control_expr (void) { return expr; }
+    tree_expression *left_hand_side (void) { return lhs; }
 
-  tree_expression *maxproc_expr (void) { return maxproc; }
+    tree_expression *control_expr (void) { return expr; }
 
-  tree_statement_list *body (void) { return list; }
+    tree_expression *maxproc_expr (void) { return maxproc; }
 
-  octave_comment_list *leading_comment (void) { return lead_comm; }
+    tree_statement_list *body (void) { return list; }
 
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list *leading_comment (void) { return lead_comm; }
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  void accept (tree_walker& tw);
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
 
 #if defined (HAVE_LLVM)
-  // some functions use by tree_jit
-  jit_info *get_info (void) const
-  {
-    return compiled;
-  }
+    // some functions use by tree_jit
+    jit_info *get_info (void) const
+    {
+      return compiled;
+    }
 
-  void stash_info (jit_info *jinfo)
-  {
-    compiled = jinfo;
-  }
+    void stash_info (jit_info *jinfo)
+    {
+      compiled = jinfo;
+    }
 #endif
 
-private:
-  // TRUE means operate in parallel (subject to the value of the
-  // maxproc expression).
-  bool parallel;
+  private:
+    // TRUE means operate in parallel (subject to the value of the
+    // maxproc expression).
+    bool parallel;
 
-  // Expression to modify.
-  tree_expression *lhs;
+    // Expression to modify.
+    tree_expression *lhs;
 
-  // Expression to evaluate.
-  tree_expression *expr;
+    // Expression to evaluate.
+    tree_expression *expr;
 
-  // Expression to tell how many processors should be used (only valid
-  // if parallel is TRUE).
-  tree_expression *maxproc;
+    // Expression to tell how many processors should be used (only valid
+    // if parallel is TRUE).
+    tree_expression *maxproc;
 
-  // List of commands to execute.
-  tree_statement_list *list;
+    // List of commands to execute.
+    tree_statement_list *list;
 
-  // Comment preceding FOR token.
-  octave_comment_list *lead_comm;
+    // Comment preceding FOR token.
+    octave_comment_list *lead_comm;
 
-  // Comment preceding ENDFOR token.
-  octave_comment_list *trail_comm;
+    // Comment preceding ENDFOR token.
+    octave_comment_list *trail_comm;
 
-  // compiled version of the loop
-  jit_info *compiled;
-};
+    // compiled version of the loop
+    jit_info *compiled;
+  };
 
-class
-tree_complex_for_command : public tree_command
-{
-public:
+  class tree_complex_for_command : public tree_command
+  {
+  public:
 
-  tree_complex_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), lhs (0), expr (0), list (0), lead_comm (0),
-      trail_comm (0) { }
+    tree_complex_for_command (int l = -1, int c = -1)
+      : tree_command (l, c), lhs (0), expr (0), list (0), lead_comm (0),
+        trail_comm (0) { }
 
-  tree_complex_for_command (tree_argument_list *le, tree_expression *re,
-                            tree_statement_list *lst,
-                            octave_comment_list *lc = 0,
-                            octave_comment_list *tc = 0,
-                            int l = -1, int c = -1)
-    : tree_command (l, c), lhs (le), expr (re), list (lst),
-      lead_comm (lc), trail_comm (tc) { }
+    tree_complex_for_command (tree_argument_list *le, tree_expression *re,
+                              tree_statement_list *lst,
+                              octave_comment_list *lc = 0,
+                              octave_comment_list *tc = 0,
+                              int l = -1, int c = -1)
+      : tree_command (l, c), lhs (le), expr (re), list (lst),
+        lead_comm (lc), trail_comm (tc) { }
 
-  // No copying!
+    // No copying!
 
-  tree_complex_for_command (const tree_complex_for_command&) = delete;
+    tree_complex_for_command (const tree_complex_for_command&) = delete;
 
-  tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
+    tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
 
-  ~tree_complex_for_command (void);
+    ~tree_complex_for_command (void);
 
-  tree_argument_list *left_hand_side (void) { return lhs; }
+    tree_argument_list *left_hand_side (void) { return lhs; }
 
-  tree_expression *control_expr (void) { return expr; }
+    tree_expression *control_expr (void) { return expr; }
 
-  tree_statement_list *body (void) { return list; }
+    tree_statement_list *body (void) { return list; }
 
-  octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list *leading_comment (void) { return lead_comm; }
 
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
 
-  void accept (tree_walker& tw);
+    void accept (tree_walker& tw);
 
-private:
+  private:
 
-  // Expression to modify.
-  tree_argument_list *lhs;
+    // Expression to modify.
+    tree_argument_list *lhs;
 
-  // Expression to evaluate.
-  tree_expression *expr;
+    // Expression to evaluate.
+    tree_expression *expr;
 
-  // List of commands to execute.
-  tree_statement_list *list;
+    // List of commands to execute.
+    tree_statement_list *list;
 
-  // Comment preceding FOR token.
-  octave_comment_list *lead_comm;
+    // Comment preceding FOR token.
+    octave_comment_list *lead_comm;
 
-  // Comment preceding ENDFOR token.
-  octave_comment_list *trail_comm;
-};
+    // Comment preceding ENDFOR token.
+    octave_comment_list *trail_comm;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_while_command' instead")
+typedef octave::tree_while_command tree_while_command;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_do_until_command' instead")
+typedef octave::tree_do_until_command tree_do_until_command;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_simple_for_command' instead")
+typedef octave::tree_simple_for_command tree_simple_for_command;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_complex_for_command' instead")
+typedef octave::tree_complex_for_command tree_complex_for_command;
 
 #endif
 
+#endif

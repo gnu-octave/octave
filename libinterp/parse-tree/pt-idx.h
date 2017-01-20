@@ -27,10 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 
-class tree_argument_list;
-
-class tree_walker;
-
 class octave_map;
 class octave_value;
 class octave_value_list;
@@ -41,95 +37,107 @@ class octave_lvalue;
 #include "pt-exp.h"
 #include "symtab.h"
 
-// Index expressions.
-
-class
-tree_index_expression : public tree_expression
+namespace octave
 {
-public:
+  class tree_argument_list;
 
-  tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
-                         int l = -1, int c = -1, char t = '(');
+  class tree_walker;
 
-  tree_index_expression (tree_expression *e, const std::string& n,
-                         int l = -1, int c = -1);
+  // Index expressions.
 
-  tree_index_expression (tree_expression *e, tree_expression* df,
-                         int l = -1, int c = -1);
+  class tree_index_expression : public tree_expression
+  {
+  public:
 
-  // No copying!
+    tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
+                           int l = -1, int c = -1, char t = '(');
 
-  tree_index_expression (const tree_index_expression&) = delete;
+    tree_index_expression (tree_expression *e, const std::string& n,
+                           int l = -1, int c = -1);
 
-  tree_index_expression& operator = (const tree_index_expression&) = delete;
+    tree_index_expression (tree_expression *e, tree_expression* df,
+                           int l = -1, int c = -1);
 
-  ~tree_index_expression (void);
+    // No copying!
 
-  bool has_magic_end (void) const;
+    tree_index_expression (const tree_index_expression&) = delete;
 
-  void append (tree_argument_list *lst = 0, char t = '(');
+    tree_index_expression& operator = (const tree_index_expression&) = delete;
 
-  void append (const std::string& n);
+    ~tree_index_expression (void);
 
-  void append (tree_expression *df);
+    bool has_magic_end (void) const;
 
-  bool is_index_expression (void) const { return true; }
+    void append (tree_argument_list *lst = 0, char t = '(');
 
-  std::string name (void) const;
+    void append (const std::string& n);
 
-  tree_expression *expression (void) { return expr; }
+    void append (tree_expression *df);
 
-  std::list<tree_argument_list *> arg_lists (void) { return args; }
+    bool is_index_expression (void) const { return true; }
 
-  std::string type_tags (void) { return type; }
+    std::string name (void) const;
 
-  std::list<string_vector> arg_names (void) { return arg_nm; }
+    tree_expression *expression (void) { return expr; }
 
-  bool lvalue_ok (void) const { return expr->lvalue_ok (); }
+    std::list<tree_argument_list *> arg_lists (void) { return args; }
 
-  bool rvalue_ok (void) const { return true; }
+    std::string type_tags (void) { return type; }
 
-  octave_value rvalue1 (int nargout = 1);
+    std::list<string_vector> arg_names (void) { return arg_nm; }
 
-  octave_value_list rvalue (int nargout);
+    bool lvalue_ok (void) const { return expr->lvalue_ok (); }
 
-  octave_value_list rvalue (int nargout,
-                            const std::list<octave_lvalue> *lvalue_list);
+    bool rvalue_ok (void) const { return true; }
 
-  octave_lvalue lvalue (void);
+    octave_value rvalue1 (int nargout = 1);
 
-  tree_index_expression *dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const;
+    octave_value_list rvalue (int nargout);
 
-  void accept (tree_walker& tw);
+    octave_value_list rvalue (int nargout,
+                              const std::list<octave_lvalue> *lvalue_list);
 
-private:
+    octave_lvalue lvalue (void);
 
-  // The LHS of this index expression.
-  tree_expression *expr;
+    tree_index_expression *dup (symbol_table::scope_id scope,
+                                symbol_table::context_id context) const;
 
-  // The indices (only valid if type == paren || type == brace).
-  std::list<tree_argument_list *> args;
+    void accept (tree_walker& tw);
 
-  // The type of this index expression.
-  std::string type;
+  private:
 
-  // The names of the arguments.  Used for constant struct element
-  // references.
-  std::list<string_vector> arg_nm;
+    // The LHS of this index expression.
+    tree_expression *expr;
 
-  // The list of dynamic field names, if any.
-  std::list<tree_expression *> dyn_field;
+    // The indices (only valid if type == paren || type == brace).
+    std::list<tree_argument_list *> args;
 
-  tree_index_expression (int l, int c);
+    // The type of this index expression.
+    std::string type;
 
-  octave_map make_arg_struct (void) const;
+    // The names of the arguments.  Used for constant struct element
+    // references.
+    std::list<string_vector> arg_nm;
 
-  std::string
-  get_struct_index
+    // The list of dynamic field names, if any.
+    std::list<tree_expression *> dyn_field;
+
+    tree_index_expression (int l, int c);
+
+    octave_map make_arg_struct (void) const;
+
+    std::string
+    get_struct_index
     (std::list<string_vector>::const_iterator p_arg_nm,
      std::list<tree_expression *>::const_iterator p_dyn_field) const;
-};
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_index_expression' instead")
+typedef octave::tree_index_expression tree_index_expression;
 
 #endif
 
+#endif

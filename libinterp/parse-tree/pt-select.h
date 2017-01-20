@@ -25,277 +25,293 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-class expression;
-class tree_statement_list;
-
-class tree_walker;
-
 #include "base-list.h"
 #include "comment-list.h"
 #include "pt-cmd.h"
 #include "symtab.h"
 
-// If.
-
-class
-tree_if_clause : public tree
+namespace octave
 {
-public:
+  class tree_expression;
+  class tree_statement_list;
 
-  tree_if_clause (int l = -1, int c = -1)
-    : tree (l, c), expr (0), list (0), lead_comm (0) { }
+  class tree_walker;
 
-  tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = 0,
-                  int l = -1, int c = -1)
-    : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
+  // If.
 
-  tree_if_clause (tree_expression *e, tree_statement_list *sl,
-                  octave_comment_list *lc = 0,
-                  int l = -1, int c = -1)
-    : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
-
-  // No copying!
-
-  tree_if_clause (const tree_if_clause&) = delete;
-
-  tree_if_clause& operator = (const tree_if_clause&) = delete;
-
-  ~tree_if_clause (void);
-
-  bool is_else_clause (void) { return ! expr; }
-
-  tree_expression *condition (void) { return expr; }
-
-  tree_statement_list *commands (void) { return list; }
-
-  octave_comment_list *leading_comment (void) { return lead_comm; }
-
-  tree_if_clause *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-
-private:
-
-  // The condition to test.
-  tree_expression *expr;
-
-  // The list of statements to evaluate if expr is true.
-  tree_statement_list *list;
-
-  // Comment preceding ELSE or ELSEIF token.
-  octave_comment_list *lead_comm;
-};
-
-class
-tree_if_command_list : public octave::base_list<tree_if_clause *>
-{
-public:
-
-  tree_if_command_list (void) { }
-
-  tree_if_command_list (tree_if_clause *t) { append (t); }
-
-  // No copying!
-
-  tree_if_command_list (const tree_if_command_list&) = delete;
-
-  tree_if_command_list& operator = (const tree_if_command_list&) = delete;
-
-  ~tree_if_command_list (void)
+  class tree_if_clause : public tree
   {
-    while (! empty ())
-      {
-        iterator p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
+  public:
 
-  tree_if_command_list *dup (symbol_table::scope_id scope,
-                             symbol_table::context_id context) const;
+    tree_if_clause (int l = -1, int c = -1)
+      : tree (l, c), expr (0), list (0), lead_comm (0) { }
 
-  void accept (tree_walker& tw);
-};
-
-class
-tree_if_command : public tree_command
-{
-public:
-
-  tree_if_command (int l = -1, int c = -1)
-    : tree_command (l, c), list (0), lead_comm (0), trail_comm (0) { }
-
-  tree_if_command (tree_if_command_list *lst, octave_comment_list *lc,
-                   octave_comment_list *tc, int l = -1, int c = -1)
-    : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
-
-  // No copying!
-
-  tree_if_command (const tree_if_command&) = delete;
-
-  tree_if_command& operator = (const tree_if_command&) = delete;
-
-  ~tree_if_command (void);
-
-  tree_if_command_list *cmd_list (void) { return list; }
-
-  octave_comment_list *leading_comment (void) { return lead_comm; }
-
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
-
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-
-private:
-
-  // List of if commands (if, elseif, elseif, ... else, endif)
-  tree_if_command_list *list;
-
-  // Comment preceding IF token.
-  octave_comment_list *lead_comm;
-
-  // Comment preceding ENDIF token.
-  octave_comment_list *trail_comm;
-};
-
-// Switch.
-
-class
-tree_switch_case : public tree
-{
-public:
-
-  tree_switch_case (int l = -1, int c = -1)
-    : tree (l, c), label (0), list (0), lead_comm (0) { }
-
-  tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = 0,
+    tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = 0,
                     int l = -1, int c = -1)
-    : tree (l, c), label (0), list (sl), lead_comm (lc) { }
+      : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
 
-  tree_switch_case (tree_expression *e, tree_statement_list *sl,
+    tree_if_clause (tree_expression *e, tree_statement_list *sl,
                     octave_comment_list *lc = 0,
                     int l = -1, int c = -1)
-    : tree (l, c), label (e), list (sl), lead_comm (lc) { }
+      : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
 
-  // No copying!
+    // No copying!
 
-  tree_switch_case (const tree_switch_case&) = delete;
+    tree_if_clause (const tree_if_clause&) = delete;
 
-  tree_switch_case& operator = (const tree_switch_case&) = delete;
+    tree_if_clause& operator = (const tree_if_clause&) = delete;
 
-  ~tree_switch_case (void);
+    ~tree_if_clause (void);
 
-  bool is_default_case (void) { return ! label; }
+    bool is_else_clause (void) { return ! expr; }
 
-  bool label_matches (const octave_value& val);
+    tree_expression *condition (void) { return expr; }
 
-  tree_expression *case_label (void) { return label; }
+    tree_statement_list *commands (void) { return list; }
 
-  tree_statement_list *commands (void) { return list; }
+    octave_comment_list *leading_comment (void) { return lead_comm; }
 
-  octave_comment_list *leading_comment (void) { return lead_comm; }
-
-  tree_switch_case *dup (symbol_table::scope_id scope,
+    tree_if_clause *dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const;
 
-  void accept (tree_walker& tw);
+    void accept (tree_walker& tw);
 
-private:
+  private:
 
-  // The case label.
-  tree_expression *label;
+    // The condition to test.
+    tree_expression *expr;
 
-  // The list of statements to evaluate if the label matches.
-  tree_statement_list *list;
+    // The list of statements to evaluate if expr is true.
+    tree_statement_list *list;
 
-  // Comment preceding CASE or OTHERWISE token.
-  octave_comment_list *lead_comm;
-};
+    // Comment preceding ELSE or ELSEIF token.
+    octave_comment_list *lead_comm;
+  };
 
-class
-tree_switch_case_list : public octave::base_list<tree_switch_case *>
-{
-public:
-
-  tree_switch_case_list (void) { }
-
-  tree_switch_case_list (tree_switch_case *t) { append (t); }
-
-  // No copying!
-
-  tree_switch_case_list (const tree_switch_case_list&) = delete;
-
-  tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
-
-  ~tree_switch_case_list (void)
+  class tree_if_command_list : public octave::base_list<tree_if_clause *>
   {
-    while (! empty ())
-      {
-        iterator p = begin ();
-        delete *p;
-        erase (p);
-      }
-  }
+  public:
 
-  tree_switch_case_list *dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const;
+    tree_if_command_list (void) { }
 
-  void accept (tree_walker& tw);
-};
+    tree_if_command_list (tree_if_clause *t) { append (t); }
 
-class
-tree_switch_command : public tree_command
-{
-public:
+    // No copying!
 
-  tree_switch_command (int l = -1, int c = -1)
-    : tree_command (l, c), expr (0), list (0), lead_comm (0),
-      trail_comm (0) { }
+    tree_if_command_list (const tree_if_command_list&) = delete;
 
-  tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
-                       octave_comment_list *lc, octave_comment_list *tc,
-                       int l = -1, int c = -1)
-    : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
-      trail_comm (tc) { }
+    tree_if_command_list& operator = (const tree_if_command_list&) = delete;
 
-  // No copying!
+    ~tree_if_command_list (void)
+    {
+      while (! empty ())
+        {
+          iterator p = begin ();
+          delete *p;
+          erase (p);
+        }
+    }
 
-  tree_switch_command (const tree_switch_command&) = delete;
+    tree_if_command_list *dup (symbol_table::scope_id scope,
+                               symbol_table::context_id context) const;
 
-  tree_switch_command& operator = (const tree_switch_command&) = delete;
+    void accept (tree_walker& tw);
+  };
 
-  ~tree_switch_command (void);
+  class tree_if_command : public tree_command
+  {
+  public:
 
-  tree_expression *switch_value (void) { return expr; }
+    tree_if_command (int l = -1, int c = -1)
+      : tree_command (l, c), list (0), lead_comm (0), trail_comm (0) { }
 
-  tree_switch_case_list *case_list (void) { return list; }
+    tree_if_command (tree_if_command_list *lst, octave_comment_list *lc,
+                     octave_comment_list *tc, int l = -1, int c = -1)
+      : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
 
-  octave_comment_list *leading_comment (void) { return lead_comm; }
+    // No copying!
 
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
+    tree_if_command (const tree_if_command&) = delete;
 
-  tree_command *dup (symbol_table::scope_id scope,
-                     symbol_table::context_id context) const;
+    tree_if_command& operator = (const tree_if_command&) = delete;
 
-  void accept (tree_walker& tw);
+    ~tree_if_command (void);
 
-private:
+    tree_if_command_list *cmd_list (void) { return list; }
 
-  // Value on which to switch.
-  tree_expression *expr;
+    octave_comment_list *leading_comment (void) { return lead_comm; }
 
-  // List of cases (case 1, case 2, ..., default)
-  tree_switch_case_list *list;
+    octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  // Comment preceding SWITCH token.
-  octave_comment_list *lead_comm;
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
 
-  // Comment preceding ENDSWITCH token.
-  octave_comment_list *trail_comm;
-};
+    void accept (tree_walker& tw);
+
+  private:
+
+    // List of if commands (if, elseif, elseif, ... else, endif)
+    tree_if_command_list *list;
+
+    // Comment preceding IF token.
+    octave_comment_list *lead_comm;
+
+    // Comment preceding ENDIF token.
+    octave_comment_list *trail_comm;
+  };
+
+  // Switch.
+
+  class tree_switch_case : public tree
+  {
+  public:
+
+    tree_switch_case (int l = -1, int c = -1)
+      : tree (l, c), label (0), list (0), lead_comm (0) { }
+
+    tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = 0,
+                      int l = -1, int c = -1)
+      : tree (l, c), label (0), list (sl), lead_comm (lc) { }
+
+    tree_switch_case (tree_expression *e, tree_statement_list *sl,
+                      octave_comment_list *lc = 0,
+                      int l = -1, int c = -1)
+      : tree (l, c), label (e), list (sl), lead_comm (lc) { }
+
+    // No copying!
+
+    tree_switch_case (const tree_switch_case&) = delete;
+
+    tree_switch_case& operator = (const tree_switch_case&) = delete;
+
+    ~tree_switch_case (void);
+
+    bool is_default_case (void) { return ! label; }
+
+    bool label_matches (const octave_value& val);
+
+    tree_expression *case_label (void) { return label; }
+
+    tree_statement_list *commands (void) { return list; }
+
+    octave_comment_list *leading_comment (void) { return lead_comm; }
+
+    tree_switch_case *dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+  private:
+
+    // The case label.
+    tree_expression *label;
+
+    // The list of statements to evaluate if the label matches.
+    tree_statement_list *list;
+
+    // Comment preceding CASE or OTHERWISE token.
+    octave_comment_list *lead_comm;
+  };
+
+  class tree_switch_case_list : public octave::base_list<tree_switch_case *>
+  {
+  public:
+
+    tree_switch_case_list (void) { }
+
+    tree_switch_case_list (tree_switch_case *t) { append (t); }
+
+    // No copying!
+
+    tree_switch_case_list (const tree_switch_case_list&) = delete;
+
+    tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
+
+    ~tree_switch_case_list (void)
+    {
+      while (! empty ())
+        {
+          iterator p = begin ();
+          delete *p;
+          erase (p);
+        }
+    }
+
+    tree_switch_case_list *dup (symbol_table::scope_id scope,
+                                symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+  };
+
+  class tree_switch_command : public tree_command
+  {
+  public:
+
+    tree_switch_command (int l = -1, int c = -1)
+      : tree_command (l, c), expr (0), list (0), lead_comm (0),
+        trail_comm (0) { }
+
+    tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
+                         octave_comment_list *lc, octave_comment_list *tc,
+                         int l = -1, int c = -1)
+      : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
+        trail_comm (tc) { }
+
+    // No copying!
+
+    tree_switch_command (const tree_switch_command&) = delete;
+
+    tree_switch_command& operator = (const tree_switch_command&) = delete;
+
+    ~tree_switch_command (void);
+
+    tree_expression *switch_value (void) { return expr; }
+
+    tree_switch_case_list *case_list (void) { return list; }
+
+    octave_comment_list *leading_comment (void) { return lead_comm; }
+
+    octave_comment_list *trailing_comment (void) { return trail_comm; }
+
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+  private:
+
+    // Value on which to switch.
+    tree_expression *expr;
+
+    // List of cases (case 1, case 2, ..., default)
+    tree_switch_case_list *list;
+
+    // Comment preceding SWITCH token.
+    octave_comment_list *lead_comm;
+
+    // Comment preceding ENDSWITCH token.
+    octave_comment_list *trail_comm;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_if_clause' instead")
+typedef octave::tree_if_clause tree_if_clause;
+
+// tree_if_command_list is derived from a template.
+
+OCTAVE_DEPRECATED ("use 'octave::tree_if_command' instead")
+typedef octave::tree_if_command tree_if_command;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_switch_case' instead")
+typedef octave::tree_switch_case tree_switch_case;
+
+// tree_switch_case_list is derived from a template.
+
+OCTAVE_DEPRECATED ("use 'octave::tree_switch_command' instead")
+typedef octave::tree_switch_command tree_switch_command;
 
 #endif
 
+#endif

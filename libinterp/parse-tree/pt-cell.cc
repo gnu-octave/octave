@@ -34,80 +34,82 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "ov.h"
 
-octave_value
-tree_cell::rvalue1 (int)
+namespace octave
 {
-  octave_value retval;
+  octave_value
+  tree_cell::rvalue1 (int)
+  {
+    octave_value retval;
 
-  octave_idx_type nr = length ();
-  octave_idx_type nc = -1;
+    octave_idx_type nr = length ();
+    octave_idx_type nc = -1;
 
-  Cell val;
+    Cell val;
 
-  octave_idx_type i = 0;
+    octave_idx_type i = 0;
 
-  for (tree_argument_list* elt : *this)
-    {
-      octave_value_list row = elt->convert_to_const_vector ();
+    for (tree_argument_list* elt : *this)
+      {
+        octave_value_list row = elt->convert_to_const_vector ();
 
-      if (nr == 1)
-        // Optimize the single row case.
-        val = row.cell_value ();
-      else if (nc < 0)
-        {
-          nc = row.length ();
+        if (nr == 1)
+          // Optimize the single row case.
+          val = row.cell_value ();
+        else if (nc < 0)
+          {
+            nc = row.length ();
 
-          val = Cell (nr, nc);
-        }
-      else
-        {
-          octave_idx_type this_nc = row.length ();
+            val = Cell (nr, nc);
+          }
+        else
+          {
+            octave_idx_type this_nc = row.length ();
 
-          if (this_nc != nc)
-            {
-              if (this_nc == 0)
-                continue;  // blank line
-              else
-                error ("number of columns must match");
-            }
-        }
+            if (this_nc != nc)
+              {
+                if (this_nc == 0)
+                  continue;  // blank line
+                else
+                  error ("number of columns must match");
+              }
+          }
 
-      for (octave_idx_type j = 0; j < nc; j++)
-        val(i,j) = row(j);
+        for (octave_idx_type j = 0; j < nc; j++)
+          val(i,j) = row(j);
 
-      i++;
-    }
+        i++;
+      }
 
-  if (i < nr)
-    val.resize (dim_vector (i, nc));  // there were blank rows
-  retval = val;
+    if (i < nr)
+      val.resize (dim_vector (i, nc));  // there were blank rows
+    retval = val;
 
-  return retval;
+    return retval;
+  }
+
+  octave_value_list
+  tree_cell::rvalue (int nargout)
+  {
+    if (nargout > 1)
+      error ("invalid number of output arguments for cell array");
+
+    return rvalue1 (nargout);
+  }
+
+  tree_expression *
+  tree_cell::dup (symbol_table::scope_id scope,
+                  symbol_table::context_id context) const
+  {
+    tree_cell *new_cell = new tree_cell (0, line (), column ());
+
+    new_cell->copy_base (*this, scope, context);
+
+    return new_cell;
+  }
+
+  void
+  tree_cell::accept (tree_walker& tw)
+  {
+    tw.visit_cell (*this);
+  }
 }
-
-octave_value_list
-tree_cell::rvalue (int nargout)
-{
-  if (nargout > 1)
-    error ("invalid number of output arguments for cell array");
-
-  return rvalue1 (nargout);
-}
-
-tree_expression *
-tree_cell::dup (symbol_table::scope_id scope,
-                symbol_table::context_id context) const
-{
-  tree_cell *new_cell = new tree_cell (0, line (), column ());
-
-  new_cell->copy_base (*this, scope, context);
-
-  return new_cell;
-}
-
-void
-tree_cell::accept (tree_walker& tw)
-{
-  tw.visit_cell (*this);
-}
-

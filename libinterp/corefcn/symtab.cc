@@ -194,8 +194,9 @@ load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
 {
   bool retval = false;
 
-  octave_function *fcn = load_fcn_from_file (ff, dir_name, dispatch_type,
-                                             package_name);
+  octave_function *fcn
+    = octave::load_fcn_from_file (ff, dir_name, dispatch_type,
+                                  package_name);
 
   if (fcn)
     {
@@ -298,7 +299,7 @@ out_of_date_check (octave_value& function,
 
                           // Maybe it's an autoload?
                           if (file.empty ())
-                            file = lookup_autoload (nm);
+                            file = octave::lookup_autoload (nm);
 
                           if (file.empty ())
                             file = load_path::find_fcn (nm, dir_name, pack);
@@ -391,7 +392,7 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
 
   if (! file_name.empty ())
     {
-      octave_function *fcn = load_fcn_from_file (file_name, dir_name);
+      octave_function *fcn = octave::load_fcn_from_file (file_name, dir_name);
 
       if (fcn)
         {
@@ -430,8 +431,9 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 
   if (! file_name.empty ())
     {
-      octave_function *fcn = load_fcn_from_file (file_name, dir_name, name,
-                                                 package_name);
+      octave_function *fcn
+        = octave::load_fcn_from_file (file_name, dir_name, name,
+                                      package_name);
 
       if (fcn)
         {
@@ -496,8 +498,9 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 
           if (! file_name.empty ())
             {
-              octave_function *fcn = load_fcn_from_file (file_name, dir_name,
-                                                         dispatch_type);
+              octave_function *fcn
+                = octave::load_fcn_from_file (file_name, dir_name,
+                                              dispatch_type);
 
               if (fcn)
                 {
@@ -1009,7 +1012,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
   if (! autoload_function.is_defined ())
     {
-      std::string file_name = lookup_autoload (name);
+      std::string file_name = octave::lookup_autoload (name);
 
       if (! file_name.empty ())
         {
@@ -1017,8 +1020,9 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
           std::string dir_name = file_name.substr (0, pos);
 
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name, "",
-                                                     "", name, true);
+          octave_function *fcn
+            = octave::load_fcn_from_file (file_name, dir_name, "", "",
+                                          name, true);
 
           if (fcn)
             autoload_function = octave_value (fcn);
@@ -1045,8 +1049,9 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
 
       if (! file_name.empty ())
         {
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name, "",
-                                                     package_name);
+          octave_function *fcn
+            = octave::load_fcn_from_file (file_name, dir_name, "",
+                                          package_name);
 
           if (fcn)
             function_on_path = octave_value (fcn);
@@ -1823,7 +1828,7 @@ Undocumented internal function.
     {
       std::ostringstream buf;
 
-      tree_print_code tpc (buf);
+      octave::tree_print_code tpc (buf);
 
       f->accept (tpc);
 

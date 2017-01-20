@@ -28,78 +28,86 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-
 class octave_value_list;
-class tree_walker;
 
 #include "ov.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "symtab.h"
 
-class
-tree_constant : public tree_expression
+namespace octave
 {
-public:
+  class tree_walker;
 
-  tree_constant (int l = -1, int c = -1)
-    : tree_expression (l, c), val (), orig_text () { }
+  class tree_constant : public tree_expression
+  {
+  public:
 
-  tree_constant (const octave_value& v, int l = -1, int c = -1)
-    : tree_expression (l, c), val (v), orig_text () { }
+    tree_constant (int l = -1, int c = -1)
+      : tree_expression (l, c), val (), orig_text () { }
 
-  tree_constant (const octave_value& v, const std::string& ot,
-                 int l = -1, int c = -1)
-    : tree_expression (l, c), val (v), orig_text (ot) { }
+    tree_constant (const octave_value& v, int l = -1, int c = -1)
+      : tree_expression (l, c), val (v), orig_text () { }
 
-  // No copying!
+    tree_constant (const octave_value& v, const std::string& ot,
+                   int l = -1, int c = -1)
+      : tree_expression (l, c), val (v), orig_text (ot) { }
 
-  tree_constant (const tree_constant&) = delete;
+    // No copying!
 
-  tree_constant& operator = (const tree_constant&) = delete;
+    tree_constant (const tree_constant&) = delete;
 
-  ~tree_constant (void) = default;
+    tree_constant& operator = (const tree_constant&) = delete;
 
-  bool has_magic_end (void) const { return false; }
+    ~tree_constant (void) = default;
 
-  // Type.  It would be nice to eliminate the need for this.
+    bool has_magic_end (void) const { return false; }
 
-  bool is_constant (void) const { return true; }
+    // Type.  It would be nice to eliminate the need for this.
 
-  void maybe_mutate (void) { val.maybe_mutate (); }
+    bool is_constant (void) const { return true; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false,
-              bool pr_orig_txt = true);
+    void maybe_mutate (void) { val.maybe_mutate (); }
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
-                  bool pr_orig_txt = true);
+    void print (std::ostream& os, bool pr_as_read_syntax = false,
+                bool pr_orig_txt = true);
 
-  bool rvalue_ok (void) const { return true; }
+    void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
+                    bool pr_orig_txt = true);
 
-  octave_value rvalue1 (int = 1) { return val; }
+    bool rvalue_ok (void) const { return true; }
 
-  octave_value_list rvalue (int nargout);
+    octave_value rvalue1 (int = 1) { return val; }
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    octave_value_list rvalue (int nargout);
 
-  void accept (tree_walker& tw);
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
 
-  // Store the original text corresponding to this constant for later
-  // pretty printing.
+    void accept (tree_walker& tw);
 
-  void stash_original_text (const std::string& s) { orig_text = s; }
+    // Store the original text corresponding to this constant for later
+    // pretty printing.
 
-  std::string original_text (void) const { return orig_text; }
+    void stash_original_text (const std::string& s) { orig_text = s; }
 
-private:
+    std::string original_text (void) const { return orig_text; }
 
-  // The actual value that this constant refers to.
-  octave_value val;
+  private:
 
-  // The original text form of this constant.
-  std::string orig_text;
-};
+    // The actual value that this constant refers to.
+    octave_value val;
+
+    // The original text form of this constant.
+    std::string orig_text;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_constant' instead")
+typedef octave::tree_constant tree_constant;
 
 #endif
 
+#endif

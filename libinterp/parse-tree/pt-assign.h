@@ -28,9 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-class tree_argument_list;
-class tree_walker;
-
 class octave_value;
 class octave_value_list;
 class octave_lvalue;
@@ -39,132 +36,146 @@ class octave_lvalue;
 #include "pt-exp.h"
 #include "symtab.h"
 
-// Simple assignment expressions.
-
-class
-tree_simple_assignment : public tree_expression
+namespace octave
 {
-public:
+  class tree_argument_list;
 
-  tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
-                          octave_value::assign_op t = octave_value::op_asn_eq)
-    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), ans_ass (),
-      etype (t) { }
+  class tree_walker;
 
-  tree_simple_assignment (tree_expression *le, tree_expression *re,
-                          bool plhs = false, int l = -1, int c = -1,
-                          octave_value::assign_op t = octave_value::op_asn_eq);
+  // Simple assignment expressions.
 
-  // No copying!
+  class tree_simple_assignment : public tree_expression
+  {
+  public:
 
-  tree_simple_assignment (const tree_simple_assignment&) = delete;
+    tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
+                            octave_value::assign_op t = octave_value::op_asn_eq)
+      : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), ans_ass (),
+        etype (t) { }
 
-  tree_simple_assignment& operator = (const tree_simple_assignment&) = delete;
+    tree_simple_assignment (tree_expression *le, tree_expression *re,
+                            bool plhs = false, int l = -1, int c = -1,
+                            octave_value::assign_op t = octave_value::op_asn_eq);
 
-  ~tree_simple_assignment (void);
+    // No copying!
 
-  bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
+    tree_simple_assignment (const tree_simple_assignment&) = delete;
 
-  bool rvalue_ok (void) const { return true; }
+    tree_simple_assignment& operator = (const tree_simple_assignment&) = delete;
 
-  octave_value rvalue1 (int nargout = 1);
+    ~tree_simple_assignment (void);
 
-  octave_value_list rvalue (int nargout);
+    bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
 
-  bool is_assignment_expression (void) const { return true; }
+    bool rvalue_ok (void) const { return true; }
 
-  std::string oper (void) const;
+    octave_value rvalue1 (int nargout = 1);
 
-  tree_expression *left_hand_side (void) { return lhs; }
+    octave_value_list rvalue (int nargout);
 
-  tree_expression *right_hand_side (void) { return rhs; }
+    bool is_assignment_expression (void) const { return true; }
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    std::string oper (void) const;
 
-  void accept (tree_walker& tw);
+    tree_expression *left_hand_side (void) { return lhs; }
 
-  octave_value::assign_op op_type (void) const { return etype; }
+    tree_expression *right_hand_side (void) { return rhs; }
 
-private:
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
 
-  void do_assign (octave_lvalue& ult, const octave_value_list& args,
-                  const octave_value& rhs_val);
+    void accept (tree_walker& tw);
 
-  void do_assign (octave_lvalue& ult, const octave_value& rhs_val);
+    octave_value::assign_op op_type (void) const { return etype; }
 
-  // The left hand side of the assignment.
-  tree_expression *lhs;
+  private:
 
-  // The right hand side of the assignment.
-  tree_expression *rhs;
+    void do_assign (octave_lvalue& ult, const octave_value_list& args,
+                    const octave_value& rhs_val);
 
-  // True if we should not delete the lhs.
-  bool preserve;
+    void do_assign (octave_lvalue& ult, const octave_value& rhs_val);
 
-  // True if this is an assignment to the automatic variable ans.
-  bool ans_ass;
+    // The left hand side of the assignment.
+    tree_expression *lhs;
 
-  // The type of the expression.
-  octave_value::assign_op etype;
-};
+    // The right hand side of the assignment.
+    tree_expression *rhs;
 
-// Multi-valued assignment expressions.
+    // True if we should not delete the lhs.
+    bool preserve;
 
-class
-tree_multi_assignment : public tree_expression
-{
-public:
+    // True if this is an assignment to the automatic variable ans.
+    bool ans_ass;
 
-  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
-    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs) { }
+    // The type of the expression.
+    octave_value::assign_op etype;
+  };
 
-  tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
-                         bool plhs = false, int l = -1, int c = -1);
+  // Multi-valued assignment expressions.
 
-  // No copying!
+  class tree_multi_assignment : public tree_expression
+  {
+  public:
 
-  tree_multi_assignment (const tree_multi_assignment&) = delete;
+    tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
+      : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs) { }
 
-  tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
+    tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
+                           bool plhs = false, int l = -1, int c = -1);
 
-  ~tree_multi_assignment (void);
+    // No copying!
 
-  bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
+    tree_multi_assignment (const tree_multi_assignment&) = delete;
 
-  bool is_assignment_expression (void) const { return true; }
+    tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
 
-  bool rvalue_ok (void) const { return true; }
+    ~tree_multi_assignment (void);
 
-  octave_value rvalue1 (int nargout = 1);
+    bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
 
-  octave_value_list rvalue (int nargout);
+    bool is_assignment_expression (void) const { return true; }
 
-  std::string oper (void) const;
+    bool rvalue_ok (void) const { return true; }
 
-  tree_argument_list *left_hand_side (void) { return lhs; }
+    octave_value rvalue1 (int nargout = 1);
 
-  tree_expression *right_hand_side (void) { return rhs; }
+    octave_value_list rvalue (int nargout);
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    std::string oper (void) const;
 
-  void accept (tree_walker& tw);
+    tree_argument_list *left_hand_side (void) { return lhs; }
 
-  octave_value::assign_op op_type (void) const
-  { return octave_value::op_asn_eq; }
+    tree_expression *right_hand_side (void) { return rhs; }
 
-private:
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
 
-  // The left hand side of the assignment.
-  tree_argument_list *lhs;
+    void accept (tree_walker& tw);
 
-  // The right hand side of the assignment.
-  tree_expression *rhs;
+    octave_value::assign_op op_type (void) const
+    { return octave_value::op_asn_eq; }
 
-  // True if we should not delete the lhs.
-  bool preserve;
-};
+  private:
+
+    // The left hand side of the assignment.
+    tree_argument_list *lhs;
+
+    // The right hand side of the assignment.
+    tree_expression *rhs;
+
+    // True if we should not delete the lhs.
+    bool preserve;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_simple_assignment' instead")
+typedef octave::tree_simple_assignment tree_simple_assignment;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_multi_assignment' instead")
+typedef octave::tree_multi_assignment tree_multi_assignment;
 
 #endif
 
+#endif

@@ -30,125 +30,132 @@ class Cell;
 class octave_value;
 class octave_value_list;
 
-class tree_identifier;
-class tree_index_expression;
-class tree_va_return_list;
-
-class tree_walker;
-
 #include "base-list.h"
 #include "pt-decl.h"
 #include "symtab.h"
 
-// Parameter lists.  Used to hold the list of input and output
-// parameters in a function definition.  Elements are identifiers
-// only.
-
-class
-tree_parameter_list : public octave::base_list<tree_decl_elt *>
+namespace octave
 {
-public:
+  class tree_identifier;
+  class tree_index_expression;
+  class tree_va_return_list;
 
-  enum in_or_out
+  class tree_walker;
+
+  // Parameter lists.  Used to hold the list of input and output
+  // parameters in a function definition.  Elements are identifiers
+  // only.
+
+  class tree_parameter_list : public octave::base_list<tree_decl_elt *>
   {
-    in = 1,
-    out = 2
+  public:
+
+    enum in_or_out
+      {
+        in = 1,
+        out = 2
+      };
+
+    tree_parameter_list (void)
+      : marked_for_varargs (0) { }
+
+    tree_parameter_list (tree_decl_elt *t)
+      : marked_for_varargs (0) { append (t); }
+
+    tree_parameter_list (tree_identifier *id)
+      : marked_for_varargs (0) { append (new tree_decl_elt (id)); }
+
+    // No copying!
+
+    tree_parameter_list (const tree_parameter_list&) = delete;
+
+    tree_parameter_list& operator = (const tree_parameter_list&) = delete;
+
+    ~tree_parameter_list (void);
+
+    void mark_as_formal_parameters (void);
+
+    bool validate (in_or_out type);
+
+    bool takes_varargs (void) const { return marked_for_varargs != 0; }
+
+    bool varargs_only (void) { return (marked_for_varargs < 0); }
+
+    void initialize_undefined_elements (const std::string& warnfor,
+                                        int nargout, const octave_value& val);
+
+    void define_from_arg_vector (const octave_value_list& args);
+
+    void undefine (void);
+
+    bool is_defined (void);
+
+    std::list<std::string> variable_names (void) const;
+
+    octave_value_list convert_to_const_vector (int nargout,
+                                               const Cell& varargout);
+
+    tree_parameter_list *dup (symbol_table::scope_id scope,
+                              symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+  private:
+
+    int marked_for_varargs;
+
+    void mark_varargs (void) { marked_for_varargs = 1; }
+
+    void mark_varargs_only (void) { marked_for_varargs = -1; }
   };
 
-  tree_parameter_list (void)
-    : marked_for_varargs (0) { }
+  // Return lists.  Used to hold the right hand sides of multiple
+  // assignment expressions.
 
-  tree_parameter_list (tree_decl_elt *t)
-    : marked_for_varargs (0) { append (t); }
+  class tree_return_list : public octave::base_list<tree_index_expression *>
+  {
+  public:
 
-  tree_parameter_list (tree_identifier *id)
-    : marked_for_varargs (0) { append (new tree_decl_elt (id)); }
+    tree_return_list (void) { }
 
-  // No copying!
+    tree_return_list (tree_index_expression *t) { append (t); }
 
-  tree_parameter_list (const tree_parameter_list&) = delete;
+    // No copying!
 
-  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
+    tree_return_list (const tree_return_list&) = delete;
 
-  ~tree_parameter_list (void);
+    tree_return_list& operator = (const tree_return_list&) = delete;
 
-  void mark_as_formal_parameters (void);
+    ~tree_return_list (void);
 
-  bool validate (in_or_out type);
+    tree_return_list *dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
-  bool takes_varargs (void) const { return marked_for_varargs != 0; }
+    void accept (tree_walker& tw);
+  };
 
-  bool varargs_only (void) { return (marked_for_varargs < 0); }
+  class tree_va_return_list : public octave::base_list<octave_value>
+  {
+  public:
 
-  void initialize_undefined_elements (const std::string& warnfor,
-                                      int nargout, const octave_value& val);
+    tree_va_return_list (void) { }
 
-  void define_from_arg_vector (const octave_value_list& args);
+    // No copying!
 
-  void undefine (void);
+    tree_va_return_list (const tree_va_return_list&) = delete;
 
-  bool is_defined (void);
+    tree_va_return_list& operator = (const tree_va_return_list&) = delete;
 
-  std::list<std::string> variable_names (void) const;
+    ~tree_va_return_list (void) = default;
+  };
+}
 
-  octave_value_list convert_to_const_vector (int nargout,
-                                             const Cell& varargout);
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  tree_parameter_list *dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-
-private:
-
-  int marked_for_varargs;
-
-  void mark_varargs (void) { marked_for_varargs = 1; }
-
-  void mark_varargs_only (void) { marked_for_varargs = -1; }
-};
-
-// Return lists.  Used to hold the right hand sides of multiple
-// assignment expressions.
-
-class
-tree_return_list : public octave::base_list<tree_index_expression *>
-{
-public:
-
-  tree_return_list (void) { }
-
-  tree_return_list (tree_index_expression *t) { append (t); }
-
-  // No copying!
-
-  tree_return_list (const tree_return_list&) = delete;
-
-  tree_return_list& operator = (const tree_return_list&) = delete;
-
-  ~tree_return_list (void);
-
-  tree_return_list *dup (symbol_table::scope_id scope,
-                         symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-};
-
-class
-tree_va_return_list : public octave::base_list<octave_value>
-{
-public:
-
-  tree_va_return_list (void) { }
-
-  // No copying!
-
-  tree_va_return_list (const tree_va_return_list&) = delete;
-
-  tree_va_return_list& operator = (const tree_va_return_list&) = delete;
-
-  ~tree_va_return_list (void) = default;
-};
+// tree_parameter_list is derived from a template.
+// tree_return_list is derived from a template.
+// tree_va_return_list is derived from a template.
 
 #endif
 
+#endif

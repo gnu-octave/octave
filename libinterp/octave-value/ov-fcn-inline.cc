@@ -82,7 +82,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
   buf << ") " << iftext;
 
   int parse_status;
-  octave_value anon_fcn_handle = eval_string (buf.str (), true, parse_status);
+  octave_value anon_fcn_handle = octave::eval_string (buf.str (), true, parse_status);
 
   if (parse_status == 0)
     {

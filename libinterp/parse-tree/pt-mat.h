@@ -29,57 +29,80 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class octave_value_list;
-class tree_argument_list;
-
-class tree_walker;
 
 #include "base-list.h"
 #include "pt-array-list.h"
 #include "pt-exp.h"
 #include "symtab.h"
 
-// General matrices.  This allows us to construct matrices from
-// other matrices, variables, and functions.
-
-class
-tree_matrix : public tree_array_list
-{
-public:
-
-  tree_matrix (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_array_list (row, l, c)
-  { }
-
-  // No copying!
-
-  tree_matrix (const tree_matrix&) = delete;
-
-  tree_matrix& operator = (const tree_matrix&) = delete;
-
-  ~tree_matrix (void) = default;
-
-  bool is_matrix (void) const { return true; }
-
-  bool rvalue_ok (void) const { return true; }
-
-  octave_value rvalue1 (int nargout = 1);
-
-  octave_value_list rvalue (int nargout);
-
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-};
-
 // The character to fill with when creating string arrays.
 extern char Vstring_fill_char;
 
-extern std::string
-get_concat_class (const std::string& c1, const std::string& c2);
+namespace octave
+{
+  class tree_argument_list;
 
-extern void
-maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p);
+  class tree_walker;
+
+  // General matrices.  This allows us to construct matrices from
+  // other matrices, variables, and functions.
+
+  class tree_matrix : public tree_array_list
+  {
+  public:
+
+    tree_matrix (tree_argument_list *row = 0, int l = -1, int c = -1)
+      : tree_array_list (row, l, c)
+    { }
+
+    // No copying!
+
+    tree_matrix (const tree_matrix&) = delete;
+
+    tree_matrix& operator = (const tree_matrix&) = delete;
+
+    ~tree_matrix (void) = default;
+
+    bool is_matrix (void) const { return true; }
+
+    bool rvalue_ok (void) const { return true; }
+
+    octave_value rvalue1 (int nargout = 1);
+
+    octave_value_list rvalue (int nargout);
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+  };
+
+  extern std::string
+  get_concat_class (const std::string& c1, const std::string& c2);
+
+  extern void
+  maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p);
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_matrix' instead")
+typedef octave::tree_matrix tree_matrix;
+
+OCTAVE_DEPRECATED ("use 'octave::get_concat_class' instead")
+static inline std::string
+get_concat_class (const std::string& c1, const std::string& c2)
+{
+  return octave::get_concat_class (c1, c2);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::maybe_warn_string_concat' instead")
+static inline void
+maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
+{
+  octave::maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+}
 
 #endif
 
+#endif

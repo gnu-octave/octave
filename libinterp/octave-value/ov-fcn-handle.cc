@@ -278,7 +278,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
           std::string dir_name = str.substr (0, xpos);
 
           octave_function *xfcn
-            = load_fcn_from_file (str, dir_name, "", "", nm);
+            = octave::load_fcn_from_file (str, dir_name, "", "", nm);
 
           if (! xfcn)
             error ("function handle points to non-existent function");
@@ -303,7 +303,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = str.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", "", nm);
+          octave_function *xfcn = octave::load_fcn_from_file (str, dir_name, "", "", nm);
 
           if (! xfcn)
             error ("function handle points to non-existent function");
@@ -321,7 +321,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
           std::string dir_name = fpath.substr (0, xpos);
 
-          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", "", nm);
+          octave_function *xfcn = octave::load_fcn_from_file (fpath, dir_name, "", "", nm);
 
           if (! xfcn)
             error ("function handle points to non-existent function");
@@ -471,7 +471,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
         {
           int parse_status;
           octave_value anon_fcn_handle =
-            eval_string (buf, true, parse_status);
+            octave::eval_string (buf, true, parse_status);
 
           if (parse_status == 0)
             {
@@ -645,8 +645,8 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       if (is && success)
         {
           int parse_status;
-          octave_value anon_fcn_handle =
-            eval_string (ctmp2, true, parse_status);
+          octave_value anon_fcn_handle
+            = octave::eval_string (ctmp2, true, parse_status);
 
           if (parse_status == 0)
             {
@@ -1168,8 +1168,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (success)
         {
           int parse_status;
-          octave_value anon_fcn_handle =
-            eval_string (fcn_tmp, true, parse_status);
+          octave_value anon_fcn_handle
+            = octave::eval_string (fcn_tmp, true, parse_status);
 
           if (parse_status == 0)
             {
@@ -1401,7 +1401,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
   if (nm == anonymous)
     {
-      tree_print_code tpc (os);
+      octave::tree_print_code tpc (os);
 
       // FCN is const because this member function is, so we can't
       // use it to call user_function_value, so we make a copy first.
@@ -1412,7 +1412,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
       if (f)
         {
-          tree_parameter_list *p = f->parameter_list ();
+          octave::tree_parameter_list *p = f->parameter_list ();
 
           os << "@(";
 
@@ -1837,8 +1837,8 @@ functions are ignored in the lookup.
   if (nm[0] == '@')
     {
       int parse_status;
-      octave_value anon_fcn_handle =
-        eval_string (nm, true, parse_status);
+      octave_value anon_fcn_handle
+        = octave::eval_string (nm, true, parse_status);
 
       if (parse_status == 0)
         retval = anon_fcn_handle;
@@ -1921,10 +1921,10 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
   octave_fcn_handle *retval = 0;
 
   octave_user_function *usr_fcn = f.user_function_value (false);
-  tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
+  octave::tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
 
-  tree_statement_list *cmd_list = 0;
-  tree_expression *body_expr = 0;
+  octave::tree_statement_list *cmd_list = 0;
+  octave::tree_expression *body_expr = 0;
 
   if (usr_fcn)
     {
@@ -1941,10 +1941,10 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
       && ! (param_list && param_list->takes_varargs ()))
     {
       // It's an index expression.
-      tree_index_expression *idx_expr = dynamic_cast<tree_index_expression *>
+      octave::tree_index_expression *idx_expr = dynamic_cast<octave::tree_index_expression *>
                                         (body_expr);
-      tree_expression *head_expr = idx_expr->expression ();
-      std::list<tree_argument_list *> arg_lists = idx_expr->arg_lists ();
+      octave::tree_expression *head_expr = idx_expr->expression ();
+      std::list<octave::tree_argument_list *> arg_lists = idx_expr->arg_lists ();
       std::string type_tags = idx_expr->type_tags ();
 
       if (type_tags.length () == 1 && type_tags[0] == '('
@@ -1953,9 +1953,9 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
           assert (arg_lists.size () == 1);
 
           // It's a single index expression: a(x,y,....)
-          tree_identifier *head_id =
-            dynamic_cast<tree_identifier *> (head_expr);
-          tree_argument_list *arg_list = arg_lists.front ();
+          octave::tree_identifier *head_id =
+            dynamic_cast<octave::tree_identifier *> (head_expr);
+          octave::tree_argument_list *arg_list = arg_lists.front ();
 
           // Build a map of input params to their position.
           std::map<std::string, int> arginmap;
@@ -1965,8 +1965,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
             {
               for (auto& param_p : *param_list)
                 {
-                  tree_decl_elt *elt = param_p;
-                  tree_identifier *id = elt ? elt->ident () : 0;
+                  octave::tree_decl_elt *elt = param_p;
+                  octave::tree_identifier *id = elt ? elt->ident () : 0;
                   if (id && ! id->is_black_hole ())
                     arginmap[id->name ()] = npar;
                 }
@@ -1982,10 +1982,10 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
               // Verify that each argument is either a named param, a constant,
               // or a defined identifier.
               int iarg = 0;
-              for (tree_argument_list::iterator it = arg_list->begin ();
+              for (octave::tree_argument_list::iterator it = arg_list->begin ();
                    it != arg_list->end (); ++it, ++iarg)
                 {
-                  tree_expression *elt = *it;
+                  octave::tree_expression *elt = *it;
                   if (elt && elt->is_constant ())
                     {
                       arg_template(iarg) = elt->rvalue1 ();
@@ -1993,8 +1993,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                     }
                   else if (elt && elt->is_identifier ())
                     {
-                      tree_identifier *elt_id =
-                        dynamic_cast<tree_identifier *> (elt);
+                      octave::tree_identifier *elt_id =
+                        dynamic_cast<octave::tree_identifier *> (elt);
                       if (arginmap.find (elt_id->name ()) != arginmap.end ())
                         {
                           arg_mask[iarg] = arginmap[elt_id->name ()];

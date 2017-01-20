@@ -205,7 +205,7 @@ interactive_input (const std::string& s, bool& eof)
 
       try
         {
-          feval ("drawnow");
+          octave::feval ("drawnow");
         }
       catch (const octave::execution_exception& e)
         {
@@ -831,7 +831,7 @@ get_user_input (const octave_value_list& args, int nargout)
     {
       int parse_status = 0;
 
-      retval = eval_string (input_buf, true, parse_status, nargout);
+      retval = octave::eval_string (input_buf, true, parse_status, nargout);
 
       if (! Vdebugging && retval.empty ())
         retval(0) = Matrix ();

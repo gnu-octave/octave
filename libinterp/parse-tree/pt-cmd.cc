@@ -27,34 +27,36 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "pt-walk.h"
 
-// No-op.
-
-tree_command *
-tree_no_op_command::dup (symbol_table::scope_id,
-                         symbol_table::context_id) const
+namespace octave
 {
-  return new tree_no_op_command (orig_cmd, is_end_of_file (),
-                                 line (), column ());
+  // No-op.
+
+  tree_command *
+  tree_no_op_command::dup (symbol_table::scope_id,
+                           symbol_table::context_id) const
+  {
+    return new tree_no_op_command (orig_cmd, is_end_of_file (),
+                                   line (), column ());
+  }
+
+  void
+  tree_no_op_command::accept (tree_walker& tw)
+  {
+    tw.visit_no_op_command (*this);
+  }
+
+  // Function definition.
+
+  tree_command *
+  tree_function_def::dup (symbol_table::scope_id,
+                          symbol_table::context_id) const
+  {
+    return new tree_function_def (fcn, line (), column ());
+  }
+
+  void
+  tree_function_def::accept (tree_walker& tw)
+  {
+    tw.visit_function_def (*this);
+  }
 }
-
-void
-tree_no_op_command::accept (tree_walker& tw)
-{
-  tw.visit_no_op_command (*this);
-}
-
-// Function definition.
-
-tree_command *
-tree_function_def::dup (symbol_table::scope_id,
-                        symbol_table::context_id) const
-{
-  return new tree_function_def (fcn, line (), column ());
-}
-
-void
-tree_function_def::accept (tree_walker& tw)
-{
-  tw.visit_function_def (*this);
-}
-

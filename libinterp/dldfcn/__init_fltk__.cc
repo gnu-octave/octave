@@ -1067,7 +1067,7 @@ private:
   {
     octave_value_list args;
     args(0) = static_cast<plot_window*> (data)->number ();
-    feval ("close", args);
+    octave::feval ("close", args);
   }
 
   // Button callbacks.
@@ -1134,7 +1134,7 @@ private:
       {
         args(0) = fp.get_currentaxes ().as_octave_value ();
         args(1) = "auto";
-        feval ("axis", args);
+        octave::feval ("axis", args);
         mark_modified ();
       }
   }
@@ -1145,7 +1145,7 @@ private:
     if (fp.get_currentaxes ().ok ())
       args(0) = fp.get_currentaxes ().as_octave_value ();
 
-    feval ("grid", args);
+    octave::feval ("grid", args);
     mark_modified ();
   }
 

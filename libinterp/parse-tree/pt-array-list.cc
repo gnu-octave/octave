@@ -29,72 +29,74 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "pt-array-list.h"
 
-tree_array_list::~tree_array_list (void)
+namespace octave
 {
-  while (! empty ())
-    {
-      iterator p = begin ();
-      delete *p;
-      erase (p);
-    }
+  tree_array_list::~tree_array_list (void)
+  {
+    while (! empty ())
+      {
+        iterator p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
+
+  bool
+  tree_array_list::all_elements_are_constant (void) const
+  {
+    for (const tree_argument_list* elt : *this)
+      {
+        octave_quit ();
+
+        if (! elt->all_elements_are_constant ())
+          return false;
+      }
+
+    return true;
+  }
+
+  bool
+  tree_array_list::has_magic_end (void) const
+  {
+    for (const tree_argument_list* elt : *this)
+      {
+        octave_quit ();
+
+        if (elt && elt->has_magic_end ())
+          return true;
+      }
+
+    return false;
+  }
+
+  void
+  tree_array_list::copy_base (const tree_array_list& array_list)
+  {
+    tree_expression::copy_base (array_list);
+  }
+
+  void
+  tree_array_list::copy_base (const tree_array_list& array_list,
+                              symbol_table::scope_id scope,
+                              symbol_table::context_id context)
+  {
+    for (const tree_argument_list* elt : array_list)
+      append (elt ? elt->dup (scope, context) : 0);
+
+    copy_base (*this);
+  }
+
+  tree_expression *
+  tree_array_list::dup (symbol_table::scope_id,
+                        symbol_table::context_id) const
+  {
+    panic_impossible ();
+    return 0;
+  }
+
+  void
+  tree_array_list::accept (tree_walker&)
+  {
+    panic_impossible ();
+  }
 }
-
-bool
-tree_array_list::all_elements_are_constant (void) const
-{
-  for (const tree_argument_list* elt : *this)
-    {
-      octave_quit ();
-
-      if (! elt->all_elements_are_constant ())
-        return false;
-    }
-
-  return true;
-}
-
-bool
-tree_array_list::has_magic_end (void) const
-{
-  for (const tree_argument_list* elt : *this)
-    {
-      octave_quit ();
-
-      if (elt && elt->has_magic_end ())
-        return true;
-    }
-
-  return false;
-}
-
-void
-tree_array_list::copy_base (const tree_array_list& array_list)
-{
-  tree_expression::copy_base (array_list);
-}
-
-void
-tree_array_list::copy_base (const tree_array_list& array_list,
-                            symbol_table::scope_id scope,
-                            symbol_table::context_id context)
-{
-  for (const tree_argument_list* elt : array_list)
-    append (elt ? elt->dup (scope, context) : 0);
-
-  copy_base (*this);
-}
-
-tree_expression *
-tree_array_list::dup (symbol_table::scope_id,
-                      symbol_table::context_id) const
-{
-  panic_impossible ();
-  return 0;
-}
-
-void
-tree_array_list::accept (tree_walker&)
-{
-  panic_impossible ();
-}
-

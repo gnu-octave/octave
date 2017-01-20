@@ -32,57 +32,59 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-const.h"
 #include "pt-walk.h"
 
-// We are likely to have a lot of tree_constant objects to allocate,
-// so make the grow_size large.
-
-void
-tree_constant::print (std::ostream& os, bool pr_as_read_syntax,
-                      bool pr_orig_text)
+namespace octave
 {
-  if (pr_orig_text && ! orig_text.empty ())
-    os << orig_text;
-  else
-    val.print (os, pr_as_read_syntax);
+  // We are likely to have a lot of tree_constant objects to allocate,
+  // so make the grow_size large.
+
+  void
+  tree_constant::print (std::ostream& os, bool pr_as_read_syntax,
+                        bool pr_orig_text)
+  {
+    if (pr_orig_text && ! orig_text.empty ())
+      os << orig_text;
+    else
+      val.print (os, pr_as_read_syntax);
+  }
+
+  void
+  tree_constant::print_raw (std::ostream& os, bool pr_as_read_syntax,
+                            bool pr_orig_text)
+  {
+    if (pr_orig_text && ! orig_text.empty ())
+      os << orig_text;
+    else
+      val.print_raw (os, pr_as_read_syntax);
+  }
+
+  octave_value_list
+  tree_constant::rvalue (int nargout)
+  {
+    octave_value_list retval;
+
+    if (nargout > 1)
+      error ("invalid number of output arguments for constant expression");
+
+    retval = rvalue1 (nargout);
+
+    return retval;
+  }
+
+  tree_expression *
+  tree_constant::dup (symbol_table::scope_id,
+                      symbol_table::context_id) const
+  {
+    tree_constant *new_tc
+      = new tree_constant (val, orig_text, line (), column ());
+
+    new_tc->copy_base (*this);
+
+    return new_tc;
+  }
+
+  void
+  tree_constant::accept (tree_walker& tw)
+  {
+    tw.visit_constant (*this);
+  }
 }
-
-void
-tree_constant::print_raw (std::ostream& os, bool pr_as_read_syntax,
-                          bool pr_orig_text)
-{
-  if (pr_orig_text && ! orig_text.empty ())
-    os << orig_text;
-  else
-    val.print_raw (os, pr_as_read_syntax);
-}
-
-octave_value_list
-tree_constant::rvalue (int nargout)
-{
-  octave_value_list retval;
-
-  if (nargout > 1)
-    error ("invalid number of output arguments for constant expression");
-
-  retval = rvalue1 (nargout);
-
-  return retval;
-}
-
-tree_expression *
-tree_constant::dup (symbol_table::scope_id,
-                    symbol_table::context_id) const
-{
-  tree_constant *new_tc
-    = new tree_constant (val, orig_text, line (), column ());
-
-  new_tc->copy_base (*this);
-
-  return new_tc;
-}
-
-void
-tree_constant::accept (tree_walker& tw)
-{
-  tw.visit_constant (*this);
-}
-

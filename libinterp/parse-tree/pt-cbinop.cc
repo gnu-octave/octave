@@ -32,53 +32,56 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-unop.h"
 #include "pt-walk.h"
 
-typedef tree_expression* tree_expression_ptr_t;
-
-octave_value_list
-tree_compound_binary_expression::rvalue (int nargout)
+namespace octave
 {
-  octave_value_list retval;
+  typedef tree_expression* tree_expression_ptr_t;
 
-  if (nargout > 1)
-    error ("binary operator '%s': invalid number of output arguments",
-           oper ().c_str ());
+  octave_value_list
+  tree_compound_binary_expression::rvalue (int nargout)
+  {
+    octave_value_list retval;
 
-  retval = rvalue1 (nargout);
+    if (nargout > 1)
+      error ("binary operator '%s': invalid number of output arguments",
+             oper ().c_str ());
 
-  return retval;
-}
+    retval = rvalue1 (nargout);
 
-octave_value
-tree_compound_binary_expression::rvalue1 (int)
-{
-  octave_value retval;
+    return retval;
+  }
 
-  if (op_lhs)
-    {
-      octave_value a = op_lhs->rvalue1 ();
+  octave_value
+  tree_compound_binary_expression::rvalue1 (int)
+  {
+    octave_value retval;
 
-      if (a.is_defined () && op_rhs)
-        {
-          octave_value b = op_rhs->rvalue1 ();
+    if (op_lhs)
+      {
+        octave_value a = op_lhs->rvalue1 ();
 
-          if (b.is_defined ())
-            retval = ::do_binary_op (etype, a, b);
-        }
-    }
+        if (a.is_defined () && op_rhs)
+          {
+            octave_value b = op_rhs->rvalue1 ();
 
-  return retval;
+            if (b.is_defined ())
+              retval = ::do_binary_op (etype, a, b);
+          }
+      }
+
+    return retval;
+  }
 }
 
 // If a tree expression is a transpose or hermitian transpose, return
 // the argument and corresponding operator.
 
 static octave_value::unary_op
-strip_trans_herm (tree_expression_ptr_t& exp)
+strip_trans_herm (octave::tree_expression_ptr_t& exp)
 {
   if (exp->is_unary_expression ())
     {
-      tree_unary_expression *uexp =
-        dynamic_cast<tree_unary_expression *> (exp);
+      octave::tree_unary_expression *uexp =
+        dynamic_cast<octave::tree_unary_expression *> (exp);
 
       octave_value::unary_op op = uexp->op_type ();
 
@@ -95,12 +98,12 @@ strip_trans_herm (tree_expression_ptr_t& exp)
 }
 
 static octave_value::unary_op
-strip_not (tree_expression_ptr_t& exp)
+strip_not (octave::tree_expression_ptr_t& exp)
 {
   if (exp->is_unary_expression ())
     {
-      tree_unary_expression *uexp =
-        dynamic_cast<tree_unary_expression *> (exp);
+      octave::tree_unary_expression *uexp =
+        dynamic_cast<octave::tree_unary_expression *> (exp);
 
       octave_value::unary_op op = uexp->op_type ();
 
@@ -119,7 +122,8 @@ strip_not (tree_expression_ptr_t& exp)
 // or mul_herm.
 
 static octave_value::compound_binary_op
-simplify_mul_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b)
+simplify_mul_op (octave::tree_expression_ptr_t& a,
+                 octave::tree_expression_ptr_t& b)
 {
   octave_value::compound_binary_op retop
     = octave_value::unknown_compound_binary_op;
@@ -146,7 +150,8 @@ simplify_mul_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b)
 // Possibly convert left division to trans_ldiv or herm_ldiv.
 
 static octave_value::compound_binary_op
-simplify_ldiv_op (tree_expression_ptr_t& a, tree_expression_ptr_t&)
+simplify_ldiv_op (octave::tree_expression_ptr_t& a,
+                  octave::tree_expression_ptr_t&)
 {
   octave_value::compound_binary_op retop
     = octave_value::unknown_compound_binary_op;
@@ -164,7 +169,8 @@ simplify_ldiv_op (tree_expression_ptr_t& a, tree_expression_ptr_t&)
 // Possibly contract and/or with negation.
 
 static octave_value::compound_binary_op
-simplify_and_or_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b,
+simplify_and_or_op (octave::tree_expression_ptr_t& a,
+                    octave::tree_expression_ptr_t& b,
                     octave_value::binary_op op)
 {
   octave_value::compound_binary_op retop
@@ -195,40 +201,42 @@ simplify_and_or_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b,
   return retop;
 }
 
-tree_binary_expression *
-maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                  int l, int c, octave_value::binary_op t)
+namespace octave
 {
-  tree_expression *ca = a;
-  tree_expression *cb = b;
-  octave_value::compound_binary_op ct;
+  tree_binary_expression *
+  maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
+                                    int l, int c, octave_value::binary_op t)
+  {
+    tree_expression *ca = a;
+    tree_expression *cb = b;
+    octave_value::compound_binary_op ct;
 
-  switch (t)
-    {
-    case octave_value::op_mul:
-      ct = simplify_mul_op (ca, cb);
-      break;
+    switch (t)
+      {
+      case octave_value::op_mul:
+        ct = simplify_mul_op (ca, cb);
+        break;
 
-    case octave_value::op_ldiv:
-      ct = simplify_ldiv_op (ca, cb);
-      break;
+      case octave_value::op_ldiv:
+        ct = simplify_ldiv_op (ca, cb);
+        break;
 
-    case octave_value::op_el_and:
-    case octave_value::op_el_or:
-      ct = simplify_and_or_op (ca, cb, t);
-      break;
+      case octave_value::op_el_and:
+      case octave_value::op_el_or:
+        ct = simplify_and_or_op (ca, cb, t);
+        break;
 
-    default:
-      ct = octave_value::unknown_compound_binary_op;
-      break;
-    }
+      default:
+        ct = octave_value::unknown_compound_binary_op;
+        break;
+      }
 
-  tree_binary_expression *ret = (ct == octave_value::unknown_compound_binary_op)
-                                ? new tree_binary_expression (a, b, l, c, t)
-                                : new tree_compound_binary_expression (a, b, l,
-                                                                       c, t, ca,
-                                                                       cb, ct);
+    tree_binary_expression *ret = (ct == octave_value::unknown_compound_binary_op)
+      ? new tree_binary_expression (a, b, l, c, t)
+      : new tree_compound_binary_expression (a, b, l,
+                                             c, t, ca,
+                                             cb, ct);
 
-  return ret;
+    return ret;
+  }
 }
-

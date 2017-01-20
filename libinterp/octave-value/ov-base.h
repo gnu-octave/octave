@@ -56,8 +56,6 @@ class octave_fcn_inline;
 class octave_value_list;
 class octave_lvalue;
 
-class tree_walker;
-
 enum builtin_type_t
 {
   btyp_double,

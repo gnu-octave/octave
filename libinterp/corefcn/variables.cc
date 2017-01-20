@@ -161,7 +161,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
       int parse_status;
 
-      eval_string (cmd, true, parse_status, 0);
+      octave::eval_string (cmd, true, parse_status, 0);
 
       if (parse_status != 0)
         error ("%s: '%s' is not valid as a function",
@@ -277,7 +277,7 @@ generate_struct_completions (const std::string& text,
 
           try
             {
-              octave_value tmp = eval_string (prefix, true, parse_status);
+              octave_value tmp = octave::eval_string (prefix, true, parse_status);
 
               frame.run ();
 
@@ -423,7 +423,7 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (search_any || search_file || search_dir)
     {
-      std::string file_name = lookup_autoload (name);
+      std::string file_name = octave::lookup_autoload (name);
 
       if (file_name.empty ())
         file_name = load_path::find_fcn (name);
@@ -1667,7 +1667,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
           frame.add_fcn (symbol_table::clear_variables);
 
-          feval ("load", octave_value (nm), 0);
+          octave::feval ("load", octave_value (nm), 0);
 
           std::string newmsg = std::string ("Variables in the file ")
                                + nm + ":\n\n";
@@ -1752,7 +1752,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
                           int parse_status;
 
                           octave_value expr_val
-                            = eval_string (pat, true, parse_status);
+                            = octave::eval_string (pat, true, parse_status);
 
                           symbol_stats.append (sr, pat, expr_val);
                         }
@@ -1956,7 +1956,7 @@ bind_ans (const octave_value& val, bool print)
               octave_value_list args = ovl (val);
               args.stash_name_tags (string_vector (ans));
 
-              feval ("display", args);
+              octave::feval ("display", args);
             }
         }
     }
@@ -1969,7 +1969,7 @@ bind_internal_variable (const std::string& fname, const octave_value& val)
 
   args(0) = val;
 
-  feval (fname, args, 0);
+  octave::feval (fname, args, 0);
 }
 
 void
@@ -2640,7 +2640,7 @@ void maybe_missing_function_hook (const std::string& name)
           Vmissing_function_hook.clear ();
 
           // Call.
-          feval (func_name, octave_value (name));
+          octave::feval (func_name, octave_value (name));
         }
     }
 }

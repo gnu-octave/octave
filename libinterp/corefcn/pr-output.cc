@@ -3652,7 +3652,7 @@ myobj = myclass (@dots{})
 
   // Use feval so that dispatch will also work for disp.
 
-  feval ("disp", ovl (value));
+  octave::feval ("disp", ovl (value));
 
   if (print_newlines)
     octave_stdout << std::endl;

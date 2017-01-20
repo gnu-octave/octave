@@ -298,7 +298,7 @@ octave_class::size (void)
       count++;
       octave_value_list args (1, octave_value (this));
 
-      octave_value_list lv = feval (meth.function_value (), args, 1);
+      octave_value_list lv = octave::feval (meth.function_value (), args, 1);
       if (lv.length () <= 0
           || ! lv(0).is_matrix_type () || ! lv(0).dims ().is_vector ())
         error ("@%s/size: invalid return value", class_name ().c_str ());
@@ -341,7 +341,7 @@ octave_class::numel (const octave_value_list& idx)
       for (octave_idx_type i = 0; i < idx.length (); i++)
         args(i+1) = idx(i);
 
-      octave_value_list lv = feval (meth.function_value (), args, 1);
+      octave_value_list lv = octave::feval (meth.function_value (), args, 1);
       if (lv.length () != 1 || ! lv(0).is_scalar_type ())
         error ("@%s/numel: invalid return value", cn.c_str ());
 
@@ -452,7 +452,7 @@ octave_class::subsref (const std::string& type,
               true_nargout = numel (tmp);
             }
 
-          retval = feval (meth.function_value (), args, true_nargout);
+          retval = octave::feval (meth.function_value (), args, true_nargout);
 
           // Since we're handling subsref, return the list in the first value
           // if it has more than one element, to be able to pass through
@@ -561,10 +561,10 @@ octave_class::subsasgn_common (const octave_value& obj,
               frame.protect_var (obsolete_copies);
               obsolete_copies = 2;
 
-              tmp = feval (meth.function_value (), args);
+              tmp = octave::feval (meth.function_value (), args);
             }
           else
-            tmp = feval (meth.function_value (), args);
+            tmp = octave::feval (meth.function_value (), args);
 
           // FIXME: Should the subsasgn method be able to return
           //        more than one value?
@@ -804,7 +804,7 @@ octave_class::index_vector (bool require_integers) const
   octave_value_list args;
   args(0) = octave_value (new octave_class (map, c_name, parent_list));
 
-  octave_value_list tmp = feval (meth.function_value (), args, 1);
+  octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
   if (tmp(0).is_object ())
     error ("subsindex function must return a valid index vector");
@@ -847,7 +847,7 @@ octave_class::is_true (void) const
     {
       octave_value in = new octave_class (*this);
 
-      octave_value_list tmp = feval (meth.function_value (), in, 1);
+      octave_value_list tmp = octave::feval (meth.function_value (), in, 1);
       retval = tmp(0).is_true ();
     }
 
@@ -965,7 +965,7 @@ octave_class::string_vector_value (bool pad) const
   octave_value_list args;
   args(0) = octave_value (new octave_class (map, c_name, parent_list));
 
-  octave_value_list tmp = feval (meth.function_value (), args, 1);
+  octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
   if (tmp.length () >= 1)
     {
@@ -1152,7 +1152,7 @@ octave_class::save_ascii (std::ostream& os)
   if (load_path::find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = feval ("saveobj", in, 1);
+      octave_value_list tmp = octave::feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1225,7 +1225,7 @@ octave_class::load_ascii (std::istream& is)
           != "")
         {
           octave_value in = new octave_class (*this);
-          octave_value_list tmp = feval ("loadobj", in, 1);
+          octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
           map = tmp(0).map_value ();
         }
@@ -1253,7 +1253,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   if (load_path::find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = feval ("saveobj", in, 1);
+      octave_value_list tmp = octave::feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1340,7 +1340,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (load_path::find_method (c_name, "loadobj") != "")
             {
               octave_value in = new octave_class (*this);
-              octave_value_list tmp = feval ("loadobj", in, 1);
+              octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
               map = tmp(0).map_value ();
             }
@@ -1417,7 +1417,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (load_path::find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = feval ("saveobj", in, 1);
+      octave_value_list tmp = octave::feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1585,7 +1585,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (load_path::find_method (c_name, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
-          octave_value_list tmp = feval ("loadobj", in, 1);
+          octave_value_list tmp = octave::feval ("loadobj", in, 1);
 
           map = tmp(0).map_value ();
           retval = true;

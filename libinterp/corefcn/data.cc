@@ -1789,7 +1789,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               first_elem_is_struct = args(i).is_map ();
             }
           else
-            result_type = get_concat_class (result_type, args(i).class_name ());
+            result_type = octave::get_concat_class (result_type, args(i).class_name ());
 
           if (all_strings_p && ! args(i).is_string ())
             all_strings_p = false;
@@ -1865,7 +1865,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             warn_implicit_conversion ("Octave:num-to-str",
                                       "numeric", result_type);
           else
-            maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+            octave::maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
           charNDArray result = do_single_type_concat<charNDArray> (args, dim);
 

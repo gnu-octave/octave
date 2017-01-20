@@ -40,46 +40,50 @@ along with Octave; see the file COPYING.  If not, see
 class octave_comment_list;
 class octave_function;
 class octave_user_function;
-class tree;
-class tree_anon_fcn_handle;
-class tree_argument_list;
-class tree_array_list;
-class tree_cell;
-class tree_classdef;
-class tree_classdef_attribute_list;
-class tree_classdef_body;
-class tree_classdef_enum_block;
-class tree_classdef_enum_list;
-class tree_classdef_events_block;
-class tree_classdef_events_list;
-class tree_classdef_methods_block;
-class tree_classdef_methods_list;
-class tree_classdef_properties_block;
-class tree_classdef_property_list;
-class tree_classdef_superclass_list;
-class tree_colon_expression;
-class tree_command;
-class tree_constant;
-class tree_decl_command;
-class tree_decl_init_list;
-class tree_expression;
-class tree_fcn_handle;
-class tree_funcall;
-class tree_function_def;
-class tree_identifier;
-class tree_if_clause;
-class tree_if_command;
-class tree_if_command_list;
-class tree_index_expression;
-class tree_matrix;
-class tree_matrix;
-class tree_parameter_list;
-class tree_statement;
-class tree_statement_list;
-class tree_statement_listtree_statement;
-class tree_switch_case;
-class tree_switch_case_list;
-class tree_switch_command;
+
+namespace octave
+{
+  class tree;
+  class tree_anon_fcn_handle;
+  class tree_argument_list;
+  class tree_array_list;
+  class tree_cell;
+  class tree_classdef;
+  class tree_classdef_attribute_list;
+  class tree_classdef_body;
+  class tree_classdef_enum_block;
+  class tree_classdef_enum_list;
+  class tree_classdef_events_block;
+  class tree_classdef_events_list;
+  class tree_classdef_methods_block;
+  class tree_classdef_methods_list;
+  class tree_classdef_properties_block;
+  class tree_classdef_property_list;
+  class tree_classdef_superclass_list;
+  class tree_colon_expression;
+  class tree_command;
+  class tree_constant;
+  class tree_decl_command;
+  class tree_decl_init_list;
+  class tree_expression;
+  class tree_fcn_handle;
+  class tree_funcall;
+  class tree_function_def;
+  class tree_identifier;
+  class tree_if_clause;
+  class tree_if_command;
+  class tree_if_command_list;
+  class tree_index_expression;
+  class tree_matrix;
+  class tree_matrix;
+  class tree_parameter_list;
+  class tree_statement;
+  class tree_statement_list;
+  class tree_statement_listtree_statement;
+  class tree_switch_case;
+  class tree_switch_case_list;
+  class tree_switch_command;
+}
 
 #include "ovl.h"
 
@@ -88,55 +92,6 @@ extern int octave_debug;
 
 // TRUE means we printed messages about reading startup files.
 extern bool reading_startup_message_printed;
-
-extern OCTINTERP_API std::string
-get_help_from_file (const std::string& nm, bool& symbol_found,
-                    std::string& file);
-
-extern OCTINTERP_API std::string
-get_help_from_file (const std::string& nm, bool& symbol_found);
-
-extern OCTINTERP_API std::string lookup_autoload (const std::string& nm);
-
-extern OCTINTERP_API string_vector autoloaded_functions (void);
-
-extern OCTINTERP_API string_vector
-reverse_lookup_autoload (const std::string& nm);
-
-extern OCTINTERP_API octave_function *
-load_fcn_from_file (const std::string& file_name,
-                    const std::string& dir_name = "",
-                    const std::string& dispatch_type = "",
-                    const std::string& package_name = "",
-                    const std::string& fcn_name = "",
-                    bool autoload = false);
-
-extern OCTINTERP_API void
-source_file (const std::string& file_name,
-             const std::string& context = "",
-             bool verbose = false, bool require_file = true,
-             const std::string& warn_for = "");
-
-extern OCTINTERP_API octave_value_list
-feval (const std::string& name,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0);
-
-extern OCTINTERP_API octave_value_list
-feval (octave_function *fcn,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0);
-
-extern OCTINTERP_API octave_value_list
-feval (const octave_value_list& args, int nargout = 0);
-
-extern OCTINTERP_API octave_value_list
-eval_string (const std::string&, bool silent, int& parse_status, int nargout);
-
-extern OCTINTERP_API octave_value
-eval_string (const std::string&, bool silent, int& parse_status);
-
-extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
 namespace octave
 {
@@ -563,7 +518,167 @@ namespace octave
 
     int run (const std::string& input, bool eof);
   };
+
+  extern OCTINTERP_API std::string
+  get_help_from_file (const std::string& nm, bool& symbol_found,
+                      std::string& file);
+
+  extern OCTINTERP_API std::string
+  get_help_from_file (const std::string& nm, bool& symbol_found);
+
+  extern OCTINTERP_API
+  std::string lookup_autoload (const std::string& nm);
+
+  extern OCTINTERP_API string_vector
+  autoloaded_functions (void);
+
+  extern OCTINTERP_API string_vector
+  reverse_lookup_autoload (const std::string& nm);
+
+  extern OCTINTERP_API octave_function *
+  load_fcn_from_file (const std::string& file_name,
+                      const std::string& dir_name = "",
+                      const std::string& dispatch_type = "",
+                      const std::string& package_name = "",
+                      const std::string& fcn_name = "",
+                      bool autoload = false);
+
+  extern OCTINTERP_API void
+  source_file (const std::string& file_name,
+               const std::string& context = "",
+               bool verbose = false, bool require_file = true,
+               const std::string& warn_for = "");
+
+  extern OCTINTERP_API octave_value_list
+  feval (const std::string& name,
+         const octave_value_list& args = octave_value_list (),
+         int nargout = 0);
+
+  extern OCTINTERP_API octave_value_list
+  feval (octave_function *fcn,
+         const octave_value_list& args = octave_value_list (),
+         int nargout = 0);
+
+  extern OCTINTERP_API octave_value_list
+  feval (const octave_value_list& args, int nargout = 0);
+
+  extern OCTINTERP_API octave_value_list
+  eval_string (const std::string&, bool silent, int& parse_status, int nargout);
+
+  extern OCTINTERP_API octave_value
+  eval_string (const std::string&, bool silent, int& parse_status);
+
+  extern OCTINTERP_API void
+  cleanup_statement_list (octave::tree_statement_list **lst);
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::get_help_from_file' instead")
+static inline std::string
+get_help_from_file (const std::string& nm, bool& symbol_found,
+                    std::string& file)
+{
+  return octave::get_help_from_file (nm, symbol_found, file);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::get_help_from_file' instead")
+static inline std::string
+get_help_from_file (const std::string& nm, bool& symbol_found)
+{
+  return octave::get_help_from_file (nm, symbol_found);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::lookup_autoload' instead")
+static inline std::string
+lookup_autoload (const std::string& nm)
+{
+  return octave::lookup_autoload (nm);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::autoloaded_functions' instead")
+static inline string_vector
+autoloaded_functions (void)
+{
+  return octave::autoloaded_functions ();
+}
+
+OCTAVE_DEPRECATED ("use 'octave::reverse_lookup_autoload' instead")
+static inline string_vector
+reverse_lookup_autoload (const std::string& nm)
+{
+  return octave::reverse_lookup_autoload (nm);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::load_fcn_from_file' instead")
+static inline octave_function *
+load_fcn_from_file (const std::string& file_name,
+                    const std::string& dir_name = "",
+                    const std::string& dispatch_type = "",
+                    const std::string& package_name = "",
+                    const std::string& fcn_name = "",
+                    bool autoload = false)
+{
+  return octave::load_fcn_from_file (file_name, dir_name, dispatch_type,
+                                     package_name, fcn_name, autoload);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::source_file' instead")
+static inline void
+source_file (const std::string& file_name,
+             const std::string& context = "",
+             bool verbose = false, bool require_file = true,
+             const std::string& warn_for = "")
+{
+  octave::source_file (file_name, context, verbose, require_file, warn_for);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::feval' instead")
+static inline octave_value_list
+feval (const std::string& name,
+       const octave_value_list& args = octave_value_list (),
+       int nargout = 0)
+{
+  return octave::feval (name, args, nargout);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::feval' instead")
+static inline octave_value_list
+feval (octave_function *fcn,
+       const octave_value_list& args = octave_value_list (),
+       int nargout = 0)
+{
+  return octave::feval (fcn, args, nargout);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::feval' instead")
+static inline octave_value_list
+feval (const octave_value_list& args, int nargout = 0)
+{
+  return octave::feval (args, nargout);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::eval_string' instead")
+static inline octave_value_list
+eval_string (const std::string& str, bool silent, int& parse_status, int nargout)
+{
+  return octave::eval_string (str, silent, parse_status, nargout);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::eval_string' instead")
+static inline octave_value
+eval_string (const std::string& str, bool silent, int& parse_status)
+{
+  return octave::eval_string (str, silent, parse_status);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::cleanup_statement_list' instead")
+static inline void
+cleanup_statement_list (octave::tree_statement_list **lst)
+{
+  octave::cleanup_statement_list (lst);
 }
 
 #endif
 
+#endif

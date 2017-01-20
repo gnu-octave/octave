@@ -42,113 +42,115 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-walk.h"
 #include "unwind-prot.h"
 
-// While.
-
-tree_while_command::~tree_while_command (void)
+namespace octave
 {
-  delete expr;
-  delete list;
-  delete lead_comm;
-  delete trail_comm;
+  // While.
+
+  tree_while_command::~tree_while_command (void)
+  {
+    delete expr;
+    delete list;
+    delete lead_comm;
+    delete trail_comm;
 #if defined (HAVE_LLVM)
-  delete compiled;
+    delete compiled;
 #endif
-}
+  }
 
-tree_command *
-tree_while_command::dup (symbol_table::scope_id scope,
-                         symbol_table::context_id context) const
-{
-  return new tree_while_command (expr ? expr->dup (scope, context) : 0,
-                                 list ? list->dup (scope, context) : 0,
-                                 lead_comm ? lead_comm->dup () : 0,
-                                 trail_comm ? trail_comm->dup (): 0,
-                                 line (), column ());
-}
+  tree_command *
+  tree_while_command::dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const
+  {
+    return new tree_while_command (expr ? expr->dup (scope, context) : 0,
+                                   list ? list->dup (scope, context) : 0,
+                                   lead_comm ? lead_comm->dup () : 0,
+                                   trail_comm ? trail_comm->dup (): 0,
+                                   line (), column ());
+  }
 
-void
-tree_while_command::accept (tree_walker& tw)
-{
-  tw.visit_while_command (*this);
-}
+  void
+  tree_while_command::accept (tree_walker& tw)
+  {
+    tw.visit_while_command (*this);
+  }
 
-// Do-Until
+  // Do-Until
 
-tree_command *
-tree_do_until_command::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
-{
-  return new tree_do_until_command (expr ? expr->dup (scope, context) : 0,
-                                    list ? list->dup (scope, context) : 0,
-                                    lead_comm ? lead_comm->dup () : 0,
-                                    trail_comm ? trail_comm->dup (): 0,
-                                    line (), column ());
-}
-
-void
-tree_do_until_command::accept (tree_walker& tw)
-{
-  tw.visit_do_until_command (*this);
-}
-
-// For.
-
-tree_simple_for_command::~tree_simple_for_command (void)
-{
-  delete lhs;
-  delete expr;
-  delete maxproc;
-  delete list;
-  delete lead_comm;
-  delete trail_comm;
-#if defined (HAVE_LLVM)
-  delete compiled;
-#endif
-}
-
-tree_command *
-tree_simple_for_command::dup (symbol_table::scope_id scope,
+  tree_command *
+  tree_do_until_command::dup (symbol_table::scope_id scope,
                               symbol_table::context_id context) const
-{
-  return new tree_simple_for_command
-    (parallel, lhs ? lhs->dup (scope, context) : 0,
-     expr ? expr->dup (scope, context) : 0,
-     maxproc ? maxproc->dup (scope, context) : 0,
-     list ? list->dup (scope, context) : 0,
-     lead_comm ? lead_comm->dup () : 0,
-     trail_comm ? trail_comm->dup () : 0, line (), column ());
-}
+  {
+    return new tree_do_until_command (expr ? expr->dup (scope, context) : 0,
+                                      list ? list->dup (scope, context) : 0,
+                                      lead_comm ? lead_comm->dup () : 0,
+                                      trail_comm ? trail_comm->dup (): 0,
+                                      line (), column ());
+  }
 
-void
-tree_simple_for_command::accept (tree_walker& tw)
-{
-  tw.visit_simple_for_command (*this);
-}
+  void
+  tree_do_until_command::accept (tree_walker& tw)
+  {
+    tw.visit_do_until_command (*this);
+  }
 
-tree_complex_for_command::~tree_complex_for_command (void)
-{
-  delete lhs;
-  delete expr;
-  delete list;
-  delete lead_comm;
-  delete trail_comm;
-}
+  // For.
 
-tree_command *
-tree_complex_for_command::dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const
-{
-  return new tree_complex_for_command (lhs ? lhs->dup (scope, context) : 0,
-                                       expr ? expr->dup (scope, context) : 0,
-                                       list ? list->dup (scope, context) : 0,
-                                       lead_comm ? lead_comm->dup () : 0,
-                                       trail_comm ? trail_comm->dup () : 0,
-                                       line (), column ());
-}
+  tree_simple_for_command::~tree_simple_for_command (void)
+  {
+    delete lhs;
+    delete expr;
+    delete maxproc;
+    delete list;
+    delete lead_comm;
+    delete trail_comm;
+#if defined (HAVE_LLVM)
+    delete compiled;
+#endif
+  }
 
-void
-tree_complex_for_command::accept (tree_walker& tw)
-{
-  tw.visit_complex_for_command (*this);
-}
+  tree_command *
+  tree_simple_for_command::dup (symbol_table::scope_id scope,
+                                symbol_table::context_id context) const
+  {
+    return new tree_simple_for_command
+      (parallel, lhs ? lhs->dup (scope, context) : 0,
+       expr ? expr->dup (scope, context) : 0,
+       maxproc ? maxproc->dup (scope, context) : 0,
+       list ? list->dup (scope, context) : 0,
+       lead_comm ? lead_comm->dup () : 0,
+       trail_comm ? trail_comm->dup () : 0, line (), column ());
+  }
 
+  void
+  tree_simple_for_command::accept (tree_walker& tw)
+  {
+    tw.visit_simple_for_command (*this);
+  }
+
+  tree_complex_for_command::~tree_complex_for_command (void)
+  {
+    delete lhs;
+    delete expr;
+    delete list;
+    delete lead_comm;
+    delete trail_comm;
+  }
+
+  tree_command *
+  tree_complex_for_command::dup (symbol_table::scope_id scope,
+                                 symbol_table::context_id context) const
+  {
+    return new tree_complex_for_command (lhs ? lhs->dup (scope, context) : 0,
+                                         expr ? expr->dup (scope, context) : 0,
+                                         list ? list->dup (scope, context) : 0,
+                                         lead_comm ? lead_comm->dup () : 0,
+                                         trail_comm ? trail_comm->dup () : 0,
+                                         line (), column ());
+  }
+
+  void
+  tree_complex_for_command::accept (tree_walker& tw)
+  {
+    tw.visit_complex_for_command (*this);
+  }
+}

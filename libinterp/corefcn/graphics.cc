@@ -9740,14 +9740,14 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
           try
             {
-              eval_string (s, false, status, 0);
+              octave::eval_string (s, false, status, 0);
             }
           catch (octave::execution_exception&)
             {
               std::cerr << "execution error in graphics callback function"
                         << std::endl;
-              feval ("lasterr",
-                     ovl ("execution error in graphics callback function"));
+              octave::feval ("lasterr",
+                             ovl ("execution error in graphics callback function"));
               recover_from_exception ();
             }
         }
@@ -9773,14 +9773,14 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       if (fcn)
         try
           {
-            feval (fcn, args);
+            octave::feval (fcn, args);
           }
         catch (octave::execution_exception&)
           {
             std::cerr << "execution error in graphics callback function"
                       << std::endl;
-            feval ("lasterr",
-                   ovl ("execution error in graphics callback function"));
+            octave::feval ("lasterr",
+                           ovl ("execution error in graphics callback function"));
             recover_from_exception ();
           }
 
@@ -11036,7 +11036,7 @@ gtk_manager::do_get_toolkit (void) const
 
       octave_value_list args;
       args(0) = dtk;
-      feval ("graphics_toolkit", args);
+      octave::feval ("graphics_toolkit", args);
 
       pl = loaded_toolkits.find (dtk);
 
@@ -11550,7 +11550,7 @@ compare_property_values (const octave_value& ov1, const octave_value& ov2)
   args(0) = ov1;
   args(1) = ov2;
 
-  octave_value_list result = feval ("isequal", args, 1);
+  octave_value_list result = octave::feval ("isequal", args, 1);
 
   if (result.length () > 0)
     return result(0).bool_value ();

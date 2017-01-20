@@ -61,7 +61,7 @@ print_usage (void)
 void
 print_usage (const std::string& name)
 {
-  feval ("print_usage", octave_value (name), 0);
+  octave::feval ("print_usage", octave_value (name), 0);
 }
 
 void

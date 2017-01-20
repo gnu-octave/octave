@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class tree_walker;
-
 class octave_value;
 class octave_value_list;
 class octave_lvalue;
@@ -37,50 +35,60 @@ class octave_lvalue;
 #include "pt-binop.h"
 #include "symtab.h"
 
-// Binary expressions that can be reduced to compound operations
-
-class
-tree_compound_binary_expression : public tree_binary_expression
+namespace octave
 {
-public:
+  class tree_walker;
 
-  tree_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                   int l, int c,
-                                   octave_value::binary_op t,
-                                   tree_expression *ca, tree_expression *cb,
-                                   octave_value::compound_binary_op ct)
-    : tree_binary_expression (a, b, l, c, t), op_lhs (ca), op_rhs (cb),
-      etype (ct) { }
+  // Binary expressions that can be reduced to compound operations
 
-  octave_value::compound_binary_op cop_type (void) const { return etype; }
+  class tree_compound_binary_expression : public tree_binary_expression
+  {
+  public:
 
-  bool rvalue_ok (void) const { return true; }
+    tree_compound_binary_expression (tree_expression *a, tree_expression *b,
+                                     int l, int c,
+                                     octave_value::binary_op t,
+                                     tree_expression *ca, tree_expression *cb,
+                                     octave_value::compound_binary_op ct)
+      : tree_binary_expression (a, b, l, c, t), op_lhs (ca), op_rhs (cb),
+        etype (ct) { }
 
-  octave_value rvalue1 (int nargout = 1);
+    octave_value::compound_binary_op cop_type (void) const { return etype; }
 
-  octave_value_list rvalue (int nargout);
+    bool rvalue_ok (void) const { return true; }
 
-private:
+    octave_value rvalue1 (int nargout = 1);
 
-  tree_expression *op_lhs;
-  tree_expression *op_rhs;
-  octave_value::compound_binary_op etype;
+    octave_value_list rvalue (int nargout);
 
-  // No copying!
+  private:
 
-  tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
+    tree_expression *op_lhs;
+    tree_expression *op_rhs;
+    octave_value::compound_binary_op etype;
 
-  tree_compound_binary_expression& operator =
+    // No copying!
+
+    tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
+
+    tree_compound_binary_expression& operator =
     (const tree_compound_binary_expression&) = delete;
-};
+  };
 
-// a "virtual constructor"
+  // a "virtual constructor"
 
-tree_binary_expression *
-maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                  int l = -1, int c = -1,
-                                  octave_value::binary_op t
-                                  = octave_value::unknown_binary_op);
+  tree_binary_expression *
+  maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
+                                    int l = -1, int c = -1,
+                                    octave_value::binary_op t
+                                    = octave_value::unknown_binary_op);
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_compound_binary_expression' instead")
+typedef octave::tree_compound_binary_expression tree_compound_binary_expression;
 
 #endif
 
+#endif

@@ -36,124 +36,134 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-class tree_walker;
-
 #include "ov.h"
 #include "ov-usr-fcn.h"
 #include "symtab.h"
 
-class
-tree_fcn_handle : public tree_expression
+namespace octave
 {
-public:
+  class tree_walker;
 
-  tree_fcn_handle (int l = -1, int c = -1)
-    : tree_expression (l, c), nm () { }
-
-  tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
-    : tree_expression (l, c), nm (n) { }
-
-  // No copying!
-
-  tree_fcn_handle (const tree_fcn_handle&) = delete;
-
-  tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
-
-  ~tree_fcn_handle (void) = default;
-
-  bool has_magic_end (void) const { return false; }
-
-  void print (std::ostream& os, bool pr_as_read_syntax = false,
-              bool pr_orig_txt = true);
-
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
-                  bool pr_orig_txt = true);
-
-  std::string name (void) const { return nm; }
-
-  bool rvalue_ok (void) const { return true; }
-
-  octave_value rvalue1 (int nargout = 1);
-
-  octave_value_list rvalue (int nargout);
-
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
-  void accept (tree_walker& tw);
-
-private:
-
-  // The name of this function handle.
-  std::string nm;
-};
-
-class
-tree_anon_fcn_handle : public tree_expression
-{
-public:
-
-  tree_anon_fcn_handle (int l = -1, int c = -1)
-    : tree_expression (l, c), fcn (0), file_name () { }
-
-  tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
-                        tree_statement_list *cl, symbol_table::scope_id sid,
-                        int l = -1, int c = -1)
-    : tree_expression (l, c),
-      fcn (new octave_user_function (sid, pl, rl, cl)),
-      file_name () { }
-
-  // No copying!
-
-  tree_anon_fcn_handle (const tree_anon_fcn_handle&) = delete;
-
-  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
-
-  ~tree_anon_fcn_handle (void) { delete fcn; }
-
-  bool has_magic_end (void) const { return false; }
-
-  bool rvalue_ok (void) const { return true; }
-
-  octave_value rvalue1 (int nargout = 1);
-
-  octave_value_list rvalue (int nargout);
-
-  tree_parameter_list *parameter_list (void) const
+  class tree_fcn_handle : public tree_expression
   {
-    return fcn ? fcn->parameter_list () : 0;
-  }
+  public:
 
-  tree_parameter_list *return_list (void) const
+    tree_fcn_handle (int l = -1, int c = -1)
+      : tree_expression (l, c), nm () { }
+
+    tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
+      : tree_expression (l, c), nm (n) { }
+
+    // No copying!
+
+    tree_fcn_handle (const tree_fcn_handle&) = delete;
+
+    tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
+
+    ~tree_fcn_handle (void) = default;
+
+    bool has_magic_end (void) const { return false; }
+
+    void print (std::ostream& os, bool pr_as_read_syntax = false,
+                bool pr_orig_txt = true);
+
+    void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
+                    bool pr_orig_txt = true);
+
+    std::string name (void) const { return nm; }
+
+    bool rvalue_ok (void) const { return true; }
+
+    octave_value rvalue1 (int nargout = 1);
+
+    octave_value_list rvalue (int nargout);
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+  private:
+
+    // The name of this function handle.
+    std::string nm;
+  };
+
+  class tree_anon_fcn_handle : public tree_expression
   {
-    return fcn ? fcn->return_list () : 0;
-  }
+  public:
 
-  tree_statement_list *body (void) const
-  {
-    return fcn ? fcn->body () : 0;
-  }
+    tree_anon_fcn_handle (int l = -1, int c = -1)
+      : tree_expression (l, c), fcn (0), file_name () { }
 
-  symbol_table::scope_id scope (void) const
-  {
-    return fcn ? fcn->scope () : -1;
-  }
+    tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
+                          tree_statement_list *cl, symbol_table::scope_id sid,
+                          int l = -1, int c = -1)
+      : tree_expression (l, c),
+        fcn (new octave_user_function (sid, pl, rl, cl)),
+        file_name () { }
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    // No copying!
 
-  void accept (tree_walker& tw);
+    tree_anon_fcn_handle (const tree_anon_fcn_handle&) = delete;
 
-  void stash_file_name (const std::string& file) { file_name = file; }
+    tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 
-private:
+    ~tree_anon_fcn_handle (void) { delete fcn; }
 
-  // The function.
-  octave_user_function *fcn;
+    bool has_magic_end (void) const { return false; }
 
-  // Filename where the handle was defined.
-  std::string file_name;
-};
+    bool rvalue_ok (void) const { return true; }
+
+    octave_value rvalue1 (int nargout = 1);
+
+    octave_value_list rvalue (int nargout);
+
+    tree_parameter_list *parameter_list (void) const
+    {
+      return fcn ? fcn->parameter_list () : 0;
+    }
+
+    tree_parameter_list *return_list (void) const
+    {
+      return fcn ? fcn->return_list () : 0;
+    }
+
+    tree_statement_list *body (void) const
+    {
+      return fcn ? fcn->body () : 0;
+    }
+
+    symbol_table::scope_id scope (void) const
+    {
+      return fcn ? fcn->scope () : -1;
+    }
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+    void stash_file_name (const std::string& file) { file_name = file; }
+
+  private:
+
+    // The function.
+    octave_user_function *fcn;
+
+    // Filename where the handle was defined.
+    std::string file_name;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_fcn_handle' instead")
+typedef octave::tree_fcn_handle tree_fcn_handle;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_anon_fcn_handle' instead")
+typedef octave::tree_anon_fcn_handle tree_anon_fcn_handle;
 
 #endif
 
+#endif

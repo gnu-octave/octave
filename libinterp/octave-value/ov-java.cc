@@ -1819,7 +1819,7 @@ Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring funcName,
   for (int i = 0; i < nargin; i++)
     varargin(i) = box (env, env->GetObjectArrayElement (argin, i), 0);
 
-  varargout = feval (fname, varargin, nargout);
+  varargout = octave::feval (fname, varargin, nargout);
 
   jobjectArray_ref out_objs (env, argout), out_clss (env);
   out_objs.detach ();
@@ -1855,7 +1855,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
       if (val.is_function_handle ())
         {
           octave_function *fcn = val.function_value ();
-          feval (fcn, oct_args);
+          octave::feval (fcn, oct_args);
         }
       else if (val.is_cell () && val.length () > 0
                && (val.rows () == 1 || val.columns () == 1)
@@ -1867,7 +1867,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           for (int i=1; i<c.numel (); i++)
             oct_args(len+i-1) = c(i);
 
-          feval (fcn, oct_args);
+          octave::feval (fcn, oct_args);
         }
       else
         error ("trying to invoke non-invocable object");
@@ -1881,7 +1881,7 @@ Java_org_octave_Octave_doEvalString (JNIEnv *env, jclass, jstring cmd)
 {
   std::string s = jstring_to_string (env, cmd);
   int pstatus;
-  eval_string (s, false, pstatus, 0);
+  octave::eval_string (s, false, pstatus, 0);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -1980,7 +1980,7 @@ octave_java::subsref (const std::string& type,
           ovl(0) = (idx.front ())(0);
           std::list<octave_value_list>::const_iterator it = idx.begin ();
           ovl.append (*++it);
-          retval = feval (std::string ("javaMethod"), ovl, 1);
+          retval = octave::feval (std::string ("javaMethod"), ovl, 1);
           skip++;
         }
       else
@@ -1989,7 +1989,7 @@ octave_java::subsref (const std::string& type,
           count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
-          retval = feval (std::string ("__java_get__"), ovl, 1);
+          retval = octave::feval (std::string ("__java_get__"), ovl, 1);
         }
       break;
 
@@ -2045,7 +2045,7 @@ octave_java::subsasgn (const std::string& type,
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           ovl(2) = rhs;
-          feval ("__java_set__", ovl, 0);
+          octave::feval ("__java_set__", ovl, 0);
 
           count++;
           retval = octave_value (this);

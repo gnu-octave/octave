@@ -44,8 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-class tree_walker;
-
 // Character matrix values.
 
 class

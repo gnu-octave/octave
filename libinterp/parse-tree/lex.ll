@@ -857,10 +857,10 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->looking_for_object_index = true;
         curr_lexer->at_beginning_of_statement = false;
 
-        curr_lexer->push_token (new token (DQ_STRING,
-                                           curr_lexer->string_text,
-                                           curr_lexer->string_line,
-                                           curr_lexer->string_column));
+        curr_lexer->push_token (new octave::token (DQ_STRING,
+                                                   curr_lexer->string_text,
+                                                   curr_lexer->string_line,
+                                                   curr_lexer->string_column));
 
         curr_lexer->string_text = "";
 
@@ -878,11 +878,11 @@ ANY_INCLUDING_NL (.|{NL})
 
     if (result > 0xff)
       {
-        token *tok
-          = new token (LEXICAL_ERROR,
-                       "invalid octal escape sequence in character string",
-                       curr_lexer->input_line_number,
-                       curr_lexer->current_input_column);
+        octave::token *tok
+          = new octave::token (LEXICAL_ERROR,
+                               "invalid octal escape sequence in character string",
+                               curr_lexer->input_line_number,
+                               curr_lexer->current_input_column);
 
         curr_lexer->push_token (tok);
 
@@ -1020,10 +1020,11 @@ ANY_INCLUDING_NL (.|{NL})
 <DQ_STRING_START>{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>{NL}");
 
-    token *tok = new token (LEXICAL_ERROR,
-                            "unterminated character string constant",
-                            curr_lexer->input_line_number,
-                            curr_lexer->current_input_column);
+    octave::token *tok
+      = new octave::token (LEXICAL_ERROR,
+                           "unterminated character string constant",
+                           curr_lexer->input_line_number,
+                           curr_lexer->current_input_column);
 
     curr_lexer->push_token (tok);
 
@@ -1056,10 +1057,10 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->looking_for_object_index = true;
         curr_lexer->at_beginning_of_statement = false;
 
-        curr_lexer->push_token (new token (SQ_STRING,
-                                           curr_lexer->string_text,
-                                           curr_lexer->string_line,
-                                           curr_lexer->string_column));
+        curr_lexer->push_token (new octave::token (SQ_STRING,
+                                                   curr_lexer->string_text,
+                                                   curr_lexer->string_line,
+                                                   curr_lexer->string_column));
 
         curr_lexer->string_text = "";
 
@@ -1077,10 +1078,11 @@ ANY_INCLUDING_NL (.|{NL})
 <SQ_STRING_START>{NL} {
     curr_lexer->lexer_debug ("<SQ_STRING_START>{NL}");
 
-    token *tok = new token (LEXICAL_ERROR,
-                            "unterminated character string constant",
-                            curr_lexer->input_line_number,
-                            curr_lexer->current_input_column);
+    octave::token *tok
+      = new octave::token (LEXICAL_ERROR,
+                           "unterminated character string constant",
+                           curr_lexer->input_line_number,
+                           curr_lexer->current_input_column);
 
     curr_lexer->push_token (tok);
 
@@ -1368,10 +1370,11 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else if (curr_lexer->nesting_level.is_bracket_or_brace ())
       {
-        token *tok = new token (LEXICAL_ERROR,
-                                "unexpected internal lexer error",
-                                curr_lexer->input_line_number,
-                                curr_lexer->current_input_column);
+        octave::token *tok
+          = new octave::token (LEXICAL_ERROR,
+                               "unexpected internal lexer error",
+                               curr_lexer->input_line_number,
+                               curr_lexer->current_input_column);
 
         curr_lexer->push_token (tok);
 
@@ -1757,9 +1760,10 @@ ANY_INCLUDING_NL (.|{NL})
             << undo_string_escape (static_cast<char> (c))
             << "' (ASCII " << c << ")";
 
-        token *tok = new token (LEXICAL_ERROR, buf.str (),
-                                curr_lexer->input_line_number,
-                                curr_lexer->current_input_column);
+        octave::token *tok
+          = new octave::token (LEXICAL_ERROR, buf.str (),
+                               curr_lexer->input_line_number,
+                               curr_lexer->current_input_column);
 
         curr_lexer->push_token (tok);
 

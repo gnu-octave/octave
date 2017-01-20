@@ -28,11 +28,15 @@ along with Octave; see the file COPYING.  If not, see
 class octave_function;
 class octave_user_function;
 
-class tree_identifier;
 class octave_value;
 class octave_value_list;
 class octave_builtin;
 class string_vector;
+
+namespace octave
+{
+  class tree_identifier;
+}
 
 #include <cfloat>
 

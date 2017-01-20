@@ -360,7 +360,7 @@ safe_source_file (const std::string& file_name,
 {
   try
     {
-      source_file (file_name, context, verbose, require_file, warn_for);
+      octave::source_file (file_name, context, verbose, require_file, warn_for);
     }
   catch (const octave::index_exception& e)
     {
@@ -991,7 +991,7 @@ namespace octave
 
         OCTAVE_SAFE_CALL (reset_error_handler, ());
 
-        OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
+        OCTAVE_SAFE_CALL (octave::feval, (fcn, octave_value_list (), 0));
 
         OCTAVE_SAFE_CALL (octave::flush_stdout, ());
       }

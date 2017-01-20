@@ -2554,7 +2554,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
 
       args(0) = base;
 
-      octave_value_list tmp = feval (meth.function_value (), args, 1);
+      octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
 
       if (tmp.length () > 0)
         retval = tmp(0);

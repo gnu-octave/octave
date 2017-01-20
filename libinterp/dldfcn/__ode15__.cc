@@ -654,7 +654,7 @@ namespace octave
 
     if (flag == "init")
       {
-        octave_value_list output = feval (event_fcn, args, 3);
+        octave_value_list output = octave::feval (event_fcn, args, 3);
         oldval = output(0).vector_value ();
         oldisterminal = output(1).vector_value ();
         olddir = output(2).vector_value ();
@@ -662,7 +662,7 @@ namespace octave
     else if (flag == "")
       {
         ColumnVector index (0);
-        octave_value_list output = feval (event_fcn, args, 3);
+        octave_value_list output = octave::feval (event_fcn, args, 3);
         ColumnVector val = output(0).vector_value ();
         ColumnVector isterminal = output(1).vector_value ();
         ColumnVector dir = output(2).vector_value ();
@@ -834,18 +834,18 @@ namespace octave
         toutput(1) = tend;
         output(0) = toutput;
 
-        feval (output_fcn, output, 0);
+        octave::feval (output_fcn, output, 0);
       }
     else if (flag == "")
       {
         output(0) = tsol;
-        octave_value_list val = feval (output_fcn, output, 1);
+        octave_value_list val = octave::feval (output_fcn, output, 1);
         status = val(0).bool_value ();
       }
     else
       {  // Cleanup plotter
         output(0) = tend;
-        feval (output_fcn, output, 0);
+        octave::feval (output_fcn, output, 0);
       }
 
     return status;

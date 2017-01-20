@@ -33,160 +33,162 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-unop.h"
 #include "pt-walk.h"
 
-// Unary expressions.
-
-std::string
-tree_unary_expression::oper (void) const
+namespace octave
 {
-  return octave_value::unary_op_as_string (etype);
+  // Unary expressions.
+
+  std::string
+  tree_unary_expression::oper (void) const
+  {
+    return octave_value::unary_op_as_string (etype);
+  }
+
+  // Prefix expressions.
+
+  octave_value_list
+  tree_prefix_expression::rvalue (int nargout)
+  {
+    octave_value_list retval;
+
+    if (nargout > 1)
+      error ("prefix operator '%s': invalid number of output arguments",
+             oper ().c_str ());
+
+    retval = rvalue1 (nargout);
+
+    return retval;
+  }
+
+  octave_value
+  tree_prefix_expression::rvalue1 (int)
+  {
+    octave_value retval;
+
+    if (op)
+      {
+        if (etype == octave_value::op_incr || etype == octave_value::op_decr)
+          {
+            octave_lvalue ref = op->lvalue ();
+
+            BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+
+              ref.do_unary_op (etype);
+
+            retval = ref.value ();
+
+            END_PROFILER_BLOCK
+              }
+        else
+          {
+            octave_value val = op->rvalue1 ();
+
+            if (val.is_defined ())
+              {
+                BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+
+                  // Attempt to do the operation in-place if it is unshared
+                  // (a temporary expression).
+                  if (val.get_count () == 1)
+                    retval = val.do_non_const_unary_op (etype);
+                  else
+                    retval = ::do_unary_op (etype, val);
+
+                END_PROFILER_BLOCK
+                  }
+          }
+      }
+
+    return retval;
+  }
+
+  tree_expression *
+  tree_prefix_expression::dup (symbol_table::scope_id scope,
+                               symbol_table::context_id context) const
+  {
+    tree_prefix_expression *new_pe
+      = new tree_prefix_expression (op ? op->dup (scope, context) : 0,
+                                    line (), column (), etype);
+
+    new_pe->copy_base (*this);
+
+    return new_pe;
+  }
+
+  void
+  tree_prefix_expression::accept (tree_walker& tw)
+  {
+    tw.visit_prefix_expression (*this);
+  }
+
+  // Postfix expressions.
+
+  octave_value_list
+  tree_postfix_expression::rvalue (int nargout)
+  {
+    octave_value_list retval;
+
+    if (nargout > 1)
+      error ("postfix operator '%s': invalid number of output arguments",
+             oper ().c_str ());
+
+    retval = rvalue1 (nargout);
+
+    return retval;
+  }
+
+  octave_value
+  tree_postfix_expression::rvalue1 (int)
+  {
+    octave_value retval;
+
+    if (op)
+      {
+        if (etype == octave_value::op_incr || etype == octave_value::op_decr)
+          {
+            octave_lvalue ref = op->lvalue ();
+
+            retval = ref.value ();
+
+            BEGIN_PROFILER_BLOCK (tree_postfix_expression)
+
+              ref.do_unary_op (etype);
+
+            END_PROFILER_BLOCK
+              }
+        else
+          {
+            octave_value val = op->rvalue1 ();
+
+            if (val.is_defined ())
+              {
+                BEGIN_PROFILER_BLOCK (tree_postfix_expression)
+
+                  retval = ::do_unary_op (etype, val);
+
+                END_PROFILER_BLOCK
+                  }
+          }
+      }
+
+    return retval;
+  }
+
+  tree_expression *
+  tree_postfix_expression::dup (symbol_table::scope_id scope,
+                                symbol_table::context_id context) const
+  {
+    tree_postfix_expression *new_pe
+      = new tree_postfix_expression (op ? op->dup (scope, context) : 0,
+                                     line (), column (), etype);
+
+    new_pe->copy_base (*this);
+
+    return new_pe;
+  }
+
+  void
+  tree_postfix_expression::accept (tree_walker& tw)
+  {
+    tw.visit_postfix_expression (*this);
+  }
 }
-
-// Prefix expressions.
-
-octave_value_list
-tree_prefix_expression::rvalue (int nargout)
-{
-  octave_value_list retval;
-
-  if (nargout > 1)
-    error ("prefix operator '%s': invalid number of output arguments",
-           oper ().c_str ());
-
-  retval = rvalue1 (nargout);
-
-  return retval;
-}
-
-octave_value
-tree_prefix_expression::rvalue1 (int)
-{
-  octave_value retval;
-
-  if (op)
-    {
-      if (etype == octave_value::op_incr || etype == octave_value::op_decr)
-        {
-          octave_lvalue ref = op->lvalue ();
-
-          BEGIN_PROFILER_BLOCK (tree_prefix_expression)
-
-          ref.do_unary_op (etype);
-
-          retval = ref.value ();
-
-          END_PROFILER_BLOCK
-        }
-      else
-        {
-          octave_value val = op->rvalue1 ();
-
-          if (val.is_defined ())
-            {
-              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
-
-              // Attempt to do the operation in-place if it is unshared
-              // (a temporary expression).
-              if (val.get_count () == 1)
-                retval = val.do_non_const_unary_op (etype);
-              else
-                retval = ::do_unary_op (etype, val);
-
-              END_PROFILER_BLOCK
-            }
-        }
-    }
-
-  return retval;
-}
-
-tree_expression *
-tree_prefix_expression::dup (symbol_table::scope_id scope,
-                             symbol_table::context_id context) const
-{
-  tree_prefix_expression *new_pe
-    = new tree_prefix_expression (op ? op->dup (scope, context) : 0,
-                                  line (), column (), etype);
-
-  new_pe->copy_base (*this);
-
-  return new_pe;
-}
-
-void
-tree_prefix_expression::accept (tree_walker& tw)
-{
-  tw.visit_prefix_expression (*this);
-}
-
-// Postfix expressions.
-
-octave_value_list
-tree_postfix_expression::rvalue (int nargout)
-{
-  octave_value_list retval;
-
-  if (nargout > 1)
-    error ("postfix operator '%s': invalid number of output arguments",
-           oper ().c_str ());
-
-  retval = rvalue1 (nargout);
-
-  return retval;
-}
-
-octave_value
-tree_postfix_expression::rvalue1 (int)
-{
-  octave_value retval;
-
-  if (op)
-    {
-      if (etype == octave_value::op_incr || etype == octave_value::op_decr)
-        {
-          octave_lvalue ref = op->lvalue ();
-
-          retval = ref.value ();
-
-          BEGIN_PROFILER_BLOCK (tree_postfix_expression)
-
-          ref.do_unary_op (etype);
-
-          END_PROFILER_BLOCK
-        }
-      else
-        {
-          octave_value val = op->rvalue1 ();
-
-          if (val.is_defined ())
-            {
-              BEGIN_PROFILER_BLOCK (tree_postfix_expression)
-
-              retval = ::do_unary_op (etype, val);
-
-              END_PROFILER_BLOCK
-            }
-        }
-    }
-
-  return retval;
-}
-
-tree_expression *
-tree_postfix_expression::dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const
-{
-  tree_postfix_expression *new_pe
-    = new tree_postfix_expression (op ? op->dup (scope, context) : 0,
-                                   line (), column (), etype);
-
-  new_pe->copy_base (*this);
-
-  return new_pe;
-}
-
-void
-tree_postfix_expression::accept (tree_walker& tw)
-{
-  tw.visit_postfix_expression (*this);
-}
-

@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class tree_walker;
-
 class octave_value;
 class octave_value_list;
 class octave_lvalue;
@@ -36,83 +34,93 @@ class octave_lvalue;
 #include "pt-exp.h"
 #include "symtab.h"
 
-// Colon expressions.
-
-class
-tree_colon_expression : public tree_expression
+namespace octave
 {
-public:
+  class tree_walker;
 
-  tree_colon_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), op_base (0), op_limit (0),
-      op_increment (0), save_base (false) { }
+  // Colon expressions.
 
-  tree_colon_expression (tree_expression *e, int l = -1, int c = -1)
-    : tree_expression (l, c), op_base (e), op_limit (0),
-      op_increment (0), save_base (false) { }
-
-  tree_colon_expression (tree_expression *bas, tree_expression *lim,
-                         tree_expression *inc, int l = -1, int c = -1)
-    : tree_expression (l, c), op_base (bas), op_limit (lim),
-      op_increment (inc), save_base (false) { }
-
-  // No copying!
-
-  tree_colon_expression (const tree_colon_expression&) = delete;
-
-  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
-
-  ~tree_colon_expression (void)
+  class tree_colon_expression : public tree_expression
   {
-    if (! save_base)
-      delete op_base;
+  public:
 
-    delete op_limit;
-    delete op_increment;
-  }
+    tree_colon_expression (int l = -1, int c = -1)
+      : tree_expression (l, c), op_base (0), op_limit (0),
+        op_increment (0), save_base (false) { }
 
-  bool has_magic_end (void) const
-  {
-    return ((op_base && op_base->has_magic_end ())
-            || (op_limit && op_limit->has_magic_end ())
-            || (op_increment && op_increment->has_magic_end ()));
-  }
+    tree_colon_expression (tree_expression *e, int l = -1, int c = -1)
+      : tree_expression (l, c), op_base (e), op_limit (0),
+        op_increment (0), save_base (false) { }
 
-  void preserve_base (void) { save_base = true; }
+    tree_colon_expression (tree_expression *bas, tree_expression *lim,
+                           tree_expression *inc, int l = -1, int c = -1)
+      : tree_expression (l, c), op_base (bas), op_limit (lim),
+        op_increment (inc), save_base (false) { }
 
-  tree_colon_expression *append (tree_expression *t);
+    // No copying!
 
-  bool rvalue_ok (void) const { return true; }
+    tree_colon_expression (const tree_colon_expression&) = delete;
 
-  octave_value rvalue1 (int nargout = 1);
+    tree_colon_expression& operator = (const tree_colon_expression&) = delete;
 
-  octave_value_list rvalue (int nargout);
+    ~tree_colon_expression (void)
+    {
+      if (! save_base)
+        delete op_base;
 
-  void eval_error (const std::string& s) const;
+      delete op_limit;
+      delete op_increment;
+    }
 
-  tree_expression *base (void) { return op_base; }
+    bool has_magic_end (void) const
+    {
+      return ((op_base && op_base->has_magic_end ())
+              || (op_limit && op_limit->has_magic_end ())
+              || (op_increment && op_increment->has_magic_end ()));
+    }
 
-  tree_expression *limit (void) { return op_limit; }
+    void preserve_base (void) { save_base = true; }
 
-  tree_expression *increment (void) { return op_increment; }
+    tree_colon_expression *append (tree_expression *t);
 
-  int line (void) const;
-  int column (void) const;
+    bool rvalue_ok (void) const { return true; }
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    octave_value rvalue1 (int nargout = 1);
 
-  void accept (tree_walker& tw);
+    octave_value_list rvalue (int nargout);
 
-private:
+    void eval_error (const std::string& s) const;
 
-  // The components of the expression.
-  tree_expression *op_base;
-  tree_expression *op_limit;
-  tree_expression *op_increment;
+    tree_expression *base (void) { return op_base; }
 
-  bool save_base;
-};
+    tree_expression *limit (void) { return op_limit; }
+
+    tree_expression *increment (void) { return op_increment; }
+
+    int line (void) const;
+    int column (void) const;
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+
+  private:
+
+    // The components of the expression.
+    tree_expression *op_base;
+    tree_expression *op_limit;
+    tree_expression *op_increment;
+
+    bool save_base;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_colon_expression' instead")
+typedef octave::tree_colon_expression tree_colon_expression;
 
 #endif
 
+#endif

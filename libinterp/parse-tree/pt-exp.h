@@ -34,135 +34,143 @@ class octave_lvalue;
 #include "pt.h"
 #include "symtab.h"
 
-// A base class for expressions.
-
-class
-tree_expression : public tree
+namespace octave
 {
-public:
+  // A base class for expressions.
 
-  tree_expression (int l = -1, int c = -1)
-    : tree (l, c), num_parens (0), postfix_index_type ('\0'),
-      for_cmd_expr (false), print_flag (false) { }
-
-  // No copying!
-
-  tree_expression (const tree_expression&) = delete;
-
-  tree_expression& operator = (const tree_expression&) = delete;
-
-  virtual ~tree_expression (void) = default;
-
-  virtual bool has_magic_end (void) const = 0;
-
-  virtual tree_expression *dup (symbol_table::scope_id,
-                                symbol_table::context_id context) const = 0;
-
-  virtual bool is_constant (void) const { return false; }
-
-  virtual bool is_matrix (void) const { return false; }
-
-  virtual bool is_cell (void) const { return false; }
-
-  virtual bool is_identifier (void) const { return false; }
-
-  virtual bool is_index_expression (void) const { return false; }
-
-  virtual bool is_assignment_expression (void) const { return false; }
-
-  virtual bool is_prefix_expression (void) const { return false; }
-
-  virtual bool is_unary_expression (void) const { return false; }
-
-  virtual bool is_binary_expression (void) const { return false; }
-
-  virtual bool is_boolean_expression (void) const { return false; }
-
-  virtual bool is_logically_true (const char *);
-
-  virtual bool lvalue_ok (void) const { return false; }
-
-  virtual bool rvalue_ok (void) const { return false; }
-
-  virtual octave_value rvalue1 (int nargout = 1);
-
-  virtual octave_value_list rvalue (int nargout);
-
-  virtual octave_value_list
-  rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
-
-  virtual octave_lvalue lvalue (void);
-
-  int paren_count (void) const { return num_parens; }
-
-  bool is_postfix_indexed (void) const { return (postfix_index_type != '\0'); }
-
-  char postfix_index (void) const { return postfix_index_type; }
-
-  // Check if the result of the expression should be printed.
-  // Should normally be used in conjunction with
-  // octave::tree_evaluator::statement_printing_enabled.
-  bool print_result (void) const { return print_flag; }
-
-  virtual std::string oper (void) const { return "<unknown>"; }
-
-  virtual std::string name (void) const { return "<unknown>"; }
-
-  virtual std::string original_text (void) const;
-
-  virtual void mark_braindead_shortcircuit (void) { }
-
-  void mark_as_for_cmd_expr (void) { for_cmd_expr = true; }
-
-  bool is_for_cmd_expr (void) const { return for_cmd_expr; }
-
-  tree_expression *mark_in_parens (void)
+  class tree_expression : public tree
   {
-    num_parens++;
-    return this;
-  }
+  public:
 
-  tree_expression *set_postfix_index (char type)
-  {
-    postfix_index_type = type;
-    return this;
-  }
+    tree_expression (int l = -1, int c = -1)
+      : tree (l, c), num_parens (0), postfix_index_type ('\0'),
+        for_cmd_expr (false), print_flag (false) { }
 
-  tree_expression *set_print_flag (bool print)
-  {
-    print_flag = print;
-    return this;
-  }
+    // No copying!
 
-  virtual void copy_base (const tree_expression& e)
-  {
-    num_parens = e.num_parens;
-    postfix_index_type = e.postfix_index_type;
-    print_flag = e.print_flag;
-  }
+    tree_expression (const tree_expression&) = delete;
 
-protected:
+    tree_expression& operator = (const tree_expression&) = delete;
 
-  // A count of the number of times this expression appears directly
-  // inside a set of parentheses.
-  //
-  //   (((e1)) + e2)  ==> 2 for expression e1
-  //                  ==> 1 for expression ((e1)) + e2
-  //                  ==> 0 for expression e2
-  int num_parens;
+    virtual ~tree_expression (void) = default;
 
-  // The first index type associated with this expression.  This field
-  // is 0 (character '\0') if the expression has no associated index.
-  // See the code in tree_identifier::rvalue for the rationale.
-  char postfix_index_type;
+    virtual bool has_magic_end (void) const = 0;
 
-  // TRUE if this expression is the EXPR in for loop:
-  // FOR i = EXPR ... END
-  bool for_cmd_expr;
+    virtual tree_expression *dup (symbol_table::scope_id,
+                                  symbol_table::context_id context) const = 0;
 
-  // Print result of rvalue for this expression?
-  bool print_flag;
-};
+    virtual bool is_constant (void) const { return false; }
+
+    virtual bool is_matrix (void) const { return false; }
+
+    virtual bool is_cell (void) const { return false; }
+
+    virtual bool is_identifier (void) const { return false; }
+
+    virtual bool is_index_expression (void) const { return false; }
+
+    virtual bool is_assignment_expression (void) const { return false; }
+
+    virtual bool is_prefix_expression (void) const { return false; }
+
+    virtual bool is_unary_expression (void) const { return false; }
+
+    virtual bool is_binary_expression (void) const { return false; }
+
+    virtual bool is_boolean_expression (void) const { return false; }
+
+    virtual bool is_logically_true (const char *);
+
+    virtual bool lvalue_ok (void) const { return false; }
+
+    virtual bool rvalue_ok (void) const { return false; }
+
+    virtual octave_value rvalue1 (int nargout = 1);
+
+    virtual octave_value_list rvalue (int nargout);
+
+    virtual octave_value_list
+    rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
+
+    virtual octave_lvalue lvalue (void);
+
+    int paren_count (void) const { return num_parens; }
+
+    bool is_postfix_indexed (void) const { return (postfix_index_type != '\0'); }
+
+    char postfix_index (void) const { return postfix_index_type; }
+
+    // Check if the result of the expression should be printed.
+    // Should normally be used in conjunction with
+    // octave::tree_evaluator::statement_printing_enabled.
+    bool print_result (void) const { return print_flag; }
+
+    virtual std::string oper (void) const { return "<unknown>"; }
+
+    virtual std::string name (void) const { return "<unknown>"; }
+
+    virtual std::string original_text (void) const;
+
+    virtual void mark_braindead_shortcircuit (void) { }
+
+    void mark_as_for_cmd_expr (void) { for_cmd_expr = true; }
+
+    bool is_for_cmd_expr (void) const { return for_cmd_expr; }
+
+    tree_expression *mark_in_parens (void)
+    {
+      num_parens++;
+      return this;
+    }
+
+    tree_expression *set_postfix_index (char type)
+    {
+      postfix_index_type = type;
+      return this;
+    }
+
+    tree_expression *set_print_flag (bool print)
+    {
+      print_flag = print;
+      return this;
+    }
+
+    virtual void copy_base (const tree_expression& e)
+    {
+      num_parens = e.num_parens;
+      postfix_index_type = e.postfix_index_type;
+      print_flag = e.print_flag;
+    }
+
+  protected:
+
+    // A count of the number of times this expression appears directly
+    // inside a set of parentheses.
+    //
+    //   (((e1)) + e2)  ==> 2 for expression e1
+    //                  ==> 1 for expression ((e1)) + e2
+    //                  ==> 0 for expression e2
+    int num_parens;
+
+    // The first index type associated with this expression.  This field
+    // is 0 (character '\0') if the expression has no associated index.
+    // See the code in tree_identifier::rvalue for the rationale.
+    char postfix_index_type;
+
+    // TRUE if this expression is the EXPR in for loop:
+    // FOR i = EXPR ... END
+    bool for_cmd_expr;
+
+    // Print result of rvalue for this expression?
+    bool print_flag;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_expression' instead")
+typedef octave::tree_expression tree_expression;
 
 #endif
 
+#endif

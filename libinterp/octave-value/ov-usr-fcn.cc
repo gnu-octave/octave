@@ -83,7 +83,7 @@ octave_user_script::octave_user_script (void)
 
 octave_user_script::octave_user_script (const std::string& fnm,
                                         const std::string& nm,
-                                        tree_statement_list *cmds,
+                                        octave::tree_statement_list *cmds,
                                         const std::string& ds)
   : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
@@ -154,18 +154,18 @@ octave_user_script::do_multi_index_op (int nargout,
 
       END_PROFILER_BLOCK
 
-      if (tree_return_command::returning)
-        tree_return_command::returning = 0;
+      if (octave::tree_return_command::returning)
+        octave::tree_return_command::returning = 0;
 
-      if (tree_break_command::breaking)
-        tree_break_command::breaking--;
+      if (octave::tree_break_command::breaking)
+        octave::tree_break_command::breaking--;
     }
 
   return retval;
 }
 
 void
-octave_user_script::accept (tree_walker& tw)
+octave_user_script::accept (octave::tree_walker& tw)
 {
   tw.visit_octave_user_script (*this);
 }
@@ -180,8 +180,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 // extrinsic/intrinsic state?).
 
 octave_user_function::octave_user_function
-  (symbol_table::scope_id sid, tree_parameter_list *pl,
-   tree_parameter_list *rl, tree_statement_list *cl)
+  (symbol_table::scope_id sid, octave::tree_parameter_list *pl,
+   octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", ""),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
@@ -226,7 +226,7 @@ octave_user_function::~octave_user_function (void)
 }
 
 octave_user_function *
-octave_user_function::define_ret_list (tree_parameter_list *t)
+octave_user_function::define_ret_list (octave::tree_parameter_list *t)
 {
   ret_list = t;
 
@@ -252,12 +252,12 @@ octave_user_function::maybe_relocate_end_internal (void)
 {
   if (cmd_list && ! cmd_list->empty ())
     {
-      tree_statement *last_stmt = cmd_list->back ();
+      octave::tree_statement *last_stmt = cmd_list->back ();
 
       if (last_stmt && last_stmt->is_end_of_fcn_or_script ()
           && last_stmt->is_end_of_file ())
         {
-          tree_statement_list::reverse_iterator
+          octave::tree_statement_list::reverse_iterator
             next_to_last_elt = cmd_list->rbegin ();
 
           next_to_last_elt++;
@@ -272,7 +272,7 @@ octave_user_function::maybe_relocate_end_internal (void)
             }
           else
             {
-              tree_statement *next_to_last_stmt = *next_to_last_elt;
+              octave::tree_statement *next_to_last_stmt = *next_to_last_elt;
 
               new_eof_line = next_to_last_stmt->line ();
               new_eof_col = next_to_last_stmt->column ();
@@ -489,7 +489,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
 #if defined (HAVE_LLVM)
   if (is_special_expr ()
-      && tree_jit::execute (*this, args, retval))
+      && octave::tree_jit::execute (*this, args, retval))
     return retval;
 #endif
 
@@ -541,14 +541,14 @@ octave_user_function::do_multi_index_op (int nargout,
   // variables that are also named function parameters.
 
   if (param_list)
-    frame.add_method (param_list, &tree_parameter_list::undefine);
+    frame.add_method (param_list, &octave::tree_parameter_list::undefine);
 
   // Force return list to be undefined when this function exits.
   // Doing so decrements the reference counts on the values of local
   // variables that are also named values returned by this function.
 
   if (ret_list)
-    frame.add_method (ret_list, &tree_parameter_list::undefine);
+    frame.add_method (ret_list, &octave::tree_parameter_list::undefine);
 
   if (call_depth == 0)
     {
@@ -592,9 +592,9 @@ octave_user_function::do_multi_index_op (int nargout,
     {
       assert (cmd_list->length () == 1);
 
-      tree_statement *stmt = cmd_list->front ();
+      octave::tree_statement *stmt = cmd_list->front ();
 
-      tree_expression *expr = stmt->expression ();
+      octave::tree_expression *expr = stmt->expression ();
 
       if (expr)
         {
@@ -613,11 +613,11 @@ octave_user_function::do_multi_index_op (int nargout,
   if (echo_commands)
     print_code_function_trailer ();
 
-  if (tree_return_command::returning)
-    tree_return_command::returning = 0;
+  if (octave::tree_return_command::returning)
+    octave::tree_return_command::returning = 0;
 
-  if (tree_break_command::breaking)
-    tree_break_command::breaking--;
+  if (octave::tree_break_command::breaking)
+    octave::tree_break_command::breaking--;
 
   // Copy return values out.
 
@@ -642,18 +642,18 @@ octave_user_function::do_multi_index_op (int nargout,
 }
 
 void
-octave_user_function::accept (tree_walker& tw)
+octave_user_function::accept (octave::tree_walker& tw)
 {
   tw.visit_octave_user_function (*this);
 }
 
-tree_expression *
+octave::tree_expression *
 octave_user_function::special_expr (void)
 {
   assert (is_special_expr ());
   assert (cmd_list->length () == 1);
 
-  tree_statement *stmt = cmd_list->front ();
+  octave::tree_statement *stmt = cmd_list->front ();
   return stmt->expression ();
 }
 
@@ -666,8 +666,8 @@ octave_user_function::subsasgn_optimization_ok (void)
       && param_list->length () > 0 && ! param_list->varargs_only ()
       && ret_list->length () == 1 && ! ret_list->takes_varargs ())
     {
-      tree_identifier *par1 = param_list->front ()->ident ();
-      tree_identifier *ret1 = ret_list->front ()->ident ();
+      octave::tree_identifier *par1 = param_list->front ()->ident ();
+      octave::tree_identifier *ret1 = ret_list->front ()->ident ();
       retval = par1->name () == ret1->name ();
     }
 
@@ -685,7 +685,7 @@ octave_user_function::print_symtab_info (std::ostream& os) const
 void
 octave_user_function::print_code_function_header (void)
 {
-  tree_print_code tpc (octave_stdout, VPS4);
+  octave::tree_print_code tpc (octave_stdout, VPS4);
 
   tpc.visit_octave_user_function_header (*this);
 }
@@ -693,7 +693,7 @@ octave_user_function::print_code_function_header (void)
 void
 octave_user_function::print_code_function_trailer (void)
 {
-  tree_print_code tpc (octave_stdout, VPS4);
+  octave::tree_print_code tpc (octave_stdout, VPS4);
 
   tpc.visit_octave_user_function_trailer (*this);
 }
@@ -859,7 +859,7 @@ Programming Note: @code{nargin} does not work on compiled functions
                  type.c_str ());
         }
 
-      tree_parameter_list *param_list = fcn->parameter_list ();
+      octave::tree_parameter_list *param_list = fcn->parameter_list ();
 
       retval = param_list ? param_list->length () : 0;
       if (fcn->takes_varargs ())
@@ -978,7 +978,7 @@ returns -1 for all anonymous functions.
                  type.c_str ());
         }
 
-      tree_parameter_list *ret_list = fcn->return_list ();
+      octave::tree_parameter_list *ret_list = fcn->return_list ();
 
       retval = ret_list ? ret_list->length () : 0;
 

@@ -195,7 +195,7 @@ make_name_list (void)
   const string_vector ffl = load_path::fcn_names ();
   const int ffl_len = ffl.numel ();
 
-  const string_vector afl = autoloaded_functions ();
+  const string_vector afl = octave::autoloaded_functions ();
   const int afl_len = afl.numel ();
 
   const string_vector lfl = local_functions ();
@@ -298,7 +298,7 @@ raw_help_from_file (const std::string& nm, std::string& h,
 {
   bool retval = false;
 
-  h = get_help_from_file (nm, symbol_found, file);
+  h = octave::get_help_from_file (nm, symbol_found, file);
 
   if (h.length () > 0)
     retval = true;
@@ -841,7 +841,7 @@ in that directory.
     {
       // Get list of all functions
       string_vector ffl = load_path::fcn_names ();
-      string_vector afl = autoloaded_functions ();
+      string_vector afl = octave::autoloaded_functions ();
 
       retval = Cell (ffl.append (afl));
     }

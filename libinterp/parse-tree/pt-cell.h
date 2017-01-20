@@ -29,45 +29,54 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class octave_value_list;
-class tree_argument_list;
-
-class tree_walker;
 
 #include "pt-mat.h"
 #include "symtab.h"
 
-// General cells.
-
-class
-tree_cell : public tree_array_list
+namespace octave
 {
-public:
+  class tree_argument_list;
 
-  tree_cell (tree_argument_list *row = 0, int l = -1, int c = -1)
-    : tree_array_list (row, l, c)
-  { }
+  class tree_walker;
 
-  // No copying!
+  // General cells.
 
-  tree_cell (const tree_cell&) = delete;
+  class tree_cell : public tree_array_list
+  {
+  public:
 
-  tree_cell& operator = (const tree_cell&) = delete;
+    tree_cell (tree_argument_list *row = 0, int l = -1, int c = -1)
+      : tree_array_list (row, l, c)
+    { }
 
-  ~tree_cell (void) = default;
+    // No copying!
 
-  bool is_cell (void) const { return true; }
+    tree_cell (const tree_cell&) = delete;
 
-  bool rvalue_ok (void) const { return true; }
+    tree_cell& operator = (const tree_cell&) = delete;
 
-  octave_value rvalue1 (int nargout = 1);
+    ~tree_cell (void) = default;
 
-  octave_value_list rvalue (int);
+    bool is_cell (void) const { return true; }
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    bool rvalue_ok (void) const { return true; }
 
-  void accept (tree_walker& tw);
-};
+    octave_value rvalue1 (int nargout = 1);
+
+    octave_value_list rvalue (int);
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw);
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_cell' instead")
+typedef octave::tree_cell tree_cell;
 
 #endif
 
+#endif

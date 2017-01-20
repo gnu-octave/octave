@@ -107,7 +107,7 @@ public:
   {
     octave_value_list args;
     args(0) = go.get_handle ().as_octave_value ();
-    feval ("__gnuplot_drawnow__", args);
+    octave::feval ("__gnuplot_drawnow__", args);
   }
 
   void print_figure (const graphics_object& go, const std::string& term,
@@ -120,7 +120,7 @@ public:
     args(2) = file;
     args(1) = term;
     args(0) = go.get_handle ().as_octave_value ();
-    feval ("__gnuplot_drawnow__", args);
+    octave::feval ("__gnuplot_drawnow__", args);
   }
 
   Matrix get_canvas_size (const graphics_handle&) const
@@ -181,7 +181,8 @@ have_gnuplot_binary (void)
 
   try
     {
-      octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
+      octave_value_list tmp
+        = octave::feval ("gnuplot_binary", octave_value_list ());
 
       if (tmp(0).is_string ())
         {

@@ -40,11 +40,14 @@ along with Octave; see the file COPYING.  If not, see
 class string_vector;
 
 class octave_value;
-class tree_parameter_list;
-class tree_statement_list;
-class tree_va_return_list;
-class tree_expression;
-class tree_walker;
+
+namespace octave
+{
+  class tree_parameter_list;
+  class tree_statement_list;
+  class tree_expression;
+  class tree_walker;
+}
 
 #if defined (HAVE_LLVM)
 class jit_function_info;
@@ -76,7 +79,7 @@ public:
 
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
-  virtual tree_statement_list *body (void) = 0;
+  virtual octave::tree_statement_list *body (void) = 0;
 };
 
 // Scripts.
@@ -89,7 +92,7 @@ public:
   octave_user_script (void);
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      tree_statement_list *cmds,
+                      octave::tree_statement_list *cmds,
                       const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
@@ -144,14 +147,14 @@ public:
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
 
-  tree_statement_list *body (void) { return cmd_list; }
+  octave::tree_statement_list *body (void) { return cmd_list; }
 
-  void accept (tree_walker& tw);
+  void accept (octave::tree_walker& tw);
 
 private:
 
   // The list of commands that make up the body of this function.
-  tree_statement_list *cmd_list;
+  octave::tree_statement_list *cmd_list;
 
   // The name of the file we parsed.
   std::string file_name;
@@ -177,9 +180,9 @@ octave_user_function : public octave_user_code
 public:
 
   octave_user_function (symbol_table::scope_id sid = -1,
-                        tree_parameter_list *pl = 0,
-                        tree_parameter_list *rl = 0,
-                        tree_statement_list *cl = 0);
+                        octave::tree_parameter_list *pl = 0,
+                        octave::tree_parameter_list *rl = 0,
+                        octave::tree_statement_list *cl = 0);
 
   // No copying!
 
@@ -201,9 +204,9 @@ public:
 
   octave_user_code *user_code_value (bool = false) { return this; }
 
-  octave_user_function *define_param_list (tree_parameter_list *t);
+  octave_user_function *define_param_list (octave::tree_parameter_list *t);
 
-  octave_user_function *define_ret_list (tree_parameter_list *t);
+  octave_user_function *define_ret_list (octave::tree_parameter_list *t);
 
   void stash_fcn_file_name (const std::string& nm);
 
@@ -379,11 +382,11 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
-  tree_parameter_list *parameter_list (void) { return param_list; }
+  octave::tree_parameter_list *parameter_list (void) { return param_list; }
 
-  tree_parameter_list *return_list (void) { return ret_list; }
+  octave::tree_parameter_list *return_list (void) { return ret_list; }
 
-  tree_statement_list *body (void) { return cmd_list; }
+  octave::tree_statement_list *body (void) { return cmd_list; }
 
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
@@ -391,11 +394,11 @@ public:
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
-  tree_expression *special_expr (void);
+  octave::tree_expression *special_expr (void);
 
   bool subsasgn_optimization_ok (void);
 
-  void accept (tree_walker& tw);
+  void accept (octave::tree_walker& tw);
 
   template <typename T>
   bool local_protect (T& variable)
@@ -429,14 +432,14 @@ private:
   };
 
   // List of arguments for this function.  These are local variables.
-  tree_parameter_list *param_list;
+  octave::tree_parameter_list *param_list;
 
   // List of parameters we return.  These are also local variables in
   // this function.
-  tree_parameter_list *ret_list;
+  octave::tree_parameter_list *ret_list;
 
   // The list of commands that make up the body of this function.
-  tree_statement_list *cmd_list;
+  octave::tree_statement_list *cmd_list;
 
   // The comments preceding the FUNCTION token.
   octave_comment_list *lead_comm;

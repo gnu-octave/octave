@@ -45,8 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
-class tree_walker;
-
 class
 OCTINTERP_API
 octave_sparse_complex_matrix : public octave_base_sparse<SparseComplexMatrix>

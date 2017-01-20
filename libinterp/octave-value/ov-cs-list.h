@@ -38,8 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov-typeinfo.h"
 
-class tree_walker;
-
 // Lists.
 
 class

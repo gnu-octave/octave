@@ -503,7 +503,7 @@ do_edit_history (const octave_value_list& args)
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
-  source_file (name);
+  octave::source_file (name);
 }
 
 static void
@@ -525,7 +525,7 @@ do_run_history (const octave_value_list& args)
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
-  source_file (name);
+  octave::source_file (name);
 }
 
 void

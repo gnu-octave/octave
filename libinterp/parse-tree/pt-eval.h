@@ -32,17 +32,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "pt-walk.h"
 
-class tree_expression;
-
 namespace octave
 {
+  class tree_expression;
+
   class interpreter;
 
   // How to evaluate the code that the parse trees represent.
 
-  class
-  OCTINTERP_API
-  tree_evaluator : public tree_walker
+  class OCTINTERP_API tree_evaluator : public tree_walker
   {
   public:
 
@@ -50,7 +48,7 @@ namespace octave
 
     tree_evaluator (interpreter *interp_context)
       : m_interp_context (interp_context)
-    { }
+      { }
 
     // No copying!
 
@@ -202,5 +200,11 @@ namespace octave
 // recursively.
 extern int Vmax_recursion_depth;
 
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_evaluator' instead")
+typedef octave::tree_evaluator tree_evaluator;
+
 #endif
 
+#endif

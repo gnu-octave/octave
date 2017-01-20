@@ -37,8 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
-class tree_walker;
-
 // Real matrix values.
 
 template <typename DMT, typename MT>

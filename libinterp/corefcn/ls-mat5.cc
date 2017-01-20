@@ -887,7 +887,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         std::string dir_name = str.substr (0, xpos);
 
                         octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", "", fname);
+                          = octave::load_fcn_from_file (str, dir_name, "", "", fname);
 
                         if (fcn)
                           {
@@ -916,7 +916,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         std::string dir_name = str.substr (0, xpos);
 
                         octave_function *fcn
-                          = load_fcn_from_file (str, dir_name, "", "", fname);
+                          = octave::load_fcn_from_file (str, dir_name, "", "", fname);
 
                         if (fcn)
                           {
@@ -941,7 +941,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string dir_name = fpath.substr (0, xpos);
 
                     octave_function *fcn
-                      = load_fcn_from_file (fpath, dir_name, "", "", fname);
+                      = octave::load_fcn_from_file (fpath, dir_name, "", "", fname);
 
                     if (fcn)
                       {
@@ -1004,7 +1004,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             int parse_status;
             octave_value anon_fcn_handle =
-              eval_string (fname.substr (4), true, parse_status);
+              octave::eval_string (fname.substr (4), true, parse_status);
 
             if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
@@ -1209,7 +1209,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       {
                         try
                           {
-                            octave_value_list tmp = feval ("loadobj", tc, 1);
+                            octave_value_list tmp = octave::feval ("loadobj", tc, 1);
 
                             tc = tmp(0);
                           }
@@ -2606,7 +2606,7 @@ save_mat5_binary_element (std::ostream& os,
         {
           try
             {
-              octave_value_list tmp = feval ("saveobj", tc, 1);
+              octave_value_list tmp = octave::feval ("saveobj", tc, 1);
 
               m = tmp(0).map_value ();
             }

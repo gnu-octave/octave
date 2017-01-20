@@ -142,58 +142,58 @@ static void yyerror (octave::base_parser& parser, const char *s);
   int dummy_type;
 
   // The type of the basic tokens returned by the lexer.
-  token *tok_val;
+  octave::token *tok_val;
 
   // Comment strings that we need to deal with mid-rule.
   octave_comment_list *comment_type;
 
   // Types for the nonterminals we generate.
   char punct_type;
-  tree *tree_type;
-  tree_matrix *tree_matrix_type;
-  tree_cell *tree_cell_type;
-  tree_expression *tree_expression_type;
-  tree_constant *tree_constant_type;
-  tree_fcn_handle *tree_fcn_handle_type;
-  tree_funcall *tree_funcall_type;
-  tree_function_def *tree_function_def_type;
-  tree_anon_fcn_handle *tree_anon_fcn_handle_type;
-  tree_identifier *tree_identifier_type;
-  tree_index_expression *tree_index_expression_type;
-  tree_colon_expression *tree_colon_expression_type;
-  tree_argument_list *tree_argument_list_type;
-  tree_parameter_list *tree_parameter_list_type;
-  tree_command *tree_command_type;
-  tree_if_command *tree_if_command_type;
-  tree_if_clause *tree_if_clause_type;
-  tree_if_command_list *tree_if_command_list_type;
-  tree_switch_command *tree_switch_command_type;
-  tree_switch_case *tree_switch_case_type;
-  tree_switch_case_list *tree_switch_case_list_type;
-  tree_decl_elt *tree_decl_elt_type;
-  tree_decl_init_list *tree_decl_init_list_type;
-  tree_decl_command *tree_decl_command_type;
-  tree_statement *tree_statement_type;
-  tree_statement_list *tree_statement_list_type;
+  octave::tree *tree_type;
+  octave::tree_matrix *tree_matrix_type;
+  octave::tree_cell *tree_cell_type;
+  octave::tree_expression *tree_expression_type;
+  octave::tree_constant *tree_constant_type;
+  octave::tree_fcn_handle *tree_fcn_handle_type;
+  octave::tree_funcall *tree_funcall_type;
+  octave::tree_function_def *tree_function_def_type;
+  octave::tree_anon_fcn_handle *tree_anon_fcn_handle_type;
+  octave::tree_identifier *tree_identifier_type;
+  octave::tree_index_expression *tree_index_expression_type;
+  octave::tree_colon_expression *tree_colon_expression_type;
+  octave::tree_argument_list *tree_argument_list_type;
+  octave::tree_parameter_list *tree_parameter_list_type;
+  octave::tree_command *tree_command_type;
+  octave::tree_if_command *tree_if_command_type;
+  octave::tree_if_clause *tree_if_clause_type;
+  octave::tree_if_command_list *tree_if_command_list_type;
+  octave::tree_switch_command *tree_switch_command_type;
+  octave::tree_switch_case *tree_switch_case_type;
+  octave::tree_switch_case_list *tree_switch_case_list_type;
+  octave::tree_decl_elt *tree_decl_elt_type;
+  octave::tree_decl_init_list *tree_decl_init_list_type;
+  octave::tree_decl_command *tree_decl_command_type;
+  octave::tree_statement *tree_statement_type;
+  octave::tree_statement_list *tree_statement_list_type;
   octave_user_function *octave_user_function_type;
 
-  tree_classdef *tree_classdef_type;
-  tree_classdef_attribute* tree_classdef_attribute_type;
-  tree_classdef_attribute_list* tree_classdef_attribute_list_type;
-  tree_classdef_superclass* tree_classdef_superclass_type;
-  tree_classdef_superclass_list* tree_classdef_superclass_list_type;
-  tree_classdef_body* tree_classdef_body_type;
-  tree_classdef_property* tree_classdef_property_type;
-  tree_classdef_property_list* tree_classdef_property_list_type;
-  tree_classdef_properties_block* tree_classdef_properties_block_type;
-  tree_classdef_methods_list* tree_classdef_methods_list_type;
-  tree_classdef_methods_block* tree_classdef_methods_block_type;
-  tree_classdef_event* tree_classdef_event_type;
-  tree_classdef_events_list* tree_classdef_events_list_type;
-  tree_classdef_events_block* tree_classdef_events_block_type;
-  tree_classdef_enum* tree_classdef_enum_type;
-  tree_classdef_enum_list* tree_classdef_enum_list_type;
-  tree_classdef_enum_block* tree_classdef_enum_block_type;
+  octave::tree_classdef *tree_classdef_type;
+  octave::tree_classdef_attribute* tree_classdef_attribute_type;
+  octave::tree_classdef_attribute_list* tree_classdef_attribute_list_type;
+  octave::tree_classdef_superclass* tree_classdef_superclass_type;
+  octave::tree_classdef_superclass_list* tree_classdef_superclass_list_type;
+  octave::tree_classdef_body* tree_classdef_body_type;
+  octave::tree_classdef_property* tree_classdef_property_type;
+  octave::tree_classdef_property_list* tree_classdef_property_list_type;
+  octave::tree_classdef_properties_block* tree_classdef_properties_block_type;
+  octave::tree_classdef_methods_list* tree_classdef_methods_list_type;
+  octave::tree_classdef_methods_block* tree_classdef_methods_block_type;
+  octave::tree_classdef_event* tree_classdef_event_type;
+  octave::tree_classdef_events_list* tree_classdef_events_list_type;
+  octave::tree_classdef_events_block* tree_classdef_events_block_type;
+  octave::tree_classdef_enum* tree_classdef_enum_type;
+  octave::tree_classdef_enum_list* tree_classdef_enum_list_type;
+  octave::tree_classdef_enum_block* tree_classdef_enum_block_type;
 }
 
 // Tokens with line and column information.
@@ -423,7 +423,7 @@ simple_list1    : statement
                 ;
 
 opt_list        : // empty
-                  { $$ = new tree_statement_list (); }
+                  { $$ = new octave::tree_statement_list (); }
                 | list
                   { $$ = $1; }
                 ;
@@ -466,7 +466,7 @@ word_list_cmd   : identifier word_list
                 ;
 
 word_list       : string
-                  { $$ = new tree_argument_list ($1); }
+                  { $$ = new octave::tree_argument_list ($1); }
                 | word_list string
                   {
                     $1->append ($2);
@@ -481,7 +481,7 @@ word_list       : string
 identifier      : NAME
                   {
                     symbol_table::symbol_record *sr = $1->sym_rec ();
-                    $$ = new tree_identifier (*sr, $1->line (), $1->column ());
+                    $$ = new octave::tree_identifier (*sr, $1->line (), $1->column ());
                   }
                 ;
 
@@ -522,7 +522,7 @@ matrix          : '[' matrix_rows ']'
                 ;
 
 matrix_rows     : cell_or_matrix_row
-                  { $$ = $1 ? new tree_matrix ($1) : 0; }
+                  { $$ = $1 ? new octave::tree_matrix ($1) : 0; }
                 | matrix_rows ';' cell_or_matrix_row
                   {
                     if ($1)
@@ -533,7 +533,7 @@ matrix_rows     : cell_or_matrix_row
                         $$ = $1;
                       }
                     else
-                      $$ = $3 ? new tree_matrix ($3) : 0;
+                      $$ = $3 ? new octave::tree_matrix ($3) : 0;
                   }
                 ;
 
@@ -542,7 +542,7 @@ cell            : '{' cell_rows '}'
                 ;
 
 cell_rows       : cell_or_matrix_row
-                  { $$ = $1 ? new tree_cell ($1) : 0; }
+                  { $$ = $1 ? new octave::tree_cell ($1) : 0; }
                 | cell_rows ';' cell_or_matrix_row
                   {
                     if ($1)
@@ -553,7 +553,7 @@ cell_rows       : cell_or_matrix_row
                         $$ = $1;
                       }
                     else
-                      $$ = $3 ? new tree_cell ($3) : 0;
+                      $$ = $3 ? new octave::tree_cell ($3) : 0;
                   }
                 ;
 
@@ -615,7 +615,7 @@ magic_colon     : ':'
                     YYUSE ($1);
 
                     octave_value tmp (octave_value::magic_colon_t);
-                    $$ = new tree_constant (tmp);
+                    $$ = new octave::tree_constant (tmp);
                   }
                 ;
 
@@ -623,16 +623,16 @@ magic_tilde     : EXPR_NOT
                   {
                     YYUSE ($1);
 
-                    $$ = new tree_black_hole ();
+                    $$ = new octave::tree_black_hole ();
                   }
                 ;
 
 arg_list        : expression
-                  { $$ = new tree_argument_list ($1); }
+                  { $$ = new octave::tree_argument_list ($1); }
                 | magic_colon
-                  { $$ = new tree_argument_list ($1); }
+                  { $$ = new octave::tree_argument_list ($1); }
                 | magic_tilde
-                  { $$ = new tree_argument_list ($1); }
+                  { $$ = new octave::tree_argument_list ($1); }
                 | arg_list ',' magic_colon
                   {
                     $1->append ($3);
@@ -806,7 +806,7 @@ colon_expr      : colon_expr1
                 ;
 
 colon_expr1     : oper_expr
-                  { $$ = new tree_colon_expression ($1); }
+                  { $$ = new octave::tree_colon_expression ($1); }
                 | colon_expr1 ':' oper_expr
                   {
                     YYUSE ($2);
@@ -949,7 +949,7 @@ declaration     : GLOBAL decl1
                 ;
 
 decl1           : decl2
-                  { $$ = new tree_decl_init_list ($1); }
+                  { $$ = new octave::tree_decl_init_list ($1); }
                 | decl1 decl2
                   {
                     $1->append ($2);
@@ -964,13 +964,13 @@ decl_param_init : // empty
                   }
 
 decl2           : identifier
-                  { $$ = new tree_decl_elt ($1); }
+                  { $$ = new octave::tree_decl_elt ($1); }
                 | identifier '=' decl_param_init expression
                   {
                     YYUSE ($2);
 
                     lexer.looking_at_initializer_expression = false;
-                    $$ = new tree_decl_elt ($1, $4);
+                    $$ = new octave::tree_decl_elt ($1, $4);
                   }
                 ;
 
@@ -1038,7 +1038,7 @@ else_clause     : ELSE stash_comment opt_sep opt_list
                     YYUSE ($1);
                     YYUSE ($3);
 
-                    $$ = new tree_if_clause ($4, $2);
+                    $$ = new octave::tree_if_clause ($4, $2);
                   }
                 ;
 
@@ -1059,9 +1059,9 @@ switch_command  : SWITCH stash_comment expression opt_sep case_list END
                 ;
 
 case_list       : // empty
-                  { $$ = new tree_switch_case_list (); }
+                  { $$ = new octave::tree_switch_case_list (); }
                 | default_case
-                  { $$ = new tree_switch_case_list ($1); }
+                  { $$ = new octave::tree_switch_case_list ($1); }
                 | case_list1
                   { $$ = $1; }
                 | case_list1 default_case
@@ -1072,7 +1072,7 @@ case_list       : // empty
                 ;
 
 case_list1      : switch_case
-                  { $$ = new tree_switch_case_list ($1); }
+                  { $$ = new octave::tree_switch_case_list ($1); }
                 | case_list1 switch_case
                   {
                     $1->append ($2);
@@ -1094,7 +1094,7 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
                     YYUSE ($1);
                     YYUSE ($3);
 
-                    $$ = new tree_switch_case ($4, $2);
+                    $$ = new octave::tree_switch_case ($4, $2);
                   }
                 ;
 
@@ -1306,7 +1306,7 @@ param_list1     : // empty
                 | param_list2
                   {
                     $1->mark_as_formal_parameters ();
-                    if ($1->validate (tree_parameter_list::in))
+                    if ($1->validate (octave::tree_parameter_list::in))
                       {
                         lexer.mark_as_variables ($1->variable_names ());
                         $$ = $1;
@@ -1320,7 +1320,7 @@ param_list1     : // empty
                 ;
 
 param_list2     : param_list_elt
-                  { $$ = new tree_parameter_list ($1); }
+                  { $$ = new octave::tree_parameter_list ($1); }
                 | param_list2 ',' param_list_elt
                   {
                     $1->append ($3);
@@ -1331,7 +1331,7 @@ param_list2     : param_list_elt
 param_list_elt  : decl2
                   { $$ = $1; }
                 | magic_tilde
-                  { $$ = new tree_decl_elt ($1); }
+                  { $$ = new octave::tree_decl_elt ($1); }
                 ;
 
 // ===================================
@@ -1342,19 +1342,19 @@ return_list     : '[' ']'
                   {
                     lexer.looking_at_return_list = false;
 
-                    $$ = new tree_parameter_list ();
+                    $$ = new octave::tree_parameter_list ();
                   }
                 | identifier
                   {
                     lexer.looking_at_return_list = false;
 
-                    tree_parameter_list *tmp = new tree_parameter_list ($1);
+                    octave::tree_parameter_list *tmp = new octave::tree_parameter_list ($1);
 
                     // Even though this parameter list can contain only
                     // a single identifier, we still need to validate it
                     // to check for varargin or varargout.
 
-                    if (tmp->validate (tree_parameter_list::out))
+                    if (tmp->validate (octave::tree_parameter_list::out))
                       $$ = tmp;
                     else
                       {
@@ -1369,7 +1369,7 @@ return_list     : '[' ']'
                     // Check for duplicate parameter names, varargin,
                     // or varargout.
 
-                    if ($2->validate (tree_parameter_list::out))
+                    if ($2->validate (octave::tree_parameter_list::out))
                       $$ = $2;
                     else
                       {
@@ -1380,10 +1380,10 @@ return_list     : '[' ']'
                 ;
 
 return_list1    : identifier
-                  { $$ = new tree_parameter_list (new tree_decl_elt ($1)); }
+                  { $$ = new octave::tree_parameter_list (new octave::tree_decl_elt ($1)); }
                 | return_list1 ',' identifier
                   {
-                    $1->append (new tree_decl_elt ($3));
+                    $1->append (new octave::tree_decl_elt ($3));
                     $$ = $1;
                   }
                 ;
@@ -1408,7 +1408,7 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                       }
                     else
                       {
-                        tree_statement *end_of_script
+                        octave::tree_statement *end_of_script
                           = parser.make_end ("endscript", true,
                                              lexer.input_line_number,
                                              lexer.current_input_column);
@@ -1630,7 +1630,7 @@ opt_attr_list   : // empty
                 ;
 
 attr_list       : attr
-                  { $$ = new tree_classdef_attribute_list ($1); }
+                  { $$ = new octave::tree_classdef_attribute_list ($1); }
                 | attr_list ',' attr
                   {
                     $1->append ($3);
@@ -1639,19 +1639,19 @@ attr_list       : attr
                 ;
 
 attr            : identifier
-                  { $$ = new tree_classdef_attribute ($1); }
+                  { $$ = new octave::tree_classdef_attribute ($1); }
                 | identifier '=' decl_param_init expression
                   {
                     YYUSE ($2);
 
                     lexer.looking_at_initializer_expression = false;
-                    $$ = new tree_classdef_attribute ($1, $4);
+                    $$ = new octave::tree_classdef_attribute ($1, $4);
                   }
                 | EXPR_NOT identifier
                   {
                     YYUSE ($1);
 
-                    $$ = new tree_classdef_attribute ($2, false);
+                    $$ = new octave::tree_classdef_attribute ($2, false);
                   }
                 ;
 
@@ -1669,7 +1669,7 @@ superclass_list : EXPR_LT
                     lexer.enable_fq_identifier ();
                   }
                   superclass
-                  { $$ = new tree_classdef_superclass_list ($3); }
+                  { $$ = new octave::tree_classdef_superclass_list ($3); }
                 | superclass_list EXPR_AND
                   {
                     YYUSE ($2);
@@ -1684,17 +1684,17 @@ superclass_list : EXPR_LT
                 ;
 
 superclass      : FQ_IDENT
-                  { $$ = new tree_classdef_superclass ($1->text ()); }
+                  { $$ = new octave::tree_classdef_superclass ($1->text ()); }
                 ;
 
 class_body      : properties_block
-                  { $$ = new tree_classdef_body ($1); }
+                  { $$ = new octave::tree_classdef_body ($1); }
                 | methods_block
-                  { $$ = new tree_classdef_body ($1); }
+                  { $$ = new octave::tree_classdef_body ($1); }
                 | events_block
-                  { $$ = new tree_classdef_body ($1); }
+                  { $$ = new octave::tree_classdef_body ($1); }
                 | enum_block
-                  { $$ = new tree_classdef_body ($1); }
+                  { $$ = new octave::tree_classdef_body ($1); }
                 | class_body opt_sep properties_block
                   {
                     YYUSE ($2);
@@ -1753,7 +1753,7 @@ properties_block
 
 property_list
                 : class_property
-                  { $$ = new tree_classdef_property_list ($1); }
+                  { $$ = new octave::tree_classdef_property_list ($1); }
                 | property_list sep class_property
                   {
                     YYUSE ($2);
@@ -1764,13 +1764,13 @@ property_list
                 ;
 
 class_property  : identifier
-                  { $$ = new tree_classdef_property ($1); }
+                  { $$ = new octave::tree_classdef_property ($1); }
                 | identifier '=' decl_param_init expression
                   {
                     YYUSE ($2);
 
                     lexer.looking_at_initializer_expression = false;
-                    $$ = new tree_classdef_property ($1, $4);
+                    $$ = new octave::tree_classdef_property ($1, $4);
                   }
                 ;
 
@@ -1841,7 +1841,7 @@ methods_list    : method
                     if ($1)
                       fcn = $1->function ();
                     delete $1;
-                    $$ = new tree_classdef_methods_list (fcn);
+                    $$ = new octave::tree_classdef_methods_list (fcn);
                   }
                 | methods_list opt_sep method
                   {
@@ -1883,7 +1883,7 @@ events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep
                 ;
 
 events_list     : class_event
-                  { $$ = new tree_classdef_events_list ($1); }
+                  { $$ = new octave::tree_classdef_events_list ($1); }
                 | events_list opt_sep class_event
                   {
                     YYUSE ($2);
@@ -1894,7 +1894,7 @@ events_list     : class_event
                 ;
 
 class_event     : identifier
-                  { $$ = new tree_classdef_event ($1); }
+                  { $$ = new octave::tree_classdef_event ($1); }
                 ;
 
 enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_sep END
@@ -1923,7 +1923,7 @@ enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_
                 ;
 
 enum_list       : class_enum
-                  { $$ = new tree_classdef_enum_list ($1); }
+                  { $$ = new octave::tree_classdef_enum_list ($1); }
                 | enum_list opt_sep class_enum
                   {
                     YYUSE ($2);
@@ -1934,7 +1934,7 @@ enum_list       : class_enum
                 ;
 
 class_enum      : identifier '(' expression ')'
-                  { $$ = new tree_classdef_enum ($1, $3); }
+                  { $$ = new octave::tree_classdef_enum ($1, $3); }
                 ;
 
 // =============
@@ -4336,177 +4336,180 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
   return fcn_ptr;
 }
 
-std::string
-get_help_from_file (const std::string& nm, bool& symbol_found,
-                    std::string& full_file)
+namespace octave
 {
-  std::string retval;
+  std::string
+  get_help_from_file (const std::string& nm, bool& symbol_found,
+                      std::string& full_file)
+  {
+    std::string retval;
 
-  full_file = fcn_file_in_path (nm);
+    full_file = fcn_file_in_path (nm);
 
-  std::string file = full_file;
+    std::string file = full_file;
 
-  size_t file_len = file.length ();
+    size_t file_len = file.length ();
 
-  if ((file_len > 4 && file.substr (file_len-4) == ".oct")
-      || (file_len > 4 && file.substr (file_len-4) == ".mex")
-      || (file_len > 2 && file.substr (file_len-2) == ".m"))
-    {
-      file = octave::sys::env::base_pathname (file);
-      file = file.substr (0, file.find_last_of ('.'));
+    if ((file_len > 4 && file.substr (file_len-4) == ".oct")
+        || (file_len > 4 && file.substr (file_len-4) == ".mex")
+        || (file_len > 2 && file.substr (file_len-2) == ".m"))
+      {
+        file = octave::sys::env::base_pathname (file);
+        file = file.substr (0, file.find_last_of ('.'));
 
-      size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
-      if (pos != std::string::npos)
-        file = file.substr (pos+1);
-    }
+        size_t pos = file.find_last_of (octave::sys::file_ops::dir_sep_str ());
+        if (pos != std::string::npos)
+          file = file.substr (pos+1);
+      }
 
-  if (! file.empty ())
-    {
-      symbol_found = true;
+    if (! file.empty ())
+      {
+        symbol_found = true;
 
-      octave_function *fcn
-        = parse_fcn_file (full_file, file, "", "", true, false, false, false,
-                          "");
+        octave_function *fcn
+          = parse_fcn_file (full_file, file, "", "", true, false, false, false,
+                            "");
 
-      if (fcn)
-        {
-          retval = fcn->doc_string ();
+        if (fcn)
+          {
+            retval = fcn->doc_string ();
 
-          delete fcn;
-        }
-    }
+            delete fcn;
+          }
+      }
 
-  return retval;
-}
+    return retval;
+  }
 
-std::string
-get_help_from_file (const std::string& nm, bool& symbol_found)
-{
-  std::string file;
-  return get_help_from_file (nm, symbol_found, file);
-}
+  std::string
+  get_help_from_file (const std::string& nm, bool& symbol_found)
+  {
+    std::string file;
+    return get_help_from_file (nm, symbol_found, file);
+  }
 
-std::string
-lookup_autoload (const std::string& nm)
-{
-  std::string retval;
+  std::string
+  lookup_autoload (const std::string& nm)
+  {
+    std::string retval;
 
-  typedef std::map<std::string, std::string>::const_iterator am_iter;
+    typedef std::map<std::string, std::string>::const_iterator am_iter;
 
-  am_iter p = autoload_map.find (nm);
+    am_iter p = autoload_map.find (nm);
 
-  if (p != autoload_map.end ())
-    retval = load_path::find_file (p->second);
+    if (p != autoload_map.end ())
+      retval = load_path::find_file (p->second);
 
-  return retval;
-}
+    return retval;
+  }
 
-string_vector
-autoloaded_functions (void)
-{
-  string_vector names (autoload_map.size ());
+  string_vector
+  autoloaded_functions (void)
+  {
+    string_vector names (autoload_map.size ());
 
-  octave_idx_type i = 0;
-  for (const auto& fcn_fname : autoload_map)
-    names[i++] = fcn_fname.first;
+    octave_idx_type i = 0;
+    for (const auto& fcn_fname : autoload_map)
+      names[i++] = fcn_fname.first;
 
-  return names;
-}
+    return names;
+  }
 
-string_vector
-reverse_lookup_autoload (const std::string& nm)
-{
-  string_vector names;
+  string_vector
+  reverse_lookup_autoload (const std::string& nm)
+  {
+    string_vector names;
 
-  for (const auto& fcn_fname : autoload_map)
-    if (nm == fcn_fname.second)
-      names.append (fcn_fname.first);
+    for (const auto& fcn_fname : autoload_map)
+      if (nm == fcn_fname.second)
+        names.append (fcn_fname.first);
 
-  return names;
-}
+    return names;
+  }
 
-octave_function *
-load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
-                    const std::string& dispatch_type,
-                    const std::string& package_name,
-                    const std::string& fcn_name, bool autoload)
-{
-  octave_function *retval = 0;
+  octave_function *
+  load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
+                      const std::string& dispatch_type,
+                      const std::string& package_name,
+                      const std::string& fcn_name, bool autoload)
+  {
+    octave_function *retval = 0;
 
-  octave::unwind_protect frame;
+    octave::unwind_protect frame;
 
-  std::string nm = file_name;
+    std::string nm = file_name;
 
-  size_t nm_len = nm.length ();
+    size_t nm_len = nm.length ();
 
-  std::string file;
+    std::string file;
 
-  bool relative_lookup = false;
+    bool relative_lookup = false;
 
-  file = nm;
+    file = nm;
 
-  if ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
-      || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
-      || (nm_len > 2 && nm.substr (nm_len-2) == ".m"))
-    {
-      nm = octave::sys::env::base_pathname (file);
-      nm = nm.substr (0, nm.find_last_of ('.'));
+    if ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
+        || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
+        || (nm_len > 2 && nm.substr (nm_len-2) == ".m"))
+      {
+        nm = octave::sys::env::base_pathname (file);
+        nm = nm.substr (0, nm.find_last_of ('.'));
 
-      size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_str ());
-      if (pos != std::string::npos)
-        nm = nm.substr (pos+1);
-    }
+        size_t pos = nm.find_last_of (octave::sys::file_ops::dir_sep_str ());
+        if (pos != std::string::npos)
+          nm = nm.substr (pos+1);
+      }
 
-  relative_lookup = ! octave::sys::env::absolute_pathname (file);
+    relative_lookup = ! octave::sys::env::absolute_pathname (file);
 
-  file = octave::sys::env::make_absolute (file);
+    file = octave::sys::env::make_absolute (file);
 
-  int len = file.length ();
+    int len = file.length ();
 
-  if (len > 4 && file.substr (len-4, len-1) == ".oct")
-    {
-      if (autoload && ! fcn_name.empty ())
-        nm = fcn_name;
+    if (len > 4 && file.substr (len-4, len-1) == ".oct")
+      {
+        if (autoload && ! fcn_name.empty ())
+          nm = fcn_name;
 
-      retval = octave::dynamic_loader::load_oct (nm, file, relative_lookup);
-    }
-  else if (len > 4 && file.substr (len-4, len-1) == ".mex")
-    {
-      // Temporarily load m-file version of mex-file, if it exists,
-      // to get the help-string to use.
+        retval = octave::dynamic_loader::load_oct (nm, file, relative_lookup);
+      }
+    else if (len > 4 && file.substr (len-4, len-1) == ".mex")
+      {
+        // Temporarily load m-file version of mex-file, if it exists,
+        // to get the help-string to use.
 
-      octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                nm, dispatch_type,
-                                                package_name, false,
-                                                autoload, autoload,
-                                                relative_lookup, "");
+        octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
+                                                  nm, dispatch_type,
+                                                  package_name, false,
+                                                  autoload, autoload,
+                                                  relative_lookup, "");
 
-      retval = octave::dynamic_loader::load_mex (nm, file, relative_lookup);
+        retval = octave::dynamic_loader::load_mex (nm, file, relative_lookup);
 
-      if (tmpfcn)
-        retval->document (tmpfcn->doc_string ());
-      delete tmpfcn;
-    }
-  else if (len > 2)
-    {
-      retval = parse_fcn_file (file, nm, dispatch_type, package_name, true,
-                               autoload, autoload, relative_lookup, "");
-    }
+        if (tmpfcn)
+          retval->document (tmpfcn->doc_string ());
+        delete tmpfcn;
+      }
+    else if (len > 2)
+      {
+        retval = parse_fcn_file (file, nm, dispatch_type, package_name, true,
+                                 autoload, autoload, relative_lookup, "");
+      }
 
-  if (retval)
-    {
-      retval->stash_dir_name (dir_name);
-      retval->stash_package_name (package_name);
+    if (retval)
+      {
+        retval->stash_dir_name (dir_name);
+        retval->stash_package_name (package_name);
 
-      if (retval->is_user_function ())
-        {
-          symbol_table::scope_id id = retval->scope ();
+        if (retval->is_user_function ())
+          {
+            symbol_table::scope_id id = retval->scope ();
 
-          symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
-        }
-    }
+            symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
+          }
+      }
 
-  return retval;
+    return retval;
+  }
 }
 
 DEFUN (autoload, args, ,
@@ -4629,148 +4632,151 @@ not loaded anymore during the current Octave session.
   return retval;
 }
 
-void
-source_file (const std::string& file_name, const std::string& context,
-             bool verbose, bool require_file, const std::string& warn_for)
+namespace octave
 {
-  // Map from absolute name of script file to recursion level.  We
-  // use a map instead of simply placing a limit on recursion in the
-  // source_file function so that two mutually recursive scripts
-  // written as
-  //
-  //   foo1.m:
-  //   ------
-  //   foo2
-  //
-  //   foo2.m:
-  //   ------
-  //   foo1
-  //
-  // and called with
-  //
-  //   foo1
-  //
-  // (for example) will behave the same if they are written as
-  //
-  //   foo1.m:
-  //   ------
-  //   source ("foo2.m")
-  //
-  //   foo2.m:
-  //   ------
-  //   source ("foo1.m")
-  //
-  // and called with
-  //
-  //   source ("foo1.m")
-  //
-  // (for example).
+  void
+  source_file (const std::string& file_name, const std::string& context,
+               bool verbose, bool require_file, const std::string& warn_for)
+  {
+    // Map from absolute name of script file to recursion level.  We
+    // use a map instead of simply placing a limit on recursion in the
+    // source_file function so that two mutually recursive scripts
+    // written as
+    //
+    //   foo1.m:
+    //   ------
+    //   foo2
+    //
+    //   foo2.m:
+    //   ------
+    //   foo1
+    //
+    // and called with
+    //
+    //   foo1
+    //
+    // (for example) will behave the same if they are written as
+    //
+    //   foo1.m:
+    //   ------
+    //   source ("foo2.m")
+    //
+    //   foo2.m:
+    //   ------
+    //   source ("foo1.m")
+    //
+    // and called with
+    //
+    //   source ("foo1.m")
+    //
+    // (for example).
 
-  static std::map<std::string, int> source_call_depth;
+    static std::map<std::string, int> source_call_depth;
 
-  std::string file_full_name = octave::sys::file_ops::tilde_expand (file_name);
+    std::string file_full_name = octave::sys::file_ops::tilde_expand (file_name);
 
-  file_full_name = octave::sys::env::make_absolute (file_full_name);
+    file_full_name = octave::sys::env::make_absolute (file_full_name);
 
-  octave::unwind_protect frame;
+    octave::unwind_protect frame;
 
-  if (source_call_depth.find (file_full_name) == source_call_depth.end ())
-    source_call_depth[file_full_name] = -1;
+    if (source_call_depth.find (file_full_name) == source_call_depth.end ())
+      source_call_depth[file_full_name] = -1;
 
-  frame.protect_var (source_call_depth[file_full_name]);
+    frame.protect_var (source_call_depth[file_full_name]);
 
-  source_call_depth[file_full_name]++;
+    source_call_depth[file_full_name]++;
 
-  if (source_call_depth[file_full_name] >= Vmax_recursion_depth)
-    error ("max_recursion_depth exceeded");
+    if (source_call_depth[file_full_name] >= Vmax_recursion_depth)
+      error ("max_recursion_depth exceeded");
 
-  if (! context.empty ())
-    {
-      if (context == "caller")
-        octave::call_stack::goto_caller_frame ();
-      else if (context == "base")
-        octave::call_stack::goto_base_frame ();
-      else
-        error ("source: context must be \"caller\" or \"base\"");
+    if (! context.empty ())
+      {
+        if (context == "caller")
+          octave::call_stack::goto_caller_frame ();
+        else if (context == "base")
+          octave::call_stack::goto_base_frame ();
+        else
+          error ("source: context must be \"caller\" or \"base\"");
 
-      frame.add_fcn (octave::call_stack::pop);
-    }
+        frame.add_fcn (octave::call_stack::pop);
+      }
 
-  octave_function *fcn = 0;
-  // Don't delete a function already in symbol_table
-  bool delete_fcn = false;
+    octave_function *fcn = 0;
+    // Don't delete a function already in symbol_table
+    bool delete_fcn = false;
 
-  // Find symbol name that would be in symbol_table, if it were loaded.
-  size_t dir_end = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
-  dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
+    // Find symbol name that would be in symbol_table, if it were loaded.
+    size_t dir_end = file_name.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+    dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
 
-  size_t extension = file_name.find_last_of ('.');
-  if (extension == std::string::npos)
-    extension = file_name.length ();
+    size_t extension = file_name.find_last_of ('.');
+    if (extension == std::string::npos)
+      extension = file_name.length ();
 
-  std::string symbol = file_name.substr (dir_end, extension - dir_end);
-  std::string full_name = octave::sys::canonicalize_file_name (file_name);
+    std::string symbol = file_name.substr (dir_end, extension - dir_end);
+    std::string full_name = octave::sys::canonicalize_file_name (file_name);
 
-  // Check if this file is already loaded (or in the path)
-  octave_value loaded_sym = symbol_table::find (symbol);
-  if (loaded_sym.is_function ())
-    {
-      fcn = loaded_sym.function_value ();
-      if (fcn)
-        {
-          if (octave::sys::canonicalize_file_name (fcn->fcn_file_name ())
-              != full_name)
-            {
-              fcn = 0;             // wrong file, so load it below
-              delete_fcn = true;   // and delete it when done.
-            }
-        }
-    }
+    // Check if this file is already loaded (or in the path)
+    octave_value loaded_sym = symbol_table::find (symbol);
+    if (loaded_sym.is_function ())
+      {
+        fcn = loaded_sym.function_value ();
+        if (fcn)
+          {
+            if (octave::sys::canonicalize_file_name (fcn->fcn_file_name ())
+                != full_name)
+              {
+                fcn = 0;             // wrong file, so load it below
+                delete_fcn = true;   // and delete it when done.
+              }
+          }
+      }
 
-  // If no symbol of this name, or the symbol is for a different file, load
-  if (! fcn)
-    {
-      try
-        {
-          fcn = parse_fcn_file (file_full_name, file_name, "", "",
-                                require_file, true, false, false, warn_for);
-        }
-      catch (octave::execution_exception& e)
-        {
-          error (e, "source: error sourcing file '%s'",
-                 file_full_name.c_str ());
-        }
-    }
+    // If no symbol of this name, or the symbol is for a different file, load
+    if (! fcn)
+      {
+        try
+          {
+            fcn = parse_fcn_file (file_full_name, file_name, "", "",
+                                  require_file, true, false, false, warn_for);
+          }
+        catch (octave::execution_exception& e)
+          {
+            error (e, "source: error sourcing file '%s'",
+                   file_full_name.c_str ());
+          }
+      }
 
-  // Return or error if we don't have a valid script
-  if (! fcn)
-    return;
+    // Return or error if we don't have a valid script
+    if (! fcn)
+      return;
 
-  if (! fcn->is_user_code ())
-    {
-      if (delete_fcn)
-        delete fcn;
-      error ("source: %s is not a script", full_name.c_str ());
-    }
+    if (! fcn->is_user_code ())
+      {
+        if (delete_fcn)
+          delete fcn;
+        error ("source: %s is not a script", full_name.c_str ());
+      }
 
-  // Parameter checking is over.  Now run.
-  octave_value_list args;
+    // Parameter checking is over.  Now run.
+    octave_value_list args;
 
-  if (verbose)
-    {
-      std::cout << "executing commands from " << full_name << " ... ";
-      reading_startup_message_printed = true;
-      std::cout.flush ();
-    }
+    if (verbose)
+      {
+        std::cout << "executing commands from " << full_name << " ... ";
+        reading_startup_message_printed = true;
+        std::cout.flush ();
+      }
 
-  fcn->do_multi_index_op (0, args);
+    fcn->do_multi_index_op (0, args);
 
-  if (verbose)
-    std::cout << "done." << std::endl;
+    if (verbose)
+      std::cout << "done." << std::endl;
 
-  // Delete scripts not on the path, so they don't shadow ones that are.
-  if (delete_fcn)
-    delete fcn;
+    // Delete scripts not on the path, so they don't shadow ones that are.
+    if (delete_fcn)
+      delete fcn;
+  }
 }
 
 DEFUN (mfilename, args, ,
@@ -4864,12 +4870,14 @@ context of the function that called the present function
   if (nargin == 2)
     context = args(1).xstring_value ("source: CONTEXT must be a string");
 
-  source_file (file_name, context);
+  octave::source_file (file_name, context);
 
   return retval;
 }
 
-/*!
+namespace octave
+{
+  /*!
     Evaluate an Octave function (built-in or interpreted) and return
     the list of result values.
 
@@ -4877,33 +4885,34 @@ context of the function that called the present function
     @param args The arguments to the function.
     @param nargout The number of output arguments expected.
     @return A list of output values.  The length of the list is not
-      necessarily the same as @c nargout.
+    necessarily the same as @c nargout.
 
-*/
-octave_value_list
-feval (const std::string& name, const octave_value_list& args, int nargout)
-{
-  octave_value_list retval;
+  */
+  octave_value_list
+  feval (const std::string& name, const octave_value_list& args, int nargout)
+  {
+    octave_value_list retval;
 
-  octave_value fcn = symbol_table::find_function (name, args);
+    octave_value fcn = symbol_table::find_function (name, args);
 
-  if (fcn.is_defined ())
-    retval = fcn.do_multi_index_op (nargout, args);
-  else
-    error ("feval: function '%s' not found", name.c_str ());
+    if (fcn.is_defined ())
+      retval = fcn.do_multi_index_op (nargout, args);
+    else
+      error ("feval: function '%s' not found", name.c_str ());
 
-  return retval;
-}
+    return retval;
+  }
 
-octave_value_list
-feval (octave_function *fcn, const octave_value_list& args, int nargout)
-{
-  octave_value_list retval;
+  octave_value_list
+  feval (octave_function *fcn, const octave_value_list& args, int nargout)
+  {
+    octave_value_list retval;
 
-  if (fcn)
-    retval = fcn->do_multi_index_op (nargout, args);
+    if (fcn)
+      retval = fcn->do_multi_index_op (nargout, args);
 
-  return retval;
+    return retval;
+  }
 }
 
 static octave_value_list
@@ -4912,48 +4921,51 @@ get_feval_args (const octave_value_list& args)
   return args.slice (1, args.length () - 1, true);
 }
 
-/*!
+namespace octave
+{
+  /*!
     Evaluate an Octave function (built-in or interpreted) and return
     the list of result values.
 
     @param args The first element of @c args is the function to call.
-      It may be the name of the function as a string, a function
-      handle, or an inline function.  The remaining arguments are
-      passed to the function.
+    It may be the name of the function as a string, a function
+    handle, or an inline function.  The remaining arguments are
+    passed to the function.
     @param nargout The number of output arguments expected.
     @return A list of output values.  The length of the list is not
-      necessarily the same as @c nargout.
-*/
-octave_value_list
-feval (const octave_value_list& args, int nargout)
-{
-  octave_value_list retval;
+    necessarily the same as @c nargout.
+  */
+  octave_value_list
+  feval (const octave_value_list& args, int nargout)
+  {
+    octave_value_list retval;
 
-  if (args.length () > 0)
-    {
-      octave_value f_arg = args(0);
+    if (args.length () > 0)
+      {
+        octave_value f_arg = args(0);
 
-      if (f_arg.is_string ())
-        {
-          std::string name = f_arg.string_value ();
+        if (f_arg.is_string ())
+          {
+            std::string name = f_arg.string_value ();
 
-          octave_value_list tmp_args = get_feval_args (args);
+            octave_value_list tmp_args = get_feval_args (args);
 
-          retval = feval (name, tmp_args, nargout);
-        }
-      else if (f_arg.is_function_handle ()
-               || f_arg.is_anonymous_function ()
-               || f_arg.is_inline_function ())
-        {
-          const octave_value_list tmp_args = get_feval_args (args);
+            retval = octave::feval (name, tmp_args, nargout);
+          }
+        else if (f_arg.is_function_handle ()
+                 || f_arg.is_anonymous_function ()
+                 || f_arg.is_inline_function ())
+          {
+            const octave_value_list tmp_args = get_feval_args (args);
 
-          retval = f_arg.do_multi_index_op (nargout, tmp_args);
-        }
-      else
-        error ("feval: first argument must be a string, inline function, or a function handle");
-    }
+            retval = f_arg.do_multi_index_op (nargout, tmp_args);
+          }
+        else
+          error ("feval: first argument must be a string, inline function, or a function handle");
+      }
 
-  return retval;
+    return retval;
+  }
 }
 
 DEFUN (feval, args, nargout,
@@ -4999,7 +5011,7 @@ instead.
   if (args.length () == 0)
     print_usage ();
 
-  return feval (args, nargout);
+  return octave::feval (args, nargout);
 }
 
 DEFUN (builtin, args, nargout,
@@ -5038,111 +5050,114 @@ builtin ("sin", 0)
   octave_value fcn = symbol_table::builtin_find (name);
 
   if (fcn.is_defined ())
-    retval = feval (fcn.function_value (), args.splice (0, 1), nargout);
+    retval = octave::feval (fcn.function_value (), args.splice (0, 1), nargout);
   else
     error ("builtin: lookup for symbol '%s' failed", name.c_str ());
 
   return retval;
 }
 
-octave_value_list
-eval_string (const std::string& eval_str, bool silent,
-             int& parse_status, int nargout)
+namespace octave
 {
-  octave_value_list retval;
+  octave_value_list
+  eval_string (const std::string& eval_str, bool silent,
+               int& parse_status, int nargout)
+  {
+    octave_value_list retval;
 
-  octave::parser parser (eval_str);
+    octave::parser parser (eval_str);
 
-  do
-    {
-      parser.reset ();
+    do
+      {
+        parser.reset ();
 
-      parse_status = parser.run ();
+        parse_status = parser.run ();
 
-      if (parse_status == 0)
-        {
-          if (parser.stmt_list)
-            {
-              tree_statement *stmt = 0;
+        if (parse_status == 0)
+          {
+            if (parser.stmt_list)
+              {
+                tree_statement *stmt = 0;
 
-              if (parser.stmt_list->length () == 1
-                  && (stmt = parser.stmt_list->front ())
-                  && stmt->is_expression ())
-                {
-                  tree_expression *expr = stmt->expression ();
+                if (parser.stmt_list->length () == 1
+                    && (stmt = parser.stmt_list->front ())
+                    && stmt->is_expression ())
+                  {
+                    tree_expression *expr = stmt->expression ();
 
-                  if (silent)
-                    expr->set_print_flag (false);
+                    if (silent)
+                      expr->set_print_flag (false);
 
-                  bool do_bind_ans = false;
+                    bool do_bind_ans = false;
 
-                  if (expr->is_identifier ())
-                    {
-                      tree_identifier *id
-                        = dynamic_cast<tree_identifier *> (expr);
+                    if (expr->is_identifier ())
+                      {
+                        tree_identifier *id
+                          = dynamic_cast<tree_identifier *> (expr);
 
-                      do_bind_ans = (! id->is_variable ());
-                    }
-                  else
-                    do_bind_ans = (! expr->is_assignment_expression ());
+                        do_bind_ans = (! id->is_variable ());
+                      }
+                    else
+                      do_bind_ans = (! expr->is_assignment_expression ());
 
-                  retval = expr->rvalue (nargout);
+                    retval = expr->rvalue (nargout);
 
-                  if (do_bind_ans && ! retval.empty ())
-                    bind_ans (retval(0), expr->print_result ());
+                    if (do_bind_ans && ! retval.empty ())
+                      bind_ans (retval(0), expr->print_result ());
 
-                  if (nargout == 0)
-                    retval = octave_value_list ();
-                }
-              else if (nargout == 0)
-                parser.stmt_list->accept (*octave::current_evaluator);
-              else
-                error ("eval: invalid use of statement list");
+                    if (nargout == 0)
+                      retval = octave_value_list ();
+                  }
+                else if (nargout == 0)
+                  parser.stmt_list->accept (*octave::current_evaluator);
+                else
+                  error ("eval: invalid use of statement list");
 
-              if (tree_return_command::returning
-                  || tree_break_command::breaking
-                  || tree_continue_command::continuing)
-                break;
-            }
-          else if (parser.lexer.end_of_input)
-            break;
-        }
-    }
-  while (parse_status == 0);
+                if (tree_return_command::returning
+                    || tree_break_command::breaking
+                    || tree_continue_command::continuing)
+                  break;
+              }
+            else if (parser.lexer.end_of_input)
+              break;
+          }
+      }
+    while (parse_status == 0);
 
-  return retval;
-}
+    return retval;
+  }
 
-octave_value
-eval_string (const std::string& eval_str, bool silent, int& parse_status)
-{
-  octave_value retval;
+  octave_value
+  eval_string (const std::string& eval_str, bool silent, int& parse_status)
+  {
+    octave_value retval;
 
-  octave_value_list tmp = eval_string (eval_str, silent, parse_status, 1);
+    octave_value_list tmp = eval_string (eval_str, silent, parse_status, 1);
 
-  if (! tmp.empty ())
-    retval = tmp(0);
+    if (! tmp.empty ())
+      retval = tmp(0);
 
-  return retval;
-}
+    return retval;
+  }
 
-static octave_value_list
-eval_string (const octave_value& arg, bool silent, int& parse_status,
-             int nargout)
-{
-  std::string s = arg.xstring_value ("eval: expecting std::string argument");
+  static octave_value_list
+  eval_string (const octave_value& arg, bool silent, int& parse_status,
+               int nargout)
+  {
+    std::string s = arg.xstring_value ("eval: expecting std::string argument");
 
-  return eval_string (s, silent, parse_status, nargout);
-}
+    return eval_string (s, silent, parse_status, nargout);
+  }
 
-void
-cleanup_statement_list (tree_statement_list **lst)
-{
-  if (*lst)
-    {
-      delete *lst;
-      *lst = 0;
-    }
+  void
+  cleanup_statement_list (tree_statement_list **lst)
+  {
+    if (*lst)
+      {
+        delete *lst;
+        *lst = 0;
+      }
+  }
 }
 
 DEFUN (eval, args, nargout,
@@ -5208,7 +5223,7 @@ does.
 
   try
     {
-      tmp = eval_string (args(0), nargout > 0, parse_status, nargout);
+      tmp = octave::eval_string (args(0), nargout > 0, parse_status, nargout);
     }
   catch (const octave::execution_exception&)
     {
@@ -5224,7 +5239,7 @@ does.
 
       buffer_error_messages--;
 
-      tmp = eval_string (args(1), nargout > 0, parse_status, nargout);
+      tmp = octave::eval_string (args(1), nargout > 0, parse_status, nargout);
 
       if (nargout > 0)
         retval = tmp;
@@ -5377,8 +5392,8 @@ Like @code{eval}, except that the expressions are evaluated in the context
 
   try
     {
-      tmp = eval_string (args(1), nargout > 0,
-                         parse_status, nargout);
+      tmp = octave::eval_string (args(1), nargout > 0,
+                                 parse_status, nargout);
     }
   catch (const octave::execution_exception&)
     {
@@ -5394,8 +5409,8 @@ Like @code{eval}, except that the expressions are evaluated in the context
 
       buffer_error_messages--;
 
-      tmp = eval_string (args(2), nargout > 0,
-                         parse_status, nargout);
+      tmp = octave::eval_string (args(2), nargout > 0,
+                                 parse_status, nargout);
 
       retval = (nargout > 0) ? tmp : octave_value_list ();
     }

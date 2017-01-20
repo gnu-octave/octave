@@ -444,7 +444,7 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
           // methods, it's the first argument of the function; for ctors, it
           // is the first return value.
 
-          tree_parameter_list* pl = uf->is_classdef_constructor ()
+          octave::tree_parameter_list* pl = uf->is_classdef_constructor ()
             ? uf->return_list () : uf->parameter_list ();
 
           if (pl && pl->size () > 0)
@@ -1181,7 +1181,7 @@ private:
 
         if (uf)
           {
-            tree_parameter_list *ret_list = uf->return_list ();
+            octave::tree_parameter_list *ret_list = uf->return_list ();
 
             if (ret_list && ret_list->length () == 1)
               return (ret_list->front ()->name () == nm);
@@ -1831,40 +1831,40 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
   return cdef_method ();
 }
 
-class ctor_analyzer : public tree_walker
+class ctor_analyzer : public octave::tree_walker
 {
 public:
   ctor_analyzer (const std::string& ctor, const std::string& obj)
-    : tree_walker (), who (ctor), obj_name (obj) { }
+    : octave::tree_walker (), who (ctor), obj_name (obj) { }
 
-  void visit_statement_list (tree_statement_list& t)
+  void visit_statement_list (octave::tree_statement_list& t)
   {
     for (const auto& stmt_p : t)
       stmt_p->accept (*this);
   }
 
-  void visit_statement (tree_statement& t)
+  void visit_statement (octave::tree_statement& t)
   {
     if (t.is_expression ())
       t.expression ()->accept (*this);
   }
 
-  void visit_simple_assignment (tree_simple_assignment& t)
+  void visit_simple_assignment (octave::tree_simple_assignment& t)
   {
     t.right_hand_side ()->accept (*this);
   }
 
-  void visit_multi_assignment (tree_multi_assignment& t)
+  void visit_multi_assignment (octave::tree_multi_assignment& t)
   {
     t.right_hand_side ()->accept (*this);
   }
 
-  void visit_index_expression (tree_index_expression& t)
+  void visit_index_expression (octave::tree_index_expression& t)
   {
     t.expression ()->accept (*this);
   }
 
-  void visit_funcall (tree_funcall& t)
+  void visit_funcall (octave::tree_funcall& t)
   {
     octave_value fcn = t.function ();
 
@@ -1896,42 +1896,42 @@ public:
   { return ctor_list; }
 
   // NO-OP
-  void visit_anon_fcn_handle (tree_anon_fcn_handle&) { }
-  void visit_argument_list (tree_argument_list&) { }
-  void visit_binary_expression (tree_binary_expression&) { }
-  void visit_break_command (tree_break_command&) { }
-  void visit_colon_expression (tree_colon_expression&) { }
-  void visit_continue_command (tree_continue_command&) { }
-  void visit_global_command (tree_global_command&) { }
-  void visit_persistent_command (tree_persistent_command&) { }
-  void visit_decl_elt (tree_decl_elt&) { }
-  void visit_decl_init_list (tree_decl_init_list&) { }
-  void visit_simple_for_command (tree_simple_for_command&) { }
-  void visit_complex_for_command (tree_complex_for_command&) { }
+  void visit_anon_fcn_handle (octave::tree_anon_fcn_handle&) { }
+  void visit_argument_list (octave::tree_argument_list&) { }
+  void visit_binary_expression (octave::tree_binary_expression&) { }
+  void visit_break_command (octave::tree_break_command&) { }
+  void visit_colon_expression (octave::tree_colon_expression&) { }
+  void visit_continue_command (octave::tree_continue_command&) { }
+  void visit_global_command (octave::tree_global_command&) { }
+  void visit_persistent_command (octave::tree_persistent_command&) { }
+  void visit_decl_elt (octave::tree_decl_elt&) { }
+  void visit_decl_init_list (octave::tree_decl_init_list&) { }
+  void visit_simple_for_command (octave::tree_simple_for_command&) { }
+  void visit_complex_for_command (octave::tree_complex_for_command&) { }
   void visit_octave_user_script (octave_user_script&) { }
   void visit_octave_user_function (octave_user_function&) { }
-  void visit_function_def (tree_function_def&) { }
-  void visit_identifier (tree_identifier&) { }
-  void visit_if_clause (tree_if_clause&) { }
-  void visit_if_command (tree_if_command&) { }
-  void visit_if_command_list (tree_if_command_list&) { }
-  void visit_switch_case (tree_switch_case&) { }
-  void visit_switch_case_list (tree_switch_case_list&) { }
-  void visit_switch_command (tree_switch_command&) { }
-  void visit_matrix (tree_matrix&) { }
-  void visit_cell (tree_cell&) { }
-  void visit_no_op_command (tree_no_op_command&) { }
-  void visit_constant (tree_constant&) { }
-  void visit_fcn_handle (tree_fcn_handle&) { }
-  void visit_parameter_list (tree_parameter_list&) { }
-  void visit_postfix_expression (tree_postfix_expression&) { }
-  void visit_prefix_expression (tree_prefix_expression&) { }
-  void visit_return_command (tree_return_command&) { }
-  void visit_return_list (tree_return_list&) { }
-  void visit_try_catch_command (tree_try_catch_command&) { }
-  void visit_unwind_protect_command (tree_unwind_protect_command&) { }
-  void visit_while_command (tree_while_command&) { }
-  void visit_do_until_command (tree_do_until_command&) { }
+  void visit_function_def (octave::tree_function_def&) { }
+  void visit_identifier (octave::tree_identifier&) { }
+  void visit_if_clause (octave::tree_if_clause&) { }
+  void visit_if_command (octave::tree_if_command&) { }
+  void visit_if_command_list (octave::tree_if_command_list&) { }
+  void visit_switch_case (octave::tree_switch_case&) { }
+  void visit_switch_case_list (octave::tree_switch_case_list&) { }
+  void visit_switch_command (octave::tree_switch_command&) { }
+  void visit_matrix (octave::tree_matrix&) { }
+  void visit_cell (octave::tree_cell&) { }
+  void visit_no_op_command (octave::tree_no_op_command&) { }
+  void visit_constant (octave::tree_constant&) { }
+  void visit_fcn_handle (octave::tree_fcn_handle&) { }
+  void visit_parameter_list (octave::tree_parameter_list&) { }
+  void visit_postfix_expression (octave::tree_postfix_expression&) { }
+  void visit_prefix_expression (octave::tree_prefix_expression&) { }
+  void visit_return_command (octave::tree_return_command&) { }
+  void visit_return_list (octave::tree_return_list&) { }
+  void visit_try_catch_command (octave::tree_try_catch_command&) { }
+  void visit_unwind_protect_command (octave::tree_unwind_protect_command&) { }
+  void visit_while_command (octave::tree_while_command&) { }
+  void visit_do_until_command (octave::tree_do_until_command&) { }
 
 private:
   // The name of the constructor being analyzed.
@@ -1964,8 +1964,8 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 
           if (uf)
             {
-              tree_parameter_list *ret_list = uf->return_list ();
-              tree_statement_list *body = uf->body ();
+              octave::tree_parameter_list *ret_list = uf->return_list ();
+              octave::tree_statement_list *body = uf->body ();
 
               if (! ret_list || ret_list->size () != 1)
                 error ("%s: invalid constructor output arguments",
@@ -2497,7 +2497,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 }
 
 static octave_value
-compute_attribute_value (tree_classdef_attribute* t)
+compute_attribute_value (octave::tree_classdef_attribute* t)
 {
   if (t->expression ())
     {
@@ -2532,7 +2532,7 @@ attribute_value_to_string (T* t, octave_value v)
 }
 
 cdef_class
-cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
+cdef_class::make_meta_class (octave::tree_classdef* t, bool is_at_folder)
 {
   cdef_class retval;
   std::string class_name, full_class_name;
@@ -2599,7 +2599,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
         }
     }
 
-  tree_classdef_body* b = t->body ();
+  octave::tree_classdef_body* b = t->body ();
 
   if (b)
     {
@@ -2611,7 +2611,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
       // Method blocks
 
-      std::list<tree_classdef_methods_block *> mb_list = b->methods_list ();
+      std::list<octave::tree_classdef_methods_block *> mb_list = b->methods_list ();
 
       for (auto& mb_p : mb_list)
         {
@@ -2715,7 +2715,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
       //        symbol should be added to the scope before evaluating default
       //        value expressions.
 
-      std::list<tree_classdef_properties_block *> pb_list
+      std::list<octave::tree_classdef_properties_block *> pb_list
         = b->properties_list ();
 
       for (auto& pb_p : pb_list)
@@ -2977,9 +2977,9 @@ cdef_method::cdef_method_rep::check_method (void)
 
           if (! file_name.empty ())
             {
-              octave_function *fcn = load_fcn_from_file (file_name, dir_name,
-                                                         dispatch_type,
-                                                         pack_name);
+              octave_function *fcn = octave::load_fcn_from_file (file_name, dir_name,
+                                                                 dispatch_type,
+                                                                 pack_name);
 
               if (fcn)
                 {

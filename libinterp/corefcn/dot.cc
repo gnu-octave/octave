@@ -181,7 +181,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and
       tmp(1) = dim + 1;
       tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
 
-      tmp = feval ("sum", tmp, 1);
+      tmp = octave::feval ("sum", tmp, 1);
       if (! tmp.empty ())
         retval = tmp(0);
     }

@@ -137,9 +137,9 @@ namespace octave
 }
 
 static inline void
-do_global_init (tree_decl_elt& elt)
+do_global_init (octave::tree_decl_elt& elt)
 {
-  tree_identifier *id = elt.ident ();
+  octave::tree_identifier *id = elt.ident ();
 
   if (id)
     {
@@ -149,7 +149,7 @@ do_global_init (tree_decl_elt& elt)
 
       if (ult.is_undefined ())
         {
-          tree_expression *expr = elt.expression ();
+          octave::tree_expression *expr = elt.expression ();
 
           octave_value init_val;
 
@@ -164,9 +164,9 @@ do_global_init (tree_decl_elt& elt)
 }
 
 static inline void
-do_static_init (tree_decl_elt& elt)
+do_static_init (octave::tree_decl_elt& elt)
 {
-  tree_identifier *id = elt.ident ();
+  octave::tree_identifier *id = elt.ident ();
 
   if (id)
     {
@@ -176,7 +176,7 @@ do_static_init (tree_decl_elt& elt)
 
       if (ult.is_undefined ())
         {
-          tree_expression *expr = elt.expression ();
+          octave::tree_expression *expr = elt.expression ();
 
           octave_value init_val;
 
@@ -1231,4 +1231,3 @@ The original variable value is restored when exiting the function.
 
 %!error (silent_functions (1, 2))
 */
-

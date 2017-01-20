@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class tree_walker;
-
 class octave_value;
 class octave_value_list;
 class octave_lvalue;
@@ -37,150 +35,162 @@ class octave_lvalue;
 #include "pt-exp.h"
 #include "symtab.h"
 
-// Binary expressions.
-
-class
-tree_binary_expression : public tree_expression
+namespace octave
 {
-public:
+  class tree_walker;
 
-  tree_binary_expression (int l = -1, int c = -1,
-                          octave_value::binary_op t
+  // Binary expressions.
+
+  class tree_binary_expression : public tree_expression
+  {
+  public:
+
+    tree_binary_expression (int l = -1, int c = -1,
+                            octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-    : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t),
-      eligible_for_braindead_shortcircuit (false),
-      braindead_shortcircuit_warning_issued (false) { }
+      : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t),
+        eligible_for_braindead_shortcircuit (false),
+        braindead_shortcircuit_warning_issued (false) { }
 
-  tree_binary_expression (tree_expression *a, tree_expression *b,
-                          int l = -1, int c = -1,
-                          octave_value::binary_op t
+    tree_binary_expression (tree_expression *a, tree_expression *b,
+                            int l = -1, int c = -1,
+                            octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-    : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t),
-      eligible_for_braindead_shortcircuit (false),
-      braindead_shortcircuit_warning_issued (false) { }
+      : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t),
+        eligible_for_braindead_shortcircuit (false),
+        braindead_shortcircuit_warning_issued (false) { }
 
-  // No copying!
+    // No copying!
 
-  tree_binary_expression (const tree_binary_expression&) = delete;
+    tree_binary_expression (const tree_binary_expression&) = delete;
 
-  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
+    tree_binary_expression& operator = (const tree_binary_expression&) = delete;
 
-  ~tree_binary_expression (void)
-  {
-    delete op_lhs;
-    delete op_rhs;
-  }
+    ~tree_binary_expression (void)
+    {
+      delete op_lhs;
+      delete op_rhs;
+    }
 
-  void mark_braindead_shortcircuit (void)
-  {
-    if (etype == octave_value::op_el_and || etype == octave_value::op_el_or)
-      {
-        eligible_for_braindead_shortcircuit = true;
+    void mark_braindead_shortcircuit (void)
+    {
+      if (etype == octave_value::op_el_and || etype == octave_value::op_el_or)
+        {
+          eligible_for_braindead_shortcircuit = true;
 
-        op_lhs->mark_braindead_shortcircuit ();
-        op_rhs->mark_braindead_shortcircuit ();
-      }
-  }
+          op_lhs->mark_braindead_shortcircuit ();
+          op_rhs->mark_braindead_shortcircuit ();
+        }
+    }
 
-  bool has_magic_end (void) const
-  {
-    return ((op_lhs && op_lhs->has_magic_end ())
-            || (op_rhs && op_rhs->has_magic_end ()));
-  }
+    bool has_magic_end (void) const
+    {
+      return ((op_lhs && op_lhs->has_magic_end ())
+              || (op_rhs && op_rhs->has_magic_end ()));
+    }
 
-  bool is_binary_expression (void) const { return true; }
+    bool is_binary_expression (void) const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+    bool rvalue_ok (void) const { return true; }
 
-  octave_value rvalue1 (int nargout = 1);
+    octave_value rvalue1 (int nargout = 1);
 
-  octave_value_list rvalue (int nargout);
+    octave_value_list rvalue (int nargout);
 
-  std::string oper (void) const;
+    std::string oper (void) const;
 
-  octave_value::binary_op op_type (void) const { return etype; }
+    octave_value::binary_op op_type (void) const { return etype; }
 
-  tree_expression *lhs (void) { return op_lhs; }
-  tree_expression *rhs (void) { return op_rhs; }
+    tree_expression *lhs (void) { return op_lhs; }
+    tree_expression *rhs (void) { return op_rhs; }
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
 
-  void accept (tree_walker& tw);
+    void accept (tree_walker& tw);
 
-  std::string profiler_name (void) const { return "binary " + oper (); }
+    std::string profiler_name (void) const { return "binary " + oper (); }
 
-protected:
+  protected:
 
-  // The operands for the expression.
-  tree_expression *op_lhs;
-  tree_expression *op_rhs;
+    // The operands for the expression.
+    tree_expression *op_lhs;
+    tree_expression *op_rhs;
 
-private:
+  private:
 
-  // The type of the expression.
-  octave_value::binary_op etype;
+    // The type of the expression.
+    octave_value::binary_op etype;
 
-  // TRUE if this is an | or & expression in the condition of an IF
-  // or WHILE statement.
-  bool eligible_for_braindead_shortcircuit;
+    // TRUE if this is an | or & expression in the condition of an IF
+    // or WHILE statement.
+    bool eligible_for_braindead_shortcircuit;
 
-  // TRUE if we have already issued a warning about short circuiting
-  // for this operator.
-  bool braindead_shortcircuit_warning_issued;
+    // TRUE if we have already issued a warning about short circuiting
+    // for this operator.
+    bool braindead_shortcircuit_warning_issued;
 
-  void matlab_style_short_circuit_warning (const char *op);
-};
-
-// Boolean expressions.
-
-class
-tree_boolean_expression : public tree_binary_expression
-{
-public:
-
-  enum type
-  {
-    unknown,
-    bool_and,
-    bool_or
+    void matlab_style_short_circuit_warning (const char *op);
   };
 
-  tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
-    : tree_binary_expression (l, c), etype (t) { }
+  // Boolean expressions.
 
-  tree_boolean_expression (tree_expression *a, tree_expression *b,
-                           int l = -1, int c = -1, type t = unknown)
-    : tree_binary_expression (a, b, l, c), etype (t) { }
+  class tree_boolean_expression : public tree_binary_expression
+  {
+  public:
 
-  // No copying!
+    enum type
+      {
+        unknown,
+        bool_and,
+        bool_or
+      };
 
-  tree_boolean_expression (const tree_boolean_expression&) = delete;
+    tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
+      : tree_binary_expression (l, c), etype (t) { }
 
-  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
+    tree_boolean_expression (tree_expression *a, tree_expression *b,
+                             int l = -1, int c = -1, type t = unknown)
+      : tree_binary_expression (a, b, l, c), etype (t) { }
 
-  ~tree_boolean_expression (void) = default;
+    // No copying!
 
-  bool is_boolean_expression (void) const { return true; }
+    tree_boolean_expression (const tree_boolean_expression&) = delete;
 
-  bool rvalue_ok (void) const { return true; }
+    tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
 
-  octave_value rvalue1 (int nargout = 1);
+    ~tree_boolean_expression (void) = default;
 
-  octave_value_list rvalue (int nargout);
+    bool is_boolean_expression (void) const { return true; }
 
-  std::string oper (void) const;
+    bool rvalue_ok (void) const { return true; }
 
-  type op_type (void) const { return etype; }
+    octave_value rvalue1 (int nargout = 1);
 
-  tree_expression *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    octave_value_list rvalue (int nargout);
 
-private:
+    std::string oper (void) const;
 
-  // The type of the expression.
-  type etype;
-};
+    type op_type (void) const { return etype; }
+
+    tree_expression *dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
+
+  private:
+
+    // The type of the expression.
+    type etype;
+  };
+}
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::tree_binary_expression' instead")
+typedef octave::tree_binary_expression tree_binary_expression;
+
+OCTAVE_DEPRECATED ("use 'octave::tree_boolean_expression' instead")
+typedef octave::tree_boolean_expression tree_boolean_expression;
 
 #endif
 
+#endif

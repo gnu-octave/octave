@@ -72,6 +72,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
   ## evtcnt  the counter for how often this function has been called
   persistent evtold told yold retcell;
   persistent evtcnt = 1;   # Don't remove.  Required for Octave parser.
+  persistent firstrun = true;
 
   if (isempty (flag))
     ## Process the event, i.e.,
@@ -109,7 +110,12 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
       ## Create new output values if a valid index has been found
       if (! isempty (idx))
         ## Change the persistent result cell array
-        retcell{1} = any (term(idx));     # Stop integration or not
+        if (firstrun)
+          ## Matlab compatibility requires ignoring condition on first run.
+          retcell{1} = false;
+        else
+          retcell{1} = any (term(idx));     # Stop integration or not
+        endif
         retcell{2}(evtcnt,1) = idx(1,1);  # Take first event found
         ## Calculate the time stamp when the event function returned 0 and
         ## calculate new values for the integration results, we do both by
@@ -122,6 +128,8 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
       endif
 
     endif
+
+    firstrun = false;
     evtold = evt; told = t; yold = y;
     retval = retcell;
 
@@ -129,6 +137,8 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
     ## Call the event function if an event function has been defined to
     ## initialize the internal variables of the event function and to get
     ## a value for evtold.
+
+    firstrun = true;
 
     if (! iscell (y))
       inpargs = {evtfun, t, y};
@@ -148,6 +158,7 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
 
   elseif (strcmp (flag, "done"))
     ## Clear this event handling function
+    firstrun = true;
     evtold = told = yold = evtcnt = [];
     retval = retcell = cell (1,4);
 

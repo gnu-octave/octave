@@ -101,7 +101,9 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
   endif
 
   ## Initialize the EventFcn
+  have_EventFcn = false;
   if (! isempty (options.Events))
+    have_EventFcn  = true;
     ode_event_handler (options.Events, tspan(1), x,
                        "init", options.funarguments{:});
   endif
@@ -162,7 +164,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
           ## Call Events function only if a valid result has been found.
           ## Stop integration if eventbreak is true.
-          if (! isempty (options.Events))
+          if (have_EventFcn)
             break_loop = false;
             for idenseout = 1:numel (t_caught)
               id = t_caught(idenseout);
@@ -224,7 +226,7 @@ function solution = integrate_adaptive (stepper, order, func, tspan, x0,
 
         ## Call Events function only if a valid result has been found.
         ## Stop integration if eventbreak is true.
-        if (! isempty (options.Events))
+        if (have_EventFcn)
           solution.event = ...
             ode_event_handler (options.Events, t(istep), x(:, istep), [],
                                options.funarguments{:});

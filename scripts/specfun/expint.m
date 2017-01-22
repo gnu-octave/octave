@@ -189,7 +189,7 @@ function E1 = expint (x)
     k += 1;
     res(fflag) = res_tmp;
     oldres(fflag) = oldres_tmp;
-    fflag = abs (oldres) > abs (res)
+    fflag = abs (oldres) > abs (res);
   endwhile
   e1_a .*= ssum;
 

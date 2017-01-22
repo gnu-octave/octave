@@ -15,6 +15,7 @@ scripts_strings_FCN_FILES = \
   scripts/strings/isletter.m \
   scripts/strings/isstrprop.m \
   scripts/strings/mat2str.m \
+  scripts/strings/native2unicode.m \
   scripts/strings/ostrsplit.m \
   scripts/strings/regexptranslate.m \
   scripts/strings/rindex.m \
@@ -29,6 +30,7 @@ scripts_strings_FCN_FILES = \
   scripts/strings/strtrim.m \
   scripts/strings/strtrunc.m \
   scripts/strings/substr.m \
+  scripts/strings/unicode2native.m \
   scripts/strings/untabify.m \
   scripts/strings/validatestring.m
 

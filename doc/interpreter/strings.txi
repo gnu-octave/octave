@@ -506,6 +506,10 @@ hex2dec ("FF")
 
 @DOCSTRING(toupper)
 
+@DOCSTRING(unicode2native)
+
+@DOCSTRING(native2unicode)
+
 @DOCSTRING(do_string_escapes)
 
 @DOCSTRING(undo_string_escapes)

@@ -77,7 +77,7 @@ function [x, fval] = fminsearch (fun, x0, options, varargin)
   if (nargin < 2)
     print_usage ();
   endif
-  
+
   if (nargin < 3 || isempty (options))
     options = struct ();
   endif

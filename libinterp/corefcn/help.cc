@@ -181,7 +181,7 @@ string_vector
 make_name_list (void)
 {
   const static string_vector keywords = Fiskeyword ()(0).string_vector_value ();
-  const static int key_len = keywords.numel (); 
+  const static int key_len = keywords.numel ();
 
   const string_vector bif = symbol_table::built_in_function_names ();
   const int bif_len = bif.numel ();

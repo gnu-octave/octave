@@ -65,7 +65,7 @@ nv_data_s (N_Vector& v)
 #endif
 
   return NV_DATA_S (v);
-  
+
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 // Restore prevailing warning state for remainder of the file.
 #pragma GCC diagnostic pop

@@ -113,7 +113,7 @@ function E1 = expint (x)
 
   ## FIXME: The performance of these routines need improvement.
   ## There are numerous temporary variables created, some of which could
-  ## probably be eliminated. 
+  ## probably be eliminated.
 
   ## Series expansion
   ## Abramowitz, Stegun, "Handbook of Mathematical Functions",

@@ -1359,7 +1359,6 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
      k, tol, presid, p, v, n, iparam, ipntr, workd, workl, lwork, info2
      F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
 
-  
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
       ("eigs: unrecoverable exception encountered in dseupd");

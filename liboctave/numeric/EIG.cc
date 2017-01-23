@@ -395,7 +395,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
 
   F77_INT a_nc = octave::to_f77_int (a.cols ());
   F77_INT b_nc = octave::to_f77_int (b.cols ());
-    
+
   if (n != a_nc || nb != b_nc)
     (*current_liboctave_error_handler) ("EIG requires square matrix");
 

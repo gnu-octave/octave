@@ -36,25 +36,25 @@ Summary of important user-visible changes for version 4.4:
     removed from Octave 4.4.
 
       allow_noninteger_range_as_index
-      bicubic              
-      delaunay3            
+      bicubic
+      delaunay3
       do_braindead_shortcircuit_evaluation
-      dump_prefs           
-      find_dir_in_path     
-      finite               
-      fmod                 
-      fnmatch              
-      gmap40               
-      loadaudio            
-      luinc                
-      mouse_wheel_zoom     
-      nfields              
-      octave_tmp_file_name 
-      playaudio            
-      saveaudio            
+      dump_prefs
+      find_dir_in_path
+      finite
+      fmod
+      fnmatch
+      gmap40
+      loadaudio
+      luinc
+      mouse_wheel_zoom
+      nfields
+      octave_tmp_file_name
+      playaudio
+      saveaudio
       setaudio
-      syl                  
-      usage                
+      syl
+      usage
 
  ** The header file oct-alloc.h has been removed along with the macros
     that it defined (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,

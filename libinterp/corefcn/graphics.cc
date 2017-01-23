@@ -4603,7 +4603,7 @@ axes::properties::init (void)
   xset (zlabel.handle_value (), "__autopos_tag__", "zlabel");
   xset (title.handle_value (), "__autopos_tag__", "title");
 
-  double fs = labelfontsizemultiplier.double_value () * 
+  double fs = labelfontsizemultiplier.double_value () *
     fontsize.double_value ();
   xset (xlabel.handle_value (), "fontsize", octave_value (fs));
   xset (ylabel.handle_value (), "fontsize", octave_value (fs));

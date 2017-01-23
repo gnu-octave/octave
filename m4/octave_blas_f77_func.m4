@@ -61,7 +61,7 @@
 
 #serial 8
 
-## Derived from 
+## Derived from
 AC_DEFUN([OCTAVE_BLAS_F77_FUNC], [
 AC_PREREQ(2.50)
 AC_REQUIRE([AX_BLAS])

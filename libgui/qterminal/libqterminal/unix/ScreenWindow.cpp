@@ -291,4 +291,3 @@ void ScreenWindow::notifyOutputChanged()
 
     emit outputChanged();
 }
-

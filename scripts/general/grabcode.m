@@ -105,4 +105,3 @@ endfunction
 %!error grabcode ()
 %!error grabcode (1,2)
 %!error <URL must point to a published> grabcode ("test_script.pdf")
-

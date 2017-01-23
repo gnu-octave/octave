@@ -453,4 +453,3 @@ endfunction
 %!error condest (1,2,3,4,5,6,7)
 %!error <A must be square> condest ([1 2])
 %!error <must provide SOLVEFCN when using AFCN> condest (@sin)
-

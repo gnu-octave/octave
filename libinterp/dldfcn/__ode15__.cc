@@ -1181,6 +1181,3 @@ Undocumented internal function.
 
 #endif
 }
-
-
-

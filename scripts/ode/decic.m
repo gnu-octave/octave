@@ -229,4 +229,3 @@ endfunction
 %! decic (@rob, 0, [1; 0; 0], [1; 1; 0], [-1e-4; 1; 0], [0; 4; 0]);
 %!error  <cannot fix more than length \(Y0\) components>
 %! decic (@rob, 0, [1; 0; 0], [1; 1; 0], [-1e-4; 1; 0], [0; 1; 1]);
-

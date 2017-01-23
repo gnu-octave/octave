@@ -187,4 +187,3 @@ endfunction
 %!test
 %! close (h1);
 %! close (h2);
-

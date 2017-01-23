@@ -1016,4 +1016,3 @@ endfunction
 %!error <FILE does not exist> publish ("%%_non_existent_file_%%.m")
 %!error <only script files can be published> publish ("publish.m")
 %!error publish ("test_script.m", "format", "html", "showCode")
-

@@ -377,4 +377,3 @@ function outstr = syntax_highlight (str)
   endfor
 
 endfunction
-

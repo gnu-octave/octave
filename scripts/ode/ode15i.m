@@ -637,4 +637,3 @@ endfunction
 %! opt = odeset ("AbsTol", [1, 1, 1]);
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
 %!       "ode15i: invalid value assigned to field 'AbsTol'");
-

@@ -234,4 +234,3 @@ function str = escape_latex (str)
   str = regexprep (str, '(?<!\\)(<)', "\\ensuremath{<}");
   str = regexprep (str, '(?<!\\)(>)', "\\ensuremath{>}");
 endfunction
-

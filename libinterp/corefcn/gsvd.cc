@@ -492,4 +492,3 @@ and zggsvd routines.
 %! assert (class (R), "single");
 
 */
-

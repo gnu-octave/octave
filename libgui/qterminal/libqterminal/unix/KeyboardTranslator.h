@@ -649,4 +649,3 @@ inline KeyboardTranslator::States KeyboardTranslator::Entry::stateMask() const {
 
 
 #endif // KEYBOARDTRANSLATOR_H
-

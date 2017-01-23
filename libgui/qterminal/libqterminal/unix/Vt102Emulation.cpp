@@ -1267,5 +1267,3 @@ void Vt102Emulation::ReportErrorToken()
   printf("undecodable "); scan_buffer_report();
 #endif
 }
-
-

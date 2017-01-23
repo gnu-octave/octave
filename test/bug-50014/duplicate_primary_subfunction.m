@@ -6,4 +6,3 @@ endfunction
 function r = duplicate_primary_subfunction ()
   r = 2;
 endfunction
-

@@ -333,4 +333,3 @@ void BlockArray::increaseBuffer()
     fclose(fion);
 
 }
-

@@ -6,4 +6,3 @@ function duplicate_primary_nested_function ()
   endfunction
 
 endfunction
-

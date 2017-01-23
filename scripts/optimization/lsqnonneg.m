@@ -241,4 +241,3 @@ endfunction
 %!error <D must be numeric matrices> lsqnonneg (1,{2})
 %!error <D must be numeric matrices> lsqnonneg (1, ones (2,2,2))
 %!error <OPTIONS must be a struct> lsqnonneg (1, 2, [], 3)
-

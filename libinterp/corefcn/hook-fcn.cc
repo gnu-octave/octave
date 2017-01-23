@@ -41,4 +41,3 @@ hook_function::hook_function (const octave_value& f, const octave_value& d)
   else
     error ("invalid hook function");
 }
-

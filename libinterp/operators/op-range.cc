@@ -140,4 +140,3 @@ install_range_ops (void)
 
   INSTALL_WIDENOP (octave_range, octave_matrix, range_to_matrix);
 }
-

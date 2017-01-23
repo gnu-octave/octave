@@ -31,4 +31,3 @@ function retval = triangle_lw (n, b)
   retval = max ([retval'; (zeros (1, n))])';
 
 endfunction
-

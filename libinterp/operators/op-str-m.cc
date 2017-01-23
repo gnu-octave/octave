@@ -63,4 +63,3 @@ install_str_m_ops (void)
   INSTALL_CATOP (octave_matrix, octave_char_matrix_str, m_str);
   INSTALL_CATOP (octave_matrix, octave_char_matrix_sq_str, m_str);
 }
-

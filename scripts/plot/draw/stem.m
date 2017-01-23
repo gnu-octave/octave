@@ -229,4 +229,3 @@ endfunction
 %!error <inconsistent sizes for X and Y> stem (1:2, ones (3,3))
 %!error <inconsistent sizes for X and Y> stem (ones (2,2), ones (3,3))
 %!error <No value specified for property "FOO"> stem (1, "FOO")
-

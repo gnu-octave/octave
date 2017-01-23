@@ -59,4 +59,3 @@ endfunction
 %!assert (is_leap_year (1600), true)
 
 %!error is_leap_year (1, 2)
-

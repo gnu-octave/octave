@@ -95,4 +95,3 @@ endfunction
 %!error unifcdf (i, 2, 2)
 %!error unifcdf (2, i, 2)
 %!error unifcdf (2, 2, i)
-

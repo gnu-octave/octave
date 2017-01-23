@@ -775,4 +775,3 @@ octave_range::fast_elem_extract (octave_idx_type n) const
   return (n < range.numel ()) ? octave_value (range.elem (n))
                               : octave_value ();
 }
-

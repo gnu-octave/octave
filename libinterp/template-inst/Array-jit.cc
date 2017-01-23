@@ -49,4 +49,3 @@ INSTANTIATE_ARRAY (jit_function, OCTINTERP_API);
 #endif
 
 #endif
-

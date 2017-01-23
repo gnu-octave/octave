@@ -133,4 +133,3 @@ function t = cor_test (x, y, alt, method)
   endif
 
 endfunction
-

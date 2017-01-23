@@ -59,4 +59,3 @@ endfunction
 %!assert (dsearchn (x,tri,[1/3,1]), 2)
 %!assert (dsearchn (x,tri,[1/3,1],NaN), NaN)
 %!assert (dsearchn (x,tri,[1/3,1],NA), NA)
-

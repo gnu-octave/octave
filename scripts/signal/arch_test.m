@@ -94,4 +94,3 @@ function [pval, lm] = arch_test (y, x, p)
   pval = 1 - chi2cdf (lm, p);
 
 endfunction
-

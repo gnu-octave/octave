@@ -96,4 +96,3 @@ endfunction
 %! axis ([1, 64, 0, 1], "xy");
 %! set (gca, "xtick", []);
 %! colormap (colorcube (64));
-

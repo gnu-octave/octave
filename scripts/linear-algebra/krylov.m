@@ -243,4 +243,3 @@ function [a1, b1] = swap (a, b)
   b1 = a;
 
 endfunction
-

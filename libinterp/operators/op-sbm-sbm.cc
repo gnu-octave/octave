@@ -105,4 +105,3 @@ install_sbm_sbm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix,
                     octave_sparse_bool_matrix, assign);
 }
-

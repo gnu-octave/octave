@@ -262,4 +262,3 @@ endfunction
 %!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, ones (2))
 %!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, -1)
 %!error <PRECISION must be a scalar integer .= 0> num2str (1+1i, 1.5)
-

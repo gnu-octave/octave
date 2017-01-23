@@ -102,4 +102,3 @@ typedef octave::sys::uname octave_uname;
 #endif
 
 #endif
-

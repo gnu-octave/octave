@@ -104,4 +104,3 @@ endfunction
 %! zlim auto;
 %! view (315, 17);
 %! title ({"contour3 of peaks() function", "gray surf() shows peaks function"});
-

@@ -843,4 +843,3 @@ jit_magic_end::overload () const
 }
 
 #endif
-

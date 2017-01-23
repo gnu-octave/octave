@@ -70,4 +70,3 @@ endfunction
 %! axis off;
 %! title ("Rotate color bars to the right");
 %! spinmap (3, 1);
-

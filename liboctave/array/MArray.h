@@ -261,5 +261,3 @@ public:
                                        const MDiagArray2<T>&);
 
 #endif
-
-

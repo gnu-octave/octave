@@ -54,4 +54,3 @@ endfunction
 %!error stdnormal_inv ()
 %!error stdnormal_inv (1,2)
 %!error stdnormal_inv (i)
-

@@ -511,4 +511,3 @@ operator << (std::ostream& os, const ComplexDiagMatrix& a)
     }
   return os;
 }
-

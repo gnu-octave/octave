@@ -118,4 +118,3 @@ endfunction
 %!error <M must be a positive integer> commutation_matrix (0,0)
 %!error <N must be a positive integer> commutation_matrix (1,0)
 %!error <M must be a positive integer> commutation_matrix (0,1)
-

@@ -120,4 +120,3 @@ function compare_plot_demos (varargin)
   endif
 
 endfunction
-

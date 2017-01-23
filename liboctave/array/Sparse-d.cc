@@ -50,4 +50,3 @@ INSTANTIATE_SPARSE (double, OCTAVE_API);
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<double>&);
 #endif
-

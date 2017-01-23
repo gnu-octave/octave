@@ -125,4 +125,3 @@ endfunction
 %!error geornd (1, [2 -1 2])
 %!error geornd (ones (2,2), 2, 3)
 %!error geornd (ones (2,2), 3, 2)
-

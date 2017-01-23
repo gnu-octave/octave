@@ -62,4 +62,3 @@ endfunction
 
 %!error nexpow2 ()
 %!error nexpow2 (1, 2)
-

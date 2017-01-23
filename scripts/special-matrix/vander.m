@@ -93,4 +93,3 @@ endfunction
 %!error vander ()
 %!error vander (1, 2, 3)
 %!error <polynomial C must be a vector> vander ([1, 2; 3, 4])
-

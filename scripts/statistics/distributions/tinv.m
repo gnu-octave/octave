@@ -107,4 +107,3 @@ endfunction
 %!error tinv (ones (2), ones (3))
 %!error tinv (i, 2)
 %!error tinv (2, i)
-

@@ -67,4 +67,3 @@ endfunction
 %!error helpdlg (1, 2, 3)
 %!error <MSG must be a character string> helpdlg (1)
 %!error <TITLE must be a character string> helpdlg ("msg", 1)
-

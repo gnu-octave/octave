@@ -42,4 +42,3 @@ octave_num_processors_wrapper (enum octave_nproc_query);
 #endif
 
 #endif
-

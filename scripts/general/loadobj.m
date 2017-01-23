@@ -40,4 +40,3 @@
 function b = loadobj (a)
   error ('loadobj: not defined for class "%s"', class (a));
 endfunction
-

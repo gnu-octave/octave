@@ -172,4 +172,3 @@ endfunction
 %! C = sqrt (fx.^2 + fy.^2);
 %! meshz (X,Y,Z,C);
 %! title ("meshz() plot with color determined by gradient");
-

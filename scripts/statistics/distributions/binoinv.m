@@ -196,4 +196,3 @@ endfunction
 %!error binoinv (i, 2, 2)
 %!error binoinv (2, i, 2)
 %!error binoinv (2, 2, i)
-

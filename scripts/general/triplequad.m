@@ -85,4 +85,3 @@ endfunction
 #%!assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadgk), pi^(3/2) * erf (1).^3, 1e-6)
 #%!#assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadl), pi^(3/2) * erf (1).^3, 1e-6)
 #%!#assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadv), pi^(3/2) * erf (1).^3, 1e-6)
-

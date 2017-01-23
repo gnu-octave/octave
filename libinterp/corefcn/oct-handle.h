@@ -149,4 +149,3 @@ operator > (const octave_handle& a, const octave_handle& b)
 }
 
 #endif
-

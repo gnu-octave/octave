@@ -1161,4 +1161,3 @@ namespace octave
     chol2inv<FloatComplexMatrix> (const FloatComplexMatrix& r);
   }
 }
-

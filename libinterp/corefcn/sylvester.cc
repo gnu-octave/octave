@@ -165,4 +165,3 @@ sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
 %!error <B must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
 %!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))
 */
-

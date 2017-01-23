@@ -68,4 +68,3 @@ extern int octave_o_wronly_wrapper (void);
 #endif
 
 #endif
-

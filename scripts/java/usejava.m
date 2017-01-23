@@ -96,4 +96,3 @@ endfunction
 %!error usejava (1, 2)
 %!error usejava (1)
 %!error <unrecognized FEATURE> usejava ("abc")
-

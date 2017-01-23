@@ -174,4 +174,3 @@ endfunction
 
 %!error (pchip (1,2))
 %!error (pchip (1,2,3))
-

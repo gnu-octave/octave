@@ -846,4 +846,3 @@ The original variable value is restored when exiting the function.
 
   return retval;
 }
-

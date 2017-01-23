@@ -551,4 +551,3 @@ function.  The @code{hash} function supports the most common used
 cryptographic hash functions, namely MD5 and SHA-1.
 
 @DOCSTRING(hash)
-

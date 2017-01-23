@@ -129,4 +129,3 @@ endfunction
 %!error lognrnd (ones (2,2), 2, 3)
 %!error lognrnd (ones (2,2), 2, [3, 2])
 %!error lognrnd (ones (2,2), 2, 2, 3)
-

@@ -143,4 +143,3 @@ endfunction
 
 ## Stop reporting function as missing tests.  No good tests possible.
 %!assert (1)
-

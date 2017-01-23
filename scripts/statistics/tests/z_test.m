@@ -117,4 +117,3 @@ endfunction
 %! zval = norminv (pval);
 %! unew = zval * sqrt (v/n) + u0;
 %! assert (mean (x), unew, 100*eps);
-

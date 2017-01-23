@@ -124,4 +124,3 @@ endfunction
 %!error <first argument must be "all" or a figure> close (-1)
 %!error <second argument must be "hidden"> close all hid
 %!error <second argument must be "hidden"> close all for
-

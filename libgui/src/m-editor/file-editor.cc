@@ -2420,4 +2420,3 @@ file_editor::switch_tab (int direction, bool movetab)
 }
 
 #endif
-

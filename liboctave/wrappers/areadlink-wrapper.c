@@ -39,4 +39,3 @@ octave_areadlink_wrapper (const char *name)
 {
   return areadlink (name);
 }
-

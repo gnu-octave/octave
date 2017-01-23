@@ -48,4 +48,3 @@ endfunction
 %!assert (spfun ("exp", sparse ([1,2;3,0])), sparse ([exp(1),exp(2);exp(3),0]))
 %!assert (spfun (@exp, [1,2;3,0]), sparse ([exp(1),exp(2);exp(3),0]))
 %!assert (spfun (@exp, sparse ([1,2;3,0])), sparse ([exp(1),exp(2);exp(3),0]))
-

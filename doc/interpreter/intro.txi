@@ -657,4 +657,3 @@ or off, and @var{diaryfile} is the name of the file where the session is
 stored.
 @seealso{history, evalc}
 @end deftypefn
-

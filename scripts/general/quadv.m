@@ -172,4 +172,3 @@ endfunction
 %!error quadv (@sin)
 %!error quadv (@sin,1)
 %!error <TOL must be a scalar> quadv (@sin,0,1, ones (2,2))
-

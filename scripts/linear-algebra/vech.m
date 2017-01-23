@@ -56,4 +56,3 @@ endfunction
 
 %!error vech ()
 %!error vech (1, 2)
-

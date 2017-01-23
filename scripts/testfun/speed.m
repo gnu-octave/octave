@@ -445,4 +445,3 @@ endfunction
 ## Test input validation
 %!error speed ()
 %!error speed (1, 2, 3, 4, 5, 6, 7)
-

@@ -53,4 +53,3 @@ endfunction
 ## Tests for this m-file are located in zip.m
 ## Remove from test statistics
 %!assert (1)
-

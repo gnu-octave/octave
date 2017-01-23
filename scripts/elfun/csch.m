@@ -42,4 +42,3 @@ endfunction
 
 %!error csch ()
 %!error csch (1, 2)
-

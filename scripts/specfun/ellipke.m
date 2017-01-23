@@ -225,4 +225,3 @@ endfunction
 %!error <TOL must be a real scalar . 0> ellipke (1, i)
 %!error <TOL must be a real scalar . 0> ellipke (1, [1 1])
 %!error <TOL must be a real scalar . 0> ellipke (1, -1)
-

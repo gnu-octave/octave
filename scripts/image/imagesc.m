@@ -187,4 +187,3 @@ endfunction
 %! imagesc (img);
 %! colormap (prism (10));
 %! title ("10 vertical color bars");
-

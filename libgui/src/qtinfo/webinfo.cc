@@ -312,4 +312,3 @@ webinfo::pasteClipboard ()
         _search_line_edit->insert (str);
     }
 }
-

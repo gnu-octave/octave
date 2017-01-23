@@ -138,4 +138,3 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                    const char *fun_name, const octave_value_list& args);
 
 #endif
-

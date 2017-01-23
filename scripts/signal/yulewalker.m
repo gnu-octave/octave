@@ -53,5 +53,3 @@ function [a, v] = yulewalker (c)
   v = c(1) - a' * cp;
 
 endfunction
-
-

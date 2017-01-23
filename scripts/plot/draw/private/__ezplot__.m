@@ -550,4 +550,3 @@ function domain = find_valid_domain (X, Y, Z)
   endif
 
 endfunction
-

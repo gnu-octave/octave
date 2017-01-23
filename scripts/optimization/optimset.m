@@ -189,4 +189,3 @@ endfunction
 %!error <no defaults for function> optimset ("%NOT_A_REAL_FUNCTION_NAME%")
 %!warning <unrecognized option: foobar> optimset ("foobar", 13);
 %!warning <ambiguous option: Max> optimset ("Max", 10);
-

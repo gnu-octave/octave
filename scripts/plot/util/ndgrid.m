@@ -126,4 +126,3 @@ endfunction
 %!error ndgrid ()
 %!error <wrong number of input arguments> [a,b,c] = ndgrid (1:3,1:3)
 %!error <arguments must be vectors> ndgrid (ones (2,2))
-

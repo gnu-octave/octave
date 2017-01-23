@@ -53,4 +53,3 @@ endfunction
 %!error laplace_pdf ()
 %!error laplace_pdf (1,2)
 %!error laplace_pdf (i)
-

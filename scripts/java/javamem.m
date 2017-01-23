@@ -88,4 +88,3 @@ function jmem = javamem ()
   endif
 
 endfunction
-

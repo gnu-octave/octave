@@ -201,4 +201,3 @@ The author of the code itself is Timothy A. Davis
 %!error amd (A2, 2)
 %!error <matrix S is corrupted|was unavailable or disabled> amd ([])
 */
-

@@ -430,4 +430,3 @@ endfunction
 %! assert (numel (num), 4);
 %! assert (numel (den), 5);
 %! assert (den(1), 1);
-

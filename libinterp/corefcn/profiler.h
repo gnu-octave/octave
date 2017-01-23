@@ -222,4 +222,3 @@ extern OCTINTERP_API profile_data_accumulator profiler;
     }  // end of block => call pe's destructor
 
 #endif
-

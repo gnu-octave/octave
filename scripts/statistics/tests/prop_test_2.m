@@ -79,4 +79,3 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
 
 endfunction
-

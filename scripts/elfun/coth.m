@@ -42,4 +42,3 @@ endfunction
 
 %!error coth ()
 %!error coth (1, 2)
-

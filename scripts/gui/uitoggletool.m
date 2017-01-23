@@ -73,4 +73,3 @@ function hui = uitoggletool (varargin)
   hui = __go_uitoggletool__ (h, args{:});
 
 endfunction
-

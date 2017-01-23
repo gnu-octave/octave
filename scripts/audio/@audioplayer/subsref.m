@@ -41,4 +41,3 @@ function value = subsref (player, idx)
   endif
 
 endfunction
-

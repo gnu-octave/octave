@@ -3702,4 +3702,3 @@ Returns the meta.class object corresponding to the class of @var{obj}.
 ;;; mode: C++ ***
 ;;; End: ***
 */
-

@@ -181,4 +181,3 @@ endfunction
 %!   imformats ("update", "jpg", fmt_ori);
 %! end_unwind_protect
 %! assert (error_thrown, true);
-

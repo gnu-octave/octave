@@ -172,4 +172,3 @@ octave_builtin::handles_dispatch_class (const std::string& dispatch_type) const
 }
 
 const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;
-

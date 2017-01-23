@@ -763,4 +763,3 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
 
   return info;
 }
-

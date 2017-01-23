@@ -109,4 +109,3 @@ endfunction
 %!error corr ([1; 2], ["A", "B"])
 %!error corr (ones (2,2,2))
 %!error corr (ones (2,2), ones (2,2,2))
-

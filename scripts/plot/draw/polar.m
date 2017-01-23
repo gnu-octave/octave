@@ -440,4 +440,3 @@ endfunction
 %! polar (theta, rho);
 %! set (gca, "rtick", 0.2:0.2:1);
 %! title ("polar() plot");
-

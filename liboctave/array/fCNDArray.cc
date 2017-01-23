@@ -907,4 +907,3 @@ BSXFUN_STDOP_DEFS_MXLOOP (FloatComplexNDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (FloatComplexNDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, FloatComplexNDArray, mx_inline_pow)
-

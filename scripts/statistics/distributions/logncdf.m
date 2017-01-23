@@ -98,4 +98,3 @@ endfunction
 %!error logncdf (i, 2, 2)
 %!error logncdf (2, i, 2)
 %!error logncdf (2, 2, i)
-

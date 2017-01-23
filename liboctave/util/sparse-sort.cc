@@ -61,4 +61,3 @@ octave_idx_vector_comp (octave_idx_vector_sort* i,
 }
 
 template class octave_sort<octave_idx_vector_sort *>;
-

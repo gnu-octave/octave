@@ -162,4 +162,3 @@ endfunction
 %!error isequal ()
 %!error isequal (1)
 %!error isequal ([1,1])
-

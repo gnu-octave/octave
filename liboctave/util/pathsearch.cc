@@ -142,4 +142,3 @@ namespace octave
     m_initialized = true;
   }
 }
-

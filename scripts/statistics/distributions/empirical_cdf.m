@@ -59,4 +59,3 @@ endfunction
 %!error empirical_cdf (1)
 %!error empirical_cdf (1,2,3)
 %!error empirical_cdf (1, ones (2))
-

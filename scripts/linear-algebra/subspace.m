@@ -74,4 +74,3 @@ endfunction
 %! ## For random matrices
 %! M = rand (3, 3);
 %! assert (0, subspace (M, M'), 100*eps);
-

@@ -472,4 +472,3 @@ octave_rl_meta (char c)
 }
 
 #endif
-

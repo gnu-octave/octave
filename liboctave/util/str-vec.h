@@ -140,4 +140,3 @@ string_vector::string_vector (const String_Container<std::string, Other...>&
 }
 
 #endif
-

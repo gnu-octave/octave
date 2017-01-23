@@ -2119,4 +2119,3 @@ octave_fcn_binder::do_multi_index_op (int nargout,
 %! x = [1,2;3,4];
 %! assert (__f (@(i) x(:,i), 1), [1;3]);
 */
-

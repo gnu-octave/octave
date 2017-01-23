@@ -104,4 +104,3 @@ namespace QtHandles
 }
 
 #endif
-

@@ -343,4 +343,3 @@ void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
 }
 
 #endif
-

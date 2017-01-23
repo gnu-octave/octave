@@ -192,4 +192,3 @@ objective function
 @DOCSTRING(fminunc)
 
 @DOCSTRING(fminsearch)
-

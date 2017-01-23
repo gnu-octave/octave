@@ -604,4 +604,3 @@ with names that start with @var{format}.
 
   return octave_value_list ();
 }
-

@@ -70,4 +70,3 @@ endfunction
 %!error chi2cdf (ones (2), ones (3))
 %!error chi2cdf (i, 2)
 %!error chi2cdf (2, i)
-

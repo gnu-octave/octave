@@ -88,4 +88,3 @@ endfunction
 %!error hamming (-1)
 %!error hamming (ones (1,4))
 %!error hamming (1, "invalid")
-

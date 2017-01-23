@@ -6551,4 +6551,3 @@ OCTINTERP_API graphics_handle gca (void);
 OCTINTERP_API void close_all_figures (void);
 
 #endif
-

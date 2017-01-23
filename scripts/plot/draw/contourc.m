@@ -168,4 +168,3 @@ endfunction
 %! [c_obs, lev_obs] = contourc (x, y, z, 2:3);
 %! assert (c_obs, c_exp, eps);
 %! assert (lev_obs, lev_exp, eps);
-

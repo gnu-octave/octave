@@ -165,7 +165,6 @@ function propstruct = getprops (h)
 
 endfunction
 
-
 ## FIXME: need validation tests
-## FIXME: Need to test code for legends, colorbars.
 
+## FIXME: Need to test code for legends, colorbars.

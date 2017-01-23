@@ -309,4 +309,3 @@ endfunction
 %!error <S and DEL must be string values> strsplit (123, "b")
 %!error <COLLAPSEDELIMITERS must be a scalar value> strsplit ("abc", "def", "collapsedelimiters", ones (3,3))
 %!error <Invalid DELIMITERTYPE> strsplit ("abc", "b", "delimitertype", "foobar")
-

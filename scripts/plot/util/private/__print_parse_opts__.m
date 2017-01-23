@@ -658,4 +658,3 @@ function aliases = gs_aliases ()
   aliases.tiff  = "tiff24nc";
   aliases.tiffn = "tiff24nc";
 endfunction
-

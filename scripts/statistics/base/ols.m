@@ -173,4 +173,3 @@ endfunction
 %!error ols (ones (2,2,2), ones (2,2))
 %!error ols (ones (2,2), ones (2,2,2))
 %!error ols (ones (1,2), ones (2,2))
-

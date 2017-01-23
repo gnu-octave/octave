@@ -1370,4 +1370,3 @@ kpse_var_expand (const std::string& src)
 
   return expansion;
 }
-

@@ -46,4 +46,3 @@ extern unsigned int octave_name_max_wrapper (void);
 #endif
 
 #endif
-

@@ -634,7 +634,7 @@ constant version of the sparse matrix.  Note that only the container for the
 sparse matrix will be copied, while the actual representation of the data will
 be shared between the two versions of the sparse matrix; This is not a costly
 operation.  The example above, re-written to prevent sparse-to-dense
-conversion, is 
+conversion, is
 
 @example
 @group
@@ -2155,4 +2155,3 @@ ans = 12.34
 @end example
 
 @seealso{javamem}
-

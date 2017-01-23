@@ -112,4 +112,3 @@ endfunction
 %! tval = tinv (pval, n-1);
 %! unew = tval * std(x)/sqrt(n) + u0;
 %! assert (mean (x), unew, 100*eps);
-

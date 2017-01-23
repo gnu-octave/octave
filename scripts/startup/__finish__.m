@@ -40,4 +40,3 @@ endfunction
 
 ## No test needed for internal helper m-file.
 %!assert (1)
-

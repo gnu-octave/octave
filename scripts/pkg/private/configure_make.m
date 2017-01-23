@@ -137,4 +137,3 @@ function [status, output] = shell (cmd, verbose)
   endif
 
 endfunction
-

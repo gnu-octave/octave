@@ -51,4 +51,3 @@ function retval = javaArray (classname, varargin)
                         classname, [varargin{:}]);
 
 endfunction
-

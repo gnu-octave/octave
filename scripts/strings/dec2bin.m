@@ -62,4 +62,3 @@ endfunction
 ## Test input validation
 %!error dec2bin ()
 %!error dec2bin (1, 2, 3)
-

@@ -44,4 +44,3 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
                    octave_idx_type nnz);
 
 #endif
-

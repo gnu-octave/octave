@@ -421,4 +421,3 @@ function update_props (h, ~)
         get (h, {"color", "marker", "markerfacecolor", "markersize"}));
 
 endfunction
-

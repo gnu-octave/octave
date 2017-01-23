@@ -83,4 +83,3 @@
 %!test
 %! matrix = single ([1,2;3,4]*i);
 %! assert (matrix', single ([-1i,-3i;-2i,-4i]));
-

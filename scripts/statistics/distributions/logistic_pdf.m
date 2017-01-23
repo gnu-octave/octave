@@ -53,4 +53,3 @@ endfunction
 %!error logistic_pdf ()
 %!error logistic_pdf (1,2)
 %!error logistic_pdf (i)
-

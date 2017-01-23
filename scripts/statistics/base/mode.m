@@ -181,4 +181,3 @@ endfunction
 %!error <DIM must be an integer> mode (1, ones (2,2))
 %!error <DIM must be an integer> mode (1, 1.5)
 %!error <DIM must be .* a valid dimension> mode (1, 0)
-

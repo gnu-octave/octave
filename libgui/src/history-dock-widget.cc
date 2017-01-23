@@ -363,4 +363,3 @@ void history_dock_widget::handle_visibility (bool visible)
       filter_activate (filter_state);
     }
 }
-

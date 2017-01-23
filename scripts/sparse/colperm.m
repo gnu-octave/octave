@@ -38,4 +38,3 @@ function p = colperm (s)
   [~, p] = sort (idx - [0; idx(1:(end-1))]);
 
 endfunction
-

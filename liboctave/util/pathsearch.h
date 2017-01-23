@@ -192,4 +192,3 @@ typedef octave::directory_path dir_path;
 #endif
 
 #endif
-

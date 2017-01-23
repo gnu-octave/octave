@@ -58,4 +58,3 @@ function [pval, chisq] = run_test (x)
   endif
 
 endfunction
-

@@ -139,4 +139,3 @@ namespace octave
 }
 
 #endif
-

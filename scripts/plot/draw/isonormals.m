@@ -202,4 +202,3 @@ endfunction
 %!error <X, Y, Z have unequal dimensions> isonormals (x, y, z(1), val, vert)
 %!error <X, Y, Z have unequal dimensions> isonormals (x(:), y(:), z, val, vert)
 %!error <VAL dimensions must match those of X, Y, and Z> isonormals (1, 2, 3, val, vert)
-

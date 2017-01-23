@@ -158,4 +158,3 @@ typedef octave::unwind_protect_safe unwind_protect_safe;
 #endif
 
 #endif
-

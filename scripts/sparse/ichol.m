@@ -469,4 +469,3 @@ endfunction
 %! fail ("ichol (A1, opts)", 'SHAPE must be "lower"');
 %! opts.shape = [];
 %! fail ("ichol (A1, opts)", 'SHAPE must be "lower"');
-

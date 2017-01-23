@@ -87,4 +87,3 @@ endfunction
 %!error unifinv (i, 2, 2)
 %!error unifinv (2, i, 2)
 %!error unifinv (2, 2, i)
-

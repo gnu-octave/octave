@@ -177,4 +177,3 @@ install_m_cm_ops (void)
 
   INSTALL_WIDENOP (octave_matrix, octave_complex_matrix, complex_matrix_conv);
 }
-

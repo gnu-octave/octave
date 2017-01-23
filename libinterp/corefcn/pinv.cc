@@ -190,4 +190,3 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.
 %! assert (diag (y), [1/3 1/2 0 0 0]');
 
 */
-

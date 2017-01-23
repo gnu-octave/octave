@@ -56,4 +56,3 @@ function [xr, yr, zr] = __rotate_around_axis__ (x, y, z, angle, dir, origin)
   endif
 
 endfunction
-

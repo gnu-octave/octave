@@ -177,4 +177,3 @@ endfunction
 ## Test input validation
 %!error <DIRECTORY argument must be a string> dir (1)
 %!warning <nonexistent directory> dir ("_%UNLIKELY_DIR_NAME%_");
-

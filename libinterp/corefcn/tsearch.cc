@@ -173,4 +173,3 @@ convex hull, @var{idx} is NaN.
 
 %!error tsearch ()
 */
-

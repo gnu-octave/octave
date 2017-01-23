@@ -63,4 +63,3 @@ endfunction
 %! y = rand (N, 1);
 %! tri = delaunay (x, y);
 %! triplot (tri, x, y);
-

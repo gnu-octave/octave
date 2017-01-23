@@ -51,4 +51,3 @@ endfunction
 
 %!error (usleep ())
 %!error (usleep (1, 2))
-

@@ -35,4 +35,3 @@ octave_strptime_wrapper (const char *p, const char *fmt, struct tm *t);
 #endif
 
 #endif
-

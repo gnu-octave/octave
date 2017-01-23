@@ -210,4 +210,3 @@ public:
                         R, dynamic_cast<const B<T>&>, R)
 
 #endif
-

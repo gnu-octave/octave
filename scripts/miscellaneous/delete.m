@@ -92,4 +92,3 @@ endfunction
 ## Test input validation
 %!error delete ()
 %!error <first argument must be a filename> delete (struct ())
-

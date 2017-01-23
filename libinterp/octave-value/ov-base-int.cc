@@ -788,4 +788,3 @@ octave_base_int_scalar<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
   return false;
 #endif
 }
-

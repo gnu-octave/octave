@@ -88,4 +88,3 @@ endfunction
 %!error hanning (-1)
 %!error hanning (ones (1,4))
 %!error hanning (1, "invalid")
-

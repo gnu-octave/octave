@@ -100,4 +100,3 @@ function limits = __caxis__ (ca, ax, varargin)
   endif
 
 endfunction
-

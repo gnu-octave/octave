@@ -89,4 +89,3 @@ endfunction
 %!error geocdf (ones (2), ones (3))
 %!error geocdf (i, 2)
 %!error geocdf (2, i)
-

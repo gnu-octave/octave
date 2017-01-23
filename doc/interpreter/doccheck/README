@@ -93,4 +93,3 @@ Functions which don't require an @DOCSTRING reference can be added to the list
 of exceptions at the bottom of the mk_undocumented_list script.  This is often
 necessary where a single DOCSTRING, such as besselj, is used to document
 multiple functions.
-

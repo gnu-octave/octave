@@ -111,4 +111,3 @@ endfunction
 %!error rmpref (1,2,3)
 %!error <GROUP must be a string> rmpref (1)
 %!error <PREF must be a string> rmpref ("group1", 1)
-

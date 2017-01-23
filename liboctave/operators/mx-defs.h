@@ -118,4 +118,3 @@ get_blas_char (blas_trans_type transt)
 #  endif
 
 #endif
-

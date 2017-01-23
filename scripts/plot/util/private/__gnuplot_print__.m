@@ -367,4 +367,3 @@ function [h, fontsize] = get_figure_text_objs (opts)
   endswitch
 
 endfunction
-

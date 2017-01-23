@@ -473,4 +473,3 @@ function x = __doglegm__ (r, g, d, delta)
   endif
 
 endfunction
-

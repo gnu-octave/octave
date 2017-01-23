@@ -109,4 +109,3 @@ endfunction
 %! zz = griddatan (x,y,xi,"nearest");
 %! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
 %! assert (zz, zz2, 1e-10);
-

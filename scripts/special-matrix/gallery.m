@@ -3081,4 +3081,3 @@ endfunction
 %!assert (cellfun (@rows, nthargout (1:2, @gallery, "wilk", 4)), [4 4])
 %!assert (size (gallery ("wilk", 5)), [5 5])
 %!assert (size (gallery ("wilk", 21)), [21 21])
-

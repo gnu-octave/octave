@@ -378,4 +378,3 @@ endfunction
 %! fminsearch (@(x) (NaN), 0, optimset ("FunValCheck", "on"));
 %!error <Inf value encountered>
 %! fminsearch (@(x) (Inf), 0, optimset ("FunValCheck", "on"));
-

@@ -90,4 +90,3 @@ endfunction
 %!error norminv (i, 2, 2)
 %!error norminv (2, i, 2)
 %!error norminv (2, 2, i)
-

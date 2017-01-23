@@ -60,4 +60,3 @@ function retval = __axis_limits__ (fcn, varargin)
   endif
 
 endfunction
-

@@ -54,4 +54,3 @@ octave_txt_lexer::lexer () const
 }
 
 #endif
-

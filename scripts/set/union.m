@@ -120,4 +120,3 @@ endfunction
 %!error <A and B must be arrays or cell arrays> union (@sin, 1, "rows")
 %!error <A and B must be 2-dimensional matrices> union (rand(2,2,2), 1, "rows")
 %!error <number of columns in A and B must match> union ([1 2], 1, "rows")
-

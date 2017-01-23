@@ -165,4 +165,3 @@ endfunction
 %!                          "p"; "classes"; "packages"});
 
 %!error what (1, 2)
-

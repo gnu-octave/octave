@@ -98,4 +98,3 @@ function name = __default_filtername__ (filterext)
   endif
 
 endfunction
-

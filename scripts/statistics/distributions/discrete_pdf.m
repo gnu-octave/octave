@@ -82,4 +82,3 @@ endfunction
 %!error discrete_pdf (1, ones (2,1), [1 -1])
 %!error discrete_pdf (1, ones (2,1), [1 NaN])
 %!error discrete_pdf (1, ones (2,1), [0  0])
-

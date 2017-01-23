@@ -111,4 +111,3 @@ endfunction
 %!error <RC must be a scalar or vector> sprand (2, 2, 0.2, ones (3,3))
 %!error <RC must be between 0 and 1> sprand (2, 2, 0.2, -1)
 %!error <RC must be between 0 and 1> sprand (2, 2, 0.2, 2)
-

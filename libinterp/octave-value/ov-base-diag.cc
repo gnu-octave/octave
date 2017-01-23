@@ -584,4 +584,3 @@ octave_base_diag<DMT, MT>::to_dense (void) const
 
   return dense_cache;
 }
-

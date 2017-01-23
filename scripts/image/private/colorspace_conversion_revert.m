@@ -34,4 +34,3 @@ function rv = colorspace_conversion_revert (rv, sz, is_im, is_nd)
   endif
 
 endfunction
-

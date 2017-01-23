@@ -151,4 +151,3 @@ install_cm_s_ops (void)
   INSTALL_ASSIGNOP (op_div_eq, octave_complex_matrix, octave_scalar,
                     assign_div);
 }
-

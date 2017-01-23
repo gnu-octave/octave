@@ -105,4 +105,3 @@ function [t_next, x_next, x_est, k] = runge_kutta_23 (fun, t, x, dt,
   endif
 
 endfunction
-

@@ -591,4 +591,3 @@ endfunction
 %!error <STEM_SZ must be a real integer> stemleaf (1, "", ones (2,2))
 %!error <STEM_SZ must be a real integer> stemleaf (1, "", -1)
 %!error <STEM_SZ must be a real integer> stemleaf (1, "", 1+i)
-

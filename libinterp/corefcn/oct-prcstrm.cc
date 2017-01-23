@@ -66,4 +66,3 @@ octave_oprocstream::~octave_oprocstream (void)
 {
   do_close ();
 }
-

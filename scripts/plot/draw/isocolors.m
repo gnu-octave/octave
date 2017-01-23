@@ -188,4 +188,3 @@ endfunction
 %!error <last argument must be a vertex list> isocolors (1, {1})
 %!error <last argument must be a vertex list> isocolors (1, [1 2 3 4])
 %!error <last argument must be a .*patch handle> isocolors (1, 0)
-

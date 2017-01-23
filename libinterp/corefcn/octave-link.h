@@ -481,4 +481,3 @@ protected:
 };
 
 #endif
-

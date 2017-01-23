@@ -380,4 +380,3 @@ extern void install_ops (void);
   }
 
 #endif
-

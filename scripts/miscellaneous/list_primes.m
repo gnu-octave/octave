@@ -67,4 +67,3 @@ endfunction
 %!error list_primes (1, 2)
 %!error <N must be a real scalar> list_primes (i)
 %!error <N must be a real scalar> list_primes ([1 2])
-

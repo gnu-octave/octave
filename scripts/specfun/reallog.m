@@ -47,4 +47,3 @@ endfunction
 %!error reallog (1,2)
 %!error <produced complex result> reallog (2i)
 %!error <produced complex result> reallog (-1)
-

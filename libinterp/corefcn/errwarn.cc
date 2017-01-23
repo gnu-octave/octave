@@ -363,4 +363,3 @@ warn_wrong_type_arg (const char *name, const octave_value& tc)
 
   warning ("%s: wrong type argument '%s'", name, type.c_str ());
 }
-

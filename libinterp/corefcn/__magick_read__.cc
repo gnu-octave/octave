@@ -2383,4 +2383,3 @@ Fill formats info with GraphicsMagick CoderInfo.
 ## No test needed for internal helper function.
 %!assert (1)
 */
-

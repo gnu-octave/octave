@@ -34,4 +34,3 @@ function retval = __axis_label__ (hax, caller, txt, varargin)
   endif
 
 endfunction
-

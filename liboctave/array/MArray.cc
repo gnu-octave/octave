@@ -359,4 +359,3 @@ operator - (const MArray<T>& a)
 {
   return do_mx_unary_op<T, T> (a, mx_inline_uminus);
 }
-

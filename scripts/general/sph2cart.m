@@ -147,4 +147,3 @@ endfunction
 %!error <numeric arrays of the same size> sph2cart ([1,2,3], [1,2,3], {1,2,3})
 %!error <numeric arrays of the same size> sph2cart (ones (3,3,3), 1, ones (3,2,3))
 %!error <numeric arrays of the same size> sph2cart (ones (3,3,3), ones (3,2,3), 1)
-

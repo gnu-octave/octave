@@ -146,4 +146,3 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
   end_unwind_protect
 
 endfunction
-

@@ -39,4 +39,3 @@ endfunction
 
 %!error asind ()
 %!error asind (1, 2)
-

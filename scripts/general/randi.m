@@ -210,4 +210,3 @@ endfunction
 %!error <IMIN and IMAX must be smaller than flintmax\(\)> randi (flintmax ())
 %!error <range must be smaller than flintmax\(\)-1> randi ([-1, flintmax() - 1])
 %!error <unknown requested output CLASS 'foo'> randi (10, "foo")
-

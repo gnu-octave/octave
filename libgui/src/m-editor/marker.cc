@@ -183,4 +183,3 @@ marker::handle_marker_line_undeleted (int mhandle)
 }
 
 #endif
-

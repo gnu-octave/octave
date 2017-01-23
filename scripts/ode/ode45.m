@@ -515,4 +515,3 @@ endfunction
 %!error <INIT must be a numeric> ode45 (@fpol, [0 25], {[3 15 1]})
 %!error <INIT must be a .* vector> ode45 (@fpol, [0 25], [3 15 1; 3 15 1])
 %!error <FUN must be a valid function handle> ode45 (1, [0 25], [3 15 1])
-

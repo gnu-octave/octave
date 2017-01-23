@@ -120,4 +120,3 @@ FCN_FILES += \
 PKG_ADD_FILES += scripts/plot/draw/PKG_ADD
 
 DIRSTAMP_FILES += scripts/plot/draw/$(octave_dirstamp)
-

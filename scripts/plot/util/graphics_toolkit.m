@@ -130,4 +130,3 @@ endfunction
 %! endswitch
 %! assert (graphics_toolkit (new_toolkit), old_toolkit);
 %! assert (graphics_toolkit (old_toolkit), new_toolkit);
-

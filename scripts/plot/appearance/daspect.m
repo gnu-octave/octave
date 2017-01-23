@@ -140,4 +140,3 @@ endfunction
 %! title ("square plot box with axis limits [0, 4, -1, 1]");
 
 ## FIXME: need some input validation tests
-

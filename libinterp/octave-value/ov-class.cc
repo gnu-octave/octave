@@ -2048,4 +2048,3 @@ may @emph{only} be called from a class constructor.
 
   return octave_value();
 }
-

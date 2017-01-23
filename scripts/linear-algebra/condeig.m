@@ -132,4 +132,3 @@ endfunction
 %!error <A must be a square numeric matrix> condeig ({1})
 %!error <A must be a square numeric matrix> condeig (ones (3,2))
 %!error <A must be a square numeric matrix> condeig (ones (2,2,2))
-

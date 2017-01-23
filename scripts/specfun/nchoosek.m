@@ -162,4 +162,3 @@ endfunction
 %!error <N must be a non-negative integer .= K> nchoosek (-100, 45)
 %!error <N must be a non-negative integer .= K> nchoosek (100.5, 45)
 %!warning <possible loss of precision> nchoosek (100, 45);
-

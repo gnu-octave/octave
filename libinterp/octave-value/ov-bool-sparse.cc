@@ -820,4 +820,3 @@ octave_sparse_bool_matrix::as_mxArray (void) const
 
   return retval;
 }
-

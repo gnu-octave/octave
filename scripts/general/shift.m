@@ -96,4 +96,3 @@ endfunction
 %!error shift (1, 1, 1.5)
 %!error shift (1, 1, 0)
 %!error shift (1, 1, 3)
-

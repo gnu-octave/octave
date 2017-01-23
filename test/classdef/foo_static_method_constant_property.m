@@ -27,4 +27,3 @@ classdef foo_static_method_constant_property
     end
   end
 end
-

@@ -194,4 +194,3 @@ octave_o_wronly_wrapper (void)
   return -1;
 #endif
 }
-

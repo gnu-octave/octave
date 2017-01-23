@@ -1118,4 +1118,3 @@ endfunction
 %! assert (a([1 3]), {"abc"; "##"});
 %! assert (isempty (a{2}), true);
 %! assert (b, int32([51; 83; 101]));
-

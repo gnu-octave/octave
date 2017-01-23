@@ -114,4 +114,3 @@ endfunction
 %!error ancestor (1,2,3)
 %!error <TYPE must be a string> ancestor (1,2)
 %!error <third argument must be "toplevel"> ancestor (1, "axes", "foo")
-

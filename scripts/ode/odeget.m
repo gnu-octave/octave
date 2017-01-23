@@ -81,4 +81,3 @@ endfunction
 %!error odeget (1, "opt1")
 %!error odeget (struct ("opt1", 1), 1)
 %!error odeget (struct ("opt1", 1), "foo")
-

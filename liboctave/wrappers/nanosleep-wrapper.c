@@ -38,4 +38,3 @@ octave_nanosleep_wrapper (const struct timespec *requested,
 {
   return nanosleep (requested, remaining);
 }
-

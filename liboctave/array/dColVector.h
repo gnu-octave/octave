@@ -123,4 +123,3 @@ extern OCTAVE_API ColumnVector imag (const ComplexColumnVector& a);
 MARRAY_FORWARD_DEFS (MArray, ColumnVector, double)
 
 #endif
-

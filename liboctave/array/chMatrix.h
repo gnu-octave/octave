@@ -110,4 +110,3 @@ MM_CMP_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
 
 #endif
-

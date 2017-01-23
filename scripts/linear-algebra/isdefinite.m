@@ -85,4 +85,3 @@ endfunction
 %!error isdefinite ()
 %!error isdefinite (1,2,3)
 %!error <A must be a Hermitian matrix> isdefinite ([1 2; 3 4])
-

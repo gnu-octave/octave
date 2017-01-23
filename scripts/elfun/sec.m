@@ -44,4 +44,3 @@ endfunction
 
 %!error sec ()
 %!error sec (1, 2)
-

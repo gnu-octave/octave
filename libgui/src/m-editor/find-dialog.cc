@@ -449,4 +449,3 @@ find_dialog::no_matches_message ()
 }
 
 #endif
-

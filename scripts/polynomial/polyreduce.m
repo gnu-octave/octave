@@ -55,4 +55,3 @@ endfunction
 %!error polyreduce (1, 2)
 %!error <C must be a non-empty vector> polyreduce ([1, 2; 3, 4])
 %!error <C must be a non-empty vector> polyreduce ([])
-

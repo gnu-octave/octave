@@ -33,4 +33,3 @@ namespace QtHandles
 extern void install___init_qt___functions (void);
 
 #endif
-

@@ -74,4 +74,3 @@
 %!   set (0, "defaultfigurevisible", visibility);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
-

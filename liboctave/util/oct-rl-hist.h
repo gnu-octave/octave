@@ -84,4 +84,3 @@ extern void octave_replace_history_entry (int, const char *);
 #endif
 
 #endif
-

@@ -25,4 +25,3 @@
 function archdir = getarchdir (desc)
   archdir = fullfile (desc.archprefix, getarch ());
 endfunction
-

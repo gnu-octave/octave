@@ -110,4 +110,3 @@ function hui = uicontrol (varargin)
   hui = __go_uicontrol__ (h, args{:});
 
 endfunction
-

@@ -190,4 +190,3 @@ BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatNDArray,
                  FloatComplexNDArray, OCTAVE_API)
 
 #endif
-

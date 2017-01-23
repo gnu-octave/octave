@@ -443,4 +443,3 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
 
   return retval;
 }
-

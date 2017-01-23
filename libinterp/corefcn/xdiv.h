@@ -150,4 +150,3 @@ extern FloatComplexDiagMatrix xleftdiv (const FloatComplexDiagMatrix& a,
                                         const FloatComplexDiagMatrix& b);
 
 #endif
-

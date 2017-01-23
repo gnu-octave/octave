@@ -85,4 +85,3 @@ endfunction
 
 %!error inputname ()
 %!error inputname (1,2)
-

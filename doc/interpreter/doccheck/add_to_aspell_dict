@@ -64,4 +64,3 @@ open (FH, ">$octdict_fname")
 print FH $header;
 print FH sort { uc($a) cmp uc ($b) } keys(%dict_db);
 close (FH);
-

@@ -283,4 +283,3 @@ endfunction
 %! [nx, ny, nz, nv] = reducevolume (x, y, z, v, [4 3 2]);
 %!error <reduction value R is too high> [nv] = reducevolume (v, 5)
 %!error <reduction value R is too high> [nv] = reducevolume (v, [4 7 2])
-

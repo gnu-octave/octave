@@ -320,4 +320,3 @@ endfunction
 %! assert (b, flip (b,1));
 %! assert (b, flip (b,2));
 %! assert (b, flip (b,3));
-

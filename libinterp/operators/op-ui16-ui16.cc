@@ -156,4 +156,3 @@ install_ui16_ui16_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, int64);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, uint64);
 }
-

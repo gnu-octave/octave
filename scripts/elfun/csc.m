@@ -44,4 +44,3 @@ endfunction
 
 %!error csc ()
 %!error csc (1, 2)
-

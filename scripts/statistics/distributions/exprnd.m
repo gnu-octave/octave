@@ -114,4 +114,3 @@ endfunction
 %!error exprnd (ones (2,2), 3)
 %!error exprnd (ones (2,2), [3, 2])
 %!error exprnd (ones (2,2), 2, 3)
-

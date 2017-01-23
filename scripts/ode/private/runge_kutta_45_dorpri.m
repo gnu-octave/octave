@@ -116,4 +116,3 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fun, t, x, dt,
   endif
 
 endfunction
-

@@ -49,4 +49,3 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   endif
 
 endfunction
-

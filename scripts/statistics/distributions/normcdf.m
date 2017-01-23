@@ -96,4 +96,3 @@ endfunction
 %!error normcdf (i, 2, 2)
 %!error normcdf (2, i, 2)
 %!error normcdf (2, 2, i)
-

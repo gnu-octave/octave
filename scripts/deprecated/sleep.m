@@ -50,4 +50,3 @@ endfunction
 
 %!error (sleep ())
 %!error (sleep (1, 2))
-

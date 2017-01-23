@@ -2710,4 +2710,3 @@ file_editor_tab::get_function_name ()
 }
 
 #endif
-

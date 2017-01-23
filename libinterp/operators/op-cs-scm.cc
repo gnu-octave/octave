@@ -179,4 +179,3 @@ install_cs_scm_ops (void)
   INSTALL_WIDENOP (octave_complex, octave_sparse_complex_matrix,
                    sparse_complex_matrix_conv);
 }
-

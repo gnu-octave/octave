@@ -296,4 +296,3 @@ gripe_singular_matrix (double rcond)
 }
 
 /* Tests in test/index.tst */
-

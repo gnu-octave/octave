@@ -342,4 +342,3 @@ endfunction
 
 ## Test input validation
 %!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");
-

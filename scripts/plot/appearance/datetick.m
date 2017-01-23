@@ -343,4 +343,3 @@ function sep = __calc_tick_sep__ (lo, hi)
   sep = x * 10 .^ b;
 
 endfunction
-

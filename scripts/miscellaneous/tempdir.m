@@ -61,4 +61,3 @@ endfunction
 %!   endif
 %!   warning (old_wstate);
 %! end_unwind_protect
-

@@ -44,4 +44,3 @@ function uiresume (h)
   end_try_catch
 
 endfunction
-

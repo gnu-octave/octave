@@ -211,4 +211,3 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, "upper")
 %!        single (1)-gammainc (single (0:4), single (0.5)),
 %!        single (1e-7))
 */
-

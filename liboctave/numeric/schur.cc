@@ -493,4 +493,3 @@ namespace octave
     template class schur<Matrix>;
   }
 }
-

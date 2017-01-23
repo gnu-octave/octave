@@ -306,4 +306,3 @@ endfunction
 %! [dx, dy] = gradient (f, xy);
 %! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1);
 %! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1);
-

@@ -849,4 +849,3 @@ INSTANTIATE_INTTYPE (uint64_t);
 %!assert (int64 (char (128)), int64 (128))
 %!assert (int64 (char (255)), int64 (255))
 */
-

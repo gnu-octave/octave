@@ -84,4 +84,3 @@ function [pval, t, df] = welch_test (x, y, alt)
   endif
 
 endfunction
-

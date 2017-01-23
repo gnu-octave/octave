@@ -100,4 +100,3 @@ endfunction
 %! set (gca, "xtick", []);
 %! brighten (0.5);
 %! title ("grayscale colormap brightened by 0.5");
-

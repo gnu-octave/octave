@@ -52,4 +52,3 @@ function retval = java_get (obj, name)
   endif
 
 endfunction
-

@@ -96,4 +96,3 @@ endfunction
 %!error <A must be .* 2-D matrix> normest (ones (3,3,3))
 %!error <TOL must be a real scalar> normest (1, [1, 2])
 %!error <TOL must be a real scalar> normest (1, 1+1i)
-

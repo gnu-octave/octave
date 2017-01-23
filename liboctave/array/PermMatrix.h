@@ -131,4 +131,3 @@ OCTAVE_API
 operator * (const PermMatrix& a, const PermMatrix& b);
 
 #endif
-

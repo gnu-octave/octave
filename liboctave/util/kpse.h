@@ -95,4 +95,3 @@ extern std::string
 kpse_path_search (const std::string& path, const std::string& name);
 
 #endif
-

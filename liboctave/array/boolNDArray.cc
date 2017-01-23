@@ -168,4 +168,3 @@ mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
 
 BSXFUN_OP_DEF_MXLOOP (and, boolNDArray, mx_inline_and)
 BSXFUN_OP_DEF_MXLOOP (or, boolNDArray, mx_inline_or)
-

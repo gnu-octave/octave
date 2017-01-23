@@ -60,4 +60,3 @@ extern "C" {
 }
 
 #endif
-

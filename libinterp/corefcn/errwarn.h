@@ -183,4 +183,3 @@ OCTINTERP_API extern void
 warn_wrong_type_arg (const char *name, const octave_value& tc);
 
 #endif
-

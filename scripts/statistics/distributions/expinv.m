@@ -92,4 +92,3 @@ endfunction
 %!error expinv (ones (2), ones (3))
 %!error expinv (i, 2)
 %!error expinv (2, i)
-

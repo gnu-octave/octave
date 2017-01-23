@@ -111,4 +111,3 @@ endfunction
 
 %!error [b, r] = deconv ([3, 6], [1, 2; 3, 4])
 %!error [b, r] = deconv ([3, 6; 1, 2], [1, 2, 3])
-

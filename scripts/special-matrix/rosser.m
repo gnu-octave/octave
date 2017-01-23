@@ -49,4 +49,3 @@ endfunction
 %!assert (rosser ()([1, end]), [611, 99])
 
 %!error (rosser (1))
-

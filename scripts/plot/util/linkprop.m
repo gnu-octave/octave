@@ -171,4 +171,3 @@ endfunction
 %!error <H must contain at least 2 handles> linkprop (1, "color")
 %!error <invalid graphic handle in input H> linkprop ([pi, e], "color")
 %!error <PROP must be a string or cell string array> linkprop ([0, 0], 1)
-

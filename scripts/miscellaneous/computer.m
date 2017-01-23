@@ -107,4 +107,3 @@ endfunction
 
 %!error computer (1,2)
 %!error <"arch" is only valid argument> computer ("xyz")
-

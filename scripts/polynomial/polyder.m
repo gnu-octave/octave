@@ -100,4 +100,3 @@ endfunction
 %!error polyder ([])
 %!error polyder (1,2,3)
 %!error <argument must be a vector> polyder ([1, 2; 3, 4])
-

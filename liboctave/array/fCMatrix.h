@@ -497,4 +497,3 @@ MM_BOOL_OP_DECLS (FloatComplexMatrix, FloatComplexMatrix, OCTAVE_API)
 MARRAY_FORWARD_DEFS (MArray, FloatComplexMatrix, FloatComplex)
 
 #endif
-

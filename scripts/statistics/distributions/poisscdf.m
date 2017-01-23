@@ -86,4 +86,3 @@ endfunction
 %!error poisscdf (ones (2), ones (3))
 %!error poisscdf (i, 2)
 %!error poisscdf (2, i)
-

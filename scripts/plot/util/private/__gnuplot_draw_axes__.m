@@ -2929,4 +2929,3 @@ function retval = mapcdata (cdata, mode, clim, cmap_sz)
     retval = max (1, min (cdata, cmap_sz));
   endif
 endfunction
-

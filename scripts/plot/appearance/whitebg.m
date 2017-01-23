@@ -248,4 +248,3 @@ endfunction
 ## Test input validation
 %!error whitebg (1,2,3)
 %!error whitebg ({1}, 2)
-

@@ -3833,4 +3833,3 @@ SM_BOOL_OPS (FloatComplex, FloatComplexMatrix)
 
 MM_CMP_OPS (FloatComplexMatrix, FloatComplexMatrix)
 MM_BOOL_OPS (FloatComplexMatrix, FloatComplexMatrix)
-

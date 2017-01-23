@@ -89,4 +89,3 @@ endfunction
 %!error ppplot ()
 %!error ppplot (ones (2,2))
 %!error <DIST must be a string> ppplot (1, 2)
-

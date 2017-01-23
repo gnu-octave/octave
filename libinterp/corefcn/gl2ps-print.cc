@@ -888,4 +888,3 @@ namespace octave
 #endif
   }
 }
-

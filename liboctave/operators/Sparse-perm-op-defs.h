@@ -155,4 +155,3 @@ SM octinternal_do_mul_sm_pm (const SM& a, const PermMatrix& p)
 }
 
 #endif
-

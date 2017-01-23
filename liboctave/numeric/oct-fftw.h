@@ -401,5 +401,4 @@ typedef octave::fftw octave_fftw;
 
 #endif
 
-
 #endif

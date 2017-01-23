@@ -396,4 +396,3 @@ plot (xi, yi);
 @DOCSTRING(polyout)
 
 @DOCSTRING(polyreduce)
-

@@ -180,4 +180,3 @@ install_sm_s_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_scalar, assign);
 }
-

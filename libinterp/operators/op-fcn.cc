@@ -54,4 +54,3 @@ install_fcn_ops (void)
   INSTALL_BINOP (op_eq, octave_fcn_handle, octave_fcn_handle, eq);
   INSTALL_BINOP (op_ne, octave_fcn_handle, octave_fcn_handle, ne);
 }
-

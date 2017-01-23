@@ -54,4 +54,3 @@ extern OCTINTERP_API std::string Vinfo_program;
 extern OCTINTERP_API std::string do_which (const std::string& name);
 
 #endif
-

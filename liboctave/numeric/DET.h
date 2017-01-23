@@ -90,4 +90,3 @@ typedef base_det<Complex> ComplexDET;
 typedef base_det<FloatComplex> FloatComplexDET;
 
 #endif
-

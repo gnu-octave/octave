@@ -1159,4 +1159,3 @@ Table 10.4 - j and y for various integer orders and arguments.
 %! assert (j, jt, -1e-9);
 %! assert (y, yt, -1e-9);
 */
-

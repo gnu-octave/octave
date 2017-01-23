@@ -891,4 +891,3 @@ inline FloatComplex rc_sqrt (float x) { return octave::math::rc_sqrt (x); }
 #endif
 
 #endif
-

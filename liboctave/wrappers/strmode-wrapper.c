@@ -37,4 +37,3 @@ octave_strmode_wrapper (mode_t mode, char *buffer)
 {
   strmode (mode, buffer);
 }
-

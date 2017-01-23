@@ -504,4 +504,3 @@ function retval = __plt2vv__ (h, x, y, options, properties = {})
                  "marker", marker, properties{:});
 
 endfunction
-

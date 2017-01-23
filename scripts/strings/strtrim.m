@@ -88,4 +88,3 @@ endfunction
 %!error <Invalid call to strtrim> strtrim ("abc", "def")
 %!error <argument must be a string> strtrim (1)
 %!error <argument must be a string> strtrim ({[]})
-

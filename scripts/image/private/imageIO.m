@@ -123,4 +123,3 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
   end_unwind_protect
 
 endfunction
-

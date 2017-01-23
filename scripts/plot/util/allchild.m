@@ -65,4 +65,3 @@ endfunction
 
 %!error allchild ()
 %!error allchild (1, 2)
-

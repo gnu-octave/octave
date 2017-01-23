@@ -88,4 +88,3 @@ endfunction
 %!error mahalanobis (ones (2,2,2))
 %!error mahalanobis (ones (2,2), ones (2,2,2))
 %!error mahalanobis (ones (2,2), ones (2,3))
-

@@ -90,4 +90,3 @@ endfunction
 %!error betacdf (ones (3), ones (2), ones (2))
 %!error betacdf (ones (2), ones (3), ones (2))
 %!error betacdf (ones (2), ones (2), ones (3))
-

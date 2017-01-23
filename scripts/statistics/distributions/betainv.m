@@ -134,4 +134,3 @@ endfunction
 %!error betainv (i, 2, 2)
 %!error betainv (2, i, 2)
 %!error betainv (2, 2, i)
-

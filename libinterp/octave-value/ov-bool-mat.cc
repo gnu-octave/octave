@@ -627,4 +627,3 @@ Compatibility Note: Octave accepts complex values as input, whereas
 %!   assert (logical (eye (1, c{i})), s);
 %! endfor
 */
-

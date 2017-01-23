@@ -87,4 +87,3 @@ endfunction
 
 %!error compan ([1,2;3,4])
 %!error compan ([])
-

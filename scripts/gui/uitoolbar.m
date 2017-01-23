@@ -55,4 +55,3 @@ function hui = uitoolbar (varargin)
   hui = __go_uitoolbar__ (h, args{:});
 
 endfunction
-

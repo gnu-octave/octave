@@ -231,4 +231,3 @@ endfunction
 %!error <only 2-D and 3-D patches are supported> shrinkfaces (faces, ones (3,1))
 %!error <only 2-D and 3-D patches are supported> shrinkfaces (faces, ones (3,4))
 %!error <faces must consist of at least 3 vertices> shrinkfaces (faces(1:2), vertices)
-

@@ -1145,4 +1145,3 @@ element-by-element and a logical array is returned.  At the top level,
 %! [~, y] = c{2}();
 %! assert (y, -2);
 */
-

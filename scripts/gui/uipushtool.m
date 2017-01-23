@@ -73,4 +73,3 @@ function hui = uipushtool (varargin)
   hui = __go_uipushtool__ (h, args{:});
 
 endfunction
-

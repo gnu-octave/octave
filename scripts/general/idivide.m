@@ -125,4 +125,3 @@ endfunction
 %!assert (idivide (a, bf, "round"), int8 ([-1, 1]))
 
 %!error (idivide (uint8 (1), int8 (1)))
-

@@ -152,4 +152,3 @@ elements @code{sec} (seconds) @code{usec} (microseconds).
 %! assert (isfield (r.utime, "sec"));
 %! assert (isfield (r.utime, "usec"));
 */
-

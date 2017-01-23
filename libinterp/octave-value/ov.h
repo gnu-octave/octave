@@ -1631,4 +1631,3 @@ DEF_DUMMY_VALUE_EXTRACTOR (octave_value, octave_value ())
 #undef DEF_DUMMY_VALUE_EXTRACTOR
 
 #endif
-

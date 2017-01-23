@@ -115,4 +115,3 @@ endfunction
 %!error index ("a", "b", "first", "d")
 %!error index (1, "bar")
 %!error index ("foo", "bar", 3)
-

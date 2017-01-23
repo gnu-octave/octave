@@ -89,4 +89,3 @@ endfunction
 %!     assert (V'*V, eye (10), 100*eps);
 %!   endif
 %! endfor
-

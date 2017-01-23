@@ -45,7 +45,7 @@ w32_get_octave_home (void)
     {
       namebuf[MAX_PATH] = '\0';
 
-      std::string exe_name = namebuf; 
+      std::string exe_name = namebuf;
       size_t pos = exe_name.rfind ("\\");
 
       if (pos != std::string::npos)
@@ -122,4 +122,3 @@ subst_octave_home (const std::string& s)
 }
 
 #endif
-

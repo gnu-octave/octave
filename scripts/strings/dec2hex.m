@@ -62,4 +62,3 @@ endfunction
 ## Test input validation
 %!error dec2hex ()
 %!error dec2hex (1, 2, 3)
-

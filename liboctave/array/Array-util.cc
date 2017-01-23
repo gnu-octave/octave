@@ -668,4 +668,3 @@ permute_vector_compare (const void *a, const void *b)
 
   return pva->pidx > pvb->pidx;
 }
-

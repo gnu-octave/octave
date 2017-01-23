@@ -47,4 +47,3 @@ function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
   gnuplot_supports_term = any (strcmp (term, available_terminals));
 
 endfunction
-

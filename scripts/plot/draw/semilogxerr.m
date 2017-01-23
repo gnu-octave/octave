@@ -93,4 +93,3 @@ endfunction
 %! xlim (x([1, end]));
 %! title ({"semilogxerr(): semilogx() plot with errorbars", ...
 %!         "X-axis is logarithmic"});
-

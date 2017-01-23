@@ -204,4 +204,3 @@ octave_value xfrobnorm (const octave_value& x)
 
   return retval;
 }
-

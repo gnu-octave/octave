@@ -101,4 +101,3 @@ endfunction
 
 ## Test input validation
 %!error calendar (1,2,3)
-

@@ -128,4 +128,3 @@ octave_wuntraced_wrapper (void)
 {
   return WUNTRACED;
 }
-

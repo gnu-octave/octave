@@ -76,4 +76,3 @@ endfunction
 %!error spectral_xdf (1, 2, 3, 4)
 %!error spectral_xdf (1, 2)
 %!error spectral_xdf (1, "invalid")
-

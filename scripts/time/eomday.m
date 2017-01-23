@@ -61,4 +61,3 @@ endfunction
 %!error eomday ()
 %!error eomday (1)
 %!error eomday (1,2,3)
-

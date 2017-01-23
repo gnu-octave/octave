@@ -61,4 +61,3 @@ endfunction
 ## Test input validation
 %!error range ()
 %!error range (1, 2, 3)
-

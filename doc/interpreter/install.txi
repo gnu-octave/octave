@@ -1058,4 +1058,3 @@ are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O2"} and
 @env{FFLAGS} is set to @qcode{"-O"}.
 
 @end itemize
-

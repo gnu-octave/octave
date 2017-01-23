@@ -429,4 +429,3 @@ function retval = isOctave
 end
 @end group
 @end example
-

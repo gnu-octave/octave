@@ -1494,4 +1494,3 @@ function.
 %!assert (regexprep ("\n", '\n', "X"), "X")
 %!assert (regexprep ("\n", "\n", "X"), "X")
 */
-

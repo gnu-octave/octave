@@ -131,4 +131,3 @@ endfunction
 %!error <all arguments must be character strings> ls (1)
 ## Test below is valid, but produces confusing output on screen
 %!#error <command exited abnormally> ls ("-!")
-

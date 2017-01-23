@@ -112,4 +112,3 @@ endfunction
 %!error postpad ()
 %!error postpad (1)
 %!error postpad (1,2,3,4,5)
-

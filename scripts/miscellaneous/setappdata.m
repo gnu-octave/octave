@@ -92,4 +92,3 @@ endfunction
 %!error <H must be a scalar .* graphic handle> rmappdata (-1, "hello")
 %!error <NAME must be a string> setappdata (0, 1, 2)
 %!error <NAME/VALUE arguments must occur in pairs> setappdata (0, "1")
-

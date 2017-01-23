@@ -220,4 +220,3 @@ octave_sparse_params::do_print_info (std::ostream& os,
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
     os << prefix << keys(i) << ": " << params(i) << "\n";
 }
-

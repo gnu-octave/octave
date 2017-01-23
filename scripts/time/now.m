@@ -58,4 +58,3 @@ endfunction
 %!assert (now () <= now ())
 
 %!error now (1)
-

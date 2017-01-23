@@ -40,4 +40,3 @@ endfunction
 
 ## Remove from test statistics.  All real tests are in mkoctfile.
 %!assert (1)
-

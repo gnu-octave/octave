@@ -124,4 +124,3 @@ endfunction
 %! shading interp;
 %! title ({"quiver3 of surface normals to peaks() function"; ...
 %!         'shading "interp"'});
-

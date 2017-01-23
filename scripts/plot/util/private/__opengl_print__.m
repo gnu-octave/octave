@@ -178,4 +178,3 @@ function opts = __opengl_print__ (opts)
   endif
 
 endfunction
-

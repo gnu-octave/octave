@@ -95,4 +95,3 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
   endif
 
 endfunction
-

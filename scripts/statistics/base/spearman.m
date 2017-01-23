@@ -92,4 +92,3 @@ endfunction
 %!error spearman (ones (2,2,2))
 %!error spearman (ones (2,2), ones (2,2,2))
 %!error spearman (ones (2,2), ones (3,2))
-

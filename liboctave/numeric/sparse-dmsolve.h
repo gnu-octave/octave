@@ -31,4 +31,3 @@ RT
 dmsolve (const ST& a, const T& b, octave_idx_type& info);
 
 #endif
-

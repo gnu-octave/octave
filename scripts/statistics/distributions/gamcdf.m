@@ -88,4 +88,3 @@ endfunction
 %!error gamcdf (i, 2, 2)
 %!error gamcdf (2, i, 2)
 %!error gamcdf (2, 2, i)
-

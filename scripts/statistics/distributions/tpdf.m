@@ -90,4 +90,3 @@ endfunction
 %!error tpdf (ones (2), ones (3))
 %!error tpdf (i, 2)
 %!error tpdf (2, i)
-

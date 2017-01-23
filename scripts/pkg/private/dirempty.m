@@ -50,4 +50,3 @@ function emp = dirempty (nm, ign)
   endif
 
 endfunction
-

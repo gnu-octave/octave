@@ -254,4 +254,3 @@ endfunction
 %!error <invalid function FN>
 %! fn = @(x) [x;x];
 %! fplot (fn, [-1,1]);
-

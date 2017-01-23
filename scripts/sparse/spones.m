@@ -41,4 +41,3 @@ endfunction
 %!assert (issparse (spones ([1,2;3,0])))
 %!assert (spones ([1,2;3,0]), sparse ([1,1;1,0]))
 %!assert (spones (sparse ([1,2;3,0])), sparse ([1,1;1,0]))
-

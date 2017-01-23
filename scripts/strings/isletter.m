@@ -40,4 +40,3 @@ endfunction
 
 %!error isletter ()
 %!error isletter ("a", "b")
-

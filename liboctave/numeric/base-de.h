@@ -119,4 +119,3 @@ protected:
 };
 
 #endif
-

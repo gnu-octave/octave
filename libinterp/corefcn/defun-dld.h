@@ -53,4 +53,3 @@ along with Octave; see the file COPYING.  If not, see
   DECLARE_FUNX (fname, args_name, nargout_name)
 
 #endif
-

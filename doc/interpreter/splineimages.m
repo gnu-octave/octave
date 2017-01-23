@@ -209,4 +209,3 @@ endfunction
 %! for s = 1:6
 %!   splineimages (sprintf ("splinefit##d", s), "pdf");
 %! endfor
-

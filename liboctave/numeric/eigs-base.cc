@@ -3346,4 +3346,3 @@ EigsComplexNonSymmetricMatrixShift<SparseComplexMatrix>
    double tol, bool rvec, bool cholB, int disp, int maxit);
 
 #endif
-

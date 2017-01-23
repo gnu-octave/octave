@@ -177,4 +177,3 @@ endfunction
 
 %!error fileattrib (1, 2)
 %!error <FILE must be a string> fileattrib (1)
-

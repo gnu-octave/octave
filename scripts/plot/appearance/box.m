@@ -104,4 +104,3 @@ endfunction
 %! box on;
 %! set (gca, "boxstyle", "full");
 %! title ({"box on", 'boxstyle = "full"'});
-

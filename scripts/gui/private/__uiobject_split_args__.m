@@ -66,4 +66,3 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
   endif
 
 endfunction
-

@@ -3137,4 +3137,3 @@ It is useful for error messages and prompts.
 {
   return const_value ("stderr", args, stderr_file);
 }
-

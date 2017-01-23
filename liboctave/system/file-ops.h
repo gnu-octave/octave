@@ -393,4 +393,3 @@ octave_canonicalize_file_name (const std::string& nm, std::string& msg)
 #endif
 
 #endif
-

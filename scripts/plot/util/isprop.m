@@ -60,4 +60,3 @@ endfunction
 %!error isprop (1)
 %!error isprop (1,2,3)
 %!error <PROP name must be a string> isprop (0, {"visible"})
-

@@ -274,4 +274,3 @@ endfunction
 %!error expint ()
 %!error expint (1,2)
 %!error <X must be numeric> expint ("1")
-

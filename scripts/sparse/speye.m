@@ -59,4 +59,3 @@ endfunction
 %!assert (speye (2,4), sparse (1:2,1:2,1,2,4))
 %!assert (speye (4,2), sparse (1:2,1:2,1,4,2))
 %!assert (speye ([4,2]), sparse (1:2,1:2,1,4,2))
-

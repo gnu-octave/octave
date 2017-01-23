@@ -58,4 +58,3 @@ endfunction
 %!error empirical_inv (1)
 %!error empirical_inv (1,2,3)
 %!error empirical_inv (1, ones (2))
-

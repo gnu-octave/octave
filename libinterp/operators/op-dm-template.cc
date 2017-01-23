@@ -99,4 +99,3 @@ INST_NAME (void)
   INSTALL_ASSIGNCONV (OCTAVE_LMATRIX, octave_null_sq_str, OCTAVE_LDMATRIX);
 #endif
 }
-

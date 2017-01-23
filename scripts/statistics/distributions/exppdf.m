@@ -81,4 +81,3 @@ endfunction
 %!error exppdf (ones (2), ones (3))
 %!error exppdf (i, 2)
 %!error exppdf (2, i)
-

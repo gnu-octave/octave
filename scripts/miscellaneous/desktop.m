@@ -47,4 +47,3 @@ endfunction
 ## Test input validation
 %!error <only one argument, "-inuse", is allowed> desktop (1,2)
 %!error desktop ("-invalid_option")
-

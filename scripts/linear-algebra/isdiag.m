@@ -56,4 +56,3 @@ endfunction
 ## Test input validation
 %!error isdiag ()
 %!error isdiag (1,2)
-

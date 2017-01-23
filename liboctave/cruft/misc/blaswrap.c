@@ -292,4 +292,3 @@ static void finiVecLibWrappers (void)
 }
 
 #endif /* USE_BLASWRAP */
-

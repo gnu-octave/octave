@@ -214,4 +214,3 @@ install_m_m_ops (void)
   INSTALL_ASSIGNOP (op_el_mul_eq, octave_matrix, octave_matrix, assign_el_mul);
   INSTALL_ASSIGNOP (op_el_div_eq, octave_matrix, octave_matrix, assign_el_div);
 }
-

@@ -449,4 +449,3 @@ octave_float_scalar::fast_elem_insert_self (void *where,
   else
     return false;
 }
-

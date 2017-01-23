@@ -452,4 +452,3 @@ text_parser::parse (const std::string& s, const caseless_str& interpreter)
 }
 
 #endif
-

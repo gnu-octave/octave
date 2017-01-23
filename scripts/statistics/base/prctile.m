@@ -184,4 +184,3 @@ endfunction
 %!error prctile (1, 1, 1.5)
 %!error prctile (1, 1, 0)
 %!error prctile (1, 1, 3)
-

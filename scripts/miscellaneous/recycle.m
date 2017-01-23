@@ -70,4 +70,3 @@ endfunction
 %!error <NEW_VAL must be a character string> recycle (1)
 %!error <recycling files is not implemented> recycle ("on")
 %!error <invalid value 'foobar'> recycle ("foobar")
-

@@ -84,4 +84,3 @@ endfunction
 %!error unidpdf (ones (2), ones (3))
 %!error unidpdf (i, 2)
 %!error unidpdf (2, i)
-

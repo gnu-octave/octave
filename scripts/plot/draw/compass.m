@@ -135,4 +135,3 @@ endfunction
 %!error compass (1, "-r", 2)
 %!error <invalid linestyle STYLE> compass (1, "abc")
 %!error <invalid linestyle STYLE> compass (1, {1})
-

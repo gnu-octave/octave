@@ -183,4 +183,3 @@ files holding data in mu-law encoding end in @file{au}, @file{mu}, or
 @DOCSTRING(sound)
 
 @DOCSTRING(soundsc)
-

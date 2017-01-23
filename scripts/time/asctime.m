@@ -55,4 +55,3 @@ endfunction
 
 %!error asctime ()
 %!error asctime (1, 2)
-

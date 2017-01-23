@@ -123,4 +123,3 @@ typedef octave::sys::group octave_group;
 #endif
 
 #endif
-

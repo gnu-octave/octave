@@ -156,4 +156,3 @@ install_i64_i64_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int64, uint32);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int64, uint64);
 }
-

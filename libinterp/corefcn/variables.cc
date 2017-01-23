@@ -2691,4 +2691,3 @@ should return an error message to be displayed.
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);
 }
-

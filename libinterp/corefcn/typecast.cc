@@ -558,4 +558,3 @@ column vector.
 %!error bitunpack (1, 2)
 %!error bitunpack ({})
 */
-

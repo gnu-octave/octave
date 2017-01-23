@@ -982,4 +982,3 @@ MatrixType::transpose (void) const
 
 template MatrixType::MatrixType (const MSparse<double>&);
 template MatrixType::MatrixType (const MSparse<Complex>&);
-

@@ -1355,4 +1355,3 @@ xmin (const octave_int<T>& x, const octave_int<T>& y)
 }
 
 #endif
-

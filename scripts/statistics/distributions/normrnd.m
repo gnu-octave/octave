@@ -128,4 +128,3 @@ endfunction
 %!error normrnd (ones (2,2), 2, 3)
 %!error normrnd (ones (2,2), 2, [3, 2])
 %!error normrnd (ones (2,2), 2, 2, 3)
-

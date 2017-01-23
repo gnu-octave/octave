@@ -968,4 +968,3 @@ and false otherwise.
 {
   return ovl (display_info::display_available ());
 }
-

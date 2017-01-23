@@ -171,4 +171,3 @@ endfunction
 %!error cov (ones (2,2), ones (2,2,2))
 %!error cov (1, 3)
 %!error cov (ones (2,2), ones (3,2))
-

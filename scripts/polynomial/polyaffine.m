@@ -85,4 +85,3 @@ endfunction
 %! g = polyaffine (f, mu);
 %! x = linspace (-4,4,100);
 %! assert (polyval (f, x, [], mu), polyval (g, x), 1e-10);
-

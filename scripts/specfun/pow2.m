@@ -68,4 +68,3 @@ endfunction
 
 %!error pow2 ()
 %!error pow2 (1,2,3)
-

@@ -126,4 +126,3 @@ endfunction
 %! a = rand (3,3,3);
 %! b = a(1);
 %! assert (setdiff (a, b), sort (a(2:end)'));
-

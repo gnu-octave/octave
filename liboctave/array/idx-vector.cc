@@ -1329,4 +1329,3 @@ INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
 %!assert ((1:3)(find ([1,0,1] != 0)), [1,3])
 
 */
-

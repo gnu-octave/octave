@@ -115,4 +115,3 @@ endfunction
 %! axis equal tight;
 %! hold on; plot (x,y,"r"); hold off;
 %! title ("quiver() with scaled arrows");
-

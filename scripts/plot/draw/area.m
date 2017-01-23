@@ -290,4 +290,3 @@ endfunction
 %!error <X and Y must be real vectors or matrices> area (1:2, [1 1+i])
 %!error <LVL must be a real scalar> area (1, i)
 %!error <LVL must be a real scalar> area (1, 2, ones (2,2))
-

@@ -584,4 +584,3 @@ b = sparse (i, j, v, sz(1), sz(2));
 
 %!error find ()
 */
-

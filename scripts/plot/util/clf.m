@@ -127,4 +127,3 @@ endfunction
 %!   set (0, "defaultfigurevisible", "remove");
 %!   close (hf);
 %! end_unwind_protect
-

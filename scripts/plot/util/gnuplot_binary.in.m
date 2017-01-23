@@ -70,4 +70,3 @@ endfunction
 %! assert (new_args, {"-opt1"});
 %! gnuplot_binary (orig_val, orig_args{:});
 %! assert (gnuplot_binary (), orig_val);
-

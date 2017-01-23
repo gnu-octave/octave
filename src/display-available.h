@@ -35,4 +35,3 @@ extern const char *display_available (int *dpy_avail);
 #endif
 
 #endif
-

@@ -44,4 +44,3 @@ endfunction
 
 %!error asec ()
 %!error asec (1, 2)
-

@@ -54,4 +54,3 @@ endfunction
 %!error stdnormal_cdf ()
 %!error stdnormal_cdf (1,2)
 %!error stdnormal_cdf (i)
-

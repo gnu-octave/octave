@@ -59,4 +59,3 @@ function res = __gnuplot_has_feature__ (feature)
   endif
 
 endfunction
-

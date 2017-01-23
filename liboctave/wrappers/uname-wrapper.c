@@ -61,4 +61,3 @@ octave_uname_wrapper (char **sysname, char **nodename,
 
   return err;
 }
-

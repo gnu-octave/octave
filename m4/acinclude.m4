@@ -2800,4 +2800,3 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
 dnl         End of macros written by Octave developers
 dnl ------------------------------------------------------------
 dnl
-

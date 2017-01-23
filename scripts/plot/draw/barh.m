@@ -89,4 +89,3 @@ endfunction
 %! set (h(2), "facecolor", "g");
 %! set (h(3), "facecolor", "b");
 %! title ("barh() graph w/multiple bars");
-

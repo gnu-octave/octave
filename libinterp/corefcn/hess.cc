@@ -148,4 +148,3 @@ IEEE Transactions on Automatic Control, 1979).
 %!error hess ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
 */
-

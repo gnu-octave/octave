@@ -142,4 +142,3 @@ OCTAVE_API ComplexRowVector linspace (const Complex& x1, const Complex& x2,
 MARRAY_FORWARD_DEFS (MArray, ComplexRowVector, Complex)
 
 #endif
-

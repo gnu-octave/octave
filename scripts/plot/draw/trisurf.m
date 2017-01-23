@@ -165,4 +165,3 @@ endfunction
 %!error <C must have 'numel \(Z\)' elements> trisurf (1,2,3,4,[5 6]')
 %!error <TrueColor C matrix must> trisurf ([1;1],[2;2],[3;3],[4;4],zeros(3,3))
 %!error <TrueColor C matrix must> trisurf ([1;1],[2;2],[3;3],[4;4],zeros(2,2))
-

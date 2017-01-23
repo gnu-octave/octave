@@ -33,4 +33,3 @@ endfunction
 
 ## No test needed for empty function
 %!assert (1)
-

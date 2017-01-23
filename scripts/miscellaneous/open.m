@@ -77,4 +77,3 @@ endfunction
 %!error open ()
 %!error open ("abc", "def")
 %!error <FILE must be a string> open (1)
-

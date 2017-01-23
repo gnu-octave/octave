@@ -38,4 +38,3 @@ function [g, g1, p, dev] = logistic_regression_likelihood (y, x, beta, z, z1)
   dev = -2 * sum (log (p));
 
 endfunction
-

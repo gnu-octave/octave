@@ -838,4 +838,3 @@ The original variable value is restored when exiting the function.
 
 %!error (sigterm_dumps_octave_core (1, 2))
 */
-

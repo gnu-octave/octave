@@ -469,4 +469,3 @@ octave_scalar::fast_elem_insert_self (void *where, builtin_type_t btyp) const
   else
     return false;
 }
-

@@ -197,4 +197,3 @@ endfunction
 %!error <ListString must not be empty> listdlg ("ListString", {})
 %!error <invalid SelectionMode>
 %! listdlg ("ListString", {"A"}, "SelectionMode", "foobar");
-

@@ -1000,4 +1000,3 @@ The original variable value is restored when exiting the function.
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);
 }
-

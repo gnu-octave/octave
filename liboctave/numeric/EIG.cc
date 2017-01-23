@@ -770,4 +770,3 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
 
   return info;
 }
-

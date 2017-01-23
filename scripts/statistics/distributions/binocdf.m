@@ -95,4 +95,3 @@ endfunction
 %!error binocdf (i, 2, 2)
 %!error binocdf (2, i, 2)
 %!error binocdf (2, 2, i)
-

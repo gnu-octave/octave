@@ -65,4 +65,3 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFALIAS(alias, name)
 
 #endif
-

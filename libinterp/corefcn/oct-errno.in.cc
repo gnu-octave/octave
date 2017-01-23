@@ -337,4 +337,3 @@ octave_errno::do_list (void)
 
   return retval;
 }
-

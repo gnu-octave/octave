@@ -570,4 +570,3 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
 
 #endif
 }
-

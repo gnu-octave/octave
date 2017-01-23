@@ -151,4 +151,3 @@ endfunction
 
 %!error type ()
 %!error <'__NO_NAME__' undefined> type ('__NO_NAME__')
-

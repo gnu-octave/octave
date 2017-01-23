@@ -137,4 +137,3 @@ endfunction
 %! assert (rank (A,0.0009), 1);
 %! assert (rank (A,0.0006), 2);
 %! assert (rank (A,0.00000002), 3);
-

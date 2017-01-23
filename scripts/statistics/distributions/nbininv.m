@@ -168,4 +168,3 @@ endfunction
 %!error nbininv (i, 2, 2)
 %!error nbininv (2, i, 2)
 %!error nbininv (2, 2, i)
-

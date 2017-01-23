@@ -361,4 +361,3 @@ endfor
 %!error <A and B must be numeric> blkmm ({1,2}, [3,4])
 %!error <A and B must be numeric> blkmm ([3,4], {1,2})
 */
-

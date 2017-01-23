@@ -61,4 +61,3 @@ endfunction
 %! ppi = ppint (pp);
 %!assert (ppval (ppi, x), [x; 0.5*x.^2 + x], 1e-14)
 %!assert (ppi.order, 5)
-

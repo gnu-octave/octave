@@ -189,4 +189,3 @@ extract_keyword (std::istream& is, const string_vector& keywords,
 }
 
 #endif
-

@@ -872,4 +872,3 @@ make_idx_args (const std::string& type,
 extern OCTINTERP_API bool called_from_builtin (void);
 
 #endif
-

@@ -104,4 +104,3 @@ endfunction
 %!error fftconv ([1, 2; 3, 4], 3)
 %!error fftconv (2, [])
 %!error fftconv ([1,1], [2,2] , [3, 4])
-

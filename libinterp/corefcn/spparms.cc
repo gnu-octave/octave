@@ -206,4 +206,3 @@ longer running time.
 %!error spparms ("ths_rel", "hello")
 %!error <KEY not found> spparms ("UNKNOWN_KEY", 1)
 */
-

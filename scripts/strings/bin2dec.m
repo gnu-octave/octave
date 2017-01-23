@@ -73,4 +73,3 @@ endfunction
 %!error bin2dec ()
 %!error bin2dec (1)
 %!error bin2dec ("1", 2)
-

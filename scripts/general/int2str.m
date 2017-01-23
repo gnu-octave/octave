@@ -105,4 +105,3 @@ endfunction
 %!error int2str ()
 %!error int2str (1, 2)
 %!error <N must be a numeric> int2str ({1})
-

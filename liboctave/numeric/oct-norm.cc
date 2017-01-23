@@ -596,4 +596,3 @@ DEFINE_COLROW_NORM_FUNCS(FloatComplex, Float, float)
 
 DEFINE_COLROW_NORM_FUNCS(Sparse, , double)
 DEFINE_COLROW_NORM_FUNCS(SparseComplex, , double)
-

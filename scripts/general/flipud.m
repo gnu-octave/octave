@@ -75,4 +75,3 @@ endfunction
 
 %!error flipud ()
 %!error flipud (1, 2)
-

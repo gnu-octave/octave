@@ -58,4 +58,3 @@ endfunction
 ## Test input validation
 %!error istril ()
 %!error istril (1,2)
-

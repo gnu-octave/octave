@@ -345,4 +345,3 @@ operator << (std::ostream& os, const DiagMatrix& a)
     }
   return os;
 }
-

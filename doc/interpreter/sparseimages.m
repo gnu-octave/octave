@@ -269,4 +269,3 @@ endfunction
 function hide_output ()
   hf = figure (1, "visible", "off");
 endfunction
-

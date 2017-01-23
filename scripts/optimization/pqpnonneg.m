@@ -244,4 +244,3 @@ endfunction
 %!error <D must be numeric matrices> pqpnonneg (1, ones (2,2,2))
 %!error <C must be a square matrix> pqpnonneg ([1 2], 2)
 %!error <OPTIONS must be a struct> pqpnonneg (1, 2, [], 3)
-

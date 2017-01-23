@@ -155,4 +155,3 @@ endfunction
 %! shading interp;
 %! axis tight;
 %! title ("pcolor() of peaks with interp shading");
-

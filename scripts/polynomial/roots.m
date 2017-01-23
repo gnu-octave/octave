@@ -137,4 +137,3 @@ endfunction
 %!error roots ([1, 2; 3, 4])
 %!error <inputs must not contain Inf or NaN> roots ([1 Inf 1])
 %!error <inputs must not contain Inf or NaN> roots ([1 NaN 1])
-

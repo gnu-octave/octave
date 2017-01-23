@@ -1175,4 +1175,3 @@ likely.
 %!   assert (length (unique (p)), 30);
 %! endfor
 */
-

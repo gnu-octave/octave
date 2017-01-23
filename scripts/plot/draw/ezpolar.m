@@ -69,4 +69,3 @@ endfunction
 %!demo
 %! clf;
 %! ezpolar (@(t) sin (5/4 * t), [0, 8*pi]);
-

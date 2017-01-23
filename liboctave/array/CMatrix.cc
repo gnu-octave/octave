@@ -3811,4 +3811,3 @@ SM_BOOL_OPS (Complex, ComplexMatrix)
 
 MM_CMP_OPS (ComplexMatrix, ComplexMatrix)
 MM_BOOL_OPS (ComplexMatrix, ComplexMatrix)
-

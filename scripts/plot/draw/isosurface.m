@@ -587,4 +587,3 @@ endfunction
 ## FIXME: private function cannot be tested, unless bug #38776 is resolved.
 %!test <38776>
 %! assert (__calc_isovalue_from_data__ (1:5), 3.02);
-

@@ -194,4 +194,3 @@ function [idx, frac] = cube_idx (x, y, z, v)
       ./ (z(idx(:, 3)+1) - z(idx(:, 3)));
 
 endfunction
-

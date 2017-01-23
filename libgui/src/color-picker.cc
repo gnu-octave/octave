@@ -70,4 +70,3 @@ void color_picker::update_button ()
   setStyleSheet (css);
   repaint ();
 }
-

@@ -227,4 +227,3 @@ endfunction
 %!error <invalid option> unique ({"a", "b", "c"}, "rows", "UnknownOption2")
 %!error <invalid option> unique ({"a", "b", "c"}, "UnknownOption1", "last")
 %!warning <"rows" is ignored for cell arrays> unique ({"1"}, "rows");
-

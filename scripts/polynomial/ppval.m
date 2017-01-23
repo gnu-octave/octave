@@ -138,4 +138,3 @@ endfunction
 %!error <argument must be a pp-form structure> ppval (1,2)
 %!error <argument must be a pp-form structure> ppval (struct ("a", 1), 2)
 %!error <argument must be a pp-form structure> ppval (struct ("form", "ab"), 2)
-

@@ -111,4 +111,3 @@ endfunction
 %!assert (pp.order, 2)
 %!assert (pp.dim, [2,3])
 %!assert (size (pp.coefs), [12,2])
-

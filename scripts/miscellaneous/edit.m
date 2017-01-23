@@ -588,4 +588,3 @@ endfunction
 %! assert (edit ("get", "license"), s.license);
 %! assert (edit ("get", "editinplace"), s.editinplace);
 %! assert (edit ("get", "mode"), s.mode);
-

@@ -132,4 +132,3 @@ endfunction
 %!error kendall (ones (2,2,2))
 %!error kendall (ones (2,2), ones (2,2,2))
 %!error kendall (ones (2,2), ones (3,2))
-

@@ -45,4 +45,3 @@ octave_base64_decode_alloc_wrapper (const char *in, size_t inlen,
 {
   return base64_decode_alloc (in, inlen, out, outlen);
 }
-

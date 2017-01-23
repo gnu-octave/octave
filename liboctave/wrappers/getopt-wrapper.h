@@ -54,4 +54,3 @@ extern int octave_optind_wrapper (void);
 #endif
 
 #endif
-

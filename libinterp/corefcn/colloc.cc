@@ -89,4 +89,3 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 
   return ovl (r, A, B, q);
 }
-

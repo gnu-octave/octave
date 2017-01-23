@@ -309,4 +309,3 @@ endfunction
 %!test
 %! ## Restore random number generator seed at end of tests
 %! rand ("state", rand_state);
-

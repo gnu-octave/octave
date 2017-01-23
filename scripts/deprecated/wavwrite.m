@@ -191,4 +191,3 @@ endfunction
 %!error wavwrite (1)
 %!error wavwrite (1,2,3,4,5)
 %!error wavwrite ([], "foo.wav")
-

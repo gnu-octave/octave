@@ -71,4 +71,3 @@ endfunction
 %!error stdnormal_rnd ([2 -1 2])
 %!error stdnormal_rnd (1, ones (2))
 %!error stdnormal_rnd (1, -1)
-

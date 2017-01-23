@@ -90,4 +90,3 @@ endfunction
 %!error colstyle ()
 %!error colstyle (1, 2)
 %!error <STYLE must be a string> colstyle (1.5)
-

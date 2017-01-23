@@ -58,4 +58,3 @@ endfunction
 
 
 %!assert (size (sinetone (18e6, 150e6, 19550/150e6, 1)), [19550, 1])
-

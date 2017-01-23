@@ -34,4 +34,3 @@ event_queue_safe::warn_unhandled_exception (void) const
            "It is a bug in Octave for this to happen.  "
            "Please help improve Octave by reporting it.");
 }
-

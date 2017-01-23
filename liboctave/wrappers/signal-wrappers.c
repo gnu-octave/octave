@@ -494,4 +494,3 @@ octave_raise_wrapper (int signum)
 {
   return raise (signum);
 }
-

@@ -221,4 +221,3 @@ namespace octave
     buf[_buf_iter] = value
 
 #endif
-

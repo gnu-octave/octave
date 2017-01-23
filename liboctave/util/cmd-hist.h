@@ -241,4 +241,3 @@ typedef octave::command_history command_history;
 #endif
 
 #endif
-

@@ -37,4 +37,3 @@ octave_strptime_wrapper (const char *p, const char *fmt, struct tm *t)
 {
   return strptime (p, fmt, t);
 }
-

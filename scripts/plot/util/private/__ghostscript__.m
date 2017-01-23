@@ -182,5 +182,3 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
   gs_cmd = cmd;
 
 endfunction
-
-

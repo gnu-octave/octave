@@ -53,4 +53,3 @@ function retval = java_set (obj, name, val)
   endif
 
 endfunction
-

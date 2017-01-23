@@ -220,4 +220,3 @@ namespace octave
     return retval;
   }
 }
-

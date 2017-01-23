@@ -66,4 +66,3 @@ endfunction
 %!error logistic_inv ()
 %!error logistic_inv (1,2)
 %!error logistic_inv (i)
-

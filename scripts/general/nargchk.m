@@ -81,4 +81,3 @@ endfunction
 %!assert (nargchk (0, 1, 1, "struct"), stnul)
 %!assert (nargchk (1, 1, 0, "struct"), stmin)
 %!assert (nargchk (0, 1, 2, "struct"), stmax)
-

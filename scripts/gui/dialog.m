@@ -114,7 +114,5 @@ function h = dialog (varargin)
 
 endfunction
 
-
 ## No BIST tests.  This function just dispatches to figure().
 %!assert (1)
-

@@ -301,4 +301,3 @@ endfunction
 %!error <MODE must be a valid string> shading (-1)
 %!error <MODE must be a valid string> shading ({})
 %!error <Invalid MODE "foo"> shading foo
-

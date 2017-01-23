@@ -73,4 +73,3 @@ endfunction
 %!error <A and B must have consistent sizes> betaln ([1 2], [1 2 3])
 %!error <A and B must have consistent sizes> betaln ([1 2 3], [1 2])
 %!error <A and B must have consistent sizes> betaln ([1 2 3], [1 2 3]')
-

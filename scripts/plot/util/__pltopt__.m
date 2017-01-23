@@ -268,4 +268,3 @@ endfunction
 %!error <argument must be a character string or cell array> __pltopt__ ("abc", 1)
 %!error <unfinished key label> __pltopt__ ("abc", "rx;my_title", true)
 %!error <unrecognized format character: 'u'> __pltopt__ ("abc", "u", true)
-

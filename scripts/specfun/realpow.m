@@ -51,4 +51,3 @@ endfunction
 %!error realpow (1)
 %!error realpow (1,2,3)
 %!error <produced complex result> realpow (-1, 1/2)
-

@@ -101,4 +101,3 @@ endfunction
 
 ## Input validation tests
 %!error delaunayn ()
-

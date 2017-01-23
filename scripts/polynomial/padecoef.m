@@ -174,4 +174,3 @@ endfunction
 %!error <N must be a non-negative scalar> padecoef (1, [1,2])
 %!error <N must be a non-negative scalar> padecoef (1, {1})
 %!error <N must be a non-negative scalar> padecoef (1, -1)
-

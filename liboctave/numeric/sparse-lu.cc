@@ -961,4 +961,3 @@ namespace octave
     template class sparse_lu<SparseComplexMatrix>;
   }
 }
-

@@ -70,4 +70,3 @@
 %!assert (a(logical ([1,1]),:), [9,8;7,6])
 %!assert (a(logical ([1,1]),1), [9;7])
 %!assert (a(logical ([1,1]),logical ([1,1])), [9,8;7,6])
-

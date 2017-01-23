@@ -145,4 +145,3 @@ endfunction
 %! shading interp;
 %! title ({"surfc() plot of peaks() function"; ...
 %!         "facecolor is interpolated, color determined by Y-gradient of Z"});
-

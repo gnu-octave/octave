@@ -152,4 +152,3 @@ octave_mktime_wrapper (struct tm *tp)
 {
   return mktime (tp);
 }
-

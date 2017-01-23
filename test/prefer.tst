@@ -188,4 +188,3 @@
 %! b = 0;
 %! fail ("isinf (a/b);", "warning", "division by zero");
 %! warning (wdbz.state, "Octave:divide-by-zero");
-

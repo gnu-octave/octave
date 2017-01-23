@@ -61,4 +61,3 @@
 %! eval ("eval (\"clear a; a; str='';\",\"error (cstrcat (\\\"rethrow: \\\", lasterr));str='';\");",
 %! "str=lasterr;");
 %! assert (str(1:22), "rethrow: 'a' undefined");
-

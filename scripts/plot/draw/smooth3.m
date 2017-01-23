@@ -233,4 +233,3 @@ endfunction
 %!error <STD_DEV must be a real> smooth3 (ones (2,2,2), "g", :, {0.65})
 %!error <STD_DEV .* must be .* 3-element> smooth3 (ones (2,2,2), "g", :, [1 2])
 %!error <invalid METHOD 'foobar'> smooth3 (ones (2,2,2), "foobar")
-

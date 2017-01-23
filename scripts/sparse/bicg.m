@@ -264,4 +264,3 @@ endfunction;
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = bicg (A, b, rtol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
-

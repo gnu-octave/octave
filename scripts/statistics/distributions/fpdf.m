@@ -102,4 +102,3 @@ endfunction
 %!error fpdf (i, 2, 2)
 %!error fpdf (2, i, 2)
 %!error fpdf (2, 2, i)
-

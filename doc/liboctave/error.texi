@@ -18,4 +18,3 @@
 
 @node Error Handling, Installation, Differential Algebraic Equations, Top
 @chapter Error Handling
-

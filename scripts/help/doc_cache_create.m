@@ -168,4 +168,3 @@ endfunction
 ## No true tests desirable for this function.
 ## Test input validation
 %!error doc_cache_create (1)
-

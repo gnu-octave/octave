@@ -65,4 +65,3 @@ endfunction
 %!   close (hf);
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
-

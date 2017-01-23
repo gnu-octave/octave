@@ -176,4 +176,3 @@ flush_octave_stdout (void)
 #define octave_diary (octave::diary_stream::stream ())
 
 #endif
-

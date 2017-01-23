@@ -242,4 +242,3 @@ endfunction
 %!test
 %! y = interp1 (xb, yb, x, "spline");
 %! assert (ppval (splinefit (x, y, xb), x), y, 15 * eps ());
-

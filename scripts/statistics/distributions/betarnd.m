@@ -131,4 +131,3 @@ endfunction
 %!error betarnd (ones (2,2), 2, 3)
 %!error betarnd (ones (2,2), 2, [3, 2])
 %!error betarnd (ones (2,2), 2, 2, 3)
-

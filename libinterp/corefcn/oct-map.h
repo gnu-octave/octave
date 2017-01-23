@@ -473,4 +473,3 @@ inline octave_map octave_value_extract<octave_map> (const octave_value& v)
 { return v.map_value (); }
 
 #endif
-

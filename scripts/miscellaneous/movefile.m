@@ -166,4 +166,3 @@ endfunction
 %!error <F1 must be a string> movefile (1, "foobar")
 %!error <F2 must be a string> movefile ("foobar", 1)
 %!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%")
-

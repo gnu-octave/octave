@@ -90,4 +90,3 @@ octave_ostream::create (std::ostream *arg, const std::string& n)
 {
   return octave::stream (new octave_ostream (arg, n));
 }
-

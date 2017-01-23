@@ -103,4 +103,3 @@ install_pm_scm_ops (void)
   INSTALL_BINOP (op_div, octave_sparse_complex_matrix, octave_perm_matrix,
                  div_scm_pm);
 }
-

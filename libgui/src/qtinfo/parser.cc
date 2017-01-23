@@ -698,4 +698,3 @@ parser::find_ref (const QString &ref_name)
 
   return text;
 }
-

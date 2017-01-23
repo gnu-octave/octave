@@ -217,4 +217,3 @@ find_files_model::fileIcon (const QModelIndex &p) const
     }
   return QIcon ();
 }
-

@@ -94,4 +94,3 @@ endfunction
 %!error lognpdf (i, 2, 2)
 %!error lognpdf (2, i, 2)
 %!error lognpdf (2, 2, i)
-

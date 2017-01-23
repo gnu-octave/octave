@@ -165,4 +165,3 @@ function retval = ode_event_handler (evtfun, t, y, flag = "", varargin)
   endif
 
 endfunction
-

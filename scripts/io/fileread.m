@@ -60,4 +60,3 @@ endfunction
 %!error fileread ()
 %!error fileread (1, 2)
 %!error <FILENAME argument must be a string> fileread (1)
-

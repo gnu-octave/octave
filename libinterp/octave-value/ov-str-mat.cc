@@ -762,4 +762,3 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
   return retval;
 }
-

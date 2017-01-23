@@ -25,4 +25,3 @@ classdef foo_value_class
     end
   end
 end
-

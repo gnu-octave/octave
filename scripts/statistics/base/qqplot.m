@@ -112,10 +112,8 @@ function [qout, sout] = qqplot (x, dist, varargin)
 
 endfunction
 
-
 ## Test input validation
 %!error qqplot ()
 %!error <X must be a numeric> qqplot ({1})
 %!error <X must be a .* vector> qqplot (ones (2,2))
 %!error <no inverse CDF found> qqplot (1, "foobar")
-

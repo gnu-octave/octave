@@ -106,4 +106,3 @@ operator - (const MDiagArray2<T>& a)
   return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus),
                          a.d1, a.d2);
 }
-

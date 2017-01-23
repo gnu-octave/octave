@@ -203,4 +203,3 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
   endfor
 
 endfunction
-

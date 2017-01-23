@@ -95,4 +95,3 @@ endfunction
 %!error cauchy_pdf (i, 2, 2)
 %!error cauchy_pdf (2, i, 2)
 %!error cauchy_pdf (2, 2, i)
-

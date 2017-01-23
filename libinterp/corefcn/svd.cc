@@ -423,4 +423,3 @@ norm (@var{x} - @var{u}*@var{s}*@var{v'}, "fro")
 %! assert (S1, S2, 5*eps);
 %! assert (V1, V2, 5*eps);
 */
-

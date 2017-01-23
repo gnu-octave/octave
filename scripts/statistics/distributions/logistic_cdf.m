@@ -53,4 +53,3 @@ endfunction
 %!error logistic_cdf ()
 %!error logistic_cdf (1,2)
 %!error logistic_cdf (i)
-

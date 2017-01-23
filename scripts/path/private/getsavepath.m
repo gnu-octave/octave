@@ -50,4 +50,3 @@ function [filelines, startline, endline] = getsavepath (file)
   endif
 
 endfunction
-

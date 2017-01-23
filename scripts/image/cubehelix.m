@@ -84,4 +84,3 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
-

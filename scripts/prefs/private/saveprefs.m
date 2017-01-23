@@ -30,4 +30,3 @@ function saveprefs (s)
   save (prefsfile (), "prefs");
 
 endfunction
-

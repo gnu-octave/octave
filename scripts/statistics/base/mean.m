@@ -158,4 +158,3 @@ endfunction
 %!error <DIM must be .* a valid dimension> mean (1, 0)
 %!error <X must not contain any negative values> mean ([1 -1], "g")
 %!error <option 'b' not recognized> mean (1, "b")
-

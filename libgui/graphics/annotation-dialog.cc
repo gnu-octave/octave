@@ -285,4 +285,3 @@ annotation_dialog::prompt_for_color ()
         }
     }
 }
-

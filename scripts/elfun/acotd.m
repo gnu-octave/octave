@@ -39,4 +39,3 @@ endfunction
 
 %!error acotd ()
 %!error acotd (1, 2)
-

@@ -106,4 +106,3 @@ octave_fstream::output_stream (void)
 
   return retval;
 }
-

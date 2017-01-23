@@ -78,4 +78,3 @@ endfunction
 %!error etime ()
 %!error etime (1)
 %!error etime (1, 2, 3)
-

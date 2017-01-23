@@ -820,4 +820,3 @@ factorization from scratch.
 %! assert (norm (vec (triu (U)-U), Inf) == 0);
 %! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
-

@@ -68,4 +68,3 @@ octave_ostrstream::create (std::ios::openmode arg_md,
 {
   return octave::stream (new octave_ostrstream (arg_md, flt_fmt));
 }
-

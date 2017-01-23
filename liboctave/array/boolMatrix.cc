@@ -88,4 +88,3 @@ MM_BOOL_OPS (boolMatrix, boolMatrix)
 MS_BOOL_OPS (boolMatrix, bool)
 SM_BOOL_OPS (bool, boolMatrix)
 MM_CMP_OPS (boolMatrix, boolMatrix)
-

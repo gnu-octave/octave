@@ -36,4 +36,3 @@ function retval = rectangle_sw (n, b)
   retval(2:n) = sin ((2/b + 1) * l / 2) ./ sin (l / 2);
 
 endfunction
-

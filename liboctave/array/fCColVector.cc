@@ -489,4 +489,3 @@ operator >> (std::istream& is, FloatComplexColumnVector& a)
     }
   return is;
 }
-

@@ -239,4 +239,3 @@ extern OCTINTERP_API void
 set_image_path (const std::string& path = "");
 
 #endif
-

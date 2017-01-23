@@ -119,4 +119,3 @@ endfunction
 %!error duplication_matrix (0.5)
 %!error duplication_matrix (-1)
 %!error duplication_matrix (ones (1,4))
-

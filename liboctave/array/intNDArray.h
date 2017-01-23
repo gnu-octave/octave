@@ -132,4 +132,3 @@ template <typename T>
 std::istream& operator >> (std::istream& is, intNDArray<T>& a);
 
 #endif
-

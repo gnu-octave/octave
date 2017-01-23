@@ -247,4 +247,3 @@ This is an alias for @code{inv}.
 {
   return Finv (args, nargout);
 }
-

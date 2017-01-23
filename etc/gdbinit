@@ -91,4 +91,3 @@ Display the contents of the current Octave debugging stack.
 This is the function stack that the Octave interpreter is processing
 and will be different from the C++ stack being debugged with gdb.
 end
-

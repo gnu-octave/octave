@@ -143,4 +143,3 @@ endfunction
 
 %!error qzhess ([0])
 %!error qzhess ()
-

@@ -127,4 +127,3 @@ endfunction
 %! assert (rank (a, tol), rank (r, tol), 2e-8);
 
 %!error rref ()
-

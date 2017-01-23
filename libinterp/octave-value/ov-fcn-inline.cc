@@ -991,4 +991,3 @@ quadv (fcn, 0, 3)
 %!error vectorize (1, 2)
 %!error <FUN must be a string or inline function> vectorize (1)
 */
-

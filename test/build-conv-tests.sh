@@ -193,4 +193,3 @@ for v in $bool_vars $real_vars $int_vars; do
     echo "%!assert (class ($c ($v)), \"$c\")"
   done
 done
-

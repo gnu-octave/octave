@@ -56,4 +56,3 @@ endfunction
 %!error trace ()
 %!error trace (1, 2)
 %!error <only valid on 2-D objects> trace (reshape (1:9,[1,3,3]))
-

@@ -91,4 +91,3 @@ endfunction
 %!error <DIM must be an integer> center (1, ones (2,2))
 %!error <DIM must be an integer> center (1, 1.5)
 %!error <DIM must be .* a valid dimension> center (1, 0)
-

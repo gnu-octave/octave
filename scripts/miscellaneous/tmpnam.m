@@ -48,4 +48,3 @@ endfunction
 
 ## No tests needed for alias.
 %!assert (1)
-

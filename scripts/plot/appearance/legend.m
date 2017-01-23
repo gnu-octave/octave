@@ -1644,4 +1644,3 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (h);
 %! end_unwind_protect
-

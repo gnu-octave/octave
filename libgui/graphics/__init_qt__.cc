@@ -347,4 +347,3 @@ DEFUN (__uigetdir_qt__, args, , "")
 }
 
 #endif
-

@@ -37,4 +37,3 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFINEDIV
 
 #include "op-dm-template.cc"
-

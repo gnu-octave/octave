@@ -573,4 +573,3 @@ endfunction
 %!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 4], [1 2 3], "spline")
 %!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 3], [1 2 4], "spline")
 %!error interp2 (1, 1, 1, 1, 1, "foobar")
-

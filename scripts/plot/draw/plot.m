@@ -289,4 +289,3 @@ endfunction
 %! plot (x, y);
 %! axis ([0 10 0 1]);
 %! title ({"Two random variables", "squeezed from 4-D arrays"});
-

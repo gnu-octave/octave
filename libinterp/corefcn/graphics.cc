@@ -6353,7 +6353,7 @@ axes::properties::update_aspectratios (void)
 }
 
 void
-axes::properties::update_label_color (handle_property label, 
+axes::properties::update_label_color (handle_property label,
                                       color_property col)
 {
   gh_manager::get_object (label.handle_value ()).set ("color", col.get ());
@@ -11945,4 +11945,3 @@ Undocumented internal function.
 
   return ovl ();
 }
-

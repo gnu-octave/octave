@@ -111,4 +111,3 @@ endfunction
 %! delete ("test_p.txt");
 %! r2 = disp (r2);
 %! assert (r4, r2);
-

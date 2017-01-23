@@ -325,4 +325,3 @@ namespace QtHandles
   }
 
 }
-

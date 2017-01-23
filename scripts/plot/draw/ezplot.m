@@ -105,4 +105,3 @@ endfunction
 %! ## implicit function of 2 variables
 %! clf;
 %! ezplot (inline ("x^2 - y^2 - 1"));
-

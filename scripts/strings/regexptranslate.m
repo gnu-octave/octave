@@ -85,4 +85,3 @@ endfunction
 %!error <Invalid call to regexptranslate> regexptranslate ("a", "b", "c")
 %!error <invalid operation> regexptranslate ("foo", "abc")
 %!error <operation OP must be a string> regexptranslate (10, "abc")
-

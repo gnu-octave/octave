@@ -219,4 +219,3 @@ is in the upper left corner, by doing:
 %! assert (diag (T)(3:4), diag (TS)(1:2), sqrt (eps ("single")));
 
 */
-

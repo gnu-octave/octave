@@ -75,4 +75,3 @@ func_ptr_with_conversion (RT (*f) (PT))
 }
 
 #endif
-

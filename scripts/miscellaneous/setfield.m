@@ -146,4 +146,3 @@ endfunction
 %!error setfield (1)
 %!error setfield (1,2)
 %!error <invalid index> setfield (1,2,3)
-

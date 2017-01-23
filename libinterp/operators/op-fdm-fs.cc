@@ -30,4 +30,3 @@ along with Octave; see the file COPYING.  If not, see
 #define MSHORT fdm
 
 #include "op-dms-template.cc"
-

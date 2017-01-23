@@ -59,4 +59,3 @@ endfunction
 ## Test input validation
 %!error logit ()
 %!error logit (1, 2)
-

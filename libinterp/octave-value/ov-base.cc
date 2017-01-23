@@ -1590,4 +1590,3 @@ The original variable value is restored when exiting the function.
 %! assert (typeinfo (s), "matrix");
 %! sparse_auto_mutate (false);
 */
-

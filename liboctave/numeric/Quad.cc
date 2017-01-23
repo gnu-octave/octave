@@ -343,4 +343,3 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   return result;
 }
-

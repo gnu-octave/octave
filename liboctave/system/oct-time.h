@@ -552,4 +552,3 @@ typedef octave::sys::strptime octave_strptime;
 #endif
 
 #endif
-

@@ -66,4 +66,3 @@ endfunction
 %!error hgload ()
 %!error hgload (1, 2)
 %!error <unable to locate file> hgload ("%%_A_REALLY_UNLIKELY_FILENAME_%%")
-

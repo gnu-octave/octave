@@ -90,4 +90,3 @@ endfunction
 %!error blackman (-1)
 %!error blackman (ones (1,4))
 %!error blackman (1, "invalid")
-

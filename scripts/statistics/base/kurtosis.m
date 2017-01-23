@@ -166,4 +166,3 @@ endfunction
 %!error <DIM must be an integer> kurtosis (1, [], ones (2,2))
 %!error <DIM must be an integer> kurtosis (1, [], 1.5)
 %!error <DIM must be .* a valid dimension> kurtosis (1, [], 0)
-

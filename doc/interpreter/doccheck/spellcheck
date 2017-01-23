@@ -64,4 +64,3 @@ print sort { uc($a) cmp uc ($b) } keys(%words);
 ################################################################################
 # Clean up temporary files
 unlink ($tmp_fname) or die "Unable to delete temporary file: $tmp_fname\n";
-

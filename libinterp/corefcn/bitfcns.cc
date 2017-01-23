@@ -895,4 +895,3 @@ by @code{intmax}.
 
 %!error sizemax (0)
 */
-

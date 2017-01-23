@@ -145,4 +145,3 @@ DiagArray2<T>::check_idx (octave_idx_type r, octave_idx_type c) const
 
   return ok;
 }
-

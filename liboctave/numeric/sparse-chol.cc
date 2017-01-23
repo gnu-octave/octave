@@ -595,4 +595,3 @@ namespace octave
     chol2inv<SparseComplexMatrix> (const SparseComplexMatrix& r);
   }
 }
-

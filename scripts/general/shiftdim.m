@@ -99,4 +99,3 @@ endfunction
 %!error (shiftdim (1,2,3))
 %!error (shiftdim (1, ones (2)))
 %!error (shiftdim (1, 1.5))
-

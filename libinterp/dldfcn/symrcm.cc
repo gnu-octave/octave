@@ -699,4 +699,3 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   // increment all indices, since Octave is not C
   return ovl (P+1);
 }
-

@@ -75,4 +75,3 @@ function y = lin2mu (x, n)
   y = 64 * sig - 16 * e - fix (32 * f) + 335;
 
 endfunction
-

@@ -236,4 +236,3 @@ hash ("md5", fileread (file));
 %!error hash ("sha1")
 %!error hash ("sha512")
 */
-

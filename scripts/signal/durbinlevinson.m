@@ -91,4 +91,3 @@ function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
   endif
 
 endfunction
-

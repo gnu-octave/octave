@@ -81,4 +81,3 @@ function x = arma_rnd (a, b, v, t, n)
   x = x(n + 1 : t + n);
 
 endfunction
-

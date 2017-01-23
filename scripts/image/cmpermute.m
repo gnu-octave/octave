@@ -142,4 +142,3 @@ endfunction
 %!error <MAP must be a valid colormap> cmpermute (1, [2 1 1])
 %!error <invalid parameter INDEX> cmpermute (1, [0 1 0;1 0 1], ones (3))
 %!error <invalid parameter INDEX> cmpermute (1, [0 1 0;1 0 1], 1:3)
-

@@ -59,4 +59,3 @@ along with Octave; see the file COPYING.  If not, see
   BSXFUN_REL_DECL (ge, ARRAY, API)
 
 #endif
-

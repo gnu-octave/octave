@@ -115,4 +115,3 @@ endfunction
 %!error <invalid data type> gray2ind (uint32 (1))
 %!error <values between 0 and 1> gray2ind (-1)
 %!error <values between 0 and 1> gray2ind (2)
-

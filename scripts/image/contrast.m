@@ -62,4 +62,3 @@ endfunction
 %! title ("Image with contrast enhanced");
 
 %!assert (contrast (1:100,10), [([0:9]/9)',([0:9]/9)',([0:9]/9)'], 1e-10)
-

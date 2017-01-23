@@ -144,4 +144,3 @@ endfunction
 %! zlabel "Z-axis";
 %! title ({"mesh() default properties overridden", ...
 %!         "transparent mesh with cyan color"});
-

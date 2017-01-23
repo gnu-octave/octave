@@ -95,4 +95,3 @@ endfunction
 %!error cast (1,2,3)
 %!error <TYPE 'foobar' is not a built-in type> cast (1, "foobar")
 %!error <TYPE must be a string> cast (1, {"foobar"})
-

@@ -68,4 +68,3 @@ endfunction
 %!error chi2pdf (ones (2), ones (3))
 %!error chi2pdf (i, 2)
 %!error chi2pdf (2, i)
-

@@ -150,4 +150,3 @@ endfunction
 %! [c, h] = contourf (peaks (), -7:6);
 %! clabel (c, h, -6:2:6, "fontsize", 12);
 %! title ("clabel() labeling every other contour");
-

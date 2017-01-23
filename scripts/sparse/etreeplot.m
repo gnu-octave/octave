@@ -36,4 +36,3 @@ function etreeplot (A, varargin)
   treeplot (etree (A+A'), varargin{:});
 
 endfunction
-

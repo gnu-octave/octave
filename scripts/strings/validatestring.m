@@ -161,4 +161,3 @@ endfunction
 %!error <FUNCNAME must be a single row vector> validatestring ("xyz", {"xyz"}, "33".', "4", 5)
 %!error <VARNAME must be a single row vector> validatestring ("xyz", {"xyz"}, "3", "44".', 5)
 %!error <POSITION must be> validatestring ("xyz", {"xyz"}, "3", "4", -5)
-

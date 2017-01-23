@@ -81,4 +81,3 @@ function to handle this.  By default, this is the internal function
 substitutes for @sc{matlab} functions.
 
 @DOCSTRING(missing_function_hook)
-

@@ -1327,4 +1327,3 @@ octave_map::optimize_dimensions (void)
     }
 
 }
-

@@ -108,4 +108,3 @@ endfunction
 %!error <N must be a real nonzero scalar> nthroot (1, [1 2])
 %!error <N must be a real nonzero scalar> nthroot (1, 0)
 %!error <N must be an odd integer> nthroot (-1, 2)
-

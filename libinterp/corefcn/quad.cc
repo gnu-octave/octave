@@ -446,4 +446,3 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
 %!error quad_options (1, 2, 3)
 */
-

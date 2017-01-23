@@ -122,4 +122,3 @@
 %! endparfor
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1234"));
-

@@ -36,4 +36,3 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-ops.h"
 
 #endif
-

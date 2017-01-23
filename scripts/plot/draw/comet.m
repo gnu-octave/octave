@@ -102,4 +102,3 @@ endfunction
 %! y = sin (2*t) .* (sin (t).^2);
 %! comet (x, y, 0.05);
 %! hold off;
-

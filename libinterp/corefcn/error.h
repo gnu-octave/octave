@@ -177,4 +177,3 @@ extern OCTINTERP_API std::string last_warning_id (void);
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
 #endif
-

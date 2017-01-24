@@ -1477,12 +1477,12 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   fi
 
   if test $build_qt_gui = yes; then
-    AC_CHECK_TOOLS(MOC, [moc-qt$qt_version])
-    AC_CHECK_TOOLS(UIC, [uic-qt$qt_version])
-    AC_CHECK_TOOLS(RCC, [rcc-qt$qt_version])
-    AC_CHECK_TOOLS(LRELEASE, [lrelease-qt$qt_version])
+    AC_CHECK_TOOLS(MOC_QTVER, [moc-qt$qt_version])
+    AC_CHECK_TOOLS(UIC_QTVER, [uic-qt$qt_version])
+    AC_CHECK_TOOLS(RCC_QTVER, [rcc-qt$qt_version])
+    AC_CHECK_TOOLS(LRELEASE_QTVER, [lrelease-qt$qt_version])
 
-    if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then
+    if test -z "$MOC_QTVER" || test -z "$UIC_QTVER" || test -z "$RCC_QTVER" || test -z "$LRELEASE_QTVER"; then
       AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
 
       if test -z "$MOC"; then
@@ -1509,6 +1509,11 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
           LRELEASEFLAGS="-qt$qt_version"
         fi
       fi
+    else
+      MOC="$MOC_QTVER"
+      UIC="$UIC_QTVER"
+      RCC="$RCC_QTVER"
+      LRELEASE="$LRELEASE_QTVER"
     fi
 
     if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then

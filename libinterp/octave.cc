@@ -366,9 +366,9 @@ namespace octave
 
   application::~application (void)
   {
-    instance = 0;
-
     delete m_interpreter;
+
+    instance = 0;
   }
 
   void application::create_interpreter (void)
@@ -385,9 +385,7 @@ namespace octave
   void application::init (void)
   {
     if (instance)
-      {
-        // FIXME: Should this be an error?
-      }
+      warning ("octave::application: application already initialized");
     else
       instance = this;
 
@@ -449,12 +447,13 @@ octave_main (int argc, char **argv, int embedded)
 
   if (embedded)
     {
-      octave::embedded_application app (argc, argv);
+      static octave::embedded_application app (argc, argv);
       return app.execute ();
     }
   else
     {
-      octave::cli_application app (argc, argv);
+      warning ("octave_main should only be used to create an embedded interpreter");
+      static octave::cli_application app (argc, argv);
       return app.execute ();
     }
 }

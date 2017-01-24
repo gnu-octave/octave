@@ -32,9 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "pt-eval.h"
 
-typedef void (*octave_exit_func) (int);
-extern OCTINTERP_API octave_exit_func octave_exit;
-
 extern OCTINTERP_API bool quit_allowed;
 
 extern OCTINTERP_API bool quitting_gracefully;
@@ -114,7 +111,7 @@ namespace octave
 
     int execute_eval_option_code (const std::string& code);
 
-    void execute_command_line_file (const std::string& fname);
+    int execute_command_line_file (const std::string& fname);
 
     bool interactive (void) const { return m_interactive; }
     void interactive (bool arg) { m_interactive = arg; }
@@ -123,7 +120,7 @@ namespace octave
 
     int main_loop (void);
 
-    void clean_up_and_exit (int status, bool safe_to_return = false);
+    void cleanup (void);
 
     application *m_app_context;
 

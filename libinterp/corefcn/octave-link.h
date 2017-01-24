@@ -98,12 +98,24 @@ public:
     return retval;
   }
 
-  static bool exit (int status)
+  static bool exit (int status, bool process_events = true)
   {
     bool retval = false;
 
     if (instance_ok ())
-      retval = instance->do_exit (status);
+      {
+        if (process_events)
+          {
+            // Disable additional event processing prior to processing
+            // all other pending events.
+
+            instance->link_enabled = false;
+
+            instance->do_process_events ();
+          }
+
+        retval = instance->do_exit (status);
+      }
 
     return retval;
   }

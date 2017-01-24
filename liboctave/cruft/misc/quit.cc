@@ -49,11 +49,9 @@ octave_handle_signal (void)
 }
 
 extern OCTAVE_API void
-clean_up_and_exit (int exit_status, bool safe_to_return)
+clean_up_and_exit (int exit_status, bool /* safe_to_return */)
 {
-  octave_exception_state = octave_quit_exception;
-
-  throw octave::exit_exception (exit_status, safe_to_return);
+  exit (exit_status);
 }
 
 void

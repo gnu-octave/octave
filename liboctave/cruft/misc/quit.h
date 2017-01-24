@@ -193,6 +193,7 @@ OCTAVE_API extern void octave_rethrow_exception (void);
 
 #if defined (__cplusplus)
 
+OCTAVE_DEPRECATED ("see the Octave documentation for other options")
 extern OCTAVE_API void
 clean_up_and_exit (int exit_status, bool safe_to_return = false);
 

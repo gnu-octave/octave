@@ -249,7 +249,7 @@ to run using @code{atexit}.
   // unwind_protect stack, clear the OCTAVE_LOCAL_BUFFER allocations,
   // etc. before exiting.
 
-  clean_up_and_exit (exit_status);
+  throw octave::exit_exception (exit_status);
 
   return ovl ();
 }
@@ -352,7 +352,7 @@ from the list, so if a function was placed in the list multiple times with
 // commands from a file before we have entered the main loop in
 // toplev.cc.
 
-static void
+static int
 safe_source_file (const std::string& file_name,
                   const std::string& context = "",
                   bool verbose = false, bool require_file = true,
@@ -368,23 +368,25 @@ safe_source_file (const std::string& file_name,
 
       std::cerr << "error: index exception in " << file_name << ": "
                 << e.message () << std::endl;
-    }
-  catch (const octave::exit_exception& ex)
-    {
-      recover_from_exception ();
 
-      clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
+      return 1;
     }
   catch (const octave::interrupt_exception&)
     {
       recover_from_exception ();
+
+      return 1;
     }
   catch (const octave::execution_exception&)
     {
       recover_from_exception ();
 
       std::cerr << "error: execution exception in " << file_name << std::endl;
+
+      return 1;
     }
+
+  return 0;
 }
 
 static void
@@ -402,12 +404,6 @@ execute_pkg_add (const std::string& dir)
 
       std::cerr << "error: index exception in " << file_name << ": "
                 << e.message () << std::endl;
-    }
-  catch (const octave::exit_exception& ex)
-    {
-      recover_from_exception ();
-
-      clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
     }
   catch (const octave::interrupt_exception&)
     {
@@ -643,6 +639,8 @@ namespace octave
 
   interpreter::~interpreter (void)
   {
+    cleanup ();
+
     current_evaluator = 0;
 
     delete m_evaluator;
@@ -671,24 +669,24 @@ namespace octave
 
     if (! code_to_eval.empty ())
       {
-        int parse_status = 0;
+        int exit_status = 0;
 
         try
           {
-            parse_status = execute_eval_option_code (code_to_eval);
+            exit_status = execute_eval_option_code (code_to_eval);
           }
-        catch (const octave::execution_exception&)
+        catch (const octave::exit_exception& ex)
           {
             recover_from_exception ();
 
-            parse_status = 1;
+            return ex.exit_status ();
           }
 
         if (! options.persist ())
           {
             m_quitting_gracefully = true;
 
-            clean_up_and_exit (parse_status);
+            return exit_status;
           }
       }
 
@@ -708,13 +706,13 @@ namespace octave
 
             m_app_context->intern_argv (script_args);
 
-            execute_command_line_file (script_args[0]);
+            exit_status = execute_command_line_file (script_args[0]);
           }
-        catch (const octave::execution_exception&)
+        catch (const octave::exit_exception& ex)
           {
             recover_from_exception ();
 
-            exit_status = 1;
+            return ex.exit_status ();
           }
 
         // Restore full set of args.
@@ -724,7 +722,7 @@ namespace octave
           {
             m_quitting_gracefully = true;
 
-            clean_up_and_exit (exit_status);
+            return exit_status;
           }
       }
 
@@ -756,8 +754,6 @@ namespace octave
 
     m_quitting_gracefully = true;
 
-    clean_up_and_exit (retval, true);
-
     return retval;
   }
 
@@ -787,27 +783,23 @@ namespace octave
       {
         eval_string (code, false, parse_status, 0);
       }
-    catch (const octave::exit_exception& ex)
-      {
-        recover_from_exception ();
-
-        clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
-      }
     catch (const octave::interrupt_exception&)
       {
         recover_from_exception ();
+
+        return 1;
       }
     catch (const octave::execution_exception&)
       {
         recover_from_exception ();
 
-        parse_status = 1;
+        return 1;
       }
 
     return parse_status;
   }
 
-  void interpreter::execute_command_line_file (const std::string& fname)
+  int interpreter::execute_command_line_file (const std::string& fname)
   {
     octave::unwind_protect frame;
 
@@ -841,7 +833,7 @@ namespace octave
     bool verbose = false;
     bool require_file = true;
 
-    safe_source_file (fname, context, verbose, require_file, "octave");
+    return safe_source_file (fname, context, verbose, require_file, "octave");
   }
 
   int interpreter::main_loop (void)
@@ -916,7 +908,11 @@ namespace octave
           {
             recover_from_exception ();
 
-            clean_up_and_exit (ex.exit_status (), ex.safe_to_return ());
+            // If we are connected to a gui, allow it to manage the exit
+            // process.
+            octave_link::exit (ex.exit_status ());
+
+            return ex.exit_status ();
           }
         catch (const octave::interrupt_exception&)
           {
@@ -977,7 +973,7 @@ namespace octave
     return retval;
   }
 
-  void interpreter::clean_up_and_exit (int status, bool safe_to_return)
+  void interpreter::cleanup (void)
   {
     static bool deja_vu = false;
 
@@ -999,11 +995,6 @@ namespace octave
     if (! deja_vu)
       {
         deja_vu = true;
-
-        // Process pending events and disasble octave_link event
-        // processing with this call.
-
-        octave_link::process_events (true);
 
         // Do this explicitly so that destructors for mex file objects
         // are called, so that functions registered with mexAtExit are
@@ -1059,32 +1050,6 @@ namespace octave
         // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
         OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
-      }
-
-    if (octave_link::exit (status))
-      {
-        if (safe_to_return)
-          return;
-        else
-          {
-            // What should we do here?  We might be called from some
-            // location other than the end of octave::interpreter::execute
-            // so it might not be safe to return.
-
-            // We have nothing else to do at this point, and the
-            // octave_link::exit function is supposed to take care of
-            // exiting for us.  Hang here forever so we never return.
-
-            while (true)
-              {
-                octave_sleep (1);
-              }
-          }
-      }
-    else
-      {
-        if (octave_exit)
-          (*octave_exit) (status);
       }
   }
 }

@@ -255,16 +255,17 @@ inline void octave_quit (void)
           octave_restore_current_context (saved_context)
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2   \
-  }                                                     \
+        }                                               \
       else                                              \
         {                                               \
-  octave_interrupt_immediately++
+          octave_interrupt_immediately++
 
-#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE       \
-  octave_interrupt_immediately--;                       \
-  octave_restore_current_context (saved_context);       \
-}                                                       \
-}                                                       \
+#define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE               \
+          octave_interrupt_immediately--;                       \
+          octave_restore_current_context (saved_context);       \
+          octave_quit ();                                       \
+        }                                                       \
+    }                                                           \
   while (0)
 
 #if defined (__cplusplus)

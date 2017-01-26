@@ -60,7 +60,7 @@ function z = xor (x, y, varargin)
   z = __xor__ (x, y);
 
   ## Slow expansion to multiple arguments.
-  ## Probably okay number of elements ## will be small.
+  ## Probably okay number of elements will be small.
   if (! isempty (varargin))
     for i = 1:numel (varargin)
       z = __xor__ (z, varargin{i});

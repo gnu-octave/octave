@@ -496,6 +496,30 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!test
+%! classes = {"int8", "int16", "int32", "int64", ...
+%!            "uint8", "uint16", "uint32", "uint64", ...
+%!            "single", "double"};
+%! nm = tempname ();
+%! id = fopen (nm, "wb+");
+%! n = numel (classes);
+%! for i = 1:n
+%!   cls = classes{i};
+%!   s_in = ones (1, 1, cls);
+%!   m_in = ones (2, 2, cls);
+%!   m_shape = size (m);
+%!   fwrite (id, s, numel (s), cls);
+%!   fwrite (id, m, numel (m), cls);
+%!   frewind (id);
+%!   s_out = fread (id, numel (s_in), sprintf ("%s=>%s", cls, cls));
+%!   m_out = fread (id, numel (m_in), sprintf ("%s=>%s", cls, cls));
+%!   m_out = reshape (m_out, m_shape);
+%!   fclose (id);
+%!   unlink (nm);
+%!   assert (s_in, s_out);
+%!   assert (m_in, m_out);
+%! endfor
+
+%!test
 %! x = char (128:255)';
 %! nm = tempname ();
 %! id = fopen (nm, "wb");

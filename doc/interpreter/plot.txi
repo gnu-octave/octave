@@ -525,11 +525,13 @@ fplot (@@cos, [-10, 10]);
 @end example
 
 @noindent
-creates a figure with two separate axes, one displaying a sine wave and
-the other a cosine wave.  The first call to subplot divides the figure
-into two plotting areas (two rows and one column) and makes the first plot
-area active.  The grid of plot areas created by @code{subplot} is
-numbered in column-major order (top to bottom, left to right).
+creates a figure with two separate axes, one displaying a sine wave and the
+other a cosine wave.  The first call to subplot divides the figure into two
+plotting areas (two rows and one column) and makes the first plot area active.
+The grid of plot areas created by @code{subplot} is numbered in row-major order
+(left to right, top to bottom).  After plotting a sine wave, the next call to
+subplot activates the second subplot area, but does not re-partition the
+figure.
 
 @DOCSTRING(subplot)
 

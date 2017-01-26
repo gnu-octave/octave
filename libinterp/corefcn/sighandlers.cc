@@ -80,7 +80,8 @@ namespace octave
   // List of signals we have caught since last call to octave::signal_handler.
   static bool *signals_caught = 0;
 
-  // Forward declaration.
+  // Forward declarations.
+  static void user_terminate (int sig_number);
   static void user_abort (const char *sig_name, int sig_number);
 
   class
@@ -99,6 +100,8 @@ namespace octave
     virtual ~base_interrupt_manager (void) = default;
 
     virtual void do_jump_to_enclosing_context (void) = 0;
+
+    virtual void do_user_terminate (int sig_number) = 0;
 
     virtual void do_user_abort (const char *sig_name, int sig_number) = 0;
 
@@ -165,6 +168,20 @@ namespace octave
         }
     }
 
+    void do_user_terminate (int sig_number)
+    {
+      bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
+
+      if (is_interrupt_thread)
+        octave::user_terminate (sig_number);
+      else
+        {
+          SuspendThread (thread);
+          octave::user_terminate (sig_number);
+          ResumeThread (thread);
+        }
+    }
+
     void do_user_abort (const char *sig_name, int sig_number)
     {
       bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
@@ -227,6 +244,11 @@ namespace octave
       ::octave_jump_to_enclosing_context ();
     }
 
+    void do_user_terminate (int sig_number)
+    {
+      octave::user_terminate (sig_number);
+    }
+
     void do_user_abort (const char *sig_name, int sig_number)
     {
       octave::user_abort (sig_name, sig_number);
@@ -251,6 +273,12 @@ namespace octave
     {
       if (instance_ok ())
         instance->do_jump_to_enclosing_context ();
+    }
+
+    static void user_terminate (int sig_number)
+    {
+      if (instance_ok ())
+        instance->do_user_terminate (sig_number);
     }
 
     static void user_abort (const char *sig_name, int sig_number)
@@ -309,6 +337,21 @@ namespace octave
 
   base_interrupt_manager *interrupt_manager::instance = 0;
 
+  static void
+  my_friendly_exit (const char *sig_name, int sig_number,
+                    bool save_vars = true)
+  {
+    std::cerr << "fatal: caught signal " << sig_name
+              << " -- stopping myself..." << std::endl;
+
+    if (save_vars)
+      dump_octave_core ();
+
+    sysdep_cleanup ();
+
+    throw octave::exit_exception (1);
+  }
+
   // Called from octave_quit () to actually do something about the signals
   // we have caught.
 
@@ -320,10 +363,14 @@ namespace octave
 
     static int sigchld;
     static int sigfpe;
+    static int sighup;
+    static int sigterm;
     static int sigpipe;
 
     static const bool have_sigchld = octave_get_sig_number ("SIGCHLD", &sigchld);
     static const bool have_sigfpe = octave_get_sig_number ("SIGFPE", &sigfpe);
+    static const bool have_sighup = octave_get_sig_number ("SIGHUP", &sighup);
+    static const bool have_sigterm = octave_get_sig_number ("SIGTERM", &sigterm);
     static const bool have_sigpipe = octave_get_sig_number ("SIGPIPE", &sigpipe);
 
     for (int i = 0; i < octave_num_signals (); i++)
@@ -349,50 +396,12 @@ namespace octave
               }
             else if (have_sigfpe && i == sigfpe)
               std::cerr << "warning: floating point exception" << std::endl;
+            else if (have_sighup && i == sighup)
+              my_friendly_exit ("SIGHUP", sighup, Vsighup_dumps_octave_core);
+            else if (have_sigterm && i == sigterm)
+              my_friendly_exit ("SIGTERM", sigterm, Vsigterm_dumps_octave_core);
             else if (have_sigpipe && i == sigpipe)
               std::cerr << "warning: broken pipe" << std::endl;
-          }
-      }
-  }
-
-  static void
-  my_friendly_exit (const char *sig_name, int sig_number,
-                    bool save_vars = true)
-  {
-    static bool been_there_done_that = false;
-
-    if (been_there_done_that)
-      {
-        set_signal_handler ("SIGABRT", SIG_DFL);
-
-        std::cerr << "panic: attempted clean up failed -- aborting..."
-                  << std::endl;
-
-        sysdep_cleanup ();
-
-        abort ();
-      }
-    else
-      {
-        been_there_done_that = true;
-
-        std::cerr << "panic: " << sig_name << " -- stopping myself..."
-                  << std::endl;
-
-        if (save_vars)
-          dump_octave_core ();
-
-        if (sig_number < 0)
-          {
-            sysdep_cleanup ();
-
-            exit (1);
-          }
-        else
-          {
-            set_signal_handler (sig_number, SIG_DFL);
-
-            octave_raise_wrapper (sig_number);
           }
       }
   }
@@ -414,14 +423,6 @@ namespace octave
   static void
   generic_sig_handler (int sig)
   {
-    my_friendly_exit (octave_strsignal_wrapper (sig), sig);
-  }
-
-  // Handle SIGCHLD.
-
-  static void
-  sigchld_handler (int sig)
-  {
     octave_signal_caught = 1;
 
     signals_caught[sig] = true;
@@ -442,33 +443,28 @@ namespace octave
   }
 #endif
 
-  static void
-  sig_hup_handler (int /* sig */)
-  {
-    if (Vsighup_dumps_octave_core)
-      dump_octave_core ();
-
-    clean_up_and_exit (0);
-  }
+  // Handle SIGHUP and SIGTERM.
 
   static void
-  sig_term_handler (int /* sig */)
+  user_terminate (int sig_number)
   {
-    if (Vsigterm_dumps_octave_core)
-      dump_octave_core ();
+    if (! octave_initialized)
+      exit (1);
 
-    clean_up_and_exit (0);
+    octave_signal_caught = 1;
+
+    signals_caught[sig_number] = true;
+
+    if (octave_interrupt_immediately)
+      {
+        // Try to get to a place where it is safe to throw an
+        // exception.
+
+        interrupt_manager::jump_to_enclosing_context ();
+      }
   }
 
-#if 0
-  static void
-  sigwinch_handler (int /* sig */)
-  {
-    command_editor::resize_terminal ();
-  }
-#endif
-
-  // Handle SIGINT by restarting the parser (see octave.cc).
+  // Handle SIGINT.
   //
   // This also has to work for SIGBREAK (on systems that have it), so we
   // use the value of sig, instead of just assuming that it is called
@@ -506,6 +502,9 @@ namespace octave
             if (octave_interrupt_state == 0)
               octave_interrupt_state = 1;
 
+            // Try to get to a place where it is safe to throw an
+            // exception.
+
             interrupt_manager::jump_to_enclosing_context ();
           }
         else
@@ -529,6 +528,12 @@ namespace octave
               my_friendly_exit (sig_name, sig_number, true);
           }
       }
+  }
+
+  static void
+  sigterm_handler (int sig)
+  {
+    interrupt_manager::user_terminate (sig);
   }
 
   static void
@@ -609,7 +614,7 @@ namespace octave
     set_signal_handler ("SIGABRT", generic_sig_handler);
     set_signal_handler ("SIGALRM", generic_sig_handler);
     set_signal_handler ("SIGBUS", generic_sig_handler);
-    set_signal_handler ("SIGCHLD", sigchld_handler);
+    set_signal_handler ("SIGCHLD", generic_sig_handler);
 
     // SIGCLD
     // SIGCONT
@@ -622,7 +627,7 @@ namespace octave
     set_signal_handler ("SIGFPE", generic_sig_handler);
 #endif
 
-    set_signal_handler ("SIGHUP", sig_hup_handler);
+    set_signal_handler ("SIGHUP", sigterm_handler);
     set_signal_handler ("SIGILL", generic_sig_handler);
 
     // SIGINFO
@@ -642,7 +647,7 @@ namespace octave
     // SIGSTOP
 
     set_signal_handler ("SIGSYS", generic_sig_handler);
-    set_signal_handler ("SIGTERM", sig_term_handler);
+    set_signal_handler ("SIGTERM", sigterm_handler);
     set_signal_handler ("SIGTRAP", generic_sig_handler);
 
     // SIGTSTP

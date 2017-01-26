@@ -59,8 +59,6 @@ private:
   octave_thread_manager thread_manager;
 
   octave::application *m_app_context;
-
-  int m_exit_status;
 };
 
 #endif

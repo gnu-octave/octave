@@ -118,6 +118,8 @@ namespace octave
 
   private:
 
+    int execute_internal (void);
+
     int main_loop (void);
 
     void cleanup (void);
@@ -130,8 +132,6 @@ namespace octave
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;
-
-    bool m_quitting_gracefully;
   };
 }
 

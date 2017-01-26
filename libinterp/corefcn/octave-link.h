@@ -76,7 +76,7 @@ public:
     if (enabled ())
       {
         if (disable)
-          instance->link_enabled = false;
+          instance->do_disable ();
 
         instance->do_process_events ();
       }
@@ -92,30 +92,8 @@ public:
   {
     bool retval = true;
 
-    if (instance_ok ())
+    if (enabled ())
       retval = instance->do_confirm_shutdown ();
-
-    return retval;
-  }
-
-  static bool exit (int status, bool process_events = true)
-  {
-    bool retval = false;
-
-    if (instance_ok ())
-      {
-        if (process_events)
-          {
-            // Disable additional event processing prior to processing
-            // all other pending events.
-
-            instance->link_enabled = false;
-
-            instance->do_process_events ();
-          }
-
-        retval = instance->do_exit (status);
-      }
 
     return retval;
   }
@@ -332,11 +310,51 @@ public:
 
   static void connect_link (octave_link *);
 
+  static octave_link *disconnect_link (bool delete_instance = true)
+  {
+    if (delete_instance)
+      {
+        delete instance;
+        instance = 0;
+        return 0;
+      }
+    else
+      {
+        octave_link *retval = instance;
+        instance = 0;
+        return retval;
+      }
+  }
+
   static void set_default_prompts (std::string& ps1, std::string& ps2,
                                    std::string& ps4)
   {
     if (enabled ())
       instance->do_set_default_prompts (ps1, ps2, ps4);
+  }
+
+  static bool enable (void)
+  {
+    return instance_ok () ? instance->do_enable () : false;
+  }
+
+  static bool disable (void)
+  {
+    return instance_ok () ? instance->do_disable () : false;
+  }
+
+  bool do_enable (void)
+  {
+    bool retval = link_enabled;
+    link_enabled = true;
+    return retval;
+  }
+
+  bool do_disable (void)
+  {
+    bool retval = link_enabled;
+    link_enabled = false;
+    return retval;
   }
 
   static bool enabled (void)
@@ -412,7 +430,6 @@ protected:
   void do_finished_readline_hook (void) { }
 
   virtual bool do_confirm_shutdown (void) = 0;
-  virtual bool do_exit (int status) = 0;
 
   virtual bool do_copy_image_to_clipboard (const std::string& file) = 0;
 

@@ -162,7 +162,6 @@ main_window::~main_window (void)
       delete community_news_window;
       community_news_window = 0;
     }
-  delete _octave_qt_link;
 }
 
 // catch focus changes and determine the active dock widget
@@ -828,12 +827,6 @@ main_window::prepare_to_exit (void)
     find_files_dlg->save_settings ();
 
   write_settings ();
-}
-
-void
-main_window::exit_app (int status)
-{
-  qApp->exit (status);
 }
 
 void
@@ -1515,8 +1508,7 @@ main_window::construct_octave_qt_link (void)
 {
   _octave_qt_link = new octave_qt_link (this, m_app_context);
 
-  connect (_octave_qt_link, SIGNAL (exit_app_signal (int)),
-           this, SLOT (exit_app (int)));
+  octave_link::connect_link (_octave_qt_link);
 
   connect (_octave_qt_link, SIGNAL (confirm_shutdown_signal ()),
            this, SLOT (confirm_shutdown_octave ()));
@@ -1615,8 +1607,6 @@ main_window::construct_octave_qt_link (void)
       connect (command_window, SIGNAL (interrupt_signal (void)),
                _octave_qt_link, SLOT (terminal_interrupt (void)));
     }
-
-  octave_link::connect_link (_octave_qt_link);
 
   // Defer initializing and executing the interpreter until after the main
   // window and QApplication are running to prevent race conditions

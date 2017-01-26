@@ -63,7 +63,6 @@ public:
   void execute_interpreter (void);
 
   bool do_confirm_shutdown (void);
-  bool do_exit (int status);
 
   bool do_copy_image_to_clipboard (const std::string& file);
 
@@ -205,7 +204,6 @@ signals:
   void show_doc_signal (const QString &file);
 
   void confirm_shutdown_signal (void);
-  void exit_app_signal (int status);
 
 public slots:
 

@@ -25,13 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <QApplication>
+
 #include "octave.h"
 
 #include "octave-interpreter.h"
 
 octave_interpreter::octave_interpreter (octave::application *app_context)
-  : QObject (), thread_manager (), m_app_context (app_context),
-    m_exit_status (0)
+  : QObject (), thread_manager (), m_app_context (app_context)
 { }
 
 void
@@ -47,7 +48,9 @@ octave_interpreter::execute (void)
 
   emit octave_ready_signal ();
 
-  m_exit_status = m_app_context->execute_interpreter ();
+  int exit_status = m_app_context->execute_interpreter ();
+
+  qApp->exit (exit_status);
 }
 
 void

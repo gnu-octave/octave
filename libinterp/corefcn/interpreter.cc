@@ -362,15 +362,6 @@ safe_source_file (const std::string& file_name,
     {
       octave::source_file (file_name, context, verbose, require_file, warn_for);
     }
-  catch (const octave::index_exception& e)
-    {
-      recover_from_exception ();
-
-      std::cerr << "error: index exception in " << file_name << ": "
-                << e.message () << std::endl;
-
-      return 1;
-    }
   catch (const octave::interrupt_exception&)
     {
       recover_from_exception ();
@@ -380,8 +371,6 @@ safe_source_file (const std::string& file_name,
   catch (const octave::execution_exception&)
     {
       recover_from_exception ();
-
-      std::cerr << "error: execution exception in " << file_name << std::endl;
 
       return 1;
     }
@@ -398,13 +387,6 @@ execute_pkg_add (const std::string& dir)
     {
       load_path::execute_pkg_add (dir);
     }
-  catch (const octave::index_exception& e)
-    {
-      recover_from_exception ();
-
-      std::cerr << "error: index exception in " << file_name << ": "
-                << e.message () << std::endl;
-    }
   catch (const octave::interrupt_exception&)
     {
       recover_from_exception ();
@@ -412,8 +394,6 @@ execute_pkg_add (const std::string& dir)
   catch (const octave::execution_exception&)
     {
       recover_from_exception ();
-
-      std::cerr << "error: execution exception in " << file_name << std::endl;
     }
 }
 
@@ -437,9 +417,11 @@ initialize_load_path (bool set_initial_path)
   load_path::initialize (set_initial_path);
 }
 
-// Initialize by reading startup files.
+// Initialize by reading startup files.  Return non-zero if an exception
+// occurs when reading any of them, but don't exit early because of an
+// exception.
 
-static void
+static int
 execute_startup_files (bool read_site_files, bool read_init_files,
                        bool verbose_flag, bool inhibit_startup_message)
 {
@@ -451,6 +433,8 @@ execute_startup_files (bool read_site_files, bool read_init_files,
 
   bool require_file = false;
 
+  int exit_status = 0;
+
   if (read_site_files)
     {
       // Execute commands from the site-wide configuration file.
@@ -458,10 +442,17 @@ execute_startup_files (bool read_site_files, bool read_init_files,
       // (if it exists), then from the file
       // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
-      safe_source_file (Vlocal_site_defaults_file, context, verbose,
-                        require_file);
+      int status = safe_source_file (Vlocal_site_defaults_file, context,
+                                     verbose, require_file);
 
-      safe_source_file (Vsite_defaults_file, context, verbose, require_file);
+      if (status)
+        exit_status = status;
+
+      status = safe_source_file (Vsite_defaults_file, context, verbose,
+                                 require_file);
+
+      if (status)
+        exit_status = status;
     }
 
   if (read_init_files)
@@ -485,7 +476,11 @@ execute_startup_files (bool read_site_files, bool read_init_files,
 
       if (! home_rc.empty ())
         {
-          safe_source_file (home_rc, context, verbose, require_file);
+          int status = safe_source_file (home_rc, context, verbose,
+                                         require_file);
+
+          if (status)
+            exit_status = status;
 
           // Names alone are not enough.
 
@@ -507,9 +502,15 @@ execute_startup_files (bool read_site_files, bool read_init_files,
           if (local_rc.empty ())
             local_rc = octave::sys::env::make_absolute (initfile);
 
-          safe_source_file (local_rc, context, verbose, require_file);
+          int status = safe_source_file (local_rc, context, verbose,
+                                         require_file);
+
+          if (status)
+            exit_status = status;
         }
     }
+
+  return exit_status;
 }
 
 namespace octave
@@ -518,8 +519,7 @@ namespace octave
 
   interpreter::interpreter (application *app_context, bool embedded)
     : m_app_context (app_context), m_evaluator (new tree_evaluator (this)),
-      m_embedded (embedded), m_interactive (false),
-      m_quitting_gracefully (false)
+      m_embedded (embedded), m_interactive (false)
   {
     current_evaluator = m_evaluator;
 
@@ -639,14 +639,30 @@ namespace octave
 
   interpreter::~interpreter (void)
   {
-    cleanup ();
-
     current_evaluator = 0;
 
     delete m_evaluator;
   }
 
   int interpreter::execute (void)
+  {
+    int exit_status = 0;
+
+    try
+      {
+        exit_status = execute_internal ();
+      }
+    catch (const octave::exit_exception& ex)
+      {
+        exit_status = ex.exit_status ();
+      }
+
+    cleanup ();
+
+    return exit_status;
+  }
+
+  int interpreter::execute_internal (void)
   {
     cmdline_options options = m_app_context->options ();
 
@@ -655,10 +671,18 @@ namespace octave
 
     octave_prepare_hdf5 ();
 
-    execute_startup_files (options.read_site_files (),
-                           options.read_init_files (),
-                           options.verbose_flag (),
-                           options.inhibit_startup_message ());
+    // Don't fail, but return non-zero if there is an error in a startup
+    // file.
+
+    int exit_status = 0;
+
+    int status = execute_startup_files (options.read_site_files (),
+                                        options.read_init_files (),
+                                        options.verbose_flag (),
+                                        options.inhibit_startup_message ());
+
+    if (status)
+      exit_status = status;
 
     if (m_interactive && ! options.inhibit_startup_message ()
         && reading_startup_message_printed)
@@ -669,25 +693,13 @@ namespace octave
 
     if (! code_to_eval.empty ())
       {
-        int exit_status = 0;
+        status = execute_eval_option_code (code_to_eval);
 
-        try
-          {
-            exit_status = execute_eval_option_code (code_to_eval);
-          }
-        catch (const octave::exit_exception& ex)
-          {
-            recover_from_exception ();
-
-            return ex.exit_status ();
-          }
+        if (status)
+          exit_status = status;
 
         if (! options.persist ())
-          {
-            m_quitting_gracefully = true;
-
-            return exit_status;
-          }
+          return exit_status;
       }
 
     // If there is an extra argument, see if it names a file to read.
@@ -698,32 +710,20 @@ namespace octave
         // If we are running an executable script (#! /bin/octave) then
         // we should only see the args passed to the script.
 
-        int exit_status = 0;
+        string_vector script_args = options.remaining_args ();
 
-        try
-          {
-            string_vector script_args = options.remaining_args ();
+        m_app_context->intern_argv (script_args);
 
-            m_app_context->intern_argv (script_args);
+        status = execute_command_line_file (script_args[0]);
 
-            exit_status = execute_command_line_file (script_args[0]);
-          }
-        catch (const octave::exit_exception& ex)
-          {
-            recover_from_exception ();
-
-            return ex.exit_status ();
-          }
+        if (status)
+          exit_status = status;
 
         // Restore full set of args.
         m_app_context->intern_argv (options.all_args ());
 
         if (! options.persist ())
-          {
-            m_quitting_gracefully = true;
-
-            return exit_status;
-          }
+          return exit_status;
       }
 
     // Avoid counting commands executed from startup or script files.
@@ -750,11 +750,7 @@ namespace octave
         return 1;
       }
 
-    int retval = main_loop ();
-
-    m_quitting_gracefully = true;
-
-    return retval;
+    return main_loop ();
   }
 
   int interpreter::execute_eval_option_code (const std::string& code)
@@ -904,16 +900,6 @@ namespace octave
                   break;
               }
           }
-        catch (const octave::exit_exception& ex)
-          {
-            recover_from_exception ();
-
-            // If we are connected to a gui, allow it to manage the exit
-            // process.
-            octave_link::exit (ex.exit_status ());
-
-            return ex.exit_status ();
-          }
         catch (const octave::interrupt_exception&)
           {
             recover_from_exception ();
@@ -964,9 +950,6 @@ namespace octave
       }
     while (retval == 0);
 
-    if (octave::application::interactive ())
-      octave_stdout << "\n";
-
     if (retval == EOF)
       retval = 0;
 
@@ -976,6 +959,12 @@ namespace octave
   void interpreter::cleanup (void)
   {
     static bool deja_vu = false;
+
+    // If we are attached to a GUI, process pending events and
+    // disconnect the link.
+
+    octave_link::process_events (true);
+    octave_link::disconnect_link ();
 
     OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
 
@@ -1003,9 +992,6 @@ namespace octave
 
         OCTAVE_SAFE_CALL (octave::command_editor::restore_terminal_state, ());
 
-        // FIXME: is this needed?  Can it cause any trouble?
-        OCTAVE_SAFE_CALL (raw_mode, (0));
-
         OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
 
         if (! octave::command_history::ignoring_entries ())
@@ -1027,7 +1013,7 @@ namespace octave
 
         OCTAVE_SAFE_CALL (octave::flush_stdout, ());
 
-        if (! m_quitting_gracefully && octave::application::interactive ())
+        if (octave::application::interactive ())
           {
             octave_stdout << "\n";
 

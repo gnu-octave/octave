@@ -96,16 +96,6 @@ octave_qt_link::do_confirm_shutdown (void)
 }
 
 bool
-octave_qt_link::do_exit (int status)
-{
-  emit exit_app_signal (status);
-
-  // Could wait for a while and then timeout, but for now just
-  // assume the GUI application exit will be without problems.
-  return true;
-}
-
-bool
 octave_qt_link::do_copy_image_to_clipboard (const std::string& file)
 {
   emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);

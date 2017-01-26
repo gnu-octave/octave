@@ -142,7 +142,6 @@ public slots:
   void notice_settings (const QSettings *settings);
   void confirm_shutdown_octave (void);
   void prepare_to_exit (void);
-  void exit_app (int status);
   void reset_windows (void);
 
   void change_directory (const QString& dir);

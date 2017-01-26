@@ -506,18 +506,19 @@
 %!   cls = classes{i};
 %!   s_in = ones (1, 1, cls);
 %!   m_in = ones (2, 2, cls);
-%!   m_shape = size (m);
-%!   fwrite (id, s, numel (s), cls);
-%!   fwrite (id, m, numel (m), cls);
+%!   m_shape = size (m_in);
+%!   frewind (id);
+%!   fwrite (id, s_in, cls);
+%!   fwrite (id, m_in, cls);
 %!   frewind (id);
 %!   s_out = fread (id, numel (s_in), sprintf ("%s=>%s", cls, cls));
 %!   m_out = fread (id, numel (m_in), sprintf ("%s=>%s", cls, cls));
 %!   m_out = reshape (m_out, m_shape);
-%!   fclose (id);
-%!   unlink (nm);
 %!   assert (s_in, s_out);
 %!   assert (m_in, m_out);
 %! endfor
+%! fclose (id);
+%! unlink (nm);
 
 %!test
 %! x = char (128:255)';

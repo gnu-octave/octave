@@ -543,6 +543,9 @@ namespace octave
 
   interpreter::~interpreter (void)
   {
+    if (m_embedded)
+      cleanup ();
+
     current_evaluator = 0;
 
     delete m_evaluator;
@@ -561,7 +564,8 @@ namespace octave
         exit_status = ex.exit_status ();
       }
 
-    cleanup ();
+    if (! m_embedded)
+      cleanup ();
 
     return exit_status;
   }

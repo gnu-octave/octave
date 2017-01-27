@@ -111,8 +111,6 @@ namespace QtHandles
       {
         gh_manager::auto_lock lock;
 
-        octave_add_atexit_function ("__shutdown_qt__");
-
         gtk_manager::unload_toolkit ("qt");
 
         gh_manager::enable_event_processing (false);

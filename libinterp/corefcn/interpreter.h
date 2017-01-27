@@ -34,8 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern OCTINTERP_API bool quit_allowed;
 
-extern OCTINTERP_API bool quitting_gracefully;
-
 extern OCTINTERP_API void recover_from_exception (void);
 
 extern OCTINTERP_API void

@@ -11,25 +11,45 @@ main (void)
   argv(0) = "embedded";
   argv(1) = "-q";
 
-  octave_main (2, argv.c_str_vec (), 1);
+  octave::embedded_application app (2, argv.c_str_vec ());
 
-  octave_idx_type n = 2;
-  octave_value_list in;
+  int status = app.execute ();
 
-  for (octave_idx_type i = 0; i < n; i++)
-    in(i) = octave_value (5 * (i + 2));
+  if (status != 0)
+    {
+      std::cerr << "creating embedded Octave interpreter failed!" << std::endl;
+      return status;
+    }
 
-  octave_value_list out = feval ("gcd", in, 1);
+  try
+    {
+      octave_idx_type n = 2;
+      octave_value_list in;
 
-  if (out.length () > 0)
-    std::cout << "GCD of ["
-              << in(0).int_value ()
-              << ", "
-              << in(1).int_value ()
-              << "] is " << out(0).int_value ()
-              << std::endl;
-  else
-    std::cout << "invalid\n";
+      for (octave_idx_type i = 0; i < n; i++)
+        in(i) = octave_value (5 * (i + 2));
 
-  clean_up_and_exit (0);
+      octave_value_list out = octave::feval ("gcd", in, 1);
+
+      if (out.length () > 0)
+        std::cout << "GCD of ["
+                  << in(0).int_value ()
+                  << ", "
+                  << in(1).int_value ()
+                  << "] is " << out(0).int_value ()
+                  << std::endl;
+      else
+        std::cout << "invalid\n";
+    }
+  catch (const octave::exit_exception& ex)
+    {
+      std::cerr << "Octave evaluator exited with status = "
+                << ex.exit_status () << std::endl;
+    }
+  catch (const octave::execution_exception&)
+    {
+      std::cerr << "error encountered in Octave evaluator!" << std::endl;
+    }
+
+  return 0;
 }

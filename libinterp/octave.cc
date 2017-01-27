@@ -399,14 +399,16 @@ namespace octave
 
     m_have_script_file = ! remaining_args.empty ();
 
-    if (! code_to_eval.empty () && m_have_script_file)
+    m_have_eval_option_code = ! code_to_eval.empty ();
+
+    if (m_have_eval_option_code && m_have_script_file)
       {
         warning ("--eval \"CODE\" and script file are mutually exclusive options");
 
         octave_print_terse_usage_and_exit ();
       }
 
-    m_is_octave_program = ((m_have_script_file || ! code_to_eval.empty ())
+    m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()
                            && ! m_options.traditional ());
 

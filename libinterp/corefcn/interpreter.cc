@@ -417,102 +417,6 @@ initialize_load_path (bool set_initial_path)
   load_path::initialize (set_initial_path);
 }
 
-// Initialize by reading startup files.  Return non-zero if an exception
-// occurs when reading any of them, but don't exit early because of an
-// exception.
-
-static int
-execute_startup_files (bool read_site_files, bool read_init_files,
-                       bool verbose_flag, bool inhibit_startup_message)
-{
-  octave::unwind_protect frame;
-
-  std::string context;
-
-  bool verbose = (verbose_flag && ! inhibit_startup_message);
-
-  bool require_file = false;
-
-  int exit_status = 0;
-
-  if (read_site_files)
-    {
-      // Execute commands from the site-wide configuration file.
-      // First from the file $(prefix)/lib/octave/site/m/octaverc
-      // (if it exists), then from the file
-      // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
-
-      int status = safe_source_file (Vlocal_site_defaults_file, context,
-                                     verbose, require_file);
-
-      if (status)
-        exit_status = status;
-
-      status = safe_source_file (Vsite_defaults_file, context, verbose,
-                                 require_file);
-
-      if (status)
-        exit_status = status;
-    }
-
-  if (read_init_files)
-    {
-      // Try to execute commands from $HOME/$OCTAVE_INITFILE and
-      // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set,
-      // .octaverc is assumed.
-
-      bool home_rc_already_executed = false;
-
-      std::string initfile = octave::sys::env::getenv ("OCTAVE_INITFILE");
-
-      if (initfile.empty ())
-        initfile = ".octaverc";
-
-      std::string home_dir = octave::sys::env::get_home_directory ();
-
-      std::string home_rc = octave::sys::env::make_absolute (initfile, home_dir);
-
-      std::string local_rc;
-
-      if (! home_rc.empty ())
-        {
-          int status = safe_source_file (home_rc, context, verbose,
-                                         require_file);
-
-          if (status)
-            exit_status = status;
-
-          // Names alone are not enough.
-
-          octave::sys::file_stat fs_home_rc (home_rc);
-
-          if (fs_home_rc)
-            {
-              // We want to check for curr_dir after executing home_rc
-              // because doing that may change the working directory.
-
-              local_rc = octave::sys::env::make_absolute (initfile);
-
-              home_rc_already_executed = same_file (home_rc, local_rc);
-            }
-        }
-
-      if (! home_rc_already_executed)
-        {
-          if (local_rc.empty ())
-            local_rc = octave::sys::env::make_absolute (initfile);
-
-          int status = safe_source_file (local_rc, context, verbose,
-                                         require_file);
-
-          if (status)
-            exit_status = status;
-        }
-    }
-
-  return exit_status;
-}
-
 namespace octave
 {
   tree_evaluator *current_evaluator = 0;
@@ -523,7 +427,7 @@ namespace octave
   {
     current_evaluator = m_evaluator;
 
-    cmdline_options options = m_app_context->options ();
+    const cmdline_options& options = m_app_context->options ();
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_NUMERIC, "C");
@@ -664,10 +568,7 @@ namespace octave
 
   int interpreter::execute_internal (void)
   {
-    cmdline_options options = m_app_context->options ();
-
-    if (m_interactive && ! options.inhibit_startup_message ())
-      std::cout << octave_startup_message () << "\n" << std::endl;
+    display_startup_message ();
 
     octave_prepare_hdf5 ();
 
@@ -676,26 +577,18 @@ namespace octave
 
     int exit_status = 0;
 
-    int status = execute_startup_files (options.read_site_files (),
-                                        options.read_init_files (),
-                                        options.verbose_flag (),
-                                        options.inhibit_startup_message ());
+    int status = execute_startup_files ();
 
     if (status)
       exit_status = status;
 
-    if (m_interactive && ! options.inhibit_startup_message ()
-        && options.verbose_flag ())
-      std::cout << std::endl;
+    const cmdline_options& options = m_app_context->options ();
 
-    // Execute any code specified with --eval 'CODE'
-    std::string code_to_eval = options.code_to_eval ();
-
-    if (! code_to_eval.empty ())
+    if (m_app_context->have_eval_option_code ())
       {
-        status = execute_eval_option_code (code_to_eval);
+        status = execute_eval_option_code ();
 
-        if (status)
+        if (status )
           exit_status = status;
 
         if (! options.persist ())
@@ -707,20 +600,10 @@ namespace octave
 
     if (m_app_context->have_script_file ())
       {
-        // If we are running an executable script (#! /bin/octave) then
-        // we should only see the args passed to the script.
-
-        string_vector script_args = options.remaining_args ();
-
-        m_app_context->intern_argv (script_args);
-
-        status = execute_command_line_file (script_args[0]);
+        status = execute_command_line_file ();
 
         if (status)
           exit_status = status;
-
-        // Restore full set of args.
-        m_app_context->intern_argv (options.all_args ());
 
         if (! options.persist ())
           return exit_status;
@@ -741,20 +624,128 @@ namespace octave
         Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
       }
 
-    if (m_embedded)
-      {
-        // FIXME: Do we need to do any cleanup here before returning?
-        // If we don't, what will happen to Octave functions that have been
-        // registered to execute with atexit, for example?
-
-        return 1;
-      }
-
-    return main_loop ();
+    return m_embedded ? main_loop () : 1;
   }
 
-  int interpreter::execute_eval_option_code (const std::string& code)
+  void interpreter::display_startup_message (void) const
   {
+    const cmdline_options& options = m_app_context->options ();
+
+    if (m_interactive && ! options.inhibit_startup_message ())
+      std::cout << octave_startup_message () << "\n" << std::endl;
+  }
+
+  // Initialize by reading startup files.  Return non-zero if an exception
+  // occurs when reading any of them, but don't exit early because of an
+  // exception.
+
+  int interpreter::execute_startup_files (void) const
+  {
+    const cmdline_options& options = m_app_context->options ();
+
+    bool read_site_files = options.read_site_files ();
+    bool read_init_files = options.read_init_files ();
+    bool verbose_flag = options.verbose_flag ();
+    bool inhibit_startup_message = options.inhibit_startup_message ();
+
+    bool verbose = (verbose_flag && ! inhibit_startup_message);
+
+    bool require_file = false;
+
+    std::string context;
+
+    int exit_status = 0;
+
+    if (read_site_files)
+      {
+        // Execute commands from the site-wide configuration file.
+        // First from the file $(prefix)/lib/octave/site/m/octaverc
+        // (if it exists), then from the file
+        // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
+
+        int status = safe_source_file (Vlocal_site_defaults_file, context,
+                                       verbose, require_file);
+
+        if (status)
+          exit_status = status;
+
+        status = safe_source_file (Vsite_defaults_file, context, verbose,
+                                   require_file);
+
+        if (status)
+          exit_status = status;
+      }
+
+    if (read_init_files)
+      {
+        // Try to execute commands from $HOME/$OCTAVE_INITFILE and
+        // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set,
+        // .octaverc is assumed.
+
+        bool home_rc_already_executed = false;
+
+        std::string initfile = octave::sys::env::getenv ("OCTAVE_INITFILE");
+
+        if (initfile.empty ())
+          initfile = ".octaverc";
+
+        std::string home_dir = octave::sys::env::get_home_directory ();
+
+        std::string home_rc = octave::sys::env::make_absolute (initfile, home_dir);
+
+        std::string local_rc;
+
+        if (! home_rc.empty ())
+          {
+            int status = safe_source_file (home_rc, context, verbose,
+                                           require_file);
+
+            if (status)
+              exit_status = status;
+
+            // Names alone are not enough.
+
+            octave::sys::file_stat fs_home_rc (home_rc);
+
+            if (fs_home_rc)
+              {
+                // We want to check for curr_dir after executing home_rc
+                // because doing that may change the working directory.
+
+                local_rc = octave::sys::env::make_absolute (initfile);
+
+                home_rc_already_executed = same_file (home_rc, local_rc);
+              }
+          }
+
+        if (! home_rc_already_executed)
+          {
+            if (local_rc.empty ())
+              local_rc = octave::sys::env::make_absolute (initfile);
+
+            int status = safe_source_file (local_rc, context, verbose,
+                                           require_file);
+
+            if (status)
+              exit_status = status;
+          }
+      }
+
+    if (m_interactive && ! options.inhibit_startup_message ()
+        && options.verbose_flag ())
+      std::cout << std::endl;
+
+    return exit_status;
+  }
+
+  // Execute any code specified with --eval 'CODE'
+
+  int interpreter::execute_eval_option_code (void)
+  {
+    const cmdline_options& options = m_app_context->options ();
+
+    std::string code_to_eval = options.code_to_eval ();
+
     octave::unwind_protect frame;
 
     octave_save_signal_mask ();
@@ -777,7 +768,7 @@ namespace octave
 
     try
       {
-        eval_string (code, false, parse_status, 0);
+        eval_string (code_to_eval, false, parse_status, 0);
       }
     catch (const octave::interrupt_exception&)
       {
@@ -795,8 +786,10 @@ namespace octave
     return parse_status;
   }
 
-  int interpreter::execute_command_line_file (const std::string& fname)
+  int interpreter::execute_command_line_file (void)
   {
+    const cmdline_options& options = m_app_context->options ();
+
     octave::unwind_protect frame;
 
     octave_save_signal_mask ();
@@ -814,6 +807,10 @@ namespace octave
     frame.add_method (this, &interpreter::interactive, m_interactive);
 
     frame.add_method (m_app_context,
+                      &application::intern_argv,
+                      options.all_args ());
+
+    frame.add_method (m_app_context,
                       &application::program_invocation_name,
                       application::program_invocation_name ());
 
@@ -822,6 +819,15 @@ namespace octave
                       application::program_name ());
 
     m_interactive = false;
+
+    // If we are running an executable script (#! /bin/octave) then
+    // we should only see the args passed to the script.
+
+    string_vector script_args = options.remaining_args ();
+
+    m_app_context->intern_argv (script_args);
+
+    std::string fname = script_args[0];
 
     m_app_context->set_program_names (fname);
 

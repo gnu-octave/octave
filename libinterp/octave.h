@@ -202,6 +202,8 @@ namespace octave
 
     cmdline_options options (void) const { return m_options; }
 
+    bool have_eval_option_code (void) const { return m_have_eval_option_code; }
+
     bool have_script_file (void) const { return m_have_script_file; }
 
     bool is_octave_program (void) const { return m_is_octave_program; }
@@ -263,6 +265,9 @@ namespace octave
     string_vector m_argv;
 
     cmdline_options m_options;
+
+    // TRUE means we have --eval CODE
+    bool m_have_eval_option_code = false;
 
     // TRUE if there is a command line argument that looks like the
     // name of a file to execute.

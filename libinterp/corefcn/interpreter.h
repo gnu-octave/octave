@@ -109,16 +109,20 @@ namespace octave
 
     int execute (void);
 
-    int execute_eval_option_code (const std::string& code);
-
-    int execute_command_line_file (const std::string& fname);
-
     bool interactive (void) const { return m_interactive; }
     void interactive (bool arg) { m_interactive = arg; }
 
   private:
 
     int execute_internal (void);
+
+    void display_startup_message (void) const;
+
+    int execute_startup_files (void) const;
+
+    int execute_eval_option_code (void);
+
+    int execute_command_line_file (void);
 
     int main_loop (void);
 

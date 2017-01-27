@@ -969,6 +969,40 @@ namespace octave
     return retval;
   }
 
+  // Call a function with exceptions handled to avoid problems with
+  // errors while shutting down.
+
+#define OCTAVE_IGNORE_EXCEPTION(E)                                      \
+  catch (E)                                                             \
+    {                                                                   \
+      recover_from_exception ();                                        \
+                                                                        \
+      std::cerr << "error: ignoring " #E " while preparing to exit"     \
+                << std::endl;                                           \
+    }
+
+#define OCTAVE_SAFE_CALL(F, ARGS)                                       \
+  do                                                                    \
+    {                                                                   \
+      try                                                               \
+        {                                                               \
+          octave::unwind_protect frame;                                 \
+                                                                        \
+          frame.protect_var (Vdebug_on_error);                          \
+          frame.protect_var (Vdebug_on_warning);                        \
+                                                                        \
+          Vdebug_on_error = false;                                      \
+          Vdebug_on_warning = false;                                    \
+                                                                        \
+          F ARGS;                                                       \
+        }                                                               \
+      OCTAVE_IGNORE_EXCEPTION (const octave::exit_exception&)           \
+      OCTAVE_IGNORE_EXCEPTION (const octave::interrupt_exception&)      \
+      OCTAVE_IGNORE_EXCEPTION (const octave::execution_exception&)      \
+      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
+    }                                                                   \
+  while (0)
+
   void interpreter::cleanup (void)
   {
     static bool deja_vu = false;

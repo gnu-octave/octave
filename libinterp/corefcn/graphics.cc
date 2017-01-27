@@ -2740,7 +2740,7 @@ close_figure (const graphics_handle& h)
 {
   octave_value closerequestfcn = xget (h, "closerequestfcn");
 
-  OCTAVE_SAFE_CALL (gh_manager::execute_callback, (h, closerequestfcn));
+  gh_manager::execute_callback (h, closerequestfcn);
 }
 
 static void

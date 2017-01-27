@@ -90,9 +90,6 @@ extern int octave_lex (YYSTYPE *, void *);
 // FIXME: to be removed after more parser+lexer refactoring.
 octave::base_lexer *LEXER = 0;
 
-// TRUE means we printed messages about reading startup files.
-bool reading_startup_message_printed = false;
-
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
 
@@ -4764,7 +4761,6 @@ namespace octave
     if (verbose)
       {
         std::cout << "executing commands from " << full_name << " ... ";
-        reading_startup_message_printed = true;
         std::cout.flush ();
       }
 

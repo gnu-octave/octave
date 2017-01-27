@@ -90,9 +90,6 @@ namespace octave
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;
 
-// TRUE means we printed messages about reading startup files.
-extern bool reading_startup_message_printed;
-
 namespace octave
 {
   // Global access to currently active lexer.

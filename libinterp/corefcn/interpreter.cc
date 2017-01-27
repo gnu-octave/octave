@@ -685,7 +685,7 @@ namespace octave
       exit_status = status;
 
     if (m_interactive && ! options.inhibit_startup_message ()
-        && reading_startup_message_printed)
+        && options.verbose_flag ())
       std::cout << std::endl;
 
     // Execute any code specified with --eval 'CODE'

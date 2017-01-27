@@ -2343,7 +2343,7 @@ namespace octave
                   }
                 catch (const octave::execution_exception&)
                   {
-                    recover_from_exception ();
+                    octave::interpreter::recover_from_exception ();
                   }
               }
           }
@@ -3963,7 +3963,7 @@ namespace octave
           }
         catch (const octave::execution_exception&)
           {
-            recover_from_exception ();
+            octave::interpreter::recover_from_exception ();
           }
       }
 
@@ -5223,7 +5223,7 @@ does.
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       execution_error = true;
     }
@@ -5393,7 +5393,7 @@ Like @code{eval}, except that the expressions are evaluated in the context
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       execution_error = true;
     }

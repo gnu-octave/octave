@@ -108,7 +108,7 @@ load_path::dir_info::update (void)
             {
               // Skip updating if we don't know where we are,
               // but don't treat it as an error.
-              recover_from_exception ();
+              octave::interpreter::recover_from_exception ();
             }
         }
       // Absolute path, check timestamp to see whether it requires re-caching
@@ -172,7 +172,7 @@ load_path::dir_info::initialize (void)
           // Skip updating if we don't know where we are but don't treat
           // it as an error.
 
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
         }
     }
   else

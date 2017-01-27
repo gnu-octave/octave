@@ -287,7 +287,7 @@ generate_struct_completions (const std::string& text,
             }
           catch (const octave::execution_exception&)
             {
-              recover_from_exception ();
+              octave::interpreter::recover_from_exception ();
             }
         }
     }

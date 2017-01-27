@@ -82,7 +82,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     {
       if (error_handler.is_defined ())
         {
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
 
           execution_error = true;
         }

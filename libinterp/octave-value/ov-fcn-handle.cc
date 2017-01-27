@@ -2043,7 +2043,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                             }
                           catch (const octave::execution_exception&)
                             {
-                              recover_from_exception ();
+                              octave::interpreter::recover_from_exception ();
 
                               bad = true;
                             }

@@ -360,7 +360,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
     }
   catch (const octave::execution_exception& e)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       success = false;
     }

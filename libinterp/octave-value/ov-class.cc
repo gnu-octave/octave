@@ -1065,7 +1065,7 @@ octave_class::reconstruct_exemplar (void)
             }
           catch (const octave::execution_exception&)
             {
-              recover_from_exception ();
+              octave::interpreter::recover_from_exception ();
 
               execution_error = true;
             }

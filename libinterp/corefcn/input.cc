@@ -217,7 +217,7 @@ interactive_input (const std::string& s, bool& eof)
             std::cerr << stack_trace;
 
           if (octave::application::interactive ())
-            recover_from_exception ();
+            octave::interpreter::recover_from_exception ();
         }
 
       octave::flush_stdout ();
@@ -724,7 +724,7 @@ get_debug_input (const std::string& prompt)
             std::cerr << stack_trace;
 
           // Ignore errors when in debugging mode;
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
         }
     }
 }

@@ -89,7 +89,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       conv_err = 1;
     }

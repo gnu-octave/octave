@@ -34,14 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern OCTINTERP_API bool quit_allowed;
 
-extern OCTINTERP_API void recover_from_exception (void);
-
-extern OCTINTERP_API void
-octave_add_atexit_function (const std::string& fname);
-
-extern OCTINTERP_API bool
-octave_remove_atexit_function (const std::string& fname);
-
 // TRUE means we are ready to interpret commands, but not everything
 // is ready for interactive use.
 extern OCTINTERP_API bool octave_interpreter_ready;
@@ -79,7 +71,15 @@ namespace octave
     bool interactive (void) const { return m_interactive; }
     void interactive (bool arg) { m_interactive = arg; }
 
+    static void recover_from_exception (void);
+
+    static void add_atexit_function (const std::string& fname);
+
+    static bool remove_atexit_function (const std::string& fname);
+
   private:
+
+    static std::list<std::string> atexit_functions;
 
     int execute_internal (void);
 
@@ -105,5 +105,30 @@ namespace octave
     bool m_interactive;
   };
 }
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED ("use 'octave::interpreter::recover_from_exception' instead")
+static inline void
+recover_from_exception (void)
+{
+  octave::interpreter::recover_from_exception ();
+}
+
+OCTAVE_DEPRECATED ("use 'octave::interpreter::add_atexit_function' instead")
+static inline void
+add_atexit_function (const std::string& fname)
+{
+  octave::interpreter::add_atexit_function (fname);
+}
+
+OCTAVE_DEPRECATED ("use 'octave::interpreter::remove_atexit_function' instead")
+static inline bool
+remove_atexit_function (const std::string& fname)
+{
+  return octave::interpreter::remove_atexit_function (fname);
+}
+
+#endif
 
 #endif

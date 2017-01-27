@@ -194,22 +194,6 @@ maximum_braindamage (void)
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
-void
-recover_from_exception (void)
-{
-  octave::can_interrupt = true;
-  octave_interrupt_immediately = 0;
-  octave_interrupt_state = 0;
-  octave_signal_caught = 0;
-  octave_exception_state = octave_no_exception;
-  octave_restore_signal_mask ();
-  octave::catch_interrupts ();
-}
-
-// Fix up things before exiting.
-
-static std::list<std::string> octave_atexit_functions;
-
 DEFUN (quit, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} exit
@@ -253,31 +237,6 @@ to run using @code{atexit}.
 }
 
 DEFALIAS (exit, quit);
-
-void
-octave_add_atexit_function (const std::string& fname)
-{
-  octave_atexit_functions.push_front (fname);
-}
-
-bool
-octave_remove_atexit_function (const std::string& fname)
-{
-  bool found = false;
-
-  for (auto it = octave_atexit_functions.begin ();
-       it != octave_atexit_functions.end (); it++)
-    {
-      if (*it == fname)
-        {
-          octave_atexit_functions.erase (it);
-          found = true;
-          break;
-        }
-    }
-
-  return found;
-}
 
 DEFUN (atexit, args, nargout,
        doc: /* -*- texinfo -*-
@@ -333,10 +292,10 @@ from the list, so if a function was placed in the list multiple times with
   octave_value_list retval;
 
   if (add_mode)
-    octave_add_atexit_function (arg);
+    octave::interpreter::add_atexit_function (arg);
   else
     {
-      bool found = octave_remove_atexit_function (arg);
+      bool found = octave::interpreter::remove_atexit_function (arg);
 
       if (nargout > 0)
         retval = ovl (found);
@@ -362,13 +321,13 @@ safe_source_file (const std::string& file_name,
     }
   catch (const octave::interrupt_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       return 1;
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       return 1;
     }
@@ -387,11 +346,11 @@ execute_pkg_add (const std::string& dir)
     }
   catch (const octave::interrupt_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
     }
 }
 
@@ -1013,11 +972,11 @@ namespace octave
 
     OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
 
-    while (! octave_atexit_functions.empty ())
+    while (! atexit_functions.empty ())
       {
-        std::string fcn = octave_atexit_functions.front ();
+        std::string fcn = atexit_functions.front ();
 
-        octave_atexit_functions.pop_front ();
+        atexit_functions.pop_front ();
 
         OCTAVE_SAFE_CALL (reset_error_handler, ());
 
@@ -1082,5 +1041,43 @@ namespace octave
 
         OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
       }
+  }
+
+  void recover_from_exception (void)
+  {
+    octave::can_interrupt = true;
+    octave_interrupt_immediately = 0;
+    octave_interrupt_state = 0;
+    octave_signal_caught = 0;
+    octave_exception_state = octave_no_exception;
+    octave_restore_signal_mask ();
+    octave::catch_interrupts ();
+  }
+
+  // Functions to call when the interpreter exits.
+
+  std::list<std::string> atexit_functions;
+
+  void interpreter::add_atexit_function (const std::string& fname)
+  {
+    atexit_functions.push_front (fname);
+  }
+
+  bool interpreter::remove_atexit_function (const std::string& fname)
+  {
+    bool found = false;
+
+    for (auto it = atexit_functions.begin ();
+         it != atexit_functions.end (); it++)
+      {
+        if (*it == fname)
+          {
+            atexit_functions.erase (it);
+            found = true;
+            break;
+          }
+      }
+
+    return found;
   }
 }

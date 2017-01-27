@@ -3186,7 +3186,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
     {
       if (mex_context->trap_feval_error)
         {
-          recover_from_exception ();
+          octave::interpreter::recover_from_exception ();
 
           execution_error = true;
         }
@@ -3266,7 +3266,7 @@ mexEvalString (const char *s)
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       execution_error = true;
     }
@@ -3293,7 +3293,7 @@ mexEvalStringWithTrap (const char *s)
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       execution_error = true;
     }

@@ -59,7 +59,7 @@ namespace QtHandles
             graphics_toolkit tk (new Backend ());
             gtk_manager::load_toolkit (tk);
 
-            octave_add_atexit_function ("__shutdown_qt__");
+            octave::interpreter::add_atexit_function ("__shutdown_qt__");
 
             // Change some default settings to use Qt default colors
             QPalette p;

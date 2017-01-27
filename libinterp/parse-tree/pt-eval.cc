@@ -833,7 +833,7 @@ namespace octave
             }
           catch (const octave::execution_exception&)
             {
-              recover_from_exception ();
+              octave::interpreter::recover_from_exception ();
 
               in_try_catch--;          // must be restored before "catch" block
               execution_error = true;
@@ -905,7 +905,7 @@ namespace octave
       }
     catch (const octave::execution_exception&)
       {
-        recover_from_exception ();
+        octave::interpreter::recover_from_exception ();
 
         if (tree_break_command::breaking || tree_return_command::returning)
           frame.discard (2);
@@ -969,7 +969,7 @@ namespace octave
             // interpreter's exception handling state to something "safe"
             // while the cleanup block runs instead of just resetting it
             // here?
-            recover_from_exception ();
+            octave::interpreter::recover_from_exception ();
 
             // Run the cleanup code on exceptions, so that it is run even
             // in case of interrupt or out-of-memory.

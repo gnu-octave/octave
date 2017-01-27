@@ -1371,7 +1371,7 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
     }
   catch (const octave::execution_exception&)
     {
-      recover_from_exception ();
+      octave::interpreter::recover_from_exception ();
 
       retval = false;
     }

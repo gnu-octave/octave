@@ -624,7 +624,7 @@ namespace octave
         Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
       }
 
-    return m_embedded ? main_loop () : 1;
+    return main_loop ();
   }
 
   void interpreter::display_startup_message (void) const
@@ -840,6 +840,9 @@ namespace octave
 
   int interpreter::main_loop (void)
   {
+    if (m_embedded)
+      return 0;
+
     octave_save_signal_mask ();
 
     octave::can_interrupt = true;

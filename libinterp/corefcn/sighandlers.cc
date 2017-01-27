@@ -82,7 +82,7 @@ namespace octave
 
   // Forward declarations.
   static void user_terminate (int sig_number);
-  static void user_abort (const char *sig_name, int sig_number);
+  static void user_abort (int sig_number);
 
   class
   base_interrupt_manager
@@ -103,7 +103,7 @@ namespace octave
 
     virtual void do_user_terminate (int sig_number) = 0;
 
-    virtual void do_user_abort (const char *sig_name, int sig_number) = 0;
+    virtual void do_user_abort (int sig_number) = 0;
 
     virtual void do_raise_sigint (void) = 0;
   };
@@ -182,16 +182,16 @@ namespace octave
         }
     }
 
-    void do_user_abort (const char *sig_name, int sig_number)
+    void do_user_abort (int sig_number)
     {
       bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
 
       if (is_interrupt_thread)
-        octave::user_abort (sig_name, sig_number);
+        octave::user_abort (sig_number);
       else
         {
           SuspendThread (thread);
-          octave::user_abort (sig_name, sig_number);
+          octave::user_abort (sig_number);
           ResumeThread (thread);
         }
     }
@@ -249,9 +249,9 @@ namespace octave
       octave::user_terminate (sig_number);
     }
 
-    void do_user_abort (const char *sig_name, int sig_number)
+    void do_user_abort (int sig_number)
     {
-      octave::user_abort (sig_name, sig_number);
+      octave::user_abort (sig_number);
     }
 
     void do_raise_sigint (void)
@@ -281,10 +281,10 @@ namespace octave
         instance->do_user_terminate (sig_number);
     }
 
-    static void user_abort (const char *sig_name, int sig_number)
+    static void user_abort (int sig_number)
     {
       if (instance_ok ())
-        instance->do_user_abort (sig_name, sig_number);
+        instance->do_user_abort (sig_number);
     }
 
     static void raise_sigint (void)
@@ -338,10 +338,10 @@ namespace octave
   base_interrupt_manager *interrupt_manager::instance = 0;
 
   static void
-  my_friendly_exit (const char *sig_name, int sig_number,
-                    bool save_vars = true)
+  my_friendly_exit (int sig, bool save_vars = true)
   {
-    std::cerr << "fatal: caught signal " << sig_name
+    std::cerr << "fatal: caught signal "
+              << octave_strsignal_wrapper (sig)
               << " -- stopping myself..." << std::endl;
 
     if (save_vars)
@@ -397,9 +397,9 @@ namespace octave
             else if (have_sigfpe && i == sigfpe)
               std::cerr << "warning: floating point exception" << std::endl;
             else if (have_sighup && i == sighup)
-              my_friendly_exit ("SIGHUP", sighup, Vsighup_dumps_octave_core);
+              my_friendly_exit (sighup, Vsighup_dumps_octave_core);
             else if (have_sigterm && i == sigterm)
-              my_friendly_exit ("SIGTERM", sigterm, Vsigterm_dumps_octave_core);
+              my_friendly_exit (sigterm, Vsigterm_dumps_octave_core);
             else if (have_sigpipe && i == sigpipe)
               std::cerr << "warning: broken pipe" << std::endl;
           }
@@ -471,7 +471,7 @@ namespace octave
   // for SIGINT only.
 
   static void
-  user_abort (const char *sig_name, int sig_number)
+  user_abort (int sig_number)
   {
     if (! octave_initialized)
       exit (1);
@@ -525,7 +525,7 @@ namespace octave
               std::cerr << "Press Control-C again to abort." << std::endl;
 
             if (octave_interrupt_state >= 3)
-              my_friendly_exit (sig_name, sig_number, true);
+              my_friendly_exit (sig_number, true);
           }
       }
   }
@@ -539,7 +539,7 @@ namespace octave
   static void
   sigint_handler (int sig)
   {
-    interrupt_manager::user_abort (octave_strsignal_wrapper (sig), sig);
+    interrupt_manager::user_abort (sig);
   }
 
   static void

@@ -69,8 +69,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include <version.h>
 
-void (*octave_exit) (int) = ::exit;
-
 // TRUE means the quit() call is allowed.
 bool quit_allowed = true;
 

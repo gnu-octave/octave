@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2014-2016 Eduardo Ramos Fernández <eduradical951@gmail.com>
-Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
+Copyright (C) 2014-2017 Eduardo Ramos Fernández <eduradical951@gmail.com>
+Copyright (C) 2013-2017 Kai T. Ohlhus <k.ohlhus@gmail.com>
 
 This file is part of Octave.
 
@@ -26,10 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "oct-locbuf.h"
+#include "oct-norm.h"
 
 #include "defun.h"
 #include "error.h"
-#include "parse.h"
+
+#include "builtin-defun-decls.h"
 
 // Secondary functions for complex and real case used in ichol algorithms.
 Complex ichol_mult_complex (Complex a, Complex b)
@@ -181,37 +183,31 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 
 DEFUN (__ichol0__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{L} =} __ichol0__ (@var{A})
-@deftypefnx {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})
+@deftypefn {} {@var{L} =} __ichol0__ (@var{A}, @var{michol})
 Undocumented internal function.
 @end deftypefn */)
 {
-  std::string michol = "off";
-  if (args.length ())
-    michol = args(1).string_value ();
+  if (args.length () != 2)
+    print_usage ();
+
+  std::string michol = args(1).string_value ();
 
   // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved
   // so its structure does not change during the algorithm.  The same input
   // matrix is used to build the output matrix due to that fact.
-  octave_value_list arg_list;
   if (! args(0).is_complex_type ())
     {
-      SparseMatrix sm = args(0).sparse_matrix_value ();
-      arg_list.append (sm);
-      sm = octave::feval ("tril", arg_list)(0).sparse_matrix_value ();
+      SparseMatrix sm = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
                ichol_checkpivot_real> (sm, michol);
-
       return ovl (sm);
     }
   else
     {
-      SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
-      arg_list.append (sm);
-      sm = octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm =
+        Ftril (args(0))(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
-
       return ovl (sm);
     }
 }
@@ -416,55 +412,32 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
 
 DEFUN (__icholt__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{L} =} __icholt__ (@var{A})
-@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol})
-@deftypefnx {} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})
+@deftypefn {} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})
 Undocumented internal function.
 @end deftypefn */)
 {
-  int nargin = args.length ();
-  // Default values of parameters
-  std::string michol = "off";
-  double droptol = 0;
+  if (args.length () != 3)
+    print_usage ();
 
-  // Don't repeat input validation of arguments done in ichol.m
-  if (nargin >= 2)
-    droptol = args(1).double_value ();
+  double droptol = args(1).double_value ();
+  std::string michol = args(2).string_value ();
 
-  if (nargin == 3)
-    michol = args(2).string_value ();
-
-  octave_value_list arg_list;
   if (! args(0).is_complex_type ())
     {
-      Array <double> cols_norm;
       SparseMatrix L;
-      arg_list.append (args(0).sparse_matrix_value ());
-      SparseMatrix sm_l =
-        octave::feval ("tril", arg_list)(0).sparse_matrix_value ();
-      arg_list(0) = sm_l;
-      arg_list(1) = 1;
-      arg_list(2) = "cols";
-      cols_norm = octave::feval ("norm", arg_list)(0).vector_value ();
-      arg_list.clear ();
+      SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
       ichol_t <SparseMatrix,
                double, ichol_mult_real, ichol_checkpivot_real>
-               (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
+               (sm_l, L, xcolnorms (sm_l, 1).fortran_vec (), droptol, michol);
 
       return ovl (L);
     }
   else
     {
-      Array <Complex> cols_norm;
       SparseComplexMatrix L;
-      arg_list.append (args(0).sparse_complex_matrix_value ());
       SparseComplexMatrix sm_l =
-        octave::feval ("tril", arg_list)(0).sparse_complex_matrix_value ();
-      arg_list(0) = sm_l;
-      arg_list(1) = 1;
-      arg_list(2) = "cols";
-      cols_norm = octave::feval ("norm", arg_list)(0).complex_vector_value ();
-      arg_list.clear ();
+        Ftril (args(0))(0).sparse_complex_matrix_value ();
+      Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>
                (sm_l, L, cols_norm.fortran_vec (),

@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2016 Eduardo Ramos Fernández <eduradical951@gmail.com>
-## Copyright (C) 2013-2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
+## Copyright (C) 2014-2017 Eduardo Ramos Fernández <eduradical951@gmail.com>
+## Copyright (C) 2013-2017 Kai T. Ohlhus <k.ohlhus@gmail.com>
 ##
 ## This file is part of Octave.
 ##
@@ -242,12 +242,12 @@ function [L, U, P] = ilu (A, opts = struct ())
           P = speye (length (A));
         endif
     case "ilutp"
-        if (nargout == 2)
-          [L, U]  = __ilutp__ (A, opts.droptol, opts.thresh,
-                                  opts.milu, opts.udiag);
-        elseif (nargout == 3)
-          [L, U, P]  = __ilutp__ (A, opts.droptol, opts.thresh,
-                                     opts.milu, opts.udiag);
+        if (nargout == 3)
+          [L, U, P] = __ilutp__ (A, opts.droptol, opts.thresh,
+                                    opts.milu, opts.udiag);
+        else
+          [L, U] = __ilutp__ (A, opts.droptol, opts.thresh,
+                                 opts.milu, opts.udiag);
         endif
   endswitch
 
@@ -459,25 +459,30 @@ endfunction
 
 ## Specific tests for ilutp
 
-%!shared a1, a2
-%! a1 = sparse ([0 0 4 3 1; 5 1 2.3 2 4.5; 0 0 0 2 1;0 0 8 0 2.2; 0 0 9 9 1 ]);
-%! a2 = sparse ([3 1 0 0 4; 3 1 0 0 -2;0 0 8 0 0; 0 4 0 4 -4.5; 0 -1 0 0 1]);
+%!shared A
+%! A = sparse ([0 0 4 3 1; 5 1 2.3 2 4.5; 0 0 0 2 1;0 0 8 0 2.2; 0 0 9 9 1 ]);
+%! 
 %!test
 %! opts.udiag = 1;
 %! opts.type = "ilutp";
 %! opts.droptol = 0.2;
-%! [L, U, P] = ilu (a1, opts);
+%! [L, U, P] = ilu (A, opts);
 %! assert (norm (U, "fro"), 17.4577, 1e-4);
 %! assert (norm (L, "fro"), 2.4192, 1e-4);
-%! opts.udiag = 0;
-%! #fail ("ilu (a1, opts)");
 %!
 %!test
+%! opts.type = "ilutp";
+%! opts.udiag = 0;
+%! opts.droptol = 0.2;
+%! fail ("ilu (A, opts)", "ilu: encountered a pivot equal to 0");
+
+%!xtest
+%! A = sparse ([3 1 0 0 4; 3 1 0 0 -2;0 0 8 0 0; 0 4 0 4 -4.5; 0 -1 0 0 1]);
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! opts.milu = "row";
-%! #fail ("ilu (a2, opts)");
+%! [L, U, P] = ilu (A, opts);  % Matlab R2016b passes, no pivoting necessary
 
 ## Tests for input validation
 %!shared A_tiny

@@ -7,13 +7,9 @@
 int
 main (void)
 {
-  string_vector argv (2);
-  argv(0) = "embedded";
-  argv(1) = "-q";
+  octave::interpreter interpreter;
 
-  octave::embedded_application app (2, argv.c_str_vec ());
-
-  int status = app.execute ();
+  int status = interpreter.execute ();
 
   if (status != 0)
     {

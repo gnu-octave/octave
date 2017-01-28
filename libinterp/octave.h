@@ -225,18 +225,32 @@ namespace octave
 
     void interactive (bool arg);
 
-    // Should be an error if instance is 0.
     static application *app (void) { return instance; }
 
-    static std::string program_invocation_name (void) { return instance->m_program_invocation_name; }
+    static std::string program_invocation_name (void)
+    {
+      return instance ? instance->m_program_invocation_name : "";
+    }
 
-    static std::string program_name (void) { return instance->m_program_name; }
+    static std::string program_name (void)
+    {
+      return instance ? instance->m_program_name : "";
+    }
 
-    static string_vector argv (void) { return instance->m_argv; }
+    static string_vector argv (void)
+    {
+      return instance ? instance->m_argv : string_vector ();
+    }
 
-    static bool is_gui_running (void) { return instance->gui_running (); }
+    static bool is_gui_running (void)
+    {
+      return instance ? instance->gui_running () : false;
+    }
 
-    static interpreter *the_interpreter (void) { return instance->m_interpreter; }
+    static interpreter *the_interpreter (void)
+    {
+      return instance ? instance->m_interpreter : 0;
+    }
 
     // Convenience functions.
 
@@ -303,31 +317,6 @@ namespace octave
     cli_application& operator = (const cli_application&) = delete;
 
     ~cli_application (void) = default;
-
-    int execute (void);
-  };
-
-  class OCTINTERP_API embedded_application : public application
-  {
-  public:
-
-    embedded_application (const cmdline_options& opts = cmdline_options ())
-      : application (opts)
-    { }
-
-    embedded_application (int argc, char **argv)
-      : application (argc, argv)
-    { }
-
-    // No copying, at least not yet...
-
-    embedded_application (const embedded_application&) = delete;
-
-    embedded_application& operator = (const embedded_application&) = delete;
-
-    ~embedded_application (void) = default;
-
-    void create_interpreter (void);
 
     int execute (void);
   };

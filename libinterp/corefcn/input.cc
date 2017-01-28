@@ -671,6 +671,8 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
+  // FIXME: should debugging be possible in an embedded interpreter?
+
   octave::application *app = octave::application::app ();
 
   if (! app->interactive ())

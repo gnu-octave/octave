@@ -56,7 +56,7 @@ namespace octave
   {
   public:
 
-    interpreter (application *app_context = 0, bool embedded = false);
+    interpreter (application *app_context = 0);
 
     // No copying, at least not yet...
 
@@ -68,8 +68,39 @@ namespace octave
 
     int execute (void);
 
-    bool interactive (void) const { return m_interactive; }
-    void interactive (bool arg) { m_interactive = arg; }
+    bool interactive (void) const
+    {
+      return m_interactive;
+    }
+
+    void interactive (bool arg)
+    {
+      m_interactive = arg;
+    }
+
+    void read_site_files (bool flag)
+    {
+      m_read_site_files = flag;
+    }
+
+    void read_init_files (bool flag)
+    {
+      m_read_init_files = flag;
+    }
+
+    void verbose (bool flag)
+    {
+      m_verbose = flag;
+    }
+
+    void inhibit_startup_message (bool flag)
+    {
+      m_inhibit_startup_message = flag;
+    }
+
+    void initialize_load_path (bool set_initial_path = true);
+
+    void initialize_history (bool read_history_file = false);
 
     static void recover_from_exception (void);
 
@@ -99,10 +130,20 @@ namespace octave
 
     tree_evaluator *m_evaluator;
 
-    bool m_embedded;
-
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;
+
+    bool m_read_site_files;
+
+    bool m_read_init_files;
+
+    bool m_verbose;
+
+    bool m_inhibit_startup_message;
+
+    bool m_load_path_initialized;
+
+    bool m_history_initialized;
   };
 }
 

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "cmd-edit.h"
+#include "cmd-hist.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
@@ -354,37 +355,23 @@ execute_pkg_add (const std::string& dir)
     }
 }
 
-static void
-initialize_load_path (bool set_initial_path)
-{
-  // Temporarily set the execute_pkg_add function to one that catches
-  // exceptions.  This is better than wrapping load_path::initialize in
-  // a try-catch block because it will not stop executing PKG_ADD files
-  // at the first exception.  It's also better than changing the default
-  // execute_pkg_add function to use safe_source file because that will
-  // normally be evaluated from the normal intepreter loop where
-  // exceptions are already handled.
-
-  octave::unwind_protect frame;
-
-  frame.add_fcn (load_path::set_add_hook, load_path::get_add_hook ());
-
-  load_path::set_add_hook (execute_pkg_add);
-
-  load_path::initialize (set_initial_path);
-}
-
 namespace octave
 {
   tree_evaluator *current_evaluator = 0;
 
-  interpreter::interpreter (application *app_context, bool embedded)
+  interpreter::interpreter (application *app_context)
     : m_app_context (app_context), m_evaluator (new tree_evaluator (this)),
-      m_embedded (embedded), m_interactive (false)
+      m_interactive (false), m_read_site_files (true),
+      m_read_init_files (m_app_context != 0), m_verbose (false),
+      m_inhibit_startup_message (false), m_load_path_initialized (false)
   {
     current_evaluator = m_evaluator;
 
-    const cmdline_options& options = m_app_context->options ();
+    // This should probably happen early.
+    sysdep_init ();
+
+    // Need to have global Vfoo variables defined early.
+    install_defaults ();
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_NUMERIC, "C");
@@ -395,8 +382,6 @@ namespace octave
     // Initialize the default floating point unit control state.
     octave_set_default_fpucw ();
 
-    string_vector all_args = options.all_args ();
-
     octave::thread::init ();
 
     set_default_prompts ();
@@ -406,10 +391,9 @@ namespace octave
 
     initialize_default_warning_state ();
 
-    if (options.traditional ())
-      maximum_braindamage ();
-
     octave_ieee_init ();
+
+    octave_prepare_hdf5 ();
 
     // The idea here is to force xerbla to be referenced so that we will link to
     // our own version instead of the one provided by the BLAS library.  But
@@ -423,7 +407,7 @@ namespace octave
 
     initialize_error_handlers ();
 
-    if (! m_embedded)
+    if (app_context)
       octave::install_signal_handlers ();
     else
       quit_allowed = false;
@@ -438,69 +422,82 @@ namespace octave
 
     install_classdef ();
 
-    std::list<std::string> command_line_path = options.command_line_path ();
+    bool line_editing = false;
+    bool traditional = false;
 
-    for (const auto& pth : command_line_path)
-      load_path::set_command_line_path (pth);
+    if (app_context)
+      {
+        // Embedded interpeters don't execute command line options or
+        const cmdline_options& options = m_app_context->options ();
 
-    std::string exec_path = options.exec_path ();
-    if (! exec_path.empty ())
-      set_exec_path (exec_path);
+        // Make all command-line arguments available to startup files,
+        // including PKG_ADD files.
 
-    std::string image_path = options.image_path ();
-    if (! image_path.empty ())
-      set_image_path (image_path);
+        app_context->intern_argv (options.all_args ());
 
-    if (options.no_window_system ())
-      display_info::no_window_system ();
+        bool is_octave_program = m_app_context->is_octave_program ();
 
-    // Is input coming from a terminal?  If so, we are probably interactive.
+        std::list<std::string> command_line_path = options.command_line_path ();
 
-    // If stdin is not a tty, then we are reading commands from a pipe or
-    // a redirected file.
-    bool stdin_is_tty = octave_isatty_wrapper (fileno (stdin));
+        for (const auto& pth : command_line_path)
+          load_path::set_command_line_path (pth);
 
-    m_interactive = (! m_embedded
-                     && ! m_app_context->is_octave_program ()
-                     && stdin_is_tty
-                     && octave_isatty_wrapper (fileno (stdout)));
+        std::string exec_path = options.exec_path ();
+        if (! exec_path.empty ())
+          set_exec_path (exec_path);
 
-    // Check if the user forced an interactive session.
-    if (options.forced_interactive ())
-      m_interactive = true;
+        std::string image_path = options.image_path ();
+        if (! image_path.empty ())
+          set_image_path (image_path);
 
-    bool line_editing = options.line_editing ();
-    if ((! m_interactive || options.forced_interactive ())
-        && ! options.forced_line_editing ())
-      line_editing = false;
+        if (options.no_window_system ())
+          display_info::no_window_system ();
+
+        // Is input coming from a terminal?  If so, we are probably
+        // interactive.
+
+        // If stdin is not a tty, then we are reading commands from a
+        // pipe or a redirected file.
+        bool stdin_is_tty = octave_isatty_wrapper (fileno (stdin));
+
+        m_interactive = (! is_octave_program && stdin_is_tty
+                         && octave_isatty_wrapper (fileno (stdout)));
+
+        // Check if the user forced an interactive session.
+        if (options.forced_interactive ())
+          m_interactive = true;
+
+        line_editing = options.line_editing ();
+        if ((! m_interactive || options.forced_interactive ())
+            && ! options.forced_line_editing ())
+          line_editing = false;
+
+        traditional = options.traditional ();
+      }
 
     // Force default line editor if we don't want readline editing.
-    if (! line_editing)
+    if (line_editing)
+      initialize_command_input ();
+    else
       octave::command_editor::force_default_editor ();
 
     // These can come after command line args since none of them set any
     // defaults that might be changed by command line options.
 
-    if (line_editing)
-      initialize_command_input ();
-
-    octave_interpreter_ready = true;
-
     initialize_version_info ();
 
-    // Make all command-line arguments available to startup files,
-    // including PKG_ADD files.
+    // This should be done before initializing the load path because
+    // some PKG_ADD files might need --traditional behavior.
 
-    app_context->intern_argv (options.all_args ());
+    if (traditional)
+      maximum_braindamage ();
 
-    initialize_load_path (options.set_initial_path ());
-
-    initialize_history (options.read_history_file ());
+    octave_interpreter_ready = true;
   }
 
   interpreter::~interpreter (void)
   {
-    if (m_embedded)
+    if (! m_app_context)
       cleanup ();
 
     current_evaluator = 0;
@@ -521,17 +518,82 @@ namespace octave
         exit_status = ex.exit_status ();
       }
 
-    if (! m_embedded)
+    if (m_app_context)
       cleanup ();
 
     return exit_status;
+  }
+
+  // Set the initial path to the system default unless command-line
+  // option says to leave it empty.
+
+  void interpreter::initialize_load_path (bool set_initial_path)
+  {
+    if (! m_load_path_initialized)
+      {
+        // Allow command-line option to override.
+
+        if (m_app_context)
+          {
+            const cmdline_options& options = m_app_context->options ();
+
+            set_initial_path = options.set_initial_path ();
+          }
+
+        // Temporarily set the execute_pkg_add function to one that
+        // catches exceptions.  This is better than wrapping
+        // load_path::initialize in a try-catch block because it will
+        // not stop executing PKG_ADD files at the first exception.
+        // It's also better than changing the default execute_pkg_add
+        // function to use safe_source file because that will normally
+        // be evaluated from the normal intepreter loop where exceptions
+        // are already handled.
+
+        octave::unwind_protect frame;
+
+        frame.add_fcn (load_path::set_add_hook, load_path::get_add_hook ());
+
+        load_path::set_add_hook (execute_pkg_add);
+
+        load_path::initialize (set_initial_path);
+
+        m_load_path_initialized = true;
+      }
+  }
+
+  void interpreter::initialize_history (bool read_history_file)
+  {
+    if (! m_history_initialized)
+      {
+        // Allow command-line option to override.
+
+        if (m_app_context)
+          {
+            const cmdline_options& options = m_app_context->options ();
+
+            read_history_file = options.read_history_file ();
+          }
+
+        ::initialize_history (read_history_file);
+
+        if (! m_app_context)
+          octave::command_history::ignore_entries ();
+
+        m_history_initialized = true;
+      }
   }
 
   int interpreter::execute_internal (void)
   {
     display_startup_message ();
 
-    octave_prepare_hdf5 ();
+    // Initializing the load path may execute PKG_ADD files.  It also
+    // allows the path to be initialized between the calls to create and
+    // executeexecute the interpreter.
+
+    initialize_load_path ();
+
+    initialize_history ();
 
     // Don't fail, but return non-zero if there is an error in a startup
     // file.
@@ -543,56 +605,67 @@ namespace octave
     if (status)
       exit_status = status;
 
-    const cmdline_options& options = m_app_context->options ();
-
-    if (m_app_context->have_eval_option_code ())
+    if (m_app_context)
       {
-        status = execute_eval_option_code ();
+        const cmdline_options& options = m_app_context->options ();
 
-        if (status )
-          exit_status = status;
+        if (m_app_context->have_eval_option_code ())
+          {
+            status = execute_eval_option_code ();
 
-        if (! options.persist ())
-          return exit_status;
-      }
+            if (status )
+              exit_status = status;
 
-    // If there is an extra argument, see if it names a file to read.
-    // Additional arguments are taken as command line options for the script.
+            if (! options.persist ())
+              return exit_status;
+          }
 
-    if (m_app_context->have_script_file ())
-      {
-        status = execute_command_line_file ();
+        // If there is an extra argument, see if it names a file to
+        // read.  Additional arguments are taken as command line options
+        // for the script.
 
-        if (status)
-          exit_status = status;
+        if (m_app_context->have_script_file ())
+          {
+            status = execute_command_line_file ();
 
-        if (! options.persist ())
-          return exit_status;
+            if (status)
+              exit_status = status;
+
+            if (! options.persist ())
+              return exit_status;
+          }
+
+        // Force input to be echoed if not really interactive,
+        // but the user has forced interactive behavior.
+
+        if (options.forced_interactive ())
+          {
+            octave::command_editor::blink_matching_paren (false);
+
+            // FIXME: is this the right thing to do?
+            Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
+          }
       }
 
     // Avoid counting commands executed from startup or script files.
 
     octave::command_editor::reset_current_command_number (1);
 
-    // Force input to be echoed if not really interactive,
-    // but the user has forced interactive behavior.
-
-    if (options.forced_interactive ())
-      {
-        octave::command_editor::blink_matching_paren (false);
-
-        // FIXME: is this the right thing to do?
-        Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
-      }
-
     return main_loop ();
   }
 
   void interpreter::display_startup_message (void) const
   {
-    const cmdline_options& options = m_app_context->options ();
+    bool inhibit_startup_message = false;
 
-    if (m_interactive && ! options.inhibit_startup_message ())
+    if (m_app_context)
+      {
+        const cmdline_options& options = m_app_context->options ();
+
+        inhibit_startup_message = options.inhibit_startup_message ();
+      }
+    
+    if (m_interactive && ! inhibit_startup_message)
       std::cout << octave_startup_message () << "\n" << std::endl;
   }
 
@@ -602,14 +675,22 @@ namespace octave
 
   int interpreter::execute_startup_files (void) const
   {
-    const cmdline_options& options = m_app_context->options ();
+    bool read_site_files = m_read_site_files;
+    bool read_init_files = m_read_init_files;
+    bool verbose = m_verbose;
+    bool inhibit_startup_message = m_inhibit_startup_message;
 
-    bool read_site_files = options.read_site_files ();
-    bool read_init_files = options.read_init_files ();
-    bool verbose_flag = options.verbose_flag ();
-    bool inhibit_startup_message = options.inhibit_startup_message ();
+    if (m_app_context)
+      {
+        const cmdline_options& options = m_app_context->options ();
 
-    bool verbose = (verbose_flag && ! inhibit_startup_message);
+        read_site_files = options.read_site_files ();
+        read_init_files = options.read_init_files ();
+        verbose = options.verbose_flag ();
+        inhibit_startup_message = options.inhibit_startup_message ();
+      }
+
+    verbose = (verbose && ! inhibit_startup_message);
 
     bool require_file = false;
 
@@ -692,8 +773,7 @@ namespace octave
           }
       }
 
-    if (m_interactive && ! options.inhibit_startup_message ()
-        && options.verbose_flag ())
+    if (m_interactive && verbose)
       std::cout << std::endl;
 
     return exit_status;
@@ -801,7 +881,7 @@ namespace octave
 
   int interpreter::main_loop (void)
   {
-    if (m_embedded)
+    if (! m_app_context)
       return 0;
 
     octave_save_signal_mask ();
@@ -867,7 +947,10 @@ namespace octave
                       octave::command_editor::increment_current_command_number ();
                   }
                 else if (parser.lexer.end_of_input)
-                  break;
+                  {
+                    retval = EOF;
+                    break;
+                  }
               }
           }
         catch (const octave::interrupt_exception&)
@@ -921,7 +1004,12 @@ namespace octave
     while (retval == 0);
 
     if (retval == EOF)
-      retval = 0;
+      {
+        if (octave::application::interactive ())
+          octave_stdout << "\n";
+
+        retval = 0;
+      }
 
     return retval;
   }
@@ -1017,16 +1105,6 @@ namespace octave
 
         OCTAVE_SAFE_CALL (octave::flush_stdout, ());
 
-        if (octave::application::interactive ())
-          {
-            octave_stdout << "\n";
-
-            // Yes, we want this to be separate from the call to
-            // octave::flush_stdout above.
-
-            OCTAVE_SAFE_CALL (octave::flush_stdout, ());
-          }
-
         // Don't call singleton_cleanup_list::cleanup until we have the
         // problems with registering/unregistering types worked out.  For
         // example, uncomment the following line, then use the make_int
@@ -1043,7 +1121,7 @@ namespace octave
       }
   }
 
-  void recover_from_exception (void)
+  void interpreter::recover_from_exception (void)
   {
     octave::can_interrupt = true;
     octave_interrupt_immediately = 0;
@@ -1056,7 +1134,7 @@ namespace octave
 
   // Functions to call when the interpreter exits.
 
-  std::list<std::string> atexit_functions;
+  std::list<std::string> interpreter::atexit_functions;
 
   void interpreter::add_atexit_function (const std::string& fname)
   {

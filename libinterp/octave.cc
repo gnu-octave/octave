@@ -346,7 +346,7 @@ namespace octave
 
   void application::interactive (bool arg)
   {
-    interpreter *interp = instance->m_interpreter;
+    interpreter *interp = instance ? instance->m_interpreter : 0;
 
     if (interp)
       interp->interactive (arg);
@@ -354,12 +354,12 @@ namespace octave
 
   bool application::forced_interactive (void)
   {
-    return instance->m_options.forced_interactive ();
+    return instance ? instance->m_options.forced_interactive () : false;
   }
 
   bool application::interactive (void)
   {
-    interpreter *interp = instance->m_interpreter;
+    interpreter *interp = instance ? instance->m_interpreter : 0;
 
     return interp ? interp->interactive () : false;
   }
@@ -411,28 +411,9 @@ namespace octave
     m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()
                            && ! m_options.traditional ());
-
-    // This should probably happen early.
-    sysdep_init ();
-
-    // Need to have global Vfoo variables defined early.
-    install_defaults ();
   }
 
   int cli_application::execute (void)
-  {
-    create_interpreter ();
-
-    return execute_interpreter ();
-  }
-
-  void embedded_application::create_interpreter (void)
-  {
-    if (! m_interpreter)
-      m_interpreter = new interpreter (this, true);
-  }
-
-  int embedded_application::execute (void)
   {
     create_interpreter ();
 
@@ -445,12 +426,13 @@ namespace octave
 int
 octave_main (int argc, char **argv, int embedded)
 {
-  octave::sys::env::set_program_name (argv[0]);
-
   if (embedded)
     {
-      static octave::embedded_application app (argc, argv);
-      return app.execute ();
+      if (argc > 0)
+        warning ("ignoring command line options for embedded octave");
+
+      static octave::interpreter embedded_interpreter;
+      return embedded_interpreter.execute ();
     }
   else
     {

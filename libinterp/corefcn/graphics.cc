@@ -10304,6 +10304,8 @@ being @qcode{"portrait"}.
       else if (nargin == 2 && args(1).is_string ())
         {
           std::string property = args(1).string_value ();
+          std::transform (property.begin (), property.end (),
+                          property.begin (), tolower);
 
           octave_map pmap = go.values_as_struct ();
 

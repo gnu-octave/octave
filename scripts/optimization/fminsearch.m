@@ -46,7 +46,7 @@
 ##
 ## The third return value @var{exitflag} is
 ##
-## @table
+## @table @asis
 ## @item 1
 ## if the algorithm converged
 ## (size of the simplex is smaller than @code{@var{options}.TolX} @strong{AND}

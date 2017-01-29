@@ -32,9 +32,8 @@
 ##
 ## Options for the search are provided in the parameter @var{options} using the
 ## function @code{optimset}.  Currently, @code{fminsearch} accepts the options:
-## options: @qcode{"TolX"}, @qcode{"TolFun"}, @qcode{"MaxFunEvals"},
-## @qcode{"MaxIter"}, @qcode{"Display"}, @qcode{"FunValCheck"} and
-## @qcode{"OutputFcn"}.
+## @qcode{"TolX"}, @qcode{"TolFun"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
+## @qcode{"Display"}, @qcode{"FunValCheck"}, and @qcode{"OutputFcn"}.
 ## For a description of these options, see @code{optimset}.
 ##
 ## Additional inputs for the function @var{fun} can be passed as the fourth

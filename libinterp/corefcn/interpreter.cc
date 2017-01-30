@@ -359,11 +359,16 @@ namespace octave
 {
   tree_evaluator *current_evaluator = 0;
 
+  // Create an interpreter object and perform initialization up to the
+  // point of setting reading command history and setting the load
+  // path.
+
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context), m_evaluator (new tree_evaluator (this)),
       m_interactive (false), m_read_site_files (true),
       m_read_init_files (m_app_context != 0), m_verbose (false),
-      m_inhibit_startup_message (false), m_load_path_initialized (false)
+      m_inhibit_startup_message (false), m_load_path_initialized (false),
+      m_history_initialized (false), m_initialized (false)
   {
     current_evaluator = m_evaluator;
 
@@ -407,7 +412,7 @@ namespace octave
 
     initialize_error_handlers ();
 
-    if (app_context)
+    if (m_app_context)
       octave::install_signal_handlers ();
     else
       quit_allowed = false;
@@ -425,7 +430,7 @@ namespace octave
     bool line_editing = false;
     bool traditional = false;
 
-    if (app_context)
+    if (m_app_context)
       {
         // Embedded interpeters don't execute command line options or
         const cmdline_options& options = m_app_context->options ();
@@ -433,7 +438,7 @@ namespace octave
         // Make all command-line arguments available to startup files,
         // including PKG_ADD files.
 
-        app_context->intern_argv (options.all_args ());
+        m_app_context->intern_argv (options.all_args ());
 
         bool is_octave_program = m_app_context->is_octave_program ();
 
@@ -497,31 +502,35 @@ namespace octave
 
   interpreter::~interpreter (void)
   {
-    if (! m_app_context)
-      cleanup ();
+    cleanup ();
 
     current_evaluator = 0;
 
     delete m_evaluator;
   }
 
-  int interpreter::execute (void)
+  // Read the history file unless a command-line option inhibits that.
+
+  void interpreter::initialize_history (bool read_history_file)
   {
-    int exit_status = 0;
-
-    try
+    if (! m_history_initialized)
       {
-        exit_status = execute_internal ();
-      }
-    catch (const octave::exit_exception& ex)
-      {
-        exit_status = ex.exit_status ();
-      }
+        // Allow command-line option to override.
 
-    if (m_app_context)
-      cleanup ();
+        if (m_app_context)
+          {
+            const cmdline_options& options = m_app_context->options ();
 
-    return exit_status;
+            read_history_file = options.read_history_file ();
+          }
+
+        ::initialize_history (read_history_file);
+
+        if (! m_app_context)
+          octave::command_history::ignore_entries ();
+
+        m_history_initialized = true;
+      }
   }
 
   // Set the initial path to the system default unless command-line
@@ -561,49 +570,34 @@ namespace octave
       }
   }
 
-  void interpreter::initialize_history (bool read_history_file)
+  // This may be called separately from execute
+
+  int interpreter::initialize (void)
   {
-    if (! m_history_initialized)
-      {
-        // Allow command-line option to override.
+    if (m_initialized)
+      return 0;
 
-        if (m_app_context)
-          {
-            const cmdline_options& options = m_app_context->options ();
-
-            read_history_file = options.read_history_file ();
-          }
-
-        ::initialize_history (read_history_file);
-
-        if (! m_app_context)
-          octave::command_history::ignore_entries ();
-
-        m_history_initialized = true;
-      }
-  }
-
-  int interpreter::execute_internal (void)
-  {
     display_startup_message ();
 
-    // Initializing the load path may execute PKG_ADD files.  It also
-    // allows the path to be initialized between the calls to create and
-    // executeexecute the interpreter.
-
-    initialize_load_path ();
+    // Wait to read the history file until the interpreter reads input
+    // files and begins evaluating commands.
 
     initialize_history ();
 
-    // Don't fail, but return non-zero if there is an error in a startup
-    // file.
+    // Initializing the load path may execute PKG_ADD files, so can't be
+    // done until the interpreter is ready to execute commands.
+
+    // Deferring it to the execute step also allows the path to be
+    // initialized between creating and execute the interpreter, for
+    // example, to set a custom path for an embedded interpreter.
+
+    initialize_load_path ();
+
+    // We ignore errors in startup files.
+
+    execute_startup_files ();
 
     int exit_status = 0;
-
-    int status = execute_startup_files ();
-
-    if (status)
-      exit_status = status;
 
     if (m_app_context)
       {
@@ -611,7 +605,7 @@ namespace octave
 
         if (m_app_context->have_eval_option_code ())
           {
-            status = execute_eval_option_code ();
+            int status = execute_eval_option_code ();
 
             if (status )
               exit_status = status;
@@ -626,7 +620,7 @@ namespace octave
 
         if (m_app_context->have_script_file ())
           {
-            status = execute_command_line_file ();
+            int status = execute_command_line_file ();
 
             if (status)
               exit_status = status;
@@ -651,7 +645,26 @@ namespace octave
 
     octave::command_editor::reset_current_command_number (1);
 
-    return main_loop ();
+    m_initialized = true;
+
+    return exit_status;
+  }
+
+  int interpreter::execute (void)
+  {
+    try
+      {
+        int status = initialize ();
+
+        if (! m_initialized)
+          return status;
+
+        return main_loop ();
+      }
+    catch (const octave::exit_exception& ex)
+      {
+        return ex.exit_status ();
+      }
   }
 
   void interpreter::display_startup_message (void) const
@@ -1050,8 +1063,6 @@ namespace octave
 
   void interpreter::cleanup (void)
   {
-    static bool deja_vu = false;
-
     // If we are attached to a GUI, process pending events and
     // disconnect the link.
 
@@ -1073,52 +1084,47 @@ namespace octave
         OCTAVE_SAFE_CALL (octave::flush_stdout, ());
       }
 
-    if (! deja_vu)
-      {
-        deja_vu = true;
+    // Do this explicitly so that destructors for mex file objects
+    // are called, so that functions registered with mexAtExit are
+    // called.
+    OCTAVE_SAFE_CALL (clear_mex_functions, ());
 
-        // Do this explicitly so that destructors for mex file objects
-        // are called, so that functions registered with mexAtExit are
-        // called.
-        OCTAVE_SAFE_CALL (clear_mex_functions, ());
+    OCTAVE_SAFE_CALL (octave::command_editor::restore_terminal_state, ());
 
-        OCTAVE_SAFE_CALL (octave::command_editor::restore_terminal_state, ());
+    OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
 
-        OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
+    if (! octave::command_history::ignoring_entries ())
+      OCTAVE_SAFE_CALL (octave::command_history::clean_up_and_save, ());
 
-        if (! octave::command_history::ignoring_entries ())
-          OCTAVE_SAFE_CALL (octave::command_history::clean_up_and_save, ());
+    OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 
-        OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
+    OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
 
-        OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
+    OCTAVE_SAFE_CALL (close_files, ());
 
-        OCTAVE_SAFE_CALL (close_files, ());
+    OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
 
-        OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
+    OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
-        OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
+    OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
-        OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+    OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
 
-        OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
+    OCTAVE_SAFE_CALL (octave::flush_stdout, ());
 
-        OCTAVE_SAFE_CALL (octave::flush_stdout, ());
+    // Don't call singleton_cleanup_list::cleanup until we have the
+    // problems with registering/unregistering types worked out.  For
+    // example, uncomment the following line, then use the make_int
+    // function from the examples directory to create an integer
+    // object and then exit Octave.  Octave should crash with a
+    // segfault when cleaning up the typinfo singleton.  We need some
+    // way to force new octave_value_X types that are created in
+    // .oct files to be unregistered when the .oct file shared library
+    // is unloaded.
+    //
+    // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
-        // Don't call singleton_cleanup_list::cleanup until we have the
-        // problems with registering/unregistering types worked out.  For
-        // example, uncomment the following line, then use the make_int
-        // function from the examples directory to create an integer
-        // object and then exit Octave.  Octave should crash with a
-        // segfault when cleaning up the typinfo singleton.  We need some
-        // way to force new octave_value_X types that are created in
-        // .oct files to be unregistered when the .oct file shared library
-        // is unloaded.
-        //
-        // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-
-        OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
-      }
+    OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
   }
 
   void interpreter::recover_from_exception (void)

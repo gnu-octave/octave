@@ -208,9 +208,15 @@ namespace octave
 
     bool is_octave_program (void) const { return m_is_octave_program; }
 
+    bool interpreter_initialized (void);
+
     virtual void create_interpreter (void);
 
+    virtual int initialize_interpreter (void);
+
     virtual int execute_interpreter (void);
+
+    virtual void delete_interpreter (void);
 
     virtual int execute (void) = 0;
 

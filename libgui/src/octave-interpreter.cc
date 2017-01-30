@@ -46,9 +46,37 @@ octave_interpreter::execute (void)
 
   m_app_context->create_interpreter ();
 
-  emit octave_ready_signal ();
+  int exit_status = 0;
 
-  int exit_status = m_app_context->execute_interpreter ();
+  try
+    {
+      // Final initialization including executing startup files.  If
+      // initialization fails, return the last available status from
+      // that process.
+
+      exit_status = m_app_context->initialize_interpreter ();
+
+      if (m_app_context->interpreter_initialized ())
+        {
+          // The interpreter should be completely ready at this point so let
+          // the GUI know.
+
+          emit octave_ready_signal ();
+
+          // Start executing commands in the command window.
+
+          exit_status = m_app_context->execute_interpreter ();
+        }
+    }
+  catch (const octave::exit_exception& ex)
+    {
+      exit_status = ex.exit_status ();
+    }
+
+  // Whether or not initialization succeeds we need to clean up the
+  // interpreter once we are done with it.
+
+  m_app_context->delete_interpreter ();
 
   qApp->exit (exit_status);
 }

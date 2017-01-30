@@ -7,18 +7,47 @@
 int
 main (void)
 {
+  // Create interpreter.
+
   octave::interpreter interpreter;
-
-  int status = interpreter.execute ();
-
-  if (status != 0)
-    {
-      std::cerr << "creating embedded Octave interpreter failed!" << std::endl;
-      return status;
-    }
 
   try
     {
+      // Inhibit reading history file by calling
+      //
+      //   interpreter.initialize_history (false);
+
+      // Set custom load path here if you wish by calling
+      //
+      //   interpreter.initialize_load_path (false);
+
+      // Perform final initialization of interpreter, including
+      // executing commands from startup files by calling
+      //
+      //   int status interpreter.initialize ();
+      //
+      //   if (! interpreter.initialized ())
+      //     {
+      //       std::cerr << "Octave interpreter initialization failed!"
+      //                 << std::endl;
+      //       exit (status);
+      //     }
+      //
+      // You may skip this step if you don't need to do do anything
+      // between reading the startup files and telling the interpreter
+      // that you are ready to execute commands.
+
+      // Tell the interpreter that we're ready to execute commands:
+
+      int status = interpreter.execute ();
+
+      if (status != 0)
+        {
+          std::cerr << "creating embedded Octave interpreter failed!"
+                    << std::endl;
+          return status;
+        }
+
       octave_idx_type n = 2;
       octave_value_list in;
 
@@ -39,7 +68,7 @@ main (void)
     }
   catch (const octave::exit_exception& ex)
     {
-      std::cerr << "Octave evaluator exited with status = "
+      std::cerr << "Octave interpreter exited with status = "
                 << ex.exit_status () << std::endl;
     }
   catch (const octave::execution_exception&)

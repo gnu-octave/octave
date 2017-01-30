@@ -366,9 +366,16 @@ namespace octave
 
   application::~application (void)
   {
+    // Delete interpreter if it still exists.
+
     delete m_interpreter;
 
     instance = 0;
+  }
+
+  bool application::interpreter_initialized (void)
+  {
+    return m_interpreter ? m_interpreter->initialized () : false;
   }
 
   void application::create_interpreter (void)
@@ -377,9 +384,21 @@ namespace octave
       m_interpreter = new interpreter (this);
   }
 
+  int application::initialize_interpreter (void)
+  {
+    return m_interpreter ? m_interpreter->initialize () : -1;
+  }
+
   int application::execute_interpreter (void)
   {
     return m_interpreter ? m_interpreter->execute () : -1;
+  }
+
+  void application::delete_interpreter (void)
+  {
+    delete m_interpreter;
+
+    m_interpreter = 0;
   }
 
   void application::init (void)
@@ -417,7 +436,11 @@ namespace octave
   {
     create_interpreter ();
 
-    return execute_interpreter ();
+    int status = execute_interpreter ();
+
+    delete_interpreter ();
+
+    return status;
   }
 }
 

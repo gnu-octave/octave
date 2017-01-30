@@ -56,6 +56,9 @@ namespace octave
   {
   public:
 
+    // Create an interpreter object and perform basic initialization
+    // up to the point of reading history and setting the load path.
+
     interpreter (application *app_context = 0);
 
     // No copying, at least not yet...
@@ -64,7 +67,31 @@ namespace octave
 
     interpreter& operator = (const interpreter&) = delete;
 
+    // Clean up the interpreter object.
+
     ~interpreter (void);
+
+    // If creating an embedded interpreter, you may inhibit reading
+    // the command history file by calling initialize_history with
+    // read_history_file = false prior to calling initialize.
+
+    void initialize_history (bool read_history_file = false);
+
+    // If creating an embedded interpreter, you may inhibit setting
+    // the default compiled-in path by calling intialize_load_path
+    // with set_initial_path = false prior calling initialize.  After
+    // that, you can add directories to the load path to set up a
+    // custom path.
+
+    void initialize_load_path (bool set_initial_path = true);
+
+    // Load command line history, set the load path and execute
+    // startup files.  May throw an exit_exception.
+
+    int initialize (void);
+
+    // Initialize the interpreter and execute --eval option code,
+    // script files, and/or interactive commands.
 
     int execute (void);
 
@@ -98,9 +125,10 @@ namespace octave
       m_inhibit_startup_message = flag;
     }
 
-    void initialize_load_path (bool set_initial_path = true);
-
-    void initialize_history (bool read_history_file = false);
+    bool initialized (void) const
+    {
+      return m_initialized;
+    }
 
     static void recover_from_exception (void);
 
@@ -111,8 +139,6 @@ namespace octave
   private:
 
     static std::list<std::string> atexit_functions;
-
-    int execute_internal (void);
 
     void display_startup_message (void) const;
 
@@ -144,6 +170,8 @@ namespace octave
     bool m_load_path_initialized;
 
     bool m_history_initialized;
+
+    bool m_initialized;
   };
 }
 

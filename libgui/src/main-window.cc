@@ -77,12 +77,71 @@ create_default_editor (QWidget *p)
 #endif
 }
 
+octave_interpreter::octave_interpreter (octave::application *app_context)
+  : QObject (), thread_manager (), m_app_context (app_context)
+{ }
+
+void
+octave_interpreter::execute (void)
+{
+  thread_manager.register_current_thread ();
+
+  octave_thread_manager::unblock_interrupt_signal ();
+
+  // The application context owns the interpreter.
+
+  m_app_context->create_interpreter ();
+
+  int exit_status = 0;
+
+  try
+    {
+      // Final initialization including executing startup files.  If
+      // initialization fails, return the last available status from
+      // that process.
+
+      exit_status = m_app_context->initialize_interpreter ();
+
+      if (m_app_context->interpreter_initialized ())
+        {
+          // The interpreter should be completely ready at this point so let
+          // the GUI know.
+
+          emit octave_ready_signal ();
+
+          // Start executing commands in the command window.
+
+          exit_status = m_app_context->execute_interpreter ();
+        }
+    }
+  catch (const octave::exit_exception& ex)
+    {
+      exit_status = ex.exit_status ();
+    }
+
+  // Whether or not initialization succeeds we need to clean up the
+  // interpreter once we are done with it.
+
+  m_app_context->delete_interpreter ();
+
+  qApp->exit (exit_status);
+}
+
+void
+octave_interpreter::interrupt (void)
+{
+  thread_manager.interrupt ();
+}
+
+
 main_window::main_window (QWidget *p, octave::gui_application *app_context)
-  : QMainWindow (p), m_app_context (app_context), _workspace_model (0),
-    status_bar (0), command_window (0), history_window (0),
-    file_browser_window (0), doc_browser_window (0), editor_window (0),
-    workspace_window (0), _settings_dlg (0), find_files_dlg (0),
-    release_notes_window (0), community_news_window (0), _octave_qt_link (0),
+  : QMainWindow (p), m_app_context (app_context),
+    m_interpreter (new octave_interpreter (app_context)),
+    m_main_thread (new QThread ()), _workspace_model (0), status_bar (0),
+    command_window (0), history_window (0), file_browser_window (0),
+    doc_browser_window (0), editor_window (0), workspace_window (0),
+    _settings_dlg (0), find_files_dlg (0), release_notes_window (0),
+    community_news_window (0), _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
     _prevent_readline_conflicts (true),
     _suppress_dbg_location (true),
@@ -127,6 +186,13 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
 
   // We have to set up all our windows, before we finally launch octave.
   construct ();
+
+  connect (m_interpreter, SIGNAL (octave_ready_signal ()),
+           this, SLOT (handle_octave_ready ()));
+
+  m_interpreter->moveToThread (m_main_thread);
+
+  m_main_thread->start ();
 }
 
 main_window::~main_window (void)
@@ -142,6 +208,8 @@ main_window::~main_window (void)
   delete history_window;
   delete status_bar;
   delete _workspace_model;
+  delete m_interpreter;
+  delete m_main_thread;
   if (find_files_dlg)
     {
       delete find_files_dlg;
@@ -1348,8 +1416,18 @@ main_window::construct (void)
       setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
       workspace_window->setModel (_workspace_model);
+
       connect (_workspace_model, SIGNAL (model_changed (void)),
                workspace_window, SLOT (handle_model_changed (void)));
+
+      connect (_workspace_model,
+               SIGNAL (rename_variable (const QString&, const QString&)),
+               this,
+               SLOT (handle_rename_variable_request (const QString&,
+                                                     const QString&)));
+
+      connect (command_window, SIGNAL (interrupt_signal (void)),
+               this, SLOT (interrupt_interpreter (void)));
 
       construct_menu_bar ();
 
@@ -1597,26 +1675,11 @@ main_window::construct_octave_qt_link (void)
       connect (_octave_qt_link,
                SIGNAL (show_doc_signal (const QString &)),
                this, SLOT (handle_show_doc (const QString &)));
-
-      connect (_workspace_model,
-               SIGNAL (rename_variable (const QString&, const QString&)),
-               this,
-               SLOT (handle_rename_variable_request (const QString&,
-                                                     const QString&)));
-
-      connect (command_window, SIGNAL (interrupt_signal (void)),
-               _octave_qt_link, SLOT (terminal_interrupt (void)));
     }
 
   // Defer initializing and executing the interpreter until after the main
   // window and QApplication are running to prevent race conditions
-  QTimer::singleShot (0, this, SLOT (execute_octave_interpreter ()));
-}
-
-void
-main_window::execute_octave_interpreter (void)
-{
-  _octave_qt_link->execute_interpreter ();
+  QTimer::singleShot (0, m_interpreter, SLOT (execute ()));
 }
 
 void
@@ -2378,4 +2441,10 @@ void
 main_window::clear_clipboard ()
 {
   _clipboard->clear (QClipboard::Clipboard);
+}
+
+void
+main_window::interrupt_interpreter (void)
+{
+  m_interpreter->interrupt ();
 }

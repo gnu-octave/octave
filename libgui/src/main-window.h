@@ -56,10 +56,42 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
+#include "thread-manager.h"
 #include "workspace-model.h"
 #include "workspace-view.h"
 
 class settings_dialog;
+
+class octave_interpreter : public QObject
+{
+  Q_OBJECT
+
+public:
+
+  // An object to manage the Octave interpreter.
+
+  octave_interpreter (octave::application *app_context);
+
+  ~octave_interpreter (void) = default;
+
+  void interrupt (void);
+
+signals:
+
+  void octave_ready_signal ();
+
+public slots:
+
+  // Initialize and execute the octave interpreter.
+
+  void execute (void);
+
+private:
+
+  octave_thread_manager thread_manager;
+
+  octave::application *m_app_context;
+};
 
 /**
  * @class MainWindow
@@ -205,7 +237,6 @@ public slots:
 
   void handle_show_doc (const QString &file);
 
-  void execute_octave_interpreter (void);
   void handle_octave_ready ();
 
   // find files dialog
@@ -221,11 +252,14 @@ public slots:
   void clipboard_has_changed (QClipboard::Mode);
   void clear_clipboard ();
 
+  void interrupt_interpreter (void);
+
   // get the dockwidgets
   QList<octave_dock_widget *> get_dock_widget_list ()
   { return dock_widget_list (); }
 
 private slots:
+
   void disable_menu_shortcuts (bool disable);
 
 protected:
@@ -291,6 +325,10 @@ private:
   void configure_shortcuts ();
 
   octave::gui_application *m_app_context;
+
+  octave_interpreter *m_interpreter;
+
+  QThread *m_main_thread;
 
   workspace_model *_workspace_model;
 

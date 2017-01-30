@@ -47,34 +47,10 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_qt_link::octave_qt_link (QWidget *p,
                                 octave::gui_application *app_context)
-  : octave_link (), main_thread (new QThread ()),
-    m_app_context (app_context),
-    command_interpreter (new octave_interpreter (app_context))
+  : octave_link (), m_app_context (app_context)
 {
   _current_directory = "";
   _new_dir = true;
-
-  connect (this, SIGNAL (execute_interpreter_signal (void)),
-           command_interpreter, SLOT (execute (void)));
-
-  connect (command_interpreter, SIGNAL (octave_ready_signal ()),
-           p, SLOT (handle_octave_ready ()));
-
-  command_interpreter->moveToThread (main_thread);
-
-  main_thread->start ();
-}
-
-octave_qt_link::~octave_qt_link (void)
-{
-  delete command_interpreter;
-  delete main_thread;
-}
-
-void
-octave_qt_link::execute_interpreter (void)
-{
-  emit execute_interpreter_signal ();
 }
 
 bool
@@ -652,10 +628,4 @@ void
 octave_qt_link::do_show_doc (const std::string& file)
 {
   emit show_doc_signal (QString::fromStdString (file));
-}
-
-void
-octave_qt_link::terminal_interrupt (void)
-{
-  command_interpreter->interrupt ();
 }

@@ -31,13 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QObject>
 #include <QString>
-#include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
 
 #include "octave-gui.h"
 #include "octave-link.h"
-#include "octave-interpreter.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -58,9 +56,7 @@ public:
 
   octave_qt_link (QWidget *p, octave::gui_application *app_context);
 
-  ~octave_qt_link (void);
-
-  void execute_interpreter (void);
+  ~octave_qt_link (void) { }
 
   bool do_confirm_shutdown (void);
 
@@ -153,19 +149,12 @@ private:
   void do_insert_debugger_pointer (const std::string& file, int line);
   void do_delete_debugger_pointer (const std::string& file, int line);
 
-  // Thread running octave_main.
-  QThread *main_thread;
-
   octave::gui_application *m_app_context;
-
-  octave_interpreter *command_interpreter;
 
   QString _current_directory;
   bool    _new_dir;
 
 signals:
-
-  void execute_interpreter_signal (void);
 
   void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
 
@@ -204,10 +193,6 @@ signals:
   void show_doc_signal (const QString &file);
 
   void confirm_shutdown_signal (void);
-
-public slots:
-
-  void terminal_interrupt (void);
 };
 
 #endif

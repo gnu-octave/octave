@@ -104,7 +104,6 @@ OCTAVE_GUI_SRC_MOC = \
   libgui/src/moc-history-dock-widget.cc \
   libgui/src/moc-main-window.cc \
   libgui/src/moc-octave-cmd.cc \
-  libgui/src/moc-octave-interpreter.cc \
   libgui/src/moc-octave-qt-link.cc \
   libgui/src/moc-settings-dialog.cc \
   libgui/src/moc-terminal-dock-widget.cc \
@@ -157,7 +156,6 @@ noinst_HEADERS += \
   libgui/src/main-window.h \
   libgui/src/octave-gui.h \
   libgui/src/octave-cmd.h \
-  libgui/src/octave-interpreter.h \
   libgui/src/octave-qt-link.h \
   libgui/src/qtinfo/parser.h \
   libgui/src/qtinfo/webinfo.h \
@@ -188,7 +186,6 @@ libgui_src_libgui_src_la_SOURCES = \
   libgui/src/octave-cmd.cc \
   libgui/src/octave-dock-widget.cc \
   libgui/src/octave-gui.cc \
-  libgui/src/octave-interpreter.cc \
   libgui/src/octave-qt-link.cc \
   libgui/src/qtinfo/parser.cc \
   libgui/src/qtinfo/webinfo.cc \

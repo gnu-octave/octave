@@ -315,7 +315,7 @@ function print (varargin)
   opts = __print_parse_opts__ (varargin{:});
 
   folder = fileparts (opts.name);
-  if (! isempty (folder) && ! exist (folder,"dir"))
+  if (! isempty (folder) && ! exist (folder, "dir"))
     error ("print: directory %s does not exist", folder);
   endif
 
@@ -325,7 +325,7 @@ function print (varargin)
   endif
   fclose (fid);
   unlink (opts.name);
-  
+
   opts.pstoedit_cmd = @pstoedit;
   opts.fig2dev_cmd = @fig2dev;
   opts.latex_standalone = @latex_standalone;

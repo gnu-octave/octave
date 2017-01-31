@@ -1,4 +1,7 @@
 PARSE_TREE_INC = \
+  libinterp/parse-tree/jit-ir.h \
+  libinterp/parse-tree/jit-typeinfo.h \
+  libinterp/parse-tree/jit-util.h \
   libinterp/parse-tree/lex.h \
   libinterp/parse-tree/parse.h \
   libinterp/parse-tree/pt-all.h \
@@ -22,6 +25,7 @@ PARSE_TREE_INC = \
   libinterp/parse-tree/pt-funcall.h \
   libinterp/parse-tree/pt-id.h \
   libinterp/parse-tree/pt-idx.h \
+  libinterp/parse-tree/pt-jit.h \
   libinterp/parse-tree/pt-jump.h \
   libinterp/parse-tree/pt-loop.h \
   libinterp/parse-tree/pt-mat.h \
@@ -34,10 +38,14 @@ PARSE_TREE_INC = \
   libinterp/parse-tree/pt.h \
   libinterp/parse-tree/token.h
 
+
 ## oct-gperf.h and oct-parse.h are in the SRC list so that they will
 ## be distributed but not installed.
 
 PARSE_TREE_SRC = \
+  libinterp/parse-tree/jit-ir.cc \
+  libinterp/parse-tree/jit-typeinfo.cc \
+  libinterp/parse-tree/jit-util.cc \
   libinterp/parse-tree/lex.ll \
   libinterp/parse-tree/oct-gperf.h \
   libinterp/parse-tree/oct-parse.h \
@@ -62,6 +70,7 @@ PARSE_TREE_SRC = \
   libinterp/parse-tree/pt-funcall.cc \
   libinterp/parse-tree/pt-id.cc \
   libinterp/parse-tree/pt-idx.cc \
+  libinterp/parse-tree/pt-jit.cc \
   libinterp/parse-tree/pt-jump.cc \
   libinterp/parse-tree/pt-loop.cc \
   libinterp/parse-tree/pt-mat.cc \

@@ -16,12 +16,6 @@ $(OPT_HANDLERS): $(srcdir)/build-aux/mk-opts.pl
 
 DIRSTAMP_FILES += libinterp/corefcn/$(octave_dirstamp)
 
-JIT_INC = \
-  libinterp/corefcn/jit-util.h \
-  libinterp/corefcn/jit-typeinfo.h \
-  libinterp/corefcn/jit-ir.h \
-  libinterp/corefcn/pt-jit.h
-
 COREFCN_INC = \
   libinterp/corefcn/base-text-renderer.h \
   libinterp/corefcn/Cell.h \
@@ -97,14 +91,7 @@ COREFCN_INC = \
   libinterp/corefcn/xdiv.h \
   libinterp/corefcn/xnorm.h \
   libinterp/corefcn/xpow.h \
-  libinterp/corefcn/zfstream.h \
-  $(JIT_INC)
-
-JIT_SRC = \
-  libinterp/corefcn/jit-util.cc \
-  libinterp/corefcn/jit-typeinfo.cc \
-  libinterp/corefcn/jit-ir.cc \
-  libinterp/corefcn/pt-jit.cc
+  libinterp/corefcn/zfstream.h
 
 NOINSTALL_COREFCN_INC = \
   libinterp/corefcn/oct-hdf5.h \
@@ -258,7 +245,6 @@ COREFCN_SRC = \
   libinterp/corefcn/xnorm.cc \
   libinterp/corefcn/xpow.cc \
   libinterp/corefcn/zfstream.cc \
-  $(JIT_SRC) \
   $(NOINSTALL_COREFCN_INC)
 
 ## Special rules for sources which must be built before rest of compilation.

@@ -45,8 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-usr-fcn.h"
 #include "pt-eval.h"
-#include "pt-pr-code.h"
-#include "pt-stmt.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "variables.h"

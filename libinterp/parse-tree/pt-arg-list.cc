@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 #include "pt-id.h"
+#include "pt-idx.h"
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "interpreter.h"

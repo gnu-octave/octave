@@ -53,8 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "ov-fcn.h"
 #include "ov-struct.h"
-#include "pt-pr-code.h"
-#include "pt-bp.h"
 #include "pt-eval.h"
 #include "pt-exp.h"
 #include "pt-stmt.h"

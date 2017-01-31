@@ -62,6 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
+#include "pt-mat.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
 #include "sysdep.h"

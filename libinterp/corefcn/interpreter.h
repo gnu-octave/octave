@@ -30,8 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
-#include "pt-eval.h"
-
 extern OCTINTERP_API bool quit_allowed;
 
 // TRUE means we are ready to interpret commands, but not everything
@@ -43,6 +41,8 @@ extern OCTINTERP_API bool octave_initialized;
 
 namespace octave
 {
+  class tree_evaluator;
+
   extern tree_evaluator *current_evaluator;
 
   // The application object contains a pointer to the current

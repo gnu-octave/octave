@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "defun.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "ov-builtin.h"
 #include "ov-classdef.h"
@@ -37,12 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-funcall.h"
+#include "pt-idx.h"
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "singleton-cleanup.h"
 #include "symtab.h"
-#include "interpreter.h"
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0

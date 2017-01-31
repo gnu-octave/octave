@@ -31,7 +31,6 @@ class octave_value_list;
 #include <string>
 
 #include "ovl.h"
-#include "pt-idx.h"
 #include "symtab.h"
 
 class

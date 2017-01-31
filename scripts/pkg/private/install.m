@@ -711,16 +711,19 @@ function create_pkgadddel (desc, packdir, nm, global_install)
 
   if (archfid >= 0 && instfid >= 0)
     ## Search all dot-m files for PKG commands.
-    lst = dir (fullfile (packdir, "inst", "*.m"));
+    lst = glob (fullfile (packdir, "inst", "*.m"));
     for i = 1:length (lst)
-      nam = fullfile (packdir, "inst", lst(i).name);
+      nam = lst{i};
       fwrite (instfid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands.
-    lst = dir (fullfile (packdir, "src", "*.cc"));
+    cc_lst = glob (fullfile (packdir, "src", "*.cc"));
+    cpp_lst = glob (fullfile (packdir, "src", "*.cpp"));
+    cxx_lst = glob (fullfile (packdir, "src", "*.cxx"));
+    lst = [cc_lst; cpp_lst; cxx_lst];
     for i = 1:length (lst)
-      nam = fullfile (packdir, "src", lst(i).name);
+      nam = lst{i};
       fwrite (archfid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
       fwrite (archfid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor

@@ -2156,7 +2156,7 @@ fi
 ### Check for Sundials IDA library and header.
 
 save_LIBS="$LIBS"
-LIBS="$SUNDIALS_NVECSERIAL_LIBS $BLAS_LIBS $FLIBS $LIBS"
+LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIB(sundials_ida, [Sundials IDA],
   [Sundials IDA library not found.  Solvers ode15i and ode15s will be disabled.],
   [ida/ida.h ida.h], [IDAInit],
@@ -3279,9 +3279,9 @@ Octave is now configured for $canonical_host_type
   Java JVM path:                 $JAVA_LDPATH
   Java CPPFLAGS:                 $JAVA_CPPFLAGS
   Java libraries:                $JAVA_LIBS
-  KLU CPPFLAGS:                $KLU_CPPFLAGS
-  KLU LDFLAGS:                 $KLU_LDFLAGS
-  KLU libraries:               $KLU_LIBS
+  KLU CPPFLAGS:                  $KLU_CPPFLAGS
+  KLU LDFLAGS:                   $KLU_LDFLAGS
+  KLU libraries:                 $KLU_LIBS
   LAPACK libraries:              $LAPACK_LIBS
   LLVM CPPFLAGS:                 $LLVM_CPPFLAGS
   LLVM LDFLAGS:                  $LLVM_LDFLAGS
@@ -3319,11 +3319,11 @@ Octave is now configured for $canonical_host_type
   Sndfile LDFLAGS:               $SNDFILE_LDFLAGS
   Sndfile libraries:             $SNDFILE_LIBS
   SuiteSparse config libraries:  $SUITESPARSE_CONFIG_LIBS
-  SUNDIALS_IDA CPPFLAGS:       $SUNDIALS_IDA_CPPFLAGS
-  SUNDIALS_IDA LDFLAGS:        $SUNDIALS_IDA_LDFLAGS
-  SUNDIALS_IDA libraries:      $SUNDIALS_IDA_LIBS
-  SUNDIALS_NVECSERIAL CPPFLAGS: $SUNDIALS_NVECSERIAL_CPPFLAGS
-  SUNDIALS_NVECSERIAL LDFLAGS: $SUNDIALS_NVECSERIAL_LDFLAGS
+  SUNDIALS_IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
+  SUNDIALS_IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS
+  SUNDIALS_IDA libraries:        $SUNDIALS_IDA_LIBS
+  SUNDIALS_NVECSERIAL CPPFLAGS:  $SUNDIALS_NVECSERIAL_CPPFLAGS
+  SUNDIALS_NVECSERIAL LDFLAGS:   $SUNDIALS_NVECSERIAL_LDFLAGS
   SUNDIALS_NVECSERIAL libraries: $SUNDIALS_NVECSERIAL_LIBS
   TERM libraries:                $TERM_LIBS
   UMFPACK CPPFLAGS:              $UMFPACK_CPPFLAGS

@@ -29,11 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <queue>
 #include <sstream>
 
-#ifdef HAVE_LIBUNISTRING
-#  include <uniconv.h>
-#endif
-
 #include "dMatrix.h"
+#include "localcharset-wrapper.h"
+#include "uniconv-wrappers.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -739,48 +737,47 @@ DEFUN (__native2unicode__, args, ,
 @deftypefn {} {@var{utf8_str} =} __native2unicode__ (@var{native_bytes}, @var{codepage})
 Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
 
-
 @seealso{native2unicode, __unicode2native__}
 @end deftypefn */)
 {
-#ifdef HAVE_LIBUNISTRING
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin != 2)
     print_usage ();
 
   if (args(0).is_string ())
-    return ovl(args(0));
+    return ovl (args(0));
 
-  // codepage
-  const char *codepage = locale_charset ();
-  string_vector tmp; 
-  if (! args(1).is_numeric_type ())
-    {
-      tmp = args(1).string_vector_value ();
-      codepage = tmp(0).c_str ();
-    }
-
-  // convert byte stream with local encoding to UTF-8
+  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  const char *codepage
+    = tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ();
+  
   charNDArray native_bytes = args(0).char_array_value ();
+
+  const char *src = native_bytes.data ();
+  size_t srclen = native_bytes.numel ();
+
   size_t length;
-  char *utf8_str = reinterpret_cast<char *>
-                   (u8_conv_from_encoding (codepage, iconveh_question_mark,
-                                           native_bytes.fortran_vec (),
-                                           native_bytes.numel (), NULL,
-                                           NULL, &length));
-  if (utf8_str == NULL)
-    error("native2unicode: Error '%s' converting from codepage '%s' to UTF-8.",
-          std::strerror (errno), codepage);
+  uint8_t *utf8_str = 0;
 
-  std::string ret_val = std::string (utf8_str, length);
-  free (utf8_str);
-  return ovl (charNDArray (ret_val));
-#else
-  octave_unused_parameter (args);
+  octave::unwind_protect frame;
 
-  err_disabled_feature ("__native2unicode__", "libunistring");
-#endif
+  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+
+  utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
+
+  if (! utf8_str)
+    error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
+           codepage, std::strerror (errno));
+
+  octave_idx_type len = length;
+
+  charNDArray retval (dim_vector (1, len));
+
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.xelem(i) = utf8_str[i];
+
+  return ovl (retval);
 }
 
 DEFUN (__unicode2native__, args, ,
@@ -789,44 +786,46 @@ DEFUN (__unicode2native__, args, ,
 Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 @var{codepage}.
 
-
 @seealso{unicode2native, __native2unicode__}
 @end deftypefn */)
 {
-#ifdef HAVE_LIBUNISTRING
   int nargin = args.length ();
 
   if (nargin != 2)
     print_usage ();
 
-  // codepage
-  const char *codepage = locale_charset ();
-  string_vector tmp; 
-  if (! args(1).is_numeric_type ())
-    {
-      tmp = args(1).string_vector_value ();
-      codepage = tmp(0).c_str ();
-    }
+  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  const char *codepage
+    = tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ();
 
-  // convert UTF-8 string vector to byte-stream with local encoding
-  charNDArray utf8_str = args(0).char_array_value ();
+  charNDArray utf8_str = args(0).xchar_array_value ("UTF8_STR must be a string");
+
+  const uint8_t *src = reinterpret_cast<const uint8_t *> (utf8_str.data ());
+  size_t srclen = utf8_str.numel ();
+
   size_t length;
-  char *native_bytes = u8_conv_to_encoding (codepage, iconveh_question_mark,
-                            reinterpret_cast<uint8_t*> (utf8_str.fortran_vec ()),
-                            utf8_str.numel (), NULL, NULL, &length);
-  if (native_bytes == NULL)
-    error("native2unicode: Error '%s' converting from UTF-8 to codepage '%s'.",
-          std::strerror (errno), codepage);
+  char *native_bytes = 0;
 
-  std::string ret_val = std::string (native_bytes, length);
-  free (native_bytes);
-  return ovl (NDArray (ret_val));
-#else
-  octave_unused_parameter (args);
+  octave::unwind_protect frame;
 
-  err_disabled_feature ("__unicode2native__", "libunistring");
-#endif
+  frame.add_fcn (::free, static_cast<void *> (native_bytes));
+
+  native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);
+
+  if (! native_bytes)
+    error ("native2unicode: converting from UTF-8 to codepage '%s': %s",
+           codepage, std::strerror (errno));
+
+  octave_idx_type len = length;
+
+  uint8NDArray retval (dim_vector (1, len));
+
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.xelem(i) = native_bytes[i];
+
+  return ovl (retval);
 }
+
 DEFUN (list_in_columns, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})

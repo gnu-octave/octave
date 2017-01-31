@@ -11,6 +11,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/getopt-wrapper.h \
   liboctave/wrappers/glob-wrappers.h \
   liboctave/wrappers/hash-wrappers.h \
+  liboctave/wrappers/localcharset-wrapper.h \
   liboctave/wrappers/math-wrappers.h \
   liboctave/wrappers/mkostemp-wrapper.h \
   liboctave/wrappers/nanosleep-wrapper.h \
@@ -27,6 +28,7 @@ NOINSTALL_WRAPPERS_INC = \
   liboctave/wrappers/time-wrappers.h \
   liboctave/wrappers/tmpfile-wrapper.h \
   liboctave/wrappers/uname-wrapper.h \
+  liboctave/wrappers/uniconv-wrappers.h \
   liboctave/wrappers/unistd-wrappers.h \
   liboctave/wrappers/unsetenv-wrapper.h \
   liboctave/wrappers/vasprintf-wrapper.h \
@@ -46,6 +48,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/getopt-wrapper.c \
   liboctave/wrappers/glob-wrappers.c \
   liboctave/wrappers/hash-wrappers.c \
+  liboctave/wrappers/localcharset-wrapper.c \
   liboctave/wrappers/math-wrappers.c \
   liboctave/wrappers/mkostemp-wrapper.c \
   liboctave/wrappers/nanosleep-wrapper.c \
@@ -62,6 +65,7 @@ WRAPPERS_SRC = \
   liboctave/wrappers/time-wrappers.c \
   liboctave/wrappers/tmpfile-wrapper.c \
   liboctave/wrappers/uname-wrapper.c \
+  liboctave/wrappers/uniconv-wrappers.c \
   liboctave/wrappers/unistd-wrappers.c \
   liboctave/wrappers/unsetenv-wrapper.c \
   liboctave/wrappers/vasprintf-wrapper.c \

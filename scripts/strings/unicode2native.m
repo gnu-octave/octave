@@ -34,56 +34,34 @@
 ## @seealso{native2unicode}
 ## @end deftypefn
 
-function native_bytes = unicode2native (utf8_str, codepage)
+function native_bytes = unicode2native (utf8_str, codepage = "")
 
-  ## check input
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-
   if (! ischar (utf8_str) || ! isvector (utf8_str))
-    error ("unicode2native: UTF8_STR must be a character vector.")
+    error ("unicode2native: UTF8_STR must be a character vector");
   endif
 
-  is_column = false;
-  if (! isrow (utf8_str))
-    is_column = true;
-    utf8_str = utf8_str';
+  if (! ischar (codepage))
+    error ("unicode2native: CODEPAGE must be a string");
   endif
 
-  if (nargin < 2 || isempty (codepage))
-    codepage = 0;
-  endif
-
-  if (! ischar (codepage) && codepage != 0)
-    error ("unicode2native: CODEPAGE must be a string or 0.")
-  endif
-
-  ## pass to internal function
   native_bytes = __unicode2native__ (utf8_str, codepage);
 
-  if (is_column)
+  if (iscolumn (utf8_str))
     native_bytes = native_bytes';
   endif
 
 endfunction
 
-%!testif(HAVE_LIBUNISTRING)
-%! assert (unicode2native ("ЄЅІЇЈЉЊ", "ISO 8859-5"), 164:170);
-%!testif(HAVE_LIBUNISTRING)
-%! assert (unicode2native (["ЄЅІ" 0 "ЇЈЉЊ"], "ISO 8859-5"), [164:166 0 167:170]);
-%!testif(HAVE_LIBUNISTRING)
-%! fail ("unicode2native (['ab'; 'cd'])", "UTF8_STR must be a character vector");
-%!testif(HAVE_LIBUNISTRING)
-%! fail ("unicode2native ({1 2 3 4})", "UTF8_STR must be a character vector");
-%!testif(HAVE_LIBUNISTRING)
-%! fail ("unicode2native ('ЄЅІЇЈЉЊ', 123)", "CODEPAGE must be a string or 0");
-%!testif(HAVE_LIBUNISTRING)
-%! fail ("unicode2native ('a', 'foo')",
-%!       "Error .* converting from UTF-8 to codepage 'foo'");
-%!testif(HAVE_LIBUNISTRING)
-%! fail ("unicode2native ()", "Invalid call");
-%!testif(HAVE_LIBUNISTRING)
-%! fail ("unicode2native ('a', 'Latin-1', 'test')", "Invalid call");
- 
+%!assert (unicode2native ("ЄЅІЇЈЉЊ", "ISO 8859-5"), uint8 (164:170));
+%!assert (unicode2native (["ЄЅІ" 0 "ЇЈЉЊ"], "ISO 8859-5"), uint8 ([164:166 0 167:170]));
+
+%!error <UTF8_STR must be a character vector> unicode2native (['ab'; 'cd'])
+%!error <UTF8_STR must be a character vector> unicode2native ({1 2 3 4})
+%!error <CODEPAGE must be a string> unicode2native ('ЄЅІЇЈЉЊ', 123)
+%!error <converting from UTF-8 to codepage 'foo'> unicode2native ('a', 'foo')
+%!error <Invalid call> unicode2native ()
+%!error <Invalid call> unicode2native ('a', 'Latin-1', 'test')

@@ -262,7 +262,7 @@ function arg_st = __print_parse_opts__ (varargin)
   if (any (match))
     default_suffix = suffixes{match};
   else
-    default_suffix = arg_st.devopt;
+    error ("print: unknown device %s", arg_st.devopt);  
   endif
 
   if (dot == 0 && ! isempty (arg_st.name))

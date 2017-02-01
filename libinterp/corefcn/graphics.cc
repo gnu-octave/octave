@@ -9865,8 +9865,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
             {
               std::cerr << "execution error in graphics callback function"
                         << std::endl;
-              octave::feval ("lasterr",
-                             ovl ("execution error in graphics callback function"));
+              Flasterr (ovl ("execution error in graphics callback function"));
               octave::interpreter::recover_from_exception ();
             }
         }
@@ -9898,8 +9897,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           {
             std::cerr << "execution error in graphics callback function"
                       << std::endl;
-            octave::feval ("lasterr",
-                           ovl ("execution error in graphics callback function"));
+            Flasterr (ovl ("execution error in graphics callback function"));
             octave::interpreter::recover_from_exception ();
           }
 

@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "builtin-defun-decls.h"
 #include "call-stack.h"
 #include "debug.h"
 #include "defun.h"
@@ -204,7 +205,7 @@ interactive_input (const std::string& s, bool& eof)
 
       try
         {
-          octave::feval ("drawnow");
+          Fdrawnow ();
         }
       catch (const octave::execution_exception& e)
         {

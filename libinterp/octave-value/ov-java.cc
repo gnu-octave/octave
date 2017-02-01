@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <clocale>
 
 #include "Cell.h"
+#include "builtin-defun-decls.h"
 #include "cmd-edit.h"
 #include "defaults.h"
 #include "file-ops.h"
@@ -1980,7 +1981,7 @@ octave_java::subsref (const std::string& type,
           ovl(0) = (idx.front ())(0);
           std::list<octave_value_list>::const_iterator it = idx.begin ();
           ovl.append (*++it);
-          retval = octave::feval (std::string ("javaMethod"), ovl, 1);
+          retval = FjavaMethod (ovl, 1);
           skip++;
         }
       else
@@ -1989,7 +1990,7 @@ octave_java::subsref (const std::string& type,
           count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
-          retval = octave::feval (std::string ("__java_get__"), ovl, 1);
+          retval = F__java_get__ (ovl, 1);
         }
       break;
 
@@ -2045,7 +2046,7 @@ octave_java::subsasgn (const std::string& type,
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           ovl(2) = rhs;
-          octave::feval ("__java_set__", ovl, 0);
+          F__java_set__ (ovl);
 
           count++;
           retval = octave_value (this);

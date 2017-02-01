@@ -510,86 +510,40 @@ user class.
 @opindex :
 @opindex <
 
-@tex
-\vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
-\halign{
-\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
-# \hfil & \vrule # & # \hfil & \vrule # & # \hfil & # \vrule
-width 0.6pt \tabskip=0pt\cr
-\noalign{\hrule height 0.6pt}
-& Operation && Method && Description &\cr
-\noalign{\hrule}
-& $a + b$ && plus (a, b) && Binary addition operator&\cr
-& $a - b$ && minus (a, b) && Binary subtraction operator&\cr
-& $+ a$ && uplus (a) && Unary addition operator&\cr
-& $- a$ && uminus (a) && Unary subtraction operator&\cr
-& $a .* b$ && times (a, b) && Element-wise multiplication operator&\cr
-& $a * b$ && mtimes (a, b) && Matrix multiplication operator&\cr
-& $a ./ b$ && rdivide (a, b) && Element-wise right division operator&\cr
-& $a / b$ && mrdivide (a, b) && Matrix right division operator&\cr
-& $a .\backslash b$ && ldivide (a, b) && Element-wise left division operator&\cr
-& $a \backslash b$ && mldivide (a, b) && Matrix left division operator&\cr
-& $a .\hat b$ && power (a, b) && Element-wise power operator&\cr
-& $a \hat b$ && mpower (a, b) && Matrix power operator&\cr
-& $a < b$ && lt (a, b) && Less than operator&\cr
-& $a <= b$ && le (a, b) && Less than or equal to operator&\cr
-& $a > b$ && gt (a, b) && Greater than operator&\cr
-& $a >= b$ && ge (a, b) && Greater than or equal to operator&\cr
-& $a == b$ && eq (a, b) && Equal to operator&\cr
-& $a != b$ && ne (a, b) && Not equal to operator&\cr
-& $a \& b$ && and (a, b) && Logical and operator&\cr
-& $a | b$ && or (a, b) && Logical or operator&\cr
-& $! b$ && not (a) && Logical not operator&\cr
-& $a'$ && ctranspose (a) && Complex conjugate transpose operator &\cr
-& $a.'$ && transpose (a) && Transpose operator &\cr
-& $a : b$ && colon (a, b) && Two element range operator &\cr
-& $a : b : c$ && colon (a, b, c) && Three element range operator &\cr
-& $[a, b]$ && horzcat (a, b) && Horizontal concatenation operator &\cr
-& $[a; b]$ && vertcat (a, b) && Vertical concatenation operator &\cr
-& $a(s_1, \ldots, s_n)$ && subsref (a, s) && Subscripted reference &\cr
-& $a(s_1, \ldots, s_n) = b$ && subsasgn (a, s, b) && Subscripted assignment &\cr
-& $b (a)$ && subsindex (a) && Convert to zero-based index &\cr
-& {\it display} && display (a) && Commandline display function &\cr
-\noalign{\hrule height 0.6pt}
-}}\hfill}}
-@end tex
-@ifnottex
-@multitable @columnfractions .1 .20 .20 .40 .1
-@headitem @tab Operation @tab Method @tab Description @tab
-@item @tab a + b @tab plus (a, b) @tab Binary addition @tab
-@item @tab a - b @tab minus (a, b) @tab Binary subtraction operator @tab
-@item @tab + a @tab uplus (a) @tab Unary addition operator @tab
-@item @tab - a @tab uminus (a) @tab Unary subtraction operator @tab
-@item @tab a .* b @tab times (a, b) @tab Element-wise multiplication operator @tab
-@item @tab a * b @tab mtimes (a, b) @tab Matrix multiplication operator @tab
-@item @tab a ./ b @tab rdivide (a, b) @tab Element-wise right division operator @tab
-@item @tab a / b @tab mrdivide (a, b) @tab Matrix right division operator @tab
-@item @tab a .\ b @tab ldivide (a, b) @tab Element-wise left division operator @tab
-@item @tab a \ b @tab mldivide (a, b) @tab Matrix left division operator @tab
-@item @tab a .^ b @tab power (a, b) @tab Element-wise power operator @tab
-@item @tab a ^ b @tab mpower (a, b) @tab Matrix power operator @tab
-@item @tab a < b @tab lt (a, b) @tab Less than operator @tab
-@item @tab a <= b @tab le (a, b) @tab Less than or equal to operator @tab
-@item @tab a > b @tab gt (a, b) @tab Greater than operator @tab
-@item @tab a >= b @tab ge (a, b) @tab Greater than or equal to operator @tab
-@item @tab a == b @tab eq (a, b) @tab Equal to operator @tab
-@item @tab a != b @tab ne (a, b) @tab Not equal to operator @tab
-@item @tab a & b @tab and (a, b) @tab Logical and operator @tab
-@item @tab a | b @tab or (a, b) @tab Logical or operator @tab
-@item @tab ! b @tab not (a) @tab Logical not operator @tab
-@item @tab a' @tab ctranspose (a) @tab Complex conjugate transpose operator @tab
-@item @tab a.' @tab transpose (a) @tab Transpose operator @tab
-@item @tab a : b @tab colon (a, b) @tab Two element range operator @tab
-@item @tab a : b : c @tab colon (a, b, c) @tab Three element range operator @tab
-@item @tab [a, b] @tab horzcat (a, b) @tab Horizontal concatenation operator @tab
-@item @tab [a; b] @tab vertcat (a, b) @tab Vertical concatenation operator @tab
-@item @tab a(s_1, @dots{}, s_n) @tab subsref (a, s) @tab Subscripted reference @tab
-@item @tab a(s_1, @dots{}, s_n) = b @tab subsasgn (a, s, b) @tab Subscripted assignment @tab
-@item @tab b (a) @tab subsindex (a) @tab Convert to zero-based index @tab
-@item @tab  @dfn{display} @tab display (a) @tab Commandline display function @tab
+@multitable {@code{a(s@math{_1},@dots{},s@math{_n}) = b}} {@code{subsasgn (a, s, b)}} {Complex conjugate transpose}
+@headitem Operation @tab Method @tab Description
+@item @code{a + b} @tab @code{plus (a, b)} @tab Binary addition
+@item @code{a - b} @tab @code{minus (a, b)} @tab Binary subtraction
+@item @code{+a} @tab @code{uplus (a)} @tab Unary addition
+@item @code{-a} @tab @code{uminus (a)} @tab Unary subtraction
+@item @code{a.* b} @tab @code{times (a, b)} @tab Element-wise multiplication
+@item @code{a * b} @tab @code{mtimes (a, b)} @tab Matrix multiplication
+@item @code{a ./ b} @tab @code{rdivide (a, b)} @tab Element-wise right division
+@item @code{a / b} @tab @code{mrdivide (a, b)} @tab Matrix right division
+@item @code{a .\ b} @tab @code{ldivide (a, b)} @tab Element-wise left division
+@item @code{a \ b} @tab @code{mldivide (a, b)} @tab Matrix left division
+@item @code{a .^ b} @tab @code{power (a, b)} @tab Element-wise power
+@item @code{a ^ b} @tab @code{mpower (a, b)} @tab Matrix power
+@item @code{a < b} @tab @code{lt (a, b)} @tab Less than
+@item @code{a <= b} @tab @code{le (a, b)} @tab Less than or equal to
+@item @code{a > b} @tab @code{gt (a, b)} @tab Greater than
+@item @code{a >= b} @tab @code{ge (a, b)} @tab Greater than or equal to
+@item @code{a == b} @tab @code{eq (a, b)} @tab Equal to
+@item @code{a != b} @tab @code{ne (a, b)} @tab Not equal to
+@item @code{a & b} @tab @code{and (a, b)} @tab Logical and
+@item @code{a | b} @tab @code{or (a, b)} @tab Logical or
+@item @code{!b} @tab @code{not (a)} @tab Logical not
+@item @code{a'} @tab @code{ctranspose (a)} @tab Complex conjugate transpose
+@item @code{a.'} @tab @code{transpose (a)} @tab Transpose
+@item @code{a:b} @tab @code{colon (a, b)} @tab Two element range
+@item @code{a:b:c} @tab @code{colon (a, b, c)} @tab Three element range
+@item @code{[a,  b]} @tab @code{horzcat (a, b)} @tab Horizontal concatenation
+@item @code{[a; b]} @tab @code{vertcat (a, b)} @tab Vertical concatenation
+@item @code{a(s@math{_1},@dots{},s@math{_n})} @tab @code{subsref (a, s)} @tab Subscripted reference
+@item @code{a(s@math{_1},@dots{},s@math{_n}) = b} @tab @code{subsasgn (a, s, b)} @tab Subscripted assignment
+@item @code{b(a)} @tab @code{subsindex (a)} @tab Convert object to index
+@item @code{display} @tab @code{display (a)} @tab Object display
 @end multitable
-@end ifnottex
 @caption{Available overloaded operators and their corresponding class method}
 @end float
 

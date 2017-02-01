@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "workspace-element.h"
 
-octave_qt_link::octave_qt_link (QWidget *p,
+octave_qt_link::octave_qt_link (QWidget *,
                                 octave::gui_application *app_context)
   : octave_link (), m_app_context (app_context)
 {

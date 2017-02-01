@@ -6459,6 +6459,7 @@ axes::properties::update_font (std::string prop)
 
     }
 
+  gh_manager::auto_lock guard;
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
@@ -7349,6 +7350,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 
           if (txt_renderer.ok ())
             {
+              gh_manager::auto_lock guard;
               ext = txt_renderer.get_extent (label, 0.0,
                                              get_ticklabelinterpreter ());
 
@@ -8318,6 +8320,7 @@ text::properties::update_fontunits (const caseless_str& old_units)
 void
 text::properties::update_font (void)
 {
+  gh_manager::auto_lock guard;
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
@@ -8354,6 +8357,7 @@ text::properties::update_text_extent (void)
 
   string_vector sv = string_prop.string_vector_value ();
 
+  gh_manager::auto_lock guard;
   txt_renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                                halign, valign, get_rotation (),
                                get_interpreter ());
@@ -9050,6 +9054,7 @@ uicontrol::properties::update_text_extent (void)
 
   elt = text_parser::parse (get_string_string (), "none");
 
+  gh_manager::auto_lock guard;
   txt_renderer.set_font (get_fontname (), get_fontweight (),
                          get_fontangle (), get_fontsize ());
 

@@ -263,7 +263,7 @@ Summary of important user-visible changes for version 4.2:
       bitmax               | flintmax
       mahalanobis          | mahal in Octave-Forge statistics pkg
       md5sum               | hash
-      octve_config_info    | __octave_config_info__
+      octave_config_info   | __octave_config_info__
       onenormest           | normest1
       sleep                | pause
       usleep               | pause

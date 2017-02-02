@@ -516,7 +516,7 @@ user class.
 @item @code{a - b} @tab @code{minus (a, b)} @tab Binary subtraction
 @item @code{+a} @tab @code{uplus (a)} @tab Unary addition
 @item @code{-a} @tab @code{uminus (a)} @tab Unary subtraction
-@item @code{a.* b} @tab @code{times (a, b)} @tab Element-wise multiplication
+@item @code{a .* b} @tab @code{times (a, b)} @tab Element-wise multiplication
 @item @code{a * b} @tab @code{mtimes (a, b)} @tab Matrix multiplication
 @item @code{a ./ b} @tab @code{rdivide (a, b)} @tab Element-wise right division
 @item @code{a / b} @tab @code{mrdivide (a, b)} @tab Matrix right division
@@ -532,7 +532,7 @@ user class.
 @item @code{a != b} @tab @code{ne (a, b)} @tab Not equal to
 @item @code{a & b} @tab @code{and (a, b)} @tab Logical and
 @item @code{a | b} @tab @code{or (a, b)} @tab Logical or
-@item @code{!b} @tab @code{not (a)} @tab Logical not
+@item @code{!a} @tab @code{not (a)} @tab Logical not
 @item @code{a'} @tab @code{ctranspose (a)} @tab Complex conjugate transpose
 @item @code{a.'} @tab @code{transpose (a)} @tab Transpose
 @item @code{a:b} @tab @code{colon (a, b)} @tab Two element range

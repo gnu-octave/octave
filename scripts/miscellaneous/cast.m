@@ -20,7 +20,8 @@
 ## @deftypefn {} {} cast (@var{val}, "@var{type}")
 ## Convert @var{val} to data type @var{type}.
 ##
-## @var{val} must be one of the numeric classes:
+## Both @var{val} and @var{type} are typically one of the following built-in
+## classes:
 ##
 ## @example
 ## @group
@@ -50,6 +51,18 @@
 ## cast (300, "int8")
 ##    @result{} 127
 ## @end group
+## @end example
+##
+## Programming Note: This function relies on the object @var{val} having a
+## conversion method named @var{type}.  User-defined classes may implement only
+## a subset of the full list of types shown above.  In that case, it may be
+## necessary to call cast twice in order to reach the desired type.
+## For example, the conversion to double is nearly always implemented, but
+## the conversion to uint8 might not be.  In that case, the following code will
+## work
+##
+## @example
+## cast (cast (@var{user_defined_val}, "double"), "uint8")
 ## @end example
 ##
 ## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64, double, single, logical, char, class, typeinfo}

@@ -30,8 +30,8 @@ class octave_value_list;
 #include <deque>
 
 #include "base-list.h"
+#include "bp-table.h"
 #include "comment-list.h"
-#include "debug.h"
 #include "symtab.h"
 #include "pt.h"
 

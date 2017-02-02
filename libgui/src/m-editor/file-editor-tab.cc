@@ -69,8 +69,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 
+#include "bp-table.h"
 #include "call-stack.h"
-#include "debug.h"
 #include "octave-qt-link.h"
 #include "version.h"
 #include "utils.h"

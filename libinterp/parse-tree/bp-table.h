@@ -20,18 +20,19 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_debug_h)
-#define octave_debug_h 1
+#if ! defined (octave_bp_table_h)
+#define octave_bp_table_h 1
 
 #include "octave-config.h"
 
+#include <list>
 #include <map>
 #include <set>
-#include "ov.h"
-#include "dRowVector.h"
 
-class octave_value_list;
+class octave_map;
 class octave_user_code;
+class octave_value_list;
+
 static std::string bp_empty_string ("");
 
 struct
@@ -150,7 +151,7 @@ public:
 
   static bool condition_valid (const std::string& cond);
 
-  friend void parse_dbfunction_params (const char *, const octave_value_list&,
+  static void parse_dbfunction_params (const char *, const octave_value_list&,
                                        std::string&, bp_table::intmap&,
                                        std::string&);
 
@@ -199,5 +200,7 @@ private:
 };
 
 extern std::string get_file_line (const std::string& fname, size_t line);
+
+extern octave_user_code *get_user_code (const std::string& fname = "");
 
 #endif

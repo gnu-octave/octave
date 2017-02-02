@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <fstream>
 #include <typeinfo>
 
+#include "bp-table.h"
 #include "call-stack.h"
-#include "debug.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"

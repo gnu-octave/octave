@@ -28,13 +28,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 
+#include "bp-table.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ov.h"
-#include "octave-link.h"
-#include "oct-lvalue.h"
 #include "input.h"
+#include "oct-lvalue.h"
+#include "octave-link.h"
+#include "ov.h"
 #include "pager.h"
 #include "pt-bp.h"
 #include "pt-cmd.h"
@@ -47,8 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-
-#include "debug.h"
 
 namespace octave
 {

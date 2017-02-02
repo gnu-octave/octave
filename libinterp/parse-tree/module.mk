@@ -1,4 +1,5 @@
 PARSE_TREE_INC = \
+  libinterp/parse-tree/bp-table.h \
   libinterp/parse-tree/jit-ir.h \
   libinterp/parse-tree/jit-typeinfo.h \
   libinterp/parse-tree/jit-util.h \
@@ -43,6 +44,7 @@ PARSE_TREE_INC = \
 ## be distributed but not installed.
 
 PARSE_TREE_SRC = \
+  libinterp/parse-tree/bp-table.cc \
   libinterp/parse-tree/jit-ir.cc \
   libinterp/parse-tree/jit-typeinfo.cc \
   libinterp/parse-tree/jit-util.cc \

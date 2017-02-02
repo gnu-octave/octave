@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 #include "signal-wrappers.h"
 
-#include "debug.h"
+#include "bp-table.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"

@@ -24,7 +24,6 @@ COREFCN_INC = \
   libinterp/corefcn/cdisplay.h \
   libinterp/corefcn/comment-list.h \
   libinterp/corefcn/data.h \
-  libinterp/corefcn/debug.h \
   libinterp/corefcn/defun-dld.h \
   libinterp/corefcn/defun-int.h \
   libinterp/corefcn/defun.h \

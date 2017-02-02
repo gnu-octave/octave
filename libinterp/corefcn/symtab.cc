@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "singleton-cleanup.h"
 
-#include "debug.h"
+#include "bp-table.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "input.h"

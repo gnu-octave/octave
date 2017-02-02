@@ -40,9 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "bp-table.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
-#include "debug.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"

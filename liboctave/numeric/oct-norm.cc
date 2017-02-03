@@ -471,7 +471,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
 
 // derive column vector and SVD types
 
-static const char *p_less1_gripe = "xnorm: p must be at least 1";
+static const char *p_less1_gripe = "xnorm: p must be >= 1";
 
 // Static constant to control the maximum number of iterations.  100 seems to
 // be a good value.  Eventually, we can provide a means to change this
@@ -491,7 +491,7 @@ R svd_matrix_norm (const MatrixT& m, R p, VectorT)
     }
   else if (p == 1)
     res = xcolnorms (m, 1).max ();
-  else if (lo_ieee_isinf (p))
+  else if (lo_ieee_isinf (p) && p > 1)
     res = xrownorms (m, 1).max ();
   else if (p > 1)
     {
@@ -512,7 +512,7 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
   R res = 0;
   if (p == 1)
     res = xcolnorms (m, 1).max ();
-  else if (lo_ieee_isinf (p))
+  else if (lo_ieee_isinf (p) && p > 1)
     res = xrownorms (m, 1).max ();
   else if (p > 1)
     {

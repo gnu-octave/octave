@@ -5660,6 +5660,7 @@ compute the norms of each column and return a row vector.
 /*
 %!shared x
 %! x = [1, -3, 4, 5, -7];
+%!assert (norm (x,0), 5)
 %!assert (norm (x,1), 20)
 %!assert (norm (x,2), 10)
 %!assert (norm (x,3), 8.24257059961711, -4*eps)
@@ -5674,6 +5675,7 @@ compute the norms of each column and return a row vector.
 %! m = magic (4);
 %!assert (norm (m,1), 34)
 %!assert (norm (m,2), 34, -eps)
+%!assert (norm (m,3), 34, -sqrt (eps))
 %!assert (norm (m,Inf), 34)
 %!assert (norm (m,"inf"), 34)
 %!shared m2, flo, fhi
@@ -5685,6 +5687,7 @@ compute the norms of each column and return a row vector.
 
 %!shared x
 %! x = single ([1, -3, 4, 5, -7]);
+%!assert (norm (x,0), single (5))
 %!assert (norm (x,1), single (20))
 %!assert (norm (x,2), single (10))
 %!assert (norm (x,3), single (8.24257059961711), -4*eps ("single"))
@@ -5699,6 +5702,7 @@ compute the norms of each column and return a row vector.
 %! m = single (magic (4));
 %!assert (norm (m,1), single (34))
 %!assert (norm (m,2), single (34), -eps ("single"))
+%!assert (norm (m,3), single (34), -sqrt (eps ("single")))
 %!assert (norm (m,Inf), single (34))
 %!assert (norm (m,"inf"), single (34))
 %!shared m2, flo, fhi
@@ -5707,6 +5711,9 @@ compute the norms of each column and return a row vector.
 %! fhi = single (1e+300);
 %!assert (norm (flo*m2,"fro"), single (sqrt (30)*flo), -eps ("single"))
 %!assert (norm (fhi*m2,"fro"), single (sqrt (30)*fhi), -eps ("single"))
+
+## Hamming norm (p == 0)
+%!assert (norm ([1, 0, 0, 0, 1], 0), 2)
 
 %!shared q
 %! q = rand (1e3, 3);
@@ -5734,6 +5741,7 @@ compute the norms of each column and return a row vector.
 %!error <unrecognized option> norm (1, "invalid", "rows")
 %!error <invalid combination of options> norm (1, "cols", "rows")
 %!error <invalid combination of options> norm (1, "rows", "rows")
+%!error <p must be .= 1> norm (ones (2,2), -Inf)
 */
 
 static octave_value

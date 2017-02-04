@@ -33,8 +33,6 @@ class octave_map;
 class octave_user_code;
 class octave_value_list;
 
-static std::string bp_empty_string ("");
-
 struct
 bp_type
 {
@@ -77,7 +75,7 @@ public:
   // Add a breakpoint at the nearest executable line.
   static intmap add_breakpoint (const std::string& fname = "",
                                 const intmap& lines = intmap (),
-                                const std::string& condition = bp_empty_string)
+                                const std::string& condition = "")
   {
     return instance_ok ()
            ? instance->do_add_breakpoint (fname, lines, condition) : intmap ();

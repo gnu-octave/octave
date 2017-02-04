@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <map>
 #include <set>
+#include <string>
 
 class octave_map;
 class octave_user_code;

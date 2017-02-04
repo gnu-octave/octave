@@ -1,5 +1,6 @@
-## Copyright (C) 2010-2016 John W. Eaton
+## Copyright (C) 2010-2017 John W. Eaton
 ## Copyright (C) 2010 VZLU Prague
+## Copyright (C) 2017 Colin B. Macdonald
 ##
 ## This file is part of Octave.
 ##
@@ -484,7 +485,8 @@ function txt = __unimplemented__ (fcn)
           "sym", "sym2poly", "symfun", "sympref", "syms", "symvar", ...
           "triangularPulse", "vpa", "vpasolve", "whittakerM", "whittakerW", ...
           "zeta"}
-      txt = check_package (fcn, "symbolic");
+      classes = {"sym", "symfun"};
+      txt = check_package (fcn, "symbolic", classes);
 
     ## optimization
     case {"bintprog", "color", "fgoalattain", "fmincon", "fminimax", ...
@@ -515,7 +517,11 @@ function txt = __unimplemented__ (fcn)
 
 endfunction
 
-function txt = check_package (fcn, name)
+function txt = check_package (fcn, name, classes)
+
+  if (nargin < 3)
+    classes = {};
+  endif
 
   txt = sprintf ("the '%s' function belongs to the %s package from Octave Forge",
                  fcn, name);
@@ -523,6 +529,20 @@ function txt = check_package (fcn, name)
   [~, status] = pkg ("describe", name);
   switch (tolower (status{1}))
     case "loaded",
+      for i = 1:length (classes)
+        cls = classes{i};
+        try
+          meths = methods (cls);
+        catch
+          meths = {};
+        end_try_catch
+        if (any (strcmp (fcn, meths)))
+          txt = sprintf (["'%s' is a method of class '%s'; it must be ", ...
+                          "called with a '%s' argument (see 'help @@%s/%s')."],
+                         fcn, cls, cls, cls, fcn);
+          return
+        endif
+      endfor
       txt = sprintf ("%s but has not yet been implemented.", txt);
     case "not loaded",
       txt = sprintf (["%s which you have installed but not loaded.  To ", ...

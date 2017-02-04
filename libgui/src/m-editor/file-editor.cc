@@ -2141,6 +2141,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (do_breakpoint_marker (bool, const QWidget*, int,
                                           const QString&)));
 
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
+
   _tab_widget->setCurrentWidget (f);
 
   check_actions ();

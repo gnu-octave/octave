@@ -74,9 +74,6 @@ generate_struct_completions (const std::string& text, std::string& prefix,
 extern OCTINTERP_API bool
 looks_like_struct (const std::string& text, char prev_char);
 
-extern OCTINTERP_API int
-symbol_exist (const std::string& name, const std::string& type = "any");
-
 extern OCTINTERP_API std::string
 unique_symbol_name (const std::string& basename);
 

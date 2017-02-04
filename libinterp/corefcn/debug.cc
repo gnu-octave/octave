@@ -563,7 +563,7 @@ is stopped.
   return ovl ();
 }
 
-void
+static void
 do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 {
   std::string ff = fcn_file_in_path (name);

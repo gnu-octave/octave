@@ -488,7 +488,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
   return retval;
 }
 
-std::string
+static std::string
 find_file_to_load (const std::string& name, const std::string& orig_name)
 {
   std::string fname = find_data_file_in_load_path ("load", name, true);

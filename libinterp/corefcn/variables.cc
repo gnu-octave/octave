@@ -378,8 +378,8 @@ isglobal ("x")
 %!error isglobal (1)
 */
 
-int
-symbol_exist (const std::string& name, const std::string& type)
+static int
+symbol_exist (const std::string& name, const std::string& type = "any")
 {
   if (octave::is_keyword (name))
     return 0;

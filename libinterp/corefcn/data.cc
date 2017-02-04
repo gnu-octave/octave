@@ -5587,10 +5587,11 @@ compute the norms of each column and return a row vector.
   if (x_arg.ndims () != 2)
     error ("norm: only valid for 2-D objects");
 
-  enum { sfmatrix, sfcols, sfrows, sffrob, sfinf } strflag = sfmatrix;
+  enum {sfmatrix, sfcols, sfrows, sffrob, sfinf, sfneginf} strflag = sfmatrix;
   if (nargin > 1 && args(nargin-1).is_string ())
     {
       std::string str = args(nargin-1).string_value ();
+      std::transform (str.begin (), str.end (), str.begin (), tolower);
       if (str == "cols" || str == "columns")
         strflag = sfcols;
       else if (str == "rows")
@@ -5599,6 +5600,8 @@ compute the norms of each column and return a row vector.
         strflag = sffrob;
       else if (str == "inf")
         strflag = sfinf;
+      else if (str == "-inf")
+        strflag = sfneginf;
       else
         error ("norm: unrecognized option: %s", str.c_str ());
 
@@ -5613,6 +5616,7 @@ compute the norms of each column and return a row vector.
   else if (p_arg.is_string ())
     {
       std::string str = p_arg.string_value ();
+      std::transform (str.begin (), str.end (), str.begin (), tolower);
       if (strflag != sfcols && strflag != sfrows)
         error ("norm: invalid combination of options");
 
@@ -5623,6 +5627,8 @@ compute the norms of each column and return a row vector.
         p_arg = octave_value (2);
       else if (str == "inf")
         p_arg = octave::numeric_limits<double>::Inf ();
+      else if (str == "-inf")
+        p_arg = -octave::numeric_limits<double>::Inf ();
       else
         error ("norm: unrecognized option: %s", str.c_str ());
     }
@@ -5652,6 +5658,10 @@ compute the norms of each column and return a row vector.
     case sfinf:
       retval = xnorm (x_arg, octave::numeric_limits<double>::Inf ());
       break;
+
+    case sfneginf:
+      retval = xnorm (x_arg, -octave::numeric_limits<double>::Inf ());
+      break;
     }
 
   return retval;
@@ -5667,6 +5677,7 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,Inf), 7)
 %!assert (norm (x,-Inf), 1)
 %!assert (norm (x,"inf"), 7)
+%!assert (norm (x,"-Inf"), 1)
 %!assert (norm (x,"fro"), 10, -eps)
 %!assert (norm (x), 10)
 %!assert (norm ([1e200, 1]), 1e200)
@@ -5694,6 +5705,7 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,Inf), single (7))
 %!assert (norm (x,-Inf), single (1))
 %!assert (norm (x,"inf"), single (7))
+%!assert (norm (x,"-Inf"), single (1))
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
 %!assert (norm (single ([1e38, 1])), single (1e38))

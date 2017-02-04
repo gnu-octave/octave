@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <set>
 #include <string>
+#include <sstream>
+#include <iostream>
 
 #include "file-ops.h"
 #include "file-stat.h"

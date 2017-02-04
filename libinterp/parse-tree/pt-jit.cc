@@ -29,6 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <string>
+#include <sstream>
+#include <iostream>
+
 #include "bp-table.h"
 #include "defun.h"
 #include "errwarn.h"

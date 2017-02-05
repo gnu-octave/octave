@@ -1878,6 +1878,9 @@ file_editor::construct (void)
   setWidget (editor_widget);
 
   // signals
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
+
   connect (this, SIGNAL (request_settings_dialog (const QString&)),
            main_win (),
            SLOT (process_settings_dialog_request (const QString&)));

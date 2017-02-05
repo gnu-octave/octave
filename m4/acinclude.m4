@@ -1477,48 +1477,63 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   fi
 
   if test $build_qt_gui = yes; then
+    AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
+
     AC_CHECK_TOOLS(MOC_QTVER, [moc-qt$qt_version])
-    AC_CHECK_TOOLS(UIC_QTVER, [uic-qt$qt_version])
-    AC_CHECK_TOOLS(RCC_QTVER, [rcc-qt$qt_version])
-    AC_CHECK_TOOLS(LRELEASE_QTVER, [lrelease-qt$qt_version])
-
-    if test -z "$MOC_QTVER" || test -z "$UIC_QTVER" || test -z "$RCC_QTVER" || test -z "$LRELEASE_QTVER"; then
-      AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
-
-      if test -z "$MOC"; then
-        AC_CHECK_TOOLS(MOC, [moc])
-        if test -n "$QTCHOOSER"; then
-          MOCFLAGS="-qt$qt_version"
-        fi
-      fi
-      if test -z "$UIC"; then
-        AC_CHECK_TOOLS(UIC, [uic])
-        if test -n "$QTCHOOSER"; then
-          UICFLAGS="-qt$qt_version"
-        fi
-      fi
-      if test -z "$RCC"; then
-        AC_CHECK_TOOLS(RCC, [rcc])
-        if test -n "$QTCHOOSER"; then
-          RCCFLAGS="-qt$qt_version"
-        fi
-      fi
-      if test -z "$LRELEASE"; then
-        AC_CHECK_TOOLS(LRELEASE, [lrelease])
-        if test -n "$QTCHOOSER"; then
-          LRELEASEFLAGS="-qt$qt_version"
-        fi
+    if test -z "$MOC_QTVER"; then
+      AC_CHECK_TOOLS(MOC, [moc])
+      if test -n "$MOC" && test -n "$QTCHOOSER"; then
+        MOCFLAGS="-qt$qt_version"
       fi
     else
       MOC="$MOC_QTVER"
+    fi
+      
+    AC_CHECK_TOOLS(UIC_QTVER, [uic-qt$qt_version])
+    if test -z "$UIC_QTVER"; then
+      AC_CHECK_TOOLS(UIC, [uic])
+      if test -n "$UIC" && test -n "$QTCHOOSER"; then
+        UICFLAGS="-qt$qt_version"
+      fi
+    else
       UIC="$UIC_QTVER"
+    fi
+
+    AC_CHECK_TOOLS(RCC_QTVER, [rcc-qt$qt_version])
+    if test -z "$RCC_QTVER"; then
+      AC_CHECK_TOOLS(RCC, [rcc])
+      if test -n "$RCC" && test -n "$QTCHOOSER"; then
+        RCCFLAGS="-qt$qt_version"
+      fi
+    else
       RCC="$RCC_QTVER"
+    fi
+
+    AC_CHECK_TOOLS(LRELEASE_QTVER, [lrelease-qt$qt_version])
+    if test -z "$LRELEASE_QTVER"; then
+      AC_CHECK_TOOLS(LRELEASE, [lrelease])
+      if test -n "$LRELEASE" && test -n "$QTCHOOSER"; then
+        LRELEASEFLAGS="-qt$qt_version"
+      fi
+    else
       LRELEASE="$LRELEASE_QTVER"
     fi
 
     if test -z "$MOC" || test -z "$UIC" || test -z "$RCC" || test -z "$LRELEASE"; then
       warn_qt_tools="one or more of the Qt utility programs moc, uic, rcc, and lrelease not found; disabling Qt GUI"
       build_qt_gui=no
+      MOC_QTVER=
+      UIC_QTVER=
+      RCC_QTVER=
+      LRELEASE_QTVER=
+      MOC_FLAGS=
+      UIC_FLAGS=
+      RCC_FLAGS=
+      LRELEASE_FLAGS=
+      $as_unset ac_cv_prog_MOC_QTVER
+      $as_unset ac_cv_prog_UIC_QTVER
+      $as_unset ac_cv_prog_RCC_QTVER
+      $as_unset ac_cv_prog_LRELEASE_QTVER
     fi
   fi
 

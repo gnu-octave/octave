@@ -142,9 +142,8 @@ parser::is_ref (const QString& node)
       return ref.pos-_node_map [ref._node_name].pos;
     }
   if (_node_map.contains (node))
-    {
-      return 0;  // node: show from the beginning
-    }
+    return 0;  // node: show from the beginning
+
   return -1;
 }
 
@@ -171,17 +170,13 @@ parser::search_node (const QString& node_arg)
 
       QIODevice *io = open_file (file_info);
       if (! io)
-        {
-          return QString ();
-        }
+        return QString ();
 
       seek (io, realPos);
 
       QString text = get_next_node (io);
       if (! text.isEmpty ())
-        {
-          return text;
-        }
+        return text;
 
       io->close ();
       delete io;
@@ -197,9 +192,7 @@ parser::search_node (const QString& node, QIODevice *io)
     {
       QString text = get_next_node (io);
       if (node == get_node_name (text))
-        {
-          return text;
-        }
+        return text;
     }
 
   return QString ();
@@ -227,7 +220,7 @@ parser::get_next_node (QIODevice *io)
           // 0 was read -> image -> text length changes
           line_buffer = io->readLine ();  // image tag that is not needed
           line = io->readLine ();         // firsts line of text message
-          for (i=1; i<line_buffer.size ()+6; i++)  // correct the size
+          for (i = 1; i < line_buffer.size ()+6; i++)  // correct the size
             line.insert (line.size ()-1,QByteArray (" "));  // by adding blanks
         }
 
@@ -235,13 +228,9 @@ parser::get_next_node (QIODevice *io)
         line = " ";
 
       if (line.at(0) == 31)
-        {
-          break;
-        }
+        break;
       else
-        {
-          text.append (QString::fromUtf8 (line));
-        }
+        text.append (QString::fromUtf8 (line));
     }
   return text;
 }
@@ -252,9 +241,7 @@ get_first_line (const QString& text)
   int n = text.indexOf ("\n");
 
   if (n < 0)
-    {
-      return QString ();
-    }
+    return QString ();
 
   QString first_line = text.left (n);
   return first_line;
@@ -270,9 +257,7 @@ parser_node (const QString& text, const QString& node_name)
       QString node = nodes.at (i).trimmed ();
 
       if (node.startsWith (node_name))
-        {
-          return node.remove (0, node_name.size ()).trimmed ();
-        }
+        return node.remove (0, node_name.size ()).trimmed ();
     }
   return QString ();
 }
@@ -307,7 +292,7 @@ replace_links (QString& text)
   QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.]+)");
   int i = 0, f;
 
-  while ((i = re.indexIn (text,i)) != -1)
+  while ((i = re.indexIn (text, i)) != -1)
     {
       QString type     = re.cap (1);
       QString note     = re.cap (3);
@@ -315,13 +300,11 @@ replace_links (QString& text)
       QString term     = re.cap (5);
 
       if (url_link.isEmpty ())
-        {
-          url_link = note;
-        }
+        url_link = note;
 
       term.replace (":","");
       note.replace (":","");
-      note.replace (QRegExp ("`([^']+)'"),"\\1");   // no extra format in links
+      note.replace (QRegExp ("`([^']+)'"),"\\1");  // no extra format in links
 
       QRegExp re_break ("(\n[ ]*)");
 
@@ -330,7 +313,7 @@ replace_links (QString& text)
 
       QString href;
       if (type == "\n*")
-        href="\n";
+        href = "\n";
 
       if (re_break.indexIn (url_link) != -1)
         term += re_break.cap (1);
@@ -347,9 +330,9 @@ replace_links (QString& text)
       url_link.replace ("</b>","");
 
       href += "<font style=\"color:DarkGray; font-weight:bold;\">&raquo;</font>";
-      href +=  "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
+      href += "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
       f = re.matchedLength ();
-      text.replace (i,f,href);
+      text.replace (i, f, href);
       i += href.size ();
     }
 }
@@ -366,7 +349,7 @@ replace_colons (QString& text)
                      "</font>";
 
       f = re.matchedLength ();
-      text.replace (i,f,bold);
+      text.replace (i, f, bold);
       i += bold.size ();
     }
 }
@@ -451,12 +434,10 @@ parser::parse_info_map ()
 
       QIODevice *io = open_file (fileInfo);
       if (! io)
-        {
-          continue;
-        }
+        continue;
 
       QString nodeText;
-      while (! (nodeText=get_next_node (io)).isEmpty () && foundCount < 2)
+      while (! (nodeText = get_next_node (io)).isEmpty () && foundCount < 2)
         {
           QString first_line = get_first_line (nodeText);
           if (first_line.startsWith ("Tag"))
@@ -513,7 +494,6 @@ parser::parse_info_map ()
                   _info_file_real_size_list.append (item);
                   pos += re_files.matchedLength ();
                 }
-
             }
         }
       io->close ();
@@ -564,7 +544,7 @@ replace (QString& text, const QRegExp& re, const QString& after)
 
   while ((pos = re.indexIn (text, pos)) != -1)
     {
-      QString cap = text.mid (pos,re.matchedLength ());
+      QString cap = text.mid (pos, re.matchedLength ());
       QString a (after);
       a = a.arg (cap);
       text.remove (pos, re.matchedLength ());
@@ -577,13 +557,11 @@ QString
 parser::global_search (const QString& text, int max_founds)
 {
   QString results;
-  QStringList words = text.split (" ",QString::SkipEmptyParts);
+  QStringList words = text.split (" ", QString::SkipEmptyParts);
 
   QString re_program ("(" + QRegExp::escape (words.at (0)));
   for (int i = 1; i < words.size (); i++)
-    {
-      re_program += "|" + QRegExp::escape (words.at (i));
-    }
+    re_program += "|" + QRegExp::escape (words.at (i));
   re_program += ")";
 
   QRegExp re (re_program, Qt::CaseInsensitive);
@@ -597,9 +575,7 @@ parser::global_search (const QString& text, int max_founds)
       QFileInfo file_info = _info_files.at (i);
       QIODevice *io = open_file (file_info);
       if (! io)
-        {
-          continue;
-        }
+        continue;
 
       QString node_text;
       while (! (node_text = get_next_node (io)).isEmpty ())
@@ -607,9 +583,7 @@ parser::global_search (const QString& text, int max_founds)
           QString firstLine = get_first_line (node_text);
           QString node = get_node_name (node_text);
           if (node.isEmpty ())
-            {
-              continue;
-            }
+            continue;
 
           int n = node_text.indexOf ("\n");
           node_text.remove (0, n);
@@ -621,10 +595,9 @@ parser::global_search (const QString& text, int max_founds)
                  && node_text.indexOf (words.at (founds)) >= 0; founds++)
             { }
 
-          if (founds<words.size ())
-            {
-              continue;
-            }
+          if (founds < words.size ())
+            continue;
+
           founds = 0;
 
           while ((pos = re.indexIn (node_text, pos)) != -1
@@ -667,8 +640,8 @@ parser::find_ref (const QString &ref_name)
 {
   QString text = "";
 
-  QHash<QString,node_position>::iterator it;
-  for (it=_ref_map.begin (); it!=_ref_map.end (); ++it)
+  QHash<QString, node_position>::iterator it;
+  for (it = _ref_map.begin (); it != _ref_map.end (); ++it)
     {
       QString k = it.key ();
       node_position p = it.value ();
@@ -684,7 +657,7 @@ parser::find_ref (const QString &ref_name)
   if (text.isEmpty ())  // try the statement-nodes
     {
       QHash<QString, node_map_item>::iterator itn;
-      for (itn=_node_map.begin (); itn!=_node_map.end (); ++itn)
+      for (itn = _node_map.begin (); itn != _node_map.end (); ++itn)
         {
           QString k = itn.key ();
           if (k == "The " + ref_name + " Statement")

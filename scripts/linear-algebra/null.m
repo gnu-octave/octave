@@ -37,6 +37,12 @@
 
 function retval = null (A, tol)
 
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  elseif (nargin == 2 && strcmp (tol, "r"))
+    error ("null: option for rational not yet implemented");
+  endif
+
   if (isempty (A))
     retval = [];
   else
@@ -110,5 +116,3 @@ endfunction
 %! tol = 1e-4;
 %! A = [1 0; 0 tol+eps];
 %! assert (null (A,tol), zeros (2,0));
-
-%!error null ()

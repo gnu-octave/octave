@@ -44,41 +44,27 @@ function retval = null (A, tol)
   endif
 
   if (isempty (A))
-    retval = [];
+    if (isa (A, "single"))
+      retval = single ([]);
+    else
+      retval = [];
+    endif
   else
     [U, S, V] = svd (A);
+    out_cls = class (V);
 
-    [rows, cols] = size (A);
-
-    [S_nr, S_nc] = size (S);
-
-    if (S_nr == 1 || S_nc == 1)
-      s = S(1);
-    else
-      s = diag (S);
-    endif
-
+    s = diag (S);
     if (nargin == 1)
-      if (isa (A, "single"))
-        tol = max (size (A)) * s (1) * eps ("single");
-      else
-        tol = max (size (A)) * s (1) * eps;
-      endif
-    elseif (nargin != 2)
-      print_usage ();
+      tol = max (size (A)) * s (1) * eps (out_cls);
     endif
-
     rank = sum (s > tol);
 
+    cols = columns (A);
     if (rank < cols)
       retval = V(:, rank+1:cols);
-      if (isa (A, "single"))
-        retval (abs (retval) < eps ("single")) = 0;
-      else
-        retval (abs (retval) < eps) = 0;
-      endif
+      retval(abs (retval) < eps (out_cls)) = 0;
     else
-      retval = zeros (cols, 0);
+      retval = zeros (cols, 0, out_cls);
     endif
   endif
 
@@ -90,6 +76,7 @@ endfunction
 %!test
 %! A = 0;
 %! assert (null (A), 1);
+%! assert (null (single (A)), single (1));
 
 %!test
 %! A = 1;
@@ -98,6 +85,7 @@ endfunction
 %!test
 %! A = [1 0; 0 1];
 %! assert (null (A), zeros (2,0));
+%! assert (null (single (A)), zeros (2, 0, "single"))
 
 %!test
 %! A = [1 0; 1 0];
@@ -105,7 +93,8 @@ endfunction
 
 %!test
 %! A = [1 1; 0 0];
-%! assert (null (A), [-1/sqrt(2) 1/sqrt(2)]', eps);
+%! assert (null (A), [-1/sqrt(2) 1/sqrt(2)]', eps)
+%! assert (null (single (A)), single ([-1/sqrt(2) 1/sqrt(2)]'), eps)
 
 %!test
 %! tol = 1e-4;
@@ -116,3 +105,7 @@ endfunction
 %! tol = 1e-4;
 %! A = [1 0; 0 tol+eps];
 %! assert (null (A,tol), zeros (2,0));
+
+%!assert (null ([]), [])
+%!assert (null (single ([])), single ([]))
+%!assert (null (uint8 ([])), [])

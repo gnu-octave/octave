@@ -1878,6 +1878,9 @@ file_editor::construct (void)
   setWidget (editor_widget);
 
   // signals
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
+
   connect (this, SIGNAL (request_settings_dialog (const QString&)),
            main_win (),
            SLOT (process_settings_dialog_request (const QString&)));
@@ -2140,9 +2143,6 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
                                                      int, const QString&)),
            f, SLOT (do_breakpoint_marker (bool, const QWidget*, int,
                                           const QString&)));
-
-  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
   _tab_widget->setCurrentWidget (f);
 

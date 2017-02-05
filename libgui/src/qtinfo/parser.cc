@@ -579,10 +579,10 @@ parser::global_search (const QString& text, int max_founds)
   QString results;
   QStringList words = text.split (" ",QString::SkipEmptyParts);
 
-  QString re_program ("(" + words.at (0));
+  QString re_program ("(" + QRegExp::escape (words.at (0)));
   for (int i = 1; i < words.size (); i++)
     {
-      re_program += "|" + words.at (i);
+      re_program += "|" + QRegExp::escape (words.at (i));
     }
   re_program += ")";
 

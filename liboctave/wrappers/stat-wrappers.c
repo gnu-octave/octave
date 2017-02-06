@@ -80,12 +80,14 @@ assign_stat_fields (struct stat *buf, mode_t *mode, ino_t *ino,
 
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
   *blksize = buf->st_blksize;
+#else
   *blksize = 0;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   *blocks = buf->st_blocks;
-  *blksize = 0;
+#else
+  *blocks = 0;
 #endif
 }
 

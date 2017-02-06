@@ -122,10 +122,10 @@ function [pass, fail, xfail, skip] = __run_test_suite__ (fcndirs, fixedtestdirs)
   end_unwind_protect
 
   if (nargout > 0)
-    pass = np;
+    pass = dp;
     fail = nfail;
     xfail = dxf;
-    skip = xsk;
+    skip = dsk;
   endif
 
 endfunction

@@ -537,22 +537,6 @@ parser::seek (QIODevice *io, int pos)
     }
 }
 
-static void
-replace (QString& text, const QRegExp& re, const QString& after)
-{
-  int pos = 0;
-
-  while ((pos = re.indexIn (text, pos)) != -1)
-    {
-      QString cap = text.mid (pos, re.matchedLength ());
-      QString a (after);
-      a = a.arg (cap);
-      text.remove (pos, re.matchedLength ());
-      text.insert (pos, a);
-      pos += a.size ();
-    }
-}
-
 QString
 parser::global_search (const QString& text, int max_founds)
 {
@@ -603,13 +587,6 @@ parser::global_search (const QString& text, int max_founds)
           while ((pos = re.indexIn (node_text, pos)) != -1
                  && founds < max_founds)
             {
-              int line_start, line_end;
-              line_start = node_text.lastIndexOf ("\n", pos);
-              line_end = node_text.indexOf ("\n", pos);
-              QString line = node_text.mid (line_start,
-                                            line_end - line_start).trimmed ();
-              pos += re.matchedLength ();
-
               if (founds == 0)
                 {
                   results.append(
@@ -620,10 +597,26 @@ parser::global_search (const QString& text, int max_founds)
                   results.append ("</a><br>\n");
                 }
 
-              replace (line, re, "<i>%1</i>");
+              // Replace text found with BOLD TEXT in search results
+              int line_start, line_end;
+              line_start = node_text.lastIndexOf ("\n", pos);
+              line_end = node_text.indexOf ("\n", pos);
+              QString line = node_text.mid (line_start,
+                                            line_end - line_start);
+
+              int pos2 = pos - line_start;
+              int len = re.matchedLength ();
+
+              QString ptn = line.mid (pos2, len);
+              QString repl ("<b>%1</b>");
+              repl = repl.arg (ptn);
+              line.remove (pos2, len);
+              line.insert (pos2, repl);
+              line = line.trimmed ();
               results.append (line);
               results.append ("<br>\n");
 
+              pos += len;
               founds++;
             }
         }

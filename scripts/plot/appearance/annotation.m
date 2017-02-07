@@ -480,10 +480,13 @@ function h = buildannot (hax, objtype, pos)
 
       hr = patch (x, y, "parent", h);
 
+      ## FIXME: Remove warn state switching in Octave 4.8
+      old_warn_state = warning ("off", "Octave:deprecated-property");
       propnames = rectprops ("names");
       for ii = 1:numel (propnames)
         update_rect (h, {}, propnames{ii}, hr, objtype);
       endfor
+      warning (old_warn_state);
 
       rectmenu (hui, h);
       set (hr, "uicontextmenu", hui);
@@ -727,9 +730,9 @@ function props = textboxprops (varargin)
            "linestyle",  "linelinestyle", "-", ...
            "linewidth", "linelinewidth", 0.5, ...
            "string", "textstring", "", ...
-           "fitboxtotext", "radio","{on}|off", ...
+           "fitboxtotext", "radio", "{on}|off", ...
            "margin", "data", 5, ...
-           "verticalalignment", "textverticalalignment",  "middle"};
+           "verticalalignment", "textverticalalignment", "middle"};
   if (strcmp (varargin, "names"))
     props = props(1:3:end);
   endif
@@ -797,7 +800,9 @@ endfunction
 
 function props = rectprops (varargin)
 
-  props = {"edgecolor", "patchedgecolor", "k", ...
+  ## FIXME: Remove "edgecolor" in Octave 4.8
+  props = {"color", "patchedgecolor", "k", ...
+           "edgecolor", "patchedgecolor", "k", ...
            "facealpha", "patchfacealpha", 1, ...
            "facecolor", "patchfacecolor", "none", ...
            "linestyle", "patchlinestyle", "-", ...
@@ -813,7 +818,7 @@ function rectmenu (hui, hpar)
   prop = "facecolor";
   vals = basecolors ();
   addbasemenu (hui, hpar, prop, vals, "Face Color");
-  prop = "edgecolor";
+  prop = "color";
   vals = basecolors ();
   addbasemenu (hui, hpar, prop, vals, "Edge Color");
   prop = "linestyle";
@@ -1257,7 +1262,7 @@ function [x, y] = pos2ell (pos)
 
 endfunction
 
-function update_rect (h, dummy, prop, hre, typ)
+function update_rect (h, ~, prop, hre, typ)
   persistent recursive = false;
 
   if (! recursive)
@@ -1269,10 +1274,22 @@ function update_rect (h, dummy, prop, hre, typ)
         else
           [x, y] = pos2ell (pos);
         endif
-
         set (hre, "xdata", x, "ydata", y);
+
+      case "color"
+        set (hre, "edgecolor", get (h, prop));
+
+      case "edgecolor"
+        ## FIXME: Remove "edgecolor" in Octave 4.8
+        warning ("Octave:deprecated-property",
+                 ['annotation: Property "edgecolor" for ' typ ' annotations'...
+                  ' is deprecated and will be removed from a future version'...
+                  ' of Octave.  Use "color" instead.']);
+        set (hre, "edgecolor", get (h, prop));
+
       otherwise
         set (hre, prop, get (h, prop));
+
     endswitch
   endif
 
@@ -1490,6 +1507,29 @@ endfunction
 %!   assert (get (hte, "verticalalignment"), "bottom");
 %!   assert (get (hte, "horizontalalignment"), "left");
 %!   assert (get (hpa, "facecolor"), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## test rectangle properties
+%!test
+%! hf = figure ("visible", "off");
+%! hax = axes ();
+%! unwind_protect
+%!   h = annotation ("rectangle", [0.2 0.7 0.2 0.2], "linewidth", 2,
+%!                   "linestyle", "--", "color", "r", "facecolor", "b",
+%!                   "facealpha", .6, "units", "normalized");
+%!   hpa = get (h, "children");
+%!   assert (get (hpa, "xdata"), [0.2; 0.4; 0.4; 0.2], eps);
+%!   assert (get (hpa, "ydata"), [0.7; 0.7; 0.9; 0.9], eps);
+%!   assert (get (hpa, "linewidth"), 2);
+%!   assert (get (hpa, "linestyle"), "--");
+%!   assert (get (hpa, "edgecolor"), [1 0 0]);
+%!   assert (get (hpa, "edgecolor"), get (h, "color"));
+%!   assert (get (hpa, "facecolor"), [0 0 1]);
+%!   assert (get (hpa, "facealpha"), .6);
+%!  
+%!   assert (gca (), hax);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

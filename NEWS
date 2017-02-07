@@ -60,6 +60,11 @@ Summary of important user-visible changes for version 4.4:
     that it defined (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
     and DEFINE_OCTAVE_ALLOCATOR2).
 
+ ** The rectangle and ellipse annotation property "edgecolor" has been
+    deprecated and will be removed from Octave 4.8 (or whatever version
+    is the second major release after 4.4).  Use the property "color"
+    instead.
+
 
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------

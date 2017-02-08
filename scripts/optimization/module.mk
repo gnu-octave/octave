@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/fsolve.m \
   %reldir%/fzero.m \
   %reldir%/glpk.m \
+  %reldir%/humps.m \
   %reldir%/lsqnonneg.m \
   %reldir%/optimget.m \
   %reldir%/optimset.m \

@@ -192,3 +192,8 @@ objective function
 @DOCSTRING(fminunc)
 
 @DOCSTRING(fminsearch)
+
+The function @code{humps} is a useful function for testing zero and
+extrema finding functions.
+
+@DOCSTRING(humps)

@@ -384,8 +384,8 @@ classdef inputParser < handle
       endif
       pnargin = numel (varargin);
 
-      this.ParameterNames  = fieldnames (this.Parameter);
-      this.SwitchNames     = fieldnames (this.Switch);
+      this.ParameterNames = fieldnames (this.Parameter);
+      this.SwitchNames    = fieldnames (this.Switch);
 
       ## Evaluate the Required arguments first
       nReq = numel (this.Required);
@@ -462,7 +462,7 @@ classdef inputParser < handle
             this.Unmatched.(name) = varargin{vidx};
           else
             this.error (sprintf ("argument '%s' is not a valid parameter",
-                                  toupper (name)));
+                                 toupper (name)));
           endif
         endif
       endwhile
@@ -719,15 +719,13 @@ endclassdef
 %! p.parse ("line", "circle");
 %! assert ({p.Results.line, p.Results.color}, {"circle", "red"})
 
-%!function r = foobar (varargin)
-%!  p = inputParser ();
-%!  p.addParameter ("foo", "bar", @ischar);
-%!  p.parse (varargin{2:end});
-%!  r = p.Results;
-%!endfunction
-
-%!xtest assert (foobar (), struct ("foo", "bar"))
-%!xtest assert (foobar ([], "foo", "qux"), struct ("foo", "qux"))
+%!test
+%! p = inputParser;
+%! p.addParameter ("foo", "bar", @ischar);
+%! p.parse ();
+%! assert (p.Results, struct ("foo", "bar"))
+%! p.parse ("foo", "qux");
+%! assert (p.Results, struct ("foo", "qux"))
 
 ## FIXME: This somehow works in Matlab
 %!xtest

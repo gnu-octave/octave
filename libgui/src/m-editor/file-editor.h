@@ -164,6 +164,7 @@ signals:
 public slots:
 
   void focus (void);
+  void set_focus (QWidget* fet);
   void enable_menu_shortcuts (bool);
   bool check_closing (void);
 

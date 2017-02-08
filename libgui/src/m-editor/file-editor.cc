@@ -162,6 +162,16 @@ file_editor::focus (void)
 }
 
 void
+file_editor::set_focus (QWidget *fet)
+{
+  octave_dock_widget::focus ();
+
+  // set focus to desired tab
+  if (fet)
+    _tab_widget->setCurrentWidget (fet);
+}
+
+void
 file_editor::update_octave_directory (const QString& dir)
 {
   ced = dir;
@@ -2012,6 +2022,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            this, SLOT (handle_edit_mfile_request (const QString&,
                                                   const QString&,
                                                   const QString&, int)));
+
+  connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
+           this, SLOT (set_focus (QWidget*)));
 
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),

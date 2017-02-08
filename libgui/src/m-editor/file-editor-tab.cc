@@ -2188,6 +2188,11 @@ file_editor_tab::file_has_changed (const QString&)
 
       else
         {
+          // give editor and this tab the focus,
+          // possibly making the editor visible if it is hidden
+          emit set_focus_editor_signal (this);
+          _edit_area->setFocus ();
+
           // Create a WindowModal message that blocks the edit area
           // by making _edit_area parent.
           QMessageBox* msgBox
@@ -2207,6 +2212,11 @@ file_editor_tab::file_has_changed (const QString&)
     }
   else
     {
+      // give editor and this tab the focus,
+      // possibly making the editor visible  if it is hidden
+      emit set_focus_editor_signal (this);
+      _edit_area->setFocus ();
+
       QString modified = "";
       if (_edit_area->isModified ())
         modified = tr ("\n\nWarning: The contents in the editor is modified!");

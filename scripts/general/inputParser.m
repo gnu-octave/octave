@@ -419,8 +419,9 @@ classdef inputParser < handle
             vidx -= 1;
             break
           else
-            this.error (sprintf ("failed validation of %s",
-                                 toupper (opt.name)));
+            this.error (sprintf (["failed validation of %s\n", ...
+                                  "Validation function: %s"],
+                                 toupper (opt.name), disp(opt.val)));
           endif
         endif
         this.Results.(opt.name) = in;
@@ -503,7 +504,8 @@ classdef inputParser < handle
 
     function validate_arg (this, name, val, in)
         if (! val (in))
-          this.error (sprintf ("failed validation of %s", toupper (name)));
+          this.error (sprintf ("failed validation of %s with %s",
+                               toupper (name), func2str (val)));
         endif
         this.Results.(name) = in;
     endfunction
@@ -752,3 +754,9 @@ endclassdef
 %! p.parse ("b", 1);
 %! assert (p.Results, struct ("b", 1));
 %! assert (p.Unmatched, struct ());
+
+## Test for patch #9241
+%!error<failed validation of A with ischar>
+%! p = inputParser;
+%! p.addParameter ("a", [], @ischar);
+%! p.parse ("a", 1);

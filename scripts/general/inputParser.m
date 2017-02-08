@@ -274,16 +274,16 @@ classdef inputParser < handle
   properties (Access = protected)
     ## Since Required and Optional are ordered, they get a cell array of
     ## structs with the fields "name", "def" (default), and "val" (validator).
-    Required   = cell ();
-    Optional   = cell ();
+    Required = cell ();
+    Optional = cell ();
     ## Parameter and Switch are unordered so we have a struct whose fieldnames
     ## are the argname, and values are a struct with fields "def" and "val"
-    Parameter  = struct ();
-    Switch     = struct ();
+    Parameter = struct ();
+    Switch    = struct ();
 
     ## List of Parameter and Switch names to ease searches
     ParameterNames = cell ();
-    SwitchNames     = cell ();
+    SwitchNames    = cell ();
 
     ## When checking for fieldnames in a Case Insensitive way, this variable
     ## holds the correct identifier for the last searched named using the

@@ -494,7 +494,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
     CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qt/qglobal.h>
+        #include <qglobal.h>
         ]], [[
         #if QT_VERSION < 0x040700
         #error No SetPlacholderText function available.

@@ -354,9 +354,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
     [octave_cv_version_2_6_0],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         #include <Qsci/qsciglobal.h>
         ]], [[
@@ -367,7 +365,6 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
       octave_cv_version_2_6_0=yes,
       octave_cv_version_2_6_0=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_version_2_6_0 = yes; then
@@ -489,9 +486,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
     [octave_cv_func_setplaceholdertext],
     [AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         #include <Qt/qglobal.h>
         ]], [[
@@ -502,7 +497,6 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT], [
       octave_cv_func_setplaceholdertext=yes,
       octave_cv_func_setplaceholdertext=no)
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_func_setplaceholdertext = yes; then

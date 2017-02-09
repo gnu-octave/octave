@@ -1445,6 +1445,8 @@ main_window::construct (void)
       connect (qApp, SIGNAL (aboutToQuit ()),
                workspace_window, SLOT (save_settings ()));
       connect (qApp, SIGNAL (aboutToQuit ()),
+               editor_window, SLOT (save_settings ()));
+      connect (qApp, SIGNAL (aboutToQuit ()),
                this, SLOT (prepare_to_exit ()));
       connect (qApp, SIGNAL (aboutToQuit ()),
                shortcut_manager::instance, SLOT (cleanup_instance ()));

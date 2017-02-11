@@ -1525,9 +1525,13 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       RCC_FLAGS=
       LRELEASE_FLAGS=
       $as_unset ac_cv_prog_MOC_QTVER
+      $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER
+      $as_unset ac_cv_prog_ac_ct_UIC_QTVER
       $as_unset ac_cv_prog_RCC_QTVER
+      $as_unset ac_cv_prog_ac_ct_RCC_QTVER
       $as_unset ac_cv_prog_LRELEASE_QTVER
+      $as_unset ac_cv_prog_ac_ct_LRELEASE_QTVER
     fi
   fi
 

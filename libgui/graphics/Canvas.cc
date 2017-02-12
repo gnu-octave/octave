@@ -374,7 +374,7 @@ namespace QtHandles
   void
   Canvas::select_object (graphics_object obj, QMouseEvent* event,
                          graphics_object &currentObj, graphics_object &axesObj,
-                         bool axes_only)
+                         bool axes_only, std::vector<std::string> omit)
   {
     QList<graphics_object> axesList;
     Matrix children = obj.get_properties ().get_all_children ();
@@ -385,7 +385,17 @@ namespace QtHandles
         graphics_object childObj (gh_manager::get_object (children(i)));
 
         if (childObj.isa ("axes"))
-          axesList.append (childObj);
+          {
+            auto p = omit.begin ();
+            bool omitfound = false;
+            while (p != omit.end () && ! omitfound)
+              {
+                omitfound = (childObj.get ("tag").string_value () == *p);
+                p++;
+              }
+            if (! omitfound)
+              axesList.append (childObj);
+          }
         else if (childObj.isa ("uicontrol") || childObj.isa ("uipanel")
                  || childObj.isa ("uibuttongroup"))
           {
@@ -545,7 +555,8 @@ namespace QtHandles
     if (figObj.valid_object () && obj.valid_object ())
       {
         graphics_object currentObj, axesObj;
-        select_object (obj, event, currentObj, axesObj, true);
+        std::vector<std::string> omit = {"legend", "colorbar", "scribeoverlay"};
+        select_object (obj, event, currentObj, axesObj, true, omit);
 
         if (axesObj.valid_object ())
           {

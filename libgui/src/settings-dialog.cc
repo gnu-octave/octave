@@ -403,6 +403,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/long_line_marker",true).toBool ());
   ui->editor_long_line_column->setValue (
     settings->value ("editor/long_line_column",80).toInt ());
+  ui->editor_wrap_checkbox->setChecked (
+    settings->value ("editor/wrap_lines",false).toBool ());
   ui->cb_edit_status_bar->setChecked (
     settings->value ("editor/show_edit_status_bar",true).toBool ());
   ui->cb_edit_tool_bar->setChecked (
@@ -786,6 +788,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->editor_long_line_marker->isChecked ());
   settings->setValue ("editor/long_line_column",
                       ui->editor_long_line_column->value ());
+  settings->setValue ("editor/wrap_lines",
+                      ui->editor_wrap_checkbox->isChecked ());
   settings->setValue ("editor/code_folding",
                       ui->cb_code_folding->isChecked ());
   settings->setValue ("editor/show_edit_status_bar",

@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 
 /**
  @file A single GUI file tab.
- This interfaces QSciScintilla with the rest of Octave.
+ This interfaces QsciScintilla with the rest of Octave.
  */
 
 #if defined (HAVE_CONFIG_H)
@@ -2357,6 +2357,14 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
     _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
   else
     _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
+
+  // line wrappping
+  _edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
+  _edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
+  if (settings->value ("editor/wrap_lines",false).toBool ())
+    _edit_area->setWrapMode (QsciScintilla::WrapWord);
+  else
+    _edit_area->setWrapMode (QsciScintilla::WrapNone);
 
   // reload changed files
   _always_reload_changed_files =

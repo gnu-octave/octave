@@ -2028,7 +2028,7 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
-           f, SLOT (settings_changed (const QSettings *)));
+           f, SLOT (notice_settings (const QSettings *)));
 
   connect (this, SIGNAL (fetab_change_request (const QWidget*)),
            f, SLOT (change_editor_state (const QWidget*)));

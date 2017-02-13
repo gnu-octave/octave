@@ -112,6 +112,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
            this, SLOT (handle_cursor_moved (int,int)));
 
+  connect (_edit_area, SIGNAL (SCN_CHARADDED (int)),
+           this, SLOT (handle_char_added (int)));
+
   connect (_edit_area, SIGNAL (linesChanged ()),
            this, SLOT (handle_lines_changed ()));
 
@@ -2351,20 +2354,26 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
 
-  _edit_area->setEdgeColumn (
-              settings->value ("editor/long_line_column",80).toInt ());
+  int line_length = settings->value ("editor/long_line_column",80).toInt ();
+  _edit_area->setEdgeColumn (line_length);
   if (settings->value ("editor/long_line_marker",true).toBool ())
     _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
   else
     _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
 
-  // line wrappping
+  // line wrappping and breaking
   _edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
   _edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
+
   if (settings->value ("editor/wrap_lines",false).toBool ())
     _edit_area->setWrapMode (QsciScintilla::WrapWord);
   else
     _edit_area->setWrapMode (QsciScintilla::WrapNone);
+
+  if (settings->value ("editor/break_lines",false).toBool ())
+    _line_break = line_length;
+  else
+    _line_break = 0;
 
   // reload changed files
   _always_reload_changed_files =
@@ -2651,6 +2660,53 @@ file_editor_tab::handle_cursor_moved (int line, int col)
 
   _row_indicator->setNum (line+1);
   _col_indicator->setNum (col+1);
+}
+
+// Slot that is entered each time a new character was typed.
+// It is used for handling line breaking if this is desired.
+void
+file_editor_tab::handle_char_added (int character)
+{
+  if (_line_break)
+  {
+    // if line breaking is desired, get the current line and column
+    int line, col;
+    _edit_area->getCursorPosition (&line, &col);
+
+    // immediately return if line has not reached the max. line length
+    if (col < _line_break)
+      return;
+
+    if (character == ' ' || character == '\t')
+      {
+        // the new character is space or tab, break already here
+        _edit_area->insertAt (QString ("\n"), line, col);
+      }
+    else
+      {
+        // search backward for the first space or tab
+        int col_space = col - 1;
+        int c = 0, pos;
+
+        while (c != ' ' && c != '\t' && col_space-- > 0)
+          {
+            pos = _edit_area->positionFromLineIndex (line, col_space);
+            c = _edit_area->SendScintilla (QsciScintillaBase::SCI_GETCHARAT,
+                                           pos);
+          }
+
+        // if a space or tab was found, break after that char;
+        // otherwise break at cursor position
+        int col_newline = col - 1;
+        if (c == ' ' || c == '\t')
+          col_newline = col_space + 1;
+        // insert a newline char for breaking the line
+        _edit_area->insertAt (QString ("\n"), line, col_newline);
+      }
+
+    // automatically indent new line to the indentation of previous line
+    _edit_area->setIndentation (line + 1, _edit_area->indentation (line));
+  }
 }
 
 void

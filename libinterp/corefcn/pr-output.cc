@@ -3598,20 +3598,29 @@ Note that the output from @code{fdisp} always ends with a newline.
 DEFUN (display, args, ,
        classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
-@deftypefn {} {} display (@var{obj})
-Display the contents of the object @var{obj}.
+@deftypefn  {} {} display (@var{obj})
+@deftypefnx {} {} display (@var{obj}, @var{name})
+Display the contents of the object @var{obj} prepended by it's assigned
+variable name @var{name}.
 
 The Octave interpreter calls the @code{display} function whenever it needs
 to present a class on-screen.  Typically, this would be a statement which
 does not end in a semicolon to suppress output.  For example:
 
 @example
+myclass (@dots{})
+@end example
+
+Or:
+
+@example
 myobj = myclass (@dots{})
 @end example
 
-User-defined classes should overload the @code{display} method so that
-something useful is printed for a class object.  Otherwise, Octave will
-report only that the object is an instance of its class.
+User-defined classes should overload the @code{display} method with two
+input arguments so that something useful is printed for a class object.
+Otherwise, Octave will report only that the object is an instance of its
+class.
 
 @example
 @group

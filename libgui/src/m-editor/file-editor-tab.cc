@@ -739,6 +739,11 @@ file_editor_tab::update_lexer ()
   // margin colors
   h = bh;
   s = bs/2;
+  v = bv + (fv - bv)/5;
+
+  bg.setHsv (h,s,v);
+  _edit_area->setEdgeColor (bg);
+
   v = bv + (fv - bv)/8;
   bg.setHsv (h,s,v);
   v = bv + (fv - bv)/4;
@@ -2354,14 +2359,16 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
 
+  // long line marker
   int line_length = settings->value ("editor/long_line_column",80).toInt ();
   _edit_area->setEdgeColumn (line_length);
+  _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
   if (settings->value ("editor/long_line_marker",true).toBool ())
     _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
-  else
-    _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
+  if (settings->value ("editor/long_line_marker_background",true).toBool ())
+    _edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
 
-  // line wrappping and breaking
+  // line wrapping and breaking
   _edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
   _edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
 

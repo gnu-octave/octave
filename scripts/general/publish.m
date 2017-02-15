@@ -1,4 +1,4 @@
-## Copyright (C) 2016 Kai T. Ohlhus <k.ohlhus@gmail.com>
+## Copyright (C) 2016-2017 Kai T. Ohlhus <k.ohlhus@gmail.com>
 ## Copyright (C) 2010 Fotios Kasolis <fotios.kasolis@gmail.com>
 ##
 ## This file is part of Octave.
@@ -95,6 +95,18 @@
 ## The output formats @samp{doc}, @samp{ppt}, and @samp{xml} are not currently
 ## supported.  To generate a @samp{doc} report, open a generated @samp{html}
 ## report with your office suite.
+##
+## In Octave custom formats are supported by implementing all callback
+## subfunctions in a function file named
+## @samp{__publish_<custom format>_output__.m}.  To obtain a template for the
+## HTML format type:
+##
+## @example
+## @group
+## edit (fullfile (fileparts (which ("publish")), ...
+##       "private", "__publish_html_output__.m"))
+## @end group
+## @end example
 ##
 ## @item
 ## @samp{outputDir} --- Full path of the directory where the generated report
@@ -233,12 +245,24 @@ function output_file = publish (file, varargin)
   if (! isfield (options, "format"))
     options.format = "html";
   else
-    options.format = validatestring (options.format, {"html", "doc", "latex",
-                                                      "ppt", "xml", "pdf"});
     ## FIXME: Implement remaining formats
-    if (any (strcmp (options.format, {"doc", "ppt", "xml"})))
+    if (any (strcmpi (options.format, {"doc", "ppt", "xml"})))
       error ('publish: Output format "%s" is not yet supported',
              options.format);
+    endif
+    ## Supported or custom output format
+    supported_formats = {"html", "doc", "latex", "ppt", "xml", "pdf"};
+    if (! any (strcmpi (options.format, supported_formats)))
+      ## Check existance of custom formatter
+      custom_formatter = ["__publish_", options.format, "_output__"];
+      if (! exist (custom_formatter, "file"))
+        error (['publish: Custom output format "%s" requires the ', ...
+                'formatter function:\n\n\t%s\n\n', ...
+                '\tSee "help publish" for more information.'],
+                options.format, custom_formatter);
+      endif
+    else
+      options.format = validatestring (options.format, supported_formats);
     endif
   endif
 
@@ -702,14 +726,14 @@ function ofile = create_output (doc, options)
   ## CREATE_OUTPUT creates the desired output file
 
   formatter = [];
-  ofile_ext = "";
   switch (options.format)
     case "html"
       formatter = @__publish_html_output__;
-      ofile_ext = ".html";
     case {"latex", "pdf"}
       formatter = @__publish_latex_output__;
-      ofile_ext = ".tex";
+    otherwise
+      ## Custom formatter
+      formatter = eval (["@__publish_", options.format, "_output__"]);
   endswitch
 
   ## Use title, or if not given, the m-file name
@@ -726,7 +750,7 @@ function ofile = create_output (doc, options)
 
   ## Write file
   [~, ofile] = fileparts (doc.m_source_file_name);
-  ofile_name = [ofile, ofile_ext];
+  ofile_name = [ofile, formatter("output_file_extension")];
   ofile = fullfile (options.outputDir, ofile_name);
   fid = fopen (ofile, "w");
   fputs (fid, content);

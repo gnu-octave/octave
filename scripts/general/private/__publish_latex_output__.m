@@ -1,4 +1,4 @@
-## Copyright (C) 2016 Kai T. Ohlhus
+## Copyright (C) 2016-2017 Kai T. Ohlhus
 ##
 ## This file is part of Octave.
 ##
@@ -28,6 +28,8 @@
 ## @var{type} is one of
 ##
 ## @itemize @bullet
+## @item
+## @samp{output_file_extension} ()
 ## @item
 ## @samp{header} (title_str, intro_str, toc_cstr)
 ## @item
@@ -71,6 +73,10 @@
 
 function outstr = __publish_latex_output__ (type, varargin)
   outstr = feval (["do_" type], varargin{:});
+endfunction
+
+function outstr = do_output_file_extension ()
+  outstr = ".tex";
 endfunction
 
 function outstr = do_header (title_str, intro_str, toc_cstr)

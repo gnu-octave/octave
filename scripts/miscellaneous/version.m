@@ -36,7 +36,7 @@
 ## for a description of the release (always an empty string),
 ##
 ## @item @qcode{"-release"}
-## for the name of the running build,
+## for the name of the running build (always an empty string),
 ##
 ## @item @qcode{"-java"}
 ## for version information of the Java @nospell{VM},
@@ -116,6 +116,9 @@ endfunction
 %! assert (d, __octave_config_info__ ("release_date"));
 
 %!assert (version ("-date"), __octave_config_info__ ("release_date"))
+
+%!assert (version ("-description"), "")
+%!assert (version ("-release"), "")
 
 ## Test input validation
 %!error version ("-date", "-release")

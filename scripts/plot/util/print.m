@@ -319,12 +319,16 @@ function print (varargin)
     error ("print: directory %s does not exist", folder);
   endif
 
-  fid = fopen (opts.name, "w+");
+  ## Check the requested file is writable
+  do_unlink = (exist (opts.name, "file") != 2);
+  fid = fopen (opts.name, "a");
   if (fid == -1)
     error ("print: cannot open file %s for writing", opts.name);
   endif
   fclose (fid);
-  unlink (opts.name);
+  if (do_unlink)
+    unlink (opts.name);
+  endif
 
   opts.pstoedit_cmd = @pstoedit;
   opts.fig2dev_cmd = @fig2dev;

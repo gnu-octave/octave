@@ -1,0 +1,100 @@
+## Copyright (C) 2017 Pantxo Diribarne
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## Put graphics properties here that should be removed, or for which some
+## values (radio strings only) should not be accepted, in a given future
+## version.  Don't forget to add a note in the NEWS file.
+
+%!function testprop (h, prop, vrs, val = [])
+%!  vrsmax = strsplit (vrs, ".");
+%!  vrscur = strsplit (version (), ".");
+%!  if (num2str (vrsmax{1}) < num2str (vrscur{1}) ||
+%!      num2str (vrsmax{2}) < num2str (vrscur{2}))
+%!    if (isempty (val) && isprop (h, prop))
+%!      error ("Please remove %s property %s", get (h, "type"), prop);
+%!    elseif (! isempty (val) && ! isempty (strfind (val, set (h, prop))))
+%!      error ("Please remove '%s' from allowed values for %s property %s",
+%!             val, get (h, "type"), prop);
+%!    endif
+%!  endif
+%!endfunction
+
+## patch/surface "normalmode" deprecated in 4.2, remove from 4.5.+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hp = patch ();
+%!   testprop (hp, "normalmode", "4.4");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hs = surface ();
+%!   testprop (hs, "normalmode", "4.4");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## axes, "zero" value for "x/yaxislocation" deprecated in 4.2, remove from 4.5.+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ha = axes ();
+%!   testprop (ha, "xaxislocation", "4.4", "zero");
+%!   testprop (ha, "yaxislocation", "4.4", "zero");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## annotation rectangle "edgecolor" deprecated in 4.4, remove from 4.7.+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ha = annotation ("rectangle");
+%!   testprop (ha, "edgecolor", "4.6");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## figure "doublebuffer, mincolormap, wvisual, wvisualmode, xdisplay,
+## xvisual, xvisualmode" deprecated in 4.4, remove from 4.7.+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   testprop (hf, "doublebuffer", "4.6");
+%!   testprop (hf, "mincolormap", "4.6");
+%!   testprop (hf, "wvisual", "4.6");
+%!   testprop (hf, "wvisualmode", "4.6");
+%!   testprop (hf, "xdisplay", "4.6");
+%!   testprop (hf, "xvisual", "4.6");
+%!   testprop (hf, "xvisualmode", "4.6");
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+## axes "drawmode" deprecated in 4.4, remove from 4.7.+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   testprop (hax, "drawmode", "4.6");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

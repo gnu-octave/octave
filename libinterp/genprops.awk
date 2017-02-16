@@ -55,7 +55,7 @@
 ##   }
 ##
 ## If present, the QUALIFIERS string may include any of the characters
-## g, G, m, s, S, o, O, h, which have the following meanings:
+## g, G, m, s, S, o, O, h, d which have the following meanings:
 ##
 ##   g:  There is a custom inline definition for the get function,
 ##       so we don't emit one.
@@ -68,6 +68,8 @@
 ##
 ##   S:  There is a custom extern definition for the type-specific set
 ##       function, so we emit only the declaration.
+##
+##   d:  The property is deprecated and a warning is emitted when accessing it.
 ##
 ################################################################################
 ##   'o','O','a' are currently not processed.  They are commented out in code.
@@ -144,7 +146,9 @@ function emit_get_accessor (i, rtype, faccess)
 {
   printf ("  %s get_%s (void) const", rtype, name[i]);
 
-  if (emit_get[i] == "definition")
+  if (emit_get[i] == "definition" && deprecated[i])
+    printf ("\n{\n  warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n  return %s.%s ();\n}\n", name[i], name[i], faccess);
+  else if (emit_get[i] == "definition")
     printf (" { return %s.%s (); }\n", name[i], faccess);
   else
     printf (";\n");
@@ -388,6 +392,8 @@ function emit_declarations ()
           printf ("            set_%smode (\"manual\");\n", name[i]);
         if (updater[i])
           printf ("            update_%s ();\n", name[i]);
+        if (deprecated[i])
+          printf ("            warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n", name[i]);
         if (limits[i])
           printf ("            update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
@@ -760,6 +766,7 @@ BEGIN {
     emit_set[idx] = "definition";
     defval[idx] = "";
     updater[idx] = "";
+    deprecated[idx] = 0;
     factory[idx] = 1;
 ##    if (type[idx] == "octave_value")
 ##      emit_ov_set[idx] = "";
@@ -815,6 +822,10 @@ BEGIN {
         ## from the set method
         if (index (quals, "U"))
           updater[idx] = "extern";
+
+        ## The property is deprecated 
+        if (index (quals, "d"))
+          deprecated[idx] = 1;
 
         ## There is not factory default value
         if (index (quals, "f"))

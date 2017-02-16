@@ -3471,11 +3471,6 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-    // FIXME: Several properties have been deleted from Matlab.
-    //        We should either immediately remove them or figure out a way
-    //        to deprecate them for a release or two.
-    // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
-    // xdisplay, xvisual, xvisualmode
 
     // Programming note: Keep property list sorted if new ones are added.
 
@@ -3548,13 +3543,13 @@ public:
       // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
       //                      xdisplay, xvisual, xvisualmode
       // FIXME: Remove in version 4.6
-      bool_property doublebuffer h , "on"
-      double_property mincolormap h , 64
-      string_property wvisual hm , ""
-      radio_property wvisualmode h , "{auto}|manual"
-      string_property xdisplay h , ""
-      string_property xvisual hm , ""
-      radio_property xvisualmode h , "{auto}|manual"
+      bool_property doublebuffer hd , "on"
+      double_property mincolormap hd , 64
+      string_property wvisual hmd , ""
+      radio_property wvisualmode hd , "{auto}|manual"
+      string_property xdisplay hd , ""
+      string_property xvisual hmd , ""
+      radio_property xvisualmode hd , "{auto}|manual"
     END_PROPERTIES
 
   protected:
@@ -3913,11 +3908,6 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // FIXME: Several properties have been deleted from Matlab.
-    //        We should either immediately remove them or figure out a way
-    //        to deprecate them for a release or two.
-    // Obsolete properties: drawmode
-
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (axes)
@@ -3944,7 +3934,7 @@ public:
       array_property currentpoint , Matrix (2, 3, 0.0)
       row_vector_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
-      radio_property drawmode , "{normal}|fast"
+      radio_property drawmode hd , "{normal}|fast"
       radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10

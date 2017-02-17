@@ -797,7 +797,7 @@ function str = format_output (cstr, formatter, options)
         if (options.showCode)
           str = [str, formatter(cstr{i}.type, cstr{i}.content)];
         endif
-        if (options.evalCode)
+        if ((options.evalCode) && (! isempty (cstr{i}.output)))
           str = [str, formatter("code_output", cstr{i}.output)];
         endif
       case {"text", "section"}

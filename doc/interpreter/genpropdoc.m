@@ -287,6 +287,8 @@ are visible in their parents' children list, regardless of the value of their \
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "closerequestfcn"
+        s.doc = "Function that is executed when a figure is deleted.  \
+@xref{XREFclosereq, , closereq function}."
         s.valid = valid_fcn;
 
       case "color"
@@ -362,8 +364,8 @@ key.\n\
         s.valid = valid_fcn;
 
       case "menubar"
-        s.doc = "Control the display of the figure menu bar in the upper \
-left of the figure.";
+        s.doc = "Control the display of the figure menu bar at the top \
+of the figure.";
 
       case "name"
         s.doc = "Name to be displayed in the figure title bar.  The name is \
@@ -376,12 +378,20 @@ property.";
       #  s.doc = "Number of current figure (RO).";
 
       case "nextplot"
+        s.doc = "__prop__ is used by high level plotting functions to \
+decide what to do with axes already present in the figure.  \
+@xref{XREFnewplot, , @w{newplot function}}.";
 
       case "numbertitle"
         s.doc = "Display \"Figure\" followed by the numerical figure handle \
 value in the figure title bar.";
 
       case "outerposition"
+        s.doc = "Specify the position and size of the figure including \
+the top menubar and the bottom status bar.  \
+The four elements of the vector are the coordinates of the lower left corner \
+and width and height of the figure.  \
+@xref{XREFfigureunits, , @w{units property}}.";
         s.valid = valid_4elvec;
 
       case "paperorientation"
@@ -438,14 +448,17 @@ units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
         s.doc = doc_unused;
 
       case "position"
-        s.doc = "Specify the position and size of the figure.  \
+        s.doc = "Specify the position and size of the figure canvas.  \
 The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the figure.  \
 @xref{XREFfigureunits, , @w{units property}}.";
         s.valid = valid_4elvec;
 
       case "renderer"
+        s.doc = doc_unused;
+        
       case "renderermode"
+        s.doc = doc_unused;
 
       case "resize"
         s.doc = doc_unused;
@@ -462,9 +475,8 @@ and width and height of the figure.  \
         s.valid = valid_fcn;
 
       case "toolbar"
-        s.doc = "Control the display of the toolbar along the bottom of the \
-figure window.  When set to @qcode{\"auto\"}, the display is based on the \
-value of the @code{menubar} property.";
+        s.doc = "Control the display of the toolbar (along the bottom of the \
+menubar) and the status bar.  When set to @qcode{\"auto\"}, the display is based on the value of the @code{menubar} property.";
 
       case "units"
         s.doc = "The unit used to compute the @code{position} and \
@@ -489,9 +501,13 @@ released respectively.  When these callback functions are executed, the \
         s.valid = valid_fcn;
 
       case "windowkeypressfcn"
+        s.doc = "Function that is executed when a key is pressed and \
+the figure has focus.";
         s.valid = valid_fcn;
 
       case "windowkeyreleasefcn"
+        s.doc = "Function that is executed when a key is released and \
+the figure has focus.";
         s.valid = valid_fcn;
 
       case "windowscrollwheelfcn"
@@ -521,18 +537,24 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
 
       ## Specific properties
       case "activepositionproperty"
+        s.doc = "Specify which of @qcode{\"position\"} or \
+@qcode{\"outerposition\"} properties takes precedence when axes \
+annotations extent changes.  @xref{XREFaxesposition, , @w{position property}}, \
+and @ref{XREFaxesposition, , @w{outerposition property}}.";
+
       case "alim"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "alimmode"
       case "ambientlightcolor"
-        s.doc = sprintf (doc_notimpl, "Light");
+        s.doc = doc_unused;
 
       case "box"
         s.doc = "Control whether the axes has a surrounding box.";
 
       case "boxstyle"
-        s.doc = doc_unused;
+        s.doc = "For 3-D axes, control whether the @qcode{\"full\"} \
+box is drawn or only the 3 @qcode{\"back\"} axes";
 
       case "cameraposition"
         s.valid = valid_3elvec;
@@ -587,11 +609,13 @@ perpendicular to the screen.";
         s.doc = "Specify the relative height and width of the data \
 displayed in the axes.  Setting @code{dataaspectratio} to \
 @w{@code{[1, 2]}} causes the length of one unit as displayed on the x-axis \
-to be the same as the length of 2 units on the y-axis.  __modemsg__.";
+to be the same as the length of 2 units on the y-axis.  \
+@xref{XREFdaspect, , daspect function}.  __modemsg__.";
         s.valid = valid_3elvec;
 
       case "dataaspectratiomode"
       case "fontangle"
+        s.doc = "Control whether the font is italic or normal.";
       case "fontname"
         s.doc = "Name of the font used for axes annotations.";
         s.valid = valid_string;
@@ -608,7 +632,7 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
         s.doc = doc_unused;
 
       case "fontweight"
-
+        s.doc = "Control variant of base font used: bold, demi, light, normal.";
       case "gridalpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
@@ -624,7 +648,8 @@ to be the same as the length of 2 units on the y-axis.  __modemsg__.";
       case "gridlinestyle"
 
       case "labelfontsizemultiplier"
-        s.doc = doc_unused;
+        s.doc = "Ratio between the x/y/zlabel fontsize and the tick \
+label fontsize";
 
       case "layer"
         s.doc = "Control whether the axes is drawn below child graphics \
@@ -637,6 +662,7 @@ objects (ticks, labels, etc.@: covered by plotted objects) or above.";
         s.doc = doc_unused;
 
       case "linewidth"
+        s.doc = "Width of the main axes lines";
 
       case "minorgridalpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
@@ -656,6 +682,12 @@ objects (ticks, labels, etc.@: covered by plotted objects) or above.";
         s.valid = "scalar in the range (0, 1)";
 
       case "nextplot"
+        s.doc = "__prop__ is used by high level plotting functions to \
+decide what to do with graphics objects already present in the axes.  \
+@xref{XREFnewplot, , @w{newplot function}}.  The state of __prop__ \
+is typically controlled using the @code{hold} function.  \
+@xref{XREFhold, , @w{hold function}}.";
+        
       case "outerposition"
         s.doc = "Specify the position of the plot including titles, \
 axes, and legend.  The four elements of the vector are the \
@@ -671,6 +703,9 @@ height to be 0.4 and 0.5 respectively.  \
         s.doc = doc_unused;
 
       case "plotboxaspectratio"
+        s.doc = "@xref{XREFpbaspect, , pbaspect function}.  \
+__modemsg__.";
+        
       case "plotboxaspectratiomode"
       case "position"
         s.doc = "Specify the position of the plot excluding titles, \
@@ -691,7 +726,7 @@ height to be 0.4 and 0.5 respectively.  \
 
       case "tickdir"
         s.doc = "Control whether axes tick marks project \"in\" to the plot \
-box or \"out\".";
+box or \"out\".  __modemsg__.";
 
       case "tickdirmode"
 
@@ -705,31 +740,45 @@ length of the tickmarks relative to the longest visible axis.";
         s.valid = valid_2elvec;
 
       case "tightinset"
+        s.doc = "Size of the @code{[left bottom right top]} margins \
+around the axes that enclose labels and title annotations.";
+        s.valid = valid_4elvec;
+        
       case "title"
         s.doc = "Graphics handle of the title text object.";
         s.valid = valid_handle;
 
       case "titlefontsizemultiplier"
-        s.doc = doc_unused;
+        s.doc = "Ratio between the title fontsize and the tick \
+label fontsize";
+        s.valid = "positive scalar";
 
       case "titlefontweight"
-        s.doc = doc_unused;
+        s.doc = "Control variant of base font used for the axes title.";
 
       case "units"
+        s.doc = "Units used to interpret the @qcode{\"position\"}, \
+@qcode{\"outerposition\"}, and @qcode{\"tightinset\"} properties."; 
+
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
 the viewpoint for three-dimensional plots";
         s.valid = valid_2elvec;
 
       case "xaxislocation"
+        s.doc = "Control the x axis location.";
+        
       case "xcolor"
-        s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.";
+        s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.  \
+__modemsg__.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
 
       case "xcolormode"
-        s.doc = doc_unused;
 
       case "xdir"
+        s.doc = "Direction of the x axis: @qcode{\"normal\"} is left \
+to right.";
+        
       case "xgrid"
         s.doc = "Control whether major x grid lines are displayed.";
 
@@ -739,7 +788,7 @@ the viewpoint for three-dimensional plots";
 
       case "xlim"
         s.doc = "Two-element vector @code{[xmin xmax]} specifying the limits \
-for the x-axis.  __modemsg__.  @xref{XREFxlim, , @w{xlim function}}.";
+for the x-axis.  __modemsg__.   @xref{XREFxlim, , @w{xlim function}}.";
         s.valid = valid_2elvec;
 
       case "xlimmode"
@@ -747,7 +796,7 @@ for the x-axis.  __modemsg__.  @xref{XREFxlim, , @w{xlim function}}.";
         s.doc = "Control whether minor x grid lines are displayed.";
 
       case "xminortick"
-      case "xscale"
+      case "xscale"        
       case "xtick"
         s.doc = "Position of x tick marks.  __modemsg__.";
         s.valid = "vector";
@@ -763,14 +812,18 @@ for the x-axis.  __modemsg__.  @xref{XREFxlim, , @w{xlim function}}.";
 
       case "xtickmode"
       case "yaxislocation"
+        s.doc = "Control the y-axis location.";
+        
       case "ycolor"
         s.doc = "Color of the y-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
 
       case "ycolormode"
-        s.doc = doc_unused;
 
       case "ydir"
+        s.doc = "Direction of the y-axis: @qcode{\"normal\"} is bottom \
+to top.";
+
       case "ygrid"
         s.doc = "Control whether major y grid lines are displayed.";
 
@@ -808,8 +861,6 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
 
       case "zcolormode"
-        s.doc = doc_unused;
-
       case "zdir"
       case "zgrid"
         s.doc = "Control whether major z grid lines are displayed.";
@@ -940,10 +991,15 @@ z data.";
         s.valid = valid_color;
 
       case "editing"
+        s.doc = doc_unused;
 
       case "extent"
+        s.doc = "Vector @code{[x0 y0 width height]} indicating the size \
+and location of the text string.";
+        s.valid = valid_4elvec;
+        
       case "fontangle"
-        s.doc = "Flag whether the font is italic or normal.  \
+        s.doc = "Control whether the font is italic or normal.  \
 @code{fontangle} is currently unused.";
 
       case "fontname"

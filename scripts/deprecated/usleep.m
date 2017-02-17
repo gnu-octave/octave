@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} usleep (@var{microseconds})\n\
+## @deftypefn {} {} usleep (@var{microseconds})
 ##
 ## @code{usleep} is deprecated and will be removed in Octave version 4.6.
 ## Use @code{pause} instead.

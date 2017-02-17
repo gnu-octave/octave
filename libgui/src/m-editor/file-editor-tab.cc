@@ -115,6 +115,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   connect (_edit_area, SIGNAL (SCN_CHARADDED (int)),
            this, SLOT (handle_char_added (int)));
 
+  connect (_edit_area, SIGNAL (SCN_DOUBLECLICK (int, int, int)),
+           this, SLOT (handle_double_click (int, int, int)));
+
   connect (_edit_area, SIGNAL (linesChanged ()),
            this, SLOT (handle_lines_changed ()));
 
@@ -229,6 +232,14 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _enc_indicator->setText (_encoding);
   // no changes in encoding yet
   _new_encoding = _encoding;
+
+  // indicators
+  _indicator_highlight_all
+        = _edit_area->indicatorDefine (QsciScintilla::StraightBoxIndicator);
+  if (_indicator_highlight_all == -1)
+    _indicator_highlight_all = 1;
+
+  _edit_area->setIndicatorDrawUnder (true, _indicator_highlight_all);
 }
 
 file_editor_tab::~file_editor_tab (void)
@@ -753,6 +764,13 @@ file_editor_tab::update_lexer ()
   _edit_area->setMarginsForegroundColor (lexer->color (0));
   _edit_area->setMarginsBackgroundColor (bg);
   _edit_area->setFoldMarginColors (bg,fg);
+
+  // color indicator for highlighting all occurrences:
+  // applications highlight color with more transparency
+  QColor hg = QApplication::palette ().color (QPalette::Highlight);
+  hg.setAlphaF (0.25);
+  _edit_area->setIndicatorForegroundColor (hg, _indicator_highlight_all);
+  _edit_area->setIndicatorOutlineColor (hg, _indicator_highlight_all);
 
   // fix line number width with respect to the font size of the lexer
   if (settings->value ("editor/showLineNumbers", true).toBool ())
@@ -2382,6 +2400,10 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   else
     _line_break = 0;
 
+  // highlight all occurrences of a word selected by a double click
+  _highlight_all_occurrences = settings->value (
+                    "editor/highlight_all_occurrences", true).toBool ();
+
   // reload changed files
   _always_reload_changed_files =
         settings->value ("editor/always_reload_changed_files",false).toBool ();
@@ -2714,6 +2736,77 @@ file_editor_tab::handle_char_added (int character)
     // automatically indent new line to the indentation of previous line
     _edit_area->setIndentation (line + 1, _edit_area->indentation (line));
   }
+}
+
+// Slot handling a double click into the text area
+void
+file_editor_tab::handle_double_click (int, int, int modifier)
+{
+  if (! modifier)
+    {
+      // double clicks without modifier
+      // clear any existing indicators of this type
+      _edit_area->clear_indicator (_indicator_highlight_all);
+
+      if (_highlight_all_occurrences)
+        {
+          // highlighting of all occurrences of the clicked word is enabled
+
+          // get the resulting cursor position
+          // (required if click was beyond a line ending)
+          int line, col;
+          _edit_area->getCursorPosition (&line, &col);
+
+          // get the word at the cursor (if any)
+          QString word = _edit_area->wordAtLineIndex (line, col);
+          word = word.trimmed ();
+
+          if (! word.isEmpty ())
+            {
+              // word is not empty, so find all occurrences of the word
+
+              // remember first visible line for restoring the view afterwards
+              int first_line = _edit_area->firstVisibleLine ();
+
+              // search for first occurrence of the detected word
+              bool find_result_available
+                      = _edit_area->findFirst (word,
+                                               false,   // no regexp
+                                               true,    // case sensitive
+                                               true,    // whole words only
+                                               false,   // do not wrap
+                                               true,    // forward
+                                               0,0,     // from the beginning
+                                               false
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+                                             , true
+#endif
+                                            );
+
+              // loop over all occurrences and set the related indicator
+              int oline, ocol;
+              int wlen = word.length ();
+
+              while (find_result_available)
+                {
+                  // get cursor position after having found an occurrence
+                  _edit_area->getCursorPosition (&oline, &ocol);
+                  // set the indicator
+                  _edit_area->fillIndicatorRange (oline, ocol - wlen,
+                                                  oline, ocol,
+                                                  _indicator_highlight_all);
+                  // find next occurrence
+                  find_result_available = _edit_area->findNext ();
+                }
+
+              // restore the visible area of the file, the cursor position,
+              // and the selection
+              _edit_area->setFirstVisibleLine (first_line);
+              _edit_area->setCursorPosition (line, col);
+              _edit_area->setSelection (line, col - wlen, line, col);
+            }
+        }
+    }
 }
 
 void

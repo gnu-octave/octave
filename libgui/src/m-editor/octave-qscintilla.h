@@ -45,6 +45,7 @@ public:
   void context_run ();
   void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
   bool get_actual_word ();
+  void clear_indicator (int indicator_style);
 
 signals:
 

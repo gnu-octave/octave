@@ -216,6 +216,7 @@ private slots:
 
   void handle_cursor_moved (int line, int col);
   void handle_char_added (int character);
+  void handle_double_click (int p, int l, int modifier);
   void handle_lines_changed (void);
 
 private:
@@ -304,6 +305,8 @@ private:
   int _line;
   int _col;
   bool _lines_changed;
+  bool _highlight_all_occurrences;
+  int _indicator_highlight_all;
 
 };
 

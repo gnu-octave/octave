@@ -417,6 +417,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_toolbar",true).toBool ());
   ui->cb_code_folding->setChecked (
     settings->value ("editor/code_folding",true).toBool ());
+  ui->editor_highlight_all_occurrences->setChecked (
+    settings->value ("editor/highlight_all_occurrences",true).toBool ());
 
   ui->editor_codeCompletion->setChecked (
     settings->value ("editor/codeCompletion", true).toBool ());
@@ -808,6 +810,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->cb_edit_status_bar->isChecked ());
   settings->setValue ("editor/show_toolbar",
                       ui->cb_edit_tool_bar->isChecked ());
+  settings->setValue ("editor/highlight_all_occurrences",
+                      ui->editor_highlight_all_occurrences->isChecked ());
   settings->setValue ("editor/codeCompletion",
                       ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold",

@@ -342,4 +342,14 @@ void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
   QsciScintilla::focusInEvent (focusEvent);
 }
 
+// helper function for clearing all indicators of a specific style
+void
+octave_qscintilla::clear_indicator (int indicator_style)
+{
+  int end_pos = text ().length ();
+  int end_line, end_col;
+  lineIndexFromPosition (end_pos, &end_line, &end_col);
+  clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
+}
+
 #endif

@@ -312,9 +312,10 @@ main (int argc, char **argv)
       // the GUI process will be in a separate process group.
       //
       // The GUI process must be in a separate process group so that we
-      // can send and interrupt to all child processes when generating
-      // interrupt signals.  See also pthread_thread_manager::interrupt
-      // in libgui/src/thread-manager.cc and bug #49609.
+      // can send an interrupt signal to all child processes when
+      // interrupting the interpreter.  See also bug #49609 and the
+      // function pthread_thread_manager::interrupt in the file
+      // libgui/src/thread-manager.cc.
 
       install_signal_handlers ();
 

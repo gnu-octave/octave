@@ -237,7 +237,7 @@ subscripts than dimensions are provided, the exceeding dimensions are merged
 into the final requested dimension.  For clarity, consider the following
 examples:
 
-@example%
+@example
 @group
 ind  = [2, 8];
 dims = [3, 3];

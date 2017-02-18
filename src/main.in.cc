@@ -139,25 +139,6 @@ install_signal_handlers (void)
   gui_driver_set_signal_handler ("SIGXFSZ", gui_driver_sig_handler);
 }
 
-static bool
-have_controlling_terminal (void)
-{
-  int retval = false;
-
-  const char *ctty = octave_ctermid_wrapper ();
-
-  int fd = octave_open_wrapper (ctty, octave_o_rdwr_wrapper (), 0);
-
-  if (fd >= 0)
-    {
-      octave_close_wrapper (fd);
-
-      retval = true;
-    }
-
-  return retval;
-}
-
 #endif
 
 static std::string
@@ -324,8 +305,17 @@ main (int argc, char **argv)
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
-  if (gui_libs && start_gui && have_controlling_terminal ())
+  if (gui_libs && start_gui)
     {
+      // Fork and exec when starting the GUI so that we will call
+      // setsid to give up the controlling terminal (if any) and so that
+      // the GUI process will be in a separate process group.
+      //
+      // The GUI process must be in a separate process group so that we
+      // can send and interrupt to all child processes when generating
+      // interrupt signals.  See also pthread_thread_manager::interrupt
+      // in libgui/src/thread-manager.cc and bug #49609.
+
       install_signal_handlers ();
 
       gui_pid = octave_fork_wrapper ();

@@ -141,8 +141,9 @@ file_editor::check_closing (void)
 
   // Finally close all the tabs and return indication that we can exit
   // the application
-  for (int i = 0; i < _tab_widget->count (); i++)
+  for (int i = _tab_widget->count () - 1; i >= 0; i--)
     {
+      // backwards loop since _tab_widget->count () changes during the loop
       delete _tab_widget->widget (i);
       _tab_widget->removeTab (i);
     }

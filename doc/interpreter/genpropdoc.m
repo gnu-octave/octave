@@ -124,6 +124,7 @@ __prop__ is unused.";
       case "beingdeleted"
       case "busyaction"
       case "buttondownfcn"
+        s.doc = "__fcnmsg__";
         s.valid = valid_fcn;
 
       case "children"
@@ -138,12 +139,12 @@ clipped in its parent axes limits.";
         s.doc = "Callback function executed immediately after __objname__ \
 has been created.  Function is set by using default property on root object, \
 e.g., @code{set (0, \"default__objname__createfcn\", \
-'disp (\"__objname__ created!\")')}.";
+'disp (\"__objname__ created!\")')}.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "deletefcn"
         s.doc = "Callback function executed immediately before __objname__ \
-is deleted.";
+is deleted.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "handlevisibility"
@@ -288,7 +289,7 @@ are visible in their parents' children list, regardless of the value of their \
 
       case "closerequestfcn"
         s.doc = "Function that is executed when a figure is deleted.  \
-@xref{XREFclosereq, , closereq function}."
+@xref{XREFclosereq, , closereq function}.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "color"
@@ -344,6 +345,9 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
         s.doc = "Replace the figure and axes background color with white when printing.";
 
       case "keypressfcn"
+        s.doc = "Callback function executed when a keystroke event \
+happens while the figure has focus. The actual key that was pressed \
+can be retrieved using the second argument 'evt' of the function.  __fcnmsg__";
         s.valid = valid_fcn;
 
       case "keyreleasefcn"
@@ -360,7 +364,8 @@ Lowercase value of the key\n\
 @item Modifier:\n\
 A cell array containing strings representing the modifiers pressed with the \
 key.\n\
-@end table";
+@end table\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "menubar"
@@ -471,7 +476,8 @@ and width and height of the figure.  \
         ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
 
       case "sizechangedfcn"
-        s.doc = "Callback triggered when the figure window size is changed.";
+        s.doc = "Callback triggered when the figure window size is changed.\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "toolbar"
@@ -497,20 +503,22 @@ menubar) and the status bar.  When set to @qcode{\"auto\"}, the display is based
 @code{windowbuttonmotionfcn}, the mouse callback functions.  These \
 callback functions are called when a mouse button is pressed, dragged, or \
 released respectively.  When these callback functions are executed, the \
-@code{currentpoint} property holds the current coordinates of the cursor.";
+@code{currentpoint} property holds the current coordinates of the cursor.\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowkeypressfcn"
         s.doc = "Function that is executed when a key is pressed and \
-the figure has focus.";
+the figure has focus.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowkeyreleasefcn"
         s.doc = "Function that is executed when a key is released and \
-the figure has focus.";
+the figure has focus.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowscrollwheelfcn"
+        s.doc = doc_unused;
         s.valid = valid_fcn;
 
       case "windowstyle"
@@ -1546,6 +1554,9 @@ function strout = expand_doc (strin, field, objname)
 property to be set to @qcode{\"manual\"}";
   modemsg = sprintf (modemsg, field, field);
   strout = strrep (strout, "__modemsg__", modemsg);
+  fcnmsg = "For information on how to write graphics listener \
+functions see @ref{Callbacks, , @w{Callbacks section}}.";
+  strout = strrep (strout, "__fcnmsg__", fcnmsg);
 endfunction
 
 function s = getstructure (objname, base = [])

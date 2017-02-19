@@ -33,21 +33,25 @@ Summary of important user-visible changes for version 4.4:
 
  ** Deprecated graphics properties.
 
-    The following properties have been deprecated in Octave 4.4 and will
-    be removed from Octave 4.8 (or whatever version is the second major
-    release after 4.4):
+    The following properties or allowed corresponding values have been 
+    deprecated in Octave 4.4 and will be removed from Octave 4.8 (or whatever 
+    version is the second major release after 4.4):
 
-      Object               | Property
-      ---------------------|------------------
-      figure               | doublebuffer
-                           | mincolormap
-                           | wvisual
-                           | wvisualmode
-                           | xdisplay
-                           | xvisual
-                           | xvisualmode
-      axes                 | drawmode
-      annotation           | edgecolor ("rectangle")
+      Object               | Property                | Value   
+      ---------------------|-------------------------|-------------------
+      figure               | doublebuffer            |
+                           | mincolormap             |
+                           | wvisual                 |
+                           | wvisualmode             |
+                           | xdisplay                |
+                           | xvisual                 |
+                           | xvisualmode             |
+      axes                 | drawmode                |
+      annotation           | edgecolor ("rectangle") |
+      text                 | fontweight              | "demi" and "light"
+      uicontrol            | fontweight              | "demi" and "light"
+      uipanel              | fontweight              | "demi" and "light"
+      uibuttongroup        | fontweight              | "demi" and "light"
 
  ** The following functions were deprecated in Octave 4.0 and have been
     removed from Octave 4.4.

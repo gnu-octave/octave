@@ -115,7 +115,7 @@ namespace QtHandles
           weightMap[std::string ("normal")] = QFont::Normal;
           weightMap[std::string ("light")] = QFont::Light;
           weightMap[std::string ("demi")] = QFont::DemiBold;
-          weightMap[std::string ("bold")] = QFont::Normal;
+          weightMap[std::string ("bold")] = QFont::Bold;
 
           angleMap[std::string ("normal")] = QFont::StyleNormal;
           angleMap[std::string ("italic")] = QFont::StyleItalic;

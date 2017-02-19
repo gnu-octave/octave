@@ -110,6 +110,17 @@ function s = getdoc (objname, field, base)
 __prop__ is unused.";
   doc_unused =  "__prop__ is unused.";
 
+  doc_fontangle = "Control whether the font is italic or normal.";
+  doc_fontsize = "Size of the font used for text rendering.  \
+@xref{XREF__objname__fontunits, , fontunits property}.";
+  doc_fontname = "Name of font used for text rendering.  When setting \
+this property, the text rendering engine will search for a matching \
+font in your system.  If none is found then text is rendered using a \
+default sans serif font (same as the default @qcode{\"*\"} value).";
+  doc_fontunits = "Units used to interpret the @qcode{\"fontsize\"} property.";
+  doc_fontweight = "Control the variant of the base font used for \
+text rendering.";
+  
   ## Initialize structure
   if (isfield (base, field))
     s = base.(field);
@@ -625,24 +636,25 @@ to be the same as the length of 2 units on the y-axis.  \
 
       case "dataaspectratiomode"
       case "fontangle"
-        s.doc = "Control whether the font is italic or normal.";
+        s.doc = doc_fontangle;
+        
       case "fontname"
-        s.doc = "Name of the font used for axes annotations.";
+        s.doc = doc_fontname;
         s.valid = valid_string;
 
       case "fontsize"
-        s.doc = "Size of the font used for axes annotations.  \
-@xref{XREFaxesfontunits, , @w{fontunits property}}.";
+        s.doc = doc_fontsize;
         s.valid = "scalar";
 
       case "fontunits"
-        s.doc = "Unit used to interpret @code{fontsize} property.";
+        s.doc = doc_fontunits;
 
       case "fontsmoothing"
         s.doc = doc_unused;
 
       case "fontweight"
-        s.doc = "Control variant of base font used: bold, demi, light, normal.";
+        s.doc = doc_fontweight;
+        
       case "gridalpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
@@ -1011,26 +1023,24 @@ z data.";
         s.doc = "Vector @code{[x0 y0 width height]} indicating the size \
 and location of the text string.";
         s.valid = valid_4elvec;
-        
+      
       case "fontangle"
-        s.doc = "Control whether the font is italic or normal.  \
-@code{fontangle} is currently unused.";
-
+        s.doc = doc_fontangle;
+        
       case "fontname"
-        s.doc = "The font used for the text.";
+        s.doc = doc_fontname;
         s.valid = valid_string;
 
       case "fontsize"
-        s.doc = "The font size of the text as measured in \
-@code{fontunits}.";
+        s.doc = doc_fontsize;
         s.valid = "scalar";
 
       case "fontunits"
-        s.doc = "The units used to interpret @code{fontsize} property.";
+        s.doc = doc_fontunits;
 
       case "fontweight"
-        s.doc = "Control variant of base font used: bold, light, normal, etc.";
-
+        s.doc = doc_fontweight;
+        
       case "horizontalalignment"
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
@@ -1425,10 +1435,22 @@ point source (@qcode{\"local\"}).";
       case "bordertype"
       case "borderwidth"
       case "fontangle"
+        s.doc = doc_fontangle;
+        
       case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
       case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
       case "fontunits"
+        s.doc = doc_fontunits;
+
       case "fontweight"
+        s.doc = doc_fontweight;
+        
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
@@ -1446,24 +1468,36 @@ point source (@qcode{\"local\"}).";
       ## Overridden shared properties
 
       ## Specific properties
-        case "backgroundcolor"
-        case "bordertype"
-        case "borderwidth"
-        case "fontangle"
-        case "fontname"
-        case "fontsize"
-        case "fontunits"
-        case "fontweight"
-        case "foregroundcolor"
-        case "highlightcolor"
-        case "position"
-        case "resizefcn"
-        case "selectedobject"
-        case "selectionchangedfcn"
-        case "shadowcolor"
-        case "title"
-        case "titleposition"
-        case "units"
+      case "backgroundcolor"
+      case "bordertype"
+      case "borderwidth"
+      case "fontangle"
+        s.doc = doc_fontangle;
+        
+      case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
+      case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
+      case "fontunits"
+        s.doc = doc_fontunits;
+
+      case "fontweight"
+        s.doc = doc_fontweight;
+        
+      case "foregroundcolor"
+      case "highlightcolor"
+      case "position"
+      case "resizefcn"
+      case "selectedobject"
+      case "selectionchangedfcn"
+      case "shadowcolor"
+      case "title"
+      case "titleposition"
+      case "units"
 
     endswitch
 
@@ -1479,10 +1513,22 @@ point source (@qcode{\"local\"}).";
       case "enable"
       case "extent"
       case "fontangle"
+        s.doc = doc_fontangle;
+        
       case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
       case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
       case "fontunits"
+        s.doc = doc_fontunits;
+
       case "fontweight"
+        s.doc = doc_fontweight;
+        
       case "foregroundcolor"
       case "horizontalalignment"
       case "keypressfcn"

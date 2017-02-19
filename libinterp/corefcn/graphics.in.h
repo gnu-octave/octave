@@ -4775,7 +4775,18 @@ public:
     void update_fontname (void) { update_font (); update_text_extent (); }
     void update_fontsize (void) { update_font (); update_text_extent (); }
     void update_fontangle (void) { update_font (); update_text_extent (); }
-    void update_fontweight (void) { update_font (); update_text_extent (); }
+
+    void update_fontweight (void) 
+    { 
+      update_font (); 
+      update_text_extent ();
+      // FIXME: Remove warning with demi and light in 4.7+
+      if (fontweight.is ("demi") || fontweight.is ("light"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontweight' to '%s' is deprecated, \
+use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+    }
+
     void update_interpreter (void) { update_text_extent (); }
     void update_horizontalalignment (void) { update_text_extent (); }
     void update_verticalalignment (void) { update_text_extent (); }
@@ -5773,7 +5784,17 @@ public:
     void update_fontname (void) { update_text_extent (); }
     void update_fontsize (void) { update_text_extent (); }
     void update_fontangle (void) { update_text_extent (); }
-    void update_fontweight (void) { update_text_extent (); }
+
+    void update_fontweight (void) 
+    { 
+      update_text_extent (); 
+      // FIXME: Remove warning with demi and light in 4.7+
+      if (fontweight.is ("demi") || fontweight.is ("light"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontweight' to '%s' is deprecated, \
+use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+    }
+
     void update_fontunits (const caseless_str& old_units);
 
     void update_units (void);
@@ -5832,7 +5853,7 @@ public:
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight , "light|{normal}|demi|bold"
+      radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position , default_panel_position ()
@@ -5859,7 +5880,15 @@ public:
     // void update_fontname (void) { update_text_extent (); }
     // void update_fontsize (void) { update_text_extent (); }
     // void update_fontangle (void) { update_text_extent (); }
-    // void update_fontweight (void) { update_text_extent (); }
+
+    void update_fontweight (void) 
+    { 
+      // FIXME: Remove this warning in 4.7+
+      if (fontweight.is ("demi") || fontweight.is ("light"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontweight' to '%s' is deprecated, \
+use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+    }
 
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
@@ -5918,7 +5947,7 @@ public:
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight , "light|{normal}|demi|bold"
+      radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position , default_panel_position ()
@@ -5940,6 +5969,14 @@ public:
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
 
+    void update_fontweight (void) 
+    { 
+      // FIXME: Remove this warning in 4.7+
+      if (fontweight.is ("demi") || fontweight.is ("light"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontweight' to '%s' is deprecated, \
+use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+    }
   };
 
 private:

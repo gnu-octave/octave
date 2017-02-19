@@ -98,3 +98,27 @@
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## text/uicontrol/uipanel/uibuttongroup  "demi" and "light" values for
+## "fontweight" property are deprecated in 4.4, remove from 4.7.+:
+##   * remove "demi" and "light" options in graphics.in.h,
+##   QtHandlesUtils.cc and ft-text-renderer.cc
+##   * remove warnings from update_fontweight in graphics.in.h
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ht = text ();
+%!   testprop (ht, "fontweight", "4.6", "demi");
+%!   testprop (ht, "fontweight", "4.6", "light");
+%!   hui = uicontrol ();
+%!   testprop (hui, "fontweight", "4.6", "demi");
+%!   testprop (hui, "fontweight", "4.6", "light");
+%!   hui = uipanel ();
+%!   testprop (hui, "fontweight", "4.6", "demi");
+%!   testprop (hui, "fontweight", "4.6", "light");
+%!   hui = uibuttongroup ();
+%!   testprop (hui, "fontweight", "4.6", "demi");
+%!   testprop (hui, "fontweight", "4.6", "light");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

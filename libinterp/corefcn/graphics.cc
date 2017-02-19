@@ -2954,6 +2954,10 @@ xreset_default_properties (graphics_handle h,
   for (const auto& p : pval)
     factory_pval[p.first] = p.second;
 
+  // Save warning state of "Octave:deprecated-property"
+  int old_dep_prop = warning_enabled ("Octave:deprecated-property");
+  disable_warning ("Octave:deprecated-property");
+
   // Reset defaults
   for (const auto& p : factory_pval)
     {
@@ -2975,6 +2979,12 @@ xreset_default_properties (graphics_handle h,
   // set *mode properties
   for (const auto& p : pval)
     go.set (p.first, p.second);
+
+  // Re-enable warning state of "Octave:deprecated-property"
+  if (old_dep_prop == 1)
+    set_warning_state ("Octave:deprecated-property", "on");
+  else if (old_dep_prop == 2)
+    set_warning_state ("Octave:deprecated-property", "error");
 }
 
 // ---------------------------------------------------------------------
@@ -3355,19 +3365,8 @@ base_graphics_object::reset_default_properties (void)
         gh_manager::get_object (0).get_factory_defaults_list ()
         .find (type ())->second;
 
-      // save warning state of "Octave:deprecated-property"
-      int old_dep_prop = warning_enabled ("Octave:deprecated-property");
-      disable_warning ("Octave:deprecated-property");
-
       remove_all_listeners ();
       xreset_default_properties (get_handle (), factory_pval);
-
-      // re-enable warning state of "Octave:deprecated-property"
-      if (old_dep_prop == 1)
-        set_warning_state ("Octave:deprecated-property", "on");
-      else if (old_dep_prop == 2)
-        set_warning_state ("Octave:deprecated-property", "error");
-
     }
 }
 
@@ -8204,9 +8203,19 @@ axes::reset_default_properties (void)
   // empty list of local defaults
   default_properties = property_list ();
 
+  // Save warning state of "Octave:deprecated-property"
+  int old_dep_prop = warning_enabled ("Octave:deprecated-property");
+  disable_warning ("Octave:deprecated-property");
+
   // reset factory defaults
   remove_all_listeners ();
   set_defaults ("reset");
+
+  // Re-enable warning state of "Octave:deprecated-property"
+  if (old_dep_prop == 1)
+    set_warning_state ("Octave:deprecated-property", "on");
+  else if (old_dep_prop == 2)
+    set_warning_state ("Octave:deprecated-property", "error");
 }
 
 void

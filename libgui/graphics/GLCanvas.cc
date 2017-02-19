@@ -114,12 +114,12 @@ namespace QtHandles
   void
   GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
   {
-    glPushMatrix ();
-
     glMatrixMode (GL_MODELVIEW);
+    glPushMatrix ();
     glLoadIdentity ();
 
     glMatrixMode (GL_PROJECTION);
+    glPushMatrix ();
     glLoadIdentity ();
     glOrtho (0, width (), height (), 0, 1, -1);
 
@@ -131,13 +131,18 @@ namespace QtHandles
     glDrawZoomBox (p1, p2);
     glEnd ();
 
-    glBegin (GL_LINE_STRIP);
     glLineWidth (1.5);
+    glBegin (GL_LINE_STRIP);
     glColor4f (0.45, 0.62, 0.81, 0.9);
     glDrawZoomBox (p1, p2);
     glEnd ();
 
     glPopAttrib ();
+
+    glMatrixMode (GL_MODELVIEW);
+    glPopMatrix ();
+
+    glMatrixMode (GL_PROJECTION);
     glPopMatrix ();
   }
 

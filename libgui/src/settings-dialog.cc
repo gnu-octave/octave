@@ -490,6 +490,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/create_new_file",false).toBool ());
   ui->editor_reload_changed_files->setChecked (
     settings->value ("editor/always_reload_changed_files",false).toBool ());
+  ui->editor_hiding_closes_files->setChecked (
+    settings->value ("editor/hiding_closes_files",false).toBool ());
 
   // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
@@ -866,6 +868,8 @@ settings_dialog::write_changed_settings (bool closing)
                       ui->editor_restoreSession->isChecked ());
   settings->setValue ("editor/create_new_file",
                       ui->editor_create_new_file->isChecked ());
+  settings->setValue ("editor/hiding_closes_files",
+                      ui->editor_hiding_closes_files->isChecked ());
   settings->setValue ("editor/always_reload_changed_files",
                       ui->editor_reload_changed_files->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value ());

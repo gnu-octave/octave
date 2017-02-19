@@ -258,6 +258,7 @@ public slots:
   void update_octave_directory (const QString& dir);
 
 protected slots:
+
   void copyClipboard ();
   void pasteClipboard ();
   void selectAll ();
@@ -299,6 +300,7 @@ private slots:
 
 protected:
 
+  void closeEvent (QCloseEvent *event);
   void dragEnterEvent (QDragEnterEvent *event);
   void dropEvent (QDropEvent *event);
 
@@ -431,6 +433,8 @@ private:
   tab_widget *_tab_widget;
 
   int _marker_breakpoint;
+
+  bool _closed;
 
   QString _file_encoding;
 

@@ -62,6 +62,7 @@ file_editor::file_editor (QWidget *p)
   _copy_action = 0;
   _paste_action = 0;
   _selectall_action = 0;
+  _closed = false;
 
   construct ();
 
@@ -84,7 +85,8 @@ file_editor::~file_editor (void)
 bool
 file_editor::check_closing (void)
 {
-  // When the applications is closing all editor tabs are checked whether
+  // When the application or the editor is closing and the user wants to close
+  // all files in the latter case all editor tabs are checked whether
   // they need to be saved. During these ckecked the tabs are not closed
   // since the user might cancel closing octave during one of these saving
   // dialogs. Therefore, saving the session for restoring at next start
@@ -101,14 +103,14 @@ file_editor::check_closing (void)
   // If there was a cancellation, make the already saved/discarded tabs
   // recovering from the exit by removing the read-only state and by
   // recovering the debugger breakpoints. Finally return false in order to
-  // cancel closing the application
+  // cancel closing the application or the editor
   if (file_editor_tab::was_cancelled ())
     {
       emit fetab_recover_from_exit ();
       return false;
     }
 
-  // Here, the application will be closed -> store the session
+  // Here, the application or the editor will be closed -> store the session
 
   // Save open files for restoring in next session; this only is possible
   QSettings *settings = resource_manager::get_settings ();
@@ -140,7 +142,7 @@ file_editor::check_closing (void)
   settings->sync ();
 
   // Finally close all the tabs and return indication that we can exit
-  // the application
+  // the application or close the editor
   for (int i = _tab_widget->count () - 1; i >= 0; i--)
     {
       // backwards loop since _tab_widget->count () changes during the loop
@@ -2357,10 +2359,18 @@ file_editor::empty_script (bool startup, bool visible)
 void
 file_editor::handle_visibility (bool visible)
 {
+  if (_closed && visible)
+    {
+      _closed = false;
+      QSettings *settings = resource_manager::get_settings ();
+      restore_session (settings);
+    }
+
   empty_script (false, visible);
 
   if (visible && ! isFloating ())
     focus ();
+
 }
 
 void
@@ -2382,6 +2392,27 @@ file_editor::dropEvent (QDropEvent *e)
         request_open_file (url.toLocalFile ());
       }
     }
+}
+
+// handler for the close event
+void
+file_editor::closeEvent (QCloseEvent *e)
+{
+  QSettings *settings = resource_manager::get_settings ();
+  if (settings->value ("editor/hiding_closes_files",false).toBool ())
+    {
+      if (check_closing ())
+        {
+          // all tabs are closed without cancelling,
+          // store closing state for restoring session when shown again
+          _closed = true;
+          e->accept ();
+        }
+      else
+        e->ignore ();
+    }
+  else
+   e->accept ();
 }
 
 // slots for tab navigation

@@ -2794,8 +2794,13 @@ namespace octave
 
         for (size_t i = 0; i < strlen (tmptxt); i++)
           {
-            long_int_value <<= 1;
-            long_int_value += static_cast<uintmax_t> (tmptxt[i] == '1');
+            if (tmptxt[i] == '0')
+              long_int_value <<= 1;
+            else if (tmptxt[i] == '1')
+            {
+              long_int_value <<= 1;
+              long_int_value += 1;
+            }
           }
 
         value = static_cast<double> (long_int_value);

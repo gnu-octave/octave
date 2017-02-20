@@ -1804,11 +1804,367 @@ like @code{javaOctave} (@url{https://kenai.com/projects/javaoctave/pages/Home})
 or @code{joPas} (@url{http://jopas.sourceforge.net/}).
 
 @menu
-* Java Interface Functions::
 * Making Java Classes Available::
-* Creating an Instance of a Java Class::
-* Handling Java Memory Limitations::
+* How to use Java from within Octave::
+* Passing parameters to the JVM::
+* Java Interface Functions::
 @end menu
+
+
+@node Making Java Classes Available
+@subsection Making Java Classes Available
+
+@c - index -
+@cindex classpath, setting
+@cindex classpath, difference between static and dynamic
+@cindex static classpath
+@cindex dynamic classpath
+@cindex @file{javaclasspath.txt}
+@cindex @file{classpath.txt}
+@cindex classes, making available to Octave
+@c - index -
+
+Java finds classes by searching a @var{classpath} which is a list of Java
+archive files and/or directories containing class files.  In Octave the
+@var{classpath} is composed of two parts:
+
+@itemize
+@item the @var{static classpath} is initialized once at startup of the JVM, and
+
+@item the @var{dynamic classpath} which can be modified at runtime.
+@end itemize
+
+Octave searches the @var{static classpath} first, and then the
+@var{dynamic classpath}.  Classes appearing in the @var{static classpath}, as
+well as in the @var{dynamic classpath}, will therefore be found in the
+@var{static classpath} and loaded from this location.  Classes which will be
+used frequently, or must be available to all users, should be added to the
+@var{static classpath}.  The @var{static classpath} is populated once from the
+contents of a plain text file named @file{javaclasspath.txt} (or
+@file{classpath.txt} historically) when the Java Virtual Machine starts.  This
+file contains one line for each individual classpath to be added to the
+@var{static classpath}.  These lines can identify directories containing class
+files, or Java archives with complete class file hierarchies.  Comment lines
+starting with a @samp{#} or a @samp{%} character are ignored.
+
+The search rules for the file @file{javaclasspath.txt} (or
+@file{classpath.txt}) are:
+
+@itemize
+@item
+First, Octave tries to locate it in the current directory (where Octave was
+started from).  If such a file is found, it is read and defines the initial
+@var{static classpath}.  Thus, it is possible to define a static classpath on a
+'per Octave invocation' basis.
+
+@item
+Next, Octave searches in the user's home directory.  If a file
+@file{javaclasspath.txt} exists here, its contents are appended to the static
+classpath (if any).  Thus, it is possible to build an initial static classpath
+on a @nospell{'per user'} basis.
+
+@item
+Finally, Octave looks for a @file{javaclasspath.txt} in the m-file directory
+where Octave Java functions live.  This is where the function
+@file{javaclasspath.m} resides, usually something like
+@file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}.
+You can find this directory by executing the command
+
+@example
+which javaclasspath
+@end example
+
+If this file exists here, its contents are also appended to the
+@var{static classpath}.  Note that the archives and class directories defined
+in this last step will affect all users.
+@end itemize
+
+Classes which are used only by a specific script should be placed in the
+@var{dynamic classpath}.  This portion of the classpath can be modified at
+runtime using the @code{javaaddpath} and @code{javarmpath} functions.
+
+Example:
+
+@example
+octave> base_path = "C:/Octave/java_files";
+
+octave> # add two JAR archives to the dynamic classpath
+octave> javaaddpath ([base_path, "/someclasses.jar"]);
+octave> javaaddpath ([base_path, "/moreclasses.jar"]);
+
+octave> # check the dynamic classpath
+octave> p = javaclasspath;
+octave> disp (p@{1@});
+C:/Octave/java_files/someclasses.jar
+octave> disp (p@{2@});
+C:/Octave/java_files/moreclasses.jar
+
+octave> # remove the first element from the classpath
+octave> javarmpath ([base_path, "/someclasses.jar"]);
+octave> p = javaclasspath;
+octave> disp (p@{1@});
+C:/Octave/java_files/moreclasses.jar
+
+octave> # provoke an error
+octave> disp (p@{2@});
+error: A(I): Index exceeds matrix dimension.
+@end example
+
+Another way to add files to the @var{dynamic classpath} exclusively for your
+user account is to use the file @file{.octaverc} which is stored in your home
+directory.  All Octave commands in this file are executed each time you start a
+new instance of Octave.  The following example adds the directory @file{octave}
+to Octave's search path and the archive @file{myclasses.jar} in this directory
+to the Java search path.
+
+@example
+@group
+# contents of .octaverc:
+addpath ("~/octave");
+javaaddpath ("~/octave/myclasses.jar");
+@end group
+@end example
+
+@c ------------------------------------------------------------------------
+@node How to use Java from within Octave
+@subsection How to use Java from within Octave
+
+The function @ref{XREFjavaObject,javaObject,javaObject} creates Java objects.
+In fact it invokes the public constructor of the class with the given name
+and with the given parameters.
+
+The following example shows how to invoke the constructors
+@code{BigDecimal(double)} and @code{BigDecimal(String)} of the builtin Java
+class @code{java.math.BigDecimal}.
+
+@example
+@group
+javaObject ("java.math.BigDecimal",  1.001 );
+javaObject ("java.math.BigDecimal", "1.001");
+@end group
+@end example
+
+Note that parameters of the Octave type @code{double} are implicitly converted
+into the Java type @code{double} and the Octave type (array of) @code{char} is
+converted into the java type @code{String}.  A Java object created by
+@ref{XREFjavaObject,javaObject,javaObject} is never automatically converted
+into an Octave type but remains a Java object.  It can be assigned to an
+Octave variable.
+
+@example
+@group
+a = 1.001;
+b = javaObject ("java.math.BigDecimal", a);
+@end group
+@end example
+
+Using @ref{XREFisjava,isjava,isjava}, it is possible to check whether a
+variable is a Java object and its class can be determined as well.  In
+addition to the previous example:
+
+@example
+@group
+isjava (a)
+@result{} ans = 0
+class (a)
+@result{} ans = double
+isjava (b)
+@result{} ans = 1
+class (b)
+@result{} ans = java.math.BigDecimal
+@end group
+@end example
+
+The example above can be carried out using only Java objects:
+
+@example
+a = javaObject ("java.lang.Double", 1.001);
+b = javaObject ("java.math.BigDecimal", a);
+
+isjava (a)
+@result{} ans = 1
+class (a)
+@result{} ans = java.lang.Double
+isjava (b)
+@result{} ans = 1
+class (b)
+@result{} ans = java.math.BigDecimal
+@end example
+
+One can see, that even a @code{java.lang.Double} is not converted to an Octave
+@code{double}, when created by @ref{XREFjavaObject,javaObject,javaObject}.
+But ambiguities might arise, if the Java classes @code{java.lang.Double} or
+@code{double} are parameters of a method (or a constructor).  In this case
+they can be converted into one another, depending on the context.
+
+
+Via @ref{XREFjavaObject,javaObject,javaObject} one may create all kinds of
+Java objects but arrays.  The latter are created through
+@ref{XREFjavaArray,javaArray,javaArray}.
+
+It is possible to invoke public member methods on Java objects in Java syntax:
+
+@example
+@group
+a.toString
+@result{} ans = 1.001
+b.toString
+@result{} ans = 1.000999999999999889865...
+@end group
+@end example
+
+The second result may be surprising, but simply comes from the fact, that
+@code{1.001} cannot exactly be represented as @code{double}, due to rounding.
+Note that unlike in Java, in Octave methods without arguments can be invoked
+with and without parentheses @code{()}.
+
+Currently it is not possible to invoke static methods with a Java like syntax
+from within Octave.  Instead, one has to use the function
+@ref{XREFjavaMethod,javaMethod,javaMethod} as in the following example:
+
+@example
+@group
+java.math.BigDecimal.valueOf(1.001);                    # does not work
+javaMethod ("valueOf", "java.math.BigDecimal", 1.001);  # workaround
+@end group
+@end example
+
+As mentioned before, method and constructor parameters are converted
+automatically between Octave and Java types, if appropriate.  For functions
+this is also true with return values, whereas for constructors this is not.
+
+It is also possible to access public fields of Java objects from within Octave
+using Java syntax, with the limitation of static fields:
+
+@example
+@group
+java.math.BigDecimal.ONE;                  # does not work
+java_get ("java.math.BigDecimal", "ONE");  # workaround
+@end group
+@end example
+
+Accordingly, with @ref{XREFjava_set,java_set,java_set} the value of a field
+can be set.  Note that only public Java fields are accessible from within
+Octave.
+
+The following example indicates that in Octave empty brackets @code{[]}
+represent Java's @code{null} value and how Java exceptions are represented.
+
+@example
+@group
+javaObject ("java.math.BigDecimal", []);
+@result{} error: [java] java.lang.NullPointerException
+@end group
+@end example
+
+It is not recommended to represent Java's @code{null} value by empty brackets
+@code{[]}, because @code{null} has no type whereas @code{[]} has type
+@code{double}.
+
+In Octave it is possible to provide limited Java reflection by listing the
+public fields and methods of a Java object, both static or not.
+
+@example
+@group
+fieldnames (<Java object>)
+methods (<Java object>)
+@end group
+@end example
+
+Finally, an examples is shown how to access the stack trace from within
+Octave, where the function @ref{XREFdebug_java,debug_java,debug_java} is used
+to set and to get the current debug state.  In debug mode, the Java error and
+the stack trace are displayed.
+
+@example
+@group
+debug_java (true)  # use "false" to omit display of stack trace
+debug_java ()
+@result{} ans = 1
+javaObject ("java.math.BigDecimal", "1") ...
+  .divide (javaObject ("java.math.BigDecimal", "0"))
+@end group
+@end example
+
+
+
+@node Passing parameters to the JVM
+@subsection Passing parameters to the JVM
+@cindex memory, limitations on JVM
+
+In order to execute Java code Octave creates a Java Virtual Machine (JVM).
+Such a JVM allocates a fixed amount of initial memory and may expand this pool
+up to a fixed maximum memory limit.  The default values depend on the Java
+version (@pxref{XREFjavamem,,javamem}).  The memory pool is shared by all Java
+objects running in the JVM@.  This strict memory limit is intended mainly to
+avoid runaway applications inside web browsers or in enterprise servers which
+can consume all memory and crash the system.  When the maximum memory limit is
+hit, Java code will throw exceptions so that applications will fail or behave
+unexpectedly.
+
+You can specify options for the creation of the JVM inside a file named
+@file{java.opts}.  This is a text file where enter you enter lines containing
+@option{-X} and @option{-D} options that are then passed to the JVM during
+initialization.
+
+The directory where the Java options file is located is specified by the
+environment variable @w{@env{OCTAVE_JAVA_DIR}}.  If unset the directory where
+@file{javaclasspath.m} resides is used instead (typically
+@file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}).
+You can find this directory by executing
+
+@example
+which javaclasspath
+@end example
+
+The @option{-X} options allow you to increase the maximum amount of memory
+available to the JVM@.  The following example allows up to 256 Megabytes to be
+used by adding the following line to the @file{java.opts} file:
+
+@example
+-Xmx256m
+@end example
+
+The maximum possible amount of memory depends on your system.  On a Windows
+system with 2 Gigabytes main memory you should be able to set this maximum to
+about 1 Gigabyte.
+
+If your application requires a large amount of memory from the beginning, you
+can also specify the initial amount of memory allocated to the JVM@.  Adding
+the following line to the @file{java.opts} file starts the JVM with 64
+Megabytes of initial memory:
+
+@example
+-Xms64m
+@end example
+
+For more details on the available @option{-X} options of your Java Virtual
+Machine issue the command @samp{java -X} at the operating system command prompt
+and consult the Java documentation.
+
+The @option{-D} options can be used to define system properties which can then
+be used by Java classes inside Octave.  System properties can be retrieved by
+using the @code{getProperty()} methods of the @code{java.lang.System} class.
+The following example line defines the property @var{MyProperty} and assigns it
+the string @code{12.34}.
+
+@example
+-DMyProperty=12.34
+@end example
+
+The value of this property can then be retrieved as a string by a Java object
+or in Octave:
+
+@example
+@group
+octave> javaMethod ("getProperty", "java.lang.System", "MyProperty");
+ans = 12.34
+@end group
+@end example
+
+@seealso{javamem}
+
+
 
 @node Java Interface Functions
 @subsection Java Interface Functions
@@ -1818,6 +2174,7 @@ to create a Java object, get and set its data fields, and call Java methods
 which return results to Octave.
 
 @cindex object, creating a Java object
+@cindex instance, creating a Java instance
 @DOCSTRING(javaObject)
 
 @cindex array, creating a Java array
@@ -1949,209 +2306,3 @@ between Octave and the Java Virtual Machine.
 @DOCSTRING(java_unsigned_autoconversion)
 
 @DOCSTRING(debug_java)
-
-@node Making Java Classes Available
-@subsection Making Java Classes Available
-
-@c - index -
-@cindex classpath, setting
-@cindex classpath, difference between static and dynamic
-@cindex static classpath
-@cindex dynamic classpath
-@cindex @file{javaclasspath.txt}
-@cindex @file{classpath.txt}
-@cindex classes, making available to Octave
-@c - index -
-
-Java finds classes by searching a @var{classpath} which is a list of Java
-archive files and/or directories containing class files.  In Octave the
-@var{classpath} is composed of two parts:
-
-@itemize
-@item the @var{static classpath} is initialized once at startup of the JVM, and
-
-@item the @var{dynamic classpath} which can be modified at runtime.
-@end itemize
-
-Octave searches the @var{static classpath} first, and then the
-@var{dynamic classpath}.  Classes appearing in the @var{static classpath}, as
-well as in the @var{dynamic classpath}, will therefore be found in the
-@var{static classpath} and loaded from this location.  Classes which will be
-used frequently, or must be available to all users, should be added to the
-@var{static classpath}.  The @var{static classpath} is populated once from the
-contents of a plain text file named @file{javaclasspath.txt} (or
-@file{classpath.txt} historically) when the Java Virtual Machine starts.  This
-file contains one line for each individual classpath to be added to the
-@var{static classpath}.  These lines can identify directories containing class
-files, or Java archives with complete class file hierarchies.  Comment lines
-starting with a @samp{#} or a @samp{%} character are ignored.
-
-The search rules for the file @file{javaclasspath.txt} (or
-@file{classpath.txt}) are:
-
-@itemize
-@item
-First, Octave tries to locate it in the current directory (where Octave was
-started from).  If such a file is found, it is read and defines the initial
-@var{static classpath}.  Thus, it is possible to define a static classpath on a
-'per Octave invocation' basis.
-
-@item
-Next, Octave searches in the user's home directory.  If a file
-@file{javaclasspath.txt} exists here, its contents are appended to the static
-classpath (if any).  Thus, it is possible to build an initial static classpath
-on a @nospell{'per user'} basis.
-
-@item
-Finally, Octave looks for a @file{javaclasspath.txt} in the m-file directory
-where Octave Java functions live.  This is where the function
-@file{javaclasspath.m} resides, usually something like
-@file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}.
-You can find this directory by executing the command
-
-@example
-which javaclasspath
-@end example
-
-If this file exists here, its contents are also appended to the
-@var{static classpath}.  Note that the archives and class directories defined
-in this last step will affect all users.
-@end itemize
-
-Classes which are used only by a specific script should be placed in the
-@var{dynamic classpath}.  This portion of the classpath can be modified at
-runtime using the @code{javaaddpath} and @code{javarmpath} functions.
-
-Example:
-
-@example
-octave> base_path = "C:/Octave/java_files";
-
-octave> # add two JAR archives to the dynamic classpath
-octave> javaaddpath ([base_path, "/someclasses.jar"]);
-octave> javaaddpath ([base_path, "/moreclasses.jar"]);
-
-octave> # check the dynamic classpath
-octave> p = javaclasspath;
-octave> disp (p@{1@});
-C:/Octave/java_files/someclasses.jar
-octave> disp (p@{2@});
-C:/Octave/java_files/moreclasses.jar
-
-octave> # remove the first element from the classpath
-octave> javarmpath ([base_path, "/someclasses.jar"]);
-octave> p = javaclasspath;
-octave> disp (p@{1@});
-C:/Octave/java_files/moreclasses.jar
-
-octave> # provoke an error
-octave> disp (p@{2@});
-error: A(I): Index exceeds matrix dimension.
-@end example
-
-Another way to add files to the @var{dynamic classpath} exclusively for your
-user account is to use the file @file{.octaverc} which is stored in your home
-directory.  All Octave commands in this file are executed each time you start a
-new instance of Octave.  The following example adds the directory @file{octave}
-to Octave's search path and the archive @file{myclasses.jar} in this directory
-to the Java search path.
-
-@example
-@group
-# contents of .octaverc:
-addpath ("~/octave");
-javaaddpath ("~/octave/myclasses.jar");
-@end group
-@end example
-
-@c ------------------------------------------------------------------------
-@node Creating an Instance of a Java Class
-@subsection Creating an Instance of a Java Class
-@c - index -
-@cindex object, how to create
-@cindex instance, how to create
-@c - index -
-
-The function @code{javaObject} can be used to create Java objects.
-
-Example:
-
-@example
-Passenger = javaObject ("package.FirstClass", row, seat);
-@end example
-
-@node Handling Java Memory Limitations
-@subsection Handling Java Memory Limitations
-@cindex memory, limitations
-
-In order to execute Java code Octave creates a Java Virtual Machine (JVM).
-Such a JVM allocates a fixed amount of initial memory and may expand this pool
-up to a fixed maximum memory limit.  The default values depend on the Java
-version (@pxref{XREFjavamem,,javamem}).  The memory pool is shared by all Java
-objects running in the JVM@.  This strict memory limit is intended mainly to
-avoid runaway applications inside web browsers or in enterprise servers which
-can consume all memory and crash the system.  When the maximum memory limit is
-hit, Java code will throw exceptions so that applications will fail or behave
-unexpectedly.
-
-You can specify options for the creation of the JVM inside a file named
-@file{java.opts}.  This is a text file where enter you enter lines containing
-@option{-X} and @option{-D} options that are then passed to the JVM during
-initialization.
-
-The directory where the Java options file is located is specified by the
-environment variable @w{@env{OCTAVE_JAVA_DIR}}.  If unset the directory where
-@file{javaclasspath.m} resides is used instead (typically
-@file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}).
-You can find this directory by executing
-
-@example
-which javaclasspath
-@end example
-
-The @option{-X} options allow you to increase the maximum amount of memory
-available to the JVM@.  The following example allows up to 256 Megabytes to be
-used by adding the following line to the @file{java.opts} file:
-
-@example
--Xmx256m
-@end example
-
-The maximum possible amount of memory depends on your system.  On a Windows
-system with 2 Gigabytes main memory you should be able to set this maximum to
-about 1 Gigabyte.
-
-If your application requires a large amount of memory from the beginning, you
-can also specify the initial amount of memory allocated to the JVM@.  Adding
-the following line to the @file{java.opts} file starts the JVM with 64
-Megabytes of initial memory:
-
-@example
--Xms64m
-@end example
-
-For more details on the available @option{-X} options of your Java Virtual
-Machine issue the command @samp{java -X} at the operating system command prompt
-and consult the Java documentation.
-
-The @option{-D} options can be used to define system properties which can then
-be used by Java classes inside Octave.  System properties can be retrieved by
-using the @code{getProperty()} methods of the @code{java.lang.System} class.
-The following example line defines the property @var{MyProperty} and assigns it
-the string @code{12.34}.
-
-@example
--DMyProperty=12.34
-@end example
-
-The value of this property can then be retrieved as a string by a Java object
-or in Octave:
-
-@example
-@group
-octave> javaMethod ("getProperty", "java.lang.System", "MyProperty");
-ans = 12.34
-@end group
-@end example
-
-@seealso{javamem}

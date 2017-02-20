@@ -21,67 +21,71 @@
 @cindex numeric constant
 @cindex numeric value
 
-A @dfn{numeric constant} may be a scalar, a vector, or a matrix, and it
-may contain complex values.
+A @dfn{numeric constant} may be a scalar, a vector, or a matrix, and it may
+contain complex values.
 
-The simplest form of a numeric constant, a scalar, is a single number
-that can be an integer, a decimal fraction, a number in scientific
-(exponential) notation, or a complex number.  Note that by default numeric
-constants are represented within Octave in double-precision floating
-point format (complex constants are stored as pairs of double-precision
-floating point values).  It is, however, possible to represent real
-integers as described in @ref{Integer Data Types}.  Here are some
-examples of real-valued numeric constants, which all have the same
-value:
-
-@example
-@group
-105
-1.05e+2
-1050e-1
-@end group
-@end example
-
-To specify complex constants, you can write an expression of the form
+The simplest form of a numeric constant, a scalar, is a single number.  Note
+that by default numeric constants are represented within Octave in IEEE 754
+double precision (binary64) floating-point format (complex constants are
+stored as pairs of binary64 values).  It is, however, possible to represent
+real integers as described in @ref{Integer Data Types}.  If the numeric
+constant is a real integer, it can be defined in decimal, hexadecimal, or
+binary notation.  Hexadecimal notations start with @code{0x} or @code{0X},
+binary notations start with @code{0b} or @code{0B}, otherwise decimal notation
+is assumed.  Therefore, @code{0b} is not a hexadecimal number, it is not a
+valid number at all.  For better readability, digits may be partitioned by the
+underscore separator @code{_}, which is ignored by the Octave interpreter.
+Here are some examples of real-valued integer constants, which all represent
+the same value and are internally stored as binary64:
 
 @example
 @group
-3 + 4i
-3.0 + 4.0i
-0.3e1 + 40e-1i
+42            # decimal notation
+0x2A          # hexadecimal notation
+0b101010      # binary notation
+0b10_1010     # underscore notation
+round (42.1)  # also binary64
 @end group
 @end example
 
-@noindent
-all of which are equivalent.  The letter @samp{i} in the previous example
-stands for the pure imaginary constant, defined as
+In decimal notation, the numeric constant may be denoted as decimal fraction
+or even in scientific (exponential) notation.  Note that this is not possible
+for the hexadecimal or binary notation.  Again, in the following example all
+numeric constants represent the same value:
+
+@example
+@group
+.105
+1.05e-1
+.00105e+2
+@end group
+@end example
+
+Unlike in most programming languages, complex numeric constants are denoted as
+sum of real and imaginary part.  The imaginary part is denoted by a
+real-valued numeric constant immediately followed by @samp{i}, @samp{j},
+@samp{I}, or @samp{J}, which is defined by
 @tex
   $\sqrt{-1}$.
 @end tex
 @ifnottex
   @code{sqrt (-1)}.
 @end ifnottex
-
-For Octave to recognize a value as the imaginary part of a complex
-constant, a space must not appear between the number and the @samp{i}.
-If it does, Octave will print an error message, like this:
+Intermediate blanks are not allowed.  Some examples where all complex numeric
+constants represent the same value:
 
 @example
 @group
-octave:13> 3 + 4 i
-
-parse error:
-
-  syntax error
-
->>> 3 + 4 i
-          ^
+3 + 42i
+3 + 42j
+3 + 42I
+3 + 42J
+3.0 + 42.0i
+3.0 + 0x2Ai
+3.0 + 0b10_1010i
+0.3e1 + 420e-1i
 @end group
 @end example
-
-@noindent
-You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
-@samp{i} above.  All four forms are equivalent.
 
 @DOCSTRING(double)
 

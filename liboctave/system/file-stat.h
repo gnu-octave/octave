@@ -211,12 +211,9 @@ namespace octave
     {
     public:
 
-      file_stat (const std::string& n = "", bool fl = true)
-        : base_file_stat (), file_name (n), follow_links (fl)
-      {
-        if (! file_name.empty ())
-          update_internal ();
-      }
+      // This constructor must remain defined in the cpp file rather than in
+      // the header file (bug #50234).
+      file_stat (const std::string& n = "", bool fl = true);
 
       file_stat (const file_stat& fs)
         : base_file_stat (fs), file_name (fs.file_name),
@@ -235,7 +232,9 @@ namespace octave
         return *this;
       }
 
-      ~file_stat (void) = default;
+      // This destructor must remain as an empty destructor defined in the
+      // cpp file rather than in the header file (bug #50234).
+      ~file_stat (void);
 
       void get_stats (bool force = false)
       {

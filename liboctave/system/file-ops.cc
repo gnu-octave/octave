@@ -227,7 +227,7 @@ namespace octave
       size_t f_len = filename.length ();
 
       if (f_len == 0 || filename[0] != '~')
-        return filename;
+        return std::string (filename);
 
       // A leading '~/' or a bare '~' is *always* translated to the value
       // of $HOME or the home directory of the current user, regardless of
@@ -301,7 +301,7 @@ namespace octave
     octave::sys::file_ops::tilde_expand (const std::string& name)
     {
       if (name.find ('~') == std::string::npos)
-        return name;
+        return std::string (name);
       else
         {
           std::string result;

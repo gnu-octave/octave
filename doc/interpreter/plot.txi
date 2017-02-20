@@ -1776,20 +1776,28 @@ is
 
 @example
 @group
-function mycallback (src, data)
+function mycallback (hsrc, evt)
 @dots{}
 endfunction
 @end group
 @end example
 
 @noindent
-where @code{src} gives a handle to the source of the callback, and
-@code{code} gives some event specific data.  This can then be associated
+where @code{hsrc} is a handle to the source of the callback, and @code{evt} 
+gives some event specific data.  
+
+The function can be provided as a function handle to a plain Octave function, 
+as an anonymous function or as a string representing an Octvae command. The 
+latter syntax is not recommended since syntax errors will only occur when the 
+string is evaluated.  
+@xref{Function Handles Anonymous Functions Inline Functions, , Function Handles section}.
+
+This can then be associated
 with an object either at the objects creation or later with the
 @code{set} function.  For example,
 
 @example
-plot (x, "DeleteFcn", @@(s, e) disp ("Window Deleted"))
+plot (x, "DeleteFcn", @@(h, e) disp ("Window Deleted"))
 @end example
 
 @noindent
@@ -1803,7 +1811,7 @@ be passed after the 2 default arguments.  For example:
 @group
 plot (x, "DeleteFcn", @{@@mycallback, "1"@})
 @dots{}
-function mycallback (src, data, a1)
+function mycallback (h, e, a1)
   fprintf ("Closing plot %d\n", a1);
 endfunction
 @end group
@@ -1813,21 +1821,32 @@ The basic callback functions that are available for all graphics objects
 are
 
 @itemize @bullet
-@item CreateFcn
-This is the callback that is called at the moment of the objects
-creation.  It is not called if the object is altered in any way, and so
-it only makes sense to define this callback in the function call that
-defines the object.  Callbacks that are added to @code{CreateFcn} later with
-the @code{set} function will never be executed.
+@item CreateFcn: 
+called at the moment of the objects creation.  It is not called if the object is altered in any way, and so it only makes sense to define this callback in the function call that defines the object.  Callbacks that are added to @code{CreateFcn} later with the @code{set} function will never be executed.
 
-@item DeleteFcn
-This is the callback that is called at the moment an object is deleted.
+@item DeleteFcn: 
+called at the moment an object is deleted.
 
-@item ButtonDownFcn
-This is the callback that is called if a mouse button is pressed while
-the pointer is over this object.  Note, that the gnuplot interface does
-not respect this callback.
+@item ButtonDownFcn: 
+called if a mouse button is pressed while the pointer is over this object.  Note, that the gnuplot interface does not respect this callback.
 @end itemize
+
+@strong{Caution:} the second @code{evt} argument in callback functions is only 
+loosely implemented in the Qt graphics toolkit:
+
+@itemize @bullet
+@item Mouse click events:
+@code{evt} is a class @code{double} value, 1 for left, 2 for middle and 3 
+for right click.
+
+@item Key press events:
+@code{evt} is a structure with fields @code{Key} (string), @code{Character} 
+(string) and @code{Modifier} (cell array of strings).
+
+@item Other events:
+@code{evt} is a class @code{double} empty matrix.
+@end itemize
+
 
 The object and figure that the event occurred in that resulted in the
 callback being called can be found with the @code{gcbo} and @code{gcbf}

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2016 Markus Bergholz
+## Copyright (C) 2014-2017 Markus Bergholz
 ## Copyright (C) 2000-2016 Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##

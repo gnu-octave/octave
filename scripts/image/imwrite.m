@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2016 John W. Eaton
+## Copyright (C) 2008-2017 John W. Eaton
 ## Copyright (C) 2013-2016 Carnë Draug
 ##
 ## This file is part of Octave.

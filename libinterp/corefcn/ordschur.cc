@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2016 Sébastien Villemot <sebastien@debian.org>
+Copyright (C) 2016-2017 Sébastien Villemot <sebastien@debian.org>
 
 This file is part of Octave.
 

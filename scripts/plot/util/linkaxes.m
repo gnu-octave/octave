@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2016 Willem Atsma
+## Copyright (C) 2014-2017 Willem Atsma
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2016 Mike Miller
+## Copyright (C) 2013-2017 Mike Miller
 ##
 ## This file is part of Octave.
 ##

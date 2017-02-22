@@ -3,7 +3,7 @@
 
 /* Look up a filename in a path.
 
-Copyright (C) 2003-2016 John W. Eaton
+Copyright (C) 2003-2017 John W. Eaton
 Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
 Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2016 John W. Eaton
+Copyright (C) 1994-2017 John W. Eaton
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 Copyright (C) 2012 Carlo de Falco

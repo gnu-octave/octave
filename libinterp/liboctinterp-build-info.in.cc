@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2016 M. Muetzel
+Copyright (C) 2016-2017 M. Muetzel
 
 This file is part of Octave.
 

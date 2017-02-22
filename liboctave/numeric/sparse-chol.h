@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2016 John W. Eaton
+Copyright (C) 2016-2017 John W. Eaton
 Copyright (C) 2005-2016 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2016 Julien Bect
+## Copyright (C) 2014-2017 Julien Bect
 ## Copyright (C) 2008-2016 Jaroslav Hajek
 ## Copyright (C) 2000, 2006-2007 Paul Kienzle
 ##

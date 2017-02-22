@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2016 Laurent Mazet
+## Copyright (C) 2005-2017 Laurent Mazet
 ## Copyright (C) 2010 Jaroslav Hajek
 ##
 ## This file is part of Octave.

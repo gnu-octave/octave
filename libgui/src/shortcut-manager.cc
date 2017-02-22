@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2014-2016 Torsten <ttl@justmail.de>
+Copyright (C) 2014-2017 Torsten <ttl@justmail.de>
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2016 John W. Eaton, Shai Ayal, Kai Habel
+## Copyright (C) 2007-2017 John W. Eaton, Shai Ayal, Kai Habel
 ##
 ## This file is part of Octave.
 ##

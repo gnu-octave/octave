@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2016 Julien Bect
+## Copyright (C) 2013-2017 Julien Bect
 ## Copyright (C) 2012 Rik Wehbring
 ## Copyright (C) 1995-2016 Kurt Hornik
 ##

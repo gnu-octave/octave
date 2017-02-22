@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2016 John W. Eaton
+## Copyright (C) 2005-2017 John W. Eaton
 ## Copyright (C) 2013-2016 Arun Giridhar
 ##
 ## This file is part of Octave.

@@ -1033,21 +1033,27 @@ generated with @code{@{@}} can be assigned to.  An example is
 
 @example
 @group
-in@{1@} = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+in@{1@} = [10, 20, 30];
 in@{2@} = inf;
 in@{3@} = "last";
 in@{4@} = "first";
 out = cell (4, 1);
-[out@{1:3@}] = find (in@{1 : 3@});
-[out@{4:6@}] = find (in@{[1, 2, 4]@})
+[out@{1:3@}] = in@{1 : 3@};
+[out@{4:6@}] = in@{[1, 2, 4]@})
      @result{} out =
         @{
-          [1,1] = 1
-          [2,1] = 9
-          [3,1] = 90
-          [4,1] = 1
-          [3,1] = 1
-          [4,1] = 10
+           [1,1] =
+         
+              10   20   30
+         
+           [2,1] = Inf
+           [3,1] = last
+           [4,1] =
+         
+              10   20   30
+         
+           [5,1] = Inf
+           [6,1] = first
         @}
 @end group
 @end example

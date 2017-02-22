@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2016 Jordi Gutiérrez Hermoso
+Copyright (C) 2012-2017 Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
 

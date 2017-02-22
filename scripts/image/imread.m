@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2016 Carnë Draug
+## Copyright (C) 2013-2017 Carnë Draug
 ## Copyright (C) 2008-2016 Thomas L. Scofield
 ## Copyright (C) 2008 Kristian Rumberg
 ## Copyright (C) 2006 Thomas Weber

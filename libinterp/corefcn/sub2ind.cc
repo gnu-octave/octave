@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2016 VZLU Prague
+Copyright (C) 2009-2017 VZLU Prague
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2016 Jacopo Corno <jacopo.corno@gmail.com>
+## Copyright (C) 2014-2017 Jacopo Corno <jacopo.corno@gmail.com>
 ## Copyright (C) 2013 Roberto Porcu' <roberto.porcu@polimi.it>
 ##
 ## This file is part of Octave.

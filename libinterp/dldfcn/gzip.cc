@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2016 Carnë Draug
+Copyright (C) 2016-2017 Carnë Draug
 
 This file is part of Octave.
 

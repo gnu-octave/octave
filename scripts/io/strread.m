@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2016 Eric Chassande-Mottin, CNRS (France)
+## Copyright (C) 2009-2017 Eric Chassande-Mottin, CNRS (France)
 ## Parts Copyright (C) 2012-2016 Philip Nienhuis
 ##
 ## This file is part of Octave.

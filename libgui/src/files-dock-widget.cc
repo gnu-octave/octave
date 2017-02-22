@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2013-2016 John P. Swensen
+Copyright (C) 2013-2017 John P. Swensen
 Copyright (C) 2011-2016 Jacob Dawid
 
 This file is part of Octave.

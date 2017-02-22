@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2016 Kurt Hornik
+## Copyright (C) 1995-2017 Kurt Hornik
 ## Copyright (C) 2016 Lachlan Andrew
 ## Copyright (C) 2014 Mike Giles
 ## Copyright (C) 2012 Rik Wehbring

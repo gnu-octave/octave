@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2016 John W. Eaton and David Bateman
+@c Copyright (C) 2007-2017 John W. Eaton and David Bateman
 @c Copyright (C) 2010 Martin Hepperle
 @c Copyright (C) 2007 Paul Thomas and Christoph Spiel
 @c

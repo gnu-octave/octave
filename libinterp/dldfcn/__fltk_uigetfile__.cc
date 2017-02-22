@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2016 Kai Habel
+Copyright (C) 2010-2017 Kai Habel
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2016 Carlo de Falco
+## Copyright (C) 2016-2017 Carlo de Falco
 ## Copyright (C) 2016 Francesco Faccio <francesco.faccio@mail.polimi.it>
 ## Copyright (C) 2014-2016 Jacopo Corno <jacopo.corno@gmail.com>
 ## Copyright (C) 2013-2016 Roberto Porcu' <roberto.porcu@polimi.it>

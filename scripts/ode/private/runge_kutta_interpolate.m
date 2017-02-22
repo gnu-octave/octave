@@ -1,4 +1,4 @@
-## Copyright (C) 2015-2016 Carlo de Falco
+## Copyright (C) 2015-2017 Carlo de Falco
 ## Copyright (C) 2015-2016 Jacopo Corno <jacopo.corno@gmail.com>
 ##
 ## This file is part of Octave.

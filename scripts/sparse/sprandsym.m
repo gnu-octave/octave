@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2016 David Bateman and Andy Adler
+## Copyright (C) 2004-2017 David Bateman and Andy Adler
 ## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.

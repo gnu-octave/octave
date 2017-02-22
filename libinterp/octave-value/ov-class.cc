@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2016 John W. Eaton
+Copyright (C) 2007-2017 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.

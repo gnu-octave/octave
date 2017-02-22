@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2016 Nir Krakauer
+## Copyright (C) 2014-2017 Nir Krakauer
 ##
 ## This file is part of Octave.
 ##

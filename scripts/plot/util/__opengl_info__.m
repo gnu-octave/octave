@@ -1,4 +1,4 @@
-## Copyright (C) 2016 John Donoghue <john.donoghue@ieee.org>
+## Copyright (C) 2016-2017 John Donoghue <john.donoghue@ieee.org>
 ##
 ## This file is part of Octave.
 ##

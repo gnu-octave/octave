@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2016 Radek Salac
+## Copyright (C) 2008-2017 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.

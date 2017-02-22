@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2016 Erik Kjellson
+## Copyright (C) 2012-2017 Erik Kjellson
 ##
 ## This file is part of Octave.
 ##

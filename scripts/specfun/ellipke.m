@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2016 David Billinghurst
+## Copyright (C) 2001-2017 David Billinghurst
 ## Copyright (C) 2001-2016 Paul Kienzle
 ## Copyright (C) 2003-2016 Jaakko Ruohio
 ##

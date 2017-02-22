@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2016 Andy Adler
+Copyright (C) 1999-2017 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.

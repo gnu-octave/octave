@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2016 Etienne Grossmann
+## Copyright (C) 2000-2017 Etienne Grossmann
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

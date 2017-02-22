@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2016 Friedrich Leisch
+## Copyright (C) 1995-2017 Friedrich Leisch
 ## Copyright (C) 2010 Alois Schloegl
 ## Copyright (C) 2014-2016 Drew Abbot
 ##

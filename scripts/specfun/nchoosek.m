@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2016 Rolf Fabian and Paul Kienzle
+## Copyright (C) 2001-2017 Rolf Fabian and Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.

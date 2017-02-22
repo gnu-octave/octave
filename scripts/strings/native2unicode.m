@@ -1,4 +1,4 @@
-## Copyright (C) 2016 Markus Mützel
+## Copyright (C) 2016-2017 Markus Mützel
 ##
 ## This file is part of Octave.
 ##

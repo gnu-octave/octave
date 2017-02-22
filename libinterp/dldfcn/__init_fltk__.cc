@@ -236,12 +236,12 @@ private:
   {
 #if defined (HAVE_OPENGL)
 
-    glPushMatrix ();
-
     glMatrixMode (GL_MODELVIEW);
+    glPushMatrix ();
     glLoadIdentity ();
 
     glMatrixMode (GL_PROJECTION);
+    glPushMatrix ();
     glLoadIdentity ();
     gluOrtho2D (0.0, w (), 0.0, h ());
 
@@ -253,13 +253,16 @@ private:
     zoom_box_vertex ();
     glEnd ();
 
-    glBegin (GL_LINE_STRIP);
     glLineWidth (1.5);
+    glBegin (GL_LINE_STRIP);
     glColor4f (0.45, 0.62, 0.81, 0.9);
     zoom_box_vertex ();
     glEnd ();
 
     glPopAttrib ();
+    glMatrixMode (GL_MODELVIEW);
+    glPopMatrix ();
+    glMatrixMode (GL_PROJECTION);
     glPopMatrix ();
 
 #else

@@ -89,6 +89,9 @@ linear axes.  For example,
 @group
 x = -10:0.1:10;
 plot (x, sin (x));
+xlabel ("x");
+ylabel ("sin (x)");
+title ("Simple 2-D Plot");
 @end group
 @end example
 
@@ -123,13 +126,20 @@ are useful for displaying discrete data.  For example,
 
 @example
 @group
+randn ("state", 1);
 hist (randn (10000, 1), 30);
+xlabel ("Value");
+ylabel ("Count");
+title ("Histogram of 10,000 normally distributed random numbers");
 @end group
 @end example
 
 @noindent
 produces the histogram of 10,000 normally distributed random numbers
-shown in @ref{fig:hist}.
+shown in @ref{fig:hist}.  Note that, @code{randn ("state", 1);}, initializes
+the random number generator for @code{randn} to a known value so that the
+returned values are reproducible; This guarantees that the figure produced
+is identical to the one in this manual.
 
 @float Figure,fig:hist
 @center @image{hist,4in}
@@ -177,11 +187,16 @@ example,
 
 @example
 @group
+rand ("state", 2);
 x = 0:0.1:10;
 y = sin (x);
 lerr = 0.1 .* rand (size (x));
 uerr = 0.1 .* rand (size (x));
 errorbar (x, y, lerr, uerr);
+axis ([0, 10, -1.1, 1.1]);
+xlabel ("x");
+ylabel ("sin (x)");
+title ("Errorbar plot of sin (x)");
 @end group
 @end example
 
@@ -207,6 +222,7 @@ and linear.  For example,
 
 @example
 polar (0:0.1:10*pi, 0:0.1:10*pi);
+title ("Example polar plot from 0 to 10*pi");
 @end example
 
 @noindent
@@ -318,6 +334,10 @@ tx = ty = linspace (-8, 8, 41)';
 r = sqrt (xx .^ 2 + yy .^ 2) + eps;
 tz = sin (r) ./ r;
 mesh (tx, ty, tz);
+xlabel ("tx");
+ylabel ("ty");
+zlabel ("tz");
+title ("3-D Sombrero plot");
 @end group
 @end example
 
@@ -343,7 +363,11 @@ without requiring it to form a surface.  For example,
 t = 0:0.1:10*pi;
 r = linspace (0, 1, numel (t));
 z = linspace (0, 1, numel (t));
-plot3 (r.*sin(t), r.*cos(t), z);
+plot3 (r.*sin (t), r.*cos (t), z);
+xlabel ("r.*sin (t)");
+ylabel ("r.*cos (t)");
+zlabel ("z");
+title ("plot3 display of 3-D helix");
 @end group
 @end example
 

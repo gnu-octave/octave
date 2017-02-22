@@ -25,6 +25,7 @@
 ##
 ## @example
 ## @group
+## format long
 ## chop (-pi, 5, 10)
 ##    @result{} -3.14200000000000
 ## chop (-pi, 5, 5)

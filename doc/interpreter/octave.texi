@@ -877,10 +877,10 @@ Mex-Files
 
 Java Interface
 
-* Java Interface Functions::
 * Making Java Classes Available::
-* Creating an Instance of a Java Class::
-* Handling Java Memory Limitations::
+* How to use Java from within Octave::
+* Passing parameters to the JVM::
+* Java Interface Functions::
 
 Test and Demo Functions
 

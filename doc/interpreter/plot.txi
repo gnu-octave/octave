@@ -136,9 +136,10 @@ title ("Histogram of 10,000 normally distributed random numbers");
 
 @noindent
 produces the histogram of 10,000 normally distributed random numbers
-shown in @ref{fig:hist}.  Note that, @code{randn ("state", 1);} sets
-the start value for @code{randn} so that the returned values are
-always the same as shown.
+shown in @ref{fig:hist}.  Note that, @code{randn ("state", 1);}, initializes
+the random number generator for @code{randn} to a known value so that the
+returned values are reproducible; This guarantees that the figure produced
+is identical to the one in this manual.
 
 @float Figure,fig:hist
 @center @image{hist,4in}

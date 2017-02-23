@@ -54,10 +54,10 @@ namespace QtHandles
                                    tr ("Select"), this));
 
     foreach (QAction* a, m_actions)
-    {
-      a->setCheckable (true);
-      connect (a, SIGNAL (toggled (bool)), this, SLOT (actionToggled (bool)));
-    }
+      {
+        a->setCheckable (true);
+        connect (a, SIGNAL (toggled (bool)), this, SLOT (actionToggled (bool)));
+      }
   }
 
   MouseModeActionGroup::~MouseModeActionGroup (void)

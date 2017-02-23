@@ -237,13 +237,13 @@ DEFUN (__uigetfile_qt__, args, , "")
           int i = 0;
 
           foreach (const QString& s, files)
-          {
-            QFileInfo fi (s);
+            {
+              QFileInfo fi (s);
 
-            if (dirName.isEmpty ())
-              dirName = appendDirSep (fi.canonicalPath ());
-            cFiles(i++) = toStdString (fi.fileName ());
-          }
+              if (dirName.isEmpty ())
+                dirName = appendDirSep (fi.canonicalPath ());
+              cFiles(i++) = toStdString (fi.fileName ());
+            }
 
           retval(0) = cFiles;
           retval(1) = toStdString (dirName);

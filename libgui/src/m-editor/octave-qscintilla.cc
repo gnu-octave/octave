@@ -252,7 +252,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
       QAction* a;
 
       foreach (a, all_actions)
-      context_menu->removeAction (a);
+        context_menu->removeAction (a);
 
       a = context_menu->addAction (tr ("dbstop if ..."), this,
                                    SLOT (contextmenu_break_condition (bool)));

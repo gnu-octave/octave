@@ -139,9 +139,9 @@ namespace QtHandles
     if (frame->hasMouseTracking ())
       {
         foreach (QWidget* w, frame->findChildren<QWidget*> ())
-        { w->setMouseTracking (true); }
+          w->setMouseTracking (true);
         foreach (QWidget* w, buttongroup->findChildren<QWidget*> ())
-        { w->setMouseTracking (true); }
+          w->setMouseTracking (true);
       }
 
     QString title = Utils::fromStdString (pp.get_title ());

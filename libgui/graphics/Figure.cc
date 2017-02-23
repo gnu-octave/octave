@@ -372,16 +372,16 @@ namespace QtHandles
 
     foreach (QFrame* frame,
              qWidget<QWidget> ()->findChildren<QFrame*> ())
-    {
-      if (frame->objectName () == "UIPanel"
-          || frame->objectName () == "UIButtonGroup")
-        {
-          Object* obj = Object::fromQObject (frame);
+      {
+        if (frame->objectName () == "UIPanel"
+            || frame->objectName () == "UIButtonGroup")
+          {
+            Object* obj = Object::fromQObject (frame);
 
-          if (obj)
-            obj->slotRedraw ();
-        }
-    }
+            if (obj)
+              obj->slotRedraw ();
+          }
+      }
 
     updateFigureToolBarAndMenuBar ();
   }
@@ -1024,7 +1024,7 @@ namespace QtHandles
     m_container->setMouseTracking (true);
     m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
     foreach (QWidget* w, m_container->findChildren<QWidget*> ())
-    { w->setMouseTracking (true); }
+      w->setMouseTracking (true);
   }
 
 }

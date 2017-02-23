@@ -69,8 +69,9 @@ namespace QtHandles
       QEvent* evt)
   {
     foreach (GenericEventNotifyReceiver* r, m_receivers)
-    if (r->eventNotifyBefore (obj, evt))
-      return true;
+      if (r->eventNotifyBefore (obj, evt))
+        return true;
+
     return false;
   }
 
@@ -79,7 +80,7 @@ namespace QtHandles
       QEvent* evt)
   {
     foreach (GenericEventNotifyReceiver* r, m_receivers)
-    r->eventNotifyAfter (obj, evt);
+      r->eventNotifyAfter (obj, evt);
   }
 
 #define DECLARE_GENERICEVENTNOTIFY_SENDER(T,B) \

@@ -81,26 +81,26 @@ namespace QtHandles
     gh_manager::auto_lock lock;
 
     foreach (QObject* qObj, children ())
-    {
-      if (qObj->isWidgetType ())
-        {
-          Object* obj = Object::fromQObject (qObj);
+      {
+        if (qObj->isWidgetType ())
+          {
+            Object* obj = Object::fromQObject (qObj);
 
-          if (obj)
-            {
-              graphics_object go = obj->object ();
+            if (obj)
+              {
+                graphics_object go = obj->object ();
 
-              if (go.valid_object ())
-                {
-                  Matrix bb = go.get_properties ().get_boundingbox (false);
+                if (go.valid_object ())
+                  {
+                    Matrix bb = go.get_properties ().get_boundingbox (false);
 
-                  obj->qWidget<QWidget> ()
-                  ->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                                 octave::math::round (bb(2)), octave::math::round (bb(3)));
-                }
-            }
-        }
-    }
+                    obj->qWidget<QWidget> ()->setGeometry (
+                      octave::math::round (bb(0)), octave::math::round (bb(1)),
+                      octave::math::round (bb(2)), octave::math::round (bb(3)));
+                  }
+              }
+          }
+      }
   }
 
   void

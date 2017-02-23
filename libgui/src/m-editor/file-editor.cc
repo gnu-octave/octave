@@ -2388,9 +2388,7 @@ file_editor::dropEvent (QDropEvent *e)
   if (e->mimeData ()->hasUrls ())
     {
       foreach (QUrl url, e->mimeData ()->urls ())
-      {
         request_open_file (url.toLocalFile ());
-      }
     }
 }
 

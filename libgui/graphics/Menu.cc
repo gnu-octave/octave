@@ -115,8 +115,9 @@ namespace QtHandles
             int count = 0;
 
             foreach (QAction* a, m_parent->actions ())
-            if (! a->isSeparator () && a->objectName () != "builtinMenu")
-              count++;
+              if (! a->isSeparator () && a->objectName () != "builtinMenu")
+                count++;
+
             up.get_property ("position").set
             (octave_value (static_cast<double> (count)), true, false);
           }
@@ -127,13 +128,15 @@ namespace QtHandles
             QAction* before = 0;
 
             foreach (QAction* a, m_parent->actions ())
-            if (! a->isSeparator () && a->objectName () != "builtinMenu")
               {
-                count++;
-                if (pos <= count)
+                if (! a->isSeparator () && a->objectName () != "builtinMenu")
                   {
-                    before = a;
-                    break;
+                    count++;
+                    if (pos <= count)
+                      {
+                        before = a;
+                        break;
+                      }
                   }
               }
 
@@ -230,13 +233,15 @@ namespace QtHandles
               int count = 0;
 
               foreach (QAction* a, m_parent->actions ())
-              if (! a->isSeparator () && a->objectName () != "builtinMenu")
                 {
-                  count++;
-                  if (pos <= count)
+                  if (! a->isSeparator () && a->objectName () != "builtinMenu")
                     {
-                      before = a;
-                      break;
+                      count++;
+                      if (pos <= count)
+                        {
+                          before = a;
+                          break;
+                        }
                     }
                 }
             }
@@ -298,29 +303,29 @@ namespace QtHandles
         double count = 1.0;
 
         foreach (QAction* a, m_parent->actions ())
-        {
-          if (! a->isSeparator () && a->objectName () != "builtinMenu")
-            {
-              Object* aObj = Object::fromQObject (a);
+          {
+            if (! a->isSeparator () && a->objectName () != "builtinMenu")
+              {
+                Object* aObj = Object::fromQObject (a);
 
-              if (aObj)
-                {
-                  graphics_object go = aObj->object ();
+                if (aObj)
+                  {
+                    graphics_object go = aObj->object ();
 
-                  // Probably overkill as a uimenu child can only be another
-                  // uimenu object.
-                  if (go.isa ("uimenu"))
-                    {
-                      uimenu::properties& up = Utils::properties<uimenu> (go);
+                    // Probably overkill as a uimenu child can only be another
+                    // uimenu object.
+                    if (go.isa ("uimenu"))
+                      {
+                        uimenu::properties& up = Utils::properties<uimenu> (go);
 
-                      up.get_property ("position").set
-                      (octave_value (count), true, false);
-                    }
-                }
+                        up.get_property ("position").set
+                        (octave_value (count), true, false);
+                      }
+                  }
 
-              count++;
-            }
-        }
+                count++;
+              }
+          }
       }
   }
 

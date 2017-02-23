@@ -78,7 +78,7 @@ namespace QtHandles
       int i = 0;
 
       foreach (const QString& s, l)
-      v[i++] = toStdString (s);
+        v[i++] = toStdString (s);
 
       return v;
     }

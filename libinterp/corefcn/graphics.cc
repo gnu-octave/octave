@@ -10652,7 +10652,16 @@ Undocumented internal function.
       if (! go)
         error ("get: invalid handle (= %g)", hcv(n));
 
+      // Disable "Octave:deprecated-property" warnings
+      int old_dep_prop = warning_enabled ("Octave:deprecated-property");
+      disable_warning ("Octave:deprecated-property");
+
       vals(n) = go.get (true);
+
+      if (old_dep_prop == 1)
+        set_warning_state ("Octave:deprecated-property", "on");
+      else if (old_dep_prop == 2)
+        set_warning_state ("Octave:deprecated-property", "error");
     }
 
   octave_idx_type vals_len = vals.numel ();

@@ -174,7 +174,7 @@ namespace octave
           update_internal ();
       }
 
-    inline file_stat::~file_stat () { }
+    file_stat::~file_stat () { }
 
     void
     file_stat::update_internal (bool force)

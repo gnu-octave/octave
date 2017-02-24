@@ -86,6 +86,129 @@ Summary of important user-visible changes for version 4.4:
     is the second major release after 4.4).  Use the property "color"
     instead.
 
+Summary of bugs fixed for version 4.2.1:
+---------------------------------------
+
+Using the bug numbers listed below, find bug reports on the web using
+the URL https://savannah.gnu.org/bugs/?NNNNN
+
+ ** guarantee returning std::string from tilde_expand functions (bug #50234)
+
+ ** workaround segfault in file_stat (bug #50234)
+
+ ** genpropdoc.m: document more graphics properties (bug #50337)
+
+ ** always fork and exec when starting the gui (bug #49609)
+
+ ** print.m: fix regression with -append option (bug #50318)
+
+ ** don't display legend, colorbar, and annotation axes coordinates
+    (bug #50272)
+
+ ** qp.m: Fix regression with incorrect vector dimensions (bug #50067)
+
+ ** prevent infinite loop in global documentation search (bug #50177)
+
+ ** connect execute command signal in editor constructor (bug #50171)
+
+ ** connect editors execute command signal to the required slot (bug #50171)
+
+ ** check if input is class method before declaring it unimplemented
+    (patch #9238) (bug #49694)
+
+ ** workaround segfault when an error occurs while printing (bug #49779)
+
+ ** axis.m: Do not set plotboxaspectratio to 0 (bug #49755)
+
+ ** don't rethrow exception in destructor (bug #49304)
+
+ ** rethrow octave::exit_exception (bug #49304)
+
+ ** update appdata.xml to follow conventions (bug #49952)
+
+ ** mexproto.h (mxAssert, mxAssertS): ensure operator precedence (bug #50050)
+
+ ** calculate error in solution for ode solvers correctly (bug #49950)
+
+ ** use GetModuleFileName for getting octave path in windows (bug #48671)
+
+ ** use C++ updaters for labels color (bug #49980)
+
+ ** distinguish elements vs. bytes in fread (bug #49699)
+
+ ** move frame2im and im2frame to image/ directory (bug #49939)
+
+ ** fix undefined return argument for more than 2 outputs from ode solver
+    (bug #49890)
+
+ ** fix inv for hermitian matrices (bug #49904)
+
+ ** fix gzip for certain types of gzip files (bug #49760)
+
+ ** fix typo in liboctave version info (bug #49860)
+
+ ** initialize ODE Event function with start time (bug #49846)
+
+ ** allow configure test to succeed without implicit fcn decls (bug #49782)
+
+ ** allow external docstrings from .oct files to be found again (bug #49687)
+
+ ** don't require semicolon between property list elements (bug #49819)
+
+ ** display.m: Correctly display output for non-class objects
+    (bug #49753, #49794)
+
+ ** don't run publish.tst unless OSMESA or gnuplot are available (bug #49767)
+
+ ** find help for function aliases again (bug #49687)
+
+ ** legend.m: backport cset 7184b4516a68 (bug #49675)
+
+ ** preserve lasterror info on rethrow (bug #49642)
+
+ ** norm: fix error in input argument validation leading to segfault
+    (bug #49634)
+
+Documentation bugs fixed:
+
+ ** overhaul Java interface description (bug #50299)
+
+ ** add documentation for hex and binary prefix and _ separator
+    (bug #50305, #50334)
+
+ ** fix build of docs broken in sub2ind (bug #50348)
+
+ ** version.m: document that "-release" returns an empty string (bug #50294)
+
+ ** remove trailing "\n\" from sleep and usleep docstrings (bug #50301)
+
+ ** expand documentation for cast() (bug #50201)
+
+ ** correct two entries in Table 34.1 (bug #50203)
+
+ ** oop.txi: Improve table formatting (bug #50203)
+
+ ** fix '##' in middle of docstring/comment lines (bug #50145)
+
+ ** reword documentation about subplots in 15.2.4 (bug #50148)
+
+ ** update unimplemented list of functions and where to find them
+    (bug #50098)
+
+ ** compare_plot_demos: fix HTML syntax, simplify output, remove
+    external deps (bug #49709)
+
+ ** add more depth to explanation of '~' function argument (bug #49444)
+
+ ** correct documentation for javaclasspath file (bug #49873)
+
+ ** small fixes to docstrings (bug #49733)
+
+ ** change text describing demo plots to reflect new ColorOrder (bug #49288)
+
+Other bugs fixed:
+
+ ** add missing classdef test files (bug #49819)
 
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------

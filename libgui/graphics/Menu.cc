@@ -115,7 +115,7 @@ namespace QtHandles
             int count = 0;
 
             foreach (QAction* a, m_parent->actions ())
-              if (! a->isSeparator () && a->objectName () != "builtinMenu")
+              if (! a->isSeparator ())
                 count++;
 
             up.get_property ("position").set
@@ -129,7 +129,7 @@ namespace QtHandles
 
             foreach (QAction* a, m_parent->actions ())
               {
-                if (! a->isSeparator () && a->objectName () != "builtinMenu")
+                if (! a->isSeparator ())
                   {
                     count++;
                     if (pos <= count)
@@ -234,7 +234,7 @@ namespace QtHandles
 
               foreach (QAction* a, m_parent->actions ())
                 {
-                  if (! a->isSeparator () && a->objectName () != "builtinMenu")
+                  if (! a->isSeparator ())
                     {
                       count++;
                       if (pos <= count)
@@ -304,7 +304,7 @@ namespace QtHandles
 
         foreach (QAction* a, m_parent->actions ())
           {
-            if (! a->isSeparator () && a->objectName () != "builtinMenu")
+            if (! a->isSeparator ())
               {
                 Object* aObj = Object::fromQObject (a);
 

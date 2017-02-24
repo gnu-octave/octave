@@ -766,7 +766,7 @@ namespace QtHandles
             switch (xevent->type ())
               {
               case QEvent::ActionChanged:
-                // The mennubar may have been resized if no action is visible
+                // The menubar may have been resized if no action is visible
                 {
                   QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
                   if (m_menuBar->sizeHint ().height () != m_previousHeight

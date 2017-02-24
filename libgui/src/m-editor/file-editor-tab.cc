@@ -2693,48 +2693,52 @@ file_editor_tab::handle_cursor_moved (int line, int col)
 
 // Slot that is entered each time a new character was typed.
 // It is used for handling line breaking if this is desired.
+// The related signal is emitted after the signal for a moved cursor
+// such that _col and _line can not be used for current position.
 void
 file_editor_tab::handle_char_added (int character)
 {
   if (_line_break)
   {
-    // if line breaking is desired, get the current line and column
-    int line, col;
-    _edit_area->getCursorPosition (&line, &col);
+    // If line breaking is desired, get the current line and column.
+    // For taking the tab width into consideration, use own function
+    int line, col, pos;
+    _edit_area->get_current_position (&pos, &line, &col);
 
     // immediately return if line has not reached the max. line length
-    if (col < _line_break)
+    if (col <= _line_break)
       return;
 
-    if (character == ' ' || character == '\t')
-      {
-        // the new character is space or tab, break already here
-        _edit_area->insertAt (QString ("\n"), line, col);
-      }
-    else
-      {
-        // search backward for the first space or tab
-        int col_space = col - 1;
-        int c = 0, pos;
+    // Here we go for breaking the current line by inserting a newline.
+    // For determining the position of a specific column, we have to get
+    // the column from the QScintila function without taking tab lengths
+    // into account, since the calculation from line/col to position ignores
+    // this, too
+    _edit_area->getCursorPosition (&line, &col);
+    int c = 0;
+    int col_space = col;
+    int indentation = _edit_area->indentation (line);
 
-        while (c != ' ' && c != '\t' && col_space-- > 0)
-          {
-            pos = _edit_area->positionFromLineIndex (line, col_space);
-            c = _edit_area->SendScintilla (QsciScintillaBase::SCI_GETCHARAT,
-                                           pos);
-          }
-
-        // if a space or tab was found, break after that char;
-        // otherwise break at cursor position
-        int col_newline = col - 1;
-        if (c == ' ' || c == '\t')
-          col_newline = col_space + 1;
-        // insert a newline char for breaking the line
-        _edit_area->insertAt (QString ("\n"), line, col_newline);
+    // Search the first occurence of space or tab backwards starting from
+    // the current column (col_space).
+    while (c != ' ' && c != '\t' && col_space > indentation)
+      {
+        pos = _edit_area->positionFromLineIndex (line, col_space--);
+        c = _edit_area->SendScintilla (QsciScintillaBase::SCI_GETCHARAT, pos);
       }
 
-    // automatically indent new line to the indentation of previous line
-    _edit_area->setIndentation (line + 1, _edit_area->indentation (line));
+    // If a space or tab was found, break at this char,
+    // otherwise break at cursor position
+    int col_newline = col - 1;
+    if (c == ' ' || c == '\t')
+      col_newline = col_space + 1;
+    // Insert a newline char for breaking the line
+    _edit_area->insertAt (QString ("\n"), line, col_newline);
+
+    // Automatically indent the new line to the indentation of previous line
+    // and set the cursor position to the end of the indentation.
+    _edit_area->setIndentation (line + 1, indentation);
+    _edit_area->SendScintilla (QsciScintillaBase::SCI_LINEEND);
   }
 }
 

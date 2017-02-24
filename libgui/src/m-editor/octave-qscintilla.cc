@@ -352,4 +352,13 @@ octave_qscintilla::clear_indicator (int indicator_style)
   clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
 }
 
+// Function returning the true cursor position where the tab length
+// is taken into account.
+void
+octave_qscintilla::get_current_position (int *pos, int *line, int *col)
+{
+  *pos = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
+  *line = SendScintilla (QsciScintillaBase::SCI_LINEFROMPOSITION, *pos);
+  *col = SendScintilla (QsciScintillaBase::SCI_GETCOLUMN, *pos);
+}
 #endif

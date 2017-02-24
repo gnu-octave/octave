@@ -65,7 +65,7 @@ END-INFO-DIR-ENTRY
 
 @ifnottex
 
-Copyright @copyright{} 1996-2016 John W. Eaton.
+Copyright @copyright{} 1996-2017 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -92,7 +92,7 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 4 for Octave version @value{VERSION}
-@subtitle November 2016
+@subtitle February 2017
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
@@ -111,7 +111,7 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011, 2013, 2015, 2016 John W. Eaton.
+2007, 2011, 2013, 2015, 2016, 2017 John W. Eaton.
 
 This is the fourth edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.

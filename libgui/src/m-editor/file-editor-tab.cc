@@ -2708,8 +2708,14 @@ file_editor_tab::handle_char_added (int character)
     int col_newline = col - 1;
     if (c == ' ' || c == '\t')
       col_newline = col_space + 1;
-    // Insert a newline char for breaking the line
-    _edit_area->insertAt (QString ("\n"), line, col_newline);
+
+    // Insert a newline char for breaking the line possibly followed
+    // by a line comment string
+    QString newline = QString ("\n");
+    int style = _edit_area->is_style_comment ();
+    if (style == octave_qscintilla::ST_LINE_COMMENT)
+      newline = newline + _edit_area->comment_string ();
+    _edit_area->insertAt (newline, line, col_newline);
 
     // Automatically indent the new line to the indentation of previous line
     // and set the cursor position to the end of the indentation.

@@ -28,13 +28,21 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_QSCINTILLA)
 
+#include <Qsci/qscilexer.h>
+
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #  define HAVE_LEXER_OCTAVE 1
+#  include <Qsci/qscilexeroctave.h>
 #elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
 #  define HAVE_LEXER_MATLAB 1
+#  include <Qsci/qscilexermatlab.h>
 #endif
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexerperl.h>
+#include <Qsci/qscilexerbatch.h>
+#include <Qsci/qscilexerdiff.h>
 
-#include <Qsci/qscilexer.h>
 #include <Qsci/qscicommandset.h>
 #include <QShortcut>
 #include <QMessageBox>
@@ -398,6 +406,66 @@ octave_qscintilla::clear_indicator (int indicator_style)
   int end_line, end_col;
   lineIndexFromPosition (end_pos, &end_line, &end_col);
   clearIndicatorRange (0, 0, end_line, end_col, indicator_style);
+}
+
+// provide the style at a specific position
+int
+octave_qscintilla::get_style (int pos)
+{
+  int position;
+  if (pos < 0)
+    // The positition has to be reduced by 2 for getting the real style (?)
+    position = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS) - 2;
+  else
+    position = pos;
+
+  return SendScintilla (QsciScintillaBase::SCI_GETSTYLEAT, position);
+}
+
+// Is a specific cursor position in a line or block comment?
+int
+octave_qscintilla::is_style_comment (int pos)
+{
+  int lexer = SendScintilla (QsciScintillaBase::SCI_GETLEXER);
+  int style = get_style (pos);
+
+  switch (lexer)
+    {
+      case SCLEX_CPP:
+        return (ST_LINE_COMMENT * (
+                          style == QsciLexerCPP::CommentLine
+                       || style == QsciLexerCPP::CommentLineDoc)
+              + ST_BLOCK_COMMENT * (
+                           style == QsciLexerCPP::Comment
+                        || style == QsciLexerCPP::CommentDoc
+                        || style == QsciLexerCPP::CommentDocKeyword
+                        || style == QsciLexerCPP::CommentDocKeywordError)
+                );
+
+#if defined (HAVE_LEXER_MATLAB)
+      case SCLEX_MATLAB:
+        return (ST_LINE_COMMENT * (style == QsciLexerMatlab::Comment));
+#endif
+#if  defined (HAVE_LEXER_OCTAVE)
+      case SCLEX_OCTAVE:
+        return (ST_LINE_COMMENT * (style == QsciLexerOctave::Comment));
+#endif
+
+      case SCLEX_PERL:
+        return (ST_LINE_COMMENT * (style == QsciLexerPerl::Comment));
+
+      case SCLEX_BATCH:
+        return (ST_LINE_COMMENT * (style == QsciLexerBatch::Comment));
+
+      case SCLEX_DIFF:
+        return (ST_LINE_COMMENT * (style == QsciLexerDiff::Comment));
+
+      case SCLEX_BASH:
+        return (ST_LINE_COMMENT * (style == QsciLexerBash::Comment));
+
+    }
+
+  return ST_NONE;
 }
 
 // Function returning the true cursor position where the tab length

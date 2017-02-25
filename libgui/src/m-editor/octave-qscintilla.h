@@ -38,6 +38,13 @@ public:
   octave_qscintilla (QWidget *p);
   ~octave_qscintilla ();
 
+  enum
+    {
+      ST_NONE = 0,
+      ST_LINE_COMMENT,
+      ST_BLOCK_COMMENT
+    };
+
   virtual void contextMenuEvent (QContextMenuEvent *e);
 
   void context_help_doc (bool);
@@ -48,6 +55,8 @@ public:
   void clear_indicator (int indicator_style);
   void get_current_position (int *pos, int *line, int *col);
   QString comment_string ();
+  int get_style (int pos = -1);
+  int is_style_comment (int pos = -1);
 
 signals:
 

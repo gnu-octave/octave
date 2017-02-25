@@ -28,6 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_QSCINTILLA)
 
+#if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
+#  define HAVE_LEXER_OCTAVE 1
+#elif defined (HAVE_QSCI_QSCILEXERMATLAB_H)
+#  define HAVE_LEXER_MATLAB 1
+#endif
+
 #include <Qsci/qscilexer.h>
 #include <Qsci/qscicommandset.h>
 #include <QShortcut>
@@ -36,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
 #include "shortcut-manager.h"
+#include "resource-manager.h"
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
@@ -340,6 +347,47 @@ void octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
   emit status_update (isUndoAvailable (), isRedoAvailable ());
 
   QsciScintilla::focusInEvent (focusEvent);
+}
+
+// Function returning the comment string of the current lexer
+QString
+octave_qscintilla::comment_string ()
+{
+  int lexer = SendScintilla (SCI_GETLEXER);
+
+  switch (lexer)
+    {
+#if defined (HAVE_LEXER_MATLAB)
+      case SCLEX_MATLAB:
+#if defined (HAVE_LEXER_OCTAVE)
+      case SCLEX_OCTAVE:
+#endif
+       {
+          QSettings *settings = resource_manager::get_settings ();
+          int comment_index
+                = settings->value ("editor/octave_comment_string", 0).toInt ();
+          if (comment_index == 1)
+            return QString ("#");
+          else if (comment_index == 2)
+            return QString ("%");
+          else
+            return QString ("##");  // default and for index 0
+        }
+#endif
+
+      case SCLEX_PERL:
+      case SCLEX_BASH:
+      case SCLEX_DIFF:
+        return QString ("#");
+
+      case SCLEX_CPP:
+        return QString ("//");
+
+      case SCLEX_BATCH:
+        return QString ("REM ");
+    }
+
+    return QString ("%");  // should never happen
 }
 
 // helper function for clearing all indicators of a specific style

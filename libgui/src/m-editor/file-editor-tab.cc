@@ -797,30 +797,6 @@ file_editor_tab::save_apis_info ()
   _lexer_apis->savePrepared (_prep_apis_file);
 }
 
-QString
-file_editor_tab::comment_string (const QString& lexer)
-{
-  if (lexer == "octave" || lexer == "matlab")
-    {
-      QSettings *settings = resource_manager::get_settings ();
-      int comment_index = settings->value ("editor/octave_comment_string", 0).toInt ();
-      if (comment_index == 1)
-      	return QString ("#");
-      else if (comment_index == 2)
-        return QString ("%");
-      else
-        return QString ("##");  // default and for index 0
-    }
-  else if (lexer == "perl" || lexer == "bash" || lexer == "diff")
-    return QString ("#");
-  else if (lexer == "cpp")
-    return ("//");
-  else if (lexer == "batch")
-    return ("REM ");
-  else
-    return ("%");  // should never happen
-}
-
 // slot for fetab_set_focus: sets the focus to the current edit area
 void
 file_editor_tab::set_focus (const QWidget *ID)
@@ -1405,7 +1381,7 @@ file_editor_tab::do_indent_selected_text (bool indent)
 void
 file_editor_tab::do_comment_selected_text (bool comment)
 {
-  QString comment_str = comment_string (_edit_area->lexer ()->lexer ());
+  QString comment_str = _edit_area->comment_string ();
   _edit_area->beginUndoAction ();
 
   if (_edit_area->hasSelectedText ())

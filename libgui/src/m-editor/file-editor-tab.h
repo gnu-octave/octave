@@ -248,7 +248,6 @@ private:
   void show_dialog (QDialog *dlg, bool modal);
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
-  QString comment_string (const QString&);
   void do_indent_selected_text (bool indent);
 
   void add_breakpoint_callback (const bp_info& info);

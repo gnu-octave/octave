@@ -498,9 +498,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-327</y>
+            <y>0</y>
             <width>642</width>
-            <height>927</height>
+            <height>956</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -969,21 +969,12 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="editor_wrap_checkbox">
+                   <widget class="QCheckBox" name="editor_break_comments_checkbox">
                     <property name="enabled">
-                     <bool>true</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="toolTip">
-                     <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
+                     <bool>false</bool>
                     </property>
                     <property name="text">
-                     <string>Wrap lines at window border</string>
+                     <string>Break lines only in comments</string>
                     </property>
                     <property name="checked">
                      <bool>false</bool>
@@ -1094,6 +1085,32 @@
                    </spacer>
                   </item>
                  </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_19">
+                <item>
+                 <widget class="QCheckBox" name="editor_wrap_checkbox">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
+                  </property>
+                  <property name="text">
+                   <string>Wrap long lines at curent window border</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -3051,6 +3068,22 @@
     <hint type="destinationlabel">
      <x>507</x>
      <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_break_checkbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_break_comments_checkbox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>446</y>
     </hint>
    </hints>
   </connection>

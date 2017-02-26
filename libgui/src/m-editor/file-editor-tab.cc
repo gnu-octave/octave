@@ -2376,9 +2376,12 @@ file_editor_tab::notice_settings (const QSettings *settings, bool init)
   else
     _line_break = 0;
 
+  _line_break_comments =
+        settings->value ("editor/break_lines_comments",false).toBool ();
+
   // highlight all occurrences of a word selected by a double click
-  _highlight_all_occurrences = settings->value (
-                    "editor/highlight_all_occurrences", true).toBool ();
+  _highlight_all_occurrences =
+        settings->value ("editor/highlight_all_occurrences", true).toBool ();
 
   // reload changed files
   _always_reload_changed_files =
@@ -2685,6 +2688,17 @@ file_editor_tab::handle_char_added (int character)
     if (col <= _line_break)
       return;
 
+    // If line breaking is only desired in comments,
+    // return if not in a comment
+    int style_comment = octave_qscintilla::ST_NONE;
+    if (_line_break_comments)
+      {
+        // line breaking only in comments, check for comment style
+        style_comment = _edit_area->is_style_comment ();
+        if (! style_comment)
+          return;       // no comment, return
+      }
+
     // Here we go for breaking the current line by inserting a newline.
     // For determining the position of a specific column, we have to get
     // the column from the QScintila function without taking tab lengths
@@ -2712,8 +2726,8 @@ file_editor_tab::handle_char_added (int character)
     // Insert a newline char for breaking the line possibly followed
     // by a line comment string
     QString newline = QString ("\n");
-    int style = _edit_area->is_style_comment ();
-    if (style == octave_qscintilla::ST_LINE_COMMENT)
+    style_comment = _edit_area->is_style_comment ();
+    if (style_comment == octave_qscintilla::ST_LINE_COMMENT)
       newline = newline + _edit_area->comment_string ();
     _edit_area->insertAt (newline, line, col_newline);
 

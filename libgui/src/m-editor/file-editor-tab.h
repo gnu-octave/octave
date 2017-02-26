@@ -301,6 +301,7 @@ private:
   static bool _cancelled;
 
   int _line_break;
+  bool _line_break_comments;
   int _line;
   int _col;
   bool _lines_changed;

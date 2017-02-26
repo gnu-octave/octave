@@ -85,6 +85,14 @@ octave_throw_bad_alloc (void)
 }
 
 void
+octave_throw_exit_exception (int exit_status, int safe_to_return)
+{
+  octave_exception_state = octave_quit_exception;
+
+  throw octave_exit_exception (exit_status, safe_to_return);
+}
+
+void
 octave_rethrow_exception (void)
 {
   if (octave_interrupt_state)
@@ -105,8 +113,8 @@ octave_rethrow_exception (void)
           break;
 
         case octave_quit_exception:
-          clean_up_and_exit (octave_exit_exception_status,
-                             octave_exit_exception_safe_to_return);
+          octave_throw_exit_exception (octave_exit_exception_status,
+                                       octave_exit_exception_safe_to_return);
           break;
 
         default:

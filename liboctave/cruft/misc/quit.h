@@ -189,6 +189,9 @@ OCTAVE_NORETURN OCTAVE_API extern void octave_throw_execution_exception (void);
 
 OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
 
+OCTAVE_NORETURN OCTAVE_API extern void
+octave_throw_exit_exception (int exit_status, int safe_to_return);
+
 OCTAVE_API extern void octave_rethrow_exception (void);
 
 #if defined (__cplusplus)

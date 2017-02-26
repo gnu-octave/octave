@@ -2675,7 +2675,7 @@ file_editor_tab::handle_cursor_moved (int line, int col)
 // The related signal is emitted after the signal for a moved cursor
 // such that _col and _line can not be used for current position.
 void
-file_editor_tab::handle_char_added (int character)
+file_editor_tab::handle_char_added (int)
 {
   if (_line_break)
   {

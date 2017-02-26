@@ -54,22 +54,23 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
   ## Filename was given with file extension
   fn = abs_path (filename);
   if (isempty (fn) && ! isempty (varargin))
-    ## Maybe if we add a file extension
+    ## Maybe if we add a file extension?
     fn = abs_path ([filename "." varargin{1}]);
   endif
 
-  ## Maybe we have an URL
-  if (isempty (fn))
+  ## Maybe we have a URL
+  if (isempty (fn)
+      && ! isempty (regexp (filename, '^[a-zA-Z][a-zA-Z0-9.+-]+:')))
     file_2_delete = true; # mark file for deletion
     [fn, ~] = urlwrite (filename, tempname ());
-    ## Maybe the URL is missing the file extension
+    ## Maybe the URL is missing the file extension?
     if (isempty (fn) && ! isempty (varargin))
       [fn, ~] = urlwrite ([filename "." varargin{1}], tempname ());
     endif
+  endif
 
-    if (isempty (fn))
-      error ("%s: unable to find file %s", func, filename);
-    endif
+  if (isempty (fn))
+    error ([func ": unable to find file " filename]);
   endif
 
   ## unwind_protect block because we may have a file to remove in the end

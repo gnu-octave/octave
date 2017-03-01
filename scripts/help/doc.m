@@ -37,85 +37,75 @@
 
 function retval = doc (function_name)
 
-  if (nargin == 0 || nargin == 1)
-
-    ftype = 0;
-
-    if (nargin == 1)
-      ## Get the directory where the function lives.
-      ## FIXME: Maybe we should have a better way of doing this?
-
-      if (ischar (function_name))
-        ftype = exist (function_name);
-      else
-        error ("doc: FUNCTION_NAME must be a string");
-      endif
-    else
-      function_name = "";
-    endif
-
-    ## if GUI is running, let it display the function
-    if (isguirunning ())
-      __octave_link_show_doc__ (function_name);
-    else
-
-      if (ftype == 2 || ftype == 3)
-        ffile = which (function_name);
-      else
-        ffile = "";
-      endif
-
-      if (isempty (ffile))
-        info_dir = __octave_config_info__ ("infodir");
-      else
-        info_dir = fileparts (ffile);
-      endif
-
-      ## Determine if a file called doc.info exist in the same
-      ## directory as the function.
-
-      info_file_name = fullfile (info_dir, "doc.info");
-
-      [stat_info, err] = stat (info_file_name);
-
-      if (err < 0)
-        info_file_name = info_file ();
-
-        if (! exist (info_file_name, "file")
-            && ! exist ([info_file_name ".gz"], "file")
-            && ! exist ([info_file_name ".bz2"], "file"))
-          __gripe_missing_component__ ("doc", "info-file");
-        endif
-      endif
-
-      ## FIXME: Don't change the order of the arguments below because
-      ## the info-emacs-info script currently expects --directory DIR as
-      ## the third and fourth arguments.  Someone should fix that.
-
-      cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
-                     info_program (), info_file_name, info_dir);
-
-      have_fname = ! isempty (function_name);
-
-      if (have_fname)
-        status = system (sprintf ("%s --index-search \"%s\"", cmd, function_name));
-      endif
-
-
-      if (! (have_fname && status == 0))
-        status = system (cmd);
-        if (status == 127)
-          warning ("doc: unable to find info program '%s'", info_program ());
-        endif
-      endif
-
-      if (nargout > 0)
-        retval = status;
-      endif
-
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  endif
+
+  if (nargin == 1)
+    if (! ischar (function_name))
+      error ("doc: FUNCTION_NAME must be a string");
+    endif
+    ftype = exist (function_name);
+  else
+    function_name = "";
+    ftype = 0;
+  endif
+
+  ## if GUI is running, let it display the function
+  if (isguirunning ())
+    status = ! __octave_link_show_doc__ (function_name);
+  else
+    if (ftype == 2 || ftype == 3)
+      ffile = which (function_name);
+    else
+      ffile = "";
+    endif
+
+    if (isempty (ffile))
+      info_dir = __octave_config_info__ ("infodir");
+    else
+      info_dir = fileparts (ffile);
+    endif
+
+    ## Determine if a file called doc.info exist in the same
+    ## directory as the function.
+    info_file_name = fullfile (info_dir, "doc.info");
+
+    [~, err] = stat (info_file_name);
+
+    if (err < 0)
+      info_file_name = info_file ();
+
+      if (! exist (info_file_name, "file")
+          && ! exist ([info_file_name ".gz"], "file")
+          && ! exist ([info_file_name ".bz2"], "file"))
+        __gripe_missing_component__ ("doc", "info-file");
+      endif
+    endif
+
+    ## FIXME: Don't change the order of the arguments below because
+    ## the info-emacs-info script currently expects --directory DIR as
+    ## the third and fourth arguments.  Someone should fix that.
+    cmd = sprintf ('"%s" --file "%s" --directory "%s"',
+                   info_program (), info_file_name, info_dir);
+
+    have_fname = ! isempty (function_name);
+
+    if (have_fname)
+      status = system (sprintf ('%s --index-search "%s"', cmd, function_name));
+    endif
+
+    if (! (have_fname && status == 0))
+      status = system (cmd);
+      if (status == 127)
+        warning ("doc: unable to find info program '%s'", info_program ());
+      endif
+    endif
+
+  endif
+
+  if (nargout > 0)
+    retval = status;
   endif
 
 endfunction

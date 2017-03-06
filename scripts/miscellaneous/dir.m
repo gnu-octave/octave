@@ -105,13 +105,14 @@ function retval = dir (directory)
     elseif (S_ISDIR (st.mode))
       flst = readdir (flst{1});
       nf = numel (flst);
-      for i = 1:nf
-        flst{i} = fullfile (fn, flst{i});
-      endfor
+      flst = strcat ([fn filesep], flst);
     endif
   endif
 
   if (numel (flst) > 0)
+
+    fs = regexptranslate ("escape", filesep);
+    re = sprintf ('(?:^|^.+[%s])([^%s.]*.[^%s]*)?$', fs, fs, fs);
     ## Collect results.
     for i = nf:-1:1
       fn = flst{i};
@@ -128,8 +129,7 @@ function retval = dir (directory)
             st = xst;
           endif
         endif
-        [dummy, fn, ext] = fileparts (fn);
-        fn = [fn ext];
+        fn = regexprep (fn, re, '$1');
         info(i,1).name = fn;
         lt = localtime (st.mtime);
         info(i,1).date = strftime ("%d-%b-%Y %T", lt);

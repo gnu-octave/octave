@@ -213,7 +213,7 @@ octave_jit_cast_any_complex (Complex c)
 }
 
 extern "C" void
-octave_jit_octave::err_nan_to_logical_conversion (void)
+octave_jit_err_nan_to_logical_conversion (void)
 {
   octave::err_nan_to_logical_conversion ();
 }
@@ -1505,7 +1505,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   logically_true_fn.stash_name ("logically_true");
 
   jit_function gripe_nantl
-    = create_external (JIT_FN (octave_jit_octave::err_nan_to_logical_conversion), 0);
+    = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion), 0);
   gripe_nantl.mark_can_error ();
 
   fn = create_internal ("octave_jit_logically_true_scalar", boolean, scalar);

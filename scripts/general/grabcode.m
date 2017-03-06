@@ -24,7 +24,7 @@
 ## Grab the code from a report created by the @code{publish} function.
 ##
 ## The grabbed code inside the published report must be enclosed by the
-## strings @samp{##### SOURCE BEGIN #####} and @samp {##### SOURCE END #####}.
+## strings @samp{##### SOURCE BEGIN #####} and @samp{##### SOURCE END #####}.
 ## The @code{publish} function creates this format automatically.
 ##
 ## If no return value is requested the code is saved to a temporary file and

@@ -48,7 +48,7 @@ octave_handle_signal (void)
     }
 }
 
-extern OCTAVE_API void
+void
 clean_up_and_exit (int exit_status, bool /* safe_to_return */)
 {
   exit (exit_status);

@@ -135,11 +135,17 @@ function retval = dir (directory)
         info(i,1).date = strftime ("%d-%b-%Y %T", lt);
         info(i,1).bytes = st.size;
         info(i,1).isdir = S_ISDIR (st.mode);
-        info(i,1).datenum = datenum (lt.year + 1900, lt.mon + 1, lt.mday,
-                                     lt.hour, lt.min, lt.sec);
+        info(i,1).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
+                             lt.hour, lt.min, lt.sec];
         info(i,1).statinfo = st;
       endif
     endfor
+    ## A lot of gymnastics in order to call datenum just once.  2x speed up.
+    dvec = [info.datenum]([[1:6:end]', [2:6:end]', [3:6:end]', ...
+                           [4:6:end]', [5:6:end]', [6:6:end]']);
+    dnum = datenum (dvec);
+    ctmp = mat2cell (dnum, ones (nf,1), 1);
+    [info.datenum] = ctmp{:};
   endif
 
   ## Return the output arguments.

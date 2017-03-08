@@ -1705,6 +1705,7 @@ returns a list of factory defaults.
 * Callbacks::
 * Application-defined Data::
 * Object Groups::
+* Transform Groups::
 * Graphics Toolkits::
 @end menu
 
@@ -2524,6 +2525,16 @@ The original x, y, z and c data.
 @itemx cdatasource
 Data source variables.
 @end table
+
+@node Transform Groups
+@subsection Transform Groups
+@cindex transform groups
+
+@c FIXME: Need to add documentation on transforms.
+
+@DOCSTRING(hgtransform)
+
+@c @DOCSTRING(makehgtform)
 
 @node Graphics Toolkits
 @subsection Graphics Toolkits

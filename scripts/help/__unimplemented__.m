@@ -680,7 +680,6 @@ function list = missing_functions ()
   "height",
   "hgexport",
   "hgsetget",
-  "hgtransform",
   "histcounts",
   "histcounts2",
   "histogram",

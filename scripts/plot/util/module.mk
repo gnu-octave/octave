@@ -55,6 +55,7 @@ scripts_plot_util_FCN_FILES = \
   scripts/plot/util/hggroup.m \
   scripts/plot/util/hgload.m \
   scripts/plot/util/hgsave.m \
+  scripts/plot/util/hgtransform.m \
   scripts/plot/util/hold.m \
   scripts/plot/util/isaxes.m \
   scripts/plot/util/isfigure.m \

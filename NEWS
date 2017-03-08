@@ -21,6 +21,7 @@ Summary of important user-visible changes for version 4.4:
  ** Other new functions added in 4.4:
 
       gsvd
+      hgtransform
 
  ** Deprecated functions.
 

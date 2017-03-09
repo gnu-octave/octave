@@ -111,8 +111,8 @@ function retval = dir (directory)
 
   if (numel (flst) > 0)
 
-    fs = regexptranslate ("escape", filesep);
-    re = sprintf ('(?:^|^.+[%s])([^%s.]*.[^%s]*)?$', fs, fs, fs);
+    fs = regexptranslate ("escape", filesep ("all"));
+    re = sprintf ('(?:^.+[%s])([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
     ## Collect results.
     for i = nf:-1:1
       fn = flst{i};
@@ -129,7 +129,7 @@ function retval = dir (directory)
             st = xst;
           endif
         endif
-        fn = regexprep (fn, re, '$1');
+        fn = regexprep (fn, re, '$1$2');
         info(i,1).name = fn;
         lt = localtime (st.mtime);
         info(i,1).date = strftime ("%d-%b-%Y %T", lt);

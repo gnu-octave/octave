@@ -98,6 +98,7 @@ private:
   QString get_node_up (const QString& text);
   QString get_node_next (const QString& text);
   QString get_node_prev (const QString& text);
+  void append_line (QString *test, const char *line);
 
   /** Parses info files and gets map of node positions.*/
   void parse_info_map ();

@@ -198,6 +198,17 @@ parser::search_node (const QString& node, QIODevice *io)
   return QString ();
 }
 
+void
+parser::append_line (QString *text, const char *line)
+{
+  QString line_converted = QString::fromLatin1 (line);
+  int len = line_converted.length ();
+  line_converted = QString::fromUtf8 (line);
+  for (int i = len - line_converted.length (); i > 0; i--)
+    line_converted.insert (line_converted.size () - 1, QByteArray (" "));
+  text->append (line_converted);
+}
+
 QString
 parser::get_next_node (QIODevice *io)
 {
@@ -217,20 +228,25 @@ parser::get_next_node (QIODevice *io)
         }
       else
         {
-          // 0 was read -> image -> text length changes
-          line_buffer = io->readLine ();  // image tag that is not needed
-          line = io->readLine ();         // firsts line of text message
-          for (i = 1; i < line_buffer.size ()+6; i++)  // correct the size
-            line.insert (line.size ()-1,QByteArray (" "));  // by adding blanks
+          // 0 was read -> image -> handle text replacement (length changes)
+          line_buffer = io->readLine ();  // start of image tag -> drop it
+          int len = line_buffer.size ();
+          line = io->readLine ();         // get first line of its text
+          line_buffer = line;             // and store it
+          append_line (&text, line);
+          line = io->readLine ();         // get next line of text
+          append_line (&text, line);
+          line = io->readLine ();         // drop last line (unneeded chars)
+          line = line_buffer;             // and take the first instead
+          // now correct the size of the dropped line and 5 additional chars
+          for (i = 1; i < len + 6; i++)
+            line.insert (line.size ()-1,QByteArray (" "));  // adding blanks
         }
-
-      if (line.at (0) == '"' && line.size () == 5)  // end of image construct
-        line = " ";
 
       if (line.at(0) == 31)
         break;
       else
-        text.append (QString::fromUtf8 (line));
+        append_line (&text, line);
     }
   return text;
 }

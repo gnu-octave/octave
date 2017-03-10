@@ -4567,9 +4567,8 @@ public:
       string_property displayname , ""
       // FIXME: Remove erasemode property in version 4.6.
       radio_property erasemode h , "{normal}|none|xor|background"
-      // FIXME: interpreter is not a property of Matlab line objects.
-      //        Octave uses this for legend() with the string displayname.
-      radio_property interpreter , "{tex}|none|latex"
+      // FIXME: Remove interpreter property in version 4.8
+      radio_property interpreter hd , "{tex}|none|latex"
       radio_property linejoin , "{round}|miter|chamfer"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -5137,9 +5136,8 @@ public:
       array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata u , Matrix ()
-      // FIXME: interpreter is not a property of a Matlab patch.
-      //        Octave uses this for legend() with the string displayname.
-      radio_property interpreter , "{tex}|none|latex"
+      // FIXME: Remove interpreter property in version 4.8
+      radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
@@ -5349,9 +5347,8 @@ public:
       radio_property facelighting , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
       radio_property facenormalsmode , "{auto}|manual"
-      // FIXME: interpreter is not a Matlab surface property
-      //        Octave uses this for legend() with the string displayname.
-      radio_property interpreter , "{tex}|none|latex"
+      // FIXME: Remove interpreter property in version 4.8
+      radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"

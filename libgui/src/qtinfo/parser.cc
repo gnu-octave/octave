@@ -251,12 +251,9 @@ parser::get_next_node (QIODevice *io)
         }
 
       if (line.at(0) == 31)
-        {
-          break;
-        }
+        break;
       else
         append_line (&text, line);
-        }
     }
   return text;
 }

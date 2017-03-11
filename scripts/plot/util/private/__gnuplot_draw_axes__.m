@@ -508,12 +508,11 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     ## FIXME: Temporary workaround to add hidden interpreter property back.
     ##        Delete when bug #50496 is fixed.
     wstate = warning ("query", "Octave:deprecated-property");
-    unwind_protect 
+    try 
       warning ("off", "Octave:deprecated-property");
       obj.interpreter = get (h_obj, "interpreter");
-    unwind_protect_cleanup
-      warning (wstate);
-    end_unwind_protect
+    end_try_catch
+    warning (wstate);
 
     if (isfield (obj, "xdata"))
       obj.xdata = double (obj.xdata);

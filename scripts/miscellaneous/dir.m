@@ -30,6 +30,9 @@
 ## @item name
 ## File or directory name.
 ##
+## @item folder
+## Location of file or directory
+## 
 ## @item date
 ## Timestamp of file modification (string value).
 ##
@@ -81,8 +84,7 @@ function retval = dir (directory)
 
   ## Prep the retval.
   info = struct (zeros (0, 1),
-                 {"name", "date", "bytes", "isdir", "datenum", "statinfo"});
-
+           {"name", "folder" "date", "bytes", "isdir", "datenum", "statinfo"});
 
   if (strcmp (directory, "*"))
     directory = ".";
@@ -112,7 +114,10 @@ function retval = dir (directory)
   if (numel (flst) > 0)
 
     fs = regexptranslate ("escape", filesep ("all"));
-    re = sprintf ('(?:^.+[%s])([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
+    re = sprintf ('(^.+[%s])([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
+    last_dir = last_absdir = "";
+    info(nf,1).name = "";  # pre-declare size of struct array
+
     ## Collect results.
     for i = nf:-1:1
       fn = flst{i};
@@ -124,20 +129,27 @@ function retval = dir (directory)
         ## return info about the target of the link, otherwise, return
         ## info about the link itself.
         if (S_ISLNK (st.mode))
-          [xst, err, msg] = stat (fn);
+          [xst, err] = stat (fn);
           if (! err)
             st = xst;
           endif
         endif
-        fn = regexprep (fn, re, '$1$2');
-        info(i,1).name = fn;
+        tmpdir = regexprep (fn, re, '$1');
+        fn = regexprep (fn, re, '$2$3');
+        info(i).name = fn;
+        if (! strcmp (last_dir, tmpdir))
+          ## Caching mechanism to speed up function
+          last_dir = tmpdir;
+          last_absdir = make_absolute_filename (last_dir);
+        endif
+        info(i).folder = last_absdir;
         lt = localtime (st.mtime);
-        info(i,1).date = strftime ("%d-%b-%Y %T", lt);
-        info(i,1).bytes = st.size;
-        info(i,1).isdir = S_ISDIR (st.mode);
-        info(i,1).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
+        info(i).date = strftime ("%d-%b-%Y %T", lt);
+        info(i).bytes = st.size;
+        info(i).isdir = S_ISDIR (st.mode);
+        info(i).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
                              lt.hour, lt.min, lt.sec];
-        info(i,1).statinfo = st;
+        info(i).statinfo = st;
       endif
     endfor
     ## A lot of gymnastics in order to call datenum just once.  2x speed up.

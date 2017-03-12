@@ -114,7 +114,7 @@ function retval = dir (directory)
   if (numel (flst) > 0)
 
     fs = regexptranslate ("escape", filesep ("all"));
-    re = sprintf ('(^.+[%s])([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
+    re = sprintf ('(^.+)[%s]([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
     last_dir = last_absdir = "";
     info(nf,1).name = "";  # pre-declare size of struct array
 
@@ -140,7 +140,7 @@ function retval = dir (directory)
         if (! strcmp (last_dir, tmpdir))
           ## Caching mechanism to speed up function
           last_dir = tmpdir;
-          last_absdir = make_absolute_filename (last_dir);
+          last_absdir = canonicalize_file_name (last_dir);
         endif
         info(i).folder = last_absdir;
         lt = localtime (st.mtime);
@@ -178,17 +178,18 @@ endfunction
 %! list = dir ();
 %! assert (isstruct (list) && ! isempty (list));
 %! assert (fieldnames (list),
-%!         {"name"; "date"; "bytes"; "isdir"; "datenum"; "statinfo"});
+%!         {"name"; "folder"; "date"; "bytes"; "isdir"; "datenum"; "statinfo"});
 %!
 %! if (isunix ())
-%!   assert ({list(1:2).name}, {".", ".."});
-%!   assert ([list(1:2).isdir], [true true]);
+%!   idx = find (strcmp ({list.name}, "."), 1);
+%!   assert ({list(idx:idx+1).name}, {".", ".."});
+%!   assert ([list(idx:idx+1).isdir], [true true]);
 %! endif
 %!
 %! ## test that specifying a filename works the same as using a directory.
 %! found = find (! [list.isdir], 1);
 %! if (! isempty (found))
-%!   list2 = dir (list(found).name);
+%!   list2 = dir (fullfile (list(found).folder, list(found).name));
 %!   assert (list(found), list2);
 %! endif
 

@@ -45,8 +45,9 @@ DEFUN (eig, args, nargout,
 @deftypefnx {} {[@dots{}] =} eig (@var{A}, @var{balanceOption})
 @deftypefnx {} {[@dots{}] =} eig (@var{A}, @var{B}, @var{algorithm})
 @deftypefnx {} {[@dots{}] =} eig (@dots{}, @var{eigvalOption})
-Compute the right eigenvalues(V) and optionally the eigenvectors(lambda) and
-the left eigenvalues(W) of a matrix or a pair of matrices.
+Compute the eigenvalues (@var{lambda}) and optionally the right eigenvectors
+(@var{V}) and the left eigenvectors (@var{W}) of a matrix or a pair of
+matrices.
 
 The flag @var{balanceOption} can be one of:
 

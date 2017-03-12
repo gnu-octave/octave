@@ -23,7 +23,7 @@
 ##
 ## Create a graphics transform object.
 ##
-## FIXME: Need to write documentation. 
+## FIXME: Need to write documentation.
 ## FIXME: Add 'makehgtform' to seealso list when it is implemented.
 ## @seealso{hggroup}
 ## @end deftypefn
@@ -81,11 +81,19 @@ function xform_data (hgt, hlist)
 
   for hk = hlist.'
 
+    ## FIXME: Add support for light, rectangle, and text objects
+    type = get (hk, "type");
+    if (! any (strcmp (type, {"line", "patch", "surface", "image"})))
+      continue;  # Unsupported type.  Silently skip.
+    endif
+
     idx = find (hk == [orig_data.h]);
     if (! idx)
       warning ("hgtransform: original data not found for %f", hk);
       continue;
     endif
+
+    ## FIXME: Rotations for "image" objects are not handled correctly.
 
     xd = double (orig_data(idx).xdata);
     xsz = size (xd);
@@ -93,8 +101,12 @@ function xform_data (hgt, hlist)
     yd = double (orig_data(idx).ydata);
     ysz = size (yd);
 
-    zd = double (orig_data(idx).zdata);
-    zsz = size (zd);
+    if (strcmp (type, "image"))
+      zd = [];
+    else
+      zd = double (orig_data(idx).zdata);
+      zsz = size (zd);
+    endif
     z_empty = isempty (zd);
 
     if (isempty (zd))
@@ -142,12 +154,24 @@ function children_cb (hgt, ~)
   hdel = setdiff (hlist, hkids);
   if (! isempty (hdel))
     for hk = hdel.'
-      idx = find (hk == hlist); 
+      idx = find (hk == hlist);
       if (ishghandle (hk))
         ## child was re-parented to something else, restore data
-        set (hk, "xdata", orig_data(idx).xdata);
-        set (hk, "ydata", orig_data(idx).ydata);
-        set (hk, "zdata", orig_data(idx).zdata);
+        switch (get (hk, "type"))
+
+          case {"line", "patch", "surface"}
+            set (hk, "xdata", orig_data(idx).xdata);
+            set (hk, "ydata", orig_data(idx).ydata);
+            set (hk, "zdata", orig_data(idx).zdata);
+
+          case {"image"}
+            set (hk, "xdata", orig_data(idx).xdata);
+            set (hk, "ydata", orig_data(idx).ydata);
+
+          otherwise
+            ## Unsupported type.  No data was saved.
+
+        endswitch
       endif
     endfor
     orig_data = orig_data(hlist != hdel);
@@ -157,12 +181,45 @@ function children_cb (hgt, ~)
   ## Add new children
   hnew = setdiff (hkids, hlist);
   for hk = hnew.'
+
     orig_data(end+1).h = hk;
-    orig_data(end).xdata = get (hk, "xdata");
-    orig_data(end).ydata = get (hk, "ydata");
-    orig_data(end).zdata = get (hk, "zdata");
+    type = get (hk, "type");
+    orig_data(end).type = type;
+
+    switch (type)
+
+      case {"line", "patch", "surface"}
+        orig_data(end).xdata = get (hk, "xdata");
+        orig_data(end).ydata = get (hk, "ydata");
+        orig_data(end).zdata = get (hk, "zdata");
+
+      case {"image"}
+        orig_data(end).xdata = get (hk, "xdata");
+        orig_data(end).ydata = get (hk, "ydata");
+
+      case {"light",  "text"}
+        warning ("hgtransform: %s objects are not yet supported", type);
+
+      case {"hggroup"}
+        try
+          get (hk, "curvature");
+          is_rectangle = true;
+        catch
+          is_rectangle = false;
+        end_try_catch
+        if (is_rectangle)
+          warning ("hgtransform: rectangle objects are not yet supported");
+        else
+          error ("hgtransform: hggroup cannot be a child of an hgtransform");
+        endif
+
+      otherwise
+        error ("hgtransform: %s cannot be a child of an hgtransform", type);
+
+    endswitch
+
   endfor
-  
+
   set (hgt, "__orig_data__", orig_data);
 
   ## Update data of new children only

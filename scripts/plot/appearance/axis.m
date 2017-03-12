@@ -74,6 +74,9 @@
 ##
 ## @item @qcode{"image"}
 ## Equivalent to @qcode{"tight"} and @qcode{"equal"}.
+##
+## @item @qcode{"vis3d"}
+## Set aspect ratio modes to @qcode{"manual"} for rotation without stretching.
 ## @end table
 ##
 ## @noindent
@@ -223,6 +226,10 @@ function limits = __axis__ (ca, varargin)
         endif
         set (ca, "dataaspectratio", [1, 1, 1],
                  "plotboxaspectratio", new_pbar);
+      elseif (strcmpi (opt, "vis3d"))
+        ## Fix aspect ratio modes for rotation without stretching.
+        set (ca, "dataaspectratiomode", "manual",
+                 "plotboxaspectratiomode", "manual");
 
       elseif (strcmpi (opt, "normal"))
         ## Set plotboxaspectratio to something obtuse so that switching

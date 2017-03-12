@@ -2940,6 +2940,24 @@ base_graphics_toolkit::finalize (const graphics_handle& h)
   finalize (go);
 }
 
+static int
+toggle_warn (std::string id, bool on, int state = -1)
+{
+  if (! on)
+    {
+      state = warning_enabled (id);
+      disable_warning (id);
+    }
+  else
+    {
+      if (state == 1)
+        set_warning_state (id, "on");
+      else if (state == 2)
+        set_warning_state (id, "error");
+    }
+  return state;
+}
+
 static void
 xreset_default_properties (graphics_handle h,
                            property_list::pval_map_type factory_pval)
@@ -2955,8 +2973,7 @@ xreset_default_properties (graphics_handle h,
     factory_pval[p.first] = p.second;
 
   // Save warning state of "Octave:deprecated-property"
-  int old_dep_prop = warning_enabled ("Octave:deprecated-property");
-  disable_warning ("Octave:deprecated-property");
+  int state = toggle_warn ("Octave:deprecated-property", false);
 
   // Reset defaults
   for (const auto& p : factory_pval)
@@ -2980,11 +2997,7 @@ xreset_default_properties (graphics_handle h,
   for (const auto& p : pval)
     go.set (p.first, p.second);
 
-  // Re-enable warning state of "Octave:deprecated-property"
-  if (old_dep_prop == 1)
-    set_warning_state ("Octave:deprecated-property", "on");
-  else if (old_dep_prop == 2)
-    set_warning_state ("Octave:deprecated-property", "error");
+  toggle_warn ("Octave:deprecated-property", true, state);
 }
 
 // ---------------------------------------------------------------------
@@ -3301,7 +3314,9 @@ base_graphics_object::update_axis_limits (const std::string& axis_type,
 void
 base_graphics_object::remove_all_listeners (void)
 {
+  int state = toggle_warn ("Octave:deprecated-property", false);
   octave_map m = get (true).map_value ();
+  toggle_warn ("Octave:deprecated-property", true, state);
 
   for (const auto& pm : m)
     {
@@ -4543,8 +4558,8 @@ figure::reset_default_properties (void)
 {
   // empty list of local defaults
   default_properties = property_list ();
-
   property_list::pval_map_type plist = xproperties.factory_defaults ();
+
   plist.erase ("units");
   plist.erase ("position");
   plist.erase ("outerposition");
@@ -8204,18 +8219,13 @@ axes::reset_default_properties (void)
   default_properties = property_list ();
 
   // Save warning state of "Octave:deprecated-property"
-  int old_dep_prop = warning_enabled ("Octave:deprecated-property");
-  disable_warning ("Octave:deprecated-property");
+  int state = toggle_warn ("Octave:deprecated-property", false);
 
   // reset factory defaults
   remove_all_listeners ();
   set_defaults ("reset");
 
-  // Re-enable warning state of "Octave:deprecated-property"
-  if (old_dep_prop == 1)
-    set_warning_state ("Octave:deprecated-property", "on");
-  else if (old_dep_prop == 2)
-    set_warning_state ("Octave:deprecated-property", "error");
+  toggle_warn ("Octave:deprecated-property", true, state);
 }
 
 void
@@ -10653,15 +10663,11 @@ Undocumented internal function.
         error ("get: invalid handle (= %g)", hcv(n));
 
       // Disable "Octave:deprecated-property" warnings
-      int old_dep_prop = warning_enabled ("Octave:deprecated-property");
-      disable_warning ("Octave:deprecated-property");
+      int state = toggle_warn ("Octave:deprecated-property", false);
 
       vals(n) = go.get (true);
 
-      if (old_dep_prop == 1)
-        set_warning_state ("Octave:deprecated-property", "on");
-      else if (old_dep_prop == 2)
-        set_warning_state ("Octave:deprecated-property", "error");
+      toggle_warn ("Octave:deprecated-property", true, state);
     }
 
   octave_idx_type vals_len = vals.numel ();

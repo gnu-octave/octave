@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{hui} =} uitoolbar (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uitoolbar (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {} uitoolbar (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} uitoolbar (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uitoolbar (@dots{})
 ##
-## Create a uitoolbar object and return a handle to it.  A uitoolbar displays
-## uitoggletool and uipushtool buttons.
+## Create a uitoolbar object.  A uitoolbar displays uitoggletool and uipushtool
+## buttons.
 ##
 ## If @var{parent} is omitted then a uitoolbar for the current figure is
 ## created.  If no figure is available, a new figure is created first.
@@ -33,6 +34,9 @@
 ## created uitoolbar object.
 ##
 ## Uitoolbar properties are documented at @ref{Uitoolbar Properties}.
+##
+## The optional return value @var{hui} is a graphics handle to the created
+## uitoolbar object.
 ##
 ## Examples:
 ##
@@ -52,6 +56,11 @@
 function hui = uitoolbar (varargin)
 
   [h, args] = __uiobject_split_args__ ("uitoolbar", varargin, {"figure"});
-  hui = __go_uitoolbar__ (h, args{:});
+  
+  htmp = __go_uitoolbar__ (h, args{:});
+  
+  if (nargout > 0)
+    hui = htmp;
+  endif
 
 endfunction

@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{hui} =} uipushtool (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {} uipushtool (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipushtool (@dots{})
 ##
-## Create a uipushtool object and return a handle to it.
+## Create a uipushtool object.
 ##
 ## uipushtools are buttons that appear on a figure toolbar.  The button is
 ## created with a border that is shown when the user hovers over the button.
@@ -38,6 +39,9 @@
 ## created uipushtool object.
 ##
 ## Uipushtool properties are documented at @ref{Uipushtool Properties}.
+##
+## The optional return value @var{hui} is a graphics handle to the created
+## uipushobject object.
 ##
 ## Examples:
 ##
@@ -70,6 +74,11 @@ function hui = uipushtool (varargin)
       h = h(1);
     endif
   endif
-  hui = __go_uipushtool__ (h, args{:});
+  
+  htmp = __go_uipushtool__ (h, args{:});
+  
+  if (nargout > 0)
+    hui = htmp;
+  endif
 
 endfunction

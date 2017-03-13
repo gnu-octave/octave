@@ -107,6 +107,10 @@ function hui = uicontrol (varargin)
 
   [h, args] = __uiobject_split_args__ ("uicontrol", varargin,
                                        {"figure", "uipanel", "uibuttongroup"});
-  hui = __go_uicontrol__ (h, args{:});
+  htmp = __go_uicontrol__ (h, args{:});
 
+  if (nargout > 0)
+    hui = htmp;
+  endif
+  
 endfunction

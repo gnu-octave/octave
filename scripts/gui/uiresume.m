@@ -30,6 +30,10 @@
 
 function uiresume (h)
 
+  if (nargin < 1)
+    h = gcf ();
+  endif
+
   if (! isfigure (h))
     error ("uiresume: invalid figure handle H");
   endif

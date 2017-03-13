@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{hui} =} uitoggletool (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {@var{hui} =} uitoggletool (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {} uitoggletool (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} uitoggletool (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uitoggletool (@dots{})
 ##
-## Create a uitoggletool object and return a handle to it.
+## Create a uitoggletool object.
 ##
 ## uitoggletool are togglebuttons that appear on a figure toolbar.  The
 ## button is created with a border that is shown when the user hovers over
@@ -38,6 +39,9 @@
 ## created uitoggletool object.
 ##
 ## Uitoggletool properties are documented at @ref{Uitoggletool Properties}.
+##
+## The optional return value @var{hui} is a graphics handle to the created
+## uitoggletool object.
 ##
 ## Examples:
 ##
@@ -70,6 +74,11 @@ function hui = uitoggletool (varargin)
       h = h(1);
     endif
   endif
-  hui = __go_uitoggletool__ (h, args{:});
+  
+  htmp = __go_uitoggletool__ (h, args{:});
+  
+  if (nargout > 0)
+    hui = htmp;
+  endif
 
 endfunction

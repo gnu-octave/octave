@@ -85,14 +85,14 @@ function h = figure (varargin)
   if (init_new_figure)
     f = __go_figure__ (f, varargin{:});
     __add_default_menu__ (f);
-    __add_default_mouse_modes__ (f);
+    __set_default_mouse_modes__ (f);
   elseif (nargs > 0)
     set (f, varargin{:});
   endif
 
   set (0, "currentfigure", f);
   ## When switching to figure N, make figure visible and on top of stack,
-  ## unless visibility is explicitly switched off
+  ## unless visibility is explicitly switched off.
   if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")
                                   && strcmpi (varargin(2:2:end), "off")))
     set (f, "visible", "on");
@@ -101,23 +101,6 @@ function h = figure (varargin)
   if (nargout > 0)
     h = f;
   endif
-
-endfunction
-
-function __add_default_mouse_modes__ (fig)
-
-  set (fig, "__pan_mode__", struct ("Enable", "off",
-                                    "Motion", "both",
-                                    "FigureHandle", fig));
-
-  set (fig, "__rotate_mode__", struct ("Enable", "off",
-                                       "RotateStyle", "box",
-                                       "FigureHandle", fig));
-
-  set (fig, "__zoom_mode__", struct ("Enable", "off",
-                                     "Motion", "both",
-                                     "Direction", "in",
-                                     "FigureHandle", fig));
 
 endfunction
 

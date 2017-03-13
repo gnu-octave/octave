@@ -73,6 +73,8 @@ function h = clf (varargin)
     ## Select all the children, including the one with hidden handles.
     delete (allchild (hfig));
     reset (hfig);
+    __add_default_menu__ (hfig);
+    __set_default_mouse_modes__ (hfig);
   else
     ## Select only the chilren with visible handles.
     delete (get (hfig, "children"));

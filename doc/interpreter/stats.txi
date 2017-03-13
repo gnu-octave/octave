@@ -167,6 +167,8 @@ using the @code{hist} function as described in
 
 @DOCSTRING(corr)
 
+@DOCSTRING(corrcoef)
+
 @DOCSTRING(spearman)
 
 @DOCSTRING(kendall)

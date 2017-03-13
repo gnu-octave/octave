@@ -4,6 +4,7 @@ scripts_statistics_base_FCN_FILES = \
   scripts/statistics/base/center.m \
   scripts/statistics/base/cloglog.m \
   scripts/statistics/base/corr.m \
+  scripts/statistics/base/corrcoef.m \
   scripts/statistics/base/cov.m \
   scripts/statistics/base/gls.m \
   scripts/statistics/base/histc.m \

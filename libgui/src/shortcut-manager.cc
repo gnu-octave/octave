@@ -115,7 +115,7 @@ shortcut_manager::do_init_data ()
   init (tr ("Copy"), "main_edit:copy", QKeySequence::Copy);
   init (tr ("Paste"), "main_edit:paste", QKeySequence::Paste);
   init (tr ("Undo"), "main_edit:undo", QKeySequence::Undo);
-  init (tr ("Select All"), "main_edit:select_all", QKeySequence ());
+  init (tr ("Select All"), "main_edit:select_all", QKeySequence::SelectAll);
   init (tr ("Clear Clipboard"), "main_edit:clear_clipboard", QKeySequence ());
   init (tr ("Find in Files"), "main_edit:find_in_files",
         QKeySequence (ctrl_shift + Qt::Key_F));

@@ -1564,11 +1564,14 @@ file_editor::construct (void)
 #endif
   _tool_bar = new QToolBar (editor_widget);
   _tool_bar->setMovable (true);
-  _tab_widget = new tab_widget (editor_widget);
+
+  _tab_widget = new file_editor_tab_widget (editor_widget);
   _tab_widget->setTabsClosable (true);
 #if defined (HAVE_QTABWIDGET_SETMOVABLE)
   _tab_widget->setMovable (true);
 #endif
+  connect (_tab_widget, SIGNAL (close_current_tab_signal (bool)),
+           this, SLOT (request_close_file (bool)));
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -2466,3 +2469,43 @@ file_editor::switch_tab (int direction, bool movetab)
 }
 
 #endif
+
+
+//
+// Functions of the the reimplemented tab widget
+//
+
+// Reimplement mouse event for filtering out the desired mouse clicks
+void
+file_editor_tab_widget::mousePressEvent(QMouseEvent *me)
+{
+  if (me->type () != QEvent::MouseButtonDblClick &&
+       me->button() == Qt::MiddleButton)
+    {
+      // Middle click into the tabbar -> close the tab
+      for (int i = 0; i < tabBar ()->count (); i++)
+        {
+          QPoint clickPos = mapToGlobal (me->pos ());
+          if (tabBar ()->tabRect (i).contains (tabBar ()->mapFromGlobal (clickPos)))
+            {
+              int idx = currentIndex ();
+              // Make the clicked tab the current one and close it
+              setCurrentIndex (i);
+              emit close_current_tab_signal (true);
+              // Was the closed tab before or after the previously current tab?
+              // According to the result, use previous index or remove it by one
+              if (idx - i > 0)
+                setCurrentIndex (idx - 1);
+              else if (idx - i < 0)
+                setCurrentIndex (idx);
+              break;
+            }
+        }
+    }
+  else
+    {
+      // regular handling of the mouse event
+      QTabWidget::mousePressEvent (me);
+    }
+}
+

@@ -617,7 +617,6 @@ function list = missing_functions ()
   "coneplot",
   "containers.Map",
   "contourslice",
-  "corrcoef",
   "countcats",
   "createClassFromWsdl",
   "createSoapMessage",

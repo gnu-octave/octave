@@ -54,7 +54,7 @@ webinfo::webinfo (QWidget *p)
   hbox_layout->setSpacing (0);
   vbox_layout->addLayout (hbox_layout);
 
-  _tab_bar = new QTabBar (this);
+  _tab_bar = new webinfo_tab_bar (this);
   _tab_bar->setSizePolicy (QSizePolicy::Preferred,QSizePolicy::Preferred);
   _tab_bar->setExpanding (false);
   _tab_bar->setTabsClosable (true);
@@ -312,3 +312,36 @@ webinfo::pasteClipboard ()
         _search_line_edit->insert (str);
     }
 }
+
+
+//
+// Functions of the the reimplemented tab bar
+//
+
+// Reimplement mouse event for filtering out the desired mouse clicks
+void
+webinfo_tab_bar::mousePressEvent(QMouseEvent *me)
+{
+  if (me->type () != QEvent::MouseButtonDblClick &&
+      me->button() == Qt::MiddleButton &&
+      count () > 1)
+    {
+      // Middle click into the tabbar -> close the tab
+      for (int i = 0; i < count (); i++)
+        {
+          QPoint clickPos = mapToGlobal (me->pos ());
+          if (tabRect (i).contains (mapFromGlobal (clickPos)))
+            {
+              removeTab (i);
+              break;
+            }
+        }
+    }
+  else
+    {
+      // regular handling of the mouse event
+      QTabBar::mousePressEvent (me);
+    }
+}
+
+

@@ -1,5 +1,5 @@
-Summary of important user-visible changes for version 4.4:
----------------------------------------------------------
+Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
+----------------------------------------------------------------------
 
  ** On systems with 64-bit pointers, --enable-64 is now the default and
     Octave always uses 64-bit indexing.  However, if the configure
@@ -88,8 +88,8 @@ Summary of important user-visible changes for version 4.4:
     is the second major release after 4.4).  Use the property "color"
     instead.
 
-Summary of bugs fixed for version 4.2.1:
----------------------------------------
+Summary of bugs fixed for version 4.2.1 (2017-02-22):
+----------------------------------------------------
 
 Using the bug numbers listed below, find bug reports on the web using
 the URL https://savannah.gnu.org/bugs/?NNNNN
@@ -212,8 +212,8 @@ Other bugs fixed:
 
  ** add missing classdef test files (bug #49819)
 
-Summary of important user-visible changes for version 4.2:
----------------------------------------------------------
+Summary of important user-visible changes for version 4.2 (2016-11-13):
+----------------------------------------------------------------------
 
  ** The parser has been extended to accept, but ignore, underscore
     characters in numbers.  This facilitates writing more legible code
@@ -458,8 +458,8 @@ Summary of important user-visible changes for version 4.2:
     Octave with memory allocator checks (similar to those in valgrind)
     built in.
 
-Summary of important user-visible changes for version 4.0:
----------------------------------------------------------
+Summary of important user-visible changes for version 4.0 (2015-05-23):
+----------------------------------------------------------------------
 
  ** A graphical user interface is now the default when running Octave
     interactively.  The start-up option --no-gui will run the familiar

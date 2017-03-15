@@ -22,7 +22,7 @@
 ## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fid})
 ## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fname})
 ## @deftypefnx {} {@var{success} =} test (@dots{})
-## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nskip}] =} test (@dots{})
+## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nskip}, @var{nrtskip}] =} test (@dots{})
 ## @deftypefnx {} {[@var{code}, @var{idx}] =} test ("@var{name}", "grabdemo")
 ## @deftypefnx {} {} test ([], "explain", @var{fid})
 ## @deftypefnx {} {} test ([], "explain", @var{fname})
@@ -81,8 +81,9 @@
 ## returns true if all of the tests were successful.  If called with more
 ## than one output argument then the number of successful tests (@var{n}),
 ## the total number of tests in the file (@var{nmax}), the number of xtest
-## failures (@var{nxfail}), and the number of skipped tests (@var{nskip}) are
-## returned.
+## failures (@var{nxfail}), the number of tests skipped due to missing
+## features (@var{nskip}), and the number of tests skipped due to
+## runtime conditions (@var{nrtskip}) are returned.
 ##
 ## Example
 ##
@@ -118,7 +119,7 @@
 ## Shared variables are eval'ed into the current workspace and therefore might
 ## collide with the names used in the test.m function itself.
 
-function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __fid = [])
+function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "normal", __fid = [])
 
   ## Output from test is prefixed by a "key" to quickly understand the issue.
   persistent __signal_fail  = "!!!!! ";
@@ -295,7 +296,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
 
   ## Process each block separately, initially with no shared variables.
   __tests = __successes = 0;
-  __xfail = __xskip = 0;
+  __xfail = __xskip = __xrtskip = 0;
   __shared = " ";
   __shared_r = " ";
   __clearfcn = "";
@@ -525,7 +526,17 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
         ## Code already processed.
         __code = "";
 
-### TESTIF
+### TESTIF HAVE_FEATURE
+### TESTIF HAVE_FEATURE ; RUNTIME_CONDITION
+### TESTIF <bug-id> HAVE_FEATURE
+### TESTIF <bug-id> HAVE_FEATURE ; RUNTIME_CONDITION
+###
+###   HAVE_FEATURE is a comma- or whitespace separated list of
+###   macro names that may be checked with __have_feature__.
+###
+###   RUNTIME_CONDITION is an expression to evaluate to check
+###   whether some condition is met when the test is executed.  For
+###   example, have_window_system.
 
       elseif (strcmp (__type, "testif"))
         __e = regexp (__code, '.$', 'lineanchors', 'once');
@@ -541,23 +552,37 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
             __feat_line = __feat_line(1:__idx1-1);
           endif
         endif
+        __idx = index (__feat_line, ";");
+        if (__idx)
+          __runtime_feat_test = __feat_line(__idx+1:end);
+          __feat_line = __feat_line(1:__idx-1);
+        else          
+          __runtime_feat_test = "";
+        endif
         __feat = regexp (__feat_line, '\w+', 'match');
         __feat = strrep (__feat, "HAVE_", "");
         __have_feat = __have_feature__ (__feat);
         if (__have_feat)
-          if (isempty (__bug_id))
-            __istest = true;
+          if (isempty (__runtime_feat_test) || eval (__runtime_feat_test))
+            if (isempty (__bug_id))
+              __istest = true;
+            else
+              __isxtest = true;
+            endif
+            __code = __code(__e + 1 : end);
           else
-            __isxtest = true;
+            __xrtskip += 1;
+            __code = ""; # Skip the code.
+            __msg = [__signal_skip "skipped test (runtime test)\n"];
           endif
-          __code = __code(__e + 1 : end);
         else
           __xskip += 1;
           __code = ""; # Skip the code.
-          __msg = [__signal_skip "skipped test\n"];
+          __msg = [__signal_skip "skipped test (missing feature)\n"];
         endif
 
 ### TEST
+### TEST <bug-id>
 
       elseif (strcmp (__type, "test"))
         [__bug_id, __code] = getbugid (__code);
@@ -568,7 +593,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
         endif
         ## Code will be evaluated below.
 
-### XTEST
+### XTEST <bug-id>
 
       elseif (strcmp (__type, "xtest"))
         __isxtest = true;
@@ -675,7 +700,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
   eval (__clearfcn, "");
 
   if (nargout == 0)
-    if (__tests || __xfail || __xskip)
+    if (__tests || __xfail || __xskip || __xrtskip)
       if (__xfail)
         printf ("PASSES %d out of %d test%s (%d known failure%s)\n",
                 __successes, __tests, ifelse (__tests > 1, "s", ""),
@@ -687,6 +712,10 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
       if (__xskip)
         printf ("Skipped %d test%s due to missing features\n", __xskip,
                 ifelse (__xskip > 1, "s", ""));
+      endif
+      if (__xrtskip)
+        printf ("Skipped %d test%s due to runtime tests\n", __xrtskip,
+                ifelse (__xrtskip > 1, "s", ""));
       endif
     else
       printf ("%s%s has no tests available\n", __signal_empty, __file);
@@ -701,6 +730,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
     __nmax   = __tests;
     __nxfail = __xfail;
     __nskip  = __xskip;
+    __nrtskip = __xrtskip;
   endif
 
 endfunction

@@ -48,10 +48,7 @@ function h = allchild (handles)
 endfunction
 
 
-%!testif HAVE_OPENGL, HAVE_FLTK
-%! if (! have_window_system)
-%!  return;
-%! endif
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system
 %! toolkit = graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect

@@ -124,7 +124,8 @@ recording using those parameters.
   int num_devices = Pa_GetDeviceCount ();
 
   if (num_devices < 0)
-    error ("audiodevinfo: no audio device found");
+    num_devices = 0;
+  num_devices = 0;
 
   octave_idx_type numinput = 0, numoutput = 0;
   for (int i = 0; i < num_devices; i++)

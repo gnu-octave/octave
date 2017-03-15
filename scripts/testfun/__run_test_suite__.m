@@ -74,16 +74,16 @@ function [pass, fail, xfail, skip, rtskip] = __run_test_suite__ (fcndirs, fixedt
       endfor
       puts ("\nSummary:\n\n");
       nfail = dn - dp - dxf;
-      printf ("  PASS                   %6d\n", dp);
-      printf ("  FAIL                   %6d\n", nfail);
+      printf ("  PASS                         %6d\n", dp);
+      printf ("  FAIL                         %6d\n", nfail);
       if (dxf > 0)
-        printf ("  XFAIL                  %6d\n", dxf);
+        printf ("  XFAIL                        %6d\n", dxf);
       endif
       if (dsk > 0)
-        printf ("  SKIPPED (feature)      %6d\n", dsk);
+        printf ("  SKIPPED (feature)            %6d\n", dsk);
       endif
       if (drtsk > 0)
-        printf ("  SKIPPED (runtime test) %6d\n", drtsk);
+        printf ("  SKIPPED (run-time condition) %6d\n", drtsk);
       endif
       puts ("\n");
       printf ("See the file %s for additional details.\n", logfile);
@@ -150,10 +150,10 @@ function print_pass_fail (p, n, xf, sk, rtsk)
       printf ("\n%71s %3d", "FAIL ", nfail);
     endif
     if (sk > 0)
-      printf ("\n%71s %3d", "(feature) SKIP ", sk);
+      printf ("\n%71s %3d", "(missing feature) SKIP ", sk);
     endif
     if (rtsk > 0)
-      printf ("\n%71s %3d", "(runtime test) SKIP ", rtsk);
+      printf ("\n%71s %3d", "(run-time condition) SKIP ", rtsk);
     endif
     if (xf > 0)
       printf ("\n%71s %3d", "XFAIL", xf);

@@ -83,7 +83,7 @@
 ## the total number of tests in the file (@var{nmax}), the number of xtest
 ## failures (@var{nxfail}), the number of tests skipped due to missing
 ## features (@var{nskip}), and the number of tests skipped due to
-## runtime conditions (@var{nrtskip}) are returned.
+## run-time conditions (@var{nrtskip}) are returned.
 ##
 ## Example
 ##
@@ -714,7 +714,7 @@ function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "n
                 ifelse (__xskip > 1, "s", ""));
       endif
       if (__xrtskip)
-        printf ("Skipped %d test%s due to runtime tests\n", __xrtskip,
+        printf ("Skipped %d test%s due to run-time conditions\n", __xrtskip,
                 ifelse (__xrtskip > 1, "s", ""));
       endif
     else

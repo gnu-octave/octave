@@ -65,12 +65,26 @@ ALL_LOCAL_TARGETS += test/.gdbinit
 test/.gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)
 
+define run-octave-tests
+  cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
+  if $(AM_V_P); then \
+    echo ""; \
+    if [ -f test/fntests.log ]; then \
+      echo "Contents of test/fntests.log:"; \
+      echo ""; \
+      cat test/fntests.log; \
+    else \
+      echo "test/fntests.log is missing!"; \
+    fi; \
+  fi
+endef
+
 check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
-	cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
+	$(call run-octave-tests)
 
 if AMCOND_HAVE_LLVM
 check-jit: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) test/$(octave_dirstamp)
-	cd test && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test
+	$(call run-octave-tests,--jit-compiler)
 endif
 
 COVERAGE_DIR = test/coverage

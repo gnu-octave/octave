@@ -100,6 +100,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     print_usage ();
   endif
 
+  do_reshape = false;
   if (ischar (year) || iscellstr (year))
     [year, month, day, hour, minute, second] = datevec (year, month);
   else
@@ -114,6 +115,21 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
       day   = year(:,3);
       month = year(:,2);
       year  = year(:,1);
+    else
+      [err, year, month, day] = common_size (year, month, day);
+      if (err)
+        error ("datenum: incompatible sizes for YEAR, MONTH, DAY");
+      endif
+      ## Preserve shape if necessary, and work with column vectors
+      ## for the remainder of the function.
+      do_reshape = (columns (year) > 1 || columns (month) > 1
+                    || columns (day) > 1);
+      if (do_reshape)
+        sz_reshape = size (day);
+        year = year(:);
+        month = month(:);
+        day = day(:);
+      endif
     endif
   endif
 
@@ -132,7 +148,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     month = floor (month);
     ## Separate regular months from leap months
     idx = mod (month-1,12) + 1 != 2 | ! is_leap_year (floor (year));
-    day(idx) += fracmonth(idx) .* monthlength ((mod (month(idx)-1,12) + 1));
+    day(idx) += fracmonth(idx) .* monthlength(mod (month(idx)-1,12) + 1);
     day(! idx) += fracmonth(! idx) * 29;
   endif
 
@@ -141,20 +157,15 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   year += ceil ((month-14)/12);
 
   ## Lookup number of days since start of the current year.
-  if (numel (month) == 1 || numel (day) == 1)
-    ## Allow month or day to be scalar while other values may be vectors or
-    ## matrices.
-    day += monthstart (mod (month-1,12) + 1) + 60;
-    if (numel (month) > 1)
-      day = reshape (day, size (month));
-    endif
-  else
-    day += reshape (monthstart (mod (month-1,12) + 1), size (day)) + 60;
-  endif
+  day += monthstart(mod (month-1,12) + 1) + 60;
 
   ## Add number of days to the start of the current year.  Correct
   ## for leap year every 4 years except centuries not divisible by 400.
   day += 365*year + floor (year/4) - floor (year/100) + floor (year/400);
+
+  if (do_reshape)
+    day = reshape (day, sz_reshape);
+  endif
 
   ## Add fraction representing current second of the day.
   days = day + (hour + (minute + second/60)/60)/24;

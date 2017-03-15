@@ -212,8 +212,7 @@ namespace octave
     m_file_tree_view->setSortingEnabled (true);
     m_file_tree_view->setAlternatingRowColors (true);
     m_file_tree_view->setAnimated (true);
-    m_file_tree_view->setToolTip (
-                                  tr ("Activate to open in editor, right click for alternatives"));
+    m_file_tree_view->setToolTip (tr ("Double click to open file/folder, right click for alternatives"));
 
     // get sort column and order as well as cloumn state (order and width)
 
@@ -388,13 +387,10 @@ namespace octave
 
             if (QFile::exists (abs_fname))
               {
-                if (is_octave_data_file (abs_fname.toStdString ()))
-                  emit load_file_signal (abs_fname);
-                else if (extensions.contains (suffix))
+                if (extensions.contains (suffix))
                   emit open_file (fileInfo.absoluteFilePath ());
                 else
-                  open_item_in_app (m_file_tree_view->selectionModel ()
-                                    ->currentIndex ());
+                  emit open_any_signal (abs_fname);
               }
           }
       }

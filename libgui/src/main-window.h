@@ -145,6 +145,7 @@ namespace octave
     void report_status_message (const QString& statusMessage);
     void handle_save_workspace_request (void);
     void handle_load_workspace_request (const QString& file = QString ());
+    void handle_open_any_request (const QString& file = QString ());
     void handle_clear_workspace_request (void);
     void handle_clear_command_window_request (void);
     void handle_clear_history_request (void);
@@ -321,6 +322,8 @@ namespace octave
     void save_workspace_callback (const std::string& file);
 
     void load_workspace_callback (const std::string& file);
+
+    void open_any_callback (const std::string& file);
 
     void rename_variable_callback (const name_pair& names);
 

@@ -22,18 +22,37 @@
 ## Open the file @var{file} in Octave or in an external application based on
 ## the file type as determined by the filename extension.
 ##
-## Recognized file types are
+## By default, recognized file types are
 ##
 ## @table @code
 ## @item .m
-## Open file in the editor.
+## Open file in the editor. No @var{output} value is returned.
 ##
 ## @item .mat
-## Load the file in the base workspace.
+## @item octave-workspace
+## Open the data file with @code{load}. If no return value @var{output}
+## is requested, variables are loaded in the base workspace. Otherwise
+## @var{output} will be a structure containing loaded data.
+## @xref{XREFload, , load function}.
+##
+## @item .ofig 
+## Open the figure with hgload.  @xref{XREFhgload, , hgload function}.
 ##
 ## @item .exe
-## Execute the program (on Windows systems only).
+## Execute the program (on Windows systems only). No @var{output} value
+## is returned.
 ## @end table
+##
+## Custom file extensions may also be handled if a function @code{openxxx}, 
+## where @code{xxx} is the extension, is found in the load path.  The function 
+## must accept the file name as input.  For example, in order to load ".dat"
+## data files in the base workspace, as is done by default for ".mat" files, one
+## may define "opendat.m" with the following contents:
+## @example
+## function retval = opendat (fname)
+##   evalin ("base", sprintf ("load ('%s');", fname));
+## endfunction
+## @end example
 ##
 ## Other file types are opened in the appropriate external application.
 ## @end deftypefn
@@ -48,17 +67,27 @@ function output = open (file)
     error ("open: FILE must be a string");
   endif
 
-  [~, ~, ext] = fileparts (file);
+  [~, fname, ext] = fileparts (file);
 
-  if (strcmpi (ext, ".m"))
+  if (! isempty (ext)
+      && any (exist (["open" tolower(ext(2:end))]) == [2 3 5 103]))
+    try 
+      feval (["open" tolower(ext(2:end))], file)
+    catch
+      error ("open: %s", lasterr);
+    end_try_catch
+  elseif (strcmpi (ext, ".m"))
     edit (file);
-  elseif (strcmpi (ext, ".mat"))
+  elseif (strcmpi (ext, ".mat") || strcmp (fname, "octave-workspace"))
     if (nargout > 0)
       output = load (file);
     else
       evalin ("base", sprintf ("load ('%s');", file));
     endif
-  elseif (any (strcmpi (ext, {".fig", ".mdl", ".slx", ".prj"})))
+  elseif (strcmpi (ext, ".ofig"))
+    output = hgload (file);
+    drawnow ();
+  elseif (any (strcmpi (ext, {".mdl", ".slx", ".prj"})))
     error ("open: opening file type '%s' is not supported", ext);
   elseif (strcmpi (ext, ".exe"))
     if (ispc ())

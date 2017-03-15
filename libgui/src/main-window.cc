@@ -69,6 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "oct-map.h"
 #include "octave.h"
+#include "parse.h"
 #include "symscope.h"
 #include "utils.h"
 #include "version.h"
@@ -390,6 +391,13 @@ namespace octave
     if (! file.isEmpty ())
       octave_link::post_event (this, &main_window::load_workspace_callback,
                                file.toStdString ());
+  }
+
+  void main_window::handle_open_any_request (const QString& file_arg)
+  {
+    if (! file_arg.isEmpty ())
+      octave_link::post_event (this, &main_window::open_any_callback,
+                               file_arg.toStdString ());
   }
 
   void main_window::handle_clear_workspace_request (void)
@@ -1834,6 +1842,9 @@ namespace octave
         connect (m_file_browser_window, SIGNAL (load_file_signal (const QString&)),
                  this, SLOT (handle_load_workspace_request (const QString&)));
 
+        connect (m_file_browser_window, SIGNAL (open_any_signal (const QString&)),
+                 this, SLOT (handle_open_any_request (const QString&)));
+
         connect (m_file_browser_window, SIGNAL (find_files_signal (const QString&)),
                  this, SLOT (find_files (const QString&)));
 
@@ -2543,6 +2554,20 @@ namespace octave
     // INTERPRETER THREAD
 
     command_editor::set_screen_size (sz.first, sz.second);
+  }
+
+  void main_window::open_any_callback (const std::string& file)
+  {
+    // INTERPRETER THREAD
+
+    octave::feval ("open", ovl (file));
+
+    // Update the workspace since open.m may have loaded new variables.
+    symbol_scope scope
+      = __get_current_scope__ ("main_window::open_any_callback");
+
+    if (scope)
+          octave_link::set_workspace (true, scope);
   }
 
   void main_window::clear_workspace_callback (void)

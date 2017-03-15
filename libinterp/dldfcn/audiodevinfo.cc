@@ -125,7 +125,6 @@ recording using those parameters.
 
   if (num_devices < 0)
     num_devices = 0;
-  num_devices = 0;
 
   octave_idx_type numinput = 0, numoutput = 0;
   for (int i = 0; i < num_devices; i++)

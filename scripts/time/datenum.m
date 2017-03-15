@@ -100,6 +100,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     print_usage ();
   endif
 
+  do_reshape = false;
   if (ischar (year) || iscellstr (year))
     [year, month, day, hour, minute, second] = datevec (year, month);
   else
@@ -114,6 +115,21 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
       day   = year(:,3);
       month = year(:,2);
       year  = year(:,1);
+    else
+      [err, year, month, day] = common_size (year, month, day);
+      if (err)
+        error ("datenum: incompatible sizes for YEAR, MONTH, DAY");
+      endif
+      ## Preserve shape if necessary, and work with column vectors
+      ## for the remainder of the function.
+      do_reshape = (columns (year) > 1 || columns (month) > 1
+                    || columns (day) > 1);
+      if (do_reshape)
+        sz_reshape = size (day);
+        year = year(:);
+        month = month(:);
+        day = day(:);
+      endif
     endif
   endif
 
@@ -123,19 +139,17 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     error ("datenum: all inputs must be of class double");
   endif
 
-  month(month < 1) = 1;  # For compatibility.  Otherwise allow negative months.
+  ## For Matlab compatibility.  Otherwise, could allow negative months.
+  month(month < 1) = 1;
 
   ## Treat fractional months, by converting the fraction to days
-  if (floor (month) != month)
+  if (any (month != fix (month)))
     fracmonth = month - floor (month);
     month = floor (month);
-    if ((mod (month-1,12) + 1) == 2
-        && (floor (year/4) - floor (year/100) + floor (year/400)) != 0)
-      ## leap year
-      day += fracmonth * 29;
-    else
-      day += fracmonth * monthlength ((mod (month-1,12) + 1));
-    endif
+    ## Separate regular months from leap months
+    idx = mod (month-1,12) + 1 != 2 | ! is_leap_year (floor (year));
+    day(idx) += fracmonth(idx) .* monthlength(mod (month(idx)-1,12) + 1);
+    day(! idx) += fracmonth(! idx) * 29;
   endif
 
   ## Set start of year to March by moving Jan. and Feb. to previous year.
@@ -143,20 +157,15 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   year += ceil ((month-14)/12);
 
   ## Lookup number of days since start of the current year.
-  if (numel (month) == 1 || numel (day) == 1)
-    ## Allow month or day to be scalar while other values may be vectors or
-    ## matrices.
-    day += monthstart (mod (month-1,12) + 1) + 60;
-    if (numel (month) > 1)
-      day = reshape (day, size (month));
-    endif
-  else
-    day += reshape (monthstart (mod (month-1,12) + 1), size (day)) + 60;
-  endif
+  day += monthstart(mod (month-1,12) + 1) + 60;
 
   ## Add number of days to the start of the current year.  Correct
   ## for leap year every 4 years except centuries not divisible by 400.
   day += 365*year + floor (year/4) - floor (year/100) + floor (year/400);
+
+  if (do_reshape)
+    day = reshape (day, sz_reshape);
+  endif
 
   ## Add fraction representing current second of the day.
   days = day + (hour + (minute + second/60)/60)/24;
@@ -176,6 +185,7 @@ endfunction
 %!assert (datenum ([2001,5,19;1417,6,12]), [730990;517712])
 %!assert (datenum (2001,5,19,12,21,3.5), 730990+part, eps)
 %!assert (datenum ([1417,6,12,12,21,3.5]), 517712+part, eps)
+
 ## Test vector inputs
 %!test
 %! t = [2001,5,19,12,21,3.5; 1417,6,12,12,21,3.5];
@@ -185,6 +195,10 @@ endfunction
 %! t = t';
 %! n = n';
 %! assert (datenum (t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);
+
+## Test fractional months including leap months
+%!assert (fix (datenum ([2001 1.999 1; 2001 2.999 1])), [730882; 730910])
+%!assert (fix (datenum ([2004 1.999 1; 2004 2.999 1])), [731977; 732006])
 
 ## Test mixed vectors and scalars
 %!assert (datenum ([2008;2009],1,1), [datenum(2008,1,1);datenum(2009,1,1)])
@@ -200,11 +214,13 @@ endfunction
 %!assert (datenum ([2008 2009], [1 2], 1), [datenum(2008,1,1) datenum(2009,2,1)])
 %!assert (datenum ([2008 2009], 1, [1 2]), [datenum(2008,1,1) datenum(2009,1,2)])
 %!assert (datenum (2008, [1 2], [1 2]), [datenum(2008,1,1) datenum(2008,2,2)])
+
 ## Test string and cellstr inputs
 %!assert (datenum ("5/19/2001"), 730990)
 %!assert (datenum ({"5/19/2001"}), 730990)
 %!assert (datenum (char ("5/19/2001", "6/6/1944")), [730990; 710189])
 %!assert (datenum ({"5/19/2001", "6/6/1944"}), [730990; 710189])
+
 ## Test string input with format string
 %!assert (datenum ("5-19, 2001", "mm-dd, yyyy"), 730990)
 

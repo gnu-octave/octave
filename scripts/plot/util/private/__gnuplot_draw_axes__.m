@@ -144,7 +144,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (nd == 2)
       t = get(axis_obj.title);
       colorspec = get_text_colorspec (t.color);
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",
                undo_string_escapes (tt), fontspec, colorspec,
@@ -176,7 +176,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       fprintf (plot_stream, "unset xlabel;\n");
       fprintf (plot_stream, "unset x2label;\n");
     else
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
       if (strcmp (axis_obj.xaxislocation, "top"))
         fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
@@ -204,7 +204,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       fprintf (plot_stream, "unset ylabel;\n");
       fprintf (plot_stream, "unset y2label;\n");
     else
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
       if (strcmp (axis_obj.yaxislocation, "right"))
         fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
@@ -231,7 +231,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     if (isempty (t.string))
       fputs (plot_stream, "unset zlabel;\n");
     else
-      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+      [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", t.interpreter);
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
                undo_string_escapes (tt), colorspec, fontspec,
@@ -498,21 +498,18 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   ximg_data = {};
   ximg_data_idx = 0;
 
+  if (! isempty (hlgnd))
+    hlgndntrp = hlgnd.interpreter;
+  else
+    hlgndntrp = "none";
+  endif
+
   while (! isempty (kids))
 
     h_obj = kids(end);
     kids = kids(1:(end-1));
 
     obj = get (h_obj);
-
-    ## FIXME: Temporary workaround to add hidden interpreter property back.
-    ##        Delete when bug #50496 is fixed.
-    wstate = warning ("query", "Octave:deprecated-property");
-    try 
-      warning ("off", "Octave:deprecated-property");
-      obj.interpreter = get (h_obj, "interpreter");
-    end_try_catch
-    warning (wstate);
 
     if (isfield (obj, "xdata"))
       obj.xdata = double (obj.xdata);
@@ -632,7 +629,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
             tmpdispname = obj.displayname;
             obj.displayname = get (obj.parent, "displayname");
             tmp = undo_string_escapes (
-                    __maybe_munge_text__ (enhanced, obj, "displayname")
+                    __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
                   );
             titlespec{data_idx} = ['title "' tmp '"'];
             obj.displayname = tmpdispname;
@@ -682,7 +679,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           titlespec{data_idx} = "title \"\"";
         else
           tmp = undo_string_escapes (
-                  __maybe_munge_text__ (enhanced, obj, "displayname")
+                  __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
                 );
           titlespec{data_idx} = ['title "' tmp '"'];
         endif
@@ -803,7 +800,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
                 titlespec{local_idx} = "title \"\"";
               else
                 tmp = undo_string_escapes (
-                        __maybe_munge_text__ (enhanced, obj, "displayname")
+                        __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
                       );
                 titlespec{local_idx} = ['title "' tmp '"'];
               endif
@@ -1214,7 +1211,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
           have_cdata(data_idx) = false;
           have_3d_patch(data_idx) = false;
           tmp = undo_string_escapes (
-                  __maybe_munge_text__ (enhanced, obj, "displayname")
+                  __maybe_munge_text__ (enhanced, obj, "displayname", hlgndntrp)
                 );
           titlespec{data_idx} = ['title "' tmp '"'];
           data{data_idx} = NaN (3,1);
@@ -2437,7 +2434,7 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
 
 endfunction
 
-function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
+function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp)
   persistent warned_latex = false;
 
   if (strcmp (fld, "string"))
@@ -2471,7 +2468,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
   endif
 
   if (enhanced)
-    if (strcmp (obj.interpreter, "tex"))
+    if (strcmp (ntrp, "tex"))
       if (iscellstr (str))
         for n = 1:numel (str)
           str{n} = __tex2enhanced__ (str{n}, fnt, it, bld);
@@ -2479,7 +2476,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       else
         str = __tex2enhanced__ (str, fnt, it, bld);
       endif
-    elseif (strcmp (obj.interpreter, "latex"))
+    elseif (strcmp (ntrp, "latex"))
       if (! warned_latex)
         warning ("latex markup not supported for text objects");
         warned_latex = true;
@@ -2820,7 +2817,7 @@ endfunction
 
 function do_text (stream, gpterm, enhanced, obj, hax, screenpos)
 
-  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
+  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string", obj.interpreter);
   fontspec = create_fontspec (f, s, gpterm);
   lpos = obj.position;
   halign = obj.horizontalalignment;

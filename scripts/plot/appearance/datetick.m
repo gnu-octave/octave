@@ -219,15 +219,19 @@ function __datetick__ (varargin)
         minmonth = ifelse (minmonth == 0, 1, minmonth);
         maxmonth = sep * ceil (maxmonth / sep);
         rangemonth = (minmonth:sep:maxmonth)';
+        tickdays = round (1 + 28*mod (rangemonth, 1));
         ticks = datenum ([repmat(minyear, size(rangemonth)), ...
-                          rangemonth, ...
-                          ones(size (rangemonth))]);
+                          floor(rangemonth), ...
+                          tickdays]);
       else
         sep = __calc_tick_sep__ (minyear, maxyear);
         minyear = sep * floor (minyear / sep);
         maxyear = sep * ceil (maxyear / sep);
         rangeyear = (minyear:sep:maxyear)';
-        ticks = datenum ([rangeyear, ones(rows(rangeyear),2)]);
+        tickmonth = round (1 + 12*mod (rangeyear, 1));
+        ticks = datenum ([floor(rangeyear), ... 
+                          tickmonth, ...
+                          ones(rows (rangeyear), 1)]);
       endif
     endif
   endif

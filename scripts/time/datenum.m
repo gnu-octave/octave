@@ -159,6 +159,13 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   ## Lookup number of days since start of the current year.
   day += monthstart(mod (month-1,12) + 1) + 60;
 
+  ## Treat fractional years, by converting the fraction to days
+  if (any (year != fix (year)))
+    fracyear = year - floor (year);
+    year = floor (year);
+    day += fracyear .* (365 + is_leap_year (year+1));
+  endif
+  
   ## Add number of days to the start of the current year.  Correct
   ## for leap year every 4 years except centuries not divisible by 400.
   day += 365*year + floor (year/4) - floor (year/100) + floor (year/400);
@@ -196,9 +203,14 @@ endfunction
 %! n = n';
 %! assert (datenum (t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);
 
+## Test fractional years including leap years
+%!assert (fix (datenum ([2001.999 1 1; 2001.999 2 1])), [731216; 731247])
+%!assert (fix (datenum ([2004.999 1 1; 2004.999 2 1])), [732312; 732343])
+
 ## Test fractional months including leap months
 %!assert (fix (datenum ([2001 1.999 1; 2001 2.999 1])), [730882; 730910])
 %!assert (fix (datenum ([2004 1.999 1; 2004 2.999 1])), [731977; 732006])
+
 
 ## Test mixed vectors and scalars
 %!assert (datenum ([2008;2009],1,1), [datenum(2008,1,1);datenum(2009,1,1)])

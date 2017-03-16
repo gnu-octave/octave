@@ -4485,10 +4485,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 
   if (args.length () == 1 && ! args(0).is_string ())
     {
-      octave_value arg0 = args(0);
-
-      if (arg0.is_complex_type ())
-        arg0 = arg0.abs ();
+      octave_value arg0 = args(0).abs ();
 
       if (arg0.is_single_type ())
         {
@@ -4498,17 +4495,17 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 
           for (octave_idx_type i = 0; i < x.numel (); i++)
             {
-              float val = ::fabsf (x(i));
+              float val = x.xelem (i);
               if (octave::math::isnan (val) || octave::math::isinf (val))
                 epsval(i) = lo_ieee_nan_value ();
               else if (val < std::numeric_limits<float>::min ())
                 epsval(i) = powf (2.0, -149e0);
               else
                 {
-                  int expon;
-                  octave::math::frexp (val, &expon);
+                  int exponent;
+                  octave::math::frexp (val, &exponent);
                   epsval(i) = std::pow (2.0f,
-                                        static_cast<float> (expon - 24));
+                                        static_cast<float> (exponent - 24));
                 }
             }
 
@@ -4522,17 +4519,17 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 
           for (octave_idx_type i = 0; i < x.numel (); i++)
             {
-              double val = ::fabs (x(i));
+              double val = x.xelem (i);
               if (octave::math::isnan (val) || octave::math::isinf (val))
                 epsval(i) = lo_ieee_nan_value ();
               else if (val < std::numeric_limits<double>::min ())
                 epsval(i) = pow (2.0, -1074e0);
               else
                 {
-                  int expon;
-                  octave::math::frexp (val, &expon);
+                  int exponent;
+                  octave::math::frexp (val, &exponent);
                   epsval(i) = std::pow (2.0,
-                                        static_cast<double> (expon - 53));
+                                        static_cast<double> (exponent - 53));
                 }
             }
 

@@ -4534,9 +4534,9 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
                   epsval(i) = std::pow (2.0,
                                         static_cast<double> (expon - 53));
                 }
-
-              retval = epsval;
             }
+
+          retval = epsval;
         }
     }
   else

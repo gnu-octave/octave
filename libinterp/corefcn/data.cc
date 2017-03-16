@@ -4485,9 +4485,14 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 
   if (args.length () == 1 && ! args(0).is_string ())
     {
-      if (args(0).is_single_type ())
+      octave_value arg0 = args(0);
+
+      if (arg0.is_complex_type ())
+        arg0 = arg0.abs ();
+
+      if (arg0.is_single_type ())
         {
-          Array<float> x = args(0).float_array_value ();
+          Array<float> x = arg0.float_array_value ();
 
           Array<float> epsval (x.dims ());
 
@@ -4511,7 +4516,7 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
         }
       else
         {
-          Array<double> x = args(0).array_value ();
+          Array<double> x = arg0.array_value ();
 
           Array<double> epsval (x.dims ());
 

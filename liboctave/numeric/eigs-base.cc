@@ -78,12 +78,33 @@ template <typename SM, typename M>
 static M
 ltsolve (const SM& L, const ColumnVector& Q, const M& m)
 {
+  // Solve (Q_mat * L) * x = m, that is L * x = Q_mat' * m = m(Q)
   octave_idx_type n = L.cols ();
   octave_idx_type b_nc = m.cols ();
   octave_idx_type err = 0;
   double rcond;
   MatrixType ltyp (MatrixType::Lower);
-  M tmp = L.solve (ltyp, m, err, rcond, 0);
+  M retval (n, b_nc);
+  const double* qv = Q.fortran_vec ();
+  for (octave_idx_type j = 0; j < b_nc; j++)
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        retval.elem (i,j) = m.elem (static_cast<octave_idx_type>(qv[i]), j);
+    }
+  return L.solve (ltyp, retval, err, rcond, 0);
+}
+
+template <typename SM, typename M>
+static M
+utsolve (const SM& U, const ColumnVector& Q, const M& m)
+{
+  // Solve (U * Q_mat') * x = m by U * tmp = m, x(Q) = tmp (Q_mat * tmp = x)
+  octave_idx_type n = U.cols ();
+  octave_idx_type b_nc = m.cols ();
+  octave_idx_type err = 0;
+  double rcond;
+  MatrixType utyp (MatrixType::Upper);
+  M tmp = U.solve (utyp, m, err, rcond, 0);
   M retval;
   const double* qv = Q.fortran_vec ();
 
@@ -99,26 +120,6 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
     }
 
   return retval;
-}
-
-template <typename SM, typename M>
-static M
-utsolve (const SM& U, const ColumnVector& Q, const M& m)
-{
-  octave_idx_type n = U.cols ();
-  octave_idx_type b_nc = m.cols ();
-  octave_idx_type err = 0;
-  double rcond;
-  MatrixType utyp (MatrixType::Upper);
-
-  M retval (n, b_nc);
-  const double* qv = Q.fortran_vec ();
-  for (octave_idx_type j = 0; j < b_nc; j++)
-    {
-      for (octave_idx_type i = 0; i < n; i++)
-        retval.elem (i,j) = m.elem (static_cast<octave_idx_type>(qv[i]), j);
-    }
-  return U.solve (utyp, retval, err, rcond, 0);
 }
 
 static bool
@@ -199,7 +200,7 @@ make_cholb (Matrix& b, Matrix& bt, ColumnVector& permB)
     return false;
   else
     {
-      bt = fact.chol_matrix ();
+      bt = fact.chol_matrix (); // upper triangular
       b = bt.transpose ();
       permB = ColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
@@ -218,7 +219,7 @@ make_cholb (SparseMatrix& b, SparseMatrix& bt, ColumnVector& permB)
     return false;
   else
     {
-      b = fact.L ();
+      b = fact.L (); // lower triangular
       bt = b.transpose ();
       permB = fact.perm () - 1.0;
       return true;
@@ -236,7 +237,7 @@ make_cholb (ComplexMatrix& b, ComplexMatrix& bt, ColumnVector& permB)
     return false;
   else
     {
-      bt = fact.chol_matrix ();
+      bt = fact.chol_matrix (); // upper triangular
       b = bt.hermitian ();
       permB = ColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
@@ -256,7 +257,7 @@ make_cholb (SparseComplexMatrix& b, SparseComplexMatrix& bt,
     return false;
   else
     {
-      b = fact.L ();
+      b = fact.L (); // lower triangular
       bt = b.hermitian ();
       permB = fact.perm () - 1.0;
       return true;
@@ -766,7 +767,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               for (octave_idx_type i = 0; i < n; i++)
                 mtmp(i,0) = workd[i + iptr(0) - 1];
 
-              mtmp = utsolve (bt, permB, m * ltsolve (b, permB, mtmp));
+              mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
 
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
@@ -854,7 +855,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
             }
 
           if (note3)
-            eig_vec = ltsolve (b, permB, eig_vec);
+            eig_vec = utsolve (bt, permB, eig_vec);
         }
     }
   else

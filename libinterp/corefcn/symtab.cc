@@ -1883,7 +1883,7 @@ updated to use some other function.
 %!endfunction
 %!test
 %! assert (bar == 5);
-%! assert (strcmp (which ("bar"), ""));
+%! assert (strcmp (which ("bar"), "command-line function"));
 %! clear -f bar;
 %! assert (! strcmp (which ("bar"), ""));
 
@@ -1892,7 +1892,7 @@ updated to use some other function.
 %!endfunction
 %!test
 %! assert (bar == 5);
-%! assert (strcmp (which ("bar"), ""));
+%! assert (strcmp (which ("bar"), "command-line function"));
 %! clear bar;
 %! assert (! strcmp (which ("bar"), ""));
 */

@@ -69,6 +69,12 @@ function varargout = which (varargin)
     endfor
   else
     varargout = {m.file};
+    ## Return type, instead of "", for built-in classes (bug #50541).
+    ## FIXME: remove code if __which__ is updated to return path for classes
+    idx = find (cellfun ("isempty", varargout));
+    if (idx)
+      varargout(idx) = m(idx).type;
+    endif
   endif
 
 endfunction
@@ -76,17 +82,19 @@ endfunction
 
 %!test
 %! str = which ("ls");
-%! assert (str(end-17:end), strcat ("miscellaneous", filesep (), "ls.m"));
+%! assert (str(end-17:end), fullfile ("miscellaneous", "ls.m"));
 %!test
 %! str = which ("amd");
 %! assert (str(end-6:end), "amd.oct");
-
-%!assert (which ("_NO_SUCH_NAME_"), "")
-
+%!test
+%! str = which ("inputParser");
+%! assert (str, "built-in function");
 %!test
 %! x = 3;
 %! str = which ("x");
 %! assert (str, "variable");
+
+%!assert (which ("__NO_SUCH_NAME__"), "")
 
 %!test
 %! str = which ("amd");
@@ -97,3 +105,7 @@ endfunction
 %! clear amd;
 %! str = which ("amd");
 %! assert (str(end-6:end), "amd.oct");
+
+%!error which ()
+%!error which (1)
+

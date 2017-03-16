@@ -72,7 +72,7 @@ define run-octave-tests
     if [ -f test/fntests.log ]; then \
       echo "Contents of test/fntests.log:"; \
       echo ""; \
-      $(AWK) -f $(srcdir)/build-aux/show-failures.awk test/fntests.log; \
+      $(AWK) -f $(srcdir)/test/show-failures.awk test/fntests.log; \
     else \
       echo "test/fntests.log is missing!"; \
     fi; \

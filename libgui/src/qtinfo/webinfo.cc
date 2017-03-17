@@ -320,7 +320,7 @@ webinfo::pasteClipboard ()
 
 // Reimplement mouse event for filtering out the desired mouse clicks
 void
-webinfo_tab_bar::mousePressEvent(QMouseEvent *me)
+webinfo_tab_bar::mousePressEvent (QMouseEvent *me)
 {
   if (me->type () != QEvent::MouseButtonDblClick &&
       me->button() == Qt::MidButton &&
@@ -332,7 +332,7 @@ webinfo_tab_bar::mousePressEvent(QMouseEvent *me)
           QPoint clickPos = mapToGlobal (me->pos ());
           if (tabRect (i).contains (mapFromGlobal (clickPos)))
             {
-              removeTab (i);
+              emit tabCloseRequested (i);
               break;
             }
         }

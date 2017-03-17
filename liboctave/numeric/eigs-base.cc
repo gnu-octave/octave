@@ -1022,7 +1022,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                 {
                   OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-                  vector_product (m, workd+iptr(0)-1, dtmp);
+                  vector_product (b, workd+iptr(0)-1, dtmp);
 
                   Matrix tmp(n, 1);
 
@@ -1566,7 +1566,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               for (octave_idx_type i = 0; i < n; i++)
                 mtmp(i,0) = workd[i + iptr(0) - 1];
 
-              mtmp = utsolve (bt, permB, m * ltsolve (b, permB, mtmp));
+              mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
 
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
@@ -1701,7 +1701,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             }
 
           if (note3)
-            eig_vec = ltsolve (M(b), permB, eig_vec);
+            eig_vec = utsolve (bt, permB, eig_vec);
         }
     }
   else
@@ -1870,7 +1870,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                 {
                   OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-                  vector_product (m, workd+iptr(0)-1, dtmp);
+                  vector_product (b, workd+iptr(0)-1, dtmp);
 
                   Matrix tmp(n, 1);
 
@@ -2521,7 +2521,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
               ComplexMatrix mtmp (n,1);
               for (octave_idx_type i = 0; i < n; i++)
                 mtmp(i,0) = workd[i + iptr(0) - 1];
-              mtmp = utsolve (bt, permB, m * ltsolve (b, permB, mtmp));
+              mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
 
@@ -2610,7 +2610,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
             }
 
           if (note3)
-            eig_vec = ltsolve (b, permB, eig_vec);
+            eig_vec = utsolve (bt, permB, eig_vec);
         }
     }
   else
@@ -2785,7 +2785,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                 {
                   OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
-                  vector_product (m, workd+iptr(0)-1, ctmp);
+                  vector_product (b, workd+iptr(0)-1, ctmp);
 
                   ComplexMatrix tmp(n, 1);
 

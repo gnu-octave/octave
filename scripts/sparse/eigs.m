@@ -760,6 +760,88 @@ endfunction
 %! v1 = v1(:, idx);
 %! assert (abs (v), abs (R \ v1), 1e-12);
 %!testif HAVE_ARPACK, HAVE_UMFPACK
+%! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
+%! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
+%! [v, d] = eigs (A, B, 5, "lm");
+%! for i = 1:5
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
+%! endfor
+%! ddiag = diag (d);
+%! [ddiag, idx] = sort (ddiag);
+%! v = v(:, idx);
+%! R = chol (B);
+%! [v1, d1] = eigs (R' \ A / R, 5, "lm");
+%! d1diag = diag (d1);
+%! [d1diag, idx] = sort (d1diag);
+%! v1 = v1(:, idx);
+%! assert (abs (v), abs (R \ v1), 1e-12);
+%!testif HAVE_ARPACK, HAVE_UMFPACK
+%! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10) -...
+%! 1i * spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
+%! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
+%! [v, d] = eigs (A, B, 5, "lm");
+%! for i = 1:5
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
+%! endfor
+%! ddiag = diag (d);
+%! [ddiag, idx] = sort (ddiag);
+%! v = v(:, idx);
+%! R = chol (B);
+%! [v1, d1] = eigs (R' \ A / R, 5, "lm");
+%! d1diag = diag (d1);
+%! [d1diag, idx] = sort (d1diag);
+%! v1 = v1(:, idx);
+%! assert (abs (v), abs (R \ v1), 1e-12);
+%!testif HAVE_ARPACK, HAVE_UMFPACK
+%! A = toeplitz (sparse (1:10));
+%! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
+%! [v, d] = eigs (A, B, 5, 1);
+%! for i = 1:5
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
+%! endfor
+%! ddiag = diag (d);
+%! [ddiag, idx] = sort (ddiag);
+%! v = v(:, idx);
+%! R = chol (B);
+%! [v1, d1] = eigs (R' \ A / R, 5, 1);
+%! d1diag = diag (d1);
+%! [d1diag, idx] = sort (d1diag);
+%! v1 = v1(:, idx);
+%! assert (abs (v), abs (R \ v1), 1e-12);
+%!testif HAVE_ARPACK, HAVE_UMFPACK
+%! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
+%! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
+%! [v, d] = eigs (A, B, 5, 1);
+%! for i = 1:5
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
+%! endfor
+%! ddiag = diag (d);
+%! [ddiag, idx] = sort (ddiag);
+%! v = v(:, idx);
+%! R = chol (B);
+%! [v1, d1] = eigs (R' \ A / R, 5, 1);
+%! d1diag = diag (d1);
+%! [d1diag, idx] = sort (d1diag);
+%! v1 = v1(:, idx);
+%! assert (abs (v), abs (R \ v1), 1e-12);
+%!testif HAVE_ARPACK, HAVE_UMFPACK
+%! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10) -...
+%! 1i * spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
+%! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
+%! [v, d] = eigs (A, B, 5, 1);
+%! for i = 1:5
+%!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
+%! endfor
+%! ddiag = diag (d);
+%! [ddiag, idx] = sort (ddiag);
+%! v = v(:, idx);
+%! R = chol (B);
+%! [v1, d1] = eigs (R' \ A / R, 5, 1);
+%! d1diag = diag (d1);
+%! [d1diag, idx] = sort (d1diag);
+%! v1 = v1(:, idx);
+%! assert (abs (v), abs (R \ v1), 1e-12);
+%!testif HAVE_ARPACK, HAVE_UMFPACK
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! R = chol (B);

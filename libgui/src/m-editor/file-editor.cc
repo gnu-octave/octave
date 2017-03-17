@@ -2480,7 +2480,7 @@ void
 file_editor_tab_widget::mousePressEvent(QMouseEvent *me)
 {
   if (me->type () != QEvent::MouseButtonDblClick &&
-       me->button() == Qt::MiddleButton)
+       me->button() == Qt::MidButton)
     {
       // Middle click into the tabbar -> close the tab
       for (int i = 0; i < tabBar ()->count (); i++)

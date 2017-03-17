@@ -323,7 +323,7 @@ void
 webinfo_tab_bar::mousePressEvent(QMouseEvent *me)
 {
   if (me->type () != QEvent::MouseButtonDblClick &&
-      me->button() == Qt::MiddleButton &&
+      me->button() == Qt::MidButton &&
       count () > 1)
     {
       // Middle click into the tabbar -> close the tab

@@ -2468,9 +2468,6 @@ file_editor::switch_tab (int direction, bool movetab)
     _tab_widget->setCurrentIndex (new_pos);
 }
 
-#endif
-
-
 //
 // Functions of the the reimplemented tab widget
 //
@@ -2509,3 +2506,4 @@ file_editor_tab_widget::mousePressEvent(QMouseEvent *me)
     }
 }
 
+#endif

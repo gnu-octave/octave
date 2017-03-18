@@ -225,7 +225,7 @@ namespace octave
     std::string buf_str = buf.str ();
 
     int pcre_options
-      = ((options.case_insensitive () ? PCRE_CASELESS : 0)
+      = (  (options.case_insensitive () ? PCRE_CASELESS : 0)
          | (options.dotexceptnewline () ? 0 : PCRE_DOTALL)
          | (options.lineanchors () ? PCRE_MULTILINE : 0)
          | (options.freespacing () ? PCRE_EXTENDED : 0));
@@ -262,7 +262,7 @@ namespace octave
 
     for (int i = 0; i < namecount; i++)
       {
-        // Index of subpattern in first two bytes MSB first of name.
+        // Index of subpattern in first two bytes of name (MSB first).
         // Extract index.
         nidx[i] = (static_cast<int> (nametable[i*nameentrysize])) << 8
                   | static_cast<int> (nametable[i*nameentrysize+1]);
@@ -313,7 +313,7 @@ namespace octave
 
         if (matches == PCRE_ERROR_NOMATCH)
           break;
-        else if (ovector[1] <= ovector[0] && ! options.emptymatch ())
+        else if (ovector[0] >= ovector[1] && ! options.emptymatch ())
           {
             // Zero length match.  Skip to next char.
             idx = ovector[0] + 1;

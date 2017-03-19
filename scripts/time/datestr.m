@@ -194,18 +194,19 @@ function retval = datestr (date, f = [], p = [])
     endif
   endif
 
+  ## automatic format selection
+  if (isempty (f))
+    if (v(:,4:6) == 0)
+      f = 1;
+    elseif (v(:,1:3) == [-1, 12, 31])
+      f = 16;
+    else
+      f = 0;
+    endif
+  endif
+
   retval = "";
   for i = 1 : rows (v)
-
-    if (isempty (f))
-      if (v(i,4:6) == 0)
-        f = 1;
-      elseif (v(i,1:3) == [-1, 12, 31])
-        f = 16;
-      else
-        f = 0;
-      endif
-    endif
 
     if (isnumeric (f))
       df = dateform{f + 1};
@@ -349,6 +350,9 @@ endfunction
 %!assert (datestr ([1944, 6, 6, 6, 30, 0], 0), "06-Jun-1944 06:30:00")
 ## Test fractional millisecond time extension
 %!assert (datestr (testtime, "HH:MM:SS:FFF"), "02:33:17:382")
+## Test automatic format detection over vectors
+%!assert (datestr ([2017 03 16 0 0 0; 2017 03 16 0 0 1]),
+%!        char ("16-Mar-2017 00:00:00", "16-Mar-2017 00:00:01"))
 
 ## Test input validation
 %!error datestr ()

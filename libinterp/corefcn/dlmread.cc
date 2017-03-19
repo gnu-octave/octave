@@ -442,67 +442,75 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       while (pos1 != std::string::npos);
 
       if (i == r1)
-        break;
+        break;  // Stop early if the desired range has been read.
 
       i++;
     }
 
+  // Clip selection indices to actual size of data
   if (r1 >= r)
     r1 = r - 1;
   if (c1 >= c)
     c1 = c - 1;
 
-  // Now take the subset of the matrix if there are any values.
-  if (i > 0 || j > 0)
-    {
-      if (iscmplx)
-        cdata = cdata.extract (0, c0, r1, c1);
-      else
-        rdata = rdata.extract (0, c0, r1, c1);
-    }
-
   if (iscmplx)
-    return ovl (cdata);
+    {
+      if ((i == 0 && j == 0) || (c0 > c1))
+        return ovl (ComplexMatrix (0,0));
+
+      cdata = cdata.extract (0, c0, r1, c1);
+      return ovl (cdata);
+    }
   else
-    return ovl (rdata);
+    {
+      if ((i == 0 && j == 0) || (c0 > c1))
+        return ovl (Matrix (0,0));
+
+      rdata = rdata.extract (0, c0, r1, c1);
+      return ovl (rdata);
+    }
 }
 
 /*
-%!shared file
+%!test
 %! file = tempname ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
-
-%!assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12])
-%!assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8])
-%!assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6])
-%!assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6])
-%!assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6])
-%!assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12])
-%!assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12])
-%!error (dlmread (file, ",", [0 1]))
+%! unwind_protect
+%!   assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12]);
+%!   assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6]);
+%!   assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6]);
+%!   assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6]);
+%!   assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!   assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!   assert (dlmread (file, ",", 10, 0), []);
+%!   assert (dlmread (file, ",", 0, 10), []);
+%!   fail ('dlmread (file, ",", [0 1])', "error parsing RANGE");
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
 
 %!test
-%! unlink (file);
-
-%!shared file
 %! file = tempname ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
+%! unwind_protect
+%!   assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8]);
+%!   assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!   assert (dlmread (file, ",", 10, 0), []);
+%!   assert (dlmread (file, ",", 0, 10), []);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
 
-%!assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8])
-%!assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
-%!error (dlmread (file, ",", [0 1]))
-
-%!test
-%! unlink (file);
 */

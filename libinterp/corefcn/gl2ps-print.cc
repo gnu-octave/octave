@@ -312,12 +312,12 @@ namespace octave
 
         // Copy temporary file to pipe
         std::fseek (tmpf, 0, SEEK_SET);
-        char str[256];
+        char str[8192];  // 8 kB is a common kernel buffersize
         size_t nread, nwrite;
         nread = 1;
         while (! feof (tmpf) && nread)
           {
-            nread = std::fread (str, 1, 256, tmpf);
+            nread = std::fread (str, 1, 8192, tmpf);
             if (nread)
               {
                 nwrite = std::fwrite (str, 1, nread, fp);

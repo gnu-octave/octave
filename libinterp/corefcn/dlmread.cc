@@ -405,7 +405,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
             {
               // Use resize_and_fill for the case of unequal length rows.
               // Keep rmax a power of 2.
-              rmax = 2 * std::max (r-1, static_cast<octave_idx_type> (1));
+              rmax = std::max (2*(r-1), rmax);
               cmax = std::max (c, cmax);
               if (iscmplx)
                 cdata.resize (rmax, cmax, empty_value);

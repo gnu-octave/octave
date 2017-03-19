@@ -39,18 +39,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"
 
-// subclassed QTabWidget for usable tab-bar and reimplemented mouse event
-class file_editor_tab_widget : public QTabWidget
+//
+// subclassed QTabBar for usable tab-bar and reimplemented mouse event
+//
+class file_editor_tab_bar : public QTabBar
 {
   Q_OBJECT
 
 public:
 
-  file_editor_tab_widget (QWidget *p) : QTabWidget (p) { }
-
-  ~file_editor_tab_widget () { }
-
-  QTabBar* tabBar () const { return (QTabWidget::tabBar ()); }
+  file_editor_tab_bar (QWidget *p);
+  ~file_editor_tab_bar ();
 
 signals:
 
@@ -59,9 +58,30 @@ signals:
 protected:
 
   void mousePressEvent(QMouseEvent *event);
+
 };
 
+
+//
+// subclassed QTabWidget for using custom tabbar
+//
+class file_editor_tab_widget : public QTabWidget
+{
+  Q_OBJECT
+
+public:
+
+  file_editor_tab_widget (QWidget *p);
+  ~file_editor_tab_widget ();
+
+  QTabBar* tabBar () const;
+
+};
+
+
+//
 // the class for the file editor
+//
 class file_editor : public file_editor_interface
 {
   Q_OBJECT

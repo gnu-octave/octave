@@ -1570,8 +1570,6 @@ file_editor::construct (void)
 #if defined (HAVE_QTABWIDGET_SETMOVABLE)
   _tab_widget->setMovable (true);
 #endif
-  connect (_tab_widget, SIGNAL (close_current_tab_signal (bool)),
-           this, SLOT (request_close_file (bool)));
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -2468,22 +2466,32 @@ file_editor::switch_tab (int direction, bool movetab)
     _tab_widget->setCurrentIndex (new_pos);
 }
 
+
 //
-// Functions of the the reimplemented tab widget
+// Functions of the the reimplemented tab bar
 //
+
+file_editor_tab_bar::file_editor_tab_bar (QWidget *p)
+  : QTabBar (p)
+{ }
+
+file_editor_tab_bar::~file_editor_tab_bar ()
+{ }
 
 // Reimplement mouse event for filtering out the desired mouse clicks
 void
-file_editor_tab_widget::mousePressEvent(QMouseEvent *me)
+file_editor_tab_bar::mousePressEvent (QMouseEvent *me)
 {
-  if (me->type () != QEvent::MouseButtonDblClick &&
-       me->button() == Qt::MidButton)
+  if ((me->type () == QEvent::MouseButtonDblClick &&
+       me->button() == Qt::LeftButton) ||
+      (me->type () != QEvent::MouseButtonDblClick &&
+       me->button() == Qt::MidButton))
     {
       // Middle click into the tabbar -> close the tab
-      for (int i = 0; i < tabBar ()->count (); i++)
+      for (int i = 0; i < count (); i++)
         {
           QPoint clickPos = mapToGlobal (me->pos ());
-          if (tabBar ()->tabRect (i).contains (tabBar ()->mapFromGlobal (clickPos)))
+          if (tabRect (i).contains (mapFromGlobal (clickPos)))
             {
               int idx = currentIndex ();
               // Make the clicked tab the current one and close it
@@ -2502,8 +2510,36 @@ file_editor_tab_widget::mousePressEvent(QMouseEvent *me)
   else
     {
       // regular handling of the mouse event
-      QTabWidget::mousePressEvent (me);
+      QTabBar::mousePressEvent (me);
     }
 }
+
+
+
+//
+// Functions of the the reimplemented tab widget
+//
+
+file_editor_tab_widget::file_editor_tab_widget (QWidget *p)
+  : QTabWidget (p)
+{
+  file_editor_tab_bar* bar;
+  bar = new file_editor_tab_bar (this);
+
+  connect (bar, SIGNAL (close_current_tab_signal (bool)),
+           p->parent (), SLOT (request_close_file (bool)));
+
+  this->setTabBar(bar);
+}
+
+file_editor_tab_widget::~file_editor_tab_widget ()
+{ }
+
+QTabBar*
+file_editor_tab_widget::tabBar () const
+{
+  return (QTabWidget::tabBar ());
+}
+
 
 #endif

@@ -179,6 +179,10 @@ function h = errorbar (varargin)
     hax = newplot (hax);
 
     htmp = __errplot__ ("errorbar", hax, varargin{:});
+
+    if (! ishold ())
+      set (hax, "box", "on");
+    endif
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

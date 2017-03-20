@@ -426,28 +426,35 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                   else
                     rdata(i,j++) = x;
                 }
-              else if (std::toupper (tmp_stream.peek ()) == 'I')
-                {
-                  // This is to allow pure imaginary numbers.
-                  if (iscmplx)
-                    cdata(i,j++) = x;
-                  else
-                    rdata(i,j++) = x;
-                }
               else
                 {
-                  double y = octave_read_double (tmp_stream);
-
-                  if (! iscmplx && y != 0.)
+                  int next_char = std::tolower (tmp_stream.peek ());
+                  if (next_char == 'i' || next_char == 'j')
                     {
-                      iscmplx = true;
-                      cdata = ComplexMatrix (rdata);
-                    }
+                      // Process pure imaginary numbers.
+                      if (! iscmplx)
+                        {
+                          iscmplx = true;
+                          cdata = ComplexMatrix (rdata);
+                        }
 
-                  if (iscmplx)
-                    cdata(i,j++) = Complex (x, y);
+                      cdata(i,j++) = Complex (0, x);
+                    }
                   else
-                    rdata(i,j++) = x;
+                    {
+                      double y = octave_read_double (tmp_stream);
+
+                      if (! iscmplx && y != 0.)
+                        {
+                          iscmplx = true;
+                          cdata = ComplexMatrix (rdata);
+                        }
+
+                      if (iscmplx)
+                        cdata(i,j++) = Complex (x, y);
+                      else
+                        rdata(i,j++) = x;
+                    }
                 }
             }
           else if (iscmplx)
@@ -545,6 +552,24 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!                                  0,  1, 2, 0
 %!                                 11, 22, 0, 0
 %!                                  0,  0, 0, 0]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+%!test <50589>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1;2;3\n");
+%!   fwrite (fid, "1i;2I;3j;4J\n");
+%!   fwrite (fid, "4;5;6\n");
+%!   fwrite (fid, "-4i;+5I;-6j;+7J\n");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 2, 3, 0; 1i, 2i, 3i, 4i;
+%!                            4, 5, 6, 0; -4i, 5i, -6i, 7i]);
+%!   assert (dlmread (file, "", [0 0 0 3]), [1, 2, 3]);
+%!   assert (dlmread (file, "", [1 0 1 3]), [1i, 2i, 3i, 4i]);
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect

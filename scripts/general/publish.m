@@ -855,8 +855,13 @@ function str = format_text (str, formatter)
           ## Links "<octave:Function TEXT>"
           idx = strfind (cstr{j}, " ");
           url = cstr{j};
-          url = ["https://www.gnu.org/software/octave/doc/interpreter/", ...
-                 "XREF", texinfo_esc(url(9:idx-1)), ".html"];
+          url = texinfo_esc(url(9:idx-1));
+          v = version ();
+          if (v(end) == '+')
+            v = "interpreter";
+          endif
+          url = sprintf ( ...
+            "https://www.gnu.org/software/octave/doc/%s/XREF%s.html", v, url);
           txt = cstr{j};
           txt = format_text (txt(idx+1:end-1), formatter);
           cstr{j} = formatter ("link", url, txt);

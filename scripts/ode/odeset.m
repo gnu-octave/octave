@@ -60,7 +60,7 @@
 ##
 ## @item BDF
 ## Use BDF formulas in implicit multistep methods.
-## @strong{Note:} This option is not yet implemented.
+## @emph{Note}: This option is not yet implemented.
 ##
 ## @item Events
 ## Event function. An event function must have the form

@@ -27,7 +27,7 @@ if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
 endif
 
 ## For Matlab compatibility, run startup.m when starting Octave.
-if (exist ("startup", "file"))
+if (exist ("startup.m", "file") == 2)
   startup;  # No arg list here since startup might be a script.
 endif
 

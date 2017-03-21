@@ -50,6 +50,7 @@ public:
 
   file_editor_tab_bar (QWidget *p);
   ~file_editor_tab_bar ();
+  void create_context_menu (QList<QAction*> *actions);
 
 signals:
 
@@ -59,6 +60,9 @@ protected:
 
   void mousePressEvent(QMouseEvent *event);
 
+private:
+
+  QMenu *_context_menu;
 };
 
 

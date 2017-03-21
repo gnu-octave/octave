@@ -35,12 +35,17 @@ public:
 
   documentation_dock_widget (QWidget *parent = 0);
 
+public slots:
+
+  void notice_settings (const QSettings *settings);
+
 protected slots:
   void copyClipboard ();
   void pasteClipboard ();
   void selectAll ();
 
   void showDoc (const QString & name);
+
 private:
 
   webinfo *_webinfo;

@@ -35,7 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QToolButton>
+#include <QMenu>
+#include <QAction>
 #include <QMouseEvent>
+#include <QSettings>
 
 // subclassed QTabWidget for usable tab-bar and reimplemented mouse event
 class webinfo_tab_bar : public QTabBar
@@ -44,27 +47,38 @@ class webinfo_tab_bar : public QTabBar
 
 public:
 
-  webinfo_tab_bar (QWidget *p) : QTabBar (p) { }
+  webinfo_tab_bar (QWidget *p);
+  ~webinfo_tab_bar ();
+  QMenu *get_context_menu () { return _context_menu; }
 
-  ~webinfo_tab_bar () { }
+public slots:
 
 protected:
 
   void mousePressEvent(QMouseEvent *event);
+
+private:
+
+  QMenu *_context_menu;
+
 };
+
 
 // The webinfo class
 class webinfo : public QWidget
 {
   Q_OBJECT
+
 public:
+
   webinfo (QWidget *parent = 0);
   bool set_info_path (const QString& info_path);
   void load_node (const QString& node_name);
-
   void load_ref (const QString &ref_name);
+  void notice_settings (const QSettings *settings);
 
 public slots:
+
   void link_clicked (const QUrl& link);
   void current_tab_changed (int index);
   void close_tab (int index);
@@ -76,7 +90,15 @@ public slots:
   void pasteClipboard ();
   void selectAll ();
 
+  void request_close_tab (bool);
+  void request_close_other_tabs (bool);
+
 private:
+
+  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                       const char *member);
+  void tab_state_changed (void);
+
   QTextBrowser        *_text_browser;
   webinfo_tab_bar     *_tab_bar;
   QStackedWidget      *_stacked_widget;
@@ -89,6 +111,9 @@ private:
   QFont               _font_web;
 
   QTextBrowser *addNewTab (const QString& name);
+  QAction *_close_action;
+  QAction *_close_others_action;
+
 };
 
 #endif

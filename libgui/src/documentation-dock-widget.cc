@@ -36,6 +36,7 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
 
   _webinfo = new webinfo (this);
   setWidget (_webinfo);
+  setFocusProxy (_webinfo);
 
   connect (p, SIGNAL (show_doc_signal (const QString &)),
            this, SLOT (showDoc (const QString &)));
@@ -67,4 +68,10 @@ documentation_dock_widget::showDoc (const QString &name)
 
   _webinfo->load_ref (name);
 
+}
+
+void
+documentation_dock_widget::notice_settings (const QSettings *settings)
+{
+  _webinfo->notice_settings (settings);
 }

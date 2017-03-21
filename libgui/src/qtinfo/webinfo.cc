@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "defaults.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 
 
 webinfo::webinfo (QWidget *p)
@@ -87,6 +88,15 @@ webinfo::webinfo (QWidget *p)
   _search_check_box = new QCheckBox (tr ("Global search"));
   hbox_layout->addWidget (_search_check_box);
 
+  _close_action = add_action (_tab_bar->get_context_menu (),
+        resource_manager::icon ("window-close",false), tr ("&Close"),
+        SLOT (request_close_tab (bool)));
+  _close_others_action = add_action (_tab_bar->get_context_menu (),
+        resource_manager::icon ("window-close",false), tr ("Close &Other Tabs"),
+        SLOT (request_close_other_tabs (bool)));
+  _close_action->setEnabled (false);
+  _close_others_action->setEnabled (false);
+
   connect (_tab_bar, SIGNAL (tabCloseRequested (int)), this,
            SLOT (close_tab (int)));
   connect (_tab_bar, SIGNAL (currentChanged (int)), this,
@@ -110,6 +120,47 @@ webinfo::webinfo (QWidget *p)
           arg (QString::fromStdString (Vinfo_file)));
       msg->setHtml (msg_text);
     }
+}
+
+// Add an action to a menu or the widget itself
+QAction*
+webinfo::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                         const char *member)
+{
+  QAction *a;
+
+  if (menu)
+    a = menu->addAction (icon, text, this, member);
+  else
+    {
+      a = new QAction (this);
+      connect (a, SIGNAL (triggered ()), this, member);
+    }
+
+  addAction (a);  // important for shortcut context
+  a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+
+  return a;
+}
+
+// Slot for the close tab action
+void
+webinfo::request_close_tab (bool)
+{
+  close_tab (_tab_bar->currentIndex ());
+}
+
+// Slot for the close other tabs action
+void
+webinfo::request_close_other_tabs (bool)
+{
+  int current = _tab_bar->currentIndex ();
+
+  for (int index = _tab_bar->count ()-1; index >= 0; index--)
+  {
+    if (current != index)
+      close_tab (index);
+  }
 }
 
 bool
@@ -163,6 +214,14 @@ webinfo::link_clicked (const QUrl & link)
 }
 
 void
+webinfo::tab_state_changed ()
+{
+  _close_action->setEnabled (_tab_bar->count () > 1);
+  _close_others_action->setEnabled (_tab_bar->count () > 1);
+  setFocusProxy (_stacked_widget->currentWidget ());
+}
+
+void
 webinfo::current_tab_changed (int index)
 {
   QVariant tab_data = _tab_bar->tabData (index);
@@ -174,6 +233,8 @@ webinfo::current_tab_changed (int index)
     {
       _text_browser->setFont (_font_web);
     }
+
+  tab_state_changed ();
 }
 
 QTextBrowser *
@@ -200,6 +261,8 @@ webinfo::addNewTab (const QString& name)
   connect (_tab_bar, SIGNAL (currentChanged (int)), this,
            SLOT (current_tab_changed (int)));
 
+  tab_state_changed ();
+
   if (_text_browser->font () != _font_web)
     {
       _text_browser->setFont (_font_web);
@@ -219,6 +282,8 @@ webinfo::close_tab (int index)
 
       _tab_bar->removeTab (index);
     }
+
+  tab_state_changed ();
 }
 
 void
@@ -313,30 +378,97 @@ webinfo::pasteClipboard ()
     }
 }
 
+void
+webinfo::notice_settings (const QSettings* settings)
+{
+  shortcut_manager::set_shortcut (_close_action, "editor_file:close");
+  shortcut_manager::set_shortcut (_close_others_action, "editor_file:close_other");
+}
 
 //
 // Functions of the the reimplemented tab bar
 //
 
+webinfo_tab_bar::webinfo_tab_bar (QWidget *p) : QTabBar (p)
+{
+  // prepare the context menu of the tab bar
+  _context_menu = new QMenu (this);
+}
+
+webinfo_tab_bar::~webinfo_tab_bar ()
+{
+  delete _context_menu;
+}
+
 // Reimplement mouse event for filtering out the desired mouse clicks
 void
 webinfo_tab_bar::mousePressEvent (QMouseEvent *me)
 {
-  if (count () > 1 &&
-      ((me->type () == QEvent::MouseButtonDblClick &&
-        me->button() == Qt::LeftButton) ||
-       (me->type () != QEvent::MouseButtonDblClick &&
-        me->button() == Qt::MidButton)))
+  QPoint click_pos;
+  int clicked_idx = -1;
+
+  // detect the tab where the click occured
+  for (int i = 0; i < count (); i++)
     {
-      // Middle click into the tabbar -> close the tab
-      for (int i = 0; i < count (); i++)
+      click_pos = mapToGlobal (me->pos ());
+      if (tabRect (i).contains (mapFromGlobal (click_pos)))
         {
-          QPoint clickPos = mapToGlobal (me->pos ());
-          if (tabRect (i).contains (mapFromGlobal (clickPos)))
+          clicked_idx = i;
+          break;
+        }
+    }
+
+  // If a tab was clicked
+  if (clicked_idx >= 0)
+    {
+      int current_idx = currentIndex ();
+      // detect the mouse click
+      if ((me->type () == QEvent::MouseButtonDblClick &&
+           me->button() == Qt::LeftButton) ||
+          (me->type () != QEvent::MouseButtonDblClick &&
+           me->button() == Qt::MidButton))
+        {
+          // Middle click or double click -> close the tab
+          // Make the clicked tab the current one and close it
+          emit tabCloseRequested (clicked_idx);
+          // Was the closed tab before or after the previously current tab?
+          // According to the result, use previous index or reduce it by one
+          if (current_idx - clicked_idx > 0)
+            setCurrentIndex (current_idx - 1);
+          else if (current_idx - clicked_idx < 0)
+            setCurrentIndex (current_idx);
+        }
+      else if (me->type () != QEvent::MouseButtonDblClick &&
+               me->button() == Qt::RightButton)
+        {
+          setCurrentIndex (clicked_idx);
+          if (! _context_menu->exec (click_pos))
             {
-              emit tabCloseRequested (i);
-              break;
+              // No action selected, back to previous tab
+              setCurrentIndex (current_idx);
             }
+          else
+            {
+              // Was the possibly only closed tab before or after the
+              // previously current tab? According to the result, use previous
+              // index or reduce it by one. Also prevent using a too large
+              // if other or all files were closed.
+              int new_idx = count () - 1;
+              if (new_idx > 0)
+                {
+                  if (current_idx - clicked_idx > 0)
+                    new_idx = current_idx - 1;
+                  else if (current_idx - clicked_idx < 0)
+                    new_idx = current_idx;
+                }
+              if (new_idx >= 0)
+                setCurrentIndex (new_idx);
+            }
+        }
+      else
+        {
+          // regular handling of the mouse event
+          QTabBar::mousePressEvent (me);
         }
     }
   else

@@ -193,13 +193,13 @@ function [q, err] = quadgk (f, a, b, varargin)
   if (isempty (abstol))
     abstol = ifelse (issingle, 1e-5, 1e-10);
   elseif (! isscalar (abstol) || abstol < 0)
-    error ("quadv: ABSTOL must be a scalar >=0");
+    error ("quadgk: ABSTOL must be a scalar >=0");
   endif
 
   if (isempty (reltol))
     reltol = ifelse (issingle, 1e-4, 1e-6);
   elseif (! isscalar (reltol) || reltol < 0)
-    error ("quadv: RELTOL must be a scalar >=0");
+    error ("quadgk: RELTOL must be a scalar >=0");
   endif
 
   ## Convert function given as a string to a function handle

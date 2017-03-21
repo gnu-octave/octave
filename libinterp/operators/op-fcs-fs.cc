@@ -165,4 +165,7 @@ install_fcs_fs_ops (void)
                       octave_float_complex_matrix);
   INSTALL_ASSIGNCONV (octave_complex, octave_float_scalar,
                       octave_complex_matrix);
+
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_scalar,
+                      octave_float_complex_matrix);
 }

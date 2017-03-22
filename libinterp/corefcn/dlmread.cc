@@ -42,7 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 static const octave_idx_type idx_max =
-  std::numeric_limits<octave_idx_type>::max ();
+  std::numeric_limits<octave_idx_type>::max () - 1;
+
+static const double idx_max_dbl = double (idx_max);
 
 static bool
 read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)
@@ -122,8 +124,8 @@ parse_range_spec (const octave_value& range_spec,
                         stat = false;
                     }
 
-                  rup = idx_max - 1;
-                  cup = idx_max - 1;
+                  rup = idx_max;
+                  cup = idx_max;
                 }
               else
                 {
@@ -143,12 +145,12 @@ parse_range_spec (const octave_value& range_spec,
     }
   else if (range_spec.is_real_matrix () && range_spec.numel () == 4)
     {
-      ColumnVector range(range_spec.vector_value ());
-      // double --> unsigned int
-      rlo = static_cast<octave_idx_type> (range(0));
-      clo = static_cast<octave_idx_type> (range(1));
-      rup = static_cast<octave_idx_type> (range(2));
-      cup = static_cast<octave_idx_type> (range(3));
+      ColumnVector range (range_spec.vector_value ());
+      // double --> unsigned int avoiding any overflow
+      rlo = static_cast<octave_idx_type> (std::min (range(0), idx_max_dbl));
+      clo = static_cast<octave_idx_type> (std::min (range(1), idx_max_dbl));
+      rup = static_cast<octave_idx_type> (std::min (range(2), idx_max_dbl));
+      cup = static_cast<octave_idx_type> (std::min (range(3), idx_max_dbl));
     }
   else
     stat = false;
@@ -249,8 +251,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   // Take a subset if a range was given.
   octave_idx_type r0 = 0;
   octave_idx_type c0 = 0;
-  octave_idx_type r1 = idx_max-1;
-  octave_idx_type c1 = idx_max-1;
+  octave_idx_type r1 = idx_max;
+  octave_idx_type c1 = idx_max;
   if (nargin > 2)
     {
       if (nargin == 3)
@@ -266,6 +268,10 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       if (r0 < 0 || c0 < 0)
         error ("dlmread: left & top must be positive");
+
+      // Short-circuit and return if range is empty 
+      if (r1 < r0 || c1 < c0)
+        return ovl (Matrix (0,0));
     }
 
   octave_idx_type i = 0;
@@ -285,10 +291,15 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
   std::string line;
 
-  // Skip the r0 leading lines (header)
-  for (octave_idx_type m = 0; m < r0; m++)
-    getline (*input, line);
-  r1 -= r0;
+  // Skip the r0 leading lines
+  octave_idx_type rcnt = r0;
+  while (rcnt > 0 && getline (*input, line))
+    rcnt--;
+
+  if (rcnt > 0)
+    return ovl (Matrix (0,0));  // Not enough lines in file to satisfy RANGE
+  else
+    r1 -= r0;
 
   std::istringstream tmp_stream;
 

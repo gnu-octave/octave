@@ -196,7 +196,7 @@ set_application_id (void)
                                            "SetCurrentProcessExplicitAppUserModelID"));
 
       if (pfnSetCurrentProcessExplicitAppUserModelID)
-        pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave");
+        pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave." VERSION);
 
       FreeLibrary (hShell);
     }

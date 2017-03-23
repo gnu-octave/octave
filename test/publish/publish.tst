@@ -34,11 +34,14 @@
 %!   set (0, "defaultfigurevisible", "off");
 %!
 %!   scripts = dir ("test_script*.m");
+%!   tmpDir = tempname ();
+%!   mkdir (tmpDir);
+%!   opts.outputDir = tmpDir;
 %!   for fname = {scripts.name}
-%!     publish (fname{1});
+%!     publish (fname{1}, opts);
 %!   endfor
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir ("html", "s");
+%!   rmdir (tmpDir, "s");
 %! unwind_protect_cleanup
 %!   set (0, "defaultfigurevisible", visibility);
 %!   graphics_toolkit (toolkit);
@@ -60,12 +63,16 @@
 %!     end_try_catch
 %!   endif
 %!   set (0, "defaultfigurevisible", "off");
-%!
-%!   publish ("test_script.m");
+%!   ## Create temporary directory
+%!   tmpDir = tempname ();
+%!   mkdir (tmpDir);
+%!   opts.outputDir = tmpDir;
+%!   ## Call publish and grabcode
+%!   publish ("test_script.m", opts);
 %!   str1 = fileread ("test_script.m");
-%!   str2 = grabcode ("html/test_script.html");
+%!   str2 = grabcode (fullfile (tmpDir, "test_script.html"));
 %!   confirm_recursive_rmdir (false, "local");
-%!   rmdir ("html", "s");
+%!   rmdir (tmpDir, "s");
 %!   ## Canonicalize strings
 %!   str1 = strjoin (deblank (strsplit (str1, "\n")), "\n");
 %!   str2 = strjoin (deblank (strsplit (str2, "\n")), "\n");

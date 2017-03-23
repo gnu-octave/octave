@@ -22,9 +22,11 @@
 ## Convert UTF-8 string @var{utf8_str} to byte stream using @var{codepage}.
 ##
 ## The character vector @var{utf8_str} is converted to a byte stream
-## @var{native_bytes} using the codepage given by @var{codepage}.
-## The string @var{codepage} must be an identifier of a valid codepage.
-## Examples for valid codepages are "ISO 8859-1", "Latin-1" or "Shift-JIS".
+## @var{native_bytes} using the code page given by @var{codepage}.
+## The string @var{codepage} must be an identifier of a valid code page.
+## Examples for valid code pages are "ISO-8859-1", "Shift-JIS", or "UTF-16".
+## For a list of supported code pages, see:
+## http://www.gnu.org/software/libiconv/
 ## If @var{codepage} is omitted or empty, the system default codepage is used.
 ##
 ## If any of the characters cannot be mapped into the codepage @var{codepage},
@@ -56,12 +58,12 @@ function native_bytes = unicode2native (utf8_str, codepage = "")
 
 endfunction
 
-%!assert (unicode2native ("ЄЅІЇЈЉЊ", "ISO 8859-5"), uint8 (164:170));
-%!assert (unicode2native (["ЄЅІ" 0 "ЇЈЉЊ"], "ISO 8859-5"), uint8 ([164:166 0 167:170]));
+%!assert (unicode2native ("ЄЅІЇЈЉЊ", "ISO-8859-5"), uint8 (164:170));
+%!assert (unicode2native (["ЄЅІ" 0 "ЇЈЉЊ"], "ISO-8859-5"), uint8 ([164:166 0 167:170]));
 
 %!error <UTF8_STR must be a character vector> unicode2native (['ab'; 'cd'])
 %!error <UTF8_STR must be a character vector> unicode2native ({1 2 3 4})
 %!error <CODEPAGE must be a string> unicode2native ('ЄЅІЇЈЉЊ', 123)
 %!error <converting from UTF-8 to codepage 'foo'> unicode2native ('a', 'foo')
 %!error <Invalid call> unicode2native ()
-%!error <Invalid call> unicode2native ('a', 'Latin-1', 'test')
+%!error <Invalid call> unicode2native ('a', 'ISO-8859-1', 'test')

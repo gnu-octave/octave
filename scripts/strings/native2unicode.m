@@ -23,10 +23,12 @@
 ##
 ## The numbers in the vector @var{native_bytes} are rounded and clipped to
 ## integers between 0 and 255.  This byte stream is then mapped into the
-## codepage given by the string @var{codepage} and returned in the string
+## code page given by the string @var{codepage} and returned in the string
 ## @var{utf8_str}.  Octave uses UTF-8 as its internal encoding.
-## The string @var{codepage} must be an identifier of a valid codepage.
-## Examples for valid codepages are "ISO 8859-1", "Latin-1" or "Shift-JIS".
+## The string @var{codepage} must be an identifier of a valid code page.
+## Examples for valid code pages are "ISO-8859-1", "Shift-JIS", or "UTF-16".
+## For a list of supported code pages, see:
+## http://www.gnu.org/software/libiconv/
 ## If @var{codepage} is omitted or empty, the system default codepage is used.
 ##
 ## If @var{native_bytes} is a string vector, it is returned as is.
@@ -70,12 +72,12 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
 endfunction
 
 ## "ЄЅІЇЈЉЊ"
-%!assert (double (native2unicode (164:170, 'ISO 8859-5')),
+%!assert (double (native2unicode (164:170, 'ISO-8859-5')),
 %!        [208 132 208 133 208 134 208 135 208 136 208 137 208 138]);
-%!assert (double (native2unicode ([164:166 0 167:170], 'ISO 8859-5')),
+## ["ЄЅІ" 0 "ЇЈЉЊ"]
+%!assert (double (native2unicode ([164:166 0 167:170], 'ISO-8859-5')),
 %!        [208 132 208 133 208 134 0 208 135 208 136 208 137 208 138]);
 
-## ["ЄЅІ" 0 "ЇЈЉЊ"]
 %!assert (native2unicode ("foobar"), "foobar");
 %!assert (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
 %!        [0 0 120 0 0 123 0 0]);
@@ -85,4 +87,4 @@ endfunction
 %!error <CODEPAGE must be a string> native2unicode (164:170, 123)
 %!error <converting from codepage 'foo' to UTF-8> native2unicode (234, 'foo')
 %!error <Invalid call> native2unicode ()
-%!error <Invalid call> native2unicode (1, 'Latin-1', 'test')
+%!error <Invalid call> native2unicode (1, 'ISO-8859-1', 'test')

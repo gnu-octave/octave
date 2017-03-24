@@ -626,6 +626,10 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       resid = ColumnVector (octave_rand::vector (n));
       octave_rand::distribution (rand_dist);
     }
+  else if (m.cols () != resid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -637,8 +641,8 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k < 1 || k > n - 2)
@@ -647,9 +651,9 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
        " (must be 0 < k < n-1-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -825,7 +829,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   if (info2 == 0)
     {
       F77_INT k2 = k / 2;
-      if (typ != "SM" && typ != "BE")
+      if (typ != "SM" && typ != "BE" && ! (typ == "SA" && rvec))
         {
           for (F77_INT i = 0; i < k2; i++)
             {
@@ -837,7 +841,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
       if (rvec)
         {
-          if (typ != "SM" && typ != "BE")
+          if (typ != "SM" && typ != "BE" && typ != "SA")
             {
               OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
@@ -907,6 +911,10 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       resid = ColumnVector (octave_rand::vector (n));
       octave_rand::distribution (rand_dist);
     }
+  else if (m.cols () != resid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -924,13 +932,13 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -1066,25 +1074,19 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
             }
           else
             {
-              if (ido == 2)
-                {
-                  for (F77_INT i = 0; i < n; i++)
-                    workd[iptr(0) + i - 1] = workd[iptr(1) + i - 1];
-                }
-              else
-                {
-                  double *ip2 = workd+iptr(0)-1;
-                  Matrix tmp(n, 1);
+              // ido cannot be 2 for non-generalized problems
+              // see dsaupd2
+              double *ip2 = workd+iptr(0)-1;
+              Matrix tmp(n, 1);
 
-                  for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]];
+              for (F77_INT i = 0; i < n; i++)
+                tmp(i,0) = ip2[P[i]];
 
-                  lusolve (L, U, tmp);
+              lusolve (L, U, tmp);
 
-                  ip2 = workd+iptr(1)-1;
-                  for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
-                }
+              ip2 = workd+iptr(1)-1;
+              for (F77_INT i = 0; i < n; i++)
+                ip2[Q[i]] = tmp(i,0);
             }
         }
       else
@@ -1191,6 +1193,10 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       resid = ColumnVector (octave_rand::vector (n));
       octave_rand::distribution (rand_dist);
     }
+  else if (n != resid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -1202,8 +1208,8 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -1212,9 +1218,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (! have_sigma)
     {
@@ -1444,6 +1450,10 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       resid = ColumnVector (octave_rand::vector (n));
       octave_rand::distribution (rand_dist);
     }
+  else if (m.cols () != resid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -1455,8 +1465,8 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -1465,9 +1475,9 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -1550,12 +1560,15 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
+      // on exit, ip(4) <= k + 1 is the number of converged eigenvalues
+      // see dnaupd2
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
          F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, tmp_info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+       // k is not changed
 
       info = tmp_info;
 
@@ -1639,65 +1652,45 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   for (F77_INT i = 0; i < k+1; i++)
     dr[i] = di[i] = 0.;
 
+  F77_INT k0 = k; // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
     (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
      sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
+  // on exit, if (and only if) rvec == true, k may have been increased by one
+  // and be equal to ip(4), see dngets
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
       ("eigs: unrecoverable exception encountered in dneupd");
 
-  eig_val.resize (k+1);
+  if (! rvec && ip(4) > k)
+    k = ip(4);
+
+  eig_val.resize (k);
   Complex *d = eig_val.fortran_vec ();
 
   if (info2 == 0)
     {
-      F77_INT jj = 0;
-      for (F77_INT i = 0; i < k+1; i++)
-        {
-          if (dr[i] == 0.0 && di[i] == 0.0 && jj == 0)
-            jj++;
-          else
-            d[i-jj] = Complex (dr[i], di[i]);
-        }
-      if (jj == 0 && ! rvec)
-        for (F77_INT i = 0; i < k; i++)
-          d[i] = d[i+1];
+      for (F77_INT i = 0; i < k; i++)
+        d[i] = Complex (dr[i], di[i]);
 
-      F77_INT k2 = k / 2;
-      for (F77_INT i = 0; i < k2; i++)
+      if (! rvec)
         {
-          Complex dtmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = dtmp;
-        }
-      eig_val.resize (k);
-
-      if (rvec)
-        {
-          OCTAVE_LOCAL_BUFFER (double, dtmp, n);
-
+          // ARPACK seems to give the eigenvalues in reversed order
+          F77_INT k2 = k / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
-              F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
-
-              if (off1 == off2)
-                continue;
-
-              for (F77_INT j = 0; j < n; j++)
-                dtmp[j] = z[off1 + j];
-
-              for (F77_INT j = 0; j < n; j++)
-                z[off1 + j] = z[off2 + j];
-
-              for (F77_INT j = 0; j < n; j++)
-                z[off2 + j] = dtmp[j];
+              Complex dtmp = d[i];
+              d[i] = d[k - i - 1];
+              d[k - i - 1] = dtmp;
             }
-
+        }
+      else
+        {
+          // When eigenvectors required, ARPACK seems to give the right order
           eig_vec.resize (n, k);
           F77_INT i = 0;
           while (i < k)
@@ -1727,6 +1720,11 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
           if (note3)
             eig_vec = utsolve (bt, permB, eig_vec);
+        }
+      if (k0 < k)
+        {
+          eig_val.resize (k0);
+          eig_vec.resize (n, k0);
         }
     }
   else
@@ -1774,6 +1772,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       resid = ColumnVector (octave_rand::vector (n));
       octave_rand::distribution (rand_dist);
     }
+  else if (m.cols () != resid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -1785,8 +1787,8 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -1795,9 +1797,9 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -1860,12 +1862,15 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
+      // on exit, ip(4) <= k + 1 is the number of converged eigenvalues
+      // see dnaupd2
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
          F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, tmp_info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+      // k is not changed
 
       info = tmp_info;
 
@@ -1933,32 +1938,26 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             }
           else
             {
-              if (ido == 2)
-                {
-                  for (F77_INT i = 0; i < n; i++)
-                    workd[iptr(0) + i - 1] = workd[iptr(1) + i - 1];
-                }
-              else
-                {
-                  double *ip2 = workd+iptr(0)-1;
-                  Matrix tmp(n, 1);
+              // ido cannot be 2 for non-generalized problems
+              // see dnaupd2
+              double *ip2 = workd+iptr(0)-1;
+              Matrix tmp(n, 1);
 
-                  for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]];
+              for (F77_INT i = 0; i < n; i++)
+                tmp(i,0) = ip2[P[i]];
 
-                  lusolve (L, U, tmp);
+              lusolve (L, U, tmp);
 
-                  ip2 = workd+iptr(1)-1;
-                  for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
-                }
+              ip2 = workd+iptr(1)-1;
+              for (F77_INT i = 0; i < n; i++)
+                ip2[Q[i]] = tmp(i,0);
             }
         }
       else
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error %d in dnaupd", info);
 
           break;
         }
@@ -1993,65 +1992,45 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   for (F77_INT i = 0; i < k+1; i++)
     dr[i] = di[i] = 0.;
 
+  F77_INT k0 = k; // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
     (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
      sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
+  // on exit, if (and only if) rvec == true, k may have been increased by one
+  // and be equal to ip(4), see dngets
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
       ("eigs: unrecoverable exception encountered in dneupd");
 
-  eig_val.resize (k+1);
+  if (! rvec && ip(4) > k)
+    k = ip(4);
+
+  eig_val.resize (k);
   Complex *d = eig_val.fortran_vec ();
 
   if (info2 == 0)
     {
-      F77_INT jj = 0;
-      for (F77_INT i = 0; i < k+1; i++)
-        {
-          if (dr[i] == 0.0 && di[i] == 0.0 && jj == 0)
-            jj++;
-          else
-            d[i-jj] = Complex (dr[i], di[i]);
-        }
-      if (jj == 0 && ! rvec)
-        for (F77_INT i = 0; i < k; i++)
-          d[i] = d[i+1];
+      for (F77_INT i = 0; i < k; i++)
+        d[i] = Complex (dr[i], di[i]);
 
-      F77_INT k2 = k / 2;
-      for (F77_INT i = 0; i < k2; i++)
+      if (! rvec)
         {
-          Complex dtmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = dtmp;
-        }
-      eig_val.resize (k);
-
-      if (rvec)
-        {
-          OCTAVE_LOCAL_BUFFER (double, dtmp, n);
-
+          // ARPACK seems to give the eigenvalues in reversed order
+          F77_INT k2 = k / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
-              F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
-
-              if (off1 == off2)
-                continue;
-
-              for (F77_INT j = 0; j < n; j++)
-                dtmp[j] = z[off1 + j];
-
-              for (F77_INT j = 0; j < n; j++)
-                z[off1 + j] = z[off2 + j];
-
-              for (F77_INT j = 0; j < n; j++)
-                z[off2 + j] = dtmp[j];
+              Complex dtmp = d[i];
+              d[i] = d[k - i - 1];
+              d[k - i - 1] = dtmp;
             }
-
+        }
+      else
+        {
+          // When eigenvectors required, ARPACK seems to give the right order
           eig_vec.resize (n, k);
           F77_INT i = 0;
           while (i < k)
@@ -2078,6 +2057,11 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                   i+=2;
                 }
             }
+        }
+      if (k0 < k)
+        {
+          eig_val.resize (k0);
+          eig_vec.resize (n, k0);
         }
     }
   else
@@ -2112,6 +2096,10 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       resid = ColumnVector (octave_rand::vector (n));
       octave_rand::distribution (rand_dist);
     }
+  else if (n != resid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -2123,8 +2111,8 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -2133,9 +2121,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (! have_sigma)
     {
@@ -2195,12 +2183,15 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
+      // on exit, ip(4) <= k + 1 is the number of converged eigenvalues
+      // see dnaupd2
       F77_FUNC (dnaupd, DNAUPD)
-        (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
          F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, tmp_info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
+       // k is not changed
 
       info = tmp_info;
 
@@ -2284,65 +2275,45 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
   for (F77_INT i = 0; i < k+1; i++)
     dr[i] = di[i] = 0.;
 
+  F77_INT k0 = k; // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
     (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
      sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
      F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
      ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
      F77_CHAR_ARG_LEN(2));
+  // on exit, if (and only if) rvec == true, k may have been increased by one
+  // and be equal to ip(4), see dngets
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler)
       ("eigs: unrecoverable exception encountered in dneupd");
 
-  eig_val.resize (k+1);
+  if (! rvec && ip(4) > k)
+    k = ip(4);
+
+  eig_val.resize (k);
   Complex *d = eig_val.fortran_vec ();
 
   if (info2 == 0)
     {
-      F77_INT jj = 0;
-      for (F77_INT i = 0; i < k+1; i++)
-        {
-          if (dr[i] == 0.0 && di[i] == 0.0 && jj == 0)
-            jj++;
-          else
-            d[i-jj] = Complex (dr[i], di[i]);
-        }
-      if (jj == 0 && ! rvec)
-        for (F77_INT i = 0; i < k; i++)
-          d[i] = d[i+1];
+      for (F77_INT i = 0; i < k; i++)
+        d[i] = Complex (dr[i], di[i]);
 
-      F77_INT k2 = k / 2;
-      for (F77_INT i = 0; i < k2; i++)
+      if (! rvec)
         {
-          Complex dtmp = d[i];
-          d[i] = d[k - i - 1];
-          d[k - i - 1] = dtmp;
-        }
-      eig_val.resize (k);
-
-      if (rvec)
-        {
-          OCTAVE_LOCAL_BUFFER (double, dtmp, n);
-
+          // ARPACK seems to give the eigenvalues in reversed order
+          octave_idx_type k2 = k / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
-              F77_INT off1 = i * n;
-              F77_INT off2 = (k - i - 1) * n;
-
-              if (off1 == off2)
-                continue;
-
-              for (F77_INT j = 0; j < n; j++)
-                dtmp[j] = z[off1 + j];
-
-              for (F77_INT j = 0; j < n; j++)
-                z[off1 + j] = z[off2 + j];
-
-              for (F77_INT j = 0; j < n; j++)
-                z[off2 + j] = dtmp[j];
+              Complex dtmp = d[i];
+              d[i] = d[k - i - 1];
+              d[k - i - 1] = dtmp;
             }
-
+        }
+      else
+        {
+          // ARPACK seems to give the eigenvalues in reversed order
           eig_vec.resize (n, k);
           F77_INT i = 0;
           while (i < k)
@@ -2369,6 +2340,11 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                   i+=2;
                 }
             }
+        }
+      if (k0 < k)
+        {
+          eig_val.resize (k0);
+          eig_vec.resize (n, k0);
         }
     }
   else
@@ -2416,6 +2392,10 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         cresid(i) = Complex (rr(i),ri(i));
       octave_rand::distribution (rand_dist);
     }
+  else if (m.cols () != cresid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -2427,8 +2407,8 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -2437,9 +2417,9 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -2705,6 +2685,10 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         cresid(i) = Complex (rr(i),ri(i));
       octave_rand::distribution (rand_dist);
     }
+  else if (m.cols () != cresid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler) ("eigs: n must be at least 3");
@@ -2716,8 +2700,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -2726,9 +2710,9 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (have_b && cholB && ! permB.isempty ())
     {
@@ -2866,33 +2850,26 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
             }
           else
             {
-              if (ido == 2)
-                {
-                  for (F77_INT i = 0; i < n; i++)
-                    workd[iptr(0) + i - 1] =
-                      workd[iptr(1) + i - 1];
-                }
-              else
-                {
-                  Complex *ip2 = workd+iptr(0)-1;
-                  ComplexMatrix tmp(n, 1);
+              // ido cannot be 2 for non-generalized problems
+              // see znaup2
+              Complex *ip2 = workd+iptr(0)-1;
+              ComplexMatrix tmp(n, 1);
 
-                  for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]];
+              for (F77_INT i = 0; i < n; i++)
+                tmp(i,0) = ip2[P[i]];
 
-                  lusolve (L, U, tmp);
+              lusolve (L, U, tmp);
 
-                  ip2 = workd+iptr(1)-1;
-                  for (F77_INT i = 0; i < n; i++)
-                    ip2[Q[i]] = tmp(i,0);
-                }
+              ip2 = workd+iptr(1)-1;
+              for (F77_INT i = 0; i < n; i++)
+                ip2[Q[i]] = tmp(i,0);
             }
         }
       else
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error %d in znaupd", info);
 
           break;
         }
@@ -3005,6 +2982,10 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
         cresid(i) = Complex (rr(i),ri(i));
       octave_rand::distribution (rand_dist);
     }
+  else if (n != cresid.numel ())
+    {
+      (*current_liboctave_error_handler) ("eigs: opts.v0 must be n-by-1");
+    }
 
   if (n < 3)
     (*current_liboctave_error_handler)
@@ -3017,8 +2998,8 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
       if (p < 20)
         p = 20;
 
-      if (p > n - 1)
-        p = n - 1;
+      if (p > n)
+        p = n;
     }
 
   if (k <= 0 || k >= n - 1)
@@ -3027,9 +3008,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
        " (must be 0 < k < n-1).\n"
        "      Use 'eig (full (A))' instead");
 
-  if (p <= k || p >= n)
+  if (p <= k || p > n)
     (*current_liboctave_error_handler)
-      ("eigs: opts.p must be greater than k and less than n");
+      ("eigs: opts.p must be greater than k and less or equal to n");
 
   if (! have_sigma)
     {

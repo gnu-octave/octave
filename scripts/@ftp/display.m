@@ -16,7 +16,14 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function display (obj)
+function display (obj, name)
+  if ((nargin > 2) || ((nargin == 2) && ~ischar (name)))
+    print_usage ();
+  endif
+  if (nargin == 2)
+    printf ("%s = ", name);
+  endif
+
   printf ("FTP Object\n");
   printf (" host: %s\n", obj.host);
   printf (" user: %s\n", obj.username);

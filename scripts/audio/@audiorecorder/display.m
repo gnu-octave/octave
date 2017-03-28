@@ -22,12 +22,14 @@
 ## @end deftypefn
 
 function display (recorder, name)
-  if ((nargin > 2) || ((nargin == 2) && ~ischar (name)))
+
+  if (nargin > 2 || (nargin == 2 && ! ischar (name)))
     print_usage ();
   endif
+
   if (nargin == 2)
     printf ("%s = ", name);
   endif
-
   disp (__get_properties__ (recorder));
+
 endfunction

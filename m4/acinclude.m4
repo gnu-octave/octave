@@ -1328,7 +1328,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       octave_qscintilla_libnames=qscintilla2
     ;;
     5)
-      octave_qscintilla_libnames="qscintilla2-qt5 qt5scintilla2"
+      octave_qscintilla_libnames="qscintilla2-qt5 qscintilla2_qt5 qt5scintilla2"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])

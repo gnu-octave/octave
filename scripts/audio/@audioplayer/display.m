@@ -21,15 +21,13 @@
 ## Display the properties of the audioplayer object @var{player}.
 ## @end deftypefn
 
-function display (player, name)
+function display (player)
 
-  if (nargin > 2 || (nargin == 2 && ! ischar (name)))
+  if (nargin != 1)
     print_usage ();
   endif
 
-  if (nargin == 2)
-    printf ("%s = ", name);
-  endif
+  printf ("%s = ", inputname (1));
   disp (__get_properties__ (player));
 
 endfunction

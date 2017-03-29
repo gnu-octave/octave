@@ -472,14 +472,11 @@ classdef inputParser < handle
 
     endfunction
 
-    function display (this, name)
-      if ((nargin > 2) || ((nargin == 2) && ~ischar (name)))
+    function display (this)
+      if (nargin != 1)
         print_usage ();
       endif
-      if (nargin == 2)
-        printf ("%s = ", name);
-      endif
-      printf ("inputParser object with properties:\n\n");
+      printf ("%s = inputParser object with properties:\n\n", inputname ());
       b2s = @(x) ifelse (any (x), "true", "false");
       printf (["   CaseSensitive   : %s\n   FunctionName    : %s\n" ...
                "   KeepUnmatched   : %s\n   PartialMatching : %s\n" ...

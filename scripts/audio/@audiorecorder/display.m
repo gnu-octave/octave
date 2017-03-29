@@ -21,15 +21,13 @@
 ## Display the properties of the audiorecorder object @var{recorder}.
 ## @end deftypefn
 
-function display (recorder, name)
+function display (recorder)
 
-  if (nargin > 2 || (nargin == 2 && ! ischar (name)))
+  if (nargin != 1)
     print_usage ();
   endif
 
-  if (nargin == 2)
-    printf ("%s = ", name);
-  endif
+  printf ("%s = ", inputname (1));
   disp (__get_properties__ (recorder));
 
 endfunction

@@ -3599,9 +3599,7 @@ DEFUN (display, args, ,
        classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} display (@var{obj})
-@deftypefnx {} {} display (@var{obj}, @var{name})
-Display the contents of the object @var{obj} prepended by it's assigned
-variable name @var{name}.
+Display the contents of the object @var{obj} prepended by its name.
 
 The Octave interpreter calls the @code{display} function whenever it needs
 to present a class on-screen.  Typically, this would be a statement which
@@ -3617,10 +3615,9 @@ Or:
 myobj = myclass (@dots{})
 @end example
 
-User-defined classes should overload the @code{display} method with two
-input arguments so that something useful is printed for a class object.
-Otherwise, Octave will report only that the object is an instance of its
-class.
+User-defined classes should overload the @code{display} method and use
+@code{inputname} to access the name of the object.  Otherwise, Octave
+will report only that the object is an instance of its class.
 
 @example
 @group
@@ -3634,21 +3631,26 @@ myobj = myclass (@dots{})
 {
   int nargin = args.length ();
 
+  // Matlab apparently accepts two arguments with the second set to the
+  // inputname of the first.  This is undocumented, but we'll use it.
+  // However, we never call display methods for classes with more than
+  // one argument.
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
   std::string name;
 
   if (nargin == 2)
-    name = args(1).xstring_value ("CALLER must be a string");
+    name = args(1).xstring_value ("NAME must be a string");
   else
     {
       string_vector names = args.name_tags ();
       name = names(0);
     }
 
-  // Only reason we got here is that there was no overloaded display
-  // function.  Rely on built-in functions to display whatever obj is.
+  // We are here because there is no overloaded display method for this
+  // object type.
 
   octave_value value = args(0);
 

@@ -120,11 +120,8 @@ namespace octave
 
                 octave_value lhs_val = ult.value ();
 
-                octave_value_list args = ovl (lhs_val, lhs->name ());
-                string_vector name_tags (2);
-                name_tags(0) = lhs->name ();
-                name_tags(1) = "name";
-                args.stash_name_tags (name_tags);
+                octave_value_list args = ovl (lhs_val);
+                args.stash_name_tags (string_vector (lhs->name ()));
                 octave::feval ("display", args);
               }
           }
@@ -331,11 +328,8 @@ namespace octave
 
                 octave_value lhs_val = ult.value ();
 
-                octave_value_list args = ovl (lhs_val, lhs_elt->name ());
-                string_vector name_tags (2);
-                name_tags(0) = lhs_elt->name ();
-                name_tags(1) = "name";
-                args.stash_name_tags (name_tags);
+                octave_value_list args = ovl (lhs_val);
+                args.stash_name_tags (string_vector (lhs_elt->name ()));
                 octave::feval ("display", args);
               }
           }

@@ -1955,7 +1955,6 @@ bind_ans (const octave_value& val, bool print)
             {
               octave_value_list args = ovl (val);
               args.stash_name_tags (string_vector (ans));
-
               octave::feval ("display", args);
             }
         }

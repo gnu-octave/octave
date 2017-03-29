@@ -99,11 +99,8 @@ namespace octave
             if (print_result () && nargout == 0
                 && octave::tree_evaluator::statement_printing_enabled ())
               {
-                octave_value_list args = ovl (val, name ());
-                string_vector name_tags (2);
-                name_tags(0) = name ();
-                name_tags(1) = "name";
-                args.stash_name_tags (name_tags);
+                octave_value_list args = ovl (val);
+                args.stash_name_tags (string_vector (name ()));
                 octave::feval ("display", args);
               }
 

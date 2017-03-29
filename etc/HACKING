@@ -208,6 +208,8 @@ An overview of the directory layout of Octave's source files:
 
     util        utility and miscellaneous functions
 
+    wrappers    C++ wrappers for gnulib functions written in C
+
   libinterp     -- the interpreter itself plus lots of infrastructure
                    around it.  Octave's extensive octave_value class
                    hierarchy for polymorphically handling all Octave
@@ -241,6 +243,8 @@ An overview of the directory layout of Octave's source files:
 
   libgui        -- the graphical user interface of GNU Octave
 
+    graphics         Qt graphics toolkit (OpenGL plotting)
+
     kb-layouts       various files need by the qterminal widget that has
                      been derived from Konsole
 
@@ -248,7 +252,7 @@ An overview of the directory layout of Octave's source files:
 
     qterminal        Qt terminal widget
 
-    src              source files
+    src              source files for the GUI
 
       icons          icon files that will be compiled into the
                      executable via a resource file
@@ -283,9 +287,13 @@ An overview of the directory layout of Octave's source files:
 
     io               input/output functions
 
-    linear-algebra   linear algebra stuff
+    java             java/Octave interface
+
+    linear-algebra   linear algebra
 
     miscellaneous    stuff that doesn't fit anywhere else
+
+    ode              Ordinary Differential Equations
 
     optimization     zero finders and minimizers
 
@@ -298,6 +306,8 @@ An overview of the directory layout of Octave's source files:
     polynomial       polynomial manipulation
 
     prefs            user-defined preferences
+
+    profiler         code profiler for performance
 
     set              set manipulation
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2017 David Bateman
+## Copyright (C) 2017 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -16,17 +16,16 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function display (obj)
+function disp (obj)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  printf ("%s =\n\n", inputname (1));
-  disp (obj);
+  printf ("  FTP Object\n");
+  printf ("    host: %s\n", obj.host);
+  printf ("    user: %s\n", obj.username);
+  printf ("     dir: %s\n", __ftp_pwd__ (obj.curlhandle));
+  printf ("    mode: %s\n\n", __ftp_mode__ (obj.curlhandle));
 
 endfunction
-
-
-## No test possible for interactive function.
-%!assert (1)

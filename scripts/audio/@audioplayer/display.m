@@ -27,7 +27,7 @@ function display (player)
     print_usage ();
   endif
 
-  printf ("%s = ", inputname (1));
-  disp (__get_properties__ (player));
+  printf ("%s =\n", inputname (1));
+  disp (player);
 
 endfunction

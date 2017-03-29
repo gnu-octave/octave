@@ -27,7 +27,7 @@ function display (recorder)
     print_usage ();
   endif
 
-  printf ("%s = ", inputname (1));
-  disp (__get_properties__ (recorder));
+  printf ("%s =\n", inputname (1));
+  disp (recorder);
 
 endfunction

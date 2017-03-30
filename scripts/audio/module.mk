@@ -14,7 +14,6 @@ scripts_audio_@audioplayer_FCN_FILES = \
   scripts/audio/@audioplayer/__get_properties__.m \
   scripts/audio/@audioplayer/audioplayer.m \
   scripts/audio/@audioplayer/disp.m \
-  scripts/audio/@audioplayer/display.m \
   scripts/audio/@audioplayer/get.m \
   scripts/audio/@audioplayer/isplaying.m \
   scripts/audio/@audioplayer/pause.m  \
@@ -30,7 +29,6 @@ scripts_audio_@audiorecorder_FCN_FILES = \
   scripts/audio/@audiorecorder/__get_properties__.m \
   scripts/audio/@audiorecorder/audiorecorder.m \
   scripts/audio/@audiorecorder/disp.m \
-  scripts/audio/@audiorecorder/display.m \
   scripts/audio/@audiorecorder/get.m \
   scripts/audio/@audiorecorder/getaudiodata.m \
   scripts/audio/@audiorecorder/getplayer.m \

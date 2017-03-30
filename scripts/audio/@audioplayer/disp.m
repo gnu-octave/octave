@@ -27,7 +27,11 @@ function disp (player)
     print_usage ();
   endif
 
-  disp (__get_properties__ (player));
+  printf ("audioplayer object with properties:\n\n");
+  for [val, prop] = __get_properties__ (player)
+    printf ("  %s = ", prop), disp (val);
+  endfor
+  ## FIXME: display in pr-output.cc should add "\n", not this function. 
   printf ("\n");
 
 endfunction

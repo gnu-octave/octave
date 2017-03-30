@@ -466,17 +466,17 @@ classdef inputParser < handle
           endif
         endif
       endwhile
-      ## Add them to the UsingDeafults list
+      ## Add them to the UsingDefaults list
       this.add_missing ("Parameter");
       this.add_missing ("Switch");
 
     endfunction
 
-    function display (this)
+    function disp (this)
       if (nargin != 1)
         print_usage ();
       endif
-      printf ("%s = inputParser object with properties:\n\n", inputname ());
+      printf ("inputParser object with properties:\n\n");
       b2s = @(x) ifelse (any (x), "true", "false");
       printf (["   CaseSensitive   : %s\n   FunctionName    : %s\n" ...
                "   KeepUnmatched   : %s\n   PartialMatching : %s\n" ...

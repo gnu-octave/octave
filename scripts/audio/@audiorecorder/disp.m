@@ -27,7 +27,11 @@ function disp (recorder)
     print_usage ();
   endif
 
-  disp (__get_properties__ (recorder));
+  printf ("audiorecorder object with properties:\n\n");
+  for [val, prop] = __get_properties__ (recorder)
+    printf ("  %s = ", prop), disp (val);
+  endfor
+  ## FIXME: display in pr-output.cc should add "\n", not this function. 
   printf ("\n");
 
 endfunction

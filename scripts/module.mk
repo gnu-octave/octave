@@ -56,7 +56,6 @@ scripts_@ftp_FCN_FILES = \
   scripts/@ftp/delete.m  \
   scripts/@ftp/dir.m  \
   scripts/@ftp/disp.m  \
-  scripts/@ftp/display.m  \
   scripts/@ftp/ftp.m  \
   scripts/@ftp/loadobj.m  \
   scripts/@ftp/mget.m  \

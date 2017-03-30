@@ -379,7 +379,7 @@ webinfo::pasteClipboard ()
 }
 
 void
-webinfo::notice_settings (const QSettings* settings)
+webinfo::notice_settings (const QSettings*)
 {
   shortcut_manager::set_shortcut (_close_action, "editor_file:close");
   shortcut_manager::set_shortcut (_close_others_action, "editor_file:close_other");

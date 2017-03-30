@@ -194,7 +194,14 @@ function retval = datestr (date, f = [], p = [])
     endif
   endif
 
-  ## automatic format selection
+  ## Round fractional seconds >= 0.9995 s to next full second.
+  idx = v(:,6) - fix (v(:,6)) >= 0.9995;
+  if (any (idx))
+    v(idx,6) = fix (v(idx,6)) + 1;
+    v(idx,:) = datevec (datenum (v(idx,:)));
+  endif
+
+  ## Automatic format selection
   if (isempty (f))
     if (v(:,4:6) == 0)
       f = 1;
@@ -353,6 +360,9 @@ endfunction
 ## Test automatic format detection over vectors
 %!assert (datestr ([2017 03 16 0 0 0; 2017 03 16 0 0 1]),
 %!        char ("16-Mar-2017 00:00:00", "16-Mar-2017 00:00:01"))
+## Test for correct millisecond rounding
+%!assert (datestr (datenum ("1:00") - datenum ("0:55"), "HH:MM:SS.FFF"),
+%!                 "00:05:00.000")
 
 ## Test input validation
 %!error datestr ()

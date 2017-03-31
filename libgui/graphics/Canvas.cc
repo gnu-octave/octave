@@ -616,6 +616,14 @@ namespace QtHandles
     if (obj.valid_object ())
       {
         graphics_object figObj (obj.get_ancestor ("figure"));
+
+        if (figObj)
+          {
+            graphics_object root = gh_manager::get_object (0);
+            Utils::properties<root_figure> (root)
+              .set_currentfigure (figObj.get_handle ().as_octave_value ());
+          }
+
         graphics_object currentObj, axesObj;
 
         select_object (obj, event, currentObj, axesObj);

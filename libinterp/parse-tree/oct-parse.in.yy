@@ -86,10 +86,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern int octave_lex (YYSTYPE *, void *);
 
-// Global access to currently active lexer.
-// FIXME: to be removed after more parser+lexer refactoring.
-octave::base_lexer *LEXER = 0;
-
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
 
@@ -4265,9 +4261,6 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
   if (ffile)
     {
       frame.add_fcn (safe_fclose, ffile);
-
-      // octave::base_parser constructor sets this for us.
-      frame.protect_var (LEXER);
 
       octave::parser parser (ffile);
 

@@ -92,10 +92,6 @@ extern int octave_debug;
 
 namespace octave
 {
-  // Global access to currently active lexer.
-  // FIXME: to be removed after more parser+lexer refactoring.
-  extern base_lexer *LEXER;
-
   class
   base_parser
   {

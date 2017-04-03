@@ -109,6 +109,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _bp_lines.clear ();      // start with empty lists of breakpoints
   _bp_conditions.clear ();
 
+  // disable editor drag & drop so parent can handle
+  _edit_area->setAcceptDrops (false);
+
   connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
            this, SLOT (handle_cursor_moved (int,int)));
 

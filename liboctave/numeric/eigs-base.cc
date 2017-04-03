@@ -65,7 +65,8 @@ lusolve (const SM& L, const SM& U, M& m)
   MatrixType utyp (MatrixType::Upper);
 
   // Sparse L is lower triangular, Dense L is permuted lower triangular!!!
-  m = L.solve (m, err, rcond, nullptr);
+  MatrixType ltyp (MatrixType::Lower);
+  m = L.solve (ltyp, m, err, rcond, nullptr);
   if (err)
     return err;
 
@@ -268,12 +269,13 @@ static bool
 LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                 bool cholB, const ColumnVector& permB, double sigma,
                 SparseMatrix& L, SparseMatrix& U, octave_idx_type *P,
-                octave_idx_type *Q)
+                octave_idx_type *Q, ColumnVector &r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.rows ();
 
-  // Caclulate LU decomposition of 'A - sigma * B'
+  // Calculate LU decomposition of 'M = A - sigma * B'
+  // P * (R \ M) * Q = L * U
   SparseMatrix AminusSigmaB (m);
 
   if (have_b)
@@ -317,10 +319,14 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
       AminusSigmaB -= sigmat;
     }
 
-  octave::math::sparse_lu<SparseMatrix> fact (AminusSigmaB);
+  octave::math::sparse_lu<SparseMatrix> fact (AminusSigmaB, Matrix (), true);
 
   L = fact.L ();
   U = fact.U ();
+  SparseMatrix R = fact.R ();
+  for (octave_idx_type i = 0; i < n; i++)
+    r(i) = R.xdata(i);
+
   const octave_idx_type *P2 = fact.row_perm ();
   const octave_idx_type *Q2 = fact.col_perm ();
 
@@ -359,13 +365,14 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
 static bool
 LuAminusSigmaB (const Matrix& m, const Matrix& b,
                 bool cholB, const ColumnVector& permB, double sigma,
-                Matrix& L, Matrix& U, octave_idx_type *P,
-                octave_idx_type *Q)
+                Matrix& L, Matrix& U, octave_idx_type *P, octave_idx_type *Q,
+                ColumnVector &r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.cols ();
 
-  // Caclulate LU decomposition of 'A - sigma * B'
+  // Calculate LU decomposition of 'M = A - sigma * B'
+  // P * M = L * U
   Matrix AminusSigmaB (m);
 
   if (have_b)
@@ -401,10 +408,16 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
 
   octave::math::lu<Matrix> fact (AminusSigmaB);
 
-  L = fact.P ().transpose () * fact.L ();
+  L = fact. L ();
   U = fact.U ();
+  ColumnVector P2 = fact.P_vec();
+
   for (octave_idx_type j = 0; j < n; j++)
-    P[j] = Q[j] = j;
+    {
+      Q[j] = j;
+      P[j] = P2(j) - 1;
+      r(j) = 1.;
+    }
 
   // Test condition number of LU decomposition
   double minU = octave::numeric_limits<double>::NaN ();
@@ -432,12 +445,13 @@ static bool
 LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                 bool cholB, const ColumnVector& permB, Complex sigma,
                 SparseComplexMatrix& L, SparseComplexMatrix& U,
-                octave_idx_type *P, octave_idx_type *Q)
+                octave_idx_type *P, octave_idx_type *Q, ColumnVector &r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.rows ();
 
-  // Caclulate LU decomposition of 'A - sigma * B'
+  // Calculate LU decomposition of 'M = A - sigma * B'
+  // P * (R \ M) * Q = L * U
   SparseComplexMatrix AminusSigmaB (m);
 
   if (have_b)
@@ -481,10 +495,15 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
       AminusSigmaB -= sigmat;
     }
 
-  octave::math::sparse_lu<SparseComplexMatrix> fact (AminusSigmaB);
+  octave::math::sparse_lu<SparseComplexMatrix> fact (AminusSigmaB, Matrix(),
+                                                     true);
 
   L = fact.L ();
   U = fact.U ();
+  SparseMatrix R = fact.R ();
+  for (octave_idx_type i = 0; i < n; i++)
+    r(i) = R.xdata(i);
+
   const octave_idx_type *P2 = fact.row_perm ();
   const octave_idx_type *Q2 = fact.col_perm ();
 
@@ -524,12 +543,13 @@ static bool
 LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
                 bool cholB, const ColumnVector& permB, Complex sigma,
                 ComplexMatrix& L, ComplexMatrix& U, octave_idx_type *P,
-                octave_idx_type *Q)
+                octave_idx_type *Q, ColumnVector &r)
 {
   bool have_b = ! b.isempty ();
   octave_idx_type n = m.cols ();
 
-  // Caclulate LU decomposition of 'A - sigma * B'
+  // Calculate LU decomposition of 'M = A - sigma * B'
+  // P * M = L * U
   ComplexMatrix AminusSigmaB (m);
 
   if (have_b)
@@ -565,10 +585,16 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
 
   octave::math::lu<ComplexMatrix> fact (AminusSigmaB);
 
-  L = fact.P ().transpose () * fact.L ();
+  L = fact.L ();
   U = fact.U ();
+  ColumnVector P2 = fact.P_vec ();
+
   for (octave_idx_type j = 0; j < n; j++)
-    P[j] = Q[j] = j;
+    {
+      Q[j] = j;
+      P[j] = P2(j) - 1;
+      r(j) = 1.;
+    }
 
   // Test condition number of LU decomposition
   double minU = octave::numeric_limits<double>::NaN ();
@@ -979,11 +1005,12 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   F77_INT ido = 0;
   int iter = 0;
   M L, U;
+  ColumnVector r(n);
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
-  if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q))
+  if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q, r))
     return -1;
 
   F77_INT lwork = p * (p + 8);
@@ -1043,7 +1070,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = dtmp[P[i]];
+                    tmp(i,0) = dtmp[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
@@ -1059,7 +1086,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]];
+                    tmp(i,0) = ip2[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
@@ -1075,7 +1102,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
               Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
-                tmp(i,0) = ip2[P[i]];
+                tmp(i,0) = ip2[P[i]] / r(P[i]);
 
               lusolve (L, U, tmp);
 
@@ -1833,11 +1860,12 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   F77_INT ido = 0;
   int iter = 0;
   M L, U;
+  ColumnVector r(n);
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
-  if (! LuAminusSigmaB (m, b, cholB, permB, sigmar, L, U, P, Q))
+  if (! LuAminusSigmaB (m, b, cholB, permB, sigmar, L, U, P, Q, r))
     return -1;
 
   F77_INT lwork = 3 * p * (p + 2);
@@ -1900,7 +1928,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = dtmp[P[i]];
+                    tmp(i,0) = dtmp[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
@@ -1916,7 +1944,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]];
+                    tmp(i,0) = ip2[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
@@ -1932,7 +1960,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
-                tmp(i,0) = ip2[P[i]];
+                tmp(i,0) = ip2[P[i]] / r(P[i]);
 
               lusolve (L, U, tmp);
 
@@ -2739,11 +2767,12 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   F77_INT ido = 0;
   int iter = 0;
   M L, U;
+  ColumnVector r(n);
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
-  if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q))
+  if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q, r))
     return -1;
 
   F77_INT lwork = p * (3 * p + 5);
@@ -2805,7 +2834,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                   ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ctmp[P[i]];
+                    tmp(i,0) = ctmp[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
@@ -2821,7 +2850,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                   ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
-                    tmp(i,0) = ip2[P[i]];
+                    tmp(i,0) = ip2[P[i]] / r(P[i]);
 
                   lusolve (L, U, tmp);
 
@@ -2837,7 +2866,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
               ComplexMatrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
-                tmp(i,0) = ip2[P[i]];
+                tmp(i,0) = ip2[P[i]] / r(P[i]);
 
               lusolve (L, U, tmp);
 

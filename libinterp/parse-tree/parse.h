@@ -413,6 +413,11 @@ namespace octave
     // only be declared inside function files.
     bool parsing_subfunctions;
 
+    // TRUE if we are parsing local functions defined at after a
+    // classdef block.  Local functions can only be declared inside
+    // classdef files.
+    bool parsing_local_functions;
+
     // Maximum function depth detected.  Used to determine whether
     // we have nested functions or just implicitly ended subfunctions.
     int max_fcn_depth;

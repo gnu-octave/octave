@@ -231,6 +231,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // Nonterminals we construct.
 %type <dummy_type> indirect_ref_op decl_param_init push_fcn_symtab
 %type <dummy_type> param_list_beg param_list_end stmt_begin parse_error
+%type <dummy_type> parsing_local_fcns
 %type <comment_type> stash_comment
 %type <tok_val> function_beg classdef_beg
 %type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
@@ -269,6 +270,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_statement_type> statement function_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list
+%type <tree_statement_list_type> opt_fcn_list fcn_list fcn_list1
 %type <tree_classdef_attribute_type> attr
 %type <tree_classdef_attribute_list_type> attr_list opt_attr_list
 %type <tree_classdef_superclass_type> superclass
@@ -429,6 +431,32 @@ list1           : statement
                   { $$ = parser.make_statement_list ($1); }
                 | list1 sep statement
                   { $$ = parser.append_statement_list ($1, $2, $3, true); }
+                ;
+
+opt_fcn_list    : // empty
+                  { $$ = 0; }
+                | fcn_list
+                  { $$ = $1; }
+                ;
+                
+fcn_list        : fcn_list1 opt_sep
+                  {
+                    YYUSE ($2);
+
+                    $$ = $1;
+                  }
+                ;
+
+fcn_list1       : function
+                  {
+                    octave::tree_statement *stmt = parser.make_statement ($1);
+                    $$ = new octave::tree_statement_list (stmt);
+                  }
+                | fcn_list1 opt_sep function
+                  {
+                    octave::tree_statement *stmt = parser.make_statement ($3);
+                    $$ = parser.append_statement_list ($1, $2, stmt, false);
+                  }
                 ;
 
 statement       : expression
@@ -1385,6 +1413,11 @@ return_list1    : identifier
 // Script or function file
 // =======================
 
+parsing_local_fcns
+                : // empty
+                  { parser.parsing_local_functions = true; }
+                ;
+
 file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
                     YYUSE ($2);
@@ -1411,10 +1444,11 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
 
                     $$ = 0;
                   }
-                | INPUT_FILE opt_nl classdef opt_sep END_OF_INPUT
+                | INPUT_FILE opt_nl classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
                   {
                     YYUSE ($2);
-                    YYUSE ($4);
+                    YYUSE ($5);
+                    YYUSE ($6);
 
                     if (lexer.reading_classdef_file)
                       parser.classdef_object = $3;
@@ -2108,7 +2142,8 @@ namespace octave
 
   base_parser::base_parser (base_lexer& lxr)
     : endfunction_found (false), autoloading (false),
-      fcn_file_from_relative_lookup (false), parsing_subfunctions (false),
+      fcn_file_from_relative_lookup (false),
+      parsing_subfunctions (false), parsing_local_functions (false),
       max_fcn_depth (0), curr_fcn_depth (0), primary_fcn_scope (-1),
       curr_class_name (), curr_package_name (), function_scopes (),
       primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
@@ -2139,6 +2174,7 @@ namespace octave
     autoloading = false;
     fcn_file_from_relative_lookup = false;
     parsing_subfunctions = false;
+    parsing_local_functions = false;
     max_fcn_depth = 0;
     curr_fcn_depth = 0;
     primary_fcn_scope = -1;
@@ -3375,8 +3411,14 @@ namespace octave
                }
           }
 
-        if (curr_fcn_depth == 1 && fcn)
-          symbol_table::update_nest (fcn->scope ());
+        if (fcn)
+          {
+            if (parsing_local_functions )
+              symbol_table::install_local_function (nm, octave_value (fcn),
+                                                    file);
+            else if (curr_fcn_depth == 1)
+              symbol_table::update_nest (fcn->scope ());
+          }
 
         if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
           {

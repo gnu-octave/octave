@@ -706,18 +706,42 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
 {
   if (local_funcs)
     {
+      octave_user_function *current_fcn = symbol_table::get_curr_fcn ();
+
+      // Local function.
+
+      if (current_fcn)
+        {
+          std::string fcn_file = current_fcn->fcn_file_name ();
+
+          if (! fcn_file.empty ())
+            {
+              str_val_iterator r = local_functions.find (fcn_file);
+
+              if (r != local_functions.end ())
+                {
+                  // We shouldn't need an out-of-date check here since
+                  // local functions may ultimately be called only from
+                  // a primary function or method defined in the same
+                  // file.
+
+                  return r->second;
+                }
+            }
+        }
+
       // Subfunction.  I think it only makes sense to check for
       // subfunctions if we are currently executing a function defined
       // from a .m file.
-
-      octave_user_function *current_fcn = symbol_table::get_curr_fcn ();
 
       for (scope_id scope = xcurrent_scope; scope >= 0;)
         {
           scope_val_iterator r = subfunctions.find (scope);
           if (r != subfunctions.end ())
             {
-              // FIXME: out-of-date check here.
+              // We shouldn't need an out-of-date check here since
+              // subfunctions may ultimately be called only from a
+              // primary function or method defined in the same file.
 
               return r->second;
             }
@@ -941,6 +965,27 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
         }
     }
 
+  // Local function.
+
+  if (current_fcn)
+    {
+      std::string fcn_file = current_fcn->fcn_file_name ();
+
+      if (! fcn_file.empty ())
+        {
+          str_val_iterator r = local_functions.find (fcn_file);
+
+          if (r != local_functions.end ())
+            {
+              // We shouldn't need an out-of-date check here since local
+              // functions may ultimately be called only from a primary
+              // function or method defined in the same file.
+
+              return r->second;
+            }
+        }
+    }
+
   // Subfunction.  I think it only makes sense to check for
   // subfunctions if we are currently executing a function defined
   // from a .m file.
@@ -950,7 +995,9 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
       scope_val_iterator r = subfunctions.find (scope);
       if (r != subfunctions.end ())
         {
-          // FIXME: out-of-date check here.
+          // We shouldn't need an out-of-date check here since
+          // subfunctions may ultimately be called only from a primary
+          // function or method defined in the same file.
 
           return r->second;
         }
@@ -1179,6 +1226,13 @@ symbol_table::fcn_info::fcn_info_rep::dump (std::ostream& os,
       for (const auto& scope_val : subfunctions)
         os << tprefix << "subfunction: " << fcn_file_name (scope_val.second)
            << " [" << scope_val.first << "]\n";
+    }
+
+  if (! local_functions.empty ())
+    {
+      for (const auto& str_val : local_functions)
+        os << tprefix << "local: " << fcn_file_name (str_val.second)
+           << " [" << str_val.first << "]\n";
     }
 
   if (! private_functions.empty ())

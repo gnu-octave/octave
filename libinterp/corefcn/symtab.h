@@ -747,10 +747,10 @@ public:
     public:
 
       fcn_info_rep (const std::string& nm)
-        : name (nm), package_name (), subfunctions (), private_functions (),
-          class_constructors (), class_methods (), cmdline_function (),
-          autoload_function (), function_on_path (), built_in_function (),
-          count (1)
+        : name (nm), package_name (), subfunctions (), local_functions (),
+          private_functions (), class_constructors (), class_methods (),
+          cmdline_function (), autoload_function (), function_on_path (),
+          built_in_function (), count (1)
       {
         size_t pos = name.rfind ('.');
 
@@ -766,6 +766,8 @@ public:
       fcn_info_rep (const fcn_info_rep&) = delete;
 
       fcn_info_rep& operator = (const fcn_info_rep&) = delete;
+
+      octave_value install_local_function (const std::string& file_name);
 
       octave_value load_private_function (const std::string& dir_name);
 
@@ -843,6 +845,12 @@ public:
         subfunctions[scope] = f;
       }
 
+      void install_local_function (const octave_value& f,
+                                   const std::string& file_name)
+      {
+        local_functions[file_name] = f;
+      }
+
       void install_user_function (const octave_value& f)
       {
         function_on_path = f;
@@ -903,6 +911,7 @@ public:
       void clear (bool force = false)
       {
         clear_map (subfunctions, force);
+        clear_map (local_functions, force);
         clear_map (private_functions, force);
         clear_map (class_constructors, force);
         clear_map (class_methods, force);
@@ -928,6 +937,9 @@ public:
 
       // Scope id to function object.
       std::map<scope_id, octave_value> subfunctions;
+
+      // File name to function object.
+      std::map<std::string, octave_value> local_functions;
 
       // Directory name to function object.
       std::map<std::string, octave_value> private_functions;
@@ -1070,6 +1082,12 @@ public:
     void install_subfunction (const octave_value& f, scope_id scope)
     {
       rep->install_subfunction (f, scope);
+    }
+
+    void install_local_function (const octave_value& f,
+                                 const std::string& file_name)
+    {
+      rep->install_local_function (f, file_name);
     }
 
     void install_user_function (const octave_value& f)
@@ -1573,6 +1591,31 @@ public:
     symbol_table *inst = get_instance (scope);
     if (inst)
       inst->do_update_nest ();
+  }
+
+  // Install local function FCN named NAME.  FILE_NAME is the name of
+  // the file containing the local function.
+
+  static void install_local_function (const std::string& name,
+                                      const octave_value& fcn,
+                                      const std::string& file_name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_local_function (fcn, file_name);
+      }
+    else
+      {
+        fcn_info finfo (name);
+
+        finfo.install_local_function (fcn, file_name);
+
+        fcn_table[name] = finfo;
+      }
   }
 
   static void install_user_function (const std::string& name,

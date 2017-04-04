@@ -48,6 +48,7 @@ include test/bug-35448/module.mk
 include test/bug-36025/module.mk
 include test/bug-38236/module.mk
 include test/bug-38691/module.mk
+include test/bug-41723/module.mk
 include test/bug-44940/module.mk
 include test/bug-46660/module.mk
 include test/bug-50014/module.mk

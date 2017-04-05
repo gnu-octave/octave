@@ -643,7 +643,6 @@ octave_cell::print_raw (std::ostream& os, bool) const
 
       if (nr > 0 && nc > 0)
         {
-          newline (os);
           indent (os);
           os << "{";
           newline (os);

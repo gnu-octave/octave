@@ -263,11 +263,13 @@ namespace octave
                 if (k + nel > n)
                   error ("some elements undefined in return list");
 
-                // This won't do a copy.
+                // This element of the return list expects a
+                // comma-separated list of values.  Slicing avoids
+                // copying.
+
                 octave_value_list ovl = rhs_val.slice (k, nel);
 
-                ult.assign (octave_value::op_asn_eq,
-                            octave_value (ovl, true));
+                ult.assign (octave_value::op_asn_eq, octave_value (ovl));
 
                 retval_list.push_back (ovl);
 

@@ -292,7 +292,12 @@ public:
                 const std::list<std::string>& plist);
   octave_value (const octave_scalar_map& m, const std::string& id,
                 const std::list<std::string>& plist);
-  octave_value (const octave_value_list& m, bool = false);
+
+  OCTAVE_DEPRECATED ("note: second argument is always ignored; use octave_value (const octave_value_list&) instead")
+  octave_value (const octave_value_list& m, bool);
+
+  octave_value (const octave_value_list& m);
+
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep, bool borrow = false);

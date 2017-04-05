@@ -1128,6 +1128,10 @@ octave_value::octave_value (const octave_value_list& l, bool)
   : rep (new octave_cs_list (l))
 { }
 
+octave_value::octave_value (const octave_value_list& l)
+  : rep (new octave_cs_list (l))
+{ }
+
 octave_value::octave_value (octave_value::magic_colon)
   : rep (new octave_magic_colon ())
 { }

@@ -454,11 +454,11 @@ octave_class::subsref (const std::string& type,
 
           retval = octave::feval (meth.function_value (), args, true_nargout);
 
-          // Since we're handling subsref, return the list in the first value
-          // if it has more than one element, to be able to pass through
-          // rvalue1 calls.
+          // Since we're handling subsref, if the list has more than one
+          // element, return it as a comma-separated list so that we can
+          // pass it to rvalue1.
           if (retval.length () > 1)
-            retval = octave_value (retval, true);
+            retval = octave_value (retval);
         }
       else
         {

@@ -150,7 +150,10 @@ octave_cell::subsref (const std::string& type,
         if (tcell.numel () == 1)
           retval(0) = tcell(0,0);
         else
-          retval = octave_value (octave_value_list (tcell), true);
+          {
+            // Return a comma-separated list.
+            retval = octave_value (octave_value_list (tcell));
+          }
       }
       break;
 
@@ -199,7 +202,10 @@ octave_cell::subsref (const std::string& type,
         if (tcell.numel () == 1)
           retval = tcell(0,0);
         else
-          retval = octave_value (octave_value_list (tcell), true);
+          {
+            // Return a comma-separated list.
+            retval = octave_value (octave_value_list (tcell));
+          }
       }
       break;
 

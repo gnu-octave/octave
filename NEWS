@@ -14,6 +14,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
       glpk  Qhull
 
+ ** A new container data type--containers.Map--is available.  Map is a
+    key/value storage container (a.k.a, a hash) that efficiently allows
+    storing and retrieving values by name, rather than by position which
+    is how arrays work.
+
  ** The "names" option used in regular expressions now returns a struct
     array, rather than a struct with a cell array for each field.  This
     change was made for Matlab compatibility.

@@ -309,6 +309,7 @@ Creating Strings
 Data Containers
 
 * Structures::
+* containers.Map::
 * Cell Arrays::
 * Comma Separated Lists::
 

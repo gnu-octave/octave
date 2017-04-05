@@ -4,6 +4,7 @@ scripts_CLEANFILES =
 scripts_DISTCLEANFILES =
 scripts_MAINTAINERCLEANFILES =
 
+include scripts/+containers/module.mk
 include scripts/audio/module.mk
 include scripts/deprecated/module.mk
 include scripts/elfun/module.mk

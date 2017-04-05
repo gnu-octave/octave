@@ -20,15 +20,16 @@
 @chapter Data Containers
 @cindex containers
 
-Octave includes support for two different mechanisms to contain
-arbitrary data types in the same variable.  Structures, which are C-like,
-and are indexed with named fields, and cell arrays, where each element
-of the array can have a different data type and or shape.  Multiple
-input arguments and return values of functions are organized as
-another data container, the comma separated list.
+Octave includes support for three different mechanisms to contain arbitrary
+data types in the same variable: Structures, which are C-like, and are indexed
+with named fields; containers.Map objects, which store data in key/value pairs;
+and cell arrays, where each element of the array can have a different data type
+and or shape.  Multiple input arguments and return values of functions are
+organized as another data container, the comma separated list.
 
 @menu
 * Structures::
+* containers.Map::
 * Cell Arrays::
 * Comma Separated Lists::
 @end menu
@@ -536,6 +537,18 @@ Alternatively, to process the data in a structure, the structure might
 be converted to another type of container before being treated.
 
 @DOCSTRING(struct2cell)
+
+@node containers.Map
+@section containers.Map
+@cindex Map
+@cindex key/value store
+@cindex hash table
+
+@c FIXME: Need to fill in documentation on what a Map is, when to use it over
+@c        other container types, how to perform basic operations with a Map. 
+
+@c FIXME: Currently have trouble getting documentation for classdef functions.
+@DOCSTRING(containers.Map)
 
 @node Cell Arrays
 @section Cell Arrays

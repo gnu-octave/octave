@@ -467,17 +467,26 @@ classdef Map < handle
         return;
       endif
       cell_input = iscell (keys);
-      if (! cell_input)
-        keys = { keys };
-      endif
-      if (! all (cellfun ("isclass", keys, this.KeyType)))
-        ## Convert input set to KeyType.  This is rarely necessary.
-        keys = cellfun (@(x) feval (this.KeyType, x), keys,
-                        "UniformOutput", false);
+      if (cell_input)
+        if (! all (cellfun ("isclass", keys, this.KeyType)))
+          ## Convert input set to KeyType.  This is rarely necessary.
+          keys = cellfun (@(x) feval (this.KeyType, x), keys,
+                          "UniformOutput", true);
+        else
+          keys = cell2mat (keys);
+        endif
       endif
       ## FIXME: Replace with csprintf when it becomes available.
-      keys = ostrsplit (sprintf ("%.16g\n", keys{:}), "\n");
-      keys(end) = [];
+      ## Use explicit width in format to ensure that we print all digits
+      ## even when there are leading zeros.
+      if (any (strcmp (this.KeyType, {"single", "int32", "uint32"})))
+        keytype = "uint32";
+        fmt = "%0.8X|";
+      else
+        keytype = "uint64";
+        fmt = "%0.16X|";
+      endif
+      keys = ostrsplit (sprintf (fmt, typecast (keys, keytype)), "|", true);
       if (! cell_input)
         keys = char (keys);
       endif
@@ -486,9 +495,18 @@ classdef Map < handle
 
     function keys = decode_keys (this, keys)
       if (this.numeric_keys)
-        keys = str2double (char (keys));
-        if (! strcmp (this.KeyType, "double"))
-          keys = feval (this.KeyType, keys);
+        ## Since we typecast the key to uint32 or uint64 before
+        ## converting to hex, it would probably be better if hex2num
+        ## could return uint32 or uint64 directly, then we could
+        ## typecast back to other types.
+        if (any (strcmp (this.KeyType, {"single", "int32", "uint32"})))
+          keytype = "single";
+        else
+          keytype = "double";
+        endif
+        keys = hex2num (keys, keytype);
+        if (! strcmp (this.KeyType, keytype))
+          keys = typecast (keys, this.KeyType);
         endif
         keys = mat2cell (keys, ones (numel (keys), 1), 1);
       endif
@@ -620,6 +638,37 @@ endclassdef
 %! m.remove("a");
 %! m.remove({"b","c"});
 %! assert (isempty (m));
+
+## Ensure that exact key values are preserved.
+%!test
+%! keytypes = {"int32", "int64", "uint32", "uint64"};
+%! for i = 1:numel (keytypes)
+%!   keytype = keytypes{i};
+%!   key = intmax (keytype);
+%!   m = containers.Map (key, pi);
+%!   assert (m.isKey (key));
+%!   assert (m.keys (), {key});
+%!   key = intmin (keytype);
+%!   m = containers.Map (key, pi);
+%!   assert (m.isKey (key));
+%!   assert (m.keys (), {key});
+%! endfor
+%! keytypes = {"double", "single"};
+%! for i = 1:numel (keytypes)
+%!   keytype = keytypes{i};
+%!   key = realmax (keytype);
+%!   m = containers.Map (key, pi);
+%!   assert (m.isKey (key));
+%!   assert (m.keys (), {key});
+%!   key = realmin (keytype);
+%!   m = containers.Map (key, pi);
+%!   assert (m.isKey (key));
+%!   assert (m.keys (), {key});
+%!   key = -realmax (keytype);
+%!   m = containers.Map (key, pi);
+%!   assert (m.isKey (key));
+%!   assert (m.keys (), {key});
+%! endfor
 
 ## Test input validation
 %!error containers.Map (1,2,3)

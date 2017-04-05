@@ -1611,12 +1611,19 @@ cdef_object_array::subsasgn (const std::string& type,
         }
       else
         {
-          const octave_value_list& ival = idx.front ();
+          const octave_value_list& ivl = idx.front ();
+
+          // Fill in trailing singleton dimensions so that
+          // array.index doesn't create a new blank entry (bug #46660).
+          const octave_idx_type one = static_cast<octave_idx_type> (1);
+          const octave_value_list& ival = ivl.length () >= 2
+                                            ? ivl : ((array.dims ()(0) == 1)
+                                                      ? ovl (one, ivl(0))
+                                                      : ovl (ivl(0), one));
 
           bool is_scalar = true;
 
-          Array<idx_vector> iv (dim_vector (1, std::max (ival.length (),
-            static_cast<octave_idx_type> (2))));
+          Array<idx_vector> iv (dim_vector (1, ival.length ()));
 
           for (int i = 0; i < ival.length (); i++)
             {
@@ -1638,11 +1645,6 @@ cdef_object_array::subsasgn (const std::string& type,
                        ", the index must reference a single object in the "
                        "array.");
             }
-
-          // Fill in trailing singleton dimensions so that
-          // array.index doesn't create a new blank entry (bug #46660).
-          for (int i = ival.length (); i < 2; i++)
-            iv(i) = static_cast<octave_idx_type> (1);
 
           Array<cdef_object> a = array.index (iv, true);
 

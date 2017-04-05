@@ -552,7 +552,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
       frame.add_method (m_scope, &octave::symbol_table::scope::pop_context);
     }
 
-  string_vector arg_names = args.name_tags ();
+  string_vector arg_names = _args.name_tags ();
 
   if (param_list && ! param_list->varargs_only ())
     {

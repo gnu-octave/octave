@@ -360,25 +360,38 @@ namespace octave
           {
             tree_argument_list *al = *p_args;
 
-            // In Matlab, () can only be followed by '.'.  In Octave, we do not
-            // enforce this for rvalue expressions, but we'll split the
-            // evaluation at this point.  This will, hopefully, allow Octave's
-            // looser rules apply smoothly for Matlab overloaded subsref
-            // codes.
-            bool force_split = type[i-1] == '(' && type[i] != '.';
+            // In Matlab, () can only be followed by '.'.  In Octave, we
+            // do not enforce this for rvalue expressions, but we'll
+            // split the evaluation at this point.  This will,
+            // hopefully, allow Octave's looser rules apply smoothly for
+            // Matlab overloaded subsref codes.
 
-            if (force_split || (al && al->has_magic_end ()))
+            // We might have an expression like
+            //
+            //   x{end}.a(end)
+            //
+            // and we are looking at the argument list that contains the
+            // second (or third, etc.) "end" token, so we must evaluate
+            // everything up to the point of that argument list so we
+            // can pass the appropriate value to the built-in end
+            // function.
+
+            // An expression like
+            //
+            //    s.a (f (1:end))
+            //
+            // can mean a lot of different things depending on the types
+            // of s, a, and f.  Let's just say it's complicated and that
+            // the following code is definitely not correct in all
+            // cases.  That it is already so complex makes me think that
+            // there must be a better way.
+             
+            bool split = ((type[i-1] == '(' && type[i] != '.')
+                          || (al && al->has_magic_end ()
+                              && ! tmp.is_classdef_object ()));
+
+            if (split)
               {
-                // (we have force_split, or) we have an expression like
-                //
-                //   x{end}.a(end)
-                //
-                // and we are looking at the argument list that
-                // contains the second (or third, etc.) "end" token,
-                // so we must evaluate everything up to the point of
-                // that argument list so we can pass the appropriate
-                // value to the built-in end function.
-
                 try
                   {
                     octave_value_list tmp_list

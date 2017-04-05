@@ -997,15 +997,7 @@ octave_class::print_raw (std::ostream& os, bool) const
 bool
 octave_class::print_name_tag (std::ostream& os, const std::string& name) const
 {
-  bool retval = false;
-
-  indent (os);
-  os << name << " =";
-  newline (os);
-  if (! Vcompact_format)
-    newline (os);
-
-  return retval;
+  return octave_base_value::print_name_tag (os, name);
 }
 
 void

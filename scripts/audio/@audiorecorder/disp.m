@@ -31,7 +31,5 @@ function disp (recorder)
   for [val, prop] = __get_properties__ (recorder)
     printf ("  %s = ", prop), disp (val);
   endfor
-  ## FIXME: display in pr-output.cc should add "\n", not this function. 
-  printf ("\n");
 
 endfunction

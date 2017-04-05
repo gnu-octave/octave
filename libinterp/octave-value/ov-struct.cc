@@ -581,7 +581,6 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      newline (os);
       indent (os);
       dim_vector dv = dims ();
       os << dv.str () << " struct array containing the fields:";
@@ -597,7 +596,8 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
           Cell val = map.contents (key);
 
-          newline (os);
+          if (i > 0 || ! Vcompact_format)
+            newline (os);
 
           if (print_fieldnames_only)
             {
@@ -638,6 +638,9 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
     {
       os << name << " =";
       newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 
@@ -1263,9 +1266,6 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      if (! Vcompact_format)
-        newline (os);
-
       indent (os);
       os << "scalar structure containing the fields:";
       newline (os);
@@ -1319,6 +1319,9 @@ octave_scalar_struct::print_name_tag (std::ostream& os,
     {
       os << name << " =";
       newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 

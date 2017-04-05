@@ -688,6 +688,25 @@ octave_cell::print_raw (std::ostream& os, bool) const
     }
 }
 
+bool
+octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
+{
+  bool retval = false;
+
+  indent (os);
+
+  if (is_empty () || ndims () > 2)
+    os << name << " = ";
+  else
+    {
+      os << name << " =";
+      newline (os);
+      retval = true;
+    }
+
+  return retval;
+}
+
 void
 octave_cell::short_disp (std::ostream& os) const
 {
@@ -714,7 +733,7 @@ octave_cell::save_ascii (std::ostream& os)
         {
           octave_value o_val = tmp.elem (i);
 
-          // Recurse to print sub-value.
+          // Recurse to save sub-value.
           bool b = save_text_data (os, o_val, CELL_ELT_TAG, false, 0);
 
           if (! b)
@@ -736,7 +755,7 @@ octave_cell::save_ascii (std::ostream& os)
             {
               octave_value o_val = tmp.elem (i, j);
 
-              // Recurse to print sub-value.
+              // Recurse to save sub-value.
               bool b = save_text_data (os, o_val, CELL_ELT_TAG, false, 0);
 
               if (! b)
@@ -871,7 +890,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
     {
       octave_value o_val = tmp.elem (i);
 
-      // Recurse to print sub-value.
+      // Recurse to save sub-value.
       bool b = save_binary_data (os, o_val, CELL_ELT_TAG, "", 0,
                                  save_as_floats);
 

@@ -106,79 +106,58 @@ function [sout, p] = orderfields (s1, s2)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif (! isstruct (s1))
+  endif
+
+  if (! isstruct (s1))
     error ("orderfields: S1 must be a struct");
   endif
 
+  names = fieldnames (s1);
+
   if (nargin == 1)
     ## One structure: return the fields in alphabetical order.
-    if (isstruct (s1))
-      names = sort (fieldnames (s1));
-    endif
+    [~, p] = sort (names);
   elseif (nargin == 2)
+
     if (isstruct (s2))
       ## Two structures: return the fields in the order of s2.
-      names = fieldnames (s2);
-      if (! isequal (sort (fieldnames (s1)), sort (names)))
+      names2 = fieldnames (s2);
+      [ns1, idx1] = sort (names);
+      [ns2, idx2] = sort (names2);
+      if (! isequal (ns1, ns2))
         error ("orderfields: structures S1 and S2 do not have the same fields");
       endif
+      p = idx1(idx2);
+
     elseif (iscellstr (s2))
       ## A structure and a list of fields: order by the list of fields.
-      t1 = sort (fieldnames (s1));
-      t2 = sort (s2(:));
-      if (! isequal (t1, t2))
+      names2 = s2(:);
+      [ns1, idx1] = sort (names);
+      [ns2, idx2] = sort (names2);
+      if (! isequal (ns1, ns2))
         error ("orderfields: CELLSTR list does not match structure fields");
       endif
-      names = s2;
-    elseif (isvector (s2))
+      p = idx1(idx2);
+
+    elseif (isnumeric (s2))
       ## A structure and a permutation vector: permute the order of s1.
-      names = fieldnames (s1);
-      t1 = 1:numel (names);
-      t2 = sort (s2);
-      t2 = t2(:)';
-      if (! isequal (t1, t2))
+      p = s2(:);
+      if (! isequal (sort (p), (1:numel (names)).'))
         error ("orderfields: invalid permutation vector P");
       endif
-      names = names(s2);
+
     else
       error ("orderfields: second argument must be structure, cellstr, or permutation vector");
     endif
   endif
 
-  ## Corner case of empty struct
-  if (isempty (names))
-    sout = struct ();
-    p = [];
-  endif
-
-  ## Find permutation vector which converts the original name order
-  ## into the new name order.  Note: could save a couple of sorts
-  ## in some cases, but performance isn't critical.
-
-  if (nargout == 2)
-    [~, oldidx] = sort (fieldnames (s1));
-    [~, newidx] = sort (names);
-    p = oldidx(newidx);
-  endif
-
   ## Permute the names in the structure.
-  if (isempty (s1))
-    ## Corner case of empty structure.  Still need to re-order fields.
-    args = cell (1, 2 * numel (names));
-    args(1:2:end) = names;
-    args(2:2:end) = {[]};
-    sout = struct (args{:});
-    ## inherit dimensions
-    sout = resize (sout, size (s1));
-  else
-    n = numel (s1);
-    for i = 1:numel (names)
-      el = names{i};
-      [sout(1:n).(el)] = s1(:).(el);
-    endfor
-    ## inherit dimensions
-    sout = reshape (sout, size (s1));
-  endif
+  names = names(p);
+  C = struct2cell (s1);
+  C = C(p,:);
+  sout = cell2struct (C, names);
+  ## Inherit dimensions.
+  sout = reshape (sout, size (s1));
 
 endfunction
 
@@ -239,6 +218,9 @@ endfunction
 %!error <invalid permutation vector P>
 %! s1.a = 1;
 %! orderfields (s1, [2 1]);
-%!error <second argument must be structure, cellstr, or permutation vector>
+%!error <invalid permutation vector P>
 %! s1.a = 1;
 %! orderfields (s1, ones (2,2));
+%!error <second argument must be structure, cellstr, or permutation vector>
+%! s1.a = 1;
+%! orderfields (s1, "foobar");

@@ -76,6 +76,8 @@ public:
 
   Array<std::string> cellstr_value (void) const;
 
+  string_vector string_vector_value (void) const;
+
   using Array<octave_value>::index;
 
   Cell index (const octave_value_list& idx, bool resize_ok = false) const;

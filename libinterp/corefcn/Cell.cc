@@ -151,6 +151,19 @@ Cell::cellstr_value (void) const
   return retval;
 }
 
+string_vector
+Cell::string_vector_value (void) const
+{
+  octave_idx_type n = numel ();
+
+  string_vector retval (n);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    retval.xelem (i) = elem (i).string_value ();
+
+  return retval;
+}
+
 Cell
 Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 {

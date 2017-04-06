@@ -479,39 +479,16 @@ classdef Map < handle
           keys = cell2mat (keys);
         endif
       endif
-      ## FIXME: Replace with csprintf when it becomes available.
-      ## Use explicit width in format to ensure that we print all digits
-      ## even when there are leading zeros.
-      if (any (strcmp (this.KeyType, {"single", "int32", "uint32"})))
-        keytype = "uint32";
-        fmt = "%0.8X|";
-      else
-        keytype = "uint64";
-        fmt = "%0.16X|";
-      endif
-      keys = ostrsplit (sprintf (fmt, typecast (keys, keytype)), "|", true);
+      keys = num2hex (keys);
       if (! cell_input)
         keys = char (keys);
       endif
-
     endfunction
 
     function keys = decode_keys (this, keys)
       if (this.numeric_keys)
-        ## Since we typecast the key to uint32 or uint64 before
-        ## converting to hex, it would probably be better if hex2num
-        ## could return uint32 or uint64 directly, then we could
-        ## typecast back to other types.
-        if (any (strcmp (this.KeyType, {"single", "int32", "uint32"})))
-          keytype = "single";
-        else
-          keytype = "double";
-        endif
-        keys = hex2num (keys, keytype);
-        if (! strcmp (this.KeyType, keytype))
-          keys = typecast (keys, this.KeyType);
-        endif
-        keys = mat2cell (keys.', 1, ones (numel (keys), 1));
+        keys = hex2num (keys, this.KeyType);
+        keys = mat2cell (keys(:)', 1, ones (numel (keys), 1));
       endif
     endfunction
 

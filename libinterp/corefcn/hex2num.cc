@@ -194,7 +194,7 @@ hex2num (["402df854"; "41200000"], "single")
   else if (type == "double")
     retval = octave_value (hex2num<double> (val, swap_bytes));
   else
-    error ("hex2num: unrecognized CLASS '%s'", type);
+    error ("hex2num: unrecognized CLASS '%s'", type.c_str ());
 
   return retval;
 }

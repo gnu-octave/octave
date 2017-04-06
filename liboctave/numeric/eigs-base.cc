@@ -780,8 +780,17 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -1030,7 +1039,6 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, tmp_info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
-
       info = tmp_info;
 
       if (f77_exception_encountered)
@@ -1044,8 +1052,17 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -1320,8 +1337,17 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -1601,8 +1627,18 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  os << "    " << workl[iptr(5)+k] << "\n";
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k - 1; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -1902,8 +1938,18 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  os << "    " << workl[iptr(5)+k] << "\n";
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k - 1; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -2220,8 +2266,18 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  os << "    " << workl[iptr(5)+k] << "\n";
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k - 1; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -2536,8 +2592,17 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -2808,8 +2873,17 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its
@@ -3099,8 +3173,17 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
               os << "Iteration " << iter - 1 <<
                  ": a few Ritz values of the " << p << "-by-" <<
                  p << " matrix\n";
-              for (int i = 0 ; i < k; i++)
-                os << "    " << workl[iptr(5)+i-1] << "\n";
+              if (ido == 99) // convergence
+                {
+                  for (F77_INT i = 0; i < k; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
+              else
+                {
+                  // the wanted Ritz estimates are at the end
+                  for (F77_INT i = p - k; i < p; i++)
+                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                }
             }
 
           // This is a kludge, as ARPACK doesn't give its

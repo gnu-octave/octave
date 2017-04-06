@@ -200,6 +200,9 @@ classdef Map < handle
         ## Determine ValueType
         vt = unique (cellfun (@class, vals, "UniformOutput", false));
         if (numel (vt) == 1
+            && (strcmp (vt{1}, "char")
+                || all (cellfun ("isreal", vals)
+                        & (cellfun ("numel", vals) == 1)))
             && any (strcmp (vt{1}, {"char", "logical", "double", "single", ...
                                     "int32", "uint32", "int64", "uint64"})))
           this.ValueType = vt{1};
@@ -508,12 +511,18 @@ classdef Map < handle
         if (! strcmp (this.KeyType, keytype))
           keys = typecast (keys, this.KeyType);
         endif
-        keys = mat2cell (keys, ones (numel (keys), 1), 1);
+        keys = mat2cell (keys.', 1, ones (numel (keys), 1));
       endif
     endfunction
 
     function this = sort_keys (this)
-      this.map = orderfields (this.map);
+      keySet = keys (this);
+      if (this.numeric_keys)
+        [~, p] = sort (cell2mat (keySet));
+      else
+        [~, p] = sort (keySet);
+      endif
+      this.map = orderfields (this.map, p);
     endfunction
 
     function check_types (this)
@@ -556,6 +565,10 @@ endclassdef
 %! assert (m.KeyType, "char");
 %! assert (m.ValueType, "double");
 %! assert (m.Count, uint64 (4));
+%! assert (iscell (keys (m)));
+%! assert (iscell (values (m)));
+%! assert (size (keys (m)), [1, 4]);
+%! assert (size (values (m)), [1, 4]);
 %! assert (m("Two"), 2);
 %! m("Five") = 5;
 %! key2 = {"Six", "Seven", "Eight"};
@@ -584,6 +597,8 @@ endclassdef
 %! m = containers.Map (key, val);
 %! assert (m(3), eye(3));
 %! assert (m(2)(2,2), 1);
+%! assert (m.KeyType, "double");
+%! assert (m.ValueType, "any");
 
 %!test
 %! m = containers.Map ("KeyType","char", "ValueType","int32");
@@ -630,6 +645,8 @@ endclassdef
 %! assert (m.ValueType, "any");
 %! m = containers.Map (key, val, "UniformValues", true);
 %! assert (m.ValueType, "any");
+%! m = containers.Map (key, {1, 2i});
+%! assert (m.ValueType, "any");
 
 %!test
 %! m = containers.Map ({"a","b","c"}, {1,2,3});
@@ -669,6 +686,23 @@ endclassdef
 %!   assert (m.isKey (key));
 %!   assert (m.keys (), {key});
 %! endfor
+
+## Check order of keys and values
+%!test
+%! key = {"d","a","b"};
+%! m = containers.Map (key, 1:numel (key));
+%! assert (keys (m), sort (key));
+%! assert (values (m), {2, 3, 1});
+%! m("c") = 4;
+%! assert (keys (m), sort ([key, "c"]));
+%! assert (values (m), {2, 3, 4, 1});
+%! key = [Inf, 2, 0, -Inf, -1];
+%! m = containers.Map (key, 1:numel (key));
+%! assert (keys (m), num2cell (sort (key)));
+%! assert (values (m), {4, 5, 3, 2, 1});
+%! m(-2) = 6;
+%! assert (keys (m), num2cell (sort ([key, -2])));
+%! assert (values (m), {4, 6, 5, 3, 2, 1});
 
 ## Test input validation
 %!error containers.Map (1,2,3)

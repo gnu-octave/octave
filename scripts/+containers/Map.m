@@ -142,6 +142,9 @@ classdef Map < handle
               (nargin == 4 && strcmpi (varargin{3}, "UniformValues")))
         ## Get Map keys
         keys = varargin{1};
+        if (isempty (keys))
+          error ("containers.Map: empty keys are not allowed");
+        endif
         if (! iscell (keys))
           if (isnumeric (keys) || islogical (keys))
             keys = num2cell (keys);
@@ -149,10 +152,7 @@ classdef Map < handle
             keys = { keys };
           endif
         endif
-        if (isempty (keys))
-          error ("containers.Map: empty keys are not allowed");
-        endif
-        keys = keys(:);        # Use Nx1 column vector for implementation
+        keys = keys(:);  # Use Nx1 column vector to simplify calls to all()
 
         ## Get Map values
         vals = varargin{2};
@@ -187,24 +187,22 @@ classdef Map < handle
           this.KeyType = char (kt);
         else
           ## Multiple key types
-          if (all (ismember (kt, {"double", "single","int8", "uint8", ...
-                                  "int16", "uint16", "int32", "uint32", ...
-                                  "int64", "uint64", "logical"})))
+          if (! all (ismember (kt, {"double", "single", "int8", "uint8", ...
+                                    "int16", "uint16", "int32", "uint32", ...
+                                    "int64", "uint64", "logical"})))
+            error ("containers.Map: when using multiple key types, all types must be numeric");
+          else
             warning ("containers.Map: all keys will be converted to double");
             this.KeyType = "double";
-          else
-            error ("containers.Map: all keys must be the same data type");
           endif
         endif
 
         ## Determine ValueType
         vt = unique (cellfun (@class, vals, "UniformOutput", false));
         if (numel (vt) == 1
-            && (strcmp (vt{1}, "char")
-                || all (cellfun ("isreal", vals)
-                        & (cellfun ("numel", vals) == 1)))
-            && any (strcmp (vt{1}, {"char", "logical", "double", "single", ...
-                                    "int32", "uint32", "int64", "uint64"})))
+            && (ischar (vals{1})
+                || ((isnumeric (vals{1}) || islogical (vals{1}))
+                    && size_equal (vals{:}))))
           this.ValueType = vt{1};
         else
           this.ValueType = "any";
@@ -245,7 +243,7 @@ classdef Map < handle
         this.map = cell2struct (vals, keys);
       elseif (nargin == 4)
         for i = [1, 3]
-          switch (lower (varargin{i}))
+          switch (tolower (varargin{i}))
             case "keytype"
               this.KeyType = varargin{i+1};
             case "valuetype"
@@ -261,7 +259,7 @@ classdef Map < handle
     endfunction
 
     function keySet = keys (this)
-      keySet = fieldnames (this.map).';
+      keySet = fieldnames (this.map).';  # compatibility requires row vector
       keySet = decode_keys (this, keySet);
     endfunction
 
@@ -431,10 +429,10 @@ classdef Map < handle
       endswitch
     endfunction
 
-    ## FIXME: Why not implement this?  Octave is a superset of Matlab and
-    ## just because they failed to implement this doesn't mean we need to.
     function newobj = horzcat (varargin)
-      error ("containers.Map: horizontal concatenation is not supported");
+      warning ("Octave:language-extension",
+               "containers.Map: horizontal concatenation is an Octave-only feature");   
+      newobj = vertcat (varargin{:});
     endfunction
 
     function newobj = vertcat (varargin)
@@ -471,24 +469,25 @@ classdef Map < handle
       endif
       cell_input = iscell (keys);
       if (cell_input)
+        orig_sz = size (keys);
         if (! all (cellfun ("isclass", keys, this.KeyType)))
           ## Convert input set to KeyType.  This is rarely necessary.
-          keys = cellfun (@(x) feval (this.KeyType, x), keys,
-                          "UniformOutput", true);
+          keys = cellfun (@(x) feval (this.KeyType, x), keys);
         else
           keys = cell2mat (keys);
         endif
       endif
-      keys = num2hex (keys);
-      if (! cell_input)
-        keys = char (keys);
+      keys = num2hex (keys);  # Force to char matrix with single logical column
+      if (cell_input)
+        keys = reshape (cellstr (keys), orig_sz);
       endif
     endfunction
 
     function keys = decode_keys (this, keys)
       if (this.numeric_keys)
         keys = hex2num (keys, this.KeyType);
-        keys = mat2cell (keys(:)', 1, ones (numel (keys), 1));
+        ## This always returns a 1xN list of keys ignoring input shape
+        keys = mat2cell (keys(:).', 1, ones (1, numel (keys)));
       endif
     endfunction
 
@@ -506,14 +505,17 @@ classdef Map < handle
       switch (this.KeyType)
         case {"char"}
           this.numeric_keys = false;
-        case {"single", "double", "int32", "uint32", "int64", "uint64"}
+        case {"double", "single", "int32", "uint32", "int64", "uint64"}
           this.numeric_keys = true;
         otherwise
           error ("containers.Map: unsupported KeyType");
       endswitch
-      if (! any (strcmp (this.ValueType, {"char","double", "single", ...
-                                          "int32", "uint32", "int64", ...
-                                          "uint64", "logical", "any"})))
+
+      if (! any (strcmp (this.ValueType, {"any"; "char"; "logical";
+                                          "double"; "single"; 
+                                          "int8"; "uint8"; "int16"; "uint16";
+                                          "int32"; "uint32";
+                                          "int64"; "uint64"})))
         error ("containers.Map: unsupported ValueType");
       endif
     endfunction
@@ -523,6 +525,7 @@ classdef Map < handle
 endclassdef
 
 
+## Test empty Map
 %!test
 %! m = containers.Map ();
 %! assert (m.Count, uint64 (0));
@@ -534,7 +537,10 @@ endclassdef
 %! assert (isempty (values (m)));
 %! assert (isKey (m, "Octave"), false);
 %! assert (isKey (m, 42), false);
+%! assert (isKey (m, {"Octave", 42}), [false, false]);
+%! assert (isKey (m, {"Octave"; 42}), [false; false]);
 
+## Test string keys
 %!test
 %! key = {"One", "Two", "Three", "Four"};
 %! val = [1, 2, 3, 4];
@@ -555,66 +561,61 @@ endclassdef
 %! assert (m.Count, uint64 (8));
 %! k = keys (m);
 %! assert (isempty (setdiff (k, [key, "Five", key2])));
-%! v = values (m, {"Three", "Four", "Five"});
-%! assert (v, {3, 4, 5});
+%! v = values (m, {"Three", "Four"; "Five", "Six"});
+%! assert (v, {3, 4; 5, 6});
 %! remove (m, {"Three", "Four"});
 %! k = keys (m);
 %! assert (numel (k), 6);
+%! assert (m.isKey({"One", "Four"; "Ten", "Five"}), [true,false; false,true]);
 
+## Test numeric keys
 %!test
 %! key = [1, 2, 3, 4];
 %! val = {"One", "Two", "Three", "Four"};
 %! m = containers.Map (key, val);
 %! assert (m.KeyType, "double");
 %! assert (m.ValueType, "char");
+%! assert (iscell (keys (m)));
+%! assert (iscell (values (m)));
+%! assert (size (keys (m)), [1, 4]);
+%! assert (size (values (m)), [1, 4]);
+%! assert (m(2), "Two");
+%! m(5) = "Five";
+%! key2 = [6, 7, 8];
+%! val2 = {"Six", "Seven", "Eight"};
+%! m2 = containers.Map (key2, val2);
+%! m = [m; m2];
+%! assert (m.Count, uint64 (8));
+%! k = keys (m);
+%! assert (isempty (setdiff (cell2mat (k), [key, 5, key2])));
+%! v = values (m, {3, 4; 5, 6});
+%! assert (v, {"Three", "Four"; "Five", "Six"});
+%! remove (m, {3, 4});
+%! k = keys (m);
+%! assert (numel (k), 6);
+%! assert (m.isKey({1, 4; 10, 5}), [true,false; false,true]);
 
+## Test that objects of different sizes force ValueType to "any"
 %!test
 %! key = [2, 3, 4];
 %! val = {eye(2), eye(3), eye(4)};
 %! m = containers.Map (key, val);
-%! assert (m(3), eye(3));
+%! assert (m(3), eye (3));
 %! assert (m(2)(2,2), 1);
 %! assert (m.KeyType, "double");
 %! assert (m.ValueType, "any");
 
-%!test
-%! m = containers.Map ("KeyType","char", "ValueType","int32");
-%! assert (m.KeyType, "char");
-%! assert (m.ValueType, "int32");
-%! assert (m.Count, uint64 (0));
-%! assert (isempty (m));
-
-%!test
-%! key = {"one", "two", "three"};
-%! val = {1, 2, 3};
-%! m = containers.Map (key, val, "UniformValues",false);
-%! m("four") = "GNU";
-%! assert (values (m), {"GNU", 1, 3, 2});
-
+## Test that mixed object types force ValueType to "any"
 %!test
 %! key = [2, 3, 4];
-%! val = {2, 3, 4};
-%! types = {"int32", "uint32", "int64", "uint64", "single", "double"};
-%! for i = 1:numel (types)
-%!   k = feval (types{i}, key);
-%!   m = containers.Map (k, val);
-%!   assert (m.KeyType, types{i});
-%!   assert (isa (keys(m){1}, types{i}));
-%! endfor
-%! assert ( all (isKey (m, keys (m))));
+%! val = {double(1), single(2), uint8(3)};
+%! m = containers.Map (key, val);
+%! assert (m.KeyType, "double");
+%! assert (m.ValueType, "any");
+%! assert (class (m(4)), "uint8");
+%! assert (class (m(3)), "single");
 
-%!test
-%! key = [0, 1];
-%! val = {1, 2};
-%! types = {"logical", "int8", "uint8", "int16", "uint16"};
-%! for i = 1:numel (types)
-%!   k = feval (types{i}, key);
-%!   m = containers.Map (k, val);
-%!   assert (m.KeyType, "double");
-%!   assert (isa (keys(m){1}, "double"));
-%! endfor
-%! assert ( all (isKey (m, keys (m))));
-
+## Test that non-numeric, non-char object types force ValueType to "any"
 %!test
 %! key = {"a", "b"};
 %! val = {struct(), struct()};
@@ -623,21 +624,67 @@ endclassdef
 %! m = containers.Map (key, val, "UniformValues", true);
 %! assert (m.ValueType, "any");
 %! m = containers.Map (key, {1, 2i});
-%! assert (m.ValueType, "any");
+%! assert (m.ValueType, "double");
 
+## Test "UniformValues" input
+%!test
+%! key = {"one", "two", "three"};
+%! val = {1, 2, 3};
+%! m = containers.Map (key, val, "UniformValues",false);
+%! assert (m.ValueType, "any");
+%! m("four") = "GNU";
+%! assert (values (m), {"GNU", 1, 3, 2});
+
+## Test 4-input form of Map
+%!test
+%! m = containers.Map ("KeyType","char", "ValueType","int32");
+%! assert (m.KeyType, "char");
+%! assert (m.ValueType, "int32");
+%! assert (m.Count, uint64 (0));
+%! assert (isempty (m));
+
+## Test all allowable key types
+%!test
+%! key = [2, 3, 4];
+%! val = {2, 3, 4};
+%! types = {"double", "single", "int32", "uint32", "int64", "uint64"};
+%! for type = types
+%!   type = type{1};
+%!   k = feval (type, key);
+%!   m = containers.Map (k, val);
+%!   assert (m.KeyType, type);
+%!   assert (isa (keys (m){1}, type));
+%! endfor
+%! assert (all (isKey (m, keys (m))));
+
+## Test that other numeric key types are converted to double
+%!test
+%! key = [0, 1];
+%! val = {1, 2};
+%! types = {"logical", "int8", "uint8", "int16", "uint16"};
+%! for type = types
+%!   type = type{1};
+%!   k = feval (type, key);
+%!   m = containers.Map (k, val);
+%!   assert (m.KeyType, "double");
+%!   assert (isa (keys (m){1}, "double"));
+%! endfor
+%! assert (all (isKey (m, keys (m))));
+
+## Test removal of keys
 %!test
 %! m = containers.Map ({"a","b","c"}, {1,2,3});
-%! assert (m.isKey("a"), true);
-%! assert (m.isKey({"a","d"}), [true, false]);
-%! m.remove("a");
-%! m.remove({"b","c"});
+%! assert (m.isKey ("a"), true);
+%! assert (m.isKey ({"a","d"}), [true, false]);
+%! m.remove ("a");
+%! m.remove ({"b","c"});
 %! assert (isempty (m));
 
 ## Ensure that exact key values are preserved.
 %!test
 %! keytypes = {"int32", "int64", "uint32", "uint64"};
-%! for i = 1:numel (keytypes)
-%!   keytype = keytypes{i};
+%! for keytype = keytypes
+%!   keytype = keytype{1};
 %!   key = intmax (keytype);
 %!   m = containers.Map (key, pi);
 %!   assert (m.isKey (key));
@@ -664,7 +711,7 @@ endclassdef
 %!   assert (m.keys (), {key});
 %! endfor
 
-## Check order of keys and values
+## Test sort order of keys and values
 %!test
 %! key = {"d","a","b"};
 %! m = containers.Map (key, 1:numel (key));
@@ -681,6 +728,15 @@ endclassdef
 %! assert (keys (m), num2cell (sort ([key, -2])));
 %! assert (values (m), {4, 6, 5, 3, 2, 1});
 
+## Test horizontal concatenation
+%!test
+%! m1 = containers.Map ("b", 2);
+%! m2 = containers.Map ("a", 1);
+%! m3 = [m1, m2];
+%! k = keys (m3);
+%! assert (numel (k), 2);
+%! assert (k, {"a", "b"});
+
 ## Test input validation
 %!error containers.Map (1,2,3)
 %!error containers.Map (1,2,3,4,5)
@@ -690,9 +746,10 @@ endclassdef
 %!error <keys must be .* scalar .* values> containers.Map ({magic(3)}, 2)
 %!warning <keys .* converted to double>
 %! containers.Map ({1,int8(2)}, {3,4});
-%!error <keys must be the same data type> containers.Map ({1, {2}}, {3,4})
+%!error <when using multiple key types, all types must be numeric>
+%! containers.Map ({1, {2}}, {3,4})
 %!error <'UniformValues' must be a logical scalar>
-%! containers.Map (1,2, 'UniformValues', ones(2,2))
+%! containers.Map (1,2, 'UniformValues', ones (2,2))
 %!error <'UniformValues' must be a logical scalar>
 %! containers.Map (1,2, 'UniformValues', {true})
 %!error <all values must be scalars of the same data type>
@@ -720,10 +777,6 @@ endclassdef
 %!error <only '\(\)' indexing is supported>
 %! m = containers.Map ("a", 1);
 %! m{1};
-%!error <horizontal concatenation is not supported>
-%! m1 = containers.Map ("a", 1);
-%! m2 = containers.Map ("b", 2);
-%! m3 = horzcat (m1, m2);
 %!error <unsupported KeyType>
 %! m1 = containers.Map ("KeyType", "cell", "ValueType", "any");
 %!error <unsupported ValueType>

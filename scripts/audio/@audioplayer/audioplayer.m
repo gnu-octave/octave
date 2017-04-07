@@ -123,7 +123,7 @@ endfunction
 
 ## Tests of audioplayer must not actually play anything.
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! mono = 0.25 * randn (1, 44100);
 %! stereo = 0.25 * randn (2, 44100);
 %! fs = 44100;
@@ -136,7 +136,7 @@ endfunction
 %! assert (player1.TotalSamples, 44100);
 %! assert (player2.TotalSamples, 44100);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -145,7 +145,7 @@ endfunction
 %! assert (player.Tag, "tag");
 %! assert (player.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -158,7 +158,7 @@ endfunction
 %! assert (player.Tag, "tag");
 %! assert (player.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! audio = 0.25 * randn (2, 44100);
 %! fs = 44100;
 %! player = audioplayer (audio, fs);

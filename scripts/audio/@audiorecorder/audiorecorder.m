@@ -69,7 +69,7 @@ endfunction
 
 ## Tests of audiorecorder must not actually record anything.
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
 %! recorder = audiorecorder (44100, 16, 2);
 %! data = getaudiodata (recorder, "int16");
 %! assert (strcmp (class (data), "int16"));
@@ -80,14 +80,14 @@ endfunction
 %! assert (size (data)(1), recorder.TotalSamples);
 %! assert (size (data)(2), 2);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
 %! recorder = audiorecorder;
 %! set (recorder, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
 %! assert (recorder.SampleRate, 8000);
 %! assert (recorder.Tag, "tag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
 %! recorder = audiorecorder;
 %! settable = set (recorder);
 %! settable.SampleRate = 8000;
@@ -98,7 +98,7 @@ endfunction
 %! assert (recorder.Tag, "tag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
 %! recorder = audiorecorder;
 %! recorder.SampleRate = 8000;
 %! recorder.Tag = "tag";

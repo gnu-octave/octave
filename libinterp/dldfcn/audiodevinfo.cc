@@ -89,7 +89,9 @@ fields @qcode{"Name"}, @nospell{"DriverVersion"} and @qcode{"ID"}
 describing an audio device.
 
 If the optional argument @var{io} is 1, return information about input
-devices only.  If it is 0, return information about output devices only.
+devices only.  If it is 0, return information about output devices
+only.  If @var{io} is the only argument supplied, return the number of
+intput or output devices available.
 
 If the optional argument @var{id} is provided, return information about
 the corresponding device.

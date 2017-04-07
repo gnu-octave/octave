@@ -3224,6 +3224,7 @@ Octave is now configured for $canonical_host_type
   Fortran libraries:             $FLIBS
   Lex libraries:                 $LEXLIB
   LIBS:                          $LIBS
+  LDFLAGS:                       $LDFLAGS
   Extra LDFLAGS:                 $WARN_LDFLAGS
 
   AMD CPPFLAGS:                  $AMD_CPPFLAGS

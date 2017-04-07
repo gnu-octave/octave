@@ -242,15 +242,15 @@ quit_loop_now (void)
 
   // Maybe handle 'continue N' someday...
 
-  if (tree_continue_command::continuing)
-    tree_continue_command::continuing--;
+  if (octave::tree_continue_command::continuing)
+    octave::tree_continue_command::continuing--;
 
-  bool quit = (tree_return_command::returning
-               || tree_break_command::breaking
-               || tree_continue_command::continuing);
+  bool quit = (octave::tree_return_command::returning
+               || octave::tree_break_command::breaking
+               || octave::tree_continue_command::continuing);
 
   if (tree_break_command::breaking)
-    tree_break_command::breaking--;
+    octave::tree_break_command::breaking--;
 
   return quit;
 }

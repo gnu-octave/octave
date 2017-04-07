@@ -22,7 +22,7 @@
 ## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fid})
 ## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fname})
 ## @deftypefnx {} {@var{success} =} test (@dots{})
-## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nskip}, @var{nrtskip}] =} test (@dots{})
+## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nbug}, @var{nskip}, @var{nrtskip}] =} test (@dots{})
 ## @deftypefnx {} {[@var{code}, @var{idx}] =} test ("@var{name}", "grabdemo")
 ## @deftypefnx {} {} test ([], "explain", @var{fid})
 ## @deftypefnx {} {} test ([], "explain", @var{fname})
@@ -81,9 +81,10 @@
 ## returns true if all of the tests were successful.  If called with more
 ## than one output argument then the number of successful tests (@var{n}),
 ## the total number of tests in the file (@var{nmax}), the number of xtest
-## failures (@var{nxfail}), the number of tests skipped due to missing
-## features (@var{nskip}), and the number of tests skipped due to
-## run-time conditions (@var{nrtskip}) are returned.
+## failures (@var{nxfail}), the number of tests failed due known bugs
+## (@var{nbug}), the number of tests skipped due to missing features
+## (@var{nskip}), and the number of tests skipped due to run-time
+## conditions (@var{nrtskip}) are returned.
 ##
 ## Example
 ##
@@ -119,7 +120,7 @@
 ## Shared variables are eval'ed into the current workspace and therefore might
 ## collide with the names used in the test.m function itself.
 
-function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "normal", __fid = [])
+function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __flag = "normal", __fid = [])
 
   ## Output from test is prefixed by a "key" to quickly understand the issue.
   persistent __signal_fail  = "!!!!! ";
@@ -296,7 +297,7 @@ function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "n
 
   ## Process each block separately, initially with no shared variables.
   __tests = __successes = 0;
-  __xfail = __xskip = __xrtskip = 0;
+  __xfail = __xbug = __xskip = __xrtskip = 0;
   __shared = " ";
   __shared_r = " ";
   __clearfcn = "";
@@ -634,10 +635,11 @@ function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "n
           else
             __success = false;
             if (__isxtest)
-              __xfail += 1;
               if (isempty (__bug_id))
+                __xfail += 1;
                 __msg = "known failure";
               else
+                __xbug += 1;
                 if (all (isdigit (__bug_id)))
                   __bug_id = ["http://octave.org/testfailure/?" __bug_id];
                 endif
@@ -700,11 +702,22 @@ function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "n
   eval (__clearfcn, "");
 
   if (nargout == 0)
-    if (__tests || __xfail || __xskip || __xrtskip)
-      if (__xfail)
-        printf ("PASSES %d out of %d test%s (%d known failure%s)\n",
-                __successes, __tests, ifelse (__tests > 1, "s", ""),
-                __xfail, ifelse (__xfail > 1, "s", ""));
+    if (__tests || __xfail || __xbug || __xskip || __xrtskip)
+      if (__xfail || __xbug)
+        if (__xfail && __xbug)
+          printf ("PASSES %d out of %d test%s (%d known failure%s; %d known bug%s)\n",
+                  __successes, __tests, ifelse (__tests > 1, "s", ""),
+                  __xfail, ifelse (__xfail > 1, "s", ""),
+                  __xbug, ifelse (__xbug > 1, "s", ""));
+        elseif (__xfail)
+          printf ("PASSES %d out of %d test%s (%d known failure%s)\n",
+                  __successes, __tests, ifelse (__tests > 1, "s", ""),
+                  __xfail, ifelse (__xfail > 1, "s", ""));
+        elseif (__xbug)
+          printf ("PASSES %d out of %d test%s (%d known bug%s)\n",
+                  __successes, __tests, ifelse (__tests > 1, "s", ""),
+                  __xbug, ifelse (__xbug > 1, "s", ""));
+        endif
       else
         printf ("PASSES %d out of %d test%s\n", __successes, __tests,
                ifelse (__tests > 1, "s", ""));
@@ -729,6 +742,7 @@ function [__n, __nmax, __nxfail, __nskip, __nrtskip] = test (__name, __flag = "n
     __n      = __successes;
     __nmax   = __tests;
     __nxfail = __xfail;
+    __nbug   = __xbug;
     __nskip  = __xskip;
     __nrtskip = __xrtskip;
   endif

@@ -402,6 +402,13 @@ classdef inputParser < handle
       while (vidx < pnargin && idx < nOpt)
         opt = this.Optional{++idx};
         in  = varargin{++vidx};
+        if (this.is_argname ("Parameter", in) && vidx < pnargin)
+          ## This looks like an optional parameter/value pair, not an
+          ## optional positional parameter.
+          idx -= 1;
+          vidx -= 1;
+          break
+        endif
         try
           valid_option = opt.val (in);
         catch
@@ -728,7 +735,7 @@ endclassdef
 %! assert (p.Results, struct ("foo", "qux"))
 
 ## FIXME: This somehow works in Matlab
-%!xtest
+%!test <50752>
 %! p = inputParser;
 %! p.addOptional ("op1", "val");
 %! p.addParameter ("line", "tree");

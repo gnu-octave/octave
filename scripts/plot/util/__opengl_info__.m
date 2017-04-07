@@ -61,10 +61,10 @@ function retval = __opengl_info__ ()
     warning (msg);
   else
     if (nargout == 0)
-      printf ("version    = %s\n", info.version);
-      printf ("vendor     = %s\n", info.vendor);
-      printf ("renderer   = %s\n", info.renderer);
-      printf ("extensions =\n");
+      printf ("   version: %s\n", info.version);
+      printf ("    vendor: %s\n", info.vendor);
+      printf ("  renderer: %s\n", info.renderer);
+      printf ("extensions:\n");
       printf ("  %s\n", info.extensions{:});
     else
       retval = info;
@@ -109,7 +109,8 @@ function [info, msg] = gl_info ()
     ## Need to create a figure, place an OpenGL object, and force drawing.
     h = figure ("position", [0,0,1,1], "toolbar", "none", "menubar", "none");
     hax = axes ();
-    drawnow ();
+    ## Hmm, drawnow did not seem to be working as intended here.
+    pause (0.2);
     info = fig_gl_info (h);
     close (h);
   endif
@@ -121,7 +122,17 @@ function [info, msg] = gl_info ()
 endfunction
 
 
-%!xtest
+## Duplicate the test since there is currently no way to write
+## "HAVE_OPENGL && (HAVE_FLTK || HAVE_QT)"
+
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system
 %! a = __opengl_info__ ();
 %! assert (! isempty (a))
 %! assert (isfield (a, "version"))
+
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system
+%! a = __opengl_info__ ();
+%! assert (! isempty (a))
+%! assert (isfield (a, "version"))
+
+%!error __opengl_info ("foobar")

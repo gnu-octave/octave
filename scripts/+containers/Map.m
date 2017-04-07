@@ -202,7 +202,7 @@ classdef Map < handle
         if (numel (vt) == 1
             && (ischar (vals{1})
                 || ((isnumeric (vals{1}) || islogical (vals{1}))
-                    && size_equal (vals{:}))))
+                    && all (cellfun (@numel, vals) == 1))))
           this.ValueType = vt{1};
         else
           this.ValueType = "any";
@@ -217,8 +217,8 @@ classdef Map < handle
           endif
 
           if (UniformValues)
-            if (! strcmp (this.ValueType, "char")
-                && (! isscalar (vt) || ! all (cellfun (@numel, vals) == 1)))
+            if (numel (vt) > 1
+                || (strcmp (this.ValueType, "any") && isreal (vals{1})))
               error ("containers.Map: when 'UniformValues' is true, all values must be scalars of the same data type");
             endif
           else
@@ -270,13 +270,15 @@ classdef Map < handle
         if (! iscell (keySet))
           error ("containers.Map: input argument 'keySet' must be a cell");
         endif
-        keySet = encode_keys (this, keySet);
+        enckeySet = encode_keys (this, keySet);
         valueSet = cell (size (keySet));
         for i = 1:numel (valueSet)
-          if (! isfield (this.map, keySet{i}))
-            error ("containers.Map: key <%s> does not exist", keySet{i});
-          endif
-          valueSet{i} = this.map.(keySet{i});
+          try
+            valueSet{i} = this.map.(enckeySet{i});
+          catch
+            error ("containers.Map: key <%s> does not exist",
+                   strtrim (disp (keySet{i})));
+          end_try_catch
         endfor
       endif
     endfunction
@@ -381,11 +383,12 @@ classdef Map < handle
                                         || ! isscalar (key))))
             error ("containers.Map: specified key type does not match the type of this container");
           endif
-          key = encode_keys (this, key);
-          if (! isfield (this.map, key))
-            error ("containers.Map: specified key <%s> does not exist", key);
+          enckey = encode_keys (this, key);
+          if (! isfield (this.map, enckey))
+            error ("containers.Map: specified key <%s> does not exist",
+                   strtrim (disp (key)));
           endif
-          sref = this.map.(key);
+          sref = this.map.(enckey);
         otherwise
           error ("containers.Map: only '()' indexing is supported");
       endswitch
@@ -595,13 +598,18 @@ endclassdef
 %! assert (numel (k), 6);
 %! assert (m.isKey({1, 4; 10, 5}), [true,false; false,true]);
 
-## Test that objects of different sizes force ValueType to "any"
+## Test that non-scalar objects force ValueType to "any"
 %!test
 %! key = [2, 3, 4];
 %! val = {eye(2), eye(3), eye(4)};
 %! m = containers.Map (key, val);
 %! assert (m(3), eye (3));
 %! assert (m(2)(2,2), 1);
+%! assert (m.KeyType, "double");
+%! assert (m.ValueType, "any");
+%! key = [2, 3, 4];
+%! val = {2, 3, [4 5]};
+%! m = containers.Map (key, val);
 %! assert (m.KeyType, "double");
 %! assert (m.ValueType, "any");
 
@@ -774,6 +782,9 @@ endclassdef
 %!error <specified key .b. does not exist>
 %! m = containers.Map ("a", 1);
 %! m("b");
+%!error <specified key .2. does not exist>
+%! m = containers.Map (1, 1);
+%! m(2);
 %!error <only '\(\)' indexing is supported>
 %! m = containers.Map ("a", 1);
 %! m{1};

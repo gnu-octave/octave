@@ -32,164 +32,124 @@ along with Octave; see the file COPYING.  If not, see
 #include "token.h"
 #include "utils.h"
 
-token::token (int tv, int l, int c)
+namespace octave
 {
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = generic_token;
-}
+  token::token (int tv, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (generic_token), m_tok_info (),
+      m_orig_text ()
+  { }
 
-token::token (int tv, bool is_kw, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = is_kw ? keyword_token : generic_token;
-}
+  token::token (int tv, bool is_kw, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (is_kw ? keyword_token : generic_token),
+      m_tok_info (), m_orig_text ()
+  { }
 
-token::token (int tv, const char *s, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = string_token;
-  str = new std::string (s);
-}
+  token::token (int tv, const char *s, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (string_token), m_tok_info (s),
+      m_orig_text ()
+  { }
 
-token::token (int tv, const std::string& s, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = string_token;
-  str = new std::string (s);
-}
+  token::token (int tv, const std::string& s, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (string_token), m_tok_info (s),
+      m_orig_text ()
+  { }
 
-token::token (int tv, double d, const std::string& s, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = double_token;
-  num = d;
-  orig_text = s;
-}
+  token::token (int tv, double d, const std::string& s, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (double_token), m_tok_info (d),
+      m_orig_text (s)
+  { }
 
-token::token (int tv, end_tok_type t, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = ettype_token;
-  et = t;
-}
+  token::token (int tv, end_tok_type t, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (ettype_token), m_tok_info (t),
+      m_orig_text ()
+  { }
 
-token::token (int tv, symbol_table::symbol_record *s, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = sym_rec_token;
-  sr = s;
-}
+  token::token (int tv, symbol_table::symbol_record *sr, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (sym_rec_token), m_tok_info (sr),
+      m_orig_text ()
+  { }
 
-token::token (int tv, const std::string& mth, const std::string& cls,
-              int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = scls_name_token;
-  sc.method_nm = new std::string (mth);
-  sc.class_nm = new std::string (cls);
-}
+  token::token (int tv, const std::string& method_nm,
+                const std::string& class_nm, int l, int c)
+    : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
+      m_tok_val (tv), m_type_tag (scls_name_token),
+      m_tok_info (method_nm, class_nm), m_orig_text ()
+  { }
 
-token::~token (void)
-{
-  if (type_tag == string_token)
-    delete str;
+  token::~token (void)
+  {
+    if (m_type_tag == string_token)
+      delete m_tok_info.m_str;
 
-  if (type_tag == scls_name_token)
-    {
-      delete sc.method_nm;
-      delete sc.class_nm;
-    }
-}
+    if (m_type_tag == scls_name_token)
+      delete m_tok_info.m_superclass_info;
+  }
 
-std::string
-token::text (void) const
-{
-  assert (type_tag == string_token);
-  return *str;
-}
+  std::string
+  token::text (void) const
+  {
+    assert (m_type_tag == string_token);
+    return *m_tok_info.m_str;
+  }
 
-std::string
-token::symbol_name (void) const
-{
-  assert (type_tag == sym_rec_token);
-  return sr->name ();
-}
+  std::string
+  token::symbol_name (void) const
+  {
+    assert (m_type_tag == sym_rec_token);
+    return m_tok_info.m_sr->name ();
+  }
 
-double
-token::number (void) const
-{
-  assert (type_tag == double_token);
-  return num;
-}
+  double
+  token::number (void) const
+  {
+    assert (m_type_tag == double_token);
+    return m_tok_info.m_num;
+  }
 
-token::token_type
-token::ttype (void) const
-{
-  return type_tag;
-}
+  token::token_type
+  token::ttype (void) const
+  {
+    return m_type_tag;
+  }
 
-token::end_tok_type
-token::ettype (void) const
-{
-  assert (type_tag == ettype_token);
-  return et;
-}
+  token::end_tok_type
+  token::ettype (void) const
+  {
+    assert (m_type_tag == ettype_token);
+    return m_tok_info.m_et;
+  }
 
-symbol_table::symbol_record *
-token::sym_rec (void)
-{
-  assert (type_tag == sym_rec_token);
-  return sr;
-}
+  symbol_table::symbol_record *
+  token::sym_rec (void) const
+  {
+    assert (m_type_tag == sym_rec_token);
+    return m_tok_info.m_sr;
+  }
 
-std::string
-token::superclass_method_name (void)
-{
-  assert (type_tag == scls_name_token);
-  return *sc.method_nm;
-}
+  std::string
+  token::superclass_method_name (void) const
+  {
+    assert (m_type_tag == scls_name_token);
+    return m_tok_info.m_superclass_info->m_method_nm;
+  }
 
-std::string
-token::superclass_class_name (void)
-{
-  assert (type_tag == scls_name_token);
-  return *sc.class_nm;
-}
+  std::string
+  token::superclass_class_name (void) const
+  {
+    assert (m_type_tag == scls_name_token);
+    return m_tok_info.m_superclass_info->m_class_nm;
+  }
 
-std::string
-token::text_rep (void)
-{
-  return orig_text;
+  std::string
+  token::text_rep (void) const
+  {
+    return m_orig_text;
+  }
 }

@@ -78,32 +78,32 @@ namespace octave
 
     // No copying!
 
-    token (const token& tok) = delete;
+    token (const token&) = delete;
 
-    token& operator = (const token& tok) = delete;
+    token& operator = (const token&) = delete;
 
     ~token (void);
 
-    void mark_may_be_command (void) { maybe_cmd = true; }
-    bool may_be_command (void) const { return maybe_cmd; }
+    void mark_may_be_command (void) { m_maybe_cmd = true; }
+    bool may_be_command (void) const { return m_maybe_cmd; }
 
-    void mark_trailing_space (void) { tspc = true; }
-    bool space_follows_token (void) const { return tspc; }
+    void mark_trailing_space (void) { m_tspc = true; }
+    bool space_follows_token (void) const { return m_tspc; }
 
-    int token_value (void) const { return tok_val; }
-    bool token_value_is (int tv) const { return tv == tok_val; }
+    int token_value (void) const { return m_tok_val; }
+    bool token_value_is (int tv) const { return tv == m_tok_val; }
 
-    int line (void) const { return line_num; }
-    int column (void) const { return column_num; }
+    int line (void) const { return m_line_num; }
+    int column (void) const { return m_column_num; }
 
     bool is_keyword (void) const
     {
-      return type_tag == keyword_token || type_tag == ettype_token;
+      return m_type_tag == keyword_token || m_type_tag == ettype_token;
     }
 
     bool is_symbol (void) const
     {
-      return type_tag == sym_rec_token;
+      return m_type_tag == sym_rec_token;
     }
 
     std::string text (void) const;
@@ -111,34 +111,84 @@ namespace octave
     double number (void) const;
     token_type ttype (void) const;
     end_tok_type ettype (void) const;
-    symbol_table::symbol_record *sym_rec (void);
+    symbol_table::symbol_record *sym_rec (void) const;
 
-    std::string superclass_method_name (void);
-    std::string superclass_class_name (void);
+    std::string superclass_method_name (void) const;
+    std::string superclass_class_name (void) const;
 
-    std::string text_rep (void);
+    std::string text_rep (void) const;
 
   private:
 
-    bool maybe_cmd;
-    bool tspc;
-    int line_num;
-    int column_num;
-    int tok_val;
-    token_type type_tag;
-    union
+    bool m_maybe_cmd;
+
+    bool m_tspc;
+
+    int m_line_num;
+
+    int m_column_num;
+
+    int m_tok_val;
+
+    token_type m_type_tag;
+
+    union tok_info
     {
-      std::string *str;
-      double num;
-      end_tok_type et;
-      symbol_table::symbol_record *sr;
-      struct
+      tok_info (void) { }
+
+      tok_info (const char *s) : m_str (new std::string (s)) { }
+
+      tok_info (const std::string& str) : m_str (new std::string (str)) { }
+
+      tok_info (double num) : m_num (num) { }
+
+      tok_info (end_tok_type et) : m_et (et) { }
+
+      tok_info (symbol_table::symbol_record *sr) : m_sr (sr) { }
+
+      tok_info (const std::string& method_nm, const std::string& class_nm)
+        : m_superclass_info (new superclass_info (method_nm, class_nm))
+      { }
+
+      tok_info (const tok_info&) = delete;
+
+      tok_info& operator = (const tok_info&) = delete;
+
+      ~tok_info (void) { }
+
+      std::string *m_str;
+
+      double m_num;
+
+      end_tok_type m_et;
+
+      symbol_table::symbol_record *m_sr;
+
+      struct superclass_info
       {
-        std::string *method_nm;
-        std::string *class_nm;
-      } sc;
+        superclass_info (void) = delete;
+
+        superclass_info (const std::string& method_nm,
+                         const std::string& class_nm)
+          : m_method_nm (method_nm), m_class_nm (class_nm)
+        { }
+
+        superclass_info (const superclass_info&) = delete;
+
+        superclass_info& operator = (const superclass_info&) = delete;
+
+        ~superclass_info (void) = default;
+
+        std::string m_method_nm;
+        std::string m_class_nm;
+      };
+
+      superclass_info *m_superclass_info;
     };
-    std::string orig_text;
+
+    tok_info m_tok_info;
+
+    std::string m_orig_text;
   };
 }
 

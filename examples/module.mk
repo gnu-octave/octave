@@ -16,7 +16,7 @@ examples_code_SRC = \
   examples/code/@FIRfilter/display.m \
   examples/code/@FIRfilter/subsasgn.m \
   examples/code/@FIRfilter/subsref.m \
-  examples/code/@polynomial/display.m \
+  examples/code/@polynomial/disp.m \
   examples/code/@polynomial/double.m \
   examples/code/@polynomial/end.m \
   examples/code/@polynomial/get.m \

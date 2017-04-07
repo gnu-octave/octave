@@ -1,6 +1,4 @@
-function display (p)
-
-  printf ("%s =", inputname (1));
+function disp (p)
 
   a = p.poly;
   first = true;

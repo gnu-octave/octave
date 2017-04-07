@@ -175,7 +175,7 @@ contents of a class which can be confusing.
 An example of a display method for the polynomial class might be
 
 @example
-@EXAMPLEFILE(@polynomial/display.m)
+@EXAMPLEFILE(@polynomial/disp.m)
 @end example
 
 @noindent

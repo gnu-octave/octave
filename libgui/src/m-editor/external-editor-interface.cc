@@ -103,6 +103,12 @@ external_editor_interface::call_custom_editor (const QString& file, int line)
 // Slots for the several signals for invoking the editor
 
 void
+external_editor_interface::request_open_file (QString file, int line)
+{
+  call_custom_editor (file, line);
+}
+
+void
 external_editor_interface::request_new_file (const QString&)
 {
   call_custom_editor ();

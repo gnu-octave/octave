@@ -136,8 +136,7 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
     _clipboard (QApplication::clipboard ()),
     _prevent_readline_conflicts (true),
     _suppress_dbg_location (true),
-    _start_gui (app_context && app_context->start_gui_p ()),
-    _file_encoding (QString ())
+    _start_gui (app_context && app_context->start_gui_p ())
 {
   if (_start_gui)
     {
@@ -1399,89 +1398,6 @@ main_window::handle_create_filedialog (const QStringList& filters,
 // is built without qscintilla
 //
 void
-main_window::request_open_file (void)
-{
-  // Open file isn't a file_editor_tab or editor function since the file
-  // might be opened in an external editor. Hence, functionality is here.
-
-  QSettings *settings = resource_manager::get_settings ();
-  bool is_internal = editor_window
-                && ! settings->value ("useCustomFileEditor",false).toBool ();
-
-  // Create a NonModal message.
-  QWidget *p = this;
-  if (is_internal)
-    p = editor_window;
-  QFileDialog *fileDialog = new QFileDialog (p);
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
-
-  // Giving trouble under KDE (problem is related to Qt signal handling on unix,
-  // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
-  // it had/has no effect on Windows, though)
-  fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
-
-  // define a new grid layout with the extra elements
-  QGridLayout *extra = new QGridLayout (fileDialog);
-  QFrame *separator = new QFrame (fileDialog);
-  separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
-  separator->setFrameStyle (QFrame::Sunken);
-
-  if (is_internal)
-    {
-      // combo box for encoding, only when using the internal editor
-      QLabel *label_enc = new QLabel (tr ("File Encoding:"));
-      QComboBox *combo_enc = new QComboBox ();
-      resource_manager::combo_encoding (combo_enc);
-      _file_encoding = QString ();  // default
-
-      // track changes in the combo boxes
-      connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
-               this, SLOT (set_file_encoding (QString)));
-
-      // build the extra grid layout
-      extra->addWidget (separator,0,0,1,3);
-      extra->addWidget (label_enc,1,0);
-      extra->addWidget (combo_enc,1,1);
-      extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                        QSizePolicy::Fixed), 1,2);
-
-      // and add the extra grid layout to the dialog's layout
-      QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (
-                                   fileDialog->layout ());
-      dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                                1,dialog_layout->columnCount ());
-    }
-
-  fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
-  fileDialog->setViewMode (QFileDialog::Detail);
-  fileDialog->setFileMode (QFileDialog::ExistingFiles);
-  fileDialog->setDirectory (_current_directory_combo_box->itemText (0));
-
-  connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
-           this, SLOT (request_open_files (const QStringList&)));
-
-  fileDialog->setWindowModality (Qt::NonModal);
-  fileDialog->setAttribute (Qt::WA_DeleteOnClose);
-  fileDialog->show ();
-}
-
-void
-main_window::set_file_encoding (const QString& new_encoding)
-{
-  _file_encoding = new_encoding;
-}
-
-// The following slot is called after files have been selected in the
-// open file dialog., possibly with a new selected encoding stored in
-// _file_encoding
-void
-main_window::request_open_files (const QStringList& open_file_names)
-{
-  for (int i = 0; i < open_file_names.count (); i++)
-    emit open_file_signal (open_file_names.at (i), _file_encoding, -1);
-}
-
-void
 main_window::handle_edit_mfile_request (const QString& fname,
                                         const QString& ffile,
                                         const QString& curr_dir, int line)
@@ -2024,7 +1940,7 @@ main_window::construct_file_menu (QMenuBar *p)
   _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
   connect (_open_action, SIGNAL (triggered ()),
-           this, SLOT (request_open_file ()));
+           _active_editor, SLOT (request_open_file ()));
 
   connect (_load_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_load_workspace_request ()));

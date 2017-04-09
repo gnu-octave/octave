@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QKeySequence>
 #include <QApplication>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMenuBar>
 #include <QMenu>
@@ -64,18 +65,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "version.h"
 #include "utils.h"
+#include <oct-map.h>
 
-static file_editor_interface *
-create_default_editor (QWidget *p)
-{
-#if defined (HAVE_QSCINTILLA)
-  return new file_editor (p);
-#else
-  octave_unused_parameter (p);
-
-  return 0;
-#endif
-}
 
 octave_interpreter::octave_interpreter (octave::application *app_context)
   : QObject (), thread_manager (), m_app_context (app_context)
@@ -155,7 +146,15 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
       history_window = new history_dock_widget (this);
       file_browser_window = new files_dock_widget (this);
       doc_browser_window = new documentation_dock_widget (this);
-      editor_window = create_default_editor (this);
+#if defined (HAVE_QSCINTILLA)
+      editor_window = new file_editor (this);
+      _external_editor = 0;
+      _active_editor = editor_window;  // for connecting signals
+#else
+      editor_window = 0;
+      _external_editor = new external_editor_interface (p);
+      _active_editor = _external_editor;  // for connecting signals
+#endif
       workspace_window = new workspace_view (this);
     }
 
@@ -201,6 +200,7 @@ main_window::~main_window (void)
   // to its original pipe to capture error messages at exit.
 
   delete editor_window;     // first one for dialogs of modified editor-tabs
+  delete _external_editor;
   delete command_window;
   delete workspace_window;
   delete doc_browser_window;
@@ -312,7 +312,7 @@ void
 
 main_window::edit_mfile (const QString& name, int line)
 {
-  emit edit_mfile_request (name, QString (), QString (), line);
+  handle_edit_mfile_request (name, QString (), QString (), line);
 }
 
 void
@@ -1390,7 +1390,154 @@ main_window::handle_create_filedialog (const QStringList& filters,
   file_dialog->show ();
 }
 
+
+//
+// Functions related to file editing
+//
+// These are moved from editor to here for also using them when octave
+// is built without qscintilla
+//
+void
+main_window::handle_edit_mfile_request (const QString& fname,
+                                        const QString& ffile,
+                                        const QString& curr_dir, int line)
+{
+  // Is it a regular function within the search path? (Call __which__)
+  octave_value_list fct = F__which__ (ovl (fname.toStdString ()),0);
+  octave_map map = fct(0).map_value ();
+
+  QString type = QString::fromStdString (
+                         map.contents ("type").data ()[0].string_value ());
+  QString name = QString::fromStdString (
+                         map.contents ("name").data ()[0].string_value ());
+
+  QString message = QString ();
+  QString filename = QString ();
+
+  if (type == QString ("built-in function"))
+    {
+      // built in function: can't edit
+      message = tr ("%1 is a built-in function");
+    }
+  else if (type.isEmpty ())
+    {
+      // function not known to octave -> try directory of edited file
+      // get directory
+      QDir dir;
+      if (ffile.isEmpty ())
+        {
+          if (curr_dir.isEmpty ())
+            dir = QDir (_current_directory_combo_box->itemText (0));
+          else
+            dir = QDir (curr_dir);
+        }
+      else
+        dir = QDir (QFileInfo (ffile).canonicalPath ());
+
+      // function not known to octave -> try directory of edited file
+      QFileInfo file = QFileInfo (dir, fname + ".m");
+
+      if (file.exists ())
+        {
+          filename = file.canonicalFilePath (); // local file exists
+        }
+      else
+        {
+          // local file does not exist -> try private directory
+          file = QFileInfo (ffile);
+          file = QFileInfo (QDir (file.canonicalPath () + "/private"),
+                            fname + ".m");
+
+          if (file.exists ())
+            {
+              filename = file.canonicalFilePath ();  // private function exists
+            }
+          else
+            {
+              message = tr ("Can not find function %1");  // no file found
+            }
+        }
+    }
+
+  if (! message.isEmpty ())
+    {
+      QMessageBox *msgBox
+        = new QMessageBox (QMessageBox::Critical,
+                           tr ("Octave Editor"),
+                           message.arg (name),
+                           QMessageBox::Ok, this);
+
+      msgBox->setWindowModality (Qt::NonModal);
+      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+      msgBox->show ();
+      return;
+    }
+
+  if (filename.isEmpty ())
+    filename = QString::fromStdString (
+                           map.contents ("file").data ()[0].string_value ());
+
+  if (! filename.endsWith (".m"))
+    filename.append (".m");
+
+  emit open_file_signal (filename, QString (), line);  // default encoding
+}
+
+// Create a new script
+void
+main_window::request_new_script (const QString& commands)
+{
+  emit new_file_signal (commands);
+}
+
+// Create a new function and open it
+void
+main_window::request_new_function (bool)
+{
+  bool ok;
+  // Get the name of the new function: Parent of the input dialog is the
+  // editor window or the main window. The latter is chosen, if a custom
+  // editor is used or qscintilla is not available
+  QWidget *p = editor_window;
+  QSettings *settings = resource_manager::get_settings ();
+  if (! p || settings->value ("useCustomFileEditor",false).toBool ())
+    p = this;
+  QString new_name = QInputDialog::getText (p, tr ("New Function"),
+                     tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
+
+  if (ok && new_name.length () > 0)
+    {
+      // append suffix if it not already exists
+      if (new_name.rightRef (2) != ".m")
+        new_name.append (".m");
+      // check whether new files are created without prompt
+      QSettings *settings = resource_manager::get_settings ();
+      if (! settings->value ("editor/create_new_file",false).toBool ())
+        {
+          // no, so enable this settings and wait for end of new file loading
+          settings->setValue ("editor/create_new_file",true);
+          connect (this, SIGNAL (file_loaded_signal ()),
+                   this, SLOT (restore_create_file_setting ()));
+        }
+      // start the edit command
+      execute_command_in_terminal ("edit " + new_name);
+    }
+}
+
+void
+main_window::restore_create_file_setting ()
+{
+  // restore the new files creation setting
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("editor/create_new_file",false);
+  disconnect (this, SIGNAL (file_loaded_signal ()),
+              this, SLOT (restore_create_file_setting ()));
+}
+
+
+//
 // Main subroutine of the constructor
+//
 void
 main_window::construct (void)
 {
@@ -1646,12 +1793,10 @@ main_window::construct_octave_qt_link (void)
                SIGNAL (show_preferences_signal (void)),
                this, SLOT (process_settings_dialog_request ()));
 
-#if defined (HAVE_QSCINTILLA)
       connect (_octave_qt_link,
                SIGNAL (edit_file_signal (const QString&)),
-               editor_window,
+               _active_editor,
                SLOT (handle_edit_file_request (const QString&)));
-#endif
 
       connect (_octave_qt_link,
                SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
@@ -1794,10 +1939,8 @@ main_window::construct_file_menu (QMenuBar *p)
   _exit_action = file_menu->addAction (tr ("Exit"));
   _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
-#if defined (HAVE_QSCINTILLA)
   connect (_open_action, SIGNAL (triggered ()),
-           editor_window, SLOT (request_open_file ()));
-#endif
+           _active_editor, SLOT (request_open_file ()));
 
   connect (_load_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_load_workspace_request ()));
@@ -1826,13 +1969,18 @@ main_window::construct_new_menu (QMenu *p)
   _new_figure_action = new_menu->addAction (tr ("New Figure"));
   _new_figure_action->setEnabled (true);
 
-#if defined (HAVE_QSCINTILLA)
   connect (_new_script_action, SIGNAL (triggered ()),
-           editor_window, SLOT (request_new_script ()));
-
+           this, SLOT (request_new_script ()));
   connect (_new_function_action, SIGNAL (triggered ()),
-           editor_window, SLOT (request_new_function ()));
-#endif
+           this, SLOT (request_new_function ()));
+  connect (this, SIGNAL (new_file_signal (const QString&)),
+           _active_editor, SLOT (request_new_file (const QString&)));
+  connect (this, SIGNAL (open_file_signal (const QString&)),
+           _active_editor, SLOT (request_open_file (const QString&)));
+  connect (this,
+           SIGNAL (open_file_signal (const QString&, const QString&, int)),
+           _active_editor,
+           SLOT (request_open_file (const QString&, const QString&, int)));
 
   connect (_new_figure_action, SIGNAL (triggered ()),
            this, SLOT (handle_new_figure_request ()));

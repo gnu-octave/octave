@@ -402,9 +402,12 @@ classdef inputParser < handle
       while (vidx < pnargin && idx < nOpt)
         opt = this.Optional{++idx};
         in  = varargin{++vidx};
-        if (this.is_argname ("Parameter", in) && vidx < pnargin)
-          ## This looks like an optional parameter/value pair, not an
-          ## optional positional parameter.
+        if ((this.is_argname ("Parameter", in) && vidx < pnargin)
+            || this.is_argname ("Switch", in))
+          ## This looks like an optional parameter/value pair or a
+          ## switch, not an positional option.  This does mean that
+          ## positional options cannot be strings named like parameter
+          ## keys.  See bug #50752.
           idx -= 1;
           vidx -= 1;
           break
@@ -417,8 +420,8 @@ classdef inputParser < handle
         if (! valid_option)
           ## If it does not match there's two options:
           ##    1) input is actually wrong and we should error;
-          ##    2) it's a Parameter or Switch name and we should use the
-          ##       the default for the rest.
+          ##    2) it's a Parameter or Switch name and we should use
+          ##       the default for the rest;
           ##    3) it's a struct with the Parameter pairs.
           if (ischar (in) || (this.StructExpand && isstruct (in)
                               && isscalar (in)))
@@ -734,13 +737,32 @@ endclassdef
 %! p.parse ("foo", "qux");
 %! assert (p.Results, struct ("foo", "qux"))
 
-## FIXME: This somehow works in Matlab
+## This behaviour means that a positional option can never be a string
+## that is the name of a parameter key.  This is required for Matlab
+## compatibility.
 %!test <50752>
 %! p = inputParser;
 %! p.addOptional ("op1", "val");
 %! p.addParameter ("line", "tree");
 %! p.parse ("line", "circle");
-%! assert (p.Results, struct ("op1", "val", "line", "circle"));
+%! assert (p.Results, struct ("op1", "val", "line", "circle"))
+%!
+%! p = inputParser ();
+%! p.addOptional ("op1", "val1")
+%! p.addOptional ("op2", "val2")
+%! p.addParameter ("line", "tree")
+%! p.parse ("line", "circle")
+%! assert (p.Results.op1, "val1")
+%! assert (p.Results.op2, "val2")
+%! assert (p.Results.line, "circle")
+
+%!test <50752>
+%! p = inputParser;
+%! p.addOptional ("op1", "val1");
+%! p.addSwitch ("line");
+%! p.parse ("line");
+%! assert (p.Results.op1, "val1")
+%! assert (p.Results.line, true)
 
 %!test
 %! p = inputParser;

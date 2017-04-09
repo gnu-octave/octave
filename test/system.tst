@@ -216,7 +216,6 @@
 
 %!testif HAVE_GETPWUID
 %! x = getpwuid (getuid ());
-%! assert (x.dir, tilde_expand ("~"));
 %! assert (x.dir, tilde_expand (sprintf ("~%s", x.name)));
 %! assert ("foobar", tilde_expand ("foobar"));
 

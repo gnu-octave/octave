@@ -72,8 +72,6 @@ file_editor::file_editor (QWidget *p)
 
   setVisible (false);
   setAcceptDrops (true);
-
-  _file_encoding = QString ();  // for selecting an encoding in open dialog
 }
 
 file_editor::~file_editor (void)
@@ -228,69 +226,6 @@ file_editor::request_new_file (const QString& commands)
     }
 }
 
-void
-file_editor::request_open_file (void)
-{
-  // Open file isn't a file_editor_tab function since the file
-  // editor tab has yet to be created and there is no object to
-  // pass a signal to.  Hence, functionality is here.
-
-  // Create a NonModal message.
-  QFileDialog *fileDialog = new QFileDialog (this);
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
-
-  // Giving trouble under KDE (problem is related to Qt signal handling on unix,
-  // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
-  // it had/has no effect on Windows, though)
-  fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
-
-  // define a new grid layout with the extra elements
-  QGridLayout *extra = new QGridLayout (fileDialog);
-  QFrame *separator = new QFrame (fileDialog);
-  separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
-  separator->setFrameStyle (QFrame::Sunken);
-
-  // combo box for encoding
-  QLabel *label_enc = new QLabel (tr ("File Encoding:"));
-  QComboBox *combo_enc = new QComboBox ();
-  resource_manager::combo_encoding (combo_enc);
-  _file_encoding = QString ();  // default, no special encoding
-
-  // track changes in the combo boxes
-  connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
-           this, SLOT (handle_combo_enc_current_index (QString)));
-
-  // build the extra grid layout
-  extra->addWidget (separator,0,0,1,3);
-  extra->addWidget (label_enc,1,0);
-  extra->addWidget (combo_enc,1,1);
-  extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                     QSizePolicy::Fixed), 1,2);
-
-  // and add the extra grid layout to the dialog's layout
-  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
-  dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                            1,dialog_layout->columnCount ());
-
-  fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
-  fileDialog->setViewMode (QFileDialog::Detail);
-  fileDialog->setFileMode (QFileDialog::ExistingFiles);
-  fileDialog->setDirectory (ced);
-
-  connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
-           this, SLOT (request_open_files (const QStringList&)));
-
-  fileDialog->setWindowModality (Qt::NonModal);
-  fileDialog->setAttribute (Qt::WA_DeleteOnClose);
-  fileDialog->show ();
-}
-
-void
-file_editor::handle_combo_enc_current_index (QString new_encoding)
-{
-  _file_encoding = new_encoding;
-}
-
 // Check whether this file is already open in the editor.
 QWidget *
 file_editor::find_tab_widget (const QString& file) const
@@ -324,7 +259,7 @@ file_editor::call_custom_editor (const QString& file_name, int line)
       // use the external editor interface for handling the call
       external_editor_interface ext_editor (main_win ());
 
-      ext_editor.request_open_file (file_name, line);
+      ext_editor.request_open_file (file_name, QString (), line);
 
       if (line < 0 && ! file_name.isEmpty ())
         handle_mru_add_file (QFileInfo (file_name).canonicalFilePath (),
@@ -351,16 +286,6 @@ file_editor::is_editor_console_tabbed ()
     }
 
   return false;
-}
-
-// The following slot is called after files have been selected in the
-// open file dialog, possibly with a new selected encoding stored in
-// _file_encoding
-void
-file_editor::request_open_files (const QStringList& open_file_names)
-{
-  for (int i = 0; i < open_file_names.count (); i++)
-    request_open_file (open_file_names.at (i), _file_encoding);
 }
 
 // Open a file, if not already open, and mark the current execution location

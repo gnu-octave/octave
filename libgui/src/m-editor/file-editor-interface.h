@@ -68,7 +68,6 @@ public:
 
 public slots:
   virtual void request_new_file (const QString& command = QString ()) = 0;
-  virtual void request_open_file () = 0;
   virtual void request_open_file (const QString& openFileName,
                                   const QString& encoding = QString (),
                                   int line = -1,

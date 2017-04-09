@@ -196,6 +196,7 @@ public slots:
   void debug_step_out (void);
   void debug_quit (void);
 
+  void request_open_file (void);
   void request_new_script (const QString& commands = QString ());
   void request_new_function (bool triggered = true);
   void handle_edit_mfile_request (const QString& name, const QString& file,
@@ -268,6 +269,8 @@ private slots:
 
   void disable_menu_shortcuts (bool disable);
   void restore_create_file_setting ();
+  void set_file_encoding (const QString& new_encoding);
+  void request_open_files (const QStringList& open_file_names);
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
@@ -449,6 +452,8 @@ private:
   bool _prevent_readline_conflicts;
   bool _suppress_dbg_location;
   bool _start_gui;
+
+  QString _file_encoding;
 };
 
 class news_reader : public QObject

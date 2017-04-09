@@ -43,7 +43,6 @@ signals:
 
 public slots:
 
-  void request_open_file (QString file, int line);
   void request_open_file (const QString& fileName,
                           const QString& encoding = QString (),
                           int line = -1, bool debug_pointer = false,

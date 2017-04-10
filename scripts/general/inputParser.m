@@ -741,20 +741,52 @@ endclassdef
 ## that is the name of a parameter key.  This is required for Matlab
 ## compatibility.
 %!test <50752>
-%! p = inputParser;
+%! p = inputParser ();
 %! p.addOptional ("op1", "val");
 %! p.addParameter ("line", "tree");
 %! p.parse ("line", "circle");
 %! assert (p.Results, struct ("op1", "val", "line", "circle"))
 %!
 %! p = inputParser ();
-%! p.addOptional ("op1", "val1")
-%! p.addOptional ("op2", "val2")
-%! p.addParameter ("line", "tree")
-%! p.parse ("line", "circle")
+%! p.addOptional ("op1", "val1");
+%! p.addOptional ("op2", "val2");
+%! p.addParameter ("line", "tree");
+%! p.parse ("line", "circle");
 %! assert (p.Results.op1, "val1")
 %! assert (p.Results.op2, "val2")
 %! assert (p.Results.line, "circle")
+%!
+%! ## If there's enough arguments to fill the positional options and
+%! ## param/key, it still skips positional options.
+%! p = inputParser ();
+%! p.addOptional ("op1", "val1");
+%! p.addOptional ("op2", "val2");
+%! p.addParameter ("line", "tree");
+%! p.parse ("line", "circle", "line", "rectangle");
+%! assert (p.Results, struct ("op1", "val1", "op2", "val2",
+%!                            "line", "rectangle"))
+%!
+%! ## Even if the key/param fails validation, it does not backtrack to
+%! ## check if the values are valid positional options.
+%! p = inputParser ();
+%! p.addOptional ("op1", "val1", @ischar);
+%! p.addOptional ("op2", "val2", @isnumeric);
+%! p.addParameter ("line", "circle", @ischar);
+%! fail ('p.parse ("line", 89)', "failed validation of LINE")
+%!
+%! p = inputParser ();
+%! p.addOptional ("op1", "val1");
+%! p.addParamValue ("line", "circle", @ischar);
+%! fail ('p.parse ("line", "line", 89)')
+
+%!test <50752>
+%! ## This fails in Matlab but works in Octave.  It is a bug there
+%! ## that we do not replicate.
+%! p = inputParser ();
+%! p.addOptional ("op1", "val1");
+%! p.addParameter ("line", "circle");
+%! p.parse ("line");
+%! assert (p.Results, struct ("op1", "line", "line", "circle"))
 
 %!test <50752>
 %! p = inputParser;

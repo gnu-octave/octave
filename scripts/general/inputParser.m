@@ -457,6 +457,10 @@ classdef inputParser < handle
           name = varargin{vidx};
         endif
 
+        if (! ischar (name))
+          this.error ("non-string for Parameter name or Switch");
+        endif
+
         if (this.is_argname ("Parameter", name))
           if (vidx++ > pnargin)
             this.error (sprintf ("no matching value for option '%s'",
@@ -777,7 +781,8 @@ endclassdef
 %! p = inputParser ();
 %! p.addOptional ("op1", "val1");
 %! p.addParamValue ("line", "circle", @ischar);
-%! fail ('p.parse ("line", "line", 89)')
+%! fail ('p.parse ("line", "line", 89)',
+%!       "non-string for Parameter name or Switch")
 
 %!test <50752>
 %! ## This fails in Matlab but works in Octave.  It is a bug there

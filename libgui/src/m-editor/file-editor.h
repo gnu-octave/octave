@@ -205,6 +205,8 @@ public slots:
   bool check_closing (void);
 
   void request_new_file (const QString& commands);
+  void request_new_script (const QString& commands);
+  void request_new_function (bool triggered = true);
   void request_open_file (void);
   void request_close_file (bool);
   void request_close_all_files (bool);
@@ -277,6 +279,8 @@ public slots:
   void handle_update_breakpoint_marker_request (bool insert,
                                                 const QString& file, int line,
                                                 const QString& cond);
+  void handle_edit_mfile_request (const QString& name, const QString& file,
+                                  const QString& curr_dir, int line);
 
   void handle_edit_file_request (const QString& file);
 
@@ -306,6 +310,7 @@ private slots:
                           const QString& cond = "");
   void request_preferences (bool);
   void request_styles_preferences (bool);
+  void restore_create_file_setting ();
 
   void handle_combo_enc_current_index (QString new_encoding);
 

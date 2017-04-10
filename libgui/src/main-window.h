@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // Editor includes
 #include "file-editor-interface.h"
-#include "external-editor-interface.h"
 
 // QTerminal includes
 #include "QTerminal.h"
@@ -125,7 +124,7 @@ signals:
   void init_terminal_size_signal (void);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
-  void open_file_signal (const QString& file, const QString& enc, int line);
+  void edit_mfile_request (const QString&, const QString&, const QString&, int);
 
   void show_doc_signal (const QString&);
 
@@ -196,11 +195,6 @@ public slots:
   void debug_step_out (void);
   void debug_quit (void);
 
-  void request_new_script (const QString& commands = QString ());
-  void request_new_function (bool triggered = true);
-  void handle_edit_mfile_request (const QString& name, const QString& file,
-                                  const QString& curr_dir, int line);
-
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
@@ -267,7 +261,6 @@ public slots:
 private slots:
 
   void disable_menu_shortcuts (bool disable);
-  void restore_create_file_setting ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
@@ -351,9 +344,6 @@ private:
   documentation_dock_widget *doc_browser_window;
   file_editor_interface *editor_window;
   workspace_view *workspace_window;
-
-  external_editor_interface *_external_editor;
-  QWidget *_active_editor;
 
   QList<octave_dock_widget *> dock_widget_list ();
 

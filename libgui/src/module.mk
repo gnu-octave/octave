@@ -98,7 +98,6 @@ DIRSTAMP_FILES += \
 endif
 
 OCTAVE_GUI_SRC_MOC = \
-  libgui/src/m-editor/moc-external-editor-interface.cc \
   libgui/src/moc-dialog.cc \
   libgui/src/moc-documentation-dock-widget.cc \
   libgui/src/moc-files-dock-widget.cc \
@@ -147,7 +146,6 @@ noinst_HEADERS += \
   libgui/src/files-dock-widget.h \
   libgui/src/history-dock-widget.h \
   libgui/src/liboctgui-build-info.h \
-  libgui/src/m-editor/external-editor-interface.h \
   libgui/src/m-editor/file-editor-interface.h \
   libgui/src/m-editor/file-editor-tab.h \
   libgui/src/m-editor/file-editor.h \
@@ -178,7 +176,6 @@ libgui_src_libgui_src_la_SOURCES = \
   libgui/src/documentation-dock-widget.cc \
   libgui/src/files-dock-widget.cc \
   libgui/src/history-dock-widget.cc \
-  libgui/src/m-editor/external-editor-interface.cc \
   libgui/src/m-editor/file-editor-tab.cc \
   libgui/src/m-editor/file-editor.cc \
   libgui/src/m-editor/find-dialog.cc \

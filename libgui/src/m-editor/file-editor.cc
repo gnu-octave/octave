@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFile>
 #include <QFileDialog>
 #include <QFont>
-#include <QInputDialog>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QProcess>
@@ -72,8 +71,6 @@ file_editor::file_editor (QWidget *p)
 
   setVisible (false);
   setAcceptDrops (true);
-
-  _file_encoding = QString ();  // for selecting an encoding in open dialog
 }
 
 file_editor::~file_editor (void)
@@ -228,111 +225,6 @@ file_editor::request_new_file (const QString& commands)
     }
 }
 
-void
-file_editor::request_new_script (const QString& commands)
-{
-  request_new_file (commands);
-}
-
-void
-file_editor::request_new_function (bool)
-{
-  bool ok;
-  // get the name of the new function
-  QString new_name = QInputDialog::getText (this, tr ("New Function"),
-                     tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
-  if (ok && new_name.length () > 0)
-    {
-      // append suffix if it not already exists
-      if (new_name.rightRef (2) != ".m")
-        new_name.append (".m");
-      // check whether new files are created without prompt
-      QSettings *settings = resource_manager::get_settings ();
-      if (! settings->value ("editor/create_new_file",false).toBool ())
-        {
-          // no, so enable this settings and wait for end of new file loading
-          settings->setValue ("editor/create_new_file",true);
-          connect (this, SIGNAL (file_loaded_signal ()),
-                   this, SLOT (restore_create_file_setting ()));
-        }
-      // start the edit command
-      emit execute_command_in_terminal_signal ("edit " + new_name);
-    }
-}
-
-void
-file_editor::restore_create_file_setting ()
-{
-  // restore the new files creation setting
-  QSettings *settings = resource_manager::get_settings ();
-  settings->setValue ("editor/create_new_file",false);
-  disconnect (this, SIGNAL (file_loaded_signal ()),
-              this, SLOT (restore_create_file_setting ()));
-}
-
-void
-file_editor::request_open_file (void)
-{
-  // Open file isn't a file_editor_tab function since the file
-  // editor tab has yet to be created and there is no object to
-  // pass a signal to.  Hence, functionality is here.
-
-  // Create a NonModal message.
-  QFileDialog *fileDialog = new QFileDialog (this);
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
-
-  // Giving trouble under KDE (problem is related to Qt signal handling on unix,
-  // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
-  // it had/has no effect on Windows, though)
-  fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
-
-  // define a new grid layout with the extra elements
-  QGridLayout *extra = new QGridLayout (fileDialog);
-  QFrame *separator = new QFrame (fileDialog);
-  separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
-  separator->setFrameStyle (QFrame::Sunken);
-
-  // combo box for encoding
-  QLabel *label_enc = new QLabel (tr ("File Encoding:"));
-  QComboBox *combo_enc = new QComboBox ();
-  resource_manager::combo_encoding (combo_enc);
-  _file_encoding = QString ();  // default, no special encoding
-
-  // track changes in the combo boxes
-  connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
-           this, SLOT (handle_combo_enc_current_index (QString)));
-
-  // build the extra grid layout
-  extra->addWidget (separator,0,0,1,3);
-  extra->addWidget (label_enc,1,0);
-  extra->addWidget (combo_enc,1,1);
-  extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                     QSizePolicy::Fixed), 1,2);
-
-  // and add the extra grid layout to the dialog's layout
-  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
-  dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                            1,dialog_layout->columnCount ());
-
-  fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
-  fileDialog->setViewMode (QFileDialog::Detail);
-  fileDialog->setFileMode (QFileDialog::ExistingFiles);
-  fileDialog->setDirectory (ced);
-
-  connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
-           this, SLOT (request_open_files (const QStringList&)));
-
-  fileDialog->setWindowModality (Qt::NonModal);
-  fileDialog->setAttribute (Qt::WA_DeleteOnClose);
-  fileDialog->show ();
-}
-
-void
-file_editor::handle_combo_enc_current_index (QString new_encoding)
-{
-  _file_encoding = new_encoding;
-}
-
 // Check whether this file is already open in the editor.
 QWidget *
 file_editor::find_tab_widget (const QString& file) const
@@ -363,28 +255,8 @@ file_editor::call_custom_editor (const QString& file_name, int line)
 
   if (settings->value ("useCustomFileEditor",false).toBool ())
     {
-      if (line > -1)  // check for a specific line (debugging)
-        return true;  // yes: do ont open a file in external editor
-
-      QString editor = settings->value ("customFileEditor").toString ();
-      editor.replace ("%f", file_name);
-      editor.replace ("%l", QString::number (line));
-
-      bool started_ok = QProcess::startDetached (editor);
-
-      if (started_ok != true)
-        {
-          QMessageBox *msgBox
-            = new QMessageBox (QMessageBox::Critical,
-                               tr ("Octave Editor"),
-                               tr ("Could not start custom file editor\n%1").
-                               arg (editor),
-                               QMessageBox::Ok, this);
-
-          msgBox->setWindowModality (Qt::NonModal);
-          msgBox->setAttribute (Qt::WA_DeleteOnClose);
-          msgBox->show ();
-        }
+      // use the external editor interface for handling the call
+      emit request_open_file_external (file_name, line);
 
       if (line < 0 && ! file_name.isEmpty ())
         handle_mru_add_file (QFileInfo (file_name).canonicalFilePath (),
@@ -411,16 +283,6 @@ file_editor::is_editor_console_tabbed ()
     }
 
   return false;
-}
-
-// The following slot is called after files have been selected in the
-// open file dialog, possibly with a new selected encoding stored in
-// _file_encoding
-void
-file_editor::request_open_files (const QStringList& open_file_names)
-{
-  for (int i = 0; i < open_file_names.count (); i++)
-    request_open_file (open_file_names.at (i), _file_encoding);
 }
 
 // Open a file, if not already open, and mark the current execution location
@@ -675,92 +537,6 @@ file_editor::check_conflict_save (const QString& saveFileName,
 
   // Can save without conflict, have the file editor tab do so.
   emit fetab_save_file (saveFileWidget, saveFileName, remove_on_success);
-}
-
-void
-file_editor::handle_edit_mfile_request (const QString& fname,
-                                        const QString& ffile,
-                                        const QString& curr_dir, int line)
-{
-  // Is it a regular function within the search path? (Call __which__)
-  octave_value_list fct = F__which__ (ovl (fname.toStdString ()),0);
-  octave_map map = fct(0).map_value ();
-
-  QString type = QString::fromStdString (
-                         map.contents ("type").data ()[0].string_value ());
-  QString name = QString::fromStdString (
-                         map.contents ("name").data ()[0].string_value ());
-
-  QString message = QString ();
-  QString filename = QString ();
-
-  if (type == QString ("built-in function"))
-    {
-      // built in function: can't edit
-      message = tr ("%1 is a built-in function");
-    }
-  else if (type.isEmpty ())
-    {
-      // function not known to octave -> try directory of edited file
-      // get directory
-      QDir dir;
-      if (ffile.isEmpty ())
-        {
-          if (curr_dir.isEmpty ())
-            dir = QDir (ced);
-          else
-            dir = QDir (curr_dir);
-        }
-      else
-        dir = QDir (QFileInfo (ffile).canonicalPath ());
-
-      // function not known to octave -> try directory of edited file
-      QFileInfo file = QFileInfo (dir, fname + ".m");
-
-      if (file.exists ())
-        {
-          filename = file.canonicalFilePath (); // local file exists
-        }
-      else
-        {
-          // local file does not exist -> try private directory
-          file = QFileInfo (ffile);
-          file = QFileInfo (QDir (file.canonicalPath () + "/private"),
-                            fname + ".m");
-
-          if (file.exists ())
-            {
-              filename = file.canonicalFilePath ();  // private function exists
-            }
-          else
-            {
-              message = tr ("Can not find function %1");  // no file found
-            }
-        }
-    }
-
-  if (! message.isEmpty ())
-    {
-      QMessageBox *msgBox
-        = new QMessageBox (QMessageBox::Critical,
-                           tr ("Octave Editor"),
-                           message.arg (name),
-                           QMessageBox::Ok, this);
-
-      msgBox->setWindowModality (Qt::NonModal);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
-      return;
-    }
-
-  if (filename.isEmpty ())
-    filename = QString::fromStdString (
-                           map.contents ("file").data ()[0].string_value ());
-
-  if (! filename.endsWith (".m"))
-    filename.append (".m");
-
-  request_open_file (filename, QString (), line);  // default encoding
 }
 
 void
@@ -1908,17 +1684,6 @@ file_editor::construct (void)
            main_win (),
            SLOT (process_settings_dialog_request (const QString&)));
 
-  connect (main_win (), SIGNAL (new_file_signal (const QString&)),
-           this, SLOT (request_new_file (const QString&)));
-
-  connect (main_win (), SIGNAL (open_file_signal (const QString&)),
-           this, SLOT (request_open_file (const QString&)));
-
-  connect (main_win (), SIGNAL (edit_mfile_request (const QString&,
-                                       const QString&, const QString&, int)),
-           this, SLOT (handle_edit_mfile_request (const QString&,
-                                       const QString&, const QString&, int)));
-
   connect (_mru_file_menu, SIGNAL (triggered (QAction *)),
            this, SLOT (request_mru_open_file (QAction *)));
 
@@ -2032,7 +1797,7 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (f, SIGNAL (edit_mfile_request (const QString&, const QString&,
                                           const QString&, int)),
-           this, SLOT (handle_edit_mfile_request (const QString&,
+           main_win (), SLOT (handle_edit_mfile_request (const QString&,
                                                   const QString&,
                                                   const QString&, int)));
 

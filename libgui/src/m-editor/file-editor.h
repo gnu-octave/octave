@@ -195,6 +195,7 @@ signals:
 
   void request_settings_dialog (const QString&);
   void execute_command_in_terminal_signal (const QString&);
+  void request_open_file_external (const QString& file_name, int line);
   void file_loaded_signal ();
 
 public slots:
@@ -205,9 +206,6 @@ public slots:
   bool check_closing (void);
 
   void request_new_file (const QString& commands);
-  void request_new_script (const QString& commands);
-  void request_new_function (bool triggered = true);
-  void request_open_file (void);
   void request_close_file (bool);
   void request_close_all_files (bool);
   void request_close_other_files (bool);
@@ -279,8 +277,6 @@ public slots:
   void handle_update_breakpoint_marker_request (bool insert,
                                                 const QString& file, int line,
                                                 const QString& cond);
-  void handle_edit_mfile_request (const QString& name, const QString& file,
-                                  const QString& curr_dir, int line);
 
   void handle_edit_file_request (const QString& file);
 
@@ -302,7 +298,6 @@ protected slots:
 
 private slots:
 
-  void request_open_files (const QStringList&);
   void request_open_file (const QString& fileName,
                           const QString& encoding = QString (),
                           int line = -1, bool debug_pointer = false,
@@ -310,9 +305,6 @@ private slots:
                           const QString& cond = "");
   void request_preferences (bool);
   void request_styles_preferences (bool);
-  void restore_create_file_setting ();
-
-  void handle_combo_enc_current_index (QString new_encoding);
 
   void show_line_numbers (bool);
   void show_white_space (bool);
@@ -471,8 +463,6 @@ private:
   int _marker_breakpoint;
 
   bool _closed;
-
-  QString _file_encoding;
 
   enum { MaxMRUFiles = 10 };
   QMenu *_mru_file_menu;

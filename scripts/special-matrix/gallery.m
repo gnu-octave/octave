@@ -3002,7 +3002,7 @@ endfunction
 %! assert (gallery ("fiedler", 5), exp)
 %! assert (gallery ("fiedler", 1:5), exp)
 %! assert (gallery ("fiedler", -2:2), exp)
-%! assert (gallery ("fiedler", 2:4), exp(1:4,1:4))
+%! assert (gallery ("fiedler", 2:5), exp(1:4,1:4))
 
 %!assert (size (gallery ("forsythe", 5)), [5 5])
 %!assert (size (gallery ("forsythe", 5, 1, 0.5)), [5 5])

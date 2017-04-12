@@ -717,6 +717,24 @@ template <typename T>
 Array<T>
 Array<T>::index (const idx_vector& i) const
 {
+  // Colon:
+  //
+  //   object   | index    | result orientation
+  //   ---------+----------+-------------------
+  //   anything | colon    | column vector
+  //
+  // Numeric array or logical mask:
+  //
+  //   Note that logical mask indices are always transformed to vectors
+  //   before we see them.
+  //
+  //   object   | index    | result orientation
+  //   ---------+----------+-------------------
+  //   vector   | vector   | indexed object
+  //            | other    | same size as index
+  //   ---------+----------+-------------------
+  //   array    | anything | same size as index
+
   octave_idx_type n = numel ();
   Array<T> retval;
 
@@ -728,48 +746,33 @@ Array<T>::index (const idx_vector& i) const
   else
     {
       if (i.extent (n) != n)
-        octave::err_index_out_of_range (1, 1, i.extent (n), n, dimensions); // throws
+        octave::err_index_out_of_range (1, 1, i.extent (n), n, dimensions);
 
-      // FIXME: this is the only place where orig_dimensions are used.
-      dim_vector rd = i.orig_dimensions ();
-      octave_idx_type il = i.length (n);
+      dim_vector result_dims = i.orig_dimensions ();
+      octave_idx_type idx_len = i.length ();
 
-      // FIXME: this is for Matlab compatibility.  Matlab 2007 given
-      //
-      //   b = ones (3,1)
-      //
-      // yields the following:
-      //
-      //   b(zeros (0,0)) gives []
-      //   b(zeros (1,0)) gives zeros (0,1)
-      //   b(zeros (0,1)) gives zeros (0,1)
-      //   b(zeros (0,m)) gives zeros (0,m)
-      //   b(zeros (m,0)) gives zeros (m,0)
-      //   b(1:2) gives ones (2,1)
-      //   b(ones (2)) gives ones (2) etc.
-      //
-      // As you can see, the behavior is weird, but the tests end up pretty
-      // simple.  Nah, I don't want to suggest that this is ad hoc :)
-
-      if (ndims () == 2 && n != 1 && rd.is_vector ())
+      if (n != 1 && is_nd_vector () && idx_len != 1
+          && result_dims.is_nd_vector ())
         {
-          if (columns () == 1)
-            rd = dim_vector (il, 1);
-          else if (rows () == 1)
-            rd = dim_vector (1, il);
+          // Indexed object and index are both vectors.  Set result size
+          // and orientation as above.
+
+          dim_vector dv = dims ();
+
+          result_dims = dv.make_nd_vector (idx_len);
         }
 
       octave_idx_type l, u;
-      if (il != 0 && i.is_cont_range (n, l, u))
+      if (idx_len != 0 && i.is_cont_range (n, l, u))
         // If suitable, produce a shallow slice.
-        retval = Array<T> (*this, rd, l, u);
+        retval = Array<T> (*this, result_dims, l, u);
       else
         {
           // Don't use resize here to avoid useless initialization for POD
           // types.
-          retval = Array<T> (rd);
+          retval = Array<T> (result_dims);
 
-          if (il != 0)
+          if (idx_len != 0)
             i.index (data (), n, retval.fortran_vec ());
         }
     }

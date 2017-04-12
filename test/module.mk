@@ -33,6 +33,7 @@ TEST_FILES += \
   test/range.tst \
   test/recursion.tst \
   test/return.tst \
+  test/single-index.tst \
   test/slice.tst \
   test/struct.tst \
   test/switch.tst \

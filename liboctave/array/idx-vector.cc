@@ -390,9 +390,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
 
   const dim_vector dv = bnda.dims ();
 
-  if (! dv.all_zero ())
-    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
-                 ? dim_vector (1, len) : dim_vector (len, 1));
+  orig_dims = dv.make_nd_vector (len);
 
   if (len != 0)
     {
@@ -416,9 +414,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
 {
   const dim_vector dv = bnda.dims ();
 
-  if (! dv.all_zero ())
-    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
-                 ? dim_vector (1, len) : dim_vector (len, 1));
+  orig_dims = dv.make_nd_vector (len);
 
   if (len != 0)
     {
@@ -661,9 +657,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
 
   const dim_vector dv = bnda.dims ();
 
-  if (! dv.all_zero ())
-    orig_dims = ((dv.ndims () == 2 && dv(0) == 1)
-                 ? dim_vector (1, len) : dim_vector (len, 1));
+  orig_dims = dv.make_nd_vector (len);
 
   aowner = new Array<bool> (bnda);
   data = bnda.data ();

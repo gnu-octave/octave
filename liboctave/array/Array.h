@@ -576,6 +576,8 @@ public:
 
   bool is_vector (void) const { return dimensions.is_vector (); }
 
+  bool is_nd_vector (void) const { return dimensions.is_nd_vector (); }
+
   Array<T> transpose (void) const;
   Array<T> hermitian (T (*fcn) (const T&) = 0) const;
 

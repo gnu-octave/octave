@@ -459,6 +459,50 @@ public:
     return (ndims () == 2 && (elem (0) == 1 || elem (1) == 1));
   }
 
+  bool is_nd_vector (void) const
+  {
+    int num_non_one = 0;
+
+    for (int i = 0; i < ndims (); i++)
+      {
+        if (elem (i) != 1)
+          {
+            num_non_one++;
+
+            if (num_non_one > 1)
+              break;
+          }
+      }
+
+    return num_non_one == 1;
+  }
+
+  // Create a vector with length N.  If this object is a vector,
+  // preserve the orientation, otherwise, create a column vector.
+
+  dim_vector make_nd_vector (octave_idx_type n) const
+  {
+    dim_vector orig_dims;
+
+    if (is_nd_vector ())
+      {
+        orig_dims = *this;
+
+        for (int i = 0; i < orig_dims.ndims (); i++)
+          {
+            if (orig_dims(i) != 1)
+              {
+                orig_dims(i) = n;
+                break;
+              }
+          }
+      }
+    else
+      orig_dims = dim_vector (n, 1);
+
+    return orig_dims;
+  }
+
   int first_non_singleton (int def = 0) const
   {
     for (int i = 0; i < ndims (); i++)

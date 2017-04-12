@@ -1603,7 +1603,6 @@ main_window::request_new_function (bool)
       if (new_name.rightRef (2) != ".m")
         new_name.append (".m");
       // check whether new files are created without prompt
-      QSettings *settings = resource_manager::get_settings ();
       if (! settings->value ("editor/create_new_file",false).toBool ())
         {
           // no, so enable this settings and wait for end of new file loading

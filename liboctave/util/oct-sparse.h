@@ -35,26 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include <amd.h>
 #endif
 
-#if defined (HAVE_SUITESPARSE_UMFPACK_H)
-#  include <suitesparse/umfpack.h>
-#elif defined (HAVE_UFSPARSE_UMFPACK_H)
-#  include <ufsparse/umfpack.h>
-#elif defined (HAVE_UMFPACK_UMFPACK_H)
-#  include <umfpack/umfpack.h>
-#elif defined (HAVE_UMFPACK_H)
-#  include <umfpack.h>
-#endif
-
-#if defined (HAVE_SUITESPARSE_COLAMD_H)
-#  include <suitesparse/colamd.h>
-#elif defined (HAVE_UFSPARSE_COLAMD_H)
-#  include <ufsparse/colamd.h>
-#elif defined (HAVE_COLAMD_COLAMD_H)
-#  include <colamd/colamd.h>
-#elif defined (HAVE_COLAMD_H)
-#  include <colamd.h>
-#endif
-
 #if defined (HAVE_SUITESPARSE_CCOLAMD_H)
 #  include <suitesparse/ccolamd.h>
 #elif defined (HAVE_UFSPARSE_CCOLAMD_H)
@@ -75,6 +55,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include <cholmod.h>
 #endif
 
+#if defined (HAVE_SUITESPARSE_COLAMD_H)
+#  include <suitesparse/colamd.h>
+#elif defined (HAVE_UFSPARSE_COLAMD_H)
+#  include <ufsparse/colamd.h>
+#elif defined (HAVE_COLAMD_COLAMD_H)
+#  include <colamd/colamd.h>
+#elif defined (HAVE_COLAMD_H)
+#  include <colamd.h>
+#endif
+
 #if defined (HAVE_SUITESPARSE_CS_H)
 #  include <suitesparse/cs.h>
 #elif defined (HAVE_UFSPARSE_CS_H)
@@ -85,15 +75,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include <cs.h>
 #endif
 
-#if (defined (HAVE_SUITESPARSE_CHOLMOD_H)       \
-     || defined (HAVE_UFSPARSE_CHOLMOD_H)       \
-     || defined (HAVE_CHOLMOD_CHOLMOD_H)        \
-     || defined (HAVE_CHOLMOD_H))
-#  if defined (OCTAVE_ENABLE_64)
-#    define CHOLMOD_NAME(name) cholmod_l_ ## name
-#  else
-#    define CHOLMOD_NAME(name) cholmod_ ## name
-#  endif
+#if defined (HAVE_SUITESPARSE_UMFPACK_H)
+#  include <suitesparse/umfpack.h>
+#elif defined (HAVE_UFSPARSE_UMFPACK_H)
+#  include <ufsparse/umfpack.h>
+#elif defined (HAVE_UMFPACK_UMFPACK_H)
+#  include <umfpack/umfpack.h>
+#elif defined (HAVE_UMFPACK_H)
+#  include <umfpack.h>
 #endif
 
 // Cope with new SuiteSparse versions
@@ -106,6 +95,44 @@ along with Octave; see the file COPYING.  If not, see
 #  else
 #    define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
 #    define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
+#  endif
+#endif
+
+// Function names depend on integer type.
+
+#if defined (HAVE_AMD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define AMD_NAME(name) amd_l ## name
+#  else
+#    define AMD_NAME(name) amd ## name
+#  endif
+#endif
+
+#if defined (HAVE_CCOLAMD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define CCOLAMD_NAME(name) ccolamd_l ## name
+#    define CSYMAMD_NAME(name) csymamd_l ## name
+#  else
+#    define CCOLAMD_NAME(name) ccolamd ## name
+#    define CSYMAMD_NAME(name) csymamd ## name
+#  endif
+#endif
+
+#if defined (HAVE_CHOLMOD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define CHOLMOD_NAME(name) cholmod_l_ ## name
+#  else
+#    define CHOLMOD_NAME(name) cholmod_ ## name
+#  endif
+#endif
+
+#if defined (HAVE_COLAMD)
+#  if defined (OCTAVE_ENABLE_64)
+#    define COLAMD_NAME(name) colamd_l ## name
+#    define SYMAMD_NAME(name) symamd_l ## name
+#  else
+#    define COLAMD_NAME(name) colamd ## name
+#    define SYMAMD_NAME(name) symamd ## name
 #  endif
 #endif
 

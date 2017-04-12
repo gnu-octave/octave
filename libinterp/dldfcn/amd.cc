@@ -42,12 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ovl.h"
 
-#if defined (OCTAVE_ENABLE_64)
-#  define AMD_NAME(name) amd_l ## name
-#else
-#  define AMD_NAME(name) amd ## name
-#endif
-
 DEFUN_DLD (amd, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} amd (@var{S})

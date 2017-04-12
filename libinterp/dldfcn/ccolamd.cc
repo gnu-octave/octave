@@ -41,14 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "pager.h"
 
-#if defined (OCTAVE_ENABLE_64)
-#  define CCOLAMD_NAME(name) ccolamd_l ## name
-#  define CSYMAMD_NAME(name) csymamd_l ## name
-#else
-#  define CCOLAMD_NAME(name) ccolamd ## name
-#  define CSYMAMD_NAME(name) csymamd ## name
-#endif
-
 DEFUN_DLD (ccolamd, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} ccolamd (@var{S})

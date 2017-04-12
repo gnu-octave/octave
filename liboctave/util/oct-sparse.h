@@ -156,4 +156,30 @@ along with Octave; see the file COPYING.  If not, see
 #  endif
 #endif
 
+#if (defined (HAVE_AMD) || defined (HAVE_CCOLAMD)               \
+     || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
+     || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
+
+namespace octave
+{
+#  if defined (OCTAVE_ENABLE_64)
+  typedef SuiteSparse_long suitesparse_integer;
+#  else
+  typedef int suitesparse_integer;
+#  endif
+
+  extern suitesparse_integer *
+  to_suitesparse_intptr (octave_idx_type *i);
+
+  extern const suitesparse_integer *
+  to_suitesparse_intptr (const octave_idx_type *i);
+
+  extern octave_idx_type*
+  to_octave_idx_type_ptr (suitesparse_integer *i);
+
+  extern const octave_idx_type*
+  to_octave_idx_type_ptr (const suitesparse_integer *i);
+}
+
+#endif
 #endif

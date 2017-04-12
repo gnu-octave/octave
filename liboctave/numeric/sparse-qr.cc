@@ -184,8 +184,8 @@ namespace octave
       A.n = ncols;
       // Cast away const on A, with full knowledge that CSparse won't touch it
       // Prevents the methods below making a copy of the data.
-      A.p = const_cast<octave_idx_type *>(a.cidx ());
-      A.i = const_cast<octave_idx_type *>(a.ridx ());
+      A.p = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.cidx ()));
+      A.i = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.ridx ()));
       A.x = const_cast<double *>(a.data ());
       A.nz = -1;
 
@@ -950,8 +950,8 @@ namespace octave
       A.n = ncols;
       // Cast away const on A, with full knowledge that CSparse won't touch it
       // Prevents the methods below making a copy of the data.
-      A.p = const_cast<octave_idx_type *>(a.cidx ());
-      A.i = const_cast<octave_idx_type *>(a.ridx ());
+      A.p = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.cidx ()));
+      A.i = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.ridx ()));
       A.x = const_cast<cs_complex_t *> (
               reinterpret_cast<const cs_complex_t *> (a.data ()));
       A.nz = -1;

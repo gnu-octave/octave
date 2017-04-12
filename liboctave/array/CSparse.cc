@@ -1114,16 +1114,20 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
       const octave_idx_type *Ai = ridx ();
       const Complex *Ax = data ();
 
-      UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai,
+      UMFPACK_ZNAME (report_matrix) (nr, nc,
+                                     octave::to_suitesparse_intptr (Ap),
+                                     octave::to_suitesparse_intptr (Ai),
                                      reinterpret_cast<const double *> (Ax),
                                      0, 1, control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = UMFPACK_ZNAME (qsymbolic)
-                   (nr, nc, Ap, Ai, reinterpret_cast<const double *> (Ax), 0,
-                    0, &Symbolic, control, info);
+      int status = UMFPACK_ZNAME (qsymbolic) (nr, nc,
+                                              octave::to_suitesparse_intptr (Ap),
+                                              octave::to_suitesparse_intptr (Ai),
+                                              reinterpret_cast<const double *> (Ax),
+                                              0, 0, &Symbolic, control, info);
 
       if (status < 0)
         {
@@ -1141,7 +1145,8 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond,
 
           void *Numeric;
           status
-            = UMFPACK_ZNAME (numeric) (Ap, Ai,
+            = UMFPACK_ZNAME (numeric) (octave::to_suitesparse_intptr (Ap),
+                                       octave::to_suitesparse_intptr (Ai),
                                        reinterpret_cast<const double *> (Ax),
                                        0, Symbolic, &Numeric, control, info);
           UMFPACK_ZNAME (free_symbolic) (&Symbolic);
@@ -5547,14 +5552,18 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai,
+  UMFPACK_ZNAME (report_matrix) (nr, nc,
+                                 octave::to_suitesparse_intptr (Ap),
+                                 octave::to_suitesparse_intptr (Ai),
                                  reinterpret_cast<const double *> (Ax),
                                  0, 1, control);
 
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai,
+  int status = UMFPACK_ZNAME (qsymbolic) (nr, nc,
+                                          octave::to_suitesparse_intptr (Ap),
+                                          octave::to_suitesparse_intptr (Ai),
                                           reinterpret_cast<const double *> (Ax),
                                           0, 0, &Symbolic, control, info);
 
@@ -5574,7 +5583,8 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
     {
       UMFPACK_ZNAME (report_symbolic) (Symbolic, control);
 
-      status = UMFPACK_ZNAME (numeric) (Ap, Ai,
+      status = UMFPACK_ZNAME (numeric) (octave::to_suitesparse_intptr (Ap),
+                                        octave::to_suitesparse_intptr (Ai),
                                         reinterpret_cast<const double *> (Ax),
                                         0, Symbolic, &Numeric, control, info);
       UMFPACK_ZNAME (free_symbolic) (&Symbolic);
@@ -5823,8 +5833,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
 #if defined (UMFPACK_SEPARATE_SPLIT)
-                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai,
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
                                                   reinterpret_cast<const double *> (Ax),
                                                   0,
                                                   reinterpret_cast<double *> (&Xx[iidx]),
@@ -5835,8 +5846,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bz[i] = b.elem (i, j);
 
-                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai,
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
                                                   reinterpret_cast<const double *> (Ax),
                                                   0,
                                                   reinterpret_cast<double *> (&Xx[iidx]),
@@ -6101,8 +6113,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bx[i] = b.elem (i, j);
 
-                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai,
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
                                                   reinterpret_cast<const double *> (Ax),
                                                   0,
                                                   reinterpret_cast<double *> (Xx),
@@ -6113,7 +6126,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bz[i] = b.elem (i, j);
 
-                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai,
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
                                                   reinterpret_cast<const double *> (Ax),
                                                   0,
                                                   reinterpret_cast<double *> (Xx),
@@ -6365,7 +6380,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
                   status =
-                    UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai,
+                    UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                           octave::to_suitesparse_intptr (Ap),
+                                           octave::to_suitesparse_intptr (Ai),
                                            reinterpret_cast<const double *> (Ax),
                                            0,
                                            reinterpret_cast<double *> (&Xx[iidx]),
@@ -6619,8 +6636,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bx[i] = b(i,j);
 
-                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai,
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
                                                   reinterpret_cast<const double *> (Ax),
                                                   0,
                                                   reinterpret_cast<double *> (Xx),

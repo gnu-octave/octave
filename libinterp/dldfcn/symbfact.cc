@@ -198,10 +198,10 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   if (A->stype && A->nrow != A->ncol)
     err_square_matrix_required ("symbfact", "S");
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, Parent, n);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, Post, n);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, ColCount, n);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, First, n);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, Parent, n);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, Post, n);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, ColCount, n);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, First, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Level, n);
 
   cholmod_common Common;
@@ -255,8 +255,8 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       goto cleanup;
     }
 
-  CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0,
-                              ColCount, First, Level, cm);
+  CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0, ColCount, First,
+                              octave::to_suitesparse_intptr (Level), cm);
 
   if (cm->status < CHOLMOD_OK)
     {
@@ -307,7 +307,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
       L.xcidx(n) = lnz;
 
       // create a copy of the column pointers
-      octave_idx_type *W = First;
+      octave::suitesparse_integer *W = First;
       for (octave_idx_type j = 0 ; j < n ; j++)
         W[j] = L.xcidx (j);
 

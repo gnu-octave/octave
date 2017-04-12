@@ -389,12 +389,12 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 
       // Cast away const on A, with full knowledge that CSparse won't touch it.
       // Prevents the methods below making a copy of the data.
-      csm.p = const_cast<octave_idx_type *>(a.cidx ());
-      csm.i = const_cast<octave_idx_type *>(a.ridx ());
+      csm.p = const_cast<octave::suitesparse_integer *>(octave::to_suitesparse_intptr (a.cidx ()));
+      csm.i = const_cast<octave::suitesparse_integer *>(octave::to_suitesparse_intptr (a.ridx ()));
 
       CXSPARSE_DNAME (d) *dm = CXSPARSE_DNAME(_dmperm) (&csm, 0);
-      octave_idx_type *p = dm->p;
-      octave_idx_type *q = dm->q;
+      octave_idx_type *p = octave::to_octave_idx_type_ptr (dm->p);
+      octave_idx_type *q = octave::to_octave_idx_type_ptr (dm->q);
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, pinv, nr);
 

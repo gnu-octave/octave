@@ -68,6 +68,7 @@ UTIL_SRC = \
   liboctave/util/oct-mutex.cc \
   liboctave/util/oct-string.cc \
   liboctave/util/oct-shlib.cc \
+  liboctave/util/oct-sparse.cc \
   liboctave/util/pathsearch.cc \
   liboctave/util/lo-regexp.cc \
   liboctave/util/singleton-cleanup.cc \

@@ -370,17 +370,17 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
     }
 
   // Allocate workspace for colamd
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
   // Order the columns (destroys A)
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, COLAMD_STATS);
   if (! COLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats))
     {
       COLAMD_NAME (_report)(stats);
@@ -580,8 +580,10 @@ Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see
 
   // Allocate workspace for symamd
   OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
-  if (! SYMAMD_NAME () (n_col, ridx, cidx, perm,
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, COLAMD_STATS);
+  if (! SYMAMD_NAME () (n_col, octave::to_suitesparse_intptr (ridx),
+                        octave::to_suitesparse_intptr (cidx),
+                        octave::to_suitesparse_intptr (perm),
                         knobs, stats, &calloc, &free))
     {
       SYMAMD_NAME (_report)(stats);

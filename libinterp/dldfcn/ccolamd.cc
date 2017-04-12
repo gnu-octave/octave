@@ -248,31 +248,31 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     }
 
   // Allocate workspace for ccolamd
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, p, n_col+1);
   for (octave_idx_type i = 0; i < n_col+1; i++)
     p[i] = cidx[i];
 
   octave_idx_type Alen = CCOLAMD_NAME (_recommended) (nnz, n_row, n_col);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, A, Alen);
   for (octave_idx_type i = 0; i < nnz; i++)
     A[i] = ridx[i];
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, CCOLAMD_STATS);
 
   if (nargin > 2)
     {
       NDArray in_cmember = args(2).array_value ();
       octave_idx_type cslen = in_cmember.numel ();
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
+      OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
-        cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
+        cmember[i] = static_cast<octave::suitesparse_integer>(in_cmember(i) - 1);
 
       if (cslen != n_col)
         error ("ccolamd: CMEMBER must be of length equal to #cols of A");
 
       // Order the columns (destroys A)
-      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
+      if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats,cmember))
         {
           CCOLAMD_NAME (_report) (stats);
 
@@ -491,14 +491,14 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     err_square_matrix_required ("csymamd", "S");
 
   // Allocate workspace for symamd
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, perm, n_col+1);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, stats, CCOLAMD_STATS);
 
   if (nargin > 2)
     {
       NDArray in_cmember = args(2).array_value ();
       octave_idx_type cslen = in_cmember.numel ();
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
+      OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
         cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
@@ -506,8 +506,10 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
       if (cslen != n_col)
         error ("csymamd: CMEMBER must be of length equal to #cols of A");
 
-      if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                             &calloc, &free, cmember, -1))
+      if (! CSYMAMD_NAME () (n_col,
+                             octave::to_suitesparse_intptr (ridx),
+                             octave::to_suitesparse_intptr (cidx),
+                             perm, knobs, stats, &calloc, &free, cmember, -1))
         {
           CSYMAMD_NAME (_report)(stats);
 
@@ -516,8 +518,10 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
     }
   else
     {
-      if (! CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                             &calloc, &free, 0, -1))
+      if (! CSYMAMD_NAME () (n_col,
+                             octave::to_suitesparse_intptr (ridx),
+                             octave::to_suitesparse_intptr (cidx),
+                             perm, knobs, stats, &calloc, &free, 0, -1))
         {
           CSYMAMD_NAME (_report)(stats);
 

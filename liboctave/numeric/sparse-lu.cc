@@ -150,10 +150,11 @@ namespace octave
     umfpack_get_lunz<double>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
-      octave_idx_type ignore1, ignore2, ignore3;
+      suitesparse_integer ignore1, ignore2, ignore3;
 
-      return UMFPACK_DNAME (get_lunz) (lnz, unz, &ignore1, &ignore2,
-                                       &ignore3, Numeric);
+      return UMFPACK_DNAME (get_lunz) (to_suitesparse_intptr (lnz),
+                                       to_suitesparse_intptr (unz),
+                                       &ignore1, &ignore2, &ignore3, Numeric);
     }
 
     template <>
@@ -164,8 +165,14 @@ namespace octave
      octave_idx_type *p, octave_idx_type *q, double *Dx,
      octave_idx_type *do_recip, double *Rs, void *Numeric)
     {
-      return UMFPACK_DNAME (get_numeric) (Lp, Lj, Lx, Up, Ui, Ux, p, q, Dx,
-                                          do_recip, Rs, Numeric);
+      return UMFPACK_DNAME (get_numeric) (to_suitesparse_intptr (Lp),
+                                          to_suitesparse_intptr (Lj),
+                                          Lx, to_suitesparse_intptr (Up),
+                                          to_suitesparse_intptr (Ui), Ux,
+                                          to_suitesparse_intptr (p),
+                                          to_suitesparse_intptr (q), Dx,
+                                          to_suitesparse_intptr (do_recip),
+                                          Rs, Numeric);
     }
 
     template <>
@@ -175,8 +182,9 @@ namespace octave
      const double *Ax, void *Symbolic, void **Numeric,
      const double *Control, double *Info)
     {
-      return UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic, Numeric, Control,
-                                      Info);
+      return UMFPACK_DNAME (numeric) (to_suitesparse_intptr (Ap),
+                                      to_suitesparse_intptr (Ai),
+                                      Ax, Symbolic, Numeric, Control, Info);
     }
 
     template <>
@@ -187,7 +195,10 @@ namespace octave
      const octave_idx_type *Qinit, void **Symbolic,
      const double *Control, double *Info)
     {
-      return UMFPACK_DNAME (qsymbolic) (n_row, n_col, Ap, Ai, Ax, Qinit,
+      return UMFPACK_DNAME (qsymbolic) (n_row, n_col,
+                                        to_suitesparse_intptr (Ap),
+                                        to_suitesparse_intptr (Ai), Ax,
+                                        to_suitesparse_intptr (Qinit),
                                         Symbolic, Control, Info);
     }
 
@@ -212,7 +223,9 @@ namespace octave
      const octave_idx_type *Ai, const double *Ax, octave_idx_type col_form,
      const double *Control)
     {
-      UMFPACK_DNAME (report_matrix) (n_row, n_col, Ap, Ai, Ax,
+      UMFPACK_DNAME (report_matrix) (n_row, n_col,
+                                     to_suitesparse_intptr (Ap),
+                                     to_suitesparse_intptr (Ai), Ax,
                                      col_form, Control);
     }
 
@@ -228,7 +241,7 @@ namespace octave
     umfpack_report_perm<double>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
-      UMFPACK_DNAME (report_perm) (np, Perm, Control);
+      UMFPACK_DNAME (report_perm) (np, to_suitesparse_intptr (Perm), Control);
     }
 
     template <>
@@ -273,10 +286,11 @@ namespace octave
     umfpack_get_lunz<Complex>
     (octave_idx_type *lnz, octave_idx_type *unz, void *Numeric)
     {
-      octave_idx_type ignore1, ignore2, ignore3;
+      suitesparse_integer ignore1, ignore2, ignore3;
 
-      return UMFPACK_ZNAME (get_lunz) (lnz, unz, &ignore1, &ignore2,
-                                       &ignore3, Numeric);
+      return UMFPACK_ZNAME (get_lunz) (to_suitesparse_intptr (lnz),
+                                       to_suitesparse_intptr (unz),
+                                       &ignore1, &ignore2, &ignore3, Numeric);
     }
 
     template <>
@@ -287,13 +301,17 @@ namespace octave
      octave_idx_type *p, octave_idx_type *q, double *Dz,
      octave_idx_type *do_recip, double *Rs, void *Numeric)
     {
-      return UMFPACK_ZNAME (get_numeric) (Lp, Lj,
+      return UMFPACK_ZNAME (get_numeric) (to_suitesparse_intptr (Lp),
+                                          to_suitesparse_intptr (Lj),
                                           reinterpret_cast<double *> (Lz),
-                                          0, Up, Ui,
+                                          0, to_suitesparse_intptr (Up),
+                                          to_suitesparse_intptr (Ui),
                                           reinterpret_cast<double *> (Uz),
-                                          0, p, q,
+                                          0, to_suitesparse_intptr (p),
+                                          to_suitesparse_intptr (q),
                                           reinterpret_cast<double *> (Dz),
-                                          0, do_recip, Rs, Numeric);
+                                          0, to_suitesparse_intptr (do_recip),
+                                          Rs, Numeric);
     }
 
     template <>
@@ -303,7 +321,8 @@ namespace octave
      const Complex *Az, void *Symbolic, void **Numeric,
      const double *Control, double *Info)
     {
-      return UMFPACK_ZNAME (numeric) (Ap, Ai,
+      return UMFPACK_ZNAME (numeric) (to_suitesparse_intptr (Ap),
+                                      to_suitesparse_intptr (Ai),
                                       reinterpret_cast<const double *> (Az),
                                       0, Symbolic, Numeric, Control, Info);
     }
@@ -316,9 +335,12 @@ namespace octave
      const Complex *Az, const octave_idx_type *Qinit,
      void **Symbolic, const double *Control, double *Info)
     {
-      return UMFPACK_ZNAME (qsymbolic) (n_row, n_col, Ap, Ai,
+      return UMFPACK_ZNAME (qsymbolic) (n_row, n_col,
+                                        to_suitesparse_intptr (Ap),
+                                        to_suitesparse_intptr (Ai),
                                         reinterpret_cast<const double *> (Az),
-                                        0, Qinit, Symbolic, Control, Info);
+                                        0, to_suitesparse_intptr (Qinit),
+                                        Symbolic, Control, Info);
     }
 
     template <>
@@ -342,7 +364,9 @@ namespace octave
      const octave_idx_type *Ap, const octave_idx_type *Ai,
      const Complex *Az, octave_idx_type col_form, const double *Control)
     {
-      UMFPACK_ZNAME (report_matrix) (n_row, n_col, Ap, Ai,
+      UMFPACK_ZNAME (report_matrix) (n_row, n_col,
+                                     to_suitesparse_intptr (Ap),
+                                     to_suitesparse_intptr (Ai),
                                      reinterpret_cast<const double *> (Az),
                                      0, col_form, Control);
     }
@@ -359,7 +383,7 @@ namespace octave
     umfpack_report_perm<Complex>
     (octave_idx_type np, const octave_idx_type *Perm, const double *Control)
     {
-      UMFPACK_ZNAME (report_perm) (np, Perm, Control);
+      UMFPACK_ZNAME (report_perm) (np, to_suitesparse_intptr (Perm), Control);
     }
 
     template <>

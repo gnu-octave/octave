@@ -84,7 +84,7 @@ The author of the code itself is Timothy A. Davis
     print_usage ();
 
   octave_idx_type n_row, n_col;
-  const octave_idx_type *ridx, *cidx;
+  const octave::suitesparse_integer *ridx, *cidx;
   SparseMatrix sm;
   SparseComplexMatrix scm;
 
@@ -95,16 +95,16 @@ The author of the code itself is Timothy A. Davis
           scm = args(0).sparse_complex_matrix_value ();
           n_row = scm.rows ();
           n_col = scm.cols ();
-          ridx = scm.xridx ();
-          cidx = scm.xcidx ();
+          ridx = octave::to_suitesparse_intptr (scm.xridx ());
+          cidx = octave::to_suitesparse_intptr (scm.xcidx ());
         }
       else
         {
           sm = args(0).sparse_matrix_value ();
           n_row = sm.rows ();
           n_col = sm.cols ();
-          ridx = sm.xridx ();
-          cidx = sm.xcidx ();
+          ridx = octave::to_suitesparse_intptr (sm.xridx ());
+          cidx = octave::to_suitesparse_intptr (sm.xcidx ());
         }
     }
   else
@@ -116,8 +116,8 @@ The author of the code itself is Timothy A. Davis
 
       n_row = sm.rows ();
       n_col = sm.cols ();
-      ridx = sm.xridx ();
-      cidx = sm.xcidx ();
+      ridx = octave::to_suitesparse_intptr (sm.xridx ());
+      cidx = octave::to_suitesparse_intptr (sm.xcidx ());
     }
 
   if (n_row != n_col)
@@ -140,7 +140,7 @@ The author of the code itself is Timothy A. Davis
         Control[AMD_AGGRESSIVE] = tmp.double_value ();
     }
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, n_col);
+  OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, P, n_col);
   Matrix xinfo (AMD_INFO, 1);
   double *Info = xinfo.fortran_vec ();
 
@@ -152,8 +152,8 @@ The author of the code itself is Timothy A. Davis
   SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
   SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
-  octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
-                                              Control, Info);
+  octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P, Control,
+                                              Info);
 
   if (result == AMD_OUT_OF_MEMORY)
     error ("amd: out of memory");

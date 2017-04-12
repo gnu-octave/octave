@@ -1190,12 +1190,17 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
       const octave_idx_type *Ai = ridx ();
       const double *Ax = data ();
 
-      UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
+      UMFPACK_DNAME (report_matrix) (nr, nc,
+                                     octave::to_suitesparse_intptr (Ap),
+                                     octave::to_suitesparse_intptr (Ai),
+                                     Ax, 1, control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
-      int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai,
+      int status = UMFPACK_DNAME (qsymbolic) (nr, nc,
+                                              octave::to_suitesparse_intptr (Ap),
+                                              octave::to_suitesparse_intptr (Ai),
                                               Ax, 0, &Symbolic, control, info);
 
       if (status < 0)
@@ -1213,7 +1218,9 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
           UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
           void *Numeric;
-          status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
+          status = UMFPACK_DNAME (numeric) (octave::to_suitesparse_intptr (Ap),
+                                            octave::to_suitesparse_intptr (Ai),
+                                            Ax, Symbolic,
                                             &Numeric, control, info);
           UMFPACK_DNAME (free_symbolic) (&Symbolic);
 
@@ -5735,13 +5742,18 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, control);
+  UMFPACK_DNAME (report_matrix) (nr, nc,
+                                 octave::to_suitesparse_intptr (Ap),
+                                 octave::to_suitesparse_intptr (Ai),
+                                 Ax, 1, control);
 
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 0,
-                                          &Symbolic, control, info);
+  int status = UMFPACK_DNAME (qsymbolic) (nr, nc,
+                                          octave::to_suitesparse_intptr (Ap),
+                                          octave::to_suitesparse_intptr (Ai),
+                                          Ax, 0, &Symbolic, control, info);
 
   if (status < 0)
     {
@@ -5759,8 +5771,9 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
     {
       UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
-      status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
-                                        &Numeric, control, info);
+      status = UMFPACK_DNAME (numeric) (octave::to_suitesparse_intptr (Ap),
+                                        octave::to_suitesparse_intptr (Ai),
+                                        Ax, Symbolic, &Numeric, control, info);
       UMFPACK_DNAME (free_symbolic) (&Symbolic);
 
       if (calc_cond)
@@ -6001,10 +6014,11 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, &result[iidx],
-                                                  &Bx[iidx], Numeric, control,
-                                                  info);
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, &result[iidx], &Bx[iidx],
+                                                  Numeric, control, info);
                   if (status < 0)
                     {
                       UMFPACK_DNAME (report_status) (control, status);
@@ -6250,8 +6264,10 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     Bx[i] = b.elem (i, j);
 
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, Xx, Bx, Numeric,
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, Xx, Bx, Numeric,
                                                   control, info);
                   if (status < 0)
                     {
@@ -6505,11 +6521,15 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       Bz[i] = c.imag ();
                     }
 
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, Xx, Bx, Numeric,
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, Xx, Bx, Numeric,
                                                   control, info);
                   int status2 = UMFPACK_DNAME (solve) (UMFPACK_A,
-                                                       Ap, Ai, Ax, Xz, Bz,
+                                                       octave::to_suitesparse_intptr (Ap),
+                                                       octave::to_suitesparse_intptr (Ai),
+                                                       Ax, Xz, Bz,
                                                        Numeric, control, info);
 
                   if (status < 0 || status2 < 0)
@@ -6767,11 +6787,15 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                       Bz[i] = c.imag ();
                     }
 
-                  status = UMFPACK_DNAME (solve) (UMFPACK_A, Ap,
-                                                  Ai, Ax, Xx, Bx, Numeric,
+                  status = UMFPACK_DNAME (solve) (UMFPACK_A,
+                                                  octave::to_suitesparse_intptr (Ap),
+                                                  octave::to_suitesparse_intptr (Ai),
+                                                  Ax, Xx, Bx, Numeric,
                                                   control, info);
                   int status2 = UMFPACK_DNAME (solve) (UMFPACK_A,
-                                                       Ap, Ai, Ax, Xz, Bz,
+                                                       octave::to_suitesparse_intptr (Ap),
+                                                       octave::to_suitesparse_intptr (Ai),
+                                                       Ax, Xz, Bz,
                                                        Numeric, control, info);
 
                   if (status < 0 || status2 < 0)

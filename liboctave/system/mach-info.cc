@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C"
 {
-  double F77_FUNC (d1mach, D1MACH) (const octave_idx_type&);
+  double F77_FUNC (d1mach, D1MACH) (const F77_INT&);
 }
 
 namespace octave

@@ -211,13 +211,21 @@ public:
     rep -= all_lengths.size ();
   }
 
+  // Fast access with absolutely no checking
+
+  octave_idx_type& xelem (int i) { return rep[i]; }
+    
+  octave_idx_type xelem (int i) const { return rep[i]; }
+
+  // Safe access to to elements
+
   octave_idx_type& elem (int i)
   {
 #if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     assert (i >= 0 && i < ndims ());
 #endif
     make_unique ();
-    return rep[i];
+    return xelem (i);
   }
 
   octave_idx_type elem (int i) const
@@ -225,7 +233,7 @@ public:
 #if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
     assert (i >= 0 && i < ndims ());
 #endif
-    return rep[i];
+    return xelem (i);
   }
 
   void chop_trailing_singletons (void)
@@ -294,7 +302,7 @@ public:
   //! Number of dimensions.
   /*!
       Returns the number of dimensions of the dim_vector.  This is number of
-      elements in the dim_vector including trailing singetons.  It is also
+      elements in the dim_vector including trailing singletons.  It is also
       the number of dimensions an Array with this dim_vector would have.
   */
   octave_idx_type ndims (void) const { return rep[-1]; }
@@ -335,7 +343,7 @@ public:
 
     for (int i = 0; i < ndims (); i++)
       {
-        if (elem (i) != 0)
+        if (xelem (i) != 0)
           {
             retval = false;
             break;
@@ -347,12 +355,12 @@ public:
 
   bool empty_2d (void) const
   {
-    return ndims () == 2 && (elem (0) == 0 || elem (1) == 0);
+    return ndims () == 2 && (xelem (0) == 0 || xelem (1) == 0);
   }
 
   bool zero_by_zero (void) const
   {
-    return ndims () == 2 && elem (0) == 0 && elem (1) == 0;
+    return ndims () == 2 && xelem (0) == 0 && xelem (1) == 0;
   }
 
   bool any_zero (void) const
@@ -361,7 +369,7 @@ public:
 
     for (int i = 0; i < ndims (); i++)
       {
-        if (elem (i) == 0)
+        if (xelem (i) == 0)
           {
             retval = true;
             break;
@@ -415,7 +423,7 @@ public:
     int i;
 
     for (i = 0; i < n_dims; i++)
-      if (elem (i) < 0)
+      if (xelem (i) < 0)
         break;
 
     return i < n_dims;
@@ -440,7 +448,7 @@ public:
 
   dim_vector as_column (void) const
   {
-    if (ndims () == 2 && elem (1) == 1)
+    if (ndims () == 2 && xelem (1) == 1)
       return *this;
     else
       return dim_vector (numel (), 1);
@@ -448,7 +456,7 @@ public:
 
   dim_vector as_row (void) const
   {
-    if (ndims () == 2 && elem (0) == 1)
+    if (ndims () == 2 && xelem (0) == 1)
       return *this;
     else
       return dim_vector (1, numel ());
@@ -456,7 +464,7 @@ public:
 
   bool is_vector (void) const
   {
-    return (ndims () == 2 && (elem (0) == 1 || elem (1) == 1));
+    return (ndims () == 2 && (xelem (0) == 1 || xelem (1) == 1));
   }
 
   bool is_nd_vector (void) const
@@ -465,7 +473,7 @@ public:
 
     for (int i = 0; i < ndims (); i++)
       {
-        if (elem (i) != 1)
+        if (xelem (i) != 1)
           {
             num_non_one++;
 
@@ -507,7 +515,7 @@ public:
   {
     for (int i = 0; i < ndims (); i++)
       {
-        if (elem (i) != 1)
+        if (xelem (i) != 1)
           return i;
       }
 

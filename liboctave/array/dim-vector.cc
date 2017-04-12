@@ -76,7 +76,7 @@ dim_vector::str (char sep) const
 
   for (int i = 0; i < ndims (); i++)
     {
-      buf << elem (i);
+      buf << xelem (i);
 
       if (i < ndims () - 1)
         buf << sep;
@@ -93,7 +93,7 @@ dim_vector::num_ones (void) const
   int retval = 0;
 
   for (int i = 0; i < ndims (); i++)
-    if (elem (i) == 1)
+    if (xelem (i) == 1)
       retval++;
 
   return retval;
@@ -129,10 +129,10 @@ dim_vector::squeeze (void) const
 
   for (int i = 0; i < ndims (); i++)
     {
-      if (elem (i) == 1)
+      if (xelem (i) == 1)
         dims_changed = true;
       else
-        new_dims(k++) = elem (i);
+        new_dims(k++) = xelem (i);
     }
 
   if (dims_changed)

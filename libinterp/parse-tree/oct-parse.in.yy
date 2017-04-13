@@ -1561,12 +1561,12 @@ function_end    : END
                   {
                     parser.endfunction_found = true;
 
-                    if (parser.end_token_ok ($1, token::function_end))
+                    if (parser.end_token_ok ($1, octave::token::function_end))
                       $$ = parser.make_end ("endfunction", false,
                                             $1->line (), $1->column ());
                     else
                       {
-                        parser.end_token_error ($1, token::function_end);
+                        parser.end_token_error ($1, octave::token::function_end);
                         YYABORT;
                       }
                   }
@@ -2197,65 +2197,65 @@ namespace octave
 // Error mesages for mismatched end tokens.
 
 static std::string
-end_token_as_string (token::end_tok_type ettype)
+end_token_as_string (octave::token::end_tok_type ettype)
 {
   std::string retval = "<unknown>";
 
   switch (ettype)
     {
-    case token::simple_end:
+    case octave::token::simple_end:
       retval = "end";
       break;
 
-    case token::classdef_end:
+    case octave::token::classdef_end:
       retval = "endclassdef";
       break;
 
-    case token::enumeration_end:
+    case octave::token::enumeration_end:
       retval = "endenumeration";
       break;
 
-    case token::events_end:
+    case octave::token::events_end:
       retval = "endevents";
       break;
 
-    case token::for_end:
+    case octave::token::for_end:
       retval = "endfor";
       break;
 
-    case token::function_end:
+    case octave::token::function_end:
       retval = "endfunction";
       break;
 
-    case token::if_end:
+    case octave::token::if_end:
       retval = "endif";
       break;
 
-    case token::methods_end:
+    case octave::token::methods_end:
       retval = "endmethods";
       break;
 
-    case token::parfor_end:
+    case octave::token::parfor_end:
       retval = "endparfor";
       break;
 
-    case token::properties_end:
+    case octave::token::properties_end:
       retval = "endproperties";
       break;
 
-    case token::switch_end:
+    case octave::token::switch_end:
       retval = "endswitch";
       break;
 
-    case token::try_catch_end:
+    case octave::token::try_catch_end:
       retval = "end_try_catch";
       break;
 
-    case token::unwind_protect_end:
+    case octave::token::unwind_protect_end:
       retval = "end_unwind_protect";
       break;
 
-    case token::while_end:
+    case octave::token::while_end:
       retval = "endwhile";
       break;
 

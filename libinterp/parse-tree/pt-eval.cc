@@ -249,7 +249,7 @@ quit_loop_now (void)
                || octave::tree_break_command::breaking
                || octave::tree_continue_command::continuing);
 
-  if (tree_break_command::breaking)
+  if (octave::tree_break_command::breaking)
     octave::tree_break_command::breaking--;
 
   return quit;

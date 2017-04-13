@@ -189,6 +189,7 @@ OCTAVE_NORETURN OCTAVE_API extern void octave_throw_execution_exception (void);
 
 OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
 
+OCTAVE_DEPRECATED ("see the Octave documentation for other options")
 OCTAVE_NORETURN OCTAVE_API extern void
 octave_throw_exit_exception (int exit_status, int safe_to_return);
 

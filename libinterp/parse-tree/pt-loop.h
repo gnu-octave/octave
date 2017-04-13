@@ -262,8 +262,10 @@ namespace octave
     // Comment preceding ENDFOR token.
     octave_comment_list *trail_comm;
 
+#if defined (HAVE_LLVM)
     // compiled version of the loop
     jit_info *compiled;
+#endif
   };
 
   class tree_complex_for_command : public tree_command

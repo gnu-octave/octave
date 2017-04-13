@@ -48,14 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "xdiv.h"
 
-static inline bool
-result_ok (octave_idx_type info)
-{
-  assert (info != -1);
-
-  return (info != -2);
-}
-
 static void
 solve_singularity_warning (double rcond)
 {

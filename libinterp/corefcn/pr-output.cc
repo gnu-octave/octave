@@ -832,14 +832,6 @@ set_format (const Matrix& m, int& fw, double& scale)
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
 
-static inline void
-set_format (const Matrix& m)
-{
-  int fw;
-  double scale;
-  set_format (m, fw, scale);
-}
-
 static void
 set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
                     int int_only, int& r_fw, int& i_fw)
@@ -1252,14 +1244,6 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
                              int_or_inf_or_nan, r_fw, i_fw);
 }
 
-static inline void
-set_format (const ComplexMatrix& cm)
-{
-  int r_fw, i_fw;
-  double scale;
-  set_format (cm, r_fw, i_fw, scale);
-}
-
 static void
 set_range_format (int x_max, int x_min, int all_ints, int& fw)
 {
@@ -1405,14 +1389,6 @@ set_format (const Range& r, int& fw, double& scale)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
-}
-
-static inline void
-set_format (const Range& r)
-{
-  int fw;
-  double scale;
-  set_format (r, fw, scale);
 }
 
 union equiv

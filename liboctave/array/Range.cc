@@ -498,12 +498,6 @@ tfloor (double x, double ct)
     return t1 - 1.0;
 }
 
-static inline double
-tceil (double x, double ct)
-{
-  return -tfloor (-x, ct);
-}
-
 static inline bool
 teq (double u, double v,
      double ct = 3.0 * std::numeric_limits<double>::epsilon ())

@@ -1883,7 +1883,6 @@ namespace octave
     bool collect_output;
     bool multiple_delims_as_one;
     bool default_exp;
-    bool numeric_delim;
 
     octave_idx_type lines;
 
@@ -2550,8 +2549,7 @@ namespace octave
       header_lines (0), treat_as_empty (), treat_as_empty_len (0),
       whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
       return_on_error (1), collect_output (false),
-      multiple_delims_as_one (false), default_exp (true),
-      numeric_delim (false), lines (0)
+      multiple_delims_as_one (false), default_exp (true), lines (0)
   { }
 
   octave_value

@@ -49,9 +49,21 @@ MFILE: foreach my $m_fname (@ARGV)
       || $paths[-1] !~ s/(\.in|)\.m$//i)  # skip non m-files, and remove extension
     { next MFILE; }
 
-  ## @classes will have @class/method as their function name
-  my $fcn = $paths[-2] =~ m/^@/ ? File::Spec->catfile (@paths[-2, -1])
-                                : $paths[-1];
+  my $fcn;
+  if ($paths[-2] =~ m/^@/)
+    {
+      ## @classes will have @class/method as their function name
+      $fcn = File::Spec->catfile (@paths[-2, -1]);
+    }
+  elsif ($paths[-2] =~ m/^\+/)
+    {
+      ## +package functions have package.name their function name
+      $fcn = substr ($paths[-2], 1) . "." . $paths[-1];
+    }
+  else
+    {
+      $fcn = $paths[-1];
+    }
 
   my @help_txt = gethelp ($fcn, $full_fname);
   next MFILE unless @help_txt;

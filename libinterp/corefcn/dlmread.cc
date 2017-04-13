@@ -269,7 +269,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
       if (r0 < 0 || c0 < 0)
         error ("dlmread: left & top must be positive");
 
-      // Short-circuit and return if range is empty 
+      // Short-circuit and return if range is empty
       if (r1 < r0 || c1 < c0)
         return ovl (Matrix (0,0));
     }

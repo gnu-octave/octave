@@ -474,7 +474,7 @@ and width and height of the figure.  \
 
       case "renderer"
         s.doc = doc_unused;
-        
+
       case "renderermode"
         s.doc = doc_unused;
 
@@ -709,7 +709,7 @@ decide what to do with graphics objects already present in the axes.  \
 @xref{XREFnewplot, , @w{newplot function}}.  The state of __prop__ \
 is typically controlled using the @code{hold} function.  \
 @xref{XREFhold, , @w{hold function}}.";
-        
+
       case "outerposition"
         s.doc = "Specify the position of the plot including titles, \
 axes, and legend.  The four elements of the vector are the \
@@ -727,7 +727,7 @@ height to be 0.4 and 0.5 respectively.  \
       case "plotboxaspectratio"
         s.doc = "@xref{XREFpbaspect, , pbaspect function}.  \
 __modemsg__.";
-        
+
       case "plotboxaspectratiomode"
       case "position"
         s.doc = "Specify the position of the plot excluding titles, \
@@ -765,7 +765,7 @@ length of the tickmarks relative to the longest visible axis.";
         s.doc = "Size of the @code{[left bottom right top]} margins \
 around the axes that enclose labels and title annotations.";
         s.valid = valid_4elvec;
-        
+
       case "title"
         s.doc = "Graphics handle of the title text object.";
         s.valid = valid_handle;
@@ -780,7 +780,7 @@ label fontsize";
 
       case "units"
         s.doc = "Units used to interpret the @qcode{\"position\"}, \
-@qcode{\"outerposition\"}, and @qcode{\"tightinset\"} properties."; 
+@qcode{\"outerposition\"}, and @qcode{\"tightinset\"} properties.";
 
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
@@ -789,7 +789,7 @@ the viewpoint for three-dimensional plots";
 
       case "xaxislocation"
         s.doc = "Control the x axis location.";
-        
+
       case "xcolor"
         s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.  \
 __modemsg__.";
@@ -800,7 +800,7 @@ __modemsg__.";
       case "xdir"
         s.doc = "Direction of the x axis: @qcode{\"normal\"} is left \
 to right.";
-        
+
       case "xgrid"
         s.doc = "Control whether major x grid lines are displayed.";
 
@@ -818,7 +818,7 @@ for the x-axis.  __modemsg__.   @xref{XREFxlim, , @w{xlim function}}.";
         s.doc = "Control whether minor x grid lines are displayed.";
 
       case "xminortick"
-      case "xscale"        
+      case "xscale"
       case "xtick"
         s.doc = "Position of x tick marks.  __modemsg__.";
         s.valid = "vector";
@@ -835,7 +835,7 @@ for the x-axis.  __modemsg__.   @xref{XREFxlim, , @w{xlim function}}.";
       case "xtickmode"
       case "yaxislocation"
         s.doc = "Control the y-axis location.";
-        
+
       case "ycolor"
         s.doc = "Color of the y-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
@@ -1023,7 +1023,7 @@ z data.";
         s.doc = "Vector @code{[x0 y0 width height]} indicating the size \
 and location of the text string.";
         s.valid = valid_4elvec;
-      
+
       case "fontangle"
         s.doc = doc_fontangle;
         

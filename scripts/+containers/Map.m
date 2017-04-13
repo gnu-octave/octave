@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{m} =} containers.Map ()
 ## @deftypefnx {} {@var{m} =} containers.Map (@var{keys}, @var{vals})
-## @deftypefnx {} {@var{m} =} containers.Map (@var{keys}, @var{vals}, "UniformValues", @var{is_uniform})
-## @deftypefnx {} {@var{m} =} containers.Map ("KeyType", @var{kt}, "ValueType", @var{vt}))
+## @deftypefnx {} {@var{m} =} containers.Map (@var{keys}, @var{vals}, @qcode{"UniformValues"}, @var{is_uniform})
+## @deftypefnx {} {@var{m} =} containers.Map (@qcode{"KeyType"}, @var{kt}, @qcode{"ValueType"}, @var{vt})
 ##
 ## Create an object of the containers.Map class that stores a list of key/value
 ## pairs.
@@ -36,7 +36,7 @@
 ## of elements as @var{keys}.
 ##
 ## When called with no input arguments a default map is created with strings
-## as the key type and "any" as the value type.
+## as the key type and @qcode{"any"} as the value type.
 ##
 ## The @qcode{"UniformValues"} option specifies specifies whether the values of
 ## the map must be strictly of the same type.  If @var{is_uniform} is true, any
@@ -57,24 +57,24 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn {} {} Map.Count ()
+## @deftypefn {} {@var{n} =} Map.Count ()
 ## Return the number of key/value pairs in the map, as a uint64.
 ## @end deftypefn
 ##
-## @deftypefn {} {} Map.KeyType ()
+## @deftypefn {} {@var{type} =} Map.KeyType ()
 ## Return the key type.
 ##
 ## Possible values are listed above when describing input variable @var{kt}.
 ## @end deftypefn
 ##
-## @deftypefn {} {} Map.ValueType ()
+## @deftypefn {} {@var{type} =} Map.ValueType ()
 ## Return the value type.
 ##
 ## Possible values are listed above when describing input variable @var{vt}.
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{} =} Map.isKey (@var{keySet})
+## @deftypefn {} {@var{mask} =} Map.isKey (@var{keySet})
 ## Return a logical array which is true where the elements of @var{keySet} are
 ## keys of the map and false otherwise.
 ##
@@ -82,11 +82,11 @@
 ## can be entered directly as a scalar value or a char vector.
 ## @end deftypefn
 ##
-## @deftypefn {} {@var{key} =} Map.keys ()
+## @deftypefn {} {@var{keys} =} Map.keys ()
 ## Return the sorted list of all keys of the map as a cell vector.
 ## @end deftypefn
 ##
-## @deftypefn {} {@var{l} =} Map.length ()
+## @deftypefn {} {@var{n} =} Map.length ()
 ## Return the number of key/value pairs in the map.
 ## @end deftypefn
 ##

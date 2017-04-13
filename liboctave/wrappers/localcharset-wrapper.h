@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 extern const char *octave_locale_charset_wrapper (void);
-  
+
 #if defined __cplusplus
 }
 #endif

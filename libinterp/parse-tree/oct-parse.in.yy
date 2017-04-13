@@ -438,7 +438,7 @@ opt_fcn_list    : // empty
                 | fcn_list
                   { $$ = $1; }
                 ;
-                
+
 fcn_list        : fcn_list1 opt_sep
                   {
                     YYUSE ($2);

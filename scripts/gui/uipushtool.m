@@ -74,9 +74,9 @@ function hui = uipushtool (varargin)
       h = h(1);
     endif
   endif
-  
+
   htmp = __go_uipushtool__ (h, args{:});
-  
+
   if (nargout > 0)
     hui = htmp;
   endif

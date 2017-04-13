@@ -120,7 +120,7 @@ default sans serif font (same as the default @qcode{\"*\"} value).";
   doc_fontunits = "Units used to interpret the @qcode{\"fontsize\"} property.";
   doc_fontweight = "Control the variant of the base font used for \
 text rendering.";
-  
+
   ## Initialize structure
   if (isfield (base, field))
     s = base.(field);
@@ -637,7 +637,7 @@ to be the same as the length of 2 units on the y-axis.  \
       case "dataaspectratiomode"
       case "fontangle"
         s.doc = doc_fontangle;
-        
+
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
@@ -654,7 +654,7 @@ to be the same as the length of 2 units on the y-axis.  \
 
       case "fontweight"
         s.doc = doc_fontweight;
-        
+
       case "gridalpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
 
@@ -1026,7 +1026,7 @@ and location of the text string.";
 
       case "fontangle"
         s.doc = doc_fontangle;
-        
+
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
@@ -1040,7 +1040,7 @@ and location of the text string.";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        
+
       case "horizontalalignment"
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
@@ -1436,7 +1436,7 @@ point source (@qcode{\"local\"}).";
       case "borderwidth"
       case "fontangle"
         s.doc = doc_fontangle;
-        
+
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
@@ -1450,7 +1450,7 @@ point source (@qcode{\"local\"}).";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        
+
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
@@ -1473,7 +1473,7 @@ point source (@qcode{\"local\"}).";
       case "borderwidth"
       case "fontangle"
         s.doc = doc_fontangle;
-        
+
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
@@ -1487,7 +1487,7 @@ point source (@qcode{\"local\"}).";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        
+
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
@@ -1514,7 +1514,7 @@ point source (@qcode{\"local\"}).";
       case "extent"
       case "fontangle"
         s.doc = doc_fontangle;
-        
+
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
@@ -1528,7 +1528,7 @@ point source (@qcode{\"local\"}).";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        
+
       case "foregroundcolor"
       case "horizontalalignment"
       case "keypressfcn"

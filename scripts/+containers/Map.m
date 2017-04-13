@@ -434,7 +434,7 @@ classdef Map < handle
 
     function newobj = horzcat (varargin)
       warning ("Octave:language-extension",
-               "containers.Map: horizontal concatenation is an Octave-only feature");   
+               "containers.Map: horizontal concatenation is an Octave-only feature");
       newobj = vertcat (varargin{:});
     endfunction
 
@@ -515,7 +515,7 @@ classdef Map < handle
       endswitch
 
       if (! any (strcmp (this.ValueType, {"any"; "char"; "logical";
-                                          "double"; "single"; 
+                                          "double"; "single";
                                           "int8"; "uint8"; "int16"; "uint16";
                                           "int32"; "uint32";
                                           "int64"; "uint64"})))

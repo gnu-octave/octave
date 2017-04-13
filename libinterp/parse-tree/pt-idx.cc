@@ -385,7 +385,7 @@ namespace octave
             // the following code is definitely not correct in all
             // cases.  That it is already so complex makes me think that
             // there must be a better way.
-             
+
             bool split = ((type[i-1] == '(' && type[i] != '.')
                           || (al && al->has_magic_end ()
                               && ! tmp.is_classdef_object ()));

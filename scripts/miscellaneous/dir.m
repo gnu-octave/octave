@@ -32,7 +32,7 @@
 ##
 ## @item folder
 ## Location of file or directory
-## 
+##
 ## @item date
 ## Timestamp of file modification (string value).
 ##

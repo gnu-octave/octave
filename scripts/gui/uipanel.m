@@ -62,7 +62,7 @@ function hui = uipanel (varargin)
   [h, args] = __uiobject_split_args__ ("uipanel", varargin,
                                        {"figure", "uipanel", "uibuttongroup"});
   htmp = __go_uipanel__ (h, args{:});
-  
+
   if (nargout > 0)
     hui = htmp;
   endif

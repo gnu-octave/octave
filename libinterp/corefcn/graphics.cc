@@ -5779,7 +5779,7 @@ axes::properties::update_axes_layout (void)
       ypTick = yPlaneN;
       ypTickN = yPlane;
       Matrix xlimits = get_xlim ().matrix_value ();
-      if (yaxislocation_is ("right") || 
+      if (yaxislocation_is ("right") ||
           (xscale_is ("log") && yaxislocation_is ("origin")
            && (xlimits(1) < 0.)))
         {

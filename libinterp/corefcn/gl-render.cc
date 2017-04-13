@@ -1457,14 +1457,14 @@ namespace octave
               render_tickmarks (xmticks, x_min, x_max,
                                 is_origin ? y_axis_pos : ypTick, ypTick,
                                 zpTick, zpTickN, 0., 0.,
-                                (is_origin_low ? -1. : 1.) * 
+                                (is_origin_low ? -1. : 1.) *
                                 octave::math::signum (zpTick-zpTickN)*fz*xticklen/2,
                                 0, ! is_origin && mirror);
             else
               render_tickmarks (xmticks, x_min, x_max,
                                 is_origin ? y_axis_pos : ypTick, ypTickN,
                                 zpTick, zpTick, 0.,
-                                (is_origin_low ? -1. : 1.) * 
+                                (is_origin_low ? -1. : 1.) *
                                 octave::math::signum (ypTick-ypTickN)*fy*xticklen/2,
                                 0., 0, ! is_origin && mirror);
           }
@@ -1474,14 +1474,14 @@ namespace octave
           render_tickmarks (xticks, x_min, x_max,
                             is_origin ? y_axis_pos : ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
-                            (is_origin_low ? -1. : 1.) * 
+                            (is_origin_low ? -1. : 1.) *
                             octave::math::signum (zpTick-zpTickN)*fz*xticklen,
                             0, ! is_origin && mirror);
         else
           render_tickmarks (xticks, x_min, x_max,
                             is_origin ? y_axis_pos : ypTick, ypTickN,
                             zpTick, zpTick, 0.,
-                            (is_origin_low ? -1. : 1.) * 
+                            (is_origin_low ? -1. : 1.) *
                             octave::math::signum (ypTick-ypTickN)*fy*xticklen,
                             0., 0, ! is_origin && mirror);
 
@@ -1497,7 +1497,7 @@ namespace octave
               render_ticktexts (xticks, xticklabels, x_min, x_max,
                                 is_origin ? y_axis_pos : ypTick,
                                 zpTick +
-                                (is_origin_low ? -1. : 1.) * 
+                                (is_origin_low ? -1. : 1.) *
                                 octave::math::signum (zpTick-zpTickN)*fz*xtickoffset,
                                 0, halign, valign, wmax, hmax);
             else
@@ -1637,14 +1637,14 @@ namespace octave
               render_tickmarks (ymticks, y_min, y_max,
                                 is_origin ? x_axis_pos : xpTick, xpTick,
                                 zpTick, zpTickN, 0., 0.,
-                                (is_origin_low ? -1. : 1.) * 
+                                (is_origin_low ? -1. : 1.) *
                                 octave::math::signum (zpTick-zpTickN)*fz*yticklen/2,
                                 1, ! is_origin && mirror);
             else
               render_tickmarks (ymticks, y_min, y_max,
                                 is_origin ? x_axis_pos : xpTick, xpTickN,
                                 zpTick, zpTick,
-                                (is_origin_low ? -1. : 1.) * 
+                                (is_origin_low ? -1. : 1.) *
                                 octave::math::signum (xpTick-xpTickN)*fx*yticklen/2,
                                 0., 0., 1, ! is_origin && mirror);
           }
@@ -1654,14 +1654,14 @@ namespace octave
           render_tickmarks (yticks, y_min, y_max,
                             is_origin ? x_axis_pos : xpTick, xpTick,
                             zpTick, zpTickN, 0., 0.,
-                            (is_origin_low ? -1. : 1.) * 
+                            (is_origin_low ? -1. : 1.) *
                             octave::math::signum (zpTick-zpTickN)*fz*yticklen,
                             1, ! is_origin && mirror);
         else
           render_tickmarks (yticks, y_min, y_max,
                             is_origin ? x_axis_pos : xpTick, xpTickN,
                             zpTick, zpTick,
-                            (is_origin_low ? -1. : 1.) * 
+                            (is_origin_low ? -1. : 1.) *
                             octave::math::signum (xPlaneN-xPlane)*fx*yticklen,
                             0., 0., 1, ! is_origin && mirror);
 
@@ -1677,7 +1677,7 @@ namespace octave
               render_ticktexts (yticks, yticklabels, y_min, y_max,
                                 is_origin ? x_axis_pos : xpTick,
                                 zpTick +
-                                (is_origin_low ? -1. : 1.) * 
+                                (is_origin_low ? -1. : 1.) *
                                 octave::math::signum (zpTick-zpTickN)*fz*ytickoffset,
                                 1, halign, valign, wmax, hmax);
             else

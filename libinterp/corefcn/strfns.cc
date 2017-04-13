@@ -751,7 +751,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
   const char *codepage
     = tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ();
-  
+
   charNDArray native_bytes = args(0).char_array_value ();
 
   const char *src = native_bytes.data ();

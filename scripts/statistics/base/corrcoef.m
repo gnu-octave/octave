@@ -52,7 +52,7 @@
 ##
 ## @item @qcode{"rows"}
 ## Determine processing of NaN values.  Acceptable values are @qcode{"all"},
-## @qcode{"complete"}, and @qcode{"pairwise"}.  Default is @qcode{"all"}. 
+## @qcode{"complete"}, and @qcode{"pairwise"}.  Default is @qcode{"all"}.
 ## With @qcode{"complete"}, only the rows without NaN values are considered.
 ## With @qcode{"pairwise"}, the selection of NaN-free rows is made for each
 ## pair of variables.
@@ -73,7 +73,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
 
   alpha = 0.05;
   rows = "all";
-  
+
   if (nargin > 1)
 
     ## Check for numeric y argument
@@ -97,7 +97,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       switch (tolower (parameter))
         case "alpha"
           if (isnumeric (value) && isscalar (value)
-              && value >= 0 && value <= 1) 
+              && value >= 0 && value <= 1)
             alpha = value;
           else
             error ('corrcoef: "alpha" must be a number between 0 and 1');
@@ -121,19 +121,19 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       endswitch
     endfor
   endif
-  
+
   if (strcmp (rows, "complete"))
     x(any (isnan (x), 2), :) = [];
   endif
-  
+
   if (isempty (x) || isscalar (x))
     r = p = lci = hci = NaN;
     return;
   endif
-  
+
   ## Flags for calculation
   pairwise = strcmp (rows, "pairwise");
-  calc_pval = nargout > 1; 
+  calc_pval = nargout > 1;
 
   if (isrow (x))
     x = x(:);

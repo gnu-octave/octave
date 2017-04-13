@@ -678,7 +678,7 @@ namespace octave
 
         inhibit_startup_message = options.inhibit_startup_message ();
       }
-    
+
     if (m_interactive && ! inhibit_startup_message)
       std::cout << octave_startup_message () << "\n" << std::endl;
   }

@@ -112,5 +112,5 @@ function hui = uicontrol (varargin)
   if (nargout > 0)
     hui = htmp;
   endif
-  
+
 endfunction

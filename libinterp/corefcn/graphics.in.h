@@ -4775,9 +4775,9 @@ public:
     void update_fontsize (void) { update_font (); update_text_extent (); }
     void update_fontangle (void) { update_font (); update_text_extent (); }
 
-    void update_fontweight (void) 
-    { 
-      update_font (); 
+    void update_fontweight (void)
+    {
+      update_font ();
       update_text_extent ();
       // FIXME: Remove warning with demi and light in 4.7+
       if (fontweight.is ("demi") || fontweight.is ("light"))
@@ -5782,9 +5782,9 @@ public:
     void update_fontsize (void) { update_text_extent (); }
     void update_fontangle (void) { update_text_extent (); }
 
-    void update_fontweight (void) 
-    { 
-      update_text_extent (); 
+    void update_fontweight (void)
+    {
+      update_text_extent ();
       // FIXME: Remove warning with demi and light in 4.7+
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
@@ -5878,8 +5878,8 @@ public:
     // void update_fontsize (void) { update_text_extent (); }
     // void update_fontangle (void) { update_text_extent (); }
 
-    void update_fontweight (void) 
-    { 
+    void update_fontweight (void)
+    {
       // FIXME: Remove this warning in 4.7+
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
@@ -5966,8 +5966,8 @@ public:
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
 
-    void update_fontweight (void) 
-    { 
+    void update_fontweight (void)
+    {
       // FIXME: Remove this warning in 4.7+
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",

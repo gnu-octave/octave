@@ -557,7 +557,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
         if (__idx)
           __runtime_feat_test = __feat_line(__idx+1:end);
           __feat_line = __feat_line(1:__idx-1);
-        else          
+        else
           __runtime_feat_test = "";
         endif
         __feat = regexp (__feat_line, '\w+', 'match');

@@ -1528,7 +1528,7 @@ endfunction
 %!   assert (get (hpa, "edgecolor"), get (h, "color"));
 %!   assert (get (hpa, "facecolor"), [0 0 1]);
 %!   assert (get (hpa, "facealpha"), .6);
-%!  
+%!
 %!   assert (gca (), hax);
 %! unwind_protect_cleanup
 %!   close (hf);

@@ -214,7 +214,7 @@ public:
   // Fast access with absolutely no checking
 
   octave_idx_type& xelem (int i) { return rep[i]; }
-    
+
   octave_idx_type xelem (int i) const { return rep[i]; }
 
   // Safe access to to elements

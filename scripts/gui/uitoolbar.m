@@ -56,9 +56,9 @@
 function hui = uitoolbar (varargin)
 
   [h, args] = __uiobject_split_args__ ("uitoolbar", varargin, {"figure"});
-  
+
   htmp = __go_uitoolbar__ (h, args{:});
-  
+
   if (nargout > 0)
     hui = htmp;
   endif

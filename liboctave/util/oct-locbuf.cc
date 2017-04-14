@@ -57,10 +57,11 @@ namespace octave
                                       ? sizeof (double)
                                       : sizeof (long)) - 1;
 
-    active++;
+    // Always allocate, even for zero-size buffers so that local buffers
+    // always have valid addresses, same as for directly using operator
+    // new.
 
-    if (! size)
-      return;
+    active++;
 
     // Align size.  Note that size_t is unsigned, so size-1 must correctly
     // wrap around.

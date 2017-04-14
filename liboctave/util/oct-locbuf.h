@@ -38,12 +38,12 @@ namespace octave
   class local_buffer
   {
   public:
-    local_buffer (size_t size)
-      : data (0)
-    {
-      if (size)
-        data = new T [size];
-    }
+
+    // Always allocate, even for zero-size buffers so that local
+    // buffers always have valid addresses, same as for directly using
+    // operator new.
+
+    local_buffer (size_t size) : data (new T [size]) { }
 
     // No copying!
 

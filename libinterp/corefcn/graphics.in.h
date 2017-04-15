@@ -3881,21 +3881,60 @@ public:
     void update_fontunits (const caseless_str& old_fontunits);
 
   private:
-    scaler sx, sy, sz;
-    Matrix x_render, x_render_inv;
-    Matrix x_gl_mat1, x_gl_mat2;
-    Matrix x_zlim;
-    std::list<octave_value> zoom_stack;
+
+    scaler sx = scaler ();
+    scaler sy = scaler ();
+    scaler sz = scaler ();
+
+    Matrix x_render = Matrix ();
+    Matrix x_render_inv = Matrix ();
+    Matrix x_gl_mat1 = Matrix ();
+    Matrix x_gl_mat2 = Matrix ();
+    Matrix x_zlim = Matrix ();
+
+    std::list<octave_value> zoom_stack = std::list<octave_value> ();
 
     // Axes layout data
-    int xstate, ystate, zstate;
-    double xPlane, xPlaneN, yPlane, yPlaneN, zPlane, zPlaneN;
-    double xpTick, xpTickN, ypTick, ypTickN, zpTick, zpTickN;
-    double fx, fy, fz;
-    double xticklen, yticklen, zticklen;
-    double xtickoffset, ytickoffset, ztickoffset;
-    bool x2Dtop, y2Dright, layer2Dtop, is2D;
-    bool xySym, xyzSym, zSign, nearhoriz;
+    int xstate = 0;
+    int ystate = 0;
+    int zstate = 0;
+
+    double xPlane = 0.0;
+    double yPlane = 0.0;
+    double zPlane = 0.0;
+
+    double xPlaneN = 0.0;
+    double yPlaneN = 0.0;
+    double zPlaneN = 0.0;
+
+    double xpTick = 0.0;
+    double ypTick = 0.0;
+    double zpTick = 0.0;
+
+    double xpTickN = 0.0;
+    double ypTickN = 0.0;
+    double zpTickN = 0.0;
+
+    double fx = 0.0;
+    double fy = 0.0;
+    double fz = 0.0;
+
+    double xticklen = 0.0;
+    double yticklen = 0.0;
+    double zticklen = 0.0;
+
+    double xtickoffset = 0.0;
+    double ytickoffset = 0.0;
+    double ztickoffset = 0.0;
+
+    bool x2Dtop = false;
+    bool y2Dright = false;
+    bool layer2Dtop = false;
+    bool is2D = false;
+    bool xySym = false;
+    bool xyzSym = false;
+    bool zSign = false;
+    bool nearhoriz = false;
 
     // Text renderer, used for calculation of text (tick labels) size
     octave::text_renderer txt_renderer;

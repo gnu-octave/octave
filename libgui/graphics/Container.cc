@@ -106,9 +106,21 @@ namespace QtHandles
   void
   Container::childEvent (QChildEvent* xevent)
   {
-    if (xevent->child ()->isWidgetType ())
-      qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (
-        hasMouseTracking ());
-  }
+    // Enable mouse tracking in child widgets as they are added if the
+    // container also has mouse tracking enabled.  There is no need to
+    // do this when child objects are removed.
 
+    if (xevent->added ())
+      {
+        QObject *obj = xevent->child ();
+
+        if (obj && obj->isWidgetType ())
+          {
+            QWidget *widget = qobject_cast<QWidget*> (obj);
+
+            if (widget)
+              widget->setMouseTracking (hasMouseTracking ());
+          }
+      }
+  }
 }

@@ -72,6 +72,7 @@ private:
   class OCTAVE_API idx_base_rep
   {
   public:
+
     idx_base_rep (void) : count (1), err (false) { }
 
     // No copying!
@@ -122,7 +123,8 @@ private:
   class OCTAVE_API idx_colon_rep : public idx_base_rep
   {
   public:
-    idx_colon_rep (void) { }
+
+    idx_colon_rep (void) = default;
 
     idx_colon_rep (char c);
 
@@ -159,24 +161,24 @@ private:
   class OCTAVE_API idx_range_rep : public idx_base_rep
   {
   public:
-    idx_range_rep (void)
-      : start(0), len(0), step(1) { }
+
+    idx_range_rep (void) = delete;
 
     idx_range_rep (octave_idx_type _start, octave_idx_type _len,
                    octave_idx_type _step, direct)
       : idx_base_rep (), start(_start), len(_len), step(_step) { }
-
-    // No copying!
-
-    idx_range_rep (const idx_range_rep& idx) = delete;
-
-    idx_range_rep& operator = (const idx_range_rep& idx) = delete;
 
     // Zero-based constructor.
     idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
                    octave_idx_type _step);
 
     idx_range_rep (const Range&);
+
+    // No copying!
+
+    idx_range_rep (const idx_range_rep& idx) = delete;
+
+    idx_range_rep& operator = (const idx_range_rep& idx) = delete;
 
     octave_idx_type xelem (octave_idx_type i) const
     { return start + i * step; }
@@ -222,11 +224,11 @@ private:
   class OCTAVE_API idx_scalar_rep : public idx_base_rep
   {
   public:
-    idx_scalar_rep (void)
-      : data (0) { }
+
+    idx_scalar_rep (void) = delete;
 
     idx_scalar_rep (octave_idx_type i, direct)
-      : data (i) { }
+      : idx_base_rep (), data (i) { }
 
     // No copying!
 
@@ -278,6 +280,7 @@ private:
   class OCTAVE_API idx_vector_rep : public idx_base_rep
   {
   public:
+
     idx_vector_rep (void)
       : data (0), len (0), ext (0), aowner (0), orig_dims ()
     { }
@@ -285,7 +288,9 @@ private:
     // Direct constructor.
     idx_vector_rep (octave_idx_type *_data, octave_idx_type _len,
                     octave_idx_type _ext, const dim_vector& od, direct)
-      : data (_data), len (_len), ext (_ext), aowner (0), orig_dims (od) { }
+      : idx_base_rep (), data (_data), len (_len), ext (_ext),
+        aowner (0), orig_dims (od)
+    { }
 
     // Zero-based constructor.
     idx_vector_rep (const Array<octave_idx_type>& inda);
@@ -357,16 +362,15 @@ private:
   class OCTAVE_API idx_mask_rep : public idx_base_rep
   {
   public:
-    idx_mask_rep (void)
-      : data (0), len (0), ext (0), lsti (-1), lste (-1), aowner (0),
-        orig_dims ()
-    { }
+
+    idx_mask_rep (void) = delete;
 
     // Direct constructor.
     idx_mask_rep (bool *_data, octave_idx_type _len,
                   octave_idx_type _ext, const dim_vector& od, direct)
-      : data (_data), len (_len), ext (_ext), lsti (-1), lste (-1),
-        aowner (0), orig_dims (od) { }
+      : idx_base_rep (), data (_data), len (_len), ext (_ext),
+        lsti (-1), lste (-1), aowner (0), orig_dims (od)
+    { }
 
     idx_mask_rep (bool);
 

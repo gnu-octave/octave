@@ -150,7 +150,10 @@ protected:
       std::copy (d, d+l, data);
     }
 
-    ArrayRep (void) : data (0), len (0), count (1) { }
+    // Use new instead of setting data to 0 so that fortran_vec and
+    // data always return valid addresses, even for zero-size arrays.
+
+    ArrayRep (void) : data (new T [0]), len (0), count (1) { }
 
     explicit ArrayRep (octave_idx_type n)
       : data (new T [n]), len (n), count (1) { }

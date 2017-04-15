@@ -93,6 +93,12 @@ protected:
         c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
         ncols (nc), count (1)
     {
+      for (octave_idx_type i = 0; i < nz; i++)
+        d[i] = T ();
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        r[i] = 0;
+
       for (octave_idx_type i = 0; i < nc + 1; i++)
         c[i] = 0;
     }

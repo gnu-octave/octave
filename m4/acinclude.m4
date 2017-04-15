@@ -2298,6 +2298,13 @@ AC_DEFUN([OCTAVE_PROG_AR], [
     ARFLAGS="rc"
   fi
   AC_SUBST(ARFLAGS)
+
+  dnl FIXME: Remove when automake, autotools updated (placed 4/15/2017).
+  dnl This silences the following unnecessary warning during compile:
+  dnl ar: `u' modifier ignored since `D' is the default (see `U')
+  if test -z "$AR_FLAGS"; then
+    AR_FLAGS="rc"
+  fi
 ])
 dnl
 dnl Check for bison.

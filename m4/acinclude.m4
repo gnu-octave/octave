@@ -2295,15 +2295,15 @@ AC_DEFUN([OCTAVE_PROG_AR], [
   AC_SUBST(AR)
 
   if test -z "$ARFLAGS"; then
-    ARFLAGS="rc"
+    ARFLAGS="cr"
   fi
   AC_SUBST(ARFLAGS)
 
-  dnl FIXME: Remove when automake, autotools updated (placed 4/15/2017).
+  dnl FIXME: Remove when libtool updated (placed 4/15/2017).
   dnl This silences the following unnecessary warning during compile:
   dnl ar: `u' modifier ignored since `D' is the default (see `U')
   if test -z "$AR_FLAGS"; then
-    AR_FLAGS="rc"
+    AR_FLAGS="$ARFLAGS"
   fi
 ])
 dnl

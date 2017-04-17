@@ -50,6 +50,7 @@ public:
     void setScrollBufferSize(int value);
     QString selectedText();
     void has_extra_interrupt (bool extra_interrupt);
+    QList<QAction*> get_hotspot_actions (const QPoint& at);
 
 public slots:
     void copyClipboard();

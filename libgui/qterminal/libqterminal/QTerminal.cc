@@ -123,7 +123,19 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);
 
+    // Get the actions of any hotspots the filters may have found
+    QList<QAction*> actions = get_hotspot_actions (at);
+    if (actions.length ())
+      _contextMenu->addSeparator ();
+    for (int i = 0; i < actions.length (); i++)
+      _contextMenu->addAction (actions.at(i));
+
+    // Finally, show the context menu
     _contextMenu->exec (mapToGlobal (at));
+
+    // Cleaning up, remove actions of the hotspot
+    for (int i = 0; i < actions.length (); i++)
+      _contextMenu->removeAction (actions.at(i));
   }
 
 // slot for edit files in error messages

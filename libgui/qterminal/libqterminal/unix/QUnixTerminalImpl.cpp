@@ -43,6 +43,9 @@ void QUnixTerminalImpl::initialize()
     m_terminalView->setSize(80, 40);
     m_terminalView->setScrollBarPosition(TerminalView::ScrollBarRight);
 
+    UrlFilter *url_filter = new UrlFilter();
+    m_terminalView->filterChain ()->addFilter (url_filter);
+
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));
 
@@ -85,6 +88,12 @@ void QUnixTerminalImpl::setScrollBufferSize(int value)
     }
   else
     m_terminalModel->setHistoryType (HistoryTypeNone ());
+}
+
+QList<QAction*>
+QUnixTerminalImpl::get_hotspot_actions (const QPoint& at)
+{
+  return m_terminalView->filterActions (at);
 }
 
 void QUnixTerminalImpl::connectToPty()

@@ -26,6 +26,7 @@
 #include <iostream>
 
 // Qt
+#include <QDesktopServices>
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -482,7 +483,7 @@ void UrlFilter::HotSpot::activate(QObject* object)
             url.prepend("mailto:");
         }
 
-//        new KRun(url,QApplication::activeWindow());
+        QDesktopServices::openUrl (QUrl (url));
     }
 }
 

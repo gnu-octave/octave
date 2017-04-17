@@ -1390,6 +1390,9 @@ void TerminalView::blinkCursorEvent()
   QRect cursorRect = imageToWidget( QRect(cursorPosition(),QSize(1,1)) );
 
   update(cursorRect);
+
+  // use this timer event for updating the hot spots
+  processFilters ();
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1559,6 +1562,16 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
 
   if ( ev->button() == Qt::LeftButton)
     {
+
+      Filter::HotSpot* spot = _filterChain->hotSpotAt(charLine,charColumn);
+      if ( spot && spot->type() == Filter::HotSpot::Link)
+        {
+          QList<QAction*> actions = spot->actions ();
+          if (actions.length ())
+            actions.at (0)->activate (QAction::Trigger);
+          return;
+        }
+
       _lineSelectionMode = false;
       _wordSelectionMode = false;
 
@@ -1645,6 +1658,10 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
   Filter::HotSpot* spot = _filterChain->hotSpotAt(charLine,charColumn);
   if ( spot && spot->type() == Filter::HotSpot::Link)
     {
+      // change mouse cursor when mouse is over links
+      if (! _mouseOverHotspotArea.isValid())
+        setCursor (Qt::PointingHandCursor);
+
       QRect previousHotspotArea = _mouseOverHotspotArea;
       _mouseOverHotspotArea.setCoords( qMin(spot->startColumn() , spot->endColumn()) * _fontWidth,
                                        spot->startLine() * _fontHeight,
@@ -1663,6 +1680,7 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
     }
   else if ( _mouseOverHotspotArea.isValid() )
     {
+      setUsesMouse (true);
       update( _mouseOverHotspotArea );
       // set hotspot area to an invalid rectangle
       _mouseOverHotspotArea = QRect();

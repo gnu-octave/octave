@@ -338,10 +338,13 @@ test block is interpreted as for @code{xtest}.
 
 @item %!testif HAVE_XXX
 @itemx %!testif HAVE_XXX, HAVE_YYY, @dots{}
+@itemx %!testif HAVE_XXX, HAVE_YYY @dots{}; RUNTIME_COND
 @itemx %!testif @dots{} <MESSAGE>
-Check block only if Octave was compiled with feature HAVE_XXX.  If
-@code{<MESSAGE>} is present, the test block is interpreted as for
-@code{xtest}.
+Check block only if Octave was compiled with feature @code{HAVE_XXX}.
+@code{RUNTIME_COND} is an optional expression to evaluate to check
+whether some condition is met when the test is executed.  If
+@code{RUNTIME_COND} is false, the test is skipped.  If @code{<MESSAGE>}
+is present, the test block is interpreted as for @code{xtest}.
 
 @item %!xtest
 @itemx %!xtest <MESSAGE>

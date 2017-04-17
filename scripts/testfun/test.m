@@ -529,8 +529,8 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
 
 ### TESTIF HAVE_FEATURE
 ### TESTIF HAVE_FEATURE ; RUNTIME_CONDITION
-### TESTIF <bug-id> HAVE_FEATURE
-### TESTIF <bug-id> HAVE_FEATURE ; RUNTIME_CONDITION
+### TESTIF HAVE_FEATURE <bug-id>
+### TESTIF HAVE_FEATURE ; RUNTIME_CONDITION <bug-id>
 ###
 ###   HAVE_FEATURE is a comma- or whitespace separated list of
 ###   macro names that may be checked with __have_feature__.

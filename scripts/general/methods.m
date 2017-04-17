@@ -80,10 +80,7 @@ endfunction
 %! assert (mtds{1}, "ascii");
 
 ## test Java classname
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! mtds = methods ("java.lang.Double");
 %! search = strfind (mtds, "java.lang.Double valueOf");
 %! assert (! isempty ([search{:}]));

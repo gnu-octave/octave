@@ -2867,10 +2867,7 @@ x = javaObject ("java.lang.StringBuffer", "Initial string")
 ## it works properly, i.e., creates the right values, is a matter of
 ## Java itself.  Create a Short and check if it really is a short, i.e.,
 ## whether it overflows.
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! assert (javaObject ("java.lang.Short", 40000).doubleValue < 0);
 */
 
@@ -2942,10 +2939,7 @@ equivalent
 }
 
 /*
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! ## Check for valid first two Java version numbers
 %! jver = strsplit (javaMethod ("getProperty", "java.lang.System", "java.version"), ".");
 %! assert (isfinite (str2double (jver{1})) && isfinite (str2double (jver{2})));
@@ -3215,19 +3209,13 @@ Return true if @var{x} is a Java object.
 
 /*
 ## Check automatic conversion of java primitive arrays into octave types.
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! assert (javaObject ("java.lang.String", "hello").getBytes (),
 %!         int8 ([104 101 108 108 111]'));
 
 ## Check automatic conversion of octave types into java primitive arrays.
 ## Note that uint8 is casted to int8.
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", [90 100 255], 255), 2);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 255]), uint8 (255)) < 0);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", uint8 ([90 100 128]), uint8 (128)) < 0);
@@ -3235,10 +3223,7 @@ Return true if @var{x} is a Java object.
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2);
 
 ## Check we can create objects that wrap java literals
-%!testif HAVE_JAVA <38821>
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm") <38821>
 %! assert (class (javaObject ("java.lang.Byte",     uint8 (1))), "java.lang.Byte");
 %! assert (class (javaObject ("java.lang.Byte",      int8 (1))), "java.lang.Byte");
 %! assert (class (javaObject ("java.lang.Short",   uint16 (1))), "java.lang.Short");
@@ -3249,10 +3234,7 @@ Return true if @var{x} is a Java object.
 %! assert (class (javaObject ("java.lang.Long",     int64 (1))), "java.lang.Long");
 
 ## Test for automatic conversion of specific numeric classes
-%!testif HAVE_JAVA <48013>
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm") <48013>
 %! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1)
 %! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1)
 %! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1)
@@ -3263,10 +3245,7 @@ Return true if @var{x} is a Java object.
 %! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))), "java.math.BigInteger")
 
 ## Automatic conversion from string cell array into String[]
-%!testif HAVE_JAVA <45290>
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm") <45290>
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "aaa"), 0);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "zzz"), 3);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "hhh") < 0);

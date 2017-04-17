@@ -141,10 +141,7 @@ endfunction
 %! assert (msg.message, "javachk: desktop is not supported");
 %! assert (msg.identifier, "Java DESKTOP");
 
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! assert (javachk ("jvm"), "");
 
 ## Test input validation

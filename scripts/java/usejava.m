@@ -85,10 +85,7 @@ endfunction
 
 %!assert (usejava ("desktop"), false)
 
-%!testif HAVE_JAVA
-%! if (! usejava ("jvm"))
-%!   return;
-%! endif
+%!testif HAVE_JAVA; usejava ("jvm")
 %! assert (usejava ("jvm"), true);
 
 ## Test input validation

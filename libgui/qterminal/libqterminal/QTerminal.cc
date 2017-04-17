@@ -99,6 +99,9 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 
     _edit_action->setVisible (false);
 
+#if defined (Q_OS_WIN32)
+    // include this when in windows because there is no filter for
+    // detecting links and error messages yet
     if (has_selected_text)
       {
         QRegExp file ("(?:[ \\t]+)(\\S+) at line (\\d+) column (?:\\d+)");
@@ -119,6 +122,7 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
             _edit_action->setData (data);
           }
       }
+#endif
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);

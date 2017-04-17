@@ -2,6 +2,7 @@
     Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Adoption to octave by Torsten <mttl@mailbox.org>, Copyright (c) 2017
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -51,8 +52,11 @@
  * When processing the text they should create instances of Filter::HotSpot subclasses for sections of interest
  * and add them to the filter's list of hotspots using addHotSpot()
  */
-class Filter
+class Filter : public QObject
 {
+
+   Q_OBJECT
+
 public:
     /**
     * Represents an area of text which matched the pattern a particular filter has been looking for.
@@ -66,8 +70,22 @@ public:
     * Hotspots may have more than one action, in which case the list of actions can be obtained using the
     * actions() method.  These actions may then be displayed in a popup menu or toolbar for example.
     */
-    class HotSpot
+
+    enum Type
     {
+      // the type of the hotspot is not specified
+      NotSpecified,
+      // this hotspot represents a clickable link
+      Link,
+      // this hotspot represents a marker
+      Marker,
+      Error,
+      ErrorLink
+    };
+
+    class HotSpot : public QObject
+    {
+
     public:
        /**
         * Constructs a new hotspot which covers the area from (@p startLine,@p startColumn) to (@p endLine,@p endColumn)
@@ -75,16 +93,6 @@ public:
         */
        HotSpot(int startLine , int startColumn , int endLine , int endColumn);
        virtual ~HotSpot();
-
-       enum Type
-       {
-            // the type of the hotspot is not specified
-            NotSpecified,
-            // this hotspot represents a clickable link
-            Link,
-            // this hotspot represents a marker
-            Marker
-       };
 
        /** Returns the line when the hotspot area starts */
        int startLine() const;
@@ -190,6 +198,9 @@ private:
  */
 class RegExpFilter : public Filter
 {
+
+   Q_OBJECT
+
 public:
     /**
      * Type of hotspot created by RegExpFilter.  The capturedTexts() method can be used to find the text
@@ -198,19 +209,20 @@ public:
     class HotSpot : public Filter::HotSpot
     {
     public:
-        HotSpot(int startLine, int startColumn, int endLine , int endColumn);
+        HotSpot(int startLine, int startColumn,
+                int endLine , int endColumn, Filter::Type);
         virtual void activate(QObject* object = 0);
 
         /** Sets the captured texts associated with this hotspot */
         void setCapturedTexts(const QStringList& texts);
         /** Returns the texts found by the filter when matching the filter's regular expression */
         QStringList capturedTexts() const;
-    private:
+     private:
         QStringList _capturedTexts;
     };
 
     /** Constructs a new regular expression filter */
-    RegExpFilter();
+    RegExpFilter (Type);
 
     /**
      * Sets the regular expression which the filter searches for in blocks of text.
@@ -230,15 +242,19 @@ public:
      */
     virtual void process();
 
+signals:
+
+    void request_open_file_signal (const QString&, int);
+
 protected:
     /**
      * Called when a match for the regular expression is encountered.  Subclasses should reimplement this
      * to return custom hotspot types
      */
     virtual RegExpFilter::HotSpot* newHotSpot(int startLine,int startColumn,
-                                    int endLine,int endColumn);
+                                    int endLine,int endColumn, Type);
+    Type _type;
 
-private:
     QRegExp _searchText;
 };
 
@@ -247,6 +263,9 @@ class FilterObject;
 /** A filter which matches URLs in blocks of text */
 class UrlFilter : public RegExpFilter
 {
+
+   Q_OBJECT
+
 public:
     /**
      * Hotspot type created by UrlFilter instances.  The activate() method opens a web browser
@@ -255,7 +274,7 @@ public:
     class HotSpot : public RegExpFilter::HotSpot
     {
     public:
-        HotSpot(int startLine,int startColumn,int endLine,int endColumn);
+        HotSpot(int startLine,int startColumn,int endLine,int endColumn,Type t);
         virtual ~HotSpot();
 
         virtual QList<QAction*> actions();
@@ -267,11 +286,15 @@ public:
         virtual void activate(QObject* object = 0);
 
         virtual QString tooltip() const;
+
+        FilterObject* get_urlObject () { return _urlObject; }
+
     private:
         enum UrlType
         {
             StandardUrl,
             Email,
+            ErrorLink,
             Unknown
         };
         UrlType urlType() const;
@@ -279,15 +302,21 @@ public:
         FilterObject* _urlObject;
     };
 
-    UrlFilter();
+    UrlFilter (Type t = Link);
+
+    virtual void process();
+
+public slots:
+    void request_open_file (const QString&, int);
 
 protected:
-    virtual RegExpFilter::HotSpot* newHotSpot(int,int,int,int);
+    virtual HotSpot* newHotSpot(int,int,int,int,Type);
 
 private:
 
     static const QRegExp FullUrlRegExp;
     static const QRegExp EmailAddressRegExp;
+    static const QRegExp ErrorLinkRegExp;
 
     // combined OR of FullUrlRegExp and EmailAddressRegExp
     static const QRegExp CompleteUrlRegExp;
@@ -298,6 +327,10 @@ class FilterObject : public QObject
 Q_OBJECT
 public:
     FilterObject(Filter::HotSpot* filter) : _filter(filter) {}
+    void request_open_file (const QString& file, int line)
+      { emit request_open_file_signal (file, line); }
+signals:
+    void request_open_file_signal (const QString&, int);
 private slots:
     void activated();
 private:

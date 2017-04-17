@@ -1194,7 +1194,8 @@ void TerminalView::paintFilters(QPainter& painter)
                        endColumn*_fontWidth - 1, (line+1)*_fontHeight - 1 );
 
           // Underline link hotspots
-          if ( spot->type() == Filter::HotSpot::Link )
+          if ( spot->type() == Filter::Link ||
+               spot->type() == Filter::ErrorLink)
             {
               QFontMetrics metrics(font());
 
@@ -1210,10 +1211,16 @@ void TerminalView::paintFilters(QPainter& painter)
             }
           // Marker hotspots simply have a transparent rectanglular shape
           // drawn on top of them
-          else if ( spot->type() == Filter::HotSpot::Marker )
+          else if ( spot->type() == Filter::Error )
             {
               //TODO - Do not use a hardcoded colour for this
-              painter.fillRect(r,QBrush(QColor(255,0,0,120)));
+              painter.fillRect(r,QBrush(QColor(255,0,0,96)));
+            }
+
+          if ( spot->type() == Filter::ErrorLink )
+            {
+              //TODO - Do not use a hardcoded colour for this
+              painter.fillRect(r,QBrush(QColor(255,0,0,96)));
             }
         }
     }
@@ -1564,7 +1571,8 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
     {
 
       Filter::HotSpot* spot = _filterChain->hotSpotAt(charLine,charColumn);
-      if ( spot && spot->type() == Filter::HotSpot::Link)
+      if ( spot &&
+          (spot->type() == Filter::Link || spot->type() == Filter::ErrorLink))
         {
           QList<QAction*> actions = spot->actions ();
           if (actions.length ())
@@ -1656,7 +1664,8 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
   // handle filters
   // change link hot-spot appearance on mouse-over
   Filter::HotSpot* spot = _filterChain->hotSpotAt(charLine,charColumn);
-  if ( spot && spot->type() == Filter::HotSpot::Link)
+  if ( spot &&
+      (spot->type() == Filter::Link || spot->type() == Filter::ErrorLink))
     {
       // change mouse cursor when mouse is over links
       if (! _mouseOverHotspotArea.isValid())

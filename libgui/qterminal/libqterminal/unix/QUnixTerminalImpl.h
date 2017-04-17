@@ -69,6 +69,7 @@ private:
     TerminalModel *m_terminalModel;
     KPty *m_kpty;
     bool _extra_interrupt;
+    QWidget *_parent;
 };
 
 #endif // Q_UNIXTERMINALIMPL

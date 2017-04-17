@@ -24,8 +24,10 @@
 
 #include <termios.h>
 
-QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
-    : QTerminal(parent) {
+QUnixTerminalImpl::QUnixTerminalImpl(QWidget *p)
+    : QTerminal(p),
+      _parent (p)
+{
     setMinimumSize(300, 200);
     initialize();
 }
@@ -45,6 +47,16 @@ void QUnixTerminalImpl::initialize()
 
     UrlFilter *url_filter = new UrlFilter();
     m_terminalView->filterChain ()->addFilter (url_filter);
+
+    RegExpFilter *error_filter = new RegExpFilter (Filter::Type::Error);
+    error_filter->setRegExp (QRegExp ("error:"));
+    m_terminalView->filterChain ()->addFilter (error_filter);
+
+    UrlFilter *file_filter = new UrlFilter (Filter::Type::ErrorLink);
+    m_terminalView->filterChain ()->addFilter (file_filter);
+
+    connect (file_filter, SIGNAL (request_open_file_signal (const QString&, int)),
+             _parent, SLOT (edit_mfile (const QString&, int)));
 
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));

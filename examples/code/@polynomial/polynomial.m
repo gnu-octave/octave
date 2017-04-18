@@ -18,10 +18,10 @@ function p = polynomial (a)
   endif
 
   if (nargin == 0)
-    p.poly = [0];
+    p.poly = 0;
     p = class (p, "polynomial");
   else
-    if (strcmp (class (a), "polynomial"))
+    if (isa (a, "polynomial"))
       p = a;
     elseif (isreal (a) && isvector (a))
       p.poly = a(:).';  # force row vector

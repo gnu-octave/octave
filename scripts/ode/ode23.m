@@ -413,6 +413,10 @@ endfunction
 %! opt = odeset ("AbsTol", 1e-8, "RelTol", 1e-8);
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);
 %! assert ([sol.x(end); sol.y(:,end)], [2; fref'], 1e-3);
+%!test # hermite_cubic_interpolation
+%! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
+%! [t,sol] = ode23(@(t,x)[x(2);x(1)],linspace(0,1),[1;0],opt);
+%! assert(max(abs(sol(:,1)-cosh(t))),0,1e-6)
 %!test  # RelTol and NormControl option -- higher accuracy
 %! opt = odeset ("RelTol", 1e-8, "NormControl", "on");
 %! sol = ode23 (@fpol, [0 2], [2 0], opt);

@@ -59,7 +59,10 @@ namespace QtHandles
 
     slider->setTracking (false);
     Matrix bb = up.get_boundingbox ();
-    slider->setOrientation (bb(2) > bb(3) ? Qt::Horizontal : Qt::Vertical);
+    bool vertical_slider = ( bb(2) < bb(3) );
+    slider->setOrientation (vertical_slider ? Qt::Vertical : Qt::Horizontal);
+    if (vertical_slider)
+      slider->setInvertedAppearance (true);  // Matlab compatibility
     Matrix steps = up.get_sliderstep ().matrix_value ();
     slider->setMinimum (0);
     slider->setMaximum (RANGE_INT_MAX);

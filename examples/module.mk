@@ -55,6 +55,7 @@ examples_code_SRC = \
   examples/code/oregonator.cc \
   examples/code/oregonator.m \
   examples/code/paramdemo.cc \
+  examples/code/polynomial2.m \
   examples/code/standalone.cc \
   examples/code/standalonebuiltin.cc \
   examples/code/stringdemo.cc \

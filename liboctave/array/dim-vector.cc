@@ -55,9 +55,9 @@ dim_vector::chop_all_singletons (void)
   make_unique ();
 
   int j = 0;
-  int l = ndims ();
+  int nd = ndims ();
 
-  for (int i = 0; i < l; i++)
+  for (int i = 0; i < nd; i++)
     {
       if (rep[i] != 1)
         rep[j++] = rep[i];
@@ -282,30 +282,30 @@ dim_vector::redim (int n) const
     {
       dim_vector retval = alloc (n);
 
-      for (int i = 0; i < n_dims; i++)
-        retval.rep[i] = rep[i];
-
-      for (int i = n_dims; i < n; i++)
-        retval.rep[i] = 1;
+      std::copy_n (rep, n_dims, retval.rep);
+      std::fill_n (retval.rep + n_dims, n - n_dims, 1);
 
       return retval;
     }
   else
     {
-      if (n < 1) n = 1;
+      if (n < 1)
+        n = 1;
 
       dim_vector retval = alloc (n);
 
-      retval.rep[1] = 1;
+      std::copy_n (rep, n-1, retval.rep);
 
-      for (int i = 0; i < n-1; i++)
-        retval.rep[i] = rep[i];
-
+      // Accumulate overflow dimensions into last remaining dimension
       int k = rep[n-1];
       for (int i = n; i < n_dims; i++)
         k *= rep[i];
 
       retval.rep[n-1] = k;
+
+      // All dim_vectors are at least 2-D.  Make Nx1 if necessary.
+      if (n == 1)
+        retval.rep[1] = 1;
 
       return retval;
     }

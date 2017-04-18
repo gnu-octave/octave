@@ -31,14 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 #include <cstddef>
 
-#include <iosfwd>
 #include <algorithm>
+#include <iosfwd>
 
 #include "Array.h"
 #include "dim-vector.h"
 #include "lo-error.h"
 #include "lo-utils.h"
-
 #include "oct-sort.h"
 
 class idx_vector;
@@ -73,35 +72,21 @@ protected:
     octave::refcount<int> count;
 
     SparseRep (void)
-      : d (0), r (0), c (new octave_idx_type [1]), nzmx (0), nrows (0),
+      : d (0), r (0), c (new octave_idx_type [1] {}), nzmx (0), nrows (0),
         ncols (0), count (1)
-    {
-      c[0] = 0;
-    }
+    { }
 
     SparseRep (octave_idx_type n)
-      : d (0), r (0), c (new octave_idx_type [n+1]), nzmx (0), nrows (n),
+      : d (0), r (0), c (new octave_idx_type [n+1] {}), nzmx (0), nrows (n),
         ncols (n), count (1)
-    {
-      for (octave_idx_type i = 0; i < n + 1; i++)
-        c[i] = 0;
-    }
+    { }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz = 0)
-      : d (nz > 0 ? new T [nz] : 0),
-        r (nz > 0 ? new octave_idx_type [nz] : 0),
-        c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
+      : d (nz > 0 ? new T [nz] {} : 0),
+        r (nz > 0 ? new octave_idx_type [nz] {} : 0),
+        c (new octave_idx_type [nc+1] {}), nzmx (nz), nrows (nr),
         ncols (nc), count (1)
-    {
-      for (octave_idx_type i = 0; i < nz; i++)
-        d[i] = T ();
-
-      for (octave_idx_type i = 0; i < nz; i++)
-        r[i] = 0;
-
-      for (octave_idx_type i = 0; i < nc + 1; i++)
-        c[i] = 0;
-    }
+    { }
 
     SparseRep (const SparseRep& a)
       : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]),
@@ -109,9 +94,9 @@ protected:
         nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
     {
       octave_idx_type nz = a.nnz ();
-      std::copy (a.d, a.d + nz, d);
-      std::copy (a.r, a.r + nz, r);
-      std::copy (a.c, a.c + ncols + 1, c);
+      std::copy_n (a.d, nz, d);
+      std::copy_n (a.r, nz, r);
+      std::copy_n (a.c, ncols + 1, c);
     }
 
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }

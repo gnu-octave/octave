@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 
+#include <algorithm>
 #include <initializer_list>
 #include <string>
 
@@ -109,12 +110,11 @@ private:
 
   octave_idx_type *clonerep (void)
   {
-    int l = ndims ();
+    int nd = ndims ();
 
-    octave_idx_type* r = newrep (l);
+    octave_idx_type* r = newrep (nd);
 
-    for (int i = 0; i < l; i++)
-      r[i] = rep[i];
+    std::copy_n (rep, nd, r);
 
     return r;
   }
@@ -123,21 +123,18 @@ private:
 
   octave_idx_type *resizerep (int n, octave_idx_type fill_value)
   {
-    int l = ndims ();
+    int nd = ndims ();
 
     if (n < 2)
       n = 2;
 
     octave_idx_type* r = newrep (n);
 
-    if (l > n)
-      l = n;
+    if (nd > n)
+      nd = n;
 
-    int j = 0;
-    for (; j < l; j++)
-      r[j] = rep[j];
-    for (; j < n; j++)
-      r[j] = fill_value;
+    std::copy_n (rep, nd, r);
+    std::fill_n (r + nd, n - nd, fill_value);
 
     return r;
   }
@@ -238,14 +235,14 @@ public:
 
   void chop_trailing_singletons (void)
   {
-    int l = ndims ();
-    if (l > 2 && rep[l-1] == 1)
+    int nd = ndims ();
+    if (nd > 2 && rep[nd-1] == 1)
       {
         make_unique ();
         do
-          l--;
-        while (l > 2 && rep[l-1] == 1);
-        rep[-1] = l;
+          nd--;
+        while (nd > 2 && rep[nd-1] == 1);
+        rep[-1] = nd;
       }
   }
 

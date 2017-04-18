@@ -596,8 +596,8 @@ idx_vector::idx_vector_rep::print (std::ostream& os) const
 {
   os << '[';
 
-  for (octave_idx_type ii = 0; ii < len - 1; ii++)
-    os << data[ii] << ',' << ' ';
+  for (octave_idx_type i = 0; i < len - 1; i++)
+    os << data[i] << ',' << ' ';
 
   if (len > 0)
     os << data[len-1];
@@ -713,8 +713,8 @@ idx_vector::idx_mask_rep::print (std::ostream& os) const
 {
   os << '[';
 
-  for (octave_idx_type ii = 0; ii < ext - 1; ii++)
-    os << data[ii] << ',' << ' ';
+  for (octave_idx_type i = 0; i < ext - 1; i++)
+    os << data[i] << ',' << ' ';
 
   if (ext > 0)
     os << data[ext-1];
@@ -1121,8 +1121,7 @@ idx_vector::complement (octave_idx_type n) const
       bool *ndata = mask.fortran_vec ();
       for (octave_idx_type i = 0; i < ext; i++)
         ndata[i] = ! data[i];
-      for (octave_idx_type i = ext; i < n; i++)
-        ndata[i] = true;
+      std::fill_n (ndata + ext, n - ext, true);
       retval = new idx_mask_rep (mask, n - nz);
     }
   else

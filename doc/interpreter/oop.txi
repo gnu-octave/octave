@@ -116,10 +116,10 @@ means is the only way to obtain help for the overloaded methods and functions
 of a class.
 
 The same specification mechanism can be used wherever Octave expects a function
-name.  For example @code{type @@polynomial/display} will print the code of the
-display method of the polynomial class to the screen, and
-@code{dbstop @@polynomial/display} will set a breakpoint at the first
-executable line of the display method of the polynomial class.
+name.  For example @code{type @@polynomial/disp} will print the code of the
+@code{disp} method of the polynomial class to the screen, and
+@code{dbstop @@polynomial/disp} will set a breakpoint at the first executable
+line of the @code{disp} method of the polynomial class.
 
 To check whether a variable belongs to a user class, the @code{isobject} and
 @code{isa} functions can be used.  For example:
@@ -164,25 +164,18 @@ ismethod (p, "roots")
 
 There are a number of basic class methods that can (and should) be defined to
 allow the contents of the classes to be queried and set.  The most basic of
-these is the @code{display} method.  The @code{display} method is used by
-Octave whenever a class should be displayed on the screen.  Usually this is the
-result of an Octave expression that doesn't end with a semicolon.  If this
-method is not defined, then Octave won't print anything when displaying the
-contents of a class which can be confusing.
-
-@DOCSTRING(display)
+these is the @code{disp} method.  The @code{disp} method is used by Octave
+whenever a class should be displayed on the screen.  Usually this is the result
+of an Octave expression that doesn't end with a semicolon.  If this method is
+not defined, then Octave won't print anything when displaying the contents of a
+class which can be confusing.
 
 @noindent
-An example of a display method for the polynomial class might be
+An example of a @code{disp} method for the polynomial class might be
 
 @example
 @EXAMPLEFILE(@polynomial/disp.m)
 @end example
-
-@noindent
-Note that in the display method it makes sense to start the method with the
-line @w{@code{printf ("%s =", inputname (1))}} to be consistent with the rest
-of Octave which prints the variable name to be displayed followed by the value.
 
 To be consistent with the Octave graphic handle classes, a class should also
 define the @code{get} and @code{set} methods.  The @code{get} method accepts
@@ -543,7 +536,7 @@ user class.
 @item @code{a(s@math{_1},@dots{},s@math{_n})} @tab @code{subsref (a, s)} @tab Subscripted reference
 @item @code{a(s@math{_1},@dots{},s@math{_n}) = b} @tab @code{subsasgn (a, s, b)} @tab Subscripted assignment
 @item @code{b(a)} @tab @code{subsindex (a)} @tab Convert object to index
-@item @code{display} @tab @code{display (a)} @tab Object display
+@item @code{disp} @tab @code{disp (a)} @tab Object display
 @end multitable
 @caption{Available overloaded operators and their corresponding class method}
 @end float
@@ -614,13 +607,13 @@ In traditional Octave programming this would be performed as follows.
 
 @example
 @group
-octave:1> x = [some data vector];
-octave:2> n = [some coefficient vector];
-octave:3> y = filter (n, 1, x);
+>> x = [some data vector];
+>> n = [some coefficient vector];
+>> y = filter (n, 1, x);
 @end group
 @end example
 
-The equivalent behavior can be implemented as a class @@FIRfilter.  The
+The equivalent behavior can be implemented as a class @code{@@FIRfilter}.  The
 constructor for this class is the file @file{FIRfilter.m} in the class
 directory @file{@@FIRfilter}.
 
@@ -631,12 +624,13 @@ directory @file{@@FIRfilter}.
 As before, the leading comments provide documentation for the class
 constructor.  This constructor is very similar to the polynomial class
 constructor, except that a polynomial object is passed as the third argument to
-the @code{class} function, telling Octave that the @w{FIRfilter} class will be
-derived from the polynomial class.  The FIR filter class itself does not have
-any data fields, but it must provide a struct to the @code{class} function.
-Given that the @@polynomial constructor will add an element named
-@var{polynomial} to the object struct, the @@FIRfilter just initializes a
-struct with a dummy field @var{polynomial} which will later be overwritten.
+the @code{class} function, telling Octave that the @code{FIRfilter} class will
+be derived from the polynomial class.  The FIR filter class itself does not
+have any data fields, but it must provide a struct to the @code{class}
+function.  Given that the @code{@@polynomial} constructor will add an element
+named @var{polynomial} to the object struct, the @code{@@FIRfilter} just
+initializes a struct with a dummy field @var{polynomial} which will later be
+overwritten.
 
 Note that the sample code always provides for the case in which no arguments
 are supplied.  This is important because Octave will call a constructor with
@@ -647,7 +641,9 @@ A class may be a child of more than one class (@pxref{XREFclass,,class}), and
 inheritance may be nested.  There is no limitation to the number of parents or
 the level of nesting other than memory or other physical issues.
 
-As before, a class requires a @code{display} method.  A simple example might be
+For the @code{FIRfilter} class, more control about the object display is
+desired.  Therefore, the @code{display} method rather than the @code{disp}
+method is overloaded (@pxref{Class Methods}).  A simple example might be
 
 @example
 @group
@@ -655,8 +651,16 @@ As before, a class requires a @code{display} method.  A simple example might be
 @end group
 @end example
 
-Note that the @w{FIRfilter}'s display method relies on the display method
-from the polynomial class to actually display the filter coefficients.
+Note that the @code{FIRfilter}'s display method relies on the @code{disp}
+method from the @code{polynomial} class to actually display the filter
+coefficients.  Furthermore, note that in the @code{display} method it makes
+sense to start the method with the line
+@code{@code{printf ("%s =", inputname (1))}} to be consistent with the
+rest of Octave which prints the variable name to be displayed followed by the
+value.  In general it is not recommended to overload the @code{display}
+function.
+
+@DOCSTRING(display)
 
 Once a constructor and display method exist, it is possible to create an
 instance of the class.  It is also possible to check the class type and examine

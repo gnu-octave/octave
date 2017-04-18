@@ -3591,18 +3591,23 @@ Or:
 myobj = myclass (@dots{})
 @end example
 
-User-defined classes should overload the @code{display} method and use
-@code{inputname} to access the name of the object.  Otherwise, Octave
-will report only that the object is an instance of its class.
+In general, user-defined classes should overload the @code{disp} method to
+avoid the default output:
 
 @example
 @group
 myobj = myclass (@dots{})
-  @result{} myobj = <class myclass>
+  @result{} myobj =
+
+  <class myclass>
 @end group
 @end example
 
-@seealso{class, subsref, subsasgn}
+When overloading the @code{display} method instead, one has to take care
+of properly displaying the object's name.  This can be done by using the
+@code{inputname} function.
+
+@seealso{disp, class, subsref, subsasgn}
 @end deftypefn */)
 {
   int nargin = args.length ();

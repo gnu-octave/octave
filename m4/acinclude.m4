@@ -1346,7 +1346,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ;;
     5)
       QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport"
-      octave_qscintilla_libnames="qscintilla2-qt5 qt5scintilla2"
+      octave_qscintilla_libnames="qscintilla2-qt5 qscintilla2_qt5 qt5scintilla2"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])

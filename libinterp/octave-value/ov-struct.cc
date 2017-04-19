@@ -769,8 +769,7 @@ octave_struct::load_ascii (std::istream& is)
           bool dummy;
 
           // recurse to read cell elements
-          std::string nm
-            = read_text_data (is, "", dummy, t2, j);
+          std::string nm = read_text_data (is, "", dummy, t2, j, false);
 
           if (! is)
             break;
@@ -1432,7 +1431,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
 
           // recurse to read cell elements
           std::string nm
-            = read_text_data (is, "", dummy, t2, j);
+            = read_text_data (is, "", dummy, t2, j, false);
 
           if (! is)
             break;

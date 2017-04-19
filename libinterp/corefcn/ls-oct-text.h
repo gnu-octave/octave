@@ -53,7 +53,8 @@ extract_keyword (std::istream& is, const char *keyword,
 
 extern OCTINTERP_API std::string
 read_text_data (std::istream& is, const std::string& filename, bool& global,
-                octave_value& tc, octave_idx_type count);
+                octave_value& tc, octave_idx_type count,
+                const bool do_name_validation = true);
 
 extern OCTINTERP_API bool
 save_text_data (std::ostream& os, const octave_value& val_arg,

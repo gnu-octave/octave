@@ -237,7 +237,8 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 
 std::string
 read_text_data (std::istream& is, const std::string& filename, bool& global,
-                octave_value& tc, octave_idx_type count)
+                octave_value& tc, octave_idx_type count,
+                const bool do_name_validation)
 {
   // Read name for this entry or break on EOF.
 
@@ -252,7 +253,8 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       return "";
     }
 
-  if (! (name == CELL_ELT_TAG || octave::valid_identifier (name)))
+  if (name != CELL_ELT_TAG
+      && do_name_validation && ! octave::valid_identifier (name))
     error ("load: invalid identifier '%s' found in file '%s'",
            name.c_str (), filename.c_str ());
 

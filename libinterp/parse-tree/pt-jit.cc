@@ -262,64 +262,60 @@ jit_convert::visit_argument_list (tree_argument_list&)
 void
 jit_convert::visit_binary_expression (tree_binary_expression& be)
 {
-  if (be.op_type () >= octave_value::num_binary_ops)
-    {
-      tree_boolean_expression *boole;
-      boole = dynamic_cast<tree_boolean_expression *> (&be);
-      assert (boole);
-      bool is_and = boole->op_type () == tree_boolean_expression::bool_and;
+  tree_expression *lhs = be.lhs ();
+  jit_value *lhsv = visit (lhs);
 
-      std::string short_name = next_shortcircut_result ();
-      jit_variable *short_result = factory.create<jit_variable> (short_name);
-      vmap[short_name] = short_result;
+  tree_expression *rhs = be.rhs ();
+  jit_value *rhsv = visit (rhs);
 
-      jit_block *done = factory.create<jit_block> (block->name ());
-      tree_expression *lhs = be.lhs ();
-      jit_value *lhsv = visit (lhs);
-      lhsv = create_checked (&jit_typeinfo::logically_true, lhsv);
+  const jit_operation& fn = jit_typeinfo::binary_op (be.op_type ());
+  result = create_checked (fn, lhsv, rhsv);
+}
 
-      jit_block *short_early = factory.create<jit_block> ("short_early");
-      blocks.push_back (short_early);
+void
+jit_convert::visit_boolean_expression (tree_boolean_expression& be)
+{
+  bool is_and = be.op_type () == tree_boolean_expression::bool_and;
 
-      jit_block *short_cont = factory.create<jit_block> ("short_cont");
+  std::string short_name = next_shortcircut_result ();
+  jit_variable *short_result = factory.create<jit_variable> (short_name);
+  vmap[short_name] = short_result;
 
-      if (is_and)
-        block->append (factory.create<jit_cond_branch> (lhsv, short_cont,
-                                                        short_early));
-      else
-        block->append (factory.create<jit_cond_branch> (lhsv, short_early,
-                                                        short_cont));
+  jit_block *done = factory.create<jit_block> (block->name ());
+  tree_expression *lhs = be.lhs ();
+  jit_value *lhsv = visit (lhs);
+  lhsv = create_checked (&jit_typeinfo::logically_true, lhsv);
 
-      block = short_early;
+  jit_block *short_early = factory.create<jit_block> ("short_early");
+  blocks.push_back (short_early);
 
-      jit_value *early_result = factory.create<jit_const_bool> (! is_and);
-      block->append (factory.create<jit_assign> (short_result, early_result));
-      block->append (factory.create<jit_branch> (done));
+  jit_block *short_cont = factory.create<jit_block> ("short_cont");
 
-      blocks.push_back (short_cont);
-      block = short_cont;
-
-      tree_expression *rhs = be.rhs ();
-      jit_value *rhsv = visit (rhs);
-      rhsv = create_checked (&jit_typeinfo::logically_true, rhsv);
-      block->append (factory.create<jit_assign> (short_result, rhsv));
-      block->append (factory.create<jit_branch> (done));
-
-      blocks.push_back (done);
-      block = done;
-      result = short_result;
-    }
+  if (is_and)
+    block->append (factory.create<jit_cond_branch> (lhsv, short_cont,
+                                                    short_early));
   else
-    {
-      tree_expression *lhs = be.lhs ();
-      jit_value *lhsv = visit (lhs);
+    block->append (factory.create<jit_cond_branch> (lhsv, short_early,
+                                                    short_cont));
 
-      tree_expression *rhs = be.rhs ();
-      jit_value *rhsv = visit (rhs);
+  block = short_early;
 
-      const jit_operation& fn = jit_typeinfo::binary_op (be.op_type ());
-      result = create_checked (fn, lhsv, rhsv);
-    }
+  jit_value *early_result = factory.create<jit_const_bool> (! is_and);
+  block->append (factory.create<jit_assign> (short_result, early_result));
+  block->append (factory.create<jit_branch> (done));
+
+  blocks.push_back (short_cont);
+  block = short_cont;
+
+  tree_expression *rhs = be.rhs ();
+  jit_value *rhsv = visit (rhs);
+  rhsv = create_checked (&jit_typeinfo::logically_true, rhsv);
+  block->append (factory.create<jit_assign> (short_result, rhsv));
+  block->append (factory.create<jit_branch> (done));
+
+  blocks.push_back (done);
+  block = done;
+  result = short_result;
 }
 
 void

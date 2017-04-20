@@ -81,6 +81,8 @@ public:
 
   void visit_binary_expression (tree_binary_expression&);
 
+  void visit_boolean_expression (tree_boolean_expression&);
+
   void visit_break_command (tree_break_command&);
 
   void visit_colon_expression (tree_colon_expression&);

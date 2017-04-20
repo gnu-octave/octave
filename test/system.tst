@@ -232,7 +232,7 @@
 %!error <... getpid> getpid (1)
 
 %!testif HAVE_GETPPID
-%! assert (getppid () > 0);
+%! assert (getppid () >= 0);
 
 %!error <... getppid> getppid (1)
 
@@ -296,6 +296,7 @@
 %!assert (ischar (pwd ()))
 
 %!testif HAVE_GETPWENT
+%! endpwent ();
 %! s = getpwent ();
 %! endpwent ();
 %! assert (isstruct (s)
@@ -310,6 +311,7 @@
 %!error <Invalid call to getpwent> getpwent (1)
 
 %!testif HAVE_GETPWUID
+%! endpwent ();
 %! x = getpwent ();
 %! y = getpwuid (x.uid);
 %! endpwent ();
@@ -319,6 +321,7 @@
 %!error <Invalid call to getpwuid> getpwuid (1, 2)
 
 %!testif HAVE_GETPWNAM
+%! endpwent ();
 %! x = getpwent ();
 %! y = getpwnam (x.name);
 %! endpwent ();
@@ -328,6 +331,7 @@
 %!error <Invalid call to getpwnam> getpwnam ("foo", 1)
 
 %!testif HAVE_SETPWENT
+%! endpwent ();
 %! x = getpwent ();
 %! setpwent ();
 %! y = getpwent ();
@@ -338,6 +342,7 @@
 %!error <Invalid call to endpwent> endpwent (1)
 
 %!testif HAVE_GETGRENT
+%! endgrent ();
 %! x = getgrent ();
 %! endgrent ();
 %! assert (isstruct (x)
@@ -349,6 +354,7 @@
 %!error <Invalid call to getgrent> getgrent (1)
 
 %!testif HAVE_GETGRGID
+%! endgrent ();
 %! x = getgrent ();
 %! y = getgrgid (x.gid);
 %! endgrent ();
@@ -358,6 +364,7 @@
 %!error <Invalid call to getgrgid> getgrgid (1, 2)
 
 %!testif HAVE_GETGRNAM
+%! endgrent ();
 %! x = getgrent ();
 %! y = getgrnam (x.name);
 %! endgrent ();
@@ -367,6 +374,7 @@
 %!error <Invalid call to getgrnam> getgrnam ("foo", 1)
 
 %!testif HAVE_SETGRENT
+%! endgrent ();
 %! x = getgrent ();
 %! setgrent ();
 %! y = getgrent ();

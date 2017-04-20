@@ -166,7 +166,7 @@ endfunction
 ## This test is the same as the similar one in imread.  imfinfo must check
 ## if file exists before calling __imfinfo_.  This BIST test confirms this.
 %!testif HAVE_MAGICK
-%! warning ("off", "Octave:GraphicsMagic-Quantum-Depth", "local");
+%! warning ("off", "Octave:GraphicsMagick-Quantum-Depth", "local");
 %! fmt = fmt_ori = imformats ("jpg");
 %! fmt.info = @true;
 %! error_thrown = false;

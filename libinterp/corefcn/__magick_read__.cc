@@ -798,7 +798,7 @@ maybe_initialize_magick (void)
       // is also the GraphicsMagick recommended setting and the default
       // for ImageMagick.
       if (QuantumDepth < 16)
-        warning_with_id ("Octave:GraphicsMagic-Quantum-Depth",
+        warning_with_id ("Octave:GraphicsMagick-Quantum-Depth",
                          "your version of %s limits images to %d bits per pixel\n",
                          MagickPackageName, QuantumDepth);
 

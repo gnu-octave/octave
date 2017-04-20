@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <set>
 #include <string>
 
+#include "oct-time.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 
@@ -39,254 +40,152 @@ class
 OCTINTERP_API
 load_path
 {
-protected:
+public:
 
   load_path (void)
-    : package_map (), top_level_package (), dir_info_list (), init_dirs () { }
-
-public:
+    : package_map (), top_level_package (), dir_info_list (), init_dirs (),
+      m_command_line_path (), add_hook (load_path::execute_pkg_add),
+      remove_hook (load_path::execute_pkg_del)
+    { }
 
   typedef void (*hook_fcn_ptr) (const std::string& dir);
 
+  load_path (const load_path&) = delete;
+
+  load_path& operator = (const load_path&) = delete;
+
   ~load_path (void) = default;
 
-  static void initialize (bool set_initial_path = false)
+  void initialize (bool set_initial_path = false);
+
+  void clear (void);
+
+  void set (const std::string& p, bool warn = false, bool is_init = false);
+
+  void append (const std::string& dir, bool warn = false);
+
+  void prepend (const std::string& dir, bool warn = false);
+
+  bool remove (const std::string& dir);
+
+  void update (void) const;
+
+  bool contains_canonical (const std::string& dir_name) const;
+
+  std::string find_method (const std::string& class_name,
+                           const std::string& meth,
+                           std::string& dir_name,
+                           const std::string& pack_name = "")
   {
-    if (instance_ok ())
-      instance->do_initialize (set_initial_path);
+    return get_package (pack_name).find_method (class_name, meth, dir_name);
   }
 
-  static void clear (void)
-  {
-    if (instance_ok ())
-      instance->do_clear ();
-  }
-
-  static void set (const std::string& p, bool warn = false)
-  {
-    if (instance_ok ())
-      instance->do_set (p, warn);
-  }
-
-  static void append (const std::string& dir, bool warn = false)
-  {
-    if (instance_ok ())
-      instance->do_append (dir, warn);
-  }
-
-  static void prepend (const std::string& dir, bool warn = false)
-  {
-    if (instance_ok ())
-      instance->do_prepend (dir, warn);
-  }
-
-  static bool remove (const std::string& dir)
-  {
-    return instance_ok () ? instance->do_remove (dir) : false;
-  }
-
-  static void update (void)
-  {
-    if (instance_ok ())
-      instance->do_update ();
-  }
-
-  static bool contains_canonical (const std::string& dir_name)
-  {
-    return instance_ok () ? instance->do_contains_canonical (dir_name) : false;
-  }
-
-  static std::string find_method (const std::string& class_name,
-                                  const std::string& meth,
-                                  std::string& dir_name,
-                                  const std::string& pack_name = "")
-  {
-    return instance_ok ()
-      ? instance->get_package (pack_name).find_method (class_name, meth,
-                                                      dir_name)
-      : "";
-  }
-
-  static std::string find_method (const std::string& class_name,
-                                  const std::string& meth,
-                                  const std::string& pack_name = "")
+  std::string find_method (const std::string& class_name,
+                           const std::string& meth,
+                           const std::string& pack_name = "")
   {
     std::string dir_name;
     return find_method (class_name, meth, dir_name, pack_name);
   }
 
-  static std::list<std::string> methods (const std::string& class_name,
-                                         const std::string& pack_name = "")
+  std::list<std::string> methods (const std::string& class_name,
+                                  const std::string& pack_name = "")
   {
-    return instance_ok ()
-      ? instance->get_package (pack_name).methods (class_name)
-      : std::list<std::string> ();
+    return get_package (pack_name).methods (class_name);
   }
 
-  static std::list<std::string> overloads (const std::string& meth)
+  std::list<std::string> overloads (const std::string& meth) const;
+
+  bool find_package (const std::string& package_name) const
   {
-    return instance_ok ()
-           ? instance->do_overloads (meth) : std::list<std::string> ();
+    return (package_map.find (package_name) != package_map.end ());
   }
 
-  static bool find_package (const std::string& package_name)
+  std::list<std::string> get_all_package_names (bool only_top_level = true) const;
+
+  std::string find_fcn (const std::string& fcn, std::string& dir_name,
+                        const std::string& pack_name = "")
   {
-    return instance_ok ()
-      ? instance->do_find_package (package_name) : false;
+    return get_package (pack_name).find_fcn (fcn, dir_name);
   }
 
-  static std::list<std::string>
-  get_all_package_names (bool only_top_level = true)
-  {
-    return instance_ok ()
-      ? instance->do_get_all_package_names (only_top_level)
-      : std::list<std::string> ();
-  }
-
-  static std::string find_fcn (const std::string& fcn, std::string& dir_name,
-                               const std::string& pack_name = "")
-  {
-    return instance_ok ()
-      ? instance->get_package (pack_name).find_fcn (fcn, dir_name)
-      : "";
-  }
-
-  static std::string find_fcn (const std::string& fcn,
-                               const std::string& pack_name = "")
+  std::string find_fcn (const std::string& fcn,
+                        const std::string& pack_name = "")
   {
     std::string dir_name;
     return find_fcn (fcn, dir_name, pack_name);
   }
 
-  static std::string find_private_fcn (const std::string& dir,
-                                       const std::string& fcn,
-                                       const std::string& pack_name = "")
+  std::string find_private_fcn (const std::string& dir,
+                                const std::string& fcn,
+                                const std::string& pack_name = "")
   {
-    return instance_ok ()
-      ? instance->get_package (pack_name).find_private_fcn (dir, fcn)
-      : "";
+    return get_package (pack_name).find_private_fcn (dir, fcn);
   }
 
-  static std::string find_fcn_file (const std::string& fcn,
-                                    const std::string& pack_name = "")
+  std::string find_fcn_file (const std::string& fcn,
+                             const std::string& pack_name = "")
   {
     std::string dir_name;
-
-    return instance_ok ()
-      ? instance->get_package (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : "";
+    return get_package (pack_name).find_fcn (fcn, dir_name, M_FILE);
   }
 
-  static std::string find_oct_file (const std::string& fcn,
-                                    const std::string& pack_name = "")
+  std::string find_oct_file (const std::string& fcn,
+                             const std::string& pack_name = "")
   {
     std::string dir_name;
-
-    return instance_ok ()
-      ? instance->get_package (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : "";
+    return get_package (pack_name).find_fcn (fcn, dir_name, M_FILE);
   }
 
-  static std::string find_mex_file (const std::string& fcn,
-                                    const std::string& pack_name = "")
+  std::string find_mex_file (const std::string& fcn,
+                             const std::string& pack_name = "")
   {
     std::string dir_name;
-
-    return instance_ok ()
-      ? instance->get_package (pack_name).find_fcn (fcn, dir_name, M_FILE)
-      : "";
+    return get_package (pack_name).find_fcn (fcn, dir_name, M_FILE);
   }
 
-  static std::string find_file (const std::string& file)
-  {
-    return instance_ok ()
-           ? instance->do_find_file (file) : "";
-  }
+  std::string find_file (const std::string& file) const;
 
-  static std::string find_dir (const std::string& dir)
-  {
-    return instance_ok ()
-           ? instance->do_find_dir (dir) : "";
-  }
+  std::string find_dir (const std::string& dir) const;
 
-  static string_vector find_matching_dirs (const std::string& dir)
-  {
-    return instance_ok ()
-           ? instance->do_find_matching_dirs (dir) : string_vector ();
-  }
+  string_vector find_matching_dirs (const std::string& dir) const;
 
-  static std::string find_first_of (const string_vector& files)
-  {
-    return instance_ok () ?
-           instance->do_find_first_of (files) : "";
-  }
+  std::string find_first_of (const string_vector& files) const;
 
-  static string_vector find_all_first_of (const string_vector& files)
-  {
-    return instance_ok () ?
-           instance->do_find_all_first_of (files) : string_vector ();
-  }
+  string_vector find_all_first_of (const string_vector& files) const;
 
-  static string_vector dirs (void)
-  {
-    return instance_ok () ? instance->do_dirs () : string_vector ();
-  }
+  string_vector dirs (void) const;
 
-  static std::list<std::string> dir_list (void)
-  {
-    return instance_ok ()
-           ? instance->do_dir_list () : std::list<std::string> ();
-  }
+  std::list<std::string> dir_list (void) const;
 
-  static string_vector files (const std::string& dir, bool omit_exts = false)
-  {
-    return instance_ok ()
-           ? instance->do_files (dir, omit_exts) : string_vector ();
-  }
+  string_vector files (const std::string& dir, bool omit_exts = false) const;
 
-  static string_vector fcn_names (void)
-  {
-    return instance_ok () ? instance->do_fcn_names () : string_vector ();
-  }
+  string_vector fcn_names (void) const;
 
-  static std::string path (void)
-  {
-    return instance_ok () ? instance->do_path () : "";
-  }
+  std::string path (void) const;
 
-  static void display (std::ostream& os)
-  {
-    if (instance_ok ())
-      instance->do_display (os);
-  }
+  void display (std::ostream& os) const;
 
-  static hook_fcn_ptr get_add_hook (void) { return add_hook; }
-  static hook_fcn_ptr get_remove_hook (void) { return remove_hook; }
+  hook_fcn_ptr get_add_hook (void) { return add_hook; }
+  hook_fcn_ptr get_remove_hook (void) { return remove_hook; }
 
-  static void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
-  static void set_remove_hook (hook_fcn_ptr f) { remove_hook = f; }
+  void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
+  void set_remove_hook (hook_fcn_ptr f) { remove_hook = f; }
 
   static void execute_pkg_add (const std::string& dir);
   static void execute_pkg_del (const std::string& dir);
 
-  static void set_command_line_path (const std::string& p)
+  void set_command_line_path (const std::string& p)
   {
-    if (command_line_path.empty ())
-      command_line_path = p;
+    if (m_command_line_path.empty ())
+      m_command_line_path = p;
     else
-      command_line_path += octave::directory_path::path_sep_str () + p;
+      m_command_line_path += octave::directory_path::path_sep_str () + p;
   }
 
-  static std::string get_command_line_path (void)
-  {
-    return instance_ok () ? instance->do_get_command_line_path ()
-                          : "";
-  }
+  std::string get_command_line_path (void) const { return m_command_line_path; }
 
-  static std::string system_path (void)
-  {
-    return instance_ok () ? instance->do_system_path () : "";
-  }
+  std::string system_path (void) const { return sys_path; }
 
 private:
 
@@ -343,52 +242,21 @@ private:
     // This default constructor is only provided so we can create a
     // std::map of dir_info objects.  You should not use this
     // constructor for any other purpose.
-    dir_info (void)
-      : dir_name (), abs_dir_name (), is_relative (false),
-        dir_mtime (), dir_time_last_checked (),
-        all_files (), fcn_files (), private_file_map (), method_file_map (),
-        package_dir_map ()
-    { }
+    dir_info (void) = default;
 
     dir_info (const std::string& d)
       : dir_name (d), abs_dir_name (), is_relative (false),
-        dir_mtime (), dir_time_last_checked (),
-        all_files (), fcn_files (), private_file_map (), method_file_map (),
-        package_dir_map ()
+        dir_mtime (), dir_time_last_checked (), all_files (), fcn_files (),
+        private_file_map (), method_file_map (), package_dir_map ()
     {
       initialize ();
     }
 
-    dir_info (const dir_info& di)
-      : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),
-        is_relative (di.is_relative),
-        dir_mtime (di.dir_mtime),
-        dir_time_last_checked (di.dir_time_last_checked),
-        all_files (di.all_files), fcn_files (di.fcn_files),
-        private_file_map (di.private_file_map),
-        method_file_map (di.method_file_map),
-        package_dir_map (di.package_dir_map) { }
+    dir_info (const dir_info& di) = default;
 
     ~dir_info (void) = default;
 
-    dir_info& operator = (const dir_info& di)
-    {
-      if (&di != this)
-        {
-          dir_name = di.dir_name;
-          abs_dir_name = di.abs_dir_name;
-          is_relative = di.is_relative;
-          dir_mtime = di.dir_mtime;
-          dir_time_last_checked = di.dir_time_last_checked;
-          all_files = di.all_files;
-          fcn_files = di.fcn_files;
-          private_file_map = di.private_file_map;
-          method_file_map = di.method_file_map;
-          package_dir_map = di.package_dir_map;
-        }
-
-      return *this;
-    }
+    dir_info& operator = (const dir_info& di) = default;
 
     void update (void);
 
@@ -498,6 +366,7 @@ private:
   class package_info
   {
   public:
+
     package_info (const std::string& package_name = "")
       : m_package_name (package_name), dir_list (), fcn_map (), private_fcn_map (),
         method_map () { }
@@ -573,6 +442,7 @@ private:
     string_vector fcn_names (void) const;
 
   private:
+
     void add_to_fcn_map (const dir_info& di, bool at_end, bool updating);
 
     void add_to_private_fcn_map (const dir_info& di);
@@ -591,7 +461,13 @@ private:
 
     void remove_method_map (const std::string& dir);
 
-  private:
+    bool check_file_type (std::string& fname, int type, int possible_types,
+                          const std::string& fcn, const char *who) const;
+
+    void print_types (std::ostream& os, int types) const;
+
+    void print_fcn_list (std::ostream& os,
+                         const dir_info::fcn_file_map_type& lst) const;
 
     std::string m_package_name;
 
@@ -604,7 +480,7 @@ private:
     method_map_type method_map;
   };
 
-  // <PACKAGE_NAME, LOADER>
+  // <PACKAGE_NAME, PACKAGE_INFO>
   typedef std::map<std::string, package_info> package_map_type;
 
   typedef package_map_type::const_iterator const_package_map_iterator;
@@ -618,56 +494,31 @@ private:
 
   mutable std::set<std::string> init_dirs;
 
-  static load_path *instance;
-
-  static void cleanup_instance (void) { delete instance; instance = 0; }
-
-  static hook_fcn_ptr add_hook;
-
-  static hook_fcn_ptr remove_hook;
-
-  static std::string command_line_path;
+  std::string m_command_line_path;
 
   static std::string sys_path;
 
   static abs_dir_cache_type abs_dir_cache;
 
-  static bool instance_ok (void);
+  hook_fcn_ptr add_hook;
+
+  hook_fcn_ptr remove_hook;
 
   const_dir_info_list_iterator find_dir_info (const std::string& dir) const;
   dir_info_list_iterator find_dir_info (const std::string& dir);
 
   bool contains (const std::string& dir) const;
 
-  bool do_contains_canonical (const std::string& dir) const;
+  void move (dir_info_list_iterator i, bool at_end);
 
-  void do_move (dir_info_list_iterator i, bool at_end);
+  void move (const dir_info& di, bool at_end, const std::string& pname = "");
 
-  void move (const dir_info& di, bool at_end,
-             const std::string& pname = "");
+  void remove (const dir_info& di, const std::string& pname = "");
 
-  void remove (const dir_info& di,
-               const std::string& pname = "");
+  void add (const std::string& dir, bool at_end, bool warn);
 
-  void do_initialize (bool set_initial_path);
-
-  void do_clear (void);
-
-  void do_set (const std::string& p, bool warn, bool is_init = false);
-
-  void do_append (const std::string& dir, bool warn);
-
-  void do_prepend (const std::string& dir, bool warn);
-
-  void do_add (const std::string& dir, bool at_end, bool warn);
-
-  bool do_remove (const std::string& dir);
-
-  void do_update (void) const;
-
-  static bool
-  check_file_type (std::string& fname, int type, int possible_types,
-                   const std::string& fcn, const char *who);
+  void add (const dir_info& di, bool at_end, const std::string& pname = "",
+            bool updating = false) const;
 
   bool is_package (const std::string& name) const;
 
@@ -675,64 +526,19 @@ private:
   {
     if (! name.empty () && is_package (name))
       {
-        package_map_iterator pi = package_map.find (name);
+        package_map_iterator l = package_map.find (name);
 
-        if (pi == package_map.end ())
-          pi = package_map.insert (package_map.end (),
-                                   package_map_type::value_type (name, package_info (name)));
+        if (l == package_map.end ())
+          l = package_map.insert (package_map.end (),
+                                  package_map_type::value_type (name, package_info (name)));
 
-        return pi->second;
+        return l->second;
       }
 
     return top_level_package;
   }
 
-  std::list<std::string> do_overloads (const std::string& meth) const;
-
-  bool do_find_package (const std::string& package_name) const
-  {
-    return (package_map.find (package_name) != package_map.end ());
-  }
-
-  std::list<std::string> do_get_all_package_names (bool only_top_level) const;
-
-  std::string do_find_file (const std::string& file) const;
-
-  std::string do_find_dir (const std::string& dir) const;
-
-  string_vector do_find_matching_dirs (const std::string& dir) const;
-
-  std::string do_find_first_of (const string_vector& files) const;
-
-  string_vector do_find_all_first_of (const string_vector& files) const;
-
-  string_vector do_dirs (void) const;
-
-  std::list<std::string> do_dir_list (void) const;
-
-  string_vector do_files (const std::string& dir, bool omit_exts) const;
-
-  string_vector do_fcn_names (void) const;
-
-  std::string do_path (void) const;
-
-  friend void print_types (std::ostream& os, int types);
-
-  friend string_vector get_file_list (const dir_info::fcn_file_map_type& lst);
-
-  friend void
-  print_fcn_list (std::ostream& os, const dir_info::fcn_file_map_type& lst);
-
-  void do_display (std::ostream& os) const;
-
-  std::string do_system_path (void) const { return sys_path; }
-
-  std::string do_get_command_line_path (void) const
-  { return command_line_path; }
-
-  void add (const dir_info& di, bool at_end,
-            const std::string& pname = "",
-            bool updating = false) const;
+  string_vector get_file_list (const dir_info::fcn_file_map_type& lst) const;
 
   friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
 };

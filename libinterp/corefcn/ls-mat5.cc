@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -905,7 +906,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         names.push_back (fname + ".mex");
                         names.push_back (fname + ".m");
 
-                        octave::directory_path p (load_path::system_path ());
+                        load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
+                        octave::directory_path p (lp.system_path ());
 
                         str =
                           octave::sys::env::make_absolute (p.find_first_of (names));
@@ -1204,8 +1207,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       warning ("load: unable to reconstruct object inheritance");
 
                     tc = cls;
-                    if (load_path::find_method (classname, "loadobj")
-                        != "")
+
+                    load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
+                    if (lp.find_method (classname, "loadobj") != "")
                       {
                         try
                           {
@@ -2600,9 +2605,10 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
+      load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
       if (tc.is_object ()
-          && load_path::find_method (tc.class_name (),
-                                     "saveobj") != "")
+          && lp.find_method (tc.class_name (), "saveobj") != "")
         {
           try
             {

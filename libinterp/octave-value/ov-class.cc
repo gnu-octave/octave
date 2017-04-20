@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "file-ops.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "ls-hdf5.h"
@@ -1141,7 +1142,10 @@ octave_class::save_ascii (std::ostream& os)
 {
   os << "# classname: " << class_name () << "\n";
   octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != "")
+
+  load_path& lp = octave::__get_load_path__ ("octave_class::save_ascii");
+
+  if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = octave::feval ("saveobj", in, 1);
@@ -1213,8 +1217,9 @@ octave_class::load_ascii (std::istream& is)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      if (load_path::find_method (classname, "loadobj")
-          != "")
+      load_path& lp = octave::__get_load_path__ ("octave_class::load_ascii");
+
+      if (lp.find_method (classname, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
           octave_value_list tmp = octave::feval ("loadobj", in, 1);
@@ -1242,7 +1247,10 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   os << class_name ();
 
   octave_map m;
-  if (load_path::find_method (class_name (), "saveobj") != "")
+
+  load_path& lp = octave::__get_load_path__ ("octave_class::save_binary");
+
+  if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = octave::feval ("saveobj", in, 1);
@@ -1329,7 +1337,9 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
 
-          if (load_path::find_method (c_name, "loadobj") != "")
+          load_path& lp = octave::__get_load_path__ ("octave_class::load_binary");
+
+          if (lp.find_method (c_name, "loadobj") != "")
             {
               octave_value in = new octave_class (*this);
               octave_value_list tmp = octave::feval ("loadobj", in, 1);
@@ -1365,6 +1375,8 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   hid_t data_hid = -1;
   octave_map m;
   octave_map::iterator i;
+
+  load_path& lp = octave::__get_load_path__ ("octave_class::save_hdf5");
 
 #if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
@@ -1406,7 +1418,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (data_hid < 0)
     goto error_cleanup;
 
-  if (load_path::find_method (class_name (), "saveobj") != "")
+  if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
       octave_value_list tmp = octave::feval ("saveobj", in, 1);
@@ -1574,7 +1586,9 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      if (load_path::find_method (c_name, "loadobj") != "")
+      load_path& lp = octave::__get_load_path__ ("octave_class::load_hdf5");
+
+      if (lp.find_method (c_name, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
           octave_value_list tmp = octave::feval ("loadobj", in, 1);
@@ -1912,7 +1926,9 @@ Return true if the string @var{method} is a valid method of the object
 
   std::string method = args(1).string_value ();
 
-  if (load_path::find_method (class_name, method) != "")
+  load_path& lp = octave::__get_load_path__ ("ismethod");
+
+  if (lp.find_method (class_name, method) != "")
     return ovl (true);
   else
     return ovl (false);
@@ -1938,7 +1954,9 @@ Implements @code{methods} for Octave class objects and classnames.
   else if (arg.is_string ())
     class_name = arg.string_value ();
 
-  string_vector sv = load_path::methods (class_name);
+  load_path& lp = octave::__get_load_path__ ("__methods__");
+
+  string_vector sv = lp.methods (class_name);
 
   return ovl (Cell (sv));
 }

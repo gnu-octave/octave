@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dynamic-ld.h"
 #include "error.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -4430,7 +4431,11 @@ namespace octave
     am_iter p = autoload_map.find (nm);
 
     if (p != autoload_map.end ())
-      retval = load_path::find_file (p->second);
+      {
+        load_path& lp = octave::__get_load_path__ ("lookup_autoload");
+
+        retval = lp.find_file (p->second);
+      }
 
     return retval;
   }

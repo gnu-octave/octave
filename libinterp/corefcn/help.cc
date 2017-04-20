@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "help.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "ov-fcn-handle.h"
@@ -192,7 +193,9 @@ make_name_list (void)
   const string_vector lcl = symbol_table::variable_names ();
   const int lcl_len = lcl.numel ();
 
-  const string_vector ffl = load_path::fcn_names ();
+  load_path& lp = octave::__get_load_path__ ("make_name_list");
+
+  const string_vector ffl = lp.fcn_names ();
   const int ffl_len = ffl.numel ();
 
   const string_vector afl = octave::autoloaded_functions ();
@@ -731,18 +734,22 @@ do_which (const std::string& name, std::string& type)
         {
           // We might find a file that contains only a doc string.
 
-          file = load_path::find_fcn_file (name);
+          load_path& lp = octave::__get_load_path__ ("do_which");
+
+          file = lp.find_fcn_file (name);
         }
     }
   else
     {
       // File query.
 
+      load_path& lp = octave::__get_load_path__ ("do_which");
+
       // For compatibility: "file." queries "file".
       if (name.size () > 1 && name[name.size () - 1] == '.')
-        file = load_path::find_file (name.substr (0, name.size () - 1));
+        file = lp.find_file (name.substr (0, name.size () - 1));
       else
-        file = load_path::find_file (name);
+        file = lp.find_file (name);
 
       file = octave::sys::env::make_absolute (file);
     }
@@ -837,10 +844,12 @@ in that directory.
 {
   octave_value retval;
 
+  load_path& lp = octave::__get_load_path__ ("__list_functions__");
+
   if (args.length () == 0)
     {
       // Get list of all functions
-      string_vector ffl = load_path::fcn_names ();
+      string_vector ffl = lp.fcn_names ();
       string_vector afl = octave::autoloaded_functions ();
 
       retval = Cell (ffl.append (afl));
@@ -849,7 +858,7 @@ in that directory.
     {
       std::string dir = args(0).xstring_value ("__list_functions__: DIRECTORY argument must be a string");
 
-      string_vector fl = load_path::files (dir, true);
+      string_vector fl = lp.files (dir, true);
 
       // Return a sorted list with unique entries (in case of .m and .oct
       // versions of the same function in a given directory, for example).

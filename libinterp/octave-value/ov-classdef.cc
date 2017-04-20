@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "defun.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "ov-builtin.h"
@@ -2632,6 +2633,8 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
 
       std::list<octave::tree_classdef_methods_block *> mb_list = b->methods_list ();
 
+      load_path& lp = octave::__get_load_path__ ("cdef_class::make_meta_class");
+
       for (auto& mb_p : mb_list)
         {
           std::map<std::string, octave_value> amap;
@@ -2702,8 +2705,8 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
           // in the @-folder containing the original classdef file.  However,
           // this is easier to implement it that way at the moment.
 
-          std::list<std::string> external_methods =
-            load_path::methods (full_class_name);
+          std::list<std::string> external_methods
+            = lp.methods (full_class_name);
 
           for (const auto& mtdnm : external_methods)
             {
@@ -2979,6 +2982,8 @@ cdef_method::cdef_method_rep::check_method (void)
     {
       if (is_dummy_method (function))
         {
+          load_path& lp = octave::__get_load_path__ ("cdef_method::cdef_method_rep::check_method");
+
           std::string name = get_name ();
           std::string cls_name = dispatch_type;
           std::string pack_name;
@@ -2992,8 +2997,8 @@ cdef_method::cdef_method_rep::check_method (void)
             }
 
           std::string dir_name;
-          std::string file_name = load_path::find_method (cls_name, name,
-                                                          dir_name, pack_name);
+          std::string file_name = lp.find_method (cls_name, name,
+                                                  dir_name, pack_name);
 
           if (! file_name.empty ())
             {
@@ -3190,7 +3195,9 @@ package_getAllPackages (const octave_value_list& /* args */, int /* nargout */)
 {
   std::map<std::string, cdef_package> toplevel_packages;
 
-  std::list<std::string> names = load_path::get_all_package_names ();
+  load_path& lp = octave::__get_load_path__ ("package_getAllPackages");
+
+  std::list<std::string> names = lp.get_all_package_names ();
 
   toplevel_packages["meta"] = cdef_manager::find_package ("meta", false,
                                                           false);
@@ -3625,7 +3632,9 @@ cdef_manager::do_find_package (const std::string& name,
     }
   else
     {
-      if (load_if_not_found && load_path::find_package (name))
+      load_path& lp = octave::__get_load_path__ ("cdef_manager::do_find_package");
+
+      if (load_if_not_found && lp.find_package (name))
         {
           size_t pos = name.find ('.');
 

@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -311,8 +312,10 @@ If no files are found, return an empty cell array.
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
 
+  load_path& lp = octave::__get_load_path__ ("file_in_loadpath");
+
   if (nargin == 1)
-    return ovl (octave::sys::env::make_absolute (load_path::find_first_of (names)));
+    return ovl (octave::sys::env::make_absolute (lp.find_first_of (names)));
   else
     {
       std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
@@ -320,7 +323,7 @@ If no files are found, return an empty cell array.
       if (opt != "all")
         error ("file_in_loadpath: \"all\" is only valid second argument");
 
-      return ovl (Cell (make_absolute (load_path::find_all_first_of (names))));
+      return ovl (Cell (make_absolute (lp.find_all_first_of (names))));
     }
 }
 
@@ -425,7 +428,9 @@ file_in_path (const std::string& name, const std::string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return octave::sys::env::make_absolute (load_path::find_file (nm));
+  load_path& lp = octave::__get_load_path__ ("file_in_path");
+
+  return octave::sys::env::make_absolute (lp.find_file (nm));
 }
 
 std::string
@@ -448,9 +453,11 @@ find_data_file_in_load_path  (const std::string& fcn,
 
       if (! local_file_ok)
         {
+          load_path& lp = octave::__get_load_path__ ("find_data_file_in_load_path");
+
           // Not directly found; search load path.
           std::string tmp
-            = octave::sys::env::make_absolute (load_path::find_file (fname));
+            = octave::sys::env::make_absolute (lp.find_file (fname));
 
           if (! tmp.empty ())
             {
@@ -484,7 +491,11 @@ fcn_file_in_path (const std::string& name)
             retval = name;
         }
       else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
-        retval = load_path::find_fcn_file (name.substr (0, len-2));
+        {
+          load_path& lp = octave::__get_load_path__ ("fcn_file_in_path");
+
+          retval = lp.find_fcn_file (name.substr (0, len-2));
+        }
       else
         {
           std::string fname = name;
@@ -492,7 +503,9 @@ fcn_file_in_path (const std::string& name)
           if (pos != std::string::npos)
             fname = name.substr (0, pos);
 
-          retval = load_path::find_fcn_file (fname);
+          load_path& lp = octave::__get_load_path__ ("fcn_file_in_path");
+
+          retval = lp.find_fcn_file (fname);
         }
     }
 
@@ -509,8 +522,11 @@ contents_file_in_path (const std::string& dir)
 
   if (dir.length () > 0)
     {
-      std::string tcontents = octave::sys::file_ops::concat (load_path::find_dir (dir),
-                                                std::string ("Contents.m"));
+      load_path& lp = octave::__get_load_path__ ("contents_in_file_path");
+
+      std::string tcontents
+        = octave::sys::file_ops::concat (lp.find_dir (dir),
+                                         std::string ("Contents.m"));
 
       octave::sys::file_stat fs (tcontents);
 
@@ -542,9 +558,17 @@ oct_file_in_path (const std::string& name)
             retval = name;
         }
       else if (len > 4 && name.find (".oct", len-5))
-        retval = load_path::find_oct_file (name.substr (0, len-4));
+        {
+          load_path& lp = octave::__get_load_path__ ("oct_file_in_path");
+
+          retval = lp.find_oct_file (name.substr (0, len-4));
+        }
       else
-        retval = load_path::find_oct_file (name);
+        {
+          load_path& lp = octave::__get_load_path__ ("oct_file_in_path");
+
+          retval = lp.find_oct_file (name);
+        }
     }
 
   return retval;
@@ -571,9 +595,17 @@ mex_file_in_path (const std::string& name)
             retval = name;
         }
       else if (len > 4 && name.find (".mex", len-5))
-        retval = load_path::find_mex_file (name.substr (0, len-4));
+        {
+          load_path& lp = octave::__get_load_path__ ("mex_file_in_path");
+
+          retval = lp.find_mex_file (name.substr (0, len-4));
+        }
       else
-        retval = load_path::find_mex_file (name);
+        {
+          load_path& lp = octave::__get_load_path__ ("mex_file_in_path");
+
+          retval = lp.find_mex_file (name);
+        }
     }
 
   return retval;
@@ -976,10 +1008,12 @@ all name matches rather than just the first.
 
   dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
 
+  load_path& lp = octave::__get_load_path__ ("dir_in_loadpath");
+
   if (nargin == 1)
-    return ovl (load_path::find_dir (dir));
+    return ovl (lp.find_dir (dir));
   else
-    return ovl (Cell (load_path::find_matching_dirs (dir)));
+    return ovl (Cell (lp.find_matching_dirs (dir)));
 }
 
 /*

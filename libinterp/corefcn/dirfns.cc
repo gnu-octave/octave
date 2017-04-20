@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "procstream.h"
 #include "sysdep.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -82,7 +83,9 @@ octave_change_to_directory (const std::string& newdir)
   // FIXME: should these actions be handled as a list of functions
   // to call so users can add their own chdir handlers?
 
-  load_path::update ();
+  load_path& lp = octave::__get_load_path__ ("octave_change_to_directory");
+
+  lp.update ();
 
   octave_link::change_directory (octave::sys::env::get_current_directory ());
 

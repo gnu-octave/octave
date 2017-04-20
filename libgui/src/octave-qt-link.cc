@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "dialog.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "utils.h"
 
@@ -563,14 +564,16 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
     ok = true;
   else
     {
-      bool dir_in_load_path = load_path::contains_canonical (dir);
+      load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
+
+      bool dir_in_load_path = lp.contains_canonical (dir);
 
       // get base name, allowing "@class/method.m" (bug #41514)
       std::string base_file = (file.length () > dir.length ())
                               ? file.substr (dir.length () + 1)
                               : octave::sys::env::base_pathname (file);
 
-      std::string lp_file = load_path::find_file (base_file);
+      std::string lp_file = lp.find_file (base_file);
 
       if (dir_in_load_path)
         {
@@ -606,8 +609,12 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
           break;
 
         case 2:
-          load_path::prepend (dir);
-          ok = true;
+          {
+            load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
+
+            lp.prepend (dir);
+            ok = true;
+          }
           break;
 
         default:

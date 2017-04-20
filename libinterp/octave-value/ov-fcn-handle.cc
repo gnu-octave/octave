@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "file-stat.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "oct-env.h"
@@ -297,7 +298,9 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
           names.push_back (nm + ".mex");
           names.push_back (nm + ".m");
 
-          octave::directory_path p (load_path::system_path ());
+          load_path& lp = octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
+
+          octave::directory_path p (lp.system_path ());
 
           str = octave::sys::env::make_absolute (p.find_first_of (names));
 
@@ -1584,14 +1587,16 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
     }
   else
     {
+      load_path& lp = octave::__get_load_path__ ("make_fcn_handle");
+
       // Globally visible (or no match yet).  Query overloads.
-      std::list<std::string> classes = load_path::overloads (tnm);
+      std::list<std::string> classes = lp.overloads (tnm);
       bool any_match = fptr != 0 || classes.size () > 0;
       if (! any_match)
         {
           // No match found, try updating load_path and query classes again.
-          load_path::update ();
-          classes = load_path::overloads (tnm);
+          lp.update ();
+          classes = lp.overloads (tnm);
           any_match = classes.size () > 0;
         }
 

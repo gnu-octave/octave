@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "help.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -426,7 +427,11 @@ symbol_exist (const std::string& name, const std::string& type = "any")
       std::string file_name = octave::lookup_autoload (name);
 
       if (file_name.empty ())
-        file_name = load_path::find_fcn (name);
+        {
+          load_path& lp = octave::__get_load_path__ ("symbol_exist");
+
+          file_name = lp.find_fcn (name);
+        }
 
       size_t len = file_name.length ();
 

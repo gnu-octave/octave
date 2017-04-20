@@ -93,6 +93,7 @@ COREFCN_INC = \
   libinterp/corefcn/zfstream.h
 
 NOINSTALL_COREFCN_INC = \
+  libinterp/corefcn/interpreter-private.h \
   libinterp/corefcn/oct-hdf5.h \
   libinterp/corefcn/oct-opengl.h
 
@@ -166,6 +167,7 @@ COREFCN_SRC = \
   libinterp/corefcn/hook-fcn.cc \
   libinterp/corefcn/input.cc \
   libinterp/corefcn/inv.cc \
+  libinterp/corefcn/interpreter-private.cc \
   libinterp/corefcn/interpreter.cc \
   libinterp/corefcn/kron.cc \
   libinterp/corefcn/load-path.cc \

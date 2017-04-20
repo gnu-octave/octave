@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "hook-fcn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
@@ -280,7 +281,9 @@ namespace octave
     if (retval != "\n"
         && retval.find_first_not_of (" \t\n\r") != std::string::npos)
       {
-        load_path::update ();
+        load_path& lp = octave::__get_load_path__ ("base_reader::octave_gets");
+
+        lp.update ();
 
         if (Vdebugging)
           last_debugging_command = retval;

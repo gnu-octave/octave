@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "file-io.h"
 #include "graphics.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "load-save.h"
@@ -342,9 +343,11 @@ execute_pkg_add (const std::string& dir)
 {
   std::string file_name = octave::sys::file_ops::concat (dir, "PKG_ADD");
 
+  load_path& lp = octave::__get_load_path__ ("execute_pkg_add");
+
   try
     {
-      load_path::execute_pkg_add (dir);
+      lp.execute_pkg_add (dir);
     }
   catch (const octave::interrupt_exception&)
     {
@@ -366,7 +369,7 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context), m_evaluator (new tree_evaluator (this)),
-      m_interactive (false), m_read_site_files (true),
+      m_load_path (), m_interactive (false), m_read_site_files (true),
       m_read_init_files (m_app_context != 0), m_verbose (false),
       m_inhibit_startup_message (false), m_load_path_initialized (false),
       m_history_initialized (false), m_initialized (false)
@@ -446,7 +449,7 @@ namespace octave
         std::list<std::string> command_line_path = options.command_line_path ();
 
         for (const auto& pth : command_line_path)
-          load_path::set_command_line_path (pth);
+          m_load_path.set_command_line_path (pth);
 
         std::string exec_path = options.exec_path ();
         if (! exec_path.empty ())
@@ -561,11 +564,12 @@ namespace octave
 
         octave::unwind_protect frame;
 
-        frame.add_fcn (load_path::set_add_hook, load_path::get_add_hook ());
+        frame.add_method (m_load_path, &load_path::set_add_hook,
+                          m_load_path.get_add_hook ());
 
-        load_path::set_add_hook (execute_pkg_add);
+        m_load_path.set_add_hook (execute_pkg_add);
 
-        load_path::initialize (set_initial_path);
+        m_load_path.initialize (set_initial_path);
 
         m_load_path_initialized = true;
       }

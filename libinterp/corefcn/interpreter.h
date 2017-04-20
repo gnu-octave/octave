@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "load-path.h"
+
 extern OCTINTERP_API bool quit_allowed;
 
 // TRUE means we are ready to interpret commands, but not everything
@@ -130,6 +132,11 @@ namespace octave
       return m_initialized;
     }
 
+    load_path& get_load_path (void)
+    {
+      return m_load_path;
+    }
+
     static void recover_from_exception (void);
 
     static void add_atexit_function (const std::string& fname);
@@ -155,6 +162,8 @@ namespace octave
     application *m_app_context;
 
     tree_evaluator *m_evaluator;
+
+    load_path m_load_path;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

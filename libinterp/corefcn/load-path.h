@@ -42,7 +42,7 @@ load_path
 protected:
 
   load_path (void)
-    : loader_map (), default_loader (), dir_info_list (), init_dirs () { }
+    : package_map (), top_level_package (), dir_info_list (), init_dirs () { }
 
 public:
 
@@ -102,7 +102,7 @@ public:
                                   const std::string& pack_name = "")
   {
     return instance_ok ()
-      ? instance->get_loader (pack_name).find_method (class_name, meth,
+      ? instance->get_package (pack_name).find_method (class_name, meth,
                                                       dir_name)
       : "";
   }
@@ -119,7 +119,7 @@ public:
                                          const std::string& pack_name = "")
   {
     return instance_ok ()
-      ? instance->get_loader(pack_name).methods (class_name)
+      ? instance->get_package (pack_name).methods (class_name)
       : std::list<std::string> ();
   }
 
@@ -147,7 +147,7 @@ public:
                                const std::string& pack_name = "")
   {
     return instance_ok ()
-      ? instance->get_loader (pack_name).find_fcn (fcn, dir_name)
+      ? instance->get_package (pack_name).find_fcn (fcn, dir_name)
       : "";
   }
 
@@ -163,7 +163,7 @@ public:
                                        const std::string& pack_name = "")
   {
     return instance_ok ()
-      ? instance->get_loader (pack_name).find_private_fcn (dir, fcn)
+      ? instance->get_package (pack_name).find_private_fcn (dir, fcn)
       : "";
   }
 
@@ -173,7 +173,7 @@ public:
     std::string dir_name;
 
     return instance_ok ()
-      ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
+      ? instance->get_package (pack_name).find_fcn (fcn, dir_name, M_FILE)
       : "";
   }
 
@@ -183,7 +183,7 @@ public:
     std::string dir_name;
 
     return instance_ok ()
-      ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
+      ? instance->get_package (pack_name).find_fcn (fcn, dir_name, M_FILE)
       : "";
   }
 
@@ -193,7 +193,7 @@ public:
     std::string dir_name;
 
     return instance_ok ()
-      ? instance->get_loader (pack_name).find_fcn (fcn, dir_name, M_FILE)
+      ? instance->get_package (pack_name).find_fcn (fcn, dir_name, M_FILE)
       : "";
   }
 
@@ -495,24 +495,24 @@ private:
   typedef method_map_type::const_iterator const_method_map_iterator;
   typedef method_map_type::iterator method_map_iterator;
 
-  class loader
+  class package_info
   {
   public:
-    loader (const std::string& pfx = "")
-      : prefix (pfx), dir_list (), fcn_map (), private_fcn_map (),
+    package_info (const std::string& package_name = "")
+      : m_package_name (package_name), dir_list (), fcn_map (), private_fcn_map (),
         method_map () { }
 
-    loader (const loader& l)
-      : prefix (l.prefix), dir_list (l.dir_list),
+    package_info (const package_info& l)
+      : m_package_name (l.m_package_name), dir_list (l.dir_list),
         private_fcn_map (l.private_fcn_map), method_map (l.method_map) { }
 
-    ~loader (void) = default;
+    ~package_info (void) = default;
 
-    loader& operator = (const loader& l)
+    package_info& operator = (const package_info& l)
     {
       if (&l != this)
         {
-          prefix = l.prefix;
+          m_package_name = l.m_package_name;
           dir_list = l.dir_list;
           fcn_map = l.fcn_map;
           private_fcn_map = l.private_fcn_map;
@@ -592,7 +592,8 @@ private:
     void remove_method_map (const std::string& dir);
 
   private:
-    std::string prefix;
+
+    std::string m_package_name;
 
     std::list<std::string> dir_list;
 
@@ -604,14 +605,14 @@ private:
   };
 
   // <PACKAGE_NAME, LOADER>
-  typedef std::map<std::string, loader> loader_map_type;
+  typedef std::map<std::string, package_info> package_map_type;
 
-  typedef loader_map_type::const_iterator const_loader_map_iterator;
-  typedef loader_map_type::iterator loader_map_iterator;
+  typedef package_map_type::const_iterator const_package_map_iterator;
+  typedef package_map_type::iterator package_map_iterator;
 
-  mutable loader_map_type loader_map;
+  mutable package_map_type package_map;
 
-  mutable loader default_loader;
+  mutable package_info top_level_package;
 
   mutable dir_info_list_type dir_info_list;
 
@@ -670,27 +671,27 @@ private:
 
   bool is_package (const std::string& name) const;
 
-  loader& get_loader (const std::string& name) const
+  package_info& get_package (const std::string& name) const
   {
     if (! name.empty () && is_package (name))
       {
-        loader_map_iterator l = loader_map.find (name);
+        package_map_iterator pi = package_map.find (name);
 
-        if (l == loader_map.end ())
-          l = loader_map.insert (loader_map.end (),
-                                 loader_map_type::value_type (name, loader (name)));
+        if (pi == package_map.end ())
+          pi = package_map.insert (package_map.end (),
+                                   package_map_type::value_type (name, package_info (name)));
 
-        return l->second;
+        return pi->second;
       }
 
-    return default_loader;
+    return top_level_package;
   }
 
   std::list<std::string> do_overloads (const std::string& meth) const;
 
   bool do_find_package (const std::string& package_name) const
   {
-    return (loader_map.find (package_name) != loader_map.end ());
+    return (package_map.find (package_name) != package_map.end ());
   }
 
   std::list<std::string> do_get_all_package_names (bool only_top_level) const;

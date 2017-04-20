@@ -408,7 +408,7 @@ load_path::do_contains_canonical (const std::string& dir) const
 }
 
 void
-load_path::loader::move_fcn_map (const std::string& dir_name,
+load_path::package_info::move_fcn_map (const std::string& dir_name,
                                  const string_vector& fcn_files, bool at_end)
 {
   octave_idx_type len = fcn_files.numel ();
@@ -457,7 +457,7 @@ load_path::loader::move_fcn_map (const std::string& dir_name,
 }
 
 void
-load_path::loader::move_method_map (const std::string& dir_name, bool at_end)
+load_path::package_info::move_method_map (const std::string& dir_name, bool at_end)
 {
   for (auto& cls_fnmap : method_map)
     {
@@ -519,9 +519,9 @@ load_path::do_move (dir_info_list_iterator i, bool at_end)
 void
 load_path::move (const dir_info& di, bool at_end, const std::string& pname)
 {
-  loader& l = get_loader (pname);
+  package_info& pkg = get_package (pname);
 
-  l.move (di, at_end);
+  pkg.move (di, at_end);
 
   dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
 
@@ -537,7 +537,7 @@ load_path::move (const dir_info& di, bool at_end, const std::string& pname)
 }
 
 void
-load_path::loader::move (const dir_info& di, bool at_end)
+load_path::package_info::move (const dir_info& di, bool at_end)
 {
   std::string dir_name = di.dir_name;
 
@@ -618,9 +618,9 @@ load_path::do_clear (void)
 {
   dir_info_list.clear ();
 
-  default_loader.clear ();
+  top_level_package.clear ();
 
-  loader_map.clear ();
+  package_map.clear ();
 }
 
 static std::list<std::string>
@@ -795,7 +795,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 }
 
 void
-load_path::loader::remove_fcn_map (const std::string& dir,
+load_path::package_info::remove_fcn_map (const std::string& dir,
                                    const string_vector& fcn_files)
 {
   octave_idx_type len = fcn_files.numel ();
@@ -835,7 +835,7 @@ load_path::loader::remove_fcn_map (const std::string& dir,
 }
 
 void
-load_path::loader::remove_private_fcn_map (const std::string& dir)
+load_path::package_info::remove_private_fcn_map (const std::string& dir)
 {
   private_fcn_map_iterator p = private_fcn_map.find (dir);
 
@@ -844,7 +844,7 @@ load_path::loader::remove_private_fcn_map (const std::string& dir)
 }
 
 void
-load_path::loader::remove_method_map (const std::string& dir)
+load_path::package_info::remove_method_map (const std::string& dir)
 {
   for (auto& cls_fnmap : method_map)
     {
@@ -925,9 +925,9 @@ load_path::do_remove (const std::string& dir_arg)
 void
 load_path::remove (const dir_info& di, const std::string& pname)
 {
-  loader& l = get_loader (pname);
+  package_info& pkg = get_package (pname);
 
-  l.remove (di);
+  pkg.remove (di);
 
   dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
 
@@ -943,7 +943,7 @@ load_path::remove (const dir_info& di, const std::string& pname)
 }
 
 void
-load_path::loader::remove (const dir_info& di)
+load_path::package_info::remove (const dir_info& di)
 {
   std::string dir = di.dir_name;
 
@@ -965,9 +965,9 @@ load_path::do_update (void) const
   // preserve the correct directory ordering for new files that
   // have appeared.
 
-  default_loader.clear ();
+  top_level_package.clear ();
 
-  loader_map.clear ();
+  package_map.clear ();
 
   for (auto& di : dir_info_list)
     {
@@ -1072,7 +1072,7 @@ load_path::check_file_type (std::string& fname, int type, int possible_types,
 }
 
 std::string
-load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
+load_path::package_info::find_fcn (const std::string& fcn, std::string& dir_name,
                              int type) const
 {
   std::string retval;
@@ -1123,7 +1123,7 @@ load_path::loader::find_fcn (const std::string& fcn, std::string& dir_name,
 }
 
 std::string
-load_path::loader::find_private_fcn (const std::string& dir,
+load_path::package_info::find_private_fcn (const std::string& dir,
                                      const std::string& fcn, int type) const
 {
   std::string retval;
@@ -1153,7 +1153,7 @@ load_path::loader::find_private_fcn (const std::string& dir,
 }
 
 std::string
-load_path::loader::find_method (const std::string& class_name,
+load_path::package_info::find_method (const std::string& class_name,
                                 const std::string& meth,
                                 std::string& dir_name, int type) const
 {
@@ -1197,7 +1197,7 @@ load_path::loader::find_method (const std::string& class_name,
 }
 
 std::list<std::string>
-load_path::loader::methods (const std::string& class_name) const
+load_path::package_info::methods (const std::string& class_name) const
 {
   std::list<std::string> retval;
 
@@ -1236,16 +1236,16 @@ load_path::do_overloads (const std::string& meth) const
 
   //  update ();
 
-  default_loader.overloads (meth, retval);
+  top_level_package.overloads (meth, retval);
 
-  for (const auto& nm_ldr : loader_map)
+  for (const auto& nm_ldr : package_map)
     nm_ldr.second.overloads (meth, retval);
 
   return retval;
 }
 
 void
-load_path::loader::overloads (const std::string& meth,
+load_path::package_info::overloads (const std::string& meth,
                               std::list<std::string>& l) const
 {
   for (const auto& cls_fnmap : method_map)
@@ -1256,8 +1256,8 @@ load_path::loader::overloads (const std::string& meth,
         {
           std::string class_name = cls_fnmap.first;
 
-          if (! prefix.empty ())
-            class_name = prefix + "." + class_name;
+          if (! m_package_name.empty ())
+            class_name = m_package_name + "." + class_name;
 
           l.push_back (class_name);
         }
@@ -1649,11 +1649,11 @@ load_path::do_files (const std::string& dir, bool omit_exts) const
 string_vector
 load_path::do_fcn_names (void) const
 {
-  return default_loader.fcn_names ();
+  return top_level_package.fcn_names ();
 }
 
 string_vector
-load_path::loader::fcn_names (void) const
+load_path::package_info::fcn_names (void) const
 {
   size_t len = fcn_map.size ();
 
@@ -1788,9 +1788,9 @@ load_path::do_display (std::ostream& os) const
         }
     }
 
-  default_loader.display (os);
+  top_level_package.display (os);
 
-  for (const auto& nm_ldr : loader_map)
+  for (const auto& nm_ldr : package_map)
     nm_ldr.second.display (os);
 }
 
@@ -1818,9 +1818,9 @@ void
 load_path::add (const dir_info& di, bool at_end,
                 const std::string& pname, bool updating) const
 {
-  loader& l = get_loader (pname);
+  package_info& pkg = get_package (pname);
 
-  l.add (di, at_end, updating);
+  pkg.add (di, at_end, updating);
 
   dir_info::package_dir_map_type package_dir_map = di.package_dir_map;
 
@@ -1836,7 +1836,7 @@ load_path::add (const dir_info& di, bool at_end,
 }
 
 void
-load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end,
+load_path::package_info::add_to_fcn_map (const dir_info& di, bool at_end,
                                    bool updating)
 {
   std::string dir_name = di.dir_name;
@@ -1939,7 +1939,7 @@ load_path::loader::add_to_fcn_map (const dir_info& di, bool at_end,
 }
 
 void
-load_path::loader::add_to_private_fcn_map (const dir_info& di)
+load_path::package_info::add_to_private_fcn_map (const dir_info& di)
 {
   dir_info::fcn_file_map_type private_file_map = di.private_file_map;
 
@@ -1948,7 +1948,7 @@ load_path::loader::add_to_private_fcn_map (const dir_info& di)
 }
 
 void
-load_path::loader::add_to_method_map (const dir_info& di, bool at_end)
+load_path::package_info::add_to_method_map (const dir_info& di, bool at_end)
 {
   std::string dir_name = di.dir_name;
 
@@ -2012,9 +2012,10 @@ load_path::loader::add_to_method_map (const dir_info& di, bool at_end)
 }
 
 void
-load_path::loader::display (std::ostream& os) const
+load_path::package_info::display (std::ostream& os) const
 {
-  os << "*** loader: " << (prefix.empty () ? "<top-level>" : prefix) << "\n\n";
+  os << "*** package info: "
+     << (m_package_name.empty () ? "<top-level>" : m_package_name) << "\n\n";
 
   for (const auto& dir : dir_list)
     os << dir << "\n";
@@ -2126,7 +2127,7 @@ load_path::do_get_all_package_names (bool only_top_level) const
 {
   std::list<std::string> retval;
 
-  for (const auto& dir_ldr : loader_map)
+  for (const auto& dir_ldr : package_map)
     {
       if (! only_top_level || dir_ldr.first.find ('.') == std::string::npos)
         retval.push_back (dir_ldr.first);

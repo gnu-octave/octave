@@ -255,4 +255,10 @@ namespace octave
 
     return new_be;
   }
+
+  void
+  tree_boolean_expression::accept (tree_walker& tw)
+  {
+    tw.visit_boolean_expression (*this);
+  }
 }

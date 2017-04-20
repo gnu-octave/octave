@@ -61,6 +61,8 @@ namespace octave
 
     octave_value_list rvalue (int nargout);
 
+    void accept (tree_walker& tw);
+
   private:
 
     tree_expression *op_lhs;

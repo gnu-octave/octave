@@ -30,9 +30,18 @@ class octave_user_function;
 
 namespace octave
 {
+  // No separate visitor needed
+  // Base classes only, so no need to include them.
+  //
+  //  class tree_array_list
+  //  class tree_unary_expression
+  //  class tree_black_hole
+
   class tree_anon_fcn_handle;
   class tree_argument_list;
   class tree_binary_expression;
+  class tree_boolean_expression;
+  class tree_compound_binary_expression;
   class tree_break_command;
   class tree_colon_expression;
   class tree_continue_command;
@@ -113,6 +122,12 @@ namespace octave
 
     virtual void
     visit_binary_expression (tree_binary_expression&) = 0;
+
+    virtual void
+    visit_boolean_expression (tree_boolean_expression& expr);
+
+    virtual void
+    visit_compound_binary_expression (tree_compound_binary_expression& expr);
 
     virtual void
     visit_break_command (tree_break_command&) = 0;

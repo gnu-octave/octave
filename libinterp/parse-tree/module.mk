@@ -81,6 +81,7 @@ PARSE_TREE_SRC = \
   libinterp/parse-tree/pt-select.cc \
   libinterp/parse-tree/pt-stmt.cc \
   libinterp/parse-tree/pt-unop.cc \
+  libinterp/parse-tree/pt-walk.cc \
   libinterp/parse-tree/pt.cc \
   libinterp/parse-tree/token.cc
 

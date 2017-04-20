@@ -239,4 +239,10 @@ namespace octave
 
     return ret;
   }
+
+  void
+  tree_compound_binary_expression::accept (tree_walker& tw)
+  {
+    tw.visit_compound_binary_expression (*this);
+  }
 }

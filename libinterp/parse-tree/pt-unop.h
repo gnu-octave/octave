@@ -42,7 +42,7 @@ namespace octave
 
   class tree_unary_expression : public tree_expression
   {
-  public:
+  protected:
 
     tree_unary_expression (int l = -1, int c = -1,
                            octave_value::unary_op t
@@ -53,6 +53,8 @@ namespace octave
                            octave_value::unary_op t
                            = octave_value::unknown_unary_op)
       : tree_expression (l, c), op (e), etype (t) { }
+
+  public:
 
     // No copying!
 

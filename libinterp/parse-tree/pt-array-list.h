@@ -42,12 +42,16 @@ namespace octave
     typedef octave::base_list<tree_argument_list *>::iterator iterator;
     typedef octave::base_list<tree_argument_list *>::const_iterator const_iterator;
 
+  protected:
+
     tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
       : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
     {
       if (row)
         append (row);
     }
+
+  public:
 
     // No copying!
 

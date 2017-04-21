@@ -25,7 +25,7 @@ fi
 
 if [ $1 = "--perl" ]; then
   PERL="$2"
-  $PERL -e 'foreach $key (keys(%!)) {
+  $PERL -e 'foreach $key (sort (keys (%!))) {
     $x .= "#if defined ($key)\n    { \"$key\", $key, },\n#endif\n";
   }
   while (<>) {
@@ -37,15 +37,15 @@ elif [ $1 = "--python" ]; then
   PYTHON="$2"
   $PYTHON -c '
 from errno import errorcode
-from sys import stdin
+from sys import stdin, stdout
 
 t = "#if defined (%s)\n    { \"%s\", %s, },\n#endif\n"
 errstr = ""
-for k in errorcode.keys ():
-    errstr += t % tuple(3*[errorcode[k]])
+for v in sorted (errorcode.values ()):
+    errstr += t % tuple (3 * [v])
 
 for l in stdin:
-    print l.replace("@SYSDEP_ERRNO_LIST@", errstr),
+    stdout.write (l.replace ("@SYSDEP_ERRNO_LIST@", errstr))
 '
 fi
 

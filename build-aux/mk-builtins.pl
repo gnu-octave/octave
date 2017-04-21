@@ -274,7 +274,7 @@ $fcn (void)
       }
     }
 
-    foreach $fcn (keys %dispatch_map)
+    foreach $fcn (sort (keys (%dispatch_map)))
     {
       print "\n";
 

@@ -202,9 +202,9 @@ public:
     dimensions (a.dimensions)
   {
     octave_idx_type nz = a.nnz ();
-    std::copy (a.rep->d, a.rep->d + nz, rep->d);
-    std::copy (a.rep->r, a.rep->r + nz, rep->r);
-    std::copy (a.rep->c, a.rep->c + rep->ncols + 1, rep->c);
+    std::copy_n (a.rep->d, nz, rep->d);
+    std::copy_n (a.rep->r, nz, rep->r);
+    std::copy_n (a.rep->c, rep->ncols + 1, rep->c);
   }
 
   // No type conversion case.

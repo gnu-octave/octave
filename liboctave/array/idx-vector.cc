@@ -475,7 +475,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
 
-      std::copy (data, data + len, new_data);
+      std::copy_n (data, len, new_data);
       octave_sort<octave_idx_type> lsort;
       lsort.set_compare (ASCENDING);
       lsort.sort (new_data, len);
@@ -552,7 +552,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
 
       octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
-      std::copy (data, data + len, new_data);
+      std::copy_n (data, len, new_data);
 
       octave_sort<octave_idx_type> lsort;
       lsort.set_compare (ASCENDING);
@@ -1082,7 +1082,7 @@ idx_vector::copy_data (octave_idx_type *data) const
       {
         idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
         const octave_idx_type *rdata = r->get_data ();
-        std::copy (rdata, rdata + len, data);
+        std::copy_n (rdata, len, data);
       }
       break;
 

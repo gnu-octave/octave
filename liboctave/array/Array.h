@@ -140,14 +140,14 @@ protected:
     ArrayRep (T *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)
     {
-      std::copy (d, d+l, data);
+      std::copy_n (d, l, data);
     }
 
     template <typename U>
     ArrayRep (U *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)
     {
-      std::copy (d, d+l, data);
+      std::copy_n (d, l, data);
     }
 
     // Use new instead of setting data to 0 so that fortran_vec and
@@ -167,7 +167,7 @@ protected:
     ArrayRep (const ArrayRep& a)
       : data (new T [a.len]), len (a.len), count (1)
     {
-      std::copy (a.data, a.data + a.len, data);
+      std::copy_n (a.data, a.len, data);
     }
 
     ~ArrayRep (void) { delete [] data; }

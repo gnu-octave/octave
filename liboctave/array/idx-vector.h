@@ -631,7 +631,7 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        std::copy (src, src + len, dest);
+        std::copy_n (src, len, dest);
         break;
 
       case class_range:
@@ -641,7 +641,7 @@ public:
           octave_idx_type step = r->get_step ();
           const T *ssrc = src + start;
           if (step == 1)
-            std::copy (ssrc, ssrc + len, dest);
+            std::copy_n (ssrc, len, dest);
           else if (step == -1)
             std::reverse_copy (ssrc - len + 1, ssrc + 1, dest);
           else if (step == 0)
@@ -705,7 +705,7 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        std::copy (src, src + len, dest);
+        std::copy_n (src, len, dest);
         break;
 
       case class_range:
@@ -715,7 +715,7 @@ public:
           octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
-            std::copy (src, src + len, sdest);
+            std::copy_n (src, len, sdest);
           else if (step == -1)
             std::reverse_copy (src, src + len, sdest - len + 1);
           else
@@ -777,7 +777,7 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        std::fill (dest, dest + len, val);
+        std::fill_n (dest, len, val);
         break;
 
       case class_range:
@@ -787,7 +787,7 @@ public:
           octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
-            std::fill (sdest, sdest + len, val);
+            std::fill_n (sdest, len, val);
           else if (step == -1)
             std::fill (sdest - len + 1, sdest + 1, val);
           else

@@ -176,7 +176,7 @@ SparseBoolMatrix::any (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
+          std::copy_n (ridx (), nz, tmp.fortran_vec ());
           retval = Sparse<bool> (Array<bool> (dim_vector (1, 1), true),
                                  idx_vector (tmp),
                                  idx_vector (static_cast<octave_idx_type> (0)),
@@ -227,7 +227,7 @@ SparseBoolMatrix::sum (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
+          std::copy_n (ridx (), nz, tmp.fortran_vec ());
           retval = Sparse<double> (Array<double> (dim_vector (1, 1), 1.0),
                                    idx_vector (tmp),
                                    idx_vector (static_cast<octave_idx_type> (0)),

@@ -94,7 +94,7 @@ define rcc-command
     echo "#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)"; \
     echo "#pragma GCC diagnostic ignored \"-Wunused-variable\""; \
     echo "#endif"; \
-    $(RCC) $(RCCFLAGS) -name $(@D) $< ) > $@-t && \
+    QT_HASH_SEED=0 $(RCC) $(RCCFLAGS) -name $(@D) $< ) > $@-t && \
   mv $@-t $@
 endef
 

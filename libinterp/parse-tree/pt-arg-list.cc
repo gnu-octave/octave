@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "parse.h"
 #include "pt-arg-list.h"
+#include "pt-eval.h"
 #include "pt-exp.h"
 #include "pt-id.h"
 #include "pt-idx.h"
@@ -204,7 +205,8 @@ DEFCONSTFUN (end, , ,
 namespace octave
 {
   octave_value_list
-  tree_argument_list::convert_to_const_vector (const octave_value *object)
+  tree_argument_list::convert_to_const_vector (tree_evaluator *tw,
+                                               const octave_value *object)
   {
     // END doesn't make sense for functions.  Maybe we need a different
     // way of asking an octave_value object this question?
@@ -243,7 +245,7 @@ namespace octave
 
         if (elt)
           {
-            octave_value tmp = elt->rvalue1 ();
+            octave_value tmp = tw->evaluate (elt);
 
             if (tmp.is_cs_list ())
               args.push_back (tmp.list_value ());
@@ -261,12 +263,12 @@ namespace octave
   }
 
   std::list<octave_lvalue>
-  tree_argument_list::lvalue_list (void)
+  tree_argument_list::lvalue_list (tree_evaluator *tw)
   {
     std::list<octave_lvalue> retval;
 
     for (tree_expression* elt : *this)
-      retval.push_back (elt->lvalue ());
+      retval.push_back (elt->lvalue (tw));
 
     return retval;
   }
@@ -324,11 +326,5 @@ namespace octave
       new_list->append (elt ? elt->dup (scope, context) : 0);
 
     return new_list;
-  }
-
-  void
-  tree_argument_list::accept (tree_walker& tw)
-  {
-    tw.visit_argument_list (*this);
   }
 }

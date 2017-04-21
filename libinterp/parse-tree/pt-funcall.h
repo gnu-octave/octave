@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "parse.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 
 namespace octave
 {
@@ -68,25 +69,14 @@ namespace octave
     tree_funcall *dup (symbol_table::scope_id,
                        symbol_table::context_id context) const;
 
-    octave_value rvalue1 (int nargout)
-    {
-      octave_value retval;
-
-      const octave_value_list tmp = rvalue (nargout);
-
-      if (! tmp.empty ())
-        retval = tmp(0);
-
-      return retval;
-    }
-
-    octave_value_list rvalue (int nargout);
-
     octave_value function (void) const { return fcn; }
 
     octave_value_list arguments (void) const { return args; }
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_funcall (*this);
+    }
 
   private:
 

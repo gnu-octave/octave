@@ -31,12 +31,6 @@ namespace octave
 {
   // Classdef attribute
 
-  void
-  tree_classdef_attribute::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_attribute (*this);
-  }
-
   // Classdef attribute_list
 
   tree_classdef_attribute_list::~tree_classdef_attribute_list (void)
@@ -49,19 +43,7 @@ namespace octave
       }
   }
 
-  void
-  tree_classdef_attribute_list::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_attribute_list (*this);
-  }
-
   // Classdef superclass
-
-  void
-  tree_classdef_superclass::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_superclass (*this);
-  }
 
   // Classdef superclass_list
 
@@ -75,19 +57,7 @@ namespace octave
       }
   }
 
-  void
-  tree_classdef_superclass_list::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_superclass_list (*this);
-  }
-
   // Classdef property
-
-  void
-  tree_classdef_property::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_property (*this);
-  }
 
   // Classdef property_list
 
@@ -101,43 +71,13 @@ namespace octave
       }
   }
 
-  void
-  tree_classdef_property_list::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_property_list (*this);
-  }
-
   // Classdef properties_block
-
-  void
-  tree_classdef_properties_block::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_properties_block (*this);
-  }
 
   // Classdef methods_list
 
-  void
-  tree_classdef_methods_list::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_methods_list (*this);
-  }
-
   // Classdef methods_block
 
-  void
-  tree_classdef_methods_block::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_methods_block (*this);
-  }
-
   // Classdef event
-
-  void
-  tree_classdef_event::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_event (*this);
-  }
 
   // Classdef events_list
 
@@ -151,27 +91,9 @@ namespace octave
       }
   }
 
-  void
-  tree_classdef_events_list::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_events_list (*this);
-  }
-
   // Classdef events_block
 
-  void
-  tree_classdef_events_block::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_events_block (*this);
-  }
-
   // Classdef enum
-
-  void
-  tree_classdef_enum::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_enum (*this);
-  }
 
   // Classdef enum_list
 
@@ -185,19 +107,7 @@ namespace octave
       }
   }
 
-  void
-  tree_classdef_enum_list::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_enum_list (*this);
-  }
-
   // Classdef enum_block
-
-  void
-  tree_classdef_enum_block::accept (tree_walker& tw)
-  {
-    tw.visit_classdef_enum_block (*this);
-  }
 
   // Classdef body
 
@@ -235,9 +145,9 @@ namespace octave
   // Classdef
 
   octave_function*
-  tree_classdef::make_meta_class (bool is_at_folder)
+  tree_classdef::make_meta_class (tree_evaluator *tw, bool is_at_folder)
   {
-    cdef_class cls = cdef_class::make_meta_class (this, is_at_folder);
+    cdef_class cls = cdef_class::make_meta_class (tw, this, is_at_folder);
 
     if (cls.ok ())
       return cls.get_constructor_function ();
@@ -251,11 +161,5 @@ namespace octave
   {
     // FIXME
     return 0;
-  }
-
-  void
-  tree_classdef::accept (tree_walker& tw)
-  {
-    tw.visit_classdef (*this);
   }
 }

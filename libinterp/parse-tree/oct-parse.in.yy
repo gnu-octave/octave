@@ -2356,7 +2356,7 @@ namespace octave
               {
                 try
                   {
-                    octave_value tmp = e->rvalue1 ();
+                    octave_value tmp = octave::current_evaluator->evaluate (e);
 
                     tree_constant *tc_retval
                       = new tree_constant (tmp, base->line (), base->column ());
@@ -3913,7 +3913,7 @@ namespace octave
 
     if (e->is_constant ())
       {
-        octave_value ov = e->rvalue1 ();
+        octave_value ov = octave::current_evaluator->evaluate (e);
 
         delete e;
 
@@ -3981,7 +3981,7 @@ namespace octave
       {
         try
           {
-            octave_value tmp = array_list->rvalue1 ();
+            octave_value tmp = octave::current_evaluator->evaluate (array_list);
 
             tree_constant *tc_retval
               = new tree_constant (tmp, array_list->line (),
@@ -4337,7 +4337,7 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
               bool is_at_folder = ! dispatch_type.empty ();
 
               fcn_ptr =
-                parser.classdef_object->make_meta_class (is_at_folder);
+                parser.classdef_object->make_meta_class (octave::current_evaluator, is_at_folder);
 
               delete (parser.classdef_object);
 
@@ -5131,7 +5131,7 @@ namespace octave
                     else
                       do_bind_ans = (! expr->is_assignment_expression ());
 
-                    retval = expr->rvalue (nargout);
+                    retval = octave::current_evaluator->evaluate_n (expr, nargout);
 
                     if (do_bind_ans && ! retval.empty ())
                       bind_ans (retval(0), expr->print_result ());

@@ -34,13 +34,12 @@ class octave_lvalue;
 
 #include "ov.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
   class tree_argument_list;
-
-  class tree_walker;
 
   // Simple assignment expressions.
 
@@ -69,10 +68,6 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     bool is_assignment_expression (void) const { return true; }
 
     std::string oper (void) const;
@@ -84,8 +79,11 @@ namespace octave
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
-
+    void accept (tree_walker& tw)
+    {
+      tw.visit_simple_assignment (*this);
+    }
+    
     octave_value::assign_op op_type (void) const { return etype; }
 
   private:
@@ -137,10 +135,6 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     std::string oper (void) const;
 
     tree_argument_list *left_hand_side (void) { return lhs; }
@@ -150,7 +144,10 @@ namespace octave
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_multi_assignment (*this);
+    }
 
     octave_value::assign_op op_type (void) const
     { return octave_value::op_asn_eq; }

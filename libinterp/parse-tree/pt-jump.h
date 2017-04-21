@@ -26,12 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "pt-cmd.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   // Break.
 
   class tree_break_command : public tree_command
@@ -52,7 +51,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_break_command (*this);
+    }
 
     static int breaking;
   };
@@ -77,7 +79,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_continue_command (*this);
+    }
 
     static int continuing;
   };
@@ -102,7 +107,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_return_command (*this);
+    }
 
     static int returning;
   };

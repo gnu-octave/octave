@@ -32,6 +32,7 @@ class octave_value_list;
 
 #include "base-list.h"
 #include "pt-decl.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
@@ -39,8 +40,6 @@ namespace octave
   class tree_identifier;
   class tree_index_expression;
   class tree_va_return_list;
-
-  class tree_walker;
 
   // Parameter lists.  Used to hold the list of input and output
   // parameters in a function definition.  Elements are identifiers
@@ -81,24 +80,17 @@ namespace octave
 
     bool varargs_only (void) { return (marked_for_varargs < 0); }
 
-    void initialize_undefined_elements (const std::string& warnfor,
-                                        int nargout, const octave_value& val);
-
-    void define_from_arg_vector (const octave_value_list& args);
-
-    void undefine (void);
-
     bool is_defined (void);
 
     std::list<std::string> variable_names (void) const;
 
-    octave_value_list convert_to_const_vector (int nargout,
-                                               const Cell& varargout);
-
     tree_parameter_list *dup (symbol_table::scope_id scope,
                               symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_parameter_list (*this);
+    }
 
   private:
 
@@ -131,7 +123,10 @@ namespace octave
     tree_return_list *dup (symbol_table::scope_id scope,
                            symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_return_list (*this);
+    }
   };
 
   class tree_va_return_list : public octave::base_list<octave_value>

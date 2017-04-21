@@ -33,13 +33,13 @@ class octave_lvalue;
 #include "str-vec.h"
 
 #include "base-list.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
+  class tree_evaluator;
   class tree_expression;
-
-  class tree_walker;
 
   // Argument lists.  Used to hold the list of expressions that are the
   // arguments in a function call or index expression.
@@ -90,9 +90,10 @@ namespace octave
 
     bool is_valid_lvalue_list (void) const;
 
-    octave_value_list convert_to_const_vector (const octave_value *object = 0);
+    octave_value_list convert_to_const_vector (tree_evaluator *tw,
+                                               const octave_value *object = 0);
 
-    std::list<octave_lvalue> lvalue_list (void);
+    std::list<octave_lvalue> lvalue_list (tree_evaluator *tw);
 
     string_vector get_arg_names (void) const;
 
@@ -101,7 +102,10 @@ namespace octave
     tree_argument_list *dup (symbol_table::scope_id scope,
                              symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_argument_list (*this);
+    }
 
   private:
 

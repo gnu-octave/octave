@@ -32,12 +32,11 @@ class octave_value_list;
 class octave_lvalue;
 
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   // Colon expressions.
 
   class tree_colon_expression : public tree_expression
@@ -85,10 +84,6 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     void eval_error (const std::string& s) const;
 
     tree_expression *base (void) { return op_base; }
@@ -103,7 +98,10 @@ namespace octave
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_colon_expression (*this);
+    }
 
   private:
 

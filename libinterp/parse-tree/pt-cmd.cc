@@ -39,12 +39,6 @@ namespace octave
                                    line (), column ());
   }
 
-  void
-  tree_no_op_command::accept (tree_walker& tw)
-  {
-    tw.visit_no_op_command (*this);
-  }
-
   // Function definition.
 
   tree_command *
@@ -52,11 +46,5 @@ namespace octave
                           symbol_table::context_id) const
   {
     return new tree_function_def (fcn, line (), column ());
-  }
-
-  void
-  tree_function_def::accept (tree_walker& tw)
-  {
-    tw.visit_function_def (*this);
   }
 }

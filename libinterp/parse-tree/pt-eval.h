@@ -25,15 +25,18 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <stack>
 #include <string>
 
 #include "comment-list.h"
 #include "ovl.h"
+#include "pt-exp.h"
 #include "pt-walk.h"
 
 namespace octave
 {
+  class tree_decl_elt;
   class tree_expression;
 
   class interpreter;
@@ -44,11 +47,50 @@ namespace octave
   {
   public:
 
+    template <typename T>
+    class value_stack
+    {
+    public:
+
+      value_stack (void) = default;
+
+      value_stack (const value_stack&) = default;
+
+      value_stack& operator = (const value_stack&) = default;
+
+      ~value_stack (void) = default;
+
+      void push (const T& val) { m_stack.push (val); }
+
+      T pop (void)
+      {
+        T retval = m_stack.top ();
+        m_stack.pop ();
+        return retval;
+      }
+
+      T top (void) const
+      {
+        return m_stack.top ();
+      }
+
+      void clear (void)
+      {
+        while (! m_stack.empty ())
+          m_stack.pop ();
+      }
+      
+    private:
+
+      std::stack<T> m_stack;
+    };
+
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter *interp_context)
-      : m_interp_context (interp_context)
-      { }
+      : m_value_stack (), m_lvalue_list_stack (), m_nargout_stack (),
+        m_interp_context (interp_context)
+    { }
 
     // No copying!
 
@@ -58,11 +100,17 @@ namespace octave
 
     ~tree_evaluator (void) = default;
 
+    void reset (void);
+
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
     void visit_argument_list (tree_argument_list&);
 
     void visit_binary_expression (tree_binary_expression&);
+
+    void visit_boolean_expression (tree_boolean_expression&);
+
+    void visit_compound_binary_expression (tree_compound_binary_expression&);
 
     void visit_break_command (tree_break_command&);
 
@@ -179,10 +227,63 @@ namespace octave
     // TRUE means we are evaluating some kind of looping construct.
     static bool in_loop_command;
 
+    octave_value evaluate (tree_expression *expr, int nargout = 1,
+                           const std::list<octave_lvalue> *lvalue_list = 0)
+    {
+      m_nargout_stack.push (nargout);
+      m_lvalue_list_stack.push (lvalue_list);
+
+      expr->accept (*this);
+
+      m_nargout_stack.pop ();
+      m_lvalue_list_stack.pop ();
+
+      octave_value_list tmp = m_value_stack.pop ();
+
+      return tmp.empty () ? octave_value () : tmp(0);
+    }
+
+    octave_value_list
+    evaluate_n (tree_expression *expr, int nargout = 1,
+                const std::list<octave_lvalue> *lvalue_list = 0)
+    {
+      m_nargout_stack.push (nargout);
+      m_lvalue_list_stack.push (lvalue_list);
+
+      expr->accept (*this);
+
+      m_nargout_stack.pop ();
+      m_lvalue_list_stack.pop ();
+
+      return m_value_stack.pop ();
+    }
+
+    octave_value evaluate (tree_decl_elt *);
+
+    void
+    initialize_undefined_parameter_list_elements
+      (tree_parameter_list *param_list, const std::string& warnfor,
+       int nargout, const octave_value& val);
+
+    void define_parameter_list_from_arg_vector
+      (tree_parameter_list *param_list, const octave_value_list& args);
+
+    void undefine_parameter_list (tree_parameter_list *param_list);
+
+    octave_value_list
+    convert_parameter_list_to_const_vector
+      (tree_parameter_list *param_list, int nargout, const Cell& varargout);
+
+    bool eval_decl_elt (tree_decl_elt *elt);
+
+    bool switch_case_label_matches (tree_switch_case *expr,
+                                    const octave_value& val);
+
   private:
 
-    void do_decl_init_list (decl_elt_init_fcn fcn,
-                            tree_decl_init_list *init_list);
+    void do_global_init (octave::tree_decl_elt& elt);
+
+    void do_static_init (octave::tree_decl_elt& elt);
 
     void do_breakpoint (tree_statement& stmt) const;
 
@@ -190,7 +291,15 @@ namespace octave
                         bool is_end_of_fcn_or_script = false) const;
 
     virtual octave_value
-      do_keyboard (const octave_value_list& args = octave_value_list ()) const;
+    do_keyboard (const octave_value_list& args = octave_value_list ()) const;
+
+    bool is_logically_true (tree_expression *expr, const char *warn_for);
+
+    value_stack<octave_value_list> m_value_stack;
+
+    value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
+
+    value_stack<int> m_nargout_stack;
 
     interpreter *m_interp_context;
   };

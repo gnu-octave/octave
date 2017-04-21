@@ -28,13 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-id.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
   class tree_statement_list;
-
-  class tree_walker;
 
   // Simple exception handling.
 
@@ -78,7 +77,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_try_catch_command (*this);
+    }
 
   private:
 
@@ -142,7 +144,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_unwind_protect_command (*this);
+    }
 
   private:
 

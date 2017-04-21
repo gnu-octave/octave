@@ -32,12 +32,11 @@ class octave_value_list;
 class octave_lvalue;
 
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   // Unary expressions.
 
   class tree_unary_expression : public tree_expression
@@ -107,14 +106,13 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_prefix_expression (*this);
+    }
 
     std::string profiler_name (void) const { return "prefix " + oper (); }
   };
@@ -143,14 +141,13 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_postfix_expression (*this);
+    }
 
     std::string profiler_name (void) const { return "postfix " + oper (); }
   };

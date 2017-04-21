@@ -219,6 +219,6 @@ extern OCTINTERP_API profile_data_accumulator profiler;
     profile_data_accumulator::enter<classname> pe (profiler, *this);
 
 #define END_PROFILER_BLOCK                      \
-    }  // end of block => call pe's destructor
+  }  // end of block => call pe's destructor
 
 #endif

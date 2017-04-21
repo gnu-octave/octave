@@ -150,7 +150,9 @@ octave_user_script::do_multi_index_op (int nargout,
 
       BEGIN_PROFILER_BLOCK (octave_user_script)
 
-        cmd_list->accept (*octave::current_evaluator);
+      octave::tree_evaluator *tw = octave::current_evaluator;
+
+      cmd_list->accept (*tw);
 
       END_PROFILER_BLOCK
 
@@ -521,8 +523,10 @@ octave_user_function::do_multi_index_op (int nargout,
 
   string_vector arg_names = args.name_tags ();
 
+  octave::tree_evaluator *tw = octave::current_evaluator;
+
   if (param_list && ! param_list->varargs_only ())
-    param_list->define_from_arg_vector (args);
+    tw->define_parameter_list_from_arg_vector (param_list, args);
 
   // For classdef constructor, pre-populate the output arguments
   // with the pre-initialized object instance, extracted above.
@@ -533,7 +537,7 @@ octave_user_function::do_multi_index_op (int nargout,
         error ("%s: invalid classdef constructor, no output argument defined",
                dispatch_class ().c_str ());
 
-      ret_list->define_from_arg_vector (ret_args);
+      tw->define_parameter_list_from_arg_vector (ret_list, ret_args);
     }
 
   // Force parameter list to be undefined when this function exits.
@@ -541,14 +545,16 @@ octave_user_function::do_multi_index_op (int nargout,
   // variables that are also named function parameters.
 
   if (param_list)
-    frame.add_method (param_list, &octave::tree_parameter_list::undefine);
+    frame.add_method (tw, &octave::tree_evaluator::undefine_parameter_list,
+                      param_list);
 
   // Force return list to be undefined when this function exits.
   // Doing so decrements the reference counts on the values of local
   // variables that are also named values returned by this function.
 
   if (ret_list)
-    frame.add_method (ret_list, &octave::tree_parameter_list::undefine);
+    frame.add_method (tw, &octave::tree_evaluator::undefine_parameter_list,
+                      ret_list);
 
   if (call_depth == 0)
     {
@@ -600,13 +606,11 @@ octave_user_function::do_multi_index_op (int nargout,
         {
           octave::call_stack::set_location (stmt->line (), stmt->column ());
 
-          retval = (lvalue_list
-                    ? expr->rvalue (nargout, lvalue_list)
-                    : expr->rvalue (nargout));
+          retval = tw->evaluate_n (expr, nargout, lvalue_list);
         }
     }
   else
-    cmd_list->accept (*octave::current_evaluator);
+    cmd_list->accept (*tw);
 
   END_PROFILER_BLOCK
 
@@ -623,7 +627,8 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (ret_list && ! is_special_expr ())
     {
-      ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
+      tw->initialize_undefined_parameter_list_elements (ret_list, my_name,
+                                                        nargout, Matrix ());
 
       Cell varargout;
 
@@ -635,7 +640,7 @@ octave_user_function::do_multi_index_op (int nargout,
             varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
         }
 
-      retval = ret_list->convert_to_const_vector (nargout, varargout);
+      retval = tw->convert_parameter_list_to_const_vector (ret_list, nargout, varargout);
     }
 
   return retval;

@@ -30,6 +30,7 @@ class octave_lvalue;
 
 #include "comment-list.h"
 #include "pt-cmd.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 class jit_info;
@@ -39,8 +40,6 @@ namespace octave
   class tree_argument_list;
   class tree_expression;
   class tree_statement_list;
-
-  class tree_walker;
 
   // While.
 
@@ -97,7 +96,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_while_command (*this);
+    }
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
@@ -166,7 +168,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_do_until_command (*this);
+    }
   };
 
   // For.
@@ -223,7 +228,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_simple_for_command (*this);
+    }
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
@@ -305,7 +313,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_complex_for_command (*this);
+    }
 
   private:
 

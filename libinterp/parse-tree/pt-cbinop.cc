@@ -35,41 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   typedef tree_expression* tree_expression_ptr_t;
-
-  octave_value_list
-  tree_compound_binary_expression::rvalue (int nargout)
-  {
-    octave_value_list retval;
-
-    if (nargout > 1)
-      error ("binary operator '%s': invalid number of output arguments",
-             oper ().c_str ());
-
-    retval = rvalue1 (nargout);
-
-    return retval;
-  }
-
-  octave_value
-  tree_compound_binary_expression::rvalue1 (int)
-  {
-    octave_value retval;
-
-    if (op_lhs)
-      {
-        octave_value a = op_lhs->rvalue1 ();
-
-        if (a.is_defined () && op_rhs)
-          {
-            octave_value b = op_rhs->rvalue1 ();
-
-            if (b.is_defined ())
-              retval = ::do_binary_op (etype, a, b);
-          }
-      }
-
-    return retval;
-  }
 }
 
 // If a tree expression is a transpose or hermitian transpose, return
@@ -238,11 +203,5 @@ namespace octave
                                              cb, ct);
 
     return ret;
-  }
-
-  void
-  tree_compound_binary_expression::accept (tree_walker& tw)
-  {
-    tw.visit_compound_binary_expression (*this);
   }
 }

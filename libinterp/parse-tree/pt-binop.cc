@@ -38,20 +38,6 @@ namespace octave
 {
   // Binary expressions.
 
-  octave_value_list
-  tree_binary_expression::rvalue (int nargout)
-  {
-    octave_value_list retval;
-
-    if (nargout > 1)
-      error ("binary operator '%s': invalid number of output arguments",
-             oper ().c_str ());
-
-    retval = rvalue1 (nargout);
-
-    return retval;
-  }
-
   void
   tree_binary_expression::matlab_style_short_circuit_warning (const char *op)
   {
@@ -60,80 +46,6 @@ namespace octave
                      op);
 
     braindead_shortcircuit_warning_issued = true;
-  }
-
-  octave_value
-  tree_binary_expression::rvalue1 (int)
-  {
-    octave_value retval;
-
-    if (eligible_for_braindead_shortcircuit)
-      {
-        if (op_lhs)
-          {
-            octave_value a = op_lhs->rvalue1 ();
-
-            if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
-              {
-                bool result = false;
-
-                bool a_true = a.is_true ();
-
-                if (a_true)
-                  {
-                    if (etype == octave_value::op_el_or)
-                      {
-                        matlab_style_short_circuit_warning ("|");
-                        return octave_value (true);
-                      }
-                  }
-                else
-                  {
-                    if (etype == octave_value::op_el_and)
-                      {
-                        matlab_style_short_circuit_warning ("&");
-                        return octave_value (false);
-                      }
-                  }
-
-                if (op_rhs)
-                  {
-                    octave_value b = op_rhs->rvalue1 ();
-
-                    result = b.is_true ();
-                  }
-
-                return octave_value (result);
-              }
-          }
-      }
-
-    if (op_lhs)
-      {
-        octave_value a = op_lhs->rvalue1 ();
-
-        if (a.is_defined () && op_rhs)
-          {
-            octave_value b = op_rhs->rvalue1 ();
-
-            if (b.is_defined ())
-              {
-                BEGIN_PROFILER_BLOCK (tree_binary_expression)
-
-                  // Note: The profiler does not catch the braindead
-                  // short-circuit evaluation code above, but that should be
-                  // ok.  The evaluation of operands and the operator itself
-                  // is entangled and it's not clear where to start/stop
-                  // timing the operator to make it reasonable.
-
-                  retval = ::do_binary_op (etype, a, b);
-
-                END_PROFILER_BLOCK
-                  }
-          }
-      }
-
-    return retval;
   }
 
   std::string
@@ -156,69 +68,7 @@ namespace octave
     return new_be;
   }
 
-  void
-  tree_binary_expression::accept (tree_walker& tw)
-  {
-    tw.visit_binary_expression (*this);
-  }
-
   // Boolean expressions.
-
-  octave_value_list
-  tree_boolean_expression::rvalue (int nargout)
-  {
-    octave_value_list retval;
-
-    if (nargout > 1)
-      error ("binary operator '%s': invalid number of output arguments",
-             oper ().c_str ());
-
-    retval = rvalue1 (nargout);
-
-    return retval;
-  }
-
-  octave_value
-  tree_boolean_expression::rvalue1 (int)
-  {
-    octave_value retval;
-
-    bool result = false;
-
-    // This evaluation is not caught by the profiler, since we can't find
-    // a reasonable place where to time.  Note that we don't want to
-    // include evaluation of LHS or RHS into the timing, but this is
-    // entangled together with short-circuit evaluation here.
-
-    if (op_lhs)
-      {
-        octave_value a = op_lhs->rvalue1 ();
-
-        bool a_true = a.is_true ();
-
-        if (a_true)
-          {
-            if (etype == bool_or)
-              return octave_value (true);
-          }
-        else
-          {
-            if (etype == bool_and)
-              return octave_value (false);
-          }
-
-        if (op_rhs)
-          {
-            octave_value b = op_rhs->rvalue1 ();
-
-            result = b.is_true ();
-          }
-
-        retval = octave_value (result);
-      }
-
-    return retval;
-  }
 
   std::string
   tree_boolean_expression::oper (void) const
@@ -254,11 +104,5 @@ namespace octave
     new_be->copy_base (*this);
 
     return new_be;
-  }
-
-  void
-  tree_boolean_expression::accept (tree_walker& tw)
-  {
-    tw.visit_boolean_expression (*this);
   }
 }

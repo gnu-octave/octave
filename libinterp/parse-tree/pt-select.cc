@@ -55,12 +55,6 @@ namespace octave
                                lead_comm ? lead_comm->dup () : 0);
   }
 
-  void
-  tree_if_clause::accept (tree_walker& tw)
-  {
-    tw.visit_if_clause (*this);
-  }
-
   // List of if commands.
 
   tree_if_command_list *
@@ -73,12 +67,6 @@ namespace octave
       new_icl->append (elt ? elt->dup (scope, context) : 0);
 
     return new_icl;
-  }
-
-  void
-  tree_if_command_list::accept (tree_walker& tw)
-  {
-    tw.visit_if_command_list (*this);
   }
 
   // If.
@@ -100,12 +88,6 @@ namespace octave
                                 line (), column ());
   }
 
-  void
-  tree_if_command::accept (tree_walker& tw)
-  {
-    tw.visit_if_command (*this);
-  }
-
   // Switch cases.
 
   tree_switch_case::~tree_switch_case (void)
@@ -115,35 +97,6 @@ namespace octave
     delete lead_comm;
   }
 
-  bool
-  tree_switch_case::label_matches (const octave_value& val)
-  {
-    octave_value label_value = label->rvalue1 ();
-
-    if (label_value.is_defined ())
-      {
-        if (label_value.is_cell ())
-          {
-            Cell cell (label_value.cell_value ());
-
-            for (octave_idx_type i = 0; i < cell.rows (); i++)
-              {
-                for (octave_idx_type j = 0; j < cell.columns (); j++)
-                  {
-                    bool match = val.is_equal (cell(i,j));
-
-                    if (match)
-                      return true;
-                  }
-              }
-          }
-        else
-          return val.is_equal (label_value);
-      }
-
-    return false;
-  }
-
   tree_switch_case *
   tree_switch_case::dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const
@@ -151,12 +104,6 @@ namespace octave
     return new tree_switch_case (label ? label->dup (scope, context) : 0,
                                  list ? list->dup (scope, context) : 0,
                                  lead_comm ? lead_comm->dup () : 0);
-  }
-
-  void
-  tree_switch_case::accept (tree_walker& tw)
-  {
-    tw.visit_switch_case (*this);
   }
 
   // List of switch cases.
@@ -171,12 +118,6 @@ namespace octave
       new_scl->append (elt ? elt->dup (scope, context) : 0);
 
     return new_scl;
-  }
-
-  void
-  tree_switch_case_list::accept (tree_walker& tw)
-  {
-    tw.visit_switch_case_list (*this);
   }
 
   // Switch.
@@ -198,11 +139,5 @@ namespace octave
                                     lead_comm ? lead_comm->dup () : 0,
                                     trail_comm ? trail_comm->dup () : 0,
                                     line (), column ());
-  }
-
-  void
-  tree_switch_command::accept (tree_walker& tw)
-  {
-    tw.visit_switch_command (*this);
   }
 }

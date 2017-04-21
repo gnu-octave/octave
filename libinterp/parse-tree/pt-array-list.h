@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class tree_walker;
+
   // Base class for cell arrays and matrices.
 
   class tree_array_list : public tree_expression,

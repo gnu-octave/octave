@@ -35,13 +35,13 @@ class octave_lvalue;
 #include "str-vec.h"
 
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
   class tree_argument_list;
-
-  class tree_walker;
+  class tree_evaluator;
 
   // Index expressions.
 
@@ -86,23 +86,26 @@ namespace octave
 
     std::list<string_vector> arg_names (void) { return arg_nm; }
 
+    std::list<tree_expression *> dyn_fields (void) { return dyn_field; }
+
     bool lvalue_ok (void) const { return expr->lvalue_ok (); }
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
-    octave_value_list rvalue (int nargout,
-                              const std::list<octave_lvalue> *lvalue_list);
-
-    octave_lvalue lvalue (void);
+    octave_lvalue lvalue (tree_evaluator *tw);
 
     tree_index_expression *dup (symbol_table::scope_id scope,
                                 symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_index_expression (*this);
+    }
+
+    std::string
+    get_struct_index
+    (tree_evaluator *tw, std::list<string_vector>::const_iterator p_arg_nm,
+     std::list<tree_expression *>::const_iterator p_dyn_field) const;
 
   private:
 
@@ -125,11 +128,6 @@ namespace octave
     tree_index_expression (int l, int c);
 
     octave_map make_arg_struct (void) const;
-
-    std::string
-    get_struct_index
-    (std::list<string_vector>::const_iterator p_arg_nm,
-     std::list<tree_expression *>::const_iterator p_dyn_field) const;
   };
 }
 

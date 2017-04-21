@@ -456,7 +456,7 @@ octave_class::subsref (const std::string& type,
 
           // Since we're handling subsref, if the list has more than one
           // element, return it as a comma-separated list so that we can
-          // pass it to rvalue1.
+          // pass it to the evaluator
           if (retval.length () > 1)
             retval = octave_value (retval);
         }

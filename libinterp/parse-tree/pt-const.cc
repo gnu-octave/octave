@@ -57,19 +57,6 @@ namespace octave
       val.print_raw (os, pr_as_read_syntax);
   }
 
-  octave_value_list
-  tree_constant::rvalue (int nargout)
-  {
-    octave_value_list retval;
-
-    if (nargout > 1)
-      error ("invalid number of output arguments for constant expression");
-
-    retval = rvalue1 (nargout);
-
-    return retval;
-  }
-
   tree_expression *
   tree_constant::dup (symbol_table::scope_id,
                       symbol_table::context_id) const
@@ -80,11 +67,5 @@ namespace octave
     new_tc->copy_base (*this);
 
     return new_tc;
-  }
-
-  void
-  tree_constant::accept (tree_walker& tw)
-  {
-    tw.visit_constant (*this);
   }
 }

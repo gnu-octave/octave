@@ -36,6 +36,8 @@ class octave_lvalue;
 
 namespace octave
 {
+  class tree_evaluator;
+
   // A base class for expressions.
 
   class tree_expression : public tree
@@ -79,20 +81,11 @@ namespace octave
 
     virtual bool is_boolean_expression (void) const { return false; }
 
-    virtual bool is_logically_true (const char *);
-
     virtual bool lvalue_ok (void) const { return false; }
 
     virtual bool rvalue_ok (void) const { return false; }
 
-    virtual octave_value rvalue1 (int nargout = 1);
-
-    virtual octave_value_list rvalue (int nargout);
-
-    virtual octave_value_list
-    rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
-
-    virtual octave_lvalue lvalue (void);
+    virtual octave_lvalue lvalue (tree_evaluator *);
 
     int paren_count (void) const { return num_parens; }
 

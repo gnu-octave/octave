@@ -35,11 +35,12 @@ class octave_function;
 #include "oct-lvalue.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
+  class tree_evaluator;
 
   // Symbols from the symbol table.
 
@@ -111,17 +112,7 @@ namespace octave
 
     bool lvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout)
-    {
-      return rvalue (nargout, 0);
-    }
-
-    octave_value_list rvalue (int nargout,
-                              const std::list<octave_lvalue> *lvalue_list);
-
-    octave_lvalue lvalue (void);
+    octave_lvalue lvalue (tree_evaluator *);
 
     void eval_undefined_error (void);
 
@@ -134,7 +125,10 @@ namespace octave
     tree_identifier *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_identifier (*this);
+    }
 
     symbol_table::symbol_reference symbol (void) const
     {
@@ -165,7 +159,7 @@ namespace octave
       return new tree_black_hole;
     }
 
-    octave_lvalue lvalue (void)
+    octave_lvalue lvalue (tree_evaluator *)
     {
       return octave_lvalue (); // black hole lvalue
     }

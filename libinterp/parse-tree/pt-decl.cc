@@ -47,37 +47,12 @@ namespace octave
     delete expr;
   }
 
-  bool
-  tree_decl_elt::eval (void)
-  {
-    bool retval = false;
-
-    if (id && expr)
-      {
-        octave_lvalue ult = id->lvalue ();
-
-        octave_value init_val = expr->rvalue1 ();
-
-        ult.assign (octave_value::op_asn_eq, init_val);
-
-        retval = true;
-      }
-
-    return retval;
-  }
-
   tree_decl_elt *
   tree_decl_elt::dup (symbol_table::scope_id scope,
                       symbol_table::context_id context) const
   {
     return new tree_decl_elt (id ? id->dup (scope, context) : 0,
                               expr ? expr->dup (scope, context) : 0);
-  }
-
-  void
-  tree_decl_elt::accept (tree_walker& tw)
-  {
-    tw.visit_decl_elt (*this);
   }
 
   // Initializer lists for declaration statements.
@@ -92,12 +67,6 @@ namespace octave
       new_dil->append (elt ? elt->dup (scope, context) : 0);
 
     return new_dil;
-  }
-
-  void
-  tree_decl_init_list::accept (tree_walker& tw)
-  {
-    tw.visit_decl_init_list (*this);
   }
 
   // Base class for declaration commands (global, static).
@@ -118,12 +87,6 @@ namespace octave
                                line (), column ());
   }
 
-  void
-  tree_global_command::accept (tree_walker& tw)
-  {
-    tw.visit_global_command (*this);
-  }
-
   // Static.
 
   tree_command *
@@ -134,11 +97,5 @@ namespace octave
       new tree_persistent_command (init_list ? init_list->dup (scope, context)
                                    : 0,
                                    line (), column ());
-  }
-
-  void
-  tree_persistent_command::accept (tree_walker& tw)
-  {
-    tw.visit_persistent_command (*this);
   }
 }

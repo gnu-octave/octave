@@ -182,12 +182,6 @@ namespace octave
     return new_stmt;
   }
 
-  void
-  tree_statement::accept (tree_walker& tw)
-  {
-    tw.visit_statement (*this);
-  }
-
   // Create a "breakpoint" tree-walker, and get it to "walk" this statement list
   // (FIXME: What does that do???)
   int
@@ -315,11 +309,5 @@ namespace octave
       new_list->append (elt ? elt->dup (scope, context) : 0);
 
     return new_list;
-  }
-
-  void
-  tree_statement_list::accept (tree_walker& tw)
-  {
-    tw.visit_statement_list (*this);
   }
 }

@@ -668,7 +668,8 @@ jit_convert::visit_no_op_command (tree_no_op_command&)
 void
 jit_convert::visit_constant (tree_constant& tc)
 {
-  octave_value v = tc.rvalue1 ();
+  octave_value v = tc.value ();
+
   jit_type *ty = jit_typeinfo::type_of (v);
 
   if (ty == jit_typeinfo::get_scalar ())

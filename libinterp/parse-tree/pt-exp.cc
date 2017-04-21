@@ -37,41 +37,8 @@ namespace octave
 {
   // Expressions.
 
-  bool
-  tree_expression::is_logically_true (const char *warn_for)
-  {
-    bool expr_value = false;
-
-    octave_value t1 = rvalue1 ();
-
-    if (t1.is_defined ())
-      return t1.is_true ();
-    else
-      error ("%s: undefined value used in conditional expression", warn_for);
-
-    return expr_value;
-  }
-
-  octave_value
-  tree_expression::rvalue1 (int)
-  {
-    error ("invalid rvalue function called in expression");
-  }
-
-  octave_value_list
-  tree_expression::rvalue (int)
-  {
-    error ("invalid rvalue function called in expression");
-  }
-
-  octave_value_list
-  tree_expression::rvalue (int nargout, const std::list<octave_lvalue> *)
-  {
-    return rvalue (nargout);
-  }
-
   octave_lvalue
-  tree_expression::lvalue (void)
+  tree_expression::lvalue (tree_evaluator *)
   {
     error ("invalid lvalue function called in expression");
   }

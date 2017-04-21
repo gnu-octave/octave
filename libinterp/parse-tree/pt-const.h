@@ -33,12 +33,11 @@ class octave_value_list;
 #include "ov.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   class tree_constant : public tree_expression
   {
   public:
@@ -77,14 +76,15 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int = 1) { return val; }
-
-    octave_value_list rvalue (int nargout);
+    octave_value value (void) { return val; }
 
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_constant (*this);
+    }
 
     // Store the original text corresponding to this constant for later
     // pretty printing.

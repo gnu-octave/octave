@@ -28,14 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "comment-list.h"
 #include "pt-cmd.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
   class tree_expression;
   class tree_statement_list;
-
-  class tree_walker;
 
   // If.
 
@@ -74,7 +73,10 @@ namespace octave
     tree_if_clause *dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_if_clause (*this);
+    }
 
   private:
 
@@ -115,7 +117,10 @@ namespace octave
     tree_if_command_list *dup (symbol_table::scope_id scope,
                                symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_if_command_list (*this);
+    }
   };
 
   class tree_if_command : public tree_command
@@ -146,7 +151,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_if_command (*this);
+    }
 
   private:
 
@@ -188,8 +196,6 @@ namespace octave
 
     bool is_default_case (void) { return ! label; }
 
-    bool label_matches (const octave_value& val);
-
     tree_expression *case_label (void) { return label; }
 
     tree_statement_list *commands (void) { return list; }
@@ -199,7 +205,10 @@ namespace octave
     tree_switch_case *dup (symbol_table::scope_id scope,
                            symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_switch_case (*this);
+    }
 
   private:
 
@@ -240,7 +249,10 @@ namespace octave
     tree_switch_case_list *dup (symbol_table::scope_id scope,
                                 symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_switch_case_list (*this);
+    }
   };
 
   class tree_switch_command : public tree_command
@@ -276,7 +288,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_switch_command (*this);
+    }
 
   private:
 

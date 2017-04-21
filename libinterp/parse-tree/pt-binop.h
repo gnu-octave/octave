@@ -33,12 +33,11 @@ class octave_lvalue;
 
 #include "ov.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   // Binary expressions.
 
   class tree_binary_expression : public tree_expression
@@ -93,10 +92,6 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     std::string oper (void) const;
 
     octave_value::binary_op op_type (void) const { return etype; }
@@ -104,12 +99,22 @@ namespace octave
     tree_expression *lhs (void) { return op_lhs; }
     tree_expression *rhs (void) { return op_rhs; }
 
+    bool is_eligible_for_braindead_shortcircuit (void) const
+    {
+      return eligible_for_braindead_shortcircuit;
+    }
+
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_binary_expression (*this);
+    }
 
     std::string profiler_name (void) const { return "binary " + oper (); }
+
+    void matlab_style_short_circuit_warning (const char *op);
 
   protected:
 
@@ -129,8 +134,6 @@ namespace octave
     // TRUE if we have already issued a warning about short circuiting
     // for this operator.
     bool braindead_shortcircuit_warning_issued;
-
-    void matlab_style_short_circuit_warning (const char *op);
   };
 
   // Boolean expressions.
@@ -165,10 +168,6 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     std::string oper (void) const;
 
     type op_type (void) const { return etype; }
@@ -176,7 +175,10 @@ namespace octave
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_boolean_expression (*this);
+    }
 
   private:
 

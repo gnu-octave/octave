@@ -29,6 +29,7 @@ class octave_value;
 
 #include "pt-cmd.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "pt-id.h"
 
 #include "base-list.h"
@@ -37,8 +38,6 @@ class octave_value;
 
 namespace octave
 {
-  class tree_walker;
-
   class tree_classdef_attribute
   {
   public:
@@ -67,7 +66,10 @@ namespace octave
 
     bool negate (void) { return neg; }
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_attribute (*this);
+    }
 
   private:
 
@@ -96,7 +98,10 @@ namespace octave
 
     ~tree_classdef_attribute_list (void);
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_attribute_list (*this);
+    }
   };
 
   class tree_classdef_superclass
@@ -117,7 +122,10 @@ namespace octave
 
     std::string class_name (void) { return cls_name; }
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_superclass (*this);
+    }
 
   private:
 
@@ -144,7 +152,10 @@ namespace octave
 
     ~tree_classdef_superclass_list (void);
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_superclass_list (*this);
+    }
   };
 
   template <typename T>
@@ -222,7 +233,10 @@ namespace octave
 
     tree_expression *expression (void) { return expr; }
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_property (*this);
+    }
 
   private:
 
@@ -250,7 +264,10 @@ namespace octave
 
     ~tree_classdef_property_list (void);
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_property_list (*this);
+    }
   };
 
   class tree_classdef_properties_block
@@ -274,7 +291,10 @@ namespace octave
 
     ~tree_classdef_properties_block (void) = default;
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_properties_block (*this);
+    }
   };
 
   class tree_classdef_methods_list : public octave::base_list<octave_value>
@@ -297,7 +317,10 @@ namespace octave
 
     ~tree_classdef_methods_list (void) = default;
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_methods_list (*this);
+    }
   };
 
   class tree_classdef_methods_block : public tree_classdef_element<octave_value>
@@ -319,7 +342,10 @@ namespace octave
 
     ~tree_classdef_methods_block (void) = default;
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_methods_block (*this);
+    }
   };
 
   class tree_classdef_event
@@ -341,7 +367,10 @@ namespace octave
 
     tree_identifier *ident (void) { return id; }
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_event (*this);
+    }
 
   private:
 
@@ -368,7 +397,10 @@ namespace octave
 
     ~tree_classdef_events_list (void);
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_events_list (*this);
+    }
   };
 
   class tree_classdef_events_block
@@ -391,7 +423,10 @@ namespace octave
 
     ~tree_classdef_events_block (void) = default;
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_events_block (*this);
+    }
   };
 
   class tree_classdef_enum
@@ -419,7 +454,10 @@ namespace octave
 
     tree_expression *expression (void) { return expr; }
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_enum (*this);
+    }
 
   private:
 
@@ -446,7 +484,10 @@ namespace octave
 
     ~tree_classdef_enum_list (void);
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_enum_list (*this);
+    }
   };
 
   class tree_classdef_enum_block
@@ -469,7 +510,10 @@ namespace octave
 
     ~tree_classdef_enum_block (void) = default;
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_enum_block (*this);
+    }
   };
 
   class tree_classdef_body
@@ -563,7 +607,10 @@ namespace octave
       return enum_lst;
     }
 
-    void accept (tree_walker&);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef_body (*this);
+    }
 
   private:
 
@@ -621,12 +668,16 @@ namespace octave
 
     const std::string& package_name (void) const { return pack_name; }
 
-    octave_function* make_meta_class (bool is_at_folder = false);
+    octave_function* make_meta_class (tree_evaluator *tw,
+                                      bool is_at_folder = false);
 
     tree_classdef *dup (symbol_table::scope_id scope,
                         symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_classdef (*this);
+    }
 
   private:
 

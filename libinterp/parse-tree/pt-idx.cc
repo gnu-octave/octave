@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
+#include "pt-eval.h"
 #include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-walk.h"
@@ -146,34 +147,10 @@ namespace octave
   }
 }
 
-static Cell
-make_subs_cell (octave::tree_argument_list *args, const string_vector& arg_nm)
-{
-  Cell retval;
-
-  octave_value_list arg_values;
-
-  if (args)
-    arg_values = args->convert_to_const_vector ();
-
-  int n = arg_values.length ();
-
-  if (n > 0)
-    {
-      arg_values.stash_name_tags (arg_nm);
-
-      retval.resize (dim_vector (1, n));
-
-      for (int i = 0; i < n; i++)
-        retval(0,i) = arg_values(i);
-    }
-
-  return retval;
-}
-
 static inline octave_value_list
-make_value_list (octave::tree_argument_list *args, const string_vector& arg_nm,
-                 const octave_value *object, bool rvalue = true)
+make_value_list (octave::tree_evaluator *tw, octave::tree_argument_list *args,
+                 const string_vector& arg_nm, const octave_value *object,
+                 bool rvalue = true)
 {
   octave_value_list retval;
 
@@ -182,7 +159,7 @@ make_value_list (octave::tree_argument_list *args, const string_vector& arg_nm,
       if (rvalue && object && args->has_magic_end () && object->is_undefined ())
         err_invalid_inquiry_subscript ();
 
-      retval = args->convert_to_const_vector (object);
+      retval = args->convert_to_const_vector (tw, object);
     }
 
   octave_idx_type n = retval.length ();
@@ -197,7 +174,8 @@ namespace octave
 {
   std::string
   tree_index_expression::get_struct_index
-  (std::list<string_vector>::const_iterator p_arg_nm,
+  (tree_evaluator *tw,
+   std::list<string_vector>::const_iterator p_arg_nm,
    std::list<tree_expression *>::const_iterator p_dyn_field) const
   {
     std::string fn = (*p_arg_nm)(0);
@@ -208,7 +186,7 @@ namespace octave
 
         if (df)
           {
-            octave_value t = df->rvalue1 ();
+            octave_value t = tw->evaluate (df);
 
             fn = t.xstring_value ("dynamic structure field names must be strings");
           }
@@ -217,57 +195,6 @@ namespace octave
       }
 
     return fn;
-  }
-
-  octave_map
-  tree_index_expression::make_arg_struct (void) const
-  {
-    int n = args.size ();
-
-    Cell type_field (n, 1);
-    Cell subs_field (n, 1);
-
-    std::list<tree_argument_list *>::const_iterator p_args = args.begin ();
-    std::list<string_vector>::const_iterator p_arg_nm = arg_nm.begin ();
-    std::list<tree_expression *>::const_iterator p_dyn_field = dyn_field.begin ();
-
-    octave_map m;
-
-    for (int i = 0; i < n; i++)
-      {
-        switch (type[i])
-          {
-          case '(':
-            subs_field(i) = make_subs_cell (*p_args, *p_arg_nm);
-            break;
-
-          case '{':
-            subs_field(i) = make_subs_cell (*p_args, *p_arg_nm);
-            break;
-
-          case '.':
-            subs_field(i) = get_struct_index (p_arg_nm, p_dyn_field);
-            break;
-
-          default:
-            panic_impossible ();
-          }
-
-        p_args++;
-        p_arg_nm++;
-        p_dyn_field++;
-      }
-
-    m.assign ("type", type_field);
-    m.assign ("subs", subs_field);
-
-    return m;
-  }
-
-  octave_value_list
-  tree_index_expression::rvalue (int nargout)
-  {
-    return tree_index_expression::rvalue (nargout, 0);
   }
 }
 
@@ -306,203 +233,8 @@ final_index_error (octave::index_exception& e,
 
 namespace octave
 {
-  octave_value_list
-  tree_index_expression::rvalue (int nargout,
-                                 const std::list<octave_lvalue> *lvalue_list)
-  {
-    octave_value_list retval;
-
-    octave_value first_expr_val;
-
-    octave_value_list first_args;
-
-    bool have_args = false;
-
-    if (expr->is_identifier () && type[0] == '(')
-      {
-        tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
-
-        if (! (id->is_variable () || args.empty ()))
-          {
-            tree_argument_list *al = *(args.begin ());
-
-            size_t n = al ? al->length () : 0;
-
-            if (n > 0)
-              {
-                string_vector anm = *(arg_nm.begin ());
-                have_args = true;
-                first_args = al -> convert_to_const_vector ();
-                first_args.stash_name_tags (anm);
-
-                first_expr_val = id->do_lookup  (first_args);
-              }
-          }
-      }
-
-    if (first_expr_val.is_undefined ())
-      first_expr_val = expr->rvalue1 ();
-
-    octave_value tmp = first_expr_val;
-    octave_idx_type tmpi = 0;
-
-    std::list<octave_value_list> idx;
-
-    int n = args.size ();
-
-    std::list<tree_argument_list *>::iterator p_args = args.begin ();
-    std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
-    std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
-
-    for (int i = 0; i < n; i++)
-      {
-        if (i > 0)
-          {
-            tree_argument_list *al = *p_args;
-
-            // In Matlab, () can only be followed by '.'.  In Octave, we
-            // do not enforce this for rvalue expressions, but we'll
-            // split the evaluation at this point.  This will,
-            // hopefully, allow Octave's looser rules apply smoothly for
-            // Matlab overloaded subsref codes.
-
-            // We might have an expression like
-            //
-            //   x{end}.a(end)
-            //
-            // and we are looking at the argument list that contains the
-            // second (or third, etc.) "end" token, so we must evaluate
-            // everything up to the point of that argument list so we
-            // can pass the appropriate value to the built-in end
-            // function.
-
-            // An expression like
-            //
-            //    s.a (f (1:end))
-            //
-            // can mean a lot of different things depending on the types
-            // of s, a, and f.  Let's just say it's complicated and that
-            // the following code is definitely not correct in all
-            // cases.  That it is already so complex makes me think that
-            // there must be a better way.
-
-            bool split = ((type[i-1] == '(' && type[i] != '.')
-                          || (al && al->has_magic_end ()
-                              && ! tmp.is_classdef_object ()));
-
-            if (split)
-              {
-                try
-                  {
-                    octave_value_list tmp_list
-                      =tmp.subsref (type.substr (tmpi, i-tmpi), idx, nargout);
-
-                    tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
-                    tmpi = i;
-                    idx.clear ();
-
-                    if (tmp.is_cs_list ())
-                      err_indexed_cs_list ();
-
-                    if (tmp.is_function ())
-                      {
-                        octave_function *fcn = tmp.function_value (true);
-
-                        if (fcn && ! fcn->is_postfix_index_handled (type[i]))
-                          {
-                            octave_value_list empty_args;
-
-                            tmp_list = tmp.do_multi_index_op (1, empty_args);
-                            tmp = (tmp_list.length ()
-                                   ? tmp_list(0) : octave_value ());
-
-                            if (tmp.is_cs_list ())
-                              err_indexed_cs_list ();
-                          }
-                      }
-                  }
-                catch (octave::index_exception& e)  // problems with index range, type etc.
-                  {
-                    final_index_error (e, expr);
-                  }
-              }
-          }
-
-        switch (type[i])
-          {
-          case '(':
-            if (have_args)
-              {
-                idx.push_back (first_args);
-                have_args = false;
-              }
-            else
-              idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
-            break;
-
-          case '{':
-            idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
-            break;
-
-          case '.':
-            idx.push_back (octave_value (get_struct_index (p_arg_nm,
-                                                           p_dyn_field)));
-            break;
-
-          default:
-            panic_impossible ();
-          }
-
-        p_args++;
-        p_arg_nm++;
-        p_dyn_field++;
-      }
-
-    try
-      {
-        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
-                              lvalue_list);
-      }
-    catch (octave::index_exception& e)  // range problems, bad index type, etc.
-      {
-        final_index_error (e, expr);
-      }
-
-    octave_value val = retval.length () ? retval(0) : octave_value ();
-
-    if (val.is_function ())
-      {
-        octave_function *fcn = val.function_value (true);
-
-        if (fcn)
-          {
-            octave_value_list empty_args;
-
-            retval = (lvalue_list
-                      ? val.do_multi_index_op (nargout, empty_args,
-                                               lvalue_list)
-                      : val.do_multi_index_op (nargout, empty_args));
-          }
-      }
-
-    return retval;
-  }
-
-  octave_value
-  tree_index_expression::rvalue1 (int nargout)
-  {
-    octave_value retval;
-
-    const octave_value_list tmp = rvalue (nargout);
-
-    if (! tmp.empty ())
-      retval = tmp(0);
-
-    return retval;
-  }
-
   octave_lvalue
-  tree_index_expression::lvalue (void)
+  tree_index_expression::lvalue (tree_evaluator *tw)
   {
     octave_lvalue retval;
 
@@ -515,7 +247,7 @@ namespace octave
     std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
     std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
 
-    retval = expr->lvalue ();
+    retval = expr->lvalue (tw);
 
     octave_value tmp = retval.value ();
 
@@ -546,7 +278,7 @@ namespace octave
           case '(':
             {
               octave_value_list tidx
-                = make_value_list (*p_args, *p_arg_nm, &tmp, false);
+                = make_value_list (tw, *p_args, *p_arg_nm, &tmp, false);
 
               idx.push_back (tidx);
 
@@ -564,7 +296,7 @@ namespace octave
           case '{':
             {
               octave_value_list tidx
-                = make_value_list (*p_args, *p_arg_nm, &tmp, false);
+                = make_value_list (tw, *p_args, *p_arg_nm, &tmp, false);
 
               if (tmp.is_undefined ())
                 {
@@ -589,7 +321,7 @@ namespace octave
 
           case '.':
             {
-              octave_value tidx = get_struct_index (p_arg_nm, p_dyn_field);
+              octave_value tidx = get_struct_index (tw, p_arg_nm, p_dyn_field);
 
               bool autoconv = (tmp.is_zero_by_zero ()
                                && (tmp.is_matrix_type () || tmp.is_string ()
@@ -683,12 +415,6 @@ namespace octave
     new_idx_expr->copy_base (*this);
 
     return new_idx_expr;
-  }
-
-  void
-  tree_index_expression::accept (tree_walker& tw)
-  {
-    tw.visit_index_expression (*this);
   }
 }
 

@@ -31,13 +31,12 @@ class octave_value;
 class octave_value_list;
 
 #include "pt-mat.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
   class tree_argument_list;
-
-  class tree_walker;
 
   // General cells.
 
@@ -61,14 +60,13 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int);
-
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_cell (*this);
+    }
   };
 }
 

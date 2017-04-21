@@ -31,14 +31,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-lvalue.h"
 #include "pt-cmd.h"
 #include "pt-id.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
+  class tree_evaluator;
   class tree_expression;
   class tree_identifier;
-
-  class tree_walker;
 
   // List of expressions that make up a declaration statement.
 
@@ -57,8 +57,6 @@ namespace octave
 
     ~tree_decl_elt (void);
 
-    bool eval (void);
-
     bool is_defined (void) { return id ? id->is_defined () : false; }
 
     bool is_variable (void) { return id ? id->is_variable () : false; }
@@ -71,25 +69,10 @@ namespace octave
 
     bool lvalue_ok (void) { return id ? id->lvalue_ok () : false; }
 
-    // Do not allow functions to return null values.
-    octave_value rvalue1 (int nargout = 1)
+    octave_lvalue lvalue (tree_evaluator *tw)
     {
-      return id ? id->rvalue1 (nargout).storable_value () : octave_value ();
+      return id ? id->lvalue (tw) : octave_lvalue ();
     }
-
-    octave_value_list rvalue (int nargout)
-    {
-      octave_value_list retval;
-
-      if (nargout > 1)
-        error ("invalid number of output arguments in declaration list");
-
-      retval = rvalue1 (nargout);
-
-      return retval;
-    }
-
-    octave_lvalue lvalue (void) { return id ? id->lvalue () : octave_lvalue (); }
 
     tree_identifier *ident (void) { return id; }
 
@@ -100,7 +83,10 @@ namespace octave
     tree_decl_elt *dup (symbol_table::scope_id scope,
                         symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_decl_elt (*this);
+    }
 
   private:
 
@@ -138,7 +124,10 @@ namespace octave
     tree_decl_init_list *dup (symbol_table::scope_id scope,
                               symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_decl_init_list (*this);
+    }
   };
 
   // Base class for declaration commands -- global, static, etc.
@@ -198,7 +187,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_global_command (*this);
+    }
 
   private:
 
@@ -228,7 +220,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_persistent_command (*this);
+    }
 
   private:
 

@@ -33,6 +33,7 @@ class octave_value_list;
 #include "base-list.h"
 #include "pt-array-list.h"
 #include "pt-exp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 // The character to fill with when creating string arrays.
@@ -41,8 +42,6 @@ extern char Vstring_fill_char;
 namespace octave
 {
   class tree_argument_list;
-
-  class tree_walker;
 
   // General matrices.  This allows us to construct matrices from
   // other matrices, variables, and functions.
@@ -67,14 +66,13 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_matrix (*this);
+    }
   };
 
   extern std::string

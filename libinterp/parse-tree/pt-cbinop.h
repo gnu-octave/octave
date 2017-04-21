@@ -33,12 +33,11 @@ class octave_lvalue;
 
 #include "ov.h"
 #include "pt-binop.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   // Binary expressions that can be reduced to compound operations
 
   class tree_compound_binary_expression : public tree_binary_expression
@@ -57,11 +56,10 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_compound_binary_expression (*this);
+    }
 
   private:
 

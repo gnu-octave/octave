@@ -32,15 +32,14 @@ class octave_value_list;
 #include "base-list.h"
 #include "bp-table.h"
 #include "comment-list.h"
-#include "symtab.h"
 #include "pt.h"
+#include "pt-walk.h"
+#include "symtab.h"
 
 namespace octave
 {
   class tree_command;
   class tree_expression;
-
-  class tree_walker;
 
   // A statement is either a command to execute or an expression to
   // evaluate.
@@ -111,7 +110,10 @@ namespace octave
     tree_statement *dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_statement (*this);
+    }
 
   private:
 
@@ -186,7 +188,10 @@ namespace octave
     tree_statement_list *dup (symbol_table::scope_id scope,
                               symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_statement_list (*this);
+    }
 
   private:
 

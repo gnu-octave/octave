@@ -35,6 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 
+namespace octave
+{
+  class tree_evaluator;
+}
+
 // Function handles.
 
 class
@@ -200,7 +205,8 @@ private:
 public:
 
   // Factory method.
-  static octave_fcn_handle *maybe_binder (const octave_value& f);
+  static octave_fcn_handle *maybe_binder (const octave_value& f,
+                                          octave::tree_evaluator *tw);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);

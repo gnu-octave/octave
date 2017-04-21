@@ -46,12 +46,6 @@ namespace octave
     return new tree_break_command (line (), column ());
   }
 
-  void
-  tree_break_command::accept (tree_walker& tw)
-  {
-    tw.visit_break_command (*this);
-  }
-
   // Continue.
 
   // Nonzero means we're jumping to the end of a loop.
@@ -64,12 +58,6 @@ namespace octave
     return new tree_continue_command (line (), column ());
   }
 
-  void
-  tree_continue_command::accept (tree_walker& tw)
-  {
-    tw.visit_continue_command (*this);
-  }
-
   // Return.
 
   // Nonzero means we're returning from a function.
@@ -80,11 +68,5 @@ namespace octave
                             symbol_table::context_id) const
   {
     return new tree_return_command (line (), column ());
-  }
-
-  void
-  tree_return_command::accept (tree_walker& tw)
-  {
-    tw.visit_return_command (*this);
   }
 }

@@ -34,6 +34,7 @@ PARSE_TREE_INC = \
   libinterp/parse-tree/pt-pr-code.h \
   libinterp/parse-tree/pt-select.h \
   libinterp/parse-tree/pt-stmt.h \
+  libinterp/parse-tree/pt-tm-const.h \
   libinterp/parse-tree/pt-unop.h \
   libinterp/parse-tree/pt-walk.h \
   libinterp/parse-tree/pt.h \
@@ -80,6 +81,7 @@ PARSE_TREE_SRC = \
   libinterp/parse-tree/pt-pr-code.cc \
   libinterp/parse-tree/pt-select.cc \
   libinterp/parse-tree/pt-stmt.cc \
+  libinterp/parse-tree/pt-tm-const.cc \
   libinterp/parse-tree/pt-unop.cc \
   libinterp/parse-tree/pt-walk.cc \
   libinterp/parse-tree/pt.cc \

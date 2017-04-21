@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-arg-list.h"
 #include "pt-assign.h"
 #include "pt-cmd.h"
+#include "pt-eval.h"
 #include "pt-exp.h"
 #include "pt-idx.h"
 #include "pt-misc.h"
@@ -1917,7 +1918,8 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
 { }
 
 octave_fcn_handle *
-octave_fcn_binder::maybe_binder (const octave_value& f)
+octave_fcn_binder::maybe_binder (const octave_value& f,
+                                 octave::tree_evaluator *tw)
 {
   octave_fcn_handle *retval = 0;
 
@@ -1989,7 +1991,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                   octave::tree_expression *elt = *it;
                   if (elt && elt->is_constant ())
                     {
-                      arg_template(iarg) = elt->rvalue1 ();
+                      arg_template(iarg) = tw->evaluate (elt);
                       arg_mask[iarg] = -1;
                     }
                   else if (elt && elt->is_identifier ())
@@ -2002,7 +2004,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                         }
                       else if (elt_id->is_defined ())
                         {
-                          arg_template(iarg) = elt_id->rvalue1 ();
+                          arg_template(iarg) = tw->evaluate (elt_id);
                           arg_mask[iarg] = -1;
                         }
                       else
@@ -2024,7 +2026,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                 {
                   // If the head is a value, use it as root.
                   if (head_id->is_defined ())
-                    root_val = head_id->rvalue1 ();
+                    root_val = tw->evaluate (head_id);
                   else
                     {
                       // It's a name.

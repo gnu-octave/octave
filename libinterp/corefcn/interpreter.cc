@@ -426,7 +426,7 @@ namespace octave
 
     install_builtins ();
 
-    install_classdef ();
+    install_classdef (m_evaluator);
 
     bool line_editing = false;
     bool traditional = false;

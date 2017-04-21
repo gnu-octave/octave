@@ -59,77 +59,8 @@ namespace octave
                      name ().c_str (), l, c);
   }
 
-  octave_value_list
-  tree_identifier::rvalue (int nargout,
-                           const std::list<octave_lvalue> *lvalue_list)
-  {
-    octave_value_list retval;
-
-    octave_value val = sym->find ();
-
-    if (val.is_defined ())
-      {
-        // GAGME -- this would be cleaner if we required
-        // parens to indicate function calls.
-        //
-        // If this identifier refers to a function, we need to know
-        // whether it is indexed so that we can do the same thing
-        // for 'f' and 'f()'.  If the index is present and the function
-        // object declares it can handle it, return the function object
-        // and let tree_index_expression::rvalue handle indexing.
-        // Otherwise, arrange to call the function here, so that we don't
-        // return the function definition as a value.
-
-        octave_function *fcn = 0;
-
-        if (val.is_function ())
-          fcn = val.function_value (true);
-
-        if (fcn && ! (is_postfix_indexed ()
-                      && fcn->is_postfix_index_handled (postfix_index ())))
-          {
-            octave_value_list tmp_args;
-
-            retval = (lvalue_list
-                      ? val.do_multi_index_op (nargout, tmp_args, lvalue_list)
-                      : val.do_multi_index_op (nargout, tmp_args));
-          }
-        else
-          {
-            if (print_result () && nargout == 0
-                && octave::tree_evaluator::statement_printing_enabled ())
-              {
-                octave_value_list args = ovl (val);
-                args.stash_name_tags (string_vector (name ()));
-                octave::feval ("display", args);
-              }
-
-            retval = val;
-          }
-      }
-    else if (sym->is_added_static ())
-      static_workspace_error ();
-    else
-      eval_undefined_error ();
-
-    return retval;
-  }
-
-  octave_value
-  tree_identifier::rvalue1 (int nargout)
-  {
-    octave_value retval;
-
-    octave_value_list tmp = rvalue (nargout);
-
-    if (! tmp.empty ())
-      retval = tmp(0);
-
-    return retval;
-  }
-
   octave_lvalue
-  tree_identifier::lvalue (void)
+  tree_identifier::lvalue (tree_evaluator *)
   {
     if (sym->is_added_static ())
       static_workspace_error ();
@@ -154,11 +85,5 @@ namespace octave
     new_id->copy_base (*this);
 
     return new_id;
-  }
-
-  void
-  tree_identifier::accept (tree_walker& tw)
-  {
-    tw.visit_identifier (*this);
   }
 }

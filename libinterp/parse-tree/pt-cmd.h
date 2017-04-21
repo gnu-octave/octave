@@ -30,12 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "pt.h"
 #include "pt-bp.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class tree_walker;
-
   // A base class for commands.
 
   class tree_command : public tree
@@ -78,7 +77,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_no_op_command (*this);
+    }
 
     bool is_end_of_fcn_or_script (void) const
     {
@@ -116,7 +118,10 @@ namespace octave
     tree_command *dup (symbol_table::scope_id scope,
                        symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_function_def (*this);
+    }
 
     octave_value function (void) { return fcn; }
 

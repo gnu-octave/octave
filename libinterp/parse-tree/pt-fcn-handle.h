@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-exp.h"
 #include "pt-misc.h"
 #include "pt-stmt.h"
+#include "pt-walk.h"
 #include "symtab.h"
 
 class octave_value_list;
@@ -42,8 +43,6 @@ class octave_value_list;
 
 namespace octave
 {
-  class tree_walker;
-
   class tree_fcn_handle : public tree_expression
   {
   public:
@@ -74,14 +73,13 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
-
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_fcn_handle (*this);
+    }
 
   private:
 
@@ -94,14 +92,14 @@ namespace octave
   public:
 
     tree_anon_fcn_handle (int l = -1, int c = -1)
-      : tree_expression (l, c), fcn (0), file_name () { }
+      : tree_expression (l, c), fcn (0), m_file_name () { }
 
     tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
                           tree_statement_list *cl, symbol_table::scope_id sid,
                           int l = -1, int c = -1)
       : tree_expression (l, c),
         fcn (new octave_user_function (sid, pl, rl, cl)),
-        file_name () { }
+        m_file_name () { }
 
     // No copying!
 
@@ -114,10 +112,6 @@ namespace octave
     bool has_magic_end (void) const { return false; }
 
     bool rvalue_ok (void) const { return true; }
-
-    octave_value rvalue1 (int nargout = 1);
-
-    octave_value_list rvalue (int nargout);
 
     tree_parameter_list *parameter_list (void) const
     {
@@ -142,9 +136,14 @@ namespace octave
     tree_expression *dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw);
+    void accept (tree_walker& tw)
+    {
+      tw.visit_anon_fcn_handle (*this);
+    }
 
-    void stash_file_name (const std::string& file) { file_name = file; }
+    void stash_file_name (const std::string& file) { m_file_name = file; }
+
+    std::string file_name (void) const { return m_file_name; }
 
   private:
 
@@ -152,7 +151,7 @@ namespace octave
     octave_user_function *fcn;
 
     // Filename where the handle was defined.
-    std::string file_name;
+    std::string m_file_name;
   };
 }
 

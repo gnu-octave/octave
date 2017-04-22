@@ -135,7 +135,6 @@ libgui_graphics_libgui_graphics_la_CPPFLAGS = \
   @QT_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Isrc -I$(srcdir)/libgui/src \
-  -I$(srcdir)/liboctave/cruft/misc \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \

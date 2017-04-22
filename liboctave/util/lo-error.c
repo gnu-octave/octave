@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 /* Having this file in this directory is a kluge to avoid unresolved
-   symbol errors when creating shared versions of libcruft. */
+   symbol errors when creating shared versions of liboctave. */
 
 /* Pointer to the current error handling function. */
 OCTAVE_NORETURN liboctave_error_handler

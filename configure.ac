@@ -997,7 +997,7 @@ if test $ax_blas_ok = no; then
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
       AC_LANG_PUSH(C)
       AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-          #include "liboctave/cruft/misc/blaswrap.c"
+          #include "liboctave/util/blaswrap.c"
         ]])],
         [mv conftest.$ac_objext blaswrap.$ac_objext
          octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
@@ -1014,14 +1014,14 @@ if test $ax_blas_ok = no; then
 
          ## remove temp file
          rm -f blaswrap.$ac_objext],
-        [AC_MSG_FAILURE([cannot compile liboctave/cruft/misc/blaswrap.c])])
+        [AC_MSG_FAILURE([cannot compile liboctave/util/blaswrap.c])])
       AC_LANG_POP(C)
       CFLAGS="$octave_blaswrap_save_CFLAGS"
 
       if test $ax_blas_ok = no; then
         BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
       else
-        ## wrapper in cruft, remove from BLAS_LIBS
+        ## wrapper in liboctave/util, remove from BLAS_LIBS
         BLAS_LIBS=`echo $BLAS_LIBS | $SED -e 's/blaswrap.[[^ ]]* //g'`
         AC_DEFINE(USE_BLASWRAP, 1,
           [Define to 1 if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])

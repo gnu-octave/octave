@@ -14,24 +14,27 @@ UTIL_INC = \
   liboctave/util/lo-hash.h \
   liboctave/util/lo-ieee.h \
   liboctave/util/lo-math.h \
+  liboctave/util/lo-regexp.h \
   liboctave/util/lo-traits.h \
   liboctave/util/lo-utils.h \
+  liboctave/util/f77-fcn.h \
+  liboctave/util/lo-error.h \
+  liboctave/util/quit.h \
   liboctave/util/oct-base64.h \
   liboctave/util/oct-binmap.h \
   liboctave/util/oct-cmplx.h \
   liboctave/util/oct-glob.h \
-  liboctave/util/oct-inttypes.h \
   liboctave/util/oct-inttypes-fwd.h \
+  liboctave/util/oct-inttypes.h \
   liboctave/util/oct-locbuf.h \
   liboctave/util/oct-mutex.h \
   liboctave/util/oct-refcount.h \
   liboctave/util/oct-rl-edit.h \
   liboctave/util/oct-rl-hist.h \
-  liboctave/util/oct-string.h \
   liboctave/util/oct-shlib.h \
   liboctave/util/oct-sort.h \
+  liboctave/util/oct-string.h \
   liboctave/util/pathsearch.h \
-  liboctave/util/lo-regexp.h \
   liboctave/util/singleton-cleanup.h \
   liboctave/util/sparse-sort.h \
   liboctave/util/sparse-util.h \
@@ -44,9 +47,18 @@ NOINSTALL_UTIL_INC = \
   liboctave/util/kpse.h \
   liboctave/util/oct-sparse.h
 
+UTIL_F77_SRC = \
+  liboctave/util/d1mach.f \
+  liboctave/util/i1mach.f \
+  liboctave/util/r1mach.f
+
 UTIL_C_SRC = \
   liboctave/util/f2c-main.c \
   liboctave/util/lo-cutils.c \
+  liboctave/util/blaswrap.c \
+  liboctave/util/cquit.c \
+  liboctave/util/f77-fcn.c \
+  liboctave/util/lo-error.c \
   liboctave/util/oct-rl-edit.c \
   liboctave/util/oct-rl-hist.c
 
@@ -60,25 +72,31 @@ UTIL_SRC = \
   liboctave/util/lo-array-gripes.cc \
   liboctave/util/lo-hash.cc \
   liboctave/util/lo-ieee.cc \
+  liboctave/util/lo-regexp.cc \
   liboctave/util/lo-utils.cc \
+  liboctave/util/f77-extern.cc \
+  liboctave/util/quit.cc \
   liboctave/util/oct-base64.cc \
   liboctave/util/oct-glob.cc \
   liboctave/util/oct-inttypes.cc \
   liboctave/util/oct-locbuf.cc \
   liboctave/util/oct-mutex.cc \
-  liboctave/util/oct-string.cc \
   liboctave/util/oct-shlib.cc \
   liboctave/util/oct-sparse.cc \
+  liboctave/util/oct-string.cc \
   liboctave/util/pathsearch.cc \
-  liboctave/util/lo-regexp.cc \
   liboctave/util/singleton-cleanup.cc \
   liboctave/util/sparse-sort.cc \
   liboctave/util/sparse-util.cc \
   liboctave/util/str-vec.cc \
   liboctave/util/unwind-prot.cc \
   liboctave/util/url-transfer.cc \
+  $(UTIL_F77_SRC) \
   $(UTIL_C_SRC) \
   $(NOINSTALL_UTIL_INC)
+
+liboctave_EXTRA_DIST += \
+  liboctave/util/d1mach-tst.for
 
 LIBOCTAVE_TEMPLATE_SRC += \
   liboctave/util/oct-sort.cc

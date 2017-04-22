@@ -185,8 +185,6 @@ An overview of the directory layout of Octave's source files:
 
       lapack-xtra      wrappers for lapack functions used in Octave
 
-      misc             miscellaneous utilities
-
       odepack          ordinary differential equation solver
 
       ordered-qz       code for ordering eigenvalues for QZ factorization

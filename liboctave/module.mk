@@ -11,7 +11,6 @@ liboctave_liboctave_la_CPPFLAGS = \
   @CRUFT_DLL_DEFS@ \
   -Iliboctave -I$(srcdir)/liboctave \
   -I$(srcdir)/liboctave/array \
-  -I$(srcdir)/liboctave/cruft/misc \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
   -I$(srcdir)/liboctave/system \

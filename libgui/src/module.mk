@@ -220,7 +220,6 @@ libgui_src_libgui_src_la_CPPFLAGS = \
   -I$(srcdir)/libgui/src/m-editor \
   -I$(srcdir)/libgui/src/qtinfo \
   -I$(srcdir)/libgui/graphics \
-  -I$(srcdir)/liboctave/cruft/misc \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \

@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 // This whole file is a kluge just to avoid unresolved symbol errors
-// when creating shared versions of libcruft.
+// when creating shared versions of liboctave.
 
 // So we can check to see if an exception has occurred.
 int f77_exception_encountered = 0;

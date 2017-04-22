@@ -9,7 +9,6 @@ src_MAINTAINERCLEANFILES =
 SRC_DIR_CPPFLAGS = \
   -Iliboctave -I$(srcdir)/liboctave \
   -I$(srcdir)/liboctave/array \
-  -I$(srcdir)/liboctave/cruft/misc \
   -I$(srcdir)/liboctave/numeric \
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \

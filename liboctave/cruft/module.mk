@@ -16,7 +16,6 @@ include liboctave/cruft/dassl/module.mk
 include liboctave/cruft/Faddeeva/module.mk
 include liboctave/cruft/fftpack/module.mk
 include liboctave/cruft/lapack-xtra/module.mk
-include liboctave/cruft/misc/module.mk
 include liboctave/cruft/odepack/module.mk
 include liboctave/cruft/ordered-qz/module.mk
 include liboctave/cruft/quadpack/module.mk

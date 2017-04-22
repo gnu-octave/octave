@@ -8,7 +8,6 @@ libinterp_MAINTAINERCLEANFILES =
 libinterp_liboctinterp_la_CPPFLAGS = \
   @OCTINTERP_DLL_DEFS@ \
   -Iliboctave -I$(srcdir)/liboctave \
-  -I$(srcdir)/liboctave/cruft/misc \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \

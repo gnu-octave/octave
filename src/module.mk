@@ -106,7 +106,7 @@ if AMCOND_BUILD_QT_GUI
   src_octave_gui_SOURCES = src/main-gui.cc
   nodist_src_octave_gui_SOURCES = src/octave-build-info.cc
   OCTAVE_GUI_LIBS = libgui/liboctgui.la
-  OCTAVE_GUI_CPPFLAGS = -Ilibgui/src -I$(srcdir)/libgui/src
+  OCTAVE_GUI_CPPFLAGS = -I$(srcdir)/libgui -Ilibgui/src -I$(srcdir)/libgui/src
 endif
 
 src_octave_gui_CPPFLAGS = \
@@ -206,11 +206,7 @@ src/main.cc: src/main.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirst
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
 src/octave-build-info.cc: src/octave-build-info.in.cc HG-ID | src/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SED) \
-	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
-	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
-	$(simple_move_if_change_rule)
+	$(AM_V_GEN)$(build-info-commands)
 
 ALL_LOCAL_TARGETS += $(OCTAVE_CROSS_TOOLS)
 

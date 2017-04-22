@@ -456,6 +456,14 @@ define cp_update_rule
   fi
 endef
 
+define build-info-commands
+  rm -f $@-t && \
+  $(SED) \
+    -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
+    -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
+  $(simple_move_if_change_rule)
+endef
+
 define simple-filter-rule
   rm -f $@-t $@ && \
   ${SHELL} $(1) < $< > $@-t && \

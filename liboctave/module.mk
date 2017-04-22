@@ -65,13 +65,8 @@ include liboctave/system/module.mk
 include liboctave/util/module.mk
 include liboctave/wrappers/module.mk
 
-## liboctave merely collects a bunch of compiled convenience libraries.
-## It has no source code itself.
 nodist_liboctave_liboctave_la_SOURCES = \
   liboctave/liboctave-build-info.cc
-
-# Dummy C++ source to force C++ linking.
-EXTRA_liboctave_liboctave_la_SOURCES = liboctave/.dummy_force_cxx_link.cc
 
 liboctave_liboctave_la_LIBADD += \
   libgnu/libgnu.la \
@@ -110,11 +105,7 @@ liboctavetestsdir := $(octtestsdir)
 nobase_liboctavetests_DATA = $(LIBOCTAVE_TST_FILES)
 
 liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc HG-ID | liboctave/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SED) \
-	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
-	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
-	$(simple_move_if_change_rule)
+	$(AM_V_GEN)$(build-info-commands)
 
 OCTAVE_INTERPRETER_TARGETS += \
   $(LIBOCTAVE_TST_FILES)

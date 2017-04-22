@@ -33,16 +33,25 @@ TRANSLATIONS = \
 
 LOCALES = $(patsubst libgui/languages/%.ts, libgui/languages/%.qm, $(TRANSLATIONS))
 
+noinst_HEADERS += \
+  libgui/liboctgui-build-info.h
+
 include libgui/src/module.mk
 include libgui/graphics/module.mk
 include libgui/qterminal-module.mk
 
-## liboctgui merely collects a bunch of compiled convenience libraries.
-## It has no source code itself.
-libgui_liboctgui_la_SOURCES =
+nodist_libgui_liboctgui_la_SOURCES = \
+  libgui/liboctgui-build-info.cc
 
-# Dummy C++ source to force C++ linking.
-EXTRA_libgui_liboctgui_la_SOURCES = libgui/.dummy_force_cxx_link.cc
+libgui_liboctgui_la_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  @OCTGUI_DLL_DEFS@ \
+  -Ilibgui \
+  -I$(srcdir)/libgui
+
+libgui_liboctgui_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+
+libgui_liboctgui_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 libgui_liboctgui_la_LIBADD = \
   libgui/qterminal/libqterminal.la \
@@ -120,9 +129,13 @@ DIRSTAMP_FILES += \
 
 libgui_EXTRA_DIST += \
   $(TRANSLATIONS) \
-  libgui/default-qt-settings.in
+  libgui/default-qt-settings.in \
+  libgui/liboctgui-build-info.in.cc
 
 EXTRA_DIST += $(libgui_EXTRA_DIST)
+
+libgui_CLEANFILES += \
+  libgui/liboctgui-build-info.cc
 
 libgui_DISTCLEANFILES += \
   libgui/default-qt-settings \
@@ -140,4 +153,7 @@ libgui-distclean: libgui-clean
 
 libgui-maintainer-clean: libgui-distclean
 	rm -f $(libgui_MAINTAINERCLEANFILES)
+
+libgui/liboctgui-build-info.cc: libgui/liboctgui-build-info.in.cc HG-ID | libgui/$(octave_dirstamp)
+	$(AM_V_GEN)$(build-info-commands)
 endif

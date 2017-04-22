@@ -245,11 +245,7 @@ libinterp/version.h: libinterp/version.in.h build-aux/mk-version-h.sh | libinter
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-version-h.sh)
 
 libinterp/liboctinterp-build-info.cc: libinterp/liboctinterp-build-info.in.cc HG-ID | libinterp/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SED) \
-	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by Makefile|" \
-	  -e "s|%OCTAVE_HG_ID%|$(HG_ID_VAR)|" $< > $@-t && \
-	$(simple_move_if_change_rule)
+	$(AM_V_GEN)$(build-info-commands)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   mkbuiltins_dld_opt =

@@ -88,19 +88,14 @@ public:
 
   octave_idx_type nnz (void) const
   {
-    octave_idx_type retval = 0;
-
     const T *d = this->data ();
 
     octave_idx_type nel = this->length ();
 
-    for (octave_idx_type i = 0; i < nel; i++)
-      {
-        if (d[i] != T ())
-          retval++;
-      }
+    const T zero = T ();
 
-    return retval;
+    return std::count_if (d, d + nel,
+                          [zero] (T elem) { return elem != zero; });
   }
 
   MArray<T> diag (octave_idx_type k = 0) const

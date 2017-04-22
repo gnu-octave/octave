@@ -336,18 +336,8 @@ public:
 
   bool all_zero (void) const
   {
-    bool retval = true;
-
-    for (int i = 0; i < ndims (); i++)
-      {
-        if (xelem (i) != 0)
-          {
-            retval = false;
-            break;
-          }
-      }
-
-    return retval;
+    return std::all_of (rep, rep + ndims (),
+                        [] (octave_idx_type dim) { return dim == 0; });
   }
 
   bool empty_2d (void) const
@@ -362,18 +352,8 @@ public:
 
   bool any_zero (void) const
   {
-    bool retval = false;
-
-    for (int i = 0; i < ndims (); i++)
-      {
-        if (xelem (i) == 0)
-          {
-            retval = true;
-            break;
-          }
-      }
-
-    return retval;
+    return std::any_of (rep, rep + ndims (),
+                        [] (octave_idx_type dim) { return dim == 0; });
   }
 
   int num_ones (void) const;
@@ -416,14 +396,8 @@ public:
 
   bool any_neg (void) const
   {
-    int n_dims = ndims ();
-    int i;
-
-    for (i = 0; i < n_dims; i++)
-      if (xelem (i) < 0)
-        break;
-
-    return i < n_dims;
+    return std::any_of (rep, rep + ndims (),
+                        [] (octave_idx_type dim) { return dim < 0; });
   }
 
   dim_vector squeeze (void) const;
@@ -561,7 +535,7 @@ public:
 
     octave_idx_type k = 1;
     for (int i = 0; i < nd; i++)
-      retval.rep[i] = k *= rep[i];
+      retval.rep[i] = (k *= rep[i]);
 
     return retval;
   }
@@ -589,26 +563,13 @@ operator == (const dim_vector& a, const dim_vector& b)
   if (a.rep == b.rep)
     return true;
 
-  bool retval = true;
-
   int a_len = a.ndims ();
   int b_len = b.ndims ();
 
   if (a_len != b_len)
-    retval = false;
-  else
-    {
-      for (int i = 0; i < a_len; i++)
-        {
-          if (a(i) != b(i))
-            {
-              retval = false;
-              break;
-            }
-        }
-    }
+    return false;
 
-  return retval;
+  return std::equal (a.rep, a.rep + a_len, b.rep);
 }
 
 inline bool

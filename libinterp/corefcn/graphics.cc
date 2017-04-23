@@ -1463,7 +1463,7 @@ array_property::validate (const octave_value& v)
 
   if (xok)
     {
-      Matrix v_mat = v.matrix_value ();
+      NDArray v_mat = v.array_value ();
       // Check min and max
       if (! octave::math::isnan (minval.first))
         {

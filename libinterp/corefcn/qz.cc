@@ -133,27 +133,36 @@ fout (const F77_INT& lsize, const double& alpha, const double& beta,
 DEFUN (qz, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{lambda} =} qz (@var{A}, @var{B})
-@deftypefnx {} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})
+@deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] =} qz (@var{A}, @var{B})
+@deftypefnx {} {[@var{AA}, @var{BB}, @var{Z}] =} qz (@var{A}, @var{B}, @var{opt})
+@deftypefnx {} {[@var{AA}, @var{BB}, @var{Z}, @var{lambda}] =} qz (@var{A}, @var{B}, @var{opt})
 QZ@tie{}decomposition of the generalized eigenvalue problem
-(@math{A x = s B x}).
+@tex
+$$A x = \lambda B x$$
+@end tex
+@ifnottex
 
-There are three ways to call this function:
+@math{A x = @var{lambda} B x}
+
+@end ifnottex
+
+There are three calling forms of the function:
+
 @enumerate
 @item @code{@var{lambda} = qz (@var{A}, @var{B})}
 
-Computes the generalized eigenvalues
+Compute the generalized eigenvalues
 @tex
-$\lambda$
+$\lambda.$
 @end tex
 @ifnottex
-@var{lambda}
+@var{lambda}.
 @end ifnottex
-of @math{(A - s B)}.
 
-@item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}
+@item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] = qz (@var{A}, @var{B})}
 
-Computes QZ@tie{}decomposition, generalized eigenvectors, and generalized
-eigenvalues of @math{(A - s B)}
+Compute QZ@tie{}decomposition, generalized eigenvectors, and generalized
+eigenvalues.
 @tex
 $$ AV = BV{ \rm diag }(\lambda) $$
 $$ W^T A = { \rm diag }(\lambda)W^T B $$
@@ -164,22 +173,22 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$
 @example
 @group
 
-A * V = B * V * diag (@var{lambda})
-W' * A = diag (@var{lambda}) * W' * B
-AA = Q * A * Z, BB = Q * B * Z
+@var{A} * @var{V} = @var{B} * @var{V} * diag (@var{lambda})
+@var{W}' * @var{A} = diag (@var{lambda}) * @var{W}' * @var{B}
+@var{AA} = @var{Q} * @var{A} * @var{Z}, @var{BB} = @var{Q} * @var{B} * @var{Z}
 
 @end group
 @end example
 
 @end ifnottex
-with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}
+with @var{Q} and @var{Z} orthogonal (unitary for complex case).
 
-@item @code{[AA,BB,Z@{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
+@item @code{[@var{AA}, @var{BB}, @var{Z} @{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
 
-As in form [2], but allows ordering of generalized eigenpairs for, e.g.,
-solution of discrete time algebraic Riccati equations.  Form 3 is not
-available for complex matrices, and does not compute the generalized
-eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
+As in form 2 above, but allows ordering of generalized eigenpairs for, e.g.,
+solution of discrete time algebraic Riccati equations.  Form 3 is not available
+for complex matrices, and does not compute the generalized eigenvectors
+@var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
 
 @table @var
 @item opt
@@ -188,28 +197,41 @@ the revised pencil contains all eigenvalues that satisfy:
 
 @table @asis
 @item @qcode{"N"}
-= unordered (default)
+unordered (default)
 
 @item @qcode{"S"}
-= small: leading block has all |lambda| @leq{} 1
+small: leading block has all
+@tex
+$|\lambda| < 1$
+@end tex
+@ifnottex
+|@var{lambda}| < 1
+@end ifnottex
 
 @item @qcode{"B"}
-= big: leading block has all |lambda| @geq{} 1
+big: leading block has all
+@tex
+$|\lambda| \geq 1$
+@end tex
+@ifnottex
+|@var{lambda}| @geq{} 1
+@end ifnottex
 
 @item @qcode{"-"}
-= negative real part: leading block has all eigenvalues
-in the open left half-plane
+negative real part: leading block has all eigenvalues in the open left
+half-plane
 
 @item @qcode{"+"}
-= non-negative real part: leading block has all eigenvalues
-in the closed right half-plane
+non-negative real part: leading block has all eigenvalues in the closed right
+half-plane
 @end table
 @end table
 @end enumerate
 
 Note: @code{qz} performs permutation balancing, but not scaling
-(@pxref{XREFbalance}).  The order of output arguments was selected for
-compatibility with @sc{matlab}.
+(@pxref{XREFbalance}), which may be lead to less accurate results than
+@code{eig}.  The order of output arguments was selected for compatibility with
+@sc{matlab}.
 @seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}
 @end deftypefn */)
 {

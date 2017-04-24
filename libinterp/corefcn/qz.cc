@@ -32,10 +32,15 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
+#include <cctype>
+#include <cmath>
 
-#include <iostream>
-#include <iomanip>
+#if defined (DEBUG) || defined (DEBUG_SORT) || defined (DEBUG_EIG)
+#  include <iostream>
+#  if defined (DEBUG_EIG)
+#    include <iomanip>
+#  endif
+#endif
 
 #include "f77-fcn.h"
 #include "lo-lapack-proto.h"
@@ -47,15 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#include "oct-map.h"
-#include "ov.h"
-#include "pager.h"
 #if defined (DEBUG) || defined (DEBUG_SORT)
 #  include "pr-output.h"
 #endif
-#include "symtab.h"
-#include "utils.h"
-#include "variables.h"
 
 typedef F77_INT (*sort_function) (const F77_INT& LSIZE,
                                   const double& ALPHA, const double& BETA,
@@ -63,8 +62,8 @@ typedef F77_INT (*sort_function) (const F77_INT& LSIZE,
 
 extern "C"
 {
-  // Van Dooren's code (netlib.org: toms/590) for reordering
-  // GEP.  Only processes Z, not Q.
+  // Van Dooren's code (netlib.org: toms/590) for reordering GEP.
+  // Only processes Z, not Q.
   F77_RET_T
   F77_FUNC (dsubsp, DSUBSP) (const F77_INT& NMAX, const F77_INT& N,
                              F77_DBLE* A, F77_DBLE* B, F77_DBLE* Z,
@@ -97,9 +96,9 @@ fin (const F77_INT& lsize, const double& alpha, const double& beta,
   F77_INT retval;
 
   if (lsize == 1)
-    retval = (fabs (alpha) < fabs (beta) ? 1 : -1);
+    retval = (std::abs (alpha) < std::abs (beta) ? 1 : -1);
   else
-    retval = (fabs (p) < 1 ? 1 : -1);
+    retval = (std::abs (p) < 1 ? 1 : -1);
 
 #if defined (DEBUG)
   std::cout << "qz: fin: retval=" << retval << std::endl;
@@ -123,9 +122,9 @@ fout (const F77_INT& lsize, const double& alpha, const double& beta,
       const double&, const double& p)
 {
   if (lsize == 1)
-    return (fabs (alpha) >= fabs (beta) ? 1 : -1);
+    return (std::abs (alpha) >= std::abs (beta) ? 1 : -1);
   else
-    return (fabs (p) >= 1 ? 1 : -1);
+    return (std::abs (p) >= 1 ? 1 : -1);
 }
 
 //FIXME: Matlab does not produce lambda as the first output argument.
@@ -235,7 +234,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 @seealso{eig, balance, lu, chol, hess, qr, qzhess, schur, svd}
 @end deftypefn */)
 {
-  volatile int nargin = args.length ();
+  int nargin = args.length ();
 
 #if defined (DEBUG)
   std::cout << "qz: nargin = " << nargin
@@ -246,30 +245,30 @@ Note: @code{qz} performs permutation balancing, but not scaling
     print_usage ();
 
   if (nargin == 3 && (nargout < 3 || nargout > 4))
-    error ("qz: invalid number of output arguments for form [3] call");
+    error ("qz: invalid number of output arguments for form 3 call");
 
 #if defined (DEBUG)
   std::cout << "qz: determine ordering option" << std::endl;
 #endif
 
   // Determine ordering option.
-  volatile char ord_job = 0;
-  static double safmin;
+  // declared volatile to avoid compiler warnings about long jumps vforks.
+  volatile char ord_job;
+  double safmin;
 
   if (nargin == 2)
     ord_job = 'N';
   else
     {
-      std::string tmp = args(2).xstring_value ("qz: OPT must be a string");
+      std::string opt = args(2).xstring_value ("qz: OPT must be a string");
 
-      if (! tmp.empty ())
-        ord_job = tmp[0];
+      if (! opt.empty ())
+        ord_job = std::toupper (opt[0]);
 
-      if (! (ord_job == 'N' || ord_job == 'n'
-             || ord_job == 'S' || ord_job == 's'
-             || ord_job == 'B' || ord_job == 'b'
-             || ord_job == '+' || ord_job == '-'))
-        error ("qz: invalid order option");
+      std::string valid_opts = "NSB+-";
+
+      if (valid_opts.find_first_of (ord_job) == std::string::npos)
+        error ("qz: invalid order option '%c'", ord_job);
 
       // overflow constant required by dlag2
       F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("S", 1),
@@ -303,30 +302,26 @@ Note: @code{qz} performs permutation balancing, but not scaling
     }
 
 #if defined (DEBUG)
-  std::cout << "qz: check argument 1" << std::endl;
+  std::cout << "qz: check matrix A" << std::endl;
 #endif
 
-  // Argument 1: check if it's okay dimensioned.
+  // Matrix A: check dimensions.
   F77_INT nn = octave::to_f77_int (args(0).rows ());
   F77_INT nc = octave::to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
-  std::cout << "argument 1 dimensions: ("
-            << nn << "," << nc << ")"
-            << std::endl;
+  std::cout << "Matrix A dimensions: (" << nn << "," << nc << ")" << std::endl;
 #endif
-
-  octave_value_list retval;
 
   if (args(0).is_empty ())
     {
-      warn_empty_arg ("qz: parameter 1; continuing");
+      warn_empty_arg ("qz: A");
       return octave_value_list (2, Matrix ());
     }
   else if (nc != nn)
     err_square_matrix_required ("qz", "A");
 
-  // Argument 1: dimensions look good; get the value.
+  // Matrix A: get value.
   Matrix aa;
   ComplexMatrix caa;
 
@@ -336,7 +331,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     aa = args(0).matrix_value ();
 
 #if defined (DEBUG)
-  std::cout << "qz: check argument 2" << std::endl;
+  std::cout << "qz: check matrix B" << std::endl;
 #endif
 
   // Extract argument 2 (bb, or cbb if complex).
@@ -354,34 +349,39 @@ Note: @code{qz} performs permutation balancing, but not scaling
   else
     bb = args(1).matrix_value ();
 
-  // Both matrices loaded, now let's check what kind of arithmetic:
-  // declared volatile to avoid compiler warnings about long jumps,
-  // vforks.
+  // Both matrices loaded, now check whether to calculate complex or real val.
 
-  volatile int complex_case
+  // declared volatile to avoid compiler warnings about long jumps vforks.
+  volatile bool complex_case
     = (args(0).is_complex_type () || args(1).is_complex_type ());
 
   if (nargin == 3 && complex_case)
     error ("qz: cannot re-order complex qz decomposition");
 
-  // First, declare variables used in both the real and complex case.
-  Matrix QQ(nn,nn), ZZ(nn,nn), VR(nn,nn), VL(nn,nn);
-  RowVector alphar(nn), alphai(nn), betar(nn);
-  ComplexRowVector xalpha(nn), xbeta(nn);
-  ComplexMatrix CQ(nn,nn), CZ(nn,nn), CVR(nn,nn), CVL(nn,nn);
+  // First, declare variables used in both the real and complex cases.
+  // FIXME: There are a lot of excess variables declared.
+  //        Probably a better way to handle this.
+  Matrix QQ (nn,nn), ZZ (nn,nn), VR (nn,nn), VL (nn,nn);
+  RowVector alphar (nn), alphai (nn), betar (nn);
+  ComplexRowVector xalpha (nn), xbeta (nn);
+  ComplexMatrix CQ (nn,nn), CZ (nn,nn), CVR (nn,nn), CVL (nn,nn);
   F77_INT ilo, ihi, info;
-  char compq = (nargout >= 3 ? 'V' : 'N');
-  char compz = ((nargout >= 4 || nargin == 3)? 'V' : 'N');
+  char comp_q = (nargout >= 3 ? 'V' : 'N');
+  char comp_z = ((nargout >= 4 || nargin == 3)? 'V' : 'N');
 
-  // Initialize Q, Z to identity if we need either of them.
-  if (compq == 'V' || compz == 'V')
-    for (F77_INT ii = 0; ii < nn; ii++)
-      for (F77_INT jj = 0; jj < nn; jj++)
+  // Initialize Q, Z to identity matrix if either is needed
+  if (comp_q == 'V' || comp_z == 'V')
+    {
+      double *QQptr = QQ.fortran_vec (); 
+      double *ZZptr = ZZ.fortran_vec (); 
+      std::fill_n (QQptr, QQ.numel (), 0.0);
+      std::fill_n (ZZptr, ZZ.numel (), 0.0);
+      for (F77_INT i = 0; i < nn; i++)
         {
-          octave_quit ();
-
-          QQ(ii,jj) = ZZ(ii,jj) = (ii == jj ? 1.0 : 0.0);
+          QQ(i,i) = 1.0;
+          ZZ(i,i) = 1.0;
         }
+    }
 
   // Always perform permutation balancing.
   const char bal_job = 'P';
@@ -390,7 +390,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
   if (complex_case)
     {
 #if defined (DEBUG)
-      if (compq == 'V')
+      if (comp_q == 'V')
         std::cout << "qz: performing balancing; CQ=" << std::endl
                   << CQ << std::endl;
 #endif
@@ -400,10 +400,10 @@ Note: @code{qz} performs permutation balancing, but not scaling
       if (args(1).is_real_type ())
         cbb = ComplexMatrix (bb);
 
-      if (compq == 'V')
+      if (comp_q == 'V')
         CQ = ComplexMatrix (QQ);
 
-      if (compz == 'V')
+      if (comp_z == 'V')
         CZ = ComplexMatrix (ZZ);
 
       F77_XFCN (zggbal, ZGGBAL,
@@ -417,7 +417,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
   else
     {
 #if defined (DEBUG)
-      if (compq == 'V')
+      if (comp_q == 'V')
         std::cout << "qz: performing balancing; QQ=" << std::endl
                   << QQ << std::endl;
 #endif
@@ -430,11 +430,13 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_CHAR_ARG_LEN (1)));
     }
 
+  // Only permutation balance above is done.  Skip scaling balance.
+
+#if 0
   // Since we just want the balancing matrices, we can use dggbal
   // for both the real and complex cases; left first
 
-#if 0
-  if (compq == 'V')
+  if (comp_q == 'V')
     {
       F77_XFCN (dggbak, DGGBAK,
                 (F77_CONST_CHAR_ARG2 (&bal_job, 1),
@@ -445,13 +447,13 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_CHAR_ARG_LEN (1)));
 
 #if defined (DEBUG)
-      if (compq == 'V')
+      if (comp_q == 'V')
         std::cout << "qz: balancing done; QQ=" << std::endl << QQ << std::endl;
 #endif
   }
 
   // then right
-  if (compz == 'V')
+  if (comp_z == 'V')
     {
       F77_XFCN (dggbak, DGGBAK,
                 (F77_CONST_CHAR_ARG2 (&bal_job, 1),
@@ -462,14 +464,13 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_CHAR_ARG_LEN (1)));
 
 #if defined (DEBUG)
-      if (compz == 'V')
+      if (comp_z == 'V')
         std::cout << "qz: balancing done; ZZ=" << std::endl << ZZ << std::endl;
 #endif
     }
 #endif
 
-  static char qz_job;
-  qz_job = (nargout < 2 ? 'E' : 'S');
+  char qz_job = (nargout < 2 ? 'E' : 'S');
 
   if (complex_case)
     {
@@ -484,8 +485,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
       CQ = CQ * cbqr.Q ();
 
       F77_XFCN (zgghrd, ZGGHRD,
-                (F77_CONST_CHAR_ARG2 (&compq, 1),
-                 F77_CONST_CHAR_ARG2 (&compz, 1),
+                (F77_CONST_CHAR_ARG2 (&comp_q, 1),
+                 F77_CONST_CHAR_ARG2 (&comp_z, 1),
                  nn, ilo, ihi, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()),
                  nn, F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn,
                  F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
@@ -493,12 +494,12 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-      ComplexRowVector cwork (1 * nn);
+      ComplexRowVector cwork (nn);
 
       F77_XFCN (zhgeqz, ZHGEQZ,
                 (F77_CONST_CHAR_ARG2 (&qz_job, 1),
-                 F77_CONST_CHAR_ARG2 (&compq, 1),
-                 F77_CONST_CHAR_ARG2 (&compz, 1),
+                 F77_CONST_CHAR_ARG2 (&comp_q, 1),
+                 F77_CONST_CHAR_ARG2 (&comp_z, 1),
                  nn, ilo, ihi,
                  F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
                  F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn,
@@ -506,12 +507,13 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_DBLE_CMPLX_ARG (xbeta.fortran_vec ()),
                  F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
                  F77_DBLE_CMPLX_ARG (CZ.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (cwork.fortran_vec ()), nn, rwork.fortran_vec (), info
+                 F77_DBLE_CMPLX_ARG (cwork.fortran_vec ()), nn,
+                                     rwork.fortran_vec (), info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-      if (compq == 'V')
+      if (comp_q == 'V')
         {
           // Left eigenvector.
           F77_XFCN (zggbak, ZGGBAK,
@@ -523,9 +525,9 @@ Note: @code{qz} performs permutation balancing, but not scaling
                      F77_CHAR_ARG_LEN (1)));
         }
 
-      // Right eigenvector.
-      if (compz == 'V')
+      if (comp_z == 'V')
         {
+          // Right eigenvector.
           F77_XFCN (zggbak, ZGGBAK,
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
                      F77_CONST_CHAR_ARG2 ("R", 1),
@@ -539,14 +541,14 @@ Note: @code{qz} performs permutation balancing, but not scaling
   else
     {
 #if defined (DEBUG)
-      std::cout << "qz: peforming qr decomposition of bb" << std::endl;
+      std::cout << "qz: performing qr decomposition of bb" << std::endl;
 #endif
 
       // Compute the QR factorization of bb.
       octave::math::qr<Matrix> bqr (bb);
 
 #if defined (DEBUG)
-      std::cout << "qz: qr (bb) done; now peforming qz decomposition"
+      std::cout << "qz: qr (bb) done; now performing qz decomposition"
                 << std::endl;
 #endif
 
@@ -562,11 +564,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
       std::cout << "qz: updated aa " << std::endl;
       std::cout << "bqr.Q () = " << std::endl << bqr.Q () << std::endl;
 
-      if (compq == 'V')
+      if (comp_q == 'V')
         std::cout << "QQ =" << QQ << std::endl;
 #endif
 
-      if (compq == 'V')
+      if (comp_q == 'V')
         QQ = QQ * bqr.Q ();
 
 #if defined (DEBUG)
@@ -574,28 +576,28 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
 #if defined (DEBUG)
-      std::cout << "qz: compq = " << compq << ", compz = " << compz
+      std::cout << "qz: comp_q = " << comp_q << ", comp_z = " << comp_z
                 << std::endl;
 #endif
 
       // Reduce to generalized Hessenberg form.
       F77_XFCN (dgghrd, DGGHRD,
-                (F77_CONST_CHAR_ARG2 (&compq, 1),
-                 F77_CONST_CHAR_ARG2 (&compz, 1),
+                (F77_CONST_CHAR_ARG2 (&comp_q, 1),
+                 F77_CONST_CHAR_ARG2 (&comp_z, 1),
                  nn, ilo, ihi, aa.fortran_vec (),
                  nn, bb.fortran_vec (), nn, QQ.fortran_vec (), nn,
                  ZZ.fortran_vec (), nn, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-      // Check if just computing generalized eigenvalues or if we're
-      // actually computing the decomposition.
+      // Check if just computing generalized eigenvalues,
+      // or if we're actually computing the decomposition.
 
       // Reduce to generalized Schur form.
       F77_XFCN (dhgeqz, DHGEQZ,
                 (F77_CONST_CHAR_ARG2 (&qz_job, 1),
-                 F77_CONST_CHAR_ARG2 (&compq, 1),
-                 F77_CONST_CHAR_ARG2 (&compz, 1),
+                 F77_CONST_CHAR_ARG2 (&comp_q, 1),
+                 F77_CONST_CHAR_ARG2 (&comp_z, 1),
                  nn, ilo, ihi, aa.fortran_vec (), nn, bb.fortran_vec (),
                  nn, alphar.fortran_vec (), alphai.fortran_vec (),
                  betar.fortran_vec (), QQ.fortran_vec (), nn,
@@ -604,7 +606,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-      if (compq == 'V')
+      if (comp_q == 'V')
         {
           F77_XFCN (dggbak, DGGBAK,
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
@@ -615,14 +617,14 @@ Note: @code{qz} performs permutation balancing, but not scaling
                      F77_CHAR_ARG_LEN (1)));
 
 #if defined (DEBUG)
-          if (compq == 'V')
+          if (comp_q == 'V')
             std::cout << "qz: balancing done; QQ=" << std::endl
                       << QQ << std::endl;
 #endif
         }
 
       // then right
-      if (compz == 'V')
+      if (comp_z == 'V')
         {
           F77_XFCN (dggbak, DGGBAK,
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
@@ -633,7 +635,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
                      F77_CHAR_ARG_LEN (1)));
 
 #if defined (DEBUG)
-          if (compz == 'V')
+          if (comp_z == 'V')
             std::cout << "qz: balancing done; ZZ=" << std::endl
                       << ZZ << std::endl;
 #endif
@@ -642,11 +644,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
     }
 
   // Order the QZ decomposition?
-  if (! (ord_job == 'N' || ord_job == 'n'))
+  if (ord_job != 'N')
     {
       if (complex_case)
         // Probably not needed, but better be safe.
-        error ("qz: cannot re-order complex qz decomposition");
+        error ("qz: cannot re-order complex QZ decomposition");
 
 #if defined (DEBUG_SORT)
       std::cout << "qz: ordering eigenvalues: ord_job = "
@@ -660,12 +662,10 @@ Note: @code{qz} performs permutation balancing, but not scaling
       switch (ord_job)
         {
         case 'S':
-        case 's':
           sort_test = &fin;
           break;
 
         case 'B':
-        case 'b':
           sort_test = &fout;
           break;
 
@@ -678,8 +678,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
           break;
 
         default:
-          // Invalid order option (should never happen, since we
-          // checked the options at the top).
+          // Invalid order option
+          // (should never happen since options were checked at the top).
           panic_impossible ();
           break;
         }
@@ -698,7 +698,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       octave_print_internal (std::cout, aa, 0);
       std::cout << std::endl << "bb="  << std::endl;
       octave_print_internal (std::cout, bb, 0);
-      if (compz == 'V')
+      if (comp_z == 'V')
         {
           std::cout << std::endl << "ZZ="  << std::endl;
           octave_print_internal (std::cout, ZZ, 0);
@@ -727,7 +727,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       octave_print_internal (std::cout, aa, 0);
       std::cout << std::endl << "bb="  << std::endl;
       octave_print_internal (std::cout, bb, 0);
-      if (compz == 'V')
+      if (comp_z == 'V')
         {
           std::cout << std::endl << "ZZ="  << std::endl;
           octave_print_internal (std::cout, ZZ, 0);
@@ -736,21 +736,21 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
       // Manually update alphar, alphai, betar.
-      static F77_INT jj;
+      static F77_INT j;
 
-      jj = 0;
-      while (jj < nn)
+      j = 0;
+      while (j < nn)
         {
 #if defined (DEBUG_EIG)
-          std::cout << "computing gen eig #" << jj << std::endl;
+          std::cout << "computing gen eig #" << j << std::endl;
 #endif
 
           // Number of zeros in this block.
           static F77_INT zcnt;
 
-          if (jj == (nn-1))
+          if (j == (nn-1))
             zcnt = 1;
-          else if (aa(jj+1,jj) == 0)
+          else if (aa(j+1,j) == 0)
             zcnt = 1;
           else zcnt = 2;
 
@@ -759,16 +759,16 @@ Note: @code{qz} performs permutation balancing, but not scaling
               // Real zero.
 #if defined (DEBUG_EIG)
               std::cout << "  single gen eig:" << std::endl;
-              std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
+              std::cout << "  alphar(" << j << ") = " << aa(j,j)
                         << std::endl;
-              std::cout << "  betar(" << jj << ") = " << bb(jj,jj)
+              std::cout << "  betar(" << j << ") = " << bb(j,j)
                         << std::endl;
-              std::cout << "  alphai(" << jj << ") = 0" << std::endl;
+              std::cout << "  alphai(" << j << ") = 0" << std::endl;
 #endif
 
-              alphar(jj) = aa(jj,jj);
-              alphai(jj) = 0;
-              betar(jj) = bb(jj,jj);
+              alphar(j) = aa(j,j);
+              alphai(j) = 0;
+              betar(j) = bb(j,j);
             }
           else
             {
@@ -779,9 +779,9 @@ Note: @code{qz} performs permutation balancing, but not scaling
                         << setiosflags (std::ios::scientific)
                         << safmin << std::endl;
 
-              for (F77_INT idr = jj; idr <= jj+1; idr++)
+              for (F77_INT idr = j; idr <= j+1; idr++)
                 {
-                  for (F77_INT idc = jj; idc <= jj+1; idc++)
+                  for (F77_INT idc = j; idc <= j+1; idc++)
                     {
                       std::cout << "aa(" << idr << "," << idc << ")="
                                 << aa(idr,idc) << std::endl;
@@ -792,11 +792,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
               // FIXME: probably should be using
-              // fortran_vec instead of &aa(jj,jj) here.
+              // fortran_vec instead of &aa(j,j) here.
 
               double scale1, scale2, wr1, wr2, wi;
-              const double *aa_ptr = aa.data () + jj * nn + jj;
-              const double *bb_ptr = bb.data () + jj * nn + jj;
+              const double *aa_ptr = aa.data () + j * nn + j;
+              const double *bb_ptr = bb.data () + j * nn + j;
               F77_XFCN (dlag2, DLAG2,
                         (aa_ptr, nn, bb_ptr, nn, safmin,
                          scale1, scale2, wr1, wr2, wi));
@@ -811,23 +811,23 @@ Note: @code{qz} performs permutation balancing, but not scaling
               // Just to be safe, check if it's a real pair.
               if (wi == 0)
                 {
-                  alphar(jj) = wr1;
-                  alphai(jj) = 0;
-                  betar(jj) = scale1;
-                  alphar(jj+1) = wr2;
-                  alphai(jj+1) = 0;
-                  betar(jj+1) = scale2;
+                  alphar(j) = wr1;
+                  alphai(j) = 0;
+                  betar(j) = scale1;
+                  alphar(j+1) = wr2;
+                  alphai(j+1) = 0;
+                  betar(j+1) = scale2;
                 }
               else
                 {
-                  alphar(jj) = alphar(jj+1) = wr1;
-                  alphai(jj) = -(alphai(jj+1) = wi);
-                  betar(jj)  = betar(jj+1) = scale1;
+                  alphar(j) = alphar(j+1) = wr1;
+                  alphai(j) = -(alphai(j+1) = wi);
+                  betar(j)  = betar(j+1) = scale1;
                 }
             }
 
           // Advance past this block.
-          jj += zcnt;
+          j += zcnt;
         }
 
 #if defined (DEBUG_SORT)
@@ -836,7 +836,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       std::cout << std::endl << "bb="  << std::endl;
       octave_print_internal (std::cout, bb, 0);
 
-      if (compz == 'V')
+      if (comp_z == 'V')
         {
           std::cout << std::endl << "ZZ="  << std::endl;
           octave_print_internal (std::cout, ZZ, 0);
@@ -853,23 +853,17 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
     }
 
-  // Compute generalized eigenvalues?
+  // Compute the generalized eigenvalues as well?
   ComplexColumnVector gev;
 
   if (nargout < 2 || nargout == 7 || (nargin == 3 && nargout == 4))
     {
       if (complex_case)
         {
-          F77_INT cnt = 0;
+          ComplexColumnVector tmp (nn);
 
-          for (F77_INT ii = 0; ii < nn; ii++)
-            cnt++;
-
-          ComplexColumnVector tmp (cnt);
-
-          cnt = 0;
-          for (F77_INT ii = 0; ii < nn; ii++)
-            tmp(cnt++) = xalpha(ii) / xbeta(ii);
+          for (F77_INT i = 0; i < nn; i++)
+            tmp(i) = xalpha(i) / xbeta(i);
 
           gev = tmp;
         }
@@ -880,18 +874,14 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
           // Return finite generalized eigenvalues.
+          ComplexColumnVector tmp (nn);
+
           F77_INT cnt = 0;
+          for (F77_INT i = 0; i < nn; i++)
+            if (betar(i) != 0)
+              tmp(cnt++) = Complex (alphar(i), alphai(i)) / betar(i);
 
-          for (F77_INT ii = 0; ii < nn; ii++)
-            if (betar(ii) != 0)
-              cnt++;
-
-          ComplexColumnVector tmp (cnt);
-
-          cnt = 0;
-          for (F77_INT ii = 0; ii < nn; ii++)
-            if (betar(ii) != 0)
-              tmp(cnt++) = Complex(alphar(ii), alphai(ii))/betar(ii);
+          tmp.resize (cnt);  // Trim vector to number of return values
 
           gev = tmp;
         }
@@ -903,7 +893,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       // Which side to compute?
       char side = (nargout == 5 ? 'R' : 'B');
       // Compute all of them and backtransform
-      char howmny = 'B';
+      char howmany = 'B';
       // Dummy pointer; select is not used.
       F77_INT *select = 0;
 
@@ -917,12 +907,13 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
           F77_XFCN (ztgevc, ZTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
-                     F77_CONST_CHAR_ARG2 (&howmny, 1),
+                     F77_CONST_CHAR_ARG2 (&howmany, 1),
                      select, nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
                      F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
                      nn, F77_DBLE_CMPLX_ARG (CVL.fortran_vec ()), nn,
                      F77_DBLE_CMPLX_ARG (CVR.fortran_vec ()), nn, nn,
-                     m, F77_DBLE_CMPLX_ARG (cwork2.fortran_vec ()), rwork2.fortran_vec (), info
+                     m, F77_DBLE_CMPLX_ARG (cwork2.fortran_vec ()),
+                     rwork2.fortran_vec (), info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
         }
@@ -938,7 +929,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
           F77_XFCN (dtgevc, DTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
-                     F77_CONST_CHAR_ARG2 (&howmny, 1),
+                     F77_CONST_CHAR_ARG2 (&howmany, 1),
                      select, nn, aa.fortran_vec (), nn, bb.fortran_vec (),
                      nn, VL.fortran_vec (), nn, VR.fortran_vec (), nn, nn,
                      m, work.fortran_vec (), info
@@ -946,9 +937,9 @@ Note: @code{qz} performs permutation balancing, but not scaling
                      F77_CHAR_ARG_LEN (1)));
 
           // Now construct the complex form of VV, WW.
-          F77_INT jj = 0;
+          F77_INT j = 0;
 
-          while (jj < nn)
+          while (j < nn)
             {
               octave_quit ();
 
@@ -957,45 +948,47 @@ Note: @code{qz} performs permutation balancing, but not scaling
               // Column increment; assume complex eigenvalue.
               int cinc = 2;
 
-              if (jj == (nn-1))
+              if (j == (nn-1))
                 // Single column.
                 cinc = 1;
-              else if (aa(jj+1,jj) == 0)
+              else if (aa(j+1,j) == 0)
                 cinc = 1;
 
               // Now copy the eigenvector (s) to CVR, CVL.
               if (cinc == 1)
                 {
-                  for (F77_INT ii = 0; ii < nn; ii++)
-                    CVR(ii,jj) = VR(ii,jj);
+                  for (F77_INT i = 0; i < nn; i++)
+                    CVR(i,j) = VR(i,j);
 
                   if (side == 'B')
-                    for (F77_INT ii = 0; ii < nn; ii++)
-                      CVL(ii,jj) = VL(ii,jj);
+                    for (F77_INT i = 0; i < nn; i++)
+                      CVL(i,j) = VL(i,j);
                 }
               else
                 {
                   // Double column; complex vector.
 
-                  for (F77_INT ii = 0; ii < nn; ii++)
+                  for (F77_INT i = 0; i < nn; i++)
                     {
-                      CVR(ii,jj) = Complex (VR(ii,jj), VR(ii,jj+1));
-                      CVR(ii,jj+1) = Complex (VR(ii,jj), -VR(ii,jj+1));
+                      CVR(i,j) = Complex (VR(i,j), VR(i,j+1));
+                      CVR(i,j+1) = Complex (VR(i,j), -VR(i,j+1));
                     }
 
                   if (side == 'B')
-                    for (F77_INT ii = 0; ii < nn; ii++)
+                    for (F77_INT i = 0; i < nn; i++)
                       {
-                        CVL(ii,jj) = Complex (VL(ii,jj), VL(ii,jj+1));
-                        CVL(ii,jj+1) = Complex (VL(ii,jj), -VL(ii,jj+1));
+                        CVL(i,j) = Complex (VL(i,j), VL(i,j+1));
+                        CVL(i,j+1) = Complex (VL(i,j), -VL(i,j+1));
                       }
                 }
 
               // Advance to next eigenvectors (if any).
-              jj += cinc;
+              j += cinc;
             }
         }
     }
+
+  octave_value_list retval (nargout);
 
   switch (nargout)
     {
@@ -1003,11 +996,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
       retval(6) = gev;
 
     case 6:
-      // Return eigenvectors.
+      // Return left eigenvectors.
       retval(5) = CVL;
 
     case 5:
-      // Return eigenvectors.
+      // Return right eigenvectors.
       retval(4) = CVR;
 
     case 4:
@@ -1015,7 +1008,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
         {
 #if defined (DEBUG)
           std::cout << "qz: sort: retval(3) = gev = " << std::endl;
-          octave_print_internal (std::cout, gev);
+          octave_print_internal (std::cout, ComplexMatrix (gev));
           std::cout << std::endl;
 #endif
           retval(3) = gev;
@@ -1101,7 +1094,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 %!assert (qz (a,b), 1)
 %!assert (isempty (qz (a,c)))
 
-## Exaple 7.7.3 in Golub & Van Loan
+## Example 7.7.3 in Golub & Van Loan
 %!test
 %! a = [ 10  1  2;
 %!        1  2 -1;
@@ -1120,6 +1113,6 @@ Note: @code{qz} performs permutation balancing, but not scaling
 %! A = [0, 0, -1, 0; 1, 0, 0, 0; -1, 0, -2, -1; 0, -1, 1, 0];
 %! B = [0, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1];
 %! [AA, BB, Q, Z1] = qz (A, B);
-%! [AA, BB, Z2] = qz (A, B, '-');
+%! [AA, BB, Z2] = qz (A, B, "-");
 %! assert (Z1, Z2);
 */

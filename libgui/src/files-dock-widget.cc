@@ -128,9 +128,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
     tr ("Set Octave directory to current browser directory"));
   _sync_octave_directory_action->setEnabled ("false");
 
-  QToolButton * popdown_button = new QToolButton ();
+  QToolButton *popdown_button = new QToolButton ();
   popdown_button->setToolTip (tr ("Actions on current directory"));
-  QMenu * popdown_menu = new QMenu ();
+  QMenu *popdown_menu = new QMenu ();
   popdown_menu->addAction (resource_manager::icon ("user-home"),
                            tr ("Show Home Directory"),
                            this, SLOT (popdownmenu_home (bool)));
@@ -923,7 +923,7 @@ files_dock_widget::copyClipboard ()
     {
       QClipboard *clipboard = QApplication::clipboard ();
 
-      QLineEdit * edit = _current_directory->lineEdit ();
+      QLineEdit *edit = _current_directory->lineEdit ();
       if (edit && edit->hasSelectedText ())
         {
           clipboard->setText (edit->selectedText ());
@@ -938,7 +938,7 @@ files_dock_widget::pasteClipboard ()
     {
       QClipboard *clipboard = QApplication::clipboard ();
       QString str = clipboard->text ();
-      QLineEdit * edit = _current_directory->lineEdit ();
+      QLineEdit *edit = _current_directory->lineEdit ();
       if (edit && str.length () > 0)
         edit->insert (str);
     }
@@ -951,7 +951,7 @@ files_dock_widget::selectAll ()
     _file_tree_view->selectAll ();
   if (_current_directory->hasFocus ())
     {
-      QLineEdit * edit = _current_directory->lineEdit ();
+      QLineEdit *edit = _current_directory->lineEdit ();
       if (edit)
         {
           edit->selectAll ();

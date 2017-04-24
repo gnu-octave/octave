@@ -235,7 +235,7 @@ namespace octave
                  int refine, realtype tend, bool haveoutputfcn,
                  bool haveoutputsel, octave_function *output_fcn,
                  ColumnVector& outputsel, bool haveeventfunction,
-                 octave_function * event_fcn, ColumnVector& te,
+                 octave_function *event_fcn, ColumnVector& te,
                  Matrix& ye, ColumnVector& ie, ColumnVector& oldval,
                  ColumnVector& oldisterminal, ColumnVector& olddir,
                  int& temp, ColumnVector& yold);
@@ -742,7 +742,7 @@ namespace octave
                     int refine, realtype tend, bool haveoutputfcn,
                     bool haveoutputsel, octave_function *output_fcn,
                     ColumnVector& outputsel, bool haveeventfunction,
-                    octave_function * event_fcn, ColumnVector& te,
+                    octave_function *event_fcn, ColumnVector& te,
                     Matrix& ye, ColumnVector& ie, ColumnVector& oldval,
                     ColumnVector& oldisterminal, ColumnVector& olddir,
                     int& temp, ColumnVector& yold)

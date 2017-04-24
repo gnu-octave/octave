@@ -273,7 +273,7 @@ private slots:
   void request_open_files (const QStringList& open_file_names);
 
 protected:
-  void closeEvent (QCloseEvent * closeEvent);
+  void closeEvent (QCloseEvent *closeEvent);
 
 private:
 
@@ -428,12 +428,12 @@ private:
   QPointer<settings_dialog> _settings_dlg;
 
   // Find files dialog
-  find_files_dialog * find_files_dlg;
+  find_files_dialog *find_files_dlg;
 
   // release notes window
-  QWidget * release_notes_window;
+  QWidget *release_notes_window;
 
-  QWidget * community_news_window;
+  QWidget *community_news_window;
 
   octave_qt_link *_octave_qt_link;
 

@@ -38,7 +38,7 @@ class find_files_dialog : public QDialog
 {
   Q_OBJECT
 public:
-  find_files_dialog (QWidget * parent=0);
+  find_files_dialog (QWidget *parent = 0);
   virtual ~find_files_dialog ();
   void save_settings (void);
 
@@ -58,22 +58,22 @@ private slots:
   void handle_done (int);
 private:
   bool is_match (const QFileInfo &info);
-  QLineEdit * _start_dir_edit;
-  QLineEdit * _file_name_edit;
-  QPushButton * _stop_button;
-  QPushButton * _find_button;
-  QPushButton * _close_button;
-  QPushButton * _browse_button;
-  QTableView   * _file_list;
-  QTimer      * _timer;
-  QCheckBox   * _recurse_dirs_check;
-  QCheckBox   * _include_dirs_check;
-  QCheckBox   * _name_case_check;
-  QCheckBox   * _contains_text_check;
-  QCheckBox   * _content_case_check;
-  QLineEdit * _contains_text_edit;
-  QDirIterator * _dir_iterator;
-  QStatusBar * _status_bar;
+  QLineEdit   *_start_dir_edit;
+  QLineEdit   *_file_name_edit;
+  QPushButton *_stop_button;
+  QPushButton *_find_button;
+  QPushButton *_close_button;
+  QPushButton *_browse_button;
+  QTableView  *_file_list;
+  QTimer      *_timer;
+  QCheckBox   *_recurse_dirs_check;
+  QCheckBox   *_include_dirs_check;
+  QCheckBox   *_name_case_check;
+  QCheckBox   *_contains_text_check;
+  QCheckBox   *_content_case_check;
+  QLineEdit   *_contains_text_edit;
+  QDirIterator *_dir_iterator;
+  QStatusBar  *_status_bar;
 };
 
 #endif

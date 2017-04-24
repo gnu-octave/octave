@@ -1172,7 +1172,7 @@ write_header (std::ostream& os, load_save_format format)
     case LS_MAT5_BINARY:
     case LS_MAT7_BINARY:
       {
-        char const * versionmagic;
+        char const *versionmagic;
         int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
         char headertext[128];
         octave::sys::gmtime now;

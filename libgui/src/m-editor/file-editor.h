@@ -419,7 +419,7 @@ private:
   QAction *_next_bookmark_action;
   QAction *_previous_bookmark_action;
   QAction *_toggle_bookmark_action;
-  QAction * _remove_bookmark_action;
+  QAction *_remove_bookmark_action;
 
   QAction *_print_action;
   QAction *_run_action;

@@ -1116,7 +1116,7 @@ symbol_table::fcn_info::fcn_info_rep::find_package (void)
 
   if (package.is_undefined ())
     {
-      octave_function * fcn =
+      octave_function *fcn =
         cdef_manager::find_package_symbol (full_name ());
 
       if (fcn)

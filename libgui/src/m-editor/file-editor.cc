@@ -1943,7 +1943,7 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 bool
 file_editor::editor_tab_has_focus ()
 {
-  QWidget * foc_w = focusWidget ();
+  QWidget *foc_w = focusWidget ();
   if (foc_w && foc_w->inherits ("octave_qscintilla"))
     return true;
   return false;

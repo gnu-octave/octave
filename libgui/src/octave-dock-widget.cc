@@ -315,7 +315,7 @@ octave_dock_widget::change_visibility (bool)
 QWidget *
 octave_dock_widget::focusWidget ()
 {
-  QWidget * w = QApplication::focusWidget ();
+  QWidget *w = QApplication::focusWidget ();
   if (w && w->focusProxy ()) w = w->focusProxy ();
   return w;
 }

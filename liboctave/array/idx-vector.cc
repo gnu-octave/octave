@@ -815,7 +815,7 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_scalar:
           {
             // (i,:) reduces to a range.
-            idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+            idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
             octave_idx_type k = r->get_data ();
             *this = new idx_range_rep (k, nj, n, DIRECT);
             reduced = true;
@@ -825,7 +825,7 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_range:
           {
             // (i:k:end,:) reduces to a range if i <= k and k divides n.
-            idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+            idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
             octave_idx_type s = r->get_start ();
             octave_idx_type l = r->length (n);
             octave_idx_type t = r->get_step ();
@@ -848,7 +848,7 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_colon:
           {
             // (:,i:j) reduces to a range (the step must be 1)
-            idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
+            idx_range_rep *rj = dynamic_cast<idx_range_rep *> (j.rep);
             if (rj->get_step () == 1)
               {
                 octave_idx_type sj = rj->get_start ();
@@ -862,8 +862,8 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_scalar:
           {
             // (k,i:d:j) reduces to a range.
-            idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
-            idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
+            idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
+            idx_range_rep *rj = dynamic_cast<idx_range_rep *> (j.rep);
             octave_idx_type k = r->get_data ();
             octave_idx_type sj = rj->get_start ();
             octave_idx_type lj = rj->length (nj);
@@ -877,11 +877,11 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
           {
             // (i:k:end,p:q) reduces to a range if i <= k and k divides n.
             // (ones (1, m), ones (1, n)) reduces to (ones (1, m*n))
-            idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+            idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
             octave_idx_type s = r->get_start ();
             octave_idx_type l = r->length (n);
             octave_idx_type t = r->get_step ();
-            idx_range_rep * rj = dynamic_cast<idx_range_rep *> (j.rep);
+            idx_range_rep *rj = dynamic_cast<idx_range_rep *> (j.rep);
             octave_idx_type sj = rj->get_start ();
             octave_idx_type lj = rj->length (nj);
             octave_idx_type tj = rj->get_step ();
@@ -904,8 +904,8 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_scalar:
           {
             // (i,j) reduces to a single index.
-            idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
-            idx_scalar_rep * rj = dynamic_cast<idx_scalar_rep *> (j.rep);
+            idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
+            idx_scalar_rep *rj = dynamic_cast<idx_scalar_rep *> (j.rep);
             octave_idx_type k = r->get_data () + n * rj->get_data ();
             *this = new idx_scalar_rep (k, DIRECT);
             reduced = true;
@@ -915,8 +915,8 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_range:
           {
             // (i:d:j,k) reduces to a range.
-            idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-            idx_scalar_rep * rj = dynamic_cast<idx_scalar_rep *> (j.rep);
+            idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
+            idx_scalar_rep *rj = dynamic_cast<idx_scalar_rep *> (j.rep);
             octave_idx_type s = r->get_start ();
             octave_idx_type l = r->length (nj);
             octave_idx_type t = r->get_step ();
@@ -929,7 +929,7 @@ idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
         case class_colon:
           {
             // (:,k) reduces to a range.
-            idx_scalar_rep * rj = dynamic_cast<idx_scalar_rep *> (j.rep);
+            idx_scalar_rep *rj = dynamic_cast<idx_scalar_rep *> (j.rep);
             octave_idx_type k = rj->get_data ();
             *this = new idx_range_rep (n * k, n, 1, DIRECT);
             reduced = true;
@@ -963,7 +963,7 @@ idx_vector::is_cont_range (octave_idx_type n,
 
     case class_range:
       {
-        idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+        idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
         if (r->get_step () == 1)
           {
             l = r->get_start ();
@@ -975,7 +975,7 @@ idx_vector::is_cont_range (octave_idx_type n,
 
     case class_scalar:
       {
-        idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+        idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
         l = r->get_data ();
         u = l + 1;
         res = true;
@@ -984,7 +984,7 @@ idx_vector::is_cont_range (octave_idx_type n,
 
     case class_mask:
       {
-        idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+        idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
         octave_idx_type ext = r->extent (0);
         octave_idx_type len = r->length (0);
         if (ext == len)
@@ -1038,7 +1038,7 @@ idx_vector::raw (void)
   if (rep->idx_class () != class_vector)
     *this = idx_vector (as_array (), extent (0));
 
-  idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+  idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
 
   assert (r != 0);
 
@@ -1058,7 +1058,7 @@ idx_vector::copy_data (octave_idx_type *data) const
 
     case class_range:
       {
-        idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+        idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
         octave_idx_type start = r->get_start ();
         octave_idx_type step = r->get_step ();
         octave_idx_type i, j;
@@ -1073,14 +1073,14 @@ idx_vector::copy_data (octave_idx_type *data) const
 
     case class_scalar:
       {
-        idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+        idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
         *data = r->get_data ();
       }
       break;
 
     case class_vector:
       {
-        idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+        idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
         const octave_idx_type *rdata = r->get_data ();
         std::copy_n (rdata, len, data);
       }
@@ -1088,7 +1088,7 @@ idx_vector::copy_data (octave_idx_type *data) const
 
     case class_mask:
       {
-        idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+        idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
         const bool *mask = r->get_data ();
         octave_idx_type ext = r->extent (0);
         for (octave_idx_type i = 0, j = 0; i < ext; i++)
@@ -1113,7 +1113,7 @@ idx_vector::complement (octave_idx_type n) const
 
   if (idx_class () == class_mask)
     {
-      idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+      idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
       octave_idx_type nz = r->length (0);
       octave_idx_type ext = r->extent (0);
       Array<bool> mask (dim_vector (n, 1));
@@ -1203,7 +1203,7 @@ idx_vector::unmask (void) const
 {
   if (idx_class () == class_mask)
     {
-      idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+      idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
       const bool *data = r->get_data ();
       octave_idx_type ext = r->extent (0);
       octave_idx_type len = r->length (0);

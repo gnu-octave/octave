@@ -92,8 +92,8 @@ private:
     int real_size;
   };
 
-  QString search_node (const QString& node, QIODevice * io);
-  QString get_next_node (QIODevice * io);
+  QString search_node (const QString& node, QIODevice *io);
+  QString get_next_node (QIODevice *io);
   QString get_node_name (const QString& text);
   QString get_node_up (const QString& text);
   QString get_node_next (const QString& text);

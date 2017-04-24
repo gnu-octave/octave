@@ -636,7 +636,7 @@ public:
 
       case class_range:
         {
-          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
           octave_idx_type start = r->get_start ();
           octave_idx_type step = r->get_step ();
           const T *ssrc = src + start;
@@ -656,14 +656,14 @@ public:
 
       case class_scalar:
         {
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
           dest[0] = src[r->get_data ()];
         }
         break;
 
       case class_vector:
         {
-          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
           const octave_idx_type *data = r->get_data ();
           for (octave_idx_type i = 0; i < len; i++)
             dest[i] = src[data[i]];
@@ -672,7 +672,7 @@ public:
 
       case class_mask:
         {
-          idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+          idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
           octave_idx_type ext = r->extent (0);
           for (octave_idx_type i = 0; i < ext; i++)
@@ -710,7 +710,7 @@ public:
 
       case class_range:
         {
-          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
           octave_idx_type start = r->get_start ();
           octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
@@ -728,14 +728,14 @@ public:
 
       case class_scalar:
         {
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
           dest[r->get_data ()] = src[0];
         }
         break;
 
       case class_vector:
         {
-          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
           const octave_idx_type *data = r->get_data ();
           for (octave_idx_type i = 0; i < len; i++)
             dest[data[i]] = src[i];
@@ -744,7 +744,7 @@ public:
 
       case class_mask:
         {
-          idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+          idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
           octave_idx_type ext = r->extent (0);
           for (octave_idx_type i = 0; i < ext; i++)
@@ -782,7 +782,7 @@ public:
 
       case class_range:
         {
-          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
           octave_idx_type start = r->get_start ();
           octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
@@ -800,14 +800,14 @@ public:
 
       case class_scalar:
         {
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
           dest[r->get_data ()] = val;
         }
         break;
 
       case class_vector:
         {
-          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
           const octave_idx_type *data = r->get_data ();
           for (octave_idx_type i = 0; i < len; i++)
             dest[data[i]] = val;
@@ -816,7 +816,7 @@ public:
 
       case class_mask:
         {
-          idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+          idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
           octave_idx_type ext = r->extent (0);
           for (octave_idx_type i = 0; i < ext; i++)
@@ -852,7 +852,7 @@ public:
 
       case class_range:
         {
-          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
           octave_idx_type start = r->get_start ();
           octave_idx_type step = r->get_step ();
           octave_idx_type i, j;
@@ -867,14 +867,14 @@ public:
 
       case class_scalar:
         {
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
           body (r->get_data ());
         }
         break;
 
       case class_vector:
         {
-          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
           const octave_idx_type *data = r->get_data ();
           for (octave_idx_type i = 0; i < len; i++) body (data[i]);
         }
@@ -882,7 +882,7 @@ public:
 
       case class_mask:
         {
-          idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+          idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
           octave_idx_type ext = r->extent (0);
           for (octave_idx_type i = 0; i < ext; i++)
@@ -924,7 +924,7 @@ public:
 
       case class_range:
         {
-          idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
+          idx_range_rep *r = dynamic_cast<idx_range_rep *> (rep);
           octave_idx_type start = r->get_start ();
           octave_idx_type step = r->get_step ();
           octave_idx_type i, j;
@@ -940,14 +940,14 @@ public:
 
       case class_scalar:
         {
-          idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
+          idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
           ret = body (r->get_data ()) ? 1 : 0;
         }
         break;
 
       case class_vector:
         {
-          idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+          idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
           const octave_idx_type *data = r->get_data ();
           octave_idx_type i;
           for (i = 0; i < len && body (data[i]); i++) ;
@@ -957,7 +957,7 @@ public:
 
       case class_mask:
         {
-          idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+          idx_mask_rep *r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
           octave_idx_type ext = r->extent (0);
           octave_idx_type j = 0;

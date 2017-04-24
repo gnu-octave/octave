@@ -59,7 +59,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
 
   QSettings *settings = resource_manager::get_settings ();
 
-  QLabel * file_name_label = new QLabel (tr ("Named:"));
+  QLabel *file_name_label = new QLabel (tr ("Named:"));
   _file_name_edit = new QLineEdit;
   _file_name_edit->setToolTip (tr ("Enter the filename search expression"));
 
@@ -67,7 +67,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
                                              "*").toString ());
   file_name_label->setBuddy (_file_name_edit);
 
-  QLabel * start_dir_label = new QLabel (tr ("Start in:"));
+  QLabel *start_dir_label = new QLabel (tr ("Start in:"));
 
   _start_dir_edit = new QLineEdit;
   _start_dir_edit->setText (settings->value ("findfiles/start_dir",
@@ -111,7 +111,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
                                                     false).toBool ());
   _content_case_check->setToolTip (tr ("Set text content is case insensitive"));
 
-  find_files_model * model = new find_files_model (this);
+  find_files_model *model = new find_files_model (this);
 
   _file_list = new QTableView;
   _file_list->setWordWrap (false);
@@ -153,7 +153,7 @@ find_files_dialog::find_files_dialog (QWidget * p)
   connect (_stop_button, SIGNAL (clicked ()), this, SLOT (stop_find ()));
 
   // layout everything
-  QDialogButtonBox * button_box = new QDialogButtonBox (Qt::Vertical);
+  QDialogButtonBox *button_box = new QDialogButtonBox (Qt::Vertical);
   button_box->addButton (_find_button, QDialogButtonBox::ActionRole);
   button_box->addButton (_stop_button, QDialogButtonBox::ActionRole);
 
@@ -163,8 +163,8 @@ find_files_dialog::find_files_dialog (QWidget * p)
            this,          SLOT (close ()));
 
   // name options
-  QGroupBox * name_group = new QGroupBox (tr ("Filename/location"));
-  QGridLayout * name_layout = new QGridLayout;
+  QGroupBox *name_group = new QGroupBox (tr ("Filename/location"));
+  QGridLayout *name_layout = new QGridLayout;
   name_group->setLayout (name_layout);
 
   name_layout->addWidget (file_name_label,1,1, 1,1);
@@ -180,8 +180,8 @@ find_files_dialog::find_files_dialog (QWidget * p)
   name_layout->addWidget (_name_case_check,3,3);
 
   // content options
-  QGroupBox * content_group = new QGroupBox (tr ("File contents"));
-  QGridLayout * content_layout = new QGridLayout;
+  QGroupBox *content_group = new QGroupBox (tr ("File contents"));
+  QGridLayout *content_layout = new QGridLayout;
   content_group->setLayout (content_layout);
   content_layout->addWidget (_contains_text_check,4,1);
   content_layout->addWidget (_contains_text_edit,4,2,1,3);

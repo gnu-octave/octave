@@ -37,7 +37,7 @@ namespace Ui
 class settings_dialog:public QDialog
 {
   Q_OBJECT public:
-  explicit settings_dialog (QWidget * parent,
+  explicit settings_dialog (QWidget *parent,
                             const QString& desired_tab = QString ());
   ~settings_dialog ();
   void show_tab (const QString&);
@@ -60,7 +60,7 @@ private slots:
   void default_shortcut_set ();
 
 private:
-  Ui::settings_dialog * ui;
+  Ui::settings_dialog *ui;
 
   void write_changed_settings (bool closing);
 

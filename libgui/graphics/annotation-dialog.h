@@ -55,7 +55,7 @@ private:
   void get_gui_props ();
   void set_gui_props ();
 
-  Ui::annotation_dialog * ui;
+  Ui::annotation_dialog *ui;
   octave_value_list props;
 };
 

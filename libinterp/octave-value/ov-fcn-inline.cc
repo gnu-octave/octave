@@ -334,7 +334,7 @@ octave_fcn_inline::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   // Save the args as a null teminated list
   for (int i = 0; i < ifargs.numel (); i++)
     {
-      const char * cptr = ifargs(i).c_str ();
+      const char *cptr = ifargs(i).c_str ();
       for (size_t j = 0; j < ifargs(i).length (); j++)
         s[i*(len+1)+j] = *cptr++;
       s[ifargs(i).length ()] = '\0';

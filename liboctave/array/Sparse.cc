@@ -169,13 +169,13 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
       // Reallocate.
       octave_idx_type min_nzmx = std::min (nz, nzmx);
 
-      octave_idx_type * new_ridx = new octave_idx_type [nz];
+      octave_idx_type *new_ridx = new octave_idx_type [nz];
       std::copy_n (r, min_nzmx, new_ridx);
 
       delete [] r;
       r = new_ridx;
 
-      T * new_data = new T [nz];
+      T *new_data = new T [nz];
       std::copy_n (d, min_nzmx, new_data);
 
       delete [] d;

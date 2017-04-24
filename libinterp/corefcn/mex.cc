@@ -388,7 +388,7 @@ public:
     if (val.is_sparse_type ())
       {
         // For sparse arrays, return the first non-zero value.
-        void * data = val.mex_get_data ();
+        void *data = val.mex_get_data ();
         if (data == NULL)
           return 0.0;
 

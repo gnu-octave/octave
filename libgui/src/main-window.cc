@@ -1236,7 +1236,7 @@ main_window::copyClipboard (void)
 {
   if (_current_directory_combo_box->hasFocus ())
     {
-      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      QLineEdit *edit = _current_directory_combo_box->lineEdit ();
       if (edit && edit->hasSelectedText ())
         {
           QClipboard *clipboard = QApplication::clipboard ();
@@ -1252,7 +1252,7 @@ main_window::pasteClipboard (void)
 {
   if (_current_directory_combo_box->hasFocus ())
     {
-      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      QLineEdit *edit = _current_directory_combo_box->lineEdit ();
       QClipboard *clipboard = QApplication::clipboard ();
       QString str = clipboard->text ();
       if (edit && str.length () > 0)
@@ -1269,7 +1269,7 @@ main_window::selectAll (void)
 {
   if (_current_directory_combo_box->hasFocus ())
     {
-      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      QLineEdit *edit = _current_directory_combo_box->lineEdit ();
       if (edit)
         {
           edit->selectAll ();

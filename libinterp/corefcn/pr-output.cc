@@ -2977,7 +2977,7 @@ template <typename T>
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
   size_t sz = d.byte_size ();
-  const unsigned char * tmpi = d.iptr ();
+  const unsigned char *tmpi = d.iptr ();
 
   // Unless explicitly asked for, always print in big-endian
   // format for hex and bit formats.

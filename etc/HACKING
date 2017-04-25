@@ -169,7 +169,7 @@ An overview of the directory layout of Octave's source files:
 
     array       the base Array, NDArray, Matrix, and Sparse classes
 
-    cruft       various numerical libraries (mostly Fortran)
+    external    various numerical libraries (mostly Fortran)
 
       amos             bessel functions
 

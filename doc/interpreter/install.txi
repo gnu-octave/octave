@@ -778,12 +778,12 @@ Octave's 64-bit index support is activated with the configure option
 @end example
 
 You must ensure that all Fortran sources except those in the
-@file{liboctave/cruft/ranlib} directory are compiled such that INTEGERS are
+@file{liboctave/external/ranlib} directory are compiled such that INTEGERS are
 8-bytes wide.  If you are using gfortran, the configure script should
 automatically set the Makefile variable @w{@env{F77_INTEGER_8_FLAG}} to
 @option{-fdefault-integer-8}.  If you are using another compiler, you
 must set this variable yourself.  You should NOT set this flag in
-@env{FFLAGS}, otherwise the files in @file{liboctave/cruft/ranlib} will be
+@env{FFLAGS}, otherwise the files in @file{liboctave/external/ranlib} will be
 miscompiled.
 
 @item Other dependencies
@@ -958,7 +958,7 @@ make[2]: *** [zgemm.o] Error 1
 @end example
 
 @noindent
-when compiling the Fortran subroutines in the @file{liboctave/cruft}
+when compiling the Fortran subroutines in the @file{liboctave/external}
 subdirectory, you should either upgrade your compiler or try compiling
 with optimization turned off.
 

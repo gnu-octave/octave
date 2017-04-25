@@ -8,7 +8,7 @@ liboctave_MAINTAINERCLEANFILES =
 ## Search local directories before those specified by the user.
 liboctave_liboctave_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
-  @CRUFT_DLL_DEFS@ \
+  @EXTERNAL_DLL_DEFS@ \
   -Iliboctave -I$(srcdir)/liboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
@@ -37,7 +37,7 @@ LIBOCTAVE_BUILT_NODISTFILES = \
 octinclude_HEADERS += \
   liboctave/liboctave-build-info.h \
   $(ARRAY_INC) \
-  $(CRUFT_INC) \
+  $(EXTERNAL_INC) \
   $(NUMERIC_INC) \
   $(LIBOCTAVE_OPERATORS_INC) \
   $(SYSTEM_INC) \
@@ -58,7 +58,7 @@ LIBOCTAVE_TEMPLATE_SRC =
 liboctave_liboctave_la_LIBADD =
 
 include liboctave/array/module.mk
-include liboctave/cruft/module.mk
+include liboctave/external/module.mk
 include liboctave/numeric/module.mk
 include liboctave/operators/module.mk
 include liboctave/system/module.mk
@@ -82,7 +82,7 @@ liboctave_liboctave_version_info = $(liboctave_liboctave_current):$(liboctave_li
 liboctave_liboctave_la_LDFLAGS = \
   -version-info $(liboctave_liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
-  @XTRA_CRUFT_SH_LDFLAGS@ \
+  @XTRA_EXTERNAL_SH_LDFLAGS@ \
   -bindir $(bindir) \
   $(LIBOCTAVE_LINK_OPTS) \
   $(WARN_LDFLAGS)

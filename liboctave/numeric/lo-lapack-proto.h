@@ -1077,7 +1077,7 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
-  // LAENV (liboctave/cruft/lapack-xtra)
+  // LAENV (liboctave/external/lapack-xtra)
 
   F77_RET_T
   F77_FUNC (xilaenv, XILAENV) (const F77_INT&,
@@ -1098,14 +1098,14 @@ extern "C"
                            F77_DBLE& SCALE2, F77_DBLE& WR1, F77_DBLE& WR2,
                            F77_DBLE& WI);
 
-  // LAMCH (liboctave/cruft/lapack-xtra)
+  // LAMCH (liboctave/external/lapack-xtra)
 
   F77_RET_T
   F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG_DECL,
                                F77_DBLE& retval
                                F77_CHAR_ARG_LEN_DECL);
 
-  // LANGE (liboctave/cruft/lapack-xtra)
+  // LANGE (liboctave/external/lapack-xtra)
 
   F77_RET_T
   F77_FUNC (xclange, XCLANGE) (F77_CONST_CHAR_ARG_DECL,
@@ -1357,7 +1357,7 @@ extern "C"
                            F77_DBLE*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
                            const F77_INT&, F77_INT&);
 
-  // RSF2CSF (liboctave/cruft/lapack-xtra)
+  // RSF2CSF (liboctave/external/lapack-xtra)
 
   F77_RET_T
   F77_FUNC (zrsf2csf, ZRSF2CSF) (const F77_INT&, F77_DBLE_CMPLX *,

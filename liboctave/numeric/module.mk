@@ -117,7 +117,7 @@ liboctave_numeric_libnumeric_la_SOURCES = $(NUMERIC_SRC)
 
 liboctave_numeric_libnumeric_la_CPPFLAGS = \
   $(liboctave_liboctave_la_CPPFLAGS) \
-  -I$(srcdir)/liboctave/cruft/Faddeeva \
+  -I$(srcdir)/liboctave/external/Faddeeva \
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 

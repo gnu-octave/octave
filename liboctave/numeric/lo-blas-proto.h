@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C"
 {
-  // DOT (liboctave/cruft/blas-xtra)
+  // DOT (liboctave/external/blas-xtra)
 
   F77_RET_T
   F77_FUNC (xddot, XDDOT) (const F77_INT&, const F77_DBLE*,
@@ -53,7 +53,7 @@ extern "C"
                            const F77_INT&, const F77_REAL*,
                            const F77_REAL*, F77_REAL*);
 
-  // DOTC (liboctave/cruft/blas-xtra)
+  // DOTC (liboctave/external/blas-xtra)
 
   F77_RET_T
   F77_FUNC (xcdotc, XCDOTC) (const F77_INT&, const F77_CMPLX*,
@@ -77,7 +77,7 @@ extern "C"
                              const F77_INT&, const F77_DBLE_CMPLX*,
                              const F77_DBLE_CMPLX*, F77_DBLE_CMPLX*);
 
-  // DOTU (liboctave/cruft/blas-xtra)
+  // DOTU (liboctave/external/blas-xtra)
 
   F77_RET_T
   F77_FUNC (xcdotu, XCDOTU) (const F77_INT&, const F77_CMPLX*,

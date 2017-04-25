@@ -357,7 +357,7 @@ solve_singularity_warning (double)
 
 template <typename RT, typename ST, typename T>
 RT
-dmsolve (const ST &a, const T &b, octave_idx_type &info)
+dmsolve (const ST& a, const T& b, octave_idx_type& info)
 {
   RT retval;
 

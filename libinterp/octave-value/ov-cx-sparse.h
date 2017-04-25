@@ -64,18 +64,18 @@ public:
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
   octave_sparse_complex_matrix (const SparseComplexMatrix& m,
-                                const MatrixType &t)
+                                const MatrixType& t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
   octave_sparse_complex_matrix (const MSparse<Complex>& m)
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
   octave_sparse_complex_matrix (const MSparse<Complex>& m,
-                                const MatrixType &t)
+                                const MatrixType& t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
   octave_sparse_complex_matrix (const Sparse<Complex>& m,
-                                const MatrixType &t)
+                                const MatrixType& t)
     : octave_base_sparse<SparseComplexMatrix> (SparseComplexMatrix (m), t) { }
 
   octave_sparse_complex_matrix (const Sparse<Complex>& m)

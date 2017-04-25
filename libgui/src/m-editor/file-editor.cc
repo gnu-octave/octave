@@ -1267,7 +1267,7 @@ file_editor::insert_global_actions (QList<QAction*> shared_actions)
 }
 
 QAction*
-file_editor::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+file_editor::add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member)
 {
   QAction *a;

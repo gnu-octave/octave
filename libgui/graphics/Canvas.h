@@ -107,7 +107,7 @@ namespace QtHandles
 
     void annotation_callback (const octave_value_list& args);
     void select_object (graphics_object obj, QMouseEvent* event,
-                        graphics_object &currentObj, graphics_object &axesObj,
+                        graphics_object& currentObj, graphics_object& axesObj,
                         bool axes_only = false,
                         std::vector<std::string> omit = std::vector<std::string> ());
 

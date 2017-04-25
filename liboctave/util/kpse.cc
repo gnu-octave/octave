@@ -263,7 +263,7 @@ log_search (const std::list<std::string>& filenames)
 {
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      for (const auto &filename : filenames)
+      for (const auto& filename : filenames)
         {
           octave::sys::time now;
           std::cerr << now.unix_time () << " " << filename << std::endl;
@@ -565,7 +565,7 @@ find_first_of (const std::string& path, const std::list<std::string>& names,
       std::cerr << "), path=" << path << "." << std::endl;
     }
 
-  for (const auto &name : names)
+  for (const auto& name : names)
     {
       if (kpse_absolute_p (name, true))
         {
@@ -801,7 +801,7 @@ kpse_brace_expand_element (const std::string& elt)
 
   std::list<std::string> expansions = brace_expand (elt);
 
-  for (const auto &expanded_elt : expansions)
+  for (const auto& expanded_elt : expansions)
     {
       /* Do $ and ~ expansion on each element.  */
       std::string x = kpse_expand (expanded_elt);
@@ -963,8 +963,8 @@ array_concat (const std::list<std::string>& arr1,
     result = arr1;
   else
     {
-      for (const auto &elt_2 : arr2)
-        for (const auto &elt_1 : arr1)
+      for (const auto& elt_2 : arr2)
+        for (const auto& elt_1 : arr1)
           result.push_back (elt_1 + elt_2);
     }
 
@@ -1252,7 +1252,7 @@ expanding_p (const std::string& var)
    This is a subroutine for the more complicated expansion function.  */
 
 static void
-expand (std::string &expansion, const std::string& var)
+expand (std::string& expansion, const std::string& var)
 {
   if (expanding_p (var))
     {

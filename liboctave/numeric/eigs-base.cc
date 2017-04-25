@@ -265,9 +265,9 @@ make_cholb (SparseComplexMatrix& b, SparseComplexMatrix& bt,
 }
 
 static bool
-LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
+LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                 bool cholB, const ColumnVector& permB, double sigma,
-                SparseMatrix &L, SparseMatrix &U, octave_idx_type *P,
+                SparseMatrix& L, SparseMatrix& U, octave_idx_type *P,
                 octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
@@ -357,9 +357,9 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
 }
 
 static bool
-LuAminusSigmaB (const Matrix &m, const Matrix &b,
+LuAminusSigmaB (const Matrix& m, const Matrix& b,
                 bool cholB, const ColumnVector& permB, double sigma,
-                Matrix &L, Matrix &U, octave_idx_type *P,
+                Matrix& L, Matrix& U, octave_idx_type *P,
                 octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
@@ -429,9 +429,9 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
 }
 
 static bool
-LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
+LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                 bool cholB, const ColumnVector& permB, Complex sigma,
-                SparseComplexMatrix &L, SparseComplexMatrix &U,
+                SparseComplexMatrix& L, SparseComplexMatrix& U,
                 octave_idx_type *P, octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
@@ -521,9 +521,9 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
 }
 
 static bool
-LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
+LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
                 bool cholB, const ColumnVector& permB, Complex sigma,
-                ComplexMatrix &L, ComplexMatrix &U, octave_idx_type *P,
+                ComplexMatrix& L, ComplexMatrix& U, octave_idx_type *P,
                 octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
@@ -596,9 +596,9 @@ template <typename M>
 octave_idx_type
 EigsRealSymmetricMatrix (const M& m, const std::string typ,
                          octave_idx_type k_arg, octave_idx_type p_arg,
-                         octave_idx_type &info, Matrix &eig_vec,
-                         ColumnVector &eig_val, const M& _b,
-                         ColumnVector &permB, ColumnVector &resid,
+                         octave_idx_type& info, Matrix& eig_vec,
+                         ColumnVector& eig_val, const M& _b,
+                         ColumnVector& permB, ColumnVector& resid,
                          std::ostream& os, double tol, bool rvec,
                          bool cholB, int disp, int maxit)
 {
@@ -874,9 +874,9 @@ template <typename M>
 octave_idx_type
 EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               octave_idx_type k_arg, octave_idx_type p_arg,
-                              octave_idx_type &info, Matrix &eig_vec,
-                              ColumnVector &eig_val, const M& _b,
-                              ColumnVector &permB, ColumnVector &resid,
+                              octave_idx_type& info, Matrix& eig_vec,
+                              ColumnVector& eig_val, const M& _b,
+                              ColumnVector& permB, ColumnVector& resid,
                               std::ostream& os, double tol, bool rvec,
                               bool cholB, int disp, int maxit)
 {
@@ -1168,10 +1168,10 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
 octave_idx_type
 EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
-                       const std::string &_typ, double sigma,
+                       const std::string& _typ, double sigma,
                        octave_idx_type k_arg, octave_idx_type p_arg,
-                       octave_idx_type &info, Matrix &eig_vec,
-                       ColumnVector &eig_val, ColumnVector &resid,
+                       octave_idx_type& info, Matrix& eig_vec,
+                       ColumnVector& eig_val, ColumnVector& resid,
                        std::ostream& os, double tol, bool rvec,
                        bool /* cholB */, int disp, int maxit)
 {
@@ -1413,9 +1413,9 @@ template <typename M>
 octave_idx_type
 EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                             octave_idx_type k_arg, octave_idx_type p_arg,
-                            octave_idx_type &info, ComplexMatrix &eig_vec,
-                            ComplexColumnVector &eig_val, const M& _b,
-                            ColumnVector &permB, ColumnVector &resid,
+                            octave_idx_type& info, ComplexMatrix& eig_vec,
+                            ComplexColumnVector& eig_val, const M& _b,
+                            ColumnVector& permB, ColumnVector& resid,
                             std::ostream& os, double tol, bool rvec,
                             bool cholB, int disp, int maxit)
 {
@@ -1739,10 +1739,10 @@ template <typename M>
 octave_idx_type
 EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  octave_idx_type k_arg, octave_idx_type p_arg,
-                                 octave_idx_type &info,
-                                 ComplexMatrix &eig_vec,
-                                 ComplexColumnVector &eig_val, const M& _b,
-                                 ColumnVector &permB, ColumnVector &resid,
+                                 octave_idx_type& info,
+                                 ComplexMatrix& eig_vec,
+                                 ComplexColumnVector& eig_val, const M& _b,
+                                 ColumnVector& permB, ColumnVector& resid,
                                  std::ostream& os, double tol, bool rvec,
                                  bool cholB, int disp, int maxit)
 {
@@ -2088,10 +2088,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
 octave_idx_type
 EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
-                          const std::string &_typ, double sigmar,
+                          const std::string& _typ, double sigmar,
                           octave_idx_type k_arg, octave_idx_type p_arg,
-                          octave_idx_type &info, ComplexMatrix &eig_vec,
-                          ComplexColumnVector &eig_val, ColumnVector &resid,
+                          octave_idx_type& info, ComplexMatrix& eig_vec,
+                          ComplexColumnVector& eig_val, ColumnVector& resid,
                           std::ostream& os, double tol, bool rvec,
                           bool /* cholB */, int disp, int maxit)
 {
@@ -2381,10 +2381,10 @@ template <typename M>
 octave_idx_type
 EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                                octave_idx_type k_arg, octave_idx_type p_arg,
-                               octave_idx_type &info, ComplexMatrix &eig_vec,
-                               ComplexColumnVector &eig_val, const M& _b,
-                               ColumnVector &permB,
-                               ComplexColumnVector &cresid,
+                               octave_idx_type& info, ComplexMatrix& eig_vec,
+                               ComplexColumnVector& eig_val, const M& _b,
+                               ColumnVector& permB,
+                               ComplexColumnVector& cresid,
                                std::ostream& os, double tol, bool rvec,
                                bool cholB, int disp, int maxit)
 {
@@ -2666,11 +2666,11 @@ template <typename M>
 octave_idx_type
 EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     octave_idx_type k_arg, octave_idx_type p_arg,
-                                    octave_idx_type &info,
-                                    ComplexMatrix &eig_vec,
-                                    ComplexColumnVector &eig_val, const M& _b,
-                                    ColumnVector &permB,
-                                    ComplexColumnVector &cresid,
+                                    octave_idx_type& info,
+                                    ComplexMatrix& eig_vec,
+                                    ComplexColumnVector& eig_val, const M& _b,
+                                    ColumnVector& permB,
+                                    ComplexColumnVector& cresid,
                                     std::ostream& os, double tol, bool rvec,
                                     bool cholB, int disp, int maxit)
 {
@@ -2977,11 +2977,11 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
 octave_idx_type
 EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
-                             const std::string &_typ, Complex sigma,
+                             const std::string& _typ, Complex sigma,
                              octave_idx_type k_arg, octave_idx_type p_arg,
-                             octave_idx_type &info, ComplexMatrix &eig_vec,
-                             ComplexColumnVector &eig_val,
-                             ComplexColumnVector &cresid, std::ostream& os,
+                             octave_idx_type& info, ComplexMatrix& eig_vec,
+                             ComplexColumnVector& eig_val,
+                             ComplexColumnVector& cresid, std::ostream& os,
                              double tol, bool rvec, bool /* cholB */,
                              int disp, int maxit)
 {

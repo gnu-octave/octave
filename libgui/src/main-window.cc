@@ -1963,7 +1963,7 @@ main_window::construct_menu_bar (void)
 }
 
 QAction*
-main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+main_window::add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member, const QWidget *receiver)
 {
   QAction *a;
@@ -2474,7 +2474,7 @@ main_window::change_directory_callback (const std::string& directory)
 }
 
 void
-main_window::find_files (const QString &start_dir)
+main_window::find_files (const QString& start_dir)
 {
 
   if (! find_files_dlg)

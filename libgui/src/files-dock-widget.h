@@ -130,13 +130,13 @@ signals:
   void run_file_signal (const QFileInfo& info);
 
   /** Emitted, whenever wants to search for a file . */
-  void find_files_signal (const QString &startdir);
+  void find_files_signal (const QString& startdir);
 
 private:
-  void process_new_file (const QString &parent_name);
-  void process_new_dir (const QString &parent_name);
-  void process_set_current_dir (const QString &parent_name);
-  void process_find_files (const QString &dir_name);
+  void process_new_file (const QString& parent_name);
+  void process_new_dir (const QString& parent_name);
+  void process_set_current_dir (const QString& parent_name);
+  void process_find_files (const QString& dir_name);
 
   /** set a new directory or open a file **/
   void display_directory (const QString& dir, bool set_octave_dir = true);

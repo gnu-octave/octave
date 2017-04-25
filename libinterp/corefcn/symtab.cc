@@ -1675,7 +1675,7 @@ symbol_table::do_update_nest (void)
       // fix bad symbol_records
       for (auto& nm_sr : table)
         {
-          symbol_record &ours = nm_sr.second;
+          symbol_record& ours = nm_sr.second;
           symbol_record parents;
           if (! ours.is_formal ()
               && nest_parent->look_nonlocal (nm_sr.first, parents))

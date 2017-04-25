@@ -1738,7 +1738,7 @@ result =
 }
 
 void
-file_editor_tab::new_file (const QString &commands)
+file_editor_tab::new_file (const QString& commands)
 {
   update_window_title (false); // window title (no modification)
 

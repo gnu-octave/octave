@@ -475,7 +475,7 @@ private:
 
 // Manipulator function thunks through to stream buffer
 inline gzofstream&
-setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
+setcompression (gzofstream& gzs, int l, int s = Z_DEFAULT_STRATEGY)
 {
   (gzs.rdbuf ())->setcompression (l, s);
   return gzs;

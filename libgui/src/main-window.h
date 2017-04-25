@@ -237,17 +237,17 @@ public slots:
                                   const QFloatList&, const QFloatList&,
                                   const QStringList&);
 
-  void handle_create_filedialog (const QStringList &filters,
+  void handle_create_filedialog (const QStringList& filters,
                                  const QString& title, const QString& filename,
-                                 const QString &dirname,
+                                 const QString& dirname,
                                  const QString& multimode);
 
-  void handle_show_doc (const QString &file);
+  void handle_show_doc (const QString& file);
 
   void handle_octave_ready ();
 
   // find files dialog
-  void find_files (const QString &startdir=QDir::currentPath ());
+  void find_files (const QString& startdir = QDir::currentPath ());
   void find_files_finished (int);
 
   // setting global shortcuts
@@ -281,7 +281,7 @@ private:
 
   void construct_octave_qt_link (void);
 
-  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+  QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                        const char *member, const QWidget *receiver = 0);
 
   QMenu* m_add_menu (QMenuBar *p, QString text);

@@ -36,7 +36,7 @@ public:
   {
     _sortorder = ord;
   }
-  QVariant getValue (const QFileInfo &f) const
+  QVariant getValue (const QFileInfo& f) const
   {
     QVariant val;
     int col = (_sortorder > 0) ? _sortorder : -_sortorder;
@@ -56,12 +56,12 @@ public:
       }
     return val;
   }
-  bool lessThan (const QVariant &left, const QVariant &right) const
+  bool lessThan (const QVariant& left, const QVariant& right) const
   {
     return
       left.toString ().compare (right.toString (), Qt::CaseInsensitive) < 0;
   }
-  bool operator () (const QFileInfo &left, const QFileInfo &right) const
+  bool operator () (const QFileInfo& left, const QFileInfo& right) const
   {
     QVariant leftval = getValue (left);
     QVariant rightval = getValue (right);
@@ -99,7 +99,7 @@ find_files_model::clear ()
 }
 
 void
-find_files_model::addFile (const QFileInfo &info)
+find_files_model::addFile (const QFileInfo& info)
 {
   beginInsertRows (QModelIndex (), _files.size (), _files.size ());
 
@@ -208,7 +208,7 @@ find_files_model::fileInfo (const QModelIndex & p) const
 }
 
 QIcon
-find_files_model::fileIcon (const QModelIndex &p) const
+find_files_model::fileIcon (const QModelIndex& p) const
 {
   QFileIconProvider icon_provider;
   if (p.isValid ())

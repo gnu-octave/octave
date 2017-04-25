@@ -61,7 +61,7 @@ public:
   QString search_node (const QString& node);
   QString global_search (const QString& text, int maxFounds);
 
-  QString find_ref (const QString &name);
+  QString find_ref (const QString& name);
 
   /** Checks if this node is reference. If node is reference, it will be
    *  returned its position in text, else it will be returned -1.

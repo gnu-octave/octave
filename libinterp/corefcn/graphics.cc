@@ -3349,7 +3349,7 @@ base_graphics_object::remove_all_listeners (void)
 }
 
 void
-base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def, const std::string go_name) const
+base_graphics_object::build_user_defaults_map (property_list::pval_map_type& def, const std::string go_name) const
 {
   property_list local_defaults = get_defaults_list ();
   const auto it = local_defaults.find (go_name);

@@ -407,7 +407,7 @@ protected:
   // helper functions
   // [start_idx, end_idx).
   llvm::Value *create_arg_array (llvm::IRBuilderD& builder,
-                                 const jit_function &fn, size_t start_idx,
+                                 const jit_function& fn, size_t start_idx,
                                  size_t end_idx) const;
 
   llvm::Module *module;
@@ -634,7 +634,7 @@ private:
     return lhs;
   }
 
-  jit_type *do_type_of (const octave_value &ov) const;
+  jit_type *do_type_of (const octave_value& ov) const;
 
   const jit_operation& do_binary_op (int op) const
   {

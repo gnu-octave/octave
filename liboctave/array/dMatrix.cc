@@ -459,14 +459,14 @@ Matrix::inverse (MatrixType& mattype) const
 }
 
 Matrix
-Matrix::inverse (MatrixType &mattype, octave_idx_type& info) const
+Matrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   double rcon;
   return inverse (mattype, info, rcon, 0, 0);
 }
 
 Matrix
-Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
+Matrix::tinverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
                   bool force, bool calc_cond) const
 {
   Matrix retval;
@@ -525,7 +525,7 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 }
 
 Matrix
-Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
+Matrix::finverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
                   bool force, bool calc_cond) const
 {
   Matrix retval;
@@ -610,7 +610,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 }
 
 Matrix
-Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
+Matrix::inverse (MatrixType& mattype, octave_idx_type& info, double& rcon,
                  bool force, bool calc_cond) const
 {
   int typ = mattype.type (false);
@@ -1182,7 +1182,7 @@ Matrix::rcond (void) const
 }
 
 double
-Matrix::rcond (MatrixType &mattype) const
+Matrix::rcond (MatrixType& mattype) const
 {
   double rcon = octave::numeric_limits<double>::NaN ();
   F77_INT nr = octave::to_f77_int (rows ());
@@ -1346,7 +1346,7 @@ Matrix::rcond (MatrixType &mattype) const
 }
 
 Matrix
-Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+Matrix::utsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                  double& rcon, solve_singularity_handler sing_handler,
                  bool calc_cond, blas_trans_type transt) const
 {
@@ -1443,7 +1443,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 }
 
 Matrix
-Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+Matrix::ltsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                  double& rcon, solve_singularity_handler sing_handler,
                  bool calc_cond, blas_trans_type transt) const
 {
@@ -1540,7 +1540,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 }
 
 Matrix
-Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                 double& rcon, solve_singularity_handler sing_handler,
                 bool calc_cond) const
 {
@@ -1739,29 +1739,30 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 }
 
 Matrix
-Matrix::solve (MatrixType &typ, const Matrix& b) const
+Matrix::solve (MatrixType& mattype, const Matrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 Matrix
-Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info) const
+Matrix::solve (MatrixType& mattype, const Matrix& b,
+               octave_idx_type& info) const
 {
   double rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 Matrix
-Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
+Matrix::solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                double& rcon) const
 {
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 Matrix
-Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
+Matrix::solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                double& rcon, solve_singularity_handler sing_handler,
                bool singular_fallback, blas_trans_type transt) const
 {
@@ -1795,26 +1796,26 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 }
 
 ComplexMatrix
-Matrix::solve (MatrixType &typ, const ComplexMatrix& b) const
+Matrix::solve (MatrixType& mattype, const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 ComplexMatrix
-Matrix::solve (MatrixType &typ, const ComplexMatrix& b,
+Matrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                octave_idx_type& info) const
 {
   double rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 ComplexMatrix
-Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
-               double& rcon) const
+Matrix::solve (MatrixType& mattype, const ComplexMatrix& b,
+               octave_idx_type& info, double& rcon) const
 {
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 static Matrix
@@ -1849,78 +1850,81 @@ unstack_complex_matrix (const Matrix& sm)
 }
 
 ComplexMatrix
-Matrix::solve (MatrixType &typ, const ComplexMatrix& b, octave_idx_type& info,
-               double& rcon, solve_singularity_handler sing_handler,
+Matrix::solve (MatrixType& mattype, const ComplexMatrix& b,
+               octave_idx_type& info, double& rcon,
+               solve_singularity_handler sing_handler,
                bool singular_fallback, blas_trans_type transt) const
 {
   Matrix tmp = stack_complex_matrix (b);
-  tmp = solve (typ, tmp, info, rcon, sing_handler, singular_fallback, transt);
+  tmp = solve (mattype, tmp, info, rcon, sing_handler, singular_fallback,
+               transt);
   return unstack_complex_matrix (tmp);
 }
 
 ColumnVector
-Matrix::solve (MatrixType &typ, const ColumnVector& b) const
+Matrix::solve (MatrixType& mattype, const ColumnVector& b) const
 {
   octave_idx_type info; double rcon;
-  return solve (typ, b, info, rcon);
+  return solve (mattype, b, info, rcon);
 }
 
 ColumnVector
-Matrix::solve (MatrixType &typ, const ColumnVector& b,
+Matrix::solve (MatrixType& mattype, const ColumnVector& b,
                octave_idx_type& info) const
 {
   double rcon;
-  return solve (typ, b, info, rcon);
+  return solve (mattype, b, info, rcon);
 }
 
 ColumnVector
-Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
-               double& rcon) const
+Matrix::solve (MatrixType& mattype, const ColumnVector& b,
+               octave_idx_type& info, double& rcon) const
 {
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 ColumnVector
-Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
-               double& rcon, solve_singularity_handler sing_handler,
+Matrix::solve (MatrixType& mattype, const ColumnVector& b,
+               octave_idx_type& info, double& rcon,
+               solve_singularity_handler sing_handler,
                blas_trans_type transt) const
 {
   Matrix tmp (b);
-  tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
+  tmp = solve (mattype, tmp, info, rcon, sing_handler, true, transt);
   return tmp.column (static_cast<octave_idx_type> (0));
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b) const
+Matrix::solve (MatrixType& mattype, const ComplexColumnVector& b) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b);
+  return tmp.solve (mattype, b);
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
+Matrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info);
+  return tmp.solve (mattype, b, info);
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
+Matrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                octave_idx_type& info, double& rcon) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon);
+  return tmp.solve (mattype, b, info, rcon);
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
+Matrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                octave_idx_type& info, double& rcon,
                solve_singularity_handler sing_handler,
                blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon, sing_handler, transt);
+  return tmp.solve (mattype, b, info, rcon, sing_handler, transt);
 }
 
 Matrix
@@ -2072,7 +2076,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 
 Matrix
 Matrix::lssolve (const Matrix& b, octave_idx_type& info,
-                 octave_idx_type& rank, double &rcon) const
+                 octave_idx_type& rank, double& rcon) const
 {
   Matrix retval;
 
@@ -2292,7 +2296,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 
 ColumnVector
 Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
-                 octave_idx_type& rank, double &rcon) const
+                 octave_idx_type& rank, double& rcon) const
 {
   ColumnVector retval;
 
@@ -2425,7 +2429,7 @@ Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 
 ComplexColumnVector
 Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
-                 octave_idx_type& rank, double &rcon) const
+                 octave_idx_type& rank, double& rcon) const
 {
   ComplexMatrix tmp (*this);
   return tmp.lssolve (b, info, rank, rcon);

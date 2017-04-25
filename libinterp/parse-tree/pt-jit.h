@@ -44,7 +44,7 @@ public:
   typedef std::vector<type_bound> type_bound_vector;
   typedef std::map<std::string, jit_variable *> variable_map;
 
-  jit_convert (tree &tee, jit_type *for_bounds = 0);
+  jit_convert (tree& tee, jit_type *for_bounds = 0);
 
   jit_convert (octave_user_function& fcn, const std::vector<jit_type *>& args);
 
@@ -73,7 +73,7 @@ public:
 
   llvm::Function *get_function (void) const { return function; }
 
-  const variable_map &get_variable_map (void) const { return vmap; }
+  const variable_map& get_variable_map (void) const { return vmap; }
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
@@ -298,7 +298,7 @@ private:
     return visit (*jvalue);
   }
 
-  void visit (jit_value &jvalue)
+  void visit (jit_value& jvalue)
   {
     jvalue.accept (*this);
   }

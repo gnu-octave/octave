@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-files-model.h"
 #include "resource-manager.h"
 
-find_files_dialog::find_files_dialog (QWidget * p)
+find_files_dialog::find_files_dialog (QWidget *p)
   : QDialog (p)
 {
   setWindowTitle (tr ("Find Files"));
@@ -247,7 +247,7 @@ void find_files_dialog::handle_done (int)
   stop_find ();
 }
 
-void find_files_dialog::set_search_dir (const QString &dir)
+void find_files_dialog::set_search_dir (const QString& dir)
 {
   stop_find ();
   _start_dir_edit->setText (dir);
@@ -333,7 +333,7 @@ find_files_dialog::browse_folders ()
 }
 
 void
-find_files_dialog::item_double_clicked (const QModelIndex &idx)
+find_files_dialog::item_double_clicked (const QModelIndex& idx)
 {
   find_files_model *m = static_cast<find_files_model *> (_file_list->model ());
 
@@ -373,7 +373,7 @@ find_files_dialog::look_for_files ()
     }
 }
 
-bool find_files_dialog::is_match (const QFileInfo &info)
+bool find_files_dialog::is_match (const QFileInfo& info)
 {
   bool match = true;
   if (info.isDir ())

@@ -259,7 +259,7 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
 }
 
 bool
-octave_fcn_handle::set_fcn (const std::string &octaveroot,
+octave_fcn_handle::set_fcn (const std::string& octaveroot,
                             const std::string& fpath)
 {
   if (octaveroot.length () != 0

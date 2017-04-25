@@ -148,7 +148,7 @@ octave_builtin::to_jit (void) const
 }
 
 void
-octave_builtin::stash_jit (jit_type &type)
+octave_builtin::stash_jit (jit_type& type)
 {
   jtype = &type;
 }

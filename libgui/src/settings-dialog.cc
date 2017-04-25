@@ -77,7 +77,7 @@ get_valid_lexer_styles (QsciLexer *lexer, int styles[])
 }
 
 static void
-read_lexer_settings (Ui::settings_dialog * ui, QsciLexer *lexer,
+read_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer,
                      QSettings *settings)
 {
   lexer->readSettings (*settings);
@@ -172,7 +172,7 @@ read_lexer_settings (Ui::settings_dialog * ui, QsciLexer *lexer,
 }
 
 static void
-write_lexer_settings (Ui::settings_dialog * ui, QsciLexer *lexer,
+write_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer,
                       QSettings *settings)
 {
   QWidget *tab = ui->tabs_editor_lexers->

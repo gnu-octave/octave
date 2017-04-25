@@ -115,7 +115,7 @@ class jit_break_exception : public std::exception
 { };
 
 // -------------------- jit_convert --------------------
-jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
+jit_convert::jit_convert (tree& tee, jit_type *for_bounds)
   : converting_function (false)
 {
   initialize (symbol_table::current_scope ());

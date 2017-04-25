@@ -191,7 +191,7 @@ history_dock_widget::update_filter_history ()
   _filter->setCurrentIndex (0);
 }
 
-void history_dock_widget::ctxMenu (const QPoint &xpos)
+void history_dock_widget::ctxMenu (const QPoint& xpos)
 {
   QMenu menu (this);
 

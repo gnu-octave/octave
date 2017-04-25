@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 using namespace QtHandles;
 
-annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list &pr):
+annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list& pr):
   QDialog (p), ui (new Ui::annotation_dialog)
 {
   props = pr;
@@ -257,7 +257,7 @@ annotation_dialog::set_gui_props ()
 }
 
 void
-annotation_dialog::edit_string_changed (const QString &str)
+annotation_dialog::edit_string_changed (const QString& str)
 {
   ui->button_box->button (QDialogButtonBox::Ok)->setEnabled (str.length () > 0);
 }

@@ -927,7 +927,7 @@ jit_index_operation::generate (const signature_vec& types) const
 
 llvm::Value *
 jit_index_operation::create_arg_array (llvm::IRBuilderD& builder,
-                                       const jit_function &fn, size_t start_idx,
+                                       const jit_function& fn, size_t start_idx,
                                        size_t end_idx) const
 {
   size_t n = end_idx - start_idx;
@@ -2203,7 +2203,7 @@ jit_typeinfo::intN (size_t nbits) const
 }
 
 jit_type *
-jit_typeinfo::do_type_of (const octave_value &ov) const
+jit_typeinfo::do_type_of (const octave_value& ov) const
 {
   if (ov.is_function ())
     {

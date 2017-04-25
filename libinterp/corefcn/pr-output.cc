@@ -558,7 +558,7 @@ pr_min_internal (const Matrix& m)
 // FIXME: it would be nice to share more code among these functions,..
 
 static void
-set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
+set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
 {
   static float_format fmt;
 

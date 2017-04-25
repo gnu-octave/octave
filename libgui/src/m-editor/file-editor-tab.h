@@ -145,7 +145,7 @@ public slots:
   void handle_request_remove_breakpoint (int line);
 
   void handle_octave_result (QObject *requester, QString& command,
-                             octave_value_list &result);
+                             octave_value_list& result);
 
 signals:
 

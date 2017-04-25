@@ -230,7 +230,7 @@ FloatDiagMatrix::inverse (void) const
 }
 
 FloatDiagMatrix
-FloatDiagMatrix::inverse (octave_idx_type &info) const
+FloatDiagMatrix::inverse (octave_idx_type& info) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();

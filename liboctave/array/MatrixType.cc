@@ -67,7 +67,7 @@ MatrixType::MatrixType (void)
     bandden (0), upper_band (0),
     lower_band (0), dense (false), full (false), nperm (0), perm (0) { }
 
-MatrixType::MatrixType (const MatrixType &a)
+MatrixType::MatrixType (const MatrixType& a)
   : typ (a.typ), sp_bandden (a.sp_bandden), bandden (a.bandden),
     upper_band (a.upper_band), lower_band (a.lower_band),
     dense (a.dense), full (a.full), nperm (a.nperm), perm (0)
@@ -197,7 +197,7 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
   return typ;
 }
 
-MatrixType::MatrixType (const Matrix &a)
+MatrixType::MatrixType (const Matrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
     dense (false), full (true), nperm (0), perm (0)
@@ -205,7 +205,7 @@ MatrixType::MatrixType (const Matrix &a)
   typ = matrix_real_probe (a);
 }
 
-MatrixType::MatrixType (const ComplexMatrix &a)
+MatrixType::MatrixType (const ComplexMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
     dense (false), full (true), nperm (0), perm (0)
@@ -213,7 +213,7 @@ MatrixType::MatrixType (const ComplexMatrix &a)
   typ = matrix_complex_probe (a);
 }
 
-MatrixType::MatrixType (const FloatMatrix &a)
+MatrixType::MatrixType (const FloatMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
     dense (false), full (true), nperm (0), perm (0)
@@ -221,7 +221,7 @@ MatrixType::MatrixType (const FloatMatrix &a)
   typ = matrix_real_probe (a);
 }
 
-MatrixType::MatrixType (const FloatComplexMatrix &a)
+MatrixType::MatrixType (const FloatComplexMatrix& a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
     dense (false), full (true), nperm (0), perm (0)
@@ -669,7 +669,7 @@ MatrixType::type (bool quiet)
 }
 
 int
-MatrixType::type (const SparseMatrix &a)
+MatrixType::type (const SparseMatrix& a)
 {
   if (typ != MatrixType::Unknown
       && (full || sp_bandden == octave_sparse_params::get_bandden ()))
@@ -701,7 +701,7 @@ MatrixType::type (const SparseMatrix &a)
 }
 
 int
-MatrixType::type (const SparseComplexMatrix &a)
+MatrixType::type (const SparseComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown
       && (full || sp_bandden == octave_sparse_params::get_bandden ()))
@@ -733,7 +733,7 @@ MatrixType::type (const SparseComplexMatrix &a)
 }
 
 int
-MatrixType::type (const Matrix &a)
+MatrixType::type (const Matrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
@@ -759,7 +759,7 @@ MatrixType::type (const Matrix &a)
 }
 
 int
-MatrixType::type (const ComplexMatrix &a)
+MatrixType::type (const ComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
@@ -785,7 +785,7 @@ MatrixType::type (const ComplexMatrix &a)
 }
 
 int
-MatrixType::type (const FloatMatrix &a)
+MatrixType::type (const FloatMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {
@@ -811,7 +811,7 @@ MatrixType::type (const FloatMatrix &a)
 }
 
 int
-MatrixType::type (const FloatComplexMatrix &a)
+MatrixType::type (const FloatComplexMatrix& a)
 {
   if (typ != MatrixType::Unknown)
     {

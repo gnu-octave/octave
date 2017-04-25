@@ -950,7 +950,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
 //    = 0  Not an empty matrix; did nothing
 //    < 0  Error condition
 int
-load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d)
+load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector& d)
 {
 #if defined (HAVE_HDF5)
 

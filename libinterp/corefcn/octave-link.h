@@ -506,7 +506,7 @@ protected:
 
   virtual void do_show_preferences (void) = 0;
 
-  virtual void do_show_doc (const std::string &file) = 0;
+  virtual void do_show_doc (const std::string& file) = 0;
 };
 
 #endif

@@ -645,7 +645,7 @@ parser::global_search (const QString& text, int max_founds)
 }
 
 QString
-parser::find_ref (const QString &ref_name)
+parser::find_ref (const QString& ref_name)
 {
   QString text = "";
 

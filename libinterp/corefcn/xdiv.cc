@@ -118,7 +118,7 @@ INSTANTIATE_MX_DIV_CONFORM (ComplexMatrix, ComplexMatrix);
 
 // -*- 1 -*-
 Matrix
-xdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
+xdiv (const Matrix& a, const Matrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return Matrix ();
@@ -135,7 +135,7 @@ xdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
 
 // -*- 2 -*-
 ComplexMatrix
-xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
+xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -152,7 +152,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
 
 // -*- 3 -*-
 ComplexMatrix
-xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
+xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -169,7 +169,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
 
 // -*- 4 -*-
 ComplexMatrix
-xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
+xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return ComplexMatrix ();
@@ -341,7 +341,7 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 
 // -*- 1 -*-
 Matrix
-xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ,
+xleftdiv (const Matrix& a, const Matrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -354,7 +354,7 @@ xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ,
 
 // -*- 2 -*-
 ComplexMatrix
-xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ,
+xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -368,7 +368,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ,
 
 // -*- 3 -*-
 ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ,
+xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -381,7 +381,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ,
 
 // -*- 4 -*-
 ComplexMatrix
-xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
+xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -419,7 +419,7 @@ INSTANTIATE_MX_DIV_CONFORM (FloatComplexMatrix, FloatComplexMatrix);
 
 // -*- 1 -*-
 FloatMatrix
-xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
+xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatMatrix ();
@@ -436,7 +436,7 @@ xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
 
 // -*- 2 -*-
 FloatComplexMatrix
-xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
+xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
@@ -453,7 +453,7 @@ xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
 
 // -*- 3 -*-
 FloatComplexMatrix
-xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
+xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
@@ -470,7 +470,7 @@ xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
 
 // -*- 4 -*-
 FloatComplexMatrix
-xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
+xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType& typ)
 {
   if (! mx_div_conform (a, b))
     return FloatComplexMatrix ();
@@ -642,7 +642,7 @@ x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
 
 // -*- 1 -*-
 FloatMatrix
-xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ,
+xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -655,7 +655,7 @@ xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ,
 
 // -*- 2 -*-
 FloatComplexMatrix
-xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ,
+xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -669,7 +669,7 @@ xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ,
 
 // -*- 3 -*-
 FloatComplexMatrix
-xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ,
+xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType& typ,
           blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
@@ -683,7 +683,7 @@ xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ,
 // -*- 4 -*-
 FloatComplexMatrix
 xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-          MatrixType &typ, blas_trans_type transt)
+          MatrixType& typ, blas_trans_type transt)
 {
   if (! mx_leftdiv_conform (a, b, transt))
     return FloatComplexMatrix ();

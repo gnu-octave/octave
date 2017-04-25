@@ -813,7 +813,7 @@ jit_variable : public jit_value
 public:
   jit_variable (const std::string& aname) : mname (aname), mlast_use (0) { }
 
-  const std::string &name (void) const { return mname; }
+  const std::string& name (void) const { return mname; }
 
   // manipulate the value_stack, for use during SSA construction.  The top of
   // the value stack represents the current value for this variable

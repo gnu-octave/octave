@@ -2832,7 +2832,7 @@ namespace octave
   // FIXME: global optimization (rendering, data structures...),
   // there is probably a smarter/faster/less-memory-consuming way to do this.
   void
-  opengl_renderer::draw_patch (const patch::properties &props)
+  opengl_renderer::draw_patch (const patch::properties& props)
   {
 #if defined (HAVE_OPENGL)
 
@@ -3302,7 +3302,7 @@ namespace octave
   }
 
   void
-  opengl_renderer::draw_light (const light::properties &props)
+  opengl_renderer::draw_light (const light::properties& props)
   {
 #if defined (HAVE_OPENGL)
 
@@ -3339,7 +3339,7 @@ namespace octave
   }
 
   void
-  opengl_renderer::draw_hggroup (const hggroup::properties &props)
+  opengl_renderer::draw_hggroup (const hggroup::properties& props)
   {
     draw (props.get_children ());
   }

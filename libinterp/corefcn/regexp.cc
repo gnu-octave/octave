@@ -330,8 +330,8 @@ parse_options (octave::regexp::opts& options, const octave_value_list& args,
 }
 
 static octave_value_list
-octregexp (const octave_value_list &args, int nargout,
-           const std::string &who, bool case_insensitive = false)
+octregexp (const octave_value_list& args, int nargout,
+           const std::string& who, bool case_insensitive = false)
 {
   octave_value_list retval;
 
@@ -516,8 +516,8 @@ octregexp (const octave_value_list &args, int nargout,
 }
 
 static octave_value_list
-octcellregexp (const octave_value_list &args, int nargout,
-               const std::string &who, bool case_insensitive = false)
+octcellregexp (const octave_value_list& args, int nargout,
+               const std::string& who, bool case_insensitive = false)
 {
   octave_value_list retval;
 
@@ -1281,7 +1281,7 @@ for details on the syntax of the search pattern.
 */
 
 static octave_value
-octregexprep (const octave_value_list &args, const std::string &who)
+octregexprep (const octave_value_list& args, const std::string& who)
 {
   int nargin = args.length ();
 

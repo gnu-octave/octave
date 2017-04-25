@@ -193,10 +193,10 @@ public:
   }
 
 private:
-  FloatComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
+  FloatComplexMatrix tinverse (MatrixType& mattype, octave_idx_type& info,
                                float& rcon, bool force, bool calc_cond) const;
 
-  FloatComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
+  FloatComplexMatrix finverse (MatrixType& mattype, octave_idx_type& info,
                                float& rcon, bool force, bool calc_cond) const;
 
 public:
@@ -205,9 +205,9 @@ public:
   FloatComplexMatrix inverse (octave_idx_type& info, float& rcon,
                               bool force = false, bool calc_cond = true) const;
 
-  FloatComplexMatrix inverse (MatrixType &mattype) const;
-  FloatComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
-  FloatComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
+  FloatComplexMatrix inverse (MatrixType& mattype) const;
+  FloatComplexMatrix inverse (MatrixType& mattype, octave_idx_type& info) const;
+  FloatComplexMatrix inverse (MatrixType& mattype, octave_idx_type& info,
                               float& rcon, bool force = false,
                               bool calc_cond = true) const;
 
@@ -223,77 +223,77 @@ public:
   FloatComplexDET determinant (octave_idx_type& info) const;
   FloatComplexDET determinant (octave_idx_type& info, float& rcon,
                                bool calc_cond = true) const;
-  FloatComplexDET determinant (MatrixType &mattype, octave_idx_type& info,
+  FloatComplexDET determinant (MatrixType& mattype, octave_idx_type& info,
                                float& rcon, bool calc_cond = true) const;
 
   float rcond (void) const;
-  float rcond (MatrixType &mattype) const;
+  float rcond (MatrixType& mattype) const;
 
 private:
   // Upper triangular matrix solvers
-  FloatComplexMatrix utsolve (MatrixType &typ, const FloatComplexMatrix& b,
+  FloatComplexMatrix utsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                               octave_idx_type& info, float& rcon,
                               solve_singularity_handler sing_handler,
                               bool calc_cond = false,
                               blas_trans_type transt = blas_no_trans) const;
 
   // Lower triangular matrix solvers
-  FloatComplexMatrix ltsolve (MatrixType &typ, const FloatComplexMatrix& b,
+  FloatComplexMatrix ltsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                               octave_idx_type& info, float& rcon,
                               solve_singularity_handler sing_handler,
                               bool calc_cond = false,
                               blas_trans_type transt = blas_no_trans) const;
 
   // Full matrix solvers (umfpack/cholesky)
-  FloatComplexMatrix fsolve (MatrixType &typ, const FloatComplexMatrix& b,
+  FloatComplexMatrix fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                              octave_idx_type& info, float& rcon,
                              solve_singularity_handler sing_handler,
                              bool calc_cond = false) const;
 
 public:
   // Generic interface to solver with no probing of type
-  FloatComplexMatrix solve (MatrixType &typ, const FloatMatrix& b) const;
-  FloatComplexMatrix solve (MatrixType &typ, const FloatMatrix& b,
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatMatrix& b) const;
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatMatrix& b,
                             octave_idx_type& info) const;
-  FloatComplexMatrix solve (MatrixType &typ, const FloatMatrix& b,
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatMatrix& b,
                             octave_idx_type& info, float& rcon) const;
-  FloatComplexMatrix solve (MatrixType &typ, const FloatMatrix& b,
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatMatrix& b,
                             octave_idx_type& info,
                             float& rcon, solve_singularity_handler sing_handler,
                             bool singular_fallback = true,
                             blas_trans_type transt = blas_no_trans) const;
 
-  FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b) const;
-  FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b,
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b) const;
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b,
                             octave_idx_type& info) const;
-  FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b,
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b,
                             octave_idx_type& info, float& rcon) const;
-  FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b,
+  FloatComplexMatrix solve (MatrixType& mattype, const FloatComplexMatrix& b,
                             octave_idx_type& info, float& rcon,
                             solve_singularity_handler sing_handler,
                             bool singular_fallback = true,
                             blas_trans_type transt = blas_no_trans) const;
 
-  FloatComplexColumnVector solve (MatrixType &typ,
+  FloatComplexColumnVector solve (MatrixType& mattype,
                                   const FloatColumnVector& b) const;
-  FloatComplexColumnVector solve (MatrixType &typ, const FloatColumnVector& b,
+  FloatComplexColumnVector solve (MatrixType& mattype, const FloatColumnVector& b,
                                   octave_idx_type& info) const;
-  FloatComplexColumnVector solve (MatrixType &typ, const FloatColumnVector& b,
+  FloatComplexColumnVector solve (MatrixType& mattype, const FloatColumnVector& b,
                                   octave_idx_type& info, float& rcon) const;
-  FloatComplexColumnVector solve (MatrixType &typ, const FloatColumnVector& b,
+  FloatComplexColumnVector solve (MatrixType& mattype, const FloatColumnVector& b,
                                   octave_idx_type& info, float& rcon,
                                   solve_singularity_handler sing_handler,
                                   blas_trans_type transt = blas_no_trans) const;
 
-  FloatComplexColumnVector solve (MatrixType &typ,
+  FloatComplexColumnVector solve (MatrixType& mattype,
                                   const FloatComplexColumnVector& b) const;
-  FloatComplexColumnVector solve (MatrixType &typ,
+  FloatComplexColumnVector solve (MatrixType& mattype,
                                   const FloatComplexColumnVector& b,
                                   octave_idx_type& info) const;
-  FloatComplexColumnVector solve (MatrixType &typ,
+  FloatComplexColumnVector solve (MatrixType& mattype,
                                   const FloatComplexColumnVector& b,
                                   octave_idx_type& info, float& rcon) const;
-  FloatComplexColumnVector solve (MatrixType &typ,
+  FloatComplexColumnVector solve (MatrixType& mattype,
                                   const FloatComplexColumnVector& b,
                                   octave_idx_type& info, float& rcon,
                                   solve_singularity_handler sing_handler,

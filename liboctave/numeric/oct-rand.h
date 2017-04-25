@@ -75,7 +75,7 @@ public:
   }
 
   // Set the current state/
-  static void state (const ColumnVector &s,
+  static void state (const ColumnVector& s,
                      const std::string& d = "")
   {
     if (instance_ok ())
@@ -213,7 +213,7 @@ private:
   ColumnVector do_state (const std::string& d);
 
   // Set the current state/
-  void do_state (const ColumnVector &s, const std::string& d);
+  void do_state (const ColumnVector& s, const std::string& d);
 
   // Reset the current state/
   void do_reset (const std::string& d);

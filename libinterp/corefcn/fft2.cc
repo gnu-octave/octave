@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 static octave_value
-do_fft2 (const octave_value_list &args, const char *fcn, int type)
+do_fft2 (const octave_value_list& args, const char *fcn, int type)
 {
   int nargin = args.length ();
 

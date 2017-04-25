@@ -39,21 +39,21 @@ public:
 
   void clear ();
 
-  void addFile (const QFileInfo &info);
+  void addFile (const QFileInfo& info);
 
-  int rowCount (const QModelIndex & p=QModelIndex ()) const;
+  int rowCount (const QModelIndex& p = QModelIndex ()) const;
 
-  int columnCount (const QModelIndex & p=QModelIndex ()) const;
+  int columnCount (const QModelIndex& p = QModelIndex ()) const;
 
   QVariant data (const QModelIndex& idx, int role) const;
 
   QVariant headerData (int section, Qt::Orientation orientation,
                        int role = Qt::DisplayRole) const;
 
-  void sort (int column, Qt::SortOrder order=Qt::AscendingOrder);
+  void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
 
-  QFileInfo fileInfo (const QModelIndex & p) const;
-  QIcon     fileIcon (const QModelIndex &p) const;
+  QFileInfo fileInfo (const QModelIndex& p) const;
+  QIcon     fileIcon (const QModelIndex& p) const;
 private:
   QList<QFileInfo> _files;
   QStringList _columnNames;

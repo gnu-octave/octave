@@ -135,7 +135,7 @@ extern OCTINTERP_API int
 save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d);
 
 extern OCTINTERP_API int
-load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector &d);
+load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector& d);
 
 extern OCTINTERP_API std::string
 read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,

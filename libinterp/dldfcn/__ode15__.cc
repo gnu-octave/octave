@@ -416,7 +416,7 @@ namespace octave
   }
 
   N_Vector
-  IDA::ColToNVec (const ColumnVector &data, long int n)
+  IDA::ColToNVec (const ColumnVector& data, long int n)
   {
     N_Vector v = N_VNew_Serial (n);
 
@@ -963,12 +963,12 @@ namespace octave
 
   octave_value_list
   do_ode15 (octave_function *ida_fcn,
-            const ColumnVector &tspan,
+            const ColumnVector& tspan,
             const int numt,
             const realtype t0,
-            const ColumnVector &y0,
-            const ColumnVector &yp0,
-            const octave_scalar_map &options)
+            const ColumnVector& y0,
+            const ColumnVector& yp0,
+            const octave_scalar_map& options)
   {
     octave_value_list retval;
 

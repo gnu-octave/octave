@@ -196,7 +196,7 @@ public:
 
     operator type_conv_fcn (void) const { return _fcn; }
 
-    octave_base_value * operator () (const octave_base_value &v) const
+    octave_base_value * operator () (const octave_base_value& v) const
     { return (*_fcn) (v); }
 
     int type_id (void) const { return _type_id; }

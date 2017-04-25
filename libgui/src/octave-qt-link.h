@@ -92,7 +92,7 @@ public:
 
   std::list<std::string>
   do_file_dialog (const filter_list& filter, const std::string& title,
-                  const std::string &filename, const std::string &pathname,
+                  const std::string& filename, const std::string& pathname,
                   const std::string& multimode);
 
   int
@@ -190,7 +190,7 @@ signals:
 
   void show_preferences_signal (void);
 
-  void show_doc_signal (const QString &file);
+  void show_doc_signal (const QString& file);
 
   void confirm_shutdown_signal (void);
 };

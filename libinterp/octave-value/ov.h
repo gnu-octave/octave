@@ -1273,7 +1273,7 @@ public:
 
   const octave_base_value& get_rep (void) const { return *rep; }
 
-  bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
+  bool is_copy_of (const octave_value& val) const { return rep == val.rep; }
 
   void print_info (std::ostream& os,
                    const std::string& prefix = "") const;

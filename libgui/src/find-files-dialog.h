@@ -43,11 +43,11 @@ public:
   void save_settings (void);
 
 signals:
-  void file_selected (const QString &fileName);
-  void dir_selected (const QString &fileName);
+  void file_selected (const QString& fileName);
+  void dir_selected (const QString& fileName);
 
 public slots:
-  void set_search_dir (const QString &dir);
+  void set_search_dir (const QString& dir);
 
 private slots:
   void start_find ();
@@ -57,7 +57,7 @@ private slots:
   void item_double_clicked (const QModelIndex&);
   void handle_done (int);
 private:
-  bool is_match (const QFileInfo &info);
+  bool is_match (const QFileInfo& info);
   QLineEdit   *_start_dir_edit;
   QLineEdit   *_file_name_edit;
   QPushButton *_stop_button;

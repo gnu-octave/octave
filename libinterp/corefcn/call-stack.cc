@@ -73,7 +73,7 @@ namespace octave
   }
 
   bool
-  call_stack::stack_frame::operator == (const call_stack::stack_frame &rhs) const
+  call_stack::stack_frame::operator == (const call_stack::stack_frame& rhs) const
   {
     if (this->line () != rhs.line ())
       return false;

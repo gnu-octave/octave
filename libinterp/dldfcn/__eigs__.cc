@@ -52,7 +52,7 @@ static bool warned_imaginary = false;
 static int call_depth = 0;
 
 ColumnVector
-eigs_func (const ColumnVector &x, int &eigs_error)
+eigs_func (const ColumnVector& x, int& eigs_error)
 {
   ColumnVector retval;
   octave_value_list args;
@@ -92,7 +92,7 @@ eigs_func (const ColumnVector &x, int &eigs_error)
 }
 
 ComplexColumnVector
-eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
+eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 {
   ComplexColumnVector retval;
   octave_value_list args;

@@ -65,7 +65,7 @@ namespace QtHandles
   }
 
   static void
-  setupPalette (const uibuttongroup::properties& pp, QPalette &p)
+  setupPalette (const uibuttongroup::properties& pp, QPalette& p)
   {
     p.setColor (QPalette::Window,
                 Utils::fromRgb (pp.get_backgroundcolor_rgb ()));

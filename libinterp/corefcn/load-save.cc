@@ -296,7 +296,7 @@ get_file_format (std::istream& file, const std::string& filename)
 
 static load_save_format
 get_file_format (const std::string& fname, const std::string& orig_fname,
-                 bool &use_zlib, bool quiet = false)
+                 bool& use_zlib, bool quiet = false)
 {
   load_save_format retval = LS_UNKNOWN;
 
@@ -1016,9 +1016,9 @@ save_vars (std::ostream& os, const std::string& pattern,
 }
 
 static string_vector
-parse_save_options (const string_vector &argv,
-                    load_save_format &format, bool &append,
-                    bool &save_as_floats, bool &use_zlib)
+parse_save_options (const string_vector& argv,
+                    load_save_format& format, bool& append,
+                    bool& save_as_floats, bool& use_zlib)
 {
 #if ! defined (HAVE_ZLIB)
   octave_unused_parameter (use_zlib);
@@ -1134,8 +1134,8 @@ parse_save_options (const string_vector &argv,
 }
 
 static string_vector
-parse_save_options (const std::string &arg, load_save_format &format,
-                    bool &append, bool &save_as_floats, bool &use_zlib)
+parse_save_options (const std::string& arg, load_save_format& format,
+                    bool& append, bool& save_as_floats, bool& use_zlib)
 {
   std::istringstream is (arg);
   std::string str;

@@ -499,7 +499,7 @@ generate_completion (const std::string& text, int state)
 }
 
 static std::string
-quoting_filename (const std::string &text, int, char quote)
+quoting_filename (const std::string& text, int, char quote)
 {
   if (quote)
     return text;

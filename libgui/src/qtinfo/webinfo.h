@@ -74,7 +74,7 @@ public:
   webinfo (QWidget *parent = 0);
   bool set_info_path (const QString& info_path);
   void load_node (const QString& node_name);
-  void load_ref (const QString &ref_name);
+  void load_ref (const QString& ref_name);
   void notice_settings (const QSettings *settings);
 
 public slots:
@@ -95,7 +95,7 @@ public slots:
 
 private:
 
-  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+  QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                        const char *member);
   void tab_state_changed (void);
 

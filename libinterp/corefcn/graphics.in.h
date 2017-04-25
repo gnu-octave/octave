@@ -2784,7 +2784,7 @@ public:
     get_properties ().override_defaults (obj);
   }
 
-  void build_user_defaults_map (property_list::pval_map_type &def,
+  void build_user_defaults_map (property_list::pval_map_type& def,
                                 const std::string go_name) const;
 
   virtual void set_from_list (property_list& plist)
@@ -3049,7 +3049,7 @@ public:
     rep->override_defaults (*rep);
   }
 
-  void build_user_defaults_map (property_list::pval_map_type &def,
+  void build_user_defaults_map (property_list::pval_map_type& def,
                                 const std::string go_name) const
   {
     rep->build_user_defaults_map (def, go_name);
@@ -5135,7 +5135,7 @@ public:
 
     // Matlab allows incoherent data to be stored into patch properties.
     // The patch should then be ignored by the renderer.
-    bool has_bad_data (std::string &msg) const
+    bool has_bad_data (std::string& msg) const
     {
       msg = bad_data_msg;
       return ! msg.empty ();

@@ -106,7 +106,7 @@ public:
 
   bool signal_filedialog (const QStringList& filters, const QString& title,
                           const QString& filename, const QString& dirname,
-                          const QString &multimode)
+                          const QString& multimode)
   {
     emit create_filedialog (filters, title, filename, dirname, multimode);
     return true;

@@ -60,15 +60,15 @@ public:
 
   MatrixType (void);
 
-  MatrixType (const MatrixType &a);
+  MatrixType (const MatrixType& a);
 
-  MatrixType (const Matrix &a);
+  MatrixType (const Matrix& a);
 
-  MatrixType (const ComplexMatrix &a);
+  MatrixType (const ComplexMatrix& a);
 
-  MatrixType (const FloatMatrix &a);
+  MatrixType (const FloatMatrix& a);
 
-  MatrixType (const FloatComplexMatrix &a);
+  MatrixType (const FloatComplexMatrix& a);
 
   template <typename T>
   MatrixType (const MSparse<T> &a);
@@ -87,17 +87,17 @@ public:
 
   int type (bool quiet = true);
 
-  int type (const Matrix &a);
+  int type (const Matrix& a);
 
-  int type (const ComplexMatrix &a);
+  int type (const ComplexMatrix& a);
 
-  int type (const FloatMatrix &a);
+  int type (const FloatMatrix& a);
 
-  int type (const FloatComplexMatrix &a);
+  int type (const FloatComplexMatrix& a);
 
-  int type (const SparseMatrix &a);
+  int type (const SparseMatrix& a);
 
-  int type (const SparseComplexMatrix &a);
+  int type (const SparseComplexMatrix& a);
 
   double band_density (void) const { return bandden; }
 

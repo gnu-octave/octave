@@ -465,14 +465,14 @@ FloatMatrix::inverse (MatrixType& mattype) const
 }
 
 FloatMatrix
-FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info) const
+FloatMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   float rcon;
   return inverse (mattype, info, rcon, 0, 0);
 }
 
 FloatMatrix
-FloatMatrix::tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
+FloatMatrix::tinverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
                        bool force, bool calc_cond) const
 {
   FloatMatrix retval;
@@ -531,7 +531,7 @@ FloatMatrix::tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 }
 
 FloatMatrix
-FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
+FloatMatrix::finverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
                        bool force, bool calc_cond) const
 {
   FloatMatrix retval;
@@ -617,7 +617,7 @@ FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
 }
 
 FloatMatrix
-FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
+FloatMatrix::inverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
                       bool force, bool calc_cond) const
 {
   int typ = mattype.type (false);
@@ -1189,7 +1189,7 @@ FloatMatrix::rcond (void) const
 }
 
 float
-FloatMatrix::rcond (MatrixType &mattype) const
+FloatMatrix::rcond (MatrixType& mattype) const
 {
   float rcon = octave::numeric_limits<float>::NaN ();
   F77_INT nr = octave::to_f77_int (rows ());
@@ -1353,7 +1353,7 @@ FloatMatrix::rcond (MatrixType &mattype) const
 }
 
 FloatMatrix
-FloatMatrix::utsolve (MatrixType &mattype, const FloatMatrix& b,
+FloatMatrix::utsolve (MatrixType& mattype, const FloatMatrix& b,
                       octave_idx_type& info,
                       float& rcon, solve_singularity_handler sing_handler,
                       bool calc_cond, blas_trans_type transt) const
@@ -1456,7 +1456,7 @@ FloatMatrix::utsolve (MatrixType &mattype, const FloatMatrix& b,
 }
 
 FloatMatrix
-FloatMatrix::ltsolve (MatrixType &mattype, const FloatMatrix& b,
+FloatMatrix::ltsolve (MatrixType& mattype, const FloatMatrix& b,
                       octave_idx_type& info,
                       float& rcon, solve_singularity_handler sing_handler,
                       bool calc_cond, blas_trans_type transt) const
@@ -1558,7 +1558,7 @@ FloatMatrix::ltsolve (MatrixType &mattype, const FloatMatrix& b,
 }
 
 FloatMatrix
-FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b,
+FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
                      octave_idx_type& info,
                      float& rcon, solve_singularity_handler sing_handler,
                      bool calc_cond) const
@@ -1755,30 +1755,30 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b,
 }
 
 FloatMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatMatrix& b) const
+FloatMatrix::solve (MatrixType& mattype, const FloatMatrix& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 FloatMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatMatrix& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatMatrix& b,
                     octave_idx_type& info) const
 {
   float rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 FloatMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatMatrix& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatMatrix& b,
                     octave_idx_type& info, float& rcon) const
 {
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 FloatMatrix
-FloatMatrix::solve (MatrixType &mattype, const FloatMatrix& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatMatrix& b,
                     octave_idx_type& info,
                     float& rcon, solve_singularity_handler sing_handler,
                     bool singular_fallback, blas_trans_type transt) const
@@ -1813,27 +1813,27 @@ FloatMatrix::solve (MatrixType &mattype, const FloatMatrix& b,
 }
 
 FloatComplexMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b) const
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexMatrix& b) const
 {
   octave_idx_type info;
   float rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 FloatComplexMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexMatrix& b,
                     octave_idx_type& info) const
 {
   float rcon;
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 FloatComplexMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexMatrix& b,
                     octave_idx_type& info,
                     float& rcon) const
 {
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 static FloatMatrix
@@ -1868,81 +1868,84 @@ unstack_complex_matrix (const FloatMatrix& sm)
 }
 
 FloatComplexMatrix
-FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexMatrix& b,
                     octave_idx_type& info,
                     float& rcon, solve_singularity_handler sing_handler,
                     bool singular_fallback, blas_trans_type transt) const
 {
   FloatMatrix tmp = stack_complex_matrix (b);
-  tmp = solve (typ, tmp, info, rcon, sing_handler, singular_fallback, transt);
+  tmp = solve (mattype, tmp, info, rcon, sing_handler, singular_fallback,
+               transt);
   return unstack_complex_matrix (tmp);
 }
 
 FloatColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatColumnVector& b) const
+FloatMatrix::solve (MatrixType& mattype, const FloatColumnVector& b) const
 {
-  octave_idx_type info; float rcon;
-  return solve (typ, b, info, rcon);
+  octave_idx_type info;
+  float rcon;
+  return solve (mattype, b, info, rcon);
 }
 
 FloatColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatColumnVector& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatColumnVector& b,
                     octave_idx_type& info) const
 {
   float rcon;
-  return solve (typ, b, info, rcon);
+  return solve (mattype, b, info, rcon);
 }
 
 FloatColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatColumnVector& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatColumnVector& b,
                     octave_idx_type& info,
                     float& rcon) const
 {
-  return solve (typ, b, info, rcon, 0);
+  return solve (mattype, b, info, rcon, 0);
 }
 
 FloatColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatColumnVector& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatColumnVector& b,
                     octave_idx_type& info,
                     float& rcon, solve_singularity_handler sing_handler,
                     blas_trans_type transt) const
 {
   FloatMatrix tmp (b);
-  tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
+  tmp = solve (mattype, tmp, info, rcon, sing_handler, true, transt);
   return tmp.column (static_cast<octave_idx_type> (0));
 }
 
 FloatComplexColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b) const
+FloatMatrix::solve (MatrixType& mattype,
+                    const FloatComplexColumnVector& b) const
 {
   FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b);
+  return tmp.solve (mattype, b);
 }
 
 FloatComplexColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexColumnVector& b,
                     octave_idx_type& info) const
 {
   FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info);
+  return tmp.solve (mattype, b, info);
 }
 
 FloatComplexColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexColumnVector& b,
                     octave_idx_type& info, float& rcon) const
 {
   FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon);
+  return tmp.solve (mattype, b, info, rcon);
 }
 
 FloatComplexColumnVector
-FloatMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b,
+FloatMatrix::solve (MatrixType& mattype, const FloatComplexColumnVector& b,
                     octave_idx_type& info, float& rcon,
                     solve_singularity_handler sing_handler,
                     blas_trans_type transt) const
 {
   FloatComplexMatrix tmp (*this);
-  return tmp.solve (typ, b, info, rcon, sing_handler, transt);
+  return tmp.solve (mattype, b, info, rcon, sing_handler, transt);
 }
 
 FloatMatrix
@@ -2097,7 +2100,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
 
 FloatMatrix
 FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
-                      octave_idx_type& rank, float &rcon) const
+                      octave_idx_type& rank, float& rcon) const
 {
   FloatMatrix retval;
 
@@ -2317,7 +2320,7 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
 
 FloatColumnVector
 FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
-                      octave_idx_type& rank, float &rcon) const
+                      octave_idx_type& rank, float& rcon) const
 {
   FloatColumnVector retval;
 
@@ -2449,7 +2452,7 @@ FloatMatrix::lssolve (const FloatComplexColumnVector& b, octave_idx_type& info,
 
 FloatComplexColumnVector
 FloatMatrix::lssolve (const FloatComplexColumnVector& b, octave_idx_type& info,
-                      octave_idx_type& rank, float &rcon) const
+                      octave_idx_type& rank, float& rcon) const
 {
   FloatComplexMatrix tmp (*this);
   return tmp.lssolve (b, info, rank, rcon);

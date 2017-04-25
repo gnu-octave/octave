@@ -796,7 +796,7 @@ namespace octave
 
   template <typename T>
   static inline void
-  convert_packcomplex_Nd (T *out, const dim_vector &dv)
+  convert_packcomplex_Nd (T *out, const dim_vector& dv)
   {
     size_t nc = dv(0);
     size_t nr = dv(1);
@@ -923,7 +923,7 @@ namespace octave
 
   int
   fftw::fftNd (const double *in, Complex *out, const int rank,
-                      const dim_vector &dv)
+                      const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -950,7 +950,7 @@ namespace octave
 
   int
   fftw::fftNd (const Complex *in, Complex *out, const int rank,
-                      const dim_vector &dv)
+                      const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -969,7 +969,7 @@ namespace octave
 
   int
   fftw::ifftNd (const Complex *in, Complex *out, const int rank,
-                       const dim_vector &dv)
+                       const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -1058,7 +1058,7 @@ namespace octave
 
   int
   fftw::fftNd (const float *in, FloatComplex *out, const int rank,
-                      const dim_vector &dv)
+                      const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -1085,7 +1085,7 @@ namespace octave
 
   int
   fftw::fftNd (const FloatComplex *in, FloatComplex *out, const int rank,
-                      const dim_vector &dv)
+                      const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -1104,7 +1104,7 @@ namespace octave
 
   int
   fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
-                       const dim_vector &dv)
+                       const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)

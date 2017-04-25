@@ -65,7 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "sparse-dmsolve.h"
 #endif
 
-SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
+SparseMatrix::SparseMatrix (const SparseBoolMatrix& a)
   : MSparse<double> (a.rows (), a.cols (), a.nnz ())
 {
   octave_idx_type nc = cols ();
@@ -762,7 +762,7 @@ SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 }
 
 SparseMatrix
-SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
+SparseMatrix::dinverse (MatrixType& mattype, octave_idx_type& info,
                         double& rcond, const bool,
                         const bool calccond) const
 {
@@ -776,8 +776,8 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
     (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   // Print spparms("spumoni") info if requested
-  int typ = mattyp.type ();
-  mattyp.info ();
+  int typ = mattype.type ();
+  mattype.info ();
 
   if (typ != MatrixType::Diagonal && typ != MatrixType::Permuted_Diagonal)
     (*current_liboctave_error_handler) ("incorrect matrix type");
@@ -812,7 +812,7 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
 }
 
 SparseMatrix
-SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
+SparseMatrix::tinverse (MatrixType& mattype, octave_idx_type& info,
                         double& rcond, const bool,
                         const bool calccond) const
 {
@@ -826,8 +826,8 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
     (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   // Print spparms("spumoni") info if requested
-  int typ = mattyp.type ();
-  mattyp.info ();
+  int typ = mattype.type ();
+  mattype.info ();
 
   if (typ != MatrixType::Upper && typ != MatrixType::Permuted_Upper
       && typ != MatrixType::Lower && typ != MatrixType::Permuted_Lower)
@@ -954,7 +954,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
       OCTAVE_LOCAL_BUFFER (double, work, nr);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
 
-      octave_idx_type *perm = mattyp.triangular_perm ();
+      octave_idx_type *perm = mattype.triangular_perm ();
       if (typ == MatrixType::Permuted_Upper)
         {
           for (octave_idx_type i = 0; i < nr; i++)
@@ -1063,7 +1063,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 }
 
 SparseMatrix
-SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
+SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
                        double& rcond, bool, bool calc_cond) const
 {
   int typ = mattype.type (false);
@@ -1275,7 +1275,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, bool) const
 }
 
 Matrix
-SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& err,
                       double& rcond, solve_singularity_handler,
                       bool calc_cond) const
@@ -1335,7 +1335,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler, bool calc_cond) const
 {
@@ -1424,7 +1424,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler, bool calc_cond) const
 {
@@ -1483,7 +1483,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::dsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler, bool calc_cond) const
 {
@@ -1572,7 +1572,7 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -1801,7 +1801,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const SparseMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2082,7 +2082,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2314,7 +2314,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::utsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2598,7 +2598,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -2851,7 +2851,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -3151,7 +3151,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -3405,7 +3405,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                        octave_idx_type& err, double& rcond,
                        solve_singularity_handler sing_handler,
                        bool calc_cond) const
@@ -3707,7 +3707,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const Matrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -3873,7 +3873,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const SparseMatrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -4027,7 +4027,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const ComplexMatrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -4197,7 +4197,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::trisolve (MatrixType& mattype, const SparseComplexMatrix& b,
                         octave_idx_type& err, double& rcond,
                         solve_singularity_handler sing_handler,
                         bool calc_cond) const
@@ -4388,7 +4388,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -4657,7 +4657,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -4995,7 +4995,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -5318,7 +5318,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -5704,8 +5704,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 void *
-SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
-                         Matrix &Info, solve_singularity_handler sing_handler,
+SparseMatrix::factorize (octave_idx_type& err, double& rcond, Matrix& Control,
+                         Matrix& Info, solve_singularity_handler sing_handler,
                          bool calc_cond) const
 {
   // The return values
@@ -5832,7 +5832,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
 }
 
 Matrix
-SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -6057,7 +6057,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 }
 
 SparseMatrix
-SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -6328,7 +6328,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -6573,7 +6573,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type& err, double& rcond,
                       solve_singularity_handler sing_handler,
                       bool calc_cond) const
@@ -6856,7 +6856,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6864,7 +6864,7 @@ SparseMatrix::solve (MatrixType &mattype, const Matrix& b) const
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -6872,14 +6872,14 @@ SparseMatrix::solve (MatrixType &mattype, const Matrix& b,
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b,
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b,
                      octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 Matrix
-SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& err,
+SparseMatrix::solve (MatrixType& mattype, const Matrix& b, octave_idx_type& err,
                      double& rcond, solve_singularity_handler sing_handler,
                      bool singular_fallback) const
 {
@@ -6921,7 +6921,7 @@ SparseMatrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& err,
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6929,7 +6929,7 @@ SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b) const
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -6937,14 +6937,14 @@ SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 SparseMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
                      octave_idx_type& err, double& rcond,
                      solve_singularity_handler sing_handler,
                      bool singular_fallback) const
@@ -6986,7 +6986,7 @@ SparseMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6994,7 +6994,7 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b) const
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -7002,14 +7002,14 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
                      octave_idx_type& err, double& rcond,
                      solve_singularity_handler sing_handler,
                      bool singular_fallback) const
@@ -7051,7 +7051,7 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b) const
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -7059,7 +7059,7 @@ SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b) const
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -7067,14 +7067,14 @@ SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
                      octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 SparseComplexMatrix
-SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
+SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
                      octave_idx_type& err, double& rcond,
                      solve_singularity_handler sing_handler,
                      bool singular_fallback) const
@@ -7116,14 +7116,14 @@ SparseMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b) const
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b) const
 {
   octave_idx_type info; double rcond;
   return solve (mattype, b, info, rcond);
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -7131,14 +7131,14 @@ SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                      octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ColumnVector& b,
                      octave_idx_type& info, double& rcond,
                      solve_singularity_handler sing_handler) const
 {
@@ -7148,7 +7148,7 @@ SparseMatrix::solve (MatrixType &mattype, const ColumnVector& b,
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b) const
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -7156,7 +7156,7 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b) const
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                      octave_idx_type& info) const
 {
   double rcond;
@@ -7164,7 +7164,7 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                      octave_idx_type& info,
                      double& rcond) const
 {
@@ -7172,7 +7172,7 @@ SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
 }
 
 ComplexColumnVector
-SparseMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
+SparseMatrix::solve (MatrixType& mattype, const ComplexColumnVector& b,
                      octave_idx_type& info, double& rcond,
                      solve_singularity_handler sing_handler) const
 {

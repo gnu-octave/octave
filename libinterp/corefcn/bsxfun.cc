@@ -230,7 +230,7 @@ maybe_optimized_builtin (const std::string& name,
 static bool
 maybe_update_column (octave_value& Ac, const octave_value& A,
                      const dim_vector& dva, const dim_vector& dvc,
-                     octave_idx_type i, octave_value_list &idx)
+                     octave_idx_type i, octave_value_list& idx)
 {
   octave_idx_type nd = dva.ndims ();
 

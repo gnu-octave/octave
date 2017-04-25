@@ -204,7 +204,7 @@ namespace octave
           x_token_extents (te), x_start (s), x_end (e)
       { }
 
-      match_element (const match_element &a)
+      match_element (const match_element& a)
         : x_match_string (a.x_match_string),
           x_named_tokens (a.x_named_tokens), x_tokens (a.x_tokens),
           x_token_extents (a.x_token_extents),

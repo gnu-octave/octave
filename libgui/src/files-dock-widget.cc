@@ -871,7 +871,7 @@ files_dock_widget::popdownmenu_newfile (bool)
 }
 
 void
-files_dock_widget::process_new_file (const QString &parent_dir)
+files_dock_widget::process_new_file (const QString& parent_dir)
 {
   bool ok;
 
@@ -889,7 +889,7 @@ files_dock_widget::process_new_file (const QString &parent_dir)
 }
 
 void
-files_dock_widget::process_new_dir (const QString &parent_dir)
+files_dock_widget::process_new_dir (const QString& parent_dir)
 {
   bool ok;
 

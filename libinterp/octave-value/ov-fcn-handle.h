@@ -160,7 +160,7 @@ public:
 
 private:
 
-  bool set_fcn (const std::string &octaveroot, const std::string& fpath);
+  bool set_fcn (const std::string& octaveroot, const std::string& fpath);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

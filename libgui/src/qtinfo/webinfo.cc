@@ -124,7 +124,7 @@ webinfo::webinfo (QWidget *p)
 
 // Add an action to a menu or the widget itself
 QAction*
-webinfo::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+webinfo::add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member)
 {
   QAction *a;
@@ -287,7 +287,7 @@ webinfo::close_tab (int index)
 }
 
 void
-webinfo::load_ref (const QString &ref_name)
+webinfo::load_ref (const QString& ref_name)
 {
   QString text = _parser.find_ref (ref_name);
   if (text.length () > 0)

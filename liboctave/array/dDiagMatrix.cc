@@ -230,7 +230,7 @@ DiagMatrix::inverse (void) const
 }
 
 DiagMatrix
-DiagMatrix::inverse (octave_idx_type &info) const
+DiagMatrix::inverse (octave_idx_type& info) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();

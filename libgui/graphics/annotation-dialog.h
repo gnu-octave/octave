@@ -38,7 +38,7 @@ class annotation_dialog : public QDialog
 {
   Q_OBJECT
 public:
-  explicit annotation_dialog (QWidget * parent, const octave_value_list &pr);
+  explicit annotation_dialog (QWidget *parent, const octave_value_list& pr);
   ~annotation_dialog ();
 
   octave_value_list get_properties () const;
@@ -46,7 +46,7 @@ public:
 private slots:
   // slots for dialog's buttons
   void button_clicked (QAbstractButton *button);
-  void edit_string_changed (const QString &str);
+  void edit_string_changed (const QString& str);
   void prompt_for_color ();
 
 private:

@@ -108,7 +108,7 @@ public:
     QString file_name;
     QString encoding;
 
-    bool operator < (const session_data &other) const
+    bool operator < (const session_data& other) const
     {
       return index < other.index;
     }
@@ -350,7 +350,7 @@ private:
   bool editor_tab_has_focus ();
 
   QWidget *find_tab_widget (const QString& openFileName) const;
-  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+  QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                        const char *member);
 
   QMenu* m_add_menu (QMenuBar *p, QString text);

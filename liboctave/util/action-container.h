@@ -131,6 +131,9 @@ public:
     method_elem (T *obj, void (T::*method) (void))
       : e_obj (obj), e_method (method) { }
 
+    method_elem (T& obj, void (T::*method) (void))
+      : e_obj (&obj), e_method (method) { }
+
     // No copying!
 
     method_elem (const method_elem&) = delete;
@@ -155,6 +158,9 @@ public:
 
     method_arg_elem (T *obj, void (T::*method) (A), A arg)
       : e_obj (obj), e_method (method), e_arg (arg) { }
+
+    method_arg_elem (T& obj, void (T::*method) (A), A arg)
+      : e_obj (&obj), e_method (method), e_arg (arg) { }
 
     // No copying!
 
@@ -182,6 +188,9 @@ public:
 
     method_crefarg_elem (T *obj, void (T::*method) (const A&), const A& arg)
       : e_obj (obj), e_method (method), e_arg (arg) { }
+
+    method_crefarg_elem (T& obj, void (T::*method) (const A&), const A& arg)
+      : e_obj (&obj), e_method (method), e_arg (arg) { }
 
     // No copying!
 
@@ -285,6 +294,12 @@ public:
     add (new method_elem<T> (obj, method));
   }
 
+  template <typename T>
+  void add_method (T& obj, void (T::*method) (void))
+  {
+    add (new method_elem<T> (obj, method));
+  }
+
   // Call to T::method (A).
   template <typename T, typename A>
   void add_method (T *obj, void (T::*method) (A), A arg)
@@ -292,9 +307,21 @@ public:
     add (new method_arg_elem<T, A> (obj, method, arg));
   }
 
+  template <typename T, typename A>
+  void add_method (T& obj, void (T::*method) (A), A arg)
+  {
+    add (new method_arg_elem<T, A> (obj, method, arg));
+  }
+
   // Call to T::method (const A&).
   template <typename T, typename A>
   void add_method (T *obj, void (T::*method) (const A&), const A& arg)
+  {
+    add (new method_crefarg_elem<T, A> (obj, method, arg));
+  }
+
+  template <typename T, typename A>
+  void add_method (T& obj, void (T::*method) (const A&), const A& arg)
   {
     add (new method_crefarg_elem<T, A> (obj, method, arg));
   }

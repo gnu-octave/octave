@@ -148,13 +148,12 @@ octave_user_script::do_multi_index_op (int nargout,
       frame.protect_var (octave::tree_evaluator::statement_context);
       octave::tree_evaluator::statement_context = octave::tree_evaluator::script;
 
-      BEGIN_PROFILER_BLOCK (octave_user_script)
+      profile_data_accumulator::enter<octave_user_script>
+        block (profiler, *this);
 
       octave::tree_evaluator *tw = octave::current_evaluator;
 
       cmd_list->accept (*tw);
-
-      END_PROFILER_BLOCK
 
       if (octave::tree_return_command::returning)
         octave::tree_return_command::returning = 0;
@@ -592,27 +591,28 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (octave::tree_evaluator::statement_context);
   octave::tree_evaluator::statement_context = octave::tree_evaluator::function;
 
-  BEGIN_PROFILER_BLOCK (octave_user_function)
+  {
+    profile_data_accumulator::enter<octave_user_function>
+      block (profiler, *this);
 
-  if (is_special_expr ())
-    {
-      assert (cmd_list->length () == 1);
+    if (is_special_expr ())
+      {
+        assert (cmd_list->length () == 1);
 
-      octave::tree_statement *stmt = cmd_list->front ();
+        octave::tree_statement *stmt = cmd_list->front ();
 
-      octave::tree_expression *expr = stmt->expression ();
+        octave::tree_expression *expr = stmt->expression ();
 
-      if (expr)
-        {
-          octave::call_stack::set_location (stmt->line (), stmt->column ());
+        if (expr)
+          {
+            octave::call_stack::set_location (stmt->line (), stmt->column ());
 
-          retval = tw->evaluate_n (expr, nargout, lvalue_list);
-        }
-    }
-  else
-    cmd_list->accept (*tw);
-
-  END_PROFILER_BLOCK
+            retval = tw->evaluate_n (expr, nargout, lvalue_list);
+          }
+      }
+    else
+      cmd_list->accept (*tw);
+  }
 
   if (echo_commands)
     print_code_function_trailer ();

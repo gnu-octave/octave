@@ -142,11 +142,9 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   frame.add_fcn (octave::call_stack::pop);
 
-  BEGIN_PROFILER_BLOCK (octave_mex_function)
+  profile_data_accumulator::enter<octave_mex_function> block (profiler, *this);
 
   retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
-
-  END_PROFILER_BLOCK
 
   return retval;
 }

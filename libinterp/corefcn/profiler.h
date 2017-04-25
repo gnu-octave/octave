@@ -212,13 +212,4 @@ private:
 // The instance used.
 extern OCTINTERP_API profile_data_accumulator profiler;
 
-// Helper macro to profile a block of code.
-
-#define BEGIN_PROFILER_BLOCK(classname)                                 \
-  {                                                                     \
-    profile_data_accumulator::enter<classname> pe (profiler, *this);
-
-#define END_PROFILER_BLOCK                      \
-  }  // end of block => call pe's destructor
-
 #endif

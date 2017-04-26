@@ -58,18 +58,6 @@ extern "C" {
 #  include <stdbool.h>
 #endif
 
-/* The definition of OCTINTERP_API is normally provided by Octave's
-   config.h file.  This is provided for the case of mex.h included by
-   user programs that don't use Octave's config.h.  */
-#if ! defined (OCTINTERP_API)
-#  if defined (_MSC_VER)
-#    define OCTINTERP_API __declspec(dllimport)
-#  else
-   /* All other compilers, at least for now.  */
-#    define OCTINTERP_API
-#  endif
-#endif
-
 #define MXARRAY_TYPEDEFS_ONLY
 #include "mxarray.h"
 #undef MXARRAY_TYPEDEFS_ONLY

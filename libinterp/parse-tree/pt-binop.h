@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class octave_value_list;
-class octave_lvalue;
 
 #include "ov.h"
 #include "pt-exp.h"

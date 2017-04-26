@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 class octave_value;
-class octave_lvalue;
 
 #include "comment-list.h"
 #include "pt-cmd.h"

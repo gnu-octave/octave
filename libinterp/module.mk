@@ -98,7 +98,6 @@ octinclude_HEADERS += \
   libinterp/build-env.h \
   libinterp/liboctinterp-build-info.h \
   libinterp/octave.h \
-  libinterp/options-usage.h \
   $(COREFCN_INC) \
   $(LIBINTERP_OPERATORS_INC) \
   $(OCTAVE_VALUE_INC) \
@@ -106,6 +105,7 @@ octinclude_HEADERS += \
   $(PARSER_INC)
 
 noinst_HEADERS += \
+  libinterp/options-usage.h \
   $(NOINSTALL_LIBINTERP_OPERATORS_INC)
 
 nodist_octinclude_HEADERS += \

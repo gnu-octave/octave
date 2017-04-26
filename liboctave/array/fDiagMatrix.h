@@ -25,12 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "MDiagArray2.h"
-
-#include "fRowVector.h"
-#include "fColVector.h"
 #include "DET.h"
-
+#include "MDiagArray2.h"
+#include "fColVector.h"
+#include "fRowVector.h"
 #include "mx-defs.h"
 
 class

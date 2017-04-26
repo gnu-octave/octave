@@ -24,13 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cmath>
-#include <vector>
 #include <iostream>
 
 #include "CSparse.h"
-#include "lu.h"
 #include "MatrixType.h"
 #include "chol.h"
 #include "dSparse.h"
@@ -38,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "lo-arpack-proto.h"
 #include "lo-blas-proto.h"
+#include "lu.h"
 #include "mx-ops.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"

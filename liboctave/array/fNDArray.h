@@ -26,10 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "MArray.h"
-
+#include "bsxfun-decl.h"
 #include "mx-defs.h"
 #include "mx-op-decl.h"
-#include "bsxfun-decl.h"
 
 template <typename T> class intNDArray;
 

@@ -26,9 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
-#include <vector>
+#include <iostream>
+#include <limits>
 
 #include "Array-util.h"
 #include "f77-fcn.h"

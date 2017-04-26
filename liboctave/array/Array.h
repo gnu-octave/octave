@@ -33,15 +33,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <iosfwd>
+#include <string>
 
 #include "dim-vector.h"
 #include "idx-vector.h"
 #include "lo-error.h"
 #include "lo-traits.h"
 #include "lo-utils.h"
+#include "oct-refcount.h"
 #include "oct-sort.h"
 #include "quit.h"
-#include "oct-refcount.h"
 
 //! N Dimensional Array with copy-on-write semantics.
 /*!

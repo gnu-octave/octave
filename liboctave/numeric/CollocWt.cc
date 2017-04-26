@@ -25,8 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
-
-#include <cfloat>
+#include <limits>
 
 #include "CollocWt.h"
 #include "f77-fcn.h"

@@ -26,11 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "quit.h"
-#include "lo-error.h"
-#include "Sparse.h"
-#include "MArray.h"
 #include "Array-util.h"
+#include "MArray.h"
+#include "Sparse.h"
+#include "lo-error.h"
+#include "quit.h"
 
 
 // Two dimensional sparse array with math ops.

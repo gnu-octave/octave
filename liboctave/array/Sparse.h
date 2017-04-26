@@ -1,4 +1,3 @@
-// Template sparse classes
 /*
 
 Copyright (C) 2004-2017 David Bateman
@@ -33,12 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <iosfwd>
+#include <string>
 
 #include "Array.h"
-#include "dim-vector.h"
-#include "lo-error.h"
-#include "lo-utils.h"
-#include "oct-sort.h"
 
 class idx_vector;
 class PermMatrix;

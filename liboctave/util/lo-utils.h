@@ -30,10 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include "quit.h"
-
 #include "lo-cutils.h"
 #include "oct-cmplx.h"
+#include "quit.h"
 
 // Generic any/all test functionality with arbitrary predicate.
 

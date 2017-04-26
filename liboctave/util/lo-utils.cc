@@ -1,4 +1,3 @@
-// utils.cc
 /*
 
 Copyright (C) 1996-2017 John W. Eaton
@@ -25,12 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cctype>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
-#include <cfloat>
 
+#include <complex>
 #include <limits>
 #include <string>
 

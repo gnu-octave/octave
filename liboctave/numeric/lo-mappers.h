@@ -28,10 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <limits>
 
+#include "lo-ieee.h"
+#include "lo-math.h"
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"
-#include "lo-math.h"
-#include "lo-ieee.h"
 
 namespace octave
 {

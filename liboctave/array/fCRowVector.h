@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "fRowVector.h"
-
 #include "mx-defs.h"
 
 class

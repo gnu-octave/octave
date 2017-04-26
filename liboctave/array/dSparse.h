@@ -26,18 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "dMatrix.h"
-#include "dNDArray.h"
-#include "CMatrix.h"
-#include "dColVector.h"
 #include "CColVector.h"
-
+#include "CMatrix.h"
 #include "DET.h"
 #include "MSparse.h"
-
-#include "Sparse-op-decls.h"
-
 #include "MatrixType.h"
+#include "Sparse-op-decls.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dNDArray.h"
 
 class PermMatrix;
 class DiagMatrix;

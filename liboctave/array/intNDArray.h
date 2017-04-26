@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MArray.h"
 #include "boolNDArray.h"
+
 class NDArray;
 
 template <typename T>

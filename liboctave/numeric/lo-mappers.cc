@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"

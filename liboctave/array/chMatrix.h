@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "chNDArray.h"
-
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 #include "str-vec.h"

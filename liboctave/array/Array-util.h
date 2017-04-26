@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "Array.h"
-#include "dim-vector.h"
-#include "idx-vector.h"
 #include "lo-array-errwarn.h"
 
 extern OCTAVE_API bool index_in_bounds (const Array<octave_idx_type>& ra_idx,

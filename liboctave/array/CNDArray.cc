@@ -26,9 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
-#include <vector>
+#include <complex>
+#include <iostream>
 
 #include "Array-util.h"
 #include "CNDArray.h"
@@ -37,8 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "mx-base.h"
-#include "mx-op-defs.h"
 #include "mx-cnda-s.h"
+#include "mx-op-defs.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 

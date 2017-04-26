@@ -26,10 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
+#include <complex>
 #include <iostream>
-#include <vector>
 
 #include "quit.h"
 #include "lo-ieee.h"

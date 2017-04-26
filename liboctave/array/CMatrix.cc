@@ -27,28 +27,23 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
+#include <algorithm>
+#include <complex>
 #include <iostream>
-#include <vector>
-
-// FIXME
-#include <sys/types.h>
+#include <limits>
 
 #include "Array-util.h"
-#include "boolMatrix.h"
-#include "chMatrix.h"
-#include "chol.h"
-#include "dMatrix.h"
+#include "CDiagMatrix.h"
 #include "CMatrix.h"
 #include "CNDArray.h"
 #include "CRowVector.h"
-#include "dRowVector.h"
-#include "CDiagMatrix.h"
-#include "dDiagMatrix.h"
-#include "schur.h"
-#include "svd.h"
 #include "DET.h"
+#include "boolMatrix.h"
+#include "chMatrix.h"
+#include "chol.h"
+#include "dDiagMatrix.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
@@ -65,6 +60,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "oct-norm.h"
+#include "schur.h"
+#include "svd.h"
 
 static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (),
                                          octave::numeric_limits<double>::NaN ());

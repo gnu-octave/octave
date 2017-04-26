@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <cfloat>
+#include <string>
 
 #include "DASSL-opts.h"
 

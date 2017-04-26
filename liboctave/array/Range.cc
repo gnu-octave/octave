@@ -24,17 +24,17 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
+#include <cmath>
 
 #include <iostream>
 #include <limits>
 
+#include "Array-util.h"
 #include "Range.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
 #include "lo-math.h"
 #include "lo-utils.h"
-#include "Array-util.h"
 
 bool
 Range::all_elements_are_ints (void) const

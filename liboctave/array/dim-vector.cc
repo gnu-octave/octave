@@ -25,10 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <sstream>
 #include <limits>
-#include <string>
 #include <new>
+#include <sstream>
 
 #include "dim-vector.h"
 

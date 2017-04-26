@@ -374,7 +374,6 @@ sub emit_opt_class_header
 #if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
 
-#include <cfloat>
 #include <cmath>
 
 #include <limits>

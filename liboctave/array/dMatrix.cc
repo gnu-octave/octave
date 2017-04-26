@@ -27,26 +27,23 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
+#include <algorithm>
 #include <iostream>
-#include <vector>
+#include <limits>
 
 #include "Array-util.h"
-#include "byte-swap.h"
+#include "CColVector.h"
+#include "CMatrix.h"
+#include "DET.h"
+#include "PermMatrix.h"
 #include "boolMatrix.h"
+#include "byte-swap.h"
 #include "chMatrix.h"
 #include "chol.h"
-#include "dMatrix.h"
-#include "dDiagMatrix.h"
-#include "CMatrix.h"
 #include "dColVector.h"
+#include "dDiagMatrix.h"
+#include "dMatrix.h"
 #include "dRowVector.h"
-#include "CColVector.h"
-#include "PermMatrix.h"
-#include "DET.h"
-#include "schur.h"
-#include "svd.h"
 #include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
@@ -54,15 +51,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-lapack-proto.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "mx-m-dm.h"
 #include "mx-dm-m.h"
 #include "mx-inlines.cc"
+#include "mx-m-dm.h"
 #include "mx-op-defs.h"
 #include "oct-cmplx.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "oct-norm.h"
 #include "quit.h"
+#include "schur.h"
+#include "svd.h"
 
 // Matrix class.
 

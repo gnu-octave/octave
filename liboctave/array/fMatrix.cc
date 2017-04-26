@@ -27,28 +27,25 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
+#include <algorithm>
 #include <iostream>
-#include <vector>
+#include <limits>
 
-#include "fNDArray.h"
 #include "Array-util.h"
+#include "DET.h"
+#include "PermMatrix.h"
 #include "boolMatrix.h"
+#include "byte-swap.h"
 #include "chMatrix.h"
 #include "chol.h"
-#include "fMatrix.h"
-#include "fDiagMatrix.h"
+#include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fColVector.h"
-#include "fRowVector.h"
-#include "fCColVector.h"
-#include "PermMatrix.h"
-#include "DET.h"
-#include "byte-swap.h"
+#include "fDiagMatrix.h"
 #include "fMatrix.h"
-#include "schur.h"
-#include "svd.h"
+#include "fMatrix.h"
+#include "fNDArray.h"
+#include "fRowVector.h"
 #include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
@@ -65,6 +62,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-norm.h"
 #include "quit.h"
+#include "schur.h"
+#include "svd.h"
 
 // Matrix class.
 

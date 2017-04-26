@@ -27,18 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 // C++ source files that should have included config.h before including
 // this file.
 
-#include <cassert>
-
 #include <iostream>
-#include <sstream>
-#include <vector>
-#include <algorithm>
-#include <new>
 
-#include "Array.h"
 #include "Array-util.h"
-#include "idx-vector.h"
-#include "lo-error.h"
+#include "Array.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 

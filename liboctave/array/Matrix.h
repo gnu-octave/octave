@@ -30,9 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "mx-base.h"
-
 #include "mx-ext.h"
-
 #include "mx-ops.h"
 
 #endif

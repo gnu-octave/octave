@@ -26,14 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "Sparse.h"
 #include "MSparse.h"
-
+#include "PermMatrix.h"
+#include "Sparse-op-decls.h"
+#include "Sparse.h"
 #include "boolMatrix.h"
 #include "boolNDArray.h"
-#include "PermMatrix.h"
-
-#include "Sparse-op-decls.h"
 
 class SparseMatrix;
 

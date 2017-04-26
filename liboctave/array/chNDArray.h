@@ -25,13 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <string>
-
 #include "Array.h"
-
+#include "bsxfun-decl.h"
 #include "mx-defs.h"
 #include "mx-op-decl.h"
-#include "bsxfun-decl.h"
 #include "str-vec.h"
 
 class

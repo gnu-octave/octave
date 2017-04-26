@@ -25,10 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "bsxfun-decl.h"
 #include "intNDArray.h"
 #include "mx-op-decl.h"
 #include "oct-inttypes-fwd.h"
-#include "bsxfun-decl.h"
 
 typedef intNDArray<octave_int32> int32NDArray;
 

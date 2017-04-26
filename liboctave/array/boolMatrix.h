@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "boolNDArray.h"
-
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 

@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
+#include "oct-cmplx.h"
+
 class ColumnVector;
 class ComplexColumnVector;
 class Matrix;

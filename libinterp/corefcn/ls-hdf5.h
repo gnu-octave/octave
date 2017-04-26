@@ -25,7 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iostream>
+
 #include "oct-hdf5-types.h"
+#include "ov.h"
 
 // first, we need to define our own dummy stream subclass, since
 // HDF5 needs to do its own file i/o

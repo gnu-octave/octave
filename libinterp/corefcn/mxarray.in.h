@@ -100,6 +100,7 @@ typedef %OCTAVE_IDX_TYPE% mwSignedIndex;
 #include "error.h"
 
 class octave_value;
+class dim_vector;
 
 #define DO_MUTABLE_METHOD(RET_T, METHOD_CALL)   \
   RET_T retval = rep->METHOD_CALL;              \

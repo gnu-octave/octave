@@ -25,6 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iosfwd>
+#include <string>
+
+class octave_value;
+
 enum mat5_data_type
 {
   miINT8 = 1,                 // 8 bit signed

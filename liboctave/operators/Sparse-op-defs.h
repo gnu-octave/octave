@@ -28,8 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "Array-util.h"
-#include "oct-locbuf.h"
+#include "lo-array-errwarn.h"
 #include "mx-inlines.cc"
+#include "oct-locbuf.h"
 
 // sparse matrix by scalar operations.
 

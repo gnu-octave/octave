@@ -25,6 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iosfwd>
+
+#include "mach-info.h"
+
+class octave_value;
+
 extern OCTINTERP_API bool
 save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,

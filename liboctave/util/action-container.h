@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <cstddef>
+
 // This class allows registering actions in a list for later
 // execution, either explicitly or when the container goes out of
 // scope.

@@ -36,10 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov.h"
 #include "ovl.h"
+#include "pt-arg-list.h"
 
 namespace octave
 {
   class tree_evaluator;
+  class tree_matrix;
 
   // General matrices.  This list type is much more work to handle than
   // constant matrices, but it allows us to construct matrices from

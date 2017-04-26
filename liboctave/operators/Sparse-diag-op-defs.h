@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "lo-array-errwarn.h"
+
 // Matrix multiplication
 
 template <typename RT, typename DM, typename SM>

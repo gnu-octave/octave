@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <ios>
+
 class
 octave_preserve_stream_state
 {

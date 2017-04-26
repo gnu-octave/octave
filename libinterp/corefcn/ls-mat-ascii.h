@@ -25,6 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iosfwd>
+#include <string>
+
+class octave_value;
+
 extern std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
                      octave_value& tc);

@@ -25,6 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#if defined (__cplusplus)
+#  include <cstdio>
+#else
+#  include <stdio.h>
+#endif
+
 typedef int (*rl_startup_hook_fcn_ptr) (void);
 
 typedef int (*rl_pre_input_hook_fcn_ptr) (void);

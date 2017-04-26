@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ls-ascii-helper.h"
 
+class octave_value;
+
 // Flag for cell elements
 #define CELL_ELT_TAG "<cell-element>"
 

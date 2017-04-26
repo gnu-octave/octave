@@ -377,6 +377,8 @@ sub emit_opt_class_header
 #include <cfloat>
 #include <cmath>
 
+#include <limits>
+
 $INCLUDE
 
 class

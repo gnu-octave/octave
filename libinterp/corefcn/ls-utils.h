@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "data-conv.h"
+
 extern save_type
 get_save_type (double max_val, double min_val);
 

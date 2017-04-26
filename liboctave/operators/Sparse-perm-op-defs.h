@@ -25,6 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "PermMatrix.h"
+#include "lo-array-errwarn.h"
+#include "oct-locbuf.h"
+#include "oct-sort.h"
+#include "quit.h"
+
 // Matrix multiplication
 
 template <typename SM>

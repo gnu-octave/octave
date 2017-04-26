@@ -33,6 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
+#include "str-vec.h"
+
+template <typename T> class Array;
+
 namespace octave
 {
   class

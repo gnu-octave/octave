@@ -25,6 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iosfwd>
+
+#include "mach-info.h"
+
+class octave_value;
+
 extern octave::mach_info::float_format
 mopt_digit_to_float_format (int mach);
 

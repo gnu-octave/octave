@@ -132,7 +132,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                bool mark_as_global, bool save_as_floats);
 
 extern OCTINTERP_API int
-save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d);
+save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d);
 
 extern OCTINTERP_API int
 load_hdf5_empty (octave_hdf5_id loc_id, const char *name, dim_vector& d);

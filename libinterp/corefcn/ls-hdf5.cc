@@ -894,7 +894,7 @@ hdf5_add_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 //    = 0  Not an empty matrix; did nothing
 //    < 0  Error condition
 int
-save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector d)
+save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d)
 {
 #if defined (HAVE_HDF5)
 

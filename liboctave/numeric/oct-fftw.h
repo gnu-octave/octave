@@ -63,7 +63,7 @@ namespace octave
     static bool instance_ok (void);
 
     static void *
-      create_plan (int dir, const int rank, const dim_vector dims,
+      create_plan (int dir, const int rank, const dim_vector& dims,
                    octave_idx_type howmany, octave_idx_type stride,
                    octave_idx_type dist, const Complex *in,
                    Complex *out)
@@ -75,7 +75,7 @@ namespace octave
     }
 
     static void *
-      create_plan (const int rank, const dim_vector dims,
+      create_plan (const int rank, const dim_vector& dims,
                    octave_idx_type howmany, octave_idx_type stride,
                    octave_idx_type dist, const double *in, Complex *out)
     {
@@ -113,13 +113,13 @@ namespace octave
     static void cleanup_instance (void) { delete instance; instance = 0; }
 
     void *
-    do_create_plan (int dir, const int rank, const dim_vector dims,
+    do_create_plan (int dir, const int rank, const dim_vector& dims,
                     octave_idx_type howmany, octave_idx_type stride,
                     octave_idx_type dist, const Complex *in,
                     Complex *out);
 
     void *
-    do_create_plan (const int rank, const dim_vector dims,
+    do_create_plan (const int rank, const dim_vector& dims,
                     octave_idx_type howmany, octave_idx_type stride,
                     octave_idx_type dist, const double *in, Complex *out);
 
@@ -209,7 +209,7 @@ namespace octave
     static bool instance_ok (void);
 
     static void *
-      create_plan (int dir, const int rank, const dim_vector dims,
+      create_plan (int dir, const int rank, const dim_vector& dims,
                    octave_idx_type howmany, octave_idx_type stride,
                    octave_idx_type dist, const FloatComplex *in,
                    FloatComplex *out)
@@ -221,7 +221,7 @@ namespace octave
     }
 
     static void *
-      create_plan (const int rank, const dim_vector dims,
+      create_plan (const int rank, const dim_vector& dims,
                    octave_idx_type howmany, octave_idx_type stride,
                    octave_idx_type dist, const float *in, FloatComplex *out)
     {
@@ -259,13 +259,13 @@ namespace octave
     static void cleanup_instance (void) { delete instance; instance = 0; }
 
     void *
-    do_create_plan (int dir, const int rank, const dim_vector dims,
+    do_create_plan (int dir, const int rank, const dim_vector& dims,
                     octave_idx_type howmany, octave_idx_type stride,
                     octave_idx_type dist, const FloatComplex *in,
                     FloatComplex *out);
 
     void *
-    do_create_plan (const int rank, const dim_vector dims,
+    do_create_plan (const int rank, const dim_vector& dims,
                     octave_idx_type howmany, octave_idx_type stride,
                     octave_idx_type dist, const float *in, FloatComplex *out);
 
@@ -347,11 +347,11 @@ namespace octave
                      size_t nsamples = 1, octave_idx_type stride = 1,
                      octave_idx_type dist = -1);
 
-    static int fftNd (const double*, Complex*, const int, const dim_vector &);
+    static int fftNd (const double*, Complex*, const int, const dim_vector&);
     static int fftNd (const Complex*, Complex*, const int,
-                      const dim_vector &);
+                      const dim_vector&);
     static int ifftNd (const Complex*, Complex*, const int,
-                       const dim_vector &);
+                       const dim_vector&);
 
     static int fft (const float *in, FloatComplex *out, size_t npts,
                     size_t nsamples = 1, octave_idx_type stride = 1,
@@ -363,11 +363,11 @@ namespace octave
                      size_t nsamples = 1, octave_idx_type stride = 1,
                      octave_idx_type dist = -1);
 
-    static int fftNd (const float*, FloatComplex*, const int, const dim_vector &);
+    static int fftNd (const float*, FloatComplex*, const int, const dim_vector&);
     static int fftNd (const FloatComplex*, FloatComplex*, const int,
-                      const dim_vector &);
+                      const dim_vector&);
     static int ifftNd (const FloatComplex*, FloatComplex*, const int,
-                       const dim_vector &);
+                       const dim_vector&);
   };
 
   extern OCTAVE_API std::string fftw_version (void);

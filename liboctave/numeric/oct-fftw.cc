@@ -150,7 +150,7 @@ namespace octave
 
   void *
   fftw_planner::do_create_plan (int dir, const int rank,
-                                const dim_vector dims,
+                                const dim_vector& dims,
                                 octave_idx_type howmany,
                                 octave_idx_type stride,
                                 octave_idx_type dist,
@@ -274,7 +274,7 @@ namespace octave
   }
 
   void *
-  fftw_planner::do_create_plan (const int rank, const dim_vector dims,
+  fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
                                 octave_idx_type howmany,
                                 octave_idx_type stride,
                                 octave_idx_type dist,
@@ -505,7 +505,7 @@ namespace octave
 
   void *
   float_fftw_planner::do_create_plan (int dir, const int rank,
-                                      const dim_vector dims,
+                                      const dim_vector& dims,
                                       octave_idx_type howmany,
                                       octave_idx_type stride,
                                       octave_idx_type dist,
@@ -630,7 +630,7 @@ namespace octave
   }
 
   void *
-  float_fftw_planner::do_create_plan (const int rank, const dim_vector dims,
+  float_fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
                                       octave_idx_type howmany,
                                       octave_idx_type stride,
                                       octave_idx_type dist,

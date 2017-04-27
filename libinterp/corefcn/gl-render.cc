@@ -396,7 +396,7 @@ namespace octave
   private:
     vertex_data_rep *rep;
 
-    vertex_data_rep *nil_rep (void) const
+    vertex_data_rep * nil_rep (void) const
     {
       static vertex_data_rep *nr = new vertex_data_rep ();
 
@@ -436,7 +436,7 @@ namespace octave
       return *this;
     }
 
-    vertex_data_rep *get_rep (void) const { return rep; }
+    vertex_data_rep * get_rep (void) const { return rep; }
   };
 
   class

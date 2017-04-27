@@ -78,7 +78,7 @@ namespace octave
 
     std::string name (void) const;
 
-    tree_expression *expression (void) { return expr; }
+    tree_expression * expression (void) { return expr; }
 
     std::list<tree_argument_list *> arg_lists (void) { return args; }
 
@@ -94,8 +94,8 @@ namespace octave
 
     octave_lvalue lvalue (tree_evaluator *tw);
 
-    tree_index_expression *dup (symbol_table::scope_id scope,
-                                symbol_table::context_id context) const;
+    tree_index_expression * dup (symbol_table::scope_id scope,
+                                 symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

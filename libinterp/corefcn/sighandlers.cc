@@ -321,7 +321,7 @@ namespace octave
       return retval;
     }
 
-    static base_interrupt_manager *create_instance (void)
+    static base_interrupt_manager * create_instance (void)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
       return new w32_interrupt_manager ();

@@ -120,7 +120,7 @@ public:
       use_head->stash_value (0);
   }
 
-  NODE_T *first_use (void) const { return use_head; }
+  NODE_T * first_use (void) const { return use_head; }
 
   size_t use_count (void) const { return muse_count; }
 private:
@@ -141,7 +141,7 @@ public:
 
   ~jit_internal_node (void) { remove (); }
 
-  LIST_T *value (void) const { return mvalue; }
+  LIST_T * value (void) const { return mvalue; }
 
   void stash_value (LIST_T *avalue)
   {
@@ -166,9 +166,9 @@ public:
       }
   }
 
-  NODE_T *next (void) const { return mnext; }
+  NODE_T * next (void) const { return mnext; }
 
-  NODE_T *prev (void) const { return mprev; }
+  NODE_T * prev (void) const { return mprev; }
 private:
   void remove ()
   {

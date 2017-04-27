@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  char *do_completer_word_break_hook ();
+  char * do_completer_word_break_hook ();
 
   command_editor *command_editor::instance = 0;
 
@@ -88,11 +88,11 @@ namespace octave
 
     void do_set_input_stream (FILE *f);
 
-    FILE *do_get_input_stream (void);
+    FILE * do_get_input_stream (void);
 
     void do_set_output_stream (FILE *f);
 
-    FILE *do_get_output_stream (void);
+    FILE * do_get_output_stream (void);
 
     void do_redisplay (void);
 
@@ -221,18 +221,18 @@ namespace octave
 
     static std::string completer_quote_characters;
 
-    static char *command_generator (const char *text, int state);
+    static char * command_generator (const char *text, int state);
 
-    static char *command_quoter (char *text, int match_type, char *quote_pointer);
-    static char *command_dequoter (char *text, int match_type);
+    static char * command_quoter (char *text, int match_type, char *quote_pointer);
+    static char * command_dequoter (char *text, int match_type);
 
     static int command_char_is_quoted (char *text, int index);
 
     static int command_accept_line (int count, int key);
 
-    static char **command_completer (const char *text, int start, int end);
+    static char ** command_completer (const char *text, int start, int end);
 
-    static char *do_completer_word_break_hook ();
+    static char * do_completer_word_break_hook ();
   };
 
   std::string gnu_readline::completer_quote_characters = "";
@@ -935,11 +935,11 @@ namespace octave
 
     void do_set_input_stream (FILE *f);
 
-    FILE *do_get_input_stream (void);
+    FILE * do_get_input_stream (void);
 
     void do_set_output_stream (FILE *f);
 
-    FILE *do_get_output_stream (void);
+    FILE * do_get_output_stream (void);
 
     string_vector do_generate_filename_completions (const std::string& text);
 

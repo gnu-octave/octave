@@ -115,7 +115,7 @@ public:
 
   std::string join (const std::string& sep = "") const;
 
-  char **c_str_vec (void) const;
+  char ** c_str_vec (void) const;
 
   std::list<std::string> std_list (void) const;
 

@@ -58,8 +58,8 @@ public:
 
   ~octave_cs_list (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_cs_list (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_cs_list (); }
+  octave_base_value * clone (void) const { return new octave_cs_list (*this); }
+  octave_base_value * empty_clone (void) const { return new octave_cs_list (); }
 
   dim_vector dims (void) const { return dim_vector (1, lst.length ()); }
 

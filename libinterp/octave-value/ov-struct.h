@@ -58,10 +58,10 @@ public:
 
   ~octave_struct (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_struct (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_struct (); }
+  octave_base_value * clone (void) const { return new octave_struct (*this); }
+  octave_base_value * empty_clone (void) const { return new octave_struct (); }
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   Cell dotref (const octave_value_list& idx, bool auto_add = false);
 
@@ -144,7 +144,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value
   fast_elem_extract (octave_idx_type n) const;
@@ -178,9 +178,9 @@ public:
 
   ~octave_scalar_struct (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_scalar_struct (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_scalar_struct (); }
 
   octave_value dotref (const octave_value_list& idx, bool auto_add = false);
@@ -262,7 +262,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 

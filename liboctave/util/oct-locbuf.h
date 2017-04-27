@@ -87,7 +87,7 @@ namespace octave
 
     OCTAVE_API virtual ~chunk_buffer (void);
 
-    char *data (void) const { return dat; }
+    char * data (void) const { return dat; }
 
     static OCTAVE_API void clear (void);
 

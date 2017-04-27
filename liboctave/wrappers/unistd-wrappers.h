@@ -47,7 +47,7 @@ extern int octave_chdir_wrapper (const char *nm);
 
 extern int octave_close_wrapper (int fd);
 
-extern const char *octave_ctermid_wrapper (void);
+extern const char * octave_ctermid_wrapper (void);
 
 extern int octave_dup2_wrapper (int fd1, int fd2);
 
@@ -59,7 +59,7 @@ extern pid_t octave_fork_wrapper (void);
 
 extern int octave_ftruncate_wrapper (int fd, off_t sz);
 
-extern char *octave_getcwd_wrapper (char *nm, size_t len);
+extern char * octave_getcwd_wrapper (char *nm, size_t len);
 
 extern gid_t octave_getegid_wrapper (void);
 

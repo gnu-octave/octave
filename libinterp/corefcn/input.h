@@ -42,7 +42,7 @@ namespace octave
   class base_lexer;
 }
 
-extern OCTINTERP_API FILE *get_input_from_stdin (void);
+extern OCTINTERP_API FILE * get_input_from_stdin (void);
 
 // TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;

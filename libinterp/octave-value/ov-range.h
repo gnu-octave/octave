@@ -82,16 +82,16 @@ public:
 
   ~octave_range (void) { clear_cached_info (); }
 
-  octave_base_value *clone (void) const { return new octave_range (*this); }
+  octave_base_value * clone (void) const { return new octave_range (*this); }
 
   // A range is really just a special kind of real matrix object.  In
   // the places where we need to call empty_clone, it makes more sense
   // to create an empty matrix (0x0) instead of an empty range (1x0).
-  octave_base_value *empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx);
@@ -291,7 +291,7 @@ public:
     return os.write (matrix_value (), block_size, output_type, skip, flt_fmt);
   }
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const
   {

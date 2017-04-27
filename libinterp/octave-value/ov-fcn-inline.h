@@ -54,14 +54,14 @@ public:
 
   ~octave_fcn_inline (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_fcn_inline (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_fcn_inline (); }
 
   bool is_inline_function (void) const { return true; }
 
-  octave_fcn_inline *fcn_inline_value (bool = false) { return this; }
+  octave_fcn_inline * fcn_inline_value (bool = false) { return this; }
 
   std::string fcn_text (void) const { return iftext; }
 

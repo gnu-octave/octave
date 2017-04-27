@@ -69,9 +69,9 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_function *function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
-  const octave_function *function_value (bool = false) const { return this; }
+  const octave_function * function_value (bool = false) const { return this; }
 
   void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
 

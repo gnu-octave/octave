@@ -127,7 +127,7 @@ namespace octave
     }
 
     // ID of error to throw
-    const char *err_id (void) const
+    const char * err_id (void) const
     {
       return error_id_invalid_index;
     }
@@ -220,7 +220,7 @@ namespace octave
     }
 
     // ID of error to throw.
-    const char *err_id (void) const
+    const char * err_id (void) const
     {
       return error_id_index_out_of_bounds;
     }

@@ -62,18 +62,18 @@ public:
 
   ~octave_complex (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_complex (*this); }
+  octave_base_value * clone (void) const { return new octave_complex (*this); }
 
   // We return an octave_complex_matrix object here instead of an
   // octave_complex object so that in expressions like A(2,2,2) = 2
   // (for A previously undefined), A will be empty instead of a 1x1
   // object.
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_complex_matrix (); }
 
   type_conv_info numeric_demotion_function (void) const;
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -187,7 +187,7 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;
 

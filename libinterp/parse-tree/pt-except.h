@@ -62,20 +62,20 @@ namespace octave
 
     ~tree_try_catch_command (void);
 
-    tree_identifier *identifier (void) { return expr_id; }
+    tree_identifier * identifier (void) { return expr_id; }
 
-    tree_statement_list *body (void) { return try_code; }
+    tree_statement_list * body (void) { return try_code; }
 
-    tree_statement_list *cleanup (void) { return catch_code; }
+    tree_statement_list * cleanup (void) { return catch_code; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *middle_comment (void) { return mid_comm; }
+    octave_comment_list * middle_comment (void) { return mid_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -131,18 +131,18 @@ namespace octave
 
     ~tree_unwind_protect_command (void);
 
-    tree_statement_list *body (void) { return unwind_protect_code; }
+    tree_statement_list * body (void) { return unwind_protect_code; }
 
-    tree_statement_list *cleanup (void) { return cleanup_code; }
+    tree_statement_list * cleanup (void) { return cleanup_code; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *middle_comment (void) { return mid_comm; }
+    octave_comment_list * middle_comment (void) { return mid_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

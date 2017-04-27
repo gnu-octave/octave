@@ -52,8 +52,8 @@ namespace octave
 
     virtual ~tree_command (void) = default;
 
-    virtual tree_command *dup (symbol_table::scope_id,
-                               symbol_table::context_id context) const = 0;
+    virtual tree_command * dup (symbol_table::scope_id,
+                                symbol_table::context_id context) const = 0;
   };
 
   // No-op.
@@ -74,8 +74,8 @@ namespace octave
 
     ~tree_no_op_command (void) = default;
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -115,8 +115,8 @@ namespace octave
 
     ~tree_function_def (void) = default;
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

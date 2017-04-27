@@ -167,11 +167,11 @@ public:
 
   // Unsafe.  These functions exists to support the MEX interface.
   // You should not use them anywhere else.
-  void *mex_get_data (void) const { return matrix.mex_get_data (); }
+  void * mex_get_data (void) const { return matrix.mex_get_data (); }
 
-  octave_idx_type *mex_get_ir (void) const { return matrix.mex_get_ir (); }
+  octave_idx_type * mex_get_ir (void) const { return matrix.mex_get_ir (); }
 
-  octave_idx_type *mex_get_jc (void) const { return matrix.mex_get_jc (); }
+  octave_idx_type * mex_get_jc (void) const { return matrix.mex_get_jc (); }
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 

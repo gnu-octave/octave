@@ -64,14 +64,14 @@ namespace octave
 
     bool is_else_clause (void) { return ! expr; }
 
-    tree_expression *condition (void) { return expr; }
+    tree_expression * condition (void) { return expr; }
 
-    tree_statement_list *commands (void) { return list; }
+    tree_statement_list * commands (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    tree_if_clause *dup (symbol_table::scope_id scope,
-                         symbol_table::context_id context) const;
+    tree_if_clause * dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -114,8 +114,8 @@ namespace octave
         }
     }
 
-    tree_if_command_list *dup (symbol_table::scope_id scope,
-                               symbol_table::context_id context) const;
+    tree_if_command_list * dup (symbol_table::scope_id scope,
+                                symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -142,14 +142,14 @@ namespace octave
 
     ~tree_if_command (void);
 
-    tree_if_command_list *cmd_list (void) { return list; }
+    tree_if_command_list * cmd_list (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -196,14 +196,14 @@ namespace octave
 
     bool is_default_case (void) { return ! label; }
 
-    tree_expression *case_label (void) { return label; }
+    tree_expression * case_label (void) { return label; }
 
-    tree_statement_list *commands (void) { return list; }
+    tree_statement_list * commands (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    tree_switch_case *dup (symbol_table::scope_id scope,
-                           symbol_table::context_id context) const;
+    tree_switch_case * dup (symbol_table::scope_id scope,
+                            symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -246,8 +246,8 @@ namespace octave
         }
     }
 
-    tree_switch_case_list *dup (symbol_table::scope_id scope,
-                                symbol_table::context_id context) const;
+    tree_switch_case_list * dup (symbol_table::scope_id scope,
+                                 symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -277,16 +277,16 @@ namespace octave
 
     ~tree_switch_command (void);
 
-    tree_expression *switch_value (void) { return expr; }
+    tree_expression * switch_value (void) { return expr; }
 
-    tree_switch_case_list *case_list (void) { return list; }
+    tree_switch_case_list * case_list (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

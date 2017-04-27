@@ -53,9 +53,9 @@ public:
 
   ~octave_procbuf (void) { close (); }
 
-  octave_procbuf *open (const char *command, int mode);
+  octave_procbuf * open (const char *command, int mode);
 
-  octave_procbuf *close (void);
+  octave_procbuf * close (void);
 
   int wait_status (void) const { return wstatus; }
 

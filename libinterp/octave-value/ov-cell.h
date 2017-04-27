@@ -64,11 +64,11 @@ public:
 
   ~octave_cell (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_cell (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_cell (); }
+  octave_base_value * clone (void) const { return new octave_cell (*this); }
+  octave_base_value * empty_clone (void) const { return new octave_cell (); }
 
 #if 0
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 #endif
 
   octave_value subsref (const std::string& type,
@@ -171,11 +171,11 @@ public:
 
   octave_value map (unary_mapper_t umap) const;
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const;
+  void * mex_get_data (void) const;
 
 private:
 

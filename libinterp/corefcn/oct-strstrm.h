@@ -64,7 +64,7 @@ public:
 
   std::string name (void) const { return ""; }
 
-  virtual std::streambuf *rdbuf (void) = 0;
+  virtual std::streambuf * rdbuf (void) = 0;
 
   virtual bool bad (void) const = 0;
 
@@ -115,13 +115,13 @@ public:
 
   bool eof (void) const { return is.eof (); }
 
-  std::istream *input_stream (void) { return &is; }
+  std::istream * input_stream (void) { return &is; }
 
-  std::ostream *output_stream (void) { return 0; }
+  std::ostream * output_stream (void) { return 0; }
 
   off_t tell (void) { return is.tellg (); }
 
-  std::streambuf *rdbuf (void) { return is ? is.rdbuf () : 0; }
+  std::streambuf * rdbuf (void) { return is ? is.rdbuf () : 0; }
 
   bool bad (void) const { return is.bad (); }
 
@@ -163,13 +163,13 @@ public:
 
   bool eof (void) const { return os.eof (); }
 
-  std::istream *input_stream (void) { return 0; }
+  std::istream * input_stream (void) { return 0; }
 
-  std::ostream *output_stream (void) { return &os; }
+  std::ostream * output_stream (void) { return &os; }
 
   std::string str (void) { return os.str (); }
 
-  std::streambuf *rdbuf (void) { return os ? os.rdbuf () : 0; }
+  std::streambuf * rdbuf (void) { return os ? os.rdbuf () : 0; }
 
   bool bad (void) const { return os.bad (); }
 

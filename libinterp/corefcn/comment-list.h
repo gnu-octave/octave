@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 extern std::string get_comment_text (void);
 
-extern char *get_comment_text_c_str (void);
+extern char * get_comment_text_c_str (void);
 
 extern void save_comment_text (const std::string& text);
 
@@ -97,7 +97,7 @@ public:
                octave_comment_elt::comment_type t = octave_comment_elt::unknown)
   { append (octave_comment_elt (s, t)); }
 
-  octave_comment_list *dup (void) const;
+  octave_comment_list * dup (void) const;
 };
 
 #endif

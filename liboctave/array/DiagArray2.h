@@ -173,11 +173,11 @@ public:
 
   Array<T> array_value (void) const;
 
-  const T *data (void) const { return Array<T>::data (); }
+  const T * data (void) const { return Array<T>::data (); }
 
-  const T *fortran_vec (void) const { return Array<T>::fortran_vec (); }
+  const T * fortran_vec (void) const { return Array<T>::fortran_vec (); }
 
-  T *fortran_vec (void) { return Array<T>::fortran_vec (); }
+  T * fortran_vec (void) { return Array<T>::fortran_vec (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<T>::print_info (os, prefix); }

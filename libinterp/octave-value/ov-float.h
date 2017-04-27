@@ -64,13 +64,13 @@ public:
 
   ~octave_float_scalar (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_float_scalar (*this); }
 
   // We return an octave_matrix here instead of an octave_float_scalar so
   // that in expressions like A(2,2,2) = 2 (for A previously
   // undefined), A will be empty instead of a 1x1 object.
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_float_matrix (); }
 
   octave_value do_index_op (const octave_value_list& idx,
@@ -258,7 +258,7 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;
 

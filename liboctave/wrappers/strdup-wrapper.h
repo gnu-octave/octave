@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-extern char *octave_strdup_wrapper (const char *str);
+extern char * octave_strdup_wrapper (const char *str);
 
 #if defined __cplusplus
 }

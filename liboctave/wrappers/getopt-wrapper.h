@@ -45,7 +45,7 @@ octave_getopt_long_wrapper (int argc, char **argv,
                             const struct octave_getopt_options *longopts,
                             int *longind);
 
-extern char *octave_optarg_wrapper (void);
+extern char * octave_optarg_wrapper (void);
 
 extern int octave_optind_wrapper (void);
 

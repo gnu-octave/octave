@@ -40,7 +40,9 @@ extern OCTINTERP_API void sysdep_cleanup (void);
 
 extern OCTINTERP_API void raw_mode (bool, bool wait = true);
 
-extern OCTINTERP_API FILE *octave_popen (const char *command, const char *mode);
+extern OCTINTERP_API FILE * octave_popen (const char *command,
+                                          const char *mode);
+
 extern OCTINTERP_API int octave_pclose (FILE *f);
 
 extern OCTINTERP_API int octave_kbhit (bool wait = true);

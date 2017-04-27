@@ -88,7 +88,7 @@ public:
     return true;
   };
 
-  const QIntList *get_list_index (void) { return list_index; }
+  const QIntList * get_list_index (void) { return list_index; }
 
   bool signal_inputlayout (const QStringList& prompt, const QString& title,
                            const QFloatList& nr, const QFloatList& nc,
@@ -102,7 +102,7 @@ public:
     return true;
   };
 
-  const QStringList *get_string_list (void) { return string_list; }
+  const QStringList * get_string_list (void) { return string_list; }
 
   bool signal_filedialog (const QStringList& filters, const QString& title,
                           const QString& filename, const QString& dirname,
@@ -112,7 +112,7 @@ public:
     return true;
   }
 
-  const QString *get_dialog_path (void) { return path_name; }
+  const QString * get_dialog_path (void) { return path_name; }
 
   // GUI objects cannot be accessed in the non-GUI thread.  However,
   // signals can be sent to slots across threads with proper

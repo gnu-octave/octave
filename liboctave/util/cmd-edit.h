@@ -79,11 +79,11 @@ namespace octave
 
     static void set_input_stream (FILE *f);
 
-    static FILE *get_input_stream (void);
+    static FILE * get_input_stream (void);
 
     static void set_output_stream (FILE *f);
 
-    static FILE *get_output_stream (void);
+    static FILE * get_output_stream (void);
 
     static void redisplay (void);
 
@@ -239,11 +239,11 @@ namespace octave
 
     virtual void do_set_input_stream (FILE *) = 0;
 
-    virtual FILE *do_get_input_stream (void) = 0;
+    virtual FILE * do_get_input_stream (void) = 0;
 
     virtual void do_set_output_stream (FILE *) = 0;
 
-    virtual FILE *do_get_output_stream (void) = 0;
+    virtual FILE * do_get_output_stream (void) = 0;
 
     virtual void do_redisplay (void) { }
 

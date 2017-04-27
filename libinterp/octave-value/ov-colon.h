@@ -54,9 +54,9 @@ public:
 
   ~octave_magic_colon (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_magic_colon (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_magic_colon (); }
 
   idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (':'); }

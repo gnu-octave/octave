@@ -90,7 +90,7 @@ private:
 
   octave_base_thread_manager *rep;
 
-  static octave_base_thread_manager *create_rep (void);
+  static octave_base_thread_manager * create_rep (void);
 };
 
 #endif

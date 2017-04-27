@@ -84,16 +84,16 @@ namespace octave
 
     ~tree_while_command (void);
 
-    tree_expression *condition (void) { return expr; }
+    tree_expression * condition (void) { return expr; }
 
-    tree_statement_list *body (void) { return list; }
+    tree_statement_list * body (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -102,7 +102,7 @@ namespace octave
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
-    jit_info *get_info (void) const
+    jit_info * get_info (void) const
     {
       return compiled;
     }
@@ -164,8 +164,8 @@ namespace octave
 
     ~tree_do_until_command (void) = default;
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -212,20 +212,20 @@ namespace octave
 
     bool in_parallel (void) { return parallel; }
 
-    tree_expression *left_hand_side (void) { return lhs; }
+    tree_expression * left_hand_side (void) { return lhs; }
 
-    tree_expression *control_expr (void) { return expr; }
+    tree_expression * control_expr (void) { return expr; }
 
-    tree_expression *maxproc_expr (void) { return maxproc; }
+    tree_expression * maxproc_expr (void) { return maxproc; }
 
-    tree_statement_list *body (void) { return list; }
+    tree_statement_list * body (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -234,7 +234,7 @@ namespace octave
 
 #if defined (HAVE_LLVM)
     // some functions use by tree_jit
-    jit_info *get_info (void) const
+    jit_info * get_info (void) const
     {
       return compiled;
     }
@@ -299,18 +299,18 @@ namespace octave
 
     ~tree_complex_for_command (void);
 
-    tree_argument_list *left_hand_side (void) { return lhs; }
+    tree_argument_list * left_hand_side (void) { return lhs; }
 
-    tree_expression *control_expr (void) { return expr; }
+    tree_expression * control_expr (void) { return expr; }
 
-    tree_statement_list *body (void) { return list; }
+    tree_statement_list * body (void) { return list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

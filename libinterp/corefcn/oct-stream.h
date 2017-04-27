@@ -101,13 +101,13 @@ namespace octave
     // pointer to a valid istream, scanf(), read(), getl(), and gets()
     // will automatically work for this stream.
 
-    virtual std::istream *input_stream (void) { return 0; }
+    virtual std::istream * input_stream (void) { return 0; }
 
     // If the derived class provides this function and it returns a
     // pointer to a valid ostream, flush(), write(), and printf() will
     // automatically work for this stream.
 
-    virtual std::ostream *output_stream (void) { return 0; }
+    virtual std::ostream * output_stream (void) { return 0; }
 
     // Return TRUE if this stream is open.
 
@@ -361,12 +361,12 @@ namespace octave
 
     static std::string mode_as_string (int mode);
 
-    std::istream *input_stream (void)
+    std::istream * input_stream (void)
     {
       return rep ? rep->input_stream () : 0;
     }
 
-    std::ostream *output_stream (void)
+    std::ostream * output_stream (void)
     {
       return rep ? rep->output_stream () : 0;
     }

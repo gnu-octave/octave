@@ -111,7 +111,7 @@ namespace octave
     double number (void) const;
     token_type ttype (void) const;
     end_tok_type ettype (void) const;
-    symbol_table::symbol_record *sym_rec (void) const;
+    symbol_table::symbol_record * sym_rec (void) const;
 
     std::string superclass_method_name (void) const;
     std::string superclass_class_name (void) const;

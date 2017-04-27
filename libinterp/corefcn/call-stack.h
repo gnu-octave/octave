@@ -107,7 +107,7 @@ namespace octave
     }
 
     // Current function (top of stack).
-    static octave_function *current (void)
+    static octave_function * current (void)
     {
       return instance_ok () ? instance->do_current () : 0;
     }
@@ -125,7 +125,7 @@ namespace octave
     }
 
     // Caller function, may be built-in.
-    static octave_function *caller (void)
+    static octave_function * caller (void)
     {
       return instance_ok () ? instance->do_caller () : 0;
     }
@@ -165,13 +165,13 @@ namespace octave
 
     // Function at location N on the call stack (N == 0 is current), may
     // be built-in.
-    static octave_function *element (size_t n)
+    static octave_function * element (size_t n)
     {
       return instance_ok () ? instance->do_element (n) : 0;
     }
 
     // User code caller.
-    static octave_user_code *caller_user_code (size_t nskip = 0)
+    static octave_user_code * caller_user_code (size_t nskip = 0)
     {
       return instance_ok () ? instance->do_caller_user_code (nskip) : 0;
     }
@@ -189,7 +189,7 @@ namespace octave
     }
 
     // Current function that we are debugging.
-    static octave_user_code *debug_user_code (void)
+    static octave_user_code * debug_user_code (void)
     {
       return instance_ok () ? instance->do_debug_user_code () : 0;
     }
@@ -339,7 +339,7 @@ namespace octave
 
     int do_current_column (void) const;
 
-    octave_function *do_caller (void) const
+    octave_function * do_caller (void) const
     {
       return curr_frame > 1 ? cs[curr_frame-1].m_fcn : cs[0].m_fcn;
     }
@@ -371,7 +371,7 @@ namespace octave
     }
 #endif
 
-    octave_function *do_element (size_t n)
+    octave_function * do_element (size_t n)
     {
       octave_function *retval = 0;
 
@@ -384,11 +384,11 @@ namespace octave
       return retval;
     }
 
-    octave_user_code *do_caller_user_code (size_t nskip) const;
+    octave_user_code * do_caller_user_code (size_t nskip) const;
     int do_caller_user_code_line (void) const;
     int do_caller_user_code_column (void) const;
 
-    octave_user_code *do_debug_user_code (void) const;
+    octave_user_code * do_debug_user_code (void) const;
     int do_debug_user_code_line (void) const;
     int do_debug_user_code_column (void) const;
 
@@ -403,7 +403,7 @@ namespace octave
       symbol_table::set_scope_and_context (scope, context);
     }
 
-    octave_function *do_current (void) const
+    octave_function * do_current (void) const
     {
       octave_function *retval = 0;
 

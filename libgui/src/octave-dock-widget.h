@@ -81,7 +81,7 @@ public slots:
 
   void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
-  QMainWindow *main_win () { return _parent; }
+  QMainWindow * main_win () { return _parent; }
 
   void save_settings (void);
 

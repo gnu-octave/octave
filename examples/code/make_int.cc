@@ -47,7 +47,7 @@ public:
 
   ~octave_integer (void) = default;
 
-  octave_base_value *clone (void) { return new octave_integer (*this); }
+  octave_base_value * clone (void) { return new octave_integer (*this); }
 
 #if 0
   void *operator new (size_t size);

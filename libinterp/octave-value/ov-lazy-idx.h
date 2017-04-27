@@ -47,13 +47,13 @@ public:
 
   ~octave_lazy_index (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_lazy_index (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 
@@ -210,12 +210,12 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const
+  void * mex_get_data (void) const
   {
     return make_value ().mex_get_data ();
   }
 
-  mxArray *as_mxArray (void) const
+  mxArray * as_mxArray (void) const
   {
     return make_value ().as_mxArray ();
   }

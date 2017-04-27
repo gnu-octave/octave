@@ -311,7 +311,7 @@ public:
 
   static void connect_link (octave_link *);
 
-  static octave_link *disconnect_link (bool delete_instance = true)
+  static octave_link * disconnect_link (bool delete_instance = true)
   {
     if (delete_instance)
       {

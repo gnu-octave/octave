@@ -95,7 +95,7 @@ private:
 
   //! Construct a new rep with count = 1 and ndims given.
 
-  static octave_idx_type *newrep (int ndims)
+  static octave_idx_type * newrep (int ndims)
   {
     octave_idx_type *r = new octave_idx_type [ndims + 2];
 
@@ -107,7 +107,7 @@ private:
 
   //! Clone this->rep.
 
-  octave_idx_type *clonerep (void)
+  octave_idx_type * clonerep (void)
   {
     int nd = ndims ();
 
@@ -120,7 +120,7 @@ private:
 
   //! Clone and resize this->rep to length n, filling by given value.
 
-  octave_idx_type *resizerep (int n, octave_idx_type fill_value)
+  octave_idx_type * resizerep (int n, octave_idx_type fill_value)
   {
     int nd = ndims ();
 
@@ -248,7 +248,7 @@ public:
   void chop_all_singletons (void);
 
   // WARNING: Only call by jit
-  octave_idx_type *to_jit (void) const
+  octave_idx_type * to_jit (void) const
   {
     return rep;
   }

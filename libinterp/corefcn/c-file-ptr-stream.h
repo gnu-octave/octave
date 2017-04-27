@@ -117,7 +117,7 @@ public:
 
   ~c_file_ptr_stream (void) { delete buf; buf = 0; }
 
-  BUF_T *rdbuf (void) { return buf; }
+  BUF_T * rdbuf (void) { return buf; }
 
   void stream_close (void) { if (buf) buf->buf_close (); }
 

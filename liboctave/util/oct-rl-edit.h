@@ -80,7 +80,7 @@ extern void octave_rl_set_screen_size (int ht, int wd);
 
 extern void octave_rl_restore_terminal_state (void);
 
-extern char *octave_rl_copy_line (void);
+extern char * octave_rl_copy_line (void);
 
 extern void octave_rl_replace_line (const char *s, int clear_undo);
 
@@ -90,7 +90,7 @@ extern void octave_rl_insert_text (const char *);
 
 extern int octave_rl_newline (int, int);
 
-extern const char *octave_rl_line_buffer (void);
+extern const char * octave_rl_line_buffer (void);
 
 extern int octave_rl_point (void);
 
@@ -100,15 +100,15 @@ extern void octave_rl_clear_undo_list (void);
 
 extern void octave_rl_set_name (const char *);
 
-extern char *octave_rl_readline (const char *);
+extern char * octave_rl_readline (const char *);
 
 extern void octave_rl_set_input_stream (FILE *);
 
-extern FILE *octave_rl_get_input_stream (void);
+extern FILE * octave_rl_get_input_stream (void);
 
 extern void octave_rl_set_output_stream (FILE *);
 
-extern FILE *octave_rl_get_output_stream (void);
+extern FILE * octave_rl_get_output_stream (void);
 
 extern void octave_rl_read_init_file (const char *);
 
@@ -122,13 +122,13 @@ extern int octave_rl_prefer_env_winsize (int);
 
 extern void octave_rl_done (int);
 
-extern char *octave_rl_filename_completion_function (const char *, int);
+extern char * octave_rl_filename_completion_function (const char *, int);
 
 extern void octave_rl_set_basic_word_break_characters (const char *);
 
 extern void octave_rl_set_completer_word_break_characters (const char *);
 
-extern char *octave_rl_get_completer_word_break_characters (void);
+extern char * octave_rl_get_completer_word_break_characters (void);
 
 extern void octave_rl_set_completion_word_break_hook (rl_completion_hook_fcn_ptr);
 

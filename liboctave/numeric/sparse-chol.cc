@@ -86,7 +86,7 @@ namespace octave
       }
 
 #if defined (HAVE_CHOLMOD)
-      cholmod_sparse *L (void) const
+      cholmod_sparse * L (void) const
       {
         return Lsparse;
       }

@@ -74,14 +74,14 @@ namespace octave
       return id ? id->lvalue (tw) : octave_lvalue ();
     }
 
-    tree_identifier *ident (void) { return id; }
+    tree_identifier * ident (void) { return id; }
 
     std::string name (void) { return id ? id->name () : ""; }
 
-    tree_expression *expression (void) { return expr; }
+    tree_expression * expression (void) { return expr; }
 
-    tree_decl_elt *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    tree_decl_elt * dup (symbol_table::scope_id scope,
+                         symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -121,8 +121,8 @@ namespace octave
         }
     }
 
-    tree_decl_init_list *dup (symbol_table::scope_id scope,
-                              symbol_table::context_id context) const;
+    tree_decl_init_list * dup (symbol_table::scope_id scope,
+                               symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -151,7 +151,7 @@ namespace octave
 
     ~tree_decl_command (void);
 
-    tree_decl_init_list *initializer_list (void) { return init_list; }
+    tree_decl_init_list * initializer_list (void) { return init_list; }
 
     std::string name (void) { return cmd_name; }
 
@@ -184,8 +184,8 @@ namespace octave
 
     ~tree_global_command (void) = default;
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -217,8 +217,8 @@ namespace octave
 
     ~tree_persistent_command (void) = default;
 
-    tree_command *dup (symbol_table::scope_id scope,
-                       symbol_table::context_id context) const;
+    tree_command * dup (symbol_table::scope_id scope,
+                        symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

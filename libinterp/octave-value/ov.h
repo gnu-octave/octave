@@ -315,9 +315,9 @@ public:
 
   // This should only be called for derived types.
 
-  octave_base_value *clone (void) const;
+  octave_base_value * clone (void) const;
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return rep->empty_clone (); }
 
   // Delete the representation of this constant if the count drops to zero.
@@ -405,7 +405,7 @@ public:
   octave_value as_uint32 (void) const { return rep->as_uint32 (); }
   octave_value as_uint64 (void) const { return rep->as_uint64 (); }
 
-  octave_base_value *try_narrowing_conversion (void)
+  octave_base_value * try_narrowing_conversion (void)
   { return rep->try_narrowing_conversion (); }
 
   // Close to dims (), but can be overloaded for classes.
@@ -950,17 +950,17 @@ public:
   bool is_instance_of (const std::string& cls_name) const
   { return rep->is_instance_of (cls_name); }
 
-  octave_function *function_value (bool silent = false) const;
+  octave_function * function_value (bool silent = false) const;
 
-  octave_user_function *user_function_value (bool silent = false) const;
+  octave_user_function * user_function_value (bool silent = false) const;
 
-  octave_user_script *user_script_value (bool silent = false) const;
+  octave_user_script * user_script_value (bool silent = false) const;
 
-  octave_user_code *user_code_value (bool silent = false) const;
+  octave_user_code * user_code_value (bool silent = false) const;
 
-  octave_fcn_handle *fcn_handle_value (bool silent = false) const;
+  octave_fcn_handle * fcn_handle_value (bool silent = false) const;
 
-  octave_fcn_inline *fcn_inline_value (bool silent = false) const;
+  octave_fcn_inline * fcn_inline_value (bool silent = false) const;
 
   octave_value_list list_value (void) const;
 
@@ -1174,12 +1174,12 @@ public:
 
   Array<FloatComplex> xfloat_complex_vector_value (const char *fmt, ...) const;
 
-  octave_function *xfunction_value (const char *fmt, ...) const;
-  octave_user_function *xuser_function_value (const char *fmt, ...) const;
-  octave_user_script *xuser_script_value (const char *fmt, ...) const;
-  octave_user_code *xuser_code_value (const char *fmt, ...) const;
-  octave_fcn_handle *xfcn_handle_value (const char *fmt, ...) const;
-  octave_fcn_inline *xfcn_inline_value (const char *fmt, ...) const;
+  octave_function * xfunction_value (const char *fmt, ...) const;
+  octave_user_function * xuser_function_value (const char *fmt, ...) const;
+  octave_user_script * xuser_script_value (const char *fmt, ...) const;
+  octave_user_code * xuser_code_value (const char *fmt, ...) const;
+  octave_fcn_handle * xfcn_handle_value (const char *fmt, ...) const;
+  octave_fcn_inline * xfcn_inline_value (const char *fmt, ...) const;
 
   octave_value_list xlist_value (const char *fmt, ...) const;
 
@@ -1300,17 +1300,17 @@ public:
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const;
 
-  octave_base_value *internal_rep (void) const { return rep; }
+  octave_base_value * internal_rep (void) const { return rep; }
 
   // Unsafe.  These functions exist to support the MEX interface.
   // You should not use them anywhere else.
-  void *mex_get_data (void) const { return rep->mex_get_data (); }
+  void * mex_get_data (void) const { return rep->mex_get_data (); }
 
-  octave_idx_type *mex_get_ir (void) const { return rep->mex_get_ir (); }
+  octave_idx_type * mex_get_ir (void) const { return rep->mex_get_ir (); }
 
-  octave_idx_type *mex_get_jc (void) const { return rep->mex_get_jc (); }
+  octave_idx_type * mex_get_jc (void) const { return rep->mex_get_jc (); }
 
-  mxArray *as_mxArray (void) const { return rep->as_mxArray (); }
+  mxArray * as_mxArray (void) const { return rep->as_mxArray (); }
 
   octave_value diag (octave_idx_type k = 0) const
   { return rep->diag (k); }

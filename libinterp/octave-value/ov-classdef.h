@@ -705,7 +705,7 @@ private:
 
     bool is_meta_class (void) const { return meta; }
 
-    octave::tree_evaluator *evaluator (void) const { return m_evaluator; }
+    octave::tree_evaluator * evaluator (void) const { return m_evaluator; }
 
   private:
     void load_all_methods (void);
@@ -896,7 +896,7 @@ private:
   const cdef_class_rep* get_rep (void) const
   { return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ()); }
 
-  octave::tree_evaluator *evaluator (void) const
+  octave::tree_evaluator * evaluator (void) const
   { return get_rep ()->evaluator (); }
 
   friend bool operator == (const cdef_class&, const cdef_class&);

@@ -99,9 +99,9 @@ private:
     virtual idx_class_type idx_class (void) const { return class_invalid; }
 
     // Sorts, maybe uniqifies, and returns a clone object pointer.
-    virtual idx_base_rep *sort_uniq_clone (bool uniq = false) = 0;
+    virtual idx_base_rep * sort_uniq_clone (bool uniq = false) = 0;
     // Sorts, and returns a sorting permutation (aka Array::sort).
-    virtual idx_base_rep *sort_idx (Array<octave_idx_type>&) = 0;
+    virtual idx_base_rep * sort_idx (Array<octave_idx_type>&) = 0;
 
     // Checks whether the index is colon or a range equivalent to colon.
     virtual bool is_colon_equiv (octave_idx_type) const { return false; }
@@ -144,10 +144,10 @@ private:
 
     idx_class_type idx_class (void) const { return class_colon; }
 
-    idx_base_rep *sort_uniq_clone (bool = false)
+    idx_base_rep * sort_uniq_clone (bool = false)
     { count++; return this; }
 
-    OCTAVE_NORETURN idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    OCTAVE_NORETURN idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type) const { return true; }
 
@@ -195,9 +195,9 @@ private:
 
     idx_class_type idx_class (void) const { return class_range; }
 
-    idx_base_rep *sort_uniq_clone (bool uniq = false);
+    idx_base_rep * sort_uniq_clone (bool uniq = false);
 
-    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type n) const
     { return start == 0 && step == 1 && len == n; }
@@ -253,10 +253,10 @@ private:
 
     idx_class_type idx_class (void) const { return class_scalar; }
 
-    idx_base_rep *sort_uniq_clone (bool = false)
+    idx_base_rep * sort_uniq_clone (bool = false)
     { count++; return this; }
 
-    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type n) const
     { return n == 1 && data == 0; }
@@ -326,13 +326,13 @@ private:
 
     idx_class_type idx_class (void) const { return class_vector; }
 
-    idx_base_rep *sort_uniq_clone (bool uniq = false);
+    idx_base_rep * sort_uniq_clone (bool uniq = false);
 
-    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
     dim_vector orig_dimensions (void) const { return orig_dims; }
 
-    const octave_idx_type *get_data (void) const { return data; }
+    const octave_idx_type * get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
 
@@ -395,17 +395,17 @@ private:
 
     idx_class_type idx_class (void) const { return class_mask; }
 
-    idx_base_rep *sort_uniq_clone (bool = false)
+    idx_base_rep * sort_uniq_clone (bool = false)
     { count++; return this; }
 
-    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+    idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
     dim_vector orig_dimensions (void) const { return orig_dims; }
 
     bool is_colon_equiv (octave_idx_type n) const
     { return len == n && ext == n; }
 
-    const bool *get_data (void) const { return data; }
+    const bool * get_data (void) const { return data; }
 
     std::ostream& print (std::ostream& os) const;
 
@@ -1025,7 +1025,7 @@ public:
 
   // Raw pointer to index array.  This is non-const because it may be
   // necessary to mutate the index.
-  const octave_idx_type *raw (void);
+  const octave_idx_type * raw (void);
 
   bool is_vector (void) const;
 

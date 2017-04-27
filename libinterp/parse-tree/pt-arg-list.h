@@ -72,7 +72,7 @@ namespace octave
     bool has_magic_tilde (void) const
     { return list_includes_magic_tilde; }
 
-    tree_expression *remove_front (void)
+    tree_expression * remove_front (void)
     {
       iterator p = begin ();
       tree_expression *retval = *p;
@@ -99,8 +99,8 @@ namespace octave
 
     std::list<std::string> variable_names (void) const;
 
-    tree_argument_list *dup (symbol_table::scope_id scope,
-                             symbol_table::context_id context) const;
+    tree_argument_list * dup (symbol_table::scope_id scope,
+                              symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

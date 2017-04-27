@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-extern char *octave_canonicalize_file_name_wrapper (const char *name);
+extern char * octave_canonicalize_file_name_wrapper (const char *name);
 
 #if defined __cplusplus
 }

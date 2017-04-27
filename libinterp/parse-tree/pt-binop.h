@@ -95,16 +95,16 @@ namespace octave
 
     octave_value::binary_op op_type (void) const { return etype; }
 
-    tree_expression *lhs (void) { return op_lhs; }
-    tree_expression *rhs (void) { return op_rhs; }
+    tree_expression * lhs (void) { return op_lhs; }
+    tree_expression * rhs (void) { return op_rhs; }
 
     bool is_eligible_for_braindead_shortcircuit (void) const
     {
       return eligible_for_braindead_shortcircuit;
     }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -171,8 +171,8 @@ namespace octave
 
     type op_type (void) const { return etype; }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

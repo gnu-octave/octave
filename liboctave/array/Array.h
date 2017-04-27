@@ -585,11 +585,11 @@ public:
   Array<T> transpose (void) const;
   Array<T> hermitian (T (*fcn) (const T&) = 0) const;
 
-  const T *data (void) const { return slice_data; }
+  const T * data (void) const { return slice_data; }
 
-  const T *fortran_vec (void) const { return data (); }
+  const T * fortran_vec (void) const { return data (); }
 
-  T *fortran_vec (void);
+  T * fortran_vec (void);
 
   bool is_shared (void) { return rep->count > 1; }
 
@@ -709,7 +709,7 @@ public:
   //! Give a pointer to the data in mex format.  Unsafe.  This function
   //! exists to support the MEX interface.  You should not use it
   //! anywhere else.
-  void *mex_get_data (void) const { return const_cast<T *> (data ()); }
+  void * mex_get_data (void) const { return const_cast<T *> (data ()); }
 
   Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
   Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
@@ -847,13 +847,13 @@ public:
   //@{
   //! WARNING: Only call these functions from jit
 
-  int *jit_ref_count (void) { return rep->count.get (); }
+  int * jit_ref_count (void) { return rep->count.get (); }
 
-  T *jit_slice_data (void) const { return slice_data; }
+  T * jit_slice_data (void) const { return slice_data; }
 
-  octave_idx_type *jit_dimensions (void) const { return dimensions.to_jit (); }
+  octave_idx_type * jit_dimensions (void) const { return dimensions.to_jit (); }
 
-  void *jit_array_rep (void) const { return rep; }
+  void * jit_array_rep (void) const { return rep; }
   //@}
 
 private:

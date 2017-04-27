@@ -400,7 +400,7 @@ private:
 
   // Recursive N-D generalized transpose
   template <typename T>
-  T *do_permute (const T *src, T *dest, int lev) const
+  T * do_permute (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
       {
@@ -566,7 +566,7 @@ private:
 
   // Recursive N-D indexing
   template <typename T>
-  T *do_index (const T *src, T *dest, int lev) const
+  T * do_index (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
       dest += idx[0].index (src, dim[0], dest);
@@ -583,7 +583,7 @@ private:
 
   // Recursive N-D indexed assignment
   template <typename T>
-  const T *do_assign (const T *src, T *dest, int lev) const
+  const T * do_assign (const T *src, T *dest, int lev) const
   {
     if (lev == 0)
       src += idx[0].assign (src, dim[0], dest);

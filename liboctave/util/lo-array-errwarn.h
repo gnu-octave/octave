@@ -57,7 +57,7 @@ namespace octave
     virtual std::string details (void) const = 0;
 
     // ID of error to throw.
-    virtual const char *err_id (void) const = 0;
+    virtual const char * err_id (void) const = 0;
 
     virtual std::string message (void) const;
 

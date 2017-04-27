@@ -143,7 +143,7 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const { return const_cast<ST *> (&scalar); }
+  void * mex_get_data (void) const { return const_cast<ST *> (&scalar); }
 
   const ST& scalar_ref (void) const { return scalar; }
 

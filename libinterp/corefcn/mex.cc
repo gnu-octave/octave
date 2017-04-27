@@ -149,7 +149,7 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
 // happens, we delete this representation, so the conversion can only
 // happen once per call to a MEX file.
 
-static inline void *maybe_mark_foreign (void *ptr);
+static inline void * maybe_mark_foreign (void *ptr);
 
 class mxArray_octave_value : public mxArray_base
 {
@@ -164,9 +164,9 @@ public:
 
   mxArray_octave_value& operator = (const mxArray_octave_value&) = delete;
 
-  mxArray_base *dup (void) const { return new mxArray_octave_value (*this); }
+  mxArray_base * dup (void) const { return new mxArray_octave_value (*this); }
 
-  mxArray *as_mxArray (void) const
+  mxArray * as_mxArray (void) const
   {
     mxArray *retval = val.as_mxArray ();
 
@@ -271,7 +271,7 @@ public:
     return n;
   }
 
-  mwSize *get_dimensions (void) const
+  mwSize * get_dimensions (void) const
   {
     if (! dims)
       {
@@ -360,7 +360,7 @@ public:
     return id;
   }
 
-  const char *get_class_name (void) const
+  const char * get_class_name (void) const
   {
     if (! class_name)
       {
@@ -374,7 +374,7 @@ public:
   // Not allowed.
   void set_class_name (const char * /*name_arg*/) { request_mutation (); }
 
-  mxArray *get_cell (mwIndex /*idx*/) const
+  mxArray * get_cell (mwIndex /*idx*/) const
   {
     request_mutation ();
     return 0;
@@ -403,7 +403,7 @@ public:
       return val.scalar_value (true);
   }
 
-  void *get_data (void) const
+  void * get_data (void) const
   {
     void *retval = val.mex_get_data ();
 
@@ -415,7 +415,7 @@ public:
     return retval;
   }
 
-  void *get_imag_data (void) const
+  void * get_imag_data (void) const
   {
     void *retval = 0;
 
@@ -433,12 +433,12 @@ public:
   // Not allowed.
   void set_imag_data (void * /*pi*/) { request_mutation (); }
 
-  mwIndex *get_ir (void) const
+  mwIndex * get_ir (void) const
   {
     return static_cast<mwIndex *> (maybe_mark_foreign (val.mex_get_ir ()));
   }
 
-  mwIndex *get_jc (void) const
+  mwIndex * get_jc (void) const
   {
     return static_cast<mwIndex *> (maybe_mark_foreign (val.mex_get_jc ()));
   }
@@ -464,7 +464,7 @@ public:
   // Not allowed.
   void remove_field (int /*key_num*/) { request_mutation (); }
 
-  mxArray *get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
+  mxArray * get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
   {
     request_mutation ();
     return 0;
@@ -479,7 +479,7 @@ public:
 
   int get_number_of_fields (void) const { return val.nfields (); }
 
-  const char *get_field_name_by_number (int /*key_num*/) const
+  const char * get_field_name_by_number (int /*key_num*/) const
   {
     request_mutation ();
     return 0;
@@ -514,7 +514,7 @@ public:
     return retval;
   }
 
-  char *array_to_string (void) const
+  char * array_to_string (void) const
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
@@ -588,7 +588,7 @@ public:
     mutate_flag = true;
   }
 
-  mxArray *mutate (void) const { return as_mxArray (); }
+  mxArray * mutate (void) const { return as_mxArray (); }
 
   octave_value as_octave_value (void) const { return val; }
 
@@ -772,7 +772,7 @@ public:
     return n;
   }
 
-  mwSize *get_dimensions (void) const { return dims; }
+  mwSize * get_dimensions (void) const { return dims; }
 
   mwSize get_number_of_dimensions (void) const { return ndims; }
 
@@ -825,7 +825,7 @@ public:
 
   mxClassID get_class_id (void) const { return id; }
 
-  const char *get_class_name (void) const
+  const char * get_class_name (void) const
   {
     switch (id)
       {
@@ -857,7 +857,7 @@ public:
     strcpy (class_name, name_arg);
   }
 
-  mxArray *get_cell (mwIndex /*idx*/) const
+  mxArray * get_cell (mwIndex /*idx*/) const
   {
     err_invalid_type ();
   }
@@ -872,12 +872,12 @@ public:
     err_invalid_type ();
   }
 
-  void *get_data (void) const
+  void * get_data (void) const
   {
     err_invalid_type ();
   }
 
-  void *get_imag_data (void) const
+  void * get_imag_data (void) const
   {
     err_invalid_type ();
   }
@@ -892,12 +892,12 @@ public:
     err_invalid_type ();
   }
 
-  mwIndex *get_ir (void) const
+  mwIndex * get_ir (void) const
   {
     err_invalid_type ();
   }
 
-  mwIndex *get_jc (void) const
+  mwIndex * get_jc (void) const
   {
     err_invalid_type ();
   }
@@ -932,7 +932,7 @@ public:
     err_invalid_type ();
   }
 
-  mxArray *get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
+  mxArray * get_field_by_number (mwIndex /*index*/, int /*key_num*/) const
   {
     err_invalid_type ();
   }
@@ -948,7 +948,7 @@ public:
     err_invalid_type ();
   }
 
-  const char *get_field_name_by_number (int /*key_num*/) const
+  const char * get_field_name_by_number (int /*key_num*/) const
   {
     err_invalid_type ();
   }
@@ -963,7 +963,7 @@ public:
     err_invalid_type ();
   }
 
-  char *array_to_string (void) const
+  char * array_to_string (void) const
   {
     err_invalid_type ();
   }
@@ -1157,7 +1157,7 @@ public:
 
   mxArray_number& operator = (const mxArray_number&);
 
-  mxArray_base *dup (void) const { return new mxArray_number (*this); }
+  mxArray_base * dup (void) const { return new mxArray_number (*this); }
 
   ~mxArray_number (void)
   {
@@ -1228,9 +1228,9 @@ public:
     return retval;
   }
 
-  void *get_data (void) const { return pr; }
+  void * get_data (void) const { return pr; }
 
-  void *get_imag_data (void) const { return pi; }
+  void * get_imag_data (void) const { return pi; }
 
   void set_data (void *pr_arg) { pr = pr_arg; }
 
@@ -1262,7 +1262,7 @@ public:
     return retval;
   }
 
-  char *array_to_string (void) const
+  char * array_to_string (void) const
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
@@ -1492,7 +1492,7 @@ public:
 
   mxArray_sparse& operator = (const mxArray_sparse&);
 
-  mxArray_base *dup (void) const { return new mxArray_sparse (*this); }
+  mxArray_base * dup (void) const { return new mxArray_sparse (*this); }
 
   ~mxArray_sparse (void)
   {
@@ -1506,17 +1506,17 @@ public:
 
   int is_sparse (void) const { return 1; }
 
-  void *get_data (void) const { return pr; }
+  void * get_data (void) const { return pr; }
 
-  void *get_imag_data (void) const { return pi; }
+  void * get_imag_data (void) const { return pi; }
 
   void set_data (void *pr_arg) { pr = pr_arg; }
 
   void set_imag_data (void *pi_arg) { pi = pi_arg; }
 
-  mwIndex *get_ir (void) const { return ir; }
+  mwIndex * get_ir (void) const { return ir; }
 
-  mwIndex *get_jc (void) const { return jc; }
+  mwIndex * get_jc (void) const { return jc; }
 
   mwSize get_nzmax (void) const { return nzmax; }
 
@@ -1693,7 +1693,7 @@ public:
       fields[i] = mxArray::strsave (keys[i]);
   }
 
-  mxArray_base *dup (void) const { return new mxArray_struct (*this); }
+  mxArray_base * dup (void) const { return new mxArray_struct (*this); }
 
   ~mxArray_struct (void)
   {
@@ -1813,7 +1813,7 @@ public:
       }
   }
 
-  mxArray *get_field_by_number (mwIndex index, int key_num) const
+  mxArray * get_field_by_number (mwIndex index, int key_num) const
   {
     return key_num >= 0 && key_num < nfields
            ? data[nfields * index + key_num] : 0;
@@ -1823,7 +1823,7 @@ public:
 
   int get_number_of_fields (void) const { return nfields; }
 
-  const char *get_field_name_by_number (int key_num) const
+  const char * get_field_name_by_number (int key_num) const
   {
     return key_num >= 0 && key_num < nfields ? fields[key_num] : 0;
   }
@@ -1844,7 +1844,7 @@ public:
     return retval;
   }
 
-  void *get_data (void) const { return data; }
+  void * get_data (void) const { return data; }
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
@@ -1927,7 +1927,7 @@ public:
 
   mxArray_cell& operator = (const mxArray_cell&);
 
-  mxArray_base *dup (void) const { return new mxArray_cell (*this); }
+  mxArray_base * dup (void) const { return new mxArray_cell (*this); }
 
   ~mxArray_cell (void)
   {
@@ -1939,14 +1939,14 @@ public:
     mxFree (data);
   }
 
-  mxArray *get_cell (mwIndex idx) const
+  mxArray * get_cell (mwIndex idx) const
   {
     return idx >= 0 && idx < get_number_of_elements () ? data[idx] : 0;
   }
 
   void set_cell (mwIndex idx, mxArray *val);
 
-  void *get_data (void) const { return data; }
+  void * get_data (void) const { return data; }
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
@@ -2111,7 +2111,7 @@ public:
     mxFree (fname);
   }
 
-  const char *function_name (void) const
+  const char * function_name (void) const
   {
     if (! fname)
       {
@@ -2130,7 +2130,7 @@ public:
   }
 
   // Allocate memory.
-  void *malloc_unmarked (size_t n)
+  void * malloc_unmarked (size_t n)
   {
     void *ptr = std::malloc (n);
 
@@ -2147,7 +2147,7 @@ public:
   }
 
   // Allocate memory to be freed on exit.
-  void *malloc (size_t n)
+  void * malloc (size_t n)
   {
     void *ptr = malloc_unmarked (n);
 
@@ -2157,7 +2157,7 @@ public:
   }
 
   // Allocate memory and initialize to 0.
-  void *calloc_unmarked (size_t n, size_t t)
+  void * calloc_unmarked (size_t n, size_t t)
   {
     void *ptr = malloc_unmarked (n*t);
 
@@ -2167,7 +2167,7 @@ public:
   }
 
   // Allocate memory to be freed on exit and initialize to 0.
-  void *calloc (size_t n, size_t t)
+  void * calloc (size_t n, size_t t)
   {
     void *ptr = calloc_unmarked (n, t);
 
@@ -2179,7 +2179,7 @@ public:
   // Reallocate a pointer obtained from malloc or calloc.
   // If the pointer is NULL, allocate using malloc.
   // We don't need an "unmarked" version of this.
-  void *realloc (void *ptr, size_t n)
+  void * realloc (void *ptr, size_t n)
   {
     void *v;
 
@@ -2263,7 +2263,7 @@ public:
 #endif
   }
 
-  mxArray *mark_array (mxArray *ptr)
+  mxArray * mark_array (mxArray *ptr)
   {
     arraylist.insert (ptr);
     return ptr;
@@ -2304,7 +2304,7 @@ public:
 
   // Make a new array value and initialize from an octave value; it will be
   // freed on exit unless marked as persistent.
-  mxArray *make_value (const octave_value& ov)
+  mxArray * make_value (const octave_value& ov)
   {
     return mark_array (new mxArray (ov));
   }
@@ -2330,7 +2330,7 @@ public:
     return inlist;
   }
 
-  octave_mex_function *current_mex_function (void) const
+  octave_mex_function * current_mex_function (void) const
   {
     return curr_mex_fcn;
   }

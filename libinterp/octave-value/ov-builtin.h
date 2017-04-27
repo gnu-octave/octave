@@ -82,7 +82,7 @@ public:
                              int nargout,
                              const std::list<octave_lvalue>* lvalue_list);
 
-  octave_function *function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
   bool is_builtin_function (void) const { return true; }
 
@@ -93,7 +93,7 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
-  jit_type *to_jit (void) const;
+  jit_type * to_jit (void) const;
 
   void stash_jit (jit_type& type);
 

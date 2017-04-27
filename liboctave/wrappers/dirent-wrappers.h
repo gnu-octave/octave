@@ -31,9 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-extern void *octave_opendir_wrapper (const char *dname);
+extern void * octave_opendir_wrapper (const char *dname);
 
-extern char *octave_readdir_wrapper (void *dir);
+extern char * octave_readdir_wrapper (void *dir);
 
 extern void octave_rewinddir_wrapper (void *dir);
 

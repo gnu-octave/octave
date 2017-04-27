@@ -41,14 +41,14 @@ public:
 
   octave_perm_matrix (const PermMatrix& p) : matrix (p), dense_cache () { }
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_perm_matrix (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_perm_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   size_t byte_size (void) const { return matrix.byte_size (); }
 
@@ -222,7 +222,7 @@ public:
              oct_data_conv::data_type output_type, int skip,
              octave::mach_info::float_format flt_fmt) const;
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   bool print_as_scalar (void) const;
 

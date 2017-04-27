@@ -37,7 +37,7 @@ typedef void octave_sig_handler (int);
 
 extern int octave_kill_wrapper (pid_t pid, int signum);
 
-extern char *octave_strsignal_wrapper (int signum);
+extern char * octave_strsignal_wrapper (int signum);
 
 extern bool octave_have_kill (void);
 
@@ -54,7 +54,7 @@ octave_set_signal_handler_internal (int sig, octave_sig_handler *handler,
 
 extern int octave_num_signals (void);
 
-extern void *octave_block_child (void);
+extern void * octave_block_child (void);
 
 extern void octave_unblock_child (void *context);
 

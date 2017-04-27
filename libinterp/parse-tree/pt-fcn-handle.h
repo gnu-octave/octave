@@ -73,8 +73,8 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -113,17 +113,17 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_parameter_list *parameter_list (void) const
+    tree_parameter_list * parameter_list (void) const
     {
       return fcn ? fcn->parameter_list () : 0;
     }
 
-    tree_parameter_list *return_list (void) const
+    tree_parameter_list * return_list (void) const
     {
       return fcn ? fcn->return_list () : 0;
     }
 
-    tree_statement_list *body (void) const
+    tree_statement_list * body (void) const
     {
       return fcn ? fcn->body () : 0;
     }
@@ -133,8 +133,8 @@ namespace octave
       return fcn ? fcn->scope () : -1;
     }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

@@ -50,16 +50,16 @@ public:
 
   ~octave_diag_matrix (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_diag_matrix (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_diag_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
   type_conv_info numeric_demotion_function (void) const;
 
-  octave_base_value *try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion (void);
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);

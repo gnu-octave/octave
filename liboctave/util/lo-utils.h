@@ -74,7 +74,7 @@ extern OCTAVE_API bool xis_one_or_zero (float x);
 extern OCTAVE_API bool xis_zero (float x);
 extern OCTAVE_API bool xtoo_large_for_float (float x);
 
-extern OCTAVE_API char *strsave (const char *);
+extern OCTAVE_API char * strsave (const char *);
 
 extern OCTAVE_API void
 octave_putenv (const std::string&, const std::string&);

@@ -104,7 +104,7 @@ private:
   void parse_info_map ();
 
   /** Open info files and uncompress them. */
-  QIODevice *open_file (QFileInfo & fileInfo);
+  QIODevice * open_file (QFileInfo & fileInfo);
 
   /** Calculates real position of nodes.
     * @param pos position from info file.

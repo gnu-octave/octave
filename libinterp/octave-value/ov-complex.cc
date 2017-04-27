@@ -80,7 +80,7 @@ namespace octave
     }
 
     // ID of error to throw.
-    const char *err_id (void) const
+    const char * err_id (void) const
     {
       return "Octave:invalid-index";
     }

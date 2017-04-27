@@ -561,14 +561,14 @@ public:
 
   // Unsafe.  These functions exist to support the MEX interface.
   // You should not use them anywhere else.
-  void *mex_get_data (void) const { return const_cast<T *> (data ()); }
+  void * mex_get_data (void) const { return const_cast<T *> (data ()); }
 
-  octave_idx_type *mex_get_ir (void) const
+  octave_idx_type * mex_get_ir (void) const
   {
     return const_cast<octave_idx_type *> (ridx ());
   }
 
-  octave_idx_type *mex_get_jc (void) const
+  octave_idx_type * mex_get_jc (void) const
   {
     return const_cast<octave_idx_type *> (cidx ());
   }

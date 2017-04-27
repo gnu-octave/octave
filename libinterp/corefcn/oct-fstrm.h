@@ -70,9 +70,9 @@ public:
 
   std::string name (void) const { return nm; }
 
-  std::istream *input_stream (void);
+  std::istream * input_stream (void);
 
-  std::ostream *output_stream (void);
+  std::ostream * output_stream (void);
 
 protected:
 

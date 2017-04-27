@@ -74,9 +74,9 @@ public:
 
   ~octave_fcn_handle (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_fcn_handle (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_fcn_handle (); }
 
   octave_value subsref (const std::string& type,
@@ -112,13 +112,13 @@ public:
 
   dim_vector dims (void) const;
 
-  octave_function *function_value (bool = false)
+  octave_function * function_value (bool = false)
   { return fcn.function_value (); }
 
-  octave_user_function *user_function_value (bool = false)
+  octave_user_function * user_function_value (bool = false)
   { return fcn.user_function_value (); }
 
-  octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
+  octave_fcn_handle * fcn_handle_value (bool = false) { return this; }
 
   octave_value fcn_val (void) const { return fcn; }
 
@@ -205,8 +205,8 @@ private:
 public:
 
   // Factory method.
-  static octave_fcn_handle *maybe_binder (const octave_value& f,
-                                          octave::tree_evaluator *tw);
+  static octave_fcn_handle * maybe_binder (const octave_value& f,
+                                           octave::tree_evaluator *tw);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);

@@ -135,9 +135,9 @@ protected:
 
 public:
 
-  virtual mxArray_base *dup (void) const = 0;
+  virtual mxArray_base * dup (void) const = 0;
 
-  virtual mxArray *as_mxArray (void) const { return 0; }
+  virtual mxArray * as_mxArray (void) const { return 0; }
 
   virtual ~mxArray_base (void) = default;
 
@@ -202,7 +202,7 @@ public:
 
   virtual mwSize get_n (void) const = 0;
 
-  virtual mwSize *get_dimensions (void) const = 0;
+  virtual mwSize * get_dimensions (void) const = 0;
 
   virtual mwSize get_number_of_dimensions (void) const = 0;
 
@@ -220,13 +220,13 @@ public:
 
   virtual mxClassID get_class_id (void) const = 0;
 
-  virtual const char *get_class_name (void) const = 0;
+  virtual const char * get_class_name (void) const = 0;
 
   virtual void set_class_name (const char *name_arg) = 0;
 
   // FIXME: Why not just have this '= 0' as the others?
   // Could then eliminate err_invalid_type function and #include "error.h".
-  virtual mxArray *get_cell (mwIndex /*idx*/) const
+  virtual mxArray * get_cell (mwIndex /*idx*/) const
   {
     err_invalid_type ();
   }
@@ -235,17 +235,17 @@ public:
 
   virtual double get_scalar (void) const = 0;
 
-  virtual void *get_data (void) const = 0;
+  virtual void * get_data (void) const = 0;
 
-  virtual void *get_imag_data (void) const = 0;
+  virtual void * get_imag_data (void) const = 0;
 
   virtual void set_data (void *pr) = 0;
 
   virtual void set_imag_data (void *pi) = 0;
 
-  virtual mwIndex *get_ir (void) const = 0;
+  virtual mwIndex * get_ir (void) const = 0;
 
-  virtual mwIndex *get_jc (void) const = 0;
+  virtual mwIndex * get_jc (void) const = 0;
 
   virtual mwSize get_nzmax (void) const = 0;
 
@@ -259,20 +259,20 @@ public:
 
   virtual void remove_field (int key_num) = 0;
 
-  virtual mxArray *get_field_by_number (mwIndex index, int key_num) const = 0;
+  virtual mxArray * get_field_by_number (mwIndex index, int key_num) const = 0;
 
   virtual void
   set_field_by_number (mwIndex index, int key_num, mxArray *val) = 0;
 
   virtual int get_number_of_fields (void) const = 0;
 
-  virtual const char *get_field_name_by_number (int key_num) const = 0;
+  virtual const char * get_field_name_by_number (int key_num) const = 0;
 
   virtual int get_field_number (const char *key) const = 0;
 
   virtual int get_string (char *buf, mwSize buflen) const = 0;
 
-  virtual char *array_to_string (void) const = 0;
+  virtual char * array_to_string (void) const = 0;
 
   virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const = 0;
 
@@ -280,7 +280,7 @@ public:
 
   virtual bool mutation_needed (void) const { return false; }
 
-  virtual mxArray *mutate (void) const { return 0; }
+  virtual mxArray * mutate (void) const { return 0; }
 
   virtual octave_value as_octave_value (void) const = 0;
 
@@ -342,7 +342,7 @@ public:
 
   mxArray (mwSize m, mwSize n);
 
-  mxArray *dup (void) const
+  mxArray * dup (void) const
   {
     mxArray *retval = rep->as_mxArray ();
 
@@ -415,7 +415,7 @@ public:
 
   mwSize get_n (void) const { return rep->get_n (); }
 
-  mwSize *get_dimensions (void) const { return rep->get_dimensions (); }
+  mwSize * get_dimensions (void) const { return rep->get_dimensions (); }
 
   mwSize get_number_of_dimensions (void) const
   { return rep->get_number_of_dimensions (); }
@@ -434,18 +434,18 @@ public:
 
   bool is_scalar (void) const { return rep->is_scalar (); }
 
-  const char *get_name (void) const { return name; }
+  const char * get_name (void) const { return name; }
 
   void set_name (const char *name_arg);
 
   mxClassID get_class_id (void) const { return rep->get_class_id (); }
 
-  const char *get_class_name (void) const { return rep->get_class_name (); }
+  const char * get_class_name (void) const { return rep->get_class_name (); }
 
   void set_class_name (const char *name_arg)
   { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
 
-  mxArray *get_cell (mwIndex idx) const
+  mxArray * get_cell (mwIndex idx) const
   { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
 
   void set_cell (mwIndex idx, mxArray *val)
@@ -453,18 +453,18 @@ public:
 
   double get_scalar (void) const { return rep->get_scalar (); }
 
-  void *get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
+  void * get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
-  void *get_imag_data (void) const
+  void * get_imag_data (void) const
   { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
 
   void set_data (void *pr) { DO_VOID_MUTABLE_METHOD (set_data (pr)); }
 
   void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
 
-  mwIndex *get_ir (void) const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
+  mwIndex * get_ir (void) const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
 
-  mwIndex *get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
+  mwIndex * get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
 
   mwSize get_nzmax (void) const { return rep->get_nzmax (); }
 
@@ -479,7 +479,7 @@ public:
   void remove_field (int key_num)
   { DO_VOID_MUTABLE_METHOD (remove_field (key_num)); }
 
-  mxArray *get_field_by_number (mwIndex index, int key_num) const
+  mxArray * get_field_by_number (mwIndex index, int key_num) const
   { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
 
   void set_field_by_number (mwIndex index, int key_num, mxArray *val)
@@ -487,7 +487,7 @@ public:
 
   int get_number_of_fields (void) const { return rep->get_number_of_fields (); }
 
-  const char *get_field_name_by_number (int key_num) const
+  const char * get_field_name_by_number (int key_num) const
   { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
 
   int get_field_number (const char *key) const
@@ -496,7 +496,7 @@ public:
   int get_string (char *buf, mwSize buflen) const
   { return rep->get_string (buf, buflen); }
 
-  char *array_to_string (void) const { return rep->array_to_string (); }
+  char * array_to_string (void) const { return rep->array_to_string (); }
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   { return rep->calc_single_subscript (nsubs, subs); }
@@ -505,13 +505,13 @@ public:
 
   bool mutation_needed (void) const { return rep->mutation_needed (); }
 
-  mxArray *mutate (void) const { return rep->mutate (); }
+  mxArray * mutate (void) const { return rep->mutate (); }
 
-  static void *malloc (size_t n);
+  static void * malloc (size_t n);
 
-  static void *calloc (size_t n, size_t t);
+  static void * calloc (size_t n, size_t t);
 
-  static char *strsave (const char *str)
+  static char * strsave (const char *str)
   {
     char *retval = 0;
 

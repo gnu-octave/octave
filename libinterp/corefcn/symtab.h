@@ -455,7 +455,7 @@ public:
         curr_fcn = fcn;
       }
 
-      symbol_record_rep *dup (scope_id new_scope) const
+      symbol_record_rep * dup (scope_id new_scope) const
       {
         return new symbol_record_rep (new_scope, name, varval (),
                                       storage_class);
@@ -2233,7 +2233,7 @@ public:
     return retval;
   }
 
-  static octave_user_function *get_curr_fcn (scope_id scope = xcurrent_scope)
+  static octave_user_function * get_curr_fcn (scope_id scope = xcurrent_scope)
   {
     symbol_table *inst = get_instance (scope);
     return inst->curr_fcn;
@@ -2358,7 +2358,7 @@ private:
 
   ~symbol_table (void) = default;
 
-  static symbol_table *get_instance (scope_id scope, bool create = true)
+  static symbol_table * get_instance (scope_id scope, bool create = true)
   {
     symbol_table *retval = 0;
 
@@ -2471,7 +2471,7 @@ private:
       }
   }
 
-  static fcn_info *get_fcn_info (const std::string& name)
+  static fcn_info * get_fcn_info (const std::string& name)
   {
     fcn_table_iterator p = fcn_table.find (name);
     return p != fcn_table.end () ? &p->second : 0;

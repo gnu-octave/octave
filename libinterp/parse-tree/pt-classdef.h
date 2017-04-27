@@ -60,9 +60,9 @@ namespace octave
       delete expr;
     }
 
-    tree_identifier *ident (void) { return id; }
+    tree_identifier * ident (void) { return id; }
 
-    tree_expression *expression (void) { return expr; }
+    tree_expression * expression (void) { return expr; }
 
     bool negate (void) { return neg; }
 
@@ -185,13 +185,13 @@ namespace octave
       delete trail_comm;
     }
 
-    tree_classdef_attribute_list *attribute_list (void) { return attr_list; }
+    tree_classdef_attribute_list * attribute_list (void) { return attr_list; }
 
-    octave::base_list<T> *element_list (void) { return elt_list; }
+    octave::base_list<T> * element_list (void) { return elt_list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
 
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
     void accept (tree_walker&) { }
 
@@ -229,9 +229,9 @@ namespace octave
       delete expr;
     }
 
-    tree_identifier *ident (void) { return id; }
+    tree_identifier * ident (void) { return id; }
 
-    tree_expression *expression (void) { return expr; }
+    tree_expression * expression (void) { return expr; }
 
     void accept (tree_walker& tw)
     {
@@ -365,7 +365,7 @@ namespace octave
       delete id;
     }
 
-    tree_identifier *ident (void) { return id; }
+    tree_identifier * ident (void) { return id; }
 
     void accept (tree_walker& tw)
     {
@@ -450,9 +450,9 @@ namespace octave
       delete expr;
     }
 
-    tree_identifier *ident (void) { return id; }
+    tree_identifier * ident (void) { return id; }
 
-    tree_expression *expression (void) { return expr; }
+    tree_expression * expression (void) { return expr; }
 
     void accept (tree_walker& tw)
     {
@@ -655,24 +655,24 @@ namespace octave
       delete trail_comm;
     }
 
-    tree_classdef_attribute_list *attribute_list (void) { return attr_list; }
+    tree_classdef_attribute_list * attribute_list (void) { return attr_list; }
 
-    tree_identifier *ident (void) { return id; }
+    tree_identifier * ident (void) { return id; }
 
-    tree_classdef_superclass_list *superclass_list (void) { return supclass_list; }
+    tree_classdef_superclass_list * superclass_list (void) { return supclass_list; }
 
-    tree_classdef_body *body (void) { return element_list; }
+    tree_classdef_body * body (void) { return element_list; }
 
-    octave_comment_list *leading_comment (void) { return lead_comm; }
-    octave_comment_list *trailing_comment (void) { return trail_comm; }
+    octave_comment_list * leading_comment (void) { return lead_comm; }
+    octave_comment_list * trailing_comment (void) { return trail_comm; }
 
     const std::string& package_name (void) const { return pack_name; }
 
     octave_function* make_meta_class (tree_evaluator *tw,
                                       bool is_at_folder = false);
 
-    tree_classdef *dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
+    tree_classdef * dup (symbol_table::scope_id scope,
+                         symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

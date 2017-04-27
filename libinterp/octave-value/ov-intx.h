@@ -66,10 +66,10 @@ public:
 
   ~OCTAVE_VALUE_INT_MATRIX_T (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (*this); }
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
@@ -311,9 +311,9 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const { return matrix.mex_get_data (); }
+  void * mex_get_data (void) const { return matrix.mex_get_data (); }
 
-  mxArray *as_mxArray (void) const
+  mxArray * as_mxArray (void) const
   {
     mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, dims (), mxREAL);
 
@@ -389,10 +389,10 @@ public:
 
   ~OCTAVE_VALUE_INT_SCALAR_T (void) = default;
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   octave_value do_index_op (const octave_value_list& idx,
@@ -621,9 +621,9 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const { return scalar.mex_get_data (); }
+  void * mex_get_data (void) const { return scalar.mex_get_data (); }
 
-  mxArray *as_mxArray (void) const
+  mxArray * as_mxArray (void) const
   {
     mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, 1, 1, mxREAL);
 

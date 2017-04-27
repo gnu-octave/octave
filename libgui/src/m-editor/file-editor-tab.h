@@ -55,7 +55,7 @@ public:
 
   ~file_editor_tab (void);
 
-  octave_qscintilla *qsci_edit_area () { return _edit_area; }
+  octave_qscintilla * qsci_edit_area () { return _edit_area; }
 
   // Will initiate close if associated with the identifier tag.
   bool conditional_close (void);

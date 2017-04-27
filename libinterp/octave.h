@@ -231,7 +231,7 @@ namespace octave
 
     void interactive (bool arg);
 
-    static application *app (void) { return instance; }
+    static application * app (void) { return instance; }
 
     static std::string program_invocation_name (void)
     {
@@ -253,7 +253,7 @@ namespace octave
       return instance ? instance->gui_running () : false;
     }
 
-    static interpreter *the_interpreter (void)
+    static interpreter * the_interpreter (void)
     {
       return instance ? instance->m_interpreter : 0;
     }

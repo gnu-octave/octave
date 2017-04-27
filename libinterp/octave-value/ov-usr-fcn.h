@@ -79,7 +79,7 @@ public:
 
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
-  virtual octave::tree_statement_list *body (void) = 0;
+  virtual octave::tree_statement_list * body (void) = 0;
 };
 
 // Scripts.
@@ -106,11 +106,11 @@ public:
 
   ~octave_user_script (void);
 
-  octave_function *function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
-  octave_user_script *user_script_value (bool = false) { return this; }
+  octave_user_script * user_script_value (bool = false) { return this; }
 
-  octave_user_code *user_code_value (bool = false) { return this; }
+  octave_user_code * user_code_value (bool = false) { return this; }
 
   // Scripts and user functions are both considered "scripts" because
   // they are written in Octave's scripting language.
@@ -147,7 +147,7 @@ public:
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
 
-  octave::tree_statement_list *body (void) { return cmd_list; }
+  octave::tree_statement_list * body (void) { return cmd_list; }
 
   void accept (octave::tree_walker& tw);
 
@@ -198,15 +198,15 @@ public:
            ? 0 : static_cast<symbol_table::context_id>(call_depth);
   }
 
-  octave_function *function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
-  octave_user_function *user_function_value (bool = false) { return this; }
+  octave_user_function * user_function_value (bool = false) { return this; }
 
-  octave_user_code *user_code_value (bool = false) { return this; }
+  octave_user_code * user_code_value (bool = false) { return this; }
 
-  octave_user_function *define_param_list (octave::tree_parameter_list *t);
+  octave_user_function * define_param_list (octave::tree_parameter_list *t);
 
-  octave_user_function *define_ret_list (octave::tree_parameter_list *t);
+  octave_user_function * define_ret_list (octave::tree_parameter_list *t);
 
   void stash_fcn_file_name (const std::string& nm);
 
@@ -382,19 +382,19 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
-  octave::tree_parameter_list *parameter_list (void) { return param_list; }
+  octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
-  octave::tree_parameter_list *return_list (void) { return ret_list; }
+  octave::tree_parameter_list * return_list (void) { return ret_list; }
 
-  octave::tree_statement_list *body (void) { return cmd_list; }
+  octave::tree_statement_list * body (void) { return cmd_list; }
 
-  octave_comment_list *leading_comment (void) { return lead_comm; }
+  octave_comment_list * leading_comment (void) { return lead_comm; }
 
-  octave_comment_list *trailing_comment (void) { return trail_comm; }
+  octave_comment_list * trailing_comment (void) { return trail_comm; }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
-  octave::tree_expression *special_expr (void);
+  octave::tree_expression * special_expr (void);
 
   bool subsasgn_optimization_ok (void);
 
@@ -413,7 +413,7 @@ public:
   }
 
 #if defined (HAVE_LLVM)
-  jit_function_info *get_info (void) { return jit_info; }
+  jit_function_info * get_info (void) { return jit_info; }
 
   void stash_info (jit_function_info *info) { jit_info = info; }
 #endif

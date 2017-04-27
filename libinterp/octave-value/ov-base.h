@@ -253,7 +253,7 @@ public:
   virtual octave_value as_uint32 (void) const;
   virtual octave_value as_uint64 (void) const;
 
-  virtual octave_base_value *try_narrowing_conversion (void) { return 0; }
+  virtual octave_base_value * try_narrowing_conversion (void) { return 0; }
 
   virtual void maybe_economize (void) { }
 
@@ -597,26 +597,26 @@ public:
 
   virtual string_vector parent_class_names (void) const;
 
-  virtual octave_base_value *find_parent_class (const std::string&)
+  virtual octave_base_value * find_parent_class (const std::string&)
   { return 0; }
 
-  virtual octave_base_value *unique_parent_class (const std::string&)
+  virtual octave_base_value * unique_parent_class (const std::string&)
   { return 0; }
 
   virtual bool is_instance_of (const std::string&) const
   { return false; }
 
-  virtual octave_function *function_value (bool silent = false);
+  virtual octave_function * function_value (bool silent = false);
 
-  virtual octave_user_function *user_function_value (bool silent = false);
+  virtual octave_user_function * user_function_value (bool silent = false);
 
-  virtual octave_user_script *user_script_value (bool silent = false);
+  virtual octave_user_script * user_script_value (bool silent = false);
 
-  virtual octave_user_code *user_code_value (bool silent = false);
+  virtual octave_user_code * user_code_value (bool silent = false);
 
-  virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
+  virtual octave_fcn_handle * fcn_handle_value (bool silent = false);
 
-  virtual octave_fcn_inline *fcn_inline_value (bool silent = false);
+  virtual octave_fcn_inline * fcn_inline_value (bool silent = false);
 
   virtual octave_value_list list_value (void) const;
 
@@ -670,13 +670,13 @@ public:
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
 
-  virtual void *mex_get_data (void) const { return 0; }
+  virtual void * mex_get_data (void) const { return 0; }
 
-  virtual octave_idx_type *mex_get_ir (void) const { return 0; }
+  virtual octave_idx_type * mex_get_ir (void) const { return 0; }
 
-  virtual octave_idx_type *mex_get_jc (void) const { return 0; }
+  virtual octave_idx_type * mex_get_jc (void) const { return 0; }
 
-  virtual mxArray *as_mxArray (void) const;
+  virtual mxArray * as_mxArray (void) const;
 
   virtual octave_value diag (octave_idx_type k = 0) const;
 
@@ -840,7 +840,7 @@ protected:
   // (think of an empty cell array with >2G elements).
   octave::refcount<octave_idx_type> count;
 
-  static const char *get_umap_name (unary_mapper_t);
+  static const char * get_umap_name (unary_mapper_t);
 
   void warn_load (const char *type) const;
   void warn_save (const char *type) const;

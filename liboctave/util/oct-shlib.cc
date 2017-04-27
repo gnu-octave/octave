@@ -42,9 +42,9 @@ extern "C"
 #  if defined (HAVE_DLFCN_H)
 #    include <dlfcn.h>
 #  else
-extern void *dlopen (const char *, int);
-extern const char *dlerror (void);
-extern void *dlsym (void *, const char *);
+extern void * dlopen (const char *, int);
+extern const char * dlerror (void);
+extern void * dlsym (void *, const char *);
 extern int dlclose (void *);
 #  endif
 #elif defined (HAVE_SHL_LOAD_API)
@@ -172,8 +172,8 @@ namespace octave
 
     ~octave_dlopen_shlib (void);
 
-    void *search (const std::string& name,
-                  dynamic_library::name_mangler mangler = 0);
+    void * search (const std::string& name,
+                   dynamic_library::name_mangler mangler = 0);
 
     // FIXME: this is possibly redundant because failure to open a library will
     // normally throw an exception, avoiding the construction of an invalid
@@ -263,8 +263,8 @@ namespace octave
 
     ~octave_shl_load_shlib (void);
 
-    void *search (const std::string& name,
-                  dynamic_library::name_mangler mangler = 0);
+    void * search (const std::string& name,
+                   dynamic_library::name_mangler mangler = 0);
 
     bool is_open (void) const { return (library != 0); }
 
@@ -331,8 +331,8 @@ namespace octave
 
     ~octave_w32_shlib (void);
 
-    void *search (const std::string& name,
-                  dynamic_library::name_mangler mangler = 0);
+    void * search (const std::string& name,
+                   dynamic_library::name_mangler mangler = 0);
 
     bool is_open (void) const { return (handle != 0); }
 
@@ -432,8 +432,8 @@ namespace octave
 
     void open (const std::string& f);
 
-    void *search (const std::string& name,
-                  dynamic_library::name_mangler mangler = 0);
+    void * search (const std::string& name,
+                   dynamic_library::name_mangler mangler = 0);
 
     void close (dynamic_library::close_hook cl_hook = 0);
 

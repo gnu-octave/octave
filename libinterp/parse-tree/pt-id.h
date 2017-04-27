@@ -122,8 +122,8 @@ namespace octave
              name ().c_str ());
     }
 
-    tree_identifier *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_identifier * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -153,8 +153,8 @@ namespace octave
 
     bool is_black_hole (void) { return true; }
 
-    tree_black_hole *dup (symbol_table::scope_id,
-                          symbol_table::context_id) const
+    tree_black_hole * dup (symbol_table::scope_id,
+                           symbol_table::context_id) const
     {
       return new tree_black_hole;
     }

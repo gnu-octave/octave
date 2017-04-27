@@ -218,33 +218,33 @@ namespace octave
       }
 
       // Direct access.
-      token *at (size_t n)
+      token * at (size_t n)
       {
         return empty () ? 0 : buffer.at (n);
       }
 
-      const token *at (size_t n) const
+      const token * at (size_t n) const
       {
         return empty () ? 0 : buffer.at (n);
       }
 
       // Most recently pushed.
-      token *front (void)
+      token * front (void)
       {
         return empty () ? 0 : buffer.front ();
       }
 
-      const token *front (void) const
+      const token * front (void) const
       {
         return empty () ? 0 : buffer.front ();
       }
 
-      token *back (void)
+      token * back (void)
       {
         return empty () ? 0 : buffer.back ();
       }
 
-      const token *back (void) const
+      const token * back (void) const
       {
         return empty () ? 0 : buffer.back ();
       }
@@ -525,7 +525,7 @@ namespace octave
 
       // Caller is expected to delete the returned value.
 
-      octave_comment_list *get_comment (void)
+      octave_comment_list * get_comment (void)
       {
         octave_comment_list *retval = comment_list;
 
@@ -579,7 +579,7 @@ namespace octave
 
     int handle_end_of_input (void);
 
-    char *flex_yytext (void);
+    char * flex_yytext (void);
 
     int flex_yyleng (void);
 
@@ -607,7 +607,7 @@ namespace octave
 
     void finish_comment (octave_comment_elt::comment_type typ);
 
-    octave_comment_list *get_comment (void) { return comment_buf.get_comment (); }
+    octave_comment_list * get_comment (void) { return comment_buf.get_comment (); }
 
     int handle_close_bracket (int bracket_type);
 
@@ -635,7 +635,7 @@ namespace octave
 
     void push_token (token *);
 
-    token *current_token (void);
+    token * current_token (void);
 
     void display_token (int tok);
 

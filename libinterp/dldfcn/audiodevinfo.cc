@@ -503,7 +503,7 @@ public:
   charMatrix get_tag (void);
   void set_userdata (const octave_value& userdata);
   octave_value get_userdata (void);
-  PaStream *get_stream (void);
+  PaStream * get_stream (void);
 
   void playblocking (void);
   void play (void);
@@ -1258,10 +1258,10 @@ public:
   charMatrix get_tag (void);
   void set_userdata (const octave_value& userdata);
   octave_value get_userdata (void);
-  PaStream *get_stream (void);
+  PaStream * get_stream (void);
 
   octave_value getaudiodata (void);
-  audioplayer *getplayer (void);
+  audioplayer * getplayer (void);
   bool isrecording (void);
   audioplayer play (void);
   void record (void);

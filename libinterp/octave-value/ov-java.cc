@@ -202,7 +202,7 @@ namespace octave
       clean ();
     }
 
-    JavaVMInitArgs *to_args ()
+    JavaVMInitArgs * to_args ()
     {
       update ();
       return &vm_args;

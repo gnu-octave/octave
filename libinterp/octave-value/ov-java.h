@@ -46,8 +46,8 @@ public:
 
   ~octave_java (void) { release (); }
 
-  void *to_java (void) const { return java_object; }
-  void *to_class (void) const { return java_class; }
+  void * to_java (void) const { return java_object; }
+  void * to_class (void) const { return java_class; }
 
   std::string java_class_name (void) const { return java_classname; }
 

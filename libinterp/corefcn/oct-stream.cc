@@ -302,18 +302,18 @@ namespace octave
 
     size_t length (void) const { return fmt_elts.size (); }
 
-    const scanf_format_elt *first (void)
+    const scanf_format_elt * first (void)
     {
       curr_idx = 0;
       return current ();
     }
 
-    const scanf_format_elt *current (void) const
+    const scanf_format_elt * current (void) const
     {
       return length () > 0 ? fmt_elts[curr_idx] : 0;
     }
 
-    const scanf_format_elt *next (bool cycle = true)
+    const scanf_format_elt * next (bool cycle = true)
     {
       static scanf_format_elt dummy
         (0, 0, false, scanf_format_elt::null, '\0', "");
@@ -811,20 +811,20 @@ namespace octave
 
     octave_idx_type num_conversions (void) { return nconv; }
 
-    const printf_format_elt *first (void)
+    const printf_format_elt * first (void)
     {
       curr_idx = 0;
       return current ();
     }
 
-    const printf_format_elt *current (void) const
+    const printf_format_elt * current (void) const
     {
       return length () > 0 ? fmt_elts[curr_idx] : 0;
     }
 
     size_t length (void) const { return fmt_elts.size (); }
 
-    const printf_format_elt *next (bool cycle = true)
+    const printf_format_elt * next (bool cycle = true)
     {
       curr_idx++;
 
@@ -1282,11 +1282,11 @@ namespace octave
 
     // int skipline (char delim);
 
-    char *read (char *buffer, int size, char* &new_start);
+    char * read (char *buffer, int size, char* &new_start);
 
     // Return a position suitable to "seekg", valid only within this
     // block between calls to field_done.
-    char *tellg (void) { return idx; }
+    char * tellg (void) { return idx; }
 
     void seekg (char *old_idx) { idx = old_idx; }
 
@@ -1716,18 +1716,18 @@ namespace octave
 
     size_t numel (void) const { return fmt_elts.size (); }
 
-    const textscan_format_elt *first (void)
+    const textscan_format_elt * first (void)
     {
       curr_idx = 0;
       return current ();
     }
 
-    const textscan_format_elt *current (void) const
+    const textscan_format_elt * current (void) const
     {
       return numel () > 0 ? fmt_elts[curr_idx] : 0;
     }
 
-    const textscan_format_elt *next (bool cycle = true)
+    const textscan_format_elt * next (bool cycle = true)
     {
       curr_idx++;
 

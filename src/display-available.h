@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-extern const char *display_available (int *dpy_avail);
+extern const char * display_available (int *dpy_avail);
 
 #if defined (__cplusplus)
 }

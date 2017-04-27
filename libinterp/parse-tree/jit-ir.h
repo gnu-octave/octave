@@ -110,7 +110,7 @@ public:
   const value_list& constants (void) const { return mconstants; }
 
   template <typename T>
-  T *create (void)
+  T * create (void)
   {
     T *ret = new T ();
     track_value (ret);
@@ -121,7 +121,7 @@ public:
 
 #define JIT_CREATE(N)                                           \
   template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
-  T *create (OCT_MAKE_LIST (DECL_ARG, N))                       \
+  T * create (OCT_MAKE_LIST (DECL_ARG, N))                      \
   {                                                             \
     T *ret = new T (OCT_MAKE_ARG_LIST (arg, N));                \
     track_value (ret);                                          \
@@ -156,7 +156,7 @@ public:
   typedef std::list<jit_block *>::iterator iterator;
   typedef std::list<jit_block *>::const_iterator const_iterator;
 
-  jit_block *back (void) const { return mlist.back (); }
+  jit_block * back (void) const { return mlist.back (); }
 
   iterator begin (void) { return mlist.begin (); }
 
@@ -168,7 +168,7 @@ public:
 
   iterator erase (iterator iter) { return mlist.erase (iter); }
 
-  jit_block *front (void) const { return mlist.front (); }
+  jit_block * front (void) const { return mlist.front (); }
 
   void insert_after (iterator iter, jit_block *ablock);
 
@@ -212,14 +212,14 @@ public:
 
   // The block of the first use which is not a jit_error_check
   // So this is not necessarily first_use ()->parent ().
-  jit_block *first_use_block (void);
+  jit_block * first_use_block (void);
 
   // replace all uses with
   virtual void replace_with (jit_value *value);
 
-  jit_type *type (void) const { return ty; }
+  jit_type * type (void) const { return ty; }
 
-  llvm::Type *type_llvm (void) const
+  llvm::Type * type_llvm (void) const
   {
     return ty ? ty->to_llvm () : 0;
   }
@@ -238,7 +238,7 @@ public:
     return ss.str ();
   }
 
-  jit_instruction *last_use (void) const { return mlast_use; }
+  jit_instruction * last_use (void) const { return mlast_use; }
 
   void stash_last_use (jit_instruction *alast_use)
   {
@@ -259,7 +259,7 @@ public:
     return llvm_value;
   }
 
-  llvm::Value *to_llvm (void) const
+  llvm::Value * to_llvm (void) const
   {
     assert (llvm_value);
     return llvm_value;
@@ -312,9 +312,9 @@ public:
 
   size_t index (void) const { return mindex; }
 
-  jit_instruction *user (void) const { return muser; }
+  jit_instruction * user (void) const { return muser; }
 
-  jit_block *user_parent (void) const;
+  jit_block * user_parent (void) const;
 
   std::list<jit_block *> user_parent_location (void) const;
 
@@ -374,23 +374,23 @@ public:
     next_id (true);
   }
 
-  jit_value *argument (size_t i) const
+  jit_value * argument (size_t i) const
   {
     return marguments[i].value ();
   }
 
-  llvm::Value *argument_llvm (size_t i) const
+  llvm::Value * argument_llvm (size_t i) const
   {
     assert (argument (i));
     return argument (i)->to_llvm ();
   }
 
-  jit_type *argument_type (size_t i) const
+  jit_type * argument_type (size_t i) const
   {
     return argument (i)->type ();
   }
 
-  llvm::Type *argument_type_llvm (size_t i) const
+  llvm::Type * argument_type_llvm (size_t i) const
   {
     assert (argument (i));
     return argument_type (i)->to_llvm ();
@@ -453,14 +453,14 @@ public:
 
   virtual std::ostream& short_print (std::ostream& os) const;
 
-  jit_block *parent (void) const { return mparent; }
+  jit_block * parent (void) const { return mparent; }
 
   std::list<jit_instruction *>::iterator location (void) const
   {
     return mlocation;
   }
 
-  llvm::BasicBlock *parent_llvm (void) const;
+  llvm::BasicBlock * parent_llvm (void) const;
 
   void stash_parent (jit_block *aparent,
                      std::list<jit_instruction *>::iterator alocation)
@@ -575,7 +575,7 @@ public:
   void replace_in_phi (jit_block *ablock, jit_block *with);
 
   // we have a new internal list, but we want to stay compatible with jit_value
-  jit_use *first_use (void) const { return jit_value::first_use (); }
+  jit_use * first_use (void) const { return jit_value::first_use (); }
 
   size_t use_count (void) const { return jit_value::use_count (); }
 
@@ -585,34 +585,34 @@ public:
   void mark_alive (void) { malive = true; }
 
   // If we can merge with a successor, do so and return the now empty block
-  jit_block *maybe_merge ();
+  jit_block * maybe_merge ();
 
   // merge another block into this block, leaving the merge block empty
   void merge (jit_block& merge);
 
   const std::string& name (void) const { return mname; }
 
-  jit_instruction *prepend (jit_instruction *instr);
+  jit_instruction * prepend (jit_instruction *instr);
 
-  jit_instruction *prepend_after_phi (jit_instruction *instr);
+  jit_instruction * prepend_after_phi (jit_instruction *instr);
 
   template <typename T>
-  T *append (T *instr)
+  T * append (T *instr)
   {
     internal_append (instr);
     return instr;
   }
 
-  jit_instruction *insert_before (iterator loc, jit_instruction *instr);
+  jit_instruction * insert_before (iterator loc, jit_instruction *instr);
 
-  jit_instruction *insert_before (jit_instruction *loc, jit_instruction *instr)
+  jit_instruction * insert_before (jit_instruction *loc, jit_instruction *instr)
   {
     return insert_before (loc->location (), instr);
   }
 
-  jit_instruction *insert_after (iterator loc, jit_instruction *instr);
+  jit_instruction * insert_after (iterator loc, jit_instruction *instr);
 
-  jit_instruction *insert_after (jit_instruction *loc, jit_instruction *instr)
+  jit_instruction * insert_after (jit_instruction *loc, jit_instruction *instr)
   {
     return insert_after (loc->location (), instr);
   }
@@ -625,12 +625,12 @@ public:
     return iter;
   }
 
-  jit_terminator *terminator (void) const;
+  jit_terminator * terminator (void) const;
 
   // is the jump from pred alive?
   bool branch_alive (jit_block *asucc) const;
 
-  jit_block *successor (size_t i) const;
+  jit_block * successor (size_t i) const;
 
   size_t successor_count (void) const;
 
@@ -690,7 +690,7 @@ public:
     create_dom_tree (mvisit_count);
   }
 
-  jit_block *dom_successor (size_t idx) const
+  jit_block * dom_successor (size_t idx) const
   {
     return dom_succ[idx];
   }
@@ -705,11 +705,11 @@ public:
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;
 
-  jit_block *maybe_split (jit_factory& factory, jit_block_list& blocks,
-                          jit_block *asuccessor);
+  jit_block * maybe_split (jit_factory& factory, jit_block_list& blocks,
+                           jit_block *asuccessor);
 
-  jit_block *maybe_split (jit_factory& factory, jit_block_list& blocks,
-                          jit_block& asuccessor)
+  jit_block * maybe_split (jit_factory& factory, jit_block_list& blocks,
+                           jit_block& asuccessor)
   {
     return maybe_split (factory, blocks, &asuccessor);
   }
@@ -727,7 +727,7 @@ public:
     return os;
   }
 
-  llvm::BasicBlock *to_llvm (void) const;
+  llvm::BasicBlock * to_llvm (void) const;
 
   std::list<jit_block *>::iterator location (void) const
   { return mlocation; }
@@ -751,9 +751,9 @@ public:
     return true;
   }
 
-  jit_instruction *front (void) { return instructions.front (); }
+  jit_instruction * front (void) { return instructions.front (); }
 
-  jit_instruction *back (void) { return instructions.back (); }
+  jit_instruction * back (void) { return instructions.back (); }
 
   JIT_VALUE_ACCEPT;
 private:
@@ -765,7 +765,7 @@ private:
 
   void create_dom_tree (size_t avisit_count);
 
-  static jit_block *idom_intersect (jit_block *i, jit_block *j);
+  static jit_block * idom_intersect (jit_block *i, jit_block *j);
 
   size_t mvisit_count;
   size_t mid;
@@ -799,9 +799,9 @@ public:
     return *this;
   }
 
-  jit_phi *user (void) const { return muser; }
+  jit_phi * user (void) const { return muser; }
 
-  jit_block *user_parent (void) const;
+  jit_block * user_parent (void) const;
 private:
   jit_phi *muser;
 };
@@ -822,7 +822,7 @@ public:
     return ! value_stack.empty ();
   }
 
-  jit_value *top (void) const
+  jit_value * top (void) const
   {
     return value_stack.top ();
   }
@@ -838,7 +838,7 @@ public:
     value_stack.pop ();
   }
 
-  jit_instruction *last_use (void) const
+  jit_instruction * last_use (void) const
   {
     return mlast_use;
   }
@@ -883,7 +883,7 @@ public:
   jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
     : jit_instruction (arg0, arg1), mdest (adest) { }
 
-  jit_variable *dest (void) const { return mdest; }
+  jit_variable * dest (void) const { return mdest; }
 
   virtual void push_variable (void)
   {
@@ -914,12 +914,12 @@ public:
   jit_assign (jit_variable *adest, jit_value *asrc)
     : jit_assign_base (adest, adest, asrc), martificial (false) { }
 
-  jit_value *overwrite (void) const
+  jit_value * overwrite (void) const
   {
     return argument (0);
   }
 
-  jit_value *src (void) const
+  jit_value * src (void) const
   {
     return argument (1);
   }
@@ -978,12 +978,12 @@ public:
     mincomming[mincomming.size () - 1].stash_value (from);
   }
 
-  jit_block *incomming (size_t i) const
+  jit_block * incomming (size_t i) const
   {
     return mincomming[i].value ();
   }
 
-  llvm::BasicBlock *incomming_llvm (size_t i) const
+  llvm::BasicBlock * incomming_llvm (size_t i) const
   {
     return incomming (i)->to_llvm ();
   }
@@ -1017,7 +1017,7 @@ public:
     return os;
   }
 
-  llvm::PHINode *to_llvm (void) const;
+  llvm::PHINode * to_llvm (void) const;
 
   JIT_VALUE_ACCEPT;
 private:
@@ -1041,12 +1041,12 @@ public:
 
 #undef JIT_TERMINATOR_CONST
 
-  jit_block *successor (size_t idx = 0) const
+  jit_block * successor (size_t idx = 0) const
   {
     return static_cast<jit_block *> (argument (idx));
   }
 
-  llvm::BasicBlock *successor_llvm (size_t idx = 0) const
+  llvm::BasicBlock * successor_llvm (size_t idx = 0) const
   {
     return successor (idx)->to_llvm ();
   }
@@ -1077,7 +1077,7 @@ public:
 
   virtual bool infer (void);
 
-  llvm::TerminatorInst *to_llvm (void) const;
+  llvm::TerminatorInst * to_llvm (void) const;
 protected:
   virtual bool check_alive (size_t) const { return true; }
 private:
@@ -1108,14 +1108,14 @@ public:
   jit_cond_branch (jit_value *c, jit_block *ctrue, jit_block *cfalse)
     : jit_terminator (2, ctrue, cfalse, c) { }
 
-  jit_value *cond (void) const { return argument (2); }
+  jit_value * cond (void) const { return argument (2); }
 
   std::ostream& print_cond (std::ostream& os) const
   {
     return cond ()->short_print (os);
   }
 
-  llvm::Value *cond_llvm (void) const
+  llvm::Value * cond_llvm (void) const
   {
     return cond ()->to_llvm ();
   }
@@ -1242,7 +1242,7 @@ public:
     return argument_count () == 3;
   }
 
-  jit_call *check_for (void) const
+  jit_call * check_for (void) const
   {
     assert (has_check_for ());
     return static_cast<jit_call *> (argument (2));
@@ -1350,17 +1350,17 @@ public:
     return jit_typeinfo::cast (jit_typeinfo::get_any (), result_type ());
   }
 
-  jit_value *result (void) const
+  jit_value * result (void) const
   {
     return argument (0);
   }
 
-  jit_type *result_type (void) const
+  jit_type * result_type (void) const
   {
     return result ()->type ();
   }
 
-  llvm::Value *result_llvm (void) const
+  llvm::Value * result_llvm (void) const
   {
     return result ()->to_llvm ();
   }
@@ -1393,12 +1393,12 @@ public:
 
   jit_return (jit_value *retval) : jit_instruction (retval) { }
 
-  jit_value *result (void) const
+  jit_value * result (void) const
   {
     return argument_count () ? argument (0) : 0;
   }
 
-  jit_type *result_type (void) const
+  jit_type * result_type (void) const
   {
     jit_value *res = result ();
     return res ? res->type () : 0;

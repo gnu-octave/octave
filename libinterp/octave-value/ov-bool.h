@@ -62,8 +62,8 @@ public:
 
   ~octave_bool (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_bool (*this); }
-  octave_base_value *empty_clone (void) const
+  octave_base_value * clone (void) const { return new octave_bool (*this); }
+  octave_base_value * empty_clone (void) const
   { return new octave_bool_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
@@ -243,7 +243,7 @@ public:
                      skip, flt_fmt);
   }
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const

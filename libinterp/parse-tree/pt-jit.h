@@ -51,7 +51,7 @@ public:
 #define DECL_ARG(n) const ARG ## n& arg ## n
 #define JIT_CREATE_CHECKED(N)                                           \
   template <OCT_MAKE_DECL_LIST (typename, ARG, N)>                      \
-  jit_call *create_checked (OCT_MAKE_LIST (DECL_ARG, N))                \
+  jit_call * create_checked (OCT_MAKE_LIST (DECL_ARG, N))               \
   {                                                                     \
     jit_call *ret = factory.create<jit_call> (OCT_MAKE_ARG_LIST (arg, N)); \
     return create_checked_impl (ret);                                   \
@@ -198,20 +198,20 @@ private:
 
   void initialize (symbol_table::scope_id s);
 
-  jit_call *create_checked_impl (jit_call *ret);
+  jit_call * create_checked_impl (jit_call *ret);
 
   // get an existing vairable.  If the variable does not exist, it will not be
   // created
-  jit_variable *find_variable (const std::string& vname) const;
+  jit_variable * find_variable (const std::string& vname) const;
 
   // get a variable, create it if it does not exist.  The type will default to
   // the variable's current type in the symbol table.
-  jit_variable *get_variable (const std::string& vname);
+  jit_variable * get_variable (const std::string& vname);
 
   // create a variable of the given name and given type.  Will also insert an
   // extract statement
-  jit_variable *create_variable (const std::string& vname, jit_type *type,
-                                 bool isarg = true);
+  jit_variable * create_variable (const std::string& vname, jit_type *type,
+                                  bool isarg = true);
 
   // The name of the next for loop iterator.  If inc is false, then the
   // iterator counter will not be incremented.
@@ -226,18 +226,18 @@ private:
 
   std::string next_name (const char *prefix, size_t& count, bool inc);
 
-  jit_instruction *resolve (tree_index_expression& exp,
-                            jit_value *extra_arg = 0, bool lhs = false);
+  jit_instruction * resolve (tree_index_expression& exp,
+                             jit_value *extra_arg = 0, bool lhs = false);
 
-  jit_value *do_assign (tree_expression *exp, jit_value *rhs,
-                        bool artificial = false);
+  jit_value * do_assign (tree_expression *exp, jit_value *rhs,
+                         bool artificial = false);
 
-  jit_value *do_assign (const std::string& lhs, jit_value *rhs, bool print,
-                        bool artificial = false);
+  jit_value * do_assign (const std::string& lhs, jit_value *rhs, bool print,
+                         bool artificial = false);
 
-  jit_value *visit (tree *tee) { return visit (*tee); }
+  jit_value * visit (tree *tee) { return visit (*tee); }
 
-  jit_value *visit (tree& tee);
+  jit_value * visit (tree& tee);
 
   typedef std::list<jit_block *> block_list;
   block_list breaks;
@@ -251,9 +251,9 @@ class
 jit_convert_llvm : public jit_ir_walker
 {
 public:
-  llvm::Function *convert_loop (llvm::Module *module,
-                                const jit_block_list& blocks,
-                                const std::list<jit_value *>& constants);
+  llvm::Function * convert_loop (llvm::Module *module,
+                                 const jit_block_list& blocks,
+                                 const std::list<jit_value *>& constants);
 
   jit_function convert_function (llvm::Module *module,
                                  const jit_block_list& blocks,
@@ -366,9 +366,9 @@ public:
   static bool execute (octave_user_function& fcn, const octave_value_list& args,
                        octave_value_list& retval);
 
-  llvm::ExecutionEngine *get_engine (void) const { return engine; }
+  llvm::ExecutionEngine * get_engine (void) const { return engine; }
 
-  llvm::Module *get_module (void) const { return module; }
+  llvm::Module * get_module (void) const { return module; }
 
   void optimize (llvm::Function *fn);
 private:

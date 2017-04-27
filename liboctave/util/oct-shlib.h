@@ -64,15 +64,15 @@ namespace octave
       virtual bool is_open (void) const
       { return false; }
 
-      virtual void *search (const std::string&, name_mangler = 0)
+      virtual void * search (const std::string&, name_mangler = 0)
       { return 0; }
 
       bool is_out_of_date (void) const;
 
       // This method will be overridden conditionally.
-      static dynlib_rep *new_instance (const std::string& f);
+      static dynlib_rep * new_instance (const std::string& f);
 
-      static dynlib_rep *get_instance (const std::string& f, bool fake);
+      static dynlib_rep * get_instance (const std::string& f, bool fake);
 
       octave::sys::time time_loaded (void) const
       { return tm_loaded; }
@@ -161,7 +161,7 @@ namespace octave
       *this = dynamic_library ();
     }
 
-    void *search (const std::string& nm, name_mangler mangler = 0) const
+    void * search (const std::string& nm, name_mangler mangler = 0) const
     {
       void *f = rep->search (nm, mangler);
       if (f)

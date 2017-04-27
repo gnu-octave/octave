@@ -36,7 +36,7 @@ extern "C" {
 // c++11 provides std::tmpfile but it appears to fail on 64-bit
 // Windows systems.
 
-extern FILE *octave_tmpfile_wrapper (void);
+extern FILE * octave_tmpfile_wrapper (void);
 
 #if defined __cplusplus
 }

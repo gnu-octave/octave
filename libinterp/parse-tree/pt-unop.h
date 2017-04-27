@@ -66,7 +66,7 @@ namespace octave
 
     bool has_magic_end (void) const { return (op && op->has_magic_end ()); }
 
-    tree_expression *operand (void) { return op; }
+    tree_expression * operand (void) { return op; }
 
     std::string oper (void) const;
 
@@ -105,8 +105,8 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -140,8 +140,8 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

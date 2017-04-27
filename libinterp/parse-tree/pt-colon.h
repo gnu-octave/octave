@@ -79,23 +79,23 @@ namespace octave
 
     void preserve_base (void) { save_base = true; }
 
-    tree_colon_expression *append (tree_expression *t);
+    tree_colon_expression * append (tree_expression *t);
 
     bool rvalue_ok (void) const { return true; }
 
     void eval_error (const std::string& s) const;
 
-    tree_expression *base (void) { return op_base; }
+    tree_expression * base (void) { return op_base; }
 
-    tree_expression *limit (void) { return op_limit; }
+    tree_expression * limit (void) { return op_limit; }
 
-    tree_expression *increment (void) { return op_increment; }
+    tree_expression * increment (void) { return op_increment; }
 
     int line (void) const;
     int column (void) const;
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

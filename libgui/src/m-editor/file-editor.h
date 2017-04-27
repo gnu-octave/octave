@@ -119,9 +119,9 @@ public:
 
   void loadFile (const QString& fileName);
 
-  QMenu *get_mru_menu (void) { return _mru_file_menu; }
-  QMenu *debug_menu (void);
-  QToolBar *toolbar (void);
+  QMenu * get_mru_menu (void) { return _mru_file_menu; }
+  QMenu * debug_menu (void);
+  QToolBar * toolbar (void);
 
   void insert_global_actions (QList<QAction*>);
   enum shared_actions_idx
@@ -349,9 +349,9 @@ private:
 
   bool editor_tab_has_focus ();
 
-  QWidget *find_tab_widget (const QString& openFileName) const;
-  QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                       const char *member);
+  QWidget * find_tab_widget (const QString& openFileName) const;
+  QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                        const char *member);
 
   QMenu* m_add_menu (QMenuBar *p, QString text);
 

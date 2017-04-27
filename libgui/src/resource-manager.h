@@ -48,7 +48,7 @@ public:
 
   ~resource_manager ();
 
-  static QSettings *get_settings (void)
+  static QSettings * get_settings (void)
   {
     return instance_ok () ? instance->do_get_settings () : 0;
   }
@@ -61,7 +61,7 @@ public:
     return QIcon ();
   }
 
-  static QSettings *get_default_settings (void)
+  static QSettings * get_default_settings (void)
   {
     return instance_ok () ? instance->do_get_default_settings () : 0;
   }
@@ -130,9 +130,9 @@ private:
 
   QSettings *default_settings;
 
-  QSettings *do_get_settings (void) const;
+  QSettings * do_get_settings (void) const;
 
-  QSettings *do_get_default_settings (void) const;
+  QSettings * do_get_default_settings (void) const;
 
   QString do_get_settings_file (void);
 

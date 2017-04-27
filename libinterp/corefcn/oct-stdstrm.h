@@ -66,12 +66,12 @@ public:
 
   std::string name (void) const { return nm; }
 
-  std::istream *input_stream (void) { return (md & std::ios::in) ? s : 0; }
+  std::istream * input_stream (void) { return (md & std::ios::in) ? s : 0; }
 
-  std::ostream *output_stream (void) { return (md & std::ios::out) ? s : 0; }
+  std::ostream * output_stream (void) { return (md & std::ios::out) ? s : 0; }
 
   // FIXME: should not have to cast away const here.
-  BUF_T *rdbuf (void) const
+  BUF_T * rdbuf (void) const
   { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
 
   int file_number (void) const { return fnum; }

@@ -76,7 +76,7 @@ private:
 
   std::string nm;
 
-  virtual const char *stream_type (void) const = 0;
+  virtual const char * stream_type (void) const = 0;
 };
 
 class
@@ -97,9 +97,9 @@ public:
 
   bool eof (void) const;
 
-  std::istream *input_stream (void) { return is; }
+  std::istream * input_stream (void) { return is; }
 
-  std::ostream *output_stream (void) { return 0; }
+  std::ostream * output_stream (void) { return 0; }
 
 protected:
 
@@ -109,7 +109,7 @@ private:
 
   std::istream *is;
 
-  const char *stream_type (void) const { return "octave_istream"; }
+  const char * stream_type (void) const { return "octave_istream"; }
 
   // No copying!
 
@@ -136,9 +136,9 @@ public:
 
   bool eof (void) const;
 
-  std::istream *input_stream (void) { return 0; }
+  std::istream * input_stream (void) { return 0; }
 
-  std::ostream *output_stream (void) { return os; }
+  std::ostream * output_stream (void) { return os; }
 
 protected:
 
@@ -148,7 +148,7 @@ private:
 
   std::ostream *os;
 
-  const char *stream_type (void) const { return "octave_ostream"; }
+  const char * stream_type (void) const { return "octave_ostream"; }
 
   // No copying!
 

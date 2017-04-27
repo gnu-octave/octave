@@ -72,12 +72,12 @@ namespace octave
 
     std::string oper (void) const;
 
-    tree_expression *left_hand_side (void) { return lhs; }
+    tree_expression * left_hand_side (void) { return lhs; }
 
-    tree_expression *right_hand_side (void) { return rhs; }
+    tree_expression * right_hand_side (void) { return rhs; }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {
@@ -137,12 +137,12 @@ namespace octave
 
     std::string oper (void) const;
 
-    tree_argument_list *left_hand_side (void) { return lhs; }
+    tree_argument_list * left_hand_side (void) { return lhs; }
 
-    tree_expression *right_hand_side (void) { return rhs; }
+    tree_expression * right_hand_side (void) { return rhs; }
 
-    tree_expression *dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const;
+    tree_expression * dup (symbol_table::scope_id scope,
+                           symbol_table::context_id context) const;
 
     void accept (tree_walker& tw)
     {

@@ -49,7 +49,7 @@ public:
 
   webinfo_tab_bar (QWidget *p);
   ~webinfo_tab_bar ();
-  QMenu *get_context_menu () { return _context_menu; }
+  QMenu * get_context_menu () { return _context_menu; }
 
 public slots:
 
@@ -95,8 +95,8 @@ public slots:
 
 private:
 
-  QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                       const char *member);
+  QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                        const char *member);
   void tab_state_changed (void);
 
   QTextBrowser        *_text_browser;
@@ -110,7 +110,7 @@ private:
   parser              _parser;
   QFont               _font_web;
 
-  QTextBrowser *addNewTab (const QString& name);
+  QTextBrowser * addNewTab (const QString& name);
   QAction *_close_action;
   QAction *_close_others_action;
 

@@ -71,11 +71,11 @@ extern void octave_remove_history (int);
 
 extern void octave_clear_history (void);
 
-extern char *octave_history_goto_mark (int n);
+extern char * octave_history_goto_mark (int n);
 
-extern char *octave_history_get (int n);
+extern char * octave_history_get (int n);
 
-extern char **octave_history_list (int, int);
+extern char ** octave_history_list (int, int);
 
 extern void octave_replace_history_entry (int, const char *);
 

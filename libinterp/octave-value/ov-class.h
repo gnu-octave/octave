@@ -68,11 +68,11 @@ public:
 
   ~octave_class (void) = default;
 
-  octave_base_value *clone (void) const { return new octave_class (*this); }
+  octave_base_value * clone (void) const { return new octave_class (*this); }
 
-  octave_base_value *unique_clone (void);
+  octave_base_value * unique_clone (void);
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   {
     return new octave_class (octave_map (map.keys ()), c_name, parent_list);
   }
@@ -164,9 +164,9 @@ public:
   string_vector parent_class_names (void) const
   { return string_vector (parent_list); }
 
-  octave_base_value *find_parent_class (const std::string&);
+  octave_base_value * find_parent_class (const std::string&);
 
-  octave_base_value *unique_parent_class (const std::string&);
+  octave_base_value * unique_parent_class (const std::string&);
 
   bool is_instance_of (const std::string&) const;
 
@@ -200,7 +200,7 @@ public:
 
   bool load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  mxArray *as_mxArray (void) const;
+  mxArray * as_mxArray (void) const;
 
 private:
   octave_map map;

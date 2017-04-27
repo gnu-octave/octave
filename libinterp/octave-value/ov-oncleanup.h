@@ -39,7 +39,7 @@ public:
 
   octave_oncleanup (const octave_value& fcn);
 
-  octave_base_value *clone (void) const
+  octave_base_value * clone (void) const
   {
     if (fcn.is_defined ())
       error ("onCleanup: internal error: cloning nonempty object");
@@ -47,7 +47,7 @@ public:
     return empty_clone ();
   }
 
-  octave_base_value *empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   {
     return new octave_oncleanup ();
   }

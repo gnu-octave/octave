@@ -58,8 +58,8 @@ namespace octave
 
     virtual bool has_magic_end (void) const = 0;
 
-    virtual tree_expression *dup (symbol_table::scope_id,
-                                  symbol_table::context_id context) const = 0;
+    virtual tree_expression * dup (symbol_table::scope_id,
+                                   symbol_table::context_id context) const = 0;
 
     virtual bool is_constant (void) const { return false; }
 
@@ -110,19 +110,19 @@ namespace octave
 
     bool is_for_cmd_expr (void) const { return for_cmd_expr; }
 
-    tree_expression *mark_in_parens (void)
+    tree_expression * mark_in_parens (void)
     {
       num_parens++;
       return this;
     }
 
-    tree_expression *set_postfix_index (char type)
+    tree_expression * set_postfix_index (char type)
     {
       postfix_index_type = type;
       return this;
     }
 
-    tree_expression *set_print_flag (bool print)
+    tree_expression * set_print_flag (bool print)
     {
       print_flag = print;
       return this;

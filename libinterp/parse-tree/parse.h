@@ -169,13 +169,13 @@ namespace octave
     void maybe_warn_variable_switch_label (tree_expression *expr);
 
     // Finish building a range.
-    tree_expression *finish_colon_expression (tree_colon_expression *e);
+    tree_expression * finish_colon_expression (tree_colon_expression *e);
 
     // Build a constant.
-    tree_constant *make_constant (int op, token *tok_val);
+    tree_constant * make_constant (int op, token *tok_val);
 
     // Build a function handle.
-    tree_fcn_handle *make_fcn_handle (token *tok_val);
+    tree_fcn_handle * make_fcn_handle (token *tok_val);
 
     // Build an anonymous function handle.
     tree_anon_fcn_handle *
@@ -231,13 +231,13 @@ namespace octave
                       octave_comment_list *lc);
 
     // Build a break command.
-    tree_command *make_break_command (token *break_tok);
+    tree_command * make_break_command (token *break_tok);
 
     // Build a continue command.
-    tree_command *make_continue_command (token *continue_tok);
+    tree_command * make_continue_command (token *continue_tok);
 
     // Build a return command.
-    tree_command *make_return_command (token *return_tok);
+    tree_command * make_return_command (token *return_tok);
 
     // Start an if command.
     tree_if_command_list *
@@ -278,7 +278,7 @@ namespace octave
                     tree_statement *end_function);
 
     // Create a no-op statement for end_function.
-    tree_statement *make_end (const std::string& type, bool eof, int l, int c);
+    tree_statement * make_end (const std::string& type, bool eof, int l, int c);
 
     // Do most of the work for defining a function.
     octave_user_function *
@@ -361,17 +361,17 @@ namespace octave
     bool validate_array_list (tree_expression *e);
 
     // Validate matrix object used in "[lhs] = ..." assignments.
-    tree_argument_list *validate_matrix_for_assignment (tree_expression *e);
+    tree_argument_list * validate_matrix_for_assignment (tree_expression *e);
 
     // Finish building an array_list (common action for finish_matrix
     // and finish_cell).
-    tree_expression *finish_array_list (tree_array_list *a);
+    tree_expression * finish_array_list (tree_array_list *a);
 
     // Finish building a matrix list.
-    tree_expression *finish_matrix (tree_matrix *m);
+    tree_expression * finish_matrix (tree_matrix *m);
 
     // Finish building a cell list.
-    tree_expression *finish_cell (tree_cell *c);
+    tree_expression * finish_cell (tree_cell *c);
 
     // Maybe print a warning.  Duh.
     void maybe_warn_missing_semi (tree_statement_list *);
@@ -382,10 +382,10 @@ namespace octave
 
     // Finish building a statement.
     template <typename T>
-    tree_statement *make_statement (T *arg);
+    tree_statement * make_statement (T *arg);
 
     // Create a statement list.
-    tree_statement_list *make_statement_list (tree_statement *stmt);
+    tree_statement_list * make_statement_list (tree_statement *stmt);
 
     // Append a statement to an existing statement list.
     tree_statement_list *

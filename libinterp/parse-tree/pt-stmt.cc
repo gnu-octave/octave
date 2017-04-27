@@ -305,7 +305,7 @@ namespace octave
 
     new_list->function_body = function_body;
 
-    for (const tree_statement* elt : *this)
+    for (const tree_statement *elt : *this)
       new_list->append (elt ? elt->dup (scope, context) : 0);
 
     return new_list;

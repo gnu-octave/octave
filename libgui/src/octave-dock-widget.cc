@@ -173,7 +173,7 @@ void
 octave_dock_widget::set_title (const QString& title)
 {
 #if defined (Q_OS_WIN32)
-  QHBoxLayout* h_layout
+  QHBoxLayout *h_layout
     = static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
   label->setStyleSheet ("background: transparent;");

@@ -36,14 +36,14 @@ namespace QtHandles
   class Panel : public Object
   {
   public:
-    Panel (const graphics_object& go, QFrame* frame);
+    Panel (const graphics_object& go, QFrame *frame);
     ~Panel (void);
 
-    Container* innerContainer (void) { return m_container; }
+    Container * innerContainer (void) { return m_container; }
 
-    bool eventFilter (QObject* watched, QEvent* event);
+    bool eventFilter (QObject *watched, QEvent *event);
 
-    static Panel* create (const graphics_object& go);
+    static Panel * create (const graphics_object& go);
 
   protected:
     void update (int pId);
@@ -53,8 +53,8 @@ namespace QtHandles
     void updateLayout (void);
 
   private:
-    Container* m_container;
-    QLabel* m_title;
+    Container *m_container;
+    QLabel *m_title;
     bool m_blockUpdates;
   };
 

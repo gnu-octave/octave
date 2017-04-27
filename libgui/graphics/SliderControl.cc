@@ -38,11 +38,11 @@ namespace QtHandles
   SliderControl*
   SliderControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new SliderControl (go, new QScrollBar (container));
@@ -52,7 +52,7 @@ namespace QtHandles
   }
 
   SliderControl::SliderControl (const graphics_object& go,
-                                QAbstractSlider* slider)
+                                QAbstractSlider *slider)
     : BaseControl (go, slider), m_blockUpdates (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
@@ -87,7 +87,7 @@ namespace QtHandles
   SliderControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QScrollBar* slider = qWidget<QScrollBar> ();
+    QScrollBar *slider = qWidget<QScrollBar> ();
 
     switch (pId)
       {

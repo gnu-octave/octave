@@ -288,7 +288,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   const octave_idx_type def_elem = frameidx(0);
 
   T img       = T (dim_vector (nRows, nCols, 1, nFrames));
-  P* img_fvec = img.fortran_vec ();
+  P *img_fvec = img.fortran_vec ();
 
   const octave_idx_type row_start = region.row_start ();
   const octave_idx_type col_start = region.col_start ();
@@ -340,10 +340,10 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
       if (imvec[def_elem].matte () && nargout >= 3)
         {
           const Matrix amap = maps(1).matrix_value ();
-          const double* amap_fvec = amap.fortran_vec ();
+          const double *amap_fvec = amap.fortran_vec ();
 
           NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
-          double* alpha_fvec = alpha.fortran_vec ();
+          double *alpha_fvec = alpha.fortran_vec ();
 
           // GraphicsMagick stores the alpha values inverted, i.e.,
           // 1 for transparent and 0 for opaque so we fix that here.
@@ -940,8 +940,8 @@ img_float2uint (const T& img)
   typedef typename T::element_type P;
   uint32NDArray out (img.dims ());
 
-  octave_uint32* out_fvec = out.fortran_vec ();
-  const P*       img_fvec = img.fortran_vec ();
+  octave_uint32 *out_fvec = out.fortran_vec ();
+  const P       *img_fvec = img.fortran_vec ();
 
   const octave_uint32 max = octave_uint32::max ();
   const octave_idx_type numel = img.numel ();
@@ -1011,7 +1011,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
   // even if it's always the same.  We can least get a vector for the Colors.
   std::vector<Magick::ColorRGB> colormap;
   {
-    const double* cmap_fvec = cmap.fortran_vec ();
+    const double *cmap_fvec = cmap.fortran_vec ();
     const octave_idx_type G_offset = cmap_size;
     const octave_idx_type B_offset = cmap_size * 2;
     for (octave_idx_type map_idx = 0; map_idx < cmap_size; map_idx++)
@@ -1042,9 +1042,9 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
       // values (no indexes), then set the image as PseudoClass and GM
       // would create a colormap for us.  However, we wouldn't have control
       // over the order of that colormap.  And that's why we set both.
-      Magick::PixelPacket* pix = m_img.getPixels (0, 0, nCols, nRows);
-      Magick::IndexPacket* ind = m_img.getIndexes ();
-      const P* img_fvec        = img.fortran_vec ();
+      Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+      Magick::IndexPacket *ind = m_img.getIndexes ();
+      const P *img_fvec        = img.fortran_vec ();
 
       octave_idx_type GM_idx = 0;
       for (octave_idx_type column = 0; column < nCols; column++)
@@ -2055,7 +2055,7 @@ Use @code{imfinfo} instead.
         // be all zeros.  So rather than send a matrix of zeros, we will
         // check for that, and send an empty vector instead.
         RowVector chromaticities (8);
-        double* chroma_fvec = chromaticities.fortran_vec ();
+        double *chroma_fvec = chromaticities.fortran_vec ();
         img.chromaWhitePoint    (&chroma_fvec[0], &chroma_fvec[1]);
         img.chromaRedPrimary    (&chroma_fvec[2], &chroma_fvec[3]);
         img.chromaGreenPrimary  (&chroma_fvec[4], &chroma_fvec[5]);

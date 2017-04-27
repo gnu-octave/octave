@@ -60,9 +60,9 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
     opt = OFF;
 
   // Input matrix pointers
-  octave_idx_type* cidx = sm.cidx ();
-  octave_idx_type* ridx = sm.ridx ();
-  T* data = sm.data ();
+  octave_idx_type *cidx = sm.cidx ();
+  octave_idx_type *ridx = sm.ridx ();
+  T *data = sm.data ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (octave_idx_type, iw, n);
@@ -180,8 +180,8 @@ Undocumented internal function.
 
 template <typename octave_matrix_t, typename T>
 void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
-                octave_matrix_t& L, octave_matrix_t& U, T* cols_norm,
-                T* rows_norm, const T droptol = 0,
+                octave_matrix_t& L, octave_matrix_t& U, T *cols_norm,
+                T *rows_norm, const T droptol = 0,
                 const std::string milu = "off")
 {
   // Map the strings into chars for faster comparing inside loops
@@ -206,24 +206,24 @@ void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
   max_len_l += (0.1 * max_len_l) > n ? 0.1 * max_len_l : n;
 
   // Extract pointers to the arrays for faster access inside loops
-  octave_idx_type* cidx_in_u = sm_u.cidx ();
-  octave_idx_type* ridx_in_u = sm_u.ridx ();
-  T* data_in_u = sm_u.data ();
-  octave_idx_type* cidx_in_l = sm_l.cidx ();
-  octave_idx_type* ridx_in_l = sm_l.ridx ();
-  T* data_in_l = sm_l.data ();
+  octave_idx_type *cidx_in_u = sm_u.cidx ();
+  octave_idx_type *ridx_in_u = sm_u.ridx ();
+  T *data_in_u = sm_u.data ();
+  octave_idx_type *cidx_in_l = sm_l.cidx ();
+  octave_idx_type *ridx_in_l = sm_l.ridx ();
+  T *data_in_l = sm_l.data ();
 
   // L output arrays
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
-  octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len_l, 1));
-  T* data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.fortran_vec ();
 
   // U output arrays
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
-  octave_idx_type* ridx_u = ridx_out_u.fortran_vec ();
+  octave_idx_type *ridx_u = ridx_out_u.fortran_vec ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T* data_u = data_out_u.fortran_vec ();
+  T *data_u = data_out_u.fortran_vec ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (octave_idx_type, cidx_l, n + 1);
@@ -518,7 +518,7 @@ Undocumented internal function.
 
 template <typename octave_matrix_t, typename T>
 void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
-             octave_idx_type nnz_u, octave_idx_type nnz_l, T* cols_norm,
+             octave_idx_type nnz_u, octave_idx_type nnz_l, T *cols_norm,
              Array <octave_idx_type>& perm_vec, const T droptol = T(0),
              const T thresh = T(0), const  std::string milu = "off",
              const double udiag = 0)
@@ -539,9 +539,9 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
     sm = sm.transpose ();
 
   // Extract pointers to the arrays for faster access inside loops
-  octave_idx_type* cidx_in = sm.cidx ();
-  octave_idx_type* ridx_in = sm.ridx ();
-  T* data_in = sm.data ();
+  octave_idx_type *cidx_in = sm.cidx ();
+  octave_idx_type *ridx_in = sm.ridx ();
+  T *data_in = sm.data ();
   octave_idx_type jrow, i, j, k, jj, c, total_len_l, total_len_u, p_perm,
                   max_ind, max_len_l, max_len_u;
   T zero = T(0);
@@ -555,19 +555,19 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
   // Extract pointers to the arrays for faster access inside loops
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
-  octave_idx_type* cidx_l = cidx_out_l.fortran_vec ();
+  octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
-  octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len_l, 1));
-  T* data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.fortran_vec ();
 
   // Data for U
   Array <octave_idx_type> cidx_out_u (dim_vector (n + 1, 1));
-  octave_idx_type* cidx_u = cidx_out_u.fortran_vec ();
+  octave_idx_type *cidx_u = cidx_out_u.fortran_vec ();
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
-  octave_idx_type* ridx_u = ridx_out_u.fortran_vec ();
+  octave_idx_type *ridx_u = ridx_out_u.fortran_vec ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T* data_u = data_out_u.fortran_vec ();
+  T *data_u = data_out_u.fortran_vec ();
 
   // Working arrays and permutation arrays
   octave_idx_type w_len_u, w_len_l;
@@ -577,7 +577,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   std::set <octave_idx_type>::iterator it, it2;
   OCTAVE_LOCAL_BUFFER (T, w_data, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, iperm, n);
-  octave_idx_type* perm = perm_vec.fortran_vec ();
+  octave_idx_type *perm = perm_vec.fortran_vec ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, uptr, n);
 
   // Initialize working and permutation arrays

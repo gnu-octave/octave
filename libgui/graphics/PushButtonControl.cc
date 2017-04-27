@@ -37,11 +37,11 @@ namespace QtHandles
   PushButtonControl*
   PushButtonControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new PushButtonControl (go, new QPushButton (container));
@@ -51,7 +51,7 @@ namespace QtHandles
   }
 
   PushButtonControl::PushButtonControl (const graphics_object& go,
-                                        QPushButton* btn)
+                                        QPushButton *btn)
     : ButtonControl (go, btn)
   {
     btn->setAutoFillBackground (true);
@@ -64,7 +64,7 @@ namespace QtHandles
   PushButtonControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QPushButton* btn = qWidget<QPushButton> ();
+    QPushButton *btn = qWidget<QPushButton> ();
 
     switch (pId)
       {

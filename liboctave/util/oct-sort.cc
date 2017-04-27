@@ -1808,7 +1808,7 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
 template <typename T>
 void
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
-                        const T* values, octave_idx_type nvalues,
+                        const T *values, octave_idx_type nvalues,
                         octave_idx_type *idx)
 {
 #if defined (INLINE_ASCENDING_SORT)
@@ -1883,7 +1883,7 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
 template <typename T>
 void
 octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
-                               const T* values, octave_idx_type nvalues,
+                               const T *values, octave_idx_type nvalues,
                                octave_idx_type *idx, bool rev)
 {
 #if defined (INLINE_ASCENDING_SORT)

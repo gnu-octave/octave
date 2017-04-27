@@ -122,7 +122,7 @@ octave_fields::orderfields (Array<octave_idx_type>& perm)
 
 bool
 octave_fields::equal_up_to_order (const octave_fields& other,
-                                  octave_idx_type* perm) const
+                                  octave_idx_type *perm) const
 {
   bool retval = true;
 

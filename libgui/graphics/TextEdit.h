@@ -33,7 +33,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    TextEdit (QWidget* xparent) : QTextEdit (xparent) { }
+    TextEdit (QWidget *xparent) : QTextEdit (xparent) { }
     ~TextEdit (void) = default;
 
   signals:
@@ -41,8 +41,8 @@ namespace QtHandles
     void returnPressed (void);
 
   protected:
-    void focusOutEvent (QFocusEvent* event);
-    void keyPressEvent (QKeyEvent* event);
+    void focusOutEvent (QFocusEvent *event);
+    void keyPressEvent (QKeyEvent *event);
   };
 
 }

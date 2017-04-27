@@ -33,10 +33,10 @@ namespace QtHandles
   class TextControl : public BaseControl
   {
   public:
-    TextControl (const graphics_object& go, QLabel* label);
+    TextControl (const graphics_object& go, QLabel *label);
     ~TextControl (void);
 
-    static TextControl* create (const graphics_object& go);
+    static TextControl * create (const graphics_object& go);
 
   protected:
     void update (int pId);

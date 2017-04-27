@@ -37,7 +37,7 @@ namespace QtHandles
 {
 
   static void
-  updatePalette (const uicontrol::properties& props, QWidget* w)
+  updatePalette (const uicontrol::properties& props, QWidget *w)
   {
     QPalette p = w->palette ();
 
@@ -88,14 +88,14 @@ namespace QtHandles
     w->setPalette (p);
   }
 
-  BaseControl::BaseControl (const graphics_object& go, QWidget* w)
+  BaseControl::BaseControl (const graphics_object& go, QWidget *w)
     : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
   {
     init (w);
   }
 
   void
-  BaseControl::init (QWidget* w, bool callBase)
+  BaseControl::init (QWidget *w, bool callBase)
   {
     if (callBase)
       Object::init (w, callBase);
@@ -124,7 +124,7 @@ namespace QtHandles
   BaseControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QWidget* w = qWidget<QWidget> ();
+    QWidget *w = qWidget<QWidget> ();
 
     switch (pId)
       {
@@ -177,7 +177,7 @@ namespace QtHandles
   }
 
   bool
-  BaseControl::eventFilter (QObject* watched, QEvent* xevent)
+  BaseControl::eventFilter (QObject *watched, QEvent *xevent)
   {
     switch (xevent->type ())
       {

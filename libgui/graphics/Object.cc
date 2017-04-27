@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Object::Object (const graphics_object& go, QObject* obj)
+  Object::Object (const graphics_object& go, QObject *obj)
     : QObject (), m_handle (go.get_handle ()), m_qobject (0)
   {
     gh_manager::auto_lock lock (false);
@@ -48,7 +48,7 @@ namespace QtHandles
   }
 
   void
-  Object::init (QObject* obj, bool)
+  Object::init (QObject *obj, bool)
   {
     if (m_qobject)
       qCritical ("QtHandles::Object::init: "
@@ -155,7 +155,7 @@ namespace QtHandles
   Object::beingDeleted (void)
   { }
 
-  void Object::objectDestroyed (QObject* obj)
+  void Object::objectDestroyed (QObject *obj)
   {
     if (obj && obj == m_qobject)
       m_qobject = 0;
@@ -166,14 +166,14 @@ namespace QtHandles
   {
     gh_manager::auto_lock lock;
 
-    Object* parent = Backend::toolkitObject
+    Object *parent = Backend::toolkitObject
                      (gh_manager::get_object (go.get_parent ()));
 
     return parent;
   }
 
   Object*
-  Object::fromQObject (QObject* obj)
+  Object::fromQObject (QObject *obj)
   {
     QVariant v = obj->property ("QtHandles::Object");
 

@@ -36,11 +36,11 @@ namespace QtHandles
   TextControl*
   TextControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new TextControl (go, new QLabel (container));
@@ -49,7 +49,7 @@ namespace QtHandles
     return 0;
   }
 
-  TextControl::TextControl (const graphics_object& go, QLabel* label)
+  TextControl::TextControl (const graphics_object& go, QLabel *label)
     : BaseControl (go, label)
   {
     uicontrol::properties& up = properties<uicontrol> ();
@@ -69,7 +69,7 @@ namespace QtHandles
   TextControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QLabel* label = qWidget<QLabel> ();
+    QLabel *label = qWidget<QLabel> ();
 
     switch (pId)
       {

@@ -62,10 +62,10 @@ namespace QtHandles
 
     void setCursor (MouseMode mode);
 
-    virtual QWidget* qWidget (void) = 0;
+    virtual QWidget * qWidget (void) = 0;
 
-    static Canvas* create (const std::string& name, QWidget* parent,
-                           const graphics_handle& handle);
+    static Canvas * create (const std::string& name, QWidget *parent,
+                            const graphics_handle& handle);
 
     virtual void toggleAxes (const graphics_handle& handle) = 0;
     virtual void toggleGrid (const graphics_handle& handle) = 0;
@@ -92,13 +92,13 @@ namespace QtHandles
     void canvasToggleGrid (const graphics_handle& handle);
     void canvasAutoAxes (const graphics_handle& handle);
     void canvasPaintEvent (void);
-    void canvasMouseDoubleClickEvent (QMouseEvent* event);
-    void canvasMouseMoveEvent (QMouseEvent* event);
-    void canvasMousePressEvent (QMouseEvent* event);
-    void canvasMouseReleaseEvent (QMouseEvent* event);
-    void canvasWheelEvent (QWheelEvent* event);
-    bool canvasKeyPressEvent (QKeyEvent* event);
-    bool canvasKeyReleaseEvent (QKeyEvent* event);
+    void canvasMouseDoubleClickEvent (QMouseEvent *event);
+    void canvasMouseMoveEvent (QMouseEvent *event);
+    void canvasMousePressEvent (QMouseEvent *event);
+    void canvasMouseReleaseEvent (QMouseEvent *event);
+    void canvasWheelEvent (QWheelEvent *event);
+    bool canvasKeyPressEvent (QKeyEvent *event);
+    bool canvasKeyReleaseEvent (QKeyEvent *event);
 
     void updateCurrentPoint (const graphics_object& fig,
                              const graphics_object& obj, QMouseEvent *event);
@@ -106,7 +106,7 @@ namespace QtHandles
                              const graphics_object& obj);
 
     void annotation_callback (const octave_value_list& args);
-    void select_object (graphics_object obj, QMouseEvent* event,
+    void select_object (graphics_object obj, QMouseEvent *event,
                         graphics_object& currentObj, graphics_object& axesObj,
                         bool axes_only = false,
                         std::vector<std::string> omit = std::vector<std::string> ());

@@ -2989,7 +2989,7 @@ Return the size of @var{val} in bytes.
 */
 
 static void
-decode_subscripts (const char* name, const octave_value& arg,
+decode_subscripts (const char *name, const octave_value& arg,
                    std::string& type_string,
                    std::list<octave_value_list>& idx)
 {

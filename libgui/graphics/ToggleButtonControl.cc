@@ -37,11 +37,11 @@ namespace QtHandles
   ToggleButtonControl*
   ToggleButtonControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new ToggleButtonControl (go, new QPushButton (container));
@@ -51,11 +51,11 @@ namespace QtHandles
   }
 
   ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
-      QPushButton* btn)
+      QPushButton *btn)
     : ButtonControl (go, btn)
   {
-    Object* parent = Object::parentObject (go);
-    ButtonGroup* btnGroup = dynamic_cast<ButtonGroup *>(parent);
+    Object *parent = Object::parentObject (go);
+    ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
     if (btnGroup)
       btnGroup->addButton (btn);
 

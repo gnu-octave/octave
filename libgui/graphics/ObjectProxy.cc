@@ -34,14 +34,14 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  ObjectProxy::ObjectProxy (Object* obj)
+  ObjectProxy::ObjectProxy (Object *obj)
     : QObject (), m_object (0)
   {
     init (obj);
   }
 
   void
-  ObjectProxy::init (Object* obj)
+  ObjectProxy::init (Object *obj)
   {
     if (obj != m_object)
       {
@@ -75,7 +75,7 @@ namespace QtHandles
   }
 
   void
-  ObjectProxy::setObject (Object* obj)
+  ObjectProxy::setObject (Object *obj)
   {
     emit sendFinalize ();
     init (obj);

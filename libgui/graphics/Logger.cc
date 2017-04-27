@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Logger* Logger::s_instance = 0;
-  QMutex* Logger::s_mutex = 0;
+  Logger *Logger::s_instance = 0;
+  QMutex *Logger::s_mutex = 0;
 
   Logger::Logger (void)
     : m_debugEnabled (false)
@@ -63,7 +63,7 @@ namespace QtHandles
   }
 
 #define STATIC_LOGGER(fun) \
-  void Logger::fun (const char* fmt, ...) \
+  void Logger::fun (const char *fmt, ...) \
   { \
     QMutexLocker lock (s_mutex); \
     va_list vl; \
@@ -75,7 +75,7 @@ namespace QtHandles
   STATIC_LOGGER (debug)
 
   void
-  Logger::debugV (const char* fmt, va_list arg)
+  Logger::debugV (const char *fmt, va_list arg)
   {
     if (m_debugEnabled)
       {

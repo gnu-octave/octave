@@ -35,10 +35,10 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    SliderControl (const graphics_object& go, QAbstractSlider* slider);
+    SliderControl (const graphics_object& go, QAbstractSlider *slider);
     ~SliderControl (void);
 
-    static SliderControl* create (const graphics_object& go);
+    static SliderControl * create (const graphics_object& go);
 
   protected:
     void update (int pId);

@@ -42,7 +42,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    Object (const graphics_object& go, QObject* obj = 0);
+    Object (const graphics_object& go, QObject *obj = 0);
 
     virtual ~Object (void);
 
@@ -68,14 +68,14 @@ namespace QtHandles
 
     graphics_object object (void) const;
 
-    virtual QObject* qObject (void) { return m_qobject; }
+    virtual QObject * qObject (void) { return m_qobject; }
 
     template <typename T>
-    T* qWidget (void) { return qobject_cast<T *>(qObject ()); }
+    T * qWidget (void) { return qobject_cast<T *>(qObject ()); }
 
-    virtual Container* innerContainer (void) = 0;
+    virtual Container * innerContainer (void) = 0;
 
-    static Object* fromQObject (QObject* obj);
+    static Object * fromQObject (QObject *obj);
 
   public slots:
     void slotUpdate (int pId);
@@ -86,8 +86,8 @@ namespace QtHandles
     void objectDestroyed (QObject *obj = 0);
 
   protected:
-    static Object* parentObject (const graphics_object& go);
-    void init (QObject* obj, bool callBase = false);
+    static Object * parentObject (const graphics_object& go);
+    void init (QObject *obj, bool callBase = false);
 
     virtual void update (int pId);
     virtual void finalize (void);
@@ -98,7 +98,7 @@ namespace QtHandles
 
   protected:
     graphics_handle m_handle;
-    QObject* m_qobject;
+    QObject *m_qobject;
   };
 
 }

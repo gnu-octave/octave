@@ -63,7 +63,7 @@ namespace octave
   bool
   tree_argument_list::has_magic_end (void) const
   {
-    for (const tree_expression* elt : *this)
+    for (const tree_expression *elt : *this)
       {
         if (elt && elt->has_magic_end ())
           return true;
@@ -90,7 +90,7 @@ namespace octave
   bool
   tree_argument_list::all_elements_are_constant (void) const
   {
-    for (const tree_expression* elt : *this)
+    for (const tree_expression *elt : *this)
       {
         if (! elt->is_constant ())
           return false;
@@ -104,7 +104,7 @@ namespace octave
   {
     bool retval = true;
 
-    for (const tree_expression* elt : *this)
+    for (const tree_expression *elt : *this)
       {
         // There is no need for a separate check for the magic "~" because it
         // is represented by tree_black_hole, and that is derived from
@@ -267,7 +267,7 @@ namespace octave
   {
     std::list<octave_lvalue> retval;
 
-    for (tree_expression* elt : *this)
+    for (tree_expression *elt : *this)
       retval.push_back (elt->lvalue (tw));
 
     return retval;
@@ -282,7 +282,7 @@ namespace octave
 
     int k = 0;
 
-    for (tree_expression* elt : *this)
+    for (tree_expression *elt : *this)
       retval(k++) = elt->str_print_code ();
 
     return retval;
@@ -293,7 +293,7 @@ namespace octave
   {
     std::list<std::string> retval;
 
-    for (tree_expression* elt : *this)
+    for (tree_expression *elt : *this)
       {
         if (elt->is_identifier ())
           {
@@ -322,7 +322,7 @@ namespace octave
     new_list->list_includes_magic_end = list_includes_magic_end;
     new_list->simple_assign_lhs = simple_assign_lhs;
 
-    for (const tree_expression* elt : *this)
+    for (const tree_expression *elt : *this)
       new_list->append (elt ? elt->dup (scope, context) : 0);
 
     return new_list;

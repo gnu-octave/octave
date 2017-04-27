@@ -35,7 +35,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    ButtonControl (const graphics_object& go, QAbstractButton* btn);
+    ButtonControl (const graphics_object& go, QAbstractButton *btn);
     ~ButtonControl (void);
 
   protected:

@@ -42,7 +42,7 @@ namespace QtHandles
 {
 
   static QAction*
-  addEmptyAction (QToolBar* bar)
+  addEmptyAction (QToolBar *bar)
   {
     static QIcon _empty;
 
@@ -55,7 +55,7 @@ namespace QtHandles
         _empty = QIcon (pix);
       }
 
-    QAction* a = bar->addAction (_empty, "Empty Toolbar");
+    QAction *a = bar->addAction (_empty, "Empty Toolbar");
 
     a->setEnabled (false);
     a->setToolTip ("");
@@ -66,11 +66,11 @@ namespace QtHandles
   ToolBar*
   ToolBar::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        QWidget* parentWidget = parent->qWidget<QWidget> ();
+        QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
           return new ToolBar (go, new QToolBar (parentWidget));
@@ -79,7 +79,7 @@ namespace QtHandles
     return 0;
   }
 
-  ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
+  ToolBar::ToolBar (const graphics_object& go, QToolBar *bar)
     : Object (go, bar), m_empty (0), m_figure (0)
   {
     uitoolbar::properties& tp = properties<uitoolbar> ();
@@ -106,7 +106,7 @@ namespace QtHandles
   ToolBar::update (int pId)
   {
     uitoolbar::properties& tp = properties<uitoolbar> ();
-    QToolBar* bar = qWidget<QToolBar> ();
+    QToolBar *bar = qWidget<QToolBar> ();
 
     switch (pId)
       {
@@ -122,7 +122,7 @@ namespace QtHandles
   }
 
   bool
-  ToolBar::eventFilter (QObject* watched, QEvent* xevent)
+  ToolBar::eventFilter (QObject *watched, QEvent *xevent)
   {
     if (watched == qObject ())
       {
@@ -131,8 +131,8 @@ namespace QtHandles
           case QEvent::ActionAdded:
           case QEvent::ActionRemoved:
             {
-              QActionEvent* ae = dynamic_cast<QActionEvent *> (xevent);
-              QToolBar* bar = qWidget<QToolBar> ();
+              QActionEvent *ae = dynamic_cast<QActionEvent *> (xevent);
+              QToolBar *bar = qWidget<QToolBar> ();
 
               if (ae->action () != m_empty)
                 {
@@ -169,7 +169,7 @@ namespace QtHandles
   {
     if (m_figure)
       {
-        QToolBar* bar = qWidget<QToolBar> ();
+        QToolBar *bar = qWidget<QToolBar> ();
 
         if (bar)
           m_figure->showCustomToolBar (bar, false);

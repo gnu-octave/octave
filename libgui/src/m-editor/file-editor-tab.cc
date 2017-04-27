@@ -1504,7 +1504,7 @@ file_editor_tab::check_file_modified ()
       else
           file = tr ("<unnamed>");
 
-      QMessageBox* msgBox
+      QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Warning, tr ("Octave Editor"),
                            tr ("The file\n\n"
                                "  %1\n\n"
@@ -1876,7 +1876,7 @@ file_editor_tab::save_file (const QString& saveFileName,
         _file_system_watcher.addPath (file_to_save);
 
       // Create a NonModal message about error.
-      QMessageBox* msgBox
+      QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Critical,
                            tr ("Octave Editor"),
                            tr ("Could not open file %1 for write:\n%2.").
@@ -1949,7 +1949,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
 
   // If the tab is removed in response to a QFileDialog signal, the tab
   // can't be a parent.
-  QFileDialog* fileDialog;
+  QFileDialog *fileDialog;
   if (remove_on_success)
     {
       // If tab is closed, "this" cannot be parent in which case modality
@@ -2200,7 +2200,7 @@ file_editor_tab::file_has_changed (const QString&)
 
           // Create a WindowModal message that blocks the edit area
           // by making _edit_area parent.
-          QMessageBox* msgBox
+          QMessageBox *msgBox
             = new QMessageBox (QMessageBox::Warning,
                                tr ("Octave Editor"),
                                tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
@@ -2229,7 +2229,7 @@ file_editor_tab::file_has_changed (const QString&)
       // Create a WindowModal message. The file editor tab can't be made
       // parent because it may be deleted depending upon the response.
       // Instead, change the _edit_area to read only.
-      QMessageBox* msgBox
+      QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Warning, tr ("Octave Editor"),
                            tr ("It seems that the file\n"
                                "%1\n"

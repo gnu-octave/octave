@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
+  MouseModeActionGroup::MouseModeActionGroup (QObject *xparent)
     : QObject (xparent), m_current (0)
   {
     m_actions.append (new QAction (QIcon (":/images/rotate.png"),
@@ -53,7 +53,7 @@ namespace QtHandles
     m_actions.append (new QAction (QIcon (":/images/select.png"),
                                    tr ("Select"), this));
 
-    foreach (QAction* a, m_actions)
+    foreach (QAction *a, m_actions)
       {
         a->setCheckable (true);
         connect (a, SIGNAL (toggled (bool)), this, SLOT (actionToggled (bool)));

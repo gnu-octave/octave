@@ -123,7 +123,7 @@ namespace QtHandles
     return new Figure (go, new FigureWindow ());
   }
 
-  Figure::Figure (const graphics_object& go, FigureWindow* win)
+  Figure::Figure (const graphics_object& go, FigureWindow *win)
     : Object (go, win), m_blockUpdates (false), m_figureToolBar (0),
       m_menuBar (0), m_innerRect (), m_outerRect (), m_mouseModeGroup (0)
   {
@@ -293,7 +293,7 @@ namespace QtHandles
   void
   Figure::createFigureToolBarAndMenuBar (void)
   {
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     m_figureToolBar = win->addToolBar (tr ("Figure ToolBar"));
     m_figureToolBar->setMovable (false);
@@ -319,7 +319,7 @@ namespace QtHandles
     m_menuBar = new MenuBar (win);
     win->setMenuBar (m_menuBar);
 
-    QMenu* fileMenu = m_menuBar->addMenu (tr ("&File"));
+    QMenu *fileMenu = m_menuBar->addMenu (tr ("&File"));
     fileMenu->menuAction ()->setObjectName ("builtinMenu");
     fileMenu->addAction (tr ("&Save"), this, SLOT (fileSaveFigure (bool)));
     fileMenu->addAction (tr ("Save &As"), this, SLOT (fileSaveFigureAs (void)));
@@ -327,14 +327,14 @@ namespace QtHandles
     fileMenu->addAction (tr ("&Close Figure"), this,
                          SLOT (fileCloseFigure (void)), Qt::CTRL | Qt::Key_W);
 
-    QMenu* editMenu = m_menuBar->addMenu (tr ("&Edit"));
+    QMenu *editMenu = m_menuBar->addMenu (tr ("&Edit"));
     editMenu->menuAction ()->setObjectName ("builtinMenu");
     editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (bool)),
                          Qt::CTRL | Qt::Key_C);
     editMenu->addSeparator ();
     editMenu->addActions (m_mouseModeGroup->actions ());
 
-    QMenu* helpMenu = m_menuBar->addMenu (tr ("&Help"));
+    QMenu *helpMenu = m_menuBar->addMenu (tr ("&Help"));
     helpMenu->menuAction ()->setObjectName ("builtinMenu");
     helpMenu->addAction (tr ("About Octave"), this,
                          SLOT (helpAboutOctave (void)));
@@ -362,7 +362,7 @@ namespace QtHandles
   void
   Figure::redraw (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       {
@@ -370,13 +370,13 @@ namespace QtHandles
         //canvas->setMouseMode (RotateMode);
       }
 
-    foreach (QFrame* frame,
+    foreach (QFrame *frame,
              qWidget<QWidget> ()->findChildren<QFrame*> ())
       {
         if (frame->objectName () == "UIPanel"
             || frame->objectName () == "UIButtonGroup")
           {
-            Object* obj = Object::fromQObject (frame);
+            Object *obj = Object::fromQObject (frame);
 
             if (obj)
               obj->slotRedraw ();
@@ -389,7 +389,7 @@ namespace QtHandles
   void
   Figure::print (const QString& file_cmd, const QString& term)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->print (file_cmd, term);
@@ -398,7 +398,7 @@ namespace QtHandles
   void
   Figure::beingDeleted (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle.value (), false);
+    Canvas *canvas = m_container->canvas (m_handle.value (), false);
 
     if (canvas)
       canvas->blockRedraw (true);
@@ -415,7 +415,7 @@ namespace QtHandles
       return;
 
     figure::properties& fp = properties<figure> ();
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     m_blockUpdates = true;
 
@@ -427,7 +427,7 @@ namespace QtHandles
           int toffset = 0;
           int boffset = 0;
 
-          foreach (QToolBar* tb, win->findChildren<QToolBar*> ())
+          foreach (QToolBar *tb, win->findChildren<QToolBar*> ())
             if (! tb->isHidden ())
               toffset += tb->sizeHint ().height ();
 
@@ -539,7 +539,7 @@ namespace QtHandles
     if (h1 <= 0)
       h1 = m_menuBar->sizeHint ().height ();
 
-    foreach (QAction* a, m_menuBar->actions ())
+    foreach (QAction *a, m_menuBar->actions ())
       if (a->objectName () == "builtinMenu")
         a->setVisible (visible);
 
@@ -598,15 +598,15 @@ namespace QtHandles
     Matrix m_bbox;
     bool m_internal;
     graphics_handle m_handle;
-    Figure* m_figure;
+    Figure *m_figure;
   };
 
   void
-  Figure::updateBoundingBoxHelper (void* data)
+  Figure::updateBoundingBoxHelper (void *data)
   {
     gh_manager::auto_lock lock;
 
-    UpdateBoundingBoxData* d = reinterpret_cast<UpdateBoundingBoxData *> (data);
+    UpdateBoundingBoxData *d = reinterpret_cast<UpdateBoundingBoxData *> (data);
     graphics_object go = gh_manager::get_object (d->m_handle);
 
     if (go.valid_object ())
@@ -622,7 +622,7 @@ namespace QtHandles
   void
   Figure::updateBoundingBox (bool internal, int flags)
   {
-    QWidget* win = qWidget<QWidget> ();
+    QWidget *win = qWidget<QWidget> ();
     Matrix bb (1, 4);
 
     if (internal)
@@ -668,7 +668,7 @@ namespace QtHandles
           return;
       }
 
-    UpdateBoundingBoxData* d = new UpdateBoundingBoxData ();
+    UpdateBoundingBoxData *d = new UpdateBoundingBoxData ();
 
     d->m_bbox = bb;
     d->m_internal = internal;
@@ -679,7 +679,7 @@ namespace QtHandles
   }
 
   bool
-  Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
+  Figure::eventNotifyBefore (QObject *obj, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
@@ -696,7 +696,7 @@ namespace QtHandles
                 break;
               case QEvent::ActionRemoved:
                 {
-                  QAction* a = dynamic_cast<QActionEvent *> (xevent)->action ();
+                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu")
@@ -727,7 +727,7 @@ namespace QtHandles
   }
 
   void
-  Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
+  Figure::eventNotifyAfter (QObject *watched, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
@@ -768,7 +768,7 @@ namespace QtHandles
               case QEvent::ActionChanged:
                 // The menubar may have been resized if no action is visible
                 {
-                  QAction* a = dynamic_cast<QActionEvent *> (xevent)->action ();
+                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
                   if (m_menuBar->sizeHint ().height () != m_previousHeight
                       && a->objectName () != "builtinMenu"
                       && ! a->isSeparator ())
@@ -777,7 +777,7 @@ namespace QtHandles
                 break;
               case QEvent::ActionAdded:
                 {
-                  QAction* a = dynamic_cast<QActionEvent *> (xevent)->action ();
+                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu"
@@ -832,7 +832,7 @@ namespace QtHandles
 
     fp.set___mouse_mode__ (mouse_mode_to_string (mode));
 
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->setCursor (mode);
@@ -935,9 +935,9 @@ namespace QtHandles
   }
 
   void
-  Figure::addCustomToolBar (QToolBar* bar, bool visible)
+  Figure::addCustomToolBar (QToolBar *bar, bool visible)
   {
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     if (! visible)
       win->addToolBar (bar);
@@ -961,9 +961,9 @@ namespace QtHandles
   }
 
   void
-  Figure::showCustomToolBar (QToolBar* bar, bool visible)
+  Figure::showCustomToolBar (QToolBar *bar, bool visible)
   {
-    QMainWindow* win = qWidget<QMainWindow> ();
+    QMainWindow *win = qWidget<QMainWindow> ();
 
     if ((! bar->isHidden ()) != visible)
       {
@@ -993,7 +993,7 @@ namespace QtHandles
   void
   Figure::toggleAxes (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->toggleAxes (m_handle);
@@ -1002,7 +1002,7 @@ namespace QtHandles
   void
   Figure::toggleGrid (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->toggleGrid (m_handle);
@@ -1011,7 +1011,7 @@ namespace QtHandles
   void
   Figure::autoAxes (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->autoAxes (m_handle);
@@ -1023,7 +1023,7 @@ namespace QtHandles
     // Enable mouse tracking on every widgets
     m_container->setMouseTracking (true);
     m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
-    foreach (QWidget* w, m_container->findChildren<QWidget*> ())
+    foreach (QWidget *w, m_container->findChildren<QWidget*> ())
       w->setMouseTracking (true);
   }
 

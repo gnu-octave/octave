@@ -122,7 +122,7 @@ namespace octave
       m_fp = nullptr;
     }
 
-    std::FILE* m_fp;
+    std::FILE *m_fp;
   };
 
 #if defined (HAVE_BZ2)
@@ -131,7 +131,7 @@ namespace octave
   {
   public:
 
-    static const constexpr char* extension = ".bz2";
+    static const constexpr char *extension = ".bz2";
 
     static void zip (const std::string& source_path,
                      const std::string& dest_path)
@@ -203,7 +203,7 @@ namespace octave
       int m_status;
       CFile m_source;
       CFile m_dest;
-      BZFILE* m_bz;
+      BZFILE *m_bz;
     };
   };
 
@@ -242,7 +242,7 @@ namespace octave
   {
   public:
 
-    static const constexpr char* extension = ".gz";
+    static const constexpr char *extension = ".gz";
 
     static void zip (const std::string& source_path,
                      const std::string& dest_path)
@@ -260,7 +260,7 @@ namespace octave
     public:
 
       // Bytef is a typedef for unsigned char
-      unsigned char* p;
+      unsigned char *p;
 
       uchar_array (void) = delete;
 
@@ -463,7 +463,7 @@ namespace octave
       CFile m_source;
       CFile m_dest;
       gzip_header m_header;
-      z_stream* m_strm;
+      z_stream *m_strm;
     };
   };
 

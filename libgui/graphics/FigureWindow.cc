@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  FigureWindow::FigureWindow (QWidget* xparent)
+  FigureWindow::FigureWindow (QWidget *xparent)
     : FigureWindowBase (xparent)
   {
     // set icon from application resources

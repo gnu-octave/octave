@@ -34,11 +34,11 @@ namespace QtHandles
   PushTool*
   PushTool::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        QWidget* parentWidget = parent->qWidget<QWidget> ();
+        QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
           return new PushTool (go, new QAction (parentWidget));
@@ -47,7 +47,7 @@ namespace QtHandles
     return 0;
   }
 
-  PushTool::PushTool (const graphics_object& go, QAction* action)
+  PushTool::PushTool (const graphics_object& go, QAction *action)
     : ToolBarButton<uipushtool> (go, action)
   {
     connect (action, SIGNAL (triggered (bool)), this, SLOT (clicked (void)));

@@ -679,7 +679,7 @@ private:
 
   // recursive resizing
   template <typename T>
-  void do_resize_fill (const T* src, T *dest, const T& rfv, int lev) const
+  void do_resize_fill (const T *src, T *dest, const T& rfv, int lev) const
   {
     if (lev == 0)
       {
@@ -701,7 +701,7 @@ private:
 public:
 
   template <typename T>
-  void resize_fill (const T* src, T *dest, const T& rfv) const
+  void resize_fill (const T *src, T *dest, const T& rfv) const
   { do_resize_fill (src, dest, rfv, n-1); }
 };
 
@@ -819,7 +819,7 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
           // Don't use resize to avoid useless initialization for POD types.
           retval = Array<T> (dim_vector (il, jl));
 
-          const T* src = data ();
+          const T *src = data ();
           T *dest = retval.fortran_vec ();
 
           for (octave_idx_type k = 0; k < jl; k++)
@@ -1242,7 +1242,7 @@ Array<T>::assign (const idx_vector& i, const idx_vector& j,
           octave_idx_type c = dv(1);
           idx_vector ii (i);
 
-          const T* src = rhs.data ();
+          const T *src = rhs.data ();
           T *dest = fortran_vec ();
 
           // Try reduction first.

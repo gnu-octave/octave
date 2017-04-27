@@ -114,7 +114,7 @@ public:
   text_element_list (void)
     : text_element (), octave::base_list<text_element*> () { }
 
-  text_element_list (text_element* e)
+  text_element_list (text_element *e)
     : text_element (), octave::base_list<text_element*> ()
   { push_back (e); }
 
@@ -136,7 +136,7 @@ OCTINTERP_API
 text_element_subscript : public text_element
 {
 public:
-  text_element_subscript (text_element* e)
+  text_element_subscript (text_element *e)
     : text_element (), elem (e) { }
 
   text_element_subscript (char c)
@@ -148,10 +148,10 @@ public:
 
   void accept (text_processor& p);
 
-  text_element* get_element (void) { return elem; }
+  text_element * get_element (void) { return elem; }
 
 private:
-  text_element* elem;
+  text_element *elem;
 
 private:
   text_element_subscript (void);
@@ -162,7 +162,7 @@ OCTINTERP_API
 text_element_superscript : public text_element
 {
 public:
-  text_element_superscript (text_element* e)
+  text_element_superscript (text_element *e)
     : text_element (), elem (e) { }
 
   text_element_superscript (char c)
@@ -174,10 +174,10 @@ public:
 
   void accept (text_processor& p);
 
-  text_element* get_element (void) { return elem; }
+  text_element * get_element (void) { return elem; }
 
 private:
-  text_element* elem;
+  text_element *elem;
 
 private:
   text_element_superscript (void);
@@ -188,10 +188,10 @@ OCTINTERP_API
 text_element_combined : public text_element_list
 {
 public:
-  text_element_combined (text_element* e)
+  text_element_combined (text_element *e)
     : text_element_list (e) { }
 
-  text_element_combined (text_element* e1, text_element* e2)
+  text_element_combined (text_element *e1, text_element *e2)
     : text_element_list(e1)
   { push_back (e2); }
 
@@ -378,11 +378,11 @@ public:
 
   virtual ~text_parser (void) = default;
 
-  virtual text_element* parse (const std::string& s) = 0;
+  virtual text_element * parse (const std::string& s) = 0;
 
 public:
-  static text_element* parse (const std::string& s,
-                              const caseless_str& interpreter);
+  static text_element * parse (const std::string& s,
+                               const caseless_str& interpreter);
 };
 
 class
@@ -399,7 +399,7 @@ public:
   // preferable to having to know when and where to delete the object it
   // creates...
 
-  text_element* parse (const std::string& s)
+  text_element * parse (const std::string& s)
   {
     return new text_element_string (s);
   }
@@ -417,13 +417,13 @@ public:
   ~text_parser_tex (void)
   { destroy_lexer (); }
 
-  text_element* parse (const std::string& s);
+  text_element * parse (const std::string& s);
 
-  void* get_scanner (void) { return scanner; }
+  void * get_scanner (void) { return scanner; }
 
-  void set_parse_result (text_element* e) { result = e; }
+  void set_parse_result (text_element *e) { result = e; }
 
-  text_element* get_parse_result (void) { return result; }
+  text_element * get_parse_result (void) { return result; }
 
 private:
   bool init_lexer (const std::string& s);
@@ -431,11 +431,11 @@ private:
   void destroy_lexer (void);
 
 private:
-  void* scanner;
+  void *scanner;
 
-  void* buffer_state;
+  void *buffer_state;
 
-  text_element* result;
+  text_element *result;
 };
 
 inline text_element*

@@ -465,7 +465,7 @@ public:
 
       scope_id decl_scope;
 
-      octave_user_function* curr_fcn;
+      octave_user_function *curr_fcn;
 
       std::string name;
 

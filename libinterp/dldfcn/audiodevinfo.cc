@@ -1830,7 +1830,7 @@ Undocumented internal function.
 
   int nargin = args.length ();
 
-  audiorecorder* recorder = new audiorecorder ();
+  audiorecorder *recorder = new audiorecorder ();
 
   if (nargin > 0)
     {
@@ -2223,7 +2223,7 @@ Undocumented internal function.
                         "audio playback and recording through PortAudio");
 #else
 
-  audioplayer* recorder = new audioplayer ();
+  audioplayer *recorder = new audioplayer ();
 
   if (! recorder)
     error ("__player_audioplayer__: Couldn't instantiate new audioplayer");

@@ -130,23 +130,23 @@ typedef java_local_ref<jdoubleArray> jdoubleArray_ref;
 typedef java_local_ref<jthrowable> jthrowable_ref;
 
 static std::string
-jstring_to_string (JNIEnv* jni_env, jstring s);
+jstring_to_string (JNIEnv *jni_env, jstring s);
 
 static std::string
-jstring_to_string (JNIEnv* jni_env, jobject obj);
+jstring_to_string (JNIEnv *jni_env, jobject obj);
 
 static octave_value
-box (JNIEnv* jni_env, void *jobj, void *jcls_arg = 0);
+box (JNIEnv *jni_env, void *jobj, void *jcls_arg = 0);
 
 static octave_value
-box_more (JNIEnv* jni_env, void *jobj_arg, void *jcls_arg = 0);
+box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg = 0);
 
 static bool
-unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
+unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
        jclass_ref& jcls);
 
 static bool
-unbox (JNIEnv* jni_env, const octave_value_list& args,
+unbox (JNIEnv *jni_env, const octave_value_list& args,
        jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 
 extern "C"

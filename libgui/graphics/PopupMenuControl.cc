@@ -36,11 +36,11 @@ namespace QtHandles
   PopupMenuControl*
   PopupMenuControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new PopupMenuControl (go, new QComboBox (container));
@@ -68,7 +68,7 @@ namespace QtHandles
   void PopupMenuControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QComboBox* box = qWidget<QComboBox> ();
+    QComboBox *box = qWidget<QComboBox> ();
 
     switch (pId)
       {

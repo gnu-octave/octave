@@ -76,7 +76,7 @@ octave_link::set_workspace (void)
 // responsibility of the caller to delete obj.
 
 void
-octave_link::connect_link (octave_link* obj)
+octave_link::connect_link (octave_link *obj)
 {
   if (obj && instance)
     error ("octave_link is already linked!");

@@ -332,7 +332,7 @@ namespace octave
 
     static void cleanup_instance (void) { delete instance; instance = 0; }
 
-    static base_interrupt_manager* instance;
+    static base_interrupt_manager *instance;
   };
 
   base_interrupt_manager *interrupt_manager::instance = 0;

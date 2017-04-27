@@ -389,7 +389,7 @@ workspace_view::handle_contextmenu_rename (void)
     {
       QString var_name = get_var_name (index);
 
-      QInputDialog* inputDialog = new QInputDialog ();
+      QInputDialog *inputDialog = new QInputDialog ();
 
       inputDialog->setOptions (QInputDialog::NoButtons);
 

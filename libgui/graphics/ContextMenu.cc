@@ -36,11 +36,11 @@ namespace QtHandles
   ContextMenu*
   ContextMenu::create (const graphics_object& go)
   {
-    Object* xparent = Object::parentObject (go);
+    Object *xparent = Object::parentObject (go);
 
     if (xparent)
       {
-        QWidget* w = xparent->qWidget<QWidget> ();
+        QWidget *w = xparent->qWidget<QWidget> ();
 
         return new ContextMenu (go, new QMenu (w));
       }
@@ -48,7 +48,7 @@ namespace QtHandles
     return 0;
   }
 
-  ContextMenu::ContextMenu (const graphics_object& go, QMenu* xmenu)
+  ContextMenu::ContextMenu (const graphics_object& go, QMenu *xmenu)
     : Object (go, xmenu)
   {
     xmenu->setAutoFillBackground (true);
@@ -64,7 +64,7 @@ namespace QtHandles
   ContextMenu::update (int pId)
   {
     uicontextmenu::properties& up = properties<uicontextmenu> ();
-    QMenu* xmenu = qWidget<QMenu> ();
+    QMenu *xmenu = qWidget<QMenu> ();
 
     switch (pId)
       {
@@ -72,7 +72,7 @@ namespace QtHandles
         if (up.is_visible ())
           {
             Matrix pos = up.get_position ().matrix_value ();
-            QWidget* parentW = xmenu->parentWidget ();
+            QWidget *parentW = xmenu->parentWidget ();
             QPoint pt;
 
             pt.rx () = octave::math::round (pos(0));
@@ -121,12 +121,12 @@ namespace QtHandles
 
         if (go.valid_object ())
           {
-            ContextMenu* cMenu =
+            ContextMenu *cMenu =
               dynamic_cast<ContextMenu *> (Backend::toolkitObject (go));
 
             if (cMenu)
               {
-                QMenu* menu = cMenu->qWidget<QMenu> ();
+                QMenu *menu = cMenu->qWidget<QMenu> ();
 
                 if (menu)
                   menu->popup (pt);

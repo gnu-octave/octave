@@ -149,8 +149,8 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
   octave_idx_type nd = r.ndims ();
   dvx.redim (nd);
 
-  const X* xvec = x.fortran_vec ();
-  R* rvec = r.fortran_vec ();
+  const X *xvec = x.fortran_vec ();
+  R *rvec = r.fortran_vec ();
 
   // Fold the common leading dimensions.
   octave_idx_type start, ldr = 1;

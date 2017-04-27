@@ -95,15 +95,15 @@ namespace QtHandles
   ButtonGroup*
   ButtonGroup::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           {
-            QFrame* frame = new QFrame (container);
+            QFrame *frame = new QFrame (container);
             return new ButtonGroup (go, new QButtonGroup (frame), frame);
           }
       }
@@ -111,8 +111,8 @@ namespace QtHandles
     return 0;
   }
 
-  ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup* buttongroup,
-                            QFrame* frame)
+  ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup *buttongroup,
+                            QFrame *frame)
     : Object (go, frame), m_hiddenbutton(0), m_container (0), m_title (0),
       m_blockUpdates (false)
   {
@@ -138,9 +138,9 @@ namespace QtHandles
 
     if (frame->hasMouseTracking ())
       {
-        foreach (QWidget* w, frame->findChildren<QWidget*> ())
+        foreach (QWidget *w, frame->findChildren<QWidget*> ())
           w->setMouseTracking (true);
-        foreach (QWidget* w, buttongroup->findChildren<QWidget*> ())
+        foreach (QWidget *w, buttongroup->findChildren<QWidget*> ())
           w->setMouseTracking (true);
       }
 
@@ -173,7 +173,7 @@ namespace QtHandles
   { }
 
   bool
-  ButtonGroup::eventFilter (QObject* watched, QEvent* xevent)
+  ButtonGroup::eventFilter (QObject *watched, QEvent *xevent)
   {
     if (! m_blockUpdates)
       {
@@ -195,7 +195,7 @@ namespace QtHandles
 
                           if (pp.fontunits_is ("normalized"))
                             {
-                              QFrame* frame = qWidget<QFrame> ();
+                              QFrame *frame = qWidget<QFrame> ();
 
                               m_title->setFont (Utils::computeFont<uibuttongroup>
                                                 (pp, frame->height ()));
@@ -209,7 +209,7 @@ namespace QtHandles
 
               case QEvent::MouseButtonPress:
                 {
-                  QMouseEvent* m = dynamic_cast<QMouseEvent *> (xevent);
+                  QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
 
                   if (m->button () == Qt::RightButton)
                     {
@@ -250,7 +250,7 @@ namespace QtHandles
   ButtonGroup::update (int pId)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
-    QFrame* frame = qWidget<QFrame> ();
+    QFrame *frame = qWidget<QFrame> ();
 
     m_blockUpdates = true;
 
@@ -349,10 +349,10 @@ namespace QtHandles
           graphics_handle h = pp.get_selectedobject ();
           gh_manager::auto_lock lock;
           graphics_object go = gh_manager::get_object (h);
-          Object* selectedObject = Backend::toolkitObject (go);
-          ToggleButtonControl* toggle = static_cast<ToggleButtonControl *>
+          Object *selectedObject = Backend::toolkitObject (go);
+          ToggleButtonControl *toggle = static_cast<ToggleButtonControl *>
                                         (selectedObject);
-          RadioButtonControl* radio = static_cast<RadioButtonControl *>(selectedObject);
+          RadioButtonControl *radio = static_cast<RadioButtonControl *>(selectedObject);
           if (toggle)
             {
               go.get_properties ().set ("value", 1);
@@ -378,7 +378,7 @@ namespace QtHandles
   void
   ButtonGroup::redraw (void)
   {
-    Canvas* canvas = m_container->canvas (m_handle);
+    Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
       canvas->redraw ();
@@ -388,7 +388,7 @@ namespace QtHandles
   ButtonGroup::updateLayout (void)
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
-    QFrame* frame = qWidget<QFrame> ();
+    QFrame *frame = qWidget<QFrame> ();
 
     Matrix bb = pp.get_boundingbox (true);
     int bw = borderWidthFromProperties (pp);
@@ -433,7 +433,7 @@ namespace QtHandles
 
 
   void
-  ButtonGroup::addButton (QAbstractButton* btn)
+  ButtonGroup::addButton (QAbstractButton *btn)
   {
     m_buttongroup->addButton (btn);
     connect (btn, SIGNAL (toggled (bool)), SLOT (buttonToggled (bool)));
@@ -450,12 +450,12 @@ namespace QtHandles
 
         graphics_handle oldValue = bp.get_selectedobject ();
 
-        QAbstractButton* checkedBtn = m_buttongroup->checkedButton ();
+        QAbstractButton *checkedBtn = m_buttongroup->checkedButton ();
 
         graphics_handle newValue = graphics_handle ();
         if (checkedBtn != m_hiddenbutton)
           {
-            Object* checkedObj = Object::fromQObject (checkedBtn);
+            Object *checkedObj = Object::fromQObject (checkedBtn);
             newValue = checkedObj->properties ().get___myhandle__ ();
           }
 
@@ -466,7 +466,7 @@ namespace QtHandles
   }
 
   void
-  ButtonGroup::buttonClicked (QAbstractButton* btn)
+  ButtonGroup::buttonClicked (QAbstractButton *btn)
   {
     Q_UNUSED (btn);
 
@@ -475,8 +475,8 @@ namespace QtHandles
 
     graphics_handle oldValue = bp.get_selectedobject ();
 
-    QAbstractButton* checkedBtn = m_buttongroup->checkedButton ();
-    Object* checkedObj = Object::fromQObject (checkedBtn);
+    QAbstractButton *checkedBtn = m_buttongroup->checkedButton ();
+    Object *checkedObj = Object::fromQObject (checkedBtn);
     graphics_handle newValue = checkedObj->properties ().get___myhandle__ ();
 
     if (oldValue != newValue)

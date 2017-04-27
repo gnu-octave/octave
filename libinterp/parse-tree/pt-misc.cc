@@ -53,7 +53,7 @@ namespace octave
   void
   tree_parameter_list::mark_as_formal_parameters (void)
   {
-    for (tree_decl_elt* elt : *this)
+    for (tree_decl_elt *elt : *this)
       elt->mark_as_formal_parameter ();
   }
 
@@ -64,7 +64,7 @@ namespace octave
 
     std::set<std::string> dict;
 
-    for (tree_decl_elt* elt : *this)
+    for (tree_decl_elt *elt : *this)
       {
         tree_identifier *id = elt->ident ();
 
@@ -117,7 +117,7 @@ namespace octave
   {
     std::list<std::string> retval;
 
-    for (tree_decl_elt* elt : *this)
+    for (tree_decl_elt *elt : *this)
       retval.push_back (elt->name ());
 
     return retval;
@@ -128,7 +128,7 @@ namespace octave
   {
     bool status = true;
 
-    for (tree_decl_elt* elt : *this)
+    for (tree_decl_elt *elt : *this)
       {
         if (! elt->is_variable ())
           {
@@ -149,7 +149,7 @@ namespace octave
     if (takes_varargs ())
       new_list->mark_varargs ();
 
-    for (const tree_decl_elt* elt : *this)
+    for (const tree_decl_elt *elt : *this)
       new_list->append (elt->dup (scope, context));
 
     return new_list;
@@ -173,7 +173,7 @@ namespace octave
   {
     tree_return_list *new_list = new tree_return_list ();
 
-    for (const tree_index_expression* elt : *this)
+    for (const tree_index_expression *elt : *this)
       new_list->append (elt->dup (scope, context));
 
     return new_list;

@@ -84,7 +84,7 @@ namespace QtHandles
           qWarning ("ObjectFactory::createObject: object is being deleted");
         else
           {
-            ObjectProxy* proxy = Backend::toolkitObjectProxy (go);
+            ObjectProxy *proxy = Backend::toolkitObjectProxy (go);
 
             if (proxy)
               {
@@ -92,7 +92,7 @@ namespace QtHandles
                                "create %s from thread %08x",
                                go.type ().c_str (), QThread::currentThreadId ());
 
-                Object* obj = 0;
+                Object *obj = 0;
 
                 if (go.isa ("figure"))
                   obj = Figure::create (go);

@@ -651,40 +651,40 @@ extern "C"
   F77_RET_T
   F77_FUNC (cggbal, CGGBAL) (F77_CONST_CHAR_ARG_DECL,
                              const F77_INT& N,
-                             F77_CMPLX* A, const F77_INT& LDA,
-                             F77_CMPLX* B, const F77_INT& LDB,
+                             F77_CMPLX *A, const F77_INT& LDA,
+                             F77_CMPLX *B, const F77_INT& LDB,
                              F77_INT& ILO, F77_INT& IHI,
-                             F77_REAL* LSCALE, F77_REAL* RSCALE,
-                             F77_REAL* WORK, F77_INT& INFO
+                             F77_REAL *LSCALE, F77_REAL *RSCALE,
+                             F77_REAL *WORK, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N, F77_DBLE* A,
-                             const F77_INT& LDA, F77_DBLE* B,
+                             const F77_INT& N, F77_DBLE *A,
+                             const F77_INT& LDA, F77_DBLE *B,
                              const F77_INT& LDB, F77_INT& ILO,
-                             F77_INT& IHI, F77_DBLE* LSCALE,
-                             F77_DBLE* RSCALE, F77_DBLE* WORK,
+                             F77_INT& IHI, F77_DBLE *LSCALE,
+                             F77_DBLE *RSCALE, F77_DBLE *WORK,
                              F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sggbal, SGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N, F77_REAL* A,
-                             const F77_INT& LDA, F77_REAL* B,
+                             const F77_INT& N, F77_REAL *A,
+                             const F77_INT& LDA, F77_REAL *B,
                              const F77_INT& LDB,
                              F77_INT& ILO, F77_INT& IHI,
-                             F77_REAL* LSCALE, F77_REAL* RSCALE,
-                             F77_REAL* WORK, F77_INT& INFO
+                             F77_REAL *LSCALE, F77_REAL *RSCALE,
+                             F77_REAL *WORK, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT& N, F77_DBLE_CMPLX* A,
-                             const F77_INT& LDA, F77_DBLE_CMPLX* B,
+                             const F77_INT& N, F77_DBLE_CMPLX *A,
+                             const F77_INT& LDA, F77_DBLE_CMPLX *B,
                              const F77_INT& LDB, F77_INT& ILO,
-                             F77_INT& IHI, F77_DBLE* LSCALE,
-                             F77_DBLE* RSCALE, F77_DBLE* WORK,
+                             F77_INT& IHI, F77_DBLE *LSCALE,
+                             F77_DBLE *RSCALE, F77_DBLE *WORK,
                              F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL);
 
@@ -696,8 +696,8 @@ extern "C"
                              const F77_INT& N,
                              const F77_INT& ILO,
                              const F77_INT& IHI,
-                             const F77_DBLE* LSCALE, const F77_DBLE* RSCALE,
-                             F77_INT& M, F77_DBLE* V,
+                             const F77_DBLE *LSCALE, const F77_DBLE *RSCALE,
+                             F77_INT& M, F77_DBLE *V,
                              const F77_INT& LDV, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -708,8 +708,8 @@ extern "C"
                              const F77_INT& N,
                              const F77_INT& ILO,
                              const F77_INT& IHI,
-                             const F77_REAL* LSCALE, const F77_REAL* RSCALE,
-                             F77_INT& M, F77_REAL* V,
+                             const F77_REAL *LSCALE, const F77_REAL *RSCALE,
+                             F77_INT& M, F77_REAL *V,
                              const F77_INT& LDV, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -720,8 +720,8 @@ extern "C"
                              const F77_INT& N,
                              const F77_INT& ILO,
                              const F77_INT& IHI,
-                             const F77_DBLE* LSCALE, const F77_DBLE* RSCALE,
-                             F77_INT& M, F77_DBLE_CMPLX* V,
+                             const F77_DBLE *LSCALE, const F77_DBLE *RSCALE,
+                             F77_INT& M, F77_DBLE_CMPLX *V,
                              const F77_INT& LDV, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -786,10 +786,10 @@ extern "C"
                              F77_CONST_CHAR_ARG_DECL,
                              const F77_INT& N,
                              const F77_INT& ILO,
-                             const F77_INT& IHI, F77_DBLE* A,
-                             const F77_INT& LDA, F77_DBLE* B,
-                             const F77_INT& LDB, F77_DBLE* Q,
-                             const F77_INT& LDQ, F77_DBLE* Z,
+                             const F77_INT& IHI, F77_DBLE *A,
+                             const F77_INT& LDA, F77_DBLE *B,
+                             const F77_INT& LDB, F77_DBLE *Q,
+                             const F77_INT& LDQ, F77_DBLE *Z,
                              const F77_INT& LDZ, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -799,10 +799,10 @@ extern "C"
                              F77_CONST_CHAR_ARG_DECL,
                              const F77_INT& N,
                              const F77_INT& ILO,
-                             const F77_INT& IHI, F77_DBLE_CMPLX* A,
-                             const F77_INT& LDA, F77_DBLE_CMPLX* B,
-                             const F77_INT& LDB, F77_DBLE_CMPLX* Q,
-                             const F77_INT& LDQ, F77_DBLE_CMPLX* Z,
+                             const F77_INT& IHI, F77_DBLE_CMPLX *A,
+                             const F77_INT& LDA, F77_DBLE_CMPLX *B,
+                             const F77_INT& LDB, F77_DBLE_CMPLX *Q,
+                             const F77_INT& LDQ, F77_DBLE_CMPLX *Z,
                              const F77_INT& LDZ, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -1048,11 +1048,11 @@ extern "C"
                              const F77_INT& N,
                              const F77_INT& ILO,
                              const F77_INT& IHI,
-                             F77_DBLE* A, const F77_INT& LDA, F77_DBLE* B,
-                             const F77_INT& LDB, F77_DBLE* ALPHAR,
-                             F77_DBLE* ALPHAI, F77_DBLE* BETA, F77_DBLE* Q,
-                             const F77_INT& LDQ, F77_DBLE* Z,
-                             const F77_INT& LDZ, F77_DBLE* WORK,
+                             F77_DBLE *A, const F77_INT& LDA, F77_DBLE *B,
+                             const F77_INT& LDB, F77_DBLE *ALPHAR,
+                             F77_DBLE *ALPHAI, F77_DBLE *BETA, F77_DBLE *Q,
+                             const F77_INT& LDQ, F77_DBLE *Z,
+                             const F77_INT& LDZ, F77_DBLE *WORK,
                              const F77_INT& LWORK,
                              F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
@@ -1066,13 +1066,13 @@ extern "C"
                              const F77_INT& N,
                              const F77_INT& ILO,
                              const F77_INT& IHI,
-                             F77_DBLE_CMPLX* A, const F77_INT& LDA,
-                             F77_DBLE_CMPLX* B, const F77_INT& LDB,
-                             F77_DBLE_CMPLX* ALPHA, F77_DBLE_CMPLX* BETA,
-                             F77_DBLE_CMPLX* CQ, const F77_INT& LDQ,
-                             F77_DBLE_CMPLX* CZ, const F77_INT& LDZ,
-                             F77_DBLE_CMPLX* WORK, const F77_INT& LWORK,
-                             F77_DBLE* RWORK, F77_INT& INFO
+                             F77_DBLE_CMPLX *A, const F77_INT& LDA,
+                             F77_DBLE_CMPLX *B, const F77_INT& LDB,
+                             F77_DBLE_CMPLX *ALPHA, F77_DBLE_CMPLX *BETA,
+                             F77_DBLE_CMPLX *CQ, const F77_INT& LDQ,
+                             F77_DBLE_CMPLX *CZ, const F77_INT& LDZ,
+                             F77_DBLE_CMPLX *WORK, const F77_INT& LWORK,
+                             F77_DBLE *RWORK, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
@@ -1092,8 +1092,8 @@ extern "C"
   // LAG2
 
   F77_RET_T
-  F77_FUNC (dlag2, DLAG2) (const F77_DBLE* A, const F77_INT& LDA,
-                           const F77_DBLE* B, const F77_INT& LDB,
+  F77_FUNC (dlag2, DLAG2) (const F77_DBLE *A, const F77_INT& LDA,
+                           const F77_DBLE *B, const F77_INT& LDB,
                            const F77_DBLE& SAFMIN, F77_DBLE& SCALE1,
                            F77_DBLE& SCALE2, F77_DBLE& WR1, F77_DBLE& WR2,
                            F77_DBLE& WI);
@@ -1459,28 +1459,28 @@ extern "C"
   F77_RET_T
   F77_FUNC (dtgevc, DTGEVC) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             F77_INT* SELECT,
-                             const F77_INT& N, F77_DBLE* A,
-                             const F77_INT& LDA, F77_DBLE* B,
-                             const F77_INT& LDB, F77_DBLE* VL,
-                             const F77_INT& LDVL, F77_DBLE* VR,
+                             F77_INT *SELECT,
+                             const F77_INT& N, F77_DBLE *A,
+                             const F77_INT& LDA, F77_DBLE *B,
+                             const F77_INT& LDB, F77_DBLE *VL,
+                             const F77_INT& LDVL, F77_DBLE *VR,
                              const F77_INT& LDVR,
                              const F77_INT& MM, F77_INT& M,
-                             F77_DBLE* WORK, F77_INT& INFO
+                             F77_DBLE *WORK, F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (ztgevc, ZTGEVC) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             F77_INT* SELECT,
-                             const F77_INT& N, const F77_DBLE_CMPLX* A,
-                             const F77_INT& LDA,const F77_DBLE_CMPLX* B,
-                             const F77_INT& LDB, F77_DBLE_CMPLX* xVL,
-                             const F77_INT& LDVL, F77_DBLE_CMPLX* xVR,
+                             F77_INT *SELECT,
+                             const F77_INT& N, const F77_DBLE_CMPLX *A,
+                             const F77_INT& LDA,const F77_DBLE_CMPLX *B,
+                             const F77_INT& LDB, F77_DBLE_CMPLX *xVL,
+                             const F77_INT& LDVL, F77_DBLE_CMPLX *xVR,
                              const F77_INT& LDVR,
                              const F77_INT& MM, F77_INT& M,
-                             F77_DBLE_CMPLX* CWORK, F77_DBLE* RWORK,
+                             F77_DBLE_CMPLX *CWORK, F77_DBLE* RWORK,
                              F77_INT& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);

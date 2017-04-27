@@ -181,7 +181,7 @@ logical_value (const octave_int<T>& x)
 }
 
 template <typename X>
-void mx_inline_not (size_t n, bool *r, const X* x) throw ()
+void mx_inline_not (size_t n, bool *r, const X *x) throw ()
 {
   for (size_t i = 0; i < n; i++)
     r[i] = ! logical_value (x[i]);
@@ -257,7 +257,7 @@ mx_inline_or2 (size_t n, bool *r, X x) throw ()
 
 template <typename T>
 inline bool
-mx_inline_any_nan (size_t n, const T* x)  throw ()
+mx_inline_any_nan (size_t n, const T *x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -270,7 +270,7 @@ mx_inline_any_nan (size_t n, const T* x)  throw ()
 
 template <typename T>
 inline bool
-mx_inline_all_finite (size_t n, const T* x)  throw ()
+mx_inline_all_finite (size_t n, const T *x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -283,7 +283,7 @@ mx_inline_all_finite (size_t n, const T* x)  throw ()
 
 template <typename T>
 inline bool
-mx_inline_any_negative (size_t n, const T* x) throw ()
+mx_inline_any_negative (size_t n, const T *x) throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -296,7 +296,7 @@ mx_inline_any_negative (size_t n, const T* x) throw ()
 
 template <typename T>
 inline bool
-mx_inline_any_positive (size_t n, const T* x) throw ()
+mx_inline_any_positive (size_t n, const T *x) throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -740,7 +740,7 @@ op_dble_sum (double& ac, const octave_int<T>& el)
 #define OP_RED_FCN(F, TSRC, TRES, OP, ZERO)     \
   template <typename T>                         \
   inline TRES                                   \
-  F (const TSRC* v, octave_idx_type n)          \
+  F (const TSRC *v, octave_idx_type n)          \
   {                                             \
     TRES ac = ZERO;                             \
     for (octave_idx_type i = 0; i < n; i++)     \
@@ -764,7 +764,7 @@ OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
 #define OP_RED_FCN2(F, TSRC, TRES, OP, ZERO)                            \
   template <typename T>                                                 \
   inline void                                                           \
-  F (const TSRC* v, TRES *r, octave_idx_type m, octave_idx_type n)      \
+  F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n)      \
   {                                                                     \
     for (octave_idx_type i = 0; i < m; i++)                             \
       r[i] = ZERO;                                                      \
@@ -798,7 +798,7 @@ OP_RED_FCN2 (mx_inline_all_r, T, bool, OP_RED_ALLR, true)
 #define OP_ROW_SHORT_CIRCUIT(F, PRED, ZERO)                             \
   template <typename T>                                                 \
   inline void                                                           \
-  F (const T* v, bool *r, octave_idx_type m, octave_idx_type n)         \
+  F (const T *v, bool *r, octave_idx_type m, octave_idx_type n)         \
   {                                                                     \
     if (n <= 8)                                                         \
       return F ## _r (v, r, m, n);                                      \

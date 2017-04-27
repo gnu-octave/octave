@@ -31,7 +31,7 @@ namespace QtHandles
   class MenuContainer
   {
   public:
-    virtual QWidget* menu (void) = 0;
+    virtual QWidget * menu (void) = 0;
   };
 
 }

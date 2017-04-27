@@ -35,10 +35,10 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    PopupMenuControl (const graphics_object& go, QComboBox* box);
+    PopupMenuControl (const graphics_object& go, QComboBox *box);
     ~PopupMenuControl (void);
 
-    static PopupMenuControl* create (const graphics_object& go);
+    static PopupMenuControl * create (const graphics_object& go);
 
   protected:
     void update (int pId);

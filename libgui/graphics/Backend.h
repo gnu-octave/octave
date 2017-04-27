@@ -59,9 +59,9 @@ namespace QtHandles
                        const std::string& file_cmd,
                        const std::string& /*debug_file*/) const;
 
-    static Object* toolkitObject (const graphics_object& go);
+    static Object * toolkitObject (const graphics_object& go);
 
-    static ObjectProxy* toolkitObjectProxy (const graphics_object& go);
+    static ObjectProxy * toolkitObjectProxy (const graphics_object& go);
 
   signals:
     void createObject (double handle);

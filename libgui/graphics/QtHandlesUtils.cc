@@ -155,7 +155,7 @@ namespace QtHandles
     toRgb (const QColor& c)
     {
       Matrix rgb (1, 3);
-      double* rgbData = rgb.fortran_vec ();
+      double *rgbData = rgb.fortran_vec ();
 
       // qreal is a typedef for double except for ARM CPU architectures
       // where it is a typedef for float (Bug #44970).
@@ -167,7 +167,7 @@ namespace QtHandles
     }
 
     std::string
-    figureSelectionType (QMouseEvent* event, bool isDoubleClick)
+    figureSelectionType (QMouseEvent *event, bool isDoubleClick)
     {
       if (isDoubleClick)
         return std::string ("open");
@@ -208,13 +208,13 @@ namespace QtHandles
        2) Used for QKeyEvents where cursor position must be determined.
     */
     Matrix
-    figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
+    figureCurrentPoint (const graphics_object& fig, QMouseEvent *event)
     {
-      Object* tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = Backend::toolkitObject (fig);
 
       if (tkFig)
         {
-          Container* c = tkFig->innerContainer ();
+          Container *c = tkFig->innerContainer ();
 
           if (c)
             {
@@ -231,11 +231,11 @@ namespace QtHandles
     Matrix
     figureCurrentPoint (const graphics_object& fig)
     {
-      Object* tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = Backend::toolkitObject (fig);
 
       if (tkFig)
         {
-          Container* c = tkFig->innerContainer ();
+          Container *c = tkFig->innerContainer ();
 
           if (c)
             {
@@ -356,7 +356,7 @@ namespace QtHandles
     }
 
     octave_scalar_map
-    makeKeyEventStruct (QKeyEvent* event)
+    makeKeyEventStruct (QKeyEvent *event)
     {
       octave_scalar_map retval;
 

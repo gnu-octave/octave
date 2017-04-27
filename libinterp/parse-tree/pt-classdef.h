@@ -250,7 +250,7 @@ namespace octave
 
     tree_classdef_property_list (void) { }
 
-    tree_classdef_property_list (tree_classdef_property* p) { append (p); }
+    tree_classdef_property_list (tree_classdef_property *p) { append (p); }
 
     tree_classdef_property_list (const octave::base_list<tree_classdef_property *>& a)
       : octave::base_list<tree_classdef_property *> (a) { }
@@ -668,8 +668,8 @@ namespace octave
 
     const std::string& package_name (void) const { return pack_name; }
 
-    octave_function* make_meta_class (tree_evaluator *tw,
-                                      bool is_at_folder = false);
+    octave_function * make_meta_class (tree_evaluator *tw,
+                                       bool is_at_folder = false);
 
     tree_classdef * dup (symbol_table::scope_id scope,
                          symbol_table::context_id context) const;

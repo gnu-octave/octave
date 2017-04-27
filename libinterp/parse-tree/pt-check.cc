@@ -441,7 +441,7 @@ namespace octave
   void
   tree_checker::visit_statement_list (tree_statement_list& lst)
   {
-    for (tree_statement* elt : lst)
+    for (tree_statement *elt : lst)
       {
         if (elt)
           elt->accept (*this);

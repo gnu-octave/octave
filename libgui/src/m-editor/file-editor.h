@@ -78,7 +78,7 @@ public:
   file_editor_tab_widget (QWidget *p);
   ~file_editor_tab_widget ();
 
-  QTabBar* tabBar () const;
+  QTabBar * tabBar () const;
 
 };
 
@@ -145,50 +145,50 @@ public:
 signals:
 
   void fetab_settings_changed (const QSettings *settings);
-  void fetab_change_request (const QWidget* ID);
-  void fetab_file_name_query (const QWidget* ID);
+  void fetab_change_request (const QWidget *ID);
+  void fetab_file_name_query (const QWidget *ID);
   // Save is a ping-pong type of communication
-  void fetab_save_file (const QWidget* ID, const QString& fileName,
+  void fetab_save_file (const QWidget *ID, const QString& fileName,
                         bool remove_on_success);
   // No fetab_open, functionality in editor
   // No fetab_new, functionality in editor
-  void fetab_context_help (const QWidget* ID, bool);
-  void fetab_context_edit (const QWidget* ID);
+  void fetab_context_help (const QWidget *ID, bool);
+  void fetab_context_edit (const QWidget *ID);
   void fetab_check_modified_file (void);
-  void fetab_save_file (const QWidget* ID);
-  void fetab_save_file_as (const QWidget* ID);
-  void fetab_print_file (const QWidget* ID);
-  void fetab_run_file (const QWidget* ID);
-  void fetab_context_run (const QWidget* ID);
-  void fetab_toggle_bookmark (const QWidget* ID);
-  void fetab_next_bookmark (const QWidget* ID);
-  void fetab_previous_bookmark (const QWidget* ID);
-  void fetab_remove_bookmark (const QWidget* ID);
-  void fetab_toggle_breakpoint (const QWidget* ID);
-  void fetab_next_breakpoint (const QWidget* ID);
-  void fetab_previous_breakpoint (const QWidget* ID);
-  void fetab_remove_all_breakpoints (const QWidget* ID);
-  void fetab_comment_selected_text (const QWidget* ID);
-  void fetab_uncomment_selected_text (const QWidget* ID);
-  void fetab_indent_selected_text (const QWidget* ID);
-  void fetab_unindent_selected_text (const QWidget* ID);
-  void fetab_convert_eol (const QWidget* ID, QsciScintilla::EolMode eol_mode);
-  void fetab_find (const QWidget* ID, QList<QAction *>);
-  void fetab_find_next (const QWidget* ID);
-  void fetab_find_previous (const QWidget* ID);
-  void fetab_goto_line (const QWidget* ID, int line = -1);
-  void fetab_move_match_brace (const QWidget* ID, bool select);
+  void fetab_save_file (const QWidget *ID);
+  void fetab_save_file_as (const QWidget *ID);
+  void fetab_print_file (const QWidget *ID);
+  void fetab_run_file (const QWidget *ID);
+  void fetab_context_run (const QWidget *ID);
+  void fetab_toggle_bookmark (const QWidget *ID);
+  void fetab_next_bookmark (const QWidget *ID);
+  void fetab_previous_bookmark (const QWidget *ID);
+  void fetab_remove_bookmark (const QWidget *ID);
+  void fetab_toggle_breakpoint (const QWidget *ID);
+  void fetab_next_breakpoint (const QWidget *ID);
+  void fetab_previous_breakpoint (const QWidget *ID);
+  void fetab_remove_all_breakpoints (const QWidget *ID);
+  void fetab_comment_selected_text (const QWidget *ID);
+  void fetab_uncomment_selected_text (const QWidget *ID);
+  void fetab_indent_selected_text (const QWidget *ID);
+  void fetab_unindent_selected_text (const QWidget *ID);
+  void fetab_convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode);
+  void fetab_find (const QWidget *ID, QList<QAction *>);
+  void fetab_find_next (const QWidget *ID);
+  void fetab_find_previous (const QWidget *ID);
+  void fetab_goto_line (const QWidget *ID, int line = -1);
+  void fetab_move_match_brace (const QWidget *ID, bool select);
   void fetab_completion (const QWidget*);
-  void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
-  void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
-  void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
+  void fetab_insert_debugger_pointer (const QWidget *ID, int line = -1);
+  void fetab_delete_debugger_pointer (const QWidget *ID, int line = -1);
+  void fetab_do_breakpoint_marker (bool insert, const QWidget *ID,
                                    int line = -1, const QString& = "");
-  void fetab_set_focus (const QWidget* ID);
-  void fetab_scintilla_command (const QWidget* ID, unsigned int sci_msg);
+  void fetab_set_focus (const QWidget *ID);
+  void fetab_scintilla_command (const QWidget *ID, unsigned int sci_msg);
 
-  void fetab_zoom_in (const QWidget* ID);
-  void fetab_zoom_out (const QWidget* ID);
-  void fetab_zoom_normal (const QWidget* ID);
+  void fetab_zoom_in (const QWidget *ID);
+  void fetab_zoom_out (const QWidget *ID);
+  void fetab_zoom_normal (const QWidget *ID);
 
   void fetab_set_directory (const QString& dir);
   void fetab_recover_from_exit (void);
@@ -201,7 +201,7 @@ signals:
 public slots:
 
   void focus (void);
-  void set_focus (QWidget* fet);
+  void set_focus (QWidget *fet);
   void enable_menu_shortcuts (bool);
   bool check_closing (void);
 
@@ -353,7 +353,7 @@ private:
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                         const char *member);
 
-  QMenu* m_add_menu (QMenuBar *p, QString text);
+  QMenu * m_add_menu (QMenuBar *p, QString text);
 
   std::map<QString, tab_info> editor_tab_map;
   QHash<QMenu*, QStringList> _hash_menu_text;

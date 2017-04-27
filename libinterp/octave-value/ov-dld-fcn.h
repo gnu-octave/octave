@@ -74,10 +74,10 @@ public:
 
   bool is_dld_function (void) const { return true; }
 
-  static octave_dld_function* create (octave_builtin::fcn ff,
-                                      const octave::dynamic_library& shl,
-                                      const std::string& nm = "",
-                                      const std::string& ds = "");
+  static octave_dld_function * create (octave_builtin::fcn ff,
+                                       const octave::dynamic_library& shl,
+                                       const std::string& nm = "",
+                                       const std::string& ds = "");
 
   octave::dynamic_library get_shlib (void) const
   { return sh_lib; }

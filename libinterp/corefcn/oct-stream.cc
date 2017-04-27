@@ -4170,7 +4170,7 @@ namespace octave
   template <typename T>
   std::istream&
   octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
-                 T* valptr)
+                 T *valptr)
   {
     T value = T ();
 
@@ -4257,7 +4257,7 @@ namespace octave
 
   template <typename T>
   std::istream&
-  octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
+  octave_scan (std::istream& is, const scanf_format_elt& fmt, T *valptr)
   {
     if (fmt.width)
       {
@@ -4284,14 +4284,14 @@ namespace octave
   template <>
   std::istream&
   octave_scan<> (std::istream& is, const scanf_format_elt& /* fmt */,
-                 char* valptr)
+                 char *valptr)
   {
     return is >> valptr;
   }
 
   template <>
   std::istream&
-  octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
+  octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
   {
     double& ref = *valptr;
 

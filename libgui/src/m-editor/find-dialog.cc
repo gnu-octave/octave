@@ -78,7 +78,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "find-dialog.h"
 
-find_dialog::find_dialog (QsciScintilla* edit_area,
+find_dialog::find_dialog (QsciScintilla *edit_area,
                           QList<QAction *> find_actions, QWidget *p)
   : QDialog (p)
 {

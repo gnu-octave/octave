@@ -111,7 +111,7 @@ private:
   {
     int nd = ndims ();
 
-    octave_idx_type* r = newrep (nd);
+    octave_idx_type *r = newrep (nd);
 
     std::copy_n (rep, nd, r);
 
@@ -127,7 +127,7 @@ private:
     if (n < 2)
       n = 2;
 
-    octave_idx_type* r = newrep (n);
+    octave_idx_type *r = newrep (n);
 
     if (nd > n)
       nd = n;
@@ -493,7 +493,7 @@ public:
   }
 
   //! Linear index from an index tuple.
-  octave_idx_type compute_index (const octave_idx_type* idx) const
+  octave_idx_type compute_index (const octave_idx_type *idx) const
   { return compute_index (idx, ndims ()); }
 
   //! Linear index from an incomplete index tuple (nidx < length ()).

@@ -38,7 +38,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    MouseModeActionGroup (QObject* parent = 0);
+    MouseModeActionGroup (QObject *parent = 0);
     ~MouseModeActionGroup (void);
 
     QList<QAction*> actions (void) const { return m_actions; }
@@ -53,7 +53,7 @@ namespace QtHandles
 
   private:
     QList<QAction*> m_actions;
-    QAction* m_current;
+    QAction *m_current;
   };
 
 };

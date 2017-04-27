@@ -63,7 +63,7 @@ namespace octave
   {
     tree_if_command_list *new_icl = new tree_if_command_list ();
 
-    for (const tree_if_clause* elt : *this)
+    for (const tree_if_clause *elt : *this)
       new_icl->append (elt ? elt->dup (scope, context) : 0);
 
     return new_icl;
@@ -114,7 +114,7 @@ namespace octave
   {
     tree_switch_case_list *new_scl = new tree_switch_case_list ();
 
-    for (const tree_switch_case* elt : *this)
+    for (const tree_switch_case *elt : *this)
       new_scl->append (elt ? elt->dup (scope, context) : 0);
 
     return new_scl;

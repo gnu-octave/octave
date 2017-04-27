@@ -505,40 +505,40 @@ public:
 
   Sparse<T> transpose (void) const;
 
-  T* data (void) { make_unique (); return rep->d; }
+  T * data (void) { make_unique (); return rep->d; }
   T& data (octave_idx_type i) { make_unique (); return rep->data (i); }
-  T* xdata (void) { return rep->d; }
+  T * xdata (void) { return rep->d; }
   T& xdata (octave_idx_type i) { return rep->data (i); }
 
   T data (octave_idx_type i) const { return rep->data (i); }
   // FIXME: shouldn't this be returning const T*?
-  T* data (void) const { return rep->d; }
+  T * data (void) const { return rep->d; }
 
-  octave_idx_type* ridx (void) { make_unique (); return rep->r; }
+  octave_idx_type * ridx (void) { make_unique (); return rep->r; }
   octave_idx_type& ridx (octave_idx_type i)
   {
     make_unique (); return rep->ridx (i);
   }
 
-  octave_idx_type* xridx (void) { return rep->r; }
+  octave_idx_type * xridx (void) { return rep->r; }
   octave_idx_type& xridx (octave_idx_type i) { return rep->ridx (i); }
 
   octave_idx_type ridx (octave_idx_type i) const { return rep->cridx (i); }
   // FIXME: shouldn't this be returning const octave_idx_type*?
-  octave_idx_type* ridx (void) const { return rep->r; }
+  octave_idx_type * ridx (void) const { return rep->r; }
 
-  octave_idx_type* cidx (void) { make_unique (); return rep->c; }
+  octave_idx_type * cidx (void) { make_unique (); return rep->c; }
   octave_idx_type& cidx (octave_idx_type i)
   {
     make_unique (); return rep->cidx (i);
   }
 
-  octave_idx_type* xcidx (void) { return rep->c; }
+  octave_idx_type * xcidx (void) { return rep->c; }
   octave_idx_type& xcidx (octave_idx_type i) { return rep->cidx (i); }
 
   octave_idx_type cidx (octave_idx_type i) const { return rep->ccidx (i); }
   // FIXME: shouldn't this be returning const octave_idx_type*?
-  octave_idx_type* cidx (void) const { return rep->c; }
+  octave_idx_type * cidx (void) const { return rep->c; }
 
   octave_idx_type ndims (void) const { return dimensions.ndims (); }
 

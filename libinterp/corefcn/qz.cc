@@ -66,9 +66,9 @@ extern "C"
   // Only processes Z, not Q.
   F77_RET_T
   F77_FUNC (dsubsp, DSUBSP) (const F77_INT& NMAX, const F77_INT& N,
-                             F77_DBLE* A, F77_DBLE* B, F77_DBLE* Z,
+                             F77_DBLE *A, F77_DBLE *B, F77_DBLE *Z,
                              sort_function, const F77_DBLE& EPS,
-                             F77_INT& NDIM, F77_INT& FAIL, F77_INT* IND);
+                             F77_INT& NDIM, F77_INT& FAIL, F77_INT *IND);
 }
 
 // fcrhp, fin, fout, folhp:

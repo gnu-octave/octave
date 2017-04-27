@@ -257,7 +257,7 @@ oct_init_by_entropy (void)
   int n = 0;
 
   /* Look for entropy in /dev/urandom */
-  FILE* urandom = std::fopen ("/dev/urandom", "rb");
+  FILE *urandom = std::fopen ("/dev/urandom", "rb");
   if (urandom)
     {
       while (n < MT_N)

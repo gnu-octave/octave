@@ -284,13 +284,13 @@ private:
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                         const char *member, const QWidget *receiver = 0);
 
-  QMenu* m_add_menu (QMenuBar *p, QString text);
+  QMenu * m_add_menu (QMenuBar *p, QString text);
   void construct_menu_bar (void);
   void construct_file_menu (QMenuBar *p);
   void construct_new_menu (QMenu *p);
   void construct_edit_menu (QMenuBar *p);
   QAction * construct_debug_menu_item (const char *icon, const QString& item,
-                                       const char* member);
+                                       const char *member);
   void construct_debug_menu (QMenuBar *p);
   QAction * construct_window_menu_item (QMenu *p, const QString& item,
                                         bool checkable, QWidget*);

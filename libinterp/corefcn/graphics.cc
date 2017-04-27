@@ -1531,9 +1531,9 @@ array_property::is_equal (const octave_value& v) const
                 /* sparse/bool arrays that are converted, to */         \
                 /* not be deallocated early */                          \
                 const A m1 = data.F ## array_value ();                  \
-                const T* d1 = m1.data ();                               \
+                const T *d1 = m1.data ();                               \
                 const A m2 = v.F ## array_value ();                     \
-                const T* d2 = m2.data ();                               \
+                const T *d2 = m2.data ();                               \
                                                                         \
                 bool flag = true;                                       \
                                                                         \
@@ -9615,7 +9615,7 @@ gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
 {
   graphics_handle h = val;
 
-  base_graphics_object* bgo = new figure (h, 0);
+  base_graphics_object *bgo = new figure (h, 0);
   graphics_object go (bgo);
 
   handle_map[h] = go;
@@ -9693,7 +9693,7 @@ public:
 
   function_event (void) = delete;
 
-  function_event (graphics_event::event_fcn fcn, void* data = 0)
+  function_event (graphics_event::event_fcn fcn, void *data = 0)
     : base_graphics_event (), function (fcn), function_data (data)
   { }
 
@@ -9712,7 +9712,7 @@ private:
 
   graphics_event::event_fcn function;
 
-  void* function_data;
+  void *function_data;
 };
 
 class
@@ -9989,7 +9989,7 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
 }
 
 void
-gh_manager::do_post_function (graphics_event::event_fcn fcn, void* fcn_data)
+gh_manager::do_post_function (graphics_event::event_fcn fcn, void *fcn_data)
 {
   gh_manager::auto_lock guard;
 

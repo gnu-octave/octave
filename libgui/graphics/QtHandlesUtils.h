@@ -58,10 +58,10 @@ namespace QtHandles
     Qt::Alignment fromHVAlign (const std::string& halign,
                                const std::string& valign);
 
-    std::string figureSelectionType (QMouseEvent* event,
+    std::string figureSelectionType (QMouseEvent *event,
                                      bool isDoubleClick = false);
 
-    Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
+    Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent *event);
     Matrix figureCurrentPoint (const graphics_object& fig);
 
     template <typename T>
@@ -77,7 +77,7 @@ namespace QtHandles
     QImage makeImageFromCData (const octave_value& v, int width = -1,
                                int height = -1);
 
-    octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
+    octave_scalar_map makeKeyEventStruct (QKeyEvent *event);
   }
 
 }

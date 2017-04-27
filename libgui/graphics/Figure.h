@@ -67,22 +67,22 @@ namespace QtHandles
     friend class ToolBar;
 
   public:
-    Figure (const graphics_object& go, FigureWindow* win);
+    Figure (const graphics_object& go, FigureWindow *win);
     ~Figure (void);
 
-    static Figure* create (const graphics_object& go);
+    static Figure * create (const graphics_object& go);
 
     QString fileName (void);
     void setFileName (const QString& name);
 
     MouseMode mouseMode (void);
 
-    Container* innerContainer (void);
-    QWidget* menu (void);
+    Container * innerContainer (void);
+    QWidget * menu (void);
     void updateStatusBar (ColumnVector pt);
 
-    bool eventNotifyBefore (QObject* watched, QEvent* event);
-    void eventNotifyAfter (QObject* watched, QEvent* event);
+    bool eventNotifyBefore (QObject *watched, QEvent *event);
+    void eventNotifyAfter (QObject *watched, QEvent *event);
 
   protected:
     enum UpdateBoundingBoxFlag
@@ -103,8 +103,8 @@ namespace QtHandles
     void createFigureToolBarAndMenuBar (void);
     void showFigureToolBar (bool visible);
     void showMenuBar (bool visible, int height = -1);
-    void addCustomToolBar (QToolBar* bar, bool visible);
-    void showCustomToolBar (QToolBar* bar, bool visible);
+    void addCustomToolBar (QToolBar *bar, bool visible);
+    void showCustomToolBar (QToolBar *bar, bool visible);
 
     void updateFigureToolBarAndMenuBar (void);
 
@@ -132,14 +132,14 @@ namespace QtHandles
     void asyncUpdate (void);
 
   private:
-    Container* m_container;
+    Container *m_container;
     bool m_blockUpdates;
-    QToolBar* m_figureToolBar;
-    MenuBar* m_menuBar;
-    QStatusBar* m_statusBar;
+    QToolBar *m_figureToolBar;
+    MenuBar *m_menuBar;
+    QStatusBar *m_statusBar;
     QRect m_innerRect;
     QRect m_outerRect;
-    MouseModeActionGroup* m_mouseModeGroup;
+    MouseModeActionGroup *m_mouseModeGroup;
     int m_previousHeight;
   };
 

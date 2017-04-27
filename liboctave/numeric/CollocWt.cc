@@ -372,7 +372,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 // Error handling.
 
 void
-CollocWt::error (const char* msg)
+CollocWt::error (const char *msg)
 {
   (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
 }

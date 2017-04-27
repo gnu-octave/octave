@@ -83,7 +83,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
   double rcond;
   MatrixType ltyp (MatrixType::Lower);
   M retval (n, b_nc);
-  const double* qv = Q.fortran_vec ();
+  const double *qv = Q.fortran_vec ();
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
@@ -104,7 +104,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
   MatrixType utyp (MatrixType::Upper);
   M tmp = U.solve (utyp, m, err, rcond, 0);
   M retval;
-  const double* qv = Q.fortran_vec ();
+  const double *qv = Q.fortran_vec ();
 
   if (! err)
     {
@@ -121,7 +121,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
 }
 
 static bool
-vector_product (const SparseMatrix& m, const double* x, double* y)
+vector_product (const SparseMatrix& m, const double *x, double *y)
 {
   octave_idx_type nc = m.cols ();
 
@@ -153,8 +153,8 @@ vector_product (const Matrix& m, const double *x, double *y)
 }
 
 static bool
-vector_product (const SparseComplexMatrix& m, const Complex* x,
-                Complex* y)
+vector_product (const SparseComplexMatrix& m, const Complex *x,
+                Complex *y)
 {
   octave_idx_type nc = m.cols ();
 

@@ -231,7 +231,7 @@ namespace octave
           gl2ps_sort = GL2PS_SIMPLE_SORT;
 
         // Use a temporary file in case an overflow happens
-        FILE* tmpf = octave_tmpfile_wrapper ();
+        FILE *tmpf = octave_tmpfile_wrapper ();
 
         if (! tmpf)
           error ("gl2ps_renderer::draw: couldn't open temporary file for printing");

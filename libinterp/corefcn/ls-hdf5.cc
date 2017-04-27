@@ -703,7 +703,7 @@ hdf5_read_next_data (octave_hdf5_id group_id, const char *name, void *dv)
 }
 
 octave_hdf5_err
-hdf5_h5g_iterate (octave_hdf5_id loc_id, const char* name, int *idx,
+hdf5_h5g_iterate (octave_hdf5_id loc_id, const char *name, int *idx,
                   void *operator_data)
 {
 #if defined (HAVE_HDF5)

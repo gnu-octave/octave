@@ -38,19 +38,19 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    EditControl (const graphics_object& go, QLineEdit* edit);
-    EditControl (const graphics_object& go, TextEdit* edit);
+    EditControl (const graphics_object& go, QLineEdit *edit);
+    EditControl (const graphics_object& go, TextEdit *edit);
     ~EditControl (void);
 
-    static EditControl* create (const graphics_object& go);
+    static EditControl * create (const graphics_object& go);
 
   protected:
     void update (int pId);
 
   private:
-    void init (QLineEdit* edit, bool callBase = false);
-    void init (TextEdit* edit, bool callBase = false);
-    void initCommon (QWidget* widget);
+    void init (QLineEdit *edit, bool callBase = false);
+    void init (TextEdit *edit, bool callBase = false);
+    void initCommon (QWidget *widget);
     bool updateSingleLine (int pId);
     bool updateMultiLine (int pId);
 

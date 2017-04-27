@@ -35,11 +35,11 @@ namespace QtHandles
   CheckBoxControl*
   CheckBoxControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new CheckBoxControl (go, new QCheckBox (container));
@@ -48,7 +48,7 @@ namespace QtHandles
     return 0;
   }
 
-  CheckBoxControl::CheckBoxControl (const graphics_object& go, QCheckBox* box)
+  CheckBoxControl::CheckBoxControl (const graphics_object& go, QCheckBox *box)
     : ButtonControl (go, box)
   {
     box->setAutoFillBackground (true);

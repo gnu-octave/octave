@@ -93,7 +93,7 @@ public:
    *  @return  @c this on success, NULL on failure.
   */
   gzfilebuf*
-  open (const char* name,
+  open (const char *name,
         std::ios_base::openmode mode);
 
   /**
@@ -120,7 +120,7 @@ protected:
   */
   bool
   open_mode (std::ios_base::openmode mode,
-             char* c_mode) const;
+             char *c_mode) const;
 
   /**
    *  @brief  Number of characters available in stream buffer.
@@ -163,7 +163,7 @@ protected:
    *  Call setbuf(0,0) to enable unbuffered output.
   */
   virtual std::streambuf*
-  setbuf (char_type* p,
+  setbuf (char_type *p,
           std::streamsize n);
 
   /**
@@ -250,7 +250,7 @@ private:
    *  For simplicity this remains allocated on the free store for the
    *  entire life span of the gzfilebuf object, unless replaced by setbuf.
   */
-  char_type* buffer;
+  char_type *buffer;
 
   /**
    *  @brief  Stream buffer size.
@@ -287,7 +287,7 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
-  gzifstream (const char* name,
+  gzifstream (const char *name,
               std::ios_base::openmode mode = std::ios_base::in);
 
   /**
@@ -326,7 +326,7 @@ public:
    *  convenience.
   */
   void
-  open (const char* name,
+  open (const char *name,
         std::ios_base::openmode mode = std::ios_base::in);
 
   /**
@@ -374,7 +374,7 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
-  gzofstream (const char* name,
+  gzofstream (const char *name,
               std::ios_base::openmode mode = std::ios_base::out);
 
   /**
@@ -413,7 +413,7 @@ public:
    *  convenience.
   */
   void
-  open (const char* name,
+  open (const char *name,
         std::ios_base::openmode mode = std::ios_base::out);
 
   /**

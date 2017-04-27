@@ -112,7 +112,7 @@ octave_cmd_debug::execute ()
 
 // add_cmd: add a command to the queue
 void
-octave_command_queue::add_cmd (octave_cmd* cmd)
+octave_command_queue::add_cmd (octave_cmd *cmd)
 {
   _queue_mutex.lock ();
   _queue.append (cmd);

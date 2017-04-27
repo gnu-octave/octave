@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename T, typename OP>
 MSparse<T>&
-plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char* op_name)
+plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
 {
   MSparse<T> r;
 
@@ -246,7 +246,7 @@ operator / (const T& s, const MSparse<T>& a)
 template <typename T, typename OP>
 MSparse<T>
 plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
-               const char* op_name, bool negate)
+               const char *op_name, bool negate)
 {
   MSparse<T> r;
 

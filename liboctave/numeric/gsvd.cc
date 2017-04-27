@@ -50,7 +50,7 @@ namespace octave
                          double *tmp_dataA, F77_INT m1, double *tmp_dataB,
                          F77_INT p1, Matrix& alpha, Matrix& beta, double *u,
                          F77_INT nrow_u, double *v, F77_INT nrow_v, double *q,
-                         F77_INT nrow_q, Matrix& work, F77_INT* iwork,
+                         F77_INT nrow_q, Matrix& work, F77_INT *iwork,
                          F77_INT& info)
     {
       F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
@@ -75,7 +75,7 @@ namespace octave
                               FloatMatrix& beta, float *u, F77_INT nrow_u,
                               float *v, F77_INT nrow_v, float *q,
                               F77_INT nrow_q, FloatMatrix& work,
-                              F77_INT* iwork, F77_INT& info)
+                              F77_INT *iwork, F77_INT& info)
     {
       F77_XFCN (sggsvd, SGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -99,7 +99,7 @@ namespace octave
                                 Matrix& beta, Complex *u, F77_INT nrow_u,
                                 Complex *v, F77_INT nrow_v, Complex *q,
                                 F77_INT nrow_q, ComplexMatrix& work,
-                                F77_INT* iwork, F77_INT& info)
+                                F77_INT *iwork, F77_INT& info)
     {
       Matrix rwork(2*n, 1);
       F77_XFCN (zggsvd, ZGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
@@ -130,7 +130,7 @@ namespace octave
                                      FloatComplex *v, F77_INT nrow_v,
                                      FloatComplex *q, F77_INT nrow_q,
                                      FloatComplexMatrix& work,
-                                     F77_INT* iwork, F77_INT& info)
+                                     F77_INT *iwork, F77_INT& info)
     {
       FloatMatrix rwork(2*n, 1);
       F77_XFCN (cggsvd, CGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),

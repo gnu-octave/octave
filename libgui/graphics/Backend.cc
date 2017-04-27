@@ -72,7 +72,7 @@ namespace QtHandles
   Backend::Backend (void)
     : QObject (), base_graphics_toolkit ("qt")
   {
-    ObjectFactory* factory = ObjectFactory::instance ();
+    ObjectFactory *factory = ObjectFactory::instance ();
 
     connect (this, SIGNAL (createObject (double)),
              factory, SLOT (createObject (double)));
@@ -97,7 +97,7 @@ namespace QtHandles
         Logger::debug ("Backend::initialize %s from thread %08x",
                        go.type ().c_str (), QThread::currentThreadId ());
 
-        ObjectProxy* proxy = new ObjectProxy ();
+        ObjectProxy *proxy = new ObjectProxy ();
         graphics_object gObj (go);
 
         OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
@@ -130,7 +130,7 @@ namespace QtHandles
     Logger::debug ("Backend::update %s(%d) from thread %08x",
                    go.type ().c_str (), pId, QThread::currentThreadId ());
 
-    ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
     if (proxy)
       {
@@ -154,7 +154,7 @@ namespace QtHandles
     Logger::debug ("Backend::finalize %s from thread %08x",
                    go.type ().c_str (), QThread::currentThreadId ());
 
-    ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
     if (proxy)
       {
@@ -172,7 +172,7 @@ namespace QtHandles
   {
     if (go.get_properties ().is_visible ())
       {
-        ObjectProxy* proxy = toolkitObjectProxy (go);
+        ObjectProxy *proxy = toolkitObjectProxy (go);
 
         if (proxy)
           proxy->redraw ();
@@ -187,7 +187,7 @@ namespace QtHandles
   {
     if (go.get_properties ().is_visible ())
       {
-        ObjectProxy* proxy = toolkitObjectProxy (go);
+        ObjectProxy *proxy = toolkitObjectProxy (go);
 
         if (proxy)
           proxy->print (QString::fromStdString (file_cmd),
@@ -198,7 +198,7 @@ namespace QtHandles
   Object*
   Backend::toolkitObject (const graphics_object& go)
   {
-    ObjectProxy* proxy = toolkitObjectProxy (go);
+    ObjectProxy *proxy = toolkitObjectProxy (go);
 
     if (proxy)
       return proxy->object ();

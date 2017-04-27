@@ -87,8 +87,8 @@ can have any value real or complex value.  However, for polygamma functions
           const A ## NDArray z = oct_z.M ## array_value ();     \
           A ## NDArray psi_z (z.dims ());                       \
                                                                 \
-          const E* zv = z.data ();                              \
-          E* psi_zv = psi_z.fortran_vec ();                     \
+          const E *zv = z.data ();                              \
+          E *psi_zv = psi_z.fortran_vec ();                     \
           const octave_idx_type n = z.numel ();                 \
           for (octave_idx_type i = 0; i < n; i++)               \
             *psi_zv++ = octave::math::psi (*zv++);              \
@@ -124,8 +124,8 @@ can have any value real or complex value.  However, for polygamma functions
           const A ## NDArray z = oct_z.M ## array_value ();             \
           A ## NDArray psi_z (z.dims ());                               \
                                                                         \
-          const E* zv = z.data ();                                      \
-          E* psi_zv = psi_z.fortran_vec ();                             \
+          const E *zv = z.data ();                                      \
+          E *psi_zv = psi_z.fortran_vec ();                             \
           const octave_idx_type n = z.numel ();                         \
           for (octave_idx_type i = 0; i < n; i++)                       \
             {                                                           \

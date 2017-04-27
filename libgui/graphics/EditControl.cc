@@ -37,11 +37,11 @@ namespace QtHandles
   EditControl*
   EditControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           {
@@ -57,14 +57,14 @@ namespace QtHandles
     return 0;
   }
 
-  EditControl::EditControl (const graphics_object& go, QLineEdit* edit)
+  EditControl::EditControl (const graphics_object& go, QLineEdit *edit)
     : BaseControl (go, edit), m_multiLine (false), m_textChanged (false)
   {
     init (edit);
   }
 
   void
-  EditControl::init (QLineEdit* edit, bool callBase)
+  EditControl::init (QLineEdit *edit, bool callBase)
   {
     if (callBase)
       BaseControl::init (edit, callBase);
@@ -86,14 +86,14 @@ namespace QtHandles
              SLOT (returnPressed (void)));
   }
 
-  EditControl::EditControl (const graphics_object& go, TextEdit* edit)
+  EditControl::EditControl (const graphics_object& go, TextEdit *edit)
     : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
   {
     init (edit);
   }
 
   void
-  EditControl::init (TextEdit* edit, bool callBase)
+  EditControl::init (TextEdit *edit, bool callBase)
   {
     if (callBase)
       BaseControl::init (edit, callBase);
@@ -149,7 +149,7 @@ namespace QtHandles
   EditControl::updateSingleLine (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QLineEdit* edit = qWidget<QLineEdit> ();
+    QLineEdit *edit = qWidget<QLineEdit> ();
 
     switch (pId)
       {
@@ -167,7 +167,7 @@ namespace QtHandles
       case uicontrol::properties::ID_MAX:
         if ((up.get_max () - up.get_min ()) > 1)
           {
-            QWidget* container = edit->parentWidget ();
+            QWidget *container = edit->parentWidget ();
 
             delete edit;
             init (new TextEdit (container), true);
@@ -185,7 +185,7 @@ namespace QtHandles
   EditControl::updateMultiLine (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    TextEdit* edit = qWidget<TextEdit> ();
+    TextEdit *edit = qWidget<TextEdit> ();
 
     switch (pId)
       {
@@ -198,7 +198,7 @@ namespace QtHandles
       case uicontrol::properties::ID_MAX:
         if ((up.get_max () - up.get_min ()) <= 1)
           {
-            QWidget* container = edit->parentWidget ();
+            QWidget *container = edit->parentWidget ();
 
             delete edit;
             init (new QLineEdit (container), true);

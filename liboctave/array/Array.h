@@ -226,7 +226,7 @@ protected:
   // contiguous subranges.  Every time rep is directly manipulated, slice_data
   // and slice_len need to be properly updated.
 
-  T* slice_data;
+  T *slice_data;
   octave_idx_type slice_len;
 
   //! slice constructor

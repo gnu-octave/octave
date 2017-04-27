@@ -34,11 +34,11 @@ namespace QtHandles
   ToggleTool*
   ToggleTool::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        QWidget* parentWidget = parent->qWidget<QWidget> ();
+        QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
           return new ToggleTool (go, new QAction (parentWidget));
@@ -47,7 +47,7 @@ namespace QtHandles
     return 0;
   }
 
-  ToggleTool::ToggleTool (const graphics_object& go, QAction* action)
+  ToggleTool::ToggleTool (const graphics_object& go, QAction *action)
     : ToolBarButton<uitoggletool> (go, action)
   {
     uitoggletool::properties& tp = properties<uitoggletool> ();
@@ -66,7 +66,7 @@ namespace QtHandles
   ToggleTool::update (int pId)
   {
     uitoggletool::properties& tp = properties<uitoggletool> ();
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     switch (pId)
       {

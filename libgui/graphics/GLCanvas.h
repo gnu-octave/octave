@@ -33,7 +33,7 @@ namespace QtHandles
   class GLCanvas : public QGLWidget, public Canvas
   {
   public:
-    GLCanvas (QWidget* parent, const graphics_handle& handle);
+    GLCanvas (QWidget *parent, const graphics_handle& handle);
     ~GLCanvas (void);
 
     void draw (const graphics_handle& handle);
@@ -45,17 +45,17 @@ namespace QtHandles
                  int /* width */, int /* height */) { }
     graphics_object selectFromAxes (const graphics_object& ax,
                                     const QPoint& pt);
-    QWidget* qWidget (void) { return this; }
+    QWidget * qWidget (void) { return this; }
 
   protected:
     void paintGL (void);
-    void mouseDoubleClickEvent (QMouseEvent* event);
-    void mouseMoveEvent (QMouseEvent* event);
-    void mousePressEvent (QMouseEvent* event);
-    void mouseReleaseEvent (QMouseEvent* event);
-    void wheelEvent (QWheelEvent* event);
-    void keyPressEvent (QKeyEvent* event);
-    void keyReleaseEvent (QKeyEvent* event);
+    void mouseDoubleClickEvent (QMouseEvent *event);
+    void mouseMoveEvent (QMouseEvent *event);
+    void mousePressEvent (QMouseEvent *event);
+    void mouseReleaseEvent (QMouseEvent *event);
+    void wheelEvent (QWheelEvent *event);
+    void keyPressEvent (QKeyEvent *event);
+    void keyReleaseEvent (QKeyEvent *event);
   };
 
 }

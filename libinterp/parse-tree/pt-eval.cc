@@ -432,7 +432,7 @@ namespace octave
 
     octave_idx_type k = 0;
 
-    for (tree_decl_elt* elt : *param_list)
+    for (tree_decl_elt *elt : *param_list)
       {
         if (++count > nargout)
           break;
@@ -479,7 +479,7 @@ namespace octave
   {
     int i = -1;
 
-    for (tree_decl_elt* elt : *param_list)
+    for (tree_decl_elt *elt : *param_list)
       {
         i++;
 
@@ -503,7 +503,7 @@ namespace octave
   void
   tree_evaluator::undefine_parameter_list (tree_parameter_list *param_list)
   {
-    for (tree_decl_elt* elt : *param_list)
+    for (tree_decl_elt *elt : *param_list)
       {
         octave_lvalue ref = elt->lvalue (this);
 
@@ -527,7 +527,7 @@ namespace octave
 
         int i = 0;
 
-        for (tree_decl_elt* elt : *param_list)
+        for (tree_decl_elt *elt : *param_list)
           {
             if (elt->is_defined ())
               retval(i++) = evaluate (elt);
@@ -543,7 +543,7 @@ namespace octave
 
         int i = 0;
 
-        for (tree_decl_elt* elt : *param_list)
+        for (tree_decl_elt *elt : *param_list)
           retval(i++) = evaluate (elt);
 
         for (octave_idx_type j = 0; j < vlen; j++)
@@ -675,7 +675,7 @@ namespace octave
         // to tell tree_evaluator::visit_decl_init_list that we are
         // evaluating a global init list.
 
-        for (tree_decl_elt* elt : *init_list)
+        for (tree_decl_elt *elt : *init_list)
           do_global_init (*elt);
       }
   }
@@ -694,7 +694,7 @@ namespace octave
         // to tell tree_evaluator::visit_decl_init_list that we are
         // evaluating a static init list.
 
-        for (tree_decl_elt* elt : *init_list)
+        for (tree_decl_elt *elt : *init_list)
           do_static_init (*elt);
       }
   }
@@ -1043,7 +1043,7 @@ namespace octave
   void
   tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
   {
-    for (tree_if_clause* tic : lst)
+    for (tree_if_clause *tic : lst)
       {
         tree_expression *expr = tic->condition ();
 
@@ -1524,7 +1524,7 @@ namespace octave
 
     octave_idx_type i = 0;
 
-    for (tree_argument_list* elt : expr)
+    for (tree_argument_list *elt : expr)
       {
         octave_value_list row = elt->convert_to_const_vector (this);
 
@@ -2123,7 +2123,7 @@ namespace octave
 
     if (lst)
       {
-        for (tree_switch_case* t : *lst)
+        for (tree_switch_case *t : *lst)
           {
             if (t->is_default_case () || switch_case_label_matches (t, val))
               {

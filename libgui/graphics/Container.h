@@ -39,17 +39,17 @@ namespace QtHandles
   class Container : public ContainerBase
   {
   public:
-    Container (QWidget* parent);
+    Container (QWidget *parent);
     ~Container (void);
 
-    Canvas* canvas (const graphics_handle& handle, bool create = true);
+    Canvas * canvas (const graphics_handle& handle, bool create = true);
 
   protected:
-    void childEvent (QChildEvent* event);
-    void resizeEvent (QResizeEvent* event);
+    void childEvent (QChildEvent *event);
+    void resizeEvent (QResizeEvent *event);
 
   private:
-    Canvas* m_canvas;
+    Canvas *m_canvas;
   };
 
 }

@@ -2174,7 +2174,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
       if (liwork < 1)
         liwork = 1;
       Array<F77_INT> iwork (dim_vector (liwork, 1));
-      F77_INT* piwork = iwork.fortran_vec ();
+      F77_INT *piwork = iwork.fortran_vec ();
 
       F77_INT tmp_info = 0;
       F77_INT tmp_rank = 0;
@@ -2383,7 +2383,7 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
       if (liwork < 1)
         liwork = 1;
       Array<F77_INT> iwork (dim_vector (liwork, 1));
-      F77_INT* piwork = iwork.fortran_vec ();
+      F77_INT *piwork = iwork.fortran_vec ();
 
       F77_INT tmp_info = 0;
       F77_INT tmp_rank = 0;

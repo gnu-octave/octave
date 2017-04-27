@@ -32,7 +32,7 @@ namespace QtHandles
 {
 
   void
-  TextEdit::focusOutEvent (QFocusEvent* xevent)
+  TextEdit::focusOutEvent (QFocusEvent *xevent)
   {
     QTextEdit::focusOutEvent (xevent);
 
@@ -40,7 +40,7 @@ namespace QtHandles
   }
 
   void
-  TextEdit::keyPressEvent (QKeyEvent* xevent)
+  TextEdit::keyPressEvent (QKeyEvent *xevent)
   {
     QTextEdit::keyPressEvent (xevent);
 

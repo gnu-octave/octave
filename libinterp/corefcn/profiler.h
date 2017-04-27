@@ -146,23 +146,23 @@ private:
 
     // Enter a child function.  It is created in the list of children if it
     // wasn't already there.  The now-active child node is returned.
-    tree_node* enter (octave_idx_type);
+    tree_node *enter (octave_idx_type);
 
     // Exit function.  As a sanity-check, it is verified that the currently
     // active function actually is the one handed in here.  Returned is the
     // then-active node, which is our parent.
-    tree_node* exit (octave_idx_type);
+    tree_node *exit (octave_idx_type);
 
     void build_flat (flat_profile&) const;
 
     // Get the hierarchical profile for this node and its children.  If total
     // is set, accumulate total time of the subtree in that variable as
     // additional return value.
-    octave_value get_hierarchical (double* total = 0) const;
+    octave_value get_hierarchical (double *total = 0) const;
 
   private:
 
-    tree_node* parent;
+    tree_node *parent;
     octave_idx_type fcn_id;
 
     typedef std::map<octave_idx_type, tree_node*> child_map;
@@ -186,8 +186,8 @@ private:
 
   bool enabled;
 
-  tree_node* call_tree;
-  tree_node* active_fcn;
+  tree_node *call_tree;
+  tree_node *active_fcn;
 
   // Store last timestamp we had, when the currently active function was called.
   double last_time;

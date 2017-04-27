@@ -225,7 +225,7 @@ namespace octave
   void
   tree_breakpoint::visit_if_command_list (tree_if_command_list& lst)
   {
-    for (tree_if_clause* t : lst)
+    for (tree_if_clause *t : lst)
       {
         if (t->line () >= line)
           take_action (*t);
@@ -357,7 +357,7 @@ namespace octave
   void
   tree_breakpoint::visit_statement_list (tree_statement_list& lst)
   {
-    for (tree_statement* elt : lst)
+    for (tree_statement *elt : lst)
       {
         if (elt)
           {
@@ -378,7 +378,7 @@ namespace octave
   void
   tree_breakpoint::visit_switch_case_list (tree_switch_case_list& lst)
   {
-    for (tree_switch_case* t : lst)
+    for (tree_switch_case *t : lst)
       {
         if (t->line () >= line)
           take_action (*t);

@@ -153,13 +153,13 @@ public:
 
   // Ditto, but for an array.
   void lookup (const T *data, octave_idx_type nel,
-               const T* values, octave_idx_type nvalues,
+               const T *values, octave_idx_type nvalues,
                octave_idx_type *idx);
 
   // A linear merge of two sorted tables.  rev indicates the second table is
   // in reverse order.
   void lookup_sorted (const T *data, octave_idx_type nel,
-                      const T* values, octave_idx_type nvalues,
+                      const T *values, octave_idx_type nvalues,
                       octave_idx_type *idx, bool rev = false);
 
   // Rearranges the array so that the elements with indices
@@ -322,12 +322,12 @@ private:
 
   template <typename Comp>
   void lookup (const T *data, octave_idx_type nel,
-               const T* values, octave_idx_type nvalues,
+               const T *values, octave_idx_type nvalues,
                octave_idx_type *idx, Comp comp);
 
   template <typename Comp>
   void lookup_sorted (const T *data, octave_idx_type nel,
-                      const T* values, octave_idx_type nvalues,
+                      const T *values, octave_idx_type nvalues,
                       octave_idx_type *idx, bool rev, Comp comp);
 
   template <typename Comp>

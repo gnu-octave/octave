@@ -65,22 +65,22 @@ public:
   virtual void set_class (const cdef_class&)
   { err_invalid_object ("set_class"); }
 
-  virtual cdef_object_rep* clone (void) const
+  virtual cdef_object_rep * clone (void) const
   {
     err_invalid_object ("clone");
   }
 
-  virtual cdef_object_rep* empty_clone (void) const
+  virtual cdef_object_rep * empty_clone (void) const
   {
     err_invalid_object ("empty_clone");
   }
 
-  virtual cdef_object_rep* copy (void) const
+  virtual cdef_object_rep * copy (void) const
   {
     err_invalid_object ("copy");
   }
 
-  virtual cdef_object_rep* make_array (void) const
+  virtual cdef_object_rep * make_array (void) const
   {
     err_invalid_object ("make_array");
   }
@@ -273,7 +273,7 @@ public:
 
   octave_map map_value (void) const;
 
-  const cdef_object_rep* get_rep (void) const { return rep; }
+  const cdef_object_rep * get_rep (void) const { return rep; }
 
   bool ok (void) const { return rep->is_valid (); }
 
@@ -296,7 +296,7 @@ public:
   bool is (const cdef_object& obj) const { return rep == obj.rep; }
 
 protected:
-  cdef_object_rep* get_rep (void) { return rep; }
+  cdef_object_rep * get_rep (void) { return rep; }
 
   void make_unique (int ignore_copies)
   {
@@ -324,10 +324,10 @@ public:
 
   void set_class (const cdef_class& cls);
 
-  cdef_object_rep* empty_clone (void) const
+  cdef_object_rep * empty_clone (void) const
   { return new cdef_object_base (*this); }
 
-  cdef_object_rep* make_array (void) const;
+  cdef_object_rep * make_array (void) const;
 
 protected:
   // Restricted copying!
@@ -360,7 +360,7 @@ public:
   cdef_object_array (const Array<cdef_object>& a)
     : cdef_object_base (), array (a) { }
 
-  cdef_object_rep* clone (void) const
+  cdef_object_rep * clone (void) const
   { return new cdef_object_array (*this); }
 
   dim_vector dims (void) const { return array.dims (); }
@@ -466,14 +466,14 @@ public:
 
   ~handle_cdef_object (void);
 
-  cdef_object_rep* clone (void) const
+  cdef_object_rep * clone (void) const
   {
     handle_cdef_object *obj = const_cast<handle_cdef_object *> (this);
     obj->refcount++;
     return obj;
   }
 
-  cdef_object_rep* copy (void) const
+  cdef_object_rep * copy (void) const
   { return new handle_cdef_object (*this); }
 
   bool is_valid (void) const { return true; }
@@ -499,10 +499,10 @@ public:
 
   ~value_cdef_object (void);
 
-  cdef_object_rep* clone (void) const
+  cdef_object_rep * clone (void) const
   { return new value_cdef_object (*this); }
 
-  cdef_object_rep* copy (void) const { return clone (); }
+  cdef_object_rep * copy (void) const { return clone (); }
 
   bool is_valid (void) const { return true; }
 
@@ -526,7 +526,7 @@ public:
 
   ~cdef_meta_object_rep (void) = default;
 
-  cdef_object_rep* copy (void) const
+  cdef_object_rep * copy (void) const
   { return new cdef_meta_object_rep (*this); }
 
   bool is_meta_object (void) const { return true; }
@@ -600,10 +600,10 @@ public:
   { return get_rep ()->meta_is_postfix_index_handled (type); }
 
 private:
-  cdef_meta_object_rep* get_rep (void)
+  cdef_meta_object_rep * get_rep (void)
   { return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_meta_object_rep* get_rep (void) const
+  const cdef_meta_object_rep * get_rep (void) const
   { return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ()); }
 };
 
@@ -624,7 +624,7 @@ private:
     cdef_class_rep (octave::tree_evaluator *tw,
                     const std::list<cdef_class>& superclasses);
 
-    cdef_object_rep* copy (void) const { return new cdef_class_rep (*this); }
+    cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
 
     bool is_class (void) const { return true; }
 
@@ -842,12 +842,12 @@ public:
   { get_rep ()->delete_object (obj); }
 
   static cdef_class make_meta_class (octave::tree_evaluator *tw,
-                                     octave::tree_classdef* t,
+                                     octave::tree_classdef *t,
                                      bool is_at_folder = false);
 
-  octave_function* get_method_function (const std::string& nm);
+  octave_function * get_method_function (const std::string& nm);
 
-  octave_function* get_constructor_function (void)
+  octave_function * get_constructor_function (void)
   { return get_method_function (get_name ()); }
 
   octave_value construct (const octave_value_list& args)
@@ -890,10 +890,10 @@ public:
   };
 
 private:
-  cdef_class_rep* get_rep (void)
+  cdef_class_rep * get_rep (void)
   { return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_class_rep* get_rep (void) const
+  const cdef_class_rep * get_rep (void) const
   { return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ()); }
 
   octave::tree_evaluator * evaluator (void) const
@@ -940,7 +940,7 @@ private:
     cdef_property_rep (void)
       : cdef_meta_object_rep () { }
 
-    cdef_object_rep* copy (void) const { return new cdef_property_rep (*this); }
+    cdef_object_rep * copy (void) const { return new cdef_property_rep (*this); }
 
     bool is_property (void) const { return true; }
 
@@ -1028,10 +1028,10 @@ public:
   bool is_constant (void) const { return get_rep ()->is_constant (); }
 
 private:
-  cdef_property_rep* get_rep (void)
+  cdef_property_rep * get_rep (void)
   { return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_property_rep* get_rep (void) const
+  const cdef_property_rep * get_rep (void) const
   { return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ()); }
 };
 
@@ -1050,7 +1050,7 @@ private:
       : cdef_meta_object_rep (), function (), dispatch_type ()
     { }
 
-    cdef_object_rep* copy (void) const { return new cdef_method_rep(*this); }
+    cdef_object_rep * copy (void) const { return new cdef_method_rep(*this); }
 
     bool is_method (void) const { return true; }
 
@@ -1171,10 +1171,10 @@ public:
   { get_rep ()->mark_as_external (dtype); }
 
 private:
-  cdef_method_rep* get_rep (void)
+  cdef_method_rep * get_rep (void)
   { return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_method_rep* get_rep (void) const
+  const cdef_method_rep * get_rep (void) const
   { return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ()); }
 };
 
@@ -1236,7 +1236,7 @@ cdef_object_base::unregister_object (void)
 inline cdef_object_rep*
 cdef_object_base::make_array (void) const
 {
-  cdef_object_rep* r = new cdef_object_array ();
+  cdef_object_rep *r = new cdef_object_array ();
 
   r->set_class (get_class ());
 
@@ -1267,7 +1267,7 @@ private:
 
     ~cdef_package_rep (void) = default;
 
-    cdef_object_rep* copy (void) const { return new cdef_package_rep (*this); }
+    cdef_object_rep * copy (void) const { return new cdef_package_rep (*this); }
 
     bool is_package (void) const { return true; }
 
@@ -1397,10 +1397,10 @@ public:
   static const cdef_package& meta (void) { return _meta; }
 
 private:
-  cdef_package_rep* get_rep (void)
+  cdef_package_rep * get_rep (void)
   { return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ()); }
 
-  const cdef_package_rep* get_rep (void) const
+  const cdef_package_rep * get_rep (void) const
   { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
 
 private:
@@ -1422,10 +1422,10 @@ public:
   octave_classdef (const octave_classdef& obj)
     : octave_base_value (obj), object (obj.object) { }
 
-  octave_base_value* clone (void) const
+  octave_base_value * clone (void) const
   { return new octave_classdef (object.clone ()); }
 
-  octave_base_value* empty_clone (void) const
+  octave_base_value * empty_clone (void) const
   { return new octave_classdef (object.empty_clone ()); }
 
   cdef_object get_object (void) const { return object; }
@@ -1555,7 +1555,7 @@ public:
     return cdef_class ();
   }
 
-  static octave_function* find_method_symbol (const std::string& method_name,
+  static octave_function * find_method_symbol (const std::string& method_name,
       const std::string& class_name)
   {
     if (instance_ok ())
@@ -1575,7 +1575,7 @@ public:
     return cdef_package ();
   }
 
-  static octave_function* find_package_symbol (const std::string& pack_name)
+  static octave_function * find_package_symbol (const std::string& pack_name)
   {
     if (instance_ok ())
       return instance->do_find_package_symbol (pack_name);
@@ -1642,14 +1642,14 @@ private:
   cdef_class do_find_class (const std::string& name, bool error_if_not_found,
                             bool load_if_not_found);
 
-  octave_function* do_find_method_symbol (const std::string& method_name,
-                                          const std::string& class_name);
+  octave_function * do_find_method_symbol (const std::string& method_name,
+                                           const std::string& class_name);
 
   cdef_package do_find_package (const std::string& name,
                                 bool error_if_not_found,
                                 bool load_if_not_found);
 
-  octave_function* do_find_package_symbol (const std::string& pack_name);
+  octave_function * do_find_package_symbol (const std::string& pack_name);
 
   void do_register_class (const cdef_class& cls)
   { all_classes[cls.get_name ()] = cls; }

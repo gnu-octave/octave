@@ -122,7 +122,7 @@ namespace QtHandles
   */
   void
   Canvas::updateCurrentPoint (const graphics_object& fig,
-                              const graphics_object& obj, QMouseEvent* event)
+                              const graphics_object& obj, QMouseEvent *event)
   {
     gh_manager::auto_lock lock;
 
@@ -372,7 +372,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::select_object (graphics_object obj, QMouseEvent* event,
+  Canvas::select_object (graphics_object obj, QMouseEvent *event,
                          graphics_object& currentObj, graphics_object& axesObj,
                          bool axes_only, std::vector<std::string> omit)
   {
@@ -474,7 +474,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMouseMoveEvent (QMouseEvent* event)
+  Canvas::canvasMouseMoveEvent (QMouseEvent *event)
   {
     gh_manager::auto_lock lock;
     graphics_object ax = gh_manager::get_object (m_mouseAxes);
@@ -562,7 +562,7 @@ namespace QtHandles
           {
             // FIXME: should we use signal/slot mechanism instead of
             //        directly calling parent fig methods
-            Figure* fig =
+            Figure *fig =
               dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
             axes::properties& ap = Utils::properties<axes> (axesObj);
 
@@ -573,7 +573,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
+  Canvas::canvasMouseDoubleClickEvent (QMouseEvent *event)
   {
     // same processing as normal click, but event type is MouseButtonDblClick
     canvasMousePressEvent (event);
@@ -606,7 +606,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMousePressEvent (QMouseEvent* event)
+  Canvas::canvasMousePressEvent (QMouseEvent *event)
   {
     gh_manager::auto_lock lock;
     graphics_object obj = gh_manager::get_object (m_handle);
@@ -649,7 +649,7 @@ namespace QtHandles
           Utils::properties<figure> (figObj).set_currentobject (
             octave::numeric_limits<double>::NaN ());
 
-        Figure* fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+        Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
         MouseMode newMouseMode = NoMode;
 
@@ -794,7 +794,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
+  Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
   {
     if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
         && m_mouseAxes.ok ())
@@ -893,7 +893,7 @@ namespace QtHandles
   }
 
   void
-  Canvas::canvasWheelEvent (QWheelEvent* event)
+  Canvas::canvasWheelEvent (QWheelEvent *event)
   {
     gh_manager::auto_lock lock;
     graphics_object obj = gh_manager::get_object (m_handle);
@@ -929,7 +929,7 @@ namespace QtHandles
 
             graphics_object figObj (obj.get_ancestor ("figure"));
 
-            Figure* fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+            Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
             if (fig)
               newMouseMode = fig->mouseMode ();
@@ -1001,7 +1001,7 @@ namespace QtHandles
   }
 
   bool
-  Canvas::canvasKeyPressEvent (QKeyEvent* event)
+  Canvas::canvasKeyPressEvent (QKeyEvent *event)
   {
     if (m_eventMask & KeyPress)
       {
@@ -1028,7 +1028,7 @@ namespace QtHandles
   }
 
   bool
-  Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
+  Canvas::canvasKeyReleaseEvent (QKeyEvent *event)
   {
     if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
       {
@@ -1042,7 +1042,7 @@ namespace QtHandles
   }
 
   Canvas*
-  Canvas::create (const std::string& /* name */, QWidget* parent,
+  Canvas::create (const std::string& /* name */, QWidget *parent,
                   const graphics_handle& handle)
   {
     // Only OpenGL

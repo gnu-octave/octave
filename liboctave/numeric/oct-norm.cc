@@ -551,7 +551,7 @@ DEFINE_XNORM_FUNCS(FloatComplex, float)
 
 // this is needed to avoid copying the sparse matrix for xfrobnorm
 template <typename T, typename R>
-inline void array_norm_2 (const T* v, octave_idx_type n, R& res)
+inline void array_norm_2 (const T *v, octave_idx_type n, R& res)
 {
   norm_accumulator_2<R> acc;
   for (octave_idx_type i = 0; i < n; i++)

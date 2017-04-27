@@ -36,7 +36,7 @@ namespace QtHandles
 {
 
   static void
-  updateSelection (QListWidget* list, const Matrix& value)
+  updateSelection (QListWidget *list, const Matrix& value)
   {
     octave_idx_type n = value.numel ();
     int lc = list->count ();
@@ -67,11 +67,11 @@ namespace QtHandles
   ListBoxControl*
   ListBoxControl::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new ListBoxControl (go, new QListWidget (container));
@@ -80,7 +80,7 @@ namespace QtHandles
     return 0;
   }
 
-  ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
+  ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget *list)
     : BaseControl (go, list), m_blockCallback (false), m_selectionChanged (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
@@ -128,7 +128,7 @@ namespace QtHandles
   ListBoxControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QListWidget* list = qWidget<QListWidget> ();
+    QListWidget *list = qWidget<QListWidget> ();
 
     switch (pId)
       {
@@ -166,7 +166,7 @@ namespace QtHandles
   {
     if (! m_blockCallback)
       {
-        QListWidget* list = qWidget<QListWidget> ();
+        QListWidget *list = qWidget<QListWidget> ();
 
         QModelIndexList l = list->selectionModel ()->selectedIndexes ();
         Matrix value (dim_vector (1, l.size ()));
@@ -201,7 +201,7 @@ namespace QtHandles
   }
 
   bool
-  ListBoxControl::eventFilter (QObject* watched, QEvent* e)
+  ListBoxControl::eventFilter (QObject *watched, QEvent *e)
   {
     // listbox change
     if (watched == m_qobject)
@@ -224,13 +224,13 @@ namespace QtHandles
     else
       {
         bool override_return = false;
-        QListWidget* list = qWidget<QListWidget> ();
+        QListWidget *list = qWidget<QListWidget> ();
 
         switch (e->type ())
           {
             case QEvent::MouseButtonPress:
               {
-                QMouseEvent* m = dynamic_cast<QMouseEvent *> (e);
+                QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
 
                 if (m->button () & Qt::RightButton)
                   override_return = true;
@@ -244,7 +244,7 @@ namespace QtHandles
               }
             case QEvent::MouseButtonRelease:
               {
-                QMouseEvent* m = dynamic_cast<QMouseEvent *> (e);
+                QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
 
                 if (m->button () & Qt::RightButton)
                   override_return = true;

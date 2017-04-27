@@ -64,7 +64,7 @@ namespace octave
         is considered to be a row vector.
     */
     template <typename T>
-    bool strcmp (const T& str_a, const typename T::value_type* str_b);
+    bool strcmp (const T& str_a, const typename T::value_type *str_b);
 
     //! True if strings are the same, ignoring case.
     /*!
@@ -85,7 +85,7 @@ namespace octave
         is considered to be a row vector.
     */
     template <typename T>
-    bool strcmpi (const T& str_a, const typename T::value_type* str_b);
+    bool strcmpi (const T& str_a, const typename T::value_type *str_b);
 
     //! True if the first N characters are the same.
     /*!
@@ -101,7 +101,7 @@ namespace octave
 
     //! True if the first N characters are the same.
     template <typename T>
-    bool strncmp (const T& str_a, const typename T::value_type* str_b,
+    bool strncmp (const T& str_a, const typename T::value_type *str_b,
                   const typename T::size_type n);
 
     //! True if the first N characters are the same, ignoring case.
@@ -118,7 +118,7 @@ namespace octave
 
     //! True if the first N characters are the same, ignoring case.
     template <typename T>
-    bool strncmpi (const T& str_a, const typename T::value_type* str_b,
+    bool strncmpi (const T& str_a, const typename T::value_type *str_b,
                    const typename T::size_type n);
   }
 }

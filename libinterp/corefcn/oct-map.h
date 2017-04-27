@@ -130,7 +130,7 @@ public:
   // returns a permutation needed to bring the fields of *other*
   // into the order of *this*.
   bool equal_up_to_order (const octave_fields& other,
-                          octave_idx_type* perm) const;
+                          octave_idx_type *perm) const;
 
   bool equal_up_to_order (const octave_fields& other,
                           Array<octave_idx_type>& perm) const;

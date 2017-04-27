@@ -85,8 +85,8 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
     opt = OFF;
 
   // Input matrix pointers
-  octave_idx_type* cidx = sm.cidx ();
-  octave_idx_type* ridx = sm.ridx ();
+  octave_idx_type *cidx = sm.cidx ();
+  octave_idx_type *ridx = sm.ridx ();
   T* data = sm.data ();
 
   // Working arrays
@@ -229,8 +229,8 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
     opt = OFF;
 
   // Input matrix pointers
-  octave_idx_type* cidx = sm.cidx ();
-  octave_idx_type* ridx = sm.ridx ();
+  octave_idx_type *cidx = sm.cidx ();
+  octave_idx_type *ridx = sm.ridx ();
   T* data = sm.data ();
 
   // Output matrix data structures.  Because the final zero pattern pattern of
@@ -243,9 +243,9 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   max_len = sm.nnz ();
   max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
-  octave_idx_type* cidx_l = cidx_out_l.fortran_vec ();
+  octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len ,1));
-  octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
   Array <T> data_out_l (dim_vector (max_len, 1));
   T* data_l = data_out_l.fortran_vec ();
 

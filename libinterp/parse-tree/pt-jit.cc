@@ -2297,7 +2297,7 @@ jit_function_info::jit_function_info (tree_jit& tjit,
           llvm::verifyFunction (*llvm_function);
         }
 
-      llvm::ExecutionEngine* engine = tjit.get_engine ();
+      llvm::ExecutionEngine *engine = tjit.get_engine ();
       void *void_fn = engine->getPointerToFunction (llvm_function);
       function = reinterpret_cast<jited_function> (void_fn);
     }

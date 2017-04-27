@@ -100,15 +100,15 @@ namespace octave
       T right_sm;
 
       void gesvd (char& jobu, char& jobv, octave_f77_int_type m,
-                  octave_f77_int_type n, P* tmp_data, octave_f77_int_type m1,
-                  DM_P* s_vec, P* u, P* vt, octave_f77_int_type nrow_vt1,
+                  octave_f77_int_type n, P *tmp_data, octave_f77_int_type m1,
+                  DM_P *s_vec, P *u, P *vt, octave_f77_int_type nrow_vt1,
                   std::vector<P>& work, octave_f77_int_type& lwork,
                   octave_f77_int_type& info);
 
       void gesdd (char& jobz, octave_f77_int_type m, octave_f77_int_type n,
-                  P* tmp_data, octave_f77_int_type m1, DM_P* s_vec, P* u,
-                  P* vt, octave_f77_int_type nrow_vt1, std::vector<P>& work,
-                  octave_f77_int_type& lwork, octave_f77_int_type* iwork,
+                  P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
+                  P *vt, octave_f77_int_type nrow_vt1, std::vector<P>& work,
+                  octave_f77_int_type& lwork, octave_f77_int_type *iwork,
                   octave_f77_int_type& info);
     };
   }

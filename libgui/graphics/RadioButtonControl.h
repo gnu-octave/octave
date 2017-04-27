@@ -33,10 +33,10 @@ namespace QtHandles
   class RadioButtonControl : public ButtonControl
   {
   public:
-    RadioButtonControl (const graphics_object& go, QRadioButton* box);
+    RadioButtonControl (const graphics_object& go, QRadioButton *box);
     ~RadioButtonControl (void);
 
-    static RadioButtonControl* create (const graphics_object& go);
+    static RadioButtonControl * create (const graphics_object& go);
   };
 
 }

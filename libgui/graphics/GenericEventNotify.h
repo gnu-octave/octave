@@ -40,15 +40,15 @@ namespace QtHandles
     GenericEventNotifySender (void) : m_receivers () { }
     virtual ~GenericEventNotifySender (void) = default;
 
-    void addReceiver (GenericEventNotifyReceiver* r)
+    void addReceiver (GenericEventNotifyReceiver *r)
     { m_receivers.insert (r); }
 
-    void removeReceiver (GenericEventNotifyReceiver* r)
+    void removeReceiver (GenericEventNotifyReceiver *r)
     { m_receivers.remove (r); }
 
   protected:
-    bool notifyReceiversBefore (QObject* obj, QEvent* evt);
-    void notifyReceiversAfter (QObject* obj, QEvent* evt);
+    bool notifyReceiversBefore (QObject *obj, QEvent *evt);
+    void notifyReceiversAfter (QObject *obj, QEvent *evt);
 
   private:
     QSet<GenericEventNotifyReceiver*> m_receivers;
@@ -60,15 +60,15 @@ namespace QtHandles
     GenericEventNotifyReceiver (void) { }
     virtual ~GenericEventNotifyReceiver (void) = default;
 
-    virtual bool eventNotifyBefore (QObject* obj, QEvent* evt) = 0;
-    virtual void eventNotifyAfter (QObject* obj, QEvent* evt) = 0;
+    virtual bool eventNotifyBefore (QObject *obj, QEvent *evt) = 0;
+    virtual void eventNotifyAfter (QObject *obj, QEvent *evt) = 0;
   };
 
   inline
-  bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
-      QEvent* evt)
+  bool GenericEventNotifySender::notifyReceiversBefore (QObject *obj,
+      QEvent *evt)
   {
-    foreach (GenericEventNotifyReceiver* r, m_receivers)
+    foreach (GenericEventNotifyReceiver *r, m_receivers)
       if (r->eventNotifyBefore (obj, evt))
         return true;
 
@@ -76,10 +76,10 @@ namespace QtHandles
   }
 
   inline
-  void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
-      QEvent* evt)
+  void GenericEventNotifySender::notifyReceiversAfter (QObject *obj,
+      QEvent *evt)
   {
-    foreach (GenericEventNotifyReceiver* r, m_receivers)
+    foreach (GenericEventNotifyReceiver *r, m_receivers)
       r->eventNotifyAfter (obj, evt);
   }
 
@@ -87,10 +87,10 @@ namespace QtHandles
 class T : public B, public GenericEventNotifySender \
 { \
 public: \
-  T (QWidget* xparent) : B (xparent), GenericEventNotifySender () { } \
+  T (QWidget *xparent) : B (xparent), GenericEventNotifySender () { } \
   ~ T (void) = default; \
 \
-  bool event (QEvent* evt) \
+  bool event (QEvent *evt) \
     { \
       bool result = true; \
       if (! notifyReceiversBefore (this, evt)) \

@@ -1043,7 +1043,7 @@ void file_editor::create_context_menu (QMenu *menu)
 {
   // remove all standard actions from scintilla
   QList<QAction *> all_actions = menu->actions ();
-  QAction* a;
+  QAction *a;
 
   foreach (a, all_actions)
     menu->removeAction (a);
@@ -2353,7 +2353,7 @@ file_editor_tab_bar::mousePressEvent (QMouseEvent *me)
 file_editor_tab_widget::file_editor_tab_widget (QWidget *p)
   : QTabWidget (p)
 {
-  file_editor_tab_bar* bar;
+  file_editor_tab_bar *bar;
   bar = new file_editor_tab_bar (this);
 
   connect (bar, SIGNAL (close_current_tab_signal (bool)),

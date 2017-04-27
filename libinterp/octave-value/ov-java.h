@@ -51,8 +51,8 @@ public:
 
   std::string java_class_name (void) const { return java_classname; }
 
-  octave_base_value* clone (void) const { return new octave_java (*this); }
-  octave_base_value* empty_clone (void) const { return new octave_java (); }
+  octave_base_value * clone (void) const { return new octave_java (*this); }
+  octave_base_value * empty_clone (void) const { return new octave_java (); }
 
   bool is_instance_of (const std::string&) const;
 

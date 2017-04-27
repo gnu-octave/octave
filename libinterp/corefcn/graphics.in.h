@@ -82,7 +82,7 @@ public:
     error ("invalid axis scale");
   }
 
-  virtual base_scaler* clone () const
+  virtual base_scaler * clone () const
   { return new base_scaler (); }
 
   virtual bool is_linear (void) const
@@ -102,7 +102,7 @@ public:
 
   double unscale (double d) const { return d; }
 
-  base_scaler* clone (void) const { return new lin_scaler (); }
+  base_scaler * clone (void) const { return new lin_scaler (); }
 
   bool is_linear (void) const { return true; }
 };
@@ -136,7 +136,7 @@ public:
   double unscale (double d) const
   { return pow (10.0, d); }
 
-  base_scaler* clone (void) const
+  base_scaler * clone (void) const
   { return new log_scaler (); }
 
 private:
@@ -176,7 +176,7 @@ public:
   double unscale (double d) const
   { return -pow (10.0, -d); }
 
-  base_scaler* clone (void) const
+  base_scaler * clone (void) const
   { return new neg_log_scaler (); }
 
 private:
@@ -387,7 +387,7 @@ public:
 
   OCTINTERP_API void run_listeners (listener_mode mode = POSTSET);
 
-  virtual base_property* clone (void) const
+  virtual base_property * clone (void) const
   { return new base_property (*this); }
 
 protected:
@@ -435,7 +435,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new string_property (*this); }
+  base_property * clone (void) const { return new string_property (*this); }
 
 protected:
   bool do_set (const octave_value& val)
@@ -541,7 +541,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const
+  base_property * clone (void) const
   { return new string_array_property (*this); }
 
 protected:
@@ -746,7 +746,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new text_label_property (*this); }
+  base_property * clone (void) const { return new text_label_property (*this); }
 
 protected:
 
@@ -944,7 +944,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new radio_property (*this); }
+  base_property * clone (void) const { return new radio_property (*this); }
 
 protected:
   bool do_set (const octave_value& newval)
@@ -1130,7 +1130,7 @@ public:
 
   operator octave_value (void) const { return get (); }
 
-  base_property* clone (void) const { return new color_property (*this); }
+  base_property * clone (void) const { return new color_property (*this); }
 
   std::string values_as_string (void) const
   { return radio_val.values_as_string (); }
@@ -1182,7 +1182,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const
+  base_property * clone (void) const
   {
     double_property *p = new double_property (*this);
 
@@ -1335,7 +1335,7 @@ public:
 
   operator octave_value (void) const { return get (); }
 
-  base_property* clone (void) const
+  base_property * clone (void) const
   { return new double_radio_property (*this); }
 
 protected:
@@ -1427,7 +1427,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const
+  base_property * clone (void) const
   {
     array_property *p = new array_property (*this);
 
@@ -1537,7 +1537,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const
+  base_property * clone (void) const
   {
     row_vector_property *p = new row_vector_property (*this);
 
@@ -1581,7 +1581,7 @@ public:
   { }
 
   bool_property (const std::string& nm, const graphics_handle& h,
-                 const char* val)
+                 const char *val)
     : radio_property (nm, h, radio_values ("on|off"), val)
   { }
 
@@ -1596,7 +1596,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new bool_property (*this); }
+  base_property * clone (void) const { return new bool_property (*this); }
 
 protected:
   bool do_set (const octave_value& val)
@@ -1640,7 +1640,7 @@ public:
   void invalidate (void)
   { current_val = octave::numeric_limits<double>::NaN (); }
 
-  base_property* clone (void) const { return new handle_property (*this); }
+  base_property * clone (void) const { return new handle_property (*this); }
 
   void add_constraint (const std::string& type)
   { type_constraints.insert (type); }
@@ -1673,7 +1673,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new any_property (*this); }
+  base_property * clone (void) const { return new any_property (*this); }
 
 protected:
   bool do_set (const octave_value& v)
@@ -1716,7 +1716,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new children_property (*this); }
+  base_property * clone (void) const { return new children_property (*this); }
 
   bool remove_child (double val)
   {
@@ -1908,7 +1908,7 @@ public:
     return *this;
   }
 
-  base_property* clone (void) const { return new callback_property (*this); }
+  base_property * clone (void) const { return new callback_property (*this); }
 
 protected:
   bool do_set (const octave_value& v)
@@ -2265,7 +2265,7 @@ public:
     rep->count++;
   }
 
-  graphics_toolkit (base_graphics_toolkit* b)
+  graphics_toolkit (base_graphics_toolkit *b)
     : rep (b)
   {
     rep->count++;
@@ -6525,7 +6525,7 @@ public:
       instance->do_post_callback (h, name, data);
   }
 
-  static void post_function (graphics_event::event_fcn fcn, void* data = 0)
+  static void post_function (graphics_event::event_fcn fcn, void *data = 0)
   {
     if (instance_ok ())
       instance->do_post_function (fcn, data);
@@ -6724,7 +6724,7 @@ private:
   void do_post_callback (const graphics_handle& h, const std::string& name,
                          const octave_value& data);
 
-  void do_post_function (graphics_event::event_fcn fcn, void* fcn_data);
+  void do_post_function (graphics_event::event_fcn fcn, void *fcn_data);
 
   void do_post_set (const graphics_handle& h, const std::string& name,
                     const octave_value& value, bool notify_toolkit = true);

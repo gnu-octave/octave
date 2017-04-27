@@ -82,7 +82,7 @@ c_file_ptr_buf::pbackfail (int_type c)
 }
 
 std::streamsize
-c_file_ptr_buf::xsputn (const char* s, std::streamsize n)
+c_file_ptr_buf::xsputn (const char *s, std::streamsize n)
 {
   if (f)
     return std::fwrite (s, 1, n, f);
@@ -226,7 +226,7 @@ c_zfile_ptr_buf::pbackfail (int_type c)
 }
 
 std::streamsize
-c_zfile_ptr_buf::xsputn (const char* s, std::streamsize n)
+c_zfile_ptr_buf::xsputn (const char *s, std::streamsize n)
 {
   if (f)
     return gzwrite (f, s, n);

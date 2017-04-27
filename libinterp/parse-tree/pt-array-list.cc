@@ -44,7 +44,7 @@ namespace octave
   bool
   tree_array_list::all_elements_are_constant (void) const
   {
-    for (const tree_argument_list* elt : *this)
+    for (const tree_argument_list *elt : *this)
       {
         octave_quit ();
 
@@ -58,7 +58,7 @@ namespace octave
   bool
   tree_array_list::has_magic_end (void) const
   {
-    for (const tree_argument_list* elt : *this)
+    for (const tree_argument_list *elt : *this)
       {
         octave_quit ();
 
@@ -80,7 +80,7 @@ namespace octave
                               symbol_table::scope_id scope,
                               symbol_table::context_id context)
   {
-    for (const tree_argument_list* elt : array_list)
+    for (const tree_argument_list *elt : array_list)
       append (elt ? elt->dup (scope, context) : 0);
 
     copy_base (*this);

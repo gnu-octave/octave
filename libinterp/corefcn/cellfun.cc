@@ -457,7 +457,7 @@ v = cellfun (@@det, a); # faster
   {
     if (func.is_function_handle ())
       {
-        octave_fcn_handle* f = func.fcn_handle_value ();
+        octave_fcn_handle *f = func.fcn_handle_value ();
 
         // Overloaded function handles need to check the type of the
         // arguments for each element of the array, so they cannot be
@@ -1162,7 +1162,7 @@ arrayfun (@@str2num, [1234],
         {
           if (func.is_function_handle ())
             {
-              octave_fcn_handle* f = func.fcn_handle_value ();
+              octave_fcn_handle *f = func.fcn_handle_value ();
 
               // Overloaded function handles need to check the type of the
               // arguments for each element of the array, so they cannot be

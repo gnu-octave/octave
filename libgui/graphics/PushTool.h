@@ -33,10 +33,10 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    PushTool (const graphics_object& go, QAction* action);
+    PushTool (const graphics_object& go, QAction *action);
     ~PushTool (void);
 
-    static PushTool* create (const graphics_object& go);
+    static PushTool * create (const graphics_object& go);
 
   protected:
     void update (int pId);

@@ -377,7 +377,7 @@ info_to_html (QString& text)
   text.replace ("<", "&lt;");
   text.replace (">", "&gt;");
 
-  text.replace ("\n* Menu:",
+  text.replace ("\n *Menu:",
                 "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
   text.replace ("See also:",
                 "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");

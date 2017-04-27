@@ -264,7 +264,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
     {
       // remove all standard actions from scintilla
       QList<QAction *> all_actions = context_menu->actions ();
-      QAction* a;
+      QAction *a;
 
       foreach (a, all_actions)
         context_menu->removeAction (a);

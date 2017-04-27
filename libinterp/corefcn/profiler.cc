@@ -53,7 +53,7 @@ profile_data_accumulator::stats::function_set_value (const function_set& list)
   return retval;
 }
 
-profile_data_accumulator::tree_node::tree_node (tree_node* p, octave_idx_type f)
+profile_data_accumulator::tree_node::tree_node (tree_node *p, octave_idx_type f)
   : parent (p), fcn_id (f), children (), time (0.0), calls (0)
 { }
 
@@ -66,7 +66,7 @@ profile_data_accumulator::tree_node::~tree_node ()
 profile_data_accumulator::tree_node*
 profile_data_accumulator::tree_node::enter (octave_idx_type fcn)
 {
-  tree_node* retval;
+  tree_node *retval;
 
   child_map::iterator pos = children.find (fcn);
   if (pos == children.end ())
@@ -111,7 +111,7 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
         }
 
       if (! entry.recursive)
-        for (const tree_node* i = parent; i; i = i->parent)
+        for (const tree_node *i = parent; i; i = i->parent)
           if (i->fcn_id == fcn_id)
             {
               entry.recursive = true;
@@ -125,7 +125,7 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
 }
 
 octave_value
-profile_data_accumulator::tree_node::get_hierarchical (double* total) const
+profile_data_accumulator::tree_node::get_hierarchical (double *total) const
 {
   // Note that we don't generate the entry just for this node, but
   // rather a struct-array with entries for all children.  This way, the

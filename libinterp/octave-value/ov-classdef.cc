@@ -268,7 +268,7 @@ get_class_context (std::string& name, bool& in_constructor)
 {
   cdef_class cls;
 
-  octave_function* fcn = octave::call_stack::current ();
+  octave_function *fcn = octave::call_stack::current ();
 
   in_constructor = false;
 
@@ -427,15 +427,15 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
 {
   octave::tree_evaluator *tw = octave::current_evaluator;
 
-  octave_function* stack_fcn = octave::call_stack::current ();
+  octave_function *stack_fcn = octave::call_stack::current ();
 
-  octave_function* method_fcn = ov.function_value (true);
+  octave_function *method_fcn = ov.function_value (true);
 
   // Does the top of the call stack match our target function?
 
   if (stack_fcn && stack_fcn == method_fcn)
     {
-      octave_user_function* uf = method_fcn->user_function_value (true);
+      octave_user_function *uf = method_fcn->user_function_value (true);
 
       // We can only check the context object for user-function (not builtin),
       // where we have access to the parameters (arguments and return values).
@@ -449,7 +449,7 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
           // methods, it's the first argument of the function; for ctors, it
           // is the first return value.
 
-          octave::tree_parameter_list* pl = uf->is_classdef_constructor ()
+          octave::tree_parameter_list *pl = uf->is_classdef_constructor ()
             ? uf->return_list () : uf->parameter_list ();
 
           if (pl && pl->size () > 0)
@@ -1004,7 +1004,7 @@ public:
   ~octave_classdef_meta (void)
   { object.meta_release (); }
 
-  octave_function* function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
   subsref (const std::string& type,
@@ -1072,7 +1072,7 @@ public:
 
   ~octave_classdef_superclass_ref (void) = default;
 
-  octave_function* function_value (bool = false) { return this; }
+  octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
   subsref (const std::string& type,
@@ -2514,7 +2514,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 
 static octave_value
 compute_attribute_value (octave::tree_evaluator *tw,
-                         octave::tree_classdef_attribute* t)
+                         octave::tree_classdef_attribute *t)
 {
   octave::tree_expression *expr = t->expression ();
 
@@ -2540,7 +2540,7 @@ compute_attribute_value (octave::tree_evaluator *tw,
 
 template <typename T>
 static std::string
-attribute_value_to_string (T* t, octave_value v)
+attribute_value_to_string (T *t, octave_value v)
 {
   if (v.is_string ())
     return v.string_value ();
@@ -2552,7 +2552,7 @@ attribute_value_to_string (T* t, octave_value v)
 
 cdef_class
 cdef_class::make_meta_class (octave::tree_evaluator *tw,
-                             octave::tree_classdef* t, bool is_at_folder)
+                             octave::tree_classdef *t, bool is_at_folder)
 {
   cdef_class retval;
   std::string class_name, full_class_name;
@@ -2619,7 +2619,7 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
         }
     }
 
-  octave::tree_classdef_body* b = t->body ();
+  octave::tree_classdef_body *b = t->body ();
 
   if (b)
     {
@@ -2847,7 +2847,7 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
 octave_function*
 cdef_class::get_method_function (const std::string& /* nm */)
 {
-  octave_classdef_meta* p = new octave_classdef_meta (*this);
+  octave_classdef_meta *p = new octave_classdef_meta (*this);
 
   return p;
 }
@@ -3306,7 +3306,7 @@ cdef_package::cdef_package_rep::meta_subsref
 
         if (o.is_function ())
           {
-            octave_function* fcn = o.function_value ();
+            octave_function *fcn = o.function_value ();
 
             // NOTE: the case where the package query is the last
             // part of this subsref index is handled in the parse
@@ -3533,7 +3533,7 @@ install_classdef (octave::tree_evaluator *tw)
 
 //----------------------------------------------------------------------------
 
-cdef_manager* cdef_manager::instance = 0;
+cdef_manager *cdef_manager::instance = 0;
 
 void
 cdef_manager::create_instance (void)
@@ -3660,7 +3660,7 @@ cdef_manager::do_find_package (const std::string& name,
 octave_function*
 cdef_manager::do_find_package_symbol (const std::string& pack_name)
 {
-  octave_function* retval = 0;
+  octave_function *retval = 0;
 
   cdef_package pack = find_package (pack_name, false);
 

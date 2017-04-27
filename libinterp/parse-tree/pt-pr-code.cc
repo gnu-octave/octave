@@ -902,7 +902,7 @@ namespace octave
   void
   tree_print_code::visit_statement_list (tree_statement_list& lst)
   {
-    for (tree_statement* elt : lst)
+    for (tree_statement *elt : lst)
       {
         if (elt)
           elt->accept (*this);

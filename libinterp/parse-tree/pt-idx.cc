@@ -128,7 +128,7 @@ namespace octave
   bool
   tree_index_expression::has_magic_end (void) const
   {
-    for (const tree_argument_list* elt : args)
+    for (const tree_argument_list *elt : args)
       {
         if (elt && elt->has_magic_end ())
           return true;
@@ -396,7 +396,7 @@ namespace octave
 
     std::list<tree_argument_list *> new_args;
 
-    for (const tree_argument_list* elt : args)
+    for (const tree_argument_list *elt : args)
       new_args.push_back (elt ? elt->dup (scope, context) : 0);
 
     new_idx_expr->args = new_args;
@@ -407,7 +407,7 @@ namespace octave
 
     std::list<tree_expression *> new_dyn_field;
 
-    for (const tree_expression* elt : dyn_field)
+    for (const tree_expression *elt : dyn_field)
       new_dyn_field.push_back (elt ? elt->dup (scope, context) : 0);
 
     new_idx_expr->dyn_field = new_dyn_field;

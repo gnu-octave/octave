@@ -37,14 +37,14 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    ListBoxControl (const graphics_object& go, QListWidget* list);
+    ListBoxControl (const graphics_object& go, QListWidget *list);
     ~ListBoxControl (void);
 
-    static ListBoxControl* create (const graphics_object& go);
+    static ListBoxControl * create (const graphics_object& go);
 
   protected:
     void update (int pId);
-    bool eventFilter (QObject* watched, QEvent* e);
+    bool eventFilter (QObject *watched, QEvent *e);
     void sendSelectionChange ();
 
   private slots:

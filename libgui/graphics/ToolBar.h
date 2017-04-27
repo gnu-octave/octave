@@ -38,14 +38,14 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    ToolBar (const graphics_object& go, QToolBar* bar);
+    ToolBar (const graphics_object& go, QToolBar *bar);
     ~ToolBar (void);
 
-    static ToolBar* create (const graphics_object& go);
+    static ToolBar * create (const graphics_object& go);
 
-    Container* innerContainer (void) { return 0; }
+    Container * innerContainer (void) { return 0; }
 
-    bool eventFilter (QObject* watched, QEvent* event);
+    bool eventFilter (QObject *watched, QEvent *event);
 
   protected:
     void update (int pId);
@@ -55,8 +55,8 @@ namespace QtHandles
     void hideEmpty (void);
 
   private:
-    QAction* m_empty;
-    Figure* m_figure;
+    QAction *m_empty;
+    Figure *m_figure;
   };
 
 }

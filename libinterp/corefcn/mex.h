@@ -69,9 +69,9 @@ extern "C" {
 #endif
 
 #if defined (V4)
-void mexFunction (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]);
+void mexFunction (int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[]);
 #else
-void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[]);
+void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
 #endif
 
 /* V4 floating point routines renamed in V5.  */

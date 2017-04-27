@@ -55,7 +55,7 @@ namespace octave
     tree_index_expression (tree_expression *e, const std::string& n,
                            int l = -1, int c = -1);
 
-    tree_index_expression (tree_expression *e, tree_expression* df,
+    tree_index_expression (tree_expression *e, tree_expression *df,
                            int l = -1, int c = -1);
 
     // No copying!

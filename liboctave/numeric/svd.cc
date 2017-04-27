@@ -92,8 +92,8 @@ namespace octave
     template<>
     void
     svd<Matrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
-                        double* tmp_data, F77_INT m1, double* s_vec,
-                        double* u, double* vt, F77_INT nrow_vt1,
+                        double *tmp_data, F77_INT m1, double *s_vec,
+                        double *u, double *vt, F77_INT nrow_vt1,
                         std::vector<double>& work, F77_INT& lwork,
                         F77_INT& info)
     {
@@ -109,8 +109,8 @@ namespace octave
     template<>
     void
     svd<FloatMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
-                             float* tmp_data, F77_INT m1, float* s_vec,
-                             float* u, float* vt, F77_INT nrow_vt1,
+                             float *tmp_data, F77_INT m1, float *s_vec,
+                             float *u, float *vt, F77_INT nrow_vt1,
                              std::vector<float>& work, F77_INT& lwork,
                              F77_INT& info)
     {
@@ -126,8 +126,8 @@ namespace octave
     template<>
     void
     svd<ComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
-                               Complex* tmp_data, F77_INT m1, double* s_vec,
-                               Complex* u, Complex* vt, F77_INT nrow_vt1,
+                               Complex *tmp_data, F77_INT m1, double *s_vec,
+                               Complex *u, Complex *vt, F77_INT nrow_vt1,
                                std::vector<Complex>& work, F77_INT& lwork,
                                F77_INT& info)
     {
@@ -145,9 +145,9 @@ namespace octave
     template<>
     void
     svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m,
-                                    F77_INT n, FloatComplex* tmp_data,
-                                    F77_INT m1, float* s_vec, FloatComplex* u,
-                                    FloatComplex* vt, F77_INT nrow_vt1,
+                                    F77_INT n, FloatComplex *tmp_data,
+                                    F77_INT m1, float *s_vec, FloatComplex *u,
+                                    FloatComplex *vt, F77_INT nrow_vt1,
                                     std::vector<FloatComplex>& work,
                                     F77_INT& lwork, F77_INT& info)
     {
@@ -185,10 +185,10 @@ namespace octave
     // DGESDD
     template<>
     void
-    svd<Matrix>::gesdd (char& jobz, F77_INT m, F77_INT n, double* tmp_data,
-                        F77_INT m1, double* s_vec, double* u, double* vt,
+    svd<Matrix>::gesdd (char& jobz, F77_INT m, F77_INT n, double *tmp_data,
+                        F77_INT m1, double *s_vec, double *u, double *vt,
                         F77_INT nrow_vt1, std::vector<double>& work,
-                        F77_INT& lwork, F77_INT* iwork, F77_INT& info)
+                        F77_INT& lwork, F77_INT *iwork, F77_INT& info)
     {
       GESDD_REAL_STEP (dgesdd, DGESDD);
 
@@ -201,8 +201,8 @@ namespace octave
     // SGESDD
     template<>
     void
-    svd<FloatMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n, float* tmp_data,
-                             F77_INT m1, float* s_vec, float* u, float* vt,
+    svd<FloatMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n, float *tmp_data,
+                             F77_INT m1, float *s_vec, float *u, float *vt,
                              F77_INT nrow_vt1, std::vector<float>& work,
                              F77_INT& lwork, F77_INT* iwork, F77_INT& info)
     {
@@ -218,10 +218,10 @@ namespace octave
     template<>
     void
     svd<ComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
-                               Complex* tmp_data, F77_INT m1, double* s_vec,
-                               Complex* u, Complex* vt, F77_INT nrow_vt1,
+                               Complex *tmp_data, F77_INT m1, double *s_vec,
+                               Complex *u, Complex *vt, F77_INT nrow_vt1,
                                std::vector<Complex>& work, F77_INT& lwork,
-                               F77_INT* iwork, F77_INT& info)
+                               F77_INT *iwork, F77_INT& info)
     {
 
       F77_INT min_mn = std::min (m, n);
@@ -246,11 +246,11 @@ namespace octave
     template<>
     void
     svd<FloatComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
-                                    FloatComplex* tmp_data, F77_INT m1,
-                                    float* s_vec, FloatComplex* u,
-                                    FloatComplex* vt, F77_INT nrow_vt1,
+                                    FloatComplex *tmp_data, F77_INT m1,
+                                    float *s_vec, FloatComplex *u,
+                                    FloatComplex *vt, F77_INT nrow_vt1,
                                     std::vector<FloatComplex>& work,
-                                    F77_INT& lwork, F77_INT* iwork,
+                                    F77_INT& lwork, F77_INT *iwork,
                                     F77_INT& info)
     {
       F77_INT min_mn = std::min (m, n);
@@ -314,7 +314,7 @@ namespace octave
         }
 
       T atmp = a;
-      P* tmp_data = atmp.fortran_vec ();
+      P *tmp_data = atmp.fortran_vec ();
 
       F77_INT min_mn = m < n ? m : n;
 
@@ -354,15 +354,15 @@ namespace octave
       if (! (jobu == 'N' || jobu == 'O'))
         left_sm.resize (m, ncol_u);
 
-      P* u = left_sm.fortran_vec ();
+      P *u = left_sm.fortran_vec ();
 
       sigma.resize (nrow_s, ncol_s);
-      DM_P* s_vec = sigma.fortran_vec ();
+      DM_P *s_vec = sigma.fortran_vec ();
 
       if (! (jobv == 'N' || jobv == 'O'))
         right_sm.resize (nrow_vt, n);
 
-      P* vt = right_sm.fortran_vec ();
+      P *vt = right_sm.fortran_vec ();
 
       // Query _GESVD for the correct dimension of WORK.
 

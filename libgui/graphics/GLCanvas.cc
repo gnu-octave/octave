@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& gh)
+  GLCanvas::GLCanvas (QWidget *xparent, const graphics_handle& gh)
 #if defined (Q_OS_WIN32)
     : QGLWidget (QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel |
                             QGL::IndirectRendering),
@@ -153,44 +153,44 @@ namespace QtHandles
   }
 
   void
-  GLCanvas::mouseDoubleClickEvent (QMouseEvent* xevent)
+  GLCanvas::mouseDoubleClickEvent (QMouseEvent *xevent)
   {
     canvasMouseDoubleClickEvent (xevent);
   }
 
   void
-  GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
+  GLCanvas::mouseMoveEvent (QMouseEvent *xevent)
   {
     canvasMouseMoveEvent (xevent);
   }
 
   void
-  GLCanvas::mousePressEvent (QMouseEvent* xevent)
+  GLCanvas::mousePressEvent (QMouseEvent *xevent)
   {
     canvasMousePressEvent (xevent);
   }
 
   void
-  GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
+  GLCanvas::mouseReleaseEvent (QMouseEvent *xevent)
   {
     canvasMouseReleaseEvent (xevent);
   }
 
   void
-  GLCanvas::wheelEvent (QWheelEvent* xevent)
+  GLCanvas::wheelEvent (QWheelEvent *xevent)
   {
     canvasWheelEvent (xevent);
   }
 
   void
-  GLCanvas::keyPressEvent (QKeyEvent* xevent)
+  GLCanvas::keyPressEvent (QKeyEvent *xevent)
   {
     if (! canvasKeyPressEvent (xevent))
       QGLWidget::keyPressEvent (xevent);
   }
 
   void
-  GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
+  GLCanvas::keyReleaseEvent (QKeyEvent *xevent)
   {
     if (! canvasKeyReleaseEvent (xevent))
       QGLWidget::keyReleaseEvent (xevent);

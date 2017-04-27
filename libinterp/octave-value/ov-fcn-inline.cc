@@ -853,7 +853,7 @@ Note that @code{char (@var{fun})} is equivalent to
   if (args.length () != 1)
     print_usage ();
 
-  octave_fcn_inline* fn = args(0).fcn_inline_value (true);
+  octave_fcn_inline *fn = args(0).fcn_inline_value (true);
 
   if (! fn)
     error ("formula: FUN must be an inline function");
@@ -932,7 +932,7 @@ quadv (fcn, 0, 3)
     print_usage ();
 
   std::string old_func;
-  octave_fcn_inline* old = 0;
+  octave_fcn_inline *old = 0;
   bool func_is_string = true;
 
   if (args(0).is_string ())

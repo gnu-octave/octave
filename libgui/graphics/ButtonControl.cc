@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
+  ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton *btn)
     : BaseControl (go, btn), m_blockCallback (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
@@ -63,7 +63,7 @@ namespace QtHandles
   ButtonControl::update (int pId)
   {
     uicontrol::properties& up = properties<uicontrol> ();
-    QAbstractButton* btn = qWidget<QAbstractButton> ();
+    QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     switch (pId)
       {
@@ -92,9 +92,9 @@ namespace QtHandles
                     btn->setChecked (false);
                     if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
                       {
-                        Object* parent = Object::parentObject (gh_manager::get_object (
+                        Object *parent = Object::parentObject (gh_manager::get_object (
                             up.get___myhandle__ ()));
-                        ButtonGroup* btnGroup = dynamic_cast<ButtonGroup *>(parent);
+                        ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();
                       }
@@ -115,7 +115,7 @@ namespace QtHandles
   void
   ButtonControl::toggled (bool checked)
   {
-    QAbstractButton* btn = qWidget<QAbstractButton> ();
+    QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     if (! m_blockCallback && btn->isCheckable ())
       {
@@ -135,7 +135,7 @@ namespace QtHandles
   void
   ButtonControl::clicked (void)
   {
-    QAbstractButton* btn = qWidget<QAbstractButton> ();
+    QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     if (! btn->isCheckable ())
       gh_manager::post_callback (m_handle, "callback");

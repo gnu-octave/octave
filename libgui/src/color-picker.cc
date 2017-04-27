@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "color-picker.h"
 
 // constuctor with initial color as parameter
-color_picker::color_picker (QColor old_color, QWidget* p) : QPushButton (p)
+color_picker::color_picker (QColor old_color, QWidget *p) : QPushButton (p)
 {
   _color = old_color;
   setFlat (true);

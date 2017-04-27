@@ -424,8 +424,8 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
     {
       shortcut_t sc = _sc.at (i);
 
-      QTreeWidgetItem* section = _level_hash[sc.settings_key.section (':',0,0)];
-      QTreeWidgetItem* tree_item = new QTreeWidgetItem (section);
+      QTreeWidgetItem *section = _level_hash[sc.settings_key.section (':',0,0)];
+      QTreeWidgetItem *tree_item = new QTreeWidgetItem (section);
 
       // set a slightly transparent foreground for default columns
       QColor fg = QColor (tree_item->foreground (1).color ());
@@ -445,7 +445,7 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 
 // write one or all actual shortcut set(s) into a settings file
 void
-shortcut_manager::do_write_shortcuts (QSettings* settings,
+shortcut_manager::do_write_shortcuts (QSettings *settings,
                                       bool closing)
 {
   bool sc_ctrld = false;
@@ -472,7 +472,7 @@ shortcut_manager::do_write_shortcuts (QSettings* settings,
 }
 
 void
-shortcut_manager::do_set_shortcut (QAction* action, const QString& key)
+shortcut_manager::do_set_shortcut (QAction *action, const QString& key)
 {
   int index;
 
@@ -486,7 +486,7 @@ shortcut_manager::do_set_shortcut (QAction* action, const QString& key)
 }
 
 void
-shortcut_manager::handle_double_clicked (QTreeWidgetItem* item, int col)
+shortcut_manager::handle_double_clicked (QTreeWidgetItem *item, int col)
 {
   if (col != 2)
     return;
@@ -637,7 +637,7 @@ shortcut_manager::import_shortcuts (QSettings *settings)
       _sc.replace (i,sc);                   // replace the old with the new one
 
       // update the tree view
-      QTreeWidgetItem* tree_item = _index_item_hash[i]; // get related tree item
+      QTreeWidgetItem *tree_item = _index_item_hash[i]; // get related tree item
       tree_item->setText (2, sc.actual_sc.toString ()); // display new shortcut
     }
 }

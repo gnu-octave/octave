@@ -34,7 +34,7 @@ namespace QtHandles
 {
 
   template <typename T>
-  ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction* action)
+  ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction *action)
     : Object (go, action), m_separator (0)
   {
     typename T::properties& tp = properties<T> ();
@@ -51,7 +51,7 @@ namespace QtHandles
       }
     action->setEnabled (tp.is_enable ());
 
-    QWidget* w = qobject_cast<QWidget *> (action->parent ());
+    QWidget *w = qobject_cast<QWidget *> (action->parent ());
 
     w->insertAction (w->actions ().back (), action);
     if (m_separator)
@@ -67,7 +67,7 @@ namespace QtHandles
   ToolBarButton<T>::update (int pId)
   {
     typename T::properties& tp = properties<T> ();
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     switch (pId)
       {
@@ -98,7 +98,7 @@ namespace QtHandles
                 m_separator->setSeparator (true);
                 m_separator->setVisible (tp.is_visible ());
 
-                QWidget* w = qobject_cast<QWidget *> (action->parent ());
+                QWidget *w = qobject_cast<QWidget *> (action->parent ());
 
                 w->insertAction (action, m_separator);
               }

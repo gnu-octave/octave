@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename T>
 static bool
-str_data_cmp (const typename T::value_type* a, const typename T::value_type* b,
+str_data_cmp (const typename T::value_type *a, const typename T::value_type *b,
               const typename T::size_type n)
 {
   for (typename T::size_type i = 0; i < n; ++i)
@@ -45,7 +45,7 @@ str_data_cmp (const typename T::value_type* a, const typename T::value_type* b,
 
 template <typename T>
 static bool
-str_data_cmpi (const typename T::value_type* a, const typename T::value_type* b,
+str_data_cmpi (const typename T::value_type *a, const typename T::value_type *b,
                const typename T::size_type n)
 {
   for (typename T::size_type i = 0; i < n; ++i)
@@ -72,7 +72,7 @@ numel (const Array<char>& str)
 
 template <typename T>
 typename T::size_type
-strlen (const typename T::value_type* str)
+strlen (const typename T::value_type *str)
 {
   return std::strlen (str);
 }
@@ -93,14 +93,14 @@ sizes_cmp (const Array<char>& str_a, const Array<char>& str_b)
 
 template <typename T>
 bool
-sizes_cmp (const T& str_a, const typename T::value_type* str_b)
+sizes_cmp (const T& str_a, const typename T::value_type *str_b)
 {
   return str_a.size () == strlen<T> (str_b);
 }
 
 template <>
 bool
-sizes_cmp (const Array<char>& str_a, const char* str_b)
+sizes_cmp (const Array<char>& str_a, const char *str_b)
 {
   return (str_a.is_vector () && str_a.rows () == 1
           && str_a.numel () == strlen<Array<char>> (str_b));
@@ -117,7 +117,7 @@ octave::string::strcmp (const T& str_a, const T& str_b)
 
 template<typename T>
 bool
-octave::string::strcmp (const T& str_a, const typename T::value_type* str_b)
+octave::string::strcmp (const T& str_a, const typename T::value_type *str_b)
 {
   return (sizes_cmp (str_a, str_b)
           && str_data_cmp<T> (str_a.data (), str_b, numel (str_a)));
@@ -134,7 +134,7 @@ octave::string::strcmpi (const T& str_a, const T& str_b)
 
 template<typename T>
 bool
-octave::string::strcmpi (const T& str_a, const typename T::value_type* str_b)
+octave::string::strcmpi (const T& str_a, const typename T::value_type *str_b)
 {
   return (sizes_cmp (str_a, str_b)
           && str_data_cmpi<T> (str_a.data (), str_b, numel (str_a)));
@@ -152,7 +152,7 @@ octave::string::strncmp (const T& str_a, const T& str_b,
 
 template<typename T>
 bool
-octave::string::strncmp (const T& str_a, const typename T::value_type* str_b,
+octave::string::strncmp (const T& str_a, const typename T::value_type *str_b,
                          const typename T::size_type n)
 {
   return (numel (str_a) >= n && strlen<T> (str_b) >= n
@@ -171,7 +171,7 @@ octave::string::strncmpi (const T& str_a, const T& str_b,
 
 template<typename T>
 bool
-octave::string::strncmpi (const T& str_a, const typename T::value_type* str_b,
+octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
                           const typename T::size_type n)
 {
   return (numel (str_a) >= n && strlen<T> (str_b) >= n

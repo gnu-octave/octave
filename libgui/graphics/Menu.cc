@@ -60,11 +60,11 @@ namespace QtHandles
   Menu*
   Menu::create (const graphics_object& go)
   {
-    Object* parent_obj = Object::parentObject (go);
+    Object *parent_obj = Object::parentObject (go);
 
     if (parent_obj)
       {
-        QObject* qObj = parent_obj->qObject ();
+        QObject *qObj = parent_obj->qObject ();
 
         if (qObj)
           return new Menu (go, new QAction (qObj), parent_obj);
@@ -73,7 +73,7 @@ namespace QtHandles
     return 0;
   }
 
-  Menu::Menu (const graphics_object& go, QAction* action, Object* xparent)
+  Menu::Menu (const graphics_object& go, QAction *action, Object *xparent)
     : Object (go, action), m_parent (0), m_separator (0)
   {
     uimenu::properties& up = properties<uimenu> ();
@@ -97,7 +97,7 @@ namespace QtHandles
         m_separator->setVisible (up.is_visible ());
       }
 
-    MenuContainer* menuContainer = dynamic_cast<MenuContainer *> (xparent);
+    MenuContainer *menuContainer = dynamic_cast<MenuContainer *> (xparent);
 
     if (menuContainer)
       m_parent = menuContainer->menu ();
@@ -114,7 +114,7 @@ namespace QtHandles
 
             int count = 0;
 
-            foreach (QAction* a, m_parent->actions ())
+            foreach (QAction *a, m_parent->actions ())
               if (! a->isSeparator ())
                 count++;
 
@@ -125,9 +125,9 @@ namespace QtHandles
           {
 
             int count = 0;
-            QAction* before = 0;
+            QAction *before = 0;
 
-            foreach (QAction* a, m_parent->actions ())
+            foreach (QAction *a, m_parent->actions ())
               {
                 if (! a->isSeparator ())
                   {
@@ -162,7 +162,7 @@ namespace QtHandles
   Menu::update (int pId)
   {
     uimenu::properties& up = properties<uimenu> ();
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     switch (pId)
       {
@@ -226,13 +226,13 @@ namespace QtHandles
           m_parent->removeAction (action);
 
           int pos = static_cast<int> (up.get_position ());
-          QAction* before = 0;
+          QAction *before = 0;
 
           if (pos > 0)
             {
               int count = 0;
 
-              foreach (QAction* a, m_parent->actions ())
+              foreach (QAction *a, m_parent->actions ())
                 {
                   if (! a->isSeparator ())
                     {
@@ -264,8 +264,8 @@ namespace QtHandles
   QWidget*
   Menu::menu (void)
   {
-    QAction* action = qWidget<QAction> ();
-    QMenu* _menu = action->menu ();
+    QAction *action = qWidget<QAction> ();
+    QMenu *_menu = action->menu ();
 
     if (! _menu)
       {
@@ -282,7 +282,7 @@ namespace QtHandles
   void
   Menu::actionTriggered (void)
   {
-    QAction* action = qWidget<QAction> ();
+    QAction *action = qWidget<QAction> ();
 
     if (action->isCheckable ())
       action->setChecked (! action->isChecked ());
@@ -302,11 +302,11 @@ namespace QtHandles
       {
         double count = 1.0;
 
-        foreach (QAction* a, m_parent->actions ())
+        foreach (QAction *a, m_parent->actions ())
           {
             if (! a->isSeparator ())
               {
-                Object* aObj = Object::fromQObject (a);
+                Object *aObj = Object::fromQObject (a);
 
                 if (aObj)
                   {

@@ -140,7 +140,7 @@ gzfilebuf::close ()
   if (! this->is_open ())
     return 0;
   // Assume success
-  gzfilebuf* retval = this;
+  gzfilebuf *retval = this;
   // Attempt to sync and close gzipped file
   if (this->sync () == -1)
     retval = 0;
@@ -158,7 +158,7 @@ gzfilebuf::close ()
 
 // Convert int open mode to mode string
 bool
-gzfilebuf::open_mode (std::ios_base::openmode mode, char* c_mode) const
+gzfilebuf::open_mode (std::ios_base::openmode mode, char *c_mode) const
 {
   // FIXME: do we need testb?
   // bool testb = mode & std::ios_base::binary;
@@ -347,7 +347,7 @@ gzfilebuf::overflow (int_type c)
 
 // Assign new buffer
 std::streambuf*
-gzfilebuf::setbuf (char_type* p, std::streamsize n)
+gzfilebuf::setbuf (char_type *p, std::streamsize n)
 {
   // First make sure stuff is sync'ed, for safety
   if (this->sync () == -1)
@@ -520,7 +520,7 @@ gzifstream::gzifstream ()
 { this->init (&sb); }
 
 // Initialize stream buffer and open file
-gzifstream::gzifstream (const char* name, std::ios_base::openmode mode)
+gzifstream::gzifstream (const char *name, std::ios_base::openmode mode)
   : std::istream (0), sb ()
 {
   this->init (&sb);
@@ -537,7 +537,7 @@ gzifstream::gzifstream (int fd, std::ios_base::openmode mode)
 
 // Open file and go into fail() state if unsuccessful
 void
-gzifstream::open (const char* name, std::ios_base::openmode mode)
+gzifstream::open (const char *name, std::ios_base::openmode mode)
 {
   if (! sb.open (name, mode | std::ios_base::in))
     this->setstate (std::ios_base::failbit);
@@ -569,7 +569,7 @@ gzofstream::gzofstream ()
 { this->init (&sb); }
 
 // Initialize stream buffer and open file
-gzofstream::gzofstream (const char* name, std::ios_base::openmode mode)
+gzofstream::gzofstream (const char *name, std::ios_base::openmode mode)
   : std::ostream (0), sb ()
 {
   this->init (&sb);
@@ -586,7 +586,7 @@ gzofstream::gzofstream (int fd, std::ios_base::openmode mode)
 
 // Open file and go into fail() state if unsuccessful
 void
-gzofstream::open (const char* name, std::ios_base::openmode mode)
+gzofstream::open (const char *name, std::ios_base::openmode mode)
 {
   if (! sb.open (name, mode | std::ios_base::out))
     this->setstate (std::ios_base::failbit);

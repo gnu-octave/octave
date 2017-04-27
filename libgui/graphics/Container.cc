@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Container::Container (QWidget* xparent)
+  Container::Container (QWidget *xparent)
     : ContainerBase (xparent), m_canvas (0)
   {
     setFocusPolicy (Qt::ClickFocus);
@@ -61,7 +61,7 @@ namespace QtHandles
             m_canvas = Canvas::create (fig.get ("renderer").string_value (),
                                        this, gh);
 
-            QWidget* canvasWidget = m_canvas->qWidget ();
+            QWidget *canvasWidget = m_canvas->qWidget ();
 
             canvasWidget->lower ();
             canvasWidget->show ();
@@ -80,11 +80,11 @@ namespace QtHandles
 
     gh_manager::auto_lock lock;
 
-    foreach (QObject* qObj, children ())
+    foreach (QObject *qObj, children ())
       {
         if (qObj->isWidgetType ())
           {
-            Object* obj = Object::fromQObject (qObj);
+            Object *obj = Object::fromQObject (qObj);
 
             if (obj)
               {
@@ -104,7 +104,7 @@ namespace QtHandles
   }
 
   void
-  Container::childEvent (QChildEvent* xevent)
+  Container::childEvent (QChildEvent *xevent)
   {
     // Enable mouse tracking in child widgets as they are added if the
     // container also has mouse tracking enabled.  There is no need to

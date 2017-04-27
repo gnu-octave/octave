@@ -41,17 +41,17 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    ButtonGroup (const graphics_object& go, QButtonGroup* buttongroup,
-                 QFrame* frame);
+    ButtonGroup (const graphics_object& go, QButtonGroup *buttongroup,
+                 QFrame *frame);
     ~ButtonGroup (void);
 
-    Container* innerContainer (void) { return m_container; }
+    Container * innerContainer (void) { return m_container; }
 
-    bool eventFilter (QObject* watched, QEvent* event);
+    bool eventFilter (QObject *watched, QEvent *event);
 
-    static ButtonGroup* create (const graphics_object& go);
+    static ButtonGroup * create (const graphics_object& go);
 
-    void addButton (QAbstractButton* btn);
+    void addButton (QAbstractButton *btn);
 
     void selectNothing (void);
 
@@ -61,16 +61,16 @@ namespace QtHandles
 
   private slots:
     void buttonToggled (bool toggled);
-    void buttonClicked (QAbstractButton* btn);
+    void buttonClicked (QAbstractButton *btn);
 
   private:
     void updateLayout (void);
 
   private:
-    QButtonGroup* m_buttongroup;
-    QRadioButton* m_hiddenbutton;
-    Container* m_container;
-    QLabel* m_title;
+    QButtonGroup *m_buttongroup;
+    QRadioButton *m_hiddenbutton;
+    Container *m_container;
+    QLabel *m_title;
     bool m_blockUpdates;
   };
 

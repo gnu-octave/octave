@@ -103,7 +103,7 @@ To initialize:
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
 
-const char* help_text = "\
+const char *help_text = "\
 Keyboard Shortcuts\n\
 a - autoscale\n\
 p - pan/zoom\n\
@@ -299,7 +299,7 @@ private:
   }
 };
 
-void script_cb (Fl_Widget*, void* data)
+void script_cb (Fl_Widget *, void *data)
 {
   static_cast<uimenu::properties *> (data)->execute_callback ();
 }
@@ -452,7 +452,7 @@ public:
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
-        Fl_Menu_Item* item =
+        Fl_Menu_Item *item =
           const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
@@ -471,7 +471,7 @@ public:
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
-        Fl_Menu_Item* item
+        Fl_Menu_Item *item
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
@@ -489,7 +489,7 @@ public:
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
-        Fl_Menu_Item* item
+        Fl_Menu_Item *item
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
@@ -506,7 +506,7 @@ public:
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
-        Fl_Menu_Item* item
+        Fl_Menu_Item *item
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
@@ -534,7 +534,7 @@ public:
 
         for (idx = curr_idx - 1; idx >= 0; idx--)
           {
-            Fl_Menu_Item* item
+            Fl_Menu_Item *item
               = const_cast<Fl_Menu_Item *> (&m_menubar->menu () [idx]);
             itemflags = item->flags;
             if (item->label ())
@@ -559,7 +559,7 @@ public:
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
-        Fl_Menu_Item* item
+        Fl_Menu_Item *item
           = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
@@ -587,7 +587,7 @@ public:
         bool item_added = false;
         do
           {
-            const Fl_Menu_Item* item
+            const Fl_Menu_Item *item
               = m_menubar->find_item (fltk_label.c_str ());
 
             if (item)
@@ -759,7 +759,7 @@ public:
 
 private:
 
-  Fl_Menu_Bar* m_menubar;
+  Fl_Menu_Bar *m_menubar;
 };
 
 #if defined (HAVE_X_WINDOWS)
@@ -1075,18 +1075,18 @@ private:
   // Menu height
   static const int m_menu_h = 25;
 
-  fltk_uimenu* m_uimenu;
+  fltk_uimenu *m_uimenu;
 
-  OpenGL_fltk* m_canvas;
+  OpenGL_fltk *m_canvas;
 
-  Fl_Button* m_autoscale;
-  Fl_Button* m_togglegrid;
-  Fl_Button* m_panzoom;
-  Fl_Button* m_rotate;
-  Fl_Button* m_help;
-  Fl_Output* m_status;
+  Fl_Button *m_autoscale;
+  Fl_Button *m_togglegrid;
+  Fl_Button *m_panzoom;
+  Fl_Button *m_rotate;
+  Fl_Button *m_help;
+  Fl_Output *m_status;
 
-  Fl_Box* m_resize_dummy;
+  Fl_Box *m_resize_dummy;
 
   graphics_object m_ax_obj;
 
@@ -1094,7 +1094,7 @@ private:
   int m_pos_y;
 
   // Window callback.
-  static void window_close (Fl_Widget*, void* data)
+  static void window_close (Fl_Widget *, void *data)
   {
     octave_value_list args;
     args(0) = static_cast<plot_window *> (data)->number ();
@@ -1102,12 +1102,12 @@ private:
   }
 
   // Button callbacks.
-  static void button_callback (Fl_Widget* ww, void* data)
+  static void button_callback (Fl_Widget *ww, void *data)
   {
     static_cast<plot_window *> (data)->button_press (ww, data);
   }
 
-  void button_press (Fl_Widget* widg, void*)
+  void button_press (Fl_Widget *widg, void *)
   {
     if (widg == m_autoscale)
       axis_auto ();
@@ -1305,7 +1305,7 @@ private:
       return 0;
   }
 
-  octave_scalar_map format_key_event (int e_key, const char* e_text, int e_state)
+  octave_scalar_map format_key_event (int e_key, const char *e_text, int e_state)
   {
     octave_scalar_map evt;
 

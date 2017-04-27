@@ -2034,22 +2034,22 @@ public:
 
 #if 0
   const string_property& as_string_property (void) const
-  { return *(dynamic_cast<string_property*> (rep)); }
+  { return *(dynamic_cast<string_property *> (rep)); }
 
   const radio_property& as_radio_property (void) const
-  { return *(dynamic_cast<radio_property*> (rep)); }
+  { return *(dynamic_cast<radio_property *> (rep)); }
 
   const color_property& as_color_property (void) const
-  { return *(dynamic_cast<color_property*> (rep)); }
+  { return *(dynamic_cast<color_property *> (rep)); }
 
   const double_property& as_double_property (void) const
-  { return *(dynamic_cast<double_property*> (rep)); }
+  { return *(dynamic_cast<double_property *> (rep)); }
 
   const bool_property& as_bool_property (void) const
-  { return *(dynamic_cast<bool_property*> (rep)); }
+  { return *(dynamic_cast<bool_property *> (rep)); }
 
   const handle_property& as_handle_property (void) const
-  { return *(dynamic_cast<handle_property*> (rep)); }
+  { return *(dynamic_cast<handle_property *> (rep)); }
 #endif
 
 private:

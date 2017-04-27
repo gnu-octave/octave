@@ -184,7 +184,7 @@ namespace QtHandles
 
               case QEvent::MouseButtonPress:
                 {
-                  QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+                  QMouseEvent* m = dynamic_cast<QMouseEvent *> (xevent);
 
                   if (m->button () == Qt::RightButton)
                     {

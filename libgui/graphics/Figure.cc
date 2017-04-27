@@ -606,7 +606,7 @@ namespace QtHandles
   {
     gh_manager::auto_lock lock;
 
-    UpdateBoundingBoxData* d = reinterpret_cast<UpdateBoundingBoxData*> (data);
+    UpdateBoundingBoxData* d = reinterpret_cast<UpdateBoundingBoxData *> (data);
     graphics_object go = gh_manager::get_object (d->m_handle);
 
     if (go.valid_object ())
@@ -696,7 +696,7 @@ namespace QtHandles
                 break;
               case QEvent::ActionRemoved:
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
+                  QAction* a = dynamic_cast<QActionEvent *> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu")
@@ -740,7 +740,7 @@ namespace QtHandles
                 break;
 
               case QEvent::ChildAdded:
-                if (dynamic_cast<QChildEvent*> (xevent)->child
+                if (dynamic_cast<QChildEvent *> (xevent)->child
                     ()->isWidgetType())
                   {
                     gh_manager::auto_lock lock;
@@ -750,7 +750,7 @@ namespace QtHandles
                   }
 
               case QEvent::ChildRemoved:
-                if (dynamic_cast<QChildEvent*> (xevent)->child
+                if (dynamic_cast<QChildEvent *> (xevent)->child
                     ()->isWidgetType())
                   {
                     gh_manager::auto_lock lock;
@@ -768,7 +768,7 @@ namespace QtHandles
               case QEvent::ActionChanged:
                 // The menubar may have been resized if no action is visible
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
+                  QAction* a = dynamic_cast<QActionEvent *> (xevent)->action ();
                   if (m_menuBar->sizeHint ().height () != m_previousHeight
                       && a->objectName () != "builtinMenu"
                       && ! a->isSeparator ())
@@ -777,7 +777,7 @@ namespace QtHandles
                 break;
               case QEvent::ActionAdded:
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
+                  QAction* a = dynamic_cast<QActionEvent *> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu"

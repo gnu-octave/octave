@@ -207,7 +207,7 @@ namespace octave
       if (! p)
         return;
 
-      struct ::tm *t = static_cast<struct ::tm*> (p);
+      struct ::tm *t = static_cast<struct ::tm *> (p);
 
       m_sec = t->tm_sec;
       m_min = t->tm_min;

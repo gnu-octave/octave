@@ -217,7 +217,7 @@ namespace QtHandles
           {
             OCTAVE_INTPTR_TYPE ptr = ov.OCTAVE_PTR_SCALAR ().value ();
 
-            return reinterpret_cast<ObjectProxy*> (ptr);
+            return reinterpret_cast<ObjectProxy *> (ptr);
           }
       }
 

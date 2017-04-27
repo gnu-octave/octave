@@ -51,7 +51,7 @@ namespace QtHandles
       }
     action->setEnabled (tp.is_enable ());
 
-    QWidget* w = qobject_cast<QWidget*> (action->parent ());
+    QWidget* w = qobject_cast<QWidget *> (action->parent ());
 
     w->insertAction (w->actions ().back (), action);
     if (m_separator)
@@ -98,7 +98,7 @@ namespace QtHandles
                 m_separator->setSeparator (true);
                 m_separator->setVisible (tp.is_visible ());
 
-                QWidget* w = qobject_cast<QWidget*> (action->parent ());
+                QWidget* w = qobject_cast<QWidget *> (action->parent ());
 
                 w->insertAction (action, m_separator);
               }

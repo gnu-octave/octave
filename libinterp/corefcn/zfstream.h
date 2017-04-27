@@ -304,7 +304,7 @@ public:
   */
   gzfilebuf*
   rdbuf () const
-  { return const_cast<gzfilebuf*>(&sb); }
+  { return const_cast<gzfilebuf *>(&sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -391,7 +391,7 @@ public:
   */
   gzfilebuf*
   rdbuf () const
-  { return const_cast<gzfilebuf*>(&sb); }
+  { return const_cast<gzfilebuf *>(&sb); }
 
   /**
    *  @brief  Check if file is open.

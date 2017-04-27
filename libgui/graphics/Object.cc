@@ -178,7 +178,7 @@ namespace QtHandles
     QVariant v = obj->property ("QtHandles::Object");
 
     if (v.isValid ())
-      return reinterpret_cast<Object*> (qvariant_cast<void*> (v));
+      return reinterpret_cast<Object *> (qvariant_cast<void*> (v));
 
     return 0;
   }

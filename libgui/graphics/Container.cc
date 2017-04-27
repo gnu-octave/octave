@@ -116,7 +116,7 @@ namespace QtHandles
 
         if (obj && obj->isWidgetType ())
           {
-            QWidget *widget = qobject_cast<QWidget*> (obj);
+            QWidget *widget = qobject_cast<QWidget *> (obj);
 
             if (widget)
               widget->setMouseTracking (hasMouseTracking ());

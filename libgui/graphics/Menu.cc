@@ -97,7 +97,7 @@ namespace QtHandles
         m_separator->setVisible (up.is_visible ());
       }
 
-    MenuContainer* menuContainer = dynamic_cast<MenuContainer*> (xparent);
+    MenuContainer* menuContainer = dynamic_cast<MenuContainer *> (xparent);
 
     if (menuContainer)
       m_parent = menuContainer->menu ();

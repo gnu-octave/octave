@@ -563,7 +563,7 @@ namespace QtHandles
             // FIXME: should we use signal/slot mechanism instead of
             //        directly calling parent fig methods
             Figure* fig =
-              dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+              dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
             axes::properties& ap = Utils::properties<axes> (axesObj);
 
             if (fig)
@@ -649,7 +649,7 @@ namespace QtHandles
           Utils::properties<figure> (figObj).set_currentobject (
             octave::numeric_limits<double>::NaN ());
 
-        Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+        Figure* fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
         MouseMode newMouseMode = NoMode;
 
@@ -929,7 +929,7 @@ namespace QtHandles
 
             graphics_object figObj (obj.get_ancestor ("figure"));
 
-            Figure* fig = dynamic_cast<Figure*> (Backend::toolkitObject (figObj));
+            Figure* fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
             if (fig)
               newMouseMode = fig->mouseMode ();

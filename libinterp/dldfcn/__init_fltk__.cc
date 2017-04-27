@@ -301,7 +301,7 @@ private:
 
 void script_cb (Fl_Widget*, void* data)
 {
-  static_cast<uimenu::properties*> (data)->execute_callback ();
+  static_cast<uimenu::properties *> (data)->execute_callback ();
 }
 
 class fltk_uimenu
@@ -320,7 +320,7 @@ public:
     for (int t = 0; t < len; t++)
       {
         const Fl_Menu_Item *m
-          = static_cast<const Fl_Menu_Item*> (&(m_menubar->menu ()[t]));
+          = static_cast<const Fl_Menu_Item *> (&(m_menubar->menu ()[t]));
 
         if (m->label () && m->visible ())
           n++;
@@ -357,7 +357,7 @@ public:
     std::string menupath;
     for (int t = 0; t < m_menubar->size (); t++)
       {
-        Fl_Menu_Item *m = const_cast<Fl_Menu_Item*> (&(m_menubar->menu ()[t]));
+        Fl_Menu_Item *m = const_cast<Fl_Menu_Item *> (&(m_menubar->menu ()[t]));
         if (m->submenu ())
           {
             // item has submenu
@@ -453,7 +453,7 @@ public:
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item =
-          const_cast<Fl_Menu_Item*> (m_menubar->find_item (fltk_label.c_str ()));
+          const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
             std::string acc = uimenup.get_accelerator ();
@@ -472,14 +472,14 @@ public:
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
-          = const_cast<Fl_Menu_Item*> (m_menubar->find_item (fltk_label.c_str ()));
+          = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
             if (! uimenup.get_callback ().is_empty ())
-              item->callback (static_cast<Fl_Callback*> (script_cb),
-                              static_cast<void*> (&uimenup));
+              item->callback (static_cast<Fl_Callback *> (script_cb),
+                              static_cast<void *> (&uimenup));
             else
-              item->callback (0, static_cast<void*> (0));
+              item->callback (0, static_cast<void *> (0));
           }
       }
   }
@@ -490,7 +490,7 @@ public:
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
-          = const_cast<Fl_Menu_Item*> (m_menubar->find_item (fltk_label.c_str ()));
+          = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
             if (uimenup.is_enable ())
@@ -507,7 +507,7 @@ public:
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
-          = const_cast<Fl_Menu_Item*> (m_menubar->find_item (fltk_label.c_str ()));
+          = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
             Matrix rgb = uimenup.get_foregroundcolor_rgb ();
@@ -535,7 +535,7 @@ public:
         for (idx = curr_idx - 1; idx >= 0; idx--)
           {
             Fl_Menu_Item* item
-              = const_cast<Fl_Menu_Item*> (&m_menubar->menu () [idx]);
+              = const_cast<Fl_Menu_Item *> (&m_menubar->menu () [idx]);
             itemflags = item->flags;
             if (item->label ())
               break;
@@ -560,7 +560,7 @@ public:
     if (! fltk_label.empty ())
       {
         Fl_Menu_Item* item
-          = const_cast<Fl_Menu_Item*> (m_menubar->find_item (fltk_label.c_str ()));
+          = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
         if (item)
           {
             if (uimenup.is_visible ())
@@ -784,7 +784,7 @@ public:
       m_help (0), m_status (0), m_resize_dummy (0), m_ax_obj (),
       m_pos_x (0), m_pos_y (0)
   {
-    callback (window_close, static_cast<void*> (this));
+    callback (window_close, static_cast<void *> (this));
 
     // The size of the resize_dummy box also determines the minimum
     // window size.
@@ -821,23 +821,23 @@ public:
     m_status->box (FL_ENGRAVED_BOX);
 
     m_autoscale = new Fl_Button (0, toolbar_y, m_status_h, m_status_h, "A");
-    m_autoscale->callback (button_callback, static_cast<void*> (this));
+    m_autoscale->callback (button_callback, static_cast<void *> (this));
     m_autoscale->tooltip ("Autoscale");
 
     m_togglegrid = new Fl_Button (m_status_h, toolbar_y, m_status_h, m_status_h, "G");
-    m_togglegrid->callback (button_callback, static_cast<void*> (this));
+    m_togglegrid->callback (button_callback, static_cast<void *> (this));
     m_togglegrid->tooltip ("Toggle Grid");
 
     m_panzoom = new Fl_Button (2* m_status_h, toolbar_y, m_status_h, m_status_h, "P");
-    m_panzoom->callback (button_callback, static_cast<void*> (this));
+    m_panzoom->callback (button_callback, static_cast<void *> (this));
     m_panzoom->tooltip ("Mouse Pan/Zoom");
 
     m_rotate = new Fl_Button (3 * m_status_h, toolbar_y, m_status_h, m_status_h, "R");
-    m_rotate->callback (button_callback, static_cast<void*> (this));
+    m_rotate->callback (button_callback, static_cast<void *> (this));
     m_rotate->tooltip ("Mouse Rotate");
 
     m_help = new Fl_Button (4 * m_status_h, toolbar_y, m_status_h, m_status_h, "?");
-    m_help->callback (button_callback, static_cast<void*> (this));
+    m_help->callback (button_callback, static_cast<void *> (this));
     m_help->tooltip ("Help");
 
     end ();
@@ -1097,14 +1097,14 @@ private:
   static void window_close (Fl_Widget*, void* data)
   {
     octave_value_list args;
-    args(0) = static_cast<plot_window*> (data)->number ();
+    args(0) = static_cast<plot_window *> (data)->number ();
     octave::feval ("close", args);
   }
 
   // Button callbacks.
   static void button_callback (Fl_Widget* ww, void* data)
   {
-    static_cast<plot_window*> (data)->button_press (ww, data);
+    static_cast<plot_window *> (data)->button_press (ww, data);
   }
 
   void button_press (Fl_Widget* widg, void*)

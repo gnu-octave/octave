@@ -684,7 +684,7 @@ find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *end_line = 0)
   // or in the main function, which we check now.
   if (main_fcn->is_user_function ())
     {
-      int e = dynamic_cast<octave_user_function*> (main_fcn)->ending_line ();
+      int e = dynamic_cast<octave_user_function *> (main_fcn)->ending_line ();
       if (e >= lineno && e < earliest_end)
         retval = main_fcn;
 

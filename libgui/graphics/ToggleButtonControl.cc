@@ -55,7 +55,7 @@ namespace QtHandles
     : ButtonControl (go, btn)
   {
     Object* parent = Object::parentObject (go);
-    ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+    ButtonGroup* btnGroup = dynamic_cast<ButtonGroup *>(parent);
     if (btnGroup)
       btnGroup->addButton (btn);
 

@@ -91,7 +91,7 @@ namespace QtHandles
     m_empty = addEmptyAction (bar);
 
     m_figure =
-      dynamic_cast<Figure*> (Object::fromQObject (bar->parentWidget ()));
+      dynamic_cast<Figure *> (Object::fromQObject (bar->parentWidget ()));
 
     if (m_figure)
       m_figure->addCustomToolBar (bar, tp.is_visible ());
@@ -131,7 +131,7 @@ namespace QtHandles
           case QEvent::ActionAdded:
           case QEvent::ActionRemoved:
             {
-              QActionEvent* ae = dynamic_cast<QActionEvent*> (xevent);
+              QActionEvent* ae = dynamic_cast<QActionEvent *> (xevent);
               QToolBar* bar = qWidget<QToolBar> ();
 
               if (ae->action () != m_empty)

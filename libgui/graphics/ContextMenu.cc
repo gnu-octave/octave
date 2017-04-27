@@ -122,7 +122,7 @@ namespace QtHandles
         if (go.valid_object ())
           {
             ContextMenu* cMenu =
-              dynamic_cast<ContextMenu*> (Backend::toolkitObject (go));
+              dynamic_cast<ContextMenu *> (Backend::toolkitObject (go));
 
             if (cMenu)
               {

@@ -225,7 +225,7 @@ void
 webinfo::current_tab_changed (int index)
 {
   QVariant tab_data = _tab_bar->tabData (index);
-  _text_browser = static_cast<QTextBrowser*> (tab_data.value<void*> ());
+  _text_browser = static_cast<QTextBrowser *> (tab_data.value<void*> ());
 
   _stacked_widget->setCurrentIndex (_stacked_widget->indexOf (_text_browser));
 
@@ -255,7 +255,7 @@ webinfo::addNewTab (const QString& name)
   int nt = _tab_bar->addTab (name);
   _tab_bar->setCurrentIndex (nt);
   QVariant tab_data;
-  tab_data.setValue (static_cast<void*> (_text_browser));
+  tab_data.setValue (static_cast<void *> (_text_browser));
   _tab_bar->setTabData (nt, tab_data);
 
   connect (_tab_bar, SIGNAL (currentChanged (int)), this,
@@ -276,7 +276,7 @@ webinfo::close_tab (int index)
   if (_tab_bar->count () > 1)
     {
       QVariant tab_data = _tab_bar->tabData (index);
-      QWidget *w = static_cast<QWidget*> (tab_data.value<void*> ());
+      QWidget *w = static_cast<QWidget *> (tab_data.value<void*> ());
       _stacked_widget->removeWidget (w);
       delete w;
 

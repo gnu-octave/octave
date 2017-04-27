@@ -76,7 +76,7 @@ namespace QtHandles
       }
     else
       {
-        int i = m_actions.indexOf (qobject_cast<QAction*> (sender ()));
+        int i = m_actions.indexOf (qobject_cast<QAction *> (sender ()));
 
         if (i >= 0)
           {

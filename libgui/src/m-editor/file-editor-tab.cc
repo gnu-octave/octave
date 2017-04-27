@@ -2003,7 +2003,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
                                           QSizePolicy::Fixed), 1,5);
 
   // and add the extra grid layout to the dialog's layout
-  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
+  QGridLayout *dialog_layout = dynamic_cast<QGridLayout *> (fileDialog->layout ());
   dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
                                   1,dialog_layout->columnCount ());
 

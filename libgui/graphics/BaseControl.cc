@@ -195,7 +195,7 @@ namespace QtHandles
         {
           gh_manager::auto_lock lock;
 
-          QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+          QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
           graphics_object go = object ();
           uicontrol::properties& up = Utils::properties<uicontrol> (go);
           graphics_object fig = go.get_ancestor ("figure");
@@ -232,7 +232,7 @@ namespace QtHandles
           {
             gh_manager::auto_lock lock;
 
-            QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+            QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
             graphics_object go = object ();
             graphics_object fig = go.get_ancestor ("figure");
 
@@ -248,7 +248,7 @@ namespace QtHandles
             gh_manager::auto_lock lock;
 
             octave_scalar_map keyData =
-              Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent*> (xevent));
+              Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));
             graphics_object fig = object ().get_ancestor ("figure");
 
             gh_manager::post_set (fig.get_handle (), "currentcharacter",

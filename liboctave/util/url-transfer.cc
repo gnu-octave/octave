@@ -221,16 +221,16 @@ namespace octave
   static int
   write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
   {
-    std::ostream& stream = *(static_cast<std::ostream*> (streamp));
-    stream.write (static_cast<const char*> (buffer), size*nmemb);
+    std::ostream& stream = *(static_cast<std::ostream *> (streamp));
+    stream.write (static_cast<const char *> (buffer), size*nmemb);
     return (stream.fail () ? 0 : size * nmemb);
   }
 
   static int
   read_data (void *buffer, size_t size, size_t nmemb, void *streamp)
   {
-    std::istream& stream = *(static_cast<std::istream*> (streamp));
-    stream.read (static_cast<char*> (buffer), size*nmemb);
+    std::istream& stream = *(static_cast<std::istream *> (streamp));
+    stream.read (static_cast<char *> (buffer), size*nmemb);
     if (stream.eof ())
       return stream.gcount ();
     else
@@ -368,7 +368,7 @@ namespace octave
     {
       std::ostream& retval = *curr_ostream;
       curr_ostream = &os;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (curr_ostream));
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (curr_ostream));
       return retval;
     }
 
@@ -376,7 +376,7 @@ namespace octave
     {
       std::istream& retval = *curr_istream;
       curr_istream = &is;
-      SETOPTR (CURLOPT_READDATA, static_cast<void*> (curr_istream));
+      SETOPTR (CURLOPT_READDATA, static_cast<void *> (curr_istream));
       return retval;
     }
 
@@ -489,7 +489,7 @@ namespace octave
 
       std::ostringstream buf;
       url = "ftp://" + host_or_url + "/";
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (&buf));
       SETOPTR (CURLOPT_URL, url.c_str ());
       SETOPTR (CURLOPT_DIRLISTONLY, 1);
       SETOPTR (CURLOPT_NOBODY, 0);
@@ -500,7 +500,7 @@ namespace octave
 
       SETOPTR (CURLOPT_NOBODY, 1);
       url = "ftp://" + host_or_url;
-      SETOPTR (CURLOPT_WRITEDATA, static_cast<void*> (curr_ostream));
+      SETOPTR (CURLOPT_WRITEDATA, static_cast<void *> (curr_ostream));
       SETOPTR (CURLOPT_DIRLISTONLY, 0);
       SETOPTR (CURLOPT_URL, url.c_str ());
 
@@ -691,13 +691,13 @@ namespace octave
       SETOPT (CURLOPT_WRITEFUNCTION, write_data);
 
       // Set a pointer to our struct to pass to the callback.
-      SETOPT (CURLOPT_WRITEDATA, static_cast<void*> (&os));
+      SETOPT (CURLOPT_WRITEDATA, static_cast<void *> (&os));
 
       // Define our callback to get called when there's data to be read
       SETOPT (CURLOPT_READFUNCTION, read_data);
 
       // Set a pointer to our struct to pass to the callback.
-      SETOPT (CURLOPT_READDATA, static_cast<void*> (&is));
+      SETOPT (CURLOPT_READDATA, static_cast<void *> (&is));
 
       // Follow redirects.
       SETOPT (CURLOPT_FOLLOWLOCATION, true);

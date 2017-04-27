@@ -267,7 +267,7 @@ namespace octave
       uchar_array (const std::string& str)
       {
         p = new Bytef[str.length () +1];
-        std::strcpy (reinterpret_cast<char*> (p), str.c_str ());
+        std::strcpy (reinterpret_cast<char *> (p), str.c_str ());
       }
 
       uchar_array (const uchar_array&) = delete;

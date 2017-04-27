@@ -80,7 +80,7 @@ octave_base64_decode (const std::string& str)
     {
       octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
       retval.resize (dim_vector (1, len));
-      double *dout = reinterpret_cast<double*> (out);
+      double *dout = reinterpret_cast<double *> (out);
       std::copy (dout, dout + len, retval.fortran_vec ());
       ::free (out);
     }

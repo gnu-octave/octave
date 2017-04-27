@@ -230,7 +230,7 @@ namespace QtHandles
           {
             case QEvent::MouseButtonPress:
               {
-                QMouseEvent* m = dynamic_cast<QMouseEvent*> (e);
+                QMouseEvent* m = dynamic_cast<QMouseEvent *> (e);
 
                 if (m->button () & Qt::RightButton)
                   override_return = true;
@@ -244,7 +244,7 @@ namespace QtHandles
               }
             case QEvent::MouseButtonRelease:
               {
-                QMouseEvent* m = dynamic_cast<QMouseEvent*> (e);
+                QMouseEvent* m = dynamic_cast<QMouseEvent *> (e);
 
                 if (m->button () & Qt::RightButton)
                   override_return = true;

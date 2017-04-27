@@ -228,7 +228,7 @@ namespace octave
           FcPattern *pat = FcPatternCreate ();
 
           FcPatternAddString (pat, FC_FAMILY,
-                              (reinterpret_cast<const FcChar8*>
+                              (reinterpret_cast<const FcChar8 *>
                                (name == "*" ? "sans" : name.c_str ())));
 
           FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
@@ -250,7 +250,7 @@ namespace octave
                   unsigned char *tmp;
 
                   FcPatternGetString (match, FC_FILE, 0, &tmp);
-                  file = reinterpret_cast<char*> (tmp);
+                  file = reinterpret_cast<char *> (tmp);
                 }
               else
                 ::warning ("could not match any font: %s-%s-%s-%g",
@@ -302,7 +302,7 @@ namespace octave
     {
       if (face->generic.data)
         {
-          ft_key *pkey = reinterpret_cast<ft_key*> (face->generic.data);
+          ft_key *pkey = reinterpret_cast<ft_key *> (face->generic.data);
 
           cache.erase (*pkey);
           delete pkey;

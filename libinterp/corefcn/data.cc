@@ -7740,18 +7740,18 @@ Encode a double matrix or array @var{x} into the base64 format string
 
   if (args(0).is_integer_type ())
     {
-#define MAKE_INT_BRANCH(X)                                              \
-      if (args(0).is_ ## X ## _type ())                                 \
-        {                                                               \
-          const X##NDArray in = args(0).  X## _array_value ();          \
-          size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char); \
-          const char* inc = reinterpret_cast<const char*> (in.data ()); \
-          char* out;                                                    \
-          if (octave_base64_encode (inc, inlen, &out))                  \
-            {                                                           \
-              retval(0) = octave_value (out);                           \
-              ::free (out);                                             \
-            }                                                           \
+#define MAKE_INT_BRANCH(X)                                               \
+      if (args(0).is_ ## X ## _type ())                                  \
+        {                                                                \
+          const X##NDArray in = args(0).  X## _array_value ();           \
+          size_t inlen = in.numel () * sizeof (X## _t) / sizeof (char);  \
+          const char* inc = reinterpret_cast<const char *> (in.data ()); \
+          char* out;                                                     \
+          if (octave_base64_encode (inc, inlen, &out))                   \
+            {                                                            \
+              retval(0) = octave_value (out);                            \
+              ::free (out);                                              \
+            }                                                            \
         }
 
       MAKE_INT_BRANCH(int8)
@@ -7774,7 +7774,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       size_t inlen;
       inlen = in.numel () * sizeof (float) / sizeof (char);
       const char*  inc;
-      inc = reinterpret_cast<const char*> (in.data ());
+      inc = reinterpret_cast<const char *> (in.data ());
       char* out;
       if (octave_base64_encode (inc, inlen, &out))
         {
@@ -7788,7 +7788,7 @@ Encode a double matrix or array @var{x} into the base64 format string
       size_t inlen;
       inlen = in.numel () * sizeof (double) / sizeof (char);
       const char*  inc;
-      inc = reinterpret_cast<const char*> (in.data ());
+      inc = reinterpret_cast<const char *> (in.data ());
       char* out;
       if (octave_base64_encode (inc, inlen, &out))
         {

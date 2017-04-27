@@ -209,7 +209,7 @@ namespace QtHandles
 
               case QEvent::MouseButtonPress:
                 {
-                  QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+                  QMouseEvent* m = dynamic_cast<QMouseEvent *> (xevent);
 
                   if (m->button () == Qt::RightButton)
                     {
@@ -350,9 +350,9 @@ namespace QtHandles
           gh_manager::auto_lock lock;
           graphics_object go = gh_manager::get_object (h);
           Object* selectedObject = Backend::toolkitObject (go);
-          ToggleButtonControl* toggle = static_cast<ToggleButtonControl*>
+          ToggleButtonControl* toggle = static_cast<ToggleButtonControl *>
                                         (selectedObject);
-          RadioButtonControl* radio = static_cast<RadioButtonControl*>(selectedObject);
+          RadioButtonControl* radio = static_cast<RadioButtonControl *>(selectedObject);
           if (toggle)
             {
               go.get_properties ().set ("value", 1);

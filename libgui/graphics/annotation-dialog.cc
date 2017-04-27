@@ -265,7 +265,7 @@ annotation_dialog::edit_string_changed (const QString& str)
 void
 annotation_dialog::prompt_for_color ()
 {
-  QWidget *widg = dynamic_cast<QWidget*> (sender ());
+  QWidget *widg = dynamic_cast<QWidget *> (sender ());
   if (widg)
     {
       QColor color = widg->palette ().color (QPalette::Button);

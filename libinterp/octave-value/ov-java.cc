@@ -1133,7 +1133,7 @@ convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
   return retval;
 }
 
-#define TO_JAVA(obj) dynamic_cast<octave_java*> ((obj).internal_rep ())
+#define TO_JAVA(obj) dynamic_cast<octave_java *> ((obj).internal_rep ())
 
 //! Return whether @c jobj shall be automatically converted to an Octave
 //! numeric value.
@@ -1531,7 +1531,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
     { \
       const OCTAVE_T ## NDArray v = val.METHOD_T ## array_value (); \
       JAVA_T ## Array jarr = jni_env->New ## JAVA_T_CAP ## Array (v.numel ()); \
-      const JAVA_T *jv = reinterpret_cast<const JAVA_T*> (v.data ()); \
+      const JAVA_T *jv = reinterpret_cast<const JAVA_T *> (v.data ()); \
       jni_env->Set ## JAVA_T_CAP ## ArrayRegion (jarr, 0, v.numel (), jv); \
       jobj = reinterpret_cast<jobject> (jarr); \
       jcls = jni_env->GetObjectClass (jobj); \

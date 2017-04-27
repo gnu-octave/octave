@@ -71,7 +71,7 @@ namespace QtHandles
     virtual QObject* qObject (void) { return m_qobject; }
 
     template <typename T>
-    T* qWidget (void) { return qobject_cast<T*>(qObject ()); }
+    T* qWidget (void) { return qobject_cast<T *>(qObject ()); }
 
     virtual Container* innerContainer (void) = 0;
 

@@ -94,7 +94,7 @@ namespace QtHandles
                       {
                         Object* parent = Object::parentObject (gh_manager::get_object (
                             up.get___myhandle__ ()));
-                        ButtonGroup* btnGroup = dynamic_cast<ButtonGroup*>(parent);
+                        ButtonGroup* btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();
                       }

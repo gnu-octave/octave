@@ -180,7 +180,7 @@ instead.
       // Adapt code if this isn't always true
       assert (sizeof (GLubyte) == 1);
       uint8NDArray img (dv);
-      unsigned char *p = reinterpret_cast<unsigned char*>(img.fortran_vec ());
+      unsigned char *p = reinterpret_cast<unsigned char *>(img.fortran_vec ());
       memcpy (p, buffer, (4 * Width * Height));
 
       Array<octave_idx_type> perm (dim_vector (3, 1));

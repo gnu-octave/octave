@@ -90,6 +90,58 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
 
 template <typename T>
 octave_value_list
+find_nonzero_elem_idx (const DiagArray2<T>& v, int nargout,
+                       octave_idx_type n_to_find, int direction)
+{
+  octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
+
+  // get array with relevant elements (i.e., the matrix diagonal)
+  Array<T> nda = v.extract_diag ();
+
+  Array<octave_idx_type> idx;
+  if (n_to_find >= 0)
+    idx = nda.find (n_to_find, direction == -1);
+  else
+    idx = nda.find ();
+
+  // The maximum element is always at the end.
+  octave_idx_type iext = idx.isempty () ? 0 : idx.xelem (idx.numel () - 1) + 1;
+  switch (nargout)
+    {
+    default:
+    case 3:
+      retval(2) = Array<T> (nda.index (idx_vector (idx)));
+      OCTAVE_FALLTHROUGH;
+
+    case 2:
+      {
+        Array<octave_idx_type> jdx (idx.dims ());
+        octave_idx_type n = idx.numel ();
+        for (octave_idx_type i = 0; i < n; i++)
+          jdx.xelem(i) = idx.xelem(i);
+        iext = -1;
+        retval(1) = idx_vector (jdx, iext);
+        retval(0) = idx_vector (idx, iext);
+        break;
+      }
+
+    case 1:
+    case 0:
+      {
+        octave_idx_type n = idx.numel ();
+        octave_idx_type nr = v.rows ();
+        for (octave_idx_type i = 0; i < n; i++)
+          idx.xelem(i) = idx.xelem(i) * (nr + 1);
+        retval(0) = idx_vector (idx, iext);
+        break;
+      }
+    }
+
+  return retval;
+}
+
+template <typename T>
+octave_value_list
 find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
                        octave_idx_type n_to_find, int direction)
 {
@@ -509,6 +561,37 @@ b = sparse (i, j, v, sz(1), sz(2));
 
       retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
     }
+  else if (arg.is_diag_matrix ())
+    {
+      // diagonal logical matrices are handled above
+      if (arg.is_single_type ())
+        {
+          if (arg.isreal ())
+            {
+              FloatDiagMatrix D = arg.diag_matrix_value ();
+
+              retval = find_nonzero_elem_idx (D, nargout, n_to_find, direction);
+            }
+          else if (arg.iscomplex ())
+            {
+              FloatComplexDiagMatrix D = arg.complex_diag_matrix_value ();
+
+              retval = find_nonzero_elem_idx (D, nargout, n_to_find, direction);
+            }
+        }
+      else if (arg.isreal ())
+        {
+          DiagMatrix D = arg.diag_matrix_value ();
+
+          retval = find_nonzero_elem_idx (D, nargout, n_to_find, direction);
+        }
+      else if (arg.iscomplex ())
+        {
+          ComplexDiagMatrix D = arg.complex_diag_matrix_value ();
+
+          retval = find_nonzero_elem_idx (D, nargout, n_to_find, direction);
+        }
+    }
   else if (arg.is_string ())
     {
       charNDArray chnda = arg.char_array_value ();
@@ -553,6 +636,8 @@ b = sparse (i, j, v, sz(1), sz(2));
 %!assert (find ([1, 0, 1, 0, 1]), [1, 3, 5])
 %!assert (find ([1; 0; 3; 0; 1]), [1; 3; 5])
 %!assert (find ([0, 0, 2; 0, 3, 0; -1, 0, 0]), [3; 5; 7])
+%!assert (find (diag ([5, 0, 4, 0, 2])), [1; 13; 25])
+%!assert (find (diag ([5, 0, 4, 0, 2], 7, 6)), [1; 17; 33])
 
 %!assert <*53603> (find (ones (1,1,2) > 0), [1;2])
 %!assert <*53603> (find (ones (1,1,1,3) > 0), [1;2;3])
@@ -592,6 +677,21 @@ b = sparse (i, j, v, sz(1), sz(2));
 %! assert (i, ifull);
 %! assert (j, jfull);
 %! assert (all (v == 1));
+
+%!test
+%! D = diag ([5, 0, 4, 0, 2]);
+%! [i, j] = find (D);
+%! [ifull, jfull] = find (full (D));
+%! assert (i, ifull);
+%! assert (j, jfull);
+
+%!test
+%! D = diag ([5, 0, 4, 0, 2], 6, 5);
+%! [i, j, v] = find (D);
+%! [ifull, jfull, vfull] = find (full (D));
+%! assert (i, ifull);
+%! assert (j, jfull);
+%! assert (v, vfull);
 
 %!test <*61986>
 %! P = cat (3, eye(3), eye(3));

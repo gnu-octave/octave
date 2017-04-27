@@ -1143,7 +1143,7 @@ octave_class::save_ascii (std::ostream& os)
   os << "# classname: " << class_name () << "\n";
   octave_map m;
 
-  load_path& lp = octave::__get_load_path__ ("octave_class::save_ascii");
+  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_ascii");
 
   if (lp.find_method (class_name (), "saveobj") != "")
     {
@@ -1217,7 +1217,7 @@ octave_class::load_ascii (std::istream& is)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      load_path& lp = octave::__get_load_path__ ("octave_class::load_ascii");
+      octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_ascii");
 
       if (lp.find_method (classname, "loadobj") != "")
         {
@@ -1248,7 +1248,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 
   octave_map m;
 
-  load_path& lp = octave::__get_load_path__ ("octave_class::save_binary");
+  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_binary");
 
   if (lp.find_method (class_name (), "saveobj") != "")
     {
@@ -1337,7 +1337,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
 
-          load_path& lp = octave::__get_load_path__ ("octave_class::load_binary");
+          octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_binary");
 
           if (lp.find_method (c_name, "loadobj") != "")
             {
@@ -1376,7 +1376,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   octave_map m;
   octave_map::iterator i;
 
-  load_path& lp = octave::__get_load_path__ ("octave_class::save_hdf5");
+  octave::load_path& lp = octave::__get_load_path__ ("octave_class::save_hdf5");
 
 #if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
@@ -1586,7 +1586,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      load_path& lp = octave::__get_load_path__ ("octave_class::load_hdf5");
+      octave::load_path& lp = octave::__get_load_path__ ("octave_class::load_hdf5");
 
       if (lp.find_method (c_name, "loadobj") != "")
         {
@@ -1926,7 +1926,7 @@ Return true if the string @var{method} is a valid method of the object
 
   std::string method = args(1).string_value ();
 
-  load_path& lp = octave::__get_load_path__ ("ismethod");
+  octave::load_path& lp = octave::__get_load_path__ ("ismethod");
 
   if (lp.find_method (class_name, method) != "")
     return ovl (true);
@@ -1954,7 +1954,7 @@ Implements @code{methods} for Octave class objects and classnames.
   else if (arg.is_string ())
     class_name = arg.string_value ();
 
-  load_path& lp = octave::__get_load_path__ ("__methods__");
+  octave::load_path& lp = octave::__get_load_path__ ("__methods__");
 
   string_vector sv = lp.methods (class_name);
 

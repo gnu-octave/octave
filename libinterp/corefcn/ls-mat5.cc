@@ -906,7 +906,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         names.push_back (fname + ".mex");
                         names.push_back (fname + ".m");
 
-                        load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
 
                         octave::directory_path p (lp.system_path ());
 
@@ -1208,7 +1208,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     tc = cls;
 
-                    load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+                    octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
 
                     if (lp.find_method (classname, "loadobj") != "")
                       {
@@ -2605,7 +2605,7 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+      octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
 
       if (tc.is_object ()
           && lp.find_method (tc.class_name (), "saveobj") != "")

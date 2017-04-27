@@ -298,7 +298,7 @@ set_image_path (const std::string& path)
   if (! tpath.empty ())
     VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;
 
-  tpath = genpath (Vimage_dir, "");
+  tpath = octave::genpath (Vimage_dir, "");
 
   if (! tpath.empty ())
     VIMAGE_PATH += octave::directory_path::path_sep_str () + tpath;

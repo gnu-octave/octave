@@ -265,7 +265,7 @@ out_of_date_check (octave_value& function,
 
                           if (! dispatch_type.empty ())
                             {
-                              load_path& lp = octave::__get_load_path__ ("out_of_date_check");
+                              octave::load_path& lp = octave::__get_load_path__ ("out_of_date_check");
 
                               file = lp.find_method (dispatch_type, nm,
                                                      dir_name, pack);
@@ -304,7 +304,7 @@ out_of_date_check (octave_value& function,
 
                           if (file.empty ())
                             {
-                              load_path& lp = octave::__get_load_path__ ("out_of_date_check");
+                              octave::load_path& lp = octave::__get_load_path__ ("out_of_date_check");
                               file = lp.find_fcn (nm, dir_name, pack);
                             }
                         }
@@ -392,7 +392,7 @@ symbol_table::fcn_info::fcn_info_rep::load_private_function
 {
   octave_value retval;
 
-  load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_private_function");
+  octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_private_function");
 
   std::string file_name = lp.find_private_fcn (dir_name, name);
 
@@ -432,7 +432,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 
   std::string dir_name;
 
-  load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_constructor");
+  octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_constructor");
 
   std::string file_name = lp.find_method (name, name, dir_name, package_name);
 
@@ -500,7 +500,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
         {
           std::string dir_name;
 
-          load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
+          octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::load_class_method");
 
           std::string file_name = lp.find_method (dispatch_type, name,
                                                   dir_name);
@@ -702,7 +702,7 @@ symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
       // the last prompt or chdir, so try updating the load path and
       // searching again.
 
-      load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find");
+      octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find");
 
       lp.update ();
 
@@ -904,7 +904,7 @@ symbol_table::fcn_info::fcn_info_rep::builtin_find (void)
       // the last prompt or chdir, so try updating the load path and
       // searching again.
 
-      load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::builtin_find");
+      octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::builtin_find");
 
       lp.update ();
 
@@ -1104,7 +1104,7 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
     {
       std::string dir_name;
 
-      load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find_user_function");
+      octave::load_path& lp = octave::__get_load_path__ ("symbol_table::fcn_info::fcn_info_rep::find_user_function");
 
 
       std::string file_name = lp.find_fcn (name, dir_name, package_name);

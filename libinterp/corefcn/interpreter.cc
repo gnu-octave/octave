@@ -343,7 +343,7 @@ execute_pkg_add (const std::string& dir)
 {
   std::string file_name = octave::sys::file_ops::concat (dir, "PKG_ADD");
 
-  load_path& lp = octave::__get_load_path__ ("execute_pkg_add");
+  octave::load_path& lp = octave::__get_load_path__ ("execute_pkg_add");
 
   try
     {

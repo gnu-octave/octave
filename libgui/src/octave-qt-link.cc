@@ -564,7 +564,7 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
     ok = true;
   else
     {
-      load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
+      octave::load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
 
       bool dir_in_load_path = lp.contains_canonical (dir);
 
@@ -610,7 +610,7 @@ octave_qt_link::file_in_path (const std::string& file, const std::string& dir)
 
         case 2:
           {
-            load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
+            octave::load_path& lp = octave::__get_load_path__ ("octave_qt_link::file_in_path");
 
             lp.prepend (dir);
             ok = true;

@@ -83,7 +83,7 @@ octave_change_to_directory (const std::string& newdir)
   // FIXME: should these actions be handled as a list of functions
   // to call so users can add their own chdir handlers?
 
-  load_path& lp = octave::__get_load_path__ ("octave_change_to_directory");
+  octave::load_path& lp = octave::__get_load_path__ ("octave_change_to_directory");
 
   lp.update ();
 

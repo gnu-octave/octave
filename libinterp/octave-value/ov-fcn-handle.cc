@@ -298,7 +298,7 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
           names.push_back (nm + ".mex");
           names.push_back (nm + ".m");
 
-          load_path& lp = octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
+          octave::load_path& lp = octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
 
           octave::directory_path p (lp.system_path ());
 
@@ -1587,7 +1587,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
     }
   else
     {
-      load_path& lp = octave::__get_load_path__ ("make_fcn_handle");
+      octave::load_path& lp = octave::__get_load_path__ ("make_fcn_handle");
 
       // Globally visible (or no match yet).  Query overloads.
       std::list<std::string> classes = lp.overloads (tnm);

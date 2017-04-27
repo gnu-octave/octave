@@ -2633,7 +2633,8 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
 
       std::list<octave::tree_classdef_methods_block *> mb_list = b->methods_list ();
 
-      load_path& lp = octave::__get_load_path__ ("cdef_class::make_meta_class");
+      octave::load_path& lp
+        = octave::__get_load_path__ ("cdef_class::make_meta_class");
 
       for (auto& mb_p : mb_list)
         {
@@ -2982,7 +2983,8 @@ cdef_method::cdef_method_rep::check_method (void)
     {
       if (is_dummy_method (function))
         {
-          load_path& lp = octave::__get_load_path__ ("cdef_method::cdef_method_rep::check_method");
+          octave::load_path& lp
+            = octave::__get_load_path__ ("cdef_method::cdef_method_rep::check_method");
 
           std::string name = get_name ();
           std::string cls_name = dispatch_type;
@@ -3195,7 +3197,7 @@ package_getAllPackages (const octave_value_list& /* args */, int /* nargout */)
 {
   std::map<std::string, cdef_package> toplevel_packages;
 
-  load_path& lp = octave::__get_load_path__ ("package_getAllPackages");
+  octave::load_path& lp = octave::__get_load_path__ ("package_getAllPackages");
 
   std::list<std::string> names = lp.get_all_package_names ();
 
@@ -3632,7 +3634,8 @@ cdef_manager::do_find_package (const std::string& name,
     }
   else
     {
-      load_path& lp = octave::__get_load_path__ ("cdef_manager::do_find_package");
+      octave::load_path& lp
+        = octave::__get_load_path__ ("cdef_manager::do_find_package");
 
       if (load_if_not_found && lp.find_package (name))
         {

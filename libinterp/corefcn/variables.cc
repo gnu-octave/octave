@@ -428,7 +428,7 @@ symbol_exist (const std::string& name, const std::string& type = "any")
 
       if (file_name.empty ())
         {
-          load_path& lp = octave::__get_load_path__ ("symbol_exist");
+          octave::load_path& lp = octave::__get_load_path__ ("symbol_exist");
 
           file_name = lp.find_fcn (name);
         }

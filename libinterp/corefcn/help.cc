@@ -193,7 +193,7 @@ make_name_list (void)
   const string_vector lcl = symbol_table::variable_names ();
   const int lcl_len = lcl.numel ();
 
-  load_path& lp = octave::__get_load_path__ ("make_name_list");
+  octave::load_path& lp = octave::__get_load_path__ ("make_name_list");
 
   const string_vector ffl = lp.fcn_names ();
   const int ffl_len = ffl.numel ();
@@ -734,7 +734,7 @@ do_which (const std::string& name, std::string& type)
         {
           // We might find a file that contains only a doc string.
 
-          load_path& lp = octave::__get_load_path__ ("do_which");
+          octave::load_path& lp = octave::__get_load_path__ ("do_which");
 
           file = lp.find_fcn_file (name);
         }
@@ -743,7 +743,7 @@ do_which (const std::string& name, std::string& type)
     {
       // File query.
 
-      load_path& lp = octave::__get_load_path__ ("do_which");
+      octave::load_path& lp = octave::__get_load_path__ ("do_which");
 
       // For compatibility: "file." queries "file".
       if (name.size () > 1 && name[name.size () - 1] == '.')
@@ -844,7 +844,7 @@ in that directory.
 {
   octave_value retval;
 
-  load_path& lp = octave::__get_load_path__ ("__list_functions__");
+  octave::load_path& lp = octave::__get_load_path__ ("__list_functions__");
 
   if (args.length () == 0)
     {

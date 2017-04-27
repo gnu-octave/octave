@@ -110,7 +110,7 @@ ddaspk_psol (const F77_INT&, const double&, const double *,
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  abort ();
+  (*current_liboctave_error_handler) ("daspk: PSOL is not implemented");
 
   END_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -360,7 +360,8 @@ DASPK::do_integrate (double tout)
                   else if (eiq == 1 || eiq == 3)
                     lid = 40 + n;
                   else
-                    abort ();
+                    (*current_liboctave_error_handler)
+                      ("daspk: invalid value for eiq: %d", eiq);
 
                   for (F77_INT i = 0; i < n; i++)
                     iwork(lid+i) = av(i) ? -1 : 1;
@@ -404,7 +405,8 @@ DASPK::do_integrate (double tout)
               else if (eiq == 1 || eiq == 3)
                 lid = 40 + n;
               else
-                abort ();
+                (*current_liboctave_error_handler)
+                  ("daspk: invalid value for eiq: %d", eiq);
 
               for (F77_INT i = 0; i < n; i++)
                 iwork(lid+i) = av(i) ? -1 : 1;

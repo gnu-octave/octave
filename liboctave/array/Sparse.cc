@@ -2250,7 +2250,8 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   else if (mode == DESCENDING)
     lsort.set_compare (sparse_descending_compare<T>);
   else
-    abort ();
+    (*current_liboctave_error_handler)
+      ("Sparse<T>::sort: invalid MODE");
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();
@@ -2319,7 +2320,8 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   else if (mode == DESCENDING)
     indexed_sort.set_compare (sparse_descending_compare<T>);
   else
-    abort ();
+    (*current_liboctave_error_handler)
+      ("Sparse<T>::sort: invalid MODE");
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();

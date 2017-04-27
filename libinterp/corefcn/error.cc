@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cstdarg>
+#include <cstdlib>
 #include <cstring>
 
 #include <iomanip>

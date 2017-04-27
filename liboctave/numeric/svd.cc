@@ -387,7 +387,7 @@ namespace octave
                  work, lwork, iwork.data (), info);
         }
       else
-        abort ();
+        (*current_liboctave_error_handler) ("svd: unknown driver");
 
       if (! (jobv == 'N' || jobv == 'O'))
         right_sm = right_sm.hermitian ();

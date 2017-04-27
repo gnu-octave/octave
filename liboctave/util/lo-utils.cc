@@ -248,7 +248,7 @@ read_inf_nan_na (std::istream& is, char c0)
       break;
 
     default:
-      abort ();
+      (*current_liboctave_error_handler) ("read_inf_nan_na: invalid character '%c'");
     }
 
   return val;

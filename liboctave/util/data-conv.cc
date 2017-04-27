@@ -272,7 +272,8 @@ oct_data_conv::data_type_size (data_type dt)
 
     case oct_data_conv::dt_unknown:
     default:
-      abort ();
+      (*current_liboctave_error_handler)
+        ("oct_data_conv::data_type_size: unknown data type");
       break;
     }
 

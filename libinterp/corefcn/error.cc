@@ -329,7 +329,7 @@ pr_where (std::ostream& os, const char *who)
     pr_where (os, who, frames);
 }
 
-static octave::execution_exception
+octave::execution_exception
 make_execution_exception (const char *who)
 {
   std::ostringstream buf;

@@ -11745,8 +11745,7 @@ static void
 cleanup_waitfor_predelete_listener (const octave_value& listener)
 { do_cleanup_waitfor_listener (listener, PREDELETE); }
 
-static octave_value_list
-waitfor_listener (const octave_value_list& args, int)
+DECLARE_STATIC_FUNX (waitfor_listener, args, )
 {
   if (args.length () > 3)
     {
@@ -11778,8 +11777,7 @@ waitfor_listener (const octave_value_list& args, int)
   return ovl ();
 }
 
-static octave_value_list
-waitfor_del_listener (const octave_value_list& args, int)
+DECLARE_STATIC_FUNX (waitfor_del_listener, args, )
 {
   if (args.length () > 2)
     {

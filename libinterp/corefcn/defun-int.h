@@ -111,6 +111,13 @@ defun_isargout (int, int, bool *);
 #define DECLARE_FUN(name, args_name, nargout_name)      \
   DECLARE_FUNX (F ## name, args_name, nargout_name)
 
+#define DECLARE_STATIC_FUNX(name, args_name, nargout_name)      \
+  static octave_value_list                                      \
+  name (const octave_value_list& args_name, int nargout_name)
+
+#define DECLARE_STATIC_FUN(name, args_name, nargout_name)       \
+  DECLARE_FUNX (F ## name, args_name, nargout_name)
+
 // Define the code that will be used to insert the new function into
 // the symbol table.  We look for this name instead of the actual
 // function so that we can easily install the doc std::string too.

@@ -231,19 +231,4 @@ sparse matrix if possible.
 
 */
 
-// FIXME: this should really be done with an alias, but
-// alias_builtin() won't do the right thing if we are actually using
-// dynamic linking.
-
-DEFUN (inverse, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} inverse (@var{A})
-@deftypefnx {} {[@var{x}, @var{rcond}] =} inverse (@var{A})
-Compute the inverse of the square matrix @var{A}.
-
-This is an alias for @code{inv}.
-@seealso{inv}
-@end deftypefn */)
-{
-  return Finv (args, nargout);
-}
+DEFALIAS (inverse, inv);

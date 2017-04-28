@@ -83,7 +83,7 @@ namespace octave
     {
       tw.visit_simple_assignment (*this);
     }
-    
+
     octave_value::assign_op op_type (void) const { return etype; }
 
   private:

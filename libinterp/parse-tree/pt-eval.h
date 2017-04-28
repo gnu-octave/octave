@@ -79,7 +79,7 @@ namespace octave
         while (! m_stack.empty ())
           m_stack.pop ();
       }
-      
+
     private:
 
       std::stack<T> m_stack;

@@ -300,7 +300,7 @@ namespace octave
 
             if (b.is_defined ())
               {
-                octave_value::binary_op etype = expr.op_type ();                
+                octave_value::binary_op etype = expr.op_type ();
 
                 val = ::do_binary_op (etype, a, b);
               }
@@ -1130,7 +1130,7 @@ namespace octave
     octave_value_list retval;
 
     int nargout = m_nargout_stack.top ();
-    
+
     octave_value first_expr_val;
 
     octave_value_list first_args;
@@ -1314,7 +1314,7 @@ namespace octave
 
     m_value_stack.push (retval);
   }
-  
+
   void
   tree_evaluator::visit_matrix (tree_matrix& expr)
   {

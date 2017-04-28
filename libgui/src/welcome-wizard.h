@@ -36,7 +36,7 @@ public:
 
   typedef QWidget *(*page_creator_fptr) (welcome_wizard *wizard);
 
-  welcome_wizard (QWidget *parent = 0);
+  welcome_wizard (QWidget *parent = nullptr);
 
   ~welcome_wizard (void) = default;
 

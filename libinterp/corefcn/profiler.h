@@ -158,7 +158,7 @@ private:
     // Get the hierarchical profile for this node and its children.  If total
     // is set, accumulate total time of the subtree in that variable as
     // additional return value.
-    octave_value get_hierarchical (double *total = 0) const;
+    octave_value get_hierarchical (double *total = nullptr) const;
 
   private:
 

@@ -275,7 +275,7 @@ ch_manager::do_free (const curl_handle& h)
     }
 }
 
-ch_manager *ch_manager::instance = 0;
+ch_manager *ch_manager::instance = nullptr;
 
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-

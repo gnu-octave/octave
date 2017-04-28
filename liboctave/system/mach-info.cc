@@ -36,7 +36,7 @@ extern "C"
 
 namespace octave
 {
-  mach_info *mach_info::instance = 0;
+  mach_info *mach_info::instance = nullptr;
 
   union equiv
   {

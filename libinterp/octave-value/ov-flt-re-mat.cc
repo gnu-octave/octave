@@ -88,7 +88,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
 octave_base_value *
 octave_float_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.numel () == 1)
     retval = new octave_float_scalar (matrix (0));

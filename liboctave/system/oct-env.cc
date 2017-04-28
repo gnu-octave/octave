@@ -75,7 +75,7 @@ namespace octave
       do_get_host_name ();
     }
 
-    env *env::instance = 0;
+    env *env::instance = nullptr;
 
     bool
     env::instance_ok (void)

@@ -895,7 +895,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       // Compute all of them and backtransform
       char howmany = 'B';
       // Dummy pointer; select is not used.
-      F77_INT *select = 0;
+      F77_INT *select = nullptr;
 
       if (complex_case)
         {

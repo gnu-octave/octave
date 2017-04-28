@@ -45,12 +45,12 @@ namespace octave
     tree_if_clause (int l = -1, int c = -1)
       : tree (l, c), expr (0), list (0), lead_comm (0) { }
 
-    tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = 0,
+    tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = nullptr,
                     int l = -1, int c = -1)
       : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
 
     tree_if_clause (tree_expression *e, tree_statement_list *sl,
-                    octave_comment_list *lc = 0,
+                    octave_comment_list *lc = nullptr,
                     int l = -1, int c = -1)
       : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
 
@@ -177,12 +177,12 @@ namespace octave
     tree_switch_case (int l = -1, int c = -1)
       : tree (l, c), label (0), list (0), lead_comm (0) { }
 
-    tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = 0,
+    tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = nullptr,
                       int l = -1, int c = -1)
       : tree (l, c), label (0), list (sl), lead_comm (lc) { }
 
     tree_switch_case (tree_expression *e, tree_statement_list *sl,
-                      octave_comment_list *lc = 0,
+                      octave_comment_list *lc = nullptr,
                       int l = -1, int c = -1)
       : tree (l, c), label (e), list (sl), lead_comm (lc) { }
 

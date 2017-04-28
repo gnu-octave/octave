@@ -144,7 +144,7 @@ typecast (@var{x}, "uint8")
 
   octave::unwind_protect frame;
 
-  const void *data = 0;
+  const void *data = nullptr;
   octave_idx_type byte_size = 0;
   dim_vector old_dims;
 

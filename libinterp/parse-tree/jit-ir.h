@@ -318,7 +318,7 @@ public:
 
   std::list<jit_block *> user_parent_location (void) const;
 
-  void stash_value (jit_value *avalue, jit_instruction *auser = 0,
+  void stash_value (jit_value *avalue, jit_instruction *auser = nullptr,
                     size_t aindex = -1)
   {
     PARENT_T::stash_value (avalue);
@@ -421,7 +421,7 @@ public:
     return marguments.size ();
   }
 
-  void resize_arguments (size_t acount, jit_value *adefault = 0)
+  void resize_arguments (size_t acount, jit_value *adefault = nullptr)
   {
     size_t old = marguments.size ();
     marguments.resize (acount);

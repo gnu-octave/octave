@@ -932,7 +932,7 @@ quadv (fcn, 0, 3)
     print_usage ();
 
   std::string old_func;
-  octave_fcn_inline *old = 0;
+  octave_fcn_inline *old = nullptr;
   bool func_is_string = true;
 
   if (args(0).is_string ())

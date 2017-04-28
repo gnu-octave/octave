@@ -1926,13 +1926,13 @@ octave_fcn_handle *
 octave_fcn_binder::maybe_binder (const octave_value& f,
                                  octave::tree_evaluator *tw)
 {
-  octave_fcn_handle *retval = 0;
+  octave_fcn_handle *retval = nullptr;
 
   octave_user_function *usr_fcn = f.user_function_value (false);
   octave::tree_parameter_list *param_list = (usr_fcn ? usr_fcn->parameter_list () : 0);
 
-  octave::tree_statement_list *cmd_list = 0;
-  octave::tree_expression *body_expr = 0;
+  octave::tree_statement_list *cmd_list = nullptr;
+  octave::tree_expression *body_expr = nullptr;
 
   if (usr_fcn)
     {

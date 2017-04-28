@@ -1106,7 +1106,7 @@ make_graphics_object_from_type (const caseless_str& type,
                                 const graphics_handle& h = graphics_handle (),
                                 const graphics_handle& p = graphics_handle ())
 {
-  base_graphics_object *go = 0;
+  base_graphics_object *go = nullptr;
 
   if (type.compare ("figure"))
     go = new figure (h, p);
@@ -2657,7 +2657,7 @@ gh_manager::do_renumber_figure (const graphics_handle& old_gh,
     }
 }
 
-gh_manager *gh_manager::instance = 0;
+gh_manager *gh_manager::instance = nullptr;
 
 static void
 xset (const graphics_handle& h, const caseless_str& pname,
@@ -9563,7 +9563,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 {
   graphics_handle h = get_handle (integer_figure_handle);
 
-  base_graphics_object *bgo = 0;
+  base_graphics_object *bgo = nullptr;
 
   bgo = make_graphics_object_from_type (go_name, h, p);
 
@@ -9696,7 +9696,7 @@ public:
 
   function_event (void) = delete;
 
-  function_event (graphics_event::event_fcn fcn, void *data = 0)
+  function_event (graphics_event::event_fcn fcn, void *data = nullptr)
     : base_graphics_event (), function (fcn), function_data (data)
   { }
 
@@ -9845,7 +9845,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
   if (cb_arg.is_defined () && ! cb_arg.is_empty ())
     {
       octave_value_list args;
-      octave_function *fcn = 0;
+      octave_function *fcn = nullptr;
 
       args(0) = h.as_octave_value ();
       if (data.is_defined ())
@@ -11147,7 +11147,7 @@ Internal function: returns the pixel size of the image in normalized units.
   return ovl (dp);
 }
 
-gtk_manager *gtk_manager::instance = 0;
+gtk_manager *gtk_manager::instance = nullptr;
 
 void
 gtk_manager::create_instance (void)

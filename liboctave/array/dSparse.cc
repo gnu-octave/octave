@@ -5705,7 +5705,7 @@ SparseMatrix::factorize (octave_idx_type& err, double& rcond, Matrix& Control,
                          bool calc_cond) const
 {
   // The return values
-  void *Numeric = 0;
+  void *Numeric = nullptr;
   err = 0;
 
 #if defined (HAVE_UMFPACK)

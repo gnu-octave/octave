@@ -6338,7 +6338,7 @@ public:
                          const octave_value& data = Matrix ());
 
   static graphics_event
-  create_function_event (event_fcn fcn, void *data = 0);
+  create_function_event (event_fcn fcn, void *data = nullptr);
 
   static graphics_event
   create_set_event (const graphics_handle& h, const std::string& name,
@@ -6528,7 +6528,7 @@ public:
       instance->do_post_callback (h, name, data);
   }
 
-  static void post_function (graphics_event::event_fcn fcn, void *data = 0)
+  static void post_function (graphics_event::event_fcn fcn, void *data = nullptr)
   {
     if (instance_ok ())
       instance->do_post_function (fcn, data);

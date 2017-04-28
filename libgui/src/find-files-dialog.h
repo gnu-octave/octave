@@ -38,7 +38,7 @@ class find_files_dialog : public QDialog
 {
   Q_OBJECT
 public:
-  find_files_dialog (QWidget *parent = 0);
+  find_files_dialog (QWidget *parent = nullptr);
   virtual ~find_files_dialog ();
   void save_settings (void);
 

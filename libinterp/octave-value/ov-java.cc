@@ -136,10 +136,10 @@ static std::string
 jstring_to_string (JNIEnv *jni_env, jobject obj);
 
 static octave_value
-box (JNIEnv *jni_env, void *jobj, void *jcls_arg = 0);
+box (JNIEnv *jni_env, void *jobj, void *jcls_arg = nullptr);
 
 static octave_value
-box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg = 0);
+box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg = nullptr);
 
 static bool
 unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
@@ -168,7 +168,7 @@ extern "C"
   Java_org_octave_Octave_needThreadedInvokation (JNIEnv *, jclass);
 }
 
-static JavaVM *jvm = 0;
+static JavaVM *jvm = nullptr;
 static bool jvm_attached = false;
 
 // Need to keep hold of the shared library handle until exit.
@@ -706,7 +706,7 @@ jstring_to_string (JNIEnv *jni_env, jobject obj)
 static inline JNIEnv *
 thread_jni_env (void)
 {
-  JNIEnv *env = 0;
+  JNIEnv *env = nullptr;
 
   if (jvm)
     jvm->GetEnv (reinterpret_cast<void **> (&env), JNI_VERSION_1_2);

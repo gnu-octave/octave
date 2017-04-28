@@ -77,7 +77,7 @@ class find_dialog : public QDialog
   Q_OBJECT
 public:
   find_dialog (QsciScintilla *edit_area, QList<QAction *> find_actions,
-               QWidget *parent = 0);
+               QWidget *parent = nullptr);
   void init_search_text ();
 
 private slots:

@@ -61,7 +61,7 @@ namespace octave
     // Create an interpreter object and perform basic initialization
     // up to the point of reading history and setting the load path.
 
-    interpreter (application *app_context = 0);
+    interpreter (application *app_context = nullptr);
 
     // No copying, at least not yet...
 

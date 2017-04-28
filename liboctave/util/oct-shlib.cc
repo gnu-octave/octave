@@ -99,7 +99,7 @@ namespace octave
   dynamic_library::dynlib_rep *
   dynamic_library::dynlib_rep::get_instance (const std::string& f, bool fake)
   {
-    dynlib_rep *retval = 0;
+    dynlib_rep *retval = nullptr;
     std::map<std::string, dynlib_rep *>::iterator p = instances.find (f);
     if (p != instances.end ())
       {
@@ -230,7 +230,7 @@ namespace octave
   octave_dlopen_shlib::search (const std::string& name,
                                dynamic_library::name_mangler mangler)
   {
-    void *function = 0;
+    void *function = nullptr;
 
     if (! is_open ())
       (*current_liboctave_error_handler)
@@ -297,7 +297,7 @@ namespace octave
   octave_shl_load_shlib::search (const std::string& name,
                                  dynamic_library::name_mangler mangler)
   {
-    void *function = 0;
+    void *function = nullptr;
 
     if (! is_open ())
       (*current_liboctave_error_handler)
@@ -396,7 +396,7 @@ namespace octave
   octave_w32_shlib::search (const std::string& name,
                             dynamic_library::name_mangler mangler)
   {
-    void *function = 0;
+    void *function = nullptr;
 
     if (! is_open ())
       (*current_liboctave_error_handler)
@@ -467,7 +467,7 @@ namespace octave
         NSLinkEditErrors ler;
         int lerno;
         const char *file2;
-        const char *errstr = 0;
+        const char *errstr = nullptr;
 
         NSLinkEditError (&ler, &lerno, &file2, &errstr);
 
@@ -490,7 +490,7 @@ namespace octave
   octave_dyld_shlib::search (const std::string& name,
                              dynamic_library::name_mangler mangler)
   {
-    void *function = 0;
+    void *function = nullptr;
 
     if (! is_open ())
       (*current_liboctave_error_handler)

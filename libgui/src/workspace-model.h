@@ -43,7 +43,7 @@ class workspace_model
 
 public:
 
-  workspace_model (QObject *parent = 0);
+  workspace_model (QObject *parent = nullptr);
 
   ~workspace_model (void) = default;
 

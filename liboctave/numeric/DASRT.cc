@@ -319,8 +319,8 @@ DASRT::integrate (double tout)
 
   F77_INT *pjroot = jroot.fortran_vec ();
 
-  double *dummy = 0;
-  F77_INT *idummy = 0;
+  double *dummy = nullptr;
+  F77_INT *idummy = nullptr;
 
   F77_INT tmp_istate = octave::to_f77_int (istate);
 

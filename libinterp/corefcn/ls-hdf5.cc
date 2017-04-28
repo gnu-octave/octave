@@ -715,11 +715,10 @@ hdf5_h5g_iterate (octave_hdf5_id loc_id, const char *name, int *idx,
 #endif
 }
 
-// Read the next Octave variable from the stream IS, which must really be
-// an hdf5_ifstream.  Return the variable value in tc, its doc string
-// in doc, and whether it is global in global.  The return value is
-// the name of the variable, or NULL if none were found or there was
-// and error.
+// Read the next Octave variable from the stream IS, which must really be an
+// hdf5_ifstream.  Return the variable value in tc, its doc string in doc, and
+// whether it is global in global.  The return value is the name of the
+// variable, or NULL if none were found or there was an error.
 std::string
 read_hdf5_data (std::istream& is, const std::string& /* filename */,
                 bool& global, octave_value& tc, std::string& doc,

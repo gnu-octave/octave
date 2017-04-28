@@ -62,7 +62,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string",
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   const octave_char_matrix_str& v
     = dynamic_cast<const octave_char_matrix_str&> (a);

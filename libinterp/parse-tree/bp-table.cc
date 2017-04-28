@@ -57,7 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 
 // Initialize the singleton object
-bp_table *bp_table::instance = 0;
+bp_table *bp_table::instance = nullptr;
 
 std::set<std::string> bp_table::errors_that_stop;
 std::set<std::string> bp_table::caught_that_stop;
@@ -169,7 +169,7 @@ get_file_line (const std::string& fname, size_t line)
 octave_user_code *
 get_user_code (const std::string& fname)
 {
-  octave_user_code *dbg_fcn = 0;
+  octave_user_code *dbg_fcn = nullptr;
 
   if (fname.empty ())
     dbg_fcn = octave::call_stack::debug_user_code ();
@@ -379,7 +379,7 @@ bp_table::condition_valid (const std::string& cond)
         error ("dbstop: Cannot parse condition '%s'", cond.c_str ());
       else
         {
-          octave::tree_statement *stmt = 0;
+          octave::tree_statement *stmt = nullptr;
           if (! parser.stmt_list)
             error ("dbstop: "
                    "condition is not empty, but has nothing to evaluate");
@@ -545,8 +545,8 @@ bp_table::parse_dbfunction_params (const char *who,
               int on_off = ! strcmp(who, "dbstop");
 
               // list of error/warning IDs to update
-              std::set<std::string> *id_list = NULL;
-              bool *stop_flag = NULL;         // Vdebug_on_... flag
+              std::set<std::string> *id_list = nullptr;
+              bool *stop_flag = nullptr;         // Vdebug_on_... flag
 
               if (condition == "error")
                 {
@@ -584,7 +584,7 @@ bp_table::parse_dbfunction_params (const char *who,
                        who, condition.c_str ());
 
               // process ID list for "dbstop if error <error_ID>" etc
-              if (id_list != NULL)
+              if (id_list != nullptr)
                 {
                   pos++;
                   if (pos < nargin)       // only affect a single error ID
@@ -594,13 +594,13 @@ bp_table::parse_dbfunction_params (const char *who,
                       else if (on_off == 1)
                         {
                           id_list->insert (args(pos).string_value ());
-                          *stop_flag = 1;
+                          *stop_flag = true;
                         }
                       else
                         {
                           id_list->erase (args(pos).string_value ());
                           if (id_list->empty ())
-                            *stop_flag = 0;
+                            *stop_flag = false;
                         }
                     }
                   else   // unqualified.  Turn all on or off
@@ -645,10 +645,10 @@ bp_table::parse_dbfunction_params (const char *who,
 // line number LINENO of the source file.
 // If END_LINE != 0, *END_LINE is set to last line of the returned function.
 static octave_user_code*
-find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *end_line = 0)
+find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *end_line = nullptr)
 {
-  octave_user_code *retval = 0;
-  octave_user_code *next_fcn = 0;  // 1st function starting after lineno
+  octave_user_code *retval = nullptr;
+  octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno
 
   // Find innermost nested (or parent) function containing lineno.
   int earliest_end = std::numeric_limits<int>::max ();

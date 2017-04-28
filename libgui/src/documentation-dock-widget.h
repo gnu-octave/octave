@@ -33,7 +33,7 @@ class documentation_dock_widget : public octave_dock_widget
 
 public:
 
-  documentation_dock_widget (QWidget *parent = 0);
+  documentation_dock_widget (QWidget *parent = nullptr);
 
 public slots:
 

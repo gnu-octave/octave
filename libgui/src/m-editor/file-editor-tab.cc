@@ -2568,7 +2568,7 @@ file_editor_tab::do_breakpoint_marker (bool insert, const QWidget *ID, int line,
       if (insert)
         {
           int editor_linenr = -1;
-          marker *bp = 0;
+          marker *bp = nullptr;
 
           // If comes back indicating a non-zero breakpoint marker,
           // reuse it if possible

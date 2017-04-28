@@ -489,10 +489,10 @@ operator << (std::ostream& os, const pr_rational_float& prf)
 
 // Current format for real numbers and the real part of complex
 // numbers.
-static float_format *curr_real_fmt = 0;
+static float_format *curr_real_fmt = nullptr;
 
 // Current format for the imaginary part of complex numbers.
-static float_format *curr_imag_fmt = 0;
+static float_format *curr_imag_fmt = nullptr;
 
 static double
 pr_max_internal (const Matrix& m)

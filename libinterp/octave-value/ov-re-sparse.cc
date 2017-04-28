@@ -69,7 +69,7 @@ octave_sparse_matrix::index_vector (bool /* require_integers */) const
 octave_base_value *
 octave_sparse_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (Vsparse_auto_mutate)
     {

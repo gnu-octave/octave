@@ -282,7 +282,7 @@ private:
   void construct_octave_qt_link (void);
 
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                        const char *member, const QWidget *receiver = 0);
+                        const char *member, const QWidget *receiver = nullptr);
 
   QMenu * m_add_menu (QMenuBar *p, QString text);
   void construct_menu_bar (void);

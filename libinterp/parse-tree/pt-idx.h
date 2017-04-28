@@ -49,7 +49,7 @@ namespace octave
   {
   public:
 
-    tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
+    tree_index_expression (tree_expression *e = nullptr, tree_argument_list *lst = nullptr,
                            int l = -1, int c = -1, char t = '(');
 
     tree_index_expression (tree_expression *e, const std::string& n,
@@ -68,7 +68,7 @@ namespace octave
 
     bool has_magic_end (void) const;
 
-    void append (tree_argument_list *lst = 0, char t = '(');
+    void append (tree_argument_list *lst = nullptr, char t = '(');
 
     void append (const std::string& n);
 

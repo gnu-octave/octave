@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "error.h"
 
-octave_errno *octave_errno::instance = 0;
+octave_errno *octave_errno::instance = nullptr;
 
 octave_errno::octave_errno (void)
 {

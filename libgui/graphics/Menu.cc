@@ -125,7 +125,7 @@ namespace QtHandles
           {
 
             int count = 0;
-            QAction *before = 0;
+            QAction *before = nullptr;
 
             foreach (QAction *a, m_parent->actions ())
               {
@@ -226,7 +226,7 @@ namespace QtHandles
           m_parent->removeAction (action);
 
           int pos = static_cast<int> (up.get_position ());
-          QAction *before = 0;
+          QAction *before = nullptr;
 
           if (pos > 0)
             {

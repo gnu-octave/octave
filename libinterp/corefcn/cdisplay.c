@@ -51,7 +51,7 @@ const char *
 octave_get_display_info (int *ht, int *wd, int *dp, double *rx, double *ry,
                          int *dpy_avail)
 {
-  const char *msg = 0;
+  const char *msg = NULL;
 
   *dpy_avail = 0;
 

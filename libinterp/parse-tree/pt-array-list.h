@@ -46,7 +46,7 @@ namespace octave
 
   protected:
 
-    tree_array_list (tree_argument_list *row = 0, int l = -1, int c = -1)
+    tree_array_list (tree_argument_list *row = nullptr, int l = -1, int c = -1)
       : tree_expression (l, c), octave::base_list<tree_argument_list *> ()
     {
       if (row)

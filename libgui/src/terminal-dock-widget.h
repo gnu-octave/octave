@@ -35,7 +35,7 @@ class terminal_dock_widget : public octave_dock_widget
 
 public:
 
-  terminal_dock_widget (QWidget *parent = 0);
+  terminal_dock_widget (QWidget *parent = nullptr);
 
   ~terminal_dock_widget (void);
 

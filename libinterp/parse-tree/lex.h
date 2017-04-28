@@ -546,7 +546,7 @@ namespace octave
       octave_comment_list *comment_list;
     };
 
-    base_lexer (interpreter *interp_context = 0)
+    base_lexer (interpreter *interp_context = nullptr)
       : lexical_feedback (), scanner (0), input_buf (), comment_buf (),
         m_interp_context (interp_context)
     {
@@ -700,7 +700,7 @@ namespace octave
 
     int handle_token (const std::string& name, int tok);
 
-    int handle_token (int tok, token *tok_val = 0);
+    int handle_token (int tok, token *tok_val = nullptr);
 
     int count_token (int tok);
 
@@ -720,16 +720,16 @@ namespace octave
   {
   public:
 
-    lexer (interpreter *interp_context = 0)
+    lexer (interpreter *interp_context = nullptr)
       : base_lexer (interp_context), reader (this)
     { }
 
-    lexer (FILE *file, interpreter *interp_context = 0)
+    lexer (FILE *file, interpreter *interp_context = nullptr)
       : base_lexer (interp_context), reader (file, this)
     { }
 
     lexer (const std::string& eval_string,
-           interpreter *interp_context = 0)
+           interpreter *interp_context = nullptr)
       : base_lexer (interp_context), reader (eval_string, this)
     { }
 
@@ -784,27 +784,27 @@ namespace octave
   {
   public:
 
-    push_lexer (interpreter *interp_context = 0)
+    push_lexer (interpreter *interp_context = nullptr)
       : base_lexer (interp_context), pflag (1)
     {
       append_input ("", false);
     }
 
     push_lexer (const std::string& input,
-                interpreter *interp_context = 0)
+                interpreter *interp_context = nullptr)
       : base_lexer (interp_context), pflag (1)
     {
       append_input (input, false);
     }
 
-    push_lexer (bool eof, interpreter *interp_context = 0)
+    push_lexer (bool eof, interpreter *interp_context = nullptr)
       : base_lexer (interp_context), pflag (1)
     {
       append_input ("", eof);
     }
 
     push_lexer (const std::string& input, bool eof,
-                interpreter *interp_context = 0)
+                interpreter *interp_context = nullptr)
       : base_lexer (interp_context), pflag (1)
     {
       append_input (input, eof);

@@ -229,7 +229,7 @@ file_editor::request_new_file (const QString& commands)
 QWidget *
 file_editor::find_tab_widget (const QString& file) const
 {
-  QWidget *retval = 0;
+  QWidget *retval = nullptr;
 
   for (editor_tab_map_const_iterator p = editor_tab_map.begin ();
        p != editor_tab_map.end (); p++)
@@ -335,7 +335,7 @@ file_editor::request_open_file (const QString& openFileName,
         }
       else
         {
-          file_editor_tab *fileEditorTab = 0;
+          file_editor_tab *fileEditorTab = nullptr;
           // Reuse <unnamed> tab if it hasn't yet been modified.
           bool reusing = false;
           tab = find_tab_widget ("");
@@ -510,7 +510,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
     }
 
   QObject *saveFileObject = sender ();
-  QWidget *saveFileWidget = 0;
+  QWidget *saveFileWidget = nullptr;
 
   for (int i = 0; i < _tab_widget->count (); i++)
     {

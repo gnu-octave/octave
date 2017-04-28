@@ -46,7 +46,7 @@ namespace octave
 {
 #if defined (HAVE_FFTW)
 
-  fftw_planner *fftw_planner::instance = 0;
+  fftw_planner *fftw_planner::instance = nullptr;
 
   // Helper class to create and cache FFTW plans for both 1D and
   // 2D.  This implementation defaults to using FFTW_ESTIMATE to create
@@ -422,7 +422,7 @@ namespace octave
     return ret;
   }
 
-  float_fftw_planner *float_fftw_planner::instance = 0;
+  float_fftw_planner *float_fftw_planner::instance = nullptr;
 
   float_fftw_planner::float_fftw_planner (void)
     : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),

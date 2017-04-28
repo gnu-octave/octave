@@ -42,7 +42,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    Object (const graphics_object& go, QObject *obj = 0);
+    Object (const graphics_object& go, QObject *obj = nullptr);
 
     virtual ~Object (void);
 
@@ -83,7 +83,7 @@ namespace QtHandles
     void slotRedraw (void);
     void slotPrint (const QString& file_cmd, const QString& term);
 
-    void objectDestroyed (QObject *obj = 0);
+    void objectDestroyed (QObject *obj = nullptr);
 
   protected:
     static Object * parentObject (const graphics_object& go);

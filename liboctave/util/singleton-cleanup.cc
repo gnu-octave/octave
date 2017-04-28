@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <lo-error.h>
 #include <singleton-cleanup.h>
 
-singleton_cleanup_list *singleton_cleanup_list::instance = 0;
+singleton_cleanup_list *singleton_cleanup_list::instance = nullptr;
 
 singleton_cleanup_list::~singleton_cleanup_list (void)
 {

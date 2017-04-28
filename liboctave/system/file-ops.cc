@@ -55,7 +55,7 @@ namespace octave
 {
   namespace sys
   {
-    file_ops *octave::sys::file_ops::instance = 0;
+    file_ops *octave::sys::file_ops::instance = nullptr;
 
     bool
     octave::sys::file_ops::instance_ok (void)

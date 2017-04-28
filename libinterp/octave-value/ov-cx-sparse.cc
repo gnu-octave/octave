@@ -58,7 +58,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
 octave_base_value *
 octave_sparse_complex_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (Vsparse_auto_mutate)
     {

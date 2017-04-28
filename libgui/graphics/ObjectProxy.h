@@ -37,7 +37,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    ObjectProxy (Object *obj = 0);
+    ObjectProxy (Object *obj = nullptr);
 
     void update (int pId);
     void finalize (void);

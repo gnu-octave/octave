@@ -414,7 +414,7 @@ namespace octave
 
     void rename (const std::string& oldname, const std::string& newname)
     {
-      struct curl_slist *slist = 0;
+      struct curl_slist *slist = nullptr;
 
       octave::unwind_protect frame;
       frame.add_fcn (curl_slist_free_all, slist);
@@ -582,7 +582,7 @@ namespace octave
     {
       std::string retval;
 
-      struct curl_slist *slist = 0;
+      struct curl_slist *slist = nullptr;
 
       octave::unwind_protect frame;
       frame.add_fcn (curl_slist_free_all, slist);
@@ -746,7 +746,7 @@ namespace octave
     void ftp_file_or_dir_action (const std::string& file_or_dir,
                                  const std::string& action)
     {
-      struct curl_slist *slist = 0;
+      struct curl_slist *slist = nullptr;
 
       octave::unwind_protect frame;
 

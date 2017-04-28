@@ -42,7 +42,7 @@ namespace octave
   public:
 
     tree (int l = -1, int c = -1)
-      : line_num (l), column_num (c), bp (NULL) { }
+      : line_num (l), column_num (c), bp (nullptr) { }
 
     // No copying!
 
@@ -74,7 +74,7 @@ namespace octave
         bp = new std::string(condition);
     }
 
-    virtual void delete_breakpoint (void) { if (bp) delete bp; bp = NULL; }
+    virtual void delete_breakpoint (void) { if (bp) delete bp; bp = nullptr; }
 
     bool meets_bp_condition (void) const;
 

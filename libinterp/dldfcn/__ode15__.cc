@@ -1065,7 +1065,7 @@ namespace octave
 
     bool haverefine = (refine > 1);
 
-    octave_function *output_fcn = 0;
+    octave_function *output_fcn = nullptr;
     ColumnVector outputsel;
 
     // OutputFcn
@@ -1081,7 +1081,7 @@ namespace octave
     if (haveoutputsel)
       outputsel = options.getfield("OutputSel").vector_value ();
 
-    octave_function *event_fcn = 0;
+    octave_function *event_fcn = nullptr;
 
     // Events
     bool haveeventfunction
@@ -1127,7 +1127,7 @@ Undocumented internal function.
     print_usage ();
 
   // Check odefun
-  octave_function *ida_fcn = 0;
+  octave_function *ida_fcn = nullptr;
 
   octave_value f_arg = args(0);
 

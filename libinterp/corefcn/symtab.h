@@ -2360,7 +2360,7 @@ private:
 
   static symbol_table * get_instance (scope_id scope, bool create = true)
   {
-    symbol_table *retval = 0;
+    symbol_table *retval = nullptr;
 
     bool ok = true;
 

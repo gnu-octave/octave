@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "randpoisson.h"
 #include "singleton-cleanup.h"
 
-octave_rand *octave_rand::instance = 0;
+octave_rand *octave_rand::instance = nullptr;
 
 octave_rand::octave_rand (void)
   : current_distribution (uniform_dist), use_old_generators (false),

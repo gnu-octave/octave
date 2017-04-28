@@ -2206,7 +2206,7 @@ private:
   }
 };
 
-figure_manager *figure_manager::instance = 0;
+figure_manager *figure_manager::instance = nullptr;
 
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;

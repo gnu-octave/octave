@@ -664,8 +664,8 @@ permutations on the tree.
 
   octave_idx_type n_row = 0;
   octave_idx_type n_col = 0;
-  octave_idx_type *ridx = 0;
-  octave_idx_type *cidx = 0;
+  octave_idx_type *ridx = nullptr;
+  octave_idx_type *cidx = nullptr;
 
   if (args(0).is_sparse_type ())
     error ("etree: S must be a sparse matrix");

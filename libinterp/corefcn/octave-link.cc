@@ -47,7 +47,7 @@ octave_readline_hook (void)
   return 0;
 }
 
-octave_link *octave_link::instance = 0;
+octave_link *octave_link::instance = nullptr;
 
 octave_link::octave_link (void)
   : event_queue_mutex (new octave::mutex ()), gui_event_queue (),

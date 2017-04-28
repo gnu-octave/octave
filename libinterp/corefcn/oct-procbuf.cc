@@ -59,7 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
 
-static octave_procbuf *octave_procbuf_list = 0;
+static octave_procbuf *octave_procbuf_list = nullptr;
 
 #if ! defined (BUFSIZ)
 #  define BUFSIZ 1024

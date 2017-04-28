@@ -137,7 +137,7 @@ template <typename T>
 octave_base_value *
 octave_base_int_matrix<T>::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (this->matrix.numel () == 1)
     retval = new typename octave_value_int_traits<T>::scalar_type

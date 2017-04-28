@@ -758,7 +758,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   size_t srclen = native_bytes.numel ();
 
   size_t length;
-  uint8_t *utf8_str = 0;
+  uint8_t *utf8_str = nullptr;
 
   octave::unwind_protect frame;
 
@@ -804,7 +804,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   size_t srclen = utf8_str.numel ();
 
   size_t length;
-  char *native_bytes = 0;
+  char *native_bytes = nullptr;
 
   octave::unwind_protect frame;
 

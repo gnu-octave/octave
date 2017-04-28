@@ -44,7 +44,7 @@ namespace octave
   {
   public:
 
-    tree_cell (tree_argument_list *row = 0, int l = -1, int c = -1)
+    tree_cell (tree_argument_list *row = nullptr, int l = -1, int c = -1)
       : tree_array_list (row, l, c)
     { }
 

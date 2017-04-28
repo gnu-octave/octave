@@ -316,7 +316,7 @@ namespace octave
     bool fontconfig_initialized;
   };
 
-  ft_manager *ft_manager::instance = 0;
+  ft_manager *ft_manager::instance = nullptr;
 
 }
 

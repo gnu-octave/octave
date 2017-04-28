@@ -285,8 +285,8 @@ DASSL::do_integrate (double tout)
   double *prwork = rwork.fortran_vec ();
   F77_INT *piwork = iwork.fortran_vec ();
 
-  double *dummy = 0;
-  F77_INT *idummy = 0;
+  double *dummy = nullptr;
+  F77_INT *idummy = nullptr;
 
   F77_INT tmp_istate = octave::to_f77_int (istate);
 

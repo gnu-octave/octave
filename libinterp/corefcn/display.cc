@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "display.h"
 #include "error.h"
 
-display_info *display_info::instance = 0;
+display_info *display_info::instance = nullptr;
 
 void
 display_info::init (bool query)

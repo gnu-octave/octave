@@ -44,7 +44,7 @@ public:
   typedef std::vector<type_bound> type_bound_vector;
   typedef std::map<std::string, jit_variable *> variable_map;
 
-  jit_convert (tree& tee, jit_type *for_bounds = 0);
+  jit_convert (tree& tee, jit_type *for_bounds = nullptr);
 
   jit_convert (octave_user_function& fcn, const std::vector<jit_type *>& args);
 
@@ -227,7 +227,7 @@ private:
   std::string next_name (const char *prefix, size_t& count, bool inc);
 
   jit_instruction * resolve (tree_index_expression& exp,
-                             jit_value *extra_arg = 0, bool lhs = false);
+                             jit_value *extra_arg = nullptr, bool lhs = false);
 
   jit_value * do_assign (tree_expression *exp, jit_value *rhs,
                          bool artificial = false);
@@ -439,7 +439,7 @@ private:
   typedef jit_convert::type_bound_vector type_bound_vector;
   typedef void (*jited_function)(octave_base_value**);
 
-  void compile (tree_jit& tjit, tree& tee, jit_type *for_bounds = 0);
+  void compile (tree_jit& tjit, tree& tee, jit_type *for_bounds = nullptr);
 
   octave_value find (const vmap& extra_vars, const std::string& vname) const;
 

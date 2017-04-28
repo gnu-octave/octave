@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 #include "singleton-cleanup.h"
 
-octave_sparse_params *octave_sparse_params::instance = 0;
+octave_sparse_params *octave_sparse_params::instance = nullptr;
 
 bool
 octave_sparse_params::instance_ok (void)

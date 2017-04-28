@@ -41,7 +41,7 @@ static const octave_fields bt_fields (bt_fieldnames);
 
 namespace octave
 {
-  call_stack *call_stack::instance = 0;
+  call_stack *call_stack::instance = nullptr;
 
   std::string
   call_stack::stack_frame::fcn_file_name (void) const
@@ -169,7 +169,7 @@ namespace octave
   octave_user_code *
   call_stack::do_caller_user_code (size_t nskip) const
   {
-    octave_user_code *retval = 0;
+    octave_user_code *retval = nullptr;
 
     const_iterator p = cs.end ();
 
@@ -249,7 +249,7 @@ namespace octave
   octave_user_code *
   call_stack::do_debug_user_code (void) const
   {
-    octave_user_code *retval = 0;
+    octave_user_code *retval = nullptr;
 
     // This should never happen...
     if (curr_frame == 0)

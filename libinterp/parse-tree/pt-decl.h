@@ -46,7 +46,7 @@ namespace octave
   {
   public:
 
-    tree_decl_elt (tree_identifier *i = 0, tree_expression *e = 0)
+    tree_decl_elt (tree_identifier *i = nullptr, tree_expression *e = nullptr)
       : id (i), expr (e) { }
 
     // No copying!

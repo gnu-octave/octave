@@ -391,7 +391,7 @@ public:
       {
         // For sparse arrays, return the first non-zero value.
         void *data = val.mex_get_data ();
-        if (data == NULL)
+        if (data == nullptr)
           return 0.0;
 
         if (val.is_bool_type ())
@@ -419,7 +419,7 @@ public:
 
   void * get_imag_data (void) const
   {
-    void *retval = 0;
+    void *retval = nullptr;
 
     if (is_numeric () && is_real_type ())
       retval = 0;
@@ -520,7 +520,7 @@ public:
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
-    char *buf = 0;
+    char *buf = nullptr;
 
     if (val.is_string ())
       {
@@ -793,7 +793,7 @@ public:
         dims
           = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
 
-        if (dims == NULL)
+        if (dims == nullptr)
           return 1;
 
         for (int i = 0; i < ndims; i++)
@@ -2391,7 +2391,7 @@ private:
 std::set<void *> mex::global_memlist;
 
 // Current context.
-mex *mex_context = 0;
+mex *mex_context = nullptr;
 
 void *
 mxArray::malloc (size_t n)
@@ -2881,7 +2881,7 @@ mxGetChars (const mxArray *ptr)
   if (mxIsChar (ptr))
     return static_cast<mxChar *> (ptr->get_data ());
   else
-    return NULL;
+    return nullptr;
 }
 
 mxLogical *
@@ -3225,7 +3225,7 @@ mxArray *
 mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
                        mxArray *argin[], const char *fname)
 {
-  mxArray *mx = NULL;
+  mxArray *mx = nullptr;
 
   int old_flag = (mex_context ? mex_context->trap_feval_error : 0);
   mexSetTrapFlag (1);
@@ -3238,7 +3238,7 @@ mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
                         + std::string (fname) + "> failed";
       mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
       mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
-      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, nullptr));
     }
   mexSetTrapFlag (old_flag);
 
@@ -3282,7 +3282,7 @@ mexEvalString (const char *s)
 mxArray *
 mexEvalStringWithTrap (const char *s)
 {
-  mxArray *mx = NULL;
+  mxArray *mx = nullptr;
 
   int parse_status;
   bool execution_error = false;
@@ -3309,7 +3309,7 @@ mexEvalStringWithTrap (const char *s)
                         + std::string (s) + "> failed";
       mxSetFieldByNumber (mx, 0, 1, mxCreateString (msg.c_str ()));
       mxSetFieldByNumber (mx, 0, 2, mxCreateCellMatrix (0, 0));
-      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, NULL));
+      mxSetFieldByNumber (mx, 0, 3, mxCreateStructMatrix (0, 1, 0, nullptr));
     }
 
   return mx;
@@ -3389,7 +3389,7 @@ mexPrintf (const char *fmt, ...)
 mxArray *
 mexGetVariable (const char *space, const char *name)
 {
-  mxArray *retval = 0;
+  mxArray *retval = nullptr;
 
   octave_value val;
 
@@ -3515,7 +3515,7 @@ mexAtExit (void (*f) (void))
 const mxArray *
 mexGet (double handle, const char *property)
 {
-  mxArray *m = 0;
+  mxArray *m = nullptr;
 
   octave_value ret = get_property_from_handle (handle, property, "mexGet");
 

@@ -51,9 +51,9 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_value symbol_table::dummy_octave_value;
 
-symbol_table *symbol_table::instance = 0;
+symbol_table *symbol_table::instance = nullptr;
 
-symbol_table::scope_id_cache *symbol_table::scope_id_cache::instance = 0;
+symbol_table::scope_id_cache *symbol_table::scope_id_cache::instance = nullptr;
 
 std::map<symbol_table::scope_id, symbol_table*> symbol_table::all_instances;
 

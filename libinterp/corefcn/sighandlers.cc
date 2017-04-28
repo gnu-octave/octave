@@ -78,7 +78,7 @@ namespace octave
   static bool Vsigterm_dumps_octave_core = true;
 
   // List of signals we have caught since last call to octave::signal_handler.
-  static bool *signals_caught = 0;
+  static bool *signals_caught = nullptr;
 
   // Forward declarations.
   static void user_terminate (int sig_number);
@@ -335,7 +335,7 @@ namespace octave
     static base_interrupt_manager *instance;
   };
 
-  base_interrupt_manager *interrupt_manager::instance = 0;
+  base_interrupt_manager *interrupt_manager::instance = nullptr;
 
   static void
   my_friendly_exit (int sig, bool save_vars = true)

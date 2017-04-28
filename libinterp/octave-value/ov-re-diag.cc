@@ -73,7 +73,7 @@ octave_diag_matrix::numeric_demotion_function (void) const
 octave_base_value *
 octave_diag_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.nelem () == 1)
     retval = new octave_scalar (matrix (0, 0));

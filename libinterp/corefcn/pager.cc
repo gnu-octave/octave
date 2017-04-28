@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 // Our actual connection to the external pager.
-static oprocstream *external_pager = 0;
+static oprocstream *external_pager = nullptr;
 
 // TRUE means we write to the diary file.
 static bool write_to_diary_file = false;
@@ -302,7 +302,7 @@ namespace octave
     return 0;
   }
 
-  pager_stream *pager_stream::instance = 0;
+  pager_stream *pager_stream::instance = nullptr;
 
   pager_stream::pager_stream (void) : std::ostream (0), pb (0)
   {
@@ -391,7 +391,7 @@ namespace octave
     return retval;
   }
 
-  diary_stream *diary_stream::instance = 0;
+  diary_stream *diary_stream::instance = nullptr;
 
   diary_stream::diary_stream (void) : std::ostream (0), db (0)
   {

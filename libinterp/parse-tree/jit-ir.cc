@@ -644,7 +644,7 @@ jit_phi::infer (void)
   if (! p->alive ())
     return false;
 
-  jit_type *infered = 0;
+  jit_type *infered = nullptr;
   for (size_t i = 0; i < argument_count (); ++i)
     {
       jit_block *inc = incomming (i);

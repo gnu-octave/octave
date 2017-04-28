@@ -39,7 +39,7 @@ namespace octave
   tree_colon_expression *
   tree_colon_expression::append (tree_expression *t)
   {
-    tree_colon_expression *retval = 0;
+    tree_colon_expression *retval = nullptr;
 
     if (! op_base)
       error ("invalid colon expression");

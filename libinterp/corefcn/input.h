@@ -156,7 +156,7 @@ namespace octave
   {
   public:
 
-    terminal_reader (octave::base_lexer *lxr = 0)
+    terminal_reader (octave::base_lexer *lxr = nullptr)
       : base_reader (lxr)
     { }
 
@@ -176,7 +176,7 @@ namespace octave
   {
   public:
 
-    file_reader (FILE *f_arg, octave::base_lexer *lxr = 0)
+    file_reader (FILE *f_arg, octave::base_lexer *lxr = nullptr)
       : base_reader (lxr), file (f_arg) { }
 
     std::string get_input (bool& eof);
@@ -198,7 +198,7 @@ namespace octave
   public:
 
     eval_string_reader (const std::string& str,
-                               octave::base_lexer *lxr = 0)
+                               octave::base_lexer *lxr = nullptr)
       : base_reader (lxr), eval_string (str)
     { }
 
@@ -219,15 +219,15 @@ namespace octave
   input_reader
   {
   public:
-    input_reader (octave::base_lexer *lxr = 0)
+    input_reader (octave::base_lexer *lxr = nullptr)
       : rep (new terminal_reader (lxr))
     { }
 
-    input_reader (FILE *file, octave::base_lexer *lxr = 0)
+    input_reader (FILE *file, octave::base_lexer *lxr = nullptr)
       : rep (new file_reader (file, lxr))
     { }
 
-    input_reader (const std::string& str, octave::base_lexer *lxr = 0)
+    input_reader (const std::string& str, octave::base_lexer *lxr = nullptr)
       : rep (new eval_string_reader (str, lxr))
     { }
 

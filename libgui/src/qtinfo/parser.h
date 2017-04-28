@@ -55,7 +55,7 @@ class parser
   Q_OBJECT
 
 public:
-  parser (QObject *parent = 0);
+  parser (QObject *parent = nullptr);
   bool set_info_path (const QString& _info_path);
   QString get_info_path ();
   QString search_node (const QString& node);

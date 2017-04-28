@@ -38,7 +38,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    MouseModeActionGroup (QObject *parent = 0);
+    MouseModeActionGroup (QObject *parent = nullptr);
     ~MouseModeActionGroup (void);
 
     QList<QAction*> actions (void) const { return m_actions; }

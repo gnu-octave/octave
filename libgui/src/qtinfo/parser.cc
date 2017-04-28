@@ -94,7 +94,7 @@ parser::get_info_path ()
 QIODevice *
 parser::open_file (QFileInfo & file_info)
 {
-  QIODevice *iodevice = 0;
+  QIODevice *iodevice = nullptr;
   if (_compressors_map.contains (file_info.suffix ()))
     {
       QString command = _compressors_map.value (file_info.suffix ()).arg (

@@ -42,8 +42,8 @@ namespace octave
   const size_t octave::chunk_buffer::chunk_size =
     static_cast<size_t> (OCTAVE_LOCBUF_CHUNKSIZE_MB) << 20;
 
-  char *chunk_buffer::top = 0;
-  char *chunk_buffer::chunk = 0;
+  char *chunk_buffer::top = nullptr;
+  char *chunk_buffer::chunk = nullptr;
   size_t chunk_buffer::left = 0;
   size_t chunk_buffer::active = 0;
 

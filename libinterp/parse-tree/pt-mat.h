@@ -50,7 +50,7 @@ namespace octave
   {
   public:
 
-    tree_matrix (tree_argument_list *row = 0, int l = -1, int c = -1)
+    tree_matrix (tree_argument_list *row = nullptr, int l = -1, int c = -1)
       : tree_array_list (row, l, c)
     { }
 

@@ -301,7 +301,7 @@ namespace octave
     // If TRUE, the GUI should be started.
     bool m_gui_running = false;
 
-    interpreter *m_interpreter = 0;
+    interpreter *m_interpreter = nullptr;
   };
 
   class OCTINTERP_API cli_application : public application

@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 static QLabel *
-make_octave_logo (QWidget *p = 0, int height = 100)
+make_octave_logo (QWidget *p = nullptr, int height = 100)
 {
   QLabel *logo = new QLabel (p);
   QPixmap logo_pixmap (":/actions/icons/logo.png");

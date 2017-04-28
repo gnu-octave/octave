@@ -92,7 +92,7 @@ namespace QtHandles
                                "create %s from thread %08x",
                                go.type ().c_str (), QThread::currentThreadId ());
 
-                Object *obj = 0;
+                Object *obj = nullptr;
 
                 if (go.isa ("figure"))
                   obj = Figure::create (go);

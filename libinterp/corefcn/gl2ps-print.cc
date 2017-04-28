@@ -843,7 +843,7 @@ namespace octave
 
     bool have_cmd = stream.length () > 1 && stream[0] == '|';
 
-    FILE *fp = 0;
+    FILE *fp = nullptr;
 
     octave::unwind_protect frame;
 

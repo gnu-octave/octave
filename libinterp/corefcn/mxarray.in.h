@@ -513,7 +513,7 @@ public:
 
   static char * strsave (const char *str)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     if (str)
       {

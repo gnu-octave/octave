@@ -88,7 +88,7 @@ octave_fstream::do_close (void)
 std::istream *
 octave_fstream::input_stream (void)
 {
-  std::istream *retval = 0;
+  std::istream *retval = nullptr;
 
   if (mode () & std::ios::in)
     retval = &fs;
@@ -99,7 +99,7 @@ octave_fstream::input_stream (void)
 std::ostream *
 octave_fstream::output_stream (void)
 {
-  std::ostream *retval = 0;
+  std::ostream *retval = nullptr;
 
   if (mode () & std::ios::out)
     retval = &fs;

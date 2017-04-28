@@ -177,4 +177,4 @@ octave_builtin::handles_dispatch_class (const std::string& dispatch_type) const
   return dispatch_classes.find (dispatch_type) != dispatch_classes.end ();
 }
 
-const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;
+const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = nullptr;

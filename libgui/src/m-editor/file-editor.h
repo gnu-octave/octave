@@ -337,7 +337,7 @@ private:
   bool is_editor_console_tabbed ();
   void construct (void);
   void add_file_editor_tab (file_editor_tab *f, const QString& fn);
-  void save_file_as (QWidget *fetabID = 0);
+  void save_file_as (QWidget *fetabID = nullptr);
   void mru_menu_update (void);
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 

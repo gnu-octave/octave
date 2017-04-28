@@ -228,7 +228,7 @@ namespace octave
     static bool in_loop_command;
 
     octave_value evaluate (tree_expression *expr, int nargout = 1,
-                           const std::list<octave_lvalue> *lvalue_list = 0)
+                           const std::list<octave_lvalue> *lvalue_list = nullptr)
     {
       m_nargout_stack.push (nargout);
       m_lvalue_list_stack.push (lvalue_list);
@@ -245,7 +245,7 @@ namespace octave
 
     octave_value_list
     evaluate_n (tree_expression *expr, int nargout = 1,
-                const std::list<octave_lvalue> *lvalue_list = 0)
+                const std::list<octave_lvalue> *lvalue_list = nullptr)
     {
       m_nargout_stack.push (nargout);
       m_lvalue_list_stack.push (lvalue_list);

@@ -985,7 +985,7 @@ namespace octave
         // Otherwise, arrange to call the function here, so that we don't
         // return the function definition as a value.
 
-        octave_function *fcn = 0;
+        octave_function *fcn = nullptr;
 
         if (val.is_function ())
           fcn = val.function_value (true);

@@ -55,8 +55,8 @@ namespace octave
     { }
 
     tree_while_command (tree_expression *e,
-                        octave_comment_list *lc = 0,
-                        octave_comment_list *tc = 0,
+                        octave_comment_list *lc = nullptr,
+                        octave_comment_list *tc = nullptr,
                         int l = -1, int c = -1)
       : tree_command (l, c), expr (e), list (0), lead_comm (lc),
         trail_comm (tc)
@@ -66,8 +66,8 @@ namespace octave
     { }
 
     tree_while_command (tree_expression *e, tree_statement_list *lst,
-                        octave_comment_list *lc = 0,
-                        octave_comment_list *tc = 0,
+                        octave_comment_list *lc = nullptr,
+                        octave_comment_list *tc = nullptr,
                         int l = -1, int c = -1)
       : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
         trail_comm (tc)
@@ -145,14 +145,14 @@ namespace octave
       : tree_while_command (l, c) { }
 
     tree_do_until_command (tree_expression *e,
-                           octave_comment_list *lc = 0,
-                           octave_comment_list *tc = 0,
+                           octave_comment_list *lc = nullptr,
+                           octave_comment_list *tc = nullptr,
                            int l = -1, int c = -1)
       : tree_while_command (e, lc, tc, l, c) { }
 
     tree_do_until_command (tree_expression *e, tree_statement_list *lst,
-                           octave_comment_list *lc = 0,
-                           octave_comment_list *tc = 0,
+                           octave_comment_list *lc = nullptr,
+                           octave_comment_list *tc = nullptr,
                            int l = -1, int c = -1)
       : tree_while_command (e, lst, lc, tc, l, c) { }
 
@@ -191,8 +191,8 @@ namespace octave
                              tree_expression *re,
                              tree_expression *maxproc_arg,
                              tree_statement_list *lst,
-                             octave_comment_list *lc = 0,
-                             octave_comment_list *tc = 0,
+                             octave_comment_list *lc = nullptr,
+                             octave_comment_list *tc = nullptr,
                              int l = -1, int c = -1)
       : tree_command (l, c), parallel (parallel_arg), lhs (le),
         expr (re), maxproc (maxproc_arg), list (lst),
@@ -285,8 +285,8 @@ namespace octave
 
     tree_complex_for_command (tree_argument_list *le, tree_expression *re,
                               tree_statement_list *lst,
-                              octave_comment_list *lc = 0,
-                              octave_comment_list *tc = 0,
+                              octave_comment_list *lc = nullptr,
+                              octave_comment_list *tc = nullptr,
                               int l = -1, int c = -1)
       : tree_command (l, c), lhs (le), expr (re), list (lst),
         lead_comm (lc), trail_comm (tc) { }

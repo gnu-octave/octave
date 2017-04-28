@@ -35,8 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Logger *Logger::s_instance = 0;
-  QMutex *Logger::s_mutex = 0;
+  Logger *Logger::s_instance = nullptr;
+  QMutex *Logger::s_mutex = nullptr;
 
   Logger::Logger (void)
     : m_debugEnabled (false)

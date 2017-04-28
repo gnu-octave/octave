@@ -244,7 +244,7 @@ namespace octave
   {
   public:
 
-    stream (base_stream *bs = 0);
+    stream (base_stream *bs = nullptr);
 
     ~stream (void);
 

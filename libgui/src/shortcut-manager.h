@@ -35,7 +35,7 @@ class enter_shortcut : public QLineEdit
   Q_OBJECT
 
 public:
-  enter_shortcut (QWidget *p = 0);
+  enter_shortcut (QWidget *p = nullptr);
   ~enter_shortcut ();
 
   virtual void keyPressEvent (QKeyEvent *e);

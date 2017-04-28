@@ -50,7 +50,7 @@ class files_dock_widget : public octave_dock_widget
 
 public:
 
-  files_dock_widget (QWidget *parent = 0);
+  files_dock_widget (QWidget *parent = nullptr);
 
   ~files_dock_widget (void) = default;
 

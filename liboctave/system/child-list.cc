@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  child_list::child_list_rep *child_list::instance = 0;
+  child_list::child_list_rep *child_list::instance = nullptr;
 
   bool
   child_list::instance_ok (void)

@@ -85,7 +85,7 @@ octave_bool_matrix::numeric_conversion_function (void) const
 octave_base_value *
 octave_bool_matrix::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (matrix.ndims () == 2)
     {

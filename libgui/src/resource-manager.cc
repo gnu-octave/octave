@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-model.h"
 #include "resource-manager.h"
 
-resource_manager *resource_manager::instance = 0;
+resource_manager *resource_manager::instance = nullptr;
 
 static QString
 default_qt_settings_file (void)

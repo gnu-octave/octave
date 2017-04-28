@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  directory_path::static_members *directory_path::static_members::instance = 0;
+  directory_path::static_members *directory_path::static_members::instance = nullptr;
 
   directory_path::static_members::static_members (void)
     : xpath_sep_char (SEPCHAR), xpath_sep_str (SEPCHAR_STR) { }

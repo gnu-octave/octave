@@ -864,7 +864,7 @@ octave_class::map_keys (void) const
 octave_base_value *
 octave_class::find_parent_class (const std::string& parent_class_name)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (parent_class_name == class_name ())
     retval = this;
@@ -893,7 +893,7 @@ octave_class::find_parent_class (const std::string& parent_class_name)
 octave_base_value *
 octave_class::unique_parent_class (const std::string& parent_class_name)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (parent_class_name == class_name ())
     retval = this;

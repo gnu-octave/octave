@@ -361,7 +361,7 @@ execute_pkg_add (const std::string& dir)
 
 namespace octave
 {
-  tree_evaluator *current_evaluator = 0;
+  tree_evaluator *current_evaluator = nullptr;
 
   // Create an interpreter object and perform initialization up to the
   // point of setting reading command history and setting the load

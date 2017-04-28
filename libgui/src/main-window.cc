@@ -245,7 +245,7 @@ main_window::~main_window (void)
 void
 main_window::focus_changed (QWidget *, QWidget *new_widget)
 {
-  octave_dock_widget *dock = 0;
+  octave_dock_widget *dock = nullptr;
   QWidget *w_new = new_widget;  // get a copy of new focus widget
   QWidget *start = w_new;       // Save it as start of our search
   int count = 0;                // fallback to prevent endless loop

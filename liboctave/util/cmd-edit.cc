@@ -53,7 +53,7 @@ namespace octave
 {
   char * do_completer_word_break_hook ();
 
-  command_editor *command_editor::instance = 0;
+  command_editor *command_editor::instance = nullptr;
 
   std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
 
@@ -603,7 +603,7 @@ namespace octave
     int n = 0;
     int count = 0;
 
-    char *fn = 0;
+    char *fn = nullptr;
 
     while (1)
       {
@@ -823,7 +823,7 @@ namespace octave
   char *
   gnu_readline::command_generator (const char *text, int state)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     completion_fcn f = command_editor::get_completion_function ();
 
@@ -844,7 +844,7 @@ namespace octave
   char *
   gnu_readline::command_quoter (char *text, int matches, char *qcp)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     quoting_fcn f = command_editor::get_quoting_function ();
 
@@ -865,7 +865,7 @@ namespace octave
   char *
   gnu_readline::command_dequoter (char *text, int quote)
   {
-    char *retval = 0;
+    char *retval = nullptr;
 
     dequoting_fcn f = command_editor::get_dequoting_function ();
 

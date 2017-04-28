@@ -62,7 +62,7 @@ static bool Vprint_struct_array_contents = false;
 octave_base_value *
 octave_struct::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   if (numel () == 1)
     retval = new octave_scalar_struct (map.checkelem (0));

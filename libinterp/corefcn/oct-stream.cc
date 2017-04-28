@@ -229,7 +229,7 @@ namespace octave
         null = 3
       };
 
-    scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
+    scanf_format_elt (const char *txt = nullptr, int w = 0, bool d = false,
                       char typ = '\0', char mod = '\0',
                       const std::string& ch_class = "")
       : text (strsave (txt)), width (w), discard (d), type (typ),
@@ -741,7 +741,7 @@ namespace octave
   {
   public:
 
-    printf_format_elt (const char *txt = 0, int n = 0, int w = -1,
+    printf_format_elt (const char *txt = nullptr, int n = 0, int w = -1,
                        int p = -1, const std::string& f = "",
                        char typ = '\0', char mod = '\0')
       : text (strsave (txt)), args (n), fw (w), prec (p), flags (f),
@@ -4612,7 +4612,7 @@ namespace octave
     bool all_char_conv = fmt_list.all_character_conversions ();
 
     Matrix mval;
-    double *data = 0;
+    double *data = nullptr;
     octave_idx_type max_size = 0;
     octave_idx_type max_conv = 0;
 
@@ -7243,7 +7243,7 @@ namespace octave
     return retval;
   }
 
-  stream_list *stream_list::instance = 0;
+  stream_list *stream_list::instance = nullptr;
 
   bool
   stream_list::instance_ok (void)

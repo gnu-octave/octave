@@ -911,7 +911,7 @@ octave_base_value::parent_class_names (void) const
 octave_function *
 octave_base_value::function_value (bool silent)
 {
-  octave_function *retval = 0;
+  octave_function *retval = nullptr;
 
   if (! silent)
     err_wrong_type_arg ("octave_base_value::function_value()", type_name ());
@@ -922,7 +922,7 @@ octave_base_value::function_value (bool silent)
 octave_user_function *
 octave_base_value::user_function_value (bool silent)
 {
-  octave_user_function *retval = 0;
+  octave_user_function *retval = nullptr;
 
   if (! silent)
     err_wrong_type_arg ("octave_base_value::user_function_value()",
@@ -933,7 +933,7 @@ octave_base_value::user_function_value (bool silent)
 octave_user_script *
 octave_base_value::user_script_value (bool silent)
 {
-  octave_user_script *retval = 0;
+  octave_user_script *retval = nullptr;
 
   if (! silent)
     err_wrong_type_arg ("octave_base_value::user_script_value()", type_name ());
@@ -944,7 +944,7 @@ octave_base_value::user_script_value (bool silent)
 octave_user_code *
 octave_base_value::user_code_value (bool silent)
 {
-  octave_user_code *retval = 0;
+  octave_user_code *retval = nullptr;
 
   if (! silent)
     err_wrong_type_arg ("octave_base_value::user_code_value()", type_name ());
@@ -955,7 +955,7 @@ octave_base_value::user_code_value (bool silent)
 octave_fcn_handle *
 octave_base_value::fcn_handle_value (bool silent)
 {
-  octave_fcn_handle *retval = 0;
+  octave_fcn_handle *retval = nullptr;
 
   if (! silent)
     err_wrong_type_arg ("octave_base_value::fcn_handle_value()", type_name ());
@@ -966,7 +966,7 @@ octave_base_value::fcn_handle_value (bool silent)
 octave_fcn_inline *
 octave_base_value::fcn_inline_value (bool silent)
 {
-  octave_fcn_inline *retval = 0;
+  octave_fcn_inline *retval = nullptr;
 
   if (! silent)
     err_wrong_type_arg ("octave_base_value::fcn_inline_value()", type_name ());

@@ -50,7 +50,7 @@ octave_lazy_index::numeric_conversion_function (void) const
 octave_base_value *
 octave_lazy_index::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   switch (index.length (0))
     {

@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 
-shortcut_manager *shortcut_manager::instance = 0;
+shortcut_manager *shortcut_manager::instance = nullptr;
 
 shortcut_manager::shortcut_manager ()
 {

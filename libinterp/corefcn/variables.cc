@@ -102,7 +102,7 @@ octave_function *
 is_valid_function (const std::string& fcn_name,
                    const std::string& warn_for, bool warn)
 {
-  octave_function *ans = 0;
+  octave_function *ans = nullptr;
 
   if (! fcn_name.empty ())
     {
@@ -124,7 +124,7 @@ octave_function *
 is_valid_function (const octave_value& arg,
                    const std::string& warn_for, bool warn)
 {
-  octave_function *ans = 0;
+  octave_function *ans = nullptr;
 
   std::string fcn_name;
 
@@ -147,7 +147,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                   const std::string& fname, const std::string& header,
                   const std::string& trailer)
 {
-  octave_function *retval = 0;
+  octave_function *retval = nullptr;
 
   retval = is_valid_function (arg, warn_for, 0);
 
@@ -741,7 +741,7 @@ template <typename T>
 bool try_local_protect (T& var)
 {
   octave_user_code *curr_usr_code = octave::call_stack::caller_user_code ();
-  octave_user_function *curr_usr_fcn = 0;
+  octave_user_function *curr_usr_fcn = nullptr;
   if (curr_usr_code && curr_usr_code->is_user_function ())
     curr_usr_fcn = dynamic_cast<octave_user_function *> (curr_usr_code);
 

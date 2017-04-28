@@ -207,7 +207,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   if (nargin < 1 || nargin > 4)
     print_usage ();
 
-  std::istream *input = 0;
+  std::istream *input = nullptr;
   std::ifstream input_file;
 
   if (args(0).is_string ())

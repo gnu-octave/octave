@@ -3533,7 +3533,7 @@ install_classdef (octave::tree_evaluator *tw)
 
 //----------------------------------------------------------------------------
 
-cdef_manager *cdef_manager::instance = 0;
+cdef_manager *cdef_manager::instance = nullptr;
 
 void
 cdef_manager::create_instance (void)
@@ -3600,7 +3600,7 @@ octave_function*
 cdef_manager::do_find_method_symbol (const std::string& method_name,
                                      const std::string& class_name)
 {
-  octave_function *retval = 0;
+  octave_function *retval = nullptr;
 
   cdef_class cls = find_class (class_name, false, false);
 
@@ -3660,7 +3660,7 @@ cdef_manager::do_find_package (const std::string& name,
 octave_function*
 cdef_manager::do_find_package_symbol (const std::string& pack_name)
 {
-  octave_function *retval = 0;
+  octave_function *retval = nullptr;
 
   cdef_package pack = find_package (pack_name, false);
 

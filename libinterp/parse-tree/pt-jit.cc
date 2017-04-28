@@ -176,7 +176,7 @@ jit_convert::jit_convert (octave_user_function& fcn,
         }
     }
 
-  jit_value *return_value = 0;
+  jit_value *return_value = nullptr;
   bool all_breaking = false;
   if (fcn.is_special_expr ())
     {
@@ -184,7 +184,7 @@ jit_convert::jit_convert (octave_user_function& fcn,
       if (expr)
         {
           jit_variable *retvar = get_variable ("#return");
-          jit_value *retval = 0;
+          jit_value *retval = nullptr;
           try
             {
               retval = visit (expr);

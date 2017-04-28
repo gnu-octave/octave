@@ -62,7 +62,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex,
 octave_base_value *
 octave_float_complex::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   float im = scalar.imag ();
 

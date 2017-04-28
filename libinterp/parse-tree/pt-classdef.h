@@ -42,7 +42,8 @@ namespace octave
   {
   public:
 
-    tree_classdef_attribute (tree_identifier *i = 0, tree_expression *e = 0)
+    tree_classdef_attribute (tree_identifier *i = nullptr,
+                             tree_expression *e = nullptr)
       : id (i), expr (e), neg (false) { }
 
     tree_classdef_attribute (tree_identifier *i, bool b)
@@ -214,7 +215,7 @@ namespace octave
   {
   public:
 
-    tree_classdef_property (tree_identifier *i = 0, tree_expression *e = 0)
+    tree_classdef_property (tree_identifier *i = nullptr, tree_expression *e = nullptr)
       : id (i), expr (e) { }
 
     // No copying!
@@ -352,7 +353,7 @@ namespace octave
   {
   public:
 
-    tree_classdef_event (tree_identifier *i = 0) : id (i) { }
+    tree_classdef_event (tree_identifier *i = nullptr) : id (i) { }
 
     // No copying!
 

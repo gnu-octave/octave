@@ -99,7 +99,7 @@ namespace octave
       std::cerr << "  " << lib.file_name () << std::endl;
   }
 
-  dynamic_loader *dynamic_loader::instance = 0;
+  dynamic_loader *dynamic_loader::instance = nullptr;
 
   bool dynamic_loader::doing_load = false;
 
@@ -150,7 +150,7 @@ namespace octave
                                const std::string& file_name,
                                bool relative)
   {
-    octave_function *retval = 0;
+    octave_function *retval = nullptr;
 
     unwind_protect frame;
 
@@ -204,7 +204,7 @@ namespace octave
                                const std::string& file_name,
                                bool /*relative*/)
   {
-    octave_function *retval = 0;
+    octave_function *retval = nullptr;
 
     unwind_protect frame;
 
@@ -228,7 +228,7 @@ namespace octave
     if (! mex_file)
       error ("%s is not a valid shared library", file_name.c_str ());
 
-    void *function = 0;
+    void *function = nullptr;
 
     bool have_fmex = false;
 

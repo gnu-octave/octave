@@ -61,7 +61,7 @@ namespace octave
     }
 
     OCTAVE_DEPRECATED ("use 'add (new fcn_arg_elem<void *> (fcn, ptr))' instead")
-    void add (void (*fcn) (void *), void *ptr = 0)
+    void add (void (*fcn) (void *), void *ptr = nullptr)
     {
       add (new fcn_arg_elem<void *> (fcn, ptr));
     }

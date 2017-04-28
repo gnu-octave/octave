@@ -298,7 +298,7 @@ namespace octave
     return *this;
   }
 
-  application *application::instance = 0;
+  application *application::instance = nullptr;
 
   application::application (int argc, char **argv)
     : m_options (argc, argv)

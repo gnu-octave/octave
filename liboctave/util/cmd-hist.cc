@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  command_history *command_history::instance = 0;
+  command_history *command_history::instance = nullptr;
 
 #if defined (USE_READLINE)
 

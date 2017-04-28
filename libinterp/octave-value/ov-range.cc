@@ -78,7 +78,7 @@ octave_range::numeric_conversion_function (void) const
 octave_base_value *
 octave_range::try_narrowing_conversion (void)
 {
-  octave_base_value *retval = 0;
+  octave_base_value *retval = nullptr;
 
   switch (range.numel ())
     {

@@ -84,14 +84,14 @@ octave_istream : public octave_base_iostream
 {
 public:
 
-  octave_istream (std::istream *arg = 0, const std::string& n = "")
+  octave_istream (std::istream *arg = nullptr, const std::string& n = "")
     : octave_base_iostream (n, std::ios::in,
                             octave::mach_info::native_float_format ()),
       is (arg)
   { }
 
   static octave::stream
-  create (std::istream *arg = 0, const std::string& n = "");
+  create (std::istream *arg = nullptr, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
 

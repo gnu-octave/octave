@@ -180,9 +180,9 @@ octave_user_function : public octave_user_code
 public:
 
   octave_user_function (symbol_table::scope_id sid = -1,
-                        octave::tree_parameter_list *pl = 0,
-                        octave::tree_parameter_list *rl = 0,
-                        octave::tree_statement_list *cl = 0);
+                        octave::tree_parameter_list *pl = nullptr,
+                        octave::tree_parameter_list *rl = nullptr,
+                        octave::tree_statement_list *cl = nullptr);
 
   // No copying!
 

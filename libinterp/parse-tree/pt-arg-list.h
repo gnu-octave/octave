@@ -91,7 +91,7 @@ namespace octave
     bool is_valid_lvalue_list (void) const;
 
     octave_value_list convert_to_const_vector (tree_evaluator *tw,
-                                               const octave_value *object = 0);
+                                               const octave_value *object = nullptr);
 
     std::list<octave_lvalue> lvalue_list (tree_evaluator *tw);
 

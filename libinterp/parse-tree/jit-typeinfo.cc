@@ -75,7 +75,7 @@ along with Octave; see the file COPYING.  If not, see
 
 static llvm::LLVMContext& context = llvm::getGlobalContext ();
 
-jit_typeinfo *jit_typeinfo::instance = 0;
+jit_typeinfo *jit_typeinfo::instance = nullptr;
 
 std::ostream& jit_print (std::ostream& os, jit_type *atype)
 {
@@ -655,7 +655,7 @@ jit_function::call (llvm::IRBuilderD& builder,
   llvm::BasicBlock& prelude = parent->getEntryBlock ();
   llvm::IRBuilder<> pre_builder (&prelude, prelude.begin ());
 
-  llvm::AllocaInst *sret_mem = 0;
+  llvm::AllocaInst *sret_mem = nullptr;
   if (sret ())
     {
       sret_mem = pre_builder.CreateAlloca (mresult->packed_type (call_conv));

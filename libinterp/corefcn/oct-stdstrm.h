@@ -102,7 +102,7 @@ octave_stdiostream
 {
 public:
 
-  octave_stdiostream (const std::string& n, FILE *f = 0,
+  octave_stdiostream (const std::string& n, FILE *f = nullptr,
                       std::ios::openmode m = std::ios::in | std::ios::out,
                       octave::mach_info::float_format ff
                         = octave::mach_info::native_float_format (),
@@ -111,7 +111,7 @@ public:
        (n, f, f ? fileno (f) : -1, m, ff, cf) { }
 
   static octave::stream
-  create (const std::string& n, FILE *f = 0,
+  create (const std::string& n, FILE *f = nullptr,
           std::ios::openmode m = std::ios::in | std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format (),

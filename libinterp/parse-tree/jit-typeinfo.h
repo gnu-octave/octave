@@ -253,7 +253,7 @@ public:
   std::string name (void) const;
 
   llvm::BasicBlock * new_block (const std::string& aname = "body",
-                                llvm::BasicBlock *insert_before = 0);
+                                llvm::BasicBlock *insert_before = nullptr);
 
   llvm::Value * call (llvm::IRBuilderD& builder,
                       const std::vector<jit_value *>& in_args) const;
@@ -286,7 +286,7 @@ public:
 
   llvm::Value * argument (llvm::IRBuilderD& builder, size_t idx) const;
 
-  void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = 0,
+  void do_return (llvm::IRBuilderD& builder, llvm::Value *rval = nullptr,
                   bool verify = true);
 
   llvm::Function * to_llvm (void) const { return llvm_function; }

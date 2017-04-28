@@ -173,7 +173,7 @@ namespace octave
 
           const char *fmt_str = fmt.c_str ();
 
-          char *buf = 0;
+          char *buf = nullptr;
           size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
           size_t chars_written = 0;
 

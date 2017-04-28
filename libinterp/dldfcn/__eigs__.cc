@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_ARPACK)
 
 // Global pointer for user defined function.
-static octave_function *eigs_fcn = 0;
+static octave_function *eigs_fcn = nullptr;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_imaginary = false;

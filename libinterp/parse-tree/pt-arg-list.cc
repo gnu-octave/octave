@@ -120,7 +120,7 @@ namespace octave
   }
 }
 
-static const octave_value *indexed_object = 0;
+static const octave_value *indexed_object = nullptr;
 static int index_position = 0;
 static int num_indices = 0;
 

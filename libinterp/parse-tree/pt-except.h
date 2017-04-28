@@ -47,9 +47,9 @@ namespace octave
 
     tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
                             tree_identifier *id,
-                            octave_comment_list *cl = 0,
-                            octave_comment_list *cm = 0,
-                            octave_comment_list *ct = 0,
+                            octave_comment_list *cl = nullptr,
+                            octave_comment_list *cm = nullptr,
+                            octave_comment_list *ct = nullptr,
                             int l = -1, int c = -1)
       : tree_command (l, c), try_code (tc), catch_code (cc), expr_id (id),
         lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
@@ -115,9 +115,9 @@ namespace octave
 
     tree_unwind_protect_command (tree_statement_list *tc,
                                  tree_statement_list *cc,
-                                 octave_comment_list *cl = 0,
-                                 octave_comment_list *cm = 0,
-                                 octave_comment_list *ct = 0,
+                                 octave_comment_list *cl = nullptr,
+                                 octave_comment_list *cm = nullptr,
+                                 octave_comment_list *ct = nullptr,
                                  int l = -1, int c = -1)
       : tree_command (l, c), unwind_protect_code (tc), cleanup_code (cc),
         lead_comm (cl), mid_comm (cm), trail_comm (ct) { }

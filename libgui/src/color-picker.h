@@ -37,7 +37,7 @@ class color_picker: public QPushButton
   Q_OBJECT
 
 public:
-  color_picker (QColor color = QColor (0,0,0), QWidget *parent = 0);
+  color_picker (QColor color = QColor (0,0,0), QWidget *parent = nullptr);
   QColor color () const { return _color; }
 
 private slots:

@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "oct-locbuf.h"
 
+#include "builtin-defun-decls.h"
 #include "defun.h"
 #include "error.h"
 #include "mxarray.h"
@@ -1273,11 +1274,6 @@ string.
 
   return ovl (args(0).is_cellstr ());
 }
-
-// Note that since Fcellstr calls Fiscellstr, we need to have
-// Fiscellstr defined first (to provide a declaration) and also we
-// should keep it in the same file (so we don't have to provide a
-// declaration) and so we don't have to use feval to call it.
 
 DEFUN (cellstr, args, ,
        doc: /* -*- texinfo -*-

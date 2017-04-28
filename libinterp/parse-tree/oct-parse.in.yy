@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "Cell.h"
+#include "builtin-defun-decls.h"
 #include "call-stack.h"
 #include "comment-list.h"
 #include "defaults.h"

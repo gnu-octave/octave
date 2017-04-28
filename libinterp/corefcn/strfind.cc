@@ -33,10 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "Cell.h"
-#include "ov.h"
+#include "builtin-defun-decls.h"
 #include "defun.h"
-#include "unwind-prot.h"
 #include "errwarn.h"
+#include "ov.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 // This allows safe indexing with char.

@@ -51,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include <zlib.h>
 #endif
 
-#include "error.h"
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-ieee.h"
@@ -61,7 +60,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "tmpfile-wrapper.h"
 #include "unistd-wrappers.h"
 
+#include "builtin-defun-decls.h"
 #include "defun.h"
+#include "error.h"
 #include "errwarn.h"
 #include "file-io.h"
 #include "load-path.h"

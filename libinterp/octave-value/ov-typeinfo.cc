@@ -139,7 +139,7 @@ octave_value_typeinfo::register_assign_op (octave_value::assign_op op,
                                            octave_value_typeinfo::assign_op_fcn f)
 {
   return (instance_ok ())
-         ? instance->do_register_assign_op (op, t_lhs, t_rhs, f) : -1;
+         ? instance->do_register_assign_op (op, t_lhs, t_rhs, f) : false;
 }
 
 bool
@@ -147,7 +147,7 @@ octave_value_typeinfo::register_assignany_op (octave_value::assign_op op,
                                               int t_lhs, octave_value_typeinfo::assignany_op_fcn f)
 {
   return (instance_ok ())
-         ? instance->do_register_assignany_op (op, t_lhs, f) : -1;
+         ? instance->do_register_assignany_op (op, t_lhs, f) : false;
 }
 
 bool

@@ -24,36 +24,32 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstring>
-#include <cctype>
-
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 #include "data-conv.h"
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 #include "quit.h"
-#include "str-vec.h"
-#include "oct-locbuf.h"
 
+#include "ls-mat4.h"
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "load-save.h"
-#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ovl.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
@@ -61,10 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
-#include "dSparse.h"
 
-#include "ls-mat4.h"
 
 // Read LEN elements of data from IS in the format specified by
 // PRECISION, placing the result in DATA.  If SWAP is TRUE, swap
@@ -139,9 +132,8 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 // If mopt is nonzero and the byte order is swapped, mopt will be
 // bigger than we expect, so we swap bytes.
 //
-// If mopt is zero, it means the file was written on a little endian
-// machine, and we only need to swap if we are running on a big endian
-// machine.
+// If mopt is zero, it means the file was written on a little endian machine,
+// and we only need to swap if we are running on a big endian machine.
 //
 // Gag me.
 

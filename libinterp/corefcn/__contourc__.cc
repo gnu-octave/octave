@@ -36,13 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-
-#include "quit.h"
+#include <limits>
 
 #include "defun.h"
-#include "error.h"
-#include "ovl.h"
+#include "ov.h"
 
 // FIXME: this looks like trouble...
 static Matrix this_contour;

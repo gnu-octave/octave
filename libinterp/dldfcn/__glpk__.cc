@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <ctime>
 
 #include <limits>

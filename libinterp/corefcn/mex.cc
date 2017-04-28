@@ -24,18 +24,20 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <csetjmp>
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
 
+#include <limits>
+#include <map>
 #include <set>
+#include <string>
 
 #include "f77-fcn.h"
 #include "lo-ieee.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 #include "Cell.h"
 #include "call-stack.h"

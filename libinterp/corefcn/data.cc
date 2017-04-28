@@ -27,21 +27,21 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <sys/types.h>
-
-#include <cfloat>
+#include <cstddef>
+#include <cstdint>
 #include <ctime>
 
+#include <algorithm>
+#include <limits>
 #include <string>
 
 #include "lo-ieee.h"
 #include "lo-math.h"
-#include "oct-base64.h"
-#include "oct-time.h"
-#include "str-vec.h"
-#include "quit.h"
 #include "mx-base.h"
+#include "oct-base64.h"
 #include "oct-binmap.h"
+#include "oct-time.h"
+#include "quit.h"
 
 #include "Cell.h"
 #include "defun.h"

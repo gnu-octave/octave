@@ -24,17 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstring>
 #include <cctype>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "data-conv.h"
 #include "file-ops.h"
 #include "glob-match.h"
@@ -43,28 +41,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-time.h"
 #include "quit.h"
-#include "str-vec.h"
 
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
-#include "errwarn.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-save.h"
 #include "ls-ascii-helper.h"
 #include "ls-mat-ascii.h"
-#include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ov.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
 
 static std::string
 get_mat_data_input_line (std::istream& is)

@@ -38,14 +38,12 @@ namespace octave
   class tree_identifier;
 }
 
-#include <cfloat>
-
 #include <limits>
 #include <string>
 
 #include "lo-ieee.h"
 
-#include "ov.h"
+//#include "ov.h"
 #include "ov-builtin.h"
 #include "symtab.h"
 

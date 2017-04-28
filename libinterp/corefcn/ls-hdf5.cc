@@ -28,11 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_HDF5)
 
-#include <cfloat>
-#include <cstring>
 #include <cctype>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>

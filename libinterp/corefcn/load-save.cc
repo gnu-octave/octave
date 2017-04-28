@@ -28,17 +28,17 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cstring>
-#include <cctype>
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <list>
 #include <sstream>
 #include <string>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "data-conv.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -70,7 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
 
 #include "ls-hdf5.h"
 #include "ls-mat-ascii.h"

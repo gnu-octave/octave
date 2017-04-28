@@ -25,10 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
-#include <cfloat>
+#include <cmath>
+#include <cstdint>
 #include <cstdlib>
 
 #include <algorithm>
+#include <iostream>
+#include <limits>
 #include <list>
 #include <map>
 #include <set>

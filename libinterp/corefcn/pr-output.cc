@@ -24,12 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstdio>
-#include <cstring>
-
 #include <iomanip>
 #include <iostream>
+#include <limits>
+#include <list>
 #include <sstream>
 #include <string>
 
@@ -43,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mach-info.h"
 #include "oct-cmplx.h"
 #include "quit.h"
-#include "str-vec.h"
 
 #include "Cell.h"
 #include "defun.h"

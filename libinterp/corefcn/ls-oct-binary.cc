@@ -24,15 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
-#include <cstring>
-#include <cctype>
-
-#include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "byte-swap.h"
 #include "data-conv.h"
@@ -41,30 +34,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
-#include "oct-time.h"
-#include "quit.h"
-#include "str-vec.h"
 #include "oct-locbuf.h"
+#include "oct-time.h"
 
-#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "load-save.h"
-#include "ovl.h"
-#include "oct-map.h"
+#include "ls-oct-binary.h"
+#include "ls-utils.h"
 #include "ov-cell.h"
+#include "ov.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
-
-#include "ls-utils.h"
-#include "ls-oct-binary.h"
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.  If the value

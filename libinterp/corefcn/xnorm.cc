@@ -26,16 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cassert>
-#include <cfloat>
-#include <cmath>
-
 #include "oct-norm.h"
 
-#include "error.h"
-#include "xnorm.h"
-#include "ov.h"
 #include "errwarn.h"
+#include "ov.h"
+#include "xnorm.h"
 
 octave_value xnorm (const octave_value& x, const octave_value& p)
 {

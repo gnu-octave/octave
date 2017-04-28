@@ -24,11 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+//#include <cstdlib>
 
 #include <iostream>
 #include <string>
@@ -67,7 +64,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "mach-info.h"
 #include "oct-env.h"
-#include "quit.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 

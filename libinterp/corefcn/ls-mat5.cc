@@ -26,58 +26,55 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cfloat>
 #include <cstring>
-#include <cctype>
 
-#include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "data-conv.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
-#include "file-stat.h"
-#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "load-save.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
-#include "ovl.h"
+#include "load-save.h"
+#include "ls-mat5.h"
+#include "ls-utils.h"
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "ov-class.h"
 #include "ov-fcn-inline.h"
+#include "ov.h"
+#include "ovl.h"
 #include "pager.h"
+#include "parse.h"
 #include "pt-exp.h"
 #include "sysdep.h"
-#include "interpreter-private.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include "dMatrix.h"
-
-#include "ls-utils.h"
-#include "ls-mat5.h"
-
-#include "parse.h"
-#include "defaults.h"
 
 #if defined (HAVE_ZLIB)
 #  include <zlib.h>

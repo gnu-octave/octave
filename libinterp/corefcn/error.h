@@ -44,6 +44,9 @@ extern OCTINTERP_API void reset_error_handler (void);
 
 extern OCTINTERP_API int warning_enabled (const std::string& id);
 
+extern OCTINTERP_API octave::execution_exception
+make_execution_exception (const char *who);
+
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
 

@@ -141,7 +141,7 @@ err_user_returned_invalid (const char *name)
 void
 err_user_supplied_eval (const char *name)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_user_supplied_eval (e, name);
 }
@@ -155,7 +155,7 @@ err_user_supplied_eval (octave::execution_exception& e, const char *name)
 void
 err_wrong_type_arg (const char *name, const char *s)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, name, s);
 }
@@ -170,7 +170,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const char *name, const std::string& s)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, name, s.c_str ());
 }
@@ -185,7 +185,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const char *name, const octave_value& tc)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, name, tc);
 }
@@ -202,7 +202,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const std::string& name, const octave_value& tc)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, name, tc);
 }
@@ -217,7 +217,7 @@ err_wrong_type_arg (octave::execution_exception& e,
 void
 err_wrong_type_arg (const char *s)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, s);
 }
@@ -231,7 +231,7 @@ err_wrong_type_arg (octave::execution_exception& e, const char *s)
 void
 err_wrong_type_arg (const std::string& s)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, s);
 }
@@ -245,7 +245,7 @@ err_wrong_type_arg (octave::execution_exception& e, const std::string& s)
 void
 err_wrong_type_arg (const octave_value& tc)
 {
-  octave::execution_exception e;
+  octave::execution_exception e = make_execution_exception ("error");
 
   err_wrong_type_arg (e, tc);
 }

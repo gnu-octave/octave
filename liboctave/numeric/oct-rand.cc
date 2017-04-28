@@ -101,7 +101,7 @@ force_to_fit_range (int32_t i, int32_t lo, int32_t hi)
 {
   assert (hi > lo && lo >= 0 && hi > lo);
 
-  i = i > 0 ? i : -i;
+  i = (i > 0 ? i : -i);
 
   if (i < lo)
     i = lo;
@@ -158,7 +158,7 @@ octave_rand::do_state (const ColumnVector& s, const std::string& d)
 
   int old_dist = current_distribution;
 
-  int new_dist = d.empty () ? current_distribution : get_dist_id (d);
+  int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
 
   ColumnVector saved_state;
 
@@ -180,7 +180,7 @@ octave_rand::do_reset (const std::string& d)
 
   int old_dist = current_distribution;
 
-  int new_dist = d.empty () ? current_distribution : get_dist_id (d);
+  int new_dist = (d.empty () ? current_distribution : get_dist_id (d));
 
   ColumnVector saved_state;
 
@@ -657,7 +657,7 @@ void
 octave_rand::set_internal_state (const ColumnVector& s)
 {
   octave_idx_type len = s.numel ();
-  octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
+  octave_idx_type n = (len < MT_N + 1 ? len : MT_N + 1);
 
   OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
 

@@ -101,7 +101,7 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
     {
       octave_idx_type m = numel ();
 
-      octave_idx_type len = n > m ? m : n;
+      octave_idx_type len = (n > m ? m : n);
 
       for (octave_idx_type i = 0; i < len; i++)
         {

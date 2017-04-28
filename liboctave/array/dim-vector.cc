@@ -65,7 +65,7 @@ dim_vector::chop_all_singletons (void)
   if (j == 1)
     rep[1] = 1;
 
-  rep[-1] = j > 2 ? j : 2;
+  rep[-1] = (j > 2 ? j : 2);
 }
 
 std::string
@@ -187,7 +187,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 {
   int orig_nd = ndims ();
   int ndb = dvb.ndims ();
-  int new_nd = dim < ndb ? ndb : dim + 1;
+  int new_nd = (dim < ndb ? ndb : dim + 1);
   if (new_nd > orig_nd)
     resize (new_nd, 1);
   else

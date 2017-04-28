@@ -239,8 +239,8 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
       reverse = true;
     }
 
-  octave_idx_type tmp = reverse ? nel - 1 : 0;
-  octave_idx_type stp = reverse ? -1 : 1;
+  octave_idx_type tmp = (reverse ? nel - 1 : 0);
+  octave_idx_type stp = (reverse ? -1 : 1);
 
   for (octave_idx_type i = 0; i < nel; i++, tmp += stp)
     psidx[i] = tmp;
@@ -298,7 +298,7 @@ Range::is_sorted (sortmode mode) const
   else if (rng_numel > 1 && rng_inc < 0)
     mode = (mode == ASCENDING) ? UNSORTED : DESCENDING;
   else
-    mode = mode ? mode : ASCENDING;
+    mode = (mode ? mode : ASCENDING);
 
   return mode;
 }
@@ -488,8 +488,8 @@ tfloor (double x, double ct)
 
   double t1 = 1.0 + std::floor (x);
   t1 = (ct / q) * (t1 < 0.0 ? -t1 : t1);
-  t1 = rmax < t1 ? rmax : t1;
-  t1 = ct > t1 ? ct : t1;
+  t1 = (rmax < t1 ? rmax : t1);
+  t1 = (ct > t1 ? ct : t1);
   t1 = std::floor (x + t1);
 
   if (x <= 0.0 || (t1 - x) < rmax)

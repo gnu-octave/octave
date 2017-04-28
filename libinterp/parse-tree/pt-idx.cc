@@ -392,7 +392,7 @@ namespace octave
     tree_index_expression *new_idx_expr
       = new tree_index_expression (line (), column ());
 
-    new_idx_expr->expr = expr ? expr->dup (scope, context) : 0;
+    new_idx_expr->expr = (expr ? expr->dup (scope, context) : 0);
 
     std::list<tree_argument_list *> new_args;
 

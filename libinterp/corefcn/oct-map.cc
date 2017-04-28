@@ -1164,7 +1164,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
 {
   Cell tmp;
   iterator p = seek (k);
-  Cell& ref = p != end () ? contents (p) : tmp;
+  Cell& ref = (p != end () ? contents (p) : tmp);
 
   if (&ref == &tmp)
     ref = Cell (dimensions);

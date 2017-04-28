@@ -382,8 +382,8 @@ octave_class::subsref (const std::string& type,
 
                 Cell t = tmp.index (idx.front ());
 
-                retval(0) = (t.numel () == 1) ? t(0)
-                                              : octave_value (t, true);
+                retval(0) = (t.numel () == 1 ? t(0)
+                                             : octave_value (t, true));
 
                 // We handled two index elements, so tell
                 // next_subsref to skip both of them.
@@ -1201,7 +1201,7 @@ octave_class::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
+          Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
           m.assign (nm, tcell);
         }
@@ -1325,7 +1325,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
+          Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
           m.assign (nm, tcell);
         }
@@ -1573,7 +1573,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2);
+      Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
       m.assign (dsub.name, tcell);
 

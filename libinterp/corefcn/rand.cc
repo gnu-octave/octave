@@ -171,7 +171,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             for (octave_idx_type i = 0; i < n; i++)
               {
                 // Negative dimensions treated as zero for Matlab compatibility
-                dims(i) = base >= 0 ? base : 0;
+                dims(i) = (base >= 0 ? base : 0);
                 base += incr;
               }
 
@@ -198,7 +198,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
               {
                 // Negative dimensions treated as zero for Matlab compatibility
                 octave_idx_type elt = iv(i);
-                dims(i) = elt >=0 ? elt : 0;
+                dims(i) = (elt >=0 ? elt : 0);
               }
 
             goto gen_matrix;
@@ -258,7 +258,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                     fcn);
 
                 // Negative dimensions treated as zero for Matlab compatibility
-                dims(i) = elt >= 0 ? elt : 0;
+                dims(i) = (elt >= 0 ? elt : 0);
               }
 
             goto gen_matrix;
@@ -1096,7 +1096,7 @@ likely.
   NDArray r = octave_rand::nd_array (dim_vector (1, m));
   double *rvec = r.fortran_vec ();
 
-  octave_idx_type idx_len = short_shuffle ? m : n;
+  octave_idx_type idx_len = (short_shuffle ? m : n);
   Array<octave_idx_type> idx;
   try
     {

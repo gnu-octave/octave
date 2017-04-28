@@ -61,7 +61,7 @@ void color_picker::update_button ()
   QWidget *p = parentWidget ();
 
   QString bordercolor
-    = p ? p->palette ().text ().color ().name () : QString ("#000000");
+    = (p ? p->palette ().text ().color ().name () : QString ("#000000"));
 
   QString css = QString ("background-color: %1; border: 1px solid %2;")
                 .arg (_color.name ())

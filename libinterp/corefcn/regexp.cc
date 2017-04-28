@@ -386,9 +386,9 @@ octregexp (const octave_value_list& args, int nargout,
     {
       octave::regexp::match_data::const_iterator p = rx_lst.begin ();
 
-      retval(4) = sz ? p->tokens () : Cell ();
-      retval(3) = sz ? p->match_string () : "";
-      retval(2) = sz ? p->token_extents () : Matrix ();
+      retval(4) = (sz ? p->tokens () : Cell ());
+      retval(3) = (sz ? p->match_string () : "");
+      retval(2) = (sz ? p->token_extents () : Matrix ());
 
       if (sz)
         {
@@ -848,7 +848,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.
   octave_value_list retval;
 
   if (args(0).is_cell () || args(1).is_cell ())
-    retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp");
+    retval = (octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp"));
   else
     retval = octregexp (args, nargout, "regexp");
 
@@ -1422,8 +1422,7 @@ function.
           ret(i) = new_args(0);
         }
 
-      retval = args(0).is_cell () ? ovl (ret)
-                                  : ovl (ret(0));
+      retval = (args(0).is_cell () ? ovl (ret) : ovl (ret(0)));
     }
   else
     retval = octregexprep (args, "regexprep");

@@ -145,8 +145,8 @@ extended_gcd (double a, double b, double& x, double& y)
       yy = ty;
     }
 
-  x = a >= 0 ? lx : -lx;
-  y = b >= 0 ? ly : -ly;
+  x = (a >= 0 ? lx : -lx);
+  y = (b >= 0 ? ly : -ly);
 
   return aa;
 }

@@ -415,8 +415,8 @@ double FADDEEVA_RE(erfc)(double x)
 #else
   if (x*x > 750) // underflow
     return (x >= 0 ? 0.0 : 2.0);
-  return x >= 0 ? exp(-x*x) * FADDEEVA_RE(erfcx)(x) 
-    : 2. - exp(-x*x) * FADDEEVA_RE(erfcx)(-x);
+  return (x >= 0 ? exp(-x*x) * FADDEEVA_RE(erfcx)(x) 
+                 : 2. - exp(-x*x) * FADDEEVA_RE(erfcx)(-x));
 #endif
 }
 
@@ -719,7 +719,7 @@ cmplx FADDEEVA(w)(cmplx z, double relerr)
        that the estimated nu be >= minimum nu to attain machine precision.
        I also separate the regions where nu == 2 and nu == 1. */
     const double ispi = 0.56418958354775628694807945156; // 1 / sqrt(pi)
-    double xs = y < 0 ? -creal(z) : creal(z); // compute for -z if y < 0
+    double xs = (y < 0 ? -creal(z) : creal(z)); // compute for -z if y < 0
     if (x + ya > 4000) { // nu <= 2
       if (x + ya > 1e7) { // nu == 1, w(z) = i/sqrt(pi) / z
         // scale to avoid overflow
@@ -770,7 +770,7 @@ cmplx FADDEEVA(w)(cmplx z, double relerr)
 #else // !USE_CONTINUED_FRACTION
   if (x + ya > 1e7) { // w(z) = i/sqrt(pi) / z, to machine precision
     const double ispi = 0.56418958354775628694807945156; // 1 / sqrt(pi)
-    double xs = y < 0 ? -creal(z) : creal(z); // compute for -z if y < 0
+    double xs = (y < 0 ? -creal(z) : creal(z)); // compute for -z if y < 0
     // scale to avoid overflow
     if (x > ya) {
       double yax = ya / xs; 

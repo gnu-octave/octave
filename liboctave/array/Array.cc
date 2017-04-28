@@ -1545,7 +1545,7 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
 
           for (int i = 0; i < ial; i++)
             {
-              octave_idx_type dim_len = i >= nd ? 1 : dimensions(i);
+              octave_idx_type dim_len = (i >= nd ? 1 : dimensions(i));
 
               if (ia(i).length (dim_len) == 0)
                 {

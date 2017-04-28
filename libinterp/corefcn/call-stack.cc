@@ -373,7 +373,7 @@ namespace octave
 
     size_t user_code_frames = do_num_user_code_frames (curr_user_frame);
 
-    size_t nframes = nskip <= user_code_frames ? user_code_frames - nskip : 0;
+    size_t nframes = (nskip <= user_code_frames ? user_code_frames - nskip : 0);
 
     // Our list is reversed.
     curr_user_frame = nframes - curr_user_frame - 1;

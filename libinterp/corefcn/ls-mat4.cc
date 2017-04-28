@@ -328,7 +328,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             SparseComplexMatrix smc = SparseComplexMatrix (data, r, c,
                                                            nr_new, nc_new);
 
-            tc = order ? smc.transpose () : smc;
+            tc = (order ? smc.transpose () : smc);
           }
         else
           {
@@ -352,7 +352,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
             SparseMatrix sm = SparseMatrix (data, r, c, nr_new, nc_new);
 
-            tc = order ? sm.transpose () : sm;
+            tc = (order ? sm.transpose () : sm);
           }
       }
     else
@@ -380,10 +380,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
               for (octave_idx_type i = 0; i < nr; i++)
                 ctmp (i,j) = Complex (re(i,j), im(i,j));
 
-            tc = order ? ctmp.transpose () : ctmp;
+            tc = (order ? ctmp.transpose () : ctmp);
           }
         else
-          tc = order ? re.transpose () : re;
+          tc = (order ? re.transpose () : re);
 
         if (type == 1)
           tc = tc.convert_to_str (false, true, '\'');
@@ -422,7 +422,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       uint32_t nnz = len + 1;
       os.write (reinterpret_cast<char *> (&nnz), 4);
 
-      uint32_t iscmplx = tc.is_complex_type () ? 4 : 3;
+      uint32_t iscmplx = (tc.is_complex_type () ? 4 : 3);
       os.write (reinterpret_cast<char *> (&iscmplx), 4);
 
       uint32_t tmp = 0;
@@ -433,7 +433,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       os.write (reinterpret_cast<char *> (&nr), 4);
       os.write (reinterpret_cast<char *> (&nc), 4);
 
-      int32_t imag = tc.is_complex_type () ? 1 : 0;
+      int32_t imag = (tc.is_complex_type () ? 1 : 0);
       os.write (reinterpret_cast<char *> (&imag), 4);
 
       len = nr * nc;

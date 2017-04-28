@@ -410,7 +410,7 @@ raw_mode (bool on, bool wait)
 #if defined (ONLRET)
         s.c_oflag &= ~(ONLRET);
 #endif
-        s.c_cc[VMIN] = wait ? 1 : 0;
+        s.c_cc[VMIN] = (wait ? 1 : 0);
         s.c_cc[VTIME] = 0;
       }
     else
@@ -453,7 +453,7 @@ raw_mode (bool on, bool wait)
 #if defined (ONLRET)
         s.c_oflag &= ~(ONLRET);
 #endif
-        s.c_cc[VMIN] = wait ? 1 : 0;
+        s.c_cc[VMIN] = (wait ? 1 : 0);
       }
     else
       {

@@ -58,7 +58,7 @@ null (const Matrix& A, octave_idx_type& rank)
       octave_idx_type A_nr = A.rows ();
       octave_idx_type A_nc = A.cols ();
 
-      octave_idx_type tmp = A_nr > A_nc ? A_nr : A_nc;
+      octave_idx_type tmp = (A_nr > A_nc ? A_nr : A_nc);
 
       double tol = tmp * s(0) * std::numeric_limits<double>::epsilon ();
 

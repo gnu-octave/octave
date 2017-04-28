@@ -428,7 +428,7 @@ namespace octave
     int count = 0;
 
     octave_value tmp = symbol_table::varval (".ignored.");
-    const Matrix ignored = tmp.is_defined () ? tmp.matrix_value () : Matrix ();
+    const Matrix ignored = (tmp.is_defined () ? tmp.matrix_value () : Matrix ());
 
     octave_idx_type k = 0;
 
@@ -1151,7 +1151,7 @@ namespace octave
           {
             tree_argument_list *al = *(args.begin ());
 
-            size_t n = al ? al->length () : 0;
+            size_t n = (al ? al->length () : 0);
 
             if (n > 0)
               {
@@ -1222,7 +1222,7 @@ namespace octave
                     octave_value_list tmp_list
                       =tmp.subsref (type.substr (tmpi, i-tmpi), idx, nargout);
 
-                    tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
+                    tmp = (tmp_list.length () ? tmp_list(0) : octave_value ());
                     tmpi = i;
                     idx.clear ();
 
@@ -1295,7 +1295,7 @@ namespace octave
         final_index_error (e, expr);
       }
 
-    octave_value val = retval.length () ? retval(0) : octave_value ();
+    octave_value val = (retval.length () ? retval(0) : octave_value ());
 
     if (val.is_function ())
       {
@@ -1377,7 +1377,7 @@ namespace octave
           }
         else if (result_type == "char")
           {
-            char type = all_dq_strings_p ? '"' : '\'';
+            char type = (all_dq_strings_p ? '"' : '\'');
 
             if (! all_strings_p)
               warn_implicit_conversion ("Octave:num-to-str",
@@ -1479,7 +1479,7 @@ namespace octave
             // insert them in the result matrix.
 
             int dv_len = dv.ndims ();
-            octave_idx_type ntmp = dv_len > 1 ? dv_len : 2;
+            octave_idx_type ntmp = (dv_len > 1 ? dv_len : 2);
             Array<octave_idx_type> ra_idx (dim_vector (ntmp, 1), 0);
 
             for (tm_row_const& row : tmp)

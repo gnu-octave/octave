@@ -308,7 +308,7 @@ private:
   idx_vector set_idx_cache (const idx_vector& idx) const
   {
     delete idx_cache;
-    idx_cache = idx ? new idx_vector (idx) : 0;
+    idx_cache = (idx ? new idx_vector (idx) : 0);
     return idx;
   }
 

@@ -495,8 +495,8 @@ zero_dims_inquire (const idx_vector& i, const idx_vector& j,
   else if (rhdv.ndims () == 2
            && ! i.is_scalar () && ! j.is_scalar ())
     {
-      rdv(0) = icol ? rhdv(0) : i.extent (0);
-      rdv(1) = jcol ? rhdv(1) : j.extent (0);
+      rdv(0) = (icol ? rhdv(0) : i.extent (0));
+      rdv(1) = (jcol ? rhdv(1) : j.extent (0));
     }
   else
     {

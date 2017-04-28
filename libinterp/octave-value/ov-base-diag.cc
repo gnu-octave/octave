@@ -488,7 +488,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
       || ! extract_keyword (is, "columns", c, true))
     error ("load: failed to extract number of rows and columns");
 
-  octave_idx_type l = r < c ? r : c;
+  octave_idx_type l = (r < c ? r : c);
   MT tmp (l, 1);
   is >> tmp;
 

@@ -866,7 +866,7 @@ Programming Note: @code{nargin} does not work on compiled functions
 
       octave::tree_parameter_list *param_list = fcn->parameter_list ();
 
-      retval = param_list ? param_list->length () : 0;
+      retval = (param_list ? param_list->length () : 0);
       if (fcn->takes_varargs ())
         retval = -1 - retval;
     }
@@ -985,7 +985,7 @@ returns -1 for all anonymous functions.
 
       octave::tree_parameter_list *ret_list = fcn->return_list ();
 
-      retval = ret_list ? ret_list->length () : 0;
+      retval = (ret_list ? ret_list->length () : 0);
 
       if (fcn->takes_var_return ())
         retval = -1 - retval;

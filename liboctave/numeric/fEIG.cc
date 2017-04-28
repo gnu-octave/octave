@@ -58,11 +58,11 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   Array<float> wi (dim_vector (n, 1));
   float *pwi = wi.fortran_vec ();
 
-  volatile F77_INT nvr = calc_rev ? n : 0;
+  volatile F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
   float *pvr = vr.fortran_vec ();
 
-  volatile F77_INT nvl = calc_lev ? n : 0;
+  volatile F77_INT nvl = (calc_lev ? n : 0);
   FloatMatrix vl (nvl, nvl);
   float *pvl = vl.fortran_vec ();
 
@@ -214,8 +214,8 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
     (*current_liboctave_error_handler) ("ssyev failed to converge");
 
   lambda = FloatComplexColumnVector (wr);
-  v = calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
-  w = calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
+  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }
@@ -245,11 +245,11 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   FloatComplexColumnVector wr (n);
   FloatComplex *pw = wr.fortran_vec ();
 
-  F77_INT nvr = calc_rev ? n : 0;
+  F77_INT nvr = (calc_rev ? n : 0);
   FloatComplexMatrix vrtmp (nvr, nvr);
   FloatComplex *pvr = vrtmp.fortran_vec ();
 
-  F77_INT nvl = calc_lev ? n : 0;
+  F77_INT nvl = (calc_lev ? n : 0);
   FloatComplexMatrix vltmp (nvl, nvl);
   FloatComplex *pvl = vltmp.fortran_vec ();
 
@@ -374,8 +374,8 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
     (*current_liboctave_error_handler) ("cheev failed to converge");
 
   lambda = FloatComplexColumnVector (wr);
-  v = calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
-  w = calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
+  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }
@@ -430,11 +430,11 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   Array<float> beta (dim_vector (n, 1));
   float *pbeta = beta.fortran_vec ();
 
-  volatile F77_INT nvr = calc_rev ? n : 0;
+  volatile F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
   float *pvr = vr.fortran_vec ();
 
-  volatile F77_INT nvl = calc_lev ? n : 0;
+  volatile F77_INT nvl = (calc_lev ? n : 0);
   FloatMatrix vl (nvl, nvl);
   float *pvl = vl.fortran_vec ();
 
@@ -579,8 +579,8 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
     (*current_liboctave_error_handler) ("ssygv failed to converge");
 
   lambda = FloatComplexColumnVector (wr);
-  v = calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
-  w = calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
+  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }
@@ -633,11 +633,11 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   FloatComplexColumnVector beta (n);
   FloatComplex *pbeta = beta.fortran_vec ();
 
-  F77_INT nvr = calc_rev ? n : 0;
+  F77_INT nvr = (calc_rev ? n : 0);
   FloatComplexMatrix vrtmp (nvr, nvr);
   FloatComplex *pvr = vrtmp.fortran_vec ();
 
-  F77_INT nvl = calc_lev ? n : 0;
+  F77_INT nvl = (calc_lev ? n : 0);
   FloatComplexMatrix vltmp (nvl, nvl);
   FloatComplex *pvl = vltmp.fortran_vec ();
 
@@ -758,8 +758,8 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
     (*current_liboctave_error_handler) ("zhegv failed to converge");
 
   lambda = FloatComplexColumnVector (wr);
-  v = calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
-  w = calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ();
+  v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
+  w = (calc_lev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());
 
   return info;
 }

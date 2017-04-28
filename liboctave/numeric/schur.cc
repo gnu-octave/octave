@@ -121,7 +121,7 @@ namespace octave
       else
         jobvs = 'N';
 
-      char ord_char = ord.empty () ? 'U' : ord[0];
+      char ord_char = (ord.empty () ? 'U' : ord[0]);
 
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
@@ -208,7 +208,7 @@ namespace octave
       else
         jobvs = 'N';
 
-      char ord_char = ord.empty () ? 'U' : ord[0];
+      char ord_char = (ord.empty () ? 'U' : ord[0]);
 
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
@@ -295,7 +295,7 @@ namespace octave
       else
         jobvs = 'N';
 
-      char ord_char = ord.empty () ? 'U' : ord[0];
+      char ord_char = (ord.empty () ? 'U' : ord[0]);
 
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';
@@ -403,7 +403,7 @@ namespace octave
       else
         jobvs = 'N';
 
-      char ord_char = ord.empty () ? 'U' : ord[0];
+      char ord_char = (ord.empty () ? 'U' : ord[0]);
 
       if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
         sort = 'S';

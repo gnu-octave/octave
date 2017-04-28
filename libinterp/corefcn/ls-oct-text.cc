@@ -268,7 +268,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     {
       global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
 
-      typ = global ? tag.substr (7) : tag;
+      typ = (global ? tag.substr (7) : tag);
     }
   else
     typ = tag;

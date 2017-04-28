@@ -1858,7 +1858,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
         }
       else if (result_type == "char")
         {
-          char type = all_dq_strings_p ? '"' : '\'';
+          char type = (all_dq_strings_p ? '"' : '\'');
 
           if (! all_strings_p)
             warn_implicit_conversion ("Octave:num-to-str",
@@ -6178,8 +6178,8 @@ or @w{@code{base : increment : limit}}.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  return (nargin == 2) ? do_colon_op (args(0), args(1))
-                       : do_colon_op (args(0), args(1), args(2));
+  return (nargin == 2 ? do_colon_op (args(0), args(1))
+                      : do_colon_op (args(0), args(1), args(2)));
 }
 
 static double tic_toc_timestamp = -1.0;
@@ -7259,13 +7259,13 @@ do_merge (const Array<bool>& mask,
           T ts = tv[0];
           T fs = fv[0];
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? ts : fs;
+            rv[i] = (mv[i] ? ts : fs);
         }
       else
         {
           T ts = tv[0];
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? ts : fv[i];
+            rv[i] = (mv[i] ? ts : fv[i]);
         }
     }
   else
@@ -7274,12 +7274,12 @@ do_merge (const Array<bool>& mask,
         {
           T fs = fv[0];
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? tv[i] : fs;
+            rv[i] = (mv[i] ? tv[i] : fs);
         }
       else
         {
           for (octave_idx_type i = 0; i < n; i++)
-            rv[i] = mv[i] ? tv[i] : fv[i];
+            rv[i] = (mv[i] ? tv[i] : fv[i]);
         }
     }
 
@@ -7334,7 +7334,7 @@ converted to logical.
   octave_value mask_val = args(0);
 
   if (mask_val.is_scalar_type ())
-    retval = mask_val.is_true () ? args(1) : args(2);
+    retval = (mask_val.is_true () ? args(1) : args(2));
   else
     {
       boolNDArray mask = mask_val.bool_array_value ();

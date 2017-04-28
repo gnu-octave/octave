@@ -1637,7 +1637,7 @@ the file @file{data} in Octave's binary format.
         use_zlib = false;
 
       std::ios::openmode mode
-        = append ? (std::ios::app | std::ios::ate) : std::ios::out;
+        = (append ? (std::ios::app | std::ios::ate) : std::ios::out);
 
       if (format == LS_BINARY
 #if defined (HAVE_HDF5)

@@ -302,8 +302,8 @@ FloatNDArray::fourier2d (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -350,8 +350,8 @@ FloatNDArray::ifourier2d (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -398,8 +398,8 @@ FloatNDArray::fourierNd (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
@@ -445,8 +445,8 @@ FloatNDArray::ifourierNd (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany :
-                 (howmany > stride ? stride : howmany));
+      howmany = (stride == 1 ? howmany
+                             : (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 

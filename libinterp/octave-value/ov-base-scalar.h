@@ -85,7 +85,7 @@ public:
 
   int ndims (void) const { return 2; }
 
-  octave_idx_type nnz (void) const { return (scalar != ST ()) ? 1 : 0; }
+  octave_idx_type nnz (void) const { return (scalar != ST () ? 1 : 0); }
 
   octave_value permute (const Array<int>&, bool = false) const;
 

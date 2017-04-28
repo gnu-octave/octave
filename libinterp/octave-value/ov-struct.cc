@@ -740,7 +740,7 @@ octave_struct::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+          Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
           m.setfield (nm, tcell);
         }
@@ -853,7 +853,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+          Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
           m.setfield (nm, tcell);
         }
@@ -954,7 +954,7 @@ octave_struct::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2);
+      Cell tcell = (t2.is_cell () ? t2.xcell_value ("load: internal error loading struct elements") : Cell (t2));
 
       m.setfield (dsub.name, tcell);
 
@@ -1978,7 +1978,7 @@ A(1)
       if (! args(2).is_real_scalar ())
         error ("cell2struct: DIM must be a real scalar");
 
-      dim = nargin == 2 ? 0 : args(2).int_value () - 1;
+      dim = (nargin == 2 ? 0 : args(2).int_value () - 1);
     }
 
   if (dim < 0)
@@ -1987,7 +1987,7 @@ A(1)
   const Cell vals = args(0).cell_value ();
   const Array<std::string> fields = args(1).cellstr_value ();
 
-  octave_idx_type ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
+  octave_idx_type ext = (vals.ndims () > dim ? vals.dims ()(dim) : 1);
 
   if (ext != fields.numel ())
     error ("cell2struct: number of FIELDS does not match dimension");

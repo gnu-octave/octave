@@ -50,7 +50,7 @@ charNDArray::charNDArray (char c)
 charNDArray::charNDArray (const char *s)
   : Array<char> ()
 {
-  octave_idx_type n = s ? strlen (s) : 0;
+  octave_idx_type n = (s ? strlen (s) : 0);
 
   resize1 (n);
 

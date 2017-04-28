@@ -701,7 +701,7 @@ Matrix::fourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -730,7 +730,7 @@ Matrix::ifourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -878,7 +878,7 @@ Matrix::fourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -946,7 +946,7 @@ Matrix::ifourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -2096,7 +2096,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
       if (m != n)
         {
@@ -2315,7 +2315,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
       if (m != n)
@@ -2621,7 +2621,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (i) = tmp_min;
-          idx_arg.elem (i) = octave::math::isnan (tmp_min) ? 0 : idx_j;
+          idx_arg.elem (i) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
         }
     }
 
@@ -2676,7 +2676,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (i) = tmp_max;
-          idx_arg.elem (i) = octave::math::isnan (tmp_max) ? 0 : idx_j;
+          idx_arg.elem (i) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
         }
     }
 
@@ -2731,7 +2731,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (j) = tmp_min;
-          idx_arg.elem (j) = octave::math::isnan (tmp_min) ? 0 : idx_i;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_i);
         }
     }
 
@@ -2786,7 +2786,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (j) = tmp_max;
-          idx_arg.elem (j) = octave::math::isnan (tmp_max) ? 0 : idx_i;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_i);
         }
     }
 

@@ -98,7 +98,7 @@ default_history_size (void)
       int val;
 
       if (sscanf (env_size.c_str (), "%d", &val) == 1)
-        size = val > 0 ? val : 0;
+        size = (val > 0 ? val : 0);
     }
 
   return size;

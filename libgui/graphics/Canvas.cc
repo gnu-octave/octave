@@ -814,7 +814,7 @@ namespace QtHandles
 
             if (m_mouseAnchor == event->pos ())
               {
-                double factor = m_clickMode ? 2.0 : 0.5;
+                double factor = (m_clickMode ? 2.0 : 0.5);
 
                 ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
 
@@ -983,7 +983,7 @@ namespace QtHandles
                 {
                   axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                  double factor = event->delta () > 0 ? 0.1 : -0.1;
+                  double factor = (event->delta () > 0 ? 0.1 : -0.1);
 
                   ap.pan (mode, factor);
                 }

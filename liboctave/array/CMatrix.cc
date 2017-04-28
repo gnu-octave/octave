@@ -1004,7 +1004,7 @@ ComplexMatrix::fourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -1033,7 +1033,7 @@ ComplexMatrix::ifourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -1183,7 +1183,7 @@ ComplexMatrix::fourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -1251,7 +1251,7 @@ ComplexMatrix::ifourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -2440,7 +2440,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
       if (m != n)
@@ -2663,7 +2663,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
       if (m != n)
@@ -3059,8 +3059,8 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_min))
                 {
-                  abs_min = real_only ? tmp_min.real ()
-                                      : std::abs (tmp_min);
+                  abs_min = (real_only ? tmp_min.real ()
+                                       : std::abs (tmp_min));
                   break;
                 }
             }
@@ -3072,7 +3072,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              double abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp < abs_min)
                 {
@@ -3134,8 +3134,8 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_max))
                 {
-                  abs_max = real_only ? tmp_max.real ()
-                                      : std::abs (tmp_max);
+                  abs_max = (real_only ? tmp_max.real ()
+                                       : std::abs (tmp_max));
                   break;
                 }
             }
@@ -3147,7 +3147,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              double abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp > abs_max)
                 {
@@ -3209,8 +3209,8 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_min))
                 {
-                  abs_min = real_only ? tmp_min.real ()
-                                      : std::abs (tmp_min);
+                  abs_min = (real_only ? tmp_min.real ()
+                                       : std::abs (tmp_min));
                   break;
                 }
             }
@@ -3222,7 +3222,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              double abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp < abs_min)
                 {
@@ -3284,8 +3284,8 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_max))
                 {
-                  abs_max = real_only ? tmp_max.real ()
-                                      : std::abs (tmp_max);
+                  abs_max = (real_only ? tmp_max.real ()
+                                       : std::abs (tmp_max));
                   break;
                 }
             }
@@ -3297,7 +3297,7 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              double abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              double abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp > abs_max)
                 {

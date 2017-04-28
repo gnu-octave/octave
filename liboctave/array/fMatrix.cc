@@ -708,7 +708,7 @@ FloatMatrix::fourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -737,7 +737,7 @@ FloatMatrix::ifourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -885,7 +885,7 @@ FloatMatrix::fourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -952,7 +952,7 @@ FloatMatrix::ifourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -2120,7 +2120,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
       if (m != n)
         {
@@ -2337,7 +2337,7 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
       if (m != n)
@@ -2628,7 +2628,7 @@ FloatMatrix::row_min (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (i) = tmp_min;
-          idx_arg.elem (i) = octave::math::isnan (tmp_min) ? 0 : idx_j;
+          idx_arg.elem (i) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
         }
     }
 
@@ -2683,7 +2683,7 @@ FloatMatrix::row_max (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (i) = tmp_max;
-          idx_arg.elem (i) = octave::math::isnan (tmp_max) ? 0 : idx_j;
+          idx_arg.elem (i) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
         }
     }
 
@@ -2738,7 +2738,7 @@ FloatMatrix::column_min (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (j) = tmp_min;
-          idx_arg.elem (j) = octave::math::isnan (tmp_min) ? 0 : idx_i;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_i);
         }
     }
 
@@ -2793,7 +2793,7 @@ FloatMatrix::column_max (Array<octave_idx_type>& idx_arg) const
             }
 
           result.elem (j) = tmp_max;
-          idx_arg.elem (j) = octave::math::isnan (tmp_max) ? 0 : idx_i;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_i);
         }
     }
 

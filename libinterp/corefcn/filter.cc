@@ -48,7 +48,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   octave_idx_type a_len = a.numel ();
   octave_idx_type b_len = b.numel ();
 
-  octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
+  octave_idx_type ab_len = (a_len > b_len ? a_len : b_len);
 
   // FIXME: The two lines below should be unecessary because
   //        this template is called with a and b as column vectors

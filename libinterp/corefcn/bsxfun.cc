@@ -396,9 +396,9 @@ dimensionality as the other array.
 
       for (octave_idx_type i = 0; i < nd; i++)
         dvc(i) = (dva(i) < 1 ? dva(i)
-                  : (dvb(i) < 1 ? dvb(i)
-                     : (dva(i) > dvb(i)
-                        ? dva(i) : dvb(i))));
+                             : (dvb(i) < 1 ? dvb(i)
+                                           : (dva(i) > dvb(i) ? dva(i)
+                                                              : dvb(i))));
 
       if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
         {

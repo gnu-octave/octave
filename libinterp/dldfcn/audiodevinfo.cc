@@ -168,7 +168,7 @@ recording using those parameters.
 
       const PaHostApiInfo *api_info = Pa_GetHostApiInfo (device_info->hostApi);
 
-      const char *driver = api_info ? api_info->name : "";
+      const char *driver = (api_info ? api_info->name : "");
 
       char name[128];
       sprintf (name, "%s (%s)", device_info->name, driver);
@@ -878,7 +878,7 @@ audioplayer::init_fn (void)
              "invalid default audio device ID = %d", device);
 
   output_parameters.suggestedLatency
-    = device_info ? device_info->defaultHighOutputLatency : -1;
+    = (device_info ? device_info->defaultHighOutputLatency : -1);
 
   output_parameters.hostApiSpecificStreamInfo = 0;
 }
@@ -922,7 +922,7 @@ audioplayer::init (void)
              "invalid default audio device ID = %d", device);
 
   output_parameters.suggestedLatency
-    = device_info ? device_info->defaultHighOutputLatency : -1;
+    = (device_info ? device_info->defaultHighOutputLatency : -1);
 
   output_parameters.hostApiSpecificStreamInfo = 0;
 }
@@ -1514,7 +1514,7 @@ audiorecorder::init (void)
              "invalid default audio device ID = %d", device);
 
   input_parameters.suggestedLatency
-    = device_info ? device_info->defaultHighInputLatency : -1;
+    = (device_info ? device_info->defaultHighInputLatency : -1);
 
   input_parameters.hostApiSpecificStreamInfo = 0;
 }

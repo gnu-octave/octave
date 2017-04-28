@@ -62,8 +62,8 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
       Parent[k] = n ;                // parent of k is not yet known
       Flag[k] = k ;                  // mark node k as visited
-      octave_idx_type kk = (P) ? P[k]  // kth original, or permuted, column
-                               : (k);
+      octave_idx_type kk = (P ? P[k]  // kth original, or permuted, column
+                              : (k));
       octave_idx_type p2 = cidx[kk+1];
       for (octave_idx_type p = cidx[kk] ; p < p2 ; p++)
         {

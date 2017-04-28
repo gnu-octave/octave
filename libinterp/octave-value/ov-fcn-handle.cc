@@ -382,7 +382,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
   else
     {
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : "";
+      std::string fnm = (f ? f->fcn_file_name () : "");
 
       os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
       if (! fnm.empty ())
@@ -556,7 +556,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       std::ostringstream nmbuf;
 
       octave_function *f = function_value ();
-      std::string fnm = f ? f->fcn_file_name () : "";
+      std::string fnm = (f ? f->fcn_file_name () : "");
 
       nmbuf << nm << "\n" << OCTAVE_EXEC_PREFIX << "\n" << fnm;
 
@@ -851,7 +851,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       std::string octaveroot = OCTAVE_EXEC_PREFIX;
 
       octave_function *f = function_value ();
-      std::string fpath = f ? f->fcn_file_name () : "";
+      std::string fpath = (f ? f->fcn_file_name () : "");
 
       H5Sclose (space_hid);
       hdims[0] = 1;
@@ -1717,7 +1717,7 @@ particular output format.
 
   octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
 
-  octave_function *fcn = fh ? fh->function_value () : 0;
+  octave_function *fcn = (fh ? fh->function_value () : 0);
 
   if (! fcn)
     error ("functions: FCN_HANDLE is not a valid function handle object");
@@ -1929,7 +1929,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
   octave_fcn_handle *retval = 0;
 
   octave_user_function *usr_fcn = f.user_function_value (false);
-  octave::tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
+  octave::tree_parameter_list *param_list = (usr_fcn ? usr_fcn->parameter_list () : 0);
 
   octave::tree_statement_list *cmd_list = 0;
   octave::tree_expression *body_expr = 0;
@@ -1974,7 +1974,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
               for (auto& param_p : *param_list)
                 {
                   octave::tree_decl_elt *elt = param_p;
-                  octave::tree_identifier *id = elt ? elt->ident () : 0;
+                  octave::tree_identifier *id = (elt ? elt->ident () : 0);
                   if (id && ! id->is_black_hole ())
                     arginmap[id->name ()] = npar;
                 }

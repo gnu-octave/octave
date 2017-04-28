@@ -1230,8 +1230,8 @@ jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
   if (extra_arg)
     call_args[call_args.size () - 1] = extra_arg;
 
-  const jit_operation& fres = lhs ? jit_typeinfo::paren_subsasgn ()
-                                  : jit_typeinfo::paren_subsref ();
+  const jit_operation& fres = (lhs ? jit_typeinfo::paren_subsasgn ()
+                                   : jit_typeinfo::paren_subsref ());
 
   return create_checked (fres, call_args);
 }
@@ -2501,8 +2501,8 @@ octave_value
 jit_info::find (const vmap& extra_vars, const std::string& vname) const
 {
   vmap::const_iterator iter = extra_vars.find (vname);
-  return iter == extra_vars.end () ? symbol_table::varval (vname)
-                                   : *iter->second;
+  return (iter == extra_vars.end () ? symbol_table::varval (vname)
+                                    : *iter->second);
 }
 
 #endif

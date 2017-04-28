@@ -123,7 +123,7 @@ set_octave_home (void)
 {
   std::string oh = octave::sys::env::getenv ("OCTAVE_HOME");
 
-  Voctave_home = oh.empty () ? std::string (OCTAVE_PREFIX) : oh;
+  Voctave_home = (oh.empty () ? std::string (OCTAVE_PREFIX) : oh);
 }
 
 static void
@@ -313,7 +313,7 @@ set_default_doc_cache_file (void)
 
       std::string env_file = octave::sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
-      Vdoc_cache_file = env_file.empty () ? def_file : env_file;
+      Vdoc_cache_file = (env_file.empty () ? def_file : env_file);
     }
 }
 
@@ -326,7 +326,7 @@ set_default_texi_macros_file (void)
 
       std::string env_file = octave::sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 
-      Vtexi_macros_file = env_file.empty () ? def_file : env_file;
+      Vtexi_macros_file = (env_file.empty () ? def_file : env_file);
     }
 }
 
@@ -339,7 +339,7 @@ set_default_info_file (void)
 
       std::string oct_info_file = octave::sys::env::getenv ("OCTAVE_INFO_FILE");
 
-      Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
+      Vinfo_file = (oct_info_file.empty () ? std_info_file : oct_info_file);
     }
 }
 

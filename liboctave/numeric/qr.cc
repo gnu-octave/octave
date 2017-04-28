@@ -387,7 +387,7 @@ namespace octave
         {
           for (F77_INT j = 0; j < min_mn; j++)
             {
-              F77_INT limit = j < min_mn - 1 ? j : min_mn - 1;
+              F77_INT limit = (j < min_mn - 1 ? j : min_mn - 1);
               for (F77_INT i = limit + 1; i < m; i++)
                 afact.elem (i, j) *= tau[j];
             }
@@ -401,7 +401,7 @@ namespace octave
             {
               // afact will become q.
               q = afact;
-              F77_INT k = qr_type == qr<Matrix>::economy ? n : m;
+              F77_INT k = (qr_type == qr<Matrix>::economy ? n : m);
               r = Matrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
@@ -451,7 +451,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (a.rows ());
       F77_INT n = octave::to_f77_int (a.cols ());
 
-      F77_INT min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (double, tau, min_mn);
 
       F77_INT info = 0;
@@ -687,7 +687,7 @@ namespace octave
             {
               F77_INT ii = i;
               F77_INT js_elt = octave::to_f77_int (js(ii));
-              F77_XFCN (dqrdec, DQRDEC, (m, n - ii, k == m ? k : k - ii,
+              F77_XFCN (dqrdec, DQRDEC, (m, n - ii, (k == m ? k : k - ii),
                                          q.fortran_vec (), ldq,
                                          r.fortran_vec (), ldr,
                                          js_elt + 1, w));
@@ -801,7 +801,7 @@ namespace octave
         {
           for (F77_INT j = 0; j < min_mn; j++)
             {
-              F77_INT limit = j < min_mn - 1 ? j : min_mn - 1;
+              F77_INT limit = (j < min_mn - 1 ? j : min_mn - 1);
               for (F77_INT i = limit + 1; i < m; i++)
                 afact.elem (i, j) *= tau[j];
             }
@@ -815,7 +815,7 @@ namespace octave
             {
               // afact will become q.
               q = afact;
-              F77_INT k = qr_type == qr<FloatMatrix>::economy ? n : m;
+              F77_INT k = (qr_type == qr<FloatMatrix>::economy ? n : m);
               r = FloatMatrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
@@ -865,7 +865,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (a.rows ());
       F77_INT n = octave::to_f77_int (a.cols ());
 
-      F77_INT min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (float, tau, min_mn);
 
       F77_INT info = 0;
@@ -1103,7 +1103,7 @@ namespace octave
             {
               F77_INT ii = i;
               F77_INT js_elt = octave::to_f77_int (js(ii));
-              F77_XFCN (sqrdec, SQRDEC, (m, n - ii, k == m ? k : k - ii,
+              F77_XFCN (sqrdec, SQRDEC, (m, n - ii, (k == m ? k : k - ii),
                                          q.fortran_vec (), ldq,
                                          r.fortran_vec (), ldr,
                                          js_elt + 1, w));
@@ -1219,7 +1219,7 @@ namespace octave
         {
           for (F77_INT j = 0; j < min_mn; j++)
             {
-              F77_INT limit = j < min_mn - 1 ? j : min_mn - 1;
+              F77_INT limit = (j < min_mn - 1 ? j : min_mn - 1);
               for (F77_INT i = limit + 1; i < m; i++)
                 afact.elem (i, j) *= tau[j];
             }
@@ -1233,7 +1233,7 @@ namespace octave
             {
               // afact will become q.
               q = afact;
-              F77_INT k = qr_type == qr<ComplexMatrix>::economy ? n : m;
+              F77_INT k = (qr_type == qr<ComplexMatrix>::economy ? n : m);
               r = ComplexMatrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
@@ -1289,7 +1289,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (a.rows ());
       F77_INT n = octave::to_f77_int (a.cols ());
 
-      F77_INT min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (Complex, tau, min_mn);
 
       F77_INT info = 0;
@@ -1544,7 +1544,7 @@ namespace octave
             {
               F77_INT ii = i;
               F77_INT js_elt = octave::to_f77_int (js(ii));
-              F77_XFCN (zqrdec, ZQRDEC, (m, n - ii, k == m ? k : k - ii,
+              F77_XFCN (zqrdec, ZQRDEC, (m, n - ii, (k == m ? k : k - ii),
                                          F77_DBLE_CMPLX_ARG (q.fortran_vec ()),
                                          ldq,
                                          F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
@@ -1665,7 +1665,7 @@ namespace octave
         {
           for (F77_INT j = 0; j < min_mn; j++)
             {
-              F77_INT limit = j < min_mn - 1 ? j : min_mn - 1;
+              F77_INT limit = (j < min_mn - 1 ? j : min_mn - 1);
               for (F77_INT i = limit + 1; i < m; i++)
                 afact.elem (i, j) *= tau[j];
             }
@@ -1679,7 +1679,7 @@ namespace octave
             {
               // afact will become q.
               q = afact;
-              F77_INT k = qr_type == qr<FloatComplexMatrix>::economy ? n : m;
+              F77_INT k = (qr_type == qr<FloatComplexMatrix>::economy ? n : m);
               r = FloatComplexMatrix (k, n);
               for (F77_INT j = 0; j < n; j++)
                 {
@@ -1733,7 +1733,7 @@ namespace octave
       F77_INT m = octave::to_f77_int (a.rows ());
       F77_INT n = octave::to_f77_int (a.cols ());
 
-      F77_INT min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
       OCTAVE_LOCAL_BUFFER (FloatComplex, tau, min_mn);
 
       F77_INT info = 0;
@@ -1983,7 +1983,7 @@ namespace octave
             {
               F77_INT ii = i;
               F77_INT js_elt = octave::to_f77_int (js(ii));
-              F77_XFCN (cqrdec, CQRDEC, (m, n - ii, k == m ? k : k - ii,
+              F77_XFCN (cqrdec, CQRDEC, (m, n - ii, (k == m ? k : k - ii),
                                          F77_CMPLX_ARG (q.fortran_vec ()), ldq,
                                          F77_CMPLX_ARG (r.fortran_vec ()), ldr,
                                          js_elt + 1, rw));

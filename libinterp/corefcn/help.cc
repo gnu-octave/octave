@@ -813,8 +813,8 @@ file_is_in_dir (const std::string filename, const std::string dir)
     {
       const int dir_len = dir.size ();
       const int filename_len = filename.size ();
-      const int max_allowed_seps = octave::sys::file_ops::is_dir_sep (dir[dir_len-1]) ? 0
-                                                                         : 1;
+      const int max_allowed_seps =
+        (octave::sys::file_ops::is_dir_sep (dir[dir_len-1]) ? 0 : 1);
 
       int num_seps = 0;
       for (int i = dir_len; i < filename_len; i++)

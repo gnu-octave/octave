@@ -182,7 +182,7 @@ sparse matrix if possible.
 
   retval(0) = result;
   if (nargout > 1)
-    retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
+    retval(1) = (isfloat ? octave_value (frcond) : octave_value (rcond));
 
   bool rcond_plus_one_eq_one = false;
 

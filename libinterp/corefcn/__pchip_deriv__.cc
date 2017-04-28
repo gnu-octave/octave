@@ -69,8 +69,8 @@ Undocumented internal function.
           FloatMatrix dmat (nyr, nyc);
 
           F77_INT ierr;
-          const F77_INT incfd = rows ? octave::to_f77_int (nyr) : 1;
-          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          const F77_INT incfd = (rows ? octave::to_f77_int (nyr) : 1);
+          volatile const octave_idx_type inc = (rows ? 1 : nyr);
           volatile octave_idx_type k = 0;
 
           for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
@@ -107,8 +107,8 @@ Undocumented internal function.
           Matrix dmat (nyr, nyc);
 
           F77_INT ierr;
-          const F77_INT incfd = rows ? octave::to_f77_int (nyr) : 1;
-          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          const F77_INT incfd = (rows ? octave::to_f77_int (nyr) : 1);
+          volatile const octave_idx_type inc = (rows ? 1 : nyr);
           volatile octave_idx_type k = 0;
 
           for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)

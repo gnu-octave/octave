@@ -197,8 +197,11 @@ public:
   scaler (const std::string& s)
     : rep (s == "log"
            ? new log_scaler ()
-           : (s == "neglog" ? new neg_log_scaler ()
-              : (s == "linear" ? new lin_scaler () : new base_scaler ())))
+           : (s == "neglog"
+              ? new neg_log_scaler ()
+              : (s == "linear"
+                 ? new lin_scaler ()
+                 : new base_scaler ())))
   { }
 
   ~scaler (void) { delete rep; }
@@ -1443,7 +1446,7 @@ public:
 protected:
   bool do_set (const octave_value& v)
   {
-    octave_value tmp = v.is_sparse_type () ? v.full_value () : v;
+    octave_value tmp = (v.is_sparse_type () ? v.full_value () : v);
 
     if (! validate (tmp))
       error ("invalid value for array property \"%s\"",
@@ -4779,18 +4782,18 @@ public:
       Matrix lim;
 
       lim = Matrix (1, 3, pos(0));
-      lim(2) = lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2);
+      lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
       set_xlim (lim);
 
       lim = Matrix (1, 3, pos(1));
-      lim(2) = lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2);
+      lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
       set_ylim (lim);
 
       if (pos.numel () == 3)
         {
           lim = Matrix (1, 3, pos(2));
-          lim(2) = lim(2) <= 0 ? octave::numeric_limits<double>::Inf ()
-                               : lim(2);
+          lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf ()
+                                : lim(2));
           set_zliminclude ("on");
           set_zlim (lim);
         }

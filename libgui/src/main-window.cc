@@ -952,7 +952,7 @@ main_window::set_current_working_directory (const QString& dir)
 {
   // Change to dir if it is an existing directory.
 
-  QString xdir = dir.isEmpty () ? "." : dir;
+  QString xdir = (dir.isEmpty () ? "." : dir);
 
   QFileInfo fileInfo (xdir);
 

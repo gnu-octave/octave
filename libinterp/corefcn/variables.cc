@@ -1592,8 +1592,9 @@ public:
             // What happens if whos_line_format contains negative numbers
             // at param_length positions?
             param.balance = (b < 0 ? 0 : param.balance);
-            param.first_parameter_length = (b < 0 ? 0 :
-                                            param.first_parameter_length);
+            param.first_parameter_length = (b < 0
+                                            ? 0
+                                            : param.first_parameter_length);
             param.parameter_length = (a < 0
                                       ? 0
                                       : (param.parameter_length

@@ -243,7 +243,7 @@ do_minmax_body (const octave_value_list& args,
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
 
-  const char *func = ismin ? "min" : "max";
+  const char *func = (ismin ? "min" : "max");
 
   if (nargin == 3 || nargin == 1)
     {
@@ -917,7 +917,7 @@ do_cumminmax_body (const octave_value_list& args,
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  const char *func = ismin ? "cummin" : "cummax";
+  const char *func = (ismin ? "cummin" : "cummax");
 
   octave_value arg = args(0);
   int dim = -1;

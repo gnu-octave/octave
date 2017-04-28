@@ -654,7 +654,7 @@ octave_range::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   Range r = range_value ();
   double range_vals[3];
   range_vals[0] = r.base ();
-  range_vals[1] = r.inc () != 0 ? r.limit () : r.numel ();
+  range_vals[1] = (r.inc () != 0 ? r.limit () : r.numel ());
   range_vals[2] = r.inc ();
 
   if (H5Dwrite (data_hid, type_hid, octave_H5S_ALL, octave_H5S_ALL,

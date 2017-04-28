@@ -2715,8 +2715,9 @@ namespace octave
     if (err & 1)
       done_after = out.size () + 1;
 
-    int valid_rows = (row == ntimes) ? ntimes
-      : (((err & 1) && (err & 8)) ? row : row+1);
+    int valid_rows = (row == ntimes
+                      ? ntimes
+                      : ((err & 1) && (err & 8)) ? row : row+1);
     dim_vector dv (valid_rows, 1);
 
     ra_idx(0) = 0;
@@ -2975,8 +2976,8 @@ namespace octave
                 if (ch2 == 'f')
                   {
                     inf = true;
-                    re = (ch == '+') ? octave::numeric_limits<double>::Inf ()
-                      : -octave::numeric_limits<double>::Inf ();
+                    re = (ch == '+' ? octave::numeric_limits<double>::Inf ()
+                                    : -octave::numeric_limits<double>::Inf ());
                     value = 0;
                   }
                 else
@@ -3849,7 +3850,7 @@ namespace octave
 
     int i;
     int (*compare)(const char *, const char *, size_t);
-    compare = case_sensitive ? strncmp : strncasecmp;
+    compare = (case_sensitive ? strncmp : strncasecmp);
 
     for (i = 0; i < targets.numel (); i++)
       {
@@ -4422,7 +4423,7 @@ namespace octave
 #define BEGIN_C_CONVERSION()                                            \
   is.unsetf (std::ios::skipws);                                         \
                                                                         \
-  int width = elt->width ? elt->width : 1;                              \
+  int width = (elt->width ? elt->width : 1);                            \
                                                                         \
   std::string tmp (width, '\0');                                        \
                                                                         \
@@ -5515,8 +5516,8 @@ do_printf_string (std::ostream& os, const octave::printf_format_elt *elt,
 
   size_t len = arg.length ();
 
-  size_t fw = nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw);
-  size_t prec = nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec);
+  size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
+  size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
 
   os << std::setw (fw)
      << (left ? std::left : std::right)
@@ -5651,7 +5652,7 @@ namespace octave
     else
       {
         static std::string llmod
-          = sizeof (long) == sizeof (int64_t) ? "l" : "ll";
+          = (sizeof (long) == sizeof (int64_t) ? "l" : "ll");
 
         char type = elt->type;
 
@@ -5891,7 +5892,7 @@ namespace octave
   std::string
   base_stream::error (bool clear_err, int& err_num)
   {
-    err_num = fail ? -1 : 0;
+    err_num = (fail ? -1 : 0);
 
     std::string tmp = errmsg;
 

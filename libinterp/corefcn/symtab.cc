@@ -603,7 +603,7 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types]
                        && (jtyp == btyp_float
                            || jtyp == btyp_float_complex)))));
 
-        sup_table[i][j] = use_j ? jtyp : ityp;
+        sup_table[i][j] = (use_j ? jtyp : ityp);
       }
 
   return sup_table;

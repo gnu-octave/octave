@@ -188,7 +188,7 @@ The eigenvalues returned by @code{eig} are not ordered.
     }
 
   // Default is to balance
-  const bool balance = no_balance_flag ? false : true;
+  const bool balance = (no_balance_flag ? false : true);
   const bool force_qz = qz_flag;
 
 

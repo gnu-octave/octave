@@ -445,7 +445,7 @@ namespace octave
     completion_function = f;
 
     rl_attempted_completion_fcn_ptr fp
-      = f ? gnu_readline::command_completer : 0;
+      = (f ? gnu_readline::command_completer : 0);
 
     ::octave_rl_set_completion_function (fp);
   }
@@ -456,7 +456,7 @@ namespace octave
     quoting_function = f;
 
     rl_quoting_fcn_ptr fp
-      = f ? gnu_readline::command_quoter : 0;
+      = (f ? gnu_readline::command_quoter : 0);
 
     ::octave_rl_set_quoting_function (fp);
   }
@@ -467,7 +467,7 @@ namespace octave
     dequoting_function = f;
 
     rl_dequoting_fcn_ptr fp
-      = f ? gnu_readline::command_dequoter : 0;
+      = (f ? gnu_readline::command_dequoter : 0);
 
     ::octave_rl_set_dequoting_function (fp);
   }
@@ -478,7 +478,7 @@ namespace octave
     char_is_quoted_function = f;
 
     rl_char_is_quoted_fcn_ptr fp
-      = f ? gnu_readline::command_char_is_quoted : 0;
+      = (f ? gnu_readline::command_char_is_quoted : 0);
 
     ::octave_rl_set_char_is_quoted_function (fp);
   }

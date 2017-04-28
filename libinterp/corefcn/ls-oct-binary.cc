@@ -178,7 +178,7 @@ read_binary_data (std::istream& is, bool swap,
 
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
     error ("load: trouble reading binary file '%s'", filename.c_str ());
-  global = tmp ? 1 : 0;
+  global = (tmp ? 1 : 0);
 
   tmp = 0;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))

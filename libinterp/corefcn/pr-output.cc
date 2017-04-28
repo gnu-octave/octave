@@ -180,7 +180,7 @@ public:
   float_format& width (int w) { fw = w; return *this; }
 
   float_format& trailing_zeros (bool tz = true)
-  { sp = tz ? std::ios::showpoint : 0; return *this; }
+  { sp = (tz ? std::ios::showpoint : 0); return *this; }
 
   friend std::ostream& operator << (std::ostream& os,
                                     const pr_engineering_float& pef);
@@ -573,7 +573,7 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
     }
   else if (bank_format)
     {
-      fw = digits < 0 ? 5 : digits + 4;
+      fw = (digits < 0 ? 5 : digits + 4);
       if (inf_or_nan && fw < 5)
         fw = 5;
       rd = 2;
@@ -600,12 +600,12 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int& fw)
       if (digits > 0)
         {
           ld = digits;
-          rd = prec > digits ? prec - digits : prec;
+          rd = (prec > digits ? prec - digits : prec);
         }
       else
         {
           ld = 1;
-          rd = prec > digits ? prec - digits : prec;
+          rd = (prec > digits ? prec - digits : prec);
         }
 
       fw = 1 + ld + 1 + rd;
@@ -665,7 +665,7 @@ set_format (double d, int& fw)
 
   bool int_only = (! inf_or_nan && octave::math::x_nint (d) == d);
 
-  double d_abs = d < 0.0 ? -d : d;
+  double d_abs = (d < 0.0 ? -d : d);
 
   int digits = (inf_or_nan || d_abs == 0.0) ? 0 : num_digits (d_abs);
 
@@ -696,8 +696,8 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
   else if (bank_format)
     {
-      int digits = x_max > x_min ? x_max : x_min;
-      fw = digits <= 0 ? 5 : digits + 4;
+      int digits = (x_max > x_min ? x_max : x_min);
+      fw = (digits <= 0 ? 5 : digits + 4);
       if (inf_or_nan && fw < 5)
         fw = 5;
       rd = 2;
@@ -721,8 +721,8 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
   else if (int_or_inf_or_nan)
     {
-      int digits = x_max > x_min ? x_max : x_min;
-      fw = digits <= 0 ? 2 : digits + 1;
+      int digits = (x_max > x_min ? x_max : x_min);
+      fw = (digits <= 0 ? 2 : digits + 1);
       if (inf_or_nan && fw < 4)
         fw = 4;
       rd = fw;
@@ -733,13 +733,13 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
       if (x_max > 0)
         {
           ld_max = x_max;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
       else
         {
           ld_max = 1;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
         }
 
@@ -747,18 +747,18 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
       if (x_min > 0)
         {
           ld_min = x_min;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
       else
         {
           ld_min = 1;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
         }
 
-      ld = ld_max > ld_min ? ld_max : ld_min;
-      rd = rd_max > rd_min ? rd_max : rd_min;
+      ld = (ld_max > ld_min ? ld_max : ld_min);
+      rd = (rd_max > rd_min ? rd_max : rd_min);
 
       fw = 1 + ld + 1 + rd;
       if (inf_or_nan && fw < 4)
@@ -822,9 +822,9 @@ set_format (const Matrix& m, int& fw, double& scale)
   double max_abs = pr_max_internal (m_abs);
   double min_abs = pr_min_internal (m_abs);
 
-  int x_max = max_abs == 0.0 ? 0 : num_digits (max_abs);
+  int x_max = (max_abs == 0.0 ? 0 : num_digits (max_abs));
 
-  int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
+  int x_min = (min_abs == 0.0 ? 0 : num_digits (min_abs));
 
   scale = (x_max == 0 || int_or_inf_or_nan)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
@@ -853,7 +853,7 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
     {
       int digits = r_x;
       i_fw = 0;
-      r_fw = digits <= 0 ? 5 : digits + 4;
+      r_fw = (digits <= 0 ? 5 : digits + 4);
       if (inf_or_nan && r_fw < 5)
         r_fw = 5;
       rd = 2;
@@ -872,8 +872,8 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
     }
   else if (inf_or_nan || int_only)
     {
-      int digits = x_max > x_min ? x_max : x_min;
-      i_fw = digits <= 0 ? 1 : digits;
+      int digits = (x_max > x_min ? x_max : x_min);
+      i_fw = (digits <= 0 ? 1 : digits);
       r_fw = i_fw + 1;
       if (inf_or_nan && i_fw < 3)
         {
@@ -888,13 +888,13 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
       if (x_max > 0)
         {
           ld_max = x_max;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
       else
         {
           ld_max = 1;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
         }
 
@@ -902,18 +902,18 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
       if (x_min > 0)
         {
           ld_min = x_min;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
       else
         {
           ld_min = 1;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
         }
 
-      ld = ld_max > ld_min ? ld_max : ld_min;
-      rd = rd_max > rd_min ? rd_max : rd_min;
+      ld = (ld_max > ld_min ? ld_max : ld_min);
+      rd = (rd_max > rd_min ? rd_max : rd_min);
 
       i_fw = ld + 1 + rd;
       r_fw = i_fw + 1;
@@ -1002,8 +1002,8 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   bool int_only = (octave::math::x_nint (rp) == rp
                    && octave::math::x_nint (ip) == ip);
 
-  double r_abs = rp < 0.0 ? -rp : rp;
-  double i_abs = ip < 0.0 ? -ip : ip;
+  double r_abs = (rp < 0.0 ? -rp : rp);
+  double i_abs = (ip < 0.0 ? -ip : ip);
 
   int r_x = (! octave::math::finite (rp)
              || r_abs == 0.0) ? 0 : num_digits (r_abs);
@@ -1054,9 +1054,9 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
   else if (bank_format)
     {
-      int digits = r_x_max > r_x_min ? r_x_max : r_x_min;
+      int digits = (r_x_max > r_x_min ? r_x_max : r_x_min);
       i_fw = 0;
-      r_fw = digits <= 0 ? 5 : digits + 4;
+      r_fw = (digits <= 0 ? 5 : digits + 4);
       if (inf_or_nan && r_fw < 5)
         r_fw = 5;
       rd = 2;
@@ -1086,8 +1086,8 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
   else if (int_or_inf_or_nan)
     {
-      int digits = x_max > x_min ? x_max : x_min;
-      i_fw = digits <= 0 ? 1 : digits;
+      int digits = (x_max > x_min ? x_max : x_min);
+      i_fw = (digits <= 0 ? 1 : digits);
       r_fw = i_fw + 1;
       if (inf_or_nan && i_fw < 3)
         {
@@ -1102,13 +1102,13 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
       if (x_max > 0)
         {
           ld_max = x_max;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
       else
         {
           ld_max = 1;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
         }
 
@@ -1116,18 +1116,18 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
       if (x_min > 0)
         {
           ld_min = x_min;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
       else
         {
           ld_min = 1;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
         }
 
-      ld = ld_max > ld_min ? ld_max : ld_min;
-      rd = rd_max > rd_min ? rd_max : rd_min;
+      ld = (ld_max > ld_min ? ld_max : ld_min);
+      rd = (rd_max > rd_min ? rd_max : rd_min);
 
       i_fw = ld + 1 + rd;
       r_fw = i_fw + 1;
@@ -1226,16 +1226,16 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   double i_max_abs = pr_max_internal (i_m_abs);
   double i_min_abs = pr_min_internal (i_m_abs);
 
-  int r_x_max = r_max_abs == 0.0 ? 0 : num_digits (r_max_abs);
+  int r_x_max = (r_max_abs == 0.0 ? 0 : num_digits (r_max_abs));
 
-  int r_x_min = r_min_abs == 0.0 ? 0 : num_digits (r_min_abs);
+  int r_x_min = (r_min_abs == 0.0 ? 0 : num_digits (r_min_abs));
 
-  int i_x_max = i_max_abs == 0.0 ? 0 : num_digits (i_max_abs);
+  int i_x_max = (i_max_abs == 0.0 ? 0 : num_digits (i_max_abs));
 
-  int i_x_min = i_min_abs == 0.0 ? 0 : num_digits (i_min_abs);
+  int i_x_min = (i_min_abs == 0.0 ? 0 : num_digits (i_min_abs));
 
-  int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
-  int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
+  int x_max = (r_x_max > i_x_max ? r_x_max : i_x_max);
+  int x_min = (r_x_min > i_x_min ? r_x_min : i_x_min);
 
   scale = (x_max == 0 || int_or_inf_or_nan)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
@@ -1260,8 +1260,8 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
     }
   else if (bank_format)
     {
-      int digits = x_max > x_min ? x_max : x_min;
-      fw = digits < 0 ? 5 : digits + 4;
+      int digits = (x_max > x_min ? x_max : x_min);
+      fw = (digits < 0 ? 5 : digits + 4);
       rd = 2;
     }
   else if (hex_format)
@@ -1276,7 +1276,7 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
     }
   else if (all_ints)
     {
-      int digits = x_max > x_min ? x_max : x_min;
+      int digits = (x_max > x_min ? x_max : x_min);
       fw = digits + 1;
       rd = fw;
     }
@@ -1291,13 +1291,13 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
       if (x_max > 0)
         {
           ld_max = x_max;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
       else
         {
           ld_max = 1;
-          rd_max = prec > x_max ? prec - x_max : prec;
+          rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
         }
 
@@ -1305,18 +1305,18 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
       if (x_min > 0)
         {
           ld_min = x_min;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
       else
         {
           ld_min = 1;
-          rd_min = prec > x_min ? prec - x_min : prec;
+          rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
         }
 
-      ld = ld_max > ld_min ? ld_max : ld_min;
-      rd = rd_max > rd_min ? rd_max : rd_min;
+      ld = (ld_max > ld_min ? ld_max : ld_min);
+      rd = (rd_max > rd_min ? rd_max : rd_min);
 
       fw = ld + rd + 3;
     }
@@ -1378,12 +1378,12 @@ set_format (const Range& r, int& fw, double& scale)
 
   bool all_ints = r.all_elements_are_ints ();
 
-  double max_abs = r_max < 0.0 ? -r_max : r_max;
-  double min_abs = r_min < 0.0 ? -r_min : r_min;
+  double max_abs = (r_max < 0.0 ? -r_max : r_max);
+  double min_abs = (r_min < 0.0 ? -r_min : r_min);
 
-  int x_max = max_abs == 0.0 ? 0 : num_digits (max_abs);
+  int x_max = (max_abs == 0.0 ? 0 : num_digits (max_abs));
 
-  int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
+  int x_min = (min_abs == 0.0 ? 0 : num_digits (min_abs));
 
   scale = (x_max == 0 || all_ints)
           ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
@@ -1788,7 +1788,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
               octave_idx_type col = 0;
               while (col < nc)
                 {
-                  octave_idx_type lim = col + inc < nc ? col + inc : nc;
+                  octave_idx_type lim = (col + inc < nc ? col + inc : nc);
 
                   for (octave_idx_type j = col; j < lim; j++)
                     {
@@ -1829,7 +1829,7 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -1924,7 +1924,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           octave_idx_type col = 0;
           while (col < nc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
@@ -1973,7 +1973,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2206,7 +2206,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
               octave_idx_type col = 0;
               while (col < nc)
                 {
-                  octave_idx_type lim = col + inc < nc ? col + inc : nc;
+                  octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
                   for (octave_idx_type j = col; j < lim; j++)
                     {
@@ -2247,7 +2247,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2344,7 +2344,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           octave_idx_type col = 0;
           while (col < nc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
@@ -2393,7 +2393,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2492,7 +2492,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
           octave_idx_type col = 0;
           while (col < nc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               for (octave_idx_type j = col; j < lim; j++)
                 {
@@ -2530,7 +2530,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
-              octave_idx_type lim = col + inc < nc ? col + inc : nc;
+              octave_idx_type lim = (col +inc < nc ? col + inc : nc);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -2720,7 +2720,7 @@ octave_print_internal (std::ostream& os, const Range& r,
           octave_idx_type col = 0;
           while (col < num_elem)
             {
-              octave_idx_type lim = col + inc < num_elem ? col + inc : num_elem;
+              octave_idx_type lim = (col +inc < num_elem ? col + inc : num_elem);
 
               pr_col_num_header (os, total_width, max_width, lim, col,
                                  extra_indent);
@@ -3328,7 +3328,8 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
               for (octave_idx_type col = 0; col < n_cols; col += inc)
                 {
-                  octave_idx_type lim = col + inc < n_cols ? col + inc : n_cols;
+                  octave_idx_type lim = (col +inc < n_cols ? col + inc
+                                                           : n_cols);
 
                   pr_col_num_header (os, total_width, max_width, lim, col,
                                      extra_indent);
@@ -3497,7 +3498,7 @@ formatted output in a string.
     {
       std::ostringstream buf;
       arg.print (buf);
-      retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
+      retval = (octave_value (buf.str (), arg.is_dq_string () ? '"' : '\''));
     }
 
   return retval;
@@ -4112,7 +4113,7 @@ format and format spacing.
   else
     {
       if (nargout >= 2)
-        retval(1) = Vcompact_format ? "compact" : "loose";
+        retval(1) = (Vcompact_format ? "compact" : "loose");
 
       retval(0) = format_string;
     }

@@ -347,8 +347,8 @@ at most n-1).
               for (octave_idx_type i = 0; i < nval; i++)
                 {
                   octave_idx_type j = idx.xelem (i);
-                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1)) ? j
-                                                                          : 0;
+                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1) ? j
+                                                                         : 0);
                 }
             }
 

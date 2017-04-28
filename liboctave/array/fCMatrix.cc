@@ -1006,7 +1006,7 @@ FloatComplexMatrix::fourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -1035,7 +1035,7 @@ FloatComplexMatrix::ifourier (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -1185,7 +1185,7 @@ FloatComplexMatrix::fourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -1252,7 +1252,7 @@ FloatComplexMatrix::ifourier2d (void) const
 
   if (nr == 1 || nc == 1)
     {
-      npts = nr > nc ? nr : nc;
+      npts = (nr > nc ? nr : nc);
       nsamples = 1;
     }
   else
@@ -2461,7 +2461,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
       if (m != n)
@@ -2687,7 +2687,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
   else
     {
       volatile F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = m > n ? m : n;
+      F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
       if (m != n)
@@ -3086,8 +3086,8 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_min))
                 {
-                  abs_min = real_only ? tmp_min.real ()
-                                      : std::abs (tmp_min);
+                  abs_min = (real_only ? tmp_min.real ()
+                                       : std::abs (tmp_min));
                   break;
                 }
             }
@@ -3099,7 +3099,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              float abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              float abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp < abs_min)
                 {
@@ -3161,8 +3161,8 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_max))
                 {
-                  abs_max = real_only ? tmp_max.real ()
-                                      : std::abs (tmp_max);
+                  abs_max = (real_only ? tmp_max.real ()
+                                       : std::abs (tmp_max));
                   break;
                 }
             }
@@ -3174,7 +3174,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              float abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              float abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp > abs_max)
                 {
@@ -3236,8 +3236,8 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_min))
                 {
-                  abs_min = real_only ? tmp_min.real ()
-                                      : std::abs (tmp_min);
+                  abs_min = (real_only ? tmp_min.real ()
+                                       : std::abs (tmp_min));
                   break;
                 }
             }
@@ -3249,7 +3249,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              float abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              float abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp < abs_min)
                 {
@@ -3311,8 +3311,8 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
               if (! octave::math::isnan (tmp_max))
                 {
-                  abs_max = real_only ? tmp_max.real ()
-                                      : std::abs (tmp_max);
+                  abs_max = (real_only ? tmp_max.real ()
+                                       : std::abs (tmp_max));
                   break;
                 }
             }
@@ -3324,7 +3324,7 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
               if (octave::math::isnan (tmp))
                 continue;
 
-              float abs_tmp = real_only ? tmp.real () : std::abs (tmp);
+              float abs_tmp = (real_only ? tmp.real () : std::abs (tmp));
 
               if (abs_tmp > abs_max)
                 {

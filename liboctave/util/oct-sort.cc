@@ -1419,8 +1419,8 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
           /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
-              const octave_idx_type force = nremaining <= minrun ? nremaining
-                                                                 : minrun;
+              const octave_idx_type force = (nremaining <= minrun ? nremaining
+                                                                  : minrun);
               binarysort (data + lo, force, n, comp);
               n = force;
             }
@@ -1479,8 +1479,8 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
           /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
-              const octave_idx_type force = nremaining <= minrun ? nremaining
-                                                                 : minrun;
+              const octave_idx_type force = (nremaining <= minrun ? nremaining
+                                                                  : minrun);
               binarysort (data + lo, idx + lo, force, n, comp);
               n = force;
             }

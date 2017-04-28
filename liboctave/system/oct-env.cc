@@ -493,7 +493,7 @@ namespace octave
           octave::sys::password pw = octave::sys::password::getpwuid (
                                        octave::sys::getuid ());
 
-          hd = pw ? pw.dir () : std::string (octave::sys::file_ops::dir_sep_str ());
+          hd = (pw ? pw.dir () : std::string (octave::sys::file_ops::dir_sep_str ()));
         }
 
       return hd;
@@ -507,7 +507,7 @@ namespace octave
           octave::sys::password pw = octave::sys::password::getpwuid (
                                        octave::sys::getuid ());
 
-          user_name = pw ? pw.name () : std::string ("unknown");
+          user_name = (pw ? pw.name () : std::string ("unknown"));
         }
 
       return user_name;

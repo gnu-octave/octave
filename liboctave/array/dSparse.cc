@@ -242,7 +242,7 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 
             }
 
-          idx_arg.elem (j) = octave::math::isnan (tmp_max) ? 0 : idx_j;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
           if (tmp_max != 0.)
             nel++;
         }
@@ -393,7 +393,7 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 
             }
 
-          idx_arg.elem (j) = octave::math::isnan (tmp_min) ? 0 : idx_j;
+          idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
           if (tmp_min != 0.)
             nel++;
         }

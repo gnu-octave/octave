@@ -1428,7 +1428,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
       // since you have a scalar stored as a sparse matrix, and
       // then want to make a dense matrix with sparse representation.
       // Ok, we'll do it, but you deserve what you get!!
-      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
+      retval = (Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ()));
     }
   else if (nc == 1)
     {

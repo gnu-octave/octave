@@ -152,7 +152,7 @@ MessageDialog::MessageDialog (const QString& message,
     eicon = QMessageBox::Question;
   setIcon (eicon);
 
-  int N = qsbutton.size () < role.size () ? qsbutton.size () : role.size ();
+  int N = (qsbutton.size () < role.size () ? qsbutton.size () : role.size ());
   if (N == 0)
     addButton (QMessageBox::Ok);
   else

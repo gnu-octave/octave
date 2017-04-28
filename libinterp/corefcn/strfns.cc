@@ -355,7 +355,7 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 
           boolNDArray output (cell_val.dims (), false);
 
-          std::string s = r == 0 ? "" : str[0];
+          std::string s = (r == 0 ? "" : str[0]);
 
           if (cell_val.is_cellstr ())
             {
@@ -750,7 +750,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
 
   std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
   const char *codepage
-    = tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ();
+    = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
 
   charNDArray native_bytes = args(0).char_array_value ();
 
@@ -796,7 +796,7 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 
   std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
   const char *codepage
-    = tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ();
+    = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
 
   charNDArray utf8_str = args(0).xchar_array_value ("UTF8_STR must be a string");
 

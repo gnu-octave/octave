@@ -418,7 +418,7 @@ namespace octave
               throw std::runtime_error ("failed to read source file");
 
             m_strm->next_in = buf_in;
-            flush = std::feof (m_source.m_fp) ? Z_FINISH : Z_NO_FLUSH;
+            flush = (std::feof (m_source.m_fp) ? Z_FINISH : Z_NO_FLUSH);
 
             // If deflate returns Z_OK and with zero avail_out, it must be
             // called again after making room in the output buffer because

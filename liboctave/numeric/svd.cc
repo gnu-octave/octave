@@ -316,7 +316,7 @@ namespace octave
       T atmp = a;
       P *tmp_data = atmp.fortran_vec ();
 
-      F77_INT min_mn = m < n ? m : n;
+      F77_INT min_mn = (m < n ? m : n);
 
       char jobu = 'A';
       char jobv = 'A';

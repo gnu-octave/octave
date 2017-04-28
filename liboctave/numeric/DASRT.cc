@@ -243,7 +243,7 @@ DASRT::integrate (double tout)
           return;
         }
 
-      info(4) = user_jsub ? 1 : 0;
+      info(4) = (user_jsub ? 1 : 0);
 
       DAEFunc::reset = false;
 

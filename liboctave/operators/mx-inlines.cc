@@ -391,7 +391,7 @@ mx_inline_xmax (size_t n, T *r, T x, const T *y) throw ()
       std::memcpy (r, x, n * sizeof (T));                       \
     else                                                        \
       for (size_t i = 0; i < n; i++)                            \
-        r[i] = (x[i] OP y) ? x[i] : y;                          \
+        r[i] = (x[i] OP y ? x[i] : y);                          \
   }                                                             \
   template <>                                                   \
   inline void F<T> (size_t n, T *r, T x, const T *y) throw ()   \
@@ -400,7 +400,7 @@ mx_inline_xmax (size_t n, T *r, T x, const T *y) throw ()
       std::memcpy (r, y, n * sizeof (T));                       \
     else                                                        \
       for (size_t i = 0; i < n; i++)                            \
-        r[i] = (y[i] OP x) ? y[i] : x;                          \
+        r[i] = (y[i] OP x ? y[i] : x);                          \
   }
 
 DEFMINMAXSPEC (double, mx_inline_xmin, <=)

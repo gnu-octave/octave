@@ -400,7 +400,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatDiagMatrix& b)
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
   octave_idx_type len = c.length ();
-  octave_idx_type lenm = len < a_nc ? len : a_nc;
+  octave_idx_type lenm = (len < a_nc ? len : a_nc);
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -427,7 +427,7 @@ operator * (const FloatDiagMatrix& a, const FloatComplexDiagMatrix& b)
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = (a_nr < b_nc ? a_nr : b_nc);
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -457,7 +457,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 
   FloatComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = a_nr < b_nc ? a_nr : b_nc;
+  octave_idx_type len = (a_nr < b_nc ? a_nr : b_nc);
 
   for (octave_idx_type i = 0; i < len; i++)
     {

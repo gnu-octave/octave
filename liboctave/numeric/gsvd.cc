@@ -270,7 +270,7 @@ namespace octave
       P *q = right_sm.fortran_vec ();
 
       F77_INT lwork = 3*n;
-      lwork = lwork > m ? lwork : m;
+      lwork = (lwork > m ? lwork : m);
       lwork = (lwork > p ? lwork : p) + n;
 
       T work (lwork, 1);

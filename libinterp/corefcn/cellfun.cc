@@ -1850,7 +1850,7 @@ mat2cell_mismatch (const dim_vector& dv,
       for (octave_idx_type j = 0; j < d[i].numel (); j++)
         s += d[i](j);
 
-      octave_idx_type r = i < dv.ndims () ? dv(i) : 1;
+      octave_idx_type r = (i < dv.ndims () ? dv(i) : 1);
 
       if (s != r)
         error ("mat2cell: mismatch on dimension %d (%d != %d)", i+1, r, s);
@@ -1864,7 +1864,7 @@ static void
 prepare_idx (container *idx, int idim, int nd,
              const Array<octave_idx_type>* d)
 {
-  octave_idx_type nidx = idim < nd ? d[idim].numel () : 1;
+  octave_idx_type nidx = (idim < nd ? d[idim].numel () : 1);
   if (nidx == 1)
     idx[0] = idx_vector::colon;
   else
@@ -1894,7 +1894,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
     return retval;
 
   octave_idx_type nridx = d[0].numel ();
-  octave_idx_type ncidx = nd == 1 ? 1 : d[1].numel ();
+  octave_idx_type ncidx = (nd == 1 ? 1 : d[1].numel ());
   retval.clear (nridx, ncidx);
 
   int ivec = -1;

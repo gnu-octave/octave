@@ -2588,7 +2588,7 @@ save_mat5_binary_element (std::ostream& os,
     {
       if (tc.is_inline_function () || tc.is_object ())
         {
-          std::string classname = tc.is_object () ? tc.class_name () : "inline";
+          std::string classname = (tc.is_object () ? tc.class_name () : "inline");
           size_t namelen = classname.length ();
 
           if (namelen > max_namelen)

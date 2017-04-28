@@ -2006,7 +2006,7 @@ namespace octave
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_INT id = deriv ? 1 : 0;
+      F77_INT id = (deriv ? 1 : 0);
       F77_INT nz, t_ierr;
 
       F77_FUNC (zairy, ZAIRY) (zr, zi, id, 2, ar, ai, nz, t_ierr);
@@ -2041,7 +2041,7 @@ namespace octave
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_INT id = deriv ? 1 : 0;
+      F77_INT id = (deriv ? 1 : 0);
       F77_INT t_ierr;
 
       F77_FUNC (zbiry, ZBIRY) (zr, zi, id, 2, ar, ai, t_ierr);
@@ -2141,7 +2141,7 @@ namespace octave
     {
       FloatComplex a;
 
-      F77_INT id = deriv ? 1 : 0;
+      F77_INT id = (deriv ? 1 : 0);
       F77_INT nz, t_ierr;
 
       F77_FUNC (cairy, CAIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,
@@ -2177,7 +2177,7 @@ namespace octave
     {
       FloatComplex a;
 
-      F77_INT id = deriv ? 1 : 0;
+      F77_INT id = (deriv ? 1 : 0);
       F77_INT t_ierr;
 
       F77_FUNC (cbiry, CBIRY) (F77_CONST_CMPLX_ARG (&z), id, 2,

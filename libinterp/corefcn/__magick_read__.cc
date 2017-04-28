@@ -1001,7 +1001,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
                        const Matrix& cmap)
 {
   typedef typename T::element_type P;
-  const octave_idx_type nFrames   = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nFrames   = (img.ndims () < 4 ? 1 : img.dims ()(3));
   const octave_idx_type nRows     = img.rows ();
   const octave_idx_type nCols     = img.columns ();
   const octave_idx_type cmap_size = cmap.rows ();
@@ -1068,7 +1068,7 @@ encode_indexed_images (std::vector<Magick::Image>& imvec,
 static void
 encode_bool_image (std::vector<Magick::Image>& imvec, const boolNDArray& img)
 {
-  const octave_idx_type nFrames = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type nFrames = (img.ndims () < 4 ? 1 : img.dims ()(3));
   const octave_idx_type nRows   = img.rows ();
   const octave_idx_type nCols   = img.columns ();
 
@@ -1118,8 +1118,8 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                    const T& img, const T& alpha)
 {
   typedef typename T::element_type P;
-  const octave_idx_type channels = img.ndims () < 3 ? 1 : img.dims ()(2);
-  const octave_idx_type nFrames  = img.ndims () < 4 ? 1 : img.dims ()(3);
+  const octave_idx_type channels = (img.ndims () < 3 ? 1 : img.dims ()(2));
+  const octave_idx_type nFrames  = (img.ndims () < 4 ? 1 : img.dims ()(3));
   const octave_idx_type nRows    = img.rows ();
   const octave_idx_type nCols    = img.columns ();
   const octave_idx_type bitdepth = bitdepth_from_class<T> ();

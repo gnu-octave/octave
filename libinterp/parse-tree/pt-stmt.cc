@@ -173,11 +173,11 @@ namespace octave
   {
     tree_statement *new_stmt = new tree_statement ();
 
-    new_stmt->cmd = cmd ? cmd->dup (scope, context) : 0;
+    new_stmt->cmd = (cmd ? cmd->dup (scope, context) : 0);
 
-    new_stmt->expr = expr ? expr->dup (scope, context) : 0;
+    new_stmt->expr = (expr ? expr->dup (scope, context) : 0);
 
-    new_stmt->comm = comm ? comm->dup () : 0;
+    new_stmt->comm = (comm ? comm->dup () : 0);
 
     return new_stmt;
   }

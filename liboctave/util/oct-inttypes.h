@@ -75,7 +75,7 @@ inline bool xisnan (long double x) { return octave::math::isnan (x); }
 // MSVC, do not provide std::abs (int64_t) and std::abs (uint64_t).  In
 // the future, it should go away in favor of std::abs.
 template <typename T>
-inline T octave_int_abs (T x) { return x >= 0 ? x : -x; }
+inline T octave_int_abs (T x) { return (x >= 0 ? x : -x); }
 
 // Query for an integer type of certain sizeof, and signedness.
 template <int qsize, bool qsigned>

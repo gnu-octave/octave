@@ -74,7 +74,7 @@ hex2num (const std::string& hex, void *num, size_t nbytes, bool swap_bytes)
 
   for (size_t i = 0; i < nbytes; i++)
     {
-      size_t k = swap_bytes ? nbytes - i - 1 : i;
+      size_t k = (swap_bytes ? nbytes - i - 1 : i);
 
       unsigned char ch1 = (j < nc) ? hex[j++] : '0';
       unsigned char ch2 = (j < nc) ? hex[j++] : '0';
@@ -229,7 +229,7 @@ num2hex (const void *p, size_t n, char *hex, bool swap_bytes)
 
   for (size_t i = 0; i < n; i++)
     {
-      size_t j = swap_bytes ? n - i - 1 : i;
+      size_t j = (swap_bytes ? n - i - 1 : i);
 
       unsigned char ch = cp[j];
 

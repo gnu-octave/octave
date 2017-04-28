@@ -137,9 +137,9 @@ For that, use any of the condition number functions: @code{cond},
           FloatMatrix m = arg.float_matrix_value ();
 
           MAYBE_CAST (rep, octave_float_matrix);
-          MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+          MatrixType mtype = (rep ? rep -> matrix_type () : MatrixType ());
           FloatDET det = m.determinant (mtype, info, rcond);
-          retval(0) = info == -1 ? 0.0f : det.value ();
+          retval(0) = (info == -1 ? 0.0f : det.value ());
           retval(1) = rcond;
           if (rep)
             rep->matrix_type (mtype);
@@ -152,9 +152,9 @@ For that, use any of the condition number functions: @code{cond},
           FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
           MAYBE_CAST (rep, octave_float_complex_matrix);
-          MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+          MatrixType mtype = (rep ? rep -> matrix_type () : MatrixType ());
           FloatComplexDET det = m.determinant (mtype, info, rcond);
-          retval(0) = info == -1 ? FloatComplex (0.0) : det.value ();
+          retval(0) = (info == -1 ? FloatComplex (0.0) : det.value ());
           retval(1) = rcond;
           if (rep)
             rep->matrix_type (mtype);
@@ -172,7 +172,7 @@ For that, use any of the condition number functions: @code{cond},
               SparseMatrix m = arg.sparse_matrix_value ();
 
               DET det = m.determinant (info, rcond);
-              retval(0) = info == -1 ? 0.0 : det.value ();
+              retval(0) = (info == -1 ? 0.0 : det.value ());
               retval(1) = rcond;
             }
           else
@@ -180,10 +180,10 @@ For that, use any of the condition number functions: @code{cond},
               Matrix m = arg.matrix_value ();
 
               MAYBE_CAST (rep, octave_matrix);
-              MatrixType mtype = rep ? rep -> matrix_type ()
-                                     : MatrixType ();
+              MatrixType mtype = (rep ? rep -> matrix_type ()
+                                      : MatrixType ());
               DET det = m.determinant (mtype, info, rcond);
-              retval(0) = info == -1 ? 0.0 : det.value ();
+              retval(0) = (info == -1 ? 0.0 : det.value ());
               retval(1) = rcond;
               if (rep)
                 rep->matrix_type (mtype);
@@ -199,7 +199,7 @@ For that, use any of the condition number functions: @code{cond},
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
               ComplexDET det = m.determinant (info, rcond);
-              retval(0) = info == -1 ? Complex (0.0) : det.value ();
+              retval(0) = (info == -1 ? Complex (0.0) : det.value ());
               retval(1) = rcond;
             }
           else
@@ -207,10 +207,10 @@ For that, use any of the condition number functions: @code{cond},
               ComplexMatrix m = arg.complex_matrix_value ();
 
               MAYBE_CAST (rep, octave_complex_matrix);
-              MatrixType mtype = rep ? rep -> matrix_type ()
-                                     : MatrixType ();
+              MatrixType mtype = (rep ? rep -> matrix_type ()
+                                      : MatrixType ());
               ComplexDET det = m.determinant (mtype, info, rcond);
-              retval(0) = info == -1 ? Complex (0.0) : det.value ();
+              retval(0) = (info == -1 ? Complex (0.0) : det.value ());
               retval(1) = rcond;
               if (rep)
                 rep->matrix_type (mtype);

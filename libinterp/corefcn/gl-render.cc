@@ -1488,10 +1488,12 @@ namespace octave
         // tick texts
         if (xticklabels.numel () > 0)
           {
-            int halign = (xstate == AXE_HORZ_DIR ? 1 :
-                          (xyzSym || is_origin_low ? 0 : 2));
-            int valign = (xstate == AXE_VERT_DIR ? 1 :
-                          (x2Dtop || is_origin_low ? 0 : 2));
+            int halign = (xstate == AXE_HORZ_DIR
+                          ? 1
+                          : (xyzSym || is_origin_low ? 0 : 2));
+            int valign = (xstate == AXE_VERT_DIR
+                          ? 1
+                          : (x2Dtop || is_origin_low ? 0 : 2));
 
             if (tick_along_z)
               render_ticktexts (xticks, xticklabels, x_min, x_max,
@@ -1668,10 +1670,12 @@ namespace octave
         // tick texts
         if (yticklabels.numel () > 0)
           {
-            int halign = (ystate == AXE_HORZ_DIR ? 1 :
-                          (! xyzSym || y2Dright || is_origin_low ? 0 : 2));
-            int valign = (ystate == AXE_VERT_DIR ? 1 :
-                          (is_origin_low ? 0 : 2));
+            int halign = (ystate == AXE_HORZ_DIR
+                          ? 1
+                          : (! xyzSym || y2Dright || is_origin_low ? 0 : 2));
+            int valign = (ystate == AXE_VERT_DIR
+                          ? 1
+                          : (is_origin_low ? 0 : 2));
 
             if (tick_along_z)
               render_ticktexts (yticks, yticklabels, y_min, y_max,
@@ -2254,7 +2258,7 @@ namespace octave
                     (props.backfacelighting_is ("reverselit") ? 1 : 2));
 
     Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
-                     : props.get_facecolor_rgb ());
+                                        : props.get_facecolor_rgb ());
     Matrix ecolor = props.get_edgecolor_rgb ();
 
     float as = props.get_ambientstrength ();
@@ -2330,8 +2334,8 @@ namespace octave
 
             if ((fl_mode > 0) && (num_lights > 0))
               glEnable (GL_LIGHTING);
-            glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD) ? GL_SMOOTH
-                          : GL_FLAT);
+            glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
+                          ? GL_SMOOTH : GL_FLAT);
             set_polygon_offset (true, 1);
             if (fc_mode == TEXTURE)
               glEnable (GL_TEXTURE_2D);
@@ -2534,8 +2538,8 @@ namespace octave
 
             if ((el_mode > 0) && (num_lights > 0))
               glEnable (GL_LIGHTING);
-            glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD) ? GL_SMOOTH
-                          : GL_FLAT);
+            glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
+                          ? GL_SMOOTH : GL_FLAT);
 
             set_linestyle (props.get_linestyle (), false,
                            props.get_linewidth ());
@@ -2806,9 +2810,9 @@ namespace octave
                   }
 
                 Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
-                             : Matrix ());
+                                     : Matrix ());
                 Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
-                             : Matrix ());
+                                     : Matrix ());
 
                 draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
               }
@@ -3279,9 +3283,9 @@ namespace octave
                 }
 
               Matrix lc = (do_edge ? (mecolor.is_empty () ? cc : mecolor)
-                           : Matrix ());
+                                   : Matrix ());
               Matrix fc = (do_face ? (mfcolor.is_empty () ? cc : mfcolor)
-                           : Matrix ());
+                                   : Matrix ());
 
               draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
             }

@@ -77,7 +77,7 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
   if (nr != a_nc)
     octave::err_nonconformant ("operator *", a_nr, a_nc, nr, nc);
 
-  const octave_idx_type mnc = nc < a_nc ? nc: a_nc;
+  const octave_idx_type mnc = (nc < a_nc ? nc: a_nc);
   RT r (a_nr, nc, a.cidx (mnc));
 
   for (octave_idx_type j = 0; j < mnc; ++j)

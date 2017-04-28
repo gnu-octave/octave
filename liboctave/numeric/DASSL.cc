@@ -191,7 +191,7 @@ DASSL::do_integrate (double tout)
           return retval;
         }
 
-      info(4) = user_jac ? 1 : 0;
+      info(4) = (user_jac ? 1 : 0);
 
       DAEFunc::reset = false;
 
@@ -243,10 +243,10 @@ DASSL::do_integrate (double tout)
         }
 
       F77_INT enc = octave::to_f77_int (enforce_nonnegativity_constraints ());
-      info(9) = enc ? 1 : 0;
+      info(9) = (enc ? 1 : 0);
 
       F77_INT ccic = octave::to_f77_int (compute_consistent_initial_condition ());
-      info(10) = ccic ? 1 : 0;
+      info(10) = (ccic ? 1 : 0);
 
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();

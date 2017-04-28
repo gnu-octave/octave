@@ -984,7 +984,7 @@ expanded even when the template string is defined with single quotes.
   retval(1) = os.error ();
 
   std::string result = ostr->str ();
-  char type = fmt_arg.is_sq_string () ? '\'' : '"';
+  char type = (fmt_arg.is_sq_string () ? '\'' : '"');
 
   retval(0) = (result.empty () ? octave_value (charMatrix (1, 0), type)
                                : octave_value (result, type));

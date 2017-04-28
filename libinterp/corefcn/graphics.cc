@@ -1829,8 +1829,8 @@ property::create (const std::string& name, const graphics_handle& h,
     }
   else if (type.compare ("handle"))
     {
-      double hv = args.length () > 0 ? args(0).double_value ()
-                                     : octave::numeric_limits<double>::NaN ();
+      double hv = (args.length () > 0 ? args(0).double_value ()
+                                      : octave::numeric_limits<double>::NaN ());
 
       graphics_handle gh (hv);
 
@@ -5565,7 +5565,7 @@ axes::properties::update_camera (void)
       // does not seem to be required.  Need investigation with concrete
       // graphics toolkit to see results visually.
       if (false && dowarp)
-        af = 1.0 / (xM > yM ? xM : yM);
+        af = (1.0 / (xM > yM ? xM : yM));
       else
         {
           if ((bb(2)/bb(3)) > (xM/yM))
@@ -5754,7 +5754,7 @@ axes::properties::update_axes_layout (void)
 
   xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
   zSign = (zd*(zPlane-zPlaneN) <= 0);
-  xyzSym = zSign ? xySym : ! xySym;
+  xyzSym = (zSign ? xySym : ! xySym);
   xpTick = (zSign ? xPlaneN : xPlane);
   ypTick = (zSign ? yPlaneN : yPlane);
   zpTick = (zSign ? zPlane : zPlaneN);
@@ -6477,8 +6477,8 @@ Matrix
 axes::properties::get_boundingbox (bool internal,
                                    const Matrix& parent_pix_size) const
 {
-  Matrix pos = internal ? get_position ().matrix_value ()
-                        : get_outerposition ().matrix_value ();
+  Matrix pos = (internal ? get_position ().matrix_value ()
+                         : get_outerposition ().matrix_value ());
   Matrix parent_size (parent_pix_size);
 
   if (parent_size.is_empty ())
@@ -7177,7 +7177,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   if (n_ticks < 2)
     return;
 
-  int n = is_logscale ? 8 : 4;
+  int n = (is_logscale ? 8 : 4);
   Matrix tmp_mticks (1, n * (n_ticks - 1));
 
   for (int i = 0; i < n_ticks-1; i++)
@@ -8194,7 +8194,7 @@ axes::properties::unzoom (void)
 void
 axes::properties::clear_zoom_stack (bool do_unzoom)
 {
-  size_t items_to_leave_on_stack = do_unzoom ? 7 : 0;
+  size_t items_to_leave_on_stack = (do_unzoom ? 7 : 0);
 
   while (zoom_stack.size () > items_to_leave_on_stack)
     zoom_stack.pop_front ();

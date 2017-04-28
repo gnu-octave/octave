@@ -71,7 +71,7 @@ void
 err_property_access (const std::string& from, const cdef_property& prop,
                      bool is_set = false)
 {
-  octave_value acc = prop.get (is_set ? "SetAccess" : "GetAccess");
+  octave_value acc = (prop.get (is_set ? "SetAccess" : "GetAccess"));
   std::string acc_s;
 
   if (acc.is_string ())
@@ -3109,7 +3109,7 @@ cdef_method::cdef_method_rep::meta_subsref
   switch (type[0])
     {
     case '(':
-      retval = execute (idx.front (), type.length () > 1 ? 1 : nargout, true);
+      retval = (execute (idx.front (), type.length () > 1 ? 1 : nargout, true));
       break;
 
     default:

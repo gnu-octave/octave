@@ -735,7 +735,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
   else if (warn_opt == 1)
     {
       bool fmt_suppresses_backtrace = false;
-      size_t fmt_len = fmt ? strlen (fmt) : 0;
+      size_t fmt_len = (fmt ? strlen (fmt) : 0);
       fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
 
       if (fmt_suppresses_backtrace && fmt_len > 1)
@@ -863,7 +863,7 @@ make_stack_frame_list (const octave_map& stack)
 
       frame.name = name(i).string_value ();
       frame.line = line(i).int_value ();
-      frame.column = have_column ? column(i).int_value () : -1;
+      frame.column = (have_column ? column(i).int_value () : -1);
 
       frames.push_back (frame);
     }

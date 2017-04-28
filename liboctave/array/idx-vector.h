@@ -941,7 +941,7 @@ public:
       case class_scalar:
         {
           idx_scalar_rep *r = dynamic_cast<idx_scalar_rep *> (rep);
-          ret = body (r->get_data ()) ? 1 : 0;
+          ret = (body (r->get_data ()) ? 1 : 0);
         }
         break;
 

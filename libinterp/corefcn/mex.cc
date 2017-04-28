@@ -125,7 +125,7 @@ calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
       {
         // Both nsubs and ndims should be at least 2 here.
 
-        mwSize n = nsubs <= ndims ? nsubs : ndims;
+        mwSize n = (nsubs <= ndims ? nsubs : ndims);
 
         retval = subs[--n];
 
@@ -1676,7 +1676,7 @@ private:
     for (mwIndex i = 0; i < nel * nfields; i++)
       {
         mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->dup () : 0;
+        data[i] = (ptr ? ptr->dup () : 0);
       }
   }
 
@@ -1916,7 +1916,7 @@ private:
     for (mwIndex i = 0; i < nel; i++)
       {
         mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->dup () : 0;
+        data[i] = (ptr ? ptr->dup () : 0);
       }
   }
 
@@ -3097,7 +3097,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   for (int i = 0; i < nargin; i++)
     argin[i] = 0;
 
-  int nout = nargout == 0 ? 1 : nargout;
+  int nout = (nargout == 0 ? 1 : nargout);
   OCTAVE_LOCAL_BUFFER (mxArray *, argout, nout);
   for (int i = 0; i < nout; i++)
     argout[i] = 0;
@@ -3225,7 +3225,7 @@ mexCallMATLABWithTrap (int nargout, mxArray *argout[], int nargin,
 {
   mxArray *mx = NULL;
 
-  int old_flag = mex_context ? mex_context->trap_feval_error : 0;
+  int old_flag = (mex_context ? mex_context->trap_feval_error : 0);
   mexSetTrapFlag (1);
   if (mexCallMATLAB (nargout, argout, nargin, argin, fname))
     {

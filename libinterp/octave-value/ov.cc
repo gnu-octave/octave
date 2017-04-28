@@ -2615,7 +2615,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
           retval = octave_value (r, is_for_cmd_expr);
 
           if (result_is_str)
-            retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+            retval = (retval.convert_to_str (false, true, dq_str ? '"' : '\''));
         }
     }
 

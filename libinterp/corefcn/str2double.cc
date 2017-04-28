@@ -141,7 +141,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
         {
           // just 'i' and string is finished.  Return immediately.
           imag = true;
-          num = negative ? -1.0 : 1.0;
+          num = (negative ? -1.0 : 1.0);
           return is;
         }
       else

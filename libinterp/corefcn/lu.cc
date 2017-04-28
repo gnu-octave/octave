@@ -614,7 +614,7 @@ factorization from scratch.
 
   octave_value argl = args(0);
   octave_value argu = args(1);
-  octave_value argp = pivoted ? args(2) : octave_value ();
+  octave_value argp = (pivoted ? args(2) : octave_value ());
   octave_value argx = args(2 + pivoted);
   octave_value argy = args(3 + pivoted);
 

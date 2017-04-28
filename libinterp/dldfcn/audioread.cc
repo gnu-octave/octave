@@ -108,8 +108,8 @@ is stored in the audio file.
       if (range.numel () != 2)
         error ("audioread: invalid specification for range of frames");
 
-      double dstart = octave::math::isinf (range(0)) ? info.frames : range(0);
-      double dend = octave::math::isinf (range(1)) ? info.frames : range(1);
+      double dstart = (octave::math::isinf (range(0)) ? info.frames : range(0));
+      double dend = (octave::math::isinf (range(1)) ? info.frames : range(1));
 
       if (dstart < 1 || dstart > dend || dend > info.frames
           || octave::math::x_nint (dstart) != dstart

@@ -57,11 +57,11 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
   Array<double> wi (dim_vector (n, 1));
   double *pwi = wi.fortran_vec ();
 
-  F77_INT tnvr = calc_rev ? n : 0;
+  F77_INT tnvr = (calc_rev ? n : 0);
   Matrix vr (tnvr, tnvr);
   double *pvr = vr.fortran_vec ();
 
-  F77_INT tnvl = calc_lev ? n : 0;
+  F77_INT tnvl = (calc_lev ? n : 0);
   Matrix vl (tnvl, tnvl);
   double *pvl = vl.fortran_vec ();
 
@@ -124,9 +124,9 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
     (*current_liboctave_error_handler) ("dgeevx failed to converge");
 
   lambda.resize (n);
-  F77_INT nvr = calc_rev ? n : 0;
+  F77_INT nvr = (calc_rev ? n : 0);
   v.resize (nvr, nvr);
-  F77_INT nvl = calc_lev ? n : 0;
+  F77_INT nvl = (calc_lev ? n : 0);
   w.resize (nvl, nvl);
 
   for (F77_INT j = 0; j < n; j++)
@@ -216,8 +216,8 @@ EIG::symmetric_init (const Matrix& a, bool calc_rev, bool calc_lev)
     (*current_liboctave_error_handler) ("dsyev failed to converge");
 
   lambda = ComplexColumnVector (wr);
-  v = calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ();
-  w = calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ();
+  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }
@@ -246,11 +246,11 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
   ComplexColumnVector wr (n);
   Complex *pw = wr.fortran_vec ();
 
-  F77_INT nvr = calc_rev ? n : 0;
+  F77_INT nvr = (calc_rev ? n : 0);
   ComplexMatrix vrtmp (nvr, nvr);
   Complex *pvr = vrtmp.fortran_vec ();
 
-  F77_INT nvl = calc_lev ? n : 0;
+  F77_INT nvl = (calc_lev ? n : 0);
   ComplexMatrix vltmp (nvl, nvl);
   Complex *pvl = vltmp.fortran_vec ();
 
@@ -376,8 +376,8 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_rev, bool calc_lev)
     (*current_liboctave_error_handler) ("zheev failed to converge");
 
   lambda = ComplexColumnVector (wr);
-  v = calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ();
-  w = calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ();
+  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }
@@ -433,11 +433,11 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
   Array<double> beta (dim_vector (n, 1));
   double *pbeta = beta.fortran_vec ();
 
-  F77_INT tnvr = calc_rev ? n : 0;
+  F77_INT tnvr = (calc_rev ? n : 0);
   Matrix vr (tnvr, tnvr);
   double *pvr = vr.fortran_vec ();
 
-  F77_INT tnvl = calc_lev ? n : 0;
+  F77_INT tnvl = (calc_lev ? n : 0);
   Matrix vl (tnvl, tnvl);
   double *pvl = vl.fortran_vec ();
 
@@ -476,10 +476,10 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
     (*current_liboctave_error_handler) ("dggev failed to converge");
 
   lambda.resize (n);
-  F77_INT nvr = calc_rev ? n : 0;
+  F77_INT nvr = (calc_rev ? n : 0);
   v.resize (nvr, nvr);
 
-  F77_INT nvl = calc_lev ? n : 0;
+  F77_INT nvl = (calc_lev ? n : 0);
   w.resize (nvl, nvl);
 
   for (F77_INT j = 0; j < n; j++)
@@ -583,8 +583,8 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_rev,
     (*current_liboctave_error_handler) ("dsygv failed to converge");
 
   lambda = ComplexColumnVector (wr);
-  v = calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ();
-  w = calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ();
+  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }
@@ -637,11 +637,11 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
   ComplexColumnVector beta (n);
   Complex *pbeta = beta.fortran_vec ();
 
-  F77_INT nvr = calc_rev ? n : 0;
+  F77_INT nvr = (calc_rev ? n : 0);
   ComplexMatrix vrtmp (nvr, nvr);
   Complex *pvr = vrtmp.fortran_vec ();
 
-  F77_INT nvl = calc_lev ? n : 0;
+  F77_INT nvl = (calc_lev ? n : 0);
   ComplexMatrix vltmp (nvl, nvl);
   Complex *pvl = vltmp.fortran_vec ();
 
@@ -765,8 +765,8 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
     (*current_liboctave_error_handler) ("zhegv failed to converge");
 
   lambda = ComplexColumnVector (wr);
-  v = calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ();
-  w = calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ();
+  v = (calc_rev ? ComplexMatrix (atmp) : ComplexMatrix ());
+  w = (calc_lev ? ComplexMatrix (atmp) : ComplexMatrix ());
 
   return info;
 }

@@ -209,7 +209,7 @@ DASPK::do_integrate (double tout)
           return retval;
         }
 
-      info(4) = user_jac ? 1 : 0;
+      info(4) = (user_jac ? 1 : 0);
 
       DAEFunc::reset = false;
 
@@ -364,7 +364,7 @@ DASPK::do_integrate (double tout)
                       ("daspk: invalid value for eiq: %d", eiq);
 
                   for (F77_INT i = 0; i < n; i++)
-                    iwork(lid+i) = av(i) ? -1 : 1;
+                    iwork(lid+i) = (av(i) ? -1 : 1);
                 }
               else
                 {
@@ -409,7 +409,7 @@ DASPK::do_integrate (double tout)
                   ("daspk: invalid value for eiq: %d", eiq);
 
               for (F77_INT i = 0; i < n; i++)
-                iwork(lid+i) = av(i) ? -1 : 1;
+                iwork(lid+i) = (av(i) ? -1 : 1);
             }
         }
 

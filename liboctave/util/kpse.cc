@@ -714,7 +714,7 @@ kpse_tilde_expand (const std::string& name)
       octave::sys::password p = octave::sys::password::getpwnam (user);
 
       /* If no such user, just use '.'.  */
-      std::string home = p ? p.dir () : std::string (".");
+      std::string home = (p ? p.dir () : std::string ("."));
 
       if (home.empty ())
         home = ".";
@@ -727,7 +727,7 @@ kpse_tilde_expand (const std::string& name)
       if (name.length () > c && IS_DIR_SEP (home[home.length () - 1]))
         c++;
 
-      expansion = name.length () > c ? home : home + name.substr (c);
+      expansion = (name.length () > c ? home : home + name.substr (c));
     }
 #else /* not HAVE_PWD_H */
   expansion = name;
@@ -1147,7 +1147,7 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
   /* Solitary or leading :?  */
   else if (IS_ENV_SEP (path[0]))
     {
-      expansion = path_len == 1 ? fallback : fallback + path;
+      expansion = (path_len == 1 ? fallback : fallback + path);
     }
 
   /* Sorry about the assignment in the middle of the expression, but

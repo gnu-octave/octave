@@ -1213,7 +1213,7 @@ idx_vector::unmask (void) const
         if (data[i])
           idata[j++] = i;
 
-      ext = len > 0 ? idata[len - 1] + 1 : 0;
+      ext = (len > 0 ? idata[len - 1] + 1 : 0);
 
       return new idx_vector_rep (idata, len, ext, r->orig_dimensions (),
                                  DIRECT);

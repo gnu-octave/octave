@@ -523,13 +523,13 @@ static void
 audio_sub_formats (int format)
 {
   int count;
-  sf_command (NULL, SFC_GET_FORMAT_SUBTYPE_COUNT, &count, sizeof (int));
+  sf_command (nullptr, SFC_GET_FORMAT_SUBTYPE_COUNT, &count, sizeof (int));
 
   for (int i = 0; i < count; i++)
     {
       SF_FORMAT_INFO info;
       info.format = i;
-      sf_command (NULL, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info));
+      sf_command (nullptr, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info));
 
       SF_INFO sfinfo;
       memset (&sfinfo, 0, sizeof (sfinfo));
@@ -566,13 +566,13 @@ with names that start with @var{format}.
     }
 
   int count;
-  sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
+  sf_command (nullptr, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof (int));
 
   for (int i = 0; i < count; i++)
     {
       SF_FORMAT_INFO info;
       info.format = i;
-      sf_command (NULL, SFC_GET_FORMAT_MAJOR, &info, sizeof (info));
+      sf_command (nullptr, SFC_GET_FORMAT_MAJOR, &info, sizeof (info));
       bool match = true;
 
       if (! search.empty ())

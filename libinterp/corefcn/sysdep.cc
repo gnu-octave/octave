@@ -185,7 +185,7 @@ set_application_id (void)
 
   HMODULE hShell = LoadLibrary ("shell32.dll");
 
-  if (hShell != NULL)
+  if (hShell)
     {
       SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
         reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,

@@ -123,7 +123,7 @@ instead.
   GLsizei Height = static_cast<GLsizei> (bb(3));
 
   // Create an RGBA-mode context, specify Z=16, stencil=0, accum=0 sizes
-  OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);
+  OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, nullptr);
   if (! ctx)
     error ("__osmesa_print__: OSMesaCreateContext failed!\n");
 

@@ -1509,7 +1509,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
       const octave_idx_type n = str_arr.numel ();
 
       jclass_ref scls (jni_env, jni_env->FindClass ("java/lang/String"));
-      jobjectArray array = jni_env->NewObjectArray (n, scls, NULL);
+      jobjectArray array = jni_env->NewObjectArray (n, scls, nullptr);
 
       for (octave_idx_type i = 0; i < n; i++)
         {

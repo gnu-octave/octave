@@ -1,4 +1,3 @@
-// RowVector manipulations.
 /*
 
 Copyright (C) 1994-2017 John W. Eaton

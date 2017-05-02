@@ -1,4 +1,3 @@
-// Matrix manipulations.
 /*
 
 Copyright (C) 1993-2017 John W. Eaton

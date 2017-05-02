@@ -1,4 +1,3 @@
-// urlwrite and urlread, a curl front-end for octave
 /*
 
 Copyright (C) 2006-2017 Alexander Barth

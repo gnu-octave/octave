@@ -1,4 +1,3 @@
-// oct-errno.h.in
 /*
 
 Copyright (C) 2005-2017 John W. Eaton

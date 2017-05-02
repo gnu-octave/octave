@@ -1,4 +1,3 @@
-// Template array classes
 /*
 
 Copyright (C) 1996-2017 John W. Eaton

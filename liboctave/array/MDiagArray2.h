@@ -1,4 +1,3 @@
-// Template array classes with like-type math ops
 /*
 
 Copyright (C) 1996-2017 John W. Eaton

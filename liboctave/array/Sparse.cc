@@ -1,4 +1,3 @@
-// Template sparse array class
 /*
 
 Copyright (C) 2004-2017 David Bateman

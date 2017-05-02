@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 
 #include "builtin-defun-decls.h"
+#include "defaults.h"
 #include "display.h"
 #if defined (HAVE_QT_GRAPHICS)
 #  include "__init_qt__.h"
@@ -71,6 +72,17 @@ message_handler (QtMsgType, const QMessageLogContext &, const QString &)
 
 namespace octave
 {
+  gui_application::gui_application (int argc, char **argv)
+    : application (argc, argv), m_argc (argc), m_argv (argv),
+      m_gui_running (false)
+  {
+    // This should probably happen early.
+    sysdep_init ();
+
+    // Need to have global Vfoo variables defined early.
+    install_defaults ();
+  }
+
   bool gui_application::start_gui_p (void) const
   {
     if (m_options.no_window_system ())

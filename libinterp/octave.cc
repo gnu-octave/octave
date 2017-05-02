@@ -430,6 +430,12 @@ namespace octave
     m_is_octave_program = ((m_have_script_file || m_have_eval_option_code)
                            && ! m_options.persist ()
                            && ! m_options.traditional ());
+
+    // This should probably happen early.
+    sysdep_init ();
+
+    // Need to have global Vfoo variables defined early.
+    install_defaults ();
   }
 
   int cli_application::execute (void)

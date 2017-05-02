@@ -376,12 +376,6 @@ namespace octave
   {
     current_evaluator = m_evaluator;
 
-    // This should probably happen early.
-    sysdep_init ();
-
-    // Need to have global Vfoo variables defined early.
-    install_defaults ();
-
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_NUMERIC, "C");
     setlocale (LC_TIME, "C");

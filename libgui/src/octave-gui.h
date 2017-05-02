@@ -31,10 +31,7 @@ namespace octave
   {
   public:
 
-    gui_application (int argc, char **argv)
-      : application (argc, argv), m_argc (argc), m_argv (argv),
-        m_gui_running (false)
-    { }
+    gui_application (int argc, char **argv);
 
     // No copying, at least not yet.
 

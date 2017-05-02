@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <Array.h>
+#include "Array.h"
 
 template <typename T>
 static bool

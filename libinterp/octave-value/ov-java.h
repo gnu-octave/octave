@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <ovl.h>
-#include <ov.h>
+#include "ov.h"
+#include "ovl.h"
 
 typedef void *voidptr;
 

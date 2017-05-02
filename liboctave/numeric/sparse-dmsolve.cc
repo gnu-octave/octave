@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-sort.h"
 #include "oct-sparse.h"
+#include "sparse-dmsolve.h"
 #include "sparse-qr.h"
 
 template <typename T>

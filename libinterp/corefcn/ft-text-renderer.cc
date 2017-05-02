@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "base-text-renderer.h"
+#include "ft-text-renderer.h"
 
 #if defined (HAVE_FREETYPE)
 

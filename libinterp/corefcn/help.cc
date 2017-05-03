@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -68,7 +69,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-#include <defaults.h>
 
 // Name of the doc cache file specified on the command line.
 // (--doc-cache-file file)

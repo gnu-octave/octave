@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "str-vec.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "variables.h"
-#include <version.h>
+#include "version.h"
 
 std::string Voctave_home;
 

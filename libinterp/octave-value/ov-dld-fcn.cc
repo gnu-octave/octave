@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-shlib.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
 #include "ovl.h"

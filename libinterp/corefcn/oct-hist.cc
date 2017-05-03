@@ -50,7 +50,7 @@ Software Foundation, Inc.
 #include "str-vec.h"
 #include "unistd-wrappers.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"

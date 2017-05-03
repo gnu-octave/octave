@@ -32,8 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "singleton-cleanup.h"
 
-#include <defaults.h>
-
+#include "defaults.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "ov-fcn.h"

@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
-#include <defaults.h>
+#include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"

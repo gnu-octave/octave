@@ -70,7 +70,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include <version.h>
+#include "version.h"
 
 // TRUE means the quit() call is allowed.
 bool quit_allowed = true;

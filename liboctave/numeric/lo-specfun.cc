@@ -377,6 +377,9 @@ namespace octave
 #if defined (HAVE_LGAMMA_R)
       int sgngam;
       result = lgamma_r (x, &sgngam);
+#elif defined (HAVE_LGAMMA)
+      result = lgamma (x);
+      int sgngam = signgam;
 #else
       double sgngam = 0.0;
 
@@ -451,6 +454,9 @@ namespace octave
 #if defined (HAVE_LGAMMAF_R)
       int sgngam;
       result = lgammaf_r (x, &sgngam);
+#elif defined (HAVE_LGAMMAF)
+      result = lgammaf (x);
+      int sgngam = signgam;
 #else
       float sgngam = 0.0f;
 

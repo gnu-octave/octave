@@ -1224,7 +1224,7 @@ dimensions.
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).is_empty ()
-                     ? 0 : args(i).xnint_value ("cell: dimension must be a scalar integer"));
+                     ? 0 : args(i).xidx_type_value ("cell: dimension must be a scalar integer"));
       }
       break;
     }
@@ -1235,6 +1235,12 @@ dimensions.
 
   return ovl (Cell (dims));
 }
+
+/*
+## This might work on some system someday, but for now, who has a system
+## where a 16 yottabyte array can be allocated?  See bug #50934.
+%!error <out of memory> cell (1e24, 1);
+*/
 
 DEFUN (iscellstr, args, ,
        doc: /* -*- texinfo -*-

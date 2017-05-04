@@ -103,7 +103,7 @@ namespace octave
 
     void mark_global (void) { sym->mark_global (); }
 
-    void mark_as_static (void) { sym->init_persistent (); }
+    void mark_persistent (void) { sym->init_persistent (); }
 
     void mark_as_formal_parameter (void) { sym->mark_formal (); }
 

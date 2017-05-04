@@ -252,7 +252,7 @@ read_binary_data (std::istream& is, bool swap,
 bool
 save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
-                  bool mark_as_global, bool save_as_floats)
+                  bool mark_global, bool save_as_floats)
 {
   int32_t name_len = name.length ();
 
@@ -266,7 +266,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 
   unsigned char tmp;
 
-  tmp = mark_as_global;
+  tmp = mark_global;
   os.write (reinterpret_cast<char *> (&tmp), 1);
 
   // 255 flags the new binary format

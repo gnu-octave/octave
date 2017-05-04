@@ -1862,7 +1862,7 @@ write_mat5_integer_data (std::ostream& os, const int *m,
 
 static bool
 write_mat5_cell_array (std::ostream& os, const Cell& cell,
-                       bool mark_as_global, bool save_as_floats)
+                       bool mark_global, bool save_as_floats)
 {
   octave_idx_type nel = cell.numel ();
 
@@ -1870,7 +1870,7 @@ write_mat5_cell_array (std::ostream& os, const Cell& cell,
     {
       octave_value ov = cell(i);
 
-      if (! save_mat5_binary_element (os, ov, "", mark_as_global,
+      if (! save_mat5_binary_element (os, ov, "", mark_global,
                                       false, save_as_floats))
         return false;
     }
@@ -2231,7 +2231,7 @@ warn_dim_too_large (const std::string& name)
 bool
 save_mat5_binary_element (std::ostream& os,
                           const octave_value& tc, const std::string& name,
-                          bool mark_as_global, bool mat7_format,
+                          bool mark_global, bool mat7_format,
                           bool save_as_floats, bool compressing)
 {
   int32_t flags = 0;
@@ -2296,7 +2296,7 @@ save_mat5_binary_element (std::ostream& os,
 
       // The code seeks backwards in the stream to fix the header.
       // Can't do this with zlib, so use a stringstream.
-      ret = save_mat5_binary_element (buf, tc, name, mark_as_global, true,
+      ret = save_mat5_binary_element (buf, tc, name, mark_global, true,
                                       save_as_floats, true);
 
       if (ret)
@@ -2338,7 +2338,7 @@ save_mat5_binary_element (std::ostream& os,
   if (tc.is_bool_type ())
     flags |= 0x0200;
 
-  if (mark_as_global)
+  if (mark_global)
     flags |= 0x0400;
 
   if (tc.is_complex_scalar () || tc.is_complex_matrix ())
@@ -2561,7 +2561,7 @@ save_mat5_binary_element (std::ostream& os,
     {
       Cell cell = tc.cell_value ();
 
-      if (! write_mat5_cell_array (os, cell, mark_as_global, save_as_floats))
+      if (! write_mat5_cell_array (os, cell, mark_global, save_as_floats))
         error ("save: error while writing '%s' to MAT file", name.c_str ());
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
@@ -2666,7 +2666,7 @@ save_mat5_binary_element (std::ostream& os,
             for (octave_idx_type i = 0; i < nf; i++)
               {
                 bool retval2 = save_mat5_binary_element (os, elts[i][j], "",
-                                                         mark_as_global,
+                                                         mark_global,
                                                          false,
                                                          save_as_floats);
                 if (! retval2)

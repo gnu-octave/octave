@@ -3861,7 +3861,7 @@ namespace octave
       case GLOBAL:
         {
           retval = new tree_decl_command ("global", lst, l, c);
-          retval->mark_as_global ();
+          retval->mark_global ();
         }
         break;
 
@@ -3869,7 +3869,7 @@ namespace octave
         if (curr_fcn_depth > 0)
           {
             retval = new tree_decl_command ("persistent", lst, l, c);
-            retval->mark_as_persistent ();
+            retval->mark_persistent ();
           }
         else
           {

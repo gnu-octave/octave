@@ -34,7 +34,7 @@ class octave_value;
 extern OCTINTERP_API bool
 save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
-                  bool mark_as_global, bool save_as_floats);
+                  bool mark_global, bool save_as_floats);
 
 extern OCTINTERP_API std::string
 read_binary_data (std::istream& is, bool swap,

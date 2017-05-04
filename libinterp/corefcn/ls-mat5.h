@@ -62,7 +62,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 extern bool
 save_mat5_binary_element (std::ostream& os,
                           const octave_value& tc, const std::string& name,
-                          bool mark_as_global, bool mat7_format,
+                          bool mark_global, bool mat7_format,
                           bool save_as_floats, bool compressing = false);
 
 #endif

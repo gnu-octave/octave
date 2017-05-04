@@ -298,7 +298,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
 
 bool
 save_text_data (std::ostream& os, const octave_value& val_arg,
-                const std::string& name, bool mark_as_global,
+                const std::string& name, bool mark_global,
                 int precision)
 {
   bool success = true;
@@ -308,7 +308,7 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
 
   octave_value val = val_arg;
 
-  if (mark_as_global)
+  if (mark_global)
     os << "# type: global " << val.type_name () << "\n";
   else
     os << "# type: " << val.type_name () << "\n";

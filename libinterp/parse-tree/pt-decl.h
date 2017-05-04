@@ -81,10 +81,10 @@ namespace octave
       return id ? id->lvalue (tw) : octave_lvalue ();
     }
 
-    void mark_as_global (void) { type = global; }
+    void mark_global (void) { type = global; }
     bool is_global (void) const { return type == global; }
 
-    void mark_as_persistent (void) { type = persistent; }
+    void mark_persistent (void) { type = persistent; }
     bool is_persistent (void) const { return type == persistent; }
 
     tree_identifier * ident (void) { return id; }
@@ -136,16 +136,16 @@ namespace octave
         }
     }
 
-    void mark_as_global (void)
+    void mark_global (void)
     {
       for (tree_decl_elt *elt : *this)
-        elt->mark_as_global ();
+        elt->mark_global ();
     }
 
-    void mark_as_persistent (void)
+    void mark_persistent (void)
     {
       for (tree_decl_elt *elt : *this)
-        elt->mark_as_persistent ();
+        elt->mark_persistent ();
     }
 
     tree_decl_init_list * dup (symbol_table::scope_id scope,
@@ -177,16 +177,16 @@ namespace octave
 
     ~tree_decl_command (void);
 
-    void mark_as_global (void)
+    void mark_global (void)
     {
       if (init_list)
-        init_list->mark_as_global ();
+        init_list->mark_global ();
     }
 
-    void mark_as_persistent (void)
+    void mark_persistent (void)
     {
       if (init_list)
-        init_list->mark_as_persistent ();
+        init_list->mark_persistent ();
     }
 
     tree_decl_init_list * initializer_list (void) { return init_list; }

@@ -1048,7 +1048,7 @@ save_type_to_hdf5 (save_type st)
 bool
 add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
-               bool mark_as_global, bool save_as_floats)
+               bool mark_global, bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
@@ -1106,7 +1106,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     retval = false;
 
   // if it's global, add an attribute "OCTAVE_GLOBAL" with value 1
-  if (retval && mark_as_global)
+  if (retval && mark_global)
     retval = hdf5_add_attr (data_id, "OCTAVE_GLOBAL") >= 0;
 
   // We are saving in the new variable format, so mark it
@@ -1143,7 +1143,7 @@ error_cleanup:
 bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
-                bool mark_as_global, bool save_as_floats)
+                bool mark_global, bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
@@ -1152,7 +1152,7 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
   hdf5_ofstream& hs = dynamic_cast<hdf5_ofstream&> (os);
 
   return add_hdf5_data (hs.file_id, tc, name, doc,
-                        mark_as_global, save_as_floats);
+                        mark_global, save_as_floats);
 
 #else
   err_disabled_feature ("save_hdf5_data", "HDF5");

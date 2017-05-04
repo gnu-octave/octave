@@ -54,7 +54,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
 
 extern OCTINTERP_API bool
 save_text_data (std::ostream& os, const octave_value& val_arg,
-                const std::string& name, bool mark_as_global, int precision);
+                const std::string& name, bool mark_global, int precision);
 
 extern OCTINTERP_API bool
 save_text_data_for_plotting (std::ostream& os, const octave_value& t,

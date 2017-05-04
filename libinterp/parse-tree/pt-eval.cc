@@ -636,7 +636,7 @@ namespace octave
         if (elt.is_global ())
           id->mark_global ();
         else if (elt.is_persistent ())
-          id->mark_as_static ();
+          id->mark_persistent ();
         else
           error ("declaration list element not global or persistent");
 

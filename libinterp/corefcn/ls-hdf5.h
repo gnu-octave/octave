@@ -132,7 +132,7 @@ hdf5_h5g_iterate (octave_hdf5_id loc_id, const char *name, int *idx,
 extern OCTINTERP_API bool
 add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
                const std::string& name, const std::string& doc,
-               bool mark_as_global, bool save_as_floats);
+               bool mark_global, bool save_as_floats);
 
 extern OCTINTERP_API int
 save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d);
@@ -148,7 +148,7 @@ read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
 extern OCTINTERP_API bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
-                bool mark_as_global, bool save_as_floats);
+                bool mark_global, bool save_as_floats);
 
 extern OCTINTERP_API bool
 hdf5_check_attr (octave_hdf5_id loc_id, const char *attr_name);

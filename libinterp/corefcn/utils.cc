@@ -1150,7 +1150,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
   if (! a.dims ().is_vector ())
     error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
 
-  const Array<int> v = a.int_vector_value ();
+  const Array<octave_idx_type> v = a.octave_idx_type_vector_value ();
   const octave_idx_type n = v.numel ();
 
   dim.resize (n); // even if n < 2, resize sets it back to 2

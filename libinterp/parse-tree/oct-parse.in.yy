@@ -3859,12 +3859,18 @@ namespace octave
     switch (tok)
       {
       case GLOBAL:
-        retval = new tree_global_command (lst, l, c);
+        {
+          retval = new tree_decl_command ("global", lst, l, c);
+          retval->mark_as_global ();
+        }
         break;
 
       case PERSISTENT:
         if (curr_fcn_depth > 0)
-          retval = new tree_persistent_command (lst, l, c);
+          {
+            retval = new tree_decl_command ("persistent", lst, l, c);
+            retval->mark_as_persistent ();
+          }
         else
           {
             if (lexer.reading_script_file)

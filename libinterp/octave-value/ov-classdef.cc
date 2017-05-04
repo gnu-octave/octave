@@ -1915,10 +1915,9 @@ public:
   void visit_break_command (octave::tree_break_command&) { }
   void visit_colon_expression (octave::tree_colon_expression&) { }
   void visit_continue_command (octave::tree_continue_command&) { }
-  void visit_global_command (octave::tree_global_command&) { }
-  void visit_persistent_command (octave::tree_persistent_command&) { }
-  void visit_decl_elt (octave::tree_decl_elt&) { }
+  void visit_decl_command (octave::tree_decl_command&) { }
   void visit_decl_init_list (octave::tree_decl_init_list&) { }
+  void visit_decl_elt (octave::tree_decl_elt&) { }
   void visit_simple_for_command (octave::tree_simple_for_command&) { }
   void visit_complex_for_command (octave::tree_complex_for_command&) { }
   void visit_octave_user_script (octave_user_script&) { }

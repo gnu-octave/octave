@@ -100,32 +100,20 @@ namespace octave
   }
 
   void
-  tree_breakpoint::do_decl_command (tree_decl_command& cmd)
+  tree_breakpoint::visit_decl_command (tree_decl_command& cmd)
   {
     if (cmd.line () >= line)
       take_action (cmd);
   }
 
   void
-  tree_breakpoint::visit_global_command (tree_global_command& cmd)
-  {
-    do_decl_command (cmd);
-  }
-
-  void
-  tree_breakpoint::visit_persistent_command (tree_persistent_command& cmd)
-  {
-    do_decl_command (cmd);
-  }
-
-  void
-  tree_breakpoint::visit_decl_elt (tree_decl_elt&)
+  tree_breakpoint::visit_decl_init_list (tree_decl_init_list&)
   {
     panic_impossible ();
   }
 
   void
-  tree_breakpoint::visit_decl_init_list (tree_decl_init_list&)
+  tree_breakpoint::visit_decl_elt (tree_decl_elt&)
   {
     panic_impossible ();
   }

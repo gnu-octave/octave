@@ -90,38 +90,12 @@ namespace octave
   { }
 
   void
-  tree_checker::do_decl_command (tree_decl_command& cmd)
+  tree_checker::visit_decl_command (tree_decl_command& cmd)
   {
     tree_decl_init_list *init_list = cmd.initializer_list ();
 
     if (init_list)
       init_list->accept (*this);
-  }
-
-  void
-  tree_checker::visit_global_command (tree_global_command& cmd)
-  {
-    do_decl_command (cmd);
-  }
-
-  void
-  tree_checker::visit_persistent_command (tree_persistent_command& cmd)
-  {
-    do_decl_command (cmd);
-  }
-
-  void
-  tree_checker::visit_decl_elt (tree_decl_elt& cmd)
-  {
-    tree_identifier *id = cmd.ident ();
-
-    if (id)
-      id->accept (*this);
-
-    tree_expression *expr = cmd.expression ();
-
-    if (expr)
-      expr->accept (*this);
   }
 
   void
@@ -136,6 +110,20 @@ namespace octave
         if (elt)
           elt->accept (*this);
       }
+  }
+
+  void
+  tree_checker::visit_decl_elt (tree_decl_elt& cmd)
+  {
+    tree_identifier *id = cmd.ident ();
+
+    if (id)
+      id->accept (*this);
+
+    tree_expression *expr = cmd.expression ();
+
+    if (expr)
+      expr->accept (*this);
   }
 
   void

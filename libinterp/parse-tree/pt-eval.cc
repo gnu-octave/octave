@@ -608,13 +608,37 @@ namespace octave
   }
 
   void
-  tree_evaluator::do_global_init (octave::tree_decl_elt& elt)
+  tree_evaluator::visit_decl_command (tree_decl_command& cmd)
+  {
+    if (debug_mode)
+      do_breakpoint (cmd.is_breakpoint (true));
+
+    tree_decl_init_list *init_list = cmd.initializer_list ();
+
+    if (init_list)
+      init_list->accept (*this);
+  }
+
+  void
+  tree_evaluator::visit_decl_init_list (tree_decl_init_list& lst)
+  {
+    for (tree_decl_elt *elt : lst)
+      elt->accept (*this);
+  }
+
+  void
+  tree_evaluator::visit_decl_elt (tree_decl_elt& elt)
   {
     octave::tree_identifier *id = elt.ident ();
 
     if (id)
       {
-        id->mark_global ();
+        if (elt.is_global ())
+          id->mark_global ();
+        else if (elt.is_persistent ())
+          id->mark_as_static ();
+        else
+          error ("declaration list element not global or persistent");
 
         octave_lvalue ult = id->lvalue (this);
 
@@ -632,83 +656,6 @@ namespace octave
             ult.assign (octave_value::op_asn_eq, init_val);
           }
       }
-  }
-
-  void
-  tree_evaluator::do_static_init (octave::tree_decl_elt& elt)
-  {
-    octave::tree_identifier *id = elt.ident ();
-
-    if (id)
-      {
-        id->mark_as_static ();
-
-        octave_lvalue ult = id->lvalue (this);
-
-        if (ult.is_undefined ())
-          {
-            octave::tree_expression *expr = elt.expression ();
-
-            octave_value init_val;
-
-            if (expr)
-              init_val = evaluate (expr);
-            else
-              init_val = Matrix ();
-
-            ult.assign (octave_value::op_asn_eq, init_val);
-          }
-      }
-  }
-
-  void
-  tree_evaluator::visit_global_command (tree_global_command& cmd)
-  {
-    if (debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
-
-    tree_decl_init_list *init_list = cmd.initializer_list ();
-
-    if (init_list)
-      {
-        // If we called init_list->accept (*this), we would need a way
-        // to tell tree_evaluator::visit_decl_init_list that we are
-        // evaluating a global init list.
-
-        for (tree_decl_elt *elt : *init_list)
-          do_global_init (*elt);
-      }
-  }
-
-  void
-  tree_evaluator::visit_persistent_command (tree_persistent_command& cmd)
-  {
-    if (debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
-
-    tree_decl_init_list *init_list = cmd.initializer_list ();
-
-    if (init_list)
-      {
-        // If we called init_list->accept (*this), we would need a way
-        // to tell tree_evaluator::visit_decl_init_list that we are
-        // evaluating a static init list.
-
-        for (tree_decl_elt *elt : *init_list)
-          do_static_init (*elt);
-      }
-  }
-
-  void
-  tree_evaluator::visit_decl_elt (tree_decl_elt&)
-  {
-    panic_impossible ();
-  }
-
-  void
-  tree_evaluator::visit_decl_init_list (tree_decl_init_list&)
-  {
-    panic_impossible ();
   }
 }
 

@@ -65,13 +65,11 @@ namespace octave
 
     void visit_continue_command (tree_continue_command&);
 
-    void visit_global_command (tree_global_command&);
-
-    void visit_persistent_command (tree_persistent_command&);
-
-    void visit_decl_elt (tree_decl_elt&);
+    void visit_decl_command (tree_decl_command&);
 
     void visit_decl_init_list (tree_decl_init_list&);
+
+    void visit_decl_elt (tree_decl_elt&);
 
     void visit_while_command (tree_while_command&);
 
@@ -149,8 +147,6 @@ namespace octave
     int get_line (void) { return found ? line : 0; }
 
   private:
-
-    void do_decl_command (tree_decl_command&);
 
     void take_action (tree& tr);
 

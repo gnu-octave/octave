@@ -46,8 +46,15 @@ namespace octave
   {
   public:
 
+    enum decl_type
+      {
+        unknown,
+        global,
+        persistent
+      };
+
     tree_decl_elt (tree_identifier *i = nullptr, tree_expression *e = nullptr)
-      : id (i), expr (e) { }
+      : type (unknown), id (i), expr (e) { }
 
     // No copying!
 
@@ -74,6 +81,12 @@ namespace octave
       return id ? id->lvalue (tw) : octave_lvalue ();
     }
 
+    void mark_as_global (void) { type = global; }
+    bool is_global (void) const { return type == global; }
+
+    void mark_as_persistent (void) { type = persistent; }
+    bool is_persistent (void) const { return type == persistent; }
+
     tree_identifier * ident (void) { return id; }
 
     std::string name (void) { return id ? id->name () : ""; }
@@ -89,6 +102,8 @@ namespace octave
     }
 
   private:
+
+    decl_type type;
 
     // An identifier to tag with the declared property.
     tree_identifier *id;
@@ -121,6 +136,18 @@ namespace octave
         }
     }
 
+    void mark_as_global (void)
+    {
+      for (tree_decl_elt *elt : *this)
+        elt->mark_as_global ();
+    }
+
+    void mark_as_persistent (void)
+    {
+      for (tree_decl_elt *elt : *this)
+        elt->mark_as_persistent ();
+    }
+
     tree_decl_init_list * dup (symbol_table::scope_id scope,
                                symbol_table::context_id context) const;
 
@@ -140,8 +167,7 @@ namespace octave
       : tree_command (l, c), cmd_name (n), init_list (0) { }
 
     tree_decl_command (const std::string& n, tree_decl_init_list *t,
-                       int l = -1, int c = -1)
-      : tree_command (l, c), cmd_name (n), init_list (t) { }
+                       int l = -1, int c = -1);
 
     // No copying!
 
@@ -151,83 +177,37 @@ namespace octave
 
     ~tree_decl_command (void);
 
+    void mark_as_global (void)
+    {
+      if (init_list)
+        init_list->mark_as_global ();
+    }
+
+    void mark_as_persistent (void)
+    {
+      if (init_list)
+        init_list->mark_as_persistent ();
+    }
+
     tree_decl_init_list * initializer_list (void) { return init_list; }
 
-    std::string name (void) { return cmd_name; }
+    std::string name (void) const { return cmd_name; }
 
-  protected:
+    tree_command *dup (symbol_table::scope_id scope,
+                       symbol_table::context_id context) const;
+
+    void accept (tree_walker& tw)
+    {
+      tw.visit_decl_command (*this);
+    }
+
+  private:
 
     // The name of this command -- global, static, etc.
     std::string cmd_name;
 
     // The list of variables or initializers in this declaration command.
     tree_decl_init_list *init_list;
-  };
-
-  // Global.
-
-  class tree_global_command : public tree_decl_command
-  {
-  public:
-
-    tree_global_command (int l = -1, int c = -1)
-      : tree_decl_command ("global", l, c) { }
-
-    tree_global_command (tree_decl_init_list *t, int l = -1, int c = -1)
-      : tree_decl_command ("global", t, l, c) { }
-
-    // No copying!
-
-    tree_global_command (const tree_global_command&) = delete;
-
-    tree_global_command& operator = (const tree_global_command&) = delete;
-
-    ~tree_global_command (void) = default;
-
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_global_command (*this);
-    }
-
-  private:
-
-    static void do_init (tree_decl_elt& elt);
-  };
-
-  // Persistent.
-
-  class tree_persistent_command : public tree_decl_command
-  {
-  public:
-
-    tree_persistent_command (int l = -1, int c = -1)
-      : tree_decl_command ("persistent", l, c) { }
-
-    tree_persistent_command (tree_decl_init_list *t, int l = -1, int c = -1)
-      : tree_decl_command ("persistent", t, l, c) { }
-
-    // No copying!
-
-    tree_persistent_command (const tree_persistent_command&) = delete;
-
-    tree_persistent_command& operator = (const tree_persistent_command&) = delete;
-
-    ~tree_persistent_command (void) = default;
-
-    tree_command * dup (symbol_table::scope_id scope,
-                        symbol_table::context_id context) const;
-
-    void accept (tree_walker& tw)
-    {
-      tw.visit_persistent_command (*this);
-    }
-
-  private:
-
-    static void do_init (tree_decl_elt& elt);
   };
 }
 
@@ -240,12 +220,6 @@ typedef octave::tree_decl_elt tree_decl_elt;
 
 OCTAVE_DEPRECATED ("use 'octave::tree_decl_command' instead")
 typedef octave::tree_decl_command tree_decl_command;
-
-OCTAVE_DEPRECATED ("use 'octave::tree_global_command' instead")
-typedef octave::tree_global_command tree_global_command;
-
-OCTAVE_DEPRECATED ("use 'octave::tree_persistent_command' instead")
-typedef octave::tree_persistent_command tree_persistent_command;
 
 #endif
 

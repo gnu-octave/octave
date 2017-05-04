@@ -45,10 +45,9 @@ namespace octave
   class tree_break_command;
   class tree_colon_expression;
   class tree_continue_command;
-  class tree_global_command;
-  class tree_persistent_command;
-  class tree_decl_elt;
+  class tree_decl_command;
   class tree_decl_init_list;
+  class tree_decl_elt;
   class tree_simple_for_command;
   class tree_complex_for_command;
   class tree_function_def;
@@ -139,10 +138,7 @@ namespace octave
     visit_continue_command (tree_continue_command&) = 0;
 
     virtual void
-    visit_global_command (tree_global_command&) = 0;
-
-    virtual void
-    visit_persistent_command (tree_persistent_command&) = 0;
+    visit_decl_command (tree_decl_command&) = 0;
 
     virtual void
     visit_decl_elt (tree_decl_elt&) = 0;

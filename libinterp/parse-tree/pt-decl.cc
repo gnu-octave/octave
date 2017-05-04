@@ -69,33 +69,35 @@ namespace octave
     return new_dil;
   }
 
-  // Base class for declaration commands (global, static).
+  // Declaration commands (global, static).
+
+  tree_decl_command::tree_decl_command (const std::string& n,
+                                        tree_decl_init_list *t, int l, int c)
+    : tree_command (l, c), cmd_name (n), init_list (t)
+  {
+    if (t)
+      {
+        if (cmd_name == "global")
+          mark_as_global ();
+        else if (cmd_name == "persistent")
+          mark_as_persistent ();
+        else
+          error ("tree_decl_command: unknown decl type: %s", cmd_name);
+      }
+  }
 
   tree_decl_command::~tree_decl_command (void)
   {
     delete init_list;
   }
 
-  // Global.
-
   tree_command *
-  tree_global_command::dup (symbol_table::scope_id scope,
-                            symbol_table::context_id context) const
+  tree_decl_command::dup (symbol_table::scope_id scope,
+                          symbol_table::context_id context) const
   {
-    return
-      new tree_global_command (init_list ? init_list->dup (scope, context) : 0,
-                               line (), column ());
-  }
+    tree_decl_init_list *new_init_list
+      = init_list ? init_list->dup (scope, context) : 0;
 
-  // Static.
-
-  tree_command *
-  tree_persistent_command::dup (symbol_table::scope_id scope,
-                                symbol_table::context_id context) const
-  {
-    return
-      new tree_persistent_command (init_list ? init_list->dup (scope, context)
-                                   : 0,
-                                   line (), column ());
+    return new tree_decl_command (name (), new_init_list, line (), column ());
   }
 }

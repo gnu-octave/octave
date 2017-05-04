@@ -148,7 +148,7 @@ namespace octave
   }
 
   void
-  tree_print_code::do_decl_command (tree_decl_command& cmd)
+  tree_print_code::visit_decl_command (tree_decl_command& cmd)
   {
     indent ();
 
@@ -158,36 +158,6 @@ namespace octave
 
     if (init_list)
       init_list->accept (*this);
-  }
-
-  void
-  tree_print_code::visit_global_command (tree_global_command& cmd)
-  {
-    do_decl_command (cmd);
-  }
-
-  void
-  tree_print_code::visit_persistent_command (tree_persistent_command& cmd)
-  {
-    do_decl_command (cmd);
-  }
-
-  void
-  tree_print_code::visit_decl_elt (tree_decl_elt& cmd)
-  {
-    tree_identifier *id = cmd.ident ();
-
-    if (id)
-      id->accept (*this);
-
-    tree_expression *expr = cmd.expression ();
-
-    if (expr)
-      {
-        os << " = ";
-
-        expr->accept (*this);
-      }
   }
 
   void
@@ -206,6 +176,24 @@ namespace octave
             if (p != lst.end ())
               os << ", ";
           }
+      }
+  }
+
+  void
+  tree_print_code::visit_decl_elt (tree_decl_elt& cmd)
+  {
+    tree_identifier *id = cmd.ident ();
+
+    if (id)
+      id->accept (*this);
+
+    tree_expression *expr = cmd.expression ();
+
+    if (expr)
+      {
+        os << " = ";
+
+        expr->accept (*this);
       }
   }
 

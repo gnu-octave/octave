@@ -60,13 +60,11 @@ namespace octave
 
     void visit_continue_command(tree_continue_command&);
 
-    void visit_global_command (tree_global_command&);
-
-    void visit_persistent_command (tree_persistent_command&);
-
-    void visit_decl_elt (tree_decl_elt&);
+    void visit_decl_command (tree_decl_command&);
 
     void visit_decl_init_list (tree_decl_init_list&);
+
+    void visit_decl_elt (tree_decl_elt&);
 
     void visit_simple_for_command (tree_simple_for_command&);
 
@@ -139,8 +137,6 @@ namespace octave
     bool do_lvalue_check;
 
     std::string file_name;
-
-    void do_decl_command (tree_decl_command&);
 
     OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
   };

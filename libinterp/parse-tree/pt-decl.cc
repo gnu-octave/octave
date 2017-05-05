@@ -82,7 +82,8 @@ namespace octave
         else if (cmd_name == "persistent")
           mark_persistent ();
         else
-          error ("tree_decl_command: unknown decl type: %s", cmd_name);
+          error ("tree_decl_command: unknown decl type: %s",
+                 cmd_name.c_str ());
       }
   }
 

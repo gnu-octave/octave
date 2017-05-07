@@ -1205,23 +1205,22 @@ void TerminalView::paintFilters(QPainter& painter)
               // find the position of the underline below that
               int underlinePos = baseline + metrics.underlinePos();
 
-              if ( r.contains( mapFromGlobal(QCursor::pos()) ) )
-                painter.drawLine( r.left() , underlinePos ,
-                                  r.right() , underlinePos );
+              if (r.contains (mapFromGlobal(QCursor::pos())))
+                {
+                  if (spot->type () == Filter::ErrorLink)
+                    painter.setPen (QColor (255,0,0));
+                  painter.drawLine (r.left(), underlinePos,
+                                    r.right(), underlinePos);
+                }
             }
           // Marker hotspots simply have a transparent rectanglular shape
           // drawn on top of them
-          else if ( spot->type() == Filter::Error )
+          else if ( spot->type() == Filter::Marker )
             {
               //TODO - Do not use a hardcoded colour for this
-              painter.fillRect(r,QBrush(QColor(255,0,0,96)));
+              painter.fillRect(r,QBrush(QColor(255,0,0,120)));
             }
 
-          if ( spot->type() == Filter::ErrorLink )
-            {
-              //TODO - Do not use a hardcoded colour for this
-              painter.fillRect(r,QBrush(QColor(255,0,0,96)));
-            }
         }
     }
 }

@@ -48,10 +48,6 @@ void QUnixTerminalImpl::initialize()
     UrlFilter *url_filter = new UrlFilter();
     m_terminalView->filterChain ()->addFilter (url_filter);
 
-    RegExpFilter *error_filter = new RegExpFilter (Filter::Type::Error);
-    error_filter->setRegExp (QRegExp ("error:"));
-    m_terminalView->filterChain ()->addFilter (error_filter);
-
     UrlFilter *file_filter = new UrlFilter (Filter::Type::ErrorLink);
     m_terminalView->filterChain ()->addFilter (file_filter);
 

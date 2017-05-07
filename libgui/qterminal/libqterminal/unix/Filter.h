@@ -79,7 +79,7 @@ public:
       Link,
       // this hotspot represents a marker
       Marker,
-      Error,
+      // this hotspot represents a clickable link to an erroneous file
       ErrorLink
     };
 

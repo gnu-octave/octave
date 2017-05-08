@@ -77,7 +77,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = dasrt_f->do_multi_index_op (1, args);
+          tmp = octave::feval (dasrt_f, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -118,7 +118,7 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
       try
         {
-          tmp = dasrt_cf->do_multi_index_op (1, args);
+          tmp = octave::feval (dasrt_cf, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -164,7 +164,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = dasrt_j->do_multi_index_op (1, args);
+          tmp = octave::feval (dasrt_j, args, 1);
         }
       catch (octave::execution_exception& e)
         {

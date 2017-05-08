@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
+#include "parse.h"
 #include "pt-mat.h"
 #include "utils.h"
 #include "variables.h"
@@ -1637,7 +1638,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+          result = octave::feval (fcn, ovl (ov), 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -1665,7 +1666,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+          result = octave::feval (fcn, ovl (ov), 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -1702,7 +1703,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
       try
         {
-          tmp2 = fcn.do_multi_index_op (1, ovl);
+          tmp2 = octave::feval (fcn, ovl, 1);
         }
       catch (octave::execution_exception& e)
         {

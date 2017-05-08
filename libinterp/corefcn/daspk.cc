@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-cell.h"
 #include "pager.h"
+#include "parse.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -77,7 +78,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = daspk_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (daspk_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -127,7 +128,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = daspk_jac->do_multi_index_op (1, args);
+          tmp = octave::feval (daspk_jac, args, 1);
         }
       catch (octave::execution_exception& e)
         {

@@ -76,7 +76,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
   try
     {
-      tmp = func.do_multi_index_op (nargout, inputlist);
+      tmp = octave::feval (func, inputlist, nargout);
     }
   catch (const octave::execution_exception& e)
     {
@@ -106,7 +106,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
           buffer_error_messages--;
 
-          tmp = error_handler.do_multi_index_op (nargout, errlist);
+          tmp = octave::feval (error_handler, errlist, nargout);
         }
       else
         tmp.clear ();

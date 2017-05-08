@@ -4947,6 +4947,12 @@ namespace octave
   }
 
   octave_value_list
+  feval (octave_value& fcn, const octave_value_list& args, int nargout)
+  {
+    return fcn.do_multi_index_op (nargout, args);
+  }
+
+  octave_value_list
   feval (octave_function *fcn, const octave_value_list& args, int nargout)
   {
     octave_value_list retval;

@@ -902,7 +902,7 @@ namespace octave
 
     try
       {
-        tmp = ida_fc->do_multi_index_op (1, ovl (t, x, xdot));
+        tmp = feval (ida_fc, ovl (t, x, xdot), 1);
       }
     catch (octave::execution_exception& e)
       {
@@ -920,7 +920,7 @@ namespace octave
 
     try
       {
-        tmp = ida_jc->do_multi_index_op (2, ovl (t, x, xdot));
+        tmp = feval (ida_jc, ovl (t, x, xdot), 2);
       }
     catch (octave::execution_exception& e)
       {
@@ -938,7 +938,7 @@ namespace octave
 
     try
       {
-        tmp = ida_jc->do_multi_index_op (2, ovl (t, x, xdot));
+        tmp = feval (ida_jc, ovl (t, x, xdot), 2);
       }
     catch (octave::execution_exception& e)
       {

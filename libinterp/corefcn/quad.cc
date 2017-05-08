@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "pager.h"
+#include "parse.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "unwind-prot.h"
@@ -71,7 +72,7 @@ quad_user_function (double x)
 
       try
         {
-          tmp = quad_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (quad_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -107,7 +108,7 @@ quad_float_user_function (float x)
 
       try
         {
-          tmp = quad_fcn->do_multi_index_op (1, args);
+          tmp = octave::feval (quad_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {

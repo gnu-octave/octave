@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
+#include "parse.h"
 #include "variables.h"
 
 #if defined (HAVE_ARPACK)
@@ -64,7 +65,7 @@ eigs_func (const ColumnVector& x, int& eigs_error)
 
       try
         {
-          tmp = eigs_fcn->do_multi_index_op (1, args);
+          tmp = feval (eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -104,7 +105,7 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 
       try
         {
-          tmp = eigs_fcn->do_multi_index_op (1, args);
+          tmp = feval (eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {

@@ -405,14 +405,14 @@ dimensionality as the other array.
           octave_value_list inputs (2);
           inputs(0) = A;
           inputs(1) = B;
-          retval = func.do_multi_index_op (1, inputs);
+          retval = octave::feval (func, inputs, 1);
         }
       else if (dvc.numel () < 1)
         {
           octave_value_list inputs (2);
           inputs(0) = A.resize (dvc);
           inputs(1) = B.resize (dvc);
-          retval = func.do_multi_index_op (1, inputs);
+          retval = octave::feval (func, inputs, 1);
         }
       else
         {
@@ -454,7 +454,7 @@ dimensionality as the other array.
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                 inputs(1) = Bc;
 
-              octave_value_list tmp = func.do_multi_index_op (1, inputs);
+              octave_value_list tmp = octave::feval (func, inputs, 1);
 
 #define BSXINIT(T, CLS, EXTRACTOR)                                      \
               (result_type == CLS)                                      \

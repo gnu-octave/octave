@@ -169,7 +169,7 @@ public:
     if (data.is_defined ())
       args.append (data);
 
-    fcn_handle.do_multi_index_op (0, args);
+    octave::feval (fcn_handle, args, 0);
   }
 
   std::string id (void) { return ident; }

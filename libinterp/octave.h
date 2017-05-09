@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <string>
 
-#include <str-vec.h>
+#include "str-vec.h"
 
 namespace octave
 {

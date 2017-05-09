@@ -43,10 +43,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
+#include "main-window.h"
+#include "oct-map.h"
 #include "octave-link.h"
 #include "utils.h"
-#include "main-window.h"
-#include <oct-map.h>
 
 file_editor::file_editor (QWidget *p)
   : file_editor_interface (p)

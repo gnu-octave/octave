@@ -84,7 +84,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 // oct-parse.h must be included after pt-all.h
-#include <oct-parse.h>
+#include "oct-parse.h"
 
 extern int octave_lex (YYSTYPE *, void *);
 

@@ -116,8 +116,8 @@ object) relevant global values before and after the nested call.
 #include "token.h"
 #include "utils.h"
 #include "variables.h"
-#include <oct-parse.h>
-#include <oct-gperf.h>
+#include "oct-parse.h"
+#include "oct-gperf.h"
 
 // FIXME: with bison 3.x, OCTAVE_STYPE appears in the generated
 // oct-parse.h file, but there is no definition for YYSTYPE, which is

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <windows.h>
 #endif
 
-#include <lo-mappers.h>
+#include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "oct-refcount.h"
 

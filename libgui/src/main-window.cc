@@ -61,11 +61,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
+#include "oct-map.h"
 #include "octave.h"
 #include "symtab.h"
-#include "version.h"
 #include "utils.h"
-#include <oct-map.h>
+#include "version.h"
 
 static file_editor_interface *
 create_default_editor (QWidget *p)

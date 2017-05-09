@@ -41,18 +41,18 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dch1dn, DCH1DN) (const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*, F77_DBLE*,
-                             F77_INT&);
+                             const F77_INT&, F77_DBLE*,
+                             F77_DBLE*, F77_INT&);
 
   F77_RET_T
   F77_FUNC (sch1dn, SCH1DN) (const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*, F77_REAL*,
-                             F77_INT&);
+                             const F77_INT&, F77_REAL*,
+                             F77_REAL*, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zch1dn, ZCH1DN) (const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*,
-                             F77_INT&);
+                             const F77_INT&, F77_DBLE_CMPLX*,
+                             F77_DBLE*, F77_INT&);
 
   // CH1UP
 
@@ -186,8 +186,8 @@ extern "C"
   F77_FUNC (sqrdec, SQRDEC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_REAL*,
                              const F77_INT&, F77_REAL*,
-                             const F77_INT&,
-                             const F77_INT&, F77_REAL*);
+                             const F77_INT&, const F77_INT&,
+                             F77_REAL*);
 
   F77_RET_T
   F77_FUNC (zqrdec, ZQRDEC) (const F77_INT&, const F77_INT&,
@@ -206,9 +206,9 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dqrder, DQRDER) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE*);
+                             F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             const F77_INT&, F77_DBLE*);
 
   F77_RET_T
   F77_FUNC (sqrder, SQRDER) (const F77_INT&, const F77_INT&,
@@ -218,9 +218,9 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (zqrder, ZQRDER) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, F77_DBLE*);
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
 
   // QRINC
 
@@ -228,7 +228,7 @@ extern "C"
   F77_FUNC (cqrinc, CQRINC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_CMPLX*,
                              const F77_INT&, F77_CMPLX*,
-                             const F77_INT&,const F77_INT&,
+                             const F77_INT&, const F77_INT&,
                              const F77_CMPLX*, F77_REAL*);
 
   F77_RET_T
@@ -242,8 +242,8 @@ extern "C"
   F77_FUNC (sqrinc, SQRINC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_REAL*,
                              const F77_INT&, F77_REAL*,
-                             const F77_INT&,
-                             const F77_INT&, const F77_REAL*, F77_REAL*);
+                             const F77_INT&, const F77_INT&,
+                             const F77_REAL*, F77_REAL*);
 
   F77_RET_T
   F77_FUNC (zqrinc, ZQRINC) (const F77_INT&, const F77_INT&,
@@ -263,21 +263,24 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dqrinr, DQRINR) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE*, F77_DBLE*);
+                             F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             const F77_INT&, const F77_DBLE*,
+                             F77_DBLE*);
 
   F77_RET_T
   F77_FUNC (sqrinr, SQRINR) (const F77_INT&, const F77_INT&,
                              F77_REAL*, const F77_INT&,
                              F77_REAL*, const F77_INT&,
-                             const F77_INT&, const F77_REAL*, F77_REAL*);
+                             const F77_INT&, const F77_REAL*,
+                             F77_REAL*);
 
   F77_RET_T
   F77_FUNC (zqrinr, ZQRINR) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, const F77_INT&,
-                             const F77_DBLE_CMPLX*, F77_DBLE*);
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             const F77_INT&, const F77_DBLE_CMPLX*,
+                             F77_DBLE*);
 
   // QRSHC
 
@@ -286,21 +289,22 @@ extern "C"
                              const F77_INT&, F77_CMPLX*,
                              const F77_INT&, F77_CMPLX*,
                              const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_CMPLX*,
-                             F77_REAL*);
+                             const F77_INT&,
+                             F77_CMPLX*, F77_REAL*);
   F77_RET_T
   F77_FUNC (dqrshc, DQRSHC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_DBLE*,
                              const F77_INT&, F77_DBLE*,
                              const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE*);
+                             const F77_INT&,
+                             F77_DBLE*);
 
   F77_RET_T
   F77_FUNC (sqrshc, SQRSHC) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_REAL*,
                              const F77_INT&, F77_REAL*,
-                             const F77_INT&,
                              const F77_INT&, const F77_INT&,
+                             const F77_INT&,
                              F77_REAL*);
 
   F77_RET_T
@@ -308,7 +312,8 @@ extern "C"
                              const F77_INT&, F77_DBLE_CMPLX*,
                              const F77_INT&, F77_DBLE_CMPLX*,
                              const F77_INT&, const F77_INT&,
-                             const F77_INT&, F77_DBLE_CMPLX*, F77_DBLE*);
+                             const F77_INT&,
+                             F77_DBLE_CMPLX*, F77_DBLE*);
 
 #endif
 

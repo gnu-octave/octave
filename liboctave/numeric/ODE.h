@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ODEFunc.h"
 #include "base-de.h"
+#include "dMatrix.h"
 
 class
 ODE : public base_diff_eqn, public ODEFunc

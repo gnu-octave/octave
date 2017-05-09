@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dMatrix.h"
 
+class ColumnVector;
+
 class
 ODESFunc
 {

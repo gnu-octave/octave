@@ -28,10 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <string>
 
+#include "Array.h"
 #include "dColVector.h"
 #include "dNDArray.h"
 #include "fNDArray.h"
 #include "lo-ieee.h"
+
+//class dim_vector;
 
 class
 OCTAVE_API

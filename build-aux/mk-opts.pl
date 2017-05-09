@@ -110,7 +110,7 @@ sub parse_input
         }
       elsif (/^\s*INCLUDE\s*=\s*"(\S+)"\s*$/)
         {
-          $INCLUDE .= "#include <$1>\n";
+          $INCLUDE .= qq (#include "$1"\n);
         }
       elsif (/^\s*DOC_STRING\s*$/)
         {
@@ -374,10 +374,9 @@ sub emit_opt_class_header
 #if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
 
-#include <cmath>
-
 #include <limits>
 
+#include "lo-math.h"
 $INCLUDE
 
 class

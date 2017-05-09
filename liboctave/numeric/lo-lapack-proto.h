@@ -46,8 +46,8 @@ extern "C"
                              const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_DBLE_CMPLX*,
                              const F77_INT&, const F77_INT*,
-                             const F77_DBLE&, F77_DBLE&, F77_DBLE_CMPLX*, F77_DBLE*,
-                             F77_INT&
+                             const F77_DBLE&, F77_DBLE&, F77_DBLE_CMPLX*,
+                             F77_DBLE*, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   // GBTRF
@@ -191,9 +191,8 @@ extern "C"
   F77_RET_T
   F77_FUNC (cgehrd, CGEHRD) (const F77_INT&, const F77_INT&,
                              const F77_INT&, F77_CMPLX*,
-                             const F77_INT&, F77_CMPLX*,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_INT&);
+                             const F77_INT&, F77_CMPLX*, F77_CMPLX*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (dgehrd, DGEHRD) (const F77_INT&, const F77_INT&,
@@ -229,15 +228,14 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (sgeqp3, SGEQP3) (const F77_INT&, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_INT*,
-                             F77_REAL*, F77_REAL*, const F77_INT&,
-                             F77_INT&);
+                             F77_REAL*, const F77_INT&,
+                             F77_INT*, F77_REAL*, F77_REAL*,
+                             const F77_INT&, F77_INT&);
   F77_RET_T
   F77_FUNC (zgeqp3, ZGEQP3) (const F77_INT&, const F77_INT&,
                              F77_DBLE_CMPLX*, const F77_INT&,
                              F77_INT*, F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE*,
-                             F77_INT&);
+                             const F77_INT&, F77_DBLE*, F77_INT&);
 
   // GEQRF
 
@@ -249,20 +247,21 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dgeqrf, DGEQRF) (const F77_INT&, const F77_INT&,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
                              F77_DBLE*, const F77_INT&,
-                             F77_INT&);
+                             F77_DBLE*, F77_DBLE*,
+                             const F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (sgeqrf, SGEQRF) (const F77_INT&, const F77_INT&,
-                             F77_REAL*, const F77_INT&, F77_REAL*, F77_REAL*,
+                             F77_REAL*, const F77_INT&,
+                             F77_REAL*, F77_REAL*,
                              const F77_INT&, F77_INT&);
 
   F77_RET_T
   F77_FUNC (zgeqrf, ZGEQRF) (const F77_INT&, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
                              F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_INT&);
+                             F77_DBLE_CMPLX*, F77_DBLE_CMPLX*,
+                             const F77_INT&, F77_INT&);
 
   // GESDD
 
@@ -272,37 +271,37 @@ extern "C"
                              F77_CMPLX*, const F77_INT&, F77_REAL*,
                              F77_CMPLX*, const F77_INT&,
                              F77_CMPLX*, const F77_INT&,
-                             F77_CMPLX*, const F77_INT&,
-                             F77_REAL*, F77_INT *, F77_INT&
+                             F77_CMPLX*, const F77_INT&, F77_REAL*,
+                             F77_INT *, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgesdd, DGESDD) (F77_CONST_CHAR_ARG_DECL,
                              const F77_INT&, const F77_INT&,
                              F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             F77_DBLE*, const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_DBLE*,
-                             const F77_INT&, F77_INT *,
-                             F77_INT&
+                             F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             F77_DBLE*, const F77_INT&,
+                             F77_INT *, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sgesdd, SGESDD) (F77_CONST_CHAR_ARG_DECL,
                              const F77_INT&, const F77_INT&,
                              F77_REAL*, const F77_INT&, F77_REAL*,
-                             F77_REAL*, const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_REAL*,
-                             const F77_INT&, F77_INT *,
-                             F77_INT&
+                             F77_REAL*, const F77_INT&,
+                             F77_REAL*, const F77_INT&,
+                             F77_REAL*, const F77_INT&,
+                             F77_INT *, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgesdd, ZGESDD) (F77_CONST_CHAR_ARG_DECL,
                              const F77_INT&, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE*,
                              F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE*, F77_DBLE_CMPLX*, const F77_INT&,
-                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE_CMPLX*,
-                             const F77_INT&, F77_DBLE*,
+                             F77_DBLE_CMPLX*, const F77_INT&,
+                             F77_DBLE_CMPLX*, const F77_INT&, F77_DBLE*,
                              F77_INT *, F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
   // GESVD

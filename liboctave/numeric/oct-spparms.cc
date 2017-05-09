@@ -25,9 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <ostream>
+
+#include "dNDArray.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
-
 #include "oct-spparms.h"
 #include "singleton-cleanup.h"
 

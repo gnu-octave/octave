@@ -26,10 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "dMatrix.h"
-#include "CMatrix.h"
-#include "dSparse.h"
-#include "CSparse.h"
+class Matrix;
+class ComplexMatrix;
+class SparseComplexMatrix;
+class SparseMatrix;
+class ColumnVector;
+template <typename T> class MArray;
 
 namespace octave
 {

@@ -25,9 +25,17 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "CMatrix.h"
+#include "CSparse.h"
+#include "MArray.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dSparse.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
+#include "oct-refcount.h"
 #include "oct-sparse.h"
+#include "quit.h"
 #include "sparse-qr.h"
 
 namespace octave
@@ -184,9 +192,11 @@ namespace octave
       A.n = ncols;
       // Cast away const on A, with full knowledge that CSparse won't touch it
       // Prevents the methods below making a copy of the data.
-      A.p = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.cidx ()));
-      A.i = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.ridx ()));
-      A.x = const_cast<double *>(a.data ());
+      A.p = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.cidx ()));
+      A.i = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.ridx ()));
+      A.x = const_cast<double *> (a.data ());
       A.nz = -1;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -326,7 +336,9 @@ namespace octave
         {
           OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
 
-          for (volatile octave_idx_type j = 0, idx = 0; j < b_nc; j++, idx+=b_nr)
+          for (volatile octave_idx_type j = 0, idx = 0;
+               j < b_nc;
+               j++, idx += b_nr)
             {
               octave_quit ();
 
@@ -950,10 +962,12 @@ namespace octave
       A.n = ncols;
       // Cast away const on A, with full knowledge that CSparse won't touch it
       // Prevents the methods below making a copy of the data.
-      A.p = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.cidx ()));
-      A.i = const_cast<suitesparse_integer *>(to_suitesparse_intptr (a.ridx ()));
-      A.x = const_cast<cs_complex_t *> (
-              reinterpret_cast<const cs_complex_t *> (a.data ()));
+      A.p = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.cidx ()));
+      A.i = const_cast<suitesparse_integer *>
+              (to_suitesparse_intptr (a.ridx ()));
+      A.x = const_cast<cs_complex_t *>
+              (reinterpret_cast<const cs_complex_t *> (a.data ()));
       A.nz = -1;
 
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -1075,7 +1089,8 @@ namespace octave
       octave_idx_type b_nc = b.cols ();
       octave_idx_type nc = N->L->n;
       octave_idx_type nr = nrows;
-      const cs_complex_t *bvec = reinterpret_cast<const cs_complex_t *> (b.fortran_vec ());
+      const cs_complex_t *bvec
+        = reinterpret_cast<const cs_complex_t *> (b.fortran_vec ());
       ComplexMatrix ret (b_nr, b_nc);
       Complex *vec = ret.fortran_vec ();
 

@@ -27,9 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 
 #include "DASPK.h"
+#include "dMatrix.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
 typedef F77_INT (*daspk_fcn_ptr) (const double&, const double*, const double*,
@@ -148,8 +148,7 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 ColumnVector
 DASPK::do_integrate (double tout)
 {
-  // FIXME: should handle all this option stuff just once
-  // for each new problem.
+  // FIXME: should handle all this option stuff just once for each new problem.
 
   ColumnVector retval;
 
@@ -248,7 +247,6 @@ DASPK::do_integrate (double tout)
         }
       else
         {
-
           // FIXME: Should this be a warning?
           (*current_liboctave_error_handler)
             ("daspk: inconsistent sizes for tolerance arrays");

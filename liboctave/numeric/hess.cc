@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "Array.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"
@@ -39,7 +40,7 @@ namespace octave
     template <>
     octave_idx_type
     hess<Matrix>::init (const Matrix& a)
-    {
+   {
       F77_INT a_nr = octave::to_f77_int (a.rows ());
       F77_INT a_nc = octave::to_f77_int (a.cols ());
 

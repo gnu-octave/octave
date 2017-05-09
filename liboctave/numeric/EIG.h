@@ -27,9 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
-#include "dMatrix.h"
-#include "CMatrix.h"
 #include "CColVector.h"
+#include "CMatrix.h"
+
+class Matrix;
 
 class
 OCTAVE_API

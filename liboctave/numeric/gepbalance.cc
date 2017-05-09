@@ -24,17 +24,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <string>
-#include <vector>
-
-#include "Array-util.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "gepbalance.h"
+#include "lo-array-errwarn.h"
+#include "lo-error.h"
 #include "lo-lapack-proto.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 namespace octave
 {
@@ -48,7 +47,8 @@ namespace octave
       F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
-        (*current_liboctave_error_handler) ("GEPBALANCE requires square matrix");
+        (*current_liboctave_error_handler)
+          ("GEPBALANCE requires square matrix");
 
       if (a.dims () != b.dims ())
         octave::err_nonconformant ("GEPBALANCE", n, n, b.rows(), b.cols());
@@ -116,7 +116,8 @@ namespace octave
           ("FloatGEPBALANCE requires square matrix");
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());
+        octave::err_nonconformant ("FloatGEPBALANCE",
+                                   n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;
@@ -182,7 +183,8 @@ namespace octave
           ("ComplexGEPBALANCE requires square matrix");
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
+        octave::err_nonconformant ("ComplexGEPBALANCE",
+                                   n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;
@@ -200,7 +202,8 @@ namespace octave
       char job = balance_job[0];
 
       F77_XFCN (zggbal, ZGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 n, F77_DBLE_CMPLX_ARG (p_balanced_mat), n, F77_DBLE_CMPLX_ARG (p_balanced_mat2),
+                                 n, F77_DBLE_CMPLX_ARG (p_balanced_mat),
+                                 n, F77_DBLE_CMPLX_ARG (p_balanced_mat2),
                                  n, ilo, ihi, plscale, prscale, pwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
@@ -251,7 +254,8 @@ namespace octave
         }
 
       if (a.dims () != b.dims ())
-        octave::err_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
+        octave::err_nonconformant ("FloatComplexGEPBALANCE",
+                                   n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;
@@ -269,7 +273,8 @@ namespace octave
       char job = balance_job[0];
 
       F77_XFCN (cggbal, CGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                 n, F77_CMPLX_ARG (p_balanced_mat), n, F77_CMPLX_ARG (p_balanced_mat2),
+                                 n, F77_CMPLX_ARG (p_balanced_mat),
+                                 n, F77_CMPLX_ARG (p_balanced_mat2),
                                  n, ilo, ihi, plscale, prscale, pwork, info
                                  F77_CHAR_ARG_LEN (1)));
 

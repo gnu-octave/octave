@@ -26,13 +26,20 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "sparse-chol.h"
-#include "sparse-util.h"
+#include <cstddef> 
+
+#include "CSparse.h"
+#include "MatrixType.h"
+#include "dRowVector.h"
+#include "dSparse.h"
 #include "lo-error.h"
+#include "oct-cmplx.h"
+#include "oct-refcount.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "quit.h"
-#include "MatrixType.h"
+#include "sparse-chol.h"
+#include "sparse-util.h"
 
 namespace octave
 {
@@ -212,7 +219,8 @@ namespace octave
       octave_idx_type a_nc = a.cols ();
 
       if (a_nr != a_nc)
-        (*current_liboctave_error_handler) ("sparse_chol requires square matrix");
+        (*current_liboctave_error_handler)
+          ("sparse_chol requires square matrix");
 
       cholmod_common *cm = &Common;
 
@@ -231,12 +239,15 @@ namespace octave
       else
         {
           cm->print = static_cast<int> (spu) + 2;
-          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
+          SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function,
+                                   &SparseCholPrint);
         }
 
       cm->error_handler = &SparseCholError;
 
-      SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+      SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide,
+                                divcomplex);
+
       SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
       cm->final_asis = false;
@@ -310,7 +321,8 @@ namespace octave
                                                   Lsparse->p, &n1, cm);
               BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
               CHOLMOD_NAME(reallocate_sparse)
-                (static_cast<octave_idx_type *>(Lsparse->p)[minor_p], Lsparse, cm);
+                (static_cast<octave_idx_type *>(Lsparse->p)[minor_p],
+                 Lsparse, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               Lsparse->ncol = minor_p;
@@ -390,21 +402,24 @@ namespace octave
     { }
 
     template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const chol_type& a, octave_idx_type& info,
+    sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                         octave_idx_type& info,
                                          bool natural, bool force)
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
     { }
 
     template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const chol_type& a, octave_idx_type& info,
+    sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                         octave_idx_type& info,
                                          bool natural)
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
     { }
 
     template <typename chol_type>
-    sparse_chol<chol_type>::sparse_chol (const chol_type& a, octave_idx_type& info)
+    sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                         octave_idx_type& info)
       : rep (new typename
              sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
     { }

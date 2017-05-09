@@ -25,8 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "Array.h"
 #include "EIG.h"
 #include "dColVector.h"
+#include "dMatrix.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 
@@ -280,10 +282,11 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
                              F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                              F77_CONST_CHAR_ARG2 ("N", 1),
                              n, F77_DBLE_CMPLX_ARG (tmp_data), n,
-                             F77_DBLE_CMPLX_ARG (pw), F77_DBLE_CMPLX_ARG (pvl), n,
-                             F77_DBLE_CMPLX_ARG (pvr), n, ilo, ihi, pscale, abnrm,
-                             prconde, prcondv,
-                             F77_DBLE_CMPLX_ARG (&dummy_work), lwork, prwork, info
+                             F77_DBLE_CMPLX_ARG (pw), F77_DBLE_CMPLX_ARG (pvl),
+                             n, F77_DBLE_CMPLX_ARG (pvr), n, ilo, ihi,
+                             pscale, abnrm, prconde, prcondv,
+                             F77_DBLE_CMPLX_ARG (&dummy_work), lwork, prwork,
+                             info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)
@@ -301,9 +304,9 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
                              F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                              F77_CONST_CHAR_ARG2 ("N", 1),
                              n, F77_DBLE_CMPLX_ARG (tmp_data), n,
-                             F77_DBLE_CMPLX_ARG (pw), F77_DBLE_CMPLX_ARG (pvl), n,
-                             F77_DBLE_CMPLX_ARG (pvr), n, ilo, ihi, pscale, abnrm,
-                             prconde, prcondv,
+                             F77_DBLE_CMPLX_ARG (pw), F77_DBLE_CMPLX_ARG (pvl),
+                             n, F77_DBLE_CMPLX_ARG (pvr), n, ilo, ihi,
+                             pscale, abnrm, prconde, prcondv,
                              F77_DBLE_CMPLX_ARG (pwork), lwork, prwork, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)
@@ -660,7 +663,8 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
                            F77_DBLE_CMPLX_ARG (pbeta),
                            F77_DBLE_CMPLX_ARG (pvl), n,
                            F77_DBLE_CMPLX_ARG (pvr), n,
-                           F77_DBLE_CMPLX_ARG (&dummy_work), lwork, prwork, info
+                           F77_DBLE_CMPLX_ARG (&dummy_work), lwork, prwork,
+                           info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
 

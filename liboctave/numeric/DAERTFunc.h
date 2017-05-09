@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "DAEFunc.h"
-#include "dMatrix.h"
 
 class
 DAERTFunc : public DAEFunc

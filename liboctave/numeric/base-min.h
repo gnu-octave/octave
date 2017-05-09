@@ -48,14 +48,13 @@ public:
     return *this;
   }
 
-  // Derived classes must provide a function to actually do the
-  // minimization.
+  // Derived classes must provide a function to actually do the minimization.
 
   virtual ColumnVector do_minimize (double& objf, octave_idx_type& inform,
                                     ColumnVector& lambda) = 0;
 
-  // Lots of ways to call the single function and optionally set and
-  // get additional information.
+  // Lots of ways to call the single function and optionally set and get
+  // additional information.
 
   virtual ColumnVector minimize (void)
   {

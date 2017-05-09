@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "ODES.h"
-#include "lo-error.h"
 
 void
 ODES::initialize (const ColumnVector& xx, double tt)

@@ -110,7 +110,8 @@ extern "C"
                            const F77_INT&, const F77_DBLE&,
                            const F77_DBLE*, const F77_INT&,
                            const F77_DBLE*, const F77_INT&,
-                           const F77_DBLE&, F77_DBLE*, const F77_INT&
+                           const F77_DBLE&, F77_DBLE*,
+                           const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
 
@@ -133,7 +134,8 @@ extern "C"
                            const F77_INT&, const F77_DBLE_CMPLX&,
                            const F77_DBLE_CMPLX*, const F77_INT&,
                            const F77_DBLE_CMPLX*, const F77_INT&,
-                           const F77_DBLE_CMPLX&, F77_DBLE_CMPLX*, const F77_INT&
+                           const F77_DBLE_CMPLX&, F77_DBLE_CMPLX*,
+                           const F77_INT&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
 

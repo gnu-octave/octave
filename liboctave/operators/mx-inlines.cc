@@ -25,24 +25,20 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_mx_inlines_h)
 #define octave_mx_inlines_h 1
 
-// This file should not include config.h.  It is only included in other
-// C++ source files that should have included config.h before including
-// this file.
+// This file should *not* include config.h.  It is only included in other C++
+// source files that should have included config.h before including this file.
 
 #include <cstddef>
 #include <cmath>
-#include <cstring>
-#include <memory>
 
-#include "quit.h"
+#include <algorithm>
 
-#include "oct-cmplx.h"
-#include "oct-locbuf.h"
-#include "oct-inttypes.h"
-#include "Array.h"
 #include "Array-util.h"
-
+#include "Array.h"
 #include "bsxfun.h"
+#include "oct-cmplx.h"
+#include "oct-inttypes.h"
+#include "oct-locbuf.h"
 
 // Provides some commonly repeated, basic loop templates.
 

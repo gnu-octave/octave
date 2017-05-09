@@ -25,21 +25,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <vector>
-
+#include "Array.h"
 #include "CColVector.h"
 #include "CMatrix.h"
-#include "CRowVector.h"
 #include "chol.h"
 #include "dColVector.h"
 #include "dMatrix.h"
-#include "dRowVector.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
-#include "fCRowVector.h"
 #include "fColVector.h"
 #include "fMatrix.h"
-#include "fRowVector.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 #include "lo-qrupdate-proto.h"

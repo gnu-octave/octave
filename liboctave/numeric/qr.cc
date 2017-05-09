@@ -26,24 +26,27 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <algorithm>
+
+#include "Array.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "CRowVector.h"
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
-#include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fCRowVector.h"
 #include "fColVector.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "idx-vector.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 #include "lo-qrupdate-proto.h"
+#include "oct-cmplx.h"
 #include "oct-locbuf.h"
+#include "oct-sort.h"
 #include "qr.h"
 
 namespace octave

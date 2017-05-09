@@ -28,30 +28,32 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "Range.h"
+#include <algorithm>
+#include <limits>
+#include <string>
+
 #include "CColVector.h"
 #include "CMatrix.h"
-#include "dRowVector.h"
+#include "CNDArray.h"
+#include "Faddeeva.hh"
 #include "dMatrix.h"
 #include "dNDArray.h"
-#include "CNDArray.h"
+#include "dRowVector.h"
+#include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
-#include "fRowVector.h"
+#include "fCNDArray.h"
 #include "fMatrix.h"
 #include "fNDArray.h"
-#include "fCNDArray.h"
-#include "f77-fcn.h"
+#include "fRowVector.h"
 #include "lo-amos-proto.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
+#include "lo-math.h"
 #include "lo-slatec-proto.h"
 #include "lo-specfun.h"
 #include "mx-inlines.cc"
-#include "lo-mappers.h"
-#include "lo-math.h"
-
-#include "Faddeeva.hh"
 
 namespace octave
 {

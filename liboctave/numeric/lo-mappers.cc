@@ -25,16 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "lo-error.h"
-#include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "lo-math.h"
 #include "lo-specfun.h"
-#include "lo-utils.h"
 #include "math-wrappers.h"
-#include "oct-cmplx.h"
-
-#include "f77-fcn.h"
 
 // FIXME: We used to have this situation:
 //

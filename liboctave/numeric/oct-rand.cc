@@ -24,13 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cassert>
 #include <cstdint>
 
-#include <map>
-#include <vector>
+#include <limits>
 
-#include "data-conv.h"
-#include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -39,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "oct-rand.h"
 #include "oct-time.h"
+#include "quit.h"
 #include "randgamma.h"
 #include "randmtzig.h"
 #include "randpoisson.h"

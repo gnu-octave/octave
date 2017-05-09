@@ -25,8 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <algorithm>
+
 #include "CColVector.h"
 #include "CMatrix.h"
+#include "PermMatrix.h"
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "fCColVector.h"
@@ -294,8 +297,8 @@ namespace octave
 
       ColumnVector utmp = u;
       ColumnVector vtmp = v;
-      F77_XFCN (dlu1up, DLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                                 utmp.fortran_vec (), vtmp.fortran_vec ()));
+      F77_XFCN (dlu1up, DLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (),
+                                 k, utmp.fortran_vec (), vtmp.fortran_vec ()));
     }
 
     template <>
@@ -426,7 +429,8 @@ namespace octave
 
     template <>
     void
-    lu<FloatMatrix>::update (const FloatColumnVector& u, const FloatColumnVector& v)
+    lu<FloatMatrix>::update (const FloatColumnVector& u,
+                             const FloatColumnVector& v)
     {
       if (packed ())
         unpack ();
@@ -570,8 +574,8 @@ namespace octave
 
       F77_INT info = 0;
 
-      F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, F77_DBLE_CMPLX_ARG (tmp_data), a_nr,
-                                 pipvt, info));
+      F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, F77_DBLE_CMPLX_ARG (tmp_data),
+                                 a_nr, pipvt, info));
 
       for (F77_INT i = 0; i < mn; i++)
         pipvt[i] -= 1;
@@ -635,8 +639,10 @@ namespace octave
         {
           ComplexColumnVector utmp = u.column (i);
           ComplexColumnVector vtmp = v.column (i);
-          F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
-                                     m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
+          F77_XFCN (zlu1up, ZLU1UP, (m, n,
+                                     F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
+                                     m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+                                     k,
                                      F77_DBLE_CMPLX_ARG (utmp.fortran_vec ()),
                                      F77_DBLE_CMPLX_ARG (vtmp.fortran_vec ())));
         }
@@ -671,13 +677,15 @@ namespace octave
                                    m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
                                    F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
-                                   F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
+                                   F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()),
+                                   F77_DBLE_CMPLX_ARG (w)));
       for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
 
     template <>
     void
-    lu<ComplexMatrix>::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
+    lu<ComplexMatrix>::update_piv (const ComplexMatrix& u,
+                                   const ComplexMatrix& v)
     {
       if (packed ())
         unpack ();
@@ -704,11 +712,14 @@ namespace octave
         {
           ComplexColumnVector utmp = u.column (i);
           ComplexColumnVector vtmp = v.column (i);
-          F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
-                                       m, F77_DBLE_CMPLX_ARG (r.fortran_vec ()), k,
-                                       ipvt.fortran_vec (),
+          F77_XFCN (zlup1up, ZLUP1UP, (m, n,
+                                       F77_DBLE_CMPLX_ARG (l.fortran_vec ()),
+                                       m,
+                                       F77_DBLE_CMPLX_ARG (r.fortran_vec ()),
+                                       k, ipvt.fortran_vec (),
                                        F77_CONST_DBLE_CMPLX_ARG (utmp.data ()),
-                                       F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()), F77_DBLE_CMPLX_ARG (w)));
+                                       F77_CONST_DBLE_CMPLX_ARG (vtmp.data ()),
+                                       F77_DBLE_CMPLX_ARG (w)));
         }
       for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
@@ -730,8 +741,8 @@ namespace octave
 
       F77_INT info = 0;
 
-      F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, F77_CMPLX_ARG (tmp_data), a_nr, pipvt,
-                                 info));
+      F77_XFCN (cgetrf, CGETRF, (a_nr, a_nc, F77_CMPLX_ARG (tmp_data), a_nr,
+                                 pipvt, info));
 
       for (F77_INT i = 0; i < mn; i++)
         pipvt[i] -= 1;
@@ -764,7 +775,8 @@ namespace octave
       FloatComplexColumnVector vtmp = v;
       F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()), m,
                                  F77_CMPLX_ARG (r.fortran_vec ()), k,
-                                 F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
+                                 F77_CMPLX_ARG (utmp.fortran_vec ()),
+                                 F77_CMPLX_ARG (vtmp.fortran_vec ())));
     }
 
     template <>
@@ -797,7 +809,8 @@ namespace octave
           FloatComplexColumnVector vtmp = v.column (i);
           F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                      m, F77_CMPLX_ARG (r.fortran_vec ()), k,
-                                     F77_CMPLX_ARG (utmp.fortran_vec ()), F77_CMPLX_ARG (vtmp.fortran_vec ())));
+                                     F77_CMPLX_ARG (utmp.fortran_vec ()),
+                                     F77_CMPLX_ARG (vtmp.fortran_vec ())));
         }
     }
 
@@ -829,7 +842,8 @@ namespace octave
       F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                    m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                    ipvt.fortran_vec (),
-                                   F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()),
+                                   F77_CONST_CMPLX_ARG (utmp.data ()),
+                                   F77_CONST_CMPLX_ARG (vtmp.data ()),
                                    F77_CMPLX_ARG (w)));
       for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
@@ -867,7 +881,8 @@ namespace octave
           F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.fortran_vec ()),
                                        m, F77_CMPLX_ARG (r.fortran_vec ()), k,
                                        ipvt.fortran_vec (),
-                                       F77_CONST_CMPLX_ARG (utmp.data ()), F77_CONST_CMPLX_ARG (vtmp.data ()),
+                                       F77_CONST_CMPLX_ARG (utmp.data ()),
+                                       F77_CONST_CMPLX_ARG (vtmp.data ()),
                                        F77_CMPLX_ARG (w)));
         }
       for (F77_INT i = 0; i < m; i++) ipvt(i) -= 1; // decrement

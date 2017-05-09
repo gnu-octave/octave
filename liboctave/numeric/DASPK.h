@@ -27,7 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "Array.h"
 #include "DASPK-opts.h"
+
+class Matrix;
 
 class
 OCTAVE_API

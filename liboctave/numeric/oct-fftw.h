@@ -27,8 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstddef>
 
-#include "oct-cmplx.h"
+#include <string>
+
 #include "dim-vector.h"
+#include "oct-cmplx.h"
 
 namespace octave
 {

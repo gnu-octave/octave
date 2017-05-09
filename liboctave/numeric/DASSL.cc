@@ -27,9 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 
 #include "DASSL.h"
+#include "dMatrix.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
 typedef F77_INT (*dassl_fcn_ptr) (const double&, const double*,

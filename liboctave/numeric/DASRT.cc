@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "DASRT.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "lo-math.h"
 #include "quit.h"
 
 typedef F77_INT (*dasrt_fcn_ptr) (const double&, const double*, const double*,

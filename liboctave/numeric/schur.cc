@@ -24,12 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "Array.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
+#include "oct-locbuf.h"
 #include "schur.h"
 
 namespace octave

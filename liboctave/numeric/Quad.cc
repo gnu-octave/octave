@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cassert>
+
+#include "Array.h"
 #include "Quad.h"
 #include "f77-fcn.h"
 #include "lo-error.h"

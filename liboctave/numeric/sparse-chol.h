@@ -27,9 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "CSparse.h"
-#include "dRowVector.h"
-#include "dSparse.h"
+class RowVector;
+class SparseMatrix;
+class SparseComplexMatrix;
 
 namespace octave
 {

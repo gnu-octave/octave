@@ -75,13 +75,16 @@ namespace octave
 
     using std::atan;
 
-    // C++ now provides versions of the following funtions for
-    // arguments of type std::complex<T> and T.  But some compilers
-    // (I'm looking at you, clang) apparently don't get this right
-    // yet...  So we provide our own wrappers for real-valued arguments.
+    // C++ now provides versions of the following functions for arguments of
+    // type std::complex<T> and T.  But some compilers (I'm looking at you,
+    // clang) apparently don't get this right yet...  So we provide our own
+    // wrappers for real-valued arguments.
 
     inline double arg (double x) { return signbit (x) ? M_PI : 0; }
-    inline float arg (float x) { return signbit (x) ? static_cast<float> (M_PI) : 0; }
+    inline float arg (float x)
+    {
+      return signbit (x) ? static_cast<float> (M_PI) : 0;
+    }
 
     template <typename T>
     T
@@ -302,9 +305,16 @@ namespace octave
     }
 
     template <>
-    inline double x_nint (double x) { return (finite (x) ? floor (x + 0.5) : x); }
+    inline double x_nint (double x)
+    {
+      return (finite (x) ? floor (x + 0.5) : x);
+    }
+
     template <>
-    inline float x_nint (float x) { return (finite (x) ? floor (x + 0.5f) : x); }
+    inline float x_nint (float x)
+    {
+      return (finite (x) ? floor (x + 0.5f) : x);
+    }
 
     extern OCTAVE_API octave_idx_type nint_big (double x);
     extern OCTAVE_API octave_idx_type nint_big (float x);
@@ -496,27 +506,45 @@ inline bool octave_is_NA (float x) { return octave::math::is_NA (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::is_NA' instead")
 inline bool octave_is_NA (const Complex& x) { return octave::math::is_NA (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::is_NA' instead")
-inline bool octave_is_NA (const FloatComplex& x) { return octave::math::is_NA (x); }
+inline bool octave_is_NA (const FloatComplex& x)
+{
+  return octave::math::is_NA (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::is_NaN_or_NA' instead")
-inline bool octave_is_NaN_or_NA (const Complex& x) { return octave::math::is_NaN_or_NA (x); }
+inline bool octave_is_NaN_or_NA (const Complex& x)
+{
+  return octave::math::is_NaN_or_NA (x);
+}
 OCTAVE_DEPRECATED ("use 'octave::math::is_NaN_or_NA' instead")
-inline bool octave_is_NaN_or_NA (const FloatComplex& x) { return octave::math::is_NaN_or_NA (x); }
+inline bool octave_is_NaN_or_NA (const FloatComplex& x)
+{
+  return octave::math::is_NaN_or_NA (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::acos' instead")
 inline Complex acos (const Complex& x) { return octave::math::acos (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::acos' instead")
-inline FloatComplex acos (const FloatComplex& x) { return octave::math::acos (x); }
+inline FloatComplex acos (const FloatComplex& x)
+{
+  return octave::math::acos (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::asin' instead")
 inline Complex asin (const Complex& x) { return octave::math::asin (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::asin' instead")
-inline FloatComplex asin (const FloatComplex& x) { return octave::math::asin (x); }
+inline FloatComplex asin (const FloatComplex& x)
+{
+  return octave::math::asin (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::atan' instead")
 inline Complex atan (const Complex& x) { return octave::math::atan (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::atan' instead")
-inline FloatComplex atan (const FloatComplex& x) { return octave::math::atan (x); }
+inline FloatComplex atan (const FloatComplex& x)
+{
+  return octave::math::atan (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::arg' instead")
 inline double arg (double x) { return octave::math::arg (x); }
@@ -546,17 +574,29 @@ inline float xlog2 (float x) { return octave::math::log2 (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline Complex xlog2 (const Complex& x) { return octave::math::log2 (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
-inline FloatComplex xlog2 (const FloatComplex& x) { return octave::math::log2 (x); }
+inline FloatComplex xlog2 (const FloatComplex& x)
+{ 
+  return octave::math::log2 (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
-inline double xlog2 (double x, int& exp) { return octave::math::log2 (x, exp); }
+inline double xlog2 (double x, int& exp)
+{ 
+  return octave::math::log2 (x, exp);
+}
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline float xlog2 (float x, int& exp) { return octave::math::log2 (x, exp); }
 
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
-inline Complex xlog2 (const Complex& x, int& exp) { return octave::math::log2 (x, exp); }
+inline Complex xlog2 (const Complex& x, int& exp)
+{ 
+  return octave::math::log2 (x, exp);
+}
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
-inline FloatComplex xlog2 (const FloatComplex& x, int& exp) { return octave::math::log2 (x, exp); }
+inline FloatComplex xlog2 (const FloatComplex& x, int& exp)
+{ 
+  return octave::math::log2 (x, exp);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::exp2' instead")
 inline double xexp2 (double x) { return octave::math::exp2 (x); }
@@ -577,9 +617,15 @@ ceil (const std::complex<T>& x)
 }
 
 OCTAVE_DEPRECATED ("use 'octave::math::copysign' instead")
-inline double xcopysign (double x, double y) { return octave::math::copysign (x, y); }
+inline double xcopysign (double x, double y)
+{ 
+  return octave::math::copysign (x, y);
+}
 OCTAVE_DEPRECATED ("use 'octave::math::copysign' instead")
-inline float xcopysign (float x, float y) { return octave::math::copysign (x, y); }
+inline float xcopysign (float x, float y)
+{ 
+  return octave::math::copysign (x, y);
+}
 
 template <typename T>
 OCTAVE_DEPRECATED ("use 'octave::math::signbit' instead")
@@ -590,14 +636,26 @@ xsignbit (T x)
 }
 
 OCTAVE_DEPRECATED ("use 'octave::math::negative_sign' instead")
-inline bool xnegative_sign (double x) { return octave::math::negative_sign (x); }
+inline bool xnegative_sign (double x)
+{ 
+  return octave::math::negative_sign (x);
+}
 OCTAVE_DEPRECATED ("use 'octave::math::negative_sign' instead")
-inline bool xnegative_sign (float x) { return octave::math::negative_sign (x); }
+inline bool xnegative_sign (float x)
+{ 
+  return octave::math::negative_sign (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::positive_sign' instead")
-inline bool xpositive_sign (double x) { return octave::math::positive_sign (x); }
+inline bool xpositive_sign (double x)
+{ 
+  return octave::math::positive_sign (x);
+}
 OCTAVE_DEPRECATED ("use 'octave::math::positive_sign' instead")
-inline bool xpositive_sign (float x) { return octave::math::positive_sign (x); }
+inline bool xpositive_sign (float x)
+{ 
+  return octave::math::positive_sign (x);
+}
 
 OCTAVE_DEPRECATED ("use 'octave::math::signum' instead")
 inline double signum (double x) { return octave::math::signum (x); }

@@ -26,14 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <cassert>
-#include <cstddef>
-
 #include <iosfwd>
+#include <string>
 
 #include "str-vec.h"
 #include "dColVector.h"
-#include "dNDArray.h"
+
+class NDArray;
 
 #define OCTAVE_SPARSE_CONTROLS_SIZE 13
 

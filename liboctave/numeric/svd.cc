@@ -25,20 +25,19 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "svd.h"
-
 #include <cassert>
+
 #include <algorithm>
 
 #include "CMatrix.h"
 #include "dDiagMatrix.h"
-#include "fDiagMatrix.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"
+#include "fDiagMatrix.h"
 #include "fMatrix.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
-#include "oct-locbuf.h"
+#include "svd.h"
 
 namespace octave
 {
@@ -65,7 +64,6 @@ namespace octave
 
       return right_sm;
     }
-
 
     // GESVD specializations
 
@@ -163,7 +161,6 @@ namespace octave
 
 #undef GESVD_REAL_STEP
 #undef GESVD_COMPLEX_STEP
-
 
     // GESDD specializations
 
@@ -274,7 +271,6 @@ namespace octave
 #undef GESDD_REAL_STEP
 #undef GESDD_COMPLEX_STEP
 
-
     template<typename T>
     svd<T>::svd (const T& a, svd::Type type,
                  svd::Driver driver)
@@ -335,11 +331,10 @@ namespace octave
 
         case svd::Type::sigma_only:
 
-          // Note:  for this case, both jobu and jobv should be 'N', but
-          // there seems to be a bug in dgesvd from Lapack V2.0.  To
-          // demonstrate the bug, set both jobu and jobv to 'N' and find
-          // the singular values of [eye(3), eye(3)].  The result is
-          // [-sqrt(2), -sqrt(2), -sqrt(2)].
+          // Note:  for this case, both jobu and jobv should be 'N', but there
+          // seems to be a bug in dgesvd from Lapack V2.0.  To demonstrate the
+          // bug, set both jobu and jobv to 'N' and find the singular values of
+          // [eye(3), eye(3)].  The result is [-sqrt(2), -sqrt(2), -sqrt(2)].
           //
           // For Lapack 3.0, this problem seems to be fixed.
 

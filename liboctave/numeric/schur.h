@@ -27,17 +27,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "dMatrix.h"
+// FIXME: Don't really need these for compiling schur.h, but it messes
+// up compilation in liboctave/array if these are not present.
 #include "CMatrix.h"
-#include "fMatrix.h"
+#include "dMatrix.h"
 #include "fCMatrix.h"
+#include "fMatrix.h"
 
 namespace octave
 {
   namespace math
   {
-    template <typename T> class schur;
-
     template <typename T>
     class
     schur
@@ -65,7 +65,6 @@ namespace octave
       schur (const T& s, const T& u) : schur_mat (s), unitary_mat (u) { }
 
       schur (const schur& a)
-
         : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat)
       { }
 

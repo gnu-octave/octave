@@ -26,7 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "PermMatrix.h"
+#include "Array.h"
+
+class ColumnVector;
+class PermMatrix;
 
 namespace octave
 {
@@ -91,15 +94,15 @@ namespace octave
 
     protected:
 
-      // The result of getp is passed to other Octave Matrix
-      // fucntions, so we use octave_idx_type.
+      // The result of getp is passed to other Octave Matrix functions,
+      // so we use octave_idx_type.
       Array<octave_idx_type> getp (void) const;
 
       T a_fact;
       T l_fact;
 
-      // This is internal storage that is passed to Fortran, so we
-      // need a Fortran INTEGER.
+      // This is internal storage that is passed to Fortran,
+      // so we need a Fortran INTEGER.
       Array<octave_f77_int_type> ipvt;
     };
   }

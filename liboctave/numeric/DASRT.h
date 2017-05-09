@@ -27,7 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "Array.h"
 #include "DASRT-opts.h"
+#include "dMatrix.h"
 
 class
 DASRT_result

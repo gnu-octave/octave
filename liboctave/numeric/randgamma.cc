@@ -83,8 +83,8 @@ Dirichlet(a1,...,ak) for ai > 0
 
 #include "lo-ieee.h"
 #include "lo-math.h"
-#include "randmtzig.h"
 #include "randgamma.h"
+#include "randmtzig.h"
 
 #define INFINITE lo_ieee_isinf
 #define RUNI oct_randu()

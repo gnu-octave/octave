@@ -24,18 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_bsxfun_defs_h)
 #define octave_bsxfun_defs_h 1
 
-// This file should not include config.h.  It is only included in other
-// C++ source files that should have included config.h before including
-// this file.
+// This file should *not* include config.h.  It is only included in other C++
+// source files that should have included config.h before including this file.
 
 #include <algorithm>
-#include <iostream>
 
 #include "dim-vector.h"
-#include "oct-locbuf.h"
 #include "lo-error.h"
-
 #include "mx-inlines.cc"
+#include "oct-locbuf.h"
 
 template <typename R, typename X, typename Y>
 Array<R>

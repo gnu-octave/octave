@@ -28,7 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "MArray.h"
+#include "dMatrix.h"
 #include "dSparse.h"
+
+class ColumnVector;
+class PermMatrix;
 
 namespace octave
 {

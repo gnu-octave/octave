@@ -35,11 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cstddef>
+
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-math.h"
-#include "lo-slatec-proto.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 
@@ -100,7 +101,8 @@ flogfak (double k)
     {
       r  = 1.0 / k;
       rr = r * r;
-      return ((k + 0.5)*std::log (k) - k + C0 + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
+      return ((k + 0.5)*std::log (k) - k + C0
+              + r*(C1 + rr*(C3 + rr*(C5 + rr*C7))));
     }
   else
     return (logfak[static_cast<int> (k)]);

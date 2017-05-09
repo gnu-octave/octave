@@ -28,15 +28,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cmath>
 
+#include <algorithm>
 #include <limits>
 #include <vector>
 
-#include "Array-util.h"
 #include "Array.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "CRowVector.h"
 #include "CSparse.h"
+#include "MArray.h"
 #include "dColVector.h"
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
@@ -51,11 +52,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "fRowVector.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "mx-cm-s.h"
 #include "mx-fcm-fs.h"
 #include "mx-fs-fcm.h"
 #include "mx-s-cm.h"
 #include "oct-cmplx.h"
+#include "quit.h"
 #include "svd.h"
 
 // Theory: norm accumulator is an object that has an accum method able

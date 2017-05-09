@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "PermMatrix.h"
 #include "dSparse.h"
 #include "lo-error.h"
+#include "lo-mappers.h"
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"

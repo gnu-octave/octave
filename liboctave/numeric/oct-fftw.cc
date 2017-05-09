@@ -24,18 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
-#include <string>
-#include <vector>
-
 #if defined (HAVE_FFTW3_H)
 #  include <fftw3.h>
 #endif
 
 #include "lo-error.h"
 #include "oct-fftw.h"
-#include "quit.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 #include "singleton-cleanup.h"
 
 #if defined (HAVE_FFTW3_THREADS) || defined (HAVE_FFTW3F_THREADS)

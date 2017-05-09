@@ -27,13 +27,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 
+#include <algorithm>
+
+#include "Array.h"
 #include "CMatrix.h"
+#include "MArray.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "lo-error.h"
 #include "lo-lapack-proto.h"
 #include "oct-locbuf.h"
 #include "qrp.h"

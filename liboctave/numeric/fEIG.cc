@@ -25,8 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "Array.h"
 #include "fEIG.h"
 #include "fColVector.h"
+#include "fMatrix.h"
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 

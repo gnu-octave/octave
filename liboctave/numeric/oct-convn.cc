@@ -24,13 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
 #include <algorithm>
 
+#include "Array.h"
+#include "MArray.h"
 #include "f77-fcn.h"
-
 #include "oct-convn.h"
-#include "oct-locbuf.h"
 
 // 2d convolution with a matrix kernel.
 template <typename T, typename R>

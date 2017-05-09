@@ -90,10 +90,12 @@ extern "C"
   // GAMMAINC
 
   F77_RET_T
-  F77_FUNC (xgammainc, XGAMMAINC) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
+  F77_FUNC (xgammainc, XGAMMAINC) (const F77_DBLE&, const F77_DBLE&,
+                                   F77_DBLE&);
 
   F77_RET_T
-  F77_FUNC (xsgammainc, XSGAMMAINC) (const F77_REAL&, const F77_REAL&, F77_REAL&);
+  F77_FUNC (xsgammainc, XSGAMMAINC) (const F77_REAL&, const F77_REAL&,
+                                     F77_REAL&);
 
   // LGAMS
 

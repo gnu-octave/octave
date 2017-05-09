@@ -27,19 +27,21 @@ along with Octave; see the file COPYING.  If not, see
 #include <cmath>
 #include <iostream>
 
+#include "Array.h"
 #include "CSparse.h"
 #include "MatrixType.h"
+#include "PermMatrix.h"
 #include "chol.h"
 #include "dSparse.h"
 #include "eigs-base.h"
-#include "f77-fcn.h"
 #include "lo-arpack-proto.h"
 #include "lo-blas-proto.h"
+#include "lo-error.h"
+#include "lo-ieee.h"
 #include "lu.h"
 #include "mx-ops.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"
-#include "quit.h"
 #include "sparse-chol.h"
 #include "sparse-lu.h"
 

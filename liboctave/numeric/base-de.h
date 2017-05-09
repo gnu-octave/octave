@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "dColVector.h"
-#include "dMatrix.h"
 
 class
 base_diff_eqn

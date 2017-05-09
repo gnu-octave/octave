@@ -27,9 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 
-#include "fMatrix.h"
-#include "fCMatrix.h"
 #include "fCColVector.h"
+#include "fCMatrix.h"
+
+class FloatMatrix;
 
 class
 OCTAVE_API

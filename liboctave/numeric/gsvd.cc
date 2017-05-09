@@ -28,16 +28,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <vector>
 
+#include "CMatrix.h"
+#include "dDiagMatrix.h"
+#include "dMatrix.h"
+#include "fCMatrix.h"
+#include "fDiagMatrix.h"
+#include "fMatrix.h"
 #include "gsvd.h"
-
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
-#include "dMatrix.h"
-#include "fMatrix.h"
-#include "CMatrix.h"
-#include "fCMatrix.h"
-#include "dDiagMatrix.h"
-#include "fDiagMatrix.h"
 
 namespace octave
 {

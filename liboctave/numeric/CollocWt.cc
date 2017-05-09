@@ -24,12 +24,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cassert>
+#include <cmath>
+
 #include <iostream>
 #include <limits>
 
+#include "Array.h"
 #include "CollocWt.h"
-#include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-mappers.h"
 
 // The following routines jcobi, dif, and dfopr are based on the code
 // found in Villadsen, J. and M. L. Michelsen, Solution of Differential

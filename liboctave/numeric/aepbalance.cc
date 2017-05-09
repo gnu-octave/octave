@@ -25,17 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <string>
-
-#include "CColVector.h"
 #include "CMatrix.h"
 #include "aepbalance.h"
 #include "dColVector.h"
 #include "dMatrix.h"
-#include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fColVector.h"
 #include "fMatrix.h"
+#include "lo-error.h"
 #include "lo-lapack-proto.h"
 
 static inline char
@@ -56,7 +53,8 @@ namespace octave
       F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
-        (*current_liboctave_error_handler) ("aepbalance: requires square matrix");
+        (*current_liboctave_error_handler)
+          ("aepbalance: requires square matrix");
 
       scale = ColumnVector (n);
 
@@ -106,7 +104,8 @@ namespace octave
       F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
-        (*current_liboctave_error_handler) ("aepbalance: requires square matrix");
+        (*current_liboctave_error_handler)
+          ("aepbalance: requires square matrix");
 
       scale = FloatColumnVector (n);
 
@@ -156,7 +155,8 @@ namespace octave
       F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
-        (*current_liboctave_error_handler) ("aepbalance: requires square matrix");
+        (*current_liboctave_error_handler)
+          ("aepbalance: requires square matrix");
 
       scale = ColumnVector (n);
 
@@ -207,7 +207,8 @@ namespace octave
       F77_INT n = octave::to_f77_int (a.cols ());
 
       if (a.rows () != n)
-        (*current_liboctave_error_handler) ("aepbalance: requires square matrix");
+        (*current_liboctave_error_handler)
+          ("aepbalance: requires square matrix");
 
       scale = FloatColumnVector (n);
 

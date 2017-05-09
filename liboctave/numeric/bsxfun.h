@@ -28,10 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <algorithm>
+#include <string>
 
-#include "Array.h"
 #include "dim-vector.h"
-#include "lo-error.h"
 
 inline
 bool

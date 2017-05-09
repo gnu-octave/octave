@@ -26,22 +26,21 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include "oct-cmplx.h"
 #include "Array.h"
+#include "oct-cmplx.h"
 
-class Matrix;
-class ComplexMatrix;
-class NDArray;
-class ComplexNDArray;
-class RowVector;
 class ComplexColumnVector;
-class FloatMatrix;
-class FloatComplexMatrix;
-class FloatNDArray;
-class FloatComplexNDArray;
-class FloatRowVector;
+class ComplexMatrix;
+class ComplexNDArray;
 class FloatComplexColumnVector;
-class Range;
+class FloatComplexMatrix;
+class FloatComplexNDArray;
+class FloatMatrix;
+class FloatNDArray;
+class FloatRowVector;
+class Matrix;
+class NDArray;
+class RowVector;
 
 namespace octave
 {

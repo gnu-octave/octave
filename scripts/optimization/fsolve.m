@@ -235,6 +235,10 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     ## Calculate function value and Jacobian (possibly via FD).
     if (has_jac)
       [fvec, fjac] = fcn (reshape (x, xsiz));
+      if (! all (size (fjac) == [m, n])) 
+        error ("fsolve: Jacobian size should be (%d,%d), not (%d,%d)",
+               m, n, rows (fjac), columns (fjac));
+      endif
       ## If the Jacobian is sparse, disable Broyden updating.
       if (issparse (fjac))
         updating = false;

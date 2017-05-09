@@ -456,9 +456,7 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
             {
               octave::tree_decl_elt *elt = pl->front ();
 
-              octave_lvalue ref = elt->lvalue (tw);
-
-              octave_value arg0 = ref.value ();
+              octave_value arg0 = tw->evaluate (elt);
 
               if (arg0.is_defined () && arg0.type_name () == "object")
                 {

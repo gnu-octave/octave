@@ -65,7 +65,7 @@ eigs_func (const ColumnVector& x, int& eigs_error)
 
       try
         {
-          tmp = feval (eigs_fcn, args, 1);
+          tmp = octave::feval (eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {
@@ -105,7 +105,7 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 
       try
         {
-          tmp = feval (eigs_fcn, args, 1);
+          tmp = octave::feval (eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& e)
         {

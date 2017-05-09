@@ -372,8 +372,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
   // Initialize Q, Z to identity matrix if either is needed
   if (comp_q == 'V' || comp_z == 'V')
     {
-      double *QQptr = QQ.fortran_vec (); 
-      double *ZZptr = ZZ.fortran_vec (); 
+      double *QQptr = QQ.fortran_vec ();
+      double *ZZptr = ZZ.fortran_vec ();
       std::fill_n (QQptr, QQ.numel (), 0.0);
       std::fill_n (ZZptr, ZZ.numel (), 0.0);
       for (F77_INT i = 0; i < nn; i++)

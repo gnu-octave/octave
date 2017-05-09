@@ -575,13 +575,13 @@ OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline Complex xlog2 (const Complex& x) { return octave::math::log2 (x); }
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline FloatComplex xlog2 (const FloatComplex& x)
-{ 
+{
   return octave::math::log2 (x);
 }
 
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline double xlog2 (double x, int& exp)
-{ 
+{
   return octave::math::log2 (x, exp);
 }
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
@@ -589,12 +589,12 @@ inline float xlog2 (float x, int& exp) { return octave::math::log2 (x, exp); }
 
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline Complex xlog2 (const Complex& x, int& exp)
-{ 
+{
   return octave::math::log2 (x, exp);
 }
 OCTAVE_DEPRECATED ("use 'octave::math::log2' instead")
 inline FloatComplex xlog2 (const FloatComplex& x, int& exp)
-{ 
+{
   return octave::math::log2 (x, exp);
 }
 
@@ -618,12 +618,12 @@ ceil (const std::complex<T>& x)
 
 OCTAVE_DEPRECATED ("use 'octave::math::copysign' instead")
 inline double xcopysign (double x, double y)
-{ 
+{
   return octave::math::copysign (x, y);
 }
 OCTAVE_DEPRECATED ("use 'octave::math::copysign' instead")
 inline float xcopysign (float x, float y)
-{ 
+{
   return octave::math::copysign (x, y);
 }
 
@@ -637,23 +637,23 @@ xsignbit (T x)
 
 OCTAVE_DEPRECATED ("use 'octave::math::negative_sign' instead")
 inline bool xnegative_sign (double x)
-{ 
+{
   return octave::math::negative_sign (x);
 }
 OCTAVE_DEPRECATED ("use 'octave::math::negative_sign' instead")
 inline bool xnegative_sign (float x)
-{ 
+{
   return octave::math::negative_sign (x);
 }
 
 OCTAVE_DEPRECATED ("use 'octave::math::positive_sign' instead")
 inline bool xpositive_sign (double x)
-{ 
+{
   return octave::math::positive_sign (x);
 }
 OCTAVE_DEPRECATED ("use 'octave::math::positive_sign' instead")
 inline bool xpositive_sign (float x)
-{ 
+{
   return octave::math::positive_sign (x);
 }
 

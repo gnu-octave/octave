@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <cstddef> 
+#include <cstddef>
 
 #include "CSparse.h"
 #include "MatrixType.h"

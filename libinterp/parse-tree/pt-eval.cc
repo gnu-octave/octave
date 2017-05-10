@@ -416,10 +416,10 @@ namespace octave
     if (m_lvalue_list_stack.empty ())
       return retval;
 
-    //    std::cerr << "lvalue_list_stack size: "
-    //              << m_lvalue_list_stack.size () << std::endl;
-
     const std::list<octave_lvalue> *lvalue_list = m_lvalue_list_stack.top ();
+
+    if (! lvalue_list)
+      return retval;
 
     octave_idx_type nbh = 0;
 
@@ -1043,29 +1043,6 @@ namespace octave
   }
 }
 
-static inline octave_value_list
-make_value_list (octave::tree_evaluator *tw, octave::tree_argument_list *args,
-                 const string_vector& arg_nm,
-                 const octave_value *object, bool rvalue = true)
-{
-  octave_value_list retval;
-
-  if (args)
-    {
-      if (rvalue && object && args->has_magic_end () && object->is_undefined ())
-        err_invalid_inquiry_subscript ();
-
-      retval = args->convert_to_const_vector (tw, object);
-    }
-
-  octave_idx_type n = retval.length ();
-
-  if (n > 0)
-    retval.stash_name_tags (arg_nm);
-
-  return retval;
-}
-
 // Final step of processing an indexing error.  Add the name of the
 // variable being indexed, if any, then issue an error.  (Will this also
 // be needed by pt-lvalue, which calls subsref?)
@@ -1132,6 +1109,16 @@ namespace octave
 
             if (n > 0)
               {
+                // Function calls inside an argument list can't have ignored
+                // output arguments.
+
+                unwind_protect frame;
+
+                m_lvalue_list_stack.push (0);
+
+                frame.add_method (m_lvalue_list_stack,
+                                  &value_stack<const std::list<octave_lvalue>*>::pop);
+
                 string_vector anm = *(arg_nm.begin ());
                 have_args = true;
                 first_args = al -> convert_to_const_vector (this);
@@ -1239,11 +1226,11 @@ namespace octave
                 have_args = false;
               }
             else
-              idx.push_back (make_value_list (this, *p_args, *p_arg_nm, &tmp));
+              idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
             break;
 
           case '{':
-            idx.push_back (make_value_list (this, *p_args, *p_arg_nm, &tmp));
+            idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
             break;
 
           case '.':
@@ -1487,6 +1474,16 @@ namespace octave
   tree_evaluator::visit_cell (tree_cell& expr)
   {
     octave_value retval;
+
+    // Function calls inside an argument list can't have ignored
+    // output arguments.
+
+    unwind_protect frame;
+
+    m_lvalue_list_stack.push (0);
+
+    frame.add_method (m_lvalue_list_stack,
+                      &value_stack<const std::list<octave_lvalue>*>::pop);
 
     octave_idx_type nr = expr.length ();
     octave_idx_type nc = -1;
@@ -2507,6 +2504,40 @@ namespace octave
       error ("%s: undefined value used in conditional expression", warn_for);
 
     return expr_value;
+  }
+
+  octave_value_list
+  tree_evaluator::make_value_list (octave::tree_argument_list *args,
+                                   const string_vector& arg_nm,
+                                   const octave_value *object, bool rvalue)
+  {
+    octave_value_list retval;
+
+    if (args)
+      {
+        // Function calls inside an argument list can't have ignored
+        // output arguments.
+
+        unwind_protect frame;
+
+        m_lvalue_list_stack.push (0);
+
+        frame.add_method (m_lvalue_list_stack,
+                          &value_stack<const std::list<octave_lvalue>*>::pop);
+
+        if (rvalue && object && args->has_magic_end ()
+            && object->is_undefined ())
+          err_invalid_inquiry_subscript ();
+
+        retval = args->convert_to_const_vector (this, object);
+      }
+
+    octave_idx_type n = retval.length ();
+
+    if (n > 0)
+      retval.stash_name_tags (arg_nm);
+
+    return retval;
   }
 
   std::list<octave_lvalue>

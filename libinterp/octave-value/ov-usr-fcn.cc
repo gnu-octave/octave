@@ -726,10 +726,7 @@ octave_user_function::bind_automatic_vars
 
   Matrix ignored_fcn_outputs = tw ? tw->ignored_fcn_outputs () : Matrix ();
 
-  if (ignored_fcn_outputs.is_empty ())
-    symbol_table::assign (".ignored.");
-  else
-    symbol_table::assign (".ignored.", ignored_fcn_outputs);
+  symbol_table::assign (".ignored.", ignored_fcn_outputs);
 
   symbol_table::mark_hidden (".ignored.");
   symbol_table::mark_automatic (".ignored.");
@@ -1073,6 +1070,11 @@ element-by-element and a logical array is returned.  At the top level,
 %!  endif
 %!endfunction
 %!
+%!function [a, b] = try_isargout2 (x, y)
+%!  a = y;
+%!  b = {isargout(1), isargout(2), x};
+%!endfunction
+%!
 %!test
 %! [x, y] = try_isargout ();
 %! assert ([x, y], [1, 2]);
@@ -1111,4 +1113,12 @@ element-by-element and a logical array is returned.  At the top level,
 %! assert (y, -2);
 %! [~, y] = c{2}();
 %! assert (y, -2);
+%!
+## Nesting, anyone?
+%!test
+%! [~, b] = try_isargout2 (try_isargout, rand);
+%! assert (b, {0, 1, -1});
+%!test
+%! [~, b] = try_isargout2 ({try_isargout, try_isargout}, rand);
+%! assert (b, {0, 1, {-1, -1}});
 */

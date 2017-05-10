@@ -304,6 +304,11 @@ namespace octave
 
     bool is_logically_true (tree_expression *expr, const char *warn_for);
 
+    octave_value_list
+    make_value_list (octave::tree_argument_list *args,
+                     const string_vector& arg_nm,
+                     const octave_value *object, bool rvalue = true);
+
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
     value_stack<octave_value_list> m_value_stack;

@@ -126,30 +126,29 @@ static int num_indices = 0;
 // END is documented in op-kw-docs.
 DEFCONSTFUN (end, , ,
              doc: /* -*- texinfo -*-
-                     @deftypefn {} {} end
-                     Last element of an array or the end of any @code{for}, @code{parfor},
-                     @code{if}, @code{do}, @code{while}, @code{function}, @code{switch},
-                     @code{try}, or @code{unwind_protect} block.
+@deftypefn {} {} end
+Last element of an array or the end of any @code{for}, @code{parfor},
+@code{if}, @code{do}, @code{while}, @code{function}, @code{switch},
+@code{try}, or @code{unwind_protect} block.
 
-                     As an index of an array, the magic index @qcode{"end"} refers to the
-                     last valid entry in an indexing operation.
+As an index of an array, the magic index @qcode{"end"} refers to the
+last valid entry in an indexing operation.
 
-                     Example:
+Example:
 
-                     @example
-                     @group
-                     @var{x} = [ 1 2 3
-                     4 5 6 ];
-                     @var{x}(1,end)
-                     @result{} 3
-                     @var{x}(end,1)
-                     @result{} 4
-                     @var{x}(end,end)
-                     @result{} 6
-                     @end group
-                     @end example
-                     @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
-                     @end deftypefn */)
+@example
+@group
+@var{x} = [ 1 2 3; 4 5 6 ];
+@var{x}(1,end)
+   @result{} 3
+@var{x}(end,1)
+   @result{} 4
+@var{x}(end,end)
+   @result{} 6
+@end group
+@end example
+@seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
+@end deftypefn */)
 {
   octave_value retval;
 

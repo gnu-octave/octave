@@ -410,15 +410,6 @@ octave_user_function::subsref (const std::string& type,
                                const std::list<octave_value_list>& idx,
                                int nargout)
 {
-  return octave_user_function::subsref (type, idx, nargout, 0);
-}
-
-octave_value_list
-octave_user_function::subsref (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               int nargout,
-                               const std::list<octave_lvalue>* lvalue_list)
-{
   octave_value_list retval;
 
   switch (type[0])
@@ -427,8 +418,7 @@ octave_user_function::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front (),
-                                    idx.size () == 1 ? lvalue_list : 0);
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
@@ -456,15 +446,7 @@ octave_user_function::subsref (const std::string& type,
 
 octave_value_list
 octave_user_function::do_multi_index_op (int nargout,
-                                         const octave_value_list& args)
-{
-  return do_multi_index_op (nargout, args, 0);
-}
-
-octave_value_list
-octave_user_function::do_multi_index_op (int nargout,
-                                         const octave_value_list& _args,
-                                         const std::list<octave_lvalue>* lvalue_list)
+                                         const octave_value_list& _args)
 {
   octave_value_list retval;
 
@@ -570,8 +552,8 @@ octave_user_function::do_multi_index_op (int nargout,
       frame.add_fcn (symbol_table::clear_variables);
     }
 
-  bind_automatic_vars (arg_names, args.length (), nargout,
-                       all_va_args (args), lvalue_list);
+  bind_automatic_vars (tw, arg_names, args.length (), nargout,
+                       all_va_args (args));
 
   frame.add_method (this, &octave_user_function::restore_warning_states);
 
@@ -607,7 +589,7 @@ octave_user_function::do_multi_index_op (int nargout,
           {
             octave::call_stack::set_location (stmt->line (), stmt->column ());
 
-            retval = tw->evaluate_n (expr, nargout, lvalue_list);
+            retval = tw->evaluate_n (expr, nargout);
           }
       }
     else
@@ -705,9 +687,8 @@ octave_user_function::print_code_function_trailer (void)
 
 void
 octave_user_function::bind_automatic_vars
-  (const string_vector& arg_names, int nargin, int nargout,
-   const octave_value_list& va_args,
-   const std::list<octave_lvalue> *lvalue_list)
+  (octave::tree_evaluator *tw, const string_vector& arg_names,
+   int nargin, int nargout, const octave_value_list& va_args)
 {
   if (! arg_names.empty ())
     {
@@ -743,31 +724,12 @@ octave_user_function::bind_automatic_vars
   if (takes_varargs ())
     symbol_table::assign ("varargin", va_args.cell_value ());
 
-  // Force .ignored. variable to be undefined by default.
-  symbol_table::assign (".ignored.");
+  Matrix ignored_fcn_outputs = tw ? tw->ignored_fcn_outputs () : Matrix ();
 
-  if (lvalue_list)
-    {
-      octave_idx_type nbh = 0;
-      for (const auto& lval : *lvalue_list)
-        nbh += lval.is_black_hole ();
-
-      if (nbh > 0)
-        {
-          // Only assign the hidden variable if black holes actually present.
-          Matrix bh (1, nbh);
-          octave_idx_type k = 0;
-          octave_idx_type l = 0;
-          for (const auto& lval : *lvalue_list)
-            {
-              if (lval.is_black_hole ())
-                bh(l++) = k+1;
-              k += lval.numel ();
-            }
-
-          symbol_table::assign (".ignored.", bh);
-        }
-    }
+  if (ignored_fcn_outputs.is_empty ())
+    symbol_table::assign (".ignored.");
+  else
+    symbol_table::assign (".ignored.", ignored_fcn_outputs);
 
   symbol_table::mark_hidden (".ignored.");
   symbol_table::mark_automatic (".ignored.");

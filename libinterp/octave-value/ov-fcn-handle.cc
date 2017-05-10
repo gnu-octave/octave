@@ -96,15 +96,6 @@ octave_fcn_handle::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
                             int nargout)
 {
-  return octave_fcn_handle::subsref (type, idx, nargout, 0);
-}
-
-octave_value_list
-octave_fcn_handle::subsref (const std::string& type,
-                            const std::list<octave_value_list>& idx,
-                            int nargout,
-                            const std::list<octave_lvalue>* lvalue_list)
-{
   octave_value_list retval;
 
   switch (type[0])
@@ -113,8 +104,7 @@ octave_fcn_handle::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front (),
-                                    idx.size () == 1 ? lvalue_list : 0);
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
@@ -143,14 +133,6 @@ octave_fcn_handle::subsref (const std::string& type,
 octave_value_list
 octave_fcn_handle::do_multi_index_op (int nargout,
                                       const octave_value_list& args)
-{
-  return do_multi_index_op (nargout, args, 0);
-}
-
-octave_value_list
-octave_fcn_handle::do_multi_index_op (int nargout,
-                                      const octave_value_list& args,
-                                      const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -213,9 +195,9 @@ octave_fcn_handle::do_multi_index_op (int nargout,
         }
 
       if (ov_fcn.is_defined ())
-        retval = ov_fcn.do_multi_index_op (nargout, args, lvalue_list);
+        retval = ov_fcn.do_multi_index_op (nargout, args);
       else if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
+        retval = fcn.do_multi_index_op (nargout, args);
       else
         error ("%s: no method for class %s",
                nm.c_str (), dispatch_type.c_str ());
@@ -224,7 +206,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
     {
       // Non-overloaded function (anonymous, subfunction, private function).
       if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
+        retval = fcn.do_multi_index_op (nargout, args);
       else
         error ("%s: no longer valid function handle", nm.c_str ());
     }
@@ -2089,14 +2071,6 @@ octave_value_list
 octave_fcn_binder::do_multi_index_op (int nargout,
                                       const octave_value_list& args)
 {
-  return do_multi_index_op (nargout, args, 0);
-}
-
-octave_value_list
-octave_fcn_binder::do_multi_index_op (int nargout,
-                                      const octave_value_list& args,
-                                      const std::list<octave_lvalue>* lvalue_list)
-{
   octave_value_list retval;
 
   if (args.length () == expected_nargin)
@@ -2111,10 +2085,10 @@ octave_fcn_binder::do_multi_index_op (int nargout,
       // Make a shallow copy of arg_template, to ensure consistency throughout
       // the following call even if we happen to get back here.
       octave_value_list tmp (arg_template);
-      retval = root_handle.do_multi_index_op (nargout, tmp, lvalue_list);
+      retval = root_handle.do_multi_index_op (nargout, tmp);
     }
   else
-    retval = octave_fcn_handle::do_multi_index_op (nargout, args, lvalue_list);
+    retval = octave_fcn_handle::do_multi_index_op (nargout, args);
 
   return retval;
 }

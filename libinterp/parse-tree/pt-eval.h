@@ -62,7 +62,12 @@ namespace octave
 
       void push (const T& val) { m_stack.push (val); }
 
-      T pop (void)
+      void pop (void)
+      {
+        m_stack.pop ();
+      }
+
+      T val_pop (void)
       {
         T retval = m_stack.top ();
         m_stack.pop ();
@@ -72,6 +77,16 @@ namespace octave
       T top (void) const
       {
         return m_stack.top ();
+      }
+
+      size_t size (void) const
+      {
+        return m_stack.size ();
+      }
+
+      bool empty (void) const
+      {
+        return m_stack.empty ();
       }
 
       void clear (void)
@@ -225,35 +240,35 @@ namespace octave
     // TRUE means we are evaluating some kind of looping construct.
     static bool in_loop_command;
 
-    octave_value evaluate (tree_expression *expr, int nargout = 1,
-                           const std::list<octave_lvalue> *lvalue_list = nullptr)
+    Matrix ignored_fcn_outputs (void) const;
+
+    const std::list<octave_lvalue> * lvalue_list (void)
+    {
+      return m_lvalue_list_stack.empty () ? 0 : m_lvalue_list_stack.top ();
+    }
+
+    octave_value evaluate (tree_expression *expr, int nargout = 1)
     {
       m_nargout_stack.push (nargout);
-      m_lvalue_list_stack.push (lvalue_list);
 
       expr->accept (*this);
 
       m_nargout_stack.pop ();
-      m_lvalue_list_stack.pop ();
 
-      octave_value_list tmp = m_value_stack.pop ();
+      octave_value_list tmp = m_value_stack.val_pop ();
 
       return tmp.empty () ? octave_value () : tmp(0);
     }
 
-    octave_value_list
-    evaluate_n (tree_expression *expr, int nargout = 1,
-                const std::list<octave_lvalue> *lvalue_list = nullptr)
+    octave_value_list evaluate_n (tree_expression *expr, int nargout = 1)
     {
       m_nargout_stack.push (nargout);
-      m_lvalue_list_stack.push (lvalue_list);
 
       expr->accept (*this);
 
       m_nargout_stack.pop ();
-      m_lvalue_list_stack.pop ();
 
-      return m_value_stack.pop ();
+      return m_value_stack.val_pop ();
     }
 
     octave_value evaluate (tree_decl_elt *);
@@ -288,6 +303,8 @@ namespace octave
     do_keyboard (const octave_value_list& args = octave_value_list ()) const;
 
     bool is_logically_true (tree_expression *expr, const char *warn_for);
+
+    std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
     value_stack<octave_value_list> m_value_stack;
 

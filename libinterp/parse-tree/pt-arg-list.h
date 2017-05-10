@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 
 class octave_value_list;
-class octave_lvalue;
 
 #include "str-vec.h"
 
@@ -92,8 +91,6 @@ namespace octave
 
     octave_value_list convert_to_const_vector (tree_evaluator *tw,
                                                const octave_value *object = nullptr);
-
-    std::list<octave_lvalue> lvalue_list (tree_evaluator *tw);
 
     string_vector get_arg_names (void) const;
 

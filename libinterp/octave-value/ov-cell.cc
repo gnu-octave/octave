@@ -131,8 +131,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 octave_value_list
 octave_cell::subsref (const std::string& type,
                       const std::list<octave_value_list>& idx,
-                      int nargout,
-                      const std::list<octave_lvalue> *lvalue_list)
+                      int nargout)
 {
   octave_value_list retval;
 
@@ -174,9 +173,7 @@ octave_cell::subsref (const std::string& type,
   // octave_user_function::subsref.
 
   if (idx.size () > 1)
-    retval = (lvalue_list
-              ? retval(0).next_subsref (nargout, type, idx, lvalue_list)
-              : retval(0).next_subsref (nargout, type, idx));
+    retval = retval(0).next_subsref (nargout, type, idx);
 
   return retval;
 }

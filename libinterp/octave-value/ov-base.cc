@@ -238,16 +238,6 @@ octave_base_value::subsref (const std::string& type,
   return subsref (type, idx);
 }
 
-octave_value_list
-octave_base_value::subsref (const std::string& type,
-                            const std::list<octave_value_list>& idx,
-                            int nargout,
-                            const std::list<octave_lvalue> *)
-{
-  // Fall back to call without passing lvalue list.
-  return subsref (type, idx, nargout);
-}
-
 octave_value
 octave_base_value::do_index_op (const octave_value_list&, bool)
 {
@@ -260,14 +250,6 @@ octave_base_value::do_multi_index_op (int, const octave_value_list&)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
-}
-
-octave_value_list
-octave_base_value::do_multi_index_op (int nargout, const octave_value_list& idx,
-                                      const std::list<octave_lvalue> *)
-{
-  // Fall back.
-  return do_multi_index_op (nargout, idx);
 }
 
 idx_vector

@@ -44,15 +44,6 @@ octave_builtin::subsref (const std::string& type,
                          const std::list<octave_value_list>& idx,
                          int nargout)
 {
-  return octave_builtin::subsref (type, idx, nargout, 0);
-}
-
-octave_value_list
-octave_builtin::subsref (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         int nargout,
-                         const std::list<octave_lvalue>* lvalue_list)
-{
   octave_value_list retval;
 
   switch (type[0])
@@ -61,8 +52,7 @@ octave_builtin::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front (),
-                                    idx.size () == 1 ? lvalue_list : 0);
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
@@ -97,13 +87,6 @@ octave_builtin::subsref (const std::string& type,
 octave_value_list
 octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 {
-  return octave_builtin::do_multi_index_op (nargout, args, 0);
-}
-
-octave_value_list
-octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
-                                   const std::list<octave_lvalue> *lvalue_list)
-{
   octave_value_list retval;
 
   if (args.has_magic_colon ())
@@ -114,12 +97,6 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
   octave::call_stack::push (this);
 
   frame.add_fcn (octave::call_stack::pop);
-
-  if (lvalue_list || curr_lvalue_list)
-    {
-      frame.protect_var (curr_lvalue_list);
-      curr_lvalue_list = lvalue_list;
-    }
 
   profile_data_accumulator::enter<octave_builtin> block (profiler, *this);
 
@@ -176,5 +153,3 @@ octave_builtin::handles_dispatch_class (const std::string& dispatch_type) const
 {
   return dispatch_classes.find (dispatch_type) != dispatch_classes.end ();
 }
-
-const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = nullptr;

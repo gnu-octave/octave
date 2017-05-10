@@ -77,21 +77,12 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout,
-                             const std::list<octave_lvalue>* lvalue_list);
-
   octave_function * function_value (bool = false) { return this; }
 
   bool is_builtin_function (void) const { return true; }
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args,
-                     const std::list<octave_lvalue>* lvalue_list);
 
   jit_type * to_jit (void) const;
 
@@ -102,8 +93,6 @@ public:
   void push_dispatch_class (const std::string& dispatch_type);
 
   bool handles_dispatch_class (const std::string& dispatch_type) const;
-
-  static const std::list<octave_lvalue> *curr_lvalue_list;
 
 protected:
 

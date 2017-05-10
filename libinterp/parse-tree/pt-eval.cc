@@ -82,8 +82,8 @@ namespace octave
   tree_evaluator::reset (void)
   {
     m_value_stack.clear ();
-    m_lvalue_list_stack.pop ();
-    m_nargout_stack.pop ();
+    m_lvalue_list_stack.clear ();
+    m_nargout_stack.clear ();
   }
 
   void
@@ -406,6 +406,43 @@ namespace octave
   {
     return ! (Vsilent_functions && (statement_context == function
                                     || statement_context == script));
+  }
+
+  Matrix
+  tree_evaluator::ignored_fcn_outputs (void) const
+  {
+    Matrix retval;
+
+    if (m_lvalue_list_stack.empty ())
+      return retval;
+
+    //    std::cerr << "lvalue_list_stack size: "
+    //              << m_lvalue_list_stack.size () << std::endl;
+
+    const std::list<octave_lvalue> *lvalue_list = m_lvalue_list_stack.top ();
+
+    octave_idx_type nbh = 0;
+
+    for (const auto& lval : *lvalue_list)
+      nbh += lval.is_black_hole ();
+
+    if (nbh > 0)
+      {
+        retval.resize (1, nbh);
+
+        octave_idx_type k = 0;
+        octave_idx_type l = 0;
+
+        for (const auto& lval : *lvalue_list)
+          {
+            if (lval.is_black_hole ())
+              retval(l++) = k+1;
+
+            k += lval.numel ();
+          }
+      }
+
+    return retval;
   }
 
   octave_value
@@ -942,14 +979,7 @@ namespace octave
         if (fcn && ! (expr.is_postfix_indexed ()
                       && fcn->is_postfix_index_handled (expr.postfix_index ())))
           {
-            octave_value_list tmp_args;
-
-            const std::list<octave_lvalue> *lvalue_list
-              = m_lvalue_list_stack.top ();
-
-            retval = (lvalue_list
-                      ? val.do_multi_index_op (nargout, tmp_args, lvalue_list)
-                      : val.do_multi_index_op (nargout, tmp_args));
+            retval = val.do_multi_index_op (nargout, octave_value_list ());
           }
         else
           {
@@ -1230,12 +1260,9 @@ namespace octave
         p_dyn_field++;
       }
 
-    const std::list<octave_lvalue> *lvalue_list = m_lvalue_list_stack.top ();
-
     try
       {
-        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
-                              lvalue_list);
+        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout);
       }
     catch (octave::index_exception& e)  // range problems, bad index type, etc.
       {
@@ -1252,10 +1279,7 @@ namespace octave
           {
             octave_value_list empty_args;
 
-            retval = (lvalue_list
-                      ? val.do_multi_index_op (nargout, empty_args,
-                                               lvalue_list)
-                      : val.do_multi_index_op (nargout, empty_args));
+            retval = val.do_multi_index_op (nargout, empty_args);
           }
       }
 
@@ -1520,9 +1544,16 @@ namespace octave
 
     if (rhs)
       {
+        unwind_protect frame;
+
         tree_argument_list *lhs = expr.left_hand_side ();
 
-        std::list<octave_lvalue> lvalue_list = lhs->lvalue_list (this);
+        std::list<octave_lvalue> lvalue_list = make_lvalue_list (lhs);
+
+        m_lvalue_list_stack.push (&lvalue_list);
+
+        frame.add_method (m_lvalue_list_stack,
+                          &value_stack<const std::list<octave_lvalue>*>::pop);
 
         octave_idx_type n_out = 0;
 
@@ -1530,7 +1561,7 @@ namespace octave
           n_out += lval.numel ();
 
         // The following trick is used to keep rhs_val constant.
-        const octave_value_list rhs_val1 = evaluate_n (rhs, n_out, &lvalue_list);
+        const octave_value_list rhs_val1 = evaluate_n (rhs, n_out);
         const octave_value_list rhs_val = (rhs_val1.length () == 1
                                            && rhs_val1(0).is_cs_list ()
                                            ? rhs_val1(0).list_value ()
@@ -1869,7 +1900,17 @@ namespace octave
 
         try
           {
+            octave::unwind_protect frame;
+
             octave_lvalue ult = lhs->lvalue (this);
+
+            std::list<octave_lvalue> lvalue_list;
+            lvalue_list.push_back (ult);
+
+            m_lvalue_list_stack.push (&lvalue_list);
+
+            frame.add_method (m_lvalue_list_stack,
+                              &value_stack<const std::list<octave_lvalue>*>::pop);
 
             if (ult.numel () != 1)
               err_nonbraced_cs_list_assignment ();
@@ -2466,6 +2507,17 @@ namespace octave
       error ("%s: undefined value used in conditional expression", warn_for);
 
     return expr_value;
+  }
+
+  std::list<octave_lvalue>
+  tree_evaluator::make_lvalue_list (tree_argument_list *lhs)
+  {
+    std::list<octave_lvalue> retval;
+
+    for (tree_expression *elt : *lhs)
+      retval.push_back (elt->lvalue (this));
+
+    return retval;
   }
 }
 

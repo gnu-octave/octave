@@ -45,6 +45,7 @@ namespace octave
 {
   class tree_parameter_list;
   class tree_statement_list;
+  class tree_evaluator;
   class tree_expression;
   class tree_walker;
 }
@@ -370,17 +371,8 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout,
-                             const std::list<octave_lvalue>* lvalue_list);
-
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
-
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args,
-                     const std::list<octave_lvalue>* lvalue_list);
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
@@ -517,9 +509,10 @@ private:
 
   void print_code_function_trailer (void);
 
-  void bind_automatic_vars (const string_vector& arg_names, int nargin,
-                            int nargout, const octave_value_list& va_args,
-                            const std::list<octave_lvalue> *lvalue_list);
+  void bind_automatic_vars (octave::tree_evaluator *tw,
+                            const string_vector& arg_names,
+                            int nargin, int nargout,
+                            const octave_value_list& va_args);
 
   void restore_warning_states (void);
 

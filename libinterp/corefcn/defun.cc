@@ -42,8 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
-#include "symtab.h"
+#include "pt-eval.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
+#include "symtab.h"
 #include "variables.h"
 #include "parse.h"
 
@@ -158,7 +160,7 @@ get_current_shlib (void)
 bool defun_isargout (int nargout, int iout)
 {
   const std::list<octave_lvalue> *lvalue_list
-    = octave_builtin::curr_lvalue_list;
+    = octave::current_evaluator->lvalue_list ();
 
   if (iout >= std::max (nargout, 1))
     return false;
@@ -183,7 +185,7 @@ bool defun_isargout (int nargout, int iout)
 void defun_isargout (int nargout, int nout, bool *isargout)
 {
   const std::list<octave_lvalue> *lvalue_list
-    = octave_builtin::curr_lvalue_list;
+    = octave::current_evaluator->lvalue_list ();
 
   if (lvalue_list)
     {

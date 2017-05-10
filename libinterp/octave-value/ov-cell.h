@@ -80,15 +80,7 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
-                             int nargout)
-  {
-    return subsref (type, idx, nargout, 0);
-  }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout,
-                             const std::list<octave_lvalue> *lvalue_list);
+                             int nargout);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx,

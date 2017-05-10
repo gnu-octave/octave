@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
-#include "oct-lvalue.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
@@ -260,17 +259,6 @@ namespace octave
       }
 
     return args;
-  }
-
-  std::list<octave_lvalue>
-  tree_argument_list::lvalue_list (tree_evaluator *tw)
-  {
-    std::list<octave_lvalue> retval;
-
-    for (tree_expression *elt : *this)
-      retval.push_back (elt->lvalue (tw));
-
-    return retval;
   }
 
   string_vector

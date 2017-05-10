@@ -27,8 +27,8 @@ function [x, map] = ind2x (caller, x, map)
   ## and check that the 3rd dimension is a singleton.
   if (all (ndims (x) != [2 4]) || size (x, 3) != 1
       || iscomplex (x) || issparse (x)
-      || (isfloat (x) && x != fix (x))
-      || ! any (strcmp (class (x), {"uint8", "uint16", "single", "double"})))
+      || ! (isfloat (x) && all (x(:) == fix (x(:)))
+            || (isinteger (x) && intmin (class (x)) == 0)))
     error ("%s: X must be an indexed image", caller);
   endif
 

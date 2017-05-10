@@ -117,3 +117,24 @@ endfunction
 %!warning <contains colors outside of colormap> ind2rgb ([0 1 2], gray (5));
 %!warning <contains colors outside of colormap> ind2rgb ([1 2 6], gray (5));
 %!warning <contains colors outside of colormap> ind2rgb (uint8 ([1 2 5]), gray (5));
+
+## We support any unsigned integer type which Matlab does not.  See
+## bug #47115.
+%!test
+%! cmap = repmat (linspace (0, 1, 9)(:), [1 3]);
+%! ind = [0 3 6; 1 4 7; 2 5 8];
+%! rgb = repmat (reshape (linspace (0, 1, 9), [3 3]), [1 1 3]);
+%! assert (ind2rgb (uint8  (ind), cmap), rgb)
+%! assert (ind2rgb (uint16 (ind), cmap), rgb)
+%! assert (ind2rgb (uint32 (ind), cmap), rgb)
+%! assert (ind2rgb (uint64 (ind), cmap), rgb)
+%! fail ("ind2rgb (int8  (ind), cmap)", "X must be an indexed image")
+%! fail ("ind2rgb (int16 (ind), cmap)", "X must be an indexed image")
+%! fail ("ind2rgb (int32 (ind), cmap)", "X must be an indexed image")
+%! fail ("ind2rgb (int64 (ind), cmap)", "X must be an indexed image")
+%!
+%! cmap(65541,:) = cmap(9,:); # index outside the uint16 range
+%! cmap(9,:) = 0;
+%! ind(3,3) = 65540;
+%! assert (ind2rgb (uint32 (ind), cmap), rgb)
+%! assert (ind2rgb (uint64 (ind), cmap), rgb)

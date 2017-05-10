@@ -902,7 +902,7 @@ namespace octave
 
     try
       {
-        tmp = feval (ida_fc, ovl (t, x, xdot), 1);
+        tmp = octave::feval (ida_fc, ovl (t, x, xdot), 1);
       }
     catch (octave::execution_exception& e)
       {
@@ -920,7 +920,7 @@ namespace octave
 
     try
       {
-        tmp = feval (ida_jc, ovl (t, x, xdot), 2);
+        tmp = octave::feval (ida_jc, ovl (t, x, xdot), 2);
       }
     catch (octave::execution_exception& e)
       {
@@ -938,7 +938,7 @@ namespace octave
 
     try
       {
-        tmp = feval (ida_jc, ovl (t, x, xdot), 2);
+        tmp = octave::feval (ida_jc, ovl (t, x, xdot), 2);
       }
     catch (octave::execution_exception& e)
       {

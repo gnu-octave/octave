@@ -377,20 +377,33 @@ public:
   octave_idx_type columns (void) const { return dimensions(1); }
 
   // Extract a scalar substructure.
-  octave_scalar_map checkelem (octave_idx_type n) const;
-  octave_scalar_map checkelem (octave_idx_type i, octave_idx_type j) const;
+  // FIXME: actually check something.
+  octave_scalar_map checkelem (octave_idx_type n) const
+  { return elem (n); }
 
-  octave_scalar_map
-  checkelem (const Array<octave_idx_type>& ra_idx) const;
+  // FIXME: actually check something.
+  octave_scalar_map checkelem (octave_idx_type i, octave_idx_type j) const
+  { return elem (i, j); }
+
+  // FIXME: actually check something.
+  octave_scalar_map checkelem (const Array<octave_idx_type>& ra_idx) const
+  { return elem (ra_idx); }
+
+  octave_scalar_map elem (octave_idx_type n) const;
+
+  octave_scalar_map elem (octave_idx_type i, octave_idx_type j) const;
+
+  octave_scalar_map elem (const Array<octave_idx_type>& ra_idx) const;
 
   octave_scalar_map operator () (octave_idx_type n) const
-  { return checkelem (n); }
+  { return elem (n); }
+
   octave_scalar_map operator () (octave_idx_type i, octave_idx_type j) const
-  { return checkelem (i, j); }
+  { return elem (i, j); }
 
   octave_scalar_map
   operator () (const Array<octave_idx_type>& ra_idx) const
-  { return checkelem (ra_idx); }
+  { return elem (ra_idx); }
 
   octave_map squeeze (void) const;
 

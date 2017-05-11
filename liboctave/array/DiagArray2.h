@@ -124,28 +124,18 @@ public:
   { return Array<T>::elem (i); }
 
   T checkelem (octave_idx_type r, octave_idx_type c) const
-  {
-    return check_idx (r, c) ? elem (r, c) : T (0);
-  }
+  { return check_idx (r, c) ? elem (r, c) : T (0); }
 
   T operator () (octave_idx_type r, octave_idx_type c) const
   {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    return checkelem (r, c);
-#else
     return elem (r, c);
-#endif
   }
 
   T& checkelem (octave_idx_type r, octave_idx_type c);
 
   T& operator () (octave_idx_type r, octave_idx_type c)
   {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    return checkelem (r, c);
-#else
     return elem (r, c);
-#endif
   }
 
   // No checking.

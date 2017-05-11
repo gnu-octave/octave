@@ -299,10 +299,11 @@ AM_CONDITIONAL([AMCOND_ENABLE_HG_ID], [test $ENABLE_HG_ID = yes])
 ENABLE_BOUNDS_CHECK=no
 AC_ARG_ENABLE([bounds-check],
   [AS_HELP_STRING([--enable-bounds-check],
-    [enable bounds checking for indexing in internal array classes])],
+    [OBSOLETE: use --enable-address-sanitizer-flags instead])],
   [if test "$enableval" = yes; then ENABLE_BOUNDS_CHECK=yes; fi], [])
 if test $ENABLE_BOUNDS_CHECK = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_BOUNDS_CHECK, 1, [Define to 1 to use internal bounds checking.])
+  warn_bounds_check="--enable-bounds-check is obsolete; use --enable-address-sanitizer-flags instead"
+  OCTAVE_CONFIGURE_WARNING([warn_bounds_check])
 fi
 
 ### Use atomic operations for internal reference counting.  This is required
@@ -3360,7 +3361,6 @@ Octave is now configured for $canonical_host_type
   Build Octave Qt GUI:                  $build_qt_gui
   JIT compiler for loops:               $ENABLE_JIT
   Build Java interface:                 $build_java
-  Do internal array bounds checking:    $ENABLE_BOUNDS_CHECK
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS
   Dynamic Linking:                      $ENABLE_DYNAMIC_LINKING $DL_API_MSG

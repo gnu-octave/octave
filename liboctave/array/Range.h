@@ -111,6 +111,8 @@ public:
 
   double elem (octave_idx_type i) const;
 
+  double operator () (octave_idx_type i) const { return elem (i); }
+
   Array<double> index (const idx_vector& i) const;
 
   void set_base (double b);

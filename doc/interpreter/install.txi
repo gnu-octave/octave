@@ -384,11 +384,12 @@ maximum problem sizes are always limited:
 @xref{Compiling Octave with 64-bit Indexing}, for more details
 about building Octave with more complete support for large arrays.
 
-@item --enable-bounds-check
-Enable bounds checking for indexing operators in the internal array
-classes.  This option is primarily used for debugging Octave.  Building
-Octave with this option has a negative impact on performance and is not
-recommended for general use.
+@item --enable-address-sanitizer-flags
+Enable compiler options @code{-fsanitize=address} and
+@code{-fomit-frame-pointer} for memory access checking.  This option is
+primarily used for debugging Octave.  Building Octave with this option
+has a negative impact on performance and is not recommended for general
+use.  It may also interfere with proper functioning of the GUI.
 
 @item --disable-docs
 Disable building all forms of the documentation (Info, PDF, HTML).  The

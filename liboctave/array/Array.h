@@ -478,8 +478,11 @@ public:
   //        a copy, but that is not so easy, and I see no clean way to do it.
 
   T& checkelem (octave_idx_type n);
+
   T& checkelem (octave_idx_type i, octave_idx_type j);
+
   T& checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k);
+
   T& checkelem (const Array<octave_idx_type>& ra_idx);
 
   T& elem (octave_idx_type n)
@@ -496,27 +499,20 @@ public:
   T& elem (const Array<octave_idx_type>& ra_idx)
   { return Array<T>::elem (compute_index_unchecked (ra_idx)); }
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  T& operator () (octave_idx_type n) { return checkelem (n); }
-  T& operator () (octave_idx_type i, octave_idx_type j)
-  { return checkelem (i, j); }
-  T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k)
-  { return checkelem (i, j, k); }
-  T& operator () (const Array<octave_idx_type>& ra_idx)
-  { return checkelem (ra_idx); }
-#else
   T& operator () (octave_idx_type n) { return elem (n); }
   T& operator () (octave_idx_type i, octave_idx_type j) { return elem (i, j); }
   T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k)
   { return elem (i, j, k); }
   T& operator () (const Array<octave_idx_type>& ra_idx)
   { return elem (ra_idx); }
-#endif
 
   crefT checkelem (octave_idx_type n) const;
+
   crefT checkelem (octave_idx_type i, octave_idx_type j) const;
+
   crefT checkelem (octave_idx_type i, octave_idx_type j,
                    octave_idx_type k) const;
+
   crefT checkelem (const Array<octave_idx_type>& ra_idx) const;
 
   crefT elem (octave_idx_type n) const { return xelem (n); }
@@ -530,16 +526,6 @@ public:
   crefT elem (const Array<octave_idx_type>& ra_idx) const
   { return Array<T>::xelem (compute_index_unchecked (ra_idx)); }
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  crefT operator () (octave_idx_type n) const { return checkelem (n); }
-  crefT operator () (octave_idx_type i, octave_idx_type j) const
-  { return checkelem (i, j); }
-  crefT operator () (octave_idx_type i, octave_idx_type j,
-                     octave_idx_type k) const
-  { return checkelem (i, j, k); }
-  crefT operator () (const Array<octave_idx_type>& ra_idx) const
-  { return checkelem (ra_idx); }
-#else
   crefT operator () (octave_idx_type n) const { return elem (n); }
   crefT operator () (octave_idx_type i, octave_idx_type j) const
   { return elem (i, j); }
@@ -548,11 +534,8 @@ public:
   { return elem (i, j, k); }
   crefT operator () (const Array<octave_idx_type>& ra_idx) const
   { return elem (ra_idx); }
-#endif
 
   // Fast extractors.  All of these produce shallow copies.
-  // Warning: none of these do check bounds, unless
-  // OCTAVE_ENABLE_BOUNDS_CHECK is defined!
 
   //! Extract column: A(:,k+1).
   Array<T> column (octave_idx_type k) const;

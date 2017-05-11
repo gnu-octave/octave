@@ -373,23 +373,6 @@ public:
   T& elem (const Array<octave_idx_type>& ra_idx)
   { return Sparse<T>::elem (compute_index (ra_idx)); }
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  T& operator () (octave_idx_type n)
-  {
-    return checkelem (n);
-  }
-
-  T& operator () (octave_idx_type i, octave_idx_type j)
-  {
-    return checkelem (i, j);
-  }
-
-  T& operator () (const Array<octave_idx_type>& ra_idx)
-  {
-    return checkelem (ra_idx);
-  }
-
-#else
   T& operator () (octave_idx_type n)
   {
     return elem (n);
@@ -404,8 +387,6 @@ public:
   {
     return elem (ra_idx);
   }
-
-#endif
 
   T checkelem (octave_idx_type n) const
   {
@@ -440,20 +421,8 @@ public:
   T elem (const Array<octave_idx_type>& ra_idx) const
   { return Sparse<T>::elem (compute_index (ra_idx)); }
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  T operator () (octave_idx_type n) const { return checkelem (n); }
-  T operator () (octave_idx_type i, octave_idx_type j) const
-  {
-    return checkelem (i, j);
-  }
-
-  T operator () (const Array<octave_idx_type>& ra_idx) const
-  {
-    return checkelem (ra_idx);
-  }
-
-#else
   T operator () (octave_idx_type n) const { return elem (n); }
+
   T operator () (octave_idx_type i, octave_idx_type j) const
   {
     return elem (i, j);
@@ -463,7 +432,6 @@ public:
   {
     return elem (ra_idx);
   }
-#endif
 
   Sparse<T> maybe_compress (bool remove_zeros = false)
   {

@@ -87,6 +87,7 @@ private:
     virtual octave_idx_type xelem (octave_idx_type i) const = 0;
 
     // Range-checking element query.
+    OCTAVE_DEPRECATED ("use 'elem' instead")
     virtual octave_idx_type checkelem (octave_idx_type i) const = 0;
 
     // Length of the index vector.
@@ -136,6 +137,7 @@ private:
 
     octave_idx_type xelem (octave_idx_type i) const { return i; }
 
+    OCTAVE_DEPRECATED ("use 'elem' instead")
     octave_idx_type checkelem (octave_idx_type i) const;
 
     octave_idx_type length (octave_idx_type n) const { return n; }
@@ -183,6 +185,7 @@ private:
     octave_idx_type xelem (octave_idx_type i) const
     { return start + i * step; }
 
+    OCTAVE_DEPRECATED ("use 'elem' instead")
     octave_idx_type checkelem (octave_idx_type i) const;
 
     octave_idx_type length (octave_idx_type) const { return len; }
@@ -244,6 +247,7 @@ private:
 
     octave_idx_type xelem (octave_idx_type) const { return data; }
 
+    OCTAVE_DEPRECATED ("use 'elem' instead")
     octave_idx_type checkelem (octave_idx_type i) const;
 
     octave_idx_type length (octave_idx_type) const { return 1; }
@@ -317,6 +321,7 @@ private:
 
     octave_idx_type xelem (octave_idx_type i) const { return data[i]; }
 
+    OCTAVE_DEPRECATED ("use 'elem' instead")
     octave_idx_type checkelem (octave_idx_type i) const;
 
     octave_idx_type length (octave_idx_type) const { return len; }
@@ -386,6 +391,7 @@ private:
 
     octave_idx_type xelem (octave_idx_type i) const;
 
+    OCTAVE_DEPRECATED ("use 'elem' instead")
     octave_idx_type checkelem (octave_idx_type i) const;
 
     octave_idx_type length (octave_idx_type) const { return len; }
@@ -563,17 +569,12 @@ public:
   octave_idx_type xelem (octave_idx_type n) const
   { return rep->xelem (n); }
 
+  OCTAVE_DEPRECATED ("use 'elem' instead")
   octave_idx_type checkelem (octave_idx_type n) const
-  { return rep->checkelem (n); }
+  { return rep->xelem (n); }
 
   octave_idx_type operator () (octave_idx_type n) const
-  {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    return rep->checkelem (n);
-#else
-    return rep->xelem (n);
-#endif
-  }
+  { return rep->xelem (n); }
 
   operator bool (void) const
   { return ! rep->err; }

@@ -355,7 +355,7 @@ octave_map::extract_scalar (octave_scalar_map& dest,
 }
 
 octave_scalar_map
-octave_map::checkelem (octave_idx_type n) const
+octave_map::elem (octave_idx_type n) const
 {
   octave_scalar_map retval (xkeys);
 
@@ -366,7 +366,7 @@ octave_map::checkelem (octave_idx_type n) const
 }
 
 octave_scalar_map
-octave_map::checkelem (octave_idx_type i, octave_idx_type j) const
+octave_map::elem (octave_idx_type i, octave_idx_type j) const
 {
   octave_scalar_map retval (xkeys);
 
@@ -377,7 +377,7 @@ octave_map::checkelem (octave_idx_type i, octave_idx_type j) const
 }
 
 octave_scalar_map
-octave_map::checkelem (const Array<octave_idx_type>& ra_idx) const
+octave_map::elem (const Array<octave_idx_type>& ra_idx) const
 {
   octave_scalar_map retval (xkeys);
 

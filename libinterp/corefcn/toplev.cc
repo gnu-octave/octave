@@ -337,12 +337,6 @@ specified option.
     { "ENABLE_ATOMIC_REFCOUNT", false },
 #endif
 
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    { "ENABLE_BOUNDS_CHECK", true },
-#else
-    { "ENABLE_BOUNDS_CHECK", false },
-#endif
-
 #if defined (ENABLE_DOCS)
     { "ENABLE_DOCS", true },
 #else

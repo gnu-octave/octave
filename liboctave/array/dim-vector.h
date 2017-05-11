@@ -217,20 +217,11 @@ public:
 
   octave_idx_type& elem (int i)
   {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    assert (i >= 0 && i < ndims ());
-#endif
     make_unique ();
     return xelem (i);
   }
 
-  octave_idx_type elem (int i) const
-  {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-    assert (i >= 0 && i < ndims ());
-#endif
-    return xelem (i);
-  }
+  octave_idx_type elem (int i) const { return xelem (i); }
 
   void chop_trailing_singletons (void)
   {

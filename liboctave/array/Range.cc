@@ -87,16 +87,12 @@ Range::checkelem (octave_idx_type i) const
 double
 Range::elem (octave_idx_type i) const
 {
-#if defined (OCTAVE_ENABLE_BOUNDS_CHECK)
-  return checkelem (i);
-#else
   if (i == 0)
     return rng_base;
   else if (i < rng_numel - 1)
     return rng_base + i * rng_inc;
   else
     return rng_limit;
-#endif
 }
 
 // Helper class used solely for idx_vector.loop () function call

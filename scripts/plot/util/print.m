@@ -91,15 +91,15 @@
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     PostScript (level 1 and 2, mono and color).  The FLTK graphics
-## toolkit generates PostScript level 3.0.
+##     PostScript (level 1 and 2, mono and color).  The OpenGL-based toolkits
+## always generate PostScript level 3.0.
 ##
 ##   @item  eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
-##     Encapsulated PostScript (level 1 and 2, mono and color).  The FLTK
-## graphic toolkit generates PostScript level 3.0.
+##     Encapsulated PostScript (level 1 and 2, mono and color).  The
+## OpenGL-based toolkits always generate PostScript level 3.0.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex
@@ -196,10 +196,11 @@
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone
-##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
-## the result is PGF@.  The @samp{tikzstandalone} device produces a @LaTeX{}
-## document which includes the TikZ file (@samp{tikzstandalone} is only
-## available for the Gnuplot graphics toolkit).
+##     Generate a @LaTeX{} file using PGF/TikZ format.  The OpenGL-based
+## toolkits create a PGF file while Gnuplot creates a TikZ file.  The
+## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
+## TikZ file (@samp{tikzstandalone} and is only available for the Gnuplot
+## graphics toolkit).
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as PostScript.

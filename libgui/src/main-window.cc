@@ -1822,6 +1822,7 @@ main_window::handle_octave_ready ()
       // This can not be done when the editor is created because all functions
       // must be known for the lexer's auto completion informations
       editor_window->empty_script (true, false);
+      editor_window->restore_session (settings);
 #endif
     }
 

@@ -141,6 +141,7 @@ public:
 
   void check_actions (void);
   void empty_script (bool startup, bool visible);
+  void restore_session (QSettings *settings);
 
 signals:
 
@@ -344,8 +345,6 @@ private:
   void toggle_preference (const QString& preference, bool def);
 
   void switch_tab (int direction, bool movetab = false);
-
-  void restore_session (QSettings *settings);
 
   bool editor_tab_has_focus ();
 

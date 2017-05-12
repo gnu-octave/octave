@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QMenu>
 #include <QToolBar>
+#include <QSettings>
 #include "octave-dock-widget.h"
 
 class file_editor_interface : public octave_dock_widget
@@ -63,6 +64,8 @@ public:
   virtual bool check_closing (void) = 0;
 
   virtual void empty_script (bool, bool) = 0;
+
+  virtual void restore_session (QSettings *) = 0;
 
   virtual void enable_menu_shortcuts (bool enable) = 0;
 

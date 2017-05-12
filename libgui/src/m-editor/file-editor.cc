@@ -1699,8 +1699,6 @@ file_editor::construct (void)
   setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("Editor"));
 
-  restore_session (settings);
-
   check_actions ();
 }
 

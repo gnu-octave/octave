@@ -610,7 +610,7 @@ file_editor_tab::update_lexer ()
 
   if (_lexer_apis)
     {
-      bool update_apis_file = false;  // flag, whether update of apis files
+      bool update_apis = false;  // flag, whether update of apis files
 
       // get path to prepared api info
 #if defined (HAVE_QT4)
@@ -631,62 +631,50 @@ file_editor_tab::update_lexer ()
 
       if (_is_octave_file)
         {
-          // octave file: keywords are always used
+          // Keywords and Builtins do not change, these informations can be
+          // stored in prepared form in a file. Information on function are
+          // changing frequently, then if functions should also be auto-
+          // completed, the date of any existing file is checked.
+
+          // Keywords are always used
           _prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
 
+          // Buitlins are only used if the user settings say so
           if (octave_builtins)
-            _prep_apis_file += "b";  // use builtins, too
+            _prep_apis_file += "b";
 
           if (octave_functions)
-            _prep_apis_file += "f";  // use keywords, too
+            _prep_apis_file += "f";
 
-          _prep_apis_file += ".pap"; // final name of apis file
+         _prep_apis_file += ".pap"; // final name of apis file
 
           // check whether the APIs info needs to be prepared and saved
           QFileInfo apis_file = QFileInfo (_prep_apis_file);
           // flag whether apis file needs update
-          update_apis_file = ! apis_file.exists ();
+          update_apis = ! apis_file.exists ();
 
-          // function list depends on installed packages: check mod. date
-          if (! update_apis_file && octave_functions)
+          if (octave_functions)
             {
-              // check whether package file is newer than apis_file
-              QDateTime apis_date = apis_file.lastModified ();
-
-              // compare to local package list
-              // FIXME: How to get user chosen location?
-#if defined (HAVE_QT4)
-              QFileInfo local_pkg_list
-                = QFileInfo (QDesktopServices::storageLocation (QDesktopServices::HomeLocation)
-                             + "/.octave_packages");
-#else
-              QFileInfo local_pkg_list
-                = QFileInfo (QStandardPaths::writableLocation (QStandardPaths::HomeLocation)
-                             + "/.octave_packages");
-#endif
-
-              if (local_pkg_list.exists ()
-                  && (apis_date < local_pkg_list.lastModified ()))
-                update_apis_file = true;
-
-              // compare to global package list
-              // FIXME: How to get user chosen location?
-              QFileInfo global_pkg_list = QFileInfo (
-                                        QString::fromStdString (Voctave_home)
-                                        + "/share/octave/octave_packages");
-               if (global_pkg_list.exists ()
-                   && (apis_date < global_pkg_list.lastModified ()))
-                update_apis_file = true;
+              // Functions may change frequently. Update the apis data
+              // if the file is older than a few minutes preventing from
+              // re-preparing data when the user opens several files.
+              QDateTime apis_time = apis_file.lastModified ();
+              if (QDateTime::currentDateTime () > apis_time.addSecs (180))
+                update_apis = true;
             }
+
           }
         else  // no octave file, just add extension
           {
+
             _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+
           }
 
-      if (update_apis_file || ! _lexer_apis->loadPrepared (_prep_apis_file))
+      if (update_apis || ! _lexer_apis->loadPrepared (_prep_apis_file))
         {
-          // no prepared info loaded, prepare and save if possible
+          // either we have decided to update the apis file or
+          // no prepared info was loaded, prepare and save if possible
 
           // create raw apis info
           QString keyword;
@@ -722,7 +710,7 @@ file_editor_tab::update_lexer ()
                 }
             }
 
-          // dsiconnect slot for saving prepared info if already connected
+          // disconnect slot for saving prepared info if already connected
           disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), 0, 0);
           // check whether path for prepared info exists or can be created
           if (QDir ("/").mkpath (prep_apis_path))
@@ -731,7 +719,9 @@ file_editor_tab::update_lexer ()
               connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
                        this, SLOT (save_apis_info ()));
             }
+
           _lexer_apis->prepare ();  // prepare apis info
+
         }
     }
 

@@ -765,9 +765,24 @@ file_editor_tab::update_lexer ()
   _edit_area->setIndicatorForegroundColor (hg, _indicator_highlight_all);
   _edit_area->setIndicatorOutlineColor (hg, _indicator_highlight_all);
 
-  // fix line number width with respect to the font size of the lexer
+  // fix line number width with respect to the font size of the lexer and
+  // set the line numbers font depending on the lexers font
   if (settings->value ("editor/showLineNumbers", true).toBool ())
-    auto_margin_width ();
+    {
+      // Line numbers width
+      auto_margin_width ();
+
+      // Line numbers font
+      QFont line_numbers_font = lexer->defaultFont ();
+      int font_size = line_numbers_font.pointSize ();
+      font_size = font_size
+                  + settings->value ("editor/line_numbers_size", 0).toInt ();
+      if (font_size < 4)
+        font_size = 4;
+      line_numbers_font.setPointSize (font_size);
+
+      _edit_area->setMarginsFont (line_numbers_font);
+    }
   else
     _edit_area->setMarginWidth (2,0);
 

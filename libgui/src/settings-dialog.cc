@@ -385,6 +385,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (
     settings->value ("editor/showLineNumbers",true).toBool ());
+  ui->editor_linenr_size->setValue (
+      settings->value ("editor/line_numbers_size",0).toInt ());
 
   resource_manager::combo_encoding (ui->editor_combo_encoding);
 
@@ -393,7 +395,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
                                           default_var).value<QColor> ();
   _editor_current_line_color = new color_picker (setting_color);
   ui->editor_grid_current_line->addWidget (_editor_current_line_color,0,3);
-  _editor_current_line_color->setMinimumSize (50,10);
+  _editor_current_line_color->setMinimumSize (20,10);
   _editor_current_line_color->setEnabled (false);
   connect (ui->editor_highlightCurrentLine, SIGNAL (toggled (bool)),
            _editor_current_line_color, SLOT (setEnabled (bool)));
@@ -792,6 +794,8 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers",
                       ui->editor_showLineNumbers->isChecked ());
+  settings->setValue ("editor/line_numbers_size",
+                      ui->editor_linenr_size->value ());
   settings->setValue ("editor/highlightCurrentLine",
                       ui->editor_highlightCurrentLine->isChecked ());
   settings->setValue ("editor/highlight_current_line_color",

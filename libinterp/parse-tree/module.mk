@@ -1,91 +1,91 @@
 PARSE_TREE_INC = \
-  libinterp/parse-tree/bp-table.h \
-  libinterp/parse-tree/jit-ir.h \
-  libinterp/parse-tree/jit-typeinfo.h \
-  libinterp/parse-tree/jit-util.h \
-  libinterp/parse-tree/lex.h \
-  libinterp/parse-tree/parse.h \
-  libinterp/parse-tree/pt-all.h \
-  libinterp/parse-tree/pt-arg-list.h \
-  libinterp/parse-tree/pt-array-list.h \
-  libinterp/parse-tree/pt-assign.h \
-  libinterp/parse-tree/pt-binop.h \
-  libinterp/parse-tree/pt-bp.h \
-  libinterp/parse-tree/pt-cbinop.h \
-  libinterp/parse-tree/pt-cell.h \
-  libinterp/parse-tree/pt-check.h \
-  libinterp/parse-tree/pt-classdef.h \
-  libinterp/parse-tree/pt-cmd.h \
-  libinterp/parse-tree/pt-colon.h \
-  libinterp/parse-tree/pt-const.h \
-  libinterp/parse-tree/pt-decl.h \
-  libinterp/parse-tree/pt-eval.h \
-  libinterp/parse-tree/pt-except.h \
-  libinterp/parse-tree/pt-exp.h \
-  libinterp/parse-tree/pt-fcn-handle.h \
-  libinterp/parse-tree/pt-funcall.h \
-  libinterp/parse-tree/pt-id.h \
-  libinterp/parse-tree/pt-idx.h \
-  libinterp/parse-tree/pt-jit.h \
-  libinterp/parse-tree/pt-jump.h \
-  libinterp/parse-tree/pt-loop.h \
-  libinterp/parse-tree/pt-mat.h \
-  libinterp/parse-tree/pt-misc.h \
-  libinterp/parse-tree/pt-pr-code.h \
-  libinterp/parse-tree/pt-select.h \
-  libinterp/parse-tree/pt-stmt.h \
-  libinterp/parse-tree/pt-tm-const.h \
-  libinterp/parse-tree/pt-unop.h \
-  libinterp/parse-tree/pt-walk.h \
-  libinterp/parse-tree/pt.h \
-  libinterp/parse-tree/token.h
+  %reldir%/bp-table.h \
+  %reldir%/jit-ir.h \
+  %reldir%/jit-typeinfo.h \
+  %reldir%/jit-util.h \
+  %reldir%/lex.h \
+  %reldir%/parse.h \
+  %reldir%/pt-all.h \
+  %reldir%/pt-arg-list.h \
+  %reldir%/pt-array-list.h \
+  %reldir%/pt-assign.h \
+  %reldir%/pt-binop.h \
+  %reldir%/pt-bp.h \
+  %reldir%/pt-cbinop.h \
+  %reldir%/pt-cell.h \
+  %reldir%/pt-check.h \
+  %reldir%/pt-classdef.h \
+  %reldir%/pt-cmd.h \
+  %reldir%/pt-colon.h \
+  %reldir%/pt-const.h \
+  %reldir%/pt-decl.h \
+  %reldir%/pt-eval.h \
+  %reldir%/pt-except.h \
+  %reldir%/pt-exp.h \
+  %reldir%/pt-fcn-handle.h \
+  %reldir%/pt-funcall.h \
+  %reldir%/pt-id.h \
+  %reldir%/pt-idx.h \
+  %reldir%/pt-jit.h \
+  %reldir%/pt-jump.h \
+  %reldir%/pt-loop.h \
+  %reldir%/pt-mat.h \
+  %reldir%/pt-misc.h \
+  %reldir%/pt-pr-code.h \
+  %reldir%/pt-select.h \
+  %reldir%/pt-stmt.h \
+  %reldir%/pt-tm-const.h \
+  %reldir%/pt-unop.h \
+  %reldir%/pt-walk.h \
+  %reldir%/pt.h \
+  %reldir%/token.h
 
 
 ## oct-gperf.h and oct-parse.h are in the SRC list so that they will
 ## be distributed but not installed.
 
 PARSE_TREE_SRC = \
-  libinterp/parse-tree/bp-table.cc \
-  libinterp/parse-tree/jit-ir.cc \
-  libinterp/parse-tree/jit-typeinfo.cc \
-  libinterp/parse-tree/jit-util.cc \
-  libinterp/parse-tree/lex.ll \
-  libinterp/parse-tree/oct-gperf.h \
-  libinterp/parse-tree/oct-parse.h \
-  libinterp/parse-tree/oct-parse.yy \
-  libinterp/parse-tree/pt-arg-list.cc \
-  libinterp/parse-tree/pt-array-list.cc \
-  libinterp/parse-tree/pt-assign.cc \
-  libinterp/parse-tree/pt-binop.cc \
-  libinterp/parse-tree/pt-bp.cc \
-  libinterp/parse-tree/pt-cbinop.cc \
-  libinterp/parse-tree/pt-cell.cc \
-  libinterp/parse-tree/pt-check.cc \
-  libinterp/parse-tree/pt-classdef.cc \
-  libinterp/parse-tree/pt-cmd.cc \
-  libinterp/parse-tree/pt-colon.cc \
-  libinterp/parse-tree/pt-const.cc \
-  libinterp/parse-tree/pt-decl.cc \
-  libinterp/parse-tree/pt-eval.cc \
-  libinterp/parse-tree/pt-except.cc \
-  libinterp/parse-tree/pt-exp.cc \
-  libinterp/parse-tree/pt-fcn-handle.cc \
-  libinterp/parse-tree/pt-funcall.cc \
-  libinterp/parse-tree/pt-id.cc \
-  libinterp/parse-tree/pt-idx.cc \
-  libinterp/parse-tree/pt-jit.cc \
-  libinterp/parse-tree/pt-jump.cc \
-  libinterp/parse-tree/pt-loop.cc \
-  libinterp/parse-tree/pt-mat.cc \
-  libinterp/parse-tree/pt-misc.cc \
-  libinterp/parse-tree/pt-pr-code.cc \
-  libinterp/parse-tree/pt-select.cc \
-  libinterp/parse-tree/pt-stmt.cc \
-  libinterp/parse-tree/pt-tm-const.cc \
-  libinterp/parse-tree/pt-unop.cc \
-  libinterp/parse-tree/pt-walk.cc \
-  libinterp/parse-tree/pt.cc \
-  libinterp/parse-tree/token.cc
+  %reldir%/bp-table.cc \
+  %reldir%/jit-ir.cc \
+  %reldir%/jit-typeinfo.cc \
+  %reldir%/jit-util.cc \
+  %reldir%/lex.ll \
+  %reldir%/oct-gperf.h \
+  %reldir%/oct-parse.h \
+  %reldir%/oct-parse.yy \
+  %reldir%/pt-arg-list.cc \
+  %reldir%/pt-array-list.cc \
+  %reldir%/pt-assign.cc \
+  %reldir%/pt-binop.cc \
+  %reldir%/pt-bp.cc \
+  %reldir%/pt-cbinop.cc \
+  %reldir%/pt-cell.cc \
+  %reldir%/pt-check.cc \
+  %reldir%/pt-classdef.cc \
+  %reldir%/pt-cmd.cc \
+  %reldir%/pt-colon.cc \
+  %reldir%/pt-const.cc \
+  %reldir%/pt-decl.cc \
+  %reldir%/pt-eval.cc \
+  %reldir%/pt-except.cc \
+  %reldir%/pt-exp.cc \
+  %reldir%/pt-fcn-handle.cc \
+  %reldir%/pt-funcall.cc \
+  %reldir%/pt-id.cc \
+  %reldir%/pt-idx.cc \
+  %reldir%/pt-jit.cc \
+  %reldir%/pt-jump.cc \
+  %reldir%/pt-loop.cc \
+  %reldir%/pt-mat.cc \
+  %reldir%/pt-misc.cc \
+  %reldir%/pt-pr-code.cc \
+  %reldir%/pt-select.cc \
+  %reldir%/pt-stmt.cc \
+  %reldir%/pt-tm-const.cc \
+  %reldir%/pt-unop.cc \
+  %reldir%/pt-walk.cc \
+  %reldir%/pt.cc \
+  %reldir%/token.cc
 
 ## Special rules for sources which must be built before rest of compilation.
 
@@ -93,27 +93,27 @@ PARSE_TREE_SRC = \
 ## is missing but sed is not, the exit status of the pipeline
 ## will still be success and we will end up creating an empty
 ## oct-gperf.h file.
-libinterp/parse-tree/oct-gperf.h: libinterp/parse-tree/octave.gperf
+%reldir%/oct-gperf.h: %reldir%/octave.gperf
 	$(AM_V_GEN)rm -f $@-t $@t1 $@ && \
 	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 && \
 	$(SED) -e 's,lookup\[,gperf_lookup[,' -e 's,register ,,g' < $@-t1 > $@-t && \
 	mv $@-t $@ && \
 	rm -f $@-t1
 
-libinterp/parse-tree/oct-parse.yy: libinterp/parse-tree/oct-parse.in.yy
+%reldir%/oct-parse.yy: %reldir%/oct-parse.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
 
 noinst_LTLIBRARIES += \
-  libinterp/parse-tree/libparse-tree.la
+  %reldir%/libparse-tree.la
 
-libinterp_parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
+%canon_reldir%_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)
 
-libinterp_parse_tree_libparse_tree_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS)
+%canon_reldir%_libparse_tree_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS)
 
-libinterp_parse_tree_libparse_tree_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_libparse_tree_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-libinterp_parse_tree_libparse_tree_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+%canon_reldir%_libparse_tree_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \
-  libinterp/parse-tree/oct-parse.in.yy \
-  libinterp/parse-tree/octave.gperf
+  %reldir%/oct-parse.in.yy \
+  %reldir%/octave.gperf

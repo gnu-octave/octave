@@ -1,38 +1,38 @@
 FCN_FILE_DIRS += scripts/statistics/tests
 
-scripts_statistics_tests_FCN_FILES = \
-  scripts/statistics/tests/anova.m \
-  scripts/statistics/tests/bartlett_test.m \
-  scripts/statistics/tests/chisquare_test_homogeneity.m \
-  scripts/statistics/tests/chisquare_test_independence.m \
-  scripts/statistics/tests/cor_test.m \
-  scripts/statistics/tests/f_test_regression.m \
-  scripts/statistics/tests/hotelling_test.m \
-  scripts/statistics/tests/hotelling_test_2.m \
-  scripts/statistics/tests/kolmogorov_smirnov_test.m \
-  scripts/statistics/tests/kolmogorov_smirnov_test_2.m \
-  scripts/statistics/tests/kruskal_wallis_test.m \
-  scripts/statistics/tests/manova.m \
-  scripts/statistics/tests/mcnemar_test.m \
-  scripts/statistics/tests/prop_test_2.m \
-  scripts/statistics/tests/run_test.m \
-  scripts/statistics/tests/sign_test.m \
-  scripts/statistics/tests/t_test.m \
-  scripts/statistics/tests/t_test_2.m \
-  scripts/statistics/tests/t_test_regression.m \
-  scripts/statistics/tests/u_test.m \
-  scripts/statistics/tests/var_test.m \
-  scripts/statistics/tests/welch_test.m \
-  scripts/statistics/tests/wilcoxon_test.m \
-  scripts/statistics/tests/z_test.m \
-  scripts/statistics/tests/z_test_2.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/anova.m \
+  %reldir%/bartlett_test.m \
+  %reldir%/chisquare_test_homogeneity.m \
+  %reldir%/chisquare_test_independence.m \
+  %reldir%/cor_test.m \
+  %reldir%/f_test_regression.m \
+  %reldir%/hotelling_test.m \
+  %reldir%/hotelling_test_2.m \
+  %reldir%/kolmogorov_smirnov_test.m \
+  %reldir%/kolmogorov_smirnov_test_2.m \
+  %reldir%/kruskal_wallis_test.m \
+  %reldir%/manova.m \
+  %reldir%/mcnemar_test.m \
+  %reldir%/prop_test_2.m \
+  %reldir%/run_test.m \
+  %reldir%/sign_test.m \
+  %reldir%/t_test.m \
+  %reldir%/t_test_2.m \
+  %reldir%/t_test_regression.m \
+  %reldir%/u_test.m \
+  %reldir%/var_test.m \
+  %reldir%/welch_test.m \
+  %reldir%/wilcoxon_test.m \
+  %reldir%/z_test.m \
+  %reldir%/z_test_2.m
 
-scripts_statistics_testsdir = $(fcnfiledir)/statistics/tests
+%canon_reldir%dir = $(fcnfiledir)/statistics/tests
 
-scripts_statistics_tests_DATA = $(scripts_statistics_tests_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_statistics_tests_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/statistics/tests/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/statistics/tests/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

@@ -1,30 +1,30 @@
 FCN_FILE_DIRS += \
   scripts/set \
-  scripts/set/private
+  %reldir%/private
 
-scripts_set_PRIVATE_FCN_FILES = scripts/set/private/validsetargs.m
+%canon_reldir%_PRIVATE_FCN_FILES = %reldir%/private/validsetargs.m
 
-scripts_set_FCN_FILES = \
-  scripts/set/intersect.m \
-  scripts/set/ismember.m \
-  scripts/set/powerset.m \
-  scripts/set/setdiff.m \
-  scripts/set/setxor.m \
-  scripts/set/union.m \
-  scripts/set/unique.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/intersect.m \
+  %reldir%/ismember.m \
+  %reldir%/powerset.m \
+  %reldir%/setdiff.m \
+  %reldir%/setxor.m \
+  %reldir%/union.m \
+  %reldir%/unique.m
 
-scripts_setdir = $(fcnfiledir)/set
+%canon_reldir%dir = $(fcnfiledir)/set
 
-scripts_set_DATA = $(scripts_set_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_set_privatedir = $(fcnfiledir)/set/private
+%canon_reldir%_privatedir = $(fcnfiledir)/set/private
 
-scripts_set_private_DATA = $(scripts_set_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_set_FCN_FILES) \
-  $(scripts_set_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/set/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/set/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

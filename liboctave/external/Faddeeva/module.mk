@@ -1,3 +1,3 @@
 EXTERNAL_SOURCES += \
-  liboctave/external/Faddeeva/Faddeeva.cc \
-  liboctave/external/Faddeeva/Faddeeva.hh
+  %reldir%/Faddeeva.cc \
+  %reldir%/Faddeeva.hh

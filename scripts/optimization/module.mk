@@ -1,37 +1,37 @@
 FCN_FILE_DIRS += \
   scripts/optimization \
-  scripts/optimization/private
+  %reldir%/private
 
-scripts_optimization_PRIVATE_FCN_FILES = \
-  scripts/optimization/private/__fdjac__.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__fdjac__.m
 
-scripts_optimization_FCN_FILES = \
-  scripts/optimization/__all_opts__.m \
-  scripts/optimization/fminbnd.m \
-  scripts/optimization/fminsearch.m \
-  scripts/optimization/fminunc.m \
-  scripts/optimization/fsolve.m \
-  scripts/optimization/fzero.m \
-  scripts/optimization/glpk.m \
-  scripts/optimization/lsqnonneg.m \
-  scripts/optimization/optimget.m \
-  scripts/optimization/optimset.m \
-  scripts/optimization/pqpnonneg.m \
-  scripts/optimization/qp.m \
-  scripts/optimization/sqp.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/__all_opts__.m \
+  %reldir%/fminbnd.m \
+  %reldir%/fminsearch.m \
+  %reldir%/fminunc.m \
+  %reldir%/fsolve.m \
+  %reldir%/fzero.m \
+  %reldir%/glpk.m \
+  %reldir%/lsqnonneg.m \
+  %reldir%/optimget.m \
+  %reldir%/optimset.m \
+  %reldir%/pqpnonneg.m \
+  %reldir%/qp.m \
+  %reldir%/sqp.m
 
-scripts_optimizationdir = $(fcnfiledir)/optimization
+%canon_reldir%dir = $(fcnfiledir)/optimization
 
-scripts_optimization_DATA = $(scripts_optimization_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_optimization_privatedir = $(fcnfiledir)/optimization/private
+%canon_reldir%_privatedir = $(fcnfiledir)/optimization/private
 
-scripts_optimization_private_DATA = $(scripts_optimization_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_optimization_FCN_FILES) \
-  $(scripts_optimization_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/optimization/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/optimization/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

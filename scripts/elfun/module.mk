@@ -1,38 +1,38 @@
 FCN_FILE_DIRS += scripts/elfun
 
-scripts_elfun_FCN_FILES = \
-  scripts/elfun/acosd.m \
-  scripts/elfun/acot.m \
-  scripts/elfun/acotd.m \
-  scripts/elfun/acoth.m \
-  scripts/elfun/acsc.m \
-  scripts/elfun/acscd.m \
-  scripts/elfun/acsch.m \
-  scripts/elfun/asec.m \
-  scripts/elfun/asecd.m \
-  scripts/elfun/asech.m \
-  scripts/elfun/asind.m \
-  scripts/elfun/atan2d.m \
-  scripts/elfun/atand.m \
-  scripts/elfun/cosd.m \
-  scripts/elfun/cot.m \
-  scripts/elfun/cotd.m \
-  scripts/elfun/coth.m \
-  scripts/elfun/csc.m \
-  scripts/elfun/cscd.m \
-  scripts/elfun/csch.m \
-  scripts/elfun/sec.m \
-  scripts/elfun/secd.m \
-  scripts/elfun/sech.m \
-  scripts/elfun/sind.m \
-  scripts/elfun/tand.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/acosd.m \
+  %reldir%/acot.m \
+  %reldir%/acotd.m \
+  %reldir%/acoth.m \
+  %reldir%/acsc.m \
+  %reldir%/acscd.m \
+  %reldir%/acsch.m \
+  %reldir%/asec.m \
+  %reldir%/asecd.m \
+  %reldir%/asech.m \
+  %reldir%/asind.m \
+  %reldir%/atan2d.m \
+  %reldir%/atand.m \
+  %reldir%/cosd.m \
+  %reldir%/cot.m \
+  %reldir%/cotd.m \
+  %reldir%/coth.m \
+  %reldir%/csc.m \
+  %reldir%/cscd.m \
+  %reldir%/csch.m \
+  %reldir%/sec.m \
+  %reldir%/secd.m \
+  %reldir%/sech.m \
+  %reldir%/sind.m \
+  %reldir%/tand.m
 
-scripts_elfundir = $(fcnfiledir)/elfun
+%canon_reldir%dir = $(fcnfiledir)/elfun
 
-scripts_elfun_DATA = $(scripts_elfun_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_elfun_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/elfun/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/elfun/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

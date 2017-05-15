@@ -1,118 +1,118 @@
 UTIL_INC = \
-  liboctave/util/action-container.h \
-  liboctave/util/base-list.h \
-  liboctave/util/byte-swap.h \
-  liboctave/util/caseless-str.h \
-  liboctave/util/cmd-edit.h \
-  liboctave/util/cmd-hist.h \
-  liboctave/util/data-conv.h \
-  liboctave/util/functor.h \
-  liboctave/util/glob-match.h \
-  liboctave/util/lo-array-errwarn.h \
-  liboctave/util/lo-array-gripes.h \
-  liboctave/util/lo-cutils.h \
-  liboctave/util/lo-hash.h \
-  liboctave/util/lo-ieee.h \
-  liboctave/util/lo-math.h \
-  liboctave/util/lo-regexp.h \
-  liboctave/util/lo-traits.h \
-  liboctave/util/lo-utils.h \
-  liboctave/util/f77-fcn.h \
-  liboctave/util/lo-error.h \
-  liboctave/util/quit.h \
-  liboctave/util/oct-base64.h \
-  liboctave/util/oct-binmap.h \
-  liboctave/util/oct-cmplx.h \
-  liboctave/util/oct-glob.h \
-  liboctave/util/oct-inttypes-fwd.h \
-  liboctave/util/oct-inttypes.h \
-  liboctave/util/oct-locbuf.h \
-  liboctave/util/oct-mutex.h \
-  liboctave/util/oct-refcount.h \
-  liboctave/util/oct-rl-edit.h \
-  liboctave/util/oct-rl-hist.h \
-  liboctave/util/oct-shlib.h \
-  liboctave/util/oct-sort.h \
-  liboctave/util/oct-string.h \
-  liboctave/util/pathsearch.h \
-  liboctave/util/singleton-cleanup.h \
-  liboctave/util/sparse-sort.h \
-  liboctave/util/sparse-util.h \
-  liboctave/util/str-vec.h \
-  liboctave/util/sun-utils.h \
-  liboctave/util/unwind-prot.h \
-  liboctave/util/url-transfer.h
+  %reldir%/action-container.h \
+  %reldir%/base-list.h \
+  %reldir%/byte-swap.h \
+  %reldir%/caseless-str.h \
+  %reldir%/cmd-edit.h \
+  %reldir%/cmd-hist.h \
+  %reldir%/data-conv.h \
+  %reldir%/functor.h \
+  %reldir%/glob-match.h \
+  %reldir%/lo-array-errwarn.h \
+  %reldir%/lo-array-gripes.h \
+  %reldir%/lo-cutils.h \
+  %reldir%/lo-hash.h \
+  %reldir%/lo-ieee.h \
+  %reldir%/lo-math.h \
+  %reldir%/lo-regexp.h \
+  %reldir%/lo-traits.h \
+  %reldir%/lo-utils.h \
+  %reldir%/f77-fcn.h \
+  %reldir%/lo-error.h \
+  %reldir%/quit.h \
+  %reldir%/oct-base64.h \
+  %reldir%/oct-binmap.h \
+  %reldir%/oct-cmplx.h \
+  %reldir%/oct-glob.h \
+  %reldir%/oct-inttypes-fwd.h \
+  %reldir%/oct-inttypes.h \
+  %reldir%/oct-locbuf.h \
+  %reldir%/oct-mutex.h \
+  %reldir%/oct-refcount.h \
+  %reldir%/oct-rl-edit.h \
+  %reldir%/oct-rl-hist.h \
+  %reldir%/oct-shlib.h \
+  %reldir%/oct-sort.h \
+  %reldir%/oct-string.h \
+  %reldir%/pathsearch.h \
+  %reldir%/singleton-cleanup.h \
+  %reldir%/sparse-sort.h \
+  %reldir%/sparse-util.h \
+  %reldir%/str-vec.h \
+  %reldir%/sun-utils.h \
+  %reldir%/unwind-prot.h \
+  %reldir%/url-transfer.h
 
 NOINSTALL_UTIL_INC = \
-  liboctave/util/kpse.h \
-  liboctave/util/oct-sparse.h
+  %reldir%/kpse.h \
+  %reldir%/oct-sparse.h
 
 UTIL_F77_SRC = \
-  liboctave/util/d1mach.f \
-  liboctave/util/i1mach.f \
-  liboctave/util/r1mach.f
+  %reldir%/d1mach.f \
+  %reldir%/i1mach.f \
+  %reldir%/r1mach.f
 
 UTIL_C_SRC = \
-  liboctave/util/f2c-main.c \
-  liboctave/util/lo-cutils.c \
-  liboctave/util/blaswrap.c \
-  liboctave/util/cquit.c \
-  liboctave/util/f77-fcn.c \
-  liboctave/util/lo-error.c \
-  liboctave/util/oct-rl-edit.c \
-  liboctave/util/oct-rl-hist.c
+  %reldir%/f2c-main.c \
+  %reldir%/lo-cutils.c \
+  %reldir%/blaswrap.c \
+  %reldir%/cquit.c \
+  %reldir%/f77-fcn.c \
+  %reldir%/lo-error.c \
+  %reldir%/oct-rl-edit.c \
+  %reldir%/oct-rl-hist.c
 
 UTIL_SRC = \
-  liboctave/util/cmd-edit.cc \
-  liboctave/util/cmd-hist.cc \
-  liboctave/util/data-conv.cc \
-  liboctave/util/glob-match.cc \
-  liboctave/util/kpse.cc \
-  liboctave/util/lo-array-errwarn.cc \
-  liboctave/util/lo-array-gripes.cc \
-  liboctave/util/lo-hash.cc \
-  liboctave/util/lo-ieee.cc \
-  liboctave/util/lo-regexp.cc \
-  liboctave/util/lo-utils.cc \
-  liboctave/util/f77-extern.cc \
-  liboctave/util/quit.cc \
-  liboctave/util/oct-base64.cc \
-  liboctave/util/oct-glob.cc \
-  liboctave/util/oct-inttypes.cc \
-  liboctave/util/oct-locbuf.cc \
-  liboctave/util/oct-mutex.cc \
-  liboctave/util/oct-shlib.cc \
-  liboctave/util/oct-sparse.cc \
-  liboctave/util/oct-string.cc \
-  liboctave/util/pathsearch.cc \
-  liboctave/util/singleton-cleanup.cc \
-  liboctave/util/sparse-sort.cc \
-  liboctave/util/sparse-util.cc \
-  liboctave/util/str-vec.cc \
-  liboctave/util/unwind-prot.cc \
-  liboctave/util/url-transfer.cc \
+  %reldir%/cmd-edit.cc \
+  %reldir%/cmd-hist.cc \
+  %reldir%/data-conv.cc \
+  %reldir%/glob-match.cc \
+  %reldir%/kpse.cc \
+  %reldir%/lo-array-errwarn.cc \
+  %reldir%/lo-array-gripes.cc \
+  %reldir%/lo-hash.cc \
+  %reldir%/lo-ieee.cc \
+  %reldir%/lo-regexp.cc \
+  %reldir%/lo-utils.cc \
+  %reldir%/f77-extern.cc \
+  %reldir%/quit.cc \
+  %reldir%/oct-base64.cc \
+  %reldir%/oct-glob.cc \
+  %reldir%/oct-inttypes.cc \
+  %reldir%/oct-locbuf.cc \
+  %reldir%/oct-mutex.cc \
+  %reldir%/oct-shlib.cc \
+  %reldir%/oct-sparse.cc \
+  %reldir%/oct-string.cc \
+  %reldir%/pathsearch.cc \
+  %reldir%/singleton-cleanup.cc \
+  %reldir%/sparse-sort.cc \
+  %reldir%/sparse-util.cc \
+  %reldir%/str-vec.cc \
+  %reldir%/unwind-prot.cc \
+  %reldir%/url-transfer.cc \
   $(UTIL_F77_SRC) \
   $(UTIL_C_SRC) \
   $(NOINSTALL_UTIL_INC)
 
 liboctave_EXTRA_DIST += \
-  liboctave/util/d1mach-tst.for
+  %reldir%/d1mach-tst.for
 
 LIBOCTAVE_TEMPLATE_SRC += \
-  liboctave/util/oct-sort.cc
+  %reldir%/oct-sort.cc
 
-noinst_LTLIBRARIES += liboctave/util/libutil.la
+noinst_LTLIBRARIES += %reldir%/libutil.la
 
-liboctave_util_libutil_la_SOURCES = $(UTIL_SRC)
+%canon_reldir%_libutil_la_SOURCES = $(UTIL_SRC)
 
-liboctave_util_libutil_la_CPPFLAGS = \
+%canon_reldir%_libutil_la_CPPFLAGS = \
   $(liboctave_liboctave_la_CPPFLAGS) \
   $(CURL_CPPFLAGS) \
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-liboctave_util_libutil_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
+%canon_reldir%_libutil_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
 
-liboctave_util_libutil_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
+%canon_reldir%_libutil_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
-liboctave_liboctave_la_LIBADD += liboctave/util/libutil.la
+liboctave_liboctave_la_LIBADD += %reldir%/libutil.la

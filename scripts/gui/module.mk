@@ -1,56 +1,56 @@
 FCN_FILE_DIRS += \
   scripts/gui \
-  scripts/gui/private
+  %reldir%/private
 
-scripts_gui_PRIVATE_FCN_FILES = \
-  scripts/gui/private/__file_filter__.m \
-  scripts/gui/private/__fltk_file_filter__.m \
-  scripts/gui/private/__get_funcname__.m \
-  scripts/gui/private/__is_function__.m \
-  scripts/gui/private/__uigetdir_fltk__.m \
-  scripts/gui/private/__uigetfile_fltk__.m \
-  scripts/gui/private/__uiobject_split_args__.m \
-  scripts/gui/private/__uiputfile_fltk__.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__file_filter__.m \
+  %reldir%/private/__fltk_file_filter__.m \
+  %reldir%/private/__get_funcname__.m \
+  %reldir%/private/__is_function__.m \
+  %reldir%/private/__uigetdir_fltk__.m \
+  %reldir%/private/__uigetfile_fltk__.m \
+  %reldir%/private/__uiobject_split_args__.m \
+  %reldir%/private/__uiputfile_fltk__.m
 
-scripts_gui_FCN_FILES = \
-  scripts/gui/dialog.m \
-  scripts/gui/errordlg.m \
-  scripts/gui/guidata.m \
-  scripts/gui/guihandles.m \
-  scripts/gui/helpdlg.m \
-  scripts/gui/inputdlg.m \
-  scripts/gui/listdlg.m \
-  scripts/gui/msgbox.m \
-  scripts/gui/questdlg.m \
-  scripts/gui/uibuttongroup.m \
-  scripts/gui/uicontextmenu.m \
-  scripts/gui/uicontrol.m \
-  scripts/gui/uigetdir.m \
-  scripts/gui/uigetfile.m \
-  scripts/gui/uimenu.m \
-  scripts/gui/uipanel.m \
-  scripts/gui/uipushtool.m \
-  scripts/gui/uiputfile.m \
-  scripts/gui/uiresume.m \
-  scripts/gui/uitoggletool.m \
-  scripts/gui/uitoolbar.m \
-  scripts/gui/uiwait.m \
-  scripts/gui/waitbar.m \
-  scripts/gui/waitforbuttonpress.m \
-  scripts/gui/warndlg.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/dialog.m \
+  %reldir%/errordlg.m \
+  %reldir%/guidata.m \
+  %reldir%/guihandles.m \
+  %reldir%/helpdlg.m \
+  %reldir%/inputdlg.m \
+  %reldir%/listdlg.m \
+  %reldir%/msgbox.m \
+  %reldir%/questdlg.m \
+  %reldir%/uibuttongroup.m \
+  %reldir%/uicontextmenu.m \
+  %reldir%/uicontrol.m \
+  %reldir%/uigetdir.m \
+  %reldir%/uigetfile.m \
+  %reldir%/uimenu.m \
+  %reldir%/uipanel.m \
+  %reldir%/uipushtool.m \
+  %reldir%/uiputfile.m \
+  %reldir%/uiresume.m \
+  %reldir%/uitoggletool.m \
+  %reldir%/uitoolbar.m \
+  %reldir%/uiwait.m \
+  %reldir%/waitbar.m \
+  %reldir%/waitforbuttonpress.m \
+  %reldir%/warndlg.m
 
-scripts_guidir = $(fcnfiledir)/gui
+%canon_reldir%dir = $(fcnfiledir)/gui
 
-scripts_gui_DATA = $(scripts_gui_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_gui_privatedir = $(fcnfiledir)/gui/private
+%canon_reldir%_privatedir = $(fcnfiledir)/gui/private
 
-scripts_gui_private_DATA = $(scripts_gui_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_gui_FCN_FILES) \
-  $(scripts_gui_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/gui/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/gui/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

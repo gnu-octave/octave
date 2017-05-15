@@ -1,65 +1,65 @@
 FCN_FILE_DIRS += \
   scripts/audio \
-  scripts/audio/@audioplayer \
-  scripts/audio/@audiorecorder
+  %reldir%/@audioplayer \
+  %reldir%/@audiorecorder
 
-scripts_audio_FCN_FILES = \
-  scripts/audio/lin2mu.m \
-  scripts/audio/mu2lin.m \
-  scripts/audio/record.m \
-  scripts/audio/sound.m \
-  scripts/audio/soundsc.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/lin2mu.m \
+  %reldir%/mu2lin.m \
+  %reldir%/record.m \
+  %reldir%/sound.m \
+  %reldir%/soundsc.m
 
-scripts_audio_@audioplayer_FCN_FILES = \
-  scripts/audio/@audioplayer/__get_properties__.m \
-  scripts/audio/@audioplayer/audioplayer.m \
-  scripts/audio/@audioplayer/disp.m \
-  scripts/audio/@audioplayer/get.m \
-  scripts/audio/@audioplayer/isplaying.m \
-  scripts/audio/@audioplayer/pause.m  \
-  scripts/audio/@audioplayer/play.m \
-  scripts/audio/@audioplayer/playblocking.m \
-  scripts/audio/@audioplayer/resume.m \
-  scripts/audio/@audioplayer/set.m \
-  scripts/audio/@audioplayer/stop.m \
-  scripts/audio/@audioplayer/subsasgn.m \
-  scripts/audio/@audioplayer/subsref.m
+%canon_reldir%_@audioplayer_FCN_FILES = \
+  %reldir%/@audioplayer/__get_properties__.m \
+  %reldir%/@audioplayer/audioplayer.m \
+  %reldir%/@audioplayer/disp.m \
+  %reldir%/@audioplayer/get.m \
+  %reldir%/@audioplayer/isplaying.m \
+  %reldir%/@audioplayer/pause.m  \
+  %reldir%/@audioplayer/play.m \
+  %reldir%/@audioplayer/playblocking.m \
+  %reldir%/@audioplayer/resume.m \
+  %reldir%/@audioplayer/set.m \
+  %reldir%/@audioplayer/stop.m \
+  %reldir%/@audioplayer/subsasgn.m \
+  %reldir%/@audioplayer/subsref.m
 
-scripts_audio_@audiorecorder_FCN_FILES = \
-  scripts/audio/@audiorecorder/__get_properties__.m \
-  scripts/audio/@audiorecorder/audiorecorder.m \
-  scripts/audio/@audiorecorder/disp.m \
-  scripts/audio/@audiorecorder/get.m \
-  scripts/audio/@audiorecorder/getaudiodata.m \
-  scripts/audio/@audiorecorder/getplayer.m \
-  scripts/audio/@audiorecorder/isrecording.m \
-  scripts/audio/@audiorecorder/pause.m \
-  scripts/audio/@audiorecorder/play.m \
-  scripts/audio/@audiorecorder/record.m \
-  scripts/audio/@audiorecorder/recordblocking.m \
-  scripts/audio/@audiorecorder/resume.m \
-  scripts/audio/@audiorecorder/set.m \
-  scripts/audio/@audiorecorder/stop.m \
-  scripts/audio/@audiorecorder/subsasgn.m \
-  scripts/audio/@audiorecorder/subsref.m
+%canon_reldir%_@audiorecorder_FCN_FILES = \
+  %reldir%/@audiorecorder/__get_properties__.m \
+  %reldir%/@audiorecorder/audiorecorder.m \
+  %reldir%/@audiorecorder/disp.m \
+  %reldir%/@audiorecorder/get.m \
+  %reldir%/@audiorecorder/getaudiodata.m \
+  %reldir%/@audiorecorder/getplayer.m \
+  %reldir%/@audiorecorder/isrecording.m \
+  %reldir%/@audiorecorder/pause.m \
+  %reldir%/@audiorecorder/play.m \
+  %reldir%/@audiorecorder/record.m \
+  %reldir%/@audiorecorder/recordblocking.m \
+  %reldir%/@audiorecorder/resume.m \
+  %reldir%/@audiorecorder/set.m \
+  %reldir%/@audiorecorder/stop.m \
+  %reldir%/@audiorecorder/subsasgn.m \
+  %reldir%/@audiorecorder/subsref.m
 
-scripts_audiodir = $(fcnfiledir)/audio
+%canon_reldir%dir = $(fcnfiledir)/audio
 
-scripts_audio_DATA = $(scripts_audio_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_audio_@audioplayerdir = $(fcnfiledir)/audio/@audioplayer
+%canon_reldir%_@audioplayerdir = $(fcnfiledir)/audio/@audioplayer
 
-scripts_audio_@audioplayer_DATA = $(scripts_audio_@audioplayer_FCN_FILES)
+%canon_reldir%_@audioplayer_DATA = $(%canon_reldir%_@audioplayer_FCN_FILES)
 
-scripts_audio_@audiorecorderdir = $(fcnfiledir)/audio/@audiorecorder
+%canon_reldir%_@audiorecorderdir = $(fcnfiledir)/audio/@audiorecorder
 
-scripts_audio_@audiorecorder_DATA = $(scripts_audio_@audiorecorder_FCN_FILES)
+%canon_reldir%_@audiorecorder_DATA = $(%canon_reldir%_@audiorecorder_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_audio_FCN_FILES) \
-  $(scripts_audio_@audioplayer_FCN_FILES) \
-  $(scripts_audio_@audiorecorder_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_@audioplayer_FCN_FILES) \
+  $(%canon_reldir%_@audiorecorder_FCN_FILES)
 
-PKG_ADD_FILES += scripts/audio/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/audio/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

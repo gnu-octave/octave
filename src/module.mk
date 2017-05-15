@@ -1,8 +1,8 @@
-src_EXTRA_DIST =
+%canon_reldir%_EXTRA_DIST =
 
-src_CLEANFILES =
-src_DISTCLEANFILES =
-src_MAINTAINERCLEANFILES =
+%canon_reldir%_CLEANFILES =
+%canon_reldir%_DISTCLEANFILES =
+%canon_reldir%_MAINTAINERCLEANFILES =
 
 ## Search local directories before those specified by the user.
 
@@ -18,35 +18,35 @@ SRC_DIR_CPPFLAGS = \
   -I$(srcdir)/src
 
 EXTRA_DIST += \
-  src/main.in.cc \
-  src/mkoctfile.in.cc \
-  src/octave-build-info.in.cc \
-  src/octave-config.in.cc
+  %reldir%/main.in.cc \
+  %reldir%/mkoctfile.in.cc \
+  %reldir%/octave-build-info.in.cc \
+  %reldir%/octave-config.in.cc
 
 bin_PROGRAMS += \
-  src/mkoctfile \
-  src/octave \
-  src/octave-cli \
-  src/octave-config
+  %reldir%/mkoctfile \
+  %reldir%/octave \
+  %reldir%/octave-cli \
+  %reldir%/octave-config
 
 OCTAVE_INTERPRETER_TARGETS += \
   $(bin_PROGRAMS) \
   $(OCTAVE_VERSION_LINKS)
 
 octinclude_HEADERS += \
-  src/octave-build-info.h
+  %reldir%/octave-build-info.h
 
 noinst_HEADERS += \
-  src/display-available.h \
-  src/shared-fcns.h
+  %reldir%/display-available.h \
+  %reldir%/shared-fcns.h
 
-OCTAVE_VERSION_LINKS += src/octave-cli-$(version)$(EXEEXT)
+OCTAVE_VERSION_LINKS += %reldir%/octave-cli-$(version)$(EXEEXT)
 
 if AMCOND_BUILD_QT_GUI
-  archlib_PROGRAMS += src/octave-gui
-  OCTAVE_VERSION_LINKS += src/octave-gui-$(version)$(EXEEXT)
+  archlib_PROGRAMS += %reldir%/octave-gui
+  OCTAVE_VERSION_LINKS += %reldir%/octave-gui-$(version)$(EXEEXT)
 
-  OCTAVE_INTERPRETER_TARGETS += src/octave-gui$(EXEEXT)
+  OCTAVE_INTERPRETER_TARGETS += %reldir%/octave-gui$(EXEEXT)
 endif
 
 OCTAVE_CORE_LIBS = \
@@ -54,18 +54,18 @@ OCTAVE_CORE_LIBS = \
   liboctave/liboctave.la \
   libgnu/libgnu.la
 
-nodist_src_octave_SOURCES = src/main.cc
+nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
 
-src_octave_SOURCES = src/display-available.c
+%canon_reldir%_octave_SOURCES = %reldir%/display-available.c
 
-src_octave_LDADD = \
+%canon_reldir%_octave_LDADD = \
   liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la \
   $(X11_LIBS) \
   $(CARBON_LIBS) \
   $(GNULIB_LINK_DEPS)
 
-src_octave_LDFLAGS = \
+%canon_reldir%_octave_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
   $(WARN_LDFLAGS)
@@ -74,93 +74,93 @@ if AMCOND_BUILD_QT_GUI
   OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_QT_GUI
 endif
 
-src_octave_CPPFLAGS = \
+%canon_reldir%_octave_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-src_octave_CXXFLAGS = \
+%canon_reldir%_octave_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(WARN_CXXFLAGS)
 
-src_octave_cli_SOURCES = src/main-cli.cc
-nodist_src_octave_cli_SOURCES = src/octave-build-info.cc
+%canon_reldir%_octave_cli_SOURCES = %reldir%/main-cli.cc
+nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 
-src_octave_cli_LDADD = \
+%canon_reldir%_octave_cli_LDADD = \
   $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_LINK_DEPS)
 
-src_octave_cli_LDFLAGS = \
+%canon_reldir%_octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-src_octave_cli_CPPFLAGS = \
+%canon_reldir%_octave_cli_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-src_octave_cli_CXXFLAGS = \
+%canon_reldir%_octave_cli_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(WARN_CXXFLAGS)
 
 if AMCOND_BUILD_QT_GUI
-  src_octave_gui_SOURCES = src/main-gui.cc
-  nodist_src_octave_gui_SOURCES = src/octave-build-info.cc
+  %canon_reldir%_octave_gui_SOURCES = %reldir%/main-gui.cc
+  nodist_%canon_reldir%_octave_gui_SOURCES = %reldir%/octave-build-info.cc
   OCTAVE_GUI_LIBS = libgui/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(srcdir)/libgui -Ilibgui/src -I$(srcdir)/libgui/src
 endif
 
-src_octave_gui_CPPFLAGS = \
+%canon_reldir%_octave_gui_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_GUI_CPPFLAGS)
 
-src_octave_gui_LDADD = \
+%canon_reldir%_octave_gui_LDADD = \
   $(OCTAVE_GUI_LIBS) \
   $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_GUI_LINK_DEPS)
 
-src_octave_gui_LDFLAGS = \
+%canon_reldir%_octave_gui_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_GUI_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-src_octave_gui_CXXFLAGS = \
+%canon_reldir%_octave_gui_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(WARN_CXXFLAGS)
 
-src_mkoctfile_SOURCES =
+%canon_reldir%_mkoctfile_SOURCES =
 
-nodist_src_mkoctfile_SOURCES = src/mkoctfile.cc
+nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
 
-src_mkoctfile_LDADD = \
+%canon_reldir%_mkoctfile_LDADD = \
   liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la $(LIBS)
 
-src_mkoctfile_CPPFLAGS = \
+%canon_reldir%_mkoctfile_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-src_mkoctfile_CXXFLAGS = \
+%canon_reldir%_mkoctfile_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(WARN_CXXFLAGS)
 
-src_octave_config_SOURCES =
+%canon_reldir%_octave_config_SOURCES =
 
-nodist_src_octave_config_SOURCES = src/octave-config.cc
+nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
 
-src_octave_config_LDADD = \
+%canon_reldir%_octave_config_LDADD = \
   libinterp/corefcn/libcorefcn.la \
   libgnu/libgnu.la \
   $(LIBS)
 
-src_octave_config_CPPFLAGS = \
+%canon_reldir%_octave_config_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-src_octave_config_CXXFLAGS = \
+%canon_reldir%_octave_config_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(WARN_CXXFLAGS)
 
-DIRSTAMP_FILES += src/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 mostlyclean-local: src-mostlyclean-local
 .PHONY: src-mostlyclean-local
@@ -169,22 +169,22 @@ if AMCOND_CROSS_TOOLS
 
 ## Building cross mkoctfile.
 
-OCTAVE_CROSS_TOOLS += src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT)
+OCTAVE_CROSS_TOOLS += %reldir%/$(host_triplet)-mkoctfile$(BUILD_EXEEXT)
 
-src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): src/$(host_triplet)-mkoctfile.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-mkoctfile.cc
+%reldir%/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): %reldir%/$(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o %reldir%/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src %reldir%/$(host_triplet)-mkoctfile.cc
 
-src/$(host_triplet)-mkoctfile.cc: src/mkoctfile.in.cc build-aux/subst-cross-config-vals.sh | src/$(octave_dirstamp)
+%reldir%/$(host_triplet)-mkoctfile.cc: %reldir%/mkoctfile.in.cc build-aux/subst-cross-config-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-cross-config-vals.sh)
 
 ## Building cross octave-config.
 
-OCTAVE_CROSS_TOOLS += src/$(host_triplet)-octave-config$(BUILD_EXEEXT)
+OCTAVE_CROSS_TOOLS += %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 
-src/$(host_triplet)-octave-config$(BUILD_EXEEXT): src/$(host_triplet)-octave-config.cc
-	$(BUILD_CXX) -o src/$(host_triplet)-octave-config$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src src/$(host_triplet)-octave-config.cc
+%reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT): %reldir%/$(host_triplet)-octave-config.cc
+	$(BUILD_CXX) -o %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src %reldir%/$(host_triplet)-octave-config.cc
 
-src/$(host_triplet)-octave-config.cc: src/octave-config.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirstamp)
+%reldir%/$(host_triplet)-octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
 src-mostlyclean-local:
@@ -196,16 +196,16 @@ src-mostlyclean-local:
 
 endif
 
-src/octave-config.cc: src/octave-config.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirstamp)
+%reldir%/octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
-src/mkoctfile.cc: src/mkoctfile.in.cc build-aux/subst-config-vals.sh | src/$(octave_dirstamp)
+%reldir%/mkoctfile.cc: %reldir%/mkoctfile.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-src/main.cc: src/main.in.cc build-aux/subst-default-vals.sh | src/$(octave_dirstamp)
+%reldir%/main.cc: %reldir%/main.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
-src/octave-build-info.cc: src/octave-build-info.in.cc HG-ID | src/$(octave_dirstamp)
+%reldir%/octave-build-info.cc: %reldir%/octave-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)
 
 ALL_LOCAL_TARGETS += $(OCTAVE_CROSS_TOOLS)
@@ -231,30 +231,30 @@ remove-version-links:
 ## We need these filenames in the build tree because the wrapper
 ## program (main.cc) will try to invoke the versioned binaries.
 
-src/octave-cli-$(version)$(EXEEXT): src/octave-cli$(EXEEXT)
+%reldir%/octave-cli-$(version)$(EXEEXT): %reldir%/octave-cli$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
 	cd $(@D) && $(LN_S) $(<F) $(@F)
 
-src/octave-gui-$(version)$(EXEEXT): src/octave-gui$(EXEEXT)
+%reldir%/octave-gui-$(version)$(EXEEXT): %reldir%/octave-gui$(EXEEXT)
 	$(AM_V_GEN)rm -f $@ && \
 	cd $(@D) && $(LN_S) $(<F) $(@F)
 
-src_CLEANFILES += \
+%canon_reldir%_CLEANFILES += \
   $(OCTAVE_VERSION_LINKS) \
-  src/main.cc \
-  src/mkoctfile.cc \
-  src/octave-build-info.cc \
-  src/octave-config.cc
+  %reldir%/main.cc \
+  %reldir%/mkoctfile.cc \
+  %reldir%/octave-build-info.cc \
+  %reldir%/octave-config.cc
 
-CLEANFILES += $(src_CLEANFILES)
-DISTCLEANFILES += $(src_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(src_MAINTAINERCLEANFILES)
+CLEANFILES += $(%canon_reldir%_CLEANFILES)
+DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
 
 src-clean:
-	rm -f $(src_CLEANFILES)
+	rm -f $(%canon_reldir%_CLEANFILES)
 
 src-distclean: src-clean
-	rm -f $(src_DISTCLEANFILES)
+	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
 src-maintainer-clean: src-distclean
-	rm -f $(src_MAINTAINERCLEANFILES)
+	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)

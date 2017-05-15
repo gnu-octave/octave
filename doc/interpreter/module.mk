@@ -1,23 +1,23 @@
 if AMCOND_BUILD_DOCS
 
 GRAPH_PROP_TEXI_SRC = \
-  doc/interpreter/plot-axesproperties.texi \
-  doc/interpreter/plot-figureproperties.texi \
-  doc/interpreter/plot-imageproperties.texi \
-  doc/interpreter/plot-lightproperties.texi \
-  doc/interpreter/plot-lineproperties.texi \
-  doc/interpreter/plot-patchproperties.texi \
-  doc/interpreter/plot-rootproperties.texi \
-  doc/interpreter/plot-surfaceproperties.texi \
-  doc/interpreter/plot-textproperties.texi \
-  doc/interpreter/plot-uimenuproperties.texi \
-  doc/interpreter/plot-uibuttongroupproperties.texi \
-  doc/interpreter/plot-uicontextmenuproperties.texi \
-  doc/interpreter/plot-uipanelproperties.texi \
-  doc/interpreter/plot-uicontrolproperties.texi \
-  doc/interpreter/plot-uitoolbarproperties.texi \
-  doc/interpreter/plot-uipushtoolproperties.texi \
-  doc/interpreter/plot-uitoggletoolproperties.texi
+  %reldir%/plot-axesproperties.texi \
+  %reldir%/plot-figureproperties.texi \
+  %reldir%/plot-imageproperties.texi \
+  %reldir%/plot-lightproperties.texi \
+  %reldir%/plot-lineproperties.texi \
+  %reldir%/plot-patchproperties.texi \
+  %reldir%/plot-rootproperties.texi \
+  %reldir%/plot-surfaceproperties.texi \
+  %reldir%/plot-textproperties.texi \
+  %reldir%/plot-uimenuproperties.texi \
+  %reldir%/plot-uibuttongroupproperties.texi \
+  %reldir%/plot-uicontextmenuproperties.texi \
+  %reldir%/plot-uipanelproperties.texi \
+  %reldir%/plot-uicontrolproperties.texi \
+  %reldir%/plot-uitoolbarproperties.texi \
+  %reldir%/plot-uipushtoolproperties.texi \
+  %reldir%/plot-uitoggletoolproperties.texi
 
 $(GRAPH_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS)
 
@@ -27,62 +27,62 @@ define gen-propdoc-texi
   mv $@-t $@
 endef
 
-doc/interpreter/plot-axesproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-axesproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,axes)
 
-doc/interpreter/plot-figureproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-figureproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,figure)
 
-doc/interpreter/plot-imageproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-imageproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,image)
 
-doc/interpreter/plot-lightproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-lightproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,light)
 
-doc/interpreter/plot-lineproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-lineproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,line)
 
-doc/interpreter/plot-patchproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-patchproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,patch)
 
-doc/interpreter/plot-rootproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-rootproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,root)
 
-doc/interpreter/plot-surfaceproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-surfaceproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,surface)
 
-doc/interpreter/plot-textproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-textproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,text)
 
-doc/interpreter/plot-uimenuproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uimenuproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uimenu)
 
-doc/interpreter/plot-uibuttongroupproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uibuttongroupproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uibuttongroup)
 
-doc/interpreter/plot-uicontextmenuproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uicontextmenuproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontextmenu)
 
-doc/interpreter/plot-uipanelproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uipanelproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uipanel)
 
-doc/interpreter/plot-uicontrolproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uicontrolproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontrol)
 
-doc/interpreter/plot-uitoolbarproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uitoolbarproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoolbar)
 
-doc/interpreter/plot-uipushtoolproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uipushtoolproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uipushtool)
 
-doc/interpreter/plot-uitoggletoolproperties.texi: doc/interpreter/genpropdoc.m
+%reldir%/plot-uitoggletoolproperties.texi: %reldir%/genpropdoc.m
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoggletool)
 
 dist_man_MANS = \
-  doc/interpreter/mkoctfile.1 \
-  doc/interpreter/octave-cli.1 \
-  doc/interpreter/octave-config.1 \
-  doc/interpreter/octave.1
+  %reldir%/mkoctfile.1 \
+  %reldir%/octave-cli.1 \
+  %reldir%/octave-config.1 \
+  %reldir%/octave.1
 
 BUILT_DOC_IMAGES += \
   $(BUILT_DOC_IMAGES_EPS) \
@@ -100,102 +100,102 @@ DOC_IMAGES += \
 
 $(BUILT_DOC_IMAGES): | $(OCTAVE_INTERPRETER_TARGETS)
 
-HTMLDIR_IMAGES = $(patsubst doc/interpreter/%.png, doc/interpreter/octave.html/%.png, $(DOC_IMAGES_PNG))
+HTMLDIR_IMAGES = $(patsubst %reldir%/%.png, %reldir%/octave.html/%.png, $(DOC_IMAGES_PNG))
 
 LOGOS = \
-  doc/interpreter/octave_logo.eps \
-  doc/interpreter/octave_logo.pdf
+  %reldir%/octave_logo.eps \
+  %reldir%/octave_logo.pdf
 
-DOC_IMAGES_EPS += doc/interpreter/octave_logo.eps
-DOC_IMAGES_PDF += doc/interpreter/octave_logo.pdf
+DOC_IMAGES_EPS += %reldir%/octave_logo.eps
+DOC_IMAGES_PDF += %reldir%/octave_logo.pdf
 
 MUNGED_TEXI_SRC = \
-  doc/interpreter/arith.texi \
-  doc/interpreter/audio.texi \
-  doc/interpreter/basics.texi \
-  doc/interpreter/bugs.texi \
-  doc/interpreter/container.texi \
-  doc/interpreter/cp-idx.texi \
-  doc/interpreter/data.texi \
-  doc/interpreter/debug.texi \
-  doc/interpreter/diffeq.texi \
-  doc/interpreter/diagperm.texi \
-  doc/interpreter/external.texi \
-  doc/interpreter/errors.texi \
-  doc/interpreter/eval.texi \
-  doc/interpreter/expr.texi \
-  doc/interpreter/fn-idx.texi \
-  doc/interpreter/func.texi \
-  doc/interpreter/geometry.texi \
-  doc/interpreter/gui.texi \
-  doc/interpreter/gpl.texi \
-  doc/interpreter/grammar.texi \
-  doc/interpreter/image.texi \
-  doc/interpreter/install.texi \
-  doc/interpreter/interp.texi \
-  doc/interpreter/intro.texi \
-  doc/interpreter/io.texi \
-  doc/interpreter/linalg.texi \
-  doc/interpreter/matrix.texi \
-  doc/interpreter/nonlin.texi \
-  doc/interpreter/numbers.texi \
-  doc/interpreter/obsolete.texi \
-  doc/interpreter/oop.texi \
-  doc/interpreter/op-idx.texi \
-  doc/interpreter/optim.texi \
-  doc/interpreter/package.texi \
-  doc/interpreter/plot.texi \
-  doc/interpreter/poly.texi \
-  doc/interpreter/preface.texi \
-  doc/interpreter/quad.texi \
-  doc/interpreter/set.texi \
-  doc/interpreter/signal.texi \
-  doc/interpreter/sparse.texi \
-  doc/interpreter/stats.texi \
-  doc/interpreter/stmt.texi \
-  doc/interpreter/strings.texi \
-  doc/interpreter/system.texi \
-  doc/interpreter/testfun.texi \
-  doc/interpreter/var.texi \
-  doc/interpreter/vectorize.texi
+  %reldir%/arith.texi \
+  %reldir%/audio.texi \
+  %reldir%/basics.texi \
+  %reldir%/bugs.texi \
+  %reldir%/container.texi \
+  %reldir%/cp-idx.texi \
+  %reldir%/data.texi \
+  %reldir%/debug.texi \
+  %reldir%/diffeq.texi \
+  %reldir%/diagperm.texi \
+  %reldir%/external.texi \
+  %reldir%/errors.texi \
+  %reldir%/eval.texi \
+  %reldir%/expr.texi \
+  %reldir%/fn-idx.texi \
+  %reldir%/func.texi \
+  %reldir%/geometry.texi \
+  %reldir%/gui.texi \
+  %reldir%/gpl.texi \
+  %reldir%/grammar.texi \
+  %reldir%/image.texi \
+  %reldir%/install.texi \
+  %reldir%/interp.texi \
+  %reldir%/intro.texi \
+  %reldir%/io.texi \
+  %reldir%/linalg.texi \
+  %reldir%/matrix.texi \
+  %reldir%/nonlin.texi \
+  %reldir%/numbers.texi \
+  %reldir%/obsolete.texi \
+  %reldir%/oop.texi \
+  %reldir%/op-idx.texi \
+  %reldir%/optim.texi \
+  %reldir%/package.texi \
+  %reldir%/plot.texi \
+  %reldir%/poly.texi \
+  %reldir%/preface.texi \
+  %reldir%/quad.texi \
+  %reldir%/set.texi \
+  %reldir%/signal.texi \
+  %reldir%/sparse.texi \
+  %reldir%/stats.texi \
+  %reldir%/stmt.texi \
+  %reldir%/strings.texi \
+  %reldir%/system.texi \
+  %reldir%/testfun.texi \
+  %reldir%/var.texi \
+  %reldir%/vectorize.texi
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
 BUILT_OCTAVE_TEXI_SRC = \
-  doc/interpreter/contributors.texi \
+  %reldir%/contributors.texi \
   $(GRAPH_PROP_TEXI_SRC) \
   $(MUNGED_TEXI_SRC)
 
 info_TEXINFOS += \
-  doc/interpreter/octave.texi
+  %reldir%/octave.texi
 
 octave_TEXINFOS = \
   $(BUILT_OCTAVE_TEXI_SRC)
 
-INFO_DEPS += $(srcdir)/doc/interpreter/octave.info
-DVIS += doc/interpreter/octave.dvi
-PDFS += doc/interpreter/octave.pdf
-PSS += doc/interpreter/octave.ps
-HTMLS += doc/interpreter/octave.html
+INFO_DEPS += $(srcdir)/%reldir%/octave.info
+DVIS += %reldir%/octave.dvi
+PDFS += %reldir%/octave.pdf
+PSS += %reldir%/octave.ps
+HTMLS += %reldir%/octave.html
 
 ## As of version 1.14.1, automake does not seem to generate
 ## rules for DVI, PDF, or HTML output that work for us when
 ## there are additional dependencies, so we include our own
 ## versions of the rules here.
 
-OCTAVE_HTML_DIR = doc/interpreter/octave.html
+OCTAVE_HTML_DIR = %reldir%/octave.html
 OCTAVE_HTML_TMP_DIR = $(OCTAVE_HTML_DIR:.html=.htp)
 OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 
-OCTAVE_CSS = doc/interpreter/octave.css
+OCTAVE_CSS = %reldir%/octave.css
 HTMLDIR_CSS = $(OCTAVE_HTML_DIR)/octave.css
 
-$(srcdir)/doc/interpreter/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
-doc/interpreter/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
-doc/interpreter/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
+$(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
+%reldir%/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
+%reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
 
-$(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi
+$(srcdir)/%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	am__cwd=`pwd` && $(am__cd) $(srcdir) && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -206,7 +206,7 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 	else :; fi && \
 	cd "$$am__cwd"; \
 	if $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
-	 -o $@ $(srcdir)/doc/interpreter/octave.texi; \
+	 -o $@ $(srcdir)/%reldir%/octave.texi; \
 	then \
 	  rc=0; \
 	  $(am__cd) $(srcdir); \
@@ -217,26 +217,26 @@ $(srcdir)/doc/interpreter/octave.info: doc/interpreter/octave.texi $(srcdir)/doc
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-doc/interpreter/octave.dvi: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
+%reldir%/octave.dvi: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi | %reldir%/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(srcdir)/doc/interpreter' \
 	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
-	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
+	`test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi
 
-doc/interpreter/octave.pdf: doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
+%reldir%/octave.pdf: %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi | %reldir%/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
 	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
-	`test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi
+	`test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi
 
-doc/interpreter/octave.html: $(OCTAVE_HTML_STAMP)
+%reldir%/octave.html: $(OCTAVE_HTML_STAMP)
 
-$(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/version-octave.texi | doc/interpreter/$(am__dirstamp)
+$(OCTAVE_HTML_STAMP): %reldir%/octave.texi $(srcdir)/%reldir%/version-octave.texi | %reldir%/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(OCTAVE_HTML_DIR)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) \
 	 -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
 	 --css-ref=octave.css \
-	 -o $(OCTAVE_HTML_TMP_DIR) `test -f 'doc/interpreter/octave.texi' || echo '$(abs_top_srcdir)/'`doc/interpreter/octave.texi; \
+	 -o $(OCTAVE_HTML_TMP_DIR) `test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi; \
 	then \
 	  rm -rf $(OCTAVE_HTML_DIR) && \
 	  mv $(OCTAVE_HTML_TMP_DIR) $(OCTAVE_HTML_DIR) && \
@@ -245,14 +245,14 @@ $(OCTAVE_HTML_STAMP): doc/interpreter/octave.texi $(srcdir)/doc/interpreter/vers
 	  rm -rf $(OCTAVE_HTML_TMP_DIR); exit 1; \
 	fi
 
-$(HTMLDIR_IMAGES) $(HTMLDIR_CSS) : doc/interpreter/octave.html/%: doc/interpreter/% $(OCTAVE_HTML_STAMP)
+$(HTMLDIR_IMAGES) $(HTMLDIR_CSS) : %reldir%/octave.html/%: %reldir%/% $(OCTAVE_HTML_STAMP)
 	$(AM_V_GEN)cp $< $@
 
 DOC_TARGETS += \
-  $(srcdir)/doc/interpreter/octave.info \
-  doc/interpreter/doc-cache \
-  doc/interpreter/octave.ps \
-  doc/interpreter/octave.pdf \
+  $(srcdir)/%reldir%/octave.info \
+  %reldir%/doc-cache \
+  %reldir%/octave.ps \
+  %reldir%/octave.pdf \
   $(OCTAVE_HTML_STAMP) \
   $(HTMLDIR_IMAGES) \
   $(HTMLDIR_CSS)
@@ -262,13 +262,13 @@ DOC_TARGETS += \
 
 doc_EXTRA_DIST += \
   $(BUILT_OCTAVE_TEXI_SRC) \
-  $(srcdir)/doc/interpreter/octave.info \
-  doc/interpreter/TODO \
-  doc/interpreter/doc-cache \
-  doc/interpreter/octave.dvi \
-  doc/interpreter/octave.ps \
-  doc/interpreter/octave.pdf \
-  doc/interpreter/octave.html \
+  $(srcdir)/%reldir%/octave.info \
+  %reldir%/TODO \
+  %reldir%/doc-cache \
+  %reldir%/octave.dvi \
+  %reldir%/octave.ps \
+  %reldir%/octave.pdf \
+  %reldir%/octave.html \
   $(HTMLDIR_IMAGES) \
   $(OCTAVE_CSS) \
   $(HTMLDIR_CSS)
@@ -285,54 +285,54 @@ $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
 
 ## These two texi files have an additional dependency through the
 ## @EXAMPLEFILE macro.
-doc/interpreter/oop.texi: $(examples_code_SRC)
-doc/interpreter/external.texi: $(examples_code_SRC)
+%reldir%/oop.texi: $(examples_code_SRC)
+%reldir%/external.texi: $(examples_code_SRC)
 
-%.texi : %.txi doc/interpreter/munge-texi.pl | doc/interpreter/$(octave_dirstamp)
+%.texi : %.txi %reldir%/munge-texi.pl | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(srcdir)/doc/interpreter/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t && \
+	$(PERL) $(srcdir)/%reldir%/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t && \
 	mv $@-t $@
 
-doc/interpreter/contributors.texi: doc/interpreter/contributors.in | doc/interpreter/$(octave_dirstamp)
+%reldir%/contributors.texi: %reldir%/contributors.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(AWK) -f $(srcdir)/doc/interpreter/mkcontrib.awk $(srcdir)/doc/interpreter/contributors.in > $@-t && \
+	$(AWK) -f $(srcdir)/%reldir%/mkcontrib.awk $(srcdir)/%reldir%/contributors.in > $@-t && \
 	mv $@-t $@
 
-AUTHORS: doc/interpreter/preface.texi doc/interpreter/contributors.texi | doc/interpreter/$(octave_dirstamp)
+AUTHORS: %reldir%/preface.texi %reldir%/contributors.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
-	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/doc/interpreter/contributors.texi ] && [ ! -f doc/interpreter/contributors.texi ]; then \
-		cp $(srcdir)/doc/interpreter/contributors.texi doc/interpreter/contributors.texi; \
-		touch -r $(srcdir)/doc/interpreter/contributors.texi doc/interpreter/contributors.texi; \
+	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/%reldir%/contributors.texi ] && [ ! -f %reldir%/contributors.texi ]; then \
+		cp $(srcdir)/%reldir%/contributors.texi %reldir%/contributors.texi; \
+		touch -r $(srcdir)/%reldir%/contributors.texi %reldir%/contributors.texi; \
 	fi && \
-	$(MAKEINFO) -D AUTHORSONLY -I $(srcdir)/doc/interpreter/ \
+	$(MAKEINFO) -D AUTHORSONLY -I $(srcdir)/%reldir%/ \
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
-BUGS: doc/interpreter/bugs.texi | doc/interpreter/$(octave_dirstamp)
+BUGS: %reldir%/bugs.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D BUGSONLY -I $(srcdir)/doc/interpreter \
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
-INSTALL.OCTAVE: doc/interpreter/install.texi | doc/interpreter/$(octave_dirstamp)
+INSTALL.OCTAVE: %reldir%/install.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -f $@-t $@ && \
 	$(MAKEINFO) -D INSTALLONLY -I $(srcdir)/doc/interpreter \
 	  --no-validate --no-headers --no-split --output $@-t $< && \
 	mv $@-t $@
 
 doc_EXTRA_DIST += \
-  doc/interpreter/config-images.sh \
-  doc/interpreter/contributors.in \
-  doc/interpreter/doc-cache \
-  doc/interpreter/genpropdoc.m \
-  doc/interpreter/graphics_properties.mk \
-  doc/interpreter/images \
-  doc/interpreter/images.awk \
-  doc/interpreter/images.mk \
-  doc/interpreter/macros.texi \
-  doc/interpreter/mk-doc-cache.pl \
-  doc/interpreter/mkcontrib.awk \
-  doc/interpreter/munge-texi.pl \
+  %reldir%/config-images.sh \
+  %reldir%/contributors.in \
+  %reldir%/doc-cache \
+  %reldir%/genpropdoc.m \
+  %reldir%/graphics_properties.mk \
+  %reldir%/images \
+  %reldir%/images.awk \
+  %reldir%/images.mk \
+  %reldir%/macros.texi \
+  %reldir%/mk-doc-cache.pl \
+  %reldir%/mkcontrib.awk \
+  %reldir%/munge-texi.pl \
   $(DOC_IMAGES) \
   $(DOC_IMAGES_SRC) \
   $(LOGOS) \
@@ -346,11 +346,11 @@ doc_MAINTAINERCLEANFILES += \
 ## The TeX software suite is used to create both PDF and PS output formats.
 ## In order to avoid race conditions between simultaneous TeX commands, the
 ## PDF and PS builds are forced to run serially through the following rule.
-doc/interpreter/octave.pdf: doc/interpreter/octave.ps
+%reldir%/octave.pdf: %reldir%/octave.ps
 
 endif
 
-DIRSTAMP_FILES += doc/interpreter/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 ## The doc-cache file can be built without TeX but it does require
 ## makeinfo, but that is needed to display function docstrings at the
@@ -358,26 +358,26 @@ DIRSTAMP_FILES += doc/interpreter/$(octave_dirstamp)
 ## to display docstrings at the command line.
 
 doc_MAINTAINERCLEANFILES += \
-  doc/interpreter/doc-cache
+  %reldir%/doc-cache
 
 octetc_DATA += \
-  doc/interpreter/doc-cache \
-  doc/interpreter/macros.texi
+  %reldir%/doc-cache \
+  %reldir%/macros.texi
 
-doc/interpreter/doc-cache: $(DOCSTRING_FILES) doc/interpreter/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) doc/interpreter/$(octave_dirstamp)
+%reldir%/doc-cache: $(DOCSTRING_FILES) %reldir%/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(srcdir)/doc/interpreter/mk-doc-cache.pl $(srcdir) $(srcdir)/doc/interpreter/macros.texi $(DOCSTRING_FILES) > $@-t && \
+	$(PERL) $(srcdir)/%reldir%/mk-doc-cache.pl $(srcdir) $(srcdir)/%reldir%/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
-doc/interpreter/undocumented_list:
+%reldir%/undocumented_list:
 	rm -f $@-t $@
 	-cd $(srcdir)/doc/interpreter; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
 	mv $@-t $@
-.PHONY: doc/interpreter/undocumented_list
+.PHONY: %reldir%/undocumented_list
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 
-%.scheck: %.texi | doc/interpreter/$(octave_dirstamp)
+%.scheck: %.texi | %reldir%/$(octave_dirstamp)
 	cd $(srcdir)/doc/interpreter; ./doccheck/spellcheck $(<F) > $(@F)-t
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@
@@ -395,5 +395,5 @@ spellcheck: $(SPELLCHECK_FILES)
 .PHONY: spellcheck
 
 doc-interpreter-clean:
-	rm -rf doc/interpreter/octave.t2d
-	rm -rf doc/interpreter/octave.t2p
+	rm -rf %reldir%/octave.t2d
+	rm -rf %reldir%/octave.t2p

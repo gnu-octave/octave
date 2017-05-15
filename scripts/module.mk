@@ -1,81 +1,81 @@
-scripts_EXTRA_DIST =
+%canon_reldir%_EXTRA_DIST =
 
-scripts_CLEANFILES =
-scripts_DISTCLEANFILES =
-scripts_MAINTAINERCLEANFILES =
+%canon_reldir%_CLEANFILES =
+%canon_reldir%_DISTCLEANFILES =
+%canon_reldir%_MAINTAINERCLEANFILES =
 
-include scripts/+containers/module.mk
-include scripts/audio/module.mk
-include scripts/deprecated/module.mk
-include scripts/elfun/module.mk
-include scripts/general/module.mk
-include scripts/geometry/module.mk
-include scripts/gui/module.mk
-include scripts/help/module.mk
-include scripts/image/module.mk
-include scripts/io/module.mk
-include scripts/java/module.mk
-include scripts/linear-algebra/module.mk
-include scripts/miscellaneous/module.mk
-include scripts/ode/module.mk
-include scripts/optimization/module.mk
-include scripts/path/module.mk
-include scripts/pkg/module.mk
-include scripts/plot/appearance/module.mk
-include scripts/plot/draw/module.mk
-include scripts/plot/util/module.mk
-include scripts/polynomial/module.mk
-include scripts/prefs/module.mk
-include scripts/profiler/module.mk
-include scripts/set/module.mk
-include scripts/signal/module.mk
-include scripts/sparse/module.mk
-include scripts/specfun/module.mk
-include scripts/special-matrix/module.mk
-include scripts/startup/module.mk
-include scripts/statistics/base/module.mk
-include scripts/statistics/distributions/module.mk
-include scripts/statistics/models/module.mk
-include scripts/statistics/tests/module.mk
-include scripts/strings/module.mk
-include scripts/testfun/module.mk
-include scripts/time/module.mk
+include %reldir%/+containers/module.mk
+include %reldir%/audio/module.mk
+include %reldir%/deprecated/module.mk
+include %reldir%/elfun/module.mk
+include %reldir%/general/module.mk
+include %reldir%/geometry/module.mk
+include %reldir%/gui/module.mk
+include %reldir%/help/module.mk
+include %reldir%/image/module.mk
+include %reldir%/io/module.mk
+include %reldir%/java/module.mk
+include %reldir%/linear-algebra/module.mk
+include %reldir%/miscellaneous/module.mk
+include %reldir%/ode/module.mk
+include %reldir%/optimization/module.mk
+include %reldir%/path/module.mk
+include %reldir%/pkg/module.mk
+include %reldir%/plot/appearance/module.mk
+include %reldir%/plot/draw/module.mk
+include %reldir%/plot/util/module.mk
+include %reldir%/polynomial/module.mk
+include %reldir%/prefs/module.mk
+include %reldir%/profiler/module.mk
+include %reldir%/set/module.mk
+include %reldir%/signal/module.mk
+include %reldir%/sparse/module.mk
+include %reldir%/specfun/module.mk
+include %reldir%/special-matrix/module.mk
+include %reldir%/startup/module.mk
+include %reldir%/statistics/base/module.mk
+include %reldir%/statistics/distributions/module.mk
+include %reldir%/statistics/models/module.mk
+include %reldir%/statistics/tests/module.mk
+include %reldir%/strings/module.mk
+include %reldir%/testfun/module.mk
+include %reldir%/time/module.mk
 
-## include scripts/@ftp/module.mk
+## include %reldir%/@ftp/module.mk
 ## The include above fails because Automake cannot process the '@' character.
-## As a work around, the contents of scripts/@ftp/module.mk are placed directly
+## As a work around, the contents of %reldir%/@ftp/module.mk are placed directly
 ## in this module.mk file.
-scripts_EXTRA_DIST += scripts/@ftp/module.mk
-######################## include scripts/@ftp/module.mk ########################
-FCN_FILE_DIRS += scripts/@ftp
+%canon_reldir%_EXTRA_DIST += %reldir%/@ftp/module.mk
+######################## include %reldir%/@ftp/module.mk ########################
+FCN_FILE_DIRS += %reldir%/@ftp
 
-scripts_@ftp_FCN_FILES = \
-  scripts/@ftp/ascii.m \
-  scripts/@ftp/binary.m  \
-  scripts/@ftp/cd.m  \
-  scripts/@ftp/close.m  \
-  scripts/@ftp/delete.m  \
-  scripts/@ftp/dir.m  \
-  scripts/@ftp/disp.m  \
-  scripts/@ftp/ftp.m  \
-  scripts/@ftp/loadobj.m  \
-  scripts/@ftp/mget.m  \
-  scripts/@ftp/mkdir.m  \
-  scripts/@ftp/mput.m  \
-  scripts/@ftp/rename.m  \
-  scripts/@ftp/rmdir.m  \
-  scripts/@ftp/saveobj.m
+%canon_reldir%_@ftp_FCN_FILES = \
+  %reldir%/@ftp/ascii.m \
+  %reldir%/@ftp/binary.m  \
+  %reldir%/@ftp/cd.m  \
+  %reldir%/@ftp/close.m  \
+  %reldir%/@ftp/delete.m  \
+  %reldir%/@ftp/dir.m  \
+  %reldir%/@ftp/disp.m  \
+  %reldir%/@ftp/ftp.m  \
+  %reldir%/@ftp/loadobj.m  \
+  %reldir%/@ftp/mget.m  \
+  %reldir%/@ftp/mkdir.m  \
+  %reldir%/@ftp/mput.m  \
+  %reldir%/@ftp/rename.m  \
+  %reldir%/@ftp/rmdir.m  \
+  %reldir%/@ftp/saveobj.m
 
-scripts_@ftpdir = $(fcnfiledir)/@ftp
+%canon_reldir%_@ftpdir = $(fcnfiledir)/@ftp
 
-scripts_@ftp_DATA = $(scripts_@ftp_FCN_FILES)
+%canon_reldir%_@ftp_DATA = $(%canon_reldir%_@ftp_FCN_FILES)
 
-FCN_FILES += $(scripts_@ftp_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_@ftp_FCN_FILES)
 
-PKG_ADD_FILES += scripts/@ftp/PKG_ADD
+PKG_ADD_FILES += %reldir%/@ftp/PKG_ADD
 
-DIRSTAMP_FILES += scripts/@ftp/$(octave_dirstamp)
-####################### end include scripts/@ftp/module.mk #####################
+DIRSTAMP_FILES += %reldir%/@ftp/$(octave_dirstamp)
+####################### end include %reldir%/@ftp/module.mk #####################
 
 image_DATA += $(SCRIPTS_IMAGES)
 
@@ -89,9 +89,9 @@ OCTAVE_INTERPRETER_TARGETS += \
   $(PKG_ADD_FILES)
 
 define PKG_ADD_FILE_TEMPLATE
-$(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) scripts/mk-pkg-add
+$(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) %reldir%/mk-pkg-add
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \
-	$$(SHELL) $$(srcdir)/scripts/mk-pkg-add $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
+	$$(SHELL) $$(srcdir)/%reldir%/mk-pkg-add $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
 	mv $$@-t $$@
 endef
 
@@ -104,21 +104,21 @@ endef
 
 $(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
 
-DOCSTRING_FILES += scripts/DOCSTRINGS
+DOCSTRING_FILES += %reldir%/DOCSTRINGS
 
-scripts/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | scripts/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f scripts/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/scripts/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > scripts/DOCSTRINGS-t && \
-	$(call move_if_change_rule,scripts/DOCSTRINGS-t,$@)
+%reldir%/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)rm -f %reldir%/DOCSTRINGS-t && \
+	$(PERL) $(srcdir)/%reldir%/mkdoc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > %reldir%/DOCSTRINGS-t && \
+	$(call move_if_change_rule,%reldir%/DOCSTRINGS-t,$@)
 
-DIRSTAMP_FILES += scripts/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 check-m-sources:
 	@echo "checking whether files in source tree are listed in module.mk files..."; \
 	for f in $$(find $(srcdir)/scripts -name '*.m'); do \
 	  found=false; \
 	  for m in $(FCN_FILES) $(GEN_FCN_FILES); do \
-	    if [ "$$f" = $(srcdir)/scripts/"$$m" ]; then \
+	    if [ "$$f" = $(srcdir)/%reldir%/"$$m" ]; then \
 	      found=true; \
 	      break; \
 	    fi; \
@@ -158,7 +158,7 @@ uninstall-local: uninstall-startup-files uninstall-pkg-add
 install-pkg-add:
 	for f in $(PKG_ADD_FILES); do \
 	  if [ -n "`cat $$f`" ]; then \
-	    base=`echo $$f | $(SED) 's,^scripts/,,'`; \
+	    base=`echo $$f | $(SED) 's,^%reldir%/,,'`; \
 	    $(MKDIR_P) $(DESTDIR)$(fcnfiledir)/`echo $$base | $(SED) 's,/[^/]*$$,,'`; \
 	    $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$$base; \
 	  fi \
@@ -167,7 +167,7 @@ install-pkg-add:
 
 uninstall-pkg-add:
 	for f in $(PKG_ADD_FILES); do \
-	  base=`echo $$f | $(SED) 's,^scripts/,,'`; \
+	  base=`echo $$f | $(SED) 's,^%reldir%/,,'`; \
 	  rm -f $(DESTDIR)$(fcnfiledir)/$$base; \
 	done
 .PHONY: uninstall-pkg-add
@@ -179,35 +179,35 @@ scripts-dist-hook:
 	@echo "Packaging distribution requires Java." ; exit 1;
 endif
 
-scripts_EXTRA_DIST += \
+%canon_reldir%_EXTRA_DIST += \
   $(SCRIPTS_IMAGES) \
   $(FCN_FILES) \
   $(GEN_FCN_FILES_IN) \
-  scripts/DOCSTRINGS \
-  scripts/mkdoc.pl \
-  scripts/mk-pkg-add
+  %reldir%/DOCSTRINGS \
+  %reldir%/mkdoc.pl \
+  %reldir%/mk-pkg-add
 
-EXTRA_DIST += $(scripts_EXTRA_DIST)
+EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
-scripts_CLEANFILES += \
+%canon_reldir%_CLEANFILES += \
   $(GEN_FCN_FILES) \
   $(PKG_ADD_FILES)
 
-scripts_DISTCLEANFILES += \
+%canon_reldir%_DISTCLEANFILES += \
   $(DIRSTAMP_FILES)
 
-scripts_MAINTAINERCLEANFILES += \
-  scripts/DOCSTRINGS
+%canon_reldir%_MAINTAINERCLEANFILES += \
+  %reldir%/DOCSTRINGS
 
-CLEANFILES += $(scripts_CLEANFILES)
-DISTCLEANFILES += $(scripts_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(scripts_MAINTAINERCLEANFILES)
+CLEANFILES += $(%canon_reldir%_CLEANFILES)
+DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
 
 scripts-clean:
-	rm -f $(scripts_CLEANFILES)
+	rm -f $(%canon_reldir%_CLEANFILES)
 
 scripts-distclean: scripts-clean
-	rm -f $(scripts_DISTCLEANFILES)
+	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
 scripts-maintainer-clean: scripts-distclean
-	rm -f $(scripts_MAINTAINERCLEANFILES)
+	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)

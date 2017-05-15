@@ -1,4 +1,4 @@
-## Automake fails to process "include scripts/@ftp/module.mk" in the directory
+## Automake fails to process "include %reldir%/module.mk" in the directory
 ## above.  All of the commands which would normally be in this file were
 ## manually placed in scripts/module.mk to avoid using the "include" directive.
 ##

@@ -1,33 +1,33 @@
 FCN_FILE_DIRS += \
   scripts/prefs \
-  scripts/prefs/private
+  %reldir%/private
 
-scripts_prefs_PRIVATE_FCN_FILES = \
-  scripts/prefs/private/loadprefs.m \
-  scripts/prefs/private/prefsfile.m \
-  scripts/prefs/private/saveprefs.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/loadprefs.m \
+  %reldir%/private/prefsfile.m \
+  %reldir%/private/saveprefs.m
 
-scripts_prefs_FCN_FILES = \
-  scripts/prefs/addpref.m \
-  scripts/prefs/getpref.m \
-  scripts/prefs/ispref.m \
-  scripts/prefs/prefdir.m \
-  scripts/prefs/preferences.m \
-  scripts/prefs/rmpref.m \
-  scripts/prefs/setpref.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/addpref.m \
+  %reldir%/getpref.m \
+  %reldir%/ispref.m \
+  %reldir%/prefdir.m \
+  %reldir%/preferences.m \
+  %reldir%/rmpref.m \
+  %reldir%/setpref.m
 
-scripts_prefsdir = $(fcnfiledir)/prefs
+%canon_reldir%dir = $(fcnfiledir)/prefs
 
-scripts_prefs_DATA = $(scripts_prefs_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_prefs_privatedir = $(fcnfiledir)/prefs/private
+%canon_reldir%_privatedir = $(fcnfiledir)/prefs/private
 
-scripts_prefs_private_DATA = $(scripts_prefs_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_prefs_FCN_FILES) \
-  $(scripts_prefs_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/prefs/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/prefs/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

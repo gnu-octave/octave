@@ -1,100 +1,100 @@
 FCN_FILE_DIRS += \
   scripts/general \
-  scripts/general/private
+  %reldir%/private
 
-scripts_general_PRIVATE_FCN_FILES = \
-  scripts/general/private/__isequal__.m \
-  scripts/general/private/__publish_html_output__.m \
-  scripts/general/private/__publish_latex_output__.m \
-  scripts/general/private/__splinen__.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__isequal__.m \
+  %reldir%/private/__publish_html_output__.m \
+  %reldir%/private/__publish_latex_output__.m \
+  %reldir%/private/__splinen__.m
 
-scripts_general_FCN_FILES = \
-  scripts/general/accumarray.m \
-  scripts/general/accumdim.m \
-  scripts/general/bincoeff.m \
-  scripts/general/bitcmp.m \
-  scripts/general/bitget.m \
-  scripts/general/bitset.m \
-  scripts/general/blkdiag.m \
-  scripts/general/cart2pol.m \
-  scripts/general/cart2sph.m \
-  scripts/general/cell2mat.m \
-  scripts/general/celldisp.m \
-  scripts/general/chop.m \
-  scripts/general/circshift.m \
-  scripts/general/common_size.m \
-  scripts/general/cplxpair.m \
-  scripts/general/cumtrapz.m \
-  scripts/general/curl.m \
-  scripts/general/dblquad.m \
-  scripts/general/deal.m \
-  scripts/general/deg2rad.m \
-  scripts/general/del2.m \
-  scripts/general/divergence.m \
-  scripts/general/fieldnames.m \
-  scripts/general/flip.m \
-  scripts/general/flipdim.m \
-  scripts/general/fliplr.m \
-  scripts/general/flipud.m \
-  scripts/general/grabcode.m \
-  scripts/general/gradient.m \
-  scripts/general/idivide.m \
-  scripts/general/inputParser.m \
-  scripts/general/int2str.m \
-  scripts/general/interp1.m \
-  scripts/general/interp2.m \
-  scripts/general/interp3.m \
-  scripts/general/interpft.m \
-  scripts/general/interpn.m \
-  scripts/general/isdir.m \
-  scripts/general/isequal.m \
-  scripts/general/isequaln.m \
-  scripts/general/loadobj.m \
-  scripts/general/logspace.m \
-  scripts/general/methods.m \
-  scripts/general/nargchk.m \
-  scripts/general/narginchk.m \
-  scripts/general/nargoutchk.m \
-  scripts/general/nextpow2.m \
-  scripts/general/nthargout.m \
-  scripts/general/num2str.m \
-  scripts/general/pol2cart.m \
-  scripts/general/polyarea.m \
-  scripts/general/postpad.m \
-  scripts/general/prepad.m \
-  scripts/general/publish.m \
-  scripts/general/quadgk.m \
-  scripts/general/quadl.m \
-  scripts/general/quadv.m \
-  scripts/general/rad2deg.m \
-  scripts/general/randi.m \
-  scripts/general/rat.m \
-  scripts/general/repmat.m \
-  scripts/general/rot90.m \
-  scripts/general/rotdim.m \
-  scripts/general/saveobj.m \
-  scripts/general/shift.m \
-  scripts/general/shiftdim.m \
-  scripts/general/sortrows.m \
-  scripts/general/sph2cart.m \
-  scripts/general/structfun.m \
-  scripts/general/subsindex.m \
-  scripts/general/trapz.m \
-  scripts/general/triplequad.m \
-  scripts/general/validateattributes.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/accumarray.m \
+  %reldir%/accumdim.m \
+  %reldir%/bincoeff.m \
+  %reldir%/bitcmp.m \
+  %reldir%/bitget.m \
+  %reldir%/bitset.m \
+  %reldir%/blkdiag.m \
+  %reldir%/cart2pol.m \
+  %reldir%/cart2sph.m \
+  %reldir%/cell2mat.m \
+  %reldir%/celldisp.m \
+  %reldir%/chop.m \
+  %reldir%/circshift.m \
+  %reldir%/common_size.m \
+  %reldir%/cplxpair.m \
+  %reldir%/cumtrapz.m \
+  %reldir%/curl.m \
+  %reldir%/dblquad.m \
+  %reldir%/deal.m \
+  %reldir%/deg2rad.m \
+  %reldir%/del2.m \
+  %reldir%/divergence.m \
+  %reldir%/fieldnames.m \
+  %reldir%/flip.m \
+  %reldir%/flipdim.m \
+  %reldir%/fliplr.m \
+  %reldir%/flipud.m \
+  %reldir%/grabcode.m \
+  %reldir%/gradient.m \
+  %reldir%/idivide.m \
+  %reldir%/inputParser.m \
+  %reldir%/int2str.m \
+  %reldir%/interp1.m \
+  %reldir%/interp2.m \
+  %reldir%/interp3.m \
+  %reldir%/interpft.m \
+  %reldir%/interpn.m \
+  %reldir%/isdir.m \
+  %reldir%/isequal.m \
+  %reldir%/isequaln.m \
+  %reldir%/loadobj.m \
+  %reldir%/logspace.m \
+  %reldir%/methods.m \
+  %reldir%/nargchk.m \
+  %reldir%/narginchk.m \
+  %reldir%/nargoutchk.m \
+  %reldir%/nextpow2.m \
+  %reldir%/nthargout.m \
+  %reldir%/num2str.m \
+  %reldir%/pol2cart.m \
+  %reldir%/polyarea.m \
+  %reldir%/postpad.m \
+  %reldir%/prepad.m \
+  %reldir%/publish.m \
+  %reldir%/quadgk.m \
+  %reldir%/quadl.m \
+  %reldir%/quadv.m \
+  %reldir%/rad2deg.m \
+  %reldir%/randi.m \
+  %reldir%/rat.m \
+  %reldir%/repmat.m \
+  %reldir%/rot90.m \
+  %reldir%/rotdim.m \
+  %reldir%/saveobj.m \
+  %reldir%/shift.m \
+  %reldir%/shiftdim.m \
+  %reldir%/sortrows.m \
+  %reldir%/sph2cart.m \
+  %reldir%/structfun.m \
+  %reldir%/subsindex.m \
+  %reldir%/trapz.m \
+  %reldir%/triplequad.m \
+  %reldir%/validateattributes.m
 
-scripts_generaldir = $(fcnfiledir)/general
+%canon_reldir%dir = $(fcnfiledir)/general
 
-scripts_general_DATA = $(scripts_general_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_general_privatedir = $(fcnfiledir)/general/private
+%canon_reldir%_privatedir = $(fcnfiledir)/general/private
 
-scripts_general_private_DATA = $(scripts_general_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_general_FCN_FILES) \
-  $(scripts_general_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/general/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/general/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

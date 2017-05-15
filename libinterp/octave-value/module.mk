@@ -1,123 +1,123 @@
 OV_INTTYPE_INC = \
-  libinterp/octave-value/ov-base-int.h \
-  libinterp/octave-value/ov-int-traits.h \
-  libinterp/octave-value/ov-int16.h \
-  libinterp/octave-value/ov-int32.h \
-  libinterp/octave-value/ov-int64.h \
-  libinterp/octave-value/ov-int8.h \
-  libinterp/octave-value/ov-intx.h \
-  libinterp/octave-value/ov-uint16.h \
-  libinterp/octave-value/ov-uint32.h \
-  libinterp/octave-value/ov-uint64.h \
-  libinterp/octave-value/ov-uint8.h
+  %reldir%/ov-base-int.h \
+  %reldir%/ov-int-traits.h \
+  %reldir%/ov-int16.h \
+  %reldir%/ov-int32.h \
+  %reldir%/ov-int64.h \
+  %reldir%/ov-int8.h \
+  %reldir%/ov-intx.h \
+  %reldir%/ov-uint16.h \
+  %reldir%/ov-uint32.h \
+  %reldir%/ov-uint64.h \
+  %reldir%/ov-uint8.h
 
 OV_SPARSE_INC = \
-  libinterp/octave-value/ov-base-sparse.h \
-  libinterp/octave-value/ov-bool-sparse.h \
-  libinterp/octave-value/ov-cx-sparse.h \
-  libinterp/octave-value/ov-re-sparse.h
+  %reldir%/ov-base-sparse.h \
+  %reldir%/ov-bool-sparse.h \
+  %reldir%/ov-cx-sparse.h \
+  %reldir%/ov-re-sparse.h
 
 OCTAVE_VALUE_INC = \
-  libinterp/octave-value/ov-base-diag.h \
-  libinterp/octave-value/ov-base-mat.h \
-  libinterp/octave-value/ov-base-scalar.h \
-  libinterp/octave-value/ov-base.h \
-  libinterp/octave-value/ov-bool-mat.h \
-  libinterp/octave-value/ov-bool.h \
-  libinterp/octave-value/ov-builtin.h \
-  libinterp/octave-value/ov-cell.h \
-  libinterp/octave-value/ov-ch-mat.h \
-  libinterp/octave-value/ov-class.h \
-  libinterp/octave-value/ov-classdef.h \
-  libinterp/octave-value/ov-colon.h \
-  libinterp/octave-value/ov-complex.h \
-  libinterp/octave-value/ov-cs-list.h \
-  libinterp/octave-value/ov-cx-diag.h \
-  libinterp/octave-value/ov-cx-mat.h \
-  libinterp/octave-value/ov-dld-fcn.h \
-  libinterp/octave-value/ov-fcn-handle.h \
-  libinterp/octave-value/ov-fcn-inline.h \
-  libinterp/octave-value/ov-fcn.h \
-  libinterp/octave-value/ov-float.h \
-  libinterp/octave-value/ov-flt-complex.h \
-  libinterp/octave-value/ov-flt-cx-diag.h \
-  libinterp/octave-value/ov-flt-cx-mat.h \
-  libinterp/octave-value/ov-flt-re-diag.h \
-  libinterp/octave-value/ov-flt-re-mat.h \
-  libinterp/octave-value/ov-java.h \
-  libinterp/octave-value/ov-lazy-idx.h \
-  libinterp/octave-value/ov-mex-fcn.h \
-  libinterp/octave-value/ov-null-mat.h \
-  libinterp/octave-value/ov-oncleanup.h \
-  libinterp/octave-value/ov-perm.h \
-  libinterp/octave-value/ov-range.h \
-  libinterp/octave-value/ov-re-diag.h \
-  libinterp/octave-value/ov-re-mat.h \
-  libinterp/octave-value/ov-scalar.h \
-  libinterp/octave-value/ov-str-mat.h \
-  libinterp/octave-value/ov-struct.h \
-  libinterp/octave-value/ov-typeinfo.h \
-  libinterp/octave-value/ov-usr-fcn.h \
-  libinterp/octave-value/ov.h \
-  libinterp/octave-value/ovl.h \
+  %reldir%/ov-base-diag.h \
+  %reldir%/ov-base-mat.h \
+  %reldir%/ov-base-scalar.h \
+  %reldir%/ov-base.h \
+  %reldir%/ov-bool-mat.h \
+  %reldir%/ov-bool.h \
+  %reldir%/ov-builtin.h \
+  %reldir%/ov-cell.h \
+  %reldir%/ov-ch-mat.h \
+  %reldir%/ov-class.h \
+  %reldir%/ov-classdef.h \
+  %reldir%/ov-colon.h \
+  %reldir%/ov-complex.h \
+  %reldir%/ov-cs-list.h \
+  %reldir%/ov-cx-diag.h \
+  %reldir%/ov-cx-mat.h \
+  %reldir%/ov-dld-fcn.h \
+  %reldir%/ov-fcn-handle.h \
+  %reldir%/ov-fcn-inline.h \
+  %reldir%/ov-fcn.h \
+  %reldir%/ov-float.h \
+  %reldir%/ov-flt-complex.h \
+  %reldir%/ov-flt-cx-diag.h \
+  %reldir%/ov-flt-cx-mat.h \
+  %reldir%/ov-flt-re-diag.h \
+  %reldir%/ov-flt-re-mat.h \
+  %reldir%/ov-java.h \
+  %reldir%/ov-lazy-idx.h \
+  %reldir%/ov-mex-fcn.h \
+  %reldir%/ov-null-mat.h \
+  %reldir%/ov-oncleanup.h \
+  %reldir%/ov-perm.h \
+  %reldir%/ov-range.h \
+  %reldir%/ov-re-diag.h \
+  %reldir%/ov-re-mat.h \
+  %reldir%/ov-scalar.h \
+  %reldir%/ov-str-mat.h \
+  %reldir%/ov-struct.h \
+  %reldir%/ov-typeinfo.h \
+  %reldir%/ov-usr-fcn.h \
+  %reldir%/ov.h \
+  %reldir%/ovl.h \
   $(OV_INTTYPE_INC) \
   $(OV_SPARSE_INC)
 
 OV_INTTYPE_SRC = \
-  libinterp/octave-value/ov-int16.cc \
-  libinterp/octave-value/ov-int32.cc \
-  libinterp/octave-value/ov-int64.cc \
-  libinterp/octave-value/ov-int8.cc \
-  libinterp/octave-value/ov-uint16.cc \
-  libinterp/octave-value/ov-uint32.cc \
-  libinterp/octave-value/ov-uint64.cc \
-  libinterp/octave-value/ov-uint8.cc
+  %reldir%/ov-int16.cc \
+  %reldir%/ov-int32.cc \
+  %reldir%/ov-int64.cc \
+  %reldir%/ov-int8.cc \
+  %reldir%/ov-uint16.cc \
+  %reldir%/ov-uint32.cc \
+  %reldir%/ov-uint64.cc \
+  %reldir%/ov-uint8.cc
 
 OV_SPARSE_SRC = \
-  libinterp/octave-value/ov-bool-sparse.cc \
-  libinterp/octave-value/ov-cx-sparse.cc \
-  libinterp/octave-value/ov-re-sparse.cc
+  %reldir%/ov-bool-sparse.cc \
+  %reldir%/ov-cx-sparse.cc \
+  %reldir%/ov-re-sparse.cc
 
 OCTAVE_VALUE_SRC = \
-  libinterp/octave-value/ov-base.cc \
-  libinterp/octave-value/ov-bool-mat.cc \
-  libinterp/octave-value/ov-bool.cc \
-  libinterp/octave-value/ov-builtin.cc \
-  libinterp/octave-value/ov-cell.cc \
-  libinterp/octave-value/ov-ch-mat.cc \
-  libinterp/octave-value/ov-class.cc \
-  libinterp/octave-value/ov-classdef.cc \
-  libinterp/octave-value/ov-colon.cc \
-  libinterp/octave-value/ov-complex.cc \
-  libinterp/octave-value/ov-cs-list.cc \
-  libinterp/octave-value/ov-cx-diag.cc \
-  libinterp/octave-value/ov-cx-mat.cc \
-  libinterp/octave-value/ov-dld-fcn.cc \
-  libinterp/octave-value/ov-fcn-handle.cc \
-  libinterp/octave-value/ov-fcn-inline.cc \
-  libinterp/octave-value/ov-fcn.cc \
-  libinterp/octave-value/ov-float.cc \
-  libinterp/octave-value/ov-flt-complex.cc \
-  libinterp/octave-value/ov-flt-cx-diag.cc \
-  libinterp/octave-value/ov-flt-cx-mat.cc \
-  libinterp/octave-value/ov-flt-re-diag.cc \
-  libinterp/octave-value/ov-flt-re-mat.cc \
-  libinterp/octave-value/ov-java.cc \
-  libinterp/octave-value/ov-lazy-idx.cc \
-  libinterp/octave-value/ov-mex-fcn.cc \
-  libinterp/octave-value/ov-null-mat.cc \
-  libinterp/octave-value/ov-oncleanup.cc \
-  libinterp/octave-value/ov-perm.cc \
-  libinterp/octave-value/ov-range.cc \
-  libinterp/octave-value/ov-re-diag.cc \
-  libinterp/octave-value/ov-re-mat.cc \
-  libinterp/octave-value/ov-scalar.cc \
-  libinterp/octave-value/ov-str-mat.cc \
-  libinterp/octave-value/ov-struct.cc \
-  libinterp/octave-value/ov-typeinfo.cc \
-  libinterp/octave-value/ov-usr-fcn.cc \
-  libinterp/octave-value/ov.cc \
-  libinterp/octave-value/ovl.cc \
+  %reldir%/ov-base.cc \
+  %reldir%/ov-bool-mat.cc \
+  %reldir%/ov-bool.cc \
+  %reldir%/ov-builtin.cc \
+  %reldir%/ov-cell.cc \
+  %reldir%/ov-ch-mat.cc \
+  %reldir%/ov-class.cc \
+  %reldir%/ov-classdef.cc \
+  %reldir%/ov-colon.cc \
+  %reldir%/ov-complex.cc \
+  %reldir%/ov-cs-list.cc \
+  %reldir%/ov-cx-diag.cc \
+  %reldir%/ov-cx-mat.cc \
+  %reldir%/ov-dld-fcn.cc \
+  %reldir%/ov-fcn-handle.cc \
+  %reldir%/ov-fcn-inline.cc \
+  %reldir%/ov-fcn.cc \
+  %reldir%/ov-float.cc \
+  %reldir%/ov-flt-complex.cc \
+  %reldir%/ov-flt-cx-diag.cc \
+  %reldir%/ov-flt-cx-mat.cc \
+  %reldir%/ov-flt-re-diag.cc \
+  %reldir%/ov-flt-re-mat.cc \
+  %reldir%/ov-java.cc \
+  %reldir%/ov-lazy-idx.cc \
+  %reldir%/ov-mex-fcn.cc \
+  %reldir%/ov-null-mat.cc \
+  %reldir%/ov-oncleanup.cc \
+  %reldir%/ov-perm.cc \
+  %reldir%/ov-range.cc \
+  %reldir%/ov-re-diag.cc \
+  %reldir%/ov-re-mat.cc \
+  %reldir%/ov-scalar.cc \
+  %reldir%/ov-str-mat.cc \
+  %reldir%/ov-struct.cc \
+  %reldir%/ov-typeinfo.cc \
+  %reldir%/ov-usr-fcn.cc \
+  %reldir%/ov.cc \
+  %reldir%/ovl.cc \
   $(OV_INTTYPE_SRC) \
   $(OV_SPARSE_SRC)
 
@@ -126,28 +126,28 @@ OCTAVE_VALUE_SRC = \
 ## so they should not appear in the OCTAVE_VALUE_SRC list.
 
 libinterp_EXTRA_DIST += \
-  libinterp/octave-value/ov-base-diag.cc \
-  libinterp/octave-value/ov-base-int.cc \
-  libinterp/octave-value/ov-base-mat.cc \
-  libinterp/octave-value/ov-base-scalar.cc \
-  libinterp/octave-value/ov-base-sparse.cc
+  %reldir%/ov-base-diag.cc \
+  %reldir%/ov-base-int.cc \
+  %reldir%/ov-base-mat.cc \
+  %reldir%/ov-base-scalar.cc \
+  %reldir%/ov-base-sparse.cc
 
-noinst_LTLIBRARIES += libinterp/octave-value/liboctave-value.la
+noinst_LTLIBRARIES += %reldir%/liboctave-value.la
 
-libinterp_octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
+%canon_reldir%_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
 
 ## FIXME: maybe it would be better to limit the JAVA flags to
 ## the compile commands for ov-java.cc?  Does JAVA_LIBS need to be
 ## added to LIBOCTINTERP_LINK_DEPS (see libinterp/link-deps.mk)?
 ## Should we have a separate set of JAVA_LDFLAGS?
 
-libinterp_octave_value_liboctave_value_la_CPPFLAGS = \
+%canon_reldir%_liboctave_value_la_CPPFLAGS = \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
   $(JAVA_CPPFLAGS)
 
-libinterp_octave_value_liboctave_value_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_liboctave_value_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-libinterp_octave_value_liboctave_value_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+%canon_reldir%_liboctave_value_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
-libinterp_octave_value_liboctave_value_la_LIBADD = $(JAVA_LIBS)
+%canon_reldir%_liboctave_value_la_LIBADD = $(JAVA_LIBS)

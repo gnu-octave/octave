@@ -1,8 +1,8 @@
 EXTERNAL_SOURCES += \
-  liboctave/external/ordered-qz/dsubsp.f \
-  liboctave/external/ordered-qz/exchqz.f \
-  liboctave/external/ordered-qz/ssubsp.f \
-  liboctave/external/ordered-qz/sexchqz.f
+  %reldir%/dsubsp.f \
+  %reldir%/exchqz.f \
+  %reldir%/ssubsp.f \
+  %reldir%/sexchqz.f
 
 liboctave_EXTRA_DIST += \
-  liboctave/external/ordered-qz/README
+  %reldir%/README

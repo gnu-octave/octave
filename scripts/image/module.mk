@@ -1,81 +1,81 @@
 FCN_FILE_DIRS += \
   scripts/image \
-  scripts/image/private
+  %reldir%/private
 
-scripts_image_PRIVATE_FCN_FILES = \
-  scripts/image/private/__imfinfo__.m \
-  scripts/image/private/__imread__.m \
-  scripts/image/private/__imwrite__.m \
-  scripts/image/private/colorspace_conversion_input_check.m \
-  scripts/image/private/colorspace_conversion_revert.m \
-  scripts/image/private/imageIO.m \
-  scripts/image/private/imwrite_filename.m \
-  scripts/image/private/ind2x.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__imfinfo__.m \
+  %reldir%/private/__imread__.m \
+  %reldir%/private/__imwrite__.m \
+  %reldir%/private/colorspace_conversion_input_check.m \
+  %reldir%/private/colorspace_conversion_revert.m \
+  %reldir%/private/imageIO.m \
+  %reldir%/private/imwrite_filename.m \
+  %reldir%/private/ind2x.m
 
-scripts_image_FCN_FILES = \
-  scripts/image/autumn.m \
-  scripts/image/bone.m \
-  scripts/image/brighten.m \
-  scripts/image/cmpermute.m \
-  scripts/image/cmunique.m \
-  scripts/image/colorcube.m \
-  scripts/image/colormap.m \
-  scripts/image/contrast.m \
-  scripts/image/cool.m \
-  scripts/image/copper.m \
-  scripts/image/cubehelix.m \
-  scripts/image/flag.m \
-  scripts/image/frame2im.m \
-  scripts/image/gray.m \
-  scripts/image/gray2ind.m \
-  scripts/image/hot.m \
-  scripts/image/hsv.m \
-  scripts/image/hsv2rgb.m \
-  scripts/image/im2double.m \
-  scripts/image/im2frame.m \
-  scripts/image/image.m \
-  scripts/image/imagesc.m \
-  scripts/image/imfinfo.m \
-  scripts/image/imformats.m \
-  scripts/image/imread.m \
-  scripts/image/imshow.m \
-  scripts/image/iscolormap.m \
-  scripts/image/imwrite.m \
-  scripts/image/ind2gray.m \
-  scripts/image/ind2rgb.m \
-  scripts/image/jet.m \
-  scripts/image/lines.m \
-  scripts/image/ntsc2rgb.m \
-  scripts/image/ocean.m \
-  scripts/image/pink.m \
-  scripts/image/prism.m \
-  scripts/image/rainbow.m \
-  scripts/image/rgb2hsv.m \
-  scripts/image/rgb2ind.m \
-  scripts/image/rgb2ntsc.m \
-  scripts/image/rgbplot.m \
-  scripts/image/spinmap.m \
-  scripts/image/spring.m \
-  scripts/image/summer.m \
-  scripts/image/viridis.m \
-  scripts/image/white.m \
-  scripts/image/winter.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/autumn.m \
+  %reldir%/bone.m \
+  %reldir%/brighten.m \
+  %reldir%/cmpermute.m \
+  %reldir%/cmunique.m \
+  %reldir%/colorcube.m \
+  %reldir%/colormap.m \
+  %reldir%/contrast.m \
+  %reldir%/cool.m \
+  %reldir%/copper.m \
+  %reldir%/cubehelix.m \
+  %reldir%/flag.m \
+  %reldir%/frame2im.m \
+  %reldir%/gray.m \
+  %reldir%/gray2ind.m \
+  %reldir%/hot.m \
+  %reldir%/hsv.m \
+  %reldir%/hsv2rgb.m \
+  %reldir%/im2double.m \
+  %reldir%/im2frame.m \
+  %reldir%/image.m \
+  %reldir%/imagesc.m \
+  %reldir%/imfinfo.m \
+  %reldir%/imformats.m \
+  %reldir%/imread.m \
+  %reldir%/imshow.m \
+  %reldir%/iscolormap.m \
+  %reldir%/imwrite.m \
+  %reldir%/ind2gray.m \
+  %reldir%/ind2rgb.m \
+  %reldir%/jet.m \
+  %reldir%/lines.m \
+  %reldir%/ntsc2rgb.m \
+  %reldir%/ocean.m \
+  %reldir%/pink.m \
+  %reldir%/prism.m \
+  %reldir%/rainbow.m \
+  %reldir%/rgb2hsv.m \
+  %reldir%/rgb2ind.m \
+  %reldir%/rgb2ntsc.m \
+  %reldir%/rgbplot.m \
+  %reldir%/spinmap.m \
+  %reldir%/spring.m \
+  %reldir%/summer.m \
+  %reldir%/viridis.m \
+  %reldir%/white.m \
+  %reldir%/winter.m
 
 SCRIPTS_IMAGES += \
-  scripts/image/default.img
+  %reldir%/default.img
 
-scripts_imagedir = $(fcnfiledir)/image
+%canon_reldir%dir = $(fcnfiledir)/image
 
-scripts_image_DATA = $(scripts_image_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_image_privatedir = $(fcnfiledir)/image/private
+%canon_reldir%_privatedir = $(fcnfiledir)/image/private
 
-scripts_image_private_DATA = $(scripts_image_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_image_FCN_FILES) \
-  $(scripts_image_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/image/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/image/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

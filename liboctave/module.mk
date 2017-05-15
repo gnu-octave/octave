@@ -1,27 +1,27 @@
-liboctave_EXTRA_DIST = \
-  liboctave/liboctave-build-info.in.cc
+%canon_reldir%_EXTRA_DIST = \
+  %reldir%/liboctave-build-info.in.cc
 
-liboctave_CLEANFILES =
-liboctave_DISTCLEANFILES =
-liboctave_MAINTAINERCLEANFILES =
+%canon_reldir%_CLEANFILES =
+%canon_reldir%_DISTCLEANFILES =
+%canon_reldir%_MAINTAINERCLEANFILES =
 
 ## Search local directories before those specified by the user.
-liboctave_liboctave_la_CPPFLAGS = \
+%canon_reldir%_%canon_reldir%_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
   @EXTERNAL_DLL_DEFS@ \
   -Iliboctave -I$(srcdir)/liboctave \
-  -I$(srcdir)/liboctave/array \
-  -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
-  -Iliboctave/operators -I$(srcdir)/liboctave/operators \
-  -I$(srcdir)/liboctave/system \
-  -I$(srcdir)/liboctave/util \
-  -I$(srcdir)/liboctave/wrappers
+  -I$(srcdir)/%reldir%/array \
+  -I%reldir%/numeric -I$(srcdir)/%reldir%/numeric \
+  -I%reldir%/operators -I$(srcdir)/%reldir%/operators \
+  -I$(srcdir)/%reldir%/system \
+  -I$(srcdir)/%reldir%/util \
+  -I$(srcdir)/%reldir%/wrappers
 
-liboctave_liboctave_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_%canon_reldir%_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-liboctave_liboctave_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+%canon_reldir%_%canon_reldir%_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
-octlib_LTLIBRARIES += liboctave/liboctave.la
+octlib_LTLIBRARIES += %reldir%/liboctave.la
 
 BUILT_INCS = \
   $(BUILT_LIBOCTAVE_OPERATORS_INC) \
@@ -32,10 +32,10 @@ BUILT_SOURCES += \
   $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
 
 LIBOCTAVE_BUILT_NODISTFILES = \
-  liboctave/liboctave-build-info.cc
+  %reldir%/liboctave-build-info.cc
 
 octinclude_HEADERS += \
-  liboctave/liboctave-build-info.h \
+  %reldir%/liboctave-build-info.h \
   $(ARRAY_INC) \
   $(EXTERNAL_INC) \
   $(NUMERIC_INC) \
@@ -55,32 +55,32 @@ LIBOCTAVE_TEMPLATE_SRC =
 
 ## A list of all files that could include tests
 
-liboctave_liboctave_la_LIBADD =
+%canon_reldir%_%canon_reldir%_la_LIBADD =
 
-include liboctave/array/module.mk
-include liboctave/external/module.mk
-include liboctave/numeric/module.mk
-include liboctave/operators/module.mk
-include liboctave/system/module.mk
-include liboctave/util/module.mk
-include liboctave/wrappers/module.mk
+include %reldir%/array/module.mk
+include %reldir%/external/module.mk
+include %reldir%/numeric/module.mk
+include %reldir%/operators/module.mk
+include %reldir%/system/module.mk
+include %reldir%/util/module.mk
+include %reldir%/wrappers/module.mk
 
-nodist_liboctave_liboctave_la_SOURCES = \
-  liboctave/liboctave-build-info.cc
+nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
+  %reldir%/liboctave-build-info.cc
 
-liboctave_liboctave_la_LIBADD += \
+%canon_reldir%_%canon_reldir%_la_LIBADD += \
   libgnu/libgnu.la \
   $(LIBOCTAVE_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctave_liboctave_current = 4
-liboctave_liboctave_revision = 0
-liboctave_liboctave_age = 0
+%canon_reldir%_%canon_reldir%_current = 4
+%canon_reldir%_%canon_reldir%_revision = 0
+%canon_reldir%_%canon_reldir%_age = 0
 
-liboctave_liboctave_version_info = $(liboctave_liboctave_current):$(liboctave_liboctave_revision):$(liboctave_liboctave_age)
+%canon_reldir%_%canon_reldir%_version_info = $(%canon_reldir%_%canon_reldir%_current):$(%canon_reldir%_%canon_reldir%_revision):$(%canon_reldir%_%canon_reldir%_age)
 
-liboctave_liboctave_la_LDFLAGS = \
-  -version-info $(liboctave_liboctave_version_info) \
+%canon_reldir%_%canon_reldir%_la_LDFLAGS = \
+  -version-info $(%canon_reldir%_%canon_reldir%_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_EXTERNAL_SH_LDFLAGS@ \
   -bindir $(bindir) \
@@ -90,10 +90,10 @@ liboctave_liboctave_la_LDFLAGS = \
 ## Rules to build test files
 
 LIBOCTAVE_TST_SRC = \
-  $(liboctave_array_libarray_la_SOURCES) \
-  $(liboctave_numeric_libnumeric_la_SOURCES) \
-  $(liboctave_system_libsystem_la_SOURCES) \
-  $(liboctave_util_libutil_la_SOURCES) \
+  $(%canon_reldir%_array_libarray_la_SOURCES) \
+  $(%canon_reldir%_numeric_libnumeric_la_SOURCES) \
+  $(%canon_reldir%_system_libsystem_la_SOURCES) \
+  $(%canon_reldir%_util_libutil_la_SOURCES) \
   $(LIBOCTAVE_TEMPLATE_SRC)
 
 LIBOCTAVE_TST_FILES_SRC := $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
@@ -104,31 +104,31 @@ liboctavetestsdir := $(octtestsdir)
 
 nobase_liboctavetests_DATA = $(LIBOCTAVE_TST_FILES)
 
-liboctave/liboctave-build-info.cc: liboctave/liboctave-build-info.in.cc HG-ID | liboctave/$(octave_dirstamp)
+%reldir%/liboctave-build-info.cc: %reldir%/liboctave-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)
 
 OCTAVE_INTERPRETER_TARGETS += \
   $(LIBOCTAVE_TST_FILES)
 
-DIRSTAMP_FILES += liboctave/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
-EXTRA_DIST += $(liboctave_EXTRA_DIST)
+EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
-liboctave_CLEANFILES += \
+%canon_reldir%_CLEANFILES += \
   $(LIBOCTAVE_BUILT_NODISTFILES) \
   $(LIBOCTAVE_TST_FILES)
 
 BUILT_NODISTFILES += $(LIBOCTAVE_BUILT_NODISTFILES)
 
-CLEANFILES += $(liboctave_CLEANFILES)
-DISTCLEANFILES += $(liboctave_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(liboctave_MAINTAINERCLEANFILES)
+CLEANFILES += $(%canon_reldir%_CLEANFILES)
+DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
 
 liboctave-clean:
-	rm -f $(liboctave_CLEANFILES)
+	rm -f $(%canon_reldir%_CLEANFILES)
 
 liboctave-distclean: liboctave-clean
-	rm -f $(liboctave_DISTCLEANFILES)
+	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
 liboctave-maintainer-clean: liboctave-distclean
-	rm -f $(liboctave_MAINTAINERCLEANFILES)
+	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)

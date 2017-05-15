@@ -1,51 +1,51 @@
 FCN_FILE_DIRS += \
   scripts/polynomial \
-  scripts/polynomial/private
+  %reldir%/private
 
-scripts_polynomial_PRIVATE_FCN_FILES = \
-  scripts/polynomial/private/__splinefit__.m
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__splinefit__.m
 
-scripts_polynomial_FCN_FILES = \
-  scripts/polynomial/compan.m \
-  scripts/polynomial/conv.m \
-  scripts/polynomial/deconv.m \
-  scripts/polynomial/mkpp.m \
-  scripts/polynomial/mpoles.m \
-  scripts/polynomial/padecoef.m \
-  scripts/polynomial/pchip.m \
-  scripts/polynomial/poly.m \
-  scripts/polynomial/polyaffine.m \
-  scripts/polynomial/polyder.m \
-  scripts/polynomial/polyeig.m \
-  scripts/polynomial/polyfit.m \
-  scripts/polynomial/polygcd.m \
-  scripts/polynomial/polyint.m \
-  scripts/polynomial/polyout.m \
-  scripts/polynomial/polyreduce.m \
-  scripts/polynomial/polyval.m \
-  scripts/polynomial/polyvalm.m \
-  scripts/polynomial/ppval.m \
-  scripts/polynomial/ppder.m \
-  scripts/polynomial/ppint.m \
-  scripts/polynomial/ppjumps.m \
-  scripts/polynomial/residue.m \
-  scripts/polynomial/roots.m \
-  scripts/polynomial/spline.m \
-  scripts/polynomial/splinefit.m \
-  scripts/polynomial/unmkpp.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/compan.m \
+  %reldir%/conv.m \
+  %reldir%/deconv.m \
+  %reldir%/mkpp.m \
+  %reldir%/mpoles.m \
+  %reldir%/padecoef.m \
+  %reldir%/pchip.m \
+  %reldir%/poly.m \
+  %reldir%/polyaffine.m \
+  %reldir%/polyder.m \
+  %reldir%/polyeig.m \
+  %reldir%/polyfit.m \
+  %reldir%/polygcd.m \
+  %reldir%/polyint.m \
+  %reldir%/polyout.m \
+  %reldir%/polyreduce.m \
+  %reldir%/polyval.m \
+  %reldir%/polyvalm.m \
+  %reldir%/ppval.m \
+  %reldir%/ppder.m \
+  %reldir%/ppint.m \
+  %reldir%/ppjumps.m \
+  %reldir%/residue.m \
+  %reldir%/roots.m \
+  %reldir%/spline.m \
+  %reldir%/splinefit.m \
+  %reldir%/unmkpp.m
 
-scripts_polynomialdir = $(fcnfiledir)/polynomial
+%canon_reldir%dir = $(fcnfiledir)/polynomial
 
-scripts_polynomial_DATA = $(scripts_polynomial_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-scripts_polynomial_privatedir = $(fcnfiledir)/polynomial/private
+%canon_reldir%_privatedir = $(fcnfiledir)/polynomial/private
 
-scripts_polynomial_private_DATA = $(scripts_polynomial_PRIVATE_FCN_FILES)
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
-  $(scripts_polynomial_FCN_FILES) \
-  $(scripts_polynomial_PRIVATE_FCN_FILES)
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
-PKG_ADD_FILES += scripts/polynomial/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/polynomial/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

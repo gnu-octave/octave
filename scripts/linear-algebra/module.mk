@@ -1,43 +1,43 @@
 FCN_FILE_DIRS += scripts/linear-algebra
 
 scripts_linear_algebra_FCN_FILES = \
-  scripts/linear-algebra/bandwidth.m \
-  scripts/linear-algebra/commutation_matrix.m \
-  scripts/linear-algebra/cond.m \
-  scripts/linear-algebra/condest.m \
-  scripts/linear-algebra/condeig.m \
-  scripts/linear-algebra/cross.m \
-  scripts/linear-algebra/duplication_matrix.m \
-  scripts/linear-algebra/expm.m \
-  scripts/linear-algebra/housh.m \
-  scripts/linear-algebra/isbanded.m \
-  scripts/linear-algebra/isdefinite.m \
-  scripts/linear-algebra/isdiag.m \
-  scripts/linear-algebra/ishermitian.m \
-  scripts/linear-algebra/issymmetric.m \
-  scripts/linear-algebra/istril.m \
-  scripts/linear-algebra/istriu.m \
-  scripts/linear-algebra/krylov.m \
-  scripts/linear-algebra/linsolve.m \
-  scripts/linear-algebra/logm.m \
-  scripts/linear-algebra/normest.m \
-  scripts/linear-algebra/normest1.m \
-  scripts/linear-algebra/null.m \
-  scripts/linear-algebra/orth.m \
-  scripts/linear-algebra/planerot.m \
-  scripts/linear-algebra/qzhess.m \
-  scripts/linear-algebra/rank.m \
-  scripts/linear-algebra/rref.m \
-  scripts/linear-algebra/subspace.m \
-  scripts/linear-algebra/trace.m \
-  scripts/linear-algebra/vech.m
+  %reldir%/bandwidth.m \
+  %reldir%/commutation_matrix.m \
+  %reldir%/cond.m \
+  %reldir%/condest.m \
+  %reldir%/condeig.m \
+  %reldir%/cross.m \
+  %reldir%/duplication_matrix.m \
+  %reldir%/expm.m \
+  %reldir%/housh.m \
+  %reldir%/isbanded.m \
+  %reldir%/isdefinite.m \
+  %reldir%/isdiag.m \
+  %reldir%/ishermitian.m \
+  %reldir%/issymmetric.m \
+  %reldir%/istril.m \
+  %reldir%/istriu.m \
+  %reldir%/krylov.m \
+  %reldir%/linsolve.m \
+  %reldir%/logm.m \
+  %reldir%/normest.m \
+  %reldir%/normest1.m \
+  %reldir%/null.m \
+  %reldir%/orth.m \
+  %reldir%/planerot.m \
+  %reldir%/qzhess.m \
+  %reldir%/rank.m \
+  %reldir%/rref.m \
+  %reldir%/subspace.m \
+  %reldir%/trace.m \
+  %reldir%/vech.m
 
-scripts_linear_algebradir = $(fcnfiledir)/linear-algebra
+%canon_reldir%dir = $(fcnfiledir)/linear-algebra
 
 scripts_linear_algebra_DATA = $(scripts_linear_algebra_FCN_FILES)
 
 FCN_FILES += $(scripts_linear_algebra_FCN_FILES)
 
-PKG_ADD_FILES += scripts/linear-algebra/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/linear-algebra/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

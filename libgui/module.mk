@@ -1,10 +1,10 @@
 if AMCOND_BUILD_QT_GUI
 
-libgui_EXTRA_DIST =
+%canon_reldir%_EXTRA_DIST =
 
-libgui_CLEANFILES =
-libgui_DISTCLEANFILES =
-libgui_MAINTAINERCLEANFILES =
+%canon_reldir%_CLEANFILES =
+%canon_reldir%_DISTCLEANFILES =
+%canon_reldir%_MAINTAINERCLEANFILES =
 
 MOC_CPPFLAGS =
 
@@ -13,84 +13,84 @@ MOC_CPPFLAGS =
 ## Only keep moc-compatible options -Idir, -Dmacro, and -Umacro.
 MOC_OCTAVE_CPPFLAGS = $(filter -I% -D% -U%, $(AM_CPPFLAGS) $(CPPFLAGS))
 
-octlib_LTLIBRARIES += libgui/liboctgui.la
+octlib_LTLIBRARIES += %reldir%/liboctgui.la
 
 TRANSLATIONS = \
-  libgui/languages/be_BY.ts \
-  libgui/languages/de_DE.ts \
-  libgui/languages/en_US.ts \
-  libgui/languages/es_ES.ts \
-  libgui/languages/eu_ES.ts \
-  libgui/languages/fr_FR.ts \
-  libgui/languages/it_IT.ts \
-  libgui/languages/ja_JP.ts \
-  libgui/languages/nl_NL.ts \
-  libgui/languages/pt_BR.ts \
-  libgui/languages/pt_PT.ts \
-  libgui/languages/ru_RU.ts \
-  libgui/languages/uk_UA.ts \
-  libgui/languages/zh_CN.ts
+  %reldir%/languages/be_BY.ts \
+  %reldir%/languages/de_DE.ts \
+  %reldir%/languages/en_US.ts \
+  %reldir%/languages/es_ES.ts \
+  %reldir%/languages/eu_ES.ts \
+  %reldir%/languages/fr_FR.ts \
+  %reldir%/languages/it_IT.ts \
+  %reldir%/languages/ja_JP.ts \
+  %reldir%/languages/nl_NL.ts \
+  %reldir%/languages/pt_BR.ts \
+  %reldir%/languages/pt_PT.ts \
+  %reldir%/languages/ru_RU.ts \
+  %reldir%/languages/uk_UA.ts \
+  %reldir%/languages/zh_CN.ts
 
-LOCALES = $(patsubst libgui/languages/%.ts, libgui/languages/%.qm, $(TRANSLATIONS))
+LOCALES = $(patsubst %reldir%/languages/%.ts, %reldir%/languages/%.qm, $(TRANSLATIONS))
 
 noinst_HEADERS += \
-  libgui/liboctgui-build-info.h
+  %reldir%/liboctgui-build-info.h
 
-include libgui/src/module.mk
-include libgui/graphics/module.mk
-include libgui/qterminal-module.mk
+include %reldir%/src/module.mk
+include %reldir%/graphics/module.mk
+include %reldir%/qterminal-module.mk
 
-nodist_libgui_liboctgui_la_SOURCES = \
-  libgui/liboctgui-build-info.cc
+nodist_%canon_reldir%_liboctgui_la_SOURCES = \
+  %reldir%/liboctgui-build-info.cc
 
-libgui_liboctgui_la_CPPFLAGS = \
+%canon_reldir%_liboctgui_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   -Ilibgui \
   -I$(srcdir)/libgui
 
-libgui_liboctgui_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_liboctgui_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-libgui_liboctgui_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+%canon_reldir%_liboctgui_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
-libgui_liboctgui_la_LIBADD = \
-  libgui/qterminal/libqterminal.la \
-  libgui/src/libgui-src.la \
-  libgui/graphics/libgui-graphics.la \
+%canon_reldir%_liboctgui_la_LIBADD = \
+  %reldir%/qterminal/libqterminal.la \
+  %reldir%/src/libgui-src.la \
+  %reldir%/graphics/libgui-graphics.la \
   libinterp/liboctinterp.la \
   liboctave/liboctave.la \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-libgui_liboctgui_current = 2
-libgui_liboctgui_revision = 0
-libgui_liboctgui_age = 0
+%canon_reldir%_liboctgui_current = 2
+%canon_reldir%_liboctgui_revision = 0
+%canon_reldir%_liboctgui_age = 0
 
-libgui_liboctgui_version_info = $(libgui_liboctgui_current):$(libgui_liboctgui_revision):$(libgui_liboctgui_age)
+%canon_reldir%_liboctgui_version_info = $(%canon_reldir%_liboctgui_current):$(%canon_reldir%_liboctgui_revision):$(%canon_reldir%_liboctgui_age)
 
-libgui_liboctgui_la_LDFLAGS = \
-  -version-info $(libgui_liboctgui_version_info) \
+%canon_reldir%_liboctgui_la_LDFLAGS = \
+  -version-info $(%canon_reldir%_liboctgui_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
   $(LIBOCTGUI_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-octetc_DATA += libgui/default-qt-settings
+octetc_DATA += %reldir%/default-qt-settings
 
 octlocale_DATA += $(LOCALES)
 
-libgui/default-qt-settings: libgui/default-qt-settings.in build-aux/mk-default-qt-settings.sh | libgui/$(octave_dirstamp)
+%reldir%/default-qt-settings: %reldir%/default-qt-settings.in build-aux/mk-default-qt-settings.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-default-qt-settings.sh)
 
 DIRSTAMP_FILES += \
-  libgui/$(octave_dirstamp)
+  %reldir%/$(octave_dirstamp)
 
 define moc-command
   rm -f $@-t $@ && \
   ( echo "#if defined (HAVE_CONFIG_H)"; \
     echo '#  include "config.h"'; \
     echo "#endif"; \
-    $(MOC) $(MOCFLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(libgui_liboctgui_la_CPPFLAGS) $< ) > $@-t && \
+    $(MOC) $(MOCFLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(%canon_reldir%_liboctgui_la_CPPFLAGS) $< ) > $@-t && \
   mv $@-t $@
 endef
 
@@ -121,39 +121,39 @@ am__v_lrelease_ = $(am__v_lrelease_$(AM_DEFAULT_VERBOSITY))
 am__v_lrelease_0 = -silent
 am__v_lrelease_1 =
 
-%.qm: %.ts | libgui/languages/$(octave_dirstamp)
+%.qm: %.ts | %reldir%/languages/$(octave_dirstamp)
 	$(AM_V_GEN)$(LRELEASE) $(LRELEASEFLAGS) $(AM_V_lrelease) -qm $@ $<
 
 DIRSTAMP_FILES += \
-  libgui/languages/$(octave_dirstamp)
+  %reldir%/languages/$(octave_dirstamp)
 
-libgui_EXTRA_DIST += \
+%canon_reldir%_EXTRA_DIST += \
   $(TRANSLATIONS) \
-  libgui/default-qt-settings.in \
-  libgui/liboctgui-build-info.in.cc
+  %reldir%/default-qt-settings.in \
+  %reldir%/liboctgui-build-info.in.cc
 
-EXTRA_DIST += $(libgui_EXTRA_DIST)
+EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
-libgui_CLEANFILES += \
-  libgui/liboctgui-build-info.cc
+%canon_reldir%_CLEANFILES += \
+  %reldir%/liboctgui-build-info.cc
 
-libgui_DISTCLEANFILES += \
-  libgui/default-qt-settings \
+%canon_reldir%_DISTCLEANFILES += \
+  %reldir%/default-qt-settings \
   $(LOCALES)
 
-CLEANFILES += $(libgui_CLEANFILES)
-DISTCLEANFILES += $(libgui_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(libgui_MAINTAINERCLEANFILES)
+CLEANFILES += $(%canon_reldir%_CLEANFILES)
+DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
 
 libgui-clean:
-	rm -f $(libgui_CLEANFILES)
+	rm -f $(%canon_reldir%_CLEANFILES)
 
 libgui-distclean: libgui-clean
-	rm -f $(libgui_DISTCLEANFILES)
+	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
 libgui-maintainer-clean: libgui-distclean
-	rm -f $(libgui_MAINTAINERCLEANFILES)
+	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)
 
-libgui/liboctgui-build-info.cc: libgui/liboctgui-build-info.in.cc HG-ID | libgui/$(octave_dirstamp)
+%reldir%/liboctgui-build-info.cc: %reldir%/liboctgui-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)
 endif

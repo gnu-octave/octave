@@ -1,36 +1,36 @@
 FFTPACK_SRC = \
-  liboctave/external/fftpack/cfftb.f \
-  liboctave/external/fftpack/cfftb1.f \
-  liboctave/external/fftpack/cfftf.f \
-  liboctave/external/fftpack/cfftf1.f \
-  liboctave/external/fftpack/cffti.f \
-  liboctave/external/fftpack/cffti1.f \
-  liboctave/external/fftpack/passb.f \
-  liboctave/external/fftpack/passb2.f \
-  liboctave/external/fftpack/passb3.f \
-  liboctave/external/fftpack/passb4.f \
-  liboctave/external/fftpack/passb5.f \
-  liboctave/external/fftpack/passf.f \
-  liboctave/external/fftpack/passf2.f \
-  liboctave/external/fftpack/passf3.f \
-  liboctave/external/fftpack/passf4.f \
-  liboctave/external/fftpack/passf5.f \
-  liboctave/external/fftpack/zfftb.f \
-  liboctave/external/fftpack/zfftb1.f \
-  liboctave/external/fftpack/zfftf.f \
-  liboctave/external/fftpack/zfftf1.f \
-  liboctave/external/fftpack/zffti.f \
-  liboctave/external/fftpack/zffti1.f \
-  liboctave/external/fftpack/zpassb.f \
-  liboctave/external/fftpack/zpassb2.f \
-  liboctave/external/fftpack/zpassb3.f \
-  liboctave/external/fftpack/zpassb4.f \
-  liboctave/external/fftpack/zpassb5.f \
-  liboctave/external/fftpack/zpassf.f \
-  liboctave/external/fftpack/zpassf2.f \
-  liboctave/external/fftpack/zpassf3.f \
-  liboctave/external/fftpack/zpassf4.f \
-  liboctave/external/fftpack/zpassf5.f
+  %reldir%/cfftb.f \
+  %reldir%/cfftb1.f \
+  %reldir%/cfftf.f \
+  %reldir%/cfftf1.f \
+  %reldir%/cffti.f \
+  %reldir%/cffti1.f \
+  %reldir%/passb.f \
+  %reldir%/passb2.f \
+  %reldir%/passb3.f \
+  %reldir%/passb4.f \
+  %reldir%/passb5.f \
+  %reldir%/passf.f \
+  %reldir%/passf2.f \
+  %reldir%/passf3.f \
+  %reldir%/passf4.f \
+  %reldir%/passf5.f \
+  %reldir%/zfftb.f \
+  %reldir%/zfftb1.f \
+  %reldir%/zfftf.f \
+  %reldir%/zfftf1.f \
+  %reldir%/zffti.f \
+  %reldir%/zffti1.f \
+  %reldir%/zpassb.f \
+  %reldir%/zpassb2.f \
+  %reldir%/zpassb3.f \
+  %reldir%/zpassb4.f \
+  %reldir%/zpassb5.f \
+  %reldir%/zpassf.f \
+  %reldir%/zpassf2.f \
+  %reldir%/zpassf3.f \
+  %reldir%/zpassf4.f \
+  %reldir%/zpassf5.f
 
 if AMCOND_HAVE_FFTW
   liboctave_EXTRA_DIST += $(FFTPACK_SRC)
@@ -39,4 +39,4 @@ else
 endif
 
 liboctave_EXTRA_DIST += \
-  liboctave/external/fftpack/fftpack.doc
+  %reldir%/fftpack.doc

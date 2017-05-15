@@ -1,14 +1,14 @@
 FCN_FILE_DIRS += scripts/+containers
 
-scripts_containers_FCN_FILES = \
-  scripts/+containers/Map.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/Map.m
 
-scripts_containersdir = $(fcnfiledir)/+containers
+%canon_reldir%dir = $(fcnfiledir)/+containers
 
-scripts_containers_DATA = $(scripts_containers_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_containers_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/+containers/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/+containers/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

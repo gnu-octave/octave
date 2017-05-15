@@ -1,45 +1,45 @@
 FCN_FILE_DIRS += scripts/strings
 
-scripts_strings_FCN_FILES = \
-  scripts/strings/base2dec.m \
-  scripts/strings/bin2dec.m \
-  scripts/strings/blanks.m \
-  scripts/strings/cstrcat.m \
-  scripts/strings/deblank.m \
-  scripts/strings/dec2base.m \
-  scripts/strings/dec2bin.m \
-  scripts/strings/dec2hex.m \
-  scripts/strings/findstr.m \
-  scripts/strings/hex2dec.m \
-  scripts/strings/index.m \
-  scripts/strings/isletter.m \
-  scripts/strings/isstrprop.m \
-  scripts/strings/mat2str.m \
-  scripts/strings/native2unicode.m \
-  scripts/strings/ostrsplit.m \
-  scripts/strings/regexptranslate.m \
-  scripts/strings/rindex.m \
-  scripts/strings/str2num.m \
-  scripts/strings/strcat.m \
-  scripts/strings/strchr.m \
-  scripts/strings/strjoin.m \
-  scripts/strings/strjust.m \
-  scripts/strings/strmatch.m \
-  scripts/strings/strsplit.m \
-  scripts/strings/strtok.m \
-  scripts/strings/strtrim.m \
-  scripts/strings/strtrunc.m \
-  scripts/strings/substr.m \
-  scripts/strings/unicode2native.m \
-  scripts/strings/untabify.m \
-  scripts/strings/validatestring.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/base2dec.m \
+  %reldir%/bin2dec.m \
+  %reldir%/blanks.m \
+  %reldir%/cstrcat.m \
+  %reldir%/deblank.m \
+  %reldir%/dec2base.m \
+  %reldir%/dec2bin.m \
+  %reldir%/dec2hex.m \
+  %reldir%/findstr.m \
+  %reldir%/hex2dec.m \
+  %reldir%/index.m \
+  %reldir%/isletter.m \
+  %reldir%/isstrprop.m \
+  %reldir%/mat2str.m \
+  %reldir%/native2unicode.m \
+  %reldir%/ostrsplit.m \
+  %reldir%/regexptranslate.m \
+  %reldir%/rindex.m \
+  %reldir%/str2num.m \
+  %reldir%/strcat.m \
+  %reldir%/strchr.m \
+  %reldir%/strjoin.m \
+  %reldir%/strjust.m \
+  %reldir%/strmatch.m \
+  %reldir%/strsplit.m \
+  %reldir%/strtok.m \
+  %reldir%/strtrim.m \
+  %reldir%/strtrunc.m \
+  %reldir%/substr.m \
+  %reldir%/unicode2native.m \
+  %reldir%/untabify.m \
+  %reldir%/validatestring.m
 
-scripts_stringsdir = $(fcnfiledir)/strings
+%canon_reldir%dir = $(fcnfiledir)/strings
 
-scripts_strings_DATA = $(scripts_strings_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_strings_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/strings/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/strings/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

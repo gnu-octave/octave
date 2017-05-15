@@ -1,9 +1,9 @@
 EXTERNAL_SOURCES += \
-  liboctave/external/dassl/ddaini.f \
-  liboctave/external/dassl/ddajac.f \
-  liboctave/external/dassl/ddanrm.f \
-  liboctave/external/dassl/ddaslv.f \
-  liboctave/external/dassl/ddassl.f \
-  liboctave/external/dassl/ddastp.f \
-  liboctave/external/dassl/ddatrp.f \
-  liboctave/external/dassl/ddawts.f
+  %reldir%/ddaini.f \
+  %reldir%/ddajac.f \
+  %reldir%/ddanrm.f \
+  %reldir%/ddaslv.f \
+  %reldir%/ddassl.f \
+  %reldir%/ddastp.f \
+  %reldir%/ddatrp.f \
+  %reldir%/ddawts.f

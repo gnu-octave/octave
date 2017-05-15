@@ -1,132 +1,132 @@
 if AMCOND_BUILD_QT_GRAPHICS
 
 OCTAVE_GUI_GRAPHICS_MOC = \
-  libgui/graphics/moc-annotation-dialog.cc \
-  libgui/graphics/moc-Backend.cc \
-  libgui/graphics/moc-ButtonControl.cc \
-  libgui/graphics/moc-ButtonGroup.cc \
-  libgui/graphics/moc-ContextMenu.cc \
-  libgui/graphics/moc-EditControl.cc \
-  libgui/graphics/moc-Figure.cc \
-  libgui/graphics/moc-FigureWindow.cc \
-  libgui/graphics/moc-ListBoxControl.cc \
-  libgui/graphics/moc-Menu.cc \
-  libgui/graphics/moc-MouseModeActionGroup.cc \
-  libgui/graphics/moc-Object.cc \
-  libgui/graphics/moc-ObjectFactory.cc \
-  libgui/graphics/moc-ObjectProxy.cc \
-  libgui/graphics/moc-PopupMenuControl.cc \
-  libgui/graphics/moc-PushTool.cc \
-  libgui/graphics/moc-SliderControl.cc \
-  libgui/graphics/moc-TextEdit.cc \
-  libgui/graphics/moc-ToggleTool.cc \
-  libgui/graphics/moc-ToolBar.cc
+  %reldir%/moc-annotation-dialog.cc \
+  %reldir%/moc-Backend.cc \
+  %reldir%/moc-ButtonControl.cc \
+  %reldir%/moc-ButtonGroup.cc \
+  %reldir%/moc-ContextMenu.cc \
+  %reldir%/moc-EditControl.cc \
+  %reldir%/moc-Figure.cc \
+  %reldir%/moc-FigureWindow.cc \
+  %reldir%/moc-ListBoxControl.cc \
+  %reldir%/moc-Menu.cc \
+  %reldir%/moc-MouseModeActionGroup.cc \
+  %reldir%/moc-Object.cc \
+  %reldir%/moc-ObjectFactory.cc \
+  %reldir%/moc-ObjectProxy.cc \
+  %reldir%/moc-PopupMenuControl.cc \
+  %reldir%/moc-PushTool.cc \
+  %reldir%/moc-SliderControl.cc \
+  %reldir%/moc-TextEdit.cc \
+  %reldir%/moc-ToggleTool.cc \
+  %reldir%/moc-ToolBar.cc
 
-$(OCTAVE_GUI_GRAPHICS_MOC): | libgui/graphics/$(octave_dirstamp)
+$(OCTAVE_GUI_GRAPHICS_MOC): | %reldir%/$(octave_dirstamp)
 
 DIRSTAMP_FILES += \
-  libgui/graphics/$(octave_dirstamp)
+  %reldir%/$(octave_dirstamp)
 
 octave_gui_MOC += \
   $(OCTAVE_GUI_GRAPHICS_MOC)
 
 octave_gui_graphics_UI = \
-  libgui/graphics/annotation-dialog.ui
+  %reldir%/annotation-dialog.ui
 
-octave_gui_graphics_UI_H = $(patsubst libgui/graphics/%.ui, libgui/graphics/ui-%.h, $(octave_gui_graphics_UI))
+octave_gui_graphics_UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(octave_gui_graphics_UI))
 
-$(octave_gui_graphics_UI_H): | libgui/graphics/$(octave_dirstamp)
+$(octave_gui_graphics_UI_H): | %reldir%/$(octave_dirstamp)
 
 BUILT_SOURCES += $(octave_gui_graphics_UI_H)
 
-octave_gui_graphics_RC = libgui/graphics/qrc-qthandles.cc
+octave_gui_graphics_RC = %reldir%/qrc-qthandles.cc
 
-$(octave_gui_graphics_RC): | libgui/graphics/$(octave_dirstamp)
+$(octave_gui_graphics_RC): | %reldir%/$(octave_dirstamp)
 
 noinst_HEADERS += \
-  libgui/graphics/__init_qt__.h \
-  libgui/graphics/annotation-dialog.h \
-  libgui/graphics/Backend.h \
-  libgui/graphics/BaseControl.h \
-  libgui/graphics/ButtonControl.h \
-  libgui/graphics/ButtonGroup.h \
-  libgui/graphics/Canvas.h \
-  libgui/graphics/CheckBoxControl.h \
-  libgui/graphics/Container.h \
-  libgui/graphics/ContextMenu.h \
-  libgui/graphics/EditControl.h \
-  libgui/graphics/Figure.h \
-  libgui/graphics/FigureWindow.h \
-  libgui/graphics/GenericEventNotify.h \
-  libgui/graphics/GLCanvas.h \
-  libgui/graphics/KeyMap.h \
-  libgui/graphics/ListBoxControl.h \
-  libgui/graphics/Logger.h \
-  libgui/graphics/Menu.h \
-  libgui/graphics/MenuContainer.h \
-  libgui/graphics/MouseModeActionGroup.h \
-  libgui/graphics/Object.h \
-  libgui/graphics/ObjectFactory.h \
-  libgui/graphics/ObjectProxy.h \
-  libgui/graphics/Panel.h \
-  libgui/graphics/PopupMenuControl.h \
-  libgui/graphics/PushButtonControl.h \
-  libgui/graphics/PushTool.h \
-  libgui/graphics/QtHandlesUtils.h \
-  libgui/graphics/RadioButtonControl.h \
-  libgui/graphics/SliderControl.h \
-  libgui/graphics/TextControl.h \
-  libgui/graphics/TextEdit.h \
-  libgui/graphics/ToggleButtonControl.h \
-  libgui/graphics/ToggleTool.h \
-  libgui/graphics/ToolBar.h \
-  libgui/graphics/ToolBarButton.h \
-  libgui/graphics/gl-select.h \
+  %reldir%/__init_qt__.h \
+  %reldir%/annotation-dialog.h \
+  %reldir%/Backend.h \
+  %reldir%/BaseControl.h \
+  %reldir%/ButtonControl.h \
+  %reldir%/ButtonGroup.h \
+  %reldir%/Canvas.h \
+  %reldir%/CheckBoxControl.h \
+  %reldir%/Container.h \
+  %reldir%/ContextMenu.h \
+  %reldir%/EditControl.h \
+  %reldir%/Figure.h \
+  %reldir%/FigureWindow.h \
+  %reldir%/GenericEventNotify.h \
+  %reldir%/GLCanvas.h \
+  %reldir%/KeyMap.h \
+  %reldir%/ListBoxControl.h \
+  %reldir%/Logger.h \
+  %reldir%/Menu.h \
+  %reldir%/MenuContainer.h \
+  %reldir%/MouseModeActionGroup.h \
+  %reldir%/Object.h \
+  %reldir%/ObjectFactory.h \
+  %reldir%/ObjectProxy.h \
+  %reldir%/Panel.h \
+  %reldir%/PopupMenuControl.h \
+  %reldir%/PushButtonControl.h \
+  %reldir%/PushTool.h \
+  %reldir%/QtHandlesUtils.h \
+  %reldir%/RadioButtonControl.h \
+  %reldir%/SliderControl.h \
+  %reldir%/TextControl.h \
+  %reldir%/TextEdit.h \
+  %reldir%/ToggleButtonControl.h \
+  %reldir%/ToggleTool.h \
+  %reldir%/ToolBar.h \
+  %reldir%/ToolBarButton.h \
+  %reldir%/gl-select.h \
   $(TEMPLATE_SRC)
 
-libgui_graphics_libgui_graphics_la_SOURCES = \
-  libgui/graphics/__init_qt__.cc \
-  libgui/graphics/annotation-dialog.cc \
-  libgui/graphics/Backend.cc \
-  libgui/graphics/BaseControl.cc \
-  libgui/graphics/ButtonControl.cc \
-  libgui/graphics/ButtonGroup.cc \
-  libgui/graphics/Canvas.cc \
-  libgui/graphics/CheckBoxControl.cc \
-  libgui/graphics/Container.cc \
-  libgui/graphics/ContextMenu.cc \
-  libgui/graphics/EditControl.cc \
-  libgui/graphics/Figure.cc \
-  libgui/graphics/FigureWindow.cc \
-  libgui/graphics/GLCanvas.cc \
-  libgui/graphics/KeyMap.cc \
-  libgui/graphics/ListBoxControl.cc \
-  libgui/graphics/Logger.cc \
-  libgui/graphics/Menu.cc \
-  libgui/graphics/MouseModeActionGroup.cc \
-  libgui/graphics/Object.cc \
-  libgui/graphics/ObjectFactory.cc \
-  libgui/graphics/ObjectProxy.cc \
-  libgui/graphics/Panel.cc \
-  libgui/graphics/PopupMenuControl.cc \
-  libgui/graphics/PushButtonControl.cc \
-  libgui/graphics/PushTool.cc \
-  libgui/graphics/QtHandlesUtils.cc \
-  libgui/graphics/RadioButtonControl.cc \
-  libgui/graphics/SliderControl.cc \
-  libgui/graphics/TextControl.cc \
-  libgui/graphics/TextEdit.cc \
-  libgui/graphics/ToggleButtonControl.cc \
-  libgui/graphics/ToggleTool.cc \
-  libgui/graphics/ToolBar.cc \
-  libgui/graphics/gl-select.cc
+%canon_reldir%_%canon_reldir%_la_SOURCES = \
+  %reldir%/__init_qt__.cc \
+  %reldir%/annotation-dialog.cc \
+  %reldir%/Backend.cc \
+  %reldir%/BaseControl.cc \
+  %reldir%/ButtonControl.cc \
+  %reldir%/ButtonGroup.cc \
+  %reldir%/Canvas.cc \
+  %reldir%/CheckBoxControl.cc \
+  %reldir%/Container.cc \
+  %reldir%/ContextMenu.cc \
+  %reldir%/EditControl.cc \
+  %reldir%/Figure.cc \
+  %reldir%/FigureWindow.cc \
+  %reldir%/GLCanvas.cc \
+  %reldir%/KeyMap.cc \
+  %reldir%/ListBoxControl.cc \
+  %reldir%/Logger.cc \
+  %reldir%/Menu.cc \
+  %reldir%/MouseModeActionGroup.cc \
+  %reldir%/Object.cc \
+  %reldir%/ObjectFactory.cc \
+  %reldir%/ObjectProxy.cc \
+  %reldir%/Panel.cc \
+  %reldir%/PopupMenuControl.cc \
+  %reldir%/PushButtonControl.cc \
+  %reldir%/PushTool.cc \
+  %reldir%/QtHandlesUtils.cc \
+  %reldir%/RadioButtonControl.cc \
+  %reldir%/SliderControl.cc \
+  %reldir%/TextControl.cc \
+  %reldir%/TextEdit.cc \
+  %reldir%/ToggleButtonControl.cc \
+  %reldir%/ToggleTool.cc \
+  %reldir%/ToolBar.cc \
+  %reldir%/gl-select.cc
 
 TEMPLATE_SRC = \
-  libgui/graphics/ToolBarButton.cc
+  %reldir%/ToolBarButton.cc
 
-nodist_libgui_graphics_libgui_graphics_la_SOURCES = $(octave_gui_graphics_MOC) $(octave_gui_graphics_RC)
+nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(octave_gui_graphics_RC)
 
-libgui_graphics_libgui_graphics_la_CPPFLAGS = \
+%canon_reldir%_%canon_reldir%_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
@@ -145,20 +145,20 @@ libgui_graphics_libgui_graphics_la_CPPFLAGS = \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-libgui_graphics_libgui_graphics_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_%canon_reldir%_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-libgui_graphics_libgui_graphics_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+%canon_reldir%_%canon_reldir%_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
-noinst_LTLIBRARIES += libgui/graphics/libgui-graphics.la
+noinst_LTLIBRARIES += %reldir%/libgui-graphics.la
 
 libgui_EXTRA_DIST += \
-  libgui/graphics/qthandles.qrc \
-  libgui/graphics/images/README \
-  libgui/graphics/images/pan.png \
-  libgui/graphics/images/rotate.png \
-  libgui/graphics/images/select.png \
-  libgui/graphics/images/zoom-in.png \
-  libgui/graphics/images/zoom-out.png \
+  %reldir%/qthandles.qrc \
+  %reldir%/images/README \
+  %reldir%/images/pan.png \
+  %reldir%/images/rotate.png \
+  %reldir%/images/select.png \
+  %reldir%/images/zoom-in.png \
+  %reldir%/images/zoom-out.png \
   $(octave_gui_graphics_UI)
 
 libgui_CLEANFILES += \

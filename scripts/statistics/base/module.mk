@@ -1,47 +1,47 @@
 FCN_FILE_DIRS += scripts/statistics/base
 
-scripts_statistics_base_FCN_FILES = \
-  scripts/statistics/base/center.m \
-  scripts/statistics/base/cloglog.m \
-  scripts/statistics/base/corr.m \
-  scripts/statistics/base/corrcoef.m \
-  scripts/statistics/base/cov.m \
-  scripts/statistics/base/gls.m \
-  scripts/statistics/base/histc.m \
-  scripts/statistics/base/iqr.m \
-  scripts/statistics/base/kendall.m \
-  scripts/statistics/base/kurtosis.m \
-  scripts/statistics/base/logit.m \
-  scripts/statistics/base/lscov.m \
-  scripts/statistics/base/mean.m \
-  scripts/statistics/base/meansq.m \
-  scripts/statistics/base/median.m \
-  scripts/statistics/base/mode.m \
-  scripts/statistics/base/moment.m \
-  scripts/statistics/base/ols.m \
-  scripts/statistics/base/ppplot.m \
-  scripts/statistics/base/prctile.m \
-  scripts/statistics/base/probit.m \
-  scripts/statistics/base/qqplot.m \
-  scripts/statistics/base/quantile.m \
-  scripts/statistics/base/range.m \
-  scripts/statistics/base/ranks.m \
-  scripts/statistics/base/run_count.m \
-  scripts/statistics/base/runlength.m \
-  scripts/statistics/base/skewness.m \
-  scripts/statistics/base/spearman.m \
-  scripts/statistics/base/statistics.m \
-  scripts/statistics/base/std.m \
-  scripts/statistics/base/table.m \
-  scripts/statistics/base/var.m \
-  scripts/statistics/base/zscore.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/center.m \
+  %reldir%/cloglog.m \
+  %reldir%/corr.m \
+  %reldir%/corrcoef.m \
+  %reldir%/cov.m \
+  %reldir%/gls.m \
+  %reldir%/histc.m \
+  %reldir%/iqr.m \
+  %reldir%/kendall.m \
+  %reldir%/kurtosis.m \
+  %reldir%/logit.m \
+  %reldir%/lscov.m \
+  %reldir%/mean.m \
+  %reldir%/meansq.m \
+  %reldir%/median.m \
+  %reldir%/mode.m \
+  %reldir%/moment.m \
+  %reldir%/ols.m \
+  %reldir%/ppplot.m \
+  %reldir%/prctile.m \
+  %reldir%/probit.m \
+  %reldir%/qqplot.m \
+  %reldir%/quantile.m \
+  %reldir%/range.m \
+  %reldir%/ranks.m \
+  %reldir%/run_count.m \
+  %reldir%/runlength.m \
+  %reldir%/skewness.m \
+  %reldir%/spearman.m \
+  %reldir%/statistics.m \
+  %reldir%/std.m \
+  %reldir%/table.m \
+  %reldir%/var.m \
+  %reldir%/zscore.m
 
-scripts_statistics_basedir = $(fcnfiledir)/statistics/base
+%canon_reldir%dir = $(fcnfiledir)/statistics/base
 
-scripts_statistics_base_DATA = $(scripts_statistics_base_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_statistics_base_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/statistics/base/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/statistics/base/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

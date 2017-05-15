@@ -1,31 +1,31 @@
 FCN_FILE_DIRS += scripts/specfun
 
-scripts_specfun_FCN_FILES = \
-  scripts/specfun/bessel.m \
-  scripts/specfun/beta.m \
-  scripts/specfun/betaln.m \
-  scripts/specfun/ellipke.m \
-  scripts/specfun/expint.m \
-  scripts/specfun/factor.m \
-  scripts/specfun/factorial.m \
-  scripts/specfun/isprime.m \
-  scripts/specfun/lcm.m \
-  scripts/specfun/legendre.m \
-  scripts/specfun/nchoosek.m \
-  scripts/specfun/nthroot.m \
-  scripts/specfun/perms.m \
-  scripts/specfun/pow2.m \
-  scripts/specfun/primes.m \
-  scripts/specfun/reallog.m \
-  scripts/specfun/realpow.m \
-  scripts/specfun/realsqrt.m
+%canon_reldir%_FCN_FILES = \
+  %reldir%/bessel.m \
+  %reldir%/beta.m \
+  %reldir%/betaln.m \
+  %reldir%/ellipke.m \
+  %reldir%/expint.m \
+  %reldir%/factor.m \
+  %reldir%/factorial.m \
+  %reldir%/isprime.m \
+  %reldir%/lcm.m \
+  %reldir%/legendre.m \
+  %reldir%/nchoosek.m \
+  %reldir%/nthroot.m \
+  %reldir%/perms.m \
+  %reldir%/pow2.m \
+  %reldir%/primes.m \
+  %reldir%/reallog.m \
+  %reldir%/realpow.m \
+  %reldir%/realsqrt.m
 
-scripts_specfundir = $(fcnfiledir)/specfun
+%canon_reldir%dir = $(fcnfiledir)/specfun
 
-scripts_specfun_DATA = $(scripts_specfun_FCN_FILES)
+%canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(scripts_specfun_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += scripts/specfun/PKG_ADD
+PKG_ADD_FILES += %reldir%/PKG_ADD
 
-DIRSTAMP_FILES += scripts/specfun/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

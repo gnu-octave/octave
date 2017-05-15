@@ -1,8 +1,8 @@
 
 bug_36025_TEST_FILES = \
-  test/bug-36025/@testclass/one.m \
-  test/bug-36025/@testclass/testclass.m \
-  test/bug-36025/@testclass/two.m \
-  test/bug-36025/bug-36025.tst
+  %reldir%/@testclass/one.m \
+  %reldir%/@testclass/testclass.m \
+  %reldir%/@testclass/two.m \
+  %reldir%/bug-36025.tst
 
 TEST_FILES += $(bug_36025_TEST_FILES)

@@ -1,269 +1,269 @@
 ## Options functions for Fortran packages like LSODE, DASPK.
 ## These are generated automagically by configure and Perl.
 OPT_HANDLERS = \
-  libinterp/corefcn/DASPK-opts.cc \
-  libinterp/corefcn/DASRT-opts.cc \
-  libinterp/corefcn/DASSL-opts.cc \
-  libinterp/corefcn/LSODE-opts.cc \
-  libinterp/corefcn/Quad-opts.cc
+  %reldir%/DASPK-opts.cc \
+  %reldir%/DASRT-opts.cc \
+  %reldir%/DASSL-opts.cc \
+  %reldir%/LSODE-opts.cc \
+  %reldir%/Quad-opts.cc
 
-$(OPT_HANDLERS): libinterp/corefcn/%.cc : liboctave/numeric/%.in | libinterp/corefcn/$(octave_dirstamp)
+$(OPT_HANDLERS): %reldir%/%.cc : liboctave/numeric/%.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t && \
 	mv $@-t $@
 
 $(OPT_HANDLERS): $(srcdir)/build-aux/mk-opts.pl
 
-DIRSTAMP_FILES += libinterp/corefcn/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 COREFCN_INC = \
-  libinterp/corefcn/base-text-renderer.h \
-  libinterp/corefcn/Cell.h \
-  libinterp/corefcn/c-file-ptr-stream.h \
-  libinterp/corefcn/call-stack.h \
-  libinterp/corefcn/cdisplay.h \
-  libinterp/corefcn/comment-list.h \
-  libinterp/corefcn/data.h \
-  libinterp/corefcn/defun-dld.h \
-  libinterp/corefcn/defun-int.h \
-  libinterp/corefcn/defun.h \
-  libinterp/corefcn/dirfns.h \
-  libinterp/corefcn/display.h \
-  libinterp/corefcn/dynamic-ld.h \
-  libinterp/corefcn/error.h \
-  libinterp/corefcn/errwarn.h \
-  libinterp/corefcn/event-queue.h \
-  libinterp/corefcn/file-io.h \
-  libinterp/corefcn/ft-text-renderer.h \
-  libinterp/corefcn/gl-render.h \
-  libinterp/corefcn/gl2ps-print.h \
-  libinterp/corefcn/gripes.h \
-  libinterp/corefcn/help.h \
-  libinterp/corefcn/hook-fcn.h \
-  libinterp/corefcn/input.h \
-  libinterp/corefcn/interpreter.h \
-  libinterp/corefcn/load-path.h \
-  libinterp/corefcn/load-save.h \
-  libinterp/corefcn/ls-ascii-helper.h \
-  libinterp/corefcn/ls-hdf5.h \
-  libinterp/corefcn/ls-mat-ascii.h \
-  libinterp/corefcn/ls-mat4.h \
-  libinterp/corefcn/ls-mat5.h \
-  libinterp/corefcn/ls-oct-text.h \
-  libinterp/corefcn/ls-oct-binary.h \
-  libinterp/corefcn/ls-utils.h \
-  libinterp/corefcn/mex.h \
-  libinterp/corefcn/mexproto.h \
-  libinterp/corefcn/oct-errno.h \
-  libinterp/corefcn/oct-fstrm.h \
-  libinterp/corefcn/oct-handle.h \
-  libinterp/corefcn/oct-hdf5-types.h \
-  libinterp/corefcn/oct-hist.h \
-  libinterp/corefcn/oct-iostrm.h \
-  libinterp/corefcn/oct-lvalue.h \
-  libinterp/corefcn/oct-map.h \
-  libinterp/corefcn/oct-obj.h \
-  libinterp/corefcn/oct-prcstrm.h \
-  libinterp/corefcn/oct-procbuf.h \
-  libinterp/corefcn/oct-stdstrm.h \
-  libinterp/corefcn/oct-stream.h \
-  libinterp/corefcn/oct-strstrm.h \
-  libinterp/corefcn/oct.h \
-  libinterp/corefcn/octave-default-image.h \
-  libinterp/corefcn/octave-link.h \
-  libinterp/corefcn/octave-preserve-stream-state.h \
-  libinterp/corefcn/pager.h \
-  libinterp/corefcn/pr-output.h \
-  libinterp/corefcn/procstream.h \
-  libinterp/corefcn/profiler.h \
-  libinterp/corefcn/sighandlers.h \
-  libinterp/corefcn/sparse-xdiv.h \
-  libinterp/corefcn/sparse-xpow.h \
-  libinterp/corefcn/symtab.h \
-  libinterp/corefcn/sysdep.h \
-  libinterp/corefcn/text-renderer.h \
-  libinterp/corefcn/toplev.h \
-  libinterp/corefcn/txt-eng.h \
-  libinterp/corefcn/utils.h \
-  libinterp/corefcn/variables.h \
-  libinterp/corefcn/workspace-element.h \
-  libinterp/corefcn/xdiv.h \
-  libinterp/corefcn/xnorm.h \
-  libinterp/corefcn/xpow.h \
-  libinterp/corefcn/zfstream.h
+  %reldir%/base-text-renderer.h \
+  %reldir%/Cell.h \
+  %reldir%/c-file-ptr-stream.h \
+  %reldir%/call-stack.h \
+  %reldir%/cdisplay.h \
+  %reldir%/comment-list.h \
+  %reldir%/data.h \
+  %reldir%/defun-dld.h \
+  %reldir%/defun-int.h \
+  %reldir%/defun.h \
+  %reldir%/dirfns.h \
+  %reldir%/display.h \
+  %reldir%/dynamic-ld.h \
+  %reldir%/error.h \
+  %reldir%/errwarn.h \
+  %reldir%/event-queue.h \
+  %reldir%/file-io.h \
+  %reldir%/ft-text-renderer.h \
+  %reldir%/gl-render.h \
+  %reldir%/gl2ps-print.h \
+  %reldir%/gripes.h \
+  %reldir%/help.h \
+  %reldir%/hook-fcn.h \
+  %reldir%/input.h \
+  %reldir%/interpreter.h \
+  %reldir%/load-path.h \
+  %reldir%/load-save.h \
+  %reldir%/ls-ascii-helper.h \
+  %reldir%/ls-hdf5.h \
+  %reldir%/ls-mat-ascii.h \
+  %reldir%/ls-mat4.h \
+  %reldir%/ls-mat5.h \
+  %reldir%/ls-oct-text.h \
+  %reldir%/ls-oct-binary.h \
+  %reldir%/ls-utils.h \
+  %reldir%/mex.h \
+  %reldir%/mexproto.h \
+  %reldir%/oct-errno.h \
+  %reldir%/oct-fstrm.h \
+  %reldir%/oct-handle.h \
+  %reldir%/oct-hdf5-types.h \
+  %reldir%/oct-hist.h \
+  %reldir%/oct-iostrm.h \
+  %reldir%/oct-lvalue.h \
+  %reldir%/oct-map.h \
+  %reldir%/oct-obj.h \
+  %reldir%/oct-prcstrm.h \
+  %reldir%/oct-procbuf.h \
+  %reldir%/oct-stdstrm.h \
+  %reldir%/oct-stream.h \
+  %reldir%/oct-strstrm.h \
+  %reldir%/oct.h \
+  %reldir%/octave-default-image.h \
+  %reldir%/octave-link.h \
+  %reldir%/octave-preserve-stream-state.h \
+  %reldir%/pager.h \
+  %reldir%/pr-output.h \
+  %reldir%/procstream.h \
+  %reldir%/profiler.h \
+  %reldir%/sighandlers.h \
+  %reldir%/sparse-xdiv.h \
+  %reldir%/sparse-xpow.h \
+  %reldir%/symtab.h \
+  %reldir%/sysdep.h \
+  %reldir%/text-renderer.h \
+  %reldir%/toplev.h \
+  %reldir%/txt-eng.h \
+  %reldir%/utils.h \
+  %reldir%/variables.h \
+  %reldir%/workspace-element.h \
+  %reldir%/xdiv.h \
+  %reldir%/xnorm.h \
+  %reldir%/xpow.h \
+  %reldir%/zfstream.h
 
 NOINSTALL_COREFCN_INC = \
-  libinterp/corefcn/interpreter-private.h \
-  libinterp/corefcn/oct-hdf5.h \
-  libinterp/corefcn/oct-opengl.h
+  %reldir%/interpreter-private.h \
+  %reldir%/oct-hdf5.h \
+  %reldir%/oct-opengl.h
 
 ## oct-tex-parser.h is in the SRC list so that it will be distributed
 ## but not installed.
 
 COREFCN_SRC = \
-  libinterp/corefcn/Cell.cc \
-  libinterp/corefcn/__contourc__.cc \
-  libinterp/corefcn/__dsearchn__.cc \
-  libinterp/corefcn/__ichol__.cc \
-  libinterp/corefcn/__ilu__.cc \
-  libinterp/corefcn/__lin_interpn__.cc \
-  libinterp/corefcn/__luinc__.cc \
-  libinterp/corefcn/__magick_read__.cc \
-  libinterp/corefcn/__pchip_deriv__.cc \
-  libinterp/corefcn/__qp__.cc \
-  libinterp/corefcn/balance.cc \
-  libinterp/corefcn/besselj.cc \
-  libinterp/corefcn/betainc.cc \
-  libinterp/corefcn/bitfcns.cc \
-  libinterp/corefcn/bsxfun.cc \
-  libinterp/corefcn/c-file-ptr-stream.cc \
-  libinterp/corefcn/call-stack.cc \
-  libinterp/corefcn/cdisplay.c \
-  libinterp/corefcn/cellfun.cc \
-  libinterp/corefcn/colloc.cc \
-  libinterp/corefcn/coct-hdf5-types.c \
-  libinterp/corefcn/comment-list.cc \
-  libinterp/corefcn/conv2.cc \
-  libinterp/corefcn/daspk.cc \
-  libinterp/corefcn/dasrt.cc \
-  libinterp/corefcn/dassl.cc \
-  libinterp/corefcn/data.cc \
-  libinterp/corefcn/debug.cc \
-  libinterp/corefcn/defaults.cc \
-  libinterp/corefcn/defun.cc \
-  libinterp/corefcn/det.cc \
-  libinterp/corefcn/dirfns.cc \
-  libinterp/corefcn/display.cc \
-  libinterp/corefcn/dlmread.cc \
-  libinterp/corefcn/dot.cc \
-  libinterp/corefcn/dynamic-ld.cc \
-  libinterp/corefcn/eig.cc \
-  libinterp/corefcn/ellipj.cc \
-  libinterp/corefcn/error.cc \
-  libinterp/corefcn/errwarn.cc \
-  libinterp/corefcn/event-queue.cc \
-  libinterp/corefcn/fft.cc \
-  libinterp/corefcn/fft2.cc \
-  libinterp/corefcn/fftn.cc \
-  libinterp/corefcn/file-io.cc \
-  libinterp/corefcn/filter.cc \
-  libinterp/corefcn/find.cc \
-  libinterp/corefcn/ft-text-renderer.cc \
-  libinterp/corefcn/gammainc.cc \
-  libinterp/corefcn/gcd.cc \
-  libinterp/corefcn/getgrent.cc \
-  libinterp/corefcn/getpwent.cc \
-  libinterp/corefcn/getrusage.cc \
-  libinterp/corefcn/givens.cc \
-  libinterp/corefcn/gl-render.cc \
-  libinterp/corefcn/gl2ps-print.cc \
-  libinterp/corefcn/graphics.cc \
-  libinterp/corefcn/gripes.cc \
-  libinterp/corefcn/gsvd.cc \
-  libinterp/corefcn/hash.cc \
-  libinterp/corefcn/help.cc \
-  libinterp/corefcn/hess.cc \
-  libinterp/corefcn/hex2num.cc \
-  libinterp/corefcn/hook-fcn.cc \
-  libinterp/corefcn/input.cc \
-  libinterp/corefcn/inv.cc \
-  libinterp/corefcn/interpreter-private.cc \
-  libinterp/corefcn/interpreter.cc \
-  libinterp/corefcn/kron.cc \
-  libinterp/corefcn/load-path.cc \
-  libinterp/corefcn/load-save.cc \
-  libinterp/corefcn/lookup.cc \
-  libinterp/corefcn/ls-ascii-helper.cc \
-  libinterp/corefcn/ls-hdf5.cc \
-  libinterp/corefcn/ls-mat-ascii.cc \
-  libinterp/corefcn/ls-mat4.cc \
-  libinterp/corefcn/ls-mat5.cc \
-  libinterp/corefcn/ls-oct-text.cc \
-  libinterp/corefcn/ls-oct-binary.cc \
-  libinterp/corefcn/ls-utils.cc \
-  libinterp/corefcn/lsode.cc \
-  libinterp/corefcn/lu.cc \
-  libinterp/corefcn/mappers.cc \
-  libinterp/corefcn/matrix_type.cc \
-  libinterp/corefcn/max.cc \
-  libinterp/corefcn/mex.cc \
-  libinterp/corefcn/mgorth.cc \
-  libinterp/corefcn/nproc.cc \
-  libinterp/corefcn/oct-fstrm.cc \
-  libinterp/corefcn/oct-hdf5-types.cc \
-  libinterp/corefcn/oct-hist.cc \
-  libinterp/corefcn/oct-iostrm.cc \
-  libinterp/corefcn/oct-lvalue.cc \
-  libinterp/corefcn/oct-map.cc \
-  libinterp/corefcn/oct-prcstrm.cc \
-  libinterp/corefcn/oct-procbuf.cc \
-  libinterp/corefcn/oct-stream.cc \
-  libinterp/corefcn/oct-strstrm.cc \
-  libinterp/corefcn/oct-tex-lexer.ll \
-  libinterp/corefcn/oct-tex-parser.h \
-  libinterp/corefcn/oct-tex-parser.yy \
-  libinterp/corefcn/octave-link.cc \
-  libinterp/corefcn/ordschur.cc \
-  libinterp/corefcn/pager.cc \
-  libinterp/corefcn/pinv.cc \
-  libinterp/corefcn/pr-output.cc \
-  libinterp/corefcn/procstream.cc \
-  libinterp/corefcn/profiler.cc \
-  libinterp/corefcn/psi.cc \
-  libinterp/corefcn/quad.cc \
-  libinterp/corefcn/quadcc.cc \
-  libinterp/corefcn/qz.cc \
-  libinterp/corefcn/rand.cc \
-  libinterp/corefcn/rcond.cc \
-  libinterp/corefcn/regexp.cc \
-  libinterp/corefcn/schur.cc \
-  libinterp/corefcn/sighandlers.cc \
-  libinterp/corefcn/sparse-xdiv.cc \
-  libinterp/corefcn/sparse-xpow.cc \
-  libinterp/corefcn/sparse.cc \
-  libinterp/corefcn/spparms.cc \
-  libinterp/corefcn/sqrtm.cc \
-  libinterp/corefcn/str2double.cc \
-  libinterp/corefcn/strfind.cc \
-  libinterp/corefcn/strfns.cc \
-  libinterp/corefcn/sub2ind.cc \
-  libinterp/corefcn/svd.cc \
-  libinterp/corefcn/sylvester.cc \
-  libinterp/corefcn/symtab.cc \
-  libinterp/corefcn/syscalls.cc \
-  libinterp/corefcn/sysdep.cc \
-  libinterp/corefcn/time.cc \
-  libinterp/corefcn/text-renderer.cc \
-  libinterp/corefcn/toplev.cc \
-  libinterp/corefcn/tril.cc \
-  libinterp/corefcn/tsearch.cc \
-  libinterp/corefcn/txt-eng.cc \
-  libinterp/corefcn/typecast.cc \
-  libinterp/corefcn/urlwrite.cc \
-  libinterp/corefcn/utils.cc \
-  libinterp/corefcn/variables.cc \
-  libinterp/corefcn/xdiv.cc \
-  libinterp/corefcn/xnorm.cc \
-  libinterp/corefcn/xpow.cc \
-  libinterp/corefcn/zfstream.cc \
+  %reldir%/Cell.cc \
+  %reldir%/__contourc__.cc \
+  %reldir%/__dsearchn__.cc \
+  %reldir%/__ichol__.cc \
+  %reldir%/__ilu__.cc \
+  %reldir%/__lin_interpn__.cc \
+  %reldir%/__luinc__.cc \
+  %reldir%/__magick_read__.cc \
+  %reldir%/__pchip_deriv__.cc \
+  %reldir%/__qp__.cc \
+  %reldir%/balance.cc \
+  %reldir%/besselj.cc \
+  %reldir%/betainc.cc \
+  %reldir%/bitfcns.cc \
+  %reldir%/bsxfun.cc \
+  %reldir%/c-file-ptr-stream.cc \
+  %reldir%/call-stack.cc \
+  %reldir%/cdisplay.c \
+  %reldir%/cellfun.cc \
+  %reldir%/colloc.cc \
+  %reldir%/coct-hdf5-types.c \
+  %reldir%/comment-list.cc \
+  %reldir%/conv2.cc \
+  %reldir%/daspk.cc \
+  %reldir%/dasrt.cc \
+  %reldir%/dassl.cc \
+  %reldir%/data.cc \
+  %reldir%/debug.cc \
+  %reldir%/defaults.cc \
+  %reldir%/defun.cc \
+  %reldir%/det.cc \
+  %reldir%/dirfns.cc \
+  %reldir%/display.cc \
+  %reldir%/dlmread.cc \
+  %reldir%/dot.cc \
+  %reldir%/dynamic-ld.cc \
+  %reldir%/eig.cc \
+  %reldir%/ellipj.cc \
+  %reldir%/error.cc \
+  %reldir%/errwarn.cc \
+  %reldir%/event-queue.cc \
+  %reldir%/fft.cc \
+  %reldir%/fft2.cc \
+  %reldir%/fftn.cc \
+  %reldir%/file-io.cc \
+  %reldir%/filter.cc \
+  %reldir%/find.cc \
+  %reldir%/ft-text-renderer.cc \
+  %reldir%/gammainc.cc \
+  %reldir%/gcd.cc \
+  %reldir%/getgrent.cc \
+  %reldir%/getpwent.cc \
+  %reldir%/getrusage.cc \
+  %reldir%/givens.cc \
+  %reldir%/gl-render.cc \
+  %reldir%/gl2ps-print.cc \
+  %reldir%/graphics.cc \
+  %reldir%/gripes.cc \
+  %reldir%/gsvd.cc \
+  %reldir%/hash.cc \
+  %reldir%/help.cc \
+  %reldir%/hess.cc \
+  %reldir%/hex2num.cc \
+  %reldir%/hook-fcn.cc \
+  %reldir%/input.cc \
+  %reldir%/inv.cc \
+  %reldir%/interpreter-private.cc \
+  %reldir%/interpreter.cc \
+  %reldir%/kron.cc \
+  %reldir%/load-path.cc \
+  %reldir%/load-save.cc \
+  %reldir%/lookup.cc \
+  %reldir%/ls-ascii-helper.cc \
+  %reldir%/ls-hdf5.cc \
+  %reldir%/ls-mat-ascii.cc \
+  %reldir%/ls-mat4.cc \
+  %reldir%/ls-mat5.cc \
+  %reldir%/ls-oct-text.cc \
+  %reldir%/ls-oct-binary.cc \
+  %reldir%/ls-utils.cc \
+  %reldir%/lsode.cc \
+  %reldir%/lu.cc \
+  %reldir%/mappers.cc \
+  %reldir%/matrix_type.cc \
+  %reldir%/max.cc \
+  %reldir%/mex.cc \
+  %reldir%/mgorth.cc \
+  %reldir%/nproc.cc \
+  %reldir%/oct-fstrm.cc \
+  %reldir%/oct-hdf5-types.cc \
+  %reldir%/oct-hist.cc \
+  %reldir%/oct-iostrm.cc \
+  %reldir%/oct-lvalue.cc \
+  %reldir%/oct-map.cc \
+  %reldir%/oct-prcstrm.cc \
+  %reldir%/oct-procbuf.cc \
+  %reldir%/oct-stream.cc \
+  %reldir%/oct-strstrm.cc \
+  %reldir%/oct-tex-lexer.ll \
+  %reldir%/oct-tex-parser.h \
+  %reldir%/oct-tex-parser.yy \
+  %reldir%/octave-link.cc \
+  %reldir%/ordschur.cc \
+  %reldir%/pager.cc \
+  %reldir%/pinv.cc \
+  %reldir%/pr-output.cc \
+  %reldir%/procstream.cc \
+  %reldir%/profiler.cc \
+  %reldir%/psi.cc \
+  %reldir%/quad.cc \
+  %reldir%/quadcc.cc \
+  %reldir%/qz.cc \
+  %reldir%/rand.cc \
+  %reldir%/rcond.cc \
+  %reldir%/regexp.cc \
+  %reldir%/schur.cc \
+  %reldir%/sighandlers.cc \
+  %reldir%/sparse-xdiv.cc \
+  %reldir%/sparse-xpow.cc \
+  %reldir%/sparse.cc \
+  %reldir%/spparms.cc \
+  %reldir%/sqrtm.cc \
+  %reldir%/str2double.cc \
+  %reldir%/strfind.cc \
+  %reldir%/strfns.cc \
+  %reldir%/sub2ind.cc \
+  %reldir%/svd.cc \
+  %reldir%/sylvester.cc \
+  %reldir%/symtab.cc \
+  %reldir%/syscalls.cc \
+  %reldir%/sysdep.cc \
+  %reldir%/time.cc \
+  %reldir%/text-renderer.cc \
+  %reldir%/toplev.cc \
+  %reldir%/tril.cc \
+  %reldir%/tsearch.cc \
+  %reldir%/txt-eng.cc \
+  %reldir%/typecast.cc \
+  %reldir%/urlwrite.cc \
+  %reldir%/utils.cc \
+  %reldir%/variables.cc \
+  %reldir%/xdiv.cc \
+  %reldir%/xnorm.cc \
+  %reldir%/xpow.cc \
+  %reldir%/zfstream.cc \
   $(NOINSTALL_COREFCN_INC)
 
 ## Special rules for sources which must be built before rest of compilation.
 
-libinterp/corefcn/defaults.h: libinterp/corefcn/defaults.in.h build-aux/subst-default-vals.sh | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/defaults.h: %reldir%/defaults.in.h build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
 
-libinterp/corefcn/graphics.h: libinterp/corefcn/graphics.in.h libinterp/genprops.awk | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/graphics.h: %reldir%/graphics.in.h libinterp/genprops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/graphics-props.cc: libinterp/corefcn/graphics.in.h libinterp/genprops.awk | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/graphics-props.cc: %reldir%/graphics.in.h libinterp/genprops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/libinterp/genprops.awk $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/oct-errno.cc: %reldir%/oct-errno.in.cc | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	if test -n "$(PERL)"; then \
 	  $(SHELL) $(srcdir)/libinterp/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
@@ -274,30 +274,30 @@ libinterp/corefcn/oct-errno.cc: libinterp/corefcn/oct-errno.in.cc | libinterp/co
 	fi && \
 	mv $@-t $@
 
-libinterp/corefcn/mxarray.h: libinterp/corefcn/mxarray.in.h build-aux/mk-mxarray-h.sh | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/mxarray.h: %reldir%/mxarray.in.h build-aux/mk-mxarray-h.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/mk-mxarray-h.sh)
 
-libinterp/corefcn/oct-tex-lexer.ll: libinterp/corefcn/oct-tex-lexer.in.ll libinterp/corefcn/oct-tex-symbols.in | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/oct-tex-lexer.ll: %reldir%/oct-tex-lexer.in.ll %reldir%/oct-tex-symbols.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/libinterp/corefcn/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t && \
+	$(AWK) 'BEGIN { print "/* DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-lexer.in.ll and oct-tex-symbols.in. */"; } /^@SYMBOL_RULES@$$/ { count = 0; while (getline < "$(srcdir)/%reldir%/oct-tex-symbols.in") { if ($$0 !~ /^#.*/ && NF == 3) { printf("\"\\\\%s\" { yylval->sym = %d; return SYM; }\n", $$1, count); count++; } } getline } ! /^@SYMBOL_RULES@$$/ { print }' $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/oct-tex-symbols.cc: libinterp/corefcn/oct-tex-symbols.in | libinterp/corefcn/$(octave_dirstamp)
+%reldir%/oct-tex-symbols.cc: %reldir%/oct-tex-symbols.in | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } !/^#/ && (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; }' $< > $@-t && \
 	mv $@-t $@
 
-libinterp/corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
+%reldir%/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
 
-libinterp/corefcn/oct-tex-parser.yy: libinterp/corefcn/oct-tex-parser.in.yy
+%reldir%/oct-tex-parser.yy: %reldir%/oct-tex-parser.in.yy
 	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
 
 noinst_LTLIBRARIES += \
-  libinterp/corefcn/libcorefcn.la
+  %reldir%/libcorefcn.la
 
-libinterp_corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
+%canon_reldir%_libcorefcn_la_SOURCES = $(COREFCN_SRC)
 
-libinterp_corefcn_libcorefcn_la_CPPFLAGS = \
+%canon_reldir%_libcorefcn_la_CPPFLAGS = \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
   $(FFTW_XCPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
@@ -306,15 +306,15 @@ libinterp_corefcn_libcorefcn_la_CPPFLAGS = \
   $(LLVM_CPPFLAGS) \
   $(Z_CPPFLAGS)
 
-libinterp_corefcn_libcorefcn_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%_libcorefcn_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 
-libinterp_corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
+%canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \
-  libinterp/corefcn/defaults.in.h \
-  libinterp/corefcn/graphics.in.h \
-  libinterp/corefcn/mxarray.in.h \
-  libinterp/corefcn/oct-errno.in.cc \
-  libinterp/corefcn/oct-tex-lexer.in.ll \
-  libinterp/corefcn/oct-tex-parser.in.yy \
-  libinterp/corefcn/oct-tex-symbols.in
+  %reldir%/defaults.in.h \
+  %reldir%/graphics.in.h \
+  %reldir%/mxarray.in.h \
+  %reldir%/oct-errno.in.cc \
+  %reldir%/oct-tex-lexer.in.ll \
+  %reldir%/oct-tex-parser.in.yy \
+  %reldir%/oct-tex-symbols.in

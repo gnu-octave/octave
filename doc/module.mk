@@ -1,14 +1,14 @@
-doc_EXTRA_DIST =
+%canon_reldir%_EXTRA_DIST =
 
-doc_CLEANFILES =
-doc_DISTCLEANFILES =
-doc_MAINTAINERCLEANFILES =
+%canon_reldir%_CLEANFILES =
+%canon_reldir%_DISTCLEANFILES =
+%canon_reldir%_MAINTAINERCLEANFILES =
 
-TEXINPUTS := $(PATH_SEPARATOR)$(abs_top_srcdir)/doc/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(abs_top_builddir)/doc/interpreter$(PATH_SEPARATOR)$(abs_top_builddir)/doc/.texmf-var//$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
+TEXINPUTS := $(PATH_SEPARATOR)$(abs_top_srcdir)/%reldir%/interpreter$(PATH_SEPARATOR)$(PATH_SEPARATOR)$(abs_top_builddir)/%reldir%/interpreter$(PATH_SEPARATOR)$(abs_top_builddir)/%reldir%/.texmf-var//$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)
 
 TEXMFCNF := $(PATH_SEPARATOR)$(abs_top_srcdir)/doc$(PATH_SEPARATOR)$(abs_top_builddir)/doc$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)
 
-TEXMFVAR := $(abs_top_builddir)/doc/.texmf-var
+TEXMFVAR := $(abs_top_builddir)/%reldir%/.texmf-var
 
 export TEXINPUTS
 export TEXMFCNF
@@ -38,10 +38,10 @@ PDFS =
 PSS =
 HTMLS =
 
-include doc/doxyhtml/module.mk
-include doc/interpreter/module.mk
-include doc/liboctave/module.mk
-include doc/refcard/module.mk
+include %reldir%/doxyhtml/module.mk
+include %reldir%/interpreter/module.mk
+include %reldir%/liboctave/module.mk
+include %reldir%/refcard/module.mk
 
 if AMCOND_BUILD_DOCS
 
@@ -50,23 +50,23 @@ if AMCOND_BUILD_DOCS
 ## also depends on the DVI file and somehow the rules are invoked
 ## twice.  Is that a bug in automake or make or what?
 
-doc_EXTRA_DIST += doc/texmf.cnf
+%canon_reldir%_EXTRA_DIST += %reldir%/texmf.cnf
 
 endif
 
-EXTRA_DIST += $(doc_EXTRA_DIST)
+EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
-CLEANFILES += $(doc_CLEANFILES)
-DISTCLEANFILES += $(doc_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(doc_MAINTAINERCLEANFILES)
+CLEANFILES += $(%canon_reldir%_CLEANFILES)
+DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
+MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
 
 doc-clean: doc-interpreter-clean doc-liboctave-clean
-	rm -f $(doc_CLEANFILES)
-	rm -rf doc/.texmf-var
+	rm -f $(%canon_reldir%_CLEANFILES)
+	rm -rf %reldir%/.texmf-var
 
 doc-distclean: doc-clean
-	rm -f $(doc_DISTCLEANFILES)
+	rm -f $(%canon_reldir%_DISTCLEANFILES)
 
 doc-maintainer-clean: doc-distclean
-	rm -f $(doc_MAINTAINERCLEANFILES)
+	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)
 	rm -rf $(DVIS) $(HTMLS) $(PDFS) $(PSS)

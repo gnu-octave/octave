@@ -1,15 +1,15 @@
 EXTERNAL_SOURCES += \
-  liboctave/external/slatec-err/fdump.f \
-  liboctave/external/slatec-err/ixsav.f \
-  liboctave/external/slatec-err/j4save.f \
-  liboctave/external/slatec-err/xerclr.f \
-  liboctave/external/slatec-err/xercnt.f \
-  liboctave/external/slatec-err/xerhlt.f \
-  liboctave/external/slatec-err/xermsg.f \
-  liboctave/external/slatec-err/xerprn.f \
-  liboctave/external/slatec-err/xerrwd.f \
-  liboctave/external/slatec-err/xersve.f \
-  liboctave/external/slatec-err/xgetf.f \
-  liboctave/external/slatec-err/xgetua.f \
-  liboctave/external/slatec-err/xsetf.f \
-  liboctave/external/slatec-err/xsetua.f
+  %reldir%/fdump.f \
+  %reldir%/ixsav.f \
+  %reldir%/j4save.f \
+  %reldir%/xerclr.f \
+  %reldir%/xercnt.f \
+  %reldir%/xerhlt.f \
+  %reldir%/xermsg.f \
+  %reldir%/xerprn.f \
+  %reldir%/xerrwd.f \
+  %reldir%/xersve.f \
+  %reldir%/xgetf.f \
+  %reldir%/xgetua.f \
+  %reldir%/xsetf.f \
+  %reldir%/xsetua.f

@@ -59,7 +59,7 @@
 ## separators.
 ##
 ## @item -W@dots{}
-## Pass flags though the compiler like @nospell{"-Wa,OPTION"}.
+## Pass options to the assembler like @nospell{"-Wa,OPTION"}.
 ##
 ## @item -c
 ## Compile but do not link.

@@ -154,6 +154,12 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     endif
   endif
 
+  if (isempty (func))
+    func = @sum;
+  elseif (! is_function_handle (func))
+    error ("accumarray: FUNC must be a function handle");
+  endif
+
   if (isempty (fillval))
     fillval = 0;
   endif
@@ -189,7 +195,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       error ("accumarray: in the sparse case, values must be numeric or logical");
     endif
 
-    if (! (isempty (func) || func == @sum))
+    if (func != @sum)
 
       ## Reduce values.  This is not needed if we're about to sum them,
       ## because "sparse" can do that.
@@ -252,7 +258,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     ## Some built-in reductions handled efficiently.
 
-    if (isempty (func) || func == @sum)
+    if (func == @sum)
       ## Fast summation.
       if (isempty (sz))
         A = __accumarray_sum__ (subs, vals);
@@ -446,3 +452,6 @@ endfunction
 ## Matlab returns an array of doubles even though FUNC returns cells.  In
 ## Octave, we do not have that bug, at least for this case.
 %!assert (accumarray (zeros (0, 1), [], [0 1] , @(x) {x}), cell (0, 1))
+
+%!error <FUNC must be a function handle>
+%! accumarray ([1; 2; 3], [1; 2; 3], [3 1], '@(x) {x}')

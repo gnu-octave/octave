@@ -43,8 +43,8 @@ function [I, map] = gray2ind (I, n = 64)
     print_usage ();
   elseif (! isreal (I) || issparse (I) || ! ismatrix(I))
     error ("gray2ind: I must be a grayscale or binary image");
-  elseif (! isscalar (n) || n < 1 || n > 65536)
-    error ("gray2ind: N must be a positive integer in the range [1, 65536]");
+  elseif (! isscalar (n) || n < 1 )
+    error ("gray2ind: N must be a positive integer");
   endif
 
   ## default n is different if image is logical
@@ -76,8 +76,14 @@ function [I, map] = gray2ind (I, n = 64)
   ##       type conversion does that automatically.
   if (n <= 256)
     I = uint8 (I);
-  else
+  elseif (n <= 65536)
     I = uint16 (I);
+  elseif (n <= 4294967296)
+    I = uint32 (I);
+  elseif (n <= intmax ("uint64"))
+    I = uint64 (I);
+  else
+    error ("gray2ind: N is larger than uint64 max value");
   endif
 
 endfunction
@@ -101,6 +107,7 @@ endfunction
 %! assert (class (gray2ind ([0.0 0.5 1.0], 255)), "uint8");
 %! assert (class (gray2ind ([0.0 0.5 1.0], 256)), "uint8");
 %! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16");
+%! assert (class (gray2ind ([0.0 0.5 1.0], 655537)), "uint32")
 
 ## Test input validation
 %!error gray2ind ()

@@ -54,7 +54,7 @@
 ## Add the run-time path to the link command.
 ##
 ## @item @nospell{-Wl,@dots{}}
-## Pass flags though the linker like @nospell{"-Wl,-rpath=@dots{}"}.
+## Pass options to the linker like @nospell{"-Wl,-rpath=@dots{}"}.
 ## The quotes are needed since commas are interpreted as command
 ## separators.
 ##

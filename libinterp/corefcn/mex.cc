@@ -3080,8 +3080,8 @@ mxGetElementSize (const mxArray *ptr)
 // ------------------------------------------------------------------
 
 typedef void (*cmex_fptr) (int nlhs, mxArray **plhs, int nrhs, mxArray **prhs);
-typedef F77_RET_T (*fmex_fptr) (int& nlhs, mxArray **plhs,
-                                int& nrhs, mxArray **prhs);
+typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
+                                F77_INT& nrhs, mxArray **prhs);
 
 octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
@@ -3120,8 +3120,8 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
     {
       fmex_fptr fcn = reinterpret_cast<fmex_fptr> (f);
 
-      int tmp_nargout = nargout;
-      int tmp_nargin = nargin;
+      F77_INT tmp_nargout = nargout;
+      F77_INT tmp_nargin = nargin;
 
       fcn (tmp_nargout, argout, tmp_nargin, argin);
     }

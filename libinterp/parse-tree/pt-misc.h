@@ -25,11 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-class Cell;
-
-class octave_value;
-class octave_value_list;
-
 #include "base-list.h"
 #include "pt-decl.h"
 #include "pt-walk.h"
@@ -39,7 +34,6 @@ namespace octave
 {
   class tree_identifier;
   class tree_index_expression;
-  class tree_va_return_list;
 
   // Parameter lists.  Used to hold the list of input and output
   // parameters in a function definition.  Elements are identifiers
@@ -128,28 +122,12 @@ namespace octave
       tw.visit_return_list (*this);
     }
   };
-
-  class tree_va_return_list : public octave::base_list<octave_value>
-  {
-  public:
-
-    tree_va_return_list (void) { }
-
-    // No copying!
-
-    tree_va_return_list (const tree_va_return_list&) = delete;
-
-    tree_va_return_list& operator = (const tree_va_return_list&) = delete;
-
-    ~tree_va_return_list (void) = default;
-  };
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 // tree_parameter_list is derived from a template.
 // tree_return_list is derived from a template.
-// tree_va_return_list is derived from a template.
 
 #endif
 

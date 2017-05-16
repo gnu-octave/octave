@@ -51,8 +51,10 @@ void QUnixTerminalImpl::initialize()
     UrlFilter *file_filter = new UrlFilter (Filter::Type::ErrorLink);
     m_terminalView->filterChain ()->addFilter (file_filter);
 
-    connect (file_filter, SIGNAL (request_open_file_signal (const QString&, int)),
+    connect (file_filter, SIGNAL (request_edit_mfile_signal (const QString&, int)),
              _parent, SLOT (edit_mfile (const QString&, int)));
+    connect (file_filter, SIGNAL (request_open_file_signal (const QString&, int)),
+             _parent, SLOT (open_file (const QString&, int)));
 
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));

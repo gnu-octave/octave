@@ -156,7 +156,7 @@ public slots:
                                        const QString& new_name);
   void handle_undo_request (void);
   void new_file (const QString& commands = QString ());
-  void open_file (const QString& file_name = QString ());
+  void open_file (const QString& file_name = QString (), int line = -1);
   void edit_mfile (const QString&, int);
   void open_online_documentation_page (void);
   void display_release_notes (void);

@@ -244,6 +244,7 @@ public:
 
 signals:
 
+    void request_edit_mfile_signal (const QString&, int);
     void request_open_file_signal (const QString&, int);
 
 protected:
@@ -295,6 +296,7 @@ public:
             StandardUrl,
             Email,
             ErrorLink,
+            ParseErrorLink,
             Unknown
         };
         UrlType urlType() const;
@@ -317,6 +319,8 @@ private:
     static const QRegExp FullUrlRegExp;
     static const QRegExp EmailAddressRegExp;
     static const QRegExp ErrorLinkRegExp;
+    static const QRegExp ParseErrorLinkRegExp;
+    static const QRegExp CompleteErrorLinkRegExp;
 
     // combined OR of FullUrlRegExp and EmailAddressRegExp
     static const QRegExp CompleteUrlRegExp;

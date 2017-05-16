@@ -313,9 +313,12 @@ main_window::new_file (const QString& commands)
 }
 
 void
-main_window::open_file (const QString& file_name)
+main_window::open_file (const QString& file_name, int line)
 {
-  emit open_file_signal (file_name);
+  if (line < 0)
+    emit open_file_signal (file_name);
+  else
+    emit open_file_signal (file_name, QString (), line);
 }
 
 void

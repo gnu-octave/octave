@@ -502,6 +502,8 @@ UrlFilter::HotSpot::UrlType UrlFilter::HotSpot::urlType() const
         return Email;
     else if ( ErrorLinkRegExp.exactMatch(url) )
         return ErrorLink;
+    else if ( ParseErrorLinkRegExp.exactMatch(url) )
+        return ParseErrorLink;
     else
         return Unknown;
 }
@@ -523,39 +525,48 @@ void UrlFilter::HotSpot::activate(QObject* object)
     }
 
     if ( !object || actionName == "open-action" )
-    {
+      {
         if ( kind == StandardUrl )
-        {
+          {
             // if the URL path does not include the protocol ( eg. "www.kde.org" ) then
             // prepend http:// ( eg. "www.kde.org" --> "http://www.kde.org" )
             if (!url.contains("://"))
-            {
-                url.prepend("http://");
-            }
-        }
+              url.prepend("http://");
+            QDesktopServices::openUrl (QUrl (url));
+          }
         else if ( kind == Email )
-        {
+          {
             url.prepend("mailto:");
-        }
-
-        if (kind == ErrorLink)
+            QDesktopServices::openUrl (QUrl (url));
+          }
+        else if (kind == ErrorLink)
           {
             int pos = ErrorLinkRegExp.indexIn (url);
             if (pos > -1)
               {
                 QString file_name = ErrorLinkRegExp.cap (1);
                 QString line = ErrorLinkRegExp.cap (2);
-
                 // call the urlobject's method for opening a file; this
                 // method then signals to the filter
                 _urlObject->request_open_file (file_name, line.toInt ());
               }
           }
-        else
+        else if (kind == ParseErrorLink)
           {
-            QDesktopServices::openUrl (QUrl (url));
+            int pos = ParseErrorLinkRegExp.indexIn (url);
+            if (pos > -1)
+              {
+                QString line = ParseErrorLinkRegExp.cap (1);
+                QString file_name = ParseErrorLinkRegExp.cap (2);
+                // call the urlobject's method for opening a file; this
+                // method then signals to the filter
+                _urlObject->request_open_file (file_name, line.toInt ());
+              }
           }
-    }
+
+
+      }
+
 }
 
 // Note:  Altering these regular expressions can have a major effect on the performance of the filters
@@ -573,14 +584,21 @@ const QRegExp UrlFilter::EmailAddressRegExp("\\b(\\w|\\.|-)+@(\\w|\\.|-)+\\.\\w+
 // matches full url or email address
 const QRegExp UrlFilter::CompleteUrlRegExp('('+FullUrlRegExp.pattern()+'|'+
                                             EmailAddressRegExp.pattern()+')');
-// error link
-const QRegExp UrlFilter::ErrorLinkRegExp("(\\S+) at line (\\d+) column (?:\\d+)");
+// error link:
+//   normal error
+const QRegExp UrlFilter::ErrorLinkRegExp ("(\\S+) at line (\\d+) column (?:\\d+)");
+//   parse error
+const QRegExp UrlFilter::ParseErrorLinkRegExp ("parse error near line (\\d+) of file (\\S+)");
+//   complete regexp
+const QRegExp UrlFilter::CompleteErrorLinkRegExp ('('+ErrorLinkRegExp.pattern ()+'|'+
+                                                     ParseErrorLinkRegExp.pattern ()+')');
+
 
 UrlFilter::UrlFilter (Type t)
     : RegExpFilter (t)
 {
     if (_type == ErrorLink)
-      setRegExp (ErrorLinkRegExp);
+      setRegExp (CompleteErrorLinkRegExp);
     else
       setRegExp (CompleteUrlRegExp);
 }
@@ -601,7 +619,9 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     QAction* openAction = new QAction(_urlObject);
     QAction* copyAction = new QAction(_urlObject);;
 
-    Q_ASSERT (kind == StandardUrl || kind == Email || kind == ErrorLink);
+    Q_ASSERT (kind == StandardUrl || kind == Email
+                                  || kind == ErrorLink
+                                  || kind == ParseErrorLink);
 
     if ( kind == StandardUrl )
     {
@@ -625,6 +645,18 @@ QList<QAction*> UrlFilter::HotSpot::actions()
                               .arg (file_name).arg (line));
         }
     }
+    else if ( kind == ParseErrorLink )
+    {
+      QString url = capturedTexts().first();
+      int pos = ParseErrorLinkRegExp.indexIn (url);
+      if (pos >= 0)
+        {
+          QString line = ParseErrorLinkRegExp.cap (1);
+          QString file_name = ParseErrorLinkRegExp.cap (2);
+          openAction->setText(tr ("Edit %1 at line %2")
+                              .arg (file_name).arg (line));
+        }
+    }
 
     // object names are set here so that the hotspot performs the
     // correct action when activated() is called with the triggered
@@ -635,7 +667,7 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     QObject::connect( openAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
     list << openAction;
 
-    if (kind != ErrorLink)
+    if (kind != ErrorLink && kind != ParseErrorLink)
       {
         QObject::connect ( copyAction , SIGNAL(triggered()) ,
                            _urlObject , SLOT(activated()) );
@@ -647,7 +679,16 @@ QList<QAction*> UrlFilter::HotSpot::actions()
 void
 UrlFilter::request_open_file (const QString& file, int line)
 {
-  emit request_open_file_signal (file, line);
+  QFileInfo file_info = QFileInfo (file);
+
+  // We have to distinguish between a parse error, where we get the full
+  // path of the file or a general error in a script, where we only get
+  // the function name. depending on this we have to invoke different
+  // slots in main_window
+  if (file_info.isAbsolute () && file_info.exists ())
+    emit request_open_file_signal (file, line);
+  else
+    emit request_edit_mfile_signal (file, line);
 }
 
 //#include "moc_Filter.cpp"

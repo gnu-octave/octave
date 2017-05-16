@@ -3084,8 +3084,8 @@ typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
                                 F77_INT& nrhs, mxArray **prhs);
 
 octave_value_list
-call_mex (bool have_fmex, void *f, const octave_value_list& args,
-          int nargout_arg, octave_mex_function *curr_mex_fcn)
+call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
+          int nargout_arg)
 {
   octave_quit ();
 
@@ -3109,16 +3109,18 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
   // Save old mex pointer.
   frame.protect_var (mex_context);
 
-  mex context (curr_mex_fcn);
+  mex context (&mex_fcn);
 
   for (int i = 0; i < nargin; i++)
     argin[i] = context.make_value (args(i));
 
   mex_context = &context;
 
-  if (have_fmex)
+  void *mex_fcn_ptr = mex_fcn.mex_fcn_ptr ();
+
+  if (mex_fcn.is_fmex ())
     {
-      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (f);
+      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (mex_fcn_ptr);
 
       F77_INT tmp_nargout = nargout;
       F77_INT tmp_nargin = nargin;
@@ -3127,7 +3129,7 @@ call_mex (bool have_fmex, void *f, const octave_value_list& args,
     }
   else
     {
-      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (f);
+      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (mex_fcn_ptr);
 
       fcn (nargout, argout, nargin, argin);
     }

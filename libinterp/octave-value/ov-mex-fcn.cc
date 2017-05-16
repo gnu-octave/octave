@@ -45,36 +45,36 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
 octave_mex_function::octave_mex_function
   (void *fptr, bool fmex, const octave::dynamic_library& shl,
    const std::string& nm)
-  : octave_function (nm), mex_fcn_ptr (fptr), exit_fcn_ptr (0),
-    have_fmex (fmex), sh_lib (shl)
+  : octave_function (nm), m_mex_fcn_ptr (fptr), m_exit_fcn_ptr (0),
+    m_is_fmex (fmex), m_sh_lib (shl)
 {
   mark_fcn_file_up_to_date (time_parsed ());
 
   std::string file_name = fcn_file_name ();
 
-  system_fcn_file
+  m_is_system_fcn_file
     = (! file_name.empty ()
        && Voct_file_dir == file_name.substr (0, Voct_file_dir.length ()));
 }
 
 octave_mex_function::~octave_mex_function (void)
 {
-  if (exit_fcn_ptr)
-    (*exit_fcn_ptr) ();
+  if (m_exit_fcn_ptr)
+    (*m_exit_fcn_ptr) ();
 
-  octave::dynamic_loader::remove_mex (my_name, sh_lib);
+  octave::dynamic_loader::remove_mex (my_name, m_sh_lib);
 }
 
 std::string
 octave_mex_function::fcn_file_name (void) const
 {
-  return sh_lib.file_name ();
+  return m_sh_lib.file_name ();
 }
 
 octave::sys::time
 octave_mex_function::time_parsed (void) const
 {
-  return sh_lib.time_loaded ();
+  return m_sh_lib.time_loaded ();
 }
 
 octave_value_list
@@ -124,8 +124,8 @@ octave_mex_function::subsref (const std::string& type,
 
 // FIXME: shouldn't this declaration be a header file somewhere?
 extern octave_value_list
-call_mex (bool have_fmex, void *f, const octave_value_list& args,
-          int nargout, octave_mex_function *curr_mex_fcn);
+call_mex (octave_mex_function& curr_mex_fcn, const octave_value_list& args,
+          int nargout);
 
 octave_value_list
 octave_mex_function::do_multi_index_op (int nargout,
@@ -144,7 +144,7 @@ octave_mex_function::do_multi_index_op (int nargout,
 
   profile_data_accumulator::enter<octave_mex_function> block (profiler, *this);
 
-  retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+  retval = call_mex (*this, args, nargout);
 
   return retval;
 }

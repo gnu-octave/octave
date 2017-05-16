@@ -44,10 +44,11 @@ octave_mex_function : public octave_function
 public:
 
   octave_mex_function (void)
-    : mex_fcn_ptr (), exit_fcn_ptr (), have_fmex (), sh_lib (),
-      t_checked (), system_fcn_file () { }
+    : m_mex_fcn_ptr (), m_exit_fcn_ptr (), m_is_fmex (), m_sh_lib (),
+      m_time_checked (), m_is_system_fcn_file () { }
 
-  octave_mex_function (void *fptr, bool fmex, const octave::dynamic_library& shl,
+  octave_mex_function (void *fptr, bool fmex,
+                       const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
   // No copying!
@@ -73,15 +74,18 @@ public:
 
   const octave_function * function_value (bool = false) const { return this; }
 
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave::sys::time& t)
+  {
+    m_time_checked = t;
+  }
 
   std::string fcn_file_name (void) const;
 
   octave::sys::time time_parsed (void) const;
 
-  octave::sys::time time_checked (void) const { return t_checked; }
+  octave::sys::time time_checked (void) const { return m_time_checked; }
 
-  bool is_system_fcn_file (void) const { return system_fcn_file; }
+  bool is_system_fcn_file (void) const { return m_is_system_fcn_file; }
 
   bool is_builtin_function (void) const { return false; }
 
@@ -90,29 +94,32 @@ public:
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
 
-  void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
+  void atexit (void (*fcn) (void)) { m_exit_fcn_ptr = fcn; }
 
-  octave::dynamic_library get_shlib (void) const
-  { return sh_lib; }
+  octave::dynamic_library get_shlib (void) const { return m_sh_lib; }
+
+  void *mex_fcn_ptr (void) const { return m_mex_fcn_ptr; }
+
+  bool is_fmex (void) const { return m_is_fmex; }
 
 private:
 
-  void *mex_fcn_ptr;
+  void *m_mex_fcn_ptr;
 
-  void (*exit_fcn_ptr) (void);
+  void (*m_exit_fcn_ptr) (void);
 
-  bool have_fmex;
+  bool m_is_fmex;
 
-  octave::dynamic_library sh_lib;
+  octave::dynamic_library m_sh_lib;
 
   // The time the file was last checked to see if it needs to be
   // parsed again.
-  mutable octave::sys::time t_checked;
+  mutable octave::sys::time m_time_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
-  bool system_fcn_file;
+  bool m_is_system_fcn_file;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

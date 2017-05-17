@@ -9,13 +9,6 @@
   %reldir%/NEWS.2 \
   %reldir%/NEWS.3 \
   %reldir%/PROJECTS \
-  %reldir%/README.Cygwin \
-  %reldir%/README.Linux \
-  %reldir%/README.MacOS \
-  %reldir%/README.MinGW \
-  %reldir%/README.Windows \
-  %reldir%/README.gnuplot \
-  %reldir%/README.kpathsea \
   %reldir%/gdbinit
 
 %canon_reldir%_EXTRA_DIST += \

@@ -18,7 +18,7 @@ dnl Copyright (C) 1993-2017 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, see
 ### <http://www.gnu.org/licenses/>.
 
-AC_PREREQ([2.63])
+AC_PREREQ([2.65])
 AC_INIT([GNU Octave], [4.3.0+], [http://octave.org/bugs.html], [octave])
 
 dnl Note that the version number is duplicated here and in AC_INIT

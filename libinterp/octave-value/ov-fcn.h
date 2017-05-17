@@ -195,8 +195,8 @@ public:
 
   virtual void accept (octave::tree_walker&) { }
 
-  virtual bool is_postfix_index_handled (char type) const
-  { return (type == '(' || type == '{'); }
+  virtual bool accepts_postfix_index (char type) const
+  { return (type == '('); }
 
   virtual octave_value_list
   call (int nargout = 0,

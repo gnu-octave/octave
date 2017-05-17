@@ -977,7 +977,7 @@ namespace octave
         int nargout = m_nargout_stack.top ();
 
         if (fcn && ! (expr.is_postfix_indexed ()
-                      && fcn->is_postfix_index_handled (expr.postfix_index ())))
+                      && fcn->accepts_postfix_index (expr.postfix_index ())))
           {
             retval = fcn->call (nargout);
           }
@@ -1197,7 +1197,7 @@ namespace octave
                       {
                         octave_function *fcn = tmp.function_value (true);
 
-                        if (fcn && ! fcn->is_postfix_index_handled (type[i]))
+                        if (fcn && ! fcn->accepts_postfix_index (type[i]))
                           {
                             tmp_list = fcn->call (1);
 
@@ -1738,7 +1738,7 @@ namespace octave
         octave_function *f = val.function_value (true);
 
         if (f && ! (expr.is_postfix_indexed ()
-                    && f->is_postfix_index_handled (expr.postfix_index ())))
+                    && f->accepts_postfix_index (expr.postfix_index ())))
           {
             retval = f->call (nargout);
           }

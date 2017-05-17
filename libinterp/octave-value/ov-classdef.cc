@@ -1031,8 +1031,8 @@ public:
     return subsref (type, l, nargout);
   }
 
-  bool is_postfix_index_handled (char type) const
-  { return object.meta_is_postfix_index_handled (type); }
+  bool accepts_postfix_index (char type) const
+  { return object.meta_accepts_postfix_index (type); }
 
   bool
   is_classdef_constructor (const std::string& cname = "") const
@@ -3310,7 +3310,7 @@ cdef_package::cdef_package_rep::meta_subsref
             // function call at this stage.
 
             if (type.size () > 1
-                && ! fcn->is_postfix_index_handled (type[1]))
+                && ! fcn->accepts_postfix_index (type[1]))
               {
                 octave_value_list tmp_args;
 

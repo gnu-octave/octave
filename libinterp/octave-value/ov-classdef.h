@@ -549,7 +549,7 @@ public:
 
   virtual void meta_release (void) { }
 
-  virtual bool meta_is_postfix_index_handled (char /* type */) const
+  virtual bool meta_accepts_postfix_index (char /* type */) const
   { return false; }
 
 protected:
@@ -596,8 +596,8 @@ public:
 
   void meta_release (void) { get_rep ()->meta_release (); }
 
-  bool meta_is_postfix_index_handled (char type) const
-  { return get_rep ()->meta_is_postfix_index_handled (type); }
+  bool meta_accepts_postfix_index (char type) const
+  { return get_rep ()->meta_accepts_postfix_index (type); }
 
 private:
   cdef_meta_object_rep * get_rep (void)
@@ -665,7 +665,7 @@ private:
 
     void meta_release (void);
 
-    bool meta_is_postfix_index_handled (char type) const
+    bool meta_accepts_postfix_index (char type) const
     { return (type == '(' || type == '.'); }
 
     octave_value construct (const octave_value_list& args);
@@ -1086,7 +1086,7 @@ private:
     meta_subsref (const std::string& type,
                   const std::list<octave_value_list>& idx, int nargout);
 
-    bool meta_is_postfix_index_handled (char type) const
+    bool meta_accepts_postfix_index (char type) const
     { return (type == '(' || type == '.'); }
 
   private:
@@ -1310,7 +1310,7 @@ private:
 
     void meta_release (void);
 
-    bool meta_is_postfix_index_handled (char type) const
+    bool meta_accepts_postfix_index (char type) const
     { return (type == '.'); }
 
     octave_value find (const std::string& nm);

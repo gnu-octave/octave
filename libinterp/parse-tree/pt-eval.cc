@@ -365,7 +365,7 @@ namespace octave
         if (! fcn.is_defined ())
           error ("can not find overloaded colon function");
 
-        octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+        octave_value_list tmp2 = octave::feval (fcn, tmp1, 1);
 
         val = tmp2 (0);
       }

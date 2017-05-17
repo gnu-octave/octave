@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
+#include "parse.h"
 #include "pt-misc.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup",
@@ -81,7 +82,7 @@ octave_oncleanup::~octave_oncleanup (void)
   try
     {
       // Run the actual code.
-      fcn.do_multi_index_op (0, octave_value_list ());
+      octave::feval (fcn);
     }
   catch (const octave::interrupt_exception&)
     {

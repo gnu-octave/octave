@@ -3316,8 +3316,7 @@ cdef_package::cdef_package_rep::meta_subsref
               {
                 octave_value_list tmp_args;
 
-                retval = o.do_multi_index_op (nargout,
-                                              tmp_args);
+                retval = octave::feval (o, tmp_args, nargout);
               }
             else
               retval(0) = o;

@@ -1054,7 +1054,7 @@ octave_class::reconstruct_exemplar (void)
 
           try
             {
-              result = ctor.do_multi_index_op (1, octave_value_list ());
+              result = octave::feval (ctor, ovl (), 1);
             }
           catch (const octave::execution_exception&)
             {

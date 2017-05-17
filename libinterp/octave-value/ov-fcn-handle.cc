@@ -195,9 +195,9 @@ octave_fcn_handle::do_multi_index_op (int nargout,
         }
 
       if (ov_fcn.is_defined ())
-        retval = ov_fcn.do_multi_index_op (nargout, args);
+        retval = octave::feval (ov_fcn, args, nargout);
       else if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args);
+        retval = octave::feval (fcn, args, nargout);
       else
         error ("%s: no method for class %s",
                nm.c_str (), dispatch_type.c_str ());
@@ -206,7 +206,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
     {
       // Non-overloaded function (anonymous, subfunction, private function).
       if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args);
+        retval = octave::feval (fcn, args, nargout);
       else
         error ("%s: no longer valid function handle", nm.c_str ());
     }
@@ -2085,7 +2085,7 @@ octave_fcn_binder::do_multi_index_op (int nargout,
       // Make a shallow copy of arg_template, to ensure consistency throughout
       // the following call even if we happen to get back here.
       octave_value_list tmp (arg_template);
-      retval = root_handle.do_multi_index_op (nargout, tmp);
+      retval = octave::feval (root_handle, tmp, nargout);
     }
   else
     retval = octave_fcn_handle::do_multi_index_op (nargout, args);

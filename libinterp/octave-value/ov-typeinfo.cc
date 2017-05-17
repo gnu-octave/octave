@@ -871,7 +871,7 @@ octave_value_typeinfo::do_installed_type_info (void) const
   retval.setfield ("unary_ops", unary_ops_map ());
   retval.setfield ("non_const_unary_ops", non_const_unary_ops_map ());
   retval.setfield ("binary_ops", binary_ops_map ());
-  retval.setfield ("compound_unary_ops", compound_binary_ops_map ());
+  retval.setfield ("compound_binary_ops", compound_binary_ops_map ());
   retval.setfield ("cat_ops", as_bool_nd_array (cat_ops));
   retval.setfield ("assign_ops", assign_ops_map ());
   retval.setfield ("assignany_ops", assignany_ops_map ());

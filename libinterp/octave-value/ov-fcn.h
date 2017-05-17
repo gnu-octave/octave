@@ -198,6 +198,10 @@ public:
   virtual bool is_postfix_index_handled (char type) const
   { return (type == '(' || type == '{'); }
 
+  virtual octave_value_list
+  call (int nargout = 0,
+        const octave_value_list& args = octave_value_list ()) = 0;
+
 protected:
 
   octave_function (const std::string& nm,

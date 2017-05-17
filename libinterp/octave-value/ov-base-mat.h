@@ -89,9 +89,6 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  octave_value_list do_multi_index_op (int, const octave_value_list& idx)
-  { return do_index_op (idx); }
-
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't
   // have to do this?  Without the using declaration or a name change,

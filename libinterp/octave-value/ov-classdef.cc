@@ -1021,8 +1021,7 @@ public:
     return (retval.length () > 0 ? retval(0) : octave_value ());
   }
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx)
+  octave_value_list call (int nargout, const octave_value_list& idx)
   {
     // Emulate ()-type meta subsref
 
@@ -1084,11 +1083,10 @@ public:
       {
       case '(':
         skip = 1;
-        retval = do_multi_index_op (type.length () > 1 ? 1 : nargout,
-                                    idx.front ());
+        retval = call (type.length () > 1 ? 1 : nargout, idx.front ());
         break;
       default:
-        retval = do_multi_index_op (1, octave_value_list ());
+        retval = call (1, octave_value_list ());
         break;
       }
 
@@ -1111,7 +1109,7 @@ public:
   }
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx)
+  call (int nargout, const octave_value_list& idx)
   {
     octave_value_list retval;
 

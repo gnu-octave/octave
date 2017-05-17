@@ -104,7 +104,7 @@ octave_fcn_handle::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = call (tmp_nargout, idx.front ());
       }
       break;
 
@@ -131,8 +131,7 @@ octave_fcn_handle::subsref (const std::string& type,
 }
 
 octave_value_list
-octave_fcn_handle::do_multi_index_op (int nargout,
-                                      const octave_value_list& args)
+octave_fcn_handle::call (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -2068,8 +2067,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
 */
 
 octave_value_list
-octave_fcn_binder::do_multi_index_op (int nargout,
-                                      const octave_value_list& args)
+octave_fcn_binder::call (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -2088,7 +2086,7 @@ octave_fcn_binder::do_multi_index_op (int nargout,
       retval = octave::feval (root_handle, tmp, nargout);
     }
   else
-    retval = octave_fcn_handle::do_multi_index_op (nargout, args);
+    retval = octave_fcn_handle::call (nargout, args);
 
   return retval;
 }

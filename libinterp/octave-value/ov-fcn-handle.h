@@ -90,9 +90,6 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
-
   bool is_defined (void) const { return true; }
 
   bool is_function_handle (void) const { return true; }
@@ -177,6 +174,8 @@ protected:
   // Overloads for other classes.
   str_ov_map overloads;
 
+  virtual octave_value_list call (int nargout, const octave_value_list& args);
+
   friend octave_value make_fcn_handle (const std::string &, bool);
 };
 
@@ -199,10 +198,9 @@ public:
   static octave_fcn_handle * maybe_binder (const octave_value& f,
                                            octave::tree_evaluator *tw);
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
-
 protected:
+
+  octave_value_list call (int nargout, const octave_value_list& args);
 
   octave_value root_handle;
   octave_value_list arg_template;

@@ -553,12 +553,12 @@ namespace octave
          int nargout = 0);
 
   extern OCTINTERP_API octave_value_list
-  feval (octave_value& fcn,
+  feval (octave_function *fcn,
          const octave_value_list& args = octave_value_list (),
          int nargout = 0);
 
   extern OCTINTERP_API octave_value_list
-  feval (octave_function *fcn,
+  feval (octave_value& val,
          const octave_value_list& args = octave_value_list (),
          int nargout = 0);
 

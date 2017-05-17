@@ -448,9 +448,6 @@ public:
                             bool resize_ok = false)
   { return rep->do_index_op (idx, resize_ok); }
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& idx);
-
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);

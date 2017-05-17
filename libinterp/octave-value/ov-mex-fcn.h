@@ -91,8 +91,7 @@ public:
 
   bool is_mex_function (void) const { return true; }
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
+  octave_value_list call (int nargout, const octave_value_list& args);
 
   void atexit (void (*fcn) (void)) { m_exit_fcn_ptr = fcn; }
 

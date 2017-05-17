@@ -145,8 +145,7 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
+  octave_value_list call (int nargout, const octave_value_list& args);
 
   octave::tree_statement_list * body (void) { return cmd_list; }
 
@@ -371,8 +370,7 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
-  octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args);
+  octave_value_list call (int nargout, const octave_value_list& args);
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 

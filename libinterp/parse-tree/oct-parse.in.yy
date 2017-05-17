@@ -4802,16 +4802,13 @@ namespace octave
         error ("source: %s is not a script", full_name.c_str ());
       }
 
-    // Parameter checking is over.  Now run.
-    octave_value_list args;
-
     if (verbose)
       {
         std::cout << "executing commands from " << full_name << " ... ";
         std::cout.flush ();
       }
 
-    fcn->do_multi_index_op (0, args);
+    fcn->call ();
 
     if (verbose)
       std::cout << "done." << std::endl;
@@ -4939,17 +4936,15 @@ namespace octave
     octave_value fcn = symbol_table::find_function (name, args);
 
     if (fcn.is_defined ())
-      retval = fcn.do_multi_index_op (nargout, args);
+      {
+        octave_function *of = fcn.function_value ();
+
+        retval = of->call (nargout, args);
+      }
     else
       error ("feval: function '%s' not found", name.c_str ());
 
     return retval;
-  }
-
-  octave_value_list
-  feval (octave_value& fcn, const octave_value_list& args, int nargout)
-  {
-    return fcn.do_multi_index_op (nargout, args);
   }
 
   octave_value_list
@@ -4958,9 +4953,36 @@ namespace octave
     octave_value_list retval;
 
     if (fcn)
-      retval = fcn->do_multi_index_op (nargout, args);
+      retval = fcn->call (nargout, args);
 
     return retval;
+  }
+
+  octave_value_list
+  feval (octave_value& val, const octave_value_list& args, int nargout)
+  {
+    if (val.is_function ())
+      {
+        return octave::feval (val.function_value (), args, nargout);
+      }
+    else if (val.is_function_handle ())
+      {
+        // This covers function handles, inline functions, and anonymous
+        //  functions.
+
+        std::list<octave_value_list> arg_list;
+        arg_list.push_back (args);
+
+        return val.subsref ("(", arg_list, nargout);
+      }
+    else if (val.is_string ())
+      {
+        return octave::feval (val.string_value (), args, nargout);
+      }
+    else
+      error ("feval: first argument must be a string, inline function, or a function handle");
+
+    return ovl ();
   }
 }
 
@@ -4987,33 +5009,18 @@ namespace octave
   octave_value_list
   feval (const octave_value_list& args, int nargout)
   {
-    octave_value_list retval;
-
     if (args.length () > 0)
       {
         octave_value f_arg = args(0);
 
-        if (f_arg.is_string ())
-          {
-            std::string name = f_arg.string_value ();
+        octave_value_list tmp_args = get_feval_args (args);
 
-            octave_value_list tmp_args = get_feval_args (args);
-
-            retval = octave::feval (name, tmp_args, nargout);
-          }
-        else if (f_arg.is_function_handle ()
-                 || f_arg.is_anonymous_function ()
-                 || f_arg.is_inline_function ())
-          {
-            const octave_value_list tmp_args = get_feval_args (args);
-
-            retval = f_arg.do_multi_index_op (nargout, tmp_args);
-          }
-        else
-          error ("feval: first argument must be a string, inline function, or a function handle");
+        return octave::feval (f_arg, tmp_args, nargout);
       }
+    else
+      error ("feval: first argument must be a string, inline function, or a function handle");
 
-    return retval;
+    return ovl ();
   }
 }
 

@@ -72,9 +72,6 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
-  octave_value_list do_multi_index_op (int, const octave_value_list& idx)
-  { return do_index_op (idx); }
-
   bool is_constant (void) const { return true; }
 
   bool is_defined (void) const { return true; }

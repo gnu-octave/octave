@@ -119,8 +119,7 @@ octave_user_script::subsref (const std::string&,
 }
 
 octave_value_list
-octave_user_script::do_multi_index_op (int nargout,
-                                       const octave_value_list& args)
+octave_user_script::call (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -418,7 +417,7 @@ octave_user_function::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = call (tmp_nargout, idx.front ());
       }
       break;
 
@@ -445,8 +444,7 @@ octave_user_function::subsref (const std::string& type,
 }
 
 octave_value_list
-octave_user_function::do_multi_index_op (int nargout,
-                                         const octave_value_list& _args)
+octave_user_function::call (int nargout, const octave_value_list& _args)
 {
   octave_value_list retval;
 

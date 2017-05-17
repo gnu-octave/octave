@@ -1445,10 +1445,7 @@ octave_value_list
 octave_value::subsref (const std::string& type,
                        const std::list<octave_value_list>& idx, int nargout)
 {
-  if (nargout == 1)
-    return rep->subsref (type, idx);
-  else
-    return rep->subsref (type, idx, nargout);
+  return rep->subsref (type, idx, nargout);
 }
 
 octave_value
@@ -1497,12 +1494,6 @@ octave_value::next_subsref (bool auto_add, const std::string& type,
     }
   else
     return *this;
-}
-
-octave_value_list
-octave_value::do_multi_index_op (int nargout, const octave_value_list& idx)
-{
-  return rep->do_multi_index_op (nargout, idx);
 }
 
 octave_value

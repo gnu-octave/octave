@@ -979,7 +979,7 @@ namespace octave
         if (fcn && ! (expr.is_postfix_indexed ()
                       && fcn->is_postfix_index_handled (expr.postfix_index ())))
           {
-            retval = val.do_multi_index_op (nargout, octave_value_list ());
+            retval = fcn->call (nargout);
           }
         else
           {
@@ -1199,9 +1199,8 @@ namespace octave
 
                         if (fcn && ! fcn->is_postfix_index_handled (type[i]))
                           {
-                            octave_value_list empty_args;
+                            tmp_list = fcn->call (1);
 
-                            tmp_list = tmp.do_multi_index_op (1, empty_args);
                             tmp = (tmp_list.length ()
                                    ? tmp_list(0) : octave_value ());
 
@@ -1263,11 +1262,7 @@ namespace octave
         octave_function *fcn = val.function_value (true);
 
         if (fcn)
-          {
-            octave_value_list empty_args;
-
-            retval = val.do_multi_index_op (nargout, empty_args);
-          }
+          retval = fcn->call (nargout);
       }
 
     m_value_stack.push (retval);
@@ -1745,9 +1740,7 @@ namespace octave
         if (f && ! (expr.is_postfix_indexed ()
                     && f->is_postfix_index_handled (expr.postfix_index ())))
           {
-            octave_value_list tmp_args;
-
-            retval = val.do_multi_index_op (nargout, tmp_args);
+            retval = f->call (nargout);
           }
       }
 

@@ -377,13 +377,14 @@ function yi = interp1 (x, y, varargin)
     maxx = max (x(1), x(nx));
 
     xi = reshape (xi, szx);
-    outliers = xi < minx | ! (xi <= maxx); # this even catches NaNs
+    outliers = (xi < minx) | ! (xi <= maxx);  # this even catches NaNs
     if (size_equal (outliers, yi))
       yi(outliers) = extrap;
       yi = reshape (yi, szx);
-    elseif (! isvector (yi))
+    elseif (! isscalar (yi))
       yi(outliers, :) = extrap;
     else
+      warning ("interp1: Unreachable state.  Please submit data that produced this warning to bugs.octave.org");
       yi(outliers.') = extrap;
     endif
 

@@ -31,7 +31,7 @@ function retval = __have_feature__ (feature)
 
   if (iscellstr (feature))
     retval = (all (isfield (features, feature))
-              && cellfun (@(x) features.(x), feature));
+              && all (cellfun (@(x) features.(x), feature)));
   elseif (ischar (feature))
     retval = isfield (features, feature) && features.(feature);
   else
@@ -41,5 +41,9 @@ function retval = __have_feature__ (feature)
 endfunction
 
 
-## No test coverage for internal function.  It is tested through calling fcn.
-%!assert (1)
+%!assert (islogical (__have_feature__ ("MAGICK")))
+%!assert (isscalar (__have_feature__ ("MAGICK")))
+%!assert (__have_feature__ ("MAGICK") == __have_feature__ ({"MAGICK", "MAGICK"}))
+
+## Test that an empty feature set returns true
+%!assert (__have_feature__ ({}))

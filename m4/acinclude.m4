@@ -17,25 +17,6 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, see
 dnl <http://www.gnu.org/licenses/>.
-dnl
-dnl Copyright (C) 2008 - 2009 Free Software Foundation, Inc.
-dnl
-dnl If needed, define the m4_ifblank and m4_ifnblank macros from autoconf 2.64
-dnl This allows us to run with earlier Autoconfs as well.
-dnl FIXME: these should go away once Autoconf 2.64 is required or ubiquitous.
-dnl
-ifdef([m4_ifblank],[],[
-m4_define([m4_ifblank],
-[m4_if(m4_translit([[$1]],  [ ][	][
-]), [], [$2], [$3])])])
-dnl
-ifdef([m4_ifnblank],[],[
-m4_define([m4_ifnblank],
-[m4_if(m4_translit([[$1]],  [ ][	][
-]), [], [$3], [$2])])])
-dnl
-dnl ----------------------------------------------------------------------
-dnl
 
 dnl
 dnl Alphabetical list of macros in the OCTAVE_ namespace
@@ -2821,7 +2802,3 @@ AC_DEFUN([OCTAVE_UMFPACK_SEPARATE_SPLIT], [
       [Define to 1 if the UMFPACK Complex solver allows matrix and RHS to be split independently.])
   fi
 ])
-
-dnl         End of macros written by Octave developers
-dnl ------------------------------------------------------------
-dnl

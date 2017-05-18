@@ -253,11 +253,6 @@ namespace octave
       return instance ? instance->gui_running () : false;
     }
 
-    static interpreter * the_interpreter (void)
-    {
-      return instance ? instance->m_interpreter : 0;
-    }
-
     // Convenience functions.
 
     static bool forced_interactive (void);

@@ -374,6 +374,12 @@ namespace octave
       m_inhibit_startup_message (false), m_load_path_initialized (false),
       m_history_initialized (false), m_initialized (false)
   {
+    if (instance)
+      throw std::runtime_error
+        ("only one Octave interpreter object may be active");
+
+    instance = this;
+
     current_evaluator = m_evaluator;
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
@@ -498,10 +504,13 @@ namespace octave
     octave_interpreter_ready = true;
   }
 
+  interpreter *interpreter::instance = nullptr;
+
   interpreter::~interpreter (void)
   {
     cleanup ();
 
+    instance = 0;
     current_evaluator = 0;
 
     delete m_evaluator;
@@ -934,7 +943,7 @@ namespace octave
               {
                 if (parser.stmt_list)
                   {
-                    parser.stmt_list->accept (*current_evaluator);
+                    parser.stmt_list->accept (*m_evaluator);
 
                     octave_quit ();
 

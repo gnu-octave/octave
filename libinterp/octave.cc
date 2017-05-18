@@ -404,9 +404,10 @@ namespace octave
   void application::init (void)
   {
     if (instance)
-      warning ("octave::application: application already initialized");
-    else
-      instance = this;
+      throw std::runtime_error
+        ("only one Octave application object may be active");
+
+    instance = this;
 
     string_vector all_args = m_options.all_args ();
 

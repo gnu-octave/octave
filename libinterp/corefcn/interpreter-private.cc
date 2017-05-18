@@ -27,25 +27,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "error.h"
+#include "load-path.h"
 #include "interpreter-private.h"
-#include "octave.h"
+#include "interpreter.h"
 
 namespace octave
 {
-  interpreter& __get_interpreter__ (const std::string& who)
+  load_path& __get_load_path__ (const std::string& who)
   {
-    interpreter *interp = octave::application::the_interpreter ();
+    interpreter *interp = interpreter::the_interpreter ();
 
     if (! interp)
       error ("%s: interpreter context missing", who.c_str ());
 
-    return *interp;
-  }
-
-  load_path& __get_load_path__ (const std::string& who)
-  {
-    interpreter& interp = __get_interpreter__ (who);
-
-    return interp.get_load_path ();
+    return interp->get_load_path ();
   }
 }

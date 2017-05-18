@@ -27,12 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "interpreter.h"
-
 namespace octave
 {
-  // Expect these functions to change without warning.
-  extern interpreter& __get_interpreter__ (const std::string& who);
+  class load_path;
 
   extern load_path& __get_load_path__ (const std::string& who);
 }

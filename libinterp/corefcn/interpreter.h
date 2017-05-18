@@ -143,7 +143,13 @@ namespace octave
 
     static bool remove_atexit_function (const std::string& fname);
 
+    static interpreter * the_interpreter (void) { return instance; }
+
   private:
+
+    // The interpreter instance;  Currently it is only possible to
+    // have one.
+    static interpreter *instance;
 
     static std::list<std::string> atexit_functions;
 

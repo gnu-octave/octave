@@ -81,7 +81,7 @@ function hgsave (h, filename, fmt = "-binary")
 endfunction
 
 
-%!testif HAVE_MAGICK
+%!testif HAVE_MAGICK; any (strcmp ("gnuplot", available_graphics_toolkits ()))
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");
 %! unwind_protect

@@ -114,7 +114,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system && any (strcmp ("gnuplot", available_graphics_toolkits ()))
 %! old_toolkit = graphics_toolkit ();
 %! switch (old_toolkit)
 %!   case {"gnuplot"}

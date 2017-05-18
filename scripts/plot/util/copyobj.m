@@ -169,7 +169,7 @@ endfunction
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
 
-%!testif HAVE_MAGICK
+%!testif HAVE_MAGICK; any (strcmp ("gnuplot", available_graphics_toolkits ()))
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");
 %! unwind_protect

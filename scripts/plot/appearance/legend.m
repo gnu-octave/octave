@@ -1613,7 +1613,7 @@ endfunction
 %! legend ("Legend Text");
 %! title ({"Multi-line", "titles", "are a", "problem", "See bug #39697"});
 
-%!test
+%!testif ; any (strcmp ("gnuplot", available_graphics_toolkits ()))
 %! toolkit = graphics_toolkit ("gnuplot");
 %! h = figure ("visible", "off");
 %! unwind_protect

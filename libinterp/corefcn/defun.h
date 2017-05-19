@@ -46,6 +46,9 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFUN(name, args_name, nargout_name, doc)       \
   DECLARE_FUN (name, args_name, nargout_name)
 
+#define DEFMETHOD(name, interp_name, args_name, nargout_name, doc)      \
+  DECLARE_METHOD (name, interp_name, args_name, nargout_name)
+
 // This one can be used when 'name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the internal name of the function must be passed
@@ -54,9 +57,15 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFUNX(name, fname, args_name, nargout_name, doc)       \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
+#define DEFMETHODX(name, fname, interp_name, args_name, nargout_name, doc) \
+  DECLARE_METHODX (fname, interp_name, args_name, nargout_name)
+
 // This is a function with a name that can't be hidden by a variable.
 #define DEFCONSTFUN(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
+
+#define DEFCONSTMETHOD(name, interp_name, args_name, nargout_name, doc) \
+  DECLARE_METHOD (name, interp_name, args_name, nargout_name)
 
 // Make alias another name for the existing function name.  This macro
 // is processed by the mkbuiltins to generate code in builtins.cc to

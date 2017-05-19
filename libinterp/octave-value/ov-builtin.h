@@ -36,6 +36,11 @@ class octave_value;
 class octave_value_list;
 class jit_type;
 
+namespace octave
+{
+  class interpreter;
+}
+
 // Builtin functions.
 
 class
@@ -46,15 +51,26 @@ public:
 
   octave_builtin (void) : octave_function (), f (0), file (), jtype (0) { }
 
+  typedef octave_value_list (*meth) (octave::interpreter&,
+                                     const octave_value_list&, int);
+
   typedef octave_value_list (*fcn) (const octave_value_list&, int);
 
   octave_builtin (fcn ff, const std::string& nm = "",
                   const std::string& ds = "")
-    : octave_function (nm, ds), f (ff), file (), jtype (0) { }
+    : octave_function (nm, ds), f (ff), m (0), file (), jtype (0) { }
+
+  octave_builtin (meth mm, const std::string& nm = "",
+                  const std::string& ds = "")
+    : octave_function (nm, ds), f (0), m (mm), file (), jtype (0) { }
 
   octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,
                   const std::string& ds)
-    : octave_function (nm, ds), f (ff), file (fnm), jtype (0) { }
+    : octave_function (nm, ds), f (ff), m (0), file (fnm), jtype (0) { }
+
+  octave_builtin (meth mm, const std::string& nm, const std::string& fnm,
+                  const std::string& ds)
+    : octave_function (nm, ds), f (0), m (mm), file (fnm), jtype (0) { }
 
   // No copying!
 
@@ -89,6 +105,8 @@ public:
 
   fcn function (void) const;
 
+  meth method (void) const;
+
   void push_dispatch_class (const std::string& dispatch_type);
 
   bool handles_dispatch_class (const std::string& dispatch_type) const;
@@ -97,6 +115,7 @@ protected:
 
   // A pointer to the actual function.
   fcn f;
+  meth m;
 
   // The name of the file where this function was defined.
   std::string file;

@@ -32,6 +32,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "version.h"
 
+namespace octave
+{
+  class interpreter;
+}
+
 class octave_value;
 
 extern OCTINTERP_API void print_usage (void);
@@ -46,7 +51,17 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
                           bool can_hide_function = true);
 
 extern OCTINTERP_API void
+install_builtin_function (octave_builtin::meth m, const std::string& name,
+                          const std::string& file, const std::string& doc,
+                          bool can_hide_function = true);
+
+extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
+                      const octave::dynamic_library& shl, const std::string& doc,
+                      bool relative = false);
+
+extern OCTINTERP_API void
+install_dld_function (octave_dld_function::meth m, const std::string& name,
                       const octave::dynamic_library& shl, const std::string& doc,
                       bool relative = false);
 
@@ -101,22 +116,45 @@ defun_isargout (int, int, bool *);
   extern OCTAVE_EXPORT octave_value_list        \
   name (const octave_value_list&, int)
 
+#define FORWARD_DECLARE_METHODX(name)                           \
+  extern OCTAVE_EXPORT octave_value_list                        \
+  name (octave::interpreter&, const octave_value_list&, int)
+
 #define FORWARD_DECLARE_FUN(name)               \
   FORWARD_DECLARE_FUNX (F ## name)
+
+#define FORWARD_DECLARE_METHOD(name)            \
+  FORWARD_DECLARE_METHODX (F ## name)
 
 #define DECLARE_FUNX(name, args_name, nargout_name)             \
   OCTAVE_EXPORT octave_value_list                               \
   name (const octave_value_list& args_name, int nargout_name)
 
+#define DECLARE_METHODX(name, interp_name, args_name, nargout_name)     \
+  OCTAVE_EXPORT octave_value_list                                       \
+  name (octave::interpreter& interp_name,                               \
+        const octave_value_list& args_name, int nargout_name)
+
 #define DECLARE_FUN(name, args_name, nargout_name)      \
   DECLARE_FUNX (F ## name, args_name, nargout_name)
+
+#define DECLARE_METHOD(name, interp_name, args_name, nargout_name)      \
+  DECLARE_METHODX (F ## name, interp_name, args_name, nargout_name)
 
 #define DECLARE_STATIC_FUNX(name, args_name, nargout_name)      \
   static octave_value_list                                      \
   name (const octave_value_list& args_name, int nargout_name)
 
+#define DECLARE_STATIC_METHODX(name, interp_name, args_name, nargout_name) \
+  static octave_value_list                                              \
+  name (octave::interpreter& interp_name,                               \
+        const octave_value_list& args_name, int nargout_name)
+
 #define DECLARE_STATIC_FUN(name, args_name, nargout_name)       \
-  DECLARE_FUNX (F ## name, args_name, nargout_name)
+  DECLARE_STATIC_FUNX (F ## name, args_name, nargout_name)
+
+#define DECLARE_STATIC_METHOD(name, interp_name, args_name, nargout_name) \
+  DECLARE_STATIC_METHODX (F ## name, interp_name, args_name, nargout_name)
 
 // Define the code that will be used to insert the new function into
 // the symbol table.  We look for this name instead of the actual

@@ -52,6 +52,20 @@ octave_dld_function::octave_dld_function
        && Voct_file_dir == file_name.substr (0, Voct_file_dir.length ()));
 }
 
+octave_dld_function::octave_dld_function
+  (octave_builtin::meth mm, const octave::dynamic_library& shl,
+   const std::string& nm, const std::string& ds)
+  : octave_builtin (mm, nm, ds), sh_lib (shl)
+{
+  mark_fcn_file_up_to_date (time_parsed ());
+
+  std::string file_name = fcn_file_name ();
+
+  system_fcn_file
+    = (! file_name.empty ()
+       && Voct_file_dir == file_name.substr (0, Voct_file_dir.length ()));
+}
+
 octave_dld_function::~octave_dld_function (void)
 {
   octave::dynamic_loader::remove_oct (my_name, sh_lib);
@@ -86,4 +100,12 @@ octave_dld_function::create (octave_builtin::fcn ff,
                              const std::string& nm, const std::string& ds)
 {
   return new octave_dld_function (ff, shl, nm, ds);
+}
+
+octave_dld_function*
+octave_dld_function::create (octave_builtin::meth mm,
+                             const octave::dynamic_library& shl,
+                             const std::string& nm, const std::string& ds)
+{
+  return new octave_dld_function (mm, shl, nm, ds);
 }

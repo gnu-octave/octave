@@ -27,11 +27,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "call-stack.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "ov-builtin.h"
 #include "ov.h"
+#include "ovl.h"
 #include "profiler.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
 
 
@@ -100,7 +101,15 @@ octave_builtin::call (int nargout, const octave_value_list& args)
 
   profile_data_accumulator::enter<octave_builtin> block (profiler, *this);
 
-  retval = (*f) (args, nargout);
+  if (f)
+    retval = (*f) (args, nargout);
+  else
+    {
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_builtin::call");
+
+      retval = (*m) (interp, args, nargout);
+    }
 
   // Do not allow null values to be returned from functions.
   // FIXME: perhaps true builtins should be allowed?
@@ -140,6 +149,12 @@ octave_builtin::fcn
 octave_builtin::function (void) const
 {
   return f;
+}
+
+octave_builtin::meth
+octave_builtin::method (void) const
+{
+  return m;
 }
 
 void

@@ -92,11 +92,36 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 }
 
 void
+install_builtin_function (octave_builtin::meth m, const std::string& name,
+                          const std::string& file, const std::string& doc,
+                          bool /* can_hide_function -- not yet implemented */)
+{
+  octave_value fcn (new octave_builtin (m, name, file, doc));
+
+  symbol_table::install_built_in_function (name, fcn);
+}
+
+void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
                       const octave::dynamic_library& shl, const std::string& doc,
                       bool relative)
 {
   octave_dld_function *fcn = new octave_dld_function (f, shl, name, doc);
+
+  if (relative)
+    fcn->mark_relative ();
+
+  octave_value fval (fcn);
+
+  symbol_table::install_built_in_function (name, fval);
+}
+
+void
+install_dld_function (octave_dld_function::meth m, const std::string& name,
+                      const octave::dynamic_library& shl, const std::string& doc,
+                      bool relative)
+{
+  octave_dld_function *fcn = new octave_dld_function (m, shl, name, doc);
 
   if (relative)
     fcn->mark_relative ();

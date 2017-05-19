@@ -71,6 +71,11 @@ if ($make_header)
 
 #include \"ovl.h\"
 
+namespace octave
+{
+  class interpreter;
+}
+
 ";
 
   while ($file = shift (@ARGV))
@@ -88,33 +93,47 @@ if ($make_header)
 
     while (<$fh>)
     {
-      if (/^[ \t]*DEF(CONSTFUN|UN)[ \t]*\( *([^ ,]*).*$/)
+      if (/^[ \t]*DEF(CONSTFUN|CONSTMETHOD|METHOD|UN)[ \t]*\( *([^ ,]*).*$/)
       {
         $name = "F$2";
+        $is_method = ($1 eq "METHOD" || $1 eq "CONSTMETHOD");
       }
-      elsif (/^[ \t]*DEFUNX[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
+      elsif (/^[ \t]*DEF(METHOD|UN)X[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
       {
-        $name = $1;
+        $name = $2;
+        $is_method = ($1 eq "METHOD");
       }
       elsif ($defun_dld_are_built_in)
       {
-        if (/^[ \t]*DEFUN_DLD[ \t]*\( *([^ ,]*).*$/)
+        if (/^[ \t]*DEF(METHOD|UN)_DLD[ \t]*\( *([^ ,]*).*$/)
         {
-          $name = "F$1";
+          $name = "F$2";
+          $is_method = ($1 eq "METHOD");
         }
-        elsif (/^[ \t]*DEFUNX_DLD[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
+        elsif (/^[ \t]*DEF(METHOD|UN)X_DLD[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
         {
-          $name = "$1";
+          $name = "$2";
+          $is_method = ($1 eq "METHOD");
         }
       }
 
       if ($name)
       {
-        print "extern OCTINTERP_API octave_value_list
-$name (const octave_value_list& = octave_value_list (), int = 0);
-
+        if ($is_method)
+        {
+          print "extern OCTINTERP_API octave_value_list
+$name (octave::interpreter&, const octave_value_list& = octave_value_list (), int = 0);
 ";
+        }
+        else
+        {
+          print "extern OCTINTERP_API octave_value_list
+$name (const octave_value_list& = octave_value_list (), int = 0);
+";
+        }
+
         $name = "";
+        $is_method = 0;
       }
     }
   }
@@ -182,23 +201,23 @@ $fcn (void)
 
     while ($line = <$fh>)
     {
-      if ($line =~ /^ *DEFUN *\( *([^ ,]*) *,.*$/)
+      if ($line =~ /^ *DEF(METHOD|UN) *\( *([^ ,]*) *,.*$/)
       {
         $type = "fun";
-        $fname = "F$1";
-        $name = "$1";
+        $fname = "F$2";
+        $name = "$2";
       }
-      elsif ($line =~ /^ *DEFUNX *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
+      elsif ($line =~ /^ *DEF(METHOD|UN)X *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
       {
         $type = "fun";
-        $fname = "$2";
-        $name = "$1";
+        $fname = "$3";
+        $name = "$2";
       }
-      elsif ($line =~ /^ *DEFCONSTFUN *\( *([^ ,]*) *,.*$/)
+      elsif ($line =~ /^ *DEFCONST(FUN|METHOD) *\( *([^ ,]*) *,.*$/)
       {
         $type = "fun";
-        $fname = "F$1";
-        $name = "$1";
+        $fname = "F$2";
+        $name = "$2";
         $const = 1;
       }
       elsif ($line =~ /^ *DEFALIAS *\( *([^ ,]*) *, *([^ )]*) *\).*$/)
@@ -209,17 +228,17 @@ $fcn (void)
       }
       elsif ($defun_dld_are_built_in)
       {
-        if ($line =~ /^ *DEFUN_DLD *\( *([^ ,]*) *,.*$/)
+        if ($line =~ /^ *DEF(METHOD|UN)_DLD *\( *([^ ,]*) *,.*$/)
         {
           $type = "fun";
-          $fname = "F$1";
-          $name = "$1";
+          $fname = "F$2";
+          $name = "$2";
         }
-        elsif ($line =~ /^ *DEFUNX_DLD *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
+        elsif ($line =~ /^ *DEF(METHOD|UN)X_DLD *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
         {
           $type = "fun";
-          $fname = "$2";
-          $name = "$1";
+          $fname = "$3";
+          $name = "$2";
         }
       }
 

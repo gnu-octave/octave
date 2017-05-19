@@ -1901,8 +1901,8 @@ Return true if @var{x} is a class object.
   return ovl (args(0).is_object ());
 }
 
-DEFUN (ismethod, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (ismethod, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} ismethod (@var{obj}, @var{method})
 @deftypefnx {} {} ismethod (@var{clsname}, @var{method})
 Return true if the string @var{method} is a valid method of the object
@@ -1926,7 +1926,7 @@ Return true if the string @var{method} is a valid method of the object
 
   std::string method = args(1).string_value ();
 
-  octave::load_path& lp = octave::__get_load_path__ ("ismethod");
+  octave::load_path& lp = interp.get_load_path ();
 
   if (lp.find_method (class_name, method) != "")
     return ovl (true);
@@ -1934,8 +1934,8 @@ Return true if the string @var{method} is a valid method of the object
     return ovl (false);
 }
 
-DEFUN (__methods__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__methods__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __methods__ (@var{x})
 @deftypefnx {} {} __methods__ ("classname")
 Internal function.
@@ -1954,7 +1954,7 @@ Implements @code{methods} for Octave class objects and classnames.
   else if (arg.is_string ())
     class_name = arg.string_value ();
 
-  octave::load_path& lp = octave::__get_load_path__ ("__methods__");
+  octave::load_path& lp = interp.get_load_path ();
 
   string_vector sv = lp.methods (class_name);
 

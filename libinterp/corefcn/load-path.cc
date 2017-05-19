@@ -2216,8 +2216,8 @@ Reinitialize Octave's load path directory cache.
   return ovl ();
 }
 
-DEFUN (command_line_path, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (command_line_path, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} command_line_path ()
 Return the command line path variable.
 
@@ -2227,13 +2227,13 @@ Return the command line path variable.
   if (! args.empty ())
     print_usage ();
 
-  octave::load_path& lp = octave::__get_load_path__ ("command_line_path");
+  octave::load_path& lp = interp.get_load_path ();
 
   return ovl (lp.get_command_line_path ());
 }
 
-DEFUN (restoredefaultpath, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (restoredefaultpath, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} restoredefaultpath ()
 Restore Octave's path to its initial state at startup.
 
@@ -2243,7 +2243,7 @@ Restore Octave's path to its initial state at startup.
   if (! args.empty ())
     print_usage ();
 
-  octave::load_path& lp = octave::__get_load_path__ ("restoredefaultpath");
+  octave::load_path& lp = interp.get_load_path ();
 
   lp.initialize (true);
 
@@ -2255,21 +2255,21 @@ Restore Octave's path to its initial state at startup.
 // exists prior to running the system's octaverc file or the user's
 // ~/.octaverc file
 
-DEFUN (__pathorig__, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__pathorig__, interp, , ,
+          doc: /* -*- texinfo -*-
 @deftypefn {} {@var{val} =} __pathorig__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::load_path& lp = octave::__get_load_path__ ("__pathorig__");
+  octave::load_path& lp = interp.get_load_path ();
 
   lp.initialize (true);
 
   return ovl (lp.system_path ());
 }
 
-DEFUN (path, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (path, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} path ()
 @deftypefnx {} {@var{str} =} path ()
 @deftypefnx {} {@var{str} =} path (@var{path1}, @dots{})
@@ -2293,7 +2293,7 @@ No checks are made for duplicate elements.
 
   string_vector argv = args.make_argv ("path");
 
-  octave::load_path& lp = octave::__get_load_path__ ("path");
+  octave::load_path& lp = interp.get_load_path ();
 
   if (nargin > 0)
     {
@@ -2324,8 +2324,8 @@ No checks are made for duplicate elements.
   return ovl ();
 }
 
-DEFUN (addpath, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (addpath, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} addpath (@var{dir1}, @dots{})
 @deftypefnx {} {} addpath (@var{dir1}, @dots{}, @var{option})
 Add named directories to the function search path.
@@ -2357,7 +2357,7 @@ For each directory that is added, and that was not already in the path,
   if (nargin == 0)
     print_usage ();
 
-  octave::load_path& lp = octave::__get_load_path__ ("addpath");
+  octave::load_path& lp = interp.get_load_path ();
 
   octave_value retval;
 
@@ -2436,8 +2436,8 @@ For each directory that is added, and that was not already in the path,
   return retval;
 }
 
-DEFUN (rmpath, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (rmpath, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} rmpath (@var{dir1}, @dots{})
 Remove @var{dir1}, @dots{} from the current function search path.
 
@@ -2465,7 +2465,7 @@ and runs it if it exists.
 
   octave_value retval;
 
-  octave::load_path& lp = octave::__get_load_path__ ("rmpath");
+  octave::load_path& lp = interp.get_load_path ();
 
   if (nargout > 0)
     retval = lp.path ();
@@ -2495,13 +2495,13 @@ and runs it if it exists.
   return retval;
 }
 
-DEFUN (__dump_load_path__, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__dump_load_path__, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __dump_load_path__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave::load_path& lp = octave::__get_load_path__ ("__dump_load_path__");
+  octave::load_path& lp = interp.get_load_path ();
 
   lp.display (octave_stdout);
 

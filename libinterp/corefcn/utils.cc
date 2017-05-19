@@ -282,8 +282,8 @@ make_absolute (const string_vector& sv)
   return retval;
 }
 
-DEFUN (file_in_loadpath, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (file_in_loadpath, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} file_in_loadpath (@var{file})
 @deftypefnx {} {} file_in_loadpath (@var{file}, "all")
 
@@ -312,7 +312,7 @@ If no files are found, return an empty cell array.
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
 
-  octave::load_path& lp = octave::__get_load_path__ ("file_in_loadpath");
+  octave::load_path& lp = interp.get_load_path ();
 
   if (nargin == 1)
     return ovl (octave::sys::env::make_absolute (lp.find_first_of (names)));
@@ -982,8 +982,8 @@ No check is done for the existence of @var{file}.
 %!error make_absolute_filename ("foo", "bar")
 */
 
-DEFUN (dir_in_loadpath, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dir_in_loadpath, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dir_in_loadpath (@var{dir})
 @deftypefnx {} {} dir_in_loadpath (@var{dir}, "all")
 Return the full name of the path element matching @var{dir}.
@@ -1008,7 +1008,7 @@ all name matches rather than just the first.
 
   dir = args(0).xstring_value ("dir_in_loadpath: DIR must be a directory name");
 
-  octave::load_path& lp = octave::__get_load_path__ ("dir_in_loadpath");
+  octave::load_path& lp = interp.get_load_path ();
 
   if (nargin == 1)
     return ovl (lp.find_dir (dir));

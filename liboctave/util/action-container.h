@@ -213,6 +213,91 @@ namespace octave
       A e_arg;
     };
 
+    /// An element for calling a member function with two arguments
+    template <class T, class A, class B>
+    class method_arg2_elem : public elem
+    {
+    public:
+      method_arg2_elem (T *obj, void (T::*method) (A, B),
+                        A arg_a, B arg_b)
+        : e_obj (obj), e_method (method),
+          e_arg_a (arg_a), e_arg_b (arg_b) { }
+
+      void run (void) { (e_obj->*e_method) (e_arg_a, e_arg_b); }
+
+    private:
+
+      T *e_obj;
+      void (T::*e_method) (A, B);
+      A e_arg_a;
+      B e_arg_b;
+
+      // No copying!
+
+      method_arg2_elem (const method_arg2_elem&);
+
+      method_arg2_elem operator = (const method_arg2_elem&);
+    };
+
+    /// An element for calling a member function with three arguments
+    template <class T, class A, class B, class C>
+    class method_arg3_elem : public elem
+    {
+    public:
+      method_arg3_elem (T *obj, void (T::*method) (A, B, C),
+                        A arg_a, B arg_b, C arg_c)
+        : e_obj (obj), e_method (method),
+          e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c)
+      { }
+
+      void run (void) { (e_obj->*e_method) (e_arg_a, e_arg_b, e_arg_c); }
+
+    private:
+
+      T *e_obj;
+      void (T::*e_method) (A, B, C);
+      A e_arg_a;
+      B e_arg_b;
+      C e_arg_c;
+
+      // No copying!
+
+      method_arg3_elem (const method_arg3_elem&);
+
+      method_arg3_elem operator = (const method_arg3_elem&);
+    };
+
+    /// An element for calling a member function with three arguments
+    template <class T, class A, class B, class C, class D>
+    class method_arg4_elem : public elem
+    {
+    public:
+      method_arg4_elem (T *obj, void (T::*method) (A, B, C, D),
+                        A arg_a, B arg_b, C arg_c, D arg_d)
+        : e_obj (obj), e_method (method),
+          e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c), e_arg_d (arg_d)
+      { }
+
+      void run (void) {
+        (e_obj->*e_method) (e_arg_a, e_arg_b, e_arg_c, e_arg_d);
+      }
+
+    private:
+
+      T *e_obj;
+      void (T::*e_method) (A, B, C, D);
+      A e_arg_a;
+      B e_arg_b;
+      C e_arg_c;
+      D e_arg_d;
+
+      // No copying!
+
+      method_arg4_elem (const method_arg4_elem&);
+
+      method_arg4_elem operator = (const method_arg4_elem&);
+    };
+
     // An element that stores arbitrary variable, and restores it.
 
     template <typename T>
@@ -328,6 +413,33 @@ namespace octave
     void add_method (T& obj, void (T::*method) (const A&), const A& arg)
     {
       add (new method_crefarg_elem<T, A> (obj, method, arg));
+    }
+
+    // Call to T::method (A, B).
+    template <class T, class A, class B>
+    void add_method (T *obj, void (T::*method) (A, B),
+                     A arg_a, B arg_b)
+    {
+      add (new method_arg2_elem<T, A, B> (obj, method, arg_a, arg_b));
+    }
+
+    // Call to T::method (A, B, C).
+    template <class T, class A, class B, class C>
+    void add_method (T *obj, void (T::*method) (A, B, C),
+                     A arg_a, B arg_b, C arg_c)
+    {
+      add (new method_arg3_elem<T, A, B, C> (obj, method, arg_a,
+                                             arg_b, arg_c));
+    }
+
+    // Call to T::method (A, B, C, D).
+    template <class T, class A, class B, class C, class D>
+    void add_method (T *obj, void (T::*method) (A, B, C, D),
+                     A arg_a, B arg_b,
+                     C arg_c, D arg_d)
+    {
+      add (new method_arg4_elem<T, A, B, C, D> (obj, method, arg_a,
+                                                arg_b, arg_c, arg_d));
     }
 
     // Call to delete (T*).

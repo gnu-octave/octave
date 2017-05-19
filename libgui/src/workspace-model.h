@@ -88,6 +88,7 @@ public slots:
 signals:
 
   void model_changed (void);
+  void prompt_variable_editor(void);
 
   void rename_variable (const QString& old_name, const QString& new_name);
 

@@ -118,6 +118,10 @@ public slots:
 
   static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
+  static QString varedit_color_chars (void) {return "fbsha"; }
+  static QStringList varedit_color_names (void);
+  static QList<QColor> varedit_default_colors (void);
+
 private:
 
   static bool instance_ok (void);

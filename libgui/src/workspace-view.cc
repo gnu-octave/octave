@@ -152,6 +152,9 @@ workspace_view::workspace_view (QWidget *p)
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
+
+  connect (this, SIGNAL (edit_variable_signal (const QString&)),
+           p, SLOT (edit_variable (const QString&)));
 }
 
 void
@@ -324,6 +327,9 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
           rename->setToolTip (tr ("Only top-level symbols may be renamed"));
         }
 
+      menu.addAction (tr ("Open in Variable Editor"), this,
+                      SLOT (handle_contextmenu_edit ()));
+
       menu.addSeparator ();
 
       menu.addAction ("disp (" + var_name + ')', this,
@@ -409,6 +415,25 @@ workspace_view::handle_contextmenu_rename (void)
           QAbstractItemModel *m = view->model ();
           m->setData (index, new_name, Qt::EditRole);
         }
+    }
+}
+
+void
+workspace_view::handle_contextmenu_edit (void)
+{
+  QModelIndex index = view->currentIndex ();
+
+  if (index.isValid ())
+    {
+      index = index.sibling (index.row (), 0);
+
+      QAbstractItemModel *m = view->model ();
+
+      QMap<int, QVariant> item_data = m->itemData (index);
+
+      QString var_name = item_data[0].toString ();
+
+      emit edit_variable_signal (var_name);
     }
 }
 

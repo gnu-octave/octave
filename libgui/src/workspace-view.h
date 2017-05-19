@@ -58,6 +58,9 @@ signals:
   /** signal that user had requested a command on a variable */
   void command_requested (const QString& cmd);
 
+  /// signal that user wants to edit a variable
+  void edit_variable_signal (const QString&);
+
 protected:
 
   void closeEvent (QCloseEvent *event);
@@ -70,6 +73,7 @@ protected slots:
   void handle_contextmenu_copy (void);
   void handle_contextmenu_copy_value (void);
   void handle_contextmenu_rename (void);
+  void handle_contextmenu_edit (void);
   void handle_contextmenu_disp (void);
   void handle_contextmenu_plot (void);
   void handle_contextmenu_stem (void);

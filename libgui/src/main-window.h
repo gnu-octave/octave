@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
+#include "variable-editor.h"
 #include "thread-manager.h"
 #include "workspace-model.h"
 #include "workspace-view.h"
@@ -272,6 +273,15 @@ private slots:
   void set_file_encoding (const QString& new_encoding);
   void request_open_files (const QStringList& open_file_names);
 
+  // open variable_editor
+  void
+  edit_variable (const QString &name);
+
+  void
+  clear_variable_editor_cache ();
+
+  void variable_editor_callback();
+
 protected:
   void closeEvent (QCloseEvent *closeEvent);
 
@@ -340,6 +350,10 @@ private:
 
   QThread *m_main_thread;
 
+  bool confirm_exit_octave ();
+
+  void force_refresh_workspace();
+
   workspace_model *_workspace_model;
 
   QHash<QMenu*, QStringList> _hash_menu_text;
@@ -354,6 +368,7 @@ private:
   documentation_dock_widget *doc_browser_window;
   file_editor_interface *editor_window;
   workspace_view *workspace_window;
+  variable_editor *variable_editor_window;
 
   external_editor_interface *_external_editor;
   QWidget *_active_editor;
@@ -399,12 +414,14 @@ private:
   QAction *_show_file_browser_action;
   QAction *_show_editor_action;
   QAction *_show_documentation_action;
+  QAction *_show_variable_editor_action;
   QAction *_command_window_action;
   QAction *_history_action;
   QAction *_workspace_action;
   QAction *_file_browser_action;
   QAction *_editor_action;
   QAction *_documentation_action;
+  QAction *_variable_editor_action;
   QAction *_reset_windows_action;
 
   QAction *_ondisk_doc_action;

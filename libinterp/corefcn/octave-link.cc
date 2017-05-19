@@ -382,6 +382,28 @@ Undocumented internal function.
   return ovl (octave_link::show_preferences ());
 }
 
+DEFUN (openvar, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} openvar (@var{name})\n\
+Open the variable @var{name} in the GUI Variable Editor.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string name = args (0).string_value ();
+      if (! error_state)
+        octave_link::openvar (name);
+      else
+        error ("invalid arguments");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (__octave_link_show_doc__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_show_doc__ (@var{filename})

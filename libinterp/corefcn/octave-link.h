@@ -120,6 +120,33 @@ public:
       instance->do_post_event (obj, method, arg);
   }
 
+  template <class T, class A, class B>
+  static void post_event (T *obj, void (T::*method) (A, B),
+                          A arg_a, B arg_b)
+  {
+    if (enabled ())
+      instance->do_post_event<T, A, B> (obj, method, arg_a, arg_b);
+  }
+
+  template <class T, class A, class B, class C>
+  static void post_event (T *obj,
+                          void (T::*method) (A, B, C),
+                          A arg_a, B arg_b, C arg_c)
+  {
+    if (enabled ())
+      instance->do_post_event<T, A, B, C> (obj, method, arg_a, arg_b, arg_c);
+  }
+
+  template <class T, class A, class B, class C, class D>
+  static void post_event (T *obj,
+                          void (T::*method) (A, B, C, D),
+                          A arg_a, B arg_b, C arg_c, D arg_d)
+  {
+    if (enabled ())
+      instance->do_post_event<T, A, B, C, D>
+        (obj, method, arg_a, arg_b, arg_c, arg_d);
+  }
+
   static void entered_readline_hook (void)
   {
     if (enabled ())
@@ -233,10 +260,10 @@ public:
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
-                             const std::list<workspace_element>& ws)
+                             const std::list<workspace_element>& ws, const bool& update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, ws);
+      instance->do_set_workspace (top_level, instance->debugging, ws, update_variable_editor);
   }
 
   static void clear_workspace (void)
@@ -388,6 +415,18 @@ public:
 
   }
 
+  static bool
+  openvar (const std::string &name)
+  {
+    if (enabled ())
+      {
+        instance->do_openvar (name);
+        return true;
+      }
+    else
+      return false;
+  }
+
 private:
 
   static octave_link *instance;
@@ -425,6 +464,30 @@ protected:
   void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
   {
     gui_event_queue.add_method (obj, method, arg);
+  }
+
+  template <class T, class A, class B>
+  void do_post_event (T *obj, void (T::*method) (A, B),
+                      A arg_a, B arg_b)
+  {
+    gui_event_queue.add_method<T, A, B>
+      (obj, method, arg_a, arg_b);
+  }
+
+  template <class T, class A, class B, class C>
+    void do_post_event (T *obj, void (T::*method) (A, B, C),
+                      A arg_a, B arg_b, C arg_c)
+  {
+    gui_event_queue.add_method<T, A, B, C>
+      (obj, method, arg_a, arg_b, arg_c);
+  }
+
+  template <class T, class A, class B, class C, class D>
+  void do_post_event (T *obj, void (T::*method) (A, B, C, D),
+                      A arg_a, B arg_b, C arg_c, D arg_d)
+  {
+    gui_event_queue.add_method<T, A, B, C, D>
+      (obj, method, arg_a, arg_b, arg_c, arg_d);
   }
 
   void do_entered_readline_hook (void) { }
@@ -479,7 +542,8 @@ protected:
 
   virtual void
   do_set_workspace (bool top_level, bool debug,
-                    const std::list<workspace_element>& ws) = 0;
+                    const std::list<workspace_element>& ws,
+                    const bool& variable_editor_too = true) = 0;
 
   virtual void do_clear_workspace (void) = 0;
 
@@ -508,6 +572,8 @@ protected:
   virtual void do_show_preferences (void) = 0;
 
   virtual void do_show_doc (const std::string& file) = 0;
+
+  virtual void do_openvar (const std::string& name) = 0;
 };
 
 #endif

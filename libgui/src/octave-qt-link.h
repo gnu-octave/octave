@@ -105,7 +105,8 @@ public:
   void do_execute_command_in_terminal (const std::string& command);
 
   void do_set_workspace (bool top_level, bool debug,
-                         const std::list<workspace_element>& ws);
+                         const std::list<workspace_element>& ws,
+                         const bool& variable_editor_too = true);
 
   void do_clear_workspace (void);
 
@@ -138,6 +139,7 @@ public:
 
   void update_directory (void);
 
+  void do_openvar (const std::string &name);
 private:
 
   bool _shutdown_confirm_result;
@@ -191,6 +193,10 @@ signals:
   void show_preferences_signal (void);
 
   void show_doc_signal (const QString& file);
+
+  void open_variable (const QString &name);
+
+  void refresh_variable_editor();
 
   void confirm_shutdown_signal (void);
 };

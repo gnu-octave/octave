@@ -429,7 +429,8 @@ octave_qt_link::do_execute_command_in_terminal (const std::string& command)
 
 void
 octave_qt_link::do_set_workspace (bool top_level, bool debug,
-                                  const std::list<workspace_element>& ws)
+                                  const std::list<workspace_element>& ws,
+                                  const bool& update_variable_editor)
 {
   if (! top_level && ! debug)
     return;
@@ -457,6 +458,9 @@ octave_qt_link::do_set_workspace (bool top_level, bool debug,
 
   emit set_workspace_signal (top_level, debug, scopes, symbols, class_names,
                              dimensions, values, complex_flags);
+
+  if (update_variable_editor)
+    emit refresh_variable_editor ();
 }
 
 void
@@ -629,6 +633,12 @@ void
 octave_qt_link::do_show_preferences ()
 {
   emit show_preferences_signal ();
+}
+
+void
+octave_qt_link::do_openvar (const std::string &expr)
+{
+  emit open_variable (QString::fromStdString (expr));
 }
 
 void

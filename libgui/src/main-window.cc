@@ -153,7 +153,7 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
     m_interpreter (new octave_interpreter (app_context)),
     m_main_thread (new QThread ()), _workspace_model (nullptr), status_bar (nullptr),
     command_window (nullptr), history_window (nullptr), file_browser_window (nullptr),
-    doc_browser_window (nullptr), editor_window (nullptr), workspace_window (nullptr),
+    doc_browser_window (nullptr), editor_window (nullptr), workspace_window (nullptr), variable_editor_window (nullptr),
     _settings_dlg (nullptr), find_files_dlg (nullptr), release_notes_window (nullptr),
     community_news_window (nullptr), _octave_qt_link (nullptr),
     _clipboard (QApplication::clipboard ()),
@@ -171,6 +171,7 @@ main_window::main_window (QWidget *p, octave::gui_application *app_context)
       file_browser_window = new files_dock_widget (this);
       doc_browser_window = new documentation_dock_widget (this);
       editor_window = create_default_editor (this);
+      variable_editor_window = new variable_editor (this);
       workspace_window = new workspace_view (this);
     }
 
@@ -232,6 +233,7 @@ main_window::~main_window (void)
   delete history_window;
   delete status_bar;
   delete _workspace_model;
+  delete variable_editor_window;
   delete m_interpreter;
   delete m_main_thread;
   if (find_files_dlg)
@@ -1324,7 +1326,7 @@ main_window::selectAll (void)
 // is not a global variable and not accessible for connecting.
 
 void
-main_window::connect_uiwidget_links (void)
+main_window::connect_uiwidget_links ()
 {
   connect (&uiwidget_creator,
            SIGNAL (create_dialog (const QString&, const QString&,
@@ -1700,11 +1702,20 @@ main_window::construct (void)
       connect (_workspace_model, SIGNAL (model_changed (void)),
                workspace_window, SLOT (handle_model_changed (void)));
 
+      connect (_octave_qt_link, SIGNAL (open_variable (const QString&)),
+               this, SLOT (edit_variable (const QString&)));
+
+      connect (_octave_qt_link, SIGNAL (refresh_variable_editor()),
+               this, SLOT (clear_variable_editor_cache()));
+
       connect (_workspace_model,
                SIGNAL (rename_variable (const QString&, const QString&)),
                this,
                SLOT (handle_rename_variable_request (const QString&,
                                                      const QString&)));
+
+      connect (variable_editor_window, SIGNAL (updated()),
+               this, SLOT (variable_editor_callback ()));
 
       connect (command_window, SIGNAL (interrupt_signal (void)),
                this, SLOT (interrupt_interpreter (void)));
@@ -1775,6 +1786,8 @@ main_window::construct (void)
       addDockWidget (Qt::RightDockWidgetArea, editor_window);
       tabifyDockWidget (command_window, editor_window);
 #endif
+      addDockWidget (Qt::RightDockWidgetArea, variable_editor_window);
+      tabifyDockWidget (command_window, variable_editor_window);
 
       addDockWidget (Qt::LeftDockWidgetArea, file_browser_window);
       addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
@@ -2313,6 +2326,9 @@ main_window::construct_window_menu (QMenuBar *p)
   _show_documentation_action = construct_window_menu_item
             (window_menu, tr ("Show Documentation"), true, doc_browser_window);
 
+  _show_variable_editor_action = construct_window_menu_item
+            (window_menu, tr ("Show Variable Editor"), true, variable_editor_window);
+
   window_menu->addSeparator ();
 
   _command_window_action = construct_window_menu_item
@@ -2332,6 +2348,9 @@ main_window::construct_window_menu (QMenuBar *p)
 
   _documentation_action = construct_window_menu_item
             (window_menu, tr ("Documentation"), false, doc_browser_window);
+
+  _variable_editor_action = construct_window_menu_item
+            (window_menu, tr ("Documentation"), false, variable_editor_window);
 
   window_menu->addSeparator ();
 
@@ -2403,6 +2422,7 @@ main_window::construct_tool_bar (void)
 
   _main_tool_bar->addAction (_copy_action);
   _main_tool_bar->addAction (_paste_action);
+  _main_tool_bar->addAction (_undo_action);
 
   _main_tool_bar->addSeparator ();
 
@@ -2443,6 +2463,23 @@ main_window::construct_tool_bar (void)
 
   connect (_undo_action, SIGNAL (triggered ()),
            this, SLOT (handle_undo_request ()));
+}
+
+void
+main_window::variable_editor_callback()
+{
+  // Called when the variable editor makes changes.
+  octave_link::post_event(this, &main_window::force_refresh_workspace);
+}
+
+void
+main_window::force_refresh_workspace()
+{
+  octave::symbol_table::scope *scope
+   = octave::__get_current_scope__ ("main_window::load_workspace_callback");
+
+  if (scope)
+    octave_link::set_workspace (true, scope->workspace_info (), false);
 }
 
 void
@@ -2632,6 +2669,7 @@ main_window::configure_shortcuts ()
                                   "main_window:file_browser");
   shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
   shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
+  shortcut_manager::set_shortcut (_variable_editor_action, "main_window:variable_editor");
   shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
 
   // help menu
@@ -2717,6 +2755,7 @@ main_window::dock_widget_list ()
   list.append (static_cast<octave_dock_widget *> (editor_window));
 #endif
   list.append (static_cast<octave_dock_widget *> (workspace_window));
+  list.append (static_cast<octave_dock_widget *> (variable_editor_window));
   return list;
 }
 
@@ -2756,6 +2795,25 @@ void
 main_window::clear_clipboard ()
 {
   _clipboard->clear (QClipboard::Clipboard);
+}
+
+void
+main_window::edit_variable (const QString &expr)
+{
+  variable_editor_window->edit_variable (expr);
+
+  if (! variable_editor_window->isVisible ())
+    {
+      variable_editor_window->show ();
+      variable_editor_window->raise ();
+    }
+
+}
+
+void
+main_window::clear_variable_editor_cache ()
+{
+  variable_editor_window->clear_data_cache ();
 }
 
 void

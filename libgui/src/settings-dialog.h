@@ -70,6 +70,9 @@ private:
   void read_terminal_colors (QSettings *settings);
   void write_terminal_colors (QSettings *settings);
 
+  void read_varedit_colors (QSettings *settings);
+  void write_varedit_colors (QSettings *settings);
+
   color_picker *_widget_title_bg_color;
   color_picker *_widget_title_bg_color_active;
   color_picker *_widget_title_fg_color;

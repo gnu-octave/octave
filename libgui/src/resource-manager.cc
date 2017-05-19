@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "QTerminal.h"
 #include "workspace-model.h"
+#include "variable-editor.h"
 #include "resource-manager.h"
 
 resource_manager *resource_manager::instance = nullptr;
@@ -317,6 +318,18 @@ QList<QColor>
 resource_manager::terminal_default_colors (void)
 {
   return QTerminal::default_colors ();
+}
+
+QList<QColor>
+resource_manager::varedit_default_colors(void)
+{
+  return variable_editor::default_colors ();
+}
+
+QStringList
+resource_manager::varedit_color_names(void)
+{
+  return variable_editor::color_names ();
 }
 
 QIcon

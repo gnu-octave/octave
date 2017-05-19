@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "resource-manager.h"
 #include "shortcut-manager.h"
+#include "variable-editor.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
@@ -590,6 +591,21 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   // terminal colors
   read_terminal_colors (settings);
 
+  // variable editor
+  ui->varedit_columnWidth->setText(settings->value("variable_editor/column_width","100").toString());
+  ui->varedit_autoFitColumnWidth->setChecked(settings->value("variable_editor/autofit_column_width",false).toBool());
+  ui->varedit_autofitType->setCurrentIndex(settings->value("autofit_type",0).toInt());
+  ui->varedit_rowHeight->setText(settings->value("variable_editor/row_height","2").toString());
+  ui->varedit_rowAutofit->setChecked(settings->value("variable_editor/autofit_row_height",true).toBool());
+  ui->varedit_font->setFont(QFont(settings->value("variable_editor/font",settings->value("terminal/FontName","Courier New")).toString()));
+  ui->varedit_fontSize->setValue(settings->value("variable_editor/font_size",QVariant(10)).toInt());
+  ui->varedit_useTerminalFont->setChecked(settings->value("variable_editor/use_terminal_font",false).toBool());
+  ui->varedit_alternate->setChecked(settings->value("variable_editor/alternate_rows",QVariant(false)).toBool());
+  ui->varedit_toolbarSize->setValue(settings->value("variable_editor/toolbar_size",24).toInt());
+
+  // variable editor colors
+  read_varedit_colors(settings);
+
   // shortcuts
 
   ui->cb_prevent_readline_conflicts->setChecked (
@@ -750,6 +766,64 @@ settings_dialog::read_terminal_colors (QSettings *settings)
 
   // place grid with elements into the tab
   ui->terminal_colors_box->setLayout (style_grid);
+}
+
+void
+settings_dialog::write_varedit_colors (QSettings *settings)
+{
+    QString class_chars = resource_manager::varedit_color_chars ();
+    color_picker *color;
+
+    for (int i = 0; i < class_chars.length (); i++)
+      {
+        color = ui->varedit_colors_box->findChild <color_picker *>(
+                  "varedit_color_"+class_chars.mid (i,1));
+        if (color)
+          settings->setValue ("variable_editor/color_"+class_chars.mid (i,1),
+                              color->color ());
+      }
+    settings->sync ();
+}
+
+
+void
+settings_dialog::read_varedit_colors (QSettings *settings)
+{
+  QList<QColor> default_colors = variable_editor::default_colors ();
+  QStringList class_names = variable_editor::color_names ();
+  QString class_chars = resource_manager::varedit_color_chars ();
+  int nr_of_classes = class_chars.length ();
+
+  QGridLayout *style_grid = new QGridLayout ();
+  QVector<QLabel*> description (nr_of_classes);
+  QVector<color_picker*> color (nr_of_classes);
+
+  int column = 0;
+  int row = 0;
+  for (int i = 0; i < nr_of_classes; i++)
+    {
+      description[i] = new QLabel ("    " + class_names.at (i));
+      description[i]->setAlignment (Qt::AlignRight);
+      QVariant default_var = default_colors.at (i);
+      QColor setting_color = settings->value ("variable_editor/color_"
+                                              + class_chars.mid (i,1),
+                                              default_var).value<QColor> ();
+      color[i] = new color_picker (setting_color);
+      color[i]->setObjectName ("varedit_color_"+class_chars.mid (i, 1));
+      color[i]->setMinimumSize (30, 10);
+      style_grid->addWidget (description[i], row, 2*column);
+      style_grid->addWidget (color[i],       row, 2*column+1);
+      if (++column == 2)
+        {
+          style_grid->setColumnStretch (3*column, 10);
+          row++;
+          column = 0;
+        }
+    }
+
+  // place grid with elements into the tab
+  ui->varedit_colors_box->setLayout (style_grid);
+
 }
 
 void
@@ -982,6 +1056,19 @@ settings_dialog::write_changed_settings (bool closing)
 
   // Terminal
   write_terminal_colors (settings);
+
+  // Variable editor
+  settings->setValue("variable_editor/autofit_column_width",ui->varedit_autoFitColumnWidth->isChecked());
+  settings->setValue("variable_editor/autofit_type",ui->varedit_autofitType->currentIndex());
+  settings->setValue("variable_editor/column_width",ui->varedit_columnWidth->text());
+  settings->setValue("variable_editor/row_height", ui->varedit_rowHeight->text());
+  settings->setValue("variable_editor/autofit_row_height",ui->varedit_rowAutofit->isChecked());
+  settings->setValue("variable_editor/use_terminal_font",ui->varedit_useTerminalFont->isChecked());
+  settings->setValue("variable_editor/alternate_rows",ui->varedit_alternate->isChecked());
+  settings->setValue("variable_editor/font_name",ui->varedit_font->currentFont().family());
+  settings->setValue("variable_editor/font_size",ui->varedit_fontSize->value());
+  settings->setValue("variable_editor/toolbar_size",ui->varedit_toolbarSize->value());
+  write_varedit_colors(settings);
 
   // shortcuts
   settings->setValue ("shortcuts/prevent_readline_conflicts",

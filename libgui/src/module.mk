@@ -114,6 +114,8 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-welcome-wizard.cc \
   %reldir%/moc-workspace-model.cc \
   %reldir%/moc-workspace-view.cc \
+  %reldir%/moc-variable-editor.cc \
+  %reldir%/moc-variable-editor-model.cc \
   %reldir%/moc-find-files-dialog.cc \
   %reldir%/moc-find-files-model.cc \
   %reldir%/qtinfo/moc-parser.cc \
@@ -170,7 +172,9 @@ noinst_HEADERS += \
   %reldir%/find-files-dialog.h \
   %reldir%/find-files-model.h \
   %reldir%/workspace-model.h \
-  %reldir%/workspace-view.h
+  %reldir%/workspace-view.h \
+  %reldir%/variable-editor.h \
+  %reldir%/variable-editor-model.h
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
   %reldir%/dialog.cc \
@@ -201,7 +205,9 @@ noinst_HEADERS += \
   %reldir%/find-files-dialog.cc \
   %reldir%/find-files-model.cc \
   %reldir%/workspace-model.cc \
-  %reldir%/workspace-view.cc
+  %reldir%/workspace-view.cc \
+  %reldir%/variable-editor.cc \
+  %reldir%/variable-editor-model.cc
 
 nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(octave_gui_MOC) \

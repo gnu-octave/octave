@@ -482,6 +482,15 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
   return 0;
 }
 
+int
+symbol_exist (const std::string& name, const std::string& type)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("symbol_exist");
+
+  return symbol_exist (interp, name, type);
+}
+
+
 #define GET_IDX(LEN)                                                    \
   static_cast<int> ((LEN-1) * static_cast<double> (rand ()) / RAND_MAX)
 

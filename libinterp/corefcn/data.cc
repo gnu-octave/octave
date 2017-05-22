@@ -2201,6 +2201,9 @@ new matrices.  For example:
 %!assert (class (horzcat (cell (1), struct ("foo", "bar"))), "cell")
 
 %!error horzcat (struct ("foo", "bar"), cell (1))
+
+%!test <39041> assert (class (horzcat (cell(0), struct())), "cell")
+%!test <51086> assert (class (horzcat (struct(), cell(0))), "struct")
 */
 
 DEFUN (vertcat, args, ,

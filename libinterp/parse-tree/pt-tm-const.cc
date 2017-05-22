@@ -82,6 +82,8 @@ namespace octave
             first_elem = false;
           }
       }
+    else if (val.is_cell ())
+      first_elem = false;
 
     append (val);
 

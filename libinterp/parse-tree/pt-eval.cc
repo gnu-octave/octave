@@ -792,15 +792,16 @@ namespace octave
         octave_idx_type nrows = dv(0);
         octave_idx_type steps = dv(1);
 
-        if (steps > 0)
-          {
-            octave_value arg = rhs;
-            if (rhs.ndims () > 2)
-              arg = arg.reshape (dv);
+        octave_value arg = rhs;
+        if (rhs.ndims () > 2)
+          arg = arg.reshape (dv);
 
-            // for row vectors, use single index to speed things up.
+        if (nrows > 0 && steps > 0)
+          {
             octave_value_list idx;
             octave_idx_type iidx;
+
+            // for row vectors, use single index to speed things up.
             if (nrows == 1)
               {
                 idx.resize (1);
@@ -827,6 +828,11 @@ namespace octave
                 if (quit_loop_now ())
                   break;
               }
+          } 
+        else
+          {
+            // Handle empty cases, while still assigning to loop var.
+            ult.assign (octave_value::op_asn_eq, arg);
           }
       }
     else

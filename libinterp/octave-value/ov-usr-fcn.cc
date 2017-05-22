@@ -405,45 +405,6 @@ octave_user_function::all_va_args (const octave_value_list& args)
 }
 
 octave_value_list
-octave_user_function::subsref (const std::string& type,
-                               const std::list<octave_value_list>& idx,
-                               int nargout)
-{
-  octave_value_list retval;
-
-  switch (type[0])
-    {
-    case '(':
-      {
-        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
-
-        retval = call (tmp_nargout, idx.front ());
-      }
-      break;
-
-    case '{':
-    case '.':
-      {
-        std::string nm = type_name ();
-        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-      }
-      break;
-
-    default:
-      panic_impossible ();
-    }
-
-  // FIXME: perhaps there should be an
-  // octave_value_list::next_subsref member function?  See also
-  // octave_builtin::subsref.
-
-  if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
-
-  return retval;
-}
-
-octave_value_list
 octave_user_function::call (int nargout, const octave_value_list& _args)
 {
   octave_value_list retval;

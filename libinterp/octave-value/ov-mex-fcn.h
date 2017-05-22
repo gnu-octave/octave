@@ -59,17 +59,6 @@ public:
 
   ~octave_mex_function (void);
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
-  {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
-  }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
-
   octave_function * function_value (bool = false) { return this; }
 
   const octave_function * function_value (bool = false) const { return this; }

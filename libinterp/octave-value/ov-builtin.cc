@@ -41,51 +41,6 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
                                      "built-in function");
 
 octave_value_list
-octave_builtin::subsref (const std::string& type,
-                         const std::list<octave_value_list>& idx,
-                         int nargout)
-{
-  octave_value_list retval;
-
-  switch (type[0])
-    {
-    case '(':
-      {
-        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
-
-        retval = call (tmp_nargout, idx.front ());
-      }
-      break;
-
-    case '{':
-    case '.':
-      {
-        std::string nm = type_name ();
-        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-      }
-      break;
-
-    default:
-      panic_impossible ();
-    }
-
-  // FIXME: perhaps there should be an
-  // octave_value_list::next_subsref member function?  See also
-  // octave_user_function::subsref.
-  //
-  // FIXME: Note that if a function call returns multiple
-  // values, and there is further indexing to perform, then we are
-  // ignoring all but the first value.  Is this really what we want to
-  // do?  If it is not, then what should happen for stat("file").size,
-  // for exmaple?
-
-  if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
-
-  return retval;
-}
-
-octave_value_list
 octave_builtin::call (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;

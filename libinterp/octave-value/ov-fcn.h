@@ -202,6 +202,18 @@ public:
   call (int nargout = 0,
         const octave_value_list& args = octave_value_list ()) = 0;
 
+  octave_value subsref (const std::string& type,
+                        const std::list<octave_value_list>& idx)
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
+
+  octave_value_list
+  subsref (const std::string& type,
+           const std::list<octave_value_list>& idx,
+           int nargout);
+
 protected:
 
   octave_function (const std::string& nm,

@@ -134,13 +134,6 @@ public:
 
   octave::sys::time time_checked (void) const { return t_checked; }
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
-  {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
-  }
-
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
                              int nargout);
@@ -358,17 +351,6 @@ public:
     return class_method
            ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
-
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
-  {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
-  }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
 
   octave_value_list call (int nargout, const octave_value_list& args);
 

@@ -82,17 +82,6 @@ public:
 
   std::string src_file_name (void) const { return file; }
 
-  octave_value subsref (const std::string& type,
-                        const std::list<octave_value_list>& idx)
-  {
-    octave_value_list tmp = subsref (type, idx, 1);
-    return tmp.length () > 0 ? tmp(0) : octave_value ();
-  }
-
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
-
   octave_function * function_value (bool = false) { return this; }
 
   bool is_builtin_function (void) const { return true; }

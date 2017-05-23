@@ -95,8 +95,8 @@ namespace octave
 
     octave_value::binary_op op_type (void) const { return etype; }
 
-    tree_expression * lhs (void) { return op_lhs; }
-    tree_expression * rhs (void) { return op_rhs; }
+    virtual tree_expression * lhs (void) { return op_lhs; }
+    virtual tree_expression * rhs (void) { return op_rhs; }
 
     bool is_eligible_for_braindead_shortcircuit (void) const
     {

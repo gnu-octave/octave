@@ -300,7 +300,7 @@ namespace octave
 
             if (b.is_defined ())
               {
-                octave_value::binary_op etype = expr.op_type ();
+                octave_value::compound_binary_op etype = expr.cop_type ();
 
                 val = ::do_binary_op (etype, a, b);
               }

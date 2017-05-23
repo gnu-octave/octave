@@ -45,7 +45,7 @@ function desc = get_description (filename)
       ## Keyword/value pair
       colon = find (line == ":");
       if (length (colon) == 0)
-        disp ("skipping line");
+        warning ("pkg: skipping invalid line in DESCRIPTION file");
       else
         colon = colon(1);
         keyword = tolower (strtrim (line(1:colon-1)));
@@ -55,7 +55,12 @@ function desc = get_description (filename)
             error ("The keyword '%s' of the package '%s' has an empty value",
                     keyword, desc.name);
         endif
-        desc.(keyword) = value;
+        if (isfield (desc, keyword))
+          warning ("pkg: duplicate keyword \"%s\" in DESCRIPTION, ignoring",
+                   keyword);
+        else
+          desc.(keyword) = value;
+        endif
       endif
     endif
     line = fgetl (fid);

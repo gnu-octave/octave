@@ -398,8 +398,7 @@ Depends: package (>= 1.0.0)
 Possible operators are @code{<}, @code{<=}, @code{==}, @code{>=} or
 @code{>}.  If the part of the dependency in @code{()} is missing, any
 version of the package is acceptable.  Multiple dependencies can be
-defined either as a comma separated list or on separate @code{Depends}
-lines.
+defined as a comma separated list.
 
 @item License
 An optional short description of the used license (e.g., GPL version 3

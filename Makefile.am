@@ -248,6 +248,7 @@ include test/module.mk
 DIST_HOOKS := \
   doc-interpreter-dist-hook \
   docs-dist-hook \
+  fix-file-perms-dist-hook \
   hg-id-dist-hook \
   icons-dist-hook \
   scripts-dist-hook
@@ -260,6 +261,16 @@ else
 docs-dist-hook:
 	@echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
+
+## Ensure file permissions are consistent on all files included in the
+## distribution.  Automake takes care of normalizing some permissions of
+## normal files and directories.  Automake does not ensure that files don't
+## have unnecessarily lax write permissions.  It also does not ensure that
+## executable permissions are set for group and other users.
+fix-file-perms-dist-hook:
+	-chmod -R go-w "$(distdir)"
+	-find "$(distdir)" -type f -perm -100 -exec chmod a+rx {} \;
+.PHONY: fix-file-perms-dist-hook
 
 if AMCOND_ENABLE_HG_ID
 hg-id-dist-hook:

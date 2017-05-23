@@ -55,8 +55,8 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    tree_expression * lhs (void) { return cop_lhs; }
-    tree_expression * rhs (void) { return cop_rhs; }
+    tree_expression * clhs (void) { return cop_lhs; }
+    tree_expression * crhs (void) { return cop_rhs; }
 
     void accept (tree_walker& tw)
     {

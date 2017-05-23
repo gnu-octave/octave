@@ -286,13 +286,13 @@ namespace octave
   {
     octave_value val;
 
-    tree_expression *op_lhs = expr.lhs ();
+    tree_expression *op_lhs = expr.clhs ();
 
     if (op_lhs)
       {
         octave_value a = evaluate (op_lhs);
 
-        tree_expression *op_rhs = expr.rhs ();
+        tree_expression *op_rhs = expr.crhs ();
 
         if (a.is_defined () && op_rhs)
           {

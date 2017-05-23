@@ -1084,6 +1084,77 @@ final_index_error (octave::index_exception& e,
 
 namespace octave
 {
+  // Unlike Matlab, which does not allow the result of a function call
+  // or array indexing expression to be further indexed, Octave attempts
+  // to handle arbitrary index expressions.  For example, Octave allows
+  // expressions like
+  //
+  //   svd (rand (10))(1:5)
+  //
+  // Although octave_value objects may contain function objects, no
+  // indexing operation or function call is supposed to return them
+  // directly.  Instead, the language is supposed to only allow function
+  // objects to be stored as function handles (named or anonymous) or as
+  // inline functions.  The only place a function object should appear
+  // directly is if the symbol stored in a tree_identifier object
+  // resolves to a function.  This means that the only place we need to
+  // look for functions is in the first element of the index
+  // expression.
+  //
+  // Steps:
+  //
+  //  * Obtain the initial value from the expression component of the
+  //    tree_index_expression object.  If it is a tree_identifier object
+  //    indexed by '(args)' and the identifier is not a variable, then
+  //    peform a function call.  Use the (optional) arguments to perform
+  //    the function lookup so we choose the correct function or class
+  //    method to call.  Otherwise, evaluate the first expression
+  //    without any additional arguments.
+  //
+  //  * Iterate over the remaining elements of the index expression and
+  //    call the octave_value::subsref method.  If indexing a class or
+  //    classdef object, build up a list of indices for a call to the
+  //    subsref method for the object.  Otherwise, use the result of
+  //    each temporary evaluation for the next index element.
+  //
+  //  * If not indexing a class or classdef object and any partial
+  //    expression evaluation produces a class or classdef object, then
+  //    build up a complete argument list from that point on for a final
+  //    subsref call for that object.
+  //
+  //    Multiple partial evaluations may be required.  For example,
+  //    given a class or classdef object X, then for the expression
+  //
+  //      x.a{end}(2:end).b
+  //
+  //    we must evaluate x.a to obtain the size for the first {end}
+  //    expression, then we must evaluate x.a{end} to obtain the size
+  //    for the second (2:end) expression.  Finally, the complete
+  //    expression may be evaluated.
+  //
+  //    If X is a cell array in the above expression, and none of the
+  //    intermediate evaluations produces a class or classdef object,
+  //    then the evaluation is performed as the following series of
+  //    steps
+  //
+  //      tmp = x.a
+  //      tmp = tmp{end}
+  //      tmp = tmp(2:end)
+  //      result = tmp.b
+  //
+  //    If any of the partial evaluations produces a class or classdef
+  //    object, then the subsref method for that object is called as
+  //    described above.  For example, suppose x.a produces a classdef
+  //    object.  Then the evaluation is performed as the following
+  //    series of steps
+  //
+  //      base_expr = tmp = x.a
+  //      tmp = base_expr{end}
+  //      base_expr{end}(2:end).b
+  //
+  //    In the last two steps, the partial value computed in the
+  //    previous step is used to determine the value of END.
+
   void
   tree_evaluator::visit_index_expression (tree_index_expression& idx_expr)
   {
@@ -1091,32 +1162,38 @@ namespace octave
 
     int nargout = m_nargout_stack.top ();
 
-    octave_value first_expr_val;
-
-    octave_value_list first_args;
-
-    bool have_args = false;
-
-    tree_expression *expr = idx_expr.expression ();
-    std::list<tree_argument_list *> args = idx_expr.arg_lists ();
     std::string type = idx_expr.type_tags ();
+    std::list<tree_argument_list *> args = idx_expr.arg_lists ();
     std::list<string_vector> arg_nm = idx_expr.arg_names ();
     std::list<tree_expression *> dyn_field = idx_expr.dyn_fields ();
 
-    if (expr->is_identifier () && type[0] == '(')
+    assert (! args.empty ());
+
+    std::list<tree_argument_list *>::iterator p_args = args.begin ();
+    std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
+    std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
+
+    int n = args.size ();
+    int beg = 0;
+
+    octave_value base_expr_val;
+
+    tree_expression *expr = idx_expr.expression ();
+
+    if (expr->is_identifier () && type[beg] == '(')
       {
         tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-        if (! (id->is_variable () || args.empty ()))
+        if (! id->is_variable ())
           {
-            tree_argument_list *al = *(args.begin ());
+            octave_value_list first_args;
 
-            size_t n = (al ? al->length () : 0);
+            tree_argument_list *al = *p_args;
 
-            if (n > 0)
+            if (al && al->length () > 0)
               {
-                // Function calls inside an argument list can't have ignored
-                // output arguments.
+                // Function calls inside an argument list can't have
+                // ignored output arguments.
 
                 unwind_protect frame;
 
@@ -1125,97 +1202,107 @@ namespace octave
                 frame.add_method (m_lvalue_list_stack,
                                   &value_stack<const std::list<octave_lvalue>*>::pop);
 
-                string_vector anm = *(arg_nm.begin ());
-                have_args = true;
-                first_args = al -> convert_to_const_vector (this);
+                string_vector anm = *p_arg_nm;
+                first_args = al->convert_to_const_vector (this);
                 first_args.stash_name_tags (anm);
+              }
 
-                first_expr_val = id->do_lookup  (first_args);
+            octave_function *fcn = nullptr;
+
+            octave_value val = id->do_lookup (first_args);
+
+            if (val.is_function ())
+              fcn = val.function_value (true);
+
+            if (fcn)
+              {
+                try
+                  {
+                    retval = fcn->call (nargout, first_args);
+                  }
+                catch (octave::index_exception& e)
+                  {
+                    final_index_error (e, expr);
+                  }
+
+                beg++;
+                p_args++;
+                p_arg_nm++;
+                p_dyn_field++;
+
+                if (n > beg)
+                  {
+                    // More indices to follow.  Silently ignore
+                    // extra output values.
+
+                    if (retval.length () == 0)
+                      error ("indexing undefined value");
+                    else
+                      base_expr_val = retval(0);
+                  }
+                else
+                  {
+                    // No more indices, so we are done.
+
+                    m_value_stack.push (retval);
+                    return;
+                  }
               }
           }
       }
 
-    if (first_expr_val.is_undefined ())
-      first_expr_val = evaluate (expr);
+    if (base_expr_val.is_undefined ())
+      base_expr_val = evaluate (expr);
 
-    octave_value tmp = first_expr_val;
-    octave_idx_type tmpi = 0;
+    bool indexing_object = base_expr_val.is_object ();
 
     std::list<octave_value_list> idx;
 
-    int n = args.size ();
+    octave_value partial_expr_val = base_expr_val;
 
-    std::list<tree_argument_list *>::iterator p_args = args.begin ();
-    std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
-    std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
-
-    for (int i = 0; i < n; i++)
+    for (int i = beg; i < n; i++)
       {
-        if (i > 0)
+        if (i > beg)
           {
             tree_argument_list *al = *p_args;
 
-            // In Matlab, () can only be followed by '.'.  In Octave, we
-            // do not enforce this for rvalue expressions, but we'll
-            // split the evaluation at this point.  This will,
-            // hopefully, allow Octave's looser rules apply smoothly for
-            // Matlab overloaded subsref codes.
-
-            // We might have an expression like
-            //
-            //   x{end}.a(end)
-            //
-            // and we are looking at the argument list that contains the
-            // second (or third, etc.) "end" token, so we must evaluate
-            // everything up to the point of that argument list so we
-            // can pass the appropriate value to the built-in end
-            // function.
-
-            // An expression like
-            //
-            //    s.a (f (1:end))
-            //
-            // can mean a lot of different things depending on the types
-            // of s, a, and f.  Let's just say it's complicated and that
-            // the following code is definitely not correct in all
-            // cases.  That it is already so complex makes me think that
-            // there must be a better way.
-
-            bool split = ((type[i-1] == '(' && type[i] != '.')
-                          || (al && al->has_magic_end ()
-                              && ! tmp.is_classdef_object ()));
-
-            if (split)
+            if (! indexing_object || (al && al->has_magic_end ()))
               {
+                // Evaluate what we have so far to find the value to
+                // pass to the END function.
+
                 try
                   {
+                    // Silently ignore extra output values.
+
                     octave_value_list tmp_list
-                      =tmp.subsref (type.substr (tmpi, i-tmpi), idx, nargout);
+                      = base_expr_val.subsref (type.substr (beg, i-beg), idx, nargout);
 
-                    tmp = (tmp_list.length () ? tmp_list(0) : octave_value ());
-                    tmpi = i;
-                    idx.clear ();
+                    partial_expr_val = tmp_list.length () ? tmp_list(0) : octave_value ();
 
-                    if (tmp.is_cs_list ())
-                      err_indexed_cs_list ();
-
-                    if (tmp.is_function ())
+                    if (! indexing_object)
                       {
-                        octave_function *fcn = tmp.function_value (true);
+                        base_expr_val = partial_expr_val;
 
-                        if (fcn && ! fcn->accepts_postfix_index (type[i]))
+                        if (partial_expr_val.is_cs_list ())
+                          err_indexed_cs_list ();
+
+                        retval = partial_expr_val;
+
+                        beg = i;
+                        idx.clear ();
+
+                        if (partial_expr_val.is_object ())
                           {
-                            tmp_list = fcn->call (1);
+                            // Found an object, so now we'll build up
+                            // complete index list for one big subsref
+                            // call from this point on.
 
-                            tmp = (tmp_list.length ()
-                                   ? tmp_list(0) : octave_value ());
-
-                            if (tmp.is_cs_list ())
-                              err_indexed_cs_list ();
+                            indexing_object = true;
                           }
                       }
                   }
-                catch (octave::index_exception& e)  // problems with index range, type etc.
+                catch (octave::index_exception& e)
                   {
                     final_index_error (e, expr);
                   }
@@ -1225,17 +1312,11 @@ namespace octave
         switch (type[i])
           {
           case '(':
-            if (have_args)
-              {
-                idx.push_back (first_args);
-                have_args = false;
-              }
-            else
-              idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
+            idx.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
             break;
 
           case '{':
-            idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
+            idx.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
             break;
 
           case '.':
@@ -1252,23 +1333,16 @@ namespace octave
         p_dyn_field++;
       }
 
-    try
+    if (! idx.empty ())
       {
-        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout);
-      }
-    catch (octave::index_exception& e)  // range problems, bad index type, etc.
-      {
-        final_index_error (e, expr);
-      }
-
-    octave_value val = (retval.length () ? retval(0) : octave_value ());
-
-    if (val.is_function ())
-      {
-        octave_function *fcn = val.function_value (true);
-
-        if (fcn)
-          retval = fcn->call (nargout);
+        try
+          {
+            retval = base_expr_val.subsref (type.substr (beg, n-beg), idx, nargout);
+          }
+        catch (octave::index_exception& e)  // range problems, bad index type, etc.
+          {
+            final_index_error (e, expr);
+          }
       }
 
     m_value_stack.push (retval);

@@ -64,7 +64,7 @@ namespace octave
   {
     for (const tree_expression *elt : *this)
       {
-        if (elt && elt->has_magic_end ())
+        if (elt && ! elt->is_index_expression () && elt->has_magic_end ())
           return true;
       }
 

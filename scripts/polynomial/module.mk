@@ -24,10 +24,10 @@ FCN_FILE_DIRS += \
   %reldir%/polyreduce.m \
   %reldir%/polyval.m \
   %reldir%/polyvalm.m \
-  %reldir%/ppval.m \
   %reldir%/ppder.m \
   %reldir%/ppint.m \
   %reldir%/ppjumps.m \
+  %reldir%/ppval.m \
   %reldir%/residue.m \
   %reldir%/roots.m \
   %reldir%/spline.m \

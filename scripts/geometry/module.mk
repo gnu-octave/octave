@@ -2,8 +2,8 @@ FCN_FILE_DIRS += scripts/geometry
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/convhull.m \
-  %reldir%/delaunayn.m \
   %reldir%/delaunay.m \
+  %reldir%/delaunayn.m \
   %reldir%/dsearch.m \
   %reldir%/dsearchn.m \
   %reldir%/griddata.m \

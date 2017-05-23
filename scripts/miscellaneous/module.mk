@@ -3,8 +3,8 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/display_info_file.m \
-  %reldir%/private/__w2mpth__.m
+  %reldir%/private/__w2mpth__.m \
+  %reldir%/private/display_info_file.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/bug_report.m \

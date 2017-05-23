@@ -3,8 +3,8 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__axis_limits__.m \
-  %reldir%/private/__axis_label__.m
+  %reldir%/private/__axis_label__.m \
+  %reldir%/private/__axis_limits__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/__clabel__.m \

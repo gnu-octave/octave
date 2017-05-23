@@ -4,8 +4,8 @@ scripts_linear_algebra_FCN_FILES = \
   %reldir%/bandwidth.m \
   %reldir%/commutation_matrix.m \
   %reldir%/cond.m \
-  %reldir%/condest.m \
   %reldir%/condeig.m \
+  %reldir%/condest.m \
   %reldir%/cross.m \
   %reldir%/duplication_matrix.m \
   %reldir%/expm.m \

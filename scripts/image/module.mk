@@ -39,10 +39,10 @@ FCN_FILE_DIRS += \
   %reldir%/imformats.m \
   %reldir%/imread.m \
   %reldir%/imshow.m \
-  %reldir%/iscolormap.m \
   %reldir%/imwrite.m \
   %reldir%/ind2gray.m \
   %reldir%/ind2rgb.m \
+  %reldir%/iscolormap.m \
   %reldir%/jet.m \
   %reldir%/lines.m \
   %reldir%/ntsc2rgb.m \

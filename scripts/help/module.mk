@@ -13,8 +13,8 @@ FCN_FILE_DIRS += \
   %reldir%/ans.m \
   %reldir%/doc.m \
   %reldir%/doc_cache_create.m \
-  %reldir%/get_first_help_sentence.m \
   %reldir%/error_ids.m \
+  %reldir%/get_first_help_sentence.m \
   %reldir%/help.m \
   %reldir%/lookfor.m \
   %reldir%/print_usage.m \

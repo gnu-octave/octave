@@ -1,9 +1,9 @@
 FCN_FILE_DIRS += scripts/java
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/javaArray.m \
   %reldir%/java_get.m \
   %reldir%/java_set.m \
-  %reldir%/javaArray.m \
   %reldir%/javaaddpath.m \
   %reldir%/javachk.m \
   %reldir%/javaclasspath.m \
@@ -22,10 +22,10 @@ org_octave_dir = org/octave
 if AMCOND_HAVE_JAVA
 JAVA_SRC = \
   $(org_octave_dir)/ClassHelper.java \
+  $(org_octave_dir)/Matrix.java \
   $(org_octave_dir)/OctClassLoader.java \
   $(org_octave_dir)/Octave.java \
-  $(org_octave_dir)/OctaveReference.java \
-  $(org_octave_dir)/Matrix.java
+  $(org_octave_dir)/OctaveReference.java
 endif
 
 JAVA_CLASSES = $(JAVA_SRC:.java=.class)

@@ -10,6 +10,8 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__add_default_menu__.m \
   %reldir%/private/__ghostscript__.m \
+  %reldir%/private/__gnuplot_draw_axes__.m \
+  %reldir%/private/__gnuplot_draw_figure__.m \
   %reldir%/private/__gnuplot_get_var__.m \
   %reldir%/private/__gnuplot_ginput__.m \
   %reldir%/private/__gnuplot_has_feature__.m \
@@ -17,8 +19,6 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/private/__gnuplot_open_stream__.m \
   %reldir%/private/__gnuplot_print__.m \
   %reldir%/private/__gnuplot_version__.m \
-  %reldir%/private/__gnuplot_draw_axes__.m \
-  %reldir%/private/__gnuplot_draw_figure__.m \
   %reldir%/private/__opengl_print__.m \
   %reldir%/private/__print_parse_opts__.m \
   %reldir%/private/__set_default_mouse_modes__.m

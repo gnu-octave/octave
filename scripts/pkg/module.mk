@@ -11,9 +11,9 @@ FCN_FILE_DIRS += \
   %reldir%/private/get_description.m \
   %reldir%/private/get_forge_download.m \
   %reldir%/private/get_forge_pkg.m \
+  %reldir%/private/get_unsatisfied_deps.m \
   %reldir%/private/getarch.m \
   %reldir%/private/getarchdir.m \
-  %reldir%/private/get_unsatisfied_deps.m \
   %reldir%/private/install.m \
   %reldir%/private/installed_packages.m \
   %reldir%/private/list_forge_packages.m \

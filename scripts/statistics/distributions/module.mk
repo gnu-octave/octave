@@ -78,14 +78,14 @@ FCN_FILE_DIRS += scripts/statistics/distributions
   %reldir%/tinv.m \
   %reldir%/tpdf.m \
   %reldir%/trnd.m \
-  %reldir%/unidrnd.m \
   %reldir%/unidcdf.m \
   %reldir%/unidinv.m \
   %reldir%/unidpdf.m \
-  %reldir%/unifrnd.m \
+  %reldir%/unidrnd.m \
   %reldir%/unifcdf.m \
   %reldir%/unifinv.m \
   %reldir%/unifpdf.m \
+  %reldir%/unifrnd.m \
   %reldir%/wblcdf.m \
   %reldir%/wblinv.m \
   %reldir%/wblpdf.m \

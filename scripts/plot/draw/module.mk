@@ -23,29 +23,29 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/area.m \
-  %reldir%/barh.m \
   %reldir%/bar.m \
+  %reldir%/barh.m \
   %reldir%/camlight.m \
   %reldir%/colorbar.m \
-  %reldir%/comet3.m \
   %reldir%/comet.m \
+  %reldir%/comet3.m \
   %reldir%/compass.m \
+  %reldir%/contour.m \
   %reldir%/contour3.m \
   %reldir%/contourc.m \
   %reldir%/contourf.m \
-  %reldir%/contour.m \
   %reldir%/cylinder.m \
   %reldir%/ellipsoid.m \
   %reldir%/errorbar.m \
-  %reldir%/ezcontourf.m \
   %reldir%/ezcontour.m \
-  %reldir%/ezmeshc.m \
+  %reldir%/ezcontourf.m \
   %reldir%/ezmesh.m \
-  %reldir%/ezplot3.m \
+  %reldir%/ezmeshc.m \
   %reldir%/ezplot.m \
+  %reldir%/ezplot3.m \
   %reldir%/ezpolar.m \
-  %reldir%/ezsurfc.m \
   %reldir%/ezsurf.m \
+  %reldir%/ezsurfc.m \
   %reldir%/feather.m \
   %reldir%/fill.m \
   %reldir%/fplot.m \
@@ -56,48 +56,48 @@ FCN_FILE_DIRS += \
   %reldir%/isosurface.m \
   %reldir%/light.m \
   %reldir%/line.m \
-  %reldir%/loglogerr.m \
   %reldir%/loglog.m \
-  %reldir%/meshc.m \
+  %reldir%/loglogerr.m \
   %reldir%/mesh.m \
+  %reldir%/meshc.m \
   %reldir%/meshz.m \
   %reldir%/pareto.m \
   %reldir%/patch.m \
   %reldir%/pcolor.m \
   %reldir%/peaks.m \
-  %reldir%/pie3.m \
   %reldir%/pie.m \
-  %reldir%/plot3.m \
+  %reldir%/pie3.m \
   %reldir%/plot.m \
+  %reldir%/plot3.m \
   %reldir%/plotmatrix.m \
   %reldir%/plotyy.m \
   %reldir%/polar.m \
-  %reldir%/quiver3.m \
   %reldir%/quiver.m \
+  %reldir%/quiver3.m \
   %reldir%/rectangle.m \
   %reldir%/reducepatch.m \
   %reldir%/reducevolume.m \
   %reldir%/ribbon.m \
   %reldir%/rose.m \
-  %reldir%/scatter3.m \
   %reldir%/scatter.m \
-  %reldir%/semilogxerr.m \
+  %reldir%/scatter3.m \
   %reldir%/semilogx.m \
-  %reldir%/semilogyerr.m \
+  %reldir%/semilogxerr.m \
   %reldir%/semilogy.m \
+  %reldir%/semilogyerr.m \
   %reldir%/shrinkfaces.m \
   %reldir%/slice.m \
   %reldir%/smooth3.m \
   %reldir%/sombrero.m \
   %reldir%/sphere.m \
   %reldir%/stairs.m \
+  %reldir%/stem.m \
   %reldir%/stem3.m \
   %reldir%/stemleaf.m \
-  %reldir%/stem.m \
+  %reldir%/surf.m \
   %reldir%/surface.m \
   %reldir%/surfc.m \
   %reldir%/surfl.m \
-  %reldir%/surf.m \
   %reldir%/surfnorm.m \
   %reldir%/tetramesh.m \
   %reldir%/trimesh.m \

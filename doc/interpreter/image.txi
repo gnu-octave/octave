@@ -152,6 +152,8 @@ between 0 and 1.
 
 @DOCSTRING(ind2rgb)
 
+@DOCSTRING(getframe)
+
 @DOCSTRING(frame2im)
 
 @DOCSTRING(im2frame)

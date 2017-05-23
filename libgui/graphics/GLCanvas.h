@@ -37,6 +37,7 @@ namespace QtHandles
     ~GLCanvas (void);
 
     void draw (const graphics_handle& handle);
+    uint8NDArray  do_getPixels (const graphics_handle& handle);
     void toggleAxes (const graphics_handle& handle);
     void toggleGrid (const graphics_handle& handle);
     void autoAxes (const graphics_handle& handle);

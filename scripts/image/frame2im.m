@@ -28,7 +28,7 @@
 ## for indexed and RGB movies respectively, with each frame concatenated
 ## along the 4th dimension.
 ##
-## @seealso{im2frame}
+## @seealso{im2frame, getframe}
 ## @end deftypefn
 
 ## Author: Carnë Draug <carandraug@octave.org>

@@ -35,6 +35,7 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       corrcoef
       gsvd
       hgtransform
+      getframe
 
  ** Deprecated functions.
 

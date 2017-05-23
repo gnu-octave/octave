@@ -128,6 +128,9 @@ namespace QtHandles
     void toggleGrid (void);
     void autoAxes (void);
 
+  public slots:
+    uint8NDArray slotGetPixels (void);
+
   signals:
     void asyncUpdate (void);
 

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_ObjectProxy_h)
 #define octave_ObjectProxy_h 1
 
+#include "uint8NDArray.h"
+
 #include <QObject>
 
 class QString;
@@ -43,6 +45,7 @@ namespace QtHandles
     void finalize (void);
     void redraw (void);
     void print (const QString& file_cmd, const QString& term);
+    uint8NDArray get_pixels (void);
 
     Object * object (void) { return m_object; }
     void setObject (Object *obj);

@@ -67,6 +67,24 @@ namespace QtHandles
       }
   }
 
+  uint8NDArray
+  GLCanvas::do_getPixels (const graphics_handle& gh)
+  {
+    uint8NDArray retval;
+    graphics_object go = gh_manager::get_object (gh);
+
+    if (go)
+      {
+        octave::opengl_renderer r;
+
+        r.set_viewport (width (), height ());
+        r.draw (go);
+        retval = r.get_pixels (width (), height ());
+      }
+
+    return retval;
+  }
+
   void
   GLCanvas::toggleAxes (const graphics_handle& gh)
   {

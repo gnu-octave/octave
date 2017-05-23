@@ -63,6 +63,7 @@ namespace octave
 
     virtual void set_viewport (int w, int h);
     virtual graphics_xform get_transform (void) const { return xform; }
+    virtual uint8NDArray get_pixels (int width, int height);
 
     virtual void finish (void);
 

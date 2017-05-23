@@ -152,6 +152,12 @@ public:
     gl2ps_print (gh_manager::get_object (m_number), cmd, term);
   }
 
+  uint8NDArray get_pixels (void)
+  {
+    m_renderer.draw (gh_manager::get_object (m_number));
+    return m_renderer.get_pixels (w (), h ());
+  }
+
   void resize (int xx, int yy, int ww, int hh)
   {
 #if defined (HAVE_OPENGL)
@@ -903,6 +909,11 @@ public:
   void print (const std::string& cmd, const std::string& term)
   {
     m_canvas->print (cmd, term);
+  }
+
+  uint8NDArray get_pixels ()
+  {
+    return m_canvas->get_pixels ();
   }
 
   void show_menubar (void)
@@ -1952,6 +1963,15 @@ public:
       instance->do_print (hnd2idx (gh), cmd, term);
   }
 
+  static uint8NDArray get_pixels (const graphics_handle& gh)
+  {
+    uint8NDArray retval;
+    if (instance_ok ())
+      retval = instance->do_get_pixels (hnd2idx (gh));
+    
+    return retval;
+  }
+
   static void uimenu_update (const graphics_handle& figh,
                              const graphics_handle& uimenuh, int id)
   {
@@ -2122,6 +2142,17 @@ private:
 
     if (win != windows.end ())
       win->second->print (cmd, term);
+  }
+
+  uint8NDArray do_get_pixels (int idx)
+  {
+    uint8NDArray retval;
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      retval = win->second->get_pixels ();
+
+    return retval;
   }
 
   void do_uimenu_update (int idx, const graphics_handle& gh, int id)
@@ -2370,6 +2401,11 @@ public:
                      const std::string& /*debug_file*/) const
   {
     figure_manager::print (go.get_handle (), file_cmd, term);
+  }
+
+  uint8NDArray get_pixels (const graphics_object& go) const
+  {
+    return figure_manager::get_pixels (go.get_handle ());
   }
 
   Matrix get_canvas_size (const graphics_handle& fh) const

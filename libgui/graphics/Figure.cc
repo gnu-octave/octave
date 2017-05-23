@@ -395,6 +395,22 @@ namespace QtHandles
       canvas->print (file_cmd, term);
   }
 
+  uint8NDArray
+  Figure::slotGetPixels (void)
+  {
+    uint8NDArray retval;
+    Canvas *canvas = m_container->canvas (m_handle);
+
+    if (canvas)
+      {
+        gh_manager::process_events ();
+        gh_manager::auto_lock lock;
+        retval = canvas->getPixels ();
+      }
+
+    return retval;
+  }
+
   void
   Figure::beingDeleted (void)
   {

@@ -2198,6 +2198,12 @@ public:
                              const std::string& = "") const
   { gripe_if_tkit_invalid ("print_figure"); }
 
+  virtual uint8NDArray get_pixels (const graphics_object&) const
+  { 
+    gripe_if_tkit_invalid ("get_pixels");
+    return uint8NDArray ();
+  }
+
   virtual Matrix get_canvas_size (const graphics_handle&) const
   {
     gripe_if_tkit_invalid ("get_canvas_size");
@@ -2311,6 +2317,9 @@ public:
                      const std::string& file,
                      const std::string& debug_file = "") const
   { rep->print_figure (go, term, file, debug_file); }
+
+  uint8NDArray get_pixels (const graphics_object& go) const
+  { return rep->get_pixels (go); }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
   { return rep->get_canvas_size (fh); }

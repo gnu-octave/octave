@@ -59,6 +59,8 @@ namespace QtHandles
                        const std::string& file_cmd,
                        const std::string& /*debug_file*/) const;
 
+    uint8NDArray get_pixels (const graphics_object& go) const;
+
     static Object * toolkitObject (const graphics_object& go);
 
     static ObjectProxy * toolkitObjectProxy (const graphics_object& go);

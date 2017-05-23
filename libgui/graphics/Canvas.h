@@ -71,12 +71,15 @@ namespace QtHandles
     virtual void toggleGrid (const graphics_handle& handle) = 0;
     virtual void autoAxes (const graphics_handle& handle) = 0;
 
+    virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
+
   protected:
     virtual void draw (const graphics_handle& handle) = 0;
     virtual void drawZoomBox (const QPoint& p1, const QPoint& p2) = 0;
     virtual void resize (int x, int y, int width, int height) = 0;
     virtual graphics_object selectFromAxes (const graphics_object& ax,
                                             const QPoint& pt) = 0;
+    virtual uint8NDArray do_getPixels (const graphics_handle& handle) = 0;
 
   protected:
     Canvas (const graphics_handle& handle)

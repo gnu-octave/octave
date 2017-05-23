@@ -26,6 +26,7 @@ FCN_FILE_DIRS += \
   %reldir%/cubehelix.m \
   %reldir%/flag.m \
   %reldir%/frame2im.m \
+  %reldir%/getframe.m \
   %reldir%/gray.m \
   %reldir%/gray2ind.m \
   %reldir%/hot.m \

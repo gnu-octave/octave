@@ -195,6 +195,22 @@ namespace QtHandles
       }
   }
 
+  uint8NDArray
+  Backend::get_pixels (const graphics_object& go) const
+  {
+    uint8NDArray retval;
+
+    if (go.get_properties ().is_visible () && go.isa ("figure"))
+      {
+        ObjectProxy *proxy = toolkitObjectProxy (go);
+
+        if (proxy)
+          retval = proxy->get_pixels ();
+      }
+
+    return retval;
+  }
+
   Object*
   Backend::toolkitObject (const graphics_object& go)
   {

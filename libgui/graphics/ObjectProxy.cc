@@ -24,7 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <QCoreApplication>
 #include <QString>
+#include <QThread>
 
 #include "oct-mutex.h"
 
@@ -107,6 +109,27 @@ namespace QtHandles
   ObjectProxy::print (const QString& file_cmd, const QString& term)
   {
     emit sendPrint (file_cmd, term);
+  }
+
+  uint8NDArray
+  ObjectProxy::get_pixels (void)
+  {
+    uint8NDArray retval;
+
+    // The ObjectProxy is generally ran from the interpreter thread while the 
+    // actual Figure (Object) lives in the gui thread. The following ensures 
+    // synchronous execution of the Figure method and allows retrieving a 
+    // return value.
+
+    Qt::ConnectionType t = Qt::BlockingQueuedConnection;
+
+    if (QThread::currentThread () == QCoreApplication::instance ()->thread ())
+      t = Qt::DirectConnection;
+
+    QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
+                               Q_RETURN_ARG (uint8NDArray, retval));
+
+    return retval;
   }
 
 };

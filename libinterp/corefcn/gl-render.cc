@@ -1073,6 +1073,39 @@ namespace octave
 #endif
   }
 
+  uint8NDArray
+  opengl_renderer::get_pixels (int width, int height)
+  {
+#if defined (HAVE_OPENGL)
+
+    glPixelStorei (GL_PACK_ALIGNMENT, 1);
+    uint8NDArray pix(dim_vector (3, width, height), 0);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, 
+                 pix.fortran_vec ());
+
+    // Permute and flip data      
+    Array<octave_idx_type> perm (dim_vector (3, 1));
+    perm(0) = 2;
+    perm(1) = 1;
+    perm(2) = 0;
+      
+    Array<idx_vector> idx (dim_vector (3, 1));
+    idx(0) = idx_vector::make_range (height - 1, -1, height);
+    idx(1) = idx_vector::colon;
+    idx(2) = idx_vector::colon;
+
+    return pix.permute (perm).index (idx);
+
+#else
+
+  // This shouldn't happen because construction of opengl_renderer
+  // objects is supposed to be impossible if OpenGL is not available.
+
+  panic_impossible ();
+
+#endif
+  }
+
   void
   opengl_renderer::finish (void)
   {

@@ -40,7 +40,7 @@
 ## is the name of a function that returns a colormap.
 ##
 ## If the first argument @var{hax} is an axes handle, then the colormap for
-## the parent figure of @var{hax} is queried or set.
+## those axes is queried or set.
 ##
 ## For convenience, it is also possible to use this function with the
 ## command form, @code{colormap @var{map_name}}.
@@ -93,7 +93,7 @@ function cmap = colormap (varargin)
   endif
 
   if (! isempty (hax))
-    cf = ancestor (hax, "figure");
+    cf = hax;
   else
     cf = get (0, "currentfigure");
   endif

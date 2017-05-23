@@ -915,20 +915,15 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   Matrix clim (1, 2, 0.0);
 
   graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
-  graphics_object fig = go.get_ancestor ("figure");
+  graphics_object ax = go.get_ancestor ("axes");
 
-  if (fig.valid_object ())
+  if (ax.valid_object ())
     {
-      Matrix _cmap = fig.get (caseless_str ("colormap")).matrix_value ();
+      Matrix _cmap = ax.get (caseless_str ("colormap")).matrix_value ();
 
       cmap = _cmap;
-    }
 
-  if (is_scaled)
-    {
-      graphics_object ax = go.get_ancestor ("axes");
-
-      if (ax.valid_object ())
+      if (is_scaled)
         {
           Matrix _clim = ax.get (caseless_str ("clim")).matrix_value ();
 
@@ -5193,6 +5188,21 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   update_transform ();
   sync_positions ();
   override_defaults (bgo);
+}
+
+octave_value
+axes::properties::get_colormap (void) const
+{
+  if (__colormap__.get ().is_empty ())
+    {
+      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      graphics_object go_f (go.get_ancestor ("figure"));
+      figure::properties& figure_props
+        = reinterpret_cast<figure::properties&> (go_f.get_properties ());
+      return figure_props.get_colormap ();
+    }
+
+  return get___colormap__ ();
 }
 
 void

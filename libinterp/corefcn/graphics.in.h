@@ -3971,6 +3971,7 @@ public:
       radio_property climmode al , "{auto}|manual"
       radio_property clippingstyle , "{3dbox}|rectangle"
       color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
+      array_property colormap sg , Matrix ()
       array_property colororder , default_colororder ()
       double_property colororderindex , 1.0
       array_property currentpoint , Matrix (2, 3, 0.0)
@@ -4070,6 +4071,7 @@ public:
       double_property zticklabelrotation , 0.0
       radio_property ztickmode u , "{auto}|manual"
       // Octave-specific properties
+      array_property __colormap__ h , Matrix ()
       double_property mousewheelzoom , 0.5
       // hidden properties for alignment of subplots
       radio_property __autopos_tag__ h , "{none}|subplot"
@@ -4437,6 +4439,13 @@ public:
     }
 
     Matrix calc_tightbox (const Matrix& init_pos);
+
+    void set_colormap (const octave_value& val)
+    {
+      set___colormap__ (val);
+    }
+
+    octave_value get_colormap (void) const;
 
   public:
     Matrix get_axis_limits (double xmin, double xmax,

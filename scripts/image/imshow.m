@@ -85,7 +85,7 @@ function h = imshow (im, varargin)
   if (ischar (im))
     [im, map] = imread (im);
     indexed = true;
-    colormap (map);
+    colormap (gca, map);
   endif
 
   nd = ndims (im);
@@ -96,7 +96,7 @@ function h = imshow (im, varargin)
 
   if (nd == 2)
     if (! indexed)
-      colormap (gray ());
+      colormap (gca, gray ());
     endif
   elseif (size (im, 3) == 3)
     if (ismember (class (im), {"uint8", "uint16", "double", "single"}))
@@ -117,7 +117,7 @@ function h = imshow (im, varargin)
       elseif (columns (arg) == 3)
         indexed = true;
         if (iscolormap (arg) && min (arg) >= 0 || max (arg) <= 1)
-          colormap (arg);
+          colormap (gca,  arg);
         else
           error ("imshow: invalid colormap MAP");
         endif
@@ -132,7 +132,7 @@ function h = imshow (im, varargin)
         case "colormap"
           map = varargin{narg++};
           if (iscolormap (map) && min (map) >= 0 || max (map) <= 1)
-            colormap (map);
+            colormap (gca, map);
           else
             error ("imshow: invalid colormap");
           endif

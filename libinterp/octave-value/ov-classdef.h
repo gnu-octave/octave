@@ -42,8 +42,8 @@ class cdef_package;
 
 namespace octave
 {
+  class interpreter;
   class tree_classdef;
-  class tree_evaluator;
 }
 
 // This is mainly a boostrap class to declare the expected interface.
@@ -342,11 +342,9 @@ private:
 
   void unregister_object (void);
 
-private:
   // The class of the object
   cdef_object klass;
 
-private:
   // No assignment!
   cdef_object_base& operator = (const cdef_object_base&);
 };
@@ -383,7 +381,6 @@ public:
 private:
   Array<cdef_object> array;
 
-private:
   void fill_empty_values (void) { fill_empty_values (array); }
 
   void fill_empty_values (Array<cdef_object>& arr);
@@ -617,12 +614,11 @@ private:
   {
   public:
     cdef_class_rep (void)
-      : cdef_meta_object_rep (), m_evaluator (0), member_count (0),
-        handle_class (false), object_count (0), meta (false)
+      : cdef_meta_object_rep (), member_count (0), handle_class (false),
+        object_count (0), meta (false)
     { }
 
-    cdef_class_rep (octave::tree_evaluator *tw,
-                    const std::list<cdef_class>& superclasses);
+    cdef_class_rep (const std::list<cdef_class>& superclasses);
 
     cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
 
@@ -705,9 +701,8 @@ private:
 
     bool is_meta_class (void) const { return meta; }
 
-    octave::tree_evaluator * evaluator (void) const { return m_evaluator; }
-
   private:
+
     void load_all_methods (void);
 
     void find_names (std::set<std::string>& names, bool all);
@@ -723,10 +718,6 @@ private:
       refcount++;
       return cdef_class (this);
     }
-
-  private:
-
-    octave::tree_evaluator *m_evaluator;
 
     // The @-directory were this class is loaded from.
     // (not used yet)
@@ -762,10 +753,8 @@ private:
     typedef std::map<std::string,cdef_property>::iterator property_iterator;
     typedef std::map<std::string,cdef_property>::const_iterator property_const_iterator;
 
-  private:
     cdef_class_rep (const cdef_class_rep& c)
-      : cdef_meta_object_rep (c), m_evaluator (c.m_evaluator),
-        directory (c.directory),
+      : cdef_meta_object_rep (c), directory (c.directory),
         method_map (c.method_map), property_map (c.property_map),
         member_count (c.member_count), handle_class (c.handle_class),
         implicit_ctor_list (c.implicit_ctor_list),
@@ -777,9 +766,8 @@ public:
   cdef_class (void)
     : cdef_meta_object () { }
 
-  cdef_class (octave::tree_evaluator *tw, const std::string& nm,
-              const std::list<cdef_class>& superclasses)
-    : cdef_meta_object (new cdef_class_rep (tw, superclasses))
+  cdef_class (const std::string& nm, const std::list<cdef_class>& superclasses)
+    : cdef_meta_object (new cdef_class_rep (superclasses))
   { get_rep ()->set_name (nm); }
 
   cdef_class (const cdef_class& cls)
@@ -841,9 +829,9 @@ public:
   void delete_object (cdef_object obj)
   { get_rep ()->delete_object (obj); }
 
-  static cdef_class make_meta_class (octave::tree_evaluator *tw,
-                                     octave::tree_classdef *t,
-                                     bool is_at_folder = false);
+  static cdef_class
+  make_meta_class (octave::interpreter& interp, octave::tree_classdef *t,
+                   bool is_at_folder = false);
 
   octave_function * get_method_function (const std::string& nm);
 
@@ -896,20 +884,16 @@ private:
   const cdef_class_rep * get_rep (void) const
   { return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ()); }
 
-  octave::tree_evaluator * evaluator (void) const
-  { return get_rep ()->evaluator (); }
-
   friend bool operator == (const cdef_class&, const cdef_class&);
   friend bool operator != (const cdef_class&, const cdef_class&);
   friend bool operator < (const cdef_class&, const cdef_class&);
 
-private:
   static cdef_class _meta_class;
   static cdef_class _meta_property;
   static cdef_class _meta_method;
   static cdef_class _meta_package;
 
-  friend void install_classdef (octave::tree_evaluator *);
+  friend void install_classdef (octave::interpreter& interp);
 };
 
 inline bool
@@ -1103,7 +1087,6 @@ private:
       return cdef_method (this);
     }
 
-  private:
     octave_value function;
 
     // When non-empty, the method is externally defined and this member
@@ -1332,7 +1315,6 @@ private:
     typedef std::map<std::string, cdef_package>::iterator package_iterator;
     typedef std::map<std::string, cdef_package>::const_iterator package_const_iterator;
 
-  private:
     cdef_package_rep (const cdef_package_rep& p)
       : cdef_meta_object_rep (p), full_name (p.full_name),
         class_map (p.class_map), function_map (p.function_map),
@@ -1403,10 +1385,9 @@ private:
   const cdef_package_rep * get_rep (void) const
   { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
 
-private:
   static cdef_package _meta;
 
-  friend void install_classdef (octave::tree_evaluator *);
+  friend void install_classdef (octave::interpreter& interp);
 };
 
 class
@@ -1481,11 +1462,6 @@ public:
 
   dim_vector dims (void) const { return object.dims (); }
 
-private:
-  cdef_object object;
-
-private:
-
 public:
   int type_id (void) const { return t_id; }
   std::string type_name (void) const { return t_name; }
@@ -1497,6 +1473,9 @@ public:
   static void register_type (void);
 
 private:
+
+  cdef_object object;
+
   static int t_id;
 
   static const std::string t_name;
@@ -1537,7 +1516,7 @@ inline cdef_object
 to_cdef (const cdef_object& obj)
 { return obj; }
 
-OCTINTERP_API void install_classdef (octave::tree_evaluator *);
+OCTINTERP_API void install_classdef (octave::interpreter& interp);
 
 class
 cdef_manager

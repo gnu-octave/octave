@@ -38,6 +38,8 @@ class octave_value;
 
 namespace octave
 {
+  class interpreter;
+
   class tree_classdef_attribute
   {
   public:
@@ -669,7 +671,7 @@ namespace octave
 
     const std::string& package_name (void) const { return pack_name; }
 
-    octave_function * make_meta_class (tree_evaluator *tw,
+    octave_function * make_meta_class (interpreter& interp,
                                        bool is_at_folder = false);
 
     tree_classdef * dup (symbol_table::scope_id scope,

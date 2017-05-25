@@ -637,10 +637,10 @@ handle_delete (const octave_value_list& /* args */, int /* nargout */)
 }
 
 static cdef_class
-make_class (octave::tree_evaluator *tw, const std::string& name,
+make_class (const std::string& name,
             const std::list<cdef_class>& super_list = std::list<cdef_class> ())
 {
-  cdef_class cls (tw, name, super_list);
+  cdef_class cls (name, super_list);
 
   cls.set_class (cdef_class::meta_class ());
   cls.put ("Abstract", false);
@@ -692,17 +692,15 @@ make_class (octave::tree_evaluator *tw, const std::string& name,
 }
 
 static cdef_class
-make_class (octave::tree_evaluator *tw, const std::string& name,
-            const cdef_class& super)
+make_class (const std::string& name, const cdef_class& super)
 {
-  return make_class (tw, name, std::list<cdef_class> (1, super));
+  return make_class (name, std::list<cdef_class> (1, super));
 }
 
 static cdef_class
-make_meta_class (octave::tree_evaluator *tw, const std::string& name,
-                 const cdef_class& super)
+make_meta_class (const std::string& name, const cdef_class& super)
 {
-  cdef_class cls = make_class (tw, name, super);
+  cdef_class cls = make_class (name, super);
 
   cls.put ("Sealed", true);
   cls.mark_as_meta_class ();
@@ -787,6 +785,16 @@ make_method (const cdef_class& cls, const std::string& name,
              bool is_static = false)
 {
   octave_value fcn (new octave_builtin (ff, name));
+
+  return make_method (cls, name, fcn, m_access, is_static);
+}
+
+inline cdef_method
+make_method (const cdef_class& cls, const std::string& name,
+             octave_builtin::meth mm, const std::string& m_access = "public",
+             bool is_static = false)
+{
+  octave_value fcn (new octave_builtin (mm, name));
 
   return make_method (cls, name, fcn, m_access, is_static);
 }
@@ -1738,10 +1746,9 @@ value_cdef_object::~value_cdef_object (void)
 #endif
 }
 
-cdef_class::cdef_class_rep::cdef_class_rep (octave::tree_evaluator *tw,
-                                            const std::list<cdef_class>& superclasses)
-  : cdef_meta_object_rep (), m_evaluator (tw), member_count (0),
-    handle_class (false), object_count (0), meta (false)
+cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
+  : cdef_meta_object_rep (), member_count (0), handle_class (false),
+    object_count (0), meta (false)
 {
   put ("SuperClasses", to_ov (superclasses));
   implicit_ctor_list = superclasses;
@@ -2396,8 +2403,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
       if (this_cls == cdef_class::meta_class ())
         {
           if (! empty_class.ok ())
-            empty_class = make_class (m_evaluator, "",
-                                      std::list<cdef_class> ());
+            empty_class = make_class ("", std::list<cdef_class> ());
           obj = empty_class;
         }
       else if (this_cls == cdef_class::meta_property ())
@@ -2405,8 +2411,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
           static cdef_property empty_property;
 
           if (! empty_class.ok ())
-            empty_class = make_class (m_evaluator, "",
-                                      std::list<cdef_class> ());
+            empty_class = make_class ("", std::list<cdef_class> ());
           if (! empty_property.ok ())
             empty_property = make_property (empty_class, "");
           obj = empty_property;
@@ -2416,8 +2421,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
           static cdef_method empty_method;
 
           if (! empty_class.ok ())
-            empty_class = make_class (m_evaluator, "",
-                                      std::list<cdef_class> ());
+            empty_class = make_class ("", std::list<cdef_class> ());
           if (! empty_method.ok ())
             empty_method = make_method (empty_class, "", octave_value ());
           obj = empty_method;
@@ -2454,7 +2458,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 }
 
 static octave_value
-compute_attribute_value (octave::tree_evaluator *tw,
+compute_attribute_value (octave::tree_evaluator& tw,
                          octave::tree_classdef_attribute *t)
 {
   octave::tree_expression *expr = t->expression ();
@@ -2473,7 +2477,7 @@ compute_attribute_value (octave::tree_evaluator *tw,
             return std::string ("private");
         }
 
-      return tw->evaluate (expr);
+      return tw.evaluate (expr);
     }
   else
     return octave_value (true);
@@ -2492,7 +2496,7 @@ attribute_value_to_string (T *t, octave_value v)
 }
 
 cdef_class
-cdef_class::make_meta_class (octave::tree_evaluator *tw,
+cdef_class::make_meta_class (octave::interpreter& interp,
                              octave::tree_classdef *t, bool is_at_folder)
 {
   cdef_class retval;
@@ -2530,7 +2534,7 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
         }
     }
 
-  retval = ::make_class (tw, full_class_name, slist);
+  retval = ::make_class (full_class_name, slist);
 
   // Package owning this class
 
@@ -2543,6 +2547,8 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
     }
 
   // Class attributes
+
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   if (t->attribute_list ())
     {
@@ -2574,8 +2580,7 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
 
       std::list<octave::tree_classdef_methods_block *> mb_list = b->methods_list ();
 
-      octave::load_path& lp
-        = octave::__get_load_path__ ("cdef_class::make_meta_class");
+      octave::load_path& lp = interp.get_load_path ();
 
       for (auto& mb_p : mb_list)
         {
@@ -2733,7 +2738,7 @@ cdef_class::make_meta_class (octave::tree_evaluator *tw,
                   octave::tree_expression *expr = prop_p->expression ();
                   if (expr)
                     {
-                      octave_value pvalue = tw->evaluate (expr);
+                      octave_value pvalue = tw.evaluate (expr);
 
 #if DEBUG_TRACE
                       std::cerr << "property default: "
@@ -3134,11 +3139,12 @@ package_get_packages (const octave_value_list& args, int /* nargout */)
 }
 
 static octave_value_list
-package_getAllPackages (const octave_value_list& /* args */, int /* nargout */)
+package_getAllPackages (octave::interpreter& interp,
+                        const octave_value_list& /* args */, int /* nargout */)
 {
   std::map<std::string, cdef_package> toplevel_packages;
 
-  octave::load_path& lp = octave::__get_load_path__ ("package_getAllPackages");
+  octave::load_path& lp = interp.get_load_path ();
 
   std::list<std::string> names = lp.get_all_package_names ();
 
@@ -3304,23 +3310,38 @@ cdef_class cdef_class::_meta_package = cdef_class ();
 cdef_package cdef_package::_meta = cdef_package ();
 
 void
-install_classdef (octave::tree_evaluator *tw)
+install_classdef (octave::interpreter& /* interp */)
 {
   octave_classdef::register_type ();
 
   // bootstrap
-  cdef_class handle = make_class (tw, "handle");
-  cdef_class meta_class = cdef_class::_meta_class = make_meta_class (tw, "meta.class", handle);
+  cdef_class handle = make_class ("handle");
+
+  cdef_class meta_class
+    = cdef_class::_meta_class
+    = make_meta_class ("meta.class", handle);
+
   handle.set_class (meta_class);
   meta_class.set_class (meta_class);
 
   // meta classes
-  cdef_class meta_property = cdef_class::_meta_property = make_meta_class (tw, "meta.property", handle);
-  cdef_class meta_method = cdef_class::_meta_method = make_meta_class (tw, "meta.method", handle);
-  cdef_class meta_package = cdef_class::_meta_package = make_meta_class (tw, "meta.package", handle);
+  cdef_class meta_property
+    = cdef_class::_meta_property
+    = make_meta_class ("meta.property", handle);
 
-  cdef_class meta_event = make_meta_class (tw, "meta.event", handle);
-  cdef_class meta_dynproperty = make_meta_class (tw, "meta.dynamicproperty", handle);
+  cdef_class meta_method
+    = cdef_class::_meta_method
+    = make_meta_class ("meta.method", handle);
+
+  cdef_class meta_package
+    = cdef_class::_meta_package
+    = make_meta_class ("meta.package", handle);
+
+  cdef_class meta_event
+    = make_meta_class ("meta.event", handle);
+
+  cdef_class meta_dynproperty
+    = make_meta_class ("meta.dynamicproperty", handle);
 
   // meta.class properties
   meta_class.install_property (make_attribute (meta_class, "Abstract"));

@@ -4353,11 +4353,11 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
               bool is_at_folder = ! dispatch_type.empty ();
 
-              octave::tree_evaluator& tw
-                = octave::__get_evaluator__ ("parse_fcn_file");
+              octave::interpreter& interp
+                = octave::__get_interpreter__ ("parse_fcn_file");
 
               fcn_ptr
-                = parser.classdef_object->make_meta_class (&tw, is_at_folder);
+                = parser.classdef_object->make_meta_class (interp, is_at_folder);
 
               delete (parser.classdef_object);
 

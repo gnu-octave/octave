@@ -145,9 +145,9 @@ namespace octave
   // Classdef
 
   octave_function*
-  tree_classdef::make_meta_class (tree_evaluator *tw, bool is_at_folder)
+  tree_classdef::make_meta_class (interpreter& interp, bool is_at_folder)
   {
-    cdef_class cls = cdef_class::make_meta_class (tw, this, is_at_folder);
+    cdef_class cls = cdef_class::make_meta_class (interp, this, is_at_folder);
 
     if (cls.ok ())
       return cls.get_constructor_function ();

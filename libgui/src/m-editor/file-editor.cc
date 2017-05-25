@@ -1245,12 +1245,10 @@ file_editor::insert_global_actions (QList<QAction*> shared_actions)
   _undo_action = shared_actions.at (UNDO_ACTION);
   _tool_bar->insertAction (_redo_action,_undo_action);
   _edit_menu->insertAction (_redo_action,_undo_action);
-  _undo_action->setEnabled (false);
   // copy
   _copy_action = shared_actions.at (COPY_ACTION);
   _tool_bar->insertAction (_cut_action,_copy_action);
   _edit_menu->insertAction (_cut_action,_copy_action);
-  _copy_action->setEnabled (false);
   // select all
   _selectall_action = shared_actions.at (SELECTALL_ACTION);
   _edit_menu->insertAction (_find_action,_selectall_action);
@@ -1260,7 +1258,6 @@ file_editor::insert_global_actions (QList<QAction*> shared_actions)
   _tool_bar->insertAction (_find_action,_paste_action);
   _edit_menu->insertAction (_selectall_action,_paste_action);
   _edit_menu->insertSeparator (_selectall_action);
-  _paste_action->setEnabled (false);
   // find files
   _find_files_action = shared_actions.at (FIND_FILES_ACTION);
   _edit_menu->insertAction (_find_action, _find_files_action);

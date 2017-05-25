@@ -102,9 +102,9 @@ namespace octave
 
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
-    tree_evaluator (interpreter *interp_context)
+    tree_evaluator (interpreter& interp)
       : m_value_stack (), m_lvalue_list_stack (), m_nargout_stack (),
-        m_interp_context (interp_context)
+        m_interpreter (interp)
     { }
 
     // No copying!
@@ -317,7 +317,7 @@ namespace octave
 
     value_stack<int> m_nargout_stack;
 
-    interpreter *m_interp_context;
+    interpreter& m_interpreter;
   };
 }
 

@@ -147,16 +147,6 @@ make_fcn_handle (const octave_value& fcn, const std::string& nm)
   return retval;
 }
 
-inline octave_value_list
-execute_ov (octave_value val, const octave_value_list& args, int nargout)
-{
-  std::list<octave_value_list> idx (1, args);
-
-  std::string type ("(");
-
-  return val.subsref (type, idx, nargout);
-}
-
 static cdef_class
 lookup_class (const std::string& name, bool error_if_not_found = true,
               bool load_if_not_found = true)
@@ -425,7 +415,8 @@ is_dummy_method (const octave_value& fcn)
 static bool
 is_method_executing (const octave_value& ov, const cdef_object& obj)
 {
-  octave::tree_evaluator *tw = octave::current_evaluator;
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("is_method_executing");
 
   octave_function *stack_fcn = octave::call_stack::current ();
 
@@ -456,7 +447,7 @@ is_method_executing (const octave_value& ov, const cdef_object& obj)
             {
               octave::tree_decl_elt *elt = pl->front ();
 
-              octave_value arg0 = tw->evaluate (elt);
+              octave_value arg0 = tw.evaluate (elt);
 
               if (arg0.is_defined () && arg0.type_name () == "object")
                 {
@@ -1008,27 +999,19 @@ public:
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
            int nargout)
-  { return object.meta_subsref (type, idx, nargout); }
-
-  octave_value
-  subsref (const std::string& type,
-           const std::list<octave_value_list>& idx)
   {
-    octave_value_list retval;
-
-    retval = subsref (type, idx, 1);
-
-    return (retval.length () > 0 ? retval(0) : octave_value ());
+    return object.meta_subsref (type, idx, nargout);
   }
 
-  octave_value_list call (int nargout, const octave_value_list& idx)
+  octave_value_list call (octave::tree_evaluator&, int nargout,
+                          const octave_value_list& args)
   {
     // Emulate ()-type meta subsref
 
-    std::list<octave_value_list> l (1, idx);
+    std::list<octave_value_list> idx (1, args);
     std::string type ("(");
 
-    return subsref (type, l, nargout);
+    return subsref (type, idx, nargout);
   }
 
   bool accepts_postfix_index (char type) const
@@ -1072,44 +1055,7 @@ public:
   octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
-  subsref (const std::string& type,
-           const std::list<octave_value_list>& idx,
-           int nargout)
-  {
-    size_t skip = 0;
-    octave_value_list retval;
-
-    switch (type[0])
-      {
-      case '(':
-        skip = 1;
-        retval = call (type.length () > 1 ? 1 : nargout, idx.front ());
-        break;
-      default:
-        retval = call (1, octave_value_list ());
-        break;
-      }
-
-    if (type.length () > skip && idx.size () > skip
-        && retval.length () > 0)
-      retval = retval(0).next_subsref (nargout, type, idx, skip);
-
-    return retval;
-  }
-
-  octave_value
-  subsref (const std::string& type,
-           const std::list<octave_value_list>& idx)
-  {
-    octave_value_list retval;
-
-    retval = subsref (type, idx, 1);
-
-    return (retval.length () > 0 ? retval(0) : octave_value ());
-  }
-
-  octave_value_list
-  call (int nargout, const octave_value_list& idx)
+  call (octave::tree_evaluator&, int nargout, const octave_value_list& idx)
   {
     octave_value_list retval;
 
@@ -2878,7 +2824,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       args(0) = to_ov (obj);
 
-      args = execute_ov (get_fcn, args, 1);
+      args = octave::feval (get_fcn, args, 1);
 
       retval = args(0);
     }
@@ -2932,7 +2878,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
       args(0) = to_ov (obj);
       args(1) = val;
 
-      args = execute_ov (set_fcn, args, 1);
+      args = octave::feval (set_fcn, args, 1);
 
       if (args.length () > 0 && args(0).is_defined ())
         {
@@ -3039,7 +2985,7 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
   check_method ();
 
   if (function.is_defined ())
-    retval = execute_ov (function, args, nargout);
+    retval = octave::feval (function, args, nargout);
 
   return retval;
 }
@@ -3071,7 +3017,7 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
       for (int i = 0; i < args.length (); i++)
         new_args(i+1) = args(i);
 
-      retval = execute_ov (function, new_args, nargout);
+      retval = octave::feval (function, new_args, nargout);
     }
 
   return retval;

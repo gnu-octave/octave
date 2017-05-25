@@ -49,4 +49,11 @@ namespace octave
 
     return interp.get_load_path ();
   }
+
+  tree_evaluator& __get_evaluator__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_evaluator ();
+  }
 }

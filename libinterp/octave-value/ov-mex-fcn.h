@@ -36,6 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 class octave_value_list;
 
+namespace octave
+{
+  class tree_evaluator;
+}
+
 // Dynamically-linked functions.
 
 class
@@ -80,7 +85,8 @@ public:
 
   bool is_mex_function (void) const { return true; }
 
-  octave_value_list call (int nargout, const octave_value_list& args);
+  octave_value_list call (octave::tree_evaluator& tw, int nargout,
+                          const octave_value_list& args);
 
   void atexit (void (*fcn) (void)) { m_exit_fcn_ptr = fcn; }
 

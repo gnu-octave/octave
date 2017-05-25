@@ -41,7 +41,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
                                      "built-in function");
 
 octave_value_list
-octave_builtin::call (int nargout, const octave_value_list& args)
+octave_builtin::call (octave::tree_evaluator&, int nargout,
+                      const octave_value_list& args)
 {
   octave_value_list retval;
 

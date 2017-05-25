@@ -546,9 +546,9 @@ namespace octave
       octave_comment_list *comment_list;
     };
 
-    base_lexer (interpreter *interp_context = nullptr)
+    base_lexer (interpreter *interp = nullptr)
       : lexical_feedback (), scanner (0), input_buf (), comment_buf (),
-        m_interp_context (interp_context)
+        m_interpreter (interp)
     {
       init ();
     }
@@ -653,7 +653,7 @@ namespace octave
     comment_buffer comment_buf;
 
     // Interpreter that contains us, if any.
-    interpreter *m_interp_context;
+    interpreter *m_interpreter;
 
     virtual void increment_promptflag (void) = 0;
 
@@ -720,17 +720,16 @@ namespace octave
   {
   public:
 
-    lexer (interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), reader (this)
+    lexer (interpreter *interp = nullptr)
+      : base_lexer (interp), reader (this)
     { }
 
-    lexer (FILE *file, interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), reader (file, this)
+    lexer (FILE *file, interpreter *interp = nullptr)
+      : base_lexer (interp), reader (file, this)
     { }
 
-    lexer (const std::string& eval_string,
-           interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), reader (eval_string, this)
+    lexer (const std::string& eval_string, interpreter *interp = nullptr)
+      : base_lexer (interp), reader (eval_string, this)
     { }
 
     // No copying!
@@ -784,28 +783,27 @@ namespace octave
   {
   public:
 
-    push_lexer (interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), pflag (1)
+    push_lexer (interpreter *interp = nullptr)
+      : base_lexer (interp), pflag (1)
     {
       append_input ("", false);
     }
 
-    push_lexer (const std::string& input,
-                interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), pflag (1)
+    push_lexer (const std::string& input, interpreter *interp = nullptr)
+      : base_lexer (interp), pflag (1)
     {
       append_input (input, false);
     }
 
-    push_lexer (bool eof, interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), pflag (1)
+    push_lexer (bool eof, interpreter *interp = nullptr)
+      : base_lexer (interp), pflag (1)
     {
       append_input ("", eof);
     }
 
     push_lexer (const std::string& input, bool eof,
-                interpreter *interp_context = nullptr)
-      : base_lexer (interp_context), pflag (1)
+                interpreter *interp = nullptr)
+      : base_lexer (interp), pflag (1)
     {
       append_input (input, eof);
     }

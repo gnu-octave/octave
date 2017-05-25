@@ -38,6 +38,7 @@ class jit_type;
 
 namespace octave
 {
+  class tree_evaluator;
   class interpreter;
 }
 
@@ -86,7 +87,8 @@ public:
 
   bool is_builtin_function (void) const { return true; }
 
-  octave_value_list call (int nargout, const octave_value_list& args);
+  octave_value_list call (octave::tree_evaluator& tw, int nargout,
+                          const octave_value_list& args);
 
   jit_type * to_jit (void) const;
 

@@ -2358,7 +2358,10 @@ namespace octave
               {
                 try
                   {
-                    octave_value tmp = octave::current_evaluator->evaluate (e);
+                    octave::tree_evaluator& tw
+                      = __get_evaluator__ ("finish_colon_expression");
+
+                    octave_value tmp = tw.evaluate (e);
 
                     tree_constant *tc_retval
                       = new tree_constant (tmp, base->line (), base->column ());
@@ -3921,7 +3924,10 @@ namespace octave
 
     if (e->is_constant ())
       {
-        octave_value ov = octave::current_evaluator->evaluate (e);
+        octave::tree_evaluator& tw
+          = __get_evaluator__ ("validate_matrix_for_assignment");
+
+        octave_value ov = tw.evaluate (e);
 
         delete e;
 
@@ -3989,7 +3995,10 @@ namespace octave
       {
         try
           {
-            octave_value tmp = octave::current_evaluator->evaluate (array_list);
+            octave::tree_evaluator& tw
+              = __get_evaluator__ ("finish_array_list");
+
+            octave_value tmp = tw.evaluate (array_list);
 
             tree_constant *tc_retval
               = new tree_constant (tmp, array_list->line (),
@@ -4344,8 +4353,11 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
               bool is_at_folder = ! dispatch_type.empty ();
 
-              fcn_ptr =
-                parser.classdef_object->make_meta_class (octave::current_evaluator, is_at_folder);
+              octave::tree_evaluator& tw
+                = octave::__get_evaluator__ ("parse_fcn_file");
+
+              fcn_ptr
+                = parser.classdef_object->make_meta_class (&tw, is_at_folder);
 
               delete (parser.classdef_object);
 
@@ -4808,7 +4820,9 @@ namespace octave
         std::cout.flush ();
       }
 
-    fcn->call ();
+    tree_evaluator& tw = __get_evaluator__ ("source");
+
+    fcn->call (tw, 0);
 
     if (verbose)
       std::cout << "done." << std::endl;
@@ -4937,9 +4951,11 @@ namespace octave
 
     if (fcn.is_defined ())
       {
+        tree_evaluator& tw = __get_evaluator__ ("feval");
+
         octave_function *of = fcn.function_value ();
 
-        retval = of->call (nargout, args);
+        retval = of->call (tw, nargout, args);
       }
     else
       error ("feval: function '%s' not found", name.c_str ());
@@ -4953,7 +4969,11 @@ namespace octave
     octave_value_list retval;
 
     if (fcn)
-      retval = fcn->call (nargout, args);
+      {
+        tree_evaluator& tw = __get_evaluator__ ("feval");
+
+        retval = fcn->call (tw, nargout, args);
+      }
 
     return retval;
   }
@@ -5135,6 +5155,8 @@ namespace octave
               {
                 tree_statement *stmt = 0;
 
+                octave::tree_evaluator& tw = __get_evaluator__ ("eval_string");
+
                 if (parser.stmt_list->length () == 1
                     && (stmt = parser.stmt_list->front ())
                     && stmt->is_expression ())
@@ -5156,7 +5178,7 @@ namespace octave
                     else
                       do_bind_ans = (! expr->is_assignment_expression ());
 
-                    retval = octave::current_evaluator->evaluate_n (expr, nargout);
+                    retval = tw.evaluate_n (expr, nargout);
 
                     if (do_bind_ans && ! retval.empty ())
                       bind_ans (retval(0), expr->print_result ());
@@ -5165,7 +5187,7 @@ namespace octave
                       retval = octave_value_list ();
                   }
                 else if (nargout == 0)
-                  parser.stmt_list->accept (*octave::current_evaluator);
+                  parser.stmt_list->accept (tw);
                 else
                   error ("eval: invalid use of statement list");
 

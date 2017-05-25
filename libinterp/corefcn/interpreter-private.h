@@ -31,10 +31,13 @@ namespace octave
 {
   class interpreter;
   class load_path;
+  class tree_evaluator;
 
   extern interpreter& __get_interpreter__ (const std::string& who);
 
   extern load_path& __get_load_path__ (const std::string& who);
+
+  extern tree_evaluator& __get_evaluator__ (const std::string& who);
 }
 
 #endif

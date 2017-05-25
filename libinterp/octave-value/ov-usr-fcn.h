@@ -134,11 +134,8 @@ public:
 
   octave::sys::time time_checked (void) const { return t_checked; }
 
-  octave_value_list subsref (const std::string& type,
-                             const std::list<octave_value_list>& idx,
-                             int nargout);
-
-  octave_value_list call (int nargout, const octave_value_list& args);
+  octave_value_list call (octave::tree_evaluator& tw, int nargout,
+                          const octave_value_list& args);
 
   octave::tree_statement_list * body (void) { return cmd_list; }
 
@@ -352,7 +349,8 @@ public:
            ? (cname.empty () ? true : cname == dispatch_class ()) : false;
   }
 
-  octave_value_list call (int nargout, const octave_value_list& args);
+  octave_value_list call (octave::tree_evaluator& tw, int nargout,
+                          const octave_value_list& args);
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
@@ -489,7 +487,7 @@ private:
 
   void print_code_function_trailer (void);
 
-  void bind_automatic_vars (octave::tree_evaluator *tw,
+  void bind_automatic_vars (octave::tree_evaluator& tw,
                             const string_vector& arg_names,
                             int nargin, int nargout,
                             const octave_value_list& va_args);

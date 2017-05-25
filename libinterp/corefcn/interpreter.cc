@@ -361,14 +361,12 @@ execute_pkg_add (const std::string& dir)
 
 namespace octave
 {
-  tree_evaluator *current_evaluator = nullptr;
-
   // Create an interpreter object and perform initialization up to the
   // point of setting reading command history and setting the load
   // path.
 
   interpreter::interpreter (application *app_context)
-    : m_app_context (app_context), m_evaluator (new tree_evaluator (this)),
+    : m_app_context (app_context), m_evaluator (new tree_evaluator (*this)),
       m_load_path (), m_interactive (false), m_read_site_files (true),
       m_read_init_files (m_app_context != 0), m_verbose (false),
       m_inhibit_startup_message (false), m_load_path_initialized (false),
@@ -379,8 +377,6 @@ namespace octave
         ("only one Octave interpreter object may be active");
 
     instance = this;
-
-    current_evaluator = m_evaluator;
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_NUMERIC, "C");
@@ -511,9 +507,6 @@ namespace octave
     cleanup ();
 
     instance = 0;
-    current_evaluator = 0;
-
-    delete m_evaluator;
   }
 
   // Read the history file unless a command-line option inhibits that.
@@ -1133,6 +1126,11 @@ namespace octave
     // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
     OCTAVE_SAFE_CALL (octave::chunk_buffer::clear, ());
+  }
+
+  tree_evaluator& interpreter::get_evaluator (void)
+  {
+    return *m_evaluator;
   }
 
   void interpreter::recover_from_exception (void)

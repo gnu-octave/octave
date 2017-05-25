@@ -182,10 +182,12 @@ get_current_shlib (void)
   return retval;
 }
 
-bool defun_isargout (int nargout, int iout)
+bool
+defun_isargout (int nargout, int iout)
 {
-  const std::list<octave_lvalue> *lvalue_list
-    = octave::current_evaluator->lvalue_list ();
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
+
+  const std::list<octave_lvalue> *lvalue_list = tw.lvalue_list ();
 
   if (iout >= std::max (nargout, 1))
     return false;
@@ -207,10 +209,12 @@ bool defun_isargout (int nargout, int iout)
     return true;
 }
 
-void defun_isargout (int nargout, int nout, bool *isargout)
+void
+defun_isargout (int nargout, int nout, bool *isargout)
 {
-  const std::list<octave_lvalue> *lvalue_list
-    = octave::current_evaluator->lvalue_list ();
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
+
+  const std::list<octave_lvalue> *lvalue_list = tw.lvalue_list ();
 
   if (lvalue_list)
     {

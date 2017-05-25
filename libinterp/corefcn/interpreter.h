@@ -45,8 +45,6 @@ namespace octave
 {
   class tree_evaluator;
 
-  extern tree_evaluator *current_evaluator;
-
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the
   // application context so we need a forward declaration for one (or
@@ -136,6 +134,8 @@ namespace octave
     {
       return m_load_path;
     }
+
+    tree_evaluator& get_evaluator (void);
 
     static void recover_from_exception (void);
 

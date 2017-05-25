@@ -83,7 +83,8 @@ call_mex (octave_mex_function& curr_mex_fcn, const octave_value_list& args,
           int nargout);
 
 octave_value_list
-octave_mex_function::call (int nargout, const octave_value_list& args)
+octave_mex_function::call (octave::tree_evaluator&, int nargout,
+                           const octave_value_list& args)
 {
   octave_value_list retval;
 

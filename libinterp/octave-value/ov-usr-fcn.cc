@@ -112,14 +112,8 @@ octave_user_script::~octave_user_script (void)
 }
 
 octave_value_list
-octave_user_script::subsref (const std::string&,
-                             const std::list<octave_value_list>&, int)
-{
-  error ("invalid use of script %s in index expression", file_name.c_str ());
-}
-
-octave_value_list
-octave_user_script::call (int nargout, const octave_value_list& args)
+octave_user_script::call (octave::tree_evaluator& tw, int nargout,
+                          const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -150,9 +144,7 @@ octave_user_script::call (int nargout, const octave_value_list& args)
       profile_data_accumulator::enter<octave_user_script>
         block (profiler, *this);
 
-      octave::tree_evaluator *tw = octave::current_evaluator;
-
-      cmd_list->accept (*tw);
+      cmd_list->accept (tw);
 
       if (octave::tree_return_command::returning)
         octave::tree_return_command::returning = 0;
@@ -405,7 +397,8 @@ octave_user_function::all_va_args (const octave_value_list& args)
 }
 
 octave_value_list
-octave_user_function::call (int nargout, const octave_value_list& _args)
+octave_user_function::call (octave::tree_evaluator& tw, int nargout,
+                            const octave_value_list& _args)
 {
   octave_value_list retval;
 
@@ -463,10 +456,8 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
 
   string_vector arg_names = args.name_tags ();
 
-  octave::tree_evaluator *tw = octave::current_evaluator;
-
   if (param_list && ! param_list->varargs_only ())
-    tw->define_parameter_list_from_arg_vector (param_list, args);
+    tw.define_parameter_list_from_arg_vector (param_list, args);
 
   // For classdef constructor, pre-populate the output arguments
   // with the pre-initialized object instance, extracted above.
@@ -477,7 +468,7 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
         error ("%s: invalid classdef constructor, no output argument defined",
                dispatch_class ().c_str ());
 
-      tw->define_parameter_list_from_arg_vector (ret_list, ret_args);
+      tw.define_parameter_list_from_arg_vector (ret_list, ret_args);
     }
 
   // Force parameter list to be undefined when this function exits.
@@ -485,7 +476,7 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
   // variables that are also named function parameters.
 
   if (param_list)
-    frame.add_method (tw, &octave::tree_evaluator::undefine_parameter_list,
+    frame.add_method (&tw, &octave::tree_evaluator::undefine_parameter_list,
                       param_list);
 
   // Force return list to be undefined when this function exits.
@@ -493,7 +484,7 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
   // variables that are also named values returned by this function.
 
   if (ret_list)
-    frame.add_method (tw, &octave::tree_evaluator::undefine_parameter_list,
+    frame.add_method (&tw, &octave::tree_evaluator::undefine_parameter_list,
                       ret_list);
 
   if (call_depth == 0)
@@ -548,11 +539,11 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
           {
             octave::call_stack::set_location (stmt->line (), stmt->column ());
 
-            retval = tw->evaluate_n (expr, nargout);
+            retval = tw.evaluate_n (expr, nargout);
           }
       }
     else
-      cmd_list->accept (*tw);
+      cmd_list->accept (tw);
   }
 
   if (echo_commands)
@@ -568,8 +559,8 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
 
   if (ret_list && ! is_special_expr ())
     {
-      tw->initialize_undefined_parameter_list_elements (ret_list, my_name,
-                                                        nargout, Matrix ());
+      tw.initialize_undefined_parameter_list_elements (ret_list, my_name,
+                                                       nargout, Matrix ());
 
       Cell varargout;
 
@@ -581,7 +572,7 @@ octave_user_function::call (int nargout, const octave_value_list& _args)
             varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
         }
 
-      retval = tw->convert_parameter_list_to_const_vector (ret_list, nargout, varargout);
+      retval = tw.convert_parameter_list_to_const_vector (ret_list, nargout, varargout);
     }
 
   return retval;
@@ -646,7 +637,7 @@ octave_user_function::print_code_function_trailer (void)
 
 void
 octave_user_function::bind_automatic_vars
-  (octave::tree_evaluator *tw, const string_vector& arg_names,
+  (octave::tree_evaluator& tw, const string_vector& arg_names,
    int nargin, int nargout, const octave_value_list& va_args)
 {
   if (! arg_names.empty ())
@@ -683,7 +674,7 @@ octave_user_function::bind_automatic_vars
   if (takes_varargs ())
     symbol_table::assign ("varargin", va_args.cell_value ());
 
-  Matrix ignored_fcn_outputs = tw ? tw->ignored_fcn_outputs () : Matrix ();
+  Matrix ignored_fcn_outputs = tw.ignored_fcn_outputs ();
 
   symbol_table::assign (".ignored.", ignored_fcn_outputs);
 

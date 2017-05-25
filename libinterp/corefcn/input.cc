@@ -694,6 +694,8 @@ get_debug_input (const std::string& prompt)
 
   octave::parser curr_parser;
 
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("get_debug_input");
+
   while (Vdebugging)
     {
       try
@@ -712,7 +714,7 @@ get_debug_input (const std::string& prompt)
             {
               if (retval == 0 && curr_parser.stmt_list)
                 {
-                  curr_parser.stmt_list->accept (*octave::current_evaluator);
+                  curr_parser.stmt_list->accept (tw);
 
                   if (octave_completion_matches_called)
                     octave_completion_matches_called = false;

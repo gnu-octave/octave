@@ -985,7 +985,7 @@ namespace octave
         if (fcn && ! (expr.is_postfix_indexed ()
                       && fcn->accepts_postfix_index (expr.postfix_index ())))
           {
-            retval = fcn->call (nargout);
+            retval = fcn->call (*this, nargout);
           }
         else
           {
@@ -1218,7 +1218,7 @@ namespace octave
               {
                 try
                   {
-                    retval = fcn->call (nargout, first_args);
+                    retval = fcn->call (*this, nargout, first_args);
                   }
                 catch (octave::index_exception& e)
                   {
@@ -1820,7 +1820,7 @@ namespace octave
         if (f && ! (expr.is_postfix_indexed ()
                     && f->accepts_postfix_index (expr.postfix_index ())))
           {
-            retval = f->call (nargout);
+            retval = f->call (*this, nargout);
           }
       }
 

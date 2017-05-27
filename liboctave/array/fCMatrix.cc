@@ -676,7 +676,7 @@ FloatComplexMatrix::stack (const FloatComplexDiagMatrix& a) const
 FloatComplexMatrix
 conj (const FloatComplexMatrix& a)
 {
-  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float> > (a);
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float>> (a);
 }
 
 // resize is the destructive equivalent for this one

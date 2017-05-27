@@ -108,7 +108,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
     }
   else
     {
-      NoAlias<Array<T> > r (a.dims ());
+      NoAlias<Array<T>> r (a.dims ());
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
         {

@@ -380,7 +380,7 @@ private:
 
   mutable generated_map generated;
 
-  std::vector<Array<jit_function> > overloads;
+  std::vector<Array<jit_function>> overloads;
 
   std::string mname;
 };

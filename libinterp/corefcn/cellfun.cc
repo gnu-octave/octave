@@ -1972,7 +1972,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  NoAlias< Array<idx_vector> > ra_idx
+  NoAlias< Array<idx_vector>> ra_idx
     (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)

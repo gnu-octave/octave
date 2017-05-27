@@ -2321,19 +2321,19 @@ private:
 
   // Mape from class names to set of classes that have lower
   // precedence.
-  static std::map<std::string, std::set<std::string> > class_precedence_table;
+  static std::map<std::string, std::set<std::string>> class_precedence_table;
 
-  typedef std::map<std::string, std::set<std::string> >::const_iterator
+  typedef std::map<std::string, std::set<std::string>>::const_iterator
     class_precedence_table_const_iterator;
-  typedef std::map<std::string, std::set<std::string> >::iterator
+  typedef std::map<std::string, std::set<std::string>>::iterator
     class_precedence_table_iterator;
 
   // Map from class names to parent class names.
-  static std::map<std::string, std::list<std::string> > parent_map;
+  static std::map<std::string, std::list<std::string>> parent_map;
 
-  typedef std::map<std::string, std::list<std::string> >::const_iterator
+  typedef std::map<std::string, std::list<std::string>>::const_iterator
     const_parent_map_iterator;
-  typedef std::map<std::string, std::list<std::string> >::iterator
+  typedef std::map<std::string, std::list<std::string>>::iterator
     parent_map_iterator;
 
   static const scope_id xglobal_scope;

@@ -78,7 +78,7 @@ public:
 };
 
 template <template <typename> class Template, typename T>
-class is_instance <Template, Template<T> >
+class is_instance <Template, Template<T>>
 {
 public:
 
@@ -129,7 +129,7 @@ public:
 };
 
 template <template <typename> class TemplatedClass, typename T>
-class strip_template_param<TemplatedClass, TemplatedClass<T> >
+class strip_template_param<TemplatedClass, TemplatedClass<T>>
 {
 public:
   typedef T type;

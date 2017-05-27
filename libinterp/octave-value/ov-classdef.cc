@@ -1709,7 +1709,7 @@ cdef_object_scalar::is_constructed_for (const cdef_class& cls) const
 bool
 cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
 {
-  std::map< cdef_class, std::list<cdef_class> >::const_iterator it;
+  std::map< cdef_class, std::list<cdef_class>>::const_iterator it;
 
   if (is_constructed ())
     return true;

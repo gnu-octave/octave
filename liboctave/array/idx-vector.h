@@ -513,7 +513,7 @@ public:
   idx_vector (bool x) : rep (new idx_mask_rep (x)) { chkerr (); }
 
   template <typename T>
-  idx_vector (const Array<octave_int<T> >& nda) : rep (new idx_vector_rep (nda))
+  idx_vector (const Array<octave_int<T>>& nda) : rep (new idx_vector_rep (nda))
   { chkerr (); }
 
   idx_vector (const Array<double>& nda) : rep (new idx_vector_rep (nda))

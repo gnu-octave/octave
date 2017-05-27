@@ -195,7 +195,7 @@ public:
            : std::list<std::string> ();
   }
 
-  typedef std::list<std::pair<std::string, std::string> > filter_list;
+  typedef std::list<std::pair<std::string, std::string>> filter_list;
 
   static std::list<std::string>
   file_dialog (const filter_list& filter, const std::string& title,

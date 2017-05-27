@@ -73,7 +73,7 @@ namespace llvm
   template <bool preserveNames, typename T, typename Inserter>
   class IRBuilder;
 
-typedef IRBuilder<true, ConstantFolder, IRBuilderDefaultInserter<true> >
+typedef IRBuilder<true, ConstantFolder, IRBuilderDefaultInserter<true>>
 IRBuilderD;
 }
 

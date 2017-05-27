@@ -163,7 +163,7 @@ public:
 
   void visit_do_until_command (tree_do_until_command&);
 private:
-  std::vector<std::pair<std::string, bool> > arguments;
+  std::vector<std::pair<std::string, bool>> arguments;
   type_bound_vector bounds;
 
   bool converting_function;
@@ -260,7 +260,7 @@ public:
                                  const std::vector<jit_type *>& args);
 
   // arguments to the llvm::Function for loops
-  const std::vector<std::pair<std::string, bool> >& get_arguments(void) const
+  const std::vector<std::pair<std::string, bool>>& get_arguments(void) const
   { return argument_vec; }
 
 #define JIT_METH(clname)                        \
@@ -273,7 +273,7 @@ private:
   // name -> argument index (used for compiling functions)
   std::map<std::string, int> argument_index;
 
-  std::vector<std::pair<std::string, bool> > argument_vec;
+  std::vector<std::pair<std::string, bool>> argument_vec;
 
   // name -> llvm argument (used for compiling loops)
   std::map<std::string, llvm::Value *> arguments;
@@ -445,7 +445,7 @@ private:
   jited_function function;
   llvm::Function *llvm_function;
 
-  std::vector<std::pair<std::string, bool> > arguments;
+  std::vector<std::pair<std::string, bool>> arguments;
   type_bound_vector bounds;
 };
 

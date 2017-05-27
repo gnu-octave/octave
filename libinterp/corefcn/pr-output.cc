@@ -3104,7 +3104,7 @@ octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
   else
     {
       if (free_format)
-        os << typename octave_print_conv<octave_int<T> >::print_conv_type (val);
+        os << typename octave_print_conv<octave_int<T>>::print_conv_type (val);
       else
         pr_int (os, val);
     }

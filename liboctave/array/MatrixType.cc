@@ -140,7 +140,7 @@ matrix_real_probe (const MArray<T>& a)
 
 template <typename T>
 MatrixType::matrix_type
-matrix_complex_probe (const MArray<std::complex<T> >& a)
+matrix_complex_probe (const MArray<std::complex<T>>& a)
 {
   MatrixType::matrix_type typ = MatrixType::Unknown;
   octave_idx_type nrows = a.rows ();

@@ -61,10 +61,10 @@ std::map<std::string, octave_value> symbol_table::global_table;
 
 std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
-std::map<std::string, std::set<std::string> >
+std::map<std::string, std::set<std::string>>
   symbol_table::class_precedence_table;
 
-std::map<std::string, std::list<std::string> > symbol_table::parent_map;
+std::map<std::string, std::list<std::string>> symbol_table::parent_map;
 
 const symbol_table::scope_id symbol_table::xglobal_scope = 0;
 const symbol_table::scope_id symbol_table::xtop_scope = 1;

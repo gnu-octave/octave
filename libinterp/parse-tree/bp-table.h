@@ -67,7 +67,7 @@ public:
   typedef fname_line_map::const_iterator const_fname_line_map_iterator;
   typedef fname_line_map::iterator fname_line_map_iterator;
 
-  typedef std::map <std::string, std::list<bp_type> > fname_bp_map;
+  typedef std::map <std::string, std::list<bp_type>> fname_bp_map;
   typedef fname_bp_map::const_iterator const_fname_bp_map_iterator;
   typedef fname_bp_map::iterator fname_bp_map_iterator;
 

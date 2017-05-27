@@ -7677,7 +7677,7 @@ endfor
 
   octave_value x = args(0);
 
-  NoAlias< Array<octave_idx_type> > r (rm.dims ());
+  NoAlias< Array<octave_idx_type>> r (rm.dims ());
 
   for (octave_idx_type i = 0; i < rm.numel (); i++)
     {

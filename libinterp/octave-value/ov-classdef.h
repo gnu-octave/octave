@@ -442,7 +442,7 @@ protected:
   octave_scalar_map map;
 
   // Internal/temporary structure used during object construction
-  std::map< cdef_class, std::list<cdef_class> > ctor_list;
+  std::map< cdef_class, std::list<cdef_class>> ctor_list;
 
 protected:
   // Restricted object copying!

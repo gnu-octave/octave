@@ -6725,7 +6725,7 @@ public:
 };
 
 template <typename T>
-class ultimate_element_type<octave_int<T> >
+class ultimate_element_type<octave_int<T>>
 {
 public:
   typedef T type;

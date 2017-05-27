@@ -50,18 +50,18 @@ along with Octave; see the file COPYING.  If not, see
 class
 OCTINTERP_API
 OCTAVE_VALUE_INT_MATRIX_T
-  : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
+  : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
 {
 public:
 
   OCTAVE_VALUE_INT_MATRIX_T (void)
-    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> > () { }
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>> () { }
 
   OCTAVE_VALUE_INT_MATRIX_T (const intNDArray<OCTAVE_INT_T>& nda)
-    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> > (nda) { }
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>> (nda) { }
 
   OCTAVE_VALUE_INT_MATRIX_T (const Array<OCTAVE_INT_T>& nda)
-    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T> >
+    : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
         (intNDArray<OCTAVE_INT_T> (nda)) { }
 
   ~OCTAVE_VALUE_INT_MATRIX_T (void) = default;

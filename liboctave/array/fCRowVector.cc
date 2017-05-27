@@ -204,7 +204,7 @@ FloatComplexRowVector::transpose (void) const
 FloatComplexRowVector
 conj (const FloatComplexRowVector& a)
 {
-  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float> > (a);
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float>> (a);
 }
 
 // resize is the destructive equivalent for this one

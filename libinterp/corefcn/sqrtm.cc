@@ -234,10 +234,10 @@ Mathematics, Manchester, England, January 1999.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
     retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix,
-                         octave::math::schur<FloatComplexMatrix> > (arg);
+                         octave::math::schur<FloatComplexMatrix>> (arg);
   else if (arg.is_numeric_type ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix,
-                         octave::math::schur<ComplexMatrix> > (arg);
+                         octave::math::schur<ComplexMatrix>> (arg);
 
   if (nargout > 1)
     {

@@ -328,8 +328,13 @@ safe_source_file (const std::string& file_name,
 
       return 1;
     }
-  catch (const octave::execution_exception&)
+  catch (const octave::execution_exception& e)
     {
+      std::string stack_trace = e.info ();
+
+      if (! stack_trace.empty ())
+        std::cerr << stack_trace;
+
       octave::interpreter::recover_from_exception ();
 
       return 1;

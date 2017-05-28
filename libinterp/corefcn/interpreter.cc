@@ -379,11 +379,14 @@ safe_source_file (const std::string& file_name,
     {
       recover_from_exception ();
     }
-  catch (const octave::execution_exception&)
+  catch (const octave::execution_exception& ex)
     {
-      recover_from_exception ();
+      std::string stack_trace = ex.info ();
 
-      std::cerr << "error: execution exception in " << file_name << std::endl;
+      if (! stack_trace.empty ())
+        std::cerr << stack_trace;
+
+      recover_from_exception ();
     }
 }
 

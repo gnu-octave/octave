@@ -1912,6 +1912,28 @@ namespace octave
   }
 
   void
+  opengl_renderer::draw_axes_grids (const axes::properties& props)
+  {
+    // Disable line smoothing for axes
+    GLboolean antialias;
+    glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+    if (antialias == GL_TRUE)
+      glDisable (GL_LINE_SMOOTH);
+
+    set_linecap ("square");
+    set_linewidth (props.get_linewidth ());
+    set_font (props);
+    set_interpreter (props.get_ticklabelinterpreter ());
+
+    draw_axes_x_grid (props);
+    draw_axes_y_grid (props);
+    draw_axes_z_grid (props);
+
+    if (antialias == GL_TRUE)
+      glEnable (GL_LINE_SMOOTH);
+  }
+
+  void
   opengl_renderer::draw_all_lights (const base_properties& props,
                                     std::list<graphics_object>& obj_list)
   {
@@ -2026,8 +2048,6 @@ namespace octave
         draw (go);
       }
 
-    glEnable (GL_DEPTH_TEST);
-
     set_clipping (false);
 
     // FIXME: finalize rendering (transparency processing)
@@ -2072,23 +2092,17 @@ namespace octave
 
     setup_opengl_transformation (props);
 
-    // Disable line smoothing for axes
-    GLboolean antialias;
-    glGetBooleanv (GL_LINE_SMOOTH, &antialias);
-    if (antialias == GL_TRUE)
-      glDisable (GL_LINE_SMOOTH);
+    // For 2D axes, draw from back to front without depth sorting
+    bool is2D = props.get_is2D ();
+    if (is2D)
+      glDisable (GL_DEPTH_TEST);
+    else
+      glEnable (GL_DEPTH_TEST);
 
-    set_font (props);
-    set_interpreter (props.get_ticklabelinterpreter ());
-    set_linecap ("square");
-    set_linewidth (props.get_linewidth ());
-
-    // draw axes object
     draw_axes_planes (props);
 
-    draw_axes_x_grid (props);
-    draw_axes_y_grid (props);
-    draw_axes_z_grid (props);
+    if (! is2D || props.layer_is ("bottom"))
+      draw_axes_grids (props);
 
     if (props.get_tag () != "legend" || props.get_box () != "off")
       draw_axes_boxes (props);
@@ -2097,11 +2111,10 @@ namespace octave
 
     set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
-    // Re-enable line smoothing for children
-    if (antialias == GL_TRUE)
-      glEnable (GL_LINE_SMOOTH);
-
     draw_axes_children (props);
+    
+    if (is2D && props.layer_is ("top"))
+      draw_axes_grids (props);
 
 #else
 

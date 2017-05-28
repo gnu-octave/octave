@@ -227,8 +227,10 @@ namespace octave
         GLint gl2ps_sort = GL2PS_BSP_SORT;
 
         // For 2D plots we can use a simpler Z-depth sorting algorithm
+        // FIXME: gl2ps does not provide a way to change the sorting algorythm
+        // on a viewport basis, we thus disable sorting only if all axes are 2D
         if (term.find ("is2D") != std::string::npos)
-          gl2ps_sort = GL2PS_SIMPLE_SORT;
+          gl2ps_sort = GL2PS_NO_SORT;
 
         // Use a temporary file in case an overflow happens
         FILE *tmpf = octave_tmpfile_wrapper ();

@@ -173,6 +173,7 @@ namespace octave
     void draw_axes_planes (const axes::properties& props);
     void draw_axes_boxes (const axes::properties& props);
 
+    void draw_axes_grids (const axes::properties& props);
     void draw_axes_x_grid (const axes::properties& props);
     void draw_axes_y_grid (const axes::properties& props);
     void draw_axes_z_grid (const axes::properties& props);

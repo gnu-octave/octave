@@ -46,6 +46,7 @@ FCN_FILE_DIRS += \
   %reldir%/iscolormap.m \
   %reldir%/jet.m \
   %reldir%/lines.m \
+  %reldir%/movie.m \
   %reldir%/ocean.m \
   %reldir%/pink.m \
   %reldir%/prism.m \

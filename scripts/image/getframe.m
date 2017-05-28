@@ -41,7 +41,7 @@
 ## the figure to be captured.  Regardless of the figure @qcode{"units"}
 ## property, @var{rect} must be defined in @strong{pixels}.
 ##
-## @seealso{im2frame, frame2im}
+## @seealso{im2frame, frame2im, movie}
 ## @end deftypefn
 
 function frame = getframe (h = [], rect = [])

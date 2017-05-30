@@ -1662,14 +1662,19 @@ void symbol_table::cleanup (void)
   clear_all (true);
 
   // Delete all possibly remaining scopes.
-  for (auto& scope_stp : all_instances)
-    {
-      // First zero the table entry to avoid possible duplicate delete.
-      symbol_table *inst = scope_stp.second;
-      scope_stp.second = 0;
 
-      // Now delete the scope.
-      // Note that there may be side effects, such as deleting other scopes.
+  while (! all_instances.empty ())
+    {
+      // Note that deleting a scope may have side effects such as
+      // deleting other scopes.  If another scope is deleted, it may
+      // invalidate ITER, so erase this map element first.
+
+      all_instances_iterator iter = all_instances.begin ();
+
+      symbol_table *inst = iter->second;
+
+      all_instances.erase (iter);
+
       delete inst;
     }
 

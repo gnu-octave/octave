@@ -1195,9 +1195,11 @@ public:
 
     if (p != all_instances.end ())
       {
-        delete p->second;
+        symbol_table *inst = p->second;
 
         all_instances.erase (p);
+
+        delete inst;
 
         free_scope (scope);
       }

@@ -465,21 +465,12 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   endif
 
   if (rows (parent_figure_obj.colormap) != 2)
-    ## Second pass to change color map for binary images (not sure correct)
     kids1 = kids;
     while (! isempty (kids1))
       obj = get (kids1(end));
       kids1 = kids1(1:(end-1));
 
       switch (obj.type)
-        case {"image"}
-          if (isfield (obj, "cdata") && islogical (obj.cdata))
-            parent_figure_obj.colormap = [0 0 0; 1 1 1];
-            axis_obj.clim = [0 1];
-            axis_obj.climmode = "manual";
-            break;
-          endif
-
         case "hggroup"
           ## Push group children into the kid list.
           if (isempty (kids1))
@@ -491,7 +482,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     endwhile
   endif
 
-  cmap = parent_figure_obj.colormap;
+  cmap = axis_obj.colormap;
   cmap_sz = rows (cmap);
   addedcmap = [];
 

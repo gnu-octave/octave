@@ -114,6 +114,17 @@ namespace octave
     return retval;
   }
 
+  std::list<std::string>
+  dynamic_library::dynlib_rep::function_names (void) const
+  {
+    std::list<std::string> retval;
+
+    for (const auto& p : fcn_names)
+      retval.push_back (p.first);
+
+    return retval;
+  }
+
   void
   dynamic_library::dynlib_rep::add_fcn_name (const std::string& name)
   {
@@ -139,15 +150,6 @@ namespace octave
       }
 
     return retval;
-  }
-
-  void
-  dynamic_library::dynlib_rep::do_close_hook (dynamic_library::close_hook cl_hook)
-  {
-    for (auto& fcn_sz : fcn_names)
-      cl_hook (fcn_sz.first);
-
-    fcn_names.clear ();
   }
 
   std::map<std::string, dynamic_library::dynlib_rep *>
@@ -435,7 +437,7 @@ namespace octave
     void * search (const std::string& name,
                    dynamic_library::name_mangler mangler = 0);
 
-    void close (dynamic_library::close_hook cl_hook = 0);
+    void close (void);
 
     bool is_open (void) const {return (handle != 0); }
 

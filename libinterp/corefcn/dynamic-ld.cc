@@ -54,23 +54,24 @@ namespace octave
     lib_list.push_back (shl);
   }
 
-  void
-  dynamic_loader::shlibs_list::remove (dynamic_library& shl,
-                                       dynamic_library::close_hook cl_hook)
+  std::list<std::string>
+  dynamic_loader::shlibs_list::remove (dynamic_library& shl)
   {
+    std::list<std::string> removed_fcns;
+
     for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
       {
         if (*p == shl)
           {
-            // Erase first to avoid potentially invalidating the pointer by the
-            // following hooks.
             lib_list.erase (p);
 
-            shl.close (cl_hook);
+            removed_fcns = shl.close ();
 
             break;
           }
       }
+
+    return removed_fcns;
   }
 
   dynamic_library
@@ -138,10 +139,18 @@ namespace octave
                          "reloading %s clears the following functions:",
                          oct_file.file_name ().c_str ());
 
-        loaded_shlibs.remove (oct_file, do_clear_function);
+        std::list<std::string> removed_fcns = loaded_shlibs.remove (oct_file);
+
+        for (const auto& fcn_name : removed_fcns)
+          do_clear_function (fcn_name);
       }
     else
-      loaded_shlibs.remove (oct_file, symbol_table::clear_dld_function);
+      {
+        std::list<std::string> removed_fcns = loaded_shlibs.remove (oct_file);
+
+        for (const auto& fcn_name : removed_fcns)
+          symbol_table::clear_dld_function (fcn_name);
+      }
   }
 
   octave_function *

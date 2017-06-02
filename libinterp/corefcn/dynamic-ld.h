@@ -53,8 +53,7 @@ namespace octave
 
       void append (const octave::dynamic_library& shl);
 
-      void remove (octave::dynamic_library& shl,
-                   octave::dynamic_library::close_hook cl_hook = 0);
+      std::list<std::string> remove (octave::dynamic_library& shl);
 
       octave::dynamic_library find_file (const std::string& file_name) const;
 

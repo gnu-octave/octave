@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
 #include <map>
 
@@ -41,7 +42,6 @@ namespace octave
   public: // FIXME: make this class private?
 
     typedef std::string (*name_mangler) (const std::string&);
-    typedef void (*close_hook) (const std::string&);
 
     class dynlib_rep
     {
@@ -82,11 +82,13 @@ namespace octave
 
       size_t num_fcn_names (void) const { return fcn_names.size (); }
 
+      std::list<std::string> function_names (void) const;
+
       void add_fcn_name (const std::string&);
 
       bool remove_fcn_name (const std::string&);
 
-      void do_close_hook (close_hook cl_hook);
+      void clear_fcn_names (void) { fcn_names.clear (); }
 
     public:
 
@@ -153,12 +155,15 @@ namespace octave
     void open (const std::string& f)
     { *this = dynamic_library (f); }
 
-    void close (close_hook cl_hook = 0)
+    std::list<std::string> close (void)
     {
-      if (cl_hook)
-        rep->do_close_hook (cl_hook);
+      std::list<std::string> removed_fcns = rep->function_names ();
+
+      rep->clear_fcn_names ();
 
       *this = dynamic_library ();
+
+      return removed_fcns;
     }
 
     void * search (const std::string& nm, name_mangler mangler = 0) const

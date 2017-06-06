@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} deconv (@var{y}, @var{a})
-## Deconvolve two vectors.
+## @deftypefn  {} {@var{b} =} deconv (@var{y}, @var{a})
+## @deftypefnx {} {[@var{b}, @var{r}] =} deconv (@var{y}, @var{a})
+## Deconvolve two vectors (polynomial division).
 ##
-## @code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that
-## @code{y = conv (a, b) + r}.
+## @code{[@var{b}, @var{r}] = deconv (@var{y}, @var{a})} solves for @var{b} and
+## @var{r} such that @code{@var{y} = conv (@var{a}, @var{b}) + @var{r}}.
 ##
 ## If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
 ## contain the coefficients of the polynomial quotient and @var{r} will be
@@ -40,18 +41,18 @@ function [b, r] = deconv (y, a)
   endif
 
   if (! (isvector (y) && isvector (a)))
-    error ("deconv: both arguments must be vectors");
+    error ("deconv: Y and A must be vectors");
+  endif
+
+  ## Ensure A is oriented as Y.
+  if ((isrow (y) && iscolumn (a)) || (iscolumn (y) && isrow (a))) 
+    a = a.';
   endif
 
   la = length (a);
   ly = length (y);
 
   lb = ly - la + 1;
-
-  ## Ensure A is oriented as Y.
-  if (diff (size (y)(1:2)) * diff (size (a)(1:2)) < 0)
-    a = permute (a, [2, 1]);
-  endif
 
   if (ly > la)
     x = zeros (size (y) - size (a) + 1);
@@ -63,19 +64,21 @@ function [b, r] = deconv (y, a)
     b = 0;
   endif
 
-  lc = la + length (b) - 1;
-  if (ly == lc)
-    r = y - conv (a, b);
-  else
-    ## Respect the orientation of Y"
-    if (rows (y) <= columns (y))
-      r = [(zeros (1, lc - ly)), y] - conv (a, b);
+  if (isargout (2))
+    lc = la + length (b) - 1;
+    if (ly == lc)
+      r = y - conv (a, b);
     else
-      r = [(zeros (lc - ly, 1)); y] - conv (a, b);
-    endif
-    if (ly < la)
-      ## Trim the remainder is equal to the length of Y.
-      r = r(end-(length(y)-1):end);
+      ## Respect the orientation of Y.
+      if (rows (y) <= columns (y))
+        r = [(zeros (1, lc - ly)), y] - conv (a, b);
+      else
+        r = [(zeros (lc - ly, 1)); y] - conv (a, b);
+      endif
+      if (ly < la)
+        ## Trim the remainder to be the length of Y.
+        r = r(end-(length(y)-1):end);
+      endif
     endif
   endif
 
@@ -109,5 +112,8 @@ endfunction
 
 %!assert (deconv ((1:3)',[1, 1]), [1; 1])
 
-%!error [b, r] = deconv ([3, 6], [1, 2; 3, 4])
-%!error [b, r] = deconv ([3, 6; 1, 2], [1, 2, 3])
+## Test input validation
+%!error deconv (1)
+%!error deconv (1,2,3)
+%!error <Y .* must be vector> deconv ([3, 6], [1, 2; 3, 4])
+%!error <A must be vector> deconv ([3, 6], [1, 2; 3, 4])

@@ -1017,10 +1017,10 @@ endfunction
 
 function ___cstr___ = eval_code_helper (___context___, ___code___)
   ## EVAL_CODE_HELPER evaluates a given string with Octave code in an extra
-  ##   temporary context and returns a cellstring with the eval output.
+  ## temporary context and returns a cellstring with the eval output.
 
-  ## FIXME: Potential conflicting variables surrounded by "___".
-  ##        Maybe there is a better solution?
+  ## FIXME: code may contain potential conflicting variables named ___code___,
+  ## ___context___, or ___cstr___.  Is there a better solution?
   if (isempty (___code___))
     return;
   endif
@@ -1032,13 +1032,13 @@ function ___cstr___ = eval_code_helper (___context___, ___code___)
   ___cstr___ = strsplit (evalc (___code___), "\n");
 
   clear ___code___;
-  save (___context___);
+  save ("-binary", ___context___);
 endfunction
 
 
 ## FIXME: Missing any functional BIST tests
-
 ## FIXME: Need to create a temporary file for use with error testing
+
 ## Test input validation
 %!error publish ()
 %!error publish (1)

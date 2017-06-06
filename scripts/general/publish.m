@@ -28,8 +28,8 @@
 ## output formats.
 ##
 ## The generated reports interpret any Publishing Markup in comments, which is
-## explained in detail in the GNU Octave manual.  Assume the following
-## example, using some Publishing Markup, to be the contents of the script file
+## explained in detail in the GNU Octave manual.  Assume the following example,
+## using some Publishing Markup, to be the contents of the script file
 ## @file{pub_example.m}:
 ##
 ## @example
@@ -55,15 +55,15 @@
 ##
 ## To publish this script file, type @code{publish ("pub_example.m")}.
 ##
-## With only @var{file} given, a HTML report is generated in a
-## subdirectory @file{html} relative to the current working directory.  The
-## Octave commands are evaluated in a separate context and any figures
-## created while executing the script file are included in the report.  All
-## formatting syntax of @var{file} is treated according to the specified
-## output format and included in the report.
+## With only @var{file} given, a HTML report is generated in a subdirectory
+## @file{html} relative to the current working directory.  The Octave commands
+## are evaluated in a separate context and any figures created while executing
+## the script file are included in the report.  All formatting syntax of
+## @var{file} is treated according to the specified output format and included
+## in the report.
 ##
-## Using @code{publish (@var{file}, @var{output_format})} is equivalent
-## to the function call using a structure
+## Using @code{publish (@var{file}, @var{output_format})} is equivalent to the
+## function call using a structure
 ##
 ## @example
 ## @group
@@ -82,8 +82,8 @@
 ## @end group
 ## @end example
 ##
-## The structure @var{options} can have the following field names.  If a
-## field name is not specified, the default value is used:
+## The structure @var{options} can have the following field names.  If a field
+## name is not specified, the default value is used:
 ##
 ## @itemize @bullet
 ## @item
@@ -209,8 +209,7 @@ function output_file = publish (file, varargin)
     error (["publish: " file " is not in the load path"]);
   endif
 
-  ## Check file extension and for an Octave script
-
+  ## Check file extension and that file is an Octave script
   file_info = __which__ (file_name);
   if (! strcmp (file_ext, ".m") || ! strcmp (file_info.type, "script"))
     error ("publish: only script files can be published");
@@ -253,12 +252,12 @@ function output_file = publish (file, varargin)
     ## Supported or custom output format
     supported_formats = {"html", "doc", "latex", "ppt", "xml", "pdf"};
     if (! any (strcmpi (options.format, supported_formats)))
-      ## Check existance of custom formatter
+      ## Check existence of custom formatter
       custom_formatter = ["__publish_", options.format, "_output__"];
       if (! exist (custom_formatter, "file"))
         error (['publish: Custom output format "%s" requires the ', ...
-                'formatter function:\n\n\t%s\n\n', ...
-                '\tSee "help publish" for more information.'],
+                "formatter function:\n\n\t%s\n\n\t", ...
+                'See "help publish" for more information.'],
                 options.format, custom_formatter);
       endif
     else
@@ -425,7 +424,7 @@ function doc = parse_m_source (doc)
   ## Parsing helper functions
   ##
   ## Checks line to have N "%" or "#" lines
-  ## followed either by a space or is end of string
+  ## followed either by a space or end of string
   is_publish_markup = @(cstr, N) ...
     any (strncmp (char (cstr), {"%%%", "##"}, N)) ...
     && ((length (char (cstr)) == N) || ((char (cstr))(N + 1) == " "));
@@ -614,7 +613,7 @@ function p_content = parse_paragraph_content (content)
     if (strncmp (block{1}, "* ", 2))
       p_content{end+1}.type = "bulleted_list";
       tmpstr = strjoin (block, "\n");
-      ## Revove first "* "
+      ## Remove first "* "
       tmpstr = tmpstr(3:end);
       ## Split items
       p_content{end}.content = strsplit (tmpstr, "\n* ");
@@ -625,7 +624,7 @@ function p_content = parse_paragraph_content (content)
     if (strncmp (block{1}, "# ", 2))
       p_content{end+1}.type = "numbered_list";
       tmpstr = strjoin (block, "\n");
-      ## Revove first "# "
+      ## Remove first "# "
       tmpstr = tmpstr(3:end);
       ## Split items
       p_content{end}.content = strsplit (tmpstr, "\n# ");
@@ -665,7 +664,7 @@ function p_content = parse_paragraph_content (content)
         if (j == numel (block) && ! strcmpi (block{j}, "</html>"))
           warning ("publish: no closing </html> found");
         else
-          j++;  ## Skip closing tag
+          j++;  # Skip closing tag
         endif
         if (j > start_html)
           p_content{end+1}.type = "html";
@@ -680,7 +679,7 @@ function p_content = parse_paragraph_content (content)
         if (j == numel (block) && ! strcmpi (block{j}, "</latex>"))
           warning ("publish: no closing </latex> found");
         else
-          j++;  ## Skip closing tag
+          j++;  # Skip closing tag
         endif
         if (j > start_latex)
           p_content{end+1}.type = "latex";
@@ -710,7 +709,7 @@ endfunction
 
 
 function m_source = read_file_to_cellstr (file)
-  ## READ_FILE_TO_CELLSTR reads a given file line by line to a cellstring
+  ## READ_FILE_TO_CELLSTR reads a given file line by line into a cellstring
 
   fid = fopen (file, "r");
   i = 0;
@@ -855,7 +854,7 @@ function str = format_text (str, formatter)
           ## Links "<octave:Function TEXT>"
           idx = strfind (cstr{j}, " ");
           url = cstr{j};
-          url = texinfo_esc(url(9:idx-1));
+          url = texinfo_esc (url(9:idx-1));
           v = version ();
           if (v(end) == '+')
             v = "interpreter";
@@ -921,8 +920,8 @@ function doc = eval_code (doc, options)
   fig_num = 1;
   fig_list = struct ();
 
-  ## mat-file used as temporary context
-  tmp_context = [tempname(), ".mat"];
+  ## File used as temporary context
+  tmp_context = [tempname() ".var"];
 
   ## Evaluate code, that does not appear in the output.
   eval_code_helper (tmp_context, options.codeToEvaluate);
@@ -941,7 +940,7 @@ function doc = eval_code (doc, options)
           doc.body{i}.output = eval_code_helper (tmp_context, code_str);
          catch err
           doc.body{i}.output = cellstr (["error: ", err.message, ...
-                                                "\n\tin:\n\n", code_str]);
+                                                 "\n\tin:\n\n", code_str]);
         end_try_catch
       else
         doc.body{i}.output = eval_code_helper (tmp_context, code_str);
@@ -965,11 +964,11 @@ function doc = eval_code (doc, options)
                       fullfile(options.outputDir, fname), ...
                       ["-d" options.imageFormat], "-color"};
         if (! isempty (options.maxWidth) && ! isempty (options.maxHeight))
-          print_opts{end+1} = sprintf("-S%d,%d", options.maxWidth,
-                                                 options.maxHeight);
-        elseif (! isempty (options.maxWidth) || ! isempty (options.maxWidth))
+          print_opts{end+1} = sprintf ("-S%d,%d", options.maxWidth,
+                                                  options.maxHeight);
+        elseif (! isempty (options.maxWidth) || ! isempty (options.maxHeight))
           warning (["publish: specify both options.maxWidth ", ...
-                              "and options.maxWidth"]);
+                              "and options.maxHeight"]);
         endif
         print (print_opts{:});
         fig_num++;
@@ -1021,6 +1020,7 @@ function ___cstr___ = eval_code_helper (___context___, ___code___)
 
   ## FIXME: code may contain potential conflicting variables named ___code___,
   ## ___context___, or ___cstr___.  Is there a better solution?
+
   if (isempty (___code___))
     return;
   endif

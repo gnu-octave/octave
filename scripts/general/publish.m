@@ -1003,10 +1003,10 @@ endfunction
 
 function ___cstr___ = eval_code_helper (___context___, ___code___);
   ## EVAL_CODE_HELPER evaluates a given string with Octave code in an extra
-  ##   temporary context and returns a cellstring with the eval output
+  ## temporary context and returns a cellstring with the eval output.
 
-  ## TODO: potential conflicting variables sourrounded by "___".  Maybe there
-  ##       is a better solution.
+  ## FIXME: code may contain potential conflicting variables named ___code___,
+  ## ___context___, or ___cstr___.  Is there a better solution?
   if (isempty (___code___))
     return;
   endif
@@ -1017,14 +1017,12 @@ function ___cstr___ = eval_code_helper (___context___, ___code___);
 
   ___cstr___ = strsplit (evalc (___code___), "\n");
 
-  clear ___code___
-  save (___context___);
+  clear ___code___;
+  save ("-binary", ___context___);
 endfunction
 
 
-
 ## Bad function calls
-
 %!error publish ()
 %!error publish (1)
 %!error publish ("non_existing_file.m")

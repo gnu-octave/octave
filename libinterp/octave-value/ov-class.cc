@@ -226,7 +226,10 @@ octave_class::get_current_method_class (void)
 
   if (nparents () > 0)
     {
-      octave_function *fcn = octave::call_stack::current ();
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_class::get_current_method_class");
+
+      octave_function *fcn = cs.current ();
 
       // Here we are just looking to see if FCN is a method or constructor
       // for any class, not specifically this one.
@@ -1624,7 +1627,10 @@ octave_class::as_mxArray (void) const
 bool
 octave_class::in_class_method (void)
 {
-  octave_function *fcn = octave::call_stack::current ();
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("octave_class::in_class_method");
+
+  octave_function *fcn = cs.current ();
 
   return (fcn
           && (fcn->is_class_method ()
@@ -1688,8 +1694,8 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   return true;
 }
 
-DEFUN (class, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (class, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{classname} =} class (@var{obj})
 @deftypefnx {} {} class (@var{s}, @var{id})
 @deftypefnx {} {} class (@var{s}, @var{id}, @var{p}, @dots{})
@@ -1716,7 +1722,9 @@ is derived.
       // Called as class constructor
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      octave_function *fcn = octave::call_stack::caller ();
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      octave_function *fcn = cs.caller ();
 
       if (! fcn)
         error ("class: invalid call from outside class constructor or method");
@@ -1988,8 +1996,8 @@ is_built_in_class (const std::string& cn)
   return built_in_class_names.find (cn) != built_in_class_names.end ();
 }
 
-DEFUN (superiorto, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (superiorto, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} superiorto (@var{class_name}, @dots{})
 When called from a class constructor, mark the object currently constructed
 as having a higher precedence than @var{class_name}.
@@ -1999,7 +2007,10 @@ may @emph{only} be called from a class constructor.
 @seealso{inferiorto}
 @end deftypefn */)
 {
-  octave_function *fcn = octave::call_stack::caller ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_function *fcn = cs.caller ();
+
   if (! fcn || ! fcn->is_class_constructor ())
     error ("superiorto: invalid call from outside class constructor");
 
@@ -2021,8 +2032,8 @@ may @emph{only} be called from a class constructor.
   return ovl ();
 }
 
-DEFUN (inferiorto, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (inferiorto, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} inferiorto (@var{class_name}, @dots{})
 When called from a class constructor, mark the object currently constructed
 as having a lower precedence than @var{class_name}.
@@ -2032,7 +2043,10 @@ may @emph{only} be called from a class constructor.
 @seealso{superiorto}
 @end deftypefn */)
 {
-  octave_function *fcn = octave::call_stack::caller ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_function *fcn = cs.caller ();
+
   if (! fcn || ! fcn->is_class_constructor ())
     error ("inferiorto: invalid call from outside class constructor");
 

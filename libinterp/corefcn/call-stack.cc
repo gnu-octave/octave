@@ -24,9 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "singleton-cleanup.h"
-
 #include "call-stack.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
 #include "ov-fcn.h"
@@ -41,8 +40,6 @@ static const octave_fields bt_fields (bt_fieldnames);
 
 namespace octave
 {
-  call_stack *call_stack::instance = nullptr;
-
   std::string
   call_stack::stack_frame::fcn_file_name (void) const
   {
@@ -87,21 +84,14 @@ namespace octave
       return true;
   }
 
-  void
-  call_stack::create_instance (void)
+  call_stack::call_stack (interpreter& interp)
+    : cs (), curr_frame (0), m_interpreter (interp)
   {
-    instance = new call_stack ();
-
-    if (instance)
-      {
-        instance->do_push (0, symbol_table::top_scope (), 0);
-
-        singleton_cleanup_list::add (cleanup_instance);
-      }
+    push (0, symbol_table::top_scope (), 0);
   }
 
   int
-  call_stack::do_current_line (void) const
+  call_stack::current_line (void) const
   {
     int retval = -1;
 
@@ -115,7 +105,7 @@ namespace octave
   }
 
   int
-  call_stack::do_current_column (void) const
+  call_stack::current_column (void) const
   {
     int retval = -1;
 
@@ -129,8 +119,7 @@ namespace octave
   }
 
   size_t
-  call_stack::do_num_user_code_frames
-  (octave_idx_type& curr_user_frame) const
+  call_stack::num_user_code_frames (octave_idx_type& curr_user_frame) const
   {
     size_t retval = 0;
 
@@ -167,7 +156,7 @@ namespace octave
   }
 
   octave_user_code *
-  call_stack::do_caller_user_code (size_t nskip) const
+  call_stack::caller_user_code (size_t nskip) const
   {
     octave_user_code *retval = nullptr;
 
@@ -195,7 +184,7 @@ namespace octave
   }
 
   int
-  call_stack::do_caller_user_code_line (void) const
+  call_stack::caller_user_code_line (void) const
   {
     int retval = -1;
 
@@ -221,7 +210,7 @@ namespace octave
   }
 
   int
-  call_stack::do_caller_user_code_column (void) const
+  call_stack::caller_user_code_column (void) const
   {
     int retval = -1;
 
@@ -247,7 +236,7 @@ namespace octave
   }
 
   octave_user_code *
-  call_stack::do_debug_user_code (void) const
+  call_stack::debug_user_code (void) const
   {
     octave_user_code *retval = nullptr;
 
@@ -275,7 +264,7 @@ namespace octave
   }
 
   int
-  call_stack::do_debug_user_code_line (void) const
+  call_stack::debug_user_code_line (void) const
   {
     int retval = -1;
 
@@ -306,7 +295,7 @@ namespace octave
   }
 
   int
-  call_stack::do_debug_user_code_column (void) const
+  call_stack::debug_user_code_column (void) const
   {
     int retval = -1;
 
@@ -337,7 +326,7 @@ namespace octave
   }
 
   bool
-  call_stack::do_all_scripts (void) const
+  call_stack::all_scripts (void) const
   {
     bool retval = true;
 
@@ -359,84 +348,8 @@ namespace octave
     return retval;
   }
 
-  octave_map
-  call_stack::empty_backtrace (void)
-  {
-    return octave_map (dim_vector (0, 1), bt_fields);
-  }
-
-  std::list<call_stack::stack_frame>
-  call_stack::do_backtrace_frames (size_t nskip,
-                                   octave_idx_type& curr_user_frame) const
-  {
-    std::list<call_stack::stack_frame> retval;
-
-    size_t user_code_frames = do_num_user_code_frames (curr_user_frame);
-
-    size_t nframes = (nskip <= user_code_frames ? user_code_frames - nskip : 0);
-
-    // Our list is reversed.
-    curr_user_frame = nframes - curr_user_frame - 1;
-
-    if (nframes > 0)
-      {
-        for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
-          {
-            const stack_frame& elt = *p;
-
-            octave_function *f = elt.m_fcn;
-
-            if (f && f->is_user_code ())
-              {
-                if (nskip > 0)
-                  nskip--;
-                else
-                  retval.push_back (elt);
-              }
-          }
-      }
-
-    return retval;
-  }
-
-  octave_map
-  call_stack::do_backtrace (size_t nskip,
-                            octave_idx_type& curr_user_frame,
-                            bool print_subfn) const
-  {
-    std::list<call_stack::stack_frame> frames
-      = do_backtrace_frames (nskip, curr_user_frame);
-
-    size_t nframes = frames.size ();
-
-    octave_map retval (dim_vector (nframes, 1), bt_fields);
-
-    Cell& file = retval.contents (0);
-    Cell& name = retval.contents (1);
-    Cell& line = retval.contents (2);
-    Cell& column = retval.contents (3);
-    Cell& scope = retval.contents (4);
-    Cell& context = retval.contents (5);
-
-    octave_idx_type k = 0;
-
-    for (const auto& frm : frames)
-      {
-        scope(k)   = frm.m_scope;
-        context(k) = frm.m_context;
-        file(k)    = frm.fcn_file_name ();
-        name(k)    = frm.fcn_name (print_subfn);
-        line(k)    = frm.m_line;
-        column(k)  = frm.m_column;
-
-        k++;
-      }
-
-    return retval;
-  }
-
   bool
-  call_stack::do_goto_frame (size_t n, bool verbose)
+  call_stack::goto_frame (size_t n, bool verbose)
   {
     bool retval = false;
 
@@ -464,7 +377,7 @@ namespace octave
   }
 
   bool
-  call_stack::do_goto_frame_relative (int nskip, bool verbose)
+  call_stack::goto_frame_relative (int nskip, bool verbose)
   {
     bool retval = false;
 
@@ -534,7 +447,7 @@ namespace octave
   }
 
   void
-  call_stack::do_goto_caller_frame (void)
+  call_stack::goto_caller_frame (void)
   {
     size_t xframe = curr_frame;
 
@@ -572,7 +485,7 @@ namespace octave
   }
 
   void
-  call_stack::do_goto_base_frame (void)
+  call_stack::goto_base_frame (void)
   {
     stack_frame tmp (cs[0]);
     tmp.m_prev = curr_frame;
@@ -582,5 +495,80 @@ namespace octave
     cs.push_back (tmp);
 
     symbol_table::set_scope_and_context (tmp.m_scope, tmp.m_context);
+  }
+
+  std::list<call_stack::stack_frame>
+  call_stack::backtrace_frames (size_t nskip,
+                                octave_idx_type& curr_user_frame) const
+  {
+    std::list<call_stack::stack_frame> retval;
+
+    size_t user_code_frames = num_user_code_frames (curr_user_frame);
+
+    size_t nframes = (nskip <= user_code_frames ? user_code_frames - nskip : 0);
+
+    // Our list is reversed.
+    curr_user_frame = nframes - curr_user_frame - 1;
+
+    if (nframes > 0)
+      {
+        for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
+          {
+            const stack_frame& elt = *p;
+
+            octave_function *f = elt.m_fcn;
+
+            if (f && f->is_user_code ())
+              {
+                if (nskip > 0)
+                  nskip--;
+                else
+                  retval.push_back (elt);
+              }
+          }
+      }
+
+    return retval;
+  }
+
+  octave_map
+  call_stack::backtrace (size_t nskip, octave_idx_type& curr_user_frame,
+                         bool print_subfn) const
+  {
+    std::list<call_stack::stack_frame> frames
+      = backtrace_frames (nskip, curr_user_frame);
+
+    size_t nframes = frames.size ();
+
+    octave_map retval (dim_vector (nframes, 1), bt_fields);
+
+    Cell& file = retval.contents (0);
+    Cell& name = retval.contents (1);
+    Cell& line = retval.contents (2);
+    Cell& column = retval.contents (3);
+    Cell& scope = retval.contents (4);
+    Cell& context = retval.contents (5);
+
+    octave_idx_type k = 0;
+
+    for (const auto& frm : frames)
+      {
+        scope(k)   = frm.m_scope;
+        context(k) = frm.m_context;
+        file(k)    = frm.fcn_file_name ();
+        name(k)    = frm.fcn_name (print_subfn);
+        line(k)    = frm.m_line;
+        column(k)  = frm.m_column;
+
+        k++;
+      }
+
+    return retval;
+  }
+
+  octave_map
+  call_stack::empty_backtrace (void) const
+  {
+    return octave_map (dim_vector (0, 1), bt_fields);
   }
 }

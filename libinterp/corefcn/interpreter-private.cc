@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "call-stack.h"
 #include "error.h"
 #include "load-path.h"
 #include "interpreter-private.h"
@@ -55,5 +56,12 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_evaluator ();
+  }
+
+  call_stack& __get_call_stack__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_call_stack ();
   }
 }

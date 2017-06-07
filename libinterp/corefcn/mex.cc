@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "call-stack.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 // mxArray must be declared as a class before including mexproto.h.
 #include "mxarray.h"
@@ -2117,7 +2118,10 @@ public:
   {
     if (! fname)
       {
-        octave_function *fcn = octave::call_stack::current ();
+        octave::call_stack& cs
+          = octave::__get_call_stack__ ("mex::function_name");
+
+        octave_function *fcn = cs.current ();
 
         if (fcn)
           {
@@ -3413,9 +3417,12 @@ mexGetVariable (const char *space, const char *name)
 
           if (base)
             {
-              octave::call_stack::goto_base_frame ();
+              octave::call_stack& cs
+                = octave::__get_call_stack__ ("mexGetVariable");
 
-              frame.add_fcn (octave::call_stack::pop);
+              cs.goto_base_frame ();
+
+              frame.add_method (cs, &octave::call_stack::pop);
             }
 
           val = symbol_table::varval (name);
@@ -3473,9 +3480,12 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
           if (base)
             {
-              octave::call_stack::goto_base_frame ();
+              octave::call_stack& cs
+                = octave::__get_call_stack__ ("mexPutVariable");
 
-              frame.add_fcn (octave::call_stack::pop);
+              cs.goto_base_frame ();
+
+              frame.add_method (cs, &octave::call_stack::pop);
             }
 
           symbol_table::assign (name, mxArray::as_octave_value (ptr));

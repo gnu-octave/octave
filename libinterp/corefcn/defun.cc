@@ -53,7 +53,10 @@ along with Octave; see the file COPYING.  If not, see
 void
 print_usage (void)
 {
-  const octave_function *cur = octave::call_stack::current ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("print_usage");
+
+  const octave_function *cur = cs.current ();
+
   if (cur)
     print_usage (cur->name ());
   else
@@ -162,7 +165,10 @@ get_current_shlib (void)
 {
   octave::dynamic_library retval;
 
-  octave_function *curr_fcn = octave::call_stack::current ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("get_current_shlib");
+
+  octave_function *curr_fcn = cs.current ();
+
   if (curr_fcn)
     {
       if (curr_fcn->is_dld_function ())

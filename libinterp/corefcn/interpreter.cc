@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtins.h"
 #include "defaults.h"
 #include "Cell.h"
+#include "call-stack.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
@@ -372,10 +373,11 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context), m_evaluator (new tree_evaluator (*this)),
-      m_load_path (), m_interactive (false), m_read_site_files (true),
-      m_read_init_files (m_app_context != 0), m_verbose (false),
-      m_inhibit_startup_message (false), m_load_path_initialized (false),
-      m_history_initialized (false), m_initialized (false)
+      m_load_path (), m_interactive (false),
+      m_read_site_files (true), m_read_init_files (m_app_context != 0),
+      m_verbose (false), m_inhibit_startup_message (false),
+      m_load_path_initialized (false), m_history_initialized (false),
+      m_initialized (false)
   {
     if (instance)
       throw std::runtime_error
@@ -1112,8 +1114,6 @@ namespace octave
 
     OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
-    symbol_table::cleanup_instance ();
-
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
     OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
@@ -1138,6 +1138,11 @@ namespace octave
   tree_evaluator& interpreter::get_evaluator (void)
   {
     return *m_evaluator;
+  }
+
+  call_stack& interpreter::get_call_stack (void)
+  {
+    return m_evaluator->get_call_stack ();
   }
 
   void interpreter::recover_from_exception (void)

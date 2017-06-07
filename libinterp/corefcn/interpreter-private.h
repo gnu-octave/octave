@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class call_stack;
   class interpreter;
   class load_path;
   class tree_evaluator;
@@ -38,6 +39,8 @@ namespace octave
   extern load_path& __get_load_path__ (const std::string& who);
 
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
+
+  extern call_stack& __get_call_stack__ (const std::string& who);
 }
 
 #endif

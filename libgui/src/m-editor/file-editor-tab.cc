@@ -71,15 +71,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
-#include "octave-qt-link.h"
-#include "version.h"
-#include "utils.h"
 #include "defaults.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
+#include "oct-map.h"
+#include "octave-qt-link.h"
 #include "ov-usr-fcn.h"
 #include "symtab.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
-#include <oct-map.h>
+#include "utils.h"
+#include "version.h"
 
 bool file_editor_tab::_cancelled = false;
 
@@ -1803,7 +1804,9 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
   bool retval = true;
   octave_idx_type curr_frame = -1;
   size_t nskip = 0;
-  octave_map stk = octave::call_stack::backtrace (nskip, curr_frame, false);
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("file_editor_tab::exit_debug_and_clear");
+  octave_map stk = cs.backtrace (nskip, curr_frame, false);
   Cell names = stk.contents ("name");
   for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
     {
@@ -1821,7 +1824,7 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
               while (names.numel () > i)
                 {
                   octave_sleep (0.01);
-                  stk = octave::call_stack::backtrace (nskip, curr_frame, false);
+                  stk = cs.backtrace (nskip, curr_frame, false);
                   names = stk.contents ("name");
                 }
             }

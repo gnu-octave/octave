@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "symtab.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -130,9 +131,12 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       if (call_depth >= Vmax_recursion_depth)
         error ("max_recursion_depth exceeded");
 
-      octave::call_stack::push (this);
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_user_script::call");
 
-      frame.add_fcn (octave::call_stack::pop);
+      cs.push (this);
+
+      frame.add_method (cs, &octave::call_stack::pop);
 
       // Update line number even if debugging.
       frame.protect_var (Vtrack_line_num);
@@ -441,11 +445,14 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
   int context = active_context ();
 
-  octave::call_stack::push (this, local_scope, context);
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("octave_user_function::call");
+
+  cs.push (this, local_scope, context);
 
   frame.protect_var (Vtrack_line_num);
   Vtrack_line_num = true;    // update source line numbers, even if debugging
-  frame.add_fcn (octave::call_stack::pop);
+  frame.add_method (cs, &octave::call_stack::pop);
 
   if (call_depth > 0 && ! is_anonymous_function ())
     {
@@ -537,7 +544,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
         if (expr)
           {
-            octave::call_stack::set_location (stmt->line (), stmt->column ());
+            cs.set_location (stmt->line (), stmt->column ());
 
             retval = tw.evaluate_n (expr, nargout);
           }
@@ -700,8 +707,11 @@ octave_user_function::restore_warning_states (void)
       Cell ids = m.contents ("identifier");
       Cell states = m.contents ("state");
 
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
+
       for (octave_idx_type i = 0; i < m.numel (); i++)
-        Fwarning (ovl (states(i), ids(i)));
+        Fwarning (interp, ovl (states(i), ids(i)));
     }
 }
 

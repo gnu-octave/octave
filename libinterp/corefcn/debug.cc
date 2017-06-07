@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "help.h"
 #include "input.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "octave-preserve-stream-state.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
@@ -519,8 +521,8 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %! assert (s(2).file(end-10:end), [filesep "@ftp" filesep "dir.m"]);
 */
 
-DEFUN (dbwhere, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbwhere, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} dbwhere
 In debugging mode, report the current file and line number where execution
 is stopped.
@@ -537,7 +539,9 @@ is stopped.
 
   octave_stdout << "stopped in " << dbg_fcn->name () << " at ";
 
-  int l = octave::call_stack::debug_user_code_line ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  int l = cs.debug_user_code_line ();
 
   if (l > 0)
     {
@@ -741,8 +745,8 @@ numbers.
   return ovl ();
 }
 
-DEFUN (dblist, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dblist, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dblist
 @deftypefnx {} {} dblist @var{n}
 In debugging mode, list @var{n} lines of the function being debugged
@@ -786,7 +790,9 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
       name = dbg_fcn->name ();
     }
 
-  int l = octave::call_stack::debug_user_code_line ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  int l = cs.debug_user_code_line ();
 
   if (l > 0)
     {
@@ -813,7 +819,8 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
 }
 
 static octave_value_list
-do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
+do_dbstack (octave::interpreter& interp, const octave_value_list& args,
+            int nargout, std::ostream& os)
 {
   int nargin = args.length ();
 
@@ -857,9 +864,11 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
         nskip = n;
     }
 
+  octave::call_stack& cs = interp.get_call_stack ();
+
   if (nargout == 0)
     {
-      octave_map stk = octave::call_stack::backtrace (nskip, curr_frame);
+      octave_map stk = cs.backtrace (nskip, curr_frame);
       octave_idx_type nframes_to_display = stk.numel ();
 
       if (nframes_to_display > 0)
@@ -905,7 +914,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
     }
   else
     {
-      octave_map stk = octave::call_stack::backtrace (nskip, curr_frame, false);
+      octave_map stk = cs.backtrace (nskip, curr_frame, false);
 
       retval = ovl (stk, curr_frame < 0 ? 1 : curr_frame + 1);
     }
@@ -921,11 +930,12 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 void
 show_octave_dbstack (void)
 {
-  do_dbstack (octave_value_list (), 0, std::cerr);
+  do_dbstack (octave::__get_interpreter__ ("show_octave_dbstack"),
+              octave_value_list (), 0, std::cerr);
 }
 
-DEFUN (dbstack, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbstack, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstack
 @deftypefnx {} {} dbstack @var{n}
 @deftypefnx {} {} dbstack @var{-completenames}
@@ -968,11 +978,12 @@ struct array is currently active.
 @seealso{dbup, dbdown, dbwhere, dblist, dbstatus}
 @end deftypefn */)
 {
-  return do_dbstack (args, nargout, octave_stdout);
+  return do_dbstack (interp, args, nargout, octave_stdout);
 }
 
 static void
-do_dbupdown (const octave_value_list& args, const std::string& who)
+do_dbupdown (octave::interpreter& interp, const octave_value_list& args,
+             const std::string& who)
 {
   int n = 1;
 
@@ -993,12 +1004,14 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
   if (who == "dbup")
     n = -n;
 
-  if (! octave::call_stack::goto_frame_relative (n, true))
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  if (! cs.goto_frame_relative (n, true))
     error ("%s: invalid stack frame", who.c_str ());
 }
 
-DEFUN (dbup, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbup, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbup
 @deftypefnx {} {} dbup @var{n}
 In debugging mode, move up the execution stack @var{n} frames.
@@ -1007,13 +1020,13 @@ If @var{n} is omitted, move up one frame.
 @seealso{dbstack, dbdown}
 @end deftypefn */)
 {
-  do_dbupdown (args, "dbup");
+  do_dbupdown (interp, args, "dbup");
 
   return ovl ();
 }
 
-DEFUN (dbdown, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbdown, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbdown
 @deftypefnx {} {} dbdown @var{n}
 In debugging mode, move down the execution stack @var{n} frames.
@@ -1022,7 +1035,7 @@ If @var{n} is omitted, move down one frame.
 @seealso{dbstack, dbup}
 @end deftypefn */)
 {
-  do_dbupdown (args, "dbdown");
+  do_dbupdown (interp, args, "dbdown");
 
   return ovl ();
 }

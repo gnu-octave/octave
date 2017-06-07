@@ -43,6 +43,7 @@ extern OCTINTERP_API bool octave_initialized;
 
 namespace octave
 {
+  class call_stack;
   class tree_evaluator;
 
   // The application object contains a pointer to the current
@@ -134,6 +135,8 @@ namespace octave
     {
       return m_load_path;
     }
+
+    call_stack& get_call_stack (void);
 
     tree_evaluator& get_evaluator (void);
 

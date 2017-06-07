@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "call-stack.h"
 #include "error.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "oct-map.h"
 #include "octave-link.h"
 #include "ov-usr-fcn.h"
@@ -172,7 +173,11 @@ get_user_code (const std::string& fname)
   octave_user_code *dbg_fcn = nullptr;
 
   if (fname.empty ())
-    dbg_fcn = octave::call_stack::debug_user_code ();
+    {
+      octave::call_stack& cs = octave::__get_call_stack__ ("get_user_code");
+
+      dbg_fcn = cs.debug_user_code ();
+    }
   else
     {
       std::string name = fname;

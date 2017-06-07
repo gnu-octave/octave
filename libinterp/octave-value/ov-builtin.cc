@@ -51,9 +51,11 @@ octave_builtin::call (octave::tree_evaluator&, int nargout,
 
   octave::unwind_protect frame;
 
-  octave::call_stack::push (this);
+  octave::call_stack& cs = octave::__get_call_stack__ ("octave_builtin::call");
 
-  frame.add_fcn (octave::call_stack::pop);
+  cs.push (this);
+
+  frame.add_method (cs, &octave::call_stack::pop);
 
   profile_data_accumulator::enter<octave_builtin> block (profiler, *this);
 

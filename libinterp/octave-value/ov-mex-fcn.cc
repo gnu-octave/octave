@@ -31,11 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "dynamic-ld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "ovl.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "ov-mex-fcn.h"
 #include "ov.h"
+#include "ovl.h"
 #include "profiler.h"
-#include "interpreter.h"
 #include "unwind-prot.h"
 
 
@@ -93,9 +94,12 @@ octave_mex_function::call (octave::tree_evaluator&, int nargout,
 
   octave::unwind_protect frame;
 
-  octave::call_stack::push (this);
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("octave_mex_function::call");
 
-  frame.add_fcn (octave::call_stack::pop);
+  cs.push (this);
+
+  frame.add_method (cs, &octave::call_stack::pop);
 
   profile_data_accumulator::enter<octave_mex_function> block (profiler, *this);
 

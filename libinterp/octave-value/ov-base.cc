@@ -34,11 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "call-stack.h"
 #include "defun.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "mxarray.h"
-#include "oct-map.h"
-#include "ovl.h"
 #include "oct-hdf5.h"
 #include "oct-lvalue.h"
+#include "oct-map.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -46,15 +47,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-ch-mat.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
+#include "ov-fcn-handle.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
-#include "ov-fcn-handle.h"
+#include "ovl.h"
 #include "parse.h"
 #include "pr-output.h"
 #include "utils.h"
-#include "interpreter.h"
 #include "variables.h"
 
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
@@ -1491,7 +1492,9 @@ make_idx_args (const std::string& type,
 bool
 called_from_builtin (void)
 {
-  octave_function *fcn = octave::call_stack::caller ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("called_from_builtin");
+
+  octave_function *fcn = cs.caller ();
 
   // FIXME: we probably need a better check here, or some other
   // mechanism to avoid overloaded functions when builtin is used.

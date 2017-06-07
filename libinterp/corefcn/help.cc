@@ -153,7 +153,9 @@ local_functions (void)
 {
   string_vector retval;
 
-  octave_user_code *curr_fcn = octave::call_stack::caller_user_code ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("local_functions");
+
+  octave_user_code *curr_fcn = cs.caller_user_code ();
 
   if (! curr_fcn)
     return retval;
@@ -628,8 +630,8 @@ Undocumented internal function.
   return ovl (Cell (bif));
 }
 
-DEFUN (localfunctions, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (localfunctions, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} localfunctions ()
 Return a list of all local functions, i.e., subfunctions, within the current
 file.
@@ -650,7 +652,8 @@ the return value is an empty cell array.
   Cell retval;
 
   // Find the main function we are in.
-  octave_user_code *parent_fcn = octave::call_stack::debug_user_code ();
+  octave::call_stack& cs = interp.get_call_stack ();
+  octave_user_code *parent_fcn = cs.debug_user_code ();
 
   if (! parent_fcn)
     return ovl (retval);

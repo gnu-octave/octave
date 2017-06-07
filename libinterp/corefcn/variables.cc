@@ -740,7 +740,9 @@ wants_local_change (const octave_value_list& args, int& nargin)
 template <typename T>
 bool try_local_protect (T& var)
 {
-  octave_user_code *curr_usr_code = octave::call_stack::caller_user_code ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("try_local_protect");
+
+  octave_user_code *curr_usr_code = cs.caller_user_code ();
   octave_user_function *curr_usr_fcn = nullptr;
   if (curr_usr_code && curr_usr_code->is_user_function ())
     curr_usr_fcn = dynamic_cast<octave_user_function *> (curr_usr_code);
@@ -1633,10 +1635,12 @@ private:
 };
 
 static octave_value
-do_who (int argc, const string_vector& argv, bool return_list,
-        bool verbose = false, std::string msg = "")
+do_who (octave::interpreter& interp, int argc, const string_vector& argv,
+        bool return_list, bool verbose = false, std::string msg = "")
 {
   octave_value retval;
+
+  octave::call_stack& cs = interp.get_call_stack ();
 
   std::string my_name = argv[0];
 
@@ -1668,8 +1672,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
           symbol_table::set_scope (tmp_scope);
 
-          octave::call_stack::push (tmp_scope, 0);
-          frame.add_fcn (octave::call_stack::pop);
+          cs.push (tmp_scope, 0);
+          frame.add_method (cs, &octave::call_stack::pop);
 
           frame.add_fcn (symbol_table::clear_variables);
 
@@ -1678,7 +1682,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
           std::string newmsg = std::string ("Variables in the file ")
                                + nm + ":\n\n";
 
-          retval = do_who (i, argv, return_list, verbose, newmsg);
+          retval = do_who (interp, i, argv, return_list, verbose, newmsg);
 
           return retval;
         }
@@ -1790,7 +1794,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
       if (verbose)
         {
           std::string caller_function_name;
-          octave_function *caller = octave::call_stack::caller ();
+          octave_function *caller = cs.caller ();
           if (caller)
             caller_function_name = caller->name ();
 
@@ -1824,8 +1828,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
   return retval;
 }
 
-DEFUN (who, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (who, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} who
 @deftypefnx {} {} who pattern @dots{}
 @deftypefnx {} {} who option pattern @dots{}
@@ -1863,11 +1867,11 @@ matching the given patterns.
 
   string_vector argv = args.make_argv ("who");
 
-  return do_who (argc, argv, nargout == 1);
+  return do_who (interp, argc, argv, nargout == 1);
 }
 
-DEFUN (whos, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (whos, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} whos
 @deftypefnx {} {} whos pattern @dots{}
 @deftypefnx {} {} whos option pattern @dots{}
@@ -1934,7 +1938,7 @@ complex, nesting, persistent.
 
   string_vector argv = args.make_argv ("whos");
 
-  return do_who (argc, argv, nargout == 1, true);
+  return do_who (interp, argc, argv, nargout == 1, true);
 }
 
 // Defining variables.
@@ -1980,7 +1984,9 @@ bind_internal_variable (const std::string& fname, const octave_value& val)
 void
 mlock (void)
 {
-  octave_function *fcn = octave::call_stack::current ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("mlock");
+
+  octave_function *fcn = cs.current ();
 
   if (! fcn)
     error ("mlock: invalid use outside a function");
@@ -2020,8 +2026,8 @@ mislocked (const std::string& nm)
   return retval;
 }
 
-DEFUN (mlock, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (mlock, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} mlock ()
 Lock the current function into memory so that it can't be cleared.
 @seealso{munlock, mislocked, persistent}
@@ -2030,7 +2036,9 @@ Lock the current function into memory so that it can't be cleared.
   if (args.length () != 0)
     print_usage ();
 
-  octave_function *fcn = octave::call_stack::caller ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_function *fcn = cs.caller ();
 
   if (! fcn)
     error ("mlock: invalid use outside a function");
@@ -2040,8 +2048,8 @@ Lock the current function into memory so that it can't be cleared.
   return ovl ();
 }
 
-DEFUN (munlock, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (munlock, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} munlock ()
 @deftypefnx {} {} munlock (@var{fcn})
 Unlock the named function @var{fcn}.
@@ -2063,7 +2071,9 @@ If no function is named then unlock the current function.
     }
   else
     {
-      octave_function *fcn = octave::call_stack::caller ();
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      octave_function *fcn = cs.caller ();
 
       if (! fcn)
         error ("munlock: invalid use outside a function");
@@ -2074,8 +2084,8 @@ If no function is named then unlock the current function.
   return ovl ();
 }
 
-DEFUN (mislocked, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (mislocked, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} mislocked ()
 @deftypefnx {} {} mislocked (@var{fcn})
 Return true if the named function @var{fcn} is locked.
@@ -2099,7 +2109,9 @@ If no function is named then return true if the current function is locked.
     }
   else
     {
-      octave_function *fcn = octave::call_stack::caller ();
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      octave_function *fcn = cs.caller ();
 
       if (! fcn)
         error ("mislocked: invalid use outside a function");

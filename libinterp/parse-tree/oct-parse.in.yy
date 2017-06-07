@@ -4568,8 +4568,8 @@ namespace octave
   }
 }
 
-DEFUN (autoload, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (autoload, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{autoload_map} =} autoload ()
 @deftypefnx {} {} autoload (@var{function}, @var{file})
 @deftypefnx {} {} autoload (@dots{}, "remove")
@@ -4644,7 +4644,9 @@ not loaded anymore during the current Octave session.
 
       if (! octave::sys::env::absolute_pathname (nm))
         {
-          octave_user_code *fcn = octave::call_stack::caller_user_code ();
+          octave::call_stack& cs = interp.get_call_stack ();
+
+          octave_user_code *fcn = cs.caller_user_code ();
 
           bool found = false;
 
@@ -4747,14 +4749,16 @@ namespace octave
 
     if (! context.empty ())
       {
+        octave::call_stack& cs = octave::__get_call_stack__ ("source_file");
+
         if (context == "caller")
-          octave::call_stack::goto_caller_frame ();
+          cs.goto_caller_frame ();
         else if (context == "base")
-          octave::call_stack::goto_base_frame ();
+          cs.goto_base_frame ();
         else
           error ("source: context must be \"caller\" or \"base\"");
 
-        frame.add_fcn (octave::call_stack::pop);
+        frame.add_method (cs, &octave::call_stack::pop);
       }
 
     octave_function *fcn = 0;
@@ -4833,8 +4837,8 @@ namespace octave
   }
 }
 
-DEFUN (mfilename, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (mfilename, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} mfilename ()
 @deftypefnx {} {} mfilename ("fullpath")
 @deftypefnx {} {} mfilename ("fullpathext")
@@ -4863,7 +4867,9 @@ the filename and the extension.
 
   std::string fname;
 
-  octave_user_code *fcn = octave::call_stack::caller_user_code ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_user_code *fcn = cs.caller_user_code ();
 
   if (fcn)
     {
@@ -5376,8 +5382,8 @@ does.
 
 */
 
-DEFUN (assignin, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (assignin, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} assignin (@var{context}, @var{varname}, @var{value})
 Assign @var{value} to @var{varname} in context @var{context}, which
 may be either @qcode{"base"} or @qcode{"caller"}.
@@ -5393,14 +5399,16 @@ may be either @qcode{"base"} or @qcode{"caller"}.
 
   octave::unwind_protect frame;
 
+  octave::call_stack& cs = interp.get_call_stack ();
+
   if (context == "caller")
-    octave::call_stack::goto_caller_frame ();
+    cs.goto_caller_frame ();
   else if (context == "base")
-    octave::call_stack::goto_base_frame ();
+    cs.goto_base_frame ();
   else
     error ("assignin: CONTEXT must be \"caller\" or \"base\"");
 
-  frame.add_fcn (octave::call_stack::pop);
+  frame.add_method (cs, &octave::call_stack::pop);
 
   std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
 
@@ -5427,8 +5435,8 @@ may be either @qcode{"base"} or @qcode{"caller"}.
 
 */
 
-DEFUN (evalin, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (evalin, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} evalin (@var{context}, @var{try})
 @deftypefnx {} {} evalin (@var{context}, @var{try}, @var{catch})
 Like @code{eval}, except that the expressions are evaluated in the context
@@ -5447,14 +5455,16 @@ Like @code{eval}, except that the expressions are evaluated in the context
 
   octave::unwind_protect frame;
 
+  octave::call_stack& cs = interp.get_call_stack ();
+
   if (context == "caller")
-    octave::call_stack::goto_caller_frame ();
+    cs.goto_caller_frame ();
   else if (context == "base")
-    octave::call_stack::goto_base_frame ();
+    cs.goto_base_frame ();
   else
     error ("evalin: CONTEXT must be \"caller\" or \"base\"");
 
-  frame.add_fcn (octave::call_stack::pop);
+  frame.add_method (cs, &octave::call_stack::pop);
 
   if (nargin > 2)
     {

@@ -39,15 +39,16 @@ Open Source Initiative (www.opensource.org)
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-hdf5.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-fcn-inline.h"
 #include "ov-usr-fcn.h"
+#include "parse.h"
 #include "pr-output.h"
 #include "variables.h"
-#include "parse.h"
-#include "interpreter.h"
 
 #include "byte-swap.h"
 #include "ls-ascii-helper.h"
@@ -96,7 +97,10 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
           if (uf)
             {
-              octave_function *curr_fcn = octave::call_stack::current ();
+              octave::call_stack& cs
+                = octave::__get_call_stack__ ("octave_fcn_inline");
+
+              octave_function *curr_fcn = cs.current ();
 
               if (curr_fcn)
                 {

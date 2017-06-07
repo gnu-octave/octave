@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <string>
 
+#include "call-stack.h"
 #include "comment-list.h"
 #include "ovl.h"
 #include "pt-exp.h"
@@ -104,7 +105,7 @@ namespace octave
 
     tree_evaluator (interpreter& interp)
       : m_value_stack (), m_lvalue_list_stack (), m_nargout_stack (),
-        m_interpreter (interp)
+        m_call_stack (interp), m_interpreter (interp)
     { }
 
     // No copying!
@@ -206,7 +207,6 @@ namespace octave
     void visit_unwind_protect_command (tree_unwind_protect_command&);
 
     void visit_while_command (tree_while_command&);
-
     void visit_do_until_command (tree_do_until_command&);
 
     static void reset_debug_state (void);
@@ -292,6 +292,8 @@ namespace octave
     bool switch_case_label_matches (tree_switch_case *expr,
                                     const octave_value& val);
 
+    call_stack& get_call_stack (void) { return m_call_stack; }
+
   private:
 
     void do_breakpoint (tree_statement& stmt) const;
@@ -316,6 +318,8 @@ namespace octave
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
 
     value_stack<int> m_nargout_stack;
+
+    call_stack m_call_stack;
 
     interpreter& m_interpreter;
   };

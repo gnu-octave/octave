@@ -598,7 +598,9 @@ get_debug_input (const std::string& prompt)
   bool silent = octave::tree_evaluator::quiet_breakpoint_flag;
   octave::tree_evaluator::quiet_breakpoint_flag = false;
 
-  octave_user_code *caller = octave::call_stack::caller_user_code ();
+  octave::call_stack& cs = octave::__get_call_stack__ ("get_debug_input");
+
+  octave_user_code *caller = cs.caller_user_code ();
   std::string nm;
   int curr_debug_line;
 
@@ -613,10 +615,10 @@ get_debug_input (const std::string& prompt)
       else
         have_file = true;
 
-      curr_debug_line = octave::call_stack::caller_user_code_line ();
+      curr_debug_line = cs.caller_user_code_line ();
     }
   else
-    curr_debug_line = octave::call_stack::current_line ();
+    curr_debug_line = cs.current_line ();
 
   std::ostringstream buf;
 
@@ -959,8 +961,10 @@ do_keyboard (const octave_value_list& args)
 
   frame.protect_var (Vdebugging);
 
-  frame.add_fcn (octave::call_stack::restore_frame,
-                 octave::call_stack::current_frame ());
+  octave::call_stack& cs = octave::__get_call_stack__ ("do_keyboard");
+
+  frame.add_method (cs, &octave::call_stack::restore_frame,
+                    cs.current_frame ());
 
   // FIXME: probably we just want to print one line, not the
   // entire statement, which might span many lines...
@@ -980,8 +984,8 @@ do_keyboard (const octave_value_list& args)
   return retval;
 }
 
-DEFUN (keyboard, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (keyboard, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} keyboard ()
 @deftypefnx {} {} keyboard ("@var{prompt}")
 Stop m-file execution and enter debug mode.
@@ -1003,16 +1007,18 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 
   octave::unwind_protect frame;
 
-  frame.add_fcn (octave::call_stack::restore_frame,
-                 octave::call_stack::current_frame ());
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  frame.add_method (cs, &octave::call_stack::restore_frame,
+                    cs.current_frame ());
 
   // Skip the frame assigned to the keyboard function.
-  octave::call_stack::goto_frame_relative (0);
+  cs.goto_frame_relative (0);
 
   octave::tree_evaluator::debug_mode = true;
   octave::tree_evaluator::quiet_breakpoint_flag = false;
 
-  octave::tree_evaluator::current_frame = octave::call_stack::current_frame ();
+  octave::tree_evaluator::current_frame = cs.current_frame ();
 
   do_keyboard (args);
 

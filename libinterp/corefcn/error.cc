@@ -39,16 +39,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "input.h"
-#include "octave.h"
-#include "pager.h"
-#include "ovl.h"
-#include "oct-map.h"
-#include "utils.h"
-#include "ov.h"
-#include "ov-usr-fcn.h"
-#include "pt-eval.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
+#include "oct-map.h"
+#include "octave.h"
+#include "ov-usr-fcn.h"
+#include "ov.h"
+#include "ovl.h"
+#include "pager.h"
+#include "pt-eval.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "variables.h"
 
 // TRUE means that Octave will try to beep obnoxiously before printing
@@ -142,7 +143,10 @@ initialize_warning_options (const std::string& state)
 static octave_map
 initialize_last_error_stack (void)
 {
-  return octave::call_stack::empty_backtrace ();
+  octave::call_stack& cs
+    = octave::__get_call_stack__ ("initialize_last_error_stack");
+
+  return cs.empty_backtrace ();
 }
 
 static void
@@ -181,13 +185,15 @@ verror (bool save_last_error, std::ostream& os,
         msg_string += std::string (name) + ": ";
     }
 
+  octave::call_stack& cs = octave::__get_call_stack__ ("verror");
+
   // If with_fcn is specified, we'll attempt to prefix the message with the name
   // of the current executing function.  But we'll do so only if:
   // 1. the name is not empty (anonymous function)
   // 2. it is not already there (including the following colon)
   if (with_cfn)
     {
-      octave_function *curfcn = octave::call_stack::current ();
+      octave_function *curfcn = cs.current ();
       if (curfcn)
         {
           std::string cfn = curfcn->name ();
@@ -212,13 +218,13 @@ verror (bool save_last_error, std::ostream& os,
       Vlast_error_id = id;
       Vlast_error_message = base_msg;
 
-      octave_user_code *fcn = octave::call_stack::caller_user_code ();
+      octave_user_code *fcn = cs.caller_user_code ();
 
       if (fcn)
         {
           octave_idx_type curr_frame = -1;
 
-          Vlast_error_stack = octave::call_stack::backtrace (0, curr_frame);
+          Vlast_error_stack = cs.backtrace (0, curr_frame);
         }
       else
         Vlast_error_stack = initialize_last_error_stack ();
@@ -307,8 +313,10 @@ pr_where (std::ostream& os, const char *who,
 static void
 pr_where (std::ostream& os, const char *who)
 {
+  octave::call_stack& cs = octave::__get_call_stack__ ("pr_where");
+
   std::list<octave::call_stack::stack_frame> call_stack_frames
-    = octave::call_stack::backtrace_frames ();
+    = cs.backtrace_frames ();
 
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
@@ -347,11 +355,13 @@ static void
 maybe_enter_debugger (octave::execution_exception& e,
                       bool show_stack_trace = false)
 {
+  octave::call_stack& cs = octave::__get_call_stack__ ("maybe_enter_debugger");
+
   if ((octave::application::interactive ()
        || octave::application::forced_interactive ())
       && ((Vdebug_on_error && bp_table::debug_on_err (last_error_id ()))
           || (Vdebug_on_caught && bp_table::debug_on_caught (last_error_id ())))
-      && octave::call_stack::caller_user_code ())
+      && cs.caller_user_code ())
     {
       octave::unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -359,7 +369,7 @@ maybe_enter_debugger (octave::execution_exception& e,
 
       octave::tree_evaluator::debug_mode = true;
 
-      octave::tree_evaluator::current_frame = octave::call_stack::current_frame ();
+      octave::tree_evaluator::current_frame = cs.current_frame ();
 
       if (show_stack_trace)
         {
@@ -528,7 +538,10 @@ error_1 (octave::execution_exception& e, std::ostream& os,
                 {
                   verror (true, os, name, id, fmt, args, with_cfn);
 
-                  bool in_user_code = octave::call_stack::caller_user_code () != 0;
+                  octave::call_stack& cs
+                    = octave::__get_call_stack__ ("error_1");
+
+                  bool in_user_code = cs.caller_user_code () != 0;
 
                   if (in_user_code && ! discard_error_messages)
                     show_stack_trace = true;
@@ -748,7 +761,9 @@ warning_1 (const char *id, const char *fmt, va_list args)
       else
         vwarning ("warning", id, fmt, args);
 
-      bool in_user_code = octave::call_stack::caller_user_code () != 0;
+      octave::call_stack& cs = octave::__get_call_stack__ ("warning_1");
+
+      bool in_user_code = cs.caller_user_code () != 0;
 
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning
@@ -765,7 +780,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
           octave::tree_evaluator::debug_mode = true;
 
-          octave::tree_evaluator::current_frame = octave::call_stack::current_frame ();
+          octave::tree_evaluator::current_frame = cs.current_frame ();
 
           do_keyboard (octave_value_list ());
         }
@@ -1408,8 +1423,8 @@ set_warning_option (const std::string& state, const std::string& ident)
   warning_options.assign ("state", tst);
 }
 
-DEFUN (warning, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (warning, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} warning (@var{template}, @dots{})
 @deftypefnx {} {} warning (@var{id}, @var{template}, @dots{})
 @deftypefnx {} {} warning ("on", @var{id})
@@ -1489,6 +1504,8 @@ disable escape sequence expansion use a second backslash before the sequence
       if (nargin >= 2)
         arg2 = argv[2];
 
+      octave::call_stack& cs = interp.get_call_stack ();
+
       if (arg1 == "on" || arg1 == "off" || arg1 == "error")
         {
           octave_map old_warning_options = warning_options;
@@ -1496,11 +1513,8 @@ disable escape sequence expansion use a second backslash before the sequence
           if (nargin == 3 && argv[3] == "local"
               && ! symbol_table::at_top_level ())
             {
-              symbol_table::scope_id scope
-                = octave::call_stack::current_scope ();
-
-              symbol_table::context_id context
-                = octave::call_stack::current_context ();
+              symbol_table::scope_id scope = cs.current_scope ();
+              symbol_table::context_id context = cs.current_context ();
 
               octave_scalar_map val = warning_query (arg2);
 
@@ -1750,13 +1764,19 @@ set_warning_state (const std::string& id, const std::string& state)
   args(1) = id;
   args(0) = state;
 
-  return Fwarning (args, 1);
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("set_warning_state");
+
+  return Fwarning (interp, args, 1);
 }
 
 octave_value_list
 set_warning_state (const octave_value_list& args)
 {
-  return Fwarning (args, 1);
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("set_warning_state");
+
+  return Fwarning (interp, args, 1);
 }
 
 void
@@ -1787,8 +1807,8 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:variable-switch-label");
 }
 
-DEFUN (lasterror, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (lasterror, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{lasterr} =} lasterror ()
 @deftypefnx {} {} lasterror (@var{err})
 @deftypefnx {} {} lasterror ("reset")
@@ -1941,8 +1961,9 @@ fields are set to their default values.
               // No stack field.  Fill it in with backtrace info.
               octave_idx_type curr_frame = -1;
 
-              Vlast_error_stack
-                = octave::call_stack::backtrace (0, curr_frame);
+              octave::call_stack& cs = interp.get_call_stack ();
+
+              Vlast_error_stack = cs.backtrace (0, curr_frame);
             }
         }
       else

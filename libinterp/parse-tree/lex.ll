@@ -2235,10 +2235,17 @@ looks_like_copyright (const std::string& s)
     {
       size_t offset = s.find_first_not_of (" \t");
 
-      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
+      retval = (s.substr (offset, 9) == "Copyright"
+                || s.substr (offset, 6) == "Author");
     }
 
   return retval;
+}
+
+static bool
+looks_like_shebang (const std::string& s)
+{
+  return ((! s.empty ()) && (s[0] == '!'));
 }
 
 namespace octave
@@ -2898,8 +2905,8 @@ namespace octave
   {
     bool copyright = looks_like_copyright (comment_text);
 
-    if (nesting_level.none () && help_text.empty ()
-        && ! comment_text.empty () && ! copyright)
+    if (nesting_level.none () && help_text.empty () && ! comment_text.empty ()
+        && ! copyright && ! looks_like_shebang (comment_text))
       help_text = comment_text;
 
     if (copyright)

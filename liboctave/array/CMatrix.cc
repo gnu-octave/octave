@@ -873,7 +873,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
         info = -1;
     }
 
-  if ((info == -1 && ! force) || octave::math::isinf (anorm))
+  if ((info == -1 && ! force)
+      || octave::math::isnan (anorm) || octave::math::isinf (anorm))
     retval = *this;  // Restore contents.
   else
     {

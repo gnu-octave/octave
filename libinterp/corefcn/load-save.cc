@@ -1565,7 +1565,7 @@ save -binary data a b*
 @noindent
 saves the variable @samp{a} and all variables beginning with @samp{b} to
 the file @file{data} in Octave's binary format.
-@seealso{load, save_default_options, save_header_format_string, dlmread, csvread, fread}
+@seealso{load, save_default_options, save_header_format_string, save_precision, dlmread, csvread, fread}
 @end deftypefn */)
 {
   // Here is where we would get the default save format if it were
@@ -1734,13 +1734,13 @@ DEFUN (save_default_options, args, nargout,
 Query or set the internal variable that specifies the default options
 for the @code{save} command, and defines the default format.
 
-Typical values include @qcode{"-ascii"}, @qcode{"-text -zip"}.
-The default value is @option{-text}.
+The default value is @qcode{"-text"} (Octave's own text-based file format).
+See the documentation of the @code{save} command for other choices.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{save}
+@seealso{save, save_header_format_string, save_precision}
 @end deftypefn */)
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (save_default_options);
@@ -1815,11 +1815,11 @@ DEFUN (save_header_format_string, args, nargout,
 @deftypefn  {} {@var{val} =} save_header_format_string ()
 @deftypefnx {} {@var{old_val} =} save_header_format_string (@var{new_val})
 @deftypefnx {} {} save_header_format_string (@var{new_val}, "local")
-Query or set the internal variable that specifies the format
-string used for the comment line written at the beginning of
-text-format data files saved by Octave.
+Query or set the internal variable that specifies the format string used for
+the comment line written at the beginning of text-format data files saved by
+Octave.
 
-The format string is passed to @code{strftime} and should begin with the
+The format string is passed to @code{strftime} and must begin with the
 character @samp{#} and contain no newline characters.  If the value of
 @code{save_header_format_string} is the empty string, the header comment is
 omitted from text-format data files.  The default value is
@@ -1832,7 +1832,7 @@ omitted from text-format data files.  The default value is
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
-@seealso{strftime, save}
+@seealso{strftime, save_default_options}
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE (save_header_format_string);

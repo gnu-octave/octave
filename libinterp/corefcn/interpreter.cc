@@ -1112,6 +1112,8 @@ namespace octave
 
     OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
+    symbol_table::cleanup_instance ();
+
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
     OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());

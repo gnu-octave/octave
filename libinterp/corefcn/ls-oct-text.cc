@@ -64,8 +64,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 #include "dMatrix.h"
 
-// The number of decimal digits to use when writing ascii data.
-static int Vsave_precision = 16;
+// The number of decimal digits to use when writing ASCII data.
+// 17 is the minimum necessary for lossless save/restore of IEEE-754 doubles.
+static int Vsave_precision = 17;
 
 // Functions for reading octave format text data.
 
@@ -406,9 +407,17 @@ DEFUN (save_precision, args, nargout,
 Query or set the internal variable that specifies the number of digits to
 keep when saving data in text format.
 
+The default value is 17 which is the minimum necessary for the lossless saving
+and restoring of IEEE-754 double values; For IEEE-754 single values the minimum
+value is 9.  If file size is a concern, it is probably better to choose a
+binary format for saving data rather than to reduce the precision of the saved
+values.
+
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
+
+@seealso{save_default_options}
 @end deftypefn */)
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1,

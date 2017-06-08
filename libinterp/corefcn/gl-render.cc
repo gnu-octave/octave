@@ -1080,15 +1080,15 @@ namespace octave
 
     glPixelStorei (GL_PACK_ALIGNMENT, 1);
     uint8NDArray pix(dim_vector (3, width, height), 0);
-    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, 
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
                  pix.fortran_vec ());
 
-    // Permute and flip data      
+    // Permute and flip data
     Array<octave_idx_type> perm (dim_vector (3, 1));
     perm(0) = 2;
     perm(1) = 1;
     perm(2) = 0;
-      
+
     Array<idx_vector> idx (dim_vector (3, 1));
     idx(0) = idx_vector::make_range (height - 1, -1, height);
     idx(1) = idx_vector::colon;
@@ -1101,7 +1101,10 @@ namespace octave
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+    octave_unused_parameter (width);
+    octave_unused_parameter (height);
+
+    panic_impossible ();
 
 #endif
   }
@@ -1914,9 +1917,12 @@ namespace octave
   void
   opengl_renderer::draw_axes_grids (const axes::properties& props)
   {
+#if defined (HAVE_OPENGL)
     // Disable line smoothing for axes
     GLboolean antialias;
+
     glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+
     if (antialias == GL_TRUE)
       glDisable (GL_LINE_SMOOTH);
 
@@ -1931,6 +1937,16 @@ namespace octave
 
     if (antialias == GL_TRUE)
       glEnable (GL_LINE_SMOOTH);
+#else
+
+    octave_unused_parameter (props);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
   }
 
   void
@@ -2112,7 +2128,7 @@ namespace octave
     set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
     draw_axes_children (props);
-    
+
     if (is2D && props.layer_is ("top"))
       draw_axes_grids (props);
 

@@ -296,7 +296,6 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
   endif
 
   indx = 1:numel (p);
-
   for n = indx
     pn = [1, -p(n)];
     if (n == 1)
@@ -320,14 +319,16 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
   pnum = zeros (1, N+1);
   for n = indx(abs (r) > 0)
     p1 = [1, -p(n)];
-    for m = 1:e(n)
-      if (m == 1)
-        pm = p1;
-      else
-        pm = conv (pm, p1);
-      endif
-    endfor
-    pn = deconv (pden, pm);
+    pn = 1;
+    for j = 1:n - 1
+      pn = conv (pn, [1, -p(j)]);
+    end
+    for j = n + 1:numel (p)
+      pn = conv (pn, [1, -p(j)]);
+    end
+    for j = 1:e(n) - 1
+      pn = deconv (pn, p1);
+    end
     pn = r(n) * pn;
     pnum += prepad (pn, N+1, 0, 2);
   endfor
@@ -430,3 +431,10 @@ endfunction
 %! assert (numel (num), 4);
 %! assert (numel (den), 5);
 %! assert (den(1), 1);
+
+%!test <51148>
+%! r = [1.0000e+18, 3.5714e+12, 2.2222e+11, 2.1739e+10];
+%! pin = [-1.9231e+15, -1.6234e+09, -4.1152e+07, -1.8116e+06];
+%! k = 0;
+%! [p, q] = residue (r, pin, k);
+%! assert (p(4), 4.6828e+42, -1e-5);

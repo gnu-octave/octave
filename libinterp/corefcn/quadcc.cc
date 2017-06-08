@@ -1692,7 +1692,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
               iv->fx[i] *= (1.0 + xw * xw) * M_PI / 2;
             }
           neval++;
-          if (! octave::math::finite (iv->fx[i]))
+          if (! octave::math::isfinite (iv->fx[i]))
             {
               nans[nnans++] = i;
               iv->fx[i] = 0.0;
@@ -1808,7 +1808,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
           nnans = 0;
           for (i = 0; i <= 32; i += skip[d])
             {
-              if (! octave::math::finite (iv->fx[i]))
+              if (! octave::math::isfinite (iv->fx[i]))
                 {
                   nans[nnans++] = i;
                   iv->fx[i] = 0.0;
@@ -1945,7 +1945,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! octave::math::finite (ivl->fx[i]))
+              if (! octave::math::isfinite (ivl->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivl->fx[i] = 0.0;
@@ -2036,7 +2036,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
           nnans = 0;
           for (i = 0; i <= 32; i += skip[0])
             {
-              if (! octave::math::finite (ivr->fx[i]))
+              if (! octave::math::isfinite (ivr->fx[i]))
                 {
                   nans[nnans++] = i;
                   ivr->fx[i] = 0.0;

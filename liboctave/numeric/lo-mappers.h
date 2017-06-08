@@ -232,14 +232,27 @@ namespace octave
       return (isnan (std::real (x)) || isnan (std::imag (x)));
     }
 
-    extern OCTAVE_API bool finite (double x);
-    extern OCTAVE_API bool finite (float x);
+    extern OCTAVE_API bool isfinite (double x);
+    extern OCTAVE_API bool isfinite (float x);
 
     template <typename T>
     bool
+    isfinite (const std::complex<T>& x)
+    {
+      return (isfinite (std::real (x)) && isfinite (std::imag (x)));
+    }
+
+    OCTAVE_DEPRECATED ("use 'octave::math::isfinite' instead")
+    inline bool finite (double x) { return octave::math::isfinite (x); }
+    OCTAVE_DEPRECATED ("use 'octave::math::isfinite' instead")
+    inline bool finite (float x) { return octave::math::isfinite (x); }
+
+    template <typename T>
+    OCTAVE_DEPRECATED ("use 'octave::math::isfinite' instead")
+    bool
     finite (const std::complex<T>& x)
     {
-      return (finite (std::real (x)) && finite (std::imag (x)));
+      return octave::math::isfinite (x);
     }
 
     extern OCTAVE_API bool isinf (double x);
@@ -255,8 +268,8 @@ namespace octave
     // Some useful tests, that are commonly repeated.
     // Test for a finite integer.
 
-    inline bool isinteger (double x) { return finite (x) && x == round (x); }
-    inline bool isinteger (float x) { return finite (x) && x == round (x); }
+    inline bool isinteger (double x) { return isfinite (x) && x == round (x); }
+    inline bool isinteger (float x) { return isfinite (x) && x == round (x); }
 
     inline double
     signum (double x)
@@ -307,13 +320,13 @@ namespace octave
     template <>
     inline double x_nint (double x)
     {
-      return (finite (x) ? floor (x + 0.5) : x);
+      return (isfinite (x) ? floor (x + 0.5) : x);
     }
 
     template <>
     inline float x_nint (float x)
     {
-      return (finite (x) ? floor (x + 0.5f) : x);
+      return (isfinite (x) ? floor (x + 0.5f) : x);
     }
 
     extern OCTAVE_API octave_idx_type nint_big (double x);
@@ -752,17 +765,17 @@ xisnan (const std::complex<T>& x)
   return octave::math::isnan (x);
 }
 
-OCTAVE_DEPRECATED ("use 'octave::math::finite' instead")
-inline bool xfinite (double x) { return octave::math::finite (x); }
-OCTAVE_DEPRECATED ("use 'octave::math::finite' instead")
-inline bool xfinite (float x) { return octave::math::finite (x); }
+OCTAVE_DEPRECATED ("use 'octave::math::isfinite' instead")
+inline bool xfinite (double x) { return octave::math::isfinite (x); }
+OCTAVE_DEPRECATED ("use 'octave::math::isfinite' instead")
+inline bool xfinite (float x) { return octave::math::isfinite (x); }
 
 template <typename T>
-OCTAVE_DEPRECATED ("use 'octave::math::finite' instead")
+OCTAVE_DEPRECATED ("use 'octave::math::isfinite' instead")
 bool
 xfinite (const std::complex<T>& x)
 {
-  return octave::math::finite (x);
+  return octave::math::isfinite (x);
 }
 
 OCTAVE_DEPRECATED ("use 'octave::math::isinf' instead")

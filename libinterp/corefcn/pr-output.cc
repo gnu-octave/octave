@@ -508,7 +508,7 @@ pr_max_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (! octave::math::finite (val))
+        if (! octave::math::isfinite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -537,7 +537,7 @@ pr_min_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (! octave::math::finite (val))
+        if (! octave::math::isfinite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -1002,10 +1002,10 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double r_abs = (rp < 0.0 ? -rp : rp);
   double i_abs = (ip < 0.0 ? -ip : ip);
 
-  int r_x = (! octave::math::finite (rp)
+  int r_x = (! octave::math::isfinite (rp)
              || r_abs == 0.0) ? 0 : num_digits (r_abs);
 
-  int i_x = (! octave::math::finite (ip)
+  int i_x = (! octave::math::isfinite (ip)
              || i_abs == 0.0) ? 0 : num_digits (i_abs);
 
   int x_max, x_min;

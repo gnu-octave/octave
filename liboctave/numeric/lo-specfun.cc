@@ -641,7 +641,7 @@ namespace octave
     xcbrt (T x)
     {
       static const T one_third = 0.3333333333333333333f;
-      if (octave::math::finite (x))
+      if (octave::math::isfinite (x))
         {
           // Use pow.
           T y = std::pow (std::abs (x), one_third) * signum (x);

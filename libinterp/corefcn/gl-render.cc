@@ -2420,14 +2420,14 @@ namespace octave
                     if (fc_mode == FLAT)
                       {
                         // "flat" only needs color at lower-left vertex
-                        if (! octave::math::finite (c(j-1,i-1)))
+                        if (! octave::math::isfinite (c(j-1,i-1)))
                           continue;
                       }
                     else if (fc_mode == INTERP)
                       {
                         // "interp" needs valid color at all 4 vertices
-                        if (! (octave::math::finite (c(j-1, i-1)) && octave::math::finite (c(j, i-1))
-                               && octave::math::finite (c(j-1, i)) && octave::math::finite (c(j, i))))
+                        if (! (octave::math::isfinite (c(j-1, i-1)) && octave::math::isfinite (c(j, i-1))
+                               && octave::math::isfinite (c(j-1, i)) && octave::math::isfinite (c(j, i))))
                           continue;
                       }
 
@@ -2629,13 +2629,13 @@ namespace octave
                         if (ec_mode == FLAT)
                           {
                             // "flat" only needs color at lower-left vertex
-                            if (! octave::math::finite (c(j-1,i)))
+                            if (! octave::math::isfinite (c(j-1,i)))
                               continue;
                           }
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (octave::math::finite (c(j-1, i)) && octave::math::finite (c(j, i))))
+                            if (! (octave::math::isfinite (c(j-1, i)) && octave::math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2726,13 +2726,13 @@ namespace octave
                         if (ec_mode == FLAT)
                           {
                             // "flat" only needs color at lower-left vertex
-                            if (! octave::math::finite (c(j,i-1)))
+                            if (! octave::math::isfinite (c(j,i-1)))
                               continue;
                           }
                         else if (ec_mode == INTERP)
                           {
                             // "interp" needs valid color at both vertices
-                            if (! (octave::math::finite (c(j, i-1)) && octave::math::finite (c(j, i))))
+                            if (! (octave::math::isfinite (c(j, i-1)) && octave::math::isfinite (c(j, i))))
                               continue;
                           }
 
@@ -2864,7 +2864,7 @@ namespace octave
                 if ((do_edge && mecolor.is_empty ())
                     || (do_face && mfcolor.is_empty ()))
                   {
-                    if (! octave::math::finite (c(j,i)))
+                    if (! octave::math::isfinite (c(j,i)))
                       continue;  // Skip NaNs in color data
 
                     for (int k = 0; k < 3; k++)

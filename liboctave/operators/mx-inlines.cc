@@ -270,7 +270,7 @@ mx_inline_all_finite (size_t n, const T *x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
-      if (! octave::math::finite (x[i]))
+      if (! octave::math::isfinite (x[i]))
         return false;
     }
 

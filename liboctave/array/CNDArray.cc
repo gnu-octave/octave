@@ -730,7 +730,7 @@ ComplexNDArray::isinf (void) const
 boolNDArray
 ComplexNDArray::isfinite (void) const
 {
-  return do_mx_unary_map<bool, Complex, octave::math::finite> (*this);
+  return do_mx_unary_map<bool, Complex, octave::math::isfinite> (*this);
 }
 
 ComplexNDArray

@@ -1489,7 +1489,7 @@ array_property::validate (const octave_value& v)
       else if (finite_constraint == FINITE)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
-            if (! octave::math::finite (v_mat(i)))
+            if (! octave::math::isfinite (v_mat(i)))
               error ("set: \"%s\" must be finite", get_name ().c_str ());
         }
       else if (finite_constraint == NOT_NAN)
@@ -6321,7 +6321,7 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
       double min_pos = octave::numeric_limits<double>::Inf ();
       double max_neg = -octave::numeric_limits<double>::Inf ();
       get_children_limits (minval, maxval, min_pos, max_neg, kids, limit_type);
-      if (octave::math::finite (minval) && octave::math::finite (maxval))
+      if (octave::math::isfinite (minval) && octave::math::isfinite (maxval))
         {
           limits(0) = minval;
           limits(1) = maxval;
@@ -6882,16 +6882,16 @@ check_limit_vals (double& min_val, double& max_val,
                   const array_property& data)
 {
   double val = data.min_val ();
-  if (octave::math::finite (val) && val < min_val)
+  if (octave::math::isfinite (val) && val < min_val)
     min_val = val;
   val = data.max_val ();
-  if (octave::math::finite (val) && val > max_val)
+  if (octave::math::isfinite (val) && val > max_val)
     max_val = val;
   val = data.min_pos ();
-  if (octave::math::finite (val) && val > 0 && val < min_pos)
+  if (octave::math::isfinite (val) && val > 0 && val < min_pos)
     min_pos = val;
   val = data.max_neg ();
-  if (octave::math::finite (val) && val < 0 && val > max_neg)
+  if (octave::math::isfinite (val) && val < 0 && val > max_neg)
     max_neg = val;
 }
 */
@@ -6910,19 +6910,19 @@ check_limit_vals (double& min_val, double& max_val,
           double val;
 
           val = m(0);
-          if (octave::math::finite (val) && val < min_val)
+          if (octave::math::isfinite (val) && val < min_val)
             min_val = val;
 
           val = m(1);
-          if (octave::math::finite (val) && val > max_val)
+          if (octave::math::isfinite (val) && val > max_val)
             max_val = val;
 
           val = m(2);
-          if (octave::math::finite (val) && val > 0 && val < min_pos)
+          if (octave::math::isfinite (val) && val > 0 && val < min_pos)
             min_pos = val;
 
           val = m(3);
-          if (octave::math::finite (val) && val < 0 && val > max_neg)
+          if (octave::math::isfinite (val) && val < 0 && val > max_neg)
             max_neg = val;
         }
     }
@@ -7502,16 +7502,16 @@ axes::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4)                     \
     {                                           \
       val = limits(0);                          \
-      if (octave::math::finite (val))           \
+      if (octave::math::isfinite (val))           \
         min_val = val;                          \
       val = limits(1);                          \
-      if (octave::math::finite (val))           \
+      if (octave::math::isfinite (val))           \
         max_val = val;                          \
       val = limits(2);                          \
-      if (octave::math::finite (val))           \
+      if (octave::math::isfinite (val))           \
         min_pos = val;                          \
       val = limits(3);                          \
-      if (octave::math::finite (val))           \
+      if (octave::math::isfinite (val))           \
         max_neg = val;                          \
     }                                           \
   else                                          \
@@ -8854,16 +8854,16 @@ hggroup::update_axis_limits (const std::string& axis_type,
   if (limits.numel () == 4)
     {
       val = limits(0);
-      if (octave::math::finite (val))
+      if (octave::math::isfinite (val))
         min_val = val;
       val = limits(1);
-      if (octave::math::finite (val))
+      if (octave::math::isfinite (val))
         max_val = val;
       val = limits(2);
-      if (octave::math::finite (val))
+      if (octave::math::isfinite (val))
         min_pos = val;
       val = limits(3);
-      if (octave::math::finite (val))
+      if (octave::math::isfinite (val))
         max_neg = val;
     }
   else

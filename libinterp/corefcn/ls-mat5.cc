@@ -1895,7 +1895,7 @@ save_mat5_array_length (const double *val, octave_idx_type nel,
             {
               double tmp = val[i];
 
-              if (octave::math::finite (tmp)
+              if (octave::math::isfinite (tmp)
                   && fabs (tmp) > std::numeric_limits<float>::max ())
                 {
                   too_large_for_float = true;

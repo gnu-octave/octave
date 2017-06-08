@@ -1240,7 +1240,7 @@ protected:
       if (finite_constraint == NO_CHECK) { /* do nothing */ }
       else if (finite_constraint == FINITE)
         {
-          if (! octave::math::finite (new_val))
+          if (! octave::math::isfinite (new_val))
             error ("set: \"%s\" must be finite", get_name ().c_str ());
         }
       else if (finite_constraint == NOT_NAN)

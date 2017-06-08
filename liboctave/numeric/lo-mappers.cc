@@ -355,7 +355,7 @@ namespace octave
     }
 
     bool
-    finite (double x)
+    isfinite (double x)
     {
 #if defined (HAVE_CMATH_ISFINITE)
       return std::isfinite (x);
@@ -365,7 +365,7 @@ namespace octave
     }
 
     bool
-    finite (float x)
+    isfinite (float x)
     {
 #if defined (HAVE_CMATH_ISFINITEF)
       return std::isfinite (x);

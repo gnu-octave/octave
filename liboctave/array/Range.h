@@ -62,8 +62,8 @@ public:
     : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
       rng_numel (n), cache ()
   {
-    if (! octave::math::finite (b) || ! octave::math::finite (i)
-        || ! octave::math::finite (rng_limit))
+    if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
+        || ! octave::math::isfinite (rng_limit))
       rng_numel = -2;
     else
       {
@@ -158,8 +158,8 @@ protected:
     : rng_base (b), rng_limit (l), rng_inc (i),
       rng_numel (n), cache ()
   {
-    if (! octave::math::finite (b) || ! octave::math::finite (i)
-        || ! octave::math::finite (l))
+    if (! octave::math::isfinite (b) || ! octave::math::isfinite (i)
+        || ! octave::math::isfinite (l))
       rng_numel = -2;
   }
 };

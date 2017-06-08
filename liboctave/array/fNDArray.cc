@@ -785,7 +785,7 @@ FloatNDArray::isinf (void) const
 boolNDArray
 FloatNDArray::isfinite (void) const
 {
-  return do_mx_unary_map<bool, float, octave::math::finite> (*this);
+  return do_mx_unary_map<bool, float, octave::math::isfinite> (*this);
 }
 
 void

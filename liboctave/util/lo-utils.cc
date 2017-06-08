@@ -50,7 +50,7 @@ bool xis_zero (double x)
 
 bool xtoo_large_for_float (double x)
 {
-  return (octave::math::finite (x)
+  return (octave::math::isfinite (x)
           && fabs (x) > std::numeric_limits<float>::max ());
 }
 

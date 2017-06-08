@@ -1968,7 +1968,7 @@ public:
     uint8NDArray retval;
     if (instance_ok ())
       retval = instance->do_get_pixels (hnd2idx (gh));
-    
+
     return retval;
   }
 

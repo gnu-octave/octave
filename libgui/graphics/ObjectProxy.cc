@@ -116,10 +116,10 @@ namespace QtHandles
   {
     uint8NDArray retval;
 
-    // The ObjectProxy is generally ran from the interpreter thread while the 
-    // actual Figure (Object) lives in the gui thread. The following ensures 
-    // synchronous execution of the Figure method and allows retrieving a 
-    // return value.
+    // The ObjectProxy is generally ran from the interpreter thread
+    // while the actual Figure (Object) lives in the gui thread. The
+    // following ensures synchronous execution of the Figure method and
+    // allows retrieving a return value.
 
     Qt::ConnectionType t = Qt::BlockingQueuedConnection;
 

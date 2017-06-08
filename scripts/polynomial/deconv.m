@@ -45,7 +45,7 @@ function [b, r] = deconv (y, a)
   endif
 
   ## Ensure A is oriented as Y.
-  if ((isrow (y) && iscolumn (a)) || (iscolumn (y) && isrow (a))) 
+  if ((isrow (y) && iscolumn (a)) || (iscolumn (y) && isrow (a)))
     a = a.';
   endif
 

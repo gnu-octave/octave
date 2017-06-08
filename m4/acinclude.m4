@@ -1545,7 +1545,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     else
       MOC="$MOC_QTVER"
     fi
-      
+
     AC_CHECK_TOOLS(UIC_QTVER, [uic-qt$qt_version])
     if test -z "$UIC_QTVER"; then
       AC_CHECK_TOOLS(UIC, [uic])

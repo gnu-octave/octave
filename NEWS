@@ -48,11 +48,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
 
  ** Deprecated graphics properties.
 
-    The following properties or allowed corresponding values have been 
-    deprecated in Octave 4.4 and will be removed from Octave 4.8 (or whatever 
+    The following properties or allowed corresponding values have been
+    deprecated in Octave 4.4 and will be removed from Octave 4.8 (or whatever
     version is the second major release after 4.4):
 
-      Object               | Property                | Value   
+      Object               | Property                | Value
       ---------------------|-------------------------|-------------------
       figure               | doublebuffer            |
                            | mincolormap             |

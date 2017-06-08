@@ -823,7 +823,7 @@ BEGIN {
         if (index (quals, "U"))
           updater[idx] = "extern";
 
-        ## The property is deprecated 
+        ## The property is deprecated
         if (index (quals, "d"))
           deprecated[idx] = 1;
 

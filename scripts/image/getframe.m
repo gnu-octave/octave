@@ -1,15 +1,15 @@
 ## Copyright (C) 2017 Pantxo Diribarne
-## 
+##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -38,7 +38,7 @@
 ## inside the figure corresponding to @var{hfig} or the parent figure of
 ## @var{hax} to be catured. Whatever the figure @qcode{"units"} property,
 ## @var{rect} must be defined in @strong{pixels}.
-## 
+##
 ## @seealso{im2frame, frame2im}
 ## @end deftypefn
 
@@ -80,7 +80,7 @@ function im = getframe (h = [], rect = [])
   unwind_protect_cleanup
     set (htmp, "units", units)
   end_unwind_protect
-    
+
   if (! isempty (rect))
     xv = [pos(1); pos(1)+pos(3); pos(1)+pos(3); pos(1)];
     yv = [pos(2); pos(2); pos(2)+pos(4); pos(2)+pos(4)];
@@ -103,16 +103,16 @@ function im = getframe (h = [], rect = [])
   else
     cdata = __get_frame__ (hf);
   endif
-  
+
   i1 = max (floor (pos(1)), 1);
   i2 = min (ceil (pos(1)+pos(3)-1), columns (cdata));
   idxx = i1:i2;
   i1 = max (floor (pos(2)), 1);
   i2 = min (ceil (pos(2)+pos(4)-1), rows (cdata));
   idxy = fliplr (rows (cdata) - (i1:i2) + 1);
-  
+
   im = struct ("cdata", cdata(idxy,idxx,:), "colormap", []);
-  
+
 endfunction
 
 %!demo
@@ -176,10 +176,10 @@ endfunction
 %!   fvc = [1 0 0; 0 1 0; 0 0 1; 1 0 1];
 %!   patch ("vertices", verts, "faces", faces, "facevertexcdata", fvc, ...
 %!          "facecolor", "flat");
-%!   
+%!
 %!   kk = 1;
 %!   pos = get (hf, "position");
-%!   
+%!
 %!   for jj = [0.05 0.55]
 %!     for ii = [0.05 0.55]
 %!       rect = [ii jj .4 .4].*[pos(3:4) pos(3:4)];

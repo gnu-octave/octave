@@ -124,7 +124,7 @@
 %! assert (__prog_output_assert__ ("1234"));
 
 %!test <50893>
-%! cnt = 0; 
+%! cnt = 0;
 %! for k = zeros (0,3);
 %!   cnt++;
 %! endfor
@@ -132,7 +132,7 @@
 %! assert (k, zeros (0,1));
 
 %!test <50893>
-%! cnt = 0; 
+%! cnt = 0;
 %! for k = zeros (3,0);
 %!   cnt++;
 %! endfor
@@ -140,7 +140,7 @@
 %! assert (k, zeros (1,0));
 
 %!test <50893>
-%! cnt = 0; 
+%! cnt = 0;
 %! for k = zeros (3,0, "uint32");
 %!   cnt++;
 %! endfor
@@ -148,7 +148,7 @@
 %! assert (k, zeros (1,0, "uint32"));
 
 %!test <50893>
-%! cnt = 0; 
+%! cnt = 0;
 %! for k = cell (0,3);
 %!   cnt++;
 %! endfor

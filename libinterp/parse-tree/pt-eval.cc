@@ -828,7 +828,7 @@ namespace octave
                 if (quit_loop_now ())
                   break;
               }
-          } 
+          }
         else
           {
             // Handle empty cases, while still assigning to loop var.

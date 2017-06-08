@@ -2199,7 +2199,7 @@ public:
   { gripe_if_tkit_invalid ("print_figure"); }
 
   virtual uint8NDArray get_pixels (const graphics_object&) const
-  { 
+  {
     gripe_if_tkit_invalid ("get_pixels");
     return uint8NDArray ();
   }

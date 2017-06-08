@@ -545,7 +545,7 @@ be converted to another type of container before being treated.
 @cindex hash table
 
 @c FIXME: Need to fill in documentation on what a Map is, when to use it over
-@c        other container types, how to perform basic operations with a Map. 
+@c        other container types, how to perform basic operations with a Map.
 
 @c FIXME: Currently have trouble getting documentation for classdef functions.
 @DOCSTRING(containers.Map)
@@ -1056,15 +1056,15 @@ out = cell (4, 1);
      @result{} out =
         @{
            [1,1] =
-         
+
               10   20   30
-         
+
            [2,1] = Inf
            [3,1] = last
            [4,1] =
-         
+
               10   20   30
-         
+
            [5,1] = Inf
            [6,1] = first
         @}

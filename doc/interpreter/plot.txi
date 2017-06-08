@@ -1808,13 +1808,13 @@ endfunction
 @end example
 
 @noindent
-where @code{hsrc} is a handle to the source of the callback, and @code{evt} 
-gives some event specific data.  
+where @code{hsrc} is a handle to the source of the callback, and @code{evt}
+gives some event specific data.
 
-The function can be provided as a function handle to a plain Octave function, 
-as an anonymous function or as a string representing an Octvae command. The 
-latter syntax is not recommended since syntax errors will only occur when the 
-string is evaluated.  
+The function can be provided as a function handle to a plain Octave function,
+as an anonymous function or as a string representing an Octvae command. The
+latter syntax is not recommended since syntax errors will only occur when the
+string is evaluated.
 @xref{Function Handles Anonymous Functions Inline Functions, , Function Handles section}.
 
 This can then be associated
@@ -1846,26 +1846,32 @@ The basic callback functions that are available for all graphics objects
 are
 
 @itemize @bullet
-@item CreateFcn: 
-called at the moment of the objects creation.  It is not called if the object is altered in any way, and so it only makes sense to define this callback in the function call that defines the object.  Callbacks that are added to @code{CreateFcn} later with the @code{set} function will never be executed.
+@item CreateFcn:
+called at the moment of the objects creation.  It is not called if the
+object is altered in any way, and so it only makes sense to define this
+callback in the function call that defines the object.  Callbacks that
+are added to @code{CreateFcn} later with the @code{set} function will
+never be executed.
 
-@item DeleteFcn: 
+@item DeleteFcn:
 called at the moment an object is deleted.
 
-@item ButtonDownFcn: 
-called if a mouse button is pressed while the pointer is over this object.  Note, that the gnuplot interface does not respect this callback.
+@item ButtonDownFcn:
+called if a mouse button is pressed while the pointer is over this
+object.  Note, that the gnuplot interface does not respect this
+callback.
 @end itemize
 
-@strong{Caution:} the second @code{evt} argument in callback functions is only 
+@strong{Caution:} the second @code{evt} argument in callback functions is only
 loosely implemented in the Qt graphics toolkit:
 
 @itemize @bullet
 @item Mouse click events:
-@code{evt} is a class @code{double} value, 1 for left, 2 for middle and 3 
+@code{evt} is a class @code{double} value, 1 for left, 2 for middle and 3
 for right click.
 
 @item Key press events:
-@code{evt} is a structure with fields @code{Key} (string), @code{Character} 
+@code{evt} is a structure with fields @code{Key} (string), @code{Character}
 (string) and @code{Modifier} (cell array of strings).
 
 @item Other events:

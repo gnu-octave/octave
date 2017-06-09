@@ -113,7 +113,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <49469>
+%!test <*49469>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ht = title ("Test FontSize Property");

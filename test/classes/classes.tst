@@ -309,19 +309,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Test overloaded vertcat() for the Snork class
-%!test <38128>
+%!test <*38128>
 %! s = [s1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [s1; x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [x1; s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1; x2]));
 
 %% Test overloaded horzcat() for the Snork class
-%!test <38128>
+%!test <*38128>
 %! s = [s1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [s1 x2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
-%!test <38128>
+%!test <*38128>
 %! s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 
 %% Test with the Blork class, where neither vertcat() nor horzcat()
@@ -389,7 +389,7 @@
 %!assert (isequal (ndims (st), 2))
 %!assert (isequal (rows (st), 1))
 %!xtest assert (isequal (columns (st), 2))
-%!assert <44334> (isequal (st, st))
+%!assert <*44334> (isequal (st, st))
 %!assert <44498> (not (isscalar (st)))
 %!assert (isvector (st))
 
@@ -399,7 +399,7 @@
 %!assert (isequal (ndims (st), 2))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
-%!assert <44334> (isequal (st, st))
+%!assert <*44334> (isequal (st, st))
 %!assert <44498> (not (isscalar (st)))
 %!assert <44498> (not (isvector (st)))
 
@@ -409,6 +409,6 @@
 %!xtest assert (isequal (ndims (st), 3))
 %!xtest assert (isequal (rows (st), 2))
 %!xtest assert (isequal (columns (st), 3))
-%!assert <44334> (isequal (st, st))
+%!assert <*44334> (isequal (st, st))
 %!assert <44498> (not (isscalar (st)))
 %!assert <44498> (not (isvector (st)))

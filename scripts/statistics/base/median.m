@@ -118,8 +118,8 @@ endfunction
 %! b = rand (3,4,6,5);
 %! x = sort (a, 4);
 %! y = sort (b, 3);
-%!assert <35679> (median (a, 4), x(:, :, :, 3))
-%!assert <35679> (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
+%!assert <*35679> (median (a, 4), x(:, :, :, 3))
+%!assert <*35679> (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
 
 ## Test non-floating point types
 %!assert (median ([true, false]), true)

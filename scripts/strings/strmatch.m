@@ -114,7 +114,7 @@ endfunction
 %!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, "exact"), [1,4])
 
 ## Weird Matlab corner cases
-%!test <49601>
+%!test <*49601>
 %! assert (strmatch (" ", " "), 1);
 %! assert (strmatch (" ", "   "), 1);
 %! assert (strmatch ("  ", " "), []);

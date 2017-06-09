@@ -529,7 +529,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test <43393>
+%!test <*43393>
 %! ## Distinguish double from complex when no delimiter is supplied
 %! fn  = tmpnam ();
 %! fid = fopen (fn, "w");

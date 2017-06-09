@@ -16,7 +16,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%!test <41723>
+%!test <*41723>
 %! a = class_bug41723 ();
 %! assert (a.value, 42);
 %! assert (a.getval (), 84);

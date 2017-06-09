@@ -88,7 +88,7 @@ endfunction
 ## Not a magic square but we must return something (bug #46672).
 ## While one day we may change the actual return of magic (2),
 ## this properties still must be true.
-%!test <46672>
+%!test <*46672>
 %! m = magic (2);
 %! assert (size (m), [2 2]);
 %! assert (unique (m), [1; 2; 3; 4]);

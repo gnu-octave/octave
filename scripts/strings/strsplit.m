@@ -297,10 +297,10 @@ endfunction
 %! assert (strsplit ("aa", "a"), {"", ""});
 %! assert (strsplit ("aaa", "a"), {"", ""});
 
-%!assert <44641> (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})
-%!assert <44641> (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"})
+%!assert <*44641> (strsplit ("xxx<yyy", "<"), {"xxx", "yyy"})
+%!assert <*44641> (strsplit ('xxx\yyy', '\'), {"xxx", "yyy"})
 
-%!assert <47403> (strsplit ('xxx+yyy', '+'), {"xxx", "yyy"})
+%!assert <*47403> (strsplit ('xxx+yyy', '+'), {"xxx", "yyy"})
 
 ## Test input validation
 %!error strsplit ()

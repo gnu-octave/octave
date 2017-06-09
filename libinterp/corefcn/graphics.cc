@@ -7230,7 +7230,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 }
 
 /*
-%!test <45356>
+%!test <*45356>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (1:10);

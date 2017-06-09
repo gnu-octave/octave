@@ -811,11 +811,11 @@ dimensionality as the other array.
 %! endfor
 
 ## Automatic broadcasting with zero length dimensions
-%!assert <47085> ([1 2 3] .+ zeros (0, 3), zeros (0, 3))
-%!assert <47085> (rand (3, 3, 1) .+ rand (3, 3, 0), zeros (3, 3, 0))
+%!assert <*47085> ([1 2 3] .+ zeros (0, 3), zeros (0, 3))
+%!assert <*47085> (rand (3, 3, 1) .+ rand (3, 3, 0), zeros (3, 3, 0))
 
 ## In-place broadcasting with zero length dimensions
-%!test <47085>
+%!test <*47085>
 %! a = zeros (0, 3);
 %! a .+= [1 2 3];
 %! assert (a, zeros (0, 3));

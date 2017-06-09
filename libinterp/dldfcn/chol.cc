@@ -339,7 +339,7 @@ sparse matrices.
 %! assert (pd, pv)
 %! assert (qv, [1 2])
 
-%!testif HAVE_CHOLMOD <42587>
+%!testif HAVE_CHOLMOD <*42587>
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);
 %! [Q, p] = chol (A);
 %! assert (p != 0);

@@ -865,8 +865,8 @@ the first index of the maximum value(s).  Thus,
 %! assert (max (x, 2.1i), sparse ([2.1i 2.1i 3 4]));
 
 ## Test for bug #40743
-%!assert <40743> (max (zeros (1,0), ones (1,1)), zeros (1,0))
-%!assert <40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
+%!assert <*40743> (max (zeros (1,0), ones (1,1)), zeros (1,0))
+%!assert <*40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
 %!                sparse (zeros (1,0)))
 
 %!error max ()

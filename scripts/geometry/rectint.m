@@ -94,10 +94,10 @@ endfunction
 %!assert (rectint ([0 0 1 1;0.5 0.5 1 1;-1 -1 2 2], [1 1 2 2]), [0;0.25;0])
 %!assert (rectint ([1 1 2 2], [0 0 1 1;0.5 0.5 1 1;-1 -1 2 2]), [0 0.25 0])
 
-%!assert <44904> (rectint ([0 0 5 5], [6 6 5 5]), 0)
-%!assert <44904> (rectint ([0 0 5 5], [0 6 5 5]), 0)
-%!assert <44904> (rectint ([0 0 5 5], [6 0 5 5]), 0)
-%!assert <44904> (rectint ([0 0 0 5 5 5], [0 0 6 5 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 5 5], [6 6 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 5 5], [0 6 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 5 5], [6 0 5 5]), 0)
+%!assert <*44904> (rectint ([0 0 0 5 5 5], [0 0 6 5 5 5]), 0)
 
 ## Test volumes
 %!shared r1, r2, r3, r4, r5

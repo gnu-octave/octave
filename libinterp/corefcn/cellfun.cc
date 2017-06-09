@@ -979,10 +979,10 @@ v = cellfun (@@det, a); # faster
 %! assert (b, {"c", "g"});
 %! assert (c, {".d", ".h"});
 
-%!assert <40467> (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
-%!assert <40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
-%!assert <40467> (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
-%!assert <40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
+%!assert <*40467> (cellfun (@isreal, {1 inf nan []}), [true, true, true, true])
+%!assert <*40467> (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true})
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false])
+%!assert <*40467> (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false})
 
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)

@@ -199,18 +199,18 @@ hash ("md5", fileread (file));
 %!         "417a81a538327af927da3e"]);
 
 ## Test special character behavior
-%!assert <31689> (hash ("md2", "abc\0"), "5a636d615002a7874ac1c9e9a43361f7")
-%!assert <31689> (hash ("md4", "abc\0"), "0ee5201897ecb206c4eaba1d2da5224d")
-%!assert <31689> (hash ("md5", "abc\0"), "147a664a2ca9410911e61986d3f0d52a")
-%!assert <31689> (hash ("sha1", "abc\0"), "686483805ac47ca14e03514f7481a7973b401762")
-%!assert <31689> (hash ("sha224", "abc\0"),
+%!assert <*31689> (hash ("md2", "abc\0"), "5a636d615002a7874ac1c9e9a43361f7")
+%!assert <*31689> (hash ("md4", "abc\0"), "0ee5201897ecb206c4eaba1d2da5224d")
+%!assert <*31689> (hash ("md5", "abc\0"), "147a664a2ca9410911e61986d3f0d52a")
+%!assert <*31689> (hash ("sha1", "abc\0"), "686483805ac47ca14e03514f7481a7973b401762")
+%!assert <*31689> (hash ("sha224", "abc\0"),
 %!        "fbc8e47920e108bb1d0b631d18b36ae9b1549d28362aa15ebe960cfb");
-%!assert <31689> (hash ("sha256", "abc\0"),
+%!assert <*31689> (hash ("sha256", "abc\0"),
 %!        "dc1114cd074914bd872cc1f9a23ec910ea2203bc79779ab2e17da25782a624fc");
-%!assert <31689> (hash ("sha384", "abc\0"),
+%!assert <*31689> (hash ("sha384", "abc\0"),
 %!        ["eba81f2dfba4ec60d3f786c89d91b08e6c0b63d55986874378e385", ...
 %!         "e6fac587cce7a520ca9437290fe626cbf75c855e17"]);
-%!assert <31689> (hash ("sha512", "abc\0"),
+%!assert <*31689> (hash ("sha512", "abc\0"),
 %!        ["7ce05eda233e545a2d5c626862a5ddaafb09b9d8ec3bec08aa458b", ...
 %!         "7c9e7d939d84a57d5a20d8a9002983aabae2457b19c50ba326bf5b", ...
 %!         "081f75b41342f42c3383"]);

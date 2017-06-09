@@ -1751,7 +1751,7 @@ disable escape sequence expansion use a second backslash before the sequence
 }
 
 /*
-%!test <45753>
+%!test <*45753>
 %! warning ("error");
 %! assert (! isempty (help ("warning")));
 */

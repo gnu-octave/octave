@@ -255,13 +255,13 @@ When the third argument is a matrix, return the convolution of the matrix
 %!shared
 
 ## Test cases from Bug #34893
-%!assert <34893> (conv2 ([1:5;1:5], [1:2], "same"),
+%!assert <*34893> (conv2 ([1:5;1:5], [1:2], "same"),
 %!                [4 7 10 13 10; 4 7 10 13 10])
-%!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "same"),
+%!assert <*34893> (conv2 ([1:5;1:5]', [1:2]', "same"),
 %!                [4 7 10 13 10; 4 7 10 13 10]')
-%!assert <34893> (conv2 ([1:5;1:5], [1:2], "valid"),
+%!assert <*34893> (conv2 ([1:5;1:5], [1:2], "valid"),
 %!                [4 7 10 13; 4 7 10 13])
-%!assert <34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
+%!assert <*34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
 %!                [4 7 10 13; 4 7 10 13]')
 
 %!test

@@ -28,13 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "defun.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
+#include "octave-link.h"
 #include "pager.h"
 #include "singleton-cleanup.h"
-#include "interpreter.h"
-
-#include "octave-link.h"
 
 static int
 octave_readline_hook (void)
@@ -65,10 +65,15 @@ void
 octave_link::set_workspace (void)
 {
   if (enabled ())
-    instance->do_set_workspace ((symbol_table::current_scope ()
-                                 == symbol_table::top_scope ()),
-                                instance->debugging,
-                                symbol_table::workspace_info ());
+    {
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_link::set_workspace");
+
+
+      instance->do_set_workspace (symtab.at_top_level (),
+                                  instance->debugging,
+                                  symtab.workspace_info ());
+    }
 }
 
 // OBJ should be an object of a class that is derived from the base

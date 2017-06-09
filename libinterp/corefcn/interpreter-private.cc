@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "symtab.h"
 
 namespace octave
 {
@@ -39,7 +40,10 @@ namespace octave
     interpreter *interp = interpreter::the_interpreter ();
 
     if (! interp)
-      error ("%s: interpreter context missing", who.c_str ());
+      {
+        abort ();
+        error ("%s: interpreter context missing", who.c_str ());
+      }
 
     return *interp;
   }
@@ -49,6 +53,20 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_load_path ();
+  }
+
+  symbol_table& __get_symbol_table__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_symbol_table ();
+  }
+
+  symbol_table::scope_id __get_current_scope__ (const std::string& who)
+  {
+    symbol_table& symtab = __get_symbol_table__ (who);
+
+    return symtab.current_scope ();
   }
 
   tree_evaluator& __get_evaluator__ (const std::string& who)

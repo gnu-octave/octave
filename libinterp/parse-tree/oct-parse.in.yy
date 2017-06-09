@@ -1264,7 +1264,8 @@ push_fcn_symtab : // empty
                     if (parser.max_fcn_depth < parser.curr_fcn_depth)
                       parser.max_fcn_depth = parser.curr_fcn_depth;
 
-                    lexer.symtab_context.push (symbol_table::alloc_scope ());
+                    symbol_table& symtab = octave::__get_symbol_table__ ("push_fcn_symtab");
+                    lexer.symtab_context.push (symtab.alloc_scope ());
 
                     parser.function_scopes.push (lexer.symtab_context.curr_scope ());
 
@@ -1294,7 +1295,8 @@ param_list_beg  : '('
 
                     if (lexer.looking_at_function_handle)
                       {
-                        lexer.symtab_context.push (symbol_table::alloc_scope ());
+                        symbol_table& symtab = octave::__get_symbol_table__ ("push_fcn_symtab");
+                        lexer.symtab_context.push (symtab.alloc_scope ());
                         lexer.looking_at_function_handle--;
                         lexer.looking_at_anon_fcn_args = true;
                       }
@@ -1620,6 +1622,8 @@ classdef_beg    : CLASSDEF
                         YYABORT;
                       }
 
+                    // Create invalid parent scope.
+                    lexer.symtab_context.push (-1);
                     lexer.parsing_classdef = true;
                     $$ = $1;
                   }
@@ -2485,6 +2489,7 @@ namespace octave
     tree_parameter_list *ret_list = 0;
 
     symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
+    symbol_table::scope_id parent_scope = lexer.symtab_context.parent_scope ();
 
     lexer.symtab_context.pop ();
 
@@ -2495,7 +2500,8 @@ namespace octave
     body->mark_as_anon_function_body ();
 
     tree_anon_fcn_handle *retval
-      = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
+      = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope,
+                                  parent_scope, l, c);
     // FIXME: Stash the filename.  This does not work and produces
     // errors when executed.
     //retval->stash_file_name (lexer.fcn_file_name);
@@ -3387,7 +3393,10 @@ namespace octave
         if (! file.empty ())
           tmp += ": " + file;
 
-        symbol_table::cache_name (fcn->scope (), tmp);
+        symbol_table& symtab
+          = octave::__get_symbol_table__ ("base_parser::finish_function");
+
+        symtab.cache_name (fcn->scope (), tmp);
 
         if (lc)
           fcn->stash_leading_comment (lc);
@@ -3400,29 +3409,26 @@ namespace octave
 
             if (endfunction_found && function_scopes.size () > 1)
               {
-                symbol_table::scope_id pscope
-                  = function_scopes.parent_scope ();
+                symbol_table::scope_id pscope = function_scopes.parent_scope ();
 
-                symbol_table::install_nestfunction (nm, octave_value (fcn),
-                                                    pscope);
+                symtab.install_nestfunction (nm, octave_value (fcn), pscope);
               }
             else
               {
                 fcn->mark_as_subfunction ();
                 subfunction_names.push_back (nm);
 
-                symbol_table::install_subfunction (nm, octave_value (fcn),
-                                                   primary_fcn_scope);
+                symtab.install_subfunction (nm, octave_value (fcn),
+                                            primary_fcn_scope);
                }
           }
 
         if (fcn)
           {
             if (parsing_local_functions )
-              symbol_table::install_local_function (nm, octave_value (fcn),
-                                                    file);
+              symtab.install_local_function (nm, octave_value (fcn), file);
             else if (curr_fcn_depth == 1)
-              symbol_table::update_nest (fcn->scope ());
+              symtab.update_nest (fcn->scope ());
           }
 
         if (! lexer.reading_fcn_file && curr_fcn_depth == 1)
@@ -3471,8 +3477,11 @@ namespace octave
     args(1) = class_nm;
     args(0) = method_nm;
 
+    symbol_table& symtab
+      = octave::__get_symbol_table__ ("base_parser::make_superclass_ref");
+
     octave_value fcn
-      = symbol_table::find_built_in_function ("__superclass_reference__");
+      = symtab.find_built_in_function ("__superclass_reference__");
 
     return new tree_funcall (fcn, args);
   }
@@ -3484,8 +3493,11 @@ namespace octave
 
     args(0) = class_nm;
 
+    symbol_table& symtab
+      = octave::__get_symbol_table__ ("base_parser::make_meta_class_query");
+
     octave_value fcn
-      = symbol_table::find_built_in_function ("__meta_class_query__");
+      = symtab.find_built_in_function ("__meta_class_query__");
 
     return new tree_funcall (fcn, args);
   }
@@ -3505,6 +3517,8 @@ namespace octave
                               octave_comment_list *lc)
   {
     tree_classdef *retval = 0;
+
+    lexer.symtab_context.pop ();
 
     std::string cls_name = id->name ();
 
@@ -4560,7 +4574,9 @@ namespace octave
           {
             symbol_table::scope_id id = retval->scope ();
 
-            symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
+            symbol_table& symtab = octave::__get_symbol_table__ ("load_fcn_from_file");
+
+            symtab.stash_dir_name_for_subfunctions (id, dir_name);
           }
       }
 
@@ -4682,7 +4698,8 @@ not loaded anymore during the current Octave session.
                            "autoload: third argument can only be 'remove'");
 
           // Remove function from symbol table and autoload map.
-          symbol_table::clear_dld_function (argv[1]);
+          symbol_table& symtab = interp.get_symbol_table ();
+          symtab.clear_dld_function (argv[1]);
           autoload_map.erase (argv[1]);
         }
     }
@@ -4777,7 +4794,8 @@ namespace octave
     std::string full_name = octave::sys::canonicalize_file_name (file_name);
 
     // Check if this file is already loaded (or in the path)
-    octave_value loaded_sym = symbol_table::find (symbol);
+    symbol_table& symtab = octave::__get_symbol_table__ ("source_file");
+    octave_value loaded_sym = symtab.find (symbol);
     if (loaded_sym.is_function ())
       {
         fcn = loaded_sym.function_value ();
@@ -4953,7 +4971,9 @@ namespace octave
   {
     octave_value_list retval;
 
-    octave_value fcn = symbol_table::find_function (name, args);
+    symbol_table& symtab = octave::__get_symbol_table__ ("feval");
+
+    octave_value fcn = symtab.find_function (name, args);
 
     if (fcn.is_defined ())
       {
@@ -5096,8 +5116,8 @@ instead.
   return octave::feval (args, nargout);
 }
 
-DEFUN (builtin, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (builtin, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {[@dots{}] =} builtin (@var{f}, @dots{})
 Call the base function @var{f} even if @var{f} is overloaded to another
 function for the given type signature.
@@ -5129,7 +5149,9 @@ builtin ("sin", 0)
 
   const std::string name (args(0).xstring_value ("builtin: function name (F) must be a string"));
 
-  octave_value fcn = symbol_table::builtin_find (name);
+  symbol_table& symtab = interp.get_symbol_table ();
+
+  octave_value fcn = symtab.builtin_find (name);
 
   if (fcn.is_defined ())
     retval = octave::feval (fcn.function_value (), args.splice (0, 1), nargout);
@@ -5421,7 +5443,9 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       if (octave::is_keyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
-      symbol_table::assign (nm, args(2));
+      symbol_table& symtab = interp.get_symbol_table ();
+
+      symtab.assign (nm, args(2));
     }
   else
     error ("assignin: invalid variable name in argument VARNAME");

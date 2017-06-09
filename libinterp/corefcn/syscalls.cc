@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ovl.h"
@@ -451,8 +452,8 @@ message.
   return ovl (status, msg);
 }
 
-DEFUNX ("fork", Ffork, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("fork", Ffork, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{pid}, @var{msg}] =} fork ()
 Create a copy of the current process.
 
@@ -477,7 +478,9 @@ action.  A system dependent error message will be waiting in @var{msg}.
   if (args.length () != 0)
     print_usage ();
 
-  if (symbol_table::at_top_level ())
+  symbol_table& symtab = interp.get_symbol_table ();
+
+  if (symtab.at_top_level ())
     error ("fork: cannot be called from command line");
 
   std::string msg;

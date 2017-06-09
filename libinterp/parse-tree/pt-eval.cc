@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
@@ -94,20 +95,28 @@ namespace octave
 
     tree_parameter_list *param_list = expr.parameter_list ();
     tree_parameter_list *ret_list = expr.return_list ();
-    tree_statement_list *cmd_list = expr.body ();
-    symbol_table::scope_id this_scope = expr.scope ();
+    tree_statement_list *stmt_list = expr.body ();
 
-    symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
+    symbol_table::scope_id af_sid = expr.scope ();
 
-    if (new_scope > 0)
-      symbol_table::inherit (new_scope, symbol_table::current_scope (),
-                             symbol_table::current_context ());
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    octave_user_function *uf
+    symbol_table::scope_id af_parent_sid
+      = expr.has_parent_scope () ? symtab.current_scope () : -1;
+
+    symbol_table::scope_id new_scope = symtab.dup_scope (af_sid);
+
+    if (new_scope > 0 && af_parent_sid > 0)
+      symtab.inherit (new_scope, af_parent_sid);
+
+    octave_user_function *af
       = new octave_user_function (new_scope,
                                   param_list ? param_list->dup (new_scope, 0) : 0,
                                   ret_list ? ret_list->dup (new_scope, 0) : 0,
-                                  cmd_list ? cmd_list->dup (new_scope, 0) : 0);
+                                  stmt_list ? stmt_list->dup (new_scope, 0) : 0);
+
+    if (af_parent_sid > 0)
+      symtab.set_parent (new_scope, af_parent_sid);
 
     octave_function *curr_fcn = m_call_stack.current ();
 
@@ -116,25 +125,18 @@ namespace octave
         // FIXME: maybe it would be better to just stash curr_fcn
         // instead of individual bits of info about it?
 
-        uf->stash_parent_fcn_name (curr_fcn->name ());
-        uf->stash_dir_name (curr_fcn->dir_name ());
-
-        symbol_table::scope_id parent_scope = curr_fcn->parent_fcn_scope ();
-
-        if (parent_scope < 0)
-          parent_scope = curr_fcn->scope ();
-
-        uf->stash_parent_fcn_scope (parent_scope);
+        af->stash_parent_fcn_name (curr_fcn->name ());
+        af->stash_dir_name (curr_fcn->dir_name ());
 
         if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
-          uf->stash_dispatch_class (curr_fcn->dispatch_class ());
+          af->stash_dispatch_class (curr_fcn->dispatch_class ());
       }
 
-    uf->mark_as_anonymous_function ();
-    uf->stash_fcn_file_name (expr.file_name ());
-    uf->stash_fcn_location (expr.line (), expr.column ());
+    af->mark_as_anonymous_function ();
+    af->stash_fcn_file_name (expr.file_name ());
+    af->stash_fcn_location (expr.line (), expr.column ());
 
-    octave_value ov_fcn (uf);
+    octave_value ov_fcn (af);
 
     octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, this));
 
@@ -360,7 +362,9 @@ namespace octave
             tmp1(0) = ov_base;
           }
 
-        octave_value fcn = symbol_table::find_function ("colon", tmp1);
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function ("colon", tmp1);
 
         if (! fcn.is_defined ())
           error ("can not find overloaded colon function");
@@ -464,7 +468,9 @@ namespace octave
 
     int count = 0;
 
-    octave_value tmp = symbol_table::varval (".ignored.");
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    octave_value tmp = symtab.varval (".ignored.");
     const Matrix ignored = (tmp.is_defined () ? tmp.matrix_value () : Matrix ());
 
     octave_idx_type k = 0;
@@ -944,12 +950,14 @@ namespace octave
       {
         std::string nm = f->name ();
 
-        symbol_table::install_cmdline_function (nm, fcn);
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        symtab.install_cmdline_function (nm, fcn);
 
         // Make sure that any variable with the same name as the new
         // function is cleared.
 
-        symbol_table::assign (nm);
+        symtab.assign (nm);
       }
   }
 
@@ -1066,7 +1074,9 @@ final_index_error (octave::index_exception& e,
 
       e.set_var (var);
 
-      octave_value fcn = symbol_table::find_function (var);
+      symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+
+      octave_value fcn = symtab.find_function (var);
 
       if (fcn.is_function ())
         {

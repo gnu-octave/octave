@@ -1095,7 +1095,10 @@ public:
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        octave_value sym = symbol_table::varval (mname);
+        symbol_table& symtab
+          = octave::__get_symbol_table__ ("octave_classdef_superclass_ref::call");
+
+        octave_value sym = symtab.varval (mname);
 
         cls.run_constructor (to_cdef_ref (sym), idx);
 
@@ -3229,7 +3232,10 @@ cdef_package::cdef_package_rep::find (const std::string& nm)
 {
   std::string symbol_name = get_name () + "." + nm;
 
-  return symbol_table::find (symbol_name, octave_value_list (), true, false);
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("cdef_package::cdef_package_rep::find");
+
+  return symtab.find (symbol_name, octave_value_list (), true, false);
 }
 
 octave_value_list
@@ -3317,7 +3323,7 @@ cdef_class cdef_class::_meta_package = cdef_class ();
 cdef_package cdef_package::_meta = cdef_package ();
 
 void
-install_classdef (octave::interpreter& /* interp */)
+install_classdef (octave::interpreter& interp)
 {
   octave_classdef::register_type ();
 
@@ -3484,18 +3490,20 @@ install_classdef (octave::interpreter& /* interp */)
   package_meta.install_class (meta_event,       "event");
   package_meta.install_class (meta_dynproperty, "dynproperty");
 
+  symbol_table& symtab = interp.get_symbol_table ();
+
   // install built-in classes into the symbol table
-  symbol_table::install_built_in_function
+  symtab.install_built_in_function
     ("meta.class", octave_value (meta_class.get_constructor_function ()));
-  symbol_table::install_built_in_function
+  symtab.install_built_in_function
     ("meta.method", octave_value (meta_method.get_constructor_function ()));
-  symbol_table::install_built_in_function
+  symtab.install_built_in_function
     ("meta.property", octave_value (meta_property.get_constructor_function ()));
-  symbol_table::install_built_in_function
+  symtab.install_built_in_function
     ("meta.package", octave_value (meta_package.get_constructor_function ()));
-  symbol_table::install_built_in_function
+  symtab.install_built_in_function
     ("meta.event", octave_value (meta_event.get_constructor_function ()));
-  symbol_table::install_built_in_function
+  symtab.install_built_in_function
     ("meta.dynproperty", octave_value (meta_dynproperty.get_constructor_function ()));
 }
 
@@ -3527,7 +3535,12 @@ cdef_manager::do_find_class (const std::string& name,
           size_t pos = name.rfind ('.');
 
           if (pos == std::string::npos)
-            ov_cls = symbol_table::find (name);
+            {
+              symbol_table& symtab
+                = octave::__get_symbol_table__ ("cdef_manager::do_find_class");
+
+              ov_cls = symtab.find (name);
+            }
           else
             {
               std::string pack_name = name.substr (0, pos);

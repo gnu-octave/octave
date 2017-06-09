@@ -82,6 +82,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "pager.h"
 #include "parse.h"
 #include "pr-output.h"
@@ -2497,7 +2498,9 @@ do_colon_op (const octave_value& base, const octave_value& increment,
       else
         dispatch_type = limit.class_name ();
 
-      octave_value meth = symbol_table::find_method ("colon", dispatch_type);
+      symbol_table& symtab = octave::__get_symbol_table__ ("do_colon_op");
+
+      octave_value meth = symtab.find_method ("colon", dispatch_type);
 
       if (! meth.is_defined ())
         error ("colon method not defined for %s class", dispatch_type.c_str ());

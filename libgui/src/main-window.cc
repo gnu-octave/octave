@@ -61,6 +61,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
+#if defined (HAVE_QT_GRAPHICS)
+#  include "__init_qt__.h"
+#endif
+#include "interpreter-private.h"
 #include "oct-map.h"
 #include "octave.h"
 #include "symtab.h"
@@ -93,6 +97,12 @@ octave_interpreter::execute (void)
   // The application context owns the interpreter.
 
   m_app_context->create_interpreter ();
+
+#if defined (HAVE_QT_GRAPHICS)
+  install___init_qt___functions ();
+
+  Fregister_graphics_toolkit (ovl ("qt"));
+#endif
 
   int exit_status = 0;
 
@@ -2410,22 +2420,31 @@ main_window::load_workspace_callback (const std::string& file)
 {
   Fload (ovl (file));
 
-  octave_link::set_workspace (true, symbol_table::workspace_info ());
+ symbol_table& symtab
+   = octave::__get_symbol_table__ ("main_window::load_workspace_callback");
+
+  octave_link::set_workspace (true, symtab.workspace_info ());
 }
 
 void
 main_window::clear_workspace_callback (void)
 {
-  Fclear ();
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("main_window::clear_workspace_callback");
+
+  Fclear (interp);
 }
 
 void
 main_window::rename_variable_callback (const main_window::name_pair& names)
 {
-  /* bool status = */ symbol_table::rename (names.first, names.second);
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("main_window::rename_variable_callback");
+
+  /* bool status = */ symtab.rename (names.first, names.second);
 
   // if (status)
-  octave_link::set_workspace (true, symbol_table::workspace_info ());
+  octave_link::set_workspace (true, symtab.workspace_info ());
 
   //  else
   //    ; // we need an octave_link action that runs a GUI error option.
@@ -2466,7 +2485,10 @@ main_window::clear_history_callback (void)
 void
 main_window::new_figure_callback (void)
 {
-  Fbuiltin (ovl ("figure"));
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("main_window::new_figure_callback");
+
+  Fbuiltin (interp, ovl ("figure"));
   Fdrawnow ();
 }
 

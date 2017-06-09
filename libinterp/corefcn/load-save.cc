@@ -56,6 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hdf5.h"
@@ -144,14 +145,16 @@ install_loaded_variable (const std::string& name,
                          const octave_value& val,
                          bool global, const std::string& /*doc*/)
 {
+  symbol_table& symtab = octave::__get_symbol_table__ ("install_loaded_variable");
+
   if (global)
     {
-      symbol_table::clear (name);
-      symbol_table::mark_global (name);
-      symbol_table::global_assign (name, val);
+      symtab.clear (name);
+      symtab.mark_global (name);
+      symtab.global_assign (name, val);
     }
   else
-    symbol_table::assign (name, val);
+    symtab.assign (name, val);
 }
 
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
@@ -1000,7 +1003,9 @@ static size_t
 save_vars (std::ostream& os, const std::string& pattern,
            load_save_format fmt, bool save_as_floats)
 {
-  std::list<symbol_table::symbol_record> vars = symbol_table::glob (pattern);
+  symbol_table& symtab = octave::__get_symbol_table__ ("save_vars");
+
+  std::list<symbol_table::symbol_record> vars = symtab.glob (pattern);
 
   size_t saved = 0;
 
@@ -1267,10 +1272,12 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       std::string struct_name = argv[argv_idx];
 
-      if (! symbol_table::is_variable (struct_name))
+      symbol_table& symtab = octave::__get_symbol_table__ ("save_vars");
+
+      if (! symtab.is_variable (struct_name))
         error ("save: no such variable: '%s'", struct_name.c_str ());
 
-      octave_value struct_var = symbol_table::varval (struct_name);
+      octave_value struct_var = symtab.varval (struct_name);
 
       if (! struct_var.isstruct () || struct_var.numel () != 1)
         error ("save: '%s' is not a scalar structure", struct_name.c_str ());
@@ -1312,8 +1319,10 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 {
   write_header (os, fmt);
 
+  symbol_table& symtab = octave::__get_symbol_table__ ("dump_octave_core");
+
   std::list<symbol_table::symbol_record> vars
-    = symbol_table::all_variables (symbol_table::top_scope (), 0);
+    = symtab.all_variables (symbol_table::top_scope (), 0);
 
   double save_mem_size = 0;
 

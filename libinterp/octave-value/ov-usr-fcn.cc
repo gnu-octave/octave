@@ -178,7 +178,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 octave_user_function::octave_user_function
   (symbol_table::scope_id sid, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
-  : octave_user_code ("", ""),
+  : octave_user_code ("", ""), m_scope (0),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
     location_line (0), location_column (0),
@@ -199,13 +199,28 @@ octave_user_function::octave_user_function
     cmd_list->mark_as_function_body ();
 
   if (local_scope >= 0)
-    symbol_table::set_curr_fcn (this, local_scope);
+    {
+      symbol_table& symtab = octave::__get_symbol_table__ ("octave_user_function");
+
+      symtab.set_curr_fcn (this, local_scope);
+
+      m_scope = symtab.get_scope (local_scope);
+    }
 }
 
 octave_user_function::~octave_user_function (void)
 {
+  // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
     cmd_list->remove_all_breakpoints (file_name);
+
+  delete m_scope;
+
+  // FIXME: there needs to be a better way...
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("~octave_user_function");
+
+  symtab.erase_scope (local_scope);
 
   delete param_list;
   delete ret_list;
@@ -216,9 +231,6 @@ octave_user_function::~octave_user_function (void)
 #if defined (HAVE_LLVM)
   delete jit_info;
 #endif
-
-  // FIXME: this is really playing with fire.
-  symbol_table::erase_scope (local_scope);
 }
 
 octave_user_function *
@@ -298,6 +310,12 @@ octave_user_function::maybe_relocate_end (void)
   maybe_relocate_end_internal ();
 }
 
+void
+octave_user_function::stash_parent_fcn_scope (symbol_table::scope_id ps)
+{
+  parent_scope = ps;
+}
+
 std::string
 octave_user_function::profiler_name (void) const
 {
@@ -344,6 +362,12 @@ octave_user_function::mark_as_system_fcn_file (void)
     system_fcn_file = false;
 }
 
+void
+octave_user_function::erase_subfunctions (void)
+{
+  m_scope->erase_subfunctions ();
+}
+
 bool
 octave_user_function::takes_varargs (void) const
 {
@@ -357,21 +381,29 @@ octave_user_function::takes_var_return (void) const
 }
 
 void
+octave_user_function::mark_as_private_function (const std::string& cname)
+{
+  m_scope->mark_subfunctions_in_scope_as_private (cname);
+
+  octave_function::mark_as_private_function (cname);
+}
+
+void
 octave_user_function::lock_subfunctions (void)
 {
-  symbol_table::lock_subfunctions (local_scope);
+  m_scope->lock_subfunctions ();
 }
 
 void
 octave_user_function::unlock_subfunctions (void)
 {
-  symbol_table::unlock_subfunctions (local_scope);
+  m_scope->unlock_subfunctions ();
 }
 
 std::map<std::string, octave_value>
 octave_user_function::subfunctions (void) const
 {
-  return symbol_table::subfunctions_defined_in_scope (local_scope);
+  return m_scope->subfunctions ();
 }
 
 bool
@@ -456,9 +488,9 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
   if (call_depth > 0 && ! is_anonymous_function ())
     {
-      symbol_table::push_context ();
+      m_scope->push_context ();
 
-      frame.add_fcn (symbol_table::pop_context);
+      frame.add_method (m_scope, &symbol_table::scope::pop_context);
     }
 
   string_vector arg_names = args.name_tags ();
@@ -506,7 +538,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
       // declared global will be unmarked as global before they are
       // undefined by the clear_param_list cleanup function.
 
-      frame.add_fcn (symbol_table::clear_variables);
+      frame.add_method (m_scope, &symbol_table::scope::clear_variables);
     }
 
   bind_automatic_vars (tw, arg_names, args.length (), nargout,
@@ -573,7 +605,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
 
       if (ret_list->takes_varargs ())
         {
-          octave_value varargout_varval = symbol_table::varval ("varargout");
+          octave_value varargout_varval = m_scope->varval ("varargout");
 
           if (varargout_varval.is_defined ())
             varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
@@ -622,7 +654,10 @@ octave_user_function::subsasgn_optimization_ok (void)
 void
 octave_user_function::print_symtab_info (std::ostream& os) const
 {
-  symbol_table::print_info (os, local_scope);
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_user_function::print_symtab_info");
+
+  symtab.print_info (os, local_scope);
 }
 #endif
 
@@ -654,45 +689,44 @@ octave_user_function::bind_automatic_vars
       // which might be redefined in a function.  Keep the old argn name
       // for backward compatibility of functions that use it directly.
 
-      symbol_table::force_assign ("argn",
-                                  charMatrix (arg_names, Vstring_fill_char));
-      symbol_table::force_assign (".argn.", Cell (arg_names));
+      m_scope->force_assign ("argn", charMatrix (arg_names, Vstring_fill_char));
+      m_scope->force_assign (".argn.", Cell (arg_names));
 
-      symbol_table::mark_hidden (".argn.");
+      m_scope->mark_hidden (".argn.");
 
-      symbol_table::mark_automatic ("argn");
-      symbol_table::mark_automatic (".argn.");
+      m_scope->mark_automatic ("argn");
+      m_scope->mark_automatic (".argn.");
     }
 
-  symbol_table::force_assign (".nargin.", nargin);
-  symbol_table::force_assign (".nargout.", nargout);
+  m_scope->force_assign (".nargin.", nargin);
+  m_scope->force_assign (".nargout.", nargout);
 
-  symbol_table::mark_hidden (".nargin.");
-  symbol_table::mark_hidden (".nargout.");
+  m_scope->mark_hidden (".nargin.");
+  m_scope->mark_hidden (".nargout.");
 
-  symbol_table::mark_automatic (".nargin.");
-  symbol_table::mark_automatic (".nargout.");
+  m_scope->mark_automatic (".nargin.");
+  m_scope->mark_automatic (".nargout.");
 
-  symbol_table::assign (".saved_warning_states.");
+  m_scope->assign (".saved_warning_states.");
 
-  symbol_table::mark_automatic (".saved_warning_states.");
-  symbol_table::mark_automatic (".saved_warning_states.");
+  m_scope->mark_automatic (".saved_warning_states.");
+  m_scope->mark_automatic (".saved_warning_states.");
 
   if (takes_varargs ())
-    symbol_table::assign ("varargin", va_args.cell_value ());
+    m_scope->assign ("varargin", va_args.cell_value ());
 
   Matrix ignored_fcn_outputs = tw.ignored_fcn_outputs ();
 
-  symbol_table::assign (".ignored.", ignored_fcn_outputs);
+  m_scope->assign (".ignored.", ignored_fcn_outputs);
 
-  symbol_table::mark_hidden (".ignored.");
-  symbol_table::mark_automatic (".ignored.");
+  m_scope->mark_hidden (".ignored.");
+  m_scope->mark_automatic (".ignored.");
 }
 
 void
 octave_user_function::restore_warning_states (void)
 {
-  octave_value val = symbol_table::varval (".saved_warning_states.");
+  octave_value val = m_scope->varval (".saved_warning_states.");
 
   if (val.is_defined ())
     {
@@ -715,8 +749,8 @@ octave_user_function::restore_warning_states (void)
     }
 }
 
-DEFUN (nargin, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (nargin, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} nargin ()
 @deftypefnx {} {} nargin (@var{fcn})
 Report the number of input arguments to a function.
@@ -755,6 +789,8 @@ Programming Note: @code{nargin} does not work on compiled functions
 
   octave_value retval;
 
+  symbol_table& symtab = interp.get_symbol_table ();
+
   if (nargin == 1)
     {
       octave_value func = args(0);
@@ -762,7 +798,7 @@ Programming Note: @code{nargin} does not work on compiled functions
       if (func.is_string ())
         {
           std::string name = func.string_value ();
-          func = symbol_table::find_function (name);
+          func = symtab.find_function (name);
           if (func.is_undefined ())
             error ("nargin: invalid function name: %s", name.c_str ());
         }
@@ -791,7 +827,7 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      retval = symbol_table::varval (".nargin.");
+      retval = symtab.varval (".nargin.");
 
       if (retval.is_undefined ())
         retval = 0;
@@ -800,8 +836,8 @@ Programming Note: @code{nargin} does not work on compiled functions
   return retval;
 }
 
-DEFUN (nargout, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (nargout, interp,args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} nargout ()
 @deftypefnx {} {} nargout (@var{fcn})
 Report the number of output arguments from a function.
@@ -862,6 +898,8 @@ returns -1 for all anonymous functions.
 
   octave_value retval;
 
+  symbol_table& symtab = interp.get_symbol_table ();
+
   if (nargin == 1)
     {
       octave_value func = args(0);
@@ -869,7 +907,7 @@ returns -1 for all anonymous functions.
       if (func.is_string ())
         {
           std::string name = func.string_value ();
-          func = symbol_table::find_function (name);
+          func = symtab.find_function (name);
           if (func.is_undefined ())
             error ("nargout: invalid function name: %s", name.c_str ());
         }
@@ -911,10 +949,10 @@ returns -1 for all anonymous functions.
     }
   else
     {
-      if (symbol_table::at_top_level ())
+      if (symtab.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      retval = symbol_table::varval (".nargout.");
+      retval = symtab.varval (".nargout.");
 
       if (retval.is_undefined ())
         retval = 0;
@@ -960,8 +998,8 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
   return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
 }
 
-DEFUN (isargout, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (isargout, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} isargout (@var{k})
 Within a function, return a logical value indicating whether the argument
 @var{k} will be assigned to a variable on output.
@@ -981,13 +1019,15 @@ element-by-element and a logical array is returned.  At the top level,
   if (args.length () != 1)
     print_usage ();
 
-  if (symbol_table::at_top_level ())
+  symbol_table& symtab = interp.get_symbol_table ();
+
+  if (symtab.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  int nargout1 = symbol_table::varval (".nargout.").int_value ();
+  int nargout1 = symtab.varval (".nargout.").int_value ();
 
   Matrix ignored;
-  octave_value tmp = symbol_table::varval (".ignored.");
+  octave_value tmp = symtab.varval (".ignored.");
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

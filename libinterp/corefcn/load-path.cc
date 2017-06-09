@@ -121,7 +121,9 @@ find_private_file (const std::string& fname)
   // Look in private directory corresponding to current function (if
   // any).
 
-  octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
+  symbol_table& symtab = octave::__get_symbol_table__ ("find_private_file");
+
+  octave_user_function *curr_fcn = symtab.get_curr_fcn ();
 
   if (curr_fcn)
     {
@@ -1681,7 +1683,10 @@ namespace octave
               {
                 if (file_info_list.empty ())
                   {
-                    if (symbol_table::is_built_in_function_name (base))
+                    symbol_table& symtab
+                      = octave::__get_symbol_table__ ("load_path::package_info::add_to_fcn_map");
+
+                    if (symtab.is_built_in_function_name (base))
                       {
                         std::string fcn_path = octave::sys::file_ops::concat (dir_name, fname);
 

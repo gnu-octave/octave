@@ -195,7 +195,9 @@ get_user_code (const std::string& fname)
       if (! name.empty () && name_len > 2 && name.substr (name_len-2) == ".m")
         name = name.substr (0, name_len-2);
 
-      octave_value fcn = symbol_table::find_function (name);
+      symbol_table& symtab = octave::__get_symbol_table__ ("get_user_code");
+
+      octave_value fcn = symtab.find_function (name);
 
       if (fcn.is_defined () && fcn.is_user_code ())
         dbg_fcn = fcn.user_code_value ();

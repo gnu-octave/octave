@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "oct-map.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
@@ -215,7 +216,9 @@ final_index_error (octave::index_exception& e,
 
       e.set_var (var);
 
-      octave_value fcn = symbol_table::find_function (var);
+      symbol_table& symtab = octave::__get_symbol_table__ ("final_index_error");
+
+      octave_value fcn = symtab.find_function (var);
 
       if (fcn.is_function ())
         {

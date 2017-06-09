@@ -118,7 +118,9 @@ class jit_break_exception : public std::exception
 jit_convert::jit_convert (tree& tee, jit_type *for_bounds)
   : converting_function (false)
 {
-  initialize (symbol_table::current_scope ());
+  symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::jit_convert");
+
+  initialize (symtab.current_scope ());
 
   if (for_bounds)
     create_variable (next_for_bounds (false), for_bounds);
@@ -1126,7 +1128,9 @@ jit_convert::get_variable (const std::string& vname)
   if (ret)
     return ret;
 
-  symbol_table::symbol_record record = symbol_table::find_symbol (vname, scope);
+  symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::find_variable");
+
+  symbol_table::symbol_record record = symtab.find_symbol (vname, scope);
   if (record.is_persistent () || record.is_global ())
     throw jit_fail_exception ("Persistent and global not yet supported");
 
@@ -1136,7 +1140,7 @@ jit_convert::get_variable (const std::string& vname)
     {
       octave_value val = record.varval ();
       if (val.is_undefined ())
-        val = symbol_table::find_function (vname);
+        val = symtab.find_function (vname);
 
       jit_type *type = jit_typeinfo::type_of (val);
       bounds.push_back (type_bound (type, vname));
@@ -2400,13 +2404,15 @@ jit_info::execute (const vmap& extra_vars) const
 
   function (&real_arguments[0]);
 
+  symbol_table& symtab = octave::__get_symbol_table__ ("jit_info::execute");
+
   for (size_t i = 0; i < arguments.size (); ++i)
     {
       const std::string& name = arguments[i].first;
 
       // do not store for loop bounds temporary
       if (name.size () && name[0] != '#')
-        symbol_table::assign (arguments[i].first, real_arguments[i]);
+        symtab::assign (arguments[i].first, real_arguments[i]);
     }
 
   octave_quit ();
@@ -2501,8 +2507,15 @@ octave_value
 jit_info::find (const vmap& extra_vars, const std::string& vname) const
 {
   vmap::const_iterator iter = extra_vars.find (vname);
-  return (iter == extra_vars.end () ? symbol_table::varval (vname)
-                                    : *iter->second);
+
+  if (iter == extra_vars.end ())
+    {
+      symbol_table& symtab = octave::__get_symbol_table__ ("jit_convert::find");
+
+      return symtab.varval (vname);
+    }
+  else
+    return *iter->second;
 }
 
 #endif

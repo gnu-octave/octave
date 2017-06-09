@@ -160,9 +160,11 @@ local_functions (void)
   if (! curr_fcn)
     return retval;
 
+  symbol_table& symtab = octave::__get_symbol_table__ ("local_functions");
+
   // All subfunctions are listed in the top-level function of this file.
   while (curr_fcn->is_subfunction ())
-    curr_fcn = symbol_table::get_curr_fcn (curr_fcn->parent_fcn_scope ());
+    curr_fcn = symtab.get_curr_fcn (curr_fcn->parent_fcn_scope ());
 
   // Get subfunctions.
   const std::list<std::string> names = curr_fcn->subfunction_names ();
@@ -186,13 +188,15 @@ make_name_list (void)
   const static string_vector keywords = Fiskeyword ()(0).string_vector_value ();
   const static int key_len = keywords.numel ();
 
-  const string_vector bif = symbol_table::built_in_function_names ();
+  symbol_table& symtab = octave::__get_symbol_table__ ("make_name_list");
+
+  const string_vector bif = symtab.built_in_function_names ();
   const int bif_len = bif.numel ();
 
-  const string_vector cfl = symbol_table::cmdline_function_names ();
+  const string_vector cfl = symtab.cmdline_function_names ();
   const int cfl_len = cfl.numel ();
 
-  const string_vector lcl = symbol_table::variable_names ();
+  const string_vector lcl = symtab.variable_names ();
   const int lcl_len = lcl.numel ();
 
   octave::load_path& lp = octave::__get_load_path__ ("make_name_list");
@@ -272,7 +276,9 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 {
   bool retval = false;
 
-  octave_value val = symbol_table::find_function (nm);
+  symbol_table& symtab = octave::__get_symbol_table__ ("raw_help_from_symbol_table");
+
+  octave_value val = symtab.find_function (nm);
 
   if (val.is_defined ())
     {
@@ -619,13 +625,15 @@ DEFALIAS (__keywords__, iskeyword)
 
 // Return a cell array of strings with the names of all builtin functions.
 
-DEFUN (__builtins__, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__builtins__, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __builtins__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  const string_vector bif = symbol_table::built_in_function_names ();
+  symbol_table& symtab = interp.get_symbol_table ();
+
+  const string_vector bif = symtab.built_in_function_names ();
 
   return ovl (Cell (bif));
 }
@@ -706,7 +714,9 @@ do_which (const std::string& name, std::string& type)
 
   type = "";
 
-  octave_value val = symbol_table::find_function (name);
+  symbol_table& symtab = octave::__get_symbol_table__ ("do_which");
+
+  octave_value val = symtab.find_function (name);
 
   if (name.find_first_of ('.') == std::string::npos)
     {

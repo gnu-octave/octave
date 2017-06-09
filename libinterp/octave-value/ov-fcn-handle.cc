@@ -85,7 +85,11 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
   octave_user_function *uf = fcn.user_function_value (true);
 
   if (uf && nm != anonymous)
-    symbol_table::cache_name (uf->scope (), nm);
+    {
+      symbol_table& symtab = octave::__get_symbol_table__ ("octave_fcn_handle");
+
+      symtab.cache_name (uf->scope (), nm);
+    }
 
   if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
     error ("handles to nested functions are not yet supported");
@@ -160,8 +164,11 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
             {
               // Try parent classes too.
 
+              symbol_table& symtab
+                = octave::__get_symbol_table__ ("octave_fcn_handle::call");
+
               std::list<std::string> plist
-                = symbol_table::parent_classes (dispatch_type);
+                = symtab.parent_classes (dispatch_type);
 
               std::list<std::string>::const_iterator pit = plist.begin ();
 
@@ -171,7 +178,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
 
                   std::string fnm = fcn_name ();
 
-                  octave_value ftmp = symbol_table::find_method (fnm, pname);
+                  octave_value ftmp = symtab.find_method (fnm, pname);
 
                   if (ftmp.is_defined ())
                     {
@@ -318,7 +325,10 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
         }
       else
         {
-          fcn = symbol_table::find_function (nm);
+          symbol_table& symtab
+            = octave::__get_symbol_table__ ("octave_fcn_handle::set_fcn");
+
+          fcn = symtab.find_function (nm);
 
           if (! fcn.is_function ())
             error ("function handle points to non-existent function");
@@ -343,8 +353,11 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 
       octave_user_function *f = fcn.user_function_value ();
 
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::save_ascii");
+
       std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (f->scope (), 0);
+        = symtab.all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
@@ -418,10 +431,13 @@ octave_fcn_handle::load_ascii (std::istream& is)
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_ascii");
 
-      symbol_table::set_scope (local_scope);
+      symbol_table::scope_id local_scope = symtab.alloc_scope ();
+      frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+
+      symtab.set_scope (local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_ascii");
@@ -446,7 +462,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   if (! is)
                     error ("load: failed to load anonymous function handle");
 
-                  symbol_table::assign (name, t2, local_scope, 0);
+                  symtab.assign (name, t2, local_scope, 0);
                 }
             }
         }
@@ -474,7 +490,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   octave_user_function *uf = fcn.user_function_value (true);
 
                   if (uf)
-                    symbol_table::cache_name (uf->scope (), nm);
+                    symtab.cache_name (uf->scope (), nm);
                 }
               else
                 success = false;
@@ -503,8 +519,11 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       octave_user_function *f = fcn.user_function_value ();
 
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::save_binary");
+
       std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (f->scope (), 0);
+        = symtab.all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
@@ -604,10 +623,13 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_binary");
 
-      symbol_table::set_scope (local_scope);
+      symbol_table::scope_id local_scope = symtab.alloc_scope ();
+      frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+
+      symtab.set_scope (local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_binary");
@@ -630,7 +652,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               if (! is)
                 error ("load: failed to load anonymous function handle");
 
-              symbol_table::assign (name, t2, local_scope);
+              symtab.assign (name, t2, local_scope);
             }
         }
 
@@ -651,7 +673,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
                   octave_user_function *uf = fcn.user_function_value (true);
 
                   if (uf)
-                    symbol_table::cache_name (uf->scope (), nm);
+                    symtab.cache_name (uf->scope (), nm);
                 }
               else
                 success = false;
@@ -776,8 +798,11 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       octave_user_function *f = fcn.user_function_value ();
 
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
+
       std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (f->scope (), 0);
+        = symtab.all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
@@ -1123,10 +1148,13 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
 
-      symbol_table::set_scope (local_scope);
+      symbol_table::scope_id local_scope = symtab.alloc_scope ();
+      frame.add_method (symtab, &symbol_table::erase_scope, local_scope);
+
+      symtab.set_scope (local_scope);
 
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_fcn_handle::load_hdf5");
@@ -1156,7 +1184,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                                     &dsub) <= 0)
                 error ("load: failed to load anonymous function handle");
 
-              symbol_table::assign (dsub.name, dsub.tc, local_scope);
+              symtab.assign (dsub.name, dsub.tc, local_scope);
             }
         }
 
@@ -1177,7 +1205,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                   octave_user_function *uf = fcn.user_function_value (true);
 
                   if (uf)
-                    symbol_table::cache_name (uf->scope (), nm);
+                    symtab.cache_name (uf->scope (), nm);
                 }
               else
                 success = false;
@@ -1560,8 +1588,10 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
         }
     }
 
-  octave_value f = symbol_table::find_function (tnm, octave_value_list (),
-                                                local_funcs);
+  symbol_table& symtab = octave::__get_symbol_table__ ("make_fcn_handle");
+
+  octave_value f = symtab.find_function (tnm, octave_value_list (),
+                                         local_funcs);
 
   octave_function *fptr = f.function_value (true);
 
@@ -1599,7 +1629,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
       for (auto& cls : classes)
         {
           std::string class_name = cls;
-          octave_value fmeth = symbol_table::find_method (tnm, class_name);
+          octave_value fmeth = symtab.find_method (tnm, class_name);
 
           bool is_builtin = false;
           for (int i = 0; i < btyp_num_types; i++)
@@ -1654,8 +1684,8 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 %! endfor
 */
 
-DEFUN (functions, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (functions, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {@var{s} =} functions (@var{fcn_handle})
 Return a structure containing information about the function handle
 @var{fcn_handle}.
@@ -1752,8 +1782,10 @@ particular output format.
 
       octave_user_function *fu = fh->user_function_value ();
 
+      symbol_table& symtab = interp.get_symbol_table ();
+
       std::list<symbol_table::symbol_record> vars
-        = symbol_table::all_variables (fu->scope (), 0);
+        = symtab.all_variables (fu->scope (), 0);
 
       size_t varlen = vars.size ();
 

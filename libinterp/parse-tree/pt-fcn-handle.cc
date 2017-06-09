@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "ov-fcn-handle.h"
 #include "pt-fcn-handle.h"
@@ -63,26 +64,37 @@ namespace octave
     return new_fh;
   }
 
+  tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
+  {
+    delete m_parameter_list;
+    delete m_return_list;
+    delete m_statement_list;
+  }
+
   tree_expression *
   tree_anon_fcn_handle::dup (symbol_table::scope_id,
                              symbol_table::context_id) const
   {
     tree_parameter_list *param_list = parameter_list ();
     tree_parameter_list *ret_list = return_list ();
-    tree_statement_list *cmd_list = body ();
-    symbol_table::scope_id this_scope = scope ();
+    tree_statement_list *stmt_list = body ();
 
-    symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
+    symbol_table::scope_id af_sid = scope ();
+    symbol_table::scope_id af_parent_sid = parent_scope ();
+
+    symbol_table& symtab
+      = octave::__get_symbol_table__ ("tree_anon_fcn_handle::dup");
+
+    symbol_table::scope_id new_scope = symtab.dup_scope (af_sid);
 
     if (new_scope > 0)
-      symbol_table::inherit (new_scope, symbol_table::current_scope (),
-                             symbol_table::current_context ());
+      symtab.inherit (new_scope);
 
     tree_anon_fcn_handle *new_afh = new
       tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
                             ret_list ? ret_list->dup (new_scope, 0) : 0,
-                            cmd_list ? cmd_list->dup (new_scope, 0) : 0,
-                            new_scope, line (), column ());
+                            stmt_list ? stmt_list->dup (new_scope, 0) : 0,
+                            new_scope, af_parent_sid, line (), column ());
 
     new_afh->copy_base (*this);
 

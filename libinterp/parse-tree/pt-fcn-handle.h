@@ -92,14 +92,18 @@ namespace octave
   public:
 
     tree_anon_fcn_handle (int l = -1, int c = -1)
-      : tree_expression (l, c), fcn (0), m_file_name () { }
+      : tree_expression (l, c), m_parameter_list (0), m_return_list (0),
+        m_statement_list (0), m_sid (-1), m_parent_sid (-1), m_file_name ()
+    { }
 
     tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
                           tree_statement_list *cl, symbol_table::scope_id sid,
+                          symbol_table::scope_id parent_sid,
                           int l = -1, int c = -1)
-      : tree_expression (l, c),
-        fcn (new octave_user_function (sid, pl, rl, cl)),
-        m_file_name () { }
+      : tree_expression (l, c), m_parameter_list (pl), m_return_list (rl),
+        m_statement_list (cl), m_sid (sid), m_parent_sid (parent_sid),
+        m_file_name ()
+    { }
 
     // No copying!
 
@@ -107,7 +111,7 @@ namespace octave
 
     tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 
-    ~tree_anon_fcn_handle (void) { delete fcn; }
+    ~tree_anon_fcn_handle (void);
 
     bool has_magic_end (void) const { return false; }
 
@@ -115,31 +119,23 @@ namespace octave
 
     tree_parameter_list * parameter_list (void) const
     {
-      return fcn ? fcn->parameter_list () : 0;
+      return m_parameter_list;
     }
 
-    tree_parameter_list * return_list (void) const
-    {
-      return fcn ? fcn->return_list () : 0;
-    }
+    tree_parameter_list * return_list (void) const { return m_return_list; }
 
-    tree_statement_list * body (void) const
-    {
-      return fcn ? fcn->body () : 0;
-    }
+    tree_statement_list * body (void) const { return m_statement_list; }
 
-    symbol_table::scope_id scope (void) const
-    {
-      return fcn ? fcn->scope () : -1;
-    }
+    symbol_table::scope_id scope (void) const { return m_sid; }
+
+    symbol_table::scope_id parent_scope (void) const { return m_parent_sid; }
+
+    bool has_parent_scope (void) const { return m_parent_sid > 0; }
 
     tree_expression * dup (symbol_table::scope_id scope,
                            symbol_table::context_id context) const;
 
-    void accept (tree_walker& tw)
-    {
-      tw.visit_anon_fcn_handle (*this);
-    }
+    void accept (tree_walker& tw) { tw.visit_anon_fcn_handle (*this); }
 
     void stash_file_name (const std::string& file) { m_file_name = file; }
 
@@ -147,8 +143,20 @@ namespace octave
 
   private:
 
-    // The function.
-    octave_user_function *fcn;
+    // Inputs parameters.
+    tree_parameter_list *m_parameter_list;
+
+    // Output parameters.
+    tree_parameter_list *m_return_list;
+
+    // Function body.
+    tree_statement_list *m_statement_list;
+
+    // Function scope.
+    symbol_table::scope_id m_sid;
+
+    // Parent scope, or -1 if none.
+    symbol_table::scope_id m_parent_sid;
 
     // Filename where the handle was defined.
     std::string m_file_name;

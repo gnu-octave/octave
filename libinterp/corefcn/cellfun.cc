@@ -219,8 +219,9 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 }
 
 static void
-get_mapper_fun_options (const octave_value_list& args, int& nargin,
-                        bool& uniform_output, octave_value& error_handler)
+get_mapper_fun_options (symbol_table& symtab, const octave_value_list& args,
+                        int& nargin, bool& uniform_output,
+                        octave_value& error_handler)
 {
   while (nargin > 3 && args(nargin-2).is_string ())
     {
@@ -241,7 +242,7 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
             {
               std::string err_name = args(nargin-1).string_value ();
 
-              error_handler = symbol_table::find_function (err_name);
+              error_handler = symtab.find_function (err_name);
 
               if (error_handler.is_undefined ())
                 error ("cellfun: invalid function NAME: %s",
@@ -259,8 +260,8 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
   nargin -= 1;
 }
 
-DEFUN (cellfun, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (cellfun, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} cellfun (@var{name}, @var{C})
 @deftypefnx {} {} cellfun ("size", @var{C}, @var{k})
 @deftypefnx {} {} cellfun ("isclass", @var{C}, @var{class})
@@ -410,6 +411,8 @@ v = cellfun (@@det, a); # faster
 
   octave_value func = args(0);
 
+  symbol_table& symtab = interp.get_symbol_table ();
+
   if (func.is_string ())
     {
       retval = try_cellfun_internal_ops<boolNDArray,NDArray> (args, nargin);
@@ -435,7 +438,7 @@ v = cellfun (@@det, a); # faster
         }
       else
         {
-          func = symbol_table::find_function (name);
+          func = symtab.find_function (name);
 
           if (func.is_undefined ())
             error ("cellfun: invalid function NAME: %s", name.c_str ());
@@ -449,7 +452,7 @@ v = cellfun (@@det, a); # faster
   bool uniform_output = true;
   octave_value error_handler;
 
-  get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+  get_mapper_fun_options (symtab, args, nargin, uniform_output, error_handler);
 
   // The following is an optimization because the symbol table can give a
   // more specific function class, so this can result in fewer polymorphic
@@ -467,7 +470,7 @@ v = cellfun (@@det, a); # faster
       }
 
     std::string name = func.function_value () -> name ();
-    octave_value f = symbol_table::find_function (name);
+    octave_value f = symtab.find_function (name);
 
     if (f.is_defined ())
       {
@@ -996,8 +999,8 @@ v = cellfun (@@det, a); # faster
 // Hajek.  It was converted to C++ by jwe so that it could properly
 // handle the nargout = 0 case.
 
-DEFUN (arrayfun, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (arrayfun, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} arrayfun (@var{func}, @var{A})
 @deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A})
 @deftypefnx {} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})
@@ -1121,6 +1124,8 @@ arrayfun (@@str2num, [1234],
   bool symbol_table_lookup = false;
   octave_value func = args(0);
 
+  symbol_table& symtab = interp.get_symbol_table ();
+
   if (func.is_string ())
     {
       // See if we can convert the string into a function.
@@ -1140,7 +1145,7 @@ arrayfun (@@str2num, [1234],
         }
       else
         {
-          func = symbol_table::find_function (name);
+          func = symtab.find_function (name);
 
           if (func.is_undefined ())
             error_with_id ("Octave:invalid-input-arg",
@@ -1171,7 +1176,7 @@ arrayfun (@@str2num, [1234],
                 goto nevermind;
             }
           octave_value f
-            = symbol_table::find_function (func.function_value () -> name ());
+            = symtab.find_function (func.function_value () -> name ());
 
           if (f.is_defined ())
             func = f;
@@ -1182,7 +1187,8 @@ arrayfun (@@str2num, [1234],
       bool uniform_output = true;
       octave_value error_handler;
 
-      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+      get_mapper_fun_options (symtab, args, nargin, uniform_output,
+                              error_handler);
 
       octave_value_list inputlist (nargin, octave_value ());
 

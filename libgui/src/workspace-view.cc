@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "workspace-view.h"
 #include "resource-manager.h"
+
+#include "interpreter-private.h"
 #include "symtab.h"
 
 workspace_view::workspace_view (QWidget *p)
@@ -371,7 +373,10 @@ workspace_view::handle_contextmenu_copy_value (void)
     {
       QString var_name = get_var_name (index);
 
-      octave_value val = symbol_table::varval (var_name.toStdString ());
+      symbol_table& symtab
+        = octave::__get_symbol_table__ ("workspace_view::handle_contextmenu_copy_value");
+
+      octave_value val = symtab.varval (var_name.toStdString ());
       std::ostringstream buf;
       val.print_raw (buf, true);
 

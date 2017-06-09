@@ -372,8 +372,8 @@ namespace octave
   // path.
 
   interpreter::interpreter (application *app_context)
-    : m_app_context (app_context), m_evaluator (new tree_evaluator (*this)),
-      m_load_path (), m_interactive (false),
+    : m_app_context (app_context), m_load_path (), m_symbol_table (),
+      m_evaluator (new tree_evaluator (*this)), m_interactive (false),
       m_read_site_files (true), m_read_init_files (m_app_context != 0),
       m_verbose (false), m_inhibit_startup_message (false),
       m_load_path_initialized (false), m_history_initialized (false),
@@ -439,13 +439,16 @@ namespace octave
 
     if (m_app_context)
       {
-        // Embedded interpeters don't execute command line options or
+        // Embedded interpeters don't execute command line options.
         const cmdline_options& options = m_app_context->options ();
 
         // Make all command-line arguments available to startup files,
         // including PKG_ADD files.
 
-        m_app_context->intern_argv (options.all_args ());
+        string_vector args = options.all_args ();
+
+        m_app_context->intern_argv (args);
+        intern_nargin (args.numel () - 1);
 
         bool is_octave_program = m_app_context->is_octave_program ();
 
@@ -512,8 +515,12 @@ namespace octave
   interpreter::~interpreter (void)
   {
     cleanup ();
+  }
 
-    instance = 0;
+  void interpreter::intern_nargin (octave_idx_type nargs)
+  {
+    m_symbol_table.assign (".nargin.", nargs);
+    m_symbol_table.mark_hidden (".nargin.");
   }
 
   // Read the history file unless a command-line option inhibits that.
@@ -868,9 +875,11 @@ namespace octave
 
     frame.add_method (this, &interpreter::interactive, m_interactive);
 
-    frame.add_method (m_app_context,
-                      &application::intern_argv,
-                      options.all_args ());
+    string_vector args = options.all_args ();
+
+    frame.add_method (m_app_context, &application::intern_argv, args);
+
+    frame.add_method (this, &interpreter::intern_nargin, args.numel () - 1);
 
     frame.add_method (m_app_context,
                       &application::program_invocation_name,
@@ -888,6 +897,7 @@ namespace octave
     string_vector script_args = options.remaining_args ();
 
     m_app_context->intern_argv (script_args);
+    intern_nargin (script_args.numel () - 1);
 
     std::string fname = script_args[0];
 
@@ -934,7 +944,7 @@ namespace octave
 
             parser.reset ();
 
-            if (symbol_table::at_top_level ())
+            if (m_symbol_table.at_top_level ())
               octave::tree_evaluator::reset_debug_state ();
 
             retval = parser.run ();
@@ -1112,7 +1122,10 @@ namespace octave
 
     OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
 
-    OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
+    // FIXME:  May still need something like this to ensure that
+    // destructors for class objects will run properly.  Should that be
+    // done earlier?  Before or after atexit functions are executed?
+    m_symbol_table.cleanup ();
 
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 

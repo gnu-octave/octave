@@ -54,9 +54,8 @@ namespace octave
       : tree_expression (l, c) { }
 
     tree_identifier (const symbol_table::symbol_record& s,
-                     int l = -1, int c = -1,
-                     symbol_table::scope_id sc = symbol_table::current_scope ())
-      : tree_expression (l, c), sym (s, sc) { }
+                     int l = -1, int c = -1)
+      : tree_expression (l, c), sym (s) { }
 
     // No copying!
 

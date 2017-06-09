@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "oct-map.h"
 #include "ov-class.h"
 #include "ov-complex.h"
@@ -1630,7 +1631,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave_value fcn = symbol_table::find_method (dtype, cname);
+  symbol_table& symtab = octave::__get_symbol_table__ ("attempt_type_conversion");
+
+  octave_value fcn = symtab.find_method (dtype, cname);
 
   if (fcn.is_defined ())
     {
@@ -1657,7 +1660,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
       // No conversion function available.  Try the constructor for the
       // dispatch type.
 
-      fcn = symbol_table::find_method (dtype, dtype);
+      fcn = symtab.find_method (dtype, dtype);
 
       if (! fcn.is_defined ())
         error ("no constructor for %s!", dtype.c_str ());
@@ -1693,7 +1696,9 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
 
   std::string dtype = get_dispatch_type (ovl);
 
-  octave_value fcn = symbol_table::find_method (cattype, dtype);
+  symbol_table& symtab = octave::__get_symbol_table__ ("do_class_concat");
+
+  octave_value fcn = symtab.find_method (cattype, dtype);
 
   if (fcn.is_defined ())
     {

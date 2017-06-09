@@ -325,8 +325,6 @@ namespace octave
   void
   application::intern_argv (const string_vector& args)
   {
-    assert (symbol_table::at_top_level ());
-
     octave_idx_type nargs = args.numel ();
 
     if (nargs > 0)
@@ -339,9 +337,6 @@ namespace octave
         for (octave_idx_type i = 0; i < nargs; i++)
           m_argv[i] = args[i+1];
       }
-
-    symbol_table::assign (".nargin.", nargs);
-    symbol_table::mark_hidden (".nargin.");
   }
 
   void application::interactive (bool arg)

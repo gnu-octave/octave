@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "load-path.h"
+#include "symtab.h"
 
 extern OCTINTERP_API bool quit_allowed;
 
@@ -71,6 +72,8 @@ namespace octave
     // Clean up the interpreter object.
 
     ~interpreter (void);
+
+    void intern_nargin (octave_idx_type nargs);
 
     // If creating an embedded interpreter, you may inhibit reading
     // the command history file by calling initialize_history with
@@ -136,6 +139,11 @@ namespace octave
       return m_load_path;
     }
 
+    symbol_table& get_symbol_table (void)
+    {
+      return m_symbol_table;
+    }
+
     call_stack& get_call_stack (void);
 
     tree_evaluator& get_evaluator (void);
@@ -170,9 +178,11 @@ namespace octave
 
     application *m_app_context;
 
-    tree_evaluator *m_evaluator;
-
     load_path m_load_path;
+
+    symbol_table m_symbol_table;
+
+    tree_evaluator *m_evaluator;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

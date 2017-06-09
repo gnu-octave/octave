@@ -222,7 +222,7 @@ public:
 
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
-  void stash_parent_fcn_scope (symbol_table::scope_id ps) { parent_scope = ps; }
+  void stash_parent_fcn_scope (symbol_table::scope_id ps);
 
   void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
 
@@ -256,21 +256,13 @@ public:
 
   bool is_user_function (void) const { return true; }
 
-  void erase_subfunctions (void)
-  {
-    symbol_table::erase_subfunctions_in_scope (local_scope);
-  }
+  void erase_subfunctions (void);
 
   bool takes_varargs (void) const;
 
   bool takes_var_return (void) const;
 
-  void mark_as_private_function (const std::string& cname = "")
-  {
-    symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
-
-    octave_function::mark_as_private_function (cname);
-  }
+  void mark_as_private_function (const std::string& cname = "");
 
   void lock_subfunctions (void);
 
@@ -400,6 +392,9 @@ private:
     legacy,
     classdef
   };
+
+  // Our symbol table scope.
+  symbol_table::scope *m_scope;
 
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *param_list;

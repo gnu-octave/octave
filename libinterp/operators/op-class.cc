@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "ovl.h"
 #include "ov.h"
@@ -46,7 +47,9 @@ along with Octave; see the file COPYING.  If not, see
                                                                         \
     std::string class_name = a.class_name ();                           \
                                                                         \
-    octave_value meth = symbol_table::find_method (#name, class_name);  \
+    symbol_table& symtab = octave::__get_symbol_table__ ("oct_unop_" #name);    \
+                                                                        \
+    octave_value meth = symtab.find_method (#name, class_name);         \
                                                                         \
     if (meth.is_undefined ())                                           \
       error ("%s method not defined for %s class", #name,               \
@@ -81,7 +84,9 @@ DEF_CLASS_UNOP (ctranspose)
     std::string dispatch_type                                           \
       = (a1.isobject () ? a1.class_name () : a2.class_name ());        \
                                                                         \
-    octave_value meth = symbol_table::find_method (#name, dispatch_type); \
+    symbol_table& symtab = octave::__get_symbol_table__ ("oct_unop_" #name);    \
+                                                                        \
+    octave_value meth = symtab.find_method (#name, dispatch_type);      \
                                                                         \
     if (meth.is_undefined ())                                           \
       error ("%s method not defined for %s class", #name,               \

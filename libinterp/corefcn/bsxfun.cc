@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-map.h"
 #include "defun.h"
+#include "interpreter.h"
 #include "parse.h"
 #include "variables.h"
 #include "ov-colon.h"
@@ -316,8 +317,8 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
     }
 }
 
-DEFUN (bsxfun, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (bsxfun, interp,args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
 The binary singleton expansion function performs broadcasting,
 that is, it applies a binary function @var{f} element-by-element to two
@@ -342,7 +343,11 @@ dimensionality as the other array.
   if (func.is_string ())
     {
       std::string name = func.string_value ();
-      func = symbol_table::find_function (name);
+
+      symbol_table& symtab = interp.get_symbol_table ();
+
+      func = symtab.find_function (name);
+
       if (func.is_undefined ())
         error ("bsxfun: invalid function name: %s", name.c_str ());
     }

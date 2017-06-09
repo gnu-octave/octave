@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "symtab.h"
+
 namespace octave
 {
   class call_stack;
@@ -37,6 +39,10 @@ namespace octave
   extern interpreter& __get_interpreter__ (const std::string& who);
 
   extern load_path& __get_load_path__ (const std::string& who);
+
+  extern symbol_table& __get_symbol_table__ (const std::string& who);
+
+  extern symbol_table::scope_id __get_current_scope__ (const std::string& who);
 
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
 

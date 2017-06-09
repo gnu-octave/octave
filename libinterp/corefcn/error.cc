@@ -1510,12 +1510,11 @@ disable escape sequence expansion use a second backslash before the sequence
         {
           octave_map old_warning_options = warning_options;
 
-          if (nargin == 3 && argv[3] == "local"
-              && ! symbol_table::at_top_level ())
-            {
-              symbol_table::scope_id scope = cs.current_scope ();
-              symbol_table::context_id context = cs.current_context ();
+          symbol_table& symtab = interp.get_symbol_table ();
 
+          if (nargin == 3 && argv[3] == "local"
+              && ! symtab.at_top_level ())
+            {
               octave_scalar_map val = warning_query (arg2);
 
               octave_value curr_state = val.contents ("state");
@@ -1523,8 +1522,7 @@ disable escape sequence expansion use a second backslash before the sequence
               // FIXME: this might be better with a dictionary object.
 
               octave_value curr_warning_states
-                = symbol_table::varval (".saved_warning_states.",
-                                        scope, context);
+                = symtab.varval (".saved_warning_states.");
 
               octave_map m;
 
@@ -1572,8 +1570,7 @@ disable escape sequence expansion use a second backslash before the sequence
               m.contents ("identifier") = ids;
               m.contents ("state") = states;
 
-              symbol_table::assign (".saved_warning_states.",
-                                    m, scope, context);
+              symtab.assign (".saved_warning_states.", m);
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.

@@ -46,9 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "defaults.h"
 #include "display.h"
-#if defined (HAVE_QT_GRAPHICS)
-#  include "__init_qt__.h"
-#endif
 #include "octave.h"
 #include "sysdep.h"
 #include "unistd-wrappers.h"
@@ -153,12 +150,6 @@ namespace octave
         qInstallMessageHandler (message_handler);
 #endif
       }
-
-#if defined (HAVE_QT_GRAPHICS)
-    install___init_qt___functions ();
-
-    Fregister_graphics_toolkit (ovl ("qt"));
-#endif
 
     // If START_GUI is false, we still set up the QApplication so that
     // we can use Qt widgets for plot windows.

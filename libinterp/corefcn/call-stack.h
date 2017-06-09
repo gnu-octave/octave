@@ -33,13 +33,12 @@ class octave_user_code;
 class octave_user_script;
 
 #include "input.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "symtab.h"
 
 namespace octave
 {
-  class interpreter;
-
   class
   OCTINTERP_API
   call_stack
@@ -52,7 +51,8 @@ namespace octave
 
       friend class call_stack;
 
-      stack_frame (octave_function *fcn = nullptr, symbol_table::scope_id scope = 0,
+      stack_frame (octave_function *fcn = nullptr,
+                   symbol_table::scope_id scope = 0,
                    symbol_table::context_id context = 0, size_t prev = 0)
         : m_fcn (fcn), m_line (-1), m_column (-1), m_scope (scope),
           m_context (context), m_prev (prev)
@@ -112,6 +112,7 @@ namespace octave
     int current_column (void) const;
 
     // Caller function, may be built-in.
+
     octave_function * caller (void) const
     {
       return curr_frame > 1 ? cs[curr_frame-1].m_fcn : cs[0].m_fcn;
@@ -173,8 +174,9 @@ namespace octave
 
     void push (octave_function *fcn)
     {
-      push (fcn, symbol_table::current_scope (),
-            symbol_table::current_context ());
+      symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+      push (fcn, symtab.current_scope (), symtab.current_context ());
     }
 
     void push (octave_function *fcn, symbol_table::scope_id scope,
@@ -183,7 +185,10 @@ namespace octave
       size_t prev_frame = curr_frame;
       curr_frame = cs.size ();
       cs.push_back (stack_frame (fcn, scope, context, prev_frame));
-      symbol_table::set_scope_and_context (scope, context);
+
+      symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+      symtab.set_scope_and_context (scope, context);
     }
 
     void push (void)
@@ -271,8 +276,10 @@ namespace octave
           curr_frame = elt.m_prev;
           cs.pop_back ();
           const stack_frame& new_elt = cs[curr_frame];
-          symbol_table::set_scope_and_context (new_elt.m_scope,
-                                               new_elt.m_context);
+
+          symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+          symtab.set_scope_and_context (new_elt.m_scope, new_elt.m_context);
         }
     }
 

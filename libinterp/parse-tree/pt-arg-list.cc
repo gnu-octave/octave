@@ -124,8 +124,8 @@ static int index_position = 0;
 static int num_indices = 0;
 
 // END is documented in op-kw-docs.
-DEFCONSTFUN (end, , ,
-             doc: /* -*- texinfo -*-
+DEFCONSTMETHOD (end, interp, , ,
+                doc: /* -*- texinfo -*-
 @deftypefn {} {} end
 Last element of an array or the end of any @code{for}, @code{parfor},
 @code{if}, @code{do}, @code{while}, @code{function}, @code{switch},
@@ -165,7 +165,9 @@ Example:
 
       std::string class_name = indexed_object->class_name ();
 
-      octave_value meth = symbol_table::find_method ("end", class_name);
+      symbol_table& symtab = interp.get_symbol_table ();
+
+      octave_value meth = symtab.find_method ("end", class_name);
 
       if (meth.is_defined ())
         return octave::feval (meth.function_value (), args, 1);

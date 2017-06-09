@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
@@ -75,9 +76,10 @@ namespace octave
     // The new tree_identifier object contains a symbol_record
     // entry from the duplicated scope.
 
+    symbol_table& symtab = octave::__get_symbol_table__ ("tree_identifier::dup");
+
     // FIXME: is this the best way?
-    symbol_table::symbol_record new_sym
-      = symbol_table::find_symbol (name (), sc);
+    symbol_table::symbol_record new_sym = symtab.find_symbol (name (), sc);
 
     tree_identifier *new_id
       = new tree_identifier (new_sym, line (), column ());

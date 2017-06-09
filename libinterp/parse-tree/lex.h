@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "token.h"
 
+class symbol_table;
+
 namespace octave
 {
   class interpreter;
@@ -55,37 +57,38 @@ namespace octave
     {
     public:
 
-      symbol_table_context (void) : frame_stack () { }
+      symbol_table_context (void)
+        : frame_stack () { }
 
-      void clear (void)
-      {
-        while (! frame_stack.empty ())
-          frame_stack.pop ();
-      }
+      ~symbol_table_context (void);
+
+      void clear (void);
 
       bool empty (void) const { return frame_stack.empty (); }
+
+      size_t size (void) const { return frame_stack.size (); }
 
       void pop (void)
       {
         if (empty ())
           panic_impossible ();
 
-        frame_stack.pop ();
+        frame_stack.pop_front ();
       }
 
-      void push (symbol_table::scope_id scope = symbol_table::current_scope ())
+      void push (void);
+
+      void push (symbol_table::scope_id scope)
       {
-        frame_stack.push (scope);
+        frame_stack.push_front (scope);
       }
 
-      symbol_table::scope_id curr_scope (void) const
-      {
-        return empty () ? symbol_table::current_scope () : frame_stack.top ();
-      }
+      symbol_table::scope_id curr_scope (void) const;
+      symbol_table::scope_id parent_scope (void) const;
 
     private:
 
-      std::stack<symbol_table::scope_id> frame_stack;
+      std::deque<symbol_table::scope_id> frame_stack;
     };
 
     // Track nesting of square brackets, curly braces, and parentheses.

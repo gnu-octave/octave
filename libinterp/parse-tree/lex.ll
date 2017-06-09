@@ -106,6 +106,7 @@ object) relevant global values before and after the nested call.
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "octave.h"
@@ -2080,6 +2081,67 @@ debug information as it processes an expression.
 
 namespace octave
 {
+  lexical_feedback::symbol_table_context::~symbol_table_context (void)
+  {
+    clear ();
+  }
+
+  void
+  lexical_feedback::symbol_table_context::clear (void)
+  {
+    symbol_table& symtab
+      = octave::__get_symbol_table__ ("lexical_feedback::symbol_table_context::push");
+
+    while (! frame_stack.empty ())
+      {
+        symbol_table::scope_id sid = curr_scope ();
+
+        if (sid > 0)
+          {
+            // FIXME: for now we need to ensure that the scope_id has a
+            // scope object associated with it.  Calling clear_variables
+            // should do that for us.  In the future, this should not be
+            // necessary.
+            symtab.clear_variables (sid);
+
+            symtab.erase_scope (sid);
+          }
+
+        frame_stack.pop_front ();
+      }
+  }
+
+  void
+  lexical_feedback::symbol_table_context::push (void)
+  {
+    symbol_table& symtab
+      = octave::__get_symbol_table__ ("lexical_feedback::symbol_table_context::push");
+
+    push (symtab.current_scope ());
+  }
+
+  symbol_table::scope_id
+  lexical_feedback::symbol_table_context::curr_scope (void) const
+  {
+    if (empty ())
+      {
+        symbol_table& symtab
+          = octave::__get_symbol_table__ ("lexical_feedback::symbol_table_context::curr_scope");
+
+        return symtab.current_scope ();
+      }
+    else
+      return frame_stack.front ();
+  }
+
+  symbol_table::scope_id
+  lexical_feedback::symbol_table_context::parent_scope (void) const
+  {
+    size_t sz = size ();
+
+    return sz > 1 ? frame_stack[1] : (sz == 1 ? frame_stack[0] : -1);
+  }
+
   lexical_feedback::~lexical_feedback (void)
   {
     tokens.clear ();
@@ -2479,9 +2541,11 @@ namespace octave
 
   bool
   base_lexer::is_variable (const std::string& name,
-                                  symbol_table::scope_id scope)
+                           symbol_table::scope_id scope)
   {
-    return (symbol_table::is_variable (name, scope)
+    symbol_table& symtab = octave::__get_symbol_table__ ("base_lexer::is_variable");
+
+    return (symtab.is_variable (name, scope)
             || (pending_local_variables.find (name)
                 != pending_local_variables.end ()));
   }
@@ -3109,7 +3173,10 @@ namespace octave
 
     symbol_table::scope_id sid = symtab_context.curr_scope ();
 
-    token *tok = new token (NAME, &(symbol_table::insert (ident, sid)),
+    symbol_table& symtab
+      = octave::__get_symbol_table__ ("base_lexer::handle_identifier");
+
+    token *tok = new token (NAME, &(symtab.insert (ident, sid)),
                             input_line_number, current_input_column);
 
     // The following symbols are handled specially so that things like

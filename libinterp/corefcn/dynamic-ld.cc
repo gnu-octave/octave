@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "defun.h"
 #include "dynamic-ld.h"
+#include "interpreter-private.h"
 #include "ov-fcn.h"
 #include "ov-dld-fcn.h"
 #include "ov-mex-fcn.h"
@@ -127,7 +128,10 @@ namespace octave
   {
     warning_with_id ("Octave:reload-forces-clear", "  %s", fcn_name.c_str ());
 
-    symbol_table::clear_dld_function (fcn_name);
+    symbol_table& symtab
+      = __get_symbol_table__ ("dynamic_loader::do_clear_function");
+
+    symtab.clear_dld_function (fcn_name);
   }
 
   void
@@ -148,8 +152,11 @@ namespace octave
       {
         std::list<std::string> removed_fcns = loaded_shlibs.remove (oct_file);
 
+        symbol_table& symtab
+          = __get_symbol_table__ ("dynamic_loader::do_clear");
+
         for (const auto& fcn_name : removed_fcns)
-          symbol_table::clear_dld_function (fcn_name);
+          symtab.clear_dld_function (fcn_name);
       }
   }
 

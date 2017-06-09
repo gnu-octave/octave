@@ -691,7 +691,12 @@ file_editor_tab::update_lexer ()
               add_octave_apis (Fiskeyword ());            // add new entries
 
               if (octave_builtins)
-                add_octave_apis (F__builtins__ ());       // add new entries
+                {
+                  octave::interpreter& interp
+                    = octave::__get_interpreter__ ("file_editor_tab::update_lexer");
+
+                  add_octave_apis (F__builtins__ (interp));       // add new entries
+                }
 
               if (octave_functions)
                 add_octave_apis (F__list_functions__ ()); // add new entries
@@ -1777,11 +1782,14 @@ bool
 file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
                                        const QString& base_name_q)
 {
+  symbol_table& symtab
+    = octave::__get_symbol_table__ ("file_editor_tab::exit_debug_and_clear");
+
   std::string base_name = base_name_q.toStdString ();
   octave_value sym;
   try
     {
-      sym = symbol_table::find (base_name);
+      sym = symtab.find (base_name);
     }
   catch (const octave::execution_exception& e)
     {
@@ -1836,7 +1844,8 @@ file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
 
   // If we aren't currently running it, or have quit above, force a reload.
   if (retval == true)
-    symbol_table::clear_user_function (base_name);
+    symtab.clear_user_function (base_name);
+
   return retval;
 }
 

@@ -361,7 +361,9 @@ namespace octave
 
         const stack_frame& elt = cs[n];
 
-        symbol_table::set_scope_and_context (elt.m_scope, elt.m_context);
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        symtab.set_scope_and_context (elt.m_scope, elt.m_context);
 
         if (verbose)
           octave_stdout << "stopped in " << elt.fcn_name ()
@@ -414,7 +416,9 @@ namespace octave
                 curr_frame = xframe;
                 cs[cs.size () - 1].m_prev = curr_frame;
 
-                symbol_table::set_scope_and_context (elt.m_scope, elt.m_context);
+                symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+                symtab.set_scope_and_context (elt.m_scope, elt.m_context);
 
                 if (verbose)
                   {
@@ -476,7 +480,9 @@ namespace octave
 
                 cs.push_back (tmp);
 
-                symbol_table::set_scope_and_context (tmp.m_scope, tmp.m_context);
+                symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+                symtab.set_scope_and_context (tmp.m_scope, tmp.m_context);
 
                 break;
               }
@@ -494,7 +500,9 @@ namespace octave
 
     cs.push_back (tmp);
 
-    symbol_table::set_scope_and_context (tmp.m_scope, tmp.m_context);
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.set_scope_and_context (tmp.m_scope, tmp.m_context);
   }
 
   std::list<call_stack::stack_frame>

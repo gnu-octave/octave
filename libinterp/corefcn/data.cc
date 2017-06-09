@@ -559,8 +559,7 @@ $x = 0$, $f = e = 0$.
 %! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
 %! assert (e(1:2,:), [0,1; 2,3]);
 
-%!assert <*42583> (all (log2 (pow2 (-1074:1023)) == -1074:1023))
-%!assert <*42583> (all (log2 (pow2 (-1074:1023)) == -1074:1023))
+%!assert <42583> (all (log2 (pow2 (-1074:1023)) == -1074:1023))
 */
 
 DEFUN (rem, args, ,
@@ -726,13 +725,10 @@ periodic, @code{mod} is a better choice.
 %! assert (nnz (y), 1);
 %! assert (y, sparse ([NaN 0 0 0]));
 
-%!assert <*45587> (signbit (rem (-0, 1)))
-%!assert <*45587> (signbit (rem (-0, 1)))
-%!assert <*45587> (! signbit (rem (0, 1)))
-%!assert <*45587> (! signbit (rem (0, 1)))
+%!assert <45587> (signbit (rem (-0, 1)))
+%!assert <45587> (! signbit (rem (0, 1)))
 
-%!assert <*42627> (rem (0.94, 0.01), 0.0)
-%!assert <*42627> (rem (0.94, 0.01), 0.0)
+%!assert <42627> (rem (0.94, 0.01), 0.0)
 
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
@@ -908,13 +904,10 @@ negative numbers or when the values are periodic.
 %!assert (mod (2.1, 0.1), 0)
 %!assert (mod (2.1, 0.2), 0.1, eps)
 
-%!assert <*45587> (signbit (mod (-0, 0)))
-%!assert <*45587> (signbit (mod (-0, 0)))
-%!assert <*45587> (! signbit (mod (0, -0)))
-%!assert <*45587> (! signbit (mod (0, -0)))
+%!assert <45587> (signbit (mod (-0, 0)))
+%!assert <45587> (! signbit (mod (0, -0)))
 
-%!assert <*42627> (mod (0.94, 0.01), 0.0)
-%!assert <*42627> (mod (0.94, 0.01), 0.0)
+%!assert <42627> (mod (0.94, 0.01), 0.0)
 */
 
 #define DATA_REDUCTION(FCN)                                             \
@@ -1273,12 +1266,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
 
-%!assert <*37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
-%!assert <*37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
-%!assert <*37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
-%!assert <*37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
-%!assert <*37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
-%!assert <*37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
+%!assert <37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
+%!assert <37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
+%!assert <37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
 
 ## Test non-square size
 %!assert (diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
@@ -2212,8 +2202,7 @@ new matrices.  For example:
 
 %!error horzcat (struct ("foo", "bar"), cell (1))
 
-%!test <*39041> assert (class (horzcat (cell(0), struct())), "cell")
-%!test <*39041> assert (class (horzcat (cell(0), struct())), "cell")
+%!test <39041> assert (class (horzcat (cell(0), struct())), "cell")
 %!test <51086> assert (class (horzcat (struct(), cell(0))), "struct")
 */
 
@@ -2437,8 +2426,7 @@ cat (4, ones (2, 2), zeros (2, 2))
 %!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]))
 %!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)))
 
-%!test <*49759>
-%!test <*49759>
+%!test <49759>
 %! A = [];
 %! B = {1; 2};
 %! assert (cat (1, A, B), {1; 2});
@@ -4240,8 +4228,7 @@ val = ones (m,n, "uint8")
 ## Matlab requires the size to be a row vector.  In that logic, it supports
 ## n to be a 1x0 vector (returns 0x0) but not a 0x1 vector.  Octave supports
 ## any vector and therefore must support 0x1, 1x0, and 0x0x1 (but not 0x1x1).
-%!test <*47298>
-%!test <*47298>
+%!test <47298>
 %! funcs = {@zeros, @ones, @inf, @nan, @NA, @i, @pi, @e};
 %! for idx = 1:numel (funcs)
 %!   func = funcs{idx};

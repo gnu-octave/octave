@@ -816,8 +816,7 @@ and 16.15), Dover, 1965.
 %! assert (cn, C, 8*eps);
 %! assert (dn, D, 8*eps);
 
-%!test <*43344>
-%!test <*43344>
+%!test <43344>
 %! ## Test continuity of dn when cn is near zero
 %! m = 0.5;
 %! u = ellipke (0.5);

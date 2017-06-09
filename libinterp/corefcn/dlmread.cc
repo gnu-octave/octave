@@ -551,8 +551,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test <*42025>
-%!test <*42025>
+%!test <42025>
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");
@@ -568,8 +567,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test <*50589>
-%!test <*50589>
+%!test <50589>
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");

@@ -3223,8 +3223,7 @@ Return true if @var{x} is a Java object.
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", uint16 ([90 100 128]), uint16 (128)), 2);
 
 ## Check we can create objects that wrap java literals
-%!testif HAVE_JAVA; usejava ("jvm") <*38821>
-%!testif HAVE_JAVA; usejava ("jvm") <*38821>
+%!testif HAVE_JAVA; usejava ("jvm") <38821>
 %! assert (class (javaObject ("java.lang.Byte",     uint8 (1))), "java.lang.Byte");
 %! assert (class (javaObject ("java.lang.Byte",      int8 (1))), "java.lang.Byte");
 %! assert (class (javaObject ("java.lang.Short",   uint16 (1))), "java.lang.Short");
@@ -3235,8 +3234,7 @@ Return true if @var{x} is a Java object.
 %! assert (class (javaObject ("java.lang.Long",     int64 (1))), "java.lang.Long");
 
 ## Test for automatic conversion of specific numeric classes
-%!testif HAVE_JAVA; usejava ("jvm") <*48013>
-%!testif HAVE_JAVA; usejava ("jvm") <*48013>
+%!testif HAVE_JAVA; usejava ("jvm") <48013>
 %! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1)
 %! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1)
 %! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1)
@@ -3247,8 +3245,7 @@ Return true if @var{x} is a Java object.
 %! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))), "java.math.BigInteger")
 
 ## Automatic conversion from string cell array into String[]
-%!testif HAVE_JAVA; usejava ("jvm") <*45290>
-%!testif HAVE_JAVA; usejava ("jvm") <*45290>
+%!testif HAVE_JAVA; usejava ("jvm") <45290>
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "aaa"), 0);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "zzz"), 3);
 %! assert (javaMethod ("binarySearch", "java.util.Arrays", {"aaa", "bbb", "ccc", "zzz"}, "hhh") < 0);

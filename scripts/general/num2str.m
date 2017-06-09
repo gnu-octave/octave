@@ -247,11 +247,9 @@ endfunction
 %! assert (num2str (1e23), "100000000000000000000000");
 
 ## Test for extra rows generated from newlines in format
-%!assert <*44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
-%!assert <*44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
+%!assert <44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
 
-%!assert <*45174> (num2str ([65 66 67], "%s"), "ABC")
-%!assert <*45174> (num2str ([65 66 67], "%s"), "ABC")
+%!assert <45174> (num2str ([65 66 67], "%s"), "ABC")
 
 %!error num2str ()
 %!error num2str (1, 2, 3)

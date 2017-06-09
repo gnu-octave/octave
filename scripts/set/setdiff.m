@@ -115,18 +115,12 @@ endfunction
 %! assert (c, a(ia));
 
 ## Test output orientation compatibility
-%!assert <*42577> (setdiff ([1:5], 2), [1,3,4,5])
-%!assert <*42577> (setdiff ([1:5], 2), [1,3,4,5])
-%!assert <*42577> (setdiff ([1:5]', 2), [1;3;4;5])
-%!assert <*42577> (setdiff ([1:5]', 2), [1;3;4;5])
-%!assert <*42577> (setdiff ([1:5], [2:3]), [1,4,5])
-%!assert <*42577> (setdiff ([1:5], [2:3]), [1,4,5])
-%!assert <*42577> (setdiff ([1:5], [2:3]'), [1,4,5])
-%!assert <*42577> (setdiff ([1:5], [2:3]'), [1,4,5])
-%!assert <*42577> (setdiff ([1:5]', [2:3]), [1;4;5])
-%!assert <*42577> (setdiff ([1:5]', [2:3]), [1;4;5])
-%!assert <*42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
-%!assert <*42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
+%!assert <42577> (setdiff ([1:5], 2), [1,3,4,5])
+%!assert <42577> (setdiff ([1:5]', 2), [1;3;4;5])
+%!assert <42577> (setdiff ([1:5], [2:3]), [1,4,5])
+%!assert <42577> (setdiff ([1:5], [2:3]'), [1,4,5])
+%!assert <42577> (setdiff ([1:5]', [2:3]), [1;4;5])
+%!assert <42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
 
 %!test
 %! a = rand (3,3,3);

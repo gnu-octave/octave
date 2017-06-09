@@ -200,22 +200,19 @@ endfunction
 %! assert (vx(2,:), zeros (1, columns (vx)), eps);
 %! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
-%!testif HAVE_QHULL <*40996>
-%!testif HAVE_QHULL <*40996>
+%!testif HAVE_QHULL <40996>
 %! ## Special case of just 2 points
 %! x = [0 1];  y = [1 0];
 %! [vx, vy] = voronoi (x,y);
 %! assert (vx, [-0.7; 1.7], eps);
 %! assert (vy, [-0.7; 1.7], eps);
 
-%!testif HAVE_QHULL <*38295>
-%!testif HAVE_QHULL <*38295>
+%!testif HAVE_QHULL <38295>
 %! x = [1,2,3];  y = [2,3,1];
 %! [vx, vy] = voronoi (x,y);
 %! assert (columns (vx), 3);
 
-%!testif HAVE_QHULL <*37270>
-%!testif HAVE_QHULL <*37270>
+%!testif HAVE_QHULL <37270>
 %! ## Duplicate points can cause an internal error
 %! x = [1,2,3, 3];  y = [2,3,1, 1];
 %! [vx, vy] = voronoi (x,y);

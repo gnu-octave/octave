@@ -159,8 +159,7 @@ endfunction
 %! assert (n, [1, 3, 1]);
 %! assert (d, [2, 10, 3]);
 
-%!assert <*43374> (eval (rat (0.75)), [0.75])
-%!assert <*43374> (eval (rat (0.75)), [0.75])
+%!assert <43374> (eval (rat (0.75)), [0.75])
 
 %!error rat ()
 %!error rat (1, 2, 3)

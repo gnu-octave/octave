@@ -109,8 +109,7 @@ endfunction
 %!assert (prepad ([1;2], 2, 2, 3), reshape ([2;2;1;2], 2, 1, 2))
 
 %! ## Test with string concatenation
-%!assert <*44162> (prepad ("Octave", 16, "x"), "xxxxxxxxxxOctave")
-%!assert <*44162> (prepad ("Octave", 16, "x"), "xxxxxxxxxxOctave")
+%!assert <44162> (prepad ("Octave", 16, "x"), "xxxxxxxxxxOctave")
 %!assert (prepad ("Octave", 4), "tave")
 
 ## FIXME: We need tests for multidimensional arrays.

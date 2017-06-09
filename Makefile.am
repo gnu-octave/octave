@@ -244,6 +244,7 @@ include etc/module.mk
 include examples/module.mk
 include m4/module.mk
 include test/module.mk
+include build-aux/module.mk
 
 DIST_HOOKS := \
   doc-interpreter-dist-hook \

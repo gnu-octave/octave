@@ -151,10 +151,8 @@ endfunction
 %!assert (all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
 
 ## test with a single string or cell input
-%!assert <*49094> (strcat ("foo    "), "foo")
-%!assert <*49094> (strcat ("foo    "), "foo")
-%!assert <*49094> (strcat ({"foo"}), {"foo"})
-%!assert <*49094> (strcat ({"foo"}), {"foo"})
+%!assert <49094> (strcat ("foo    "), "foo")
+%!assert <49094> (strcat ({"foo"}), {"foo"})
 
 %!assert (strcat (1), char (1))
 %!assert (strcat (1, 2), strcat (char (1), char (2)))

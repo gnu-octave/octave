@@ -421,8 +421,7 @@ endfunction
 
 
 ## Test infeasible initial guess
-%!testif HAVE_GLPK <*40536>
-%!testif HAVE_GLPK <*40536>
+%!testif HAVE_GLPK <40536>
 %!
 %! H = 1;  q = 0;                # objective: x -> 0.5 x^2
 %! A = 1;  lb = 1;  ub = +inf;   # constraint: x >= 1

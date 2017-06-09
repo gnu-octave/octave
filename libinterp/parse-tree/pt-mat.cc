@@ -343,8 +343,7 @@ namespace octave
 %!assert (class ([cell(1), struct("foo", "bar")]), "cell")
 %!error [struct("foo", "bar"), cell(1)]
 
-%!test <*39041> assert (class ([cell(0), struct()]), "cell")
-%!test <*39041> assert (class ([cell(0), struct()]), "cell")
+%!test <39041> assert (class ([cell(0), struct()]), "cell")
 %!test <51086> assert (class ([struct(), cell(0)]), "struct")
 
 %!assert ([,1], 1)

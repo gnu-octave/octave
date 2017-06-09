@@ -218,13 +218,10 @@ endfunction
 %! endfor
 %!assert (hist (1,1), 1)
 %!assert (size (hist (randn (750,240), 200)), [200,240])
-%!assert <*42394> (isempty (hist (rand (10,2), 0:5, 1)), false)
-%!assert <*42394> (isempty (hist (rand (10,2), 0:5, 1)), false)
-%!assert <*42394> (isempty (hist (rand (10,2), 0:5, [1 1])), false)
-%!assert <*42394> (isempty (hist (rand (10,2), 0:5, [1 1])), false)
+%!assert <42394> (isempty (hist (rand (10,2), 0:5, 1)), false)
+%!assert <42394> (isempty (hist (rand (10,2), 0:5, [1 1])), false)
 
-%!test <*47707>
-%!test <*47707>
+%!test <47707>
 %! y = [1  9  2  2  9  3  8  9  1  7  1  1  3  2  4  4  8  2  1  9  4  1 ...
 %!      2  3  1  1  6  5  5  3  9  9  1  1  8  7  7  2  4  1];
 %! [n, x] = hist (y, 10);

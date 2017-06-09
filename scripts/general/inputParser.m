@@ -658,8 +658,7 @@ endclassdef
 %!         {"file", "foo", 80,    true,      "circle"});
 
 ## We must not perform validation of default values
-%!test <*45837>
-%!test <*45837>
+%!test <45837>
 %! p = inputParser;
 %! p.addParameter ("Dir", [], @ischar);
 %! p.parse ();
@@ -745,8 +744,7 @@ endclassdef
 ## This behaviour means that a positional option can never be a string
 ## that is the name of a parameter key.  This is required for Matlab
 ## compatibility.
-%!test <*50752>
-%!test <*50752>
+%!test <50752>
 %! p = inputParser ();
 %! p.addOptional ("op1", "val");
 %! p.addParameter ("line", "tree");
@@ -786,8 +784,7 @@ endclassdef
 %! fail ('p.parse ("line", "line", 89)',
 %!       "non-string for Parameter name or Switch")
 
-%!test <*50752>
-%!test <*50752>
+%!test <50752>
 %! ## This fails in Matlab but works in Octave.  It is a bug there
 %! ## that we do not replicate.
 %! p = inputParser ();
@@ -796,8 +793,7 @@ endclassdef
 %! p.parse ("line");
 %! assert (p.Results, struct ("op1", "line", "line", "circle"))
 
-%!test <*50752>
-%!test <*50752>
+%!test <50752>
 %! p = inputParser;
 %! p.addOptional ("op1", "val1");
 %! p.addSwitch ("line");

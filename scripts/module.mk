@@ -88,6 +88,8 @@ OCTAVE_INTERPRETER_TARGETS += \
   $(GEN_FCN_FILES) \
   $(PKG_ADD_FILES)
 
+FCN_FILES_WITH_TESTS = $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN))
+
 define PKG_ADD_FILE_TEMPLATE
 $(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) %reldir%/mk-pkg-add
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \

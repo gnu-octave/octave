@@ -14,44 +14,43 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{im} =} getframe ()
-## @deftypefnx {} {@var{im} =} getframe (@var{hax})
-## @deftypefnx {} {@var{im} =} getframe (@var{hfig})
-## @deftypefnx {} {@var{im} =} getframe (@dots{}, @var{rect})
+## @deftypefn  {} {@var{frame} =} getframe ()
+## @deftypefnx {} {@var{frame} =} getframe (@var{hax})
+## @deftypefnx {} {@var{frame} =} getframe (@var{hfig})
+## @deftypefnx {} {@var{frame} =} getframe (@dots{}, @var{rect})
 ##
-## Capture a figure or axes pixels.
+## Capture a figure or axes as a movie frame structure.
 ##
-## Without any argument capture the current axes excluding ticklabels,
-## title and x/y/zlabels. The returned structure @var{im} has fields
-## "cdata", which contains the actual image data in the form of a
-## n-by-m-by-3 (rgb) uint8 matrix, and "colormap" which is provided for
-## matlab compatibility but is always empty.
+## Without an argument, capture the current axes excluding ticklabels, title,
+## and x/y/zlabels.  The returned structure @var{frame} has a field
+## @code{cdata}, which contains the actual image data in the form of an
+## NxMx3 (RGB) uint8 matrix, and a field @code{colormap} which is provided for
+## @sc{matlab} compatibility but is always empty.
 ##
-## If a graphics handle @var{hax} to an axes object is provided, this
-## axes is captured instead of the currentaxes.
+## If the first argument @var{hax} is an axes handle, then capture this axes,
+## rather than the current axes returned by @code{gca}.
 ##
-## If a graphics handle @var{hfig} to a figure object is provided, the whole
-## corresponding figure canvas is catured.
+## If the first argument @var{hfig} is a figure handle then the entire
+## corresponding figure canvas is captured.
 ##
-## Finally if a second argument @var{rect} is provided, it must be a
-## four element vector [left bottom width height], defining the region
-## inside the figure corresponding to @var{hfig} or the parent figure of
-## @var{hax} to be catured. Whatever the figure @qcode{"units"} property,
-## @var{rect} must be defined in @strong{pixels}.
+## Finally, if a second argument @var{rect} is provided it must be a
+## four-element vector ([left bottom width height]) defining the region inside
+## the figure to be captured.  Regardless of the figure @qcode{"units"}
+## property, @var{rect} must be defined in @strong{pixels}.
 ##
 ## @seealso{im2frame, frame2im}
 ## @end deftypefn
 
-function im = getframe (h = [], rect = [])
+function frame = getframe (h = [], rect = [])
   hf = hax = [];
   if (isempty (h))
     hf = get (0, "currentfigure");
     if (isempty (hf))
-      error ("getframe: no figure to capture")
+      error ("getframe: no figure to capture");
     endif
     hax = get (hf, "currentaxes");
     if (isempty (hax))
-      error ("getframe: no axes to capture")
+      error ("getframe: no axes to capture");
     endif
   elseif (isfigure (h))
     hf = h;
@@ -59,11 +58,11 @@ function im = getframe (h = [], rect = [])
     hf = ancestor (h, "figure");
     hax = h;
   else
-    error ("getframe: H must be a figure or axes handle")
+    error ("getframe: H must be a figure or axes handle");
   endif
 
   if (strcmp (get (hf, "__graphics_toolkit__"), "gnuplot"))
-    error ("getframe: not implemented for gnuplot graphics toolkit")
+    error ("getframe: not implemented for gnuplot graphics toolkit");
   endif
 
   unwind_protect
@@ -93,15 +92,15 @@ function im = getframe (h = [], rect = [])
     pos = rect;
   endif
 
-  if (strcmp (get (hf, "visible"), "off"))
-    ## Use OpenGL offscreen rendering with OSMesa
+  if (strcmp (get (hf, "visible"), "on"))
+    cdata = __get_frame__ (hf);
+  else
+    ## Use OpenGL offscreen rendering with OSMesa for non-visible figures
     try
       cdata = __osmesa_print__ (hf);
     catch
-      error ("getframe: couldn't render invisible figure. %s", lasterr ())
+      error ("getframe: couldn't render invisible figure. %s", lasterr ());
     end_try_catch
-  else
-    cdata = __get_frame__ (hf);
   endif
 
   i1 = max (floor (pos(1)), 1);
@@ -111,58 +110,59 @@ function im = getframe (h = [], rect = [])
   i2 = min (ceil (pos(2)+pos(4)-1), rows (cdata));
   idxy = fliplr (rows (cdata) - (i1:i2) + 1);
 
-  im = struct ("cdata", cdata(idxy,idxx,:), "colormap", []);
+  frame = struct ("cdata", cdata(idxy,idxx,:), "colormap", []);
 
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! contourf (rand (5));
 %! drawnow ();
-%! im = getframe ();
-%! imshow (im.cdata);
+%! frame = getframe ();
+%! imshow (frame.cdata);
 
 %!demo
-%! clf reset
+%! clf reset;
 %! contourf (rand (5));
-%! im = getframe (gcf ());
-%! imshow (im.cdata);
-%! set (gca, 'position', [0 0 1 1]);
+%! frame = getframe (gcf ());
+%! imshow (frame.cdata);
+%! set (gca, "position", [0 0 1 1]);
 
 %!demo
-%! clf
+%! clf;
 %! hax1 = subplot (2,1,1);
 %! contourf (rand (5));
-%! title ('Original');
-%! im = getframe (hax1);
+%! title ("Original");
+%! frame = getframe (hax1);
 %! hax2 = subplot (2,1,2);
-%! image (im.cdata);
-%! title ('Image');
+%! image (frame.cdata);
+%! title ("Frame");
 
 %!demo
-%! clf
+%! clf;
 %! hax1 = subplot (2,1,1);
 %! contourf (rand (5));
-%! title ('Original');
+%! title ("Original");
 %!
-%! % Get the coordinates of the lower-left hand corner in pixels
-%! set (hax1, 'units', 'pixels');
-%! pos = get (hax1, 'position');
-%! set (hax1, 'units', 'normalized');
+%! ## Get the coordinates of the lower-left hand corner in pixels
+%! set (hax1, "units", "pixels");
+%! pos = get (hax1, "position");
+%! set (hax1, "units", "normalized");
 %! rect = [pos(1:2) pos(3:4)/2];
 %!
-%! im = getframe (hax1, rect);
+%! frame = getframe (hax1, rect);
 %! hax2 = subplot (2,1,2);
-%! image (im.cdata);
-%! title ('Lower left hand corner');
+%! image (frame.cdata);
+%! title ("Lower left hand corner");
 
 %!testif HAVE_OSMESA, <44338>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   pos = get (hf, "position");
-%!   assert (size (getframe (hf).cdata)(1:2), pos(4:-1:3))
+%!   assert (size (getframe (hf).cdata)(1:2), pos(4:-1:3));
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
 %!testif HAVE_OSMESA, <44338>
@@ -183,13 +183,13 @@ endfunction
 %!   for jj = [0.05 0.55]
 %!     for ii = [0.05 0.55]
 %!       rect = [ii jj .4 .4].*[pos(3:4) pos(3:4)];
-%!       im = getframe (hax, rect).cdata;
-%!       assert (im(:,:,1) == fvc(kk,1)*255)
-%!       assert (im(:,:,2) == fvc(kk,2)*255)
-%!       assert (im(:,:,3) == fvc(kk,3)*255)
+%!       frame = getframe (hax, rect).cdata;
+%!       assert (frame(:,:,1) == fvc(kk,1)*255);
+%!       assert (frame(:,:,2) == fvc(kk,2)*255);
+%!       assert (frame(:,:,3) == fvc(kk,3)*255);
 %!       kk++;
 %!     endfor
 %!   endfor
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect

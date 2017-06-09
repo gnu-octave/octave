@@ -24,12 +24,12 @@
 ## The numbers in the vector @var{native_bytes} are rounded and clipped to
 ## integers between 0 and 255.  This byte stream is then mapped into the
 ## code page given by the string @var{codepage} and returned in the string
-## @var{utf8_str}.  Octave uses UTF-8 as its internal encoding.
-## The string @var{codepage} must be an identifier of a valid code page.
-## Examples for valid code pages are "ISO-8859-1", "Shift-JIS", or "UTF-16".
-## For a list of supported code pages, see:
-## http://www.gnu.org/software/libiconv/
-## If @var{codepage} is omitted or empty, the system default codepage is used.
+## @var{utf8_str}.  Octave uses UTF-8 as its internal encoding.  The string
+## @var{codepage} must be an identifier of a valid code page.  Examples for
+## valid code pages are @qcode{"ISO-8859-1"}, @qcode{"Shift-JIS"}, or
+## @qcode{"UTF-16"}.  For a list of supported code pages, see
+## @url{http://www.gnu.org/software/libiconv}.  If @var{codepage} is omitted
+## or empty, the system default codepage is used.
 ##
 ## If @var{native_bytes} is a string vector, it is returned as is.
 ##
@@ -55,7 +55,7 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
     error ("native2unicode: CODEPAGE must be a string")
   endif
 
-  ## FIXME: would it be better to do this by converting to uint8?  Or to
+  ## FIXME: Would it be better to do this by converting to uint8?  Or to
   ## let __native2unicode to the clipping?  Multiple steps here means
   ## looping through the data and allocating memory multiple times.
 
@@ -71,6 +71,7 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
 
 endfunction
 
+
 ## "ЄЅІЇЈЉЊ"
 %!assert (double (native2unicode (164:170, 'ISO-8859-5')),
 %!        [208 132 208 133 208 134 208 135 208 136 208 137 208 138]);
@@ -82,9 +83,9 @@ endfunction
 %!assert (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
 %!        [0 0 120 0 0 123 0 0]);
 
+%!error <Invalid call> native2unicode ()
+%!error <Invalid call> native2unicode (1, 'ISO-8859-1', 'test')
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ([1 2; 3 4])
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ({1 2 3 4})
 %!error <CODEPAGE must be a string> native2unicode (164:170, 123)
 %!error <converting from codepage 'foo' to UTF-8> native2unicode (234, 'foo')
-%!error <Invalid call> native2unicode ()
-%!error <Invalid call> native2unicode (1, 'ISO-8859-1', 'test')

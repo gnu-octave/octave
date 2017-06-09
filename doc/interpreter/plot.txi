@@ -221,8 +221,10 @@ polar coordinates.  However, the display coordinates remain rectangular
 and linear.  For example,
 
 @example
+@group
 polar (0:0.1:10*pi, 0:0.1:10*pi);
 title ("Example polar plot from 0 to 10*pi");
+@end group
 @end example
 
 @noindent
@@ -1812,7 +1814,7 @@ where @code{hsrc} is a handle to the source of the callback, and @code{evt}
 gives some event specific data.
 
 The function can be provided as a function handle to a plain Octave function,
-as an anonymous function or as a string representing an Octvae command. The
+as an anonymous function or as a string representing an Octave command.  The
 latter syntax is not recommended since syntax errors will only occur when the
 string is evaluated.
 @xref{Function Handles Anonymous Functions Inline Functions, , Function Handles section}.

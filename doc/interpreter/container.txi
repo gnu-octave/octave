@@ -1045,7 +1045,6 @@ If used on the left-hand side of an assignment, a comma separated list
 generated with @code{@{@}} can be assigned to.  An example is
 
 @example
-@group
 in@{1@} = [10, 20, 30];
 in@{2@} = inf;
 in@{3@} = "last";
@@ -1068,7 +1067,6 @@ out = cell (4, 1);
            [5,1] = Inf
            [6,1] = first
         @}
-@end group
 @end example
 
 

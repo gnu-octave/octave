@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {@var{h} =} {} hgtransform ()
-## @deftypefnx {@var{h} =} {} hgtransform (@var{property}, @var{value}, @dots{})
-## @deftypefnx {@var{h} =} {} hgtransform (@var{hax}, @dots{})
+## @deftypefn  {} {@var{h} =} hgtransform ()
+## @deftypefnx {} {@var{h} =} hgtransform (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{h} =} hgtransform (@var{hax}, @dots{})
 ##
 ## Create a graphics transform object.
 ##

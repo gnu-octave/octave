@@ -1113,7 +1113,7 @@ namespace octave
 
 DEFUN_DLD (__ode15__, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{t}, @var{y} =} __ode15__ (@var{fun}, @var{tspan}, @var{y0}, @var{yp0}, @var{options})
+@deftypefn {} {@var{t}, @var{y} =} __ode15__ (@var{fun}, @var{tspan}, @var{y0}, @var{yp0}, @var{options})
 Undocumented internal function.
 @end deftypefn */)
 {

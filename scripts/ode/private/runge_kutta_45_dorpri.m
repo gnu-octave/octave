@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt})
-## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
-## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals})
-## @deftypefn  {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals}, @var{t_next})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals})
+## @deftypefnx {} {[@var{t_next}, @var{x_next}] =} runge_kutta_45_dorpri (@var{@@fun}, @var{t}, @var{x}, @var{dt}, @var{options}, @var{k_vals}, @var{t_next})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}] =} runge_kutta_45_dorpri (@dots{})
 ## @deftypefnx {} {[@var{t_next}, @var{x_next}, @var{x_est}, @var{k_vals_out}] =} runge_kutta_45_dorpri (@dots{})
 ##

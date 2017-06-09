@@ -76,8 +76,8 @@ be specified with subscripts for the row, column, page, etc.  The functions
 @code{ind2sub} and @code{sub2ind} interconvert between the two forms.
 
 The linear index traverses dimension 1 (rows), then dimension 2 (columns), then
-dimension 3 (pages), etc. until it has numbered all of the elements.  Consider
-the following 3-by-3 matrices:
+dimension 3 (pages), etc.@: until it has numbered all of the elements.
+Consider the following 3-by-3 matrices:
 
 @example
 @group
@@ -200,8 +200,8 @@ be specified with subscripts for the row, column, page, etc.  The functions
 @code{ind2sub} and @code{sub2ind} interconvert between the two forms.
 
 The linear index traverses dimension 1 (rows), then dimension 2 (columns), then
-dimension 3 (pages), etc. until it has numbered all of the elements.  Consider
-the following 3-by-3 matrices:
+dimension 3 (pages), etc.@: until it has numbered all of the elements.
+Consider the following 3-by-3 matrices:
 
 @example
 @group

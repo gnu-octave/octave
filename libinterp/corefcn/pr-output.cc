@@ -3572,7 +3572,7 @@ Note that the output from @code{fdisp} always ends with a newline.
 DEFUN (display, args, ,
        classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} display (@var{obj})
+@deftypefn {} {} display (@var{obj})
 Display the contents of the object @var{obj} prepended by its name.
 
 The Octave interpreter calls the @code{display} function whenever it needs

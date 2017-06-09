@@ -360,16 +360,20 @@ Look for Octave sources in the directory @var{dir}.
 @item --disable-64
 Disable using 64-bit integers for indexing arrays and use 32-bit
 integers instead.  On systems with 32-bit pointers, this option is
-always disabled.  If he configure script determines that your BLAS
+always disabled.  If the configure script determines that your @sc{blas}
 library uses 32-bit integers, then operations using the following
 libraries are limited to arrays with dimensions that are smaller than
 @math{2^{31}} elements:
 
 @itemize @bullet
 @item @sc{blas}
+
 @item @sc{lapack}
+
 @item QRUPDATE
+
 @item SuiteSparse
+
 @item @sc{arpack}
 @end itemize
 
@@ -378,6 +382,7 @@ maximum problem sizes are always limited:
 
 @itemize @bullet
 @item @sc{glpk}
+
 @item Qhull
 @end itemize
 
@@ -385,8 +390,8 @@ maximum problem sizes are always limited:
 about building Octave with more complete support for large arrays.
 
 @item --enable-address-sanitizer-flags
-Enable compiler options @code{-fsanitize=address} and
-@code{-fomit-frame-pointer} for memory access checking.  This option is
+Enable compiler options @option{-fsanitize=address} and
+@option{-fomit-frame-pointer} for memory access checking.  This option is
 primarily used for debugging Octave.  Building Octave with this option
 has a negative impact on performance and is not recommended for general
 use.  It may also interfere with proper functioning of the GUI.
@@ -630,16 +635,20 @@ Configuring Octave with @option{--enable-64} cannot magically make a
 32-bit system have a 64-bit address space.
 
 On 64-bit systems, Octave uses 64-bit integers for indexing arrays
-by default.  If he configure script determines that your BLAS
+by default.  If the configure script determines that your @sc{blas}
 library uses 32-bit integers, then operations using the following
 libraries are limited to arrays with dimensions that are smaller than
 @math{2^{31}} elements:
 
 @itemize @bullet
 @item @sc{blas}
+
 @item @sc{lapack}
+
 @item QRUPDATE
+
 @item SuiteSparse
+
 @item @sc{arpack}
 @end itemize
 
@@ -648,6 +657,7 @@ maximum problem sizes are always limited:
 
 @itemize @bullet
 @item @sc{glpk}
+
 @item Qhull
 @end itemize
 

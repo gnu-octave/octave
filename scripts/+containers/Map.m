@@ -38,7 +38,7 @@
 ## When called with no input arguments a default map is created with strings
 ## as the key type and @qcode{"any"} as the value type.
 ##
-## The @qcode{"UniformValues"} option specifies specifies whether the values of
+## The @qcode{"UniformValues"} option specifies whether the values of
 ## the map must be strictly of the same type.  If @var{is_uniform} is true, any
 ## values which would be added to the map are first validated to ensure they
 ## are of the correct type.

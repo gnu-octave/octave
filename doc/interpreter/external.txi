@@ -1978,6 +1978,7 @@ class (b)
 The example above can be carried out using only Java objects:
 
 @example
+@group
 a = javaObject ("java.lang.Double", 1.001);
 b = javaObject ("java.math.BigDecimal", a);
 
@@ -1989,6 +1990,7 @@ isjava (b)
 @result{} ans = 1
 class (b)
 @result{} ans = java.math.BigDecimal
+@end group
 @end example
 
 One can see, that even a @code{java.lang.Double} is not converted to an Octave

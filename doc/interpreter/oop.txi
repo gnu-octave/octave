@@ -531,7 +531,7 @@ user class.
 @item @code{a.'} @tab @code{transpose (a)} @tab Transpose
 @item @code{a:b} @tab @code{colon (a, b)} @tab Two element range
 @item @code{a:b:c} @tab @code{colon (a, b, c)} @tab Three element range
-@item @code{[a,  b]} @tab @code{horzcat (a, b)} @tab Horizontal concatenation
+@item @code{[a, b]} @tab @code{horzcat (a, b)} @tab Horizontal concatenation
 @item @code{[a; b]} @tab @code{vertcat (a, b)} @tab Vertical concatenation
 @item @code{a(s@math{_1},@dots{},s@math{_n})} @tab @code{subsref (a, s)} @tab Subscripted reference
 @item @code{a(s@math{_1},@dots{},s@math{_n}) = b} @tab @code{subsasgn (a, s, b)} @tab Subscripted assignment
@@ -771,7 +771,7 @@ innovations of @code{classdef} classes are:
 @b{access rights} for properties and methods,
 
 @item
-@b{static methods}, i.e. methods that are independent of an object, and
+@b{static methods}, i.e., methods that are independent of an object, and
 
 @item
 the distinction between @b{value and handle classes}.
@@ -828,10 +828,12 @@ An object of class @code{polynomial2} is created by calling the class
 constructor:
 
 @example
+@group
 >> p = polynomial2 ([1, 0, 1])
 @result{} p =
 
  1 + X ^ 2
+@end group
 @end example
 
 @node Properties
@@ -897,11 +899,10 @@ public read and write access.
 All class methods must be defined within @code{methods} blocks.  An exception
 to this rule is described at the end of this subsection.  Those @code{methods}
 blocks can have additional attributes specifying the access rights or whether
-the methods are static, i.e. methods that can be called without creating an
+the methods are static, i.e., methods that can be called without creating an
 object of that class.
 
 @example
-@group
 classdef some_class
   methods
     function obj = some_class ()
@@ -925,7 +926,6 @@ classdef some_class
     endfunction
   endmethods
 endclassdef
-@end group
 @end example
 
 The constructor of the class is declared in the @code{methods} block and must
@@ -942,10 +942,12 @@ the first argument to that method or by calling the object followed by a dot
 ("@code{.}") and the method's name with subsequent arguments:
 
 @example
+@group
 >> obj = some_class ();
 New instance created.
 >> disp (obj);   # both are
 >> obj.disp ();  # equal
+@end group
 @end example
 
 In @code{some_class}, the method @code{func} is defined within a @code{methods}

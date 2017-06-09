@@ -28,8 +28,8 @@
 ## Called without arguments @code{ylim} returns the y-axis limits of the
 ## current plot.
 ##
-## With the input query @qcode{"mode"}, return the current
-## y-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
+## With the input query @qcode{"mode"}, return the current y-limit calculation
+## mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{y_lo} @var{y_hi}], the limits of the
 ## y-axis are set to these values and the mode is set to @qcode{"manual"}.
@@ -44,8 +44,7 @@
 ##
 ## Programming Note: The @code{ylim} function operates by modifying the
 ## @qcode{"ylim"} and @qcode{"ylimmode"} properties of an axes object.  These
-## properties can be be directly inspected and altered with
-## @code{get}/@code{set}.
+## properties can be directly inspected and altered with @code{get}/@code{set}.
 ## @seealso{xlim, zlim, axis, set, get, gca}
 ## @end deftypefn
 

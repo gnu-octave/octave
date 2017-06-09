@@ -12098,19 +12098,21 @@ Undocumented internal function.
 
 DEFUN (__get_frame__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{cdata} = } __get_frame__ (@var{hfig})
-Internal function: returns the pixel cdata of figure hfig in the form of a
-height-by-width-by-3 uint8 array
+@deftypefn {} {@var{cdata} =} __get_frame__ (@var{hfig})
+Internal function.
+
+Return the pixel cdata of figure hfig in the form of a height-by-width-by-3
+uint8 array.
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  double h = args(0).xdouble_value ("__get_frame__: argument is not a handle");
+  double h = args(0).xdouble_value ("__get_frame__: HFIG is not a handle");
 
   graphics_object go = gh_manager::get_object (h);
   if (! go || ! go.isa ("figure"))
-    error ("__get_frame__: object is not a figure");
+    error ("__get_frame__: HFIG is not a figure");
 
   return ovl (go.get_toolkit ().get_pixels (go));
 }

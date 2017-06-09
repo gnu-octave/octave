@@ -118,7 +118,8 @@ C'*C + S'*S = eye (columns (A))
 
 @end ifnottex
 
-The function @code{gsvd} normally returns just the vector of generalized singular values
+The function @code{gsvd} normally returns just the vector of generalized
+singular values
 @tex
 $$ \sqrt{{{diag (C^\dagger C)} \over {diag (S^\dagger S)}}} $$
 @end tex

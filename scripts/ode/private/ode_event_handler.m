@@ -21,7 +21,7 @@
 ##
 ## Return the solution of the event function (@var{@@evtfun}) which is
 ## specified in the form of a function handle.
-#
+##
 ## The second input argument @var{t} is a scalar double and specifies the time
 ## of the event evaluation.
 ##

@@ -52,7 +52,7 @@
 ## @var{oldstruct}.
 ##
 ## The most commonly used ODE options, which are always assigned a value
-## by @qcode{odeset}, are the following:
+## by @code{odeset}, are the following:
 ##
 ## @table @asis
 ## @item AbsTol
@@ -63,7 +63,7 @@
 ## @emph{Note}: This option is not yet implemented.
 ##
 ## @item Events
-## Event function. An event function must have the form
+## Event function.  An event function must have the form
 ## @code{[value, isterminal, direction] = my_events_f (t, y)}
 ##
 ## @item InitialSlope
@@ -89,7 +89,7 @@
 ## time and state.
 ##
 ## @item MassSingular
-## Specify whether the mass matrix is singular. Accepted values include
+## Specify whether the mass matrix is singular.  Accepted values include
 ## @qcode{"yes"}, @qcode{"no"}, @qcode{"maybe"}.
 ##
 ## @item MaxOrder
@@ -108,15 +108,15 @@
 ##
 ## @item NonNegative
 ## Specify elements of the state vector that are expected to remain
-## nonnegative during the simulation.
+## non-negative during the simulation.
 ##
 ## @item NormControl
 ## Control error relative to the 2-norm of the solution, rather than its
 ## absolute value.
 ##
 ## @item OutputFcn
-## Function to monitor the state during the simulation. For the form of
-## the function to use see @qcode{odeplot}.
+## Function to monitor the state during the simulation.  For the form of
+## the function to use see @code{odeplot}.
 ##
 ## @item OutputSel
 ## Indices of elements of the state vector to be passed to the output
@@ -124,7 +124,7 @@
 ##
 ## @item Refine
 ## Specify whether output should be returned only at the end of each
-## time step or also at intermediate time instances. The value should be
+## time step or also at intermediate time instances.  The value should be
 ## a scalar indicating the number of equally spaced time points to use
 ## within each timestep at which to return output.
 ## @emph{Note}: This option is not yet implemented.
@@ -136,7 +136,7 @@
 ## Print solver statistics after simulation.
 ##
 ## @item Vectorized
-## Specify whether @qcode{odefun} can be passed multiple values of the
+## Specify whether @code{odefun} can be passed multiple values of the
 ## state at once.
 ##
 ## @end table

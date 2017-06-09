@@ -265,7 +265,7 @@ num2hex (const Array<T>& v, bool swap_bytes)
 
 DEFUN (num2hex, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{s} =} num2hex (@var{n})
+@deftypefn  {} {@var{s} =} num2hex (@var{n})
 @deftypefnx {} {@var{s} =} num2hex (@var{n}, "cell")
 Convert a numeric array to an array of hexadecimal strings.
 

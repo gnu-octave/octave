@@ -46,14 +46,13 @@ DEFUN (eig, args, nargout,
 @deftypefnx {} {[@dots{}] =} eig (@var{A}, @var{B}, @var{algorithm})
 @deftypefnx {} {[@dots{}] =} eig (@dots{}, @var{eigvalOption})
 Compute the eigenvalues (@var{lambda}) and optionally the right eigenvectors
-(@var{V}) and the left eigenvectors (@var{W}) of a matrix or a pair of
-matrices.
+(@var{V}) and the left eigenvectors (@var{W}) of a matrix or pair of matrices.
 
 The flag @var{balanceOption} can be one of:
 
 @table @asis
-@item @qcode{"balance"}
-Preliminary balancing is on. (default)
+@item @qcode{"balance"} (default)
+Preliminary balancing is on.
 
 @item @qcode{"nobalance"}
 Disables preliminary balancing.
@@ -63,24 +62,23 @@ The flag @var{eigvalOption} can be one of:
 
 @table @asis
 @item @qcode{"matrix"}
-Return the eigenvalues in a diagonal matrix. (default if 2 or 3 outputs
-are specified)
+Return the eigenvalues in a diagonal matrix.  (default if 2 or 3 outputs
+are requested)
 
 @item @qcode{"vector"}
-Return the eigenvalues in a column vector. (default if 1 output is
-specified, e.g. @var{lambda} = eig (@var{A}))
+Return the eigenvalues in a column vector.  (default if only 1 output is
+requested, e.g., @var{lambda} = eig (@var{A}))
 @end table
 
 The flag @var{algorithm} can be one of:
 
 @table @asis
 @item @qcode{"chol"}
-Uses the Cholesky factorization of B. (default if A is symmetric (Hermitian)
-and B is symmetric (Hermitian) positive definite)
+Use the Cholesky factorization of B.  (default if @var{A} is symmetric
+(Hermitian) and @var{B} is symmetric (Hermitian) positive definite)
 
 @item @qcode{"qz"}
-Uses the QZ algorithm. (When A or B are not symmetric always the
-QZ algorithm will be used)
+Use the QZ algorithm.  (used whenever @var{A} or @var{B} are not symmetric)
 @end table
 
 @multitable @columnfractions .31 .23 .23 .23

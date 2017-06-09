@@ -28,11 +28,11 @@
 ## Called without arguments @code{zlim} returns the z-axis limits of the
 ## current plot.
 ##
-## With the input query @qcode{"mode"}, return the current
-## z-limit calculation mode which is either @qcode{"auto"} or @qcode{"manual"}.
+## With the input query @qcode{"mode"}, return the current z-limit calculation
+## mode which is either @qcode{"auto"} or @qcode{"manual"}.
 ##
 ## If passed a 2-element vector [@var{z_lo} @var{z_hi}], the limits of the
-## x-axis are set to these values and the mode is set to @qcode{"manual"}.
+## z-axis are set to these values and the mode is set to @qcode{"manual"}.
 ## The special values -Inf and Inf can be used to indicate that either
 ## the lower axis limit or upper axis limit should be automatically calculated.
 ##
@@ -44,8 +44,7 @@
 ##
 ## Programming Note: The @code{zlim} function operates by modifying the
 ## @qcode{"zlim"} and @qcode{"zlimmode"} properties of an axes object.  These
-## properties can be be directly inspected and altered with
-## @code{get}/@code{set}.
+## properties can be directly inspected and altered with @code{get}/@code{set}.
 ## @seealso{xlim, ylim, axis, set, get, gca}
 ## @end deftypefn
 

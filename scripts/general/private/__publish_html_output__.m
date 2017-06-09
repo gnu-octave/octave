@@ -30,42 +30,61 @@
 ## @itemize @bullet
 ## @item
 ## @samp{output_file_extension} ()
+##
 ## @item
 ## @samp{header} (title_str, intro_str, toc_cstr)
+##
 ## @item
 ## @samp{footer} ()
+##
 ## @item
 ## @samp{code} (str)
+##
 ## @item
 ## @samp{code_output} (str)
+##
 ## @item
 ## @samp{section} (str)
+##
 ## @item
 ## @samp{preformatted_code} (str)
+##
 ## @item
 ## @samp{preformatted_text} (str)
+##
 ## @item
 ## @samp{bulleted_list} (cstr)
+##
 ## @item
 ## @samp{numbered_list} (cstr)
+##
 ## @item
 ## @samp{graphic} (str)
+##
 ## @item
 ## @samp{html} (str)
+##
 ## @item
 ## @samp{latex} (str)
+##
 ## @item
 ## @samp{text} (str)
+##
 ## @item
 ## @samp{bold} (str)
+##
 ## @item
 ## @samp{italic} (str)
+##
 ## @item
 ## @samp{monospaced} (str)
+##
 ## @item
 ## @samp{link} (url_str, url_str, str)
+##
 ## @item
 ## @samp{TM} ()
+##
 ## @item
 ## @samp{R} ()
 ## @end itemize

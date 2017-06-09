@@ -144,7 +144,7 @@
 ## @item permB
 ## The permutation vector of the Cholesky@tie{}factorization of @var{B} if
 ## @code{cholB} is true.  It is obtained by @code{[R, ~, permB] =
-## chol (@var{B}, @qcode{"vector"})}. The default is @code{1:@var{n}}.
+## chol (@var{B}, @qcode{"vector"})}.  The default is @code{1:@var{n}}.
 ##
 ## @end table
 ##

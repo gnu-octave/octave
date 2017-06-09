@@ -113,49 +113,8 @@ EXTRA_DIST += \
   INSTALL \
   NEWS \
   README \
-  build-aux/OctJavaQry.class \
-  build-aux/OctJavaQry.java \
-  build-aux/changelog.tmpl \
-  build-aux/check-subst-vars.in.sh \
-  build-aux/find-defun-files.sh \
-  build-aux/find-files-with-tests.sh \
-  build-aux/mk-builtins.pl \
-  build-aux/mk-default-qt-settings.in.sh \
-  build-aux/mk-f77-def.in.sh \
-  build-aux/mk-hg-id.sh \
-  build-aux/mk-mxarray-h.in.sh \
-  build-aux/mk-octave-config-h.sh \
-  build-aux/mk-opts.pl \
-  build-aux/mk-version-h.in.sh \
-  build-aux/move-if-change \
-  build-aux/stl_algo.h-fixed \
-  build-aux/subst-config-vals.in.sh \
-  build-aux/subst-cross-config-vals.in.sh \
-  build-aux/subst-default-vals.in.sh \
-  build-aux/subst-f77-isnan-macro.in.sh \
-  build-aux/subst-script-vals.in.sh \
   run-octave.in \
   $(BUILT_DISTFILES)
-
-GEN_CONFIG_SHELL = \
-  build-aux/mk-default-qt-settings.sh \
-  build-aux/mk-f77-def.sh \
-  build-aux/mk-mxarray-h.sh \
-  build-aux/mk-version-h.sh \
-  build-aux/subst-config-vals.sh \
-  build-aux/subst-cross-config-vals.sh \
-  build-aux/subst-default-vals.sh \
-  build-aux/subst-f77-isnan-macro.sh \
-  build-aux/subst-script-vals.sh
-
-$(GEN_CONFIG_SHELL) : %.sh : %.in.sh config.status
-	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
-
-GEN_CONFIG_INC = \
-  oct-conf-post.h
-
-$(GEN_CONFIG_INC) : %.h : %.in.h config.status
-	$(AM_V_GEN)$(SHELL) config.status $@-tmp $@
 
 AUTOCONF_SUBST_VARS = @AUTOCONF_SUBST_VARS@
 ALL_SUBST_VARS = \

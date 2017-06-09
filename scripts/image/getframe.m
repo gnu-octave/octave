@@ -156,7 +156,7 @@ endfunction
 %! image (frame.cdata);
 %! title ("Lower left hand corner");
 
-%!testif HAVE_OSMESA, <44338>
+%!testif HAVE_OSMESA <44338>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   pos = get (hf, "position");
@@ -165,7 +165,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_OSMESA, <44338>
+%!testif HAVE_OSMESA <44338>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("visible", "off", "position", [0 0 1 1]);

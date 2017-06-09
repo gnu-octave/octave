@@ -106,7 +106,8 @@ endfunction
 %!assert (postpad ([1; 2], 2, 3, 2), [1 3; 2 3])
 
 %! ## Test with string concatenation
-%!assert <44162> (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
+%!assert <*44162> (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
+%!assert <*44162> (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
 %!assert (postpad ("Octave", 4), "Octa")
 
 %!error postpad ()

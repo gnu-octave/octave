@@ -195,7 +195,8 @@ endfunction
 %! assert (aa(2).y{1}, 6);
 
 ## Corner case of empty struct
-%!assert <40224> (orderfields (struct ()), struct ())
+%!assert <*40224> (orderfields (struct ()), struct ())
+%!assert <*40224> (orderfields (struct ()), struct ())
 %!test
 %! s(2,2).a = 1;
 %! s(1,1).b = 2;

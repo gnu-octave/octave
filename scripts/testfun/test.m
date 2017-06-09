@@ -22,7 +22,7 @@
 ## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fid})
 ## @deftypefnx {} {} test ("@var{name}", "quiet|normal|verbose", @var{fname})
 ## @deftypefnx {} {@var{success} =} test (@dots{})
-## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nbug}, @var{nskip}, @var{nrtskip}] =} test (@dots{})
+## @deftypefnx {} {[@var{n}, @var{nmax}, @var{nxfail}, @var{nbug}, @var{nskip}, @var{nrtskip}, @var{nregression}] =} test (@dots{})
 ## @deftypefnx {} {[@var{code}, @var{idx}] =} test ("@var{name}", "grabdemo")
 ## @deftypefnx {} {} test ([], "explain", @var{fid})
 ## @deftypefnx {} {} test ([], "explain", @var{fname})
@@ -83,8 +83,9 @@
 ## the total number of tests in the file (@var{nmax}), the number of xtest
 ## failures (@var{nxfail}), the number of tests failed due known bugs
 ## (@var{nbug}), the number of tests skipped due to missing features
-## (@var{nskip}), and the number of tests skipped due to run-time
-## conditions (@var{nrtskip}) are returned.
+## (@var{nskip}), the number of tests skipped due to run-time
+## conditions (@var{nrtskip}), and the number of regressions
+## (@var{nregression}) are returned.
 ##
 ## Example
 ##
@@ -120,7 +121,7 @@
 ## Shared variables are eval'ed into the current workspace and therefore might
 ## collide with the names used in the test.m function itself.
 
-function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __flag = "normal", __fid = [])
+function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = test (__name, __flag = "normal", __fid = [])
 
   ## Output from test is prefixed by a "key" to quickly understand the issue.
   persistent __signal_fail  = "!!!!! ";
@@ -297,7 +298,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
 
   ## Process each block separately, initially with no shared variables.
   __tests = __successes = 0;
-  __xfail = __xbug = __xskip = __xrtskip = 0;
+  __xfail = __xbug = __xskip = __xrtskip = __xregression = 0;
   __shared = " ";
   __shared_r = " ";
   __clearfcn = "";
@@ -332,6 +333,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
       __istest = false;
       __isxtest = false;
       __bug_id = "";
+      __fixed_bug = false;
 
 ### DEMO
 
@@ -434,10 +436,17 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
         ## There is no processing to be done here, just skip to next block.
         __code = "";
 
-### ASSERT/FAIL
+### ASSERT
+### ASSERT <BUG-ID>
+### FAIL
+### FAIL <BUG-ID>
+###
+###   BUG-ID is a bug number from the bug tracker.  A prefix of '*'
+###   indicates a bug that has been fixed.  Tests that fail for fixed
+###   bugs are reported as regressions.
 
       elseif (strcmp (__type, "assert") || strcmp (__type, "fail"))
-        [__bug_id, __code] = getbugid (__code);
+        [__bug_id, __code, __fixed_bug] = getbugid (__code);
         if (isempty (__bug_id))
           __istest = true;
         else
@@ -529,8 +538,8 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
 
 ### TESTIF HAVE_FEATURE
 ### TESTIF HAVE_FEATURE ; RUNTIME_CONDITION
-### TESTIF HAVE_FEATURE <bug-id>
-### TESTIF HAVE_FEATURE ; RUNTIME_CONDITION <bug-id>
+### TESTIF HAVE_FEATURE <BUG-ID>
+### TESTIF HAVE_FEATURE ; RUNTIME_CONDITION <BUG-ID>
 ###
 ###   HAVE_FEATURE is a comma- or whitespace separated list of
 ###   macro names that may be checked with __have_feature__.
@@ -538,6 +547,10 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
 ###   RUNTIME_CONDITION is an expression to evaluate to check
 ###   whether some condition is met when the test is executed.  For
 ###   example, have_window_system.
+###
+###   BUG-ID is a bug number from the bug tracker.  A prefix of '*'
+###   indicates a bug that has been fixed.  Tests that fail for fixed
+###   bugs are reported as regressions.
 
       elseif (strcmp (__type, "testif"))
         __e = regexp (__code, '.$', 'lineanchors', 'once');
@@ -550,6 +563,10 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
           __idx2 = index (__tmp, ">");
           if (__idx2)
             __bug_id = __tmp(1:__idx2-1);
+            if (strncmp (__bug_id, "*", 1))
+              __bug_id = __bug_id(2:end);
+              __fixed_bug = true;
+            endif
             __feat_line = __feat_line(1:__idx1-1);
           endif
         endif
@@ -583,10 +600,14 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
         endif
 
 ### TEST
-### TEST <bug-id>
+### TEST <BUG-ID>
+###
+###   BUG-ID is a bug number from the bug tracker.  A prefix of '*'
+###   indicates a bug that has been fixed.  Tests that fail for fixed
+###   bugs are reported as regressions.
 
       elseif (strcmp (__type, "test"))
-        [__bug_id, __code] = getbugid (__code);
+        [__bug_id, __code, __fixed_bug] = getbugid (__code);
         if (! isempty (__bug_id))
           __isxtest = true;
         else
@@ -594,11 +615,16 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
         endif
         ## Code will be evaluated below.
 
-### XTEST <bug-id>
+### XTEST
+### XTEST <BUG-ID>
+###
+###   BUG-ID is a bug number from the bug tracker.  A prefix of '*'
+###   indicates a bug that has been fixed.  Tests that fail for fixed
+###   bugs are reported as regressions.
 
       elseif (strcmp (__type, "xtest"))
         __isxtest = true;
-        [__bug_id, __code] = getbugid (__code);
+        [__bug_id, __code, __fixed_bug] = getbugid (__code);
         ## Code will be evaluated below.
 
 ### Comment block.
@@ -636,14 +662,27 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
             __success = false;
             if (__isxtest)
               if (isempty (__bug_id))
-                __xfail += 1;
-                __msg = "known failure";
+                if (__fixed_bug)
+                  __xregression += 1;
+                  __msg = "regression";
+                else
+                  __xfail += 1;
+                  __msg = "known failure";
+                endif
               else
-                __xbug += 1;
+                if (__fixed_bug)
+                  __xregression += 1;
+                else
+                  __xbug += 1;
+                endif
                 if (all (isdigit (__bug_id)))
                   __bug_id = ["http://octave.org/testfailure/?" __bug_id];
                 endif
-                __msg = ["known bug: " __bug_id];
+                if (__fixed_bug)
+                  __msg = ["regression: " __bug_id];
+                else
+                  __msg = ["known bug: " __bug_id];
+                endif
               endif
             else
               __msg = "test failed";
@@ -739,12 +778,13 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip] = test (__name, __f
   elseif (nargout == 1)
     __n = __all_success;
   else
-    __n      = __successes;
-    __nmax   = __tests;
+    __n = __successes;
+    __nmax = __tests;
     __nxfail = __xfail;
-    __nbug   = __xbug;
-    __nskip  = __xskip;
+    __nbug = __xbug;
+    __nskip = __xskip;
     __nrtskip = __xrtskip;
+    __nregression = __xregression;
   endif
 
 endfunction
@@ -803,16 +843,21 @@ function [pattern, id, rest] = getpattern (str)
 endfunction
 
 ## Strip <bug-id> from '<pattern> code'.
-function [bug_id, rest] = getbugid (str)
+function [bug_id, rest, fixed] = getbugid (str)
 
   bug_id = "";
-  id = [];
   rest = str;
+  fixed = false;
+
   str = trimleft (str);
   if (! isempty (str) && str(1) == "<")
     close = index (str, ">");
     if (close)
       bug_id = str(2:close-1);
+      if (strncmp (bug_id, "*", 1))
+        bug_id = bug_id(2:end);
+        fixed = true;
+      endif
       rest = str(close+1:end);
     endif
   endif

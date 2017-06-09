@@ -440,7 +440,8 @@ endfunction
 %!error (accumarray ([1,2,3],1:2))
 
 ## Handle empty arrays
-%!test <47287>
+%!test <*47287>
+%!test <*47287>
 %! ## min, max, and sum are special cases within accumarray so test them.
 %! funcs = {@(x) length (x) > 1, @min, @max, @sum};
 %! for idx = 1:numel (funcs)

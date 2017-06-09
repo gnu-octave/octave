@@ -1294,7 +1294,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 }
 
 /*
-%!test <33857>
+%!test <*33857>
+%!test <*33857>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
@@ -1346,7 +1347,8 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!  endif
 %!endfunction
 
-%!test <35876>
+%!test <*35876>
+%!test <*35876>
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;

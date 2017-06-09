@@ -192,7 +192,8 @@ endfunction
 %! title ("Minor grid adapts to xticks (bug #45850)")
 
 ## linear scaling
-%!test <48533>
+%!test <*48533>
+%!test <*48533>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ();
@@ -251,7 +252,8 @@ endfunction
 %! end_unwind_protect
 
 ## semilog scaling
-%!test <48533>
+%!test <*48533>
+%!test <*48533>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ();

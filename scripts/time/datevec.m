@@ -362,7 +362,8 @@ endfunction
 %!        [2015,6,1,15,7,12.12])
 
 ## Test structure of return value
-%!test <42334>
+%!test <*42334>
+%!test <*42334>
 %! [~, ~, d] = datevec ([1 2; 3 4]);
 %! assert (d, [1 2; 3 4]);
 

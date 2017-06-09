@@ -1166,7 +1166,8 @@ likely.
 %!assert (length (randperm (20,10)), 10)
 
 ## Test biggish N
-%!assert <39378> (length (randperm (30000^2, 100000)), 100000)
+%!assert <*39378> (length (randperm (30000^2, 100000)), 100000)
+%!assert <*39378> (length (randperm (30000^2, 100000)), 100000)
 
 %!test
 %! rand ("seed", 0);

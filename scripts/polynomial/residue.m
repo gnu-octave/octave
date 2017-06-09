@@ -406,7 +406,8 @@ endfunction
 %! assert (ar, a, 1e-12);
 
 ## The following test is due to Bernard Grung
-%!test <34266>
+%!test <*34266>
+%!test <*34266>
 %! z1 =  7.0372976777e6;
 %! p1 = -3.1415926536e9;
 %! p2 = -4.9964813512e8;
@@ -424,7 +425,8 @@ endfunction
 %! assert (br, [0,0,b], 1e-7);
 %! assert (ar, a, 1e-8);
 
-%!test <49291>
+%!test <*49291>
+%!test <*49291>
 %! rf = [1e3, 2e3, 1e3, 2e3];
 %! cf = [316.2e-9, 50e-9, 31.6e-9, 5e-9];
 %! [num, den] = residue (1./cf,-1./(rf.*cf),0);
@@ -432,7 +434,8 @@ endfunction
 %! assert (numel (den), 5);
 %! assert (den(1), 1);
 
-%!test <51148>
+%!test <*51148>
+%!test <*51148>
 %! r = [1.0000e+18, 3.5714e+12, 2.2222e+11, 2.1739e+10];
 %! pin = [-1.9231e+15, -1.6234e+09, -4.1152e+07, -1.8116e+06];
 %! k = 0;

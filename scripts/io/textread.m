@@ -476,7 +476,8 @@ endfunction
 #%! assert (A, [0 2 0 4; 5 0 0 0], 1e-6);
 
 ### Test endofline
-#%!test <45046>
+#%!test <*45046>
+#%!test <*45046>
 #%! f = tempname ();
 #%! fid = fopen (f, "w");
 #%! fprintf (fid, "a\rb\rc");
@@ -490,7 +491,8 @@ endfunction
 #%! unlink (f);
 
 ### Properly process single-quoted EOL args
-#%!test <46477>
+#%!test <*46477>
+#%!test <*46477>
 #%! f = tempname ();
 #%! fid = fopen (f, "w");
 #%! fprintf (fid, "hello, world!");

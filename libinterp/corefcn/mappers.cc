@@ -374,7 +374,8 @@ Compute the inverse tangent in radians for each element of @var{x}.
 %! assert (atan (x), v, sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #44310, bug #45507)
-%!test <44310>
+%!test <*44310>
+%!test <*44310>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, pi/2, -pi/2];
 %! assert (real (atan (x)), v);
@@ -409,7 +410,8 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.
 %! assert (atanh (x), v, sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #44310, bug #45507)
-%!test <44310>
+%!test <*44310>
+%!test <*44310>
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, pi/2, pi/2, -pi/2];
 %! assert (imag (atanh (x)), v);

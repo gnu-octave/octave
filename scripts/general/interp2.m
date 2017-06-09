@@ -519,11 +519,14 @@ endfunction
 %! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
 ## re-order monotonically decreasing
-%!assert <41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
-%!assert <41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
+%!assert <*41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
+%!assert <*41838> (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5)
+%!assert <*41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
+%!assert <*41838> (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5)
 
 ## Linear interpretation with vector XI doesn't lead to matrix output
-%!assert <49506> (interp2 ([2 3], [2 3 4], [1 2; 3 4; 5 6], [2 3], 3, "linear"), [3 4])
+%!assert <*49506> (interp2 ([2 3], [2 3 4], [1 2; 3 4; 5 6], [2 3], 3, "linear"), [3 4])
+%!assert <*49506> (interp2 ([2 3], [2 3 4], [1 2; 3 4; 5 6], [2 3], 3, "linear"), [3 4])
 
 %!shared z, zout, tol
 %! z = [1 3 5; 3 5 7; 5 7 9];

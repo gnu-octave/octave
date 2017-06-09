@@ -352,7 +352,8 @@ assert (a, u * s * v', 128 * eps);
 %! assert (size (s), [0, 0]);
 %! assert (size (v), [0, 0]);
 
-%!test <49309>
+%!test <*49309>
+%!test <*49309>
 %! [~,~,v] = svd ([1, 1, 1], 0);
 %! assert (size (v), [3 3]);
 %! [~,~,v] = svd ([1, 1, 1], "econ");

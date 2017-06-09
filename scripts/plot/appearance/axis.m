@@ -673,7 +673,8 @@ endfunction
 %! end_unwind_protect
 
 ## Test 'axis tight' with differently oriented, differently numbered data vecs
-%!test <40036>
+%!test <*40036>
+%!test <*40036>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   Z = peaks (linspace (-3, 3, 49), linspace (-2, 2, 29));

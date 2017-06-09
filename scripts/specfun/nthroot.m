@@ -94,7 +94,8 @@ endfunction
 %!assert (nthroot (-Inf, -7), 0)
 
 ## This should not generate a division by zero warning
-%!test <43492>
+%!test <*43492>
+%!test <*43492>
 %! warnmsg = lastwarn ();
 %! assert (nthroot (0, 2), 0);
 %! assert (lastwarn (), warnmsg);

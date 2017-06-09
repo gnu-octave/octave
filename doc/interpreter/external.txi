@@ -850,7 +850,7 @@ changing capacity.
 @subsubsection Using Sparse Matrices in Oct-Files
 
 Most of the same operators and functions for sparse matrices that are available
-from the Octave interpeter are also available within oct-files.  The basic
+from the Octave interpreter are also available within oct-files.  The basic
 means of extracting a sparse matrix from an @code{octave_value}, and returning
 it as an @code{octave_value}, can be seen in the following example.
 
@@ -1454,7 +1454,7 @@ The example above uses the functions @code{mxGetDimensions},
 @code{mxGetNumberOfElements}, and @code{mxGetNumberOfDimensions} to work with
 the dimensions of multi-dimensional arrays.  The functions @code{mxGetM}, and
 @code{mxGetN} are also available to find the number of rows and columns in a
-2-D matrix (MxN matrix).
+2-D matrix (@nospell{MxN} matrix).
 
 @node Character Strings in Mex-Files
 @subsection Character Strings in Mex-Files

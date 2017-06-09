@@ -24,8 +24,8 @@
 ## Without an argument, capture the current axes excluding ticklabels, title,
 ## and x/y/zlabels.  The returned structure @var{frame} has a field
 ## @code{cdata}, which contains the actual image data in the form of an
-## NxMx3 (RGB) uint8 matrix, and a field @code{colormap} which is provided for
-## @sc{matlab} compatibility but is always empty.
+## @nospell{NxMx3} (RGB) uint8 matrix, and a field @code{colormap} which is
+## provided for @sc{matlab} compatibility but is always empty.
 ##
 ## If the first argument @var{hax} is an axes handle, then capture this axes,
 ## rather than the current axes returned by @code{gca}.

@@ -323,7 +323,7 @@ SuiteSparse is required to provide sparse matrix factorizations and
 solution of linear equations for sparse systems.
 
 @item SUNDIALS
-The SUite of Nonlinear and DIfferential/ALgebraic Equation Solvers
+@nospell{The SUite of Nonlinear and DIfferential/ALgebraic Equation Solvers}
 (@url{http://computation.llnl.gov/projects/sundials}) is required for
 the Ordinary Differential Equations (ODE) solvers @code{ode15i} and
 @code{ode15s}.

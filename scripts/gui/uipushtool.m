@@ -32,8 +32,8 @@
 ## figure is available, but does not contain a uitoolbar, a uitoolbar will be
 ## created.
 ##
-## If @var{parent} is given then an uipushtools is created on the
-## @var{parent} uitoolbar.
+## If @var{parent} is given then a uipushtool is created on the @var{parent}
+## uitoolbar.
 ##
 ## Any provided property value pairs will override the default values of the
 ## created uipushtool object.
@@ -41,7 +41,7 @@
 ## Uipushtool properties are documented at @ref{Uipushtool Properties}.
 ##
 ## The optional return value @var{hui} is a graphics handle to the created
-## uipushobject object.
+## uipushtool object.
 ##
 ## Examples:
 ##

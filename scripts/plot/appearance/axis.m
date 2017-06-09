@@ -75,7 +75,7 @@
 ## @item @qcode{"image"}
 ## Equivalent to @qcode{"tight"} and @qcode{"equal"}.
 ##
-## @item @qcode{"vis3d"}
+## @item @nospell{@qcode{"vis3d"}}
 ## Set aspect ratio modes to @qcode{"manual"} for rotation without stretching.
 ## @end table
 ##

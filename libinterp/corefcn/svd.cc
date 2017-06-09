@@ -385,10 +385,10 @@ following discussion is not relevant.
 The default routine use by Octave is the newer @code{gesdd} which is based on a
 Divide-and-Conquer algorithm that is 5X faster than the alternative
 @code{gesvd}, which is based on QR factorization.  However, the new algorithm
-can use significantly more memory.  For an MxN input matrix the memory usage is
-of order O(min(M,N) ^ 2), whereas the alternative is of order O(max(M,N)).  In
-general, modern computers have abundant memory so Octave has chosen to
-prioritize speed.
+can use significantly more memory.  For an @nospell{MxN} input matrix the
+memory usage is of order O(min(M,N) ^ 2), whereas the alternative is of order
+O(max(M,N)).  In general, modern computers have abundant memory so Octave has
+chosen to prioritize speed.
 
 In addition, there have been instances in the past where some input matrices
 were not accurately decomposed by @code{gesdd}.  This appears to have been

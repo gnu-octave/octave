@@ -64,8 +64,8 @@
 ## @code{funcCount} containing the number of function calls to @var{fun},
 ## @code{iterations} containing the number of iteration steps,
 ## @code{algorithm} with the name of the search algorithm (always:
-## @qcode{"Nelder-Mead simplex direct search"}), and @code{message} with the
-## exit message.
+## @nospell{@qcode{"Nelder-Mead simplex direct search"}}), and @code{message}
+## with the exit message.
 ##
 ## Example:
 ##

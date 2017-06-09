@@ -88,6 +88,11 @@ function [tf, s_idx] = ismember (a, s, varargin)
     s = uint8 (s);
   endif
 
+  ## Matlab-compatible behavior (R2016b).  See bug #51187.
+  if (ischar (a) && rows (a) == 1 && iscell (s))
+    a = {a};
+  endif
+
   [a, s] = validsetargs ("ismember", a, s, varargin{:});
 
   by_rows = nargin == 3;
@@ -225,3 +230,10 @@ endfunction
 %! [result, s_idx] = ismember ([1:3; 5:7; 4:6; 0:2; 1:3; 2:4], [1:3], "rows");
 %! assert (result, logical ([1 0 0 0 1 0]'));
 %! assert (s_idx, [1 0 0 0 1 0]');
+
+%!test <51187>
+%! assert (ismember ('b ', {'a ', 'b '}), true);
+
+%!test <51187>
+%! abc = ['a '; 'b '; 'c '];
+%! assert (ismember (abc, {abc}), [false; false; false]);

@@ -51,8 +51,16 @@
 %!assert (nest_eval ("x = 5;", "y = 6;"), 5)
 %!assert (nest_eval ("x = -5; x = abs (x);", "y = 6;"), 5)
 
+%!test
+%! f = no_closure (0);
+%! assert (f("foo"), "nested foo");
+%! assert (f("foo"), "nested foo");
+
+%!test <39257>
+%! f = no_closure (1);
+%! assert (f(), "nested");
+%! assert (f("foo"), "nested foo");
+
 %!error <D' undefined near line 7> scope2
-%!error <handles to nested functions are not yet supported> no_closure (0)
-%!error <handles to nested functions are not yet supported> no_closure (1)
 %!error <can not add variable "y" to a static workspace> nest_eval ("y = 5;", "")
 %!error <can not add variable "y" to a static workspace> nest_eval ("y;", "")
